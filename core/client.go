@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -110,96 +112,96 @@ type DatabricksClient struct {
 	commandFactory func(context.Context, *DatabricksClient) CommandExecutor
 }
 
-type ConfigAttribute struct {
-	Name      string
-	Kind      reflect.Kind
-	EnvVars   []string
-	Auth      string
-	Sensitive bool
-	Internal  bool
-	num       int
-}
-
-func (ca *ConfigAttribute) Set(client *DatabricksClient, i interface{}) error {
-	rv := reflect.ValueOf(client)
-	field := rv.Elem().Field(ca.num)
-	switch ca.Kind {
-	case reflect.String:
-		field.SetString(i.(string))
-	case reflect.Bool:
-		field.SetBool(i.(bool))
-	case reflect.Int:
-		field.SetInt(int64(i.(int)))
-	default:
-		// must extensively test with providerFixture to avoid this one
-		return fmt.Errorf("cannot set %s of unknown type %s", ca.Name, reflectKind(ca.Kind))
-	}
-	return nil
-}
-
-func (ca *ConfigAttribute) GetString(client *DatabricksClient) string {
-	rv := reflect.ValueOf(client)
-	field := rv.Elem().Field(ca.num)
-	return fmt.Sprintf("%v", field.Interface())
-}
-
-// ClientAttributes returns meta-representation of DatabricksClient configuration options
-func ClientAttributes() (attrs []ConfigAttribute) {
-	t := reflect.TypeOf(DatabricksClient{})
-	for i := 0; i < t.NumField(); i++ {
-		field := t.Field(i)
-		nameTag := field.Tag.Get("name")
-		if nameTag == "" {
-			continue
-		}
-		sensitive := false
-		auth := field.Tag.Get("auth")
-		authSplit := strings.Split(auth, ",")
-		if len(authSplit) == 2 {
-			auth = authSplit[0]
-			sensitive = authSplit[1] == "sensitive"
-		}
-		// internal config fields are skipped in debugging
-		internal := false
-		if auth == "-" {
-			auth = ""
-			internal = true
-		}
-		attr := ConfigAttribute{
-			Name:      nameTag,
-			Auth:      auth,
-			Kind:      field.Type.Kind(),
-			Sensitive: sensitive,
-			Internal:  internal,
-			num:       i,
-		}
-		envTag := field.Tag.Get("env")
-		if envTag != "" {
-			attr.EnvVars = strings.Split(envTag, ",")
-		}
-		attrs = append(attrs, attr)
-	}
-	return
-}
-
 // Configure client to work, optionally specifying configuration attributes used
 func (c *DatabricksClient) Configure(attrsUsed ...string) error {
-	c.configAttributesUsed = attrsUsed
+	// TODO: we go full-lazy-init, make this method private and don't call it directly outside of Authenticate
+	c.configAttributesUsed = attrsUsed // TODO: we don't need that, remove
+	err := c.readEnvironmentVariables()
+	if err != nil {
+		return err
+	}
 	c.configureHTTPCLient()
 	if c.DebugTruncateBytes == 0 {
 		c.DebugTruncateBytes = DefaultTruncateBytes
 	}
 	// AzureEnvironment could be used in the different contexts, not only for Auzre Authentication
-	// lack of this lead to crash (see issue #831)
+	// lack of this lead to crash (https://github.com/databrickslabs/terraform-provider-databricks/issues/831)
 	azureEnvironment, err := c.getAzureEnvironment()
 	if err != nil {
 		return fmt.Errorf("cannot get azure environment: %w", err)
 	}
 	c.AzureEnvironment = &azureEnvironment
-
 	return nil
 }
 
+// readEnvironmentVariables reads client options from environment variables
+func (c *DatabricksClient) readEnvironmentVariables() error {
+	// TODO: make sure terraform provider schema removes default func for env-based settings
+	authsUsed := map[string]bool{}
+	attrsUsed := []string{}
+	for _, attr := range ClientAttributes() { // bools
+		if !attr.IsZero(c) {
+			attrsUsed = append(attrsUsed, attr.Name)
+			if attr.Auth != "" {
+				authsUsed[attr.Auth] = true
+			}
+			// explicit attributes have precedence
+			continue
+		}
+		foundInEnv := false
+		var value interface{}
+		// TODO: move it to ConfigAttribute
+		for _, envName := range attr.EnvVars {
+			v := os.Getenv(envName)
+			if v == "" {
+				continue
+			}
+			switch attr.Kind {
+			case reflect.String:
+				value = v
+				foundInEnv = true
+			case reflect.Bool:
+				if vv, err := strconv.ParseBool(v); err == nil {
+					value = vv
+					foundInEnv = true
+				}
+			case reflect.Int:
+				if vv, err := strconv.Atoi(v); err == nil {
+					value = vv
+					foundInEnv = true
+				}
+			default:
+				continue
+			}
+		}
+		if !foundInEnv {
+			continue
+		}
+		err := attr.Set(c, value)
+		if err != nil {
+			return err
+		}
+		attrsUsed = append(attrsUsed, attr.Name)
+		if attr.Auth != "" {
+			authsUsed[attr.Auth] = true
+		}
+	}
+	sort.Strings(attrsUsed)
+	log.Printf("[INFO] Explicit and implicit attributes: %s", strings.Join(attrsUsed, ", "))
+	authorizationMethodsUsed := []string{}
+	for name := range authsUsed {
+		authorizationMethodsUsed = append(authorizationMethodsUsed, name)
+	}
+	if c.AuthType == "" && len(authorizationMethodsUsed) > 1 {
+		sort.Strings(authorizationMethodsUsed)
+		return fmt.Errorf("more than one authorization method configured: %s",
+			strings.Join(authorizationMethodsUsed, " and "))
+	}
+	return nil
+}
+
+// configDebugString returns attr=value debug string of auth parameters,
+// so that error messages are more digestible by non-technical people.
 func (c *DatabricksClient) configDebugString() string {
 	debug := []string{}
 	for _, attr := range ClientAttributes() {
@@ -231,6 +233,10 @@ func (c *DatabricksClient) Authenticate(ctx context.Context) error {
 	defer c.authMutex.Unlock()
 	if c.authVisitor != nil {
 		return nil
+	}
+	err := c.Configure()
+	if err != nil {
+		return err
 	}
 	type auth struct {
 		configure func(context.Context) (func(*http.Request) error, error)
@@ -273,6 +279,7 @@ func (c *DatabricksClient) Authenticate(ctx context.Context) error {
 		return c.niceAuthError(fmt.Sprintf("cannot configure %s auth", c.AuthType))
 	}
 	if c.Host == "" && IsData.GetOrUnknown(ctx) == "yes" {
+		// TODO: provide error explanation callback, so that terraform plugin could include documentation, based on context.
 		return c.niceAuthError("workspace is most likely not created yet, because the `host` " +
 			"is empty. Please add `depends_on = [databricks_mws_workspaces.this]` or " +
 			"`depends_on = [azurerm_databricks_workspace.this]` to every data resource. See " +
