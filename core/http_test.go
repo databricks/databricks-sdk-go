@@ -231,6 +231,8 @@ func TestCheckHTTPRetry_429(t *testing.T) {
 func singleRequestServer(t *testing.T, method, url, response string) (*DatabricksClient, *httptest.Server) {
 	server := httptest.NewServer(http.HandlerFunc(
 		func(rw http.ResponseWriter, req *http.Request) {
+			// rw.WriteHeader(500)
+			// return
 			if req.Method == method && req.RequestURI == url {
 				_, err := rw.Write([]byte(response))
 				assert.NoError(t, err)

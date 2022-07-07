@@ -9,11 +9,11 @@ Initial commit includes porting of Core Authentication layer.
 sequenceDiagram
     ClustersAPI->>+DatabricksClient: GET .../clusters/list
     DatabricksClient->>+AuthRegistry: lazy auth
-    AuthRegistry-->>+FirstAuthorizer: try configure
-    FirstAuthorizer-->>-AuthRegistry: try next
-    AuthRegistry->>+NextAuthorizer: try configure
-    NextAuthorizer->>RequestVisitor: configured auth
-    NextAuthorizer->>-AuthRegistry: authenticated
+    AuthRegistry-->>+FirstCredentials: try configure
+    FirstCredentials-->>-AuthRegistry: try next
+    AuthRegistry->>+NextCredentials: try configure
+    NextCredentials->>RequestVisitor: configured auth
+    NextCredentials->>-AuthRegistry: authenticated
     AuthRegistry->>+RequestVisitor: visit HTTP request
     RequestVisitor-->>+IdentityProvider: ensure fresh token
     IdentityProvider-->>-RequestVisitor: access token
@@ -40,8 +40,8 @@ classDiagram
         Delete(path, query) T
     }
 
-    Authorizer --> "0..1" RequestVisitor: creates
-    class Authorizer {
+    Credentials --> "0..1" RequestVisitor: creates
+    class Credentials {
         <<interface>>
         Name() string
         TryConfigure() RequestVisitor
@@ -67,65 +67,65 @@ classDiagram
         IsExpired() bool
     }
 
-    AzureSpnAuthorizer --> AuthorizerRegistry: combines
-    AzureSpnAuthorizer --|> Authorizer: implements
-    AzureSpnAuthorizer --> AzureSpnVisitor: creates
+    AzureSpnCredentials --> CredentialsRegistry: combines
+    AzureSpnCredentials --|> Credentials: implements
+    AzureSpnCredentials --> AzureSpnVisitor: creates
     AzureSpnVisitor --|> RefreshableVisitor: implements
-    class AzureSpnAuthorizer {
+    class AzureSpnCredentials {
         ClientID string
         SecretID string
         TenantID string
     }
 
-    AzureCliAuthorizer --> AuthorizerRegistry: combines
-    AzureCliAuthorizer --|> Authorizer: implements
-    AzureCliAuthorizer --> AzureCliVisitor: creates
+    AzureCliCredentials --> CredentialsRegistry: combines
+    AzureCliCredentials --|> Credentials: implements
+    AzureCliCredentials --> AzureCliVisitor: creates
     AzureCliVisitor --|> RefreshableVisitor: implements
 
-    GoogleAuthorizer --> AuthorizerRegistry: combines
-    GoogleAuthorizer --|> Authorizer: implements
-    GoogleAuthorizer --> GoogleVisitor: creates
+    GoogleCredentials --> CredentialsRegistry: combines
+    GoogleCredentials --|> Credentials: implements
+    GoogleCredentials --> GoogleVisitor: creates
     GoogleVisitor --|> RefreshableVisitor: implements
-    class GoogleAuthorizer {
+    class GoogleCredentials {
         ServiceAccount
     }
     
-    DatabricksOauthAuthorizer --> AuthorizerRegistry: combines
-    DatabricksOauthAuthorizer --|> Authorizer: implements
-    DatabricksOauthAuthorizer --> DatabricksOauthVisitor: creates
+    DatabricksOauthCredentials --> CredentialsRegistry: combines
+    DatabricksOauthCredentials --|> Credentials: implements
+    DatabricksOauthCredentials --> DatabricksOauthVisitor: creates
     DatabricksOauthVisitor --|> RefreshableVisitor: implements
-    class DatabricksOauthAuthorizer {
+    class DatabricksOauthCredentials {
         []Scopes
     }
     
     StaticVisitor --|> RequestVisitor: implements
     class StaticVisitor
 
-    DatabricksCliAuthorizer --> AuthorizerRegistry: combines
-    DatabricksCliAuthorizer --|> Authorizer: implements
-    DatabricksCliAuthorizer --> StaticVisitor: creates
-    class DatabricksCliAuthorizer {
+    DatabricksCliCredentials --> CredentialsRegistry: combines
+    DatabricksCliCredentials --|> Credentials: implements
+    DatabricksCliCredentials --> StaticVisitor: creates
+    class DatabricksCliCredentials {
         Profile
     }
 
-    PatAuthorizer --> AuthorizerRegistry: combines
-    PatAuthorizer --|> Authorizer: implements
-    PatAuthorizer --> StaticVisitor: creates
-    class PatAuthorizer {
+    PatCredentials --> CredentialsRegistry: combines
+    PatCredentials --|> Credentials: implements
+    PatCredentials --> StaticVisitor: creates
+    class PatCredentials {
         Token
     }
 
-    PatAuthorizer --> AuthorizerRegistry: combines
-    BasicAuthorizer --|> Authorizer: implements
-    BasicAuthorizer --> StaticVisitor: creates
-    class BasicAuthorizer {
+    PatCredentials --> CredentialsRegistry: combines
+    BasicCredentials --|> Credentials: implements
+    BasicCredentials --> StaticVisitor: creates
+    class BasicCredentials {
         Username
         Password
     }
 
-    DatabricksClient --* AuthorizerRegistry: (just pretty render)
-    AuthorizerRegistry --|> RequestVisitor: implements
-    class AuthorizerRegistry {
+    DatabricksClient --* CredentialsRegistry: (just pretty render)
+    CredentialsRegistry --|> RequestVisitor: implements
+    class CredentialsRegistry {
         - authMutex
     }
 ```
@@ -133,6 +133,7 @@ classDiagram
 TODO:
 ---
 
+- [ ] Azure MSI Auth ported
 - [ ] Try pulling up packages for Azure and Google
 - [ ] Pass tests for CommonEnvironmentClient
 - [ ] CommandFactory should be done better

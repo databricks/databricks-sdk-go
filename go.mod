@@ -12,7 +12,7 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.7.1
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/stretchr/testify v1.7.2
-	golang.org/x/oauth2 v0.0.0-20220524215830-622c5d57e401
+	golang.org/x/oauth2 v0.0.0-20220628200809-02e64fa58f26
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
 	google.golang.org/api v0.82.0
 	gopkg.in/ini.v1 v1.66.6

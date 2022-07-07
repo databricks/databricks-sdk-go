@@ -37,6 +37,18 @@ var maxWait = 10 * time.Second
 var minJitter = 50 * time.Millisecond
 var maxJitter = 750 * time.Millisecond
 
+func Backoff(attempt int) time.Duration {
+	wait := time.Duration(attempt) * time.Second
+	if wait > maxWait {
+		wait = maxWait
+	}
+	// add some random jitter
+	rand.Seed(time.Now().UnixNano())
+	jitter := rand.Intn(int(maxJitter)-int(minJitter)+1) + int(minJitter)
+	wait += time.Duration(jitter)
+	return wait
+}
+
 func Wait(pctx context.Context, timeout time.Duration, fn WaitFn) error {
 	ctx, cancel := context.WithTimeout(pctx, timeout)
 	defer cancel()
@@ -52,14 +64,7 @@ func Wait(pctx context.Context, timeout time.Duration, fn WaitFn) error {
 			return res.Err
 		}
 		lastErr = res.Err
-		wait := time.Duration(attempt) * time.Second
-		if wait > maxWait {
-			wait = maxWait
-		}
-		// add some random jitter
-		rand.Seed(time.Now().UnixNano())
-		jitter := rand.Intn(int(maxJitter)-int(minJitter)+1) + int(minJitter)
-		wait += time.Duration(jitter)
+		wait := Backoff(attempt)
 		timer := time.NewTimer(wait)
 		log.Printf("[TRACE] %s. Sleeping %s",
 			strings.TrimSuffix(res.Err.Error(), "."),
