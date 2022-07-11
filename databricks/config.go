@@ -10,14 +10,22 @@ import (
 	"time"
 )
 
-type Credentials interface {
+// CredentialsProvider responsible for configuring static or refreshable
+// authentication credentials for Databricks REST APIs
+type CredentialsProvider interface {
+	// Name returns human-addressable name of this credentials provider name
 	Name() string
+
+	// Configure creates HTTP Request Visitor or returns nil if a given credetials
+	// are not configured. It returns an error if credentials are misconfigured.
 	Configure(context.Context, *Config) (func(*http.Request) error, error)
 }
 
 // Config represents configuration for Databricks Connectivity
 type Config struct {
-	Credentials Credentials
+	// Credentials holds an instance of Credentials Provider to authenticate with Databricks REST APIs.
+	// If no credentials provider is specified, `DefaultCredentials` are implicitly used.
+	Credentials CredentialsProvider
 
 	// Databricks host (either of workspace endpoint or Accounts API endpoint)
 	Host string `name:"host" env:"DATABRICKS_HOST"`

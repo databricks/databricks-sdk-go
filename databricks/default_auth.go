@@ -16,7 +16,7 @@ var (
 		DebugTruncateBytes: 1024,
 	}
 
-	authProviders = []Credentials{
+	authProviders = []CredentialsProvider{
 		PatCredentials{},
 		BasicCredentials{},
 		AzureClientSecretCredentials{},
@@ -30,7 +30,7 @@ var (
 	ConfigAttributes = discoverConfigurations(authProviders, defaultConfig)
 )
 
-func discoverConfigurations(providers []Credentials, cfg Config) (res []ConfigAttribute) {
+func discoverConfigurations(providers []CredentialsProvider, cfg Config) (res []ConfigAttribute) {
 	overlap := map[string]string{}
 	res = append(res, discoverAttributesOf(cfg, "config", overlap)...)
 	for _, credentials := range providers {
@@ -85,7 +85,7 @@ func (c DefaultCredentials) Configure(ctx context.Context, cfg *Config) (func(*h
 	return nil, fmt.Errorf("cannot configure default credentials")
 }
 
-func (c DefaultCredentials) effectiveCredentials(cfg *Config, explicit map[string]string) ([]Credentials, error) {
+func (c DefaultCredentials) effectiveCredentials(cfg *Config, explicit map[string]string) ([]CredentialsProvider, error) {
 	placeholders := map[string]reflect.Value{
 		"config": reflect.ValueOf(*cfg), // TODO: figure out what to do with mutexes...
 	}
@@ -127,9 +127,9 @@ func (c DefaultCredentials) effectiveCredentials(cfg *Config, explicit map[strin
 		return nil, fmt.Errorf("more than one authorization method configured: %s",
 			strings.Join(configuredCreds, " and "))
 	}
-	creds := []Credentials{}
+	creds := []CredentialsProvider{}
 	for _, v := range placeholders {
-		creds = append(creds, v.Interface().(Credentials))
+		creds = append(creds, v.Interface().(CredentialsProvider))
 	}
 	return creds, nil
 }

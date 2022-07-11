@@ -8,17 +8,22 @@ Initial commit includes porting of Core Authentication layer.
 ```mermaid
 sequenceDiagram
     ClustersAPI->>+DatabricksClient: GET .../clusters/list
-    DatabricksClient->>+AuthRegistry: lazy auth
-    AuthRegistry-->>+FirstCredentials: try configure
-    FirstCredentials-->>-AuthRegistry: try next
-    AuthRegistry->>+NextCredentials: try configure
+    DatabricksClient->>+databricks.Config: Authenticate(HttpRequest)
+
+    databricks.Config-->>+DefaultCredentials: Configure(databricks.Config)
+    DefaultCredentials-->>+FirstCredentials: try configure
+    FirstCredentials-->>-DefaultCredentials: try next
+    DefaultCredentials->>+NextCredentials: try configure
     NextCredentials->>RequestVisitor: configured auth
-    NextCredentials->>-AuthRegistry: authenticated
-    AuthRegistry->>+RequestVisitor: visit HTTP request
+    NextCredentials->>-DefaultCredentials: authenticated
+    DefaultCredentials->>-databricks.Config: set AuthType & request visitor
+
+    databricks.Config->>+RequestVisitor: visit HTTP request
     RequestVisitor-->>+IdentityProvider: ensure fresh token
     IdentityProvider-->>-RequestVisitor: access token
-    RequestVisitor->>-AuthRegistry: added HTTP headers
-    AuthRegistry->>-DatabricksClient: added HTTP headers
+    RequestVisitor->>-databricks.Config: added HTTP headers
+    
+    databricks.Config->>-DatabricksClient: added HTTP headers
 
     DatabricksClient->>+API: authenticated request
     API->>-DatabricksClient: JSON payload
@@ -29,10 +34,22 @@ sequenceDiagram
 
 ```mermaid
 classDiagram
+    Credentials "0..1" <-- Config: Configure(self)
+    RequestVisitor --* Config: configured auth
+    class Config {
+        * Host string
+        * AzureResourceID string
+        * AzureEnvironment string
+        Credentials: DefaultCredentials
+
+        Authenticate(HttpRequest) error
+    }
+
+    Config --* DatabricksClient
     class DatabricksClient {
-        - requestVisitor
+        Config
         - retryPolicy
-        - authDiscovery
+        
         Get(path, query) T
         Post(path, body) T
         Put(path, body) T
@@ -44,7 +61,7 @@ classDiagram
     class Credentials {
         <<interface>>
         Name() string
-        TryConfigure() RequestVisitor
+        Configure(Config) RequestVisitor
     }
 
     class RequestVisitor {
@@ -52,81 +69,58 @@ classDiagram
         Visit(HttpRequest) error
     }
 
-    RefreshableVisitor ..> RequestVisitor: extends
-    class RefreshableVisitor {
-        <<interface>>
-        - state Token 
-        EnsureFresh() error
-    }
-
-    RefreshableVisitor --* Token: contains
-    class Token {
-        - accessToken JWT
-        - refreshToken JWT
-        - expiresOn Time
-        IsExpired() bool
-    }
-
-    AzureSpnCredentials --> CredentialsRegistry: combines
-    AzureSpnCredentials --|> Credentials: implements
-    AzureSpnCredentials --> AzureSpnVisitor: creates
-    AzureSpnVisitor --|> RefreshableVisitor: implements
+    AzureSpnCredentials --* authProviders
+    AzureSpnCredentials ..|> Credentials
     class AzureSpnCredentials {
         ClientID string
         SecretID string
         TenantID string
     }
 
-    AzureCliCredentials --> CredentialsRegistry: combines
-    AzureCliCredentials --|> Credentials: implements
-    AzureCliCredentials --> AzureCliVisitor: creates
-    AzureCliVisitor --|> RefreshableVisitor: implements
+    AzureCliCredentials --* authProviders
+    AzureCliCredentials ..|> Credentials
 
-    GoogleCredentials --> CredentialsRegistry: combines
-    GoogleCredentials --|> Credentials: implements
-    GoogleCredentials --> GoogleVisitor: creates
-    GoogleVisitor --|> RefreshableVisitor: implements
+    GoogleCredentials --* authProviders
+    GoogleCredentials ..|> Credentials
     class GoogleCredentials {
         ServiceAccount
     }
     
-    DatabricksOauthCredentials --> CredentialsRegistry: combines
-    DatabricksOauthCredentials --|> Credentials: implements
-    DatabricksOauthCredentials --> DatabricksOauthVisitor: creates
-    DatabricksOauthVisitor --|> RefreshableVisitor: implements
+    DatabricksOauthCredentials --* authProviders
+    DatabricksOauthCredentials ..|> Credentials
     class DatabricksOauthCredentials {
         []Scopes
     }
-    
-    StaticVisitor --|> RequestVisitor: implements
-    class StaticVisitor
 
-    DatabricksCliCredentials --> CredentialsRegistry: combines
-    DatabricksCliCredentials --|> Credentials: implements
-    DatabricksCliCredentials --> StaticVisitor: creates
-    class DatabricksCliCredentials {
-        Profile
-    }
-
-    PatCredentials --> CredentialsRegistry: combines
-    PatCredentials --|> Credentials: implements
-    PatCredentials --> StaticVisitor: creates
+    PatCredentials --* authProviders
+    PatCredentials ..|> Credentials
     class PatCredentials {
         Token
     }
 
-    PatCredentials --> CredentialsRegistry: combines
-    BasicCredentials --|> Credentials: implements
-    BasicCredentials --> StaticVisitor: creates
+    BasicCredentials --* authProviders
+    BasicCredentials ..|> Credentials
     class BasicCredentials {
         Username
         Password
     }
 
-    DatabricksClient --* CredentialsRegistry: (just pretty render)
-    CredentialsRegistry --|> RequestVisitor: implements
-    class CredentialsRegistry {
-        - authMutex
+    DatabricksCliCredentials --* authProviders
+    DatabricksCliCredentials ..|> Credentials
+    class DatabricksCliCredentials {
+        Profile
+    }
+
+    authProviders --> DefaultCredentials: for reach ConfigAttributes()
+    DefaultCredentials <-- DatabricksCliCredentials: set explicit
+    DefaultCredentials ..|> Credentials
+    class DefaultCredentials {
+        - explicit map[string]string
+        - skip CredentialsName
+    }
+
+    class authProviders {
+        ConfigAttributes()
     }
 ```
 
