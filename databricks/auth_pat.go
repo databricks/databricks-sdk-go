@@ -14,7 +14,10 @@ func (c PatCredentials) Name() string {
 	return "pat"
 }
 
-func (c PatCredentials) Configure(context.Context, *Config) (func(*http.Request) error, error) {
+func (c PatCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+	if c.Token == "" || cfg.Host == "" {
+		return nil, nil
+	}
 	return func(r *http.Request) error {
 		r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Token))
 		return nil

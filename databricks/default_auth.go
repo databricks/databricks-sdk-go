@@ -32,7 +32,7 @@ var (
 
 func discoverConfigurations(providers []CredentialsProvider, cfg Config) (res []ConfigAttribute) {
 	overlap := map[string]string{}
-	res = append(res, discoverAttributesOf(cfg, "config", overlap)...)
+	res = append(res, discoverAttributesOf(&cfg, "config", overlap)...)
 	for _, credentials := range providers {
 		res = append(res, discoverAttributesOf(credentials, credentials.Name(), overlap)...)
 	}
@@ -87,13 +87,23 @@ func (c DefaultCredentials) Configure(ctx context.Context, cfg *Config) (func(*h
 
 func (c DefaultCredentials) effectiveCredentials(cfg *Config, explicit map[string]string) ([]CredentialsProvider, error) {
 	placeholders := map[string]reflect.Value{
-		"config": reflect.ValueOf(*cfg), // TODO: figure out what to do with mutexes...
+		"config": reflect.ValueOf(cfg), // TODO: figure out what to do with mutexes...
 	}
-	for _, provider := range authProviders {
-		placeholders[provider.Name()] = reflect.ValueOf(provider)
+	refOf := func(cp CredentialsProvider) reflect.Value {
+		// field :=
+		// //field.Elem().Set(reflect.ValueOf(b))
+		// println(field.String())
+		// return reflect.ValueOf(&cp)
+		return reflect.New(reflect.TypeOf(cp))
+	}
+	for _, provider := range authProviders { // TODO: this does need to be in the same order.
+		placeholders[provider.Name()] = refOf(provider)
 	}
 	authsUsed := map[string]bool{}
 	for _, attr := range ConfigAttributes {
+		if c.skip != "" && attr.where == c.skip {
+			continue
+		}
 		target, ok := placeholders[attr.where]
 		if !ok {
 			return nil, fmt.Errorf("cannot find where to put %s", attr.Name)
@@ -102,6 +112,12 @@ func (c DefaultCredentials) effectiveCredentials(cfg *Config, explicit map[strin
 		// explicit attributes have precedence
 		expl, okExpl := explicit[attr.Name]
 		env, okEnv := attr.ReadEnv()
+		if expl == "" {
+			okExpl = false
+		}
+		if env == "" {
+			okEnv = false
+		}
 		if !okExpl && !okEnv {
 			continue
 		}
@@ -128,8 +144,11 @@ func (c DefaultCredentials) effectiveCredentials(cfg *Config, explicit map[strin
 			strings.Join(configuredCreds, " and "))
 	}
 	creds := []CredentialsProvider{}
-	for _, v := range placeholders {
-		creds = append(creds, v.Interface().(CredentialsProvider))
+	for k, v := range placeholders {
+		if k == "config" {
+			continue // TODO: or more?
+		}
+		creds = append(creds, v.Elem().Interface().(CredentialsProvider))
 	}
 	return creds, nil
 }

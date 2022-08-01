@@ -58,7 +58,7 @@ func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (f
 		skip:     c.Name(),
 	}.Configure(ctx, cfg)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", configFile, err)
+		return nil, fmt.Errorf("%s %s profile: %w", configFile, c.Profile, err)
 	}
 	return visitor, nil
 }

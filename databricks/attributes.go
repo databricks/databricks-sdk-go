@@ -52,6 +52,9 @@ func (ca *ConfigAttribute) SetS(rv reflect.Value, v string) error {
 }
 
 func (ca *ConfigAttribute) Set(rv reflect.Value, i interface{}) error {
+	if rv.Kind() == reflect.Pointer {
+		rv = rv.Elem() // pointer deref
+	}
 	field := rv.Field(ca.num)
 	switch ca.Kind {
 	case reflect.String:
@@ -79,8 +82,17 @@ func (ca *ConfigAttribute) GetString(client interface{}) string {
 	return fmt.Sprintf("%v", field.Interface())
 }
 
-func attributesOf(template interface{}, where string) (attrs []ConfigAttribute) {
+func getTemplateType(template interface{}) reflect.Type {
 	t := reflect.TypeOf(template)
+	if t.Kind() == reflect.Pointer {
+		return t.Elem()
+	}
+	return t
+}
+
+func attributesOf(template interface{}, where string) (attrs []ConfigAttribute) {
+	t := getTemplateType(template)
+	// t := reflect.ValueOf(template).Type()
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
 		nameTag := field.Tag.Get("name")

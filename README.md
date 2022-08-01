@@ -124,9 +124,11 @@ classDiagram
     }
 ```
 
+
 TODO:
 ---
 
+- [ ] change origin to the databricks-sdk-go
 - [ ] Azure MSI Auth ported
 - [ ] Try pulling up packages for Azure and Google
 - [ ] Pass tests for CommonEnvironmentClient

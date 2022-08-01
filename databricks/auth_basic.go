@@ -13,10 +13,13 @@ type BasicCredentials struct {
 }
 
 func (c BasicCredentials) Name() string {
-	return "pat"
+	return "basic"
 }
 
-func (c BasicCredentials) Configure(context.Context, *Config) (func(*http.Request) error, error) {
+func (c BasicCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+	if c.Username == "" || c.Password == "" || cfg.Host == "" {
+		return nil, nil
+	}
 	tokenUnB64 := fmt.Sprintf("%s:%s", c.Username, c.Password)
 	b64 := base64.StdEncoding.EncodeToString([]byte(tokenUnB64))
 	return func(r *http.Request) error {
