@@ -137,7 +137,7 @@ func parseErrorFromResponse(resp *http.Response) APIError {
 			Resource:   resp.Request.URL.Path,
 		}
 	}
-	logger.Debugf("%s %v", resp.Status, body)
+	logger.Debugf("%s %v", resp.Status, body) // TODO: this is wrong
 	// try to read in nicely formatted API error response
 	var errorBody APIErrorBody
 	err = json.Unmarshal(body, &errorBody)

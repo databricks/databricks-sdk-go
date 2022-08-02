@@ -6,16 +6,16 @@ import (
 
 	"github.com/databricks/sdk-go/databricks"
 	"github.com/databricks/sdk-go/databricks/client"
+	"github.com/databricks/sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAccDefaultCredentials(t *testing.T) {
-	var resp map[string]interface{}
-	client := client.New()
-	err := client.Get(context.Background(), "/token/list", nil, &resp)
+	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+	ws := workspaces.New()
+	versions, err := ws.Clusters.ListSparkVersions(context.Background())
 	assert.NoError(t, err)
-	_, ok := resp["token_infos"]
-	assert.True(t, ok)
+	assert.GreaterOrEqual(t, len(versions.SparkVersions), 10)
 }
 
 // TODO: add CredentialProviderChain

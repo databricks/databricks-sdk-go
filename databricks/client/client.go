@@ -292,6 +292,7 @@ func (c *DatabricksClient) drain(r *http.Response) {
 
 func (c *DatabricksClient) retried(ctx context.Context, method, requestURL string,
 	requestBody []byte, visitors ...func(*http.Request) error) (resp *http.Response, err error) {
+	var lastErr error
 	for attempt := 0; ; attempt++ {
 		request, err := http.NewRequestWithContext(ctx, method, requestURL, bytes.NewBuffer(requestBody))
 		if err != nil {
@@ -310,6 +311,7 @@ func (c *DatabricksClient) retried(ctx context.Context, method, requestURL strin
 		// attempt the actual request
 		resp, err = c.httpClient.Do(request)
 		retry, err := apierr.CheckForRetry(ctx, resp, err)
+		lastErr = err
 		if !retry {
 			break
 		}
@@ -329,14 +331,14 @@ func (c *DatabricksClient) retried(ctx context.Context, method, requestURL strin
 		case <-timer.C:
 		}
 	}
-	if err == nil {
+	if lastErr == nil {
 		return resp, nil
 	}
 	defer c.httpClient.CloseIdleConnections()
 	if resp != nil {
 		c.drain(resp)
 	}
-	return nil, fmt.Errorf("exceeded %d retries: %s %s: %w", c.Config.MaxRetryAttempts, method, requestURL, err)
+	return nil, lastErr
 }
 
 func (c *DatabricksClient) perform(ctx context.Context, method, requestURL string, data interface{},
