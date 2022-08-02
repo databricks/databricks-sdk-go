@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"strings"
 
 	"golang.org/x/oauth2"
@@ -66,19 +67,28 @@ func (c *Config) GetAzureEnvironment() (azureEnvironment, error) {
 	return env, nil
 }
 
-func (c *Config) getWorkspaceUrl(ctx context.Context, management oauth2.TokenSource) (string, error) {
+type azureHostResolver interface {
+	tokenSourceFor(ctx context.Context, cfg *Config, env azureEnvironment, resource string) oauth2.TokenSource
+}
+
+func (c *Config) azureEnsureWorkspaceUrl(ctx context.Context, ahr azureHostResolver) error {
+	if c.AzureResourceID == "" || c.Host != "" {
+		return nil
+	}
 	env, err := c.GetAzureEnvironment()
 	if err != nil {
-		return "", err
+		return err
 	}
+	// azure resource ID can also be used in lieu of host by some of the clients, like Terraform
+	management := ahr.tokenSourceFor(ctx, c, env, env.ResourceManagerEndpoint)
 	resourceManager := oauth2.NewClient(ctx, management)
 	resp, err := resourceManager.Get(env.ResourceManagerEndpoint + c.AzureResourceID + "?api-version=2018-04-01")
 	if err != nil {
-		return "", fmt.Errorf("cannot resolve workspace: %w", err)
+		return fmt.Errorf("cannot resolve workspace: %w", err)
 	}
 	raw, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", fmt.Errorf("cannot read: %w", err)
+		return fmt.Errorf("cannot read: %w", err)
 	}
 	var workspaceMetadata struct {
 		Properties struct {
@@ -87,7 +97,9 @@ func (c *Config) getWorkspaceUrl(ctx context.Context, management oauth2.TokenSou
 	}
 	err = json.Unmarshal(raw, &workspaceMetadata)
 	if err != nil {
-		return "", fmt.Errorf("cannot unmarshal: %w", err)
+		return fmt.Errorf("cannot unmarshal: %w", err)
 	}
-	return fmt.Sprintf("https://%s/", workspaceMetadata.Properties.WorkspaceURL), nil
+	c.Host = fmt.Sprintf("https://%s/", workspaceMetadata.Properties.WorkspaceURL)
+	log.Printf("[INFO] Discovered workspace url: %s", c.Host)
+	return nil
 }

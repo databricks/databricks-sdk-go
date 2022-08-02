@@ -3,6 +3,7 @@ package databricks
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -18,7 +19,14 @@ type CredentialsProvider interface {
 
 	// Configure creates HTTP Request Visitor or returns nil if a given credetials
 	// are not configured. It returns an error if credentials are misconfigured.
+	// Takes a context and a pointer to a Config instance, that holds auth mutex.
 	Configure(context.Context, *Config) (func(*http.Request) error, error)
+}
+
+type Loader interface {
+	// Name is human-addressable representation of this config resolver
+	Name() string
+	Configure(*Config) error
 }
 
 // Config represents configuration for Databricks Connectivity
@@ -32,6 +40,30 @@ type Config struct {
 
 	// Databricks Account ID for Accounts API. This field is used in dependencies.
 	AccountID string `name:"account_id" env:"DATABRICKS_ACCOUNT_ID"`
+
+	Token    string `name:"token" env:"DATABRICKS_TOKEN" auth:"pat,sensitive"`
+	Username string `name:"username" env:"DATABRICKS_USERNAME" auth:"basic"`
+	Password string `name:"password" env:"DATABRICKS_PASSWORD" auth:"basic,sensitive"`
+
+	// Connection profile specified within ~/.databrickscfg.
+	Profile string `name:"profile" env:"DATABRICKS_CONFIG_PROFILE"`
+
+	// Location of the Databricks CLI credentials file, that is created
+	// by `databricks configure --token` command. By default, it is located
+	// in ~/.databrickscfg.
+	ConfigFile string `name:"config_file" env:"DATABRICKS_CONFIG_FILE"`
+
+	GoogleServiceAccount string `name:"google_service_account" env:"DATABRICKS_GOOGLE_SERVICE_ACCOUNT" auth:"google"`
+	GoogleCredentials    string `name:"google_credentials" env:"GOOGLE_CREDENTIALS" auth:"google,sensitive"`
+
+	// Azure Resource Manager ID for Azure Databricks workspace, which is exhanged for a Host
+	AzureResourceID string `name:"azure_workspace_resource_id" env:"DATABRICKS_AZURE_RESOURCE_ID" auth:"azure"`
+
+	AzureUseMSI        bool   `name:"azure_use_msi" env:"ARM_USE_MSI" auth:"azure"`
+	AzureClientSecret  string `name:"azure_client_secret" env:"ARM_CLIENT_SECRET" auth:"azure,sensitive"`
+	AzureClientID      string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure"`
+	AzureTenantID      string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure"`
+	AzurermEnvironment string `name:"azure_environment" env:"ARM_ENVIRONMENT"`
 
 	// When multiple auth attributes are available in the environment, use the auth type
 	// specified by this argument. This argument also holds currently selected auth.
@@ -53,9 +85,6 @@ type Config struct {
 	// Maximum number of requests per second made to Databricks REST API.
 	RateLimitPerSecond int `name:"rate_limit" env:"DATABRICKS_RATE_LIMIT" auth:"-"`
 
-	// Azure Resource Manager ID for Azure Databricks workspace, which is exhanged for a Host
-	AzureResourceID string `name:"azure_workspace_resource_id" env:"DATABRICKS_AZURE_RESOURCE_ID"`
-
 	// Azure Environment (Public, UsGov, China, Germany) has specific set of API endpoints
 	Environment string `name:"azure_environment" env:"ARM_ENVIRONMENT"` // TODO: rename to AzureEnvironment
 
@@ -63,10 +92,16 @@ type Config struct {
 	RetryWaitMax     time.Duration
 	MaxRetryAttempts int
 
+	Loaders []Loader
+
+	// marker for configuration resolving
+	resolved bool
+
 	// Mutex used by Authenticate method to guard `auth`, which
 	// has to be lazily created on the first request to Databricks API.
 	// It is done because databricks host and token may often be available
 	// only in the middle of Terraform DAG execution.
+	// This mutex is also used for config resolution.
 	mu sync.Mutex
 
 	// HTTP request interceptor, that assigns Authorization header
@@ -75,7 +110,11 @@ type Config struct {
 
 // Authenticate adds special headers to HTTP request to authorize it to work with Databricks REST API
 func (c *Config) Authenticate(r *http.Request) error {
-	err := c.authenticateIfNeeded(r.Context())
+	err := c.resolve()
+	if err != nil {
+		return err
+	}
+	err = c.authenticateIfNeeded(r.Context())
 	if err != nil {
 		return err
 	}
@@ -84,7 +123,7 @@ func (c *Config) Authenticate(r *http.Request) error {
 
 // IsAzure returns true if client is configured for Azure Databricks
 func (c *Config) IsAzure() bool {
-	return strings.Contains(c.Host, ".azuredatabricks.net")
+	return strings.Contains(c.Host, ".azuredatabricks.net") || c.AzureResourceID != ""
 }
 
 // IsGcp returns true if client is configured for GCP
@@ -102,6 +141,45 @@ func (c *Config) IsAccountsClient() bool {
 	return strings.HasPrefix(c.Host, "https://accounts.")
 }
 
+func (c *Config) resolve() error {
+	if c.resolved {
+		return nil
+	}
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if c.resolved {
+		return nil
+	}
+	if len(c.Loaders) == 0 {
+		c.Loaders = []Loader{
+			ConfigAttributes,
+			KnownConfigLoader{},
+		}
+	}
+	for _, loader := range c.Loaders {
+		log.Printf("[TRACE] Loading config via %s", loader.Name())
+		err := loader.Configure(c)
+		if err != nil {
+
+			return c.wrapDebug(fmt.Errorf("resolve: %w", err))
+		}
+	}
+	err := ConfigAttributes.Validate(c)
+	if err != nil {
+		return c.wrapDebug(fmt.Errorf("validate: %w", err))
+	}
+	c.resolved = true
+	return nil
+}
+
+func (c *Config) wrapDebug(err error) error {
+	debug := ConfigAttributes.DebugString(c)
+	if debug == "" {
+		return err
+	}
+	return fmt.Errorf("%w. %s", err, debug)
+}
+
 // authenticateIfNeeded lazily authenticates across authorizers or returns error
 func (c *Config) authenticateIfNeeded(ctx context.Context) error {
 	if c.auth != nil {
@@ -113,12 +191,12 @@ func (c *Config) authenticateIfNeeded(ctx context.Context) error {
 		return nil
 	}
 	if c.Credentials == nil {
-		c.Credentials = DefaultCredentials{}
+		c.Credentials = &DefaultCredentials{}
 	}
 	c.fixHostIfNeeded()
 	visitor, err := c.Credentials.Configure(ctx, c)
 	if err != nil {
-		return fmt.Errorf("cannot configure %s auth: %w", c.Credentials.Name(), err)
+		return c.wrapDebug(fmt.Errorf("%s auth: %w", c.Credentials.Name(), err))
 	}
 	c.auth = visitor
 	c.AuthType = c.Credentials.Name()

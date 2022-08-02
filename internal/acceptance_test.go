@@ -23,10 +23,7 @@ func TestAccDefaultCredentials(t *testing.T) {
 func TestAccExplicitDatabricksCfg(t *testing.T) {
 	var resp map[string]interface{}
 	client := client.New(&databricks.Config{
-		Credentials: databricks.DatabricksCliCredentials{
-			Profile: "aws-dogfood",
-		},
-		
+		Profile: GetEnvOrSkipTest(t, "DATABRICKS_CONFIG_PROFILE"),
 	})
 	err := client.Get(context.Background(), "/token/list", nil, &resp)
 	assert.NoError(t, err)
@@ -49,57 +46,15 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 func TestAccExplicitAzureSpnAuth(t *testing.T) {
 	var resp map[string]interface{}
 	client := client.New(&databricks.Config{
+		AzureTenantID:     GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
+		AzureClientID:     GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
+		AzureClientSecret: GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET"),
 		AzureResourceID:   GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
-		Credentials:  databricks.AzureClientSecretCredentials{
-			TenantID:     GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
-			ClientID:     GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
-			ClientSecret: GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET"),
-		},
-		DebugHeaders: true,
+		Credentials:       databricks.AzureClientSecretCredentials{},
+		DebugHeaders:      true,
 	})
 	err := client.Get(context.Background(), "/preview/scim/Me", nil, &resp)
 	assert.NoError(t, err)
 	_, ok := resp["userName"]
 	assert.True(t, ok)
 }
-
-// func PREFERRED() {
-// 	BBB := client.New(&databricks.Config{ // CURRENTLY IN TERRAFORM
-// 		AzureResourceID: GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
-// 		TenantID:        GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
-// 		ClientID:        GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
-// 		ClientSecret:    GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET"),
-// 		DebugHeaders: true,
-// 	})
-// }
-
-// func DISCUSS() {
-// 	AAAA := client.New(&databricks.Config{
-// 		AzureResourceID: GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
-// 		Credentials: databricks.AzureClientSecretCredentials{
-// 			TenantID:        GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
-// 			ClientID:        GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
-// 			ClientSecret:    GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET"),
-// 		},
-// 		DebugHeaders: true,
-// 	})
-
-// 	BBB := client.New(&databricks.Config{ // CURRENTLY IN TERRAFORM
-// 		AzureResourceID: GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
-// 		TenantID:        GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
-// 		ClientID:        GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
-// 		ClientSecret:    GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET"),
-// 		DebugHeaders: true,
-// 	})
-
-// 	CCC := client.New(&databricks.Config{
-// 		Credentials: databricks.AzureClientSecretCredentials{
-// 			Host: GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
-// 			AzureResourceID: GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
-// 			TenantID:        GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
-// 			ClientID:        GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
-// 			ClientSecret:    GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET"),
-// 		},
-// 		DebugHeaders: true,
-// 	})
-// }

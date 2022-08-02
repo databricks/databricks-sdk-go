@@ -11,18 +11,24 @@ import (
 	"time"
 
 	"golang.org/x/oauth2"
-	
+
 	"github.com/databricks/sdk-go/databricks/internal"
 )
 
 // List of management information
 const armDatabricksResourceID string = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
 
-type AzureCliCredentials struct{
+type AzureCliCredentials struct {
 }
 
 func (c AzureCliCredentials) Name() string {
 	return "azure-cli"
+}
+
+// implementing azureHostResolver for ensureWorkspaceUrl to work
+func (c AzureCliCredentials) tokenSourceFor(
+	ctx context.Context, cfg *Config, env azureEnvironment, resource string) oauth2.TokenSource {
+	return &azureCliTokenSource{resource: resource}
 }
 
 func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
@@ -37,11 +43,15 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 			return nil, nil
 		}
 		if strings.Contains(err.Error(), "executable file not found") {
-			// , fmt.Errorf("most likely Azure CLI is not installed. " +
-			// 	"See https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest for details")
+			log.Printf("[DEBUG] Most likely Azure CLI is not installed. " +
+				"See https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest for details")
 			return nil, nil
 		}
 		return nil, err
+	}
+	err = cfg.azureEnsureWorkspaceUrl(ctx, c)
+	if err != nil {
+		return nil, fmt.Errorf("resolve host: %w", err)
 	}
 	log.Printf("[INFO] Using Azure CLI authentication with AAD tokens")
 	return internal.RefreshableVisitor(&ts), nil

@@ -7,7 +7,6 @@ import (
 )
 
 type PatCredentials struct {
-	Token string `name:"token" env:"DATABRICKS_TOKEN" auth:"token,sensitive"`
 }
 
 func (c PatCredentials) Name() string {
@@ -15,11 +14,11 @@ func (c PatCredentials) Name() string {
 }
 
 func (c PatCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
-	if c.Token == "" || cfg.Host == "" {
+	if cfg.Token == "" || cfg.Host == "" {
 		return nil, nil
 	}
 	return func(r *http.Request) error {
-		r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Token))
+		r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", cfg.Token))
 		return nil
 	}, nil
 }

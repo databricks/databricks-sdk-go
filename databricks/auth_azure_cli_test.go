@@ -26,9 +26,7 @@ func TestAzureCliCredentials_NotInstalled(t *testing.T) {
 	os.Setenv("PATH", "whatever")
 	aa := AzureCliCredentials{}
 	_, err := aa.Configure(context.Background(), azDummy)
-	require.Error(t, err)
-	require.EqualError(t, err, "most likely Azure CLI is not installed. "+
-		"See https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest for details")
+	require.NoError(t, err)
 }
 
 func TestAzureCliCredentials_NotLoggedIn(t *testing.T) {

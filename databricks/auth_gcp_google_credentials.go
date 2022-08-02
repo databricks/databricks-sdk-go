@@ -15,7 +15,6 @@ import (
 )
 
 type GoogleCredentials struct {
-	GoogleCredentials string `name:"google_credentials" env:"GOOGLE_CREDENTIALS" auth:"sensitive"`
 }
 
 func (c GoogleCredentials) Name() string {
@@ -23,10 +22,10 @@ func (c GoogleCredentials) Name() string {
 }
 
 func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
-	if c.GoogleCredentials == "" || !cfg.IsGcp() {
+	if cfg.GoogleCredentials == "" || !cfg.IsGcp() {
 		return nil, nil
 	}
-	json, err := readCredentials(c.GoogleCredentials)
+	json, err := readCredentials(cfg.GoogleCredentials)
 	if err != nil {
 		err = fmt.Errorf("could not read GoogleCredentials. "+
 			"Make sure the file exists, or the JSON content is valid: %w", err)

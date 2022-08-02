@@ -34,15 +34,44 @@ sequenceDiagram
 
 ```mermaid
 classDiagram
+    Loader "0..n" <-- Config: Configure(self)
     Credentials "0..1" <-- Config: Configure(self)
     RequestVisitor --* Config: configured auth
     class Config {
         * Host string
+        * Token string
+        * Profile string
+        * Username string
+        * Password string
         * AzureResourceID string
         * AzureEnvironment string
+        * AzureClientID string
+        * AzureSecretID string
+        * AzureTenantID string
+        * GoogleServiceAccount string
+
         Credentials: DefaultCredentials
+        Loaders: Loader
 
         Authenticate(HttpRequest) error
+    }
+
+    class Loader {
+        <<interface>>
+        Name() string
+        Configure(Config) error
+    }
+
+    KnownConfigLoader ..|> Loader
+    class KnownConfigLoader
+
+    ConfigAttributes ..|> Loader
+    class ConfigAttributes {
+        Configure(Config) error
+        DebugString(Config) string
+        Validate(Config) error
+        ResolveFromStringMap(Config, map) error
+        ResolveFromAnyMap(Config, map) error
     }
 
     Config --* DatabricksClient
@@ -71,20 +100,14 @@ classDiagram
 
     AzureSpnCredentials --* authProviders
     AzureSpnCredentials ..|> Credentials
-    class AzureSpnCredentials {
-        ClientID string
-        SecretID string
-        TenantID string
-    }
+    class AzureSpnCredentials
 
     AzureCliCredentials --* authProviders
     AzureCliCredentials ..|> Credentials
 
     GoogleCredentials --* authProviders
     GoogleCredentials ..|> Credentials
-    class GoogleCredentials {
-        ServiceAccount
-    }
+    class GoogleCredentials
     
     DatabricksOauthCredentials --* authProviders
     DatabricksOauthCredentials ..|> Credentials
@@ -94,34 +117,15 @@ classDiagram
 
     PatCredentials --* authProviders
     PatCredentials ..|> Credentials
-    class PatCredentials {
-        Token
-    }
+    class PatCredentials
 
     BasicCredentials --* authProviders
     BasicCredentials ..|> Credentials
-    class BasicCredentials {
-        Username
-        Password
-    }
-
-    DatabricksCliCredentials --* authProviders
-    DatabricksCliCredentials ..|> Credentials
-    class DatabricksCliCredentials {
-        Profile
-    }
+    class BasicCredentials
 
     authProviders --> DefaultCredentials: for reach ConfigAttributes()
-    DefaultCredentials <-- DatabricksCliCredentials: set explicit
     DefaultCredentials ..|> Credentials
-    class DefaultCredentials {
-        - explicit map[string]string
-        - skip CredentialsName
-    }
-
-    class authProviders {
-        ConfigAttributes()
-    }
+    class DefaultCredentials
 ```
 
 

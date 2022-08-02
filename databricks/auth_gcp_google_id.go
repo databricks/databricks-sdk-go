@@ -13,8 +13,6 @@ import (
 )
 
 type GoogleDefaultCredentials struct {
-	GoogleServiceAccount string `name:"google_service_account" env:"DATABRICKS_GOOGLE_SERVICE_ACCOUNT"`
-
 	// options used to enable unit testing mode for OIDC
 	opts []option.ClientOption
 }
@@ -24,10 +22,10 @@ func (c GoogleDefaultCredentials) Name() string {
 }
 
 func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
-	if c.GoogleServiceAccount == "" || !cfg.IsGcp() {
+	if cfg.GoogleServiceAccount == "" || !cfg.IsGcp() {
 		return nil, nil
 	}
-	inner, err := c.idTokenSource(ctx, cfg.Host, c.GoogleServiceAccount, c.opts...)
+	inner, err := c.idTokenSource(ctx, cfg.Host, cfg.GoogleServiceAccount, c.opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +35,7 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (f
 	}
 	// source for generateAccessToken
 	platform, err := impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{
-		TargetPrincipal: c.GoogleServiceAccount,
+		TargetPrincipal: cfg.GoogleServiceAccount,
 		Scopes: []string{
 			"https://www.googleapis.com/auth/cloud-platform",
 			"https://www.googleapis.com/auth/compute",
