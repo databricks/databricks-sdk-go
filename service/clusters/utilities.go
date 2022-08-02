@@ -3,8 +3,9 @@ package clusters
 import (
 	"context"
 	"fmt"
-	"log"
 	"sync"
+
+	"github.com/databricks/sdk-go/databricks/logger"
 )
 
 // getOrCreateClusterMutex guards "mounting" cluster creation to prevent multiple
@@ -26,13 +27,13 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	}
 	for _, cl := range clusters {
 		if cl.ClusterName == name {
-			log.Printf("[INFO] Found reusable cluster '%s'", name)
+			logger.Infof("Found reusable cluster '%s'", name)
 			clusterAvailable := true
 			if !cl.IsRunningOrResizing() {
 				err = a.Start(ctx, cl.ClusterID)
 				if err != nil {
 					clusterAvailable = false
-					log.Printf("[INFO] Cluster %s cannot be started, creating an autoterminating cluster", name)
+					logger.Infof("Cluster %s cannot be started, creating an autoterminating cluster", name)
 				}
 			}
 			if clusterAvailable {
@@ -50,7 +51,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	if err != nil {
 		return ClusterInfo{}, err
 	}
-	log.Printf("[INFO] Creating an autoterminating cluster with node type %s", smallestNodeType)
+	logger.Infof("Creating an autoterminating cluster with node type %s", smallestNodeType)
 	versions, err := a.ListSparkVersions(ctx)
 	if err != nil {
 		return ClusterInfo{}, fmt.Errorf("list spark versions: %w", err) // TODO: GENERATOR: prefix method name

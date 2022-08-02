@@ -24,16 +24,6 @@ var (
 // CommandMock mocks the execution of command
 type CommandMock func(commandStr string) CommandResults
 
-// CommandExecutorMock simplifies command testing
-type commandExecutorMock struct {
-	mock CommandMock
-}
-
-// Execute mock command with given mock function
-func (c commandExecutorMock) Execute(ctx context.Context, clusterID, language, commandStr string) CommandResults {
-	return c.mock(commandStr)
-}
-
 // CommandExecutor creates a spark context and executes a command and then closes context
 type CommandExecutor interface {
 	Execute(ctx context.Context, clusterID, language, commandStr string) CommandResults

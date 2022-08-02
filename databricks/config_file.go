@@ -2,9 +2,9 @@ package databricks
 
 import (
 	"fmt"
-	"log"
 	"os"
 
+	"github.com/databricks/sdk-go/databricks/logger"
 	"github.com/mitchellh/go-homedir"
 	"gopkg.in/ini.v1"
 )
@@ -27,7 +27,7 @@ func (l KnownConfigLoader) Configure(cfg *Config) error {
 	_, err = os.Stat(configFile)
 	if os.IsNotExist(err) {
 		// early return for non-configured machines
-		log.Printf("[DEBUG] %s not found on current host", configFile)
+		logger.Debugf("%s not found on current host", configFile)
 		return nil
 	}
 	iniFile, err := ini.Load(configFile)
@@ -43,12 +43,12 @@ func (l KnownConfigLoader) Configure(cfg *Config) error {
 	profileValues := iniFile.Section(profile)
 	if len(profileValues.Keys()) == 0 {
 		if !hasExplicitProfile {
-			log.Printf("[DEBUG] %s has no %s profile configured", configFile, profile)
+			logger.Debugf("%s has no %s profile configured", configFile, profile)
 			return nil
 		}
 		return fmt.Errorf("%s has no %s profile configured", configFile, profile)
 	}
-	log.Printf("[INFO] Loading %s profile from %s", profile, configFile)
+	logger.Infof("Loading %s profile from %s", profile, configFile)
 	err = ConfigAttributes.ResolveFromStringMap(cfg, profileValues.KeysHash())
 	if err != nil {
 		return fmt.Errorf("%s %s profile: %w", configFile, profile, err)

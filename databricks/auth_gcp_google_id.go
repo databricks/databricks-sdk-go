@@ -3,10 +3,10 @@ package databricks
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/databricks/sdk-go/databricks/internal"
+	"github.com/databricks/sdk-go/databricks/logger"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/impersonate"
 	"google.golang.org/api/option"
@@ -30,7 +30,7 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (f
 		return nil, err
 	}
 	if !cfg.IsAccountsClient() {
-		log.Printf("[INFO] Using Google Default Application Credentials for Workspace")
+		logger.Infof("Using Google Default Application Credentials for Workspace")
 		return internal.RefreshableVisitor(inner), nil
 	}
 	// source for generateAccessToken
@@ -44,7 +44,7 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (f
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("[INFO] Using Google Default Application Credentials for Accounts API")
+	logger.Infof("Using Google Default Application Credentials for Accounts API")
 	return internal.ServiceToServiceVisitor(inner, platform, "X-Databricks-GCP-SA-Access-Token"), nil
 }
 

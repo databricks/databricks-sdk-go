@@ -3,11 +3,11 @@ package commands
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/databricks/sdk-go/databricks"
 	"github.com/databricks/sdk-go/databricks/client"
+	"github.com/databricks/sdk-go/databricks/logger"
 	"github.com/databricks/sdk-go/retries"
 	"github.com/databricks/sdk-go/service/clusters"
 )
@@ -49,7 +49,7 @@ func (a *CommandsAPI) Execute(ctx context.Context, clusterID, language, commandS
 		}
 	}
 	commandStr = TrimLeadingWhitespace(commandStr)
-	log.Printf("[INFO] Executing %s command on %s:\n%s", language, clusterID, commandStr)
+	logger.Infof("Executing %s command on %s:\n%s", language, clusterID, commandStr)
 
 	// this is the place, where API version propagation through context looks strange,
 	// but makes some sense, otherwise there'll have to be full api prefix specification
@@ -100,7 +100,7 @@ func (a *CommandsAPI) Execute(ctx context.Context, clusterID, language, commandS
 		}
 	}
 	if command.Results == nil {
-		log.Printf("[ERROR] Command has no results: %#v", command)
+		logger.Warnf("Command has no results: %#v", command)
 		return CommandResults{
 			ResultType: "error",
 			Summary:    "Command has no results",
@@ -150,7 +150,7 @@ func (a *CommandsAPI) waitForCommandFinished(ctx context.Context, commandID, con
 		case "Finished":
 			return nil
 		}
-		log.Printf("[DEBUG] Command is in %s state", commandInfo.Status)
+		logger.Debugf("Command is in %s state", commandInfo.Status)
 		return retries.Continues(commandInfo.Status)
 	})
 }

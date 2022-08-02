@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -22,6 +21,7 @@ import (
 
 	"github.com/databricks/sdk-go/databricks"
 	"github.com/databricks/sdk-go/databricks/apierr"
+	"github.com/databricks/sdk-go/databricks/logger"
 	"github.com/databricks/sdk-go/retries"
 	"github.com/google/go-querystring/query"
 	"golang.org/x/time/rate"
@@ -284,7 +284,7 @@ func (c *DatabricksClient) drain(r *http.Response) {
 	defer r.Body.Close()
 	_, err := io.Copy(ioutil.Discard, io.LimitReader(r.Body, 4096))
 	if err != nil {
-		log.Printf("[ERROR] failed to drain body: %s", err)
+		logger.Errorf("failed to drain body: %s", err)
 	}
 }
 
@@ -303,7 +303,7 @@ func (c *DatabricksClient) retried(ctx context.Context, method, requestURL strin
 			}
 		}
 		headers := c.createDebugHeaders(request.Header, c.Config.Host)
-		log.Printf("[DEBUG] %s %s %s%v", method, escapeNewLines(request.URL.Path),
+		logger.Debugf("%s %s %s%v", method, escapeNewLines(request.URL.Path),
 			headers, c.redactedDump(requestBody)) // lgtm [go/log-injection] lgtm [go/clear-text-logging]
 		// attempt the actual request
 		resp, err = c.httpClient.Do(request)
@@ -370,7 +370,7 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 		return nil, fmt.Errorf("response body: %w", err)
 	}
 	headers := c.createDebugHeaders(resp.Header, "")
-	log.Printf("[DEBUG] %s %s %s <- %s %s", resp.Status, headers, c.redactedDump(body), method, strings.ReplaceAll(requestURL, "\n", ""))
+	logger.Debugf("%s %s %s <- %s %s", resp.Status, headers, c.redactedDump(body), method, strings.ReplaceAll(requestURL, "\n", ""))
 	return body, nil
 }
 

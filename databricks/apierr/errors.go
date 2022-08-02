@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
+
+	"github.com/databricks/sdk-go/databricks/logger"
 )
 
 var (
@@ -50,7 +51,7 @@ type APIError struct {
 // Error returns error message string instead of
 func (apiError APIError) Error() string {
 	if apiError.StatusCode != 404 {
-		log.Printf("[WARN] %s:%d - %s", apiError.Resource, apiError.StatusCode, apiError.Message)
+		logger.Warnf("%s:%d - %s", apiError.Resource, apiError.StatusCode, apiError.Message)
 	}
 	return apiError.Message
 }
@@ -79,7 +80,7 @@ func (apiError APIError) IsRetriable() bool {
 	// Handle transient errors for retries
 	for _, substring := range transientErrorStringMatches {
 		if strings.Contains(apiError.Message, substring) {
-			log.Printf("[INFO] Attempting retry because of %#v", substring)
+			logger.Infof("Attempting retry because of %#v", substring)
 			return true
 		}
 	}
@@ -136,7 +137,7 @@ func parseErrorFromResponse(resp *http.Response) APIError {
 			Resource:   resp.Request.URL.Path,
 		}
 	}
-	log.Printf("[DEBUG] %s %v", resp.Status, body)
+	logger.Debugf("%s %v", resp.Status, body)
 	// try to read in nicely formatted API error response
 	var errorBody APIErrorBody
 	err = json.Unmarshal(body, &errorBody)

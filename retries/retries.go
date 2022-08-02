@@ -3,10 +3,11 @@ package retries
 import (
 	"context"
 	"fmt"
-	"log"
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/databricks/sdk-go/databricks/logger"
 )
 
 type Err struct {
@@ -66,7 +67,7 @@ func Wait(pctx context.Context, timeout time.Duration, fn WaitFn) error {
 		lastErr = res.Err
 		wait := Backoff(attempt)
 		timer := time.NewTimer(wait)
-		log.Printf("[TRACE] %s. Sleeping %s",
+		logger.Tracef("%s. Sleeping %s",
 			strings.TrimSuffix(res.Err.Error(), "."),
 			wait.Round(time.Millisecond))
 		select {

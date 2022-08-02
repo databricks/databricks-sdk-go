@@ -3,13 +3,13 @@ package clusters
 import (
 	"context"
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
 	"github.com/databricks/sdk-go/databricks"
-	"github.com/databricks/sdk-go/databricks/client"
 	"github.com/databricks/sdk-go/databricks/apierr"
+	"github.com/databricks/sdk-go/databricks/client"
+	"github.com/databricks/sdk-go/databricks/logger"
 	"github.com/databricks/sdk-go/retries"
 )
 
@@ -39,10 +39,10 @@ func (a *ClustersAPI) Create(ctx context.Context, cluster Cluster) (info Cluster
 	info, err = a.waitForClusterStatus(ctx, ci.ClusterID, ClusterStateRunning)
 	if err != nil {
 		// https://github.com/databricks/terraform-provider-databricks/issues/383
-		log.Printf("[ERROR] Cleaning up created cluster, that failed to start: %s", err.Error())
+		logger.Errorf("Cleaning up created cluster, that failed to start: %s", err.Error())
 		deleteErr := a.PermanentDelete(ctx, ci.ClusterID)
 		if deleteErr != nil {
-			log.Printf("[ERROR] Failed : %s", deleteErr.Error())
+			logger.Errorf("Failed : %s", deleteErr.Error())
 			err = deleteErr
 		}
 	}
@@ -123,7 +123,7 @@ func (a *ClustersAPI) StartAndGetInfo(ctx context.Context, clusterID string) (Cl
 		}
 	case ClusterStateError, ClusterStateUnknown:
 		// most likely we can start error'ed cluster again...
-		log.Printf("[ERROR] Cluster %s: %s", info.State, info.StateMessage)
+		logger.Errorf("Cluster %s: %s", info.State, info.StateMessage)
 	}
 	err = a.client.Post(ctx, "/clusters/start", ClusterID{ClusterID: clusterID}, nil)
 	if err != nil {
@@ -139,14 +139,14 @@ func (a *ClustersAPI) waitForClusterStatus(ctx context.Context, clusterID string
 	return result, retries.Wait(ctx, a.defaultTimeout(), func() *retries.Err {
 		clusterInfo, err := a.Get(ctx, clusterID)
 		if apierr.IsMissing(err) {
-			log.Printf("[INFO] Cluster %s not found. Retrying", clusterID)
+			logger.Infof("Cluster %s not found. Retrying", clusterID)
 			return retries.Continue(err)
 		}
 		if err != nil {
 			return retries.Halt(err)
 		}
 		result = clusterInfo
-		log.Printf("[DEBUG] Cluster %s is %s: %s", clusterID, clusterInfo.State, clusterInfo.StateMessage)
+		logger.Debugf("Cluster %s is %s: %s", clusterID, clusterInfo.State, clusterInfo.StateMessage)
 		if clusterInfo.State == desired {
 			return nil
 		}

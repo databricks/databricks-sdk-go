@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os/exec"
 	"strings"
@@ -13,6 +12,7 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/databricks/sdk-go/databricks/internal"
+	"github.com/databricks/sdk-go/databricks/logger"
 )
 
 // List of management information
@@ -43,7 +43,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 			return nil, nil
 		}
 		if strings.Contains(err.Error(), "executable file not found") {
-			log.Printf("[DEBUG] Most likely Azure CLI is not installed. " +
+			logger.Debugf("Most likely Azure CLI is not installed. " +
 				"See https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest for details")
 			return nil, nil
 		}
@@ -53,7 +53,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if err != nil {
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
-	log.Printf("[INFO] Using Azure CLI authentication with AAD tokens")
+	logger.Infof("Using Azure CLI authentication with AAD tokens")
 	return internal.RefreshableVisitor(&ts), nil
 }
 
@@ -86,7 +86,7 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 	if err != nil {
 		return nil, fmt.Errorf("cannot parse expiry: %w", err)
 	}
-	log.Printf("[INFO] Refreshed OAuth token for %s from Azure CLI, which expires on %s",
+	logger.Infof("Refreshed OAuth token for %s from Azure CLI, which expires on %s",
 		ts.resource, it.ExpiresOn)
 
 	var extra map[string]interface{}

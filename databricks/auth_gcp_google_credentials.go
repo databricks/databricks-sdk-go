@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 
 	"github.com/databricks/sdk-go/databricks/internal"
+	"github.com/databricks/sdk-go/databricks/logger"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/idtoken"
 	"google.golang.org/api/option"
@@ -42,7 +42,7 @@ func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (func(*ht
 	if err != nil {
 		return nil, fmt.Errorf("could not obtain OAuth2 token from JSON: %w", err)
 	}
-	log.Printf("[INFO] Using Google Credentials")
+	logger.Infof("Using Google Credentials")
 	return internal.ServiceToServiceVisitor(inner, creds.TokenSource, "X-Databricks-GCP-SA-Access-Token"), nil
 }
 

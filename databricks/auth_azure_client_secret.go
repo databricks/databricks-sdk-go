@@ -3,7 +3,6 @@ package databricks
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 
@@ -11,6 +10,7 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 
 	"github.com/databricks/sdk-go/databricks/internal"
+	"github.com/databricks/sdk-go/databricks/logger"
 )
 
 type AzureClientSecretCredentials struct {
@@ -48,7 +48,7 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	if err != nil {
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
-	log.Printf("[INFO] Generating AAD token for Service Principal (%s)", cfg.AzureClientID)
+	logger.Infof("Generating AAD token for Service Principal (%s)", cfg.AzureClientID)
 	return func(r *http.Request) error {
 		ctx := r.Context()
 		r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)

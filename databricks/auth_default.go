@@ -3,8 +3,9 @@ package databricks
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
+
+	"github.com/databricks/sdk-go/databricks/logger"
 )
 
 var (
@@ -33,10 +34,10 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	for _, p := range authProviders {
 		if cfg.AuthType != "" && p.Name() != cfg.AuthType {
 			// ignore other auth types if one is explicitly enforced
-			log.Printf("[INFO] Ignoring %s auth, because %s is preferred", p.Name(), cfg.AuthType)
+			logger.Infof("Ignoring %s auth, because %s is preferred", p.Name(), cfg.AuthType)
 			continue
 		}
-		log.Printf("[TRACE] Attempting to configure auth: %s", p.Name())
+		logger.Tracef("Attempting to configure auth: %s", p.Name())
 		visitor, err := p.Configure(ctx, cfg)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", p.Name(), err)

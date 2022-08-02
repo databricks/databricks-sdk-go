@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"strings"
 
+	"github.com/databricks/sdk-go/databricks/logger"
 	"golang.org/x/oauth2"
 )
 
@@ -100,6 +100,6 @@ func (c *Config) azureEnsureWorkspaceUrl(ctx context.Context, ahr azureHostResol
 		return fmt.Errorf("cannot unmarshal: %w", err)
 	}
 	c.Host = fmt.Sprintf("https://%s/", workspaceMetadata.Properties.WorkspaceURL)
-	log.Printf("[INFO] Discovered workspace url: %s", c.Host)
+	logger.Infof("Discovered workspace url: %s", c.Host)
 	return nil
 }

@@ -3,12 +3,13 @@ package databricks
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/databricks/sdk-go/databricks/logger"
 )
 
 // CredentialsProvider responsible for configuring static or refreshable
@@ -157,7 +158,7 @@ func (c *Config) resolve() error {
 		}
 	}
 	for _, loader := range c.Loaders {
-		log.Printf("[TRACE] Loading config via %s", loader.Name())
+		logger.Tracef("Loading config via %s", loader.Name())
 		err := loader.Configure(c)
 		if err != nil {
 
