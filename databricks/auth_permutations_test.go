@@ -3,11 +3,8 @@ package databricks
 import (
 	"net/http"
 	"os"
-	"strings"
-	"sync"
 	"testing"
 
-	"github.com/mitchellh/go-homedir"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -31,27 +28,9 @@ type configFixture struct {
 	assertAzure       bool
 }
 
-var envMutex sync.Mutex
-
 func (cf configFixture) apply(t *testing.T) {
-	// make a backed-up pristine environment
-	envMutex.Lock()
-	prevEnv := os.Environ()
-	oldPath := os.Getenv("PATH")
-	pwd := os.Getenv("PWD")
-	os.Clearenv()
-	os.Setenv("PATH", oldPath)
-	os.Setenv("HOME", pwd)
-	homedir.DisableCache = true
-
+	defer CleanupEnvironment()()
 	c, err := cf.configureProviderAndReturnConfig(t)
-
-	for _, kv := range prevEnv {
-		kvs := strings.SplitN(kv, "=", 2)
-		os.Setenv(kvs[0], kvs[1])
-	}
-	envMutex.Unlock()
-
 	if cf.assertError != "" {
 		require.NotNilf(t, err, "Expected to have %s error", cf.assertError)
 		require.Equal(t, cf.assertError, err.Error())
