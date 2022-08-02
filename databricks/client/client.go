@@ -362,6 +362,9 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 		// `retryablehttp` package nicely wraps _everything_ to `url.Error`.
 		return nil, fmt.Errorf("failed request: %w", err)
 	}
+	if resp == nil {
+		return nil, fmt.Errorf("no response: %s %s", method, requestURL)
+	}
 	defer func() {
 		if ferr := resp.Body.Close(); ferr != nil {
 			err = fmt.Errorf("failed to close: %w", ferr)

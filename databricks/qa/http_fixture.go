@@ -124,9 +124,10 @@ func (fixtures HTTPFixtures) Config(t *testing.T) (*databricks.Config, *httptest
 		}
 	}))
 	return &databricks.Config{
+		Credentials: databricks.PatCredentials{},
 		Host:        server.URL,
+		Token:       "x",
 		Environment: "public",
-		// TODO: add Pat Credentials
 	}, server
 }
 
