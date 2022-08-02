@@ -41,7 +41,9 @@ const (
 
 func New(c ...*databricks.Config) *DatabricksClient {
 	if len(c) == 0 {
-		c[0] = &databricks.Config{}
+		c = []*databricks.Config{
+			{},
+		}
 	}
 	return &DatabricksClient{Config: c[0]}
 }
