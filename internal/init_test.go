@@ -3,7 +3,13 @@ package internal
 import (
 	"os"
 	"testing"
+
+	"github.com/databricks/sdk-go/databricks"
 )
+
+func init() {
+	databricks.WithProduct("integration-tests", databricks.Version())
+}
 
 // GetEnvOrSkipTest proceeds with test only with that env variable
 func GetEnvOrSkipTest(t *testing.T, name string) string {

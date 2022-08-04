@@ -111,7 +111,7 @@ type Config struct {
 
 // Authenticate adds special headers to HTTP request to authorize it to work with Databricks REST API
 func (c *Config) Authenticate(r *http.Request) error {
-	err := c.resolve()
+	err := c.EnsureResolved()
 	if err != nil {
 		return err
 	}
@@ -142,7 +142,7 @@ func (c *Config) IsAccountsClient() bool {
 	return strings.HasPrefix(c.Host, "https://accounts.")
 }
 
-func (c *Config) resolve() error {
+func (c *Config) EnsureResolved() error {
 	if c.resolved {
 		return nil
 	}
@@ -155,6 +155,7 @@ func (c *Config) resolve() error {
 		c.Loaders = []Loader{
 			ConfigAttributes,
 			KnownConfigLoader{},
+			TransportDefaults{},
 		}
 	}
 	for _, loader := range c.Loaders {

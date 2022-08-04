@@ -18,7 +18,7 @@ type GoogleCredentials struct {
 }
 
 func (c GoogleCredentials) Name() string {
-	return "google-accounts"
+	return "google-credentials"
 }
 
 func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {

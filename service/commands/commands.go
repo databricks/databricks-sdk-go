@@ -12,16 +12,14 @@ import (
 	"github.com/databricks/sdk-go/service/clusters"
 )
 
-func New(c ...*databricks.Config) *CommandsAPI {
+func New(cfg *databricks.Config) *CommandsAPI {
 	return &CommandsAPI{
-		config: c[0], // TODO: make it normal
-		client: client.New(c...),
+		client: client.New(cfg),
 	}
 }
 
 // CommandsAPI exposes the Command & Context API
 type CommandsAPI struct {
-	config *databricks.Config
 	client *client.DatabricksClient
 }
 
@@ -35,7 +33,7 @@ type Command struct {
 // Execute creates a spark context and executes a command and then closes context
 // Any leading whitespace is trimmed
 func (a *CommandsAPI) Execute(ctx context.Context, clusterID, language, commandStr string) CommandResults {
-	cluster, err := clusters.New(a.config).Get(ctx, clusterID)
+	cluster, err := clusters.New(a.client.Config).Get(ctx, clusterID)
 	if err != nil {
 		return CommandResults{
 			ResultType: "error",

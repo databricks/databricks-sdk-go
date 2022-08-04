@@ -2,6 +2,7 @@ package databricks
 
 import (
 	"fmt"
+	"math/big"
 	"os"
 	"reflect"
 	"sort"
@@ -130,20 +131,24 @@ func (a Attributes) ResolveFromAnyMap(cfg *Config, m map[string]interface{}) err
 	return nil
 }
 
-const maskSignatureMaxFields = 100
+const maskSignatureMaxFields = 24 // 24 bits to encode
 
-func (a Attributes) MaskedSignature(cfg *Config) string {
-	sig := 2 * maskSignatureMaxFields * maskSignatureMaxFields
+func powerOfTwo(n int) *big.Int {
+	return big.NewInt(0).Exp(big.NewInt(2), big.NewInt(int64(n)), nil)
+}
+
+func (a Attributes) FieldNamesMask(cfg *Config) string {
+	sig := powerOfTwo(maskSignatureMaxFields)
 	for _, attr := range a {
-		if !attr.IsZero(cfg) {
+		if attr.IsZero(cfg) {
 			// don't overwtite a value previously set
 			continue
 		}
-		// get power of two for the
-		num := 2 * attr.num * attr.num
-		sig = sig | num
+		// get power of two of the field number
+		num := powerOfTwo(attr.num)
+		sig = sig.Or(sig, num)
 	}
-	return fmt.Sprintf("%x", sig)
+	return fmt.Sprintf("%d:%s", maskSignatureMaxFields, sig.Text(16))
 }
 
 func loadAttrs() (attrs Attributes) {

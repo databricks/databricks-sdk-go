@@ -99,7 +99,7 @@ func (c *Config) azureEnsureWorkspaceUrl(ctx context.Context, ahr azureHostResol
 	if err != nil {
 		return fmt.Errorf("cannot unmarshal: %w", err)
 	}
-	c.Host = fmt.Sprintf("https://%s/", workspaceMetadata.Properties.WorkspaceURL)
+	c.Host = fmt.Sprintf("https://%s", workspaceMetadata.Properties.WorkspaceURL)
 	logger.Infof("Discovered workspace url: %s", c.Host)
 	return nil
 }

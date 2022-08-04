@@ -19,9 +19,9 @@ type ClustersAPI struct {
 }
 
 // New creates ClustersAPI instance from provider meta
-func New(c ...*databricks.Config) *ClustersAPI {
+func New(cfg *databricks.Config) *ClustersAPI {
 	return &ClustersAPI{
-		client: client.New(c...),
+		client: client.New(cfg),
 	}
 }
 

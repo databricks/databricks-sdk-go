@@ -14,8 +14,10 @@ type AccountsClient struct {
 
 func New(c ...*databricks.Config) *AccountsClient {
 	var cfg *databricks.Config
-	if len(c) > 1 {
+	if len(c) == 1 {
 		cfg = c[0]
+	} else {
+		cfg = &databricks.Config{}
 	}
 	return &AccountsClient{
 		Config:                cfg,

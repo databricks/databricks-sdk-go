@@ -9,9 +9,9 @@ import (
 )
 
 // New creates ClustersAPI instance from provider meta
-func New(c ...*databricks.Config) *CredentialsAPI {
+func New(cfg *databricks.Config) *CredentialsAPI {
 	return &CredentialsAPI{
-		client: client.New(c...),
+		client: client.New(cfg),
 	}
 }
 

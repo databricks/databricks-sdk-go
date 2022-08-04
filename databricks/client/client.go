@@ -22,6 +22,7 @@ import (
 	"github.com/databricks/sdk-go/databricks"
 	"github.com/databricks/sdk-go/databricks/apierr"
 	"github.com/databricks/sdk-go/databricks/logger"
+	"github.com/databricks/sdk-go/databricks/useragent"
 	"github.com/databricks/sdk-go/retries"
 	"github.com/google/go-querystring/query"
 	"golang.org/x/time/rate"
@@ -39,13 +40,8 @@ const (
 	defaultHTTPTimeoutSeconds = 60
 )
 
-func New(c ...*databricks.Config) *DatabricksClient {
-	if len(c) == 0 {
-		c = []*databricks.Config{
-			{},
-		}
-	}
-	return &DatabricksClient{Config: c[0]}
+func New(cfg *databricks.Config) *DatabricksClient {
+	return &DatabricksClient{Config: cfg}
 }
 
 type DatabricksClient struct {
@@ -157,6 +153,8 @@ func (c *DatabricksClient) configure() {
 	if c.httpClient != nil {
 		return
 	}
+	// TODO: make these parts of DatabricksClient->ApiClient struct,
+	// so that actually used config attributes are visible in debug strings
 	if c.Config.DebugTruncateBytes == 0 {
 		c.Config.DebugTruncateBytes = defaultDebugTruncateBytes
 	}
@@ -195,15 +193,6 @@ func (c *DatabricksClient) configure() {
 			},
 		},
 	}
-}
-
-func (c *DatabricksClient) userAgent(ctx context.Context) string {
-	// TODO: add user-agent framework to get things propagated dynamically
-	terraformVersion := "unknown"
-	resource := "unknown"
-	version := "0.0.1"
-	return fmt.Sprintf("databricks-tf-provider/%s (+%s) terraform/%s",
-		version, resource, terraformVersion)
 }
 
 // CWE-117 prevention
@@ -298,13 +287,14 @@ func (c *DatabricksClient) retried(ctx context.Context, method, requestURL strin
 		if err != nil {
 			return nil, fmt.Errorf("new request: %w", err)
 		}
-		request.Header.Set("User-Agent", c.userAgent(ctx))
 		for _, requestVisitor := range visitors {
 			err = requestVisitor(request)
 			if err != nil {
 				return nil, fmt.Errorf("failed visitor: %w", err)
 			}
 		}
+		// request.Context() holds context potentially enhanced by visitors
+		request.Header.Set("User-Agent", useragent.FromContext(request.Context()))
 		headers := c.createDebugHeaders(request.Header, c.Config.Host)
 		logger.Debugf("%s %s %s%v", method, escapeNewLines(request.URL.Path),
 			headers, c.redactedDump(requestBody)) // lgtm [go/log-injection] lgtm [go/clear-text-logging]
@@ -341,19 +331,40 @@ func (c *DatabricksClient) retried(ctx context.Context, method, requestURL strin
 	return nil, lastErr
 }
 
+func (c *DatabricksClient) addAuthHeaderToUserAgent(r *http.Request) error {
+	ctx := useragent.InContext(r.Context(), "auth", c.Config.AuthType)
+	*r = *r.WithContext(ctx) // replace request
+	return nil
+}
+
+func (c *DatabricksClient) addConfigFieldsMask(r *http.Request) error {
+	mask := databricks.ConfigAttributes.FieldNamesMask(c.Config)
+	ctx := useragent.InContext(r.Context(), "config-mask", mask)
+	*r = *r.WithContext(ctx) // replace request
+	return nil
+}
+
 func (c *DatabricksClient) perform(ctx context.Context, method, requestURL string, data interface{},
 	visitors ...func(*http.Request) error) (body []byte, err error) {
+	err = c.Config.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
 	c.init.Do(c.configure)
-	if err = c.rateLimiter.Wait(ctx); err != nil {
+	err = c.rateLimiter.Wait(ctx)
+	if err != nil {
 		return nil, fmt.Errorf("rate limited: %w", err)
 	}
 	requestBody, err := makeRequestBody(method, &requestURL, data)
 	if err != nil {
 		return nil, fmt.Errorf("request marshal: %w", err)
 	}
-	visitors = append([]func(*http.Request) error{c.Config.Authenticate}, visitors...)
+	visitors = append([]func(*http.Request) error{
+		c.Config.Authenticate,
+		c.addAuthHeaderToUserAgent,
+		c.addConfigFieldsMask,
+	}, visitors...)
 	resp, err := c.retried(ctx, method, requestURL, requestBody, visitors...)
-	// retryablehttp library now returns only wrapped errors
 	var ae apierr.APIError
 	if errors.As(err, &ae) {
 		// don't re-wrap, as upper layers may depend on handling common.APIError

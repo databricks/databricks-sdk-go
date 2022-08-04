@@ -15,8 +15,12 @@ type WorkspacesClient struct {
 
 func New(c ...*databricks.Config) *WorkspacesClient {
 	var cfg *databricks.Config
-	if len(c) > 1 {
+	if len(c) == 1 {
+		// first config
 		cfg = c[0]
+	} else {
+		// default config
+		cfg = &databricks.Config{}
 	}
 	return &WorkspacesClient{
 		Config:   cfg,
