@@ -21,7 +21,7 @@ if [ -z "${EXP}" ]; then
   # Linux
   EXPIRE=$(/bin/echo $EXPIRE | /bin/sed 's/S/seconds/')
   EXPIRE=$(/bin/echo $EXPIRE | /bin/sed 's/M/minutes/')
-  EXP=$(/bin/date --date=+${EXPIRE:=10seconds} +'%FT%TZ')
+  EXP=$(/bin/date --date=+${EXPIRE:=10seconds} +'%F %T')
 fi
 
 if [ -z "${TF_AAD_TOKEN}" ]; then
