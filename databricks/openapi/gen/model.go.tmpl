@@ -1,0 +1,33 @@
+package {{.Name}}
+
+{{range .Types}}
+// {{.Description}}
+{{if .Fields -}}
+type {{.PascalName}} struct {
+	{{range .Fields}}
+	// {{.Description}}
+	{{.PascalName}} {{template "type" .}} `{{if .IsJson}}json:"{{.Name}}{{if not .Required}},omitempty{{end}}"{{end}}{{if .IsPath}}path:"{{.Name}}"{{end}}{{if .IsQuery}}query:"{{.Name}},omitempty"{{end}}`
+	{{end}}
+}
+{{else if .Enum}}
+type {{.PascalName}} string
+{{range .Enum }}
+// {{.Description}}
+const {{.PascalName}} {{.Entity.PascalName}} = "{{.Content}}"
+{{end}}
+{{end}}
+{{end}}
+
+{{- define "type" -}}
+	{{- if not .Entity }}NULL_TYPE
+	{{- else if .Entity.IsString}}string
+	{{- else if .Entity.IsBool}}bool
+	{{- else if .Entity.IsInt64}}int64
+	{{- else if .Entity.IsInt}}int
+	{{- else if .Entity.IsInt}}int
+	{{- else if .Entity.ArrayValue }}[]{{.Entity.ArrayValue.PascalName}}
+	{{- else if and .Required .Entity.IsObject }}{{.Entity.PascalName}}
+	{{- else if .Entity.IsObject }}*{{.Entity.PascalName}}
+	{{- else}}any /* {{.}} */
+	{{- end -}}
+{{- end -}}

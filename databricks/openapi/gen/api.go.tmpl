@@ -1,0 +1,34 @@
+package {{.Name}}
+
+import (
+	"context"
+
+	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/databricks/client"
+)
+
+func New(cfg *databricks.Config) {{.PascalName}}Service {
+	return &{{.PascalName}}API{
+		client: client.New(cfg),
+	}
+}
+
+// {{.Description}}
+type {{.PascalName}}Service interface {
+	{{range .Methods}}
+	// {{.Description}}
+	{{.PascalName}}(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}
+	{{end}}
+}
+
+type {{.PascalName}}API struct {
+	client *client.DatabricksClient
+}
+{{range .Methods}}
+// {{.Description}}
+func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, in {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}} {
+	{{if .Response}}var {{.Response.CamelName}} {{.Response.PascalName}}{{end}}
+	err := a.client.{{.TitleVerb}}(ctx, "{{.Path}}", {{if .Request}}in{{else}}nil{{end}}{{if .Response}}, &{{.Response.CamelName}}{{end}})
+	return {{if .Response}}&{{.Response.CamelName}}, {{end}}err
+}
+{{end}}

@@ -1,0 +1,2577 @@
+{
+    "openapi" : "3.0.0",
+    "paths" : {
+      "/jobs/runs/submit" : {
+        "post" : {
+          "summary" : "Create and trigger a one-time run",
+          "operationId" : "SubmitRun",
+          "tags" : [ "Jobs" ],
+          "responses" : {
+            "200" : {
+              "content" : {
+                "application/json" : {
+                  "schema" : {
+                    "properties" : {
+                      "run_id" : {
+                        "example" : 455644833,
+                        "format" : "int64",
+                        "description" : "The canonical identifier for the newly submitted run.",
+                        "type" : "integer"
+                      }
+                    },
+                    "type" : "object"
+                  }
+                }
+              },
+              "description" : "Run was created and started successfully."
+            },
+            "400" : {
+              "content" : {
+                "application/json" : {
+                  "schema" : {
+                    "type" : "Error",
+                    "$ref" : "#/components/schemas/Error"
+                  }
+                }
+              },
+              "$ref" : "#/components/responses/BadRequest"
+            }
+          },
+          "requestBody" : {
+            "required" : true,
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "idempotency_token" : {
+                      "example" : "8f018174-4792-40d5-bcbc-3e6a527352c8",
+                      "description" : "An optional token that can be used to guarantee the idempotency of job run requests. If a run with the provided token already exists, the request does not create a new run but returns the ID of the existing run instead. If a run with the provided token is deleted, an error is returned.\n\nIf you specify the idempotency token, upon failure you can retry until the request succeeds. Databricks guarantees that exactly one run is launched with that idempotency token.\n\nThis token must have at most 64 characters.\n\nFor more information, see [How to ensure idempotency for jobs](https://kb.databricks.com/jobs/jobs-idempotency.html).",
+                      "type" : "string"
+                    },
+                    "timeout_seconds" : {
+                      "example" : 86400,
+                      "format" : "int32",
+                      "description" : "An optional timeout applied to each run of this job. The default behavior is to have no timeout.",
+                      "type" : "integer"
+                    },
+                    "tasks" : {
+                      "example" : [ {
+                        "task_key" : "Sessionize",
+                        "description" : "Extracts session data from events",
+                        "depends_on" : [ ],
+                        "timeout_seconds" : 86400,
+                        "spark_jar_task" : {
+                          "main_class_name" : "com.databricks.Sessionize",
+                          "parameters" : [ "--data", "dbfs:/path/to/data.json" ]
+                        },
+                        "libraries" : [ {
+                          "jar" : "dbfs:/mnt/databricks/Sessionize.jar"
+                        } ],
+                        "existing_cluster_id" : "0923-164208-meows279"
+                      }, {
+                        "task_key" : "Orders_Ingest",
+                        "description" : "Ingests order data",
+                        "depends_on" : [ ],
+                        "timeout_seconds" : 86400,
+                        "spark_jar_task" : {
+                          "main_class_name" : "com.databricks.OrdersIngest",
+                          "parameters" : [ "--data", "dbfs:/path/to/order-data.json" ]
+                        },
+                        "libraries" : [ {
+                          "jar" : "dbfs:/mnt/databricks/OrderIngest.jar"
+                        } ],
+                        "existing_cluster_id" : "0923-164208-meows279"
+                      }, {
+                        "task_key" : "Match",
+                        "description" : "Matches orders with user sessions",
+                        "notebook_task" : {
+                          "base_parameters" : {
+                            "age" : "35",
+                            "name" : "John Doe"
+                          },
+                          "notebook_path" : "/Users/user.name@databricks.com/Match"
+                        },
+                        "depends_on" : [ {
+                          "task_key" : "Orders_Ingest"
+                        }, {
+                          "task_key" : "Sessionize"
+                        } ],
+                        "new_cluster" : {
+                          "autoscale" : {
+                            "max_workers" : 16,
+                            "min_workers" : 2
+                          },
+                          "node_type_id" : null,
+                          "spark_conf" : {
+                            "spark.speculation" : true
+                          },
+                          "spark_version" : "7.3.x-scala2.12"
+                        },
+                        "timeout_seconds" : 86400
+                      } ],
+                      "type" : "array",
+                      "items" : {
+                        "type" : "RunSubmitTaskSettings",
+                        "$ref" : "#/components/schemas/RunSubmitTaskSettings"
+                      }
+                    },
+                    "run_name" : {
+                      "example" : "A multitask job run",
+                      "description" : "An optional name for the run. The default value is `Untitled`.",
+                      "type" : "string"
+                    },
+                    "access_control_list" : {
+                      "description" : "List of permissions to set on the job.",
+                      "type" : "array",
+                      "items" : {
+                        "type" : "AccessControlRequest",
+                        "$ref" : "#/components/schemas/AccessControlRequest"
+                      }
+                    },
+                    "git_source" : {
+                      "description" : "An optional specification for a remote repository containing the notebooks used by this job's notebook tasks.",
+                      "$ref" : "#/components/schemas/GitSource"
+                    }
+                  },
+                  "type" : "object"
+                }
+              }
+            }
+          },
+          "description" : "Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job. Runs submitted using this endpoint don?t display in the UI. Use the `jobs/runs/get` API to check the run state after the job is submitted."
+        }
+      }
+    },
+    "components" : {
+      "responses" : {
+        "BadRequest" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "Error",
+                "$ref" : "#/components/schemas/Error"
+              }
+            }
+          },
+          "description" : "The request was malformed. See JSON response for error details."
+        },
+        "InternalError" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "Error",
+                "$ref" : "#/components/schemas/Error"
+              }
+            }
+          },
+          "description" : "The request was not handled correctly due to a server error."
+        },
+        "NotFound" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "Error",
+                "$ref" : "#/components/schemas/Error"
+              }
+            }
+          },
+          "description" : "The requested resource does not exist."
+        },
+        "Unauthorized" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "Error",
+                "$ref" : "#/components/schemas/Error"
+              }
+            }
+          },
+          "description" : "The request was unauthorized."
+        }
+      },
+      "schemas" : {
+        "JobEmailNotifications" : {
+          "properties" : {
+            "no_alert_for_skipped_runs" : {
+              "example" : false,
+              "description" : "If true, do not send email to recipients specified in `on_failure` if the run is skipped.",
+              "type" : "boolean"
+            },
+            "on_failure" : {
+              "example" : [ "user.name@databricks.com" ],
+              "description" : "A list of email addresses to be notified when a run unsuccessfully completes. A run is considered to have completed unsuccessfully if it ends with an `INTERNAL_ERROR` `life_cycle_state` or a `SKIPPED`, `FAILED`, or `TIMED_OUT` result_state. If this is not specified on job creation, reset, or update the list is empty, and notifications are not sent.",
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "on_start" : {
+              "example" : [ "user.name@databricks.com" ],
+              "description" : "A list of email addresses to be notified when a run begins. If not specified on job creation, reset, or update, the list is empty, and notifications are not sent.",
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "on_success" : {
+              "example" : [ "user.name@databricks.com" ],
+              "description" : "A list of email addresses to be notified when a run successfully completes. A run is considered to have completed successfully if it ends with a `TERMINATED` `life_cycle_state` and a `SUCCESSFUL` result_state. If not specified on job creation, reset, or update, the list is empty, and notifications are not sent.",
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "type" : "object"
+        },
+        "LogSyncStatus" : {
+          "properties" : {
+            "last_attempted" : {
+              "format" : "int64",
+              "description" : "The timestamp of last attempt. If the last attempt fails, last_exception contains the exception in the last attempt.",
+              "type" : "integer"
+            },
+            "last_exception" : {
+              "description" : "The exception thrown in the last attempt, it would be null (omitted in the response) if there is no exception in last attempted.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "CanView" : {
+          "description" : "Permission to view the settings of the job.",
+          "type" : "string"
+        },
+        "ListOrder" : {
+          "description" : "* `DESC`: Descending order.\n* `ASC`: Ascending order.",
+          "type" : "string"
+        },
+        "ClusterSpec" : {
+          "properties" : {
+            "existing_cluster_id" : {
+              "example" : "0923-164208-meows279",
+              "description" : "If existing_cluster_id, the ID of an existing cluster that is used for all runs of this job. When running jobs on an existing cluster, you may need to manually restart the cluster if it stops responding. We suggest running jobs on new clusters for greater reliability.",
+              "type" : "string"
+            },
+            "libraries" : {
+              "description" : "An optional list of libraries to be installed on the cluster that executes the job. The default value is an empty list.",
+              "type" : "array",
+              "items" : {
+                "type" : "Library",
+                "$ref" : "#/components/schemas/Library"
+              }
+            },
+            "new_cluster" : {
+              "description" : "If new_cluster, a description of a cluster that is created for each run.",
+              "$ref" : "#/components/schemas/NewCluster"
+            }
+          },
+          "type" : "object"
+        },
+        "ServicePrincipalName" : {
+          "example" : "9f0621ee-b52b-11ea-b3de-0242ac130004",
+          "description" : "Name of an Azure service principal.",
+          "type" : "string"
+        },
+        "SqlQueryOutput" : {
+          "properties" : {
+            "output_link" : {
+              "description" : "The link to find the output results.",
+              "type" : "string"
+            },
+            "query_text" : {
+              "description" : "The text of the SQL query. Can Run permission of the SQL query is required to view this field.",
+              "type" : "string"
+            },
+            "sql_statements" : {
+              "description" : "Information about SQL statements executed in the run.",
+              "$ref" : "#/components/schemas/SqlStatementOutput"
+            },
+            "warehouse_id" : {
+              "description" : "The canonical identifier of the SQL warehouse.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "UserName" : {
+          "example" : "jsmith@example.com",
+          "description" : "Email address for the user.",
+          "type" : "string"
+        },
+        "AccessControlList" : {
+          "properties" : {
+            "access_control_list" : {
+              "description" : "List of permissions to set on the job.",
+              "type" : "array",
+              "items" : {
+                "type" : "AccessControlRequest",
+                "$ref" : "#/components/schemas/AccessControlRequest"
+              }
+            }
+          },
+          "type" : "object"
+        },
+        "SparkNode" : {
+          "properties" : {
+            "host_private_ip" : {
+              "description" : "The private IP address of the host instance.",
+              "type" : "string"
+            },
+            "node_id" : {
+              "description" : "Globally unique identifier for this node.",
+              "type" : "string"
+            },
+            "start_timestamp" : {
+              "format" : "int64",
+              "description" : "The timestamp (in millisecond) when the Spark node is launched.",
+              "type" : "integer"
+            },
+            "private_ip" : {
+              "description" : "Private IP address (typically a 10.x.x.x address) of the Spark node. This is different from the private IP address of the host instance.",
+              "type" : "string"
+            },
+            "instance_id" : {
+              "description" : "Globally unique identifier for the host instance from the cloud provider.",
+              "type" : "string"
+            },
+            "public_dns" : {
+              "description" : "Public DNS address of this node. This address can be used to access the Spark JDBC server on the driver node.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "SparkConfPair" : {
+          "description" : "An arbitrary object where the object key is a configuration propery name and the value is a configuration property value.",
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "object"
+          }
+        },
+        "ParameterPair" : {
+          "description" : "An object with additional information about why a cluster was terminated. The object keys are one of `TerminationParameter` and the value is the termination information.",
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "object"
+          }
+        },
+        "AccessControlRequestForServicePrincipal" : {
+          "properties" : {
+            "permission_level" : {
+              "$ref" : "#/components/schemas/PermissionLevel"
+            },
+            "service_principal_name" : {
+              "example" : "9f0621ee-b52b-11ea-b3de-0242ac130004",
+              "description" : "Name of an Azure service principal.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "IsOwner" : {
+          "description" : "Perimssion that represents ownership of the job.",
+          "type" : "string"
+        },
+        "TerminationType" : {
+          "description" : "* SUCCESS: Termination succeeded.\n* CLIENT_ERROR: Non-retriable. Client must fix parameters before reattempting the cluster creation.\n* SERVICE_FAULT: Databricks service issue. Client can retry.\n* CLOUD_FAILURECloud provider infrastructure issue. Client can retry after the underlying issue is resolved.\n",
+          "type" : "string"
+        },
+        "RepairHistory" : {
+          "properties" : {
+            "repair_history" : {
+              "description" : "The repair history of the run.",
+              "type" : "array",
+              "items" : {
+                "type" : "RepairHistoryItem",
+                "$ref" : "#/components/schemas/RepairHistoryItem"
+              }
+            }
+          },
+          "type" : "object"
+        },
+        "PermissionLevelForGroup" : {
+          "description" : "Permission level to grant.",
+          "type" : "string"
+        },
+        "TerminationReason" : {
+          "properties" : {
+            "code" : {
+              "description" : "Status code indicating why a cluster was terminated.",
+              "$ref" : "#/components/schemas/TerminationCode"
+            },
+            "parameters" : {
+              "description" : "Object containing a set of parameters that provide information about why a cluster was terminated.",
+              "$ref" : "#/components/schemas/ParameterPair"
+            },
+            "type" : {
+              "description" : "Reason indicating why a cluster was terminated.",
+              "$ref" : "#/components/schemas/TerminationType"
+            }
+          },
+          "type" : "object"
+        },
+        "AutoScale" : {
+          "properties" : {
+            "max_workers" : {
+              "format" : "int32",
+              "description" : "The maximum number of workers to which the cluster can scale up when overloaded. max_workers must be strictly greater than min_workers.",
+              "type" : "integer"
+            },
+            "min_workers" : {
+              "format" : "int32",
+              "description" : "The minimum number of workers to which the cluster can scale down when underutilized. It is also the initial number of workers the cluster has after creation.",
+              "type" : "integer"
+            }
+          },
+          "type" : "object"
+        },
+        "ClusterInfo" : {
+          "properties" : {
+            "cluster_name" : {
+              "description" : "Cluster name requested by the user. This doesn?t have to be unique. If not specified at creation, the cluster name is an empty string.",
+              "type" : "string"
+            },
+            "start_time" : {
+              "format" : "int64",
+              "description" : "Time (in epoch milliseconds) when the cluster creation request was received (when the cluster entered a `PENDING` state).",
+              "type" : "integer"
+            },
+            "state" : {
+              "description" : "State of the cluster.",
+              "$ref" : "#/components/schemas/ClusterState"
+            },
+            "node_type_id" : {
+              "description" : "This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads. A list of available node types can be retrieved by using the [List node types](..dev-tools/api/latest/clustershtml#list-node-types) API call.",
+              "type" : "string"
+            },
+            "spark_version" : {
+              "description" : "The runtime version of the cluster. You can retrieve a list of available runtime versions by using the [Runtime versions](..dev-tools/api/latest/clustershtml#runtime-versions) API call.",
+              "type" : "string"
+            },
+            "num_workers" : {
+              "format" : "int32",
+              "description" : "If num_workers, number of worker nodes that this cluster must have. A cluster has one Spark driver and num_workers executors for a total of num_workers + 1 Spark nodes. **Note:** When reading the properties of a cluster, this field reflects the desired number of workers rather than the actual number of workers. For instance, if a cluster is resized from 5 to 10 workers, this field is immediately updated to reflect the target size of 10 workers, whereas the workers listed in `executors` gradually increase from 5 to 10 as the new nodes are provisioned.",
+              "type" : "integer"
+            },
+            "cluster_cores" : {
+              "format" : "float",
+              "description" : "Number of CPU cores available for this cluster. This can be fractional since certain node types are configured to share cores between Spark nodes on the same instance.",
+              "type" : "number"
+            },
+            "executors" : {
+              "description" : "Nodes on which the Spark executors reside.",
+              "type" : "array",
+              "items" : {
+                "type" : "SparkNode",
+                "$ref" : "#/components/schemas/SparkNode"
+              }
+            },
+            "last_state_loss_time" : {
+              "format" : "int64",
+              "description" : "Time when the cluster driver last lost its state (due to a restart or driver failure).",
+              "type" : "integer"
+            },
+            "cluster_memory_mb" : {
+              "format" : "int64",
+              "description" : "Total amount of cluster memory, in megabytes.",
+              "type" : "integer"
+            },
+            "custom_tags" : {
+              "type" : "array",
+              "items" : {
+                "type" : "ClusterTag",
+                "$ref" : "#/components/schemas/ClusterTag"
+              }
+            },
+            "autoscale" : {
+              "description" : "If autoscale, parameters needed in order to automatically scale clusters up and down based on load.",
+              "$ref" : "#/components/schemas/AutoScale"
+            },
+            "driver" : {
+              "description" : "Node on which the Spark driver resides. The driver node contains the Spark master and the Databricks application that manages the per-notebook Spark REPLs.",
+              "$ref" : "#/components/schemas/SparkNode"
+            },
+            "spark_conf" : {
+              "description" : "An object containing a set of optional, user-specified Spark configuration key-value pairs. You can also pass in a string of extra JVM options to the driver and the executors via `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively.\n\nExample Spark confs: `{\"spark.speculation\": true, \"spark.streaming.ui.retainedBatches\": 5}` or `{\"spark.driver.extraJavaOptions\": \"-verbose:gc -XX:+PrintGCDetails\"}`",
+              "$ref" : "#/components/schemas/SparkConfPair"
+            },
+            "creator_user_name" : {
+              "description" : "Creator user name. The field won?t be included in the response if the user has already been deleted.",
+              "type" : "string"
+            },
+            "state_message" : {
+              "description" : "A message associated with the most recent state transition (for example, the reason why the cluster entered a `TERMINATED` state). This field is unstructured, and its exact format is subject to change.",
+              "type" : "string"
+            },
+            "init_scripts" : {
+              "description" : "The configuration for storing init scripts. Any number of destinations can be specified. The scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script logs are sent to `<destination>/<cluster-ID>/init_scripts`.",
+              "type" : "array",
+              "items" : {
+                "type" : "InitScriptInfo",
+                "$ref" : "#/components/schemas/InitScriptInfo"
+              }
+            },
+            "driver_node_type_id" : {
+              "description" : "The node type of the Spark driver. This field is optional; if unset, the driver node type is set as the same value as `node_type_id` defined above.",
+              "type" : "string"
+            },
+            "instance_pool_id" : {
+              "description" : "The optional ID of the instance pool to which the cluster belongs. Refer to [Pools](..clusters/instance-pools/indexhtml) for details.",
+              "type" : "string"
+            },
+            "terminated_time" : {
+              "format" : "int64",
+              "description" : "Time (in epoch milliseconds) when the cluster was terminated, if applicable.",
+              "type" : "integer"
+            },
+            "spark_context_id" : {
+              "format" : "int64",
+              "description" : "A canonical SparkContext identifier. This value _does_ change when the Spark driver restarts. The pair `(cluster_id, spark_context_id)` is a globally unique identifier over all Spark contexts.",
+              "type" : "integer"
+            },
+            "cluster_log_status" : {
+              "description" : "Cluster log delivery status.",
+              "$ref" : "#/components/schemas/LogSyncStatus"
+            },
+            "last_activity_time" : {
+              "format" : "int64",
+              "description" : "Time (in epoch milliseconds) when the cluster was last active. A cluster is active if there is at least one command that has not finished on the cluster. This field is available after the cluster has reached a `RUNNING` state. Updates to this field are made as best-effort attempts. Certain versions of Spark do not support reporting of cluster activity. Refer to [Automatic termination](..clusters/clusters-managehtml#automatic-termination) for details.",
+              "type" : "integer"
+            },
+            "spark_env_vars" : {
+              "description" : "An object containing a set of optional, user-specified environment variable key-value pairs. Key-value pairs of the form (X,Y) are exported as is (that is, `export X='Y'`) while launching the driver and workers.\n\nTo specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the following example. This ensures that all default databricks managed environmental variables are included as well.\n\nExample Spark environment variables: `{\"SPARK_WORKER_MEMORY\": \"28000m\", \"SPARK_LOCAL_DIRS\": \"/local_disk0\"}` or `{\"SPARK_DAEMON_JAVA_OPTS\": \"$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true\"}`",
+              "$ref" : "#/components/schemas/SparkEnvPair"
+            },
+            "cluster_id" : {
+              "description" : "Canonical identifier for the cluster. This ID is retained during cluster restarts and resizes, while each new cluster has a globally unique ID.",
+              "x-databricks-id" : true,
+              "type" : "string"
+            },
+            "autotermination_minutes" : {
+              "format" : "int32",
+              "description" : "Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this cluster is not be automatically terminated. If specified, the threshold must be between 10 and 10000 minutes. You can also set this value to 0 to explicitly disable automatic termination.",
+              "type" : "integer"
+            },
+            "jdbc_port" : {
+              "format" : "int32",
+              "description" : "Port on which Spark JDBC server is listening in the driver node. No service listens on this port in executor nodes.",
+              "type" : "integer"
+            },
+            "cluster_log_conf" : {
+              "description" : "The configuration for delivering Spark logs to a long-term storage destination. Only one destination can be specified for one cluster. If the conf is given, the logs are delivered to the destination every `5 mins`. The destination of driver logs is `<destination>/<cluster-ID>/driver`, while the destination of executor logs is `<destination>/<cluster-ID>/executor`.",
+              "$ref" : "#/components/schemas/ClusterLogConf"
+            },
+            "termination_reason" : {
+              "description" : "Information about why the cluster was terminated. This field only appears when the cluster is in a `TERMINATING` or `TERMINATED` state.",
+              "$ref" : "#/components/schemas/TerminationReason"
+            },
+            "default_tags" : {
+              "description" : "An object containing a set of tags that are added by Databricks regardless of any custom_tags, including:\n\n* Vendor: Databricks\n* Creator: <username-of-creator>\n* ClusterName: <name-of-cluster>\n* ClusterId: <id-of-cluster>\n* Name: <Databricks internal use>  \nOn job clusters:\n* RunName: <name-of-job>\n* JobId: <id-of-job>  \nOn resources used by Databricks SQL:\n* SqlEndpointId: <id-of-endpoint>",
+              "$ref" : "#/components/schemas/ClusterTag"
+            }
+          },
+          "type" : "object"
+        },
+        "RunParameters" : {
+          "properties" : {
+            "pipeline_params" : {
+              "$ref" : "#/components/schemas/PipelineParams"
+            },
+            "python_params" : {
+              "example" : [ "john doe", "35" ],
+              "description" : "A list of parameters for jobs with Python tasks, for example `\"python_params\": [\"john doe\", \"35\"]`. The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it would overwrite the parameters specified in job setting. The JSON representation of this field (for example `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.\n\nUse [Task parameter variables](..jobshtml#parameter-variables) to set parameters containing information about job runs.\n\nImportant\n\nThese parameters accept only Latin characters (ASCII character set). Using non-ASCII characters returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and emojis.",
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "python_named_params" : {
+              "example" : {
+                "data" : "dbfs:/path/to/data.json",
+                "name" : "task"
+              },
+              "description" : "A map from keys to values for jobs with Python wheel task, for example `\"python_named_params\": {\"name\": \"task\", \"data\": \"dbfs:/path/to/data.json\"}`.",
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "string"
+              }
+            },
+            "notebook_params" : {
+              "example" : {
+                "age" : "35",
+                "name" : "john doe"
+              },
+              "description" : "A map from keys to values for jobs with notebook task, for example `\"notebook_params\": {\"name\": \"john doe\", \"age\": \"35\"}`. The map is passed to the notebook and is accessible through the [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets) function.\n\nIf not specified upon `run-now`, the triggered run uses the job?s base parameters.\n\nnotebook_params cannot be specified in conjunction with jar_params.\n\nUse [Task parameter variables](..jobshtml#parameter-variables) to set parameters containing information about job runs.\n\nThe JSON representation of this field (for example `{\"notebook_params\":{\"name\":\"john doe\",\"age\":\"35\"}}`) cannot exceed 10,000 bytes.",
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "string"
+              }
+            },
+            "jar_params" : {
+              "example" : [ "john", "doe", "35" ],
+              "description" : "A list of parameters for jobs with Spark JAR tasks, for example `\"jar_params\": [\"john doe\", \"35\"]`. The parameters are used to invoke the main function of the main class specified in the Spark JAR task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be specified in conjunction with notebook_params. The JSON representation of this field (for example `{\"jar_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.\n\nUse [Task parameter variables](..jobshtml#parameter-variables) to set parameters containing information about job runs.",
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "spark_submit_params" : {
+              "example" : [ "--class", "org.apache.spark.examples.SparkPi" ],
+              "description" : "A list of parameters for jobs with spark submit task, for example `\"spark_submit_params\": [\"--class\", \"org.apache.spark.examples.SparkPi\"]`. The parameters are passed to spark-submit script as command-line parameters. If specified upon `run-now`, it would overwrite the parameters specified in job setting. The JSON representation of this field (for example `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.\n\nUse [Task parameter variables](..jobshtml#parameter-variables) to set parameters containing information about job runs.\n\nImportant\n\nThese parameters accept only Latin characters (ASCII character set). Using non-ASCII characters returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and emojis.",
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "type" : "object"
+        },
+        "ClusterEvent" : {
+          "required" : [ "cluster_id", "type", "details" ],
+          "properties" : {
+            "cluster_id" : {
+              "description" : "Canonical identifier for the cluster. This field is required.",
+              "type" : "string"
+            },
+            "details" : {
+              "description" : "The event details. This field is required.",
+              "$ref" : "#/components/schemas/EventDetails"
+            },
+            "timestamp" : {
+              "format" : "int64",
+              "description" : "The timestamp when the event occurred, stored as the number of milliseconds since the unix epoch. Assigned by the Timeline service.",
+              "type" : "integer"
+            },
+            "type" : {
+              "description" : "The event type. This field is required.",
+              "$ref" : "#/components/schemas/ClusterEventType"
+            }
+          },
+          "type" : "object"
+        },
+        "SqlStatementOutput" : {
+          "properties" : {
+            "lookup_key" : {
+              "description" : "A key that can be used to look up query details.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "SqlAlertOutput" : {
+          "properties" : {
+            "output_link" : {
+              "description" : "The link to find the output results.",
+              "type" : "string"
+            },
+            "query_text" : {
+              "description" : "The text of the SQL query. Can Run permission of the SQL query associated with the SQL alert is required to view this field.",
+              "type" : "string"
+            },
+            "sql_statements" : {
+              "description" : "Information about SQL statements executed in the run.",
+              "$ref" : "#/components/schemas/SqlStatementOutput"
+            },
+            "warehouse_id" : {
+              "description" : "The canonical identifier of the SQL warehouse.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "SparkVersion" : {
+          "properties" : {
+            "key" : {
+              "description" : "[Databricks Runtime version](..dev-tools/api/latest/indexhtml#programmatic-version) key, for example `7.3.x-scala2.12`. The value that must be provided as the `spark_version` when creating a new cluster. The exact runtime version may change over time for a ?wildcard? version (that is, `7.3.x-scala2.12` is a ?wildcard? version) with minor bug fixes.",
+              "type" : "string"
+            },
+            "name" : {
+              "description" : "A descriptive name for the runtime version, for example ?Databricks Runtime 7.3 LTS?.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "MavenLibrary" : {
+          "required" : [ "coordinates" ],
+          "properties" : {
+            "coordinates" : {
+              "example" : "org.jsoup:jsoup:1.7.2",
+              "description" : "Gradle-style Maven coordinates. For example: `org.jsoup:jsoup:1.7.2`. This field is required.",
+              "type" : "string"
+            },
+            "exclusions" : {
+              "example" : [ "slf4j:slf4j", "*:hadoop-client" ],
+              "description" : "List of dependences to exclude. For example: `[\"slf4j:slf4j\", \"*:hadoop-client\"]`.\n\nMaven dependency exclusions: <https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html>.",
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "repo" : {
+              "example" : "https://my-repo.com",
+              "description" : "Maven repo to install the Maven package from. If omitted, both Maven Central Repository and Spark Packages are searched.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "Error" : {
+          "properties" : {
+            "error_code" : {
+              "example" : "INTERNAL_ERROR",
+              "description" : "Error code",
+              "type" : "string"
+            },
+            "message" : {
+              "example" : "Unexpected error.",
+              "description" : "Human-readable error message that describes the cause of the error.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "Run" : {
+          "properties" : {
+            "setup_duration" : {
+              "example" : 0,
+              "format" : "int64",
+              "description" : "The time it took to set up the cluster in milliseconds. For runs that run on new clusters this is the cluster creation time, for runs that run on existing clusters this time should be very short.",
+              "type" : "integer"
+            },
+            "start_time" : {
+              "example" : 1625060460483,
+              "format" : "int64",
+              "description" : "The time at which this run was started in epoch milliseconds (milliseconds since 1/1/1970 UTC). This may not be the time when the job task starts executing, for example, if the job is scheduled to run on a new cluster, this is the time the cluster creation call is issued.",
+              "type" : "integer"
+            },
+            "job_clusters" : {
+              "example" : [ {
+                "job_cluster_key" : "auto_scaling_cluster",
+                "new_cluster" : {
+                  "autoscale" : {
+                    "max_workers" : 16,
+                    "min_workers" : 2
+                  },
+                  "node_type_id" : null,
+                  "spark_conf" : {
+                    "spark.speculation" : true
+                  },
+                  "spark_version" : "7.3.x-scala2.12"
+                }
+              } ],
+              "description" : "A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.",
+              "type" : "array",
+              "items" : {
+                "type" : "JobCluster",
+                "$ref" : "#/components/schemas/JobCluster"
+              }
+            },
+            "state" : {
+              "description" : "The result and lifecycle states of the run.",
+              "$ref" : "#/components/schemas/RunState"
+            },
+            "original_attempt_run_id" : {
+              "example" : 455644833,
+              "format" : "int64",
+              "description" : "If this run is a retry of a prior run attempt, this field contains the run_id of the original attempt; otherwise, it is the same as the run_id.",
+              "type" : "integer"
+            },
+            "overriding_parameters" : {
+              "description" : "The parameters used for this run.",
+              "$ref" : "#/components/schemas/RunParameters"
+            },
+            "end_time" : {
+              "example" : 1625060863413,
+              "format" : "int64",
+              "description" : "The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This field is set to 0 if the job is still running.",
+              "type" : "integer"
+            },
+            "job_id" : {
+              "example" : 11223344,
+              "format" : "int64",
+              "description" : "The canonical identifier of the job that contains this run.",
+              "type" : "integer"
+            },
+            "run_page_url" : {
+              "example" : "https://my-workspace.cloud.databricks.com/#job/11223344/run/123",
+              "description" : "The URL to the detail page of the run.",
+              "type" : "string"
+            },
+            "number_in_job" : {
+              "example" : 455644833,
+              "format" : "int64",
+              "description" : "A unique identifier for this job run. This is set to the same value as `run_id`.",
+              "type" : "integer"
+            },
+            "run_type" : {
+              "$ref" : "#/components/schemas/RunType"
+            },
+            "run_id" : {
+              "example" : 455644833,
+              "format" : "int64",
+              "description" : "The canonical identifier of the run. This ID is unique across all runs of all jobs.",
+              "x-databricks-id" : true,
+              "type" : "integer"
+            },
+            "cluster_instance" : {
+              "description" : "The cluster used for this run. If the run is specified to use a new cluster, this field is set once the Jobs service has requested a cluster for the run.",
+              "$ref" : "#/components/schemas/ClusterInstance"
+            },
+            "tasks" : {
+              "example" : [ {
+                "setup_duration" : 0,
+                "start_time" : 1629989929660,
+                "task_key" : "Orders_Ingest",
+                "state" : {
+                  "life_cycle_state" : "INTERNAL_ERROR",
+                  "result_state" : "FAILED",
+                  "state_message" : "Library installation failed for library due to user error. Error messages:\n'Manage' permissions are required to install libraries on a cluster",
+                  "user_cancelled_or_timedout" : false
+                },
+                "description" : "Ingests order data",
+                "job_cluster_key" : "auto_scaling_cluster",
+                "end_time" : 1629989930171,
+                "run_page_url" : "https://my-workspace.cloud.databricks.com/#job/39832/run/20",
+                "run_id" : 2112892,
+                "cluster_instance" : {
+                  "cluster_id" : "0923-164208-meows279",
+                  "spark_context_id" : "4348585301701786933"
+                },
+                "spark_jar_task" : {
+                  "main_class_name" : "com.databricks.OrdersIngest",
+                  "run_as_repl" : true
+                },
+                "libraries" : [ {
+                  "jar" : "dbfs:/mnt/databricks/OrderIngest.jar"
+                } ],
+                "attempt_number" : 0,
+                "cleanup_duration" : 0,
+                "execution_duration" : 0
+              }, {
+                "setup_duration" : 0,
+                "start_time" : 0,
+                "task_key" : "Match",
+                "state" : {
+                  "life_cycle_state" : "SKIPPED",
+                  "state_message" : "An upstream task failed.",
+                  "user_cancelled_or_timedout" : false
+                },
+                "description" : "Matches orders with user sessions",
+                "notebook_task" : {
+                  "notebook_path" : "/Users/user.name@databricks.com/Match"
+                },
+                "end_time" : 1629989930238,
+                "depends_on" : [ {
+                  "task_key" : "Orders_Ingest"
+                }, {
+                  "task_key" : "Sessionize"
+                } ],
+                "run_page_url" : "https://my-workspace.cloud.databricks.com/#job/39832/run/21",
+                "new_cluster" : {
+                  "autoscale" : {
+                    "max_workers" : 16,
+                    "min_workers" : 2
+                  },
+                  "node_type_id" : null,
+                  "spark_conf" : {
+                    "spark.speculation" : true
+                  },
+                  "spark_version" : "7.3.x-scala2.12"
+                },
+                "run_id" : 2112897,
+                "cluster_instance" : {
+                  "cluster_id" : "0923-164208-meows279"
+                },
+                "attempt_number" : 0,
+                "cleanup_duration" : 0,
+                "execution_duration" : 0
+              }, {
+                "setup_duration" : 0,
+                "start_time" : 1629989929668,
+                "task_key" : "Sessionize",
+                "state" : {
+                  "life_cycle_state" : "INTERNAL_ERROR",
+                  "result_state" : "FAILED",
+                  "state_message" : "Library installation failed for library due to user error. Error messages:\n'Manage' permissions are required to install libraries on a cluster",
+                  "user_cancelled_or_timedout" : false
+                },
+                "description" : "Extracts session data from events",
+                "end_time" : 1629989930144,
+                "run_page_url" : "https://my-workspace.cloud.databricks.com/#job/39832/run/22",
+                "run_id" : 2112902,
+                "cluster_instance" : {
+                  "cluster_id" : "0923-164208-meows279",
+                  "spark_context_id" : "4348585301701786933"
+                },
+                "spark_jar_task" : {
+                  "main_class_name" : "com.databricks.Sessionize",
+                  "run_as_repl" : true
+                },
+                "libraries" : [ {
+                  "jar" : "dbfs:/mnt/databricks/Sessionize.jar"
+                } ],
+                "attempt_number" : 0,
+                "existing_cluster_id" : "0923-164208-meows279",
+                "cleanup_duration" : 0,
+                "execution_duration" : 0
+              } ],
+              "description" : "The list of tasks performed by the run. Each task has its own `run_id` which you can use to call `JobsGetOutput` to retrieve the run resutls.",
+              "type" : "array",
+              "items" : {
+                "type" : "RunTask",
+                "$ref" : "#/components/schemas/RunTask"
+              }
+            },
+            "run_name" : {
+              "default" : "Untitled",
+              "example" : "A multitask job run",
+              "description" : "An optional name for the run. The maximum allowed length is 4096 bytes in UTF-8 encoding.",
+              "type" : "string"
+            },
+            "creator_user_name" : {
+              "example" : "user.name@databricks.com",
+              "description" : "The creator user name. This field won?t be included in the response if the user has already been deleted.",
+              "type" : "string"
+            },
+            "schedule" : {
+              "description" : "The cron schedule that triggered this run if it was triggered by the periodic scheduler.",
+              "$ref" : "#/components/schemas/CronSchedule"
+            },
+            "attempt_number" : {
+              "example" : 0,
+              "format" : "int32",
+              "description" : "The sequence number of this run attempt for a triggered job run. The initial attempt of a run has an attempt_number of 0\\. If the initial run attempt fails, and the job has a retry policy (`max_retries` \\> 0), subsequent runs are created with an `original_attempt_run_id` of the original attempt?s ID and an incrementing `attempt_number`. Runs are retried only until they succeed, and the maximum `attempt_number` is the same as the `max_retries` value for the job.",
+              "type" : "integer"
+            },
+            "git_source" : {
+              "description" : "An optional specification for a remote repository containing the notebooks used by this job's notebook tasks.",
+              "$ref" : "#/components/schemas/GitSource"
+            },
+            "cleanup_duration" : {
+              "example" : 0,
+              "format" : "int64",
+              "description" : "The time in milliseconds it took to terminate the cluster and clean up any associated artifacts. The total duration of the run is the sum of the setup_duration, the execution_duration, and the cleanup_duration.",
+              "type" : "integer"
+            },
+            "execution_duration" : {
+              "example" : 0,
+              "format" : "int64",
+              "description" : "The time in milliseconds it took to execute the commands in the JAR or notebook until they completed, failed, timed out, were cancelled, or encountered an unexpected error.",
+              "type" : "integer"
+            },
+            "cluster_spec" : {
+              "description" : "A snapshot of the job?s cluster specification when this run was created.",
+              "$ref" : "#/components/schemas/ClusterSpec"
+            },
+            "trigger" : {
+              "description" : "The type of trigger that fired this run.",
+              "$ref" : "#/components/schemas/TriggerType"
+            }
+          },
+          "type" : "object"
+        },
+        "PythonWheelTask" : {
+          "properties" : {
+            "entry_point" : {
+              "description" : "Named entry point to use, if it does not exist in the metadata of the package it executes the function from the package directly using `$packageName.$entryPoint()`",
+              "type" : "string"
+            },
+            "named_parameters" : {
+              "example" : {
+                "data" : "dbfs:/path/to/data.json",
+                "name" : "task"
+              },
+              "description" : "Command-line parameters passed to Python wheel task in the form of `[\"--name=task\", \"--data=dbfs:/path/to/data.json\"]`. Leave it empty if `parameters` is not null.",
+              "type" : "object"
+            },
+            "package_name" : {
+              "description" : "Name of the package to execute",
+              "type" : "string"
+            },
+            "parameters" : {
+              "example" : [ "--name=task", "one", "two" ],
+              "description" : "Command-line parameters passed to Python wheel task. Leave it empty if `named_parameters` is not null.",
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "type" : "object"
+        },
+        "RunResultState" : {
+          "description" : "* `SUCCESS`: The task completed successfully.\n* `FAILED`: The task completed with an error.\n* `TIMEDOUT`: The run was stopped after reaching the timeout.\n* `CANCELED`: The run was canceled at user request.",
+          "type" : "string"
+        },
+        "PermissionLevel" : {
+          "description" : "Permission level to grant.",
+          "type" : "string"
+        },
+        "ClusterSize" : {
+          "properties" : {
+            "autoscale" : {
+              "description" : "If autoscale, parameters needed in order to automatically scale clusters up and down based on load.",
+              "$ref" : "#/components/schemas/AutoScale"
+            },
+            "num_workers" : {
+              "format" : "int32",
+              "description" : "If num_workers, number of worker nodes that this cluster must have. A cluster has one Spark driver and num_workers executors for a total of num_workers + 1 Spark nodes. When reading the properties of a cluster, this field reflects the desired number of workers rather than the actual number of workers. For instance, if a cluster is resized from 5 to 10 workers, this field is updated to reflect the target size of 10 workers, whereas the workers listed in executors gradually increase from 5 to 10 as the new nodes are provisioned.",
+              "type" : "integer"
+            }
+          },
+          "type" : "object"
+        },
+        "ClusterCloudProviderNodeInfo" : {
+          "properties" : {
+            "available_core_quota" : {
+              "format" : "int32",
+              "description" : "Available CPU core quota.",
+              "type" : "integer"
+            },
+            "status" : {
+              "description" : "Status as reported by the cloud provider.",
+              "$ref" : "#/components/schemas/ClusterCloudProviderNodeStatus"
+            },
+            "total_core_quota" : {
+              "format" : "int32",
+              "description" : "Total CPU core quota.",
+              "type" : "integer"
+            }
+          },
+          "type" : "object"
+        },
+        "SqlOutputError" : {
+          "properties" : {
+            "message" : {
+              "description" : "The error message when execution fails.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "EventDetails" : {
+          "properties" : {
+            "previous_cluster_size" : {
+              "description" : "The size of the cluster before an edit or resize.",
+              "$ref" : "#/components/schemas/ClusterSize"
+            },
+            "previous_attributes" : {
+              "description" : "The cluster attributes before a cluster was edited.",
+              "type" : "object"
+            },
+            "reason" : {
+              "description" : "A termination reason:\n\n* On a `TERMINATED` event, the reason for the termination.\n* On a `RESIZE_COMPLETE` event, indicates the reason that we failed to acquire some nodes.",
+              "$ref" : "#/components/schemas/TerminationReason"
+            },
+            "attributes" : {
+              "description" : "* For created clusters, the attributes of the cluster.\n* For edited clusters, the new attributes of the cluster.",
+              "type" : "object"
+            },
+            "current_num_workers" : {
+              "format" : "int32",
+              "description" : "The number of nodes in the cluster.",
+              "type" : "integer"
+            },
+            "cluster_size" : {
+              "description" : "The cluster size that was set in the cluster creation or edit.",
+              "$ref" : "#/components/schemas/ClusterSize"
+            },
+            "cause" : {
+              "description" : "The cause of a change in target size.",
+              "$ref" : "#/components/schemas/ResizeCause"
+            },
+            "target_num_workers" : {
+              "format" : "int32",
+              "description" : "The targeted number of nodes in the cluster.",
+              "type" : "integer"
+            },
+            "user" : {
+              "description" : "The user that caused the event to occur. (Empty if it was done by jobs.)",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "RunNowInput" : {
+          "properties" : {
+            "idempotency_token" : {
+              "example" : "8f018174-4792-40d5-bcbc-3e6a527352c8",
+              "description" : "An optional token to guarantee the idempotency of job run requests. If a run with the provided token already exists, the request does not create a new run but returns the ID of the existing run instead. If a run with the provided token is deleted, an error is returned.\n\nIf you specify the idempotency token, upon failure you can retry until the request succeeds. Databricks guarantees that exactly one run is launched with that idempotency token.\n\nThis token must have at most 64 characters.\n\nFor more information, see [How to ensure idempotency for jobs](https://kb.databricks.com/jobs/jobs-idempotency.html).",
+              "type" : "string"
+            },
+            "job_id" : {
+              "example" : 11223344,
+              "format" : "int64",
+              "description" : "The ID of the job to be executed",
+              "type" : "integer"
+            }
+          },
+          "type" : "object"
+        },
+        "ClusterLibraryStatuses" : {
+          "properties" : {
+            "cluster_id" : {
+              "description" : "Unique identifier for the cluster.",
+              "type" : "string"
+            },
+            "library_statuses" : {
+              "description" : "Status of all libraries on the cluster.",
+              "type" : "array",
+              "items" : {
+                "type" : "LibraryFullStatus",
+                "$ref" : "#/components/schemas/LibraryFullStatus"
+              }
+            }
+          },
+          "type" : "object"
+        },
+        "ClusterSource" : {
+          "description" : "* UI: Cluster created through the UI.\n* JOB: Cluster created by the Databricks job scheduler.\n* API: Cluster created through an API call.\n",
+          "type" : "string"
+        },
+        "CanManage" : {
+          "description" : "Permission to manage the job.",
+          "type" : "string"
+        },
+        "LibraryFullStatus" : {
+          "properties" : {
+            "is_library_for_all_clusters" : {
+              "description" : "Whether the library was set to be installed on all clusters via the libraries UI.",
+              "type" : "boolean"
+            },
+            "library" : {
+              "description" : "Unique identifier for the library.",
+              "$ref" : "#/components/schemas/Library"
+            },
+            "messages" : {
+              "description" : "All the info and warning messages that have occurred so far for this library.",
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "status" : {
+              "description" : "Status of installing the library on the cluster.",
+              "$ref" : "#/components/schemas/LibraryInstallStatus"
+            }
+          },
+          "type" : "object"
+        },
+        "AccessControlRequestForGroup" : {
+          "properties" : {
+            "group_name" : {
+              "example" : "users",
+              "description" : "Group name. There are two built-in groups: `users` for all users, and `admins` for administrators.",
+              "type" : "string"
+            },
+            "permission_level" : {
+              "$ref" : "#/components/schemas/PermissionLevelForGroup"
+            }
+          },
+          "type" : "object"
+        },
+        "LibraryInstallStatus" : {
+          "description" : "* `PENDING`: No action has yet been taken to install the library. This state should be very short lived.\n* `RESOLVING`: Metadata necessary to install the library is being retrieved from the provided repository. For Jar, Egg, and Whl libraries, this step is a no-op.\n* `INSTALLING`: The library is actively being installed, either by adding resources to Spark or executing system commands inside the Spark nodes.\n* `INSTALLED`: The library has been successfully instally.\n* `SKIPPED`: Installation on a Databricks Runtime 7.0 or above cluster was skipped due to Scala version incompatibility.\n* `FAILED`: Some step in installation failed. More information can be found in the messages field.\n* `UNINSTALL_ON_RESTART`: The library has been marked for removal. Libraries can be removed only when clusters are restarted, so libraries that enter this state remains until the cluster is restarted.",
+          "type" : "string"
+        },
+        "GroupName" : {
+          "example" : "users",
+          "description" : "Group name. There are two built-in groups: `users` for all users, and `admins` for administrators.",
+          "type" : "string"
+        },
+        "SparkPythonTask" : {
+          "required" : [ "python_file" ],
+          "properties" : {
+            "parameters" : {
+              "example" : [ "--data", "dbfs:/path/to/data.json" ],
+              "description" : "Command line parameters passed to the Python file.\n\nUse [Task parameter variables](..jobshtml#parameter-variables) to set parameters containing information about job runs.",
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "python_file" : {
+              "example" : "dbfs:/path/to/file.py",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "NodeType" : {
+          "required" : [ "node_type_id", "memory_mb", "description", "instance_type_id" ],
+          "properties" : {
+            "instance_type_id" : {
+              "description" : "An identifier for the type of hardware that this node runs on. This field is required.",
+              "type" : "string"
+            },
+            "node_type_id" : {
+              "description" : "Unique identifier for this node type. This field is required.",
+              "type" : "string"
+            },
+            "description" : {
+              "description" : "A string description associated with this node type. This field is required.",
+              "type" : "string"
+            },
+            "node_info" : {
+              "description" : "Node type info reported by the cloud provider.",
+              "$ref" : "#/components/schemas/ClusterCloudProviderNodeInfo"
+            },
+            "memory_mb" : {
+              "format" : "int32",
+              "description" : "Memory (in MB) available for this node type. This field is required.",
+              "type" : "integer"
+            },
+            "num_cores" : {
+              "format" : "float",
+              "description" : "Number of CPU cores available for this node type. This can be fractional if the number of cores on a machine instance is not divisible by the number of Spark nodes on that machine. This field is required.",
+              "type" : "number"
+            },
+            "is_deprecated" : {
+              "description" : "Whether the node type is deprecated. Non-deprecated node types offer greater performance.",
+              "type" : "boolean"
+            }
+          },
+          "type" : "object"
+        },
+        "DockerImage" : {
+          "properties" : {
+            "basic_auth" : {
+              "description" : "Basic authentication information for Docker repository.",
+              "$ref" : "#/components/schemas/DockerBasicAuth"
+            },
+            "url" : {
+              "description" : "URL for the Docker image.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "PoolClusterTerminationCode" : {
+          "description" : "* INSTANCE_POOL_MAX_CAPACITY_FAILURE: The pool max capacity has been reached.\n* INSTANCE_POOL_NOT_FOUND_FAILURE: The pool specified by the cluster is no longer active or doesn?t exist.",
+          "type" : "string"
+        },
+        "TerminationParameter" : {
+          "properties" : {
+            "username" : {
+              "description" : "The username of the user who terminated the cluster.",
+              "type" : "string"
+            },
+            "instance_pool_error_code" : {
+              "description" : "The [error code](..dev-tools/api/latest/clustershtml#clusterterminationreasonpoolclusterterminationcode) for cluster failures specific to a pool.",
+              "type" : "string"
+            },
+            "inactivity_duration_min" : {
+              "description" : "An idle cluster was shut down after being inactive for this duration.",
+              "type" : "string"
+            },
+            "databricks_error_message" : {
+              "description" : "Additional context that may explain the reason for cluster termination. This field is unstructured, and its exact format is subject to change.",
+              "type" : "string"
+            },
+            "instance_pool_id" : {
+              "description" : "The ID of the instance pool the cluster is using.",
+              "type" : "string"
+            },
+            "instance_id" : {
+              "description" : "The ID of the instance that was hosting the Spark driver.",
+              "type" : "string"
+            }
+          },
+          "type" : "object",
+          "x-databricks-not-cloud" : "gcp"
+        },
+        "Job" : {
+          "properties" : {
+            "created_time" : {
+              "example" : 1601370337343,
+              "format" : "int64",
+              "description" : "The time at which this job was created in epoch milliseconds (milliseconds since 1/1/1970 UTC).",
+              "type" : "integer"
+            },
+            "creator_user_name" : {
+              "example" : "user.name@databricks.com",
+              "description" : "The creator user name. This field won?t be included in the response if the user has already been deleted.",
+              "type" : "string"
+            },
+            "job_id" : {
+              "example" : 11223344,
+              "format" : "int64",
+              "description" : "The canonical identifier for this job.",
+              "x-databricks-id" : true,
+              "type" : "integer"
+            },
+            "settings" : {
+              "description" : "Settings for this job and all of its runs. These settings can be updated using the `resetJob` method.",
+              "$ref" : "#/components/schemas/JobSettings"
+            }
+          },
+          "type" : "object"
+        },
+        "RunTask" : {
+          "properties" : {
+            "spark_python_task" : {
+              "description" : "If spark_python_task, indicates that this job must run a Python file.",
+              "$ref" : "#/components/schemas/SparkPythonTask"
+            },
+            "pipeline_task" : {
+              "description" : "If pipeline_task, indicates that this job must execute a Pipeline.",
+              "$ref" : "#/components/schemas/PipelineTask"
+            },
+            "setup_duration" : {
+              "example" : 0,
+              "format" : "int64",
+              "description" : "The time it took to set up the cluster in milliseconds. For runs that run on new clusters this is the cluster creation time, for runs that run on existing clusters this time should be very short.",
+              "type" : "integer"
+            },
+            "start_time" : {
+              "example" : 1625060460483,
+              "format" : "int64",
+              "description" : "The time at which this run was started in epoch milliseconds (milliseconds since 1/1/1970 UTC). This may not be the time when the job task starts executing, for example, if the job is scheduled to run on a new cluster, this is the time the cluster creation call is issued.",
+              "type" : "integer"
+            },
+            "task_key" : {
+              "example" : "Task_Key",
+              "description" : "A unique name for the task. This field is used to refer to this task from other tasks.\nThis field is required and must be unique within its parent job.\nOn Update or Reset, this field is used to reference the tasks to be updated or reset.\nThe maximum length is 100 characters.",
+              "type" : "string",
+              "minLength" : 1,
+              "pattern" : "^[\\w\\-]+$",
+              "maxLength" : 100
+            },
+            "state" : {
+              "description" : "The result and lifecycle states of the run.",
+              "$ref" : "#/components/schemas/RunState"
+            },
+            "description" : {
+              "example" : "This is the description for this task.",
+              "description" : "An optional description for this task.\nThe maximum length is 4096 bytes.",
+              "type" : "string",
+              "maxLength" : 4096
+            },
+            "notebook_task" : {
+              "description" : "If notebook_task, indicates that this job must run a notebook. This field may not be specified in conjunction with spark_jar_task.",
+              "$ref" : "#/components/schemas/NotebookTask"
+            },
+            "python_wheel_task" : {
+              "description" : "If python_wheel_task, indicates that this job must execute a PythonWheel.",
+              "$ref" : "#/components/schemas/PythonWheelTask"
+            },
+            "end_time" : {
+              "example" : 1625060863413,
+              "format" : "int64",
+              "description" : "The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This field is set to 0 if the job is still running.",
+              "type" : "integer"
+            },
+            "depends_on" : {
+              "$ref" : "#/components/schemas/TaskDependencies"
+            },
+            "new_cluster" : {
+              "description" : "If new_cluster, a description of a cluster that is created for each run.",
+              "$ref" : "#/components/schemas/NewCluster"
+            },
+            "run_id" : {
+              "example" : 99887766,
+              "format" : "int64",
+              "description" : "The ID of the task run.",
+              "type" : "integer"
+            },
+            "cluster_instance" : {
+              "description" : "The cluster used for this run. If the run is specified to use a new cluster, this field is set once the Jobs service has requested a cluster for the run.",
+              "$ref" : "#/components/schemas/ClusterInstance"
+            },
+            "spark_jar_task" : {
+              "description" : "If spark_jar_task, indicates that this job must run a JAR.",
+              "$ref" : "#/components/schemas/SparkJarTask"
+            },
+            "libraries" : {
+              "description" : "An optional list of libraries to be installed on the cluster that executes the job. The default value is an empty list.",
+              "type" : "array",
+              "items" : {
+                "type" : "Library",
+                "$ref" : "#/components/schemas/Library"
+              }
+            },
+            "spark_submit_task" : {
+              "description" : "If spark_submit_task, indicates that this job must be launched by the spark submit script.",
+              "$ref" : "#/components/schemas/SparkSubmitTask"
+            },
+            "attempt_number" : {
+              "example" : 0,
+              "format" : "int32",
+              "description" : "The sequence number of this run attempt for a triggered job run. The initial attempt of a run has an attempt_number of 0\\. If the initial run attempt fails, and the job has a retry policy (`max_retries` \\> 0), subsequent runs are created with an `original_attempt_run_id` of the original attempt?s ID and an incrementing `attempt_number`. Runs are retried only until they succeed, and the maximum `attempt_number` is the same as the `max_retries` value for the job.",
+              "type" : "integer"
+            },
+            "existing_cluster_id" : {
+              "description" : "If existing_cluster_id, the ID of an existing cluster that is used for all runs of this job. When running jobs on an existing cluster, you may need to manually restart the cluster if it stops responding. We suggest running jobs on new clusters for greater reliability.",
+              "type" : "string"
+            },
+            "git_source" : {
+              "description" : "An optional specification for a remote repository containing the notebooks used by this job's notebook tasks.",
+              "$ref" : "#/components/schemas/GitSource"
+            },
+            "cleanup_duration" : {
+              "example" : 0,
+              "format" : "int64",
+              "description" : "The time in milliseconds it took to terminate the cluster and clean up any associated artifacts. The total duration of the run is the sum of the setup_duration, the execution_duration, and the cleanup_duration.",
+              "type" : "integer"
+            },
+            "execution_duration" : {
+              "example" : 0,
+              "format" : "int64",
+              "description" : "The time in milliseconds it took to execute the commands in the JAR or notebook until they completed, failed, timed out, were cancelled, or encountered an unexpected error.",
+              "type" : "integer"
+            }
+          },
+          "type" : "object"
+        },
+        "SparkEnvPair" : {
+          "description" : "An arbitrary object where the object key is an environment variable name and the value is an environment variable value.",
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "object"
+          }
+        },
+        "Library" : {
+          "properties" : {
+            "egg" : {
+              "example" : "dbfs:/my/egg",
+              "type" : "string"
+            },
+            "pypi" : {
+              "description" : "If pypi, specification of a PyPI library to be installed. Specifying the `repo` field is optional and if not specified, the default pip index is used. For example: `{ \"package\": \"simplejson\", \"repo\": \"https://my-repo.com\" }`",
+              "$ref" : "#/components/schemas/PythonPyPiLibrary"
+            },
+            "maven" : {
+              "description" : "If maven, specification of a Maven library to be installed. For example: `{ \"coordinates\": \"org.jsoup:jsoup:1.7.2\" }`",
+              "$ref" : "#/components/schemas/MavenLibrary"
+            },
+            "cran" : {
+              "description" : "If cran, specification of a CRAN library to be installed.",
+              "$ref" : "#/components/schemas/RCranLibrary"
+            },
+            "whl" : {
+              "example" : "dbfs:/my/whl",
+              "type" : "string"
+            },
+            "jar" : {
+              "example" : "dbfs:/my-jar.jar",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "RunSubmitTaskSettings" : {
+          "required" : [ "task_key" ],
+          "properties" : {
+            "spark_python_task" : {
+              "description" : "If spark_python_task, indicates that this task must run a Python file.",
+              "$ref" : "#/components/schemas/SparkPythonTask"
+            },
+            "pipeline_task" : {
+              "description" : "If pipeline_task, indicates that this task must execute a Pipeline.",
+              "$ref" : "#/components/schemas/PipelineTask"
+            },
+            "task_key" : {
+              "example" : "Task_Key",
+              "description" : "A unique name for the task. This field is used to refer to this task from other tasks.\nThis field is required and must be unique within its parent job.\nOn Update or Reset, this field is used to reference the tasks to be updated or reset.\nThe maximum length is 100 characters.",
+              "type" : "string",
+              "minLength" : 1,
+              "pattern" : "^[\\w\\-]+$",
+              "maxLength" : 100
+            },
+            "notebook_task" : {
+              "description" : "If notebook_task, indicates that this task must run a notebook. This field may not be specified in conjunction with spark_jar_task.",
+              "$ref" : "#/components/schemas/NotebookTask"
+            },
+            "python_wheel_task" : {
+              "description" : "If python_wheel_task, indicates that this job must execute a PythonWheel.",
+              "$ref" : "#/components/schemas/PythonWheelTask"
+            },
+            "depends_on" : {
+              "$ref" : "#/components/schemas/TaskDependencies"
+            },
+            "new_cluster" : {
+              "description" : "If new_cluster, a description of a cluster that is created for each run.",
+              "$ref" : "#/components/schemas/NewCluster"
+            },
+            "timeout_seconds" : {
+              "example" : 86400,
+              "format" : "int32",
+              "description" : "An optional timeout applied to each run of this job task. The default behavior is to have no timeout.",
+              "type" : "integer"
+            },
+            "spark_jar_task" : {
+              "description" : "If spark_jar_task, indicates that this task must run a JAR.",
+              "$ref" : "#/components/schemas/SparkJarTask"
+            },
+            "libraries" : {
+              "description" : "An optional list of libraries to be installed on the cluster that executes the task. The default value is an empty list.",
+              "type" : "array",
+              "items" : {
+                "type" : "Library",
+                "$ref" : "#/components/schemas/Library"
+              }
+            },
+            "spark_submit_task" : {
+              "description" : "If spark_submit_task, indicates that this task must be launched by the spark submit script.",
+              "$ref" : "#/components/schemas/SparkSubmitTask"
+            },
+            "existing_cluster_id" : {
+              "example" : "0923-164208-meows279",
+              "description" : "If existing_cluster_id, the ID of an existing cluster that is used for all runs of this task. When running tasks on an existing cluster, you may need to manually restart the cluster if it stops responding. We suggest running jobs on new clusters for greater reliability.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "RCranLibrary" : {
+          "required" : [ "package" ],
+          "properties" : {
+            "package" : {
+              "example" : "geojson",
+              "description" : "The name of the CRAN package to install. This field is required.",
+              "type" : "string"
+            },
+            "repo" : {
+              "example" : "https://my-repo.com",
+              "description" : "The repository where the package can be found. If not specified, the default CRAN repo is used.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "TriggerType" : {
+          "description" : "* `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler.\n* `ONE_TIME`: One time triggers that fire a single run. This occurs you triggered a single run on demand through the UI or the API.\n* `RETRY`: Indicates a run that is triggered as a retry of a previously failed run. This occurs when you request to re-run the job in case of failures.",
+          "type" : "string"
+        },
+        "ResizeCause" : {
+          "description" : "* `AUTOSCALE`: Automatically resized based on load.\n* `USER_REQUEST`: User requested a new size.\n* `AUTORECOVERY`: Autorecovery monitor resized the cluster after it lost a node.",
+          "type" : "string"
+        },
+        "ClusterLogConf" : {
+          "properties" : {
+            "dbfs" : {
+              "description" : "DBFS location of cluster log. Destination must be provided. For example, `{ \"dbfs\" : { \"destination\" : \"dbfs:/home/cluster_log\" } }`",
+              "$ref" : "#/components/schemas/DbfsStorageInfo"
+            }
+          },
+          "type" : "object"
+        },
+        "NotebookTask" : {
+          "required" : [ "notebook_path" ],
+          "properties" : {
+            "base_parameters" : {
+              "example" : {
+                "age" : 35,
+                "name" : "John Doe"
+              },
+              "description" : "Base parameters to be used for each run of this job. If the run is initiated by a call to [`run-now`](..dev-tools/api/latest/jobshtml#operation/JobsRunNow) with parameters specified, the two parameters maps are merged. If the same key is specified in `base_parameters` and in `run-now`, the value from `run-now` is used.\n\nUse [Task parameter variables](..jobshtml#parameter-variables) to set parameters containing information about job runs.\n\nIf the notebook takes a parameter that is not specified in the job?s `base_parameters` or the `run-now` override parameters, the default value from the notebook is used.\n\nRetrieve these parameters in a notebook using [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets).",
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "object"
+              }
+            },
+            "notebook_path" : {
+              "example" : "/Users/user.name@databricks.com/notebook_to_run",
+              "description" : "The path of the notebook to be run in the jobs workspace or remote repository. For notebooks stored in the Databricks workspace, the path must be absolute and begin with a slash. For notebooks stored in a remote repository, the path must be relative. This field is required.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "TerminationCode" : {
+          "description" : "* USER_REQUEST: A user terminated the cluster directly. Parameters should include a `username` field that indicates the specific user who terminated the cluster.\n* JOB_FINISHED: The cluster was launched by a job, and terminated when the job completed.\n* INACTIVITY: The cluster was terminated since it was idle.\n* CLOUD_PROVIDER_SHUTDOWN: The instance that hosted the Spark driver was terminated by the cloud provider.\n* COMMUNICATION_LOST: jobs lost connection to services on the driver instance. For example, this can happen when problems arise in cloud networking infrastructure, or when the instance itself becomes unhealthy.\n* CLOUD_PROVIDER_LAUNCH_FAILURE: jobs experienced a cloud provider failure when requesting instances to launch clusters.\n* SPARK_STARTUP_FAILURE: The cluster failed to initialize. Possible reasons may include failure to create the environment for Spark or issues launching the Spark master and worker processes.\n* INVALID_ARGUMENT: Cannot launch the cluster because the user specified an invalid argument. For example, the user might specify an invalid runtime version for the cluster.\n* UNEXPECTED_LAUNCH_FAILURE: While launching this cluster, Databricks failed to complete critical setup steps, terminating the cluster.\n* INTERNAL_ERROR: jobs encountered an unexpected error that forced the running cluster to be terminated. Contact Databricks support for additional details.\n* SPARK_ERROR: The Spark driver failed to start. Possible reasons may include incompatible libraries and initialization scripts that corrupted the Spark container.\n* METASTORE_COMPONENT_UNHEALTHY: The cluster failed to start because the external metastore could not be reached. Refer to [Troubleshooting](..data/metastores/external-hive-metastorehtml#troubleshooting).\n* DBFS_COMPONENT_UNHEALTHY: The cluster failed to start because Databricks File System (DBFS) could not be reached. \n* DRIVER_UNREACHABLE: jobs was not able to access the Spark driver, because it was not reachable.\n* DRIVER_UNRESPONSIVE: jobs was not able to access the Spark driver, because it was unresponsive.\n* INSTANCE_UNREACHABLE: jobs was not able to access instances in order to start the cluster. This can be a transient networking issue. If the problem persists, this usually indicates a networking environment misconfiguration.\n* CONTAINER_LAUNCH_FAILURE: jobs was unable to launch containers on worker nodes for the cluster. Have your admin check your network configuration.\n* INSTANCE_POOL_CLUSTER_FAILURE: Pool backed cluster specific failure. Refer to [Pools](..clusters/instance-pools/indexhtml) for details.\n* REQUEST_REJECTED: jobs cannot handle the request at this moment. Try again later and contact Databricks if the problem persists.\n* INIT_SCRIPT_FAILURE: jobs cannot load and run a cluster-scoped init script on one of the cluster?s nodes, or the init script terminates with a non-zero exit code. Refer to [Init script logs](..clusters/init-scriptshtml#init-script-log).\n* TRIAL_EXPIRED: The Databricks trial subscription expired.",
+          "type" : "string"
+        },
+        "ViewsToExport" : {
+          "default" : "CODE",
+          "description" : "* `CODE`: Code view of the notebook.\n* `DASHBOARDS`: All dashboard views of the notebook.\n* `ALL`: All views of the notebook.",
+          "type" : "string"
+        },
+        "TaskDependencies" : {
+          "example" : [ {
+            "task_key" : "Previous_Task_Key"
+          }, {
+            "task_key" : "Other_Task_Key"
+          } ],
+          "description" : "An optional array of objects specifying the dependency graph of the task. All tasks specified in this field must complete successfully before executing this task.\nThe key is `task_key`, and the value is the name assigned to the dependent task.\nThis field is required when a job consists of more than one task.",
+          "type" : "array",
+          "items" : {
+            "properties" : {
+              "task_key" : {
+                "type" : "string"
+              }
+            },
+            "type" : "object"
+          }
+        },
+        "FileStorageInfo" : {
+          "properties" : {
+            "destination" : {
+              "description" : "File destination. Example: `file:/my/file.sh`",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "ViewType" : {
+          "description" : "* `NOTEBOOK`: Notebook view item.\n* `DASHBOARD`: Dashboard view item.",
+          "type" : "string"
+        },
+        "DockerBasicAuth" : {
+          "properties" : {
+            "password" : {
+              "description" : "Password for the Docker repository.",
+              "type" : "string"
+            },
+            "username" : {
+              "description" : "User name for the Docker repository.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "ClusterTag" : {
+          "description" : "An object with key value pairs. The key length must be between 1 and 127 UTF-8 characters, inclusive. The value length must be less than or equal to 255 UTF-8 characters.",
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "string"
+          }
+        },
+        "RunLifeCycleState" : {
+          "description" : "* `PENDING`: The run has been triggered. If there is not already an active run of the same job, the cluster and execution context are being prepared. If there is already an active run of the same job, the run immediately transitions into the `SKIPPED` state without preparing any resources.\n* `RUNNING`: The task of this run is being executed.\n* `TERMINATING`: The task of this run has completed, and the cluster and execution context are being cleaned up.\n* `TERMINATED`: The task of this run has completed, and the cluster and execution context have been cleaned up. This state is terminal.\n* `SKIPPED`: This run was aborted because a previous run of the same job was already active. This state is terminal.\n* `INTERNAL_ERROR`: An exceptional state that indicates a failure in the Jobs service, such as network failure over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR` state, the Jobs service terminates the cluster as soon as possible. This state is terminal.",
+          "type" : "string"
+        },
+        "SqlOutput" : {
+          "properties" : {
+            "alert_output" : {
+              "description" : "The output of a SQL alert task, if available.",
+              "$ref" : "#/components/schemas/SqlAlertOutput"
+            },
+            "dashboard_output" : {
+              "description" : "The output of a SQL dashboard task, if available.",
+              "$ref" : "#/components/schemas/SqlDashboardOutput"
+            },
+            "query_output" : {
+              "description" : "The output of a SQL query task, if available.",
+              "$ref" : "#/components/schemas/SqlQueryOutput"
+            }
+          },
+          "type" : "object"
+        },
+        "GitSource" : {
+          "required" : [ "git_url", "git_provider", "git_branch" ],
+          "properties" : {
+            "git_tag" : {
+              "example" : "release-1.0.0",
+              "description" : "Name of the tag to be checked out and used by this job. This field cannot be specified in conjunction with git_branch or git_commit.\nThe maximum length is 255 characters.",
+              "type" : "string"
+            },
+            "git_provider" : {
+              "example" : "github",
+              "description" : "Unique identifier of the service used to host the Git repository. The value is case insensitive.",
+              "type" : "string"
+            },
+            "git_url" : {
+              "example" : "https://github.com/databricks/databricks-cli",
+              "description" : "URL of the repository to be cloned by this job.\nThe maximum length is 300 characters.",
+              "type" : "string"
+            },
+            "git_branch" : {
+              "example" : "main",
+              "description" : "Name of the branch to be checked out and used by this job. This field cannot be specified in conjunction with git_tag or git_commit.\nThe maximum length is 255 characters.",
+              "type" : "string"
+            },
+            "git_commit" : {
+              "example" : "e0056d01",
+              "description" : "Commit to be checked out and used by this job. This field cannot be specified in conjunction with git_branch or git_tag.\nThe maximum length is 64 characters.",
+              "type" : "string"
+            },
+            "git_snapshot" : {
+              "$ref" : "#/components/schemas/GitSnapshot"
+            }
+          },
+          "description" : "An optional specification for a remote repository containing the notebooks used by this job's notebook tasks.",
+          "type" : "object",
+          "x-databricks-stability" : "public-preview"
+        },
+        "NewCluster" : {
+          "required" : [ "spark_version", "node_type_id" ],
+          "properties" : {
+            "ssh_public_keys" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              },
+              "x-databricks-not-cloud" : "azure"
+            },
+            "policy_id" : {
+              "description" : "A [cluster policy](..dev-tools/api/latest/policieshtml) ID.",
+              "type" : "string"
+            },
+            "node_type_id" : {
+              "description" : "This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads A list of available node types can be retrieved by using the [List node types](..dev-tools/api/latest/clustershtml#list-node-types) API call. This field is required.",
+              "type" : "string"
+            },
+            "spark_version" : {
+              "description" : "The Spark version of the cluster. A list of available Spark versions can be retrieved by using the [Runtime versions](..dev-tools/api/latest/clustershtml#runtime-versions) API call. This field is required.",
+              "type" : "string"
+            },
+            "num_workers" : {
+              "format" : "int32",
+              "description" : "If num_workers, number of worker nodes that this cluster must have. A cluster has one Spark driver and num_workers executors for a total of num_workers + 1 Spark nodes. When reading the properties of a cluster, this field reflects the desired number of workers rather than the actual current number of workers. For example, if a cluster is resized from 5 to 10 workers, this field immediately updates to reflect the target size of 10 workers, whereas the workers listed in `spark_info` gradually increase from 5 to 10 as the new nodes are provisioned.",
+              "type" : "integer"
+            },
+            "custom_tags" : {
+              "$ref" : "#/components/schemas/ClusterTag"
+            },
+            "autoscale" : {
+              "description" : "If autoscale, the required parameters to automatically scale clusters up and down based on load.",
+              "$ref" : "#/components/schemas/AutoScale"
+            },
+            "spark_conf" : {
+              "description" : "An object containing a set of optional, user-specified Spark configuration key-value pairs. You can also pass in a string of extra JVM options to the driver and the executors via `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively.\n\nExample Spark confs: `{\"spark.speculation\": true, \"spark.streaming.ui.retainedBatches\": 5}` or `{\"spark.driver.extraJavaOptions\": \"-verbose:gc -XX:+PrintGCDetails\"}`",
+              "$ref" : "#/components/schemas/SparkConfPair"
+            },
+            "init_scripts" : {
+              "description" : "The configuration for storing init scripts. Any number of scripts can be specified. The scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script logs are sent to `<destination>/<cluster-id>/init_scripts`.",
+              "type" : "array",
+              "items" : {
+                "type" : "InitScriptInfo",
+                "$ref" : "#/components/schemas/InitScriptInfo"
+              }
+            },
+            "driver_node_type_id" : {
+              "description" : "The node type of the Spark driver. This field is optional; if unset, the driver node type is set as the same value as `node_type_id` defined above.",
+              "type" : "string"
+            },
+            "instance_pool_id" : {
+              "description" : "The optional ID of the instance pool to use for cluster nodes. If `driver_instance_pool_id` is present, `instance_pool_id` is used for worker nodes only. Otherwise, it is used for both the driver node and worker nodes. Refer to [Instance Pools API](..dev-tools/api/latest/instance-poolshtml) for details.",
+              "type" : "string"
+            },
+            "spark_env_vars" : {
+              "description" : "An object containing a set of optional, user-specified environment variable key-value pairs. Key-value pair of the form (X,Y) are exported as is (for example, `export X='Y'`) while launching the driver and workers.\n\nTo specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the following example. This ensures that all default databricks managed environmental variables are included as well.\n\nExample Spark environment variables: `{\"SPARK_WORKER_MEMORY\": \"28000m\", \"SPARK_LOCAL_DIRS\": \"/local_disk0\"}` or `{\"SPARK_DAEMON_JAVA_OPTS\": \"$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true\"}`",
+              "$ref" : "#/components/schemas/SparkEnvPair"
+            },
+            "cluster_log_conf" : {
+              "description" : "The configuration for delivering Spark logs to a long-term storage destination. Only one destination can be specified for one cluster. If the conf is given, the logs are delivered to the destination every `5 mins`. The destination of driver logs is `<destination>/<cluster-id>/driver`, while the destination of executor logs is `<destination>/<cluster-id>/executor`.",
+              "$ref" : "#/components/schemas/ClusterLogConf"
+            },
+            "enable_elastic_disk" : {
+              "type" : "boolean"
+            }
+          },
+          "type" : "object"
+        },
+        "TaskDescription" : {
+          "example" : "This is the description for this task.",
+          "description" : "An optional description for this task.\nThe maximum length is 4096 bytes.",
+          "type" : "string"
+        },
+        "RunState" : {
+          "properties" : {
+            "life_cycle_state" : {
+              "description" : "A description of a run?s current location in the run lifecycle. This field is always available in the response.",
+              "$ref" : "#/components/schemas/RunLifeCycleState"
+            },
+            "result_state" : {
+              "$ref" : "#/components/schemas/RunResultState"
+            },
+            "state_message" : {
+              "example" : "",
+              "description" : "A descriptive message for the current state. This field is unstructured, and its exact format is subject to change.",
+              "type" : "string"
+            },
+            "user_cancelled_or_timedout" : {
+              "example" : false,
+              "description" : "Whether a run was canceled manually by a user or by the scheduler because the run timed out.",
+              "type" : "boolean"
+            }
+          },
+          "description" : "The result and lifecycle state of the run.",
+          "type" : "object"
+        },
+        "PipelineParams" : {
+          "properties" : {
+            "full_refresh" : {
+              "description" : "If true, triggers a full refresh on the delta live table.",
+              "type" : "boolean"
+            }
+          },
+          "type" : "object"
+        },
+        "ClusterState" : {
+          "description" : "* PENDING: Indicates that a cluster is in the process of being created.\n* RUNNING: Indicates that a cluster has been started and is ready for use.\n* RESTARTING: Indicates that a cluster is in the process of restarting.\n* RESIZING: Indicates that a cluster is in the process of adding or removing nodes.\n* TERMINATING: Indicates that a cluster is in the process of being destroyed.\n* TERMINATED: Indicates that a cluster has been successfully destroyed.\n* ERROR: This state is no longer used. It was used to indicate a cluster that failed to be created. `TERMINATING` and `TERMINATED` are used instead.\n* UNKNOWN: Indicates that a cluster is in an unknown state. A cluster should never be in this state.\n",
+          "type" : "string"
+        },
+        "SqlDashboardOutput" : {
+          "properties" : {
+            "widgets" : {
+              "description" : "Widgets executed in the run. Only SQL query based widgets are listed.",
+              "$ref" : "#/components/schemas/SqlDashboardWidgetOutput"
+            }
+          },
+          "type" : "object"
+        },
+        "TaskKey" : {
+          "example" : "Task_Key",
+          "description" : "A unique name for the task. This field is used to refer to this task from other tasks.\nThis field is required and must be unique within its parent job.\nOn Update or Reset, this field is used to reference the tasks to be updated or reset.\nThe maximum length is 100 characters.",
+          "type" : "string"
+        },
+        "AccessControlRequest" : {
+          "properties" : {
+            "permission_level" : {
+              "$ref" : "#/components/schemas/PermissionLevel"
+            },
+            "user_name" : {
+              "example" : "jsmith@example.com",
+              "description" : "Email address for the user.",
+              "type" : "string"
+            },
+            "group_name" : {
+              "example" : "users",
+              "description" : "Group name. There are two built-in groups: `users` for all users, and `admins` for administrators.",
+              "type" : "string"
+            },
+            "service_principal_name" : {
+              "example" : "9f0621ee-b52b-11ea-b3de-0242ac130004",
+              "description" : "Name of an Azure service principal.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "GitSnapshot" : {
+          "properties" : {
+            "used_commit" : {
+              "example" : "4506fdf41e9fa98090570a34df7a5bce163ff15f",
+              "description" : "Commit that was used to execute the run. If git_branch was specified, this points to the HEAD of the branch at the time of the run; if git_tag was specified, this points to the commit the tag points to.",
+              "type" : "string"
+            }
+          },
+          "description" : "Read-only state of the remote repository at the time the job was run. This field is only included on job runs.",
+          "type" : "object"
+        },
+        "RunSubmitSettings" : {
+          "properties" : {
+            "idempotency_token" : {
+              "example" : "8f018174-4792-40d5-bcbc-3e6a527352c8",
+              "description" : "An optional token that can be used to guarantee the idempotency of job run requests. If a run with the provided token already exists, the request does not create a new run but returns the ID of the existing run instead. If a run with the provided token is deleted, an error is returned.\n\nIf you specify the idempotency token, upon failure you can retry until the request succeeds. Databricks guarantees that exactly one run is launched with that idempotency token.\n\nThis token must have at most 64 characters.\n\nFor more information, see [How to ensure idempotency for jobs](https://kb.databricks.com/jobs/jobs-idempotency.html).",
+              "type" : "string"
+            },
+            "timeout_seconds" : {
+              "example" : 86400,
+              "format" : "int32",
+              "description" : "An optional timeout applied to each run of this job. The default behavior is to have no timeout.",
+              "type" : "integer"
+            },
+            "tasks" : {
+              "example" : [ {
+                "task_key" : "Sessionize",
+                "description" : "Extracts session data from events",
+                "depends_on" : [ ],
+                "timeout_seconds" : 86400,
+                "spark_jar_task" : {
+                  "main_class_name" : "com.databricks.Sessionize",
+                  "parameters" : [ "--data", "dbfs:/path/to/data.json" ]
+                },
+                "libraries" : [ {
+                  "jar" : "dbfs:/mnt/databricks/Sessionize.jar"
+                } ],
+                "existing_cluster_id" : "0923-164208-meows279"
+              }, {
+                "task_key" : "Orders_Ingest",
+                "description" : "Ingests order data",
+                "depends_on" : [ ],
+                "timeout_seconds" : 86400,
+                "spark_jar_task" : {
+                  "main_class_name" : "com.databricks.OrdersIngest",
+                  "parameters" : [ "--data", "dbfs:/path/to/order-data.json" ]
+                },
+                "libraries" : [ {
+                  "jar" : "dbfs:/mnt/databricks/OrderIngest.jar"
+                } ],
+                "existing_cluster_id" : "0923-164208-meows279"
+              }, {
+                "task_key" : "Match",
+                "description" : "Matches orders with user sessions",
+                "notebook_task" : {
+                  "base_parameters" : {
+                    "age" : "35",
+                    "name" : "John Doe"
+                  },
+                  "notebook_path" : "/Users/user.name@databricks.com/Match"
+                },
+                "depends_on" : [ {
+                  "task_key" : "Orders_Ingest"
+                }, {
+                  "task_key" : "Sessionize"
+                } ],
+                "new_cluster" : {
+                  "autoscale" : {
+                    "max_workers" : 16,
+                    "min_workers" : 2
+                  },
+                  "node_type_id" : null,
+                  "spark_conf" : {
+                    "spark.speculation" : true
+                  },
+                  "spark_version" : "7.3.x-scala2.12"
+                },
+                "timeout_seconds" : 86400
+              } ],
+              "type" : "array",
+              "items" : {
+                "type" : "RunSubmitTaskSettings",
+                "$ref" : "#/components/schemas/RunSubmitTaskSettings"
+              }
+            },
+            "run_name" : {
+              "example" : "A multitask job run",
+              "description" : "An optional name for the run. The default value is `Untitled`.",
+              "type" : "string"
+            },
+            "git_source" : {
+              "description" : "An optional specification for a remote repository containing the notebooks used by this job's notebook tasks.",
+              "$ref" : "#/components/schemas/GitSource"
+            }
+          },
+          "type" : "object"
+        },
+        "SqlTaskQuery" : {
+          "required" : [ "query_id" ],
+          "properties" : {
+            "query_id" : {
+              "description" : "The canonical identifier of the SQL query.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "SqlTaskDashboard" : {
+          "required" : [ "dashboard_id" ],
+          "properties" : {
+            "dashboard_id" : {
+              "description" : "The canonical identifier of the SQL dashboard.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "DbfsStorageInfo" : {
+          "properties" : {
+            "destination" : {
+              "description" : "DBFS destination. Example: `dbfs:/my/path`",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "PythonPyPiLibrary" : {
+          "required" : [ "package" ],
+          "properties" : {
+            "package" : {
+              "example" : "simplejson==3.8.0",
+              "description" : "The name of the PyPI package to install. An optional exact version specification is also supported. Examples: `simplejson` and `simplejson==3.8.0`. This field is required.",
+              "type" : "string"
+            },
+            "repo" : {
+              "example" : "https://my-repo.com",
+              "description" : "The repository where the package can be found. If not specified, the default pip index is used.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "JobCluster" : {
+          "required" : [ "job_cluster_key" ],
+          "properties" : {
+            "job_cluster_key" : {
+              "example" : "auto_scaling_cluster",
+              "description" : "A unique name for the job cluster. This field is required and must be unique within the job.\n`JobTaskSettings` may refer to this field to determine which cluster to launch for the task execution.",
+              "type" : "string"
+            },
+            "new_cluster" : {
+              "$ref" : "#/components/schemas/NewCluster"
+            }
+          },
+          "type" : "object"
+        },
+        "ViewItem" : {
+          "properties" : {
+            "content" : {
+              "description" : "Content of the view.",
+              "type" : "string"
+            },
+            "name" : {
+              "description" : "Name of the view item. In the case of code view, it would be the notebook?s name. In the case of dashboard view, it would be the dashboard?s name.",
+              "type" : "string"
+            },
+            "type" : {
+              "description" : "Type of the view item.",
+              "$ref" : "#/components/schemas/ViewType"
+            }
+          },
+          "type" : "object"
+        },
+        "RepairHistoryItem" : {
+          "properties" : {
+            "task_run_ids" : {
+              "example" : [ 1106460542112844, 988297789683452 ],
+              "description" : "The run IDs of the task runs that ran as part of this repair history item.",
+              "type" : "array",
+              "items" : {
+                "format" : "int64",
+                "type" : "integer"
+              }
+            },
+            "start_time" : {
+              "example" : 1625060460483,
+              "format" : "int64",
+              "description" : "The start time of the (repaired) run.",
+              "type" : "integer"
+            },
+            "state" : {
+              "$ref" : "#/components/schemas/RunState"
+            },
+            "end_time" : {
+              "example" : 1625060863413,
+              "format" : "int64",
+              "description" : "The end time of the (repaired) run.",
+              "type" : "integer"
+            },
+            "id" : {
+              "example" : 734650698524280,
+              "format" : "int64",
+              "description" : "The ID of the repair. Only returned for the items that represent a repair in `repair_history`.",
+              "type" : "integer"
+            },
+            "type" : {
+              "description" : "The repair history item type. Indicates whether a run is the original run or a repair run.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "CronSchedule" : {
+          "required" : [ "quartz_cron_expression", "timezone_id" ],
+          "properties" : {
+            "pause_status" : {
+              "example" : "PAUSED",
+              "description" : "Indicate whether this schedule is paused or not.",
+              "type" : "string"
+            },
+            "quartz_cron_expression" : {
+              "example" : "20 30 * * * ?",
+              "description" : "A Cron expression using Quartz syntax that describes the schedule for a job. See [Cron Trigger](http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html) for details. This field is required.",
+              "type" : "string"
+            },
+            "timezone_id" : {
+              "example" : "Europe/London",
+              "description" : "A Java timezone ID. The schedule for a job is resolved with respect to this timezone. See [Java TimeZone](https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html) for details. This field is required.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "SparkSubmitTask" : {
+          "properties" : {
+            "parameters" : {
+              "example" : [ "--class", "org.apache.spark.examples.SparkPi", "dbfs:/path/to/examples.jar", "10" ],
+              "description" : "Command-line parameters passed to spark submit.\n\nUse [Task parameter variables](..jobshtml#parameter-variables) to set parameters containing information about job runs.",
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "type" : "object"
+        },
+        "ClusterInstance" : {
+          "properties" : {
+            "cluster_id" : {
+              "example" : "0923-164208-meows279",
+              "description" : "The canonical identifier for the cluster used by a run. This field is always available for runs on existing clusters. For runs on new clusters, it becomes available once the cluster is created. This value can be used to view logs by browsing to `/#setting/sparkui/$cluster_id/driver-logs`. The logs continue to be available after the run completes.\n\nThe response won?t include this field if the identifier is not available yet.",
+              "type" : "string"
+            },
+            "spark_context_id" : {
+              "description" : "The canonical identifier for the Spark context used by a run. This field is filled in once the run begins execution. This value can be used to view the Spark UI by browsing to `/#setting/sparkui/$cluster_id/$spark_context_id`. The Spark UI continues to be available after the run has completed.\n\nThe response won?t include this field if the identifier is not available yet.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "PipelineTask" : {
+          "properties" : {
+            "full_refresh" : {
+              "default" : false,
+              "description" : "If true, a full refresh will be triggered on the delta live table.",
+              "type" : "boolean"
+            },
+            "pipeline_id" : {
+              "example" : "a12cd3e4-0ab1-1abc-1a2b-1a2bcd3e4fg5",
+              "description" : "The full name of the pipeline task to execute.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "SqlTaskAlert" : {
+          "required" : [ "alert_id" ],
+          "properties" : {
+            "alert_id" : {
+              "description" : "The canonical identifier of the SQL alert.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "SqlTask" : {
+          "required" : [ "warehouse_id" ],
+          "properties" : {
+            "alert" : {
+              "description" : "If alert, indicates that this job must execute a SQL alert.",
+              "$ref" : "#/components/schemas/SqlTaskAlert"
+            },
+            "dashboard" : {
+              "description" : "If dashboard, indicates that this job must execute a SQL dashboard.",
+              "$ref" : "#/components/schemas/SqlTaskDashboard"
+            },
+            "query" : {
+              "description" : "If query, indicates that this job must execute a SQL query.",
+              "$ref" : "#/components/schemas/SqlTaskQuery"
+            },
+            "parameters" : {
+              "example" : {
+                "age" : 35,
+                "name" : "John Doe"
+              },
+              "description" : "Parameters to be used for each run of this job. The SQL alert task does not support custom parameters.",
+              "type" : "object"
+            },
+            "warehouse_id" : {
+              "description" : "The canonical identifier of the SQL warehouse. Only serverless warehouse is supported.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "AccessControlRequestForUser" : {
+          "properties" : {
+            "permission_level" : {
+              "$ref" : "#/components/schemas/PermissionLevel"
+            },
+            "user_name" : {
+              "example" : "jsmith@example.com",
+              "description" : "Email address for the user.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "InitScriptInfo" : {
+          "properties" : {
+            "dbfs" : {
+              "description" : "DBFS location of init script. Destination must be provided. For example, `{ \"dbfs\" : { \"destination\" : \"dbfs:/home/init_script\" } }`",
+              "$ref" : "#/components/schemas/DbfsStorageInfo"
+            },
+            "file" : {
+              "description" : "File location of init script. Destination must be provided. For example, `{ \"file\" : { \"destination\" : \"file:/my/local/file.sh\" } }`",
+              "$ref" : "#/components/schemas/FileStorageInfo"
+            }
+          },
+          "type" : "object"
+        },
+        "SqlDashboardWidgetOutput" : {
+          "properties" : {
+            "start_time" : {
+              "format" : "int64",
+              "description" : "Time (in epoch milliseconds) when execution of the SQL widget starts.",
+              "type" : "integer"
+            },
+            "widget_id" : {
+              "description" : "The canonical identifier of the SQL widget.",
+              "type" : "string"
+            },
+            "widget_title" : {
+              "description" : "The title of the SQL widget.",
+              "type" : "string"
+            },
+            "output_link" : {
+              "description" : "The link to find the output results.",
+              "type" : "string"
+            },
+            "end_time" : {
+              "format" : "int64",
+              "description" : "Time (in epoch milliseconds) when execution of the SQL widget ends.",
+              "type" : "integer"
+            },
+            "error" : {
+              "description" : "The information about the error when execution fails.",
+              "$ref" : "#/components/schemas/SqlOutputError"
+            },
+            "status" : {
+              "description" : "The execution status of the SQL widget.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "JobTask" : {
+          "properties" : {
+            "spark_python_task" : {
+              "description" : "If spark_python_task, indicates that this job must run a Python file.",
+              "$ref" : "#/components/schemas/SparkPythonTask"
+            },
+            "pipeline_task" : {
+              "description" : "If pipeline_task, indicates that this job must execute a Pipeline.",
+              "$ref" : "#/components/schemas/PipelineTask"
+            },
+            "notebook_task" : {
+              "description" : "If notebook_task, indicates that this job must run a notebook. This field may not be specified in conjunction with spark_jar_task.",
+              "$ref" : "#/components/schemas/NotebookTask"
+            },
+            "python_wheel_task" : {
+              "description" : "If python_wheel_task, indicates that this job must execute a PythonWheel.",
+              "$ref" : "#/components/schemas/PythonWheelTask"
+            },
+            "spark_jar_task" : {
+              "example" : "",
+              "description" : "If spark_jar_task, indicates that this job must run a JAR.",
+              "$ref" : "#/components/schemas/SparkJarTask"
+            },
+            "spark_submit_task" : {
+              "description" : "If spark_submit_task, indicates that this job must be launched by the spark submit script.",
+              "$ref" : "#/components/schemas/SparkSubmitTask"
+            }
+          },
+          "type" : "object"
+        },
+        "JobSettings" : {
+          "properties" : {
+            "format" : {
+              "example" : "MULTI_TASK",
+              "description" : "Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When using the Jobs API 2.1 this value is always set to `\"MULTI_TASK\"`.",
+              "type" : "string"
+            },
+            "name" : {
+              "default" : "Untitled",
+              "example" : "A multitask job",
+              "description" : "An optional name for the job.",
+              "type" : "string"
+            },
+            "job_clusters" : {
+              "example" : [ {
+                "job_cluster_key" : "auto_scaling_cluster",
+                "new_cluster" : {
+                  "autoscale" : {
+                    "max_workers" : 16,
+                    "min_workers" : 2
+                  },
+                  "node_type_id" : null,
+                  "spark_conf" : {
+                    "spark.speculation" : true
+                  },
+                  "spark_version" : "7.3.x-scala2.12"
+                }
+              } ],
+              "description" : "A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.",
+              "type" : "array",
+              "items" : {
+                "type" : "JobCluster",
+                "$ref" : "#/components/schemas/JobCluster"
+              }
+            },
+            "email_notifications" : {
+              "description" : "An optional set of email addresses that is notified when runs of this job begin or complete as well as when this job is deleted. The default behavior is to not send any emails.",
+              "$ref" : "#/components/schemas/JobEmailNotifications"
+            },
+            "tags" : {
+              "default" : "{}",
+              "example" : {
+                "cost-center" : "engineering",
+                "team" : "jobs"
+              },
+              "description" : "A map of tags associated with the job. These are forwarded to the cluster as cluster tags for jobs clusters, and are subject to the same limitations as cluster tags. A maximum of 25 tags can be added to the job.",
+              "type" : "object"
+            },
+            "timeout_seconds" : {
+              "example" : 86400,
+              "format" : "int32",
+              "description" : "An optional timeout applied to each run of this job. The default behavior is to have no timeout.",
+              "type" : "integer"
+            },
+            "tasks" : {
+              "example" : [ {
+                "max_retries" : 3,
+                "task_key" : "Sessionize",
+                "description" : "Extracts session data from events",
+                "min_retry_interval_millis" : 2000,
+                "depends_on" : [ ],
+                "timeout_seconds" : 86400,
+                "spark_jar_task" : {
+                  "main_class_name" : "com.databricks.Sessionize",
+                  "parameters" : [ "--data", "dbfs:/path/to/data.json" ]
+                },
+                "libraries" : [ {
+                  "jar" : "dbfs:/mnt/databricks/Sessionize.jar"
+                } ],
+                "retry_on_timeout" : false,
+                "existing_cluster_id" : "0923-164208-meows279"
+              }, {
+                "max_retries" : 3,
+                "task_key" : "Orders_Ingest",
+                "description" : "Ingests order data",
+                "job_cluster_key" : "auto_scaling_cluster",
+                "min_retry_interval_millis" : 2000,
+                "depends_on" : [ ],
+                "timeout_seconds" : 86400,
+                "spark_jar_task" : {
+                  "main_class_name" : "com.databricks.OrdersIngest",
+                  "parameters" : [ "--data", "dbfs:/path/to/order-data.json" ]
+                },
+                "libraries" : [ {
+                  "jar" : "dbfs:/mnt/databricks/OrderIngest.jar"
+                } ],
+                "retry_on_timeout" : false
+              }, {
+                "max_retries" : 3,
+                "task_key" : "Match",
+                "description" : "Matches orders with user sessions",
+                "notebook_task" : {
+                  "base_parameters" : {
+                    "age" : "35",
+                    "name" : "John Doe"
+                  },
+                  "notebook_path" : "/Users/user.name@databricks.com/Match"
+                },
+                "min_retry_interval_millis" : 2000,
+                "depends_on" : [ {
+                  "task_key" : "Orders_Ingest"
+                }, {
+                  "task_key" : "Sessionize"
+                } ],
+                "new_cluster" : {
+                  "autoscale" : {
+                    "max_workers" : 16,
+                    "min_workers" : 2
+                  },
+                  "node_type_id" : null,
+                  "spark_conf" : {
+                    "spark.speculation" : true
+                  },
+                  "spark_version" : "7.3.x-scala2.12"
+                },
+                "timeout_seconds" : 86400,
+                "retry_on_timeout" : false
+              } ],
+              "description" : "A list of task specifications to be executed by this job.",
+              "type" : "array",
+              "items" : {
+                "type" : "JobTaskSettings",
+                "$ref" : "#/components/schemas/JobTaskSettings"
+              }
+            },
+            "max_concurrent_runs" : {
+              "example" : 10,
+              "format" : "int32",
+              "description" : "An optional maximum allowed number of concurrent runs of the job.\n\nSet this value if you want to be able to execute multiple runs of the same job concurrently. This is useful for example if you trigger your job on a frequent schedule and want to allow consecutive runs to overlap with each other, or if you want to trigger multiple runs which differ by their input parameters.\n\nThis setting affects only new runs. For example, suppose the job?s concurrency is 4 and there are 4 concurrent active runs. Then setting the concurrency to 3 won?t kill any of the active runs. However, from then on, new runs are skipped unless there are fewer than 3 active runs.\n\nThis value cannot exceed 1000\\. Setting this value to 0 causes all new runs to be skipped. The default behavior is to allow only 1 concurrent run.",
+              "type" : "integer"
+            },
+            "schedule" : {
+              "description" : "An optional periodic schedule for this job. The default behavior is that the job only runs when triggered by clicking ?Run Now? in the Jobs UI or sending an API request to `runNow`.",
+              "$ref" : "#/components/schemas/CronSchedule"
+            },
+            "git_source" : {
+              "description" : "An optional specification for a remote repository containing the notebooks used by this job's notebook tasks.",
+              "$ref" : "#/components/schemas/GitSource"
+            }
+          },
+          "type" : "object"
+        },
+        "NotebookOutput" : {
+          "properties" : {
+            "result" : {
+              "example" : "An arbitrary string passed by calling dbutils.notebook.exit(...)",
+              "description" : "The value passed to [dbutils.notebook.exit()](..notebooks/notebook-workflowshtml#notebook-workflows-exit). jobs restricts this API to return the first 5 MB of the value. For a larger result, your job can store the results in a cloud storage service. This field is absent if `dbutils.notebook.exit()` was never called.",
+              "type" : "string"
+            },
+            "truncated" : {
+              "example" : false,
+              "description" : "Whether or not the result was truncated.",
+              "type" : "boolean"
+            }
+          },
+          "type" : "object"
+        },
+        "SparkJarTask" : {
+          "properties" : {
+            "jar_uri" : {
+              "description" : "Deprecated since 04/2016\\. Provide a `jar` through the `libraries` field instead. For an example, see [Create](..dev-tools/api/latest/jobshtml#operation/JobsCreate).",
+              "type" : "string"
+            },
+            "main_class_name" : {
+              "example" : "com.databricks.ComputeModels",
+              "description" : "The full name of the class containing the main method to be executed. This class must be contained in a JAR provided as a library.\n\nThe code must use `SparkContext.getOrCreate` to obtain a Spark context; otherwise, runs of the job fail.",
+              "type" : "string"
+            },
+            "parameters" : {
+              "example" : [ "--data", "dbfs:/path/to/data.json" ],
+              "description" : "Parameters passed to the main method.\n\nUse [Task parameter variables](..jobshtml#parameter-variables) to set parameters containing information about job runs.",
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "type" : "object"
+        },
+        "JobTaskSettings" : {
+          "required" : [ "task_key" ],
+          "properties" : {
+            "spark_python_task" : {
+              "description" : "If spark_python_task, indicates that this task must run a Python file.",
+              "$ref" : "#/components/schemas/SparkPythonTask"
+            },
+            "pipeline_task" : {
+              "description" : "If pipeline_task, indicates that this task must execute a Pipeline.",
+              "$ref" : "#/components/schemas/PipelineTask"
+            },
+            "max_retries" : {
+              "example" : 10,
+              "format" : "int32",
+              "description" : "An optional maximum number of times to retry an unsuccessful run. A run is considered to be unsuccessful if it completes with the `FAILED` result_state or `INTERNAL_ERROR` `life_cycle_state`. The value -1 means to retry indefinitely and the value 0 means to never retry. The default behavior is to never retry.",
+              "type" : "integer"
+            },
+            "task_key" : {
+              "example" : "Task_Key",
+              "description" : "A unique name for the task. This field is used to refer to this task from other tasks.\nThis field is required and must be unique within its parent job.\nOn Update or Reset, this field is used to reference the tasks to be updated or reset.\nThe maximum length is 100 characters.",
+              "type" : "string",
+              "minLength" : 1,
+              "pattern" : "^[\\w\\-]+$",
+              "maxLength" : 100
+            },
+            "email_notifications" : {
+              "description" : "An optional set of email addresses that is notified when runs of this task begin or complete as well as when this task is deleted. The default behavior is to not send any emails.",
+              "$ref" : "#/components/schemas/JobEmailNotifications"
+            },
+            "description" : {
+              "example" : "This is the description for this task.",
+              "description" : "An optional description for this task.\nThe maximum length is 4096 bytes.",
+              "type" : "string",
+              "maxLength" : 4096
+            },
+            "job_cluster_key" : {
+              "description" : "If job_cluster_key, this task is executed reusing the cluster specified in `job.settings.job_clusters`.",
+              "type" : "string"
+            },
+            "notebook_task" : {
+              "description" : "If notebook_task, indicates that this task must run a notebook. This field may not be specified in conjunction with spark_jar_task.",
+              "$ref" : "#/components/schemas/NotebookTask"
+            },
+            "python_wheel_task" : {
+              "description" : "If python_wheel_task, indicates that this job must execute a PythonWheel.",
+              "$ref" : "#/components/schemas/PythonWheelTask"
+            },
+            "min_retry_interval_millis" : {
+              "example" : 2000,
+              "format" : "int32",
+              "description" : "An optional minimal interval in milliseconds between the start of the failed run and the subsequent retry run. The default behavior is that unsuccessful runs are immediately retried.",
+              "type" : "integer"
+            },
+            "depends_on" : {
+              "$ref" : "#/components/schemas/TaskDependencies"
+            },
+            "new_cluster" : {
+              "description" : "If new_cluster, a description of a cluster that is created for each run.",
+              "$ref" : "#/components/schemas/NewCluster"
+            },
+            "timeout_seconds" : {
+              "example" : 86400,
+              "format" : "int32",
+              "description" : "An optional timeout applied to each run of this job task. The default behavior is to have no timeout.",
+              "type" : "integer"
+            },
+            "spark_jar_task" : {
+              "description" : "If spark_jar_task, indicates that this task must run a JAR.",
+              "$ref" : "#/components/schemas/SparkJarTask"
+            },
+            "libraries" : {
+              "description" : "An optional list of libraries to be installed on the cluster that executes the task. The default value is an empty list.",
+              "type" : "array",
+              "items" : {
+                "type" : "Library",
+                "$ref" : "#/components/schemas/Library"
+              }
+            },
+            "spark_submit_task" : {
+              "description" : "If spark_submit_task, indicates that this task must be launched by the spark submit script.",
+              "$ref" : "#/components/schemas/SparkSubmitTask"
+            },
+            "retry_on_timeout" : {
+              "example" : true,
+              "description" : "An optional policy to specify whether to retry a task when it times out. The default behavior is to not retry on timeout.",
+              "type" : "boolean"
+            },
+            "existing_cluster_id" : {
+              "example" : "0923-164208-meows279",
+              "description" : "If existing_cluster_id, the ID of an existing cluster that is used for all runs of this task. When running tasks on an existing cluster, you may need to manually restart the cluster if it stops responding. We suggest running jobs on new clusters for greater reliability.",
+              "type" : "string"
+            }
+          },
+          "type" : "object"
+        },
+        "ClusterCloudProviderNodeStatus" : {
+          "description" : "* NotEnabledOnSubscription: Node type not available for subscription.\n* NotAvailableInRegion: Node type not available in region.\n",
+          "type" : "string"
+        },
+        "RunType" : {
+          "example" : "JOB_RUN",
+          "description" : "The type of the run.\n* `JOB_RUN` \\- Normal job run. A run created with [Run now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).  \n* `WORKFLOW_RUN` \\- Workflow run. A run created with [dbutils.notebook.run](..dev-tools/databricks-utilshtml#dbutils-workflow).\n* `SUBMIT_RUN` \\- Submit run. A run created with [Run now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).",
+          "type" : "string"
+        },
+        "RepairRunInput" : {
+          "properties" : {
+            "latest_repair_id" : {
+              "example" : 734650698524280,
+              "format" : "int64",
+              "description" : "The ID of the latest repair. This parameter is not required when repairing a run for the first time, but must be provided on subsequent requests to repair the same run.",
+              "type" : "integer"
+            },
+            "rerun_tasks" : {
+              "example" : [ "task0", "task1" ],
+              "description" : "The task keys of the task runs to repair.",
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "run_id" : {
+              "example" : 455644833,
+              "format" : "int64",
+              "description" : "The job run ID of the run to repair. The run must not be in progress.",
+              "x-databricks-id" : true,
+              "type" : "integer"
+            }
+          },
+          "type" : "object"
+        },
+        "ClusterEventType" : {
+          "description" : "* `CREATING`: Indicates that the cluster is being created.\n* `DID_NOT_EXPAND_DISK`: Indicates that a disk is low on space, but adding disks would put it over the max capacity.\n* `EXPANDED_DISK`: Indicates that a disk was low on space and the disks were expanded.\n* `FAILED_TO_EXPAND_DISK`: Indicates that a disk was low on space and disk space could not be expanded.\n* `INIT_SCRIPTS_STARTING`: Indicates that the cluster scoped init script has started.\n* `INIT_SCRIPTS_FINISHED`: Indicates that the cluster scoped init script has finished.\n* `STARTING`: Indicates that the cluster is being started.\n* `RESTARTING`: Indicates that the cluster is being started.\n* `TERMINATING`: Indicates that the cluster is being terminated.\n* `EDITED`: Indicates that the cluster has been edited.\n* `RUNNING`: Indicates the cluster has finished being created. Includes the number of nodes in the cluster and a failure reason if some nodes could not be acquired.\n* `RESIZING`: Indicates a change in the target size of the cluster (upsize or downsize).\n* `UPSIZE_COMPLETED`: Indicates that nodes finished being added to the cluster. Includes the number of nodes in the cluster and a failure reason if some nodes could not be acquired.\n* `NODES_LOST`: Indicates that some nodes were lost from the cluster.\n* `DRIVER_HEALTHY`: Indicates that the driver is healthy and the cluster is ready for use.\n* `DRIVER_UNAVAILABLE`: Indicates that the driver is unavailable.\n* `SPARK_EXCEPTION`: Indicates that a Spark exception was thrown from the driver.\n* `DRIVER_NOT_RESPONDING`: Indicates that the driver is up but is not responsive, likely due to GC.\n* `DBFS_DOWN`: Indicates that the driver is up but DBFS is down.\n* `METASTORE_DOWN`: Indicates that the driver is up but the metastore is down.\n* `NODE_BLACKLISTED`: Indicates that a node is not allowed by Spark.\n* `PINNED`: Indicates that the cluster was pinned.\n* `UNPINNED`: Indicates that the cluster was unpinned.",
+          "type" : "string"
+        },
+        "CanManageRun" : {
+          "description" : "Permission to run and/or manage runs for the job.",
+          "type" : "string"
+        }
+      }
+    },
+    "tags" : [ {
+      "name" : "Jobs",
+      "description" : "The Jobs API allows you to create, edit, and delete jobs.",
+      "x-databricks-terraform-resource" : "databricks_job",
+      "x-databricks-package" : "jobs",
+      "x-databricks-service" : "Jobs"
+    }]
+  }
