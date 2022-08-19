@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/databricks/sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/logger"
 )
 
 // CredentialsProvider responsible for configuring static or refreshable

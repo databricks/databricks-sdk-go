@@ -1,9 +1,9 @@
 package workspaces
 
 import (
-	"github.com/databricks/sdk-go/databricks"
-	"github.com/databricks/sdk-go/service/clusters"
-	"github.com/databricks/sdk-go/service/commands"
+	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/service/commands"
 )
 
 type WorkspacesClient struct {

@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/databricks/sdk-go/databricks/internal"
-	"github.com/databricks/sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/internal"
+	"github.com/databricks/databricks-sdk-go/databricks/logger"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/idtoken"
 	"google.golang.org/api/option"

@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/sdk-go/databricks"
-	"github.com/databricks/sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
 // New creates ClustersAPI instance from provider meta

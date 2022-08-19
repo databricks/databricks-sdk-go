@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/sdk-go/databricks"
-	"github.com/databricks/sdk-go/databricks/client"
-	"github.com/databricks/sdk-go/databricks/logger"
-	"github.com/databricks/sdk-go/retries"
-	"github.com/databricks/sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/service/clusters"
 )
 
 func New(cfg *databricks.Config) *CommandsAPI {

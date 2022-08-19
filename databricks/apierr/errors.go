@@ -10,7 +10,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/databricks/sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/logger"
 )
 
 var (

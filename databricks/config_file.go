@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/databricks/sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/logger"
 	"github.com/mitchellh/go-homedir"
 	"gopkg.in/ini.v1"
 )

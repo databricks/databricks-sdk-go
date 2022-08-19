@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/databricks/sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/databricks"
 )
 
 func init() {

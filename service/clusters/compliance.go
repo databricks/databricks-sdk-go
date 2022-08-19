@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/databricks/sdk-go/databricks/apierr"
-	"github.com/databricks/sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/apierr"
+	"github.com/databricks/databricks-sdk-go/databricks/logger"
 )
 
 // make common/resource.go#ToResource read behavior consistent with "normal" resources

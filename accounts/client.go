@@ -1,9 +1,9 @@
 package accounts
 
 import (
-	"github.com/databricks/sdk-go/databricks"
-	"github.com/databricks/sdk-go/service/credentials"
-	"github.com/databricks/sdk-go/service/storageconfigurations"
+	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/service/credentials"
+	"github.com/databricks/databricks-sdk-go/service/storageconfigurations"
 )
 
 type AccountsClient struct {

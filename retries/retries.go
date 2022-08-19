@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/databricks/sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/logger"
 )
 
 type Err struct {

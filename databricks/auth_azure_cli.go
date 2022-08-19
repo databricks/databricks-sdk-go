@@ -11,8 +11,8 @@ import (
 
 	"golang.org/x/oauth2"
 
-	"github.com/databricks/sdk-go/databricks/internal"
-	"github.com/databricks/sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/internal"
+	"github.com/databricks/databricks-sdk-go/databricks/logger"
 )
 
 // List of management information

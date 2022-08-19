@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/databricks/sdk-go/databricks"
-	"github.com/databricks/sdk-go/service/clusters"
-	"github.com/databricks/sdk-go/workspaces"
+	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

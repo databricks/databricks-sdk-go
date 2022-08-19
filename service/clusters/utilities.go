@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/databricks/sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/logger"
 )
 
 // getOrCreateClusterMutex guards "mounting" cluster creation to prevent multiple

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/databricks/sdk-go/databricks/internal"
+	"github.com/databricks/databricks-sdk-go/databricks/internal"
 	"github.com/stretchr/testify/assert"
 )
 

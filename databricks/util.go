@@ -1,8 +1,8 @@
 package databricks
 
 import (
-	"github.com/databricks/sdk-go/databricks/internal"
-	"github.com/databricks/sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/databricks/internal"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 // Version of this SDK

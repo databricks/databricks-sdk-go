@@ -6,11 +6,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/databricks/sdk-go/databricks"
-	"github.com/databricks/sdk-go/databricks/apierr"
-	"github.com/databricks/sdk-go/databricks/client"
-	"github.com/databricks/sdk-go/databricks/logger"
-	"github.com/databricks/sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/databricks/apierr"
+	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 // ClustersAPI is a struct that contains the Databricks api client to perform queries
