@@ -6,12 +6,15 @@ require (
 	github.com/google/go-querystring v1.1.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/stretchr/testify v1.7.2
-	golang.org/x/mod v0.5.1
+	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e
+	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3
 	golang.org/x/oauth2 v0.0.0-20220628200809-02e64fa58f26
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
 	google.golang.org/api v0.82.0
 	gopkg.in/ini.v1 v1.66.6
+)
 
+require (
 	cloud.google.com/go/compute v1.6.1 // indirect
 	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
