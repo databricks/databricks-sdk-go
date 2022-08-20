@@ -1,6 +1,7 @@
 package code
 
 import (
+	"regexp"
 	"strings"
 
 	"golang.org/x/exp/slices"
@@ -17,12 +18,39 @@ func (n *Named) PascalName() string {
 	return strings.ReplaceAll(
 		strings.Title(
 			strings.ReplaceAll(
-				n.Name, "_", " ")), " ", "")
+				strings.ReplaceAll(n.Name, "$", ""),
+				"_", " ")),
+		" ", "")
 }
 
 func (n *Named) CamelName() string {
 	cc := n.PascalName()
 	return strings.ToLower(cc[0:1]) + cc[1:]
+}
+
+func (n *Named) HasComment() bool {
+	return n.Description != ""
+}
+
+func (n *Named) Comment(prefix string, maxLen int) string {
+	if n.Description == "" {
+		return ""
+	}
+	var lines []string
+	currentLine := strings.Builder{}
+	for _, v := range whitespace.Split(n.Description, -1) {
+		if len(prefix)+currentLine.Len()+len(v)+1 > maxLen {
+			lines = append(lines, currentLine.String())
+			currentLine.Reset()
+		}
+		currentLine.WriteString(v)
+		currentLine.WriteRune(' ')
+	}
+	if currentLine.Len() > 0 {
+		lines = append(lines, currentLine.String())
+		currentLine.Reset()
+	}
+	return strings.TrimLeft(prefix, "\t ") + strings.Join(lines, "\n"+prefix)
 }
 
 // Package represents a service package, which contains entities and interfaces
@@ -66,6 +94,10 @@ type Field struct {
 	IsQuery  bool
 }
 
+func (f *Field) IsOptionalObject() bool {
+	return f.Entity != nil && !f.Required && f.Entity.IsObject()
+}
+
 type EnumEntry struct {
 	Named
 	Entity *Entity
@@ -99,7 +131,7 @@ func (e *Entity) Fields() (fields []Field) {
 	return fields
 }
 
-func (pkg *Package) schemaToEntity(s *openapi.Schema) *Entity {
+func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool) *Entity {
 	if s.IsRef() {
 		// if schema is src, load it to this package
 		src := pkg.Components.Schemas.Resolve(s)
@@ -113,57 +145,76 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema) *Entity {
 			Description: s.Description,
 		},
 	}
-	// enum
-	if len(s.Enum) != 0 && len(s.AliasEnum) == len(s.Enum) {
-		for idx, v := range s.Enum {
-			e.Enum = append(e.Enum, EnumEntry{
-				Named:   Named{s.AliasEnum[idx], s.EnumDescriptions[v]},
-				Entity:  e,
-				Content: v,
-			})
-		}
-		return e
+	// pull embedded types up, if they can be defined at package level
+	if s.IsDefinable() && !hasName {
+		// TODO: log message or panic when overrides a type
+		e.Named.Name = strings.Join(path, "")
+		pkg.define(e)
 	}
+	// enum
 	if len(s.Enum) != 0 {
-		for _, v := range s.Enum {
-			e.Enum = append(e.Enum, EnumEntry{
-				Named:   Named{v, s.EnumDescriptions[v]},
-				Entity:  e,
-				Content: v,
-			})
-		}
-		return e
+		return pkg.makeEnum(e, s, path)
 	}
 	// object
 	if len(s.Properties) != 0 {
-		e.fields = map[string]Field{}
-		required := map[string]bool{}
-		for _, v := range s.Required {
-			required[v] = true
-		}
-		for k, v := range s.Properties {
-			e.fields[k] = Field{
-				Named:    Named{k, v.Description},
-				Entity:   pkg.schemaToEntity(v),
-				Required: required[k],
-				IsJson:   true,
-			}
-		}
-		return e
+		return pkg.makeObject(e, s, path)
 	}
 	// array
 	if s.ArrayValue != nil {
-		e.ArrayValue = pkg.schemaToEntity(s.ArrayValue)
+		e.ArrayValue = pkg.schemaToEntity(s.ArrayValue, path, hasName)
 		return e
 	}
 	// map
 	if s.MapValue != nil {
-		e.MapValue = pkg.schemaToEntity(s.MapValue)
+		e.MapValue = pkg.schemaToEntity(s.MapValue, path, hasName)
+		return e
 	}
 	e.IsBool = s.Type == "boolean" || s.Type == "bool"
 	e.IsString = s.Type == "string"
 	e.IsInt64 = s.Type == "integer" && s.Format == "int64"
 	e.IsInt = s.Type == "integer" || s.Type == "int"
+	return e
+}
+
+func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Entity {
+	e.fields = map[string]Field{}
+	required := map[string]bool{}
+	for _, v := range s.Required {
+		required[v] = true
+	}
+	for k, v := range s.Properties {
+		named := Named{k, v.Description}
+		e.fields[k] = Field{
+			Named:    named,
+			Entity:   pkg.schemaToEntity(v, append(path, named.PascalName()), false),
+			Required: required[k],
+			IsJson:   true,
+		}
+	}
+	return e
+}
+
+var nonAlphanum = regexp.MustCompile(`[^a-zA-Z]`)
+var whitespace = regexp.MustCompile(`\s+`)
+
+func (pkg *Package) makeEnum(e *Entity, s *openapi.Schema, path []string) *Entity {
+	for idx, content := range s.Enum {
+		name := content
+		name = nonAlphanum.ReplaceAllString(name, " ")
+		var splits []string
+		for _, v := range whitespace.Split(name, -1) {
+			splits = append(splits, strings.Title(strings.ToLower(v)))
+		}
+		name = strings.Join(splits, "")
+		if len(s.AliasEnum) == len(s.Enum) {
+			name = s.AliasEnum[idx]
+		}
+		e.Enum = append(e.Enum, EnumEntry{
+			Named:   Named{name, s.EnumDescriptions[content]},
+			Entity:  e,
+			Content: content,
+		})
+	}
 	return e
 }
 
@@ -178,41 +229,49 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 		// entity is defined, return from cache
 		return pkg.types[s.Component()]
 	}
-	e := pkg.schemaToEntity(s)
-	e.Named = Named{name, s.Description}
-	pkg.types[name] = e
-	return pkg.types[name]
+	e := pkg.schemaToEntity(s, []string{name}, true)
+	if e.Name == "" {
+		e.Named = Named{name, s.Description}
+	}
+	pkg.define(e)
+	return pkg.types[e.Name]
 }
 
 func (pkg *Package) newRequest(params []openapi.Parameter, op *openapi.Operation) *Entity {
 	if op.RequestBody == nil && len(params) == 0 {
 		return nil
 	}
-	var hasParams bool
+	//var hasParams bool
 	request := &Entity{fields: map[string]Field{}}
+	schemaPath := []string{op.OperationId}
 	if op.RequestBody != nil {
-		request = pkg.schemaToEntity(op.RequestBody.Schema())
+		request = pkg.schemaToEntity(op.RequestBody.Schema(), schemaPath, true)
 	}
 	for _, v := range params {
 		param := *pkg.Components.Parameters.Resolve(&v)
 		if param == nil {
 			continue
 		}
+		named := Named{param.Name, param.Description}
 		request.fields[param.Name] = Field{
-			Named:    Named{param.Name, param.Description},
+			Named:    named,
 			Required: param.Required,
 			IsPath:   param.In == "path",
 			IsQuery:  param.In == "query",
-			Entity:   pkg.schemaToEntity(param.Schema),
+			Entity:   pkg.schemaToEntity(param.Schema, append(schemaPath, named.PascalName()), false),
 		}
-		hasParams = true
+		//hasParams = true
 	}
-	if !hasParams || request.Name == "" {
+	if request.Name == "" {
 		// when there was a merge of params with a request or new entity was made
 		request.Name = op.OperationId + "Request"
-		pkg.types[request.Name] = request
+		pkg.define(request)
 	}
 	return request
+}
+
+func (pkg *Package) define(entity *Entity) {
+	pkg.types[entity.Name] = entity
 }
 
 func (pkg *Package) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) Method {

@@ -10,6 +10,9 @@ func TestDebug(t *testing.T) {
 	batch, err := NewFromFile("/tmp/processed-scim.json")
 	assert.NoError(t, err)
 
+	types := batch.Packages[2].Types()
+	assert.Greater(t, len(types), 3)
+
 	assert.Len(t, batch.Packages, 3)
 }
 

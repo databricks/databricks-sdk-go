@@ -154,14 +154,36 @@ type Schema struct {
 	MapValue         *Schema            `json:"additionalProperties,omitempty"`
 }
 
-func (s Schema) IsEmpty() bool {
-	if s.MapValue != nil {
+func (s *Schema) IsEnum() bool {
+	return len(s.Enum) != 0
+}
+
+func (s *Schema) IsObject() bool {
+	return len(s.Properties) != 0
+}
+
+// IsDefinable states that type could be translated into a valid top-level type
+// in Go, Python, Java, Scala, and JavaScript
+func (s *Schema) IsDefinable() bool {
+	return s.IsObject() || s.IsEnum()
+}
+
+func (s *Schema) IsMap() bool {
+	return s.MapValue != nil
+}
+
+func (s *Schema) IsArray() bool {
+	return s.ArrayValue != nil
+}
+
+func (s *Schema) IsEmpty() bool {
+	if s.IsMap() {
 		return false
 	}
-	if s.ArrayValue != nil {
+	if s.IsArray() {
 		return false
 	}
-	if len(s.Properties) != 0 {
+	if s.IsObject() {
 		return false
 	}
 	if s.Type == "object" || s.Type == "" {

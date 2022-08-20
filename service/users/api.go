@@ -1,3 +1,5 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
 package users
 
 import (
@@ -13,61 +15,56 @@ func New(cfg *databricks.Config) UsersService {
 	}
 }
 
-// 
+
 type UsersService interface {
-	
-	// Delete one user
+	// Delete one user 
 	DeleteUser(ctx context.Context, deleteUserRequest DeleteUserRequest) error
-	
-	// Fetch information of one user
-	FetchUser(ctx context.Context, fetchUserRequest FetchUserRequest) (*FetchUserResponse, error)
-	
-	// Get multiple users associated with a &lt;Workspace&gt;.
+	// Fetch information of one user 
+	FetchUser(ctx context.Context, fetchUserRequest FetchUserRequest) (*User, error)
+	// Get multiple users associated with a &lt;Workspace&gt;. 
 	ListUsers(ctx context.Context, listUsersRequest ListUsersRequest) (*ListUsersResponse, error)
-	
-	// Create one user in the &lt;Workspace&gt;.
-	NewUser(ctx context.Context, newUserRequest NewUserRequest) (*User, error)
-	
-	// Update details of one user.
+	// Create one user in the &lt;Workspace&gt;. 
+	NewUser(ctx context.Context, createUserRequest CreateUserRequest) (*User, error)
+	// Update details of one user. 
 	UpdateUser(ctx context.Context, updateUserRequest UpdateUserRequest) error
-	
 }
 
 type UsersAPI struct {
 	client *client.DatabricksClient
 }
 
-// Delete one user
+// Delete one user 
 func (a *UsersAPI) DeleteUser(ctx context.Context, in DeleteUserRequest) error {
 	
 	err := a.client.Delete(ctx, "/scim/v2/Users/{user_id}", in)
 	return err
 }
 
-// Fetch information of one user
-func (a *UsersAPI) FetchUser(ctx context.Context, in FetchUserRequest) (*FetchUserResponse, error) {
-	var fetchUserResponse FetchUserResponse
-	err := a.client.Get(ctx, "/scim/v2/Users/{user_id}", in, &fetchUserResponse)
-	return &fetchUserResponse, err
+// Fetch information of one user 
+func (a *UsersAPI) FetchUser(ctx context.Context, in FetchUserRequest) (*User, error) {
+	var user User
+	err := a.client.Get(ctx, "/scim/v2/Users/{user_id}", in, &user)
+	return &user, err
 }
 
-// Get multiple users associated with a &lt;Workspace&gt;.
+// Get multiple users associated with a &lt;Workspace&gt;. 
 func (a *UsersAPI) ListUsers(ctx context.Context, in ListUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
 	err := a.client.Get(ctx, "/scim/v2/Users", in, &listUsersResponse)
 	return &listUsersResponse, err
 }
 
-// Create one user in the &lt;Workspace&gt;.
-func (a *UsersAPI) NewUser(ctx context.Context, in NewUserRequest) (*User, error) {
+// Create one user in the &lt;Workspace&gt;. 
+func (a *UsersAPI) NewUser(ctx context.Context, in CreateUserRequest) (*User, error) {
 	var user User
 	err := a.client.Post(ctx, "/scim/v2/Users", in, &user)
 	return &user, err
 }
 
-// Update details of one user.
+// Update details of one user. 
 func (a *UsersAPI) UpdateUser(ctx context.Context, in UpdateUserRequest) error {
 	
 	err := a.client.Patch(ctx, "/scim/v2/Users/{user_id}", in)
 	return err
 }
+
