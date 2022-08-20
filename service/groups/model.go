@@ -32,7 +32,7 @@ type DeleteGroupRequest struct {
 
 
 type FetchGroupRequest struct {
-    
+    // Unique ID for a group in the &lt;Workspace&gt;. 
     GroupId string `path:"group_id"`
 }
 

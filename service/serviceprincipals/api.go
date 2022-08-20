@@ -27,6 +27,8 @@ type ServiceprincipalsService interface {
     NewServicePrincipal(ctx context.Context, createServicePrincipalRequest CreateServicePrincipalRequest) (*ServicePrincipal, error)
     // Update details of one service principal. 
     UpdateServicePrincipal(ctx context.Context, updateDisplayNameRequest UpdateDisplayNameRequest) error
+	FetchServicePrincipalByServicePrincipalId(ctx context.Context, servicePrincipalId string) (*ServicePrincipal, error)
+	DeleteServicePrincipalByServicePrincipalId(ctx context.Context, servicePrincipalId string) error
 }
 
 type ServiceprincipalsAPI struct {
@@ -68,3 +70,15 @@ func (a *ServiceprincipalsAPI) UpdateServicePrincipal(ctx context.Context, in Up
 	return err
 }
 
+
+func (a *ServiceprincipalsAPI) FetchServicePrincipalByServicePrincipalId(ctx context.Context, servicePrincipalId string) (*ServicePrincipal, error) {
+	return a.FetchServicePrincipal(ctx, FetchServicePrincipalRequest{
+		ServicePrincipalId: servicePrincipalId,
+	})
+}
+
+func (a *ServiceprincipalsAPI) DeleteServicePrincipalByServicePrincipalId(ctx context.Context, servicePrincipalId string) error {
+	return a.DeleteServicePrincipal(ctx, DeleteServicePrincipalRequest{
+		ServicePrincipalId: servicePrincipalId,
+	})
+}

@@ -1,6 +1,7 @@
 package code
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -57,9 +58,10 @@ func (n *Named) Comment(prefix string, maxLen int) string {
 // that are relevant to a single service
 type Package struct {
 	Named
-	Components *openapi.Components
-	Methods    []Method
-	types      map[string]*Entity
+	Components          *openapi.Components
+	Methods             []Method
+	ByPathParamsMethods []*ByPathParamsMethod
+	types               map[string]*Entity
 }
 
 func (pkg *Package) Types() (types []*Entity) {
@@ -237,30 +239,31 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 	return pkg.types[e.Name]
 }
 
+func (pkg *Package) paramToField(op *openapi.Operation, param openapi.Parameter) *Field {
+	named := Named{param.Name, param.Description}
+	return &Field{
+		Named:    named,
+		Required: param.Required,
+		IsPath:   param.In == "path",
+		IsQuery:  param.In == "query",
+		Entity:   pkg.schemaToEntity(param.Schema, []string{op.OperationId, named.PascalName()}, false),
+	}
+}
+
 func (pkg *Package) newRequest(params []openapi.Parameter, op *openapi.Operation) *Entity {
 	if op.RequestBody == nil && len(params) == 0 {
 		return nil
 	}
-	//var hasParams bool
 	request := &Entity{fields: map[string]Field{}}
-	schemaPath := []string{op.OperationId}
 	if op.RequestBody != nil {
-		request = pkg.schemaToEntity(op.RequestBody.Schema(), schemaPath, true)
+		request = pkg.schemaToEntity(op.RequestBody.Schema(), []string{op.OperationId}, true)
 	}
 	for _, v := range params {
-		param := *pkg.Components.Parameters.Resolve(&v)
+		param := pkg.paramToField(op, v)
 		if param == nil {
 			continue
 		}
-		named := Named{param.Name, param.Description}
-		request.fields[param.Name] = Field{
-			Named:    named,
-			Required: param.Required,
-			IsPath:   param.In == "path",
-			IsQuery:  param.In == "query",
-			Entity:   pkg.schemaToEntity(param.Schema, append(schemaPath, named.PascalName()), false),
-		}
-		//hasParams = true
+		request.fields[param.Name] = *param
 	}
 	if request.Name == "" {
 		// when there was a merge of params with a request or new entity was made
@@ -278,11 +281,48 @@ func (pkg *Package) newMethod(verb, path string, params []openapi.Parameter, op 
 	return Method{
 		Named:   Named{op.OperationId, op.Description},
 		Service: pkg,
-		Verb:    verb,
+		Verb:    strings.ToUpper(verb),
 		Path:    path,
 		Request: pkg.newRequest(params, op),
 		Response: pkg.definedEntity(op.OperationId+"Response",
 			op.SuccessResponseSchema(pkg.Components)),
+	}
+}
+
+type ByPathParamsMethod struct {
+	Named
+	Params []Field
+	Method *Method
+}
+
+func (pkg *Package) makeByPathParamsMethod(p []openapi.Parameter, op *openapi.Operation, method *Method) *ByPathParamsMethod {
+	if len(p) == 0 {
+		return nil
+	}
+	if !(method.Verb == "GET" || method.Verb == "DELETE") {
+		return nil
+	}
+	params := []Field{}
+	nameParts := []string{}
+	for _, v := range p {
+		field := pkg.paramToField(op, v)
+		if field == nil {
+			continue
+		}
+		if !field.IsPath {
+			continue
+		}
+		params = append(params, *field)
+		nameParts = append(nameParts, field.PascalName())
+	}
+	if len(params) == 0 {
+		return nil
+	}
+	name := fmt.Sprintf("%sBy%s", method.PascalName(), strings.Join(nameParts, "And"))
+	return &ByPathParamsMethod{
+		Named:  Named{name, ""},
+		Method: method,
+		Params: params,
 	}
 }
 
@@ -292,9 +332,27 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 			if !op.HasTag(tag.Name) {
 				continue
 			}
-			params := append(path.Parameters, op.Parameters...)
+			params := []openapi.Parameter{}
+			seenParams := map[string]bool{}
+			for _, list := range [][]openapi.Parameter{path.Parameters, op.Parameters} {
+				for _, v := range list {
+					param := *pkg.Components.Parameters.Resolve(&v)
+					if param == nil {
+						return nil
+					}
+					if seenParams[param.Name] {
+						continue
+					}
+					params = append(params, *param)
+					seenParams[param.Name] = true
+				}
+			}
 			method := pkg.newMethod(verb, prefix, params, op)
 			pkg.Methods = append(pkg.Methods, method)
+			byPathParams := pkg.makeByPathParamsMethod(params, op, &method)
+			if byPathParams != nil {
+				pkg.ByPathParamsMethods = append(pkg.ByPathParamsMethods, byPathParams)
+			}
 		}
 		slices.SortFunc(pkg.Methods, func(a, b Method) bool {
 			return a.Name < b.Name

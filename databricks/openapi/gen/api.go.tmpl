@@ -20,6 +20,8 @@ type {{.PascalName}}Service interface {
 	{{- range .Methods}}
     {{.Comment "    // " 80}}
     {{.PascalName}}(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}{{end}}
+	{{- range .ByPathParamsMethods}}{{.Comment "// " 80}}
+	{{.PascalName}}(ctx context.Context{{range .Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{if .Method.Response}}(*{{.Method.Response.PascalName}}, error){{else}}error{{end}}{{end}}
 }
 
 type {{.PascalName}}API struct {
@@ -34,3 +36,12 @@ func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Re
 }
 
 {{end -}}
+
+{{range .ByPathParamsMethods}}{{.Comment "// " 80}}
+func (a *{{.Method.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{range .Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{if .Method.Response}}(*{{.Method.Response.PascalName}}, error){{else}}error{{end}} {
+	return a.{{.Method.PascalName}}(ctx, {{.Method.Request.PascalName}}{
+		{{- range .Params}}
+		{{.PascalName}}: {{.CamelName}},{{end}}
+	})
+}
+{{end}}

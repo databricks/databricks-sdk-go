@@ -27,6 +27,8 @@ type GroupsService interface {
     NewGroup(ctx context.Context, createGroupRequest CreateGroupRequest) (*Group, error)
     // Update details of a group 
     UpdateGroup(ctx context.Context, updateGroupRequest UpdateGroupRequest) error
+	FetchGroupByGroupId(ctx context.Context, groupId string) (*Group, error)
+	DeleteGroupByGroupId(ctx context.Context, groupId string) error
 }
 
 type GroupsAPI struct {
@@ -68,3 +70,15 @@ func (a *GroupsAPI) UpdateGroup(ctx context.Context, in UpdateGroupRequest) erro
 	return err
 }
 
+
+func (a *GroupsAPI) FetchGroupByGroupId(ctx context.Context, groupId string) (*Group, error) {
+	return a.FetchGroup(ctx, FetchGroupRequest{
+		GroupId: groupId,
+	})
+}
+
+func (a *GroupsAPI) DeleteGroupByGroupId(ctx context.Context, groupId string) error {
+	return a.DeleteGroup(ctx, DeleteGroupRequest{
+		GroupId: groupId,
+	})
+}

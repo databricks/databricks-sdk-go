@@ -62,7 +62,7 @@ type Email struct {
 
 
 type FetchUserRequest struct {
-    
+    // Unique ID for a user in the &lt;Workspace&gt;. 
     UserId string `path:"user_id"`
 }
 

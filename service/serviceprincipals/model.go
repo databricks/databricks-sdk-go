@@ -50,7 +50,7 @@ type DisplayNamePatchOpValue struct {
 
 
 type FetchServicePrincipalRequest struct {
-    
+    // Unique ID for a service principal in the &lt;Workspace&gt;. 
     ServicePrincipalId string `path:"service_principal_id"`
 }
 

@@ -26,9 +26,7 @@ func TestAccUsers(t *testing.T) {
 	require.NoError(t, err)
 
 	// fetch the user by the newly created ID
-	fetch, err := ws.Users.FetchUser(ctx, users.FetchUserRequest{
-		UserId: user.Id,
-	})
+	fetch, err := ws.Users.FetchUserByUserId(ctx, user.Id)
 	require.NoError(t, err)
 	assert.Equal(t, user.DisplayName, fetch.DisplayName)
 
@@ -48,15 +46,11 @@ func TestAccUsers(t *testing.T) {
 	assert.Equal(t, user.Id, namesToIds[user.UserName])
 
 	// remove user by ID
-	err = ws.Users.DeleteUser(ctx, users.DeleteUserRequest{
-		UserId: user.Id,
-	})
+	err = ws.Users.DeleteUserByUserId(ctx, user.Id)
 	require.NoError(t, err)
 
 	// and verify that user is missing
-	_, err = ws.Users.FetchUser(ctx, users.FetchUserRequest{
-		UserId: user.Id,
-	})
+	_, err = ws.Users.FetchUserByUserId(ctx, user.Id)
 	assert.True(t, apierr.IsMissing(err))
 }
 
@@ -73,9 +67,7 @@ func TestAccGroups(t *testing.T) {
 	require.NoError(t, err)
 
 	// fetch the group we've just created
-	fetch, err := ws.Groups.FetchGroup(ctx, groups.FetchGroupRequest{
-		GroupId: group.Id,
-	})
+	fetch, err := ws.Groups.FetchGroupByGroupId(ctx, group.Id)
 	require.NoError(t, err)
 	assert.Equal(t, group.DisplayName, fetch.DisplayName)
 
@@ -94,12 +86,10 @@ func TestAccGroups(t *testing.T) {
 	assert.Equal(t, group.Id, namesToIds[group.DisplayName])
 
 	// remove group by ID
-	err = ws.Groups.DeleteGroup(ctx, groups.DeleteGroupRequest{GroupId: group.Id})
+	err = ws.Groups.DeleteGroupByGroupId(ctx, group.Id)
 	require.NoError(t, err)
 
 	// and verify the group is missing
-	_, err = ws.Groups.FetchGroup(ctx, groups.FetchGroupRequest{
-		GroupId: group.Id,
-	})
+	_, err = ws.Groups.FetchGroupByGroupId(ctx, group.Id)
 	assert.True(t, apierr.IsMissing(err))
 }

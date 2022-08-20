@@ -27,6 +27,8 @@ type UsersService interface {
     NewUser(ctx context.Context, createUserRequest CreateUserRequest) (*User, error)
     // Update details of one user. 
     UpdateUser(ctx context.Context, updateUserRequest UpdateUserRequest) error
+	DeleteUserByUserId(ctx context.Context, userId string) error
+	FetchUserByUserId(ctx context.Context, userId string) (*User, error)
 }
 
 type UsersAPI struct {
@@ -68,3 +70,15 @@ func (a *UsersAPI) UpdateUser(ctx context.Context, in UpdateUserRequest) error {
 	return err
 }
 
+
+func (a *UsersAPI) DeleteUserByUserId(ctx context.Context, userId string) error {
+	return a.DeleteUser(ctx, DeleteUserRequest{
+		UserId: userId,
+	})
+}
+
+func (a *UsersAPI) FetchUserByUserId(ctx context.Context, userId string) (*User, error) {
+	return a.FetchUser(ctx, FetchUserRequest{
+		UserId: userId,
+	})
+}
