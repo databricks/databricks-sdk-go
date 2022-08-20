@@ -17,16 +17,16 @@ func New(cfg *databricks.Config) ServiceprincipalsService {
 
 
 type ServiceprincipalsService interface {
-	// Delete one service principal 
-	DeleteServicePrincipal(ctx context.Context, deleteServicePrincipalRequest DeleteServicePrincipalRequest) error
-	// Fetch information of one service principal 
-	FetchServicePrincipal(ctx context.Context, fetchServicePrincipalRequest FetchServicePrincipalRequest) (*ServicePrincipal, error)
-	// Get multiple service principals associated with a &lt;Workspace&gt;. 
-	ListServicePrincipals(ctx context.Context, listServicePrincipalsRequest ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
-	// Create one service principal in the &lt;Workspace&gt;. 
-	NewServicePrincipal(ctx context.Context, createServicePrincipalRequest CreateServicePrincipalRequest) (*ServicePrincipal, error)
-	// Update details of one service principal. 
-	UpdateServicePrincipal(ctx context.Context, updateDisplayNameRequest UpdateDisplayNameRequest) error
+    // Delete one service principal 
+    DeleteServicePrincipal(ctx context.Context, deleteServicePrincipalRequest DeleteServicePrincipalRequest) error
+    // Fetch information of one service principal 
+    FetchServicePrincipal(ctx context.Context, fetchServicePrincipalRequest FetchServicePrincipalRequest) (*ServicePrincipal, error)
+    // Get multiple service principals associated with a &lt;Workspace&gt;. 
+    ListServicePrincipals(ctx context.Context, listServicePrincipalsRequest ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
+    // Create one service principal in the &lt;Workspace&gt;. 
+    NewServicePrincipal(ctx context.Context, createServicePrincipalRequest CreateServicePrincipalRequest) (*ServicePrincipal, error)
+    // Update details of one service principal. 
+    UpdateServicePrincipal(ctx context.Context, updateDisplayNameRequest UpdateDisplayNameRequest) error
 }
 
 type ServiceprincipalsAPI struct {

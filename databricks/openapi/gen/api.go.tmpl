@@ -18,8 +18,8 @@ func New(cfg *databricks.Config) {{.PascalName}}Service {
 {{.Comment "// " 80}}
 type {{.PascalName}}Service interface {
 	{{- range .Methods}}
-	{{.Comment "	// " 80}}
-	{{.PascalName}}(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}{{end}}
+    {{.Comment "    // " 80}}
+    {{.PascalName}}(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}{{end}}
 }
 
 type {{.PascalName}}API struct {

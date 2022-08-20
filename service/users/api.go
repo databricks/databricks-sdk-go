@@ -17,16 +17,16 @@ func New(cfg *databricks.Config) UsersService {
 
 
 type UsersService interface {
-	// Delete one user 
-	DeleteUser(ctx context.Context, deleteUserRequest DeleteUserRequest) error
-	// Fetch information of one user 
-	FetchUser(ctx context.Context, fetchUserRequest FetchUserRequest) (*User, error)
-	// Get multiple users associated with a &lt;Workspace&gt;. 
-	ListUsers(ctx context.Context, listUsersRequest ListUsersRequest) (*ListUsersResponse, error)
-	// Create one user in the &lt;Workspace&gt;. 
-	NewUser(ctx context.Context, createUserRequest CreateUserRequest) (*User, error)
-	// Update details of one user. 
-	UpdateUser(ctx context.Context, updateUserRequest UpdateUserRequest) error
+    // Delete one user 
+    DeleteUser(ctx context.Context, deleteUserRequest DeleteUserRequest) error
+    // Fetch information of one user 
+    FetchUser(ctx context.Context, fetchUserRequest FetchUserRequest) (*User, error)
+    // Get multiple users associated with a &lt;Workspace&gt;. 
+    ListUsers(ctx context.Context, listUsersRequest ListUsersRequest) (*ListUsersResponse, error)
+    // Create one user in the &lt;Workspace&gt;. 
+    NewUser(ctx context.Context, createUserRequest CreateUserRequest) (*User, error)
+    // Update details of one user. 
+    UpdateUser(ctx context.Context, updateUserRequest UpdateUserRequest) error
 }
 
 type UsersAPI struct {

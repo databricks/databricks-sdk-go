@@ -17,16 +17,16 @@ func New(cfg *databricks.Config) GroupsService {
 
 
 type GroupsService interface {
-	// Delete one group 
-	DeleteGroup(ctx context.Context, deleteGroupRequest DeleteGroupRequest) error
-	// Fetch information of one group 
-	FetchGroup(ctx context.Context, fetchGroupRequest FetchGroupRequest) (*Group, error)
-	// Get multiple groups associated with the &lt;Workspace&gt;. 
-	ListGroups(ctx context.Context, listGroupsRequest ListGroupsRequest) (*ListGroupsResponse, error)
-	// Create one group in the &lt;Workspace&gt;. 
-	NewGroup(ctx context.Context, createGroupRequest CreateGroupRequest) (*Group, error)
-	// Update details of a group 
-	UpdateGroup(ctx context.Context, updateGroupRequest UpdateGroupRequest) error
+    // Delete one group 
+    DeleteGroup(ctx context.Context, deleteGroupRequest DeleteGroupRequest) error
+    // Fetch information of one group 
+    FetchGroup(ctx context.Context, fetchGroupRequest FetchGroupRequest) (*Group, error)
+    // Get multiple groups associated with the &lt;Workspace&gt;. 
+    ListGroups(ctx context.Context, listGroupsRequest ListGroupsRequest) (*ListGroupsResponse, error)
+    // Create one group in the &lt;Workspace&gt;. 
+    NewGroup(ctx context.Context, createGroupRequest CreateGroupRequest) (*Group, error)
+    // Update details of a group 
+    UpdateGroup(ctx context.Context, updateGroupRequest UpdateGroupRequest) error
 }
 
 type GroupsAPI struct {
