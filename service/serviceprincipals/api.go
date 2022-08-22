@@ -5,15 +5,8 @@ package serviceprincipals
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
-
-func New(cfg *databricks.Config) ServiceprincipalsService {
-	return &ServiceprincipalsAPI{
-		client: client.New(cfg),
-	}
-}
 
 
 type ServiceprincipalsService interface {
@@ -24,11 +17,19 @@ type ServiceprincipalsService interface {
     // Get multiple service principals associated with a &lt;Workspace&gt;. 
     ListServicePrincipals(ctx context.Context, listServicePrincipalsRequest ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
     // Create one service principal in the &lt;Workspace&gt;. 
-    NewServicePrincipal(ctx context.Context, createServicePrincipalRequest CreateServicePrincipalRequest) (*ServicePrincipal, error)
+    NewServicePrincipal(ctx context.Context, servicePrincipal ServicePrincipal) (*ServicePrincipal, error)
+    // Partially update details of one service principal. 
+    PatchServicePrincipal(ctx context.Context, partialUpdate PartialUpdate) error
     // Update details of one service principal. 
-    UpdateServicePrincipal(ctx context.Context, updateDisplayNameRequest UpdateDisplayNameRequest) error
-	FetchServicePrincipalByServicePrincipalId(ctx context.Context, servicePrincipalId string) (*ServicePrincipal, error)
-	DeleteServicePrincipalByServicePrincipalId(ctx context.Context, servicePrincipalId string) error
+    ReplaceServicePrincipal(ctx context.Context, servicePrincipal ServicePrincipal) error
+	DeleteServicePrincipalById(ctx context.Context, id string) error
+	FetchServicePrincipalById(ctx context.Context, id string) (*ServicePrincipal, error)
+}
+
+func New(client *client.DatabricksClient) ServiceprincipalsService {
+	return &ServiceprincipalsAPI{
+		client: client,
+	}
 }
 
 type ServiceprincipalsAPI struct {
@@ -36,49 +37,59 @@ type ServiceprincipalsAPI struct {
 }
 
 // Delete one service principal 
-func (a *ServiceprincipalsAPI) DeleteServicePrincipal(ctx context.Context, in DeleteServicePrincipalRequest) error {
-	
-	err := a.client.Delete(ctx, "/scim/v2/ServicePrincipals/{service_principal_id}", in)
+func (a *ServiceprincipalsAPI) DeleteServicePrincipal(ctx context.Context, request DeleteServicePrincipalRequest) error {
+	path := "/api/2.0/preview/scim/v2/ServicePrincipals/"+request.Id
+	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
 // Fetch information of one service principal 
-func (a *ServiceprincipalsAPI) FetchServicePrincipal(ctx context.Context, in FetchServicePrincipalRequest) (*ServicePrincipal, error) {
+func (a *ServiceprincipalsAPI) FetchServicePrincipal(ctx context.Context, request FetchServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	err := a.client.Get(ctx, "/scim/v2/ServicePrincipals/{service_principal_id}", in, &servicePrincipal)
+	path := "/api/2.0/preview/scim/v2/ServicePrincipals/"+request.Id
+	err := a.client.Get(ctx, path, request, &servicePrincipal)
 	return &servicePrincipal, err
 }
 
 // Get multiple service principals associated with a &lt;Workspace&gt;. 
-func (a *ServiceprincipalsAPI) ListServicePrincipals(ctx context.Context, in ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
+func (a *ServiceprincipalsAPI) ListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 	var listServicePrincipalResponse ListServicePrincipalResponse
-	err := a.client.Get(ctx, "/scim/v2/ServicePrincipals", in, &listServicePrincipalResponse)
+	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
+	err := a.client.Get(ctx, path, request, &listServicePrincipalResponse)
 	return &listServicePrincipalResponse, err
 }
 
 // Create one service principal in the &lt;Workspace&gt;. 
-func (a *ServiceprincipalsAPI) NewServicePrincipal(ctx context.Context, in CreateServicePrincipalRequest) (*ServicePrincipal, error) {
+func (a *ServiceprincipalsAPI) NewServicePrincipal(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	err := a.client.Post(ctx, "/scim/v2/ServicePrincipals", in, &servicePrincipal)
+	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
+	err := a.client.Post(ctx, path, request, &servicePrincipal)
 	return &servicePrincipal, err
 }
 
+// Partially update details of one service principal. 
+func (a *ServiceprincipalsAPI) PatchServicePrincipal(ctx context.Context, request PartialUpdate) error {
+	path := "/api/2.0/preview/scim/v2/ServicePrincipals/"+request.Id
+	err := a.client.Patch(ctx, path, request)
+	return err
+}
+
 // Update details of one service principal. 
-func (a *ServiceprincipalsAPI) UpdateServicePrincipal(ctx context.Context, in UpdateDisplayNameRequest) error {
-	
-	err := a.client.Patch(ctx, "/scim/v2/ServicePrincipals/{service_principal_id}", in)
+func (a *ServiceprincipalsAPI) ReplaceServicePrincipal(ctx context.Context, request ServicePrincipal) error {
+	path := "/api/2.0/preview/scim/v2/ServicePrincipals/"+request.Id
+	err := a.client.Put(ctx, path, request)
 	return err
 }
 
 
-func (a *ServiceprincipalsAPI) FetchServicePrincipalByServicePrincipalId(ctx context.Context, servicePrincipalId string) (*ServicePrincipal, error) {
-	return a.FetchServicePrincipal(ctx, FetchServicePrincipalRequest{
-		ServicePrincipalId: servicePrincipalId,
+func (a *ServiceprincipalsAPI) DeleteServicePrincipalById(ctx context.Context, id string) error {
+	return a.DeleteServicePrincipal(ctx, DeleteServicePrincipalRequest{
+		Id: id,
 	})
 }
 
-func (a *ServiceprincipalsAPI) DeleteServicePrincipalByServicePrincipalId(ctx context.Context, servicePrincipalId string) error {
-	return a.DeleteServicePrincipal(ctx, DeleteServicePrincipalRequest{
-		ServicePrincipalId: servicePrincipalId,
+func (a *ServiceprincipalsAPI) FetchServicePrincipalById(ctx context.Context, id string) (*ServicePrincipal, error) {
+	return a.FetchServicePrincipal(ctx, FetchServicePrincipalRequest{
+		Id: id,
 	})
 }

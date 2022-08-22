@@ -94,6 +94,7 @@ func (r *Render) File(pkg code.Package, contentTRef, nameT string) error {
 		return nil
 	}
 	if nameT == "stdout" {
+		// print something, usually instructions for any manual work
 		println(contents.String())
 		return nil
 	}

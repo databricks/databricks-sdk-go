@@ -5,15 +5,8 @@ package groups
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
-
-func New(cfg *databricks.Config) GroupsService {
-	return &GroupsAPI{
-		client: client.New(cfg),
-	}
-}
 
 
 type GroupsService interface {
@@ -24,11 +17,19 @@ type GroupsService interface {
     // Get multiple groups associated with the &lt;Workspace&gt;. 
     ListGroups(ctx context.Context, listGroupsRequest ListGroupsRequest) (*ListGroupsResponse, error)
     // Create one group in the &lt;Workspace&gt;. 
-    NewGroup(ctx context.Context, createGroupRequest CreateGroupRequest) (*Group, error)
-    // Update details of a group 
-    UpdateGroup(ctx context.Context, updateGroupRequest UpdateGroupRequest) error
-	FetchGroupByGroupId(ctx context.Context, groupId string) (*Group, error)
-	DeleteGroupByGroupId(ctx context.Context, groupId string) error
+    NewGroup(ctx context.Context, group Group) (*Group, error)
+    // Partially update details of a group 
+    PatchGroup(ctx context.Context, partialUpdate PartialUpdate) error
+    // Update details of a group by replacing the entire entity 
+    ReplaceGroup(ctx context.Context, group Group) error
+	FetchGroupById(ctx context.Context, id string) (*Group, error)
+	DeleteGroupById(ctx context.Context, id string) error
+}
+
+func New(client *client.DatabricksClient) GroupsService {
+	return &GroupsAPI{
+		client: client,
+	}
 }
 
 type GroupsAPI struct {
@@ -36,49 +37,59 @@ type GroupsAPI struct {
 }
 
 // Delete one group 
-func (a *GroupsAPI) DeleteGroup(ctx context.Context, in DeleteGroupRequest) error {
-	
-	err := a.client.Delete(ctx, "/scim/v2/Groups/{group_id}", in)
+func (a *GroupsAPI) DeleteGroup(ctx context.Context, request DeleteGroupRequest) error {
+	path := "/api/2.0/preview/scim/v2/Groups/"+request.Id
+	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
 // Fetch information of one group 
-func (a *GroupsAPI) FetchGroup(ctx context.Context, in FetchGroupRequest) (*Group, error) {
+func (a *GroupsAPI) FetchGroup(ctx context.Context, request FetchGroupRequest) (*Group, error) {
 	var group Group
-	err := a.client.Get(ctx, "/scim/v2/Groups/{group_id}", in, &group)
+	path := "/api/2.0/preview/scim/v2/Groups/"+request.Id
+	err := a.client.Get(ctx, path, request, &group)
 	return &group, err
 }
 
 // Get multiple groups associated with the &lt;Workspace&gt;. 
-func (a *GroupsAPI) ListGroups(ctx context.Context, in ListGroupsRequest) (*ListGroupsResponse, error) {
+func (a *GroupsAPI) ListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
 	var listGroupsResponse ListGroupsResponse
-	err := a.client.Get(ctx, "/scim/v2/Groups", in, &listGroupsResponse)
+	path := "/api/2.0/preview/scim/v2/Groups"
+	err := a.client.Get(ctx, path, request, &listGroupsResponse)
 	return &listGroupsResponse, err
 }
 
 // Create one group in the &lt;Workspace&gt;. 
-func (a *GroupsAPI) NewGroup(ctx context.Context, in CreateGroupRequest) (*Group, error) {
+func (a *GroupsAPI) NewGroup(ctx context.Context, request Group) (*Group, error) {
 	var group Group
-	err := a.client.Post(ctx, "/scim/v2/Groups", in, &group)
+	path := "/api/2.0/preview/scim/v2/Groups"
+	err := a.client.Post(ctx, path, request, &group)
 	return &group, err
 }
 
-// Update details of a group 
-func (a *GroupsAPI) UpdateGroup(ctx context.Context, in UpdateGroupRequest) error {
-	
-	err := a.client.Patch(ctx, "/scim/v2/Groups/{group_id}", in)
+// Partially update details of a group 
+func (a *GroupsAPI) PatchGroup(ctx context.Context, request PartialUpdate) error {
+	path := "/api/2.0/preview/scim/v2/Groups/"+request.Id
+	err := a.client.Patch(ctx, path, request)
+	return err
+}
+
+// Update details of a group by replacing the entire entity 
+func (a *GroupsAPI) ReplaceGroup(ctx context.Context, request Group) error {
+	path := "/api/2.0/preview/scim/v2/Groups/"+request.Id
+	err := a.client.Put(ctx, path, request)
 	return err
 }
 
 
-func (a *GroupsAPI) FetchGroupByGroupId(ctx context.Context, groupId string) (*Group, error) {
+func (a *GroupsAPI) FetchGroupById(ctx context.Context, id string) (*Group, error) {
 	return a.FetchGroup(ctx, FetchGroupRequest{
-		GroupId: groupId,
+		Id: id,
 	})
 }
 
-func (a *GroupsAPI) DeleteGroupByGroupId(ctx context.Context, groupId string) error {
+func (a *GroupsAPI) DeleteGroupById(ctx context.Context, id string) error {
 	return a.DeleteGroup(ctx, DeleteGroupRequest{
-		GroupId: groupId,
+		Id: id,
 	})
 }

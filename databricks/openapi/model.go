@@ -23,7 +23,7 @@ func (n *Node) Component() string {
 	return s[len(s)-1]
 }
 
-func NewFromReader(r io.ReadCloser) (*Specification, error) {
+func NewFromReader(r io.Reader) (*Specification, error) {
 	raw, err := io.ReadAll(r)
 	if err != nil {
 		return nil, fmt.Errorf("cannot read openapi spec: %w", err)
@@ -33,7 +33,7 @@ func NewFromReader(r io.ReadCloser) (*Specification, error) {
 	if err != nil {
 		return nil, fmt.Errorf("cannot parse openapi spec: %w", err)
 	}
-	return &spec, r.Close()
+	return &spec, nil
 }
 
 type Specification struct {

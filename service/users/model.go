@@ -4,95 +4,53 @@ package users
 
 // all definitions in this file are in alphabetical order
 
-
-type CoreUser string
-
-const CoreUserCoreUserSchema CoreUser = `urn:ietf:params:scim:schemas:core:2.0:User`
-
-type CreateUserRequest struct {
-    // String representing a concatenation of given and family names. 
-    DisplayName string `json:"displayName,omitempty"`
-    // SCIM schema used for the user object. 
-    Schemas []CoreUser `json:"schemas,omitempty"`
-    // Email address of the Databricks user. 
-    UserName string `json:"userName,omitempty"`
+type ComplexValue struct {
+    
+    Ref string `json:"$ref,omitempty"`
+    
+    Display string `json:"display,omitempty"`
+    
+    Primary bool `json:"primary,omitempty"`
+    
+    Type string `json:"type,omitempty"`
+    
+    Value string `json:"value,omitempty"`
 }
 
 
 type DeleteUserRequest struct {
     // Unique ID for a user in the &lt;Workspace&gt;. 
-    UserId string `path:"user_id"`
-}
-
-
-type DisplayNamePatchOp struct {
-    // Type of patch operation. 
-    Op DisplayNamePatchOpOp `json:"op,omitempty"`
-    // Field to update. 
-    Path DisplayNamePatchOpPath `json:"path,omitempty"`
-    
-    Value []DisplayNamePatchOpValue `json:"value,omitempty"`
-}
-
-// Type of patch operation. 
-// Type of patch operation. 
-type DisplayNamePatchOpOp string
-// Type of patch operation. 
-const DisplayNamePatchOpOpReplace DisplayNamePatchOpOp = `replace`
-// Field to update. 
-// Field to update. 
-type DisplayNamePatchOpPath string
-// Field to update. 
-const DisplayNamePatchOpPathDisplayname DisplayNamePatchOpPath = `displayName`
-
-type DisplayNamePatchOpValue struct {
-    // New value for the field specified in path. 
-    Value string `json:"value,omitempty"`
-}
-
-
-type Email struct {
-    
-    Primary bool `json:"primary,omitempty"`
-    // Type of email. `work` is an example. 
-    Type string `json:"type,omitempty"`
-    // The actual email. 
-    Value string `json:"value,omitempty"`
+    Id string ` path:"id"`
 }
 
 
 type FetchUserRequest struct {
     // Unique ID for a user in the &lt;Workspace&gt;. 
-    UserId string `path:"user_id"`
+    Id string ` path:"id"`
 }
 
 
-
-type List string
-
-const ListListResponseMessage List = `urn:ietf:params:scim:api:messages:2.0:ListResponse`
-
 type ListUsersRequest struct {
     // Comma-separated list of attributes to return in response. 
-    Attributes string `query:"attributes,omitempty"`
+    Attributes string ` query:"attributes,omitempty"`
     // Desired number of results per page. 
-    Count int `query:"count,omitempty"`
+    Count int ` query:"count,omitempty"`
     // Comma-separated list of attributes to exclude in response. 
-    ExcludedAttributes string `query:"excludedAttributes,omitempty"`
+    ExcludedAttributes string ` query:"excludedAttributes,omitempty"`
     // Query by which the results have to be filtered. Supported operators are 
     // equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`). 
     // Additionally, simple expressions can be formed using logical operators - 
     // `and` and `or`. The [SCIM 
     // RFC](https://tools.ietf.org/html/rfc7644#section-3.4.2.2) has more 
     // details but we currently only support simple expressions. 
-    Filter string `query:"filter,omitempty"`
+    Filter string ` query:"filter,omitempty"`
     // Attribute to sort the results. Multi-part paths are supported. For 
     // example, `userName`, `name.givenName`, and `emails`. 
-    SortBy string `query:"sortBy,omitempty"`
+    SortBy string ` query:"sortBy,omitempty"`
     // The order to sort the results. 
-    SortOrder ListUsersSortOrder `query:"sortOrder,omitempty"`
+    SortOrder ListUsersSortOrder ` query:"sortOrder,omitempty"`
     // Specifies the index of the first result. First item is number 1. 
-    StartIndex int `query:"startIndex,omitempty"`
+    StartIndex int ` query:"startIndex,omitempty"`
 }
 
 
@@ -101,8 +59,6 @@ type ListUsersResponse struct {
     Resources []User `json:"Resources,omitempty"`
     // Total results returned in the response. 
     ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
-    // SCIM ListOp schema used in the response. 
-    Schemas []List `json:"schemas,omitempty"`
     // Starting index of all the results that matched the request filters. 
     // First item is number 1. 
     StartIndex int64 `json:"startIndex,omitempty"`
@@ -111,10 +67,11 @@ type ListUsersResponse struct {
 }
 
 
-
 type ListUsersSortOrder string
 
+
 const ListUsersSortOrderAscending ListUsersSortOrder = `ascending`
+
 const ListUsersSortOrderDescending ListUsersSortOrder = `descending`
 
 type Name struct {
@@ -125,60 +82,70 @@ type Name struct {
 }
 
 
-
-type Update string
-
-const UpdatePatchOpMessage Update = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
-// Type of patch operation. 
-// Type of patch operation. 
-type UpdateUserOp string
-// Type of patch operation. 
-const UpdateUserOpRemove UpdateUserOp = `remove`
-// Path of removing admin status 
-// Path of removing admin status 
-type UpdateUserPath string
-// Path of removing admin status 
-const UpdateUserPathRolesValueEqAccountAdmin UpdateUserPath = `roles[value eq \&#34;account_admin\&#34;]`
-
-type UpdateUserRequest struct {
-    // Patch operations to be performed on the user object. 
-    Operations []DisplayNamePatchOp `json:"Operations,omitempty"`
-    // Type of patch operation. 
-    Op UpdateUserOp `json:"op,omitempty"`
-    // Path of removing admin status 
-    Path UpdateUserPath `json:"path,omitempty"`
-    // SCIM PatchOp schema used to update user information. 
-    Schemas []Update `json:"schemas,omitempty"`
+type PartialUpdate struct {
     // Unique ID for a user in the &lt;Workspace&gt;. 
-    UserId string `path:"user_id"`
+    Id string ` path:"id"`
     
-    Value []UpdateUserValue `json:"value,omitempty"`
+    Operations []Patch `json:"operations,omitempty"`
+    // SCIM schema used for the user object. 
+    Schemas []Urn `json:"schemas,omitempty"`
 }
 
 
-type UpdateUserValue struct {
-    // Account admin field. 
-    Value UpdateUserValueValue `json:"value,omitempty"`
+type Patch struct {
+    // Type of patch operation. 
+    Op PatchOp `json:"op,omitempty"`
+    // Selection of patch operation 
+    Path string `json:"path,omitempty"`
+    // Value to modify 
+    Value string `json:"value,omitempty"`
 }
 
-// Account admin field. 
-// Account admin field. 
-type UpdateUserValueValue string
-// Account admin field. 
-const UpdateUserValueValueAccountAdmin UpdateUserValueValue = `account_admin`
+// Type of patch operation. 
+type PatchOp string
+
+// Type of patch operation. 
+const PatchOpAdd PatchOp = `add`
+// Type of patch operation. 
+const PatchOpRemove PatchOp = `remove`
+// Type of patch operation. 
+const PatchOpReplace PatchOp = `replace`
+// Defines type of SCIM protocol entity 
+type Urn string
+
+// Defines type of SCIM protocol entity 
+const UrnUser Urn = `urn:ietf:params:scim:schemas:core:2.0:User`
+// Defines type of SCIM protocol entity 
+const UrnGroup Urn = `urn:ietf:params:scim:schemas:core:2.0:Group`
+// Defines type of SCIM protocol entity 
+const UrnServicePrincipal Urn = `urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal`
+// Defines type of SCIM protocol entity 
+const UrnWorkspaceUser Urn = `urn:ietf:params:scim:schemas:extension:workspace:2.0:User`
+// Defines type of SCIM protocol entity 
+const UrnPatchOp Urn = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
 
 type User struct {
+    // If this user is active 
+    Active bool `json:"active,omitempty"`
     // String that represents a concatenation of given and family names. For 
     // example `John Smith`. 
     DisplayName string `json:"displayName,omitempty"`
     // All the emails associated with the Databricks user. 
-    Emails []Email `json:"emails,omitempty"`
+    Emails []ComplexValue `json:"emails,omitempty"`
+    
+    Entitlements []ComplexValue `json:"entitlements,omitempty"`
+    
+    ExternalId string `json:"externalId,omitempty"`
+    
+    Groups []ComplexValue `json:"groups,omitempty"`
     // Databricks user ID. 
     Id string `json:"id,omitempty"`
     
     Name *Name `json:"name,omitempty"`
+    
+    Roles []ComplexValue `json:"roles,omitempty"`
     // SCIM schema used for the user object. 
-    Schemas []CoreUser `json:"schemas,omitempty"`
+    Schemas []Urn `json:"schemas,omitempty"`
     // Email address of the Databricks user. 
     UserName string `json:"userName,omitempty"`
 }

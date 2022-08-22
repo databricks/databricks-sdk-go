@@ -76,11 +76,16 @@ func (pkg *Package) Types() (types []*Entity) {
 
 type Method struct {
 	Named
-	Service  *Package
-	Verb     string
-	Path     string
-	Request  *Entity
-	Response *Entity
+	Service   *Package
+	Verb      string
+	Path      string
+	PathParts []PathPart
+	Request   *Entity
+	Response  *Entity
+}
+
+func (m *Method) CanHaveResponseBody() bool {
+	return m.TitleVerb() == "Get" || m.TitleVerb() == "Post"
 }
 
 func (m *Method) TitleVerb() string {
@@ -163,7 +168,7 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 	}
 	// array
 	if s.ArrayValue != nil {
-		e.ArrayValue = pkg.schemaToEntity(s.ArrayValue, path, hasName)
+		e.ArrayValue = pkg.schemaToEntity(s.ArrayValue, append(path, "Item"), false)
 		return e
 	}
 	// map
@@ -263,7 +268,13 @@ func (pkg *Package) newRequest(params []openapi.Parameter, op *openapi.Operation
 		if param == nil {
 			continue
 		}
-		request.fields[param.Name] = *param
+		field, exists := request.fields[param.Name]
+		if !exists {
+			field = *param
+		}
+		field.IsPath = param.IsPath
+		field.IsQuery = param.IsQuery
+		request.fields[param.Name] = field
 	}
 	if request.Name == "" {
 		// when there was a merge of params with a request or new entity was made
@@ -274,16 +285,45 @@ func (pkg *Package) newRequest(params []openapi.Parameter, op *openapi.Operation
 }
 
 func (pkg *Package) define(entity *Entity) {
+	_, defined := pkg.types[entity.Name]
+	if defined {
+		panic(fmt.Sprintf("%s is already defined", entity.Name))
+	}
 	pkg.types[entity.Name] = entity
 }
 
+var pathPairRE = regexp.MustCompile(`(?m)([^\{]+)\{(\w+)\}`)
+
+type PathPart struct {
+	Prefix string
+	Field  *Field
+}
+
+func (pkg *Package) paramPath(path string, request *Entity, params []openapi.Parameter) (parts []PathPart) {
+	if len(params) == 0 {
+		return
+	}
+	for _, v := range pathPairRE.FindAllStringSubmatch(path, -1) {
+		field, ok := request.fields[v[2]]
+		if !ok {
+			panic(fmt.Sprintf(
+				"%s invalid: missing path param field: %s",
+				request.Name, v[2]))
+		}
+		parts = append(parts, PathPart{v[1], &field})
+	}
+	return
+}
+
 func (pkg *Package) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) Method {
+	request := pkg.newRequest(params, op)
 	return Method{
-		Named:   Named{op.OperationId, op.Description},
-		Service: pkg,
-		Verb:    strings.ToUpper(verb),
-		Path:    path,
-		Request: pkg.newRequest(params, op),
+		Named:     Named{op.OperationId, op.Description},
+		Service:   pkg,
+		Verb:      strings.ToUpper(verb),
+		Path:      path,
+		Request:   request,
+		PathParts: pkg.paramPath(path, request, params),
 		Response: pkg.definedEntity(op.OperationId+"Response",
 			op.SuccessResponseSchema(pkg.Components)),
 	}

@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"os"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
@@ -13,20 +14,22 @@ import (
 )
 
 func TestAccUsers(t *testing.T) {
+	os.Setenv("CLOUD_ENV", "azure")
+	os.Setenv("DATABRICKS_CONFIG_PROFILE", "azure-deco")
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	ctx := context.TODO()
 
 	ws := workspaces.New()
 
 	// create new user
-	user, err := ws.Users.NewUser(ctx, users.CreateUserRequest{
+	user, err := ws.Users.NewUser(ctx, users.User{
 		DisplayName: RandomName("Me "),
 		UserName:    RandomEmail(),
 	})
 	require.NoError(t, err)
 
 	// fetch the user by the newly created ID
-	fetch, err := ws.Users.FetchUserByUserId(ctx, user.Id)
+	fetch, err := ws.Users.FetchUserById(ctx, user.Id)
 	require.NoError(t, err)
 	assert.Equal(t, user.DisplayName, fetch.DisplayName)
 
@@ -46,11 +49,11 @@ func TestAccUsers(t *testing.T) {
 	assert.Equal(t, user.Id, namesToIds[user.UserName])
 
 	// remove user by ID
-	err = ws.Users.DeleteUserByUserId(ctx, user.Id)
+	err = ws.Users.DeleteUserById(ctx, user.Id)
 	require.NoError(t, err)
 
 	// and verify that user is missing
-	_, err = ws.Users.FetchUserByUserId(ctx, user.Id)
+	_, err = ws.Users.FetchUserById(ctx, user.Id)
 	assert.True(t, apierr.IsMissing(err))
 }
 
@@ -61,13 +64,13 @@ func TestAccGroups(t *testing.T) {
 	ws := workspaces.New()
 
 	// create new group
-	group, err := ws.Groups.NewGroup(ctx, groups.CreateGroupRequest{
+	group, err := ws.Groups.NewGroup(ctx, groups.Group{
 		DisplayName: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 
 	// fetch the group we've just created
-	fetch, err := ws.Groups.FetchGroupByGroupId(ctx, group.Id)
+	fetch, err := ws.Groups.FetchGroupById(ctx, group.Id)
 	require.NoError(t, err)
 	assert.Equal(t, group.DisplayName, fetch.DisplayName)
 
@@ -86,10 +89,10 @@ func TestAccGroups(t *testing.T) {
 	assert.Equal(t, group.Id, namesToIds[group.DisplayName])
 
 	// remove group by ID
-	err = ws.Groups.DeleteGroupByGroupId(ctx, group.Id)
+	err = ws.Groups.DeleteGroupById(ctx, group.Id)
 	require.NoError(t, err)
 
 	// and verify the group is missing
-	_, err = ws.Groups.FetchGroupByGroupId(ctx, group.Id)
+	_, err = ws.Groups.FetchGroupById(ctx, group.Id)
 	assert.True(t, apierr.IsMissing(err))
 }

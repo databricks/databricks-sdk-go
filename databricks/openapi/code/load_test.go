@@ -7,13 +7,10 @@ import (
 )
 
 func TestDebug(t *testing.T) {
-	batch, err := NewFromFile("/tmp/processed-scim.json")
+	batch, err := NewFromFile("/tmp/processed-jobs-2.1.json")
 	assert.NoError(t, err)
 
-	types := batch.Packages[2].Types()
-	assert.Greater(t, len(types), 3)
-
-	assert.Len(t, batch.Packages, 3)
+	assert.Len(t, batch.Packages, 1)
 }
 
 func TestBasic(t *testing.T) {

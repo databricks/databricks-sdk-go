@@ -130,13 +130,12 @@ func (c *DatabricksClient) completeUrl(r *http.Request) error {
 		return fmt.Errorf("no URL found in request")
 	}
 
-	ctx := r.Context()
-	av, ok := ctx.Value(Api).(ApiVersion)
-	if !ok {
-		av = API_2_0
-	}
-
-	r.URL.Path = fmt.Sprintf("/api/%s%s", av, r.URL.Path)
+	// ctx := r.Context()
+	// av, ok := ctx.Value(Api).(ApiVersion)
+	// if !ok {
+	// 	av = API_2_0
+	// }
+	//r.URL.Path = fmt.Sprintf("/api/%s%s", av, r.URL.Path)
 	r.Header.Set("Content-Type", "application/json")
 
 	url, err := url.Parse(c.Config.Host)

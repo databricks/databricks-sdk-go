@@ -5,15 +5,8 @@ package users
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
-
-func New(cfg *databricks.Config) UsersService {
-	return &UsersAPI{
-		client: client.New(cfg),
-	}
-}
 
 
 type UsersService interface {
@@ -24,11 +17,19 @@ type UsersService interface {
     // Get multiple users associated with a &lt;Workspace&gt;. 
     ListUsers(ctx context.Context, listUsersRequest ListUsersRequest) (*ListUsersResponse, error)
     // Create one user in the &lt;Workspace&gt;. 
-    NewUser(ctx context.Context, createUserRequest CreateUserRequest) (*User, error)
-    // Update details of one user. 
-    UpdateUser(ctx context.Context, updateUserRequest UpdateUserRequest) error
-	DeleteUserByUserId(ctx context.Context, userId string) error
-	FetchUserByUserId(ctx context.Context, userId string) (*User, error)
+    NewUser(ctx context.Context, user User) (*User, error)
+    // Partially update details of one user. 
+    PatchUser(ctx context.Context, partialUpdate PartialUpdate) error
+    // Replaces user with the data supplied in request 
+    ReplaceUser(ctx context.Context, user User) error
+	FetchUserById(ctx context.Context, id string) (*User, error)
+	DeleteUserById(ctx context.Context, id string) error
+}
+
+func New(client *client.DatabricksClient) UsersService {
+	return &UsersAPI{
+		client: client,
+	}
 }
 
 type UsersAPI struct {
@@ -36,49 +37,59 @@ type UsersAPI struct {
 }
 
 // Delete one user 
-func (a *UsersAPI) DeleteUser(ctx context.Context, in DeleteUserRequest) error {
-	
-	err := a.client.Delete(ctx, "/scim/v2/Users/{user_id}", in)
+func (a *UsersAPI) DeleteUser(ctx context.Context, request DeleteUserRequest) error {
+	path := "/api/2.0/preview/scim/v2/Users/"+request.Id
+	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
 // Fetch information of one user 
-func (a *UsersAPI) FetchUser(ctx context.Context, in FetchUserRequest) (*User, error) {
+func (a *UsersAPI) FetchUser(ctx context.Context, request FetchUserRequest) (*User, error) {
 	var user User
-	err := a.client.Get(ctx, "/scim/v2/Users/{user_id}", in, &user)
+	path := "/api/2.0/preview/scim/v2/Users/"+request.Id
+	err := a.client.Get(ctx, path, request, &user)
 	return &user, err
 }
 
 // Get multiple users associated with a &lt;Workspace&gt;. 
-func (a *UsersAPI) ListUsers(ctx context.Context, in ListUsersRequest) (*ListUsersResponse, error) {
+func (a *UsersAPI) ListUsers(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
-	err := a.client.Get(ctx, "/scim/v2/Users", in, &listUsersResponse)
+	path := "/api/2.0/preview/scim/v2/Users"
+	err := a.client.Get(ctx, path, request, &listUsersResponse)
 	return &listUsersResponse, err
 }
 
 // Create one user in the &lt;Workspace&gt;. 
-func (a *UsersAPI) NewUser(ctx context.Context, in CreateUserRequest) (*User, error) {
+func (a *UsersAPI) NewUser(ctx context.Context, request User) (*User, error) {
 	var user User
-	err := a.client.Post(ctx, "/scim/v2/Users", in, &user)
+	path := "/api/2.0/preview/scim/v2/Users"
+	err := a.client.Post(ctx, path, request, &user)
 	return &user, err
 }
 
-// Update details of one user. 
-func (a *UsersAPI) UpdateUser(ctx context.Context, in UpdateUserRequest) error {
-	
-	err := a.client.Patch(ctx, "/scim/v2/Users/{user_id}", in)
+// Partially update details of one user. 
+func (a *UsersAPI) PatchUser(ctx context.Context, request PartialUpdate) error {
+	path := "/api/2.0/preview/scim/v2/Users/"+request.Id
+	err := a.client.Patch(ctx, path, request)
+	return err
+}
+
+// Replaces user with the data supplied in request 
+func (a *UsersAPI) ReplaceUser(ctx context.Context, request User) error {
+	path := "/api/2.0/preview/scim/v2/Users/"+request.Id
+	err := a.client.Put(ctx, path, request)
 	return err
 }
 
 
-func (a *UsersAPI) DeleteUserByUserId(ctx context.Context, userId string) error {
-	return a.DeleteUser(ctx, DeleteUserRequest{
-		UserId: userId,
+func (a *UsersAPI) FetchUserById(ctx context.Context, id string) (*User, error) {
+	return a.FetchUser(ctx, FetchUserRequest{
+		Id: id,
 	})
 }
 
-func (a *UsersAPI) FetchUserByUserId(ctx context.Context, userId string) (*User, error) {
-	return a.FetchUser(ctx, FetchUserRequest{
-		UserId: userId,
+func (a *UsersAPI) DeleteUserById(ctx context.Context, id string) error {
+	return a.DeleteUser(ctx, DeleteUserRequest{
+		Id: id,
 	})
 }
