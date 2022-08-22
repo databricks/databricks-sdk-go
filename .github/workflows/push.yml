@@ -10,6 +10,10 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        goVersion: [1.18.x, 1.19.x]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -20,14 +24,14 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.16.x
+          go-version: ${{ matrix.goVersion }}
 
       - name: Set go env
         run: |
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-          go get gotest.tools/gotestsum
-          go install honnef.co/go/tools/cmd/staticcheck@v0.2.2
+          go install gotest.tools/gotestsum@latest
+          go install honnef.co/go/tools/cmd/staticcheck@latest
       
       - name: Pull external libraries
         run: make vendor
