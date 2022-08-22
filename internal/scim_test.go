@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
@@ -14,8 +13,6 @@ import (
 )
 
 func TestAccUsers(t *testing.T) {
-	os.Setenv("CLOUD_ENV", "azure")
-	os.Setenv("DATABRICKS_CONFIG_PROFILE", "azure-deco")
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	ctx := context.TODO()
 
