@@ -1,5 +1,23 @@
 {
 	// https://snippet-generator.app/
+	"explain error": {
+		"prefix": "ifef",
+		"body": [
+		  "if err != nil {",
+		  "  return nil, fmt.Errorf(\"failed to XXX: %w\", err)",
+		  "}"
+		],
+		"description": "explain error"
+	},
+	"if not nil": {
+		"prefix": "inn",
+		"body": [
+		  "if $1 != nil {",
+		  "  $2",
+		  "}"
+		],
+		"description": "if not nil"
+	},
 	"Test case": {
 		"prefix": "te",
 		"body": [
