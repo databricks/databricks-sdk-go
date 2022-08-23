@@ -15,6 +15,7 @@ type Named struct {
 	Description string
 }
 
+// TODO: Add tests, document accepted inputs/outputs.
 func (n *Named) PascalName() string {
 	return strings.ReplaceAll(
 		strings.Title(
