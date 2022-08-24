@@ -126,6 +126,10 @@ type Entity struct {
 	fields     map[string]Field
 }
 
+func (e *Entity) IsNumber() bool {
+	return e.IsInt64 || e.IsInt
+}
+
 func (e *Entity) IsObject() bool {
 	return len(e.fields) > 0
 }
@@ -300,7 +304,7 @@ func (pkg *Package) define(entity *Entity) {
 	pkg.types[entity.Name] = entity
 }
 
-var pathPairRE = regexp.MustCompile(`(?m)([^\{]+)\{(\w+)\}`)
+var pathPairRE = regexp.MustCompile(`(?m)([^\{]+)(\{(\w+)\})?`)
 
 type PathPart struct {
 	Prefix string
@@ -308,15 +312,20 @@ type PathPart struct {
 }
 
 func (pkg *Package) paramPath(path string, request *Entity, params []openapi.Parameter) (parts []PathPart) {
-	if len(params) == 0 {
+	var pathParams int
+	for _, v := range params {
+		if v.In == "path" {
+			pathParams++
+		}
+	}
+	if pathParams == 0 {
 		return
 	}
 	for _, v := range pathPairRE.FindAllStringSubmatch(path, -1) {
-		field, ok := request.fields[v[2]]
+		field, ok := request.fields[v[3]]
 		if !ok {
-			panic(fmt.Sprintf(
-				"%s invalid: missing path param field: %s",
-				request.Name, v[2]))
+			parts = append(parts, PathPart{v[1], nil})
+			continue
 		}
 		parts = append(parts, PathPart{v[1], &field})
 	}
