@@ -14,6 +14,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/libraries"
 	"github.com/databricks/databricks-sdk-go/service/permissions"
+	"github.com/databricks/databricks-sdk-go/service/repos"
 	"github.com/databricks/databricks-sdk-go/service/secrets"
 	"github.com/databricks/databricks-sdk-go/service/serviceprincipals"
 	"github.com/databricks/databricks-sdk-go/service/unitycatalog"
@@ -36,6 +37,7 @@ type WorkspacesClient struct {
 	Secrets           secrets.SecretsService
 	ServicePrincipals serviceprincipals.ServiceprincipalsService
 	Permissions       permissions.PermissionsService
+	Repos             repos.ReposService
 	UnityCatalog      unitycatalog.UnitycatalogService
 	Users             users.UsersService
 }
@@ -66,6 +68,7 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		Secrets:           secrets.New(apiClient),
 		ServicePrincipals: serviceprincipals.New(apiClient),
 		Permissions:       permissions.New(apiClient),
+		Repos:             repos.New(apiClient),
 		UnityCatalog:      unitycatalog.New(apiClient),
 		Users:             users.New(apiClient),
 	}

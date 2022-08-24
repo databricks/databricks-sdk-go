@@ -274,6 +274,9 @@ func (pkg *Package) newRequest(params []openapi.Parameter, op *openapi.Operation
 	if op.RequestBody != nil {
 		request = pkg.schemaToEntity(op.RequestBody.Schema(), []string{op.OperationId}, true)
 	}
+	if request.fields == nil {
+		panic(fmt.Errorf("%s request schema has no fields", op.OperationId))
+	}
 	for _, v := range params {
 		param := pkg.paramToField(op, v)
 		if param == nil {
