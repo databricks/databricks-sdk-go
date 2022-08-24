@@ -311,6 +311,15 @@ type PathPart struct {
 	Field  *Field
 }
 
+func (pkg *Package) HasPathParams() bool {
+	for _, m := range pkg.Methods {
+		if len(m.PathParts) > 0 {
+			return true
+		}
+	}
+	return false
+}
+
 func (pkg *Package) paramPath(path string, request *Entity, params []openapi.Parameter) (parts []PathPart) {
 	var pathParams int
 	for _, v := range params {

@@ -5,16 +5,17 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/service/commands"
+	"github.com/databricks/databricks-sdk-go/service/datasharing"
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
 	"github.com/databricks/databricks-sdk-go/service/deltapipelines"
-	"github.com/databricks/databricks-sdk-go/service/datasharing"
 	"github.com/databricks/databricks-sdk-go/service/groups"
 	"github.com/databricks/databricks-sdk-go/service/instancepools"
 	"github.com/databricks/databricks-sdk-go/service/instanceprofiles"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/libraries"
-	"github.com/databricks/databricks-sdk-go/service/serviceprincipals"
 	"github.com/databricks/databricks-sdk-go/service/permissions"
+	"github.com/databricks/databricks-sdk-go/service/secrets"
+	"github.com/databricks/databricks-sdk-go/service/serviceprincipals"
 	"github.com/databricks/databricks-sdk-go/service/unitycatalog"
 	"github.com/databricks/databricks-sdk-go/service/users"
 )
@@ -32,6 +33,7 @@ type WorkspacesClient struct {
 	InstancePools     instancepools.InstancepoolsService
 	InstanceProfiles  instanceprofiles.InstanceprofilesService
 	Libraries         libraries.LibrariesService
+	Secrets           secrets.SecretsService
 	ServicePrincipals serviceprincipals.ServiceprincipalsService
 	Permissions       permissions.PermissionsService
 	UnityCatalog      unitycatalog.UnitycatalogService
@@ -61,6 +63,7 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		InstancePools:     instancepools.New(apiClient),
 		InstanceProfiles:  instanceprofiles.New(apiClient),
 		Libraries:         libraries.New(apiClient),
+		Secrets:           secrets.New(apiClient),
 		ServicePrincipals: serviceprincipals.New(apiClient),
 		Permissions:       permissions.New(apiClient),
 		UnityCatalog:      unitycatalog.New(apiClient),
