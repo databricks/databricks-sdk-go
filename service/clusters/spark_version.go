@@ -47,25 +47,25 @@ func (s sparkVersionsType) Less(i, j int) bool {
 }
 
 // LatestSparkVersion returns latest version matching the request parameters
-func (sv SparkVersionsList) Select(req SparkVersionRequest) (string, error) {
+func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, error) {
 	var versions []string
-	for _, version := range sv.SparkVersions {
-		if strings.Contains(version.Version, "-scala"+req.Scala) {
-			matches := ((!strings.Contains(version.Version, "apache-spark-")) &&
-				(strings.Contains(version.Version, "-ml-") == req.ML) &&
-				(strings.Contains(version.Version, "-hls-") == req.Genomics) &&
-				(strings.Contains(version.Version, "-gpu-") == req.GPU) &&
-				(strings.Contains(version.Version, "-photon-") == req.Photon) &&
-				(strings.Contains(version.Version, "-aarch64-") == req.Graviton) &&
-				(strings.Contains(version.Description, "Beta") == req.Beta))
+	for _, version := range sv.Versions {
+		if strings.Contains(version.Key, "-scala"+req.Scala) {
+			matches := ((!strings.Contains(version.Key, "apache-spark-")) &&
+				(strings.Contains(version.Key, "-ml-") == req.ML) &&
+				(strings.Contains(version.Key, "-hls-") == req.Genomics) &&
+				(strings.Contains(version.Key, "-gpu-") == req.GPU) &&
+				(strings.Contains(version.Key, "-photon-") == req.Photon) &&
+				(strings.Contains(version.Key, "-aarch64-") == req.Graviton) &&
+				(strings.Contains(version.Name, "Beta") == req.Beta))
 			if matches && req.LongTermSupport {
-				matches = (matches && (strings.Contains(version.Description, "LTS") || strings.Contains(version.Version, "-esr-")))
+				matches = (matches && (strings.Contains(version.Name, "LTS") || strings.Contains(version.Key, "-esr-")))
 			}
 			if matches && len(req.SparkVersion) > 0 {
-				matches = (matches && strings.Contains(version.Description, "Apache Spark "+req.SparkVersion))
+				matches = (matches && strings.Contains(version.Name, "Apache Spark "+req.SparkVersion))
 			}
 			if matches {
-				versions = append(versions, version.Version)
+				versions = append(versions, version.Key)
 			}
 		}
 	}

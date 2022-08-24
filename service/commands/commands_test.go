@@ -22,13 +22,13 @@ func commonFixtureWithStatusResponse(response Command) qa.HTTPFixtures {
 			ReuseRequest: true,
 			Resource:     "/api/2.0/clusters/get?cluster_id=abc",
 			Response: clusters.ClusterInfo{
-				ClusterID:              "abc",
+				ClusterId:              "abc",
 				NumWorkers:             100,
 				ClusterName:            "Shared Autoscaling",
 				SparkVersion:           "7.1-scala12",
-				NodeTypeID:             "i3.xlarge",
+				NodeTypeId:             "i3.xlarge",
 				AutoterminationMinutes: 15,
-				State:                  clusters.ClusterStateRunning,
+				State:                  clusters.ClusterInfoStateRunning,
 			},
 		},
 		{

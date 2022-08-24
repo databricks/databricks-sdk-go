@@ -13,61 +13,77 @@ import (
 // https://github.com/databricks/terraform-provider-databricks/issues/445
 var getOrCreateClusterMutex sync.Mutex
 
+func (ci *ClusterInfo) IsRunningOrResizing() bool {
+	return ci.State == ClusterInfoStateRunning || ci.State == ClusterInfoStateResizing
+}
+
+func (ci *GetClusterResponse) IsRunningOrResizing() bool {
+	return ci.State == GetClusterResponseStateRunning || ci.State == GetClusterResponseStateResizing
+}
+
+// TODO: Consistency
+// CreateClusterResponse -> ClusterInfo ?..
+// CreateClusterRequest -> Cluster
+
 // GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist
-func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string, custom ...Cluster) (c ClusterInfo, err error) {
+func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateClusterRequest) (c *CreateClusterResponse, err error) {
 	getOrCreateClusterMutex.Lock()
 	defer getOrCreateClusterMutex.Unlock()
 	if len(custom) > 1 {
 		err = fmt.Errorf("you can only specify 1 custom cluster conf, not %d", len(custom))
 		return
 	}
-	clusters, err := a.List(ctx)
+	clusters, err := a.ListClusters(ctx, ListClustersRequest{})
 	if err != nil {
 		return
 	}
-	for _, cl := range clusters {
+	for _, cl := range clusters.Clusters {
 		if cl.ClusterName == name {
 			logger.Infof("Found reusable cluster '%s'", name)
 			clusterAvailable := true
 			if !cl.IsRunningOrResizing() {
-				err = a.Start(ctx, cl.ClusterID)
+				err = a.StartCluster(ctx, StartClusterRequest{
+					ClusterId: cl.ClusterId,
+				})
 				if err != nil {
 					clusterAvailable = false
 					logger.Infof("Cluster %s cannot be started, creating an autoterminating cluster", name)
 				}
 			}
 			if clusterAvailable {
-				return cl, nil
+				return &CreateClusterResponse{
+					ClusterId: cl.ClusterId,
+				}, nil
 			}
 		}
 	}
 	nodeTypes, err := a.ListNodeTypes(ctx)
 	if err != nil {
-		return ClusterInfo{}, fmt.Errorf("list node types: %w", err) // TODO: GENERATOR: prefix method name
+		return nil, fmt.Errorf("list node types: %w", err) // TODO: GENERATOR: prefix method name
 	}
 	smallestNodeType, err := nodeTypes.Smallest(NodeTypeRequest{
 		LocalDisk: true,
 	})
 	if err != nil {
-		return ClusterInfo{}, err
+		return nil, err
 	}
 	logger.Infof("Creating an autoterminating cluster with node type %s", smallestNodeType)
-	versions, err := a.ListSparkVersions(ctx)
+	versions, err := a.GetSparkVersions(ctx)
 	if err != nil {
-		return ClusterInfo{}, fmt.Errorf("list spark versions: %w", err) // TODO: GENERATOR: prefix method name
+		return nil, fmt.Errorf("list spark versions: %w", err) // TODO: GENERATOR: prefix method name
 	}
 	version, err := versions.Select(SparkVersionRequest{
 		Latest:          true,
 		LongTermSupport: true,
 	})
 	if err != nil {
-		return ClusterInfo{}, err
+		return nil, err
 	}
-	r := Cluster{
-		NumWorkers:  1,
-		ClusterName: name,
-		SparkVersion: version,
-		NodeTypeID:             smallestNodeType,
+	r := CreateClusterRequest{
+		NumWorkers:             1,
+		ClusterName:            name,
+		SparkVersion:           version,
+		NodeTypeId:             smallestNodeType,
 		AutoterminationMinutes: 10,
 	}
 	if a.client.Config.IsAws() {
@@ -78,5 +94,5 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	if len(custom) == 1 {
 		r = custom[0]
 	}
-	return a.Create(ctx, r)
+	return a.CreateCluster(ctx, r)
 }

@@ -16,7 +16,7 @@ func TestAccDefaultCredentials(t *testing.T) {
 	ws := workspaces.New()
 
 	ctx := context.Background()
-	versions, err := ws.Clusters.ListSparkVersions(ctx)
+	versions, err := ws.Clusters.GetSparkVersions(ctx)
 	require.NoError(t, err)
 
 	v, err := versions.Select(clusters.SparkVersionRequest{
@@ -34,9 +34,15 @@ func TestAccExplicitDatabricksCfg(t *testing.T) {
 		Profile: GetEnvOrSkipTest(t, "DATABRICKS_CONFIG_PROFILE"),
 	})
 	ctx := context.Background()
-	versions, err := ws.Clusters.ListSparkVersions(ctx)
+	versions, err := ws.Clusters.GetSparkVersions(ctx)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(versions.SparkVersions), 10)
+
+	v, err := versions.Select(clusters.SparkVersionRequest{
+		LongTermSupport: true,
+		Latest:          true,
+	})
+	assert.NoError(t, err)
+	assert.NotEmpty(t, v)
 }
 
 func TestAccExplicitAzureCliAuth(t *testing.T) {
@@ -45,9 +51,15 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 		Credentials:     databricks.AzureCliCredentials{},
 	})
 	ctx := context.Background()
-	versions, err := ws.Clusters.ListSparkVersions(ctx)
+	versions, err := ws.Clusters.GetSparkVersions(ctx)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(versions.SparkVersions), 10)
+
+	v, err := versions.Select(clusters.SparkVersionRequest{
+		LongTermSupport: true,
+		Latest:          true,
+	})
+	assert.NoError(t, err)
+	assert.NotEmpty(t, v)
 }
 
 func TestAccExplicitAzureSpnAuth(t *testing.T) {
@@ -59,7 +71,13 @@ func TestAccExplicitAzureSpnAuth(t *testing.T) {
 		Credentials:       databricks.AzureClientSecretCredentials{},
 	})
 	ctx := context.Background()
-	versions, err := ws.Clusters.ListSparkVersions(ctx)
+	versions, err := ws.Clusters.GetSparkVersions(ctx)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(versions.SparkVersions), 10)
+
+	v, err := versions.Select(clusters.SparkVersionRequest{
+		LongTermSupport: true,
+		Latest:          true,
+	})
+	assert.NoError(t, err)
+	assert.NotEmpty(t, v)
 }

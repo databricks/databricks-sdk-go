@@ -22,26 +22,26 @@ type NodeTypeRequest struct {
 }
 
 // sort NodeTypes within this struct
-func (ntl *NodeTypeList) sort() {
+func (ntl *ListNodeTypesResponse) sort() {
 	sortByChain(ntl.NodeTypes, func(i int) sortCmp {
 		var localDisks, localDiskSizeGB int32
-		if ntl.NodeTypes[i].NodeInstanceType != nil {
-			localDisks = ntl.NodeTypes[i].NodeInstanceType.LocalDisks
-			localDiskSizeGB = ntl.NodeTypes[i].NodeInstanceType.LocalDiskSizeGB
-		}
+		// if ntl.NodeTypes[i].InstanceTypeId != nil {
+		// 	localDisks = ntl.NodeTypes[i].NodeInstanceType.LocalDisks
+		// 	localDiskSizeGB = ntl.NodeTypes[i].NodeInstanceType.LocalDiskSizeGB
+		// }
 		return sortChain{
 			boolAsc(ntl.NodeTypes[i].IsDeprecated),
 			intAsc(localDisks),
 			intAsc(localDiskSizeGB),
-			intAsc(ntl.NodeTypes[i].MemoryMB),
+			intAsc(ntl.NodeTypes[i].MemoryMb),
 			intAsc(ntl.NodeTypes[i].NumCores),
-			intAsc(ntl.NodeTypes[i].NumGPUs),
-			strAsc(ntl.NodeTypes[i].InstanceTypeID),
+			//intAsc(ntl.NodeTypes[i].NumGPUs),
+			strAsc(ntl.NodeTypes[i].InstanceTypeId),
 		}
 	})
 }
 
-func (ntl *NodeTypeList) Smallest(r NodeTypeRequest) (string, error) {
+func (ntl *ListNodeTypesResponse) Smallest(r NodeTypeRequest) (string, error) {
 	// error is explicitly ingored here, because Azure returns
 	// apparently too big of a JSON for Go to parse
 	if len(ntl.NodeTypes) == 0 {
@@ -52,11 +52,11 @@ func (ntl *NodeTypeList) Smallest(r NodeTypeRequest) (string, error) {
 	}
 	ntl.sort()
 	for _, nt := range ntl.NodeTypes {
-		gbs := (nt.MemoryMB / 1024)
-		if r.VCPU && !strings.HasPrefix(nt.NodeTypeID, "vcpu") {
+		gbs := int32(nt.MemoryMb / 1024)
+		if r.VCPU && !strings.HasPrefix(nt.NodeTypeId, "vcpu") {
 			continue
 		}
-		if !r.VCPU && strings.HasPrefix(nt.NodeTypeID, "vcpu") {
+		if !r.VCPU && strings.HasPrefix(nt.NodeTypeId, "vcpu") {
 			continue
 		}
 		if r.MinMemoryGB > 0 && gbs < r.MinMemoryGB {
@@ -68,33 +68,33 @@ func (ntl *NodeTypeList) Smallest(r NodeTypeRequest) (string, error) {
 		if r.MinCores > 0 && int32(nt.NumCores) < r.MinCores {
 			continue
 		}
-		if r.MinGPUs > 0 && nt.NumGPUs < r.MinGPUs {
-			continue
-		}
-		if r.LocalDisk && nt.NodeInstanceType != nil &&
-			(nt.NodeInstanceType.LocalDisks < 1 &&
-				nt.NodeInstanceType.LocalNVMeDisks < 1) {
-			continue
-		}
-		if r.Category != "" && !strings.EqualFold(nt.Category, r.Category) {
-			continue
-		}
-		if r.IsIOCacheEnabled && nt.IsIOCacheEnabled != r.IsIOCacheEnabled {
-			continue
-		}
-		if r.SupportPortForwarding && nt.SupportPortForwarding != r.SupportPortForwarding {
-			continue
-		}
-		if r.PhotonDriverCapable && nt.PhotonDriverCapable != r.PhotonDriverCapable {
-			continue
-		}
-		if r.PhotonWorkerCapable && nt.PhotonWorkerCapable != r.PhotonWorkerCapable {
-			continue
-		}
-		if r.Graviton && nt.Graviton != r.Graviton {
-			continue
-		}
-		return nt.NodeTypeID, nil
+		// if r.MinGPUs > 0 && nt.NumGPUs < r.MinGPUs {
+		// 	continue
+		// }
+		// if r.LocalDisk && nt.NodeInstanceType != nil &&
+		// 	(nt.NodeInstanceType.LocalDisks < 1 &&
+		// 		nt.NodeInstanceType.LocalNVMeDisks < 1) {
+		// 	continue
+		// }
+		// if r.Category != "" && !strings.EqualFold(nt.Category, r.Category) {
+		// 	continue
+		// }
+		// if r.IsIOCacheEnabled && nt.IsIOCacheEnabled != r.IsIOCacheEnabled {
+		// 	continue
+		// }
+		// if r.SupportPortForwarding && nt.SupportPortForwarding != r.SupportPortForwarding {
+		// 	continue
+		// }
+		// if r.PhotonDriverCapable && nt.PhotonDriverCapable != r.PhotonDriverCapable {
+		// 	continue
+		// }
+		// if r.PhotonWorkerCapable && nt.PhotonWorkerCapable != r.PhotonWorkerCapable {
+		// 	continue
+		// }
+		// if r.Graviton && nt.Graviton != r.Graviton {
+		// 	continue
+		// }
+		return nt.NodeTypeId, nil
 	}
 	return "", fmt.Errorf("cannot determine smallest node type")
 }

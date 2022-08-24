@@ -33,7 +33,9 @@ type Command struct {
 // Execute creates a spark context and executes a command and then closes context
 // Any leading whitespace is trimmed
 func (a *CommandsAPI) Execute(ctx context.Context, clusterID, language, commandStr string) CommandResults {
-	cluster, err := clusters.New(a.client.Config).Get(ctx, clusterID)
+	cluster, err := clusters.New(a.client).GetCluster(ctx, clusters.GetClusterRequest{
+		ClusterId: clusterID,
+	})
 	if err != nil {
 		return CommandResults{
 			ResultType: "error",
