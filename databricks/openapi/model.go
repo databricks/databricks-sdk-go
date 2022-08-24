@@ -186,6 +186,9 @@ func (s *Schema) IsEmpty() bool {
 	if s.IsObject() {
 		return false
 	}
+	if s.IsRef() {
+		return false
+	}
 	if s.Type == "object" || s.Type == "" {
 		return true
 	}

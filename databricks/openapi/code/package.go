@@ -120,6 +120,7 @@ type Entity struct {
 	MapValue   *Entity
 	IsInt      bool
 	IsInt64    bool
+	IsFloat64  bool
 	IsBool     bool
 	IsString   bool
 	fields     map[string]Field
@@ -180,6 +181,7 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 	e.IsBool = s.Type == "boolean" || s.Type == "bool"
 	e.IsString = s.Type == "string"
 	e.IsInt64 = s.Type == "integer" && s.Format == "int64"
+	e.IsFloat64 = s.Type == "number" && s.Format == "double"
 	e.IsInt = s.Type == "integer" || s.Type == "int"
 	return e
 }
@@ -238,6 +240,10 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 		return pkg.types[s.Component()]
 	}
 	e := pkg.schemaToEntity(s, []string{name}, true)
+	if e == nil {
+		// gets here when responses are objects with no properties
+		return nil
+	}
 	if e.Name == "" {
 		e.Named = Named{name, s.Description}
 	}
@@ -288,7 +294,8 @@ func (pkg *Package) newRequest(params []openapi.Parameter, op *openapi.Operation
 func (pkg *Package) define(entity *Entity) {
 	_, defined := pkg.types[entity.Name]
 	if defined {
-		panic(fmt.Sprintf("%s is already defined", entity.Name))
+		//panic(fmt.Sprintf("%s is already defined", entity.Name))
+		return
 	}
 	pkg.types[entity.Name] = entity
 }
@@ -318,6 +325,8 @@ func (pkg *Package) paramPath(path string, request *Entity, params []openapi.Par
 
 func (pkg *Package) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) Method {
 	request := pkg.newRequest(params, op)
+	response := pkg.definedEntity(op.OperationId+"Response",
+		op.SuccessResponseSchema(pkg.Components))
 	return Method{
 		Named:     Named{op.OperationId, op.Description},
 		Service:   pkg,
@@ -325,8 +334,7 @@ func (pkg *Package) newMethod(verb, path string, params []openapi.Parameter, op 
 		Path:      path,
 		Request:   request,
 		PathParts: pkg.paramPath(path, request, params),
-		Response: pkg.definedEntity(op.OperationId+"Response",
-			op.SuccessResponseSchema(pkg.Components)),
+		Response:  response,
 	}
 }
 

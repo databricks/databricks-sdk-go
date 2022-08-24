@@ -26,6 +26,7 @@ const {{.Entity.PascalName}}{{.PascalName}} {{.Entity.PascalName}} = `{{.Content
 	{{- else if .IsString}}string
 	{{- else if .IsBool}}bool
 	{{- else if .IsInt64}}int64
+	{{- else if .IsFloat64}}float64
 	{{- else if .IsInt}}int
 	{{- else if .ArrayValue }}[]{{template "type" .ArrayValue}}
 	{{- else if .MapValue }}[]{{template "type" .MapValue}}
