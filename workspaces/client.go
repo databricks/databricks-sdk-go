@@ -20,6 +20,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/tokens"
 	"github.com/databricks/databricks-sdk-go/service/unitycatalog"
 	"github.com/databricks/databricks-sdk-go/service/users"
+	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
 
 type WorkspacesClient struct {
@@ -42,6 +43,7 @@ type WorkspacesClient struct {
 	Tokens            tokens.TokensService
 	UnityCatalog      unitycatalog.UnitycatalogService
 	Users             users.UsersService
+	Workspace         workspace.WorkspaceService
 }
 
 func New(c ...*databricks.Config) *WorkspacesClient {
@@ -74,5 +76,6 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		Tokens:            tokens.New(apiClient),
 		UnityCatalog:      unitycatalog.New(apiClient),
 		Users:             users.New(apiClient),
+		Workspace:         workspace.New(apiClient),
 	}
 }
