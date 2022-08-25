@@ -1184,7 +1184,7 @@ const GcpAttributesAvailabilityPreemptibleWithFallbackGcp GcpAttributesAvailabil
 
 type GetClusterRequest struct {
     // The cluster about which to retrieve information. 
-    ClusterId string ` query:"cluster_id,omitempty"`
+    ClusterId string ` url:"cluster_id,omitempty"`
 }
 
 
@@ -1615,7 +1615,7 @@ type ListClustersRequest struct {
     // Filter clusters based on what type of client it can be used for. Could 
     // be either NOTEBOOKS or JOBS. No input for this field will get all 
     // clusters in the workspace without filtering on its supported client 
-    CanUseClient string ` query:"can_use_client,omitempty"`
+    CanUseClient string ` url:"can_use_client,omitempty"`
 }
 
 

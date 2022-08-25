@@ -74,9 +74,9 @@ type DeleteSecretRequest struct {
 
 type GetAclRequest struct {
     // The principal to fetch ACL information for. 
-    Principal string ` query:"principal,omitempty"`
+    Principal string ` url:"principal,omitempty"`
     // The name of the scope to fetch ACL information from. 
-    Scope string ` query:"scope,omitempty"`
+    Scope string ` url:"scope,omitempty"`
 }
 
 
@@ -99,7 +99,7 @@ const GetAclResponsePermissionManage GetAclResponsePermission = `MANAGE`
 
 type ListAclsRequest struct {
     // The name of the scope to fetch ACL information from. 
-    Scope string ` query:"scope,omitempty"`
+    Scope string ` url:"scope,omitempty"`
 }
 
 
@@ -117,7 +117,7 @@ type ListScopesResponse struct {
 
 type ListSecretsRequest struct {
     // The name of the scope to list secrets within. 
-    Scope string ` query:"scope,omitempty"`
+    Scope string ` url:"scope,omitempty"`
 }
 
 

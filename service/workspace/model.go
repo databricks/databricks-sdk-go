@@ -20,14 +20,14 @@ type ExportRequest struct {
     // the exported file itself. Otherwise, the response contains content as 
     // base64 encoded string. See :ref:`workspace-api-export-example` for more 
     // information about how to use it. 
-    DirectDownload bool ` query:"direct_download,omitempty"`
+    DirectDownload bool ` url:"direct_download,omitempty"`
     // This specifies the format of the exported file. By default, this is 
     // ``SOURCE``. However it may be one of: ``SOURCE``, ``HTML``, ``JUPYTER``, 
     // ``DBC``. The value is case sensitive. 
-    Format string ` query:"format,omitempty"`
+    Format string ` url:"format,omitempty"`
     // The absolute path of the notebook or directory. Exporting directory is 
     // only support for ``DBC`` format. 
-    Path string ` query:"path,omitempty"`
+    Path string ` url:"path,omitempty"`
 }
 
 
@@ -40,7 +40,7 @@ type ExportResponse struct {
 
 type GetStatusRequest struct {
     // The absolute path of the notebook or directory. 
-    Path string ` query:"path,omitempty"`
+    Path string ` url:"path,omitempty"`
 }
 
 
@@ -166,9 +166,9 @@ const ImportRequestLanguageR ImportRequestLanguage = `R`
 
 type ListRequest struct {
     
-    NotebooksModifiedAfter int ` query:"notebooks_modified_after,omitempty"`
+    NotebooksModifiedAfter int ` url:"notebooks_modified_after,omitempty"`
     // The absolute path of the notebook or directory. 
-    Path string ` query:"path,omitempty"`
+    Path string ` url:"path,omitempty"`
 }
 
 

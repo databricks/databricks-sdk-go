@@ -45,24 +45,24 @@ type ListServicePrincipalResponse struct {
 
 type ListServicePrincipalsRequest struct {
     // Comma-separated list of attributes to return in response. 
-    Attributes string ` query:"attributes,omitempty"`
+    Attributes string ` url:"attributes,omitempty"`
     // Desired number of results per page. 
-    Count int ` query:"count,omitempty"`
+    Count int ` url:"count,omitempty"`
     // Comma-separated list of attributes to exclude in response. 
-    ExcludedAttributes string ` query:"excludedAttributes,omitempty"`
+    ExcludedAttributes string ` url:"excludedAttributes,omitempty"`
     // Query by which the results have to be filtered. Supported operators are 
     // equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`). 
     // Additionally, simple expressions can be formed using logical operators - 
     // `and` and `or`. The [SCIM 
     // RFC](https://tools.ietf.org/html/rfc7644#section-3.4.2.2) has more 
     // details but we currently only support simple expressions. 
-    Filter string ` query:"filter,omitempty"`
+    Filter string ` url:"filter,omitempty"`
     // Attribute to sort the results. 
-    SortBy string ` query:"sortBy,omitempty"`
+    SortBy string ` url:"sortBy,omitempty"`
     // The order to sort the results. 
-    SortOrder ListServicePrincipalsSortOrder ` query:"sortOrder,omitempty"`
+    SortOrder ListServicePrincipalsSortOrder ` url:"sortOrder,omitempty"`
     // Specifies the index of the first result. First item is number 1. 
-    StartIndex int ` query:"startIndex,omitempty"`
+    StartIndex int ` url:"startIndex,omitempty"`
 }
 
 

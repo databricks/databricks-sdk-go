@@ -60,7 +60,7 @@ type FileInfo struct {
 type GetStatusRequest struct {
     // The path of the file or directory. The path should be the absolute DBFS 
     // path (e.g. &#34;/mnt/foo/&#34;). 
-    Path string ` query:"path,omitempty"`
+    Path string ` url:"path,omitempty"`
 }
 
 
@@ -79,7 +79,7 @@ type GetStatusResponse struct {
 type ListStatusRequest struct {
     // The path of the file or directory. The path should be the absolute DBFS 
     // path (e.g. &#34;/mnt/foo/&#34;). 
-    Path string ` query:"path,omitempty"`
+    Path string ` url:"path,omitempty"`
 }
 
 
@@ -121,12 +121,12 @@ type PutRequest struct {
 type ReadRequest struct {
     // The number of bytes to read starting from the offset. This has a limit 
     // of 1 MB, and a default value of 0.5 MB. 
-    Length int ` query:"length,omitempty"`
+    Length int ` url:"length,omitempty"`
     // The offset to read from in bytes. 
-    Offset int ` query:"offset,omitempty"`
+    Offset int ` url:"offset,omitempty"`
     // The path of the file to read. The path should be the absolute DBFS path 
     // (e.g. &#34;/mnt/foo/&#34;). 
-    Path string ` query:"path,omitempty"`
+    Path string ` url:"path,omitempty"`
 }
 
 

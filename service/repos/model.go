@@ -54,9 +54,9 @@ type ListReposRequest struct {
     // Token used to get the next page of results. If not specified, returns 
     // the first page of results as well as a next page token if there are more 
     // results. 
-    NextPageToken string ` query:"next_page_token,omitempty"`
+    NextPageToken string ` url:"next_page_token,omitempty"`
     // Filters repos that have paths starting with the given path prefix. 
-    PathPrefix string ` query:"path_prefix,omitempty"`
+    PathPrefix string ` url:"path_prefix,omitempty"`
 }
 
 

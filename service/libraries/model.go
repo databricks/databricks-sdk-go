@@ -14,7 +14,7 @@ type ClusterLibraryStatuses struct {
 
 type ClusterStatusRequest struct {
     // Unique identifier of the cluster whose status should be retrieved. 
-    ClusterId string ` query:"cluster_id,omitempty"`
+    ClusterId string ` url:"cluster_id,omitempty"`
 }
 
 
