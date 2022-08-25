@@ -45,8 +45,10 @@ func (n *Named) Comment(prefix string, maxLen int) string {
 			lines = append(lines, currentLine.String())
 			currentLine.Reset()
 		}
+		if currentLine.Len() > 0 {
+			currentLine.WriteRune(' ')
+		}
 		currentLine.WriteString(v)
-		currentLine.WriteRune(' ')
 	}
 	if currentLine.Len() > 0 {
 		lines = append(lines, currentLine.String())
