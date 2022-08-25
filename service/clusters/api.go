@@ -4,7 +4,6 @@ package clusters
 
 import (
 	"context"
-	
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
