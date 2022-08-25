@@ -5,11 +5,12 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"html/template"
 	"io/fs"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
+	"text/template"
 
 	"github.com/databricks/databricks-sdk-go/databricks/openapi/code"
 )
@@ -19,7 +20,7 @@ var ctx Context
 func main() {
 	flag.StringVar(&ctx.Spec, "spec", "", "location of the spec file")
 	flag.BoolVar(&ctx.DryRun, "dry-run", false, "print to stdout instead of real files")
-
+	flag.StringVar(&ctx.Language, "lang", "go", "target language")
 	flag.Parse()
 
 	if ctx.Spec == "" {
@@ -36,8 +37,31 @@ func main() {
 }
 
 type Context struct {
-	Spec   string
-	DryRun bool
+	Spec     string
+	DryRun   bool
+	Language string
+}
+
+func (c *Context) templateDir() string {
+	return filepath.Join("databricks/openapi/templates", c.Language)
+}
+
+func (c *Context) fileset() (map[string]string, error) {
+	switch c.Language {
+	case "go":
+		return map[string]string{
+			"api.go.tmpl":   "service/{{.Name}}/api.go",
+			"model.go.tmpl": "service/{{.Name}}/model.go",
+		}, nil
+	case "js":
+		return map[string]string{
+			"api.ts.tmpl":   "service-js/{{.Name}}/api.ts",
+			"model.ts.tmpl": "service-js/{{.Name}}/model.ts",
+			"index.ts.tmpl": "service-js/{{.Name}}/index.ts",
+		}, nil
+	}
+
+	return nil, fmt.Errorf("fileset for language %s not found", c.Language)
 }
 
 func (c *Context) Generate() error {
@@ -45,14 +69,15 @@ func (c *Context) Generate() error {
 	if err != nil {
 		return err
 	}
+	fileset, err := c.fileset()
+	if err != nil {
+		return err
+	}
 	return (&Render{
-		ctx:   c,
-		batch: batch,
-		tmpl:  template.Must(template.ParseGlob("databricks/openapi/gen/*.tmpl")),
-		fileset: map[string]string{
-			"api.go.tmpl":   "service/{{.Name}}/api.go",
-			"model.go.tmpl": "service/{{.Name}}/model.go",
-		},
+		ctx:     c,
+		batch:   batch,
+		tmpl:    template.Must(template.New("content").Funcs(code.HelperFuncs).ParseGlob(filepath.Join(c.templateDir(), "*.tmpl"))),
+		fileset: fileset,
 	}).Run()
 }
 
@@ -64,6 +89,16 @@ type Render struct {
 }
 
 func (r *Render) Run() error {
+	for _, tmpl := range r.tmpl.Templates() {
+		if !strings.HasSuffix(tmpl.Name(), ".tmpl") {
+			continue
+		}
+		_, ok := r.fileset[tmpl.Name()]
+		if !ok {
+			return fmt.Errorf("File %s not in fileset", tmpl.Name())
+		}
+	}
+
 	for _, pkg := range r.batch.Packages {
 		for k, v := range r.fileset {
 			err := r.File(pkg, k, v)
