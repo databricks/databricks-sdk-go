@@ -1208,7 +1208,7 @@ type GetMetastoreSummaryResponse struct {
 
 type GetPermissionsRequest struct {
     // Optional. List permissions granted to this principal. 
-    Principal string ` query:"principal,omitempty"`
+    Principal string ` url:"principal,omitempty"`
     // Required. Unique identifier (full name) of Securable (from URL). 
     SecurableFullName string ` path:"securable_full_name"`
     // Required. Type of Securable (from URL). 
@@ -1459,7 +1459,7 @@ type ListMetastoresResponse struct {
 
 type ListSchemasRequest struct {
     // Optional. Parent catalog for schemas of interest. 
-    CatalogName string ` query:"catalog_name,omitempty"`
+    CatalogName string ` url:"catalog_name,omitempty"`
 }
 
 
@@ -1477,10 +1477,10 @@ type ListStorageCredentialsResponse struct {
 
 type ListTablesRequest struct {
     // Required. Name of parent catalog for tables of interest. 
-    CatalogName string ` query:"catalog_name,omitempty"`
+    CatalogName string ` url:"catalog_name,omitempty"`
     // Required (for now -- may be optional for wildcard search in future). 
     // Parent schema of tables. 
-    SchemaName string ` query:"schema_name,omitempty"`
+    SchemaName string ` url:"schema_name,omitempty"`
 }
 
 

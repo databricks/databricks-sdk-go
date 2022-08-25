@@ -276,7 +276,7 @@ const FleetSpotOptionAllocationStrategyPrioritized FleetSpotOptionAllocationStra
 
 type GetInstancePoolRequest struct {
     // The instance pool about which to retrieve information. 
-    InstancePoolId string ` query:"instance_pool_id,omitempty"`
+    InstancePoolId string ` url:"instance_pool_id,omitempty"`
 }
 
 

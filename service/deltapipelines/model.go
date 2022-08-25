@@ -200,13 +200,13 @@ type GetUpdateResponse struct {
 
 type ListUpdatesRequest struct {
     // Max number of entries to return in a single page. 
-    MaxResults int ` query:"max_results,omitempty"`
+    MaxResults int ` url:"max_results,omitempty"`
     // Page token returned by previous call 
-    PageToken string ` query:"page_token,omitempty"`
+    PageToken string ` url:"page_token,omitempty"`
     // The pipeline to return updates for. 
     PipelineId string ` path:"pipeline_id"`
     // If present, returns updates until and including this update_id. 
-    UntilUpdateId string ` query:"until_update_id,omitempty"`
+    UntilUpdateId string ` url:"until_update_id,omitempty"`
 }
 
 

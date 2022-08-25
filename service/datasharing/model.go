@@ -355,7 +355,7 @@ type GetSharePermissionsResponse struct {
 
 type GetShareRequest struct {
     
-    IncludeSharedData bool ` query:"include_shared_data,omitempty"`
+    IncludeSharedData bool ` url:"include_shared_data,omitempty"`
     
     Name string ` path:"name"`
 }

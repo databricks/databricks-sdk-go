@@ -197,9 +197,9 @@ type DeleteRunRequest struct {
 
 type ExportRunRequest struct {
     // The canonical identifier for the run. This field is required. 
-    RunId int64 ` query:"run_id,omitempty"`
+    RunId int64 ` url:"run_id,omitempty"`
     // Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE. 
-    ViewsToExport ViewsToExport ` query:"views_to_export,omitempty"`
+    ViewsToExport ViewsToExport ` url:"views_to_export,omitempty"`
 }
 
 
@@ -218,7 +218,7 @@ type FileStorageInfo struct {
 type GetJobRequest struct {
     // The canonical identifier of the job to retrieve information about. This 
     // field is required. 
-    JobId int64 ` query:"job_id,omitempty"`
+    JobId int64 ` url:"job_id,omitempty"`
 }
 
 
@@ -246,7 +246,7 @@ type GetJobResponse struct {
 
 type GetRunOutputRequest struct {
     // The canonical identifier for the run. This field is required. 
-    RunId int64 ` query:"run_id,omitempty"`
+    RunId int64 ` url:"run_id,omitempty"`
 }
 
 
@@ -287,10 +287,10 @@ type GetRunOutputResponse struct {
 
 type GetRunRequest struct {
     // Whether to include the repair history in the response. 
-    IncludeHistory bool ` query:"include_history,omitempty"`
+    IncludeHistory bool ` url:"include_history,omitempty"`
     // The canonical identifier of the run for which to retrieve the metadata. 
     // This field is required. 
-    RunId int64 ` query:"run_id,omitempty"`
+    RunId int64 ` url:"run_id,omitempty"`
 }
 
 
@@ -639,13 +639,13 @@ type Library struct {
 
 type ListJobsRequest struct {
     // Whether to include task and cluster details in the response. 
-    ExpandTasks bool ` query:"expand_tasks,omitempty"`
+    ExpandTasks bool ` url:"expand_tasks,omitempty"`
     // The number of jobs to return. This value must be greater than 0 and less 
     // or equal to 25. The default value is 20. 
-    Limit int ` query:"limit,omitempty"`
+    Limit int ` url:"limit,omitempty"`
     // The offset of the first job to return, relative to the most recently 
     // created job. 
-    Offset int ` query:"offset,omitempty"`
+    Offset int ` url:"offset,omitempty"`
 }
 
 
@@ -662,33 +662,33 @@ type ListRunsRequest struct {
     // otherwise, lists both active and completed runs. An active run is a run 
     // in the `PENDING`, `RUNNING`, or `TERMINATING`. This field cannot be 
     // `true` when completed_only is `true`. 
-    ActiveOnly bool ` query:"active_only,omitempty"`
+    ActiveOnly bool ` url:"active_only,omitempty"`
     // If completed_only is `true`, only completed runs are included in the 
     // results; otherwise, lists both active and completed runs. This field 
     // cannot be `true` when active_only is `true`. 
-    CompletedOnly bool ` query:"completed_only,omitempty"`
+    CompletedOnly bool ` url:"completed_only,omitempty"`
     // Whether to include task and cluster details in the response. 
-    ExpandTasks bool ` query:"expand_tasks,omitempty"`
+    ExpandTasks bool ` url:"expand_tasks,omitempty"`
     // The job for which to list runs. If omitted, the Jobs service lists runs 
     // from all jobs. 
-    JobId int64 ` query:"job_id,omitempty"`
+    JobId int64 ` url:"job_id,omitempty"`
     // The number of runs to return. This value must be greater than 0 and less 
     // than 25\. The default value is 25\. If a request specifies a limit of 0, 
     // the service instead uses the maximum limit. 
-    Limit int ` query:"limit,omitempty"`
+    Limit int ` url:"limit,omitempty"`
     // The offset of the first run to return, relative to the most recent run. 
-    Offset int ` query:"offset,omitempty"`
+    Offset int ` url:"offset,omitempty"`
     // The type of runs to return. For a description of run types, see 
     // [Run](..dev-tools/api/latest/jobshtml#operation/JobsRunsGet). 
-    RunType ListRunsRunType ` query:"run_type,omitempty"`
+    RunType ListRunsRunType ` url:"run_type,omitempty"`
     // Show runs that started _at or after_ this value. The value must be a UTC 
     // timestamp in milliseconds. Can be combined with _start_time_to_ to 
     // filter by a time range. 
-    StartTimeFrom int ` query:"start_time_from,omitempty"`
+    StartTimeFrom int ` url:"start_time_from,omitempty"`
     // Show runs that started _at or before_ this value. The value must be a 
     // UTC timestamp in milliseconds. Can be combined with _start_time_from_ to 
     // filter by a time range. 
-    StartTimeTo int ` query:"start_time_to,omitempty"`
+    StartTimeTo int ` url:"start_time_to,omitempty"`
 }
 
 
