@@ -5,7 +5,7 @@
 {{if .Fields -}}export interface {{.PascalName}} {
     {{- range .Fields}}
     {{.Comment "    // " 80}}
-    {{.CamelName}}{{if .IsOptionalObject}}?{{end}}: {{template "type" .Entity}};{{end}}
+    {{.SnakeName}}{{if .IsOptionalObject}}?{{end}}: {{template "type" .Entity}};{{end}}
 }
 {{else if .Enum}}type {{.PascalName}} = 
 {{$entity := .Enum}}{{range $i, $e:=.Enum }}{{if $e.Comment "// " 80}}{{$e.Comment "// " 80}}

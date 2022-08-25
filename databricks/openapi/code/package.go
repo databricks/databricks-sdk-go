@@ -30,6 +30,16 @@ func (n *Named) CamelName() string {
 	return strings.ToLower(cc[0:1]) + cc[1:]
 }
 
+func (n *Named) SnakeName() string {
+	return strings.ToLower(
+		strings.ReplaceAll(
+			strings.ReplaceAll(
+				strings.ReplaceAll(n.Name, "$", ""),
+				" ", ""),
+			"-", "_"),
+	)
+}
+
 func (n *Named) HasComment() bool {
 	return n.Description != ""
 }
@@ -348,6 +358,8 @@ func (pkg *Package) newMethod(verb, path string, params []openapi.Parameter, op 
 	request := pkg.newRequest(params, op)
 	response := pkg.definedEntity(op.OperationId+"Response",
 		op.SuccessResponseSchema(pkg.Components))
+
+	fmt.Println(op.SuccessResponseSchema(pkg.Components))
 	return Method{
 		Named:     Named{op.OperationId, op.Description},
 		Service:   pkg,
