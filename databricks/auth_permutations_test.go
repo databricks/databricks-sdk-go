@@ -272,7 +272,7 @@ func TestConfig_AzureCliHost(t *testing.T) {
 		host:            "x",          // adb-123.4.azuredatabricks.net
 		azureResourceID: azResourceID, // skips ensureWorkspaceUrl
 		env: map[string]string{
-			"PATH": "testdata",
+			"PATH": testdataPath(),
 			"HOME": "testdata/azure",
 		},
 		assertAzure: true,
@@ -285,7 +285,7 @@ func TestConfig_AzureCliHost_Fail(t *testing.T) {
 	configFixture{
 		azureResourceID: azResourceID,
 		env: map[string]string{
-			"PATH": "testdata",
+			"PATH": testdataPath(),
 			"HOME": "testdata/azure",
 			"FAIL": "yes",
 		},
@@ -310,7 +310,7 @@ func TestConfig_AzureCliHost_PatConflict_WithConfigFilePresentWithoutDefaultProf
 		azureResourceID: azResourceID,
 		token:           "x",
 		env: map[string]string{
-			"PATH": "testdata",
+			"PATH": testdataPath(),
 			"HOME": "testdata/azure",
 		},
 		assertError: "validate: more than one authorization method configured: azure and pat. Config: token=***, azure_workspace_resource_id=/sub/rg/ws",
@@ -323,7 +323,7 @@ func TestConfig_AzureCliHostAndResourceID(t *testing.T) {
 		azureResourceID: azResourceID,
 		host:            "x",
 		env: map[string]string{
-			"PATH": "testdata",
+			"PATH": testdataPath(),
 			"HOME": "testdata/azure",
 		},
 		assertAzure: true,
@@ -338,7 +338,7 @@ func TestConfig_AzureCliHostAndResourceID_ConfigurationPrecedence(t *testing.T) 
 		azureResourceID: azResourceID,
 		host:            "x",
 		env: map[string]string{
-			"PATH":                      "testdata",
+			"PATH":                      testdataPath(),
 			"HOME":                      "testdata/azure",
 			"DATABRICKS_CONFIG_PROFILE": "justhost",
 		},
@@ -353,7 +353,7 @@ func TestConfig_AzureAndPasswordConflict(t *testing.T) { // TODO: this breaks
 		host:            "x",
 		azureResourceID: azResourceID,
 		env: map[string]string{
-			"PATH":                "testdata",
+			"PATH":                testdataPath(),
 			"HOME":                "testdata/azure",
 			"DATABRICKS_USERNAME": "x",
 		},
