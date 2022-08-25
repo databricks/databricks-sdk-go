@@ -4,14 +4,31 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
 )
 
 var azDummy = &Config{Host: "https://adb-xyz.c.azuredatabricks.net/"}
+
+// testdataPath returns the PATH to use for the duration of a test.
+// It must only return absolute directories because Go refuses to run
+// exexutables found in a relative directory as of 1.19.
+// More information at https://tip.golang.org/doc/go1.19#os-exec-path.
+func testdataPath() string {
+	cwd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	paths := []string{
+		filepath.Join(cwd, "testdata"),
+		"/bin",
+	}
+	return strings.Join(paths, ":")
+}
 
 func TestAzureCliCredentials_SkipAws(t *testing.T) {
 	aa := AzureCliCredentials{}
@@ -30,7 +47,7 @@ func TestAzureCliCredentials_NotInstalled(t *testing.T) {
 
 func TestAzureCliCredentials_NotLoggedIn(t *testing.T) {
 	defer CleanupEnvironment()()
-	os.Setenv("PATH", "testdata:/bin")
+	os.Setenv("PATH", testdataPath())
 	os.Setenv("FAIL", "logout")
 	aa := AzureCliCredentials{}
 	_, err := aa.Configure(context.Background(), azDummy)
@@ -39,7 +56,7 @@ func TestAzureCliCredentials_NotLoggedIn(t *testing.T) {
 
 func TestAzureCliCredentials_Valid(t *testing.T) {
 	defer CleanupEnvironment()()
-	os.Setenv("PATH", "testdata:/bin")
+	os.Setenv("PATH", testdataPath())
 	aa := AzureCliCredentials{}
 	visitor, err := aa.Configure(context.Background(), azDummy)
 	assert.NoError(t, err)
@@ -53,7 +70,7 @@ func TestAzureCliCredentials_Valid(t *testing.T) {
 
 func TestAzureCliCredentials_AlwaysExpired(t *testing.T) {
 	defer CleanupEnvironment()()
-	os.Setenv("PATH", "testdata:/bin")
+	os.Setenv("PATH", testdataPath())
 	os.Setenv("EXPIRE", "10S")
 	aa := AzureCliCredentials{}
 	visitor, err := aa.Configure(context.Background(), azDummy)
@@ -67,7 +84,7 @@ func TestAzureCliCredentials_AlwaysExpired(t *testing.T) {
 
 func TestAzureCliCredentials_ExitError(t *testing.T) {
 	defer CleanupEnvironment()()
-	os.Setenv("PATH", "testdata:/bin")
+	os.Setenv("PATH", testdataPath())
 	os.Setenv("FAIL", "yes")
 	aa := AzureCliCredentials{}
 	_, err := aa.Configure(context.Background(), azDummy)
@@ -76,7 +93,7 @@ func TestAzureCliCredentials_ExitError(t *testing.T) {
 
 func TestAzureCliCredentials_Corrupt(t *testing.T) {
 	defer CleanupEnvironment()()
-	os.Setenv("PATH", "testdata:/bin")
+	os.Setenv("PATH", testdataPath())
 	os.Setenv("FAIL", "corrupt")
 	aa := AzureCliCredentials{}
 	_, err := aa.Configure(context.Background(), azDummy)
@@ -85,7 +102,7 @@ func TestAzureCliCredentials_Corrupt(t *testing.T) {
 
 func TestAzureCliCredentials_CorruptExpire(t *testing.T) {
 	defer CleanupEnvironment()()
-	os.Setenv("PATH", "testdata:/bin")
+	os.Setenv("PATH", testdataPath())
 	os.Setenv("EXPIRE", "corrupt")
 	aa := AzureCliCredentials{}
 	_, err := aa.Configure(context.Background(), azDummy)
