@@ -13,6 +13,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/groups"
 	"github.com/databricks/databricks-sdk-go/service/instancepools"
 	"github.com/databricks/databricks-sdk-go/service/instanceprofiles"
+	"github.com/databricks/databricks-sdk-go/service/ipaccesslists"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/libraries"
 	"github.com/databricks/databricks-sdk-go/service/mlflow"
@@ -45,6 +46,7 @@ type WorkspacesClient struct {
 	Jobs                  jobs.JobsService
 	InstancePools         instancepools.InstancepoolsService
 	InstanceProfiles      instanceprofiles.InstanceprofilesService
+	IpAccessLists         ipaccesslists.IpaccesslistsService
 	Libraries             libraries.LibrariesService
 	MLflow                mlflow.MlflowService
 	MLflowExt             mlflowext.MlflowextService
@@ -86,6 +88,7 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		Jobs:                  jobs.New(apiClient),
 		InstancePools:         instancepools.New(apiClient),
 		InstanceProfiles:      instanceprofiles.New(apiClient),
+		IpAccessLists:         ipaccesslists.New(apiClient),
 		Libraries:             libraries.New(apiClient),
 		MLflow:                mlflow.New(apiClient),
 		MLflowExt:             mlflowext.New(apiClient),
