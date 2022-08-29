@@ -4,6 +4,7 @@ package clusters
 
 // all definitions in this file are in alphabetical order
 
+
 type AutoScale struct {
     // The maximum number of workers to which the cluster can scale up when
     // overloaded. Note that ``max_workers`` must be strictly greater than
@@ -14,6 +15,7 @@ type AutoScale struct {
     // have after creation.
     MinWorkers int `json:"min_workers,omitempty"`
 }
+
 
 type AwsAttributes struct {
     // Availability type used for all subsequent nodes past the
@@ -91,6 +93,7 @@ type AwsAttributes struct {
 // Availability type used for all subsequent nodes past the ``first_on_demand``
 // ones. Note: If ``first_on_demand`` is zero, this availability type will be
 // used for the entire cluster.
+
 type AwsAttributesAvailability string
 const (
 	AwsAttributesAvailabilitySpot AwsAttributesAvailability = `SPOT`
@@ -99,11 +102,13 @@ const (
 )
 
 // The type of EBS volumes that will be launched with this cluster.
+
 type AwsAttributesEbsVolumeType string
 const (
 	AwsAttributesEbsVolumeTypeGeneralPurposeSsd AwsAttributesEbsVolumeType = `GENERAL_PURPOSE_SSD`
 	AwsAttributesEbsVolumeTypeThroughputOptimizedHdd AwsAttributesEbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
 )
+
 
 type AwsCpalError struct {
     
@@ -117,6 +122,7 @@ type AwsCpalError struct {
     
     AwsSpotRequestStatus string `json:"aws_spot_request_status,omitempty"`
 }
+
 
 type AzureAttributes struct {
     // Availability type used for all subsequent nodes past the
@@ -147,12 +153,14 @@ type AzureAttributes struct {
 // Availability type used for all subsequent nodes past the ``first_on_demand``
 // ones. Note: If ``first_on_demand`` is zero (which only happens on pool
 // clusters), this availability type will be used for the entire cluster.
+
 type AzureAttributesAvailability string
 const (
 	AzureAttributesAvailabilitySpotAzure AzureAttributesAvailability = `SPOT_AZURE`
 	AzureAttributesAvailabilityOnDemandAzure AzureAttributesAvailability = `ON_DEMAND_AZURE`
 	AzureAttributesAvailabilitySpotWithFallbackAzure AzureAttributesAvailability = `SPOT_WITH_FALLBACK_AZURE`
 )
+
 
 type ChangeClusterOwnerRequest struct {
     
@@ -161,12 +169,14 @@ type ChangeClusterOwnerRequest struct {
     OwnerUsername string `json:"owner_username,omitempty"`
 }
 
+
 type ClientsTypes struct {
     // With jobs set, the cluster can be used for jobs
     Jobs bool `json:"jobs,omitempty"`
     // With notebooks set, this cluster can be used for notebooks
     Notebooks bool `json:"notebooks,omitempty"`
 }
+
 
 type ClusterAttributes struct {
     // Automatically terminates the cluster after it is inactive for this time
@@ -273,6 +283,7 @@ type ClusterAttributes struct {
 // Determines whether the cluster was created by a user through the UI, created
 // by the Databricks Jobs Scheduler, or through an API request. This is the same
 // as cluster_creator, but read only.
+
 type ClusterAttributesClusterSource string
 const (
 	ClusterAttributesClusterSourceUi ClusterAttributesClusterSource = `UI`
@@ -286,12 +297,14 @@ const (
 
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 // unspecified, the runtime engine is inferred from spark_version.
+
 type ClusterAttributesRuntimeEngine string
 const (
 	ClusterAttributesRuntimeEngineNull ClusterAttributesRuntimeEngine = `NULL`
 	ClusterAttributesRuntimeEngineStandard ClusterAttributesRuntimeEngine = `STANDARD`
 	ClusterAttributesRuntimeEnginePhoton ClusterAttributesRuntimeEngine = `PHOTON`
 )
+
 
 type ClusterEvent struct {
     
@@ -307,6 +320,7 @@ type ClusterEvent struct {
     
     Type ClusterEventType `json:"type,omitempty"`
 }
+
 
 
 type ClusterEventType string
@@ -337,6 +351,7 @@ const (
 	ClusterEventTypeUnpinned ClusterEventType = `UNPINNED`
 	ClusterEventTypeNodeExcludedDecommissioned ClusterEventType = `NODE_EXCLUDED_DECOMMISSIONED`
 )
+
 
 type ClusterInfo struct {
     // Parameters needed in order to automatically scale clusters up and down
@@ -516,6 +531,7 @@ type ClusterInfo struct {
 // Determines whether the cluster was created by a user through the UI, created
 // by the Databricks Jobs Scheduler, or through an API request. This is the same
 // as cluster_creator, but read only.
+
 type ClusterInfoClusterSource string
 const (
 	ClusterInfoClusterSourceUi ClusterInfoClusterSource = `UI`
@@ -529,6 +545,7 @@ const (
 
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 // unspecified, the runtime engine is inferred from spark_version.
+
 type ClusterInfoRuntimeEngine string
 const (
 	ClusterInfoRuntimeEngineNull ClusterInfoRuntimeEngine = `NULL`
@@ -537,6 +554,7 @@ const (
 )
 
 // Current state of the cluster.
+
 type ClusterInfoState string
 const (
 	ClusterInfoStatePending ClusterInfoState = `PENDING`
@@ -549,6 +567,7 @@ const (
 	ClusterInfoStateUnknown ClusterInfoState = `UNKNOWN`
 )
 
+
 type ClusterLogConf struct {
     // destination needs to be provided. e.g. ``{ &#34;dbfs&#34; : { &#34;destination&#34; :
     // &#34;dbfs:/home/cluster_log&#34; } }``
@@ -560,6 +579,7 @@ type ClusterLogConf struct {
     // data to the s3 destination.
     S3 *S3StorageInfo `json:"s3,omitempty"`
 }
+
 
 type ClusterSize struct {
     // Parameters needed in order to automatically scale clusters up and down
@@ -576,6 +596,7 @@ type ClusterSize struct {
     // will gradually increase from 5 to 10 as the new nodes are provisioned.
     NumWorkers int `json:"num_workers,omitempty"`
 }
+
 
 type CpalFailureResponse struct {
     
@@ -599,6 +620,7 @@ type CpalFailureResponse struct {
 }
 
 
+
 type CpalFailureResponseAwsCpalErrorCode string
 const (
 	CpalFailureResponseAwsCpalErrorCodeAwsServiceException CpalFailureResponseAwsCpalErrorCode = `AWS_SERVICE_EXCEPTION`
@@ -612,6 +634,7 @@ const (
 	CpalFailureResponseAwsCpalErrorCodeAwsInvalidInstanceTypeFailure CpalFailureResponseAwsCpalErrorCode = `AWS_INVALID_INSTANCE_TYPE_FAILURE`
 	CpalFailureResponseAwsCpalErrorCodeAwsMaxSpotInstanceCountExceeded CpalFailureResponseAwsCpalErrorCode = `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED`
 )
+
 
 
 type CpalFailureResponseAzureCpalErrorCode string
@@ -636,11 +659,13 @@ const (
 )
 
 
+
 type CpalFailureResponseDelegateErrorCode string
 const (
 	CpalFailureResponseDelegateErrorCodeDelegateUnexpectedException CpalFailureResponseDelegateErrorCode = `DELEGATE_UNEXPECTED_EXCEPTION`
 	CpalFailureResponseDelegateErrorCodeNoSuchWorkerEnvironmentException CpalFailureResponseDelegateErrorCode = `NO_SUCH_WORKER_ENVIRONMENT_EXCEPTION`
 )
+
 
 type CreateClusterRequest struct {
     // Note: This field won&#39;t be true for webapp requests. Only API users will
@@ -772,6 +797,7 @@ type CreateClusterRequest struct {
 // Determines whether the cluster was created by a user through the UI, created
 // by the Databricks Jobs Scheduler, or through an API request. This is the same
 // as cluster_creator, but read only.
+
 type CreateClusterRequestClusterSource string
 const (
 	CreateClusterRequestClusterSourceUi CreateClusterRequestClusterSource = `UI`
@@ -785,6 +811,7 @@ const (
 
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 // unspecified, the runtime engine is inferred from spark_version.
+
 type CreateClusterRequestRuntimeEngine string
 const (
 	CreateClusterRequestRuntimeEngineNull CreateClusterRequestRuntimeEngine = `NULL`
@@ -792,10 +819,12 @@ const (
 	CreateClusterRequestRuntimeEnginePhoton CreateClusterRequestRuntimeEngine = `PHOTON`
 )
 
+
 type CreateClusterResponse struct {
     
     ClusterId string `json:"cluster_id,omitempty"`
 }
+
 
 type DataPlaneEventDetails struct {
     
@@ -809,21 +838,25 @@ type DataPlaneEventDetails struct {
 }
 
 
+
 type DataPlaneEventDetailsEventType string
 const (
 	DataPlaneEventDetailsEventTypeNodeBlacklisted DataPlaneEventDetailsEventType = `NODE_BLACKLISTED`
 	DataPlaneEventDetailsEventTypeNodeExcludedDecommissioned DataPlaneEventDetailsEventType = `NODE_EXCLUDED_DECOMMISSIONED`
 )
 
+
 type DbfsStorageInfo struct {
     // dbfs destination, e.g. ``dbfs:/my/path``
     Destination string `json:"destination,omitempty"`
 }
 
+
 type DeleteClusterRequest struct {
     // The cluster to be terminated.
     ClusterId string `json:"cluster_id"`
 }
+
 
 type EditClusterRequest struct {
     // Note: This field won&#39;t be true for webapp requests. Only API users will
@@ -957,6 +990,7 @@ type EditClusterRequest struct {
 // Determines whether the cluster was created by a user through the UI, created
 // by the Databricks Jobs Scheduler, or through an API request. This is the same
 // as cluster_creator, but read only.
+
 type EditClusterRequestClusterSource string
 const (
 	EditClusterRequestClusterSourceUi EditClusterRequestClusterSource = `UI`
@@ -970,12 +1004,14 @@ const (
 
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 // unspecified, the runtime engine is inferred from spark_version.
+
 type EditClusterRequestRuntimeEngine string
 const (
 	EditClusterRequestRuntimeEngineNull EditClusterRequestRuntimeEngine = `NULL`
 	EditClusterRequestRuntimeEngineStandard EditClusterRequestRuntimeEngine = `STANDARD`
 	EditClusterRequestRuntimeEnginePhoton EditClusterRequestRuntimeEngine = `PHOTON`
 )
+
 
 type EventDetails struct {
     // * For created clusters, the attributes of the cluster. * For edited
@@ -1026,6 +1062,7 @@ type EventDetails struct {
 }
 
 // The cause of a change in target size.
+
 type EventDetailsCause string
 const (
 	EventDetailsCauseAutoscale EventDetailsCause = `AUTOSCALE`
@@ -1033,6 +1070,7 @@ const (
 	EventDetailsCauseAutorecovery EventDetailsCause = `AUTORECOVERY`
 	EventDetailsCauseReplaceBadNodes EventDetailsCause = `REPLACE_BAD_NODES`
 )
+
 
 type GcpAttributes struct {
     // This field determines whether the spark executors will be scheduled to
@@ -1051,6 +1089,7 @@ type GcpAttributes struct {
 // This field determines whether the spark executors will be scheduled to run on
 // preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to
 // on-demand VMs if the former is unavailable.
+
 type GcpAttributesAvailability string
 const (
 	GcpAttributesAvailabilityPreemptibleGcp GcpAttributesAvailability = `PREEMPTIBLE_GCP`
@@ -1058,10 +1097,12 @@ const (
 	GcpAttributesAvailabilityPreemptibleWithFallbackGcp GcpAttributesAvailability = `PREEMPTIBLE_WITH_FALLBACK_GCP`
 )
 
+
 type GetClusterRequest struct {
     // The cluster about which to retrieve information.
     ClusterId string ` url:"cluster_id,omitempty"`
 }
+
 
 type GetClusterResponse struct {
     // Parameters needed in order to automatically scale clusters up and down
@@ -1241,6 +1282,7 @@ type GetClusterResponse struct {
 // Determines whether the cluster was created by a user through the UI, created
 // by the Databricks Jobs Scheduler, or through an API request. This is the same
 // as cluster_creator, but read only.
+
 type GetClusterResponseClusterSource string
 const (
 	GetClusterResponseClusterSourceUi GetClusterResponseClusterSource = `UI`
@@ -1254,6 +1296,7 @@ const (
 
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 // unspecified, the runtime engine is inferred from spark_version.
+
 type GetClusterResponseRuntimeEngine string
 const (
 	GetClusterResponseRuntimeEngineNull GetClusterResponseRuntimeEngine = `NULL`
@@ -1262,6 +1305,7 @@ const (
 )
 
 // Current state of the cluster.
+
 type GetClusterResponseState string
 const (
 	GetClusterResponseStatePending GetClusterResponseState = `PENDING`
@@ -1273,6 +1317,7 @@ const (
 	GetClusterResponseStateError GetClusterResponseState = `ERROR`
 	GetClusterResponseStateUnknown GetClusterResponseState = `UNKNOWN`
 )
+
 
 type GetEvents struct {
     // The ID of the cluster to retrieve events about.
@@ -1296,6 +1341,7 @@ type GetEvents struct {
     // from the beginning of time.
     StartTime int64 `json:"start_time,omitempty"`
 }
+
 
 
 type GetEventsEventTypesItem string
@@ -1328,11 +1374,13 @@ const (
 )
 
 // The order to list events in; either &#34;ASC&#34; or &#34;DESC&#34;. Defaults to &#34;DESC&#34;.
+
 type GetEventsOrder string
 const (
 	GetEventsOrderDesc GetEventsOrder = `DESC`
 	GetEventsOrderAsc GetEventsOrder = `ASC`
 )
+
 
 type GetEventsRequest struct {
     // The ID of the cluster to retrieve events about.
@@ -1356,6 +1404,7 @@ type GetEventsRequest struct {
     // from the beginning of time.
     StartTime int64 `json:"start_time,omitempty"`
 }
+
 
 
 type GetEventsRequestEventTypesItem string
@@ -1388,11 +1437,13 @@ const (
 )
 
 // The order to list events in; either &#34;ASC&#34; or &#34;DESC&#34;. Defaults to &#34;DESC&#34;.
+
 type GetEventsRequestOrder string
 const (
 	GetEventsRequestOrderDesc GetEventsRequestOrder = `DESC`
 	GetEventsRequestOrderAsc GetEventsRequestOrder = `ASC`
 )
+
 
 type GetEventsResponse struct {
     
@@ -1405,10 +1456,12 @@ type GetEventsResponse struct {
     TotalCount int64 `json:"total_count,omitempty"`
 }
 
+
 type GetSparkVersionsResponse struct {
     // All the available Spark versions.
     Versions []SparkVersion `json:"versions,omitempty"`
 }
+
 
 type ListAvailableZonesResponse struct {
     // The availability zone if no ``zone_id`` is provided in the cluster
@@ -1418,6 +1471,7 @@ type ListAvailableZonesResponse struct {
     Zones []string `json:"zones,omitempty"`
 }
 
+
 type ListClustersRequest struct {
     // Filter clusters based on what type of client it can be used for. Could be
     // either NOTEBOOKS or JOBS. No input for this field will get all clusters
@@ -1425,10 +1479,12 @@ type ListClustersRequest struct {
     CanUseClient string ` url:"can_use_client,omitempty"`
 }
 
+
 type ListClustersResponse struct {
     
     Clusters []ClusterInfo `json:"clusters,omitempty"`
 }
+
 
 type ListNodeTypesResponse struct {
     
@@ -1439,12 +1495,14 @@ type ListNodeTypesResponse struct {
     Success any /* ERROR */ `json:"success,omitempty"`
 }
 
+
 type LogAnalyticsInfo struct {
     
     LogAnalyticsPrimaryKey string `json:"log_analytics_primary_key,omitempty"`
     
     LogAnalyticsWorkspaceId string `json:"log_analytics_workspace_id,omitempty"`
 }
+
 
 type LogSyncStatus struct {
     // The timestamp of last attempt. If the last attempt fails,
@@ -1454,6 +1512,7 @@ type LogSyncStatus struct {
     // the response) if there is no exception in last attempted.
     LastException string `json:"last_exception,omitempty"`
 }
+
 
 type NodeType struct {
     // A string description associated with this node type, e.g., &#34;r3.xlarge&#34;.
@@ -1477,15 +1536,18 @@ type NodeType struct {
     NumCores float64 `json:"num_cores"`
 }
 
+
 type PermanentDeleteClusterRequest struct {
     // The cluster to be deleted.
     ClusterId string `json:"cluster_id"`
 }
 
+
 type PinClusterRequest struct {
     
     ClusterId string `json:"cluster_id"`
 }
+
 
 type ResizeClusterRequest struct {
     // Parameters needed in order to automatically scale clusters up and down
@@ -1505,12 +1567,14 @@ type ResizeClusterRequest struct {
     NumWorkers int `json:"num_workers,omitempty"`
 }
 
+
 type RestartClusterRequest struct {
     // The cluster to be started.
     ClusterId string `json:"cluster_id"`
     
     RestartUser string `json:"restart_user,omitempty"`
 }
+
 
 type S3StorageInfo struct {
     // (Optional) Set canned access control list for the logs, e.g.
@@ -1546,6 +1610,7 @@ type S3StorageInfo struct {
     Region string `json:"region,omitempty"`
 }
 
+
 type SparkNode struct {
     // The private IP address of the host instance.
     HostPrivateIp string `json:"host_private_ip,omitempty"`
@@ -1572,10 +1637,12 @@ type SparkNode struct {
     StartTimestamp int64 `json:"start_timestamp,omitempty"`
 }
 
+
 type SparkNodeAwsAttributes struct {
     // Whether this node is on an Amazon spot instance.
     IsSpot bool `json:"is_spot,omitempty"`
 }
+
 
 type SparkVersion struct {
     // Spark version key, for example &#34;2.1.x-scala2.11&#34;. This is the value which
@@ -1588,10 +1655,12 @@ type SparkVersion struct {
     Name string `json:"name,omitempty"`
 }
 
+
 type StartClusterRequest struct {
     // The cluster to be started.
     ClusterId string `json:"cluster_id"`
 }
+
 
 type TerminationReason struct {
     // status code indicating why the cluster was terminated
@@ -1604,6 +1673,7 @@ type TerminationReason struct {
 }
 
 // status code indicating why the cluster was terminated
+
 type TerminationReasonCode string
 const (
 	TerminationReasonCodeUnknown TerminationReasonCode = `UNKNOWN`
@@ -1688,6 +1758,7 @@ const (
 )
 
 // type of the termination
+
 type TerminationReasonType string
 const (
 	TerminationReasonTypeSuccess TerminationReasonType = `SUCCESS`
@@ -1696,10 +1767,12 @@ const (
 	TerminationReasonTypeCloudFailure TerminationReasonType = `CLOUD_FAILURE`
 )
 
+
 type UnpinClusterRequest struct {
     
     ClusterId string `json:"cluster_id"`
 }
+
 
 type WorkloadType struct {
     // defined what type of clients can use the cluster. E.g. Notebooks, Jobs

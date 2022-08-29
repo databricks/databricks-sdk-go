@@ -4,7 +4,8 @@ package {{.Name}}
 
 // all definitions in this file are in alphabetical order
 {{range .Types}}
-{{.Comment "// " 80}}{{if .Fields -}}type {{.PascalName}} struct {
+{{.Comment "// " 80}}
+{{if .Fields -}}type {{.PascalName}} struct {
     {{- range .Fields}}
     {{.Comment "    // " 80}}
     {{.PascalName}} {{if .IsOptionalObject}}*{{end}}{{template "type" .Entity}} `{{template "field-tag" . }}`{{end}}
