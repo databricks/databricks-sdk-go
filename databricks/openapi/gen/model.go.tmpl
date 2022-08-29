@@ -9,6 +9,7 @@ package {{.Name}}
     {{.Comment "    // " 80}}
     {{.PascalName}} {{if .IsOptionalObject}}*{{end}}{{template "type" .Entity}} `{{template "field-tag" . }}`{{end}}
 }
+{{else if .ArrayValue}}type {{.PascalName}} []{{template "type" .ArrayValue}}
 {{else if .Enum}}type {{.PascalName}} string
 {{range .Enum }}
 {{.Comment "// " 80}}
