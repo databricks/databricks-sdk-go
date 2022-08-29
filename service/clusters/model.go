@@ -15,7 +15,6 @@ type AutoScale struct {
     MinWorkers int `json:"min_workers,omitempty"`
 }
 
-
 type AwsAttributes struct {
     // Availability type used for all subsequent nodes past the
     // ``first_on_demand`` ones. Note: If ``first_on_demand`` is zero, this
@@ -93,26 +92,18 @@ type AwsAttributes struct {
 // ones. Note: If ``first_on_demand`` is zero, this availability type will be
 // used for the entire cluster.
 type AwsAttributesAvailability string
+const (
+	AwsAttributesAvailabilitySpot AwsAttributesAvailability = `SPOT`
+	AwsAttributesAvailabilityOnDemand AwsAttributesAvailability = `ON_DEMAND`
+	AwsAttributesAvailabilitySpotWithFallback AwsAttributesAvailability = `SPOT_WITH_FALLBACK`
+)
 
-// Availability type used for all subsequent nodes past the ``first_on_demand``
-// ones. Note: If ``first_on_demand`` is zero, this availability type will be
-// used for the entire cluster.
-const AwsAttributesAvailabilitySpot AwsAttributesAvailability = `SPOT`
-// Availability type used for all subsequent nodes past the ``first_on_demand``
-// ones. Note: If ``first_on_demand`` is zero, this availability type will be
-// used for the entire cluster.
-const AwsAttributesAvailabilityOnDemand AwsAttributesAvailability = `ON_DEMAND`
-// Availability type used for all subsequent nodes past the ``first_on_demand``
-// ones. Note: If ``first_on_demand`` is zero, this availability type will be
-// used for the entire cluster.
-const AwsAttributesAvailabilitySpotWithFallback AwsAttributesAvailability = `SPOT_WITH_FALLBACK`
 // The type of EBS volumes that will be launched with this cluster.
 type AwsAttributesEbsVolumeType string
-
-// The type of EBS volumes that will be launched with this cluster.
-const AwsAttributesEbsVolumeTypeGeneralPurposeSsd AwsAttributesEbsVolumeType = `GENERAL_PURPOSE_SSD`
-// The type of EBS volumes that will be launched with this cluster.
-const AwsAttributesEbsVolumeTypeThroughputOptimizedHdd AwsAttributesEbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
+const (
+	AwsAttributesEbsVolumeTypeGeneralPurposeSsd AwsAttributesEbsVolumeType = `GENERAL_PURPOSE_SSD`
+	AwsAttributesEbsVolumeTypeThroughputOptimizedHdd AwsAttributesEbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
+)
 
 type AwsCpalError struct {
     
@@ -126,7 +117,6 @@ type AwsCpalError struct {
     
     AwsSpotRequestStatus string `json:"aws_spot_request_status,omitempty"`
 }
-
 
 type AzureAttributes struct {
     // Availability type used for all subsequent nodes past the
@@ -158,19 +148,11 @@ type AzureAttributes struct {
 // ones. Note: If ``first_on_demand`` is zero (which only happens on pool
 // clusters), this availability type will be used for the entire cluster.
 type AzureAttributesAvailability string
-
-// Availability type used for all subsequent nodes past the ``first_on_demand``
-// ones. Note: If ``first_on_demand`` is zero (which only happens on pool
-// clusters), this availability type will be used for the entire cluster.
-const AzureAttributesAvailabilitySpotAzure AzureAttributesAvailability = `SPOT_AZURE`
-// Availability type used for all subsequent nodes past the ``first_on_demand``
-// ones. Note: If ``first_on_demand`` is zero (which only happens on pool
-// clusters), this availability type will be used for the entire cluster.
-const AzureAttributesAvailabilityOnDemandAzure AzureAttributesAvailability = `ON_DEMAND_AZURE`
-// Availability type used for all subsequent nodes past the ``first_on_demand``
-// ones. Note: If ``first_on_demand`` is zero (which only happens on pool
-// clusters), this availability type will be used for the entire cluster.
-const AzureAttributesAvailabilitySpotWithFallbackAzure AzureAttributesAvailability = `SPOT_WITH_FALLBACK_AZURE`
+const (
+	AzureAttributesAvailabilitySpotAzure AzureAttributesAvailability = `SPOT_AZURE`
+	AzureAttributesAvailabilityOnDemandAzure AzureAttributesAvailability = `ON_DEMAND_AZURE`
+	AzureAttributesAvailabilitySpotWithFallbackAzure AzureAttributesAvailability = `SPOT_WITH_FALLBACK_AZURE`
+)
 
 type ChangeClusterOwnerRequest struct {
     
@@ -179,14 +161,12 @@ type ChangeClusterOwnerRequest struct {
     OwnerUsername string `json:"owner_username,omitempty"`
 }
 
-
 type ClientsTypes struct {
     // With jobs set, the cluster can be used for jobs
     Jobs bool `json:"jobs,omitempty"`
     // With notebooks set, this cluster can be used for notebooks
     Notebooks bool `json:"notebooks,omitempty"`
 }
-
 
 type ClusterAttributes struct {
     // Automatically terminates the cluster after it is inactive for this time
@@ -294,48 +274,24 @@ type ClusterAttributes struct {
 // by the Databricks Jobs Scheduler, or through an API request. This is the same
 // as cluster_creator, but read only.
 type ClusterAttributesClusterSource string
+const (
+	ClusterAttributesClusterSourceUi ClusterAttributesClusterSource = `UI`
+	ClusterAttributesClusterSourceJob ClusterAttributesClusterSource = `JOB`
+	ClusterAttributesClusterSourceApi ClusterAttributesClusterSource = `API`
+	ClusterAttributesClusterSourceSql ClusterAttributesClusterSource = `SQL`
+	ClusterAttributesClusterSourceModels ClusterAttributesClusterSource = `MODELS`
+	ClusterAttributesClusterSourcePipeline ClusterAttributesClusterSource = `PIPELINE`
+	ClusterAttributesClusterSourcePipelineMaintenance ClusterAttributesClusterSource = `PIPELINE_MAINTENANCE`
+)
 
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterAttributesClusterSourceUi ClusterAttributesClusterSource = `UI`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterAttributesClusterSourceJob ClusterAttributesClusterSource = `JOB`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterAttributesClusterSourceApi ClusterAttributesClusterSource = `API`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterAttributesClusterSourceSql ClusterAttributesClusterSource = `SQL`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterAttributesClusterSourceModels ClusterAttributesClusterSource = `MODELS`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterAttributesClusterSourcePipeline ClusterAttributesClusterSource = `PIPELINE`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterAttributesClusterSourcePipelineMaintenance ClusterAttributesClusterSource = `PIPELINE_MAINTENANCE`
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 // unspecified, the runtime engine is inferred from spark_version.
 type ClusterAttributesRuntimeEngine string
-
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const ClusterAttributesRuntimeEngineNull ClusterAttributesRuntimeEngine = `NULL`
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const ClusterAttributesRuntimeEngineStandard ClusterAttributesRuntimeEngine = `STANDARD`
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const ClusterAttributesRuntimeEnginePhoton ClusterAttributesRuntimeEngine = `PHOTON`
+const (
+	ClusterAttributesRuntimeEngineNull ClusterAttributesRuntimeEngine = `NULL`
+	ClusterAttributesRuntimeEngineStandard ClusterAttributesRuntimeEngine = `STANDARD`
+	ClusterAttributesRuntimeEnginePhoton ClusterAttributesRuntimeEngine = `PHOTON`
+)
 
 type ClusterEvent struct {
     
@@ -354,57 +310,33 @@ type ClusterEvent struct {
 
 
 type ClusterEventType string
-
-
-const ClusterEventTypeCreating ClusterEventType = `CREATING`
-
-const ClusterEventTypeStarting ClusterEventType = `STARTING`
-
-const ClusterEventTypeRestarting ClusterEventType = `RESTARTING`
-
-const ClusterEventTypeTerminating ClusterEventType = `TERMINATING`
-
-const ClusterEventTypeEdited ClusterEventType = `EDITED`
-
-const ClusterEventTypeRunning ClusterEventType = `RUNNING`
-
-const ClusterEventTypeResizing ClusterEventType = `RESIZING`
-
-const ClusterEventTypeNodesLost ClusterEventType = `NODES_LOST`
-
-const ClusterEventTypeUpsizeCompleted ClusterEventType = `UPSIZE_COMPLETED`
-
-const ClusterEventTypeInitScriptsStarted ClusterEventType = `INIT_SCRIPTS_STARTED`
-
-const ClusterEventTypeInitScriptsFinished ClusterEventType = `INIT_SCRIPTS_FINISHED`
-
-const ClusterEventTypeDidNotExpandDisk ClusterEventType = `DID_NOT_EXPAND_DISK`
-
-const ClusterEventTypeExpandedDisk ClusterEventType = `EXPANDED_DISK`
-
-const ClusterEventTypeFailedToExpandDisk ClusterEventType = `FAILED_TO_EXPAND_DISK`
-
-const ClusterEventTypeDriverHealthy ClusterEventType = `DRIVER_HEALTHY`
-
-const ClusterEventTypeDriverNotResponding ClusterEventType = `DRIVER_NOT_RESPONDING`
-
-const ClusterEventTypeDriverUnavailable ClusterEventType = `DRIVER_UNAVAILABLE`
-
-const ClusterEventTypeSparkException ClusterEventType = `SPARK_EXCEPTION`
-
-const ClusterEventTypeMetastoreDown ClusterEventType = `METASTORE_DOWN`
-
-const ClusterEventTypeDbfsDown ClusterEventType = `DBFS_DOWN`
-
-const ClusterEventTypeAutoscalingStatsReport ClusterEventType = `AUTOSCALING_STATS_REPORT`
-
-const ClusterEventTypeNodeBlacklisted ClusterEventType = `NODE_BLACKLISTED`
-
-const ClusterEventTypePinned ClusterEventType = `PINNED`
-
-const ClusterEventTypeUnpinned ClusterEventType = `UNPINNED`
-
-const ClusterEventTypeNodeExcludedDecommissioned ClusterEventType = `NODE_EXCLUDED_DECOMMISSIONED`
+const (
+	ClusterEventTypeCreating ClusterEventType = `CREATING`
+	ClusterEventTypeStarting ClusterEventType = `STARTING`
+	ClusterEventTypeRestarting ClusterEventType = `RESTARTING`
+	ClusterEventTypeTerminating ClusterEventType = `TERMINATING`
+	ClusterEventTypeEdited ClusterEventType = `EDITED`
+	ClusterEventTypeRunning ClusterEventType = `RUNNING`
+	ClusterEventTypeResizing ClusterEventType = `RESIZING`
+	ClusterEventTypeNodesLost ClusterEventType = `NODES_LOST`
+	ClusterEventTypeUpsizeCompleted ClusterEventType = `UPSIZE_COMPLETED`
+	ClusterEventTypeInitScriptsStarted ClusterEventType = `INIT_SCRIPTS_STARTED`
+	ClusterEventTypeInitScriptsFinished ClusterEventType = `INIT_SCRIPTS_FINISHED`
+	ClusterEventTypeDidNotExpandDisk ClusterEventType = `DID_NOT_EXPAND_DISK`
+	ClusterEventTypeExpandedDisk ClusterEventType = `EXPANDED_DISK`
+	ClusterEventTypeFailedToExpandDisk ClusterEventType = `FAILED_TO_EXPAND_DISK`
+	ClusterEventTypeDriverHealthy ClusterEventType = `DRIVER_HEALTHY`
+	ClusterEventTypeDriverNotResponding ClusterEventType = `DRIVER_NOT_RESPONDING`
+	ClusterEventTypeDriverUnavailable ClusterEventType = `DRIVER_UNAVAILABLE`
+	ClusterEventTypeSparkException ClusterEventType = `SPARK_EXCEPTION`
+	ClusterEventTypeMetastoreDown ClusterEventType = `METASTORE_DOWN`
+	ClusterEventTypeDbfsDown ClusterEventType = `DBFS_DOWN`
+	ClusterEventTypeAutoscalingStatsReport ClusterEventType = `AUTOSCALING_STATS_REPORT`
+	ClusterEventTypeNodeBlacklisted ClusterEventType = `NODE_BLACKLISTED`
+	ClusterEventTypePinned ClusterEventType = `PINNED`
+	ClusterEventTypeUnpinned ClusterEventType = `UNPINNED`
+	ClusterEventTypeNodeExcludedDecommissioned ClusterEventType = `NODE_EXCLUDED_DECOMMISSIONED`
+)
 
 type ClusterInfo struct {
     // Parameters needed in order to automatically scale clusters up and down
@@ -585,67 +517,37 @@ type ClusterInfo struct {
 // by the Databricks Jobs Scheduler, or through an API request. This is the same
 // as cluster_creator, but read only.
 type ClusterInfoClusterSource string
+const (
+	ClusterInfoClusterSourceUi ClusterInfoClusterSource = `UI`
+	ClusterInfoClusterSourceJob ClusterInfoClusterSource = `JOB`
+	ClusterInfoClusterSourceApi ClusterInfoClusterSource = `API`
+	ClusterInfoClusterSourceSql ClusterInfoClusterSource = `SQL`
+	ClusterInfoClusterSourceModels ClusterInfoClusterSource = `MODELS`
+	ClusterInfoClusterSourcePipeline ClusterInfoClusterSource = `PIPELINE`
+	ClusterInfoClusterSourcePipelineMaintenance ClusterInfoClusterSource = `PIPELINE_MAINTENANCE`
+)
 
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterInfoClusterSourceUi ClusterInfoClusterSource = `UI`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterInfoClusterSourceJob ClusterInfoClusterSource = `JOB`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterInfoClusterSourceApi ClusterInfoClusterSource = `API`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterInfoClusterSourceSql ClusterInfoClusterSource = `SQL`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterInfoClusterSourceModels ClusterInfoClusterSource = `MODELS`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterInfoClusterSourcePipeline ClusterInfoClusterSource = `PIPELINE`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const ClusterInfoClusterSourcePipelineMaintenance ClusterInfoClusterSource = `PIPELINE_MAINTENANCE`
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 // unspecified, the runtime engine is inferred from spark_version.
 type ClusterInfoRuntimeEngine string
+const (
+	ClusterInfoRuntimeEngineNull ClusterInfoRuntimeEngine = `NULL`
+	ClusterInfoRuntimeEngineStandard ClusterInfoRuntimeEngine = `STANDARD`
+	ClusterInfoRuntimeEnginePhoton ClusterInfoRuntimeEngine = `PHOTON`
+)
 
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const ClusterInfoRuntimeEngineNull ClusterInfoRuntimeEngine = `NULL`
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const ClusterInfoRuntimeEngineStandard ClusterInfoRuntimeEngine = `STANDARD`
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const ClusterInfoRuntimeEnginePhoton ClusterInfoRuntimeEngine = `PHOTON`
 // Current state of the cluster.
 type ClusterInfoState string
-
-// Current state of the cluster.
-const ClusterInfoStatePending ClusterInfoState = `PENDING`
-// Current state of the cluster.
-const ClusterInfoStateRunning ClusterInfoState = `RUNNING`
-// Current state of the cluster.
-const ClusterInfoStateRestarting ClusterInfoState = `RESTARTING`
-// Current state of the cluster.
-const ClusterInfoStateResizing ClusterInfoState = `RESIZING`
-// Current state of the cluster.
-const ClusterInfoStateTerminating ClusterInfoState = `TERMINATING`
-// Current state of the cluster.
-const ClusterInfoStateTerminated ClusterInfoState = `TERMINATED`
-// Current state of the cluster.
-const ClusterInfoStateError ClusterInfoState = `ERROR`
-// Current state of the cluster.
-const ClusterInfoStateUnknown ClusterInfoState = `UNKNOWN`
+const (
+	ClusterInfoStatePending ClusterInfoState = `PENDING`
+	ClusterInfoStateRunning ClusterInfoState = `RUNNING`
+	ClusterInfoStateRestarting ClusterInfoState = `RESTARTING`
+	ClusterInfoStateResizing ClusterInfoState = `RESIZING`
+	ClusterInfoStateTerminating ClusterInfoState = `TERMINATING`
+	ClusterInfoStateTerminated ClusterInfoState = `TERMINATED`
+	ClusterInfoStateError ClusterInfoState = `ERROR`
+	ClusterInfoStateUnknown ClusterInfoState = `UNKNOWN`
+)
 
 type ClusterLogConf struct {
     // destination needs to be provided. e.g. ``{ &#34;dbfs&#34; : { &#34;destination&#34; :
@@ -658,7 +560,6 @@ type ClusterLogConf struct {
     // data to the s3 destination.
     S3 *S3StorageInfo `json:"s3,omitempty"`
 }
-
 
 type ClusterSize struct {
     // Parameters needed in order to automatically scale clusters up and down
@@ -675,7 +576,6 @@ type ClusterSize struct {
     // will gradually increase from 5 to 10 as the new nodes are provisioned.
     NumWorkers int `json:"num_workers,omitempty"`
 }
-
 
 type CpalFailureResponse struct {
     
@@ -700,71 +600,47 @@ type CpalFailureResponse struct {
 
 
 type CpalFailureResponseAwsCpalErrorCode string
+const (
+	CpalFailureResponseAwsCpalErrorCodeAwsServiceException CpalFailureResponseAwsCpalErrorCode = `AWS_SERVICE_EXCEPTION`
+	CpalFailureResponseAwsCpalErrorCodeAwsUnexpectedInstanceState CpalFailureResponseAwsCpalErrorCode = `AWS_UNEXPECTED_INSTANCE_STATE`
+	CpalFailureResponseAwsCpalErrorCodeAwsSpotRequestFailed CpalFailureResponseAwsCpalErrorCode = `AWS_SPOT_REQUEST_FAILED`
+	CpalFailureResponseAwsCpalErrorCodeAwsUnexpectedException CpalFailureResponseAwsCpalErrorCode = `AWS_UNEXPECTED_EXCEPTION`
+	CpalFailureResponseAwsCpalErrorCodeAwsInsufficientInstanceCapacityFailure CpalFailureResponseAwsCpalErrorCode = `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`
+	CpalFailureResponseAwsCpalErrorCodeAwsUnsupportedInstanceTypeFailure CpalFailureResponseAwsCpalErrorCode = `AWS_UNSUPPORTED_INSTANCE_TYPE_FAILURE`
+	CpalFailureResponseAwsCpalErrorCodeAwsInsufficientFreeAddressesInSubnetFailure CpalFailureResponseAwsCpalErrorCode = `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`
+	CpalFailureResponseAwsCpalErrorCodeAwsRequestLimitExceeded CpalFailureResponseAwsCpalErrorCode = `AWS_REQUEST_LIMIT_EXCEEDED`
+	CpalFailureResponseAwsCpalErrorCodeAwsInvalidInstanceTypeFailure CpalFailureResponseAwsCpalErrorCode = `AWS_INVALID_INSTANCE_TYPE_FAILURE`
+	CpalFailureResponseAwsCpalErrorCodeAwsMaxSpotInstanceCountExceeded CpalFailureResponseAwsCpalErrorCode = `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED`
+)
 
-
-const CpalFailureResponseAwsCpalErrorCodeAwsServiceException CpalFailureResponseAwsCpalErrorCode = `AWS_SERVICE_EXCEPTION`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsUnexpectedInstanceState CpalFailureResponseAwsCpalErrorCode = `AWS_UNEXPECTED_INSTANCE_STATE`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsSpotRequestFailed CpalFailureResponseAwsCpalErrorCode = `AWS_SPOT_REQUEST_FAILED`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsUnexpectedException CpalFailureResponseAwsCpalErrorCode = `AWS_UNEXPECTED_EXCEPTION`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsInsufficientInstanceCapacityFailure CpalFailureResponseAwsCpalErrorCode = `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsUnsupportedInstanceTypeFailure CpalFailureResponseAwsCpalErrorCode = `AWS_UNSUPPORTED_INSTANCE_TYPE_FAILURE`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsInsufficientFreeAddressesInSubnetFailure CpalFailureResponseAwsCpalErrorCode = `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsRequestLimitExceeded CpalFailureResponseAwsCpalErrorCode = `AWS_REQUEST_LIMIT_EXCEEDED`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsInvalidInstanceTypeFailure CpalFailureResponseAwsCpalErrorCode = `AWS_INVALID_INSTANCE_TYPE_FAILURE`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsMaxSpotInstanceCountExceeded CpalFailureResponseAwsCpalErrorCode = `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED`
 
 type CpalFailureResponseAzureCpalErrorCode string
+const (
+	CpalFailureResponseAzureCpalErrorCodeAzureCloudException CpalFailureResponseAzureCpalErrorCode = `AZURE_CLOUD_EXCEPTION`
+	CpalFailureResponseAzureCpalErrorCodeAzureResourceManagerThrottling CpalFailureResponseAzureCpalErrorCode = `AZURE_RESOURCE_MANAGER_THROTTLING`
+	CpalFailureResponseAzureCpalErrorCodeAzureResourceProviderThrottling CpalFailureResponseAzureCpalErrorCode = `AZURE_RESOURCE_PROVIDER_THROTTLING`
+	CpalFailureResponseAzureCpalErrorCodeAzureServerUnreachable CpalFailureResponseAzureCpalErrorCode = `AZURE_SERVER_UNREACHABLE`
+	CpalFailureResponseAzureCpalErrorCodeAzureNullPointer CpalFailureResponseAzureCpalErrorCode = `AZURE_NULL_POINTER`
+	CpalFailureResponseAzureCpalErrorCodeAzureUnknownException CpalFailureResponseAzureCpalErrorCode = `AZURE_UNKNOWN_EXCEPTION`
+	CpalFailureResponseAzureCpalErrorCodeAzureVnetConfigurationException CpalFailureResponseAzureCpalErrorCode = `AZURE_VNET_CONFIGURATION_EXCEPTION`
+	CpalFailureResponseAzureCpalErrorCodeAzureLoadBalancerConfigurationException CpalFailureResponseAzureCpalErrorCode = `AZURE_LOAD_BALANCER_CONFIGURATION_EXCEPTION`
+	CpalFailureResponseAzureCpalErrorCodeAzureQuotaExceededException CpalFailureResponseAzureCpalErrorCode = `AZURE_QUOTA_EXCEEDED_EXCEPTION`
+	CpalFailureResponseAzureCpalErrorCodeAzureAuthenticationException CpalFailureResponseAzureCpalErrorCode = `AZURE_AUTHENTICATION_EXCEPTION`
+	CpalFailureResponseAzureCpalErrorCodeAzureSpotRequestException CpalFailureResponseAzureCpalErrorCode = `AZURE_SPOT_REQUEST_EXCEPTION`
+	CpalFailureResponseAzureCpalErrorCodeAzureNotRunningVmException CpalFailureResponseAzureCpalErrorCode = `AZURE_NOT_RUNNING_VM_EXCEPTION`
+	CpalFailureResponseAzureCpalErrorCodeAzureInvalidDeploymentTemplate CpalFailureResponseAzureCpalErrorCode = `AZURE_INVALID_DEPLOYMENT_TEMPLATE`
+	CpalFailureResponseAzureCpalErrorCodeAzureUnexpectedDeploymentTemplateFailure CpalFailureResponseAzureCpalErrorCode = `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`
+	CpalFailureResponseAzureCpalErrorCodeAzureSubnetExhaustedFailure CpalFailureResponseAzureCpalErrorCode = `AZURE_SUBNET_EXHAUSTED_FAILURE`
+	CpalFailureResponseAzureCpalErrorCodeAzureOperationNotAllowedException CpalFailureResponseAzureCpalErrorCode = `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`
+	CpalFailureResponseAzureCpalErrorCodeAzureServerException CpalFailureResponseAzureCpalErrorCode = `AZURE_SERVER_EXCEPTION`
+)
 
-
-const CpalFailureResponseAzureCpalErrorCodeAzureCloudException CpalFailureResponseAzureCpalErrorCode = `AZURE_CLOUD_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureResourceManagerThrottling CpalFailureResponseAzureCpalErrorCode = `AZURE_RESOURCE_MANAGER_THROTTLING`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureResourceProviderThrottling CpalFailureResponseAzureCpalErrorCode = `AZURE_RESOURCE_PROVIDER_THROTTLING`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureServerUnreachable CpalFailureResponseAzureCpalErrorCode = `AZURE_SERVER_UNREACHABLE`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureNullPointer CpalFailureResponseAzureCpalErrorCode = `AZURE_NULL_POINTER`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureUnknownException CpalFailureResponseAzureCpalErrorCode = `AZURE_UNKNOWN_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureVnetConfigurationException CpalFailureResponseAzureCpalErrorCode = `AZURE_VNET_CONFIGURATION_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureLoadBalancerConfigurationException CpalFailureResponseAzureCpalErrorCode = `AZURE_LOAD_BALANCER_CONFIGURATION_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureQuotaExceededException CpalFailureResponseAzureCpalErrorCode = `AZURE_QUOTA_EXCEEDED_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureAuthenticationException CpalFailureResponseAzureCpalErrorCode = `AZURE_AUTHENTICATION_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureSpotRequestException CpalFailureResponseAzureCpalErrorCode = `AZURE_SPOT_REQUEST_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureNotRunningVmException CpalFailureResponseAzureCpalErrorCode = `AZURE_NOT_RUNNING_VM_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureInvalidDeploymentTemplate CpalFailureResponseAzureCpalErrorCode = `AZURE_INVALID_DEPLOYMENT_TEMPLATE`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureUnexpectedDeploymentTemplateFailure CpalFailureResponseAzureCpalErrorCode = `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureSubnetExhaustedFailure CpalFailureResponseAzureCpalErrorCode = `AZURE_SUBNET_EXHAUSTED_FAILURE`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureOperationNotAllowedException CpalFailureResponseAzureCpalErrorCode = `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureServerException CpalFailureResponseAzureCpalErrorCode = `AZURE_SERVER_EXCEPTION`
 
 type CpalFailureResponseDelegateErrorCode string
-
-
-const CpalFailureResponseDelegateErrorCodeDelegateUnexpectedException CpalFailureResponseDelegateErrorCode = `DELEGATE_UNEXPECTED_EXCEPTION`
-
-const CpalFailureResponseDelegateErrorCodeNoSuchWorkerEnvironmentException CpalFailureResponseDelegateErrorCode = `NO_SUCH_WORKER_ENVIRONMENT_EXCEPTION`
+const (
+	CpalFailureResponseDelegateErrorCodeDelegateUnexpectedException CpalFailureResponseDelegateErrorCode = `DELEGATE_UNEXPECTED_EXCEPTION`
+	CpalFailureResponseDelegateErrorCodeNoSuchWorkerEnvironmentException CpalFailureResponseDelegateErrorCode = `NO_SUCH_WORKER_ENVIRONMENT_EXCEPTION`
+)
 
 type CreateClusterRequest struct {
     // Note: This field won&#39;t be true for webapp requests. Only API users will
@@ -897,54 +773,29 @@ type CreateClusterRequest struct {
 // by the Databricks Jobs Scheduler, or through an API request. This is the same
 // as cluster_creator, but read only.
 type CreateClusterRequestClusterSource string
+const (
+	CreateClusterRequestClusterSourceUi CreateClusterRequestClusterSource = `UI`
+	CreateClusterRequestClusterSourceJob CreateClusterRequestClusterSource = `JOB`
+	CreateClusterRequestClusterSourceApi CreateClusterRequestClusterSource = `API`
+	CreateClusterRequestClusterSourceSql CreateClusterRequestClusterSource = `SQL`
+	CreateClusterRequestClusterSourceModels CreateClusterRequestClusterSource = `MODELS`
+	CreateClusterRequestClusterSourcePipeline CreateClusterRequestClusterSource = `PIPELINE`
+	CreateClusterRequestClusterSourcePipelineMaintenance CreateClusterRequestClusterSource = `PIPELINE_MAINTENANCE`
+)
 
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const CreateClusterRequestClusterSourceUi CreateClusterRequestClusterSource = `UI`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const CreateClusterRequestClusterSourceJob CreateClusterRequestClusterSource = `JOB`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const CreateClusterRequestClusterSourceApi CreateClusterRequestClusterSource = `API`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const CreateClusterRequestClusterSourceSql CreateClusterRequestClusterSource = `SQL`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const CreateClusterRequestClusterSourceModels CreateClusterRequestClusterSource = `MODELS`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const CreateClusterRequestClusterSourcePipeline CreateClusterRequestClusterSource = `PIPELINE`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const CreateClusterRequestClusterSourcePipelineMaintenance CreateClusterRequestClusterSource = `PIPELINE_MAINTENANCE`
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 // unspecified, the runtime engine is inferred from spark_version.
 type CreateClusterRequestRuntimeEngine string
-
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const CreateClusterRequestRuntimeEngineNull CreateClusterRequestRuntimeEngine = `NULL`
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const CreateClusterRequestRuntimeEngineStandard CreateClusterRequestRuntimeEngine = `STANDARD`
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const CreateClusterRequestRuntimeEnginePhoton CreateClusterRequestRuntimeEngine = `PHOTON`
+const (
+	CreateClusterRequestRuntimeEngineNull CreateClusterRequestRuntimeEngine = `NULL`
+	CreateClusterRequestRuntimeEngineStandard CreateClusterRequestRuntimeEngine = `STANDARD`
+	CreateClusterRequestRuntimeEnginePhoton CreateClusterRequestRuntimeEngine = `PHOTON`
+)
 
 type CreateClusterResponse struct {
     
     ClusterId string `json:"cluster_id,omitempty"`
 }
-
 
 type DataPlaneEventDetails struct {
     
@@ -959,23 +810,20 @@ type DataPlaneEventDetails struct {
 
 
 type DataPlaneEventDetailsEventType string
-
-
-const DataPlaneEventDetailsEventTypeNodeBlacklisted DataPlaneEventDetailsEventType = `NODE_BLACKLISTED`
-
-const DataPlaneEventDetailsEventTypeNodeExcludedDecommissioned DataPlaneEventDetailsEventType = `NODE_EXCLUDED_DECOMMISSIONED`
+const (
+	DataPlaneEventDetailsEventTypeNodeBlacklisted DataPlaneEventDetailsEventType = `NODE_BLACKLISTED`
+	DataPlaneEventDetailsEventTypeNodeExcludedDecommissioned DataPlaneEventDetailsEventType = `NODE_EXCLUDED_DECOMMISSIONED`
+)
 
 type DbfsStorageInfo struct {
     // dbfs destination, e.g. ``dbfs:/my/path``
     Destination string `json:"destination,omitempty"`
 }
 
-
 type DeleteClusterRequest struct {
     // The cluster to be terminated.
     ClusterId string `json:"cluster_id"`
 }
-
 
 type EditClusterRequest struct {
     // Note: This field won&#39;t be true for webapp requests. Only API users will
@@ -1110,48 +958,24 @@ type EditClusterRequest struct {
 // by the Databricks Jobs Scheduler, or through an API request. This is the same
 // as cluster_creator, but read only.
 type EditClusterRequestClusterSource string
+const (
+	EditClusterRequestClusterSourceUi EditClusterRequestClusterSource = `UI`
+	EditClusterRequestClusterSourceJob EditClusterRequestClusterSource = `JOB`
+	EditClusterRequestClusterSourceApi EditClusterRequestClusterSource = `API`
+	EditClusterRequestClusterSourceSql EditClusterRequestClusterSource = `SQL`
+	EditClusterRequestClusterSourceModels EditClusterRequestClusterSource = `MODELS`
+	EditClusterRequestClusterSourcePipeline EditClusterRequestClusterSource = `PIPELINE`
+	EditClusterRequestClusterSourcePipelineMaintenance EditClusterRequestClusterSource = `PIPELINE_MAINTENANCE`
+)
 
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const EditClusterRequestClusterSourceUi EditClusterRequestClusterSource = `UI`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const EditClusterRequestClusterSourceJob EditClusterRequestClusterSource = `JOB`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const EditClusterRequestClusterSourceApi EditClusterRequestClusterSource = `API`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const EditClusterRequestClusterSourceSql EditClusterRequestClusterSource = `SQL`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const EditClusterRequestClusterSourceModels EditClusterRequestClusterSource = `MODELS`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const EditClusterRequestClusterSourcePipeline EditClusterRequestClusterSource = `PIPELINE`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const EditClusterRequestClusterSourcePipelineMaintenance EditClusterRequestClusterSource = `PIPELINE_MAINTENANCE`
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 // unspecified, the runtime engine is inferred from spark_version.
 type EditClusterRequestRuntimeEngine string
-
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const EditClusterRequestRuntimeEngineNull EditClusterRequestRuntimeEngine = `NULL`
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const EditClusterRequestRuntimeEngineStandard EditClusterRequestRuntimeEngine = `STANDARD`
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const EditClusterRequestRuntimeEnginePhoton EditClusterRequestRuntimeEngine = `PHOTON`
+const (
+	EditClusterRequestRuntimeEngineNull EditClusterRequestRuntimeEngine = `NULL`
+	EditClusterRequestRuntimeEngineStandard EditClusterRequestRuntimeEngine = `STANDARD`
+	EditClusterRequestRuntimeEnginePhoton EditClusterRequestRuntimeEngine = `PHOTON`
+)
 
 type EventDetails struct {
     // * For created clusters, the attributes of the cluster. * For edited
@@ -1203,15 +1027,12 @@ type EventDetails struct {
 
 // The cause of a change in target size.
 type EventDetailsCause string
-
-// The cause of a change in target size.
-const EventDetailsCauseAutoscale EventDetailsCause = `AUTOSCALE`
-// The cause of a change in target size.
-const EventDetailsCauseUserRequest EventDetailsCause = `USER_REQUEST`
-// The cause of a change in target size.
-const EventDetailsCauseAutorecovery EventDetailsCause = `AUTORECOVERY`
-// The cause of a change in target size.
-const EventDetailsCauseReplaceBadNodes EventDetailsCause = `REPLACE_BAD_NODES`
+const (
+	EventDetailsCauseAutoscale EventDetailsCause = `AUTOSCALE`
+	EventDetailsCauseUserRequest EventDetailsCause = `USER_REQUEST`
+	EventDetailsCauseAutorecovery EventDetailsCause = `AUTORECOVERY`
+	EventDetailsCauseReplaceBadNodes EventDetailsCause = `REPLACE_BAD_NODES`
+)
 
 type GcpAttributes struct {
     // This field determines whether the spark executors will be scheduled to
@@ -1231,25 +1052,16 @@ type GcpAttributes struct {
 // preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to
 // on-demand VMs if the former is unavailable.
 type GcpAttributesAvailability string
-
-// This field determines whether the spark executors will be scheduled to run on
-// preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to
-// on-demand VMs if the former is unavailable.
-const GcpAttributesAvailabilityPreemptibleGcp GcpAttributesAvailability = `PREEMPTIBLE_GCP`
-// This field determines whether the spark executors will be scheduled to run on
-// preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to
-// on-demand VMs if the former is unavailable.
-const GcpAttributesAvailabilityOnDemandGcp GcpAttributesAvailability = `ON_DEMAND_GCP`
-// This field determines whether the spark executors will be scheduled to run on
-// preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to
-// on-demand VMs if the former is unavailable.
-const GcpAttributesAvailabilityPreemptibleWithFallbackGcp GcpAttributesAvailability = `PREEMPTIBLE_WITH_FALLBACK_GCP`
+const (
+	GcpAttributesAvailabilityPreemptibleGcp GcpAttributesAvailability = `PREEMPTIBLE_GCP`
+	GcpAttributesAvailabilityOnDemandGcp GcpAttributesAvailability = `ON_DEMAND_GCP`
+	GcpAttributesAvailabilityPreemptibleWithFallbackGcp GcpAttributesAvailability = `PREEMPTIBLE_WITH_FALLBACK_GCP`
+)
 
 type GetClusterRequest struct {
     // The cluster about which to retrieve information.
     ClusterId string ` url:"cluster_id,omitempty"`
 }
-
 
 type GetClusterResponse struct {
     // Parameters needed in order to automatically scale clusters up and down
@@ -1430,67 +1242,37 @@ type GetClusterResponse struct {
 // by the Databricks Jobs Scheduler, or through an API request. This is the same
 // as cluster_creator, but read only.
 type GetClusterResponseClusterSource string
+const (
+	GetClusterResponseClusterSourceUi GetClusterResponseClusterSource = `UI`
+	GetClusterResponseClusterSourceJob GetClusterResponseClusterSource = `JOB`
+	GetClusterResponseClusterSourceApi GetClusterResponseClusterSource = `API`
+	GetClusterResponseClusterSourceSql GetClusterResponseClusterSource = `SQL`
+	GetClusterResponseClusterSourceModels GetClusterResponseClusterSource = `MODELS`
+	GetClusterResponseClusterSourcePipeline GetClusterResponseClusterSource = `PIPELINE`
+	GetClusterResponseClusterSourcePipelineMaintenance GetClusterResponseClusterSource = `PIPELINE_MAINTENANCE`
+)
 
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const GetClusterResponseClusterSourceUi GetClusterResponseClusterSource = `UI`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const GetClusterResponseClusterSourceJob GetClusterResponseClusterSource = `JOB`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const GetClusterResponseClusterSourceApi GetClusterResponseClusterSource = `API`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const GetClusterResponseClusterSourceSql GetClusterResponseClusterSource = `SQL`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const GetClusterResponseClusterSourceModels GetClusterResponseClusterSource = `MODELS`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const GetClusterResponseClusterSourcePipeline GetClusterResponseClusterSource = `PIPELINE`
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-const GetClusterResponseClusterSourcePipelineMaintenance GetClusterResponseClusterSource = `PIPELINE_MAINTENANCE`
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 // unspecified, the runtime engine is inferred from spark_version.
 type GetClusterResponseRuntimeEngine string
+const (
+	GetClusterResponseRuntimeEngineNull GetClusterResponseRuntimeEngine = `NULL`
+	GetClusterResponseRuntimeEngineStandard GetClusterResponseRuntimeEngine = `STANDARD`
+	GetClusterResponseRuntimeEnginePhoton GetClusterResponseRuntimeEngine = `PHOTON`
+)
 
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const GetClusterResponseRuntimeEngineNull GetClusterResponseRuntimeEngine = `NULL`
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const GetClusterResponseRuntimeEngineStandard GetClusterResponseRuntimeEngine = `STANDARD`
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-const GetClusterResponseRuntimeEnginePhoton GetClusterResponseRuntimeEngine = `PHOTON`
 // Current state of the cluster.
 type GetClusterResponseState string
-
-// Current state of the cluster.
-const GetClusterResponseStatePending GetClusterResponseState = `PENDING`
-// Current state of the cluster.
-const GetClusterResponseStateRunning GetClusterResponseState = `RUNNING`
-// Current state of the cluster.
-const GetClusterResponseStateRestarting GetClusterResponseState = `RESTARTING`
-// Current state of the cluster.
-const GetClusterResponseStateResizing GetClusterResponseState = `RESIZING`
-// Current state of the cluster.
-const GetClusterResponseStateTerminating GetClusterResponseState = `TERMINATING`
-// Current state of the cluster.
-const GetClusterResponseStateTerminated GetClusterResponseState = `TERMINATED`
-// Current state of the cluster.
-const GetClusterResponseStateError GetClusterResponseState = `ERROR`
-// Current state of the cluster.
-const GetClusterResponseStateUnknown GetClusterResponseState = `UNKNOWN`
+const (
+	GetClusterResponseStatePending GetClusterResponseState = `PENDING`
+	GetClusterResponseStateRunning GetClusterResponseState = `RUNNING`
+	GetClusterResponseStateRestarting GetClusterResponseState = `RESTARTING`
+	GetClusterResponseStateResizing GetClusterResponseState = `RESIZING`
+	GetClusterResponseStateTerminating GetClusterResponseState = `TERMINATING`
+	GetClusterResponseStateTerminated GetClusterResponseState = `TERMINATED`
+	GetClusterResponseStateError GetClusterResponseState = `ERROR`
+	GetClusterResponseStateUnknown GetClusterResponseState = `UNKNOWN`
+)
 
 type GetEvents struct {
     // The ID of the cluster to retrieve events about.
@@ -1517,64 +1299,40 @@ type GetEvents struct {
 
 
 type GetEventsEventTypesItem string
+const (
+	GetEventsEventTypesItemCreating GetEventsEventTypesItem = `CREATING`
+	GetEventsEventTypesItemStarting GetEventsEventTypesItem = `STARTING`
+	GetEventsEventTypesItemRestarting GetEventsEventTypesItem = `RESTARTING`
+	GetEventsEventTypesItemTerminating GetEventsEventTypesItem = `TERMINATING`
+	GetEventsEventTypesItemEdited GetEventsEventTypesItem = `EDITED`
+	GetEventsEventTypesItemRunning GetEventsEventTypesItem = `RUNNING`
+	GetEventsEventTypesItemResizing GetEventsEventTypesItem = `RESIZING`
+	GetEventsEventTypesItemNodesLost GetEventsEventTypesItem = `NODES_LOST`
+	GetEventsEventTypesItemUpsizeCompleted GetEventsEventTypesItem = `UPSIZE_COMPLETED`
+	GetEventsEventTypesItemInitScriptsStarted GetEventsEventTypesItem = `INIT_SCRIPTS_STARTED`
+	GetEventsEventTypesItemInitScriptsFinished GetEventsEventTypesItem = `INIT_SCRIPTS_FINISHED`
+	GetEventsEventTypesItemDidNotExpandDisk GetEventsEventTypesItem = `DID_NOT_EXPAND_DISK`
+	GetEventsEventTypesItemExpandedDisk GetEventsEventTypesItem = `EXPANDED_DISK`
+	GetEventsEventTypesItemFailedToExpandDisk GetEventsEventTypesItem = `FAILED_TO_EXPAND_DISK`
+	GetEventsEventTypesItemDriverHealthy GetEventsEventTypesItem = `DRIVER_HEALTHY`
+	GetEventsEventTypesItemDriverNotResponding GetEventsEventTypesItem = `DRIVER_NOT_RESPONDING`
+	GetEventsEventTypesItemDriverUnavailable GetEventsEventTypesItem = `DRIVER_UNAVAILABLE`
+	GetEventsEventTypesItemSparkException GetEventsEventTypesItem = `SPARK_EXCEPTION`
+	GetEventsEventTypesItemMetastoreDown GetEventsEventTypesItem = `METASTORE_DOWN`
+	GetEventsEventTypesItemDbfsDown GetEventsEventTypesItem = `DBFS_DOWN`
+	GetEventsEventTypesItemAutoscalingStatsReport GetEventsEventTypesItem = `AUTOSCALING_STATS_REPORT`
+	GetEventsEventTypesItemNodeBlacklisted GetEventsEventTypesItem = `NODE_BLACKLISTED`
+	GetEventsEventTypesItemPinned GetEventsEventTypesItem = `PINNED`
+	GetEventsEventTypesItemUnpinned GetEventsEventTypesItem = `UNPINNED`
+	GetEventsEventTypesItemNodeExcludedDecommissioned GetEventsEventTypesItem = `NODE_EXCLUDED_DECOMMISSIONED`
+)
 
-
-const GetEventsEventTypesItemCreating GetEventsEventTypesItem = `CREATING`
-
-const GetEventsEventTypesItemStarting GetEventsEventTypesItem = `STARTING`
-
-const GetEventsEventTypesItemRestarting GetEventsEventTypesItem = `RESTARTING`
-
-const GetEventsEventTypesItemTerminating GetEventsEventTypesItem = `TERMINATING`
-
-const GetEventsEventTypesItemEdited GetEventsEventTypesItem = `EDITED`
-
-const GetEventsEventTypesItemRunning GetEventsEventTypesItem = `RUNNING`
-
-const GetEventsEventTypesItemResizing GetEventsEventTypesItem = `RESIZING`
-
-const GetEventsEventTypesItemNodesLost GetEventsEventTypesItem = `NODES_LOST`
-
-const GetEventsEventTypesItemUpsizeCompleted GetEventsEventTypesItem = `UPSIZE_COMPLETED`
-
-const GetEventsEventTypesItemInitScriptsStarted GetEventsEventTypesItem = `INIT_SCRIPTS_STARTED`
-
-const GetEventsEventTypesItemInitScriptsFinished GetEventsEventTypesItem = `INIT_SCRIPTS_FINISHED`
-
-const GetEventsEventTypesItemDidNotExpandDisk GetEventsEventTypesItem = `DID_NOT_EXPAND_DISK`
-
-const GetEventsEventTypesItemExpandedDisk GetEventsEventTypesItem = `EXPANDED_DISK`
-
-const GetEventsEventTypesItemFailedToExpandDisk GetEventsEventTypesItem = `FAILED_TO_EXPAND_DISK`
-
-const GetEventsEventTypesItemDriverHealthy GetEventsEventTypesItem = `DRIVER_HEALTHY`
-
-const GetEventsEventTypesItemDriverNotResponding GetEventsEventTypesItem = `DRIVER_NOT_RESPONDING`
-
-const GetEventsEventTypesItemDriverUnavailable GetEventsEventTypesItem = `DRIVER_UNAVAILABLE`
-
-const GetEventsEventTypesItemSparkException GetEventsEventTypesItem = `SPARK_EXCEPTION`
-
-const GetEventsEventTypesItemMetastoreDown GetEventsEventTypesItem = `METASTORE_DOWN`
-
-const GetEventsEventTypesItemDbfsDown GetEventsEventTypesItem = `DBFS_DOWN`
-
-const GetEventsEventTypesItemAutoscalingStatsReport GetEventsEventTypesItem = `AUTOSCALING_STATS_REPORT`
-
-const GetEventsEventTypesItemNodeBlacklisted GetEventsEventTypesItem = `NODE_BLACKLISTED`
-
-const GetEventsEventTypesItemPinned GetEventsEventTypesItem = `PINNED`
-
-const GetEventsEventTypesItemUnpinned GetEventsEventTypesItem = `UNPINNED`
-
-const GetEventsEventTypesItemNodeExcludedDecommissioned GetEventsEventTypesItem = `NODE_EXCLUDED_DECOMMISSIONED`
 // The order to list events in; either &#34;ASC&#34; or &#34;DESC&#34;. Defaults to &#34;DESC&#34;.
 type GetEventsOrder string
-
-// The order to list events in; either &#34;ASC&#34; or &#34;DESC&#34;. Defaults to &#34;DESC&#34;.
-const GetEventsOrderDesc GetEventsOrder = `DESC`
-// The order to list events in; either &#34;ASC&#34; or &#34;DESC&#34;. Defaults to &#34;DESC&#34;.
-const GetEventsOrderAsc GetEventsOrder = `ASC`
+const (
+	GetEventsOrderDesc GetEventsOrder = `DESC`
+	GetEventsOrderAsc GetEventsOrder = `ASC`
+)
 
 type GetEventsRequest struct {
     // The ID of the cluster to retrieve events about.
@@ -1601,64 +1359,40 @@ type GetEventsRequest struct {
 
 
 type GetEventsRequestEventTypesItem string
+const (
+	GetEventsRequestEventTypesItemCreating GetEventsRequestEventTypesItem = `CREATING`
+	GetEventsRequestEventTypesItemStarting GetEventsRequestEventTypesItem = `STARTING`
+	GetEventsRequestEventTypesItemRestarting GetEventsRequestEventTypesItem = `RESTARTING`
+	GetEventsRequestEventTypesItemTerminating GetEventsRequestEventTypesItem = `TERMINATING`
+	GetEventsRequestEventTypesItemEdited GetEventsRequestEventTypesItem = `EDITED`
+	GetEventsRequestEventTypesItemRunning GetEventsRequestEventTypesItem = `RUNNING`
+	GetEventsRequestEventTypesItemResizing GetEventsRequestEventTypesItem = `RESIZING`
+	GetEventsRequestEventTypesItemNodesLost GetEventsRequestEventTypesItem = `NODES_LOST`
+	GetEventsRequestEventTypesItemUpsizeCompleted GetEventsRequestEventTypesItem = `UPSIZE_COMPLETED`
+	GetEventsRequestEventTypesItemInitScriptsStarted GetEventsRequestEventTypesItem = `INIT_SCRIPTS_STARTED`
+	GetEventsRequestEventTypesItemInitScriptsFinished GetEventsRequestEventTypesItem = `INIT_SCRIPTS_FINISHED`
+	GetEventsRequestEventTypesItemDidNotExpandDisk GetEventsRequestEventTypesItem = `DID_NOT_EXPAND_DISK`
+	GetEventsRequestEventTypesItemExpandedDisk GetEventsRequestEventTypesItem = `EXPANDED_DISK`
+	GetEventsRequestEventTypesItemFailedToExpandDisk GetEventsRequestEventTypesItem = `FAILED_TO_EXPAND_DISK`
+	GetEventsRequestEventTypesItemDriverHealthy GetEventsRequestEventTypesItem = `DRIVER_HEALTHY`
+	GetEventsRequestEventTypesItemDriverNotResponding GetEventsRequestEventTypesItem = `DRIVER_NOT_RESPONDING`
+	GetEventsRequestEventTypesItemDriverUnavailable GetEventsRequestEventTypesItem = `DRIVER_UNAVAILABLE`
+	GetEventsRequestEventTypesItemSparkException GetEventsRequestEventTypesItem = `SPARK_EXCEPTION`
+	GetEventsRequestEventTypesItemMetastoreDown GetEventsRequestEventTypesItem = `METASTORE_DOWN`
+	GetEventsRequestEventTypesItemDbfsDown GetEventsRequestEventTypesItem = `DBFS_DOWN`
+	GetEventsRequestEventTypesItemAutoscalingStatsReport GetEventsRequestEventTypesItem = `AUTOSCALING_STATS_REPORT`
+	GetEventsRequestEventTypesItemNodeBlacklisted GetEventsRequestEventTypesItem = `NODE_BLACKLISTED`
+	GetEventsRequestEventTypesItemPinned GetEventsRequestEventTypesItem = `PINNED`
+	GetEventsRequestEventTypesItemUnpinned GetEventsRequestEventTypesItem = `UNPINNED`
+	GetEventsRequestEventTypesItemNodeExcludedDecommissioned GetEventsRequestEventTypesItem = `NODE_EXCLUDED_DECOMMISSIONED`
+)
 
-
-const GetEventsRequestEventTypesItemCreating GetEventsRequestEventTypesItem = `CREATING`
-
-const GetEventsRequestEventTypesItemStarting GetEventsRequestEventTypesItem = `STARTING`
-
-const GetEventsRequestEventTypesItemRestarting GetEventsRequestEventTypesItem = `RESTARTING`
-
-const GetEventsRequestEventTypesItemTerminating GetEventsRequestEventTypesItem = `TERMINATING`
-
-const GetEventsRequestEventTypesItemEdited GetEventsRequestEventTypesItem = `EDITED`
-
-const GetEventsRequestEventTypesItemRunning GetEventsRequestEventTypesItem = `RUNNING`
-
-const GetEventsRequestEventTypesItemResizing GetEventsRequestEventTypesItem = `RESIZING`
-
-const GetEventsRequestEventTypesItemNodesLost GetEventsRequestEventTypesItem = `NODES_LOST`
-
-const GetEventsRequestEventTypesItemUpsizeCompleted GetEventsRequestEventTypesItem = `UPSIZE_COMPLETED`
-
-const GetEventsRequestEventTypesItemInitScriptsStarted GetEventsRequestEventTypesItem = `INIT_SCRIPTS_STARTED`
-
-const GetEventsRequestEventTypesItemInitScriptsFinished GetEventsRequestEventTypesItem = `INIT_SCRIPTS_FINISHED`
-
-const GetEventsRequestEventTypesItemDidNotExpandDisk GetEventsRequestEventTypesItem = `DID_NOT_EXPAND_DISK`
-
-const GetEventsRequestEventTypesItemExpandedDisk GetEventsRequestEventTypesItem = `EXPANDED_DISK`
-
-const GetEventsRequestEventTypesItemFailedToExpandDisk GetEventsRequestEventTypesItem = `FAILED_TO_EXPAND_DISK`
-
-const GetEventsRequestEventTypesItemDriverHealthy GetEventsRequestEventTypesItem = `DRIVER_HEALTHY`
-
-const GetEventsRequestEventTypesItemDriverNotResponding GetEventsRequestEventTypesItem = `DRIVER_NOT_RESPONDING`
-
-const GetEventsRequestEventTypesItemDriverUnavailable GetEventsRequestEventTypesItem = `DRIVER_UNAVAILABLE`
-
-const GetEventsRequestEventTypesItemSparkException GetEventsRequestEventTypesItem = `SPARK_EXCEPTION`
-
-const GetEventsRequestEventTypesItemMetastoreDown GetEventsRequestEventTypesItem = `METASTORE_DOWN`
-
-const GetEventsRequestEventTypesItemDbfsDown GetEventsRequestEventTypesItem = `DBFS_DOWN`
-
-const GetEventsRequestEventTypesItemAutoscalingStatsReport GetEventsRequestEventTypesItem = `AUTOSCALING_STATS_REPORT`
-
-const GetEventsRequestEventTypesItemNodeBlacklisted GetEventsRequestEventTypesItem = `NODE_BLACKLISTED`
-
-const GetEventsRequestEventTypesItemPinned GetEventsRequestEventTypesItem = `PINNED`
-
-const GetEventsRequestEventTypesItemUnpinned GetEventsRequestEventTypesItem = `UNPINNED`
-
-const GetEventsRequestEventTypesItemNodeExcludedDecommissioned GetEventsRequestEventTypesItem = `NODE_EXCLUDED_DECOMMISSIONED`
 // The order to list events in; either &#34;ASC&#34; or &#34;DESC&#34;. Defaults to &#34;DESC&#34;.
 type GetEventsRequestOrder string
-
-// The order to list events in; either &#34;ASC&#34; or &#34;DESC&#34;. Defaults to &#34;DESC&#34;.
-const GetEventsRequestOrderDesc GetEventsRequestOrder = `DESC`
-// The order to list events in; either &#34;ASC&#34; or &#34;DESC&#34;. Defaults to &#34;DESC&#34;.
-const GetEventsRequestOrderAsc GetEventsRequestOrder = `ASC`
+const (
+	GetEventsRequestOrderDesc GetEventsRequestOrder = `DESC`
+	GetEventsRequestOrderAsc GetEventsRequestOrder = `ASC`
+)
 
 type GetEventsResponse struct {
     
@@ -1671,12 +1405,10 @@ type GetEventsResponse struct {
     TotalCount int64 `json:"total_count,omitempty"`
 }
 
-
 type GetSparkVersionsResponse struct {
     // All the available Spark versions.
     Versions []SparkVersion `json:"versions,omitempty"`
 }
-
 
 type ListAvailableZonesResponse struct {
     // The availability zone if no ``zone_id`` is provided in the cluster
@@ -1686,7 +1418,6 @@ type ListAvailableZonesResponse struct {
     Zones []string `json:"zones,omitempty"`
 }
 
-
 type ListClustersRequest struct {
     // Filter clusters based on what type of client it can be used for. Could be
     // either NOTEBOOKS or JOBS. No input for this field will get all clusters
@@ -1694,12 +1425,10 @@ type ListClustersRequest struct {
     CanUseClient string ` url:"can_use_client,omitempty"`
 }
 
-
 type ListClustersResponse struct {
     
     Clusters []ClusterInfo `json:"clusters,omitempty"`
 }
-
 
 type ListNodeTypesResponse struct {
     
@@ -1710,14 +1439,12 @@ type ListNodeTypesResponse struct {
     Success any /* ERROR */ `json:"success,omitempty"`
 }
 
-
 type LogAnalyticsInfo struct {
     
     LogAnalyticsPrimaryKey string `json:"log_analytics_primary_key,omitempty"`
     
     LogAnalyticsWorkspaceId string `json:"log_analytics_workspace_id,omitempty"`
 }
-
 
 type LogSyncStatus struct {
     // The timestamp of last attempt. If the last attempt fails,
@@ -1727,7 +1454,6 @@ type LogSyncStatus struct {
     // the response) if there is no exception in last attempted.
     LastException string `json:"last_exception,omitempty"`
 }
-
 
 type NodeType struct {
     // A string description associated with this node type, e.g., &#34;r3.xlarge&#34;.
@@ -1751,18 +1477,15 @@ type NodeType struct {
     NumCores float64 `json:"num_cores"`
 }
 
-
 type PermanentDeleteClusterRequest struct {
     // The cluster to be deleted.
     ClusterId string `json:"cluster_id"`
 }
 
-
 type PinClusterRequest struct {
     
     ClusterId string `json:"cluster_id"`
 }
-
 
 type ResizeClusterRequest struct {
     // Parameters needed in order to automatically scale clusters up and down
@@ -1782,14 +1505,12 @@ type ResizeClusterRequest struct {
     NumWorkers int `json:"num_workers,omitempty"`
 }
 
-
 type RestartClusterRequest struct {
     // The cluster to be started.
     ClusterId string `json:"cluster_id"`
     
     RestartUser string `json:"restart_user,omitempty"`
 }
-
 
 type S3StorageInfo struct {
     // (Optional) Set canned access control list for the logs, e.g.
@@ -1825,7 +1546,6 @@ type S3StorageInfo struct {
     Region string `json:"region,omitempty"`
 }
 
-
 type SparkNode struct {
     // The private IP address of the host instance.
     HostPrivateIp string `json:"host_private_ip,omitempty"`
@@ -1852,12 +1572,10 @@ type SparkNode struct {
     StartTimestamp int64 `json:"start_timestamp,omitempty"`
 }
 
-
 type SparkNodeAwsAttributes struct {
     // Whether this node is on an Amazon spot instance.
     IsSpot bool `json:"is_spot,omitempty"`
 }
-
 
 type SparkVersion struct {
     // Spark version key, for example &#34;2.1.x-scala2.11&#34;. This is the value which
@@ -1870,12 +1588,10 @@ type SparkVersion struct {
     Name string `json:"name,omitempty"`
 }
 
-
 type StartClusterRequest struct {
     // The cluster to be started.
     ClusterId string `json:"cluster_id"`
 }
-
 
 type TerminationReason struct {
     // status code indicating why the cluster was terminated
@@ -1889,185 +1605,103 @@ type TerminationReason struct {
 
 // status code indicating why the cluster was terminated
 type TerminationReasonCode string
+const (
+	TerminationReasonCodeUnknown TerminationReasonCode = `UNKNOWN`
+	TerminationReasonCodeUserRequest TerminationReasonCode = `USER_REQUEST`
+	TerminationReasonCodeJobFinished TerminationReasonCode = `JOB_FINISHED`
+	TerminationReasonCodeInactivity TerminationReasonCode = `INACTIVITY`
+	TerminationReasonCodeCloudProviderShutdown TerminationReasonCode = `CLOUD_PROVIDER_SHUTDOWN`
+	TerminationReasonCodeCommunicationLost TerminationReasonCode = `COMMUNICATION_LOST`
+	TerminationReasonCodeCloudProviderLaunchFailure TerminationReasonCode = `CLOUD_PROVIDER_LAUNCH_FAILURE`
+	TerminationReasonCodeInitScriptFailure TerminationReasonCode = `INIT_SCRIPT_FAILURE`
+	TerminationReasonCodeSparkStartupFailure TerminationReasonCode = `SPARK_STARTUP_FAILURE`
+	TerminationReasonCodeInvalidArgument TerminationReasonCode = `INVALID_ARGUMENT`
+	TerminationReasonCodeUnexpectedLaunchFailure TerminationReasonCode = `UNEXPECTED_LAUNCH_FAILURE`
+	TerminationReasonCodeInternalError TerminationReasonCode = `INTERNAL_ERROR`
+	TerminationReasonCodeInstanceUnreachable TerminationReasonCode = `INSTANCE_UNREACHABLE`
+	TerminationReasonCodeRequestRejected TerminationReasonCode = `REQUEST_REJECTED`
+	TerminationReasonCodeTrialExpired TerminationReasonCode = `TRIAL_EXPIRED`
+	TerminationReasonCodeDriverUnreachable TerminationReasonCode = `DRIVER_UNREACHABLE`
+	TerminationReasonCodeSparkError TerminationReasonCode = `SPARK_ERROR`
+	TerminationReasonCodeDriverUnresponsive TerminationReasonCode = `DRIVER_UNRESPONSIVE`
+	TerminationReasonCodeMetastoreComponentUnhealthy TerminationReasonCode = `METASTORE_COMPONENT_UNHEALTHY`
+	TerminationReasonCodeDbfsComponentUnhealthy TerminationReasonCode = `DBFS_COMPONENT_UNHEALTHY`
+	TerminationReasonCodeExecutionComponentUnhealthy TerminationReasonCode = `EXECUTION_COMPONENT_UNHEALTHY`
+	TerminationReasonCodeAzureResourceManagerThrottling TerminationReasonCode = `AZURE_RESOURCE_MANAGER_THROTTLING`
+	TerminationReasonCodeAzureResourceProviderThrottling TerminationReasonCode = `AZURE_RESOURCE_PROVIDER_THROTTLING`
+	TerminationReasonCodeNetworkConfigurationFailure TerminationReasonCode = `NETWORK_CONFIGURATION_FAILURE`
+	TerminationReasonCodeContainerLaunchFailure TerminationReasonCode = `CONTAINER_LAUNCH_FAILURE`
+	TerminationReasonCodeInstancePoolClusterFailure TerminationReasonCode = `INSTANCE_POOL_CLUSTER_FAILURE`
+	TerminationReasonCodeSkippedSlowNodes TerminationReasonCode = `SKIPPED_SLOW_NODES`
+	TerminationReasonCodeAttachProjectFailure TerminationReasonCode = `ATTACH_PROJECT_FAILURE`
+	TerminationReasonCodeUpdateInstanceProfileFailure TerminationReasonCode = `UPDATE_INSTANCE_PROFILE_FAILURE`
+	TerminationReasonCodeDatabaseConnectionFailure TerminationReasonCode = `DATABASE_CONNECTION_FAILURE`
+	TerminationReasonCodeRequestThrottled TerminationReasonCode = `REQUEST_THROTTLED`
+	TerminationReasonCodeSelfBootstrapFailure TerminationReasonCode = `SELF_BOOTSTRAP_FAILURE`
+	TerminationReasonCodeGlobalInitScriptFailure TerminationReasonCode = `GLOBAL_INIT_SCRIPT_FAILURE`
+	TerminationReasonCodeSlowImageDownload TerminationReasonCode = `SLOW_IMAGE_DOWNLOAD`
+	TerminationReasonCodeInvalidSparkImage TerminationReasonCode = `INVALID_SPARK_IMAGE`
+	TerminationReasonCodeNpipTunnelTokenFailure TerminationReasonCode = `NPIP_TUNNEL_TOKEN_FAILURE`
+	TerminationReasonCodeHiveMetastoreProvisioningFailure TerminationReasonCode = `HIVE_METASTORE_PROVISIONING_FAILURE`
+	TerminationReasonCodeAzureInvalidDeploymentTemplate TerminationReasonCode = `AZURE_INVALID_DEPLOYMENT_TEMPLATE`
+	TerminationReasonCodeAzureUnexpectedDeploymentTemplateFailure TerminationReasonCode = `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`
+	TerminationReasonCodeSubnetExhaustedFailure TerminationReasonCode = `SUBNET_EXHAUSTED_FAILURE`
+	TerminationReasonCodeBootstrapTimeout TerminationReasonCode = `BOOTSTRAP_TIMEOUT`
+	TerminationReasonCodeStorageDownloadFailure TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE`
+	TerminationReasonCodeControlPlaneRequestFailure TerminationReasonCode = `CONTROL_PLANE_REQUEST_FAILURE`
+	TerminationReasonCodeBootstrapTimeoutCloudProviderException TerminationReasonCode = `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`
+	TerminationReasonCodeAwsInsufficientInstanceCapacityFailure TerminationReasonCode = `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`
+	TerminationReasonCodeDockerImagePullFailure TerminationReasonCode = `DOCKER_IMAGE_PULL_FAILURE`
+	TerminationReasonCodeAzureVnetConfigurationFailure TerminationReasonCode = `AZURE_VNET_CONFIGURATION_FAILURE`
+	TerminationReasonCodeNpipTunnelSetupFailure TerminationReasonCode = `NPIP_TUNNEL_SETUP_FAILURE`
+	TerminationReasonCodeAwsAuthorizationFailure TerminationReasonCode = `AWS_AUTHORIZATION_FAILURE`
+	TerminationReasonCodeNephosResourceManagement TerminationReasonCode = `NEPHOS_RESOURCE_MANAGEMENT`
+	TerminationReasonCodeStsClientSetupFailure TerminationReasonCode = `STS_CLIENT_SETUP_FAILURE`
+	TerminationReasonCodeSecurityDaemonRegistrationException TerminationReasonCode = `SECURITY_DAEMON_REGISTRATION_EXCEPTION`
+	TerminationReasonCodeAwsRequestLimitExceeded TerminationReasonCode = `AWS_REQUEST_LIMIT_EXCEEDED`
+	TerminationReasonCodeAwsInsufficientFreeAddressesInSubnetFailure TerminationReasonCode = `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`
+	TerminationReasonCodeAwsUnsupportedFailure TerminationReasonCode = `AWS_UNSUPPORTED_FAILURE`
+	TerminationReasonCodeAzureQuotaExceededException TerminationReasonCode = `AZURE_QUOTA_EXCEEDED_EXCEPTION`
+	TerminationReasonCodeAzureOperationNotAllowedException TerminationReasonCode = `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`
+	TerminationReasonCodeNfsMountFailure TerminationReasonCode = `NFS_MOUNT_FAILURE`
+	TerminationReasonCodeKSAutoscalingFailure TerminationReasonCode = `K8S_AUTOSCALING_FAILURE`
+	TerminationReasonCodeKSDbrClusterLaunchTimeout TerminationReasonCode = `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`
+	TerminationReasonCodeSparkImageDownloadFailure TerminationReasonCode = `SPARK_IMAGE_DOWNLOAD_FAILURE`
+	TerminationReasonCodeAzureVmExtensionFailure TerminationReasonCode = `AZURE_VM_EXTENSION_FAILURE`
+	TerminationReasonCodeWorkspaceCancelledError TerminationReasonCode = `WORKSPACE_CANCELLED_ERROR`
+	TerminationReasonCodeAwsMaxSpotInstanceCountExceededFailure TerminationReasonCode = `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`
+	TerminationReasonCodeTemporarilyUnavailable TerminationReasonCode = `TEMPORARILY_UNAVAILABLE`
+	TerminationReasonCodeWorkerSetupFailure TerminationReasonCode = `WORKER_SETUP_FAILURE`
+	TerminationReasonCodeIpExhaustionFailure TerminationReasonCode = `IP_EXHAUSTION_FAILURE`
+	TerminationReasonCodeGcpQuotaExceeded TerminationReasonCode = `GCP_QUOTA_EXCEEDED`
+	TerminationReasonCodeCloudProviderResourceStockout TerminationReasonCode = `CLOUD_PROVIDER_RESOURCE_STOCKOUT`
+	TerminationReasonCodeGcpServiceAccountDeleted TerminationReasonCode = `GCP_SERVICE_ACCOUNT_DELETED`
+	TerminationReasonCodeAzureByokKeyPermissionFailure TerminationReasonCode = `AZURE_BYOK_KEY_PERMISSION_FAILURE`
+	TerminationReasonCodeSpotInstanceTermination TerminationReasonCode = `SPOT_INSTANCE_TERMINATION`
+	TerminationReasonCodeAzureEphemeralDiskFailure TerminationReasonCode = `AZURE_EPHEMERAL_DISK_FAILURE`
+	TerminationReasonCodeAbuseDetected TerminationReasonCode = `ABUSE_DETECTED`
+	TerminationReasonCodeImagePullPermissionDenied TerminationReasonCode = `IMAGE_PULL_PERMISSION_DENIED`
+	TerminationReasonCodeWorkspaceConfigurationError TerminationReasonCode = `WORKSPACE_CONFIGURATION_ERROR`
+	TerminationReasonCodeSecretResolutionError TerminationReasonCode = `SECRET_RESOLUTION_ERROR`
+	TerminationReasonCodeUnsupportedInstanceType TerminationReasonCode = `UNSUPPORTED_INSTANCE_TYPE`
+	TerminationReasonCodeCloudProviderDiskSetupFailure TerminationReasonCode = `CLOUD_PROVIDER_DISK_SETUP_FAILURE`
+)
 
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeUnknown TerminationReasonCode = `UNKNOWN`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeUserRequest TerminationReasonCode = `USER_REQUEST`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeJobFinished TerminationReasonCode = `JOB_FINISHED`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeInactivity TerminationReasonCode = `INACTIVITY`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeCloudProviderShutdown TerminationReasonCode = `CLOUD_PROVIDER_SHUTDOWN`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeCommunicationLost TerminationReasonCode = `COMMUNICATION_LOST`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeCloudProviderLaunchFailure TerminationReasonCode = `CLOUD_PROVIDER_LAUNCH_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeInitScriptFailure TerminationReasonCode = `INIT_SCRIPT_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeSparkStartupFailure TerminationReasonCode = `SPARK_STARTUP_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeInvalidArgument TerminationReasonCode = `INVALID_ARGUMENT`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeUnexpectedLaunchFailure TerminationReasonCode = `UNEXPECTED_LAUNCH_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeInternalError TerminationReasonCode = `INTERNAL_ERROR`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeInstanceUnreachable TerminationReasonCode = `INSTANCE_UNREACHABLE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeRequestRejected TerminationReasonCode = `REQUEST_REJECTED`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeTrialExpired TerminationReasonCode = `TRIAL_EXPIRED`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeDriverUnreachable TerminationReasonCode = `DRIVER_UNREACHABLE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeSparkError TerminationReasonCode = `SPARK_ERROR`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeDriverUnresponsive TerminationReasonCode = `DRIVER_UNRESPONSIVE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeMetastoreComponentUnhealthy TerminationReasonCode = `METASTORE_COMPONENT_UNHEALTHY`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeDbfsComponentUnhealthy TerminationReasonCode = `DBFS_COMPONENT_UNHEALTHY`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeExecutionComponentUnhealthy TerminationReasonCode = `EXECUTION_COMPONENT_UNHEALTHY`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAzureResourceManagerThrottling TerminationReasonCode = `AZURE_RESOURCE_MANAGER_THROTTLING`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAzureResourceProviderThrottling TerminationReasonCode = `AZURE_RESOURCE_PROVIDER_THROTTLING`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeNetworkConfigurationFailure TerminationReasonCode = `NETWORK_CONFIGURATION_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeContainerLaunchFailure TerminationReasonCode = `CONTAINER_LAUNCH_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeInstancePoolClusterFailure TerminationReasonCode = `INSTANCE_POOL_CLUSTER_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeSkippedSlowNodes TerminationReasonCode = `SKIPPED_SLOW_NODES`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAttachProjectFailure TerminationReasonCode = `ATTACH_PROJECT_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeUpdateInstanceProfileFailure TerminationReasonCode = `UPDATE_INSTANCE_PROFILE_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeDatabaseConnectionFailure TerminationReasonCode = `DATABASE_CONNECTION_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeRequestThrottled TerminationReasonCode = `REQUEST_THROTTLED`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeSelfBootstrapFailure TerminationReasonCode = `SELF_BOOTSTRAP_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeGlobalInitScriptFailure TerminationReasonCode = `GLOBAL_INIT_SCRIPT_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeSlowImageDownload TerminationReasonCode = `SLOW_IMAGE_DOWNLOAD`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeInvalidSparkImage TerminationReasonCode = `INVALID_SPARK_IMAGE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeNpipTunnelTokenFailure TerminationReasonCode = `NPIP_TUNNEL_TOKEN_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeHiveMetastoreProvisioningFailure TerminationReasonCode = `HIVE_METASTORE_PROVISIONING_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAzureInvalidDeploymentTemplate TerminationReasonCode = `AZURE_INVALID_DEPLOYMENT_TEMPLATE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAzureUnexpectedDeploymentTemplateFailure TerminationReasonCode = `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeSubnetExhaustedFailure TerminationReasonCode = `SUBNET_EXHAUSTED_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeBootstrapTimeout TerminationReasonCode = `BOOTSTRAP_TIMEOUT`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeStorageDownloadFailure TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeControlPlaneRequestFailure TerminationReasonCode = `CONTROL_PLANE_REQUEST_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeBootstrapTimeoutCloudProviderException TerminationReasonCode = `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAwsInsufficientInstanceCapacityFailure TerminationReasonCode = `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeDockerImagePullFailure TerminationReasonCode = `DOCKER_IMAGE_PULL_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAzureVnetConfigurationFailure TerminationReasonCode = `AZURE_VNET_CONFIGURATION_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeNpipTunnelSetupFailure TerminationReasonCode = `NPIP_TUNNEL_SETUP_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAwsAuthorizationFailure TerminationReasonCode = `AWS_AUTHORIZATION_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeNephosResourceManagement TerminationReasonCode = `NEPHOS_RESOURCE_MANAGEMENT`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeStsClientSetupFailure TerminationReasonCode = `STS_CLIENT_SETUP_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeSecurityDaemonRegistrationException TerminationReasonCode = `SECURITY_DAEMON_REGISTRATION_EXCEPTION`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAwsRequestLimitExceeded TerminationReasonCode = `AWS_REQUEST_LIMIT_EXCEEDED`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAwsInsufficientFreeAddressesInSubnetFailure TerminationReasonCode = `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAwsUnsupportedFailure TerminationReasonCode = `AWS_UNSUPPORTED_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAzureQuotaExceededException TerminationReasonCode = `AZURE_QUOTA_EXCEEDED_EXCEPTION`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAzureOperationNotAllowedException TerminationReasonCode = `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeNfsMountFailure TerminationReasonCode = `NFS_MOUNT_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeKSAutoscalingFailure TerminationReasonCode = `K8S_AUTOSCALING_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeKSDbrClusterLaunchTimeout TerminationReasonCode = `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeSparkImageDownloadFailure TerminationReasonCode = `SPARK_IMAGE_DOWNLOAD_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAzureVmExtensionFailure TerminationReasonCode = `AZURE_VM_EXTENSION_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeWorkspaceCancelledError TerminationReasonCode = `WORKSPACE_CANCELLED_ERROR`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAwsMaxSpotInstanceCountExceededFailure TerminationReasonCode = `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeTemporarilyUnavailable TerminationReasonCode = `TEMPORARILY_UNAVAILABLE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeWorkerSetupFailure TerminationReasonCode = `WORKER_SETUP_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeIpExhaustionFailure TerminationReasonCode = `IP_EXHAUSTION_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeGcpQuotaExceeded TerminationReasonCode = `GCP_QUOTA_EXCEEDED`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeCloudProviderResourceStockout TerminationReasonCode = `CLOUD_PROVIDER_RESOURCE_STOCKOUT`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeGcpServiceAccountDeleted TerminationReasonCode = `GCP_SERVICE_ACCOUNT_DELETED`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAzureByokKeyPermissionFailure TerminationReasonCode = `AZURE_BYOK_KEY_PERMISSION_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeSpotInstanceTermination TerminationReasonCode = `SPOT_INSTANCE_TERMINATION`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAzureEphemeralDiskFailure TerminationReasonCode = `AZURE_EPHEMERAL_DISK_FAILURE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeAbuseDetected TerminationReasonCode = `ABUSE_DETECTED`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeImagePullPermissionDenied TerminationReasonCode = `IMAGE_PULL_PERMISSION_DENIED`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeWorkspaceConfigurationError TerminationReasonCode = `WORKSPACE_CONFIGURATION_ERROR`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeSecretResolutionError TerminationReasonCode = `SECRET_RESOLUTION_ERROR`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeUnsupportedInstanceType TerminationReasonCode = `UNSUPPORTED_INSTANCE_TYPE`
-// status code indicating why the cluster was terminated
-const TerminationReasonCodeCloudProviderDiskSetupFailure TerminationReasonCode = `CLOUD_PROVIDER_DISK_SETUP_FAILURE`
 // type of the termination
 type TerminationReasonType string
-
-// type of the termination
-const TerminationReasonTypeSuccess TerminationReasonType = `SUCCESS`
-// type of the termination
-const TerminationReasonTypeClientError TerminationReasonType = `CLIENT_ERROR`
-// type of the termination
-const TerminationReasonTypeServiceFault TerminationReasonType = `SERVICE_FAULT`
-// type of the termination
-const TerminationReasonTypeCloudFailure TerminationReasonType = `CLOUD_FAILURE`
+const (
+	TerminationReasonTypeSuccess TerminationReasonType = `SUCCESS`
+	TerminationReasonTypeClientError TerminationReasonType = `CLIENT_ERROR`
+	TerminationReasonTypeServiceFault TerminationReasonType = `SERVICE_FAULT`
+	TerminationReasonTypeCloudFailure TerminationReasonType = `CLOUD_FAILURE`
+)
 
 type UnpinClusterRequest struct {
     
     ClusterId string `json:"cluster_id"`
 }
 
-
 type WorkloadType struct {
     // defined what type of clients can use the cluster. E.g. Notebooks, Jobs
     Clients *ClientsTypes `json:"clients,omitempty"`
 }
-

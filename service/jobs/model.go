@@ -16,7 +16,6 @@ type AccessControlRequest struct {
     UserName string `json:"user_name,omitempty"`
 }
 
-
 type AutoScale struct {
     // The maximum number of workers to which the cluster can scale up when
     // overloaded. max_workers must be strictly greater than min_workers.
@@ -27,19 +26,16 @@ type AutoScale struct {
     MinWorkers int `json:"min_workers,omitempty"`
 }
 
-
 type CancelAllRunsRequest struct {
     // The canonical identifier of the job to cancel all runs of. This field is
     // required.
     JobId int64 `json:"job_id"`
 }
 
-
 type CancelRunRequest struct {
     // This field is required.
     RunId int64 `json:"run_id"`
 }
-
 
 type ClusterInstance struct {
     // The canonical identifier for the cluster used by a run. This field is
@@ -58,13 +54,11 @@ type ClusterInstance struct {
     SparkContextId string `json:"spark_context_id,omitempty"`
 }
 
-
 type ClusterLogConf struct {
     // DBFS location of cluster log. Destination must be provided. For example,
     // `{ &#34;dbfs&#34; : { &#34;destination&#34; : &#34;dbfs:/home/cluster_log&#34; } }`
     Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
 }
-
 
 type ClusterSpec struct {
     // If existing_cluster_id, the ID of an existing cluster that is used for
@@ -82,20 +76,14 @@ type ClusterSpec struct {
 // An object with key value pairs. The key length must be between 1 and 127
 // UTF-8 characters, inclusive. The value length must be less than or equal to
 // 255 UTF-8 characters.
-
 // Used to tell what is the format of the job. This field is ignored in
 // Create/Update/Reset calls. When using the Jobs API 2.1 this value is always
 // set to `&#34;MULTI_TASK&#34;`.
 type CreateJobFormat string
-
-// Used to tell what is the format of the job. This field is ignored in
-// Create/Update/Reset calls. When using the Jobs API 2.1 this value is always
-// set to `&#34;MULTI_TASK&#34;`.
-const CreateJobFormatSingleTask CreateJobFormat = `SINGLE_TASK`
-// Used to tell what is the format of the job. This field is ignored in
-// Create/Update/Reset calls. When using the Jobs API 2.1 this value is always
-// set to `&#34;MULTI_TASK&#34;`.
-const CreateJobFormatMultiTask CreateJobFormat = `MULTI_TASK`
+const (
+	CreateJobFormatSingleTask CreateJobFormat = `SINGLE_TASK`
+	CreateJobFormatMultiTask CreateJobFormat = `MULTI_TASK`
+)
 
 type CreateJobRequest struct {
     // List of permissions to set on the job.
@@ -146,12 +134,10 @@ type CreateJobRequest struct {
     TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 }
 
-
 type CreateJobResponse struct {
     // The canonical identifier for the newly created job.
     JobId int64 `json:"job_id,omitempty"`
 }
-
 
 type CronSchedule struct {
     // Indicate whether this schedule is paused or not.
@@ -170,29 +156,25 @@ type CronSchedule struct {
 
 // Indicate whether this schedule is paused or not.
 type CronSchedulePauseStatus string
-
-// Indicate whether this schedule is paused or not.
-const CronSchedulePauseStatusPaused CronSchedulePauseStatus = `PAUSED`
-// Indicate whether this schedule is paused or not.
-const CronSchedulePauseStatusUnpaused CronSchedulePauseStatus = `UNPAUSED`
+const (
+	CronSchedulePauseStatusPaused CronSchedulePauseStatus = `PAUSED`
+	CronSchedulePauseStatusUnpaused CronSchedulePauseStatus = `UNPAUSED`
+)
 
 type DbfsStorageInfo struct {
     // DBFS destination. Example: `dbfs:/my/path`
     Destination string `json:"destination,omitempty"`
 }
 
-
 type DeleteJobRequest struct {
     // The canonical identifier of the job to delete. This field is required.
     JobId int64 `json:"job_id"`
 }
 
-
 type DeleteRunRequest struct {
     // The canonical identifier of the run for which to retrieve the metadata.
     RunId int64 `json:"run_id,omitempty"`
 }
-
 
 type ExportRunRequest struct {
     // The canonical identifier for the run. This field is required.
@@ -201,25 +183,21 @@ type ExportRunRequest struct {
     ViewsToExport ViewsToExport ` url:"views_to_export,omitempty"`
 }
 
-
 type ExportRunResponse struct {
     // The exported content in HTML format (one for every view item).
     Views []ViewItem `json:"views,omitempty"`
 }
-
 
 type FileStorageInfo struct {
     // File destination. Example: `file:/my/file.sh`
     Destination string `json:"destination,omitempty"`
 }
 
-
 type GetJobRequest struct {
     // The canonical identifier of the job to retrieve information about. This
     // field is required.
     JobId int64 ` url:"job_id,omitempty"`
 }
-
 
 type GetJobResponse struct {
     // The time at which this job was created in epoch milliseconds
@@ -241,12 +219,10 @@ type GetJobResponse struct {
     Settings *JobSettings `json:"settings,omitempty"`
 }
 
-
 type GetRunOutputRequest struct {
     // The canonical identifier for the run. This field is required.
     RunId int64 ` url:"run_id,omitempty"`
 }
-
 
 type GetRunOutputResponse struct {
     // An error message indicating why a task failed or why output is not
@@ -282,7 +258,6 @@ type GetRunOutputResponse struct {
     NotebookOutput *NotebookOutput `json:"notebook_output,omitempty"`
 }
 
-
 type GetRunRequest struct {
     // Whether to include the repair history in the response.
     IncludeHistory bool ` url:"include_history,omitempty"`
@@ -290,7 +265,6 @@ type GetRunRequest struct {
     // This field is required.
     RunId int64 ` url:"run_id,omitempty"`
 }
-
 
 type GetRunResponse struct {
     // The sequence number of this run attempt for a triggered job run. The
@@ -372,8 +346,7 @@ type GetRunResponse struct {
 }
 
 // Read-only state of the remote repository at the time the job was run. This
-// field is only included on job runs.
-type GitSnapshot struct {
+// field is only included on job runs.type GitSnapshot struct {
     // Commit that was used to execute the run. If git_branch was specified,
     // this points to the HEAD of the branch at the time of the run; if git_tag
     // was specified, this points to the commit the tag points to.
@@ -381,8 +354,7 @@ type GitSnapshot struct {
 }
 
 // An optional specification for a remote repository containing the notebooks
-// used by this job&#39;s notebook tasks.
-type GitSource struct {
+// used by this job&#39;s notebook tasks.type GitSource struct {
     // Name of the branch to be checked out and used by this job. This field
     // cannot be specified in conjunction with git_tag or git_commit. The
     // maximum length is 255 characters.
@@ -408,31 +380,16 @@ type GitSource struct {
 // Unique identifier of the service used to host the Git repository. The value
 // is case insensitive.
 type GitSourceGitProvider string
-
-// Unique identifier of the service used to host the Git repository. The value
-// is case insensitive.
-const GitSourceGitProviderGithub GitSourceGitProvider = `gitHub`
-// Unique identifier of the service used to host the Git repository. The value
-// is case insensitive.
-const GitSourceGitProviderBitbucketcloud GitSourceGitProvider = `bitbucketCloud`
-// Unique identifier of the service used to host the Git repository. The value
-// is case insensitive.
-const GitSourceGitProviderAzuredevopsservices GitSourceGitProvider = `azureDevOpsServices`
-// Unique identifier of the service used to host the Git repository. The value
-// is case insensitive.
-const GitSourceGitProviderGithubenterprise GitSourceGitProvider = `gitHubEnterprise`
-// Unique identifier of the service used to host the Git repository. The value
-// is case insensitive.
-const GitSourceGitProviderBitbucketserver GitSourceGitProvider = `bitbucketServer`
-// Unique identifier of the service used to host the Git repository. The value
-// is case insensitive.
-const GitSourceGitProviderGitlab GitSourceGitProvider = `gitLab`
-// Unique identifier of the service used to host the Git repository. The value
-// is case insensitive.
-const GitSourceGitProviderGitlabenterpriseedition GitSourceGitProvider = `gitLabEnterpriseEdition`
-// Unique identifier of the service used to host the Git repository. The value
-// is case insensitive.
-const GitSourceGitProviderAwscodecommit GitSourceGitProvider = `awsCodeCommit`
+const (
+	GitSourceGitProviderGithub GitSourceGitProvider = `gitHub`
+	GitSourceGitProviderBitbucketcloud GitSourceGitProvider = `bitbucketCloud`
+	GitSourceGitProviderAzuredevopsservices GitSourceGitProvider = `azureDevOpsServices`
+	GitSourceGitProviderGithubenterprise GitSourceGitProvider = `gitHubEnterprise`
+	GitSourceGitProviderBitbucketserver GitSourceGitProvider = `bitbucketServer`
+	GitSourceGitProviderGitlab GitSourceGitProvider = `gitLab`
+	GitSourceGitProviderGitlabenterpriseedition GitSourceGitProvider = `gitLabEnterpriseEdition`
+	GitSourceGitProviderAwscodecommit GitSourceGitProvider = `awsCodeCommit`
+)
 
 type InitScriptInfo struct {
     // DBFS location of init script. Destination must be provided. For example,
@@ -442,7 +399,6 @@ type InitScriptInfo struct {
     // `{ &#34;file&#34; : { &#34;destination&#34; : &#34;file:/my/local/file.sh&#34; } }`
     File *FileStorageInfo `json:"file,omitempty"`
 }
-
 
 type Job struct {
     // The time at which this job was created in epoch milliseconds
@@ -458,7 +414,6 @@ type Job struct {
     Settings *JobSettings `json:"settings,omitempty"`
 }
 
-
 type JobCluster struct {
     // A unique name for the job cluster. This field is required and must be
     // unique within the job. `JobTaskSettings` may refer to this field to
@@ -467,7 +422,6 @@ type JobCluster struct {
     
     NewCluster *NewCluster `json:"new_cluster,omitempty"`
 }
-
 
 type JobEmailNotifications struct {
     // If true, do not send email to recipients specified in `on_failure` if the
@@ -491,7 +445,6 @@ type JobEmailNotifications struct {
     // and notifications are not sent.
     OnSuccess []string `json:"on_success,omitempty"`
 }
-
 
 type JobSettings struct {
     // An optional set of email addresses that is notified when runs of this job
@@ -544,15 +497,10 @@ type JobSettings struct {
 // Create/Update/Reset calls. When using the Jobs API 2.1 this value is always
 // set to `&#34;MULTI_TASK&#34;`.
 type JobSettingsFormat string
-
-// Used to tell what is the format of the job. This field is ignored in
-// Create/Update/Reset calls. When using the Jobs API 2.1 this value is always
-// set to `&#34;MULTI_TASK&#34;`.
-const JobSettingsFormatSingleTask JobSettingsFormat = `SINGLE_TASK`
-// Used to tell what is the format of the job. This field is ignored in
-// Create/Update/Reset calls. When using the Jobs API 2.1 this value is always
-// set to `&#34;MULTI_TASK&#34;`.
-const JobSettingsFormatMultiTask JobSettingsFormat = `MULTI_TASK`
+const (
+	JobSettingsFormatSingleTask JobSettingsFormat = `SINGLE_TASK`
+	JobSettingsFormatMultiTask JobSettingsFormat = `MULTI_TASK`
+)
 
 type JobTaskSettings struct {
     
@@ -613,7 +561,6 @@ type JobTaskSettings struct {
     TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 }
 
-
 type Library struct {
     // If cran, specification of a CRAN library to be installed.
     Cran *RCranLibrary `json:"cran,omitempty"`
@@ -633,7 +580,6 @@ type Library struct {
     Whl string `json:"whl,omitempty"`
 }
 
-
 type ListJobsRequest struct {
     // Whether to include task and cluster details in the response.
     ExpandTasks bool ` url:"expand_tasks,omitempty"`
@@ -645,14 +591,12 @@ type ListJobsRequest struct {
     Offset int ` url:"offset,omitempty"`
 }
 
-
 type ListJobsResponse struct {
     
     HasMore bool `json:"has_more,omitempty"`
     // The list of jobs.
     Jobs []Job `json:"jobs,omitempty"`
 }
-
 
 type ListRunsRequest struct {
     // If active_only is `true`, only active runs are included in the results;
@@ -688,7 +632,6 @@ type ListRunsRequest struct {
     StartTimeTo int ` url:"start_time_to,omitempty"`
 }
 
-
 type ListRunsResponse struct {
     // If true, additional runs matching the provided filter are available for
     // listing.
@@ -699,13 +642,11 @@ type ListRunsResponse struct {
 
 
 type ListRunsRunType string
-
-
-const ListRunsRunTypeJobRun ListRunsRunType = `JOB_RUN`
-
-const ListRunsRunTypeWorkflowRun ListRunsRunType = `WORKFLOW_RUN`
-
-const ListRunsRunTypeSubmitRun ListRunsRunType = `SUBMIT_RUN`
+const (
+	ListRunsRunTypeJobRun ListRunsRunType = `JOB_RUN`
+	ListRunsRunTypeWorkflowRun ListRunsRunType = `WORKFLOW_RUN`
+	ListRunsRunTypeSubmitRun ListRunsRunType = `SUBMIT_RUN`
+)
 
 type MavenLibrary struct {
     // Gradle-style Maven coordinates. For example: `org.jsoup:jsoup:1.7.2`.
@@ -719,7 +660,6 @@ type MavenLibrary struct {
     // Central Repository and Spark Packages are searched.
     Repo string `json:"repo,omitempty"`
 }
-
 
 type NewCluster struct {
     // If autoscale, the required parameters to automatically scale clusters up
@@ -797,7 +737,6 @@ type NewCluster struct {
     SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 }
 
-
 type NotebookOutput struct {
     // The value passed to
     // [dbutils.notebook.exit()](..notebooks/notebook-workflowshtml#notebook-workflows-exit).
@@ -808,7 +747,6 @@ type NotebookOutput struct {
     // Whether or not the result was truncated.
     Truncated bool `json:"truncated,omitempty"`
 }
-
 
 type NotebookTask struct {
     // Base parameters to be used for each run of this job. If the run is
@@ -833,21 +771,17 @@ type NotebookTask struct {
 
 // Permission level to grant.
 type PermissionLevel string
-
-// Permission to manage the job.
-const PermissionLevelCanManage PermissionLevel = `CAN_MANAGE`
-// Permission to run and/or manage runs for the job.
-const PermissionLevelCanManageRun PermissionLevel = `CAN_MANAGE_RUN`
-// Permission to view the settings of the job.
-const PermissionLevelCanView PermissionLevel = `CAN_VIEW`
-// Perimssion that represents ownership of the job.
-const PermissionLevelIsOwner PermissionLevel = `IS_OWNER`
+const (
+	PermissionLevelCanManage PermissionLevel = `CAN_MANAGE`
+	PermissionLevelCanManageRun PermissionLevel = `CAN_MANAGE_RUN`
+	PermissionLevelCanView PermissionLevel = `CAN_VIEW`
+	PermissionLevelIsOwner PermissionLevel = `IS_OWNER`
+)
 
 type PipelineParams struct {
     // If true, triggers a full refresh on the delta live table.
     FullRefresh bool `json:"full_refresh,omitempty"`
 }
-
 
 type PipelineTask struct {
     // If true, a full refresh will be triggered on the delta live table.
@@ -855,7 +789,6 @@ type PipelineTask struct {
     // The full name of the pipeline task to execute.
     PipelineId string `json:"pipeline_id,omitempty"`
 }
-
 
 type PythonPyPiLibrary struct {
     // The name of the PyPI package to install. An optional exact version
@@ -866,7 +799,6 @@ type PythonPyPiLibrary struct {
     // default pip index is used.
     Repo string `json:"repo,omitempty"`
 }
-
 
 type PythonWheelTask struct {
     // Named entry point to use, if it does not exist in the metadata of the
@@ -884,7 +816,6 @@ type PythonWheelTask struct {
     Parameters []string `json:"parameters,omitempty"`
 }
 
-
 type RCranLibrary struct {
     // The name of the CRAN package to install. This field is required.
     Package string `json:"package"`
@@ -892,7 +823,6 @@ type RCranLibrary struct {
     // default CRAN repo is used.
     Repo string `json:"repo,omitempty"`
 }
-
 
 type RepairHistoryItem struct {
     // The end time of the (repaired) run.
@@ -915,13 +845,10 @@ type RepairHistoryItem struct {
 // The repair history item type. Indicates whether a run is the original run or
 // a repair run.
 type RepairHistoryItemType string
-
-// The repair history item type. Indicates whether a run is the original run or
-// a repair run.
-const RepairHistoryItemTypeOriginal RepairHistoryItemType = `ORIGINAL`
-// The repair history item type. Indicates whether a run is the original run or
-// a repair run.
-const RepairHistoryItemTypeRepair RepairHistoryItemType = `REPAIR`
+const (
+	RepairHistoryItemTypeOriginal RepairHistoryItemType = `ORIGINAL`
+	RepairHistoryItemTypeRepair RepairHistoryItemType = `REPAIR`
+)
 
 type RepairRunRequest struct {
     // A list of parameters for jobs with Spark JAR tasks, for example
@@ -987,12 +914,10 @@ type RepairRunRequest struct {
     SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 }
 
-
 type RepairRunResponse struct {
     // The ID of the repair.
     RepairId int64 `json:"repair_id,omitempty"`
 }
-
 
 type ResetJobRequest struct {
     // The canonical identifier of the job to reset. This field is required.
@@ -1002,7 +927,6 @@ type ResetJobRequest struct {
     // to active runs. Changes to other fields are applied to future runs only.
     NewSettings *JobSettings `json:"new_settings,omitempty"`
 }
-
 
 type Run struct {
     // The sequence number of this run attempt for a triggered job run. The
@@ -1096,97 +1020,14 @@ type Run struct {
 // state, the Jobs service terminates the cluster as soon as possible. This
 // state is terminal.
 type RunLifeCycleState string
-
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
-const RunLifeCycleStatePending RunLifeCycleState = `PENDING`
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
-const RunLifeCycleStateRunning RunLifeCycleState = `RUNNING`
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
-const RunLifeCycleStateTerminating RunLifeCycleState = `TERMINATING`
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
-const RunLifeCycleStateTerminated RunLifeCycleState = `TERMINATED`
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
-const RunLifeCycleStateSkipped RunLifeCycleState = `SKIPPED`
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
-const RunLifeCycleStateInternalError RunLifeCycleState = `INTERNAL_ERROR`
+const (
+	RunLifeCycleStatePending RunLifeCycleState = `PENDING`
+	RunLifeCycleStateRunning RunLifeCycleState = `RUNNING`
+	RunLifeCycleStateTerminating RunLifeCycleState = `TERMINATING`
+	RunLifeCycleStateTerminated RunLifeCycleState = `TERMINATED`
+	RunLifeCycleStateSkipped RunLifeCycleState = `SKIPPED`
+	RunLifeCycleStateInternalError RunLifeCycleState = `INTERNAL_ERROR`
+)
 
 type RunNowRequest struct {
     // An optional token to guarantee the idempotency of job run requests. If a
@@ -1256,7 +1097,6 @@ type RunNowRequest struct {
     SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 }
 
-
 type RunNowResponse struct {
     // A unique identifier for this job run. This is set to the same value as
     // `run_id`.
@@ -1264,7 +1104,6 @@ type RunNowResponse struct {
     // The globally unique ID of the newly triggered run.
     RunId int64 `json:"run_id,omitempty"`
 }
-
 
 type RunParameters struct {
     // A list of parameters for jobs with Spark JAR tasks, for example
@@ -1326,25 +1165,14 @@ type RunParameters struct {
 // with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
 // * `CANCELED`: The run was canceled at user request.
 type RunResultState string
+const (
+	RunResultStateSuccess RunResultState = `SUCCESS`
+	RunResultStateFailed RunResultState = `FAILED`
+	RunResultStateTimedout RunResultState = `TIMEDOUT`
+	RunResultStateCanceled RunResultState = `CANCELED`
+)
 
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
-const RunResultStateSuccess RunResultState = `SUCCESS`
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
-const RunResultStateFailed RunResultState = `FAILED`
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
-const RunResultStateTimedout RunResultState = `TIMEDOUT`
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
-const RunResultStateCanceled RunResultState = `CANCELED`
-// The result and lifecycle state of the run.
-type RunState struct {
+// The result and lifecycle state of the run.type RunState struct {
     // A description of a run?s current location in the run lifecycle. This
     // field is always available in the response.
     LifeCycleState RunLifeCycleState `json:"life_cycle_state,omitempty"`
@@ -1357,7 +1185,6 @@ type RunState struct {
     // the run timed out.
     UserCancelledOrTimedout bool `json:"user_cancelled_or_timedout,omitempty"`
 }
-
 
 type RunSubmitTaskSettings struct {
     
@@ -1395,7 +1222,6 @@ type RunSubmitTaskSettings struct {
     // behavior is to have no timeout.
     TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 }
-
 
 type RunTask struct {
     // The sequence number of this run attempt for a triggered job run. The
@@ -1479,35 +1305,16 @@ type RunTask struct {
 // `SUBMIT_RUN` \- Submit run. A run created with [Run
 // now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
 type RunType string
+const (
+	RunTypeJobRun RunType = `JOB_RUN`
+	RunTypeWorkflowRun RunType = `WORKFLOW_RUN`
+	RunTypeSubmitRun RunType = `SUBMIT_RUN`
+)
 
-// The type of the run. * `JOB_RUN` \- Normal job run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow). * `WORKFLOW_RUN`
-// \- Workflow run. A run created with
-// [dbutils.notebook.run](..dev-tools/databricks-utilshtml#dbutils-workflow). *
-// `SUBMIT_RUN` \- Submit run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
-const RunTypeJobRun RunType = `JOB_RUN`
-// The type of the run. * `JOB_RUN` \- Normal job run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow). * `WORKFLOW_RUN`
-// \- Workflow run. A run created with
-// [dbutils.notebook.run](..dev-tools/databricks-utilshtml#dbutils-workflow). *
-// `SUBMIT_RUN` \- Submit run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
-const RunTypeWorkflowRun RunType = `WORKFLOW_RUN`
-// The type of the run. * `JOB_RUN` \- Normal job run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow). * `WORKFLOW_RUN`
-// \- Workflow run. A run created with
-// [dbutils.notebook.run](..dev-tools/databricks-utilshtml#dbutils-workflow). *
-// `SUBMIT_RUN` \- Submit run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
-const RunTypeSubmitRun RunType = `SUBMIT_RUN`
 // An arbitrary object where the object key is a configuration propery name and
 // the value is a configuration property value.
-
 // An arbitrary object where the object key is an environment variable name and
 // the value is an environment variable value.
-
-
 type SparkJarTask struct {
     // Deprecated since 04/2016\. Provide a `jar` through the `libraries` field
     // instead. For an example, see
@@ -1524,7 +1331,6 @@ type SparkJarTask struct {
     Parameters []string `json:"parameters,omitempty"`
 }
 
-
 type SparkPythonTask struct {
     // Command line parameters passed to the Python file. Use [Task parameter
     // variables](..jobshtml#parameter-variables) to set parameters containing
@@ -1534,14 +1340,12 @@ type SparkPythonTask struct {
     PythonFile string `json:"python_file"`
 }
 
-
 type SparkSubmitTask struct {
     // Command-line parameters passed to spark submit. Use [Task parameter
     // variables](..jobshtml#parameter-variables) to set parameters containing
     // information about job runs.
     Parameters []string `json:"parameters,omitempty"`
 }
-
 
 type SubmitRunRequest struct {
     // List of permissions to set on the job.
@@ -1568,7 +1372,6 @@ type SubmitRunRequest struct {
     TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 }
 
-
 type SubmitRunResponse struct {
     // The canonical identifier for the newly submitted run.
     RunId int64 `json:"run_id,omitempty"`
@@ -1578,8 +1381,7 @@ type SubmitRunResponse struct {
 // tasks specified in this field must complete successfully before executing
 // this task. The key is `task_key`, and the value is the name assigned to the
 // dependent task. This field is required when a job consists of more than one
-// task.
-
+// task.type TaskDependencies []TaskDependenciesItem
 
 type TaskDependenciesItem struct {
     
@@ -1592,25 +1394,11 @@ type TaskDependenciesItem struct {
 // `RETRY`: Indicates a run that is triggered as a retry of a previously failed
 // run. This occurs when you request to re-run the job in case of failures.
 type TriggerType string
-
-// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
-// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
-// occurs you triggered a single run on demand through the UI or the API. *
-// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
-// run. This occurs when you request to re-run the job in case of failures.
-const TriggerTypePeriodic TriggerType = `PERIODIC`
-// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
-// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
-// occurs you triggered a single run on demand through the UI or the API. *
-// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
-// run. This occurs when you request to re-run the job in case of failures.
-const TriggerTypeOneTime TriggerType = `ONE_TIME`
-// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
-// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
-// occurs you triggered a single run on demand through the UI or the API. *
-// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
-// run. This occurs when you request to re-run the job in case of failures.
-const TriggerTypeRetry TriggerType = `RETRY`
+const (
+	TriggerTypePeriodic TriggerType = `PERIODIC`
+	TriggerTypeOneTime TriggerType = `ONE_TIME`
+	TriggerTypeRetry TriggerType = `RETRY`
+)
 
 type UpdateJobRequest struct {
     // Remove top-level fields in the job settings. Removing nested fields is
@@ -1626,7 +1414,6 @@ type UpdateJobRequest struct {
     NewSettings *JobSettings `json:"new_settings,omitempty"`
 }
 
-
 type ViewItem struct {
     // Content of the view.
     Content string `json:"content,omitempty"`
@@ -1640,21 +1427,16 @@ type ViewItem struct {
 
 // * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
 type ViewType string
+const (
+	ViewTypeNotebook ViewType = `NOTEBOOK`
+	ViewTypeDashboard ViewType = `DASHBOARD`
+)
 
-// * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
-const ViewTypeNotebook ViewType = `NOTEBOOK`
-// * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
-const ViewTypeDashboard ViewType = `DASHBOARD`
 // * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
 // the notebook. * `ALL`: All views of the notebook.
 type ViewsToExport string
-
-// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
-// the notebook. * `ALL`: All views of the notebook.
-const ViewsToExportCode ViewsToExport = `CODE`
-// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
-// the notebook. * `ALL`: All views of the notebook.
-const ViewsToExportDashboards ViewsToExport = `DASHBOARDS`
-// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
-// the notebook. * `ALL`: All views of the notebook.
-const ViewsToExportAll ViewsToExport = `ALL`
+const (
+	ViewsToExportCode ViewsToExport = `CODE`
+	ViewsToExportDashboards ViewsToExport = `DASHBOARDS`
+	ViewsToExportAll ViewsToExport = `ALL`
+)
