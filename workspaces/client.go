@@ -25,6 +25,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/repos"
 	"github.com/databricks/databricks-sdk-go/service/secrets"
 	"github.com/databricks/databricks-sdk-go/service/serviceprincipals"
+	"github.com/databricks/databricks-sdk-go/service/tokenmanagement"
 	"github.com/databricks/databricks-sdk-go/service/tokens"
 	"github.com/databricks/databricks-sdk-go/service/transitionrequests"
 	"github.com/databricks/databricks-sdk-go/service/unitycatalog"
@@ -58,6 +59,7 @@ type WorkspacesClient struct {
 	Secrets               secrets.SecretsService
 	ServicePrincipals     serviceprincipals.ServiceprincipalsService
 	Tokens                tokens.TokensService
+	TokenManagement       tokenmanagement.TokenmanagementService
 	TransitionRequests    transitionrequests.TransitionrequestsService
 	UnityCatalog          unitycatalog.UnitycatalogService
 	Users                 users.UsersService
@@ -73,7 +75,6 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		// default config
 		cfg = &databricks.Config{}
 	}
-	// TODO: migrate other signatures here
 	apiClient := client.New(cfg)
 	return &WorkspacesClient{
 		Config:                cfg,
@@ -100,6 +101,7 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		Secrets:               secrets.New(apiClient),
 		ServicePrincipals:     serviceprincipals.New(apiClient),
 		Tokens:                tokens.New(apiClient),
+		TokenManagement:       tokenmanagement.New(apiClient),
 		TransitionRequests:    transitionrequests.New(apiClient),
 		UnityCatalog:          unitycatalog.New(apiClient),
 		Users:                 users.New(apiClient),
