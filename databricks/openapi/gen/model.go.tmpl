@@ -30,7 +30,7 @@ const {{.Entity.PascalName}}{{.PascalName}} {{.Entity.PascalName}} = `{{.Content
 	{{- else if .IsFloat64}}float64
 	{{- else if .IsInt}}int
 	{{- else if .ArrayValue }}[]{{template "type" .ArrayValue}}
-	{{- else if .MapValue }}[]{{template "type" .MapValue}}
+	{{- else if .MapValue }}map[string]{{template "type" .MapValue}}
 	{{- else if .IsObject }}{{.PascalName}}
 	{{- else if .Enum }}{{.PascalName}}
 	{{- else}}any /* MISSING TYPE */
