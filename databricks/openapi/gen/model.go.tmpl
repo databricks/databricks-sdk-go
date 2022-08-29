@@ -9,13 +9,13 @@ package {{.Name}}
     {{.Comment "    // " 80}}
     {{.PascalName}} {{if .IsOptionalObject}}*{{end}}{{template "type" .Entity}} `{{template "field-tag" . }}`{{end}}
 }
+{{else if .ArrayValue}}type {{.PascalName}} []{{template "type" .ArrayValue}}
 {{else if .Enum}}
 type {{.PascalName}} string
 const ({{range .Enum }}
 	{{.Entity.PascalName}}{{.PascalName}} {{.Entity.PascalName}} = `{{.Content}}`{{end}}
 )
 {{end}}{{end}}
-
 
 {{- define "field-tag" -}}
 	{{if .IsJson}}json:"{{.Name}}{{if not .Required}},omitempty{{end}}"{{end -}}
@@ -31,7 +31,7 @@ const ({{range .Enum }}
 	{{- else if .IsFloat64}}float64
 	{{- else if .IsInt}}int
 	{{- else if .ArrayValue }}[]{{template "type" .ArrayValue}}
-	{{- else if .MapValue }}[]{{template "type" .MapValue}}
+	{{- else if .MapValue }}map[string]{{template "type" .MapValue}}
 	{{- else if .IsObject }}{{.PascalName}}
 	{{- else if .Enum }}{{.PascalName}}
 	{{- else}}any /* MISSING TYPE */
