@@ -3,6 +3,7 @@ package workspaces
 import (
 	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/service/clusterpolicies"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/service/commands"
 	"github.com/databricks/databricks-sdk-go/service/datasharing"
@@ -36,6 +37,7 @@ import (
 type WorkspacesClient struct {
 	Config *databricks.Config
 
+	ClusterPolicies       clusterpolicies.ClusterpoliciesService
 	Clusters              clusters.ClustersService
 	Commands              *commands.CommandsAPI
 	Dbfs                  dbfs.DbfsService
@@ -78,6 +80,7 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 	apiClient := client.New(cfg)
 	return &WorkspacesClient{
 		Config:                cfg,
+		ClusterPolicies:       clusterpolicies.New(apiClient),
 		Clusters:              clusters.New(apiClient),
 		Commands:              commands.New(cfg),
 		Dbfs:                  dbfs.New(apiClient),
