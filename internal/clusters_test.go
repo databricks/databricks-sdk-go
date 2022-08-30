@@ -42,7 +42,6 @@ func waitForTerminatingClusterToTerminate(ctx context.Context, workspacesClient 
 	})
 }
 
-// Maybe think about how to clean this function up
 func waitForClusterRunning(ctx context.Context, workspacesClient workspaces.WorkspacesClient, t *testing.T, clusterId string) error {
 	return retries.Wait(ctx, 30*time.Minute, func() *retries.Err {
 		clusterInfo, err := workspacesClient.Clusters.GetCluster(
