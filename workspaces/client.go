@@ -30,6 +30,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/transitionrequests"
 	"github.com/databricks/databricks-sdk-go/service/unitycatalog"
 	"github.com/databricks/databricks-sdk-go/service/users"
+	"github.com/databricks/databricks-sdk-go/service/warehouses"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
 
@@ -63,6 +64,7 @@ type WorkspacesClient struct {
 	TransitionRequests    transitionrequests.TransitionrequestsService
 	UnityCatalog          unitycatalog.UnitycatalogService
 	Users                 users.UsersService
+	Warehouses            warehouses.WarehousesService
 	Workspace             workspace.WorkspaceService
 }
 
@@ -105,6 +107,7 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		TransitionRequests:    transitionrequests.New(apiClient),
 		UnityCatalog:          unitycatalog.New(apiClient),
 		Users:                 users.New(apiClient),
+		Warehouses:            warehouses.New(apiClient),
 		Workspace:             workspace.New(apiClient),
 	}
 }
