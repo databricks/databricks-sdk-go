@@ -9,6 +9,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
 	"github.com/databricks/databricks-sdk-go/service/deltapipelines"
 	"github.com/databricks/databricks-sdk-go/service/gitcredentials"
+	"github.com/databricks/databricks-sdk-go/service/globalinitscripts"
 	"github.com/databricks/databricks-sdk-go/service/groups"
 	"github.com/databricks/databricks-sdk-go/service/instancepools"
 	"github.com/databricks/databricks-sdk-go/service/instanceprofiles"
@@ -39,6 +40,7 @@ type WorkspacesClient struct {
 	DeltaPipelines        deltapipelines.DeltapipelinesService
 	DeltaSharing          datasharing.DatasharingService
 	GitCredentials        gitcredentials.GitcredentialsService
+	GlobalInitScripts     globalinitscripts.GlobalinitscriptsService
 	Groups                groups.GroupsService
 	Jobs                  jobs.JobsService
 	InstancePools         instancepools.InstancepoolsService
@@ -79,6 +81,7 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		DeltaPipelines:        deltapipelines.New(apiClient),
 		DeltaSharing:          datasharing.New(apiClient),
 		GitCredentials:        gitcredentials.New(apiClient),
+		GlobalInitScripts:     globalinitscripts.New(apiClient),
 		Groups:                groups.New(apiClient),
 		Jobs:                  jobs.New(apiClient),
 		InstancePools:         instancepools.New(apiClient),
