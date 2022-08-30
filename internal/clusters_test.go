@@ -4,15 +4,10 @@ import (
 	"context"
 	"fmt"
 	"testing"
-
-	// "reflect"
-
-	// "github.com/databricks/databricks-sdk-go/databricks/apierr"
-	"github.com/databricks/databricks-sdk-go/service/clusters"
-	"github.com/databricks/databricks-sdk-go/workspaces"
-
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
