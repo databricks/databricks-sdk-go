@@ -144,12 +144,13 @@ func TestAccListClustersIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Terminate the cluster
-	workspacesClient.Clusters.DeleteCluster(
+	err = workspacesClient.Clusters.DeleteCluster(
 		ctx,
 		clusters.DeleteClusterRequest{
 			ClusterId: clusterId1,
 		},
 	)
+	require.NoError(t, err)
 
 	// Assert the cluster state is TERMINATING or TERMINATED
 	getClusterResponse, err = workspacesClient.Clusters.GetCluster(
@@ -164,7 +165,7 @@ func TestAccListClustersIntegration(t *testing.T) {
 	)
 
 	// Wait until cluster reaches TERMINATED state
-	waitForTerminatingClusterToTerminate(ctx, *workspacesClient, t, clusterId1)
+	err = waitForTerminatingClusterToTerminate(ctx, *workspacesClient, t, clusterId1)
 	require.NoError(t, err)
 
 	// Assert cluster state is terminated
