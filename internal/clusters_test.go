@@ -69,8 +69,8 @@ func TestAccListClustersIntegration(t *testing.T) {
 	ctx := context.TODO()
 	workspacesClient := workspaces.New()
 	const DEFAULT_RUNTIME_VERSION = "7.3.x-scala2.12"
-	cluster1_name := RandomName("acceptance-test-cluster-1")
-	cluster2_name := RandomName("acceptance-test-cluster-2")
+	cluster1_name := RandomName("acceptance-test-cluster-1-")
+	cluster2_name := RandomName("acceptance-test-cluster-2-")
 
 	// Assert default node type used in this test (from getDefaultNodeTypeForCloudEnv)
 	// is present in list node types
