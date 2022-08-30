@@ -3,6 +3,7 @@ package accounts
 import (
 	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/service/accountpermissionassignments"
 	"github.com/databricks/databricks-sdk-go/service/budgets"
 	"github.com/databricks/databricks-sdk-go/service/credentials"
 	"github.com/databricks/databricks-sdk-go/service/customermanagedkeys"
@@ -16,17 +17,18 @@ import (
 )
 
 type AccountsClient struct {
-	Config                *databricks.Config
-	Budgets               budgets.BudgetsService
-	Credentials           credentials.CredentialsService
-	CustomerManagedKeys   customermanagedkeys.CustomermanagedkeysService
-	LogDelivery           logdelivery.LogdeliveryService
-	Networks              networks.NetworksService
-	PrivateAccessSettings privateaccesssettings.PrivateaccesssettingsService
-	StorageConfigurations storageconfigurations.StorageconfigurationsService
-	UsageDownload         usagedownload.UsagedownloadService
-	VpcEndpoints          vpcendpoints.VpcendpointsService
-	Workspaces            workspaces.WorkspacesService
+	Config                       *databricks.Config
+	AccountPermissionAssignments accountpermissionassignments.AccountpermissionassignmentsService
+	Budgets                      budgets.BudgetsService
+	Credentials                  credentials.CredentialsService
+	CustomerManagedKeys          customermanagedkeys.CustomermanagedkeysService
+	LogDelivery                  logdelivery.LogdeliveryService
+	Networks                     networks.NetworksService
+	PrivateAccessSettings        privateaccesssettings.PrivateaccesssettingsService
+	StorageConfigurations        storageconfigurations.StorageconfigurationsService
+	UsageDownload                usagedownload.UsagedownloadService
+	VpcEndpoints                 vpcendpoints.VpcendpointsService
+	Workspaces                   workspaces.WorkspacesService
 }
 
 func New(c ...*databricks.Config) *AccountsClient {
@@ -40,16 +42,17 @@ func New(c ...*databricks.Config) *AccountsClient {
 	}
 	apiClient := client.New(cfg)
 	return &AccountsClient{
-		Config:                cfg,
-		Budgets:               budgets.New(apiClient),
-		Credentials:           credentials.New(apiClient),
-		CustomerManagedKeys:   customermanagedkeys.New(apiClient),
-		LogDelivery:           logdelivery.New(apiClient),
-		Networks:              networks.New(apiClient),
-		PrivateAccessSettings: privateaccesssettings.New(apiClient),
-		StorageConfigurations: storageconfigurations.New(apiClient),
-		UsageDownload:         usagedownload.New(apiClient),
-		VpcEndpoints:          vpcendpoints.New(apiClient),
-		Workspaces:            workspaces.New(apiClient),
+		Config:                       cfg,
+		AccountPermissionAssignments: accountpermissionassignments.New(apiClient),
+		Budgets:                      budgets.New(apiClient),
+		Credentials:                  credentials.New(apiClient),
+		CustomerManagedKeys:          customermanagedkeys.New(apiClient),
+		LogDelivery:                  logdelivery.New(apiClient),
+		Networks:                     networks.New(apiClient),
+		PrivateAccessSettings:        privateaccesssettings.New(apiClient),
+		StorageConfigurations:        storageconfigurations.New(apiClient),
+		UsageDownload:                usagedownload.New(apiClient),
+		VpcEndpoints:                 vpcendpoints.New(apiClient),
+		Workspaces:                   workspaces.New(apiClient),
 	}
 }
