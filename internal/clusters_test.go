@@ -6,26 +6,16 @@ import (
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/workspaces"
-	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func getDefaultNodeTypeForCloudEnv() string {
-	if IsCloudEnvAzure() {
-		return "Standard_D3_v2"
-	} else if IsCloudEnvGcp() {
-		return "n1-standard-4"
-	}
-	return "i3.xlarge"
-}
-
 func waitForTerminatingClusterToTerminate(ctx context.Context, workspacesClient workspaces.WorkspacesClient, t *testing.T, clusterId string) error {
 	return retries.Wait(ctx, 30*time.Minute, func() *retries.Err {
-		clusterInfo, err := workspacesClient.Clusters.GetCluster(
-			ctx,
+		clusterInfo, err := workspacesClient.Clusters.GetCluster(ctx,
 			clusters.GetClusterRequest{ClusterId: clusterId},
 		)
 		if err != nil {
@@ -44,8 +34,7 @@ func waitForTerminatingClusterToTerminate(ctx context.Context, workspacesClient 
 
 func waitForClusterRunning(ctx context.Context, workspacesClient workspaces.WorkspacesClient, t *testing.T, clusterId string) error {
 	return retries.Wait(ctx, 30*time.Minute, func() *retries.Err {
-		clusterInfo, err := workspacesClient.Clusters.GetCluster(
-			ctx,
+		clusterInfo, err := workspacesClient.Clusters.GetCluster(ctx,
 			clusters.GetClusterRequest{ClusterId: clusterId},
 		)
 		if err != nil {
@@ -67,42 +56,31 @@ func TestAccListClustersIntegration(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	ctx := context.TODO()
 	workspacesClient := workspaces.New()
-	const DEFAULT_RUNTIME_VERSION = "7.3.x-scala2.12"
-	cluster1_name := RandomName("acceptance-test-cluster-1-")
-	cluster2_name := RandomName("acceptance-test-cluster-2-")
+	cluster1Name := RandomName("acceptance-test-cluster-1-")
+	cluster2Name := RandomName("acceptance-test-cluster-2-")
 
-	// Assert default node type used in this test (from getDefaultNodeTypeForCloudEnv)
-	// is present in list node types
-	listNodeTypesResponse, err := workspacesClient.Clusters.ListNodeTypes(ctx)
-	require.NoError(t, err)
-	isDefaultNodeTypePresent := false
-	for _, nodeType := range listNodeTypesResponse.NodeTypes {
-		if nodeType.NodeTypeId == getDefaultNodeTypeForCloudEnv() {
-			isDefaultNodeTypePresent = true
-			break
-		}
-	}
-	assert.True(t, isDefaultNodeTypePresent)
-
-	// Assert default runtime version used in this test (7.3.x-scala2.12)
-	// is present spark versions api response
+	// Fetch list of spark runtime versions and select the latest LTS version
 	getSparkVersionsResponse, err := workspacesClient.Clusters.GetSparkVersions(ctx)
 	require.NoError(t, err)
-	isDefaultRuntimeVersionPresent := false
-	for _, runtimeVersion := range getSparkVersionsResponse.Versions {
-		if runtimeVersion.Key == DEFAULT_RUNTIME_VERSION {
-			isDefaultRuntimeVersionPresent = true
-			break
-		}
-	}
-	assert.True(t, isDefaultRuntimeVersionPresent)
+	dbrVersion, err := getSparkVersionsResponse.Select(clusters.SparkVersionRequest{
+		Latest:          true,
+		LongTermSupport: true,
+	},
+	)
+	require.NoError(t, err)
+
+	// Fetch list of node types and select the smallest version
+	listNodeTypesResponse, err := workspacesClient.Clusters.ListNodeTypes(ctx)
+	require.NoError(t, err)
+	clusterNodeType, err := listNodeTypesResponse.Smallest(clusters.NodeTypeRequest{})
+	require.NoError(t, err)
 
 	createClusterRequest := clusters.CreateClusterRequest{
 		NumWorkers:             1,
-		ClusterName:            cluster1_name,
-		SparkVersion:           DEFAULT_RUNTIME_VERSION,
+		ClusterName:            cluster1Name,
+		SparkVersion:           dbrVersion,
 		AutoterminationMinutes: 15,
-		NodeTypeId:             getDefaultNodeTypeForCloudEnv(),
+		NodeTypeId:             clusterNodeType,
 	}
 
 	// Create cluster
@@ -125,8 +103,7 @@ func TestAccListClustersIntegration(t *testing.T) {
 	assert.True(t, getClusterResponse.SparkVersion == createClusterRequest.SparkVersion)
 
 	// Pin the cluster
-	err = workspacesClient.Clusters.PinCluster(
-		ctx,
+	err = workspacesClient.Clusters.PinCluster(ctx,
 		clusters.PinClusterRequest{
 			ClusterId: clusterId1,
 		},
@@ -134,8 +111,7 @@ func TestAccListClustersIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Unpin the cluster
-	err = workspacesClient.Clusters.UnpinCluster(
-		ctx,
+	err = workspacesClient.Clusters.UnpinCluster(ctx,
 		clusters.UnpinClusterRequest{
 			ClusterId: clusterId1,
 		},
@@ -143,8 +119,7 @@ func TestAccListClustersIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Terminate the cluster
-	err = workspacesClient.Clusters.DeleteCluster(
-		ctx,
+	err = workspacesClient.Clusters.DeleteCluster(ctx,
 		clusters.DeleteClusterRequest{
 			ClusterId: clusterId1,
 		},
@@ -152,13 +127,11 @@ func TestAccListClustersIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Assert the cluster state is TERMINATING or TERMINATED
-	getClusterResponse, err = workspacesClient.Clusters.GetCluster(
-		ctx,
+	getClusterResponse, err = workspacesClient.Clusters.GetCluster(ctx,
 		clusters.GetClusterRequest{ClusterId: clusterId1},
 	)
 	require.NoError(t, err)
-	assert.True(
-		t,
+	assert.True(t,
 		getClusterResponse.State == clusters.GetClusterResponseStateTerminated ||
 			getClusterResponse.State == clusters.GetClusterResponseStateTerminating,
 	)
@@ -168,30 +141,27 @@ func TestAccListClustersIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Assert cluster state is terminated
-	getClusterResponse, err = workspacesClient.Clusters.GetCluster(
-		ctx,
+	getClusterResponse, err = workspacesClient.Clusters.GetCluster(ctx,
 		clusters.GetClusterRequest{ClusterId: clusterId1},
 	)
 	require.NoError(t, err)
 	assert.True(t, getClusterResponse.State == clusters.GetClusterResponseStateTerminated)
 
 	// Edit the cluster
-	err = workspacesClient.Clusters.EditCluster(
-		ctx,
+	err = workspacesClient.Clusters.EditCluster(ctx,
 		clusters.EditClusterRequest{
 			ClusterId:              clusterId1,
 			NumWorkers:             2,
 			AutoterminationMinutes: 30,
-			SparkVersion:           DEFAULT_RUNTIME_VERSION,
-			NodeTypeId:             getDefaultNodeTypeForCloudEnv(),
-			ClusterName:            cluster1_name,
+			SparkVersion:           dbrVersion,
+			NodeTypeId:             clusterNodeType,
+			ClusterName:            cluster1Name,
 		},
 	)
 	require.NoError(t, err)
 
 	// Assert edit changes are reflected in the cluster
-	getClusterResponse, err = workspacesClient.Clusters.GetCluster(
-		ctx,
+	getClusterResponse, err = workspacesClient.Clusters.GetCluster(ctx,
 		clusters.GetClusterRequest{ClusterId: clusterId1},
 	)
 	require.NoError(t, err)
@@ -200,8 +170,7 @@ func TestAccListClustersIntegration(t *testing.T) {
 	assert.True(t, getClusterResponse.State == clusters.GetClusterResponseStateTerminated)
 
 	// Start cluster 1
-	err = workspacesClient.Clusters.StartCluster(
-		ctx,
+	err = workspacesClient.Clusters.StartCluster(ctx,
 		clusters.StartClusterRequest{
 			ClusterId: clusterId1,
 		},
@@ -209,14 +178,13 @@ func TestAccListClustersIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create cluster 2
-	clusterCreateResponse2, err := workspacesClient.Clusters.CreateCluster(
-		ctx,
+	clusterCreateResponse2, err := workspacesClient.Clusters.CreateCluster(ctx,
 		clusters.CreateClusterRequest{
 			NumWorkers:             1,
-			ClusterName:            cluster2_name,
-			SparkVersion:           DEFAULT_RUNTIME_VERSION,
+			ClusterName:            cluster2Name,
+			SparkVersion:           dbrVersion,
 			AutoterminationMinutes: 15,
-			NodeTypeId:             getDefaultNodeTypeForCloudEnv(),
+			NodeTypeId:             clusterNodeType,
 		},
 	)
 	require.NoError(t, err)
@@ -229,23 +197,20 @@ func TestAccListClustersIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Assert cluster 1 is running
-	getClusterResponse, err = workspacesClient.Clusters.GetCluster(
-		ctx,
+	getClusterResponse, err = workspacesClient.Clusters.GetCluster(ctx,
 		clusters.GetClusterRequest{ClusterId: clusterId1},
 	)
 	require.NoError(t, err)
 	assert.True(t, getClusterResponse.State == clusters.GetClusterResponseStateRunning)
 	// Assert cluster 2 is running
-	getClusterResponse, err = workspacesClient.Clusters.GetCluster(
-		ctx,
+	getClusterResponse, err = workspacesClient.Clusters.GetCluster(ctx,
 		clusters.GetClusterRequest{ClusterId: clusterId2},
 	)
 	require.NoError(t, err)
 	assert.True(t, getClusterResponse.State == clusters.GetClusterResponseStateRunning)
 
 	// Resize num_workers in cluster 1
-	err = workspacesClient.Clusters.ResizeCluster(
-		ctx,
+	err = workspacesClient.Clusters.ResizeCluster(ctx,
 		clusters.ResizeClusterRequest{
 			ClusterId:  clusterId1,
 			NumWorkers: 3,
@@ -253,16 +218,14 @@ func TestAccListClustersIntegration(t *testing.T) {
 	)
 	require.NoError(t, err)
 	// Assert num_workers in cluster 1 is 3 now
-	getClusterResponse, err = workspacesClient.Clusters.GetCluster(
-		ctx,
+	getClusterResponse, err = workspacesClient.Clusters.GetCluster(ctx,
 		clusters.GetClusterRequest{ClusterId: clusterId1},
 	)
 	require.NoError(t, err)
 	assert.True(t, getClusterResponse.NumWorkers == 3)
 
 	// Restart cluster 2
-	err = workspacesClient.Clusters.RestartCluster(
-		ctx,
+	err = workspacesClient.Clusters.RestartCluster(ctx,
 		clusters.RestartClusterRequest{
 			ClusterId: clusterId2,
 		},
@@ -270,8 +233,7 @@ func TestAccListClustersIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Get events for cluster 1 and assert its non empty
-	getEventsResponse, err := workspacesClient.Clusters.GetEvents(
-		ctx,
+	getEventsResponse, err := workspacesClient.Clusters.GetEvents(ctx,
 		clusters.GetEventsRequest{
 			ClusterId: clusterId1,
 		},
@@ -280,8 +242,7 @@ func TestAccListClustersIntegration(t *testing.T) {
 	assert.True(t, len(getEventsResponse.Events) > 0)
 
 	// List clusters in workspace
-	listClustersResponse, err := workspacesClient.Clusters.ListClusters(
-		ctx,
+	listClustersResponse, err := workspacesClient.Clusters.ListClusters(ctx,
 		clusters.ListClustersRequest{},
 	)
 	require.NoError(t, err)
@@ -300,15 +261,13 @@ func TestAccListClustersIntegration(t *testing.T) {
 	assert.True(t, numOccurancesOfTestCluster2 == 1)
 
 	// Permanently delete the clusters
-	err = workspacesClient.Clusters.PermanentDeleteCluster(
-		ctx,
+	err = workspacesClient.Clusters.PermanentDeleteCluster(ctx,
 		clusters.PermanentDeleteClusterRequest{
 			ClusterId: clusterId1,
 		},
 	)
 	require.NoError(t, err)
-	err = workspacesClient.Clusters.PermanentDeleteCluster(
-		ctx,
+	err = workspacesClient.Clusters.PermanentDeleteCluster(ctx,
 		clusters.PermanentDeleteClusterRequest{
 			ClusterId: clusterId2,
 		},

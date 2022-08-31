@@ -25,21 +25,6 @@ func GetEnvOrSkipTest(t *testing.T, name string) string {
 	return value
 }
 
-func IsCloudEnvAzure() bool {
-	cloudProvider := os.Getenv("CLOUD_ENV")
-	return cloudProvider == "azure"
-}
-
-func IsCloudEnvGcp() bool {
-	cloudProvider := os.Getenv("CLOUD_ENV")
-	return cloudProvider == "gcp"
-}
-
-func IsCloudEnvAws() bool {
-	cloudProvider := os.Getenv("CLOUD_ENV")
-	return cloudProvider == "aws"
-}
-
 // RandomEmail generates random email
 func RandomEmail(prefix ...string) string {
 	return fmt.Sprintf("%s@example.com", RandomName(
