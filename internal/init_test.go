@@ -50,11 +50,12 @@ func RandomName(prefix ...string) string {
 	return string(b)
 }
 
-func StartDefaultTestCluster(t *testing.T, ctx context.Context, apiClient *client.DatabricksClient) {
+func startDefaultTestCluster(t *testing.T, ctx context.Context, apiClient *client.DatabricksClient) {
 	clusterService := clusters.New(apiClient)
+	clusterId := GetEnvOrSkipTest(t, "TEST_DEFAULT_CLUSTER_ID")
 	err := retries.Wait(ctx, 10*time.Minute, func() *retries.Err {
 		clusterDetails, err := clusterService.GetCluster(ctx, clusters.GetClusterRequest{
-			ClusterId: GetEnvOrSkipTest(t, "TEST_DEFAULT_CLUSTER_ID"),
+			ClusterId: clusterId,
 		})
 		if err != nil {
 			return retries.Halt(err)
@@ -64,7 +65,7 @@ func StartDefaultTestCluster(t *testing.T, ctx context.Context, apiClient *clien
 		}
 		if clusterDetails.State == clusters.GetClusterResponseStateTerminated {
 			err = clusterService.StartCluster(ctx, clusters.StartClusterRequest{
-				ClusterId: GetEnvOrSkipTest(t, "TEST_DEFAULT_CLUSTER_ID"),
+				ClusterId: clusterId,
 			})
 			if err != nil {
 				return retries.Halt(err)

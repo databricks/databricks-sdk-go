@@ -81,7 +81,7 @@ func assertRunCanceled(t *testing.T, ctx context.Context, jobsService jobs.JobsS
 func setup(t *testing.T) (ctx context.Context, apiClient *client.DatabricksClient) {
 	ctx = context.Background()
 	apiClient = client.New(&databricks.Config{})
-	StartDefaultTestCluster(t, ctx, apiClient)
+	startDefaultTestCluster(t, ctx, apiClient)
 	return ctx, apiClient
 }
 
@@ -89,13 +89,10 @@ func TestAccCreateAndRunJob(t *testing.T) {
 	ctx, apiClient := setup(t)
 	jobsService := jobs.New(apiClient)
 	testId := fmt.Sprint(rand.Int())
-	createResp := createTestJob(
-		t,
-		ctx,
-		jobsService,
-		CreateTestPythonFile(t, ctx, apiClient, "/tmp/go-sdk-jobs-tests", testId, "dbutils.notebook.exit('hello')"),
-		testId,
-	)
+
+	pythonPath := createTestPythonFile(t, ctx, apiClient, "/tmp/go-sdk-jobs-tests", testId, "dbutils.notebook.exit('hello')")
+	createResp := createTestJob(t, ctx, jobsService, pythonPath, testId)
+
 	runResp, err := jobsService.RunNow(ctx, jobs.RunNowRequest{
 		JobId: createResp.JobId,
 	})
@@ -135,7 +132,7 @@ func TestAccSubmitOneTimeRun(t *testing.T) {
 	ctx, apiClient := setup(t)
 	jobsService := jobs.New(apiClient)
 	testId := fmt.Sprint(rand.Int())
-	testPath := CreateTestPythonFile(t, ctx, apiClient, "/tmp/go-sdk-jobs-tests", testId, "dbutils.notebook.exit('hello')")
+	testPath := createTestPythonFile(t, ctx, apiClient, "/tmp/go-sdk-jobs-tests", testId, "dbutils.notebook.exit('hello')")
 
 	submitResp, err := jobsService.SubmitRun(ctx, jobs.SubmitRunRequest{
 		IdempotencyToken: fmt.Sprintf("test-%s", testId),
@@ -159,20 +156,11 @@ func TestAccCreateAndCancelRun(t *testing.T) {
 	ctx, apiClient := setup(t)
 	jobsService := jobs.New(apiClient)
 	testId := fmt.Sprint(rand.Int())
-	createResp := createTestJob(
-		t,
-		ctx,
-		jobsService,
-		CreateTestPythonFile(
-			t,
-			ctx,
-			apiClient,
-			"/tmp/go-sdk-jobs-tests",
-			testId,
-			"import time; time.sleep(100); dbutils.notebook.exit('hello')",
-		),
-		testId,
-	)
+
+	fileContent := "import time; time.sleep(10); dbutils.notebook.exit('hello')"
+	pythonPath := createTestPythonFile(t, ctx, apiClient, "/tmp/go-sdk-jobs-tests", testId, fileContent)
+	createResp := createTestJob(t, ctx, jobsService, pythonPath, testId)
+
 	//Cancel single run
 	runResp, err := jobsService.RunNow(ctx, jobs.RunNowRequest{
 		JobId: createResp.JobId,
@@ -207,20 +195,11 @@ func TestAccCreateAndDeleteJob(t *testing.T) {
 	ctx, apiClient := setup(t)
 	jobsService := jobs.New(apiClient)
 	testId := fmt.Sprint(rand.Int())
-	createResp := createTestJob(
-		t,
-		ctx,
-		jobsService,
-		CreateTestPythonFile(
-			t,
-			ctx,
-			apiClient,
-			"/tmp/go-sdk-jobs-tests",
-			testId,
-			"import time; time.sleep(100); dbutils.notebook.exit('hello')",
-		),
-		testId,
-	)
+
+	fileContent := "import time; time.sleep(10); dbutils.notebook.exit('hello')"
+	pythonPath := createTestPythonFile(t, ctx, apiClient, "/tmp/go-sdk-jobs-tests", testId, fileContent)
+	createResp := createTestJob(t, ctx, jobsService, pythonPath, testId)
+
 	jobList, err := jobsService.ListJobs(ctx, jobs.ListJobsRequest{
 		ExpandTasks: false,
 	})
@@ -250,20 +229,10 @@ func TestAccResetAndUpdateJob(t *testing.T) {
 	ctx, apiClient := setup(t)
 	jobsService := jobs.New(apiClient)
 	testId := fmt.Sprint(rand.Int())
-	createResp := createTestJob(
-		t,
-		ctx,
-		jobsService,
-		CreateTestPythonFile(
-			t,
-			ctx,
-			apiClient,
-			"/tmp/go-sdk-jobs-tests",
-			testId,
-			"import time; time.sleep(100); dbutils.notebook.exit('hello')",
-		),
-		testId,
-	)
+
+	fileContent := "import time; time.sleep(10); dbutils.notebook.exit('hello')"
+	pythonPath := createTestPythonFile(t, ctx, apiClient, "/tmp/go-sdk-jobs-tests", testId, fileContent)
+	createResp := createTestJob(t, ctx, jobsService, pythonPath, testId)
 
 	defaultJobDetails, err := jobsService.GetJob(ctx, jobs.GetJobRequest{
 		JobId: createResp.JobId,
@@ -313,20 +282,10 @@ func TestAccRepairAndExportRun(t *testing.T) {
 	ctx, apiClient := setup(t)
 	jobsService := jobs.New(apiClient)
 	testId := fmt.Sprint(rand.Int())
-	createResp := createTestJob(
-		t,
-		ctx,
-		jobsService,
-		CreateTestPythonFile(
-			t,
-			ctx,
-			apiClient,
-			"/tmp/go-sdk-jobs-tests",
-			testId,
-			"import time; time.sleep(10); dbutils.notebook.exit('hello')",
-		),
-		testId,
-	)
+
+	fileContent := "import time; time.sleep(10); dbutils.notebook.exit('hello')"
+	pythonPath := createTestPythonFile(t, ctx, apiClient, "/tmp/go-sdk-jobs-tests", testId, fileContent)
+	createResp := createTestJob(t, ctx, jobsService, pythonPath, testId)
 
 	runResp, err := jobsService.RunNow(ctx, jobs.RunNowRequest{
 		JobId: createResp.JobId,

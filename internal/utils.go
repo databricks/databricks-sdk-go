@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func CreateTestPythonFile(t *testing.T, ctx context.Context, apiClient *client.DatabricksClient, testDir string, testId string, content string) string {
+func createTestPythonFile(t *testing.T, ctx context.Context, apiClient *client.DatabricksClient, testDir string, testId string, content string) string {
 	workspaceService := workspace.New(apiClient)
 	err := workspaceService.Mkdirs(ctx, workspace.MkdirsRequest{
 		Path: testDir,
