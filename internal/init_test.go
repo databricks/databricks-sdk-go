@@ -1,13 +1,19 @@
 package internal
 
 import (
+	"context"
 	"fmt"
 	"math/rand"
 	"os"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/stretchr/testify/assert"
 )
 
 const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -42,4 +48,30 @@ func RandomName(prefix ...string) string {
 		return fmt.Sprintf("%s%s", strings.Join(prefix, ""), b)
 	}
 	return string(b)
+}
+
+func startDefaultTestCluster(t *testing.T, ctx context.Context, apiClient *client.DatabricksClient) {
+	clusterService := clusters.New(apiClient)
+	clusterId := GetEnvOrSkipTest(t, "TEST_DEFAULT_CLUSTER_ID")
+	err := retries.Wait(ctx, 10*time.Minute, func() *retries.Err {
+		clusterDetails, err := clusterService.GetCluster(ctx, clusters.GetClusterRequest{
+			ClusterId: clusterId,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		if clusterDetails.State == clusters.GetClusterResponseStateRunning {
+			return nil
+		}
+		if clusterDetails.State == clusters.GetClusterResponseStateTerminated {
+			err = clusterService.StartCluster(ctx, clusters.StartClusterRequest{
+				ClusterId: clusterId,
+			})
+			if err != nil {
+				return retries.Halt(err)
+			}
+		}
+		return retries.Continue(fmt.Errorf("%s", clusterDetails.State))
+	})
+	assert.NoError(t, err)
 }
