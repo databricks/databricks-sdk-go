@@ -3,9 +3,9 @@ package databricks
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/logger"
-	"github.com/mitchellh/go-homedir"
 	"gopkg.in/ini.v1"
 )
 
@@ -20,11 +20,14 @@ func (l KnownConfigLoader) Configure(cfg *Config) error {
 	if configFile == "" {
 		configFile = "~/.databrickscfg"
 	}
-	configFile, err := homedir.Expand(configFile)
-	if err != nil {
-		return fmt.Errorf("cannot find homedir: %w", err)
+	if strings.HasPrefix(configFile, "~") {
+		homedir, err := os.UserHomeDir()
+		if err != nil {
+			return fmt.Errorf("cannot find homedir: %w", err)
+		}
+		configFile = fmt.Sprintf("%s%s", homedir, configFile[1:])
 	}
-	_, err = os.Stat(configFile)
+	_, err := os.Stat(configFile)
 	if os.IsNotExist(err) {
 		// early return for non-configured machines
 		logger.Debugf("%s not found on current host", configFile)
