@@ -9,21 +9,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-
-type PermissionsService interface {
-    
-    GetObjectPermissions(ctx context.Context, getObjectPermissionsRequest GetObjectPermissionsRequest) (*ObjectPermissions, error)
-    
-    GetPermissionLevels(ctx context.Context, getPermissionLevelsRequest GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error)
-    
-    SetObjectPermissions(ctx context.Context, setObjectPermissionsRequest SetObjectPermissionsRequest) error
-    
-    UpdateObjectPermissions(ctx context.Context, updateObjectPermissionsRequest UpdateObjectPermissionsRequest) error
-	GetObjectPermissionsByObjectTypeAndObjectId(ctx context.Context, objectType string, objectId string) (*ObjectPermissions, error)
-	GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error)
-}
-
-func New(client *client.DatabricksClient) PermissionsService {
+func NewPermissions(client *client.DatabricksClient) PermissionsService {
 	return &PermissionsAPI{
 		client: client,
 	}
@@ -64,16 +50,16 @@ func (a *PermissionsAPI) UpdateObjectPermissions(ctx context.Context, request Up
 }
 
 
-func (a *PermissionsAPI) GetObjectPermissionsByObjectTypeAndObjectId(ctx context.Context, objectType string, objectId string) (*ObjectPermissions, error) {
-	return a.GetObjectPermissions(ctx, GetObjectPermissionsRequest{
-		ObjectType: objectType,
-		ObjectId: objectId,
-	})
-}
-
 func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error) {
 	return a.GetPermissionLevels(ctx, GetPermissionLevelsRequest{
 		RequestObjectType: requestObjectType,
 		RequestObjectId: requestObjectId,
+	})
+}
+
+func (a *PermissionsAPI) GetObjectPermissionsByObjectTypeAndObjectId(ctx context.Context, objectType string, objectId string) (*ObjectPermissions, error) {
+	return a.GetObjectPermissions(ctx, GetObjectPermissionsRequest{
+		ObjectType: objectType,
+		ObjectId: objectId,
 	})
 }

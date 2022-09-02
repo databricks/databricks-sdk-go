@@ -1,0 +1,18 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package {{.Name}}
+
+import (
+	"context"
+)
+
+{{range .Services}}
+{{.Comment "// " 80}}
+type {{.PascalName}}Service interface {
+	{{- range .Methods}}
+    {{.Comment "    // " 80}}
+    {{.PascalName}}(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}{{end}}
+	{{- range .ByPathParamsMethods}}{{.Comment "// " 80}}
+	{{.PascalName}}(ctx context.Context{{range .Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{if .Method.Response}}(*{{.Method.Response.PascalName}}, error){{else}}error{{end}}{{end}}
+}
+{{end}}

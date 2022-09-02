@@ -8,17 +8,8 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
-
-{{.Comment "// " 80}}
-type {{.PascalName}}Service interface {
-	{{- range .Methods}}
-    {{.Comment "    // " 80}}
-    {{.PascalName}}(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}{{end}}
-	{{- range .ByPathParamsMethods}}{{.Comment "// " 80}}
-	{{.PascalName}}(ctx context.Context{{range .Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{if .Method.Response}}(*{{.Method.Response.PascalName}}, error){{else}}error{{end}}{{end}}
-}
-
-func New(client *client.DatabricksClient) {{.PascalName}}Service {
+{{range .Services}}
+func New{{.PascalName}}(client *client.DatabricksClient) {{.PascalName}}Service {
 	return &{{.PascalName}}API{
 		client: client,
 	}
@@ -29,7 +20,7 @@ type {{.PascalName}}API struct {
 }
 
 {{range .Methods}}{{.Comment "// " 80}}
-func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}} {
+func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}} {
 	{{if .Response}}var {{.Response.CamelName}} {{.Response.PascalName}}
 	{{end -}}
 	path := {{if .PathParts -}}
@@ -49,3 +40,4 @@ func (a *{{.Method.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{
 	})
 }
 {{end}}
+{{- end}}

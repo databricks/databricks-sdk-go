@@ -9,27 +9,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// The Repos API allows users to manage their git repos. 
-type ReposService interface {
-    // Creates a repo in the workspace and links it to the remote Git repo 
-    // specified. Note that repos created programmatically must be linked to a 
-    // remote Git repo, unlike repos created in the browser. 
-    CreateRepo(ctx context.Context, createRepoRequest CreateRepoRequest) (*GetRepoResponse, error)
-    // Deletes the specified repo 
-    DeleteRepo(ctx context.Context, deleteRepoRequest DeleteRepoRequest) error
-    // Returns the repo with the given repo ID. 
-    GetRepo(ctx context.Context, getRepoRequest GetRepoRequest) (*GetRepoResponse, error)
-    // Returns repos that the calling user has Manage permissions on. Results 
-    // are paginated with each page containing twenty repos. 
-    ListRepos(ctx context.Context, listReposRequest ListReposRequest) (*GetReposResponse, error)
-    // Updates the repo to a different branch or tag, or updates the repo to 
-    // the latest commit on the same branch. 
-    UpdateRepo(ctx context.Context, updateRepoRequest UpdateRepoRequest) error
-	GetRepoByRepoId(ctx context.Context, repoId string) (*GetRepoResponse, error)
-	DeleteRepoByRepoId(ctx context.Context, repoId string) error
-}
-
-func New(client *client.DatabricksClient) ReposService {
+func NewRepos(client *client.DatabricksClient) ReposService {
 	return &ReposAPI{
 		client: client,
 	}
@@ -39,57 +19,57 @@ type ReposAPI struct {
 	client *client.DatabricksClient
 }
 
-// Creates a repo in the workspace and links it to the remote Git repo 
-// specified. Note that repos created programmatically must be linked to a 
-// remote Git repo, unlike repos created in the browser. 
-func (a *ReposAPI) CreateRepo(ctx context.Context, request CreateRepoRequest) (*GetRepoResponse, error) {
-	var getRepoResponse GetRepoResponse
-	path := "/repos"
-	err := a.client.Post(ctx, path, request, &getRepoResponse)
-	return &getRepoResponse, err
+// Creates a repo in the workspace and links it to the remote Git repo
+// specified. Note that repos created programmatically must be linked to a
+// remote Git repo, unlike repos created in the browser.
+func (a *ReposAPI) Create(ctx context.Context, request CreateRepo) (*RepoInfo, error) {
+	var repoInfo RepoInfo
+	path := "/api/2.0/repos"
+	err := a.client.Post(ctx, path, request, &repoInfo)
+	return &repoInfo, err
 }
 
-// Deletes the specified repo 
-func (a *ReposAPI) DeleteRepo(ctx context.Context, request DeleteRepoRequest) error {
-	path := fmt.Sprintf("/repos/%v", request.RepoId)
+// Deletes the specified repo
+func (a *ReposAPI) Delete(ctx context.Context, request DeleteRequest) error {
+	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
-// Returns the repo with the given repo ID. 
-func (a *ReposAPI) GetRepo(ctx context.Context, request GetRepoRequest) (*GetRepoResponse, error) {
-	var getRepoResponse GetRepoResponse
-	path := fmt.Sprintf("/repos/%v", request.RepoId)
-	err := a.client.Get(ctx, path, request, &getRepoResponse)
-	return &getRepoResponse, err
+// Returns the repo with the given repo ID.
+func (a *ReposAPI) Get(ctx context.Context, request GetRequest) (*RepoInfo, error) {
+	var repoInfo RepoInfo
+	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
+	err := a.client.Get(ctx, path, request, &repoInfo)
+	return &repoInfo, err
 }
 
-// Returns repos that the calling user has Manage permissions on. Results are 
-// paginated with each page containing twenty repos. 
-func (a *ReposAPI) ListRepos(ctx context.Context, request ListReposRequest) (*GetReposResponse, error) {
-	var getReposResponse GetReposResponse
-	path := "/repos"
-	err := a.client.Get(ctx, path, request, &getReposResponse)
-	return &getReposResponse, err
+// Returns repos that the calling user has Manage permissions on. Results are
+// paginated with each page containing twenty repos.
+func (a *ReposAPI) List(ctx context.Context, request ListRequest) (*ListReposResponse, error) {
+	var listReposResponse ListReposResponse
+	path := "/api/2.0/repos"
+	err := a.client.Get(ctx, path, request, &listReposResponse)
+	return &listReposResponse, err
 }
 
-// Updates the repo to a different branch or tag, or updates the repo to the 
-// latest commit on the same branch. 
-func (a *ReposAPI) UpdateRepo(ctx context.Context, request UpdateRepoRequest) error {
-	path := fmt.Sprintf("/repos/%v", request.RepoId)
+// Updates the repo to a different branch or tag, or updates the repo to the
+// latest commit on the same branch.
+func (a *ReposAPI) Update(ctx context.Context, request UpdateRepo) error {
+	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
 
 
-func (a *ReposAPI) GetRepoByRepoId(ctx context.Context, repoId string) (*GetRepoResponse, error) {
-	return a.GetRepo(ctx, GetRepoRequest{
+func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId string) (*RepoInfo, error) {
+	return a.Get(ctx, GetRequest{
 		RepoId: repoId,
 	})
 }
 
-func (a *ReposAPI) DeleteRepoByRepoId(ctx context.Context, repoId string) error {
-	return a.DeleteRepo(ctx, DeleteRepoRequest{
+func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId string) error {
+	return a.Delete(ctx, DeleteRequest{
 		RepoId: repoId,
 	})
 }

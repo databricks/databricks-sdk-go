@@ -25,26 +25,53 @@ type ListAllTokensRequest struct {
 
 
 type ListTokensResponse struct {
-    
-    TokenInfos []TokenInfo `json:"token_infos,omitempty"`
+    // The information for each token.
+    TokenInfos []PublicTokenInfo `json:"token_infos,omitempty"`
+}
+
+
+type PublicTokenInfo struct {
+    // Comment the token was created with, if applicable.
+    Comment string `json:"comment,omitempty"`
+    // Server time (in epoch milliseconds) when the token was created.
+    CreationTime int64 `json:"creation_time,omitempty"`
+    // Server time (in epoch milliseconds) when the token will expire, or -1 if
+    // not applicable.
+    ExpiryTime int64 `json:"expiry_time,omitempty"`
+    // The ID of this token.
+    TokenId string `json:"token_id,omitempty"`
 }
 
 
 type TokenInfo struct {
-    // Comment that describes the purpose of the token, specified by the token
-    // creator.
+    
     Comment string `json:"comment,omitempty"`
-    // User ID of the user that created the token.
+    
     CreatedById int64 `json:"created_by_id,omitempty"`
-    // Username of the user that created the token.
+    
     CreatedByUsername string `json:"created_by_username,omitempty"`
-    // Timestamp when the token was created
+    
     CreationTime int64 `json:"creation_time,omitempty"`
-    // Timestamp when the token expires
+    
     ExpiryTime int64 `json:"expiry_time,omitempty"`
-    // User ID of the user that owns the token.
+    
     OwnerId int64 `json:"owner_id,omitempty"`
-    // ID of the token
+    
     TokenId string `json:"token_id,omitempty"`
 }
+
+// Comment that describes the purpose of the token, specified by the token
+// creator.
+
+// User ID of the user that created the token.
+
+// Username of the user that created the token.
+
+// Timestamp when the token was created
+
+// Timestamp when the token expires
+
+// User ID of the user that owns the token.
+
+// ID of the token
 

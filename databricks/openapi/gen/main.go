@@ -50,8 +50,9 @@ func (c *Context) Generate() error {
 		batch: batch,
 		tmpl:  template.Must(template.ParseGlob("databricks/openapi/gen/*.tmpl")),
 		fileset: map[string]string{
-			"api.go.tmpl":   "service/{{.Name}}/api.go",
-			"model.go.tmpl": "service/{{.Name}}/model.go",
+			"api.go.tmpl":       "service/{{.Name}}/api.go",
+			"interface.go.tmpl": "service/{{.Name}}/interface.go",
+			"model.go.tmpl":     "service/{{.Name}}/model.go",
 		},
 	}).Run()
 }
@@ -75,7 +76,7 @@ func (r *Render) Run() error {
 	return nil
 }
 
-func (r *Render) File(pkg code.Package, contentTRef, nameT string) error {
+func (r *Render) File(pkg *code.Package, contentTRef, nameT string) error {
 	nt, err := template.New("filename").Parse(nameT)
 	if err != nil {
 		return fmt.Errorf("parse %s: %w", nameT, err)

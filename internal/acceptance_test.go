@@ -16,7 +16,7 @@ func TestAccDefaultCredentials(t *testing.T) {
 	ws := workspaces.New()
 
 	ctx := context.Background()
-	versions, err := ws.Clusters.GetSparkVersions(ctx)
+	versions, err := ws.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
 	v, err := versions.Select(clusters.SparkVersionRequest{
@@ -34,7 +34,7 @@ func TestAccExplicitDatabricksCfg(t *testing.T) {
 		Profile: GetEnvOrSkipTest(t, "DATABRICKS_CONFIG_PROFILE"),
 	})
 	ctx := context.Background()
-	versions, err := ws.Clusters.GetSparkVersions(ctx)
+	versions, err := ws.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
 	v, err := versions.Select(clusters.SparkVersionRequest{
@@ -51,7 +51,7 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 		Credentials:     databricks.AzureCliCredentials{},
 	})
 	ctx := context.Background()
-	versions, err := ws.Clusters.GetSparkVersions(ctx)
+	versions, err := ws.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
 	v, err := versions.Select(clusters.SparkVersionRequest{
@@ -71,7 +71,7 @@ func TestAccExplicitAzureSpnAuth(t *testing.T) {
 		Credentials:       databricks.AzureClientSecretCredentials{},
 	})
 	ctx := context.Background()
-	versions, err := ws.Clusters.GetSparkVersions(ctx)
+	versions, err := ws.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
 	v, err := versions.Select(clusters.SparkVersionRequest{

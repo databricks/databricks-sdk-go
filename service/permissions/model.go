@@ -7,9 +7,9 @@ package permissions
 type AccessControlRequest struct {
     
     GroupName string `json:"group_name,omitempty"`
-    // getPermissionLevel defaults to CAN_ATTACH_TO when it&#39;s not defined (for 
-    // PUT/PATCH) so you should use .permissionLevel.isDefined to verify that 
-    // it actually exists 
+    // getPermissionLevel defaults to CAN_ATTACH_TO when it&#39;s not defined (for
+    // PUT/PATCH) so you should use .permissionLevel.isDefined to verify that it
+    // actually exists
     PermissionLevel AccessControlRequestPermissionLevel `json:"permission_level,omitempty"`
     
     ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -17,9 +17,9 @@ type AccessControlRequest struct {
     UserName string `json:"user_name,omitempty"`
 }
 
-// getPermissionLevel defaults to CAN_ATTACH_TO when it&#39;s not defined (for 
-// PUT/PATCH) so you should use .permissionLevel.isDefined to verify that it 
-// actually exists 
+// getPermissionLevel defaults to CAN_ATTACH_TO when it&#39;s not defined (for
+// PUT/PATCH) so you should use .permissionLevel.isDefined to verify that it
+// actually exists
 type AccessControlRequestPermissionLevel string
 
 

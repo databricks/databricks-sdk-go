@@ -35,7 +35,7 @@ func waitForRunToFinish(t *testing.T, ctx context.Context, jobsService jobs.Jobs
 	assert.NoError(t, err)
 }
 
-func getLastTaskOutput(t *testing.T, ctx context.Context, jobsService jobs.JobsService, runId int64) *jobs.GetRunOutputResponse {
+func getLastTaskOutput(t *testing.T, ctx context.Context, jobsService jobs.JobsService, runId int64) *jobs.RunOutput {
 	runDetails, err := jobsService.GetRun(ctx, jobs.GetRunRequest{
 		RunId: runId,
 	})
@@ -50,7 +50,7 @@ func getLastTaskOutput(t *testing.T, ctx context.Context, jobsService jobs.JobsS
 }
 
 func createTestJob(t *testing.T, ctx context.Context, jobsService jobs.JobsService, testPath string, testId string) *jobs.CreateJobResponse {
-	createResp, err := jobsService.CreateJob(ctx, jobs.CreateJobRequest{
+	createResp, err := jobsService.Create(ctx, jobs.CreateJob{
 		Name: fmt.Sprintf("Test job %s", testId),
 		Tasks: []jobs.JobTaskSettings{{
 			Description:       "test",
@@ -93,7 +93,7 @@ func TestAccCreateAndRunJob(t *testing.T) {
 	pythonPath := createTestPythonFile(t, ctx, apiClient, "/tmp/go-sdk-jobs-tests", testId, "dbutils.notebook.exit('hello')")
 	createResp := createTestJob(t, ctx, jobsService, pythonPath, testId)
 
-	runResp, err := jobsService.RunNow(ctx, jobs.RunNowRequest{
+	runResp, err := jobsService.RunNow(ctx, jobs.RunNow{
 		JobId: createResp.JobId,
 	})
 	assert.NoError(t, err)
@@ -114,7 +114,7 @@ func TestAccCreateAndRunJob(t *testing.T) {
 	output := getLastTaskOutput(t, ctx, jobsService, runResp.RunId)
 	assert.Equal(t, output.NotebookOutput.Result, "hello")
 
-	jobsService.DeleteRun(ctx, jobs.DeleteRunRequest{
+	jobsService.DeleteRun(ctx, jobs.DeleteRun{
 		RunId: runResp.RunId,
 	})
 	runList, err = jobsService.ListRuns(ctx, jobs.ListRunsRequest{
@@ -134,7 +134,7 @@ func TestAccSubmitOneTimeRun(t *testing.T) {
 	testId := fmt.Sprint(rand.Int())
 	testPath := createTestPythonFile(t, ctx, apiClient, "/tmp/go-sdk-jobs-tests", testId, "dbutils.notebook.exit('hello')")
 
-	submitResp, err := jobsService.SubmitRun(ctx, jobs.SubmitRunRequest{
+	submitResp, err := jobsService.SubmitRun(ctx, jobs.SubmitRun{
 		IdempotencyToken: fmt.Sprintf("test-%s", testId),
 		RunName:          fmt.Sprintf("test-%s", testId),
 		Tasks: []jobs.RunSubmitTaskSettings{{
@@ -162,27 +162,27 @@ func TestAccCreateAndCancelRun(t *testing.T) {
 	createResp := createTestJob(t, ctx, jobsService, pythonPath, testId)
 
 	//Cancel single run
-	runResp, err := jobsService.RunNow(ctx, jobs.RunNowRequest{
+	runResp, err := jobsService.RunNow(ctx, jobs.RunNow{
 		JobId: createResp.JobId,
 	})
 	assert.NoError(t, err)
 
-	jobsService.CancelRun(ctx, jobs.CancelRunRequest{
+	jobsService.CancelRun(ctx, jobs.CancelRun{
 		RunId: runResp.RunId,
 	})
 	assertRunCanceled(t, ctx, jobsService, runResp.RunId)
 
 	//Cancel all runs
-	runResp, err = jobsService.RunNow(ctx, jobs.RunNowRequest{
+	runResp, err = jobsService.RunNow(ctx, jobs.RunNow{
 		JobId: createResp.JobId,
 	})
 	assert.NoError(t, err)
-	runResp2, err := jobsService.RunNow(ctx, jobs.RunNowRequest{
+	runResp2, err := jobsService.RunNow(ctx, jobs.RunNow{
 		JobId: createResp.JobId,
 	})
 	assert.NoError(t, err)
 
-	err = jobsService.CancelAllRuns(ctx, jobs.CancelAllRunsRequest{
+	err = jobsService.CancelAllRuns(ctx, jobs.CancelAllRuns{
 		JobId: createResp.JobId,
 	})
 	assert.NoError(t, err)
@@ -211,7 +211,7 @@ func TestAccCreateAndDeleteJob(t *testing.T) {
 	}
 	assert.Contains(t, jobsIdList, createResp.JobId)
 
-	err = jobsService.DeleteJob(ctx, jobs.DeleteJobRequest{
+	err = jobsService.DeleteJob(ctx, jobs.DeleteJob{
 		JobId: createResp.JobId,
 	})
 	assert.NoError(t, err)
@@ -280,14 +280,14 @@ func TestAccResetAndUpdateJob(t *testing.T) {
 
 func TestAccRepairAndExportRun(t *testing.T) {
 	ctx, apiClient := setup(t)
-	jobsService := jobs.New(apiClient)
+	jobsService := jobs.NewJobs(apiClient)
 	testId := fmt.Sprint(rand.Int())
 
 	fileContent := "import time; time.sleep(10); dbutils.notebook.exit('hello')"
 	pythonPath := createTestPythonFile(t, ctx, apiClient, "/tmp/go-sdk-jobs-tests", testId, fileContent)
 	createResp := createTestJob(t, ctx, jobsService, pythonPath, testId)
 
-	runResp, err := jobsService.RunNow(ctx, jobs.RunNowRequest{
+	runResp, err := jobsService.RunNow(ctx, jobs.RunNow{
 		JobId: createResp.JobId,
 	})
 	assert.NoError(t, err)
@@ -296,14 +296,14 @@ func TestAccRepairAndExportRun(t *testing.T) {
 	})
 	assert.NoError(t, err)
 	assert.NotEmpty(t, runDetails.Tasks)
-	err = jobsService.CancelRun(ctx, jobs.CancelRunRequest{
+	err = jobsService.CancelRun(ctx, jobs.CancelRun{
 		RunId: runDetails.Tasks[0].RunId,
 	})
 	assert.NoError(t, err)
 	assertRunCanceled(t, ctx, jobsService, runDetails.Tasks[0].RunId)
 	waitForRunToFinish(t, ctx, jobsService, 1*time.Minute, runDetails.RunId)
 
-	_, err = jobsService.RepairRun(ctx, jobs.RepairRunRequest{
+	_, err = jobsService.RepairRun(ctx, jobs.RepairRun{
 		RerunTasks: []string{runDetails.Tasks[0].TaskKey},
 		RunId:      runDetails.RunId,
 	})

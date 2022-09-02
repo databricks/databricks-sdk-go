@@ -17,23 +17,19 @@ func (ci *ClusterInfo) IsRunningOrResizing() bool {
 	return ci.State == ClusterInfoStateRunning || ci.State == ClusterInfoStateResizing
 }
 
-func (ci *GetClusterResponse) IsRunningOrResizing() bool {
-	return ci.State == GetClusterResponseStateRunning || ci.State == GetClusterResponseStateResizing
-}
-
 // TODO: Consistency
 // CreateClusterResponse -> ClusterInfo ?..
 // CreateClusterRequest -> Cluster
 
 // GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist
-func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateClusterRequest) (c *CreateClusterResponse, err error) {
+func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateCluster) (c *CreateClusterResponse, err error) {
 	getOrCreateClusterMutex.Lock()
 	defer getOrCreateClusterMutex.Unlock()
 	if len(custom) > 1 {
 		err = fmt.Errorf("you can only specify 1 custom cluster conf, not %d", len(custom))
 		return
 	}
-	clusters, err := a.ListClusters(ctx, ListClustersRequest{})
+	clusters, err := a.List(ctx, ListRequest{})
 	if err != nil {
 		return
 	}
@@ -42,7 +38,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 			logger.Infof("Found reusable cluster '%s'", name)
 			clusterAvailable := true
 			if !cl.IsRunningOrResizing() {
-				err = a.StartCluster(ctx, StartClusterRequest{
+				err = a.Start(ctx, StartCluster{
 					ClusterId: cl.ClusterId,
 				})
 				if err != nil {
@@ -68,7 +64,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 		return nil, err
 	}
 	logger.Infof("Creating an autoterminating cluster with node type %s", smallestNodeType)
-	versions, err := a.GetSparkVersions(ctx)
+	versions, err := a.SparkVersions(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("list spark versions: %w", err) // TODO: GENERATOR: prefix method name
 	}
@@ -79,7 +75,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	if err != nil {
 		return nil, err
 	}
-	r := CreateClusterRequest{
+	r := CreateCluster{
 		NumWorkers:             1,
 		ClusterName:            name,
 		SparkVersion:           version,
@@ -94,5 +90,5 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	if len(custom) == 1 {
 		r = custom[0]
 	}
-	return a.CreateCluster(ctx, r)
+	return a.Create(ctx, r)
 }

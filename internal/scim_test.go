@@ -5,8 +5,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
-	"github.com/databricks/databricks-sdk-go/service/groups"
-	"github.com/databricks/databricks-sdk-go/service/users"
+	"github.com/databricks/databricks-sdk-go/service/scim"
 	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -19,7 +18,7 @@ func TestAccUsers(t *testing.T) {
 	ws := workspaces.New()
 
 	// create new user
-	user, err := ws.Users.NewUser(ctx, users.User{
+	user, err := ws.Users.NewUser(ctx, scim.User{
 		DisplayName: RandomName("Me "),
 		UserName:    RandomEmail(),
 	})
@@ -31,10 +30,10 @@ func TestAccUsers(t *testing.T) {
 	assert.Equal(t, user.DisplayName, fetch.DisplayName)
 
 	// list all users
-	allUsers, err := ws.Users.ListUsers(ctx, users.ListUsersRequest{
+	allUsers, err := ws.Users.ListUsers(ctx, scim.ListUsersRequest{
 		Attributes: "id,userName",
 		SortBy:     "userName",
-		SortOrder:  users.ListUsersSortOrderDescending,
+		SortOrder:  scim.ListUsersSortOrderDescending,
 	})
 	require.NoError(t, err)
 
@@ -61,7 +60,7 @@ func TestAccGroups(t *testing.T) {
 	ws := workspaces.New()
 
 	// create new group
-	group, err := ws.Groups.NewGroup(ctx, groups.Group{
+	group, err := ws.Groups.NewGroup(ctx, scim.Group{
 		DisplayName: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
@@ -72,8 +71,8 @@ func TestAccGroups(t *testing.T) {
 	assert.Equal(t, group.DisplayName, fetch.DisplayName)
 
 	// list all groups that start with `go-sdk-`
-	allGroups, err := ws.Groups.ListGroups(ctx, groups.ListGroupsRequest{
-		SortOrder: groups.ListGroupsSortOrderDescending,
+	allGroups, err := ws.Groups.ListGroups(ctx, scim.ListGroupsRequest{
+		SortOrder: scim.ListGroupsSortOrderDescending,
 		Filter:    "displayName sw 'go-sdk-'",
 	})
 	require.NoError(t, err)

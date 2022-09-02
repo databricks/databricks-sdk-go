@@ -3,6 +3,187 @@
 package mlflow
 
 // all definitions in this file are in alphabetical order
+// Activity recorded for the action.
+type Activity struct {
+    
+    ActivityType ActivityType `json:"activity_type,omitempty"`
+    
+    Comment string `json:"comment,omitempty"`
+    
+    CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
+    // Source stage of the transition (if the activity is stage transition
+    // related). Valid values are: * `None`: The initial stage of a model
+    // version. * `Staging`: Staging or pre-production stage. * `Production`:
+    // Production stage. * `Archived`: Archived stage.
+    FromStage Stage `json:"from_stage,omitempty"`
+    
+    Id string `json:"id,omitempty"`
+    
+    LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+    // Comment made by system, for example explaining an activity of type
+    // `SYSTEM_TRANSITION`. It usually describes a side effect, such as a
+    // version being archived as part of another version&#39;s stage transition, and
+    // may not be returned for some activity types.
+    SystemComment string `json:"system_comment,omitempty"`
+    // Target stage of the transition (if the activity is stage transition
+    // related). Valid values are: * `None`: The initial stage of a model
+    // version. * `Staging`: Staging or pre-production stage. * `Production`:
+    // Production stage. * `Archived`: Archived stage.
+    ToStage Stage `json:"to_stage,omitempty"`
+    // Username of the user who created the activity, e.g. the user who made the
+    // stage transition request.
+    UserId string `json:"user_id,omitempty"`
+}
+
+// An action that a user (with sufficient permissions) could take on an
+// activity. Valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a
+// transition request * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+// * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+type ActivityAction string
+
+// An action that a user (with sufficient permissions) could take on an
+// activity. Valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a
+// transition request * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+// * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+const ActivityActionApproveTransitionRequest ActivityAction = `APPROVE_TRANSITION_REQUEST`
+// An action that a user (with sufficient permissions) could take on an
+// activity. Valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a
+// transition request * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+// * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+const ActivityActionRejectTransitionRequest ActivityAction = `REJECT_TRANSITION_REQUEST`
+// An action that a user (with sufficient permissions) could take on an
+// activity. Valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a
+// transition request * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+// * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+const ActivityActionCancelTransitionRequest ActivityAction = `CANCEL_TRANSITION_REQUEST`
+// Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
+// corresponding stage transition. * `REQUESTED_TRANSITION`: User requested the
+// corresponding stage transition. * `CANCELLED_REQUEST`: User cancelled an
+// existing transition request. * `APPROVED_REQUEST`: User approved the
+// corresponding stage transition. * `REJECTED_REQUEST`: User rejected the
+// coressponding stage transition. * `SYSTEM_TRANSITION`: For events performed
+// as a side effect, such as archiving existing model versions in a stage.
+type ActivityType string
+
+// Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
+// corresponding stage transition. * `REQUESTED_TRANSITION`: User requested the
+// corresponding stage transition. * `CANCELLED_REQUEST`: User cancelled an
+// existing transition request. * `APPROVED_REQUEST`: User approved the
+// corresponding stage transition. * `REJECTED_REQUEST`: User rejected the
+// coressponding stage transition. * `SYSTEM_TRANSITION`: For events performed
+// as a side effect, such as archiving existing model versions in a stage.
+const ActivityTypeAppliedTransition ActivityType = `APPLIED_TRANSITION`
+// Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
+// corresponding stage transition. * `REQUESTED_TRANSITION`: User requested the
+// corresponding stage transition. * `CANCELLED_REQUEST`: User cancelled an
+// existing transition request. * `APPROVED_REQUEST`: User approved the
+// corresponding stage transition. * `REJECTED_REQUEST`: User rejected the
+// coressponding stage transition. * `SYSTEM_TRANSITION`: For events performed
+// as a side effect, such as archiving existing model versions in a stage.
+const ActivityTypeRequestedTransition ActivityType = `REQUESTED_TRANSITION`
+// Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
+// corresponding stage transition. * `REQUESTED_TRANSITION`: User requested the
+// corresponding stage transition. * `CANCELLED_REQUEST`: User cancelled an
+// existing transition request. * `APPROVED_REQUEST`: User approved the
+// corresponding stage transition. * `REJECTED_REQUEST`: User rejected the
+// coressponding stage transition. * `SYSTEM_TRANSITION`: For events performed
+// as a side effect, such as archiving existing model versions in a stage.
+const ActivityTypeCancelledRequest ActivityType = `CANCELLED_REQUEST`
+// Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
+// corresponding stage transition. * `REQUESTED_TRANSITION`: User requested the
+// corresponding stage transition. * `CANCELLED_REQUEST`: User cancelled an
+// existing transition request. * `APPROVED_REQUEST`: User approved the
+// corresponding stage transition. * `REJECTED_REQUEST`: User rejected the
+// coressponding stage transition. * `SYSTEM_TRANSITION`: For events performed
+// as a side effect, such as archiving existing model versions in a stage.
+const ActivityTypeApprovedRequest ActivityType = `APPROVED_REQUEST`
+// Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
+// corresponding stage transition. * `REQUESTED_TRANSITION`: User requested the
+// corresponding stage transition. * `CANCELLED_REQUEST`: User cancelled an
+// existing transition request. * `APPROVED_REQUEST`: User approved the
+// corresponding stage transition. * `REJECTED_REQUEST`: User rejected the
+// coressponding stage transition. * `SYSTEM_TRANSITION`: For events performed
+// as a side effect, such as archiving existing model versions in a stage.
+const ActivityTypeRejectedRequest ActivityType = `REJECTED_REQUEST`
+// Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
+// corresponding stage transition. * `REQUESTED_TRANSITION`: User requested the
+// corresponding stage transition. * `CANCELLED_REQUEST`: User cancelled an
+// existing transition request. * `APPROVED_REQUEST`: User approved the
+// corresponding stage transition. * `REJECTED_REQUEST`: User rejected the
+// coressponding stage transition. * `SYSTEM_TRANSITION`: For events performed
+// as a side effect, such as archiving existing model versions in a stage.
+const ActivityTypeNewComment ActivityType = `NEW_COMMENT`
+// Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
+// corresponding stage transition. * `REQUESTED_TRANSITION`: User requested the
+// corresponding stage transition. * `CANCELLED_REQUEST`: User cancelled an
+// existing transition request. * `APPROVED_REQUEST`: User approved the
+// corresponding stage transition. * `REJECTED_REQUEST`: User rejected the
+// coressponding stage transition. * `SYSTEM_TRANSITION`: For events performed
+// as a side effect, such as archiving existing model versions in a stage.
+const ActivityTypeSystemTransition ActivityType = `SYSTEM_TRANSITION`
+
+type ApproveTransitionRequestRequest struct {
+    
+    ArchiveExistingVersions bool `json:"archive_existing_versions"`
+    
+    Comment string `json:"comment,omitempty"`
+    
+    Name string `json:"name"`
+    
+    Stage Stage `json:"stage"`
+    
+    Version string `json:"version"`
+}
+
+
+type ApproveTransitionRequestResponse struct {
+    
+    Activity *Activity `json:"activity,omitempty"`
+}
+
+// An action that a user (with sufficient permissions) could take on a comment.
+// Valid values are: * `EDIT_COMMENT`: Edit the comment * `DELETE_COMMENT`:
+// Delete the comment
+type CommentActivityAction string
+
+// An action that a user (with sufficient permissions) could take on a comment.
+// Valid values are: * `EDIT_COMMENT`: Edit the comment * `DELETE_COMMENT`:
+// Delete the comment
+const CommentActivityActionEditComment CommentActivityAction = `EDIT_COMMENT`
+// An action that a user (with sufficient permissions) could take on a comment.
+// Valid values are: * `EDIT_COMMENT`: Edit the comment * `DELETE_COMMENT`:
+// Delete the comment
+const CommentActivityActionDeleteComment CommentActivityAction = `DELETE_COMMENT`
+// Comment details.
+type CommentObject struct {
+    // Array of actions on the activity allowed for the current viewer.
+    AvailableActions []CommentActivityAction `json:"available_actions,omitempty"`
+    
+    Comment string `json:"comment,omitempty"`
+    
+    CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
+    
+    LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+    // Username of the user who made the comment.
+    UserId string `json:"user_id,omitempty"`
+}
+
+
+type CreateCommentRequest struct {
+    
+    Comment string `json:"comment"`
+    
+    Name string `json:"name"`
+    
+    Version string `json:"version"`
+}
+
+
+type CreateCommentResponse struct {
+    
+    Comment *CommentObject `json:"comment,omitempty"`
+}
+
 
 type CreateExperimentRequest struct {
     // Location where all artifacts for the experiment are stored. If not
@@ -22,6 +203,70 @@ type CreateExperimentRequest struct {
 type CreateExperimentResponse struct {
     // Unique identifier for the experiment.
     ExperimentId string `json:"experiment_id,omitempty"`
+}
+
+
+type CreateModelVersionRequest struct {
+    // Optional description for model version.
+    Description string `json:"description,omitempty"`
+    // Register model under this name
+    Name string `json:"name"`
+    // MLflow run ID for correlation, if ``source`` was generated by an
+    // experiment run in MLflow tracking server
+    RunId string `json:"run_id,omitempty"`
+    // MLflow run link - this is the exact link of the run that generated this
+    // model version, potentially hosted at another instance of MLflow.
+    RunLink string `json:"run_link,omitempty"`
+    // URI indicating the location of the model artifacts.
+    Source string `json:"source"`
+    // Additional metadata for model version.
+    Tags []ModelVersionTag `json:"tags,omitempty"`
+}
+
+
+type CreateModelVersionResponse struct {
+    // Return new version number generated for this model in registry.
+    ModelVersion *ModelVersion `json:"model_version,omitempty"`
+}
+
+
+type CreateRegisteredModelRequest struct {
+    // Optional description for registered model.
+    Description string `json:"description,omitempty"`
+    // Register models under this name
+    Name string `json:"name"`
+    // Additional metadata for registered model.
+    Tags []RegisteredModelTag `json:"tags,omitempty"`
+}
+
+
+type CreateRegisteredModelResponse struct {
+    
+    RegisteredModel *RegisteredModel `json:"registered_model,omitempty"`
+}
+
+
+type CreateRegistryWebhookRequest struct {
+    
+    Description string `json:"description,omitempty"`
+    
+    Events []RegistryWebhookEvent `json:"events"`
+    
+    HttpUrlSpec *HttpUrlSpec `json:"http_url_spec,omitempty"`
+    
+    JobSpec *JobSpec `json:"job_spec,omitempty"`
+    // If model name is not specified, a registry-wide webhook is created that
+    // listens for the specified events across all versions of all registered
+    // models.
+    ModelName string `json:"model_name,omitempty"`
+    
+    Status RegistryWebhookStatus `json:"status,omitempty"`
+}
+
+
+type CreateRegistryWebhookResponse struct {
+    
+    Webhook any /* ERROR */ `json:"webhook,omitempty"`
 }
 
 
@@ -45,9 +290,73 @@ type CreateRunResponse struct {
 }
 
 
+type CreateTransitionRequestRequest struct {
+    
+    Comment string `json:"comment,omitempty"`
+    
+    Name string `json:"name"`
+    
+    Stage Stage `json:"stage"`
+    
+    Version string `json:"version"`
+}
+
+
+type CreateTransitionRequestResponse struct {
+    
+    Request *TransitionRequest `json:"request,omitempty"`
+}
+
+
+type DeleteCommentRequest struct {
+    
+    Id string `json:"id"`
+}
+
+
 type DeleteExperimentRequest struct {
     // ID of the associated experiment.
     ExperimentId string `json:"experiment_id"`
+}
+
+
+type DeleteModelVersionRequest struct {
+    // Name of the registered model
+    Name string `json:"name"`
+    // Model version number
+    Version string `json:"version"`
+}
+
+
+type DeleteModelVersionTagRequest struct {
+    // Name of the tag. The name must be an exact match; wild-card deletion is
+    // not supported. Maximum size is 250 bytes.
+    Key string `json:"key"`
+    // Name of the registered model that the tag was logged under.
+    Name string `json:"name"`
+    // Model version number that the tag was logged under.
+    Version string `json:"version"`
+}
+
+
+type DeleteRegisteredModelRequest struct {
+    // Registered model unique name identifier.
+    Name string `json:"name"`
+}
+
+
+type DeleteRegisteredModelTagRequest struct {
+    // Name of the tag. The name must be an exact match; wild-card deletion is
+    // not supported. Maximum size is 250 bytes.
+    Key string `json:"key"`
+    // Name of the registered model that the tag was logged under.
+    Name string `json:"name"`
+}
+
+
+type DeleteRegistryWebhookRequest struct {
+    
+    Id string `json:"id"`
 }
 
 
@@ -62,6 +371,24 @@ type DeleteTagRequest struct {
     Key string `json:"key"`
     // ID of the run that the tag was logged under. Must be provided.
     RunId string `json:"run_id"`
+}
+
+
+type DeleteTransitionRequestRequest struct {
+    // User-provided comment on the action.
+    Comment string ` url:"comment,omitempty"`
+    // Username of the user who created this request. Of the transition requests
+    // matching the specified details, only the one transition created by this
+    // user will be deleted.
+    Creator string ` url:"creator,omitempty"`
+    // Name of the model.
+    Name string ` url:"name,omitempty"`
+    // Target stage of the transition request. Valid values are: * `None`: The
+    // initial stage of a model version. * `Staging`: Staging or pre-production
+    // stage. * `Production`: Production stage. * `Archived`: Archived stage.
+    Stage string ` url:"stage,omitempty"`
+    // Version of the model.
+    Version string ` url:"version,omitempty"`
 }
 
 
@@ -130,6 +457,22 @@ type GetExperimentResponse struct {
 }
 
 
+type GetLatestVersionsRequest struct {
+    // Registered model unique name identifier.
+    Name string `json:"name"`
+    // List of stages.
+    Stages []string `json:"stages,omitempty"`
+}
+
+
+type GetLatestVersionsResponse struct {
+    // Latest version models for each requests stage. Only return models with
+    // current ``READY`` status. If no ``stages`` provided, returns the latest
+    // version for each stage, including ``&#34;None&#34;``.
+    ModelVersions []ModelVersion `json:"model_versions,omitempty"`
+}
+
+
 type GetMetricHistoryRequest struct {
     // Name of the metric.
     MetricKey string ` url:"metric_key,omitempty"`
@@ -147,6 +490,46 @@ type GetMetricHistoryResponse struct {
 }
 
 
+type GetModelVersionDownloadUriRequest struct {
+    // Name of the registered model
+    Name string ` url:"name,omitempty"`
+    // Model version number
+    Version string ` url:"version,omitempty"`
+}
+
+
+type GetModelVersionDownloadUriResponse struct {
+    // URI corresponding to where artifacts for this model version are stored.
+    ArtifactUri string `json:"artifact_uri,omitempty"`
+}
+
+
+type GetModelVersionRequest struct {
+    // Name of the registered model
+    Name string ` url:"name,omitempty"`
+    // Model version number
+    Version string ` url:"version,omitempty"`
+}
+
+
+type GetModelVersionResponse struct {
+    
+    ModelVersion *ModelVersion `json:"model_version,omitempty"`
+}
+
+
+type GetRegisteredModelRequest struct {
+    // Name of the model.
+    Name string ` url:"name,omitempty"`
+}
+
+
+type GetRegisteredModelResponse struct {
+    
+    RegisteredModel *RegisteredModelDatabricks `json:"registered_model,omitempty"`
+}
+
+
 type GetRunRequest struct {
     // ID of the run to fetch. Must be provided.
     RunId string ` url:"run_id,omitempty"`
@@ -160,6 +543,55 @@ type GetRunResponse struct {
     // Run metadata (name, start time, etc) and data (metrics, params, and
     // tags).
     Run *Run `json:"run,omitempty"`
+}
+
+
+type GetTransitionRequestsRequest struct {
+    // Name of the model.
+    Name string ` url:"name,omitempty"`
+    // Version of the model.
+    Version string ` url:"version,omitempty"`
+}
+
+
+type GetTransitionRequestsResponse struct {
+    // Array of open transition requests.
+    Requests []TransitionRequest `json:"requests,omitempty"`
+}
+
+
+type HttpUrlSpec struct {
+    // Value of the authorization header that should be sent in the request sent
+    // by the wehbook. It should be of the form `&#34;&lt;auth type&gt; &lt;credentials&gt;&#34;`.
+    // If set to an empty string, no authorization header will be included in
+    // the request.
+    Authorization string `json:"authorization,omitempty"`
+    // Enable/disable SSL certificate validation. Default is true. For
+    // self-signed certificates, this field must be false AND the destination
+    // server must disable certificate validation as well. For security
+    // purposes, it is encouraged to perform secret validation with the
+    // HMAC-encoded portion of the payload and acknowledge the risk associated
+    // with disabling hostname validation whereby it becomes more likely that
+    // requests can be maliciously routed to an unintended host.
+    EnableSslVerification bool `json:"enable_ssl_verification,omitempty"`
+    // Shared secret required for HMAC encoding payload. The HMAC-encoded
+    // payload will be sent in the header as: { &#34;X-Databricks-Signature&#34;:
+    // $encoded_payload }.
+    Secret string `json:"secret,omitempty"`
+    // External HTTPS URL called on event trigger (by using a POST request).
+    Url string `json:"url"`
+}
+
+
+type JobSpec struct {
+    // The personal access token used to authorize webhook&#39;s job runs.
+    AccessToken string `json:"access_token"`
+    // ID of the job that the webhook runs.
+    JobId string `json:"job_id"`
+    // URL of the workspace containing the job that this webhook runs. If not
+    // specified, the job?s workspace URL is assumed to be the same as the
+    // workspace where the webhook is created.
+    WorkspaceUrl string `json:"workspace_url,omitempty"`
 }
 
 
@@ -209,6 +641,39 @@ type ListExperimentsResponse struct {
     // Token that can be used to retrieve the next page of experiments. Empty
     // token means no more experiment is available for retrieval.
     NextPageToken string `json:"next_page_token,omitempty"`
+}
+
+
+type ListRegisteredModelsRequest struct {
+    // Maximum number of registered models desired. Max threshold is 1000.
+    MaxResults int ` url:"max_results,omitempty"`
+    // Pagination token to go to the next page based on a previous query.
+    PageToken string ` url:"page_token,omitempty"`
+}
+
+
+type ListRegisteredModelsResponse struct {
+    // Pagination token to request next page of models for the same query.
+    NextPageToken string `json:"next_page_token,omitempty"`
+    
+    RegisteredModels []RegisteredModel `json:"registered_models,omitempty"`
+}
+
+
+type ListRegistryWebhooksRequest struct {
+    // If `events` is specified, any webhook with one or more of the specified
+    // trigger events is included in the output. If `events` is not specified,
+    // webhooks of all event types are included in the output.
+    Events []RegistryWebhookEvent `json:"events,omitempty"`
+    // If `model_name` is not specified, all webhooks associated with the
+    // specified events are listed, regardless of their associated model.
+    ModelName string `json:"model_name,omitempty"`
+}
+
+
+type ListRegistryWebhooksResponse struct {
+    // Array of registry webhooks.
+    Webhooks any /* MISSING TYPE */ `json:"webhooks,omitempty"`
 }
 
 
@@ -277,11 +742,253 @@ type Metric struct {
 }
 
 
+type ModelVersion struct {
+    
+    CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
+    
+    CurrentStage Stage `json:"current_stage,omitempty"`
+    
+    Description string `json:"description,omitempty"`
+    
+    LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+    
+    Name string `json:"name,omitempty"`
+    
+    RunId string `json:"run_id,omitempty"`
+    
+    RunLink string `json:"run_link,omitempty"`
+    
+    Source string `json:"source,omitempty"`
+    
+    Status Status `json:"status,omitempty"`
+    
+    StatusMessage string `json:"status_message,omitempty"`
+    
+    Tags []ModelVersionTag `json:"tags,omitempty"`
+    
+    UserId string `json:"user_id,omitempty"`
+    
+    Version string `json:"version,omitempty"`
+}
+
+
+type ModelVersionDatabricks struct {
+    
+    CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
+    
+    CurrentStage Stage `json:"current_stage,omitempty"`
+    
+    Description string `json:"description,omitempty"`
+    
+    LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+    
+    Name string `json:"name,omitempty"`
+    
+    PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
+    
+    RunId string `json:"run_id,omitempty"`
+    
+    RunLink string `json:"run_link,omitempty"`
+    
+    Source string `json:"source,omitempty"`
+    
+    Status Status `json:"status,omitempty"`
+    
+    StatusMessage string `json:"status_message,omitempty"`
+    
+    Tags []ModelVersionTag `json:"tags,omitempty"`
+    
+    UserId string `json:"user_id,omitempty"`
+    
+    Version string `json:"version,omitempty"`
+}
+
+
+type ModelVersionTag struct {
+    
+    Key string `json:"key,omitempty"`
+    
+    Value string `json:"value,omitempty"`
+}
+
+
 type Param struct {
     // Key identifying this param.
     Key string `json:"key,omitempty"`
     // Value associated with this param.
     Value string `json:"value,omitempty"`
+}
+
+// Permission level of the requesting user on the object. For what is allowed at
+// each level, see [MLflow Model permissions](..).
+type PermissionLevel string
+
+// Permission level of the requesting user on the object. For what is allowed at
+// each level, see [MLflow Model permissions](..).
+const PermissionLevelCanManage PermissionLevel = `CAN_MANAGE`
+// Permission level of the requesting user on the object. For what is allowed at
+// each level, see [MLflow Model permissions](..).
+const PermissionLevelCanEdit PermissionLevel = `CAN_EDIT`
+// Permission level of the requesting user on the object. For what is allowed at
+// each level, see [MLflow Model permissions](..).
+const PermissionLevelCanRead PermissionLevel = `CAN_READ`
+// Permission level of the requesting user on the object. For what is allowed at
+// each level, see [MLflow Model permissions](..).
+const PermissionLevelCanManageStagingVersions PermissionLevel = `CAN_MANAGE_STAGING_VERSIONS`
+// Permission level of the requesting user on the object. For what is allowed at
+// each level, see [MLflow Model permissions](..).
+const PermissionLevelCanManageProductionVersions PermissionLevel = `CAN_MANAGE_PRODUCTION_VERSIONS`
+
+type RegisteredModel struct {
+    // Timestamp recorded when this ``registered_model`` was created.
+    CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
+    // Description of this ``registered_model``.
+    Description string `json:"description,omitempty"`
+    // Timestamp recorded when metadata for this ``registered_model`` was last
+    // updated.
+    LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+    // Collection of latest model versions for each stage. Only contains models
+    // with current ``READY`` status.
+    LatestVersions []ModelVersion `json:"latest_versions,omitempty"`
+    // Unique name for the model.
+    Name string `json:"name,omitempty"`
+    // Tags: Additional metadata key-value pairs for this ``registered_model``.
+    Tags []RegisteredModelTag `json:"tags,omitempty"`
+    // User that created this ``registered_model``
+    UserId string `json:"user_id,omitempty"`
+}
+
+
+type RegisteredModelDatabricks struct {
+    
+    CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
+    
+    Description string `json:"description,omitempty"`
+    
+    Id string `json:"id,omitempty"`
+    
+    LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+    // Array of model versions, each the latest version for its stage.
+    LatestVersions []ModelVersion `json:"latest_versions,omitempty"`
+    
+    Name string `json:"name,omitempty"`
+    
+    PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
+    // Array of tags associated with the model.
+    Tags []RegisteredModelTag `json:"tags,omitempty"`
+    
+    UserId string `json:"user_id,omitempty"`
+}
+
+
+type RegisteredModelTag struct {
+    
+    Key string `json:"key,omitempty"`
+    
+    Value string `json:"value,omitempty"`
+}
+
+
+type RegistryWebhookEvent string
+
+
+const RegistryWebhookEventModelVersionCreated RegistryWebhookEvent = `MODEL_VERSION_CREATED`
+
+const RegistryWebhookEventModelVersionTransitionedStage RegistryWebhookEvent = `MODEL_VERSION_TRANSITIONED_STAGE`
+
+const RegistryWebhookEventTransitionRequestCreated RegistryWebhookEvent = `TRANSITION_REQUEST_CREATED`
+
+const RegistryWebhookEventCommentCreated RegistryWebhookEvent = `COMMENT_CREATED`
+
+const RegistryWebhookEventRegisteredModelCreated RegistryWebhookEvent = `REGISTERED_MODEL_CREATED`
+
+const RegistryWebhookEventModelVersionTagSet RegistryWebhookEvent = `MODEL_VERSION_TAG_SET`
+
+const RegistryWebhookEventModelVersionTransitionedToStaging RegistryWebhookEvent = `MODEL_VERSION_TRANSITIONED_TO_STAGING`
+
+const RegistryWebhookEventModelVersionTransitionedToProduction RegistryWebhookEvent = `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`
+
+const RegistryWebhookEventModelVersionTransitionedToArchived RegistryWebhookEvent = `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`
+
+const RegistryWebhookEventTransitionRequestToStagingCreated RegistryWebhookEvent = `TRANSITION_REQUEST_TO_STAGING_CREATED`
+
+const RegistryWebhookEventTransitionRequestToProductionCreated RegistryWebhookEvent = `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`
+
+const RegistryWebhookEventTransitionRequestToArchivedCreated RegistryWebhookEvent = `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`
+// Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new
+// model version was created for the associated model. *
+// `MODEL_VERSION_TRANSITIONED_STAGE`: A model version?s stage was changed. *
+// `TRANSITION_REQUEST_CREATED`: A user requested a model version?s stage be
+// transitioned. * `COMMENT_CREATED`: A user wrote a comment on a registered
+// model. * `REGISTERED_MODEL_CREATED`: A new registered model was created. This
+// event type can only be specified for a registry-wide webhook, which can be
+// created by not specifying a model name in the create request. *
+// `MODEL_VERSION_TAG_SET`: A user set a tag on the model version. *
+// `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to
+// staging. * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was
+// transitioned to production. * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A
+// model version was archived. * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user
+// requested a model version be transitioned to staging. *
+// `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version
+// be transitioned to production. * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A
+// user requested a model version be archived.
+type RegistryWebhookEvents []RegistryWebhookEvent
+
+// Enable or disable triggering the webhook, or put the webhook into test mode.
+// The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated
+// event happens. * `DISABLED`: Webhook is not triggered. * `TEST_MODE`: Webhook
+// can be triggered through the test endpoint, but is not triggered on a real
+// event.
+type RegistryWebhookStatus string
+
+// Enable or disable triggering the webhook, or put the webhook into test mode.
+// The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated
+// event happens. * `DISABLED`: Webhook is not triggered. * `TEST_MODE`: Webhook
+// can be triggered through the test endpoint, but is not triggered on a real
+// event.
+const RegistryWebhookStatusActive RegistryWebhookStatus = `ACTIVE`
+// Enable or disable triggering the webhook, or put the webhook into test mode.
+// The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated
+// event happens. * `DISABLED`: Webhook is not triggered. * `TEST_MODE`: Webhook
+// can be triggered through the test endpoint, but is not triggered on a real
+// event.
+const RegistryWebhookStatusDisabled RegistryWebhookStatus = `DISABLED`
+// Enable or disable triggering the webhook, or put the webhook into test mode.
+// The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated
+// event happens. * `DISABLED`: Webhook is not triggered. * `TEST_MODE`: Webhook
+// can be triggered through the test endpoint, but is not triggered on a real
+// event.
+const RegistryWebhookStatusTestMode RegistryWebhookStatus = `TEST_MODE`
+
+type RejectTransitionRequestRequest struct {
+    
+    Comment string `json:"comment,omitempty"`
+    
+    Name string `json:"name"`
+    
+    Stage Stage `json:"stage"`
+    
+    Version string `json:"version"`
+}
+
+
+type RejectTransitionRequestResponse struct {
+    
+    Activity *Activity `json:"activity,omitempty"`
+}
+
+
+type RenameRegisteredModelRequest struct {
+    // Registered model unique name identifier.
+    Name string `json:"name"`
+    // If provided, updates the name for this ``registered_model``.
+    NewName string `json:"new_name,omitempty"`
+}
+
+
+type RenameRegisteredModelResponse struct {
+    
+    RegisteredModel *RegisteredModel `json:"registered_model,omitempty"`
 }
 
 
@@ -402,6 +1109,55 @@ type SearchExperimentsResponse struct {
 }
 
 
+type SearchModelVersionsRequest struct {
+    // String filter condition, like &#34;name=&#39;my-model-name&#39;&#34;. Must be a single
+    // boolean condition, with string values wrapped in single quotes.
+    Filter string ` url:"filter,omitempty"`
+    // Maximum number of models desired. Max threshold is 10K.
+    MaxResults int ` url:"max_results,omitempty"`
+    // List of columns to be ordered by including model name, version, stage
+    // with an optional &#34;DESC&#34; or &#34;ASC&#34; annotation, where &#34;ASC&#34; is the default.
+    // Tiebreaks are done by latest stage transition timestamp, followed by name
+    // ASC, followed by version DESC.
+    OrderBy any /* MISSING TYPE */ ` url:"order_by,omitempty"`
+    // Pagination token to go to next page based on previous search query.
+    PageToken string ` url:"page_token,omitempty"`
+}
+
+
+type SearchModelVersionsResponse struct {
+    // Models that match the search criteria
+    ModelVersions []ModelVersion `json:"model_versions,omitempty"`
+    // Pagination token to request next page of models for the same search
+    // query.
+    NextPageToken string `json:"next_page_token,omitempty"`
+}
+
+
+type SearchRegisteredModelsRequest struct {
+    // String filter condition, like &#34;name LIKE &#39;my-model-name&#39;&#34;. Interpreted in
+    // the backend automatically as &#34;name LIKE &#39;%my-model-name%&#39;&#34;. Single
+    // boolean condition, with string values wrapped in single quotes.
+    Filter string ` url:"filter,omitempty"`
+    // Maximum number of models desired. Default is 100. Max threshold is 1000.
+    MaxResults int ` url:"max_results,omitempty"`
+    // List of columns for ordering search results, which can include model name
+    // and last updated timestamp with an optional &#34;DESC&#34; or &#34;ASC&#34; annotation,
+    // where &#34;ASC&#34; is the default. Tiebreaks are done by model name ASC.
+    OrderBy any /* MISSING TYPE */ ` url:"order_by,omitempty"`
+    // Pagination token to go to the next page based on a previous search query.
+    PageToken string ` url:"page_token,omitempty"`
+}
+
+
+type SearchRegisteredModelsResponse struct {
+    // Pagination token to request the next page of models.
+    NextPageToken string `json:"next_page_token,omitempty"`
+    // Registered Models that match the search criteria.
+    RegisteredModels []RegisteredModel `json:"registered_models,omitempty"`
+}
+
+
 type SearchRunsRequest struct {
     // List of experiment IDs to search over.
     ExperimentIds []string `json:"experiment_ids,omitempty"`
@@ -462,6 +1218,38 @@ type SetExperimentTagRequest struct {
 }
 
 
+type SetModelVersionTagRequest struct {
+    // Name of the tag. Maximum size depends on storage backend. If a tag with
+    // this name already exists, its preexisting value will be replaced by the
+    // specified `value`. All storage backends are guaranteed to support key
+    // values up to 250 bytes in size.
+    Key string `json:"key"`
+    // Unique name of the model.
+    Name string `json:"name"`
+    // String value of the tag being logged. Maximum size depends on storage
+    // backend. All storage backends are guaranteed to support key values up to
+    // 5000 bytes in size.
+    Value string `json:"value"`
+    // Model version number.
+    Version string `json:"version"`
+}
+
+
+type SetRegisteredModelTagRequest struct {
+    // Name of the tag. Maximum size depends on storage backend. If a tag with
+    // this name already exists, its preexisting value will be replaced by the
+    // specified `value`. All storage backends are guaranteed to support key
+    // values up to 250 bytes in size.
+    Key string `json:"key"`
+    // Unique name of the model.
+    Name string `json:"name"`
+    // String value of the tag being logged. Maximum size depends on storage
+    // backend. All storage backends are guaranteed to support key values up to
+    // 5000 bytes in size.
+    Value string `json:"value"`
+}
+
+
 type SetTagRequest struct {
     // Name of the tag. Maximum size depends on storage backend. All storage
     // backends are guaranteed to support key values up to 250 bytes in size.
@@ -477,6 +1265,81 @@ type SetTagRequest struct {
     Value string `json:"value"`
 }
 
+// Test webhook response object.
+type TestRegistryWebhook struct {
+    // Body of the response from the webhook URL
+    Body string `json:"body,omitempty"`
+    // Status code returned by the webhook URL
+    StatusCode int `json:"status_code,omitempty"`
+}
+
+
+type TestRegistryWebhookRequest struct {
+    // If `event` is specified, the test trigger uses the specified event. If
+    // `event` is not specified, the test trigger uses a randomly chosen event
+    // associated with the webhook.
+    Event RegistryWebhookEvent `json:"event,omitempty"`
+    
+    Id string `json:"id"`
+}
+
+
+type TestRegistryWebhookResponse struct {
+    
+    Webhook *TestRegistryWebhook `json:"webhook,omitempty"`
+}
+
+
+type TransitionModelVersionStageRequest struct {
+    
+    ArchiveExistingVersions bool `json:"archive_existing_versions"`
+    
+    Comment string `json:"comment,omitempty"`
+    
+    Name string `json:"name"`
+    
+    Stage Stage `json:"stage"`
+    
+    Version string `json:"version"`
+}
+
+
+type TransitionModelVersionStageResponse struct {
+    
+    ModelVersion *ModelVersionDatabricks `json:"model_version,omitempty"`
+}
+
+// Transition request details.
+type TransitionRequest struct {
+    // Array of actions on the activity allowed for the current viewer.
+    AvailableActions []ActivityAction `json:"available_actions,omitempty"`
+    
+    Comment string `json:"comment,omitempty"`
+    
+    CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
+    // Target stage of the transition (if the activity is stage transition
+    // related). Valid values are: * `None`: The initial stage of a model
+    // version. * `Staging`: Staging or pre-production stage. * `Production`:
+    // Production stage. * `Archived`: Archived stage.
+    ToStage Stage `json:"to_stage,omitempty"`
+    // Username of the user who made the stage transition request.
+    UserId string `json:"user_id,omitempty"`
+}
+
+
+type UpdateCommentRequest struct {
+    
+    Comment string `json:"comment"`
+    
+    Id string `json:"id"`
+}
+
+
+type UpdateCommentResponse struct {
+    
+    Comment *CommentObject `json:"comment,omitempty"`
+}
+
 
 type UpdateExperimentRequest struct {
     // ID of the associated experiment.
@@ -484,6 +1347,40 @@ type UpdateExperimentRequest struct {
     // If provided, the experiment&#39;s name is changed to the new name. The new
     // name must be unique.
     NewName string `json:"new_name,omitempty"`
+}
+
+
+type UpdateModelVersionRequest struct {
+    // If provided, updates the description for this ``registered_model``.
+    Description string `json:"description,omitempty"`
+    // Name of the registered model
+    Name string `json:"name"`
+    // Model version number
+    Version string `json:"version"`
+}
+
+
+type UpdateRegisteredModelRequest struct {
+    // If provided, updates the description for this ``registered_model``.
+    Description string `json:"description,omitempty"`
+    // Registered model unique name identifier.
+    Name string `json:"name"`
+}
+
+
+type UpdateRegistryWebhookRequest struct {
+    
+    Description string `json:"description,omitempty"`
+    
+    Events []RegistryWebhookEvent `json:"events,omitempty"`
+    
+    HttpUrlSpec *HttpUrlSpec `json:"http_url_spec,omitempty"`
+    
+    Id string `json:"id"`
+    
+    JobSpec *JobSpec `json:"job_spec,omitempty"`
+    
+    Status RegistryWebhookStatus `json:"status,omitempty"`
 }
 
 
@@ -517,4 +1414,94 @@ type UpdateRunResponse struct {
     // Updated metadata of the run.
     RunInfo *RunInfo `json:"run_info,omitempty"`
 }
+
+// User-provided comment associated with the activity.
+
+// Unique identifier of an activity
+
+// Specifies whether to archive all current model versions in the target stage.
+
+// User-provided comment on the action.
+
+// Creation time of the object, as a Unix timestamp in milliseconds.
+
+// User-specified description for the object.
+
+// Unique identifier for the object.
+
+// Key for the tag.
+
+// Time of the object at last update, as a Unix timestamp in milliseconds.
+
+// Name of the model whose events would trigger this webhook.
+
+// Name of the model.
+
+// User-provided comment associated with the transition request.
+
+// Unique identifier for the MLflow tracking run associated with the source
+// model artifacts.
+
+// URL of the run associated with the model artifacts, potentially in another
+// workspace.
+
+// URI that indicates the location of the source model artifacts. This is used
+// when creating the model version.
+
+// Stage of the model version. Valid values are: * `None`: The initial stage of
+// a model version. * `Staging`: Staging or pre-production stage. *
+// `Production`: Production stage. * `Archived`: Archived stage.
+type Stage string
+
+// Stage of the model version. Valid values are: * `None`: The initial stage of
+// a model version. * `Staging`: Staging or pre-production stage. *
+// `Production`: Production stage. * `Archived`: Archived stage.
+const StageNone Stage = `None`
+// Stage of the model version. Valid values are: * `None`: The initial stage of
+// a model version. * `Staging`: Staging or pre-production stage. *
+// `Production`: Production stage. * `Archived`: Archived stage.
+const StageStaging Stage = `Staging`
+// Stage of the model version. Valid values are: * `None`: The initial stage of
+// a model version. * `Staging`: Staging or pre-production stage. *
+// `Production`: Production stage. * `Archived`: Archived stage.
+const StageProduction Stage = `Production`
+// Stage of the model version. Valid values are: * `None`: The initial stage of
+// a model version. * `Staging`: Staging or pre-production stage. *
+// `Production`: Production stage. * `Archived`: Archived stage.
+const StageArchived Stage = `Archived`
+// The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
+// Request to register a new model version is pending as server performs
+// background tasks. * `FAILED_REGISTRATION`: Request to register a new model
+// version has failed. * `READY`: Model version is ready for use.
+type Status string
+
+// The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
+// Request to register a new model version is pending as server performs
+// background tasks. * `FAILED_REGISTRATION`: Request to register a new model
+// version has failed. * `READY`: Model version is ready for use.
+const StatusPendingRegistration Status = `PENDING_REGISTRATION`
+// The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
+// Request to register a new model version is pending as server performs
+// background tasks. * `FAILED_REGISTRATION`: Request to register a new model
+// version has failed. * `READY`: Model version is ready for use.
+const StatusFailedRegistration Status = `FAILED_REGISTRATION`
+// The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
+// Request to register a new model version is pending as server performs
+// background tasks. * `FAILED_REGISTRATION`: Request to register a new model
+// version has failed. * `READY`: Model version is ready for use.
+const StatusReady Status = `READY`
+// Details on the current status, for example why registration failed.
+
+// The username of the user that created the object.
+
+// Value for the tag.
+
+// Version of the model.
+
+// Array of tags that are associated with the model version.
+type VersionTags []ModelVersionTag
+
+// User-specified description for the webhook.
+
+// Webhook ID
 

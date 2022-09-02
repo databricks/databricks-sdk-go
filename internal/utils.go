@@ -12,7 +12,7 @@ import (
 )
 
 func createTestPythonFile(t *testing.T, ctx context.Context, apiClient *client.DatabricksClient, testDir string, testId string, content string) string {
-	workspaceService := workspace.New(apiClient)
+	workspaceService := workspace.NewWorkspace(apiClient)
 	err := workspaceService.Mkdirs(ctx, workspace.MkdirsRequest{
 		Path: testDir,
 	})
