@@ -23,9 +23,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	tmpPath := RandomName("/tmp/jobs-test")
-	err = wsc.Workspace.Mkdirs(ctx, workspace.MkdirsRequest{
-		Path: tmpPath,
-	})
+	err = wsc.Workspace.MkdirsByPath(ctx, tmpPath)
 	require.NoError(t, err)
 
 	filePath := filepath.Join(tmpPath, RandomName())
@@ -39,9 +37,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	res, err := wsc.Workspace.GetStatus(ctx, workspace.GetStatusRequest{
-		Path: filePath,
-	})
+	res, err := wsc.Workspace.GetStatusByPath(ctx, tmpPath)
 	require.NoError(t, err)
 
 	submitResp, err := wsc.Jobs.SubmitAndWait(ctx, jobs.SubmitRun{
