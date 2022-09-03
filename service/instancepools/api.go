@@ -4,8 +4,7 @@ package instancepools
 
 import (
 	"context"
-	
-	
+
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -70,4 +69,3 @@ func (a *InstancePoolsAPI) List(ctx context.Context) (*ListInstancePoolsResponse
 	err := a.client.Get(ctx, path, nil, &listInstancePoolsResponse)
 	return &listInstancePoolsResponse, err
 }
-

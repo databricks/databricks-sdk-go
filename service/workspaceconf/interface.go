@@ -4,14 +4,10 @@ package workspaceconf
 
 import (
 	"context"
-	
 )
 
-
-
 type WorkspaceConfService interface {
-    
-    GetStatus(ctx context.Context, getStatusRequest GetStatusRequest) (*WorkspaceConf, error)
-    
-    SetStatus(ctx context.Context, workspaceConf WorkspaceConf) error
+	GetStatus(ctx context.Context, getStatusRequest GetStatusRequest) (*WorkspaceConf, error)
+
+	SetStatus(ctx context.Context, workspaceConf WorkspaceConf) error
 }

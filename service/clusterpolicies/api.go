@@ -4,8 +4,7 @@ package clusterpolicies
 
 import (
 	"context"
-	
-	
+
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -70,4 +69,3 @@ func (a *ClusterPoliciesAPI) List(ctx context.Context) (*ListPoliciesResponse, e
 	err := a.client.Get(ctx, path, nil, &listPoliciesResponse)
 	return &listPoliciesResponse, err
 }
-

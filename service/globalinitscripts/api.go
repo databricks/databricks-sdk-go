@@ -5,7 +5,7 @@ package globalinitscripts
 import (
 	"context"
 	"fmt"
-	
+
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -73,4 +73,3 @@ func (a *GlobalInitScriptsAPI) UpdateScript(ctx context.Context, request GlobalI
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-

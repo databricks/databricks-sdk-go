@@ -5,69 +5,60 @@ package globalinitscripts
 // all definitions in this file are in alphabetical order
 
 type CreateScriptResponse struct {
-    
-    ScriptId any /* MISSING TYPE */ `json:"script_id,omitempty"`
+	ScriptId any /* MISSING TYPE */ `json:"script_id,omitempty"`
 }
-
 
 type DeleteScriptRequest struct {
-    // The ID of the global init script.
-    ScriptId string ` path:"script_id"`
+	// The ID of the global init script.
+	ScriptId string ` path:"script_id"`
 }
-
 
 type GetAllScriptsResponse []GlobalInitScriptDetails
 
-
 type GetScriptRequest struct {
-    // The ID of the global init script.
-    ScriptId string ` path:"script_id"`
+	// The ID of the global init script.
+	ScriptId string ` path:"script_id"`
 }
-
 
 type GlobalInitScriptCreateRequest struct {
-    
-    Enabled bool `json:"enabled,omitempty"`
-    
-    Name string `json:"name"`
-    
-    Position int `json:"position,omitempty"`
-    
-    Script string `json:"script"`
-}
+	Enabled bool `json:"enabled,omitempty"`
 
+	Name string `json:"name"`
+
+	Position int `json:"position,omitempty"`
+
+	Script string `json:"script"`
+}
 
 type GlobalInitScriptDetails struct {
-    // When the script was created, as a Unix timestamp in milliseconds.
-    CreatedAt int `json:"created_at,omitempty"`
-    // The username of the user who created the script.
-    CreatedBy string `json:"created_by,omitempty"`
-    
-    Enabled bool `json:"enabled,omitempty"`
-    
-    Name string `json:"name,omitempty"`
-    
-    Position int `json:"position,omitempty"`
-    
-    ScriptId string `json:"script_id,omitempty"`
-    // When the script was updated, as a Unix timestamp in milliseconds.
-    UpdatedAt int `json:"updated_at,omitempty"`
-    // The username of the user who last updated the script
-    UpdatedBy string `json:"updated_by,omitempty"`
+	// When the script was created, as a Unix timestamp in milliseconds.
+	CreatedAt int `json:"created_at,omitempty"`
+	// The username of the user who created the script.
+	CreatedBy string `json:"created_by,omitempty"`
+
+	Enabled bool `json:"enabled,omitempty"`
+
+	Name string `json:"name,omitempty"`
+
+	Position int `json:"position,omitempty"`
+
+	ScriptId string `json:"script_id,omitempty"`
+	// When the script was updated, as a Unix timestamp in milliseconds.
+	UpdatedAt int `json:"updated_at,omitempty"`
+	// The username of the user who last updated the script
+	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
-
 type GlobalInitScriptUpdateRequest struct {
-    
-    Enabled bool `json:"enabled,omitempty"`
-    
-    Name string `json:"name,omitempty"`
-    
-    Position int `json:"position,omitempty"`
-    
-    Script string `json:"script,omitempty"`
-    // The ID of the global init script.
-    ScriptId string ` path:"script_id"`
+	Enabled bool `json:"enabled,omitempty"`
+
+	Name string `json:"name,omitempty"`
+
+	Position int `json:"position,omitempty"`
+
+	Script string `json:"script,omitempty"`
+	// The ID of the global init script.
+	ScriptId string ` path:"script_id"`
 }
 
 // The Base64-encoded content of the script.
@@ -103,4 +94,3 @@ type GlobalInitScriptUpdateRequest struct {
 // an explicit position value conflicts with an existing script, your request
 // succeeds. The original script at that position and all later scripts have
 // their position incremented by 1.
-

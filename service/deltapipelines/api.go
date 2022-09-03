@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 func NewDeltaPipelines(client *client.DatabricksClient) DeltaPipelinesService {
@@ -20,7 +20,6 @@ func NewDeltaPipelines(client *client.DatabricksClient) DeltaPipelinesService {
 type DeltaPipelinesAPI struct {
 	client *client.DatabricksClient
 }
-
 
 func (a *DeltaPipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipelineRequest) (*CreatePipelineResponse, error) {
 	var createPipelineResponse CreatePipelineResponse
@@ -36,7 +35,7 @@ func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, request C
 		return nil, err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return createPipelineResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
@@ -60,13 +59,11 @@ func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, request C
 	})
 }
 
-
 func (a *DeltaPipelinesAPI) DeletePipeline(ctx context.Context, request DeletePipelineRequest) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
-
 
 func (a *DeltaPipelinesAPI) DeletePipelineByPipelineId(ctx context.Context, pipelineId string) error {
 	return a.DeletePipeline(ctx, DeletePipelineRequest{
@@ -74,13 +71,11 @@ func (a *DeltaPipelinesAPI) DeletePipelineByPipelineId(ctx context.Context, pipe
 	})
 }
 
-
 func (a *DeltaPipelinesAPI) EditPipeline(ctx context.Context, request EditPipelineRequest) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Put(ctx, path, request)
 	return err
 }
-
 
 func (a *DeltaPipelinesAPI) GetPipeline(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error) {
 	var getPipelineResponse GetPipelineResponse
@@ -96,7 +91,7 @@ func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, request GetP
 		return nil, err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return getPipelineResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
@@ -120,7 +115,6 @@ func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, request GetP
 	})
 }
 
-
 func (a *DeltaPipelinesAPI) GetPipelineByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
 	return a.GetPipeline(ctx, GetPipelineRequest{
 		PipelineId: pipelineId,
@@ -133,7 +127,6 @@ func (a *DeltaPipelinesAPI) GetPipelineByPipelineIdAndWait(ctx context.Context, 
 	}, timeout...)
 }
 
-
 func (a *DeltaPipelinesAPI) GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error) {
 	var getUpdateResponse GetUpdateResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates/%v", request.PipelineId, request.UpdateId)
@@ -141,14 +134,12 @@ func (a *DeltaPipelinesAPI) GetUpdate(ctx context.Context, request GetUpdateRequ
 	return &getUpdateResponse, err
 }
 
-
 func (a *DeltaPipelinesAPI) GetUpdateByPipelineIdAndUpdateId(ctx context.Context, pipelineId string, updateId string) (*GetUpdateResponse, error) {
 	return a.GetUpdate(ctx, GetUpdateRequest{
 		PipelineId: pipelineId,
-		UpdateId: updateId,
+		UpdateId:   updateId,
 	})
 }
-
 
 func (a *DeltaPipelinesAPI) ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error) {
 	var listUpdatesResponse ListUpdatesResponse
@@ -157,13 +148,11 @@ func (a *DeltaPipelinesAPI) ListUpdates(ctx context.Context, request ListUpdates
 	return &listUpdatesResponse, err
 }
 
-
 func (a *DeltaPipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId string) (*ListUpdatesResponse, error) {
 	return a.ListUpdates(ctx, ListUpdatesRequest{
 		PipelineId: pipelineId,
 	})
 }
-
 
 func (a *DeltaPipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipelineRequest) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/reset", request.PipelineId)
@@ -178,7 +167,7 @@ func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, request Re
 		return err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return retries.Wait(ctx, timeout[0], func() *retries.Err {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
@@ -210,7 +199,6 @@ func (a *DeltaPipelinesAPI) StartUpdate(ctx context.Context, request StartUpdate
 	return &startUpdateResponse, err
 }
 
-
 func (a *DeltaPipelinesAPI) StopPipeline(ctx context.Context, request StopPipelineRequest) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", request.PipelineId)
 	err := a.client.Post(ctx, path, request, nil)
@@ -224,7 +212,7 @@ func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, request Sto
 		return err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return retries.Wait(ctx, timeout[0], func() *retries.Err {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
@@ -247,4 +235,3 @@ func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, request Sto
 		}
 	})
 }
-

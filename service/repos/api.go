@@ -5,7 +5,7 @@ package repos
 import (
 	"context"
 	"fmt"
-	
+
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -74,4 +74,3 @@ func (a *ReposAPI) Update(ctx context.Context, request UpdateRepo) error {
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-

@@ -5,7 +5,7 @@ package permissions
 import (
 	"context"
 	"fmt"
-	
+
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -19,7 +19,6 @@ type PermissionsAPI struct {
 	client *client.DatabricksClient
 }
 
-
 func (a *PermissionsAPI) GetObjectPermissions(ctx context.Context, request GetObjectPermissionsRequest) (*ObjectPermissions, error) {
 	var objectPermissions ObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
@@ -27,14 +26,12 @@ func (a *PermissionsAPI) GetObjectPermissions(ctx context.Context, request GetOb
 	return &objectPermissions, err
 }
 
-
 func (a *PermissionsAPI) GetObjectPermissionsByObjectTypeAndObjectId(ctx context.Context, objectType string, objectId string) (*ObjectPermissions, error) {
 	return a.GetObjectPermissions(ctx, GetObjectPermissionsRequest{
 		ObjectType: objectType,
-		ObjectId: objectId,
+		ObjectId:   objectId,
 	})
 }
-
 
 func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error) {
 	var getPermissionLevelsResponse GetPermissionLevelsResponse
@@ -43,14 +40,12 @@ func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPer
 	return &getPermissionLevelsResponse, err
 }
 
-
 func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error) {
 	return a.GetPermissionLevels(ctx, GetPermissionLevelsRequest{
 		RequestObjectType: requestObjectType,
-		RequestObjectId: requestObjectId,
+		RequestObjectId:   requestObjectId,
 	})
 }
-
 
 func (a *PermissionsAPI) SetObjectPermissions(ctx context.Context, request SetObjectPermissionsRequest) error {
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
@@ -58,10 +53,8 @@ func (a *PermissionsAPI) SetObjectPermissions(ctx context.Context, request SetOb
 	return err
 }
 
-
 func (a *PermissionsAPI) UpdateObjectPermissions(ctx context.Context, request UpdateObjectPermissionsRequest) error {
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-

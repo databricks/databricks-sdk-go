@@ -4,8 +4,7 @@ package mlflow
 
 import (
 	"context"
-	
-	
+
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -22,7 +21,7 @@ type ExperimentsAPI struct {
 // Create an experiment with a name. Returns the ID of the newly created
 // experiment. Validates that another experiment with the same name does not
 // already exist and fails if another experiment with the same name already
-// exists. Throws ``RESOURCE_ALREADY_EXISTS`` if a experiment with the given
+// exists. Throws “RESOURCE_ALREADY_EXISTS“ if a experiment with the given
 // name exists.
 func (a *ExperimentsAPI) Create(ctx context.Context, request CreateExperimentRequest) (*CreateExperimentResponse, error) {
 	var createExperimentResponse CreateExperimentResponse
@@ -68,7 +67,7 @@ func (a *ExperimentsAPI) GetByExperimentId(ctx context.Context, experimentId str
 // experiments, but prefers the active experiment if an active and deleted
 // experiment share the same name. If multiple deleted experiments share the
 // same name, the API will return one of them. Throws
-// ``RESOURCE_DOES_NOT_EXIST`` if no experiment with the specified name exists.
+// “RESOURCE_DOES_NOT_EXIST“ if no experiment with the specified name exists.
 func (a *ExperimentsAPI) GetByName(ctx context.Context, request GetExperimentByNameRequest) (*GetExperimentByNameResponse, error) {
 	var getExperimentByNameResponse GetExperimentByNameResponse
 	path := "/api/2.0/mlflow/experiments/get-by-name"
@@ -80,7 +79,7 @@ func (a *ExperimentsAPI) GetByName(ctx context.Context, request GetExperimentByN
 // experiments, but prefers the active experiment if an active and deleted
 // experiment share the same name. If multiple deleted experiments share the
 // same name, the API will return one of them. Throws
-// ``RESOURCE_DOES_NOT_EXIST`` if no experiment with the specified name exists.
+// “RESOURCE_DOES_NOT_EXIST“ if no experiment with the specified name exists.
 func (a *ExperimentsAPI) GetByNameByExperimentName(ctx context.Context, experimentName string) (*GetExperimentByNameResponse, error) {
 	return a.GetByName(ctx, GetExperimentByNameRequest{
 		ExperimentName: experimentName,
@@ -98,7 +97,7 @@ func (a *ExperimentsAPI) List(ctx context.Context, request ListExperimentsReques
 // Restore an experiment marked for deletion. This also restores associated
 // metadata, runs, metrics, params, and tags. If experiment uses FileStore,
 // underlying artifacts associated with experiment are also restored. Throws
-// ``RESOURCE_DOES_NOT_EXIST`` if experiment was never created or was
+// “RESOURCE_DOES_NOT_EXIST“ if experiment was never created or was
 // permanently deleted.
 func (a *ExperimentsAPI) Restore(ctx context.Context, request RestoreExperimentRequest) error {
 	path := "/api/2.0/mlflow/experiments/restore"
@@ -109,7 +108,7 @@ func (a *ExperimentsAPI) Restore(ctx context.Context, request RestoreExperimentR
 // Restore an experiment marked for deletion. This also restores associated
 // metadata, runs, metrics, params, and tags. If experiment uses FileStore,
 // underlying artifacts associated with experiment are also restored. Throws
-// ``RESOURCE_DOES_NOT_EXIST`` if experiment was never created or was
+// “RESOURCE_DOES_NOT_EXIST“ if experiment was never created or was
 // permanently deleted.
 func (a *ExperimentsAPI) RestoreByExperimentId(ctx context.Context, experimentId string) error {
 	return a.Restore(ctx, RestoreExperimentRequest{
@@ -139,7 +138,6 @@ func (a *ExperimentsAPI) Update(ctx context.Context, request UpdateExperimentReq
 	return err
 }
 
-
 func NewMLflowArtifacts(client *client.DatabricksClient) MLflowArtifactsService {
 	return &MLflowArtifactsAPI{
 		client: client,
@@ -150,7 +148,7 @@ type MLflowArtifactsAPI struct {
 	client *client.DatabricksClient
 }
 
-// List artifacts for a run. Takes an optional ``artifact_path`` prefix which if
+// List artifacts for a run. Takes an optional “artifact_path“ prefix which if
 // specified, the response contains only artifacts with the specified prefix.
 func (a *MLflowArtifactsAPI) List(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error) {
 	var listArtifactsResponse ListArtifactsResponse
@@ -158,7 +156,6 @@ func (a *MLflowArtifactsAPI) List(ctx context.Context, request ListArtifactsRequ
 	err := a.client.Get(ctx, path, request, &listArtifactsResponse)
 	return &listArtifactsResponse, err
 }
-
 
 func NewMLflowDatabricks(client *client.DatabricksClient) MLflowDatabricksService {
 	return &MLflowDatabricksAPI{
@@ -170,14 +167,12 @@ type MLflowDatabricksAPI struct {
 	client *client.DatabricksClient
 }
 
-
 func (a *MLflowDatabricksAPI) Get(ctx context.Context, request GetRegisteredModelRequest) (*GetRegisteredModelResponse, error) {
 	var getRegisteredModelResponse GetRegisteredModelResponse
 	path := "/api/2.0/mlflow/databricks/registered-models/get"
 	err := a.client.Get(ctx, path, request, &getRegisteredModelResponse)
 	return &getRegisteredModelResponse, err
 }
-
 
 func (a *MLflowDatabricksAPI) GetByName(ctx context.Context, name string) (*GetRegisteredModelResponse, error) {
 	return a.Get(ctx, GetRegisteredModelRequest{
@@ -196,7 +191,6 @@ func (a *MLflowDatabricksAPI) TransitionStage(ctx context.Context, request Trans
 	return &transitionModelVersionStageResponse, err
 }
 
-
 func NewMLflowMetrics(client *client.DatabricksClient) MLflowMetricsService {
 	return &MLflowMetricsAPI{
 		client: client,
@@ -214,7 +208,6 @@ func (a *MLflowMetricsAPI) GetHistory(ctx context.Context, request GetMetricHist
 	err := a.client.Get(ctx, path, request, &getMetricHistoryResponse)
 	return &getMetricHistoryResponse, err
 }
-
 
 func NewMLflowRuns(client *client.DatabricksClient) MLflowRunsService {
 	return &MLflowRunsAPI{
@@ -372,7 +365,6 @@ func (a *MLflowRunsAPI) Update(ctx context.Context, request UpdateRunRequest) (*
 	return &updateRunResponse, err
 }
 
-
 func NewModelVersionComments(client *client.DatabricksClient) ModelVersionCommentsService {
 	return &ModelVersionCommentsAPI{
 		client: client,
@@ -415,7 +407,6 @@ func (a *ModelVersionCommentsAPI) Update(ctx context.Context, request UpdateComm
 	return &updateCommentResponse, err
 }
 
-
 func NewModelVersions(client *client.DatabricksClient) ModelVersionsService {
 	return &ModelVersionsAPI{
 		client: client,
@@ -426,7 +417,6 @@ type ModelVersionsAPI struct {
 	client *client.DatabricksClient
 }
 
-
 func (a *ModelVersionsAPI) Create(ctx context.Context, request CreateModelVersionRequest) (*CreateModelVersionResponse, error) {
 	var createModelVersionResponse CreateModelVersionResponse
 	path := "/api/2.0/mlflow/model-versions/create"
@@ -434,20 +424,17 @@ func (a *ModelVersionsAPI) Create(ctx context.Context, request CreateModelVersio
 	return &createModelVersionResponse, err
 }
 
-
 func (a *ModelVersionsAPI) Delete(ctx context.Context, request DeleteModelVersionRequest) error {
 	path := "/api/2.0/mlflow/model-versions/delete"
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
-
 func (a *ModelVersionsAPI) DeleteTag(ctx context.Context, request DeleteModelVersionTagRequest) error {
 	path := "/api/2.0/mlflow/model-versions/delete-tag"
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
-
 
 func (a *ModelVersionsAPI) Get(ctx context.Context, request GetModelVersionRequest) (*GetModelVersionResponse, error) {
 	var getModelVersionResponse GetModelVersionResponse
@@ -456,14 +443,12 @@ func (a *ModelVersionsAPI) Get(ctx context.Context, request GetModelVersionReque
 	return &getModelVersionResponse, err
 }
 
-
 func (a *ModelVersionsAPI) GetDownloadUri(ctx context.Context, request GetModelVersionDownloadUriRequest) (*GetModelVersionDownloadUriResponse, error) {
 	var getModelVersionDownloadUriResponse GetModelVersionDownloadUriResponse
 	path := "/api/2.0/mlflow/model-versions/get-download-uri"
 	err := a.client.Get(ctx, path, request, &getModelVersionDownloadUriResponse)
 	return &getModelVersionDownloadUriResponse, err
 }
-
 
 func (a *ModelVersionsAPI) Search(ctx context.Context, request SearchModelVersionsRequest) (*SearchModelVersionsResponse, error) {
 	var searchModelVersionsResponse SearchModelVersionsResponse
@@ -472,13 +457,11 @@ func (a *ModelVersionsAPI) Search(ctx context.Context, request SearchModelVersio
 	return &searchModelVersionsResponse, err
 }
 
-
 func (a *ModelVersionsAPI) SetTag(ctx context.Context, request SetModelVersionTagRequest) error {
 	path := "/api/2.0/mlflow/model-versions/set-tag"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
-
 
 func (a *ModelVersionsAPI) TransitionStage(ctx context.Context, request TransitionModelVersionStageRequest) (*TransitionModelVersionStageResponse, error) {
 	var transitionModelVersionStageResponse TransitionModelVersionStageResponse
@@ -487,13 +470,11 @@ func (a *ModelVersionsAPI) TransitionStage(ctx context.Context, request Transiti
 	return &transitionModelVersionStageResponse, err
 }
 
-
 func (a *ModelVersionsAPI) Update(ctx context.Context, request UpdateModelVersionRequest) error {
 	path := "/api/2.0/mlflow/model-versions/update"
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-
 
 func NewRegisteredModels(client *client.DatabricksClient) RegisteredModelsService {
 	return &RegisteredModelsAPI{
@@ -505,7 +486,7 @@ type RegisteredModelsAPI struct {
 	client *client.DatabricksClient
 }
 
-// Throws ``RESOURCE_ALREADY_EXISTS`` if a registered model with the given name
+// Throws “RESOURCE_ALREADY_EXISTS“ if a registered model with the given name
 // exists.
 func (a *RegisteredModelsAPI) Create(ctx context.Context, request CreateRegisteredModelRequest) (*CreateRegisteredModelResponse, error) {
 	var createRegisteredModelResponse CreateRegisteredModelResponse
@@ -514,13 +495,11 @@ func (a *RegisteredModelsAPI) Create(ctx context.Context, request CreateRegister
 	return &createRegisteredModelResponse, err
 }
 
-
 func (a *RegisteredModelsAPI) Delete(ctx context.Context, request DeleteRegisteredModelRequest) error {
 	path := "/api/2.0/mlflow/registered-models/delete"
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
-
 
 func (a *RegisteredModelsAPI) DeleteByName(ctx context.Context, name string) error {
 	return a.Delete(ctx, DeleteRegisteredModelRequest{
@@ -528,13 +507,11 @@ func (a *RegisteredModelsAPI) DeleteByName(ctx context.Context, name string) err
 	})
 }
 
-
 func (a *RegisteredModelsAPI) DeleteTag(ctx context.Context, request DeleteRegisteredModelTagRequest) error {
 	path := "/api/2.0/mlflow/registered-models/delete-tag"
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
-
 
 func (a *RegisteredModelsAPI) Get(ctx context.Context, request GetRegisteredModelRequest) (*GetRegisteredModelResponse, error) {
 	var getRegisteredModelResponse GetRegisteredModelResponse
@@ -543,13 +520,11 @@ func (a *RegisteredModelsAPI) Get(ctx context.Context, request GetRegisteredMode
 	return &getRegisteredModelResponse, err
 }
 
-
 func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*GetRegisteredModelResponse, error) {
 	return a.Get(ctx, GetRegisteredModelRequest{
 		Name: name,
 	})
 }
-
 
 func (a *RegisteredModelsAPI) GetLatestVersions(ctx context.Context, request GetLatestVersionsRequest) (*GetLatestVersionsResponse, error) {
 	var getLatestVersionsResponse GetLatestVersionsResponse
@@ -558,14 +533,12 @@ func (a *RegisteredModelsAPI) GetLatestVersions(ctx context.Context, request Get
 	return &getLatestVersionsResponse, err
 }
 
-
 func (a *RegisteredModelsAPI) List(ctx context.Context, request ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error) {
 	var listRegisteredModelsResponse ListRegisteredModelsResponse
 	path := "/api/2.0/mlflow/registered-models/list"
 	err := a.client.Get(ctx, path, request, &listRegisteredModelsResponse)
 	return &listRegisteredModelsResponse, err
 }
-
 
 func (a *RegisteredModelsAPI) Rename(ctx context.Context, request RenameRegisteredModelRequest) (*RenameRegisteredModelResponse, error) {
 	var renameRegisteredModelResponse RenameRegisteredModelResponse
@@ -574,7 +547,6 @@ func (a *RegisteredModelsAPI) Rename(ctx context.Context, request RenameRegister
 	return &renameRegisteredModelResponse, err
 }
 
-
 func (a *RegisteredModelsAPI) Search(ctx context.Context, request SearchRegisteredModelsRequest) (*SearchRegisteredModelsResponse, error) {
 	var searchRegisteredModelsResponse SearchRegisteredModelsResponse
 	path := "/api/2.0/mlflow/registered-models/search"
@@ -582,20 +554,17 @@ func (a *RegisteredModelsAPI) Search(ctx context.Context, request SearchRegister
 	return &searchRegisteredModelsResponse, err
 }
 
-
 func (a *RegisteredModelsAPI) SetTag(ctx context.Context, request SetRegisteredModelTagRequest) error {
 	path := "/api/2.0/mlflow/registered-models/set-tag"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
-
 func (a *RegisteredModelsAPI) Update(ctx context.Context, request UpdateRegisteredModelRequest) error {
 	path := "/api/2.0/mlflow/registered-models/update"
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-
 
 func NewRegistryWebhooks(client *client.DatabricksClient) RegistryWebhooksService {
 	return &RegistryWebhooksAPI{
@@ -652,7 +621,6 @@ func (a *RegistryWebhooksAPI) Update(ctx context.Context, request UpdateRegistry
 	return err
 }
 
-
 func NewTransitionRequests(client *client.DatabricksClient) TransitionRequestsService {
 	return &TransitionRequestsAPI{
 		client: client,
@@ -701,4 +669,3 @@ func (a *TransitionRequestsAPI) Reject(ctx context.Context, request RejectTransi
 	err := a.client.Post(ctx, path, request, &rejectTransitionRequestResponse)
 	return &rejectTransitionRequestResponse, err
 }
-

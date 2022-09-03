@@ -5,7 +5,7 @@ package scim
 import (
 	"context"
 	"fmt"
-	
+
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -19,14 +19,12 @@ type CurrentUserAPI struct {
 	client *client.DatabricksClient
 }
 
-
 func (a *CurrentUserAPI) Me(ctx context.Context) (*User, error) {
 	var user User
 	path := "/preview/scim/v2/Me"
 	err := a.client.Get(ctx, path, nil, &user)
 	return &user, err
 }
-
 
 func NewGroups(client *client.DatabricksClient) GroupsService {
 	return &GroupsAPI{
@@ -97,7 +95,6 @@ func (a *GroupsAPI) ReplaceGroup(ctx context.Context, request Group) error {
 	return err
 }
 
-
 func NewServicePrincipals(client *client.DatabricksClient) ServicePrincipalsService {
 	return &ServicePrincipalsAPI{
 		client: client,
@@ -167,7 +164,6 @@ func (a *ServicePrincipalsAPI) ReplaceServicePrincipal(ctx context.Context, requ
 	return err
 }
 
-
 func NewUsers(client *client.DatabricksClient) UsersService {
 	return &UsersAPI{
 		client: client,
@@ -236,4 +232,3 @@ func (a *UsersAPI) ReplaceUser(ctx context.Context, request User) error {
 	err := a.client.Put(ctx, path, request)
 	return err
 }
-

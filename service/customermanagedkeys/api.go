@@ -24,54 +24,54 @@ import (
 // version of the platform. If you are not sure, contact your Databricks
 // reprsentative.
 type CustomermanagedkeysService interface {
-    // Create a customer-managed key configuration object for an account,
-    // specified by ID. This operation uploads a reference to a customer-managed
-    // key to Databricks. If the key is assigned as a workspace&#39;s
-    // customer-managed key for managed services, Databricks uses the key to
-    // encrypt the workspaces notebooks and secrets in the control plane, as
-    // well as Databricks SQL queries and query history. If it is specified as a
-    // workspace&#39;s customer-managed key for workspace storage, the key encrypts
-    // the workspace&#39;s root S3 bucket (which contains the workspace&#39;s root DBFS
-    // and system data) and optionally cluster EBS volume data. **Important**:
-    // Customer-managed keys are supported only for some deployment types,
-    // subscription types, and AWS regions. This operation is available only if
-    // your account is on the E2 version of the platform or on a select custom
-    // plan that allows multiple workspaces per account.
-    CreateKeyConfig(ctx context.Context, createCustomerManagedKeyRequest CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error)
-    // Delete a customer-managed key configuration object for an account. You
-    // cannot delete a configuration that is associated with a running
-    // workspace.
-    DeleteKeyConfig(ctx context.Context, deleteKeyConfigRequest DeleteKeyConfigRequest) error
-    // Get all customer-managed key configuration objects for an account. If the
-    // key is specified as a workspace&#39;s managed services customer-managed key,
-    // Databricks will use the key to encrypt the workspace&#39;s notebooks and
-    // secrets in the control plane, as well as Databricks SQL queries and query
-    // history. If the key is specified as a workspace&#39;s storage
-    // customer-managed key, the key is used to encrypt the workspace&#39;s root S3
-    // bucket and optionally can encrypt cluster EBS volumes data in the data
-    // plane. **Important**: Customer-managed keys are supported only for some
-    // deployment types, subscription types, and AWS regions. This operation is
-    // available only if your account is on the E2 version of the platform.
-    GetAllKeyConfigs(ctx context.Context, getAllKeyConfigsRequest GetAllKeyConfigsRequest) (*ListCustomerManagedKeysResponse, error)
-    // Get a customer-managed key configuration object for an account, specified
-    // by ID. This operation uploads a reference to a customer-managed key to
-    // Databricks. If assigned as a workspace&#39;s customer-managed key for managed
-    // services, Databricks uses the key to encrypt the workspaces notebooks and
-    // secrets in the control plane, as well as Databricks SQL queries and query
-    // history. If it is specified as a workspace&#39;s customer-managed key for
-    // storage, the key encrypts the workspace&#39;s root S3 bucket (which contains
-    // the workspace&#39;s root DBFS and system data) and optionally cluster EBS
-    // volume data. **Important**: Customer-managed keys are supported only for
-    // some deployment types, subscription types, and AWS regions. This
-    // operation is available only if your account is on the E2 version of the
-    // platform.
-    GetKeyConfig(ctx context.Context, getKeyConfigRequest GetKeyConfigRequest) (*CustomerManagedKey, error)
-    // Get a list of records of how key configurations were associated with
-    // workspaces. **Important**: Customer-managed keys are supported only for
-    // some deployment types, subscription types, and AWS regions. This
-    // operation is available only if your account is on the E2 version of the
-    // platform.
-    GetKeyWorkspaceHistory(ctx context.Context, getKeyWorkspaceHistoryRequest GetKeyWorkspaceHistoryRequest) (*ListWorkspaceEncryptionKeyRecordsResponse, error)
+	// Create a customer-managed key configuration object for an account,
+	// specified by ID. This operation uploads a reference to a customer-managed
+	// key to Databricks. If the key is assigned as a workspace&#39;s
+	// customer-managed key for managed services, Databricks uses the key to
+	// encrypt the workspaces notebooks and secrets in the control plane, as
+	// well as Databricks SQL queries and query history. If it is specified as a
+	// workspace&#39;s customer-managed key for workspace storage, the key encrypts
+	// the workspace&#39;s root S3 bucket (which contains the workspace&#39;s root DBFS
+	// and system data) and optionally cluster EBS volume data. **Important**:
+	// Customer-managed keys are supported only for some deployment types,
+	// subscription types, and AWS regions. This operation is available only if
+	// your account is on the E2 version of the platform or on a select custom
+	// plan that allows multiple workspaces per account.
+	CreateKeyConfig(ctx context.Context, createCustomerManagedKeyRequest CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error)
+	// Delete a customer-managed key configuration object for an account. You
+	// cannot delete a configuration that is associated with a running
+	// workspace.
+	DeleteKeyConfig(ctx context.Context, deleteKeyConfigRequest DeleteKeyConfigRequest) error
+	// Get all customer-managed key configuration objects for an account. If the
+	// key is specified as a workspace&#39;s managed services customer-managed key,
+	// Databricks will use the key to encrypt the workspace&#39;s notebooks and
+	// secrets in the control plane, as well as Databricks SQL queries and query
+	// history. If the key is specified as a workspace&#39;s storage
+	// customer-managed key, the key is used to encrypt the workspace&#39;s root S3
+	// bucket and optionally can encrypt cluster EBS volumes data in the data
+	// plane. **Important**: Customer-managed keys are supported only for some
+	// deployment types, subscription types, and AWS regions. This operation is
+	// available only if your account is on the E2 version of the platform.
+	GetAllKeyConfigs(ctx context.Context, getAllKeyConfigsRequest GetAllKeyConfigsRequest) (*ListCustomerManagedKeysResponse, error)
+	// Get a customer-managed key configuration object for an account, specified
+	// by ID. This operation uploads a reference to a customer-managed key to
+	// Databricks. If assigned as a workspace&#39;s customer-managed key for managed
+	// services, Databricks uses the key to encrypt the workspaces notebooks and
+	// secrets in the control plane, as well as Databricks SQL queries and query
+	// history. If it is specified as a workspace&#39;s customer-managed key for
+	// storage, the key encrypts the workspace&#39;s root S3 bucket (which contains
+	// the workspace&#39;s root DBFS and system data) and optionally cluster EBS
+	// volume data. **Important**: Customer-managed keys are supported only for
+	// some deployment types, subscription types, and AWS regions. This
+	// operation is available only if your account is on the E2 version of the
+	// platform.
+	GetKeyConfig(ctx context.Context, getKeyConfigRequest GetKeyConfigRequest) (*CustomerManagedKey, error)
+	// Get a list of records of how key configurations were associated with
+	// workspaces. **Important**: Customer-managed keys are supported only for
+	// some deployment types, subscription types, and AWS regions. This
+	// operation is available only if your account is on the E2 version of the
+	// platform.
+	GetKeyWorkspaceHistory(ctx context.Context, getKeyWorkspaceHistoryRequest GetKeyWorkspaceHistoryRequest) (*ListWorkspaceEncryptionKeyRecordsResponse, error)
 	GetAllKeyConfigsByAccountId(ctx context.Context, accountId string) (*ListCustomerManagedKeysResponse, error)
 	GetKeyWorkspaceHistoryByAccountId(ctx context.Context, accountId string) (*ListWorkspaceEncryptionKeyRecordsResponse, error)
 	GetKeyConfigByAccountIdAndCustomerManagedKeyId(ctx context.Context, accountId string, customerManagedKeyId string) (*CustomerManagedKey, error)
@@ -161,7 +161,6 @@ func (a *CustomermanagedkeysAPI) GetKeyWorkspaceHistory(ctx context.Context, req
 	return &listWorkspaceEncryptionKeyRecordsResponse, err
 }
 
-
 func (a *CustomermanagedkeysAPI) GetAllKeyConfigsByAccountId(ctx context.Context, accountId string) (*ListCustomerManagedKeysResponse, error) {
 	return a.GetAllKeyConfigs(ctx, GetAllKeyConfigsRequest{
 		AccountId: accountId,
@@ -176,14 +175,14 @@ func (a *CustomermanagedkeysAPI) GetKeyWorkspaceHistoryByAccountId(ctx context.C
 
 func (a *CustomermanagedkeysAPI) GetKeyConfigByAccountIdAndCustomerManagedKeyId(ctx context.Context, accountId string, customerManagedKeyId string) (*CustomerManagedKey, error) {
 	return a.GetKeyConfig(ctx, GetKeyConfigRequest{
-		AccountId: accountId,
+		AccountId:            accountId,
 		CustomerManagedKeyId: customerManagedKeyId,
 	})
 }
 
 func (a *CustomermanagedkeysAPI) DeleteKeyConfigByAccountIdAndCustomerManagedKeyId(ctx context.Context, accountId string, customerManagedKeyId string) error {
 	return a.DeleteKeyConfig(ctx, DeleteKeyConfigRequest{
-		AccountId: accountId,
+		AccountId:            accountId,
 		CustomerManagedKeyId: customerManagedKeyId,
 	})
 }

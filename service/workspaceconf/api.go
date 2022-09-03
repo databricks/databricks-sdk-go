@@ -4,8 +4,7 @@ package workspaceconf
 
 import (
 	"context"
-	
-	
+
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -19,7 +18,6 @@ type WorkspaceConfAPI struct {
 	client *client.DatabricksClient
 }
 
-
 func (a *WorkspaceConfAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*WorkspaceConf, error) {
 	var workspaceConf WorkspaceConf
 	path := "/api/2.0/workspace-conf"
@@ -27,10 +25,8 @@ func (a *WorkspaceConfAPI) GetStatus(ctx context.Context, request GetStatusReque
 	return &workspaceConf, err
 }
 
-
 func (a *WorkspaceConfAPI) SetStatus(ctx context.Context, request WorkspaceConf) error {
 	path := "/api/2.0/workspace-conf"
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-

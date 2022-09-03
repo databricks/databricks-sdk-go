@@ -5,7 +5,7 @@ package gitcredentials
 import (
 	"context"
 	"fmt"
-	
+
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -74,4 +74,3 @@ func (a *GitCredentialsAPI) UpdateCredential(ctx context.Context, request Update
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-

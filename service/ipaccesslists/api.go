@@ -5,7 +5,7 @@ package ipaccesslists
 import (
 	"context"
 	"fmt"
-	
+
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -66,7 +66,6 @@ func (a *IpAccessListsAPI) FetchIpAccessListByIpAccessListId(ctx context.Context
 	})
 }
 
-
 func (a *IpAccessListsAPI) GetAllIpAccessLists(ctx context.Context) (*GetIPAccessListResponse, error) {
 	var getIPAccessListResponse GetIPAccessListResponse
 	path := "/api/2.0/ip-access-lists"
@@ -107,4 +106,3 @@ func (a *IpAccessListsAPI) UpdateIpAccessList(ctx context.Context, request Updat
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-

@@ -4,8 +4,7 @@ package libraries
 
 import (
 	"context"
-	
-	
+
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -23,7 +22,7 @@ type LibrariesAPI struct {
 // for all libraries installed on this cluster via the API or the libraries UI
 // as well as libraries set to be installed on all clusters via the libraries
 // UI. If a library has been set to be installed on all clusters,
-// ``is_library_for_all_clusters`` will be ``true``, even if the library was
+// “is_library_for_all_clusters“ will be “true“, even if the library was
 // also installed on this specific cluster.. An example response: .. code:: {
 // &#34;statuses&#34;: [ { &#34;cluster_id&#34;: &#34;11203-my-cluster&#34;, &#34;library_statuses&#34;: [ {
 // &#34;library&#34;: { &#34;jar&#34;: &#34;dbfs:/mnt/libraries/library.jar&#34; }, &#34;status&#34;:
@@ -43,7 +42,7 @@ func (a *LibrariesAPI) AllClusterStatuses(ctx context.Context) (*ListAllClusterL
 // libraries installed on this cluster via the API or the libraries UI as well
 // as libraries set to be installed on all clusters via the libraries UI. If a
 // library has been set to be installed on all clusters,
-// ``is_library_for_all_clusters`` will be ``true``, even if the library was was
+// “is_library_for_all_clusters“ will be “true“, even if the library was was
 // also installed on this specific cluster. The order of returned libraries will
 // be as follows. 1) Libraries set to be installed on this cluster will be
 // returned first. Within this group, the order will be order in which the
@@ -74,7 +73,7 @@ func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusR
 // libraries installed on this cluster via the API or the libraries UI as well
 // as libraries set to be installed on all clusters via the libraries UI. If a
 // library has been set to be installed on all clusters,
-// ``is_library_for_all_clusters`` will be ``true``, even if the library was was
+// “is_library_for_all_clusters“ will be “true“, even if the library was was
 // also installed on this specific cluster. The order of returned libraries will
 // be as follows. 1) Libraries set to be installed on this cluster will be
 // returned first. Within this group, the order will be order in which the
@@ -129,4 +128,3 @@ func (a *LibrariesAPI) Uninstall(ctx context.Context, request UninstallLibraries
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
-

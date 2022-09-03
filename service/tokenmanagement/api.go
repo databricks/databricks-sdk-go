@@ -5,7 +5,7 @@ package tokenmanagement
 import (
 	"context"
 	"fmt"
-	
+
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -55,4 +55,3 @@ func (a *TokenManagementAPI) ListAllTokens(ctx context.Context, request ListAllT
 	err := a.client.Get(ctx, path, request, &listTokensResponse)
 	return &listTokensResponse, err
 }
-

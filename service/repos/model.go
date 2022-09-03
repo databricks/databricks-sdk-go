@@ -5,68 +5,58 @@ package repos
 // all definitions in this file are in alphabetical order
 
 type CreateRepo struct {
-    
-    Path string `json:"path,omitempty"`
-    
-    Provider string `json:"provider"`
-    
-    Url string `json:"url"`
-}
+	Path string `json:"path,omitempty"`
 
+	Provider string `json:"provider"`
+
+	Url string `json:"url"`
+}
 
 type DeleteRequest struct {
-    // The ID for the corresponding repo to access.
-    RepoId string ` path:"repo_id"`
+	// The ID for the corresponding repo to access.
+	RepoId string ` path:"repo_id"`
 }
-
 
 type GetRequest struct {
-    // The ID for the corresponding repo to access.
-    RepoId string ` path:"repo_id"`
+	// The ID for the corresponding repo to access.
+	RepoId string ` path:"repo_id"`
 }
-
 
 type ListReposResponse struct {
-    
-    NextPageToken string `json:"next_page_token,omitempty"`
-    
-    Repos []RepoInfo `json:"repos,omitempty"`
-}
+	NextPageToken string `json:"next_page_token,omitempty"`
 
+	Repos []RepoInfo `json:"repos,omitempty"`
+}
 
 type ListRequest struct {
-    // Token used to get the next page of results. If not specified, returns the
-    // first page of results as well as a next page token if there are more
-    // results.
-    NextPageToken string ` url:"next_page_token,omitempty"`
-    // Filters repos that have paths starting with the given path prefix.
-    PathPrefix string ` url:"path_prefix,omitempty"`
+	// Token used to get the next page of results. If not specified, returns the
+	// first page of results as well as a next page token if there are more
+	// results.
+	NextPageToken string ` url:"next_page_token,omitempty"`
+	// Filters repos that have paths starting with the given path prefix.
+	PathPrefix string ` url:"path_prefix,omitempty"`
 }
-
 
 type RepoInfo struct {
-    
-    Branch string `json:"branch,omitempty"`
-    
-    HeadCommitId string `json:"head_commit_id,omitempty"`
-    
-    Id int64 `json:"id,omitempty"`
-    
-    Path string `json:"path,omitempty"`
-    
-    Provider string `json:"provider,omitempty"`
-    
-    Url string `json:"url,omitempty"`
+	Branch string `json:"branch,omitempty"`
+
+	HeadCommitId string `json:"head_commit_id,omitempty"`
+
+	Id int64 `json:"id,omitempty"`
+
+	Path string `json:"path,omitempty"`
+
+	Provider string `json:"provider,omitempty"`
+
+	Url string `json:"url,omitempty"`
 }
 
-
 type UpdateRepo struct {
-    
-    Branch string `json:"branch,omitempty"`
-    // The ID for the corresponding repo to access.
-    RepoId string ` path:"repo_id"`
-    
-    Tag string `json:"tag,omitempty"`
+	Branch string `json:"branch,omitempty"`
+	// The ID for the corresponding repo to access.
+	RepoId string ` path:"repo_id"`
+
+	Tag string `json:"tag,omitempty"`
 }
 
 // Branch that the local version of the repo is checked out to.
@@ -90,4 +80,3 @@ type UpdateRepo struct {
 // changes, you must update the repo to a branch instead of the detached HEAD.
 
 // URL of the Git repository to be linked.
-

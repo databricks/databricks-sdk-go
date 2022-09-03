@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 func NewJobs(client *client.DatabricksClient) JobsService {
@@ -52,7 +52,7 @@ func (a *JobsAPI) CancelRunAndWait(ctx context.Context, request CancelRun, timeo
 		return err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return retries.Wait(ctx, timeout[0], func() *retries.Err {
 		run, err := a.GetRun(ctx, GetRunRequest{
@@ -164,7 +164,7 @@ func (a *JobsAPI) GetRunAndWait(ctx context.Context, request GetRunRequest, time
 		return nil, err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return run, retries.Wait(ctx, timeout[0], func() *retries.Err {
 		run, err := a.GetRun(ctx, GetRunRequest{
@@ -254,7 +254,7 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, request RepairRun, timeo
 		return nil, err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return repairRunResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
 		run, err := a.GetRun(ctx, GetRunRequest{
@@ -301,7 +301,7 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, request RunNow, timeout ...
 		return nil, err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return runNowResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
 		run, err := a.GetRun(ctx, GetRunRequest{
@@ -343,7 +343,7 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, request SubmitRun, timeout 
 		return nil, err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return submitRunResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
 		run, err := a.GetRun(ctx, GetRunRequest{
@@ -374,4 +374,3 @@ func (a *JobsAPI) Update(ctx context.Context, request UpdateJob) error {
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
-

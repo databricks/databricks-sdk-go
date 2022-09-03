@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 func NewWarehouses(client *client.DatabricksClient) WarehousesService {
@@ -36,7 +36,7 @@ func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, request Crea
 		return nil, err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return createWarehouseResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
@@ -74,7 +74,7 @@ func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, request Dele
 		return err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return retries.Wait(ctx, timeout[0], func() *retries.Err {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
@@ -121,7 +121,7 @@ func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, request EditWa
 		return err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return retries.Wait(ctx, timeout[0], func() *retries.Err {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
@@ -160,7 +160,7 @@ func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, request GetWare
 		return nil, err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return getWarehouseResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
@@ -236,7 +236,7 @@ func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, request Start
 		return err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return retries.Wait(ctx, timeout[0], func() *retries.Err {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
@@ -274,7 +274,7 @@ func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, request StopWa
 		return err
 	}
 	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+		timeout = []time.Duration{20 * time.Minute}
 	}
 	return retries.Wait(ctx, timeout[0], func() *retries.Err {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
@@ -293,4 +293,3 @@ func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, request StopWa
 		}
 	})
 }
-
