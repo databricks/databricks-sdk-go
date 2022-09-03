@@ -1,4 +1,4 @@
-// Usage: go run databricks/openapi/gen/main.go -target service -spec /path/to/spec.json
+// Usage: go run databricks/openapi/gen/main.go -spec /private/tmp/processed-databricks-workspace-all.json -target service
 package main
 
 import (
@@ -10,6 +10,7 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"strings"
@@ -95,7 +96,10 @@ func (r *Render) Run() error {
 			}
 		}
 	}
-	return nil
+	split := strings.Split(r.Formatter, " ")
+	cmd := exec.Command(split[0], split[1:]...)
+	cmd.Dir = r.ctx.Target
+	return cmd.Run()
 }
 
 func (r *Render) File(pkg *code.Package, contentTRef, nameT string) error {
