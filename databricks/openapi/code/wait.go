@@ -10,7 +10,7 @@ func (w *Wait) Bind() *Field {
 }
 
 func (w *Wait) ForceBindRequest() bool {
-	// this was specifically added for Jobs#RepairRun, 
+	// this was specifically added for Jobs#RepairRun,
 	// that does not send run_id in response
 	return w.Method.wait.ForceBindRequest
 }

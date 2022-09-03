@@ -122,7 +122,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	// List clusters in workspace
 	listClustersResponse, err := wsc.Clusters.List(ctx, clusters.ListRequest{})
 	require.NoError(t, err)
-	
+
 	var seen int
 	for _, clusterInfo := range listClustersResponse.Clusters {
 		if clusterInfo.ClusterId == clstr.ClusterId {
