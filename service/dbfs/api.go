@@ -5,7 +5,7 @@ package dbfs
 import (
 	"context"
 	
-
+	
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -36,6 +36,14 @@ func (a *DbfsAPI) Close(ctx context.Context, request CloseRequest) error {
 	path := "/api/2.0/dbfs/close"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
+}
+
+// Closes the stream specified by the input handle. If the handle does not
+// exist, this call will throw an exception with ``RESOURCE_DOES_NOT_EXIST``.
+func (a *DbfsAPI) CloseByHandle(ctx context.Context, handle int64) error {
+	return a.Close(ctx, CloseRequest{
+		Handle: handle,
+	})
 }
 
 // Opens a stream to write to a file and returns a handle to this stream. There
@@ -72,16 +80,36 @@ func (a *DbfsAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*Get
 	return &getStatusResponse, err
 }
 
+// Gets the file information of a file or directory. If the file or directory
+// does not exist, this call will throw an exception with
+// ``RESOURCE_DOES_NOT_EXIST``.
+func (a *DbfsAPI) GetStatusByPath(ctx context.Context, path string) (*GetStatusResponse, error) {
+	return a.GetStatus(ctx, GetStatusRequest{
+		Path: path,
+	})
+}
+
 // Lists the contents of a directory, or details of the file. If the file or
 // directory does not exist, this call will throw an exception with
 // ``RESOURCE_DOES_NOT_EXIST``. Example of reply: .. code:: { &#34;files&#34;: [ {
 // &#34;path&#34;: &#34;/a.cpp&#34;, &#34;is_dir&#34;: false, &#34;file_size&#34;: 261 }, { &#34;path&#34;:
 // &#34;/databricks-results&#34;, &#34;is_dir&#34;: true, &#34;file_size&#34;: 0 } ] }
-func (a *DbfsAPI) ListStatus(ctx context.Context, request ListStatusRequest) (*ListStatusResponse, error) {
+func (a *DbfsAPI) List(ctx context.Context, request ListStatusRequest) (*ListStatusResponse, error) {
 	var listStatusResponse ListStatusResponse
 	path := "/api/2.0/dbfs/list"
 	err := a.client.Get(ctx, path, request, &listStatusResponse)
 	return &listStatusResponse, err
+}
+
+// Lists the contents of a directory, or details of the file. If the file or
+// directory does not exist, this call will throw an exception with
+// ``RESOURCE_DOES_NOT_EXIST``. Example of reply: .. code:: { &#34;files&#34;: [ {
+// &#34;path&#34;: &#34;/a.cpp&#34;, &#34;is_dir&#34;: false, &#34;file_size&#34;: 261 }, { &#34;path&#34;:
+// &#34;/databricks-results&#34;, &#34;is_dir&#34;: true, &#34;file_size&#34;: 0 } ] }
+func (a *DbfsAPI) ListByPath(ctx context.Context, path string) (*ListStatusResponse, error) {
+	return a.List(ctx, ListStatusRequest{
+		Path: path,
+	})
 }
 
 // Creates the given directory and necessary parent directories if they do not
@@ -89,10 +117,21 @@ func (a *DbfsAPI) ListStatus(ctx context.Context, request ListStatusRequest) (*L
 // path, this call will throw an exception with ``RESOURCE_ALREADY_EXISTS``.
 // Note that if this operation fails it may have succeeded in creating some of
 // the necessary parent directories.
-func (a *DbfsAPI) MkDirs(ctx context.Context, request MkDirsRequest) error {
+func (a *DbfsAPI) Mkdirs(ctx context.Context, request MkDirsRequest) error {
 	path := "/api/2.0/dbfs/mkdirs"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
+}
+
+// Creates the given directory and necessary parent directories if they do not
+// exist. If there exists a file (not a directory) at any prefix of the input
+// path, this call will throw an exception with ``RESOURCE_ALREADY_EXISTS``.
+// Note that if this operation fails it may have succeeded in creating some of
+// the necessary parent directories.
+func (a *DbfsAPI) MkdirsByPath(ctx context.Context, path string) error {
+	return a.Mkdirs(ctx, MkDirsRequest{
+		Path: path,
+	})
 }
 
 // Move a file from one location to another location within DBFS. If the source

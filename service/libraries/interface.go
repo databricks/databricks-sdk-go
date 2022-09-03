@@ -4,11 +4,27 @@ package libraries
 
 import (
 	"context"
+	
 )
 
 
 
 type LibrariesService interface {
+    // Get the status of all libraries on all clusters. A status will be
+    // available for all libraries installed on this cluster via the API or the
+    // libraries UI as well as libraries set to be installed on all clusters via
+    // the libraries UI. If a library has been set to be installed on all
+    // clusters, ``is_library_for_all_clusters`` will be ``true``, even if the
+    // library was also installed on this specific cluster.. An example
+    // response: .. code:: { &#34;statuses&#34;: [ { &#34;cluster_id&#34;: &#34;11203-my-cluster&#34;,
+    // &#34;library_statuses&#34;: [ { &#34;library&#34;: { &#34;jar&#34;:
+    // &#34;dbfs:/mnt/libraries/library.jar&#34; }, &#34;status&#34;: &#34;INSTALLING&#34;, &#34;messages&#34;:
+    // [], &#34;is_library_for_all_clusters&#34;: false } ] }, { &#34;cluster_id&#34;:
+    // &#34;20131-my-other-cluster&#34;, &#34;library_statuses&#34;: [ { &#34;library&#34;: { &#34;egg&#34;:
+    // &#34;dbfs:/mnt/libraries/library.egg&#34; }, &#34;status&#34;: &#34;ERROR&#34;, &#34;messages&#34;:
+    // [&#34;Could not download library&#34;], &#34;is_library_for_all_clusters&#34;: false } ]
+    // } ] }
+    AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error)
     // Get the status of libraries on a cluster. A status will be available for
     // all libraries installed on this cluster via the API or the libraries UI
     // as well as libraries set to be installed on all clusters via the
@@ -34,6 +50,7 @@ type LibrariesService interface {
     // spark version.\nPlease upgrade to Runtime 3.2 or higher&#34;],
     // &#34;is_library_for_all_clusters&#34;: false } ] }
     ClusterStatus(ctx context.Context, clusterStatusRequest ClusterStatusRequest) (*ClusterStatusResponse, error)
+	ClusterStatusByClusterId(ctx context.Context, clusterId string) (*ClusterStatusResponse, error)
     // Add libraries to be installed on a cluster. The installation is
     // asynchronous - it happens in the background after the completion of this
     // request. Note that the actual set of libraries to be installed on a
@@ -48,27 +65,12 @@ type LibrariesService interface {
     // &#34;org.jsoup:jsoup:1.7.2&#34;, &#34;exclusions&#34;: [&#34;slf4j:slf4j&#34;] } }, { &#34;pypi&#34;: {
     // &#34;package&#34;: &#34;simplejson&#34;, &#34;repo&#34;: &#34;http://my-pypi-mirror.com&#34; } }, {
     // &#34;cran&#34;: { &#34;package: &#34;ada&#34;, &#34;repo&#34;: &#34;http://cran.us.r-project.org&#34; } } ] }
-    InstallLibraries(ctx context.Context, installLibrariesRequest InstallLibrariesRequest) error
-    // Get the status of all libraries on all clusters. A status will be
-    // available for all libraries installed on this cluster via the API or the
-    // libraries UI as well as libraries set to be installed on all clusters via
-    // the libraries UI. If a library has been set to be installed on all
-    // clusters, ``is_library_for_all_clusters`` will be ``true``, even if the
-    // library was also installed on this specific cluster.. An example
-    // response: .. code:: { &#34;statuses&#34;: [ { &#34;cluster_id&#34;: &#34;11203-my-cluster&#34;,
-    // &#34;library_statuses&#34;: [ { &#34;library&#34;: { &#34;jar&#34;:
-    // &#34;dbfs:/mnt/libraries/library.jar&#34; }, &#34;status&#34;: &#34;INSTALLING&#34;, &#34;messages&#34;:
-    // [], &#34;is_library_for_all_clusters&#34;: false } ] }, { &#34;cluster_id&#34;:
-    // &#34;20131-my-other-cluster&#34;, &#34;library_statuses&#34;: [ { &#34;library&#34;: { &#34;egg&#34;:
-    // &#34;dbfs:/mnt/libraries/library.egg&#34; }, &#34;status&#34;: &#34;ERROR&#34;, &#34;messages&#34;:
-    // [&#34;Could not download library&#34;], &#34;is_library_for_all_clusters&#34;: false } ]
-    // } ] }
-    ListAllClusterLibraryStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error)
+    Install(ctx context.Context, installLibrariesRequest InstallLibrariesRequest) error
     // Set libraries to be uninstalled on a cluster. The libraries won&#39;t be
     // uninstalled until the cluster is restarted. Uninstalling libraries that
     // are not installed on the cluster will have no impact but is not an error.
     // An example request: .. code:: { &#34;cluster_id&#34;: &#34;10201-my-cluster&#34;,
     // &#34;libraries&#34;: [ { &#34;jar&#34;: &#34;dbfs:/mnt/libraries/library.jar&#34; }, { &#34;cran&#34;:
     // &#34;ada&#34; } ] }
-    UninstallLibraries(ctx context.Context, uninstallLibrariesRequest UninstallLibrariesRequest) error
+    Uninstall(ctx context.Context, uninstallLibrariesRequest UninstallLibrariesRequest) error
 }

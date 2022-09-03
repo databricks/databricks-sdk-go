@@ -5,7 +5,7 @@ package repos
 import (
 	"context"
 	"fmt"
-
+	
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -36,12 +36,26 @@ func (a *ReposAPI) Delete(ctx context.Context, request DeleteRequest) error {
 	return err
 }
 
+// Deletes the specified repo
+func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId string) error {
+	return a.Delete(ctx, DeleteRequest{
+		RepoId: repoId,
+	})
+}
+
 // Returns the repo with the given repo ID.
 func (a *ReposAPI) Get(ctx context.Context, request GetRequest) (*RepoInfo, error) {
 	var repoInfo RepoInfo
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	err := a.client.Get(ctx, path, request, &repoInfo)
 	return &repoInfo, err
+}
+
+// Returns the repo with the given repo ID.
+func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId string) (*RepoInfo, error) {
+	return a.Get(ctx, GetRequest{
+		RepoId: repoId,
+	})
 }
 
 // Returns repos that the calling user has Manage permissions on. Results are
@@ -61,15 +75,3 @@ func (a *ReposAPI) Update(ctx context.Context, request UpdateRepo) error {
 	return err
 }
 
-
-func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId string) (*RepoInfo, error) {
-	return a.Get(ctx, GetRequest{
-		RepoId: repoId,
-	})
-}
-
-func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId string) error {
-	return a.Delete(ctx, DeleteRequest{
-		RepoId: repoId,
-	})
-}

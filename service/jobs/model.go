@@ -130,15 +130,9 @@ type CreateJob struct {
 type CreateJobFormat string
 
 
-const CreateJobFormatSingleTask CreateJobFormat = `SINGLE_TASK`
-
 const CreateJobFormatMultiTask CreateJobFormat = `MULTI_TASK`
 
-type CreateJobResponse struct {
-    // The canonical identifier for the newly created job.
-    JobId int64 `json:"job_id,omitempty"`
-}
-
+const CreateJobFormatSingleTask CreateJobFormat = `SINGLE_TASK`
 
 type CronSchedule struct {
     // Indicate whether this schedule is paused or not.
@@ -187,39 +181,9 @@ type ExportRunOutput struct {
 }
 
 
-type ExportRunRequest struct {
-    // The canonical identifier for the run. This field is required.
-    RunId int64 ` url:"run_id,omitempty"`
-    // Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
-    ViewsToExport ViewsToExport ` url:"views_to_export,omitempty"`
-}
-
-
 type FileStorageInfo struct {
     // File destination. Example: `file:/my/file.sh`
     Destination string `json:"destination,omitempty"`
-}
-
-
-type GetJobRequest struct {
-    // The canonical identifier of the job to retrieve information about. This
-    // field is required.
-    JobId int64 ` url:"job_id,omitempty"`
-}
-
-
-type GetRunOutputRequest struct {
-    // The canonical identifier for the run. This field is required.
-    RunId int64 ` url:"run_id,omitempty"`
-}
-
-
-type GetRunRequest struct {
-    // Whether to include the repair history in the response.
-    IncludeHistory bool ` url:"include_history,omitempty"`
-    // The canonical identifier of the run for which to retrieve the metadata.
-    // This field is required.
-    RunId int64 ` url:"run_id,omitempty"`
 }
 
 // Read-only state of the remote repository at the time the job was run. This
@@ -261,21 +225,21 @@ type GitSource struct {
 type GitSourceGitProvider string
 
 
-const GitSourceGitProviderGithub GitSourceGitProvider = `gitHub`
-
-const GitSourceGitProviderBitbucketcloud GitSourceGitProvider = `bitbucketCloud`
+const GitSourceGitProviderAwscodecommit GitSourceGitProvider = `awsCodeCommit`
 
 const GitSourceGitProviderAzuredevopsservices GitSourceGitProvider = `azureDevOpsServices`
 
-const GitSourceGitProviderGithubenterprise GitSourceGitProvider = `gitHubEnterprise`
+const GitSourceGitProviderBitbucketcloud GitSourceGitProvider = `bitbucketCloud`
 
 const GitSourceGitProviderBitbucketserver GitSourceGitProvider = `bitbucketServer`
+
+const GitSourceGitProviderGithub GitSourceGitProvider = `gitHub`
+
+const GitSourceGitProviderGithubenterprise GitSourceGitProvider = `gitHubEnterprise`
 
 const GitSourceGitProviderGitlab GitSourceGitProvider = `gitLab`
 
 const GitSourceGitProviderGitlabenterpriseedition GitSourceGitProvider = `gitLabEnterpriseEdition`
-
-const GitSourceGitProviderAwscodecommit GitSourceGitProvider = `awsCodeCommit`
 
 type InitScriptInfo struct {
     // S3 location of init script. Destination and either region or endpoint
@@ -393,9 +357,9 @@ type JobSettings struct {
 type JobSettingsFormat string
 
 
-const JobSettingsFormatSingleTask JobSettingsFormat = `SINGLE_TASK`
-
 const JobSettingsFormatMultiTask JobSettingsFormat = `MULTI_TASK`
+
+const JobSettingsFormatSingleTask JobSettingsFormat = `SINGLE_TASK`
 
 type JobTaskSettings struct {
     
@@ -474,61 +438,6 @@ type Library struct {
 }
 
 
-type ListJobsRequest struct {
-    // Whether to include task and cluster details in the response.
-    ExpandTasks bool ` url:"expand_tasks,omitempty"`
-    // The number of jobs to return. This value must be greater than 0 and less
-    // or equal to 25. The default value is 20.
-    Limit int ` url:"limit,omitempty"`
-    // The offset of the first job to return, relative to the most recently
-    // created job.
-    Offset int ` url:"offset,omitempty"`
-}
-
-
-type ListJobsResponse struct {
-    
-    HasMore bool `json:"has_more,omitempty"`
-    // The list of jobs.
-    Jobs []Job `json:"jobs,omitempty"`
-}
-
-
-type ListRunsRequest struct {
-    // If active_only is `true`, only active runs are included in the results;
-    // otherwise, lists both active and completed runs. An active run is a run
-    // in the `PENDING`, `RUNNING`, or `TERMINATING`. This field cannot be
-    // `true` when completed_only is `true`.
-    ActiveOnly bool ` url:"active_only,omitempty"`
-    // If completed_only is `true`, only completed runs are included in the
-    // results; otherwise, lists both active and completed runs. This field
-    // cannot be `true` when active_only is `true`.
-    CompletedOnly bool ` url:"completed_only,omitempty"`
-    // Whether to include task and cluster details in the response.
-    ExpandTasks bool ` url:"expand_tasks,omitempty"`
-    // The job for which to list runs. If omitted, the Jobs service lists runs
-    // from all jobs.
-    JobId int64 ` url:"job_id,omitempty"`
-    // The number of runs to return. This value must be greater than 0 and less
-    // than 25\. The default value is 25\. If a request specifies a limit of 0,
-    // the service instead uses the maximum limit.
-    Limit int ` url:"limit,omitempty"`
-    // The offset of the first run to return, relative to the most recent run.
-    Offset int ` url:"offset,omitempty"`
-    // The type of runs to return. For a description of run types, see
-    // [Run](..dev-tools/api/latest/jobshtml#operation/JobsRunsGet).
-    RunType ListRunsRunType ` url:"run_type,omitempty"`
-    // Show runs that started _at or after_ this value. The value must be a UTC
-    // timestamp in milliseconds. Can be combined with _start_time_to_ to filter
-    // by a time range.
-    StartTimeFrom int ` url:"start_time_from,omitempty"`
-    // Show runs that started _at or before_ this value. The value must be a UTC
-    // timestamp in milliseconds. Can be combined with _start_time_from_ to
-    // filter by a time range.
-    StartTimeTo int ` url:"start_time_to,omitempty"`
-}
-
-
 type ListRunsResponse struct {
     // If true, additional runs matching the provided filter are available for
     // listing.
@@ -537,15 +446,6 @@ type ListRunsResponse struct {
     Runs []Run `json:"runs,omitempty"`
 }
 
-
-type ListRunsRunType string
-
-
-const ListRunsRunTypeJobRun ListRunsRunType = `JOB_RUN`
-
-const ListRunsRunTypeWorkflowRun ListRunsRunType = `WORKFLOW_RUN`
-
-const ListRunsRunTypeSubmitRun ListRunsRunType = `SUBMIT_RUN`
 
 type MavenLibrary struct {
     // Gradle-style Maven coordinates. For example: `org.jsoup:jsoup:1.7.2`.
@@ -829,12 +729,6 @@ type RepairRunPipelineParams struct {
 }
 
 
-type RepairRunResponse struct {
-    // The ID of the repair.
-    RepairId int64 `json:"repair_id,omitempty"`
-}
-
-
 type ResetJob struct {
     // The canonical identifier of the job to reset. This field is required.
     JobId int64 `json:"job_id"`
@@ -954,6 +848,21 @@ type RunLifeCycleState string
 // over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
 // state, the Jobs service terminates the cluster as soon as possible. This
 // state is terminal.
+const RunLifeCycleStateInternalError RunLifeCycleState = `INTERNAL_ERROR`
+// * `PENDING`: The run has been triggered. If there is not already an active
+// run of the same job, the cluster and execution context are being prepared. If
+// there is already an active run of the same job, the run immediately
+// transitions into the `SKIPPED` state without preparing any resources. *
+// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
+// of this run has completed, and the cluster and execution context are being
+// cleaned up. * `TERMINATED`: The task of this run has completed, and the
+// cluster and execution context have been cleaned up. This state is terminal. *
+// `SKIPPED`: This run was aborted because a previous run of the same job was
+// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
+// state that indicates a failure in the Jobs service, such as network failure
+// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
+// state, the Jobs service terminates the cluster as soon as possible. This
+// state is terminal.
 const RunLifeCycleStatePending RunLifeCycleState = `PENDING`
 // * `PENDING`: The run has been triggered. If there is not already an active
 // run of the same job, the cluster and execution context are being prepared. If
@@ -984,7 +893,7 @@ const RunLifeCycleStateRunning RunLifeCycleState = `RUNNING`
 // over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
 // state, the Jobs service terminates the cluster as soon as possible. This
 // state is terminal.
-const RunLifeCycleStateTerminating RunLifeCycleState = `TERMINATING`
+const RunLifeCycleStateSkipped RunLifeCycleState = `SKIPPED`
 // * `PENDING`: The run has been triggered. If there is not already an active
 // run of the same job, the cluster and execution context are being prepared. If
 // there is already an active run of the same job, the run immediately
@@ -1014,22 +923,7 @@ const RunLifeCycleStateTerminated RunLifeCycleState = `TERMINATED`
 // over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
 // state, the Jobs service terminates the cluster as soon as possible. This
 // state is terminal.
-const RunLifeCycleStateSkipped RunLifeCycleState = `SKIPPED`
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
-const RunLifeCycleStateInternalError RunLifeCycleState = `INTERNAL_ERROR`
+const RunLifeCycleStateTerminating RunLifeCycleState = `TERMINATING`
 
 type RunNow struct {
     // An optional token to guarantee the idempotency of job run requests. If a
@@ -1220,7 +1114,7 @@ type RunResultState string
 // * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
 // with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
 // * `CANCELED`: The run was canceled at user request.
-const RunResultStateSuccess RunResultState = `SUCCESS`
+const RunResultStateCanceled RunResultState = `CANCELED`
 // * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
 // with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
 // * `CANCELED`: The run was canceled at user request.
@@ -1228,11 +1122,11 @@ const RunResultStateFailed RunResultState = `FAILED`
 // * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
 // with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
 // * `CANCELED`: The run was canceled at user request.
-const RunResultStateTimedout RunResultState = `TIMEDOUT`
+const RunResultStateSuccess RunResultState = `SUCCESS`
 // * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
 // with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
 // * `CANCELED`: The run was canceled at user request.
-const RunResultStateCanceled RunResultState = `CANCELED`
+const RunResultStateTimedout RunResultState = `TIMEDOUT`
 // The result and lifecycle state of the run.
 type RunState struct {
     // A description of a run?s current location in the run lifecycle. This
@@ -1377,14 +1271,14 @@ const RunTypeJobRun RunType = `JOB_RUN`
 // [dbutils.notebook.run](..dev-tools/databricks-utilshtml#dbutils-workflow). *
 // `SUBMIT_RUN` \- Submit run. A run created with [Run
 // now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
-const RunTypeWorkflowRun RunType = `WORKFLOW_RUN`
+const RunTypeSubmitRun RunType = `SUBMIT_RUN`
 // The type of the run. * `JOB_RUN` \- Normal job run. A run created with [Run
 // now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow). * `WORKFLOW_RUN`
 // \- Workflow run. A run created with
 // [dbutils.notebook.run](..dev-tools/databricks-utilshtml#dbutils-workflow). *
 // `SUBMIT_RUN` \- Submit run. A run created with [Run
 // now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
-const RunTypeSubmitRun RunType = `SUBMIT_RUN`
+const RunTypeWorkflowRun RunType = `WORKFLOW_RUN`
 // An arbitrary object where the object key is a configuration propery name and
 // the value is a configuration property value.
 
@@ -1490,13 +1384,13 @@ type TriggerType string
 // occurs you triggered a single run on demand through the UI or the API. *
 // `RETRY`: Indicates a run that is triggered as a retry of a previously failed
 // run. This occurs when you request to re-run the job in case of failures.
-const TriggerTypePeriodic TriggerType = `PERIODIC`
+const TriggerTypeOneTime TriggerType = `ONE_TIME`
 // * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
 // scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
 // occurs you triggered a single run on demand through the UI or the API. *
 // `RETRY`: Indicates a run that is triggered as a retry of a previously failed
 // run. This occurs when you request to re-run the job in case of failures.
-const TriggerTypeOneTime TriggerType = `ONE_TIME`
+const TriggerTypePeriodic TriggerType = `PERIODIC`
 // * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
 // scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
 // occurs you triggered a single run on demand through the UI or the API. *
@@ -1534,19 +1428,125 @@ type ViewItem struct {
 type ViewType string
 
 // * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
-const ViewTypeNotebook ViewType = `NOTEBOOK`
-// * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
 const ViewTypeDashboard ViewType = `DASHBOARD`
+// * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
+const ViewTypeNotebook ViewType = `NOTEBOOK`
 // * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
 // the notebook. * `ALL`: All views of the notebook.
 type ViewsToExport string
 
 // * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
 // the notebook. * `ALL`: All views of the notebook.
+const ViewsToExportAll ViewsToExport = `ALL`
+// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
+// the notebook. * `ALL`: All views of the notebook.
 const ViewsToExportCode ViewsToExport = `CODE`
 // * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
 // the notebook. * `ALL`: All views of the notebook.
 const ViewsToExportDashboards ViewsToExport = `DASHBOARDS`
-// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
-// the notebook. * `ALL`: All views of the notebook.
-const ViewsToExportAll ViewsToExport = `ALL`
+
+type CreateResponse struct {
+    // The canonical identifier for the newly created job.
+    JobId int64 `json:"job_id,omitempty"`
+}
+
+
+type ExportRunRequest struct {
+    // The canonical identifier for the run. This field is required.
+    RunId int64 ` url:"run_id,omitempty"`
+    // Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
+    ViewsToExport ViewsToExport ` url:"views_to_export,omitempty"`
+}
+
+
+type GetRequest struct {
+    // The canonical identifier of the job to retrieve information about. This
+    // field is required.
+    JobId int64 ` url:"job_id,omitempty"`
+}
+
+
+type GetRunOutputRequest struct {
+    // The canonical identifier for the run. This field is required.
+    RunId int64 ` url:"run_id,omitempty"`
+}
+
+
+type GetRunRequest struct {
+    // Whether to include the repair history in the response.
+    IncludeHistory bool ` url:"include_history,omitempty"`
+    // The canonical identifier of the run for which to retrieve the metadata.
+    // This field is required.
+    RunId int64 ` url:"run_id,omitempty"`
+}
+
+
+type ListRequest struct {
+    // Whether to include task and cluster details in the response.
+    ExpandTasks bool ` url:"expand_tasks,omitempty"`
+    // The number of jobs to return. This value must be greater than 0 and less
+    // or equal to 25. The default value is 20.
+    Limit int ` url:"limit,omitempty"`
+    // The offset of the first job to return, relative to the most recently
+    // created job.
+    Offset int ` url:"offset,omitempty"`
+}
+
+
+type ListResponse struct {
+    
+    HasMore bool `json:"has_more,omitempty"`
+    // The list of jobs.
+    Jobs []Job `json:"jobs,omitempty"`
+}
+
+
+type ListRunsRequest struct {
+    // If active_only is `true`, only active runs are included in the results;
+    // otherwise, lists both active and completed runs. An active run is a run
+    // in the `PENDING`, `RUNNING`, or `TERMINATING`. This field cannot be
+    // `true` when completed_only is `true`.
+    ActiveOnly bool ` url:"active_only,omitempty"`
+    // If completed_only is `true`, only completed runs are included in the
+    // results; otherwise, lists both active and completed runs. This field
+    // cannot be `true` when active_only is `true`.
+    CompletedOnly bool ` url:"completed_only,omitempty"`
+    // Whether to include task and cluster details in the response.
+    ExpandTasks bool ` url:"expand_tasks,omitempty"`
+    // The job for which to list runs. If omitted, the Jobs service lists runs
+    // from all jobs.
+    JobId int64 ` url:"job_id,omitempty"`
+    // The number of runs to return. This value must be greater than 0 and less
+    // than 25\. The default value is 25\. If a request specifies a limit of 0,
+    // the service instead uses the maximum limit.
+    Limit int ` url:"limit,omitempty"`
+    // The offset of the first run to return, relative to the most recent run.
+    Offset int ` url:"offset,omitempty"`
+    // The type of runs to return. For a description of run types, see
+    // [Run](..dev-tools/api/latest/jobshtml#operation/JobsRunsGet).
+    RunType ListRunsRunType ` url:"run_type,omitempty"`
+    // Show runs that started _at or after_ this value. The value must be a UTC
+    // timestamp in milliseconds. Can be combined with _start_time_to_ to filter
+    // by a time range.
+    StartTimeFrom int ` url:"start_time_from,omitempty"`
+    // Show runs that started _at or before_ this value. The value must be a UTC
+    // timestamp in milliseconds. Can be combined with _start_time_from_ to
+    // filter by a time range.
+    StartTimeTo int ` url:"start_time_to,omitempty"`
+}
+
+
+type ListRunsRunType string
+
+
+const ListRunsRunTypeJobRun ListRunsRunType = `JOB_RUN`
+
+const ListRunsRunTypeSubmitRun ListRunsRunType = `SUBMIT_RUN`
+
+const ListRunsRunTypeWorkflowRun ListRunsRunType = `WORKFLOW_RUN`
+
+type RepairRunResponse struct {
+    // The ID of the repair.
+    RepairId int64 `json:"repair_id,omitempty"`
+}
+

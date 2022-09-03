@@ -4,6 +4,7 @@ package workspace
 
 import (
 	"context"
+	
 )
 
 
@@ -39,6 +40,7 @@ type WorkspaceService interface {
     // &#34;/Users/user@example.com/project/ScalaExampleNotebook&#34;, &#34;language&#34;:
     // &#34;SCALA&#34;, &#34;object_type&#34;: &#34;NOTEBOOK&#34;, &#34;object_id&#34;: 789 }
     GetStatus(ctx context.Context, getStatusRequest GetStatusRequest) (*GetStatusResponse, error)
+	GetStatusByPath(ctx context.Context, path string) (*GetStatusResponse, error)
     // Imports a notebook or the contents of an entire directory. If ``path``
     // already exists and ``overwrite`` is set to ``false``, this call returns
     // an error ``RESOURCE_ALREADY_EXISTS``. One can only use ``DBC`` format to
@@ -67,4 +69,5 @@ type WorkspaceService interface {
     // of the necessary parrent directories. Example of request: .. code:: json
     // { &#34;path&#34;: &#34;/Users/user@example.com/project&#34; }
     Mkdirs(ctx context.Context, mkdirsRequest MkdirsRequest) error
+	MkdirsByPath(ctx context.Context, path string) error
 }

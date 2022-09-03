@@ -1,8 +1,6 @@
 package code
 
 import (
-	"fmt"
-	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -10,56 +8,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/openapi"
 )
-
-type Named struct {
-	Name        string
-	Description string
-}
-
-// TODO: Add tests, document accepted inputs/outputs.
-func (n *Named) PascalName() string {
-	return strings.ReplaceAll(
-		strings.Title(
-			strings.ReplaceAll(
-				strings.ReplaceAll(
-					strings.ReplaceAll(n.Name, "$", ""),
-					"-", " ",
-				),
-				"_", " ")),
-		" ", "")
-}
-
-func (n *Named) CamelName() string {
-	cc := n.PascalName()
-	return strings.ToLower(cc[0:1]) + cc[1:]
-}
-
-func (n *Named) HasComment() bool {
-	return n.Description != ""
-}
-
-func (n *Named) Comment(prefix string, maxLen int) string {
-	if n.Description == "" {
-		return ""
-	}
-	var lines []string
-	currentLine := strings.Builder{}
-	for _, v := range whitespace.Split(n.Description, -1) {
-		if len(prefix)+currentLine.Len()+len(v)+1 > maxLen {
-			lines = append(lines, currentLine.String())
-			currentLine.Reset()
-		}
-		if currentLine.Len() > 0 {
-			currentLine.WriteRune(' ')
-		}
-		currentLine.WriteString(v)
-	}
-	if currentLine.Len() > 0 {
-		lines = append(lines, currentLine.String())
-		currentLine.Reset()
-	}
-	return strings.TrimLeft(prefix, "\t ") + strings.Join(lines, "\n"+prefix)
-}
 
 // Package represents a service package, which contains entities and interfaces
 // that are relevant to a single service
@@ -90,83 +38,6 @@ func (pkg *Package) Types() (types []*Entity) {
 	return types
 }
 
-type Service struct {
-	Named
-	IsRpcStyle          bool
-	Package             *Package
-	Methods             []Method
-	ByPathParamsMethods []*ByPathParamsMethod
-}
-
-type Method struct {
-	Named
-	Service   *Service
-	Verb      string
-	Path      string
-	PathParts []PathPart
-	Request   *Entity
-	Response  *Entity
-}
-
-func (m *Method) CanHaveResponseBody() bool {
-	return m.TitleVerb() == "Get" || m.TitleVerb() == "Post"
-}
-
-func (m *Method) TitleVerb() string {
-	return strings.Title(strings.ToLower(m.Verb))
-}
-
-type Field struct {
-	Named
-	Required bool
-	Entity   *Entity
-	IsJson   bool
-	IsPath   bool
-	IsQuery  bool
-}
-
-func (f *Field) IsOptionalObject() bool {
-	return f.Entity != nil && !f.Required && f.Entity.IsObject()
-}
-
-type EnumEntry struct {
-	Named
-	Entity *Entity
-	// SCIM API has schema specifiers
-	Content string
-}
-
-type Entity struct {
-	Named
-	Enum       []EnumEntry
-	ArrayValue *Entity
-	MapValue   *Entity
-	IsInt      bool
-	IsInt64    bool
-	IsFloat64  bool
-	IsBool     bool
-	IsString   bool
-	fields     map[string]Field
-}
-
-func (e *Entity) IsNumber() bool {
-	return e.IsInt64 || e.IsInt
-}
-
-func (e *Entity) IsObject() bool {
-	return len(e.fields) > 0
-}
-
-func (e *Entity) Fields() (fields []Field) {
-	for _, v := range e.fields {
-		fields = append(fields, v)
-	}
-	slices.SortFunc(fields, func(a, b Field) bool {
-		return a.Name < b.Name
-	})
-	return fields
-}
-
 func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool) *Entity {
 	if s.IsRef() {
 		// if schema is src, load it to this package
@@ -181,6 +52,7 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		Named: Named{
 			Description: s.Description,
 		},
+		enum: map[string]EnumEntry{},
 	}
 	// pull embedded types up, if they can be defined at package level
 	if s.IsDefinable() && !hasName {
@@ -247,11 +119,11 @@ func (pkg *Package) makeEnum(e *Entity, s *openapi.Schema, path []string) *Entit
 		if len(s.AliasEnum) == len(s.Enum) {
 			name = s.AliasEnum[idx]
 		}
-		e.Enum = append(e.Enum, EnumEntry{
+		e.enum[content] = EnumEntry{
 			Named:   Named{name, s.EnumDescriptions[content]},
 			Entity:  e,
 			Content: content,
-		})
+		}
 	}
 	return e
 }
@@ -288,55 +160,6 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 	return pkg.types[e.Name]
 }
 
-func (svc *Service) paramToField(op *openapi.Operation, param openapi.Parameter) *Field {
-	named := Named{param.Name, param.Description}
-	return &Field{
-		Named:    named,
-		Required: param.Required,
-		IsPath:   param.In == "path",
-		IsQuery:  param.In == "query",
-		Entity: svc.Package.schemaToEntity(param.Schema, []string{
-			op.OperationId,
-			named.PascalName(),
-		}, false),
-	}
-}
-
-func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation) *Entity {
-	if op.RequestBody == nil && len(params) == 0 {
-		return nil
-	}
-	request := &Entity{fields: map[string]Field{}}
-	if op.RequestBody != nil {
-		request = svc.Package.schemaToEntity(op.RequestBody.Schema(), []string{op.OperationId}, true)
-	}
-	if request == nil {
-		panic(fmt.Errorf("%s request body is nil", op.OperationId))
-	}
-	if request.fields == nil && request.MapValue == nil {
-		panic(fmt.Errorf("%s request schema has no fields", op.OperationId))
-	}
-	for _, v := range params {
-		param := svc.paramToField(op, v)
-		if param == nil {
-			continue
-		}
-		field, exists := request.fields[param.Name]
-		if !exists {
-			field = *param
-		}
-		field.IsPath = param.IsPath
-		field.IsQuery = param.IsQuery
-		request.fields[param.Name] = field
-	}
-	if request.Name == "" {
-		// when there was a merge of params with a request or new entity was made
-		request.Name = op.OperationId + "Request"
-		svc.Package.define(request)
-	}
-	return request
-}
-
 func (pkg *Package) define(entity *Entity) {
 	_, defined := pkg.types[entity.Name]
 	if defined {
@@ -346,16 +169,9 @@ func (pkg *Package) define(entity *Entity) {
 	pkg.types[entity.Name] = entity
 }
 
-var pathPairRE = regexp.MustCompile(`(?m)([^\{]+)(\{(\w+)\})?`)
-
-type PathPart struct {
-	Prefix string
-	Field  *Field
-}
-
 func (pkg *Package) HasPathParams() bool {
 	for _, s := range pkg.services {
-		for _, m := range s.Methods {
+		for _, m := range s.methods {
 			if len(m.PathParts) > 0 {
 				return true
 			}
@@ -364,81 +180,15 @@ func (pkg *Package) HasPathParams() bool {
 	return false
 }
 
-func (svc *Service) paramPath(path string, request *Entity, params []openapi.Parameter) (parts []PathPart) {
-	var pathParams int
-	for _, v := range params {
-		if v.In == "path" {
-			pathParams++
+func (pkg *Package) HasWaits() bool {
+	for _, s := range pkg.services {
+		for _, m := range s.methods {
+			if m.wait != nil {
+				return true
+			}
 		}
 	}
-	if pathParams == 0 {
-		return
-	}
-	for _, v := range pathPairRE.FindAllStringSubmatch(path, -1) {
-		field, ok := request.fields[v[3]]
-		if !ok {
-			parts = append(parts, PathPart{v[1], nil})
-			continue
-		}
-		parts = append(parts, PathPart{v[1], &field})
-	}
-	return
-}
-
-func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) Method {
-	request := svc.newRequest(params, op)
-	response := svc.Package.definedEntity(op.OperationId+"Response",
-		op.SuccessResponseSchema(svc.Package.Components))
-	name := op.OperationId
-	if svc.IsRpcStyle {
-		name = filepath.Base(path)
-	}
-	return Method{
-		Named:     Named{name, op.Description},
-		Service:   svc,
-		Verb:      strings.ToUpper(verb),
-		Path:      path,
-		Request:   request,
-		PathParts: svc.paramPath(path, request, params),
-		Response:  response,
-	}
-}
-
-type ByPathParamsMethod struct {
-	Named
-	Params []Field
-	Method *Method
-}
-
-func (svc *Service) makeByPathParamsMethod(p []openapi.Parameter, op *openapi.Operation, method *Method) *ByPathParamsMethod {
-	if len(p) == 0 {
-		return nil
-	}
-	if !(method.Verb == "GET" || method.Verb == "DELETE") {
-		return nil
-	}
-	params := []Field{}
-	nameParts := []string{}
-	for _, v := range p {
-		field := svc.paramToField(op, v)
-		if field == nil {
-			continue
-		}
-		if !field.IsPath {
-			continue
-		}
-		params = append(params, *field)
-		nameParts = append(nameParts, field.PascalName())
-	}
-	if len(params) == 0 {
-		return nil
-	}
-	name := fmt.Sprintf("%sBy%s", method.PascalName(), strings.Join(nameParts, "And"))
-	return &ByPathParamsMethod{
-		Named:  Named{name, ""},
-		Method: method,
-		Params: params,
-	}
+	return false
 }
 
 func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
@@ -447,17 +197,18 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 			if !op.HasTag(tag.Name) {
 				continue
 			}
-			service, ok := pkg.services[tag.Service]
+			svc, ok := pkg.services[tag.Service]
 			if !ok {
-				service = &Service{
+				svc = &Service{
 					Package:    pkg,
 					IsRpcStyle: tag.PathStyle == "rpc",
+					methods:    map[string]*Method{},
 					Named: Named{
 						Name:        tag.Service,
 						Description: tag.Description,
 					},
 				}
-				pkg.services[tag.Service] = service
+				pkg.services[tag.Service] = svc
 			}
 			params := []openapi.Parameter{}
 			seenParams := map[string]bool{}
@@ -474,16 +225,8 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 					seenParams[param.Name] = true
 				}
 			}
-			method := service.newMethod(verb, prefix, params, op)
-
-			service.Methods = append(service.Methods, method)
-			byPathParams := service.makeByPathParamsMethod(params, op, &method)
-			if byPathParams != nil {
-				service.ByPathParamsMethods = append(service.ByPathParamsMethods, byPathParams)
-			}
-			slices.SortFunc(service.Methods, func(a, b Method) bool {
-				return a.Name < b.Name
-			})
+			method := svc.newMethod(verb, prefix, params, op)
+			svc.methods[method.Name] = method
 		}
 	}
 	return nil

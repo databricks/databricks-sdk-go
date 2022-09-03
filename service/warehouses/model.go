@@ -15,15 +15,15 @@ type Channel struct {
 type ChannelName string
 
 
-const ChannelNameChannelNameUnspecified ChannelName = `CHANNEL_NAME_UNSPECIFIED`
+const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
+
+const ChannelNameChannelNameCustom ChannelName = `CHANNEL_NAME_CUSTOM`
 
 const ChannelNameChannelNamePreview ChannelName = `CHANNEL_NAME_PREVIEW`
 
-const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
-
 const ChannelNameChannelNamePrevious ChannelName = `CHANNEL_NAME_PREVIOUS`
 
-const ChannelNameChannelNameCustom ChannelName = `CHANNEL_NAME_CUSTOM`
+const ChannelNameChannelNameUnspecified ChannelName = `CHANNEL_NAME_UNSPECIFIED`
 
 type CreateWarehouseRequest struct {
     // The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
@@ -83,20 +83,20 @@ type CreateWarehouseRequest struct {
 type CreateWarehouseRequestSpotInstancePolicy string
 
 
-const CreateWarehouseRequestSpotInstancePolicyPolicyUnspecified CreateWarehouseRequestSpotInstancePolicy = `POLICY_UNSPECIFIED`
-
 const CreateWarehouseRequestSpotInstancePolicyCostOptimized CreateWarehouseRequestSpotInstancePolicy = `COST_OPTIMIZED`
+
+const CreateWarehouseRequestSpotInstancePolicyPolicyUnspecified CreateWarehouseRequestSpotInstancePolicy = `POLICY_UNSPECIFIED`
 
 const CreateWarehouseRequestSpotInstancePolicyReliabilityOptimized CreateWarehouseRequestSpotInstancePolicy = `RELIABILITY_OPTIMIZED`
 // Warehouse type (Classic/Pro)
 type CreateWarehouseRequestWarehouseType string
 
 
-const CreateWarehouseRequestWarehouseTypeTypeUnspecified CreateWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
-
 const CreateWarehouseRequestWarehouseTypeClassic CreateWarehouseRequestWarehouseType = `CLASSIC`
 
 const CreateWarehouseRequestWarehouseTypePro CreateWarehouseRequestWarehouseType = `PRO`
+
+const CreateWarehouseRequestWarehouseTypeTypeUnspecified CreateWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
 
 type CreateWarehouseResponse struct {
     // Id for the SQL warehouse. This value is unique across all SQL warehouses.
@@ -178,20 +178,20 @@ type EditWarehouseRequest struct {
 type EditWarehouseRequestSpotInstancePolicy string
 
 
-const EditWarehouseRequestSpotInstancePolicyPolicyUnspecified EditWarehouseRequestSpotInstancePolicy = `POLICY_UNSPECIFIED`
-
 const EditWarehouseRequestSpotInstancePolicyCostOptimized EditWarehouseRequestSpotInstancePolicy = `COST_OPTIMIZED`
+
+const EditWarehouseRequestSpotInstancePolicyPolicyUnspecified EditWarehouseRequestSpotInstancePolicy = `POLICY_UNSPECIFIED`
 
 const EditWarehouseRequestSpotInstancePolicyReliabilityOptimized EditWarehouseRequestSpotInstancePolicy = `RELIABILITY_OPTIMIZED`
 // Warehouse type (Classic/Pro)
 type EditWarehouseRequestWarehouseType string
 
 
-const EditWarehouseRequestWarehouseTypeTypeUnspecified EditWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
-
 const EditWarehouseRequestWarehouseTypeClassic EditWarehouseRequestWarehouseType = `CLASSIC`
 
 const EditWarehouseRequestWarehouseTypePro EditWarehouseRequestWarehouseType = `PRO`
+
+const EditWarehouseRequestWarehouseTypeTypeUnspecified EditWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
 
 type EndpointConfPair struct {
     
@@ -220,13 +220,13 @@ type EndpointHealth struct {
 type EndpointHealthStatus string
 
 
-const EndpointHealthStatusStatusUnspecified EndpointHealthStatus = `STATUS_UNSPECIFIED`
-
-const EndpointHealthStatusHealthy EndpointHealthStatus = `HEALTHY`
-
 const EndpointHealthStatusDegraded EndpointHealthStatus = `DEGRADED`
 
 const EndpointHealthStatusFailed EndpointHealthStatus = `FAILED`
+
+const EndpointHealthStatusHealthy EndpointHealthStatus = `HEALTHY`
+
+const EndpointHealthStatusStatusUnspecified EndpointHealthStatus = `STATUS_UNSPECIFIED`
 
 type EndpointInfo struct {
     // The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
@@ -305,35 +305,35 @@ type EndpointInfo struct {
 type EndpointInfoSpotInstancePolicy string
 
 
-const EndpointInfoSpotInstancePolicyPolicyUnspecified EndpointInfoSpotInstancePolicy = `POLICY_UNSPECIFIED`
-
 const EndpointInfoSpotInstancePolicyCostOptimized EndpointInfoSpotInstancePolicy = `COST_OPTIMIZED`
+
+const EndpointInfoSpotInstancePolicyPolicyUnspecified EndpointInfoSpotInstancePolicy = `POLICY_UNSPECIFIED`
 
 const EndpointInfoSpotInstancePolicyReliabilityOptimized EndpointInfoSpotInstancePolicy = `RELIABILITY_OPTIMIZED`
 // state of the endpoint
 type EndpointInfoState string
 
 
-const EndpointInfoStateStarting EndpointInfoState = `STARTING`
-
-const EndpointInfoStateRunning EndpointInfoState = `RUNNING`
-
-const EndpointInfoStateStopping EndpointInfoState = `STOPPING`
-
-const EndpointInfoStateStopped EndpointInfoState = `STOPPED`
+const EndpointInfoStateDeleted EndpointInfoState = `DELETED`
 
 const EndpointInfoStateDeleting EndpointInfoState = `DELETING`
 
-const EndpointInfoStateDeleted EndpointInfoState = `DELETED`
+const EndpointInfoStateRunning EndpointInfoState = `RUNNING`
+
+const EndpointInfoStateStarting EndpointInfoState = `STARTING`
+
+const EndpointInfoStateStopped EndpointInfoState = `STOPPED`
+
+const EndpointInfoStateStopping EndpointInfoState = `STOPPING`
 // Warehouse type (Classic/Pro)
 type EndpointInfoWarehouseType string
 
 
-const EndpointInfoWarehouseTypeTypeUnspecified EndpointInfoWarehouseType = `TYPE_UNSPECIFIED`
-
 const EndpointInfoWarehouseTypeClassic EndpointInfoWarehouseType = `CLASSIC`
 
 const EndpointInfoWarehouseTypePro EndpointInfoWarehouseType = `PRO`
+
+const EndpointInfoWarehouseTypeTypeUnspecified EndpointInfoWarehouseType = `TYPE_UNSPECIFIED`
 
 type EndpointTagPair struct {
     
@@ -432,35 +432,35 @@ type GetWarehouseResponse struct {
 type GetWarehouseResponseSpotInstancePolicy string
 
 
-const GetWarehouseResponseSpotInstancePolicyPolicyUnspecified GetWarehouseResponseSpotInstancePolicy = `POLICY_UNSPECIFIED`
-
 const GetWarehouseResponseSpotInstancePolicyCostOptimized GetWarehouseResponseSpotInstancePolicy = `COST_OPTIMIZED`
+
+const GetWarehouseResponseSpotInstancePolicyPolicyUnspecified GetWarehouseResponseSpotInstancePolicy = `POLICY_UNSPECIFIED`
 
 const GetWarehouseResponseSpotInstancePolicyReliabilityOptimized GetWarehouseResponseSpotInstancePolicy = `RELIABILITY_OPTIMIZED`
 // state of the endpoint
 type GetWarehouseResponseState string
 
 
-const GetWarehouseResponseStateStarting GetWarehouseResponseState = `STARTING`
-
-const GetWarehouseResponseStateRunning GetWarehouseResponseState = `RUNNING`
-
-const GetWarehouseResponseStateStopping GetWarehouseResponseState = `STOPPING`
-
-const GetWarehouseResponseStateStopped GetWarehouseResponseState = `STOPPED`
+const GetWarehouseResponseStateDeleted GetWarehouseResponseState = `DELETED`
 
 const GetWarehouseResponseStateDeleting GetWarehouseResponseState = `DELETING`
 
-const GetWarehouseResponseStateDeleted GetWarehouseResponseState = `DELETED`
+const GetWarehouseResponseStateRunning GetWarehouseResponseState = `RUNNING`
+
+const GetWarehouseResponseStateStarting GetWarehouseResponseState = `STARTING`
+
+const GetWarehouseResponseStateStopped GetWarehouseResponseState = `STOPPED`
+
+const GetWarehouseResponseStateStopping GetWarehouseResponseState = `STOPPING`
 // Warehouse type (Classic/Pro)
 type GetWarehouseResponseWarehouseType string
 
 
-const GetWarehouseResponseWarehouseTypeTypeUnspecified GetWarehouseResponseWarehouseType = `TYPE_UNSPECIFIED`
-
 const GetWarehouseResponseWarehouseTypeClassic GetWarehouseResponseWarehouseType = `CLASSIC`
 
 const GetWarehouseResponseWarehouseTypePro GetWarehouseResponseWarehouseType = `PRO`
+
+const GetWarehouseResponseWarehouseTypeTypeUnspecified GetWarehouseResponseWarehouseType = `TYPE_UNSPECIFIED`
 
 type GetWorkspaceWarehouseConfigResponse struct {
     // Optional: Channel selection details
@@ -500,9 +500,9 @@ type GetWorkspaceWarehouseConfigResponse struct {
 type GetWorkspaceWarehouseConfigResponseSecurityPolicy string
 
 
-const GetWorkspaceWarehouseConfigResponseSecurityPolicyNone GetWorkspaceWarehouseConfigResponseSecurityPolicy = `NONE`
-
 const GetWorkspaceWarehouseConfigResponseSecurityPolicyDataAccessControl GetWorkspaceWarehouseConfigResponseSecurityPolicy = `DATA_ACCESS_CONTROL`
+
+const GetWorkspaceWarehouseConfigResponseSecurityPolicyNone GetWorkspaceWarehouseConfigResponseSecurityPolicy = `NONE`
 
 const GetWorkspaceWarehouseConfigResponseSecurityPolicyPassthrough GetWorkspaceWarehouseConfigResponseSecurityPolicy = `PASSTHROUGH`
 
@@ -579,9 +579,9 @@ type SetWorkspaceWarehouseConfigRequest struct {
 type SetWorkspaceWarehouseConfigRequestSecurityPolicy string
 
 
-const SetWorkspaceWarehouseConfigRequestSecurityPolicyNone SetWorkspaceWarehouseConfigRequestSecurityPolicy = `NONE`
-
 const SetWorkspaceWarehouseConfigRequestSecurityPolicyDataAccessControl SetWorkspaceWarehouseConfigRequestSecurityPolicy = `DATA_ACCESS_CONTROL`
+
+const SetWorkspaceWarehouseConfigRequestSecurityPolicyNone SetWorkspaceWarehouseConfigRequestSecurityPolicy = `NONE`
 
 const SetWorkspaceWarehouseConfigRequestSecurityPolicyPassthrough SetWorkspaceWarehouseConfigRequestSecurityPolicy = `PASSTHROUGH`
 
@@ -611,174 +611,174 @@ type TerminationReason struct {
 type TerminationReasonCode string
 
 
-const TerminationReasonCodeUnknown TerminationReasonCode = `UNKNOWN`
+const TerminationReasonCodeAbuseDetected TerminationReasonCode = `ABUSE_DETECTED`
 
-const TerminationReasonCodeUserRequest TerminationReasonCode = `USER_REQUEST`
+const TerminationReasonCodeAttachProjectFailure TerminationReasonCode = `ATTACH_PROJECT_FAILURE`
 
-const TerminationReasonCodeJobFinished TerminationReasonCode = `JOB_FINISHED`
+const TerminationReasonCodeAwsAuthorizationFailure TerminationReasonCode = `AWS_AUTHORIZATION_FAILURE`
 
-const TerminationReasonCodeInactivity TerminationReasonCode = `INACTIVITY`
+const TerminationReasonCodeAwsInsufficientFreeAddressesInSubnetFailure TerminationReasonCode = `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`
 
-const TerminationReasonCodeCloudProviderShutdown TerminationReasonCode = `CLOUD_PROVIDER_SHUTDOWN`
+const TerminationReasonCodeAwsInsufficientInstanceCapacityFailure TerminationReasonCode = `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`
 
-const TerminationReasonCodeCommunicationLost TerminationReasonCode = `COMMUNICATION_LOST`
+const TerminationReasonCodeAwsMaxSpotInstanceCountExceededFailure TerminationReasonCode = `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`
 
-const TerminationReasonCodeCloudProviderLaunchFailure TerminationReasonCode = `CLOUD_PROVIDER_LAUNCH_FAILURE`
+const TerminationReasonCodeAwsRequestLimitExceeded TerminationReasonCode = `AWS_REQUEST_LIMIT_EXCEEDED`
 
-const TerminationReasonCodeInitScriptFailure TerminationReasonCode = `INIT_SCRIPT_FAILURE`
+const TerminationReasonCodeAwsUnsupportedFailure TerminationReasonCode = `AWS_UNSUPPORTED_FAILURE`
 
-const TerminationReasonCodeSparkStartupFailure TerminationReasonCode = `SPARK_STARTUP_FAILURE`
+const TerminationReasonCodeAzureByokKeyPermissionFailure TerminationReasonCode = `AZURE_BYOK_KEY_PERMISSION_FAILURE`
 
-const TerminationReasonCodeInvalidArgument TerminationReasonCode = `INVALID_ARGUMENT`
+const TerminationReasonCodeAzureEphemeralDiskFailure TerminationReasonCode = `AZURE_EPHEMERAL_DISK_FAILURE`
 
-const TerminationReasonCodeUnexpectedLaunchFailure TerminationReasonCode = `UNEXPECTED_LAUNCH_FAILURE`
+const TerminationReasonCodeAzureInvalidDeploymentTemplate TerminationReasonCode = `AZURE_INVALID_DEPLOYMENT_TEMPLATE`
 
-const TerminationReasonCodeInternalError TerminationReasonCode = `INTERNAL_ERROR`
+const TerminationReasonCodeAzureOperationNotAllowedException TerminationReasonCode = `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`
 
-const TerminationReasonCodeInstanceUnreachable TerminationReasonCode = `INSTANCE_UNREACHABLE`
-
-const TerminationReasonCodeRequestRejected TerminationReasonCode = `REQUEST_REJECTED`
-
-const TerminationReasonCodeTrialExpired TerminationReasonCode = `TRIAL_EXPIRED`
-
-const TerminationReasonCodeDriverUnreachable TerminationReasonCode = `DRIVER_UNREACHABLE`
-
-const TerminationReasonCodeSparkError TerminationReasonCode = `SPARK_ERROR`
-
-const TerminationReasonCodeDriverUnresponsive TerminationReasonCode = `DRIVER_UNRESPONSIVE`
-
-const TerminationReasonCodeMetastoreComponentUnhealthy TerminationReasonCode = `METASTORE_COMPONENT_UNHEALTHY`
-
-const TerminationReasonCodeDbfsComponentUnhealthy TerminationReasonCode = `DBFS_COMPONENT_UNHEALTHY`
-
-const TerminationReasonCodeExecutionComponentUnhealthy TerminationReasonCode = `EXECUTION_COMPONENT_UNHEALTHY`
+const TerminationReasonCodeAzureQuotaExceededException TerminationReasonCode = `AZURE_QUOTA_EXCEEDED_EXCEPTION`
 
 const TerminationReasonCodeAzureResourceManagerThrottling TerminationReasonCode = `AZURE_RESOURCE_MANAGER_THROTTLING`
 
 const TerminationReasonCodeAzureResourceProviderThrottling TerminationReasonCode = `AZURE_RESOURCE_PROVIDER_THROTTLING`
 
-const TerminationReasonCodeNetworkConfigurationFailure TerminationReasonCode = `NETWORK_CONFIGURATION_FAILURE`
-
-const TerminationReasonCodeContainerLaunchFailure TerminationReasonCode = `CONTAINER_LAUNCH_FAILURE`
-
-const TerminationReasonCodeInstancePoolClusterFailure TerminationReasonCode = `INSTANCE_POOL_CLUSTER_FAILURE`
-
-const TerminationReasonCodeSkippedSlowNodes TerminationReasonCode = `SKIPPED_SLOW_NODES`
-
-const TerminationReasonCodeAttachProjectFailure TerminationReasonCode = `ATTACH_PROJECT_FAILURE`
-
-const TerminationReasonCodeUpdateInstanceProfileFailure TerminationReasonCode = `UPDATE_INSTANCE_PROFILE_FAILURE`
-
-const TerminationReasonCodeDatabaseConnectionFailure TerminationReasonCode = `DATABASE_CONNECTION_FAILURE`
-
-const TerminationReasonCodeRequestThrottled TerminationReasonCode = `REQUEST_THROTTLED`
-
-const TerminationReasonCodeSelfBootstrapFailure TerminationReasonCode = `SELF_BOOTSTRAP_FAILURE`
-
-const TerminationReasonCodeGlobalInitScriptFailure TerminationReasonCode = `GLOBAL_INIT_SCRIPT_FAILURE`
-
-const TerminationReasonCodeSlowImageDownload TerminationReasonCode = `SLOW_IMAGE_DOWNLOAD`
-
-const TerminationReasonCodeInvalidSparkImage TerminationReasonCode = `INVALID_SPARK_IMAGE`
-
-const TerminationReasonCodeNpipTunnelTokenFailure TerminationReasonCode = `NPIP_TUNNEL_TOKEN_FAILURE`
-
-const TerminationReasonCodeHiveMetastoreProvisioningFailure TerminationReasonCode = `HIVE_METASTORE_PROVISIONING_FAILURE`
-
-const TerminationReasonCodeAzureInvalidDeploymentTemplate TerminationReasonCode = `AZURE_INVALID_DEPLOYMENT_TEMPLATE`
-
 const TerminationReasonCodeAzureUnexpectedDeploymentTemplateFailure TerminationReasonCode = `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`
 
-const TerminationReasonCodeSubnetExhaustedFailure TerminationReasonCode = `SUBNET_EXHAUSTED_FAILURE`
-
-const TerminationReasonCodeBootstrapTimeout TerminationReasonCode = `BOOTSTRAP_TIMEOUT`
-
-const TerminationReasonCodeStorageDownloadFailure TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE`
-
-const TerminationReasonCodeControlPlaneRequestFailure TerminationReasonCode = `CONTROL_PLANE_REQUEST_FAILURE`
-
-const TerminationReasonCodeBootstrapTimeoutCloudProviderException TerminationReasonCode = `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`
-
-const TerminationReasonCodeAwsInsufficientInstanceCapacityFailure TerminationReasonCode = `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`
-
-const TerminationReasonCodeDockerImagePullFailure TerminationReasonCode = `DOCKER_IMAGE_PULL_FAILURE`
+const TerminationReasonCodeAzureVmExtensionFailure TerminationReasonCode = `AZURE_VM_EXTENSION_FAILURE`
 
 const TerminationReasonCodeAzureVnetConfigurationFailure TerminationReasonCode = `AZURE_VNET_CONFIGURATION_FAILURE`
 
-const TerminationReasonCodeNpipTunnelSetupFailure TerminationReasonCode = `NPIP_TUNNEL_SETUP_FAILURE`
+const TerminationReasonCodeBootstrapTimeout TerminationReasonCode = `BOOTSTRAP_TIMEOUT`
 
-const TerminationReasonCodeAwsAuthorizationFailure TerminationReasonCode = `AWS_AUTHORIZATION_FAILURE`
+const TerminationReasonCodeBootstrapTimeoutCloudProviderException TerminationReasonCode = `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`
 
-const TerminationReasonCodeNephosResourceManagement TerminationReasonCode = `NEPHOS_RESOURCE_MANAGEMENT`
+const TerminationReasonCodeCloudProviderDiskSetupFailure TerminationReasonCode = `CLOUD_PROVIDER_DISK_SETUP_FAILURE`
 
-const TerminationReasonCodeStsClientSetupFailure TerminationReasonCode = `STS_CLIENT_SETUP_FAILURE`
+const TerminationReasonCodeCloudProviderLaunchFailure TerminationReasonCode = `CLOUD_PROVIDER_LAUNCH_FAILURE`
 
-const TerminationReasonCodeSecurityDaemonRegistrationException TerminationReasonCode = `SECURITY_DAEMON_REGISTRATION_EXCEPTION`
+const TerminationReasonCodeCloudProviderResourceStockout TerminationReasonCode = `CLOUD_PROVIDER_RESOURCE_STOCKOUT`
 
-const TerminationReasonCodeAwsRequestLimitExceeded TerminationReasonCode = `AWS_REQUEST_LIMIT_EXCEEDED`
+const TerminationReasonCodeCloudProviderShutdown TerminationReasonCode = `CLOUD_PROVIDER_SHUTDOWN`
 
-const TerminationReasonCodeAwsInsufficientFreeAddressesInSubnetFailure TerminationReasonCode = `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`
+const TerminationReasonCodeCommunicationLost TerminationReasonCode = `COMMUNICATION_LOST`
 
-const TerminationReasonCodeAwsUnsupportedFailure TerminationReasonCode = `AWS_UNSUPPORTED_FAILURE`
+const TerminationReasonCodeContainerLaunchFailure TerminationReasonCode = `CONTAINER_LAUNCH_FAILURE`
 
-const TerminationReasonCodeAzureQuotaExceededException TerminationReasonCode = `AZURE_QUOTA_EXCEEDED_EXCEPTION`
+const TerminationReasonCodeControlPlaneRequestFailure TerminationReasonCode = `CONTROL_PLANE_REQUEST_FAILURE`
 
-const TerminationReasonCodeAzureOperationNotAllowedException TerminationReasonCode = `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`
+const TerminationReasonCodeDatabaseConnectionFailure TerminationReasonCode = `DATABASE_CONNECTION_FAILURE`
 
-const TerminationReasonCodeNfsMountFailure TerminationReasonCode = `NFS_MOUNT_FAILURE`
+const TerminationReasonCodeDbfsComponentUnhealthy TerminationReasonCode = `DBFS_COMPONENT_UNHEALTHY`
+
+const TerminationReasonCodeDockerImagePullFailure TerminationReasonCode = `DOCKER_IMAGE_PULL_FAILURE`
+
+const TerminationReasonCodeDriverUnreachable TerminationReasonCode = `DRIVER_UNREACHABLE`
+
+const TerminationReasonCodeDriverUnresponsive TerminationReasonCode = `DRIVER_UNRESPONSIVE`
+
+const TerminationReasonCodeExecutionComponentUnhealthy TerminationReasonCode = `EXECUTION_COMPONENT_UNHEALTHY`
+
+const TerminationReasonCodeGcpQuotaExceeded TerminationReasonCode = `GCP_QUOTA_EXCEEDED`
+
+const TerminationReasonCodeGcpServiceAccountDeleted TerminationReasonCode = `GCP_SERVICE_ACCOUNT_DELETED`
+
+const TerminationReasonCodeGlobalInitScriptFailure TerminationReasonCode = `GLOBAL_INIT_SCRIPT_FAILURE`
+
+const TerminationReasonCodeHiveMetastoreProvisioningFailure TerminationReasonCode = `HIVE_METASTORE_PROVISIONING_FAILURE`
+
+const TerminationReasonCodeImagePullPermissionDenied TerminationReasonCode = `IMAGE_PULL_PERMISSION_DENIED`
+
+const TerminationReasonCodeInactivity TerminationReasonCode = `INACTIVITY`
+
+const TerminationReasonCodeInitScriptFailure TerminationReasonCode = `INIT_SCRIPT_FAILURE`
+
+const TerminationReasonCodeInstancePoolClusterFailure TerminationReasonCode = `INSTANCE_POOL_CLUSTER_FAILURE`
+
+const TerminationReasonCodeInstanceUnreachable TerminationReasonCode = `INSTANCE_UNREACHABLE`
+
+const TerminationReasonCodeInternalError TerminationReasonCode = `INTERNAL_ERROR`
+
+const TerminationReasonCodeInvalidArgument TerminationReasonCode = `INVALID_ARGUMENT`
+
+const TerminationReasonCodeInvalidSparkImage TerminationReasonCode = `INVALID_SPARK_IMAGE`
+
+const TerminationReasonCodeIpExhaustionFailure TerminationReasonCode = `IP_EXHAUSTION_FAILURE`
+
+const TerminationReasonCodeJobFinished TerminationReasonCode = `JOB_FINISHED`
 
 const TerminationReasonCodeKSAutoscalingFailure TerminationReasonCode = `K8S_AUTOSCALING_FAILURE`
 
 const TerminationReasonCodeKSDbrClusterLaunchTimeout TerminationReasonCode = `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`
 
-const TerminationReasonCodeSparkImageDownloadFailure TerminationReasonCode = `SPARK_IMAGE_DOWNLOAD_FAILURE`
+const TerminationReasonCodeMetastoreComponentUnhealthy TerminationReasonCode = `METASTORE_COMPONENT_UNHEALTHY`
 
-const TerminationReasonCodeAzureVmExtensionFailure TerminationReasonCode = `AZURE_VM_EXTENSION_FAILURE`
+const TerminationReasonCodeNephosResourceManagement TerminationReasonCode = `NEPHOS_RESOURCE_MANAGEMENT`
 
-const TerminationReasonCodeWorkspaceCancelledError TerminationReasonCode = `WORKSPACE_CANCELLED_ERROR`
+const TerminationReasonCodeNetworkConfigurationFailure TerminationReasonCode = `NETWORK_CONFIGURATION_FAILURE`
 
-const TerminationReasonCodeAwsMaxSpotInstanceCountExceededFailure TerminationReasonCode = `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`
+const TerminationReasonCodeNfsMountFailure TerminationReasonCode = `NFS_MOUNT_FAILURE`
 
-const TerminationReasonCodeTemporarilyUnavailable TerminationReasonCode = `TEMPORARILY_UNAVAILABLE`
+const TerminationReasonCodeNpipTunnelSetupFailure TerminationReasonCode = `NPIP_TUNNEL_SETUP_FAILURE`
 
-const TerminationReasonCodeWorkerSetupFailure TerminationReasonCode = `WORKER_SETUP_FAILURE`
+const TerminationReasonCodeNpipTunnelTokenFailure TerminationReasonCode = `NPIP_TUNNEL_TOKEN_FAILURE`
 
-const TerminationReasonCodeIpExhaustionFailure TerminationReasonCode = `IP_EXHAUSTION_FAILURE`
+const TerminationReasonCodeRequestRejected TerminationReasonCode = `REQUEST_REJECTED`
 
-const TerminationReasonCodeGcpQuotaExceeded TerminationReasonCode = `GCP_QUOTA_EXCEEDED`
-
-const TerminationReasonCodeCloudProviderResourceStockout TerminationReasonCode = `CLOUD_PROVIDER_RESOURCE_STOCKOUT`
-
-const TerminationReasonCodeGcpServiceAccountDeleted TerminationReasonCode = `GCP_SERVICE_ACCOUNT_DELETED`
-
-const TerminationReasonCodeAzureByokKeyPermissionFailure TerminationReasonCode = `AZURE_BYOK_KEY_PERMISSION_FAILURE`
-
-const TerminationReasonCodeSpotInstanceTermination TerminationReasonCode = `SPOT_INSTANCE_TERMINATION`
-
-const TerminationReasonCodeAzureEphemeralDiskFailure TerminationReasonCode = `AZURE_EPHEMERAL_DISK_FAILURE`
-
-const TerminationReasonCodeAbuseDetected TerminationReasonCode = `ABUSE_DETECTED`
-
-const TerminationReasonCodeImagePullPermissionDenied TerminationReasonCode = `IMAGE_PULL_PERMISSION_DENIED`
-
-const TerminationReasonCodeWorkspaceConfigurationError TerminationReasonCode = `WORKSPACE_CONFIGURATION_ERROR`
+const TerminationReasonCodeRequestThrottled TerminationReasonCode = `REQUEST_THROTTLED`
 
 const TerminationReasonCodeSecretResolutionError TerminationReasonCode = `SECRET_RESOLUTION_ERROR`
 
+const TerminationReasonCodeSecurityDaemonRegistrationException TerminationReasonCode = `SECURITY_DAEMON_REGISTRATION_EXCEPTION`
+
+const TerminationReasonCodeSelfBootstrapFailure TerminationReasonCode = `SELF_BOOTSTRAP_FAILURE`
+
+const TerminationReasonCodeSkippedSlowNodes TerminationReasonCode = `SKIPPED_SLOW_NODES`
+
+const TerminationReasonCodeSlowImageDownload TerminationReasonCode = `SLOW_IMAGE_DOWNLOAD`
+
+const TerminationReasonCodeSparkError TerminationReasonCode = `SPARK_ERROR`
+
+const TerminationReasonCodeSparkImageDownloadFailure TerminationReasonCode = `SPARK_IMAGE_DOWNLOAD_FAILURE`
+
+const TerminationReasonCodeSparkStartupFailure TerminationReasonCode = `SPARK_STARTUP_FAILURE`
+
+const TerminationReasonCodeSpotInstanceTermination TerminationReasonCode = `SPOT_INSTANCE_TERMINATION`
+
+const TerminationReasonCodeStorageDownloadFailure TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE`
+
+const TerminationReasonCodeStsClientSetupFailure TerminationReasonCode = `STS_CLIENT_SETUP_FAILURE`
+
+const TerminationReasonCodeSubnetExhaustedFailure TerminationReasonCode = `SUBNET_EXHAUSTED_FAILURE`
+
+const TerminationReasonCodeTemporarilyUnavailable TerminationReasonCode = `TEMPORARILY_UNAVAILABLE`
+
+const TerminationReasonCodeTrialExpired TerminationReasonCode = `TRIAL_EXPIRED`
+
+const TerminationReasonCodeUnexpectedLaunchFailure TerminationReasonCode = `UNEXPECTED_LAUNCH_FAILURE`
+
+const TerminationReasonCodeUnknown TerminationReasonCode = `UNKNOWN`
+
 const TerminationReasonCodeUnsupportedInstanceType TerminationReasonCode = `UNSUPPORTED_INSTANCE_TYPE`
 
-const TerminationReasonCodeCloudProviderDiskSetupFailure TerminationReasonCode = `CLOUD_PROVIDER_DISK_SETUP_FAILURE`
+const TerminationReasonCodeUpdateInstanceProfileFailure TerminationReasonCode = `UPDATE_INSTANCE_PROFILE_FAILURE`
+
+const TerminationReasonCodeUserRequest TerminationReasonCode = `USER_REQUEST`
+
+const TerminationReasonCodeWorkerSetupFailure TerminationReasonCode = `WORKER_SETUP_FAILURE`
+
+const TerminationReasonCodeWorkspaceCancelledError TerminationReasonCode = `WORKSPACE_CANCELLED_ERROR`
+
+const TerminationReasonCodeWorkspaceConfigurationError TerminationReasonCode = `WORKSPACE_CONFIGURATION_ERROR`
 // type of the termination
 type TerminationReasonType string
 
 
-const TerminationReasonTypeSuccess TerminationReasonType = `SUCCESS`
-
 const TerminationReasonTypeClientError TerminationReasonType = `CLIENT_ERROR`
+
+const TerminationReasonTypeCloudFailure TerminationReasonType = `CLOUD_FAILURE`
 
 const TerminationReasonTypeServiceFault TerminationReasonType = `SERVICE_FAULT`
 
-const TerminationReasonTypeCloudFailure TerminationReasonType = `CLOUD_FAILURE`
+const TerminationReasonTypeSuccess TerminationReasonType = `SUCCESS`
 
 type WarehouseTypePair struct {
     // If set to false the specific warehouse type will not be be allowed as a
@@ -792,8 +792,8 @@ type WarehouseTypePair struct {
 type WarehouseTypePairWarehouseType string
 
 
-const WarehouseTypePairWarehouseTypeTypeUnspecified WarehouseTypePairWarehouseType = `TYPE_UNSPECIFIED`
-
 const WarehouseTypePairWarehouseTypeClassic WarehouseTypePairWarehouseType = `CLASSIC`
 
 const WarehouseTypePairWarehouseTypePro WarehouseTypePairWarehouseType = `PRO`
+
+const WarehouseTypePairWarehouseTypeTypeUnspecified WarehouseTypePairWarehouseType = `TYPE_UNSPECIFIED`

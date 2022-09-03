@@ -5,7 +5,7 @@ package permissions
 import (
 	"context"
 	"fmt"
-
+	
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -28,11 +28,27 @@ func (a *PermissionsAPI) GetObjectPermissions(ctx context.Context, request GetOb
 }
 
 
+func (a *PermissionsAPI) GetObjectPermissionsByObjectTypeAndObjectId(ctx context.Context, objectType string, objectId string) (*ObjectPermissions, error) {
+	return a.GetObjectPermissions(ctx, GetObjectPermissionsRequest{
+		ObjectType: objectType,
+		ObjectId: objectId,
+	})
+}
+
+
 func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error) {
 	var getPermissionLevelsResponse GetPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", request.RequestObjectType, request.RequestObjectId)
 	err := a.client.Get(ctx, path, request, &getPermissionLevelsResponse)
 	return &getPermissionLevelsResponse, err
+}
+
+
+func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error) {
+	return a.GetPermissionLevels(ctx, GetPermissionLevelsRequest{
+		RequestObjectType: requestObjectType,
+		RequestObjectId: requestObjectId,
+	})
 }
 
 
@@ -49,17 +65,3 @@ func (a *PermissionsAPI) UpdateObjectPermissions(ctx context.Context, request Up
 	return err
 }
 
-
-func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error) {
-	return a.GetPermissionLevels(ctx, GetPermissionLevelsRequest{
-		RequestObjectType: requestObjectType,
-		RequestObjectId: requestObjectId,
-	})
-}
-
-func (a *PermissionsAPI) GetObjectPermissionsByObjectTypeAndObjectId(ctx context.Context, objectType string, objectId string) (*ObjectPermissions, error) {
-	return a.GetObjectPermissions(ctx, GetObjectPermissionsRequest{
-		ObjectType: objectType,
-		ObjectId: objectId,
-	})
-}

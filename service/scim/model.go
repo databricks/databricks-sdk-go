@@ -259,15 +259,15 @@ type ServicePrincipal struct {
 type Urn string
 
 // Defines type of SCIM protocol entity
-const UrnUser Urn = `urn:ietf:params:scim:schemas:core:2.0:User`
-// Defines type of SCIM protocol entity
 const UrnGroup Urn = `urn:ietf:params:scim:schemas:core:2.0:Group`
+// Defines type of SCIM protocol entity
+const UrnPatchOp Urn = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
 // Defines type of SCIM protocol entity
 const UrnServicePrincipal Urn = `urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal`
 // Defines type of SCIM protocol entity
-const UrnWorkspaceUser Urn = `urn:ietf:params:scim:schemas:extension:workspace:2.0:User`
+const UrnUser Urn = `urn:ietf:params:scim:schemas:core:2.0:User`
 // Defines type of SCIM protocol entity
-const UrnPatchOp Urn = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
+const UrnWorkspaceUser Urn = `urn:ietf:params:scim:schemas:extension:workspace:2.0:User`
 
 type User struct {
     // If this user is active

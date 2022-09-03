@@ -5,7 +5,7 @@ package unitycatalog
 import (
 	"context"
 	"fmt"
-
+	
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -35,11 +35,25 @@ func (a *CatalogsAPI) DeleteCatalog(ctx context.Context, request DeleteCatalogRe
 }
 
 
+func (a *CatalogsAPI) DeleteCatalogByNameArg(ctx context.Context, nameArg string) error {
+	return a.DeleteCatalog(ctx, DeleteCatalogRequest{
+		NameArg: nameArg,
+	})
+}
+
+
 func (a *CatalogsAPI) GetCatalog(ctx context.Context, request GetCatalogRequest) (*GetCatalogResponse, error) {
 	var getCatalogResponse GetCatalogResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.NameArg)
 	err := a.client.Get(ctx, path, request, &getCatalogResponse)
 	return &getCatalogResponse, err
+}
+
+
+func (a *CatalogsAPI) GetCatalogByNameArg(ctx context.Context, nameArg string) (*GetCatalogResponse, error) {
+	return a.GetCatalog(ctx, GetCatalogRequest{
+		NameArg: nameArg,
+	})
 }
 
 
@@ -57,18 +71,6 @@ func (a *CatalogsAPI) UpdateCatalog(ctx context.Context, request UpdateCatalogRe
 	return err
 }
 
-
-func (a *CatalogsAPI) GetCatalogByNameArg(ctx context.Context, nameArg string) (*GetCatalogResponse, error) {
-	return a.GetCatalog(ctx, GetCatalogRequest{
-		NameArg: nameArg,
-	})
-}
-
-func (a *CatalogsAPI) DeleteCatalogByNameArg(ctx context.Context, nameArg string) error {
-	return a.DeleteCatalog(ctx, DeleteCatalogRequest{
-		NameArg: nameArg,
-	})
-}
 
 func NewExternalLocations(client *client.DatabricksClient) ExternalLocationsService {
 	return &ExternalLocationsAPI{
@@ -96,11 +98,25 @@ func (a *ExternalLocationsAPI) DeleteExternalLocation(ctx context.Context, reque
 }
 
 
+func (a *ExternalLocationsAPI) DeleteExternalLocationByNameArg(ctx context.Context, nameArg string) error {
+	return a.DeleteExternalLocation(ctx, DeleteExternalLocationRequest{
+		NameArg: nameArg,
+	})
+}
+
+
 func (a *ExternalLocationsAPI) GetExternalLocation(ctx context.Context, request GetExternalLocationRequest) (*GetExternalLocationResponse, error) {
 	var getExternalLocationResponse GetExternalLocationResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.NameArg)
 	err := a.client.Get(ctx, path, request, &getExternalLocationResponse)
 	return &getExternalLocationResponse, err
+}
+
+
+func (a *ExternalLocationsAPI) GetExternalLocationByNameArg(ctx context.Context, nameArg string) (*GetExternalLocationResponse, error) {
+	return a.GetExternalLocation(ctx, GetExternalLocationRequest{
+		NameArg: nameArg,
+	})
 }
 
 
@@ -118,18 +134,6 @@ func (a *ExternalLocationsAPI) UpdateExternalLocation(ctx context.Context, reque
 	return err
 }
 
-
-func (a *ExternalLocationsAPI) GetExternalLocationByNameArg(ctx context.Context, nameArg string) (*GetExternalLocationResponse, error) {
-	return a.GetExternalLocation(ctx, GetExternalLocationRequest{
-		NameArg: nameArg,
-	})
-}
-
-func (a *ExternalLocationsAPI) DeleteExternalLocationByNameArg(ctx context.Context, nameArg string) error {
-	return a.DeleteExternalLocation(ctx, DeleteExternalLocationRequest{
-		NameArg: nameArg,
-	})
-}
 
 func NewGrants(client *client.DatabricksClient) GrantsService {
 	return &GrantsAPI{
@@ -150,19 +154,20 @@ func (a *GrantsAPI) GetPermissions(ctx context.Context, request GetPermissionsRe
 }
 
 
-func (a *GrantsAPI) UpdatePermissions(ctx context.Context, request UpdatePermissionsRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.SecurableFullName)
-	err := a.client.Patch(ctx, path, request)
-	return err
-}
-
-
 func (a *GrantsAPI) GetPermissionsBySecurableTypeAndSecurableFullName(ctx context.Context, securableType string, securableFullName string) (*GetPermissionsResponse, error) {
 	return a.GetPermissions(ctx, GetPermissionsRequest{
 		SecurableType: securableType,
 		SecurableFullName: securableFullName,
 	})
 }
+
+
+func (a *GrantsAPI) UpdatePermissions(ctx context.Context, request UpdatePermissionsRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.SecurableFullName)
+	err := a.client.Patch(ctx, path, request)
+	return err
+}
+
 
 func NewMetastores(client *client.DatabricksClient) MetastoresService {
 	return &MetastoresAPI{
@@ -197,10 +202,24 @@ func (a *MetastoresAPI) DeleteMetastore(ctx context.Context, request DeleteMetas
 }
 
 
+func (a *MetastoresAPI) DeleteMetastoreById(ctx context.Context, id string) error {
+	return a.DeleteMetastore(ctx, DeleteMetastoreRequest{
+		Id: id,
+	})
+}
+
+
 func (a *MetastoresAPI) DeleteMetastoreAssignment(ctx context.Context, request DeleteMetastoreAssignmentRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
 	err := a.client.Delete(ctx, path, request)
 	return err
+}
+
+
+func (a *MetastoresAPI) DeleteMetastoreAssignmentByWorkspaceId(ctx context.Context, workspaceId int) error {
+	return a.DeleteMetastoreAssignment(ctx, DeleteMetastoreAssignmentRequest{
+		WorkspaceId: workspaceId,
+	})
 }
 
 
@@ -209,6 +228,13 @@ func (a *MetastoresAPI) GetMetastore(ctx context.Context, request GetMetastoreRe
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
 	err := a.client.Get(ctx, path, request, &getMetastoreResponse)
 	return &getMetastoreResponse, err
+}
+
+
+func (a *MetastoresAPI) GetMetastoreById(ctx context.Context, id string) (*GetMetastoreResponse, error) {
+	return a.GetMetastore(ctx, GetMetastoreRequest{
+		Id: id,
+	})
 }
 
 
@@ -242,24 +268,6 @@ func (a *MetastoresAPI) UpdateMetastoreAssignment(ctx context.Context, request U
 }
 
 
-func (a *MetastoresAPI) GetMetastoreById(ctx context.Context, id string) (*GetMetastoreResponse, error) {
-	return a.GetMetastore(ctx, GetMetastoreRequest{
-		Id: id,
-	})
-}
-
-func (a *MetastoresAPI) DeleteMetastoreById(ctx context.Context, id string) error {
-	return a.DeleteMetastore(ctx, DeleteMetastoreRequest{
-		Id: id,
-	})
-}
-
-func (a *MetastoresAPI) DeleteMetastoreAssignmentByWorkspaceId(ctx context.Context, workspaceId int) error {
-	return a.DeleteMetastoreAssignment(ctx, DeleteMetastoreAssignmentRequest{
-		WorkspaceId: workspaceId,
-	})
-}
-
 func NewProviders(client *client.DatabricksClient) ProvidersService {
 	return &ProvidersAPI{
 		client: client,
@@ -286,6 +294,13 @@ func (a *ProvidersAPI) DeleteProvider(ctx context.Context, request DeleteProvide
 }
 
 
+func (a *ProvidersAPI) DeleteProviderByNameArg(ctx context.Context, nameArg string) error {
+	return a.DeleteProvider(ctx, DeleteProviderRequest{
+		NameArg: nameArg,
+	})
+}
+
+
 func (a *ProvidersAPI) GetProvider(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
 	var getProviderResponse GetProviderResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.NameArg)
@@ -294,11 +309,25 @@ func (a *ProvidersAPI) GetProvider(ctx context.Context, request GetProviderReque
 }
 
 
+func (a *ProvidersAPI) GetProviderByNameArg(ctx context.Context, nameArg string) (*GetProviderResponse, error) {
+	return a.GetProvider(ctx, GetProviderRequest{
+		NameArg: nameArg,
+	})
+}
+
+
 func (a *ProvidersAPI) ListProviderShares(ctx context.Context, request ListProviderSharesRequest) (*ListProviderSharesResponse, error) {
 	var listProviderSharesResponse ListProviderSharesResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v/shares", request.ProviderNameArg)
 	err := a.client.Get(ctx, path, request, &listProviderSharesResponse)
 	return &listProviderSharesResponse, err
+}
+
+
+func (a *ProvidersAPI) ListProviderSharesByProviderNameArg(ctx context.Context, providerNameArg string) (*ListProviderSharesResponse, error) {
+	return a.ListProviderShares(ctx, ListProviderSharesRequest{
+		ProviderNameArg: providerNameArg,
+	})
 }
 
 
@@ -317,24 +346,6 @@ func (a *ProvidersAPI) UpdateProvider(ctx context.Context, request UpdateProvide
 }
 
 
-func (a *ProvidersAPI) GetProviderByNameArg(ctx context.Context, nameArg string) (*GetProviderResponse, error) {
-	return a.GetProvider(ctx, GetProviderRequest{
-		NameArg: nameArg,
-	})
-}
-
-func (a *ProvidersAPI) DeleteProviderByNameArg(ctx context.Context, nameArg string) error {
-	return a.DeleteProvider(ctx, DeleteProviderRequest{
-		NameArg: nameArg,
-	})
-}
-
-func (a *ProvidersAPI) ListProviderSharesByProviderNameArg(ctx context.Context, providerNameArg string) (*ListProviderSharesResponse, error) {
-	return a.ListProviderShares(ctx, ListProviderSharesRequest{
-		ProviderNameArg: providerNameArg,
-	})
-}
-
 func NewRecipientActivation(client *client.DatabricksClient) RecipientActivationService {
 	return &RecipientActivationAPI{
 		client: client,
@@ -352,6 +363,13 @@ func (a *RecipientActivationAPI) GetActivationUrlInfo(ctx context.Context, reque
 	return err
 }
 
+
+func (a *RecipientActivationAPI) GetActivationUrlInfoByActivationUrl(ctx context.Context, activationUrl string) error {
+	return a.GetActivationUrlInfo(ctx, GetActivationUrlInfoRequest{
+		ActivationUrl: activationUrl,
+	})
+}
+
 // Rpc to retrieve access token with an activation token. This is an public API
 // without any authentication.
 func (a *RecipientActivationAPI) RetrieveToken(ctx context.Context, request RetrieveTokenRequest) (*RetrieveTokenResponse, error) {
@@ -361,18 +379,14 @@ func (a *RecipientActivationAPI) RetrieveToken(ctx context.Context, request Retr
 	return &retrieveTokenResponse, err
 }
 
-
-func (a *RecipientActivationAPI) GetActivationUrlInfoByActivationUrl(ctx context.Context, activationUrl string) error {
-	return a.GetActivationUrlInfo(ctx, GetActivationUrlInfoRequest{
-		ActivationUrl: activationUrl,
-	})
-}
-
+// Rpc to retrieve access token with an activation token. This is an public API
+// without any authentication.
 func (a *RecipientActivationAPI) RetrieveTokenByActivationUrl(ctx context.Context, activationUrl string) (*RetrieveTokenResponse, error) {
 	return a.RetrieveToken(ctx, RetrieveTokenRequest{
 		ActivationUrl: activationUrl,
 	})
 }
+
 
 func NewRecipients(client *client.DatabricksClient) RecipientsService {
 	return &RecipientsAPI{
@@ -400,6 +414,13 @@ func (a *RecipientsAPI) DeleteRecipient(ctx context.Context, request DeleteRecip
 }
 
 
+func (a *RecipientsAPI) DeleteRecipientByName(ctx context.Context, name string) error {
+	return a.DeleteRecipient(ctx, DeleteRecipientRequest{
+		Name: name,
+	})
+}
+
+
 func (a *RecipientsAPI) GetRecipient(ctx context.Context, request GetRecipientRequest) (*GetRecipientResponse, error) {
 	var getRecipientResponse GetRecipientResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
@@ -408,11 +429,25 @@ func (a *RecipientsAPI) GetRecipient(ctx context.Context, request GetRecipientRe
 }
 
 
+func (a *RecipientsAPI) GetRecipientByName(ctx context.Context, name string) (*GetRecipientResponse, error) {
+	return a.GetRecipient(ctx, GetRecipientRequest{
+		Name: name,
+	})
+}
+
+
 func (a *RecipientsAPI) GetRecipientSharePermissions(ctx context.Context, request GetRecipientSharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error) {
 	var getRecipientSharePermissionsResponse GetRecipientSharePermissionsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/share-permissions", request.Name)
 	err := a.client.Get(ctx, path, request, &getRecipientSharePermissionsResponse)
 	return &getRecipientSharePermissionsResponse, err
+}
+
+
+func (a *RecipientsAPI) GetRecipientSharePermissionsByName(ctx context.Context, name string) (*GetRecipientSharePermissionsResponse, error) {
+	return a.GetRecipientSharePermissions(ctx, GetRecipientSharePermissionsRequest{
+		Name: name,
+	})
 }
 
 
@@ -438,24 +473,6 @@ func (a *RecipientsAPI) UpdateRecipient(ctx context.Context, request UpdateRecip
 	return err
 }
 
-
-func (a *RecipientsAPI) GetRecipientSharePermissionsByName(ctx context.Context, name string) (*GetRecipientSharePermissionsResponse, error) {
-	return a.GetRecipientSharePermissions(ctx, GetRecipientSharePermissionsRequest{
-		Name: name,
-	})
-}
-
-func (a *RecipientsAPI) GetRecipientByName(ctx context.Context, name string) (*GetRecipientResponse, error) {
-	return a.GetRecipient(ctx, GetRecipientRequest{
-		Name: name,
-	})
-}
-
-func (a *RecipientsAPI) DeleteRecipientByName(ctx context.Context, name string) error {
-	return a.DeleteRecipient(ctx, DeleteRecipientRequest{
-		Name: name,
-	})
-}
 
 func NewSchemas(client *client.DatabricksClient) SchemasService {
 	return &SchemasAPI{
@@ -483,11 +500,25 @@ func (a *SchemasAPI) DeleteSchema(ctx context.Context, request DeleteSchemaReque
 }
 
 
+func (a *SchemasAPI) DeleteSchemaByFullNameArg(ctx context.Context, fullNameArg string) error {
+	return a.DeleteSchema(ctx, DeleteSchemaRequest{
+		FullNameArg: fullNameArg,
+	})
+}
+
+
 func (a *SchemasAPI) GetSchema(ctx context.Context, request GetSchemaRequest) (*GetSchemaResponse, error) {
 	var getSchemaResponse GetSchemaResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullNameArg)
 	err := a.client.Get(ctx, path, request, &getSchemaResponse)
 	return &getSchemaResponse, err
+}
+
+
+func (a *SchemasAPI) GetSchemaByFullNameArg(ctx context.Context, fullNameArg string) (*GetSchemaResponse, error) {
+	return a.GetSchema(ctx, GetSchemaRequest{
+		FullNameArg: fullNameArg,
+	})
 }
 
 
@@ -505,18 +536,6 @@ func (a *SchemasAPI) UpdateSchema(ctx context.Context, request UpdateSchemaReque
 	return err
 }
 
-
-func (a *SchemasAPI) GetSchemaByFullNameArg(ctx context.Context, fullNameArg string) (*GetSchemaResponse, error) {
-	return a.GetSchema(ctx, GetSchemaRequest{
-		FullNameArg: fullNameArg,
-	})
-}
-
-func (a *SchemasAPI) DeleteSchemaByFullNameArg(ctx context.Context, fullNameArg string) error {
-	return a.DeleteSchema(ctx, DeleteSchemaRequest{
-		FullNameArg: fullNameArg,
-	})
-}
 
 func NewShares(client *client.DatabricksClient) SharesService {
 	return &SharesAPI{
@@ -544,11 +563,25 @@ func (a *SharesAPI) DeleteShare(ctx context.Context, request DeleteShareRequest)
 }
 
 
+func (a *SharesAPI) DeleteShareByName(ctx context.Context, name string) error {
+	return a.DeleteShare(ctx, DeleteShareRequest{
+		Name: name,
+	})
+}
+
+
 func (a *SharesAPI) GetShare(ctx context.Context, request GetShareRequest) (*GetShareResponse, error) {
 	var getShareResponse GetShareResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
 	err := a.client.Get(ctx, path, request, &getShareResponse)
 	return &getShareResponse, err
+}
+
+
+func (a *SharesAPI) GetShareByName(ctx context.Context, name string) (*GetShareResponse, error) {
+	return a.GetShare(ctx, GetShareRequest{
+		Name: name,
+	})
 }
 
 // Permissions API for data sharing.
@@ -557,6 +590,13 @@ func (a *SharesAPI) GetSharePermissions(ctx context.Context, request GetSharePer
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
 	err := a.client.Get(ctx, path, request, &getSharePermissionsResponse)
 	return &getSharePermissionsResponse, err
+}
+
+// Permissions API for data sharing.
+func (a *SharesAPI) GetSharePermissionsByName(ctx context.Context, name string) (*GetSharePermissionsResponse, error) {
+	return a.GetSharePermissions(ctx, GetSharePermissionsRequest{
+		Name: name,
+	})
 }
 
 
@@ -581,24 +621,6 @@ func (a *SharesAPI) UpdateSharePermissions(ctx context.Context, request UpdateSh
 	return err
 }
 
-
-func (a *SharesAPI) GetSharePermissionsByName(ctx context.Context, name string) (*GetSharePermissionsResponse, error) {
-	return a.GetSharePermissions(ctx, GetSharePermissionsRequest{
-		Name: name,
-	})
-}
-
-func (a *SharesAPI) DeleteShareByName(ctx context.Context, name string) error {
-	return a.DeleteShare(ctx, DeleteShareRequest{
-		Name: name,
-	})
-}
-
-func (a *SharesAPI) GetShareByName(ctx context.Context, name string) (*GetShareResponse, error) {
-	return a.GetShare(ctx, GetShareRequest{
-		Name: name,
-	})
-}
 
 func NewStorageCredentials(client *client.DatabricksClient) StorageCredentialsService {
 	return &StorageCredentialsAPI{
@@ -626,11 +648,25 @@ func (a *StorageCredentialsAPI) DeleteStorageCredential(ctx context.Context, req
 }
 
 
+func (a *StorageCredentialsAPI) DeleteStorageCredentialByNameArg(ctx context.Context, nameArg string) error {
+	return a.DeleteStorageCredential(ctx, DeleteStorageCredentialRequest{
+		NameArg: nameArg,
+	})
+}
+
+
 func (a *StorageCredentialsAPI) GetStorageCredential(ctx context.Context, request GetStorageCredentialRequest) (*GetStorageCredentialResponse, error) {
 	var getStorageCredentialResponse GetStorageCredentialResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.NameArg)
 	err := a.client.Get(ctx, path, request, &getStorageCredentialResponse)
 	return &getStorageCredentialResponse, err
+}
+
+
+func (a *StorageCredentialsAPI) GetStorageCredentialByNameArg(ctx context.Context, nameArg string) (*GetStorageCredentialResponse, error) {
+	return a.GetStorageCredential(ctx, GetStorageCredentialRequest{
+		NameArg: nameArg,
+	})
 }
 
 
@@ -648,18 +684,6 @@ func (a *StorageCredentialsAPI) UpdateStorageCredential(ctx context.Context, req
 	return err
 }
 
-
-func (a *StorageCredentialsAPI) DeleteStorageCredentialByNameArg(ctx context.Context, nameArg string) error {
-	return a.DeleteStorageCredential(ctx, DeleteStorageCredentialRequest{
-		NameArg: nameArg,
-	})
-}
-
-func (a *StorageCredentialsAPI) GetStorageCredentialByNameArg(ctx context.Context, nameArg string) (*GetStorageCredentialResponse, error) {
-	return a.GetStorageCredential(ctx, GetStorageCredentialRequest{
-		NameArg: nameArg,
-	})
-}
 
 func NewTables(client *client.DatabricksClient) TablesService {
 	return &TablesAPI{
@@ -695,11 +719,25 @@ func (a *TablesAPI) DeleteTable(ctx context.Context, request DeleteTableRequest)
 }
 
 
+func (a *TablesAPI) DeleteTableByFullNameArg(ctx context.Context, fullNameArg string) error {
+	return a.DeleteTable(ctx, DeleteTableRequest{
+		FullNameArg: fullNameArg,
+	})
+}
+
+
 func (a *TablesAPI) GetTable(ctx context.Context, request GetTableRequest) (*GetTableResponse, error) {
 	var getTableResponse GetTableResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullNameArg)
 	err := a.client.Get(ctx, path, request, &getTableResponse)
 	return &getTableResponse, err
+}
+
+
+func (a *TablesAPI) GetTableByFullNameArg(ctx context.Context, fullNameArg string) (*GetTableResponse, error) {
+	return a.GetTable(ctx, GetTableRequest{
+		FullNameArg: fullNameArg,
+	})
 }
 
 
@@ -725,18 +763,6 @@ func (a *TablesAPI) UpdateTable(ctx context.Context, request UpdateTableRequest)
 	return err
 }
 
-
-func (a *TablesAPI) GetTableByFullNameArg(ctx context.Context, fullNameArg string) (*GetTableResponse, error) {
-	return a.GetTable(ctx, GetTableRequest{
-		FullNameArg: fullNameArg,
-	})
-}
-
-func (a *TablesAPI) DeleteTableByFullNameArg(ctx context.Context, fullNameArg string) error {
-	return a.DeleteTable(ctx, DeleteTableRequest{
-		FullNameArg: fullNameArg,
-	})
-}
 
 func NewUnityFiles(client *client.DatabricksClient) UnityFilesService {
 	return &UnityFilesAPI{

@@ -4,6 +4,7 @@ package tokenmanagement
 
 import (
 	"context"
+	
 )
 
 
@@ -13,10 +14,10 @@ import (
 type TokenManagementService interface {
     // Delete a token, specified by its ID.
     DeleteToken(ctx context.Context, deleteTokenRequest DeleteTokenRequest) error
+	DeleteTokenByTokenId(ctx context.Context, tokenId string) error
     // Get a token, specified by its ID.
     GetTokenInfo(ctx context.Context, getTokenInfoRequest GetTokenInfoRequest) (*TokenInfo, error)
+	GetTokenInfoByTokenId(ctx context.Context, tokenId string) (*TokenInfo, error)
     // List all tokens belonging to a workspace or a user.
     ListAllTokens(ctx context.Context, listAllTokensRequest ListAllTokensRequest) (*ListTokensResponse, error)
-	GetTokenInfoByTokenId(ctx context.Context, tokenId string) (*TokenInfo, error)
-	DeleteTokenByTokenId(ctx context.Context, tokenId string) error
 }

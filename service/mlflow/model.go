@@ -50,12 +50,12 @@ const ActivityActionApproveTransitionRequest ActivityAction = `APPROVE_TRANSITIO
 // activity. Valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a
 // transition request * `REJECT_TRANSITION_REQUEST`: Reject a transition request
 // * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
-const ActivityActionRejectTransitionRequest ActivityAction = `REJECT_TRANSITION_REQUEST`
+const ActivityActionCancelTransitionRequest ActivityAction = `CANCEL_TRANSITION_REQUEST`
 // An action that a user (with sufficient permissions) could take on an
 // activity. Valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a
 // transition request * `REJECT_TRANSITION_REQUEST`: Reject a transition request
 // * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
-const ActivityActionCancelTransitionRequest ActivityAction = `CANCEL_TRANSITION_REQUEST`
+const ActivityActionRejectTransitionRequest ActivityAction = `REJECT_TRANSITION_REQUEST`
 // Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
 // corresponding stage transition. * `REQUESTED_TRANSITION`: User requested the
 // corresponding stage transition. * `CANCELLED_REQUEST`: User cancelled an
@@ -80,7 +80,7 @@ const ActivityTypeAppliedTransition ActivityType = `APPLIED_TRANSITION`
 // corresponding stage transition. * `REJECTED_REQUEST`: User rejected the
 // coressponding stage transition. * `SYSTEM_TRANSITION`: For events performed
 // as a side effect, such as archiving existing model versions in a stage.
-const ActivityTypeRequestedTransition ActivityType = `REQUESTED_TRANSITION`
+const ActivityTypeApprovedRequest ActivityType = `APPROVED_REQUEST`
 // Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
 // corresponding stage transition. * `REQUESTED_TRANSITION`: User requested the
 // corresponding stage transition. * `CANCELLED_REQUEST`: User cancelled an
@@ -96,7 +96,7 @@ const ActivityTypeCancelledRequest ActivityType = `CANCELLED_REQUEST`
 // corresponding stage transition. * `REJECTED_REQUEST`: User rejected the
 // coressponding stage transition. * `SYSTEM_TRANSITION`: For events performed
 // as a side effect, such as archiving existing model versions in a stage.
-const ActivityTypeApprovedRequest ActivityType = `APPROVED_REQUEST`
+const ActivityTypeNewComment ActivityType = `NEW_COMMENT`
 // Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
 // corresponding stage transition. * `REQUESTED_TRANSITION`: User requested the
 // corresponding stage transition. * `CANCELLED_REQUEST`: User cancelled an
@@ -112,7 +112,7 @@ const ActivityTypeRejectedRequest ActivityType = `REJECTED_REQUEST`
 // corresponding stage transition. * `REJECTED_REQUEST`: User rejected the
 // coressponding stage transition. * `SYSTEM_TRANSITION`: For events performed
 // as a side effect, such as archiving existing model versions in a stage.
-const ActivityTypeNewComment ActivityType = `NEW_COMMENT`
+const ActivityTypeRequestedTransition ActivityType = `REQUESTED_TRANSITION`
 // Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
 // corresponding stage transition. * `REQUESTED_TRANSITION`: User requested the
 // corresponding stage transition. * `CANCELLED_REQUEST`: User cancelled an
@@ -149,11 +149,11 @@ type CommentActivityAction string
 // An action that a user (with sufficient permissions) could take on a comment.
 // Valid values are: * `EDIT_COMMENT`: Edit the comment * `DELETE_COMMENT`:
 // Delete the comment
-const CommentActivityActionEditComment CommentActivityAction = `EDIT_COMMENT`
+const CommentActivityActionDeleteComment CommentActivityAction = `DELETE_COMMENT`
 // An action that a user (with sufficient permissions) could take on a comment.
 // Valid values are: * `EDIT_COMMENT`: Edit the comment * `DELETE_COMMENT`:
 // Delete the comment
-const CommentActivityActionDeleteComment CommentActivityAction = `DELETE_COMMENT`
+const CommentActivityActionEditComment CommentActivityAction = `EDIT_COMMENT`
 // Comment details.
 type CommentObject struct {
     // Array of actions on the activity allowed for the current viewer.
@@ -825,19 +825,19 @@ type PermissionLevel string
 
 // Permission level of the requesting user on the object. For what is allowed at
 // each level, see [MLflow Model permissions](..).
-const PermissionLevelCanManage PermissionLevel = `CAN_MANAGE`
-// Permission level of the requesting user on the object. For what is allowed at
-// each level, see [MLflow Model permissions](..).
 const PermissionLevelCanEdit PermissionLevel = `CAN_EDIT`
 // Permission level of the requesting user on the object. For what is allowed at
 // each level, see [MLflow Model permissions](..).
-const PermissionLevelCanRead PermissionLevel = `CAN_READ`
+const PermissionLevelCanManage PermissionLevel = `CAN_MANAGE`
+// Permission level of the requesting user on the object. For what is allowed at
+// each level, see [MLflow Model permissions](..).
+const PermissionLevelCanManageProductionVersions PermissionLevel = `CAN_MANAGE_PRODUCTION_VERSIONS`
 // Permission level of the requesting user on the object. For what is allowed at
 // each level, see [MLflow Model permissions](..).
 const PermissionLevelCanManageStagingVersions PermissionLevel = `CAN_MANAGE_STAGING_VERSIONS`
 // Permission level of the requesting user on the object. For what is allowed at
 // each level, see [MLflow Model permissions](..).
-const PermissionLevelCanManageProductionVersions PermissionLevel = `CAN_MANAGE_PRODUCTION_VERSIONS`
+const PermissionLevelCanRead PermissionLevel = `CAN_READ`
 
 type RegisteredModel struct {
     // Timestamp recorded when this ``registered_model`` was created.
@@ -892,29 +892,29 @@ type RegisteredModelTag struct {
 type RegistryWebhookEvent string
 
 
-const RegistryWebhookEventModelVersionCreated RegistryWebhookEvent = `MODEL_VERSION_CREATED`
-
-const RegistryWebhookEventModelVersionTransitionedStage RegistryWebhookEvent = `MODEL_VERSION_TRANSITIONED_STAGE`
-
-const RegistryWebhookEventTransitionRequestCreated RegistryWebhookEvent = `TRANSITION_REQUEST_CREATED`
-
 const RegistryWebhookEventCommentCreated RegistryWebhookEvent = `COMMENT_CREATED`
 
-const RegistryWebhookEventRegisteredModelCreated RegistryWebhookEvent = `REGISTERED_MODEL_CREATED`
+const RegistryWebhookEventModelVersionCreated RegistryWebhookEvent = `MODEL_VERSION_CREATED`
 
 const RegistryWebhookEventModelVersionTagSet RegistryWebhookEvent = `MODEL_VERSION_TAG_SET`
 
-const RegistryWebhookEventModelVersionTransitionedToStaging RegistryWebhookEvent = `MODEL_VERSION_TRANSITIONED_TO_STAGING`
-
-const RegistryWebhookEventModelVersionTransitionedToProduction RegistryWebhookEvent = `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`
+const RegistryWebhookEventModelVersionTransitionedStage RegistryWebhookEvent = `MODEL_VERSION_TRANSITIONED_STAGE`
 
 const RegistryWebhookEventModelVersionTransitionedToArchived RegistryWebhookEvent = `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`
 
-const RegistryWebhookEventTransitionRequestToStagingCreated RegistryWebhookEvent = `TRANSITION_REQUEST_TO_STAGING_CREATED`
+const RegistryWebhookEventModelVersionTransitionedToProduction RegistryWebhookEvent = `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`
+
+const RegistryWebhookEventModelVersionTransitionedToStaging RegistryWebhookEvent = `MODEL_VERSION_TRANSITIONED_TO_STAGING`
+
+const RegistryWebhookEventRegisteredModelCreated RegistryWebhookEvent = `REGISTERED_MODEL_CREATED`
+
+const RegistryWebhookEventTransitionRequestCreated RegistryWebhookEvent = `TRANSITION_REQUEST_CREATED`
+
+const RegistryWebhookEventTransitionRequestToArchivedCreated RegistryWebhookEvent = `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`
 
 const RegistryWebhookEventTransitionRequestToProductionCreated RegistryWebhookEvent = `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`
 
-const RegistryWebhookEventTransitionRequestToArchivedCreated RegistryWebhookEvent = `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`
+const RegistryWebhookEventTransitionRequestToStagingCreated RegistryWebhookEvent = `TRANSITION_REQUEST_TO_STAGING_CREATED`
 // Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new
 // model version was created for the associated model. *
 // `MODEL_VERSION_TRANSITIONED_STAGE`: A model version?s stage was changed. *
@@ -1053,15 +1053,15 @@ type RunInfo struct {
 type RunInfoStatus string
 
 
-const RunInfoStatusRunning RunInfoStatus = `RUNNING`
-
-const RunInfoStatusScheduled RunInfoStatus = `SCHEDULED`
+const RunInfoStatusFailed RunInfoStatus = `FAILED`
 
 const RunInfoStatusFinished RunInfoStatus = `FINISHED`
 
-const RunInfoStatusFailed RunInfoStatus = `FAILED`
-
 const RunInfoStatusKilled RunInfoStatus = `KILLED`
+
+const RunInfoStatusRunning RunInfoStatus = `RUNNING`
+
+const RunInfoStatusScheduled RunInfoStatus = `SCHEDULED`
 
 type RunTag struct {
     // The tag key.
@@ -1096,9 +1096,9 @@ type SearchExperimentsRequestViewType string
 
 const SearchExperimentsRequestViewTypeActiveOnly SearchExperimentsRequestViewType = `ACTIVE_ONLY`
 
-const SearchExperimentsRequestViewTypeDeletedOnly SearchExperimentsRequestViewType = `DELETED_ONLY`
-
 const SearchExperimentsRequestViewTypeAll SearchExperimentsRequestViewType = `ALL`
+
+const SearchExperimentsRequestViewTypeDeletedOnly SearchExperimentsRequestViewType = `DELETED_ONLY`
 
 type SearchExperimentsResponse struct {
     // Experiments that match the search criteria
@@ -1193,9 +1193,9 @@ type SearchRunsRequestRunViewType string
 
 const SearchRunsRequestRunViewTypeActiveOnly SearchRunsRequestRunViewType = `ACTIVE_ONLY`
 
-const SearchRunsRequestRunViewTypeDeletedOnly SearchRunsRequestRunViewType = `DELETED_ONLY`
-
 const SearchRunsRequestRunViewTypeAll SearchRunsRequestRunViewType = `ALL`
+
+const SearchRunsRequestRunViewTypeDeletedOnly SearchRunsRequestRunViewType = `DELETED_ONLY`
 
 type SearchRunsResponse struct {
     
@@ -1400,15 +1400,15 @@ type UpdateRunRequest struct {
 type UpdateRunRequestStatus string
 
 
-const UpdateRunRequestStatusRunning UpdateRunRequestStatus = `RUNNING`
-
-const UpdateRunRequestStatusScheduled UpdateRunRequestStatus = `SCHEDULED`
+const UpdateRunRequestStatusFailed UpdateRunRequestStatus = `FAILED`
 
 const UpdateRunRequestStatusFinished UpdateRunRequestStatus = `FINISHED`
 
-const UpdateRunRequestStatusFailed UpdateRunRequestStatus = `FAILED`
-
 const UpdateRunRequestStatusKilled UpdateRunRequestStatus = `KILLED`
+
+const UpdateRunRequestStatusRunning UpdateRunRequestStatus = `RUNNING`
+
+const UpdateRunRequestStatusScheduled UpdateRunRequestStatus = `SCHEDULED`
 
 type UpdateRunResponse struct {
     // Updated metadata of the run.
@@ -1456,11 +1456,11 @@ type Stage string
 // Stage of the model version. Valid values are: * `None`: The initial stage of
 // a model version. * `Staging`: Staging or pre-production stage. *
 // `Production`: Production stage. * `Archived`: Archived stage.
-const StageNone Stage = `None`
+const StageArchived Stage = `Archived`
 // Stage of the model version. Valid values are: * `None`: The initial stage of
 // a model version. * `Staging`: Staging or pre-production stage. *
 // `Production`: Production stage. * `Archived`: Archived stage.
-const StageStaging Stage = `Staging`
+const StageNone Stage = `None`
 // Stage of the model version. Valid values are: * `None`: The initial stage of
 // a model version. * `Staging`: Staging or pre-production stage. *
 // `Production`: Production stage. * `Archived`: Archived stage.
@@ -1468,7 +1468,7 @@ const StageProduction Stage = `Production`
 // Stage of the model version. Valid values are: * `None`: The initial stage of
 // a model version. * `Staging`: Staging or pre-production stage. *
 // `Production`: Production stage. * `Archived`: Archived stage.
-const StageArchived Stage = `Archived`
+const StageStaging Stage = `Staging`
 // The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
 // Request to register a new model version is pending as server performs
 // background tasks. * `FAILED_REGISTRATION`: Request to register a new model
@@ -1479,12 +1479,12 @@ type Status string
 // Request to register a new model version is pending as server performs
 // background tasks. * `FAILED_REGISTRATION`: Request to register a new model
 // version has failed. * `READY`: Model version is ready for use.
-const StatusPendingRegistration Status = `PENDING_REGISTRATION`
+const StatusFailedRegistration Status = `FAILED_REGISTRATION`
 // The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
 // Request to register a new model version is pending as server performs
 // background tasks. * `FAILED_REGISTRATION`: Request to register a new model
 // version has failed. * `READY`: Model version is ready for use.
-const StatusFailedRegistration Status = `FAILED_REGISTRATION`
+const StatusPendingRegistration Status = `PENDING_REGISTRATION`
 // The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
 // Request to register a new model version is pending as server performs
 // background tasks. * `FAILED_REGISTRATION`: Request to register a new model

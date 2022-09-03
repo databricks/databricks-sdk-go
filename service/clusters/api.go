@@ -4,8 +4,10 @@ package clusters
 
 import (
 	"context"
-	
+	"fmt"
+	"time"
 
+	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -50,6 +52,37 @@ func (a *ClustersAPI) Create(ctx context.Context, request CreateCluster) (*Creat
 	return &createClusterResponse, err
 }
 
+// Create and wait to reach RUNNING state
+func (a *ClustersAPI) CreateAndWait(ctx context.Context, request CreateCluster, timeout ...time.Duration) (*CreateClusterResponse, error) {
+	createClusterResponse, err := a.Create(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return createClusterResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
+		clusterInfo, err := a.Get(ctx, GetRequest{
+			ClusterId: createClusterResponse.ClusterId,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		status := clusterInfo.State
+		statusMessage := clusterInfo.StateMessage
+		switch status {
+		case ClusterInfoStateRunning: // target state
+			return nil
+		case ClusterInfoStateError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ClusterInfoStateRunning, status, statusMessage)
+			return retries.Halt(err)
+		default:
+			return retries.Continues(statusMessage)
+		}
+	})
+}
+
 // Terminates a Spark cluster given its id. The cluster is removed
 // asynchronously. Once the termination has completed, the cluster will be in a
 // ``TERMINATED`` state. If the cluster is already in a ``TERMINATING`` or
@@ -59,6 +92,54 @@ func (a *ClustersAPI) Delete(ctx context.Context, request DeleteCluster) error {
 	path := "/api/2.0/clusters/delete"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
+}
+
+// Delete and wait to reach TERMINATED state
+func (a *ClustersAPI) DeleteAndWait(ctx context.Context, request DeleteCluster, timeout ...time.Duration) error {
+	err := a.Delete(ctx, request)
+	if err != nil {
+		return err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+		clusterInfo, err := a.Get(ctx, GetRequest{
+			ClusterId: request.ClusterId,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		status := clusterInfo.State
+		statusMessage := clusterInfo.StateMessage
+		switch status {
+		case ClusterInfoStateTerminated: // target state
+			return nil
+		case ClusterInfoStateError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ClusterInfoStateTerminated, status, statusMessage)
+			return retries.Halt(err)
+		default:
+			return retries.Continues(statusMessage)
+		}
+	})
+}
+
+// Terminates a Spark cluster given its id. The cluster is removed
+// asynchronously. Once the termination has completed, the cluster will be in a
+// ``TERMINATED`` state. If the cluster is already in a ``TERMINATING`` or
+// ``TERMINATED`` state, nothing will happen. An example request: .. code:: {
+// &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34; }
+func (a *ClustersAPI) DeleteByClusterId(ctx context.Context, clusterId string) error {
+	return a.Delete(ctx, DeleteCluster{
+		ClusterId: clusterId,
+	})
+}
+
+func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId string, timeout ...time.Duration) error {
+	return a.DeleteAndWait(ctx, DeleteCluster{
+		ClusterId: clusterId,
+	}, timeout...)
 }
 
 // Edits the configuration of a cluster to match the provided attributes and
@@ -76,6 +157,37 @@ func (a *ClustersAPI) Edit(ctx context.Context, request EditCluster) error {
 	path := "/api/2.0/clusters/edit"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
+}
+
+// Edit and wait to reach RUNNING state
+func (a *ClustersAPI) EditAndWait(ctx context.Context, request EditCluster, timeout ...time.Duration) error {
+	err := a.Edit(ctx, request)
+	if err != nil {
+		return err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+		clusterInfo, err := a.Get(ctx, GetRequest{
+			ClusterId: request.ClusterId,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		status := clusterInfo.State
+		statusMessage := clusterInfo.StateMessage
+		switch status {
+		case ClusterInfoStateRunning: // target state
+			return nil
+		case ClusterInfoStateError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ClusterInfoStateRunning, status, statusMessage)
+			return retries.Halt(err)
+		default:
+			return retries.Continues(statusMessage)
+		}
+	})
 }
 
 // Retrieves a list of events about the activity of a cluster. This API is
@@ -108,6 +220,52 @@ func (a *ClustersAPI) Get(ctx context.Context, request GetRequest) (*ClusterInfo
 	return &clusterInfo, err
 }
 
+// Get and wait to reach RUNNING state
+func (a *ClustersAPI) GetAndWait(ctx context.Context, request GetRequest, timeout ...time.Duration) (*ClusterInfo, error) {
+	clusterInfo, err := a.Get(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return clusterInfo, retries.Wait(ctx, timeout[0], func() *retries.Err {
+		clusterInfo, err := a.Get(ctx, GetRequest{
+			ClusterId: clusterInfo.ClusterId,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		status := clusterInfo.State
+		statusMessage := clusterInfo.StateMessage
+		switch status {
+		case ClusterInfoStateRunning: // target state
+			return nil
+		case ClusterInfoStateError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ClusterInfoStateRunning, status, statusMessage)
+			return retries.Halt(err)
+		default:
+			return retries.Continues(statusMessage)
+		}
+	})
+}
+
+// Retrieves the information for a cluster given its identifier. Clusters can be
+// described while they are running, or up to 60 days after they are terminated.
+// An example request: ``/clusters/get?cluster_id=1202-211320-brick1``
+func (a *ClustersAPI) GetByClusterId(ctx context.Context, clusterId string) (*ClusterInfo, error) {
+	return a.Get(ctx, GetRequest{
+		ClusterId: clusterId,
+	})
+}
+
+func (a *ClustersAPI) GetByClusterIdAndWait(ctx context.Context, clusterId string, timeout ...time.Duration) (*ClusterInfo, error) {
+	return a.GetAndWait(ctx, GetRequest{
+		ClusterId: clusterId,
+	}, timeout...)
+}
+
 // Returns information about all pinned clusters, currently active clusters, up
 // to 70 of the most recently terminated interactive clusters in the past 7
 // days, and up to 30 of the most recently terminated job clusters in the past 7
@@ -121,6 +279,20 @@ func (a *ClustersAPI) List(ctx context.Context, request ListRequest) (*ListClust
 	path := "/api/2.0/clusters/list"
 	err := a.client.Get(ctx, path, request, &listClustersResponse)
 	return &listClustersResponse, err
+}
+
+// Returns information about all pinned clusters, currently active clusters, up
+// to 70 of the most recently terminated interactive clusters in the past 7
+// days, and up to 30 of the most recently terminated job clusters in the past 7
+// days. For example, if there is 1 pinned cluster, 4 active clusters, 45
+// terminated interactive clusters in the past 7 days, and 50 terminated job
+// clusters in the past 7 days, then this API returns the 1 pinned cluster, 4
+// active clusters, all 45 terminated interactive clusters, and the 30 most
+// recently terminated job clusters.
+func (a *ClustersAPI) ListByCanUseClient(ctx context.Context, canUseClient string) (*ListClustersResponse, error) {
+	return a.List(ctx, ListRequest{
+		CanUseClient: canUseClient,
+	})
 }
 
 // Returns a list of supported Spark node types. These node types can be used to
@@ -152,6 +324,17 @@ func (a *ClustersAPI) PermanentDelete(ctx context.Context, request PermanentDele
 	return err
 }
 
+// Permanently deletes a Spark cluster. This cluster is terminated and resources
+// are asynchronously removed. In addition, users will no longer see permanently
+// deleted clusters in the cluster list, and API users can no longer perform any
+// action on permanently deleted clusters. An example request: .. code:: {
+// &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34; }
+func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId string) error {
+	return a.PermanentDelete(ctx, PermanentDeleteCluster{
+		ClusterId: clusterId,
+	})
+}
+
 // Pinning a cluster ensures that the cluster will always be returned by the
 // ListClusters API. Pinning a cluster that is already pinned will have no
 // effect. This API can only be called by workspace admins. An example request:
@@ -160,6 +343,16 @@ func (a *ClustersAPI) Pin(ctx context.Context, request PinCluster) error {
 	path := "/api/2.0/clusters/pin"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
+}
+
+// Pinning a cluster ensures that the cluster will always be returned by the
+// ListClusters API. Pinning a cluster that is already pinned will have no
+// effect. This API can only be called by workspace admins. An example request:
+// ``/clusters/pin?cluster_id=1202-211320-brick1``
+func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) error {
+	return a.Pin(ctx, PinCluster{
+		ClusterId: clusterId,
+	})
 }
 
 // Resizes a cluster to have a desired number of workers. This will fail unless
@@ -171,6 +364,37 @@ func (a *ClustersAPI) Resize(ctx context.Context, request ResizeCluster) error {
 	return err
 }
 
+// Resize and wait to reach RUNNING state
+func (a *ClustersAPI) ResizeAndWait(ctx context.Context, request ResizeCluster, timeout ...time.Duration) error {
+	err := a.Resize(ctx, request)
+	if err != nil {
+		return err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+		clusterInfo, err := a.Get(ctx, GetRequest{
+			ClusterId: request.ClusterId,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		status := clusterInfo.State
+		statusMessage := clusterInfo.StateMessage
+		switch status {
+		case ClusterInfoStateRunning: // target state
+			return nil
+		case ClusterInfoStateError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ClusterInfoStateRunning, status, statusMessage)
+			return retries.Halt(err)
+		default:
+			return retries.Continues(statusMessage)
+		}
+	})
+}
+
 // Restarts a Spark cluster given its id. If the cluster is not currently in a
 // ``RUNNING`` state, nothing will happen. An example request: .. code:: {
 // &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34; }
@@ -178,6 +402,37 @@ func (a *ClustersAPI) Restart(ctx context.Context, request RestartCluster) error
 	path := "/api/2.0/clusters/restart"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
+}
+
+// Restart and wait to reach RUNNING state
+func (a *ClustersAPI) RestartAndWait(ctx context.Context, request RestartCluster, timeout ...time.Duration) error {
+	err := a.Restart(ctx, request)
+	if err != nil {
+		return err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+		clusterInfo, err := a.Get(ctx, GetRequest{
+			ClusterId: request.ClusterId,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		status := clusterInfo.State
+		statusMessage := clusterInfo.StateMessage
+		switch status {
+		case ClusterInfoStateRunning: // target state
+			return nil
+		case ClusterInfoStateError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ClusterInfoStateRunning, status, statusMessage)
+			return retries.Halt(err)
+		default:
+			return retries.Continues(statusMessage)
+		}
+	})
 }
 
 // Returns the list of available Spark versions. These versions can be used to
@@ -203,6 +458,57 @@ func (a *ClustersAPI) Start(ctx context.Context, request StartCluster) error {
 	return err
 }
 
+// Start and wait to reach RUNNING state
+func (a *ClustersAPI) StartAndWait(ctx context.Context, request StartCluster, timeout ...time.Duration) error {
+	err := a.Start(ctx, request)
+	if err != nil {
+		return err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+		clusterInfo, err := a.Get(ctx, GetRequest{
+			ClusterId: request.ClusterId,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		status := clusterInfo.State
+		statusMessage := clusterInfo.StateMessage
+		switch status {
+		case ClusterInfoStateRunning: // target state
+			return nil
+		case ClusterInfoStateError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ClusterInfoStateRunning, status, statusMessage)
+			return retries.Halt(err)
+		default:
+			return retries.Continues(statusMessage)
+		}
+	})
+}
+
+// Starts a terminated Spark cluster given its id. This works similar to
+// `createCluster` except: - The previous cluster id and attributes are
+// preserved. - The cluster starts with the last specified cluster size. - If
+// the previous cluster was an autoscaling cluster, the current cluster starts
+// with the minimum number of nodes. - If the cluster is not currently in a
+// ``TERMINATED`` state, nothing will happen. - Clusters launched to run a job
+// cannot be started. An example request: .. code:: { &#34;cluster_id&#34;:
+// &#34;1202-211320-brick1&#34; }
+func (a *ClustersAPI) StartByClusterId(ctx context.Context, clusterId string) error {
+	return a.Start(ctx, StartCluster{
+		ClusterId: clusterId,
+	})
+}
+
+func (a *ClustersAPI) StartByClusterIdAndWait(ctx context.Context, clusterId string, timeout ...time.Duration) error {
+	return a.StartAndWait(ctx, StartCluster{
+		ClusterId: clusterId,
+	}, timeout...)
+}
+
 // Unpinning a cluster will allow the cluster to eventually be removed from the
 // ListClusters API. Unpinning a cluster that is not pinned will have no effect.
 // This API can only be called by workspace admins. An example request:
@@ -211,5 +517,15 @@ func (a *ClustersAPI) Unpin(ctx context.Context, request UnpinCluster) error {
 	path := "/api/2.0/clusters/unpin"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
+}
+
+// Unpinning a cluster will allow the cluster to eventually be removed from the
+// ListClusters API. Unpinning a cluster that is not pinned will have no effect.
+// This API can only be called by workspace admins. An example request:
+// ``/clusters/unpin?cluster_id=1202-211320-brick1``
+func (a *ClustersAPI) UnpinByClusterId(ctx context.Context, clusterId string) error {
+	return a.Unpin(ctx, UnpinCluster{
+		ClusterId: clusterId,
+	})
 }
 

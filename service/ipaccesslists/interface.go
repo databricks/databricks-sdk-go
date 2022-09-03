@@ -4,6 +4,7 @@ package ipaccesslists
 
 import (
 	"context"
+	
 )
 
 
@@ -24,8 +25,10 @@ type IpAccessListsService interface {
     CreateIpAccessList(ctx context.Context, createIPAccessListRequest CreateIPAccessListRequest) (*CreateIPAccessListResponse, error)
     // Delete an IP access list, specified by its list ID.
     DeleteIpAccessList(ctx context.Context, deleteIpAccessListRequest DeleteIpAccessListRequest) error
+	DeleteIpAccessListByIpAccessListId(ctx context.Context, ipAccessListId string) error
     // Get an IP access list, specified by its list ID.
     FetchIpAccessList(ctx context.Context, fetchIpAccessListRequest FetchIpAccessListRequest) (*CreateIPAccessListResponse, error)
+	FetchIpAccessListByIpAccessListId(ctx context.Context, ipAccessListId string) (*CreateIPAccessListResponse, error)
     
     GetAllIpAccessLists(ctx context.Context) (*GetIPAccessListResponse, error)
     // Replace an IP access list, specified by its ID. A list can include allow
@@ -53,6 +56,4 @@ type IpAccessListsService interface {
     // effect until you enable the feature. See
     // [`/workspace-conf`](#operation/set-status)
     UpdateIpAccessList(ctx context.Context, updateIPAccessListRequest UpdateIPAccessListRequest) error
-	DeleteIpAccessListByIpAccessListId(ctx context.Context, ipAccessListId string) error
-	FetchIpAccessListByIpAccessListId(ctx context.Context, ipAccessListId string) (*CreateIPAccessListResponse, error)
 }

@@ -85,27 +85,27 @@ type ImportRequest struct {
 type ImportRequestFormat string
 
 
-const ImportRequestFormatSource ImportRequestFormat = `SOURCE`
+const ImportRequestFormatDbc ImportRequestFormat = `DBC`
 
 const ImportRequestFormatHtml ImportRequestFormat = `HTML`
 
 const ImportRequestFormatJupyter ImportRequestFormat = `JUPYTER`
 
-const ImportRequestFormatDbc ImportRequestFormat = `DBC`
-
 const ImportRequestFormatRMarkdown ImportRequestFormat = `R_MARKDOWN`
+
+const ImportRequestFormatSource ImportRequestFormat = `SOURCE`
 // The language. If format is set to ``SOURCE``, this field is required;
 // otherwise, it will be ignored.
 type ImportRequestLanguage string
 
 
-const ImportRequestLanguageScala ImportRequestLanguage = `SCALA`
-
 const ImportRequestLanguagePython ImportRequestLanguage = `PYTHON`
 
-const ImportRequestLanguageSql ImportRequestLanguage = `SQL`
-
 const ImportRequestLanguageR ImportRequestLanguage = `R`
+
+const ImportRequestLanguageScala ImportRequestLanguage = `SCALA`
+
+const ImportRequestLanguageSql ImportRequestLanguage = `SQL`
 
 type ListRequest struct {
     
@@ -172,26 +172,26 @@ const ObjectInfoBlobLocationInternalDbfsJobs ObjectInfoBlobLocation = `INTERNAL_
 type ObjectInfoLanguage string
 
 
-const ObjectInfoLanguageScala ObjectInfoLanguage = `SCALA`
-
 const ObjectInfoLanguagePython ObjectInfoLanguage = `PYTHON`
 
-const ObjectInfoLanguageSql ObjectInfoLanguage = `SQL`
-
 const ObjectInfoLanguageR ObjectInfoLanguage = `R`
+
+const ObjectInfoLanguageScala ObjectInfoLanguage = `SCALA`
+
+const ObjectInfoLanguageSql ObjectInfoLanguage = `SQL`
 
 type ObjectInfoObjectType string
 
 
-const ObjectInfoObjectTypeNotebook ObjectInfoObjectType = `NOTEBOOK`
-
 const ObjectInfoObjectTypeDirectory ObjectInfoObjectType = `DIRECTORY`
-
-const ObjectInfoObjectTypeLibrary ObjectInfoObjectType = `LIBRARY`
 
 const ObjectInfoObjectTypeFile ObjectInfoObjectType = `FILE`
 
+const ObjectInfoObjectTypeLibrary ObjectInfoObjectType = `LIBRARY`
+
 const ObjectInfoObjectTypeMlflowExperiment ObjectInfoObjectType = `MLFLOW_EXPERIMENT`
+
+const ObjectInfoObjectTypeNotebook ObjectInfoObjectType = `NOTEBOOK`
 
 const ObjectInfoObjectTypeProject ObjectInfoObjectType = `PROJECT`
 

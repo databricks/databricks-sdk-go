@@ -4,6 +4,7 @@ package mlflow
 
 import (
 	"context"
+	
 )
 
 
@@ -19,8 +20,10 @@ type ExperimentsService interface {
     // tags for deletion. If the experiment uses FileStore, artifacts associated
     // with experiment are also deleted.
     Delete(ctx context.Context, deleteExperimentRequest DeleteExperimentRequest) error
+	DeleteByExperimentId(ctx context.Context, experimentId string) error
     // Get metadata for an experiment. This method works on deleted experiments.
     Get(ctx context.Context, getExperimentRequest GetExperimentRequest) (*GetExperimentResponse, error)
+	GetByExperimentId(ctx context.Context, experimentId string) (*GetExperimentResponse, error)
     // Get metadata for an experiment. This endpoint will return deleted
     // experiments, but prefers the active experiment if an active and deleted
     // experiment share the same name. If multiple deleted experiments share the
@@ -28,6 +31,7 @@ type ExperimentsService interface {
     // ``RESOURCE_DOES_NOT_EXIST`` if no experiment with the specified name
     // exists.
     GetByName(ctx context.Context, getExperimentByNameRequest GetExperimentByNameRequest) (*GetExperimentByNameResponse, error)
+	GetByNameByExperimentName(ctx context.Context, experimentName string) (*GetExperimentByNameResponse, error)
     // Get a list of all experiments.
     List(ctx context.Context, listExperimentsRequest ListExperimentsRequest) (*ListExperimentsResponse, error)
     // Restore an experiment marked for deletion. This also restores associated
@@ -36,6 +40,7 @@ type ExperimentsService interface {
     // ``RESOURCE_DOES_NOT_EXIST`` if experiment was never created or was
     // permanently deleted.
     Restore(ctx context.Context, restoreExperimentRequest RestoreExperimentRequest) error
+	RestoreByExperimentId(ctx context.Context, experimentId string) error
     // Search for experiments that satisfy specified search criteria.
     Search(ctx context.Context, searchExperimentsRequest SearchExperimentsRequest) (*SearchExperimentsResponse, error)
     // Set a tag on an experiment. Experiment tags are metadata that can be
@@ -58,6 +63,7 @@ type MLflowArtifactsService interface {
 type MLflowDatabricksService interface {
     
     Get(ctx context.Context, getRegisteredModelRequest GetRegisteredModelRequest) (*GetRegisteredModelResponse, error)
+	GetByName(ctx context.Context, name string) (*GetRegisteredModelResponse, error)
     // Transition a model version&#39;s stage. This is a &lt;Workspace&gt; version of the
     // [MLflow
     // endpoint](https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage)
@@ -81,6 +87,7 @@ type MLflowRunsService interface {
     Create(ctx context.Context, createRunRequest CreateRunRequest) (*CreateRunResponse, error)
     // Mark a run for deletion.
     Delete(ctx context.Context, deleteRunRequest DeleteRunRequest) error
+	DeleteByRunId(ctx context.Context, runId string) error
     // Delete a tag on a run. Tags are run metadata that can be updated during a
     // run and after a run completes.
     DeleteTag(ctx context.Context, deleteTagRequest DeleteTagRequest) error
@@ -136,6 +143,7 @@ type MLflowRunsService interface {
     LogParameter(ctx context.Context, logParamRequest LogParamRequest) error
     // Restore a deleted run.
     Restore(ctx context.Context, restoreRunRequest RestoreRunRequest) error
+	RestoreByRunId(ctx context.Context, runId string) error
     // Search for runs that satisfy expressions. Search expressions can use
     // :ref:`mlflowMetric` and :ref:`mlflowParam` keys.
     Search(ctx context.Context, searchRunsRequest SearchRunsRequest) (*SearchRunsResponse, error)
@@ -154,6 +162,7 @@ type ModelVersionCommentsService interface {
     Create(ctx context.Context, createCommentRequest CreateCommentRequest) (*CreateCommentResponse, error)
     // Delete a comment on a model version.
     Delete(ctx context.Context, deleteCommentRequest DeleteCommentRequest) error
+	DeleteById(ctx context.Context, id string) error
     // Edit a comment on a model version.
     Update(ctx context.Context, updateCommentRequest UpdateCommentRequest) (*UpdateCommentResponse, error)
 }
@@ -187,10 +196,12 @@ type RegisteredModelsService interface {
     Create(ctx context.Context, createRegisteredModelRequest CreateRegisteredModelRequest) (*CreateRegisteredModelResponse, error)
     
     Delete(ctx context.Context, deleteRegisteredModelRequest DeleteRegisteredModelRequest) error
+	DeleteByName(ctx context.Context, name string) error
     
     DeleteTag(ctx context.Context, deleteRegisteredModelTagRequest DeleteRegisteredModelTagRequest) error
     
     Get(ctx context.Context, getRegisteredModelRequest GetRegisteredModelRequest) (*GetRegisteredModelResponse, error)
+	GetByName(ctx context.Context, name string) (*GetRegisteredModelResponse, error)
     
     GetLatestVersions(ctx context.Context, getLatestVersionsRequest GetLatestVersionsRequest) (*GetLatestVersionsResponse, error)
     
@@ -211,6 +222,7 @@ type RegistryWebhooksService interface {
     Create(ctx context.Context, createRegistryWebhookRequest CreateRegistryWebhookRequest) (*CreateRegistryWebhookResponse, error)
     // This endpoint is in Public Preview. Delete a registry webhook.
     Delete(ctx context.Context, deleteRegistryWebhookRequest DeleteRegistryWebhookRequest) error
+	DeleteById(ctx context.Context, id string) error
     // This endpoint is in Public Preview. List registry webhooks.
     List(ctx context.Context, listRegistryWebhooksRequest ListRegistryWebhooksRequest) (*ListRegistryWebhooksResponse, error)
     // This endpoint is in Public Preview. Test a registry webhook.

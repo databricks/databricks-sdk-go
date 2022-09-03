@@ -5,7 +5,7 @@ package ipaccesslists
 import (
 	"context"
 	"fmt"
-
+	
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -44,12 +44,26 @@ func (a *IpAccessListsAPI) DeleteIpAccessList(ctx context.Context, request Delet
 	return err
 }
 
+// Delete an IP access list, specified by its list ID.
+func (a *IpAccessListsAPI) DeleteIpAccessListByIpAccessListId(ctx context.Context, ipAccessListId string) error {
+	return a.DeleteIpAccessList(ctx, DeleteIpAccessListRequest{
+		IpAccessListId: ipAccessListId,
+	})
+}
+
 // Get an IP access list, specified by its list ID.
 func (a *IpAccessListsAPI) FetchIpAccessList(ctx context.Context, request FetchIpAccessListRequest) (*CreateIPAccessListResponse, error) {
 	var createIPAccessListResponse CreateIPAccessListResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	err := a.client.Get(ctx, path, request, &createIPAccessListResponse)
 	return &createIPAccessListResponse, err
+}
+
+// Get an IP access list, specified by its list ID.
+func (a *IpAccessListsAPI) FetchIpAccessListByIpAccessListId(ctx context.Context, ipAccessListId string) (*CreateIPAccessListResponse, error) {
+	return a.FetchIpAccessList(ctx, FetchIpAccessListRequest{
+		IpAccessListId: ipAccessListId,
+	})
 }
 
 
@@ -94,15 +108,3 @@ func (a *IpAccessListsAPI) UpdateIpAccessList(ctx context.Context, request Updat
 	return err
 }
 
-
-func (a *IpAccessListsAPI) DeleteIpAccessListByIpAccessListId(ctx context.Context, ipAccessListId string) error {
-	return a.DeleteIpAccessList(ctx, DeleteIpAccessListRequest{
-		IpAccessListId: ipAccessListId,
-	})
-}
-
-func (a *IpAccessListsAPI) FetchIpAccessListByIpAccessListId(ctx context.Context, ipAccessListId string) (*CreateIPAccessListResponse, error) {
-	return a.FetchIpAccessList(ctx, FetchIpAccessListRequest{
-		IpAccessListId: ipAccessListId,
-	})
-}

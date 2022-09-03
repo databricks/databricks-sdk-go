@@ -5,7 +5,7 @@ package mlflow
 import (
 	"context"
 	
-
+	
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -40,12 +40,28 @@ func (a *ExperimentsAPI) Delete(ctx context.Context, request DeleteExperimentReq
 	return err
 }
 
+// Mark an experiment and associated metadata, runs, metrics, params, and tags
+// for deletion. If the experiment uses FileStore, artifacts associated with
+// experiment are also deleted.
+func (a *ExperimentsAPI) DeleteByExperimentId(ctx context.Context, experimentId string) error {
+	return a.Delete(ctx, DeleteExperimentRequest{
+		ExperimentId: experimentId,
+	})
+}
+
 // Get metadata for an experiment. This method works on deleted experiments.
 func (a *ExperimentsAPI) Get(ctx context.Context, request GetExperimentRequest) (*GetExperimentResponse, error) {
 	var getExperimentResponse GetExperimentResponse
 	path := "/api/2.0/mlflow/experiments/get"
 	err := a.client.Get(ctx, path, request, &getExperimentResponse)
 	return &getExperimentResponse, err
+}
+
+// Get metadata for an experiment. This method works on deleted experiments.
+func (a *ExperimentsAPI) GetByExperimentId(ctx context.Context, experimentId string) (*GetExperimentResponse, error) {
+	return a.Get(ctx, GetExperimentRequest{
+		ExperimentId: experimentId,
+	})
 }
 
 // Get metadata for an experiment. This endpoint will return deleted
@@ -58,6 +74,17 @@ func (a *ExperimentsAPI) GetByName(ctx context.Context, request GetExperimentByN
 	path := "/api/2.0/mlflow/experiments/get-by-name"
 	err := a.client.Get(ctx, path, request, &getExperimentByNameResponse)
 	return &getExperimentByNameResponse, err
+}
+
+// Get metadata for an experiment. This endpoint will return deleted
+// experiments, but prefers the active experiment if an active and deleted
+// experiment share the same name. If multiple deleted experiments share the
+// same name, the API will return one of them. Throws
+// ``RESOURCE_DOES_NOT_EXIST`` if no experiment with the specified name exists.
+func (a *ExperimentsAPI) GetByNameByExperimentName(ctx context.Context, experimentName string) (*GetExperimentByNameResponse, error) {
+	return a.GetByName(ctx, GetExperimentByNameRequest{
+		ExperimentName: experimentName,
+	})
 }
 
 // Get a list of all experiments.
@@ -77,6 +104,17 @@ func (a *ExperimentsAPI) Restore(ctx context.Context, request RestoreExperimentR
 	path := "/api/2.0/mlflow/experiments/restore"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
+}
+
+// Restore an experiment marked for deletion. This also restores associated
+// metadata, runs, metrics, params, and tags. If experiment uses FileStore,
+// underlying artifacts associated with experiment are also restored. Throws
+// ``RESOURCE_DOES_NOT_EXIST`` if experiment was never created or was
+// permanently deleted.
+func (a *ExperimentsAPI) RestoreByExperimentId(ctx context.Context, experimentId string) error {
+	return a.Restore(ctx, RestoreExperimentRequest{
+		ExperimentId: experimentId,
+	})
 }
 
 // Search for experiments that satisfy specified search criteria.
@@ -140,6 +178,13 @@ func (a *MLflowDatabricksAPI) Get(ctx context.Context, request GetRegisteredMode
 	return &getRegisteredModelResponse, err
 }
 
+
+func (a *MLflowDatabricksAPI) GetByName(ctx context.Context, name string) (*GetRegisteredModelResponse, error) {
+	return a.Get(ctx, GetRegisteredModelRequest{
+		Name: name,
+	})
+}
+
 // Transition a model version&#39;s stage. This is a &lt;Workspace&gt; version of the
 // [MLflow
 // endpoint](https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage)
@@ -197,6 +242,13 @@ func (a *MLflowRunsAPI) Delete(ctx context.Context, request DeleteRunRequest) er
 	path := "/api/2.0/mlflow/runs/delete"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
+}
+
+// Mark a run for deletion.
+func (a *MLflowRunsAPI) DeleteByRunId(ctx context.Context, runId string) error {
+	return a.Delete(ctx, DeleteRunRequest{
+		RunId: runId,
+	})
 }
 
 // Delete a tag on a run. Tags are run metadata that can be updated during a run
@@ -288,6 +340,13 @@ func (a *MLflowRunsAPI) Restore(ctx context.Context, request RestoreRunRequest) 
 	return err
 }
 
+// Restore a deleted run.
+func (a *MLflowRunsAPI) RestoreByRunId(ctx context.Context, runId string) error {
+	return a.Restore(ctx, RestoreRunRequest{
+		RunId: runId,
+	})
+}
+
 // Search for runs that satisfy expressions. Search expressions can use
 // :ref:`mlflowMetric` and :ref:`mlflowParam` keys.
 func (a *MLflowRunsAPI) Search(ctx context.Context, request SearchRunsRequest) (*SearchRunsResponse, error) {
@@ -339,6 +398,13 @@ func (a *ModelVersionCommentsAPI) Delete(ctx context.Context, request DeleteComm
 	path := "/api/2.0/mlflow/comments/delete"
 	err := a.client.Delete(ctx, path, request)
 	return err
+}
+
+// Delete a comment on a model version.
+func (a *ModelVersionCommentsAPI) DeleteById(ctx context.Context, id string) error {
+	return a.Delete(ctx, DeleteCommentRequest{
+		Id: id,
+	})
 }
 
 // Edit a comment on a model version.
@@ -456,6 +522,13 @@ func (a *RegisteredModelsAPI) Delete(ctx context.Context, request DeleteRegister
 }
 
 
+func (a *RegisteredModelsAPI) DeleteByName(ctx context.Context, name string) error {
+	return a.Delete(ctx, DeleteRegisteredModelRequest{
+		Name: name,
+	})
+}
+
+
 func (a *RegisteredModelsAPI) DeleteTag(ctx context.Context, request DeleteRegisteredModelTagRequest) error {
 	path := "/api/2.0/mlflow/registered-models/delete-tag"
 	err := a.client.Delete(ctx, path, request)
@@ -468,6 +541,13 @@ func (a *RegisteredModelsAPI) Get(ctx context.Context, request GetRegisteredMode
 	path := "/api/2.0/mlflow/registered-models/get"
 	err := a.client.Get(ctx, path, request, &getRegisteredModelResponse)
 	return &getRegisteredModelResponse, err
+}
+
+
+func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*GetRegisteredModelResponse, error) {
+	return a.Get(ctx, GetRegisteredModelRequest{
+		Name: name,
+	})
 }
 
 
@@ -540,6 +620,13 @@ func (a *RegistryWebhooksAPI) Delete(ctx context.Context, request DeleteRegistry
 	path := "/api/2.0/mlflow/registry-webhooks/delete"
 	err := a.client.Delete(ctx, path, request)
 	return err
+}
+
+// This endpoint is in Public Preview. Delete a registry webhook.
+func (a *RegistryWebhooksAPI) DeleteById(ctx context.Context, id string) error {
+	return a.Delete(ctx, DeleteRegistryWebhookRequest{
+		Id: id,
+	})
 }
 
 // This endpoint is in Public Preview. List registry webhooks.

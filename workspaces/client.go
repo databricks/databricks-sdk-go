@@ -44,7 +44,6 @@ type WorkspacesClient struct {
 	Grants               unitycatalog.GrantsService
 	Groups               scim.GroupsService
 	Jobs                 jobs.JobsService
-	JobRuns              jobs.JobRunsService
 	InstancePools        instancepools.InstancePoolsService
 	InstanceProfiles     instanceprofiles.InstanceprofilesService
 	IpAccessLists        ipaccesslists.IpAccessListsService
@@ -104,7 +103,6 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		Grants:               unitycatalog.NewGrants(apiClient),
 		Groups:               scim.NewGroups(apiClient),
 		Jobs:                 jobs.NewJobs(apiClient),
-		JobRuns:              jobs.NewJobRuns(apiClient),
 		InstancePools:        instancepools.NewInstancePools(apiClient),
 		InstanceProfiles:     instanceprofiles.New(apiClient),
 		IpAccessLists:        ipaccesslists.NewIpAccessLists(apiClient),

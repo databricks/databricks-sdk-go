@@ -15,11 +15,11 @@ type AclItem struct {
 type AclItemPermission string
 
 
+const AclItemPermissionManage AclItemPermission = `MANAGE`
+
 const AclItemPermissionRead AclItemPermission = `READ`
 
 const AclItemPermissionWrite AclItemPermission = `WRITE`
-
-const AclItemPermissionManage AclItemPermission = `MANAGE`
 
 type AzureKeyVaultSecretScopeMetadata struct {
     // The DNS of the KeyVault
@@ -46,9 +46,9 @@ type CreateScopeRequest struct {
 type CreateScopeRequestScopeBackendType string
 
 
-const CreateScopeRequestScopeBackendTypeDatabricks CreateScopeRequestScopeBackendType = `DATABRICKS`
-
 const CreateScopeRequestScopeBackendTypeAzureKeyvault CreateScopeRequestScopeBackendType = `AZURE_KEYVAULT`
+
+const CreateScopeRequestScopeBackendTypeDatabricks CreateScopeRequestScopeBackendType = `DATABRICKS`
 
 type DeleteAclRequest struct {
     // The principal to remove an existing ACL from.
@@ -91,11 +91,11 @@ type GetAclResponse struct {
 type GetAclResponsePermission string
 
 
+const GetAclResponsePermissionManage GetAclResponsePermission = `MANAGE`
+
 const GetAclResponsePermissionRead GetAclResponsePermission = `READ`
 
 const GetAclResponsePermissionWrite GetAclResponsePermission = `WRITE`
-
-const GetAclResponsePermissionManage GetAclResponsePermission = `MANAGE`
 
 type ListAclsRequest struct {
     // The name of the scope to fetch ACL information from.
@@ -140,11 +140,11 @@ type PutAclRequest struct {
 type PutAclRequestPermission string
 
 
+const PutAclRequestPermissionManage PutAclRequestPermission = `MANAGE`
+
 const PutAclRequestPermissionRead PutAclRequestPermission = `READ`
 
 const PutAclRequestPermissionWrite PutAclRequestPermission = `WRITE`
-
-const PutAclRequestPermissionManage PutAclRequestPermission = `MANAGE`
 
 type PutSecretRequest struct {
     // If specified, value will be stored as bytes.
@@ -179,6 +179,6 @@ type SecretScope struct {
 type SecretScopeBackendType string
 
 
-const SecretScopeBackendTypeDatabricks SecretScopeBackendType = `DATABRICKS`
-
 const SecretScopeBackendTypeAzureKeyvault SecretScopeBackendType = `AZURE_KEYVAULT`
+
+const SecretScopeBackendTypeDatabricks SecretScopeBackendType = `DATABRICKS`

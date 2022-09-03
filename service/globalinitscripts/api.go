@@ -5,7 +5,7 @@ package globalinitscripts
 import (
 	"context"
 	"fmt"
-
+	
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -34,6 +34,13 @@ func (a *GlobalInitScriptsAPI) DeleteScript(ctx context.Context, request DeleteS
 	return err
 }
 
+// Delete a global init script.
+func (a *GlobalInitScriptsAPI) DeleteScriptByScriptId(ctx context.Context, scriptId string) error {
+	return a.DeleteScript(ctx, DeleteScriptRequest{
+		ScriptId: scriptId,
+	})
+}
+
 // Get a list of all global init scripts for this workspace. This returns all
 // properties for each script but **not** the script contents. To retrieve the
 // contents of a script, use the [get a global init
@@ -52,6 +59,13 @@ func (a *GlobalInitScriptsAPI) GetScript(ctx context.Context, request GetScriptR
 	return err
 }
 
+// Get all the details of a script, including its Base64-encoded contents.
+func (a *GlobalInitScriptsAPI) GetScriptByScriptId(ctx context.Context, scriptId string) error {
+	return a.GetScript(ctx, GetScriptRequest{
+		ScriptId: scriptId,
+	})
+}
+
 // Update a global init script, specifying only the fields to change. All fields
 // are optional. Unspecified fields retain their current value.
 func (a *GlobalInitScriptsAPI) UpdateScript(ctx context.Context, request GlobalInitScriptUpdateRequest) error {
@@ -60,15 +74,3 @@ func (a *GlobalInitScriptsAPI) UpdateScript(ctx context.Context, request GlobalI
 	return err
 }
 
-
-func (a *GlobalInitScriptsAPI) GetScriptByScriptId(ctx context.Context, scriptId string) error {
-	return a.GetScript(ctx, GetScriptRequest{
-		ScriptId: scriptId,
-	})
-}
-
-func (a *GlobalInitScriptsAPI) DeleteScriptByScriptId(ctx context.Context, scriptId string) error {
-	return a.DeleteScript(ctx, DeleteScriptRequest{
-		ScriptId: scriptId,
-	})
-}

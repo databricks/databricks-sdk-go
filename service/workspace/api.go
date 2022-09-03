@@ -5,7 +5,7 @@ package workspace
 import (
 	"context"
 	
-
+	
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -64,6 +64,18 @@ func (a *WorkspaceAPI) GetStatus(ctx context.Context, request GetStatusRequest) 
 	return &getStatusResponse, err
 }
 
+// Gets the status of an object or a directory. If ``path`` does not exist, this
+// call returns an error ``RESOURCE_DOES_NOT_EXIST``. Example of request: ..
+// code :: json { &#34;path&#34;: &#34;/Users/user@example.com/project/ScaleExampleNotebook&#34;
+// } Example of response: .. code :: json { &#34;path&#34;:
+// &#34;/Users/user@example.com/project/ScalaExampleNotebook&#34;, &#34;language&#34;: &#34;SCALA&#34;,
+// &#34;object_type&#34;: &#34;NOTEBOOK&#34;, &#34;object_id&#34;: 789 }
+func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*GetStatusResponse, error) {
+	return a.GetStatus(ctx, GetStatusRequest{
+		Path: path,
+	})
+}
+
 // Imports a notebook or the contents of an entire directory. If ``path``
 // already exists and ``overwrite`` is set to ``false``, this call returns an
 // error ``RESOURCE_ALREADY_EXISTS``. One can only use ``DBC`` format to import
@@ -106,5 +118,17 @@ func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request MkdirsRequest) error 
 	path := "/api/2.0/workspace/mkdirs"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
+}
+
+// Creates the given directory and necessary parent directories if they do not
+// exists. If there exists an object (not a directory) at any prefix of the
+// input path, this call returns an error ``RESOURCE_ALREADY_EXISTS``. Note that
+// if this operation fails it may have succeeded in creating some of the
+// necessary parrent directories. Example of request: .. code:: json { &#34;path&#34;:
+// &#34;/Users/user@example.com/project&#34; }
+func (a *WorkspaceAPI) MkdirsByPath(ctx context.Context, path string) error {
+	return a.Mkdirs(ctx, MkdirsRequest{
+		Path: path,
+	})
 }
 

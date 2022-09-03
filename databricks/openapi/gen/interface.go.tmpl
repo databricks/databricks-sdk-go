@@ -4,6 +4,7 @@ package {{.Name}}
 
 import (
 	"context"
+	{{if .HasWaits}}"time"{{end}}
 )
 
 {{range .Services}}
@@ -11,8 +12,13 @@ import (
 type {{.PascalName}}Service interface {
 	{{- range .Methods}}
     {{.Comment "    // " 80}}
-    {{.PascalName}}(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}{{end}}
-	{{- range .ByPathParamsMethods}}{{.Comment "// " 80}}
-	{{.PascalName}}(ctx context.Context{{range .Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{if .Method.Response}}(*{{.Method.Response.PascalName}}, error){{else}}error{{end}}{{end}}
+    {{.PascalName}}(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}
+	{{- if .Wait}}// {{.PascalName}} and wait to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
+	{{.PascalName}}AndWait(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}, timeout ...time.Duration) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}{{end}}
+	{{- if .Shortcut}}
+	{{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}{{end}}
+	{{- if and .Shortcut .Wait}}
+	{{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, timeout ...time.Duration) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}{{end}}
+	{{- end}}
 }
 {{end}}

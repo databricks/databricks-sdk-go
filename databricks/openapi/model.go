@@ -83,6 +83,8 @@ func (path *Path) Verbs() map[string]*Operation {
 
 type Operation struct {
 	Node
+	Wait        *Wait            `json:"x-databricks-wait,omitempty"`
+	Shortcut    bool             `json:"x-databricks-shortcut,omitempty"`
 	Crud        string           `json:"x-databricks-crud,omitempty"`
 	Summary     string           `json:"summary,omitempty"`
 	OperationId string           `json:"operationId"`
@@ -90,6 +92,16 @@ type Operation struct {
 	Parameters  []Parameter      `json:"parameters,omitempty"`
 	Responses   map[string]*Body `json:"responses"`
 	RequestBody *Body            `json:"requestBody,omitempty"`
+}
+
+type Wait struct {
+	Poll             string   `json:"poll"`
+	Bind             string   `json:"bind"`
+	ForceBindRequest bool     `json:"forceBindRequest"`
+	Field            []string `json:"field"`
+	Message          []string `json:"message"`
+	Success          []string `json:"success"`
+	Failure          []string `json:"failure"`
 }
 
 func (o *Operation) HasTag(tag string) bool {
@@ -137,8 +149,15 @@ type Components struct {
 	Schemas    refs[*Schema]    `json:"schemas,omitempty"`
 }
 
+type Retries struct {
+	Success      []string `json:"success"`
+	Failure      []string `json:"failure"`
+	MessageField string   `json:"messageField"`
+}
+
 type Schema struct {
 	Node
+	Retries          *Retries           `json:"x-databricks-retries,omitempty"`
 	IsIdentifier     bool               `json:"x-databricks-id,omitempty"`
 	IsComputed       bool               `json:"x-databricks-computed,omitempty"`
 	IsAny            bool               `json:"x-databricks-any,omitempty"`

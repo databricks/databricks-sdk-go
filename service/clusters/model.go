@@ -95,9 +95,9 @@ type AwsAttributes struct {
 type AwsAttributesAvailability string
 
 
-const AwsAttributesAvailabilitySpot AwsAttributesAvailability = `SPOT`
-
 const AwsAttributesAvailabilityOnDemand AwsAttributesAvailability = `ON_DEMAND`
+
+const AwsAttributesAvailabilitySpot AwsAttributesAvailability = `SPOT`
 
 const AwsAttributesAvailabilitySpotWithFallback AwsAttributesAvailability = `SPOT_WITH_FALLBACK`
 // The type of EBS volumes that will be launched with this cluster.
@@ -140,9 +140,9 @@ type AzureAttributes struct {
 type AzureAttributesAvailability string
 
 
-const AzureAttributesAvailabilitySpotAzure AzureAttributesAvailability = `SPOT_AZURE`
-
 const AzureAttributesAvailabilityOnDemandAzure AzureAttributesAvailability = `ON_DEMAND_AZURE`
+
+const AzureAttributesAvailabilitySpotAzure AzureAttributesAvailability = `SPOT_AZURE`
 
 const AzureAttributesAvailabilitySpotWithFallbackAzure AzureAttributesAvailability = `SPOT_WITH_FALLBACK_AZURE`
 
@@ -171,9 +171,9 @@ type CloudProviderNodeInfo struct {
 type CloudProviderNodeInfoStatus string
 
 
-const CloudProviderNodeInfoStatusNotenabledonsubscription CloudProviderNodeInfoStatus = `NotEnabledOnSubscription`
-
 const CloudProviderNodeInfoStatusNotavailableinregion CloudProviderNodeInfoStatus = `NotAvailableInRegion`
+
+const CloudProviderNodeInfoStatusNotenabledonsubscription CloudProviderNodeInfoStatus = `NotEnabledOnSubscription`
 
 type ClusterAttributes struct {
     // Automatically terminates the cluster after it is inactive for this time
@@ -292,19 +292,19 @@ type ClusterAttributes struct {
 type ClusterAttributesClusterSource string
 
 
-const ClusterAttributesClusterSourceUi ClusterAttributesClusterSource = `UI`
-
-const ClusterAttributesClusterSourceJob ClusterAttributesClusterSource = `JOB`
-
 const ClusterAttributesClusterSourceApi ClusterAttributesClusterSource = `API`
 
-const ClusterAttributesClusterSourceSql ClusterAttributesClusterSource = `SQL`
+const ClusterAttributesClusterSourceJob ClusterAttributesClusterSource = `JOB`
 
 const ClusterAttributesClusterSourceModels ClusterAttributesClusterSource = `MODELS`
 
 const ClusterAttributesClusterSourcePipeline ClusterAttributesClusterSource = `PIPELINE`
 
 const ClusterAttributesClusterSourcePipelineMaintenance ClusterAttributesClusterSource = `PIPELINE_MAINTENANCE`
+
+const ClusterAttributesClusterSourceSql ClusterAttributesClusterSource = `SQL`
+
+const ClusterAttributesClusterSourceUi ClusterAttributesClusterSource = `UI`
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 // unspecified, the runtime engine is inferred from spark_version.
 type ClusterAttributesRuntimeEngine string
@@ -312,9 +312,9 @@ type ClusterAttributesRuntimeEngine string
 
 const ClusterAttributesRuntimeEngineNull ClusterAttributesRuntimeEngine = `NULL`
 
-const ClusterAttributesRuntimeEngineStandard ClusterAttributesRuntimeEngine = `STANDARD`
-
 const ClusterAttributesRuntimeEnginePhoton ClusterAttributesRuntimeEngine = `PHOTON`
+
+const ClusterAttributesRuntimeEngineStandard ClusterAttributesRuntimeEngine = `STANDARD`
 
 type ClusterEvent struct {
     // &lt;needs content added&gt;
@@ -335,33 +335,13 @@ type ClusterEvent struct {
 type ClusterEventType string
 
 
+const ClusterEventTypeAutoscalingStatsReport ClusterEventType = `AUTOSCALING_STATS_REPORT`
+
 const ClusterEventTypeCreating ClusterEventType = `CREATING`
 
-const ClusterEventTypeStarting ClusterEventType = `STARTING`
-
-const ClusterEventTypeRestarting ClusterEventType = `RESTARTING`
-
-const ClusterEventTypeTerminating ClusterEventType = `TERMINATING`
-
-const ClusterEventTypeEdited ClusterEventType = `EDITED`
-
-const ClusterEventTypeRunning ClusterEventType = `RUNNING`
-
-const ClusterEventTypeResizing ClusterEventType = `RESIZING`
-
-const ClusterEventTypeNodesLost ClusterEventType = `NODES_LOST`
-
-const ClusterEventTypeUpsizeCompleted ClusterEventType = `UPSIZE_COMPLETED`
-
-const ClusterEventTypeInitScriptsStarted ClusterEventType = `INIT_SCRIPTS_STARTED`
-
-const ClusterEventTypeInitScriptsFinished ClusterEventType = `INIT_SCRIPTS_FINISHED`
+const ClusterEventTypeDbfsDown ClusterEventType = `DBFS_DOWN`
 
 const ClusterEventTypeDidNotExpandDisk ClusterEventType = `DID_NOT_EXPAND_DISK`
-
-const ClusterEventTypeExpandedDisk ClusterEventType = `EXPANDED_DISK`
-
-const ClusterEventTypeFailedToExpandDisk ClusterEventType = `FAILED_TO_EXPAND_DISK`
 
 const ClusterEventTypeDriverHealthy ClusterEventType = `DRIVER_HEALTHY`
 
@@ -369,21 +349,41 @@ const ClusterEventTypeDriverNotResponding ClusterEventType = `DRIVER_NOT_RESPOND
 
 const ClusterEventTypeDriverUnavailable ClusterEventType = `DRIVER_UNAVAILABLE`
 
-const ClusterEventTypeSparkException ClusterEventType = `SPARK_EXCEPTION`
+const ClusterEventTypeEdited ClusterEventType = `EDITED`
+
+const ClusterEventTypeExpandedDisk ClusterEventType = `EXPANDED_DISK`
+
+const ClusterEventTypeFailedToExpandDisk ClusterEventType = `FAILED_TO_EXPAND_DISK`
+
+const ClusterEventTypeInitScriptsFinished ClusterEventType = `INIT_SCRIPTS_FINISHED`
+
+const ClusterEventTypeInitScriptsStarted ClusterEventType = `INIT_SCRIPTS_STARTED`
 
 const ClusterEventTypeMetastoreDown ClusterEventType = `METASTORE_DOWN`
 
-const ClusterEventTypeDbfsDown ClusterEventType = `DBFS_DOWN`
-
-const ClusterEventTypeAutoscalingStatsReport ClusterEventType = `AUTOSCALING_STATS_REPORT`
-
 const ClusterEventTypeNodeBlacklisted ClusterEventType = `NODE_BLACKLISTED`
+
+const ClusterEventTypeNodeExcludedDecommissioned ClusterEventType = `NODE_EXCLUDED_DECOMMISSIONED`
+
+const ClusterEventTypeNodesLost ClusterEventType = `NODES_LOST`
 
 const ClusterEventTypePinned ClusterEventType = `PINNED`
 
+const ClusterEventTypeResizing ClusterEventType = `RESIZING`
+
+const ClusterEventTypeRestarting ClusterEventType = `RESTARTING`
+
+const ClusterEventTypeRunning ClusterEventType = `RUNNING`
+
+const ClusterEventTypeSparkException ClusterEventType = `SPARK_EXCEPTION`
+
+const ClusterEventTypeStarting ClusterEventType = `STARTING`
+
+const ClusterEventTypeTerminating ClusterEventType = `TERMINATING`
+
 const ClusterEventTypeUnpinned ClusterEventType = `UNPINNED`
 
-const ClusterEventTypeNodeExcludedDecommissioned ClusterEventType = `NODE_EXCLUDED_DECOMMISSIONED`
+const ClusterEventTypeUpsizeCompleted ClusterEventType = `UPSIZE_COMPLETED`
 
 type ClusterInfo struct {
     // Parameters needed in order to automatically scale clusters up and down
@@ -566,19 +566,19 @@ type ClusterInfo struct {
 type ClusterInfoClusterSource string
 
 
-const ClusterInfoClusterSourceUi ClusterInfoClusterSource = `UI`
-
-const ClusterInfoClusterSourceJob ClusterInfoClusterSource = `JOB`
-
 const ClusterInfoClusterSourceApi ClusterInfoClusterSource = `API`
 
-const ClusterInfoClusterSourceSql ClusterInfoClusterSource = `SQL`
+const ClusterInfoClusterSourceJob ClusterInfoClusterSource = `JOB`
 
 const ClusterInfoClusterSourceModels ClusterInfoClusterSource = `MODELS`
 
 const ClusterInfoClusterSourcePipeline ClusterInfoClusterSource = `PIPELINE`
 
 const ClusterInfoClusterSourcePipelineMaintenance ClusterInfoClusterSource = `PIPELINE_MAINTENANCE`
+
+const ClusterInfoClusterSourceSql ClusterInfoClusterSource = `SQL`
+
+const ClusterInfoClusterSourceUi ClusterInfoClusterSource = `UI`
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 // unspecified, the runtime engine is inferred from spark_version.
 type ClusterInfoRuntimeEngine string
@@ -586,26 +586,26 @@ type ClusterInfoRuntimeEngine string
 
 const ClusterInfoRuntimeEngineNull ClusterInfoRuntimeEngine = `NULL`
 
-const ClusterInfoRuntimeEngineStandard ClusterInfoRuntimeEngine = `STANDARD`
-
 const ClusterInfoRuntimeEnginePhoton ClusterInfoRuntimeEngine = `PHOTON`
+
+const ClusterInfoRuntimeEngineStandard ClusterInfoRuntimeEngine = `STANDARD`
 // Current state of the cluster.
 type ClusterInfoState string
 
 
+const ClusterInfoStateError ClusterInfoState = `ERROR`
+
 const ClusterInfoStatePending ClusterInfoState = `PENDING`
-
-const ClusterInfoStateRunning ClusterInfoState = `RUNNING`
-
-const ClusterInfoStateRestarting ClusterInfoState = `RESTARTING`
 
 const ClusterInfoStateResizing ClusterInfoState = `RESIZING`
 
-const ClusterInfoStateTerminating ClusterInfoState = `TERMINATING`
+const ClusterInfoStateRestarting ClusterInfoState = `RESTARTING`
+
+const ClusterInfoStateRunning ClusterInfoState = `RUNNING`
 
 const ClusterInfoStateTerminated ClusterInfoState = `TERMINATED`
 
-const ClusterInfoStateError ClusterInfoState = `ERROR`
+const ClusterInfoStateTerminating ClusterInfoState = `TERMINATING`
 
 const ClusterInfoStateUnknown ClusterInfoState = `UNKNOWN`
 
@@ -772,19 +772,19 @@ type CreateCluster struct {
 type CreateClusterClusterSource string
 
 
-const CreateClusterClusterSourceUi CreateClusterClusterSource = `UI`
-
-const CreateClusterClusterSourceJob CreateClusterClusterSource = `JOB`
-
 const CreateClusterClusterSourceApi CreateClusterClusterSource = `API`
 
-const CreateClusterClusterSourceSql CreateClusterClusterSource = `SQL`
+const CreateClusterClusterSourceJob CreateClusterClusterSource = `JOB`
 
 const CreateClusterClusterSourceModels CreateClusterClusterSource = `MODELS`
 
 const CreateClusterClusterSourcePipeline CreateClusterClusterSource = `PIPELINE`
 
 const CreateClusterClusterSourcePipelineMaintenance CreateClusterClusterSource = `PIPELINE_MAINTENANCE`
+
+const CreateClusterClusterSourceSql CreateClusterClusterSource = `SQL`
+
+const CreateClusterClusterSourceUi CreateClusterClusterSource = `UI`
 
 type CreateClusterResponse struct {
     
@@ -798,9 +798,9 @@ type CreateClusterRuntimeEngine string
 
 const CreateClusterRuntimeEngineNull CreateClusterRuntimeEngine = `NULL`
 
-const CreateClusterRuntimeEngineStandard CreateClusterRuntimeEngine = `STANDARD`
-
 const CreateClusterRuntimeEnginePhoton CreateClusterRuntimeEngine = `PHOTON`
+
+const CreateClusterRuntimeEngineStandard CreateClusterRuntimeEngine = `STANDARD`
 
 type DataPlaneEventDetails struct {
     // &lt;needs content added&gt;
@@ -968,19 +968,19 @@ type EditCluster struct {
 type EditClusterClusterSource string
 
 
-const EditClusterClusterSourceUi EditClusterClusterSource = `UI`
-
-const EditClusterClusterSourceJob EditClusterClusterSource = `JOB`
-
 const EditClusterClusterSourceApi EditClusterClusterSource = `API`
 
-const EditClusterClusterSourceSql EditClusterClusterSource = `SQL`
+const EditClusterClusterSourceJob EditClusterClusterSource = `JOB`
 
 const EditClusterClusterSourceModels EditClusterClusterSource = `MODELS`
 
 const EditClusterClusterSourcePipeline EditClusterClusterSource = `PIPELINE`
 
 const EditClusterClusterSourcePipelineMaintenance EditClusterClusterSource = `PIPELINE_MAINTENANCE`
+
+const EditClusterClusterSourceSql EditClusterClusterSource = `SQL`
+
+const EditClusterClusterSourceUi EditClusterClusterSource = `UI`
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 // unspecified, the runtime engine is inferred from spark_version.
 type EditClusterRuntimeEngine string
@@ -988,9 +988,9 @@ type EditClusterRuntimeEngine string
 
 const EditClusterRuntimeEngineNull EditClusterRuntimeEngine = `NULL`
 
-const EditClusterRuntimeEngineStandard EditClusterRuntimeEngine = `STANDARD`
-
 const EditClusterRuntimeEnginePhoton EditClusterRuntimeEngine = `PHOTON`
+
+const EditClusterRuntimeEngineStandard EditClusterRuntimeEngine = `STANDARD`
 
 type EventDetails struct {
     // * For created clusters, the attributes of the cluster. * For edited
@@ -1044,13 +1044,13 @@ type EventDetails struct {
 type EventDetailsCause string
 
 
-const EventDetailsCauseAutoscale EventDetailsCause = `AUTOSCALE`
-
-const EventDetailsCauseUserRequest EventDetailsCause = `USER_REQUEST`
-
 const EventDetailsCauseAutorecovery EventDetailsCause = `AUTORECOVERY`
 
+const EventDetailsCauseAutoscale EventDetailsCause = `AUTOSCALE`
+
 const EventDetailsCauseReplaceBadNodes EventDetailsCause = `REPLACE_BAD_NODES`
+
+const EventDetailsCauseUserRequest EventDetailsCause = `USER_REQUEST`
 
 type GcpAttributes struct {
     // This field determines whether the spark executors will be scheduled to
@@ -1072,9 +1072,9 @@ type GcpAttributes struct {
 type GcpAttributesAvailability string
 
 
-const GcpAttributesAvailabilityPreemptibleGcp GcpAttributesAvailability = `PREEMPTIBLE_GCP`
-
 const GcpAttributesAvailabilityOnDemandGcp GcpAttributesAvailability = `ON_DEMAND_GCP`
+
+const GcpAttributesAvailabilityPreemptibleGcp GcpAttributesAvailability = `PREEMPTIBLE_GCP`
 
 const GcpAttributesAvailabilityPreemptibleWithFallbackGcp GcpAttributesAvailability = `PREEMPTIBLE_WITH_FALLBACK_GCP`
 
@@ -1105,33 +1105,13 @@ type GetEvents struct {
 type GetEventsEventTypesItem string
 
 
+const GetEventsEventTypesItemAutoscalingStatsReport GetEventsEventTypesItem = `AUTOSCALING_STATS_REPORT`
+
 const GetEventsEventTypesItemCreating GetEventsEventTypesItem = `CREATING`
 
-const GetEventsEventTypesItemStarting GetEventsEventTypesItem = `STARTING`
-
-const GetEventsEventTypesItemRestarting GetEventsEventTypesItem = `RESTARTING`
-
-const GetEventsEventTypesItemTerminating GetEventsEventTypesItem = `TERMINATING`
-
-const GetEventsEventTypesItemEdited GetEventsEventTypesItem = `EDITED`
-
-const GetEventsEventTypesItemRunning GetEventsEventTypesItem = `RUNNING`
-
-const GetEventsEventTypesItemResizing GetEventsEventTypesItem = `RESIZING`
-
-const GetEventsEventTypesItemNodesLost GetEventsEventTypesItem = `NODES_LOST`
-
-const GetEventsEventTypesItemUpsizeCompleted GetEventsEventTypesItem = `UPSIZE_COMPLETED`
-
-const GetEventsEventTypesItemInitScriptsStarted GetEventsEventTypesItem = `INIT_SCRIPTS_STARTED`
-
-const GetEventsEventTypesItemInitScriptsFinished GetEventsEventTypesItem = `INIT_SCRIPTS_FINISHED`
+const GetEventsEventTypesItemDbfsDown GetEventsEventTypesItem = `DBFS_DOWN`
 
 const GetEventsEventTypesItemDidNotExpandDisk GetEventsEventTypesItem = `DID_NOT_EXPAND_DISK`
-
-const GetEventsEventTypesItemExpandedDisk GetEventsEventTypesItem = `EXPANDED_DISK`
-
-const GetEventsEventTypesItemFailedToExpandDisk GetEventsEventTypesItem = `FAILED_TO_EXPAND_DISK`
 
 const GetEventsEventTypesItemDriverHealthy GetEventsEventTypesItem = `DRIVER_HEALTHY`
 
@@ -1139,28 +1119,48 @@ const GetEventsEventTypesItemDriverNotResponding GetEventsEventTypesItem = `DRIV
 
 const GetEventsEventTypesItemDriverUnavailable GetEventsEventTypesItem = `DRIVER_UNAVAILABLE`
 
-const GetEventsEventTypesItemSparkException GetEventsEventTypesItem = `SPARK_EXCEPTION`
+const GetEventsEventTypesItemEdited GetEventsEventTypesItem = `EDITED`
+
+const GetEventsEventTypesItemExpandedDisk GetEventsEventTypesItem = `EXPANDED_DISK`
+
+const GetEventsEventTypesItemFailedToExpandDisk GetEventsEventTypesItem = `FAILED_TO_EXPAND_DISK`
+
+const GetEventsEventTypesItemInitScriptsFinished GetEventsEventTypesItem = `INIT_SCRIPTS_FINISHED`
+
+const GetEventsEventTypesItemInitScriptsStarted GetEventsEventTypesItem = `INIT_SCRIPTS_STARTED`
 
 const GetEventsEventTypesItemMetastoreDown GetEventsEventTypesItem = `METASTORE_DOWN`
 
-const GetEventsEventTypesItemDbfsDown GetEventsEventTypesItem = `DBFS_DOWN`
-
-const GetEventsEventTypesItemAutoscalingStatsReport GetEventsEventTypesItem = `AUTOSCALING_STATS_REPORT`
-
 const GetEventsEventTypesItemNodeBlacklisted GetEventsEventTypesItem = `NODE_BLACKLISTED`
+
+const GetEventsEventTypesItemNodeExcludedDecommissioned GetEventsEventTypesItem = `NODE_EXCLUDED_DECOMMISSIONED`
+
+const GetEventsEventTypesItemNodesLost GetEventsEventTypesItem = `NODES_LOST`
 
 const GetEventsEventTypesItemPinned GetEventsEventTypesItem = `PINNED`
 
+const GetEventsEventTypesItemResizing GetEventsEventTypesItem = `RESIZING`
+
+const GetEventsEventTypesItemRestarting GetEventsEventTypesItem = `RESTARTING`
+
+const GetEventsEventTypesItemRunning GetEventsEventTypesItem = `RUNNING`
+
+const GetEventsEventTypesItemSparkException GetEventsEventTypesItem = `SPARK_EXCEPTION`
+
+const GetEventsEventTypesItemStarting GetEventsEventTypesItem = `STARTING`
+
+const GetEventsEventTypesItemTerminating GetEventsEventTypesItem = `TERMINATING`
+
 const GetEventsEventTypesItemUnpinned GetEventsEventTypesItem = `UNPINNED`
 
-const GetEventsEventTypesItemNodeExcludedDecommissioned GetEventsEventTypesItem = `NODE_EXCLUDED_DECOMMISSIONED`
+const GetEventsEventTypesItemUpsizeCompleted GetEventsEventTypesItem = `UPSIZE_COMPLETED`
 // The order to list events in; either &#34;ASC&#34; or &#34;DESC&#34;. Defaults to &#34;DESC&#34;.
 type GetEventsOrder string
 
 
-const GetEventsOrderDesc GetEventsOrder = `DESC`
-
 const GetEventsOrderAsc GetEventsOrder = `ASC`
+
+const GetEventsOrderDesc GetEventsOrder = `DESC`
 
 type GetEventsResponse struct {
     // &lt;content needs to be added&gt;
@@ -1421,174 +1421,174 @@ type TerminationReason struct {
 type TerminationReasonCode string
 
 
-const TerminationReasonCodeUnknown TerminationReasonCode = `UNKNOWN`
+const TerminationReasonCodeAbuseDetected TerminationReasonCode = `ABUSE_DETECTED`
 
-const TerminationReasonCodeUserRequest TerminationReasonCode = `USER_REQUEST`
+const TerminationReasonCodeAttachProjectFailure TerminationReasonCode = `ATTACH_PROJECT_FAILURE`
 
-const TerminationReasonCodeJobFinished TerminationReasonCode = `JOB_FINISHED`
+const TerminationReasonCodeAwsAuthorizationFailure TerminationReasonCode = `AWS_AUTHORIZATION_FAILURE`
 
-const TerminationReasonCodeInactivity TerminationReasonCode = `INACTIVITY`
+const TerminationReasonCodeAwsInsufficientFreeAddressesInSubnetFailure TerminationReasonCode = `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`
 
-const TerminationReasonCodeCloudProviderShutdown TerminationReasonCode = `CLOUD_PROVIDER_SHUTDOWN`
+const TerminationReasonCodeAwsInsufficientInstanceCapacityFailure TerminationReasonCode = `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`
 
-const TerminationReasonCodeCommunicationLost TerminationReasonCode = `COMMUNICATION_LOST`
+const TerminationReasonCodeAwsMaxSpotInstanceCountExceededFailure TerminationReasonCode = `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`
 
-const TerminationReasonCodeCloudProviderLaunchFailure TerminationReasonCode = `CLOUD_PROVIDER_LAUNCH_FAILURE`
+const TerminationReasonCodeAwsRequestLimitExceeded TerminationReasonCode = `AWS_REQUEST_LIMIT_EXCEEDED`
 
-const TerminationReasonCodeInitScriptFailure TerminationReasonCode = `INIT_SCRIPT_FAILURE`
+const TerminationReasonCodeAwsUnsupportedFailure TerminationReasonCode = `AWS_UNSUPPORTED_FAILURE`
 
-const TerminationReasonCodeSparkStartupFailure TerminationReasonCode = `SPARK_STARTUP_FAILURE`
+const TerminationReasonCodeAzureByokKeyPermissionFailure TerminationReasonCode = `AZURE_BYOK_KEY_PERMISSION_FAILURE`
 
-const TerminationReasonCodeInvalidArgument TerminationReasonCode = `INVALID_ARGUMENT`
+const TerminationReasonCodeAzureEphemeralDiskFailure TerminationReasonCode = `AZURE_EPHEMERAL_DISK_FAILURE`
 
-const TerminationReasonCodeUnexpectedLaunchFailure TerminationReasonCode = `UNEXPECTED_LAUNCH_FAILURE`
+const TerminationReasonCodeAzureInvalidDeploymentTemplate TerminationReasonCode = `AZURE_INVALID_DEPLOYMENT_TEMPLATE`
 
-const TerminationReasonCodeInternalError TerminationReasonCode = `INTERNAL_ERROR`
+const TerminationReasonCodeAzureOperationNotAllowedException TerminationReasonCode = `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`
 
-const TerminationReasonCodeInstanceUnreachable TerminationReasonCode = `INSTANCE_UNREACHABLE`
-
-const TerminationReasonCodeRequestRejected TerminationReasonCode = `REQUEST_REJECTED`
-
-const TerminationReasonCodeTrialExpired TerminationReasonCode = `TRIAL_EXPIRED`
-
-const TerminationReasonCodeDriverUnreachable TerminationReasonCode = `DRIVER_UNREACHABLE`
-
-const TerminationReasonCodeSparkError TerminationReasonCode = `SPARK_ERROR`
-
-const TerminationReasonCodeDriverUnresponsive TerminationReasonCode = `DRIVER_UNRESPONSIVE`
-
-const TerminationReasonCodeMetastoreComponentUnhealthy TerminationReasonCode = `METASTORE_COMPONENT_UNHEALTHY`
-
-const TerminationReasonCodeDbfsComponentUnhealthy TerminationReasonCode = `DBFS_COMPONENT_UNHEALTHY`
-
-const TerminationReasonCodeExecutionComponentUnhealthy TerminationReasonCode = `EXECUTION_COMPONENT_UNHEALTHY`
+const TerminationReasonCodeAzureQuotaExceededException TerminationReasonCode = `AZURE_QUOTA_EXCEEDED_EXCEPTION`
 
 const TerminationReasonCodeAzureResourceManagerThrottling TerminationReasonCode = `AZURE_RESOURCE_MANAGER_THROTTLING`
 
 const TerminationReasonCodeAzureResourceProviderThrottling TerminationReasonCode = `AZURE_RESOURCE_PROVIDER_THROTTLING`
 
-const TerminationReasonCodeNetworkConfigurationFailure TerminationReasonCode = `NETWORK_CONFIGURATION_FAILURE`
-
-const TerminationReasonCodeContainerLaunchFailure TerminationReasonCode = `CONTAINER_LAUNCH_FAILURE`
-
-const TerminationReasonCodeInstancePoolClusterFailure TerminationReasonCode = `INSTANCE_POOL_CLUSTER_FAILURE`
-
-const TerminationReasonCodeSkippedSlowNodes TerminationReasonCode = `SKIPPED_SLOW_NODES`
-
-const TerminationReasonCodeAttachProjectFailure TerminationReasonCode = `ATTACH_PROJECT_FAILURE`
-
-const TerminationReasonCodeUpdateInstanceProfileFailure TerminationReasonCode = `UPDATE_INSTANCE_PROFILE_FAILURE`
-
-const TerminationReasonCodeDatabaseConnectionFailure TerminationReasonCode = `DATABASE_CONNECTION_FAILURE`
-
-const TerminationReasonCodeRequestThrottled TerminationReasonCode = `REQUEST_THROTTLED`
-
-const TerminationReasonCodeSelfBootstrapFailure TerminationReasonCode = `SELF_BOOTSTRAP_FAILURE`
-
-const TerminationReasonCodeGlobalInitScriptFailure TerminationReasonCode = `GLOBAL_INIT_SCRIPT_FAILURE`
-
-const TerminationReasonCodeSlowImageDownload TerminationReasonCode = `SLOW_IMAGE_DOWNLOAD`
-
-const TerminationReasonCodeInvalidSparkImage TerminationReasonCode = `INVALID_SPARK_IMAGE`
-
-const TerminationReasonCodeNpipTunnelTokenFailure TerminationReasonCode = `NPIP_TUNNEL_TOKEN_FAILURE`
-
-const TerminationReasonCodeHiveMetastoreProvisioningFailure TerminationReasonCode = `HIVE_METASTORE_PROVISIONING_FAILURE`
-
-const TerminationReasonCodeAzureInvalidDeploymentTemplate TerminationReasonCode = `AZURE_INVALID_DEPLOYMENT_TEMPLATE`
-
 const TerminationReasonCodeAzureUnexpectedDeploymentTemplateFailure TerminationReasonCode = `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`
 
-const TerminationReasonCodeSubnetExhaustedFailure TerminationReasonCode = `SUBNET_EXHAUSTED_FAILURE`
-
-const TerminationReasonCodeBootstrapTimeout TerminationReasonCode = `BOOTSTRAP_TIMEOUT`
-
-const TerminationReasonCodeStorageDownloadFailure TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE`
-
-const TerminationReasonCodeControlPlaneRequestFailure TerminationReasonCode = `CONTROL_PLANE_REQUEST_FAILURE`
-
-const TerminationReasonCodeBootstrapTimeoutCloudProviderException TerminationReasonCode = `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`
-
-const TerminationReasonCodeAwsInsufficientInstanceCapacityFailure TerminationReasonCode = `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`
-
-const TerminationReasonCodeDockerImagePullFailure TerminationReasonCode = `DOCKER_IMAGE_PULL_FAILURE`
+const TerminationReasonCodeAzureVmExtensionFailure TerminationReasonCode = `AZURE_VM_EXTENSION_FAILURE`
 
 const TerminationReasonCodeAzureVnetConfigurationFailure TerminationReasonCode = `AZURE_VNET_CONFIGURATION_FAILURE`
 
-const TerminationReasonCodeNpipTunnelSetupFailure TerminationReasonCode = `NPIP_TUNNEL_SETUP_FAILURE`
+const TerminationReasonCodeBootstrapTimeout TerminationReasonCode = `BOOTSTRAP_TIMEOUT`
 
-const TerminationReasonCodeAwsAuthorizationFailure TerminationReasonCode = `AWS_AUTHORIZATION_FAILURE`
+const TerminationReasonCodeBootstrapTimeoutCloudProviderException TerminationReasonCode = `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`
 
-const TerminationReasonCodeNephosResourceManagement TerminationReasonCode = `NEPHOS_RESOURCE_MANAGEMENT`
+const TerminationReasonCodeCloudProviderDiskSetupFailure TerminationReasonCode = `CLOUD_PROVIDER_DISK_SETUP_FAILURE`
 
-const TerminationReasonCodeStsClientSetupFailure TerminationReasonCode = `STS_CLIENT_SETUP_FAILURE`
+const TerminationReasonCodeCloudProviderLaunchFailure TerminationReasonCode = `CLOUD_PROVIDER_LAUNCH_FAILURE`
 
-const TerminationReasonCodeSecurityDaemonRegistrationException TerminationReasonCode = `SECURITY_DAEMON_REGISTRATION_EXCEPTION`
+const TerminationReasonCodeCloudProviderResourceStockout TerminationReasonCode = `CLOUD_PROVIDER_RESOURCE_STOCKOUT`
 
-const TerminationReasonCodeAwsRequestLimitExceeded TerminationReasonCode = `AWS_REQUEST_LIMIT_EXCEEDED`
+const TerminationReasonCodeCloudProviderShutdown TerminationReasonCode = `CLOUD_PROVIDER_SHUTDOWN`
 
-const TerminationReasonCodeAwsInsufficientFreeAddressesInSubnetFailure TerminationReasonCode = `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`
+const TerminationReasonCodeCommunicationLost TerminationReasonCode = `COMMUNICATION_LOST`
 
-const TerminationReasonCodeAwsUnsupportedFailure TerminationReasonCode = `AWS_UNSUPPORTED_FAILURE`
+const TerminationReasonCodeContainerLaunchFailure TerminationReasonCode = `CONTAINER_LAUNCH_FAILURE`
 
-const TerminationReasonCodeAzureQuotaExceededException TerminationReasonCode = `AZURE_QUOTA_EXCEEDED_EXCEPTION`
+const TerminationReasonCodeControlPlaneRequestFailure TerminationReasonCode = `CONTROL_PLANE_REQUEST_FAILURE`
 
-const TerminationReasonCodeAzureOperationNotAllowedException TerminationReasonCode = `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`
+const TerminationReasonCodeDatabaseConnectionFailure TerminationReasonCode = `DATABASE_CONNECTION_FAILURE`
 
-const TerminationReasonCodeNfsMountFailure TerminationReasonCode = `NFS_MOUNT_FAILURE`
+const TerminationReasonCodeDbfsComponentUnhealthy TerminationReasonCode = `DBFS_COMPONENT_UNHEALTHY`
+
+const TerminationReasonCodeDockerImagePullFailure TerminationReasonCode = `DOCKER_IMAGE_PULL_FAILURE`
+
+const TerminationReasonCodeDriverUnreachable TerminationReasonCode = `DRIVER_UNREACHABLE`
+
+const TerminationReasonCodeDriverUnresponsive TerminationReasonCode = `DRIVER_UNRESPONSIVE`
+
+const TerminationReasonCodeExecutionComponentUnhealthy TerminationReasonCode = `EXECUTION_COMPONENT_UNHEALTHY`
+
+const TerminationReasonCodeGcpQuotaExceeded TerminationReasonCode = `GCP_QUOTA_EXCEEDED`
+
+const TerminationReasonCodeGcpServiceAccountDeleted TerminationReasonCode = `GCP_SERVICE_ACCOUNT_DELETED`
+
+const TerminationReasonCodeGlobalInitScriptFailure TerminationReasonCode = `GLOBAL_INIT_SCRIPT_FAILURE`
+
+const TerminationReasonCodeHiveMetastoreProvisioningFailure TerminationReasonCode = `HIVE_METASTORE_PROVISIONING_FAILURE`
+
+const TerminationReasonCodeImagePullPermissionDenied TerminationReasonCode = `IMAGE_PULL_PERMISSION_DENIED`
+
+const TerminationReasonCodeInactivity TerminationReasonCode = `INACTIVITY`
+
+const TerminationReasonCodeInitScriptFailure TerminationReasonCode = `INIT_SCRIPT_FAILURE`
+
+const TerminationReasonCodeInstancePoolClusterFailure TerminationReasonCode = `INSTANCE_POOL_CLUSTER_FAILURE`
+
+const TerminationReasonCodeInstanceUnreachable TerminationReasonCode = `INSTANCE_UNREACHABLE`
+
+const TerminationReasonCodeInternalError TerminationReasonCode = `INTERNAL_ERROR`
+
+const TerminationReasonCodeInvalidArgument TerminationReasonCode = `INVALID_ARGUMENT`
+
+const TerminationReasonCodeInvalidSparkImage TerminationReasonCode = `INVALID_SPARK_IMAGE`
+
+const TerminationReasonCodeIpExhaustionFailure TerminationReasonCode = `IP_EXHAUSTION_FAILURE`
+
+const TerminationReasonCodeJobFinished TerminationReasonCode = `JOB_FINISHED`
 
 const TerminationReasonCodeKSAutoscalingFailure TerminationReasonCode = `K8S_AUTOSCALING_FAILURE`
 
 const TerminationReasonCodeKSDbrClusterLaunchTimeout TerminationReasonCode = `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`
 
-const TerminationReasonCodeSparkImageDownloadFailure TerminationReasonCode = `SPARK_IMAGE_DOWNLOAD_FAILURE`
+const TerminationReasonCodeMetastoreComponentUnhealthy TerminationReasonCode = `METASTORE_COMPONENT_UNHEALTHY`
 
-const TerminationReasonCodeAzureVmExtensionFailure TerminationReasonCode = `AZURE_VM_EXTENSION_FAILURE`
+const TerminationReasonCodeNephosResourceManagement TerminationReasonCode = `NEPHOS_RESOURCE_MANAGEMENT`
 
-const TerminationReasonCodeWorkspaceCancelledError TerminationReasonCode = `WORKSPACE_CANCELLED_ERROR`
+const TerminationReasonCodeNetworkConfigurationFailure TerminationReasonCode = `NETWORK_CONFIGURATION_FAILURE`
 
-const TerminationReasonCodeAwsMaxSpotInstanceCountExceededFailure TerminationReasonCode = `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`
+const TerminationReasonCodeNfsMountFailure TerminationReasonCode = `NFS_MOUNT_FAILURE`
 
-const TerminationReasonCodeTemporarilyUnavailable TerminationReasonCode = `TEMPORARILY_UNAVAILABLE`
+const TerminationReasonCodeNpipTunnelSetupFailure TerminationReasonCode = `NPIP_TUNNEL_SETUP_FAILURE`
 
-const TerminationReasonCodeWorkerSetupFailure TerminationReasonCode = `WORKER_SETUP_FAILURE`
+const TerminationReasonCodeNpipTunnelTokenFailure TerminationReasonCode = `NPIP_TUNNEL_TOKEN_FAILURE`
 
-const TerminationReasonCodeIpExhaustionFailure TerminationReasonCode = `IP_EXHAUSTION_FAILURE`
+const TerminationReasonCodeRequestRejected TerminationReasonCode = `REQUEST_REJECTED`
 
-const TerminationReasonCodeGcpQuotaExceeded TerminationReasonCode = `GCP_QUOTA_EXCEEDED`
-
-const TerminationReasonCodeCloudProviderResourceStockout TerminationReasonCode = `CLOUD_PROVIDER_RESOURCE_STOCKOUT`
-
-const TerminationReasonCodeGcpServiceAccountDeleted TerminationReasonCode = `GCP_SERVICE_ACCOUNT_DELETED`
-
-const TerminationReasonCodeAzureByokKeyPermissionFailure TerminationReasonCode = `AZURE_BYOK_KEY_PERMISSION_FAILURE`
-
-const TerminationReasonCodeSpotInstanceTermination TerminationReasonCode = `SPOT_INSTANCE_TERMINATION`
-
-const TerminationReasonCodeAzureEphemeralDiskFailure TerminationReasonCode = `AZURE_EPHEMERAL_DISK_FAILURE`
-
-const TerminationReasonCodeAbuseDetected TerminationReasonCode = `ABUSE_DETECTED`
-
-const TerminationReasonCodeImagePullPermissionDenied TerminationReasonCode = `IMAGE_PULL_PERMISSION_DENIED`
-
-const TerminationReasonCodeWorkspaceConfigurationError TerminationReasonCode = `WORKSPACE_CONFIGURATION_ERROR`
+const TerminationReasonCodeRequestThrottled TerminationReasonCode = `REQUEST_THROTTLED`
 
 const TerminationReasonCodeSecretResolutionError TerminationReasonCode = `SECRET_RESOLUTION_ERROR`
 
+const TerminationReasonCodeSecurityDaemonRegistrationException TerminationReasonCode = `SECURITY_DAEMON_REGISTRATION_EXCEPTION`
+
+const TerminationReasonCodeSelfBootstrapFailure TerminationReasonCode = `SELF_BOOTSTRAP_FAILURE`
+
+const TerminationReasonCodeSkippedSlowNodes TerminationReasonCode = `SKIPPED_SLOW_NODES`
+
+const TerminationReasonCodeSlowImageDownload TerminationReasonCode = `SLOW_IMAGE_DOWNLOAD`
+
+const TerminationReasonCodeSparkError TerminationReasonCode = `SPARK_ERROR`
+
+const TerminationReasonCodeSparkImageDownloadFailure TerminationReasonCode = `SPARK_IMAGE_DOWNLOAD_FAILURE`
+
+const TerminationReasonCodeSparkStartupFailure TerminationReasonCode = `SPARK_STARTUP_FAILURE`
+
+const TerminationReasonCodeSpotInstanceTermination TerminationReasonCode = `SPOT_INSTANCE_TERMINATION`
+
+const TerminationReasonCodeStorageDownloadFailure TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE`
+
+const TerminationReasonCodeStsClientSetupFailure TerminationReasonCode = `STS_CLIENT_SETUP_FAILURE`
+
+const TerminationReasonCodeSubnetExhaustedFailure TerminationReasonCode = `SUBNET_EXHAUSTED_FAILURE`
+
+const TerminationReasonCodeTemporarilyUnavailable TerminationReasonCode = `TEMPORARILY_UNAVAILABLE`
+
+const TerminationReasonCodeTrialExpired TerminationReasonCode = `TRIAL_EXPIRED`
+
+const TerminationReasonCodeUnexpectedLaunchFailure TerminationReasonCode = `UNEXPECTED_LAUNCH_FAILURE`
+
+const TerminationReasonCodeUnknown TerminationReasonCode = `UNKNOWN`
+
 const TerminationReasonCodeUnsupportedInstanceType TerminationReasonCode = `UNSUPPORTED_INSTANCE_TYPE`
 
-const TerminationReasonCodeCloudProviderDiskSetupFailure TerminationReasonCode = `CLOUD_PROVIDER_DISK_SETUP_FAILURE`
+const TerminationReasonCodeUpdateInstanceProfileFailure TerminationReasonCode = `UPDATE_INSTANCE_PROFILE_FAILURE`
+
+const TerminationReasonCodeUserRequest TerminationReasonCode = `USER_REQUEST`
+
+const TerminationReasonCodeWorkerSetupFailure TerminationReasonCode = `WORKER_SETUP_FAILURE`
+
+const TerminationReasonCodeWorkspaceCancelledError TerminationReasonCode = `WORKSPACE_CANCELLED_ERROR`
+
+const TerminationReasonCodeWorkspaceConfigurationError TerminationReasonCode = `WORKSPACE_CONFIGURATION_ERROR`
 // type of the termination
 type TerminationReasonType string
 
 
-const TerminationReasonTypeSuccess TerminationReasonType = `SUCCESS`
-
 const TerminationReasonTypeClientError TerminationReasonType = `CLIENT_ERROR`
+
+const TerminationReasonTypeCloudFailure TerminationReasonType = `CLOUD_FAILURE`
 
 const TerminationReasonTypeServiceFault TerminationReasonType = `SERVICE_FAULT`
 
-const TerminationReasonTypeCloudFailure TerminationReasonType = `CLOUD_FAILURE`
+const TerminationReasonTypeSuccess TerminationReasonType = `SUCCESS`
 
 type UnpinCluster struct {
     // &lt;needs content added&gt;

@@ -4,6 +4,7 @@ package clusters
 
 import (
 	"context"
+	"time"
 )
 
 
@@ -30,13 +31,17 @@ type ClustersService interface {
     // nodes, the minimum. .. code:: { &#34;cluster_name&#34;: &#34;autoscaling-cluster&#34;,
     // &#34;spark_version&#34;: &#34;2.0.x-scala2.10&#34;, &#34;node_type_id&#34;: &#34;r3.xlarge&#34;,
     // &#34;autoscale&#34; : { &#34;min_workers&#34;: 2, &#34;max_workers&#34;: 50 } }
-    Create(ctx context.Context, createCluster CreateCluster) (*CreateClusterResponse, error)
+    Create(ctx context.Context, createCluster CreateCluster) (*CreateClusterResponse, error)// Create and wait to reach RUNNING state
+	CreateAndWait(ctx context.Context, request CreateCluster, timeout ...time.Duration) (*CreateClusterResponse, error)
     // Terminates a Spark cluster given its id. The cluster is removed
     // asynchronously. Once the termination has completed, the cluster will be
     // in a ``TERMINATED`` state. If the cluster is already in a ``TERMINATING``
     // or ``TERMINATED`` state, nothing will happen. An example request: ..
     // code:: { &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34; }
-    Delete(ctx context.Context, deleteCluster DeleteCluster) error
+    Delete(ctx context.Context, deleteCluster DeleteCluster) error// Delete and wait to reach TERMINATED state
+	DeleteAndWait(ctx context.Context, request DeleteCluster, timeout ...time.Duration) error
+	DeleteByClusterId(ctx context.Context, clusterId string) error
+	DeleteByClusterIdAndWait(ctx context.Context, clusterId string, timeout ...time.Duration) error
     // Edits the configuration of a cluster to match the provided attributes and
     // size. A cluster can be edited if it is in a ``RUNNING`` or ``TERMINATED``
     // state. If a cluster is edited while in a ``RUNNING`` state, it will be
@@ -48,7 +53,8 @@ type ClustersService interface {
     // created by the Databricks Jobs service cannot be edited. An example
     // request: .. code:: { &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34;, &#34;num_workers&#34;:
     // 10, &#34;spark_version&#34;: &#34;3.3.x-scala2.11&#34;, &#34;node_type_id&#34;: &#34;i3.2xlarge&#34; }
-    Edit(ctx context.Context, editCluster EditCluster) error
+    Edit(ctx context.Context, editCluster EditCluster) error// Edit and wait to reach RUNNING state
+	EditAndWait(ctx context.Context, request EditCluster, timeout ...time.Duration) error
     // Retrieves a list of events about the activity of a cluster. This API is
     // paginated. If there are more events to read, the response includes all
     // the parameters necessary to request the next page of events. An example
@@ -68,7 +74,10 @@ type ClustersService interface {
     // can be described while they are running, or up to 60 days after they are
     // terminated. An example request:
     // ``/clusters/get?cluster_id=1202-211320-brick1``
-    Get(ctx context.Context, getRequest GetRequest) (*ClusterInfo, error)
+    Get(ctx context.Context, getRequest GetRequest) (*ClusterInfo, error)// Get and wait to reach RUNNING state
+	GetAndWait(ctx context.Context, request GetRequest, timeout ...time.Duration) (*ClusterInfo, error)
+	GetByClusterId(ctx context.Context, clusterId string) (*ClusterInfo, error)
+	GetByClusterIdAndWait(ctx context.Context, clusterId string, timeout ...time.Duration) (*ClusterInfo, error)
     // Returns information about all pinned clusters, currently active clusters,
     // up to 70 of the most recently terminated interactive clusters in the past
     // 7 days, and up to 30 of the most recently terminated job clusters in the
@@ -78,6 +87,7 @@ type ClustersService interface {
     // pinned cluster, 4 active clusters, all 45 terminated interactive
     // clusters, and the 30 most recently terminated job clusters.
     List(ctx context.Context, listRequest ListRequest) (*ListClustersResponse, error)
+	ListByCanUseClient(ctx context.Context, canUseClient string) (*ListClustersResponse, error)
     // Returns a list of supported Spark node types. These node types can be
     // used to launch a cluster.
     ListNodeTypes(ctx context.Context) (*ListNodeTypesResponse, error)
@@ -90,19 +100,23 @@ type ClustersService interface {
     // no longer perform any action on permanently deleted clusters. An example
     // request: .. code:: { &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34; }
     PermanentDelete(ctx context.Context, permanentDeleteCluster PermanentDeleteCluster) error
+	PermanentDeleteByClusterId(ctx context.Context, clusterId string) error
     // Pinning a cluster ensures that the cluster will always be returned by the
     // ListClusters API. Pinning a cluster that is already pinned will have no
     // effect. This API can only be called by workspace admins. An example
     // request: ``/clusters/pin?cluster_id=1202-211320-brick1``
     Pin(ctx context.Context, pinCluster PinCluster) error
+	PinByClusterId(ctx context.Context, clusterId string) error
     // Resizes a cluster to have a desired number of workers. This will fail
     // unless the cluster is in a ``RUNNING`` state. An example request: ..
     // code:: { &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34;, &#34;num_workers&#34;: 30 }
-    Resize(ctx context.Context, resizeCluster ResizeCluster) error
+    Resize(ctx context.Context, resizeCluster ResizeCluster) error// Resize and wait to reach RUNNING state
+	ResizeAndWait(ctx context.Context, request ResizeCluster, timeout ...time.Duration) error
     // Restarts a Spark cluster given its id. If the cluster is not currently in
     // a ``RUNNING`` state, nothing will happen. An example request: .. code:: {
     // &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34; }
-    Restart(ctx context.Context, restartCluster RestartCluster) error
+    Restart(ctx context.Context, restartCluster RestartCluster) error// Restart and wait to reach RUNNING state
+	RestartAndWait(ctx context.Context, request RestartCluster, timeout ...time.Duration) error
     // Returns the list of available Spark versions. These versions can be used
     // to launch a cluster.
     SparkVersions(ctx context.Context) (*GetSparkVersionsResponse, error)
@@ -114,10 +128,14 @@ type ClustersService interface {
     // currently in a ``TERMINATED`` state, nothing will happen. - Clusters
     // launched to run a job cannot be started. An example request: .. code:: {
     // &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34; }
-    Start(ctx context.Context, startCluster StartCluster) error
+    Start(ctx context.Context, startCluster StartCluster) error// Start and wait to reach RUNNING state
+	StartAndWait(ctx context.Context, request StartCluster, timeout ...time.Duration) error
+	StartByClusterId(ctx context.Context, clusterId string) error
+	StartByClusterIdAndWait(ctx context.Context, clusterId string, timeout ...time.Duration) error
     // Unpinning a cluster will allow the cluster to eventually be removed from
     // the ListClusters API. Unpinning a cluster that is not pinned will have no
     // effect. This API can only be called by workspace admins. An example
     // request: ``/clusters/unpin?cluster_id=1202-211320-brick1``
     Unpin(ctx context.Context, unpinCluster UnpinCluster) error
+	UnpinByClusterId(ctx context.Context, clusterId string) error
 }

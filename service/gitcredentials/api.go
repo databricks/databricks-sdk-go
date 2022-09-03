@@ -5,7 +5,7 @@ package gitcredentials
 import (
 	"context"
 	"fmt"
-
+	
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -37,12 +37,26 @@ func (a *GitCredentialsAPI) DeleteCredential(ctx context.Context, request Delete
 	return err
 }
 
+// Deletes the specified credential
+func (a *GitCredentialsAPI) DeleteCredentialByCredentialId(ctx context.Context, credentialId string) error {
+	return a.DeleteCredential(ctx, DeleteCredentialRequest{
+		CredentialId: credentialId,
+	})
+}
+
 // Returns the credential with the given credential ID.
 func (a *GitCredentialsAPI) GetCredential(ctx context.Context, request GetCredentialRequest) (*GetCredentialResponse, error) {
 	var getCredentialResponse GetCredentialResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	err := a.client.Get(ctx, path, request, &getCredentialResponse)
 	return &getCredentialResponse, err
+}
+
+// Returns the credential with the given credential ID.
+func (a *GitCredentialsAPI) GetCredentialByCredentialId(ctx context.Context, credentialId string) (*GetCredentialResponse, error) {
+	return a.GetCredential(ctx, GetCredentialRequest{
+		CredentialId: credentialId,
+	})
 }
 
 // Returns the calling user&#39;s Git credentials. One credential per user is
@@ -61,15 +75,3 @@ func (a *GitCredentialsAPI) UpdateCredential(ctx context.Context, request Update
 	return err
 }
 
-
-func (a *GitCredentialsAPI) GetCredentialByCredentialId(ctx context.Context, credentialId string) (*GetCredentialResponse, error) {
-	return a.GetCredential(ctx, GetCredentialRequest{
-		CredentialId: credentialId,
-	})
-}
-
-func (a *GitCredentialsAPI) DeleteCredentialByCredentialId(ctx context.Context, credentialId string) error {
-	return a.DeleteCredential(ctx, DeleteCredentialRequest{
-		CredentialId: credentialId,
-	})
-}

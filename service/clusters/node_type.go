@@ -68,32 +68,32 @@ func (ntl *ListNodeTypesResponse) Smallest(r NodeTypeRequest) (string, error) {
 		if r.MinCores > 0 && int32(nt.NumCores) < r.MinCores {
 			continue
 		}
-		// if r.MinGPUs > 0 && nt.NumGPUs < r.MinGPUs {
-		// 	continue
-		// }
-		// if r.LocalDisk && nt.NodeInstanceType != nil &&
-		// 	(nt.NodeInstanceType.LocalDisks < 1 &&
-		// 		nt.NodeInstanceType.LocalNVMeDisks < 1) {
-		// 	continue
-		// }
-		// if r.Category != "" && !strings.EqualFold(nt.Category, r.Category) {
-		// 	continue
-		// }
-		// if r.IsIOCacheEnabled && nt.IsIOCacheEnabled != r.IsIOCacheEnabled {
-		// 	continue
-		// }
-		// if r.SupportPortForwarding && nt.SupportPortForwarding != r.SupportPortForwarding {
-		// 	continue
-		// }
-		// if r.PhotonDriverCapable && nt.PhotonDriverCapable != r.PhotonDriverCapable {
-		// 	continue
-		// }
-		// if r.PhotonWorkerCapable && nt.PhotonWorkerCapable != r.PhotonWorkerCapable {
-		// 	continue
-		// }
-		// if r.Graviton && nt.Graviton != r.Graviton {
-		// 	continue
-		// }
+		if r.MinGPUs > 0 && int32(nt.NumGpus) < r.MinGPUs {
+			continue
+		}
+		if r.LocalDisk && nt.NodeInstanceType != nil &&
+			(nt.NodeInstanceType.LocalDisks < 1 &&
+				nt.NodeInstanceType.LocalNvmeDisks < 1) {
+			continue
+		}
+		if r.Category != "" && !strings.EqualFold(nt.Category, r.Category) {
+			continue
+		}
+		if r.IsIOCacheEnabled && nt.IsIoCacheEnabled != r.IsIOCacheEnabled {
+			continue
+		}
+		if r.SupportPortForwarding && nt.SupportPortForwarding != r.SupportPortForwarding {
+			continue
+		}
+		if r.PhotonDriverCapable && nt.PhotonDriverCapable != r.PhotonDriverCapable {
+			continue
+		}
+		if r.PhotonWorkerCapable && nt.PhotonWorkerCapable != r.PhotonWorkerCapable {
+			continue
+		}
+		if r.Graviton && nt.IsGraviton != r.Graviton {
+			continue
+		}
 		return nt.NodeTypeId, nil
 	}
 	return "", fmt.Errorf("cannot determine smallest node type")

@@ -4,19 +4,22 @@ package clusterpolicies
 
 import (
 	"context"
+	
 )
 
 
 
 type ClusterPoliciesService interface {
     // Creates a new Policy
-    CreatePolicy(ctx context.Context, createPolicyRequest CreatePolicyRequest) (*CreatePolicyResponse, error)
+    Create(ctx context.Context, createPolicyRequest CreatePolicyRequest) (*CreatePolicyResponse, error)
     // Delete a policy
-    DeletePolicy(ctx context.Context, deletePolicyRequest DeletePolicyRequest) error
+    Delete(ctx context.Context, deletePolicyRequest DeletePolicyRequest) error
+	DeleteByPolicyId(ctx context.Context, policyId string) error
     // Update an existing policy
-    EditPolicy(ctx context.Context, editPolicyRequest EditPolicyRequest) error
+    Edit(ctx context.Context, editPolicyRequest EditPolicyRequest) error
     // Returns a Policy
-    GetPolicy(ctx context.Context, getPolicyRequest GetPolicyRequest) (*GetPolicyResponse, error)
+    Get(ctx context.Context, getPolicyRequest GetPolicyRequest) (*GetPolicyResponse, error)
+	GetByPolicyId(ctx context.Context, policyId string) (*GetPolicyResponse, error)
     // Returns list of policies
-    ListPolicies(ctx context.Context) (*ListPoliciesResponse, error)
+    List(ctx context.Context) (*ListPoliciesResponse, error)
 }

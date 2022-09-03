@@ -5,7 +5,7 @@ package clusterpolicies
 import (
 	"context"
 	
-
+	
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -20,7 +20,7 @@ type ClusterPoliciesAPI struct {
 }
 
 // Creates a new Policy
-func (a *ClusterPoliciesAPI) CreatePolicy(ctx context.Context, request CreatePolicyRequest) (*CreatePolicyResponse, error) {
+func (a *ClusterPoliciesAPI) Create(ctx context.Context, request CreatePolicyRequest) (*CreatePolicyResponse, error) {
 	var createPolicyResponse CreatePolicyResponse
 	path := "/api/2.0/policies/clusters/create"
 	err := a.client.Post(ctx, path, request, &createPolicyResponse)
@@ -28,29 +28,43 @@ func (a *ClusterPoliciesAPI) CreatePolicy(ctx context.Context, request CreatePol
 }
 
 // Delete a policy
-func (a *ClusterPoliciesAPI) DeletePolicy(ctx context.Context, request DeletePolicyRequest) error {
+func (a *ClusterPoliciesAPI) Delete(ctx context.Context, request DeletePolicyRequest) error {
 	path := "/api/2.0/policies/clusters/delete"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
+// Delete a policy
+func (a *ClusterPoliciesAPI) DeleteByPolicyId(ctx context.Context, policyId string) error {
+	return a.Delete(ctx, DeletePolicyRequest{
+		PolicyId: policyId,
+	})
+}
+
 // Update an existing policy
-func (a *ClusterPoliciesAPI) EditPolicy(ctx context.Context, request EditPolicyRequest) error {
+func (a *ClusterPoliciesAPI) Edit(ctx context.Context, request EditPolicyRequest) error {
 	path := "/api/2.0/policies/clusters/edit"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
 // Returns a Policy
-func (a *ClusterPoliciesAPI) GetPolicy(ctx context.Context, request GetPolicyRequest) (*GetPolicyResponse, error) {
+func (a *ClusterPoliciesAPI) Get(ctx context.Context, request GetPolicyRequest) (*GetPolicyResponse, error) {
 	var getPolicyResponse GetPolicyResponse
 	path := "/api/2.0/policies/clusters/get"
 	err := a.client.Get(ctx, path, request, &getPolicyResponse)
 	return &getPolicyResponse, err
 }
 
+// Returns a Policy
+func (a *ClusterPoliciesAPI) GetByPolicyId(ctx context.Context, policyId string) (*GetPolicyResponse, error) {
+	return a.Get(ctx, GetPolicyRequest{
+		PolicyId: policyId,
+	})
+}
+
 // Returns list of policies
-func (a *ClusterPoliciesAPI) ListPolicies(ctx context.Context) (*ListPoliciesResponse, error) {
+func (a *ClusterPoliciesAPI) List(ctx context.Context) (*ListPoliciesResponse, error) {
 	var listPoliciesResponse ListPoliciesResponse
 	path := "/api/2.0/policies/clusters/list"
 	err := a.client.Get(ctx, path, nil, &listPoliciesResponse)

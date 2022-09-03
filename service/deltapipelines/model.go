@@ -164,23 +164,23 @@ const GetPipelineResponseHealthUnhealthy GetPipelineResponseHealth = `UNHEALTHY`
 type GetPipelineResponseState string
 
 
-const GetPipelineResponseStateDeploying GetPipelineResponseState = `DEPLOYING`
-
-const GetPipelineResponseStateStarting GetPipelineResponseState = `STARTING`
-
-const GetPipelineResponseStateRunning GetPipelineResponseState = `RUNNING`
-
-const GetPipelineResponseStateStopping GetPipelineResponseState = `STOPPING`
-
 const GetPipelineResponseStateDeleted GetPipelineResponseState = `DELETED`
 
-const GetPipelineResponseStateRecovering GetPipelineResponseState = `RECOVERING`
+const GetPipelineResponseStateDeploying GetPipelineResponseState = `DEPLOYING`
 
 const GetPipelineResponseStateFailed GetPipelineResponseState = `FAILED`
 
+const GetPipelineResponseStateIdle GetPipelineResponseState = `IDLE`
+
+const GetPipelineResponseStateRecovering GetPipelineResponseState = `RECOVERING`
+
 const GetPipelineResponseStateResetting GetPipelineResponseState = `RESETTING`
 
-const GetPipelineResponseStateIdle GetPipelineResponseState = `IDLE`
+const GetPipelineResponseStateRunning GetPipelineResponseState = `RUNNING`
+
+const GetPipelineResponseStateStarting GetPipelineResponseState = `STARTING`
+
+const GetPipelineResponseStateStopping GetPipelineResponseState = `STOPPING`
 
 type GetUpdateRequest struct {
     // The ID of the pipeline.
@@ -503,13 +503,13 @@ type StartUpdateRequestCause string
 
 const StartUpdateRequestCauseApiCall StartUpdateRequestCause = `API_CALL`
 
-const StartUpdateRequestCauseRetryOnFailure StartUpdateRequestCause = `RETRY_ON_FAILURE`
+const StartUpdateRequestCauseJobTask StartUpdateRequestCause = `JOB_TASK`
 
-const StartUpdateRequestCauseServiceUpgrade StartUpdateRequestCause = `SERVICE_UPGRADE`
+const StartUpdateRequestCauseRetryOnFailure StartUpdateRequestCause = `RETRY_ON_FAILURE`
 
 const StartUpdateRequestCauseSchemaChange StartUpdateRequestCause = `SCHEMA_CHANGE`
 
-const StartUpdateRequestCauseJobTask StartUpdateRequestCause = `JOB_TASK`
+const StartUpdateRequestCauseServiceUpgrade StartUpdateRequestCause = `SERVICE_UPGRADE`
 
 const StartUpdateRequestCauseUserAction StartUpdateRequestCause = `USER_ACTION`
 
@@ -561,40 +561,40 @@ type UpdateInfoCause string
 
 const UpdateInfoCauseApiCall UpdateInfoCause = `API_CALL`
 
-const UpdateInfoCauseRetryOnFailure UpdateInfoCause = `RETRY_ON_FAILURE`
+const UpdateInfoCauseJobTask UpdateInfoCause = `JOB_TASK`
 
-const UpdateInfoCauseServiceUpgrade UpdateInfoCause = `SERVICE_UPGRADE`
+const UpdateInfoCauseRetryOnFailure UpdateInfoCause = `RETRY_ON_FAILURE`
 
 const UpdateInfoCauseSchemaChange UpdateInfoCause = `SCHEMA_CHANGE`
 
-const UpdateInfoCauseJobTask UpdateInfoCause = `JOB_TASK`
+const UpdateInfoCauseServiceUpgrade UpdateInfoCause = `SERVICE_UPGRADE`
 
 const UpdateInfoCauseUserAction UpdateInfoCause = `USER_ACTION`
 // The update state.
 type UpdateInfoState string
 
 
-const UpdateInfoStateQueued UpdateInfoState = `QUEUED`
-
-const UpdateInfoStateCreated UpdateInfoState = `CREATED`
-
-const UpdateInfoStateWaitingForResources UpdateInfoState = `WAITING_FOR_RESOURCES`
-
-const UpdateInfoStateInitializing UpdateInfoState = `INITIALIZING`
-
-const UpdateInfoStateResetting UpdateInfoState = `RESETTING`
-
-const UpdateInfoStateSettingUpTables UpdateInfoState = `SETTING_UP_TABLES`
-
-const UpdateInfoStateRunning UpdateInfoState = `RUNNING`
-
-const UpdateInfoStateStopping UpdateInfoState = `STOPPING`
+const UpdateInfoStateCanceled UpdateInfoState = `CANCELED`
 
 const UpdateInfoStateCompleted UpdateInfoState = `COMPLETED`
 
+const UpdateInfoStateCreated UpdateInfoState = `CREATED`
+
 const UpdateInfoStateFailed UpdateInfoState = `FAILED`
 
-const UpdateInfoStateCanceled UpdateInfoState = `CANCELED`
+const UpdateInfoStateInitializing UpdateInfoState = `INITIALIZING`
+
+const UpdateInfoStateQueued UpdateInfoState = `QUEUED`
+
+const UpdateInfoStateResetting UpdateInfoState = `RESETTING`
+
+const UpdateInfoStateRunning UpdateInfoState = `RUNNING`
+
+const UpdateInfoStateSettingUpTables UpdateInfoState = `SETTING_UP_TABLES`
+
+const UpdateInfoStateStopping UpdateInfoState = `STOPPING`
+
+const UpdateInfoStateWaitingForResources UpdateInfoState = `WAITING_FOR_RESOURCES`
 
 type UpdateStateInfo struct {
     
@@ -609,24 +609,24 @@ type UpdateStateInfo struct {
 type UpdateStateInfoState string
 
 
-const UpdateStateInfoStateQueued UpdateStateInfoState = `QUEUED`
-
-const UpdateStateInfoStateCreated UpdateStateInfoState = `CREATED`
-
-const UpdateStateInfoStateWaitingForResources UpdateStateInfoState = `WAITING_FOR_RESOURCES`
-
-const UpdateStateInfoStateInitializing UpdateStateInfoState = `INITIALIZING`
-
-const UpdateStateInfoStateResetting UpdateStateInfoState = `RESETTING`
-
-const UpdateStateInfoStateSettingUpTables UpdateStateInfoState = `SETTING_UP_TABLES`
-
-const UpdateStateInfoStateRunning UpdateStateInfoState = `RUNNING`
-
-const UpdateStateInfoStateStopping UpdateStateInfoState = `STOPPING`
+const UpdateStateInfoStateCanceled UpdateStateInfoState = `CANCELED`
 
 const UpdateStateInfoStateCompleted UpdateStateInfoState = `COMPLETED`
 
+const UpdateStateInfoStateCreated UpdateStateInfoState = `CREATED`
+
 const UpdateStateInfoStateFailed UpdateStateInfoState = `FAILED`
 
-const UpdateStateInfoStateCanceled UpdateStateInfoState = `CANCELED`
+const UpdateStateInfoStateInitializing UpdateStateInfoState = `INITIALIZING`
+
+const UpdateStateInfoStateQueued UpdateStateInfoState = `QUEUED`
+
+const UpdateStateInfoStateResetting UpdateStateInfoState = `RESETTING`
+
+const UpdateStateInfoStateRunning UpdateStateInfoState = `RUNNING`
+
+const UpdateStateInfoStateSettingUpTables UpdateStateInfoState = `SETTING_UP_TABLES`
+
+const UpdateStateInfoStateStopping UpdateStateInfoState = `STOPPING`
+
+const UpdateStateInfoStateWaitingForResources UpdateStateInfoState = `WAITING_FOR_RESOURCES`

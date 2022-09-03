@@ -5,7 +5,7 @@ package scim
 import (
 	"context"
 	"fmt"
-
+	
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -45,12 +45,26 @@ func (a *GroupsAPI) DeleteGroup(ctx context.Context, request DeleteGroupRequest)
 	return err
 }
 
+// Delete one group
+func (a *GroupsAPI) DeleteGroupById(ctx context.Context, id string) error {
+	return a.DeleteGroup(ctx, DeleteGroupRequest{
+		Id: id,
+	})
+}
+
 // Fetch information of one group
 func (a *GroupsAPI) FetchGroup(ctx context.Context, request FetchGroupRequest) (*Group, error) {
 	var group Group
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	err := a.client.Get(ctx, path, request, &group)
 	return &group, err
+}
+
+// Fetch information of one group
+func (a *GroupsAPI) FetchGroupById(ctx context.Context, id string) (*Group, error) {
+	return a.FetchGroup(ctx, FetchGroupRequest{
+		Id: id,
+	})
 }
 
 // Get multiple groups associated with the &lt;Workspace&gt;.
@@ -84,18 +98,6 @@ func (a *GroupsAPI) ReplaceGroup(ctx context.Context, request Group) error {
 }
 
 
-func (a *GroupsAPI) DeleteGroupById(ctx context.Context, id string) error {
-	return a.DeleteGroup(ctx, DeleteGroupRequest{
-		Id: id,
-	})
-}
-
-func (a *GroupsAPI) FetchGroupById(ctx context.Context, id string) (*Group, error) {
-	return a.FetchGroup(ctx, FetchGroupRequest{
-		Id: id,
-	})
-}
-
 func NewServicePrincipals(client *client.DatabricksClient) ServicePrincipalsService {
 	return &ServicePrincipalsAPI{
 		client: client,
@@ -113,12 +115,26 @@ func (a *ServicePrincipalsAPI) DeleteServicePrincipal(ctx context.Context, reque
 	return err
 }
 
+// Delete one service principal
+func (a *ServicePrincipalsAPI) DeleteServicePrincipalById(ctx context.Context, id string) error {
+	return a.DeleteServicePrincipal(ctx, DeleteServicePrincipalRequest{
+		Id: id,
+	})
+}
+
 // Fetch information of one service principal
 func (a *ServicePrincipalsAPI) FetchServicePrincipal(ctx context.Context, request FetchServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	err := a.client.Get(ctx, path, request, &servicePrincipal)
 	return &servicePrincipal, err
+}
+
+// Fetch information of one service principal
+func (a *ServicePrincipalsAPI) FetchServicePrincipalById(ctx context.Context, id string) (*ServicePrincipal, error) {
+	return a.FetchServicePrincipal(ctx, FetchServicePrincipalRequest{
+		Id: id,
+	})
 }
 
 // Get multiple service principals associated with a &lt;Workspace&gt;.
@@ -152,18 +168,6 @@ func (a *ServicePrincipalsAPI) ReplaceServicePrincipal(ctx context.Context, requ
 }
 
 
-func (a *ServicePrincipalsAPI) FetchServicePrincipalById(ctx context.Context, id string) (*ServicePrincipal, error) {
-	return a.FetchServicePrincipal(ctx, FetchServicePrincipalRequest{
-		Id: id,
-	})
-}
-
-func (a *ServicePrincipalsAPI) DeleteServicePrincipalById(ctx context.Context, id string) error {
-	return a.DeleteServicePrincipal(ctx, DeleteServicePrincipalRequest{
-		Id: id,
-	})
-}
-
 func NewUsers(client *client.DatabricksClient) UsersService {
 	return &UsersAPI{
 		client: client,
@@ -181,12 +185,26 @@ func (a *UsersAPI) DeleteUser(ctx context.Context, request DeleteUserRequest) er
 	return err
 }
 
+// Delete one user
+func (a *UsersAPI) DeleteUserById(ctx context.Context, id string) error {
+	return a.DeleteUser(ctx, DeleteUserRequest{
+		Id: id,
+	})
+}
+
 // Fetch information of one user
 func (a *UsersAPI) FetchUser(ctx context.Context, request FetchUserRequest) (*User, error) {
 	var user User
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	err := a.client.Get(ctx, path, request, &user)
 	return &user, err
+}
+
+// Fetch information of one user
+func (a *UsersAPI) FetchUserById(ctx context.Context, id string) (*User, error) {
+	return a.FetchUser(ctx, FetchUserRequest{
+		Id: id,
+	})
 }
 
 // Get multiple users associated with a &lt;Workspace&gt;.
@@ -219,15 +237,3 @@ func (a *UsersAPI) ReplaceUser(ctx context.Context, request User) error {
 	return err
 }
 
-
-func (a *UsersAPI) FetchUserById(ctx context.Context, id string) (*User, error) {
-	return a.FetchUser(ctx, FetchUserRequest{
-		Id: id,
-	})
-}
-
-func (a *UsersAPI) DeleteUserById(ctx context.Context, id string) error {
-	return a.DeleteUser(ctx, DeleteUserRequest{
-		Id: id,
-	})
-}

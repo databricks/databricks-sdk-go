@@ -239,11 +239,11 @@ type FleetOnDemandOption struct {
 type FleetOnDemandOptionAllocationStrategy string
 
 
-const FleetOnDemandOptionAllocationStrategyLowestPrice FleetOnDemandOptionAllocationStrategy = `LOWEST_PRICE`
+const FleetOnDemandOptionAllocationStrategyCapacityOptimized FleetOnDemandOptionAllocationStrategy = `CAPACITY_OPTIMIZED`
 
 const FleetOnDemandOptionAllocationStrategyDiversified FleetOnDemandOptionAllocationStrategy = `DIVERSIFIED`
 
-const FleetOnDemandOptionAllocationStrategyCapacityOptimized FleetOnDemandOptionAllocationStrategy = `CAPACITY_OPTIMIZED`
+const FleetOnDemandOptionAllocationStrategyLowestPrice FleetOnDemandOptionAllocationStrategy = `LOWEST_PRICE`
 
 const FleetOnDemandOptionAllocationStrategyPrioritized FleetOnDemandOptionAllocationStrategy = `PRIORITIZED`
 
@@ -264,11 +264,11 @@ type FleetSpotOption struct {
 type FleetSpotOptionAllocationStrategy string
 
 
-const FleetSpotOptionAllocationStrategyLowestPrice FleetSpotOptionAllocationStrategy = `LOWEST_PRICE`
+const FleetSpotOptionAllocationStrategyCapacityOptimized FleetSpotOptionAllocationStrategy = `CAPACITY_OPTIMIZED`
 
 const FleetSpotOptionAllocationStrategyDiversified FleetSpotOptionAllocationStrategy = `DIVERSIFIED`
 
-const FleetSpotOptionAllocationStrategyCapacityOptimized FleetSpotOptionAllocationStrategy = `CAPACITY_OPTIMIZED`
+const FleetSpotOptionAllocationStrategyLowestPrice FleetSpotOptionAllocationStrategy = `LOWEST_PRICE`
 
 const FleetSpotOptionAllocationStrategyPrioritized FleetSpotOptionAllocationStrategy = `PRIORITIZED`
 
@@ -351,9 +351,9 @@ type GetInstancePoolResponseState string
 
 const GetInstancePoolResponseStateActive GetInstancePoolResponseState = `ACTIVE`
 
-const GetInstancePoolResponseStateStopped GetInstancePoolResponseState = `STOPPED`
-
 const GetInstancePoolResponseStateDeleted GetInstancePoolResponseState = `DELETED`
+
+const GetInstancePoolResponseStateStopped GetInstancePoolResponseState = `STOPPED`
 
 type InstancePoolAndStats struct {
     // Attributes related to pool running on Amazon Web Services. If not
@@ -428,9 +428,9 @@ type InstancePoolAndStatsState string
 
 const InstancePoolAndStatsStateActive InstancePoolAndStatsState = `ACTIVE`
 
-const InstancePoolAndStatsStateStopped InstancePoolAndStatsState = `STOPPED`
-
 const InstancePoolAndStatsStateDeleted InstancePoolAndStatsState = `DELETED`
+
+const InstancePoolAndStatsStateStopped InstancePoolAndStatsState = `STOPPED`
 
 type InstancePoolAwsAttributes struct {
     // Availability type used for the spot nodes. The default value is defined
@@ -465,9 +465,9 @@ type InstancePoolAwsAttributes struct {
 type InstancePoolAwsAttributesAvailability string
 
 
-const InstancePoolAwsAttributesAvailabilitySpot InstancePoolAwsAttributesAvailability = `SPOT`
-
 const InstancePoolAwsAttributesAvailabilityOnDemand InstancePoolAwsAttributesAvailability = `ON_DEMAND`
+
+const InstancePoolAwsAttributesAvailabilitySpot InstancePoolAwsAttributesAvailability = `SPOT`
 
 const InstancePoolAwsAttributesAvailabilitySpotWithFallback InstancePoolAwsAttributesAvailability = `SPOT_WITH_FALLBACK`
 
@@ -485,9 +485,9 @@ type InstancePoolAzureAttributes struct {
 type InstancePoolAzureAttributesAvailability string
 
 
-const InstancePoolAzureAttributesAvailabilitySpotAzure InstancePoolAzureAttributesAvailability = `SPOT_AZURE`
-
 const InstancePoolAzureAttributesAvailabilityOnDemandAzure InstancePoolAzureAttributesAvailability = `ON_DEMAND_AZURE`
+
+const InstancePoolAzureAttributesAvailabilitySpotAzure InstancePoolAzureAttributesAvailability = `SPOT_AZURE`
 
 const InstancePoolAzureAttributesAvailabilitySpotWithFallbackAzure InstancePoolAzureAttributesAvailability = `SPOT_WITH_FALLBACK_AZURE`
 

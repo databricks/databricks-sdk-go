@@ -4,6 +4,7 @@ package dbfs
 
 import (
 	"context"
+	
 )
 
 
@@ -19,6 +20,7 @@ type DbfsService interface {
     // exist, this call will throw an exception with
     // ``RESOURCE_DOES_NOT_EXIST``.
     Close(ctx context.Context, closeRequest CloseRequest) error
+	CloseByHandle(ctx context.Context, handle int64) error
     // Opens a stream to write to a file and returns a handle to this stream.
     // There is a 10 minute idle timeout on this handle. If a file or directory
     // already exists on the given path and overwrite is set to false, this call
@@ -36,18 +38,21 @@ type DbfsService interface {
     // directory does not exist, this call will throw an exception with
     // ``RESOURCE_DOES_NOT_EXIST``.
     GetStatus(ctx context.Context, getStatusRequest GetStatusRequest) (*GetStatusResponse, error)
+	GetStatusByPath(ctx context.Context, path string) (*GetStatusResponse, error)
     // Lists the contents of a directory, or details of the file. If the file or
     // directory does not exist, this call will throw an exception with
     // ``RESOURCE_DOES_NOT_EXIST``. Example of reply: .. code:: { &#34;files&#34;: [ {
     // &#34;path&#34;: &#34;/a.cpp&#34;, &#34;is_dir&#34;: false, &#34;file_size&#34;: 261 }, { &#34;path&#34;:
     // &#34;/databricks-results&#34;, &#34;is_dir&#34;: true, &#34;file_size&#34;: 0 } ] }
-    ListStatus(ctx context.Context, listStatusRequest ListStatusRequest) (*ListStatusResponse, error)
+    List(ctx context.Context, listStatusRequest ListStatusRequest) (*ListStatusResponse, error)
+	ListByPath(ctx context.Context, path string) (*ListStatusResponse, error)
     // Creates the given directory and necessary parent directories if they do
     // not exist. If there exists a file (not a directory) at any prefix of the
     // input path, this call will throw an exception with
     // ``RESOURCE_ALREADY_EXISTS``. Note that if this operation fails it may
     // have succeeded in creating some of the necessary parent directories.
-    MkDirs(ctx context.Context, mkDirsRequest MkDirsRequest) error
+    Mkdirs(ctx context.Context, mkDirsRequest MkDirsRequest) error
+	MkdirsByPath(ctx context.Context, path string) error
     // Move a file from one location to another location within DBFS. If the
     // source file does not exist, this call will throw an exception with
     // ``RESOURCE_DOES_NOT_EXIST``. If there already exists a file in the

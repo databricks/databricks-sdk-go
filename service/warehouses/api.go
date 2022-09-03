@@ -5,7 +5,9 @@ package warehouses
 import (
 	"context"
 	"fmt"
+	"time"
 
+	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
@@ -27,11 +29,82 @@ func (a *WarehousesAPI) CreateWarehouse(ctx context.Context, request CreateWareh
 	return &createWarehouseResponse, err
 }
 
+// CreateWarehouse and wait to reach RUNNING state
+func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, request CreateWarehouseRequest, timeout ...time.Duration) (*CreateWarehouseResponse, error) {
+	createWarehouseResponse, err := a.CreateWarehouse(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return createWarehouseResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
+		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
+			Id: createWarehouseResponse.Id,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		status := getWarehouseResponse.State
+		statusMessage := getWarehouseResponse.Health.Summary
+		switch status {
+		case GetWarehouseResponseStateRunning: // target state
+			return nil
+		case GetWarehouseResponseStateStopped, GetWarehouseResponseStateDeleted:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				GetWarehouseResponseStateRunning, status, statusMessage)
+			return retries.Halt(err)
+		default:
+			return retries.Continues(statusMessage)
+		}
+	})
+}
+
 // Deletes a SQL warehouse.
 func (a *WarehousesAPI) DeleteWarehouse(ctx context.Context, request DeleteWarehouseRequest) error {
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
 	err := a.client.Delete(ctx, path, request)
 	return err
+}
+
+// DeleteWarehouse and wait to reach DELETED state
+func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, request DeleteWarehouseRequest, timeout ...time.Duration) error {
+	err := a.DeleteWarehouse(ctx, request)
+	if err != nil {
+		return err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
+			Id: request.Id,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		status := getWarehouseResponse.State
+		statusMessage := getWarehouseResponse.Health.Summary
+		switch status {
+		case GetWarehouseResponseStateDeleted: // target state
+			return nil
+		default:
+			return retries.Continues(statusMessage)
+		}
+	})
+}
+
+// Deletes a SQL warehouse.
+func (a *WarehousesAPI) DeleteWarehouseById(ctx context.Context, id string) error {
+	return a.DeleteWarehouse(ctx, DeleteWarehouseRequest{
+		Id: id,
+	})
+}
+
+func (a *WarehousesAPI) DeleteWarehouseByIdAndWait(ctx context.Context, id string, timeout ...time.Duration) error {
+	return a.DeleteWarehouseAndWait(ctx, DeleteWarehouseRequest{
+		Id: id,
+	}, timeout...)
 }
 
 // Edits a SQL warehouse.
@@ -41,12 +114,87 @@ func (a *WarehousesAPI) EditWarehouse(ctx context.Context, request EditWarehouse
 	return err
 }
 
+// EditWarehouse and wait to reach RUNNING state
+func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, request EditWarehouseRequest, timeout ...time.Duration) error {
+	err := a.EditWarehouse(ctx, request)
+	if err != nil {
+		return err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
+			Id: request.Id,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		status := getWarehouseResponse.State
+		statusMessage := getWarehouseResponse.Health.Summary
+		switch status {
+		case GetWarehouseResponseStateRunning: // target state
+			return nil
+		case GetWarehouseResponseStateStopped, GetWarehouseResponseStateDeleted:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				GetWarehouseResponseStateRunning, status, statusMessage)
+			return retries.Halt(err)
+		default:
+			return retries.Continues(statusMessage)
+		}
+	})
+}
+
 // Gets the information for a single SQL warehouse.
 func (a *WarehousesAPI) GetWarehouse(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error) {
 	var getWarehouseResponse GetWarehouseResponse
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
 	err := a.client.Get(ctx, path, request, &getWarehouseResponse)
 	return &getWarehouseResponse, err
+}
+
+// GetWarehouse and wait to reach RUNNING state
+func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, request GetWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+	getWarehouseResponse, err := a.GetWarehouse(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return getWarehouseResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
+		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
+			Id: getWarehouseResponse.Id,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		status := getWarehouseResponse.State
+		statusMessage := getWarehouseResponse.Health.Summary
+		switch status {
+		case GetWarehouseResponseStateRunning: // target state
+			return nil
+		case GetWarehouseResponseStateStopped, GetWarehouseResponseStateDeleted:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				GetWarehouseResponseStateRunning, status, statusMessage)
+			return retries.Halt(err)
+		default:
+			return retries.Continues(statusMessage)
+		}
+	})
+}
+
+// Gets the information for a single SQL warehouse.
+func (a *WarehousesAPI) GetWarehouseById(ctx context.Context, id string) (*GetWarehouseResponse, error) {
+	return a.GetWarehouse(ctx, GetWarehouseRequest{
+		Id: id,
+	})
+}
+
+func (a *WarehousesAPI) GetWarehouseByIdAndWait(ctx context.Context, id string, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+	return a.GetWarehouseAndWait(ctx, GetWarehouseRequest{
+		Id: id,
+	}, timeout...)
 }
 
 // Gets the workspace level configuration that is shared by all SQL warehouses
@@ -81,6 +229,37 @@ func (a *WarehousesAPI) StartWarehouse(ctx context.Context, request StartWarehou
 	return err
 }
 
+// StartWarehouse and wait to reach RUNNING state
+func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, request StartWarehouseRequest, timeout ...time.Duration) error {
+	err := a.StartWarehouse(ctx, request)
+	if err != nil {
+		return err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
+			Id: request.Id,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		status := getWarehouseResponse.State
+		statusMessage := getWarehouseResponse.Health.Summary
+		switch status {
+		case GetWarehouseResponseStateRunning: // target state
+			return nil
+		case GetWarehouseResponseStateStopped, GetWarehouseResponseStateDeleted:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				GetWarehouseResponseStateRunning, status, statusMessage)
+			return retries.Halt(err)
+		default:
+			return retries.Continues(statusMessage)
+		}
+	})
+}
+
 // Stops a SQL warehouse.
 func (a *WarehousesAPI) StopWarehouse(ctx context.Context, request StopWarehouseRequest) error {
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/stop", request.Id)
@@ -88,15 +267,30 @@ func (a *WarehousesAPI) StopWarehouse(ctx context.Context, request StopWarehouse
 	return err
 }
 
-
-func (a *WarehousesAPI) GetWarehouseById(ctx context.Context, id string) (*GetWarehouseResponse, error) {
-	return a.GetWarehouse(ctx, GetWarehouseRequest{
-		Id: id,
+// StopWarehouse and wait to reach STOPPED state
+func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, request StopWarehouseRequest, timeout ...time.Duration) error {
+	err := a.StopWarehouse(ctx, request)
+	if err != nil {
+		return err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
+			Id: request.Id,
+		})
+		if err != nil {
+			return retries.Halt(err)
+		}
+		status := getWarehouseResponse.State
+		statusMessage := getWarehouseResponse.Health.Summary
+		switch status {
+		case GetWarehouseResponseStateStopped: // target state
+			return nil
+		default:
+			return retries.Continues(statusMessage)
+		}
 	})
 }
 
-func (a *WarehousesAPI) DeleteWarehouseById(ctx context.Context, id string) error {
-	return a.DeleteWarehouse(ctx, DeleteWarehouseRequest{
-		Id: id,
-	})
-}

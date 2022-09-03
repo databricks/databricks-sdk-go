@@ -80,19 +80,19 @@ type LibraryFullStatus struct {
 type LibraryFullStatusStatus string
 
 
+const LibraryFullStatusStatusFailed LibraryFullStatusStatus = `FAILED`
+
+const LibraryFullStatusStatusInstalled LibraryFullStatusStatus = `INSTALLED`
+
+const LibraryFullStatusStatusInstalling LibraryFullStatusStatus = `INSTALLING`
+
 const LibraryFullStatusStatusPending LibraryFullStatusStatus = `PENDING`
 
 const LibraryFullStatusStatusResolving LibraryFullStatusStatus = `RESOLVING`
 
-const LibraryFullStatusStatusInstalling LibraryFullStatusStatus = `INSTALLING`
-
-const LibraryFullStatusStatusInstalled LibraryFullStatusStatus = `INSTALLED`
-
-const LibraryFullStatusStatusFailed LibraryFullStatusStatus = `FAILED`
+const LibraryFullStatusStatusSkipped LibraryFullStatusStatus = `SKIPPED`
 
 const LibraryFullStatusStatusUninstallOnRestart LibraryFullStatusStatus = `UNINSTALL_ON_RESTART`
-
-const LibraryFullStatusStatusSkipped LibraryFullStatusStatus = `SKIPPED`
 
 type ListAllClusterLibraryStatusesResponse struct {
     // A list of cluster statuses.

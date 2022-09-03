@@ -43,34 +43,34 @@ type CatalogInfo struct {
 type CatalogInfoCatalogType string
 
 
-const CatalogInfoCatalogTypeUnknownCatalogType CatalogInfoCatalogType = `UNKNOWN_CATALOG_TYPE`
+const CatalogInfoCatalogTypeDeltasharingCatalog CatalogInfoCatalogType = `DELTASHARING_CATALOG`
 
 const CatalogInfoCatalogTypeManagedCatalog CatalogInfoCatalogType = `MANAGED_CATALOG`
 
-const CatalogInfoCatalogTypeDeltasharingCatalog CatalogInfoCatalogType = `DELTASHARING_CATALOG`
-
 const CatalogInfoCatalogTypeSystemCatalog CatalogInfoCatalogType = `SYSTEM_CATALOG`
+
+const CatalogInfoCatalogTypeUnknownCatalogType CatalogInfoCatalogType = `UNKNOWN_CATALOG_TYPE`
 
 type CatalogInfoPrivilegesItem string
 
 
-const CatalogInfoPrivilegesItemUnknownPrivilege CatalogInfoPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const CatalogInfoPrivilegesItemSelect CatalogInfoPrivilegesItem = `SELECT`
-
 const CatalogInfoPrivilegesItemCreate CatalogInfoPrivilegesItem = `CREATE`
 
-const CatalogInfoPrivilegesItemModify CatalogInfoPrivilegesItem = `MODIFY`
-
-const CatalogInfoPrivilegesItemUsage CatalogInfoPrivilegesItem = `USAGE`
-
-const CatalogInfoPrivilegesItemReadFiles CatalogInfoPrivilegesItem = `READ_FILES`
-
-const CatalogInfoPrivilegesItemWriteFiles CatalogInfoPrivilegesItem = `WRITE_FILES`
+const CatalogInfoPrivilegesItemCreateMount CatalogInfoPrivilegesItem = `CREATE_MOUNT`
 
 const CatalogInfoPrivilegesItemCreateTable CatalogInfoPrivilegesItem = `CREATE_TABLE`
 
-const CatalogInfoPrivilegesItemCreateMount CatalogInfoPrivilegesItem = `CREATE_MOUNT`
+const CatalogInfoPrivilegesItemModify CatalogInfoPrivilegesItem = `MODIFY`
+
+const CatalogInfoPrivilegesItemReadFiles CatalogInfoPrivilegesItem = `READ_FILES`
+
+const CatalogInfoPrivilegesItemSelect CatalogInfoPrivilegesItem = `SELECT`
+
+const CatalogInfoPrivilegesItemUnknownPrivilege CatalogInfoPrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const CatalogInfoPrivilegesItemUsage CatalogInfoPrivilegesItem = `USAGE`
+
+const CatalogInfoPrivilegesItemWriteFiles CatalogInfoPrivilegesItem = `WRITE_FILES`
 
 type ColumnInfo struct {
     // [Create,Update:OPT] User-provided free-form text description.
@@ -104,43 +104,43 @@ type ColumnInfo struct {
 type ColumnInfoTypeName string
 
 
-const ColumnInfoTypeNameUnknownColumnTypeName ColumnInfoTypeName = `UNKNOWN_COLUMN_TYPE_NAME`
+const ColumnInfoTypeNameArray ColumnInfoTypeName = `ARRAY`
+
+const ColumnInfoTypeNameBinary ColumnInfoTypeName = `BINARY`
 
 const ColumnInfoTypeNameBoolean ColumnInfoTypeName = `BOOLEAN`
 
 const ColumnInfoTypeNameByte ColumnInfoTypeName = `BYTE`
 
-const ColumnInfoTypeNameShort ColumnInfoTypeName = `SHORT`
-
-const ColumnInfoTypeNameInt ColumnInfoTypeName = `INT`
-
-const ColumnInfoTypeNameLong ColumnInfoTypeName = `LONG`
-
-const ColumnInfoTypeNameFloat ColumnInfoTypeName = `FLOAT`
-
-const ColumnInfoTypeNameDouble ColumnInfoTypeName = `DOUBLE`
+const ColumnInfoTypeNameChar ColumnInfoTypeName = `CHAR`
 
 const ColumnInfoTypeNameDate ColumnInfoTypeName = `DATE`
 
-const ColumnInfoTypeNameTimestamp ColumnInfoTypeName = `TIMESTAMP`
-
-const ColumnInfoTypeNameString ColumnInfoTypeName = `STRING`
-
-const ColumnInfoTypeNameBinary ColumnInfoTypeName = `BINARY`
-
 const ColumnInfoTypeNameDecimal ColumnInfoTypeName = `DECIMAL`
+
+const ColumnInfoTypeNameDouble ColumnInfoTypeName = `DOUBLE`
+
+const ColumnInfoTypeNameFloat ColumnInfoTypeName = `FLOAT`
+
+const ColumnInfoTypeNameInt ColumnInfoTypeName = `INT`
 
 const ColumnInfoTypeNameInterval ColumnInfoTypeName = `INTERVAL`
 
-const ColumnInfoTypeNameArray ColumnInfoTypeName = `ARRAY`
-
-const ColumnInfoTypeNameStruct ColumnInfoTypeName = `STRUCT`
+const ColumnInfoTypeNameLong ColumnInfoTypeName = `LONG`
 
 const ColumnInfoTypeNameMap ColumnInfoTypeName = `MAP`
 
-const ColumnInfoTypeNameChar ColumnInfoTypeName = `CHAR`
-
 const ColumnInfoTypeNameNull ColumnInfoTypeName = `NULL`
+
+const ColumnInfoTypeNameShort ColumnInfoTypeName = `SHORT`
+
+const ColumnInfoTypeNameString ColumnInfoTypeName = `STRING`
+
+const ColumnInfoTypeNameStruct ColumnInfoTypeName = `STRUCT`
+
+const ColumnInfoTypeNameTimestamp ColumnInfoTypeName = `TIMESTAMP`
+
+const ColumnInfoTypeNameUnknownColumnTypeName ColumnInfoTypeName = `UNKNOWN_COLUMN_TYPE_NAME`
 
 type CreateCatalogRequest struct {
     // [Create,Update:IGN] The type of the catalog.
@@ -181,34 +181,34 @@ type CreateCatalogRequest struct {
 type CreateCatalogRequestCatalogType string
 
 
-const CreateCatalogRequestCatalogTypeUnknownCatalogType CreateCatalogRequestCatalogType = `UNKNOWN_CATALOG_TYPE`
+const CreateCatalogRequestCatalogTypeDeltasharingCatalog CreateCatalogRequestCatalogType = `DELTASHARING_CATALOG`
 
 const CreateCatalogRequestCatalogTypeManagedCatalog CreateCatalogRequestCatalogType = `MANAGED_CATALOG`
 
-const CreateCatalogRequestCatalogTypeDeltasharingCatalog CreateCatalogRequestCatalogType = `DELTASHARING_CATALOG`
-
 const CreateCatalogRequestCatalogTypeSystemCatalog CreateCatalogRequestCatalogType = `SYSTEM_CATALOG`
+
+const CreateCatalogRequestCatalogTypeUnknownCatalogType CreateCatalogRequestCatalogType = `UNKNOWN_CATALOG_TYPE`
 
 type CreateCatalogRequestPrivilegesItem string
 
 
-const CreateCatalogRequestPrivilegesItemUnknownPrivilege CreateCatalogRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const CreateCatalogRequestPrivilegesItemSelect CreateCatalogRequestPrivilegesItem = `SELECT`
-
 const CreateCatalogRequestPrivilegesItemCreate CreateCatalogRequestPrivilegesItem = `CREATE`
 
-const CreateCatalogRequestPrivilegesItemModify CreateCatalogRequestPrivilegesItem = `MODIFY`
-
-const CreateCatalogRequestPrivilegesItemUsage CreateCatalogRequestPrivilegesItem = `USAGE`
-
-const CreateCatalogRequestPrivilegesItemReadFiles CreateCatalogRequestPrivilegesItem = `READ_FILES`
-
-const CreateCatalogRequestPrivilegesItemWriteFiles CreateCatalogRequestPrivilegesItem = `WRITE_FILES`
+const CreateCatalogRequestPrivilegesItemCreateMount CreateCatalogRequestPrivilegesItem = `CREATE_MOUNT`
 
 const CreateCatalogRequestPrivilegesItemCreateTable CreateCatalogRequestPrivilegesItem = `CREATE_TABLE`
 
-const CreateCatalogRequestPrivilegesItemCreateMount CreateCatalogRequestPrivilegesItem = `CREATE_MOUNT`
+const CreateCatalogRequestPrivilegesItemModify CreateCatalogRequestPrivilegesItem = `MODIFY`
+
+const CreateCatalogRequestPrivilegesItemReadFiles CreateCatalogRequestPrivilegesItem = `READ_FILES`
+
+const CreateCatalogRequestPrivilegesItemSelect CreateCatalogRequestPrivilegesItem = `SELECT`
+
+const CreateCatalogRequestPrivilegesItemUnknownPrivilege CreateCatalogRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const CreateCatalogRequestPrivilegesItemUsage CreateCatalogRequestPrivilegesItem = `USAGE`
+
+const CreateCatalogRequestPrivilegesItemWriteFiles CreateCatalogRequestPrivilegesItem = `WRITE_FILES`
 
 type CreateCatalogResponse struct {
     // [Create,Update:IGN] The type of the catalog.
@@ -249,34 +249,34 @@ type CreateCatalogResponse struct {
 type CreateCatalogResponseCatalogType string
 
 
-const CreateCatalogResponseCatalogTypeUnknownCatalogType CreateCatalogResponseCatalogType = `UNKNOWN_CATALOG_TYPE`
+const CreateCatalogResponseCatalogTypeDeltasharingCatalog CreateCatalogResponseCatalogType = `DELTASHARING_CATALOG`
 
 const CreateCatalogResponseCatalogTypeManagedCatalog CreateCatalogResponseCatalogType = `MANAGED_CATALOG`
 
-const CreateCatalogResponseCatalogTypeDeltasharingCatalog CreateCatalogResponseCatalogType = `DELTASHARING_CATALOG`
-
 const CreateCatalogResponseCatalogTypeSystemCatalog CreateCatalogResponseCatalogType = `SYSTEM_CATALOG`
+
+const CreateCatalogResponseCatalogTypeUnknownCatalogType CreateCatalogResponseCatalogType = `UNKNOWN_CATALOG_TYPE`
 
 type CreateCatalogResponsePrivilegesItem string
 
 
-const CreateCatalogResponsePrivilegesItemUnknownPrivilege CreateCatalogResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const CreateCatalogResponsePrivilegesItemSelect CreateCatalogResponsePrivilegesItem = `SELECT`
-
 const CreateCatalogResponsePrivilegesItemCreate CreateCatalogResponsePrivilegesItem = `CREATE`
 
-const CreateCatalogResponsePrivilegesItemModify CreateCatalogResponsePrivilegesItem = `MODIFY`
-
-const CreateCatalogResponsePrivilegesItemUsage CreateCatalogResponsePrivilegesItem = `USAGE`
-
-const CreateCatalogResponsePrivilegesItemReadFiles CreateCatalogResponsePrivilegesItem = `READ_FILES`
-
-const CreateCatalogResponsePrivilegesItemWriteFiles CreateCatalogResponsePrivilegesItem = `WRITE_FILES`
+const CreateCatalogResponsePrivilegesItemCreateMount CreateCatalogResponsePrivilegesItem = `CREATE_MOUNT`
 
 const CreateCatalogResponsePrivilegesItemCreateTable CreateCatalogResponsePrivilegesItem = `CREATE_TABLE`
 
-const CreateCatalogResponsePrivilegesItemCreateMount CreateCatalogResponsePrivilegesItem = `CREATE_MOUNT`
+const CreateCatalogResponsePrivilegesItemModify CreateCatalogResponsePrivilegesItem = `MODIFY`
+
+const CreateCatalogResponsePrivilegesItemReadFiles CreateCatalogResponsePrivilegesItem = `READ_FILES`
+
+const CreateCatalogResponsePrivilegesItemSelect CreateCatalogResponsePrivilegesItem = `SELECT`
+
+const CreateCatalogResponsePrivilegesItemUnknownPrivilege CreateCatalogResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const CreateCatalogResponsePrivilegesItemUsage CreateCatalogResponsePrivilegesItem = `USAGE`
+
+const CreateCatalogResponsePrivilegesItemWriteFiles CreateCatalogResponsePrivilegesItem = `WRITE_FILES`
 
 type CreateExternalLocationRequest struct {
     // [Create:OPT Update:OPT] User-provided free-form text description.
@@ -391,23 +391,23 @@ type CreateMetastoreRequest struct {
 type CreateMetastoreRequestPrivilegesItem string
 
 
-const CreateMetastoreRequestPrivilegesItemUnknownPrivilege CreateMetastoreRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const CreateMetastoreRequestPrivilegesItemSelect CreateMetastoreRequestPrivilegesItem = `SELECT`
-
 const CreateMetastoreRequestPrivilegesItemCreate CreateMetastoreRequestPrivilegesItem = `CREATE`
 
-const CreateMetastoreRequestPrivilegesItemModify CreateMetastoreRequestPrivilegesItem = `MODIFY`
-
-const CreateMetastoreRequestPrivilegesItemUsage CreateMetastoreRequestPrivilegesItem = `USAGE`
-
-const CreateMetastoreRequestPrivilegesItemReadFiles CreateMetastoreRequestPrivilegesItem = `READ_FILES`
-
-const CreateMetastoreRequestPrivilegesItemWriteFiles CreateMetastoreRequestPrivilegesItem = `WRITE_FILES`
+const CreateMetastoreRequestPrivilegesItemCreateMount CreateMetastoreRequestPrivilegesItem = `CREATE_MOUNT`
 
 const CreateMetastoreRequestPrivilegesItemCreateTable CreateMetastoreRequestPrivilegesItem = `CREATE_TABLE`
 
-const CreateMetastoreRequestPrivilegesItemCreateMount CreateMetastoreRequestPrivilegesItem = `CREATE_MOUNT`
+const CreateMetastoreRequestPrivilegesItemModify CreateMetastoreRequestPrivilegesItem = `MODIFY`
+
+const CreateMetastoreRequestPrivilegesItemReadFiles CreateMetastoreRequestPrivilegesItem = `READ_FILES`
+
+const CreateMetastoreRequestPrivilegesItemSelect CreateMetastoreRequestPrivilegesItem = `SELECT`
+
+const CreateMetastoreRequestPrivilegesItemUnknownPrivilege CreateMetastoreRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const CreateMetastoreRequestPrivilegesItemUsage CreateMetastoreRequestPrivilegesItem = `USAGE`
+
+const CreateMetastoreRequestPrivilegesItemWriteFiles CreateMetastoreRequestPrivilegesItem = `WRITE_FILES`
 
 type CreateMetastoreResponse struct {
     // [Create,Update:IGN] Time at which this Metastore was created, in epoch
@@ -450,23 +450,23 @@ type CreateMetastoreResponse struct {
 type CreateMetastoreResponsePrivilegesItem string
 
 
-const CreateMetastoreResponsePrivilegesItemUnknownPrivilege CreateMetastoreResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const CreateMetastoreResponsePrivilegesItemSelect CreateMetastoreResponsePrivilegesItem = `SELECT`
-
 const CreateMetastoreResponsePrivilegesItemCreate CreateMetastoreResponsePrivilegesItem = `CREATE`
 
-const CreateMetastoreResponsePrivilegesItemModify CreateMetastoreResponsePrivilegesItem = `MODIFY`
-
-const CreateMetastoreResponsePrivilegesItemUsage CreateMetastoreResponsePrivilegesItem = `USAGE`
-
-const CreateMetastoreResponsePrivilegesItemReadFiles CreateMetastoreResponsePrivilegesItem = `READ_FILES`
-
-const CreateMetastoreResponsePrivilegesItemWriteFiles CreateMetastoreResponsePrivilegesItem = `WRITE_FILES`
+const CreateMetastoreResponsePrivilegesItemCreateMount CreateMetastoreResponsePrivilegesItem = `CREATE_MOUNT`
 
 const CreateMetastoreResponsePrivilegesItemCreateTable CreateMetastoreResponsePrivilegesItem = `CREATE_TABLE`
 
-const CreateMetastoreResponsePrivilegesItemCreateMount CreateMetastoreResponsePrivilegesItem = `CREATE_MOUNT`
+const CreateMetastoreResponsePrivilegesItemModify CreateMetastoreResponsePrivilegesItem = `MODIFY`
+
+const CreateMetastoreResponsePrivilegesItemReadFiles CreateMetastoreResponsePrivilegesItem = `READ_FILES`
+
+const CreateMetastoreResponsePrivilegesItemSelect CreateMetastoreResponsePrivilegesItem = `SELECT`
+
+const CreateMetastoreResponsePrivilegesItemUnknownPrivilege CreateMetastoreResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const CreateMetastoreResponsePrivilegesItemUsage CreateMetastoreResponsePrivilegesItem = `USAGE`
+
+const CreateMetastoreResponsePrivilegesItemWriteFiles CreateMetastoreResponsePrivilegesItem = `WRITE_FILES`
 
 type CreateProviderRequest struct {
     // [Create,Update:IGN] Whether this provider is successfully activated by
@@ -504,11 +504,11 @@ type CreateProviderRequest struct {
 type CreateProviderRequestAuthenticationType string
 
 
-const CreateProviderRequestAuthenticationTypeUnknown CreateProviderRequestAuthenticationType = `UNKNOWN`
+const CreateProviderRequestAuthenticationTypeDatabricks CreateProviderRequestAuthenticationType = `DATABRICKS`
 
 const CreateProviderRequestAuthenticationTypeToken CreateProviderRequestAuthenticationType = `TOKEN`
 
-const CreateProviderRequestAuthenticationTypeDatabricks CreateProviderRequestAuthenticationType = `DATABRICKS`
+const CreateProviderRequestAuthenticationTypeUnknown CreateProviderRequestAuthenticationType = `UNKNOWN`
 
 type CreateProviderResponse struct {
     // [Create,Update:IGN] Whether this provider is successfully activated by
@@ -546,11 +546,11 @@ type CreateProviderResponse struct {
 type CreateProviderResponseAuthenticationType string
 
 
-const CreateProviderResponseAuthenticationTypeUnknown CreateProviderResponseAuthenticationType = `UNKNOWN`
+const CreateProviderResponseAuthenticationTypeDatabricks CreateProviderResponseAuthenticationType = `DATABRICKS`
 
 const CreateProviderResponseAuthenticationTypeToken CreateProviderResponseAuthenticationType = `TOKEN`
 
-const CreateProviderResponseAuthenticationTypeDatabricks CreateProviderResponseAuthenticationType = `DATABRICKS`
+const CreateProviderResponseAuthenticationTypeUnknown CreateProviderResponseAuthenticationType = `UNKNOWN`
 
 type CreateRecipientRequest struct {
     // [Create:IGN,Update:IGN] A boolean status field showing whether the
@@ -590,11 +590,11 @@ type CreateRecipientRequest struct {
 type CreateRecipientRequestAuthenticationType string
 
 
-const CreateRecipientRequestAuthenticationTypeUnknown CreateRecipientRequestAuthenticationType = `UNKNOWN`
+const CreateRecipientRequestAuthenticationTypeDatabricks CreateRecipientRequestAuthenticationType = `DATABRICKS`
 
 const CreateRecipientRequestAuthenticationTypeToken CreateRecipientRequestAuthenticationType = `TOKEN`
 
-const CreateRecipientRequestAuthenticationTypeDatabricks CreateRecipientRequestAuthenticationType = `DATABRICKS`
+const CreateRecipientRequestAuthenticationTypeUnknown CreateRecipientRequestAuthenticationType = `UNKNOWN`
 
 type CreateRecipientResponse struct {
     // [Create:IGN,Update:IGN] A boolean status field showing whether the
@@ -634,11 +634,11 @@ type CreateRecipientResponse struct {
 type CreateRecipientResponseAuthenticationType string
 
 
-const CreateRecipientResponseAuthenticationTypeUnknown CreateRecipientResponseAuthenticationType = `UNKNOWN`
+const CreateRecipientResponseAuthenticationTypeDatabricks CreateRecipientResponseAuthenticationType = `DATABRICKS`
 
 const CreateRecipientResponseAuthenticationTypeToken CreateRecipientResponseAuthenticationType = `TOKEN`
 
-const CreateRecipientResponseAuthenticationTypeDatabricks CreateRecipientResponseAuthenticationType = `DATABRICKS`
+const CreateRecipientResponseAuthenticationTypeUnknown CreateRecipientResponseAuthenticationType = `UNKNOWN`
 
 type CreateSchemaRequest struct {
     // [Create:REQ Update:IGN] Name of parent Catalog.
@@ -676,23 +676,23 @@ type CreateSchemaRequest struct {
 type CreateSchemaRequestPrivilegesItem string
 
 
-const CreateSchemaRequestPrivilegesItemUnknownPrivilege CreateSchemaRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const CreateSchemaRequestPrivilegesItemSelect CreateSchemaRequestPrivilegesItem = `SELECT`
-
 const CreateSchemaRequestPrivilegesItemCreate CreateSchemaRequestPrivilegesItem = `CREATE`
 
-const CreateSchemaRequestPrivilegesItemModify CreateSchemaRequestPrivilegesItem = `MODIFY`
-
-const CreateSchemaRequestPrivilegesItemUsage CreateSchemaRequestPrivilegesItem = `USAGE`
-
-const CreateSchemaRequestPrivilegesItemReadFiles CreateSchemaRequestPrivilegesItem = `READ_FILES`
-
-const CreateSchemaRequestPrivilegesItemWriteFiles CreateSchemaRequestPrivilegesItem = `WRITE_FILES`
+const CreateSchemaRequestPrivilegesItemCreateMount CreateSchemaRequestPrivilegesItem = `CREATE_MOUNT`
 
 const CreateSchemaRequestPrivilegesItemCreateTable CreateSchemaRequestPrivilegesItem = `CREATE_TABLE`
 
-const CreateSchemaRequestPrivilegesItemCreateMount CreateSchemaRequestPrivilegesItem = `CREATE_MOUNT`
+const CreateSchemaRequestPrivilegesItemModify CreateSchemaRequestPrivilegesItem = `MODIFY`
+
+const CreateSchemaRequestPrivilegesItemReadFiles CreateSchemaRequestPrivilegesItem = `READ_FILES`
+
+const CreateSchemaRequestPrivilegesItemSelect CreateSchemaRequestPrivilegesItem = `SELECT`
+
+const CreateSchemaRequestPrivilegesItemUnknownPrivilege CreateSchemaRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const CreateSchemaRequestPrivilegesItemUsage CreateSchemaRequestPrivilegesItem = `USAGE`
+
+const CreateSchemaRequestPrivilegesItemWriteFiles CreateSchemaRequestPrivilegesItem = `WRITE_FILES`
 
 type CreateSchemaResponse struct {
     // [Create:REQ Update:IGN] Name of parent Catalog.
@@ -730,23 +730,23 @@ type CreateSchemaResponse struct {
 type CreateSchemaResponsePrivilegesItem string
 
 
-const CreateSchemaResponsePrivilegesItemUnknownPrivilege CreateSchemaResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const CreateSchemaResponsePrivilegesItemSelect CreateSchemaResponsePrivilegesItem = `SELECT`
-
 const CreateSchemaResponsePrivilegesItemCreate CreateSchemaResponsePrivilegesItem = `CREATE`
 
-const CreateSchemaResponsePrivilegesItemModify CreateSchemaResponsePrivilegesItem = `MODIFY`
-
-const CreateSchemaResponsePrivilegesItemUsage CreateSchemaResponsePrivilegesItem = `USAGE`
-
-const CreateSchemaResponsePrivilegesItemReadFiles CreateSchemaResponsePrivilegesItem = `READ_FILES`
-
-const CreateSchemaResponsePrivilegesItemWriteFiles CreateSchemaResponsePrivilegesItem = `WRITE_FILES`
+const CreateSchemaResponsePrivilegesItemCreateMount CreateSchemaResponsePrivilegesItem = `CREATE_MOUNT`
 
 const CreateSchemaResponsePrivilegesItemCreateTable CreateSchemaResponsePrivilegesItem = `CREATE_TABLE`
 
-const CreateSchemaResponsePrivilegesItemCreateMount CreateSchemaResponsePrivilegesItem = `CREATE_MOUNT`
+const CreateSchemaResponsePrivilegesItemModify CreateSchemaResponsePrivilegesItem = `MODIFY`
+
+const CreateSchemaResponsePrivilegesItemReadFiles CreateSchemaResponsePrivilegesItem = `READ_FILES`
+
+const CreateSchemaResponsePrivilegesItemSelect CreateSchemaResponsePrivilegesItem = `SELECT`
+
+const CreateSchemaResponsePrivilegesItemUnknownPrivilege CreateSchemaResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const CreateSchemaResponsePrivilegesItemUsage CreateSchemaResponsePrivilegesItem = `USAGE`
+
+const CreateSchemaResponsePrivilegesItemWriteFiles CreateSchemaResponsePrivilegesItem = `WRITE_FILES`
 
 type CreateShareRequest struct {
     // [Create: OPT] comment when creating the share
@@ -930,55 +930,55 @@ type CreateTableRequest struct {
 type CreateTableRequestDataSourceFormat string
 
 
-const CreateTableRequestDataSourceFormatUnknownDataSourceFormat CreateTableRequestDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
-
-const CreateTableRequestDataSourceFormatDelta CreateTableRequestDataSourceFormat = `DELTA`
+const CreateTableRequestDataSourceFormatAvro CreateTableRequestDataSourceFormat = `AVRO`
 
 const CreateTableRequestDataSourceFormatCsv CreateTableRequestDataSourceFormat = `CSV`
 
+const CreateTableRequestDataSourceFormatDelta CreateTableRequestDataSourceFormat = `DELTA`
+
+const CreateTableRequestDataSourceFormatDeltasharing CreateTableRequestDataSourceFormat = `DELTASHARING`
+
 const CreateTableRequestDataSourceFormatJson CreateTableRequestDataSourceFormat = `JSON`
 
-const CreateTableRequestDataSourceFormatAvro CreateTableRequestDataSourceFormat = `AVRO`
+const CreateTableRequestDataSourceFormatOrc CreateTableRequestDataSourceFormat = `ORC`
 
 const CreateTableRequestDataSourceFormatParquet CreateTableRequestDataSourceFormat = `PARQUET`
-
-const CreateTableRequestDataSourceFormatOrc CreateTableRequestDataSourceFormat = `ORC`
 
 const CreateTableRequestDataSourceFormatText CreateTableRequestDataSourceFormat = `TEXT`
 
 const CreateTableRequestDataSourceFormatUnityCatalog CreateTableRequestDataSourceFormat = `UNITY_CATALOG`
 
-const CreateTableRequestDataSourceFormatDeltasharing CreateTableRequestDataSourceFormat = `DELTASHARING`
+const CreateTableRequestDataSourceFormatUnknownDataSourceFormat CreateTableRequestDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
 
 type CreateTableRequestPrivilegesItem string
 
 
-const CreateTableRequestPrivilegesItemUnknownPrivilege CreateTableRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const CreateTableRequestPrivilegesItemSelect CreateTableRequestPrivilegesItem = `SELECT`
-
 const CreateTableRequestPrivilegesItemCreate CreateTableRequestPrivilegesItem = `CREATE`
 
-const CreateTableRequestPrivilegesItemModify CreateTableRequestPrivilegesItem = `MODIFY`
-
-const CreateTableRequestPrivilegesItemUsage CreateTableRequestPrivilegesItem = `USAGE`
-
-const CreateTableRequestPrivilegesItemReadFiles CreateTableRequestPrivilegesItem = `READ_FILES`
-
-const CreateTableRequestPrivilegesItemWriteFiles CreateTableRequestPrivilegesItem = `WRITE_FILES`
+const CreateTableRequestPrivilegesItemCreateMount CreateTableRequestPrivilegesItem = `CREATE_MOUNT`
 
 const CreateTableRequestPrivilegesItemCreateTable CreateTableRequestPrivilegesItem = `CREATE_TABLE`
 
-const CreateTableRequestPrivilegesItemCreateMount CreateTableRequestPrivilegesItem = `CREATE_MOUNT`
+const CreateTableRequestPrivilegesItemModify CreateTableRequestPrivilegesItem = `MODIFY`
+
+const CreateTableRequestPrivilegesItemReadFiles CreateTableRequestPrivilegesItem = `READ_FILES`
+
+const CreateTableRequestPrivilegesItemSelect CreateTableRequestPrivilegesItem = `SELECT`
+
+const CreateTableRequestPrivilegesItemUnknownPrivilege CreateTableRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const CreateTableRequestPrivilegesItemUsage CreateTableRequestPrivilegesItem = `USAGE`
+
+const CreateTableRequestPrivilegesItemWriteFiles CreateTableRequestPrivilegesItem = `WRITE_FILES`
 // [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
 type CreateTableRequestTableType string
 
 
-const CreateTableRequestTableTypeUnknownTableType CreateTableRequestTableType = `UNKNOWN_TABLE_TYPE`
+const CreateTableRequestTableTypeExternal CreateTableRequestTableType = `EXTERNAL`
 
 const CreateTableRequestTableTypeManaged CreateTableRequestTableType = `MANAGED`
 
-const CreateTableRequestTableTypeExternal CreateTableRequestTableType = `EXTERNAL`
+const CreateTableRequestTableTypeUnknownTableType CreateTableRequestTableType = `UNKNOWN_TABLE_TYPE`
 
 const CreateTableRequestTableTypeView CreateTableRequestTableType = `VIEW`
 
@@ -1043,55 +1043,55 @@ type CreateTableResponse struct {
 type CreateTableResponseDataSourceFormat string
 
 
-const CreateTableResponseDataSourceFormatUnknownDataSourceFormat CreateTableResponseDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
-
-const CreateTableResponseDataSourceFormatDelta CreateTableResponseDataSourceFormat = `DELTA`
+const CreateTableResponseDataSourceFormatAvro CreateTableResponseDataSourceFormat = `AVRO`
 
 const CreateTableResponseDataSourceFormatCsv CreateTableResponseDataSourceFormat = `CSV`
 
+const CreateTableResponseDataSourceFormatDelta CreateTableResponseDataSourceFormat = `DELTA`
+
+const CreateTableResponseDataSourceFormatDeltasharing CreateTableResponseDataSourceFormat = `DELTASHARING`
+
 const CreateTableResponseDataSourceFormatJson CreateTableResponseDataSourceFormat = `JSON`
 
-const CreateTableResponseDataSourceFormatAvro CreateTableResponseDataSourceFormat = `AVRO`
+const CreateTableResponseDataSourceFormatOrc CreateTableResponseDataSourceFormat = `ORC`
 
 const CreateTableResponseDataSourceFormatParquet CreateTableResponseDataSourceFormat = `PARQUET`
-
-const CreateTableResponseDataSourceFormatOrc CreateTableResponseDataSourceFormat = `ORC`
 
 const CreateTableResponseDataSourceFormatText CreateTableResponseDataSourceFormat = `TEXT`
 
 const CreateTableResponseDataSourceFormatUnityCatalog CreateTableResponseDataSourceFormat = `UNITY_CATALOG`
 
-const CreateTableResponseDataSourceFormatDeltasharing CreateTableResponseDataSourceFormat = `DELTASHARING`
+const CreateTableResponseDataSourceFormatUnknownDataSourceFormat CreateTableResponseDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
 
 type CreateTableResponsePrivilegesItem string
 
 
-const CreateTableResponsePrivilegesItemUnknownPrivilege CreateTableResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const CreateTableResponsePrivilegesItemSelect CreateTableResponsePrivilegesItem = `SELECT`
-
 const CreateTableResponsePrivilegesItemCreate CreateTableResponsePrivilegesItem = `CREATE`
 
-const CreateTableResponsePrivilegesItemModify CreateTableResponsePrivilegesItem = `MODIFY`
-
-const CreateTableResponsePrivilegesItemUsage CreateTableResponsePrivilegesItem = `USAGE`
-
-const CreateTableResponsePrivilegesItemReadFiles CreateTableResponsePrivilegesItem = `READ_FILES`
-
-const CreateTableResponsePrivilegesItemWriteFiles CreateTableResponsePrivilegesItem = `WRITE_FILES`
+const CreateTableResponsePrivilegesItemCreateMount CreateTableResponsePrivilegesItem = `CREATE_MOUNT`
 
 const CreateTableResponsePrivilegesItemCreateTable CreateTableResponsePrivilegesItem = `CREATE_TABLE`
 
-const CreateTableResponsePrivilegesItemCreateMount CreateTableResponsePrivilegesItem = `CREATE_MOUNT`
+const CreateTableResponsePrivilegesItemModify CreateTableResponsePrivilegesItem = `MODIFY`
+
+const CreateTableResponsePrivilegesItemReadFiles CreateTableResponsePrivilegesItem = `READ_FILES`
+
+const CreateTableResponsePrivilegesItemSelect CreateTableResponsePrivilegesItem = `SELECT`
+
+const CreateTableResponsePrivilegesItemUnknownPrivilege CreateTableResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const CreateTableResponsePrivilegesItemUsage CreateTableResponsePrivilegesItem = `USAGE`
+
+const CreateTableResponsePrivilegesItemWriteFiles CreateTableResponsePrivilegesItem = `WRITE_FILES`
 // [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
 type CreateTableResponseTableType string
 
 
-const CreateTableResponseTableTypeUnknownTableType CreateTableResponseTableType = `UNKNOWN_TABLE_TYPE`
+const CreateTableResponseTableTypeExternal CreateTableResponseTableType = `EXTERNAL`
 
 const CreateTableResponseTableTypeManaged CreateTableResponseTableType = `MANAGED`
 
-const CreateTableResponseTableTypeExternal CreateTableResponseTableType = `EXTERNAL`
+const CreateTableResponseTableTypeUnknownTableType CreateTableResponseTableType = `UNKNOWN_TABLE_TYPE`
 
 const CreateTableResponseTableTypeView CreateTableResponseTableType = `VIEW`
 
@@ -1262,34 +1262,34 @@ type GetCatalogResponse struct {
 type GetCatalogResponseCatalogType string
 
 
-const GetCatalogResponseCatalogTypeUnknownCatalogType GetCatalogResponseCatalogType = `UNKNOWN_CATALOG_TYPE`
+const GetCatalogResponseCatalogTypeDeltasharingCatalog GetCatalogResponseCatalogType = `DELTASHARING_CATALOG`
 
 const GetCatalogResponseCatalogTypeManagedCatalog GetCatalogResponseCatalogType = `MANAGED_CATALOG`
 
-const GetCatalogResponseCatalogTypeDeltasharingCatalog GetCatalogResponseCatalogType = `DELTASHARING_CATALOG`
-
 const GetCatalogResponseCatalogTypeSystemCatalog GetCatalogResponseCatalogType = `SYSTEM_CATALOG`
+
+const GetCatalogResponseCatalogTypeUnknownCatalogType GetCatalogResponseCatalogType = `UNKNOWN_CATALOG_TYPE`
 
 type GetCatalogResponsePrivilegesItem string
 
 
-const GetCatalogResponsePrivilegesItemUnknownPrivilege GetCatalogResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const GetCatalogResponsePrivilegesItemSelect GetCatalogResponsePrivilegesItem = `SELECT`
-
 const GetCatalogResponsePrivilegesItemCreate GetCatalogResponsePrivilegesItem = `CREATE`
 
-const GetCatalogResponsePrivilegesItemModify GetCatalogResponsePrivilegesItem = `MODIFY`
-
-const GetCatalogResponsePrivilegesItemUsage GetCatalogResponsePrivilegesItem = `USAGE`
-
-const GetCatalogResponsePrivilegesItemReadFiles GetCatalogResponsePrivilegesItem = `READ_FILES`
-
-const GetCatalogResponsePrivilegesItemWriteFiles GetCatalogResponsePrivilegesItem = `WRITE_FILES`
+const GetCatalogResponsePrivilegesItemCreateMount GetCatalogResponsePrivilegesItem = `CREATE_MOUNT`
 
 const GetCatalogResponsePrivilegesItemCreateTable GetCatalogResponsePrivilegesItem = `CREATE_TABLE`
 
-const GetCatalogResponsePrivilegesItemCreateMount GetCatalogResponsePrivilegesItem = `CREATE_MOUNT`
+const GetCatalogResponsePrivilegesItemModify GetCatalogResponsePrivilegesItem = `MODIFY`
+
+const GetCatalogResponsePrivilegesItemReadFiles GetCatalogResponsePrivilegesItem = `READ_FILES`
+
+const GetCatalogResponsePrivilegesItemSelect GetCatalogResponsePrivilegesItem = `SELECT`
+
+const GetCatalogResponsePrivilegesItemUnknownPrivilege GetCatalogResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const GetCatalogResponsePrivilegesItemUsage GetCatalogResponsePrivilegesItem = `USAGE`
+
+const GetCatalogResponsePrivilegesItemWriteFiles GetCatalogResponsePrivilegesItem = `WRITE_FILES`
 
 type GetExternalLocationRequest struct {
     // Required. Name of the storage credential.
@@ -1375,23 +1375,23 @@ type GetMetastoreResponse struct {
 type GetMetastoreResponsePrivilegesItem string
 
 
-const GetMetastoreResponsePrivilegesItemUnknownPrivilege GetMetastoreResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const GetMetastoreResponsePrivilegesItemSelect GetMetastoreResponsePrivilegesItem = `SELECT`
-
 const GetMetastoreResponsePrivilegesItemCreate GetMetastoreResponsePrivilegesItem = `CREATE`
 
-const GetMetastoreResponsePrivilegesItemModify GetMetastoreResponsePrivilegesItem = `MODIFY`
-
-const GetMetastoreResponsePrivilegesItemUsage GetMetastoreResponsePrivilegesItem = `USAGE`
-
-const GetMetastoreResponsePrivilegesItemReadFiles GetMetastoreResponsePrivilegesItem = `READ_FILES`
-
-const GetMetastoreResponsePrivilegesItemWriteFiles GetMetastoreResponsePrivilegesItem = `WRITE_FILES`
+const GetMetastoreResponsePrivilegesItemCreateMount GetMetastoreResponsePrivilegesItem = `CREATE_MOUNT`
 
 const GetMetastoreResponsePrivilegesItemCreateTable GetMetastoreResponsePrivilegesItem = `CREATE_TABLE`
 
-const GetMetastoreResponsePrivilegesItemCreateMount GetMetastoreResponsePrivilegesItem = `CREATE_MOUNT`
+const GetMetastoreResponsePrivilegesItemModify GetMetastoreResponsePrivilegesItem = `MODIFY`
+
+const GetMetastoreResponsePrivilegesItemReadFiles GetMetastoreResponsePrivilegesItem = `READ_FILES`
+
+const GetMetastoreResponsePrivilegesItemSelect GetMetastoreResponsePrivilegesItem = `SELECT`
+
+const GetMetastoreResponsePrivilegesItemUnknownPrivilege GetMetastoreResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const GetMetastoreResponsePrivilegesItemUsage GetMetastoreResponsePrivilegesItem = `USAGE`
+
+const GetMetastoreResponsePrivilegesItemWriteFiles GetMetastoreResponsePrivilegesItem = `WRITE_FILES`
 
 type GetMetastoreSummaryResponse struct {
     // Unique identifier of the Metastore&#39;s (Default) Data Access Configuration
@@ -1464,11 +1464,11 @@ type GetProviderResponse struct {
 type GetProviderResponseAuthenticationType string
 
 
-const GetProviderResponseAuthenticationTypeUnknown GetProviderResponseAuthenticationType = `UNKNOWN`
+const GetProviderResponseAuthenticationTypeDatabricks GetProviderResponseAuthenticationType = `DATABRICKS`
 
 const GetProviderResponseAuthenticationTypeToken GetProviderResponseAuthenticationType = `TOKEN`
 
-const GetProviderResponseAuthenticationTypeDatabricks GetProviderResponseAuthenticationType = `DATABRICKS`
+const GetProviderResponseAuthenticationTypeUnknown GetProviderResponseAuthenticationType = `UNKNOWN`
 
 type GetRecipientRequest struct {
     // Required. Name of the recipient.
@@ -1514,11 +1514,11 @@ type GetRecipientResponse struct {
 type GetRecipientResponseAuthenticationType string
 
 
-const GetRecipientResponseAuthenticationTypeUnknown GetRecipientResponseAuthenticationType = `UNKNOWN`
+const GetRecipientResponseAuthenticationTypeDatabricks GetRecipientResponseAuthenticationType = `DATABRICKS`
 
 const GetRecipientResponseAuthenticationTypeToken GetRecipientResponseAuthenticationType = `TOKEN`
 
-const GetRecipientResponseAuthenticationTypeDatabricks GetRecipientResponseAuthenticationType = `DATABRICKS`
+const GetRecipientResponseAuthenticationTypeUnknown GetRecipientResponseAuthenticationType = `UNKNOWN`
 
 type GetRecipientSharePermissionsRequest struct {
     // Required. The name of the Recipient.
@@ -1574,23 +1574,23 @@ type GetSchemaResponse struct {
 type GetSchemaResponsePrivilegesItem string
 
 
-const GetSchemaResponsePrivilegesItemUnknownPrivilege GetSchemaResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const GetSchemaResponsePrivilegesItemSelect GetSchemaResponsePrivilegesItem = `SELECT`
-
 const GetSchemaResponsePrivilegesItemCreate GetSchemaResponsePrivilegesItem = `CREATE`
 
-const GetSchemaResponsePrivilegesItemModify GetSchemaResponsePrivilegesItem = `MODIFY`
-
-const GetSchemaResponsePrivilegesItemUsage GetSchemaResponsePrivilegesItem = `USAGE`
-
-const GetSchemaResponsePrivilegesItemReadFiles GetSchemaResponsePrivilegesItem = `READ_FILES`
-
-const GetSchemaResponsePrivilegesItemWriteFiles GetSchemaResponsePrivilegesItem = `WRITE_FILES`
+const GetSchemaResponsePrivilegesItemCreateMount GetSchemaResponsePrivilegesItem = `CREATE_MOUNT`
 
 const GetSchemaResponsePrivilegesItemCreateTable GetSchemaResponsePrivilegesItem = `CREATE_TABLE`
 
-const GetSchemaResponsePrivilegesItemCreateMount GetSchemaResponsePrivilegesItem = `CREATE_MOUNT`
+const GetSchemaResponsePrivilegesItemModify GetSchemaResponsePrivilegesItem = `MODIFY`
+
+const GetSchemaResponsePrivilegesItemReadFiles GetSchemaResponsePrivilegesItem = `READ_FILES`
+
+const GetSchemaResponsePrivilegesItemSelect GetSchemaResponsePrivilegesItem = `SELECT`
+
+const GetSchemaResponsePrivilegesItemUnknownPrivilege GetSchemaResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const GetSchemaResponsePrivilegesItemUsage GetSchemaResponsePrivilegesItem = `USAGE`
+
+const GetSchemaResponsePrivilegesItemWriteFiles GetSchemaResponsePrivilegesItem = `WRITE_FILES`
 
 type GetSharePermissionsRequest struct {
     // Required. The name of the Share.
@@ -1731,55 +1731,55 @@ type GetTableResponse struct {
 type GetTableResponseDataSourceFormat string
 
 
-const GetTableResponseDataSourceFormatUnknownDataSourceFormat GetTableResponseDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
-
-const GetTableResponseDataSourceFormatDelta GetTableResponseDataSourceFormat = `DELTA`
+const GetTableResponseDataSourceFormatAvro GetTableResponseDataSourceFormat = `AVRO`
 
 const GetTableResponseDataSourceFormatCsv GetTableResponseDataSourceFormat = `CSV`
 
+const GetTableResponseDataSourceFormatDelta GetTableResponseDataSourceFormat = `DELTA`
+
+const GetTableResponseDataSourceFormatDeltasharing GetTableResponseDataSourceFormat = `DELTASHARING`
+
 const GetTableResponseDataSourceFormatJson GetTableResponseDataSourceFormat = `JSON`
 
-const GetTableResponseDataSourceFormatAvro GetTableResponseDataSourceFormat = `AVRO`
+const GetTableResponseDataSourceFormatOrc GetTableResponseDataSourceFormat = `ORC`
 
 const GetTableResponseDataSourceFormatParquet GetTableResponseDataSourceFormat = `PARQUET`
-
-const GetTableResponseDataSourceFormatOrc GetTableResponseDataSourceFormat = `ORC`
 
 const GetTableResponseDataSourceFormatText GetTableResponseDataSourceFormat = `TEXT`
 
 const GetTableResponseDataSourceFormatUnityCatalog GetTableResponseDataSourceFormat = `UNITY_CATALOG`
 
-const GetTableResponseDataSourceFormatDeltasharing GetTableResponseDataSourceFormat = `DELTASHARING`
+const GetTableResponseDataSourceFormatUnknownDataSourceFormat GetTableResponseDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
 
 type GetTableResponsePrivilegesItem string
 
 
-const GetTableResponsePrivilegesItemUnknownPrivilege GetTableResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const GetTableResponsePrivilegesItemSelect GetTableResponsePrivilegesItem = `SELECT`
-
 const GetTableResponsePrivilegesItemCreate GetTableResponsePrivilegesItem = `CREATE`
 
-const GetTableResponsePrivilegesItemModify GetTableResponsePrivilegesItem = `MODIFY`
-
-const GetTableResponsePrivilegesItemUsage GetTableResponsePrivilegesItem = `USAGE`
-
-const GetTableResponsePrivilegesItemReadFiles GetTableResponsePrivilegesItem = `READ_FILES`
-
-const GetTableResponsePrivilegesItemWriteFiles GetTableResponsePrivilegesItem = `WRITE_FILES`
+const GetTableResponsePrivilegesItemCreateMount GetTableResponsePrivilegesItem = `CREATE_MOUNT`
 
 const GetTableResponsePrivilegesItemCreateTable GetTableResponsePrivilegesItem = `CREATE_TABLE`
 
-const GetTableResponsePrivilegesItemCreateMount GetTableResponsePrivilegesItem = `CREATE_MOUNT`
+const GetTableResponsePrivilegesItemModify GetTableResponsePrivilegesItem = `MODIFY`
+
+const GetTableResponsePrivilegesItemReadFiles GetTableResponsePrivilegesItem = `READ_FILES`
+
+const GetTableResponsePrivilegesItemSelect GetTableResponsePrivilegesItem = `SELECT`
+
+const GetTableResponsePrivilegesItemUnknownPrivilege GetTableResponsePrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const GetTableResponsePrivilegesItemUsage GetTableResponsePrivilegesItem = `USAGE`
+
+const GetTableResponsePrivilegesItemWriteFiles GetTableResponsePrivilegesItem = `WRITE_FILES`
 // [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
 type GetTableResponseTableType string
 
 
-const GetTableResponseTableTypeUnknownTableType GetTableResponseTableType = `UNKNOWN_TABLE_TYPE`
+const GetTableResponseTableTypeExternal GetTableResponseTableType = `EXTERNAL`
 
 const GetTableResponseTableTypeManaged GetTableResponseTableType = `MANAGED`
 
-const GetTableResponseTableTypeExternal GetTableResponseTableType = `EXTERNAL`
+const GetTableResponseTableTypeUnknownTableType GetTableResponseTableType = `UNKNOWN_TABLE_TYPE`
 
 const GetTableResponseTableTypeView GetTableResponseTableType = `VIEW`
 
@@ -1953,23 +1953,23 @@ type MetastoreInfo struct {
 type MetastoreInfoPrivilegesItem string
 
 
-const MetastoreInfoPrivilegesItemUnknownPrivilege MetastoreInfoPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const MetastoreInfoPrivilegesItemSelect MetastoreInfoPrivilegesItem = `SELECT`
-
 const MetastoreInfoPrivilegesItemCreate MetastoreInfoPrivilegesItem = `CREATE`
 
-const MetastoreInfoPrivilegesItemModify MetastoreInfoPrivilegesItem = `MODIFY`
-
-const MetastoreInfoPrivilegesItemUsage MetastoreInfoPrivilegesItem = `USAGE`
-
-const MetastoreInfoPrivilegesItemReadFiles MetastoreInfoPrivilegesItem = `READ_FILES`
-
-const MetastoreInfoPrivilegesItemWriteFiles MetastoreInfoPrivilegesItem = `WRITE_FILES`
+const MetastoreInfoPrivilegesItemCreateMount MetastoreInfoPrivilegesItem = `CREATE_MOUNT`
 
 const MetastoreInfoPrivilegesItemCreateTable MetastoreInfoPrivilegesItem = `CREATE_TABLE`
 
-const MetastoreInfoPrivilegesItemCreateMount MetastoreInfoPrivilegesItem = `CREATE_MOUNT`
+const MetastoreInfoPrivilegesItemModify MetastoreInfoPrivilegesItem = `MODIFY`
+
+const MetastoreInfoPrivilegesItemReadFiles MetastoreInfoPrivilegesItem = `READ_FILES`
+
+const MetastoreInfoPrivilegesItemSelect MetastoreInfoPrivilegesItem = `SELECT`
+
+const MetastoreInfoPrivilegesItemUnknownPrivilege MetastoreInfoPrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const MetastoreInfoPrivilegesItemUsage MetastoreInfoPrivilegesItem = `USAGE`
+
+const MetastoreInfoPrivilegesItemWriteFiles MetastoreInfoPrivilegesItem = `WRITE_FILES`
 
 type Partition struct {
     
@@ -2008,44 +2008,44 @@ type PermissionsChange struct {
 type PermissionsChangeAddItem string
 
 
-const PermissionsChangeAddItemUnknownPrivilege PermissionsChangeAddItem = `UNKNOWN_PRIVILEGE`
-
-const PermissionsChangeAddItemSelect PermissionsChangeAddItem = `SELECT`
-
 const PermissionsChangeAddItemCreate PermissionsChangeAddItem = `CREATE`
 
-const PermissionsChangeAddItemModify PermissionsChangeAddItem = `MODIFY`
-
-const PermissionsChangeAddItemUsage PermissionsChangeAddItem = `USAGE`
-
-const PermissionsChangeAddItemReadFiles PermissionsChangeAddItem = `READ_FILES`
-
-const PermissionsChangeAddItemWriteFiles PermissionsChangeAddItem = `WRITE_FILES`
+const PermissionsChangeAddItemCreateMount PermissionsChangeAddItem = `CREATE_MOUNT`
 
 const PermissionsChangeAddItemCreateTable PermissionsChangeAddItem = `CREATE_TABLE`
 
-const PermissionsChangeAddItemCreateMount PermissionsChangeAddItem = `CREATE_MOUNT`
+const PermissionsChangeAddItemModify PermissionsChangeAddItem = `MODIFY`
+
+const PermissionsChangeAddItemReadFiles PermissionsChangeAddItem = `READ_FILES`
+
+const PermissionsChangeAddItemSelect PermissionsChangeAddItem = `SELECT`
+
+const PermissionsChangeAddItemUnknownPrivilege PermissionsChangeAddItem = `UNKNOWN_PRIVILEGE`
+
+const PermissionsChangeAddItemUsage PermissionsChangeAddItem = `USAGE`
+
+const PermissionsChangeAddItemWriteFiles PermissionsChangeAddItem = `WRITE_FILES`
 
 type PermissionsChangeRemoveItem string
 
 
-const PermissionsChangeRemoveItemUnknownPrivilege PermissionsChangeRemoveItem = `UNKNOWN_PRIVILEGE`
-
-const PermissionsChangeRemoveItemSelect PermissionsChangeRemoveItem = `SELECT`
-
 const PermissionsChangeRemoveItemCreate PermissionsChangeRemoveItem = `CREATE`
 
-const PermissionsChangeRemoveItemModify PermissionsChangeRemoveItem = `MODIFY`
-
-const PermissionsChangeRemoveItemUsage PermissionsChangeRemoveItem = `USAGE`
-
-const PermissionsChangeRemoveItemReadFiles PermissionsChangeRemoveItem = `READ_FILES`
-
-const PermissionsChangeRemoveItemWriteFiles PermissionsChangeRemoveItem = `WRITE_FILES`
+const PermissionsChangeRemoveItemCreateMount PermissionsChangeRemoveItem = `CREATE_MOUNT`
 
 const PermissionsChangeRemoveItemCreateTable PermissionsChangeRemoveItem = `CREATE_TABLE`
 
-const PermissionsChangeRemoveItemCreateMount PermissionsChangeRemoveItem = `CREATE_MOUNT`
+const PermissionsChangeRemoveItemModify PermissionsChangeRemoveItem = `MODIFY`
+
+const PermissionsChangeRemoveItemReadFiles PermissionsChangeRemoveItem = `READ_FILES`
+
+const PermissionsChangeRemoveItemSelect PermissionsChangeRemoveItem = `SELECT`
+
+const PermissionsChangeRemoveItemUnknownPrivilege PermissionsChangeRemoveItem = `UNKNOWN_PRIVILEGE`
+
+const PermissionsChangeRemoveItemUsage PermissionsChangeRemoveItem = `USAGE`
+
+const PermissionsChangeRemoveItemWriteFiles PermissionsChangeRemoveItem = `WRITE_FILES`
 
 type PrivilegeAssignment struct {
     // The principal (user email address or group name).
@@ -2058,23 +2058,23 @@ type PrivilegeAssignment struct {
 type PrivilegeAssignmentPrivilegesItem string
 
 
-const PrivilegeAssignmentPrivilegesItemUnknownPrivilege PrivilegeAssignmentPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const PrivilegeAssignmentPrivilegesItemSelect PrivilegeAssignmentPrivilegesItem = `SELECT`
-
 const PrivilegeAssignmentPrivilegesItemCreate PrivilegeAssignmentPrivilegesItem = `CREATE`
 
-const PrivilegeAssignmentPrivilegesItemModify PrivilegeAssignmentPrivilegesItem = `MODIFY`
-
-const PrivilegeAssignmentPrivilegesItemUsage PrivilegeAssignmentPrivilegesItem = `USAGE`
-
-const PrivilegeAssignmentPrivilegesItemReadFiles PrivilegeAssignmentPrivilegesItem = `READ_FILES`
-
-const PrivilegeAssignmentPrivilegesItemWriteFiles PrivilegeAssignmentPrivilegesItem = `WRITE_FILES`
+const PrivilegeAssignmentPrivilegesItemCreateMount PrivilegeAssignmentPrivilegesItem = `CREATE_MOUNT`
 
 const PrivilegeAssignmentPrivilegesItemCreateTable PrivilegeAssignmentPrivilegesItem = `CREATE_TABLE`
 
-const PrivilegeAssignmentPrivilegesItemCreateMount PrivilegeAssignmentPrivilegesItem = `CREATE_MOUNT`
+const PrivilegeAssignmentPrivilegesItemModify PrivilegeAssignmentPrivilegesItem = `MODIFY`
+
+const PrivilegeAssignmentPrivilegesItemReadFiles PrivilegeAssignmentPrivilegesItem = `READ_FILES`
+
+const PrivilegeAssignmentPrivilegesItemSelect PrivilegeAssignmentPrivilegesItem = `SELECT`
+
+const PrivilegeAssignmentPrivilegesItemUnknownPrivilege PrivilegeAssignmentPrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const PrivilegeAssignmentPrivilegesItemUsage PrivilegeAssignmentPrivilegesItem = `USAGE`
+
+const PrivilegeAssignmentPrivilegesItemWriteFiles PrivilegeAssignmentPrivilegesItem = `WRITE_FILES`
 
 type ProviderInfo struct {
     // [Create,Update:IGN] Whether this provider is successfully activated by
@@ -2112,11 +2112,11 @@ type ProviderInfo struct {
 type ProviderInfoAuthenticationType string
 
 
-const ProviderInfoAuthenticationTypeUnknown ProviderInfoAuthenticationType = `UNKNOWN`
+const ProviderInfoAuthenticationTypeDatabricks ProviderInfoAuthenticationType = `DATABRICKS`
 
 const ProviderInfoAuthenticationTypeToken ProviderInfoAuthenticationType = `TOKEN`
 
-const ProviderInfoAuthenticationTypeDatabricks ProviderInfoAuthenticationType = `DATABRICKS`
+const ProviderInfoAuthenticationTypeUnknown ProviderInfoAuthenticationType = `UNKNOWN`
 
 type ProviderShare struct {
     // The name of the Provider Share.
@@ -2162,11 +2162,11 @@ type RecipientInfo struct {
 type RecipientInfoAuthenticationType string
 
 
-const RecipientInfoAuthenticationTypeUnknown RecipientInfoAuthenticationType = `UNKNOWN`
+const RecipientInfoAuthenticationTypeDatabricks RecipientInfoAuthenticationType = `DATABRICKS`
 
 const RecipientInfoAuthenticationTypeToken RecipientInfoAuthenticationType = `TOKEN`
 
-const RecipientInfoAuthenticationTypeDatabricks RecipientInfoAuthenticationType = `DATABRICKS`
+const RecipientInfoAuthenticationTypeUnknown RecipientInfoAuthenticationType = `UNKNOWN`
 
 type RecipientProfile struct {
     
@@ -2263,11 +2263,11 @@ type RotateRecipientTokenResponse struct {
 type RotateRecipientTokenResponseAuthenticationType string
 
 
-const RotateRecipientTokenResponseAuthenticationTypeUnknown RotateRecipientTokenResponseAuthenticationType = `UNKNOWN`
+const RotateRecipientTokenResponseAuthenticationTypeDatabricks RotateRecipientTokenResponseAuthenticationType = `DATABRICKS`
 
 const RotateRecipientTokenResponseAuthenticationTypeToken RotateRecipientTokenResponseAuthenticationType = `TOKEN`
 
-const RotateRecipientTokenResponseAuthenticationTypeDatabricks RotateRecipientTokenResponseAuthenticationType = `DATABRICKS`
+const RotateRecipientTokenResponseAuthenticationTypeUnknown RotateRecipientTokenResponseAuthenticationType = `UNKNOWN`
 
 type SchemaInfo struct {
     // [Create:REQ Update:IGN] Name of parent Catalog.
@@ -2305,23 +2305,23 @@ type SchemaInfo struct {
 type SchemaInfoPrivilegesItem string
 
 
-const SchemaInfoPrivilegesItemUnknownPrivilege SchemaInfoPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const SchemaInfoPrivilegesItemSelect SchemaInfoPrivilegesItem = `SELECT`
-
 const SchemaInfoPrivilegesItemCreate SchemaInfoPrivilegesItem = `CREATE`
 
-const SchemaInfoPrivilegesItemModify SchemaInfoPrivilegesItem = `MODIFY`
-
-const SchemaInfoPrivilegesItemUsage SchemaInfoPrivilegesItem = `USAGE`
-
-const SchemaInfoPrivilegesItemReadFiles SchemaInfoPrivilegesItem = `READ_FILES`
-
-const SchemaInfoPrivilegesItemWriteFiles SchemaInfoPrivilegesItem = `WRITE_FILES`
+const SchemaInfoPrivilegesItemCreateMount SchemaInfoPrivilegesItem = `CREATE_MOUNT`
 
 const SchemaInfoPrivilegesItemCreateTable SchemaInfoPrivilegesItem = `CREATE_TABLE`
 
-const SchemaInfoPrivilegesItemCreateMount SchemaInfoPrivilegesItem = `CREATE_MOUNT`
+const SchemaInfoPrivilegesItemModify SchemaInfoPrivilegesItem = `MODIFY`
+
+const SchemaInfoPrivilegesItemReadFiles SchemaInfoPrivilegesItem = `READ_FILES`
+
+const SchemaInfoPrivilegesItemSelect SchemaInfoPrivilegesItem = `SELECT`
+
+const SchemaInfoPrivilegesItemUnknownPrivilege SchemaInfoPrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const SchemaInfoPrivilegesItemUsage SchemaInfoPrivilegesItem = `USAGE`
+
+const SchemaInfoPrivilegesItemWriteFiles SchemaInfoPrivilegesItem = `WRITE_FILES`
 
 type ShareInfo struct {
     // [Create: OPT] comment when creating the share
@@ -2486,55 +2486,55 @@ type TableInfo struct {
 type TableInfoDataSourceFormat string
 
 
-const TableInfoDataSourceFormatUnknownDataSourceFormat TableInfoDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
-
-const TableInfoDataSourceFormatDelta TableInfoDataSourceFormat = `DELTA`
+const TableInfoDataSourceFormatAvro TableInfoDataSourceFormat = `AVRO`
 
 const TableInfoDataSourceFormatCsv TableInfoDataSourceFormat = `CSV`
 
+const TableInfoDataSourceFormatDelta TableInfoDataSourceFormat = `DELTA`
+
+const TableInfoDataSourceFormatDeltasharing TableInfoDataSourceFormat = `DELTASHARING`
+
 const TableInfoDataSourceFormatJson TableInfoDataSourceFormat = `JSON`
 
-const TableInfoDataSourceFormatAvro TableInfoDataSourceFormat = `AVRO`
+const TableInfoDataSourceFormatOrc TableInfoDataSourceFormat = `ORC`
 
 const TableInfoDataSourceFormatParquet TableInfoDataSourceFormat = `PARQUET`
-
-const TableInfoDataSourceFormatOrc TableInfoDataSourceFormat = `ORC`
 
 const TableInfoDataSourceFormatText TableInfoDataSourceFormat = `TEXT`
 
 const TableInfoDataSourceFormatUnityCatalog TableInfoDataSourceFormat = `UNITY_CATALOG`
 
-const TableInfoDataSourceFormatDeltasharing TableInfoDataSourceFormat = `DELTASHARING`
+const TableInfoDataSourceFormatUnknownDataSourceFormat TableInfoDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
 
 type TableInfoPrivilegesItem string
 
 
-const TableInfoPrivilegesItemUnknownPrivilege TableInfoPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const TableInfoPrivilegesItemSelect TableInfoPrivilegesItem = `SELECT`
-
 const TableInfoPrivilegesItemCreate TableInfoPrivilegesItem = `CREATE`
 
-const TableInfoPrivilegesItemModify TableInfoPrivilegesItem = `MODIFY`
-
-const TableInfoPrivilegesItemUsage TableInfoPrivilegesItem = `USAGE`
-
-const TableInfoPrivilegesItemReadFiles TableInfoPrivilegesItem = `READ_FILES`
-
-const TableInfoPrivilegesItemWriteFiles TableInfoPrivilegesItem = `WRITE_FILES`
+const TableInfoPrivilegesItemCreateMount TableInfoPrivilegesItem = `CREATE_MOUNT`
 
 const TableInfoPrivilegesItemCreateTable TableInfoPrivilegesItem = `CREATE_TABLE`
 
-const TableInfoPrivilegesItemCreateMount TableInfoPrivilegesItem = `CREATE_MOUNT`
+const TableInfoPrivilegesItemModify TableInfoPrivilegesItem = `MODIFY`
+
+const TableInfoPrivilegesItemReadFiles TableInfoPrivilegesItem = `READ_FILES`
+
+const TableInfoPrivilegesItemSelect TableInfoPrivilegesItem = `SELECT`
+
+const TableInfoPrivilegesItemUnknownPrivilege TableInfoPrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const TableInfoPrivilegesItemUsage TableInfoPrivilegesItem = `USAGE`
+
+const TableInfoPrivilegesItemWriteFiles TableInfoPrivilegesItem = `WRITE_FILES`
 // [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
 type TableInfoTableType string
 
 
-const TableInfoTableTypeUnknownTableType TableInfoTableType = `UNKNOWN_TABLE_TYPE`
+const TableInfoTableTypeExternal TableInfoTableType = `EXTERNAL`
 
 const TableInfoTableTypeManaged TableInfoTableType = `MANAGED`
 
-const TableInfoTableTypeExternal TableInfoTableType = `EXTERNAL`
+const TableInfoTableTypeUnknownTableType TableInfoTableType = `UNKNOWN_TABLE_TYPE`
 
 const TableInfoTableTypeView TableInfoTableType = `VIEW`
 
@@ -2549,11 +2549,11 @@ type TableSummary struct {
 type TableSummaryTableType string
 
 
-const TableSummaryTableTypeUnknownTableType TableSummaryTableType = `UNKNOWN_TABLE_TYPE`
+const TableSummaryTableTypeExternal TableSummaryTableType = `EXTERNAL`
 
 const TableSummaryTableTypeManaged TableSummaryTableType = `MANAGED`
 
-const TableSummaryTableTypeExternal TableSummaryTableType = `EXTERNAL`
+const TableSummaryTableTypeUnknownTableType TableSummaryTableType = `UNKNOWN_TABLE_TYPE`
 
 const TableSummaryTableTypeView TableSummaryTableType = `VIEW`
 
@@ -2598,34 +2598,34 @@ type UpdateCatalogRequest struct {
 type UpdateCatalogRequestCatalogType string
 
 
-const UpdateCatalogRequestCatalogTypeUnknownCatalogType UpdateCatalogRequestCatalogType = `UNKNOWN_CATALOG_TYPE`
+const UpdateCatalogRequestCatalogTypeDeltasharingCatalog UpdateCatalogRequestCatalogType = `DELTASHARING_CATALOG`
 
 const UpdateCatalogRequestCatalogTypeManagedCatalog UpdateCatalogRequestCatalogType = `MANAGED_CATALOG`
 
-const UpdateCatalogRequestCatalogTypeDeltasharingCatalog UpdateCatalogRequestCatalogType = `DELTASHARING_CATALOG`
-
 const UpdateCatalogRequestCatalogTypeSystemCatalog UpdateCatalogRequestCatalogType = `SYSTEM_CATALOG`
+
+const UpdateCatalogRequestCatalogTypeUnknownCatalogType UpdateCatalogRequestCatalogType = `UNKNOWN_CATALOG_TYPE`
 
 type UpdateCatalogRequestPrivilegesItem string
 
 
-const UpdateCatalogRequestPrivilegesItemUnknownPrivilege UpdateCatalogRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const UpdateCatalogRequestPrivilegesItemSelect UpdateCatalogRequestPrivilegesItem = `SELECT`
-
 const UpdateCatalogRequestPrivilegesItemCreate UpdateCatalogRequestPrivilegesItem = `CREATE`
 
-const UpdateCatalogRequestPrivilegesItemModify UpdateCatalogRequestPrivilegesItem = `MODIFY`
-
-const UpdateCatalogRequestPrivilegesItemUsage UpdateCatalogRequestPrivilegesItem = `USAGE`
-
-const UpdateCatalogRequestPrivilegesItemReadFiles UpdateCatalogRequestPrivilegesItem = `READ_FILES`
-
-const UpdateCatalogRequestPrivilegesItemWriteFiles UpdateCatalogRequestPrivilegesItem = `WRITE_FILES`
+const UpdateCatalogRequestPrivilegesItemCreateMount UpdateCatalogRequestPrivilegesItem = `CREATE_MOUNT`
 
 const UpdateCatalogRequestPrivilegesItemCreateTable UpdateCatalogRequestPrivilegesItem = `CREATE_TABLE`
 
-const UpdateCatalogRequestPrivilegesItemCreateMount UpdateCatalogRequestPrivilegesItem = `CREATE_MOUNT`
+const UpdateCatalogRequestPrivilegesItemModify UpdateCatalogRequestPrivilegesItem = `MODIFY`
+
+const UpdateCatalogRequestPrivilegesItemReadFiles UpdateCatalogRequestPrivilegesItem = `READ_FILES`
+
+const UpdateCatalogRequestPrivilegesItemSelect UpdateCatalogRequestPrivilegesItem = `SELECT`
+
+const UpdateCatalogRequestPrivilegesItemUnknownPrivilege UpdateCatalogRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const UpdateCatalogRequestPrivilegesItemUsage UpdateCatalogRequestPrivilegesItem = `USAGE`
+
+const UpdateCatalogRequestPrivilegesItemWriteFiles UpdateCatalogRequestPrivilegesItem = `WRITE_FILES`
 
 type UpdateExternalLocationRequest struct {
     // [Create:OPT Update:OPT] User-provided free-form text description.
@@ -2717,23 +2717,23 @@ type UpdateMetastoreRequest struct {
 type UpdateMetastoreRequestPrivilegesItem string
 
 
-const UpdateMetastoreRequestPrivilegesItemUnknownPrivilege UpdateMetastoreRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const UpdateMetastoreRequestPrivilegesItemSelect UpdateMetastoreRequestPrivilegesItem = `SELECT`
-
 const UpdateMetastoreRequestPrivilegesItemCreate UpdateMetastoreRequestPrivilegesItem = `CREATE`
 
-const UpdateMetastoreRequestPrivilegesItemModify UpdateMetastoreRequestPrivilegesItem = `MODIFY`
-
-const UpdateMetastoreRequestPrivilegesItemUsage UpdateMetastoreRequestPrivilegesItem = `USAGE`
-
-const UpdateMetastoreRequestPrivilegesItemReadFiles UpdateMetastoreRequestPrivilegesItem = `READ_FILES`
-
-const UpdateMetastoreRequestPrivilegesItemWriteFiles UpdateMetastoreRequestPrivilegesItem = `WRITE_FILES`
+const UpdateMetastoreRequestPrivilegesItemCreateMount UpdateMetastoreRequestPrivilegesItem = `CREATE_MOUNT`
 
 const UpdateMetastoreRequestPrivilegesItemCreateTable UpdateMetastoreRequestPrivilegesItem = `CREATE_TABLE`
 
-const UpdateMetastoreRequestPrivilegesItemCreateMount UpdateMetastoreRequestPrivilegesItem = `CREATE_MOUNT`
+const UpdateMetastoreRequestPrivilegesItemModify UpdateMetastoreRequestPrivilegesItem = `MODIFY`
+
+const UpdateMetastoreRequestPrivilegesItemReadFiles UpdateMetastoreRequestPrivilegesItem = `READ_FILES`
+
+const UpdateMetastoreRequestPrivilegesItemSelect UpdateMetastoreRequestPrivilegesItem = `SELECT`
+
+const UpdateMetastoreRequestPrivilegesItemUnknownPrivilege UpdateMetastoreRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const UpdateMetastoreRequestPrivilegesItemUsage UpdateMetastoreRequestPrivilegesItem = `USAGE`
+
+const UpdateMetastoreRequestPrivilegesItemWriteFiles UpdateMetastoreRequestPrivilegesItem = `WRITE_FILES`
 
 type UpdatePermissionsRequest struct {
     
@@ -2785,11 +2785,11 @@ type UpdateProviderRequest struct {
 type UpdateProviderRequestAuthenticationType string
 
 
-const UpdateProviderRequestAuthenticationTypeUnknown UpdateProviderRequestAuthenticationType = `UNKNOWN`
+const UpdateProviderRequestAuthenticationTypeDatabricks UpdateProviderRequestAuthenticationType = `DATABRICKS`
 
 const UpdateProviderRequestAuthenticationTypeToken UpdateProviderRequestAuthenticationType = `TOKEN`
 
-const UpdateProviderRequestAuthenticationTypeDatabricks UpdateProviderRequestAuthenticationType = `DATABRICKS`
+const UpdateProviderRequestAuthenticationTypeUnknown UpdateProviderRequestAuthenticationType = `UNKNOWN`
 
 type UpdateRecipientRequest struct {
     // [Create:IGN,Update:IGN] A boolean status field showing whether the
@@ -2831,11 +2831,11 @@ type UpdateRecipientRequest struct {
 type UpdateRecipientRequestAuthenticationType string
 
 
-const UpdateRecipientRequestAuthenticationTypeUnknown UpdateRecipientRequestAuthenticationType = `UNKNOWN`
+const UpdateRecipientRequestAuthenticationTypeDatabricks UpdateRecipientRequestAuthenticationType = `DATABRICKS`
 
 const UpdateRecipientRequestAuthenticationTypeToken UpdateRecipientRequestAuthenticationType = `TOKEN`
 
-const UpdateRecipientRequestAuthenticationTypeDatabricks UpdateRecipientRequestAuthenticationType = `DATABRICKS`
+const UpdateRecipientRequestAuthenticationTypeUnknown UpdateRecipientRequestAuthenticationType = `UNKNOWN`
 
 type UpdateSchemaRequest struct {
     // [Create:REQ Update:IGN] Name of parent Catalog.
@@ -2875,23 +2875,23 @@ type UpdateSchemaRequest struct {
 type UpdateSchemaRequestPrivilegesItem string
 
 
-const UpdateSchemaRequestPrivilegesItemUnknownPrivilege UpdateSchemaRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const UpdateSchemaRequestPrivilegesItemSelect UpdateSchemaRequestPrivilegesItem = `SELECT`
-
 const UpdateSchemaRequestPrivilegesItemCreate UpdateSchemaRequestPrivilegesItem = `CREATE`
 
-const UpdateSchemaRequestPrivilegesItemModify UpdateSchemaRequestPrivilegesItem = `MODIFY`
-
-const UpdateSchemaRequestPrivilegesItemUsage UpdateSchemaRequestPrivilegesItem = `USAGE`
-
-const UpdateSchemaRequestPrivilegesItemReadFiles UpdateSchemaRequestPrivilegesItem = `READ_FILES`
-
-const UpdateSchemaRequestPrivilegesItemWriteFiles UpdateSchemaRequestPrivilegesItem = `WRITE_FILES`
+const UpdateSchemaRequestPrivilegesItemCreateMount UpdateSchemaRequestPrivilegesItem = `CREATE_MOUNT`
 
 const UpdateSchemaRequestPrivilegesItemCreateTable UpdateSchemaRequestPrivilegesItem = `CREATE_TABLE`
 
-const UpdateSchemaRequestPrivilegesItemCreateMount UpdateSchemaRequestPrivilegesItem = `CREATE_MOUNT`
+const UpdateSchemaRequestPrivilegesItemModify UpdateSchemaRequestPrivilegesItem = `MODIFY`
+
+const UpdateSchemaRequestPrivilegesItemReadFiles UpdateSchemaRequestPrivilegesItem = `READ_FILES`
+
+const UpdateSchemaRequestPrivilegesItemSelect UpdateSchemaRequestPrivilegesItem = `SELECT`
+
+const UpdateSchemaRequestPrivilegesItemUnknownPrivilege UpdateSchemaRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const UpdateSchemaRequestPrivilegesItemUsage UpdateSchemaRequestPrivilegesItem = `USAGE`
+
+const UpdateSchemaRequestPrivilegesItemWriteFiles UpdateSchemaRequestPrivilegesItem = `WRITE_FILES`
 
 type UpdateSharePermissionsRequest struct {
     
@@ -3008,54 +3008,54 @@ type UpdateTableRequest struct {
 type UpdateTableRequestDataSourceFormat string
 
 
-const UpdateTableRequestDataSourceFormatUnknownDataSourceFormat UpdateTableRequestDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
-
-const UpdateTableRequestDataSourceFormatDelta UpdateTableRequestDataSourceFormat = `DELTA`
+const UpdateTableRequestDataSourceFormatAvro UpdateTableRequestDataSourceFormat = `AVRO`
 
 const UpdateTableRequestDataSourceFormatCsv UpdateTableRequestDataSourceFormat = `CSV`
 
+const UpdateTableRequestDataSourceFormatDelta UpdateTableRequestDataSourceFormat = `DELTA`
+
+const UpdateTableRequestDataSourceFormatDeltasharing UpdateTableRequestDataSourceFormat = `DELTASHARING`
+
 const UpdateTableRequestDataSourceFormatJson UpdateTableRequestDataSourceFormat = `JSON`
 
-const UpdateTableRequestDataSourceFormatAvro UpdateTableRequestDataSourceFormat = `AVRO`
+const UpdateTableRequestDataSourceFormatOrc UpdateTableRequestDataSourceFormat = `ORC`
 
 const UpdateTableRequestDataSourceFormatParquet UpdateTableRequestDataSourceFormat = `PARQUET`
-
-const UpdateTableRequestDataSourceFormatOrc UpdateTableRequestDataSourceFormat = `ORC`
 
 const UpdateTableRequestDataSourceFormatText UpdateTableRequestDataSourceFormat = `TEXT`
 
 const UpdateTableRequestDataSourceFormatUnityCatalog UpdateTableRequestDataSourceFormat = `UNITY_CATALOG`
 
-const UpdateTableRequestDataSourceFormatDeltasharing UpdateTableRequestDataSourceFormat = `DELTASHARING`
+const UpdateTableRequestDataSourceFormatUnknownDataSourceFormat UpdateTableRequestDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
 
 type UpdateTableRequestPrivilegesItem string
 
 
-const UpdateTableRequestPrivilegesItemUnknownPrivilege UpdateTableRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const UpdateTableRequestPrivilegesItemSelect UpdateTableRequestPrivilegesItem = `SELECT`
-
 const UpdateTableRequestPrivilegesItemCreate UpdateTableRequestPrivilegesItem = `CREATE`
 
-const UpdateTableRequestPrivilegesItemModify UpdateTableRequestPrivilegesItem = `MODIFY`
-
-const UpdateTableRequestPrivilegesItemUsage UpdateTableRequestPrivilegesItem = `USAGE`
-
-const UpdateTableRequestPrivilegesItemReadFiles UpdateTableRequestPrivilegesItem = `READ_FILES`
-
-const UpdateTableRequestPrivilegesItemWriteFiles UpdateTableRequestPrivilegesItem = `WRITE_FILES`
+const UpdateTableRequestPrivilegesItemCreateMount UpdateTableRequestPrivilegesItem = `CREATE_MOUNT`
 
 const UpdateTableRequestPrivilegesItemCreateTable UpdateTableRequestPrivilegesItem = `CREATE_TABLE`
 
-const UpdateTableRequestPrivilegesItemCreateMount UpdateTableRequestPrivilegesItem = `CREATE_MOUNT`
+const UpdateTableRequestPrivilegesItemModify UpdateTableRequestPrivilegesItem = `MODIFY`
+
+const UpdateTableRequestPrivilegesItemReadFiles UpdateTableRequestPrivilegesItem = `READ_FILES`
+
+const UpdateTableRequestPrivilegesItemSelect UpdateTableRequestPrivilegesItem = `SELECT`
+
+const UpdateTableRequestPrivilegesItemUnknownPrivilege UpdateTableRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const UpdateTableRequestPrivilegesItemUsage UpdateTableRequestPrivilegesItem = `USAGE`
+
+const UpdateTableRequestPrivilegesItemWriteFiles UpdateTableRequestPrivilegesItem = `WRITE_FILES`
 // [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
 type UpdateTableRequestTableType string
 
 
-const UpdateTableRequestTableTypeUnknownTableType UpdateTableRequestTableType = `UNKNOWN_TABLE_TYPE`
+const UpdateTableRequestTableTypeExternal UpdateTableRequestTableType = `EXTERNAL`
 
 const UpdateTableRequestTableTypeManaged UpdateTableRequestTableType = `MANAGED`
 
-const UpdateTableRequestTableTypeExternal UpdateTableRequestTableType = `EXTERNAL`
+const UpdateTableRequestTableTypeUnknownTableType UpdateTableRequestTableType = `UNKNOWN_TABLE_TYPE`
 
 const UpdateTableRequestTableTypeView UpdateTableRequestTableType = `VIEW`

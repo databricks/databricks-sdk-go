@@ -4,6 +4,7 @@ package tokens
 
 import (
 	"context"
+	
 )
 
 
@@ -13,10 +14,11 @@ type TokensService interface {
     // token authentication, it will create the token that has the same client
     // id with the authenticated token. This call returns an error
     // ``QUOTA_EXCEEDED`` if over the token quota for the user.
-    CreateToken(ctx context.Context, createTokenRequest CreateTokenRequest) (*CreateTokenResponse, error)
-    // Lists all the valid tokens for a user-workspace pair.
-    ListTokens(ctx context.Context) (*ListTokensResponse, error)
+    Create(ctx context.Context, createTokenRequest CreateTokenRequest) (*CreateTokenResponse, error)
     // Revokes an access token. This call returns an error
     // ``RESOURCE_DOES_NOT_EXIST`` if a token with the given ID is not valid.
-    RevokeToken(ctx context.Context, revokeTokenRequest RevokeTokenRequest) error
+    Delete(ctx context.Context, revokeTokenRequest RevokeTokenRequest) error
+	DeleteByTokenId(ctx context.Context, tokenId string) error
+    // Lists all the valid tokens for a user-workspace pair.
+    List(ctx context.Context) (*ListTokensResponse, error)
 }
