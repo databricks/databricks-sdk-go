@@ -18,12 +18,12 @@ import (
 
 type AccountsClient struct {
 	Config                       *databricks.Config
-	AccountPermissionAssignments accountpermissionassignments.AccountpermissionassignmentsService
+	AccountPermissionAssignments accountpermissionassignments.AccountPermissionAssignmentsService
 	Budgets                      budgets.BudgetsService
 	Credentials                  credentials.CredentialsService
 	CustomerManagedKeys          customermanagedkeys.CustomermanagedkeysService
 	LogDelivery                  logdelivery.LogdeliveryService
-	Networks                     networks.NetworksService
+	Networks                     networks.NetworkConfigurationsService
 	PrivateAccessSettings        privateaccesssettings.PrivateaccesssettingsService
 	StorageConfigurations        storageconfigurations.StorageconfigurationsService
 	UsageDownload                usagedownload.UsagedownloadService
@@ -43,16 +43,16 @@ func New(c ...*databricks.Config) *AccountsClient {
 	apiClient := client.New(cfg)
 	return &AccountsClient{
 		Config:                       cfg,
-		AccountPermissionAssignments: accountpermissionassignments.New(apiClient),
+		AccountPermissionAssignments: accountpermissionassignments.NewAccountPermissionAssignments(apiClient),
 		Budgets:                      budgets.New(apiClient),
 		Credentials:                  credentials.New(apiClient),
 		CustomerManagedKeys:          customermanagedkeys.New(apiClient),
 		LogDelivery:                  logdelivery.New(apiClient),
-		Networks:                     networks.New(apiClient),
+		Networks:                     networks.NewNetworkConfigurations(apiClient),
 		PrivateAccessSettings:        privateaccesssettings.New(apiClient),
 		StorageConfigurations:        storageconfigurations.New(apiClient),
 		UsageDownload:                usagedownload.New(apiClient),
 		VpcEndpoints:                 vpcendpoints.New(apiClient),
-		Workspaces:                   workspaces.New(apiClient),
+		Workspaces:                   workspaces.NewWorkspaces(apiClient),
 	}
 }

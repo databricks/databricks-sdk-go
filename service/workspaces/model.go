@@ -3,21 +3,6 @@
 package workspaces
 
 // all definitions in this file are in alphabetical order
-
-type AwsKeyInfo struct {
-	// The AWS KMS key alias.
-	KeyAlias string `json:"key_alias,omitempty"`
-	// The AWS KMS key&#39;s Amazon Resource Name (ARN).
-	KeyArn string `json:"key_arn"`
-	// The AWS KMS key region.
-	KeyRegion string `json:"key_region"`
-	// This field applies only if the `use_cases` property includes `STORAGE`.
-	// If this is set to `true` or omitted, the key is also used to encrypt
-	// cluster EBS volumes. If you do not want to use this key for encrypting
-	// EBS volumes, set to `false`..
-	ReuseKeyForClusterVolumes bool `json:"reuse_key_for_cluster_volumes,omitempty"`
-}
-
 // The general workspace configurations that are specific to cloud providers.
 type CloudResourceBucket struct {
 	// The general workspace configurations that are specific to Google Cloud.
@@ -32,9 +17,9 @@ type CloudResourceBucketGcp struct {
 }
 
 type CreateWorkspaceRequest struct {
-	// Databricks account ID. Your account must be on the E2 version of the
-	// platform or on a select custom plan that allows multiple workspaces per
-	// account.
+	// Databricks account ID of any type. For non-E2 account types, get your
+	// account ID from the [Accounts
+	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
 	AccountId string ` path:"account_id"`
 	// The AWS region of the workspace&#39;s Data Plane.
 	AwsRegion string `json:"aws_region,omitempty"`
@@ -212,57 +197,44 @@ type CreateWorkspaceRequestNetworkGcpManagedNetworkConfig struct {
 // information.
 type CreateWorkspaceRequestPricingTier string
 
-const CreateWorkspaceRequestPricingTierStandard CreateWorkspaceRequestPricingTier = `STANDARD`
+const CreateWorkspaceRequestPricingTierEnterprise CreateWorkspaceRequestPricingTier = `ENTERPRISE`
 
 const CreateWorkspaceRequestPricingTierPremium CreateWorkspaceRequestPricingTier = `PREMIUM`
 
-const CreateWorkspaceRequestPricingTierEnterprise CreateWorkspaceRequestPricingTier = `ENTERPRISE`
+const CreateWorkspaceRequestPricingTierStandard CreateWorkspaceRequestPricingTier = `STANDARD`
 
 type DeleteWorkspaceRequest struct {
-	// Databricks account ID. Your account must be on the E2 version of the
-	// platform or on a select custom plan that allows multiple workspaces per
-	// account.
+	// Databricks account ID of any type. For non-E2 account types, get your
+	// account ID from the [Accounts
+	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
 	AccountId string ` path:"account_id"`
 	// Workspace ID.
 	WorkspaceId int64 ` path:"workspace_id"`
 }
 
 type GetAllWorkspacesRequest struct {
-	// Databricks account ID. Your account must be on the E2 version of the
-	// platform or on a select custom plan that allows multiple workspaces per
-	// account.
+	// Databricks account ID of any type. For non-E2 account types, get your
+	// account ID from the [Accounts
+	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
 	AccountId string ` path:"account_id"`
-}
-
-type GetWorkspaceKeyHistoryRequest struct {
-	// Databricks account ID. Your account must be on the E2 version of the
-	// platform or on a select custom plan that allows multiple workspaces per
-	// account.
-	AccountId string ` path:"account_id"`
-	// Workspace ID.
-	WorkspaceId int64 ` path:"workspace_id"`
 }
 
 type GetWorkspaceRequest struct {
-	// Databricks account ID. Your account must be on the E2 version of the
-	// platform or on a select custom plan that allows multiple workspaces per
-	// account.
+	// Databricks account ID of any type. For non-E2 account types, get your
+	// account ID from the [Accounts
+	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
 	AccountId string ` path:"account_id"`
 	// Workspace ID.
 	WorkspaceId int64 ` path:"workspace_id"`
-}
-
-type ListWorkspaceEncryptionKeyRecordsResponse struct {
-	WorkspaceEncryptionKeyRecords []WorkspaceEncryptionKeyRecord `json:"workspaceEncryptionKeyRecords,omitempty"`
 }
 
 // An array of workspaces.
 type ListWorkspacesResponse []Workspace
 
 type UpdateWorkspaceRequest struct {
-	// Databricks account ID. Your account must be on the E2 version of the
-	// platform or on a select custom plan that allows multiple workspaces per
-	// account.
+	// Databricks account ID of any type. For non-E2 account types, get your
+	// account ID from the [Accounts
+	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
 	AccountId string ` path:"account_id"`
 	// The AWS region of the workspace&#39;s Data Plane. For example, `us-west-2`.
 	// This parameter is available only for updating failed workspaces.
@@ -350,41 +322,6 @@ type Workspace struct {
 	WorkspaceStatusMessage string `json:"workspace_status_message,omitempty"`
 }
 
-type WorkspaceEncryptionKeyRecord struct {
-	AwsKeyInfo *AwsKeyInfo `json:"aws_key_info,omitempty"`
-	// ID of the encryption key configuration object.
-	CustomerManagedKeyId string `json:"customer_managed_key_id,omitempty"`
-
-	KeyStatus WorkspaceEncryptionKeyRecordKeyStatus `json:"key_status,omitempty"`
-	// ID for the workspace-key mapping record
-	RecordId string `json:"record_id,omitempty"`
-	// Time in epoch milliseconds when the record was added.
-	UpdateTime int64 `json:"update_time,omitempty"`
-	// Possible values are: - `MANAGED_SERVICES`: Encrypts notebook and secret
-	// data in the control plane - `STORAGE`: Encrypts the workspace&#39;s root S3
-	// bucket (root DBFS and system data) and optionally cluster EBS volumes.
-	UseCase WorkspaceEncryptionKeyRecordUseCase `json:"use_case,omitempty"`
-	// Workspace ID.
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
-}
-
-type WorkspaceEncryptionKeyRecordKeyStatus string
-
-const WorkspaceEncryptionKeyRecordKeyStatusUnknown WorkspaceEncryptionKeyRecordKeyStatus = `UNKNOWN`
-
-const WorkspaceEncryptionKeyRecordKeyStatusAttached WorkspaceEncryptionKeyRecordKeyStatus = `ATTACHED`
-
-const WorkspaceEncryptionKeyRecordKeyStatusDetached WorkspaceEncryptionKeyRecordKeyStatus = `DETACHED`
-
-// Possible values are: - `MANAGED_SERVICES`: Encrypts notebook and secret data
-// in the control plane - `STORAGE`: Encrypts the workspace&#39;s root S3 bucket
-// (root DBFS and system data) and optionally cluster EBS volumes.
-type WorkspaceEncryptionKeyRecordUseCase string
-
-const WorkspaceEncryptionKeyRecordUseCaseManagedServices WorkspaceEncryptionKeyRecordUseCase = `MANAGED_SERVICES`
-
-const WorkspaceEncryptionKeyRecordUseCaseStorage WorkspaceEncryptionKeyRecordUseCase = `STORAGE`
-
 type WorkspaceNetwork struct {
 	// The network configuration ID that is attached to the workspace. This
 	// field is available only if the network is a customer-managed network.
@@ -396,17 +333,17 @@ type WorkspaceNetwork struct {
 // information.
 type WorkspacePricingTier string
 
-const WorkspacePricingTierUnknown WorkspacePricingTier = `UNKNOWN`
-
 const WorkspacePricingTierCommunityEdition WorkspacePricingTier = `COMMUNITY_EDITION`
 
-const WorkspacePricingTierStandard WorkspacePricingTier = `STANDARD`
-
-const WorkspacePricingTierPremium WorkspacePricingTier = `PREMIUM`
+const WorkspacePricingTierDedicated WorkspacePricingTier = `DEDICATED`
 
 const WorkspacePricingTierEnterprise WorkspacePricingTier = `ENTERPRISE`
 
-const WorkspacePricingTierDedicated WorkspacePricingTier = `DEDICATED`
+const WorkspacePricingTierPremium WorkspacePricingTier = `PREMIUM`
+
+const WorkspacePricingTierStandard WorkspacePricingTier = `STANDARD`
+
+const WorkspacePricingTierUnknown WorkspacePricingTier = `UNKNOWN`
 
 // The status of the workspace. For workspace creation, it is typically
 // initially `PROVISIONING`. Continue to check the status until the status is
@@ -416,14 +353,14 @@ const WorkspacePricingTierDedicated WorkspacePricingTier = `DEDICATED`
 // API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html).
 type WorkspaceWorkspaceStatus string
 
+const WorkspaceWorkspaceStatusBanned WorkspaceWorkspaceStatus = `BANNED`
+
+const WorkspaceWorkspaceStatusCancelling WorkspaceWorkspaceStatus = `CANCELLING`
+
+const WorkspaceWorkspaceStatusFailed WorkspaceWorkspaceStatus = `FAILED`
+
 const WorkspaceWorkspaceStatusNotProvisioned WorkspaceWorkspaceStatus = `NOT_PROVISIONED`
 
 const WorkspaceWorkspaceStatusProvisioning WorkspaceWorkspaceStatus = `PROVISIONING`
 
 const WorkspaceWorkspaceStatusRunning WorkspaceWorkspaceStatus = `RUNNING`
-
-const WorkspaceWorkspaceStatusFailed WorkspaceWorkspaceStatus = `FAILED`
-
-const WorkspaceWorkspaceStatusBanned WorkspaceWorkspaceStatus = `BANNED`
-
-const WorkspaceWorkspaceStatusCancelling WorkspaceWorkspaceStatus = `CANCELLING`
