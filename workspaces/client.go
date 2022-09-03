@@ -25,6 +25,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/unitycatalog"
 	"github.com/databricks/databricks-sdk-go/service/warehouses"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
+	"github.com/databricks/databricks-sdk-go/service/workspaceconf"
 )
 
 type WorkspacesClient struct {
@@ -75,6 +76,7 @@ type WorkspacesClient struct {
 	Users                scim.UsersService
 	Warehouses           warehouses.WarehousesService
 	Workspace            workspace.WorkspaceService
+	WorkspaceConf        workspaceconf.WorkspaceConfService
 }
 
 func New(c ...*databricks.Config) *WorkspacesClient {
@@ -134,5 +136,6 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		Users:                scim.NewUsers(apiClient),
 		Warehouses:           warehouses.NewWarehouses(apiClient),
 		Workspace:            workspace.NewWorkspace(apiClient),
+		WorkspaceConf:        workspaceconf.NewWorkspaceConf(apiClient),
 	}
 }

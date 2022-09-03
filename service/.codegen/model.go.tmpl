@@ -10,6 +10,7 @@ package {{.Name}}
     {{.PascalName}} {{if .IsOptionalObject}}*{{end}}{{template "type" .Entity}} `{{template "field-tag" . }}`{{end}}
 }
 {{else if .ArrayValue}}type {{.PascalName}} []{{template "type" .ArrayValue}}
+{{else if .MapValue}}type {{.PascalName}} {{template "type" .}}
 {{else if .Enum}}type {{.PascalName}} string
 {{range .Enum }}
 {{.Comment "// " 80}}

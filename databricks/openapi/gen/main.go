@@ -89,6 +89,7 @@ type Render struct {
 
 func (r *Render) Run() error {
 	for _, pkg := range r.batch.Packages {
+		fmt.Printf("Processing: %s\n", pkg.Name)
 		for k, v := range r.Fileset {
 			err := r.File(pkg, k, v)
 			if err != nil {
@@ -99,7 +100,11 @@ func (r *Render) Run() error {
 	split := strings.Split(r.Formatter, " ")
 	cmd := exec.Command(split[0], split[1:]...)
 	cmd.Dir = r.ctx.Target
-	return cmd.Run()
+	err := cmd.Run()
+	if err != nil {
+		return fmt.Errorf("%s: %w", r.Formatter, err)
+	}
+	return nil
 }
 
 func (r *Render) File(pkg *code.Package, contentTRef, nameT string) error {

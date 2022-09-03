@@ -68,6 +68,7 @@ type ClusterSpec struct {
 // An object with key value pairs. The key length must be between 1 and 127
 // UTF-8 characters, inclusive. The value length must be less than or equal to
 // 255 UTF-8 characters.
+type ClusterTag map[string]string
 
 type CreateJob struct {
 	// List of permissions to set on the job.
@@ -1251,9 +1252,11 @@ const RunTypeWorkflowRun RunType = `WORKFLOW_RUN`
 
 // An arbitrary object where the object key is a configuration propery name and
 // the value is a configuration property value.
+type SparkConfPair map[string]any /* MISSING TYPE */
 
 // An arbitrary object where the object key is an environment variable name and
 // the value is an environment variable value.
+type SparkEnvPair map[string]any /* MISSING TYPE */
 
 type SparkJarTask struct {
 	// Deprecated since 04/2016\. Provide a `jar` through the `libraries` field

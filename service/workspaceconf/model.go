@@ -7,3 +7,5 @@ package workspaceconf
 type GetStatusRequest struct {
 	Keys string ` url:"keys,omitempty"`
 }
+
+type WorkspaceConf map[string]string
