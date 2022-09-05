@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
@@ -47,36 +48,12 @@ func TestAccExplicitDatabricksCfg(t *testing.T) {
 	assert.NotEmpty(t, v)
 }
 
-func temporaryDirectory(t *testing.T) string {
-	dir, err := os.MkdirTemp(os.TempDir(), "tmp.*")
-	if err != nil {
+func TestAccExplicitAzureCliAuth(t *testing.T) {
+	defer client.CleanupEnvironment()()
+
+	if err := os.Setenv("AZURE_CONFIG_DIR", t.TempDir()); err != nil {
 		t.Fatal(err)
 	}
-
-	// Remove temporary directory upon test completion.
-	t.Cleanup(func() {
-		os.RemoveAll(dir)
-	})
-
-	return dir
-}
-
-func setEnv(t *testing.T, key, value string) {
-	cur, ok := os.LookupEnv(key)
-	os.Setenv(key, value)
-
-	// Revert environment variable upon test completion.
-	t.Cleanup(func() {
-		if ok {
-			os.Setenv(key, cur)
-		} else {
-			os.Unsetenv(key)
-		}
-	})
-}
-
-func TestAccExplicitAzureCliAuth(t *testing.T) {
-	setEnv(t, "AZURE_CONFIG_DIR", temporaryDirectory(t))
 
 	// Login with Azure CLI
 	cmd := exec.Command(
