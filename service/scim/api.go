@@ -21,7 +21,7 @@ type CurrentUserAPI struct {
 
 func (a *CurrentUserAPI) Me(ctx context.Context) (*User, error) {
 	var user User
-	path := "/preview/scim/v2/Me"
+	path := "/api/2.0/preview/scim/v2/Me"
 	err := a.client.Get(ctx, path, nil, &user)
 	return &user, err
 }

@@ -11,6 +11,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestAccCurrentUser(t *testing.T) {
+	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+	t.Parallel()
+
+	ctx := context.TODO()
+	wsc := workspaces.New()
+
+	me, err := wsc.CurrentUser.Me(ctx)
+	assert.NoError(t, err)
+
+	assert.NotEmpty(t, me.UserName)
+}
+
 func TestAccUsers(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	t.Parallel()
