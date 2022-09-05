@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"encoding/base64"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
@@ -12,10 +13,10 @@ import (
 
 func TestAccListDbfsIntegration(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	ctx := context.TODO()
+	ctx := context.Background()
 	wsc := workspaces.New()
-	dbfsTestFilePath := "/dbfs-acceptance-test-file.txt"
-	dbfsTestDirPath := "/DbfsAcceptanceTestDir"
+	dbfsTestFilePath := RandomName("/test-file-")
+	dbfsTestDirPath := RandomName("/tmp/databricks-go-sdk/integration/dbfs/TestDir-")
 
 	// create file
 	createResponse, err := wsc.Dbfs.Create(ctx,
@@ -29,7 +30,7 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	// write 'Hello, World!' to file
 	err = wsc.Dbfs.AddBlock(ctx,
 		dbfs.AddBlockRequest{
-			Data:   "SGVsbG8sIFdvcmxkIQ==",
+			Data:   base64.StdEncoding.EncodeToString([]byte("Hello, World!")),
 			Handle: createResponse.Handle,
 		},
 	)
@@ -88,8 +89,8 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	// put hello-world.txt into DbfsAcceptanceTestDir
 	err = wsc.Dbfs.Put(ctx,
 		dbfs.PutRequest{
-			Path:      dbfsTestDirPath + "/hello-world.txt",
-			Contents:  "SGVsbG8sIFdvcmxkIQ==",
+			Path:      dbfsTestDirPath + "/byebye-world.txt",
+			Contents:  base64.StdEncoding.EncodeToString([]byte("Bye Bye, World!")),
 			Overwrite: true,
 		},
 	)
@@ -102,16 +103,16 @@ func TestAccListDbfsIntegration(t *testing.T) {
 		},
 	)
 	require.NoError(t, err)
-	assert.True(t, readResponse1.Data == "SGVsbG8sIFdvcmxkIQ==")
+	assert.True(t, readResponse1.Data == base64.StdEncoding.EncodeToString([]byte("Hello, World!")))
 
 	// assert on contents of hello-world.txt
 	readResponse2, err := wsc.Dbfs.Read(ctx,
 		dbfs.ReadRequest{
-			Path: dbfsTestDirPath + "/hello-world.txt",
+			Path: dbfsTestDirPath + "/byebye-world.txt",
 		},
 	)
 	require.NoError(t, err)
-	assert.True(t, readResponse2.Data == "SGVsbG8sIFdvcmxkIQ==")
+	assert.True(t, readResponse2.Data == base64.StdEncoding.EncodeToString([]byte("Bye Bye, World!")))
 
 	// recursively delete the test dir and the test files inside it
 	err = wsc.Dbfs.Delete(ctx,
