@@ -17,12 +17,8 @@ func (ci *ClusterInfo) IsRunningOrResizing() bool {
 	return ci.State == ClusterInfoStateRunning || ci.State == ClusterInfoStateResizing
 }
 
-// TODO: Consistency
-// CreateClusterResponse -> ClusterInfo ?..
-// CreateClusterRequest -> Cluster
-
 // GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist
-func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateCluster) (c *CreateClusterResponse, err error) {
+func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateCluster) (c *ClusterInfo, err error) {
 	getOrCreateClusterMutex.Lock()
 	defer getOrCreateClusterMutex.Unlock()
 	if len(custom) > 1 {
@@ -34,24 +30,19 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 		return
 	}
 	for _, cl := range clusters.Clusters {
-		if cl.ClusterName == name {
-			logger.Infof("Found reusable cluster '%s'", name)
-			clusterAvailable := true
-			if !cl.IsRunningOrResizing() {
-				err = a.Start(ctx, StartCluster{
-					ClusterId: cl.ClusterId,
-				})
-				if err != nil {
-					clusterAvailable = false
-					logger.Infof("Cluster %s cannot be started, creating an autoterminating cluster", name)
-				}
-			}
-			if clusterAvailable {
-				return &CreateClusterResponse{
-					ClusterId: cl.ClusterId,
-				}, nil
-			}
+		if cl.ClusterName != name {
+			continue
 		}
+		logger.Infof("Found reusable cluster '%s'", name)
+		if cl.IsRunningOrResizing() {
+			return &cl, nil
+		}
+		started, err := a.StartByClusterIdAndWait(ctx, cl.ClusterId)
+		if err != nil {
+			logger.Infof("Cluster %s cannot be started, creating an autoterminating cluster: %s", name, err)
+			break
+		}
+		return started, nil
 	}
 	nodeTypes, err := a.ListNodeTypes(ctx)
 	if err != nil {
@@ -90,5 +81,5 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	if len(custom) == 1 {
 		r = custom[0]
 	}
-	return a.Create(ctx, r)
+	return a.CreateAndWait(ctx, r)
 }

@@ -153,4 +153,6 @@ type ClustersService interface {
 	Unpin(ctx context.Context, unpinCluster UnpinCluster) error
 
 	UnpinByClusterId(ctx context.Context, clusterId string) error
+	// GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist
+	GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateCluster) (c *ClusterInfo, err error)
 }

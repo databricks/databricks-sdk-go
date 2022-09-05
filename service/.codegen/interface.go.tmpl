@@ -20,5 +20,8 @@ type {{.PascalName}}Service interface {
 	{{- if and .Shortcut .Wait}}
 	{{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, timeout ...time.Duration) (*{{.Wait.Poll.Response.PascalName}}, error){{end}}
 	{{- end}}
+	{{if eq .PascalName "Clusters"}}// GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist
+	GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateCluster) (c *ClusterInfo, err error)
+	{{end}}
 }
 {{end}}
