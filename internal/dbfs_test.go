@@ -69,7 +69,7 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	}
 	assert.True(t, foundTestFile)
 
-	// make DbfsAcceptanceTestDir in workspace root
+	// make test dir in workspace root
 	err = wsc.Dbfs.MkDirs(ctx,
 		dbfs.MkDirsRequest{
 			Path: dbfsTestDirPath,
@@ -77,7 +77,7 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	// move `/dbfs-acceptance-test-file.txt` to `/DbfsAcceptanceTestDir`
+	// move test file to test dir
 	err = wsc.Dbfs.Move(ctx,
 		dbfs.MoveRequest{
 			SourcePath:      dbfsTestFilePath,
@@ -86,7 +86,7 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	// put hello-world.txt into DbfsAcceptanceTestDir
+	// put a new file (byebye-world.txt) in test dir
 	err = wsc.Dbfs.Put(ctx,
 		dbfs.PutRequest{
 			Path:      dbfsTestDirPath + "/byebye-world.txt",
@@ -96,7 +96,7 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	// assert on contents of dbfs-acceptance-test-file.txt
+	// assert on contents of original test file
 	readResponse1, err := wsc.Dbfs.Read(ctx,
 		dbfs.ReadRequest{
 			Path: dbfsTestDirPath + dbfsTestFilePath,
@@ -105,7 +105,7 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, readResponse1.Data == base64.StdEncoding.EncodeToString([]byte("Hello, World!")))
 
-	// assert on contents of hello-world.txt
+	// assert on contents of byebye-world.txt
 	readResponse2, err := wsc.Dbfs.Read(ctx,
 		dbfs.ReadRequest{
 			Path: dbfsTestDirPath + "/byebye-world.txt",
