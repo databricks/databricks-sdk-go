@@ -13,24 +13,25 @@ import (
 
 func TestAccUsers(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	ctx := context.TODO()
+	t.Parallel()
 
-	ws := workspaces.New()
+	ctx := context.TODO()
+	wsc := workspaces.New()
 
 	// create new user
-	user, err := ws.Users.NewUser(ctx, scim.User{
+	user, err := wsc.Users.NewUser(ctx, scim.User{
 		DisplayName: RandomName("Me "),
 		UserName:    RandomEmail(),
 	})
 	require.NoError(t, err)
 
 	// fetch the user by the newly created ID
-	fetch, err := ws.Users.FetchUserById(ctx, user.Id)
+	fetch, err := wsc.Users.FetchUserById(ctx, user.Id)
 	require.NoError(t, err)
 	assert.Equal(t, user.DisplayName, fetch.DisplayName)
 
 	// list all users
-	allUsers, err := ws.Users.ListUsers(ctx, scim.ListUsersRequest{
+	allUsers, err := wsc.Users.ListUsers(ctx, scim.ListUsersRequest{
 		Attributes: "id,userName",
 		SortBy:     "userName",
 		SortOrder:  scim.ListUsersSortOrderDescending,
@@ -45,33 +46,34 @@ func TestAccUsers(t *testing.T) {
 	assert.Equal(t, user.Id, namesToIds[user.UserName])
 
 	// remove user by ID
-	err = ws.Users.DeleteUserById(ctx, user.Id)
+	err = wsc.Users.DeleteUserById(ctx, user.Id)
 	require.NoError(t, err)
 
 	// and verify that user is missing
-	_, err = ws.Users.FetchUserById(ctx, user.Id)
+	_, err = wsc.Users.FetchUserById(ctx, user.Id)
 	assert.True(t, apierr.IsMissing(err))
 }
 
 func TestAccGroups(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	ctx := context.TODO()
+	t.Parallel()
 
-	ws := workspaces.New()
+	ctx := context.TODO()
+	wsc := workspaces.New()
 
 	// create new group
-	group, err := ws.Groups.NewGroup(ctx, scim.Group{
+	group, err := wsc.Groups.NewGroup(ctx, scim.Group{
 		DisplayName: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 
 	// fetch the group we've just created
-	fetch, err := ws.Groups.FetchGroupById(ctx, group.Id)
+	fetch, err := wsc.Groups.FetchGroupById(ctx, group.Id)
 	require.NoError(t, err)
 	assert.Equal(t, group.DisplayName, fetch.DisplayName)
 
 	// list all groups that start with `go-sdk-`
-	allGroups, err := ws.Groups.ListGroups(ctx, scim.ListGroupsRequest{
+	allGroups, err := wsc.Groups.ListGroups(ctx, scim.ListGroupsRequest{
 		SortOrder: scim.ListGroupsSortOrderDescending,
 		Filter:    "displayName sw 'go-sdk-'",
 	})
@@ -85,10 +87,10 @@ func TestAccGroups(t *testing.T) {
 	assert.Equal(t, group.Id, namesToIds[group.DisplayName])
 
 	// remove group by ID
-	err = ws.Groups.DeleteGroupById(ctx, group.Id)
+	err = wsc.Groups.DeleteGroupById(ctx, group.Id)
 	require.NoError(t, err)
 
 	// and verify the group is missing
-	_, err = ws.Groups.FetchGroupById(ctx, group.Id)
+	_, err = wsc.Groups.FetchGroupById(ctx, group.Id)
 	assert.True(t, apierr.IsMissing(err))
 }

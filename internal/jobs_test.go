@@ -65,7 +65,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	assert.Equal(t, output.NotebookOutput.Result, "hello")
 
 	createdJob, err := wsc.Jobs.Create(ctx, jobs.CreateJob{
-		Name: ("go-sdk-Create-"),
+		Name: RandomName("go-sdk-Create-"),
 		Tasks: []jobs.JobTaskSettings{{
 			Description:       "test",
 			ExistingClusterId: clusterId,
@@ -85,6 +85,15 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotEmpty(t, run.Tasks)
 
+	exportedView, err := wsc.Jobs.ExportRun(ctx, jobs.ExportRunRequest{
+		RunId:         run.Tasks[0].RunId,
+		ViewsToExport: "CODE",
+	})
+	require.NoError(t, err)
+	assert.NotEmpty(t, exportedView.Views)
+	assert.Equal(t, exportedView.Views[0].Type, jobs.ViewTypeNotebook)
+	assert.NotEmpty(t, exportedView.Views[0].Content)
+
 	_, err = wsc.Jobs.RunNow(ctx, jobs.RunNow{
 		JobId: createdJob.JobId,
 	})
@@ -98,34 +107,17 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	run, err = wsc.Jobs.GetRun(ctx, jobs.GetRunRequest{
+	run, err = wsc.Jobs.CancelRunAndWait(ctx, jobs.CancelRun{
 		RunId: runNowResponse.RunId,
 	})
 	require.NoError(t, err)
-
-	run, err = wsc.Jobs.CancelRunAndWait(ctx, jobs.CancelRun{
-		RunId: run.Tasks[0].RunId,
-	})
-	require.NoError(t, err)
-
-	assert.Equal(t, run.State.LifeCycleState, jobs.RunLifeCycleStateTerminated)
-	assert.Equal(t, run.State.ResultState, jobs.RunResultStateCanceled)
-	assert.True(t, run.State.UserCancelledOrTimedout)
 
 	run, err = wsc.Jobs.RepairRunAndWait(ctx, jobs.RepairRun{
 		RerunTasks: []string{run.Tasks[0].TaskKey},
 		RunId:      runNowResponse.RunId,
 	})
 	require.NoError(t, err)
-
-	exportedView, err := wsc.Jobs.ExportRun(ctx, jobs.ExportRunRequest{
-		RunId:         run.Tasks[0].RunId,
-		ViewsToExport: "CODE",
-	})
-	require.NoError(t, err)
-	assert.NotEmpty(t, exportedView.Views)
-	assert.Equal(t, exportedView.Views[0].Type, jobs.ViewTypeNotebook)
-	assert.NotEmpty(t, exportedView.Views[0].Content)
+	assert.GreaterOrEqual(t, len(run.Tasks), 1)
 
 	newName := RandomName("updated")
 	err = wsc.Jobs.Update(ctx, jobs.UpdateJob{
@@ -143,11 +135,6 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	assert.Equal(t, byId.Settings.Name, newName)
 	assert.Equal(t, byId.Settings.MaxConcurrentRuns, 5)
 
-	/** reset the job to default settings
-	- max concurrent run : 1
-	- Name : from default job
-	- Tasks : from default job
-	*/
 	newName = RandomName("updated-for-reset")
 	err = wsc.Jobs.Reset(ctx, jobs.ResetJob{
 		JobId: createdJob.JobId,

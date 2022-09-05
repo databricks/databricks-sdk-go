@@ -158,14 +158,14 @@ type ClientsTypes struct {
 }
 
 type CloudProviderNodeInfo struct {
-	Status CloudProviderNodeInfoStatus `json:"status,omitempty"`
+	Status []CloudProviderNodeStatus `json:"status,omitempty"`
 }
 
-type CloudProviderNodeInfoStatus string
+type CloudProviderNodeStatus string
 
-const CloudProviderNodeInfoStatusNotavailableinregion CloudProviderNodeInfoStatus = `NotAvailableInRegion`
+const CloudProviderNodeStatusNotavailableinregion CloudProviderNodeStatus = `NotAvailableInRegion`
 
-const CloudProviderNodeInfoStatusNotenabledonsubscription CloudProviderNodeInfoStatus = `NotEnabledOnSubscription`
+const CloudProviderNodeStatusNotenabledonsubscription CloudProviderNodeStatus = `NotEnabledOnSubscription`
 
 type ClusterAttributes struct {
 	// Automatically terminates the cluster after it is inactive for this time
