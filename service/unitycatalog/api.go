@@ -9,82 +9,80 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-
 type UnitycatalogService interface {
-    
-    CreateCatalog(ctx context.Context, createCatalogRequest CreateCatalogRequest) (*CreateCatalogResponse, error)
-    
-    CreateExternalLocation(ctx context.Context, createExternalLocationRequest CreateExternalLocationRequest) (*CreateExternalLocationResponse, error)
-    
-    CreateMetastore(ctx context.Context, createMetastoreRequest CreateMetastoreRequest) (*CreateMetastoreResponse, error)
-    
-    CreateMetastoreAssignment(ctx context.Context, createMetastoreAssignmentRequest CreateMetastoreAssignmentRequest) error
-    
-    CreateSchema(ctx context.Context, createSchemaRequest CreateSchemaRequest) (*CreateSchemaResponse, error)
-    
-    CreateStagingTable(ctx context.Context, createStagingTableRequest CreateStagingTableRequest) (*CreateStagingTableResponse, error)
-    
-    CreateStorageCredential(ctx context.Context, createStorageCredentialRequest CreateStorageCredentialRequest) (*CreateStorageCredentialResponse, error)
-    
-    CreateTable(ctx context.Context, createTableRequest CreateTableRequest) (*CreateTableResponse, error)
-    
-    DeleteCatalog(ctx context.Context, deleteCatalogRequest DeleteCatalogRequest) error
-    
-    DeleteExternalLocation(ctx context.Context, deleteExternalLocationRequest DeleteExternalLocationRequest) error
-    
-    DeleteMetastore(ctx context.Context, deleteMetastoreRequest DeleteMetastoreRequest) error
-    
-    DeleteMetastoreAssignment(ctx context.Context, deleteMetastoreAssignmentRequest DeleteMetastoreAssignmentRequest) error
-    
-    DeleteSchema(ctx context.Context, deleteSchemaRequest DeleteSchemaRequest) error
-    
-    DeleteStorageCredential(ctx context.Context, deleteStorageCredentialRequest DeleteStorageCredentialRequest) error
-    
-    DeleteTable(ctx context.Context, deleteTableRequest DeleteTableRequest) error
-    
-    GetCatalog(ctx context.Context, getCatalogRequest GetCatalogRequest) (*GetCatalogResponse, error)
-    
-    GetExternalLocation(ctx context.Context, getExternalLocationRequest GetExternalLocationRequest) (*GetExternalLocationResponse, error)
-    
-    GetMetastore(ctx context.Context, getMetastoreRequest GetMetastoreRequest) (*GetMetastoreResponse, error)
-    
-    GetMetastoreSummary(ctx context.Context) (*GetMetastoreSummaryResponse, error)
-    
-    GetPermissions(ctx context.Context, getPermissionsRequest GetPermissionsRequest) (*GetPermissionsResponse, error)
-    
-    GetSchema(ctx context.Context, getSchemaRequest GetSchemaRequest) (*GetSchemaResponse, error)
-    
-    GetStorageCredential(ctx context.Context, getStorageCredentialRequest GetStorageCredentialRequest) (*GetStorageCredentialResponse, error)
-    
-    GetTable(ctx context.Context, getTableRequest GetTableRequest) (*GetTableResponse, error)
-    
-    ListCatalogs(ctx context.Context) (*ListCatalogsResponse, error)
-    
-    ListExternalLocations(ctx context.Context) (*ListExternalLocationsResponse, error)
-    
-    ListMetastores(ctx context.Context) (*ListMetastoresResponse, error)
-    
-    ListSchemas(ctx context.Context, listSchemasRequest ListSchemasRequest) (*ListSchemasResponse, error)
-    
-    ListStorageCredentials(ctx context.Context) (*ListStorageCredentialsResponse, error)
-    
-    ListTables(ctx context.Context, listTablesRequest ListTablesRequest) (*ListTablesResponse, error)
-    
-    UpdateCatalog(ctx context.Context, updateCatalogRequest UpdateCatalogRequest) error
-    
-    UpdateExternalLocation(ctx context.Context, updateExternalLocationRequest UpdateExternalLocationRequest) error
-    
-    UpdateMetastore(ctx context.Context, updateMetastoreRequest UpdateMetastoreRequest) error
-    
-    UpdateMetastoreAssignment(ctx context.Context, updateMetastoreAssignmentRequest UpdateMetastoreAssignmentRequest) error
-    
-    UpdatePermissions(ctx context.Context, updatePermissionsRequest UpdatePermissionsRequest) error
-    
-    UpdateSchema(ctx context.Context, updateSchemaRequest UpdateSchemaRequest) error
-    
-    UpdateStorageCredential(ctx context.Context, updateStorageCredentialRequest UpdateStorageCredentialRequest) error
-    
-    UpdateTable(ctx context.Context, updateTableRequest UpdateTableRequest) error
+	CreateCatalog(ctx context.Context, createCatalogRequest CreateCatalogRequest) (*CreateCatalogResponse, error)
+
+	CreateExternalLocation(ctx context.Context, createExternalLocationRequest CreateExternalLocationRequest) (*CreateExternalLocationResponse, error)
+
+	CreateMetastore(ctx context.Context, createMetastoreRequest CreateMetastoreRequest) (*CreateMetastoreResponse, error)
+
+	CreateMetastoreAssignment(ctx context.Context, createMetastoreAssignmentRequest CreateMetastoreAssignmentRequest) error
+
+	CreateSchema(ctx context.Context, createSchemaRequest CreateSchemaRequest) (*CreateSchemaResponse, error)
+
+	CreateStagingTable(ctx context.Context, createStagingTableRequest CreateStagingTableRequest) (*CreateStagingTableResponse, error)
+
+	CreateStorageCredential(ctx context.Context, createStorageCredentialRequest CreateStorageCredentialRequest) (*CreateStorageCredentialResponse, error)
+
+	CreateTable(ctx context.Context, createTableRequest CreateTableRequest) (*CreateTableResponse, error)
+
+	DeleteCatalog(ctx context.Context, deleteCatalogRequest DeleteCatalogRequest) error
+
+	DeleteExternalLocation(ctx context.Context, deleteExternalLocationRequest DeleteExternalLocationRequest) error
+
+	DeleteMetastore(ctx context.Context, deleteMetastoreRequest DeleteMetastoreRequest) error
+
+	DeleteMetastoreAssignment(ctx context.Context, deleteMetastoreAssignmentRequest DeleteMetastoreAssignmentRequest) error
+
+	DeleteSchema(ctx context.Context, deleteSchemaRequest DeleteSchemaRequest) error
+
+	DeleteStorageCredential(ctx context.Context, deleteStorageCredentialRequest DeleteStorageCredentialRequest) error
+
+	DeleteTable(ctx context.Context, deleteTableRequest DeleteTableRequest) error
+
+	GetCatalog(ctx context.Context, getCatalogRequest GetCatalogRequest) (*GetCatalogResponse, error)
+
+	GetExternalLocation(ctx context.Context, getExternalLocationRequest GetExternalLocationRequest) (*GetExternalLocationResponse, error)
+
+	GetMetastore(ctx context.Context, getMetastoreRequest GetMetastoreRequest) (*GetMetastoreResponse, error)
+
+	GetMetastoreSummary(ctx context.Context) (*GetMetastoreSummaryResponse, error)
+
+	GetPermissions(ctx context.Context, getPermissionsRequest GetPermissionsRequest) (*GetPermissionsResponse, error)
+
+	GetSchema(ctx context.Context, getSchemaRequest GetSchemaRequest) (*GetSchemaResponse, error)
+
+	GetStorageCredential(ctx context.Context, getStorageCredentialRequest GetStorageCredentialRequest) (*GetStorageCredentialResponse, error)
+
+	GetTable(ctx context.Context, getTableRequest GetTableRequest) (*GetTableResponse, error)
+
+	ListCatalogs(ctx context.Context) (*ListCatalogsResponse, error)
+
+	ListExternalLocations(ctx context.Context) (*ListExternalLocationsResponse, error)
+
+	ListMetastores(ctx context.Context) (*ListMetastoresResponse, error)
+
+	ListSchemas(ctx context.Context, listSchemasRequest ListSchemasRequest) (*ListSchemasResponse, error)
+
+	ListStorageCredentials(ctx context.Context) (*ListStorageCredentialsResponse, error)
+
+	ListTables(ctx context.Context, listTablesRequest ListTablesRequest) (*ListTablesResponse, error)
+
+	UpdateCatalog(ctx context.Context, updateCatalogRequest UpdateCatalogRequest) error
+
+	UpdateExternalLocation(ctx context.Context, updateExternalLocationRequest UpdateExternalLocationRequest) error
+
+	UpdateMetastore(ctx context.Context, updateMetastoreRequest UpdateMetastoreRequest) error
+
+	UpdateMetastoreAssignment(ctx context.Context, updateMetastoreAssignmentRequest UpdateMetastoreAssignmentRequest) error
+
+	UpdatePermissions(ctx context.Context, updatePermissionsRequest UpdatePermissionsRequest) error
+
+	UpdateSchema(ctx context.Context, updateSchemaRequest UpdateSchemaRequest) error
+
+	UpdateStorageCredential(ctx context.Context, updateStorageCredentialRequest UpdateStorageCredentialRequest) error
+
+	UpdateTable(ctx context.Context, updateTableRequest UpdateTableRequest) error
 	GetPermissionsBySecurableTypeAndSecurableFullName(ctx context.Context, securableType string, securableFullName string) (*GetPermissionsResponse, error)
 	GetExternalLocationByNameArg(ctx context.Context, nameArg string) (*GetExternalLocationResponse, error)
 	DeleteExternalLocationByNameArg(ctx context.Context, nameArg string) error
@@ -111,14 +109,12 @@ type UnitycatalogAPI struct {
 	client *client.DatabricksClient
 }
 
-
 func (a *UnitycatalogAPI) CreateCatalog(ctx context.Context, request CreateCatalogRequest) (*CreateCatalogResponse, error) {
 	var createCatalogResponse CreateCatalogResponse
 	path := "/api/2.1/unity-catalog/catalogs"
 	err := a.client.Post(ctx, path, request, &createCatalogResponse)
 	return &createCatalogResponse, err
 }
-
 
 func (a *UnitycatalogAPI) CreateExternalLocation(ctx context.Context, request CreateExternalLocationRequest) (*CreateExternalLocationResponse, error) {
 	var createExternalLocationResponse CreateExternalLocationResponse
@@ -127,7 +123,6 @@ func (a *UnitycatalogAPI) CreateExternalLocation(ctx context.Context, request Cr
 	return &createExternalLocationResponse, err
 }
 
-
 func (a *UnitycatalogAPI) CreateMetastore(ctx context.Context, request CreateMetastoreRequest) (*CreateMetastoreResponse, error) {
 	var createMetastoreResponse CreateMetastoreResponse
 	path := "/api/2.1/unity-catalog/metastores"
@@ -135,13 +130,11 @@ func (a *UnitycatalogAPI) CreateMetastore(ctx context.Context, request CreateMet
 	return &createMetastoreResponse, err
 }
 
-
 func (a *UnitycatalogAPI) CreateMetastoreAssignment(ctx context.Context, request CreateMetastoreAssignmentRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
 	err := a.client.Put(ctx, path, request)
 	return err
 }
-
 
 func (a *UnitycatalogAPI) CreateSchema(ctx context.Context, request CreateSchemaRequest) (*CreateSchemaResponse, error) {
 	var createSchemaResponse CreateSchemaResponse
@@ -150,14 +143,12 @@ func (a *UnitycatalogAPI) CreateSchema(ctx context.Context, request CreateSchema
 	return &createSchemaResponse, err
 }
 
-
 func (a *UnitycatalogAPI) CreateStagingTable(ctx context.Context, request CreateStagingTableRequest) (*CreateStagingTableResponse, error) {
 	var createStagingTableResponse CreateStagingTableResponse
 	path := "/api/2.1/unity-catalog/staging-tables"
 	err := a.client.Post(ctx, path, request, &createStagingTableResponse)
 	return &createStagingTableResponse, err
 }
-
 
 func (a *UnitycatalogAPI) CreateStorageCredential(ctx context.Context, request CreateStorageCredentialRequest) (*CreateStorageCredentialResponse, error) {
 	var createStorageCredentialResponse CreateStorageCredentialResponse
@@ -166,7 +157,6 @@ func (a *UnitycatalogAPI) CreateStorageCredential(ctx context.Context, request C
 	return &createStorageCredentialResponse, err
 }
 
-
 func (a *UnitycatalogAPI) CreateTable(ctx context.Context, request CreateTableRequest) (*CreateTableResponse, error) {
 	var createTableResponse CreateTableResponse
 	path := "/api/2.1/unity-catalog/tables"
@@ -174,13 +164,11 @@ func (a *UnitycatalogAPI) CreateTable(ctx context.Context, request CreateTableRe
 	return &createTableResponse, err
 }
 
-
 func (a *UnitycatalogAPI) DeleteCatalog(ctx context.Context, request DeleteCatalogRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.NameArg)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
-
 
 func (a *UnitycatalogAPI) DeleteExternalLocation(ctx context.Context, request DeleteExternalLocationRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.NameArg)
@@ -188,13 +176,11 @@ func (a *UnitycatalogAPI) DeleteExternalLocation(ctx context.Context, request De
 	return err
 }
 
-
 func (a *UnitycatalogAPI) DeleteMetastore(ctx context.Context, request DeleteMetastoreRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
-
 
 func (a *UnitycatalogAPI) DeleteMetastoreAssignment(ctx context.Context, request DeleteMetastoreAssignmentRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
@@ -202,13 +188,11 @@ func (a *UnitycatalogAPI) DeleteMetastoreAssignment(ctx context.Context, request
 	return err
 }
 
-
 func (a *UnitycatalogAPI) DeleteSchema(ctx context.Context, request DeleteSchemaRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullNameArg)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
-
 
 func (a *UnitycatalogAPI) DeleteStorageCredential(ctx context.Context, request DeleteStorageCredentialRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.NameArg)
@@ -216,13 +200,11 @@ func (a *UnitycatalogAPI) DeleteStorageCredential(ctx context.Context, request D
 	return err
 }
 
-
 func (a *UnitycatalogAPI) DeleteTable(ctx context.Context, request DeleteTableRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullNameArg)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
-
 
 func (a *UnitycatalogAPI) GetCatalog(ctx context.Context, request GetCatalogRequest) (*GetCatalogResponse, error) {
 	var getCatalogResponse GetCatalogResponse
@@ -231,14 +213,12 @@ func (a *UnitycatalogAPI) GetCatalog(ctx context.Context, request GetCatalogRequ
 	return &getCatalogResponse, err
 }
 
-
 func (a *UnitycatalogAPI) GetExternalLocation(ctx context.Context, request GetExternalLocationRequest) (*GetExternalLocationResponse, error) {
 	var getExternalLocationResponse GetExternalLocationResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.NameArg)
 	err := a.client.Get(ctx, path, request, &getExternalLocationResponse)
 	return &getExternalLocationResponse, err
 }
-
 
 func (a *UnitycatalogAPI) GetMetastore(ctx context.Context, request GetMetastoreRequest) (*GetMetastoreResponse, error) {
 	var getMetastoreResponse GetMetastoreResponse
@@ -247,14 +227,12 @@ func (a *UnitycatalogAPI) GetMetastore(ctx context.Context, request GetMetastore
 	return &getMetastoreResponse, err
 }
 
-
 func (a *UnitycatalogAPI) GetMetastoreSummary(ctx context.Context) (*GetMetastoreSummaryResponse, error) {
 	var getMetastoreSummaryResponse GetMetastoreSummaryResponse
 	path := "/api/2.1/unity-catalog/metastore_summary"
 	err := a.client.Get(ctx, path, nil, &getMetastoreSummaryResponse)
 	return &getMetastoreSummaryResponse, err
 }
-
 
 func (a *UnitycatalogAPI) GetPermissions(ctx context.Context, request GetPermissionsRequest) (*GetPermissionsResponse, error) {
 	var getPermissionsResponse GetPermissionsResponse
@@ -263,14 +241,12 @@ func (a *UnitycatalogAPI) GetPermissions(ctx context.Context, request GetPermiss
 	return &getPermissionsResponse, err
 }
 
-
 func (a *UnitycatalogAPI) GetSchema(ctx context.Context, request GetSchemaRequest) (*GetSchemaResponse, error) {
 	var getSchemaResponse GetSchemaResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullNameArg)
 	err := a.client.Get(ctx, path, request, &getSchemaResponse)
 	return &getSchemaResponse, err
 }
-
 
 func (a *UnitycatalogAPI) GetStorageCredential(ctx context.Context, request GetStorageCredentialRequest) (*GetStorageCredentialResponse, error) {
 	var getStorageCredentialResponse GetStorageCredentialResponse
@@ -279,14 +255,12 @@ func (a *UnitycatalogAPI) GetStorageCredential(ctx context.Context, request GetS
 	return &getStorageCredentialResponse, err
 }
 
-
 func (a *UnitycatalogAPI) GetTable(ctx context.Context, request GetTableRequest) (*GetTableResponse, error) {
 	var getTableResponse GetTableResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullNameArg)
 	err := a.client.Get(ctx, path, request, &getTableResponse)
 	return &getTableResponse, err
 }
-
 
 func (a *UnitycatalogAPI) ListCatalogs(ctx context.Context) (*ListCatalogsResponse, error) {
 	var listCatalogsResponse ListCatalogsResponse
@@ -295,14 +269,12 @@ func (a *UnitycatalogAPI) ListCatalogs(ctx context.Context) (*ListCatalogsRespon
 	return &listCatalogsResponse, err
 }
 
-
 func (a *UnitycatalogAPI) ListExternalLocations(ctx context.Context) (*ListExternalLocationsResponse, error) {
 	var listExternalLocationsResponse ListExternalLocationsResponse
 	path := "/api/2.1/unity-catalog/external-locations"
 	err := a.client.Get(ctx, path, nil, &listExternalLocationsResponse)
 	return &listExternalLocationsResponse, err
 }
-
 
 func (a *UnitycatalogAPI) ListMetastores(ctx context.Context) (*ListMetastoresResponse, error) {
 	var listMetastoresResponse ListMetastoresResponse
@@ -311,14 +283,12 @@ func (a *UnitycatalogAPI) ListMetastores(ctx context.Context) (*ListMetastoresRe
 	return &listMetastoresResponse, err
 }
 
-
 func (a *UnitycatalogAPI) ListSchemas(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error) {
 	var listSchemasResponse ListSchemasResponse
 	path := "/api/2.1/unity-catalog/schemas"
 	err := a.client.Get(ctx, path, request, &listSchemasResponse)
 	return &listSchemasResponse, err
 }
-
 
 func (a *UnitycatalogAPI) ListStorageCredentials(ctx context.Context) (*ListStorageCredentialsResponse, error) {
 	var listStorageCredentialsResponse ListStorageCredentialsResponse
@@ -327,7 +297,6 @@ func (a *UnitycatalogAPI) ListStorageCredentials(ctx context.Context) (*ListStor
 	return &listStorageCredentialsResponse, err
 }
 
-
 func (a *UnitycatalogAPI) ListTables(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error) {
 	var listTablesResponse ListTablesResponse
 	path := "/api/2.1/unity-catalog/tables"
@@ -335,13 +304,11 @@ func (a *UnitycatalogAPI) ListTables(ctx context.Context, request ListTablesRequ
 	return &listTablesResponse, err
 }
 
-
 func (a *UnitycatalogAPI) UpdateCatalog(ctx context.Context, request UpdateCatalogRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.NameArg)
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-
 
 func (a *UnitycatalogAPI) UpdateExternalLocation(ctx context.Context, request UpdateExternalLocationRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.NameArg)
@@ -349,13 +316,11 @@ func (a *UnitycatalogAPI) UpdateExternalLocation(ctx context.Context, request Up
 	return err
 }
 
-
 func (a *UnitycatalogAPI) UpdateMetastore(ctx context.Context, request UpdateMetastoreRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-
 
 func (a *UnitycatalogAPI) UpdateMetastoreAssignment(ctx context.Context, request UpdateMetastoreAssignmentRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
@@ -363,13 +328,11 @@ func (a *UnitycatalogAPI) UpdateMetastoreAssignment(ctx context.Context, request
 	return err
 }
 
-
 func (a *UnitycatalogAPI) UpdatePermissions(ctx context.Context, request UpdatePermissionsRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.SecurableFullName)
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-
 
 func (a *UnitycatalogAPI) UpdateSchema(ctx context.Context, request UpdateSchemaRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullNameArg)
@@ -377,13 +340,11 @@ func (a *UnitycatalogAPI) UpdateSchema(ctx context.Context, request UpdateSchema
 	return err
 }
 
-
 func (a *UnitycatalogAPI) UpdateStorageCredential(ctx context.Context, request UpdateStorageCredentialRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.NameArg)
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-
 
 func (a *UnitycatalogAPI) UpdateTable(ctx context.Context, request UpdateTableRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullNameArg)
@@ -391,10 +352,9 @@ func (a *UnitycatalogAPI) UpdateTable(ctx context.Context, request UpdateTableRe
 	return err
 }
 
-
 func (a *UnitycatalogAPI) GetPermissionsBySecurableTypeAndSecurableFullName(ctx context.Context, securableType string, securableFullName string) (*GetPermissionsResponse, error) {
 	return a.GetPermissions(ctx, GetPermissionsRequest{
-		SecurableType: securableType,
+		SecurableType:     securableType,
 		SecurableFullName: securableFullName,
 	})
 }

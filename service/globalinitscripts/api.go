@@ -9,22 +9,21 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-
 type GlobalinitscriptsService interface {
-    // Create a new global init script in this workspace.
-    CreateScript(ctx context.Context, globalInitScriptCreateRequest GlobalInitScriptCreateRequest) (*CreateScriptResponse, error)
-    // Delete a global init script.
-    DeleteScript(ctx context.Context, deleteScriptRequest DeleteScriptRequest) error
-    // Get a list of all global init scripts for this workspace. This returns
-    // all properties for each script but **not** the script contents. To
-    // retrieve the contents of a script, use the [get a global init
-    // script](#operation/get-script) operation.
-    GetAllScripts(ctx context.Context) (*GetAllScriptsResponse, error)
-    // Get all the details of a script, including its Base64-encoded contents.
-    GetScript(ctx context.Context, getScriptRequest GetScriptRequest) (*GlobalInitScriptDetailsWithContent, error)
-    // Update a global init script, specifying only the fields to change. All
-    // fields are optional. Unspecified fields retain their current value.
-    UpdateScript(ctx context.Context, globalInitScriptUpdateRequest GlobalInitScriptUpdateRequest) error
+	// Create a new global init script in this workspace.
+	CreateScript(ctx context.Context, globalInitScriptCreateRequest GlobalInitScriptCreateRequest) (*CreateScriptResponse, error)
+	// Delete a global init script.
+	DeleteScript(ctx context.Context, deleteScriptRequest DeleteScriptRequest) error
+	// Get a list of all global init scripts for this workspace. This returns
+	// all properties for each script but **not** the script contents. To
+	// retrieve the contents of a script, use the [get a global init
+	// script](#operation/get-script) operation.
+	GetAllScripts(ctx context.Context) (*GetAllScriptsResponse, error)
+	// Get all the details of a script, including its Base64-encoded contents.
+	GetScript(ctx context.Context, getScriptRequest GetScriptRequest) (*GlobalInitScriptDetailsWithContent, error)
+	// Update a global init script, specifying only the fields to change. All
+	// fields are optional. Unspecified fields retain their current value.
+	UpdateScript(ctx context.Context, globalInitScriptUpdateRequest GlobalInitScriptUpdateRequest) error
 	DeleteScriptByScriptId(ctx context.Context, scriptId string) error
 	GetScriptByScriptId(ctx context.Context, scriptId string) (*GlobalInitScriptDetailsWithContent, error)
 }
@@ -80,7 +79,6 @@ func (a *GlobalinitscriptsAPI) UpdateScript(ctx context.Context, request GlobalI
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-
 
 func (a *GlobalinitscriptsAPI) DeleteScriptByScriptId(ctx context.Context, scriptId string) error {
 	return a.DeleteScript(ctx, DeleteScriptRequest{

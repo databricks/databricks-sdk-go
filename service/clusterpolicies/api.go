@@ -4,23 +4,21 @@ package clusterpolicies
 
 import (
 	"context"
-	
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-
 type ClusterpoliciesService interface {
-    // Creates a new Policy
-    CreatePolicy(ctx context.Context, createPolicyRequest CreatePolicyRequest) (*CreatePolicyResponse, error)
-    // Delete a policy
-    DeletePolicy(ctx context.Context, deletePolicyRequest DeletePolicyRequest) error
-    // Update an existing policy
-    EditPolicy(ctx context.Context, editPolicyRequest EditPolicyRequest) error
-    // Returns a Policy
-    GetPolicy(ctx context.Context, getPolicyRequest GetPolicyRequest) (*GetPolicyResponse, error)
-    // Returns list of policies
-    ListPolicies(ctx context.Context) (*ListPoliciesResponse, error)
+	// Creates a new Policy
+	CreatePolicy(ctx context.Context, createPolicyRequest CreatePolicyRequest) (*CreatePolicyResponse, error)
+	// Delete a policy
+	DeletePolicy(ctx context.Context, deletePolicyRequest DeletePolicyRequest) error
+	// Update an existing policy
+	EditPolicy(ctx context.Context, editPolicyRequest EditPolicyRequest) error
+	// Returns a Policy
+	GetPolicy(ctx context.Context, getPolicyRequest GetPolicyRequest) (*GetPolicyResponse, error)
+	// Returns list of policies
+	ListPolicies(ctx context.Context) (*ListPoliciesResponse, error)
 }
 
 func New(client *client.DatabricksClient) ClusterpoliciesService {
@@ -70,4 +68,3 @@ func (a *ClusterpoliciesAPI) ListPolicies(ctx context.Context) (*ListPoliciesRes
 	err := a.client.Get(ctx, path, nil, &listPoliciesResponse)
 	return &listPoliciesResponse, err
 }
-

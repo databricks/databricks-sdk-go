@@ -15,27 +15,27 @@ import (
 // A credential configuration encapsulates this role information, and its ID is
 // used when creating a new workspace.
 type CredentialsService interface {
-    // Create a Databricks credential configuration that represents cloud
-    // cross-account credentials for a specified account. Databricks uses this
-    // to set up network infrastructure properly to host Databricks clusters.
-    // For your AWS IAM role, you need to trust the External ID (the Databricks
-    // Account API account ID) in the returned credential object, and configure
-    // the required access policy. Save the response&#39;s `credentials_id` field,
-    // which is the ID for your new credential configuration object. For
-    // detailed instructions of creating a new workspace with this API, see
-    // [Create a new workspace using the Account
-    // API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html)
-    CreateCredentialConfig(ctx context.Context, createCredentialRequest CreateCredentialRequest) (*Credential, error)
-    // Delete a Databricks credential configuration object for an account, both
-    // specified by ID. You cannot delete a credential that is associated with
-    // any workspace.
-    DeleteCredentialConfig(ctx context.Context, deleteCredentialConfigRequest DeleteCredentialConfigRequest) error
-    // Get a Databricks credential configuration object for an account, both
-    // specified by ID.
-    GetCredentialConfig(ctx context.Context, getCredentialConfigRequest GetCredentialConfigRequest) (*Credential, error)
-    // Get all Databricks credential configurations associated with an account
-    // specified by ID.
-    ListCredentials(ctx context.Context, listCredentialsRequest ListCredentialsRequest) (*ListCredentialsResponse, error)
+	// Create a Databricks credential configuration that represents cloud
+	// cross-account credentials for a specified account. Databricks uses this
+	// to set up network infrastructure properly to host Databricks clusters.
+	// For your AWS IAM role, you need to trust the External ID (the Databricks
+	// Account API account ID) in the returned credential object, and configure
+	// the required access policy. Save the response&#39;s `credentials_id` field,
+	// which is the ID for your new credential configuration object. For
+	// detailed instructions of creating a new workspace with this API, see
+	// [Create a new workspace using the Account
+	// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html)
+	CreateCredentialConfig(ctx context.Context, createCredentialRequest CreateCredentialRequest) (*Credential, error)
+	// Delete a Databricks credential configuration object for an account, both
+	// specified by ID. You cannot delete a credential that is associated with
+	// any workspace.
+	DeleteCredentialConfig(ctx context.Context, deleteCredentialConfigRequest DeleteCredentialConfigRequest) error
+	// Get a Databricks credential configuration object for an account, both
+	// specified by ID.
+	GetCredentialConfig(ctx context.Context, getCredentialConfigRequest GetCredentialConfigRequest) (*Credential, error)
+	// Get all Databricks credential configurations associated with an account
+	// specified by ID.
+	ListCredentials(ctx context.Context, listCredentialsRequest ListCredentialsRequest) (*ListCredentialsResponse, error)
 	GetCredentialConfigByAccountIdAndCredentialsId(ctx context.Context, accountId string, credentialsId string) (*Credential, error)
 	DeleteCredentialConfigByAccountIdAndCredentialsId(ctx context.Context, accountId string, credentialsId string) error
 	ListCredentialsByAccountId(ctx context.Context, accountId string) (*ListCredentialsResponse, error)
@@ -95,17 +95,16 @@ func (a *CredentialsAPI) ListCredentials(ctx context.Context, request ListCreden
 	return &listCredentialsResponse, err
 }
 
-
 func (a *CredentialsAPI) GetCredentialConfigByAccountIdAndCredentialsId(ctx context.Context, accountId string, credentialsId string) (*Credential, error) {
 	return a.GetCredentialConfig(ctx, GetCredentialConfigRequest{
-		AccountId: accountId,
+		AccountId:     accountId,
 		CredentialsId: credentialsId,
 	})
 }
 
 func (a *CredentialsAPI) DeleteCredentialConfigByAccountIdAndCredentialsId(ctx context.Context, accountId string, credentialsId string) error {
 	return a.DeleteCredentialConfig(ctx, DeleteCredentialConfigRequest{
-		AccountId: accountId,
+		AccountId:     accountId,
 		CredentialsId: credentialsId,
 	})
 }
