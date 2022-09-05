@@ -13,12 +13,12 @@ import (
 // Admins can either get every token, get a specific token by ID, or get all
 // tokens for a particular user.
 type TokenmanagementService interface {
-    // Delete a token, specified by its ID.
-    DeleteToken(ctx context.Context, deleteTokenRequest DeleteTokenRequest) error
-    // Get a token, specified by its ID.
-    GetTokenInfo(ctx context.Context, getTokenInfoRequest GetTokenInfoRequest) (*TokenInfo, error)
-    // List all tokens belonging to a workspace or a user.
-    ListAllTokens(ctx context.Context, listAllTokensRequest ListAllTokensRequest) (*ListTokensResponse, error)
+	// Delete a token, specified by its ID.
+	DeleteToken(ctx context.Context, deleteTokenRequest DeleteTokenRequest) error
+	// Get a token, specified by its ID.
+	GetTokenInfo(ctx context.Context, getTokenInfoRequest GetTokenInfoRequest) (*TokenInfo, error)
+	// List all tokens belonging to a workspace or a user.
+	ListAllTokens(ctx context.Context, listAllTokensRequest ListAllTokensRequest) (*ListTokensResponse, error)
 	GetTokenInfoByTokenId(ctx context.Context, tokenId string) (*TokenInfo, error)
 	DeleteTokenByTokenId(ctx context.Context, tokenId string) error
 }
@@ -55,7 +55,6 @@ func (a *TokenmanagementAPI) ListAllTokens(ctx context.Context, request ListAllT
 	err := a.client.Get(ctx, path, request, &listTokensResponse)
 	return &listTokensResponse, err
 }
-
 
 func (a *TokenmanagementAPI) GetTokenInfoByTokenId(ctx context.Context, tokenId string) (*TokenInfo, error) {
 	return a.GetTokenInfo(ctx, GetTokenInfoRequest{

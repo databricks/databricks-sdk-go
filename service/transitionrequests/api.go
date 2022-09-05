@@ -4,23 +4,21 @@ package transitionrequests
 
 import (
 	"context"
-	
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-
 type TransitionrequestsService interface {
-    // Approve model version stage transition request.
-    ApproveTransitionRequest(ctx context.Context, approveTransitionRequestRequest ApproveTransitionRequestRequest) (*ApproveTransitionRequestResponse, error)
-    // Make a model version stage transition request.
-    CreateTransitionRequest(ctx context.Context, createTransitionRequestRequest CreateTransitionRequestRequest) (*CreateTransitionRequestResponse, error)
-    // Cancel model version stage transition request.
-    DeleteTransitionRequest(ctx context.Context, deleteTransitionRequestRequest DeleteTransitionRequestRequest) error
-    // Get all open stage transition requests for the model version.
-    GetTransitionRequests(ctx context.Context, getTransitionRequestsRequest GetTransitionRequestsRequest) (*GetTransitionRequestsResponse, error)
-    // Reject model version stage transition request.
-    RejectTransitionRequest(ctx context.Context, rejectTransitionRequestRequest RejectTransitionRequestRequest) (*RejectTransitionRequestResponse, error)
+	// Approve model version stage transition request.
+	ApproveTransitionRequest(ctx context.Context, approveTransitionRequestRequest ApproveTransitionRequestRequest) (*ApproveTransitionRequestResponse, error)
+	// Make a model version stage transition request.
+	CreateTransitionRequest(ctx context.Context, createTransitionRequestRequest CreateTransitionRequestRequest) (*CreateTransitionRequestResponse, error)
+	// Cancel model version stage transition request.
+	DeleteTransitionRequest(ctx context.Context, deleteTransitionRequestRequest DeleteTransitionRequestRequest) error
+	// Get all open stage transition requests for the model version.
+	GetTransitionRequests(ctx context.Context, getTransitionRequestsRequest GetTransitionRequestsRequest) (*GetTransitionRequestsResponse, error)
+	// Reject model version stage transition request.
+	RejectTransitionRequest(ctx context.Context, rejectTransitionRequestRequest RejectTransitionRequestRequest) (*RejectTransitionRequestResponse, error)
 }
 
 func New(client *client.DatabricksClient) TransitionrequestsService {
@@ -71,4 +69,3 @@ func (a *TransitionrequestsAPI) RejectTransitionRequest(ctx context.Context, req
 	err := a.client.Post(ctx, path, request, &rejectTransitionRequestResponse)
 	return &rejectTransitionRequestResponse, err
 }
-

@@ -5,23 +5,21 @@ package permissions
 // all definitions in this file are in alphabetical order
 
 type AccessControlRequest struct {
-    
-    GroupName string `json:"group_name,omitempty"`
-    // getPermissionLevel defaults to CAN_ATTACH_TO when it&#39;s not defined (for 
-    // PUT/PATCH) so you should use .permissionLevel.isDefined to verify that 
-    // it actually exists 
-    PermissionLevel AccessControlRequestPermissionLevel `json:"permission_level,omitempty"`
-    
-    ServicePrincipalName string `json:"service_principal_name,omitempty"`
-    
-    UserName string `json:"user_name,omitempty"`
+	GroupName string `json:"group_name,omitempty"`
+	// getPermissionLevel defaults to CAN_ATTACH_TO when it&#39;s not defined (for
+	// PUT/PATCH) so you should use .permissionLevel.isDefined to verify that
+	// it actually exists
+	PermissionLevel AccessControlRequestPermissionLevel `json:"permission_level,omitempty"`
+
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+
+	UserName string `json:"user_name,omitempty"`
 }
 
-// getPermissionLevel defaults to CAN_ATTACH_TO when it&#39;s not defined (for 
-// PUT/PATCH) so you should use .permissionLevel.isDefined to verify that it 
-// actually exists 
+// getPermissionLevel defaults to CAN_ATTACH_TO when it&#39;s not defined (for
+// PUT/PATCH) so you should use .permissionLevel.isDefined to verify that it
+// actually exists
 type AccessControlRequestPermissionLevel string
-
 
 const AccessControlRequestPermissionLevelCanManage AccessControlRequestPermissionLevel = `CAN_MANAGE`
 
@@ -54,61 +52,48 @@ const AccessControlRequestPermissionLevelCanViewMetadata AccessControlRequestPer
 const AccessControlRequestPermissionLevelCanBind AccessControlRequestPermissionLevel = `CAN_BIND`
 
 type AccessControlResponse struct {
-    
-    AllPermissions []Permission `json:"all_permissions,omitempty"`
-    
-    GroupName string `json:"group_name,omitempty"`
-    
-    ServicePrincipalName string `json:"service_principal_name,omitempty"`
-    
-    UserName string `json:"user_name,omitempty"`
-}
+	AllPermissions []Permission `json:"all_permissions,omitempty"`
 
+	GroupName string `json:"group_name,omitempty"`
+
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+
+	UserName string `json:"user_name,omitempty"`
+}
 
 type GetObjectPermissionsRequest struct {
-    
-    ObjectId string ` path:"object_id"`
-    
-    ObjectType string ` path:"object_type"`
-}
+	ObjectId string ` path:"object_id"`
 
+	ObjectType string ` path:"object_type"`
+}
 
 type GetPermissionLevelsRequest struct {
-    
-    RequestObjectId string ` path:"request_object_id"`
-    
-    RequestObjectType string ` path:"request_object_type"`
-}
+	RequestObjectId string ` path:"request_object_id"`
 
+	RequestObjectType string ` path:"request_object_type"`
+}
 
 type GetPermissionLevelsResponse struct {
-    
-    PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
+	PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
 }
-
 
 type ObjectPermissions struct {
-    
-    AccessControlList []AccessControlResponse `json:"access_control_list,omitempty"`
-    
-    ObjectId string `json:"object_id,omitempty"`
-    
-    ObjectType string `json:"object_type,omitempty"`
-}
+	AccessControlList []AccessControlResponse `json:"access_control_list,omitempty"`
 
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
 
 type Permission struct {
-    
-    Inherited bool `json:"inherited,omitempty"`
-    
-    InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-    
-    PermissionLevel PermissionPermissionLevel `json:"permission_level,omitempty"`
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel PermissionPermissionLevel `json:"permission_level,omitempty"`
 }
 
-
 type PermissionPermissionLevel string
-
 
 const PermissionPermissionLevelCanManage PermissionPermissionLevel = `CAN_MANAGE`
 
@@ -141,15 +126,12 @@ const PermissionPermissionLevelCanViewMetadata PermissionPermissionLevel = `CAN_
 const PermissionPermissionLevelCanBind PermissionPermissionLevel = `CAN_BIND`
 
 type PermissionsDescription struct {
-    
-    Description string `json:"description,omitempty"`
-    
-    PermissionLevel PermissionsDescriptionPermissionLevel `json:"permission_level,omitempty"`
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel PermissionsDescriptionPermissionLevel `json:"permission_level,omitempty"`
 }
 
-
 type PermissionsDescriptionPermissionLevel string
-
 
 const PermissionsDescriptionPermissionLevelCanManage PermissionsDescriptionPermissionLevel = `CAN_MANAGE`
 
@@ -182,21 +164,17 @@ const PermissionsDescriptionPermissionLevelCanViewMetadata PermissionsDescriptio
 const PermissionsDescriptionPermissionLevelCanBind PermissionsDescriptionPermissionLevel = `CAN_BIND`
 
 type SetObjectPermissionsRequest struct {
-    
-    AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
-    
-    ObjectId string `json:"object_id,omitempty" path:"object_id"`
-    
-    ObjectType string `json:"object_type,omitempty" path:"object_type"`
-}
+	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
 
+	ObjectId string `json:"object_id,omitempty" path:"object_id"`
+
+	ObjectType string `json:"object_type,omitempty" path:"object_type"`
+}
 
 type UpdateObjectPermissionsRequest struct {
-    
-    AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
-    
-    ObjectId string `json:"object_id,omitempty" path:"object_id"`
-    
-    ObjectType string `json:"object_type,omitempty" path:"object_type"`
-}
+	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
 
+	ObjectId string `json:"object_id,omitempty" path:"object_id"`
+
+	ObjectType string `json:"object_type,omitempty" path:"object_type"`
+}

@@ -4,23 +4,21 @@ package modelregistrywebhooks
 
 import (
 	"context"
-	
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-
 type ModelregistrywebhooksService interface {
-    // This endpoint is in Public Preview. Create a registry webhook.
-    CreateRegistryWebhook(ctx context.Context, createRegistryWebhookRequest CreateRegistryWebhookRequest) (*CreateRegistryWebhookResponse, error)
-    // This endpoint is in Public Preview. Delete a registry webhook.
-    DeleteRegistryWebhook(ctx context.Context, deleteRegistryWebhookRequest DeleteRegistryWebhookRequest) error
-    // This endpoint is in Public Preview. List registry webhooks.
-    ListRegistryWebhooks(ctx context.Context, listRegistryWebhooksRequest ListRegistryWebhooksRequest) (*ListRegistryWebhooksResponse, error)
-    // This endpoint is in Public Preview. Test a registry webhook.
-    TestRegistryWebhook(ctx context.Context, testRegistryWebhookRequest TestRegistryWebhookRequest) (*TestRegistryWebhookResponse, error)
-    // This endpoint is in Public Preview. Update a registry webhook.
-    UpdateRegistryWebhook(ctx context.Context, updateRegistryWebhookRequest UpdateRegistryWebhookRequest) error
+	// This endpoint is in Public Preview. Create a registry webhook.
+	CreateRegistryWebhook(ctx context.Context, createRegistryWebhookRequest CreateRegistryWebhookRequest) (*CreateRegistryWebhookResponse, error)
+	// This endpoint is in Public Preview. Delete a registry webhook.
+	DeleteRegistryWebhook(ctx context.Context, deleteRegistryWebhookRequest DeleteRegistryWebhookRequest) error
+	// This endpoint is in Public Preview. List registry webhooks.
+	ListRegistryWebhooks(ctx context.Context, listRegistryWebhooksRequest ListRegistryWebhooksRequest) (*ListRegistryWebhooksResponse, error)
+	// This endpoint is in Public Preview. Test a registry webhook.
+	TestRegistryWebhook(ctx context.Context, testRegistryWebhookRequest TestRegistryWebhookRequest) (*TestRegistryWebhookResponse, error)
+	// This endpoint is in Public Preview. Update a registry webhook.
+	UpdateRegistryWebhook(ctx context.Context, updateRegistryWebhookRequest UpdateRegistryWebhookRequest) error
 }
 
 func New(client *client.DatabricksClient) ModelregistrywebhooksService {
@@ -70,4 +68,3 @@ func (a *ModelregistrywebhooksAPI) UpdateRegistryWebhook(ctx context.Context, re
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
-

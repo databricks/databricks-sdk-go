@@ -67,42 +67,42 @@ import (
 // for details. * Auditable events are typically available in logs within 15
 // minutes.
 type LogdeliveryService interface {
-    // Create a new Databricks log delivery configuration to enable delivery of
-    // the specified type of logs to your storage location. This requires that
-    // you already created a [credential
-    // object](#operation/create-credential-config) (which encapsulates a
-    // cross-account service IAM role) and a [storage configuration
-    // object](#operation/create-storage-config) (which encapsulates an S3
-    // bucket). For full details, including the required IAM role policies and
-    // bucket policies, see [Billable usage log
-    // delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html)
-    // or [Audit log
-    // delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
-    // Note: There is a limit on the number of log delivery configurations
-    // available per account (each limit applies separately to each log type
-    // including billable usage and audit logs). You can create a maximum of two
-    // enabled account-level delivery configurations (configurations without a
-    // workspace filter) per type. Additionally, you can create two enabled
-    // workspace level delivery configurations per workspace for each log type,
-    // meaning the same workspace ID can occur in the workspace filter for no
-    // more than two delivery configurations per log type. You cannot delete a
-    // log delivery configuration, but you can disable it (see [Enable or
-    // disable log delivery
-    // configuration](#operation/patch-log-delivery-config-status)).
-    CreateLogDeliveryConfig(ctx context.Context, wrappedCreateLogDeliveryConfiguration WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error)
-    // Get all Databricks log delivery configurations associated with an account
-    // specified by ID.
-    GetAllLogDeliveryConfigs(ctx context.Context, getAllLogDeliveryConfigsRequest GetAllLogDeliveryConfigsRequest) (*WrappedLogDeliveryConfigurations, error)
-    // Get a Databricks log delivery configuration object for an account, both
-    // specified by ID.
-    GetLogDeliveryConfig(ctx context.Context, getLogDeliveryConfigRequest GetLogDeliveryConfigRequest) (*WrappedLogDeliveryConfiguration, error)
-    // Enable or disable a log delivery configuration. Deletion of delivery
-    // configurations is not supported, so disable log delivery configurations
-    // that are no longer needed. Note that you can&#39;t re-enable a delivery
-    // configuration if this would violate the delivery configuration limits
-    // described under [Create log
-    // delivery](#operation/create-log-delivery-config).
-    PatchLogDeliveryConfigStatus(ctx context.Context, updateLogDeliveryConfigurationStatusRequest UpdateLogDeliveryConfigurationStatusRequest) error
+	// Create a new Databricks log delivery configuration to enable delivery of
+	// the specified type of logs to your storage location. This requires that
+	// you already created a [credential
+	// object](#operation/create-credential-config) (which encapsulates a
+	// cross-account service IAM role) and a [storage configuration
+	// object](#operation/create-storage-config) (which encapsulates an S3
+	// bucket). For full details, including the required IAM role policies and
+	// bucket policies, see [Billable usage log
+	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html)
+	// or [Audit log
+	// delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
+	// Note: There is a limit on the number of log delivery configurations
+	// available per account (each limit applies separately to each log type
+	// including billable usage and audit logs). You can create a maximum of two
+	// enabled account-level delivery configurations (configurations without a
+	// workspace filter) per type. Additionally, you can create two enabled
+	// workspace level delivery configurations per workspace for each log type,
+	// meaning the same workspace ID can occur in the workspace filter for no
+	// more than two delivery configurations per log type. You cannot delete a
+	// log delivery configuration, but you can disable it (see [Enable or
+	// disable log delivery
+	// configuration](#operation/patch-log-delivery-config-status)).
+	CreateLogDeliveryConfig(ctx context.Context, wrappedCreateLogDeliveryConfiguration WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error)
+	// Get all Databricks log delivery configurations associated with an account
+	// specified by ID.
+	GetAllLogDeliveryConfigs(ctx context.Context, getAllLogDeliveryConfigsRequest GetAllLogDeliveryConfigsRequest) (*WrappedLogDeliveryConfigurations, error)
+	// Get a Databricks log delivery configuration object for an account, both
+	// specified by ID.
+	GetLogDeliveryConfig(ctx context.Context, getLogDeliveryConfigRequest GetLogDeliveryConfigRequest) (*WrappedLogDeliveryConfiguration, error)
+	// Enable or disable a log delivery configuration. Deletion of delivery
+	// configurations is not supported, so disable log delivery configurations
+	// that are no longer needed. Note that you can&#39;t re-enable a delivery
+	// configuration if this would violate the delivery configuration limits
+	// described under [Create log
+	// delivery](#operation/create-log-delivery-config).
+	PatchLogDeliveryConfigStatus(ctx context.Context, updateLogDeliveryConfigurationStatusRequest UpdateLogDeliveryConfigurationStatusRequest) error
 	GetAllLogDeliveryConfigsByAccountId(ctx context.Context, accountId string) (*WrappedLogDeliveryConfigurations, error)
 	GetLogDeliveryConfigByAccountIdAndLogDeliveryConfigurationId(ctx context.Context, accountId string, logDeliveryConfigurationId string) (*WrappedLogDeliveryConfiguration, error)
 }
@@ -173,7 +173,6 @@ func (a *LogdeliveryAPI) PatchLogDeliveryConfigStatus(ctx context.Context, reque
 	return err
 }
 
-
 func (a *LogdeliveryAPI) GetAllLogDeliveryConfigsByAccountId(ctx context.Context, accountId string) (*WrappedLogDeliveryConfigurations, error) {
 	return a.GetAllLogDeliveryConfigs(ctx, GetAllLogDeliveryConfigsRequest{
 		AccountId: accountId,
@@ -182,7 +181,7 @@ func (a *LogdeliveryAPI) GetAllLogDeliveryConfigsByAccountId(ctx context.Context
 
 func (a *LogdeliveryAPI) GetLogDeliveryConfigByAccountIdAndLogDeliveryConfigurationId(ctx context.Context, accountId string, logDeliveryConfigurationId string) (*WrappedLogDeliveryConfiguration, error) {
 	return a.GetLogDeliveryConfig(ctx, GetLogDeliveryConfigRequest{
-		AccountId: accountId,
+		AccountId:                  accountId,
 		LogDeliveryConfigurationId: logDeliveryConfigurationId,
 	})
 }
