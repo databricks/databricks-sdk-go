@@ -39,6 +39,7 @@ func RandomEmail(prefix ...string) string {
 
 // RandomName gives random name with optional prefix. e.g. qa.RandomName("tf-")
 func RandomName(prefix ...string) string {
+	rand.Seed(time.Now().UnixNano())
 	randLen := 12
 	b := make([]byte, randLen)
 	for i := range b {
