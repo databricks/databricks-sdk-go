@@ -12,6 +12,8 @@ import (
 
 func TestAccClustersApiIntegration(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+	t.Parallel()
+
 	ctx := context.Background()
 	wsc := workspaces.New()
 
@@ -77,34 +79,29 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	// Assert edit changes are reflected in the cluster
 	byId, err = wsc.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
-	assert.True(t, byId.AutoterminationMinutes == 10)
-	assert.True(t, byId.NumWorkers == 2)
-	assert.True(t, byId.State == clusters.ClusterInfoStateTerminated)
+	assert.Equal(t, 10, byId.AutoterminationMinutes)
+	assert.Equal(t, 2, byId.NumWorkers)
 
 	// Terminate the cluster
-	err = wsc.Clusters.DeleteByClusterIdAndWait(ctx, clstr.ClusterId)
+	_, err = wsc.Clusters.DeleteByClusterIdAndWait(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 
 	// Assert that the cluster we've just deleted has Terminated state
 	byId, err = wsc.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
-	assert.True(t, byId.State == clusters.ClusterInfoStateTerminated)
+	assert.Equal(t, byId.State, clusters.ClusterInfoStateTerminated)
 
 	// Start cluster and wait until it's running again
-	err = wsc.Clusters.StartByClusterIdAndWait(ctx, clstr.ClusterId)
+	_, err = wsc.Clusters.StartByClusterIdAndWait(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 
 	// Resize the cluster back to 1 worker and wait till completion
-	err = wsc.Clusters.ResizeAndWait(ctx, clusters.ResizeCluster{
+	byId, err = wsc.Clusters.ResizeAndWait(ctx, clusters.ResizeCluster{
 		ClusterId:  clstr.ClusterId,
 		NumWorkers: 1,
 	})
 	require.NoError(t, err)
-
-	// Assert that cluster is back to one worker
-	byId, err = wsc.Clusters.GetByClusterId(ctx, clstr.ClusterId)
-	require.NoError(t, err)
-	assert.True(t, byId.NumWorkers == 1)
+	assert.Equal(t, 1, byId.NumWorkers)
 
 	// Restart the cluster and wait for it to run again
 	err = wsc.Clusters.Restart(ctx, clusters.RestartCluster{

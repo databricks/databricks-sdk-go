@@ -15,18 +15,28 @@ import (
 
 func TestAccJobsApiFullIntegration(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+	t.Parallel()
+
 	ctx := context.Background()
 	wsc := workspaces.New()
 
 	clusterId := GetEnvOrSkipTest(t, "TEST_DEFAULT_CLUSTER_ID")
-	err := wsc.Clusters.StartByClusterIdAndWait(ctx, clusterId)
+	clusterInfo, err := wsc.Clusters.GetByClusterId(ctx, clusterId)
 	require.NoError(t, err)
+
+	if !clusterInfo.IsRunningOrResizing() {
+		_, err := wsc.Clusters.StartByClusterIdAndWait(ctx, clusterId)
+		require.NoError(t, err)
+	}
 
 	tmpPath := RandomName("/tmp/jobs-test")
 	err = wsc.Workspace.MkdirsByPath(ctx, tmpPath)
 	require.NoError(t, err)
+	defer wsc.Workspace.Delete(ctx, workspace.DeleteRequest{
+		Path: tmpPath,
+	})
 
-	filePath := filepath.Join(tmpPath, RandomName())
+	filePath := filepath.Join(tmpPath, RandomName("slow-"))
 	fileContent := "import time; time.sleep(10); dbutils.notebook.exit('hello')"
 	err = wsc.Workspace.Import(ctx, workspace.ImportRequest{
 		Content:   base64.StdEncoding.Strict().EncodeToString([]byte(fileContent)),
@@ -37,12 +47,8 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	res, err := wsc.Workspace.GetStatusByPath(ctx, tmpPath)
-	require.NoError(t, err)
-
-	submitResp, err := wsc.Jobs.SubmitAndWait(ctx, jobs.SubmitRun{
-		IdempotencyToken: RandomName(),
-		RunName:          RandomName("go-sdk-"),
+	run, err := wsc.Jobs.SubmitAndWait(ctx, jobs.SubmitRun{
+		RunName: RandomName("go-sdk-SubmitAndWait-"),
 		Tasks: []jobs.RunSubmitTaskSettings{{
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
@@ -51,83 +57,72 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 			TaskKey: RandomName(),
 		}},
 	})
-	assert.NoError(t, err)
-	output, err := wsc.Jobs.GetRunOutputByRunId(ctx, submitResp.RunId)
-	assert.NoError(t, err)
+	require.NoError(t, err)
+	defer wsc.Jobs.DeleteRunByRunId(ctx, run.RunId)
+
+	output, err := wsc.Jobs.GetRunOutputByRunId(ctx, run.Tasks[0].RunId)
+	require.NoError(t, err)
 	assert.Equal(t, output.NotebookOutput.Result, "hello")
 
 	createdJob, err := wsc.Jobs.Create(ctx, jobs.CreateJob{
-		Name: RandomName(),
+		Name: ("go-sdk-Create-"),
 		Tasks: []jobs.JobTaskSettings{{
 			Description:       "test",
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
-				NotebookPath: res.Path,
+				NotebookPath: filePath,
 			},
 			TaskKey:        "test",
 			TimeoutSeconds: 0,
 		}},
 	})
 	require.NoError(t, err)
+	defer wsc.Jobs.DeleteByJobId(ctx, createdJob.JobId)
 
-	runResp, err := wsc.Jobs.RunNow(ctx, jobs.RunNow{
+	run, err = wsc.Jobs.RunNowAndWait(ctx, jobs.RunNow{
 		JobId: createdJob.JobId,
 	})
-	assert.NoError(t, err)
-
-	runDetails, err := wsc.Jobs.GetRun(ctx, jobs.GetRunRequest{
-		RunId: runResp.RunId,
-	})
-	assert.NoError(t, err)
-	assert.NotEmpty(t, runDetails.Tasks)
+	require.NoError(t, err)
+	assert.NotEmpty(t, run.Tasks)
 
 	_, err = wsc.Jobs.RunNow(ctx, jobs.RunNow{
 		JobId: createdJob.JobId,
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	err = wsc.Jobs.CancelAllRunsByJobId(ctx, createdJob.JobId)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	err = wsc.Jobs.CancelRunAndWait(ctx, jobs.CancelRun{
-		RunId: runDetails.Tasks[0].RunId,
+	runNowResponse, err := wsc.Jobs.RunNow(ctx, jobs.RunNow{
+		JobId: createdJob.JobId,
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	runDetails, err = wsc.Jobs.GetRun(ctx, jobs.GetRunRequest{
-		RunId: runDetails.Tasks[0].RunId,
+	run, err = wsc.Jobs.GetRun(ctx, jobs.GetRunRequest{
+		RunId: runNowResponse.RunId,
 	})
-	assert.NoError(t, err)
-	assert.Equal(t, runDetails.State.LifeCycleState, jobs.RunLifeCycleStateTerminated)
-	assert.Equal(t, runDetails.State.ResultState, jobs.RunResultStateCanceled)
-	assert.True(t, runDetails.State.UserCancelledOrTimedout)
+	require.NoError(t, err)
 
-	_, err = wsc.Jobs.RepairRunAndWait(ctx, jobs.RepairRun{
-		RerunTasks: []string{runDetails.Tasks[0].TaskKey},
-		RunId:      runDetails.RunId,
+	run, err = wsc.Jobs.CancelRunAndWait(ctx, jobs.CancelRun{
+		RunId: run.Tasks[0].RunId,
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	runDetails, err = wsc.Jobs.GetRun(ctx, jobs.GetRunRequest{
-		RunId: runDetails.RunId,
+	assert.Equal(t, run.State.LifeCycleState, jobs.RunLifeCycleStateTerminated)
+	assert.Equal(t, run.State.ResultState, jobs.RunResultStateCanceled)
+	assert.True(t, run.State.UserCancelledOrTimedout)
+
+	run, err = wsc.Jobs.RepairRunAndWait(ctx, jobs.RepairRun{
+		RerunTasks: []string{run.Tasks[0].TaskKey},
+		RunId:      runNowResponse.RunId,
 	})
-	assert.NoError(t, err)
-
-	output, err = wsc.Jobs.GetRunOutputByRunId(ctx, runDetails.FirstTask().RunId)
-	assert.NoError(t, err)
-	assert.Equal(t, output.NotebookOutput.Result, "hello")
-
-	runDetails, err = wsc.Jobs.GetRun(ctx, jobs.GetRunRequest{
-		RunId: runDetails.RunId,
-	})
-	assert.NoError(t, err)
-	assert.NotEmpty(t, runDetails.Tasks)
+	require.NoError(t, err)
 
 	exportedView, err := wsc.Jobs.ExportRun(ctx, jobs.ExportRunRequest{
-		RunId:         runDetails.FirstTask().RunId,
+		RunId:         run.Tasks[0].RunId,
 		ViewsToExport: "CODE",
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.NotEmpty(t, exportedView.Views)
 	assert.Equal(t, exportedView.Views[0].Type, jobs.ViewTypeNotebook)
 	assert.NotEmpty(t, exportedView.Views[0].Content)
@@ -140,10 +135,10 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 			MaxConcurrentRuns: 5,
 		},
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	byId, err := wsc.Jobs.GetByJobId(ctx, createdJob.JobId)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	assert.Equal(t, byId.Settings.Name, newName)
 	assert.Equal(t, byId.Settings.MaxConcurrentRuns, 5)
@@ -161,16 +156,16 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 			Tasks: byId.Settings.Tasks,
 		},
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	byId, err = wsc.Jobs.GetByJobId(ctx, createdJob.JobId)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, byId.Settings.Name, newName)
 
 	jobList, err := wsc.Jobs.List(ctx, jobs.ListRequest{
 		ExpandTasks: false,
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	var jobsIdList []int64
 	for _, job := range jobList.Jobs {
@@ -179,10 +174,10 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	assert.Contains(t, jobsIdList, createdJob.JobId)
 
 	err = wsc.Jobs.DeleteByJobId(ctx, createdJob.JobId)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	jobList, err = wsc.Jobs.List(ctx, jobs.ListRequest{})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	for _, job := range jobList.Jobs {
 		// TODO: change assertion to by-name
 		assert.NotEqual(t, job.JobId, createdJob.JobId)

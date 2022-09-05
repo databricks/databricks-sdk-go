@@ -12,9 +12,11 @@ type TokensService interface {
 	// id with the authenticated token. This call returns an error
 	// ``QUOTA_EXCEEDED`` if over the token quota for the user.
 	Create(ctx context.Context, createTokenRequest CreateTokenRequest) (*CreateTokenResponse, error)
+
 	// Revokes an access token. This call returns an error
 	// ``RESOURCE_DOES_NOT_EXIST`` if a token with the given ID is not valid.
 	Delete(ctx context.Context, revokeTokenRequest RevokeTokenRequest) error
+
 	DeleteByTokenId(ctx context.Context, tokenId string) error
 	// Lists all the valid tokens for a user-workspace pair.
 	List(ctx context.Context) (*ListTokensResponse, error)

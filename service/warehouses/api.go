@@ -30,7 +30,7 @@ func (a *WarehousesAPI) CreateWarehouse(ctx context.Context, request CreateWareh
 }
 
 // CreateWarehouse and wait to reach RUNNING state
-func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, request CreateWarehouseRequest, timeout ...time.Duration) (*CreateWarehouseResponse, error) {
+func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, request CreateWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
 	createWarehouseResponse, err := a.CreateWarehouse(ctx, request)
 	if err != nil {
 		return nil, err
@@ -38,24 +38,24 @@ func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, request Crea
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return createWarehouseResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: createWarehouseResponse.Id,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
 		switch status {
 		case GetWarehouseResponseStateRunning: // target state
-			return nil
+			return getWarehouseResponse, nil
 		case GetWarehouseResponseStateStopped, GetWarehouseResponseStateDeleted:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				GetWarehouseResponseStateRunning, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -68,28 +68,28 @@ func (a *WarehousesAPI) DeleteWarehouse(ctx context.Context, request DeleteWareh
 }
 
 // DeleteWarehouse and wait to reach DELETED state
-func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, request DeleteWarehouseRequest, timeout ...time.Duration) error {
+func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, request DeleteWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
 	err := a.DeleteWarehouse(ctx, request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: request.Id,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
 		switch status {
 		case GetWarehouseResponseStateDeleted: // target state
-			return nil
+			return getWarehouseResponse, nil
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -101,7 +101,7 @@ func (a *WarehousesAPI) DeleteWarehouseById(ctx context.Context, id string) erro
 	})
 }
 
-func (a *WarehousesAPI) DeleteWarehouseByIdAndWait(ctx context.Context, id string, timeout ...time.Duration) error {
+func (a *WarehousesAPI) DeleteWarehouseByIdAndWait(ctx context.Context, id string, timeout ...time.Duration) (*GetWarehouseResponse, error) {
 	return a.DeleteWarehouseAndWait(ctx, DeleteWarehouseRequest{
 		Id: id,
 	}, timeout...)
@@ -115,32 +115,32 @@ func (a *WarehousesAPI) EditWarehouse(ctx context.Context, request EditWarehouse
 }
 
 // EditWarehouse and wait to reach RUNNING state
-func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, request EditWarehouseRequest, timeout ...time.Duration) error {
+func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, request EditWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
 	err := a.EditWarehouse(ctx, request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: request.Id,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
 		switch status {
 		case GetWarehouseResponseStateRunning: // target state
-			return nil
+			return getWarehouseResponse, nil
 		case GetWarehouseResponseStateStopped, GetWarehouseResponseStateDeleted:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				GetWarehouseResponseStateRunning, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -162,24 +162,24 @@ func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, request GetWare
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return getWarehouseResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: getWarehouseResponse.Id,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
 		switch status {
 		case GetWarehouseResponseStateRunning: // target state
-			return nil
+			return getWarehouseResponse, nil
 		case GetWarehouseResponseStateStopped, GetWarehouseResponseStateDeleted:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				GetWarehouseResponseStateRunning, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -230,32 +230,32 @@ func (a *WarehousesAPI) StartWarehouse(ctx context.Context, request StartWarehou
 }
 
 // StartWarehouse and wait to reach RUNNING state
-func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, request StartWarehouseRequest, timeout ...time.Duration) error {
+func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, request StartWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
 	err := a.StartWarehouse(ctx, request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: request.Id,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
 		switch status {
 		case GetWarehouseResponseStateRunning: // target state
-			return nil
+			return getWarehouseResponse, nil
 		case GetWarehouseResponseStateStopped, GetWarehouseResponseStateDeleted:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				GetWarehouseResponseStateRunning, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -268,28 +268,28 @@ func (a *WarehousesAPI) StopWarehouse(ctx context.Context, request StopWarehouse
 }
 
 // StopWarehouse and wait to reach STOPPED state
-func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, request StopWarehouseRequest, timeout ...time.Duration) error {
+func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, request StopWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
 	err := a.StopWarehouse(ctx, request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: request.Id,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
 		switch status {
 		case GetWarehouseResponseStateStopped: // target state
-			return nil
+			return getWarehouseResponse, nil
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }

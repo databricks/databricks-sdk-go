@@ -20,14 +20,18 @@ type IpAccessListsService interface {
 	// until you enable the feature. See
 	// [`/workspace-conf`](#operation/set-status)
 	CreateIpAccessList(ctx context.Context, createIPAccessListRequest CreateIPAccessListRequest) (*CreateIPAccessListResponse, error)
+
 	// Delete an IP access list, specified by its list ID.
 	DeleteIpAccessList(ctx context.Context, deleteIpAccessListRequest DeleteIpAccessListRequest) error
+
 	DeleteIpAccessListByIpAccessListId(ctx context.Context, ipAccessListId string) error
 	// Get an IP access list, specified by its list ID.
 	FetchIpAccessList(ctx context.Context, fetchIpAccessListRequest FetchIpAccessListRequest) (*CreateIPAccessListResponse, error)
+
 	FetchIpAccessListByIpAccessListId(ctx context.Context, ipAccessListId string) (*CreateIPAccessListResponse, error)
 
 	GetAllIpAccessLists(ctx context.Context) (*GetIPAccessListResponse, error)
+
 	// Replace an IP access list, specified by its ID. A list can include allow
 	// lists and block lists. See the top of this file for a description of how
 	// the server treats allow lists and block lists at run time. When replacing
@@ -40,6 +44,7 @@ type IpAccessListsService interface {
 	// effect. Note that your resulting IP access list has no effect until you
 	// enable the feature. See [`/workspace-conf`](#operation/set-status)
 	ReplaceIpAccessList(ctx context.Context, replaceIPAccessListRequest ReplaceIPAccessListRequest) error
+
 	// Modify an existing IP access list, specified by its ID. A list can
 	// include allow lists and block lists. See the top of this file for a
 	// description of how the server treats allow lists and block lists at run

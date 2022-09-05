@@ -33,32 +33,32 @@ func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}
 }
 {{if .Wait}}
 // {{.PascalName}} and wait to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
-func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}, timeout ...time.Duration) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}} {
-	{{if .Response}}{{.Response.CamelName}}, {{end}}err := a.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
+func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}, timeout ...time.Duration) (*{{.Wait.Poll.Response.PascalName}}, error) {
+	{{if .Wait.ForceBindRequest}}_, {{else if .Response}}{{.Response.CamelName}}, {{end}}err := a.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
 	if err != nil {
-		return {{if .Response}}nil, {{end}}err
+		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20*time.Minute}
 	}
-	return {{if .Response}}{{.Response.CamelName}}, {{end}}retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[{{.Wait.Poll.Response.PascalName}}](ctx, timeout[0], func() (*{{.Wait.Poll.Response.PascalName}}, *retries.Err) {
 		{{.Wait.Poll.Response.CamelName}}, err := a.{{.Wait.Poll.PascalName}}(ctx, {{.Wait.Poll.Request.PascalName}}{
 			{{.Wait.Bind.PascalName}}: {{if .Wait.ForceBindRequest}}request{{else if .Response}}{{.Response.CamelName}}{{else}}request{{end}}.{{.Wait.Bind.PascalName}},
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := {{.Wait.Poll.Response.CamelName}}{{range .Wait.StatusPath}}.{{.PascalName}}{{end}}
 		statusMessage := {{.Wait.Poll.Response.CamelName}}{{range .Wait.MessagePath}}.{{.PascalName}}{{end}}
 		switch status {
 		case {{range $i, $e := .Wait.Success}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}: // target state
-			return nil
+			return {{.Wait.Poll.Response.CamelName}}, nil
 		{{if .Wait.Failure}}case {{range $i, $e := .Wait.Failure}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}:
 			err := fmt.Errorf("failed to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}%s{{end}}, got %s: %s",
 				{{range $i, $e := .Wait.Success}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		{{end}}default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -71,7 +71,7 @@ func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}(ctx context.Context{{ran
 	})
 }
 {{end}}{{if and .Shortcut .Wait}}
-func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, timeout ...time.Duration) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}} {
+func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, timeout ...time.Duration) (*{{.Wait.Poll.Response.PascalName}}, error) {
 	return a.{{.PascalName}}AndWait(ctx, {{.Request.PascalName}}{
 		{{- range .Shortcut.Params}}
 		{{.PascalName}}: {{.CamelName}},{{end}}

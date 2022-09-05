@@ -29,7 +29,7 @@ func (a *DeltaPipelinesAPI) CreatePipeline(ctx context.Context, request CreatePi
 }
 
 // CreatePipeline and wait to reach RUNNING state
-func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, request CreatePipelineRequest, timeout ...time.Duration) (*CreatePipelineResponse, error) {
+func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, request CreatePipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
 	createPipelineResponse, err := a.CreatePipeline(ctx, request)
 	if err != nil {
 		return nil, err
@@ -37,24 +37,24 @@ func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, request C
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return createPipelineResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
 			PipelineId: createPipelineResponse.PipelineId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := getPipelineResponse.State
 		statusMessage := getPipelineResponse.Cause
 		switch status {
 		case GetPipelineResponseStateRunning: // target state
-			return nil
+			return getPipelineResponse, nil
 		case GetPipelineResponseStateFailed:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				GetPipelineResponseStateRunning, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -93,24 +93,24 @@ func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, request GetP
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return getPipelineResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
 			PipelineId: getPipelineResponse.PipelineId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := getPipelineResponse.State
 		statusMessage := getPipelineResponse.Cause
 		switch status {
 		case GetPipelineResponseStateRunning: // target state
-			return nil
+			return getPipelineResponse, nil
 		case GetPipelineResponseStateFailed:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				GetPipelineResponseStateRunning, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -161,32 +161,32 @@ func (a *DeltaPipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipe
 }
 
 // ResetPipeline and wait to reach RUNNING state
-func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, request ResetPipelineRequest, timeout ...time.Duration) error {
+func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, request ResetPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
 	err := a.ResetPipeline(ctx, request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
 			PipelineId: request.PipelineId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := getPipelineResponse.State
 		statusMessage := getPipelineResponse.Cause
 		switch status {
 		case GetPipelineResponseStateRunning: // target state
-			return nil
+			return getPipelineResponse, nil
 		case GetPipelineResponseStateFailed:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				GetPipelineResponseStateRunning, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -206,32 +206,32 @@ func (a *DeltaPipelinesAPI) StopPipeline(ctx context.Context, request StopPipeli
 }
 
 // StopPipeline and wait to reach IDLE state
-func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, request StopPipelineRequest, timeout ...time.Duration) error {
+func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, request StopPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
 	err := a.StopPipeline(ctx, request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
 			PipelineId: request.PipelineId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := getPipelineResponse.State
 		statusMessage := getPipelineResponse.Cause
 		switch status {
 		case GetPipelineResponseStateIdle: // target state
-			return nil
+			return getPipelineResponse, nil
 		case GetPipelineResponseStateFailed:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				GetPipelineResponseStateIdle, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }

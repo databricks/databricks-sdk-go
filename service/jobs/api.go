@@ -46,32 +46,32 @@ func (a *JobsAPI) CancelRun(ctx context.Context, request CancelRun) error {
 }
 
 // CancelRun and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) CancelRunAndWait(ctx context.Context, request CancelRun, timeout ...time.Duration) error {
+func (a *JobsAPI) CancelRunAndWait(ctx context.Context, request CancelRun, timeout ...time.Duration) (*Run, error) {
 	err := a.CancelRun(ctx, request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[Run](ctx, timeout[0], func() (*Run, *retries.Err) {
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: request.RunId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := run.State.LifeCycleState
 		statusMessage := run.State.StateMessage
 		switch status {
 		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
-			return nil
+			return run, nil
 		case RunLifeCycleStateInternalError:
 			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
 				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -84,7 +84,7 @@ func (a *JobsAPI) CancelRunByRunId(ctx context.Context, runId int64) error {
 	})
 }
 
-func (a *JobsAPI) CancelRunByRunIdAndWait(ctx context.Context, runId int64, timeout ...time.Duration) error {
+func (a *JobsAPI) CancelRunByRunIdAndWait(ctx context.Context, runId int64, timeout ...time.Duration) (*Run, error) {
 	return a.CancelRunAndWait(ctx, CancelRun{
 		RunId: runId,
 	}, timeout...)
@@ -166,24 +166,24 @@ func (a *JobsAPI) GetRunAndWait(ctx context.Context, request GetRunRequest, time
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return run, retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[Run](ctx, timeout[0], func() (*Run, *retries.Err) {
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: run.RunId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := run.State.LifeCycleState
 		statusMessage := run.State.StateMessage
 		switch status {
 		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
-			return nil
+			return run, nil
 		case RunLifeCycleStateInternalError:
 			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
 				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -248,32 +248,32 @@ func (a *JobsAPI) RepairRun(ctx context.Context, request RepairRun) (*RepairRunR
 }
 
 // RepairRun and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) RepairRunAndWait(ctx context.Context, request RepairRun, timeout ...time.Duration) (*RepairRunResponse, error) {
-	repairRunResponse, err := a.RepairRun(ctx, request)
+func (a *JobsAPI) RepairRunAndWait(ctx context.Context, request RepairRun, timeout ...time.Duration) (*Run, error) {
+	_, err := a.RepairRun(ctx, request)
 	if err != nil {
 		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return repairRunResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[Run](ctx, timeout[0], func() (*Run, *retries.Err) {
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: request.RunId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := run.State.LifeCycleState
 		statusMessage := run.State.StateMessage
 		switch status {
 		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
-			return nil
+			return run, nil
 		case RunLifeCycleStateInternalError:
 			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
 				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -295,7 +295,7 @@ func (a *JobsAPI) RunNow(ctx context.Context, request RunNow) (*RunNowResponse, 
 }
 
 // RunNow and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) RunNowAndWait(ctx context.Context, request RunNow, timeout ...time.Duration) (*RunNowResponse, error) {
+func (a *JobsAPI) RunNowAndWait(ctx context.Context, request RunNow, timeout ...time.Duration) (*Run, error) {
 	runNowResponse, err := a.RunNow(ctx, request)
 	if err != nil {
 		return nil, err
@@ -303,24 +303,24 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, request RunNow, timeout ...
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return runNowResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[Run](ctx, timeout[0], func() (*Run, *retries.Err) {
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: runNowResponse.RunId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := run.State.LifeCycleState
 		statusMessage := run.State.StateMessage
 		switch status {
 		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
-			return nil
+			return run, nil
 		case RunLifeCycleStateInternalError:
 			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
 				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -337,7 +337,7 @@ func (a *JobsAPI) Submit(ctx context.Context, request SubmitRun) (*SubmitRunResp
 }
 
 // Submit and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) SubmitAndWait(ctx context.Context, request SubmitRun, timeout ...time.Duration) (*SubmitRunResponse, error) {
+func (a *JobsAPI) SubmitAndWait(ctx context.Context, request SubmitRun, timeout ...time.Duration) (*Run, error) {
 	submitRunResponse, err := a.Submit(ctx, request)
 	if err != nil {
 		return nil, err
@@ -345,24 +345,24 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, request SubmitRun, timeout 
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return submitRunResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[Run](ctx, timeout[0], func() (*Run, *retries.Err) {
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: submitRunResponse.RunId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := run.State.LifeCycleState
 		statusMessage := run.State.StateMessage
 		switch status {
 		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
-			return nil
+			return run, nil
 		case RunLifeCycleStateInternalError:
 			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
 				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }

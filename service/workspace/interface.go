@@ -16,6 +16,7 @@ type WorkspaceService interface {
 	// code :: json { &#34;path&#34;: &#34;/Users/user@example.com/project&#34;, &#34;recursive&#34;:
 	// true }
 	Delete(ctx context.Context, deleteRequest DeleteRequest) error
+
 	// Exports a notebook or contents of an entire directory. If ``path`` does
 	// not exist, this call returns an error ``RESOURCE_DOES_NOT_EXIST``. One
 	// can only export a directory in ``DBC`` format. If the exported data would
@@ -29,6 +30,7 @@ type WorkspaceService interface {
 	// ``direct_download``: .. code :: shell curl -n -o example.scala \
 	// &#39;https://XX.cloud.databricks.com/api/2.0/workspace/export?path=/Users/user@example.com/ScalaExampleNotebook&amp;direct_download=true&#39;
 	Export(ctx context.Context, exportRequest ExportRequest) (*ExportResponse, error)
+
 	// Gets the status of an object or a directory. If ``path`` does not exist,
 	// this call returns an error ``RESOURCE_DOES_NOT_EXIST``. Example of
 	// request: .. code :: json { &#34;path&#34;:
@@ -37,6 +39,7 @@ type WorkspaceService interface {
 	// &#34;/Users/user@example.com/project/ScalaExampleNotebook&#34;, &#34;language&#34;:
 	// &#34;SCALA&#34;, &#34;object_type&#34;: &#34;NOTEBOOK&#34;, &#34;object_id&#34;: 789 }
 	GetStatus(ctx context.Context, getStatusRequest GetStatusRequest) (*GetStatusResponse, error)
+
 	GetStatusByPath(ctx context.Context, path string) (*GetStatusResponse, error)
 	// Imports a notebook or the contents of an entire directory. If ``path``
 	// already exists and ``overwrite`` is set to ``false``, this call returns
@@ -50,6 +53,7 @@ type WorkspaceService interface {
 	// language=SCALA \ -F content=@example.scala \
 	// https://XX.cloud.databricks.com/api/2.0/workspace/import
 	Import(ctx context.Context, importRequest ImportRequest) error
+
 	// Lists the contents of a directory, or the object if it is not a
 	// directory. If the input path does not exist, this call returns an error
 	// ``RESOURCE_DOES_NOT_EXIST``. Example of request: .. code :: json {
@@ -59,6 +63,7 @@ type WorkspaceService interface {
 	// &#34;/Users/user@example.com/PythonExampleNotebook&#34;, &#34;language&#34;: &#34;PYTHON&#34;,
 	// &#34;object_type&#34;: &#34;NOTEBOOK&#34;, &#34;object_id&#34;: 456 } ] }
 	List(ctx context.Context, listRequest ListRequest) (*ListResponse, error)
+
 	// Creates the given directory and necessary parent directories if they do
 	// not exists. If there exists an object (not a directory) at any prefix of
 	// the input path, this call returns an error ``RESOURCE_ALREADY_EXISTS``.
@@ -66,5 +71,6 @@ type WorkspaceService interface {
 	// of the necessary parrent directories. Example of request: .. code:: json
 	// { &#34;path&#34;: &#34;/Users/user@example.com/project&#34; }
 	Mkdirs(ctx context.Context, mkdirsRequest MkdirsRequest) error
+
 	MkdirsByPath(ctx context.Context, path string) error
 }

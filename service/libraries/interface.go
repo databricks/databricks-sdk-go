@@ -22,6 +22,7 @@ type LibrariesService interface {
 	// [&#34;Could not download library&#34;], &#34;is_library_for_all_clusters&#34;: false } ]
 	// } ] }
 	AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error)
+
 	// Get the status of libraries on a cluster. A status will be available for
 	// all libraries installed on this cluster via the API or the libraries UI
 	// as well as libraries set to be installed on all clusters via the
@@ -47,6 +48,7 @@ type LibrariesService interface {
 	// spark version.\nPlease upgrade to Runtime 3.2 or higher&#34;],
 	// &#34;is_library_for_all_clusters&#34;: false } ] }
 	ClusterStatus(ctx context.Context, clusterStatusRequest ClusterStatusRequest) (*ClusterStatusResponse, error)
+
 	ClusterStatusByClusterId(ctx context.Context, clusterId string) (*ClusterStatusResponse, error)
 	// Add libraries to be installed on a cluster. The installation is
 	// asynchronous - it happens in the background after the completion of this
@@ -63,6 +65,7 @@ type LibrariesService interface {
 	// &#34;package&#34;: &#34;simplejson&#34;, &#34;repo&#34;: &#34;http://my-pypi-mirror.com&#34; } }, {
 	// &#34;cran&#34;: { &#34;package: &#34;ada&#34;, &#34;repo&#34;: &#34;http://cran.us.r-project.org&#34; } } ] }
 	Install(ctx context.Context, installLibrariesRequest InstallLibrariesRequest) error
+
 	// Set libraries to be uninstalled on a cluster. The libraries won&#39;t be
 	// uninstalled until the cluster is restarted. Uninstalling libraries that
 	// are not installed on the cluster will have no impact but is not an error.

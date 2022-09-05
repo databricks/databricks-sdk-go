@@ -13,10 +13,12 @@ type DbfsService interface {
 	// will throw an exception with ``MAX_BLOCK_SIZE_EXCEEDED``. Example of
 	// request: .. code:: { &#34;data&#34;: &#34;ZGF0YWJyaWNrcwo=&#34;, &#34;handle&#34;: 7904256 }
 	AddBlock(ctx context.Context, addBlockRequest AddBlockRequest) error
+
 	// Closes the stream specified by the input handle. If the handle does not
 	// exist, this call will throw an exception with
 	// ``RESOURCE_DOES_NOT_EXIST``.
 	Close(ctx context.Context, closeRequest CloseRequest) error
+
 	CloseByHandle(ctx context.Context, handle int64) error
 	// Opens a stream to write to a file and returns a handle to this stream.
 	// There is a 10 minute idle timeout on this handle. If a file or directory
@@ -26,15 +28,18 @@ type DbfsService interface {
 	// handle. 2) Issue one or more ``add-block`` calls with the handle you
 	// have. 3) Issue a ``close`` call with the handle you have.
 	Create(ctx context.Context, createRequest CreateRequest) (*CreateResponse, error)
+
 	// Delete the file or directory (optionally recursively delete all files in
 	// the directory). This call will throw an exception with ``IO_ERROR`` if
 	// the path is a non-empty directory and recursive is set to false or on
 	// other similar errors.
 	Delete(ctx context.Context, deleteRequest DeleteRequest) error
+
 	// Gets the file information of a file or directory. If the file or
 	// directory does not exist, this call will throw an exception with
 	// ``RESOURCE_DOES_NOT_EXIST``.
 	GetStatus(ctx context.Context, getStatusRequest GetStatusRequest) (*GetStatusResponse, error)
+
 	GetStatusByPath(ctx context.Context, path string) (*GetStatusResponse, error)
 	// Lists the contents of a directory, or details of the file. If the file or
 	// directory does not exist, this call will throw an exception with
@@ -42,6 +47,7 @@ type DbfsService interface {
 	// &#34;path&#34;: &#34;/a.cpp&#34;, &#34;is_dir&#34;: false, &#34;file_size&#34;: 261 }, { &#34;path&#34;:
 	// &#34;/databricks-results&#34;, &#34;is_dir&#34;: true, &#34;file_size&#34;: 0 } ] }
 	List(ctx context.Context, listStatusRequest ListStatusRequest) (*ListStatusResponse, error)
+
 	ListByPath(ctx context.Context, path string) (*ListStatusResponse, error)
 	// Creates the given directory and necessary parent directories if they do
 	// not exist. If there exists a file (not a directory) at any prefix of the
@@ -49,6 +55,7 @@ type DbfsService interface {
 	// ``RESOURCE_ALREADY_EXISTS``. Note that if this operation fails it may
 	// have succeeded in creating some of the necessary parent directories.
 	Mkdirs(ctx context.Context, mkDirsRequest MkDirsRequest) error
+
 	MkdirsByPath(ctx context.Context, path string) error
 	// Move a file from one location to another location within DBFS. If the
 	// source file does not exist, this call will throw an exception with
@@ -57,6 +64,7 @@ type DbfsService interface {
 	// ``RESOURCE_ALREADY_EXISTS``. If the given source path is a directory,
 	// this call will always recursively move all files.
 	Move(ctx context.Context, moveRequest MoveRequest) error
+
 	// Uploads a file through the use of multipart form post. It is mainly used
 	// for streaming uploads, but can also be used as a convenient single call
 	// for data upload. Example usage: .. code:: curl -u USER:PASS -F
@@ -76,6 +84,7 @@ type DbfsService interface {
 	// :ref:`dbfsDbfsServicecreate`, :ref:`dbfsDbfsServiceaddBlock` and
 	// :ref:`dbfsDbfsServiceclose` for details.
 	Put(ctx context.Context, putRequest PutRequest) error
+
 	// Returns the contents of a file. If the file does not exist, this call
 	// will throw an exception with ``RESOURCE_DOES_NOT_EXIST``. If the path is
 	// a directory, the read length is negative, or if the offset is negative,

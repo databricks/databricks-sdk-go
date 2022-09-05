@@ -33,6 +33,7 @@ type SecretsService interface {
 	// the workspace is exceeded. Throws ``INVALID_PARAMETER_VALUE`` if the
 	// scope name is invalid.
 	CreateScope(ctx context.Context, createScopeRequest CreateScopeRequest) error
+
 	// Deletes the given ACL on the given scope. Users must have the ``MANAGE``
 	// permission to invoke this API. Example request: .. code:: { &#34;scope&#34;:
 	// &#34;my-secret-scope&#34;, &#34;principal&#34;: &#34;data-scientists&#34; } Throws
@@ -40,11 +41,13 @@ type SecretsService interface {
 	// exists. Throws ``PERMISSION_DENIED`` if the user does not have permission
 	// to make this API call.
 	DeleteAcl(ctx context.Context, deleteAclRequest DeleteAclRequest) error
+
 	// Deletes a secret scope. Example request: .. code:: { &#34;scope&#34;:
 	// &#34;my-secret-scope&#34; } Throws ``RESOURCE_DOES_NOT_EXIST`` if the scope does
 	// not exist. Throws ``PERMISSION_DENIED`` if the user does not have
 	// permission to make this API call.
 	DeleteScope(ctx context.Context, deleteScopeRequest DeleteScopeRequest) error
+
 	// Deletes the secret stored in this secret scope. You must have ``WRITE``
 	// or ``MANAGE`` permission on the Secret Scope. Example request: .. code::
 	// { &#34;scope&#34;: &#34;my-secret-scope&#34;, &#34;key&#34;: &#34;my-secret-key&#34; } Throws
@@ -52,6 +55,7 @@ type SecretsService interface {
 	// Throws ``PERMISSION_DENIED`` if the user does not have permission to make
 	// this API call.
 	DeleteSecret(ctx context.Context, deleteSecretRequest DeleteSecretRequest) error
+
 	// Describes the details about the given ACL, such as the group and
 	// permission. Users must have the ``MANAGE`` permission to invoke this API.
 	// Example response: .. code:: { &#34;principal&#34;: &#34;data-scientists&#34;,
@@ -59,6 +63,7 @@ type SecretsService interface {
 	// secret scope exists. Throws ``PERMISSION_DENIED`` if the user does not
 	// have permission to make this API call.
 	GetAcl(ctx context.Context, getAclRequest GetAclRequest) (*GetAclResponse, error)
+
 	// Lists the ACLs set on the given scope. Users must have the ``MANAGE``
 	// permission to invoke this API. Example response: .. code:: { &#34;acls&#34;: [{
 	// &#34;principal&#34;: &#34;admins&#34;, &#34;permission&#34;: &#34;MANAGE&#34; },{ &#34;principal&#34;:
@@ -67,12 +72,14 @@ type SecretsService interface {
 	// ``PERMISSION_DENIED`` if the user does not have permission to make this
 	// API call.
 	ListAcls(ctx context.Context, listAclsRequest ListAclsRequest) (*ListAclsResponse, error)
+
 	// Lists all secret scopes available in the workspace. Example response: ..
 	// code:: { &#34;scopes&#34;: [{ &#34;name&#34;: &#34;my-databricks-scope&#34;, &#34;backend_type&#34;:
 	// &#34;DATABRICKS&#34; },{ &#34;name&#34;: &#34;mount-points&#34;, &#34;backend_type&#34;: &#34;DATABRICKS&#34; }]
 	// } Throws ``PERMISSION_DENIED`` if the user does not have permission to
 	// make this API call.
 	ListScopes(ctx context.Context) (*ListScopesResponse, error)
+
 	// Lists the secret keys that are stored at this scope. This is a
 	// metadata-only operation; secret data cannot be retrieved using this API.
 	// Users need the READ permission to make this call. Example response: ..
@@ -84,6 +91,7 @@ type SecretsService interface {
 	// ``PERMISSION_DENIED`` if the user does not have permission to make this
 	// API call.
 	ListSecrets(ctx context.Context, listSecretsRequest ListSecretsRequest) (*ListSecretsResponse, error)
+
 	// Creates or overwrites the ACL associated with the given principal (user
 	// or group) on the specified scope point. In general, a user or group will
 	// use the most powerful permission available to them, and permissions are
@@ -105,6 +113,7 @@ type SecretsService interface {
 	// the permission is invalid. Throws ``PERMISSION_DENIED`` if the user does
 	// not have permission to make this API call.
 	PutAcl(ctx context.Context, putAclRequest PutAclRequest) error
+
 	// Inserts a secret under the provided scope with the given name. If a
 	// secret already exists with the same name, this command overwrites the
 	// existing secret&#39;s value. The server encrypts the secret using the secret

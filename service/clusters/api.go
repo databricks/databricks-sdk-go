@@ -53,7 +53,7 @@ func (a *ClustersAPI) Create(ctx context.Context, request CreateCluster) (*Creat
 }
 
 // Create and wait to reach RUNNING state
-func (a *ClustersAPI) CreateAndWait(ctx context.Context, request CreateCluster, timeout ...time.Duration) (*CreateClusterResponse, error) {
+func (a *ClustersAPI) CreateAndWait(ctx context.Context, request CreateCluster, timeout ...time.Duration) (*ClusterInfo, error) {
 	createClusterResponse, err := a.Create(ctx, request)
 	if err != nil {
 		return nil, err
@@ -61,24 +61,24 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, request CreateCluster, 
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return createClusterResponse, retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: createClusterResponse.ClusterId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
 		case ClusterInfoStateRunning: // target state
-			return nil
+			return clusterInfo, nil
 		case ClusterInfoStateError:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ClusterInfoStateRunning, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -95,32 +95,32 @@ func (a *ClustersAPI) Delete(ctx context.Context, request DeleteCluster) error {
 }
 
 // Delete and wait to reach TERMINATED state
-func (a *ClustersAPI) DeleteAndWait(ctx context.Context, request DeleteCluster, timeout ...time.Duration) error {
+func (a *ClustersAPI) DeleteAndWait(ctx context.Context, request DeleteCluster, timeout ...time.Duration) (*ClusterInfo, error) {
 	err := a.Delete(ctx, request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: request.ClusterId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
 		case ClusterInfoStateTerminated: // target state
-			return nil
+			return clusterInfo, nil
 		case ClusterInfoStateError:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ClusterInfoStateTerminated, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -136,7 +136,7 @@ func (a *ClustersAPI) DeleteByClusterId(ctx context.Context, clusterId string) e
 	})
 }
 
-func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId string, timeout ...time.Duration) error {
+func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId string, timeout ...time.Duration) (*ClusterInfo, error) {
 	return a.DeleteAndWait(ctx, DeleteCluster{
 		ClusterId: clusterId,
 	}, timeout...)
@@ -160,32 +160,32 @@ func (a *ClustersAPI) Edit(ctx context.Context, request EditCluster) error {
 }
 
 // Edit and wait to reach RUNNING state
-func (a *ClustersAPI) EditAndWait(ctx context.Context, request EditCluster, timeout ...time.Duration) error {
+func (a *ClustersAPI) EditAndWait(ctx context.Context, request EditCluster, timeout ...time.Duration) (*ClusterInfo, error) {
 	err := a.Edit(ctx, request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: request.ClusterId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
 		case ClusterInfoStateRunning: // target state
-			return nil
+			return clusterInfo, nil
 		case ClusterInfoStateError:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ClusterInfoStateRunning, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -229,24 +229,24 @@ func (a *ClustersAPI) GetAndWait(ctx context.Context, request GetRequest, timeou
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return clusterInfo, retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: clusterInfo.ClusterId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
 		case ClusterInfoStateRunning: // target state
-			return nil
+			return clusterInfo, nil
 		case ClusterInfoStateError:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ClusterInfoStateRunning, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -365,32 +365,32 @@ func (a *ClustersAPI) Resize(ctx context.Context, request ResizeCluster) error {
 }
 
 // Resize and wait to reach RUNNING state
-func (a *ClustersAPI) ResizeAndWait(ctx context.Context, request ResizeCluster, timeout ...time.Duration) error {
+func (a *ClustersAPI) ResizeAndWait(ctx context.Context, request ResizeCluster, timeout ...time.Duration) (*ClusterInfo, error) {
 	err := a.Resize(ctx, request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: request.ClusterId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
 		case ClusterInfoStateRunning: // target state
-			return nil
+			return clusterInfo, nil
 		case ClusterInfoStateError:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ClusterInfoStateRunning, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -405,32 +405,32 @@ func (a *ClustersAPI) Restart(ctx context.Context, request RestartCluster) error
 }
 
 // Restart and wait to reach RUNNING state
-func (a *ClustersAPI) RestartAndWait(ctx context.Context, request RestartCluster, timeout ...time.Duration) error {
+func (a *ClustersAPI) RestartAndWait(ctx context.Context, request RestartCluster, timeout ...time.Duration) (*ClusterInfo, error) {
 	err := a.Restart(ctx, request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: request.ClusterId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
 		case ClusterInfoStateRunning: // target state
-			return nil
+			return clusterInfo, nil
 		case ClusterInfoStateError:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ClusterInfoStateRunning, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -459,32 +459,32 @@ func (a *ClustersAPI) Start(ctx context.Context, request StartCluster) error {
 }
 
 // Start and wait to reach RUNNING state
-func (a *ClustersAPI) StartAndWait(ctx context.Context, request StartCluster, timeout ...time.Duration) error {
+func (a *ClustersAPI) StartAndWait(ctx context.Context, request StartCluster, timeout ...time.Duration) (*ClusterInfo, error) {
 	err := a.Start(ctx, request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if len(timeout) == 0 {
 		timeout = []time.Duration{20 * time.Minute}
 	}
-	return retries.Wait(ctx, timeout[0], func() *retries.Err {
+	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: request.ClusterId,
 		})
 		if err != nil {
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
 		case ClusterInfoStateRunning: // target state
-			return nil
+			return clusterInfo, nil
 		case ClusterInfoStateError:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ClusterInfoStateRunning, status, statusMessage)
-			return retries.Halt(err)
+			return nil, retries.Halt(err)
 		default:
-			return retries.Continues(statusMessage)
+			return nil, retries.Continues(statusMessage)
 		}
 	})
 }
@@ -503,7 +503,7 @@ func (a *ClustersAPI) StartByClusterId(ctx context.Context, clusterId string) er
 	})
 }
 
-func (a *ClustersAPI) StartByClusterIdAndWait(ctx context.Context, clusterId string, timeout ...time.Duration) error {
+func (a *ClustersAPI) StartByClusterIdAndWait(ctx context.Context, clusterId string, timeout ...time.Duration) (*ClusterInfo, error) {
 	return a.StartAndWait(ctx, StartCluster{
 		ClusterId: clusterId,
 	}, timeout...)
