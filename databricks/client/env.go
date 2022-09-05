@@ -4,8 +4,6 @@ import (
 	"os"
 	"strings"
 	"sync"
-
-	"github.com/mitchellh/go-homedir"
 )
 
 var (
@@ -49,7 +47,6 @@ func CleanupEnvironment() func() {
 	os.Clearenv()
 	os.Setenv("PATH", oldPath)
 	os.Setenv("HOME", pwd)
-	homedir.DisableCache = true
 	// and return restore function
 	return func() {
 		for _, kv := range prevEnv {
