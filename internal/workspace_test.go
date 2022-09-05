@@ -2,16 +2,11 @@ package internal
 
 import (
 	"context"
-	// "fmt"
-	"testing"
-	// "time"
 	"encoding/base64"
+	"testing"
 
-	// "github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/databricks/databricks-sdk-go/workspaces"
-
-	// "github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
