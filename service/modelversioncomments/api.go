@@ -4,21 +4,19 @@ package modelversioncomments
 
 import (
 	"context"
-	
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-
 type ModelversioncommentsService interface {
-    // Make a comment on a model version. A comment can be submitted either by a
-    // user or programmatically to display relevant information about the model.
-    // For example, test results or deployment errors.
-    CreateComment(ctx context.Context, createCommentRequest CreateCommentRequest) (*CreateCommentResponse, error)
-    // Delete a comment on a model version.
-    DeleteComment(ctx context.Context, deleteCommentRequest DeleteCommentRequest) error
-    // Edit a comment on a model version.
-    UpdateComment(ctx context.Context, updateCommentRequest UpdateCommentRequest) (*UpdateCommentResponse, error)
+	// Make a comment on a model version. A comment can be submitted either by a
+	// user or programmatically to display relevant information about the model.
+	// For example, test results or deployment errors.
+	CreateComment(ctx context.Context, createCommentRequest CreateCommentRequest) (*CreateCommentResponse, error)
+	// Delete a comment on a model version.
+	DeleteComment(ctx context.Context, deleteCommentRequest DeleteCommentRequest) error
+	// Edit a comment on a model version.
+	UpdateComment(ctx context.Context, updateCommentRequest UpdateCommentRequest) (*UpdateCommentResponse, error)
 }
 
 func New(client *client.DatabricksClient) ModelversioncommentsService {
@@ -55,4 +53,3 @@ func (a *ModelversioncommentsAPI) UpdateComment(ctx context.Context, request Upd
 	err := a.client.Post(ctx, path, request, &updateCommentResponse)
 	return &updateCommentResponse, err
 }
-

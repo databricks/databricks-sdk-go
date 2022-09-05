@@ -4,7 +4,6 @@ package mlflowext
 
 import (
 	"context"
-	
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
@@ -12,14 +11,13 @@ import (
 // These endpoints are modified versions of the MLflow API that accept
 // additional input parameters or return additional information.
 type MlflowextService interface {
-    
-    GetRegisteredModel(ctx context.Context, getRegisteredModelRequest GetRegisteredModelRequest) (*GetRegisteredModelResponse, error)
-    // Transition a model version&#39;s stage. This is a &lt;Workspace&gt; version of the
-    // [MLflow
-    // endpoint](https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage)
-    // that also accepts a comment associated with the transition to be
-    // recorded.
-    TransitionModelVersionStage(ctx context.Context, transitionModelVersionStageRequest TransitionModelVersionStageRequest) (*TransitionModelVersionStageResponse, error)
+	GetRegisteredModel(ctx context.Context, getRegisteredModelRequest GetRegisteredModelRequest) (*GetRegisteredModelResponse, error)
+	// Transition a model version&#39;s stage. This is a &lt;Workspace&gt; version of the
+	// [MLflow
+	// endpoint](https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage)
+	// that also accepts a comment associated with the transition to be
+	// recorded.
+	TransitionModelVersionStage(ctx context.Context, transitionModelVersionStageRequest TransitionModelVersionStageRequest) (*TransitionModelVersionStageResponse, error)
 }
 
 func New(client *client.DatabricksClient) MlflowextService {
@@ -31,7 +29,6 @@ func New(client *client.DatabricksClient) MlflowextService {
 type MlflowextAPI struct {
 	client *client.DatabricksClient
 }
-
 
 func (a *MlflowextAPI) GetRegisteredModel(ctx context.Context, request GetRegisteredModelRequest) (*GetRegisteredModelResponse, error) {
 	var getRegisteredModelResponse GetRegisteredModelResponse
@@ -50,4 +47,3 @@ func (a *MlflowextAPI) TransitionModelVersionStage(ctx context.Context, request 
 	err := a.client.Post(ctx, path, request, &transitionModelVersionStageResponse)
 	return &transitionModelVersionStageResponse, err
 }
-
