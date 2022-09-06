@@ -24,16 +24,14 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 		err := wsc.Workspace.Delete(ctx, workspace.DeleteRequest{
 			Path:      testDirPath,
 			Recursive: true,
-		},
-		)
+		})
 		require.NoError(t, err)
 	})
 
 	// Make test directory
 	err := wsc.Workspace.Mkdirs(ctx, workspace.MkdirsRequest{
 		Path: testDirPath,
-	},
-	)
+	})
 	require.NoError(t, err)
 
 	// Import the test notebook
@@ -43,15 +41,13 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 		Language:  "PYTHON",
 		Content:   base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")),
 		Overwrite: true,
-	},
-	)
+	})
 	require.NoError(t, err)
 
 	// Get test notebook status
 	getStatusResponse, err := wsc.Workspace.GetStatus(ctx, workspace.GetStatusRequest{
 		Path: filepath.Join(testDirPath, testFileName),
-	},
-	)
+	})
 	require.NoError(t, err)
 	assert.True(t, getStatusResponse.Language == "PYTHON")
 	assert.True(t, getStatusResponse.Path == filepath.Join(testDirPath, testFileName))
@@ -62,16 +58,14 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 		DirectDownload: false,
 		Format:         "SOURCE",
 		Path:           filepath.Join(testDirPath, testFileName),
-	},
-	)
+	})
 	require.NoError(t, err)
 	assert.True(t, exportResponse.Content == base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")))
 
 	// Assert the test notebook is present in test dir using list api
 	listReponse, err := wsc.Workspace.List(ctx, workspace.ListRequest{
 		Path: testDirPath,
-	},
-	)
+	})
 	require.NoError(t, err)
 	foundTestNotebook := false
 	for _, objectInfo := range listReponse.Objects {
