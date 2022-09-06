@@ -79,3 +79,33 @@ func Wait(pctx context.Context, timeout time.Duration, fn WaitFn) error {
 		}
 	}
 }
+
+func Poll[T any](pctx context.Context, timeout time.Duration, fn func() (*T, *Err)) (*T, error) {
+	ctx, cancel := context.WithTimeout(pctx, timeout)
+	defer cancel()
+	var attempt int
+	var lastErr error
+	for {
+		attempt++
+		entity, err := fn()
+		if err == nil {
+			return entity, nil
+		}
+		if err.Halt {
+			return nil, err.Err
+		}
+		lastErr = err.Err
+		wait := Backoff(attempt)
+		timer := time.NewTimer(wait)
+		logger.Tracef("%s. Sleeping %s",
+			strings.TrimSuffix(err.Err.Error(), "."),
+			wait.Round(time.Millisecond))
+		select {
+		// stop when either this or parent context times out
+		case <-ctx.Done():
+			timer.Stop()
+			return nil, fmt.Errorf("timed out: %w", lastErr)
+		case <-timer.C:
+		}
+	}
+}

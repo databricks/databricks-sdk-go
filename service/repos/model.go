@@ -4,7 +4,7 @@ package repos
 
 // all definitions in this file are in alphabetical order
 
-type CreateRepoRequest struct {
+type CreateRepo struct {
 	Path string `json:"path,omitempty"`
 
 	Provider string `json:"provider"`
@@ -12,17 +12,32 @@ type CreateRepoRequest struct {
 	Url string `json:"url"`
 }
 
-type DeleteRepoRequest struct {
+type DeleteRequest struct {
 	// The ID for the corresponding repo to access.
 	RepoId string ` path:"repo_id"`
 }
 
-type GetRepoRequest struct {
+type GetRequest struct {
 	// The ID for the corresponding repo to access.
 	RepoId string ` path:"repo_id"`
 }
 
-type GetRepoResponse struct {
+type ListReposResponse struct {
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Repos []RepoInfo `json:"repos,omitempty"`
+}
+
+type ListRequest struct {
+	// Token used to get the next page of results. If not specified, returns the
+	// first page of results as well as a next page token if there are more
+	// results.
+	NextPageToken string ` url:"next_page_token,omitempty"`
+	// Filters repos that have paths starting with the given path prefix.
+	PathPrefix string ` url:"path_prefix,omitempty"`
+}
+
+type RepoInfo struct {
 	Branch string `json:"branch,omitempty"`
 
 	HeadCommitId string `json:"head_commit_id,omitempty"`
@@ -36,24 +51,12 @@ type GetRepoResponse struct {
 	Url string `json:"url,omitempty"`
 }
 
-type GetReposResponse struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Repos []GetRepoResponse `json:"repos,omitempty"`
-}
-
-type ListReposRequest struct {
-	// Token used to get the next page of results. If not specified, returns
-	// the first page of results as well as a next page token if there are more
-	// results.
-	NextPageToken string ` url:"next_page_token,omitempty"`
-	// Filters repos that have paths starting with the given path prefix.
-	PathPrefix string ` url:"path_prefix,omitempty"`
-}
-
-type UpdateRepoRequest struct {
+type UpdateRepo struct {
+	Branch string `json:"branch,omitempty"`
 	// The ID for the corresponding repo to access.
 	RepoId string ` path:"repo_id"`
+
+	Tag string `json:"tag,omitempty"`
 }
 
 // Branch that the local version of the repo is checked out to.
@@ -68,8 +71,12 @@ type UpdateRepoRequest struct {
 // Desired path for the repo in the workspace. Must be in the format
 // /Repos/{folder}/{repo-name}.
 
-// Git provider. This field is case-insensitive. The available Git providers
-// are gitHub, bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise,
+// Git provider. This field is case-insensitive. The available Git providers are
+// gitHub, bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise,
 // bitbucketServer, gitLabEnterpriseEdition and awsCodeCommit.
+
+// Tag that the local version of the repo is checked out to. Updating the repo
+// to a tag puts the repo in a detached HEAD state. Before committing new
+// changes, you must update the repo to a branch instead of the detached HEAD.
 
 // URL of the Git repository to be linked.

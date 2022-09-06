@@ -1,0 +1,82 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package {{.Name}}
+
+import (
+	"context"
+	{{if or .HasPathParams .HasWaits}}"fmt"{{end}}
+	{{if .HasWaits}}"time"
+
+	"github.com/databricks/databricks-sdk-go/retries"{{end}}
+	"github.com/databricks/databricks-sdk-go/databricks/client"
+)
+{{range .Services}}
+func New{{.PascalName}}(client *client.DatabricksClient) {{.PascalName}}Service {
+	return &{{.PascalName}}API{
+		client: client,
+	}
+}
+
+type {{.PascalName}}API struct {
+	client *client.DatabricksClient
+}
+
+{{range .Methods}}{{.Comment "// " 80}}
+func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}} {
+	{{if .Response}}var {{.Response.CamelName}} {{.Response.PascalName}}
+	{{end -}}
+	path := {{if .PathParts -}}
+		fmt.Sprintf("{{range  .PathParts}}{{.Prefix}}{{if .Field}}%v{{end}}{{ end }}"{{ range .PathParts }}{{if .Field}}, request.{{.Field.PascalName}}{{end}}{{ end }})
+	{{- else}}"{{.Path}}"{{end}}
+	err := a.client.{{.TitleVerb}}(ctx, path, {{if .Request}}request{{else}}nil{{end}}{{if .Response}}, &{{.Response.CamelName}}{{else if .CanHaveResponseBody}}, nil{{end}})
+	return {{if .Response}}&{{.Response.CamelName}}, {{end}}err
+}
+{{if .Wait}}
+// {{.PascalName}} and wait to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
+func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}, timeout ...time.Duration) (*{{.Wait.Poll.Response.PascalName}}, error) {
+	{{if .Wait.ForceBindRequest}}_, {{else if .Response}}{{.Response.CamelName}}, {{end}}err := a.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
+	if err != nil {
+		return nil, err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20*time.Minute}
+	}
+	return retries.Poll[{{.Wait.Poll.Response.PascalName}}](ctx, timeout[0], func() (*{{.Wait.Poll.Response.PascalName}}, *retries.Err) {
+		{{.Wait.Poll.Response.CamelName}}, err := a.{{.Wait.Poll.PascalName}}(ctx, {{.Wait.Poll.Request.PascalName}}{
+			{{.Wait.Bind.PascalName}}: {{if .Wait.ForceBindRequest}}request{{else if .Response}}{{.Response.CamelName}}{{else}}request{{end}}.{{.Wait.Bind.PascalName}},
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := {{.Wait.Poll.Response.CamelName}}{{range .Wait.StatusPath}}.{{.PascalName}}{{end}}
+		statusMessage := {{.Wait.Poll.Response.CamelName}}{{range .Wait.MessagePath}}.{{.PascalName}}{{end}}
+		switch status {
+		case {{range $i, $e := .Wait.Success}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}: // target state
+			return {{.Wait.Poll.Response.CamelName}}, nil
+		{{if .Wait.Failure}}case {{range $i, $e := .Wait.Failure}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}:
+			err := fmt.Errorf("failed to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}%s{{end}}, got %s: %s",
+				{{range $i, $e := .Wait.Success}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}, status, statusMessage)
+			return nil, retries.Halt(err)
+		{{end}}default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+{{end}}{{if .Shortcut}}
+{{.Comment "// " 80}}
+func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}} {
+	return a.{{.PascalName}}(ctx, {{.Request.PascalName}}{
+		{{- range .Shortcut.Params}}
+		{{.PascalName}}: {{.CamelName}},{{end}}
+	})
+}
+{{end}}{{if and .Shortcut .Wait}}
+func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, timeout ...time.Duration) (*{{.Wait.Poll.Response.PascalName}}, error) {
+	return a.{{.PascalName}}AndWait(ctx, {{.Request.PascalName}}{
+		{{- range .Shortcut.Params}}
+		{{.PascalName}}: {{.CamelName}},{{end}}
+	}, timeout...)
+}
+{{end}}
+{{end -}}
+{{- end}}

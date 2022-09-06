@@ -2,275 +2,134 @@ package internal
 
 import (
 	"context"
-	"fmt"
 	"testing"
-	"time"
 
-	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func waitForTerminatingClusterToTerminate(ctx context.Context, workspacesClient workspaces.WorkspacesClient, t *testing.T, clusterId string) error {
-	return retries.Wait(ctx, 30*time.Minute, func() *retries.Err {
-		clusterInfo, err := workspacesClient.Clusters.GetCluster(ctx,
-			clusters.GetClusterRequest{ClusterId: clusterId},
-		)
-		if err != nil {
-			return retries.Halt(err)
-		}
-		if clusterInfo.State == clusters.GetClusterResponseStateTerminated {
-			return nil
-		}
-		if clusterInfo.State != clusters.GetClusterResponseStateTerminating {
-			// Maybe manually test that this path
-			return retries.Halt(fmt.Errorf("Expected cluster %s to be in a TERMINATING state, instead its in %s state", clusterId, clusterInfo.State))
-		}
-		return retries.Continue(fmt.Errorf("%s is %s, but has to be TERMINATING", clusterId, clusterInfo.State))
-	})
-}
-
-func waitForClusterRunning(ctx context.Context, workspacesClient workspaces.WorkspacesClient, t *testing.T, clusterId string) error {
-	return retries.Wait(ctx, 30*time.Minute, func() *retries.Err {
-		clusterInfo, err := workspacesClient.Clusters.GetCluster(ctx,
-			clusters.GetClusterRequest{ClusterId: clusterId},
-		)
-		if err != nil {
-			return retries.Halt(err)
-		}
-		if clusterInfo.State == clusters.GetClusterResponseStateRunning {
-			return nil
-		}
-		if clusterInfo.State == clusters.GetClusterResponseStateTerminated ||
-			clusterInfo.State == clusters.GetClusterResponseStateTerminating {
-			// Maybe manually test that this path
-			return retries.Halt(fmt.Errorf("cluster %s can't transition into a RUNNING state because its in %s state", clusterId, clusterInfo.State))
-		}
-		return retries.Continue(fmt.Errorf("%s is %s, but has to be RUNNING", clusterId, clusterInfo.State))
-	})
-}
-
-func TestAccListClustersIntegration(t *testing.T) {
+func TestAccClustersApiIntegration(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	ctx := context.TODO()
-	workspacesClient := workspaces.New()
-	cluster1Name := RandomName("acceptance-test-cluster-1-")
-	cluster2Name := RandomName("acceptance-test-cluster-2-")
+	t.Parallel()
 
-	// Fetch list of spark runtime versions and select the latest LTS version
-	getSparkVersionsResponse, err := workspacesClient.Clusters.GetSparkVersions(ctx)
+	ctx := context.Background()
+	wsc := workspaces.New()
+
+	clusterName := RandomName("sdk-go-cluster-")
+
+	// Fetch list of spark runtime versions
+	sparkVersions, err := wsc.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
-	dbrVersion, err := getSparkVersionsResponse.Select(clusters.SparkVersionRequest{
+
+	// Select the latest LTS version
+	latestLTS, err := sparkVersions.Select(clusters.SparkVersionRequest{
 		Latest:          true,
 		LongTermSupport: true,
-	},
-	)
+	})
 	require.NoError(t, err)
 
-	// Fetch list of node types and select the smallest version
-	listNodeTypesResponse, err := workspacesClient.Clusters.ListNodeTypes(ctx)
-	require.NoError(t, err)
-	clusterNodeType, err := listNodeTypesResponse.Smallest(clusters.NodeTypeRequest{})
+	// Fetch list of available node types
+	nodeTypes, err := wsc.Clusters.ListNodeTypes(ctx)
 	require.NoError(t, err)
 
-	createClusterRequest := clusters.CreateClusterRequest{
-		NumWorkers:             1,
-		ClusterName:            cluster1Name,
-		SparkVersion:           dbrVersion,
+	// Select the smallest node type id
+	smallestWithDisk, err := nodeTypes.Smallest(clusters.NodeTypeRequest{
+		LocalDisk: true,
+	})
+	require.NoError(t, err)
+
+	// Create cluster and wait for it to start properly
+	clstr, err := wsc.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
+		ClusterName:            clusterName,
+		SparkVersion:           latestLTS,
+		NodeTypeId:             smallestWithDisk,
 		AutoterminationMinutes: 15,
-		NodeTypeId:             clusterNodeType,
-	}
-
-	// Create cluster
-	clusterCreateResponse, err := workspacesClient.Clusters.CreateCluster(ctx, createClusterRequest)
+		NumWorkers:             1,
+	})
 	require.NoError(t, err)
-	assert.NotEmpty(t, clusterCreateResponse.ClusterId)
 
-	clusterId1 := clusterCreateResponse.ClusterId
-
-	// Get cluster information. Assert cluster metadata is as expected
-	getClusterResponse, err := workspacesClient.Clusters.GetCluster(
-		ctx,
-		clusters.GetClusterRequest{ClusterId: clusterId1},
-	)
+	byId, err := wsc.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
-	assert.True(t, getClusterResponse.NumWorkers == createClusterRequest.NumWorkers)
-	assert.True(t, getClusterResponse.ClusterName == createClusterRequest.ClusterName)
-	assert.True(t, getClusterResponse.AutoterminationMinutes == createClusterRequest.AutoterminationMinutes)
-	assert.True(t, getClusterResponse.NodeTypeId == createClusterRequest.NodeTypeId)
-	assert.True(t, getClusterResponse.SparkVersion == createClusterRequest.SparkVersion)
+	assert.Equal(t, clusterName, byId.ClusterName)
+	assert.Equal(t, clusters.ClusterInfoStateRunning, byId.State)
 
-	// Pin the cluster
-	err = workspacesClient.Clusters.PinCluster(ctx,
-		clusters.PinClusterRequest{
-			ClusterId: clusterId1,
-		},
-	)
+	// Pin the cluster in the list
+	err = wsc.Clusters.PinByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 
 	// Unpin the cluster
-	err = workspacesClient.Clusters.UnpinCluster(ctx,
-		clusters.UnpinClusterRequest{
-			ClusterId: clusterId1,
-		},
-	)
+	err = wsc.Clusters.UnpinByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 
-	// Terminate the cluster
-	err = workspacesClient.Clusters.DeleteCluster(ctx,
-		clusters.DeleteClusterRequest{
-			ClusterId: clusterId1,
-		},
-	)
-	require.NoError(t, err)
+	// Edit the cluster: change auto-termination and number of workers
+	err = wsc.Clusters.Edit(ctx, clusters.EditCluster{
+		ClusterId:    clstr.ClusterId,
+		SparkVersion: latestLTS,
+		NodeTypeId:   smallestWithDisk,
+		ClusterName:  clusterName,
 
-	// Assert the cluster state is TERMINATING or TERMINATED
-	getClusterResponse, err = workspacesClient.Clusters.GetCluster(ctx,
-		clusters.GetClusterRequest{ClusterId: clusterId1},
-	)
-	require.NoError(t, err)
-	assert.True(t,
-		getClusterResponse.State == clusters.GetClusterResponseStateTerminated ||
-			getClusterResponse.State == clusters.GetClusterResponseStateTerminating,
-	)
-
-	// Wait until cluster reaches TERMINATED state
-	err = waitForTerminatingClusterToTerminate(ctx, *workspacesClient, t, clusterId1)
-	require.NoError(t, err)
-
-	// Assert cluster state is terminated
-	getClusterResponse, err = workspacesClient.Clusters.GetCluster(ctx,
-		clusters.GetClusterRequest{ClusterId: clusterId1},
-	)
-	require.NoError(t, err)
-	assert.True(t, getClusterResponse.State == clusters.GetClusterResponseStateTerminated)
-
-	// Edit the cluster
-	err = workspacesClient.Clusters.EditCluster(ctx,
-		clusters.EditClusterRequest{
-			ClusterId:              clusterId1,
-			NumWorkers:             2,
-			AutoterminationMinutes: 30,
-			SparkVersion:           dbrVersion,
-			NodeTypeId:             clusterNodeType,
-			ClusterName:            cluster1Name,
-		},
-	)
+		// change auto-termination and number of workers
+		AutoterminationMinutes: 10,
+		NumWorkers:             2,
+	})
 	require.NoError(t, err)
 
 	// Assert edit changes are reflected in the cluster
-	getClusterResponse, err = workspacesClient.Clusters.GetCluster(ctx,
-		clusters.GetClusterRequest{ClusterId: clusterId1},
-	)
+	byId, err = wsc.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
-	assert.True(t, getClusterResponse.AutoterminationMinutes == 30)
-	assert.True(t, getClusterResponse.NumWorkers == 2)
-	assert.True(t, getClusterResponse.State == clusters.GetClusterResponseStateTerminated)
+	assert.Equal(t, 10, byId.AutoterminationMinutes)
+	assert.Equal(t, 2, byId.NumWorkers)
 
-	// Start cluster 1
-	err = workspacesClient.Clusters.StartCluster(ctx,
-		clusters.StartClusterRequest{
-			ClusterId: clusterId1,
-		},
-	)
+	// Terminate the cluster
+	_, err = wsc.Clusters.DeleteByClusterIdAndWait(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 
-	// Create cluster 2
-	clusterCreateResponse2, err := workspacesClient.Clusters.CreateCluster(ctx,
-		clusters.CreateClusterRequest{
-			NumWorkers:             1,
-			ClusterName:            cluster2Name,
-			SparkVersion:           dbrVersion,
-			AutoterminationMinutes: 15,
-			NodeTypeId:             clusterNodeType,
-		},
-	)
+	// Assert that the cluster we've just deleted has Terminated state
+	byId, err = wsc.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
-	clusterId2 := clusterCreateResponse2.ClusterId
+	assert.Equal(t, byId.State, clusters.ClusterInfoStateTerminated)
 
-	// Wait until both cluster 1 and 2 are running
-	err = waitForClusterRunning(ctx, *workspacesClient, t, clusterId1)
-	require.NoError(t, err)
-	err = waitForClusterRunning(ctx, *workspacesClient, t, clusterId2)
+	// Start cluster and wait until it's running again
+	_, err = wsc.Clusters.StartByClusterIdAndWait(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 
-	// Assert cluster 1 is running
-	getClusterResponse, err = workspacesClient.Clusters.GetCluster(ctx,
-		clusters.GetClusterRequest{ClusterId: clusterId1},
-	)
+	// Resize the cluster back to 1 worker and wait till completion
+	byId, err = wsc.Clusters.ResizeAndWait(ctx, clusters.ResizeCluster{
+		ClusterId:  clstr.ClusterId,
+		NumWorkers: 1,
+	})
 	require.NoError(t, err)
-	assert.True(t, getClusterResponse.State == clusters.GetClusterResponseStateRunning)
-	// Assert cluster 2 is running
-	getClusterResponse, err = workspacesClient.Clusters.GetCluster(ctx,
-		clusters.GetClusterRequest{ClusterId: clusterId2},
-	)
-	require.NoError(t, err)
-	assert.True(t, getClusterResponse.State == clusters.GetClusterResponseStateRunning)
+	assert.Equal(t, 1, byId.NumWorkers)
 
-	// Resize num_workers in cluster 1
-	err = workspacesClient.Clusters.ResizeCluster(ctx,
-		clusters.ResizeClusterRequest{
-			ClusterId:  clusterId1,
-			NumWorkers: 3,
-		},
-	)
-	require.NoError(t, err)
-	// Assert num_workers in cluster 1 is 3 now
-	getClusterResponse, err = workspacesClient.Clusters.GetCluster(ctx,
-		clusters.GetClusterRequest{ClusterId: clusterId1},
-	)
-	require.NoError(t, err)
-	assert.True(t, getClusterResponse.NumWorkers == 3)
-
-	// Restart cluster 2
-	err = workspacesClient.Clusters.RestartCluster(ctx,
-		clusters.RestartClusterRequest{
-			ClusterId: clusterId2,
-		},
-	)
+	// Restart the cluster and wait for it to run again
+	err = wsc.Clusters.Restart(ctx, clusters.RestartCluster{
+		ClusterId: clstr.ClusterId,
+	})
 	require.NoError(t, err)
 
-	// Get events for cluster 1 and assert its non empty
-	getEventsResponse, err := workspacesClient.Clusters.GetEvents(ctx,
-		clusters.GetEventsRequest{
-			ClusterId: clusterId1,
-		},
-	)
+	// Get events for the cluster and assert its non empty
+	getEventsResponse, err := wsc.Clusters.Events(ctx, clusters.GetEvents{
+		ClusterId: clstr.ClusterId,
+	})
 	require.NoError(t, err)
 	assert.True(t, len(getEventsResponse.Events) > 0)
 
 	// List clusters in workspace
-	listClustersResponse, err := workspacesClient.Clusters.ListClusters(ctx,
-		clusters.ListClustersRequest{},
-	)
+	listClustersResponse, err := wsc.Clusters.List(ctx, clusters.ListRequest{})
 	require.NoError(t, err)
-	numOccurancesOfTestCluster1 := 0
-	numOccurancesOfTestCluster2 := 0
+
+	var seen int
 	for _, clusterInfo := range listClustersResponse.Clusters {
-		if clusterInfo.ClusterId == clusterId1 {
-			numOccurancesOfTestCluster1 += 1
-		}
-		if clusterInfo.ClusterId == clusterId2 {
-			numOccurancesOfTestCluster2 += 1
+		if clusterInfo.ClusterId == clstr.ClusterId {
+			seen++
 		}
 	}
 	// The test clusters should only occur once in the list clusters response
-	assert.True(t, numOccurancesOfTestCluster1 == 1)
-	assert.True(t, numOccurancesOfTestCluster2 == 1)
+	assert.True(t, seen == 1)
 
-	// Permanently delete the clusters
-	err = workspacesClient.Clusters.PermanentDeleteCluster(ctx,
-		clusters.PermanentDeleteClusterRequest{
-			ClusterId: clusterId1,
-		},
-	)
-	require.NoError(t, err)
-	err = workspacesClient.Clusters.PermanentDeleteCluster(ctx,
-		clusters.PermanentDeleteClusterRequest{
-			ClusterId: clusterId2,
-		},
-	)
+	// Permanently delete the cluster
+	err = wsc.Clusters.PermanentDeleteByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 }

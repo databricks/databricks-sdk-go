@@ -8,7 +8,7 @@ import (
 )
 
 type Batch struct {
-	Packages []Package
+	Packages map[string]*Package
 }
 
 func NewFromFile(name string) (*Batch, error) {
@@ -21,18 +21,24 @@ func NewFromFile(name string) (*Batch, error) {
 	if err != nil {
 		return nil, fmt.Errorf("spec from %s: %w", name, err)
 	}
-	batch := Batch{}
+	batch := Batch{
+		Packages: map[string]*Package{},
+	}
 	for _, tag := range spec.Tags {
-		pkg := &Package{
-			Named:      Named{tag.Package, tag.Description},
-			Components: spec.Components,
-			types:      map[string]*Entity{},
+		pkg, ok := batch.Packages[tag.Package]
+		if !ok {
+			pkg = &Package{
+				Named:      Named{tag.Package, tag.Description},
+				Components: spec.Components,
+				services:   map[string]*Service{},
+				types:      map[string]*Entity{},
+			}
+			batch.Packages[tag.Package] = pkg
 		}
 		err := pkg.Load(spec, &tag)
 		if err != nil {
 			return nil, fmt.Errorf("fail to load %s: %w", tag.Name, err)
 		}
-		batch.Packages = append(batch.Packages, *pkg)
 	}
 	return &batch, nil
 }

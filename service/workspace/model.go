@@ -5,12 +5,11 @@ package workspace
 // all definitions in this file are in alphabetical order
 
 type DeleteRequest struct {
-	// The absolute path of the notebook or directory.
+	// The path of the file or directory to delete. The path should be the
+	// absolute DBFS path (e.g. &#34;/mnt/foo/&#34;).
 	Path string `json:"path"`
-	// The flag that specifies whether to delete the object recursively. It is
-	// ``false`` by default. Please note this deleting directory is not atomic.
-	// If it fails in the middle, some of objects under this directory may be
-	// deleted and cannot be undone.
+	// Whether or not to recursively delete the directory&#39;s contents. Deleting
+	// empty directories can be done without providing the recursive flag.
 	Recursive bool `json:"recursive,omitempty"`
 }
 
@@ -41,82 +40,27 @@ type GetStatusRequest struct {
 }
 
 type GetStatusResponse struct {
-	// The location (bucket and prefix) enum value of the content blob. This
-	// field is used in conjunction with the blob_path field to determine where
-	// the blob is located.
-	BlobLocation GetStatusResponseBlobLocation `json:"blob_location,omitempty"`
-	// ========= File metadata. These values are set only if the object type is
-	// ``FILE``. ===========//
-	BlobPath string `json:"blob_path,omitempty"`
-
-	ContentSha256Hex string `json:"content_sha256_hex,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-	// The language of the object. This value is set only if the object type is
-	// ``NOTEBOOK``.
-	Language GetStatusResponseLanguage `json:"language,omitempty"`
-
-	MetadataVersion int `json:"metadata_version,omitempty"`
-
-	ModifiedAt int64 `json:"modified_at,omitempty"`
-
-	ObjectId int64 `json:"object_id,omitempty"`
-
-	ObjectType GetStatusResponseObjectType `json:"object_type,omitempty"`
-	// The absolute path of the object.
+	// The length of the file in bytes or zero if the path is a directory.
+	FileSize int64 `json:"file_size,omitempty"`
+	// True if the path is a directory.
+	IsDir bool `json:"is_dir,omitempty"`
+	// Last modification time of given file/dir in milliseconds since Epoch.
+	ModificationTime int64 `json:"modification_time,omitempty"`
+	// The path of the file or directory.
 	Path string `json:"path,omitempty"`
-
-	Size int64 `json:"size,omitempty"`
 }
-
-// The location (bucket and prefix) enum value of the content blob. This field
-// is used in conjunction with the blob_path field to determine where the blob
-// is located.
-type GetStatusResponseBlobLocation string
-
-const GetStatusResponseBlobLocationDbfsRoot GetStatusResponseBlobLocation = `DBFS_ROOT`
-
-const GetStatusResponseBlobLocationInternalDbfsJobs GetStatusResponseBlobLocation = `INTERNAL_DBFS_JOBS`
-
-// The language of the object. This value is set only if the object type is
-// ``NOTEBOOK``.
-type GetStatusResponseLanguage string
-
-const GetStatusResponseLanguageScala GetStatusResponseLanguage = `SCALA`
-
-const GetStatusResponseLanguagePython GetStatusResponseLanguage = `PYTHON`
-
-const GetStatusResponseLanguageSql GetStatusResponseLanguage = `SQL`
-
-const GetStatusResponseLanguageR GetStatusResponseLanguage = `R`
-
-type GetStatusResponseObjectType string
-
-const GetStatusResponseObjectTypeNotebook GetStatusResponseObjectType = `NOTEBOOK`
-
-const GetStatusResponseObjectTypeDirectory GetStatusResponseObjectType = `DIRECTORY`
-
-const GetStatusResponseObjectTypeLibrary GetStatusResponseObjectType = `LIBRARY`
-
-const GetStatusResponseObjectTypeFile GetStatusResponseObjectType = `FILE`
-
-const GetStatusResponseObjectTypeMlflowExperiment GetStatusResponseObjectType = `MLFLOW_EXPERIMENT`
-
-const GetStatusResponseObjectTypeProject GetStatusResponseObjectType = `PROJECT`
-
-const GetStatusResponseObjectTypeRepo GetStatusResponseObjectType = `REPO`
 
 type ImportRequest struct {
 	// The base64-encoded content. This has a limit of 10 MB. If the limit
 	// (10MB) is exceeded, exception with error code
 	// **MAX_NOTEBOOK_SIZE_EXCEEDED** will be thrown. This parameter might be
 	// absent, and instead a posted file will be used. See
-	// :ref:`workspace-api-import-example` for more information about how to
-	// use it.
+	// :ref:`workspace-api-import-example` for more information about how to use
+	// it.
 	Content string `json:"content,omitempty"`
-	// This specifies the format of the file to be imported. By default, this
-	// is ``SOURCE``. However it may be one of: ``SOURCE``, ``HTML``,
-	// ``JUPYTER``, ``DBC``. The value is case sensitive.
+	// This specifies the format of the file to be imported. By default, this is
+	// ``SOURCE``. However it may be one of: ``SOURCE``, ``HTML``, ``JUPYTER``,
+	// ``DBC``. The value is case sensitive.
 	Format ImportRequestFormat `json:"format,omitempty"`
 	// The language. If format is set to ``SOURCE``, this field is required;
 	// otherwise, it will be ignored.
@@ -131,31 +75,31 @@ type ImportRequest struct {
 }
 
 // This specifies the format of the file to be imported. By default, this is
-// ``SOURCE``. However it may be one of: ``SOURCE``, ``HTML``, ``JUPYTER``,
-// ``DBC``. The value is case sensitive.
+// “SOURCE“. However it may be one of: “SOURCE“, “HTML“, “JUPYTER“,
+// “DBC“. The value is case sensitive.
 type ImportRequestFormat string
 
-const ImportRequestFormatSource ImportRequestFormat = `SOURCE`
+const ImportRequestFormatDbc ImportRequestFormat = `DBC`
 
 const ImportRequestFormatHtml ImportRequestFormat = `HTML`
 
 const ImportRequestFormatJupyter ImportRequestFormat = `JUPYTER`
 
-const ImportRequestFormatDbc ImportRequestFormat = `DBC`
-
 const ImportRequestFormatRMarkdown ImportRequestFormat = `R_MARKDOWN`
 
-// The language. If format is set to ``SOURCE``, this field is required;
+const ImportRequestFormatSource ImportRequestFormat = `SOURCE`
+
+// The language. If format is set to “SOURCE“, this field is required;
 // otherwise, it will be ignored.
 type ImportRequestLanguage string
 
-const ImportRequestLanguageScala ImportRequestLanguage = `SCALA`
-
 const ImportRequestLanguagePython ImportRequestLanguage = `PYTHON`
 
-const ImportRequestLanguageSql ImportRequestLanguage = `SQL`
-
 const ImportRequestLanguageR ImportRequestLanguage = `R`
+
+const ImportRequestLanguageScala ImportRequestLanguage = `SCALA`
+
+const ImportRequestLanguageSql ImportRequestLanguage = `SQL`
 
 type ListRequest struct {
 	NotebooksModifiedAfter int ` url:"notebooks_modified_after,omitempty"`
@@ -214,28 +158,28 @@ const ObjectInfoBlobLocationDbfsRoot ObjectInfoBlobLocation = `DBFS_ROOT`
 const ObjectInfoBlobLocationInternalDbfsJobs ObjectInfoBlobLocation = `INTERNAL_DBFS_JOBS`
 
 // The language of the object. This value is set only if the object type is
-// ``NOTEBOOK``.
+// “NOTEBOOK“.
 type ObjectInfoLanguage string
-
-const ObjectInfoLanguageScala ObjectInfoLanguage = `SCALA`
 
 const ObjectInfoLanguagePython ObjectInfoLanguage = `PYTHON`
 
-const ObjectInfoLanguageSql ObjectInfoLanguage = `SQL`
-
 const ObjectInfoLanguageR ObjectInfoLanguage = `R`
+
+const ObjectInfoLanguageScala ObjectInfoLanguage = `SCALA`
+
+const ObjectInfoLanguageSql ObjectInfoLanguage = `SQL`
 
 type ObjectInfoObjectType string
 
-const ObjectInfoObjectTypeNotebook ObjectInfoObjectType = `NOTEBOOK`
-
 const ObjectInfoObjectTypeDirectory ObjectInfoObjectType = `DIRECTORY`
-
-const ObjectInfoObjectTypeLibrary ObjectInfoObjectType = `LIBRARY`
 
 const ObjectInfoObjectTypeFile ObjectInfoObjectType = `FILE`
 
+const ObjectInfoObjectTypeLibrary ObjectInfoObjectType = `LIBRARY`
+
 const ObjectInfoObjectTypeMlflowExperiment ObjectInfoObjectType = `MLFLOW_EXPERIMENT`
+
+const ObjectInfoObjectTypeNotebook ObjectInfoObjectType = `NOTEBOOK`
 
 const ObjectInfoObjectTypeProject ObjectInfoObjectType = `PROJECT`
 

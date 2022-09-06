@@ -35,15 +35,15 @@ type Library struct {
 	Cran *RCranLibrary `json:"cran,omitempty"`
 	// URI of the egg to be installed. Currently only DBFS and S3 URIs are
 	// supported. For example: ``{ &#34;egg&#34;: &#34;dbfs:/my/egg&#34; }`` or ``{ &#34;egg&#34;:
-	// &#34;s3://my-bucket/egg&#34; }``. If S3 is used, please make sure the cluster
-	// has read access on the library. You may need to launch the cluster with
-	// an IAM role to access the S3 URI.
+	// &#34;s3://my-bucket/egg&#34; }``. If S3 is used, please make sure the cluster has
+	// read access on the library. You may need to launch the cluster with an
+	// IAM role to access the S3 URI.
 	Egg string `json:"egg,omitempty"`
 	// URI of the jar to be installed. Currently only DBFS and S3 URIs are
-	// supported. For example: ``{ &#34;jar&#34;: &#34;dbfs:/mnt/databricks/library.jar&#34;
-	// }`` or ``{ &#34;jar&#34;: &#34;s3://my-bucket/library.jar&#34; }``. If S3 is used,
-	// please make sure the cluster has read access on the library. You may
-	// need to launch the cluster with an IAM role to access the S3 URI.
+	// supported. For example: ``{ &#34;jar&#34;: &#34;dbfs:/mnt/databricks/library.jar&#34; }``
+	// or ``{ &#34;jar&#34;: &#34;s3://my-bucket/library.jar&#34; }``. If S3 is used, please
+	// make sure the cluster has read access on the library. You may need to
+	// launch the cluster with an IAM role to access the S3 URI.
 	Jar string `json:"jar,omitempty"`
 	// Specification of a maven library to be installed. For example: ``{
 	// &#34;coordinates&#34;: &#34;org.jsoup:jsoup:1.7.2&#34; }``
@@ -74,19 +74,19 @@ type LibraryFullStatus struct {
 // Status of installing the library on the cluster.
 type LibraryFullStatusStatus string
 
+const LibraryFullStatusStatusFailed LibraryFullStatusStatus = `FAILED`
+
+const LibraryFullStatusStatusInstalled LibraryFullStatusStatus = `INSTALLED`
+
+const LibraryFullStatusStatusInstalling LibraryFullStatusStatus = `INSTALLING`
+
 const LibraryFullStatusStatusPending LibraryFullStatusStatus = `PENDING`
 
 const LibraryFullStatusStatusResolving LibraryFullStatusStatus = `RESOLVING`
 
-const LibraryFullStatusStatusInstalling LibraryFullStatusStatus = `INSTALLING`
-
-const LibraryFullStatusStatusInstalled LibraryFullStatusStatus = `INSTALLED`
-
-const LibraryFullStatusStatusFailed LibraryFullStatusStatus = `FAILED`
+const LibraryFullStatusStatusSkipped LibraryFullStatusStatus = `SKIPPED`
 
 const LibraryFullStatusStatusUninstallOnRestart LibraryFullStatusStatus = `UNINSTALL_ON_RESTART`
-
-const LibraryFullStatusStatusSkipped LibraryFullStatusStatus = `SKIPPED`
 
 type ListAllClusterLibraryStatusesResponse struct {
 	// A list of cluster statuses.
