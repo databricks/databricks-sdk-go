@@ -37,7 +37,7 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	})
 
 	// make test dir2 in workspace root
-	err := wsc.Dbfs.MkDirs(ctx, dbfs.MkDirsRequest{
+	err := wsc.Dbfs.Mkdirs(ctx, dbfs.MkDirsRequest{
 		Path: dbfsTestDirPath2,
 	})
 	require.NoError(t, err)
@@ -71,7 +71,7 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	assert.True(t, testFileStatus.IsDir == false)
 
 	// List all files in test dir2 and assert testFile1 is found
-	listOfFilesInWorkspaceRoot, err := wsc.Dbfs.ListStatus(ctx, dbfs.ListStatusRequest{
+	listOfFilesInWorkspaceRoot, err := wsc.Dbfs.List(ctx, dbfs.ListStatusRequest{
 		Path: dbfsTestDirPath2,
 	})
 	require.NoError(t, err)
@@ -84,7 +84,7 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	assert.True(t, foundTestFile)
 
 	// make test dir1 in workspace root
-	err = wsc.Dbfs.MkDirs(ctx, dbfs.MkDirsRequest{
+	err = wsc.Dbfs.Mkdirs(ctx, dbfs.MkDirsRequest{
 		Path: dbfsTestDirPath1,
 	})
 	require.NoError(t, err)
