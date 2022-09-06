@@ -1,0 +1,31 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package {{.Name}}
+
+import (
+	"context"
+	{{if .HasWaits}}"time"{{end}}
+)
+
+{{range .Services}}
+{{.Comment "// " 80}}
+//
+// This is the high-level interface, that contains generated methods.
+// 
+// Evolving: this interface is under development. Method signatures may change.
+type {{.PascalName}}Service interface {
+	{{- range .Methods}}
+    {{.Comment "    // " 80}}
+    {{.PascalName}}(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}
+	{{if .Wait}}// {{.PascalName}} and wait to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
+	{{.PascalName}}AndWait(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}, timeout ...time.Duration) (*{{.Wait.Poll.Response.PascalName}}, error){{end}}
+	{{- if .Shortcut}}
+	{{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}{{end}}
+	{{- if and .Shortcut .Wait}}
+	{{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, timeout ...time.Duration) (*{{.Wait.Poll.Response.PascalName}}, error){{end}}
+	{{- end}}
+	{{if eq .PascalName "Clusters"}}// GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist
+	GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateCluster) (c *ClusterInfo, err error)
+	{{end}}
+}
+{{end}}

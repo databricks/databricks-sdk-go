@@ -5,9 +5,9 @@ package networks
 // all definitions in this file are in alphabetical order
 
 type CreateNetworkRequest struct {
-	// Databricks account ID. Your account must be on the E2 version of the
-	// platform or on a select custom plan that allows multiple workspaces per
-	// account.
+	// Databricks account ID of any type. For non-E2 account types, get your
+	// account ID from the [Accounts
+	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
 	AccountId string ` path:"account_id"`
 
 	GcpNetworkInfo *GcpNetworkInfo `json:"gcp_network_info,omitempty"`
@@ -15,21 +15,21 @@ type CreateNetworkRequest struct {
 	NetworkName string `json:"network_name"`
 	// IDs of 1 to 5 security groups associated with this network. Security
 	// groups IDs **cannot** be used in multiple network configurations.
-	SecurityGroupIds []string `json:"security_group_ids"`
+	SecurityGroupIds []string `json:"security_group_ids,omitempty"`
 	// IDs of at least 2 subnets associated with this network. Subnet IDs
 	// **cannot** be used in multiple network configurations.
-	SubnetIds []string `json:"subnet_ids"`
+	SubnetIds []string `json:"subnet_ids,omitempty"`
 
 	VpcEndpoints *NetworkVpcEndpoints `json:"vpc_endpoints,omitempty"`
 	// The ID of the VPC associated with this network. VPC IDs can be used in
 	// multiple network configurations.
-	VpcId string `json:"vpc_id"`
+	VpcId string `json:"vpc_id,omitempty"`
 }
 
 type DeleteNetworkConfigRequest struct {
-	// Databricks account ID. Your account must be on the E2 version of the
-	// platform or on a select custom plan that allows multiple workspaces per
-	// account.
+	// Databricks account ID of any type. For non-E2 account types, get your
+	// account ID from the [Accounts
+	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
 	AccountId string ` path:"account_id"`
 	// Databricks Account API network configuration ID.
 	NetworkId string ` path:"network_id"`
@@ -59,16 +59,16 @@ type GcpNetworkInfo struct {
 }
 
 type GetAllNetworkConfigsRequest struct {
-	// Databricks account ID. Your account must be on the E2 version of the
-	// platform or on a select custom plan that allows multiple workspaces per
-	// account.
+	// Databricks account ID of any type. For non-E2 account types, get your
+	// account ID from the [Accounts
+	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
 	AccountId string ` path:"account_id"`
 }
 
 type GetNetworkConfigRequest struct {
-	// Databricks account ID. Your account must be on the E2 version of the
-	// platform or on a select custom plan that allows multiple workspaces per
-	// account.
+	// Databricks account ID of any type. For non-E2 account types, get your
+	// account ID from the [Accounts
+	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
 	AccountId string ` path:"account_id"`
 	// Databricks Account API network configuration ID.
 	NetworkId string ` path:"network_id"`
@@ -123,13 +123,13 @@ type NetworkHealthErrorType string
 
 const NetworkHealthErrorTypeCredentials NetworkHealthErrorType = `credentials`
 
-const NetworkHealthErrorTypeVpc NetworkHealthErrorType = `vpc`
-
-const NetworkHealthErrorTypeSubnet NetworkHealthErrorType = `subnet`
+const NetworkHealthErrorTypeNetworkacl NetworkHealthErrorType = `networkAcl`
 
 const NetworkHealthErrorTypeSecuritygroup NetworkHealthErrorType = `securityGroup`
 
-const NetworkHealthErrorTypeNetworkacl NetworkHealthErrorType = `networkAcl`
+const NetworkHealthErrorTypeSubnet NetworkHealthErrorType = `subnet`
+
+const NetworkHealthErrorTypeVpc NetworkHealthErrorType = `vpc`
 
 // If specified, contains the VPC endpoints used to allow cluster communication
 // from this VPC over [AWS PrivateLink](https://aws.amazon.com/privatelink/).
@@ -158,11 +158,11 @@ type NetworkVpcEndpoints struct {
 // * `WARNED`: Warned.
 type NetworkVpcStatus string
 
+const NetworkVpcStatusBroken NetworkVpcStatus = `BROKEN`
+
 const NetworkVpcStatusUnattached NetworkVpcStatus = `UNATTACHED`
 
 const NetworkVpcStatusValid NetworkVpcStatus = `VALID`
-
-const NetworkVpcStatusBroken NetworkVpcStatus = `BROKEN`
 
 const NetworkVpcStatusWarned NetworkVpcStatus = `WARNED`
 
@@ -177,6 +177,6 @@ type NetworkWarning struct {
 // The AWS resource associated with this warning: a subnet or a security group.
 type NetworkWarningWarningType string
 
-const NetworkWarningWarningTypeSubnet NetworkWarningWarningType = `subnet`
-
 const NetworkWarningWarningTypeSecuritygroup NetworkWarningWarningType = `securityGroup`
+
+const NetworkWarningWarningTypeSubnet NetworkWarningWarningType = `subnet`

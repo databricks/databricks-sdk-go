@@ -52,11 +52,11 @@ type PermissionOutput struct {
 
 type PermissionOutputPermissionLevel string
 
+const PermissionOutputPermissionLevelAdmin PermissionOutputPermissionLevel = `ADMIN`
+
 const PermissionOutputPermissionLevelUnknown PermissionOutputPermissionLevel = `UNKNOWN`
 
 const PermissionOutputPermissionLevelUser PermissionOutputPermissionLevel = `USER`
-
-const PermissionOutputPermissionLevelAdmin PermissionOutputPermissionLevel = `ADMIN`
 
 type PrincipalOutput struct {
 	DisplayName string `json:"display_name,omitempty"`
@@ -82,11 +82,11 @@ type UpdateWorkspacePermissionAssignmentRequest struct {
 
 type UpdateWorkspacePermissionAssignmentRequestPermissionsItem string
 
+const UpdateWorkspacePermissionAssignmentRequestPermissionsItemAdmin UpdateWorkspacePermissionAssignmentRequestPermissionsItem = `ADMIN`
+
 const UpdateWorkspacePermissionAssignmentRequestPermissionsItemUnknown UpdateWorkspacePermissionAssignmentRequestPermissionsItem = `UNKNOWN`
 
 const UpdateWorkspacePermissionAssignmentRequestPermissionsItemUser UpdateWorkspacePermissionAssignmentRequestPermissionsItem = `USER`
-
-const UpdateWorkspacePermissionAssignmentRequestPermissionsItemAdmin UpdateWorkspacePermissionAssignmentRequestPermissionsItem = `ADMIN`
 
 type WorkspacePermissionAssignmentInput struct {
 	GroupName string `json:"group_name,omitempty"`
@@ -100,11 +100,11 @@ type WorkspacePermissionAssignmentInput struct {
 
 type WorkspacePermissionAssignmentInputPermissionsItem string
 
+const WorkspacePermissionAssignmentInputPermissionsItemAdmin WorkspacePermissionAssignmentInputPermissionsItem = `ADMIN`
+
 const WorkspacePermissionAssignmentInputPermissionsItemUnknown WorkspacePermissionAssignmentInputPermissionsItem = `UNKNOWN`
 
 const WorkspacePermissionAssignmentInputPermissionsItemUser WorkspacePermissionAssignmentInputPermissionsItem = `USER`
-
-const WorkspacePermissionAssignmentInputPermissionsItemAdmin WorkspacePermissionAssignmentInputPermissionsItem = `ADMIN`
 
 type WorkspacePermissionAssignmentOutput struct {
 	// Error response associated with a workspace permission assignment, if any.
@@ -117,8 +117,8 @@ type WorkspacePermissionAssignmentOutput struct {
 
 type WorkspacePermissionAssignmentOutputPermissionsItem string
 
+const WorkspacePermissionAssignmentOutputPermissionsItemAdmin WorkspacePermissionAssignmentOutputPermissionsItem = `ADMIN`
+
 const WorkspacePermissionAssignmentOutputPermissionsItemUnknown WorkspacePermissionAssignmentOutputPermissionsItem = `UNKNOWN`
 
 const WorkspacePermissionAssignmentOutputPermissionsItemUser WorkspacePermissionAssignmentOutputPermissionsItem = `USER`
-
-const WorkspacePermissionAssignmentOutputPermissionsItemAdmin WorkspacePermissionAssignmentOutputPermissionsItem = `ADMIN`

@@ -4,125 +4,234 @@ package deltapipelines
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/retries"
 )
 
-type DeltapipelinesService interface {
-	CreatePipeline(ctx context.Context, createPipelineRequest CreatePipelineRequest) (*CreatePipelineResponse, error)
-
-	DeletePipeline(ctx context.Context, deletePipelineRequest DeletePipelineRequest) error
-
-	EditPipeline(ctx context.Context, editPipelineRequest EditPipelineRequest) error
-
-	GetPipeline(ctx context.Context, getPipelineRequest GetPipelineRequest) (*GetPipelineResponse, error)
-
-	GetUpdate(ctx context.Context, getUpdateRequest GetUpdateRequest) (*GetUpdateResponse, error)
-
-	ListUpdates(ctx context.Context, listUpdatesRequest ListUpdatesRequest) (*ListUpdatesResponse, error)
-
-	ResetPipeline(ctx context.Context, resetPipelineRequest ResetPipelineRequest) error
-	// * Starts or queues a pipeline update.
-	StartUpdate(ctx context.Context, startUpdateRequest StartUpdateRequest) (*StartUpdateResponse, error)
-
-	StopPipeline(ctx context.Context, stopPipelineRequest StopPipelineRequest) error
-	GetUpdateByPipelineIdAndUpdateId(ctx context.Context, pipelineId string, updateId string) (*GetUpdateResponse, error)
-	GetPipelineByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error)
-	DeletePipelineByPipelineId(ctx context.Context, pipelineId string) error
-	ListUpdatesByPipelineId(ctx context.Context, pipelineId string) (*ListUpdatesResponse, error)
-}
-
-func New(client *client.DatabricksClient) DeltapipelinesService {
-	return &DeltapipelinesAPI{
+func NewDeltaPipelines(client *client.DatabricksClient) DeltaPipelinesService {
+	return &DeltaPipelinesAPI{
 		client: client,
 	}
 }
 
-type DeltapipelinesAPI struct {
+type DeltaPipelinesAPI struct {
 	client *client.DatabricksClient
 }
 
-func (a *DeltapipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipelineRequest) (*CreatePipelineResponse, error) {
+func (a *DeltaPipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipelineRequest) (*CreatePipelineResponse, error) {
 	var createPipelineResponse CreatePipelineResponse
 	path := "/api/2.0/pipelines"
 	err := a.client.Post(ctx, path, request, &createPipelineResponse)
 	return &createPipelineResponse, err
 }
 
-func (a *DeltapipelinesAPI) DeletePipeline(ctx context.Context, request DeletePipelineRequest) error {
-	path := "/api/2.0/pipelines/" + request.PipelineId
+// CreatePipeline and wait to reach RUNNING state
+func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, request CreatePipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
+	createPipelineResponse, err := a.CreatePipeline(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20 * time.Minute}
+	}
+	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
+		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
+			PipelineId: createPipelineResponse.PipelineId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := getPipelineResponse.State
+		statusMessage := getPipelineResponse.Cause
+		switch status {
+		case GetPipelineResponseStateRunning: // target state
+			return getPipelineResponse, nil
+		case GetPipelineResponseStateFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				GetPipelineResponseStateRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+func (a *DeltaPipelinesAPI) DeletePipeline(ctx context.Context, request DeletePipelineRequest) error {
+	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
-func (a *DeltapipelinesAPI) EditPipeline(ctx context.Context, request EditPipelineRequest) error {
-	path := "/api/2.0/pipelines/" + request.PipelineId
+func (a *DeltaPipelinesAPI) DeletePipelineByPipelineId(ctx context.Context, pipelineId string) error {
+	return a.DeletePipeline(ctx, DeletePipelineRequest{
+		PipelineId: pipelineId,
+	})
+}
+
+func (a *DeltaPipelinesAPI) EditPipeline(ctx context.Context, request EditPipelineRequest) error {
+	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Put(ctx, path, request)
 	return err
 }
 
-func (a *DeltapipelinesAPI) GetPipeline(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error) {
+func (a *DeltaPipelinesAPI) GetPipeline(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error) {
 	var getPipelineResponse GetPipelineResponse
-	path := "/api/2.0/pipelines/" + request.PipelineId
+	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Get(ctx, path, request, &getPipelineResponse)
 	return &getPipelineResponse, err
 }
 
-func (a *DeltapipelinesAPI) GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error) {
+// GetPipeline and wait to reach RUNNING state
+func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, request GetPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
+	getPipelineResponse, err := a.GetPipeline(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20 * time.Minute}
+	}
+	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
+		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
+			PipelineId: getPipelineResponse.PipelineId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := getPipelineResponse.State
+		statusMessage := getPipelineResponse.Cause
+		switch status {
+		case GetPipelineResponseStateRunning: // target state
+			return getPipelineResponse, nil
+		case GetPipelineResponseStateFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				GetPipelineResponseStateRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+func (a *DeltaPipelinesAPI) GetPipelineByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
+	return a.GetPipeline(ctx, GetPipelineRequest{
+		PipelineId: pipelineId,
+	})
+}
+
+func (a *DeltaPipelinesAPI) GetPipelineByPipelineIdAndWait(ctx context.Context, pipelineId string, timeout ...time.Duration) (*GetPipelineResponse, error) {
+	return a.GetPipelineAndWait(ctx, GetPipelineRequest{
+		PipelineId: pipelineId,
+	}, timeout...)
+}
+
+func (a *DeltaPipelinesAPI) GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error) {
 	var getUpdateResponse GetUpdateResponse
-	path := "/api/2.0/pipelines/" + request.PipelineId + "/updates/" + request.UpdateId
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates/%v", request.PipelineId, request.UpdateId)
 	err := a.client.Get(ctx, path, request, &getUpdateResponse)
 	return &getUpdateResponse, err
 }
 
-func (a *DeltapipelinesAPI) ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error) {
-	var listUpdatesResponse ListUpdatesResponse
-	path := "/api/2.0/pipelines/" + request.PipelineId
-	err := a.client.Get(ctx, path, request, &listUpdatesResponse)
-	return &listUpdatesResponse, err
-}
-
-func (a *DeltapipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipelineRequest) error {
-	path := "/api/2.0/pipelines/" + request.PipelineId
-	err := a.client.Post(ctx, path, request, nil)
-	return err
-}
-
-// * Starts or queues a pipeline update.
-func (a *DeltapipelinesAPI) StartUpdate(ctx context.Context, request StartUpdateRequest) (*StartUpdateResponse, error) {
-	var startUpdateResponse StartUpdateResponse
-	path := "/api/2.0/pipelines/" + request.PipelineId
-	err := a.client.Post(ctx, path, request, &startUpdateResponse)
-	return &startUpdateResponse, err
-}
-
-func (a *DeltapipelinesAPI) StopPipeline(ctx context.Context, request StopPipelineRequest) error {
-	path := "/api/2.0/pipelines/" + request.PipelineId
-	err := a.client.Post(ctx, path, request, nil)
-	return err
-}
-
-func (a *DeltapipelinesAPI) GetUpdateByPipelineIdAndUpdateId(ctx context.Context, pipelineId string, updateId string) (*GetUpdateResponse, error) {
+func (a *DeltaPipelinesAPI) GetUpdateByPipelineIdAndUpdateId(ctx context.Context, pipelineId string, updateId string) (*GetUpdateResponse, error) {
 	return a.GetUpdate(ctx, GetUpdateRequest{
 		PipelineId: pipelineId,
 		UpdateId:   updateId,
 	})
 }
 
-func (a *DeltapipelinesAPI) GetPipelineByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
-	return a.GetPipeline(ctx, GetPipelineRequest{
-		PipelineId: pipelineId,
-	})
+func (a *DeltaPipelinesAPI) ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error) {
+	var listUpdatesResponse ListUpdatesResponse
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
+	err := a.client.Get(ctx, path, request, &listUpdatesResponse)
+	return &listUpdatesResponse, err
 }
 
-func (a *DeltapipelinesAPI) DeletePipelineByPipelineId(ctx context.Context, pipelineId string) error {
-	return a.DeletePipeline(ctx, DeletePipelineRequest{
-		PipelineId: pipelineId,
-	})
-}
-
-func (a *DeltapipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId string) (*ListUpdatesResponse, error) {
+func (a *DeltaPipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId string) (*ListUpdatesResponse, error) {
 	return a.ListUpdates(ctx, ListUpdatesRequest{
 		PipelineId: pipelineId,
+	})
+}
+
+func (a *DeltaPipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipelineRequest) error {
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/reset", request.PipelineId)
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
+
+// ResetPipeline and wait to reach RUNNING state
+func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, request ResetPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
+	err := a.ResetPipeline(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20 * time.Minute}
+	}
+	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
+		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
+			PipelineId: request.PipelineId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := getPipelineResponse.State
+		statusMessage := getPipelineResponse.Cause
+		switch status {
+		case GetPipelineResponseStateRunning: // target state
+			return getPipelineResponse, nil
+		case GetPipelineResponseStateFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				GetPipelineResponseStateRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// * Starts or queues a pipeline update.
+func (a *DeltaPipelinesAPI) StartUpdate(ctx context.Context, request StartUpdateRequest) (*StartUpdateResponse, error) {
+	var startUpdateResponse StartUpdateResponse
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
+	err := a.client.Post(ctx, path, request, &startUpdateResponse)
+	return &startUpdateResponse, err
+}
+
+func (a *DeltaPipelinesAPI) StopPipeline(ctx context.Context, request StopPipelineRequest) error {
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", request.PipelineId)
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
+
+// StopPipeline and wait to reach IDLE state
+func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, request StopPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
+	err := a.StopPipeline(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	if len(timeout) == 0 {
+		timeout = []time.Duration{20 * time.Minute}
+	}
+	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
+		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
+			PipelineId: request.PipelineId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := getPipelineResponse.State
+		statusMessage := getPipelineResponse.Cause
+		switch status {
+		case GetPipelineResponseStateIdle: // target state
+			return getPipelineResponse, nil
+		case GetPipelineResponseStateFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				GetPipelineResponseStateIdle, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
 	})
 }

@@ -14,11 +14,11 @@ type AclItem struct {
 // The permission level applied to the principal.
 type AclItemPermission string
 
+const AclItemPermissionManage AclItemPermission = `MANAGE`
+
 const AclItemPermissionRead AclItemPermission = `READ`
 
 const AclItemPermissionWrite AclItemPermission = `WRITE`
-
-const AclItemPermissionManage AclItemPermission = `MANAGE`
 
 type AzureKeyVaultSecretScopeMetadata struct {
 	// The DNS of the KeyVault
@@ -40,12 +40,12 @@ type CreateScopeRequest struct {
 }
 
 // The backend type the scope will be created with. If not specified, will
-// default to ``DATABRICKS``
+// default to “DATABRICKS“
 type CreateScopeRequestScopeBackendType string
 
-const CreateScopeRequestScopeBackendTypeDatabricks CreateScopeRequestScopeBackendType = `DATABRICKS`
-
 const CreateScopeRequestScopeBackendTypeAzureKeyvault CreateScopeRequestScopeBackendType = `AZURE_KEYVAULT`
+
+const CreateScopeRequestScopeBackendTypeDatabricks CreateScopeRequestScopeBackendType = `DATABRICKS`
 
 type DeleteAclRequest struct {
 	// The principal to remove an existing ACL from.
@@ -83,11 +83,11 @@ type GetAclResponse struct {
 // The permission level applied to the principal.
 type GetAclResponsePermission string
 
+const GetAclResponsePermissionManage GetAclResponsePermission = `MANAGE`
+
 const GetAclResponsePermissionRead GetAclResponsePermission = `READ`
 
 const GetAclResponsePermissionWrite GetAclResponsePermission = `WRITE`
-
-const GetAclResponsePermissionManage GetAclResponsePermission = `MANAGE`
 
 type ListAclsRequest struct {
 	// The name of the scope to fetch ACL information from.
@@ -126,11 +126,11 @@ type PutAclRequest struct {
 // The permission level applied to the principal.
 type PutAclRequestPermission string
 
+const PutAclRequestPermissionManage PutAclRequestPermission = `MANAGE`
+
 const PutAclRequestPermissionRead PutAclRequestPermission = `READ`
 
 const PutAclRequestPermissionWrite PutAclRequestPermission = `WRITE`
-
-const PutAclRequestPermissionManage PutAclRequestPermission = `MANAGE`
 
 type PutSecretRequest struct {
 	// If specified, value will be stored as bytes.
@@ -162,6 +162,6 @@ type SecretScope struct {
 // The type of secret scope backend.
 type SecretScopeBackendType string
 
-const SecretScopeBackendTypeDatabricks SecretScopeBackendType = `DATABRICKS`
-
 const SecretScopeBackendTypeAzureKeyvault SecretScopeBackendType = `AZURE_KEYVAULT`
+
+const SecretScopeBackendTypeDatabricks SecretScopeBackendType = `DATABRICKS`
