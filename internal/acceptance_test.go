@@ -2,12 +2,11 @@ package internal
 
 import (
 	"context"
-	"os"
 	"os/exec"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/databricks"
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
@@ -49,11 +48,9 @@ func TestAccExplicitDatabricksCfg(t *testing.T) {
 }
 
 func TestAccExplicitAzureCliAuth(t *testing.T) {
-	defer client.CleanupEnvironment()()
+	env.CleanupEnvironment(t)
 
-	if err := os.Setenv("AZURE_CONFIG_DIR", t.TempDir()); err != nil {
-		t.Fatal(err)
-	}
+	t.Setenv("AZURE_CONFIG_DIR", t.TempDir())
 
 	// Login with Azure CLI
 	cmd := exec.Command(
