@@ -22,14 +22,14 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	dbfsTestDirPath2 := RandomName("/tmp/databricks-go-sdk/integration/dbfs/TestDir2-")
 
 	t.Cleanup(func() {
-		// recursively delete the test dir1 and the test files inside it
+		// recursively delete the test dir1 and any test files inside it
 		err := wsc.Dbfs.Delete(ctx, dbfs.DeleteRequest{
 			Path:      dbfsTestDirPath1,
 			Recursive: true,
 		},
 		)
 		require.NoError(t, err)
-		// recursively delete the test dir2 and the test files inside it
+		// recursively delete the test dir2 and any test files inside it
 		err = wsc.Dbfs.Delete(ctx, dbfs.DeleteRequest{
 			Path:      dbfsTestDirPath2,
 			Recursive: true,
