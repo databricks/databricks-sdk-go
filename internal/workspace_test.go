@@ -3,6 +3,7 @@ package internal
 import (
 	"context"
 	"encoding/base64"
+	"path/filepath"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/workspace"
@@ -16,7 +17,18 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	ctx := context.Background()
 	wsc := workspaces.New()
 	testDirPath := RandomName("/tmp/databricks-go-sdk/integration/workspace/TestDir-")
-	testFileName := RandomName("/test-file-")
+	testFileName := RandomName("test-file-")
+
+	t.Cleanup(func() {
+		// Delete the test directory
+		err := wsc.Workspace.Delete(ctx,
+			workspace.DeleteRequest{
+				Path:      testDirPath,
+				Recursive: true,
+			},
+		)
+		require.NoError(t, err)
+	})
 
 	// Make test directory
 	err := wsc.Workspace.Mkdirs(ctx,
@@ -29,7 +41,7 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	// Import the test notebook
 	err = wsc.Workspace.Import(ctx,
 		workspace.ImportRequest{
-			Path:      testDirPath + testFileName,
+			Path:      filepath.Join(testDirPath, testFileName),
 			Format:    "SOURCE",
 			Language:  "PYTHON",
 			Content:   base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")),
@@ -41,12 +53,12 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	// Get test notebook status
 	getStatusResponse, err := wsc.Workspace.GetStatus(ctx,
 		workspace.GetStatusRequest{
-			Path: testDirPath + testFileName,
+			Path: filepath.Join(testDirPath, testFileName),
 		},
 	)
 	require.NoError(t, err)
 	assert.True(t, getStatusResponse.Language == "PYTHON")
-	assert.True(t, getStatusResponse.Path == testDirPath+testFileName)
+	assert.True(t, getStatusResponse.Path == filepath.Join(testDirPath, testFileName))
 	assert.True(t, string(getStatusResponse.ObjectType) == "NOTEBOOK")
 
 	// Export the notebook and assert the contents
@@ -54,7 +66,7 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 		workspace.ExportRequest{
 			DirectDownload: false,
 			Format:         "SOURCE",
-			Path:           testDirPath + testFileName,
+			Path:           filepath.Join(testDirPath, testFileName),
 		},
 	)
 	require.NoError(t, err)
@@ -69,18 +81,9 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	require.NoError(t, err)
 	foundTestNotebook := false
 	for _, objectInfo := range listReponse.Objects {
-		if objectInfo.Path == testDirPath+testFileName {
+		if objectInfo.Path == filepath.Join(testDirPath, testFileName) {
 			foundTestNotebook = true
 		}
 	}
 	assert.True(t, foundTestNotebook)
-
-	// Delete the test directory
-	err = wsc.Workspace.Delete(ctx,
-		workspace.DeleteRequest{
-			Path:      testDirPath,
-			Recursive: true,
-		},
-	)
-	require.NoError(t, err)
 }
