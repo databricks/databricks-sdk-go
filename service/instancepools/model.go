@@ -15,23 +15,23 @@ type CreateInstancePoolRequest struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to ``default_tags``. Notes: - Currently, Databricks allows at
 	// most 45 custom tags
-	CustomTags []string `json:"custom_tags,omitempty"`
-	// Defines the specification of the disks that will be attached to all
-	// spark containers.
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
+	// Defines the specification of the disks that will be attached to all spark
+	// containers.
 	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
-	// Autoscaling Local Storage: when enabled, this instances in this pool
-	// will dynamically acquire additional disk space when its Spark workers
-	// are running low on disk space. In AWS, this feature requires specific
-	// AWS permissions to function correctly - refer to the User Guide for more
+	// Autoscaling Local Storage: when enabled, this instances in this pool will
+	// dynamically acquire additional disk space when its Spark workers are
+	// running low on disk space. In AWS, this feature requires specific AWS
+	// permissions to function correctly - refer to the User Guide for more
 	// details.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-	// Automatically terminates the extra instances in the pool cache after
-	// they are inactive for this time in minutes if min_idle_instances
-	// requirement is already met. If not set, the extra pool instances will be
+	// Automatically terminates the extra instances in the pool cache after they
+	// are inactive for this time in minutes if min_idle_instances requirement
+	// is already met. If not set, the extra pool instances will be
 	// automatically terminated after a default timeout. If specified, the
 	// threshold must be between 0 and 10000 minutes. Users can also set this
-	// value to 0 to instantly remove idle instances from the cache if min
-	// cache size could still hold.
+	// value to 0 to instantly remove idle instances from the cache if min cache
+	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
 	// The fleet related setting to power the intance pool. Note that we don&#39;t
 	// want to inline this message as it can be hard to interpret/manage
@@ -46,8 +46,8 @@ type CreateInstancePoolRequest struct {
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this pool. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads A
+	// each of the Spark nodes in this pool. For example, the Spark nodes can be
+	// provisioned and optimized for memory or compute intensive workloads A
 	// list of available node types can be retrieved by using the
 	// :ref:`clusterClusterServicelistNodeTypes` API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
@@ -74,9 +74,9 @@ type DiskSpec struct {
 	// The number of disks launched for each instance: - This feature is only
 	// enabled for supported node types. - Users can choose up to the limit of
 	// the disks supported by the node type. - For node types with no OS disk,
-	// at least one disk needs to be specified; otherwise, cluster creation
-	// will fail. If disks are attached, Databricks will configure Spark to use
-	// only the disks for scratch storage because heterogenously sized scratch
+	// at least one disk needs to be specified; otherwise, cluster creation will
+	// fail. If disks are attached, Databricks will configure Spark to use only
+	// the disks for scratch storage because heterogenously sized scratch
 	// devices can lead to inefficient disk utilization. If no disks are
 	// attached, Databricks will configure Spark to use instance store disks.
 	// Please note that if disks are specified, then the Spark configuration
@@ -123,8 +123,6 @@ type DockerBasicAuth struct {
 }
 
 type DockerImage struct {
-	// TODO(evan, qian): secret manager integration, etc Basic auth with
-	// username and password
 	BasicAuth *DockerBasicAuth `json:"basic_auth,omitempty"`
 	// URL of the docker image.
 	Url string `json:"url,omitempty"`
@@ -141,23 +139,23 @@ type EditInstancePoolRequest struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to ``default_tags``. Notes: - Currently, Databricks allows at
 	// most 45 custom tags
-	CustomTags []string `json:"custom_tags,omitempty"`
-	// Defines the specification of the disks that will be attached to all
-	// spark containers.
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
+	// Defines the specification of the disks that will be attached to all spark
+	// containers.
 	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
-	// Autoscaling Local Storage: when enabled, this instances in this pool
-	// will dynamically acquire additional disk space when its Spark workers
-	// are running low on disk space. In AWS, this feature requires specific
-	// AWS permissions to function correctly - refer to the User Guide for more
+	// Autoscaling Local Storage: when enabled, this instances in this pool will
+	// dynamically acquire additional disk space when its Spark workers are
+	// running low on disk space. In AWS, this feature requires specific AWS
+	// permissions to function correctly - refer to the User Guide for more
 	// details.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-	// Automatically terminates the extra instances in the pool cache after
-	// they are inactive for this time in minutes if min_idle_instances
-	// requirement is already met. If not set, the extra pool instances will be
+	// Automatically terminates the extra instances in the pool cache after they
+	// are inactive for this time in minutes if min_idle_instances requirement
+	// is already met. If not set, the extra pool instances will be
 	// automatically terminated after a default timeout. If specified, the
 	// threshold must be between 0 and 10000 minutes. Users can also set this
-	// value to 0 to instantly remove idle instances from the cache if min
-	// cache size could still hold.
+	// value to 0 to instantly remove idle instances from the cache if min cache
+	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
 
 	InstancePoolId string `json:"instance_pool_id"`
@@ -171,8 +169,8 @@ type EditInstancePoolRequest struct {
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this pool. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads A
+	// each of the Spark nodes in this pool. For example, the Spark nodes can be
+	// provisioned and optimized for memory or compute intensive workloads A
 	// list of available node types can be retrieved by using the
 	// :ref:`clusterClusterServicelistNodeTypes` API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
@@ -215,21 +213,21 @@ type FleetOnDemandOption struct {
 	// Capacity Reservations to fulfill On-Demand capacity up to the target
 	// On-Demand capacity. If multiple instance pools have unused Capacity
 	// Reservations, the On-Demand allocation strategy (lowest-price or
-	// prioritized) is applied. If the number of unused Capacity Reservations
-	// is less than the On-Demand target capacity, the remaining On-Demand
-	// target capacity is launched according to the On-Demand allocation
-	// strategy (lowest-price or prioritized).
+	// prioritized) is applied. If the number of unused Capacity Reservations is
+	// less than the On-Demand target capacity, the remaining On-Demand target
+	// capacity is launched according to the On-Demand allocation strategy
+	// (lowest-price or prioritized).
 	UseCapacityReservationsFirst bool `json:"use_capacity_reservations_first,omitempty"`
 }
 
 // Only lowest-price and prioritized are allowed
 type FleetOnDemandOptionAllocationStrategy string
 
-const FleetOnDemandOptionAllocationStrategyLowestPrice FleetOnDemandOptionAllocationStrategy = `LOWEST_PRICE`
+const FleetOnDemandOptionAllocationStrategyCapacityOptimized FleetOnDemandOptionAllocationStrategy = `CAPACITY_OPTIMIZED`
 
 const FleetOnDemandOptionAllocationStrategyDiversified FleetOnDemandOptionAllocationStrategy = `DIVERSIFIED`
 
-const FleetOnDemandOptionAllocationStrategyCapacityOptimized FleetOnDemandOptionAllocationStrategy = `CAPACITY_OPTIMIZED`
+const FleetOnDemandOptionAllocationStrategyLowestPrice FleetOnDemandOptionAllocationStrategy = `LOWEST_PRICE`
 
 const FleetOnDemandOptionAllocationStrategyPrioritized FleetOnDemandOptionAllocationStrategy = `PRIORITIZED`
 
@@ -237,10 +235,9 @@ type FleetSpotOption struct {
 	// lowest-price | diversified | capaacityOptimized
 	AllocationStrategy FleetSpotOptionAllocationStrategy `json:"allocation_strategy,omitempty"`
 	// The number of Spot pools across which to allocate your target Spot
-	// capacity. Valid only when Spot AllocationStrategy is set to
-	// lowest-price. EC2 Fleet selects the cheapest Spot pools and evenly
-	// allocates your target Spot capacity across the number of Spot pools that
-	// you specify.
+	// capacity. Valid only when Spot AllocationStrategy is set to lowest-price.
+	// EC2 Fleet selects the cheapest Spot pools and evenly allocates your
+	// target Spot capacity across the number of Spot pools that you specify.
 	InstancePoolsToUseCount int `json:"instance_pools_to_use_count,omitempty"`
 	// The maximum amount per hour for Spot Instances that you&#39;re willing to
 	// pay.
@@ -250,11 +247,11 @@ type FleetSpotOption struct {
 // lowest-price | diversified | capaacityOptimized
 type FleetSpotOptionAllocationStrategy string
 
-const FleetSpotOptionAllocationStrategyLowestPrice FleetSpotOptionAllocationStrategy = `LOWEST_PRICE`
+const FleetSpotOptionAllocationStrategyCapacityOptimized FleetSpotOptionAllocationStrategy = `CAPACITY_OPTIMIZED`
 
 const FleetSpotOptionAllocationStrategyDiversified FleetSpotOptionAllocationStrategy = `DIVERSIFIED`
 
-const FleetSpotOptionAllocationStrategyCapacityOptimized FleetSpotOptionAllocationStrategy = `CAPACITY_OPTIMIZED`
+const FleetSpotOptionAllocationStrategyLowestPrice FleetSpotOptionAllocationStrategy = `LOWEST_PRICE`
 
 const FleetSpotOptionAllocationStrategyPrioritized FleetSpotOptionAllocationStrategy = `PRIORITIZED`
 
@@ -274,28 +271,28 @@ type GetInstancePoolResponse struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to ``default_tags``. Notes: - Currently, Databricks allows at
 	// most 45 custom tags
-	CustomTags []string `json:"custom_tags,omitempty"`
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// Tags that are added by Databricks regardless of any ``custom_tags``,
 	// including: - Vendor: Databricks - InstancePoolCreator:
-	// &lt;user_id_of_creator&gt; - InstancePoolName: &lt;name_of_pool&gt; -
-	// InstancePoolId: &lt;id_of_pool&gt;
-	DefaultTags []string `json:"default_tags,omitempty"`
-	// Defines the specification of the disks that will be attached to all
-	// spark containers.
+	// &lt;user_id_of_creator&gt; - InstancePoolName: &lt;name_of_pool&gt; - InstancePoolId:
+	// &lt;id_of_pool&gt;
+	DefaultTags map[string]string `json:"default_tags,omitempty"`
+	// Defines the specification of the disks that will be attached to all spark
+	// containers.
 	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
-	// Autoscaling Local Storage: when enabled, this instances in this pool
-	// will dynamically acquire additional disk space when its Spark workers
-	// are running low on disk space. In AWS, this feature requires specific
-	// AWS permissions to function correctly - refer to the User Guide for more
+	// Autoscaling Local Storage: when enabled, this instances in this pool will
+	// dynamically acquire additional disk space when its Spark workers are
+	// running low on disk space. In AWS, this feature requires specific AWS
+	// permissions to function correctly - refer to the User Guide for more
 	// details.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-	// Automatically terminates the extra instances in the pool cache after
-	// they are inactive for this time in minutes if min_idle_instances
-	// requirement is already met. If not set, the extra pool instances will be
+	// Automatically terminates the extra instances in the pool cache after they
+	// are inactive for this time in minutes if min_idle_instances requirement
+	// is already met. If not set, the extra pool instances will be
 	// automatically terminated after a default timeout. If specified, the
 	// threshold must be between 0 and 10000 minutes. Users can also set this
-	// value to 0 to instantly remove idle instances from the cache if min
-	// cache size could still hold.
+	// value to 0 to instantly remove idle instances from the cache if min cache
+	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
 	// Canonical unique identifier for the pool.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
@@ -309,8 +306,8 @@ type GetInstancePoolResponse struct {
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this pool. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads A
+	// each of the Spark nodes in this pool. For example, the Spark nodes can be
+	// provisioned and optimized for memory or compute intensive workloads A
 	// list of available node types can be retrieved by using the
 	// :ref:`clusterClusterServicelistNodeTypes` API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
@@ -335,9 +332,9 @@ type GetInstancePoolResponseState string
 
 const GetInstancePoolResponseStateActive GetInstancePoolResponseState = `ACTIVE`
 
-const GetInstancePoolResponseStateStopped GetInstancePoolResponseState = `STOPPED`
-
 const GetInstancePoolResponseStateDeleted GetInstancePoolResponseState = `DELETED`
+
+const GetInstancePoolResponseStateStopped GetInstancePoolResponseState = `STOPPED`
 
 type InstancePoolAndStats struct {
 	// Attributes related to pool running on Amazon Web Services. If not
@@ -350,28 +347,28 @@ type InstancePoolAndStats struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to ``default_tags``. Notes: - Currently, Databricks allows at
 	// most 45 custom tags
-	CustomTags []string `json:"custom_tags,omitempty"`
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// Tags that are added by Databricks regardless of any ``custom_tags``,
 	// including: - Vendor: Databricks - InstancePoolCreator:
-	// &lt;user_id_of_creator&gt; - InstancePoolName: &lt;name_of_pool&gt; -
-	// InstancePoolId: &lt;id_of_pool&gt;
-	DefaultTags []string `json:"default_tags,omitempty"`
-	// Defines the specification of the disks that will be attached to all
-	// spark containers.
+	// &lt;user_id_of_creator&gt; - InstancePoolName: &lt;name_of_pool&gt; - InstancePoolId:
+	// &lt;id_of_pool&gt;
+	DefaultTags map[string]string `json:"default_tags,omitempty"`
+	// Defines the specification of the disks that will be attached to all spark
+	// containers.
 	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
-	// Autoscaling Local Storage: when enabled, this instances in this pool
-	// will dynamically acquire additional disk space when its Spark workers
-	// are running low on disk space. In AWS, this feature requires specific
-	// AWS permissions to function correctly - refer to the User Guide for more
+	// Autoscaling Local Storage: when enabled, this instances in this pool will
+	// dynamically acquire additional disk space when its Spark workers are
+	// running low on disk space. In AWS, this feature requires specific AWS
+	// permissions to function correctly - refer to the User Guide for more
 	// details.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-	// Automatically terminates the extra instances in the pool cache after
-	// they are inactive for this time in minutes if min_idle_instances
-	// requirement is already met. If not set, the extra pool instances will be
+	// Automatically terminates the extra instances in the pool cache after they
+	// are inactive for this time in minutes if min_idle_instances requirement
+	// is already met. If not set, the extra pool instances will be
 	// automatically terminated after a default timeout. If specified, the
 	// threshold must be between 0 and 10000 minutes. Users can also set this
-	// value to 0 to instantly remove idle instances from the cache if min
-	// cache size could still hold.
+	// value to 0 to instantly remove idle instances from the cache if min cache
+	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
 	// Canonical unique identifier for the pool.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
@@ -385,8 +382,8 @@ type InstancePoolAndStats struct {
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this pool. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads A
+	// each of the Spark nodes in this pool. For example, the Spark nodes can be
+	// provisioned and optimized for memory or compute intensive workloads A
 	// list of available node types can be retrieved by using the
 	// :ref:`clusterClusterServicelistNodeTypes` API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
@@ -411,25 +408,25 @@ type InstancePoolAndStatsState string
 
 const InstancePoolAndStatsStateActive InstancePoolAndStatsState = `ACTIVE`
 
-const InstancePoolAndStatsStateStopped InstancePoolAndStatsState = `STOPPED`
-
 const InstancePoolAndStatsStateDeleted InstancePoolAndStatsState = `DELETED`
+
+const InstancePoolAndStatsStateStopped InstancePoolAndStatsState = `STOPPED`
 
 type InstancePoolAwsAttributes struct {
 	// Availability type used for the spot nodes. The default value is defined
 	// by InstancePoolConf.instancePoolDefaultAwsAvailability
 	Availability InstancePoolAwsAttributesAvailability `json:"availability,omitempty"`
 	// The bid price for AWS spot instances, as a percentage of the
-	// corresponding instance type&#39;s on-demand price. For example, if this
-	// field is set to 50, and the cluster needs a new ``r3.xlarge`` spot
-	// instance, then the bid price is half of the price of on-demand
-	// ``r3.xlarge`` instances. Similarly, if this field is set to 200, the bid
-	// price is twice the price of on-demand ``r3.xlarge`` instances. If not
-	// specified, the default value is 100. When spot instances are requested
-	// for this cluster, only spot instances whose bid price percentage matches
-	// this field will be considered. Note that, for safety, we enforce this
-	// field to be no more than 10000. The default value and documentation here
-	// should be kept consistent with CommonConf.defaultSpotBidPricePercent and
+	// corresponding instance type&#39;s on-demand price. For example, if this field
+	// is set to 50, and the cluster needs a new ``r3.xlarge`` spot instance,
+	// then the bid price is half of the price of on-demand ``r3.xlarge``
+	// instances. Similarly, if this field is set to 200, the bid price is twice
+	// the price of on-demand ``r3.xlarge`` instances. If not specified, the
+	// default value is 100. When spot instances are requested for this cluster,
+	// only spot instances whose bid price percentage matches this field will be
+	// considered. Note that, for safety, we enforce this field to be no more
+	// than 10000. The default value and documentation here should be kept
+	// consistent with CommonConf.defaultSpotBidPricePercent and
 	// CommonConf.maxSpotBidPricePercent.
 	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
 	// Identifier for the availability zone/datacenter in which the cluster
@@ -447,9 +444,9 @@ type InstancePoolAwsAttributes struct {
 // InstancePoolConf.instancePoolDefaultAwsAvailability
 type InstancePoolAwsAttributesAvailability string
 
-const InstancePoolAwsAttributesAvailabilitySpot InstancePoolAwsAttributesAvailability = `SPOT`
-
 const InstancePoolAwsAttributesAvailabilityOnDemand InstancePoolAwsAttributesAvailability = `ON_DEMAND`
+
+const InstancePoolAwsAttributesAvailabilitySpot InstancePoolAwsAttributesAvailability = `SPOT`
 
 const InstancePoolAwsAttributesAvailabilitySpotWithFallback InstancePoolAwsAttributesAvailability = `SPOT_WITH_FALLBACK`
 
@@ -466,9 +463,9 @@ type InstancePoolAzureAttributes struct {
 // InstancePoolConf.instancePoolDefaultAzureAvailability
 type InstancePoolAzureAttributesAvailability string
 
-const InstancePoolAzureAttributesAvailabilitySpotAzure InstancePoolAzureAttributesAvailability = `SPOT_AZURE`
-
 const InstancePoolAzureAttributesAvailabilityOnDemandAzure InstancePoolAzureAttributesAvailability = `ON_DEMAND_AZURE`
+
+const InstancePoolAzureAttributesAvailabilitySpotAzure InstancePoolAzureAttributesAvailability = `SPOT_AZURE`
 
 const InstancePoolAzureAttributesAvailabilitySpotWithFallbackAzure InstancePoolAzureAttributesAvailability = `SPOT_WITH_FALLBACK_AZURE`
 

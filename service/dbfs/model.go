@@ -20,8 +20,8 @@ type CloseRequest struct {
 type CreateRequest struct {
 	// The flag that specifies whether to overwrite existing file/files.
 	Overwrite bool `json:"overwrite,omitempty"`
-	// The path of the new file. The path should be the absolute DBFS path
-	// (e.g. &#34;/mnt/foo.txt&#34;).
+	// The path of the new file. The path should be the absolute DBFS path (e.g.
+	// &#34;/mnt/foo.txt&#34;).
 	Path string `json:"path"`
 }
 
@@ -90,8 +90,8 @@ type MoveRequest struct {
 	// The destination path of the file or directory. The path should be the
 	// absolute DBFS path (e.g. &#34;/mnt/bar/&#34;).
 	DestinationPath string `json:"destination_path"`
-	// The source path of the file or directory. The path should be the
-	// absolute DBFS path (e.g. &#34;/mnt/foo/&#34;).
+	// The source path of the file or directory. The path should be the absolute
+	// DBFS path (e.g. &#34;/mnt/foo/&#34;).
 	SourcePath string `json:"source_path"`
 }
 
@@ -100,14 +100,14 @@ type PutRequest struct {
 	Contents string `json:"contents,omitempty"`
 	// The flag that specifies whether to overwrite existing file/files.
 	Overwrite bool `json:"overwrite,omitempty"`
-	// The path of the new file. The path should be the absolute DBFS path
-	// (e.g. &#34;/mnt/foo/&#34;).
+	// The path of the new file. The path should be the absolute DBFS path (e.g.
+	// &#34;/mnt/foo/&#34;).
 	Path string `json:"path"`
 }
 
 type ReadRequest struct {
-	// The number of bytes to read starting from the offset. This has a limit
-	// of 1 MB, and a default value of 0.5 MB.
+	// The number of bytes to read starting from the offset. This has a limit of
+	// 1 MB, and a default value of 0.5 MB.
 	Length int ` url:"length,omitempty"`
 	// The offset to read from in bytes.
 	Offset int ` url:"offset,omitempty"`
@@ -118,8 +118,8 @@ type ReadRequest struct {
 
 type ReadResponse struct {
 	// The number of bytes read (could be less than ``length`` if we hit end of
-	// file). This refers to number of bytes read in unencoded version
-	// (response data is base64-encoded).
+	// file). This refers to number of bytes read in unencoded version (response
+	// data is base64-encoded).
 	BytesRead int64 `json:"bytes_read,omitempty"`
 	// The base64-encoded contents of the file read.
 	Data string `json:"data,omitempty"`
