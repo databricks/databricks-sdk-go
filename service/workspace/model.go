@@ -5,11 +5,12 @@ package workspace
 // all definitions in this file are in alphabetical order
 
 type DeleteRequest struct {
-	// The path of the file or directory to delete. The path should be the
-	// absolute DBFS path (e.g. &#34;/mnt/foo/&#34;).
+	// The absolute path of the notebook or directory.
 	Path string `json:"path"`
-	// Whether or not to recursively delete the directory&#39;s contents. Deleting
-	// empty directories can be done without providing the recursive flag.
+	// The flag that specifies whether to delete the object recursively. It is
+	// ``false`` by default. Please note this deleting directory is not atomic.
+	// If it fails in the middle, some of objects under this directory may be
+	// deleted and cannot be undone.
 	Recursive bool `json:"recursive,omitempty"`
 }
 
@@ -40,15 +41,70 @@ type GetStatusRequest struct {
 }
 
 type GetStatusResponse struct {
-	// The length of the file in bytes or zero if the path is a directory.
-	FileSize int64 `json:"file_size,omitempty"`
-	// True if the path is a directory.
-	IsDir bool `json:"is_dir,omitempty"`
-	// Last modification time of given file/dir in milliseconds since Epoch.
-	ModificationTime int64 `json:"modification_time,omitempty"`
-	// The path of the file or directory.
+	// The location (bucket and prefix) enum value of the content blob. This
+	// field is used in conjunction with the blob_path field to determine where
+	// the blob is located.
+	BlobLocation GetStatusResponseBlobLocation `json:"blob_location,omitempty"`
+	// ========= File metadata. These values are set only if the object type is
+	// ``FILE``. ===========//
+	BlobPath string `json:"blob_path,omitempty"`
+
+	ContentSha256Hex string `json:"content_sha256_hex,omitempty"`
+
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// The language of the object. This value is set only if the object type is
+	// ``NOTEBOOK``.
+	Language GetStatusResponseLanguage `json:"language,omitempty"`
+
+	MetadataVersion int `json:"metadata_version,omitempty"`
+
+	ModifiedAt int64 `json:"modified_at,omitempty"`
+
+	ObjectId int64 `json:"object_id,omitempty"`
+
+	ObjectType GetStatusResponseObjectType `json:"object_type,omitempty"`
+	// The absolute path of the object.
 	Path string `json:"path,omitempty"`
+
+	Size int64 `json:"size,omitempty"`
 }
+
+// The location (bucket and prefix) enum value of the content blob. This field
+// is used in conjunction with the blob_path field to determine where the blob
+// is located.
+type GetStatusResponseBlobLocation string
+
+const GetStatusResponseBlobLocationDbfsRoot GetStatusResponseBlobLocation = `DBFS_ROOT`
+
+const GetStatusResponseBlobLocationInternalDbfsJobs GetStatusResponseBlobLocation = `INTERNAL_DBFS_JOBS`
+
+// The language of the object. This value is set only if the object type is
+// “NOTEBOOK“.
+type GetStatusResponseLanguage string
+
+const GetStatusResponseLanguagePython GetStatusResponseLanguage = `PYTHON`
+
+const GetStatusResponseLanguageR GetStatusResponseLanguage = `R`
+
+const GetStatusResponseLanguageScala GetStatusResponseLanguage = `SCALA`
+
+const GetStatusResponseLanguageSql GetStatusResponseLanguage = `SQL`
+
+type GetStatusResponseObjectType string
+
+const GetStatusResponseObjectTypeDirectory GetStatusResponseObjectType = `DIRECTORY`
+
+const GetStatusResponseObjectTypeFile GetStatusResponseObjectType = `FILE`
+
+const GetStatusResponseObjectTypeLibrary GetStatusResponseObjectType = `LIBRARY`
+
+const GetStatusResponseObjectTypeMlflowExperiment GetStatusResponseObjectType = `MLFLOW_EXPERIMENT`
+
+const GetStatusResponseObjectTypeNotebook GetStatusResponseObjectType = `NOTEBOOK`
+
+const GetStatusResponseObjectTypeProject GetStatusResponseObjectType = `PROJECT`
+
+const GetStatusResponseObjectTypeRepo GetStatusResponseObjectType = `REPO`
 
 type ImportRequest struct {
 	// The base64-encoded content. This has a limit of 10 MB. If the limit
