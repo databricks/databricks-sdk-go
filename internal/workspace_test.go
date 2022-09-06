@@ -29,9 +29,7 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	})
 
 	// Make test directory
-	err := wsc.Workspace.Mkdirs(ctx, workspace.MkdirsRequest{
-		Path: testDirPath,
-	})
+	err := wsc.Workspace.MkdirsByPath(ctx, testDirPath)
 	require.NoError(t, err)
 
 	// Import the test notebook
@@ -45,9 +43,7 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Get test notebook status
-	getStatusResponse, err := wsc.Workspace.GetStatus(ctx, workspace.GetStatusRequest{
-		Path: filepath.Join(testDirPath, testFileName),
-	})
+	getStatusResponse, err := wsc.Workspace.GetStatusByPath(ctx, filepath.Join(testDirPath, testFileName))
 	require.NoError(t, err)
 	assert.True(t, getStatusResponse.Language == "PYTHON")
 	assert.True(t, getStatusResponse.Path == filepath.Join(testDirPath, testFileName))
