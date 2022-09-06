@@ -6,10 +6,16 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type CurrentUserService interface {
 	Me(ctx context.Context) (*User, error)
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type GroupsService interface {
 	// Delete one group
 	DeleteGroup(ctx context.Context, deleteGroupRequest DeleteGroupRequest) error
@@ -32,6 +38,9 @@ type GroupsService interface {
 	ReplaceGroup(ctx context.Context, group Group) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type ServicePrincipalsService interface {
 	// Delete one service principal
 	DeleteServicePrincipal(ctx context.Context, deleteServicePrincipalRequest DeleteServicePrincipalRequest) error
@@ -54,6 +63,9 @@ type ServicePrincipalsService interface {
 	ReplaceServicePrincipal(ctx context.Context, servicePrincipal ServicePrincipal) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type UsersService interface {
 	// Delete one user
 	DeleteUser(ctx context.Context, deleteUserRequest DeleteUserRequest) error

@@ -6,6 +6,9 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type WorkspaceService interface {
 	// Deletes an object or a directory (and optionally recursively deletes all
 	// objects in the directory). If ``path`` does not exist, this call returns

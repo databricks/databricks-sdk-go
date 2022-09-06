@@ -6,6 +6,9 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type CatalogsService interface {
 	CreateCatalog(ctx context.Context, createCatalogRequest CreateCatalogRequest) (*CreateCatalogResponse, error)
 
@@ -22,6 +25,9 @@ type CatalogsService interface {
 	UpdateCatalog(ctx context.Context, updateCatalogRequest UpdateCatalogRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type ExternalLocationsService interface {
 	CreateExternalLocation(ctx context.Context, createExternalLocationRequest CreateExternalLocationRequest) (*CreateExternalLocationResponse, error)
 
@@ -38,6 +44,9 @@ type ExternalLocationsService interface {
 	UpdateExternalLocation(ctx context.Context, updateExternalLocationRequest UpdateExternalLocationRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type GrantsService interface {
 	GetPermissions(ctx context.Context, getPermissionsRequest GetPermissionsRequest) (*GetPermissionsResponse, error)
 
@@ -46,6 +55,9 @@ type GrantsService interface {
 	UpdatePermissions(ctx context.Context, updatePermissionsRequest UpdatePermissionsRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type MetastoresService interface {
 	CreateMetastore(ctx context.Context, createMetastoreRequest CreateMetastoreRequest) (*CreateMetastoreResponse, error)
 
@@ -72,6 +84,9 @@ type MetastoresService interface {
 	UpdateMetastoreAssignment(ctx context.Context, updateMetastoreAssignmentRequest UpdateMetastoreAssignmentRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type ProvidersService interface {
 	CreateProvider(ctx context.Context, createProviderRequest CreateProviderRequest) (*CreateProviderResponse, error)
 
@@ -92,6 +107,9 @@ type ProvidersService interface {
 	UpdateProvider(ctx context.Context, updateProviderRequest UpdateProviderRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type RecipientActivationService interface {
 	GetActivationUrlInfo(ctx context.Context, getActivationUrlInfoRequest GetActivationUrlInfoRequest) error
 
@@ -103,6 +121,9 @@ type RecipientActivationService interface {
 	RetrieveTokenByActivationUrl(ctx context.Context, activationUrl string) (*RetrieveTokenResponse, error)
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type RecipientsService interface {
 	CreateRecipient(ctx context.Context, createRecipientRequest CreateRecipientRequest) (*CreateRecipientResponse, error)
 
@@ -125,6 +146,9 @@ type RecipientsService interface {
 	UpdateRecipient(ctx context.Context, updateRecipientRequest UpdateRecipientRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type SchemasService interface {
 	CreateSchema(ctx context.Context, createSchemaRequest CreateSchemaRequest) (*CreateSchemaResponse, error)
 
@@ -141,6 +165,9 @@ type SchemasService interface {
 	UpdateSchema(ctx context.Context, updateSchemaRequest UpdateSchemaRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type SharesService interface {
 	CreateShare(ctx context.Context, createShareRequest CreateShareRequest) (*CreateShareResponse, error)
 
@@ -163,6 +190,9 @@ type SharesService interface {
 	UpdateSharePermissions(ctx context.Context, updateSharePermissionsRequest UpdateSharePermissionsRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type StorageCredentialsService interface {
 	CreateStorageCredential(ctx context.Context, createStorageCredentialRequest CreateStorageCredentialRequest) (*CreateStorageCredentialResponse, error)
 
@@ -179,6 +209,9 @@ type StorageCredentialsService interface {
 	UpdateStorageCredential(ctx context.Context, updateStorageCredentialRequest UpdateStorageCredentialRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type TablesService interface {
 	CreateStagingTable(ctx context.Context, createStagingTableRequest CreateStagingTableRequest) (*CreateStagingTableResponse, error)
 
@@ -199,6 +232,9 @@ type TablesService interface {
 	UpdateTable(ctx context.Context, updateTableRequest UpdateTableRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type UnityFilesService interface {
 	ListFiles(ctx context.Context, listFilesRequest ListFilesRequest) (*ListFilesResponse, error)
 }

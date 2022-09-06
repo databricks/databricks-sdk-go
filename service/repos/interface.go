@@ -7,6 +7,10 @@ import (
 )
 
 // The Repos API allows users to manage their git repos.
+//
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type ReposService interface {
 	// Creates a repo in the workspace and links it to the remote Git repo
 	// specified. Note that repos created programmatically must be linked to a

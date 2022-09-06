@@ -6,6 +6,9 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type PermissionsService interface {
 	GetObjectPermissions(ctx context.Context, getObjectPermissionsRequest GetObjectPermissionsRequest) (*ObjectPermissions, error)
 

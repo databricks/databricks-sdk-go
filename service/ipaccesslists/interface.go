@@ -6,6 +6,9 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type IpAccessListsService interface {
 	// Add an IP access list for this workspace. A list can be an allow list or
 	// a block list. See the top of this file for a description of how the

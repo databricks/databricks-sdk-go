@@ -8,6 +8,10 @@ import (
 )
 
 // &lt;needs content added&gt;
+//
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type ClustersService interface {
 	// Public version of editClusterOwner, allowing admins to change cluster
 	// owner

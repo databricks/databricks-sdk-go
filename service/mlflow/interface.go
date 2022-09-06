@@ -6,6 +6,9 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type ExperimentsService interface {
 	// Create an experiment with a name. Returns the ID of the newly created
 	// experiment. Validates that another experiment with the same name does not
@@ -55,6 +58,9 @@ type ExperimentsService interface {
 	Update(ctx context.Context, updateExperimentRequest UpdateExperimentRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type MLflowArtifactsService interface {
 	// List artifacts for a run. Takes an optional ``artifact_path`` prefix
 	// which if specified, the response contains only artifacts with the
@@ -64,6 +70,10 @@ type MLflowArtifactsService interface {
 
 // These endpoints are modified versions of the MLflow API that accept
 // additional input parameters or return additional information.
+//
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type MLflowDatabricksService interface {
 	Get(ctx context.Context, getRegisteredModelRequest GetRegisteredModelRequest) (*GetRegisteredModelResponse, error)
 
@@ -76,11 +86,17 @@ type MLflowDatabricksService interface {
 	TransitionStage(ctx context.Context, transitionModelVersionStageRequest TransitionModelVersionStageRequest) (*TransitionModelVersionStageResponse, error)
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type MLflowMetricsService interface {
 	// Get a list of all values for the specified metric for a given run.
 	GetHistory(ctx context.Context, getMetricHistoryRequest GetMetricHistoryRequest) (*GetMetricHistoryResponse, error)
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type MLflowRunsService interface {
 	// Create a new run within an experiment. A run is usually a single
 	// execution of a machine learning or data ETL pipeline. MLflow uses runs to
@@ -167,6 +183,9 @@ type MLflowRunsService interface {
 	Update(ctx context.Context, updateRunRequest UpdateRunRequest) (*UpdateRunResponse, error)
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type ModelVersionCommentsService interface {
 	// Make a comment on a model version. A comment can be submitted either by a
 	// user or programmatically to display relevant information about the model.
@@ -181,6 +200,9 @@ type ModelVersionCommentsService interface {
 	Update(ctx context.Context, updateCommentRequest UpdateCommentRequest) (*UpdateCommentResponse, error)
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type ModelVersionsService interface {
 	Create(ctx context.Context, createModelVersionRequest CreateModelVersionRequest) (*CreateModelVersionResponse, error)
 
@@ -201,6 +223,9 @@ type ModelVersionsService interface {
 	Update(ctx context.Context, updateModelVersionRequest UpdateModelVersionRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type RegisteredModelsService interface {
 	// Throws ``RESOURCE_ALREADY_EXISTS`` if a registered model with the given
 	// name exists.
@@ -229,6 +254,9 @@ type RegisteredModelsService interface {
 	Update(ctx context.Context, updateRegisteredModelRequest UpdateRegisteredModelRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type RegistryWebhooksService interface {
 	// This endpoint is in Public Preview. Create a registry webhook.
 	Create(ctx context.Context, createRegistryWebhookRequest CreateRegistryWebhookRequest) (*CreateRegistryWebhookResponse, error)
@@ -247,6 +275,9 @@ type RegistryWebhooksService interface {
 	Update(ctx context.Context, updateRegistryWebhookRequest UpdateRegistryWebhookRequest) error
 }
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type TransitionRequestsService interface {
 	// Approve model version stage transition request.
 	Approve(ctx context.Context, approveTransitionRequestRequest ApproveTransitionRequestRequest) (*ApproveTransitionRequestResponse, error)

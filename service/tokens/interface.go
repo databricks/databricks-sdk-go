@@ -6,6 +6,9 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type TokensService interface {
 	// Creates and returns a token for a user. If this call is made through
 	// token authentication, it will create the token that has the same client

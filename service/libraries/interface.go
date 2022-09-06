@@ -6,6 +6,9 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type LibrariesService interface {
 	// Get the status of all libraries on all clusters. A status will be
 	// available for all libraries installed on this cluster via the API or the

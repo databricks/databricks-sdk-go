@@ -6,6 +6,9 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type InstancePoolsService interface {
 	// Creates a new Instance Pool
 	Create(ctx context.Context, createInstancePoolRequest CreateInstancePoolRequest) (*CreateInstancePoolResponse, error)

@@ -7,6 +7,9 @@ import (
 	"time"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type DeltaPipelinesService interface {
 	CreatePipeline(ctx context.Context, createPipelineRequest CreatePipelineRequest) (*CreatePipelineResponse, error)
 	// CreatePipeline and wait to reach RUNNING state

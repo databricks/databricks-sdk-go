@@ -6,6 +6,9 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type GlobalInitScriptsService interface {
 	// Create a new global init script in this workspace.
 	CreateScript(ctx context.Context, globalInitScriptCreateRequest GlobalInitScriptCreateRequest) (*CreateScriptResponse, error)

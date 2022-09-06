@@ -6,6 +6,9 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type GitCredentialsService interface {
 	// Creates a Git credential entry for the user. Only one Git credential per
 	// user is supported, so any attempts to create credentials if an entry

@@ -6,6 +6,9 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type SecretsService interface {
 	// Creates a new secret scope. The scope name must consist of alphanumeric
 	// characters, dashes, underscores, and periods, and may not exceed 128

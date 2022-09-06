@@ -7,6 +7,9 @@ import (
 	"time"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type WarehousesService interface {
 	// Creates a new SQL warehouse.
 	CreateWarehouse(ctx context.Context, createWarehouseRequest CreateWarehouseRequest) (*CreateWarehouseResponse, error)

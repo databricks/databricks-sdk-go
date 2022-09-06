@@ -6,6 +6,9 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type DbfsService interface {
 	// Appends a block of data to the stream specified by the input handle. If
 	// the handle does not exist, this call will throw an exception with

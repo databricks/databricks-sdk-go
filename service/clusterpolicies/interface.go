@@ -6,6 +6,9 @@ import (
 	"context"
 )
 
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type ClusterPoliciesService interface {
 	// Creates a new Policy
 	Create(ctx context.Context, createPolicyRequest CreatePolicyRequest) (*CreatePolicyResponse, error)

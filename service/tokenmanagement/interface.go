@@ -9,6 +9,10 @@ import (
 // Enables administrators to get all tokens and delete tokens for other users.
 // Admins can either get every token, get a specific token by ID, or get all
 // tokens for a particular user.
+//
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type TokenManagementService interface {
 	// Delete a token, specified by its ID.
 	DeleteToken(ctx context.Context, deleteTokenRequest DeleteTokenRequest) error

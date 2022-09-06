@@ -8,6 +8,10 @@ import (
 )
 
 // The Jobs API allows you to create, edit, and delete jobs.
+//
+// This is the high-level interface, that contains generated methods.
+//
+// Evolving: this interface is under development. Method signatures may change.
 type JobsService interface {
 	// Cancels all active runs of a job. The runs are canceled asynchronously,
 	// so it doesn&#39;t prevent new runs from being started.
