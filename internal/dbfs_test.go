@@ -19,7 +19,7 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	dbfsTestDirPath := RandomName("/tmp/databricks-go-sdk/integration/dbfs/TestDir-")
 
 	// create file
-	createResponse, err := wsc.Dbfs.Create(ctx,
+	createdFile, err := wsc.Dbfs.Create(ctx,
 		dbfs.CreateRequest{
 			Path:      dbfsTestFilePath,
 			Overwrite: true,
@@ -31,7 +31,7 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	err = wsc.Dbfs.AddBlock(ctx,
 		dbfs.AddBlockRequest{
 			Data:   base64.StdEncoding.EncodeToString([]byte("Hello, World!")),
-			Handle: createResponse.Handle,
+			Handle: createdFile.Handle,
 		},
 	)
 	require.NoError(t, err)
@@ -39,30 +39,30 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	// Close file handle
 	err = wsc.Dbfs.Close(ctx,
 		dbfs.CloseRequest{
-			Handle: createResponse.Handle,
+			Handle: createdFile.Handle,
 		},
 	)
 	require.NoError(t, err)
 
 	// Get file status
-	getStatusResponse, err := wsc.Dbfs.GetStatus(ctx,
+	testFileStatus, err := wsc.Dbfs.GetStatus(ctx,
 		dbfs.GetStatusRequest{
 			Path: dbfsTestFilePath,
 		},
 	)
 	require.NoError(t, err)
-	assert.True(t, getStatusResponse.Path == dbfsTestFilePath)
-	assert.True(t, getStatusResponse.IsDir == false)
+	assert.True(t, testFileStatus.Path == dbfsTestFilePath)
+	assert.True(t, testFileStatus.IsDir == false)
 
 	// List all files in workspace root and assert test file is found
-	listStatusReponse, err := wsc.Dbfs.ListStatus(ctx,
+	listOfFilesInWorkspaceRoot, err := wsc.Dbfs.ListStatus(ctx,
 		dbfs.ListStatusRequest{
 			Path: "/",
 		},
 	)
 	require.NoError(t, err)
 	foundTestFile := false
-	for _, fileInfo := range listStatusReponse.Files {
+	for _, fileInfo := range listOfFilesInWorkspaceRoot.Files {
 		if fileInfo.Path == dbfsTestFilePath {
 			foundTestFile = true
 		}
@@ -97,22 +97,22 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// assert on contents of original test file
-	readResponse1, err := wsc.Dbfs.Read(ctx,
+	contentsTestFile, err := wsc.Dbfs.Read(ctx,
 		dbfs.ReadRequest{
 			Path: dbfsTestDirPath + dbfsTestFilePath,
 		},
 	)
 	require.NoError(t, err)
-	assert.True(t, readResponse1.Data == base64.StdEncoding.EncodeToString([]byte("Hello, World!")))
+	assert.True(t, contentsTestFile.Data == base64.StdEncoding.EncodeToString([]byte("Hello, World!")))
 
 	// assert on contents of byebye-world.txt
-	readResponse2, err := wsc.Dbfs.Read(ctx,
+	contentsByeByeWorldFile, err := wsc.Dbfs.Read(ctx,
 		dbfs.ReadRequest{
 			Path: dbfsTestDirPath + "/byebye-world.txt",
 		},
 	)
 	require.NoError(t, err)
-	assert.True(t, readResponse2.Data == base64.StdEncoding.EncodeToString([]byte("Bye Bye, World!")))
+	assert.True(t, contentsByeByeWorldFile.Data == base64.StdEncoding.EncodeToString([]byte("Bye Bye, World!")))
 
 	// recursively delete the test dir and the test files inside it
 	err = wsc.Dbfs.Delete(ctx,
