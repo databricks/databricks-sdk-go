@@ -28,27 +28,24 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// write 'Hello, World!' to file
-	err = wsc.Dbfs.AddBlock(ctx,
-		dbfs.AddBlockRequest{
-			Data:   base64.StdEncoding.EncodeToString([]byte("Hello, World!")),
-			Handle: createdFile.Handle,
-		},
+	err = wsc.Dbfs.AddBlock(ctx, dbfs.AddBlockRequest{
+		Data:   base64.StdEncoding.EncodeToString([]byte("Hello, World!")),
+		Handle: createdFile.Handle,
+	},
 	)
 	require.NoError(t, err)
 
 	// Close file handle
-	err = wsc.Dbfs.Close(ctx,
-		dbfs.CloseRequest{
-			Handle: createdFile.Handle,
-		},
+	err = wsc.Dbfs.Close(ctx, dbfs.CloseRequest{
+		Handle: createdFile.Handle,
+	},
 	)
 	require.NoError(t, err)
 
 	// Get file status
-	testFileStatus, err := wsc.Dbfs.GetStatus(ctx,
-		dbfs.GetStatusRequest{
-			Path: dbfsTestFilePath,
-		},
+	testFileStatus, err := wsc.Dbfs.GetStatus(ctx, dbfs.GetStatusRequest{
+		Path: dbfsTestFilePath,
+	},
 	)
 	require.NoError(t, err)
 	assert.True(t, testFileStatus.Path == dbfsTestFilePath)
@@ -70,56 +67,52 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	assert.True(t, foundTestFile)
 
 	// make test dir in workspace root
-	err = wsc.Dbfs.MkDirs(ctx,
-		dbfs.MkDirsRequest{
-			Path: dbfsTestDirPath,
-		},
+	err = wsc.Dbfs.MkDirs(ctx, dbfs.MkDirsRequest{
+		Path: dbfsTestDirPath,
+	},
 	)
 	require.NoError(t, err)
 
-	// move test file to test dir
-	err = wsc.Dbfs.Move(ctx,
-		dbfs.MoveRequest{
-			SourcePath:      dbfsTestFilePath,
-			DestinationPath: dbfsTestDirPath + dbfsTestFilePath,
+	t.Cleanup(func() {
+		// recursively delete the test dir and the test files inside it
+		err = wsc.Dbfs.Delete(ctx, dbfs.DeleteRequest{
+			Path:      dbfsTestDirPath,
+			Recursive: true,
 		},
+		)
+		require.NoError(t, err)
+	})
+
+	// move test file to test dir
+	err = wsc.Dbfs.Move(ctx, dbfs.MoveRequest{
+		SourcePath:      dbfsTestFilePath,
+		DestinationPath: dbfsTestDirPath + dbfsTestFilePath,
+	},
 	)
 	require.NoError(t, err)
 
 	// put a new file (byebye-world.txt) in test dir
-	err = wsc.Dbfs.Put(ctx,
-		dbfs.PutRequest{
-			Path:      dbfsTestDirPath + "/byebye-world.txt",
-			Contents:  base64.StdEncoding.EncodeToString([]byte("Bye Bye, World!")),
-			Overwrite: true,
-		},
+	err = wsc.Dbfs.Put(ctx, dbfs.PutRequest{
+		Path:      dbfsTestDirPath + "/byebye-world.txt",
+		Contents:  base64.StdEncoding.EncodeToString([]byte("Bye Bye, World!")),
+		Overwrite: true,
+	},
 	)
 	require.NoError(t, err)
 
 	// assert on contents of original test file
-	contentsTestFile, err := wsc.Dbfs.Read(ctx,
-		dbfs.ReadRequest{
-			Path: dbfsTestDirPath + dbfsTestFilePath,
-		},
+	contentsTestFile, err := wsc.Dbfs.Read(ctx, dbfs.ReadRequest{
+		Path: dbfsTestDirPath + dbfsTestFilePath,
+	},
 	)
 	require.NoError(t, err)
 	assert.True(t, contentsTestFile.Data == base64.StdEncoding.EncodeToString([]byte("Hello, World!")))
 
 	// assert on contents of byebye-world.txt
-	contentsByeByeWorldFile, err := wsc.Dbfs.Read(ctx,
-		dbfs.ReadRequest{
-			Path: dbfsTestDirPath + "/byebye-world.txt",
-		},
+	contentsByeByeWorldFile, err := wsc.Dbfs.Read(ctx, dbfs.ReadRequest{
+		Path: dbfsTestDirPath + "/byebye-world.txt",
+	},
 	)
 	require.NoError(t, err)
 	assert.True(t, contentsByeByeWorldFile.Data == base64.StdEncoding.EncodeToString([]byte("Bye Bye, World!")))
-
-	// recursively delete the test dir and the test files inside it
-	err = wsc.Dbfs.Delete(ctx,
-		dbfs.DeleteRequest{
-			Path:      dbfsTestDirPath,
-			Recursive: true,
-		},
-	)
-	require.NoError(t, err)
 }
