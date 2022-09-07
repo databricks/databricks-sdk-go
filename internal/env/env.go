@@ -10,7 +10,16 @@ import (
 // The original environment is restored upon test completion.
 // Note: use of this function is incompatible with parallel execution.
 func CleanupEnvironment(t *testing.T) {
+	// Restore environment when test finishes.
 	environ := os.Environ()
+	t.Cleanup(func() {
+		// Restore original environment.
+		for _, kv := range environ {
+			kvs := strings.SplitN(kv, "=", 2)
+			os.Setenv(kvs[0], kvs[1])
+		}
+	})
+
 	path := os.Getenv("PATH")
 	pwd := os.Getenv("PWD")
 	os.Clearenv()
@@ -21,13 +30,4 @@ func CleanupEnvironment(t *testing.T) {
 	// because of isolation; the environment is scoped to the process.
 	t.Setenv("PATH", path)
 	t.Setenv("HOME", pwd)
-
-	// Restore environment when test finishes.
-	t.Cleanup(func() {
-		// Restore original environment.
-		for _, kv := range environ {
-			kvs := strings.SplitN(kv, "=", 2)
-			os.Setenv(kvs[0], kvs[1])
-		}
-	})
 }
