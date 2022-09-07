@@ -122,9 +122,9 @@ func TestAccClustersApiIntegration(t *testing.T) {
 
 	var seen int
 	for _, clusterInfo := range listClustersResponse.Clusters {
-	if clusterInfo.ClusterId == clstr.ClusterId {
-		seen++
-	}
+		if clusterInfo.ClusterId == clstr.ClusterId {
+			seen++
+		}
 	}
 	// The test clusters should only occur once in the list clusters response
 	assert.True(t, seen == 1)
