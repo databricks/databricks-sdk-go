@@ -5,6 +5,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -29,7 +30,7 @@ type configFixture struct {
 }
 
 func (cf configFixture) apply(t *testing.T) {
-	defer CleanupEnvironment()()
+	env.CleanupEnvironment(t)
 	c, err := cf.configureProviderAndReturnConfig(t)
 	if cf.assertError != "" {
 		require.NotNilf(t, err, "Expected to have %s error", cf.assertError)

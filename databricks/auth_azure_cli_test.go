@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -38,7 +39,7 @@ func TestAzureCliCredentials_SkipAws(t *testing.T) {
 }
 
 func TestAzureCliCredentials_NotInstalled(t *testing.T) {
-	defer CleanupEnvironment()()
+	env.CleanupEnvironment(t)
 	os.Setenv("PATH", "whatever")
 	aa := AzureCliCredentials{}
 	_, err := aa.Configure(context.Background(), azDummy)
@@ -46,7 +47,7 @@ func TestAzureCliCredentials_NotInstalled(t *testing.T) {
 }
 
 func TestAzureCliCredentials_NotLoggedIn(t *testing.T) {
-	defer CleanupEnvironment()()
+	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
 	os.Setenv("FAIL", "logout")
 	aa := AzureCliCredentials{}
@@ -55,7 +56,7 @@ func TestAzureCliCredentials_NotLoggedIn(t *testing.T) {
 }
 
 func TestAzureCliCredentials_Valid(t *testing.T) {
-	defer CleanupEnvironment()()
+	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
 	aa := AzureCliCredentials{}
 	visitor, err := aa.Configure(context.Background(), azDummy)
@@ -69,7 +70,7 @@ func TestAzureCliCredentials_Valid(t *testing.T) {
 }
 
 func TestAzureCliCredentials_AlwaysExpired(t *testing.T) {
-	defer CleanupEnvironment()()
+	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
 	os.Setenv("EXPIRE", "10S")
 	aa := AzureCliCredentials{}
@@ -83,7 +84,7 @@ func TestAzureCliCredentials_AlwaysExpired(t *testing.T) {
 }
 
 func TestAzureCliCredentials_ExitError(t *testing.T) {
-	defer CleanupEnvironment()()
+	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
 	os.Setenv("FAIL", "yes")
 	aa := AzureCliCredentials{}
@@ -92,7 +93,7 @@ func TestAzureCliCredentials_ExitError(t *testing.T) {
 }
 
 func TestAzureCliCredentials_Corrupt(t *testing.T) {
-	defer CleanupEnvironment()()
+	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
 	os.Setenv("FAIL", "corrupt")
 	aa := AzureCliCredentials{}
@@ -101,7 +102,7 @@ func TestAzureCliCredentials_Corrupt(t *testing.T) {
 }
 
 func TestAzureCliCredentials_CorruptExpire(t *testing.T) {
-	defer CleanupEnvironment()()
+	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
 	os.Setenv("EXPIRE", "corrupt")
 	aa := AzureCliCredentials{}
