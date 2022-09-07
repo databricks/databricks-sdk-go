@@ -15,9 +15,8 @@ import (
 func TestAccListDbfsIntegration(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
-	// We skip dbfs tests for gcp because dbfs rest api is disabled on gcp
 	if env == "gcp" {
-		return
+		t.Skip("dbfs tests are skipped because dbfs rest api is disabled on gcp")
 	}
 
 	ctx := context.Background()
