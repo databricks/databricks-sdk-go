@@ -13,7 +13,13 @@ import (
 )
 
 func TestAccListDbfsIntegration(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
+	t.Log(env)
+	// We skip dbfs tests for gcp because dbfs rest api is not supported
+	if env == "gcp" {
+		return
+	}
+
 	ctx := context.Background()
 	wsc := workspaces.New()
 	testFile1 := RandomName("test-file-1-")
