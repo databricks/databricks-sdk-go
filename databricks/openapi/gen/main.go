@@ -1,12 +1,15 @@
-// Usage: go run databricks/openapi/gen/main.go -spec /path/to/spec.json
+// Usage: go run databricks/openapi/gen/main.go -spec /private/tmp/processed-databricks-workspace-all.json -target service
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"strings"
@@ -19,8 +22,8 @@ var ctx Context
 
 func main() {
 	flag.StringVar(&ctx.Spec, "spec", "", "location of the spec file")
+	flag.StringVar(&ctx.Target, "target", "", "path to directory with .codegen.json")
 	flag.BoolVar(&ctx.DryRun, "dry-run", false, "print to stdout instead of real files")
-	flag.StringVar(&ctx.Language, "lang", "go", "target language")
 	flag.Parse()
 
 	if ctx.Spec == "" {
@@ -37,31 +40,9 @@ func main() {
 }
 
 type Context struct {
-	Spec     string
-	DryRun   bool
-	Language string
-}
-
-func (c *Context) templateDir() string {
-	return filepath.Join("databricks/openapi/templates", c.Language)
-}
-
-func (c *Context) fileset() (map[string]string, error) {
-	switch c.Language {
-	case "go":
-		return map[string]string{
-			"api.go.tmpl":   "service/{{.Name}}/api.go",
-			"model.go.tmpl": "service/{{.Name}}/model.go",
-		}, nil
-	case "js":
-		return map[string]string{
-			"api.ts.tmpl":   "service-js/{{.Name}}/api.ts",
-			"model.ts.tmpl": "service-js/{{.Name}}/model.ts",
-			"index.ts.tmpl": "service-js/{{.Name}}/index.ts",
-		}, nil
-	}
-
-	return nil, fmt.Errorf("fileset for language %s not found", c.Language)
+	Spec   string
+	Target string
+	DryRun bool
 }
 
 func (c *Context) Generate() error {
@@ -69,23 +50,40 @@ func (c *Context) Generate() error {
 	if err != nil {
 		return err
 	}
-	fileset, err := c.fileset()
+	f, err := os.Open(fmt.Sprintf("%s/.codegen.json", c.Target))
 	if err != nil {
-		return err
+		return fmt.Errorf("no .codegen.json file in %s: %w", c.Target, err)
 	}
-	return (&Render{
-		ctx:     c,
-		batch:   batch,
-		tmpl:    template.Must(template.New("content").Funcs(code.HelperFuncs).ParseGlob(filepath.Join(c.templateDir(), "*.tmpl"))),
-		fileset: fileset,
-	}).Run()
+	defer f.Close()
+	raw, err := io.ReadAll(f)
+	if err != nil {
+		return fmt.Errorf("read all: %w", err)
+	}
+	var render Render
+	err = json.Unmarshal(raw, &render)
+	if err != nil {
+		return fmt.Errorf(".codegen.json: %w", err)
+	}
+	render.ctx = c
+	render.batch = batch
+	var tmpls []string
+	fileset := map[string]string{}
+	for filename, v := range render.Fileset {
+		filename = filepath.Join(c.Target, filename)
+		tmpls = append(tmpls, filename)
+		fileset[filepath.Base(filename)] = v
+	}
+	render.Fileset = fileset
+	render.tmpl = template.Must(template.ParseFiles(tmpls...))
+	return render.Run()
 }
 
 type Render struct {
-	ctx     *Context
-	tmpl    *template.Template
-	batch   *code.Batch
-	fileset map[string]string
+	ctx       *Context
+	tmpl      *template.Template
+	batch     *code.Batch
+	Formatter string            `json:"formatter"`
+	Fileset   map[string]string `json:"fileset"`
 }
 
 func (r *Render) Run() error {
@@ -93,30 +91,38 @@ func (r *Render) Run() error {
 		if !strings.HasSuffix(tmpl.Name(), ".tmpl") {
 			continue
 		}
-		_, ok := r.fileset[tmpl.Name()]
+		_, ok := r.Fileset[tmpl.Name()]
 		if !ok {
 			return fmt.Errorf("File %s not in fileset", tmpl.Name())
 		}
 	}
 
 	for _, pkg := range r.batch.Packages {
-		for k, v := range r.fileset {
+		fmt.Printf("Processing: %s\n", pkg.Name)
+		for k, v := range r.Fileset {
 			err := r.File(pkg, k, v)
 			if err != nil {
 				return fmt.Errorf("%s: %w", pkg.Name, err)
 			}
 		}
 	}
+	split := strings.Split(r.Formatter, " ")
+	cmd := exec.Command(split[0], split[1:]...)
+	cmd.Dir = r.ctx.Target
+	err := cmd.Run()
+	if err != nil {
+		return fmt.Errorf("%s: %w", r.Formatter, err)
+	}
 	return nil
 }
 
-func (r *Render) File(pkg code.Package, contentTRef, nameT string) error {
+func (r *Render) File(pkg *code.Package, contentTRef, nameT string) error {
 	nt, err := template.New("filename").Parse(nameT)
 	if err != nil {
 		return fmt.Errorf("parse %s: %w", nameT, err)
 	}
-	var filename, contents strings.Builder
-	err = nt.Execute(&filename, pkg)
+	var childFilename, contents strings.Builder
+	err = nt.Execute(&childFilename, pkg)
 	if err != nil {
 		return fmt.Errorf("exec %s: %w", nameT, err)
 	}
@@ -125,7 +131,7 @@ func (r *Render) File(pkg code.Package, contentTRef, nameT string) error {
 		return fmt.Errorf("exec %s: %w", contentTRef, err)
 	}
 	if r.ctx.DryRun {
-		fmt.Printf("\n---\nDRY RUN: %s\n---\n%s", &filename, &contents)
+		fmt.Printf("\n---\nDRY RUN: %s\n---\n%s", &childFilename, &contents)
 		return nil
 	}
 	if nameT == "stdout" {
@@ -133,20 +139,21 @@ func (r *Render) File(pkg code.Package, contentTRef, nameT string) error {
 		println(contents.String())
 		return nil
 	}
-	_, err = os.Stat(filename.String())
+	targetFilename := filepath.Join(r.ctx.Target, childFilename.String())
+	_, err = os.Stat(targetFilename)
 	if errors.Is(err, fs.ErrNotExist) {
-		err = os.MkdirAll(path.Dir(filename.String()), 0o755)
+		err = os.MkdirAll(path.Dir(targetFilename), 0o755)
 		if err != nil {
 			return fmt.Errorf("cannot create parent folders: %w", err)
 		}
 	}
-	file, err := os.OpenFile(filename.String(), os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0755)
+	file, err := os.OpenFile(targetFilename, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0755)
 	if err != nil {
-		return fmt.Errorf("open %s: %w", &filename, err)
+		return fmt.Errorf("open %s: %w", targetFilename, err)
 	}
 	_, err = file.WriteString(contents.String())
 	if err != nil {
-		return fmt.Errorf("write %s: %w", &filename, err)
+		return fmt.Errorf("write %s: %w", targetFilename, err)
 	}
 	return file.Close()
 }

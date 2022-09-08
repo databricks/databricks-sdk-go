@@ -17,45 +17,32 @@ func (ci *ClusterInfo) IsRunningOrResizing() bool {
 	return ci.State == ClusterInfoStateRunning || ci.State == ClusterInfoStateResizing
 }
 
-func (ci *GetClusterResponse) IsRunningOrResizing() bool {
-	return ci.State == GetClusterResponseStateRunning || ci.State == GetClusterResponseStateResizing
-}
-
-// TODO: Consistency
-// CreateClusterResponse -> ClusterInfo ?..
-// CreateClusterRequest -> Cluster
-
 // GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist
-func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateClusterRequest) (c *CreateClusterResponse, err error) {
+func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateCluster) (c *ClusterInfo, err error) {
 	getOrCreateClusterMutex.Lock()
 	defer getOrCreateClusterMutex.Unlock()
 	if len(custom) > 1 {
 		err = fmt.Errorf("you can only specify 1 custom cluster conf, not %d", len(custom))
 		return
 	}
-	clusters, err := a.ListClusters(ctx, ListClustersRequest{})
+	clusters, err := a.List(ctx, ListRequest{})
 	if err != nil {
 		return
 	}
 	for _, cl := range clusters.Clusters {
-		if cl.ClusterName == name {
-			logger.Infof("Found reusable cluster '%s'", name)
-			clusterAvailable := true
-			if !cl.IsRunningOrResizing() {
-				err = a.StartCluster(ctx, StartClusterRequest{
-					ClusterId: cl.ClusterId,
-				})
-				if err != nil {
-					clusterAvailable = false
-					logger.Infof("Cluster %s cannot be started, creating an autoterminating cluster", name)
-				}
-			}
-			if clusterAvailable {
-				return &CreateClusterResponse{
-					ClusterId: cl.ClusterId,
-				}, nil
-			}
+		if cl.ClusterName != name {
+			continue
 		}
+		logger.Infof("Found reusable cluster '%s'", name)
+		if cl.IsRunningOrResizing() {
+			return &cl, nil
+		}
+		started, err := a.StartByClusterIdAndWait(ctx, cl.ClusterId)
+		if err != nil {
+			logger.Infof("Cluster %s cannot be started, creating an autoterminating cluster: %s", name, err)
+			break
+		}
+		return started, nil
 	}
 	nodeTypes, err := a.ListNodeTypes(ctx)
 	if err != nil {
@@ -68,7 +55,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 		return nil, err
 	}
 	logger.Infof("Creating an autoterminating cluster with node type %s", smallestNodeType)
-	versions, err := a.GetSparkVersions(ctx)
+	versions, err := a.SparkVersions(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("list spark versions: %w", err) // TODO: GENERATOR: prefix method name
 	}
@@ -79,7 +66,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	if err != nil {
 		return nil, err
 	}
-	r := CreateClusterRequest{
+	r := CreateCluster{
 		NumWorkers:             1,
 		ClusterName:            name,
 		SparkVersion:           version,
@@ -94,5 +81,5 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	if len(custom) == 1 {
 		r = custom[0]
 	}
-	return a.CreateCluster(ctx, r)
+	return a.CreateAndWait(ctx, r)
 }

@@ -17,7 +17,6 @@ func Version() string {
 //	func init() {
 //		databricks.WithProduct("your-product", "0.0.1")
 //	}
-//
 func WithProduct(name, version string) {
 	useragent.WithProduct(name, version)
 }

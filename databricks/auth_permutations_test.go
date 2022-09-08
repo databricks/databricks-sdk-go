@@ -5,6 +5,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -29,7 +30,7 @@ type configFixture struct {
 }
 
 func (cf configFixture) apply(t *testing.T) {
-	defer CleanupEnvironment()()
+	env.CleanupEnvironment(t)
 	c, err := cf.configureProviderAndReturnConfig(t)
 	if cf.assertError != "" {
 		require.NotNilf(t, err, "Expected to have %s error", cf.assertError)
@@ -272,7 +273,7 @@ func TestConfig_AzureCliHost(t *testing.T) {
 		host:            "x",          // adb-123.4.azuredatabricks.net
 		azureResourceID: azResourceID, // skips ensureWorkspaceUrl
 		env: map[string]string{
-			"PATH": "testdata",
+			"PATH": testdataPath(),
 			"HOME": "testdata/azure",
 		},
 		assertAzure: true,
@@ -285,7 +286,7 @@ func TestConfig_AzureCliHost_Fail(t *testing.T) {
 	configFixture{
 		azureResourceID: azResourceID,
 		env: map[string]string{
-			"PATH": "testdata",
+			"PATH": testdataPath(),
 			"HOME": "testdata/azure",
 			"FAIL": "yes",
 		},
@@ -310,7 +311,7 @@ func TestConfig_AzureCliHost_PatConflict_WithConfigFilePresentWithoutDefaultProf
 		azureResourceID: azResourceID,
 		token:           "x",
 		env: map[string]string{
-			"PATH": "testdata",
+			"PATH": testdataPath(),
 			"HOME": "testdata/azure",
 		},
 		assertError: "validate: more than one authorization method configured: azure and pat. Config: token=***, azure_workspace_resource_id=/sub/rg/ws",
@@ -323,7 +324,7 @@ func TestConfig_AzureCliHostAndResourceID(t *testing.T) {
 		azureResourceID: azResourceID,
 		host:            "x",
 		env: map[string]string{
-			"PATH": "testdata",
+			"PATH": testdataPath(),
 			"HOME": "testdata/azure",
 		},
 		assertAzure: true,
@@ -338,7 +339,7 @@ func TestConfig_AzureCliHostAndResourceID_ConfigurationPrecedence(t *testing.T) 
 		azureResourceID: azResourceID,
 		host:            "x",
 		env: map[string]string{
-			"PATH":                      "testdata",
+			"PATH":                      testdataPath(),
 			"HOME":                      "testdata/azure",
 			"DATABRICKS_CONFIG_PROFILE": "justhost",
 		},
@@ -353,7 +354,7 @@ func TestConfig_AzureAndPasswordConflict(t *testing.T) { // TODO: this breaks
 		host:            "x",
 		azureResourceID: azResourceID,
 		env: map[string]string{
-			"PATH":                "testdata",
+			"PATH":                testdataPath(),
 			"HOME":                "testdata/azure",
 			"DATABRICKS_USERNAME": "x",
 		},

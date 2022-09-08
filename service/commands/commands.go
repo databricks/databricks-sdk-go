@@ -33,7 +33,7 @@ type Command struct {
 // Execute creates a spark context and executes a command and then closes context
 // Any leading whitespace is trimmed
 func (a *CommandsAPI) Execute(ctx context.Context, clusterID, language, commandStr string) CommandResults {
-	cluster, err := clusters.New(a.client).GetCluster(ctx, clusters.GetClusterRequest{
+	cluster, err := clusters.NewClusters(a.client).Get(ctx, clusters.GetRequest{
 		ClusterId: clusterID,
 	})
 	if err != nil {
@@ -119,7 +119,7 @@ type genericCommandRequest struct {
 
 func (a *CommandsAPI) createCommand(ctx context.Context, contextID, clusterID, language, commandStr string) (string, error) {
 	var command Command
-	err := a.client.Post(ctx, "/commands/execute", genericCommandRequest{
+	err := a.client.Post(ctx, "/api/1.2/commands/execute", genericCommandRequest{
 		Language:  language,
 		ClusterID: clusterID,
 		ContextID: contextID,
@@ -130,7 +130,7 @@ func (a *CommandsAPI) createCommand(ctx context.Context, contextID, clusterID, l
 
 func (a *CommandsAPI) getCommand(ctx context.Context, commandID, contextID, clusterID string) (Command, error) {
 	var commandResp Command
-	err := a.client.Get(ctx, "/commands/status", genericCommandRequest{
+	err := a.client.Get(ctx, "/api/1.2/commands/status", genericCommandRequest{
 		CommandID: commandID,
 		ContextID: contextID,
 		ClusterID: clusterID,
@@ -157,7 +157,7 @@ func (a *CommandsAPI) waitForCommandFinished(ctx context.Context, commandID, con
 
 func (a *CommandsAPI) createContext(ctx context.Context, language, clusterID string) (string, error) {
 	var context Command // internal hack, yes
-	err := a.client.Post(ctx, "/contexts/create", genericCommandRequest{
+	err := a.client.Post(ctx, "/api/1.2/contexts/create", genericCommandRequest{
 		Language:  language,
 		ClusterID: clusterID,
 	}, &context)
@@ -166,7 +166,7 @@ func (a *CommandsAPI) createContext(ctx context.Context, language, clusterID str
 
 func (a *CommandsAPI) getContext(ctx context.Context, contextID, clusterID string) (string, error) {
 	var contextStatus Command // internal hack, yes
-	err := a.client.Get(ctx, "/contexts/status", genericCommandRequest{
+	err := a.client.Get(ctx, "/api/1.2/contexts/status", genericCommandRequest{
 		ContextID: contextID,
 		ClusterID: clusterID,
 	}, &contextStatus)
@@ -174,7 +174,7 @@ func (a *CommandsAPI) getContext(ctx context.Context, contextID, clusterID strin
 }
 
 func (a *CommandsAPI) deleteContext(ctx context.Context, contextID, clusterID string) error {
-	return a.client.Post(ctx, "/contexts/destroy", genericCommandRequest{
+	return a.client.Post(ctx, "/api/1.2/contexts/destroy", genericCommandRequest{
 		ContextID: contextID,
 		ClusterID: clusterID,
 	}, nil)

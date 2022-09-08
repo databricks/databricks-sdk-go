@@ -1,0 +1,8 @@
+{
+  "formatter": "go fmt ./...",
+  "fileset": {
+    ".codegen/api.go.tmpl": "{{.Name}}/api.go",
+    ".codegen/interface.go.tmpl": "{{.Name}}/interface.go",
+    ".codegen/model.go.tmpl": "{{.Name}}/model.go"
+  }
+}

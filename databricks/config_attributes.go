@@ -22,6 +22,10 @@ func (a Attributes) DebugString(cfg *Config) string {
 		if attr.IsZero(cfg) {
 			continue
 		}
+		// Don't include internal fields in debug representation.
+		if attr.Internal {
+			continue
+		}
 		v := "***"
 		if !attr.Sensitive {
 			v = attr.GetString(cfg)

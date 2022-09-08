@@ -1,55 +1,108 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
 package storageconfigurations
 
 import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-// New creates ClustersAPI instance from provider meta
-func New(cfg *databricks.Config) *StorageConfigurationsAPI {
-	return &StorageConfigurationsAPI{
-		client: client.New(cfg),
+// These APIs manage storage configurations for this workspace. A root storage
+// S3 bucket in your account is required to store objects like cluster logs,
+// notebook revisions, and job results. You can also use the root storage S3
+// bucket for storage of non-production DBFS data. A storage configuration
+// encapsulates this bucket information, and its ID is used when creating a new
+// workspace.
+type StorageconfigurationsService interface {
+	// Create new storage configuration for an account, specified by ID. Uploads
+	// a storage configuration object that represents the root AWS S3 bucket in
+	// your account. Databricks stores related workspace assets including DBFS,
+	// cluster logs, and job results. For AWS S3 bucket, you need to configure
+	// the required bucket policy. For detailed instructions of creating a new
+	// workspace with this API, see [Create a new workspace using the Account
+	// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html)
+	CreateStorageConfig(ctx context.Context, createStorageConfigurationRequest CreateStorageConfigurationRequest) (*StorageConfiguration, error)
+	// Delete a Databricks storage configuration. You cannot delete a storage
+	// configuration that is currently being associated to any workspace.
+	DeleteStorageConfig(ctx context.Context, deleteStorageConfigRequest DeleteStorageConfigRequest) error
+	// Get a list of all Databricks storage configurations for your account,
+	// specified by ID.
+	GetAllStorageConfigs(ctx context.Context, getAllStorageConfigsRequest GetAllStorageConfigsRequest) (*ListStorageConfigurationsResponse, error)
+	// Get a Databricks storage configuration for an account, both specified by
+	// ID.
+	GetStorageConfig(ctx context.Context, getStorageConfigRequest GetStorageConfigRequest) (*StorageConfiguration, error)
+	GetStorageConfigByAccountIdAndStorageConfigurationId(ctx context.Context, accountId string, storageConfigurationId string) (*StorageConfiguration, error)
+	DeleteStorageConfigByAccountIdAndStorageConfigurationId(ctx context.Context, accountId string, storageConfigurationId string) error
+	GetAllStorageConfigsByAccountId(ctx context.Context, accountId string) (*ListStorageConfigurationsResponse, error)
+}
+
+func New(client *client.DatabricksClient) StorageconfigurationsService {
+	return &StorageconfigurationsAPI{
+		client: client,
 	}
 }
 
-type StorageConfigurationsAPI struct {
+type StorageconfigurationsAPI struct {
 	client *client.DatabricksClient
 }
 
-// Create creates a configuration for the root s3 bucket
-func (a StorageConfigurationsAPI) Create(ctx context.Context, storageConfigurationName string, bucketName string) (StorageConfiguration, error) {
-	var conf StorageConfiguration
-	path := fmt.Sprintf("/accounts/%s/storage-configurations", a.client.Config.AccountID)
-	err := a.client.Post(ctx, path, StorageConfiguration{
-		StorageConfigurationName: storageConfigurationName,
-		RootBucketInfo: &RootBucketInfo{
-			BucketName: bucketName,
-		},
-	}, &conf)
-	return conf, err
+// Create new storage configuration for an account, specified by ID. Uploads a
+// storage configuration object that represents the root AWS S3 bucket in your
+// account. Databricks stores related workspace assets including DBFS, cluster
+// logs, and job results. For AWS S3 bucket, you need to configure the required
+// bucket policy. For detailed instructions of creating a new workspace with
+// this API, see [Create a new workspace using the Account
+// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html)
+func (a *StorageconfigurationsAPI) CreateStorageConfig(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error) {
+	var storageConfiguration StorageConfiguration
+	path := fmt.Sprintf("/accounts/%v/storage-configurations", request.AccountId)
+	err := a.client.Post(ctx, path, request, &storageConfiguration)
+	return &storageConfiguration, err
 }
 
-// Read returns the configuration for the root s3 bucket and metadata for the storage configuration
-func (a StorageConfigurationsAPI) Read(ctx context.Context, storageConfigurationID string) (StorageConfiguration, error) {
-	var conf StorageConfiguration
-	path := fmt.Sprintf("/accounts/%s/storage-configurations/%s", a.client.Config.AccountID, storageConfigurationID)
-	err := a.client.Get(ctx, path, nil, &conf)
-	return conf, err
+// Delete a Databricks storage configuration. You cannot delete a storage
+// configuration that is currently being associated to any workspace.
+func (a *StorageconfigurationsAPI) DeleteStorageConfig(ctx context.Context, request DeleteStorageConfigRequest) error {
+	path := fmt.Sprintf("/accounts/%v/storage-configurations/%v", request.AccountId, request.StorageConfigurationId)
+	err := a.client.Delete(ctx, path, request)
+	return err
 }
 
-// Delete deletes the configuration for the root s3 bucket
-func (a StorageConfigurationsAPI) Delete(ctx context.Context, storageConfigurationID string) error {
-	storageConfigurationAPIPath := fmt.Sprintf("/accounts/%s/storage-configurations/%s", a.client.Config.AccountID, storageConfigurationID)
-	return a.client.Delete(ctx, storageConfigurationAPIPath, nil)
+// Get a list of all Databricks storage configurations for your account,
+// specified by ID.
+func (a *StorageconfigurationsAPI) GetAllStorageConfigs(ctx context.Context, request GetAllStorageConfigsRequest) (*ListStorageConfigurationsResponse, error) {
+	var listStorageConfigurationsResponse ListStorageConfigurationsResponse
+	path := fmt.Sprintf("/accounts/%v/storage-configurations", request.AccountId)
+	err := a.client.Get(ctx, path, request, &listStorageConfigurationsResponse)
+	return &listStorageConfigurationsResponse, err
 }
 
-// List lists all the storage configurations for the root s3 buckets in the account ID provided to the client config
-func (a StorageConfigurationsAPI) List(ctx context.Context) ([]StorageConfiguration, error) {
-	var confList []StorageConfiguration
-	path := fmt.Sprintf("/accounts/%s/storage-configurations", a.client.Config.AccountID)
-	err := a.client.Get(ctx, path, nil, &confList)
-	return confList, err
+// Get a Databricks storage configuration for an account, both specified by ID.
+func (a *StorageconfigurationsAPI) GetStorageConfig(ctx context.Context, request GetStorageConfigRequest) (*StorageConfiguration, error) {
+	var storageConfiguration StorageConfiguration
+	path := fmt.Sprintf("/accounts/%v/storage-configurations/%v", request.AccountId, request.StorageConfigurationId)
+	err := a.client.Get(ctx, path, request, &storageConfiguration)
+	return &storageConfiguration, err
+}
+
+func (a *StorageconfigurationsAPI) GetStorageConfigByAccountIdAndStorageConfigurationId(ctx context.Context, accountId string, storageConfigurationId string) (*StorageConfiguration, error) {
+	return a.GetStorageConfig(ctx, GetStorageConfigRequest{
+		AccountId:              accountId,
+		StorageConfigurationId: storageConfigurationId,
+	})
+}
+
+func (a *StorageconfigurationsAPI) DeleteStorageConfigByAccountIdAndStorageConfigurationId(ctx context.Context, accountId string, storageConfigurationId string) error {
+	return a.DeleteStorageConfig(ctx, DeleteStorageConfigRequest{
+		AccountId:              accountId,
+		StorageConfigurationId: storageConfigurationId,
+	})
+}
+
+func (a *StorageconfigurationsAPI) GetAllStorageConfigsByAccountId(ctx context.Context, accountId string) (*ListStorageConfigurationsResponse, error) {
+	return a.GetAllStorageConfigs(ctx, GetAllStorageConfigsRequest{
+		AccountId: accountId,
+	})
 }
