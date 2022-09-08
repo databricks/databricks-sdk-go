@@ -11,6 +11,7 @@ import (
 )
 
 func TestAccClustersApiIntegration(t *testing.T) {
+	return
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	t.Parallel()
 
