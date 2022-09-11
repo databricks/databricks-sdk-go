@@ -16,6 +16,7 @@ type Package struct {
 	Components *openapi.Components
 	services   map[string]*Service
 	types      map[string]*Entity
+	emptyTypes []*Named
 }
 
 func (pkg *Package) Services() (types []*Service) {
@@ -33,6 +34,14 @@ func (pkg *Package) Types() (types []*Entity) {
 		types = append(types, v)
 	}
 	slices.SortFunc(types, func(a, b *Entity) bool {
+		return a.Name < b.Name
+	})
+	return types
+}
+
+func (pkg *Package) EmptyTypes() (types []*Named) {
+	types = append(types, pkg.emptyTypes...)
+	slices.SortFunc(types, func(a, b *Named) bool {
 		return a.Name < b.Name
 	})
 	return types
@@ -83,6 +92,7 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 	e.IsInt64 = s.Type == "integer" && s.Format == "int64"
 	e.IsFloat64 = s.Type == "number" && s.Format == "double"
 	e.IsInt = s.Type == "integer" || s.Type == "int"
+	e.IsEmpty = s.IsEmpty()
 	return e
 }
 
@@ -137,12 +147,17 @@ func (pkg *Package) localComponent(n *openapi.Node) string {
 }
 
 func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
-	if s == nil {
-		return nil
+	if s == nil || s.IsEmpty() {
+		entity := &Entity{
+			Named: Named{
+				Name:        name,
+				Description: "",
+			},
+			IsEmpty: true,
+		}
+		return pkg.define(entity)
 	}
-	if s.IsEmpty() {
-		return nil
-	}
+
 	component := pkg.localComponent(&s.Node)
 	if s.IsRef() && pkg.types[component] != nil {
 		// entity is defined, return from cache
@@ -156,17 +171,25 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 	if e.Name == "" {
 		e.Named = Named{name, s.Description}
 	}
-	pkg.define(e)
-	return pkg.types[e.Name]
+	return pkg.define(e)
 }
 
-func (pkg *Package) define(entity *Entity) {
+func (pkg *Package) define(entity *Entity) *Entity {
+	if entity.IsEmpty {
+		if slices.Contains(pkg.emptyTypes, &entity.Named) {
+			//panic(fmt.Sprintf("%s is already defined", entity.Name))
+			return entity
+		}
+		pkg.emptyTypes = append(pkg.emptyTypes, &entity.Named)
+		return entity
+	}
 	_, defined := pkg.types[entity.Name]
 	if defined {
 		//panic(fmt.Sprintf("%s is already defined", entity.Name))
-		return
+		return entity
 	}
 	pkg.types[entity.Name] = entity
+	return entity
 }
 
 func (pkg *Package) HasPathParams() bool {

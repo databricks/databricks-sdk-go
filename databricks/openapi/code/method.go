@@ -10,14 +10,15 @@ import (
 
 type Method struct {
 	Named
-	Service   *Service
-	Verb      string
-	Path      string
-	PathParts []PathPart
-	Request   *Entity
-	Response  *Entity
-	wait      *openapi.Wait
-	shortcut  bool
+	Service           *Service
+	Verb              string
+	Path              string
+	PathParts         []PathPart
+	Request           *Entity
+	Response          *Entity
+	EmptyResponseName Named
+	wait              *openapi.Wait
+	shortcut          bool
 }
 
 type Shortcut struct {

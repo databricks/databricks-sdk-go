@@ -1,6 +1,8 @@
 package code
 
-import "golang.org/x/exp/slices"
+import (
+	"golang.org/x/exp/slices"
+)
 
 type Field struct {
 	Named
@@ -32,7 +34,17 @@ type Entity struct {
 	IsFloat64  bool
 	IsBool     bool
 	IsString   bool
+	IsEmpty    bool
 	fields     map[string]Field
+}
+
+func (e *Entity) HasBooleanField() bool {
+	for _, field := range e.fields {
+		if field.Entity != nil && field.Entity.IsBool {
+			return true
+		}
+	}
+	return false
 }
 
 func (e *Entity) Field(name string) *Field {

@@ -46,10 +46,6 @@ type Context struct {
 }
 
 func (c *Context) Generate() error {
-	batch, err := code.NewFromFile(c.Spec)
-	if err != nil {
-		return err
-	}
 	f, err := os.Open(fmt.Sprintf("%s/.codegen.json", c.Target))
 	if err != nil {
 		return fmt.Errorf("no .codegen.json file in %s: %w", c.Target, err)
@@ -65,7 +61,6 @@ func (c *Context) Generate() error {
 		return fmt.Errorf(".codegen.json: %w", err)
 	}
 	render.ctx = c
-	render.batch = batch
 	var tmpls []string
 	fileset := map[string]string{}
 	for filename, v := range render.Fileset {
@@ -74,16 +69,22 @@ func (c *Context) Generate() error {
 		fileset[filepath.Base(filename)] = v
 	}
 	render.Fileset = fileset
-	render.tmpl = template.Must(template.ParseFiles(tmpls...))
+	render.tmpl = template.Must(template.New("codegen").Funcs(code.HelperFuncs).ParseFiles(tmpls...))
+	batch, err := code.NewFromFile(c.Spec, render.IncludeTags)
+	if err != nil {
+		return err
+	}
+	render.batch = batch
 	return render.Run()
 }
 
 type Render struct {
-	ctx       *Context
-	tmpl      *template.Template
-	batch     *code.Batch
-	Formatter string            `json:"formatter"`
-	Fileset   map[string]string `json:"fileset"`
+	ctx         *Context
+	tmpl        *template.Template
+	batch       *code.Batch
+	Formatter   string            `json:"formatter"`
+	Fileset     map[string]string `json:"fileset"`
+	IncludeTags []string          `json:"includeTags,omitempty"`
 }
 
 func (r *Render) Run() error {

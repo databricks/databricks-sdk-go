@@ -101,19 +101,27 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 	request := svc.newRequest(params, op)
 	respSchema := op.SuccessResponseSchema(svc.Package.Components)
 	response := svc.Package.definedEntity(op.OperationId+"Response", respSchema)
+	var emptyResponse Named
+	if response != nil && response.IsEmpty {
+		emptyResponse = response.Named
+		response = nil
+	}
 	name := op.OperationId
 	if svc.IsRpcStyle {
 		name = filepath.Base(path)
 	}
-	return &Method{
-		Named:     Named{name, op.Description},
-		Service:   svc,
-		Verb:      strings.ToUpper(verb),
-		Path:      path,
-		Request:   request,
-		PathParts: svc.paramPath(path, request, params),
-		Response:  response,
-		wait:      op.Wait,
-		shortcut:  op.Shortcut,
+
+	ret := &Method{
+		Named:             Named{name, op.Description},
+		Service:           svc,
+		Verb:              strings.ToUpper(verb),
+		Path:              path,
+		Request:           request,
+		PathParts:         svc.paramPath(path, request, params),
+		Response:          response,
+		EmptyResponseName: emptyResponse,
+		wait:              op.Wait,
+		shortcut:          op.Shortcut,
 	}
+	return ret
 }
