@@ -38,15 +38,6 @@ type Entity struct {
 	fields     map[string]Field
 }
 
-func (e *Entity) HasBooleanField() bool {
-	for _, field := range e.fields {
-		if field.Entity != nil && field.Entity.IsBool {
-			return true
-		}
-	}
-	return false
-}
-
 func (e *Entity) Field(name string) *Field {
 	field, ok := e.fields[name]
 	if !ok {
