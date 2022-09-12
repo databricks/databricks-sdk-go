@@ -22,7 +22,7 @@ type JobsAPI struct {
 }
 
 // Cancels all active runs of a job. The runs are canceled asynchronously, so it
-// doesn&#39;t prevent new runs from being started.
+// doesn't prevent new runs from being started.
 func (a *JobsAPI) CancelAllRuns(ctx context.Context, request CancelAllRuns) error {
 	path := "/api/2.1/jobs/runs/cancel-all"
 	err := a.client.Post(ctx, path, request, nil)
@@ -30,7 +30,7 @@ func (a *JobsAPI) CancelAllRuns(ctx context.Context, request CancelAllRuns) erro
 }
 
 // Cancels all active runs of a job. The runs are canceled asynchronously, so it
-// doesn&#39;t prevent new runs from being started.
+// doesn't prevent new runs from being started.
 func (a *JobsAPI) CancelAllRunsByJobId(ctx context.Context, jobId int64) error {
 	return a.CancelAllRuns(ctx, CancelAllRuns{
 		JobId: jobId,

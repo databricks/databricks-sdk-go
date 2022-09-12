@@ -14,7 +14,7 @@ import (
 // Evolving: this interface is under development. Method signatures may change.
 type JobsService interface {
 	// Cancels all active runs of a job. The runs are canceled asynchronously,
-	// so it doesn&#39;t prevent new runs from being started.
+	// so it doesn't prevent new runs from being started.
 	CancelAllRuns(ctx context.Context, cancelAllRuns CancelAllRuns) error
 
 	CancelAllRunsByJobId(ctx context.Context, jobId int64) error

@@ -6,7 +6,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"html/template"
+	"text/template"
 	"io"
 	"io/fs"
 	"os"

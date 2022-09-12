@@ -17,32 +17,32 @@ type ComplexValue struct {
 }
 
 type DeleteGroupRequest struct {
-	// Unique ID for a group in the &lt;Workspace&gt;.
+	// Unique ID for a group in the <Workspace>.
 	Id string ` path:"id"`
 }
 
 type DeleteServicePrincipalRequest struct {
-	// Unique ID for a service principal in the &lt;Workspace&gt;.
+	// Unique ID for a service principal in the <Workspace>.
 	Id string ` path:"id"`
 }
 
 type DeleteUserRequest struct {
-	// Unique ID for a user in the &lt;Workspace&gt;.
+	// Unique ID for a user in the <Workspace>.
 	Id string ` path:"id"`
 }
 
 type FetchGroupRequest struct {
-	// Unique ID for a group in the &lt;Workspace&gt;.
+	// Unique ID for a group in the <Workspace>.
 	Id string ` path:"id"`
 }
 
 type FetchServicePrincipalRequest struct {
-	// Unique ID for a service principal in the &lt;Workspace&gt;.
+	// Unique ID for a service principal in the <Workspace>.
 	Id string ` path:"id"`
 }
 
 type FetchUserRequest struct {
-	// Unique ID for a user in the &lt;Workspace&gt;.
+	// Unique ID for a user in the <Workspace>.
 	Id string ` path:"id"`
 }
 
@@ -61,8 +61,6 @@ type Group struct {
 	Members []ComplexValue `json:"members,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
-	// SCIM schema used for the group object.
-	Schemas []Urn `json:"schemas,omitempty"`
 }
 
 type ListGroupsRequest struct {
@@ -187,12 +185,10 @@ const ListUsersSortOrderAscending ListUsersSortOrder = `ascending`
 const ListUsersSortOrderDescending ListUsersSortOrder = `descending`
 
 type PartialUpdate struct {
-	// Unique ID for a group in the &lt;Workspace&gt;.
+	// Unique ID for a group in the <Workspace>.
 	Id string ` path:"id"`
 
 	Operations []Patch `json:"operations,omitempty"`
-	// SCIM schema used for the user object.
-	Schemas []Urn `json:"schemas,omitempty"`
 }
 
 type Patch struct {
@@ -231,27 +227,7 @@ type ServicePrincipal struct {
 	Id string `json:"id,omitempty" path:"id"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
-	// SCIM schema used for the user object.
-	Schemas []Urn `json:"schemas,omitempty"`
 }
-
-// Defines type of SCIM protocol entity
-type Urn string
-
-// Defines type of SCIM protocol entity
-const UrnGroup Urn = `urn:ietf:params:scim:schemas:core:2.0:Group`
-
-// Defines type of SCIM protocol entity
-const UrnPatchOp Urn = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
-
-// Defines type of SCIM protocol entity
-const UrnServicePrincipal Urn = `urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal`
-
-// Defines type of SCIM protocol entity
-const UrnUser Urn = `urn:ietf:params:scim:schemas:core:2.0:User`
-
-// Defines type of SCIM protocol entity
-const UrnWorkspaceUser Urn = `urn:ietf:params:scim:schemas:extension:workspace:2.0:User`
 
 type User struct {
 	// If this user is active
@@ -273,8 +249,6 @@ type User struct {
 	Name *UserName `json:"name,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
-	// SCIM schema used for the user object.
-	Schemas []Urn `json:"schemas,omitempty"`
 	// Email address of the Databricks user.
 	UserName string `json:"userName,omitempty"`
 }

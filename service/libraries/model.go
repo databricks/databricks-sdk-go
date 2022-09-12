@@ -34,25 +34,25 @@ type Library struct {
 	// Specification of a CRAN library to be installed as part of the library
 	Cran *RCranLibrary `json:"cran,omitempty"`
 	// URI of the egg to be installed. Currently only DBFS and S3 URIs are
-	// supported. For example: ``{ &#34;egg&#34;: &#34;dbfs:/my/egg&#34; }`` or ``{ &#34;egg&#34;:
-	// &#34;s3://my-bucket/egg&#34; }``. If S3 is used, please make sure the cluster has
+	// supported. For example: ``{ "egg": "dbfs:/my/egg" }`` or ``{ "egg":
+	// "s3://my-bucket/egg" }``. If S3 is used, please make sure the cluster has
 	// read access on the library. You may need to launch the cluster with an
 	// IAM role to access the S3 URI.
 	Egg string `json:"egg,omitempty"`
 	// URI of the jar to be installed. Currently only DBFS and S3 URIs are
-	// supported. For example: ``{ &#34;jar&#34;: &#34;dbfs:/mnt/databricks/library.jar&#34; }``
-	// or ``{ &#34;jar&#34;: &#34;s3://my-bucket/library.jar&#34; }``. If S3 is used, please
+	// supported. For example: ``{ "jar": "dbfs:/mnt/databricks/library.jar" }``
+	// or ``{ "jar": "s3://my-bucket/library.jar" }``. If S3 is used, please
 	// make sure the cluster has read access on the library. You may need to
 	// launch the cluster with an IAM role to access the S3 URI.
 	Jar string `json:"jar,omitempty"`
 	// Specification of a maven library to be installed. For example: ``{
-	// &#34;coordinates&#34;: &#34;org.jsoup:jsoup:1.7.2&#34; }``
+	// "coordinates": "org.jsoup:jsoup:1.7.2" }``
 	Maven *MavenLibrary `json:"maven,omitempty"`
 	// Specification of a PyPi library to be installed. For example: ``{
-	// &#34;package&#34;: &#34;simplejson&#34; }``
+	// "package": "simplejson" }``
 	Pypi *PythonPyPiLibrary `json:"pypi,omitempty"`
-	// URI of the wheel to be installed. For example: ``{ &#34;whl&#34;: &#34;dbfs:/my/whl&#34;
-	// }`` or ``{ &#34;whl&#34;: &#34;s3://my-bucket/whl&#34; }``. If S3 is used, please make
+	// URI of the wheel to be installed. For example: ``{ "whl": "dbfs:/my/whl"
+	// }`` or ``{ "whl": "s3://my-bucket/whl" }``. If S3 is used, please make
 	// sure the cluster has read access on the library. You may need to launch
 	// the cluster with an IAM role to access the S3 URI.
 	Whl string `json:"whl,omitempty"`
@@ -94,10 +94,10 @@ type ListAllClusterLibraryStatusesResponse struct {
 }
 
 type MavenLibrary struct {
-	// Gradle-style maven coordinates. For example: &#34;org.jsoup:jsoup:1.7.2&#34;.
+	// Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2".
 	Coordinates string `json:"coordinates"`
-	// List of dependences to exclude. For example: ``[&#34;slf4j:slf4j&#34;,
-	// &#34;*:hadoop-client&#34;]``. Maven dependency exclusions:
+	// List of dependences to exclude. For example: ``["slf4j:slf4j",
+	// "*:hadoop-client"]``. Maven dependency exclusions:
 	// https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html.
 	Exclusions []string `json:"exclusions,omitempty"`
 	// Maven repo to install the Maven package from. If omitted, both Maven
@@ -107,8 +107,8 @@ type MavenLibrary struct {
 
 type PythonPyPiLibrary struct {
 	// The name of the pypi package to install. An optional exact version
-	// specification is also supported. Examples: &#34;simplejson&#34; and
-	// &#34;simplejson==3.8.0&#34;.
+	// specification is also supported. Examples: "simplejson" and
+	// "simplejson==3.8.0".
 	Package string `json:"package"`
 	// The repository where the package can be found. If not specified, the
 	// default pip index is used.
