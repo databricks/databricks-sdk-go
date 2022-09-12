@@ -24,7 +24,7 @@ type WorkspaceAPI struct {
 // “recursive“ is set to “false“, this call returns an error
 // “DIRECTORY_NOT_EMPTY“. Object deletion cannot be undone and deleting a
 // directory recursively is not atomic. Example of request: .. code :: json {
-// &#34;path&#34;: &#34;/Users/user@example.com/project&#34;, &#34;recursive&#34;: true }
+// "path": "/Users/user@example.com/project", "recursive": true }
 func (a *WorkspaceAPI) Delete(ctx context.Context, request DeleteRequest) error {
 	path := "/api/2.0/workspace/delete"
 	err := a.client.Post(ctx, path, request, nil)
@@ -36,13 +36,13 @@ func (a *WorkspaceAPI) Delete(ctx context.Context, request DeleteRequest) error 
 // export a directory in “DBC“ format. If the exported data would exceed size
 // limit, this call returns an error “MAX_NOTEBOOK_SIZE_EXCEEDED“. Currently,
 // this API does not support exporting a library. Example of request: .. code ::
-// json { &#34;path&#34;: &#34;/Users/user@example.com/project/ScalaExampleNotebook&#34;,
-// &#34;format&#34;: &#34;SOURCE&#34; } Example of response, where “content“ is
-// base64-encoded: .. code :: json { &#34;content&#34;:
-// &#34;Ly8gRGF0YWJyaWNrcyBub3RlYm9vayBzb3VyY2UKMSsx&#34;, } Alternaitvely, one can
+// json { "path": "/Users/user@example.com/project/ScalaExampleNotebook",
+// "format": "SOURCE" } Example of response, where “content“ is
+// base64-encoded: .. code :: json { "content":
+// "Ly8gRGF0YWJyaWNrcyBub3RlYm9vayBzb3VyY2UKMSsx", } Alternaitvely, one can
 // download the exported file by enabling “direct_download“: .. code :: shell
 // curl -n -o example.scala \
-// &#39;https://XX.cloud.databricks.com/api/2.0/workspace/export?path=/Users/user@example.com/ScalaExampleNotebook&amp;direct_download=true&#39;
+// 'https://XX.cloud.databricks.com/api/2.0/workspace/export?path=/Users/user@example.com/ScalaExampleNotebook&direct_download=true'
 func (a *WorkspaceAPI) Export(ctx context.Context, request ExportRequest) (*ExportResponse, error) {
 	var exportResponse ExportResponse
 	path := "/api/2.0/workspace/export"
@@ -52,10 +52,10 @@ func (a *WorkspaceAPI) Export(ctx context.Context, request ExportRequest) (*Expo
 
 // Gets the status of an object or a directory. If “path“ does not exist, this
 // call returns an error “RESOURCE_DOES_NOT_EXIST“. Example of request: ..
-// code :: json { &#34;path&#34;: &#34;/Users/user@example.com/project/ScaleExampleNotebook&#34;
-// } Example of response: .. code :: json { &#34;path&#34;:
-// &#34;/Users/user@example.com/project/ScalaExampleNotebook&#34;, &#34;language&#34;: &#34;SCALA&#34;,
-// &#34;object_type&#34;: &#34;NOTEBOOK&#34;, &#34;object_id&#34;: 789 }
+// code :: json { "path": "/Users/user@example.com/project/ScaleExampleNotebook"
+// } Example of response: .. code :: json { "path":
+// "/Users/user@example.com/project/ScalaExampleNotebook", "language": "SCALA",
+// "object_type": "NOTEBOOK", "object_id": 789 }
 func (a *WorkspaceAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*GetStatusResponse, error) {
 	var getStatusResponse GetStatusResponse
 	path := "/api/2.0/workspace/get-status"
@@ -65,10 +65,10 @@ func (a *WorkspaceAPI) GetStatus(ctx context.Context, request GetStatusRequest) 
 
 // Gets the status of an object or a directory. If “path“ does not exist, this
 // call returns an error “RESOURCE_DOES_NOT_EXIST“. Example of request: ..
-// code :: json { &#34;path&#34;: &#34;/Users/user@example.com/project/ScaleExampleNotebook&#34;
-// } Example of response: .. code :: json { &#34;path&#34;:
-// &#34;/Users/user@example.com/project/ScalaExampleNotebook&#34;, &#34;language&#34;: &#34;SCALA&#34;,
-// &#34;object_type&#34;: &#34;NOTEBOOK&#34;, &#34;object_id&#34;: 789 }
+// code :: json { "path": "/Users/user@example.com/project/ScaleExampleNotebook"
+// } Example of response: .. code :: json { "path":
+// "/Users/user@example.com/project/ScalaExampleNotebook", "language": "SCALA",
+// "object_type": "NOTEBOOK", "object_id": 789 }
 func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*GetStatusResponse, error) {
 	return a.GetStatus(ctx, GetStatusRequest{
 		Path: path,
@@ -79,9 +79,9 @@ func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*GetSt
 // already exists and “overwrite“ is set to “false“, this call returns an
 // error “RESOURCE_ALREADY_EXISTS“. One can only use “DBC“ format to import
 // a directory. Example of request, where “content“ is the base64-encoded
-// string of “1&#43;1“: .. code :: json { &#34;content&#34;: &#34;MSsx\n&#34;, &#34;path&#34;:
-// &#34;/Users/user@example.com/project/ScalaExampleNotebook&#34;, &#34;language&#34;: &#34;SCALA&#34;,
-// &#34;overwrite&#34;: true, &#34;format&#34;: &#34;SOURCE&#34; } Alternatively, one can import a local
+// string of “1+1“: .. code :: json { "content": "MSsx\n", "path":
+// "/Users/user@example.com/project/ScalaExampleNotebook", "language": "SCALA",
+// "overwrite": true, "format": "SOURCE" } Alternatively, one can import a local
 // file directly: .. code :: shell curl -n -F
 // path=/Users/user@example.com/project/ScalaExampleNotebook -F language=SCALA \
 // -F content=@example.scala \
@@ -94,12 +94,12 @@ func (a *WorkspaceAPI) Import(ctx context.Context, request ImportRequest) error 
 
 // Lists the contents of a directory, or the object if it is not a directory. If
 // the input path does not exist, this call returns an error
-// “RESOURCE_DOES_NOT_EXIST“. Example of request: .. code :: json { &#34;path&#34;:
-// &#34;/Users/user@example.com/&#34; } Example of response: .. code :: json {
-// &#34;objects&#34;: [ { &#34;path&#34;: &#34;/Users/user@example.com/project&#34;, &#34;object_type&#34;:
-// &#34;DIRECTORY&#34;, &#34;object_id&#34;: 123 }, { &#34;path&#34;:
-// &#34;/Users/user@example.com/PythonExampleNotebook&#34;, &#34;language&#34;: &#34;PYTHON&#34;,
-// &#34;object_type&#34;: &#34;NOTEBOOK&#34;, &#34;object_id&#34;: 456 } ] }
+// “RESOURCE_DOES_NOT_EXIST“. Example of request: .. code :: json { "path":
+// "/Users/user@example.com/" } Example of response: .. code :: json {
+// "objects": [ { "path": "/Users/user@example.com/project", "object_type":
+// "DIRECTORY", "object_id": 123 }, { "path":
+// "/Users/user@example.com/PythonExampleNotebook", "language": "PYTHON",
+// "object_type": "NOTEBOOK", "object_id": 456 } ] }
 func (a *WorkspaceAPI) List(ctx context.Context, request ListRequest) (*ListResponse, error) {
 	var listResponse ListResponse
 	path := "/api/2.0/workspace/list"
@@ -111,8 +111,8 @@ func (a *WorkspaceAPI) List(ctx context.Context, request ListRequest) (*ListResp
 // exists. If there exists an object (not a directory) at any prefix of the
 // input path, this call returns an error “RESOURCE_ALREADY_EXISTS“. Note that
 // if this operation fails it may have succeeded in creating some of the
-// necessary parrent directories. Example of request: .. code:: json { &#34;path&#34;:
-// &#34;/Users/user@example.com/project&#34; }
+// necessary parrent directories. Example of request: .. code:: json { "path":
+// "/Users/user@example.com/project" }
 func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request MkdirsRequest) error {
 	path := "/api/2.0/workspace/mkdirs"
 	err := a.client.Post(ctx, path, request, nil)
@@ -123,8 +123,8 @@ func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request MkdirsRequest) error 
 // exists. If there exists an object (not a directory) at any prefix of the
 // input path, this call returns an error “RESOURCE_ALREADY_EXISTS“. Note that
 // if this operation fails it may have succeeded in creating some of the
-// necessary parrent directories. Example of request: .. code:: json { &#34;path&#34;:
-// &#34;/Users/user@example.com/project&#34; }
+// necessary parrent directories. Example of request: .. code:: json { "path":
+// "/Users/user@example.com/project" }
 func (a *WorkspaceAPI) MkdirsByPath(ctx context.Context, path string) error {
 	return a.Mkdirs(ctx, MkdirsRequest{
 		Path: path,

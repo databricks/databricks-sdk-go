@@ -65,7 +65,7 @@ func (a *GroupsAPI) FetchGroupById(ctx context.Context, id string) (*Group, erro
 	})
 }
 
-// Get multiple groups associated with the &lt;Workspace&gt;.
+// Get multiple groups associated with the <Workspace>.
 func (a *GroupsAPI) ListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
 	var listGroupsResponse ListGroupsResponse
 	path := "/api/2.0/preview/scim/v2/Groups"
@@ -73,7 +73,7 @@ func (a *GroupsAPI) ListGroups(ctx context.Context, request ListGroupsRequest) (
 	return &listGroupsResponse, err
 }
 
-// Create one group in the &lt;Workspace&gt;.
+// Create one group in the <Workspace>.
 func (a *GroupsAPI) NewGroup(ctx context.Context, request Group) (*Group, error) {
 	var group Group
 	path := "/api/2.0/preview/scim/v2/Groups"
@@ -134,7 +134,7 @@ func (a *ServicePrincipalsAPI) FetchServicePrincipalById(ctx context.Context, id
 	})
 }
 
-// Get multiple service principals associated with a &lt;Workspace&gt;.
+// Get multiple service principals associated with a <Workspace>.
 func (a *ServicePrincipalsAPI) ListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 	var listServicePrincipalResponse ListServicePrincipalResponse
 	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
@@ -142,7 +142,7 @@ func (a *ServicePrincipalsAPI) ListServicePrincipals(ctx context.Context, reques
 	return &listServicePrincipalResponse, err
 }
 
-// Create one service principal in the &lt;Workspace&gt;.
+// Create one service principal in the <Workspace>.
 func (a *ServicePrincipalsAPI) NewServicePrincipal(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
@@ -203,7 +203,7 @@ func (a *UsersAPI) FetchUserById(ctx context.Context, id string) (*User, error) 
 	})
 }
 
-// Get multiple users associated with a &lt;Workspace&gt;.
+// Get multiple users associated with a <Workspace>.
 func (a *UsersAPI) ListUsers(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
 	path := "/api/2.0/preview/scim/v2/Users"
@@ -211,7 +211,7 @@ func (a *UsersAPI) ListUsers(ctx context.Context, request ListUsersRequest) (*Li
 	return &listUsersResponse, err
 }
 
-// Create one user in the &lt;Workspace&gt;.
+// Create one user in the <Workspace>.
 func (a *UsersAPI) NewUser(ctx context.Context, request User) (*User, error) {
 	var user User
 	path := "/api/2.0/preview/scim/v2/Users"

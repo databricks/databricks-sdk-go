@@ -59,7 +59,7 @@ func (a *GitCredentialsAPI) GetCredentialByCredentialId(ctx context.Context, cre
 	})
 }
 
-// Returns the calling user&#39;s Git credentials. One credential per user is
+// Returns the calling user's Git credentials. One credential per user is
 // supported.
 func (a *GitCredentialsAPI) GetCredentials(ctx context.Context) (*GetCredentialsResponse, error) {
 	var getCredentialsResponse GetCredentialsResponse

@@ -22,8 +22,8 @@ type CatalogInfo struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Catalog.
 	Privileges []CatalogInfoPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// Delta Sharing Catalog specific fields. A Delta Sharing Catalog is a
@@ -157,8 +157,8 @@ type CreateCatalogRequest struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Catalog.
 	Privileges []CreateCatalogRequestPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// Delta Sharing Catalog specific fields. A Delta Sharing Catalog is a
@@ -223,8 +223,8 @@ type CreateCatalogResponse struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Catalog.
 	Privileges []CreateCatalogResponsePrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// Delta Sharing Catalog specific fields. A Delta Sharing Catalog is a
@@ -279,7 +279,7 @@ type CreateExternalLocationRequest struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of External Location creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// [Create,Update:IGN] Unique ID of the location&#39;s Storage Credential.
+	// [Create,Update:IGN] Unique ID of the location's Storage Credential.
 	CredentialId string `json:"credential_id,omitempty"`
 	// [Create:REQ Update:OPT] Current name of the Storage Credential this
 	// location uses.
@@ -309,7 +309,7 @@ type CreateExternalLocationResponse struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of External Location creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// [Create,Update:IGN] Unique ID of the location&#39;s Storage Credential.
+	// [Create,Update:IGN] Unique ID of the location's Storage Credential.
 	CredentialId string `json:"credential_id,omitempty"`
 	// [Create:REQ Update:OPT] Current name of the Storage Credential this
 	// location uses.
@@ -537,7 +537,7 @@ const CreateProviderResponseAuthenticationTypeUnknown CreateProviderResponseAuth
 
 type CreateRecipientRequest struct {
 	// [Create:IGN,Update:IGN] A boolean status field showing whether the
-	// Recipient&#39;s activation URL has been exercised or not.
+	// Recipient's activation URL has been exercised or not.
 	Activated bool `json:"activated,omitempty"`
 	// [Create:IGN,Update:IGN] Full activation url to retrieve the access token.
 	// It will be empty if the token is already retrieved.
@@ -580,7 +580,7 @@ const CreateRecipientRequestAuthenticationTypeUnknown CreateRecipientRequestAuth
 
 type CreateRecipientResponse struct {
 	// [Create:IGN,Update:IGN] A boolean status field showing whether the
-	// Recipient&#39;s activation URL has been exercised or not.
+	// Recipient's activation URL has been exercised or not.
 	Activated bool `json:"activated,omitempty"`
 	// [Create:IGN,Update:IGN] Full activation url to retrieve the access token.
 	// It will be empty if the token is already retrieved.
@@ -632,7 +632,7 @@ type CreateSchemaRequest struct {
 	// [Create,Update:IGN] Username of Schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Full name of Schema, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.
+	// <catalog_name>.<schema_name>.
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -642,8 +642,8 @@ type CreateSchemaRequest struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Schema.
 	Privileges []CreateSchemaRequestPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create,Update:IGN] Time at which this Schema was created, in epoch
@@ -684,7 +684,7 @@ type CreateSchemaResponse struct {
 	// [Create,Update:IGN] Username of Schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Full name of Schema, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.
+	// <catalog_name>.<schema_name>.
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -694,8 +694,8 @@ type CreateSchemaResponse struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Schema.
 	Privileges []CreateSchemaResponsePrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create,Update:IGN] Time at which this Schema was created, in epoch
@@ -841,8 +841,8 @@ type CreateStorageCredentialResponse struct {
 type CreateTableRequest struct {
 	// [Create:REQ Update:IGN] Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// This name (&#39;columns&#39;) is what the client actually sees as the field name
-	// in messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('columns') is what the client actually sees as the field name
+	// in messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Columns []ColumnInfo `json:"columns,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
@@ -854,10 +854,10 @@ type CreateTableRequest struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Unique ID of the data_access_configuration to use.
 	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
-	// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+	// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 	DataSourceFormat CreateTableRequestDataSourceFormat `json:"data_source_format,omitempty"`
 	// [Create,Update:IGN] Full name of Table, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.&lt;table_name&gt;
+	// <catalog_name>.<schema_name>.<table_name>
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -867,8 +867,8 @@ type CreateTableRequest struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Table.
 	Privileges []CreateTableRequestPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create:REQ Update:IGN] Name of parent Schema relative to its parent
@@ -884,18 +884,18 @@ type CreateTableRequest struct {
 	StorageLocation string `json:"storage_location,omitempty"`
 	// [Create:IGN Update:IGN] Name of Table, relative to parent Schema.
 	TableId string `json:"table_id,omitempty"`
-	// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+	// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 	TableType CreateTableRequestTableType `json:"table_type,omitempty"`
 	// [Create,Update:IGN] Time at which this Table was last modified, in epoch
 	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// [Create,Update:IGN] Username of user who last modified the Table.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// [Create,Update:OPT] View definition SQL (when table_type == &#34;VIEW&#34;)
+	// [Create,Update:OPT] View definition SQL (when table_type == "VIEW")
 	ViewDefinition string `json:"view_definition,omitempty"`
 }
 
-// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 type CreateTableRequestDataSourceFormat string
 
 const CreateTableRequestDataSourceFormatAvro CreateTableRequestDataSourceFormat = `AVRO`
@@ -938,7 +938,7 @@ const CreateTableRequestPrivilegesItemUsage CreateTableRequestPrivilegesItem = `
 
 const CreateTableRequestPrivilegesItemWriteFiles CreateTableRequestPrivilegesItem = `WRITE_FILES`
 
-// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 type CreateTableRequestTableType string
 
 const CreateTableRequestTableTypeExternal CreateTableRequestTableType = `EXTERNAL`
@@ -952,8 +952,8 @@ const CreateTableRequestTableTypeView CreateTableRequestTableType = `VIEW`
 type CreateTableResponse struct {
 	// [Create:REQ Update:IGN] Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// This name (&#39;columns&#39;) is what the client actually sees as the field name
-	// in messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('columns') is what the client actually sees as the field name
+	// in messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Columns []ColumnInfo `json:"columns,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
@@ -965,10 +965,10 @@ type CreateTableResponse struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Unique ID of the data_access_configuration to use.
 	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
-	// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+	// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 	DataSourceFormat CreateTableResponseDataSourceFormat `json:"data_source_format,omitempty"`
 	// [Create,Update:IGN] Full name of Table, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.&lt;table_name&gt;
+	// <catalog_name>.<schema_name>.<table_name>
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -978,8 +978,8 @@ type CreateTableResponse struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Table.
 	Privileges []CreateTableResponsePrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create:REQ Update:IGN] Name of parent Schema relative to its parent
@@ -995,18 +995,18 @@ type CreateTableResponse struct {
 	StorageLocation string `json:"storage_location,omitempty"`
 	// [Create:IGN Update:IGN] Name of Table, relative to parent Schema.
 	TableId string `json:"table_id,omitempty"`
-	// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+	// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 	TableType CreateTableResponseTableType `json:"table_type,omitempty"`
 	// [Create,Update:IGN] Time at which this Table was last modified, in epoch
 	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// [Create,Update:IGN] Username of user who last modified the Table.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// [Create,Update:OPT] View definition SQL (when table_type == &#34;VIEW&#34;)
+	// [Create,Update:OPT] View definition SQL (when table_type == "VIEW")
 	ViewDefinition string `json:"view_definition,omitempty"`
 }
 
-// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 type CreateTableResponseDataSourceFormat string
 
 const CreateTableResponseDataSourceFormatAvro CreateTableResponseDataSourceFormat = `AVRO`
@@ -1049,7 +1049,7 @@ const CreateTableResponsePrivilegesItemUsage CreateTableResponsePrivilegesItem =
 
 const CreateTableResponsePrivilegesItemWriteFiles CreateTableResponsePrivilegesItem = `WRITE_FILES`
 
-// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 type CreateTableResponseTableType string
 
 const CreateTableResponseTableTypeExternal CreateTableResponseTableType = `EXTERNAL`
@@ -1127,7 +1127,7 @@ type ExternalLocationInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of External Location creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// [Create,Update:IGN] Unique ID of the location&#39;s Storage Credential.
+	// [Create,Update:IGN] Unique ID of the location's Storage Credential.
 	CredentialId string `json:"credential_id,omitempty"`
 	// [Create:REQ Update:OPT] Current name of the Storage Credential this
 	// location uses.
@@ -1190,8 +1190,8 @@ type GetCatalogResponse struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Catalog.
 	Privileges []GetCatalogResponsePrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// Delta Sharing Catalog specific fields. A Delta Sharing Catalog is a
@@ -1251,7 +1251,7 @@ type GetExternalLocationResponse struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of External Location creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// [Create,Update:IGN] Unique ID of the location&#39;s Storage Credential.
+	// [Create,Update:IGN] Unique ID of the location's Storage Credential.
 	CredentialId string `json:"credential_id,omitempty"`
 	// [Create:REQ Update:OPT] Current name of the Storage Credential this
 	// location uses.
@@ -1336,7 +1336,7 @@ const GetMetastoreResponsePrivilegesItemUsage GetMetastoreResponsePrivilegesItem
 const GetMetastoreResponsePrivilegesItemWriteFiles GetMetastoreResponsePrivilegesItem = `WRITE_FILES`
 
 type GetMetastoreSummaryResponse struct {
-	// Unique identifier of the Metastore&#39;s (Default) Data Access Configuration
+	// Unique identifier of the Metastore's (Default) Data Access Configuration
 	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
 	// The unique ID (UUID) of the Metastore
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -1414,7 +1414,7 @@ type GetRecipientRequest struct {
 
 type GetRecipientResponse struct {
 	// [Create:IGN,Update:IGN] A boolean status field showing whether the
-	// Recipient&#39;s activation URL has been exercised or not.
+	// Recipient's activation URL has been exercised or not.
 	Activated bool `json:"activated,omitempty"`
 	// [Create:IGN,Update:IGN] Full activation url to retrieve the access token.
 	// It will be empty if the token is already retrieved.
@@ -1480,7 +1480,7 @@ type GetSchemaResponse struct {
 	// [Create,Update:IGN] Username of Schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Full name of Schema, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.
+	// <catalog_name>.<schema_name>.
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -1490,8 +1490,8 @@ type GetSchemaResponse struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Schema.
 	Privileges []GetSchemaResponsePrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create,Update:IGN] Time at which this Schema was created, in epoch
@@ -1593,8 +1593,8 @@ type GetTableRequest struct {
 type GetTableResponse struct {
 	// [Create:REQ Update:IGN] Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// This name (&#39;columns&#39;) is what the client actually sees as the field name
-	// in messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('columns') is what the client actually sees as the field name
+	// in messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Columns []ColumnInfo `json:"columns,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
@@ -1606,10 +1606,10 @@ type GetTableResponse struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Unique ID of the data_access_configuration to use.
 	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
-	// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+	// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 	DataSourceFormat GetTableResponseDataSourceFormat `json:"data_source_format,omitempty"`
 	// [Create,Update:IGN] Full name of Table, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.&lt;table_name&gt;
+	// <catalog_name>.<schema_name>.<table_name>
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -1619,8 +1619,8 @@ type GetTableResponse struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Table.
 	Privileges []GetTableResponsePrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create:REQ Update:IGN] Name of parent Schema relative to its parent
@@ -1636,18 +1636,18 @@ type GetTableResponse struct {
 	StorageLocation string `json:"storage_location,omitempty"`
 	// [Create:IGN Update:IGN] Name of Table, relative to parent Schema.
 	TableId string `json:"table_id,omitempty"`
-	// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+	// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 	TableType GetTableResponseTableType `json:"table_type,omitempty"`
 	// [Create,Update:IGN] Time at which this Table was last modified, in epoch
 	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// [Create,Update:IGN] Username of user who last modified the Table.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// [Create,Update:OPT] View definition SQL (when table_type == &#34;VIEW&#34;)
+	// [Create,Update:OPT] View definition SQL (when table_type == "VIEW")
 	ViewDefinition string `json:"view_definition,omitempty"`
 }
 
-// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 type GetTableResponseDataSourceFormat string
 
 const GetTableResponseDataSourceFormatAvro GetTableResponseDataSourceFormat = `AVRO`
@@ -1690,7 +1690,7 @@ const GetTableResponsePrivilegesItemUsage GetTableResponsePrivilegesItem = `USAG
 
 const GetTableResponsePrivilegesItemWriteFiles GetTableResponsePrivilegesItem = `WRITE_FILES`
 
-// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 type GetTableResponseTableType string
 
 const GetTableResponseTableTypeExternal GetTableResponseTableType = `EXTERNAL`
@@ -1783,7 +1783,7 @@ type ListTableSummariesRequest struct {
 }
 
 type ListTableSummariesResponse struct {
-	// Optional. Opaque token for pagination. Empty if there&#39;s no more page.
+	// Optional. Opaque token for pagination. Empty if there's no more page.
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// Only name, catalog_name, schema_name, full_name and table_type will be
 	// set.
@@ -2004,7 +2004,7 @@ type ProviderShare struct {
 
 type RecipientInfo struct {
 	// [Create:IGN,Update:IGN] A boolean status field showing whether the
-	// Recipient&#39;s activation URL has been exercised or not.
+	// Recipient's activation URL has been exercised or not.
 	Activated bool `json:"activated,omitempty"`
 	// [Create:IGN,Update:IGN] Full activation url to retrieve the access token.
 	// It will be empty if the token is already retrieved.
@@ -2097,7 +2097,7 @@ type RotateRecipientTokenRequest struct {
 
 type RotateRecipientTokenResponse struct {
 	// [Create:IGN,Update:IGN] A boolean status field showing whether the
-	// Recipient&#39;s activation URL has been exercised or not.
+	// Recipient's activation URL has been exercised or not.
 	Activated bool `json:"activated,omitempty"`
 	// [Create:IGN,Update:IGN] Full activation url to retrieve the access token.
 	// It will be empty if the token is already retrieved.
@@ -2149,7 +2149,7 @@ type SchemaInfo struct {
 	// [Create,Update:IGN] Username of Schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Full name of Schema, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.
+	// <catalog_name>.<schema_name>.
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -2159,8 +2159,8 @@ type SchemaInfo struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Schema.
 	Privileges []SchemaInfoPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create,Update:IGN] Time at which this Schema was created, in epoch
@@ -2222,15 +2222,15 @@ type SharedDataObject struct {
 	// The type of the data object. Output only field. [Update:IGN]
 	DataObjectType string `json:"data_object_type,omitempty"`
 	// A fully qualified name that uniquely identifies a data object. For
-	// example, a table&#39;s fully qualified name is in the format of
-	// `&lt;catalog&gt;.&lt;schema&gt;.&lt;table&gt;`. [Update:REQ]
+	// example, a table's fully qualified name is in the format of
+	// `<catalog>.<schema>.<table>`. [Update:REQ]
 	Name string `json:"name,omitempty"`
 
 	Partitions []Partition `json:"partitions,omitempty"`
 	// A user-provided new name for the data object within the share. If this
-	// new name is not not provided, the object&#39;s original name will be used as
+	// new name is not not provided, the object's original name will be used as
 	// the `shared_as` name. The `shared_as` name must be unique within a Share.
-	// For tables, the new name must follow the format of `&lt;schema&gt;.&lt;table&gt;`.
+	// For tables, the new name must follow the format of `<schema>.<table>`.
 	// [Update:OPT]
 	SharedAs string `json:"shared_as,omitempty"`
 }
@@ -2285,8 +2285,8 @@ type StringKeyValuePair struct {
 type TableInfo struct {
 	// [Create:REQ Update:IGN] Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// This name (&#39;columns&#39;) is what the client actually sees as the field name
-	// in messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('columns') is what the client actually sees as the field name
+	// in messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Columns []ColumnInfo `json:"columns,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
@@ -2298,10 +2298,10 @@ type TableInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Unique ID of the data_access_configuration to use.
 	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
-	// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+	// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 	DataSourceFormat TableInfoDataSourceFormat `json:"data_source_format,omitempty"`
 	// [Create,Update:IGN] Full name of Table, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.&lt;table_name&gt;
+	// <catalog_name>.<schema_name>.<table_name>
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -2311,8 +2311,8 @@ type TableInfo struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Table.
 	Privileges []TableInfoPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create:REQ Update:IGN] Name of parent Schema relative to its parent
@@ -2328,18 +2328,18 @@ type TableInfo struct {
 	StorageLocation string `json:"storage_location,omitempty"`
 	// [Create:IGN Update:IGN] Name of Table, relative to parent Schema.
 	TableId string `json:"table_id,omitempty"`
-	// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+	// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 	TableType TableInfoTableType `json:"table_type,omitempty"`
 	// [Create,Update:IGN] Time at which this Table was last modified, in epoch
 	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// [Create,Update:IGN] Username of user who last modified the Table.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// [Create,Update:OPT] View definition SQL (when table_type == &#34;VIEW&#34;)
+	// [Create,Update:OPT] View definition SQL (when table_type == "VIEW")
 	ViewDefinition string `json:"view_definition,omitempty"`
 }
 
-// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 type TableInfoDataSourceFormat string
 
 const TableInfoDataSourceFormatAvro TableInfoDataSourceFormat = `AVRO`
@@ -2382,7 +2382,7 @@ const TableInfoPrivilegesItemUsage TableInfoPrivilegesItem = `USAGE`
 
 const TableInfoPrivilegesItemWriteFiles TableInfoPrivilegesItem = `WRITE_FILES`
 
-// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 type TableInfoTableType string
 
 const TableInfoTableTypeExternal TableInfoTableType = `EXTERNAL`
@@ -2429,8 +2429,8 @@ type UpdateCatalogRequest struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Catalog.
 	Privileges []UpdateCatalogRequestPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// Delta Sharing Catalog specific fields. A Delta Sharing Catalog is a
@@ -2485,12 +2485,12 @@ type UpdateExternalLocationRequest struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of External Location creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// [Create,Update:IGN] Unique ID of the location&#39;s Storage Credential.
+	// [Create,Update:IGN] Unique ID of the location's Storage Credential.
 	CredentialId string `json:"credential_id,omitempty"`
 	// [Create:REQ Update:OPT] Current name of the Storage Credential this
 	// location uses.
 	CredentialName string `json:"credential_name,omitempty"`
-	// TODO: SC-90063 re-add &#39;force&#39; parameter in backward-compatible way for
+	// TODO: SC-90063 re-add 'force' parameter in backward-compatible way for
 	// DBR (not removed below as it still works with CLI) Optional. Force update
 	// even if changing url invalidates dependent external tables or mounts.
 	Force bool `json:"force,omitempty"`
@@ -2635,7 +2635,7 @@ const UpdateProviderRequestAuthenticationTypeUnknown UpdateProviderRequestAuthen
 
 type UpdateRecipientRequest struct {
 	// [Create:IGN,Update:IGN] A boolean status field showing whether the
-	// Recipient&#39;s activation URL has been exercised or not.
+	// Recipient's activation URL has been exercised or not.
 	Activated bool `json:"activated,omitempty"`
 	// [Create:IGN,Update:IGN] Full activation url to retrieve the access token.
 	// It will be empty if the token is already retrieved.
@@ -2689,7 +2689,7 @@ type UpdateSchemaRequest struct {
 	// [Create,Update:IGN] Username of Schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Full name of Schema, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.
+	// <catalog_name>.<schema_name>.
 	FullName string `json:"full_name,omitempty"`
 	// Required. Full name of the Schema (from URL).
 	FullNameArg string ` path:"full_name_arg"`
@@ -2701,8 +2701,8 @@ type UpdateSchemaRequest struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Schema.
 	Privileges []UpdateSchemaRequestPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create,Update:IGN] Time at which this Schema was created, in epoch
@@ -2781,8 +2781,8 @@ type UpdateStorageCredentialRequest struct {
 type UpdateTableRequest struct {
 	// [Create:REQ Update:IGN] Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// This name (&#39;columns&#39;) is what the client actually sees as the field name
-	// in messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('columns') is what the client actually sees as the field name
+	// in messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Columns []ColumnInfo `json:"columns,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
@@ -2794,10 +2794,10 @@ type UpdateTableRequest struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Unique ID of the data_access_configuration to use.
 	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
-	// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+	// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 	DataSourceFormat UpdateTableRequestDataSourceFormat `json:"data_source_format,omitempty"`
 	// [Create,Update:IGN] Full name of Table, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.&lt;table_name&gt;
+	// <catalog_name>.<schema_name>.<table_name>
 	FullName string `json:"full_name,omitempty"`
 	// Required. Full name of the Table (from URL).
 	FullNameArg string ` path:"full_name_arg"`
@@ -2809,8 +2809,8 @@ type UpdateTableRequest struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Table.
 	Privileges []UpdateTableRequestPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create:REQ Update:IGN] Name of parent Schema relative to its parent
@@ -2826,18 +2826,18 @@ type UpdateTableRequest struct {
 	StorageLocation string `json:"storage_location,omitempty"`
 	// [Create:IGN Update:IGN] Name of Table, relative to parent Schema.
 	TableId string `json:"table_id,omitempty"`
-	// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+	// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 	TableType UpdateTableRequestTableType `json:"table_type,omitempty"`
 	// [Create,Update:IGN] Time at which this Table was last modified, in epoch
 	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// [Create,Update:IGN] Username of user who last modified the Table.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// [Create,Update:OPT] View definition SQL (when table_type == &#34;VIEW&#34;)
+	// [Create,Update:OPT] View definition SQL (when table_type == "VIEW")
 	ViewDefinition string `json:"view_definition,omitempty"`
 }
 
-// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 type UpdateTableRequestDataSourceFormat string
 
 const UpdateTableRequestDataSourceFormatAvro UpdateTableRequestDataSourceFormat = `AVRO`
@@ -2880,7 +2880,7 @@ const UpdateTableRequestPrivilegesItemUsage UpdateTableRequestPrivilegesItem = `
 
 const UpdateTableRequestPrivilegesItemWriteFiles UpdateTableRequestPrivilegesItem = `WRITE_FILES`
 
-// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 type UpdateTableRequestTableType string
 
 const UpdateTableRequestTableTypeExternal UpdateTableRequestTableType = `EXTERNAL`

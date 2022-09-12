@@ -37,14 +37,14 @@ func (a *ClustersAPI) ChangeOwner(ctx context.Context, request ChangeClusterOwne
 // (account limits, spot price, ...) or transient network issues. If Databricks
 // acquires at least 85% of the requested on-demand nodes, cluster creation will
 // succeed. Otherwise the cluster will terminate with an informative error
-// message. An example request: .. code:: { &#34;cluster_name&#34;: &#34;my-cluster&#34;,
-// &#34;spark_version&#34;: &#34;2.0.x-scala2.10&#34;, &#34;node_type_id&#34;: &#34;r3.xlarge&#34;,
-// &#34;spark_conf&#34;: { &#34;spark.speculation&#34;: true }, &#34;aws_attributes&#34;: {
-// &#34;availability&#34;: &#34;SPOT&#34;, &#34;zone_id&#34;: &#34;us-west-2a&#34; }, &#34;num_workers&#34;: 25 } See
+// message. An example request: .. code:: { "cluster_name": "my-cluster",
+// "spark_version": "2.0.x-scala2.10", "node_type_id": "r3.xlarge",
+// "spark_conf": { "spark.speculation": true }, "aws_attributes": {
+// "availability": "SPOT", "zone_id": "us-west-2a" }, "num_workers": 25 } See
 // below as an example for an autoscaling cluster. Note that this cluster will
-// start with `2` nodes, the minimum. .. code:: { &#34;cluster_name&#34;:
-// &#34;autoscaling-cluster&#34;, &#34;spark_version&#34;: &#34;2.0.x-scala2.10&#34;, &#34;node_type_id&#34;:
-// &#34;r3.xlarge&#34;, &#34;autoscale&#34; : { &#34;min_workers&#34;: 2, &#34;max_workers&#34;: 50 } }
+// start with `2` nodes, the minimum. .. code:: { "cluster_name":
+// "autoscaling-cluster", "spark_version": "2.0.x-scala2.10", "node_type_id":
+// "r3.xlarge", "autoscale" : { "min_workers": 2, "max_workers": 50 } }
 func (a *ClustersAPI) Create(ctx context.Context, request CreateCluster) (*CreateClusterResponse, error) {
 	var createClusterResponse CreateClusterResponse
 	path := "/api/2.0/clusters/create"
@@ -87,7 +87,7 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, request CreateCluster, 
 // asynchronously. Once the termination has completed, the cluster will be in a
 // “TERMINATED“ state. If the cluster is already in a “TERMINATING“ or
 // “TERMINATED“ state, nothing will happen. An example request: .. code:: {
-// &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34; }
+// "cluster_id": "1202-211320-brick1" }
 func (a *ClustersAPI) Delete(ctx context.Context, request DeleteCluster) error {
 	path := "/api/2.0/clusters/delete"
 	err := a.client.Post(ctx, path, request, nil)
@@ -129,7 +129,7 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, request DeleteCluster, 
 // asynchronously. Once the termination has completed, the cluster will be in a
 // “TERMINATED“ state. If the cluster is already in a “TERMINATING“ or
 // “TERMINATED“ state, nothing will happen. An example request: .. code:: {
-// &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34; }
+// "cluster_id": "1202-211320-brick1" }
 func (a *ClustersAPI) DeleteByClusterId(ctx context.Context, clusterId string) error {
 	return a.Delete(ctx, DeleteCluster{
 		ClusterId: clusterId,
@@ -150,9 +150,9 @@ func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId st
 // it is started using the “clusters/start“ API, the new attributes will take
 // effect. An attempt to edit a cluster in any other state will be rejected with
 // an “INVALID_STATE“ error code. Clusters created by the Databricks Jobs
-// service cannot be edited. An example request: .. code:: { &#34;cluster_id&#34;:
-// &#34;1202-211320-brick1&#34;, &#34;num_workers&#34;: 10, &#34;spark_version&#34;: &#34;3.3.x-scala2.11&#34;,
-// &#34;node_type_id&#34;: &#34;i3.2xlarge&#34; }
+// service cannot be edited. An example request: .. code:: { "cluster_id":
+// "1202-211320-brick1", "num_workers": 10, "spark_version": "3.3.x-scala2.11",
+// "node_type_id": "i3.2xlarge" }
 func (a *ClustersAPI) Edit(ctx context.Context, request EditCluster) error {
 	path := "/api/2.0/clusters/edit"
 	err := a.client.Post(ctx, path, request, nil)
@@ -194,15 +194,15 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, request EditCluster, time
 // paginated. If there are more events to read, the response includes all the
 // parameters necessary to request the next page of events. An example request:
 // “/clusters/events?cluster_id=1202-211320-brick1“ An example response: {
-// &#34;events&#34;: [ { &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34;, &#34;timestamp&#34;: 1509572145487,
-// &#34;event_type&#34;: &#34;RESTARTING&#34;, &#34;event_details&#34;: { &#34;username&#34;: &#34;admin&#34; } }, ... {
-// &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34;, &#34;timestamp&#34;: 1509505807923, &#34;event_type&#34;:
-// &#34;TERMINATING&#34;, &#34;event_details&#34;: { &#34;termination_reason&#34;: { &#34;code&#34;:
-// &#34;USER_REQUEST&#34;, &#34;parameters&#34;: [ &#34;username&#34;: &#34;admin&#34; ] } } ], &#34;next_page&#34;: {
-// &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34;, &#34;end_time&#34;: 1509572145487, &#34;order&#34;:
-// &#34;DESC&#34;, &#34;offset&#34;: 50 }, &#34;total_count&#34;: 303 } Example request to retrieve the
+// "events": [ { "cluster_id": "1202-211320-brick1", "timestamp": 1509572145487,
+// "event_type": "RESTARTING", "event_details": { "username": "admin" } }, ... {
+// "cluster_id": "1202-211320-brick1", "timestamp": 1509505807923, "event_type":
+// "TERMINATING", "event_details": { "termination_reason": { "code":
+// "USER_REQUEST", "parameters": [ "username": "admin" ] } } ], "next_page": {
+// "cluster_id": "1202-211320-brick1", "end_time": 1509572145487, "order":
+// "DESC", "offset": 50 }, "total_count": 303 } Example request to retrieve the
 // next page of events
-// “/clusters/events?cluster_id=1202-211320-brick1&amp;end_time=1509572145487&amp;order=DESC&amp;offset=50“
+// “/clusters/events?cluster_id=1202-211320-brick1&end_time=1509572145487&order=DESC&offset=50“
 func (a *ClustersAPI) Events(ctx context.Context, request GetEvents) (*GetEventsResponse, error) {
 	var getEventsResponse GetEventsResponse
 	path := "/api/2.0/clusters/events"
@@ -317,7 +317,7 @@ func (a *ClustersAPI) ListZones(ctx context.Context) (*ListAvailableZonesRespons
 // are asynchronously removed. In addition, users will no longer see permanently
 // deleted clusters in the cluster list, and API users can no longer perform any
 // action on permanently deleted clusters. An example request: .. code:: {
-// &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34; }
+// "cluster_id": "1202-211320-brick1" }
 func (a *ClustersAPI) PermanentDelete(ctx context.Context, request PermanentDeleteCluster) error {
 	path := "/api/2.0/clusters/permanent-delete"
 	err := a.client.Post(ctx, path, request, nil)
@@ -328,7 +328,7 @@ func (a *ClustersAPI) PermanentDelete(ctx context.Context, request PermanentDele
 // are asynchronously removed. In addition, users will no longer see permanently
 // deleted clusters in the cluster list, and API users can no longer perform any
 // action on permanently deleted clusters. An example request: .. code:: {
-// &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34; }
+// "cluster_id": "1202-211320-brick1" }
 func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId string) error {
 	return a.PermanentDelete(ctx, PermanentDeleteCluster{
 		ClusterId: clusterId,
@@ -357,7 +357,7 @@ func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) erro
 
 // Resizes a cluster to have a desired number of workers. This will fail unless
 // the cluster is in a “RUNNING“ state. An example request: .. code:: {
-// &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34;, &#34;num_workers&#34;: 30 }
+// "cluster_id": "1202-211320-brick1", "num_workers": 30 }
 func (a *ClustersAPI) Resize(ctx context.Context, request ResizeCluster) error {
 	path := "/api/2.0/clusters/resize"
 	err := a.client.Post(ctx, path, request, nil)
@@ -397,7 +397,7 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, request ResizeCluster, 
 
 // Restarts a Spark cluster given its id. If the cluster is not currently in a
 // “RUNNING“ state, nothing will happen. An example request: .. code:: {
-// &#34;cluster_id&#34;: &#34;1202-211320-brick1&#34; }
+// "cluster_id": "1202-211320-brick1" }
 func (a *ClustersAPI) Restart(ctx context.Context, request RestartCluster) error {
 	path := "/api/2.0/clusters/restart"
 	err := a.client.Post(ctx, path, request, nil)
@@ -450,8 +450,8 @@ func (a *ClustersAPI) SparkVersions(ctx context.Context) (*GetSparkVersionsRespo
 // the previous cluster was an autoscaling cluster, the current cluster starts
 // with the minimum number of nodes. - If the cluster is not currently in a
 // “TERMINATED“ state, nothing will happen. - Clusters launched to run a job
-// cannot be started. An example request: .. code:: { &#34;cluster_id&#34;:
-// &#34;1202-211320-brick1&#34; }
+// cannot be started. An example request: .. code:: { "cluster_id":
+// "1202-211320-brick1" }
 func (a *ClustersAPI) Start(ctx context.Context, request StartCluster) error {
 	path := "/api/2.0/clusters/start"
 	err := a.client.Post(ctx, path, request, nil)
@@ -495,8 +495,8 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, request StartCluster, ti
 // the previous cluster was an autoscaling cluster, the current cluster starts
 // with the minimum number of nodes. - If the cluster is not currently in a
 // “TERMINATED“ state, nothing will happen. - Clusters launched to run a job
-// cannot be started. An example request: .. code:: { &#34;cluster_id&#34;:
-// &#34;1202-211320-brick1&#34; }
+// cannot be started. An example request: .. code:: { "cluster_id":
+// "1202-211320-brick1" }
 func (a *ClustersAPI) StartByClusterId(ctx context.Context, clusterId string) error {
 	return a.Start(ctx, StartCluster{
 		ClusterId: clusterId,

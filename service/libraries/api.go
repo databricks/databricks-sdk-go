@@ -24,12 +24,12 @@ type LibrariesAPI struct {
 // UI. If a library has been set to be installed on all clusters,
 // “is_library_for_all_clusters“ will be “true“, even if the library was
 // also installed on this specific cluster.. An example response: .. code:: {
-// &#34;statuses&#34;: [ { &#34;cluster_id&#34;: &#34;11203-my-cluster&#34;, &#34;library_statuses&#34;: [ {
-// &#34;library&#34;: { &#34;jar&#34;: &#34;dbfs:/mnt/libraries/library.jar&#34; }, &#34;status&#34;:
-// &#34;INSTALLING&#34;, &#34;messages&#34;: [], &#34;is_library_for_all_clusters&#34;: false } ] }, {
-// &#34;cluster_id&#34;: &#34;20131-my-other-cluster&#34;, &#34;library_statuses&#34;: [ { &#34;library&#34;: {
-// &#34;egg&#34;: &#34;dbfs:/mnt/libraries/library.egg&#34; }, &#34;status&#34;: &#34;ERROR&#34;, &#34;messages&#34;:
-// [&#34;Could not download library&#34;], &#34;is_library_for_all_clusters&#34;: false } ] } ]
+// "statuses": [ { "cluster_id": "11203-my-cluster", "library_statuses": [ {
+// "library": { "jar": "dbfs:/mnt/libraries/library.jar" }, "status":
+// "INSTALLING", "messages": [], "is_library_for_all_clusters": false } ] }, {
+// "cluster_id": "20131-my-other-cluster", "library_statuses": [ { "library": {
+// "egg": "dbfs:/mnt/libraries/library.egg" }, "status": "ERROR", "messages":
+// ["Could not download library"], "is_library_for_all_clusters": false } ] } ]
 // }
 func (a *LibrariesAPI) AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error) {
 	var listAllClusterLibraryStatusesResponse ListAllClusterLibraryStatusesResponse
@@ -52,16 +52,16 @@ func (a *LibrariesAPI) AllClusterStatuses(ctx context.Context) (*ListAllClusterL
 // but now marked for removal. Within this group there is no order guarantee. An
 // example request: .. code::
 // /libraries/cluster-status?cluster_id=11203-my-cluster And response: .. code::
-// { &#34;cluster_id&#34;: &#34;11203-my-cluster&#34;, &#34;library_statuses&#34;: [ { &#34;library&#34;: {
-// &#34;jar&#34;: &#34;dbfs:/mnt/libraries/library.jar&#34; }, &#34;status&#34;: &#34;INSTALLED&#34;,
-// &#34;messages&#34;: [], &#34;is_library_for_all_clusters&#34;: false }, { &#34;library&#34;: {
-// &#34;pypi&#34;: { &#34;package&#34;: &#34;beautifulsoup4&#34; }, }, &#34;status&#34;: &#34;INSTALLING&#34;,
-// &#34;messages&#34;: [&#34;Successfully resolved package from PyPI&#34;],
-// &#34;is_library_for_all_clusters&#34;: false }, { &#34;library&#34;: { &#34;cran&#34;: { &#34;package&#34;:
-// &#34;ada&#34;, &#34;repo&#34;: &#34;http://cran.us.r-project.org&#34; }, }, &#34;status&#34;: &#34;FAILED&#34;,
-// &#34;messages&#34;: [&#34;R package installation is not supported on this spark
-// version.\nPlease upgrade to Runtime 3.2 or higher&#34;],
-// &#34;is_library_for_all_clusters&#34;: false } ] }
+// { "cluster_id": "11203-my-cluster", "library_statuses": [ { "library": {
+// "jar": "dbfs:/mnt/libraries/library.jar" }, "status": "INSTALLED",
+// "messages": [], "is_library_for_all_clusters": false }, { "library": {
+// "pypi": { "package": "beautifulsoup4" }, }, "status": "INSTALLING",
+// "messages": ["Successfully resolved package from PyPI"],
+// "is_library_for_all_clusters": false }, { "library": { "cran": { "package":
+// "ada", "repo": "http://cran.us.r-project.org" }, }, "status": "FAILED",
+// "messages": ["R package installation is not supported on this spark
+// version.\nPlease upgrade to Runtime 3.2 or higher"],
+// "is_library_for_all_clusters": false } ] }
 func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusRequest) (*ClusterStatusResponse, error) {
 	var clusterStatusResponse ClusterStatusResponse
 	path := "/api/2.0/libraries/cluster-status"
@@ -83,16 +83,16 @@ func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusR
 // but now marked for removal. Within this group there is no order guarantee. An
 // example request: .. code::
 // /libraries/cluster-status?cluster_id=11203-my-cluster And response: .. code::
-// { &#34;cluster_id&#34;: &#34;11203-my-cluster&#34;, &#34;library_statuses&#34;: [ { &#34;library&#34;: {
-// &#34;jar&#34;: &#34;dbfs:/mnt/libraries/library.jar&#34; }, &#34;status&#34;: &#34;INSTALLED&#34;,
-// &#34;messages&#34;: [], &#34;is_library_for_all_clusters&#34;: false }, { &#34;library&#34;: {
-// &#34;pypi&#34;: { &#34;package&#34;: &#34;beautifulsoup4&#34; }, }, &#34;status&#34;: &#34;INSTALLING&#34;,
-// &#34;messages&#34;: [&#34;Successfully resolved package from PyPI&#34;],
-// &#34;is_library_for_all_clusters&#34;: false }, { &#34;library&#34;: { &#34;cran&#34;: { &#34;package&#34;:
-// &#34;ada&#34;, &#34;repo&#34;: &#34;http://cran.us.r-project.org&#34; }, }, &#34;status&#34;: &#34;FAILED&#34;,
-// &#34;messages&#34;: [&#34;R package installation is not supported on this spark
-// version.\nPlease upgrade to Runtime 3.2 or higher&#34;],
-// &#34;is_library_for_all_clusters&#34;: false } ] }
+// { "cluster_id": "11203-my-cluster", "library_statuses": [ { "library": {
+// "jar": "dbfs:/mnt/libraries/library.jar" }, "status": "INSTALLED",
+// "messages": [], "is_library_for_all_clusters": false }, { "library": {
+// "pypi": { "package": "beautifulsoup4" }, }, "status": "INSTALLING",
+// "messages": ["Successfully resolved package from PyPI"],
+// "is_library_for_all_clusters": false }, { "library": { "cran": { "package":
+// "ada", "repo": "http://cran.us.r-project.org" }, }, "status": "FAILED",
+// "messages": ["R package installation is not supported on this spark
+// version.\nPlease upgrade to Runtime 3.2 or higher"],
+// "is_library_for_all_clusters": false } ] }
 func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId string) (*ClusterStatusResponse, error) {
 	return a.ClusterStatus(ctx, ClusterStatusRequest{
 		ClusterId: clusterId,
@@ -105,24 +105,24 @@ func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId s
 // the libraries specified via this method and the libraries set to be installed
 // on all clusters via the libraries UI. Note that CRAN libraries can only be
 // installed on clusters running Databricks Runtime 3.2 or higher. An example
-// request: .. code:: { &#34;cluster_id&#34;: &#34;10201-my-cluster&#34;, &#34;libraries&#34;: [ {
-// &#34;jar&#34;: &#34;dbfs:/mnt/libraries/library.jar&#34; }, { &#34;egg&#34;:
-// &#34;dbfs:/mnt/libraries/library.egg&#34; }, { &#34;whl&#34;:
-// &#34;dbfs:/mnt/libraries/library.whl&#34; }, { &#34;maven&#34;: { &#34;coordinates&#34;:
-// &#34;org.jsoup:jsoup:1.7.2&#34;, &#34;exclusions&#34;: [&#34;slf4j:slf4j&#34;] } }, { &#34;pypi&#34;: {
-// &#34;package&#34;: &#34;simplejson&#34;, &#34;repo&#34;: &#34;http://my-pypi-mirror.com&#34; } }, { &#34;cran&#34;: {
-// &#34;package: &#34;ada&#34;, &#34;repo&#34;: &#34;http://cran.us.r-project.org&#34; } } ] }
+// request: .. code:: { "cluster_id": "10201-my-cluster", "libraries": [ {
+// "jar": "dbfs:/mnt/libraries/library.jar" }, { "egg":
+// "dbfs:/mnt/libraries/library.egg" }, { "whl":
+// "dbfs:/mnt/libraries/library.whl" }, { "maven": { "coordinates":
+// "org.jsoup:jsoup:1.7.2", "exclusions": ["slf4j:slf4j"] } }, { "pypi": {
+// "package": "simplejson", "repo": "http://my-pypi-mirror.com" } }, { "cran": {
+// "package: "ada", "repo": "http://cran.us.r-project.org" } } ] }
 func (a *LibrariesAPI) Install(ctx context.Context, request InstallLibrariesRequest) error {
 	path := "/api/2.0/libraries/install"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
-// Set libraries to be uninstalled on a cluster. The libraries won&#39;t be
+// Set libraries to be uninstalled on a cluster. The libraries won't be
 // uninstalled until the cluster is restarted. Uninstalling libraries that are
 // not installed on the cluster will have no impact but is not an error. An
-// example request: .. code:: { &#34;cluster_id&#34;: &#34;10201-my-cluster&#34;, &#34;libraries&#34;: [
-// { &#34;jar&#34;: &#34;dbfs:/mnt/libraries/library.jar&#34; }, { &#34;cran&#34;: &#34;ada&#34; } ] }
+// example request: .. code:: { "cluster_id": "10201-my-cluster", "libraries": [
+// { "jar": "dbfs:/mnt/libraries/library.jar" }, { "cran": "ada" } ] }
 func (a *LibrariesAPI) Uninstall(ctx context.Context, request UninstallLibrariesRequest) error {
 	path := "/api/2.0/libraries/uninstall"
 	err := a.client.Post(ctx, path, request, nil)

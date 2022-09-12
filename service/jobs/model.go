@@ -44,11 +44,11 @@ type ClusterInstance struct {
 
 type ClusterLogConf struct {
 	// DBFS location of cluster log. Destination must be provided. For example,
-	// `{ &#34;dbfs&#34; : { &#34;destination&#34; : &#34;dbfs:/home/cluster_log&#34; } }`
+	// `{ "dbfs" : { "destination" : "dbfs:/home/cluster_log" } }`
 	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
 	// S3 location of cluster log. `destination` and either `region` or
-	// `endpoint` must be provided. For example, `{ &#34;s3&#34;: { &#34;destination&#34; :
-	// &#34;s3://cluster_log_bucket/prefix&#34;, &#34;region&#34; : &#34;us-west-2&#34; } }`
+	// `endpoint` must be provided. For example, `{ "s3": { "destination" :
+	// "s3://cluster_log_bucket/prefix", "region" : "us-west-2" } }`
 	S3 any/* ERROR */ `json:"s3,omitempty"`
 }
 
@@ -79,10 +79,10 @@ type CreateJob struct {
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
-	// always set to `&#34;MULTI_TASK&#34;`.
+	// always set to `"MULTI_TASK"`.
 	Format CreateJobFormat `json:"format,omitempty"`
 	// An optional specification for a remote repository containing the
-	// notebooks used by this job&#39;s notebook tasks.
+	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
@@ -121,7 +121,7 @@ type CreateJob struct {
 
 // Used to tell what is the format of the job. This field is ignored in
 // Create/Update/Reset calls. When using the Jobs API 2.1 this value is always
-// set to `&#34;MULTI_TASK&#34;`.
+// set to `"MULTI_TASK"`.
 type CreateJobFormat string
 
 const CreateJobFormatMultiTask CreateJobFormat = `MULTI_TASK`
@@ -185,7 +185,7 @@ type GitSnapshot struct {
 }
 
 // An optional specification for a remote repository containing the notebooks
-// used by this job&#39;s notebook tasks.
+// used by this job's notebook tasks.
 type GitSource struct {
 	// Name of the branch to be checked out and used by this job. This field
 	// cannot be specified in conjunction with git_tag or git_commit. The
@@ -231,14 +231,14 @@ const GitSourceGitProviderGitlabenterpriseedition GitSourceGitProvider = `gitLab
 
 type InitScriptInfo struct {
 	// S3 location of init script. Destination and either region or endpoint
-	// must be provided. For example, `{ &#34;s3&#34;: { &#34;destination&#34; :
-	// &#34;s3://init_script_bucket/prefix&#34;, &#34;region&#34; : &#34;us-west-2&#34; } }`
+	// must be provided. For example, `{ "s3": { "destination" :
+	// "s3://init_script_bucket/prefix", "region" : "us-west-2" } }`
 	S3 any/* ERROR */ `json:"S3,omitempty"`
 	// DBFS location of init script. Destination must be provided. For example,
-	// `{ &#34;dbfs&#34; : { &#34;destination&#34; : &#34;dbfs:/home/init_script&#34; } }`
+	// `{ "dbfs" : { "destination" : "dbfs:/home/init_script" } }`
 	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
 	// File location of init script. Destination must be provided. For example,
-	// `{ &#34;file&#34; : { &#34;destination&#34; : &#34;file:/my/local/file.sh&#34; } }`
+	// `{ "file" : { "destination" : "file:/my/local/file.sh" } }`
 	File *FileStorageInfo `json:"file,omitempty"`
 }
 
@@ -295,10 +295,10 @@ type JobSettings struct {
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
-	// always set to `&#34;MULTI_TASK&#34;`.
+	// always set to `"MULTI_TASK"`.
 	Format JobSettingsFormat `json:"format,omitempty"`
 	// An optional specification for a remote repository containing the
-	// notebooks used by this job&#39;s notebook tasks.
+	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
@@ -337,7 +337,7 @@ type JobSettings struct {
 
 // Used to tell what is the format of the job. This field is ignored in
 // Create/Update/Reset calls. When using the Jobs API 2.1 this value is always
-// set to `&#34;MULTI_TASK&#34;`.
+// set to `"MULTI_TASK"`.
 type JobSettingsFormat string
 
 const JobSettingsFormatMultiTask JobSettingsFormat = `MULTI_TASK`
@@ -407,12 +407,12 @@ type Library struct {
 
 	Jar string `json:"jar,omitempty"`
 	// If maven, specification of a Maven library to be installed. For example:
-	// `{ &#34;coordinates&#34;: &#34;org.jsoup:jsoup:1.7.2&#34; }`
+	// `{ "coordinates": "org.jsoup:jsoup:1.7.2" }`
 	Maven *MavenLibrary `json:"maven,omitempty"`
 	// If pypi, specification of a PyPI library to be installed. Specifying the
 	// `repo` field is optional and if not specified, the default pip index is
-	// used. For example: `{ &#34;package&#34;: &#34;simplejson&#34;, &#34;repo&#34;:
-	// &#34;https://my-repo.com&#34; }`
+	// used. For example: `{ "package": "simplejson", "repo":
+	// "https://my-repo.com" }`
 	Pypi *PythonPyPiLibrary `json:"pypi,omitempty"`
 
 	Whl string `json:"whl,omitempty"`
@@ -430,9 +430,9 @@ type MavenLibrary struct {
 	// Gradle-style Maven coordinates. For example: `org.jsoup:jsoup:1.7.2`.
 	// This field is required.
 	Coordinates string `json:"coordinates"`
-	// List of dependences to exclude. For example: `[&#34;slf4j:slf4j&#34;,
-	// &#34;*:hadoop-client&#34;]`. Maven dependency exclusions:
-	// &lt;https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html&gt;.
+	// List of dependences to exclude. For example: `["slf4j:slf4j",
+	// "*:hadoop-client"]`. Maven dependency exclusions:
+	// <https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html>.
 	Exclusions []string `json:"exclusions,omitempty"`
 	// Maven repo to install the Maven package from. If omitted, both Maven
 	// Central Repository and Spark Packages are searched.
@@ -454,8 +454,8 @@ type NewCluster struct {
 	// destination. Only one destination can be specified for one cluster. If
 	// the conf is given, the logs are delivered to the destination every `5
 	// mins`. The destination of driver logs is
-	// `&lt;destination&gt;/&lt;cluster-id&gt;/driver`, while the destination of executor
-	// logs is `&lt;destination&gt;/&lt;cluster-id&gt;/executor`.
+	// `<destination>/<cluster-id>/driver`, while the destination of executor
+	// logs is `<destination>/<cluster-id>/executor`.
 	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
@@ -475,7 +475,7 @@ type NewCluster struct {
 	// The configuration for storing init scripts. Any number of scripts can be
 	// specified. The scripts are executed sequentially in the order provided.
 	// If `cluster_log_conf` is specified, init script logs are sent to
-	// `&lt;destination&gt;/&lt;cluster-id&gt;/init_scripts`.
+	// `<destination>/<cluster-id>/init_scripts`.
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to use for cluster nodes. If
 	// `driver_instance_pool_id` is present, `instance_pool_id` is used for
@@ -492,7 +492,7 @@ type NewCluster struct {
 	NodeTypeId string `json:"node_type_id"`
 	// If num_workers, number of worker nodes that this cluster must have. A
 	// cluster has one Spark driver and num_workers executors for a total of
-	// num_workers &#43; 1 Spark nodes. When reading the properties of a cluster,
+	// num_workers + 1 Spark nodes. When reading the properties of a cluster,
 	// this field reflects the desired number of workers rather than the actual
 	// current number of workers. For example, if a cluster is resized from 5 to
 	// 10 workers, this field immediately updates to reflect the target size of
@@ -505,20 +505,20 @@ type NewCluster struct {
 	// configuration key-value pairs. You can also pass in a string of extra JVM
 	// options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
-	// respectively. Example Spark confs: `{&#34;spark.speculation&#34;: true,
-	// &#34;spark.streaming.ui.retainedBatches&#34;: 5}` or
-	// `{&#34;spark.driver.extraJavaOptions&#34;: &#34;-verbose:gc -XX:&#43;PrintGCDetails&#34;}`
+	// respectively. Example Spark confs: `{"spark.speculation": true,
+	// "spark.streaming.ui.retainedBatches": 5}` or
+	// `{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}`
 	SparkConf map[string]any/* MISSING TYPE */ `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Key-value pair of the form (X,Y) are exported
-	// as is (for example, `export X=&#39;Y&#39;`) while launching the driver and
+	// as is (for example, `export X='Y'`) while launching the driver and
 	// workers. To specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
 	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
 	// following example. This ensures that all default databricks managed
 	// environmental variables are included as well. Example Spark environment
-	// variables: `{&#34;SPARK_WORKER_MEMORY&#34;: &#34;28000m&#34;, &#34;SPARK_LOCAL_DIRS&#34;:
-	// &#34;/local_disk0&#34;}` or `{&#34;SPARK_DAEMON_JAVA_OPTS&#34;: &#34;$SPARK_DAEMON_JAVA_OPTS
-	// -Dspark.shuffle.service.enabled=true&#34;}`
+	// variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+	// "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+	// -Dspark.shuffle.service.enabled=true"}`
 	SparkEnvVars map[string]any/* MISSING TYPE */ `json:"spark_env_vars,omitempty"`
 	// The Spark version of the cluster. A list of available Spark versions can
 	// be retrieved by using the [Runtime
@@ -584,7 +584,7 @@ type PythonWheelTask struct {
 	// `$packageName.$entryPoint()`
 	EntryPoint string `json:"entry_point,omitempty"`
 	// Command-line parameters passed to Python wheel task in the form of
-	// `[&#34;--name=task&#34;, &#34;--data=dbfs:/path/to/data.json&#34;]`. Leave it empty if
+	// `["--name=task", "--data=dbfs:/path/to/data.json"]`. Leave it empty if
 	// `parameters` is not null.
 	NamedParameters any/* MISSING TYPE */ `json:"named_parameters,omitempty"`
 	// Name of the package to execute
@@ -630,11 +630,11 @@ const RepairHistoryItemTypeRepair RepairHistoryItemType = `REPAIR`
 
 type RepairRun struct {
 	// A list of parameters for jobs with Spark JAR tasks, for example
-	// `&#34;jar_params&#34;: [&#34;john doe&#34;, &#34;35&#34;]`. The parameters are used to invoke the
+	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
 	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
 	// be specified in conjunction with notebook_params. The JSON representation
-	// of this field (for example `{&#34;jar_params&#34;:[&#34;john doe&#34;,&#34;35&#34;]}`) cannot
+	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs.
@@ -644,7 +644,7 @@ type RepairRun struct {
 	// requests to repair the same run.
 	LatestRepairId int64 `json:"latest_repair_id,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
-	// `&#34;notebook_params&#34;: {&#34;name&#34;: &#34;john doe&#34;, &#34;age&#34;: &#34;35&#34;}`. The map is passed
+	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the
 	// [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets)
 	// function. If not specified upon `run-now`, the triggered run uses the
@@ -652,21 +652,21 @@ type RepairRun struct {
 	// with jar_params. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs. The JSON representation of this field (for
-	// example `{&#34;notebook_params&#34;:{&#34;name&#34;:&#34;john doe&#34;,&#34;age&#34;:&#34;35&#34;}}`) cannot
+	// example `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot
 	// exceed 10,000 bytes.
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *RepairRunPipelineParams `json:"pipeline_params,omitempty"`
 	// A map from keys to values for jobs with Python wheel task, for example
-	// `&#34;python_named_params&#34;: {&#34;name&#34;: &#34;task&#34;, &#34;data&#34;:
-	// &#34;dbfs:/path/to/data.json&#34;}`.
+	// `"python_named_params": {"name": "task", "data":
+	// "dbfs:/path/to/data.json"}`.
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
-	// `&#34;python_params&#34;: [&#34;john doe&#34;, &#34;35&#34;]`. The parameters are passed to
+	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
-	// representation of this field (for example `{&#34;python_params&#34;:[&#34;john
-	// doe&#34;,&#34;35&#34;]}`) cannot exceed 10,000 bytes. Use [Task parameter
+	// representation of this field (for example `{"python_params":["john
+	// doe","35"]}`) cannot exceed 10,000 bytes. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs. Important These parameters accept only Latin
 	// characters (ASCII character set). Using non-ASCII characters returns an
@@ -678,12 +678,12 @@ type RepairRun struct {
 	// The job run ID of the run to repair. The run must not be in progress.
 	RunId int64 `json:"run_id,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
-	// `&#34;spark_submit_params&#34;: [&#34;--class&#34;,
-	// &#34;org.apache.spark.examples.SparkPi&#34;]`. The parameters are passed to
+	// `"spark_submit_params": ["--class",
+	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{&#34;python_params&#34;:[&#34;john doe&#34;,&#34;35&#34;]}`) cannot exceed 10,000 bytes. Use
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes. Use
 	// [Task parameter variables](..jobshtml#parameter-variables) to set
 	// parameters containing information about job runs. Important These
 	// parameters accept only Latin characters (ASCII character set). Using
@@ -709,7 +709,7 @@ type ResetJob struct {
 type Run struct {
 	// The sequence number of this run attempt for a triggered job run. The
 	// initial attempt of a run has an attempt_number of 0\. If the initial run
-	// attempt fails, and the job has a retry policy (`max_retries` \&gt; 0),
+	// attempt fails, and the job has a retry policy (`max_retries` \> 0),
 	// subsequent runs are created with an `original_attempt_run_id` of the
 	// original attempt?s ID and an incrementing `attempt_number`. Runs are
 	// retried only until they succeed, and the maximum `attempt_number` is the
@@ -736,7 +736,7 @@ type Run struct {
 	// encountered an unexpected error.
 	ExecutionDuration int64 `json:"execution_duration,omitempty"`
 	// An optional specification for a remote repository containing the
-	// notebooks used by this job&#39;s notebook tasks.
+	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
@@ -909,11 +909,11 @@ type RunNow struct {
 	// jobs](https://kb.databricks.com/jobs/jobs-idempotency.html).
 	IdempotencyToken string `json:"idempotency_token,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
-	// `&#34;jar_params&#34;: [&#34;john doe&#34;, &#34;35&#34;]`. The parameters are used to invoke the
+	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
 	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
 	// be specified in conjunction with notebook_params. The JSON representation
-	// of this field (for example `{&#34;jar_params&#34;:[&#34;john doe&#34;,&#34;35&#34;]}`) cannot
+	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs.
@@ -921,7 +921,7 @@ type RunNow struct {
 	// The ID of the job to be executed
 	JobId int64 `json:"job_id,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
-	// `&#34;notebook_params&#34;: {&#34;name&#34;: &#34;john doe&#34;, &#34;age&#34;: &#34;35&#34;}`. The map is passed
+	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the
 	// [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets)
 	// function. If not specified upon `run-now`, the triggered run uses the
@@ -929,21 +929,21 @@ type RunNow struct {
 	// with jar_params. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs. The JSON representation of this field (for
-	// example `{&#34;notebook_params&#34;:{&#34;name&#34;:&#34;john doe&#34;,&#34;age&#34;:&#34;35&#34;}}`) cannot
+	// example `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot
 	// exceed 10,000 bytes.
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *RunNowPipelineParams `json:"pipeline_params,omitempty"`
 	// A map from keys to values for jobs with Python wheel task, for example
-	// `&#34;python_named_params&#34;: {&#34;name&#34;: &#34;task&#34;, &#34;data&#34;:
-	// &#34;dbfs:/path/to/data.json&#34;}`.
+	// `"python_named_params": {"name": "task", "data":
+	// "dbfs:/path/to/data.json"}`.
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
-	// `&#34;python_params&#34;: [&#34;john doe&#34;, &#34;35&#34;]`. The parameters are passed to
+	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
-	// representation of this field (for example `{&#34;python_params&#34;:[&#34;john
-	// doe&#34;,&#34;35&#34;]}`) cannot exceed 10,000 bytes. Use [Task parameter
+	// representation of this field (for example `{"python_params":["john
+	// doe","35"]}`) cannot exceed 10,000 bytes. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs. Important These parameters accept only Latin
 	// characters (ASCII character set). Using non-ASCII characters returns an
@@ -951,12 +951,12 @@ type RunNow struct {
 	// kanjis, and emojis.
 	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
-	// `&#34;spark_submit_params&#34;: [&#34;--class&#34;,
-	// &#34;org.apache.spark.examples.SparkPi&#34;]`. The parameters are passed to
+	// `"spark_submit_params": ["--class",
+	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{&#34;python_params&#34;:[&#34;john doe&#34;,&#34;35&#34;]}`) cannot exceed 10,000 bytes. Use
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes. Use
 	// [Task parameter variables](..jobshtml#parameter-variables) to set
 	// parameters containing information about job runs. Important These
 	// parameters accept only Latin characters (ASCII character set). Using
@@ -991,7 +991,7 @@ type RunOutput struct {
 	// [SparkJarTask](..dev-tools/api/latest/jobshtml#/components/schemas/SparkJarTask),
 	// [SparkPythonTask](..dev-tools/api/latest/jobshtml#/components/schemas/SparkPythonTask,
 	// [PythonWheelTask](..dev-tools/api/latest/jobshtml#/components/schemas/PythonWheelTask.
-	// It&#39;s not supported for the
+	// It's not supported for the
 	// [NotebookTask](..dev-tools/api/latest/jobshtml#/components/schemas/NotebookTask,
 	// [PipelineTask](..dev-tools/api/latest/jobshtml#/components/schemas/PipelineTask,
 	// or
@@ -1014,17 +1014,17 @@ type RunOutput struct {
 
 type RunParameters struct {
 	// A list of parameters for jobs with Spark JAR tasks, for example
-	// `&#34;jar_params&#34;: [&#34;john doe&#34;, &#34;35&#34;]`. The parameters are used to invoke the
+	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
 	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
 	// be specified in conjunction with notebook_params. The JSON representation
-	// of this field (for example `{&#34;jar_params&#34;:[&#34;john doe&#34;,&#34;35&#34;]}`) cannot
+	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs.
 	JarParams []string `json:"jar_params,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
-	// `&#34;notebook_params&#34;: {&#34;name&#34;: &#34;john doe&#34;, &#34;age&#34;: &#34;35&#34;}`. The map is passed
+	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the
 	// [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets)
 	// function. If not specified upon `run-now`, the triggered run uses the
@@ -1032,21 +1032,21 @@ type RunParameters struct {
 	// with jar_params. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs. The JSON representation of this field (for
-	// example `{&#34;notebook_params&#34;:{&#34;name&#34;:&#34;john doe&#34;,&#34;age&#34;:&#34;35&#34;}}`) cannot
+	// example `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot
 	// exceed 10,000 bytes.
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *RunParametersPipelineParams `json:"pipeline_params,omitempty"`
 	// A map from keys to values for jobs with Python wheel task, for example
-	// `&#34;python_named_params&#34;: {&#34;name&#34;: &#34;task&#34;, &#34;data&#34;:
-	// &#34;dbfs:/path/to/data.json&#34;}`.
+	// `"python_named_params": {"name": "task", "data":
+	// "dbfs:/path/to/data.json"}`.
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
-	// `&#34;python_params&#34;: [&#34;john doe&#34;, &#34;35&#34;]`. The parameters are passed to
+	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
-	// representation of this field (for example `{&#34;python_params&#34;:[&#34;john
-	// doe&#34;,&#34;35&#34;]}`) cannot exceed 10,000 bytes. Use [Task parameter
+	// representation of this field (for example `{"python_params":["john
+	// doe","35"]}`) cannot exceed 10,000 bytes. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs. Important These parameters accept only Latin
 	// characters (ASCII character set). Using non-ASCII characters returns an
@@ -1054,12 +1054,12 @@ type RunParameters struct {
 	// kanjis, and emojis.
 	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
-	// `&#34;spark_submit_params&#34;: [&#34;--class&#34;,
-	// &#34;org.apache.spark.examples.SparkPi&#34;]`. The parameters are passed to
+	// `"spark_submit_params": ["--class",
+	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{&#34;python_params&#34;:[&#34;john doe&#34;,&#34;35&#34;]}`) cannot exceed 10,000 bytes. Use
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes. Use
 	// [Task parameter variables](..jobshtml#parameter-variables) to set
 	// parameters containing information about job runs. Important These
 	// parameters accept only Latin characters (ASCII character set). Using
@@ -1149,7 +1149,7 @@ type RunSubmitTaskSettings struct {
 type RunTask struct {
 	// The sequence number of this run attempt for a triggered job run. The
 	// initial attempt of a run has an attempt_number of 0\. If the initial run
-	// attempt fails, and the job has a retry policy (`max_retries` \&gt; 0),
+	// attempt fails, and the job has a retry policy (`max_retries` \> 0),
 	// subsequent runs are created with an `original_attempt_run_id` of the
 	// original attempt?s ID and an incrementing `attempt_number`. Runs are
 	// retried only until they succeed, and the maximum `attempt_number` is the
@@ -1180,7 +1180,7 @@ type RunTask struct {
 	// running jobs on new clusters for greater reliability.
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// An optional specification for a remote repository containing the
-	// notebooks used by this job&#39;s notebook tasks.
+	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the job. The default value is an empty list.
@@ -1294,7 +1294,7 @@ type SubmitRun struct {
 	// List of permissions to set on the job.
 	AccessControlList any/* MISSING TYPE */ `json:"access_control_list,omitempty"`
 	// An optional specification for a remote repository containing the
-	// notebooks used by this job&#39;s notebook tasks.
+	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional token that can be used to guarantee the idempotency of job
 	// run requests. If a run with the provided token already exists, the

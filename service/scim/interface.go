@@ -25,10 +25,10 @@ type GroupsService interface {
 	FetchGroup(ctx context.Context, fetchGroupRequest FetchGroupRequest) (*Group, error)
 
 	FetchGroupById(ctx context.Context, id string) (*Group, error)
-	// Get multiple groups associated with the &lt;Workspace&gt;.
+	// Get multiple groups associated with the <Workspace>.
 	ListGroups(ctx context.Context, listGroupsRequest ListGroupsRequest) (*ListGroupsResponse, error)
 
-	// Create one group in the &lt;Workspace&gt;.
+	// Create one group in the <Workspace>.
 	NewGroup(ctx context.Context, group Group) (*Group, error)
 
 	// Partially update details of a group
@@ -50,10 +50,10 @@ type ServicePrincipalsService interface {
 	FetchServicePrincipal(ctx context.Context, fetchServicePrincipalRequest FetchServicePrincipalRequest) (*ServicePrincipal, error)
 
 	FetchServicePrincipalById(ctx context.Context, id string) (*ServicePrincipal, error)
-	// Get multiple service principals associated with a &lt;Workspace&gt;.
+	// Get multiple service principals associated with a <Workspace>.
 	ListServicePrincipals(ctx context.Context, listServicePrincipalsRequest ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
 
-	// Create one service principal in the &lt;Workspace&gt;.
+	// Create one service principal in the <Workspace>.
 	NewServicePrincipal(ctx context.Context, servicePrincipal ServicePrincipal) (*ServicePrincipal, error)
 
 	// Partially update details of one service principal.
@@ -75,10 +75,10 @@ type UsersService interface {
 	FetchUser(ctx context.Context, fetchUserRequest FetchUserRequest) (*User, error)
 
 	FetchUserById(ctx context.Context, id string) (*User, error)
-	// Get multiple users associated with a &lt;Workspace&gt;.
+	// Get multiple users associated with a <Workspace>.
 	ListUsers(ctx context.Context, listUsersRequest ListUsersRequest) (*ListUsersResponse, error)
 
-	// Create one user in the &lt;Workspace&gt;.
+	// Create one user in the <Workspace>.
 	NewUser(ctx context.Context, user User) (*User, error)
 
 	// Partially update details of one user.

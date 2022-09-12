@@ -6,6 +6,7 @@ type Field struct {
 	Named
 	Required bool
 	Entity   *Entity
+	Of       *Entity
 	IsJson   bool
 	IsPath   bool
 	IsQuery  bool
@@ -48,11 +49,12 @@ func (e *Entity) IsNumber() bool {
 }
 
 func (e *Entity) IsObject() bool {
-	return len(e.fields) > 0
+	return e.MapValue == nil && len(e.fields) > 0
 }
 
 func (e *Entity) Fields() (fields []Field) {
 	for _, v := range e.fields {
+		v.Of = e
 		fields = append(fields, v)
 	}
 	slices.SortFunc(fields, func(a, b Field) bool {
