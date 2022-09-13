@@ -42,7 +42,7 @@ type GetPolicyResponse struct {
 	// Creation time. The timestamp (in millisecond) when this Cluster Policy
 	// was created.
 	CreatedAtTimestamp int64 `json:"created_at_timestamp,omitempty"`
-	// Creator user name. The field won&#39;t be included in the response if the
+	// Creator user name. The field won't be included in the response if the
 	// user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Policy definition document expressed in Databricks Cluster Policy
@@ -63,7 +63,7 @@ type Policy struct {
 	// Creation time. The timestamp (in millisecond) when this Cluster Policy
 	// was created.
 	CreatedAtTimestamp int64 `json:"created_at_timestamp,omitempty"`
-	// Creator user name. The field won&#39;t be included in the response if the
+	// Creator user name. The field won't be included in the response if the
 	// user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Policy definition document expressed in Databricks Cluster Policy

@@ -6,12 +6,49 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func createTestCluster(ctx context.Context, wsc *workspaces.WorkspacesClient, t *testing.T) string {
+	clusterName := RandomName("sdk-go-jobs-test-")
+
+	// Fetch list of spark runtime versions
+	sparkVersions, err := wsc.Clusters.SparkVersions(ctx)
+	require.NoError(t, err)
+
+	// Select the latest LTS version
+	latestLTS, err := sparkVersions.Select(clusters.SparkVersionRequest{
+		Latest:          true,
+		LongTermSupport: true,
+	})
+	require.NoError(t, err)
+
+	// Fetch list of available node types
+	nodeTypes, err := wsc.Clusters.ListNodeTypes(ctx)
+	require.NoError(t, err)
+
+	// Select the smallest node type id
+	smallestWithDisk, err := nodeTypes.Smallest(clusters.NodeTypeRequest{
+		LocalDisk: true,
+	})
+	require.NoError(t, err)
+
+	// Create cluster and wait for it to start properly
+	clstr, err := wsc.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
+		ClusterName:            clusterName,
+		SparkVersion:           latestLTS,
+		NodeTypeId:             smallestWithDisk,
+		AutoterminationMinutes: 15,
+		NumWorkers:             1,
+	})
+	require.NoError(t, err)
+	return clstr.ClusterId
+}
 
 func TestAccJobsApiFullIntegration(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
@@ -20,17 +57,11 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	ctx := context.Background()
 	wsc := workspaces.New()
 
-	clusterId := GetEnvOrSkipTest(t, "TEST_DEFAULT_CLUSTER_ID")
-	clusterInfo, err := wsc.Clusters.GetByClusterId(ctx, clusterId)
-	require.NoError(t, err)
-
-	if !clusterInfo.IsRunningOrResizing() {
-		_, err := wsc.Clusters.StartByClusterIdAndWait(ctx, clusterId)
-		require.NoError(t, err)
-	}
+	clusterId := createTestCluster(ctx, wsc, t)
+	defer wsc.Clusters.PermanentDeleteByClusterId(ctx, clusterId)
 
 	tmpPath := RandomName("/tmp/jobs-test")
-	err = wsc.Workspace.MkdirsByPath(ctx, tmpPath)
+	err := wsc.Workspace.MkdirsByPath(ctx, tmpPath)
 	require.NoError(t, err)
 	defer wsc.Workspace.Delete(ctx, workspace.DeleteRequest{
 		Path: tmpPath,

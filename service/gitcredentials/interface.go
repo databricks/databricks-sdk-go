@@ -24,7 +24,7 @@ type GitCredentialsService interface {
 	GetCredential(ctx context.Context, getCredentialRequest GetCredentialRequest) (*GetCredentialResponse, error)
 
 	GetCredentialByCredentialId(ctx context.Context, credentialId string) (*GetCredentialResponse, error)
-	// Returns the calling user&#39;s Git credentials. One credential per user is
+	// Returns the calling user's Git credentials. One credential per user is
 	// supported.
 	GetCredentials(ctx context.Context) (*GetCredentialsResponse, error)
 

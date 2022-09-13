@@ -25,7 +25,7 @@ const ChannelNameChannelNameUnspecified ChannelName = `CHANNEL_NAME_UNSPECIFIED`
 type CreateWarehouseRequest struct {
 	// The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped. Supported values: -
-	// Must be == 0 or &gt;= 10 mins - 0 indicates no autostop. Defaults to 120
+	// Must be == 0 or >= 10 mins - 0 indicates no autostop. Defaults to 120
 	// mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
 	// Channel Details
@@ -47,34 +47,34 @@ type CreateWarehouseRequest struct {
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
-	// concurrent queries. Supported values: - Must be &gt;= min_num_clusters -
-	// Must be &lt;= 30. Defaults to min_clusters if unset.
+	// concurrent queries. Supported values: - Must be >= min_num_clusters -
+	// Must be <= 30. Defaults to min_clusters if unset.
 	MaxNumClusters int `json:"max_num_clusters,omitempty"`
 	// Minimum number of available clusters that will be maintained for this SQL
 	// Endpoint. Increasing this will ensure that a larger number of clusters
 	// are always running and therefore may reduce the cold start time for new
 	// queries. This is similar to reserved vs. revocable cores in a resource
-	// manager. Supported values: - Must be &gt; 0 - Must be &lt;=
+	// manager. Supported values: - Must be > 0 - Must be <=
 	// min(max_num_clusters, 30) Defaults to 1
 	MinNumClusters int `json:"min_num_clusters,omitempty"`
 	// Logical name for the cluster. Supported values: - Must be unique within
 	// an org. - Must be less than 100 characters.
 	Name string `json:"name,omitempty"`
 	// Configurations whether the endpoint should use spot instances. Supported
-	// values: &#34;COST_OPTIMIZED&#34;, &#34;RELIABILITY_OPTIMIZED&#34; Defaults to
+	// values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED" Defaults to
 	// COST_OPTIMIZED. Please refer to documentation for
 	// EndpointSpotInstancePolicy for more details.
 	SpotInstancePolicy CreateWarehouseRequestSpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL Endpoints. Supported
-	// values: - Number of tags &lt; 45.
+	// values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
 	// Warehouse type (Classic/Pro)
 	WarehouseType CreateWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
 }
 
 // Configurations whether the endpoint should use spot instances. Supported
-// values: &#34;COST_OPTIMIZED&#34;, &#34;RELIABILITY_OPTIMIZED&#34; Defaults to COST_OPTIMIZED.
+// values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED" Defaults to COST_OPTIMIZED.
 // Please refer to documentation for EndpointSpotInstancePolicy for more
 // details.
 type CreateWarehouseRequestSpotInstancePolicy string
@@ -107,7 +107,7 @@ type DeleteWarehouseRequest struct {
 type EditWarehouseRequest struct {
 	// The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped. Supported values: -
-	// Must be == 0 or &gt;= 10 mins - 0 indicates no autostop. Defaults to 120
+	// Must be == 0 or >= 10 mins - 0 indicates no autostop. Defaults to 120
 	// mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
 	// Channel Details
@@ -119,7 +119,7 @@ type EditWarehouseRequest struct {
 	// - 2X-Large - 3X-Large - 4X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// Needed for backwards compatibility. config.conf is json_inlined. We need
-	// to keep confs here to make sure json calls with &#39;confs&#39; explicitly
+	// to keep confs here to make sure json calls with 'confs' explicitly
 	// specified continue to work as is.
 	Confs any/* ERROR */ `json:"confs,omitempty"`
 	// endpoint creator name
@@ -139,34 +139,34 @@ type EditWarehouseRequest struct {
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
-	// concurrent queries. Supported values: - Must be &gt;= min_num_clusters -
-	// Must be &lt;= 30. Defaults to min_clusters if unset.
+	// concurrent queries. Supported values: - Must be >= min_num_clusters -
+	// Must be <= 30. Defaults to min_clusters if unset.
 	MaxNumClusters int `json:"max_num_clusters,omitempty"`
 	// Minimum number of available clusters that will be maintained for this SQL
 	// Endpoint. Increasing this will ensure that a larger number of clusters
 	// are always running and therefore may reduce the cold start time for new
 	// queries. This is similar to reserved vs. revocable cores in a resource
-	// manager. Supported values: - Must be &gt; 0 - Must be &lt;=
+	// manager. Supported values: - Must be > 0 - Must be <=
 	// min(max_num_clusters, 30) Defaults to 1
 	MinNumClusters int `json:"min_num_clusters,omitempty"`
 	// Logical name for the cluster. Supported values: - Must be unique within
 	// an org. - Must be less than 100 characters.
 	Name string `json:"name,omitempty"`
 	// Configurations whether the endpoint should use spot instances. Supported
-	// values: &#34;COST_OPTIMIZED&#34;, &#34;RELIABILITY_OPTIMIZED&#34; Defaults to
+	// values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED" Defaults to
 	// COST_OPTIMIZED. Please refer to documentation for
 	// EndpointSpotInstancePolicy for more details.
 	SpotInstancePolicy EditWarehouseRequestSpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL Endpoints. Supported
-	// values: - Number of tags &lt; 45.
+	// values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
 	// Warehouse type (Classic/Pro)
 	WarehouseType EditWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
 }
 
 // Configurations whether the endpoint should use spot instances. Supported
-// values: &#34;COST_OPTIMIZED&#34;, &#34;RELIABILITY_OPTIMIZED&#34; Defaults to COST_OPTIMIZED.
+// values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED" Defaults to COST_OPTIMIZED.
 // Please refer to documentation for EndpointSpotInstancePolicy for more
 // details.
 type EditWarehouseRequestSpotInstancePolicy string
@@ -196,7 +196,7 @@ type EndpointHealth struct {
 	// Details about errors that are causing current degraded/failed status.
 	Details string `json:"details,omitempty"`
 	// The reason for failure to bring up clusters for this endpoint. This is
-	// available when status is &#39;FAILED&#39; and sometimes when it is DEGRADED.
+	// available when status is 'FAILED' and sometimes when it is DEGRADED.
 	FailureReason *TerminationReason `json:"failure_reason,omitempty"`
 	// Deprecated. split into summary and details for security
 	Message string `json:"message,omitempty"`
@@ -221,7 +221,7 @@ const EndpointHealthStatusStatusUnspecified EndpointHealthStatus = `STATUS_UNSPE
 type EndpointInfo struct {
 	// The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped. Supported values: -
-	// Must be == 0 or &gt;= 10 mins - 0 indicates no autostop. Defaults to 120
+	// Must be == 0 or >= 10 mins - 0 indicates no autostop. Defaults to 120
 	// mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
 	// Channel Details
@@ -254,14 +254,14 @@ type EndpointInfo struct {
 	// the jdbc connection string for this endpoint
 	JdbcUrl string `json:"jdbc_url,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
-	// concurrent queries. Supported values: - Must be &gt;= min_num_clusters -
-	// Must be &lt;= 30. Defaults to min_clusters if unset.
+	// concurrent queries. Supported values: - Must be >= min_num_clusters -
+	// Must be <= 30. Defaults to min_clusters if unset.
 	MaxNumClusters int `json:"max_num_clusters,omitempty"`
 	// Minimum number of available clusters that will be maintained for this SQL
 	// Endpoint. Increasing this will ensure that a larger number of clusters
 	// are always running and therefore may reduce the cold start time for new
 	// queries. This is similar to reserved vs. revocable cores in a resource
-	// manager. Supported values: - Must be &gt; 0 - Must be &lt;=
+	// manager. Supported values: - Must be > 0 - Must be <=
 	// min(max_num_clusters, 30) Defaults to 1
 	MinNumClusters int `json:"min_num_clusters,omitempty"`
 	// Logical name for the cluster. Supported values: - Must be unique within
@@ -274,7 +274,7 @@ type EndpointInfo struct {
 	// ODBC parameters for the sql endpoint
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
 	// Configurations whether the endpoint should use spot instances. Supported
-	// values: &#34;COST_OPTIMIZED&#34;, &#34;RELIABILITY_OPTIMIZED&#34; Defaults to
+	// values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED" Defaults to
 	// COST_OPTIMIZED. Please refer to documentation for
 	// EndpointSpotInstancePolicy for more details.
 	SpotInstancePolicy EndpointInfoSpotInstancePolicy `json:"spot_instance_policy,omitempty"`
@@ -282,14 +282,14 @@ type EndpointInfo struct {
 	State EndpointInfoState `json:"state,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL Endpoints. Supported
-	// values: - Number of tags &lt; 45.
+	// values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
 	// Warehouse type (Classic/Pro)
 	WarehouseType EndpointInfoWarehouseType `json:"warehouse_type,omitempty"`
 }
 
 // Configurations whether the endpoint should use spot instances. Supported
-// values: &#34;COST_OPTIMIZED&#34;, &#34;RELIABILITY_OPTIMIZED&#34; Defaults to COST_OPTIMIZED.
+// values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED" Defaults to COST_OPTIMIZED.
 // Please refer to documentation for EndpointSpotInstancePolicy for more
 // details.
 type EndpointInfoSpotInstancePolicy string
@@ -342,7 +342,7 @@ type GetWarehouseRequest struct {
 type GetWarehouseResponse struct {
 	// The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped. Supported values: -
-	// Must be == 0 or &gt;= 10 mins - 0 indicates no autostop. Defaults to 120
+	// Must be == 0 or >= 10 mins - 0 indicates no autostop. Defaults to 120
 	// mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
 	// Channel Details
@@ -375,14 +375,14 @@ type GetWarehouseResponse struct {
 	// the jdbc connection string for this endpoint
 	JdbcUrl string `json:"jdbc_url,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
-	// concurrent queries. Supported values: - Must be &gt;= min_num_clusters -
-	// Must be &lt;= 30. Defaults to min_clusters if unset.
+	// concurrent queries. Supported values: - Must be >= min_num_clusters -
+	// Must be <= 30. Defaults to min_clusters if unset.
 	MaxNumClusters int `json:"max_num_clusters,omitempty"`
 	// Minimum number of available clusters that will be maintained for this SQL
 	// Endpoint. Increasing this will ensure that a larger number of clusters
 	// are always running and therefore may reduce the cold start time for new
 	// queries. This is similar to reserved vs. revocable cores in a resource
-	// manager. Supported values: - Must be &gt; 0 - Must be &lt;=
+	// manager. Supported values: - Must be > 0 - Must be <=
 	// min(max_num_clusters, 30) Defaults to 1
 	MinNumClusters int `json:"min_num_clusters,omitempty"`
 	// Logical name for the cluster. Supported values: - Must be unique within
@@ -395,7 +395,7 @@ type GetWarehouseResponse struct {
 	// ODBC parameters for the sql endpoint
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
 	// Configurations whether the endpoint should use spot instances. Supported
-	// values: &#34;COST_OPTIMIZED&#34;, &#34;RELIABILITY_OPTIMIZED&#34; Defaults to
+	// values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED" Defaults to
 	// COST_OPTIMIZED. Please refer to documentation for
 	// EndpointSpotInstancePolicy for more details.
 	SpotInstancePolicy GetWarehouseResponseSpotInstancePolicy `json:"spot_instance_policy,omitempty"`
@@ -403,14 +403,14 @@ type GetWarehouseResponse struct {
 	State GetWarehouseResponseState `json:"state,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL Endpoints. Supported
-	// values: - Number of tags &lt; 45.
+	// values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
 	// Warehouse type (Classic/Pro)
 	WarehouseType GetWarehouseResponseWarehouseType `json:"warehouse_type,omitempty"`
 }
 
 // Configurations whether the endpoint should use spot instances. Supported
-// values: &#34;COST_OPTIMIZED&#34;, &#34;RELIABILITY_OPTIMIZED&#34; Defaults to COST_OPTIMIZED.
+// values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED" Defaults to COST_OPTIMIZED.
 // Please refer to documentation for EndpointSpotInstancePolicy for more
 // details.
 type GetWarehouseResponseSpotInstancePolicy string
@@ -451,7 +451,7 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	// Deprecated: Use sql_configuration_parameters
 	ConfigParam *RepeatedEndpointConfPairs `json:"config_param,omitempty"`
 	// Spark confs for external hive metastore configuration JSON serialized
-	// size must be less than &lt;= 512K
+	// size must be less than <= 512K
 	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
 	// Enable Serverless compute for SQL Endpoints Deprecated: Use
 	// enable_serverless_compute TODO(SC-79930): Remove the field once clients
@@ -461,7 +461,7 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// List of Warehouse Types allowed in this workspace (limits allowed value
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types
-	// cannot be disabled, they don&#39;t need to be specified in
+	// cannot be disabled, they don't need to be specified in
 	// SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing
 	// warehouses to be converted to another type. Used by frontend to save
 	// specific type availability in the warehouse create and edit form UI.
@@ -522,7 +522,7 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	// Deprecated: Use sql_configuration_parameters
 	ConfigParam *RepeatedEndpointConfPairs `json:"config_param,omitempty"`
 	// Spark confs for external hive metastore configuration JSON serialized
-	// size must be less than &lt;= 512K
+	// size must be less than <= 512K
 	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
 	// Enable Serverless compute for SQL Endpoints Deprecated: Use
 	// enable_serverless_compute TODO(SC-79930): Remove the field once clients
@@ -532,7 +532,7 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// List of Warehouse Types allowed in this workspace (limits allowed value
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types
-	// cannot be disabled, they don&#39;t need to be specified in
+	// cannot be disabled, they don't need to be specified in
 	// SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing
 	// warehouses to be converted to another type. Used by frontend to save
 	// specific type availability in the warehouse create and edit form UI.

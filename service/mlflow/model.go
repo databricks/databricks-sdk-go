@@ -21,7 +21,7 @@ type Activity struct {
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Comment made by system, for example explaining an activity of type
 	// `SYSTEM_TRANSITION`. It usually describes a side effect, such as a
-	// version being archived as part of another version&#39;s stage transition, and
+	// version being archived as part of another version's stage transition, and
 	// may not be returned for some activity types.
 	SystemComment string `json:"system_comment,omitempty"`
 	// Target stage of the transition (if the activity is stage transition
@@ -269,7 +269,7 @@ type CreateRunRequest struct {
 	// Additional metadata for run.
 	Tags []RunTag `json:"tags,omitempty"`
 	// ID of the user executing the run. This field is deprecated as of MLflow
-	// 1.0, and will be removed in a future MLflow release. Use &#39;mlflow.user&#39;
+	// 1.0, and will be removed in a future MLflow release. Use 'mlflow.user'
 	// tag instead.
 	UserId string `json:"user_id,omitempty"`
 }
@@ -374,7 +374,7 @@ type Experiment struct {
 	ExperimentId string `json:"experiment_id,omitempty"`
 	// Last update time
 	LastUpdateTime int64 `json:"last_update_time,omitempty"`
-	// Current life cycle stage of the experiment: &#34;active&#34; or &#34;deleted&#34;.
+	// Current life cycle stage of the experiment: "active" or "deleted".
 	// Deleted experiments are not returned by APIs.
 	LifecycleStage string `json:"lifecycle_stage,omitempty"`
 	// Human readable name that identifies the experiment.
@@ -418,8 +418,8 @@ type GetExperimentResponse struct {
 	// Experiment details.
 	Experiment *Experiment `json:"experiment,omitempty"`
 	// A collection of active runs in the experiment. Note: this may not contain
-	// all of the experiment&#39;s active runs. This field is deprecated. Please use
-	// the &#34;Search Runs&#34; API to fetch runs within an experiment.
+	// all of the experiment's active runs. This field is deprecated. Please use
+	// the "Search Runs" API to fetch runs within an experiment.
 	Runs []RunInfo `json:"runs,omitempty"`
 }
 
@@ -433,7 +433,7 @@ type GetLatestVersionsRequest struct {
 type GetLatestVersionsResponse struct {
 	// Latest version models for each requests stage. Only return models with
 	// current ``READY`` status. If no ``stages`` provided, returns the latest
-	// version for each stage, including ``&#34;None&#34;``.
+	// version for each stage, including ``"None"``.
 	ModelVersions []ModelVersion `json:"model_versions,omitempty"`
 }
 
@@ -512,7 +512,7 @@ type GetTransitionRequestsResponse struct {
 
 type HttpUrlSpec struct {
 	// Value of the authorization header that should be sent in the request sent
-	// by the wehbook. It should be of the form `&#34;&lt;auth type&gt; &lt;credentials&gt;&#34;`.
+	// by the wehbook. It should be of the form `"<auth type> <credentials>"`.
 	// If set to an empty string, no authorization header will be included in
 	// the request.
 	Authorization string `json:"authorization,omitempty"`
@@ -525,7 +525,7 @@ type HttpUrlSpec struct {
 	// requests can be maliciously routed to an unintended host.
 	EnableSslVerification bool `json:"enable_ssl_verification,omitempty"`
 	// Shared secret required for HMAC encoding payload. The HMAC-encoded
-	// payload will be sent in the header as: { &#34;X-Databricks-Signature&#34;:
+	// payload will be sent in the header as: { "X-Databricks-Signature":
 	// $encoded_payload }.
 	Secret string `json:"secret,omitempty"`
 	// External HTTPS URL called on event trigger (by using a POST request).
@@ -533,7 +533,7 @@ type HttpUrlSpec struct {
 }
 
 type JobSpec struct {
-	// The personal access token used to authorize webhook&#39;s job runs.
+	// The personal access token used to authorize webhook's job runs.
 	AccessToken string `json:"access_token"`
 	// ID of the job that the webhook runs.
 	JobId string `json:"job_id"`
@@ -567,7 +567,7 @@ type ListArtifactsResponse struct {
 
 type ListExperimentsRequest struct {
 	// Maximum number of experiments desired. If `max_results` is unspecified,
-	// return all experiments. If `max_results` is too large, it&#39;ll be
+	// return all experiments. If `max_results` is too large, it'll be
 	// automatically capped at 1000. Callers of this endpoint are encouraged to
 	// pass max_results explicitly and leverage page_token to iterate through
 	// experiments.
@@ -943,7 +943,7 @@ type RunData struct {
 
 type RunInfo struct {
 	// URI of the directory where artifacts should be uploaded. This can be a
-	// local path (starting with &#34;/&#34;), or a distributed file system (DFS) path,
+	// local path (starting with "/"), or a distributed file system (DFS) path,
 	// like ``s3://bucket/directory`` or ``dbfs:/my/directory``. If not set, the
 	// local ``./mlruns`` directory is chosen.
 	ArtifactUri string `json:"artifact_uri,omitempty"`
@@ -951,7 +951,7 @@ type RunInfo struct {
 	EndTime int64 `json:"end_time,omitempty"`
 	// The experiment ID.
 	ExperimentId string `json:"experiment_id,omitempty"`
-	// Current life cycle stage of the experiment : OneOf(&#34;active&#34;, &#34;deleted&#34;)
+	// Current life cycle stage of the experiment : OneOf("active", "deleted")
 	LifecycleStage string `json:"lifecycle_stage,omitempty"`
 	// Unique identifier for the run.
 	RunId string `json:"run_id,omitempty"`
@@ -963,7 +963,7 @@ type RunInfo struct {
 	// Current status of the run.
 	Status RunInfoStatus `json:"status,omitempty"`
 	// User who initiated the run. This field is deprecated as of MLflow 1.0,
-	// and will be removed in a future MLflow release. Use &#39;mlflow.user&#39; tag
+	// and will be removed in a future MLflow release. Use 'mlflow.user' tag
 	// instead.
 	UserId string `json:"user_id,omitempty"`
 }
@@ -989,14 +989,14 @@ type RunTag struct {
 }
 
 type SearchExperimentsRequest struct {
-	// String representing a SQL filter condition (e.g. &#34;name ILIKE
-	// &#39;my-experiment%&#39;&#34;)
+	// String representing a SQL filter condition (e.g. "name ILIKE
+	// 'my-experiment%'")
 	Filter string `json:"filter,omitempty"`
 	// Maximum number of experiments desired. Max threshold is 3000.
 	MaxResults int64 `json:"max_results,omitempty"`
 	// List of columns for ordering search results, which can include experiment
-	// name and last updated timestamp with an optional &#34;DESC&#34; or &#34;ASC&#34;
-	// annotation, where &#34;ASC&#34; is the default. Tiebreaks are done by experiment
+	// name and last updated timestamp with an optional "DESC" or "ASC"
+	// annotation, where "ASC" is the default. Tiebreaks are done by experiment
 	// id DESC.
 	OrderBy []string `json:"order_by,omitempty"`
 	// Token indicating the page of experiments to fetch
@@ -1025,13 +1025,13 @@ type SearchExperimentsResponse struct {
 }
 
 type SearchModelVersionsRequest struct {
-	// String filter condition, like &#34;name=&#39;my-model-name&#39;&#34;. Must be a single
+	// String filter condition, like "name='my-model-name'". Must be a single
 	// boolean condition, with string values wrapped in single quotes.
 	Filter string ` url:"filter,omitempty"`
 	// Maximum number of models desired. Max threshold is 10K.
 	MaxResults int ` url:"max_results,omitempty"`
 	// List of columns to be ordered by including model name, version, stage
-	// with an optional &#34;DESC&#34; or &#34;ASC&#34; annotation, where &#34;ASC&#34; is the default.
+	// with an optional "DESC" or "ASC" annotation, where "ASC" is the default.
 	// Tiebreaks are done by latest stage transition timestamp, followed by name
 	// ASC, followed by version DESC.
 	OrderBy any/* MISSING TYPE */ ` url:"order_by,omitempty"`
@@ -1048,15 +1048,15 @@ type SearchModelVersionsResponse struct {
 }
 
 type SearchRegisteredModelsRequest struct {
-	// String filter condition, like &#34;name LIKE &#39;my-model-name&#39;&#34;. Interpreted in
-	// the backend automatically as &#34;name LIKE &#39;%my-model-name%&#39;&#34;. Single
+	// String filter condition, like "name LIKE 'my-model-name'". Interpreted in
+	// the backend automatically as "name LIKE '%my-model-name%'". Single
 	// boolean condition, with string values wrapped in single quotes.
 	Filter string ` url:"filter,omitempty"`
 	// Maximum number of models desired. Default is 100. Max threshold is 1000.
 	MaxResults int ` url:"max_results,omitempty"`
 	// List of columns for ordering search results, which can include model name
-	// and last updated timestamp with an optional &#34;DESC&#34; or &#34;ASC&#34; annotation,
-	// where &#34;ASC&#34; is the default. Tiebreaks are done by model name ASC.
+	// and last updated timestamp with an optional "DESC" or "ASC" annotation,
+	// where "ASC" is the default. Tiebreaks are done by model name ASC.
 	OrderBy any/* MISSING TYPE */ ` url:"order_by,omitempty"`
 	// Pagination token to go to the next page based on a previous search query.
 	PageToken string ` url:"page_token,omitempty"`
@@ -1075,18 +1075,18 @@ type SearchRunsRequest struct {
 	// A filter expression over params, metrics, and tags, that allows returning
 	// a subset of runs. The syntax is a subset of SQL that supports ANDing
 	// together binary operations between a param, metric, or tag and a
-	// constant. Example: ``metrics.rmse &lt; 1 and params.model_class =
-	// &#39;LogisticRegression&#39;`` You can select columns with special characters
-	// (hyphen, space, period, etc.) by using double quotes: ``metrics.&#34;model
-	// class&#34; = &#39;LinearRegression&#39; and tags.&#34;user-name&#34; = &#39;Tomas&#39;`` Supported
-	// operators are ``=``, ``!=``, ``&gt;``, ``&gt;=``, ``&lt;``, and ``&lt;=``.
+	// constant. Example: ``metrics.rmse < 1 and params.model_class =
+	// 'LogisticRegression'`` You can select columns with special characters
+	// (hyphen, space, period, etc.) by using double quotes: ``metrics."model
+	// class" = 'LinearRegression' and tags."user-name" = 'Tomas'`` Supported
+	// operators are ``=``, ``!=``, ``>``, ``>=``, ``<``, and ``<=``.
 	Filter string `json:"filter,omitempty"`
 	// Maximum number of runs desired. Max threshold is 50000
 	MaxResults int `json:"max_results,omitempty"`
 	// List of columns to be ordered by, including attributes, params, metrics,
-	// and tags with an optional &#34;DESC&#34; or &#34;ASC&#34; annotation, where &#34;ASC&#34; is the
-	// default. Example: [&#34;params.input DESC&#34;, &#34;metrics.alpha ASC&#34;,
-	// &#34;metrics.rmse&#34;] Tiebreaks are done by start_time DESC followed by run_id
+	// and tags with an optional "DESC" or "ASC" annotation, where "ASC" is the
+	// default. Example: ["params.input DESC", "metrics.alpha ASC",
+	// "metrics.rmse"] Tiebreaks are done by start_time DESC followed by run_id
 	// for runs with the same start time (and this is the default ordering
 	// criterion if order_by is not provided).
 	OrderBy []string `json:"order_by,omitempty"`
@@ -1237,7 +1237,7 @@ type UpdateCommentResponse struct {
 type UpdateExperimentRequest struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"experiment_id"`
-	// If provided, the experiment&#39;s name is changed to the new name. The new
+	// If provided, the experiment's name is changed to the new name. The new
 	// name must be unique.
 	NewName string `json:"new_name,omitempty"`
 }

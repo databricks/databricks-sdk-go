@@ -9,8 +9,8 @@ type CreatePipelineRequest struct {
 	// pipeline.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
 	// Catalog in UC to add tables to. If target is specified, tables in this
-	// pipeline will be published to a &#34;target&#34; schema inside catalog (i.e.
-	// &lt;catalog&gt;.&lt;target&gt;.&lt;table&gt;).
+	// pipeline will be published to a "target" schema inside catalog (i.e.
+	// <catalog>.<target>.<table>).
 	Catalog string `json:"catalog,omitempty"`
 	// DLT Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
@@ -66,8 +66,8 @@ type EditPipelineRequest struct {
 	// of another pipeline.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
 	// Catalog in UC to add tables to. If target is specified, tables in this
-	// pipeline will be published to a &#34;target&#34; schema inside catalog (i.e.
-	// &lt;catalog&gt;.&lt;target&gt;.&lt;table&gt;).
+	// pipeline will be published to a "target" schema inside catalog (i.e.
+	// <catalog>.<target>.<table>).
 	Catalog string `json:"catalog,omitempty"`
 	// DLT Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
@@ -211,7 +211,7 @@ type NotebookLibrary struct {
 }
 
 type PipelineCluster struct {
-	// Note: This field won&#39;t be persisted. Only API users will check this
+	// Note: This field won't be persisted. Only API users will check this
 	// field.
 	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
 	// Parameters needed in order to automatically scale clusters up and down
@@ -235,7 +235,7 @@ type PipelineCluster struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to ``default_tags``. Notes: - Currently, Databricks allows at
 	// most 45 custom tags - Clusters can only reuse cloud resources if the
-	// resources&#39; tags are a subset of the cluster tags
+	// resources' tags are a subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -260,7 +260,7 @@ type PipelineCluster struct {
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and ``num_workers`` Executors for a total of ``num_workers``
-	// &#43; 1 Spark nodes. Note: When reading the properties of a cluster, this
+	// + 1 Spark nodes. Note: When reading the properties of a cluster, this
 	// field reflects the desired number of workers rather than the actual
 	// current number of workers. For instance, if a cluster is resized from 5
 	// to 10 workers, this field will immediately be updated to reflect the
@@ -273,21 +273,21 @@ type PipelineCluster struct {
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions``
-	// respectively. Example Spark confs: ``{&#34;spark.speculation&#34;: true,
-	// &#34;spark.streaming.ui.retainedBatches&#34;: 5}`` or
-	// ``{&#34;spark.driver.extraJavaOptions&#34;: &#34;-verbose:gc -XX:&#43;PrintGCDetails&#34;}``
+	// respectively. Example Spark confs: ``{"spark.speculation": true,
+	// "spark.streaming.ui.retainedBatches": 5}`` or
+	// ``{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}``
 	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
-	// (X,Y) will be exported as is (i.e., ``export X=&#39;Y&#39;``) while launching the
+	// (X,Y) will be exported as is (i.e., ``export X='Y'``) while launching the
 	// driver and workers. In order to specify an additional set of
 	// ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them to
 	// ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example below. This ensures
 	// that all default databricks managed environmental variables are included
-	// as well. Example Spark environment variables: ``{&#34;SPARK_WORKER_MEMORY&#34;:
-	// &#34;28000m&#34;, &#34;SPARK_LOCAL_DIRS&#34;: &#34;/local_disk0&#34;}`` or
-	// ``{&#34;SPARK_DAEMON_JAVA_OPTS&#34;: &#34;$SPARK_DAEMON_JAVA_OPTS
-	// -Dspark.shuffle.service.enabled=true&#34;}``
+	// as well. Example Spark environment variables: ``{"SPARK_WORKER_MEMORY":
+	// "28000m", "SPARK_LOCAL_DIRS": "/local_disk0"}`` or
+	// ``{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+	// -Dspark.shuffle.service.enabled=true"}``
 	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
@@ -297,21 +297,21 @@ type PipelineCluster struct {
 
 type PipelineLibrary struct {
 	// URI of the jar to be installed. Currently only DBFS and S3 URIs are
-	// supported. For example: ``{ &#34;jar&#34;: &#34;dbfs:/mnt/databricks/library.jar&#34; }``
-	// or ``{ &#34;jar&#34;: &#34;s3://my-bucket/library.jar&#34; }``. If S3 is used, please
+	// supported. For example: ``{ "jar": "dbfs:/mnt/databricks/library.jar" }``
+	// or ``{ "jar": "s3://my-bucket/library.jar" }``. If S3 is used, please
 	// make sure the cluster has read access on the library. You may need to
 	// launch the cluster with an IAM role to access the S3 URI.
 	Jar string `json:"jar,omitempty"`
 	// Specification of a maven library to be installed. For example: ``{
-	// &#34;coordinates&#34;: &#34;org.jsoup:jsoup:1.7.2&#34; }``
+	// "coordinates": "org.jsoup:jsoup:1.7.2" }``
 	Maven *PipelinesMavenLibrary `json:"maven,omitempty"`
 	// The path to a notebook that defines a pipeline and is stored in the
-	// Databricks workspace. For example: ``{ &#34;notebook&#34; : { &#34;path&#34; :
-	// &#34;/my-pipeline-notebook-path&#34; } }``. Currently, only Scala notebooks are
+	// Databricks workspace. For example: ``{ "notebook" : { "path" :
+	// "/my-pipeline-notebook-path" } }``. Currently, only Scala notebooks are
 	// supported, and pipelines must be defined in a package cell.
 	Notebook *NotebookLibrary `json:"notebook,omitempty"`
-	// URI of the wheel to be installed. For example: ``{ &#34;whl&#34;: &#34;dbfs:/my/whl&#34;
-	// }`` or ``{ &#34;whl&#34;: &#34;s3://my-bucket/whl&#34; }``. If S3 is used, please make
+	// URI of the wheel to be installed. For example: ``{ "whl": "dbfs:/my/whl"
+	// }`` or ``{ "whl": "s3://my-bucket/whl" }``. If S3 is used, please make
 	// sure the cluster has read access on the library. You may need to launch
 	// the cluster with an IAM role to access the S3 URI.
 	Whl string `json:"whl,omitempty"`
@@ -319,8 +319,8 @@ type PipelineLibrary struct {
 
 type PipelineSpec struct {
 	// Catalog in UC to add tables to. If target is specified, tables in this
-	// pipeline will be published to a &#34;target&#34; schema inside catalog (i.e.
-	// &lt;catalog&gt;.&lt;target&gt;.&lt;table&gt;).
+	// pipeline will be published to a "target" schema inside catalog (i.e.
+	// <catalog>.<target>.<table>).
 	Catalog string `json:"catalog,omitempty"`
 	// DLT Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
@@ -375,12 +375,12 @@ type PipelinesAutoScale struct {
 }
 
 type PipelinesClusterLogConf struct {
-	// destination needs to be provided. e.g. ``{ &#34;dbfs&#34; : { &#34;destination&#34; :
-	// &#34;dbfs:/home/cluster_log&#34; } }``
+	// destination needs to be provided. e.g. ``{ "dbfs" : { "destination" :
+	// "dbfs:/home/cluster_log" } }``
 	Dbfs *PipelinesDbfsStorageInfo `json:"dbfs,omitempty"`
 	// destination and either region or endpoint should also be provided. e.g.
-	// ``{ &#34;s3&#34;: { &#34;destination&#34; : &#34;s3://cluster_log_bucket/prefix&#34;, &#34;region&#34; :
-	// &#34;us-west-2&#34; } }`` Cluster iam role is used to access s3, please make sure
+	// ``{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
+	// "us-west-2" } }`` Cluster iam role is used to access s3, please make sure
 	// the cluster iam role in ``instance_profile_arn`` has permission to write
 	// data to the s3 destination.
 	S3 *PipelinesS3StorageInfo `json:"s3,omitempty"`
@@ -400,10 +400,10 @@ type PipelinesGcpAttributes struct {
 }
 
 type PipelinesMavenLibrary struct {
-	// Gradle-style maven coordinates. For example: &#34;org.jsoup:jsoup:1.7.2&#34;.
+	// Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2".
 	Coordinates string `json:"coordinates"`
-	// List of dependences to exclude. For example: ``[&#34;slf4j:slf4j&#34;,
-	// &#34;*:hadoop-client&#34;]``. Maven dependency exclusions:
+	// List of dependences to exclude. For example: ``["slf4j:slf4j",
+	// "*:hadoop-client"]``. Maven dependency exclusions:
 	// https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html.
 	Exclusions []string `json:"exclusions,omitempty"`
 	// Maven repo to install the Maven package from. If omitted, both Maven

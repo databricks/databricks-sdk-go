@@ -78,7 +78,7 @@ type MLflowDatabricksService interface {
 	Get(ctx context.Context, getRegisteredModelRequest GetRegisteredModelRequest) (*GetRegisteredModelResponse, error)
 
 	GetByName(ctx context.Context, name string) (*GetRegisteredModelResponse, error)
-	// Transition a model version&#39;s stage. This is a &lt;Workspace&gt; version of the
+	// Transition a model version's stage. This is a <Workspace> version of the
 	// [MLflow
 	// endpoint](https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage)
 	// that also accepts a comment associated with the transition to be
@@ -124,13 +124,13 @@ type MLflowRunsService interface {
 	// request), partial data may be written. You can write metrics, params, and
 	// tags in interleaving fashion, but within a given entity type are
 	// guaranteed to follow the order specified in the request body. That is,
-	// for an API request like .. code-block:: json { &#34;run_id&#34;:
-	// &#34;2a14ed5c6a87499199e0106c3501eab8&#34;, &#34;metrics&#34;: [ {&#34;key&#34;: &#34;mae&#34;, &#34;value&#34;:
-	// 2.5, &#34;timestamp&#34;: 1552550804}, {&#34;key&#34;: &#34;rmse&#34;, &#34;value&#34;: 2.7, &#34;timestamp&#34;:
-	// 1552550804}, ], &#34;params&#34;: [ {&#34;key&#34;: &#34;model_class&#34;, &#34;value&#34;:
-	// &#34;LogisticRegression&#34;}, ] } the server is guaranteed to write metric
-	// &#34;rmse&#34; after &#34;mae&#34;, though it may write param &#34;model_class&#34; before both
-	// metrics, after &#34;mae&#34;, or after both metrics. The overwrite behavior for
+	// for an API request like .. code-block:: json { "run_id":
+	// "2a14ed5c6a87499199e0106c3501eab8", "metrics": [ {"key": "mae", "value":
+	// 2.5, "timestamp": 1552550804}, {"key": "rmse", "value": 2.7, "timestamp":
+	// 1552550804}, ], "params": [ {"key": "model_class", "value":
+	// "LogisticRegression"}, ] } the server is guaranteed to write metric
+	// "rmse" after "mae", though it may write param "model_class" before both
+	// metrics, after "mae", or after both metrics. The overwrite behavior for
 	// metrics, params, and tags is as follows: - Metrics: metric values are
 	// never overwritten. Logging a metric (key, value, timestamp) appends to
 	// the set of values for the metric with the provided key. - Tags: tag

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"text/template"
 	"io"
 	"io/fs"
 	"os"
@@ -13,7 +14,6 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-	"text/template"
 
 	"github.com/databricks/databricks-sdk-go/databricks/openapi/code"
 )
