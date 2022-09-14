@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/dbsql"
@@ -12,10 +11,8 @@ import (
 )
 
 func TestAccQueries(t *testing.T) {
-	// env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	// t.Log(env)
-	os.Setenv("DATABRICKS_CONFIG_PROFILE", "azure-deco")
-	os.Setenv("DATABRICKS_DEBUG_TRUNCATE_BYTES", "5096")
+	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
+	t.Log(env)
 	ctx := context.Background()
 	wsc := workspaces.New()
 
