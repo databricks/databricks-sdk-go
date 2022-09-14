@@ -49,9 +49,16 @@ type GroupsService interface {
 	// Get all details of the groups associated with the <Workspace>.
 	ListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error)
 
+<<<<<<< HEAD
 	// Create a new group in <Workspace>
 	//
 	// Create one group in the <Workspace> with a unique name
+=======
+	GroupDisplayNameToIdMap(ctx context.Context, request ListGroupsRequest) (map[string]string, error)
+
+	GetGroupByDisplayName(ctx context.Context, name string) (*Group, error)
+	// Create one group in the <Workspace>.
+>>>>>>> e767f34 (Unify list return types)
 	NewGroup(ctx context.Context, request Group) (*Group, error)
 
 	// Update details of a group
@@ -97,8 +104,12 @@ type ServicePrincipalsService interface {
 	// Get multiple service principals associated with a <Workspace>.
 	ListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
 
+<<<<<<< HEAD
 	// Create a new service principal in <Workspace>
 	//
+=======
+	GetServicePrincipalByDisplayName(ctx context.Context, name string) (*ServicePrincipal, error)
+>>>>>>> e767f34 (Unify list return types)
 	// Create one service principal in the <Workspace>.
 	NewServicePrincipal(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error)
 
@@ -146,10 +157,15 @@ type UsersService interface {
 	// Get all the users associated with a <Workspace>.
 	ListUsers(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error)
 
+<<<<<<< HEAD
 	// Create a new user in <Workspace>
 	//
 	// Create a user in the <Workspace> who will automatically added to the
 	// account.
+=======
+	GetUserByUserName(ctx context.Context, name string) (*User, error)
+	// Create one user in the <Workspace>.
+>>>>>>> e767f34 (Unify list return types)
 	NewUser(ctx context.Context, request User) (*User, error)
 
 	// Update details of a user in <Workspace>

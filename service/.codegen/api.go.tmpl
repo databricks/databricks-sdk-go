@@ -97,7 +97,7 @@ func (a *{{.Service.Name}}API) {{.NamedIdMap.Entity.PascalName}}{{.NamedIdMap.Na
 	return mapping, nil
 }
 {{end}}{{if .GetByName}}
-func (a *{{.Service.Name}}API) Get{{.NamedIdMap.Entity.PascalName}}By{{.NamedIdMap.Name.PascalName}}(ctx context.Context, name string) (*{{.GetByName.Response.PascalName}}, error) {
+func (a *{{.Service.Name}}API) Get{{.NamedIdMap.Entity.PascalName}}By{{.NamedIdMap.Name.PascalName}}(ctx context.Context, name string) (*{{.GetByName.PascalName}}, error) {
 	result, err := a.{{.PascalName}}{{if not .NamedIdMap.Direct}}All{{end}}(ctx{{if .Request}}, {{.Request.PascalName}}{}{{end}})
 	if err != nil {
 		return nil, err

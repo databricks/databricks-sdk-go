@@ -53,4 +53,6 @@ type ClusterPoliciesService interface {
 	//
 	// Returns a list of policies accessible by the requesting user.
 	List(ctx context.Context) (*ListPoliciesResponse, error)
+	// ListAll retrieves all available results from the platform
+	ListAll(ctx context.Context) ([]Policy, error)
 }

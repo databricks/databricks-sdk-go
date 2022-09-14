@@ -80,8 +80,19 @@ func (a *GitCredentialsAPI) List(ctx context.Context) (*GetCredentialsResponse, 
 	return &getCredentialsResponse, err
 }
 
+<<<<<<< HEAD
 // Updates the credential
 //
+=======
+func (a *GitCredentialsAPI) GetCredentialsAll(ctx context.Context) ([]GetCredentialResponse, error) {
+	response, err := a.GetCredentials(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return response.Credentials, nil
+}
+
+>>>>>>> e767f34 (Unify list return types)
 // Updates the credential.
 func (a *GitCredentialsAPI) Update(ctx context.Context, request UpdateCredentials) error {
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)

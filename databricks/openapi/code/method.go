@@ -189,17 +189,12 @@ func (m *Method) NamedIdMap() *NamedIdMap {
 }
 
 // GetByName returns method from the same service with x-databricks-crud:read
-func (m *Method) GetByName() *Method {
-	if m.NamedIdMap() == nil {
+func (m *Method) GetByName() *Entity {
+	n := m.NamedIdMap()
+	if n == nil {
 		return nil
 	}
-	for _, v := range m.Service.methods {
-		if strings.ToLower(v.operation.Crud) != "read" {
-			continue
-		}
-		return v
-	}
-	return nil
+	return n.Entity
 }
 
 func (m *Method) CanHaveResponseBody() bool {

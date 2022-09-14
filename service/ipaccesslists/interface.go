@@ -57,6 +57,8 @@ type IpAccessListsService interface {
 	//
 	// Gets all IP access lists for the specified workspace.
 	GetAllIpAccessLists(ctx context.Context) (*GetIPAccessListResponse, error)
+	// GetAllIpAccessListsAll retrieves all available results from the platform
+	GetAllIpAccessListsAll(ctx context.Context) ([]CreateIPAccessListResponse, error)
 
 	// Replace access list
 	//

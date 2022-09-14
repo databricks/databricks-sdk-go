@@ -88,3 +88,11 @@ func (a *ClusterPoliciesAPI) List(ctx context.Context) (*ListPoliciesResponse, e
 	err := a.client.Get(ctx, path, nil, &listPoliciesResponse)
 	return &listPoliciesResponse, err
 }
+
+func (a *ClusterPoliciesAPI) ListAll(ctx context.Context) ([]Policy, error) {
+	response, err := a.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return response.Policies, nil
+}
