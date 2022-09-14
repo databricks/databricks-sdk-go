@@ -84,6 +84,7 @@ func (path *Path) Verbs() map[string]*Operation {
 type Operation struct {
 	Node
 	Wait        *Wait            `json:"x-databricks-wait,omitempty"`
+	Pagination  *Pagination      `json:"x-databricks-pagination,omitempty"`
 	Shortcut    bool             `json:"x-databricks-shortcut,omitempty"`
 	Crud        string           `json:"x-databricks-crud,omitempty"`
 	Summary     string           `json:"summary,omitempty"`
@@ -92,6 +93,14 @@ type Operation struct {
 	Parameters  []Parameter      `json:"parameters,omitempty"`
 	Responses   map[string]*Body `json:"responses"`
 	RequestBody *Body            `json:"requestBody,omitempty"`
+}
+
+type Pagination struct {
+	Offset    string `json:"offset,omitempty"`
+	Limit     string `json:"limit,omitempty"`
+	Results   string `json:"results,omitempty"`
+	Increment int    `json:"increment,omitempty"`
+	Inline    bool   `json:"inline,omitempty"`
 }
 
 type Wait struct {
@@ -159,6 +168,7 @@ type Schema struct {
 	Node
 	Retries          *Retries           `json:"x-databricks-retries,omitempty"`
 	IsIdentifier     bool               `json:"x-databricks-id,omitempty"`
+	IsName           bool               `json:"x-databricks-name,omitempty"`
 	IsComputed       bool               `json:"x-databricks-computed,omitempty"`
 	IsAny            bool               `json:"x-databricks-any,omitempty"`
 	Type             string             `json:"type,omitempty"`

@@ -100,17 +100,7 @@ func (c *DatabricksClient) unmarshall(path string, body []byte, response interfa
 	if len(body) == 0 {
 		return nil
 	}
-	err := json.Unmarshal(body, &response)
-	if err == nil {
-		return nil
-	}
-	return apierr.APIError{
-		ErrorCode:  "UNKNOWN",
-		StatusCode: 200,
-		Resource:   "..." + path,
-		Message: fmt.Sprintf("Invalid JSON received (%d bytes): %v",
-			len(body), string(body)),
-	}
+	return json.Unmarshal(body, &response)
 }
 
 type contextKey int
@@ -249,7 +239,7 @@ func (c *DatabricksClient) redactedDump(body []byte) (res string) {
 	if len(body) == 0 {
 		return
 	}
-	if body[0] != '{' {
+	if body[0] != '{' { // TODO: body[0] == '['
 		return fmt.Sprintf("[non-JSON document of %d bytes]", len(body))
 	}
 	var requestMap map[string]interface{}
