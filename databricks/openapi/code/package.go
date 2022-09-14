@@ -98,6 +98,7 @@ func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Ent
 			Named:    named,
 			Entity:   pkg.schemaToEntity(v, append(path, named.PascalName()), false),
 			Required: required[k],
+			Schema:   v,
 			IsJson:   true,
 		}
 	}
@@ -152,6 +153,9 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 	if e == nil {
 		// gets here when responses are objects with no properties
 		return nil
+	}
+	if e.ArrayValue != nil {
+		return e
 	}
 	if e.Name == "" {
 		e.Named = Named{name, s.Description}

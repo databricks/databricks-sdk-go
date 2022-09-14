@@ -1,6 +1,9 @@
 package code
 
-import "golang.org/x/exp/slices"
+import (
+	"github.com/databricks/databricks-sdk-go/databricks/openapi"
+	"golang.org/x/exp/slices"
+)
 
 type Field struct {
 	Named
@@ -10,6 +13,7 @@ type Field struct {
 	IsJson   bool
 	IsPath   bool
 	IsQuery  bool
+	Schema   *openapi.Schema
 }
 
 func (f *Field) IsOptionalObject() bool {
@@ -36,7 +40,25 @@ type Entity struct {
 	fields     map[string]Field
 }
 
+func (e *Entity) PascalName() string {
+	if e.Name == "" && e.ArrayValue != nil {
+		return e.ArrayValue.PascalName() + "List"
+	}
+	return e.Named.PascalName()
+}
+
+func (e *Entity) CamelName() string {
+	if e.Name == "" && e.ArrayValue != nil {
+		return e.ArrayValue.CamelName() + "List"
+	}
+	return e.Named.CamelName()
+}
+
 func (e *Entity) Field(name string) *Field {
+	if e == nil {
+		// nil received: entity is not present
+		return nil
+	}
 	field, ok := e.fields[name]
 	if !ok {
 		return nil

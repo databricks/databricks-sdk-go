@@ -12,3 +12,13 @@ func TestBasic(t *testing.T) {
 
 	assert.Len(t, batch.Packages, 1)
 }
+
+func TestBasic2(t *testing.T) {
+	batch, err := NewFromFile("/tmp/processed-databricks-workspace-all.json")
+	assert.NoError(t, err)
+
+	r := batch.Packages["dbsql"].services["DataSources"].methods["listDataSources"].Response
+	t.Log(r.CamelName())
+
+	assert.Len(t, batch.Packages, 1)
+}

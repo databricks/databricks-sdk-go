@@ -16,11 +16,17 @@ import (
 type {{.PascalName}}Service interface {
 	{{- range .Methods}}
     {{.Comment "    // " 80}}
-    {{.PascalName}}(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}
+    {{.PascalName}}(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{.Response.PascalName}}{{end}}, error){{else}}error{{end}}
 	{{if .Wait}}// {{.PascalName}} and wait to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
 	{{.PascalName}}AndWait(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}, timeout ...time.Duration) (*{{.Wait.Poll.Response.PascalName}}, error){{end}}
 	{{- if .Shortcut}}
-	{{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}}{{end}}
+	{{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{.Response.PascalName}}{{end}}, error){{else}}error{{end}}{{end}}
+	{{- if .Pagination}}// {{.PascalName}}All retrieves all available results from the platform
+	{{.PascalName}}All(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) ([]{{.Pagination.Entity.PascalName}}, error){{- end}}
+	{{if .NamedIdMap}}
+	{{.NamedIdMap.Entity.PascalName}}{{.NamedIdMap.Name.PascalName}}To{{.NamedIdMap.Id.PascalName}}Map(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) (map[string]{{template "type" .NamedIdMap.Id.Entity}}, error){{- end}}
+	{{if .GetByName}}
+	Get{{.NamedIdMap.Entity.PascalName}}By{{.NamedIdMap.Name.PascalName}}(ctx context.Context, name string) (*{{.GetByName.Response.PascalName}}, error){{- end}}
 	{{- if and .Shortcut .Wait}}
 	{{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, timeout ...time.Duration) (*{{.Wait.Poll.Response.PascalName}}, error){{end}}
 	{{- end}}

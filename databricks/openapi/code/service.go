@@ -106,14 +106,16 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		name = filepath.Base(path)
 	}
 	return &Method{
-		Named:     Named{name, op.Description},
-		Service:   svc,
-		Verb:      strings.ToUpper(verb),
-		Path:      path,
-		Request:   request,
-		PathParts: svc.paramPath(path, request, params),
-		Response:  response,
-		wait:      op.Wait,
-		shortcut:  op.Shortcut,
+		Named:      Named{name, op.Description},
+		Service:    svc,
+		Verb:       strings.ToUpper(verb),
+		Path:       path,
+		Request:    request,
+		PathParts:  svc.paramPath(path, request, params),
+		Response:   response,
+		wait:       op.Wait,
+		operation:  op,
+		pagination: op.Pagination,
+		shortcut:   op.Shortcut,
 	}
 }
