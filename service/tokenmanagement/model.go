@@ -6,19 +6,19 @@ package tokenmanagement
 
 type DeleteTokenRequest struct {
 	// The ID of the token to get.
-	TokenId string ` path:"token_id"`
+	TokenId string `json:"-" path:"token_id"`
 }
 
 type GetTokenInfoRequest struct {
 	// The ID of the token to get.
-	TokenId string ` path:"token_id"`
+	TokenId string `json:"-" path:"token_id"`
 }
 
 type ListAllTokensRequest struct {
 	// User ID of the user that created the token.
-	CreatedById string ` url:"created_by_id,omitempty"`
+	CreatedById string `json:"-" url:"created_by_id,omitempty"`
 	// Username of the user that created the token.
-	CreatedByUsername string ` url:"created_by_username,omitempty"`
+	CreatedByUsername string `json:"-" url:"created_by_username,omitempty"`
 }
 
 type ListTokensResponse struct {

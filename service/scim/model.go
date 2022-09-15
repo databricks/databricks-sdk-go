@@ -18,32 +18,32 @@ type ComplexValue struct {
 
 type DeleteGroupRequest struct {
 	// Unique ID for a group in the <Workspace>.
-	Id string ` path:"id"`
+	Id string `json:"-" path:"id"`
 }
 
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the <Workspace>.
-	Id string ` path:"id"`
+	Id string `json:"-" path:"id"`
 }
 
 type DeleteUserRequest struct {
 	// Unique ID for a user in the <Workspace>.
-	Id string ` path:"id"`
+	Id string `json:"-" path:"id"`
 }
 
 type FetchGroupRequest struct {
 	// Unique ID for a group in the <Workspace>.
-	Id string ` path:"id"`
+	Id string `json:"-" path:"id"`
 }
 
 type FetchServicePrincipalRequest struct {
 	// Unique ID for a service principal in the <Workspace>.
-	Id string ` path:"id"`
+	Id string `json:"-" path:"id"`
 }
 
 type FetchUserRequest struct {
 	// Unique ID for a user in the <Workspace>.
-	Id string ` path:"id"`
+	Id string `json:"-" path:"id"`
 }
 
 type Group struct {
@@ -65,24 +65,24 @@ type Group struct {
 
 type ListGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string ` url:"attributes,omitempty"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
-	Count int ` url:"count,omitempty"`
+	Count int `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string ` url:"excludedAttributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
 	// `and` and `or`. The [SCIM
 	// RFC](https://tools.ietf.org/html/rfc7644#section-3.4.2.2) has more
 	// details but we currently only support simple expressions.
-	Filter string ` url:"filter,omitempty"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
-	SortBy string ` url:"sortBy,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListGroupsSortOrder ` url:"sortOrder,omitempty"`
+	SortOrder ListGroupsSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int ` url:"startIndex,omitempty"`
+	StartIndex int `json:"-" url:"startIndex,omitempty"`
 }
 
 type ListGroupsResponse struct {
@@ -117,24 +117,24 @@ type ListServicePrincipalResponse struct {
 
 type ListServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string ` url:"attributes,omitempty"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
-	Count int ` url:"count,omitempty"`
+	Count int `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string ` url:"excludedAttributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
 	// `and` and `or`. The [SCIM
 	// RFC](https://tools.ietf.org/html/rfc7644#section-3.4.2.2) has more
 	// details but we currently only support simple expressions.
-	Filter string ` url:"filter,omitempty"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
-	SortBy string ` url:"sortBy,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListServicePrincipalsSortOrder ` url:"sortOrder,omitempty"`
+	SortOrder ListServicePrincipalsSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int ` url:"startIndex,omitempty"`
+	StartIndex int `json:"-" url:"startIndex,omitempty"`
 }
 
 type ListServicePrincipalsSortOrder string
@@ -145,25 +145,25 @@ const ListServicePrincipalsSortOrderDescending ListServicePrincipalsSortOrder = 
 
 type ListUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string ` url:"attributes,omitempty"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
-	Count int ` url:"count,omitempty"`
+	Count int `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string ` url:"excludedAttributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
 	// `and` and `or`. The [SCIM
 	// RFC](https://tools.ietf.org/html/rfc7644#section-3.4.2.2) has more
 	// details but we currently only support simple expressions.
-	Filter string ` url:"filter,omitempty"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string ` url:"sortBy,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListUsersSortOrder ` url:"sortOrder,omitempty"`
+	SortOrder ListUsersSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int ` url:"startIndex,omitempty"`
+	StartIndex int `json:"-" url:"startIndex,omitempty"`
 }
 
 type ListUsersResponse struct {
@@ -186,7 +186,7 @@ const ListUsersSortOrderDescending ListUsersSortOrder = `descending`
 
 type PartialUpdate struct {
 	// Unique ID for a group in the <Workspace>.
-	Id string ` path:"id"`
+	Id string `json:"-" path:"id"`
 
 	Operations []Patch `json:"operations,omitempty"`
 }

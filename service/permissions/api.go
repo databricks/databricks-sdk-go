@@ -33,6 +33,7 @@ func (a *PermissionsAPI) GetObjectPermissionsByObjectTypeAndObjectId(ctx context
 	})
 }
 
+// <needs content>
 func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error) {
 	var getPermissionLevelsResponse GetPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", request.RequestObjectType, request.RequestObjectId)
@@ -40,6 +41,7 @@ func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPer
 	return &getPermissionLevelsResponse, err
 }
 
+// <needs content>
 func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error) {
 	return a.GetPermissionLevels(ctx, GetPermissionLevelsRequest{
 		RequestObjectType: requestObjectType,
@@ -47,13 +49,15 @@ func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectI
 	})
 }
 
-func (a *PermissionsAPI) SetObjectPermissions(ctx context.Context, request SetObjectPermissionsRequest) error {
+// <needs content>
+func (a *PermissionsAPI) SetObjectPermissions(ctx context.Context, request SetObjectPermissions) error {
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
 	err := a.client.Put(ctx, path, request)
 	return err
 }
 
-func (a *PermissionsAPI) UpdateObjectPermissions(ctx context.Context, request UpdateObjectPermissionsRequest) error {
+// <needs content>
+func (a *PermissionsAPI) UpdateObjectPermissions(ctx context.Context, request UpdateObjectPermissions) error {
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
 	err := a.client.Patch(ctx, path, request)
 	return err

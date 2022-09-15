@@ -11,19 +11,7 @@ type ClusterLibraryStatuses struct {
 	LibraryStatuses []LibraryFullStatus `json:"library_statuses,omitempty"`
 }
 
-type ClusterStatusRequest struct {
-	// Unique identifier of the cluster whose status should be retrieved.
-	ClusterId string ` url:"cluster_id,omitempty"`
-}
-
-type ClusterStatusResponse struct {
-	// Unique identifier for the cluster.
-	ClusterId string `json:"cluster_id,omitempty"`
-	// Status of all libraries on the cluster.
-	LibraryStatuses []LibraryFullStatus `json:"library_statuses,omitempty"`
-}
-
-type InstallLibrariesRequest struct {
+type InstallLibraries struct {
 	// Unique identifier for the cluster on which to install these libraries.
 	ClusterId string `json:"cluster_id"`
 	// The libraries to install.
@@ -123,9 +111,14 @@ type RCranLibrary struct {
 	Repo string `json:"repo,omitempty"`
 }
 
-type UninstallLibrariesRequest struct {
+type UninstallLibraries struct {
 	// Unique identifier for the cluster on which to uninstall these libraries.
 	ClusterId string `json:"cluster_id"`
 	// The libraries to uninstall.
 	Libraries []Library `json:"libraries,omitempty"`
+}
+
+type ClusterStatusRequest struct {
+	// Unique identifier of the cluster whose status should be retrieved.
+	ClusterId string `json:"-" url:"cluster_id,omitempty"`
 }

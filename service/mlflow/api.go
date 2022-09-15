@@ -23,7 +23,7 @@ type ExperimentsAPI struct {
 // already exist and fails if another experiment with the same name already
 // exists. Throws “RESOURCE_ALREADY_EXISTS“ if a experiment with the given
 // name exists.
-func (a *ExperimentsAPI) Create(ctx context.Context, request CreateExperimentRequest) (*CreateExperimentResponse, error) {
+func (a *ExperimentsAPI) Create(ctx context.Context, request CreateExperiment) (*CreateExperimentResponse, error) {
 	var createExperimentResponse CreateExperimentResponse
 	path := "/api/2.0/mlflow/experiments/create"
 	err := a.client.Post(ctx, path, request, &createExperimentResponse)
@@ -33,7 +33,7 @@ func (a *ExperimentsAPI) Create(ctx context.Context, request CreateExperimentReq
 // Mark an experiment and associated metadata, runs, metrics, params, and tags
 // for deletion. If the experiment uses FileStore, artifacts associated with
 // experiment are also deleted.
-func (a *ExperimentsAPI) Delete(ctx context.Context, request DeleteExperimentRequest) error {
+func (a *ExperimentsAPI) Delete(ctx context.Context, request DeleteExperiment) error {
 	path := "/api/2.0/mlflow/experiments/delete"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -43,21 +43,21 @@ func (a *ExperimentsAPI) Delete(ctx context.Context, request DeleteExperimentReq
 // for deletion. If the experiment uses FileStore, artifacts associated with
 // experiment are also deleted.
 func (a *ExperimentsAPI) DeleteByExperimentId(ctx context.Context, experimentId string) error {
-	return a.Delete(ctx, DeleteExperimentRequest{
+	return a.Delete(ctx, DeleteExperiment{
 		ExperimentId: experimentId,
 	})
 }
 
 // Get metadata for an experiment. This method works on deleted experiments.
-func (a *ExperimentsAPI) Get(ctx context.Context, request GetExperimentRequest) (*GetExperimentResponse, error) {
-	var getExperimentResponse GetExperimentResponse
+func (a *ExperimentsAPI) Get(ctx context.Context, request GetExperimentRequest) (*Experiment, error) {
+	var experiment Experiment
 	path := "/api/2.0/mlflow/experiments/get"
-	err := a.client.Get(ctx, path, request, &getExperimentResponse)
-	return &getExperimentResponse, err
+	err := a.client.Get(ctx, path, request, &experiment)
+	return &experiment, err
 }
 
 // Get metadata for an experiment. This method works on deleted experiments.
-func (a *ExperimentsAPI) GetByExperimentId(ctx context.Context, experimentId string) (*GetExperimentResponse, error) {
+func (a *ExperimentsAPI) GetByExperimentId(ctx context.Context, experimentId string) (*Experiment, error) {
 	return a.Get(ctx, GetExperimentRequest{
 		ExperimentId: experimentId,
 	})
@@ -68,7 +68,7 @@ func (a *ExperimentsAPI) GetByExperimentId(ctx context.Context, experimentId str
 // experiment share the same name. If multiple deleted experiments share the
 // same name, the API will return one of them. Throws
 // “RESOURCE_DOES_NOT_EXIST“ if no experiment with the specified name exists.
-func (a *ExperimentsAPI) GetByName(ctx context.Context, request GetExperimentByNameRequest) (*GetExperimentByNameResponse, error) {
+func (a *ExperimentsAPI) GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error) {
 	var getExperimentByNameResponse GetExperimentByNameResponse
 	path := "/api/2.0/mlflow/experiments/get-by-name"
 	err := a.client.Get(ctx, path, request, &getExperimentByNameResponse)
@@ -81,7 +81,7 @@ func (a *ExperimentsAPI) GetByName(ctx context.Context, request GetExperimentByN
 // same name, the API will return one of them. Throws
 // “RESOURCE_DOES_NOT_EXIST“ if no experiment with the specified name exists.
 func (a *ExperimentsAPI) GetByNameByExperimentName(ctx context.Context, experimentName string) (*GetExperimentByNameResponse, error) {
-	return a.GetByName(ctx, GetExperimentByNameRequest{
+	return a.GetByName(ctx, GetByNameRequest{
 		ExperimentName: experimentName,
 	})
 }
@@ -99,7 +99,7 @@ func (a *ExperimentsAPI) List(ctx context.Context, request ListExperimentsReques
 // underlying artifacts associated with experiment are also restored. Throws
 // “RESOURCE_DOES_NOT_EXIST“ if experiment was never created or was
 // permanently deleted.
-func (a *ExperimentsAPI) Restore(ctx context.Context, request RestoreExperimentRequest) error {
+func (a *ExperimentsAPI) Restore(ctx context.Context, request RestoreExperiment) error {
 	path := "/api/2.0/mlflow/experiments/restore"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -111,13 +111,13 @@ func (a *ExperimentsAPI) Restore(ctx context.Context, request RestoreExperimentR
 // “RESOURCE_DOES_NOT_EXIST“ if experiment was never created or was
 // permanently deleted.
 func (a *ExperimentsAPI) RestoreByExperimentId(ctx context.Context, experimentId string) error {
-	return a.Restore(ctx, RestoreExperimentRequest{
+	return a.Restore(ctx, RestoreExperiment{
 		ExperimentId: experimentId,
 	})
 }
 
 // Search for experiments that satisfy specified search criteria.
-func (a *ExperimentsAPI) Search(ctx context.Context, request SearchExperimentsRequest) (*SearchExperimentsResponse, error) {
+func (a *ExperimentsAPI) Search(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error) {
 	var searchExperimentsResponse SearchExperimentsResponse
 	path := "/api/2.0/mlflow/experiments/search"
 	err := a.client.Post(ctx, path, request, &searchExperimentsResponse)
@@ -125,14 +125,14 @@ func (a *ExperimentsAPI) Search(ctx context.Context, request SearchExperimentsRe
 }
 
 // Set a tag on an experiment. Experiment tags are metadata that can be updated.
-func (a *ExperimentsAPI) SetExperimentTag(ctx context.Context, request SetExperimentTagRequest) error {
+func (a *ExperimentsAPI) SetExperimentTag(ctx context.Context, request SetExperimentTag) error {
 	path := "/api/2.0/mlflow/experiments/set-experiment-tag"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
 // Update experiment metadata.
-func (a *ExperimentsAPI) Update(ctx context.Context, request UpdateExperimentRequest) error {
+func (a *ExperimentsAPI) Update(ctx context.Context, request UpdateExperiment) error {
 	path := "/api/2.0/mlflow/experiments/update"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -167,15 +167,15 @@ type MLflowDatabricksAPI struct {
 	client *client.DatabricksClient
 }
 
-func (a *MLflowDatabricksAPI) Get(ctx context.Context, request GetRegisteredModelRequest) (*GetRegisteredModelResponse, error) {
-	var getRegisteredModelResponse GetRegisteredModelResponse
+func (a *MLflowDatabricksAPI) Get(ctx context.Context, request GetRequest) (*GetResponse, error) {
+	var getResponse GetResponse
 	path := "/api/2.0/mlflow/databricks/registered-models/get"
-	err := a.client.Get(ctx, path, request, &getRegisteredModelResponse)
-	return &getRegisteredModelResponse, err
+	err := a.client.Get(ctx, path, request, &getResponse)
+	return &getResponse, err
 }
 
-func (a *MLflowDatabricksAPI) GetByName(ctx context.Context, name string) (*GetRegisteredModelResponse, error) {
-	return a.Get(ctx, GetRegisteredModelRequest{
+func (a *MLflowDatabricksAPI) GetByName(ctx context.Context, name string) (*GetResponse, error) {
+	return a.Get(ctx, GetRequest{
 		Name: name,
 	})
 }
@@ -184,11 +184,11 @@ func (a *MLflowDatabricksAPI) GetByName(ctx context.Context, name string) (*GetR
 // [MLflow
 // endpoint](https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage)
 // that also accepts a comment associated with the transition to be recorded.
-func (a *MLflowDatabricksAPI) TransitionStage(ctx context.Context, request TransitionModelVersionStageRequest) (*TransitionModelVersionStageResponse, error) {
-	var transitionModelVersionStageResponse TransitionModelVersionStageResponse
+func (a *MLflowDatabricksAPI) TransitionStage(ctx context.Context, request TransitionModelVersionStageDatabricks) (*TransitionStageResponse, error) {
+	var transitionStageResponse TransitionStageResponse
 	path := "/api/2.0/mlflow/databricks/model-versions/transition-stage"
-	err := a.client.Post(ctx, path, request, &transitionModelVersionStageResponse)
-	return &transitionModelVersionStageResponse, err
+	err := a.client.Post(ctx, path, request, &transitionStageResponse)
+	return &transitionStageResponse, err
 }
 
 func NewMLflowMetrics(client *client.DatabricksClient) MLflowMetricsService {
@@ -202,7 +202,7 @@ type MLflowMetricsAPI struct {
 }
 
 // Get a list of all values for the specified metric for a given run.
-func (a *MLflowMetricsAPI) GetHistory(ctx context.Context, request GetMetricHistoryRequest) (*GetMetricHistoryResponse, error) {
+func (a *MLflowMetricsAPI) GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error) {
 	var getMetricHistoryResponse GetMetricHistoryResponse
 	path := "/api/2.0/mlflow/metrics/get-history"
 	err := a.client.Get(ctx, path, request, &getMetricHistoryResponse)
@@ -223,7 +223,7 @@ type MLflowRunsAPI struct {
 // a machine learning or data ETL pipeline. MLflow uses runs to track
 // :ref:`mlflowParam`, :ref:`mlflowMetric`, and :ref:`mlflowRunTag` associated
 // with a single execution.
-func (a *MLflowRunsAPI) Create(ctx context.Context, request CreateRunRequest) (*CreateRunResponse, error) {
+func (a *MLflowRunsAPI) Create(ctx context.Context, request CreateRun) (*CreateRunResponse, error) {
 	var createRunResponse CreateRunResponse
 	path := "/api/2.0/mlflow/runs/create"
 	err := a.client.Post(ctx, path, request, &createRunResponse)
@@ -231,7 +231,7 @@ func (a *MLflowRunsAPI) Create(ctx context.Context, request CreateRunRequest) (*
 }
 
 // Mark a run for deletion.
-func (a *MLflowRunsAPI) Delete(ctx context.Context, request DeleteRunRequest) error {
+func (a *MLflowRunsAPI) Delete(ctx context.Context, request DeleteRun) error {
 	path := "/api/2.0/mlflow/runs/delete"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -239,14 +239,14 @@ func (a *MLflowRunsAPI) Delete(ctx context.Context, request DeleteRunRequest) er
 
 // Mark a run for deletion.
 func (a *MLflowRunsAPI) DeleteByRunId(ctx context.Context, runId string) error {
-	return a.Delete(ctx, DeleteRunRequest{
+	return a.Delete(ctx, DeleteRun{
 		RunId: runId,
 	})
 }
 
 // Delete a tag on a run. Tags are run metadata that can be updated during a run
 // and after a run completes.
-func (a *MLflowRunsAPI) DeleteTag(ctx context.Context, request DeleteTagRequest) error {
+func (a *MLflowRunsAPI) DeleteTag(ctx context.Context, request DeleteTag) error {
 	path := "/api/2.0/mlflow/runs/delete-tag"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -293,7 +293,7 @@ func (a *MLflowRunsAPI) Get(ctx context.Context, request GetRunRequest) (*GetRun
 // param, and tag keys and values: - Metric, param, and tag keys can be up to
 // 250 characters in length - Param and tag values can be up to 250 characters
 // in length
-func (a *MLflowRunsAPI) LogBatch(ctx context.Context, request LogBatchRequest) error {
+func (a *MLflowRunsAPI) LogBatch(ctx context.Context, request LogBatch) error {
 	path := "/api/2.0/mlflow/runs/log-batch"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -302,7 +302,7 @@ func (a *MLflowRunsAPI) LogBatch(ctx context.Context, request LogBatchRequest) e
 // Log a metric for a run. A metric is a key-value pair (string key, float
 // value) with an associated timestamp. Examples include the various metrics
 // that represent ML model accuracy. A metric can be logged multiple times.
-func (a *MLflowRunsAPI) LogMetric(ctx context.Context, request LogMetricRequest) error {
+func (a *MLflowRunsAPI) LogMetric(ctx context.Context, request LogMetric) error {
 	path := "/api/2.0/mlflow/runs/log-metric"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -310,7 +310,7 @@ func (a *MLflowRunsAPI) LogMetric(ctx context.Context, request LogMetricRequest)
 
 // .. note:: Experimental: This API may change or be removed in a future release
 // without warning.
-func (a *MLflowRunsAPI) LogModel(ctx context.Context, request LogModelRequest) error {
+func (a *MLflowRunsAPI) LogModel(ctx context.Context, request LogModel) error {
 	path := "/api/2.0/mlflow/runs/log-model"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -320,14 +320,14 @@ func (a *MLflowRunsAPI) LogModel(ctx context.Context, request LogModelRequest) e
 // value). Examples include hyperparameters used for ML model training and
 // constant dates and values used in an ETL pipeline. A param can be logged only
 // once for a run.
-func (a *MLflowRunsAPI) LogParameter(ctx context.Context, request LogParamRequest) error {
+func (a *MLflowRunsAPI) LogParameter(ctx context.Context, request LogParam) error {
 	path := "/api/2.0/mlflow/runs/log-parameter"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
 // Restore a deleted run.
-func (a *MLflowRunsAPI) Restore(ctx context.Context, request RestoreRunRequest) error {
+func (a *MLflowRunsAPI) Restore(ctx context.Context, request RestoreRun) error {
 	path := "/api/2.0/mlflow/runs/restore"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -335,14 +335,14 @@ func (a *MLflowRunsAPI) Restore(ctx context.Context, request RestoreRunRequest) 
 
 // Restore a deleted run.
 func (a *MLflowRunsAPI) RestoreByRunId(ctx context.Context, runId string) error {
-	return a.Restore(ctx, RestoreRunRequest{
+	return a.Restore(ctx, RestoreRun{
 		RunId: runId,
 	})
 }
 
 // Search for runs that satisfy expressions. Search expressions can use
 // :ref:`mlflowMetric` and :ref:`mlflowParam` keys.
-func (a *MLflowRunsAPI) Search(ctx context.Context, request SearchRunsRequest) (*SearchRunsResponse, error) {
+func (a *MLflowRunsAPI) Search(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error) {
 	var searchRunsResponse SearchRunsResponse
 	path := "/api/2.0/mlflow/runs/search"
 	err := a.client.Post(ctx, path, request, &searchRunsResponse)
@@ -351,14 +351,14 @@ func (a *MLflowRunsAPI) Search(ctx context.Context, request SearchRunsRequest) (
 
 // Set a tag on a run. Tags are run metadata that can be updated during a run
 // and after a run completes.
-func (a *MLflowRunsAPI) SetTag(ctx context.Context, request SetTagRequest) error {
+func (a *MLflowRunsAPI) SetTag(ctx context.Context, request SetTag) error {
 	path := "/api/2.0/mlflow/runs/set-tag"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
 // Update run metadata.
-func (a *MLflowRunsAPI) Update(ctx context.Context, request UpdateRunRequest) (*UpdateRunResponse, error) {
+func (a *MLflowRunsAPI) Update(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error) {
 	var updateRunResponse UpdateRunResponse
 	path := "/api/2.0/mlflow/runs/update"
 	err := a.client.Post(ctx, path, request, &updateRunResponse)
@@ -378,15 +378,15 @@ type ModelVersionCommentsAPI struct {
 // Make a comment on a model version. A comment can be submitted either by a
 // user or programmatically to display relevant information about the model. For
 // example, test results or deployment errors.
-func (a *ModelVersionCommentsAPI) Create(ctx context.Context, request CreateCommentRequest) (*CreateCommentResponse, error) {
-	var createCommentResponse CreateCommentResponse
+func (a *ModelVersionCommentsAPI) Create(ctx context.Context, request CreateComment) (*CreateResponse, error) {
+	var createResponse CreateResponse
 	path := "/api/2.0/mlflow/comments/create"
-	err := a.client.Post(ctx, path, request, &createCommentResponse)
-	return &createCommentResponse, err
+	err := a.client.Post(ctx, path, request, &createResponse)
+	return &createResponse, err
 }
 
 // Delete a comment on a model version.
-func (a *ModelVersionCommentsAPI) Delete(ctx context.Context, request DeleteCommentRequest) error {
+func (a *ModelVersionCommentsAPI) Delete(ctx context.Context, request DeleteComment) error {
 	path := "/api/2.0/mlflow/comments/delete"
 	err := a.client.Delete(ctx, path, request)
 	return err
@@ -394,17 +394,17 @@ func (a *ModelVersionCommentsAPI) Delete(ctx context.Context, request DeleteComm
 
 // Delete a comment on a model version.
 func (a *ModelVersionCommentsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.Delete(ctx, DeleteCommentRequest{
+	return a.Delete(ctx, DeleteComment{
 		Id: id,
 	})
 }
 
 // Edit a comment on a model version.
-func (a *ModelVersionCommentsAPI) Update(ctx context.Context, request UpdateCommentRequest) (*UpdateCommentResponse, error) {
-	var updateCommentResponse UpdateCommentResponse
+func (a *ModelVersionCommentsAPI) Update(ctx context.Context, request UpdateComment) (*UpdateResponse, error) {
+	var updateResponse UpdateResponse
 	path := "/api/2.0/mlflow/comments/update"
-	err := a.client.Post(ctx, path, request, &updateCommentResponse)
-	return &updateCommentResponse, err
+	err := a.client.Post(ctx, path, request, &updateResponse)
+	return &updateResponse, err
 }
 
 func NewModelVersions(client *client.DatabricksClient) ModelVersionsService {
@@ -463,7 +463,7 @@ func (a *ModelVersionsAPI) SetTag(ctx context.Context, request SetModelVersionTa
 	return err
 }
 
-func (a *ModelVersionsAPI) TransitionStage(ctx context.Context, request TransitionModelVersionStageRequest) (*TransitionModelVersionStageResponse, error) {
+func (a *ModelVersionsAPI) TransitionStage(ctx context.Context, request TransitionModelVersionStage) (*TransitionModelVersionStageResponse, error) {
 	var transitionModelVersionStageResponse TransitionModelVersionStageResponse
 	path := "/api/2.0/mlflow/model-versions/transition-stage"
 	err := a.client.Post(ctx, path, request, &transitionModelVersionStageResponse)
@@ -577,15 +577,15 @@ type RegistryWebhooksAPI struct {
 }
 
 // This endpoint is in Public Preview. Create a registry webhook.
-func (a *RegistryWebhooksAPI) Create(ctx context.Context, request CreateRegistryWebhookRequest) (*CreateRegistryWebhookResponse, error) {
-	var createRegistryWebhookResponse CreateRegistryWebhookResponse
+func (a *RegistryWebhooksAPI) Create(ctx context.Context, request CreateRegistryWebhook) (*CreateResponse, error) {
+	var createResponse CreateResponse
 	path := "/api/2.0/mlflow/registry-webhooks/create"
-	err := a.client.Post(ctx, path, request, &createRegistryWebhookResponse)
-	return &createRegistryWebhookResponse, err
+	err := a.client.Post(ctx, path, request, &createResponse)
+	return &createResponse, err
 }
 
 // This endpoint is in Public Preview. Delete a registry webhook.
-func (a *RegistryWebhooksAPI) Delete(ctx context.Context, request DeleteRegistryWebhookRequest) error {
+func (a *RegistryWebhooksAPI) Delete(ctx context.Context, request DeleteRequest) error {
 	path := "/api/2.0/mlflow/registry-webhooks/delete"
 	err := a.client.Delete(ctx, path, request)
 	return err
@@ -593,17 +593,17 @@ func (a *RegistryWebhooksAPI) Delete(ctx context.Context, request DeleteRegistry
 
 // This endpoint is in Public Preview. Delete a registry webhook.
 func (a *RegistryWebhooksAPI) DeleteById(ctx context.Context, id string) error {
-	return a.Delete(ctx, DeleteRegistryWebhookRequest{
+	return a.Delete(ctx, DeleteRequest{
 		Id: id,
 	})
 }
 
 // This endpoint is in Public Preview. List registry webhooks.
-func (a *RegistryWebhooksAPI) List(ctx context.Context, request ListRegistryWebhooksRequest) (*ListRegistryWebhooksResponse, error) {
-	var listRegistryWebhooksResponse ListRegistryWebhooksResponse
+func (a *RegistryWebhooksAPI) List(ctx context.Context, request ListRegistryWebhooks) (*ListResponse, error) {
+	var listResponse ListResponse
 	path := "/api/2.0/mlflow/registry-webhooks/list"
-	err := a.client.Get(ctx, path, request, &listRegistryWebhooksResponse)
-	return &listRegistryWebhooksResponse, err
+	err := a.client.Get(ctx, path, request, &listResponse)
+	return &listResponse, err
 }
 
 // This endpoint is in Public Preview. Test a registry webhook.
@@ -615,7 +615,7 @@ func (a *RegistryWebhooksAPI) Test(ctx context.Context, request TestRegistryWebh
 }
 
 // This endpoint is in Public Preview. Update a registry webhook.
-func (a *RegistryWebhooksAPI) Update(ctx context.Context, request UpdateRegistryWebhookRequest) error {
+func (a *RegistryWebhooksAPI) Update(ctx context.Context, request UpdateRegistryWebhook) error {
 	path := "/api/2.0/mlflow/registry-webhooks/update"
 	err := a.client.Patch(ctx, path, request)
 	return err
@@ -632,40 +632,40 @@ type TransitionRequestsAPI struct {
 }
 
 // Approve model version stage transition request.
-func (a *TransitionRequestsAPI) Approve(ctx context.Context, request ApproveTransitionRequestRequest) (*ApproveTransitionRequestResponse, error) {
-	var approveTransitionRequestResponse ApproveTransitionRequestResponse
+func (a *TransitionRequestsAPI) Approve(ctx context.Context, request ApproveTransitionRequest) (*ApproveResponse, error) {
+	var approveResponse ApproveResponse
 	path := "/api/2.0/mlflow/transition-requests/approve"
-	err := a.client.Post(ctx, path, request, &approveTransitionRequestResponse)
-	return &approveTransitionRequestResponse, err
+	err := a.client.Post(ctx, path, request, &approveResponse)
+	return &approveResponse, err
 }
 
 // Make a model version stage transition request.
-func (a *TransitionRequestsAPI) Create(ctx context.Context, request CreateTransitionRequestRequest) (*CreateTransitionRequestResponse, error) {
-	var createTransitionRequestResponse CreateTransitionRequestResponse
+func (a *TransitionRequestsAPI) Create(ctx context.Context, request CreateTransitionRequest) (*CreateResponse, error) {
+	var createResponse CreateResponse
 	path := "/api/2.0/mlflow/transition-requests/create"
-	err := a.client.Post(ctx, path, request, &createTransitionRequestResponse)
-	return &createTransitionRequestResponse, err
+	err := a.client.Post(ctx, path, request, &createResponse)
+	return &createResponse, err
 }
 
 // Cancel model version stage transition request.
-func (a *TransitionRequestsAPI) Delete(ctx context.Context, request DeleteTransitionRequestRequest) error {
+func (a *TransitionRequestsAPI) Delete(ctx context.Context, request DeleteRequest) error {
 	path := "/api/2.0/mlflow/transition-requests/delete"
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
 // Get all open stage transition requests for the model version.
-func (a *TransitionRequestsAPI) List(ctx context.Context, request GetTransitionRequestsRequest) (*GetTransitionRequestsResponse, error) {
-	var getTransitionRequestsResponse GetTransitionRequestsResponse
+func (a *TransitionRequestsAPI) List(ctx context.Context, request ListRequest) (*ListResponse, error) {
+	var listResponse ListResponse
 	path := "/api/2.0/mlflow/transition-requests/list"
-	err := a.client.Get(ctx, path, request, &getTransitionRequestsResponse)
-	return &getTransitionRequestsResponse, err
+	err := a.client.Get(ctx, path, request, &listResponse)
+	return &listResponse, err
 }
 
 // Reject model version stage transition request.
-func (a *TransitionRequestsAPI) Reject(ctx context.Context, request RejectTransitionRequestRequest) (*RejectTransitionRequestResponse, error) {
-	var rejectTransitionRequestResponse RejectTransitionRequestResponse
+func (a *TransitionRequestsAPI) Reject(ctx context.Context, request RejectTransitionRequest) (*RejectResponse, error) {
+	var rejectResponse RejectResponse
 	path := "/api/2.0/mlflow/transition-requests/reject"
-	err := a.client.Post(ctx, path, request, &rejectTransitionRequestResponse)
-	return &rejectTransitionRequestResponse, err
+	err := a.client.Post(ctx, path, request, &rejectResponse)
+	return &rejectResponse, err
 }

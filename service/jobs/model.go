@@ -785,116 +785,34 @@ type Run struct {
 	Trigger TriggerType `json:"trigger,omitempty"`
 }
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// This describes an enum
 type RunLifeCycleState string
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// An exceptional state that indicates a failure in the Jobs service, such as
+// network failure over a long period. If a run on a new cluster ends in the
+// `INTERNAL_ERROR` state, the Jobs service terminates the cluster as soon as
+// possible. This state is terminal.
 const RunLifeCycleStateInternalError RunLifeCycleState = `INTERNAL_ERROR`
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// The run has been triggered. If there is not already an active run of the same
+// job, the cluster and execution context are being prepared. If there is
+// already an active run of the same job, the run immediately transitions into
+// the `SKIPPED` state without preparing any resources.
 const RunLifeCycleStatePending RunLifeCycleState = `PENDING`
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// The task of this run is being executed.
 const RunLifeCycleStateRunning RunLifeCycleState = `RUNNING`
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// This run was aborted because a previous run of the same job was already
+// active. This state is terminal.
 const RunLifeCycleStateSkipped RunLifeCycleState = `SKIPPED`
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// The task of this run has completed, and the cluster and execution context
+// have been cleaned up. This state is terminal.
 const RunLifeCycleStateTerminated RunLifeCycleState = `TERMINATED`
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// The task of this run has completed, and the cluster and execution context are
+// being cleaned up.
 const RunLifeCycleStateTerminating RunLifeCycleState = `TERMINATING`
 
 type RunNow struct {
@@ -1073,29 +991,19 @@ type RunParametersPipelineParams struct {
 	FullRefresh bool `json:"full_refresh,omitempty"`
 }
 
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
+// This describes an enum
 type RunResultState string
 
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
+// The run was canceled at user request.
 const RunResultStateCanceled RunResultState = `CANCELED`
 
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
+// The task completed with an error.
 const RunResultStateFailed RunResultState = `FAILED`
 
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
+// The task completed successfully.
 const RunResultStateSuccess RunResultState = `SUCCESS`
 
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
+// The run was stopped after reaching the timeout.
 const RunResultStateTimedout RunResultState = `TIMEDOUT`
 
 // The result and lifecycle state of the run.
@@ -1226,28 +1134,10 @@ type RunTask struct {
 // now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
 type RunType string
 
-// The type of the run. * `JOB_RUN` \- Normal job run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow). * `WORKFLOW_RUN`
-// \- Workflow run. A run created with
-// [dbutils.notebook.run](..dev-tools/databricks-utilshtml#dbutils-workflow). *
-// `SUBMIT_RUN` \- Submit run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
 const RunTypeJobRun RunType = `JOB_RUN`
 
-// The type of the run. * `JOB_RUN` \- Normal job run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow). * `WORKFLOW_RUN`
-// \- Workflow run. A run created with
-// [dbutils.notebook.run](..dev-tools/databricks-utilshtml#dbutils-workflow). *
-// `SUBMIT_RUN` \- Submit run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
 const RunTypeSubmitRun RunType = `SUBMIT_RUN`
 
-// The type of the run. * `JOB_RUN` \- Normal job run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow). * `WORKFLOW_RUN`
-// \- Workflow run. A run created with
-// [dbutils.notebook.run](..dev-tools/databricks-utilshtml#dbutils-workflow). *
-// `SUBMIT_RUN` \- Submit run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
 const RunTypeWorkflowRun RunType = `WORKFLOW_RUN`
 
 // An arbitrary object where the object key is a configuration propery name and
@@ -1320,13 +1210,6 @@ type SubmitRunResponse struct {
 	RunId int64 `json:"run_id,omitempty"`
 }
 
-// An optional array of objects specifying the dependency graph of the task. All
-// tasks specified in this field must complete successfully before executing
-// this task. The key is `task_key`, and the value is the name assigned to the
-// dependent task. This field is required when a job consists of more than one
-// task.
-type TaskDependencies []TaskDependenciesItem
-
 type TaskDependenciesItem struct {
 	TaskKey string `json:"task_key,omitempty"`
 }
@@ -1338,32 +1221,18 @@ type TaskDependenciesItem struct {
 // On Update or Reset, this field is used to reference the tasks to be updated
 // or reset. The maximum length is 100 characters.
 
-// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
-// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
-// occurs you triggered a single run on demand through the UI or the API. *
-// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
-// run. This occurs when you request to re-run the job in case of failures.
+// This describes an enum
 type TriggerType string
 
-// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
-// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
-// occurs you triggered a single run on demand through the UI or the API. *
-// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
-// run. This occurs when you request to re-run the job in case of failures.
+// One time triggers that fire a single run. This occurs you triggered a single
+// run on demand through the UI or the API.
 const TriggerTypeOneTime TriggerType = `ONE_TIME`
 
-// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
-// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
-// occurs you triggered a single run on demand through the UI or the API. *
-// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
-// run. This occurs when you request to re-run the job in case of failures.
+// Schedules that periodically trigger runs, such as a cron scheduler.
 const TriggerTypePeriodic TriggerType = `PERIODIC`
 
-// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
-// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
-// occurs you triggered a single run on demand through the UI or the API. *
-// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
-// run. This occurs when you request to re-run the job in case of failures.
+// Indicates a run that is triggered as a retry of a previously failed run. This
+// occurs when you request to re-run the job in case of failures.
 const TriggerTypeRetry TriggerType = `RETRY`
 
 type UpdateJob struct {
@@ -1391,29 +1260,25 @@ type ViewItem struct {
 	Type ViewType `json:"type,omitempty"`
 }
 
-// * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
+// This describes an enum
 type ViewType string
 
-// * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
+// Dashboard view item.
 const ViewTypeDashboard ViewType = `DASHBOARD`
 
-// * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
+// Notebook view item.
 const ViewTypeNotebook ViewType = `NOTEBOOK`
 
-// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
-// the notebook. * `ALL`: All views of the notebook.
+// This describes an enum
 type ViewsToExport string
 
-// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
-// the notebook. * `ALL`: All views of the notebook.
+// All views of the notebook.
 const ViewsToExportAll ViewsToExport = `ALL`
 
-// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
-// the notebook. * `ALL`: All views of the notebook.
+// Code view of the notebook.
 const ViewsToExportCode ViewsToExport = `CODE`
 
-// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
-// the notebook. * `ALL`: All views of the notebook.
+// All dashboard views of the notebook.
 const ViewsToExportDashboards ViewsToExport = `DASHBOARDS`
 
 type CreateResponse struct {
@@ -1423,39 +1288,39 @@ type CreateResponse struct {
 
 type ExportRunRequest struct {
 	// The canonical identifier for the run. This field is required.
-	RunId int64 ` url:"run_id,omitempty"`
+	RunId int64 `json:"-" url:"run_id,omitempty"`
 	// Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
-	ViewsToExport ViewsToExport ` url:"views_to_export,omitempty"`
+	ViewsToExport ViewsToExport `json:"-" url:"views_to_export,omitempty"`
 }
 
 type GetRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
-	JobId int64 ` url:"job_id,omitempty"`
+	JobId int64 `json:"-" url:"job_id,omitempty"`
 }
 
 type GetRunOutputRequest struct {
 	// The canonical identifier for the run. This field is required.
-	RunId int64 ` url:"run_id,omitempty"`
+	RunId int64 `json:"-" url:"run_id,omitempty"`
 }
 
 type GetRunRequest struct {
 	// Whether to include the repair history in the response.
-	IncludeHistory bool ` url:"include_history,omitempty"`
+	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
-	RunId int64 ` url:"run_id,omitempty"`
+	RunId int64 `json:"-" url:"run_id,omitempty"`
 }
 
 type ListRequest struct {
 	// Whether to include task and cluster details in the response.
-	ExpandTasks bool ` url:"expand_tasks,omitempty"`
+	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
 	// The number of jobs to return. This value must be greater than 0 and less
 	// or equal to 25. The default value is 20.
-	Limit int ` url:"limit,omitempty"`
+	Limit int `json:"-" url:"limit,omitempty"`
 	// The offset of the first job to return, relative to the most recently
 	// created job.
-	Offset int ` url:"offset,omitempty"`
+	Offset int `json:"-" url:"offset,omitempty"`
 }
 
 type ListResponse struct {
@@ -1469,33 +1334,33 @@ type ListRunsRequest struct {
 	// otherwise, lists both active and completed runs. An active run is a run
 	// in the `PENDING`, `RUNNING`, or `TERMINATING`. This field cannot be
 	// `true` when completed_only is `true`.
-	ActiveOnly bool ` url:"active_only,omitempty"`
+	ActiveOnly bool `json:"-" url:"active_only,omitempty"`
 	// If completed_only is `true`, only completed runs are included in the
 	// results; otherwise, lists both active and completed runs. This field
 	// cannot be `true` when active_only is `true`.
-	CompletedOnly bool ` url:"completed_only,omitempty"`
+	CompletedOnly bool `json:"-" url:"completed_only,omitempty"`
 	// Whether to include task and cluster details in the response.
-	ExpandTasks bool ` url:"expand_tasks,omitempty"`
+	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
 	// The job for which to list runs. If omitted, the Jobs service lists runs
 	// from all jobs.
-	JobId int64 ` url:"job_id,omitempty"`
+	JobId int64 `json:"-" url:"job_id,omitempty"`
 	// The number of runs to return. This value must be greater than 0 and less
 	// than 25\. The default value is 25\. If a request specifies a limit of 0,
 	// the service instead uses the maximum limit.
-	Limit int ` url:"limit,omitempty"`
+	Limit int `json:"-" url:"limit,omitempty"`
 	// The offset of the first run to return, relative to the most recent run.
-	Offset int ` url:"offset,omitempty"`
+	Offset int `json:"-" url:"offset,omitempty"`
 	// The type of runs to return. For a description of run types, see
 	// [Run](..dev-tools/api/latest/jobshtml#operation/JobsRunsGet).
-	RunType ListRunsRunType ` url:"run_type,omitempty"`
+	RunType ListRunsRunType `json:"-" url:"run_type,omitempty"`
 	// Show runs that started _at or after_ this value. The value must be a UTC
 	// timestamp in milliseconds. Can be combined with _start_time_to_ to filter
 	// by a time range.
-	StartTimeFrom int ` url:"start_time_from,omitempty"`
+	StartTimeFrom int `json:"-" url:"start_time_from,omitempty"`
 	// Show runs that started _at or before_ this value. The value must be a UTC
 	// timestamp in milliseconds. Can be combined with _start_time_from_ to
 	// filter by a time range.
-	StartTimeTo int ` url:"start_time_to,omitempty"`
+	StartTimeTo int `json:"-" url:"start_time_to,omitempty"`
 }
 
 type ListRunsRunType string
