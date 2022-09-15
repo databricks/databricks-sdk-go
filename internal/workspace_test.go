@@ -21,7 +21,7 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 
 	t.Cleanup(func() {
 		// Delete the test directory
-		err := wsc.Workspace.Delete(ctx, workspace.DeleteRequest{
+		err := wsc.Workspace.Delete(ctx, workspace.Delete{
 			Path:      testDirPath,
 			Recursive: true,
 		})
@@ -33,7 +33,7 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Import the test notebook
-	err = wsc.Workspace.Import(ctx, workspace.ImportRequest{
+	err = wsc.Workspace.Import(ctx, workspace.Import{
 		Path:      filepath.Join(testDirPath, testFileName),
 		Format:    "SOURCE",
 		Language:  "PYTHON",

@@ -120,8 +120,9 @@ func (pkg *Package) makeEnum(e *Entity, s *openapi.Schema, path []string) *Entit
 		if len(s.AliasEnum) == len(s.Enum) {
 			name = s.AliasEnum[idx]
 		}
+		description := s.EnumDescriptions[content]
 		e.enum[content] = EnumEntry{
-			Named:   Named{name, s.EnumDescriptions[content]},
+			Named:   Named{name, description},
 			Entity:  e,
 			Content: content,
 		}

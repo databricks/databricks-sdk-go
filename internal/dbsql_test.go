@@ -37,12 +37,4 @@ func TestAccQueries(t *testing.T) {
 	loaded, err := wsc.Queries.GetQueryByQueryId(ctx, query.Id)
 	require.NoError(t, err)
 	assert.Equal(t, query.Query, loaded.Query)
-
-	nameToId, err := wsc.Queries.QueryNameToIdMap(ctx, dbsql.ListQueriesRequest{})
-	require.NoError(t, err)
-	assert.Equal(t, nameToId[loaded.Name], loaded.Id)
-
-	byName, err := wsc.Queries.GetQueryByName(ctx, loaded.Name)
-	require.NoError(t, err)
-	assert.Equal(t, byName.Id, loaded.Id)
 }

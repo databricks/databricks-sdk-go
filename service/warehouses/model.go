@@ -101,7 +101,7 @@ type CreateWarehouseResponse struct {
 
 type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
-	Id string ` path:"id"`
+	Id string `json:"-" path:"id"`
 }
 
 type EditWarehouseRequest struct {
@@ -135,7 +135,7 @@ type EditWarehouseRequest struct {
 	// Nephos) Defaults to value in global endpoint settings
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// Required. Id of the warehouse to configure.
-	Id string ` path:"id"`
+	Id string `json:"-" path:"id"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
@@ -336,7 +336,7 @@ type EndpointTags struct {
 
 type GetWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
-	Id string ` path:"id"`
+	Id string `json:"-" path:"id"`
 }
 
 type GetWarehouseResponse struct {
@@ -491,7 +491,7 @@ const GetWorkspaceWarehouseConfigResponseSecurityPolicyPassthrough GetWorkspaceW
 type ListWarehousesRequest struct {
 	// Service Principal which will be used to fetch the list of endpoints. If
 	// not specified, GW will use the user from the session header.
-	RunAsUserId int ` url:"run_as_user_id,omitempty"`
+	RunAsUserId int `json:"-" url:"run_as_user_id,omitempty"`
 }
 
 type ListWarehousesResponse struct {
@@ -563,12 +563,12 @@ const SetWorkspaceWarehouseConfigRequestSecurityPolicyPassthrough SetWorkspaceWa
 
 type StartWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
-	Id string ` path:"id"`
+	Id string `json:"-" path:"id"`
 }
 
 type StopWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
-	Id string ` path:"id"`
+	Id string `json:"-" path:"id"`
 }
 
 type TerminationReason struct {

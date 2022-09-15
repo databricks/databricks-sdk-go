@@ -10,7 +10,7 @@ import (
 //
 // Evolving: this interface is under development. Method signatures may change.
 type WorkspaceConfService interface {
-	GetStatus(ctx context.Context, getStatusRequest GetStatusRequest) (*WorkspaceConf, error)
+	GetStatus(ctx context.Context, request GetStatusRequest) (*WorkspaceConf, error)
 
-	SetStatus(ctx context.Context, workspaceConf WorkspaceConf) error
+	SetStatus(ctx context.Context, request WorkspaceConf) error
 }

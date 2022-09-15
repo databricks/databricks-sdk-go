@@ -36,12 +36,12 @@ type CreateIPAccessListResponse struct {
 
 type DeleteIpAccessListRequest struct {
 	// The ID for the corresponding IP access list to modify.
-	IpAccessListId string ` path:"ip_access_list_id"`
+	IpAccessListId string `json:"-" path:"ip_access_list_id"`
 }
 
 type FetchIpAccessListRequest struct {
 	// The ID for the corresponding IP access list to modify.
-	IpAccessListId string ` path:"ip_access_list_id"`
+	IpAccessListId string `json:"-" path:"ip_access_list_id"`
 }
 
 type GetIPAccessListResponse struct {
@@ -51,7 +51,7 @@ type GetIPAccessListResponse struct {
 type ReplaceIPAccessListRequest struct {
 	Enabled bool `json:"enabled"`
 	// The ID for the corresponding IP access list to modify.
-	IpAccessListId string ` path:"ip_access_list_id"`
+	IpAccessListId string `json:"-" path:"ip_access_list_id"`
 
 	IpAddresses []string `json:"ip_addresses"`
 
@@ -65,7 +65,7 @@ type ReplaceIPAccessListRequest struct {
 type UpdateIPAccessListRequest struct {
 	Enabled bool `json:"enabled,omitempty"`
 	// The ID for the corresponding IP access list to modify.
-	IpAccessListId string ` path:"ip_access_list_id"`
+	IpAccessListId string `json:"-" path:"ip_access_list_id"`
 
 	IpAddresses []string `json:"ip_addresses,omitempty"`
 
@@ -84,29 +84,18 @@ type UpdateIPAccessListRequest struct {
 
 // Specifies whether this IP access list is enabled.
 
-// Array of IP addresses or CIDR values to be added to the IP access list.
-type IpAddresses []string
-
 // Label for the IP access list. This **cannot** be empty.
 
 // UUID of the IP access list
 
-// Type of IP access list. Valid values are as follows and are case-sensitive: *
-// `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list.
-// Exclude this IP or range. IP addresses in the block list are excluded even if
-// they are included in an allow list.
+// This describes an enum
 type ListType string
 
-// Type of IP access list. Valid values are as follows and are case-sensitive: *
-// `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list.
-// Exclude this IP or range. IP addresses in the block list are excluded even if
-// they are included in an allow list.
+// An allow list. Include this IP or range.
 const ListTypeAllow ListType = `ALLOW`
 
-// Type of IP access list. Valid values are as follows and are case-sensitive: *
-// `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list.
-// Exclude this IP or range. IP addresses in the block list are excluded even if
-// they are included in an allow list.
+// A block list. Exclude this IP or range. IP addresses in the block list are
+// excluded even if they are included in an allow list.
 const ListTypeBlock ListType = `BLOCK`
 
 // Update timestamp in milliseconds

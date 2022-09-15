@@ -12,3 +12,15 @@ func TestBasic(t *testing.T) {
 
 	assert.Len(t, batch.Packages, 1)
 }
+
+// This test is used for debugging purposes
+func TestBasicDebug(t *testing.T) {
+	t.SkipNow()
+	batch, err := NewFromFile("/tmp/processed-databricks-workspace-all.json")
+	assert.NoError(t, err)
+
+	m := batch.Packages["unitycatalog"].services["Catalogs"].methods["createCatalog"]
+	t.Log(m)
+
+	assert.Len(t, batch.Packages, 1)
+}

@@ -62,11 +62,11 @@ func (a *LibrariesAPI) AllClusterStatuses(ctx context.Context) (*ListAllClusterL
 // "messages": ["R package installation is not supported on this spark
 // version.\nPlease upgrade to Runtime 3.2 or higher"],
 // "is_library_for_all_clusters": false } ] }
-func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusRequest) (*ClusterStatusResponse, error) {
-	var clusterStatusResponse ClusterStatusResponse
+func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusRequest) (*ClusterLibraryStatuses, error) {
+	var clusterLibraryStatuses ClusterLibraryStatuses
 	path := "/api/2.0/libraries/cluster-status"
-	err := a.client.Get(ctx, path, request, &clusterStatusResponse)
-	return &clusterStatusResponse, err
+	err := a.client.Get(ctx, path, request, &clusterLibraryStatuses)
+	return &clusterLibraryStatuses, err
 }
 
 // Get the status of libraries on a cluster. A status will be available for all
@@ -93,7 +93,7 @@ func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusR
 // "messages": ["R package installation is not supported on this spark
 // version.\nPlease upgrade to Runtime 3.2 or higher"],
 // "is_library_for_all_clusters": false } ] }
-func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId string) (*ClusterStatusResponse, error) {
+func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId string) (*ClusterLibraryStatuses, error) {
 	return a.ClusterStatus(ctx, ClusterStatusRequest{
 		ClusterId: clusterId,
 	})
@@ -112,7 +112,7 @@ func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId s
 // "org.jsoup:jsoup:1.7.2", "exclusions": ["slf4j:slf4j"] } }, { "pypi": {
 // "package": "simplejson", "repo": "http://my-pypi-mirror.com" } }, { "cran": {
 // "package: "ada", "repo": "http://cran.us.r-project.org" } } ] }
-func (a *LibrariesAPI) Install(ctx context.Context, request InstallLibrariesRequest) error {
+func (a *LibrariesAPI) Install(ctx context.Context, request InstallLibraries) error {
 	path := "/api/2.0/libraries/install"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -123,7 +123,7 @@ func (a *LibrariesAPI) Install(ctx context.Context, request InstallLibrariesRequ
 // not installed on the cluster will have no impact but is not an error. An
 // example request: .. code:: { "cluster_id": "10201-my-cluster", "libraries": [
 // { "jar": "dbfs:/mnt/libraries/library.jar" }, { "cran": "ada" } ] }
-func (a *LibrariesAPI) Uninstall(ctx context.Context, request UninstallLibrariesRequest) error {
+func (a *LibrariesAPI) Uninstall(ctx context.Context, request UninstallLibraries) error {
 	path := "/api/2.0/libraries/uninstall"
 	err := a.client.Post(ctx, path, request, nil)
 	return err

@@ -196,12 +196,16 @@ type EditAlert struct {
 	Rearm int `json:"rearm,omitempty"`
 }
 
+// This describes an enum
 type PermissionLevel string
 
+// Can manage the query
 const PermissionLevelCanManage PermissionLevel = `CAN_MANAGE`
 
+// Can run the query
 const PermissionLevelCanRun PermissionLevel = `CAN_RUN`
 
+// Can view the query
 const PermissionLevelCanView PermissionLevel = `CAN_VIEW`
 
 type Query struct {
@@ -427,19 +431,10 @@ type WidgetOptions struct {
 // and did not fulfill trigger conditions).
 type AlertState string
 
-// State of the alert. Possible values are: `unknown` (yet to be evaluated),
-// `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated
-// and did not fulfill trigger conditions).
 const AlertStateOk AlertState = `ok`
 
-// State of the alert. Possible values are: `unknown` (yet to be evaluated),
-// `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated
-// and did not fulfill trigger conditions).
 const AlertStateTriggered AlertState = `triggered`
 
-// State of the alert. Possible values are: `unknown` (yet to be evaluated),
-// `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated
-// and did not fulfill trigger conditions).
 const AlertStateUnknown AlertState = `unknown`
 
 // ID of the alert subscriber (if subscribing an alert destination). Alert
@@ -592,16 +587,12 @@ type ListSchedulesRequest struct {
 // A singular noun object type
 type ObjectType string
 
-// A singular noun object type
 const ObjectTypeAlert ObjectType = `alert`
 
-// A singular noun object type
 const ObjectTypeDashboard ObjectType = `dashboard`
 
-// A singular noun object type
 const ObjectTypeDataSource ObjectType = `data_source`
 
-// A singular noun object type
 const ObjectTypeQuery ObjectType = `query`
 
 // An object's type and UUID, separated by a forward slash (/) character.
@@ -609,28 +600,21 @@ const ObjectTypeQuery ObjectType = `query`
 // Always a plural of the object type.
 type ObjectTypePlural string
 
-// Always a plural of the object type.
 const ObjectTypePluralAlerts ObjectTypePlural = `alerts`
 
-// Always a plural of the object type.
 const ObjectTypePluralDashboards ObjectTypePlural = `dashboards`
 
-// Always a plural of the object type.
 const ObjectTypePluralDataSources ObjectTypePlural = `data_sources`
 
-// Always a plural of the object type.
 const ObjectTypePluralQueries ObjectTypePlural = `queries`
 
 // The singular form of the type of object which can be owned.
 type OwnableObjectType string
 
-// The singular form of the type of object which can be owned.
 const OwnableObjectTypeAlert OwnableObjectType = `alert`
 
-// The singular form of the type of object which can be owned.
 const OwnableObjectTypeDashboard OwnableObjectType = `dashboard`
 
-// The singular form of the type of object which can be owned.
 const OwnableObjectTypeQuery OwnableObjectType = `query`
 
 // Cron string representing the refresh schedule.

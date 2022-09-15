@@ -63,13 +63,13 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	tmpPath := RandomName("/tmp/jobs-test")
 	err := wsc.Workspace.MkdirsByPath(ctx, tmpPath)
 	require.NoError(t, err)
-	defer wsc.Workspace.Delete(ctx, workspace.DeleteRequest{
+	defer wsc.Workspace.Delete(ctx, workspace.Delete{
 		Path: tmpPath,
 	})
 
 	filePath := filepath.Join(tmpPath, RandomName("slow-"))
 	fileContent := "import time; time.sleep(10); dbutils.notebook.exit('hello')"
-	err = wsc.Workspace.Import(ctx, workspace.ImportRequest{
+	err = wsc.Workspace.Import(ctx, workspace.Import{
 		Content:   base64.StdEncoding.Strict().EncodeToString([]byte(fileContent)),
 		Format:    "SOURCE",
 		Language:  "PYTHON",

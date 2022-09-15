@@ -106,32 +106,6 @@ func (a *AlertsAPI) ListAlerts(ctx context.Context) ([]Alert, error) {
 	return alertList, err
 }
 
-func (a *AlertsAPI) AlertNameToIdMap(ctx context.Context) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListAlerts(ctx)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.Name] = v.Id
-	}
-	return mapping, nil
-}
-
-func (a *AlertsAPI) GetAlertByName(ctx context.Context, name string) (*Alert, error) {
-	result, err := a.ListAlerts(ctx)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.Name != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("Alert named '%s' does not exist", name)
-}
-
 // Alerts can have refresh schedules that specify when to refresh and evaluate
 // the associated query result. **Note:** Although refresh schedules are
 // returned in a list, only one refresh schedule per alert is currently
@@ -236,51 +210,6 @@ func (a *DashboardsAPI) ListDashboards(ctx context.Context, request ListDashboar
 	return &listDashboardsResponse, err
 }
 
-func (a *DashboardsAPI) ListDashboardsAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
-	var results []Dashboard
-	for {
-		response, err := a.ListDashboards(ctx, request)
-		if err != nil {
-			return nil, err
-		}
-		if len(response.Results) == 0 {
-			break
-		}
-		for _, v := range response.Results {
-			results = append(results, v)
-		}
-		request.Page += 1
-	}
-	return results, nil
-
-}
-
-func (a *DashboardsAPI) DashboardNameToIdMap(ctx context.Context, request ListDashboardsRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListDashboardsAll(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.Name] = v.Id
-	}
-	return mapping, nil
-}
-
-func (a *DashboardsAPI) GetDashboardByName(ctx context.Context, name string) (*Dashboard, error) {
-	result, err := a.ListDashboardsAll(ctx, ListDashboardsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.Name != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("Dashboard named '%s' does not exist", name)
-}
-
 // A restored dashboard appears in list views and searches and can be shared.
 func (a *DashboardsAPI) RestoreDashboard(ctx context.Context, request RestoreDashboardRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/trash/%v", request.DashboardId)
@@ -306,18 +235,6 @@ func (a *DataSourcesAPI) ListDataSources(ctx context.Context) ([]DataSource, err
 	path := "/api/2.0/preview/sql/data_sources"
 	err := a.client.Get(ctx, path, nil, &dataSourceList)
 	return dataSourceList, err
-}
-
-func (a *DataSourcesAPI) DataSourceNameToIdMap(ctx context.Context) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListDataSources(ctx)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.Name] = v.Id
-	}
-	return mapping, nil
 }
 
 func NewDbsqlPermissions(client *client.DatabricksClient) DbsqlPermissionsService {
@@ -427,51 +344,6 @@ func (a *QueriesAPI) ListQueries(ctx context.Context, request ListQueriesRequest
 	path := "/api/2.0/preview/sql/queries"
 	err := a.client.Get(ctx, path, request, &listQueriesResponse)
 	return &listQueriesResponse, err
-}
-
-func (a *QueriesAPI) ListQueriesAll(ctx context.Context, request ListQueriesRequest) ([]Query, error) {
-	var results []Query
-	for {
-		response, err := a.ListQueries(ctx, request)
-		if err != nil {
-			return nil, err
-		}
-		if len(response.Results) == 0 {
-			break
-		}
-		for _, v := range response.Results {
-			results = append(results, v)
-		}
-		request.Page += 1
-	}
-	return results, nil
-
-}
-
-func (a *QueriesAPI) QueryNameToIdMap(ctx context.Context, request ListQueriesRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListQueriesAll(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.Name] = v.Id
-	}
-	return mapping, nil
-}
-
-func (a *QueriesAPI) GetQueryByName(ctx context.Context, name string) (*Query, error) {
-	result, err := a.ListQueriesAll(ctx, ListQueriesRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.Name != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("Query named '%s' does not exist", name)
 }
 
 // A restored query appears in list views and searches. You can use restored

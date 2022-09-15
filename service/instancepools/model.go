@@ -4,7 +4,7 @@ package instancepools
 
 // all definitions in this file are in alphabetical order
 
-type CreateInstancePoolRequest struct {
+type CreateInstancePool struct {
 	// Attributes related to pool running on Amazon Web Services. If not
 	// specified at pool creation, a set of default values will be used.
 	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
@@ -65,7 +65,7 @@ type CreateInstancePoolResponse struct {
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 }
 
-type DeleteInstancePoolRequest struct {
+type DeleteInstancePool struct {
 	// The instance pool to be terminated.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 }
@@ -128,7 +128,7 @@ type DockerImage struct {
 	Url string `json:"url,omitempty"`
 }
 
-type EditInstancePoolRequest struct {
+type EditInstancePool struct {
 	// Attributes related to pool running on Amazon Web Services. If not
 	// specified at pool creation, a set of default values will be used.
 	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
@@ -255,12 +255,7 @@ const FleetSpotOptionAllocationStrategyLowestPrice FleetSpotOptionAllocationStra
 
 const FleetSpotOptionAllocationStrategyPrioritized FleetSpotOptionAllocationStrategy = `PRIORITIZED`
 
-type GetInstancePoolRequest struct {
-	// The instance pool about which to retrieve information.
-	InstancePoolId string ` url:"instance_pool_id,omitempty"`
-}
-
-type GetInstancePoolResponse struct {
+type GetInstancePool struct {
 	// Attributes related to pool running on Amazon Web Services. If not
 	// specified at pool creation, a set of default values will be used.
 	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
@@ -320,7 +315,7 @@ type GetInstancePoolResponse struct {
 	// API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 	// Current state of the instance pool.
-	State GetInstancePoolResponseState `json:"state,omitempty"`
+	State GetInstancePoolState `json:"state,omitempty"`
 
 	Stats *InstancePoolStats `json:"stats,omitempty"`
 
@@ -328,13 +323,13 @@ type GetInstancePoolResponse struct {
 }
 
 // Current state of the instance pool.
-type GetInstancePoolResponseState string
+type GetInstancePoolState string
 
-const GetInstancePoolResponseStateActive GetInstancePoolResponseState = `ACTIVE`
+const GetInstancePoolStateActive GetInstancePoolState = `ACTIVE`
 
-const GetInstancePoolResponseStateDeleted GetInstancePoolResponseState = `DELETED`
+const GetInstancePoolStateDeleted GetInstancePoolState = `DELETED`
 
-const GetInstancePoolResponseStateStopped GetInstancePoolResponseState = `STOPPED`
+const GetInstancePoolStateStopped GetInstancePoolState = `STOPPED`
 
 type InstancePoolAndStats struct {
 	// Attributes related to pool running on Amazon Web Services. If not
@@ -496,7 +491,7 @@ type InstancePoolStatus struct {
 	PendingInstanceErrors []PendingInstanceError `json:"pending_instance_errors,omitempty"`
 }
 
-type ListInstancePoolsResponse struct {
+type ListInstancePools struct {
 	InstancePools []InstancePoolAndStats `json:"instance_pools,omitempty"`
 }
 
@@ -504,4 +499,9 @@ type PendingInstanceError struct {
 	InstanceId string `json:"instance_id,omitempty"`
 
 	Message string `json:"message,omitempty"`
+}
+
+type GetRequest struct {
+	// The instance pool about which to retrieve information.
+	InstancePoolId string `json:"-" url:"instance_pool_id,omitempty"`
 }

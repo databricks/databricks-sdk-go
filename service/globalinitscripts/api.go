@@ -45,11 +45,11 @@ func (a *GlobalInitScriptsAPI) DeleteScriptByScriptId(ctx context.Context, scrip
 // properties for each script but **not** the script contents. To retrieve the
 // contents of a script, use the [get a global init
 // script](#operation/get-script) operation.
-func (a *GlobalInitScriptsAPI) GetAllScripts(ctx context.Context) (*GetAllScriptsResponse, error) {
-	var getAllScriptsResponse GetAllScriptsResponse
+func (a *GlobalInitScriptsAPI) GetAllScripts(ctx context.Context) ([]GlobalInitScriptDetails, error) {
+	var globalInitScriptDetailsList []GlobalInitScriptDetails
 	path := "/api/2.0/global-init-scripts"
-	err := a.client.Get(ctx, path, nil, &getAllScriptsResponse)
-	return &getAllScriptsResponse, err
+	err := a.client.Get(ctx, path, nil, &globalInitScriptDetailsList)
+	return globalInitScriptDetailsList, err
 }
 
 // Get all the details of a script, including its Base64-encoded contents.

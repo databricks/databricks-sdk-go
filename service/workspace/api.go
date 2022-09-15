@@ -25,7 +25,7 @@ type WorkspaceAPI struct {
 // “DIRECTORY_NOT_EMPTY“. Object deletion cannot be undone and deleting a
 // directory recursively is not atomic. Example of request: .. code :: json {
 // "path": "/Users/user@example.com/project", "recursive": true }
-func (a *WorkspaceAPI) Delete(ctx context.Context, request DeleteRequest) error {
+func (a *WorkspaceAPI) Delete(ctx context.Context, request Delete) error {
 	path := "/api/2.0/workspace/delete"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -56,11 +56,11 @@ func (a *WorkspaceAPI) Export(ctx context.Context, request ExportRequest) (*Expo
 // } Example of response: .. code :: json { "path":
 // "/Users/user@example.com/project/ScalaExampleNotebook", "language": "SCALA",
 // "object_type": "NOTEBOOK", "object_id": 789 }
-func (a *WorkspaceAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*GetStatusResponse, error) {
-	var getStatusResponse GetStatusResponse
+func (a *WorkspaceAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error) {
+	var objectInfo ObjectInfo
 	path := "/api/2.0/workspace/get-status"
-	err := a.client.Get(ctx, path, request, &getStatusResponse)
-	return &getStatusResponse, err
+	err := a.client.Get(ctx, path, request, &objectInfo)
+	return &objectInfo, err
 }
 
 // Gets the status of an object or a directory. If “path“ does not exist, this
@@ -69,7 +69,7 @@ func (a *WorkspaceAPI) GetStatus(ctx context.Context, request GetStatusRequest) 
 // } Example of response: .. code :: json { "path":
 // "/Users/user@example.com/project/ScalaExampleNotebook", "language": "SCALA",
 // "object_type": "NOTEBOOK", "object_id": 789 }
-func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*GetStatusResponse, error) {
+func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*ObjectInfo, error) {
 	return a.GetStatus(ctx, GetStatusRequest{
 		Path: path,
 	})
@@ -86,7 +86,7 @@ func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*GetSt
 // path=/Users/user@example.com/project/ScalaExampleNotebook -F language=SCALA \
 // -F content=@example.scala \
 // https://XX.cloud.databricks.com/api/2.0/workspace/import
-func (a *WorkspaceAPI) Import(ctx context.Context, request ImportRequest) error {
+func (a *WorkspaceAPI) Import(ctx context.Context, request Import) error {
 	path := "/api/2.0/workspace/import"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -113,7 +113,7 @@ func (a *WorkspaceAPI) List(ctx context.Context, request ListRequest) (*ListResp
 // if this operation fails it may have succeeded in creating some of the
 // necessary parrent directories. Example of request: .. code:: json { "path":
 // "/Users/user@example.com/project" }
-func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request MkdirsRequest) error {
+func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request Mkdirs) error {
 	path := "/api/2.0/workspace/mkdirs"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -126,7 +126,7 @@ func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request MkdirsRequest) error 
 // necessary parrent directories. Example of request: .. code:: json { "path":
 // "/Users/user@example.com/project" }
 func (a *WorkspaceAPI) MkdirsByPath(ctx context.Context, path string) error {
-	return a.Mkdirs(ctx, MkdirsRequest{
+	return a.Mkdirs(ctx, Mkdirs{
 		Path: path,
 	})
 }

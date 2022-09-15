@@ -19,7 +19,7 @@ type InstancePoolsAPI struct {
 }
 
 // Creates a new Instance Pool
-func (a *InstancePoolsAPI) Create(ctx context.Context, request CreateInstancePoolRequest) (*CreateInstancePoolResponse, error) {
+func (a *InstancePoolsAPI) Create(ctx context.Context, request CreateInstancePool) (*CreateInstancePoolResponse, error) {
 	var createInstancePoolResponse CreateInstancePoolResponse
 	path := "/api/2.0/instance-pools/create"
 	err := a.client.Post(ctx, path, request, &createInstancePoolResponse)
@@ -27,7 +27,7 @@ func (a *InstancePoolsAPI) Create(ctx context.Context, request CreateInstancePoo
 }
 
 // Deletes an Instance Pool
-func (a *InstancePoolsAPI) Delete(ctx context.Context, request DeleteInstancePoolRequest) error {
+func (a *InstancePoolsAPI) Delete(ctx context.Context, request DeleteInstancePool) error {
 	path := "/api/2.0/instance-pools/delete"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -35,37 +35,37 @@ func (a *InstancePoolsAPI) Delete(ctx context.Context, request DeleteInstancePoo
 
 // Deletes an Instance Pool
 func (a *InstancePoolsAPI) DeleteByInstancePoolId(ctx context.Context, instancePoolId string) error {
-	return a.Delete(ctx, DeleteInstancePoolRequest{
+	return a.Delete(ctx, DeleteInstancePool{
 		InstancePoolId: instancePoolId,
 	})
 }
 
 // Edits an existing Instance Pool
-func (a *InstancePoolsAPI) Edit(ctx context.Context, request EditInstancePoolRequest) error {
+func (a *InstancePoolsAPI) Edit(ctx context.Context, request EditInstancePool) error {
 	path := "/api/2.0/instance-pools/edit"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
 // Returns an Instance Pool
-func (a *InstancePoolsAPI) Get(ctx context.Context, request GetInstancePoolRequest) (*GetInstancePoolResponse, error) {
-	var getInstancePoolResponse GetInstancePoolResponse
+func (a *InstancePoolsAPI) Get(ctx context.Context, request GetRequest) (*GetInstancePool, error) {
+	var getInstancePool GetInstancePool
 	path := "/api/2.0/instance-pools/get"
-	err := a.client.Get(ctx, path, request, &getInstancePoolResponse)
-	return &getInstancePoolResponse, err
+	err := a.client.Get(ctx, path, request, &getInstancePool)
+	return &getInstancePool, err
 }
 
 // Returns an Instance Pool
-func (a *InstancePoolsAPI) GetByInstancePoolId(ctx context.Context, instancePoolId string) (*GetInstancePoolResponse, error) {
-	return a.Get(ctx, GetInstancePoolRequest{
+func (a *InstancePoolsAPI) GetByInstancePoolId(ctx context.Context, instancePoolId string) (*GetInstancePool, error) {
+	return a.Get(ctx, GetRequest{
 		InstancePoolId: instancePoolId,
 	})
 }
 
 // Returns list of Instance Pools
-func (a *InstancePoolsAPI) List(ctx context.Context) (*ListInstancePoolsResponse, error) {
-	var listInstancePoolsResponse ListInstancePoolsResponse
+func (a *InstancePoolsAPI) List(ctx context.Context) (*ListInstancePools, error) {
+	var listInstancePools ListInstancePools
 	path := "/api/2.0/instance-pools/list"
-	err := a.client.Get(ctx, path, nil, &listInstancePoolsResponse)
-	return &listInstancePoolsResponse, err
+	err := a.client.Get(ctx, path, nil, &listInstancePools)
+	return &listInstancePools, err
 }

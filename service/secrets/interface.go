@@ -10,6 +10,7 @@ import (
 //
 // Evolving: this interface is under development. Method signatures may change.
 type SecretsService interface {
+
 	// Creates a new secret scope. The scope name must consist of alphanumeric
 	// characters, dashes, underscores, and periods, and may not exceed 128
 	// characters. The maximum number of scopes in a workspace is 100. Example
@@ -35,7 +36,7 @@ type SecretsService interface {
 	// exists. Throws ``RESOURCE_LIMIT_EXCEEDED`` if maximum number of scopes in
 	// the workspace is exceeded. Throws ``INVALID_PARAMETER_VALUE`` if the
 	// scope name is invalid.
-	CreateScope(ctx context.Context, createScopeRequest CreateScopeRequest) error
+	CreateScope(ctx context.Context, request CreateScopeRequest) error
 
 	// Deletes the given ACL on the given scope. Users must have the ``MANAGE``
 	// permission to invoke this API. Example request: .. code:: { "scope":
@@ -43,13 +44,13 @@ type SecretsService interface {
 	// ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope, principal, or ACL
 	// exists. Throws ``PERMISSION_DENIED`` if the user does not have permission
 	// to make this API call.
-	DeleteAcl(ctx context.Context, deleteAclRequest DeleteAclRequest) error
+	DeleteAcl(ctx context.Context, request DeleteAclRequest) error
 
 	// Deletes a secret scope. Example request: .. code:: { "scope":
 	// "my-secret-scope" } Throws ``RESOURCE_DOES_NOT_EXIST`` if the scope does
 	// not exist. Throws ``PERMISSION_DENIED`` if the user does not have
 	// permission to make this API call.
-	DeleteScope(ctx context.Context, deleteScopeRequest DeleteScopeRequest) error
+	DeleteScope(ctx context.Context, request DeleteScopeRequest) error
 
 	// Deletes the secret stored in this secret scope. You must have ``WRITE``
 	// or ``MANAGE`` permission on the Secret Scope. Example request: .. code::
@@ -57,7 +58,7 @@ type SecretsService interface {
 	// ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret exists.
 	// Throws ``PERMISSION_DENIED`` if the user does not have permission to make
 	// this API call.
-	DeleteSecret(ctx context.Context, deleteSecretRequest DeleteSecretRequest) error
+	DeleteSecret(ctx context.Context, request DeleteSecretRequest) error
 
 	// Describes the details about the given ACL, such as the group and
 	// permission. Users must have the ``MANAGE`` permission to invoke this API.
@@ -65,7 +66,7 @@ type SecretsService interface {
 	// "permission": "READ" } Throws ``RESOURCE_DOES_NOT_EXIST`` if no such
 	// secret scope exists. Throws ``PERMISSION_DENIED`` if the user does not
 	// have permission to make this API call.
-	GetAcl(ctx context.Context, getAclRequest GetAclRequest) (*GetAclResponse, error)
+	GetAcl(ctx context.Context, request GetAclRequest) (*GetAclResponse, error)
 
 	// Lists the ACLs set on the given scope. Users must have the ``MANAGE``
 	// permission to invoke this API. Example response: .. code:: { "acls": [{
@@ -74,7 +75,7 @@ type SecretsService interface {
 	// ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
 	// ``PERMISSION_DENIED`` if the user does not have permission to make this
 	// API call.
-	ListAcls(ctx context.Context, listAclsRequest ListAclsRequest) (*ListAclsResponse, error)
+	ListAcls(ctx context.Context, request ListAclsRequest) (*ListAclsResponse, error)
 
 	// Lists all secret scopes available in the workspace. Example response: ..
 	// code:: { "scopes": [{ "name": "my-databricks-scope", "backend_type":
@@ -93,7 +94,7 @@ type SecretsService interface {
 	// ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
 	// ``PERMISSION_DENIED`` if the user does not have permission to make this
 	// API call.
-	ListSecrets(ctx context.Context, listSecretsRequest ListSecretsRequest) (*ListSecretsResponse, error)
+	ListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error)
 
 	// Creates or overwrites the ACL associated with the given principal (user
 	// or group) on the specified scope point. In general, a user or group will
@@ -115,7 +116,7 @@ type SecretsService interface {
 	// for the principal already exists. Throws ``INVALID_PARAMETER_VALUE`` if
 	// the permission is invalid. Throws ``PERMISSION_DENIED`` if the user does
 	// not have permission to make this API call.
-	PutAcl(ctx context.Context, putAclRequest PutAclRequest) error
+	PutAcl(ctx context.Context, request PutAclRequest) error
 
 	// Inserts a secret under the provided scope with the given name. If a
 	// secret already exists with the same name, this command overwrites the
@@ -134,5 +135,5 @@ type SecretsService interface {
 	// in scope is exceeded. Throws ``INVALID_PARAMETER_VALUE`` if the key name
 	// or value length is invalid. Throws ``PERMISSION_DENIED`` if the user does
 	// not have permission to make this API call.
-	PutSecret(ctx context.Context, putSecretRequest PutSecretRequest) error
+	PutSecret(ctx context.Context, request PutSecretRequest) error
 }
