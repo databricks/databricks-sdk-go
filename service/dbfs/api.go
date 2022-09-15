@@ -127,6 +127,7 @@ func (a *DbfsAPI) List(ctx context.Context, request ListRequest) (*ListStatusRes
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // List directory contents or file details
 //
 // Lists the contents of a directory, or details of a file. If the file or
@@ -139,6 +140,9 @@ func (a *DbfsAPI) List(ctx context.Context, request ListRequest) (*ListStatusRes
 // "path": "/databricks-results", "is_dir": true, "file_size\": 0 } ] } ```
 =======
 func (a *DbfsAPI) ListAll(ctx context.Context, request ListStatusRequest) ([]FileInfo, error) {
+=======
+func (a *DbfsAPI) ListAll(ctx context.Context, request ListRequest) ([]FileInfo, error) {
+>>>>>>> 499b182 (regenerate)
 	response, err := a.List(ctx, request)
 	if err != nil {
 		return nil, err

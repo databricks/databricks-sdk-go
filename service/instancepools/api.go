@@ -4,7 +4,6 @@ package instancepools
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )

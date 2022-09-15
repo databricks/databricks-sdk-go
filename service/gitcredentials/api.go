@@ -81,11 +81,16 @@ func (a *GitCredentialsAPI) List(ctx context.Context) (*GetCredentialsResponse, 
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Updates the credential
 //
 =======
 func (a *GitCredentialsAPI) GetCredentialsAll(ctx context.Context) ([]GetCredentialResponse, error) {
 	response, err := a.GetCredentials(ctx)
+=======
+func (a *GitCredentialsAPI) ListAll(ctx context.Context) ([]GetCredentialResponse, error) {
+	response, err := a.List(ctx)
+>>>>>>> 499b182 (regenerate)
 	if err != nil {
 		return nil, err
 	}
