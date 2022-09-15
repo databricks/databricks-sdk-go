@@ -37,6 +37,18 @@ func TestAccRepos(t *testing.T) {
 	})
 	require.NoError(t, err)
 
+	// err := wsc.Workspace.MkdirsByPath(ctx, "/Repos/pagination-test")
+	// require.NoError(t, err)
+
+	// for i := 0; i < 100; i++ {
+	// 	_, err = wsc.Repos.Create(ctx, repos.CreateRepo{
+	// 		Path: RandomName("/Repos/pagination-test/"),
+	// 		Url: "https://github.com/fjakobs/empty-repo.git",
+	// 		Provider: "github",
+	// 	})
+	// 	require.NoError(t, err)
+	// }
+
 	_, err = wsc.Repos.List(ctx, repos.ListRequest{})
 	require.NoError(t, err)
 }

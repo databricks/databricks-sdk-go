@@ -188,7 +188,7 @@ func (m *Method) NamedIdMap() *NamedIdMap {
 	}
 }
 
-// GetByName returns method from the same service with x-databricks-crud:read
+// GetByName returns entity from the same service with x-databricks-crud:read
 func (m *Method) GetByName() *Entity {
 	n := m.NamedIdMap()
 	if n == nil {
