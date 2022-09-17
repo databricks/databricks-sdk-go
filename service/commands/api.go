@@ -4,11 +4,16 @@ package commands
 
 import (
 	"context"
+<<<<<<< HEAD
 	"fmt"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/retries"
+=======
+
+	"github.com/databricks/databricks-sdk-go/databricks/client"
+>>>>>>> 0acc168 (intermediate commit)
 )
 
 func NewCommandExecution(client *client.DatabricksClient) CommandExecutionService {
@@ -21,13 +26,17 @@ type CommandExecutionAPI struct {
 	client *client.DatabricksClient
 }
 
+<<<<<<< HEAD
 // Cancel a command
+=======
+>>>>>>> 0acc168 (intermediate commit)
 func (a *CommandExecutionAPI) Cancel(ctx context.Context, request CancelCommand) error {
 	path := "/api/1.2/commands/cancel"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
+<<<<<<< HEAD
 // Cancel and wait to reach Cancelled state
 func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand CancelCommand, timeout ...time.Duration) (*CommandStatusResponse, error) {
 	err := a.Cancel(ctx, cancelCommand)
@@ -60,6 +69,8 @@ func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand C
 }
 
 // Get information about a command
+=======
+>>>>>>> 0acc168 (intermediate commit)
 func (a *CommandExecutionAPI) CommandStatus(ctx context.Context, request CommandStatusRequest) (*CommandStatusResponse, error) {
 	var commandStatusResponse CommandStatusResponse
 	path := "/api/1.2/commands/status"
@@ -67,7 +78,10 @@ func (a *CommandExecutionAPI) CommandStatus(ctx context.Context, request Command
 	return &commandStatusResponse, err
 }
 
+<<<<<<< HEAD
 // Get information about an execution context
+=======
+>>>>>>> 0acc168 (intermediate commit)
 func (a *CommandExecutionAPI) ContextStatus(ctx context.Context, request ContextStatusRequest) (*ContextStatusResponse, error) {
 	var contextStatusResponse ContextStatusResponse
 	path := "/api/1.2/contexts/status"
@@ -75,6 +89,7 @@ func (a *CommandExecutionAPI) ContextStatus(ctx context.Context, request Context
 	return &contextStatusResponse, err
 }
 
+<<<<<<< HEAD
 // Create an execution context
 func (a *CommandExecutionAPI) Create(ctx context.Context, request CreateContext) (*Created, error) {
 	var created Created
@@ -117,11 +132,21 @@ func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext C
 
 // Delete an execution context
 func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyContext) error {
+=======
+func (a *CommandExecutionAPI) Create(ctx context.Context, request CreateContext) error {
+	path := "/api/1.2/contexts/create"
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
+
+func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyRequest) error {
+>>>>>>> 0acc168 (intermediate commit)
 	path := "/api/1.2/contexts/destroy"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
+<<<<<<< HEAD
 // Run a command
 func (a *CommandExecutionAPI) Execute(ctx context.Context, request Command) (*Created, error) {
 	var created Created
@@ -161,4 +186,10 @@ func (a *CommandExecutionAPI) ExecuteAndWait(ctx context.Context, command Comman
 			return nil, retries.Continues(statusMessage)
 		}
 	})
+=======
+func (a *CommandExecutionAPI) Execute(ctx context.Context, request Command) error {
+	path := "/api/1.2/commands/execute"
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+>>>>>>> 0acc168 (intermediate commit)
 }

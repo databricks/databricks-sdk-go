@@ -66,6 +66,7 @@ type CreateContext struct {
 	Language Language `json:"language,omitempty"`
 }
 
+<<<<<<< HEAD
 type Created struct {
 	Id string `json:"id,omitempty"`
 }
@@ -76,6 +77,8 @@ type DestroyContext struct {
 	ContextId string `json:"contextId"`
 }
 
+=======
+>>>>>>> 0acc168 (intermediate commit)
 type Language string
 
 const LanguagePython Language = `python`
@@ -108,14 +111,20 @@ type Results struct {
 	// true if a JSON schema is returned instead of a string representation of
 	// the Hive type.
 	IsJsonSchema bool `json:"isJsonSchema,omitempty"`
+<<<<<<< HEAD
 	// internal field used by SDK
 	Pos int `json:"pos,omitempty"`
+=======
+>>>>>>> 0acc168 (intermediate commit)
 
 	ResultType ResultType `json:"resultType,omitempty"`
 	// The table schema
 	Schema [][]any/* MISSING TYPE */ `json:"schema,omitempty"`
+<<<<<<< HEAD
 	// The summary of the error
 	Summary string `json:"summary,omitempty"`
+=======
+>>>>>>> 0acc168 (intermediate commit)
 	// true if partial results are returned.
 	Truncated bool `json:"truncated,omitempty"`
 }
@@ -133,3 +142,12 @@ type ContextStatusRequest struct {
 
 	ContextId string `json:"-" url:"contextId,omitempty"`
 }
+<<<<<<< HEAD
+=======
+
+type DestroyRequest struct {
+	ClusterId string `json:"-" url:"clusterId,omitempty"`
+
+	ContextId string `json:"-" url:"contextId,omitempty"`
+}
+>>>>>>> 0acc168 (intermediate commit)

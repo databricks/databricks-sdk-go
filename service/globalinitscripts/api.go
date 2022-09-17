@@ -88,3 +88,29 @@ func (a *GlobalInitScriptsAPI) GetAllScripts(ctx context.Context) ([]GlobalInitS
 	err := a.client.Get(ctx, path, nil, &globalInitScriptDetailsList)
 	return globalInitScriptDetailsList, err
 }
+<<<<<<< HEAD
+=======
+
+// Get all the details of a script, including its Base64-encoded contents.
+func (a *GlobalInitScriptsAPI) GetScript(ctx context.Context, request GetScriptRequest) (*GlobalInitScriptDetailsWithContent, error) {
+	var globalInitScriptDetailsWithContent GlobalInitScriptDetailsWithContent
+	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
+	err := a.client.Get(ctx, path, request, &globalInitScriptDetailsWithContent)
+	return &globalInitScriptDetailsWithContent, err
+}
+
+// Get all the details of a script, including its Base64-encoded contents.
+func (a *GlobalInitScriptsAPI) GetScriptByScriptId(ctx context.Context, scriptId string) (*GlobalInitScriptDetailsWithContent, error) {
+	return a.GetScript(ctx, GetScriptRequest{
+		ScriptId: scriptId,
+	})
+}
+
+// Update a global init script, specifying only the fields to change. All fields
+// are optional. Unspecified fields retain their current value.
+func (a *GlobalInitScriptsAPI) UpdateScript(ctx context.Context, request GlobalInitScriptUpdateRequest) error {
+	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
+	err := a.client.Patch(ctx, path, request)
+	return err
+}
+>>>>>>> 0acc168 (intermediate commit)
