@@ -95,6 +95,16 @@ type Operation struct {
 	RequestBody *Body            `json:"requestBody,omitempty"`
 }
 
+// Name is picking the last element of <ServiceName>.<method> string,
+// that is coming in as part of Databricks OpenAPI spec.
+func (o *Operation) Name() string {
+	split := strings.Split(o.OperationId, ".")
+	if len(split) == 2 {
+		return split[1]
+	}
+	return o.OperationId
+}
+
 type Pagination struct {
 	Offset    string `json:"offset,omitempty"`
 	Limit     string `json:"limit,omitempty"`
@@ -104,13 +114,19 @@ type Pagination struct {
 }
 
 type Wait struct {
-	Poll             string   `json:"poll"`
-	Bind             string   `json:"bind"`
-	ForceBindRequest bool     `json:"forceBindRequest"`
-	Field            []string `json:"field"`
-	Message          []string `json:"message"`
-	Success          []string `json:"success"`
-	Failure          []string `json:"failure"`
+	Poll         string             `json:"poll"`
+	Bind         string             `json:"bind"`
+	BindResponse string             `json:"bindResponse,omitempty"`
+	Binding      map[string]Binding `json:"binding,omitempty"`
+	Field        []string           `json:"field"`
+	Message      []string           `json:"message"`
+	Success      []string           `json:"success"`
+	Failure      []string           `json:"failure"`
+}
+
+type Binding struct {
+	Request  string `json:"request,omitempty"`
+	Response string `json:"response,omitempty"`
 }
 
 func (o *Operation) HasTag(tag string) bool {

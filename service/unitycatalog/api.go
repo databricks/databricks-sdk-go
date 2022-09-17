@@ -81,14 +81,14 @@ func (a *ExternalLocationsAPI) Create(ctx context.Context, request CreateExterna
 	return &createExternalLocationResponse, err
 }
 
-func (a *ExternalLocationsAPI) DeleteExternalLocation(ctx context.Context, request DeleteExternalLocation) error {
+func (a *ExternalLocationsAPI) DeleteExternalLocation(ctx context.Context, request DeleteExternalLocationRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.Name)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
 func (a *ExternalLocationsAPI) DeleteExternalLocationByName(ctx context.Context, name string) error {
-	return a.DeleteExternalLocation(ctx, DeleteExternalLocation{
+	return a.DeleteExternalLocation(ctx, DeleteExternalLocationRequest{
 		Name: name,
 	})
 }
@@ -174,26 +174,26 @@ func (a *MetastoresAPI) CreateMetastoreAssignment(ctx context.Context, request C
 	return err
 }
 
-func (a *MetastoresAPI) DeleteMetastore(ctx context.Context, request DeleteMetastore) error {
+func (a *MetastoresAPI) DeleteMetastore(ctx context.Context, request DeleteMetastoreRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
 func (a *MetastoresAPI) DeleteMetastoreById(ctx context.Context, id string) error {
-	return a.DeleteMetastore(ctx, DeleteMetastore{
+	return a.DeleteMetastore(ctx, DeleteMetastoreRequest{
 		Id: id,
 	})
 }
 
-func (a *MetastoresAPI) DeleteMetastoreAssignment(ctx context.Context, request DeleteMetastoreAssignment) error {
+func (a *MetastoresAPI) DeleteMetastoreAssignment(ctx context.Context, request DeleteMetastoreAssignmentRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
 func (a *MetastoresAPI) DeleteMetastoreAssignmentByWorkspaceId(ctx context.Context, workspaceId int) error {
-	return a.DeleteMetastoreAssignment(ctx, DeleteMetastoreAssignment{
+	return a.DeleteMetastoreAssignment(ctx, DeleteMetastoreAssignmentRequest{
 		WorkspaceId: workspaceId,
 	})
 }
@@ -598,7 +598,7 @@ func (a *StorageCredentialsAPI) Create(ctx context.Context, request CreateStorag
 }
 
 // <needs content>
-func (a *StorageCredentialsAPI) DeleteStorageCredential(ctx context.Context, request DeleteStorageCredential) error {
+func (a *StorageCredentialsAPI) DeleteStorageCredential(ctx context.Context, request DeleteStorageCredentialRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
 	err := a.client.Delete(ctx, path, request)
 	return err
@@ -606,7 +606,7 @@ func (a *StorageCredentialsAPI) DeleteStorageCredential(ctx context.Context, req
 
 // <needs content>
 func (a *StorageCredentialsAPI) DeleteStorageCredentialByName(ctx context.Context, name string) error {
-	return a.DeleteStorageCredential(ctx, DeleteStorageCredential{
+	return a.DeleteStorageCredential(ctx, DeleteStorageCredentialRequest{
 		Name: name,
 	})
 }

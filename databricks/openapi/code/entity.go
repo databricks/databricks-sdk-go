@@ -63,6 +63,7 @@ func (e *Entity) Field(name string) *Field {
 	if !ok {
 		return nil
 	}
+	field.Of = e
 	return &field
 }
 

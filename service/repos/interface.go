@@ -6,7 +6,8 @@ import (
 	"context"
 )
 
-// The Repos API allows users to manage their git repos.
+// The Repos API allows users to manage their git repos. Users can use the API
+// to access all repos that they have manage permissions on.
 //
 // This is the high-level interface, that contains generated methods.
 //

@@ -53,8 +53,8 @@ func (a *ClustersAPI) Create(ctx context.Context, request CreateCluster) (*Creat
 }
 
 // Create and wait to reach RUNNING state
-func (a *ClustersAPI) CreateAndWait(ctx context.Context, request CreateCluster, timeout ...time.Duration) (*ClusterInfo, error) {
-	createClusterResponse, err := a.Create(ctx, request)
+func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateCluster, timeout ...time.Duration) (*ClusterInfo, error) {
+	createClusterResponse, err := a.Create(ctx, createCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -95,8 +95,8 @@ func (a *ClustersAPI) Delete(ctx context.Context, request DeleteCluster) error {
 }
 
 // Delete and wait to reach TERMINATED state
-func (a *ClustersAPI) DeleteAndWait(ctx context.Context, request DeleteCluster, timeout ...time.Duration) (*ClusterInfo, error) {
-	err := a.Delete(ctx, request)
+func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteCluster, timeout ...time.Duration) (*ClusterInfo, error) {
+	err := a.Delete(ctx, deleteCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, request DeleteCluster, 
 	}
 	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
-			ClusterId: request.ClusterId,
+			ClusterId: deleteCluster.ClusterId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -160,8 +160,8 @@ func (a *ClustersAPI) Edit(ctx context.Context, request EditCluster) error {
 }
 
 // Edit and wait to reach RUNNING state
-func (a *ClustersAPI) EditAndWait(ctx context.Context, request EditCluster, timeout ...time.Duration) (*ClusterInfo, error) {
-	err := a.Edit(ctx, request)
+func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, timeout ...time.Duration) (*ClusterInfo, error) {
+	err := a.Edit(ctx, editCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +170,7 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, request EditCluster, time
 	}
 	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
-			ClusterId: request.ClusterId,
+			ClusterId: editCluster.ClusterId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -221,8 +221,8 @@ func (a *ClustersAPI) Get(ctx context.Context, request GetRequest) (*ClusterInfo
 }
 
 // Get and wait to reach RUNNING state
-func (a *ClustersAPI) GetAndWait(ctx context.Context, request GetRequest, timeout ...time.Duration) (*ClusterInfo, error) {
-	clusterInfo, err := a.Get(ctx, request)
+func (a *ClustersAPI) GetAndWait(ctx context.Context, getRequest GetRequest, timeout ...time.Duration) (*ClusterInfo, error) {
+	clusterInfo, err := a.Get(ctx, getRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -365,8 +365,8 @@ func (a *ClustersAPI) Resize(ctx context.Context, request ResizeCluster) error {
 }
 
 // Resize and wait to reach RUNNING state
-func (a *ClustersAPI) ResizeAndWait(ctx context.Context, request ResizeCluster, timeout ...time.Duration) (*ClusterInfo, error) {
-	err := a.Resize(ctx, request)
+func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeCluster, timeout ...time.Duration) (*ClusterInfo, error) {
+	err := a.Resize(ctx, resizeCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -375,7 +375,7 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, request ResizeCluster, 
 	}
 	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
-			ClusterId: request.ClusterId,
+			ClusterId: resizeCluster.ClusterId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -405,8 +405,8 @@ func (a *ClustersAPI) Restart(ctx context.Context, request RestartCluster) error
 }
 
 // Restart and wait to reach RUNNING state
-func (a *ClustersAPI) RestartAndWait(ctx context.Context, request RestartCluster, timeout ...time.Duration) (*ClusterInfo, error) {
-	err := a.Restart(ctx, request)
+func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster RestartCluster, timeout ...time.Duration) (*ClusterInfo, error) {
+	err := a.Restart(ctx, restartCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -415,7 +415,7 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, request RestartCluster
 	}
 	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
-			ClusterId: request.ClusterId,
+			ClusterId: restartCluster.ClusterId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -459,8 +459,8 @@ func (a *ClustersAPI) Start(ctx context.Context, request StartCluster) error {
 }
 
 // Start and wait to reach RUNNING state
-func (a *ClustersAPI) StartAndWait(ctx context.Context, request StartCluster, timeout ...time.Duration) (*ClusterInfo, error) {
-	err := a.Start(ctx, request)
+func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluster, timeout ...time.Duration) (*ClusterInfo, error) {
+	err := a.Start(ctx, startCluster)
 	if err != nil {
 		return nil, err
 	}
@@ -469,7 +469,7 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, request StartCluster, ti
 	}
 	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
-			ClusterId: request.ClusterId,
+			ClusterId: startCluster.ClusterId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)

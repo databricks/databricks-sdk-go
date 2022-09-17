@@ -53,14 +53,15 @@ func (a *GlobalInitScriptsAPI) GetAllScripts(ctx context.Context) ([]GlobalInitS
 }
 
 // Get all the details of a script, including its Base64-encoded contents.
-func (a *GlobalInitScriptsAPI) GetScript(ctx context.Context, request GetScriptRequest) error {
+func (a *GlobalInitScriptsAPI) GetScript(ctx context.Context, request GetScriptRequest) (*GlobalInitScriptDetailsWithContent, error) {
+	var globalInitScriptDetailsWithContent GlobalInitScriptDetailsWithContent
 	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
-	err := a.client.Get(ctx, path, request, nil)
-	return err
+	err := a.client.Get(ctx, path, request, &globalInitScriptDetailsWithContent)
+	return &globalInitScriptDetailsWithContent, err
 }
 
 // Get all the details of a script, including its Base64-encoded contents.
-func (a *GlobalInitScriptsAPI) GetScriptByScriptId(ctx context.Context, scriptId string) error {
+func (a *GlobalInitScriptsAPI) GetScriptByScriptId(ctx context.Context, scriptId string) (*GlobalInitScriptDetailsWithContent, error) {
 	return a.GetScript(ctx, GetScriptRequest{
 		ScriptId: scriptId,
 	})

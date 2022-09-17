@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"context"
 	"fmt"
 	"html"
 	"regexp"
@@ -21,33 +20,25 @@ var (
 	errorMessageRE = regexp.MustCompile(`ErrorMessage=(.+)\n`)
 )
 
-// CommandMock mocks the execution of command
-type CommandMock func(commandStr string) CommandResults
-
-// CommandExecutor creates a spark context and executes a command and then closes context
-type CommandExecutor interface {
-	Execute(ctx context.Context, clusterID, language, commandStr string) CommandResults
-}
-
-// CommandResults captures results of a command
-type CommandResults struct {
-	ResultType   string      `json:"resultType,omitempty"`
-	Summary      string      `json:"summary,omitempty"`
-	Cause        string      `json:"cause,omitempty"`
-	Data         interface{} `json:"data,omitempty"`
-	Schema       interface{} `json:"schema,omitempty"`
-	Truncated    bool        `json:"truncated,omitempty"`
-	IsJSONSchema bool        `json:"isJsonSchema,omitempty"`
-	pos          int
-}
+// // Results captures results of a command
+// type Results struct {
+// 	ResultType   string      `json:"resultType,omitempty"`
+// 	Summary      string      `json:"summary,omitempty"`
+// 	Cause        string      `json:"cause,omitempty"`
+// 	Data         interface{} `json:"data,omitempty"`
+// 	Schema       interface{} `json:"schema,omitempty"`
+// 	Truncated    bool        `json:"truncated,omitempty"`
+// 	IsJSONSchema bool        `json:"isJsonSchema,omitempty"`
+// 	pos          int
+// }
 
 // Failed tells if command execution failed
-func (cr *CommandResults) Failed() bool {
+func (cr *Results) Failed() bool {
 	return cr.ResultType == "error"
 }
 
 // Text returns plain text results
-func (cr *CommandResults) Text() string {
+func (cr *Results) Text() string {
 	if cr.ResultType != "text" {
 		return ""
 	}
@@ -55,7 +46,7 @@ func (cr *CommandResults) Text() string {
 }
 
 // Err returns error type
-func (cr *CommandResults) Err() error {
+func (cr *Results) Err() error {
 	if !cr.Failed() {
 		return nil
 	}
@@ -63,7 +54,7 @@ func (cr *CommandResults) Err() error {
 }
 
 // Error returns error in a bit more friendly way
-func (cr *CommandResults) Error() string {
+func (cr *Results) Error() string {
 	if cr.ResultType != "error" {
 		return ""
 	}
@@ -91,15 +82,18 @@ func (cr *CommandResults) Error() string {
 }
 
 // Scan scans for results
-func (cr *CommandResults) Scan(dest ...interface{}) bool {
-	if cr.ResultType != "table" {
+// TODO: change API, also in terraform (databricks_sql_permissions)
+// for now we're adding `pos` field artificially. this must be removed
+// before this repo is public.
+func (cr *Results) Scan(dest ...any) bool {
+	if cr.ResultType != ResultTypeTable {
 		return false
 	}
-	if rows, ok := cr.Data.([]interface{}); ok {
-		if cr.pos >= len(rows) {
+	if rows, ok := cr.Data.([]any); ok {
+		if cr.Pos >= len(rows) {
 			return false
 		}
-		if cols, ok := rows[cr.pos].([]interface{}); ok {
+		if cols, ok := rows[cr.Pos].([]any); ok {
 			for i := range dest {
 				switch d := dest[i].(type) {
 				case *string:
@@ -110,7 +104,7 @@ func (cr *CommandResults) Scan(dest ...interface{}) bool {
 					*d = cols[i].(bool)
 				}
 			}
-			cr.pos++
+			cr.Pos++
 			return true
 		}
 	}

@@ -386,7 +386,7 @@ func (a *ModelVersionCommentsAPI) Create(ctx context.Context, request CreateComm
 }
 
 // Delete a comment on a model version.
-func (a *ModelVersionCommentsAPI) Delete(ctx context.Context, request DeleteComment) error {
+func (a *ModelVersionCommentsAPI) Delete(ctx context.Context, request DeleteRequest) error {
 	path := "/api/2.0/mlflow/comments/delete"
 	err := a.client.Delete(ctx, path, request)
 	return err
@@ -394,7 +394,7 @@ func (a *ModelVersionCommentsAPI) Delete(ctx context.Context, request DeleteComm
 
 // Delete a comment on a model version.
 func (a *ModelVersionCommentsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.Delete(ctx, DeleteComment{
+	return a.Delete(ctx, DeleteRequest{
 		Id: id,
 	})
 }
@@ -599,7 +599,7 @@ func (a *RegistryWebhooksAPI) DeleteById(ctx context.Context, id string) error {
 }
 
 // This endpoint is in Public Preview. List registry webhooks.
-func (a *RegistryWebhooksAPI) List(ctx context.Context, request ListRegistryWebhooks) (*ListResponse, error) {
+func (a *RegistryWebhooksAPI) List(ctx context.Context, request ListRequest) (*ListResponse, error) {
 	var listResponse ListResponse
 	path := "/api/2.0/mlflow/registry-webhooks/list"
 	err := a.client.Get(ctx, path, request, &listResponse)

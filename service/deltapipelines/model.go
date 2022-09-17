@@ -220,7 +220,7 @@ type PipelineCluster struct {
 	Autoscale *PipelinesAutoScale `json:"autoscale,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
-	AwsAttributes any/* ERROR */ `json:"aws_attributes,omitempty"`
+	AwsAttributes *PipelinesAwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
 	AzureAttributes any/* ERROR */ `json:"azure_attributes,omitempty"`
@@ -372,6 +372,38 @@ type PipelinesAutoScale struct {
 	// autoscaling cluster. Decision Doc here:
 	// https://docs.google.com/document/d/1Eojc1a5raIyApDz_2NYyoltDlimjXzqkTgwFwDQoGnw/edit?usp=sharing
 	Mode string `json:"mode,omitempty"`
+}
+
+type PipelinesAwsAttributes struct {
+	// The first ``first_on_demand`` nodes of the cluster will be placed on
+	// on-demand instances. If this value is greater than 0, the cluster driver
+	// node in particular will be placed on an on-demand instance. If this value
+	// is greater than or equal to the current cluster size, all nodes will be
+	// placed on on-demand instances. If this value is less than the current
+	// cluster size, ``first_on_demand`` nodes will be placed on on-demand
+	// instances and the remainder will be placed on ``availability`` instances.
+	// Note that this value does not affect cluster size and cannot currently be
+	// mutated over the lifetime of a cluster.
+	FirstOnDemand int `json:"first_on_demand,omitempty"`
+	// Nodes for this cluster will only be placed on AWS instances with this
+	// instance profile. If ommitted, nodes will be placed on instances without
+	// an IAM instance profile. The instance profile must have previously been
+	// added to the Databricks environment by an account administrator. This
+	// feature may only be available to certain customer plans. If this field is
+	// ommitted, we will pull in the default from the conf if it exists.
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// Identifier for the availability zone/datacenter in which the cluster
+	// resides. This string will be of a form like "us-west-2a". The provided
+	// availability zone must be in the same region as the Databricks
+	// deployment. For example, "us-west-2a" is not a valid zone id if the
+	// Databricks deployment resides in the "us-east-1" region. This is an
+	// optional field at cluster creation, and if not specified, a default zone
+	// will be used. If the zone specified is "auto", will try to place cluster
+	// in a zone with high availability, and will retry placement in a different
+	// AZ if there is not enough capacity. See [[AutoAZHelper.scala]] for more
+	// details. The list of available zones as well as the default value can be
+	// found by using the `List Zones`_ method.
+	ZoneId string `json:"zone_id,omitempty"`
 }
 
 type PipelinesClusterLogConf struct {

@@ -12,6 +12,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
+	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -136,4 +137,15 @@ func (fixtures HTTPFixtures) Apply(t *testing.T, callback func(ctx context.Conte
 	cfg, server := fixtures.Config(t)
 	defer server.Close()
 	callback(context.Background(), cfg)
+}
+
+func (fixtures HTTPFixtures) Client(t *testing.T) (*client.DatabricksClient, *httptest.Server) {
+	cfg, server := fixtures.Config(t)
+	return client.New(cfg), server
+}
+
+func (fixtures HTTPFixtures) ApplyClient(t *testing.T, callback func(ctx context.Context, client *client.DatabricksClient)) {
+	client, server := fixtures.Client(t)
+	defer server.Close()
+	callback(context.Background(), client)
 }

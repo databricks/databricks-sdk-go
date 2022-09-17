@@ -36,7 +36,7 @@ type WorkspacesClient struct {
 	Catalogs             unitycatalog.CatalogsService
 	ClusterPolicies      clusterpolicies.ClusterPoliciesService
 	Clusters             clusters.ClustersService
-	Commands             *commands.CommandsAPI
+	CommandExecutor      commands.CommandExecutor
 	CurrentUser          scim.CurrentUserService
 	Dashboards           dbsql.DashboardsService
 	DataSources          dbsql.DataSourcesService
@@ -101,7 +101,7 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		Catalogs:             unitycatalog.NewCatalogs(apiClient),
 		ClusterPolicies:      clusterpolicies.NewClusterPolicies(apiClient),
 		Clusters:             clusters.NewClusters(apiClient),
-		Commands:             commands.New(cfg),
+		CommandExecutor:      commands.NewCommandExecutor(apiClient),
 		CurrentUser:          scim.NewCurrentUser(apiClient),
 		Dashboards:           dbsql.NewDashboards(apiClient),
 		DataSources:          dbsql.NewDataSources(apiClient),
