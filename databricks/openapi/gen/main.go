@@ -120,10 +120,10 @@ func newPass[T named](items []T, fileset map[string]string) *Pass[T] {
 		newFileset[filepath.Base(filename)] = v
 	}
 	return &Pass[T]{
-		Items: items,
-		ctx: &ctx,
+		Items:   items,
+		ctx:     &ctx,
 		fileset: newFileset,
-		tmpl: template.Must(template.ParseFiles(tmpls...)),
+		tmpl:    template.Must(template.ParseFiles(tmpls...)),
 	}
 }
 
@@ -132,9 +132,9 @@ type named interface {
 }
 
 type Pass[T named] struct {
-	Items []T
-	ctx *Context
-	tmpl *template.Template
+	Items   []T
+	ctx     *Context
+	tmpl    *template.Template
 	fileset map[string]string
 }
 
