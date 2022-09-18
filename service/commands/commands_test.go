@@ -44,7 +44,7 @@ func commonFixtureWithStatusResponse(response CommandStatusResponse) qa.HTTPFixt
 			Resource:     "/api/1.2/contexts/status?clusterId=abc&contextId=123",
 			ReuseRequest: true,
 			Response: ContextStatusResponse{
-				Id: "123",
+				Id:     "123",
 				Status: "Running",
 			},
 		},
@@ -289,7 +289,7 @@ func TestCommandsAPIExecute_FailToCreateCommand(t *testing.T) {
 			Method:   "GET",
 			Resource: "/api/1.2/contexts/status?clusterId=abc&contextId=abc",
 			Response: CommandStatusResponse{
-				Id: "abc",
+				Id:     "abc",
 				Status: "Running",
 			},
 		},
@@ -299,6 +299,14 @@ func TestCommandsAPIExecute_FailToCreateCommand(t *testing.T) {
 			Status:   417,
 			Response: apierr.APIError{
 				Message: "Does not compute",
+			},
+		},
+		{
+			Method:   "POST",
+			Resource: "/api/1.2/contexts/destroy",
+			ExpectedRequest: DestroyContext{
+				ClusterId: "abc",
+				ContextId: "abc",
 			},
 		},
 	}.ApplyClient(t, func(ctx context.Context, client *client.DatabricksClient) {
@@ -328,7 +336,7 @@ func TestCommandsAPIExecute_FailToWaitForCommand(t *testing.T) {
 			Method:   "GET",
 			Resource: "/api/1.2/contexts/status?clusterId=abc&contextId=abc",
 			Response: CommandStatusResponse{
-				Id: "abc",
+				Id:     "abc",
 				Status: "Running",
 			},
 		},
@@ -345,6 +353,14 @@ func TestCommandsAPIExecute_FailToWaitForCommand(t *testing.T) {
 			Status:   417,
 			Response: apierr.APIError{
 				Message: "Does not compute",
+			},
+		},
+		{
+			Method:   "POST",
+			Resource: "/api/1.2/contexts/destroy",
+			ExpectedRequest: DestroyContext{
+				ClusterId: "abc",
+				ContextId: "abc",
 			},
 		},
 	}.ApplyClient(t, func(ctx context.Context, client *client.DatabricksClient) {
@@ -374,7 +390,7 @@ func TestCommandsAPIExecute_FailToGetCommand(t *testing.T) {
 			Method:   "GET",
 			Resource: "/api/1.2/contexts/status?clusterId=abc&contextId=abc",
 			Response: CommandStatusResponse{
-				Id: "abc",
+				Id:     "abc",
 				Status: "Running",
 			},
 		},
@@ -383,14 +399,6 @@ func TestCommandsAPIExecute_FailToGetCommand(t *testing.T) {
 			Resource: "/api/1.2/commands/execute",
 			Response: Created{
 				Id: "abc",
-			},
-		},
-		{
-			Method:   "GET",
-			Resource: "/api/1.2/commands/status?clusterId=abc&commandId=abc&contextId=abc",
-			Response: CommandStatusResponse{
-				Id: "abc",
-				Status: "Finished",
 			},
 		},
 		{
@@ -399,61 +407,14 @@ func TestCommandsAPIExecute_FailToGetCommand(t *testing.T) {
 			Status:   417,
 			Response: apierr.APIError{
 				Message: "Does not compute",
-			},
-		},
-	}.ApplyClient(t, func(ctx context.Context, client *client.DatabricksClient) {
-		commands := NewCommandExecutor(client)
-		cr := commands.Execute(ctx, "abc", "cobol", "Hello?")
-		assert.EqualError(t, cr.Err(), "Does not compute")
-	})
-}
-
-func TestCommandsAPIExecute_FailToDeleteContext(t *testing.T) {
-	qa.HTTPFixtures{
-		{
-			Method:   "GET",
-			Resource: "/api/2.0/clusters/get?cluster_id=abc",
-			Response: clusters.ClusterInfo{
-				State: "RUNNING",
-			},
-		},
-		{
-			Method:   "POST",
-			Resource: "/api/1.2/contexts/create",
-			Response: Created{
-				Id: "abc",
-			},
-		},
-		{
-			Method:   "GET",
-			Resource: "/api/1.2/contexts/status?clusterId=abc&contextId=abc",
-			Response: CommandStatusResponse{
-				Id: "abc",
-				Status: "Running",
-			},
-		},
-		{
-			Method:   "POST",
-			Resource: "/api/1.2/commands/execute",
-			Response: Created{
-				Id: "abc",
-			},
-		},
-		{
-			Method:       "GET",
-			ReuseRequest: true,
-			Resource:     "/api/1.2/commands/status?clusterId=abc&commandId=abc&contextId=abc",
-			Response: CommandStatusResponse{
-				Id: "abc",
-				Status: "Finished",
 			},
 		},
 		{
 			Method:   "POST",
 			Resource: "/api/1.2/contexts/destroy",
-			Status:   417,
-			Response: apierr.APIError{
-				Message: "Does not compute",
+			ExpectedRequest: DestroyContext{
+				ClusterId: "abc",
+				ContextId: "abc",
 			},
 		},
 	}.ApplyClient(t, func(ctx context.Context, client *client.DatabricksClient) {
@@ -483,7 +444,7 @@ func TestCommandsAPIExecute_NoResults(t *testing.T) {
 			Method:   "GET",
 			Resource: "/api/1.2/contexts/status?clusterId=abc&contextId=abc",
 			Response: CommandStatusResponse{
-				Id: "abc",
+				Id:     "abc",
 				Status: "Running",
 			},
 		},
@@ -499,7 +460,7 @@ func TestCommandsAPIExecute_NoResults(t *testing.T) {
 			ReuseRequest: true,
 			Resource:     "/api/1.2/commands/status?clusterId=abc&commandId=abc&contextId=abc",
 			Response: CommandStatusResponse{
-				Id: "abc",
+				Id:     "abc",
 				Status: "Finished",
 			},
 		},

@@ -143,7 +143,7 @@ func (a *CommandExecutionAPI) ExecuteAndWait(ctx context.Context, command Comman
 			return nil, retries.Halt(err)
 		}
 		status := commandStatusResponse.Status
-		statusMessage := commandStatusResponse.Results.Cause
+		statusMessage := fmt.Sprintf("current status: %s", status)
 		switch status {
 		case CommandStatusFinished, CommandStatusError: // target state
 			return commandStatusResponse, nil

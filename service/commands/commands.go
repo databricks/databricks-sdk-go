@@ -64,21 +64,15 @@ func (a *CommandsHighLevelAPI) Execute(ctx context.Context, clusterID, language,
 			Summary:    err.Error(),
 		}
 	}
+	defer a.execution.Destroy(ctx, DestroyContext{
+		ClusterId: clusterID,
+		ContextId: context.Id,
+	})
 	command, err := a.execution.ExecuteAndWait(ctx, Command{
 		ClusterId: clusterID,
 		ContextId: context.Id,
 		Language:  Language(language),
 		Command:   commandStr,
-	})
-	if err != nil {
-		return Results{
-			ResultType: "error",
-			Summary:    err.Error(),
-		}
-	}
-	err = a.execution.Destroy(ctx, DestroyContext{
-		ClusterId: clusterID,
-		ContextId: context.Id,
 	})
 	if err != nil {
 		return Results{
