@@ -17,6 +17,10 @@ type Service struct {
 	ByPathParamsMethods []*Shortcut
 }
 
+func (svc *Service) FullName() string {
+	return fmt.Sprintf("%s.%s", svc.Name, svc.Package.Name)
+}
+
 func (svc *Service) Methods() (methods []*Method) {
 	for _, v := range svc.methods {
 		methods = append(methods, v)

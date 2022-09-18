@@ -42,3 +42,24 @@ func NewFromFile(name string) (*Batch, error) {
 	}
 	return &batch, nil
 }
+
+func (b *Batch) Pkgs() (pkgs []*Package) {
+	for _, pkg := range b.Packages {
+		pkgs = append(pkgs, pkg)
+	}
+	return pkgs
+}
+
+func (b *Batch) Types() (types []*Entity) {
+	for _, pkg := range b.Packages {
+		types = append(types, pkg.Types()...)
+	}
+	return types
+}
+
+func (b *Batch) Services() (services []*Service) {
+	for _, pkg := range b.Packages {
+		services = append(services, pkg.Services()...)
+	}
+	return services
+}

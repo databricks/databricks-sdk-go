@@ -18,6 +18,10 @@ type Package struct {
 	types      map[string]*Entity
 }
 
+func (pkg *Package) FullName() string {
+	return pkg.Name
+}
+
 func (pkg *Package) Services() (types []*Service) {
 	for _, v := range pkg.services {
 		types = append(types, v)
@@ -171,6 +175,7 @@ func (pkg *Package) define(entity *Entity) {
 		//panic(fmt.Sprintf("%s is already defined", entity.Name))
 		return
 	}
+	entity.Package = pkg
 	pkg.types[entity.Name] = entity
 }
 
