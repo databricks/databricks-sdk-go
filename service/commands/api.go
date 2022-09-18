@@ -111,7 +111,7 @@ func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext C
 	})
 }
 
-func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyRequest) error {
+func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyContext) error {
 	path := "/api/1.2/contexts/destroy"
 	err := a.client.Post(ctx, path, request, nil)
 	return err

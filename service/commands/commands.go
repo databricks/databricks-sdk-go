@@ -76,7 +76,7 @@ func (a *CommandsHighLevelAPI) Execute(ctx context.Context, clusterID, language,
 			Summary:    err.Error(),
 		}
 	}
-	err = a.execution.Destroy(ctx, DestroyRequest{
+	err = a.execution.Destroy(ctx, DestroyContext{
 		ClusterId: clusterID,
 		ContextId: context.Id,
 	})

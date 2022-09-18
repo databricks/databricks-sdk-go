@@ -70,6 +70,12 @@ type Created struct {
 	Id string `json:"id,omitempty"`
 }
 
+type DestroyContext struct {
+	ClusterId string `json:"clusterId"`
+
+	ContextId string `json:"contextId"`
+}
+
 type Language string
 
 const LanguagePython Language = `python`
@@ -123,12 +129,6 @@ type CommandStatusRequest struct {
 }
 
 type ContextStatusRequest struct {
-	ClusterId string `json:"-" url:"clusterId,omitempty"`
-
-	ContextId string `json:"-" url:"contextId,omitempty"`
-}
-
-type DestroyRequest struct {
 	ClusterId string `json:"-" url:"clusterId,omitempty"`
 
 	ContextId string `json:"-" url:"contextId,omitempty"`

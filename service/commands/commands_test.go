@@ -44,6 +44,7 @@ func commonFixtureWithStatusResponse(response CommandStatusResponse) qa.HTTPFixt
 			Resource:     "/api/1.2/contexts/status?clusterId=abc&contextId=123",
 			ReuseRequest: true,
 			Response: ContextStatusResponse{
+				Id: "123",
 				Status: "Running",
 			},
 		},
@@ -69,7 +70,7 @@ func commonFixtureWithStatusResponse(response CommandStatusResponse) qa.HTTPFixt
 		{
 			Method:   "POST",
 			Resource: "/api/1.2/contexts/destroy",
-			ExpectedRequest: DestroyRequest{
+			ExpectedRequest: DestroyContext{
 				ClusterId: "abc",
 				ContextId: "123",
 			},
@@ -249,7 +250,7 @@ func TestCommandsAPIExecute_FailToWaitForContext(t *testing.T) {
 		{
 			Method:   "POST",
 			Resource: "/api/1.2/contexts/create",
-			Response: CommandStatusResponse{
+			Response: Created{
 				Id: "abc",
 			},
 		},
@@ -288,6 +289,7 @@ func TestCommandsAPIExecute_FailToCreateCommand(t *testing.T) {
 			Method:   "GET",
 			Resource: "/api/1.2/contexts/status?clusterId=abc&contextId=abc",
 			Response: CommandStatusResponse{
+				Id: "abc",
 				Status: "Running",
 			},
 		},
@@ -318,7 +320,7 @@ func TestCommandsAPIExecute_FailToWaitForCommand(t *testing.T) {
 		{
 			Method:   "POST",
 			Resource: "/api/1.2/contexts/create",
-			Response: CommandStatusResponse{
+			Response: Created{
 				Id: "abc",
 			},
 		},
@@ -326,13 +328,14 @@ func TestCommandsAPIExecute_FailToWaitForCommand(t *testing.T) {
 			Method:   "GET",
 			Resource: "/api/1.2/contexts/status?clusterId=abc&contextId=abc",
 			Response: CommandStatusResponse{
+				Id: "abc",
 				Status: "Running",
 			},
 		},
 		{
 			Method:   "POST",
 			Resource: "/api/1.2/commands/execute",
-			Response: CommandStatusResponse{
+			Response: Created{
 				Id: "abc",
 			},
 		},
@@ -363,7 +366,7 @@ func TestCommandsAPIExecute_FailToGetCommand(t *testing.T) {
 		{
 			Method:   "POST",
 			Resource: "/api/1.2/contexts/create",
-			Response: CommandStatusResponse{
+			Response: Created{
 				Id: "abc",
 			},
 		},
@@ -371,13 +374,14 @@ func TestCommandsAPIExecute_FailToGetCommand(t *testing.T) {
 			Method:   "GET",
 			Resource: "/api/1.2/contexts/status?clusterId=abc&contextId=abc",
 			Response: CommandStatusResponse{
+				Id: "abc",
 				Status: "Running",
 			},
 		},
 		{
 			Method:   "POST",
 			Resource: "/api/1.2/commands/execute",
-			Response: CommandStatusResponse{
+			Response: Created{
 				Id: "abc",
 			},
 		},
@@ -385,6 +389,7 @@ func TestCommandsAPIExecute_FailToGetCommand(t *testing.T) {
 			Method:   "GET",
 			Resource: "/api/1.2/commands/status?clusterId=abc&commandId=abc&contextId=abc",
 			Response: CommandStatusResponse{
+				Id: "abc",
 				Status: "Finished",
 			},
 		},
@@ -415,7 +420,7 @@ func TestCommandsAPIExecute_FailToDeleteContext(t *testing.T) {
 		{
 			Method:   "POST",
 			Resource: "/api/1.2/contexts/create",
-			Response: CommandStatusResponse{
+			Response: Created{
 				Id: "abc",
 			},
 		},
@@ -423,13 +428,14 @@ func TestCommandsAPIExecute_FailToDeleteContext(t *testing.T) {
 			Method:   "GET",
 			Resource: "/api/1.2/contexts/status?clusterId=abc&contextId=abc",
 			Response: CommandStatusResponse{
+				Id: "abc",
 				Status: "Running",
 			},
 		},
 		{
 			Method:   "POST",
 			Resource: "/api/1.2/commands/execute",
-			Response: CommandStatusResponse{
+			Response: Created{
 				Id: "abc",
 			},
 		},
@@ -438,6 +444,7 @@ func TestCommandsAPIExecute_FailToDeleteContext(t *testing.T) {
 			ReuseRequest: true,
 			Resource:     "/api/1.2/commands/status?clusterId=abc&commandId=abc&contextId=abc",
 			Response: CommandStatusResponse{
+				Id: "abc",
 				Status: "Finished",
 			},
 		},
@@ -468,7 +475,7 @@ func TestCommandsAPIExecute_NoResults(t *testing.T) {
 		{
 			Method:   "POST",
 			Resource: "/api/1.2/contexts/create",
-			Response: CommandStatusResponse{
+			Response: Created{
 				Id: "abc",
 			},
 		},
@@ -476,13 +483,14 @@ func TestCommandsAPIExecute_NoResults(t *testing.T) {
 			Method:   "GET",
 			Resource: "/api/1.2/contexts/status?clusterId=abc&contextId=abc",
 			Response: CommandStatusResponse{
+				Id: "abc",
 				Status: "Running",
 			},
 		},
 		{
 			Method:   "POST",
 			Resource: "/api/1.2/commands/execute",
-			Response: CommandStatusResponse{
+			Response: Created{
 				Id: "abc",
 			},
 		},
@@ -491,6 +499,7 @@ func TestCommandsAPIExecute_NoResults(t *testing.T) {
 			ReuseRequest: true,
 			Resource:     "/api/1.2/commands/status?clusterId=abc&commandId=abc&contextId=abc",
 			Response: CommandStatusResponse{
+				Id: "abc",
 				Status: "Finished",
 			},
 		},

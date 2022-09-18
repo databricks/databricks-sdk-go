@@ -20,45 +20,33 @@ var (
 	errorMessageRE = regexp.MustCompile(`ErrorMessage=(.+)\n`)
 )
 
-// // Results captures results of a command
-// type Results struct {
-// 	ResultType   string      `json:"resultType,omitempty"`
-// 	Summary      string      `json:"summary,omitempty"`
-// 	Cause        string      `json:"cause,omitempty"`
-// 	Data         interface{} `json:"data,omitempty"`
-// 	Schema       interface{} `json:"schema,omitempty"`
-// 	Truncated    bool        `json:"truncated,omitempty"`
-// 	IsJSONSchema bool        `json:"isJsonSchema,omitempty"`
-// 	pos          int
-// }
-
 // Failed tells if command execution failed
-func (cr *Results) Failed() bool {
-	return cr.ResultType == "error"
+func (r *Results) Failed() bool {
+	return r.ResultType == "error"
 }
 
 // Text returns plain text results
-func (cr *Results) Text() string {
-	if cr.ResultType != "text" {
+func (r *Results) Text() string {
+	if r.ResultType != "text" {
 		return ""
 	}
-	return outRE.ReplaceAllLiteralString(cr.Data.(string), "")
+	return outRE.ReplaceAllLiteralString(r.Data.(string), "")
 }
 
 // Err returns error type
-func (cr *Results) Err() error {
-	if !cr.Failed() {
+func (r *Results) Err() error {
+	if !r.Failed() {
 		return nil
 	}
-	return fmt.Errorf(cr.Error())
+	return fmt.Errorf(r.Error())
 }
 
 // Error returns error in a bit more friendly way
-func (cr *Results) Error() string {
-	if cr.ResultType != "error" {
+func (r *Results) Error() string {
+	if r.ResultType != "error" {
 		return ""
 	}
-	summary := tagRE.ReplaceAllLiteralString(cr.Summary, "")
+	summary := tagRE.ReplaceAllLiteralString(r.Summary, "")
 	summary = html.UnescapeString(summary)
 
 	exceptionMatches := exceptionRE.FindStringSubmatch(summary)
@@ -68,12 +56,12 @@ func (cr *Results) Error() string {
 		return summary
 	}
 
-	executionErrorMatches := executionErrorRE.FindStringSubmatch(cr.Cause)
+	executionErrorMatches := executionErrorRE.FindStringSubmatch(r.Cause)
 	if len(executionErrorMatches) == 4 {
 		return strings.Join(executionErrorMatches[1:], "\n")
 	}
 
-	errorMessageMatches := errorMessageRE.FindStringSubmatch(cr.Cause)
+	errorMessageMatches := errorMessageRE.FindStringSubmatch(r.Cause)
 	if len(errorMessageMatches) == 2 {
 		return errorMessageMatches[1]
 	}
@@ -85,15 +73,15 @@ func (cr *Results) Error() string {
 // TODO: change API, also in terraform (databricks_sql_permissions)
 // for now we're adding `pos` field artificially. this must be removed
 // before this repo is public.
-func (cr *Results) Scan(dest ...any) bool {
-	if cr.ResultType != ResultTypeTable {
+func (r *Results) Scan(dest ...any) bool {
+	if r.ResultType != ResultTypeTable {
 		return false
 	}
-	if rows, ok := cr.Data.([]any); ok {
-		if cr.Pos >= len(rows) {
+	if rows, ok := r.Data.([]any); ok {
+		if r.Pos >= len(rows) {
 			return false
 		}
-		if cols, ok := rows[cr.Pos].([]any); ok {
+		if cols, ok := rows[r.Pos].([]any); ok {
 			for i := range dest {
 				switch d := dest[i].(type) {
 				case *string:
@@ -104,7 +92,7 @@ func (cr *Results) Scan(dest ...any) bool {
 					*d = cols[i].(bool)
 				}
 			}
-			cr.Pos++
+			r.Pos++
 			return true
 		}
 	}
