@@ -19,7 +19,7 @@ func TestBasicDebug(t *testing.T) {
 	batch, err := NewFromFile("/tmp/processed-databricks-workspace-all.json")
 	assert.NoError(t, err)
 
-	m := batch.Packages["unitycatalog"].services["Catalogs"].methods["createCatalog"]
+	m := batch.Packages["unitycatalog"].services["Catalogs"].methods["create"]
 	t.Log(m)
 
 	assert.Len(t, batch.Packages, 1)

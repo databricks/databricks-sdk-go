@@ -4,6 +4,30 @@ package unitycatalog
 
 // all definitions in this file are in alphabetical order
 
+type AwsIamRole struct {
+	// The external ID used in role assumption to prevent confused deputy
+	// problem. [Create:IGN].
+	ExternalId string `json:"external_id,omitempty"`
+	// The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access.
+	// [Create:REQ].
+	RoleArn string `json:"role_arn,omitempty"`
+	// The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
+	// This is the identity that is going to assume the AWS IAM role.
+	// [Create:IGN].
+	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
+}
+
+type AzureServicePrincipal struct {
+	// The application ID of the application registration within the referenced
+	// AAD tenant. [Create:REQ]
+	ApplicationId string `json:"application_id,omitempty"`
+	// The client secret generated for the above app ID in AAD. [Create:REQ]
+	ClientSecret string `json:"client_secret,omitempty"`
+	// The directory ID corresponding to the Azure Active Directory (AAD) tenant
+	// of the application. [Create:REQ].
+	DirectoryId string `json:"directory_id,omitempty"`
+}
+
 type CatalogInfo struct {
 	// [Create,Update:IGN] The type of the catalog.
 	CatalogType CatalogInfoCatalogType `json:"catalog_type,omitempty"`
@@ -778,9 +802,9 @@ type CreateStagingTableResponse struct {
 }
 
 type CreateStorageCredential struct {
-	AwsIamRole any/* ERROR */ `json:"aws_iam_role,omitempty"`
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 
-	AzureServicePrincipal any/* ERROR */ `json:"azure_service_principal,omitempty"`
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Credential was created, in epoch
@@ -789,7 +813,7 @@ type CreateStorageCredential struct {
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
 
-	GcpServiceAccountKey any/* ERROR */ `json:"gcp_service_account_key,omitempty"`
+	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
@@ -810,9 +834,9 @@ type CreateStorageCredential struct {
 }
 
 type CreateStorageCredentialResponse struct {
-	AwsIamRole any/* ERROR */ `json:"aws_iam_role,omitempty"`
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 
-	AzureServicePrincipal any/* ERROR */ `json:"azure_service_principal,omitempty"`
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Credential was created, in epoch
@@ -821,7 +845,7 @@ type CreateStorageCredentialResponse struct {
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
 
-	GcpServiceAccountKey any/* ERROR */ `json:"gcp_service_account_key,omitempty"`
+	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
@@ -1060,36 +1084,6 @@ const CreateTableTableTypeUnknownTableType CreateTableTableType = `UNKNOWN_TABLE
 
 const CreateTableTableTypeView CreateTableTableType = `VIEW`
 
-type DeleteExternalLocation struct {
-	// Optional. Force deletion even if there are dependent external tables or
-	// mounts.
-	Force bool `json:"force,omitempty"`
-	// Required. Name of the storage credential.
-	Name string `json:"-" path:"name"`
-}
-
-type DeleteMetastore struct {
-	// Optional. Force deletion even if the metastore is not empty. Default is
-	// false.
-	Force bool `json:"force,omitempty"`
-	// Required. Unique ID of the Metastore (from URL).
-	Id string `json:"-" path:"id"`
-}
-
-type DeleteMetastoreAssignment struct {
-	MetastoreId string `json:"metastore_id"`
-
-	WorkspaceId int `json:"-" path:"workspace_id"`
-}
-
-type DeleteStorageCredential struct {
-	// Optional. Force deletion even if there are dependent external locations
-	// or external tables.
-	Force bool `json:"force,omitempty"`
-	// Required. Name of the storage credential.
-	Name string `json:"-" path:"name"`
-}
-
 type ExternalLocationInfo struct {
 	// [Create:OPT Update:OPT] User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -1131,6 +1125,15 @@ type FileInfo struct {
 	Path string `json:"path,omitempty"`
 	// Size in bytes.
 	Size int64 `json:"size,omitempty"`
+}
+
+type GcpServiceAccountKey struct {
+	// The email of the service account. [Create:REQ].
+	Email string `json:"email,omitempty"`
+	// The service account's RSA private key. [Create:REQ]
+	PrivateKey string `json:"private_key,omitempty"`
+	// The ID of the service account's private key. [Create:REQ]
+	PrivateKeyId string `json:"private_key_id,omitempty"`
 }
 
 type GetCatalogResponse struct {
@@ -1463,9 +1466,9 @@ type GetShareResponse struct {
 }
 
 type GetStorageCredentialResponse struct {
-	AwsIamRole any/* ERROR */ `json:"aws_iam_role,omitempty"`
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 
-	AzureServicePrincipal any/* ERROR */ `json:"azure_service_principal,omitempty"`
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Credential was created, in epoch
@@ -1474,7 +1477,7 @@ type GetStorageCredentialResponse struct {
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
 
-	GcpServiceAccountKey any/* ERROR */ `json:"gcp_service_account_key,omitempty"`
+	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
@@ -2110,9 +2113,9 @@ const SharedDataObjectUpdateActionAdd SharedDataObjectUpdateAction = `ADD`
 const SharedDataObjectUpdateActionRemove SharedDataObjectUpdateAction = `REMOVE`
 
 type StorageCredentialInfo struct {
-	AwsIamRole any/* ERROR */ `json:"aws_iam_role,omitempty"`
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 
-	AzureServicePrincipal any/* ERROR */ `json:"azure_service_principal,omitempty"`
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Credential was created, in epoch
@@ -2121,7 +2124,7 @@ type StorageCredentialInfo struct {
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
 
-	GcpServiceAccountKey any/* ERROR */ `json:"gcp_service_account_key,omitempty"`
+	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
@@ -2598,9 +2601,9 @@ type UpdateSharePermissions struct {
 }
 
 type UpdateStorageCredential struct {
-	AwsIamRole any/* ERROR */ `json:"aws_iam_role,omitempty"`
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 
-	AzureServicePrincipal any/* ERROR */ `json:"azure_service_principal,omitempty"`
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Credential was created, in epoch
@@ -2609,7 +2612,7 @@ type UpdateStorageCredential struct {
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
 
-	GcpServiceAccountKey any/* ERROR */ `json:"gcp_service_account_key,omitempty"`
+	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
@@ -2745,6 +2748,26 @@ type DeleteCatalogRequest struct {
 	Name string `json:"-" path:"name"`
 }
 
+type DeleteExternalLocationRequest struct {
+	// Force deletion even if there are dependent external tables or mounts.
+	Force bool `json:"-" url:"force,omitempty"`
+	// Required. Name of the storage credential.
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteMetastoreAssignmentRequest struct {
+	MetastoreId string `json:"-" url:"metastore_id,omitempty"`
+
+	WorkspaceId int `json:"-" path:"workspace_id"`
+}
+
+type DeleteMetastoreRequest struct {
+	// Force deletion even if the metastore is not empty. Default is false.
+	Force bool `json:"-" url:"force,omitempty"`
+	// Required. Unique ID of the Metastore (from URL).
+	Id string `json:"-" path:"id"`
+}
+
 type DeleteProviderRequest struct {
 	// Required. Name of the provider.
 	Name string `json:"-" path:"name"`
@@ -2762,6 +2785,14 @@ type DeleteSchemaRequest struct {
 
 type DeleteShareRequest struct {
 	// <needs content>
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteStorageCredentialRequest struct {
+	// Force deletion even if there are dependent external locations or external
+	// tables.
+	Force bool `json:"-" url:"force,omitempty"`
+	// Required. Name of the storage credential.
 	Name string `json:"-" path:"name"`
 }
 

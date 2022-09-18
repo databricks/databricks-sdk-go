@@ -97,8 +97,6 @@ type Dashboard struct {
 	// Whether this query object appears in the current user's favorites list.
 	// This flag determines whether the star icon for favorites is colored in.
 	IsFavorite bool `json:"is_favorite,omitempty"`
-	// Unused field.
-	Layout any/* MISSING TYPE */ `json:"layout,omitempty"`
 	// The title of the dashboard that appears in list views and at the top of
 	// the dashboard page.
 	Name string `json:"name,omitempty"`
@@ -106,13 +104,11 @@ type Dashboard struct {
 	Options *DashboardOptions `json:"options,omitempty"`
 
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
-	// Unsupported field.
-	RefreshSchedules any/* MISSING TYPE */ `json:"refresh_schedules,omitempty"`
 	// URL slug. Usually mirrors the query name with dashes (`-`) instead of
 	// spaces. Appears in the URL for this query.
 	Slug string `json:"slug,omitempty"`
 
-	Tags any/* MISSING TYPE */ `json:"tags,omitempty"`
+	Tags []string `json:"tags,omitempty"`
 	// Timestamp when this dashboard was last updated.
 	UpdatedAt string `json:"updated_at,omitempty"`
 
@@ -122,7 +118,7 @@ type Dashboard struct {
 	// Unused field.
 	Version string `json:"version,omitempty"`
 
-	Widgets *Widget `json:"widgets,omitempty"`
+	Widgets []Widget `json:"widgets,omitempty"`
 }
 
 type DashboardOptions struct {
@@ -196,6 +192,29 @@ type EditAlert struct {
 	Rearm int `json:"rearm,omitempty"`
 }
 
+type Parameter struct {
+	// The literal parameter marker that appears between double curly braces in
+	// the query text.
+	Name string `json:"name,omitempty"`
+	// The text displayed in a parameter picking widget.
+	Title string `json:"title,omitempty"`
+	// Parameters can have several different types.
+	Type ParameterType `json:"type,omitempty"`
+	// The default value for this parameter.
+	Value string `json:"value,omitempty"`
+}
+
+// Parameters can have several different types.
+type ParameterType string
+
+const ParameterTypeDatetime ParameterType = `datetime`
+
+const ParameterTypeDropdownList ParameterType = `dropdown-list`
+
+const ParameterTypeNumber ParameterType = `number`
+
+const ParameterTypeText ParameterType = `text`
+
 // This describes an enum
 type PermissionLevel string
 
@@ -261,7 +280,7 @@ type Query struct {
 
 	Schedule *QueryInterval `json:"schedule,omitempty"`
 
-	Tags any/* MISSING TYPE */ `json:"tags,omitempty"`
+	Tags []string `json:"tags,omitempty"`
 	// The timestamp at which this query was last updated.
 	UpdatedAt string `json:"updated_at,omitempty"`
 
@@ -289,7 +308,7 @@ type QueryOptions struct {
 	// days.
 	MovedToTrashAt string `json:"moved_to_trash_at,omitempty"`
 
-	Parameters any/* MISSING TYPE */ `json:"parameters,omitempty"`
+	Parameters []Parameter `json:"parameters,omitempty"`
 }
 
 type QueryPostContent struct {
@@ -340,6 +359,9 @@ type Success struct {
 type SuccessMessage string
 
 const SuccessMessageSuccess SuccessMessage = `Success`
+
+// Tags can be applied to dashboards and queries. They are used for filtering
+// list views.
 
 type User struct {
 	Email string `json:"email,omitempty"`
@@ -392,10 +414,10 @@ type Widget struct {
 
 type WidgetOptions struct {
 	// Timestamp when this object was created
-	CreatedAt any/* MISSING TYPE */ `json:"created_at,omitempty"`
+	CreatedAt string `json:"created_at,omitempty"`
 	// The dashboard ID to which this widget belongs. Each widget can belong to
 	// one dashboard.
-	DashboardId any/* MISSING TYPE */ `json:"dashboard_id,omitempty"`
+	DashboardId string `json:"dashboard_id,omitempty"`
 	// Whether this widget is hidden on the dashboard.
 	IsHidden bool `json:"isHidden,omitempty"`
 	// How parameters used by the visualization in this widget relate to other
@@ -408,9 +430,9 @@ type WidgetOptions struct {
 	// If this is a textbox widget, the application displays this text. This
 	// field is ignored if the widget contains a visualization in the
 	// `visualization` field.
-	Text any/* MISSING TYPE */ `json:"text,omitempty"`
+	Text string `json:"text,omitempty"`
 	// Timestamp of the last time this object was updated.
-	UpdatedAt any/* MISSING TYPE */ `json:"updated_at,omitempty"`
+	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
 // Timestamp when the alert was created.
@@ -456,19 +478,16 @@ type CreateDashboardRequest struct {
 	// Whether the dashboard is trashed. Trashed dashboards won't appear in list
 	// views.
 	IsTrashed bool `json:"is_trashed,omitempty"`
-	// Currently unused. In a previous version of this API `layout` contained
-	// information for arranging widgets on the grid.
-	Layout any/* MISSING TYPE */ `json:"layout,omitempty"`
 	// The title of this dashboard which appears in list views and at the top of
 	// the dashboard page.
 	Name string `json:"name,omitempty"`
 
-	Tags any/* MISSING TYPE */ `json:"tags,omitempty"`
+	Tags []string `json:"tags,omitempty"`
 	// An array of widget objects. A complete description of widget objects can
 	// be found in the response to [Retrieve A Dashboard
 	// Definition](#operation/sql-analytics-fetch-dashboard). Databricks does
 	// not recommend creating new widgets via this API.
-	Widgets any/* MISSING TYPE */ `json:"widgets,omitempty"`
+	Widgets []Widget `json:"widgets,omitempty"`
 }
 
 type DeleteAlertRequest struct {

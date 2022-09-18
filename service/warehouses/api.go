@@ -30,8 +30,8 @@ func (a *WarehousesAPI) CreateWarehouse(ctx context.Context, request CreateWareh
 }
 
 // CreateWarehouse and wait to reach RUNNING state
-func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, request CreateWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
-	createWarehouseResponse, err := a.CreateWarehouse(ctx, request)
+func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, createWarehouseRequest CreateWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+	createWarehouseResponse, err := a.CreateWarehouse(ctx, createWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -68,8 +68,8 @@ func (a *WarehousesAPI) DeleteWarehouse(ctx context.Context, request DeleteWareh
 }
 
 // DeleteWarehouse and wait to reach DELETED state
-func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, request DeleteWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
-	err := a.DeleteWarehouse(ctx, request)
+func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWarehouseRequest DeleteWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+	err := a.DeleteWarehouse(ctx, deleteWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, request Dele
 	}
 	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
-			Id: request.Id,
+			Id: deleteWarehouseRequest.Id,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -115,8 +115,8 @@ func (a *WarehousesAPI) EditWarehouse(ctx context.Context, request EditWarehouse
 }
 
 // EditWarehouse and wait to reach RUNNING state
-func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, request EditWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
-	err := a.EditWarehouse(ctx, request)
+func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, editWarehouseRequest EditWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+	err := a.EditWarehouse(ctx, editWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -125,7 +125,7 @@ func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, request EditWa
 	}
 	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
-			Id: request.Id,
+			Id: editWarehouseRequest.Id,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -154,8 +154,8 @@ func (a *WarehousesAPI) GetWarehouse(ctx context.Context, request GetWarehouseRe
 }
 
 // GetWarehouse and wait to reach RUNNING state
-func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, request GetWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
-	getWarehouseResponse, err := a.GetWarehouse(ctx, request)
+func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouseRequest GetWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+	getWarehouseResponse, err := a.GetWarehouse(ctx, getWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -230,8 +230,8 @@ func (a *WarehousesAPI) StartWarehouse(ctx context.Context, request StartWarehou
 }
 
 // StartWarehouse and wait to reach RUNNING state
-func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, request StartWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
-	err := a.StartWarehouse(ctx, request)
+func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehouseRequest StartWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+	err := a.StartWarehouse(ctx, startWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -240,7 +240,7 @@ func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, request Start
 	}
 	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
-			Id: request.Id,
+			Id: startWarehouseRequest.Id,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -268,8 +268,8 @@ func (a *WarehousesAPI) StopWarehouse(ctx context.Context, request StopWarehouse
 }
 
 // StopWarehouse and wait to reach STOPPED state
-func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, request StopWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
-	err := a.StopWarehouse(ctx, request)
+func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, stopWarehouseRequest StopWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+	err := a.StopWarehouse(ctx, stopWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -278,7 +278,7 @@ func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, request StopWa
 	}
 	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
-			Id: request.Id,
+			Id: stopWarehouseRequest.Id,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)

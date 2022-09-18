@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"context"
 	"fmt"
 	"html"
 	"regexp"
@@ -21,53 +20,33 @@ var (
 	errorMessageRE = regexp.MustCompile(`ErrorMessage=(.+)\n`)
 )
 
-// CommandMock mocks the execution of command
-type CommandMock func(commandStr string) CommandResults
-
-// CommandExecutor creates a spark context and executes a command and then closes context
-type CommandExecutor interface {
-	Execute(ctx context.Context, clusterID, language, commandStr string) CommandResults
-}
-
-// CommandResults captures results of a command
-type CommandResults struct {
-	ResultType   string      `json:"resultType,omitempty"`
-	Summary      string      `json:"summary,omitempty"`
-	Cause        string      `json:"cause,omitempty"`
-	Data         interface{} `json:"data,omitempty"`
-	Schema       interface{} `json:"schema,omitempty"`
-	Truncated    bool        `json:"truncated,omitempty"`
-	IsJSONSchema bool        `json:"isJsonSchema,omitempty"`
-	pos          int
-}
-
 // Failed tells if command execution failed
-func (cr *CommandResults) Failed() bool {
-	return cr.ResultType == "error"
+func (r *Results) Failed() bool {
+	return r.ResultType == "error"
 }
 
 // Text returns plain text results
-func (cr *CommandResults) Text() string {
-	if cr.ResultType != "text" {
+func (r *Results) Text() string {
+	if r.ResultType != "text" {
 		return ""
 	}
-	return outRE.ReplaceAllLiteralString(cr.Data.(string), "")
+	return outRE.ReplaceAllLiteralString(r.Data.(string), "")
 }
 
 // Err returns error type
-func (cr *CommandResults) Err() error {
-	if !cr.Failed() {
+func (r *Results) Err() error {
+	if !r.Failed() {
 		return nil
 	}
-	return fmt.Errorf(cr.Error())
+	return fmt.Errorf(r.Error())
 }
 
 // Error returns error in a bit more friendly way
-func (cr *CommandResults) Error() string {
-	if cr.ResultType != "error" {
+func (r *Results) Error() string {
+	if r.ResultType != "error" {
 		return ""
 	}
-	summary := tagRE.ReplaceAllLiteralString(cr.Summary, "")
+	summary := tagRE.ReplaceAllLiteralString(r.Summary, "")
 	summary = html.UnescapeString(summary)
 
 	exceptionMatches := exceptionRE.FindStringSubmatch(summary)
@@ -77,12 +56,12 @@ func (cr *CommandResults) Error() string {
 		return summary
 	}
 
-	executionErrorMatches := executionErrorRE.FindStringSubmatch(cr.Cause)
+	executionErrorMatches := executionErrorRE.FindStringSubmatch(r.Cause)
 	if len(executionErrorMatches) == 4 {
 		return strings.Join(executionErrorMatches[1:], "\n")
 	}
 
-	errorMessageMatches := errorMessageRE.FindStringSubmatch(cr.Cause)
+	errorMessageMatches := errorMessageRE.FindStringSubmatch(r.Cause)
 	if len(errorMessageMatches) == 2 {
 		return errorMessageMatches[1]
 	}
@@ -91,15 +70,18 @@ func (cr *CommandResults) Error() string {
 }
 
 // Scan scans for results
-func (cr *CommandResults) Scan(dest ...interface{}) bool {
-	if cr.ResultType != "table" {
+// TODO: change API, also in terraform (databricks_sql_permissions)
+// for now we're adding `pos` field artificially. this must be removed
+// before this repo is public.
+func (r *Results) Scan(dest ...any) bool {
+	if r.ResultType != ResultTypeTable {
 		return false
 	}
-	if rows, ok := cr.Data.([]interface{}); ok {
-		if cr.pos >= len(rows) {
+	if rows, ok := r.Data.([]any); ok {
+		if r.Pos >= len(rows) {
 			return false
 		}
-		if cols, ok := rows[cr.pos].([]interface{}); ok {
+		if cols, ok := rows[r.Pos].([]any); ok {
 			for i := range dest {
 				switch d := dest[i].(type) {
 				case *string:
@@ -110,7 +92,7 @@ func (cr *CommandResults) Scan(dest ...interface{}) bool {
 					*d = cols[i].(bool)
 				}
 			}
-			cr.pos++
+			r.Pos++
 			return true
 		}
 	}

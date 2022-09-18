@@ -19,6 +19,14 @@ type TokenManagementAPI struct {
 	client *client.DatabricksClient
 }
 
+// Create a token on behalf of a service principal.
+func (a *TokenManagementAPI) CreateOboToken(ctx context.Context, request CreateOboTokenRequest) (*CreateOboTokenResponse, error) {
+	var createOboTokenResponse CreateOboTokenResponse
+	path := "/api/2.0/token-management/on-behalf-of/tokens"
+	err := a.client.Post(ctx, path, request, &createOboTokenResponse)
+	return &createOboTokenResponse, err
+}
+
 // Delete a token, specified by its ID.
 func (a *TokenManagementAPI) DeleteToken(ctx context.Context, request DeleteTokenRequest) error {
 	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", request.TokenId)

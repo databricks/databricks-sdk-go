@@ -15,6 +15,9 @@ import (
 // Evolving: this interface is under development. Method signatures may change.
 type TokenManagementService interface {
 
+	// Create a token on behalf of a service principal.
+	CreateOboToken(ctx context.Context, request CreateOboTokenRequest) (*CreateOboTokenResponse, error)
+
 	// Delete a token, specified by its ID.
 	DeleteToken(ctx context.Context, request DeleteTokenRequest) error
 

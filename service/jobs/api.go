@@ -46,8 +46,8 @@ func (a *JobsAPI) CancelRun(ctx context.Context, request CancelRun) error {
 }
 
 // CancelRun and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) CancelRunAndWait(ctx context.Context, request CancelRun, timeout ...time.Duration) (*Run, error) {
-	err := a.CancelRun(ctx, request)
+func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, timeout ...time.Duration) (*Run, error) {
+	err := a.CancelRun(ctx, cancelRun)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (a *JobsAPI) CancelRunAndWait(ctx context.Context, request CancelRun, timeo
 	}
 	return retries.Poll[Run](ctx, timeout[0], func() (*Run, *retries.Err) {
 		run, err := a.GetRun(ctx, GetRunRequest{
-			RunId: request.RunId,
+			RunId: cancelRun.RunId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -158,8 +158,8 @@ func (a *JobsAPI) GetRun(ctx context.Context, request GetRunRequest) (*Run, erro
 }
 
 // GetRun and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) GetRunAndWait(ctx context.Context, request GetRunRequest, timeout ...time.Duration) (*Run, error) {
-	run, err := a.GetRun(ctx, request)
+func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRunRequest GetRunRequest, timeout ...time.Duration) (*Run, error) {
+	run, err := a.GetRun(ctx, getRunRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -248,8 +248,8 @@ func (a *JobsAPI) RepairRun(ctx context.Context, request RepairRun) (*RepairRunR
 }
 
 // RepairRun and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) RepairRunAndWait(ctx context.Context, request RepairRun, timeout ...time.Duration) (*Run, error) {
-	_, err := a.RepairRun(ctx, request)
+func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, timeout ...time.Duration) (*Run, error) {
+	_, err := a.RepairRun(ctx, repairRun)
 	if err != nil {
 		return nil, err
 	}
@@ -258,7 +258,7 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, request RepairRun, timeo
 	}
 	return retries.Poll[Run](ctx, timeout[0], func() (*Run, *retries.Err) {
 		run, err := a.GetRun(ctx, GetRunRequest{
-			RunId: request.RunId,
+			RunId: repairRun.RunId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -295,8 +295,8 @@ func (a *JobsAPI) RunNow(ctx context.Context, request RunNow) (*RunNowResponse, 
 }
 
 // RunNow and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) RunNowAndWait(ctx context.Context, request RunNow, timeout ...time.Duration) (*Run, error) {
-	runNowResponse, err := a.RunNow(ctx, request)
+func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, timeout ...time.Duration) (*Run, error) {
+	runNowResponse, err := a.RunNow(ctx, runNow)
 	if err != nil {
 		return nil, err
 	}
@@ -337,8 +337,8 @@ func (a *JobsAPI) Submit(ctx context.Context, request SubmitRun) (*SubmitRunResp
 }
 
 // Submit and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) SubmitAndWait(ctx context.Context, request SubmitRun, timeout ...time.Duration) (*Run, error) {
-	submitRunResponse, err := a.Submit(ctx, request)
+func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, timeout ...time.Duration) (*Run, error) {
+	submitRunResponse, err := a.Submit(ctx, submitRun)
 	if err != nil {
 		return nil, err
 	}

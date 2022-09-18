@@ -4,6 +4,20 @@ package tokenmanagement
 
 // all definitions in this file are in alphabetical order
 
+type CreateOboTokenRequest struct {
+	ApplicationId string `json:"application_id"`
+
+	Comment string `json:"comment"`
+
+	LifetimeSeconds any/* MISSING TYPE */ `json:"lifetime_seconds"`
+}
+
+type CreateOboTokenResponse struct {
+	TokenInfo *TokenInfo `json:"token_info,omitempty"`
+
+	TokenValue string `json:"token_value,omitempty"`
+}
+
 type DeleteTokenRequest struct {
 	// The ID of the token to get.
 	TokenId string `json:"-" path:"token_id"`
@@ -22,20 +36,7 @@ type ListAllTokensRequest struct {
 }
 
 type ListTokensResponse struct {
-	// The information for each token.
-	TokenInfos []PublicTokenInfo `json:"token_infos,omitempty"`
-}
-
-type PublicTokenInfo struct {
-	// Comment the token was created with, if applicable.
-	Comment string `json:"comment,omitempty"`
-	// Server time (in epoch milliseconds) when the token was created.
-	CreationTime int64 `json:"creation_time,omitempty"`
-	// Server time (in epoch milliseconds) when the token will expire, or -1 if
-	// not applicable.
-	ExpiryTime int64 `json:"expiry_time,omitempty"`
-	// The ID of this token.
-	TokenId string `json:"token_id,omitempty"`
+	TokenInfos []TokenInfo `json:"token_infos,omitempty"`
 }
 
 type TokenInfo struct {
@@ -54,8 +55,12 @@ type TokenInfo struct {
 	TokenId string `json:"token_id,omitempty"`
 }
 
+// Application ID of the service principal.
+
 // Comment that describes the purpose of the token, specified by the token
 // creator.
+
+// Comment that describes the purpose of the token.
 
 // User ID of the user that created the token.
 
@@ -65,6 +70,10 @@ type TokenInfo struct {
 
 // Timestamp when the token expires
 
+// The number of seconds before the token expires.
+
 // User ID of the user that owns the token.
 
 // ID of the token
+
+// Value of the token

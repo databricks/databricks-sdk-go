@@ -184,6 +184,13 @@ const ListUsersSortOrderAscending ListUsersSortOrder = `ascending`
 
 const ListUsersSortOrderDescending ListUsersSortOrder = `descending`
 
+type Name struct {
+	// Family name of the Databricks user.
+	FamilyName string `json:"familyName,omitempty"`
+	// Given name of the Databricks user.
+	GivenName string `json:"givenName,omitempty"`
+}
+
 type PartialUpdate struct {
 	// Unique ID for a group in the <Workspace>.
 	Id string `json:"-" path:"id"`
@@ -246,16 +253,9 @@ type User struct {
 	// Databricks user ID.
 	Id string `json:"id,omitempty" path:"id"`
 
-	Name *UserName `json:"name,omitempty"`
+	Name *Name `json:"name,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// Email address of the Databricks user.
 	UserName string `json:"userName,omitempty"`
-}
-
-type UserName struct {
-	// Family name of the Databricks user.
-	FamilyName string `json:"familyName,omitempty"`
-	// Given name of the Databricks user.
-	GivenName string `json:"givenName,omitempty"`
 }

@@ -1,18 +1,72 @@
 package code
 
+import (
+	"golang.org/x/exp/slices"
+)
+
 type Wait struct {
 	Method *Method
 }
 
-// Bind assumes the same name of field either in request/request or response/response
-func (w *Wait) Bind() *Field {
-	return w.Poll().Request.Field(w.Method.wait.Bind)
+type Binding struct {
+	// Polling method request field
+	PollField *Field
+
+	// Wrapped method either response or request body field
+	Bind *Field
+
+	// Is wrapped method response used?
+	IsResponseBind bool
+}
+
+func (w *Wait) Binding() (binding []Binding) {
+	poll := w.Poll()
+	if w.Method.wait.Binding != nil {
+		for pollRequestField, b := range w.Method.wait.Binding {
+			var bind *Field
+			if b.Response != "" {
+				bind = w.Method.Response.Field(b.Response)
+			} else {
+				bind = w.Method.Request.Field(b.Request)
+			}
+			binding = append(binding, Binding{
+				PollField:      poll.Request.Field(pollRequestField),
+				Bind:           bind,
+				IsResponseBind: b.Response != "",
+			})
+		}
+		// ensure generated code is deterministic
+		slices.SortFunc(binding, func(a, b Binding) bool {
+			return a.PollField.Name < b.PollField.Name
+		})
+	} else {
+		responseBind := true
+		bind := w.Method.wait.Bind
+		entity := w.Method.Response
+		if entity == nil {
+			entity = w.Method.Request
+			responseBind = false
+		}
+		binding = append(binding, Binding{
+			PollField:      poll.Request.Field(bind),
+			Bind:           entity.Field(bind),
+			IsResponseBind: responseBind,
+		})
+	}
+	return binding
 }
 
 func (w *Wait) ForceBindRequest() bool {
+	if w.Method.Response == nil {
+		return false
+	}
+	binding := w.Binding()
 	// this was specifically added for Jobs#RepairRun,
 	// that does not send run_id in response
-	return w.Method.wait.ForceBindRequest
+	if len(binding) == 1 && !binding[0].IsResponseBind {
+		return true
+	}
+	return false
 }
 
 func (w *Wait) Poll() *Method {
@@ -64,17 +118,11 @@ func (w *Wait) StatusPath() (path []*Field) {
 
 func (w *Wait) MessagePath() (path []*Field) {
 	pollMethod := w.Poll()
-	pathToMessage := w.Method.wait.Message
 	current := pollMethod.Response
-	for {
-		fieldName := pathToMessage[0]
-		pathToMessage = pathToMessage[1:]
+	for _, fieldName := range w.Method.wait.Message {
 		field := current.Field(fieldName)
 		path = append(path, field)
 		current = field.Entity
-		if len(pathToMessage) == 0 {
-			break
-		}
 	}
 	return path
 }

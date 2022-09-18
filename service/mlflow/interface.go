@@ -233,7 +233,7 @@ type ModelVersionCommentsService interface {
 	Create(ctx context.Context, request CreateComment) (*CreateResponse, error)
 
 	// Delete a comment on a model version.
-	Delete(ctx context.Context, request DeleteComment) error
+	Delete(ctx context.Context, request DeleteRequest) error
 
 	// DeleteById calls Delete, but directly with primitive function arguments,
 	// instead of constructing request instance.
@@ -326,7 +326,7 @@ type RegistryWebhooksService interface {
 	DeleteById(ctx context.Context, id string) error
 
 	// This endpoint is in Public Preview. List registry webhooks.
-	List(ctx context.Context, request ListRegistryWebhooks) (*ListResponse, error)
+	List(ctx context.Context, request ListRequest) (*ListResponse, error)
 
 	// This endpoint is in Public Preview. Test a registry webhook.
 	Test(ctx context.Context, request TestRegistryWebhookRequest) (*TestRegistryWebhookResponse, error)
