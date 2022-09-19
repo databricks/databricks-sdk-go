@@ -8,5 +8,5 @@ import (
 
 func TestNonConflictingCamelNames(t *testing.T) {
 	n := Named{Name: "Import"}
-	assert.True(t, n.IsReserved())
+	assert.True(t, n.IsNameReserved())
 }

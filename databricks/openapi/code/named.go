@@ -14,7 +14,7 @@ type Named struct {
 	Description string
 }
 
-func (n *Named) IsReserved() bool {
+func (n *Named) IsNameReserved() bool {
 	for _, v := range reservedWords {
 		if n.CamelName() == v {
 			return true
