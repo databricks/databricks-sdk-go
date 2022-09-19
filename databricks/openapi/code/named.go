@@ -4,9 +4,9 @@ import "strings"
 
 var reservedWords = []string{
 	"break", "default", "func", "interface", "select", "case", "defer", "go",
-	"map", "struct", "chan", "else", "goto", "switch", " const", "fallthrough",
+	"map", "struct", "chan", "else", "goto", "switch", "const", "fallthrough",
 	"if", "range", "type", "continue", "for", "import", "return", "var",
-	"append", "bool", "byte", "iota", "len", "make", "new",
+	"append", "bool", "byte", "iota", "len", "make", "new", "package",
 }
 
 type Named struct {
@@ -14,9 +14,9 @@ type Named struct {
 	Description string
 }
 
-func (n *Named) IsReserved() bool {
+func (n *Named) IsNameReserved() bool {
 	for _, v := range reservedWords {
-		if n.Name == v {
+		if n.CamelName() == v {
 			return true
 		}
 	}
