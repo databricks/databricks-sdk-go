@@ -6,7 +6,7 @@ var reservedWords = []string{
 	"break", "default", "func", "interface", "select", "case", "defer", "go",
 	"map", "struct", "chan", "else", "goto", "switch", "const", "fallthrough",
 	"if", "range", "type", "continue", "for", "import", "return", "var",
-	"append", "bool", "byte", "iota", "len", "make", "new",
+	"append", "bool", "byte", "iota", "len", "make", "new", "package",
 }
 
 type Named struct {
