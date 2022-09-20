@@ -1,6 +1,8 @@
 package code
 
 import (
+	"fmt"
+
 	"github.com/databricks/databricks-sdk-go/databricks/openapi"
 	"golang.org/x/exp/slices"
 )
@@ -29,6 +31,7 @@ type EnumEntry struct {
 
 type Entity struct {
 	Named
+	Package    *Package
 	enum       map[string]EnumEntry // TODO: sort
 	ArrayValue *Entity
 	MapValue   *Entity
@@ -38,6 +41,10 @@ type Entity struct {
 	IsBool     bool
 	IsString   bool
 	fields     map[string]Field
+}
+
+func (e *Entity) FullName() string {
+	return fmt.Sprintf("%s.%s", e.Package.Name, e.Name)
 }
 
 func (e *Entity) PascalName() string {
