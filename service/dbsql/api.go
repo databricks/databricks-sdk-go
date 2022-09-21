@@ -19,6 +19,9 @@ type AlertsAPI struct {
 	client *client.DatabricksClient
 }
 
+// Creates an alert. An alert is a Databricks SQL object that periodically runs
+// a query, evaluates a condition of its result, and notifies users or alert
+// destinations if the condition was met.
 func (a *AlertsAPI) CreateAlert(ctx context.Context, request EditAlert) (*Alert, error) {
 	var alert Alert
 	path := "/api/2.0/preview/sql/alerts"
@@ -34,30 +37,34 @@ func (a *AlertsAPI) CreateSchedule(ctx context.Context, request CreateRefreshSch
 	return &refreshSchedule, err
 }
 
-// Deleted alerts are no longer accessible. Once deleted, alerts cannot be
-// restored. **Note:** Unlike queries and dashboards, alerts do not support the
-// trash functionality.
+// Deletes an alert. Deleted alerts are no longer accessible and cannot be
+// restored. **Note:** Unlike queries and dashboards, alerts cannot be moved to
+// the trash.
 func (a *AlertsAPI) DeleteAlert(ctx context.Context, request DeleteAlertRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
-// Deleted alerts are no longer accessible. Once deleted, alerts cannot be
-// restored. **Note:** Unlike queries and dashboards, alerts do not support the
-// trash functionality.
+// Deletes an alert. Deleted alerts are no longer accessible and cannot be
+// restored. **Note:** Unlike queries and dashboards, alerts cannot be moved to
+// the trash.
 func (a *AlertsAPI) DeleteAlertByAlertId(ctx context.Context, alertId string) error {
 	return a.DeleteAlert(ctx, DeleteAlertRequest{
 		AlertId: alertId,
 	})
 }
 
+// Deletes alert refresh schedule that specifies when to refresh and evaluate
+// the associated query result.
 func (a *AlertsAPI) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v/refresh-schedules/%v", request.AlertId, request.ScheduleId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
+// Deletes alert refresh schedule that specifies when to refresh and evaluate
+// the associated query result.
 func (a *AlertsAPI) DeleteScheduleByAlertIdAndScheduleId(ctx context.Context, alertId string, scheduleId string) error {
 	return a.DeleteSchedule(ctx, DeleteScheduleRequest{
 		AlertId:    alertId,
@@ -65,6 +72,7 @@ func (a *AlertsAPI) DeleteScheduleByAlertIdAndScheduleId(ctx context.Context, al
 	})
 }
 
+// Gets an alert.
 func (a *AlertsAPI) GetAlert(ctx context.Context, request GetAlertRequest) (*Alert, error) {
 	var alert Alert
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
@@ -72,6 +80,7 @@ func (a *AlertsAPI) GetAlert(ctx context.Context, request GetAlertRequest) (*Ale
 	return &alert, err
 }
 
+// Gets an alert.
 func (a *AlertsAPI) GetAlertByAlertId(ctx context.Context, alertId string) (*Alert, error) {
 	return a.GetAlert(ctx, GetAlertRequest{
 		AlertId: alertId,
@@ -99,6 +108,7 @@ func (a *AlertsAPI) GetSubscriptionsByAlertId(ctx context.Context, alertId strin
 	})
 }
 
+// Get a list of alerts.
 func (a *AlertsAPI) ListAlerts(ctx context.Context) ([]Alert, error) {
 	var alertList []Alert
 	path := "/api/2.0/preview/sql/alerts"
@@ -134,12 +144,14 @@ func (a *AlertsAPI) Subscribe(ctx context.Context, request CreateSubscription) (
 	return &subscription, err
 }
 
+// Unsubscribes a user or a destination to an alert.
 func (a *AlertsAPI) Unsubscribe(ctx context.Context, request UnsubscribeRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v/subscriptions/%v", request.AlertId, request.SubscriptionId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
+// Unsubscribes a user or a destination to an alert.
 func (a *AlertsAPI) UnsubscribeByAlertIdAndSubscriptionId(ctx context.Context, alertId string, subscriptionId string) error {
 	return a.Unsubscribe(ctx, UnsubscribeRequest{
 		AlertId:        alertId,
@@ -147,6 +159,7 @@ func (a *AlertsAPI) UnsubscribeByAlertIdAndSubscriptionId(ctx context.Context, a
 	})
 }
 
+// Updates an alert.
 func (a *AlertsAPI) UpdateAlert(ctx context.Context, request EditAlert) error {
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	err := a.client.Put(ctx, path, request)
@@ -170,16 +183,16 @@ func (a *DashboardsAPI) CreateDashboard(ctx context.Context, request CreateDashb
 	return &dashboard, err
 }
 
-// Trashed dashboards do not appear in list views or searches and cannot be
-// shared.
+// Moves a dashboard to the trash. Trashed dashboards do not appear in list
+// views or searches, and cannot be shared.
 func (a *DashboardsAPI) DeleteDashboard(ctx context.Context, request DeleteDashboardRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
-// Trashed dashboards do not appear in list views or searches and cannot be
-// shared.
+// Moves a dashboard to the trash. Trashed dashboards do not appear in list
+// views or searches, and cannot be shared.
 func (a *DashboardsAPI) DeleteDashboardByDashboardId(ctx context.Context, dashboardId string) error {
 	return a.DeleteDashboard(ctx, DeleteDashboardRequest{
 		DashboardId: dashboardId,
@@ -227,9 +240,9 @@ type DataSourcesAPI struct {
 	client *client.DatabricksClient
 }
 
-// Retrieve a full list of SQL warehouses available in this workspace. All
+// Retrieves a full list of SQL warehouses available in this workspace. All
 // fields that appear in this API response are enumerated for clarity. However,
-// you will only need a SQL warehouse's `id` to create new queries against it.
+// you need only a SQL warehouse's `id` to create new queries against it.
 func (a *DataSourcesAPI) ListDataSources(ctx context.Context) ([]DataSource, error) {
 	var dataSourceList []DataSource
 	path := "/api/2.0/preview/sql/data_sources"
@@ -292,12 +305,12 @@ type QueriesAPI struct {
 	client *client.DatabricksClient
 }
 
-// Queries created with this endpoint belong to the authenticated user making
-// the request. The `data_source_id` field specifies the id of the SQL warehouse
-// against which this query will run. You can use the Data Sources API to see a
-// complete list of available SQL warehouses. Or you can copy the
-// `data_source_id` from an existing query. **Note**: You cannot add a
-// visualization until you create the query.
+// Creates a new query definition. Queries created with this endpoint belong to
+// the authenticated user making the request. The `data_source_id` field
+// specifies the ID of the SQL warehouse to run this query against. You can use
+// the Data Sources API to see a complete list of available SQL warehouses. Or
+// you can copy the `data_source_id` from an existing query. **Note**: You
+// cannot add a visualization until you create the query.
 func (a *QueriesAPI) CreateQuery(ctx context.Context, request QueryPostContent) (*Query, error) {
 	var query Query
 	path := "/api/2.0/preview/sql/queries"
@@ -305,16 +318,18 @@ func (a *QueriesAPI) CreateQuery(ctx context.Context, request QueryPostContent) 
 	return &query, err
 }
 
-// Trashed queries immediately disappear from searches and list views and cannot
-// be used for alerts. The trash is deleted after 30 days.
+// Moves a query to the trash. Trashed queries immediately disappear from
+// searches and list views, and they cannot be used for alerts. The trash is
+// deleted after 30 days.
 func (a *QueriesAPI) DeleteQuery(ctx context.Context, request DeleteQueryRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
-// Trashed queries immediately disappear from searches and list views and cannot
-// be used for alerts. The trash is deleted after 30 days.
+// Moves a query to the trash. Trashed queries immediately disappear from
+// searches and list views, and they cannot be used for alerts. The trash is
+// deleted after 30 days.
 func (a *QueriesAPI) DeleteQueryByQueryId(ctx context.Context, queryId string) error {
 	return a.DeleteQuery(ctx, DeleteQueryRequest{
 		QueryId: queryId,
@@ -338,7 +353,8 @@ func (a *QueriesAPI) GetQueryByQueryId(ctx context.Context, queryId string) (*Qu
 	})
 }
 
-// Optionally this list can be filtered by a search term.
+// Retrieves a list of queries. Optionally, this list can be filtered by a
+// search term.
 func (a *QueriesAPI) ListQueries(ctx context.Context, request ListQueriesRequest) (*ListQueriesResponse, error) {
 	var listQueriesResponse ListQueriesResponse
 	path := "/api/2.0/preview/sql/queries"

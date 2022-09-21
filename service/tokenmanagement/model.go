@@ -66,14 +66,14 @@ type TokenInfo struct {
 
 // Username of the user that created the token.
 
-// Timestamp when the token was created
+// Timestamp when the token was created.
 
-// Timestamp when the token expires
+// Timestamp when the token expires.
 
 // The number of seconds before the token expires.
 
 // User ID of the user that owns the token.
 
-// ID of the token
+// ID of the token.
 
-// Value of the token
+// Value of the token.

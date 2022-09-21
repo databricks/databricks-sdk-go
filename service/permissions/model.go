@@ -5,21 +5,17 @@ package permissions
 // all definitions in this file are in alphabetical order
 
 type AccessControlRequest struct {
-	// <needs content>
+	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// getPermissionLevel defaults to CAN_ATTACH_TO when it's not defined (for
-	// PUT/PATCH) so you should use .permissionLevel.isDefined to verify that it
-	// actually exists
+	// Permission level
 	PermissionLevel AccessControlRequestPermissionLevel `json:"permission_level,omitempty"`
-	// <needs content>
+	// name of the service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-	// <needs content>
+	// name of the user
 	UserName string `json:"user_name,omitempty"`
 }
 
-// getPermissionLevel defaults to CAN_ATTACH_TO when it's not defined (for
-// PUT/PATCH) so you should use .permissionLevel.isDefined to verify that it
-// actually exists
+// Permission level
 type AccessControlRequestPermissionLevel string
 
 const AccessControlRequestPermissionLevelCanAttachTo AccessControlRequestPermissionLevel = `CAN_ATTACH_TO`
@@ -53,17 +49,18 @@ const AccessControlRequestPermissionLevelCanViewMetadata AccessControlRequestPer
 const AccessControlRequestPermissionLevelIsOwner AccessControlRequestPermissionLevel = `IS_OWNER`
 
 type AccessControlResponse struct {
-	// <needs content>
+	// All permissions.
 	AllPermissions []Permission `json:"all_permissions,omitempty"`
-	// <needs content>
+	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// <needs content>
+	// name of the service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-	// <needs content>
+	// name of the user
 	UserName string `json:"user_name,omitempty"`
 }
 
 type GetPermissionLevelsResponse struct {
+	// Specific permission levels
 	PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
 }
 

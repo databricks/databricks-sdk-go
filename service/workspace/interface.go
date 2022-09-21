@@ -12,19 +12,19 @@ import (
 type WorkspaceService interface {
 
 	// Deletes an object or a directory (and optionally recursively deletes all
-	// objects in the directory). If ``path`` does not exist, this call returns
-	// an error ``RESOURCE_DOES_NOT_EXIST``. If ``path`` is a non-empty
-	// directory and ``recursive`` is set to ``false``, this call returns an
-	// error ``DIRECTORY_NOT_EMPTY``. Object deletion cannot be undone and
-	// deleting a directory recursively is not atomic. Example of request: ..
-	// code :: json { "path": "/Users/user@example.com/project", "recursive":
-	// true }
+	// objects in the directory). * If ``path`` does not exist, this call
+	// returns an error ``RESOURCE_DOES_NOT_EXIST``. * If ``path`` is a
+	// non-empty directory and ``recursive`` is set to ``false``, this call
+	// returns an error ``DIRECTORY_NOT_EMPTY``. Object deletion cannot be
+	// undone and deleting a directory recursively is not atomic. Example of
+	// request: ```json { "path": "/Users/user-name/project", "recursive": true
+	// } ```
 	Delete(ctx context.Context, request Delete) error
 
-	// Exports a notebook or contents of an entire directory. If ``path`` does
-	// not exist, this call returns an error ``RESOURCE_DOES_NOT_EXIST``. One
-	// can only export a directory in ``DBC`` format. If the exported data would
-	// exceed size limit, this call returns an error
+	// Exports a notebook or the contents of an entire directory. If ``path``
+	// does not exist, this call returns an error ``RESOURCE_DOES_NOT_EXIST``.
+	// One can only export a directory in ``DBC`` format. If the exported data
+	// would exceed size limit, this call returns an error
 	// ``MAX_NOTEBOOK_SIZE_EXCEEDED``. Currently, this API does not support
 	// exporting a library. Example of request: .. code :: json { "path":
 	// "/Users/user@example.com/project/ScalaExampleNotebook", "format":
@@ -73,8 +73,8 @@ type WorkspaceService interface {
 	// "object_type": "NOTEBOOK", "object_id": 456 } ] }
 	List(ctx context.Context, request ListRequest) (*ListResponse, error)
 
-	// Creates the given directory and necessary parent directories if they do
-	// not exists. If there exists an object (not a directory) at any prefix of
+	// Creates the specified directory (and necessary parent directories if they
+	// do not exist) . If there is an object (not a directory) at any prefix of
 	// the input path, this call returns an error ``RESOURCE_ALREADY_EXISTS``.
 	// Note that if this operation fails it may have succeeded in creating some
 	// of the necessary parrent directories. Example of request: .. code:: json

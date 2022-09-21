@@ -86,16 +86,17 @@ type Dashboard struct {
 	DashboardFiltersEnabled bool `json:"dashboard_filters_enabled,omitempty"`
 	// The ID for this dashboard.
 	Id string `json:"id,omitempty"`
-	// Whether a dashboard is trashed. Trashed dashboards won't appear in list
-	// views. If this boolean is `true`, the `options` property for this
-	// dashboard will include a `moved_to_trash_at` timestamp. Items in Trash
-	// are permanently deleted after 30 days.
+	// Indicates whether a dashboard is trashed. Trashed dashboards won't appear
+	// in list views. If this boolean is `true`, the `options` property for this
+	// dashboard includes a `moved_to_trash_at` timestamp. Items in trash are
+	// permanently deleted after 30 days.
 	IsArchived bool `json:"is_archived,omitempty"`
 	// Whether a dashboard is a draft. Draft dashboards only appear in list
 	// views for their owners.
 	IsDraft bool `json:"is_draft,omitempty"`
-	// Whether this query object appears in the current user's favorites list.
-	// This flag determines whether the star icon for favorites is colored in.
+	// Indicates whether this query object appears in the current user's
+	// favorites list. This flag determines whether the star icon for favorites
+	// is selected.
 	IsFavorite bool `json:"is_favorite,omitempty"`
 	// The title of the dashboard that appears in list views and at the top of
 	// the dashboard page.
@@ -134,21 +135,21 @@ type DataSource struct {
 	// when creating / modifying queries and dashboards.
 	Id string `json:"id,omitempty"`
 	// The string name of this data source / SQL warehouse as it appears in the
-	// Databricks SQL web application
+	// Databricks SQL web application.
 	Name string `json:"name,omitempty"`
-	// Undocumented field
+	// <needs content>
 	PauseReason string `json:"pause_reason,omitempty"`
-	// Undocumented field
+	// <needs content>
 	Paused any/* MISSING TYPE */ `json:"paused,omitempty"`
-	// Undocumented field
+	// <needs content>
 	SupportsAutoLimit bool `json:"supports_auto_limit,omitempty"`
-	// Undocumented field
+	// <needs content>
 	Syntax string `json:"syntax,omitempty"`
-	// Undocumented field
+	// <needs content>
 	Type string `json:"type,omitempty"`
-	// Undocumented field
+	// <needs content>
 	ViewOnly bool `json:"view_only,omitempty"`
-	// Undocumented field
+	// <needs content>
 	WarehouseId string `json:"warehouse_id,omitempty"`
 }
 
@@ -209,8 +210,6 @@ type ParameterType string
 
 const ParameterTypeDatetime ParameterType = `datetime`
 
-const ParameterTypeDropdownList ParameterType = `dropdown-list`
-
 const ParameterTypeNumber ParameterType = `number`
 
 const ParameterTypeText ParameterType = `text`
@@ -228,8 +227,8 @@ const PermissionLevelCanRun PermissionLevel = `CAN_RUN`
 const PermissionLevelCanView PermissionLevel = `CAN_VIEW`
 
 type Query struct {
-	// Describes whether the authenticated user may edit the definition of this
-	// query.
+	// Describes whether the authenticated user is allowed to edit the
+	// definition of this query.
 	CanEdit bool `json:"can_edit,omitempty"`
 	// The timestamp when this query was created.
 	CreatedAt string `json:"created_at,omitempty"`
@@ -241,9 +240,9 @@ type Query struct {
 	Description string `json:"description,omitempty"`
 
 	Id string `json:"id,omitempty"`
-	// Whether the query is trashed. Trashed queries can't be used in
+	// Indicates whether the query is trashed. Trashed queries can't be used in
 	// dashboards, or appear in search results. If this boolean is `true`, the
-	// `options` property for this query will include a `moved_to_trash_at`
+	// `options` property for this query includes a `moved_to_trash_at`
 	// timestamp. Trashed queries are permanently deleted after 30 days.
 	IsArchived bool `json:"is_archived,omitempty"`
 	// Whether the query is a draft. Draft queries only appear in list views for
@@ -251,7 +250,7 @@ type Query struct {
 	// dashboards.
 	IsDraft bool `json:"is_draft,omitempty"`
 	// Whether this query object appears in the current user's favorites list.
-	// This flag determines whether the star icon for favorites is colored in.
+	// This flag determines whether the star icon for favorites is selected.
 	IsFavorite bool `json:"is_favorite,omitempty"`
 	// Text parameter types are not safe from SQL injection for all types of
 	// data source. Set this Boolean parameter to `true` if a query either does
@@ -292,11 +291,11 @@ type Query struct {
 }
 
 type QueryInterval struct {
-	// For weekly runs, a day of the week for run to start.
+	// For weekly runs, the day of the week to start the run.
 	DayOfWeek any/* MISSING TYPE */ `json:"day_of_week,omitempty"`
 	// Integer number of seconds between runs.
 	Interval int `json:"interval,omitempty"`
-	// For daily, weekly, and monthly runs, the time-of-day for run to start.
+	// For daily, weekly, and monthly runs, the time of day to start the run.
 	Time any/* MISSING TYPE */ `json:"time,omitempty"`
 	// A date after which this schedule no longer applies.
 	Until any/* MISSING TYPE */ `json:"until,omitempty"`
@@ -372,7 +371,7 @@ type User struct {
 
 	Name string `json:"name,omitempty"`
 	// The URL for the gravatar profile picture tied to this user's email
-	// address
+	// address.
 	ProfileImageUrl string `json:"profile_image_url,omitempty"`
 }
 
@@ -475,10 +474,10 @@ type CreateDashboardRequest struct {
 	DashboardFiltersEnabled bool `json:"dashboard_filters_enabled,omitempty"`
 	// Draft dashboards only appear in list views for their owners.
 	IsDraft bool `json:"is_draft,omitempty"`
-	// Whether the dashboard is trashed. Trashed dashboards won't appear in list
-	// views.
+	// Indicates whether the dashboard is trashed. Trashed dashboards don't
+	// appear in list views.
 	IsTrashed bool `json:"is_trashed,omitempty"`
-	// The title of this dashboard which appears in list views and at the top of
+	// The title of this dashboard that appears in list views and at the top of
 	// the dashboard page.
 	Name string `json:"name,omitempty"`
 
@@ -517,7 +516,7 @@ type GetDashboardRequest struct {
 }
 
 type GetPermissionsRequest struct {
-	// Object ID. An ACL will be returned for the object with this UUID.
+	// Object ID. An ACL is returned for the object with this UUID.
 	ObjectId string `json:"-" path:"objectId"`
 	// The type of object permissions to check.
 	ObjectType ObjectTypePlural `json:"-" path:"objectType"`
@@ -573,10 +572,10 @@ type ListQueriesRequest struct {
 	// the query. - `created_at`: The timestamp the query was created. -
 	// `schedule`: The refresh interval for each query. For example: "Every 5
 	// Hours" or "Every 5 Minutes". "Never" is treated as the highest value for
-	// sorting. - `runtime`: The time it took to run this query. This will be
-	// blank for parameterized queries. A blank value is treated as the highest
-	// value for sorting. - `executed_at`: The timestamp when the query was last
-	// run. - `created_by`: The user name of the user that created the query.
+	// sorting. - `runtime`: The time it took to run this query. This is blank
+	// for parameterized queries. A blank value is treated as the highest value
+	// for sorting. - `executed_at`: The timestamp when the query was last run.
+	// - `created_by`: The user name of the user that created the query.
 	Order string `json:"-" url:"order,omitempty"`
 	// Page number to retrieve.
 	Page int `json:"-" url:"page,omitempty"`
@@ -603,7 +602,7 @@ type ListSchedulesRequest struct {
 
 // A UUID generated by the application.
 
-// A singular noun object type
+// A singular noun object type.
 type ObjectType string
 
 const ObjectTypeAlert ObjectType = `alert`
@@ -653,8 +652,8 @@ type RestoreQueryRequest struct {
 
 type SetPermissionsRequest struct {
 	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
-	// Object ID. The ACL for the object with this UUID will be overwritten by
-	// this request's POST content.
+	// Object ID. The ACL for the object with this UUID is overwritten by this
+	// request's POST content.
 	ObjectId string `json:"-" path:"objectId"`
 	// The type of object permission to set.
 	ObjectType ObjectTypePlural `json:"-" path:"objectType"`

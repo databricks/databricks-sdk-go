@@ -78,15 +78,15 @@ type UpdateIPAccessListRequest struct {
 
 // Total number of IP or CIDR values.
 
-// Creation timestamp in milliseconds
+// Creation timestamp in milliseconds.
 
-// User ID of the user who created this list
+// User ID of the user who created this list.
 
 // Specifies whether this IP access list is enabled.
 
 // Label for the IP access list. This **cannot** be empty.
 
-// UUID of the IP access list
+// Universally unique identifier(UUID) of the IP access list.
 
 // This describes an enum
 type ListType string
@@ -98,6 +98,6 @@ const ListTypeAllow ListType = `ALLOW`
 // excluded even if they are included in an allow list.
 const ListTypeBlock ListType = `BLOCK`
 
-// Update timestamp in milliseconds
+// Update timestamp in milliseconds.
 
-// User ID of the user who updated this list
+// User ID of the user who updated this list.

@@ -21,7 +21,7 @@ type ClustersAPI struct {
 	client *client.DatabricksClient
 }
 
-// Public version of editClusterOwner, allowing admins to change cluster owner
+// Allowing admins to change cluster owner
 func (a *ClustersAPI) ChangeOwner(ctx context.Context, request ChangeClusterOwner) error {
 	path := "/api/2.0/clusters/change-owner"
 	err := a.client.Post(ctx, path, request, nil)
