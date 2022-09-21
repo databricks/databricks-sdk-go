@@ -19,29 +19,29 @@ type WorkspaceAPI struct {
 }
 
 // Deletes an object or a directory (and optionally recursively deletes all
-// objects in the directory). If “path“ does not exist, this call returns an
-// error “RESOURCE_DOES_NOT_EXIST“. If “path“ is a non-empty directory and
+// objects in the directory). * If “path“ does not exist, this call returns an
+// error “RESOURCE_DOES_NOT_EXIST“. * If “path“ is a non-empty directory and
 // “recursive“ is set to “false“, this call returns an error
 // “DIRECTORY_NOT_EMPTY“. Object deletion cannot be undone and deleting a
-// directory recursively is not atomic. Example of request: .. code :: json {
-// "path": "/Users/user@example.com/project", "recursive": true }
+// directory recursively is not atomic. Example of request: ```json { "path":
+// "/Users/user-name/project", "recursive": true } ```
 func (a *WorkspaceAPI) Delete(ctx context.Context, request Delete) error {
 	path := "/api/2.0/workspace/delete"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
-// Exports a notebook or contents of an entire directory. If “path“ does not
-// exist, this call returns an error “RESOURCE_DOES_NOT_EXIST“. One can only
-// export a directory in “DBC“ format. If the exported data would exceed size
-// limit, this call returns an error “MAX_NOTEBOOK_SIZE_EXCEEDED“. Currently,
-// this API does not support exporting a library. Example of request: .. code ::
-// json { "path": "/Users/user@example.com/project/ScalaExampleNotebook",
-// "format": "SOURCE" } Example of response, where “content“ is
-// base64-encoded: .. code :: json { "content":
-// "Ly8gRGF0YWJyaWNrcyBub3RlYm9vayBzb3VyY2UKMSsx", } Alternaitvely, one can
-// download the exported file by enabling “direct_download“: .. code :: shell
-// curl -n -o example.scala \
+// Exports a notebook or the contents of an entire directory. If “path“ does
+// not exist, this call returns an error “RESOURCE_DOES_NOT_EXIST“. One can
+// only export a directory in “DBC“ format. If the exported data would exceed
+// size limit, this call returns an error “MAX_NOTEBOOK_SIZE_EXCEEDED“.
+// Currently, this API does not support exporting a library. Example of request:
+// .. code :: json { "path":
+// "/Users/user@example.com/project/ScalaExampleNotebook", "format": "SOURCE" }
+// Example of response, where “content“ is base64-encoded: .. code :: json {
+// "content": "Ly8gRGF0YWJyaWNrcyBub3RlYm9vayBzb3VyY2UKMSsx", } Alternaitvely,
+// one can download the exported file by enabling “direct_download“: .. code
+// :: shell curl -n -o example.scala \
 // 'https://XX.cloud.databricks.com/api/2.0/workspace/export?path=/Users/user@example.com/ScalaExampleNotebook&direct_download=true'
 func (a *WorkspaceAPI) Export(ctx context.Context, request ExportRequest) (*ExportResponse, error) {
 	var exportResponse ExportResponse
@@ -107,8 +107,8 @@ func (a *WorkspaceAPI) List(ctx context.Context, request ListRequest) (*ListResp
 	return &listResponse, err
 }
 
-// Creates the given directory and necessary parent directories if they do not
-// exists. If there exists an object (not a directory) at any prefix of the
+// Creates the specified directory (and necessary parent directories if they do
+// not exist) . If there is an object (not a directory) at any prefix of the
 // input path, this call returns an error “RESOURCE_ALREADY_EXISTS“. Note that
 // if this operation fails it may have succeeded in creating some of the
 // necessary parrent directories. Example of request: .. code:: json { "path":
@@ -119,8 +119,8 @@ func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request Mkdirs) error {
 	return err
 }
 
-// Creates the given directory and necessary parent directories if they do not
-// exists. If there exists an object (not a directory) at any prefix of the
+// Creates the specified directory (and necessary parent directories if they do
+// not exist) . If there is an object (not a directory) at any prefix of the
 // input path, this call returns an error “RESOURCE_ALREADY_EXISTS“. Note that
 // if this operation fails it may have succeeded in creating some of the
 // necessary parrent directories. Example of request: .. code:: json { "path":

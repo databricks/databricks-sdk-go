@@ -19,6 +19,8 @@ type PermissionsAPI struct {
 	client *client.DatabricksClient
 }
 
+// Get the permission of an object. Objects can inherit permissions from their
+// parent objects or root objects.
 func (a *PermissionsAPI) GetObjectPermissions(ctx context.Context, request GetObjectPermissionsRequest) (*ObjectPermissions, error) {
 	var objectPermissions ObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
@@ -26,6 +28,8 @@ func (a *PermissionsAPI) GetObjectPermissions(ctx context.Context, request GetOb
 	return &objectPermissions, err
 }
 
+// Get the permission of an object. Objects can inherit permissions from their
+// parent objects or root objects.
 func (a *PermissionsAPI) GetObjectPermissionsByObjectTypeAndObjectId(ctx context.Context, objectType string, objectId string) (*ObjectPermissions, error) {
 	return a.GetObjectPermissions(ctx, GetObjectPermissionsRequest{
 		ObjectType: objectType,
@@ -33,7 +37,7 @@ func (a *PermissionsAPI) GetObjectPermissionsByObjectTypeAndObjectId(ctx context
 	})
 }
 
-// <needs content>
+// Get permission levels that a user can have.
 func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error) {
 	var getPermissionLevelsResponse GetPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", request.RequestObjectType, request.RequestObjectId)
@@ -41,7 +45,7 @@ func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPer
 	return &getPermissionLevelsResponse, err
 }
 
-// <needs content>
+// Get permission levels that a user can have.
 func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error) {
 	return a.GetPermissionLevels(ctx, GetPermissionLevelsRequest{
 		RequestObjectType: requestObjectType,
@@ -49,14 +53,15 @@ func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectI
 	})
 }
 
-// <needs content>
+// Set permissions on object. Objects can inherit permissiond from their parent
+// objects and root objects.
 func (a *PermissionsAPI) SetObjectPermissions(ctx context.Context, request SetObjectPermissions) error {
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
 	err := a.client.Put(ctx, path, request)
 	return err
 }
 
-// <needs content>
+// Update permission on objects
 func (a *PermissionsAPI) UpdateObjectPermissions(ctx context.Context, request UpdateObjectPermissions) error {
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
 	err := a.client.Patch(ctx, path, request)

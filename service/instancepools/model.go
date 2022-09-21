@@ -62,6 +62,7 @@ type CreateInstancePool struct {
 }
 
 type CreateInstancePoolResponse struct {
+	// The ID of the created instance pool.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 }
 
@@ -502,6 +503,6 @@ type PendingInstanceError struct {
 }
 
 type GetRequest struct {
-	// The instance pool about which to retrieve information.
+	// The canonical unique identifier for the instance pool.
 	InstancePoolId string `json:"-" url:"instance_pool_id,omitempty"`
 }

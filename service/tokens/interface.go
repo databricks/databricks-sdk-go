@@ -15,13 +15,13 @@ import (
 type TokensService interface {
 
 	// Creates and returns a token for a user. If this call is made through
-	// token authentication, it will create the token that has the same client
-	// id with the authenticated token. This call returns an error
-	// ``QUOTA_EXCEEDED`` if over the token quota for the user.
+	// token authentication, it creates a token with the same client ID as the
+	// authenticated token. If the user's token quota is exceeded, this call
+	// returns an error ``QUOTA_EXCEEDED``.
 	Create(ctx context.Context, request CreateTokenRequest) (*CreateTokenResponse, error)
 
-	// Revokes an access token. This call returns an error
-	// ``RESOURCE_DOES_NOT_EXIST`` if a token with the given ID is not valid.
+	// Revokes an access token. If a token with the specified ID is not valid,
+	// this call returns an error ``RESOURCE_DOES_NOT_EXIST``.
 	Delete(ctx context.Context, request RevokeTokenRequest) error
 
 	// DeleteByTokenId calls Delete, but directly with primitive function arguments,

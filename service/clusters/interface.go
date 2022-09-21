@@ -14,8 +14,7 @@ import (
 // Evolving: this interface is under development. Method signatures may change.
 type ClustersService interface {
 
-	// Public version of editClusterOwner, allowing admins to change cluster
-	// owner
+	// Allowing admins to change cluster owner
 	ChangeOwner(ctx context.Context, request ChangeClusterOwner) error
 
 	// Creates a new Spark cluster. This method will acquire new instances from

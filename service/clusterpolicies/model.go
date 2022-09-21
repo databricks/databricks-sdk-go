@@ -14,6 +14,7 @@ type CreatePolicy struct {
 }
 
 type CreatePolicyResponse struct {
+	// Canonical unique identifier for the cluster policy.
 	PolicyId string `json:"policy_id,omitempty"`
 }
 
@@ -34,6 +35,7 @@ type EditPolicy struct {
 }
 
 type ListPoliciesResponse struct {
+	// List of policies.
 	Policies []Policy `json:"policies,omitempty"`
 }
 
@@ -55,6 +57,6 @@ type Policy struct {
 }
 
 type GetRequest struct {
-	// The policy ID about which to retrieve information.
+	// Canonical unique identifier for the cluster policy.
 	PolicyId string `json:"-" url:"policy_id,omitempty"`
 }
