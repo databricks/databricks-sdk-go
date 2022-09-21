@@ -17,33 +17,33 @@ type ComplexValue struct {
 }
 
 type DeleteGroupRequest struct {
-	// Unique ID for a group in the &lt;Workspace&gt;.
-	Id string ` path:"id"`
+	// Unique ID for a group in the <Workspace>.
+	Id string `json:"-" path:"id"`
 }
 
 type DeleteServicePrincipalRequest struct {
-	// Unique ID for a service principal in the &lt;Workspace&gt;.
-	Id string ` path:"id"`
+	// Unique ID for a service principal in the <Workspace>.
+	Id string `json:"-" path:"id"`
 }
 
 type DeleteUserRequest struct {
-	// Unique ID for a user in the &lt;Workspace&gt;.
-	Id string ` path:"id"`
+	// Unique ID for a user in the <Workspace>.
+	Id string `json:"-" path:"id"`
 }
 
 type FetchGroupRequest struct {
-	// Unique ID for a group in the &lt;Workspace&gt;.
-	Id string ` path:"id"`
+	// Unique ID for a group in the <Workspace>.
+	Id string `json:"-" path:"id"`
 }
 
 type FetchServicePrincipalRequest struct {
-	// Unique ID for a service principal in the &lt;Workspace&gt;.
-	Id string ` path:"id"`
+	// Unique ID for a service principal in the <Workspace>.
+	Id string `json:"-" path:"id"`
 }
 
 type FetchUserRequest struct {
-	// Unique ID for a user in the &lt;Workspace&gt;.
-	Id string ` path:"id"`
+	// Unique ID for a user in the <Workspace>.
+	Id string `json:"-" path:"id"`
 }
 
 type Group struct {
@@ -61,30 +61,28 @@ type Group struct {
 	Members []ComplexValue `json:"members,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
-	// SCIM schema used for the group object.
-	Schemas []Urn `json:"schemas,omitempty"`
 }
 
 type ListGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string ` url:"attributes,omitempty"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
-	Count int ` url:"count,omitempty"`
+	Count int `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string ` url:"excludedAttributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
 	// `and` and `or`. The [SCIM
 	// RFC](https://tools.ietf.org/html/rfc7644#section-3.4.2.2) has more
 	// details but we currently only support simple expressions.
-	Filter string ` url:"filter,omitempty"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
-	SortBy string ` url:"sortBy,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListGroupsSortOrder ` url:"sortOrder,omitempty"`
+	SortOrder ListGroupsSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int ` url:"startIndex,omitempty"`
+	StartIndex int `json:"-" url:"startIndex,omitempty"`
 }
 
 type ListGroupsResponse struct {
@@ -119,24 +117,24 @@ type ListServicePrincipalResponse struct {
 
 type ListServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string ` url:"attributes,omitempty"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
-	Count int ` url:"count,omitempty"`
+	Count int `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string ` url:"excludedAttributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
 	// `and` and `or`. The [SCIM
 	// RFC](https://tools.ietf.org/html/rfc7644#section-3.4.2.2) has more
 	// details but we currently only support simple expressions.
-	Filter string ` url:"filter,omitempty"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
-	SortBy string ` url:"sortBy,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListServicePrincipalsSortOrder ` url:"sortOrder,omitempty"`
+	SortOrder ListServicePrincipalsSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int ` url:"startIndex,omitempty"`
+	StartIndex int `json:"-" url:"startIndex,omitempty"`
 }
 
 type ListServicePrincipalsSortOrder string
@@ -147,25 +145,25 @@ const ListServicePrincipalsSortOrderDescending ListServicePrincipalsSortOrder = 
 
 type ListUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string ` url:"attributes,omitempty"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
-	Count int ` url:"count,omitempty"`
+	Count int `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string ` url:"excludedAttributes,omitempty"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
 	// `and` and `or`. The [SCIM
 	// RFC](https://tools.ietf.org/html/rfc7644#section-3.4.2.2) has more
 	// details but we currently only support simple expressions.
-	Filter string ` url:"filter,omitempty"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string ` url:"sortBy,omitempty"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListUsersSortOrder ` url:"sortOrder,omitempty"`
+	SortOrder ListUsersSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int ` url:"startIndex,omitempty"`
+	StartIndex int `json:"-" url:"startIndex,omitempty"`
 }
 
 type ListUsersResponse struct {
@@ -186,13 +184,18 @@ const ListUsersSortOrderAscending ListUsersSortOrder = `ascending`
 
 const ListUsersSortOrderDescending ListUsersSortOrder = `descending`
 
+type Name struct {
+	// Family name of the Databricks user.
+	FamilyName string `json:"familyName,omitempty"`
+	// Given name of the Databricks user.
+	GivenName string `json:"givenName,omitempty"`
+}
+
 type PartialUpdate struct {
-	// Unique ID for a group in the &lt;Workspace&gt;.
-	Id string ` path:"id"`
+	// Unique ID for a group in the <Workspace>.
+	Id string `json:"-" path:"id"`
 
 	Operations []Patch `json:"operations,omitempty"`
-	// SCIM schema used for the user object.
-	Schemas []Urn `json:"schemas,omitempty"`
 }
 
 type Patch struct {
@@ -231,27 +234,7 @@ type ServicePrincipal struct {
 	Id string `json:"id,omitempty" path:"id"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
-	// SCIM schema used for the user object.
-	Schemas []Urn `json:"schemas,omitempty"`
 }
-
-// Defines type of SCIM protocol entity
-type Urn string
-
-// Defines type of SCIM protocol entity
-const UrnGroup Urn = `urn:ietf:params:scim:schemas:core:2.0:Group`
-
-// Defines type of SCIM protocol entity
-const UrnPatchOp Urn = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
-
-// Defines type of SCIM protocol entity
-const UrnServicePrincipal Urn = `urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal`
-
-// Defines type of SCIM protocol entity
-const UrnUser Urn = `urn:ietf:params:scim:schemas:core:2.0:User`
-
-// Defines type of SCIM protocol entity
-const UrnWorkspaceUser Urn = `urn:ietf:params:scim:schemas:extension:workspace:2.0:User`
 
 type User struct {
 	// If this user is active
@@ -270,18 +253,9 @@ type User struct {
 	// Databricks user ID.
 	Id string `json:"id,omitempty" path:"id"`
 
-	Name *UserName `json:"name,omitempty"`
+	Name *Name `json:"name,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
-	// SCIM schema used for the user object.
-	Schemas []Urn `json:"schemas,omitempty"`
 	// Email address of the Databricks user.
 	UserName string `json:"userName,omitempty"`
-}
-
-type UserName struct {
-	// Family name of the Databricks user.
-	FamilyName string `json:"familyName,omitempty"`
-	// Given name of the Databricks user.
-	GivenName string `json:"givenName,omitempty"`
 }

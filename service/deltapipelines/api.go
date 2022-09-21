@@ -29,8 +29,8 @@ func (a *DeltaPipelinesAPI) CreatePipeline(ctx context.Context, request CreatePi
 }
 
 // CreatePipeline and wait to reach RUNNING state
-func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, request CreatePipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
-	createPipelineResponse, err := a.CreatePipeline(ctx, request)
+func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPipelineRequest CreatePipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
+	createPipelineResponse, err := a.CreatePipeline(ctx, createPipelineRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -85,8 +85,8 @@ func (a *DeltaPipelinesAPI) GetPipeline(ctx context.Context, request GetPipeline
 }
 
 // GetPipeline and wait to reach RUNNING state
-func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, request GetPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
-	getPipelineResponse, err := a.GetPipeline(ctx, request)
+func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipelineRequest GetPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
+	getPipelineResponse, err := a.GetPipeline(ctx, getPipelineRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -161,8 +161,8 @@ func (a *DeltaPipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipe
 }
 
 // ResetPipeline and wait to reach RUNNING state
-func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, request ResetPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
-	err := a.ResetPipeline(ctx, request)
+func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipelineRequest ResetPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
+	err := a.ResetPipeline(ctx, resetPipelineRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +171,7 @@ func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, request Re
 	}
 	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
-			PipelineId: request.PipelineId,
+			PipelineId: resetPipelineRequest.PipelineId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -206,8 +206,8 @@ func (a *DeltaPipelinesAPI) StopPipeline(ctx context.Context, request StopPipeli
 }
 
 // StopPipeline and wait to reach IDLE state
-func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, request StopPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
-	err := a.StopPipeline(ctx, request)
+func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipelineRequest StopPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
+	err := a.StopPipeline(ctx, stopPipelineRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +216,7 @@ func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, request Sto
 	}
 	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
-			PipelineId: request.PipelineId,
+			PipelineId: stopPipelineRequest.PipelineId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)

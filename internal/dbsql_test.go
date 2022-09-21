@@ -1,0 +1,40 @@
+package internal
+
+import (
+	"context"
+	"testing"
+
+	"github.com/databricks/databricks-sdk-go/service/dbsql"
+	"github.com/databricks/databricks-sdk-go/workspaces"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func TestAccQueries(t *testing.T) {
+	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
+	t.Log(env)
+	ctx := context.Background()
+	wsc := workspaces.New()
+
+	srcs, err := wsc.DataSources.ListDataSources(ctx)
+	require.NoError(t, err)
+	if len(srcs) == 0 {
+		t.Skipf("no sql warehouses found")
+	}
+
+	query, err := wsc.Queries.CreateQuery(ctx, dbsql.QueryPostContent{
+		Name:         RandomName("go-sdk/test/"),
+		DataSourceId: srcs[0].Id,
+		Description:  "test query from Go SDK",
+		Query:        "SHOW TABLES",
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := wsc.Queries.DeleteQueryByQueryId(ctx, query.Id)
+		require.NoError(t, err)
+	})
+
+	loaded, err := wsc.Queries.GetQueryByQueryId(ctx, query.Id)
+	require.NoError(t, err)
+	assert.Equal(t, query.Query, loaded.Query)
+}

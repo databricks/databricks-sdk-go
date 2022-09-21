@@ -18,6 +18,7 @@ type WorkspaceConfAPI struct {
 	client *client.DatabricksClient
 }
 
+// Gets the configuration status for a workspace.
 func (a *WorkspaceConfAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*WorkspaceConf, error) {
 	var workspaceConf WorkspaceConf
 	path := "/api/2.0/workspace-conf"
@@ -25,6 +26,8 @@ func (a *WorkspaceConfAPI) GetStatus(ctx context.Context, request GetStatusReque
 	return &workspaceConf, err
 }
 
+// Sets the configuration status for a workspace, including enabling or
+// disabling it.
 func (a *WorkspaceConfAPI) SetStatus(ctx context.Context, request WorkspaceConf) error {
 	path := "/api/2.0/workspace-conf"
 	err := a.client.Patch(ctx, path, request)

@@ -18,6 +18,8 @@ type Method struct {
 	Response          *Entity
 	EmptyResponseName Named
 	wait              *openapi.Wait
+	pagination        *openapi.Pagination
+	operation         *openapi.Operation
 	shortcut          bool
 }
 
@@ -27,12 +29,31 @@ type Shortcut struct {
 	Method *Method
 }
 
-var pathPairRE = regexp.MustCompile(`(?m)([^\{]+)(\{(\w+)\})?`)
+type Pagination struct {
+	Offset    *Field
+	Limit     *Field
+	Results   *Field
+	Entity    *Entity
+	Increment int
+}
+
+// NamedIdMap assumes that Pagination is there
+type NamedIdMap struct {
+	Id     *Field
+	Name   *Field
+	Entity *Entity
+
+	// if List method returns []Item directly
+	// without generated iteration wrapper
+	Direct bool
+}
 
 type PathPart struct {
 	Prefix string
 	Field  *Field
 }
+
+var pathPairRE = regexp.MustCompile(`(?m)([^\{]+)(\{(\w+)\})?`)
 
 func (m *Method) pathParams() (params []Field) {
 	if len(m.PathParts) == 0 {
@@ -110,6 +131,75 @@ func (m *Method) Wait() *Wait {
 	return &Wait{
 		Method: m,
 	}
+}
+
+func (m *Method) Pagination() *Pagination {
+	if m.pagination == nil {
+		return nil
+	}
+	if m.Response.ArrayValue != nil {
+		// we assume that method already returns body-as-array
+		return nil
+	}
+	results := m.Response.Field(m.pagination.Results)
+	return &Pagination{
+		Results:   results,
+		Entity:    results.Entity.ArrayValue,
+		Offset:    m.Request.Field(m.pagination.Offset),
+		Limit:     m.Request.Field(m.pagination.Limit),
+		Increment: m.pagination.Increment,
+	}
+}
+
+func (m *Method) paginationItem() *Entity {
+	if m.pagination == nil {
+		return nil
+	}
+	if m.Response.ArrayValue != nil {
+		// we assume that method already returns body-as-array
+		return m.Response.ArrayValue
+	}
+	return m.Pagination().Entity
+}
+
+func (m *Method) NamedIdMap() *NamedIdMap {
+	entity := m.paginationItem()
+	if entity == nil {
+		return nil
+	}
+	var id, name *Field
+	for _, f := range entity.fields {
+		local := f
+		if f.Schema.IsIdentifier {
+			id = &local
+		}
+		if f.Schema.IsName {
+			name = &local
+		}
+	}
+	if id == nil || name == nil {
+		return nil
+	}
+	return &NamedIdMap{
+		Id:     id,
+		Name:   name,
+		Entity: entity,
+		Direct: m.Response.ArrayValue != nil,
+	}
+}
+
+// GetByName returns method from the same service with x-databricks-crud:read
+func (m *Method) GetByName() *Method {
+	if m.NamedIdMap() == nil {
+		return nil
+	}
+	for _, v := range m.Service.methods {
+		if strings.ToLower(v.operation.Crud) != "read" {
+			continue
+		}
+		return v
+	}
+	return nil
 }
 
 func (m *Method) CanHaveResponseBody() bool {

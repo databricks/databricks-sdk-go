@@ -4,6 +4,30 @@ package unitycatalog
 
 // all definitions in this file are in alphabetical order
 
+type AwsIamRole struct {
+	// The external ID used in role assumption to prevent confused deputy
+	// problem. [Create:IGN].
+	ExternalId string `json:"external_id,omitempty"`
+	// The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access.
+	// [Create:REQ].
+	RoleArn string `json:"role_arn,omitempty"`
+	// The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
+	// This is the identity that is going to assume the AWS IAM role.
+	// [Create:IGN].
+	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
+}
+
+type AzureServicePrincipal struct {
+	// The application ID of the application registration within the referenced
+	// AAD tenant. [Create:REQ]
+	ApplicationId string `json:"application_id,omitempty"`
+	// The client secret generated for the above app ID in AAD. [Create:REQ]
+	ClientSecret string `json:"client_secret,omitempty"`
+	// The directory ID corresponding to the Azure Active Directory (AAD) tenant
+	// of the application. [Create:REQ].
+	DirectoryId string `json:"directory_id,omitempty"`
+}
+
 type CatalogInfo struct {
 	// [Create,Update:IGN] The type of the catalog.
 	CatalogType CatalogInfoCatalogType `json:"catalog_type,omitempty"`
@@ -22,8 +46,8 @@ type CatalogInfo struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Catalog.
 	Privileges []CatalogInfoPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// Delta Sharing Catalog specific fields. A Delta Sharing Catalog is a
@@ -139,9 +163,9 @@ const ColumnInfoTypeNameTimestamp ColumnInfoTypeName = `TIMESTAMP`
 
 const ColumnInfoTypeNameUnknownColumnTypeName ColumnInfoTypeName = `UNKNOWN_COLUMN_TYPE_NAME`
 
-type CreateCatalogRequest struct {
+type CreateCatalog struct {
 	// [Create,Update:IGN] The type of the catalog.
-	CatalogType CreateCatalogRequestCatalogType `json:"catalog_type,omitempty"`
+	CatalogType CreateCatalogCatalogType `json:"catalog_type,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Catalog was created, in epoch
@@ -156,9 +180,9 @@ type CreateCatalogRequest struct {
 	// [Create:IGN,Update:OPT] Username of current owner of Catalog.
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Catalog.
-	Privileges []CreateCatalogRequestPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	Privileges []CreateCatalogPrivilegesItem `json:"privileges,omitempty"`
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// Delta Sharing Catalog specific fields. A Delta Sharing Catalog is a
@@ -175,35 +199,35 @@ type CreateCatalogRequest struct {
 }
 
 // [Create,Update:IGN] The type of the catalog.
-type CreateCatalogRequestCatalogType string
+type CreateCatalogCatalogType string
 
-const CreateCatalogRequestCatalogTypeDeltasharingCatalog CreateCatalogRequestCatalogType = `DELTASHARING_CATALOG`
+const CreateCatalogCatalogTypeDeltasharingCatalog CreateCatalogCatalogType = `DELTASHARING_CATALOG`
 
-const CreateCatalogRequestCatalogTypeManagedCatalog CreateCatalogRequestCatalogType = `MANAGED_CATALOG`
+const CreateCatalogCatalogTypeManagedCatalog CreateCatalogCatalogType = `MANAGED_CATALOG`
 
-const CreateCatalogRequestCatalogTypeSystemCatalog CreateCatalogRequestCatalogType = `SYSTEM_CATALOG`
+const CreateCatalogCatalogTypeSystemCatalog CreateCatalogCatalogType = `SYSTEM_CATALOG`
 
-const CreateCatalogRequestCatalogTypeUnknownCatalogType CreateCatalogRequestCatalogType = `UNKNOWN_CATALOG_TYPE`
+const CreateCatalogCatalogTypeUnknownCatalogType CreateCatalogCatalogType = `UNKNOWN_CATALOG_TYPE`
 
-type CreateCatalogRequestPrivilegesItem string
+type CreateCatalogPrivilegesItem string
 
-const CreateCatalogRequestPrivilegesItemCreate CreateCatalogRequestPrivilegesItem = `CREATE`
+const CreateCatalogPrivilegesItemCreate CreateCatalogPrivilegesItem = `CREATE`
 
-const CreateCatalogRequestPrivilegesItemCreateMount CreateCatalogRequestPrivilegesItem = `CREATE_MOUNT`
+const CreateCatalogPrivilegesItemCreateMount CreateCatalogPrivilegesItem = `CREATE_MOUNT`
 
-const CreateCatalogRequestPrivilegesItemCreateTable CreateCatalogRequestPrivilegesItem = `CREATE_TABLE`
+const CreateCatalogPrivilegesItemCreateTable CreateCatalogPrivilegesItem = `CREATE_TABLE`
 
-const CreateCatalogRequestPrivilegesItemModify CreateCatalogRequestPrivilegesItem = `MODIFY`
+const CreateCatalogPrivilegesItemModify CreateCatalogPrivilegesItem = `MODIFY`
 
-const CreateCatalogRequestPrivilegesItemReadFiles CreateCatalogRequestPrivilegesItem = `READ_FILES`
+const CreateCatalogPrivilegesItemReadFiles CreateCatalogPrivilegesItem = `READ_FILES`
 
-const CreateCatalogRequestPrivilegesItemSelect CreateCatalogRequestPrivilegesItem = `SELECT`
+const CreateCatalogPrivilegesItemSelect CreateCatalogPrivilegesItem = `SELECT`
 
-const CreateCatalogRequestPrivilegesItemUnknownPrivilege CreateCatalogRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+const CreateCatalogPrivilegesItemUnknownPrivilege CreateCatalogPrivilegesItem = `UNKNOWN_PRIVILEGE`
 
-const CreateCatalogRequestPrivilegesItemUsage CreateCatalogRequestPrivilegesItem = `USAGE`
+const CreateCatalogPrivilegesItemUsage CreateCatalogPrivilegesItem = `USAGE`
 
-const CreateCatalogRequestPrivilegesItemWriteFiles CreateCatalogRequestPrivilegesItem = `WRITE_FILES`
+const CreateCatalogPrivilegesItemWriteFiles CreateCatalogPrivilegesItem = `WRITE_FILES`
 
 type CreateCatalogResponse struct {
 	// [Create,Update:IGN] The type of the catalog.
@@ -223,8 +247,8 @@ type CreateCatalogResponse struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Catalog.
 	Privileges []CreateCatalogResponsePrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// Delta Sharing Catalog specific fields. A Delta Sharing Catalog is a
@@ -271,7 +295,7 @@ const CreateCatalogResponsePrivilegesItemUsage CreateCatalogResponsePrivilegesIt
 
 const CreateCatalogResponsePrivilegesItemWriteFiles CreateCatalogResponsePrivilegesItem = `WRITE_FILES`
 
-type CreateExternalLocationRequest struct {
+type CreateExternalLocation struct {
 	// [Create:OPT Update:OPT] User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this External Location was created, in
@@ -279,7 +303,7 @@ type CreateExternalLocationRequest struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of External Location creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// [Create,Update:IGN] Unique ID of the location&#39;s Storage Credential.
+	// [Create,Update:IGN] Unique ID of the location's Storage Credential.
 	CredentialId string `json:"credential_id,omitempty"`
 	// [Create:REQ Update:OPT] Current name of the Storage Credential this
 	// location uses.
@@ -309,7 +333,7 @@ type CreateExternalLocationResponse struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of External Location creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// [Create,Update:IGN] Unique ID of the location&#39;s Storage Credential.
+	// [Create,Update:IGN] Unique ID of the location's Storage Credential.
 	CredentialId string `json:"credential_id,omitempty"`
 	// [Create:REQ Update:OPT] Current name of the Storage Credential this
 	// location uses.
@@ -331,15 +355,7 @@ type CreateExternalLocationResponse struct {
 	Url string `json:"url,omitempty"`
 }
 
-type CreateMetastoreAssignmentRequest struct {
-	DefaultCatalogName string `json:"default_catalog_name"`
-
-	MetastoreId string `json:"metastore_id"`
-
-	WorkspaceId int ` path:"workspace_id"`
-}
-
-type CreateMetastoreRequest struct {
+type CreateMetastore struct {
 	// [Create,Update:IGN] Time at which this Metastore was created, in epoch
 	// milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
@@ -361,7 +377,7 @@ type CreateMetastoreRequest struct {
 	// [Create:IGN Update:OPT] The owner of the metastore.
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Metastore.
-	Privileges []CreateMetastoreRequestPrivilegesItem `json:"privileges,omitempty"`
+	Privileges []CreateMetastorePrivilegesItem `json:"privileges,omitempty"`
 	// The region this metastore has an afinity to. This is used by
 	// accounts-manager. Ignored by Unity Catalog.
 	Region string `json:"region,omitempty"`
@@ -376,25 +392,33 @@ type CreateMetastoreRequest struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
-type CreateMetastoreRequestPrivilegesItem string
+type CreateMetastoreAssignment struct {
+	DefaultCatalogName string `json:"default_catalog_name"`
 
-const CreateMetastoreRequestPrivilegesItemCreate CreateMetastoreRequestPrivilegesItem = `CREATE`
+	MetastoreId string `json:"metastore_id"`
 
-const CreateMetastoreRequestPrivilegesItemCreateMount CreateMetastoreRequestPrivilegesItem = `CREATE_MOUNT`
+	WorkspaceId int `json:"-" path:"workspace_id"`
+}
 
-const CreateMetastoreRequestPrivilegesItemCreateTable CreateMetastoreRequestPrivilegesItem = `CREATE_TABLE`
+type CreateMetastorePrivilegesItem string
 
-const CreateMetastoreRequestPrivilegesItemModify CreateMetastoreRequestPrivilegesItem = `MODIFY`
+const CreateMetastorePrivilegesItemCreate CreateMetastorePrivilegesItem = `CREATE`
 
-const CreateMetastoreRequestPrivilegesItemReadFiles CreateMetastoreRequestPrivilegesItem = `READ_FILES`
+const CreateMetastorePrivilegesItemCreateMount CreateMetastorePrivilegesItem = `CREATE_MOUNT`
 
-const CreateMetastoreRequestPrivilegesItemSelect CreateMetastoreRequestPrivilegesItem = `SELECT`
+const CreateMetastorePrivilegesItemCreateTable CreateMetastorePrivilegesItem = `CREATE_TABLE`
 
-const CreateMetastoreRequestPrivilegesItemUnknownPrivilege CreateMetastoreRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+const CreateMetastorePrivilegesItemModify CreateMetastorePrivilegesItem = `MODIFY`
 
-const CreateMetastoreRequestPrivilegesItemUsage CreateMetastoreRequestPrivilegesItem = `USAGE`
+const CreateMetastorePrivilegesItemReadFiles CreateMetastorePrivilegesItem = `READ_FILES`
 
-const CreateMetastoreRequestPrivilegesItemWriteFiles CreateMetastoreRequestPrivilegesItem = `WRITE_FILES`
+const CreateMetastorePrivilegesItemSelect CreateMetastorePrivilegesItem = `SELECT`
+
+const CreateMetastorePrivilegesItemUnknownPrivilege CreateMetastorePrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const CreateMetastorePrivilegesItemUsage CreateMetastorePrivilegesItem = `USAGE`
+
+const CreateMetastorePrivilegesItemWriteFiles CreateMetastorePrivilegesItem = `WRITE_FILES`
 
 type CreateMetastoreResponse struct {
 	// [Create,Update:IGN] Time at which this Metastore was created, in epoch
@@ -453,13 +477,13 @@ const CreateMetastoreResponsePrivilegesItemUsage CreateMetastoreResponsePrivileg
 
 const CreateMetastoreResponsePrivilegesItemWriteFiles CreateMetastoreResponsePrivilegesItem = `WRITE_FILES`
 
-type CreateProviderRequest struct {
+type CreateProvider struct {
 	// [Create,Update:IGN] Whether this provider is successfully activated by
 	// the data provider. This field is only present when the authentication
 	// type is DATABRICKS.
 	ActivatedByProvider bool `json:"activated_by_provider,omitempty"`
 	// [Create:REQ,Update:IGN] The delta sharing authentication type.
-	AuthenticationType CreateProviderRequestAuthenticationType `json:"authentication_type,omitempty"`
+	AuthenticationType CreateProviderAuthenticationType `json:"authentication_type,omitempty"`
 	// [Create,Update:OPT] Description about the provider.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Provider was created, in epoch
@@ -486,13 +510,13 @@ type CreateProviderRequest struct {
 }
 
 // [Create:REQ,Update:IGN] The delta sharing authentication type.
-type CreateProviderRequestAuthenticationType string
+type CreateProviderAuthenticationType string
 
-const CreateProviderRequestAuthenticationTypeDatabricks CreateProviderRequestAuthenticationType = `DATABRICKS`
+const CreateProviderAuthenticationTypeDatabricks CreateProviderAuthenticationType = `DATABRICKS`
 
-const CreateProviderRequestAuthenticationTypeToken CreateProviderRequestAuthenticationType = `TOKEN`
+const CreateProviderAuthenticationTypeToken CreateProviderAuthenticationType = `TOKEN`
 
-const CreateProviderRequestAuthenticationTypeUnknown CreateProviderRequestAuthenticationType = `UNKNOWN`
+const CreateProviderAuthenticationTypeUnknown CreateProviderAuthenticationType = `UNKNOWN`
 
 type CreateProviderResponse struct {
 	// [Create,Update:IGN] Whether this provider is successfully activated by
@@ -535,15 +559,15 @@ const CreateProviderResponseAuthenticationTypeToken CreateProviderResponseAuthen
 
 const CreateProviderResponseAuthenticationTypeUnknown CreateProviderResponseAuthenticationType = `UNKNOWN`
 
-type CreateRecipientRequest struct {
+type CreateRecipient struct {
 	// [Create:IGN,Update:IGN] A boolean status field showing whether the
-	// Recipient&#39;s activation URL has been exercised or not.
+	// Recipient's activation URL has been exercised or not.
 	Activated bool `json:"activated,omitempty"`
 	// [Create:IGN,Update:IGN] Full activation url to retrieve the access token.
 	// It will be empty if the token is already retrieved.
 	ActivationUrl string `json:"activation_url,omitempty"`
 	// [Create:REQ,Update:IGN] The delta sharing authentication type.
-	AuthenticationType CreateRecipientRequestAuthenticationType `json:"authentication_type,omitempty"`
+	AuthenticationType CreateRecipientAuthenticationType `json:"authentication_type,omitempty"`
 	// [Create:OPT,Update:OPT] Description about the recipient.
 	Comment string `json:"comment,omitempty"`
 	// [Create:IGN,Update:IGN] Time at which this Recipient was created, in
@@ -570,17 +594,17 @@ type CreateRecipientRequest struct {
 }
 
 // [Create:REQ,Update:IGN] The delta sharing authentication type.
-type CreateRecipientRequestAuthenticationType string
+type CreateRecipientAuthenticationType string
 
-const CreateRecipientRequestAuthenticationTypeDatabricks CreateRecipientRequestAuthenticationType = `DATABRICKS`
+const CreateRecipientAuthenticationTypeDatabricks CreateRecipientAuthenticationType = `DATABRICKS`
 
-const CreateRecipientRequestAuthenticationTypeToken CreateRecipientRequestAuthenticationType = `TOKEN`
+const CreateRecipientAuthenticationTypeToken CreateRecipientAuthenticationType = `TOKEN`
 
-const CreateRecipientRequestAuthenticationTypeUnknown CreateRecipientRequestAuthenticationType = `UNKNOWN`
+const CreateRecipientAuthenticationTypeUnknown CreateRecipientAuthenticationType = `UNKNOWN`
 
 type CreateRecipientResponse struct {
 	// [Create:IGN,Update:IGN] A boolean status field showing whether the
-	// Recipient&#39;s activation URL has been exercised or not.
+	// Recipient's activation URL has been exercised or not.
 	Activated bool `json:"activated,omitempty"`
 	// [Create:IGN,Update:IGN] Full activation url to retrieve the access token.
 	// It will be empty if the token is already retrieved.
@@ -621,7 +645,7 @@ const CreateRecipientResponseAuthenticationTypeToken CreateRecipientResponseAuth
 
 const CreateRecipientResponseAuthenticationTypeUnknown CreateRecipientResponseAuthenticationType = `UNKNOWN`
 
-type CreateSchemaRequest struct {
+type CreateSchema struct {
 	// [Create:REQ Update:IGN] Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
@@ -632,7 +656,7 @@ type CreateSchemaRequest struct {
 	// [Create,Update:IGN] Username of Schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Full name of Schema, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.
+	// <catalog_name>.<schema_name>.
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -641,9 +665,9 @@ type CreateSchemaRequest struct {
 	// [Create:IGN Update:OPT] Username of current owner of Schema.
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Schema.
-	Privileges []CreateSchemaRequestPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	Privileges []CreateSchemaPrivilegesItem `json:"privileges,omitempty"`
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create,Update:IGN] Time at which this Schema was created, in epoch
@@ -653,25 +677,25 @@ type CreateSchemaRequest struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
-type CreateSchemaRequestPrivilegesItem string
+type CreateSchemaPrivilegesItem string
 
-const CreateSchemaRequestPrivilegesItemCreate CreateSchemaRequestPrivilegesItem = `CREATE`
+const CreateSchemaPrivilegesItemCreate CreateSchemaPrivilegesItem = `CREATE`
 
-const CreateSchemaRequestPrivilegesItemCreateMount CreateSchemaRequestPrivilegesItem = `CREATE_MOUNT`
+const CreateSchemaPrivilegesItemCreateMount CreateSchemaPrivilegesItem = `CREATE_MOUNT`
 
-const CreateSchemaRequestPrivilegesItemCreateTable CreateSchemaRequestPrivilegesItem = `CREATE_TABLE`
+const CreateSchemaPrivilegesItemCreateTable CreateSchemaPrivilegesItem = `CREATE_TABLE`
 
-const CreateSchemaRequestPrivilegesItemModify CreateSchemaRequestPrivilegesItem = `MODIFY`
+const CreateSchemaPrivilegesItemModify CreateSchemaPrivilegesItem = `MODIFY`
 
-const CreateSchemaRequestPrivilegesItemReadFiles CreateSchemaRequestPrivilegesItem = `READ_FILES`
+const CreateSchemaPrivilegesItemReadFiles CreateSchemaPrivilegesItem = `READ_FILES`
 
-const CreateSchemaRequestPrivilegesItemSelect CreateSchemaRequestPrivilegesItem = `SELECT`
+const CreateSchemaPrivilegesItemSelect CreateSchemaPrivilegesItem = `SELECT`
 
-const CreateSchemaRequestPrivilegesItemUnknownPrivilege CreateSchemaRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+const CreateSchemaPrivilegesItemUnknownPrivilege CreateSchemaPrivilegesItem = `UNKNOWN_PRIVILEGE`
 
-const CreateSchemaRequestPrivilegesItemUsage CreateSchemaRequestPrivilegesItem = `USAGE`
+const CreateSchemaPrivilegesItemUsage CreateSchemaPrivilegesItem = `USAGE`
 
-const CreateSchemaRequestPrivilegesItemWriteFiles CreateSchemaRequestPrivilegesItem = `WRITE_FILES`
+const CreateSchemaPrivilegesItemWriteFiles CreateSchemaPrivilegesItem = `WRITE_FILES`
 
 type CreateSchemaResponse struct {
 	// [Create:REQ Update:IGN] Name of parent Catalog.
@@ -684,7 +708,7 @@ type CreateSchemaResponse struct {
 	// [Create,Update:IGN] Username of Schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Full name of Schema, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.
+	// <catalog_name>.<schema_name>.
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -694,8 +718,8 @@ type CreateSchemaResponse struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Schema.
 	Privileges []CreateSchemaResponsePrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create,Update:IGN] Time at which this Schema was created, in epoch
@@ -725,7 +749,7 @@ const CreateSchemaResponsePrivilegesItemUsage CreateSchemaResponsePrivilegesItem
 
 const CreateSchemaResponsePrivilegesItemWriteFiles CreateSchemaResponsePrivilegesItem = `WRITE_FILES`
 
-type CreateShareRequest struct {
+type CreateShare struct {
 	// [Create: OPT] comment when creating the share
 	Comment string `json:"comment,omitempty"`
 	// [Create:IGN] Time at which this Share was created, in epoch milliseconds.
@@ -751,7 +775,7 @@ type CreateShareResponse struct {
 	Objects []SharedDataObject `json:"objects,omitempty"`
 }
 
-type CreateStagingTableRequest struct {
+type CreateStagingTable struct {
 	// [Create:REQ] Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
 	// [Create:IGN] Unique id generated for the staging table
@@ -777,10 +801,10 @@ type CreateStagingTableResponse struct {
 	StagingLocation string `json:"staging_location,omitempty"`
 }
 
-type CreateStorageCredentialRequest struct {
-	AwsIamRole any/* ERROR */ `json:"aws_iam_role,omitempty"`
+type CreateStorageCredential struct {
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 
-	AzureServicePrincipal any/* ERROR */ `json:"azure_service_principal,omitempty"`
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Credential was created, in epoch
@@ -789,7 +813,7 @@ type CreateStorageCredentialRequest struct {
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
 
-	GcpServiceAccountKey any/* ERROR */ `json:"gcp_service_account_key,omitempty"`
+	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
@@ -810,9 +834,9 @@ type CreateStorageCredentialRequest struct {
 }
 
 type CreateStorageCredentialResponse struct {
-	AwsIamRole any/* ERROR */ `json:"aws_iam_role,omitempty"`
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 
-	AzureServicePrincipal any/* ERROR */ `json:"azure_service_principal,omitempty"`
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Credential was created, in epoch
@@ -821,7 +845,7 @@ type CreateStorageCredentialResponse struct {
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
 
-	GcpServiceAccountKey any/* ERROR */ `json:"gcp_service_account_key,omitempty"`
+	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
@@ -838,11 +862,11 @@ type CreateStorageCredentialResponse struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
-type CreateTableRequest struct {
+type CreateTable struct {
 	// [Create:REQ Update:IGN] Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// This name (&#39;columns&#39;) is what the client actually sees as the field name
-	// in messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('columns') is what the client actually sees as the field name
+	// in messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Columns []ColumnInfo `json:"columns,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
@@ -854,10 +878,10 @@ type CreateTableRequest struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Unique ID of the data_access_configuration to use.
 	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
-	// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
-	DataSourceFormat CreateTableRequestDataSourceFormat `json:"data_source_format,omitempty"`
+	// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
+	DataSourceFormat CreateTableDataSourceFormat `json:"data_source_format,omitempty"`
 	// [Create,Update:IGN] Full name of Table, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.&lt;table_name&gt;
+	// <catalog_name>.<schema_name>.<table_name>
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -866,9 +890,9 @@ type CreateTableRequest struct {
 	// [Create: IGN Update:OPT] Username of current owner of Table.
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Table.
-	Privileges []CreateTableRequestPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	Privileges []CreateTablePrivilegesItem `json:"privileges,omitempty"`
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create:REQ Update:IGN] Name of parent Schema relative to its parent
@@ -884,76 +908,65 @@ type CreateTableRequest struct {
 	StorageLocation string `json:"storage_location,omitempty"`
 	// [Create:IGN Update:IGN] Name of Table, relative to parent Schema.
 	TableId string `json:"table_id,omitempty"`
-	// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
-	TableType CreateTableRequestTableType `json:"table_type,omitempty"`
+	// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
+	TableType CreateTableTableType `json:"table_type,omitempty"`
 	// [Create,Update:IGN] Time at which this Table was last modified, in epoch
 	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// [Create,Update:IGN] Username of user who last modified the Table.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// [Create,Update:OPT] View definition SQL (when table_type == &#34;VIEW&#34;)
+	// [Create,Update:OPT] View definition SQL (when table_type == "VIEW")
 	ViewDefinition string `json:"view_definition,omitempty"`
 }
 
-// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
-type CreateTableRequestDataSourceFormat string
+// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
+type CreateTableDataSourceFormat string
 
-const CreateTableRequestDataSourceFormatAvro CreateTableRequestDataSourceFormat = `AVRO`
+const CreateTableDataSourceFormatAvro CreateTableDataSourceFormat = `AVRO`
 
-const CreateTableRequestDataSourceFormatCsv CreateTableRequestDataSourceFormat = `CSV`
+const CreateTableDataSourceFormatCsv CreateTableDataSourceFormat = `CSV`
 
-const CreateTableRequestDataSourceFormatDelta CreateTableRequestDataSourceFormat = `DELTA`
+const CreateTableDataSourceFormatDelta CreateTableDataSourceFormat = `DELTA`
 
-const CreateTableRequestDataSourceFormatDeltasharing CreateTableRequestDataSourceFormat = `DELTASHARING`
+const CreateTableDataSourceFormatDeltasharing CreateTableDataSourceFormat = `DELTASHARING`
 
-const CreateTableRequestDataSourceFormatJson CreateTableRequestDataSourceFormat = `JSON`
+const CreateTableDataSourceFormatJson CreateTableDataSourceFormat = `JSON`
 
-const CreateTableRequestDataSourceFormatOrc CreateTableRequestDataSourceFormat = `ORC`
+const CreateTableDataSourceFormatOrc CreateTableDataSourceFormat = `ORC`
 
-const CreateTableRequestDataSourceFormatParquet CreateTableRequestDataSourceFormat = `PARQUET`
+const CreateTableDataSourceFormatParquet CreateTableDataSourceFormat = `PARQUET`
 
-const CreateTableRequestDataSourceFormatText CreateTableRequestDataSourceFormat = `TEXT`
+const CreateTableDataSourceFormatText CreateTableDataSourceFormat = `TEXT`
 
-const CreateTableRequestDataSourceFormatUnityCatalog CreateTableRequestDataSourceFormat = `UNITY_CATALOG`
+const CreateTableDataSourceFormatUnityCatalog CreateTableDataSourceFormat = `UNITY_CATALOG`
 
-const CreateTableRequestDataSourceFormatUnknownDataSourceFormat CreateTableRequestDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
+const CreateTableDataSourceFormatUnknownDataSourceFormat CreateTableDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
 
-type CreateTableRequestPrivilegesItem string
+type CreateTablePrivilegesItem string
 
-const CreateTableRequestPrivilegesItemCreate CreateTableRequestPrivilegesItem = `CREATE`
+const CreateTablePrivilegesItemCreate CreateTablePrivilegesItem = `CREATE`
 
-const CreateTableRequestPrivilegesItemCreateMount CreateTableRequestPrivilegesItem = `CREATE_MOUNT`
+const CreateTablePrivilegesItemCreateMount CreateTablePrivilegesItem = `CREATE_MOUNT`
 
-const CreateTableRequestPrivilegesItemCreateTable CreateTableRequestPrivilegesItem = `CREATE_TABLE`
+const CreateTablePrivilegesItemCreateTable CreateTablePrivilegesItem = `CREATE_TABLE`
 
-const CreateTableRequestPrivilegesItemModify CreateTableRequestPrivilegesItem = `MODIFY`
+const CreateTablePrivilegesItemModify CreateTablePrivilegesItem = `MODIFY`
 
-const CreateTableRequestPrivilegesItemReadFiles CreateTableRequestPrivilegesItem = `READ_FILES`
+const CreateTablePrivilegesItemReadFiles CreateTablePrivilegesItem = `READ_FILES`
 
-const CreateTableRequestPrivilegesItemSelect CreateTableRequestPrivilegesItem = `SELECT`
+const CreateTablePrivilegesItemSelect CreateTablePrivilegesItem = `SELECT`
 
-const CreateTableRequestPrivilegesItemUnknownPrivilege CreateTableRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+const CreateTablePrivilegesItemUnknownPrivilege CreateTablePrivilegesItem = `UNKNOWN_PRIVILEGE`
 
-const CreateTableRequestPrivilegesItemUsage CreateTableRequestPrivilegesItem = `USAGE`
+const CreateTablePrivilegesItemUsage CreateTablePrivilegesItem = `USAGE`
 
-const CreateTableRequestPrivilegesItemWriteFiles CreateTableRequestPrivilegesItem = `WRITE_FILES`
-
-// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
-type CreateTableRequestTableType string
-
-const CreateTableRequestTableTypeExternal CreateTableRequestTableType = `EXTERNAL`
-
-const CreateTableRequestTableTypeManaged CreateTableRequestTableType = `MANAGED`
-
-const CreateTableRequestTableTypeUnknownTableType CreateTableRequestTableType = `UNKNOWN_TABLE_TYPE`
-
-const CreateTableRequestTableTypeView CreateTableRequestTableType = `VIEW`
+const CreateTablePrivilegesItemWriteFiles CreateTablePrivilegesItem = `WRITE_FILES`
 
 type CreateTableResponse struct {
 	// [Create:REQ Update:IGN] Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// This name (&#39;columns&#39;) is what the client actually sees as the field name
-	// in messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('columns') is what the client actually sees as the field name
+	// in messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Columns []ColumnInfo `json:"columns,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
@@ -965,10 +978,10 @@ type CreateTableResponse struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Unique ID of the data_access_configuration to use.
 	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
-	// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+	// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 	DataSourceFormat CreateTableResponseDataSourceFormat `json:"data_source_format,omitempty"`
 	// [Create,Update:IGN] Full name of Table, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.&lt;table_name&gt;
+	// <catalog_name>.<schema_name>.<table_name>
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -978,8 +991,8 @@ type CreateTableResponse struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Table.
 	Privileges []CreateTableResponsePrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create:REQ Update:IGN] Name of parent Schema relative to its parent
@@ -995,18 +1008,18 @@ type CreateTableResponse struct {
 	StorageLocation string `json:"storage_location,omitempty"`
 	// [Create:IGN Update:IGN] Name of Table, relative to parent Schema.
 	TableId string `json:"table_id,omitempty"`
-	// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+	// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 	TableType CreateTableResponseTableType `json:"table_type,omitempty"`
 	// [Create,Update:IGN] Time at which this Table was last modified, in epoch
 	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// [Create,Update:IGN] Username of user who last modified the Table.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// [Create,Update:OPT] View definition SQL (when table_type == &#34;VIEW&#34;)
+	// [Create,Update:OPT] View definition SQL (when table_type == "VIEW")
 	ViewDefinition string `json:"view_definition,omitempty"`
 }
 
-// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 type CreateTableResponseDataSourceFormat string
 
 const CreateTableResponseDataSourceFormatAvro CreateTableResponseDataSourceFormat = `AVRO`
@@ -1049,7 +1062,7 @@ const CreateTableResponsePrivilegesItemUsage CreateTableResponsePrivilegesItem =
 
 const CreateTableResponsePrivilegesItemWriteFiles CreateTableResponsePrivilegesItem = `WRITE_FILES`
 
-// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 type CreateTableResponseTableType string
 
 const CreateTableResponseTableTypeExternal CreateTableResponseTableType = `EXTERNAL`
@@ -1060,64 +1073,16 @@ const CreateTableResponseTableTypeUnknownTableType CreateTableResponseTableType 
 
 const CreateTableResponseTableTypeView CreateTableResponseTableType = `VIEW`
 
-type DeleteCatalogRequest struct {
-	// Required. Name of the Catalog (from URL).
-	NameArg string ` path:"name_arg"`
-}
+// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
+type CreateTableTableType string
 
-type DeleteExternalLocationRequest struct {
-	// Optional. Force deletion even if there are dependent external tables or
-	// mounts.
-	Force bool `json:"force,omitempty"`
-	// Required. Name of the storage credential.
-	NameArg string ` path:"name_arg"`
-}
+const CreateTableTableTypeExternal CreateTableTableType = `EXTERNAL`
 
-type DeleteMetastoreAssignmentRequest struct {
-	MetastoreId string `json:"metastore_id"`
+const CreateTableTableTypeManaged CreateTableTableType = `MANAGED`
 
-	WorkspaceId int ` path:"workspace_id"`
-}
+const CreateTableTableTypeUnknownTableType CreateTableTableType = `UNKNOWN_TABLE_TYPE`
 
-type DeleteMetastoreRequest struct {
-	// Optional. Force deletion even if the metastore is not empty. Default is
-	// false.
-	Force bool `json:"force,omitempty"`
-	// Required. Unique ID of the Metastore (from URL).
-	Id string ` path:"id"`
-}
-
-type DeleteProviderRequest struct {
-	// Required. Name of the provider.
-	NameArg string ` path:"name_arg"`
-}
-
-type DeleteRecipientRequest struct {
-	// Required. Name of the recipient.
-	Name string ` path:"name"`
-}
-
-type DeleteSchemaRequest struct {
-	// Required. Full name of the Schema (from URL).
-	FullNameArg string ` path:"full_name_arg"`
-}
-
-type DeleteShareRequest struct {
-	Name string ` path:"name"`
-}
-
-type DeleteStorageCredentialRequest struct {
-	// Optional. Force deletion even if there are dependent external locations
-	// or external tables.
-	Force bool `json:"force,omitempty"`
-	// Required. Name of the storage credential.
-	NameArg string ` path:"name_arg"`
-}
-
-type DeleteTableRequest struct {
-	// Required. Full name of the Table (from URL).
-	FullNameArg string ` path:"full_name_arg"`
-}
+const CreateTableTableTypeView CreateTableTableType = `VIEW`
 
 type ExternalLocationInfo struct {
 	// [Create:OPT Update:OPT] User-provided free-form text description.
@@ -1127,7 +1092,7 @@ type ExternalLocationInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of External Location creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// [Create,Update:IGN] Unique ID of the location&#39;s Storage Credential.
+	// [Create,Update:IGN] Unique ID of the location's Storage Credential.
 	CredentialId string `json:"credential_id,omitempty"`
 	// [Create:REQ Update:OPT] Current name of the Storage Credential this
 	// location uses.
@@ -1162,14 +1127,13 @@ type FileInfo struct {
 	Size int64 `json:"size,omitempty"`
 }
 
-type GetActivationUrlInfoRequest struct {
-	// Required. The one time activation url. It also accepts activation token.
-	ActivationUrl string ` path:"activation_url"`
-}
-
-type GetCatalogRequest struct {
-	// Required. Name of the Catalog (from URL).
-	NameArg string ` path:"name_arg"`
+type GcpServiceAccountKey struct {
+	// The email of the service account. [Create:REQ].
+	Email string `json:"email,omitempty"`
+	// The service account's RSA private key. [Create:REQ]
+	PrivateKey string `json:"private_key,omitempty"`
+	// The ID of the service account's private key. [Create:REQ]
+	PrivateKeyId string `json:"private_key_id,omitempty"`
 }
 
 type GetCatalogResponse struct {
@@ -1190,8 +1154,8 @@ type GetCatalogResponse struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Catalog.
 	Privileges []GetCatalogResponsePrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// Delta Sharing Catalog specific fields. A Delta Sharing Catalog is a
@@ -1238,11 +1202,6 @@ const GetCatalogResponsePrivilegesItemUsage GetCatalogResponsePrivilegesItem = `
 
 const GetCatalogResponsePrivilegesItemWriteFiles GetCatalogResponsePrivilegesItem = `WRITE_FILES`
 
-type GetExternalLocationRequest struct {
-	// Required. Name of the storage credential.
-	NameArg string ` path:"name_arg"`
-}
-
 type GetExternalLocationResponse struct {
 	// [Create:OPT Update:OPT] User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -1251,7 +1210,7 @@ type GetExternalLocationResponse struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of External Location creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// [Create,Update:IGN] Unique ID of the location&#39;s Storage Credential.
+	// [Create,Update:IGN] Unique ID of the location's Storage Credential.
 	CredentialId string `json:"credential_id,omitempty"`
 	// [Create:REQ Update:OPT] Current name of the Storage Credential this
 	// location uses.
@@ -1271,11 +1230,6 @@ type GetExternalLocationResponse struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// [Create:REQ Update:OPT] Path URL of the External Location.
 	Url string `json:"url,omitempty"`
-}
-
-type GetMetastoreRequest struct {
-	// Required. Unique ID of the Metastore (from URL).
-	Id string ` path:"id"`
 }
 
 type GetMetastoreResponse struct {
@@ -1336,7 +1290,7 @@ const GetMetastoreResponsePrivilegesItemUsage GetMetastoreResponsePrivilegesItem
 const GetMetastoreResponsePrivilegesItemWriteFiles GetMetastoreResponsePrivilegesItem = `WRITE_FILES`
 
 type GetMetastoreSummaryResponse struct {
-	// Unique identifier of the Metastore&#39;s (Default) Data Access Configuration
+	// Unique identifier of the Metastore's (Default) Data Access Configuration
 	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
 	// The unique ID (UUID) of the Metastore
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -1346,24 +1300,10 @@ type GetMetastoreSummaryResponse struct {
 	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
 }
 
-type GetPermissionsRequest struct {
-	// Optional. List permissions granted to this principal.
-	Principal string ` url:"principal,omitempty"`
-	// Required. Unique identifier (full name) of Securable (from URL).
-	SecurableFullName string ` path:"securable_full_name"`
-	// Required. Type of Securable (from URL).
-	SecurableType string ` path:"securable_type"`
-}
-
 type GetPermissionsResponse struct {
 	// Note to self (acain): Unfortunately, neither json_inline nor json_map
 	// work here.
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
-}
-
-type GetProviderRequest struct {
-	// Required. Name of the provider.
-	NameArg string ` path:"name_arg"`
 }
 
 type GetProviderResponse struct {
@@ -1407,14 +1347,9 @@ const GetProviderResponseAuthenticationTypeToken GetProviderResponseAuthenticati
 
 const GetProviderResponseAuthenticationTypeUnknown GetProviderResponseAuthenticationType = `UNKNOWN`
 
-type GetRecipientRequest struct {
-	// Required. Name of the recipient.
-	Name string ` path:"name"`
-}
-
 type GetRecipientResponse struct {
 	// [Create:IGN,Update:IGN] A boolean status field showing whether the
-	// Recipient&#39;s activation URL has been exercised or not.
+	// Recipient's activation URL has been exercised or not.
 	Activated bool `json:"activated,omitempty"`
 	// [Create:IGN,Update:IGN] Full activation url to retrieve the access token.
 	// It will be empty if the token is already retrieved.
@@ -1455,18 +1390,8 @@ const GetRecipientResponseAuthenticationTypeToken GetRecipientResponseAuthentica
 
 const GetRecipientResponseAuthenticationTypeUnknown GetRecipientResponseAuthenticationType = `UNKNOWN`
 
-type GetRecipientSharePermissionsRequest struct {
-	// Required. The name of the Recipient.
-	Name string ` path:"name"`
-}
-
 type GetRecipientSharePermissionsResponse struct {
 	PermissionsOut []ShareToPrivilegeAssignment `json:"permissions_out,omitempty"`
-}
-
-type GetSchemaRequest struct {
-	// Required. Full name of the Schema (from URL).
-	FullNameArg string ` path:"full_name_arg"`
 }
 
 type GetSchemaResponse struct {
@@ -1480,7 +1405,7 @@ type GetSchemaResponse struct {
 	// [Create,Update:IGN] Username of Schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Full name of Schema, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.
+	// <catalog_name>.<schema_name>.
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -1490,8 +1415,8 @@ type GetSchemaResponse struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Schema.
 	Privileges []GetSchemaResponsePrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create,Update:IGN] Time at which this Schema was created, in epoch
@@ -1521,21 +1446,10 @@ const GetSchemaResponsePrivilegesItemUsage GetSchemaResponsePrivilegesItem = `US
 
 const GetSchemaResponsePrivilegesItemWriteFiles GetSchemaResponsePrivilegesItem = `WRITE_FILES`
 
-type GetSharePermissionsRequest struct {
-	// Required. The name of the Share.
-	Name string ` path:"name"`
-}
-
 type GetSharePermissionsResponse struct {
 	// Note to self (acain): Unfortunately, neither json_inline nor json_map
 	// work here.
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
-}
-
-type GetShareRequest struct {
-	IncludeSharedData bool ` url:"include_shared_data,omitempty"`
-
-	Name string ` path:"name"`
 }
 
 type GetShareResponse struct {
@@ -1551,15 +1465,10 @@ type GetShareResponse struct {
 	Objects []SharedDataObject `json:"objects,omitempty"`
 }
 
-type GetStorageCredentialRequest struct {
-	// Required. Name of the storage credential.
-	NameArg string ` path:"name_arg"`
-}
-
 type GetStorageCredentialResponse struct {
-	AwsIamRole any/* ERROR */ `json:"aws_iam_role,omitempty"`
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 
-	AzureServicePrincipal any/* ERROR */ `json:"azure_service_principal,omitempty"`
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Credential was created, in epoch
@@ -1568,7 +1477,7 @@ type GetStorageCredentialResponse struct {
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
 
-	GcpServiceAccountKey any/* ERROR */ `json:"gcp_service_account_key,omitempty"`
+	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
@@ -1585,16 +1494,11 @@ type GetStorageCredentialResponse struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
-type GetTableRequest struct {
-	// Required. Full name of the Table (from URL).
-	FullNameArg string ` path:"full_name_arg"`
-}
-
 type GetTableResponse struct {
 	// [Create:REQ Update:IGN] Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// This name (&#39;columns&#39;) is what the client actually sees as the field name
-	// in messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('columns') is what the client actually sees as the field name
+	// in messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Columns []ColumnInfo `json:"columns,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
@@ -1606,10 +1510,10 @@ type GetTableResponse struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Unique ID of the data_access_configuration to use.
 	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
-	// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+	// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 	DataSourceFormat GetTableResponseDataSourceFormat `json:"data_source_format,omitempty"`
 	// [Create,Update:IGN] Full name of Table, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.&lt;table_name&gt;
+	// <catalog_name>.<schema_name>.<table_name>
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -1619,8 +1523,8 @@ type GetTableResponse struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Table.
 	Privileges []GetTableResponsePrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create:REQ Update:IGN] Name of parent Schema relative to its parent
@@ -1636,18 +1540,18 @@ type GetTableResponse struct {
 	StorageLocation string `json:"storage_location,omitempty"`
 	// [Create:IGN Update:IGN] Name of Table, relative to parent Schema.
 	TableId string `json:"table_id,omitempty"`
-	// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+	// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 	TableType GetTableResponseTableType `json:"table_type,omitempty"`
 	// [Create,Update:IGN] Time at which this Table was last modified, in epoch
 	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// [Create,Update:IGN] Username of user who last modified the Table.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// [Create,Update:OPT] View definition SQL (when table_type == &#34;VIEW&#34;)
+	// [Create,Update:OPT] View definition SQL (when table_type == "VIEW")
 	ViewDefinition string `json:"view_definition,omitempty"`
 }
 
-// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 type GetTableResponseDataSourceFormat string
 
 const GetTableResponseDataSourceFormatAvro GetTableResponseDataSourceFormat = `AVRO`
@@ -1690,7 +1594,7 @@ const GetTableResponsePrivilegesItemUsage GetTableResponsePrivilegesItem = `USAG
 
 const GetTableResponsePrivilegesItemWriteFiles GetTableResponsePrivilegesItem = `WRITE_FILES`
 
-// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 type GetTableResponseTableType string
 
 const GetTableResponseTableTypeExternal GetTableResponseTableType = `EXTERNAL`
@@ -1716,11 +1620,11 @@ type ListExternalLocationsResponse struct {
 
 type ListFilesRequest struct {
 	// Optional. Name of a Storage Credential to use for accessing the URL.
-	CredentialName string ` url:"credential_name,omitempty"`
+	CredentialName string `json:"-" url:"credential_name,omitempty"`
 	// Optional. Limit on number of results to return.
-	MaxResults int ` url:"max_results,omitempty"`
+	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Required. Path URL to list files from.
-	Url string ` url:"url,omitempty"`
+	Url string `json:"-" url:"url,omitempty"`
 }
 
 type ListFilesResponse struct {
@@ -1729,11 +1633,6 @@ type ListFilesResponse struct {
 
 type ListMetastoresResponse struct {
 	Metastores []MetastoreInfo `json:"metastores,omitempty"`
-}
-
-type ListProviderSharesRequest struct {
-	// Required. Name of the provider in which to list shares.
-	ProviderNameArg string ` path:"provider_name_arg"`
 }
 
 type ListProviderSharesResponse struct {
@@ -1746,11 +1645,6 @@ type ListProvidersResponse struct {
 
 type ListRecipientsResponse struct {
 	Recipients []RecipientInfo `json:"recipients,omitempty"`
-}
-
-type ListSchemasRequest struct {
-	// Optional. Parent catalog for schemas of interest.
-	CatalogName string ` url:"catalog_name,omitempty"`
 }
 
 type ListSchemasResponse struct {
@@ -1766,36 +1660,12 @@ type ListStorageCredentialsResponse struct {
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
 }
 
-type ListTableSummariesRequest struct {
-	// Required. Name of parent catalog for tables of interest.
-	CatalogName string ` url:"catalog_name,omitempty"`
-	// Optional. Maximum number of tables to return (page length). Defaults to
-	// 10000.
-	MaxResults int ` url:"max_results,omitempty"`
-	// Optional. Opaque token to send for the next page of results (pagination).
-	PageToken string ` url:"page_token,omitempty"`
-	// Optional. A sql LIKE pattern (% and _) for schema names. All schemas will
-	// be returned if not set or empty.
-	SchemaNamePattern string ` url:"schema_name_pattern,omitempty"`
-	// Optional. A sql LIKE pattern (% and _) for table names. All tables will
-	// be returned if not set or empty.
-	TableNamePattern string ` url:"table_name_pattern,omitempty"`
-}
-
 type ListTableSummariesResponse struct {
-	// Optional. Opaque token for pagination. Empty if there&#39;s no more page.
+	// Optional. Opaque token for pagination. Empty if there's no more page.
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// Only name, catalog_name, schema_name, full_name and table_type will be
 	// set.
 	Tables []TableSummary `json:"tables,omitempty"`
-}
-
-type ListTablesRequest struct {
-	// Required. Name of parent catalog for tables of interest.
-	CatalogName string ` url:"catalog_name,omitempty"`
-	// Required (for now -- may be optional for wildcard search in future).
-	// Parent schema of tables.
-	SchemaName string ` url:"schema_name,omitempty"`
 }
 
 type ListTablesResponse struct {
@@ -2004,7 +1874,7 @@ type ProviderShare struct {
 
 type RecipientInfo struct {
 	// [Create:IGN,Update:IGN] A boolean status field showing whether the
-	// Recipient&#39;s activation URL has been exercised or not.
+	// Recipient's activation URL has been exercised or not.
 	Activated bool `json:"activated,omitempty"`
 	// [Create:IGN,Update:IGN] Full activation url to retrieve the access token.
 	// It will be empty if the token is already retrieved.
@@ -2071,11 +1941,6 @@ type RecipientTokenInfo struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
-type RetrieveTokenRequest struct {
-	// Required. The one time activation url. It also accepts activation token.
-	ActivationUrl string ` path:"activation_url"`
-}
-
 type RetrieveTokenResponse struct {
 	BearerToken string `json:"bearerToken,omitempty"`
 
@@ -2086,18 +1951,18 @@ type RetrieveTokenResponse struct {
 	ShareCredentialsVersion int `json:"shareCredentialsVersion,omitempty"`
 }
 
-type RotateRecipientTokenRequest struct {
+type RotateRecipientToken struct {
 	// Required. This will set the expiration_time of existing token only to a
 	// smaller timestamp, it cannot extend the expiration_time. Use 0 to expire
 	// the existing token immediately, negative number will return an error.
 	ExistingTokenExpireInSeconds int64 `json:"existing_token_expire_in_seconds,omitempty"`
 	// Required. The name of the Recipient.
-	Name string ` path:"name"`
+	Name string `json:"-" path:"name"`
 }
 
 type RotateRecipientTokenResponse struct {
 	// [Create:IGN,Update:IGN] A boolean status field showing whether the
-	// Recipient&#39;s activation URL has been exercised or not.
+	// Recipient's activation URL has been exercised or not.
 	Activated bool `json:"activated,omitempty"`
 	// [Create:IGN,Update:IGN] Full activation url to retrieve the access token.
 	// It will be empty if the token is already retrieved.
@@ -2149,7 +2014,7 @@ type SchemaInfo struct {
 	// [Create,Update:IGN] Username of Schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Full name of Schema, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.
+	// <catalog_name>.<schema_name>.
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -2159,8 +2024,8 @@ type SchemaInfo struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Schema.
 	Privileges []SchemaInfoPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create,Update:IGN] Time at which this Schema was created, in epoch
@@ -2222,15 +2087,15 @@ type SharedDataObject struct {
 	// The type of the data object. Output only field. [Update:IGN]
 	DataObjectType string `json:"data_object_type,omitempty"`
 	// A fully qualified name that uniquely identifies a data object. For
-	// example, a table&#39;s fully qualified name is in the format of
-	// `&lt;catalog&gt;.&lt;schema&gt;.&lt;table&gt;`. [Update:REQ]
+	// example, a table's fully qualified name is in the format of
+	// `<catalog>.<schema>.<table>`. [Update:REQ]
 	Name string `json:"name,omitempty"`
 
 	Partitions []Partition `json:"partitions,omitempty"`
 	// A user-provided new name for the data object within the share. If this
-	// new name is not not provided, the object&#39;s original name will be used as
+	// new name is not not provided, the object's original name will be used as
 	// the `shared_as` name. The `shared_as` name must be unique within a Share.
-	// For tables, the new name must follow the format of `&lt;schema&gt;.&lt;table&gt;`.
+	// For tables, the new name must follow the format of `<schema>.<table>`.
 	// [Update:OPT]
 	SharedAs string `json:"shared_as,omitempty"`
 }
@@ -2248,9 +2113,9 @@ const SharedDataObjectUpdateActionAdd SharedDataObjectUpdateAction = `ADD`
 const SharedDataObjectUpdateActionRemove SharedDataObjectUpdateAction = `REMOVE`
 
 type StorageCredentialInfo struct {
-	AwsIamRole any/* ERROR */ `json:"aws_iam_role,omitempty"`
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 
-	AzureServicePrincipal any/* ERROR */ `json:"azure_service_principal,omitempty"`
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Credential was created, in epoch
@@ -2259,7 +2124,7 @@ type StorageCredentialInfo struct {
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
 
-	GcpServiceAccountKey any/* ERROR */ `json:"gcp_service_account_key,omitempty"`
+	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
@@ -2285,8 +2150,8 @@ type StringKeyValuePair struct {
 type TableInfo struct {
 	// [Create:REQ Update:IGN] Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// This name (&#39;columns&#39;) is what the client actually sees as the field name
-	// in messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('columns') is what the client actually sees as the field name
+	// in messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Columns []ColumnInfo `json:"columns,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
@@ -2298,10 +2163,10 @@ type TableInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Unique ID of the data_access_configuration to use.
 	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
-	// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+	// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 	DataSourceFormat TableInfoDataSourceFormat `json:"data_source_format,omitempty"`
 	// [Create,Update:IGN] Full name of Table, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.&lt;table_name&gt;
+	// <catalog_name>.<schema_name>.<table_name>
 	FullName string `json:"full_name,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -2311,8 +2176,8 @@ type TableInfo struct {
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Table.
 	Privileges []TableInfoPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create:REQ Update:IGN] Name of parent Schema relative to its parent
@@ -2328,18 +2193,18 @@ type TableInfo struct {
 	StorageLocation string `json:"storage_location,omitempty"`
 	// [Create:IGN Update:IGN] Name of Table, relative to parent Schema.
 	TableId string `json:"table_id,omitempty"`
-	// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+	// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 	TableType TableInfoTableType `json:"table_type,omitempty"`
 	// [Create,Update:IGN] Time at which this Table was last modified, in epoch
 	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// [Create,Update:IGN] Username of user who last modified the Table.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// [Create,Update:OPT] View definition SQL (when table_type == &#34;VIEW&#34;)
+	// [Create,Update:OPT] View definition SQL (when table_type == "VIEW")
 	ViewDefinition string `json:"view_definition,omitempty"`
 }
 
-// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
+// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
 type TableInfoDataSourceFormat string
 
 const TableInfoDataSourceFormatAvro TableInfoDataSourceFormat = `AVRO`
@@ -2382,7 +2247,7 @@ const TableInfoPrivilegesItemUsage TableInfoPrivilegesItem = `USAGE`
 
 const TableInfoPrivilegesItemWriteFiles TableInfoPrivilegesItem = `WRITE_FILES`
 
-// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
+// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
 type TableInfoTableType string
 
 const TableInfoTableTypeExternal TableInfoTableType = `EXTERNAL`
@@ -2409,9 +2274,9 @@ const TableSummaryTableTypeUnknownTableType TableSummaryTableType = `UNKNOWN_TAB
 
 const TableSummaryTableTypeView TableSummaryTableType = `VIEW`
 
-type UpdateCatalogRequest struct {
+type UpdateCatalog struct {
 	// [Create,Update:IGN] The type of the catalog.
-	CatalogType UpdateCatalogRequestCatalogType `json:"catalog_type,omitempty"`
+	CatalogType UpdateCatalogCatalogType `json:"catalog_type,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Catalog was created, in epoch
@@ -2422,15 +2287,13 @@ type UpdateCatalogRequest struct {
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create:REQ Update:OPT] Name of Catalog.
-	Name string `json:"name,omitempty"`
-	// Required. Name of the Catalog (from URL).
-	NameArg string ` path:"name_arg"`
+	Name string `json:"name,omitempty" path:"name"`
 	// [Create:IGN,Update:OPT] Username of current owner of Catalog.
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Catalog.
-	Privileges []UpdateCatalogRequestPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	Privileges []UpdateCatalogPrivilegesItem `json:"privileges,omitempty"`
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// Delta Sharing Catalog specific fields. A Delta Sharing Catalog is a
@@ -2447,37 +2310,37 @@ type UpdateCatalogRequest struct {
 }
 
 // [Create,Update:IGN] The type of the catalog.
-type UpdateCatalogRequestCatalogType string
+type UpdateCatalogCatalogType string
 
-const UpdateCatalogRequestCatalogTypeDeltasharingCatalog UpdateCatalogRequestCatalogType = `DELTASHARING_CATALOG`
+const UpdateCatalogCatalogTypeDeltasharingCatalog UpdateCatalogCatalogType = `DELTASHARING_CATALOG`
 
-const UpdateCatalogRequestCatalogTypeManagedCatalog UpdateCatalogRequestCatalogType = `MANAGED_CATALOG`
+const UpdateCatalogCatalogTypeManagedCatalog UpdateCatalogCatalogType = `MANAGED_CATALOG`
 
-const UpdateCatalogRequestCatalogTypeSystemCatalog UpdateCatalogRequestCatalogType = `SYSTEM_CATALOG`
+const UpdateCatalogCatalogTypeSystemCatalog UpdateCatalogCatalogType = `SYSTEM_CATALOG`
 
-const UpdateCatalogRequestCatalogTypeUnknownCatalogType UpdateCatalogRequestCatalogType = `UNKNOWN_CATALOG_TYPE`
+const UpdateCatalogCatalogTypeUnknownCatalogType UpdateCatalogCatalogType = `UNKNOWN_CATALOG_TYPE`
 
-type UpdateCatalogRequestPrivilegesItem string
+type UpdateCatalogPrivilegesItem string
 
-const UpdateCatalogRequestPrivilegesItemCreate UpdateCatalogRequestPrivilegesItem = `CREATE`
+const UpdateCatalogPrivilegesItemCreate UpdateCatalogPrivilegesItem = `CREATE`
 
-const UpdateCatalogRequestPrivilegesItemCreateMount UpdateCatalogRequestPrivilegesItem = `CREATE_MOUNT`
+const UpdateCatalogPrivilegesItemCreateMount UpdateCatalogPrivilegesItem = `CREATE_MOUNT`
 
-const UpdateCatalogRequestPrivilegesItemCreateTable UpdateCatalogRequestPrivilegesItem = `CREATE_TABLE`
+const UpdateCatalogPrivilegesItemCreateTable UpdateCatalogPrivilegesItem = `CREATE_TABLE`
 
-const UpdateCatalogRequestPrivilegesItemModify UpdateCatalogRequestPrivilegesItem = `MODIFY`
+const UpdateCatalogPrivilegesItemModify UpdateCatalogPrivilegesItem = `MODIFY`
 
-const UpdateCatalogRequestPrivilegesItemReadFiles UpdateCatalogRequestPrivilegesItem = `READ_FILES`
+const UpdateCatalogPrivilegesItemReadFiles UpdateCatalogPrivilegesItem = `READ_FILES`
 
-const UpdateCatalogRequestPrivilegesItemSelect UpdateCatalogRequestPrivilegesItem = `SELECT`
+const UpdateCatalogPrivilegesItemSelect UpdateCatalogPrivilegesItem = `SELECT`
 
-const UpdateCatalogRequestPrivilegesItemUnknownPrivilege UpdateCatalogRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+const UpdateCatalogPrivilegesItemUnknownPrivilege UpdateCatalogPrivilegesItem = `UNKNOWN_PRIVILEGE`
 
-const UpdateCatalogRequestPrivilegesItemUsage UpdateCatalogRequestPrivilegesItem = `USAGE`
+const UpdateCatalogPrivilegesItemUsage UpdateCatalogPrivilegesItem = `USAGE`
 
-const UpdateCatalogRequestPrivilegesItemWriteFiles UpdateCatalogRequestPrivilegesItem = `WRITE_FILES`
+const UpdateCatalogPrivilegesItemWriteFiles UpdateCatalogPrivilegesItem = `WRITE_FILES`
 
-type UpdateExternalLocationRequest struct {
+type UpdateExternalLocation struct {
 	// [Create:OPT Update:OPT] User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this External Location was created, in
@@ -2485,12 +2348,12 @@ type UpdateExternalLocationRequest struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of External Location creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// [Create,Update:IGN] Unique ID of the location&#39;s Storage Credential.
+	// [Create,Update:IGN] Unique ID of the location's Storage Credential.
 	CredentialId string `json:"credential_id,omitempty"`
 	// [Create:REQ Update:OPT] Current name of the Storage Credential this
 	// location uses.
 	CredentialName string `json:"credential_name,omitempty"`
-	// TODO: SC-90063 re-add &#39;force&#39; parameter in backward-compatible way for
+	// TODO: SC-90063 re-add 'force' parameter in backward-compatible way for
 	// DBR (not removed below as it still works with CLI) Optional. Force update
 	// even if changing url invalidates dependent external tables or mounts.
 	Force bool `json:"force,omitempty"`
@@ -2498,9 +2361,7 @@ type UpdateExternalLocationRequest struct {
 	// Location.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create:REQ Update:OPT] Name of the External Location.
-	Name string `json:"name,omitempty"`
-	// Required. Name of the storage credential.
-	NameArg string ` path:"name_arg"`
+	Name string `json:"name,omitempty" path:"name"`
 	// [Create:IGN Update:OPT] The owner of the External Location.
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Time at which this was last modified, in epoch
@@ -2513,15 +2374,7 @@ type UpdateExternalLocationRequest struct {
 	Url string `json:"url,omitempty"`
 }
 
-type UpdateMetastoreAssignmentRequest struct {
-	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	WorkspaceId int ` path:"workspace_id"`
-}
-
-type UpdateMetastoreRequest struct {
+type UpdateMetastore struct {
 	// [Create,Update:IGN] Time at which this Metastore was created, in epoch
 	// milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
@@ -2537,7 +2390,7 @@ type UpdateMetastoreRequest struct {
 	// seconds
 	DeltaSharingRecipientTokenLifetimeInSeconds int `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// Required. Unique ID of the Metastore (from URL).
-	Id string ` path:"id"`
+	Id string `json:"-" path:"id"`
 	// [Create,Update:IGN] Unique identifier of Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create:REQ Update:OPT] Name of Metastore.
@@ -2545,7 +2398,7 @@ type UpdateMetastoreRequest struct {
 	// [Create:IGN Update:OPT] The owner of the metastore.
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Metastore.
-	Privileges []UpdateMetastoreRequestPrivilegesItem `json:"privileges,omitempty"`
+	Privileges []UpdateMetastorePrivilegesItem `json:"privileges,omitempty"`
 	// The region this metastore has an afinity to. This is used by
 	// accounts-manager. Ignored by Unity Catalog.
 	Region string `json:"region,omitempty"`
@@ -2560,43 +2413,51 @@ type UpdateMetastoreRequest struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
-type UpdateMetastoreRequestPrivilegesItem string
+type UpdateMetastoreAssignment struct {
+	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
 
-const UpdateMetastoreRequestPrivilegesItemCreate UpdateMetastoreRequestPrivilegesItem = `CREATE`
+	MetastoreId string `json:"metastore_id,omitempty"`
 
-const UpdateMetastoreRequestPrivilegesItemCreateMount UpdateMetastoreRequestPrivilegesItem = `CREATE_MOUNT`
-
-const UpdateMetastoreRequestPrivilegesItemCreateTable UpdateMetastoreRequestPrivilegesItem = `CREATE_TABLE`
-
-const UpdateMetastoreRequestPrivilegesItemModify UpdateMetastoreRequestPrivilegesItem = `MODIFY`
-
-const UpdateMetastoreRequestPrivilegesItemReadFiles UpdateMetastoreRequestPrivilegesItem = `READ_FILES`
-
-const UpdateMetastoreRequestPrivilegesItemSelect UpdateMetastoreRequestPrivilegesItem = `SELECT`
-
-const UpdateMetastoreRequestPrivilegesItemUnknownPrivilege UpdateMetastoreRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const UpdateMetastoreRequestPrivilegesItemUsage UpdateMetastoreRequestPrivilegesItem = `USAGE`
-
-const UpdateMetastoreRequestPrivilegesItemWriteFiles UpdateMetastoreRequestPrivilegesItem = `WRITE_FILES`
-
-type UpdatePermissionsRequest struct {
-	Changes []PermissionsChange `json:"changes,omitempty"`
-	// Optional. List permissions granted to this principal.
-	Principal string ` url:"principal,omitempty"`
-	// Required. Unique identifier (full name) of Securable (from URL).
-	SecurableFullName string ` path:"securable_full_name"`
-	// Required. Type of Securable (from URL).
-	SecurableType string ` path:"securable_type"`
+	WorkspaceId int `json:"-" path:"workspace_id"`
 }
 
-type UpdateProviderRequest struct {
+type UpdateMetastorePrivilegesItem string
+
+const UpdateMetastorePrivilegesItemCreate UpdateMetastorePrivilegesItem = `CREATE`
+
+const UpdateMetastorePrivilegesItemCreateMount UpdateMetastorePrivilegesItem = `CREATE_MOUNT`
+
+const UpdateMetastorePrivilegesItemCreateTable UpdateMetastorePrivilegesItem = `CREATE_TABLE`
+
+const UpdateMetastorePrivilegesItemModify UpdateMetastorePrivilegesItem = `MODIFY`
+
+const UpdateMetastorePrivilegesItemReadFiles UpdateMetastorePrivilegesItem = `READ_FILES`
+
+const UpdateMetastorePrivilegesItemSelect UpdateMetastorePrivilegesItem = `SELECT`
+
+const UpdateMetastorePrivilegesItemUnknownPrivilege UpdateMetastorePrivilegesItem = `UNKNOWN_PRIVILEGE`
+
+const UpdateMetastorePrivilegesItemUsage UpdateMetastorePrivilegesItem = `USAGE`
+
+const UpdateMetastorePrivilegesItemWriteFiles UpdateMetastorePrivilegesItem = `WRITE_FILES`
+
+type UpdatePermissions struct {
+	Changes []PermissionsChange `json:"changes,omitempty"`
+	// Required. Unique identifier (full name) of Securable (from URL).
+	FullName string `json:"-" path:"full_name"`
+	// Optional. List permissions granted to this principal.
+	Principal string `json:"-" url:"principal,omitempty"`
+	// Required. Type of Securable (from URL).
+	SecurableType string `json:"-" path:"securable_type"`
+}
+
+type UpdateProvider struct {
 	// [Create,Update:IGN] Whether this provider is successfully activated by
 	// the data provider. This field is only present when the authentication
 	// type is DATABRICKS.
 	ActivatedByProvider bool `json:"activated_by_provider,omitempty"`
 	// [Create:REQ,Update:IGN] The delta sharing authentication type.
-	AuthenticationType UpdateProviderRequestAuthenticationType `json:"authentication_type,omitempty"`
+	AuthenticationType UpdateProviderAuthenticationType `json:"authentication_type,omitempty"`
 	// [Create,Update:OPT] Description about the provider.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Provider was created, in epoch
@@ -2605,9 +2466,7 @@ type UpdateProviderRequest struct {
 	// [Create,Update:IGN] Username of Provider creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:REQ] The name of the Provider.
-	Name string `json:"name,omitempty"`
-	// Required. Name of the provider.
-	NameArg string ` path:"name_arg"`
+	Name string `json:"name,omitempty" path:"name"`
 	// [Create,Update:IGN] This field is only present when the authentication
 	// type is TOKEN.
 	RecipientProfile *RecipientProfile `json:"recipient_profile,omitempty"`
@@ -2625,23 +2484,23 @@ type UpdateProviderRequest struct {
 }
 
 // [Create:REQ,Update:IGN] The delta sharing authentication type.
-type UpdateProviderRequestAuthenticationType string
+type UpdateProviderAuthenticationType string
 
-const UpdateProviderRequestAuthenticationTypeDatabricks UpdateProviderRequestAuthenticationType = `DATABRICKS`
+const UpdateProviderAuthenticationTypeDatabricks UpdateProviderAuthenticationType = `DATABRICKS`
 
-const UpdateProviderRequestAuthenticationTypeToken UpdateProviderRequestAuthenticationType = `TOKEN`
+const UpdateProviderAuthenticationTypeToken UpdateProviderAuthenticationType = `TOKEN`
 
-const UpdateProviderRequestAuthenticationTypeUnknown UpdateProviderRequestAuthenticationType = `UNKNOWN`
+const UpdateProviderAuthenticationTypeUnknown UpdateProviderAuthenticationType = `UNKNOWN`
 
-type UpdateRecipientRequest struct {
+type UpdateRecipient struct {
 	// [Create:IGN,Update:IGN] A boolean status field showing whether the
-	// Recipient&#39;s activation URL has been exercised or not.
+	// Recipient's activation URL has been exercised or not.
 	Activated bool `json:"activated,omitempty"`
 	// [Create:IGN,Update:IGN] Full activation url to retrieve the access token.
 	// It will be empty if the token is already retrieved.
 	ActivationUrl string `json:"activation_url,omitempty"`
 	// [Create:REQ,Update:IGN] The delta sharing authentication type.
-	AuthenticationType UpdateRecipientRequestAuthenticationType `json:"authentication_type,omitempty"`
+	AuthenticationType UpdateRecipientAuthenticationType `json:"authentication_type,omitempty"`
 	// [Create:OPT,Update:OPT] Description about the recipient.
 	Comment string `json:"comment,omitempty"`
 	// [Create:IGN,Update:IGN] Time at which this Recipient was created, in
@@ -2652,9 +2511,7 @@ type UpdateRecipientRequest struct {
 	// [Create:OPT,Update:OPT] IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// [Create:REQ,Update:OPT] Name of Recipient.
-	Name string `json:"name,omitempty"`
-	// Required. Name of the recipient.
-	NameArg string ` path:"name_arg"`
+	Name string `json:"name,omitempty" path:"name"`
 	// [Create:OPT,Update:IGN] The one-time sharing code provided by the data
 	// recipient. This field is only present when the authentication type is
 	// DATABRICKS.
@@ -2670,15 +2527,15 @@ type UpdateRecipientRequest struct {
 }
 
 // [Create:REQ,Update:IGN] The delta sharing authentication type.
-type UpdateRecipientRequestAuthenticationType string
+type UpdateRecipientAuthenticationType string
 
-const UpdateRecipientRequestAuthenticationTypeDatabricks UpdateRecipientRequestAuthenticationType = `DATABRICKS`
+const UpdateRecipientAuthenticationTypeDatabricks UpdateRecipientAuthenticationType = `DATABRICKS`
 
-const UpdateRecipientRequestAuthenticationTypeToken UpdateRecipientRequestAuthenticationType = `TOKEN`
+const UpdateRecipientAuthenticationTypeToken UpdateRecipientAuthenticationType = `TOKEN`
 
-const UpdateRecipientRequestAuthenticationTypeUnknown UpdateRecipientRequestAuthenticationType = `UNKNOWN`
+const UpdateRecipientAuthenticationTypeUnknown UpdateRecipientAuthenticationType = `UNKNOWN`
 
-type UpdateSchemaRequest struct {
+type UpdateSchema struct {
 	// [Create:REQ Update:IGN] Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
@@ -2689,10 +2546,8 @@ type UpdateSchemaRequest struct {
 	// [Create,Update:IGN] Username of Schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Full name of Schema, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.
-	FullName string `json:"full_name,omitempty"`
-	// Required. Full name of the Schema (from URL).
-	FullNameArg string ` path:"full_name_arg"`
+	// <catalog_name>.<schema_name>.
+	FullName string `json:"full_name,omitempty" path:"full_name"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create:REQ Update:OPT] Name of Schema, relative to parent Catalog.
@@ -2700,9 +2555,9 @@ type UpdateSchemaRequest struct {
 	// [Create:IGN Update:OPT] Username of current owner of Schema.
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Schema.
-	Privileges []UpdateSchemaRequestPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	Privileges []UpdateSchemaPrivilegesItem `json:"privileges,omitempty"`
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create,Update:IGN] Time at which this Schema was created, in epoch
@@ -2712,42 +2567,43 @@ type UpdateSchemaRequest struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
-type UpdateSchemaRequestPrivilegesItem string
+type UpdateSchemaPrivilegesItem string
 
-const UpdateSchemaRequestPrivilegesItemCreate UpdateSchemaRequestPrivilegesItem = `CREATE`
+const UpdateSchemaPrivilegesItemCreate UpdateSchemaPrivilegesItem = `CREATE`
 
-const UpdateSchemaRequestPrivilegesItemCreateMount UpdateSchemaRequestPrivilegesItem = `CREATE_MOUNT`
+const UpdateSchemaPrivilegesItemCreateMount UpdateSchemaPrivilegesItem = `CREATE_MOUNT`
 
-const UpdateSchemaRequestPrivilegesItemCreateTable UpdateSchemaRequestPrivilegesItem = `CREATE_TABLE`
+const UpdateSchemaPrivilegesItemCreateTable UpdateSchemaPrivilegesItem = `CREATE_TABLE`
 
-const UpdateSchemaRequestPrivilegesItemModify UpdateSchemaRequestPrivilegesItem = `MODIFY`
+const UpdateSchemaPrivilegesItemModify UpdateSchemaPrivilegesItem = `MODIFY`
 
-const UpdateSchemaRequestPrivilegesItemReadFiles UpdateSchemaRequestPrivilegesItem = `READ_FILES`
+const UpdateSchemaPrivilegesItemReadFiles UpdateSchemaPrivilegesItem = `READ_FILES`
 
-const UpdateSchemaRequestPrivilegesItemSelect UpdateSchemaRequestPrivilegesItem = `SELECT`
+const UpdateSchemaPrivilegesItemSelect UpdateSchemaPrivilegesItem = `SELECT`
 
-const UpdateSchemaRequestPrivilegesItemUnknownPrivilege UpdateSchemaRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+const UpdateSchemaPrivilegesItemUnknownPrivilege UpdateSchemaPrivilegesItem = `UNKNOWN_PRIVILEGE`
 
-const UpdateSchemaRequestPrivilegesItemUsage UpdateSchemaRequestPrivilegesItem = `USAGE`
+const UpdateSchemaPrivilegesItemUsage UpdateSchemaPrivilegesItem = `USAGE`
 
-const UpdateSchemaRequestPrivilegesItemWriteFiles UpdateSchemaRequestPrivilegesItem = `WRITE_FILES`
+const UpdateSchemaPrivilegesItemWriteFiles UpdateSchemaPrivilegesItem = `WRITE_FILES`
 
-type UpdateSharePermissionsRequest struct {
-	Changes []PermissionsChange `json:"changes,omitempty"`
-	// Required. The name of the Share.
-	Name string ` path:"name"`
-}
-
-type UpdateShareRequest struct {
-	Name string ` path:"name"`
+type UpdateShare struct {
+	// <needs content>
+	Name string `json:"-" path:"name"`
 
 	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
 }
 
-type UpdateStorageCredentialRequest struct {
-	AwsIamRole any/* ERROR */ `json:"aws_iam_role,omitempty"`
+type UpdateSharePermissions struct {
+	Changes []PermissionsChange `json:"changes,omitempty"`
+	// Required. The name of the Share.
+	Name string `json:"-" path:"name"`
+}
 
-	AzureServicePrincipal any/* ERROR */ `json:"azure_service_principal,omitempty"`
+type UpdateStorageCredential struct {
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Credential was created, in epoch
@@ -2756,16 +2612,14 @@ type UpdateStorageCredentialRequest struct {
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
 
-	GcpServiceAccountKey any/* ERROR */ `json:"gcp_service_account_key,omitempty"`
+	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create:REQ, Update:OPT] The credential name. The name MUST be unique
 	// within the Metastore.
-	Name string `json:"name,omitempty"`
-	// Required. Name of the storage credential.
-	NameArg string ` path:"name_arg"`
+	Name string `json:"name,omitempty" path:"name"`
 	// [Create:IGN Update:OPT] Username of current owner of credential.
 	Owner string `json:"owner,omitempty"`
 	// Optional. Supplying true to this argument skips validation of the updated
@@ -2778,11 +2632,11 @@ type UpdateStorageCredentialRequest struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
-type UpdateTableRequest struct {
+type UpdateTable struct {
 	// [Create:REQ Update:IGN] Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// This name (&#39;columns&#39;) is what the client actually sees as the field name
-	// in messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	// This name ('columns') is what the client actually sees as the field name
+	// in messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Columns []ColumnInfo `json:"columns,omitempty"`
 	// [Create,Update:OPT] User-provided free-form text description.
@@ -2794,13 +2648,11 @@ type UpdateTableRequest struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Unique ID of the data_access_configuration to use.
 	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
-	// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
-	DataSourceFormat UpdateTableRequestDataSourceFormat `json:"data_source_format,omitempty"`
+	// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
+	DataSourceFormat UpdateTableDataSourceFormat `json:"data_source_format,omitempty"`
 	// [Create,Update:IGN] Full name of Table, in form of
-	// &lt;catalog_name&gt;.&lt;schema_name&gt;.&lt;table_name&gt;
-	FullName string `json:"full_name,omitempty"`
-	// Required. Full name of the Table (from URL).
-	FullNameArg string ` path:"full_name_arg"`
+	// <catalog_name>.<schema_name>.<table_name>
+	FullName string `json:"full_name,omitempty" path:"full_name"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create:REQ Update:OPT] Name of Table, relative to parent Schema.
@@ -2808,9 +2660,9 @@ type UpdateTableRequest struct {
 	// [Create: IGN Update:OPT] Username of current owner of Table.
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Table.
-	Privileges []UpdateTableRequestPrivilegesItem `json:"privileges,omitempty"`
-	// This name (&#39;properties&#39;) is what the client sees as the field name in
-	// messages that include PropertiesKVPairs using &#39;json_inline&#39; (e.g.,
+	Privileges []UpdateTablePrivilegesItem `json:"privileges,omitempty"`
+	// This name ('properties') is what the client sees as the field name in
+	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
 	Properties []StringKeyValuePair `json:"properties,omitempty"`
 	// [Create:REQ Update:IGN] Name of parent Schema relative to its parent
@@ -2826,67 +2678,227 @@ type UpdateTableRequest struct {
 	StorageLocation string `json:"storage_location,omitempty"`
 	// [Create:IGN Update:IGN] Name of Table, relative to parent Schema.
 	TableId string `json:"table_id,omitempty"`
-	// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
-	TableType UpdateTableRequestTableType `json:"table_type,omitempty"`
+	// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
+	TableType UpdateTableTableType `json:"table_type,omitempty"`
 	// [Create,Update:IGN] Time at which this Table was last modified, in epoch
 	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// [Create,Update:IGN] Username of user who last modified the Table.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// [Create,Update:OPT] View definition SQL (when table_type == &#34;VIEW&#34;)
+	// [Create,Update:OPT] View definition SQL (when table_type == "VIEW")
 	ViewDefinition string `json:"view_definition,omitempty"`
 }
 
-// [Create:REQ Update:OPT] Data source format (&#34;DELTA&#34;, &#34;CSV&#34;, etc.).
-type UpdateTableRequestDataSourceFormat string
+// [Create:REQ Update:OPT] Data source format ("DELTA", "CSV", etc.).
+type UpdateTableDataSourceFormat string
 
-const UpdateTableRequestDataSourceFormatAvro UpdateTableRequestDataSourceFormat = `AVRO`
+const UpdateTableDataSourceFormatAvro UpdateTableDataSourceFormat = `AVRO`
 
-const UpdateTableRequestDataSourceFormatCsv UpdateTableRequestDataSourceFormat = `CSV`
+const UpdateTableDataSourceFormatCsv UpdateTableDataSourceFormat = `CSV`
 
-const UpdateTableRequestDataSourceFormatDelta UpdateTableRequestDataSourceFormat = `DELTA`
+const UpdateTableDataSourceFormatDelta UpdateTableDataSourceFormat = `DELTA`
 
-const UpdateTableRequestDataSourceFormatDeltasharing UpdateTableRequestDataSourceFormat = `DELTASHARING`
+const UpdateTableDataSourceFormatDeltasharing UpdateTableDataSourceFormat = `DELTASHARING`
 
-const UpdateTableRequestDataSourceFormatJson UpdateTableRequestDataSourceFormat = `JSON`
+const UpdateTableDataSourceFormatJson UpdateTableDataSourceFormat = `JSON`
 
-const UpdateTableRequestDataSourceFormatOrc UpdateTableRequestDataSourceFormat = `ORC`
+const UpdateTableDataSourceFormatOrc UpdateTableDataSourceFormat = `ORC`
 
-const UpdateTableRequestDataSourceFormatParquet UpdateTableRequestDataSourceFormat = `PARQUET`
+const UpdateTableDataSourceFormatParquet UpdateTableDataSourceFormat = `PARQUET`
 
-const UpdateTableRequestDataSourceFormatText UpdateTableRequestDataSourceFormat = `TEXT`
+const UpdateTableDataSourceFormatText UpdateTableDataSourceFormat = `TEXT`
 
-const UpdateTableRequestDataSourceFormatUnityCatalog UpdateTableRequestDataSourceFormat = `UNITY_CATALOG`
+const UpdateTableDataSourceFormatUnityCatalog UpdateTableDataSourceFormat = `UNITY_CATALOG`
 
-const UpdateTableRequestDataSourceFormatUnknownDataSourceFormat UpdateTableRequestDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
+const UpdateTableDataSourceFormatUnknownDataSourceFormat UpdateTableDataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
 
-type UpdateTableRequestPrivilegesItem string
+type UpdateTablePrivilegesItem string
 
-const UpdateTableRequestPrivilegesItemCreate UpdateTableRequestPrivilegesItem = `CREATE`
+const UpdateTablePrivilegesItemCreate UpdateTablePrivilegesItem = `CREATE`
 
-const UpdateTableRequestPrivilegesItemCreateMount UpdateTableRequestPrivilegesItem = `CREATE_MOUNT`
+const UpdateTablePrivilegesItemCreateMount UpdateTablePrivilegesItem = `CREATE_MOUNT`
 
-const UpdateTableRequestPrivilegesItemCreateTable UpdateTableRequestPrivilegesItem = `CREATE_TABLE`
+const UpdateTablePrivilegesItemCreateTable UpdateTablePrivilegesItem = `CREATE_TABLE`
 
-const UpdateTableRequestPrivilegesItemModify UpdateTableRequestPrivilegesItem = `MODIFY`
+const UpdateTablePrivilegesItemModify UpdateTablePrivilegesItem = `MODIFY`
 
-const UpdateTableRequestPrivilegesItemReadFiles UpdateTableRequestPrivilegesItem = `READ_FILES`
+const UpdateTablePrivilegesItemReadFiles UpdateTablePrivilegesItem = `READ_FILES`
 
-const UpdateTableRequestPrivilegesItemSelect UpdateTableRequestPrivilegesItem = `SELECT`
+const UpdateTablePrivilegesItemSelect UpdateTablePrivilegesItem = `SELECT`
 
-const UpdateTableRequestPrivilegesItemUnknownPrivilege UpdateTableRequestPrivilegesItem = `UNKNOWN_PRIVILEGE`
+const UpdateTablePrivilegesItemUnknownPrivilege UpdateTablePrivilegesItem = `UNKNOWN_PRIVILEGE`
 
-const UpdateTableRequestPrivilegesItemUsage UpdateTableRequestPrivilegesItem = `USAGE`
+const UpdateTablePrivilegesItemUsage UpdateTablePrivilegesItem = `USAGE`
 
-const UpdateTableRequestPrivilegesItemWriteFiles UpdateTableRequestPrivilegesItem = `WRITE_FILES`
+const UpdateTablePrivilegesItemWriteFiles UpdateTablePrivilegesItem = `WRITE_FILES`
 
-// [Create:REQ Update:OPT] Table type (&#34;MANAGED&#34;, &#34;EXTERNAL&#34;, &#34;VIEW&#34;).
-type UpdateTableRequestTableType string
+// [Create:REQ Update:OPT] Table type ("MANAGED", "EXTERNAL", "VIEW").
+type UpdateTableTableType string
 
-const UpdateTableRequestTableTypeExternal UpdateTableRequestTableType = `EXTERNAL`
+const UpdateTableTableTypeExternal UpdateTableTableType = `EXTERNAL`
 
-const UpdateTableRequestTableTypeManaged UpdateTableRequestTableType = `MANAGED`
+const UpdateTableTableTypeManaged UpdateTableTableType = `MANAGED`
 
-const UpdateTableRequestTableTypeUnknownTableType UpdateTableRequestTableType = `UNKNOWN_TABLE_TYPE`
+const UpdateTableTableTypeUnknownTableType UpdateTableTableType = `UNKNOWN_TABLE_TYPE`
 
-const UpdateTableRequestTableTypeView UpdateTableRequestTableType = `VIEW`
+const UpdateTableTableTypeView UpdateTableTableType = `VIEW`
+
+type DeleteCatalogRequest struct {
+	// Required. Name of the Catalog (from URL).
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteExternalLocationRequest struct {
+	// Force deletion even if there are dependent external tables or mounts.
+	Force bool `json:"-" url:"force,omitempty"`
+	// Required. Name of the storage credential.
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteMetastoreAssignmentRequest struct {
+	MetastoreId string `json:"-" url:"metastore_id,omitempty"`
+
+	WorkspaceId int `json:"-" path:"workspace_id"`
+}
+
+type DeleteMetastoreRequest struct {
+	// Force deletion even if the metastore is not empty. Default is false.
+	Force bool `json:"-" url:"force,omitempty"`
+	// Required. Unique ID of the Metastore (from URL).
+	Id string `json:"-" path:"id"`
+}
+
+type DeleteProviderRequest struct {
+	// Required. Name of the provider.
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteRecipientRequest struct {
+	// Required. Name of the recipient.
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteSchemaRequest struct {
+	// Required. Full name of the Schema (from URL).
+	FullName string `json:"-" path:"full_name"`
+}
+
+type DeleteShareRequest struct {
+	// <needs content>
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteStorageCredentialRequest struct {
+	// Force deletion even if there are dependent external locations or external
+	// tables.
+	Force bool `json:"-" url:"force,omitempty"`
+	// Required. Name of the storage credential.
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteTableRequest struct {
+	// Required. Full name of the Table (from URL).
+	FullName string `json:"-" path:"full_name"`
+}
+
+type GetActivationUrlInfoRequest struct {
+	// Required. The one time activation url. It also accepts activation token.
+	ActivationUrl string `json:"-" path:"activation_url"`
+}
+
+type GetCatalogRequest struct {
+	// Required. Name of the Catalog (from URL).
+	Name string `json:"-" path:"name"`
+}
+
+type GetExternalLocationRequest struct {
+	// Required. Name of the storage credential.
+	Name string `json:"-" path:"name"`
+}
+
+type GetMetastoreRequest struct {
+	// Required. Unique ID of the Metastore (from URL).
+	Id string `json:"-" path:"id"`
+}
+
+type GetPermissionsRequest struct {
+	// Required. Unique identifier (full name) of Securable (from URL).
+	FullName string `json:"-" path:"full_name"`
+	// Optional. List permissions granted to this principal.
+	Principal string `json:"-" url:"principal,omitempty"`
+	// Required. Type of Securable (from URL).
+	SecurableType string `json:"-" path:"securable_type"`
+}
+
+type GetProviderRequest struct {
+	// Required. Name of the provider.
+	Name string `json:"-" path:"name"`
+}
+
+type GetRecipientRequest struct {
+	// Required. Name of the recipient.
+	Name string `json:"-" path:"name"`
+}
+
+type GetRecipientSharePermissionsRequest struct {
+	// Required. The name of the Recipient.
+	Name string `json:"-" path:"name"`
+}
+
+type GetSchemaRequest struct {
+	// Required. Full name of the Schema (from URL).
+	FullName string `json:"-" path:"full_name"`
+}
+
+type GetSharePermissionsRequest struct {
+	// Required. The name of the Share.
+	Name string `json:"-" path:"name"`
+}
+
+type GetShareRequest struct {
+	// <needs content>
+	IncludeSharedData bool `json:"-" url:"include_shared_data,omitempty"`
+	// <needs content>
+	Name string `json:"-" path:"name"`
+}
+
+type GetStorageCredentialsRequest struct {
+	// Required. Name of the storage credential.
+	Name string `json:"-" path:"name"`
+}
+
+type GetTableRequest struct {
+	// Required. Full name of the Table (from URL).
+	FullName string `json:"-" path:"full_name"`
+}
+
+type ListRequest struct {
+	// Optional. Parent catalog for schemas of interest.
+	CatalogName string `json:"-" url:"catalog_name,omitempty"`
+}
+
+type ListSharesRequest struct {
+	// Required. Name of the provider in which to list shares.
+	Name string `json:"-" path:"name"`
+}
+
+type ListTableSummariesRequest struct {
+	// Required. Name of parent catalog for tables of interest.
+	CatalogName string `json:"-" url:"catalog_name,omitempty"`
+	// Optional. Maximum number of tables to return (page length). Defaults to
+	// 10000.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Optional. Opaque token to send for the next page of results (pagination).
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Optional. A sql LIKE pattern (% and _) for schema names. All schemas will
+	// be returned if not set or empty.
+	SchemaNamePattern string `json:"-" url:"schema_name_pattern,omitempty"`
+	// Optional. A sql LIKE pattern (% and _) for table names. All tables will
+	// be returned if not set or empty.
+	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
+}
+
+type RetrieveTokenRequest struct {
+	// Required. The one time activation url. It also accepts activation token.
+	ActivationUrl string `json:"-" path:"activation_url"`
+}

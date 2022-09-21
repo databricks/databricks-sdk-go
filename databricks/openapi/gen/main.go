@@ -61,15 +61,6 @@ func (c *Context) Generate() error {
 		return fmt.Errorf(".codegen.json: %w", err)
 	}
 	render.ctx = c
-	var tmpls []string
-	fileset := map[string]string{}
-	for filename, v := range render.Fileset {
-		filename = filepath.Join(c.Target, filename)
-		tmpls = append(tmpls, filename)
-		fileset[filepath.Base(filename)] = v
-	}
-	render.Fileset = fileset
-	render.tmpl = template.Must(template.New("codegen").Funcs(code.HelperFuncs).ParseFiles(tmpls...))
 	batch, err := code.NewFromFile(c.Spec, render.IncludeTags)
 	if err != nil {
 		return err
@@ -79,32 +70,35 @@ func (c *Context) Generate() error {
 }
 
 type Render struct {
-	ctx         *Context
-	tmpl        *template.Template
-	batch       *code.Batch
-	Formatter   string            `json:"formatter"`
-	Fileset     map[string]string `json:"fileset"`
+	ctx       *Context
+	batch     *code.Batch
+	Formatter string `json:"formatter"`
+
+	// We can generate SDKs in three modes: Packages, Types, Services
+	// E.g. Go is Package-focused and Java is Types+Services
+	Packages    map[string]string `json:"packages,omitempty"`
+	Types       map[string]string `json:"types,omitempty"`
+	Services    map[string]string `json:"services,omitempty"`
 	IncludeTags []string          `json:"includeTags,omitempty"`
 }
 
 func (r *Render) Run() error {
-	for _, tmpl := range r.tmpl.Templates() {
-		if !strings.HasSuffix(tmpl.Name(), ".tmpl") {
-			continue
-		}
-		_, ok := r.Fileset[tmpl.Name()]
-		if !ok {
-			return fmt.Errorf("File %s not in fileset", tmpl.Name())
+	if r.Packages != nil {
+		err := newPass(r.batch.Pkgs(), r.Packages).Run()
+		if err != nil {
+			return fmt.Errorf("packages: %w", err)
 		}
 	}
-
-	for _, pkg := range r.batch.Packages {
-		fmt.Printf("Processing: %s\n", pkg.Name)
-		for k, v := range r.Fileset {
-			err := r.File(pkg, k, v)
-			if err != nil {
-				return fmt.Errorf("%s: %w", pkg.Name, err)
-			}
+	if r.Services != nil {
+		err := newPass(r.batch.Services(), r.Services).Run()
+		if err != nil {
+			return fmt.Errorf("services: %w", err)
+		}
+	}
+	if r.Types != nil {
+		err := newPass(r.batch.Types(), r.Types).Run()
+		if err != nil {
+			return fmt.Errorf("types: %w", err)
 		}
 	}
 	split := strings.Split(r.Formatter, " ")
@@ -117,21 +111,61 @@ func (r *Render) Run() error {
 	return nil
 }
 
-func (r *Render) File(pkg *code.Package, contentTRef, nameT string) error {
+func newPass[T named](items []T, fileset map[string]string) *Pass[T] {
+	var tmpls []string
+	newFileset := map[string]string{}
+	for filename, v := range fileset {
+		filename = filepath.Join(ctx.Target, filename)
+		tmpls = append(tmpls, filename)
+		newFileset[filepath.Base(filename)] = v
+	}
+	return &Pass[T]{
+		Items:   items,
+		ctx:     &ctx,
+		fileset: newFileset,
+		tmpl:    template.Must(template.New("codegen").Funcs(code.HelperFuncs).ParseFiles(tmpls...)),
+	}
+}
+
+type named interface {
+	FullName() string
+}
+
+type Pass[T named] struct {
+	Items   []T
+	ctx     *Context
+	tmpl    *template.Template
+	fileset map[string]string
+}
+
+func (p *Pass[T]) Run() error {
+	for _, item := range p.Items {
+		fmt.Printf("Processing: %s\n", item.FullName())
+		for k, v := range p.fileset {
+			err := p.File(item, k, v)
+			if err != nil {
+				return fmt.Errorf("%s: %w", item.FullName(), err)
+			}
+		}
+	}
+	return nil
+}
+
+func (p *Pass[T]) File(item T, contentTRef, nameT string) error {
 	nt, err := template.New("filename").Parse(nameT)
 	if err != nil {
 		return fmt.Errorf("parse %s: %w", nameT, err)
 	}
 	var childFilename, contents strings.Builder
-	err = nt.Execute(&childFilename, pkg)
+	err = nt.Execute(&childFilename, item)
 	if err != nil {
 		return fmt.Errorf("exec %s: %w", nameT, err)
 	}
-	err = r.tmpl.ExecuteTemplate(&contents, contentTRef, &pkg)
+	err = p.tmpl.ExecuteTemplate(&contents, contentTRef, &item)
 	if err != nil {
 		return fmt.Errorf("exec %s: %w", contentTRef, err)
 	}
-	if r.ctx.DryRun {
+	if p.ctx.DryRun {
 		fmt.Printf("\n---\nDRY RUN: %s\n---\n%s", &childFilename, &contents)
 		return nil
 	}
@@ -140,7 +174,7 @@ func (r *Render) File(pkg *code.Package, contentTRef, nameT string) error {
 		println(contents.String())
 		return nil
 	}
-	targetFilename := filepath.Join(r.ctx.Target, childFilename.String())
+	targetFilename := filepath.Join(p.ctx.Target, childFilename.String())
 	_, err = os.Stat(targetFilename)
 	if errors.Is(err, fs.ErrNotExist) {
 		err = os.MkdirAll(path.Dir(targetFilename), 0o755)

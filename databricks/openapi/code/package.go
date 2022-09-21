@@ -19,6 +19,10 @@ type Package struct {
 	emptyTypes []*Named
 }
 
+func (pkg *Package) FullName() string {
+	return pkg.Name
+}
+
 func (pkg *Package) Services() (types []*Service) {
 	for _, v := range pkg.services {
 		types = append(types, v)
@@ -108,6 +112,7 @@ func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Ent
 			Named:    named,
 			Entity:   pkg.schemaToEntity(v, append(path, named.PascalName()), false),
 			Required: required[k],
+			Schema:   v,
 			IsJson:   true,
 		}
 	}
@@ -129,8 +134,9 @@ func (pkg *Package) makeEnum(e *Entity, s *openapi.Schema, path []string) *Entit
 		if len(s.AliasEnum) == len(s.Enum) {
 			name = s.AliasEnum[idx]
 		}
+		description := s.EnumDescriptions[content]
 		e.enum[content] = EnumEntry{
-			Named:   Named{name, s.EnumDescriptions[content]},
+			Named:   Named{name, description},
 			Entity:  e,
 			Content: content,
 		}
@@ -168,6 +174,9 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 		// gets here when responses are objects with no properties
 		return nil
 	}
+	if e.ArrayValue != nil {
+		return e
+	}
 	if e.Name == "" {
 		e.Named = Named{name, s.Description}
 	}
@@ -188,6 +197,7 @@ func (pkg *Package) define(entity *Entity) *Entity {
 		//panic(fmt.Sprintf("%s is already defined", entity.Name))
 		return entity
 	}
+	entity.Package = pkg
 	pkg.types[entity.Name] = entity
 	return entity
 }

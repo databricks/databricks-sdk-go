@@ -68,9 +68,9 @@ type DeleteSecretRequest struct {
 
 type GetAclRequest struct {
 	// The principal to fetch ACL information for.
-	Principal string ` url:"principal,omitempty"`
+	Principal string `json:"-" url:"principal,omitempty"`
 	// The name of the scope to fetch ACL information from.
-	Scope string ` url:"scope,omitempty"`
+	Scope string `json:"-" url:"scope,omitempty"`
 }
 
 type GetAclResponse struct {
@@ -91,7 +91,7 @@ const GetAclResponsePermissionWrite GetAclResponsePermission = `WRITE`
 
 type ListAclsRequest struct {
 	// The name of the scope to fetch ACL information from.
-	Scope string ` url:"scope,omitempty"`
+	Scope string `json:"-" url:"scope,omitempty"`
 }
 
 type ListAclsResponse struct {
@@ -106,7 +106,7 @@ type ListScopesResponse struct {
 
 type ListSecretsRequest struct {
 	// The name of the scope to list secrets within.
-	Scope string ` url:"scope,omitempty"`
+	Scope string `json:"-" url:"scope,omitempty"`
 }
 
 type ListSecretsResponse struct {

@@ -18,7 +18,7 @@ const {{.Entity.PascalName}}{{.PascalName}} {{.Entity.PascalName}} = `{{.Content
 {{end}}
 
 {{- define "field-tag" -}}
-	{{if .IsJson}}json:"{{.Name}}{{if not .Required}},omitempty{{end}}"{{end -}}
+	{{if .IsJson}}json:"{{.Name}}{{if not .Required}},omitempty{{end}}"{{else}}json:"-"{{end -}}
 	{{if .IsPath}} path:"{{.Name}}"{{end -}}
 	{{if .IsQuery}} url:"{{.Name}},omitempty"{{end -}}
 {{- end -}}

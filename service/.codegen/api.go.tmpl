@@ -22,19 +22,19 @@ type {{.PascalName}}API struct {
 }
 
 {{range .Methods}}{{.Comment "// " 80}}
-func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}} {
-	{{if .Response}}var {{.Response.CamelName}} {{.Response.PascalName}}
+func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{.Response.PascalName}}{{end}}, error){{else}}error{{end}} {
+	{{if .Response}}var {{.Response.CamelName}} {{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}{{.Response.PascalName}}{{end}}
 	{{end -}}
 	path := {{if .PathParts -}}
 		fmt.Sprintf("{{range  .PathParts}}{{.Prefix}}{{if .Field}}%v{{end}}{{ end }}"{{ range .PathParts }}{{if .Field}}, request.{{.Field.PascalName}}{{end}}{{ end }})
 	{{- else}}"{{.Path}}"{{end}}
 	err := a.client.{{.TitleVerb}}(ctx, path, {{if .Request}}request{{else}}nil{{end}}{{if .Response}}, &{{.Response.CamelName}}{{else if .CanHaveResponseBody}}, nil{{end}})
-	return {{if .Response}}&{{.Response.CamelName}}, {{end}}err
+	return {{if .Response}}{{if not .Response.ArrayValue}}&{{end}}{{.Response.CamelName}}, {{end}}err
 }
 {{if .Wait}}
 // {{.PascalName}} and wait to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
-func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}, timeout ...time.Duration) (*{{.Wait.Poll.Response.PascalName}}, error) {
-	{{if .Wait.ForceBindRequest}}_, {{else if .Response}}{{.Response.CamelName}}, {{end}}err := a.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
+func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}, timeout ...time.Duration) (*{{.Wait.Poll.Response.PascalName}}, error) {
+	{{if .Wait.ForceBindRequest}}_, {{else if .Response}}{{.Response.CamelName}}, {{end}}err := a.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
 	if err != nil {
 		return nil, err
 	}
@@ -42,14 +42,14 @@ func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .R
 		timeout = []time.Duration{20*time.Minute}
 	}
 	return retries.Poll[{{.Wait.Poll.Response.PascalName}}](ctx, timeout[0], func() (*{{.Wait.Poll.Response.PascalName}}, *retries.Err) {
-		{{.Wait.Poll.Response.CamelName}}, err := a.{{.Wait.Poll.PascalName}}(ctx, {{.Wait.Poll.Request.PascalName}}{
-			{{.Wait.Bind.PascalName}}: {{if .Wait.ForceBindRequest}}request{{else if .Response}}{{.Response.CamelName}}{{else}}request{{end}}.{{.Wait.Bind.PascalName}},
+		{{.Wait.Poll.Response.CamelName}}, err := a.{{.Wait.Poll.PascalName}}(ctx, {{.Wait.Poll.Request.PascalName}}{ {{range .Wait.Binding}}
+			{{.PollField.PascalName}}: {{.Bind.Of.CamelName}}.{{.Bind.PascalName}},{{end}}
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
 		status := {{.Wait.Poll.Response.CamelName}}{{range .Wait.StatusPath}}.{{.PascalName}}{{end}}
-		statusMessage := {{.Wait.Poll.Response.CamelName}}{{range .Wait.MessagePath}}.{{.PascalName}}{{end}}
+		statusMessage := {{if .Wait.MessagePath}}{{.Wait.Poll.Response.CamelName}}{{range .Wait.MessagePath}}.{{.PascalName}}{{end}}{{else}}fmt.Sprintf("current status: %s", status){{end}}
 		switch status {
 		case {{range $i, $e := .Wait.Success}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}: // target state
 			return {{.Wait.Poll.Response.CamelName}}, nil
@@ -62,9 +62,57 @@ func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .R
 		}
 	})
 }
+{{end}}{{if .Pagination}}
+func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) ([]{{.Pagination.Entity.PascalName}}, error) {
+	{{if .Pagination.Offset}}var results []{{.Pagination.Entity.PascalName}}
+	for {
+		response, err := a.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
+		if err != nil {
+			return nil, err
+		}
+		if len(response.{{.Pagination.Results.PascalName}}) == 0 {
+			break
+		}
+		for _, v := range response.{{.Pagination.Results.PascalName}} {
+			results = append(results, v)
+		}
+		request.{{.Pagination.Offset.PascalName}} += {{.Pagination.Increment}}
+	}
+	return results, nil{{else if .Pagination.Results}}response, err := a.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
+	if err != nil {
+		return nil, err
+	}
+	return response.{{.Pagination.Results.PascalName}}, nil{{else}}return a.{{.PascalName}}(ctx, request){{end}}
+}
+{{end}}{{if .NamedIdMap}}
+func (a *{{.Service.Name}}API) {{.NamedIdMap.Entity.PascalName}}{{.NamedIdMap.Name.PascalName}}To{{.NamedIdMap.Id.PascalName}}Map(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) (map[string]{{template "type" .NamedIdMap.Id.Entity}}, error) {
+	mapping := map[string]{{template "type" .NamedIdMap.Id.Entity}}{}
+	result, err := a.{{.PascalName}}{{if not .NamedIdMap.Direct}}All{{end}}(ctx{{if .Request}}, request{{end}})
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		mapping[v.{{.NamedIdMap.Name.PascalName}}] = v.{{.NamedIdMap.Id.PascalName}}
+	}
+	return mapping, nil
+}
+{{end}}{{if .GetByName}}
+func (a *{{.Service.Name}}API) Get{{.NamedIdMap.Entity.PascalName}}By{{.NamedIdMap.Name.PascalName}}(ctx context.Context, name string) (*{{.GetByName.Response.PascalName}}, error) {
+	result, err := a.{{.PascalName}}{{if not .NamedIdMap.Direct}}All{{end}}(ctx{{if .Request}}, {{.Request.PascalName}}{}{{end}})
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		if v.{{.NamedIdMap.Name.PascalName}} != name {
+			continue
+		}
+		return &v, nil
+	}
+	return nil, fmt.Errorf("{{.NamedIdMap.Entity.PascalName}} named '%s' does not exist", name)
+}
 {{end}}{{if .Shortcut}}
 {{.Comment "// " 80}}
-func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{if .Response}}(*{{.Response.PascalName}}, error){{else}}error{{end}} {
+func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{.Response.PascalName}}{{end}}, error){{else}}error{{end}} {
 	return a.{{.PascalName}}(ctx, {{.Request.PascalName}}{
 		{{- range .Shortcut.Params}}
 		{{.PascalName}}: {{.CamelName}},{{end}}

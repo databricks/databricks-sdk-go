@@ -28,13 +28,13 @@ func TestAccListDbfsIntegration(t *testing.T) {
 
 	t.Cleanup(func() {
 		// recursively delete the test dir1 and any test files inside it
-		err := wsc.Dbfs.Delete(ctx, dbfs.DeleteRequest{
+		err := wsc.Dbfs.Delete(ctx, dbfs.Delete{
 			Path:      dbfsTestDirPath1,
 			Recursive: true,
 		})
 		require.NoError(t, err)
 		// recursively delete the test dir2 and any test files inside it
-		err = wsc.Dbfs.Delete(ctx, dbfs.DeleteRequest{
+		err = wsc.Dbfs.Delete(ctx, dbfs.Delete{
 			Path:      dbfsTestDirPath2,
 			Recursive: true,
 		})
@@ -46,14 +46,14 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// create testFile1 in test dir2
-	createdFile, err := wsc.Dbfs.Create(ctx, dbfs.CreateRequest{
+	createdFile, err := wsc.Dbfs.Create(ctx, dbfs.Create{
 		Path:      filepath.Join(dbfsTestDirPath2, testFile1),
 		Overwrite: true,
 	})
 	require.NoError(t, err)
 
 	// write 'Hello, World!' to testFile1
-	err = wsc.Dbfs.AddBlock(ctx, dbfs.AddBlockRequest{
+	err = wsc.Dbfs.AddBlock(ctx, dbfs.AddBlock{
 		Data:   base64.StdEncoding.EncodeToString([]byte("Hello, World!")),
 		Handle: createdFile.Handle,
 	})
@@ -85,14 +85,14 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// move testFile1 to test dir1
-	err = wsc.Dbfs.Move(ctx, dbfs.MoveRequest{
+	err = wsc.Dbfs.Move(ctx, dbfs.Move{
 		SourcePath:      filepath.Join(dbfsTestDirPath2, testFile1),
 		DestinationPath: filepath.Join(dbfsTestDirPath1, testFile1),
 	})
 	require.NoError(t, err)
 
 	// put a new file testFile2 in test dir1
-	err = wsc.Dbfs.Put(ctx, dbfs.PutRequest{
+	err = wsc.Dbfs.Put(ctx, dbfs.Put{
 		Path:      filepath.Join(dbfsTestDirPath1, testFile2),
 		Contents:  base64.StdEncoding.EncodeToString([]byte("Bye Bye, World!")),
 		Overwrite: true,

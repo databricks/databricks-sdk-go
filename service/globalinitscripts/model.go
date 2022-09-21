@@ -5,19 +5,18 @@ package globalinitscripts
 // all definitions in this file are in alphabetical order
 
 type CreateScriptResponse struct {
-	ScriptId any /* MISSING TYPE */ `json:"script_id,omitempty"`
+	// The global init script ID.
+	ScriptId string `json:"script_id,omitempty"`
 }
 
 type DeleteScriptRequest struct {
 	// The ID of the global init script.
-	ScriptId string ` path:"script_id"`
+	ScriptId string `json:"-" path:"script_id"`
 }
-
-type GetAllScriptsResponse []GlobalInitScriptDetails
 
 type GetScriptRequest struct {
 	// The ID of the global init script.
-	ScriptId string ` path:"script_id"`
+	ScriptId string `json:"-" path:"script_id"`
 }
 
 type GlobalInitScriptCreateRequest struct {
@@ -41,7 +40,28 @@ type GlobalInitScriptDetails struct {
 	Name string `json:"name,omitempty"`
 
 	Position int `json:"position,omitempty"`
+	// The global init script ID.
+	ScriptId string `json:"script_id,omitempty"`
+	// When the script was updated, as a Unix timestamp in milliseconds.
+	UpdatedAt int `json:"updated_at,omitempty"`
+	// The username of the user who last updated the script
+	UpdatedBy string `json:"updated_by,omitempty"`
+}
 
+type GlobalInitScriptDetailsWithContent struct {
+	// When the script was created, as a Unix timestamp in milliseconds.
+	CreatedAt int `json:"created_at,omitempty"`
+	// The username of the user who created the script.
+	CreatedBy string `json:"created_by,omitempty"`
+
+	Enabled bool `json:"enabled,omitempty"`
+
+	Name string `json:"name,omitempty"`
+
+	Position int `json:"position,omitempty"`
+
+	Script string `json:"script,omitempty"`
+	// The global init script ID.
 	ScriptId string `json:"script_id,omitempty"`
 	// When the script was updated, as a Unix timestamp in milliseconds.
 	UpdatedAt int `json:"updated_at,omitempty"`
@@ -58,7 +78,7 @@ type GlobalInitScriptUpdateRequest struct {
 
 	Script string `json:"script,omitempty"`
 	// The ID of the global init script.
-	ScriptId string ` path:"script_id"`
+	ScriptId string `json:"-" path:"script_id"`
 }
 
 // The Base64-encoded content of the script.
@@ -66,8 +86,6 @@ type GlobalInitScriptUpdateRequest struct {
 // Specifies whether the script is enabled. The script runs only if enabled.
 
 // Specifies whether the script is enabled. The script runs only if enabled.
-
-// The global init script ID.
 
 // The name of the script
 

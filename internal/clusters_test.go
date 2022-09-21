@@ -50,6 +50,12 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	})
 	require.NoError(t, err)
 
+	t.Cleanup(func() {
+		// Permanently delete the cluster
+		err := wsc.Clusters.PermanentDeleteByClusterId(ctx, clstr.ClusterId)
+		require.NoError(t, err)
+	})
+
 	byId, err := wsc.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 	assert.Equal(t, clusterName, byId.ClusterName)
@@ -128,8 +134,4 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	}
 	// The test clusters should only occur once in the list clusters response
 	assert.True(t, seen == 1)
-
-	// Permanently delete the cluster
-	err = wsc.Clusters.PermanentDeleteByClusterId(ctx, clstr.ClusterId)
-	require.NoError(t, err)
 }

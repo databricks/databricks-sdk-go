@@ -17,6 +17,10 @@ type Service struct {
 	ByPathParamsMethods []*Shortcut
 }
 
+func (svc *Service) FullName() string {
+	return fmt.Sprintf("%s.%s", svc.Name, svc.Package.Name)
+}
+
 func (svc *Service) Methods() (methods []*Method) {
 	for _, v := range svc.methods {
 		methods = append(methods, v)
@@ -35,7 +39,7 @@ func (svc *Service) paramToField(op *openapi.Operation, param openapi.Parameter)
 		IsPath:   param.In == "path",
 		IsQuery:  param.In == "query",
 		Entity: svc.Package.schemaToEntity(param.Schema, []string{
-			op.OperationId,
+			op.Name(),
 			named.PascalName(),
 		}, false),
 	}
@@ -47,7 +51,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 	}
 	request := &Entity{fields: map[string]Field{}}
 	if op.RequestBody != nil {
-		request = svc.Package.schemaToEntity(op.RequestBody.Schema(), []string{op.OperationId}, true)
+		request = svc.Package.schemaToEntity(op.RequestBody.Schema(), []string{op.Name()}, true)
 	}
 	if request == nil {
 		panic(fmt.Errorf("%s request body is nil", op.OperationId))
@@ -70,7 +74,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 	}
 	if request.Name == "" {
 		// when there was a merge of params with a request or new entity was made
-		request.Name = op.OperationId + "Request"
+		request.Name = op.Name() + "Request"
 		svc.Package.define(request)
 	}
 	return request
@@ -100,18 +104,17 @@ func (svc *Service) paramPath(path string, request *Entity, params []openapi.Par
 func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) *Method {
 	request := svc.newRequest(params, op)
 	respSchema := op.SuccessResponseSchema(svc.Package.Components)
-	response := svc.Package.definedEntity(op.OperationId+"Response", respSchema)
+	name := op.Name()
+	response := svc.Package.definedEntity(name+"Response", respSchema)
 	var emptyResponse Named
 	if response != nil && response.IsEmpty {
 		emptyResponse = response.Named
 		response = nil
 	}
-	name := op.OperationId
 	if svc.IsRpcStyle {
 		name = filepath.Base(path)
 	}
-
-	ret := &Method{
+	return &Method{
 		Named:             Named{name, op.Description},
 		Service:           svc,
 		Verb:              strings.ToUpper(verb),
@@ -119,9 +122,10 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		Request:           request,
 		PathParts:         svc.paramPath(path, request, params),
 		Response:          response,
-		EmptyResponseName: emptyResponse,
 		wait:              op.Wait,
+		operation:         op,
+		EmptyResponseName: emptyResponse,
+		pagination:        op.Pagination,
 		shortcut:          op.Shortcut,
 	}
-	return ret
 }

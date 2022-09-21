@@ -4,22 +4,12 @@ package gitcredentials
 
 // all definitions in this file are in alphabetical order
 
-type CreateCredentialRequest struct {
+type CreateCredentials struct {
 	GitProvider string `json:"git_provider"`
 
 	GitUsername string `json:"git_username,omitempty"`
 
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
-}
-
-type DeleteCredentialRequest struct {
-	// The ID for the corresponding credential to access.
-	CredentialId string ` path:"credential_id"`
-}
-
-type GetCredentialRequest struct {
-	// The ID for the corresponding credential to access.
-	CredentialId string ` path:"credential_id"`
 }
 
 type GetCredentialResponse struct {
@@ -34,9 +24,9 @@ type GetCredentialsResponse struct {
 	Credentials []GetCredentialResponse `json:"credentials,omitempty"`
 }
 
-type UpdateCredentialRequest struct {
+type UpdateCredentials struct {
 	// The ID for the corresponding credential to access.
-	CredentialId string ` path:"credential_id"`
+	CredentialId string `json:"-" path:"credential_id"`
 
 	GitProvider string `json:"git_provider,omitempty"`
 
@@ -46,6 +36,16 @@ type UpdateCredentialRequest struct {
 }
 
 // ID of the credential object in the workspace.
+
+type DeleteRequest struct {
+	// The ID for the corresponding credential to access.
+	CredentialId string `json:"-" path:"credential_id"`
+}
+
+type GetRequest struct {
+	// The ID for the corresponding credential to access.
+	CredentialId string `json:"-" path:"credential_id"`
+}
 
 // Git provider. This field is case-insensitive. The available Git providers are
 // awsCodeCommit, azureDevOpsServices,

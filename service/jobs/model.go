@@ -4,6 +4,16 @@ package jobs
 
 // all definitions in this file are in alphabetical order
 
+type AccessControlRequest struct {
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel any/* ERROR */ `json:"permission_level,omitempty"`
+
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+
+	UserName string `json:"user_name,omitempty"`
+}
+
 type AutoScale struct {
 	// The maximum number of workers to which the cluster can scale up when
 	// overloaded. max_workers must be strictly greater than min_workers.
@@ -13,6 +23,151 @@ type AutoScale struct {
 	// after creation.
 	MinWorkers int `json:"min_workers,omitempty"`
 }
+
+type AwsAttributes struct {
+	// Availability type used for all subsequent nodes past the
+	// `first_on_demand` ones. **Note:** If `first_on_demand` is zero, this
+	// availability type is used for the entire cluster. `SPOT`: use spot
+	// instances. `ON_DEMAND`: use on-demand instances. `SPOT_WITH_FALLBACK`:
+	// preferably use spot instances, but fall back to on-demand instances if
+	// spot instances cannot be acquired (for example, if AWS spot prices are
+	// too high).
+	Availability AwsAttributesAvailability `json:"availability,omitempty"`
+	// The number of volumes launched for each instance. You can choose up to 10
+	// volumes. This feature is only enabled for supported node types. Legacy
+	// node types cannot specify custom EBS volumes. For node types with no
+	// instance store, at least one EBS volume needs to be specified; otherwise,
+	// cluster creation fails. These EBS volumes are mounted at `/ebs0`,
+	// `/ebs1`, and etc. Instance store volumes are mounted at `/local_disk0`,
+	// `/local_disk1`, and etc. If EBS volumes are attached, Databricks
+	// configures Spark to use only the EBS volumes for scratch storage because
+	// heterogeneously sized scratch devices can lead to inefficient disk
+	// utilization. If no EBS volumes are attached, Databricks configures Spark
+	// to use instance store volumes. If EBS volumes are specified, then the
+	// Spark configuration `spark.local.dir` is overridden.
+	EbsVolumeCount int `json:"ebs_volume_count,omitempty"`
+	// The number of IOPS per EBS gp3 volume. This value must be between 3000
+	// and 16000. The value of IOPS and throughput is calculated based on AWS
+	// documentation to match the maximum performance of a gp2 volume with the
+	// same volume size. For more information, see the [EBS volume limit
+	// calculator](https://github.com/awslabs/aws-support-tools/tree/master/EBS/VolumeLimitCalculator).
+	EbsVolumeIops int `json:"ebs_volume_iops,omitempty"`
+	// The size of each EBS volume (in GiB) launched for each instance. For
+	// general purpose SSD, this value must be within the range 100 - 4096\. For
+	// throughput optimized HDD, this value must be within the range 500 -
+	// 4096\. Custom EBS volumes cannot be specified for the legacy node types
+	// (_memory-optimized_ and _compute-optimized_).
+	EbsVolumeSize int `json:"ebs_volume_size,omitempty"`
+	// The throughput per EBS gp3 volume, in MiB per second. This value must be
+	// between 125 and 1000.
+	EbsVolumeThroughput int `json:"ebs_volume_throughput,omitempty"`
+	// The type of EBS volume that is launched with this cluster.
+	// `GENERAL_PURPOSE_SSD`: provision extra storage using AWS gp2 EBS volumes.
+	// `THROUGHPUT_OPTIMIZED_HDD`: provision extra storage using AWS st1
+	// volumes.
+	EbsVolumeType AwsAttributesEbsVolumeType `json:"ebs_volume_type,omitempty"`
+	// The first first_on_demand nodes of the cluster are placed on on-demand
+	// instances. If this value is greater than 0, the cluster driver node is
+	// placed on an on-demand instance. If this value is greater than or equal
+	// to the current cluster size, all nodes are placed on on-demand instances.
+	// If this value is less than the current cluster size, first_on_demand
+	// nodes are placed on on-demand instances and the remainder are placed on
+	// `availability` instances. This value does not affect cluster size and
+	// cannot be mutated over the lifetime of a cluster.
+	FirstOnDemand int `json:"first_on_demand,omitempty"`
+	// Nodes for this cluster are only be placed on AWS instances with this
+	// instance profile. If omitted, nodes are placed on instances without an
+	// instance profile. The instance profile must have previously been added to
+	// the Databricks environment by an account administrator. This feature may
+	// only be available to certain customer plans.
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// The max price for AWS spot instances, as a percentage of the
+	// corresponding instance type?s on-demand price. For example, if this field
+	// is set to 50, and the cluster needs a new `i3.xlarge` spot instance, then
+	// the max price is half of the price of on-demand `i3.xlarge` instances.
+	// Similarly, if this field is set to 200, the max price is twice the price
+	// of on-demand `i3.xlarge` instances. If not specified, the default value
+	// is 100\. When spot instances are requested for this cluster, only spot
+	// instances whose max price percentage matches this field is considered.
+	// For safety, we enforce this field to be no more than 10000.
+	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
+	// Identifier for the availability zone/datacenter in which the cluster
+	// resides. You have three options: **Specify an availability zone as a
+	// string**, for example: ?us-west-2a?. The provided availability zone must
+	// be in the same region as the Databricks deployment. For example,
+	// ?us-west-2a? is not a valid zone ID if the Databricks deployment resides
+	// in the ?us-east-1? region. **Enable automatic availability zone selection
+	// (?Auto-AZ?)**, by setting the value ?auto?. Databricks selects the AZ
+	// based on available IPs in the workspace subnets and retries in other
+	// availability zones if AWS returns insufficient capacity errors. **Do not
+	// specify a value**. If not specified, a default zone is used. The list of
+	// available zones as well as the default value can be found by using the
+	// [List zones](..dev-tools/api/latest/clustershtml#list-zones) API.
+	ZoneId string `json:"zone_id,omitempty"`
+}
+
+// Availability type used for all subsequent nodes past the `first_on_demand`
+// ones. **Note:** If `first_on_demand` is zero, this availability type is used
+// for the entire cluster. `SPOT`: use spot instances. `ON_DEMAND`: use
+// on-demand instances. `SPOT_WITH_FALLBACK`: preferably use spot instances, but
+// fall back to on-demand instances if spot instances cannot be acquired (for
+// example, if AWS spot prices are too high).
+type AwsAttributesAvailability string
+
+const AwsAttributesAvailabilityOnDemand AwsAttributesAvailability = `ON_DEMAND`
+
+const AwsAttributesAvailabilitySpot AwsAttributesAvailability = `SPOT`
+
+const AwsAttributesAvailabilitySpotWithFallback AwsAttributesAvailability = `SPOT_WITH_FALLBACK`
+
+// The type of EBS volume that is launched with this cluster.
+// `GENERAL_PURPOSE_SSD`: provision extra storage using AWS gp2 EBS volumes.
+// `THROUGHPUT_OPTIMIZED_HDD`: provision extra storage using AWS st1 volumes.
+type AwsAttributesEbsVolumeType string
+
+const AwsAttributesEbsVolumeTypeGeneralPurposeSsd AwsAttributesEbsVolumeType = `GENERAL_PURPOSE_SSD`
+
+const AwsAttributesEbsVolumeTypeThroughputOptimizedHdd AwsAttributesEbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
+
+type AzureAttributes struct {
+	// Availability type used for all subsequent nodes past the
+	// `first_on_demand` ones. `SPOT_AZURE`: use spot instances.
+	// `ON_DEMAND_AZURE`: use on demand instances. `SPOT_WITH_FALLBACK_AZURE`:
+	// preferably use spot instances, but fall back to on-demand instances if
+	// spot instances cannot be acquired (for example, if Azure spot prices are
+	// too high or out of quota). Does not apply to pool availability.
+	Availability AzureAttributesAvailability `json:"availability,omitempty"`
+	// The first `first_on_demand` nodes of the cluster are placed on on-demand
+	// instances. This value must be greater than 0, or else cluster creation
+	// validation fails. If this value is greater than or equal to the current
+	// cluster size, all nodes are placed on on-demand instances. If this value
+	// is less than the current cluster size, `first_on_demand` nodes are placed
+	// on on-demand instances and the remainder are placed on availability
+	// instances. This value does not affect cluster size and cannot be mutated
+	// over the lifetime of a cluster.
+	FirstOnDemand int `json:"first_on_demand,omitempty"`
+	// The max bid price used for Azure spot instances. You can set this to
+	// greater than or equal to the current spot price. You can also set this to
+	// -1 (the default), which specifies that the instance cannot be evicted on
+	// the basis of price. The price for the instance is the current price for
+	// spot instances or the price for a standard instance. You can view
+	// historical pricing and eviction rates in the Azure portal.
+	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
+}
+
+// Availability type used for all subsequent nodes past the `first_on_demand`
+// ones. `SPOT_AZURE`: use spot instances. `ON_DEMAND_AZURE`: use on demand
+// instances. `SPOT_WITH_FALLBACK_AZURE`: preferably use spot instances, but
+// fall back to on-demand instances if spot instances cannot be acquired (for
+// example, if Azure spot prices are too high or out of quota). Does not apply
+// to pool availability.
+type AzureAttributesAvailability string
+
+const AzureAttributesAvailabilityOnDemandAzure AzureAttributesAvailability = `ON_DEMAND_AZURE`
+
+const AzureAttributesAvailabilitySpotAzure AzureAttributesAvailability = `SPOT_AZURE`
+
+const AzureAttributesAvailabilitySpotWithFallbackAzure AzureAttributesAvailability = `SPOT_WITH_FALLBACK_AZURE`
 
 type CancelAllRuns struct {
 	// The canonical identifier of the job to cancel all runs of. This field is
@@ -44,12 +199,12 @@ type ClusterInstance struct {
 
 type ClusterLogConf struct {
 	// DBFS location of cluster log. Destination must be provided. For example,
-	// `{ &#34;dbfs&#34; : { &#34;destination&#34; : &#34;dbfs:/home/cluster_log&#34; } }`
+	// `{ "dbfs" : { "destination" : "dbfs:/home/cluster_log" } }`
 	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
 	// S3 location of cluster log. `destination` and either `region` or
-	// `endpoint` must be provided. For example, `{ &#34;s3&#34;: { &#34;destination&#34; :
-	// &#34;s3://cluster_log_bucket/prefix&#34;, &#34;region&#34; : &#34;us-west-2&#34; } }`
-	S3 any/* ERROR */ `json:"s3,omitempty"`
+	// `endpoint` must be provided. For example, `{ "s3": { "destination" :
+	// "s3://cluster_log_bucket/prefix", "region" : "us-west-2" } }`
+	S3 *S3StorageInfo `json:"s3,omitempty"`
 }
 
 type ClusterSpec struct {
@@ -72,17 +227,17 @@ type ClusterTag map[string]string
 
 type CreateJob struct {
 	// List of permissions to set on the job.
-	AccessControlList any/* MISSING TYPE */ `json:"access_control_list,omitempty"`
+	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted. The default
 	// behavior is to not send any emails.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
-	// always set to `&#34;MULTI_TASK&#34;`.
+	// always set to `"MULTI_TASK"`.
 	Format CreateJobFormat `json:"format,omitempty"`
 	// An optional specification for a remote repository containing the
-	// notebooks used by this job&#39;s notebook tasks.
+	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
@@ -111,7 +266,7 @@ type CreateJob struct {
 	// as cluster tags for jobs clusters, and are subject to the same
 	// limitations as cluster tags. A maximum of 25 tags can be added to the
 	// job.
-	Tags any/* MISSING TYPE */ `json:"tags,omitempty"`
+	Tags map[string]string `json:"tags,omitempty"`
 	// A list of task specifications to be executed by this job.
 	Tasks []JobTaskSettings `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. The default behavior
@@ -121,7 +276,7 @@ type CreateJob struct {
 
 // Used to tell what is the format of the job. This field is ignored in
 // Create/Update/Reset calls. When using the Jobs API 2.1 this value is always
-// set to `&#34;MULTI_TASK&#34;`.
+// set to `"MULTI_TASK"`.
 type CreateJobFormat string
 
 const CreateJobFormatMultiTask CreateJobFormat = `MULTI_TASK`
@@ -175,6 +330,16 @@ type FileStorageInfo struct {
 	Destination string `json:"destination,omitempty"`
 }
 
+type GcpAttributes struct {
+	// Google service account email address that the cluster uses to
+	// authenticate with Google Identity. This field is used for authentication
+	// with the [GCS](..data/data-sources/google/gcshtml) and
+	// [BigQuery](..data/data-sources/google/bigqueryhtml) data sources.
+	GoogleServiceAccount string `json:"google_service_account,omitempty"`
+	// Use preemptible executors.
+	UsePreemptibleExecutors bool `json:"use_preemptible_executors,omitempty"`
+}
+
 // Read-only state of the remote repository at the time the job was run. This
 // field is only included on job runs.
 type GitSnapshot struct {
@@ -185,12 +350,12 @@ type GitSnapshot struct {
 }
 
 // An optional specification for a remote repository containing the notebooks
-// used by this job&#39;s notebook tasks.
+// used by this job's notebook tasks.
 type GitSource struct {
 	// Name of the branch to be checked out and used by this job. This field
 	// cannot be specified in conjunction with git_tag or git_commit. The
 	// maximum length is 255 characters.
-	GitBranch string `json:"git_branch"`
+	GitBranch string `json:"git_branch,omitempty"`
 	// Commit to be checked out and used by this job. This field cannot be
 	// specified in conjunction with git_branch or git_tag. The maximum length
 	// is 64 characters.
@@ -229,16 +394,19 @@ const GitSourceGitProviderGitlab GitSourceGitProvider = `gitLab`
 
 const GitSourceGitProviderGitlabenterpriseedition GitSourceGitProvider = `gitLabEnterpriseEdition`
 
+// Group name. There are two built-in groups: `users` for all users, and
+// `admins` for administrators.
+
 type InitScriptInfo struct {
 	// S3 location of init script. Destination and either region or endpoint
-	// must be provided. For example, `{ &#34;s3&#34;: { &#34;destination&#34; :
-	// &#34;s3://init_script_bucket/prefix&#34;, &#34;region&#34; : &#34;us-west-2&#34; } }`
-	S3 any/* ERROR */ `json:"S3,omitempty"`
+	// must be provided. For example, `{ "s3": { "destination" :
+	// "s3://init_script_bucket/prefix", "region" : "us-west-2" } }`
+	S3 *S3StorageInfo `json:"S3,omitempty"`
 	// DBFS location of init script. Destination must be provided. For example,
-	// `{ &#34;dbfs&#34; : { &#34;destination&#34; : &#34;dbfs:/home/init_script&#34; } }`
+	// `{ "dbfs" : { "destination" : "dbfs:/home/init_script" } }`
 	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
 	// File location of init script. Destination must be provided. For example,
-	// `{ &#34;file&#34; : { &#34;destination&#34; : &#34;file:/my/local/file.sh&#34; } }`
+	// `{ "file" : { "destination" : "file:/my/local/file.sh" } }`
 	File *FileStorageInfo `json:"file,omitempty"`
 }
 
@@ -295,10 +463,10 @@ type JobSettings struct {
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
-	// always set to `&#34;MULTI_TASK&#34;`.
+	// always set to `"MULTI_TASK"`.
 	Format JobSettingsFormat `json:"format,omitempty"`
 	// An optional specification for a remote repository containing the
-	// notebooks used by this job&#39;s notebook tasks.
+	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
@@ -327,7 +495,7 @@ type JobSettings struct {
 	// as cluster tags for jobs clusters, and are subject to the same
 	// limitations as cluster tags. A maximum of 25 tags can be added to the
 	// job.
-	Tags any/* MISSING TYPE */ `json:"tags,omitempty"`
+	Tags map[string]string `json:"tags,omitempty"`
 	// A list of task specifications to be executed by this job.
 	Tasks []JobTaskSettings `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. The default behavior
@@ -337,7 +505,7 @@ type JobSettings struct {
 
 // Used to tell what is the format of the job. This field is ignored in
 // Create/Update/Reset calls. When using the Jobs API 2.1 this value is always
-// set to `&#34;MULTI_TASK&#34;`.
+// set to `"MULTI_TASK"`.
 type JobSettingsFormat string
 
 const JobSettingsFormatMultiTask JobSettingsFormat = `MULTI_TASK`
@@ -407,12 +575,12 @@ type Library struct {
 
 	Jar string `json:"jar,omitempty"`
 	// If maven, specification of a Maven library to be installed. For example:
-	// `{ &#34;coordinates&#34;: &#34;org.jsoup:jsoup:1.7.2&#34; }`
+	// `{ "coordinates": "org.jsoup:jsoup:1.7.2" }`
 	Maven *MavenLibrary `json:"maven,omitempty"`
 	// If pypi, specification of a PyPI library to be installed. Specifying the
 	// `repo` field is optional and if not specified, the default pip index is
-	// used. For example: `{ &#34;package&#34;: &#34;simplejson&#34;, &#34;repo&#34;:
-	// &#34;https://my-repo.com&#34; }`
+	// used. For example: `{ "package": "simplejson", "repo":
+	// "https://my-repo.com" }`
 	Pypi *PythonPyPiLibrary `json:"pypi,omitempty"`
 
 	Whl string `json:"whl,omitempty"`
@@ -430,9 +598,9 @@ type MavenLibrary struct {
 	// Gradle-style Maven coordinates. For example: `org.jsoup:jsoup:1.7.2`.
 	// This field is required.
 	Coordinates string `json:"coordinates"`
-	// List of dependences to exclude. For example: `[&#34;slf4j:slf4j&#34;,
-	// &#34;*:hadoop-client&#34;]`. Maven dependency exclusions:
-	// &lt;https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html&gt;.
+	// List of dependences to exclude. For example: `["slf4j:slf4j",
+	// "*:hadoop-client"]`. Maven dependency exclusions:
+	// <https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html>.
 	Exclusions []string `json:"exclusions,omitempty"`
 	// Maven repo to install the Maven package from. If omitted, both Maven
 	// Central Repository and Spark Packages are searched.
@@ -445,17 +613,17 @@ type NewCluster struct {
 	Autoscale *AutoScale `json:"autoscale,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values is used.
-	AwsAttributes any/* ERROR */ `json:"aws_attributes,omitempty"`
+	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
 	// Defines attributes such as the instance availability type, node
 	// placement, and max bid price. If not specified during cluster creation, a
 	// set of default values is used.
-	AzureAttributes any/* ERROR */ `json:"azure_attributes,omitempty"`
+	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
 	// The configuration for delivering Spark logs to a long-term storage
 	// destination. Only one destination can be specified for one cluster. If
 	// the conf is given, the logs are delivered to the destination every `5
 	// mins`. The destination of driver logs is
-	// `&lt;destination&gt;/&lt;cluster-id&gt;/driver`, while the destination of executor
-	// logs is `&lt;destination&gt;/&lt;cluster-id&gt;/executor`.
+	// `<destination>/<cluster-id>/driver`, while the destination of executor
+	// logs is `<destination>/<cluster-id>/executor`.
 	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
@@ -471,11 +639,11 @@ type NewCluster struct {
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Attributes related to clusters running on Google Cloud. If not specified
 	// at cluster creation, a set of default values is used.
-	GcpAttributes any/* ERROR */ `json:"gcp_attributes,omitempty"`
+	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
 	// The configuration for storing init scripts. Any number of scripts can be
 	// specified. The scripts are executed sequentially in the order provided.
 	// If `cluster_log_conf` is specified, init script logs are sent to
-	// `&lt;destination&gt;/&lt;cluster-id&gt;/init_scripts`.
+	// `<destination>/<cluster-id>/init_scripts`.
 	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to use for cluster nodes. If
 	// `driver_instance_pool_id` is present, `instance_pool_id` is used for
@@ -492,7 +660,7 @@ type NewCluster struct {
 	NodeTypeId string `json:"node_type_id"`
 	// If num_workers, number of worker nodes that this cluster must have. A
 	// cluster has one Spark driver and num_workers executors for a total of
-	// num_workers &#43; 1 Spark nodes. When reading the properties of a cluster,
+	// num_workers + 1 Spark nodes. When reading the properties of a cluster,
 	// this field reflects the desired number of workers rather than the actual
 	// current number of workers. For example, if a cluster is resized from 5 to
 	// 10 workers, this field immediately updates to reflect the target size of
@@ -505,20 +673,20 @@ type NewCluster struct {
 	// configuration key-value pairs. You can also pass in a string of extra JVM
 	// options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
-	// respectively. Example Spark confs: `{&#34;spark.speculation&#34;: true,
-	// &#34;spark.streaming.ui.retainedBatches&#34;: 5}` or
-	// `{&#34;spark.driver.extraJavaOptions&#34;: &#34;-verbose:gc -XX:&#43;PrintGCDetails&#34;}`
+	// respectively. Example Spark confs: `{"spark.speculation": true,
+	// "spark.streaming.ui.retainedBatches": 5}` or
+	// `{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}`
 	SparkConf map[string]any/* MISSING TYPE */ `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Key-value pair of the form (X,Y) are exported
-	// as is (for example, `export X=&#39;Y&#39;`) while launching the driver and
+	// as is (for example, `export X='Y'`) while launching the driver and
 	// workers. To specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
 	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
 	// following example. This ensures that all default databricks managed
 	// environmental variables are included as well. Example Spark environment
-	// variables: `{&#34;SPARK_WORKER_MEMORY&#34;: &#34;28000m&#34;, &#34;SPARK_LOCAL_DIRS&#34;:
-	// &#34;/local_disk0&#34;}` or `{&#34;SPARK_DAEMON_JAVA_OPTS&#34;: &#34;$SPARK_DAEMON_JAVA_OPTS
-	// -Dspark.shuffle.service.enabled=true&#34;}`
+	// variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+	// "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+	// -Dspark.shuffle.service.enabled=true"}`
 	SparkEnvVars map[string]any/* MISSING TYPE */ `json:"spark_env_vars,omitempty"`
 	// The Spark version of the cluster. A list of available Spark versions can
 	// be retrieved by using the [Runtime
@@ -561,6 +729,11 @@ type NotebookTask struct {
 	NotebookPath string `json:"notebook_path"`
 }
 
+type PipelineParams struct {
+	// If true, triggers a full refresh on the delta live table.
+	FullRefresh bool `json:"full_refresh,omitempty"`
+}
+
 type PipelineTask struct {
 	// If true, a full refresh will be triggered on the delta live table.
 	FullRefresh bool `json:"full_refresh,omitempty"`
@@ -584,7 +757,7 @@ type PythonWheelTask struct {
 	// `$packageName.$entryPoint()`
 	EntryPoint string `json:"entry_point,omitempty"`
 	// Command-line parameters passed to Python wheel task in the form of
-	// `[&#34;--name=task&#34;, &#34;--data=dbfs:/path/to/data.json&#34;]`. Leave it empty if
+	// `["--name=task", "--data=dbfs:/path/to/data.json"]`. Leave it empty if
 	// `parameters` is not null.
 	NamedParameters any/* MISSING TYPE */ `json:"named_parameters,omitempty"`
 	// Name of the package to execute
@@ -630,11 +803,11 @@ const RepairHistoryItemTypeRepair RepairHistoryItemType = `REPAIR`
 
 type RepairRun struct {
 	// A list of parameters for jobs with Spark JAR tasks, for example
-	// `&#34;jar_params&#34;: [&#34;john doe&#34;, &#34;35&#34;]`. The parameters are used to invoke the
+	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
 	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
 	// be specified in conjunction with notebook_params. The JSON representation
-	// of this field (for example `{&#34;jar_params&#34;:[&#34;john doe&#34;,&#34;35&#34;]}`) cannot
+	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs.
@@ -644,7 +817,7 @@ type RepairRun struct {
 	// requests to repair the same run.
 	LatestRepairId int64 `json:"latest_repair_id,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
-	// `&#34;notebook_params&#34;: {&#34;name&#34;: &#34;john doe&#34;, &#34;age&#34;: &#34;35&#34;}`. The map is passed
+	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the
 	// [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets)
 	// function. If not specified upon `run-now`, the triggered run uses the
@@ -652,21 +825,21 @@ type RepairRun struct {
 	// with jar_params. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs. The JSON representation of this field (for
-	// example `{&#34;notebook_params&#34;:{&#34;name&#34;:&#34;john doe&#34;,&#34;age&#34;:&#34;35&#34;}}`) cannot
+	// example `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot
 	// exceed 10,000 bytes.
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
-	PipelineParams *RepairRunPipelineParams `json:"pipeline_params,omitempty"`
+	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 	// A map from keys to values for jobs with Python wheel task, for example
-	// `&#34;python_named_params&#34;: {&#34;name&#34;: &#34;task&#34;, &#34;data&#34;:
-	// &#34;dbfs:/path/to/data.json&#34;}`.
+	// `"python_named_params": {"name": "task", "data":
+	// "dbfs:/path/to/data.json"}`.
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
-	// `&#34;python_params&#34;: [&#34;john doe&#34;, &#34;35&#34;]`. The parameters are passed to
+	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
-	// representation of this field (for example `{&#34;python_params&#34;:[&#34;john
-	// doe&#34;,&#34;35&#34;]}`) cannot exceed 10,000 bytes. Use [Task parameter
+	// representation of this field (for example `{"python_params":["john
+	// doe","35"]}`) cannot exceed 10,000 bytes. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs. Important These parameters accept only Latin
 	// characters (ASCII character set). Using non-ASCII characters returns an
@@ -678,23 +851,18 @@ type RepairRun struct {
 	// The job run ID of the run to repair. The run must not be in progress.
 	RunId int64 `json:"run_id,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
-	// `&#34;spark_submit_params&#34;: [&#34;--class&#34;,
-	// &#34;org.apache.spark.examples.SparkPi&#34;]`. The parameters are passed to
+	// `"spark_submit_params": ["--class",
+	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{&#34;python_params&#34;:[&#34;john doe&#34;,&#34;35&#34;]}`) cannot exceed 10,000 bytes. Use
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes. Use
 	// [Task parameter variables](..jobshtml#parameter-variables) to set
 	// parameters containing information about job runs. Important These
 	// parameters accept only Latin characters (ASCII character set). Using
 	// non-ASCII characters returns an error. Examples of invalid, non-ASCII
 	// characters are Chinese, Japanese kanjis, and emojis.
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
-}
-
-type RepairRunPipelineParams struct {
-	// If true, triggers a full refresh on the delta live table.
-	FullRefresh bool `json:"full_refresh,omitempty"`
 }
 
 type ResetJob struct {
@@ -709,7 +877,7 @@ type ResetJob struct {
 type Run struct {
 	// The sequence number of this run attempt for a triggered job run. The
 	// initial attempt of a run has an attempt_number of 0\. If the initial run
-	// attempt fails, and the job has a retry policy (`max_retries` \&gt; 0),
+	// attempt fails, and the job has a retry policy (`max_retries` \> 0),
 	// subsequent runs are created with an `original_attempt_run_id` of the
 	// original attempt?s ID and an incrementing `attempt_number`. Runs are
 	// retried only until they succeed, and the maximum `attempt_number` is the
@@ -736,7 +904,7 @@ type Run struct {
 	// encountered an unexpected error.
 	ExecutionDuration int64 `json:"execution_duration,omitempty"`
 	// An optional specification for a remote repository containing the
-	// notebooks used by this job&#39;s notebook tasks.
+	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
@@ -785,116 +953,34 @@ type Run struct {
 	Trigger TriggerType `json:"trigger,omitempty"`
 }
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// This describes an enum
 type RunLifeCycleState string
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// An exceptional state that indicates a failure in the Jobs service, such as
+// network failure over a long period. If a run on a new cluster ends in the
+// `INTERNAL_ERROR` state, the Jobs service terminates the cluster as soon as
+// possible. This state is terminal.
 const RunLifeCycleStateInternalError RunLifeCycleState = `INTERNAL_ERROR`
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// The run has been triggered. If there is not already an active run of the same
+// job, the cluster and execution context are being prepared. If there is
+// already an active run of the same job, the run immediately transitions into
+// the `SKIPPED` state without preparing any resources.
 const RunLifeCycleStatePending RunLifeCycleState = `PENDING`
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// The task of this run is being executed.
 const RunLifeCycleStateRunning RunLifeCycleState = `RUNNING`
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// This run was aborted because a previous run of the same job was already
+// active. This state is terminal.
 const RunLifeCycleStateSkipped RunLifeCycleState = `SKIPPED`
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// The task of this run has completed, and the cluster and execution context
+// have been cleaned up. This state is terminal.
 const RunLifeCycleStateTerminated RunLifeCycleState = `TERMINATED`
 
-// * `PENDING`: The run has been triggered. If there is not already an active
-// run of the same job, the cluster and execution context are being prepared. If
-// there is already an active run of the same job, the run immediately
-// transitions into the `SKIPPED` state without preparing any resources. *
-// `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task
-// of this run has completed, and the cluster and execution context are being
-// cleaned up. * `TERMINATED`: The task of this run has completed, and the
-// cluster and execution context have been cleaned up. This state is terminal. *
-// `SKIPPED`: This run was aborted because a previous run of the same job was
-// already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional
-// state that indicates a failure in the Jobs service, such as network failure
-// over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR`
-// state, the Jobs service terminates the cluster as soon as possible. This
-// state is terminal.
+// The task of this run has completed, and the cluster and execution context are
+// being cleaned up.
 const RunLifeCycleStateTerminating RunLifeCycleState = `TERMINATING`
 
 type RunNow struct {
@@ -909,11 +995,11 @@ type RunNow struct {
 	// jobs](https://kb.databricks.com/jobs/jobs-idempotency.html).
 	IdempotencyToken string `json:"idempotency_token,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
-	// `&#34;jar_params&#34;: [&#34;john doe&#34;, &#34;35&#34;]`. The parameters are used to invoke the
+	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
 	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
 	// be specified in conjunction with notebook_params. The JSON representation
-	// of this field (for example `{&#34;jar_params&#34;:[&#34;john doe&#34;,&#34;35&#34;]}`) cannot
+	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs.
@@ -921,7 +1007,7 @@ type RunNow struct {
 	// The ID of the job to be executed
 	JobId int64 `json:"job_id,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
-	// `&#34;notebook_params&#34;: {&#34;name&#34;: &#34;john doe&#34;, &#34;age&#34;: &#34;35&#34;}`. The map is passed
+	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the
 	// [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets)
 	// function. If not specified upon `run-now`, the triggered run uses the
@@ -929,21 +1015,21 @@ type RunNow struct {
 	// with jar_params. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs. The JSON representation of this field (for
-	// example `{&#34;notebook_params&#34;:{&#34;name&#34;:&#34;john doe&#34;,&#34;age&#34;:&#34;35&#34;}}`) cannot
+	// example `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot
 	// exceed 10,000 bytes.
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
-	PipelineParams *RunNowPipelineParams `json:"pipeline_params,omitempty"`
+	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 	// A map from keys to values for jobs with Python wheel task, for example
-	// `&#34;python_named_params&#34;: {&#34;name&#34;: &#34;task&#34;, &#34;data&#34;:
-	// &#34;dbfs:/path/to/data.json&#34;}`.
+	// `"python_named_params": {"name": "task", "data":
+	// "dbfs:/path/to/data.json"}`.
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
-	// `&#34;python_params&#34;: [&#34;john doe&#34;, &#34;35&#34;]`. The parameters are passed to
+	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
-	// representation of this field (for example `{&#34;python_params&#34;:[&#34;john
-	// doe&#34;,&#34;35&#34;]}`) cannot exceed 10,000 bytes. Use [Task parameter
+	// representation of this field (for example `{"python_params":["john
+	// doe","35"]}`) cannot exceed 10,000 bytes. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs. Important These parameters accept only Latin
 	// characters (ASCII character set). Using non-ASCII characters returns an
@@ -951,23 +1037,18 @@ type RunNow struct {
 	// kanjis, and emojis.
 	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
-	// `&#34;spark_submit_params&#34;: [&#34;--class&#34;,
-	// &#34;org.apache.spark.examples.SparkPi&#34;]`. The parameters are passed to
+	// `"spark_submit_params": ["--class",
+	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{&#34;python_params&#34;:[&#34;john doe&#34;,&#34;35&#34;]}`) cannot exceed 10,000 bytes. Use
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes. Use
 	// [Task parameter variables](..jobshtml#parameter-variables) to set
 	// parameters containing information about job runs. Important These
 	// parameters accept only Latin characters (ASCII character set). Using
 	// non-ASCII characters returns an error. Examples of invalid, non-ASCII
 	// characters are Chinese, Japanese kanjis, and emojis.
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
-}
-
-type RunNowPipelineParams struct {
-	// If true, triggers a full refresh on the delta live table.
-	FullRefresh bool `json:"full_refresh,omitempty"`
 }
 
 type RunNowResponse struct {
@@ -991,7 +1072,7 @@ type RunOutput struct {
 	// [SparkJarTask](..dev-tools/api/latest/jobshtml#/components/schemas/SparkJarTask),
 	// [SparkPythonTask](..dev-tools/api/latest/jobshtml#/components/schemas/SparkPythonTask,
 	// [PythonWheelTask](..dev-tools/api/latest/jobshtml#/components/schemas/PythonWheelTask.
-	// It&#39;s not supported for the
+	// It's not supported for the
 	// [NotebookTask](..dev-tools/api/latest/jobshtml#/components/schemas/NotebookTask,
 	// [PipelineTask](..dev-tools/api/latest/jobshtml#/components/schemas/PipelineTask,
 	// or
@@ -1014,17 +1095,17 @@ type RunOutput struct {
 
 type RunParameters struct {
 	// A list of parameters for jobs with Spark JAR tasks, for example
-	// `&#34;jar_params&#34;: [&#34;john doe&#34;, &#34;35&#34;]`. The parameters are used to invoke the
+	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
 	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
 	// be specified in conjunction with notebook_params. The JSON representation
-	// of this field (for example `{&#34;jar_params&#34;:[&#34;john doe&#34;,&#34;35&#34;]}`) cannot
+	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs.
 	JarParams []string `json:"jar_params,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
-	// `&#34;notebook_params&#34;: {&#34;name&#34;: &#34;john doe&#34;, &#34;age&#34;: &#34;35&#34;}`. The map is passed
+	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the
 	// [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets)
 	// function. If not specified upon `run-now`, the triggered run uses the
@@ -1032,21 +1113,21 @@ type RunParameters struct {
 	// with jar_params. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs. The JSON representation of this field (for
-	// example `{&#34;notebook_params&#34;:{&#34;name&#34;:&#34;john doe&#34;,&#34;age&#34;:&#34;35&#34;}}`) cannot
+	// example `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot
 	// exceed 10,000 bytes.
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
-	PipelineParams *RunParametersPipelineParams `json:"pipeline_params,omitempty"`
+	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 	// A map from keys to values for jobs with Python wheel task, for example
-	// `&#34;python_named_params&#34;: {&#34;name&#34;: &#34;task&#34;, &#34;data&#34;:
-	// &#34;dbfs:/path/to/data.json&#34;}`.
+	// `"python_named_params": {"name": "task", "data":
+	// "dbfs:/path/to/data.json"}`.
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
-	// `&#34;python_params&#34;: [&#34;john doe&#34;, &#34;35&#34;]`. The parameters are passed to
+	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
-	// representation of this field (for example `{&#34;python_params&#34;:[&#34;john
-	// doe&#34;,&#34;35&#34;]}`) cannot exceed 10,000 bytes. Use [Task parameter
+	// representation of this field (for example `{"python_params":["john
+	// doe","35"]}`) cannot exceed 10,000 bytes. Use [Task parameter
 	// variables](..jobshtml#parameter-variables) to set parameters containing
 	// information about job runs. Important These parameters accept only Latin
 	// characters (ASCII character set). Using non-ASCII characters returns an
@@ -1054,12 +1135,12 @@ type RunParameters struct {
 	// kanjis, and emojis.
 	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
-	// `&#34;spark_submit_params&#34;: [&#34;--class&#34;,
-	// &#34;org.apache.spark.examples.SparkPi&#34;]`. The parameters are passed to
+	// `"spark_submit_params": ["--class",
+	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{&#34;python_params&#34;:[&#34;john doe&#34;,&#34;35&#34;]}`) cannot exceed 10,000 bytes. Use
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes. Use
 	// [Task parameter variables](..jobshtml#parameter-variables) to set
 	// parameters containing information about job runs. Important These
 	// parameters accept only Latin characters (ASCII character set). Using
@@ -1068,34 +1149,19 @@ type RunParameters struct {
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 }
 
-type RunParametersPipelineParams struct {
-	// If true, triggers a full refresh on the delta live table.
-	FullRefresh bool `json:"full_refresh,omitempty"`
-}
-
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
+// This describes an enum
 type RunResultState string
 
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
+// The run was canceled at user request.
 const RunResultStateCanceled RunResultState = `CANCELED`
 
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
+// The task completed with an error.
 const RunResultStateFailed RunResultState = `FAILED`
 
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
+// The task completed successfully.
 const RunResultStateSuccess RunResultState = `SUCCESS`
 
-// * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed
-// with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout.
-// * `CANCELED`: The run was canceled at user request.
+// The run was stopped after reaching the timeout.
 const RunResultStateTimedout RunResultState = `TIMEDOUT`
 
 // The result and lifecycle state of the run.
@@ -1149,7 +1215,7 @@ type RunSubmitTaskSettings struct {
 type RunTask struct {
 	// The sequence number of this run attempt for a triggered job run. The
 	// initial attempt of a run has an attempt_number of 0\. If the initial run
-	// attempt fails, and the job has a retry policy (`max_retries` \&gt; 0),
+	// attempt fails, and the job has a retry policy (`max_retries` \> 0),
 	// subsequent runs are created with an `original_attempt_run_id` of the
 	// original attempt?s ID and an incrementing `attempt_number`. Runs are
 	// retried only until they succeed, and the maximum `attempt_number` is the
@@ -1180,7 +1246,7 @@ type RunTask struct {
 	// running jobs on new clusters for greater reliability.
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// An optional specification for a remote repository containing the
-	// notebooks used by this job&#39;s notebook tasks.
+	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the job. The default value is an empty list.
@@ -1226,29 +1292,43 @@ type RunTask struct {
 // now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
 type RunType string
 
-// The type of the run. * `JOB_RUN` \- Normal job run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow). * `WORKFLOW_RUN`
-// \- Workflow run. A run created with
-// [dbutils.notebook.run](..dev-tools/databricks-utilshtml#dbutils-workflow). *
-// `SUBMIT_RUN` \- Submit run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
 const RunTypeJobRun RunType = `JOB_RUN`
 
-// The type of the run. * `JOB_RUN` \- Normal job run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow). * `WORKFLOW_RUN`
-// \- Workflow run. A run created with
-// [dbutils.notebook.run](..dev-tools/databricks-utilshtml#dbutils-workflow). *
-// `SUBMIT_RUN` \- Submit run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
 const RunTypeSubmitRun RunType = `SUBMIT_RUN`
 
-// The type of the run. * `JOB_RUN` \- Normal job run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow). * `WORKFLOW_RUN`
-// \- Workflow run. A run created with
-// [dbutils.notebook.run](..dev-tools/databricks-utilshtml#dbutils-workflow). *
-// `SUBMIT_RUN` \- Submit run. A run created with [Run
-// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
 const RunTypeWorkflowRun RunType = `WORKFLOW_RUN`
+
+type S3StorageInfo struct {
+	// (Optional) Set canned access control list. For example:
+	// `bucket-owner-full-control`. If canned_acl is set, the cluster instance
+	// profile must have `s3:PutObjectAcl` permission on the destination bucket
+	// and prefix. The full list of possible canned ACLs can be found at
+	// <https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overviewhtml#canned-acl>.
+	// By default only the object owner gets full control. If you are using
+	// cross account role for writing data, you may want to set
+	// `bucket-owner-full-control` to make bucket owner able to read the logs.
+	CannedAcl string `json:"canned_acl,omitempty"`
+	// S3 destination. For example: `s3://my-bucket/some-prefix` You must
+	// configure the cluster with an instance profile and the instance profile
+	// must have write access to the destination. You _cannot_ use AWS keys.
+	Destination string `json:"destination,omitempty"`
+	// (Optional)Enable server side encryption, `false` by default.
+	EnableEncryption bool `json:"enable_encryption,omitempty"`
+	// (Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It is
+	// used only when encryption is enabled and the default type is `sse-s3`.
+	EncryptionType string `json:"encryption_type,omitempty"`
+	// S3 endpoint. For example: `https://s3-us-west-2.amazonaws.com`. Either
+	// region or endpoint must be set. If both are set, endpoint is used.
+	Endpoint string `json:"endpoint,omitempty"`
+	// (Optional) KMS key used if encryption is enabled and encryption type is
+	// set to `sse-kms`.
+	KmsKey string `json:"kms_key,omitempty"`
+	// S3 region. For example: `us-west-2`. Either region or endpoint must be
+	// set. If both are set, endpoint is used.
+	Region string `json:"region,omitempty"`
+}
+
+// Name of an Azure service principal.
 
 // An arbitrary object where the object key is a configuration propery name and
 // the value is a configuration property value.
@@ -1292,9 +1372,9 @@ type SparkSubmitTask struct {
 
 type SubmitRun struct {
 	// List of permissions to set on the job.
-	AccessControlList any/* MISSING TYPE */ `json:"access_control_list,omitempty"`
+	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
 	// An optional specification for a remote repository containing the
-	// notebooks used by this job&#39;s notebook tasks.
+	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional token that can be used to guarantee the idempotency of job
 	// run requests. If a run with the provided token already exists, the
@@ -1320,13 +1400,6 @@ type SubmitRunResponse struct {
 	RunId int64 `json:"run_id,omitempty"`
 }
 
-// An optional array of objects specifying the dependency graph of the task. All
-// tasks specified in this field must complete successfully before executing
-// this task. The key is `task_key`, and the value is the name assigned to the
-// dependent task. This field is required when a job consists of more than one
-// task.
-type TaskDependencies []TaskDependenciesItem
-
 type TaskDependenciesItem struct {
 	TaskKey string `json:"task_key,omitempty"`
 }
@@ -1338,32 +1411,18 @@ type TaskDependenciesItem struct {
 // On Update or Reset, this field is used to reference the tasks to be updated
 // or reset. The maximum length is 100 characters.
 
-// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
-// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
-// occurs you triggered a single run on demand through the UI or the API. *
-// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
-// run. This occurs when you request to re-run the job in case of failures.
+// This describes an enum
 type TriggerType string
 
-// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
-// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
-// occurs you triggered a single run on demand through the UI or the API. *
-// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
-// run. This occurs when you request to re-run the job in case of failures.
+// One time triggers that fire a single run. This occurs you triggered a single
+// run on demand through the UI or the API.
 const TriggerTypeOneTime TriggerType = `ONE_TIME`
 
-// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
-// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
-// occurs you triggered a single run on demand through the UI or the API. *
-// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
-// run. This occurs when you request to re-run the job in case of failures.
+// Schedules that periodically trigger runs, such as a cron scheduler.
 const TriggerTypePeriodic TriggerType = `PERIODIC`
 
-// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
-// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
-// occurs you triggered a single run on demand through the UI or the API. *
-// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
-// run. This occurs when you request to re-run the job in case of failures.
+// Indicates a run that is triggered as a retry of a previously failed run. This
+// occurs when you request to re-run the job in case of failures.
 const TriggerTypeRetry TriggerType = `RETRY`
 
 type UpdateJob struct {
@@ -1380,6 +1439,8 @@ type UpdateJob struct {
 	NewSettings *JobSettings `json:"new_settings,omitempty"`
 }
 
+// Email address for the user.
+
 type ViewItem struct {
 	// Content of the view.
 	Content string `json:"content,omitempty"`
@@ -1391,29 +1452,25 @@ type ViewItem struct {
 	Type ViewType `json:"type,omitempty"`
 }
 
-// * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
+// This describes an enum
 type ViewType string
 
-// * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
+// Dashboard view item.
 const ViewTypeDashboard ViewType = `DASHBOARD`
 
-// * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
+// Notebook view item.
 const ViewTypeNotebook ViewType = `NOTEBOOK`
 
-// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
-// the notebook. * `ALL`: All views of the notebook.
+// This describes an enum
 type ViewsToExport string
 
-// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
-// the notebook. * `ALL`: All views of the notebook.
+// All views of the notebook.
 const ViewsToExportAll ViewsToExport = `ALL`
 
-// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
-// the notebook. * `ALL`: All views of the notebook.
+// Code view of the notebook.
 const ViewsToExportCode ViewsToExport = `CODE`
 
-// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
-// the notebook. * `ALL`: All views of the notebook.
+// All dashboard views of the notebook.
 const ViewsToExportDashboards ViewsToExport = `DASHBOARDS`
 
 type CreateResponse struct {
@@ -1423,39 +1480,39 @@ type CreateResponse struct {
 
 type ExportRunRequest struct {
 	// The canonical identifier for the run. This field is required.
-	RunId int64 ` url:"run_id,omitempty"`
+	RunId int64 `json:"-" url:"run_id,omitempty"`
 	// Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
-	ViewsToExport ViewsToExport ` url:"views_to_export,omitempty"`
+	ViewsToExport ViewsToExport `json:"-" url:"views_to_export,omitempty"`
 }
 
 type GetRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
-	JobId int64 ` url:"job_id,omitempty"`
+	JobId int64 `json:"-" url:"job_id,omitempty"`
 }
 
 type GetRunOutputRequest struct {
 	// The canonical identifier for the run. This field is required.
-	RunId int64 ` url:"run_id,omitempty"`
+	RunId int64 `json:"-" url:"run_id,omitempty"`
 }
 
 type GetRunRequest struct {
 	// Whether to include the repair history in the response.
-	IncludeHistory bool ` url:"include_history,omitempty"`
+	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
-	RunId int64 ` url:"run_id,omitempty"`
+	RunId int64 `json:"-" url:"run_id,omitempty"`
 }
 
 type ListRequest struct {
 	// Whether to include task and cluster details in the response.
-	ExpandTasks bool ` url:"expand_tasks,omitempty"`
+	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
 	// The number of jobs to return. This value must be greater than 0 and less
 	// or equal to 25. The default value is 20.
-	Limit int ` url:"limit,omitempty"`
+	Limit int `json:"-" url:"limit,omitempty"`
 	// The offset of the first job to return, relative to the most recently
 	// created job.
-	Offset int ` url:"offset,omitempty"`
+	Offset int `json:"-" url:"offset,omitempty"`
 }
 
 type ListResponse struct {
@@ -1469,33 +1526,33 @@ type ListRunsRequest struct {
 	// otherwise, lists both active and completed runs. An active run is a run
 	// in the `PENDING`, `RUNNING`, or `TERMINATING`. This field cannot be
 	// `true` when completed_only is `true`.
-	ActiveOnly bool ` url:"active_only,omitempty"`
+	ActiveOnly bool `json:"-" url:"active_only,omitempty"`
 	// If completed_only is `true`, only completed runs are included in the
 	// results; otherwise, lists both active and completed runs. This field
 	// cannot be `true` when active_only is `true`.
-	CompletedOnly bool ` url:"completed_only,omitempty"`
+	CompletedOnly bool `json:"-" url:"completed_only,omitempty"`
 	// Whether to include task and cluster details in the response.
-	ExpandTasks bool ` url:"expand_tasks,omitempty"`
+	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
 	// The job for which to list runs. If omitted, the Jobs service lists runs
 	// from all jobs.
-	JobId int64 ` url:"job_id,omitempty"`
+	JobId int64 `json:"-" url:"job_id,omitempty"`
 	// The number of runs to return. This value must be greater than 0 and less
 	// than 25\. The default value is 25\. If a request specifies a limit of 0,
 	// the service instead uses the maximum limit.
-	Limit int ` url:"limit,omitempty"`
+	Limit int `json:"-" url:"limit,omitempty"`
 	// The offset of the first run to return, relative to the most recent run.
-	Offset int ` url:"offset,omitempty"`
+	Offset int `json:"-" url:"offset,omitempty"`
 	// The type of runs to return. For a description of run types, see
 	// [Run](..dev-tools/api/latest/jobshtml#operation/JobsRunsGet).
-	RunType ListRunsRunType ` url:"run_type,omitempty"`
+	RunType ListRunsRunType `json:"-" url:"run_type,omitempty"`
 	// Show runs that started _at or after_ this value. The value must be a UTC
 	// timestamp in milliseconds. Can be combined with _start_time_to_ to filter
 	// by a time range.
-	StartTimeFrom int ` url:"start_time_from,omitempty"`
+	StartTimeFrom int `json:"-" url:"start_time_from,omitempty"`
 	// Show runs that started _at or before_ this value. The value must be a UTC
 	// timestamp in milliseconds. Can be combined with _start_time_from_ to
 	// filter by a time range.
-	StartTimeTo int ` url:"start_time_to,omitempty"`
+	StartTimeTo int `json:"-" url:"start_time_to,omitempty"`
 }
 
 type ListRunsRunType string

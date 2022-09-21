@@ -84,6 +84,7 @@ func (path *Path) Verbs() map[string]*Operation {
 type Operation struct {
 	Node
 	Wait        *Wait            `json:"x-databricks-wait,omitempty"`
+	Pagination  *Pagination      `json:"x-databricks-pagination,omitempty"`
 	Shortcut    bool             `json:"x-databricks-shortcut,omitempty"`
 	Crud        string           `json:"x-databricks-crud,omitempty"`
 	Summary     string           `json:"summary,omitempty"`
@@ -94,14 +95,38 @@ type Operation struct {
 	RequestBody *Body            `json:"requestBody,omitempty"`
 }
 
+// Name is picking the last element of <ServiceName>.<method> string,
+// that is coming in as part of Databricks OpenAPI spec.
+func (o *Operation) Name() string {
+	split := strings.Split(o.OperationId, ".")
+	if len(split) == 2 {
+		return split[1]
+	}
+	return o.OperationId
+}
+
+type Pagination struct {
+	Offset    string `json:"offset,omitempty"`
+	Limit     string `json:"limit,omitempty"`
+	Results   string `json:"results,omitempty"`
+	Increment int    `json:"increment,omitempty"`
+	Inline    bool   `json:"inline,omitempty"`
+}
+
 type Wait struct {
-	Poll             string   `json:"poll"`
-	Bind             string   `json:"bind"`
-	ForceBindRequest bool     `json:"forceBindRequest"`
-	Field            []string `json:"field"`
-	Message          []string `json:"message"`
-	Success          []string `json:"success"`
-	Failure          []string `json:"failure"`
+	Poll         string             `json:"poll"`
+	Bind         string             `json:"bind"`
+	BindResponse string             `json:"bindResponse,omitempty"`
+	Binding      map[string]Binding `json:"binding,omitempty"`
+	Field        []string           `json:"field"`
+	Message      []string           `json:"message"`
+	Success      []string           `json:"success"`
+	Failure      []string           `json:"failure"`
+}
+
+type Binding struct {
+	Request  string `json:"request,omitempty"`
+	Response string `json:"response,omitempty"`
 }
 
 func (o *Operation) HasTag(tag string) bool {
@@ -159,6 +184,7 @@ type Schema struct {
 	Node
 	Retries          *Retries           `json:"x-databricks-retries,omitempty"`
 	IsIdentifier     bool               `json:"x-databricks-id,omitempty"`
+	IsName           bool               `json:"x-databricks-name,omitempty"`
 	IsComputed       bool               `json:"x-databricks-computed,omitempty"`
 	IsAny            bool               `json:"x-databricks-any,omitempty"`
 	Type             string             `json:"type,omitempty"`

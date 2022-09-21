@@ -1,6 +1,9 @@
 package code
 
 import (
+	"fmt"
+
+	"github.com/databricks/databricks-sdk-go/databricks/openapi"
 	"golang.org/x/exp/slices"
 )
 
@@ -8,9 +11,11 @@ type Field struct {
 	Named
 	Required bool
 	Entity   *Entity
+	Of       *Entity
 	IsJson   bool
 	IsPath   bool
 	IsQuery  bool
+	Schema   *openapi.Schema
 }
 
 func (f *Field) IsOptionalObject() bool {
@@ -26,6 +31,7 @@ type EnumEntry struct {
 
 type Entity struct {
 	Named
+	Package    *Package
 	enum       map[string]EnumEntry // TODO: sort
 	ArrayValue *Entity
 	MapValue   *Entity
@@ -38,11 +44,34 @@ type Entity struct {
 	fields     map[string]Field
 }
 
+func (e *Entity) FullName() string {
+	return fmt.Sprintf("%s.%s", e.Package.Name, e.Name)
+}
+
+func (e *Entity) PascalName() string {
+	if e.Name == "" && e.ArrayValue != nil {
+		return e.ArrayValue.PascalName() + "List"
+	}
+	return e.Named.PascalName()
+}
+
+func (e *Entity) CamelName() string {
+	if e.Name == "" && e.ArrayValue != nil {
+		return e.ArrayValue.CamelName() + "List"
+	}
+	return e.Named.CamelName()
+}
+
 func (e *Entity) Field(name string) *Field {
+	if e == nil {
+		// nil received: entity is not present
+		return nil
+	}
 	field, ok := e.fields[name]
 	if !ok {
 		return nil
 	}
+	field.Of = e
 	return &field
 }
 
@@ -51,11 +80,12 @@ func (e *Entity) IsNumber() bool {
 }
 
 func (e *Entity) IsObject() bool {
-	return len(e.fields) > 0
+	return e.MapValue == nil && len(e.fields) > 0
 }
 
 func (e *Entity) Fields() (fields []Field) {
 	for _, v := range e.fields {
+		v.Of = e
 		fields = append(fields, v)
 	}
 	slices.SortFunc(fields, func(a, b Field) bool {

@@ -18,51 +18,54 @@ type ClusterPoliciesAPI struct {
 	client *client.DatabricksClient
 }
 
-// Creates a new Policy
-func (a *ClusterPoliciesAPI) Create(ctx context.Context, request CreatePolicyRequest) (*CreatePolicyResponse, error) {
+// Creates a new Policy with prescribed settings
+func (a *ClusterPoliciesAPI) Create(ctx context.Context, request CreatePolicy) (*CreatePolicyResponse, error) {
 	var createPolicyResponse CreatePolicyResponse
 	path := "/api/2.0/policies/clusters/create"
 	err := a.client.Post(ctx, path, request, &createPolicyResponse)
 	return &createPolicyResponse, err
 }
 
-// Delete a policy
-func (a *ClusterPoliciesAPI) Delete(ctx context.Context, request DeletePolicyRequest) error {
+// Delete a policy for a cluster. Clusters governed by this policy can still
+// run, but cannot be edited.
+func (a *ClusterPoliciesAPI) Delete(ctx context.Context, request DeletePolicy) error {
 	path := "/api/2.0/policies/clusters/delete"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
-// Delete a policy
+// Delete a policy for a cluster. Clusters governed by this policy can still
+// run, but cannot be edited.
 func (a *ClusterPoliciesAPI) DeleteByPolicyId(ctx context.Context, policyId string) error {
-	return a.Delete(ctx, DeletePolicyRequest{
+	return a.Delete(ctx, DeletePolicy{
 		PolicyId: policyId,
 	})
 }
 
-// Update an existing policy
-func (a *ClusterPoliciesAPI) Edit(ctx context.Context, request EditPolicyRequest) error {
+// Update an existing policy for cluster which may make some clusters governed
+// by this policy invalid
+func (a *ClusterPoliciesAPI) Edit(ctx context.Context, request EditPolicy) error {
 	path := "/api/2.0/policies/clusters/edit"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
-// Returns a Policy
-func (a *ClusterPoliciesAPI) Get(ctx context.Context, request GetPolicyRequest) (*GetPolicyResponse, error) {
-	var getPolicyResponse GetPolicyResponse
+// Get cluster policy entity. Creation and editing is available to admins only.
+func (a *ClusterPoliciesAPI) Get(ctx context.Context, request GetRequest) (*Policy, error) {
+	var policy Policy
 	path := "/api/2.0/policies/clusters/get"
-	err := a.client.Get(ctx, path, request, &getPolicyResponse)
-	return &getPolicyResponse, err
+	err := a.client.Get(ctx, path, request, &policy)
+	return &policy, err
 }
 
-// Returns a Policy
-func (a *ClusterPoliciesAPI) GetByPolicyId(ctx context.Context, policyId string) (*GetPolicyResponse, error) {
-	return a.Get(ctx, GetPolicyRequest{
+// Get cluster policy entity. Creation and editing is available to admins only.
+func (a *ClusterPoliciesAPI) GetByPolicyId(ctx context.Context, policyId string) (*Policy, error) {
+	return a.Get(ctx, GetRequest{
 		PolicyId: policyId,
 	})
 }
 
-// Returns list of policies
+// Return a list of policies accessible by the requesting user.
 func (a *ClusterPoliciesAPI) List(ctx context.Context) (*ListPoliciesResponse, error) {
 	var listPoliciesResponse ListPoliciesResponse
 	path := "/api/2.0/policies/clusters/list"

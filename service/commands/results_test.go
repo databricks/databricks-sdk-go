@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCommandResults_Error(t *testing.T) {
-	cr := CommandResults{}
+func TestResults_Error(t *testing.T) {
+	cr := Results{}
 	assert.NoError(t, cr.Err())
 	cr.ResultType = "error"
 	assert.EqualError(t, cr.Err(), "")
@@ -25,8 +25,8 @@ func TestCommandResults_Error(t *testing.T) {
 	assert.False(t, cr.Scan())
 }
 
-func TestCommandResults_Scan(t *testing.T) {
-	cr := CommandResults{
+func TestResults_Scan(t *testing.T) {
+	cr := Results{
 		ResultType: "table",
 		Data: []interface{}{
 			[]interface{}{"foo", 1, true},

@@ -19,9 +19,9 @@ type TokensAPI struct {
 }
 
 // Creates and returns a token for a user. If this call is made through token
-// authentication, it will create the token that has the same client id with the
-// authenticated token. This call returns an error “QUOTA_EXCEEDED“ if over
-// the token quota for the user.
+// authentication, it creates a token with the same client ID as the
+// authenticated token. If the user's token quota is exceeded, this call returns
+// an error “QUOTA_EXCEEDED“.
 func (a *TokensAPI) Create(ctx context.Context, request CreateTokenRequest) (*CreateTokenResponse, error) {
 	var createTokenResponse CreateTokenResponse
 	path := "/api/2.0/token/create"
@@ -29,16 +29,16 @@ func (a *TokensAPI) Create(ctx context.Context, request CreateTokenRequest) (*Cr
 	return &createTokenResponse, err
 }
 
-// Revokes an access token. This call returns an error
-// “RESOURCE_DOES_NOT_EXIST“ if a token with the given ID is not valid.
+// Revokes an access token. If a token with the specified ID is not valid, this
+// call returns an error “RESOURCE_DOES_NOT_EXIST“.
 func (a *TokensAPI) Delete(ctx context.Context, request RevokeTokenRequest) error {
 	path := "/api/2.0/token/delete"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
-// Revokes an access token. This call returns an error
-// “RESOURCE_DOES_NOT_EXIST“ if a token with the given ID is not valid.
+// Revokes an access token. If a token with the specified ID is not valid, this
+// call returns an error “RESOURCE_DOES_NOT_EXIST“.
 func (a *TokensAPI) DeleteByTokenId(ctx context.Context, tokenId string) error {
 	return a.Delete(ctx, RevokeTokenRequest{
 		TokenId: tokenId,

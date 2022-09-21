@@ -7,6 +7,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/service/commands"
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
+	"github.com/databricks/databricks-sdk-go/service/dbsql"
 	"github.com/databricks/databricks-sdk-go/service/deltapipelines"
 	"github.com/databricks/databricks-sdk-go/service/gitcredentials"
 	"github.com/databricks/databricks-sdk-go/service/globalinitscripts"
@@ -31,12 +32,16 @@ import (
 type WorkspacesClient struct {
 	Config *databricks.Config
 
+	Alerts               dbsql.AlertsService
 	Catalogs             unitycatalog.CatalogsService
 	ClusterPolicies      clusterpolicies.ClusterPoliciesService
 	Clusters             clusters.ClustersService
-	Commands             *commands.CommandsAPI
+	CommandExecutor      commands.CommandExecutor
 	CurrentUser          scim.CurrentUserService
+	Dashboards           dbsql.DashboardsService
+	DataSources          dbsql.DataSourcesService
 	Dbfs                 dbfs.DbfsService
+	DbsqlPermissions     dbsql.DbsqlPermissionsService
 	DeltaPipelines       deltapipelines.DeltaPipelinesService
 	Experiments          mlflow.ExperimentsService
 	ExternalLocations    unitycatalog.ExternalLocationsService
@@ -72,6 +77,7 @@ type WorkspacesClient struct {
 	Tokens               tokens.TokensService
 	TokenManagement      tokenmanagement.TokenManagementService
 	TransitionRequests   mlflow.TransitionRequestsService
+	Queries              dbsql.QueriesService
 	UnityFiles           unitycatalog.UnityFilesService
 	Users                scim.UsersService
 	Warehouses           warehouses.WarehousesService
@@ -91,12 +97,16 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 	apiClient := client.New(cfg)
 	return &WorkspacesClient{
 		Config:               cfg,
+		Alerts:               dbsql.NewAlerts(apiClient),
 		Catalogs:             unitycatalog.NewCatalogs(apiClient),
 		ClusterPolicies:      clusterpolicies.NewClusterPolicies(apiClient),
 		Clusters:             clusters.NewClusters(apiClient),
-		Commands:             commands.New(cfg),
+		CommandExecutor:      commands.NewCommandExecutor(apiClient),
 		CurrentUser:          scim.NewCurrentUser(apiClient),
+		Dashboards:           dbsql.NewDashboards(apiClient),
+		DataSources:          dbsql.NewDataSources(apiClient),
 		Dbfs:                 dbfs.NewDbfs(apiClient),
+		DbsqlPermissions:     dbsql.NewDbsqlPermissions(apiClient),
 		DeltaPipelines:       deltapipelines.NewDeltaPipelines(apiClient),
 		Experiments:          mlflow.NewExperiments(apiClient),
 		ExternalLocations:    unitycatalog.NewExternalLocations(apiClient),
@@ -132,6 +142,7 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		Tokens:               tokens.NewTokens(apiClient),
 		TokenManagement:      tokenmanagement.NewTokenManagement(apiClient),
 		TransitionRequests:   mlflow.NewTransitionRequests(apiClient),
+		Queries:              dbsql.NewQueries(apiClient),
 		UnityFiles:           unitycatalog.NewUnityFiles(apiClient),
 		Users:                scim.NewUsers(apiClient),
 		Warehouses:           warehouses.NewWarehouses(apiClient),
