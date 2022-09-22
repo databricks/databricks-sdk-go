@@ -166,6 +166,14 @@ func (a *WorkspaceAPI) List(ctx context.Context, request ListRequest) (*ListResp
 	return &listResponse, err
 }
 
+func (a *WorkspaceAPI) ListAll(ctx context.Context, request ListRequest) ([]ObjectInfo, error) {
+	response, err := a.List(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.Objects, nil
+}
+
 // Create a directory
 //
 // Creates the specified directory (and necessary parent directories if they do

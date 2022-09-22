@@ -79,6 +79,14 @@ func (a *ReposAPI) List(ctx context.Context, request ListRequest) (*ListReposRes
 	return &listReposResponse, err
 }
 
+func (a *ReposAPI) ListAll(ctx context.Context, request ListRequest) ([]RepoInfo, error) {
+	response, err := a.List(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.Repos, nil
+}
+
 // Updates the repo to the given branch or tag
 //
 // Updates the repo to a different branch or tag, or updates the repo to the

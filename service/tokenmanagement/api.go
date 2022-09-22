@@ -75,3 +75,11 @@ func (a *TokenManagementAPI) ListAllTokens(ctx context.Context, request ListAllT
 	err := a.client.Get(ctx, path, request, &listTokensResponse)
 	return &listTokensResponse, err
 }
+
+func (a *TokenManagementAPI) ListAllTokensAll(ctx context.Context, request ListAllTokensRequest) ([]TokenInfo, error) {
+	response, err := a.ListAllTokens(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.TokenInfos, nil
+}

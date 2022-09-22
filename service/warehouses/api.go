@@ -214,6 +214,14 @@ func (a *WarehousesAPI) ListWarehouses(ctx context.Context, request ListWarehous
 	return &listWarehousesResponse, err
 }
 
+func (a *WarehousesAPI) ListWarehousesAll(ctx context.Context, request ListWarehousesRequest) ([]EndpointInfo, error) {
+	response, err := a.ListWarehouses(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.Warehouses, nil
+}
+
 // Sets the workspace level configuration that is shared by all SQL warehouses
 // in a workspace.
 func (a *WarehousesAPI) SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) error {

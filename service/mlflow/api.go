@@ -120,6 +120,14 @@ func (a *ExperimentsAPI) List(ctx context.Context, request ListExperimentsReques
 	return &listExperimentsResponse, err
 }
 
+func (a *ExperimentsAPI) ListAll(ctx context.Context, request ListExperimentsRequest) ([]Experiment, error) {
+	response, err := a.List(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.Experiments, nil
+}
+
 // Restores an experiment
 //
 // "Restore an experiment marked for deletion. This also restores\nassociated
@@ -154,6 +162,14 @@ func (a *ExperimentsAPI) Search(ctx context.Context, request SearchExperiments) 
 	path := "/api/2.0/mlflow/experiments/search"
 	err := a.client.Post(ctx, path, request, &searchExperimentsResponse)
 	return &searchExperimentsResponse, err
+}
+
+func (a *ExperimentsAPI) SearchAll(ctx context.Context, request SearchExperiments) ([]Experiment, error) {
+	response, err := a.Search(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.Experiments, nil
 }
 
 // Set a tag
@@ -195,6 +211,14 @@ func (a *MLflowArtifactsAPI) List(ctx context.Context, request ListArtifactsRequ
 	path := "/api/2.0/mlflow/artifacts/list"
 	err := a.client.Get(ctx, path, request, &listArtifactsResponse)
 	return &listArtifactsResponse, err
+}
+
+func (a *MLflowArtifactsAPI) ListAll(ctx context.Context, request ListArtifactsRequest) ([]FileInfo, error) {
+	response, err := a.List(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.Files, nil
 }
 
 func NewMLflowDatabricks(client *client.DatabricksClient) MLflowDatabricksService {
@@ -448,6 +472,14 @@ func (a *MLflowRunsAPI) Search(ctx context.Context, request SearchRuns) (*Search
 	return &searchRunsResponse, err
 }
 
+func (a *MLflowRunsAPI) SearchAll(ctx context.Context, request SearchRuns) ([]Run, error) {
+	response, err := a.Search(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.Runs, nil
+}
+
 // Set a tag
 //
 // Sets a tag on a run. Tags are run metadata that can be updated during a run
@@ -586,6 +618,14 @@ func (a *ModelVersionsAPI) Search(ctx context.Context, request SearchModelVersio
 	return &searchModelVersionsResponse, err
 }
 
+func (a *ModelVersionsAPI) SearchAll(ctx context.Context, request SearchModelVersionsRequest) ([]ModelVersion, error) {
+	response, err := a.Search(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.ModelVersions, nil
+}
+
 // Set a version tag
 //
 // Sets a model version tag.
@@ -693,6 +733,14 @@ func (a *RegisteredModelsAPI) GetLatestVersions(ctx context.Context, request Get
 	return &getLatestVersionsResponse, err
 }
 
+func (a *RegisteredModelsAPI) GetLatestVersionsAll(ctx context.Context, request GetLatestVersionsRequest) ([]ModelVersion, error) {
+	response, err := a.GetLatestVersions(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.ModelVersions, nil
+}
+
 // List models
 //
 // Lists all available registered models, up to the limit specified in
@@ -702,6 +750,14 @@ func (a *RegisteredModelsAPI) List(ctx context.Context, request ListRegisteredMo
 	path := "/api/2.0/mlflow/registered-models/list"
 	err := a.client.Get(ctx, path, request, &listRegisteredModelsResponse)
 	return &listRegisteredModelsResponse, err
+}
+
+func (a *RegisteredModelsAPI) ListAll(ctx context.Context, request ListRegisteredModelsRequest) ([]RegisteredModel, error) {
+	response, err := a.List(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.RegisteredModels, nil
 }
 
 // Rename a model
@@ -722,6 +778,14 @@ func (a *RegisteredModelsAPI) Search(ctx context.Context, request SearchRegister
 	path := "/api/2.0/mlflow/registered-models/search"
 	err := a.client.Get(ctx, path, request, &searchRegisteredModelsResponse)
 	return &searchRegisteredModelsResponse, err
+}
+
+func (a *RegisteredModelsAPI) SearchAll(ctx context.Context, request SearchRegisteredModelsRequest) ([]RegisteredModel, error) {
+	response, err := a.Search(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.RegisteredModels, nil
 }
 
 // Set a tag
@@ -798,6 +862,14 @@ func (a *RegistryWebhooksAPI) List(ctx context.Context, request ListRequest) (*L
 	return &listResponse, err
 }
 
+func (a *RegistryWebhooksAPI) ListAll(ctx context.Context, request ListRequest) ([]RegistryWebhook, error) {
+	response, err := a.List(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.Webhooks, nil
+}
+
 // Test a webhook
 //
 // **NOTE:** This endpoint is in Public Preview.
@@ -868,6 +940,14 @@ func (a *TransitionRequestsAPI) List(ctx context.Context, request ListRequest) (
 	path := "/api/2.0/mlflow/transition-requests/list"
 	err := a.client.Get(ctx, path, request, &listResponse)
 	return &listResponse, err
+}
+
+func (a *TransitionRequestsAPI) ListAll(ctx context.Context, request ListRequest) ([]Activity, error) {
+	response, err := a.List(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.Requests, nil
 }
 
 // Reject a transition request
