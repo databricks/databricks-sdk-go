@@ -25,11 +25,11 @@ type GitCredentialsAPI struct {
 // is supported, so any attempts to create credentials if an entry already
 // exists will fail. Use the PATCH endpoint to update existing credentials, or
 // the DELETE endpoint to delete existing credentials.
-func (a *GitCredentialsAPI) Create(ctx context.Context, request CreateCredentials) (*GetCredentialsResponse, error) {
-	var getCredentialsResponse GetCredentialsResponse
+func (a *GitCredentialsAPI) Create(ctx context.Context, request CreateCredentials) (*CreateCredentialsResponse, error) {
+	var createCredentialsResponse CreateCredentialsResponse
 	path := "/api/2.0/git-credentials"
-	err := a.client.Post(ctx, path, request, &getCredentialsResponse)
-	return &getCredentialsResponse, err
+	err := a.client.Post(ctx, path, request, &createCredentialsResponse)
+	return &createCredentialsResponse, err
 }
 
 // Deletes the credential
@@ -44,7 +44,7 @@ func (a *GitCredentialsAPI) Delete(ctx context.Context, request DeleteRequest) e
 // Deletes the credential
 //
 // Deletes the specified credential
-func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credentialId string) error {
+func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credentialId int64) error {
 	return a.Delete(ctx, DeleteRequest{
 		CredentialId: credentialId,
 	})
@@ -53,17 +53,17 @@ func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credential
 // Get a credential entry
 //
 // Returns the credential with the given credential ID.
-func (a *GitCredentialsAPI) Get(ctx context.Context, request GetRequest) (*GetCredentialsResponse, error) {
-	var getCredentialsResponse GetCredentialsResponse
+func (a *GitCredentialsAPI) Get(ctx context.Context, request GetRequest) (*GetCredentialResponse, error) {
+	var getCredentialResponse GetCredentialResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
-	err := a.client.Get(ctx, path, request, &getCredentialsResponse)
-	return &getCredentialsResponse, err
+	err := a.client.Get(ctx, path, request, &getCredentialResponse)
+	return &getCredentialResponse, err
 }
 
 // Get a credential entry
 //
 // Returns the credential with the given credential ID.
-func (a *GitCredentialsAPI) GetByCredentialId(ctx context.Context, credentialId string) (*GetCredentialsResponse, error) {
+func (a *GitCredentialsAPI) GetByCredentialId(ctx context.Context, credentialId int64) (*GetCredentialResponse, error) {
 	return a.Get(ctx, GetRequest{
 		CredentialId: credentialId,
 	})
