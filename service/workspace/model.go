@@ -91,24 +91,24 @@ type ObjectInfo struct {
 	// ========= File metadata. These values are set only if the object type is
 	// ``FILE``. ===========//
 	BlobPath string `json:"blob_path,omitempty"`
-
+	// <content needed>
 	ContentSha256Hex string `json:"content_sha256_hex,omitempty"`
-
+	// <content needed>
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The language of the object. This value is set only if the object type is
 	// ``NOTEBOOK``.
 	Language ObjectInfoLanguage `json:"language,omitempty"`
-
+	// <content needed>
 	MetadataVersion int `json:"metadata_version,omitempty"`
-
+	// <content needed>
 	ModifiedAt int64 `json:"modified_at,omitempty"`
-
+	// <content needed>
 	ObjectId int64 `json:"object_id,omitempty"`
-
+	// <content needed>
 	ObjectType ObjectInfoObjectType `json:"object_type,omitempty"`
 	// The absolute path of the object.
 	Path string `json:"path,omitempty"`
-
+	// <content needed>
 	Size int64 `json:"size,omitempty"`
 }
 
@@ -133,6 +133,7 @@ const ObjectInfoLanguageScala ObjectInfoLanguage = `SCALA`
 
 const ObjectInfoLanguageSql ObjectInfoLanguage = `SQL`
 
+// <content needed>
 type ObjectInfoObjectType string
 
 const ObjectInfoObjectTypeDirectory ObjectInfoObjectType = `DIRECTORY`
@@ -170,6 +171,7 @@ type GetStatusRequest struct {
 }
 
 type ListRequest struct {
+	// <content needed>
 	NotebooksModifiedAfter int `json:"-" url:"notebooks_modified_after,omitempty"`
 	// The absolute path of the notebook or directory.
 	Path string `json:"-" url:"path,omitempty"`

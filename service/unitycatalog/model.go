@@ -6,13 +6,16 @@ package unitycatalog
 
 type AwsIamRole struct {
 	// The external ID used in role assumption to prevent confused deputy
-	// problem. [Create:IGN].
+	// problem.
+	//
+	// [Create:IGN].
 	ExternalId string `json:"external_id,omitempty"`
 	// The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access.
 	// [Create:REQ].
 	RoleArn string `json:"role_arn,omitempty"`
 	// The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
 	// This is the identity that is going to assume the AWS IAM role.
+	//
 	// [Create:IGN].
 	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
 }
@@ -393,10 +396,11 @@ type CreateMetastore struct {
 }
 
 type CreateMetastoreAssignment struct {
+	// THe name of the default catalog in the Metastore.
 	DefaultCatalogName string `json:"default_catalog_name"`
-
+	// The ID of the Metastore.
 	MetastoreId string `json:"metastore_id"`
-
+	// A workspace ID.
 	WorkspaceId int `json:"-" path:"workspace_id"`
 }
 
@@ -570,10 +574,10 @@ type CreateRecipient struct {
 	AuthenticationType CreateRecipientAuthenticationType `json:"authentication_type,omitempty"`
 	// [Create:OPT,Update:OPT] Description about the recipient.
 	Comment string `json:"comment,omitempty"`
-	// [Create:IGN,Update:IGN] Time at which this Recipient was created, in
+	// [Create:IGN,Update:IGN] Time at which this recipient was created, in
 	// epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// [Create:IGN,Update:IGN] Username of Recipient creator.
+	// [Create:IGN,Update:IGN] Username of recipient creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create:OPT,Update:OPT] IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
@@ -583,13 +587,13 @@ type CreateRecipient struct {
 	// recipient. This field is only present when the authentication type is
 	// DATABRICKS.
 	SharingCode string `json:"sharing_code,omitempty"`
-	// [Create:IGN,Update:IGN] Recipient Tokens This field is only present when
+	// [Create:IGN,Update:IGN] recipient Tokens This field is only present when
 	// the authentication type is TOKEN.
 	Tokens []RecipientTokenInfo `json:"tokens,omitempty"`
-	// [Create:IGN,Update:IGN] Time at which thie Recipient was updated, in
-	// epoch milliseconds.
+	// [Create:IGN,Update:IGN] Time at which the recipient was updated, in epoch
+	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// [Create:IGN,Update:IGN] Username of Recipient updater.
+	// [Create:IGN,Update:IGN] Username of recipient updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
@@ -613,10 +617,10 @@ type CreateRecipientResponse struct {
 	AuthenticationType CreateRecipientResponseAuthenticationType `json:"authentication_type,omitempty"`
 	// [Create:OPT,Update:OPT] Description about the recipient.
 	Comment string `json:"comment,omitempty"`
-	// [Create:IGN,Update:IGN] Time at which this Recipient was created, in
+	// [Create:IGN,Update:IGN] Time at which this recipient was created, in
 	// epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// [Create:IGN,Update:IGN] Username of Recipient creator.
+	// [Create:IGN,Update:IGN] Username of recipient creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create:OPT,Update:OPT] IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
@@ -626,13 +630,13 @@ type CreateRecipientResponse struct {
 	// recipient. This field is only present when the authentication type is
 	// DATABRICKS.
 	SharingCode string `json:"sharing_code,omitempty"`
-	// [Create:IGN,Update:IGN] Recipient Tokens This field is only present when
+	// [Create:IGN,Update:IGN] recipient Tokens This field is only present when
 	// the authentication type is TOKEN.
 	Tokens []RecipientTokenInfo `json:"tokens,omitempty"`
-	// [Create:IGN,Update:IGN] Time at which thie Recipient was updated, in
-	// epoch milliseconds.
+	// [Create:IGN,Update:IGN] Time at which the recipient was updated, in epoch
+	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// [Create:IGN,Update:IGN] Username of Recipient updater.
+	// [Create:IGN,Update:IGN] Username of recipient updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
@@ -802,8 +806,9 @@ type CreateStagingTableResponse struct {
 }
 
 type CreateStorageCredential struct {
+	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
-
+	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
@@ -812,7 +817,7 @@ type CreateStorageCredential struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
-
+	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
@@ -834,8 +839,9 @@ type CreateStorageCredential struct {
 }
 
 type CreateStorageCredentialResponse struct {
+	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
-
+	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
@@ -844,7 +850,7 @@ type CreateStorageCredentialResponse struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
-
+	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
@@ -1358,10 +1364,10 @@ type GetRecipientResponse struct {
 	AuthenticationType GetRecipientResponseAuthenticationType `json:"authentication_type,omitempty"`
 	// [Create:OPT,Update:OPT] Description about the recipient.
 	Comment string `json:"comment,omitempty"`
-	// [Create:IGN,Update:IGN] Time at which this Recipient was created, in
+	// [Create:IGN,Update:IGN] Time at which this recipient was created, in
 	// epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// [Create:IGN,Update:IGN] Username of Recipient creator.
+	// [Create:IGN,Update:IGN] Username of recipient creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create:OPT,Update:OPT] IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
@@ -1371,13 +1377,13 @@ type GetRecipientResponse struct {
 	// recipient. This field is only present when the authentication type is
 	// DATABRICKS.
 	SharingCode string `json:"sharing_code,omitempty"`
-	// [Create:IGN,Update:IGN] Recipient Tokens This field is only present when
+	// [Create:IGN,Update:IGN] recipient Tokens This field is only present when
 	// the authentication type is TOKEN.
 	Tokens []RecipientTokenInfo `json:"tokens,omitempty"`
-	// [Create:IGN,Update:IGN] Time at which thie Recipient was updated, in
-	// epoch milliseconds.
+	// [Create:IGN,Update:IGN] Time at which the recipient was updated, in epoch
+	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// [Create:IGN,Update:IGN] Username of Recipient updater.
+	// [Create:IGN,Update:IGN] Username of recipient updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
@@ -1391,6 +1397,7 @@ const GetRecipientResponseAuthenticationTypeToken GetRecipientResponseAuthentica
 const GetRecipientResponseAuthenticationTypeUnknown GetRecipientResponseAuthenticationType = `UNKNOWN`
 
 type GetRecipientSharePermissionsResponse struct {
+	// An array of data share permissions for a recipient.
 	PermissionsOut []ShareToPrivilegeAssignment `json:"permissions_out,omitempty"`
 }
 
@@ -1466,8 +1473,9 @@ type GetShareResponse struct {
 }
 
 type GetStorageCredentialResponse struct {
+	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
-
+	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
@@ -1476,7 +1484,7 @@ type GetStorageCredentialResponse struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
-
+	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
@@ -1611,10 +1619,12 @@ type IpAccessList struct {
 }
 
 type ListCatalogsResponse struct {
+	// AN array of catalog information objects.
 	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
 }
 
 type ListExternalLocationsResponse struct {
+	// AN array of external locations.
 	ExternalLocations []ExternalLocationInfo `json:"external_locations,omitempty"`
 }
 
@@ -1628,30 +1638,37 @@ type ListFilesRequest struct {
 }
 
 type ListFilesResponse struct {
+	// An array of file information objects.
 	Files []FileInfo `json:"files,omitempty"`
 }
 
 type ListMetastoresResponse struct {
+	// An array of Metastore information objects.
 	Metastores []MetastoreInfo `json:"metastores,omitempty"`
 }
 
 type ListProviderSharesResponse struct {
+	// An array of provider shares.
 	Shares []ProviderShare `json:"shares,omitempty"`
 }
 
 type ListProvidersResponse struct {
+	// An array of provider information objects.
 	Providers []ProviderInfo `json:"providers,omitempty"`
 }
 
 type ListRecipientsResponse struct {
+	// An array of recipient information objects.
 	Recipients []RecipientInfo `json:"recipients,omitempty"`
 }
 
 type ListSchemasResponse struct {
+	// An array of schema information objects.
 	Schemas []SchemaInfo `json:"schemas,omitempty"`
 }
 
 type ListSharesResponse struct {
+	// An array of data share information objects.
 	Shares []ShareInfo `json:"shares,omitempty"`
 }
 
@@ -1669,6 +1686,7 @@ type ListTableSummariesResponse struct {
 }
 
 type ListTablesResponse struct {
+	// An array of table information objects.
 	Tables []TableInfo `json:"tables,omitempty"`
 }
 
@@ -1730,6 +1748,7 @@ const MetastoreInfoPrivilegesItemUsage MetastoreInfoPrivilegesItem = `USAGE`
 const MetastoreInfoPrivilegesItemWriteFiles MetastoreInfoPrivilegesItem = `WRITE_FILES`
 
 type Partition struct {
+	// An array of partition values.
 	Values []PartitionValue `json:"values,omitempty"`
 }
 
@@ -1883,10 +1902,10 @@ type RecipientInfo struct {
 	AuthenticationType RecipientInfoAuthenticationType `json:"authentication_type,omitempty"`
 	// [Create:OPT,Update:OPT] Description about the recipient.
 	Comment string `json:"comment,omitempty"`
-	// [Create:IGN,Update:IGN] Time at which this Recipient was created, in
+	// [Create:IGN,Update:IGN] Time at which this recipient was created, in
 	// epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// [Create:IGN,Update:IGN] Username of Recipient creator.
+	// [Create:IGN,Update:IGN] Username of recipient creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create:OPT,Update:OPT] IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
@@ -1896,13 +1915,13 @@ type RecipientInfo struct {
 	// recipient. This field is only present when the authentication type is
 	// DATABRICKS.
 	SharingCode string `json:"sharing_code,omitempty"`
-	// [Create:IGN,Update:IGN] Recipient Tokens This field is only present when
+	// [Create:IGN,Update:IGN] Recipient Tokens. This field is only present when
 	// the authentication type is TOKEN.
 	Tokens []RecipientTokenInfo `json:"tokens,omitempty"`
-	// [Create:IGN,Update:IGN] Time at which thie Recipient was updated, in
+	// [Create:IGN,Update:IGN] Time at which this recipient was updated, in
 	// epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// [Create:IGN,Update:IGN] Username of Recipient updater.
+	// [Create:IGN,Update:IGN] Username of recipient updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
@@ -1916,36 +1935,38 @@ const RecipientInfoAuthenticationTypeToken RecipientInfoAuthenticationType = `TO
 const RecipientInfoAuthenticationTypeUnknown RecipientInfoAuthenticationType = `UNKNOWN`
 
 type RecipientProfile struct {
+	// The token used to authorize the recipient.
 	BearerToken string `json:"bearer_token,omitempty"`
-
+	// The endpoint for the share to be used by the recipient.
 	Endpoint string `json:"endpoint,omitempty"`
-
+	// The version number of the recipient's credentials on a share.
 	ShareCredentialsVersion int `json:"share_credentials_version,omitempty"`
 }
 
 type RecipientTokenInfo struct {
-	// Full activation url to retrieve the access token. It will be empty if the
+	// Full activation URL to retrieve the access token. It will be empty if the
 	// token is already retrieved.
 	ActivationUrl string `json:"activation_url,omitempty"`
-	// Time at which this Recipient Token was created, in epoch milliseconds.
+	// Time at which this recipient Token was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// Username of Recipient Token creator.
+	// Username of recipient token creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// Expiration timestamp of the token in epoch milliseconds.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
-	// Unique id of the Recipient Token.
+	// Unique ID of the recipient token.
 	Id string `json:"id,omitempty"`
-	// Time at which this Recipient Token was updated, in epoch milliseconds.
+	// Time at which this recipient Token was updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// Username of Recipient Token updater.
+	// Username of recipient Token updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
 type RetrieveTokenResponse struct {
+	// The token used to authorize the recipient.
 	BearerToken string `json:"bearerToken,omitempty"`
-
+	// The endpoint for the share to be used by the recipient.
 	Endpoint string `json:"endpoint,omitempty"`
-
+	// Expiration timestamp of the token in epoch milliseconds.
 	ExpirationTime string `json:"expirationTime,omitempty"`
 	// These field names must follow the delta sharing protocol.
 	ShareCredentialsVersion int `json:"shareCredentialsVersion,omitempty"`
@@ -1956,45 +1977,45 @@ type RotateRecipientToken struct {
 	// smaller timestamp, it cannot extend the expiration_time. Use 0 to expire
 	// the existing token immediately, negative number will return an error.
 	ExistingTokenExpireInSeconds int64 `json:"existing_token_expire_in_seconds,omitempty"`
-	// Required. The name of the Recipient.
+	// Required. The name of the recipient.
 	Name string `json:"-" path:"name"`
 }
 
 type RotateRecipientTokenResponse struct {
-	// [Create:IGN,Update:IGN] A boolean status field showing whether the
+	// [Create:IGN, Update:IGN] A boolean status field showing whether the
 	// Recipient's activation URL has been exercised or not.
 	Activated bool `json:"activated,omitempty"`
-	// [Create:IGN,Update:IGN] Full activation url to retrieve the access token.
-	// It will be empty if the token is already retrieved.
+	// [Create:IGN, Update:IGN] Full activation url to retrieve the access
+	// token. It will be empty if the token is already retrieved.
 	ActivationUrl string `json:"activation_url,omitempty"`
-	// [Create:REQ,Update:IGN] The delta sharing authentication type.
+	// [Create:REQ, Update:IGN] The delta sharing authentication type.
 	AuthenticationType RotateRecipientTokenResponseAuthenticationType `json:"authentication_type,omitempty"`
 	// [Create:OPT,Update:OPT] Description about the recipient.
 	Comment string `json:"comment,omitempty"`
-	// [Create:IGN,Update:IGN] Time at which this Recipient was created, in
+	// [Create:IGN, Update:IGN] Time at which this recipient was created, in
 	// epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// [Create:IGN,Update:IGN] Username of Recipient creator.
+	// [Create:IGN, Update:IGN] Username of recipient creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create:OPT,Update:OPT] IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
-	// [Create:REQ,Update:OPT] Name of Recipient.
+	// [Create:REQ, Update:OPT] Name of Recipient.
 	Name string `json:"name,omitempty"`
 	// [Create:OPT,Update:IGN] The one-time sharing code provided by the data
 	// recipient. This field is only present when the authentication type is
 	// DATABRICKS.
 	SharingCode string `json:"sharing_code,omitempty"`
-	// [Create:IGN,Update:IGN] Recipient Tokens This field is only present when
+	// [Create:IGN,Update:IGN] recipient Tokens. This field is only present when
 	// the authentication type is TOKEN.
 	Tokens []RecipientTokenInfo `json:"tokens,omitempty"`
-	// [Create:IGN,Update:IGN] Time at which thie Recipient was updated, in
-	// epoch milliseconds.
+	// [Create:IGN,Update:IGN] Time at which the recipient was updated, in epoch
+	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// [Create:IGN,Update:IGN] Username of Recipient updater.
+	// [Create:IGN,Update:IGN] Username of recipient updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
-// [Create:REQ,Update:IGN] The delta sharing authentication type.
+// [Create:REQ, Update:IGN] The delta sharing authentication type.
 type RotateRecipientTokenResponseAuthenticationType string
 
 const RotateRecipientTokenResponseAuthenticationTypeDatabricks RotateRecipientTokenResponseAuthenticationType = `DATABRICKS`
@@ -2090,22 +2111,25 @@ type SharedDataObject struct {
 	// example, a table's fully qualified name is in the format of
 	// `<catalog>.<schema>.<table>`. [Update:REQ]
 	Name string `json:"name,omitempty"`
-
+	// Array of partitions for the shared data.
 	Partitions []Partition `json:"partitions,omitempty"`
 	// A user-provided new name for the data object within the share. If this
 	// new name is not not provided, the object's original name will be used as
 	// the `shared_as` name. The `shared_as` name must be unique within a Share.
+	//
 	// For tables, the new name must follow the format of `<schema>.<table>`.
 	// [Update:OPT]
 	SharedAs string `json:"shared_as,omitempty"`
 }
 
 type SharedDataObjectUpdate struct {
+	// One of: **ADD**, **REMOVE**.
 	Action SharedDataObjectUpdateAction `json:"action,omitempty"`
 	// The data object that is being updated (added / removed).
 	DataObject *SharedDataObject `json:"data_object,omitempty"`
 }
 
+// One of: **ADD**, **REMOVE**.
 type SharedDataObjectUpdateAction string
 
 const SharedDataObjectUpdateActionAdd SharedDataObjectUpdateAction = `ADD`
@@ -2113,8 +2137,9 @@ const SharedDataObjectUpdateActionAdd SharedDataObjectUpdateAction = `ADD`
 const SharedDataObjectUpdateActionRemove SharedDataObjectUpdateAction = `REMOVE`
 
 type StorageCredentialInfo struct {
+	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
-
+	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
@@ -2123,7 +2148,7 @@ type StorageCredentialInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
-
+	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
@@ -2142,8 +2167,9 @@ type StorageCredentialInfo struct {
 }
 
 type StringKeyValuePair struct {
+	// The key for the tuple.
 	Key string `json:"key"`
-
+	// The value for the tuple.
 	Value string `json:"value"`
 }
 
@@ -2259,11 +2285,13 @@ const TableInfoTableTypeUnknownTableType TableInfoTableType = `UNKNOWN_TABLE_TYP
 const TableInfoTableTypeView TableInfoTableType = `VIEW`
 
 type TableSummary struct {
+	// The full name of the table.
 	FullName string `json:"full_name,omitempty"`
-
+	// One of: **UNKNOWN_TABLE_TYPE**, **MANAGED**, **EXTERNAL**, **VIEW**.
 	TableType TableSummaryTableType `json:"table_type,omitempty"`
 }
 
+// One of: **UNKNOWN_TABLE_TYPE**, **MANAGED**, **EXTERNAL**, **VIEW**.
 type TableSummaryTableType string
 
 const TableSummaryTableTypeExternal TableSummaryTableType = `EXTERNAL`
@@ -2414,10 +2442,11 @@ type UpdateMetastore struct {
 }
 
 type UpdateMetastoreAssignment struct {
+	// The name of the default catalog for the Metastore.
 	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
-
+	// The unique ID of the Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
-
+	// A workspace ID.
 	WorkspaceId int `json:"-" path:"workspace_id"`
 }
 
@@ -2442,6 +2471,7 @@ const UpdateMetastorePrivilegesItemUsage UpdateMetastorePrivilegesItem = `USAGE`
 const UpdateMetastorePrivilegesItemWriteFiles UpdateMetastorePrivilegesItem = `WRITE_FILES`
 
 type UpdatePermissions struct {
+	// Array of permissions change objects.
 	Changes []PermissionsChange `json:"changes,omitempty"`
 	// Required. Unique identifier (full name) of Securable (from URL).
 	FullName string `json:"-" path:"full_name"`
@@ -2465,7 +2495,7 @@ type UpdateProvider struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of Provider creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// [Create,Update:REQ] The name of the Provider.
+	// [Create, Update:REQ] The name of the Provider.
 	Name string `json:"name,omitempty" path:"name"`
 	// [Create,Update:IGN] This field is only present when the authentication
 	// type is TOKEN.
@@ -2503,10 +2533,10 @@ type UpdateRecipient struct {
 	AuthenticationType UpdateRecipientAuthenticationType `json:"authentication_type,omitempty"`
 	// [Create:OPT,Update:OPT] Description about the recipient.
 	Comment string `json:"comment,omitempty"`
-	// [Create:IGN,Update:IGN] Time at which this Recipient was created, in
+	// [Create:IGN,Update:IGN] Time at which this recipient was created, in
 	// epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// [Create:IGN,Update:IGN] Username of Recipient creator.
+	// [Create:IGN,Update:IGN] Username of recipient creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create:OPT,Update:OPT] IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
@@ -2516,13 +2546,13 @@ type UpdateRecipient struct {
 	// recipient. This field is only present when the authentication type is
 	// DATABRICKS.
 	SharingCode string `json:"sharing_code,omitempty"`
-	// [Create:IGN,Update:IGN] Recipient Tokens This field is only present when
+	// [Create:IGN,Update:IGN] recipient Tokens This field is only present when
 	// the authentication type is TOKEN.
 	Tokens []RecipientTokenInfo `json:"tokens,omitempty"`
-	// [Create:IGN,Update:IGN] Time at which thie Recipient was updated, in
-	// epoch milliseconds.
+	// [Create:IGN,Update:IGN] Time at which the recipient was updated, in epoch
+	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// [Create:IGN,Update:IGN] Username of Recipient updater.
+	// [Create:IGN,Update:IGN] Username of recipient updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
@@ -2588,21 +2618,23 @@ const UpdateSchemaPrivilegesItemUsage UpdateSchemaPrivilegesItem = `USAGE`
 const UpdateSchemaPrivilegesItemWriteFiles UpdateSchemaPrivilegesItem = `WRITE_FILES`
 
 type UpdateShare struct {
-	// <needs content>
+	// The name of the share.
 	Name string `json:"-" path:"name"`
-
+	// Array of shared data object updates.
 	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
 }
 
 type UpdateSharePermissions struct {
+	// Array of permission changes.
 	Changes []PermissionsChange `json:"changes,omitempty"`
-	// Required. The name of the Share.
+	// Required. The name of the share.
 	Name string `json:"-" path:"name"`
 }
 
 type UpdateStorageCredential struct {
+	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
-
+	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// [Create,Update:OPT] Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
@@ -2611,7 +2643,7 @@ type UpdateStorageCredential struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
-
+	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// [Create:IGN] The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
@@ -2744,7 +2776,7 @@ const UpdateTableTableTypeUnknownTableType UpdateTableTableType = `UNKNOWN_TABLE
 const UpdateTableTableTypeView UpdateTableTableType = `VIEW`
 
 type DeleteCatalogRequest struct {
-	// Required. Name of the Catalog (from URL).
+	// Required. The name of the catalog.
 	Name string `json:"-" path:"name"`
 }
 
@@ -2756,8 +2788,9 @@ type DeleteExternalLocationRequest struct {
 }
 
 type DeleteMetastoreAssignmentRequest struct {
+	// Query for the ID of the Metastore to delete.
 	MetastoreId string `json:"-" url:"metastore_id,omitempty"`
-
+	// A workspace ID.
 	WorkspaceId int `json:"-" path:"workspace_id"`
 }
 
@@ -2779,12 +2812,12 @@ type DeleteRecipientRequest struct {
 }
 
 type DeleteSchemaRequest struct {
-	// Required. Full name of the Schema (from URL).
+	// Required. Full name of the schema (from URL).
 	FullName string `json:"-" path:"full_name"`
 }
 
 type DeleteShareRequest struct {
-	// <needs content>
+	// The name of the share.
 	Name string `json:"-" path:"name"`
 }
 
@@ -2807,7 +2840,7 @@ type GetActivationUrlInfoRequest struct {
 }
 
 type GetCatalogRequest struct {
-	// Required. Name of the Catalog (from URL).
+	// Required. The name of the catalog.
 	Name string `json:"-" path:"name"`
 }
 
@@ -2846,19 +2879,19 @@ type GetRecipientSharePermissionsRequest struct {
 }
 
 type GetSchemaRequest struct {
-	// Required. Full name of the Schema (from URL).
+	// Required. Full name of the schema (from URL).
 	FullName string `json:"-" path:"full_name"`
 }
 
 type GetSharePermissionsRequest struct {
-	// Required. The name of the Share.
+	// Required. The name of the share.
 	Name string `json:"-" path:"name"`
 }
 
 type GetShareRequest struct {
-	// <needs content>
+	// Query for data to include in the share.
 	IncludeSharedData bool `json:"-" url:"include_shared_data,omitempty"`
-	// <needs content>
+	// The name of the share.
 	Name string `json:"-" path:"name"`
 }
 

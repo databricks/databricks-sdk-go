@@ -19,6 +19,8 @@ type TokenManagementAPI struct {
 	client *client.DatabricksClient
 }
 
+// Create on-behalf token
+//
 // Creates a token on behalf of a service principal.
 func (a *TokenManagementAPI) CreateOboToken(ctx context.Context, request CreateOboTokenRequest) (*CreateOboTokenResponse, error) {
 	var createOboTokenResponse CreateOboTokenResponse
@@ -27,6 +29,8 @@ func (a *TokenManagementAPI) CreateOboToken(ctx context.Context, request CreateO
 	return &createOboTokenResponse, err
 }
 
+// Delete a token
+//
 // Deletes a token, specified by its ID.
 func (a *TokenManagementAPI) DeleteToken(ctx context.Context, request DeleteTokenRequest) error {
 	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", request.TokenId)
@@ -34,6 +38,8 @@ func (a *TokenManagementAPI) DeleteToken(ctx context.Context, request DeleteToke
 	return err
 }
 
+// Delete a token
+//
 // Deletes a token, specified by its ID.
 func (a *TokenManagementAPI) DeleteTokenByTokenId(ctx context.Context, tokenId string) error {
 	return a.DeleteToken(ctx, DeleteTokenRequest{
@@ -41,6 +47,8 @@ func (a *TokenManagementAPI) DeleteTokenByTokenId(ctx context.Context, tokenId s
 	})
 }
 
+// Get token info
+//
 // Gets information about a token, specified by its ID.
 func (a *TokenManagementAPI) GetTokenInfo(ctx context.Context, request GetTokenInfoRequest) (*TokenInfo, error) {
 	var tokenInfo TokenInfo
@@ -49,6 +57,8 @@ func (a *TokenManagementAPI) GetTokenInfo(ctx context.Context, request GetTokenI
 	return &tokenInfo, err
 }
 
+// Get token info
+//
 // Gets information about a token, specified by its ID.
 func (a *TokenManagementAPI) GetTokenInfoByTokenId(ctx context.Context, tokenId string) (*TokenInfo, error) {
 	return a.GetTokenInfo(ctx, GetTokenInfoRequest{
@@ -56,6 +66,8 @@ func (a *TokenManagementAPI) GetTokenInfoByTokenId(ctx context.Context, tokenId 
 	})
 }
 
+// List all tokens
+//
 // Lists all tokens associated with the specified workspace or user.
 func (a *TokenManagementAPI) ListAllTokens(ctx context.Context, request ListAllTokensRequest) (*ListTokensResponse, error) {
 	var listTokensResponse ListTokensResponse

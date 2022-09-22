@@ -568,13 +568,22 @@ type ListDashboardsResponse struct {
 
 type ListQueriesRequest struct {
 	// Name of query attribute to order by. Default sort order is ascending.
-	// Append a dash (`-`) to order descending instead. - `name`: The name of
-	// the query. - `created_at`: The timestamp the query was created. -
-	// `schedule`: The refresh interval for each query. For example: "Every 5
+	// Append a dash (`-`) to order descending instead.
+	//
+	// - `name`: The name of the query.
+	//
+	// - `created_at`: The timestamp the query was created.
+	//
+	// - `schedule`: The refresh interval for each query. For example: "Every 5
 	// Hours" or "Every 5 Minutes". "Never" is treated as the highest value for
-	// sorting. - `runtime`: The time it took to run this query. This is blank
-	// for parameterized queries. A blank value is treated as the highest value
-	// for sorting. - `executed_at`: The timestamp when the query was last run.
+	// sorting.
+	//
+	// - `runtime`: The time it took to run this query. This is blank for
+	// parameterized queries. A blank value is treated as the highest value for
+	// sorting.
+	//
+	// - `executed_at`: The timestamp when the query was last run.
+	//
 	// - `created_by`: The user name of the user that created the query.
 	Order string `json:"-" url:"order,omitempty"`
 	// Page number to retrieve.

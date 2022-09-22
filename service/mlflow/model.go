@@ -11,9 +11,15 @@ type Activity struct {
 
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// Source stage of the transition (if the activity is stage transition
-	// related). Valid values are: * `None`: The initial stage of a model
-	// version. * `Staging`: Staging or pre-production stage. * `Production`:
-	// Production stage. * `Archived`: Archived stage.
+	// related). Valid values are:
+	//
+	// * `None`: The initial stage of a model version.
+	//
+	// * `Staging`: Staging or pre-production stage.
+	//
+	// * `Production`: Production stage.
+	//
+	// * `Archived`: Archived stage.
 	FromStage Stage `json:"from_stage,omitempty"`
 
 	Id string `json:"id,omitempty"`
@@ -25,9 +31,15 @@ type Activity struct {
 	// may not be returned for some activity types.
 	SystemComment string `json:"system_comment,omitempty"`
 	// Target stage of the transition (if the activity is stage transition
-	// related). Valid values are: * `None`: The initial stage of a model
-	// version. * `Staging`: Staging or pre-production stage. * `Production`:
-	// Production stage. * `Archived`: Archived stage.
+	// related). Valid values are:
+	//
+	// * `None`: The initial stage of a model version.
+	//
+	// * `Staging`: Staging or pre-production stage.
+	//
+	// * `Production`: Production stage.
+	//
+	// * `Archived`: Archived stage.
 	ToStage Stage `json:"to_stage,omitempty"`
 	// Username of the user who created the activity, e.g. the user who made the
 	// stage transition request.
@@ -886,11 +898,16 @@ type SearchRuns struct {
 	// A filter expression over params, metrics, and tags, that allows returning
 	// a subset of runs. The syntax is a subset of SQL that supports ANDing
 	// together binary operations between a param, metric, or tag and a
-	// constant. Example: ``metrics.rmse < 1 and params.model_class =
-	// 'LogisticRegression'`` You can select columns with special characters
-	// (hyphen, space, period, etc.) by using double quotes: ``metrics."model
-	// class" = 'LinearRegression' and tags."user-name" = 'Tomas'`` Supported
-	// operators are ``=``, ``!=``, ``>``, ``>=``, ``<``, and ``<=``.
+	// constant.
+	//
+	// Example: ``metrics.rmse < 1 and params.model_class =
+	// 'LogisticRegression'``
+	//
+	// You can select columns with special characters (hyphen, space, period,
+	// etc.) by using double quotes: ``metrics."model class" =
+	// 'LinearRegression' and tags."user-name" = 'Tomas'``
+	//
+	// Supported operators are ``=``, ``!=``, ``>``, ``>=``, ``<``, and ``<=``.
 	Filter string `json:"filter,omitempty"`
 	// Maximum number of runs desired. Max threshold is 50000
 	MaxResults int `json:"max_results,omitempty"`
@@ -901,7 +918,7 @@ type SearchRuns struct {
 	// for runs with the same start time (and this is the default ordering
 	// criterion if order_by is not provided).
 	OrderBy []string `json:"order_by,omitempty"`
-
+	// Token for the current page of runs.
 	PageToken string `json:"page_token,omitempty"`
 	// Whether to display only active, only deleted, or all runs. Defaults to
 	// only active runs.
@@ -909,6 +926,7 @@ type SearchRuns struct {
 }
 
 type SearchRunsResponse struct {
+	// Token for the next page of runs.
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// Runs that match the search criteria.
 	Runs []Run `json:"runs,omitempty"`
@@ -1039,9 +1057,15 @@ type TransitionRequest struct {
 
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// Target stage of the transition (if the activity is stage transition
-	// related). Valid values are: * `None`: The initial stage of a model
-	// version. * `Staging`: Staging or pre-production stage. * `Production`:
-	// Production stage. * `Archived`: Archived stage.
+	// related). Valid values are:
+	//
+	// * `None`: The initial stage of a model version.
+	//
+	// * `Staging`: Staging or pre-production stage.
+	//
+	// * `Production`: Production stage.
+	//
+	// * `Archived`: Archived stage.
 	ToStage Stage `json:"to_stage,omitempty"`
 	// Username of the user who made the stage transition request.
 	UserId string `json:"user_id,omitempty"`

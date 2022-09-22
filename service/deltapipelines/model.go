@@ -233,9 +233,12 @@ type PipelineCluster struct {
 	ClusterLogConf *PipelinesClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes: - Currently, Databricks allows at
-	// most 45 custom tags - Clusters can only reuse cloud resources if the
-	// resources' tags are a subset of the cluster tags
+	// addition to ``default_tags``. Notes:
+	//
+	// - Currently, Databricks allows at most 45 custom tags
+	//
+	// - Clusters can only reuse cloud resources if the resources' tags are a
+	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -260,12 +263,14 @@ type PipelineCluster struct {
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and ``num_workers`` Executors for a total of ``num_workers``
-	// + 1 Spark nodes. Note: When reading the properties of a cluster, this
-	// field reflects the desired number of workers rather than the actual
-	// current number of workers. For instance, if a cluster is resized from 5
-	// to 10 workers, this field will immediately be updated to reflect the
-	// target size of 10 workers, whereas the workers listed in ``spark_info``
-	// will gradually increase from 5 to 10 as the new nodes are provisioned.
+	// + 1 Spark nodes.
+	//
+	// Note: When reading the properties of a cluster, this field reflects the
+	// desired number of workers rather than the actual current number of
+	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
+	// field will immediately be updated to reflect the target size of 10
+	// workers, whereas the workers listed in ``spark_info`` will gradually
+	// increase from 5 to 10 as the new nodes are provisioned.
 	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	PolicyId string `json:"policy_id,omitempty"`
@@ -273,21 +278,25 @@ type PipelineCluster struct {
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions``
-	// respectively. Example Spark confs: ``{"spark.speculation": true,
+	// respectively.
+	//
+	// Example Spark confs: ``{"spark.speculation": true,
 	// "spark.streaming.ui.retainedBatches": 5}`` or
 	// ``{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}``
 	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
 	// (X,Y) will be exported as is (i.e., ``export X='Y'``) while launching the
-	// driver and workers. In order to specify an additional set of
-	// ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them to
-	// ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example below. This ensures
-	// that all default databricks managed environmental variables are included
-	// as well. Example Spark environment variables: ``{"SPARK_WORKER_MEMORY":
-	// "28000m", "SPARK_LOCAL_DIRS": "/local_disk0"}`` or
-	// ``{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-	// -Dspark.shuffle.service.enabled=true"}``
+	// driver and workers.
+	//
+	// In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we
+	// recommend appending them to ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the
+	// example below. This ensures that all default databricks managed
+	// environmental variables are included as well.
+	//
+	// Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m",
+	// "SPARK_LOCAL_DIRS": "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS":
+	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}``
 	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
@@ -388,9 +397,12 @@ type PipelinesAwsAttributes struct {
 	// Nodes for this cluster will only be placed on AWS instances with this
 	// instance profile. If ommitted, nodes will be placed on instances without
 	// an IAM instance profile. The instance profile must have previously been
-	// added to the Databricks environment by an account administrator. This
-	// feature may only be available to certain customer plans. If this field is
-	// ommitted, we will pull in the default from the conf if it exists.
+	// added to the Databricks environment by an account administrator.
+	//
+	// This feature may only be available to certain customer plans.
+	//
+	// If this field is ommitted, we will pull in the default from the conf if
+	// it exists.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Identifier for the availability zone/datacenter in which the cluster
 	// resides. This string will be of a form like "us-west-2a". The provided
@@ -435,7 +447,9 @@ type PipelinesMavenLibrary struct {
 	// Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2".
 	Coordinates string `json:"coordinates"`
 	// List of dependences to exclude. For example: ``["slf4j:slf4j",
-	// "*:hadoop-client"]``. Maven dependency exclusions:
+	// "*:hadoop-client"]``.
+	//
+	// Maven dependency exclusions:
 	// https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html.
 	Exclusions []string `json:"exclusions,omitempty"`
 	// Maven repo to install the Maven package from. If omitted, both Maven

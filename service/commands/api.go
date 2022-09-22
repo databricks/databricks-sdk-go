@@ -21,6 +21,7 @@ type CommandExecutionAPI struct {
 	client *client.DatabricksClient
 }
 
+// Cancel a command
 func (a *CommandExecutionAPI) Cancel(ctx context.Context, request CancelCommand) error {
 	path := "/api/1.2/commands/cancel"
 	err := a.client.Post(ctx, path, request, nil)
@@ -58,6 +59,7 @@ func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand C
 	})
 }
 
+// Get information about a command
 func (a *CommandExecutionAPI) CommandStatus(ctx context.Context, request CommandStatusRequest) (*CommandStatusResponse, error) {
 	var commandStatusResponse CommandStatusResponse
 	path := "/api/1.2/commands/status"
@@ -65,6 +67,7 @@ func (a *CommandExecutionAPI) CommandStatus(ctx context.Context, request Command
 	return &commandStatusResponse, err
 }
 
+// Get information about an execution context
 func (a *CommandExecutionAPI) ContextStatus(ctx context.Context, request ContextStatusRequest) (*ContextStatusResponse, error) {
 	var contextStatusResponse ContextStatusResponse
 	path := "/api/1.2/contexts/status"
@@ -72,6 +75,7 @@ func (a *CommandExecutionAPI) ContextStatus(ctx context.Context, request Context
 	return &contextStatusResponse, err
 }
 
+// Create an execution context
 func (a *CommandExecutionAPI) Create(ctx context.Context, request CreateContext) (*Created, error) {
 	var created Created
 	path := "/api/1.2/contexts/create"
@@ -111,12 +115,14 @@ func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext C
 	})
 }
 
+// Delete an execution context
 func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyContext) error {
 	path := "/api/1.2/contexts/destroy"
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
 
+// Run a command
 func (a *CommandExecutionAPI) Execute(ctx context.Context, request Command) (*Created, error) {
 	var created Created
 	path := "/api/1.2/commands/execute"

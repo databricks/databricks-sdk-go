@@ -27,29 +27,39 @@ type AutoScale struct {
 type AwsAttributes struct {
 	// Availability type used for all subsequent nodes past the
 	// `first_on_demand` ones. **Note:** If `first_on_demand` is zero, this
-	// availability type is used for the entire cluster. `SPOT`: use spot
-	// instances. `ON_DEMAND`: use on-demand instances. `SPOT_WITH_FALLBACK`:
-	// preferably use spot instances, but fall back to on-demand instances if
-	// spot instances cannot be acquired (for example, if AWS spot prices are
-	// too high).
+	// availability type is used for the entire cluster.
+	//
+	// `SPOT`: use spot instances. `ON_DEMAND`: use on-demand instances.
+	// `SPOT_WITH_FALLBACK`: preferably use spot instances, but fall back to
+	// on-demand instances if spot instances cannot be acquired (for example, if
+	// AWS spot prices are too high).
 	Availability AwsAttributesAvailability `json:"availability,omitempty"`
 	// The number of volumes launched for each instance. You can choose up to 10
 	// volumes. This feature is only enabled for supported node types. Legacy
 	// node types cannot specify custom EBS volumes. For node types with no
 	// instance store, at least one EBS volume needs to be specified; otherwise,
-	// cluster creation fails. These EBS volumes are mounted at `/ebs0`,
-	// `/ebs1`, and etc. Instance store volumes are mounted at `/local_disk0`,
-	// `/local_disk1`, and etc. If EBS volumes are attached, Databricks
-	// configures Spark to use only the EBS volumes for scratch storage because
-	// heterogeneously sized scratch devices can lead to inefficient disk
-	// utilization. If no EBS volumes are attached, Databricks configures Spark
-	// to use instance store volumes. If EBS volumes are specified, then the
-	// Spark configuration `spark.local.dir` is overridden.
+	// cluster creation fails.
+	//
+	// These EBS volumes are mounted at `/ebs0`, `/ebs1`, and etc. Instance
+	// store volumes are mounted at `/local_disk0`, `/local_disk1`, and etc.
+	//
+	// If EBS volumes are attached, Databricks configures Spark to use only the
+	// EBS volumes for scratch storage because heterogeneously sized scratch
+	// devices can lead to inefficient disk utilization. If no EBS volumes are
+	// attached, Databricks configures Spark to use instance store volumes.
+	//
+	// If EBS volumes are specified, then the Spark configuration
+	// `spark.local.dir` is overridden.
 	EbsVolumeCount int `json:"ebs_volume_count,omitempty"`
-	// The number of IOPS per EBS gp3 volume. This value must be between 3000
-	// and 16000. The value of IOPS and throughput is calculated based on AWS
-	// documentation to match the maximum performance of a gp2 volume with the
-	// same volume size. For more information, see the [EBS volume limit
+	// The number of IOPS per EBS gp3 volume.
+	//
+	// This value must be between 3000 and 16000.
+	//
+	// The value of IOPS and throughput is calculated based on AWS documentation
+	// to match the maximum performance of a gp2 volume with the same volume
+	// size.
+	//
+	// For more information, see the [EBS volume limit
 	// calculator](https://github.com/awslabs/aws-support-tools/tree/master/EBS/VolumeLimitCalculator).
 	EbsVolumeIops int `json:"ebs_volume_iops,omitempty"`
 	// The size of each EBS volume (in GiB) launched for each instance. For
@@ -58,10 +68,12 @@ type AwsAttributes struct {
 	// 4096\. Custom EBS volumes cannot be specified for the legacy node types
 	// (_memory-optimized_ and _compute-optimized_).
 	EbsVolumeSize int `json:"ebs_volume_size,omitempty"`
-	// The throughput per EBS gp3 volume, in MiB per second. This value must be
-	// between 125 and 1000.
+	// The throughput per EBS gp3 volume, in MiB per second.
+	//
+	// This value must be between 125 and 1000.
 	EbsVolumeThroughput int `json:"ebs_volume_throughput,omitempty"`
 	// The type of EBS volume that is launched with this cluster.
+	//
 	// `GENERAL_PURPOSE_SSD`: provision extra storage using AWS gp2 EBS volumes.
 	// `THROUGHPUT_OPTIMIZED_HDD`: provision extra storage using AWS st1
 	// volumes.
@@ -78,8 +90,9 @@ type AwsAttributes struct {
 	// Nodes for this cluster are only be placed on AWS instances with this
 	// instance profile. If omitted, nodes are placed on instances without an
 	// instance profile. The instance profile must have previously been added to
-	// the Databricks environment by an account administrator. This feature may
-	// only be available to certain customer plans.
+	// the Databricks environment by an account administrator.
+	//
+	// This feature may only be available to certain customer plans.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// The max price for AWS spot instances, as a percentage of the
 	// corresponding instance type?s on-demand price. For example, if this field
@@ -92,26 +105,34 @@ type AwsAttributes struct {
 	// For safety, we enforce this field to be no more than 10000.
 	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
 	// Identifier for the availability zone/datacenter in which the cluster
-	// resides. You have three options: **Specify an availability zone as a
-	// string**, for example: ?us-west-2a?. The provided availability zone must
-	// be in the same region as the Databricks deployment. For example,
-	// ?us-west-2a? is not a valid zone ID if the Databricks deployment resides
-	// in the ?us-east-1? region. **Enable automatic availability zone selection
-	// (?Auto-AZ?)**, by setting the value ?auto?. Databricks selects the AZ
-	// based on available IPs in the workspace subnets and retries in other
-	// availability zones if AWS returns insufficient capacity errors. **Do not
-	// specify a value**. If not specified, a default zone is used. The list of
-	// available zones as well as the default value can be found by using the
-	// [List zones](..dev-tools/api/latest/clustershtml#list-zones) API.
+	// resides. You have three options:
+	//
+	// **Specify an availability zone as a string**, for example: ?us-west-2a?.
+	// The provided availability zone must be in the same region as the
+	// Databricks deployment. For example, ?us-west-2a? is not a valid zone ID
+	// if the Databricks deployment resides in the ?us-east-1? region.
+	//
+	// **Enable automatic availability zone selection (?Auto-AZ?)**, by setting
+	// the value ?auto?. Databricks selects the AZ based on available IPs in the
+	// workspace subnets and retries in other availability zones if AWS returns
+	// insufficient capacity errors.
+	//
+	// **Do not specify a value**. If not specified, a default zone is used.
+	//
+	// The list of available zones as well as the default value can be found by
+	// using the [List zones](..dev-tools/api/latest/clustershtml#list-zones)
+	// API.
 	ZoneId string `json:"zone_id,omitempty"`
 }
 
 // Availability type used for all subsequent nodes past the `first_on_demand`
 // ones. **Note:** If `first_on_demand` is zero, this availability type is used
-// for the entire cluster. `SPOT`: use spot instances. `ON_DEMAND`: use
-// on-demand instances. `SPOT_WITH_FALLBACK`: preferably use spot instances, but
-// fall back to on-demand instances if spot instances cannot be acquired (for
-// example, if AWS spot prices are too high).
+// for the entire cluster.
+//
+// `SPOT`: use spot instances. `ON_DEMAND`: use on-demand instances.
+// `SPOT_WITH_FALLBACK`: preferably use spot instances, but fall back to
+// on-demand instances if spot instances cannot be acquired (for example, if AWS
+// spot prices are too high).
 type AwsAttributesAvailability string
 
 const AwsAttributesAvailabilityOnDemand AwsAttributesAvailability = `ON_DEMAND`
@@ -121,6 +142,7 @@ const AwsAttributesAvailabilitySpot AwsAttributesAvailability = `SPOT`
 const AwsAttributesAvailabilitySpotWithFallback AwsAttributesAvailability = `SPOT_WITH_FALLBACK`
 
 // The type of EBS volume that is launched with this cluster.
+//
 // `GENERAL_PURPOSE_SSD`: provision extra storage using AWS gp2 EBS volumes.
 // `THROUGHPUT_OPTIMIZED_HDD`: provision extra storage using AWS st1 volumes.
 type AwsAttributesEbsVolumeType string
@@ -131,11 +153,13 @@ const AwsAttributesEbsVolumeTypeThroughputOptimizedHdd AwsAttributesEbsVolumeTyp
 
 type AzureAttributes struct {
 	// Availability type used for all subsequent nodes past the
-	// `first_on_demand` ones. `SPOT_AZURE`: use spot instances.
-	// `ON_DEMAND_AZURE`: use on demand instances. `SPOT_WITH_FALLBACK_AZURE`:
-	// preferably use spot instances, but fall back to on-demand instances if
-	// spot instances cannot be acquired (for example, if Azure spot prices are
-	// too high or out of quota). Does not apply to pool availability.
+	// `first_on_demand` ones.
+	//
+	// `SPOT_AZURE`: use spot instances. `ON_DEMAND_AZURE`: use on demand
+	// instances. `SPOT_WITH_FALLBACK_AZURE`: preferably use spot instances, but
+	// fall back to on-demand instances if spot instances cannot be acquired
+	// (for example, if Azure spot prices are too high or out of quota). Does
+	// not apply to pool availability.
 	Availability AzureAttributesAvailability `json:"availability,omitempty"`
 	// The first `first_on_demand` nodes of the cluster are placed on on-demand
 	// instances. This value must be greater than 0, or else cluster creation
@@ -156,11 +180,13 @@ type AzureAttributes struct {
 }
 
 // Availability type used for all subsequent nodes past the `first_on_demand`
-// ones. `SPOT_AZURE`: use spot instances. `ON_DEMAND_AZURE`: use on demand
-// instances. `SPOT_WITH_FALLBACK_AZURE`: preferably use spot instances, but
-// fall back to on-demand instances if spot instances cannot be acquired (for
-// example, if Azure spot prices are too high or out of quota). Does not apply
-// to pool availability.
+// ones.
+//
+// `SPOT_AZURE`: use spot instances. `ON_DEMAND_AZURE`: use on demand instances.
+// `SPOT_WITH_FALLBACK_AZURE`: preferably use spot instances, but fall back to
+// on-demand instances if spot instances cannot be acquired (for example, if
+// Azure spot prices are too high or out of quota). Does not apply to pool
+// availability.
 type AzureAttributesAvailability string
 
 const AzureAttributesAvailabilityOnDemandAzure AzureAttributesAvailability = `ON_DEMAND_AZURE`
@@ -185,15 +211,19 @@ type ClusterInstance struct {
 	// always available for runs on existing clusters. For runs on new clusters,
 	// it becomes available once the cluster is created. This value can be used
 	// to view logs by browsing to `/#setting/sparkui/$cluster_id/driver-logs`.
-	// The logs continue to be available after the run completes. The response
-	// won?t include this field if the identifier is not available yet.
+	// The logs continue to be available after the run completes.
+	//
+	// The response won?t include this field if the identifier is not available
+	// yet.
 	ClusterId string `json:"cluster_id,omitempty"`
 	// The canonical identifier for the Spark context used by a run. This field
 	// is filled in once the run begins execution. This value can be used to
 	// view the Spark UI by browsing to
 	// `/#setting/sparkui/$cluster_id/$spark_context_id`. The Spark UI continues
-	// to be available after the run has completed. The response won?t include
-	// this field if the identifier is not available yet.
+	// to be available after the run has completed.
+	//
+	// The response won?t include this field if the identifier is not available
+	// yet.
 	SparkContextId string `json:"spark_context_id,omitempty"`
 }
 
@@ -243,18 +273,22 @@ type CreateJob struct {
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
 	// You must declare dependent libraries in task settings.
 	JobClusters []JobCluster `json:"job_clusters,omitempty"`
-	// An optional maximum allowed number of concurrent runs of the job. Set
-	// this value if you want to be able to execute multiple runs of the same
-	// job concurrently. This is useful for example if you trigger your job on a
-	// frequent schedule and want to allow consecutive runs to overlap with each
-	// other, or if you want to trigger multiple runs which differ by their
-	// input parameters. This setting affects only new runs. For example,
-	// suppose the job?s concurrency is 4 and there are 4 concurrent active
-	// runs. Then setting the concurrency to 3 won?t kill any of the active
-	// runs. However, from then on, new runs are skipped unless there are fewer
-	// than 3 active runs. This value cannot exceed 1000\. Setting this value to
-	// 0 causes all new runs to be skipped. The default behavior is to allow
-	// only 1 concurrent run.
+	// An optional maximum allowed number of concurrent runs of the job.
+	//
+	// Set this value if you want to be able to execute multiple runs of the
+	// same job concurrently. This is useful for example if you trigger your job
+	// on a frequent schedule and want to allow consecutive runs to overlap with
+	// each other, or if you want to trigger multiple runs which differ by their
+	// input parameters.
+	//
+	// This setting affects only new runs. For example, suppose the job?s
+	// concurrency is 4 and there are 4 concurrent active runs. Then setting the
+	// concurrency to 3 won?t kill any of the active runs. However, from then
+	// on, new runs are skipped unless there are fewer than 3 active runs.
+	//
+	// This value cannot exceed 1000\. Setting this value to 0 causes all new
+	// runs to be skipped. The default behavior is to allow only 1 concurrent
+	// run.
 	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
 	// An optional name for the job.
 	Name string `json:"name,omitempty"`
@@ -472,18 +506,22 @@ type JobSettings struct {
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
 	// You must declare dependent libraries in task settings.
 	JobClusters []JobCluster `json:"job_clusters,omitempty"`
-	// An optional maximum allowed number of concurrent runs of the job. Set
-	// this value if you want to be able to execute multiple runs of the same
-	// job concurrently. This is useful for example if you trigger your job on a
-	// frequent schedule and want to allow consecutive runs to overlap with each
-	// other, or if you want to trigger multiple runs which differ by their
-	// input parameters. This setting affects only new runs. For example,
-	// suppose the job?s concurrency is 4 and there are 4 concurrent active
-	// runs. Then setting the concurrency to 3 won?t kill any of the active
-	// runs. However, from then on, new runs are skipped unless there are fewer
-	// than 3 active runs. This value cannot exceed 1000\. Setting this value to
-	// 0 causes all new runs to be skipped. The default behavior is to allow
-	// only 1 concurrent run.
+	// An optional maximum allowed number of concurrent runs of the job.
+	//
+	// Set this value if you want to be able to execute multiple runs of the
+	// same job concurrently. This is useful for example if you trigger your job
+	// on a frequent schedule and want to allow consecutive runs to overlap with
+	// each other, or if you want to trigger multiple runs which differ by their
+	// input parameters.
+	//
+	// This setting affects only new runs. For example, suppose the job?s
+	// concurrency is 4 and there are 4 concurrent active runs. Then setting the
+	// concurrency to 3 won?t kill any of the active runs. However, from then
+	// on, new runs are skipped unless there are fewer than 3 active runs.
+	//
+	// This value cannot exceed 1000\. Setting this value to 0 causes all new
+	// runs to be skipped. The default behavior is to allow only 1 concurrent
+	// run.
 	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
 	// An optional name for the job.
 	Name string `json:"name,omitempty"`
@@ -599,7 +637,9 @@ type MavenLibrary struct {
 	// This field is required.
 	Coordinates string `json:"coordinates"`
 	// List of dependences to exclude. For example: `["slf4j:slf4j",
-	// "*:hadoop-client"]`. Maven dependency exclusions:
+	// "*:hadoop-client"]`.
+	//
+	// Maven dependency exclusions:
 	// <https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html>.
 	Exclusions []string `json:"exclusions,omitempty"`
 	// Maven repo to install the Maven package from. If omitted, both Maven
@@ -673,20 +713,25 @@ type NewCluster struct {
 	// configuration key-value pairs. You can also pass in a string of extra JVM
 	// options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
-	// respectively. Example Spark confs: `{"spark.speculation": true,
+	// respectively.
+	//
+	// Example Spark confs: `{"spark.speculation": true,
 	// "spark.streaming.ui.retainedBatches": 5}` or
 	// `{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}`
 	SparkConf map[string]any/* MISSING TYPE */ `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Key-value pair of the form (X,Y) are exported
 	// as is (for example, `export X='Y'`) while launching the driver and
-	// workers. To specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
-	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
-	// following example. This ensures that all default databricks managed
-	// environmental variables are included as well. Example Spark environment
-	// variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
-	// "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-	// -Dspark.shuffle.service.enabled=true"}`
+	// workers.
+	//
+	// To specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend
+	// appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the following
+	// example. This ensures that all default databricks managed environmental
+	// variables are included as well.
+	//
+	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
+	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
+	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
 	SparkEnvVars map[string]any/* MISSING TYPE */ `json:"spark_env_vars,omitempty"`
 	// The Spark version of the cluster. A list of available Spark versions can
 	// be retrieved by using the [Runtime
@@ -714,12 +759,16 @@ type NotebookTask struct {
 	// [`run-now`](..dev-tools/api/latest/jobshtml#operation/JobsRunNow) with
 	// parameters specified, the two parameters maps are merged. If the same key
 	// is specified in `base_parameters` and in `run-now`, the value from
-	// `run-now` is used. Use [Task parameter
-	// variables](..jobshtml#parameter-variables) to set parameters containing
-	// information about job runs. If the notebook takes a parameter that is not
-	// specified in the job?s `base_parameters` or the `run-now` override
-	// parameters, the default value from the notebook is used. Retrieve these
-	// parameters in a notebook using
+	// `run-now` is used.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
+	//
+	// If the notebook takes a parameter that is not specified in the job?s
+	// `base_parameters` or the `run-now` override parameters, the default value
+	// from the notebook is used.
+	//
+	// Retrieve these parameters in a notebook using
 	// [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets).
 	BaseParameters map[string]any/* MISSING TYPE */ `json:"base_parameters,omitempty"`
 	// The path of the notebook to be run in the jobs workspace or remote
@@ -808,9 +857,10 @@ type RepairRun struct {
 	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
 	// be specified in conjunction with notebook_params. The JSON representation
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
-	// exceed 10,000 bytes. Use [Task parameter
-	// variables](..jobshtml#parameter-variables) to set parameters containing
-	// information about job runs.
+	// exceed 10,000 bytes.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
 	JarParams []string `json:"jar_params,omitempty"`
 	// The ID of the latest repair. This parameter is not required when
 	// repairing a run for the first time, but must be provided on subsequent
@@ -820,13 +870,19 @@ type RepairRun struct {
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the
 	// [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets)
-	// function. If not specified upon `run-now`, the triggered run uses the
-	// job?s base parameters. notebook_params cannot be specified in conjunction
-	// with jar_params. Use [Task parameter
-	// variables](..jobshtml#parameter-variables) to set parameters containing
-	// information about job runs. The JSON representation of this field (for
-	// example `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot
-	// exceed 10,000 bytes.
+	// function.
+	//
+	// If not specified upon `run-now`, the triggered run uses the job?s base
+	// parameters.
+	//
+	// notebook_params cannot be specified in conjunction with jar_params.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
+	//
+	// The JSON representation of this field (for example
+	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
+	// 10,000 bytes.
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -839,12 +895,16 @@ type RepairRun struct {
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
 	// representation of this field (for example `{"python_params":["john
-	// doe","35"]}`) cannot exceed 10,000 bytes. Use [Task parameter
-	// variables](..jobshtml#parameter-variables) to set parameters containing
-	// information about job runs. Important These parameters accept only Latin
-	// characters (ASCII character set). Using non-ASCII characters returns an
-	// error. Examples of invalid, non-ASCII characters are Chinese, Japanese
-	// kanjis, and emojis.
+	// doe","35"]}`) cannot exceed 10,000 bytes.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
+	//
+	// Important
+	//
+	// These parameters accept only Latin characters (ASCII character set).
+	// Using non-ASCII characters returns an error. Examples of invalid,
+	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	PythonParams []string `json:"python_params,omitempty"`
 	// The task keys of the task runs to repair.
 	RerunTasks []string `json:"rerun_tasks,omitempty"`
@@ -856,12 +916,16 @@ type RepairRun struct {
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes. Use
-	// [Task parameter variables](..jobshtml#parameter-variables) to set
-	// parameters containing information about job runs. Important These
-	// parameters accept only Latin characters (ASCII character set). Using
-	// non-ASCII characters returns an error. Examples of invalid, non-ASCII
-	// characters are Chinese, Japanese kanjis, and emojis.
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
+	//
+	// Important
+	//
+	// These parameters accept only Latin characters (ASCII character set).
+	// Using non-ASCII characters returns an error. Examples of invalid,
+	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 }
 
@@ -869,8 +933,10 @@ type ResetJob struct {
 	// The canonical identifier of the job to reset. This field is required.
 	JobId int64 `json:"job_id"`
 	// The new settings of the job. These settings completely replace the old
-	// settings. Changes to the field `JobSettings.timeout_seconds` are applied
-	// to active runs. Changes to other fields are applied to future runs only.
+	// settings.
+	//
+	// Changes to the field `JobSettings.timeout_seconds` are applied to active
+	// runs. Changes to other fields are applied to future runs only.
 	NewSettings *JobSettings `json:"new_settings,omitempty"`
 }
 
@@ -987,11 +1053,15 @@ type RunNow struct {
 	// An optional token to guarantee the idempotency of job run requests. If a
 	// run with the provided token already exists, the request does not create a
 	// new run but returns the ID of the existing run instead. If a run with the
-	// provided token is deleted, an error is returned. If you specify the
-	// idempotency token, upon failure you can retry until the request succeeds.
-	// Databricks guarantees that exactly one run is launched with that
-	// idempotency token. This token must have at most 64 characters. For more
-	// information, see [How to ensure idempotency for
+	// provided token is deleted, an error is returned.
+	//
+	// If you specify the idempotency token, upon failure you can retry until
+	// the request succeeds. Databricks guarantees that exactly one run is
+	// launched with that idempotency token.
+	//
+	// This token must have at most 64 characters.
+	//
+	// For more information, see [How to ensure idempotency for
 	// jobs](https://kb.databricks.com/jobs/jobs-idempotency.html).
 	IdempotencyToken string `json:"idempotency_token,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
@@ -1000,9 +1070,10 @@ type RunNow struct {
 	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
 	// be specified in conjunction with notebook_params. The JSON representation
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
-	// exceed 10,000 bytes. Use [Task parameter
-	// variables](..jobshtml#parameter-variables) to set parameters containing
-	// information about job runs.
+	// exceed 10,000 bytes.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
 	JarParams []string `json:"jar_params,omitempty"`
 	// The ID of the job to be executed
 	JobId int64 `json:"job_id,omitempty"`
@@ -1010,13 +1081,19 @@ type RunNow struct {
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the
 	// [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets)
-	// function. If not specified upon `run-now`, the triggered run uses the
-	// job?s base parameters. notebook_params cannot be specified in conjunction
-	// with jar_params. Use [Task parameter
-	// variables](..jobshtml#parameter-variables) to set parameters containing
-	// information about job runs. The JSON representation of this field (for
-	// example `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot
-	// exceed 10,000 bytes.
+	// function.
+	//
+	// If not specified upon `run-now`, the triggered run uses the job?s base
+	// parameters.
+	//
+	// notebook_params cannot be specified in conjunction with jar_params.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
+	//
+	// The JSON representation of this field (for example
+	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
+	// 10,000 bytes.
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -1029,12 +1106,16 @@ type RunNow struct {
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
 	// representation of this field (for example `{"python_params":["john
-	// doe","35"]}`) cannot exceed 10,000 bytes. Use [Task parameter
-	// variables](..jobshtml#parameter-variables) to set parameters containing
-	// information about job runs. Important These parameters accept only Latin
-	// characters (ASCII character set). Using non-ASCII characters returns an
-	// error. Examples of invalid, non-ASCII characters are Chinese, Japanese
-	// kanjis, and emojis.
+	// doe","35"]}`) cannot exceed 10,000 bytes.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
+	//
+	// Important
+	//
+	// These parameters accept only Latin characters (ASCII character set).
+	// Using non-ASCII characters returns an error. Examples of invalid,
+	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
 	// `"spark_submit_params": ["--class",
@@ -1042,12 +1123,16 @@ type RunNow struct {
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes. Use
-	// [Task parameter variables](..jobshtml#parameter-variables) to set
-	// parameters containing information about job runs. Important These
-	// parameters accept only Latin characters (ASCII character set). Using
-	// non-ASCII characters returns an error. Examples of invalid, non-ASCII
-	// characters are Chinese, Japanese kanjis, and emojis.
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
+	//
+	// Important
+	//
+	// These parameters accept only Latin characters (ASCII character set).
+	// Using non-ASCII characters returns an error. Examples of invalid,
+	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 }
 
@@ -1100,21 +1185,28 @@ type RunParameters struct {
 	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
 	// be specified in conjunction with notebook_params. The JSON representation
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
-	// exceed 10,000 bytes. Use [Task parameter
-	// variables](..jobshtml#parameter-variables) to set parameters containing
-	// information about job runs.
+	// exceed 10,000 bytes.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
 	JarParams []string `json:"jar_params,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the
 	// [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets)
-	// function. If not specified upon `run-now`, the triggered run uses the
-	// job?s base parameters. notebook_params cannot be specified in conjunction
-	// with jar_params. Use [Task parameter
-	// variables](..jobshtml#parameter-variables) to set parameters containing
-	// information about job runs. The JSON representation of this field (for
-	// example `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot
-	// exceed 10,000 bytes.
+	// function.
+	//
+	// If not specified upon `run-now`, the triggered run uses the job?s base
+	// parameters.
+	//
+	// notebook_params cannot be specified in conjunction with jar_params.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
+	//
+	// The JSON representation of this field (for example
+	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
+	// 10,000 bytes.
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -1127,12 +1219,16 @@ type RunParameters struct {
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
 	// representation of this field (for example `{"python_params":["john
-	// doe","35"]}`) cannot exceed 10,000 bytes. Use [Task parameter
-	// variables](..jobshtml#parameter-variables) to set parameters containing
-	// information about job runs. Important These parameters accept only Latin
-	// characters (ASCII character set). Using non-ASCII characters returns an
-	// error. Examples of invalid, non-ASCII characters are Chinese, Japanese
-	// kanjis, and emojis.
+	// doe","35"]}`) cannot exceed 10,000 bytes.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
+	//
+	// Important
+	//
+	// These parameters accept only Latin characters (ASCII character set).
+	// Using non-ASCII characters returns an error. Examples of invalid,
+	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
 	// `"spark_submit_params": ["--class",
@@ -1140,12 +1236,16 @@ type RunParameters struct {
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes. Use
-	// [Task parameter variables](..jobshtml#parameter-variables) to set
-	// parameters containing information about job runs. Important These
-	// parameters accept only Latin characters (ASCII character set). Using
-	// non-ASCII characters returns an error. Examples of invalid, non-ASCII
-	// characters are Chinese, Japanese kanjis, and emojis.
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
+	//
+	// Important
+	//
+	// These parameters accept only Latin characters (ASCII character set).
+	// Using non-ASCII characters returns an error. Examples of invalid,
+	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 }
 
@@ -1344,29 +1444,33 @@ type SparkJarTask struct {
 	// [Create](..dev-tools/api/latest/jobshtml#operation/JobsCreate).
 	JarUri string `json:"jar_uri,omitempty"`
 	// The full name of the class containing the main method to be executed.
-	// This class must be contained in a JAR provided as a library. The code
-	// must use `SparkContext.getOrCreate` to obtain a Spark context; otherwise,
-	// runs of the job fail.
+	// This class must be contained in a JAR provided as a library.
+	//
+	// The code must use `SparkContext.getOrCreate` to obtain a Spark context;
+	// otherwise, runs of the job fail.
 	MainClassName string `json:"main_class_name,omitempty"`
-	// Parameters passed to the main method. Use [Task parameter
-	// variables](..jobshtml#parameter-variables) to set parameters containing
-	// information about job runs.
+	// Parameters passed to the main method.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
 	Parameters []string `json:"parameters,omitempty"`
 }
 
 type SparkPythonTask struct {
-	// Command line parameters passed to the Python file. Use [Task parameter
-	// variables](..jobshtml#parameter-variables) to set parameters containing
-	// information about job runs.
+	// Command line parameters passed to the Python file.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
 	Parameters []string `json:"parameters,omitempty"`
 
 	PythonFile string `json:"python_file"`
 }
 
 type SparkSubmitTask struct {
-	// Command-line parameters passed to spark submit. Use [Task parameter
-	// variables](..jobshtml#parameter-variables) to set parameters containing
-	// information about job runs.
+	// Command-line parameters passed to spark submit.
+	//
+	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
+	// parameters containing information about job runs.
 	Parameters []string `json:"parameters,omitempty"`
 }
 
@@ -1380,10 +1484,15 @@ type SubmitRun struct {
 	// run requests. If a run with the provided token already exists, the
 	// request does not create a new run but returns the ID of the existing run
 	// instead. If a run with the provided token is deleted, an error is
-	// returned. If you specify the idempotency token, upon failure you can
-	// retry until the request succeeds. Databricks guarantees that exactly one
-	// run is launched with that idempotency token. This token must have at most
-	// 64 characters. For more information, see [How to ensure idempotency for
+	// returned.
+	//
+	// If you specify the idempotency token, upon failure you can retry until
+	// the request succeeds. Databricks guarantees that exactly one run is
+	// launched with that idempotency token.
+	//
+	// This token must have at most 64 characters.
+	//
+	// For more information, see [How to ensure idempotency for
 	// jobs](https://kb.databricks.com/jobs/jobs-idempotency.html).
 	IdempotencyToken string `json:"idempotency_token,omitempty"`
 	// An optional name for the run. The default value is `Untitled`.
@@ -1433,9 +1542,10 @@ type UpdateJob struct {
 	JobId int64 `json:"job_id"`
 	// The new settings for the job. Any top-level fields specified in
 	// `new_settings` are completely replaced. Partially updating nested fields
-	// is not supported. Changes to the field `JobSettings.timeout_seconds` are
-	// applied to active runs. Changes to other fields are applied to future
-	// runs only.
+	// is not supported.
+	//
+	// Changes to the field `JobSettings.timeout_seconds` are applied to active
+	// runs. Changes to other fields are applied to future runs only.
 	NewSettings *JobSettings `json:"new_settings,omitempty"`
 }
 
