@@ -12,5 +12,5 @@ func TestLoadFromJson(t *testing.T) {
 	assert.NoError(t, err)
 	spec, err := NewFromReader(f)
 	assert.NoError(t, err)
-	assert.Equal(t, "Jobs", spec.Tags[0].Name)
+	assert.Equal(t, "Command Execution", spec.Tags[0].Name)
 }
