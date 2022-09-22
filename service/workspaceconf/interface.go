@@ -11,9 +11,13 @@ import (
 // Evolving: this interface is under development. Method signatures may change.
 type WorkspaceConfService interface {
 
+	// Check configuration status
+	//
 	// Gets the configuration status for a workspace.
 	GetStatus(ctx context.Context, request GetStatusRequest) (*WorkspaceConf, error)
 
+	// Enable/disable features
+	//
 	// Sets the configuration status for a workspace, including enabling or
 	// disabling it.
 	SetStatus(ctx context.Context, request WorkspaceConf) error

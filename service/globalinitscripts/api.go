@@ -19,7 +19,9 @@ type GlobalInitScriptsAPI struct {
 	client *client.DatabricksClient
 }
 
-// Create a new global init script in this workspace.
+// Create init script
+//
+// Creates a new global init script in this workspace.
 func (a *GlobalInitScriptsAPI) CreateScript(ctx context.Context, request GlobalInitScriptCreateRequest) (*CreateScriptResponse, error) {
 	var createScriptResponse CreateScriptResponse
 	path := "/api/2.0/global-init-scripts"
@@ -27,21 +29,56 @@ func (a *GlobalInitScriptsAPI) CreateScript(ctx context.Context, request GlobalI
 	return &createScriptResponse, err
 }
 
-// Delete a global init script.
+// Delete init script
+//
+// Deletes a global init script.
 func (a *GlobalInitScriptsAPI) DeleteScript(ctx context.Context, request DeleteScriptRequest) error {
 	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
-// Delete a global init script.
+// Delete init script
+//
+// Deletes a global init script.
 func (a *GlobalInitScriptsAPI) DeleteScriptByScriptId(ctx context.Context, scriptId string) error {
 	return a.DeleteScript(ctx, DeleteScriptRequest{
 		ScriptId: scriptId,
 	})
 }
 
-// Get a list of all global init scripts for this workspace. This returns all
+// Get an init script
+//
+// Gets all the details of a script, including its Base64-encoded contents.
+func (a *GlobalInitScriptsAPI) GetScript(ctx context.Context, request GetScriptRequest) (*GlobalInitScriptDetailsWithContent, error) {
+	var globalInitScriptDetailsWithContent GlobalInitScriptDetailsWithContent
+	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
+	err := a.client.Get(ctx, path, request, &globalInitScriptDetailsWithContent)
+	return &globalInitScriptDetailsWithContent, err
+}
+
+// Get an init script
+//
+// Gets all the details of a script, including its Base64-encoded contents.
+func (a *GlobalInitScriptsAPI) GetScriptByScriptId(ctx context.Context, scriptId string) (*GlobalInitScriptDetailsWithContent, error) {
+	return a.GetScript(ctx, GetScriptRequest{
+		ScriptId: scriptId,
+	})
+}
+
+// Update init script
+//
+// Updates a global init script, specifying only the fields to change. All
+// fields are optional. Unspecified fields retain their current value.
+func (a *GlobalInitScriptsAPI) UpdateScript(ctx context.Context, request GlobalInitScriptUpdateRequest) error {
+	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
+	err := a.client.Patch(ctx, path, request)
+	return err
+}
+
+// Get init scripts
+//
+// "Get a list of all global init scripts for this workspace. This returns all
 // properties for each script but **not** the script contents. To retrieve the
 // contents of a script, use the [get a global init
 // script](#operation/get-script) operation.
@@ -50,27 +87,4 @@ func (a *GlobalInitScriptsAPI) GetAllScripts(ctx context.Context) ([]GlobalInitS
 	path := "/api/2.0/global-init-scripts"
 	err := a.client.Get(ctx, path, nil, &globalInitScriptDetailsList)
 	return globalInitScriptDetailsList, err
-}
-
-// Get all the details of a script, including its Base64-encoded contents.
-func (a *GlobalInitScriptsAPI) GetScript(ctx context.Context, request GetScriptRequest) (*GlobalInitScriptDetailsWithContent, error) {
-	var globalInitScriptDetailsWithContent GlobalInitScriptDetailsWithContent
-	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
-	err := a.client.Get(ctx, path, request, &globalInitScriptDetailsWithContent)
-	return &globalInitScriptDetailsWithContent, err
-}
-
-// Get all the details of a script, including its Base64-encoded contents.
-func (a *GlobalInitScriptsAPI) GetScriptByScriptId(ctx context.Context, scriptId string) (*GlobalInitScriptDetailsWithContent, error) {
-	return a.GetScript(ctx, GetScriptRequest{
-		ScriptId: scriptId,
-	})
-}
-
-// Update a global init script, specifying only the fields to change. All fields
-// are optional. Unspecified fields retain their current value.
-func (a *GlobalInitScriptsAPI) UpdateScript(ctx context.Context, request GlobalInitScriptUpdateRequest) error {
-	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
-	err := a.client.Patch(ctx, path, request)
-	return err
 }

@@ -18,7 +18,9 @@ type InstancePoolsAPI struct {
 	client *client.DatabricksClient
 }
 
-// Creates a new Instance Pool using idle and ready-to-use cloud instances
+// Create a new instance pool
+//
+// Creates a new instance pool using idle and ready-to-use cloud instances.
 func (a *InstancePoolsAPI) Create(ctx context.Context, request CreateInstancePool) (*CreateInstancePoolResponse, error) {
 	var createInstancePoolResponse CreateInstancePoolResponse
 	path := "/api/2.0/instance-pools/create"
@@ -26,6 +28,8 @@ func (a *InstancePoolsAPI) Create(ctx context.Context, request CreateInstancePoo
 	return &createInstancePoolResponse, err
 }
 
+// Delete an instance pool
+//
 // Deletes the instance pool permanently. The idle instances in the pool are
 // terminated asynchronously.
 func (a *InstancePoolsAPI) Delete(ctx context.Context, request DeleteInstancePool) error {
@@ -34,6 +38,8 @@ func (a *InstancePoolsAPI) Delete(ctx context.Context, request DeleteInstancePoo
 	return err
 }
 
+// Delete an instance pool
+//
 // Deletes the instance pool permanently. The idle instances in the pool are
 // terminated asynchronously.
 func (a *InstancePoolsAPI) DeleteByInstancePoolId(ctx context.Context, instancePoolId string) error {
@@ -42,6 +48,8 @@ func (a *InstancePoolsAPI) DeleteByInstancePoolId(ctx context.Context, instanceP
 	})
 }
 
+// Edit an existing instance pool
+//
 // Modifies the configuration of an existing instance pool.
 func (a *InstancePoolsAPI) Edit(ctx context.Context, request EditInstancePool) error {
 	path := "/api/2.0/instance-pools/edit"
@@ -49,7 +57,9 @@ func (a *InstancePoolsAPI) Edit(ctx context.Context, request EditInstancePool) e
 	return err
 }
 
-// Retrieve the information for an instance pool given its identifier.
+// Get instance pool information
+//
+// Retrieve the information for an instance pool based on its identifier.
 func (a *InstancePoolsAPI) Get(ctx context.Context, request GetRequest) (*GetInstancePool, error) {
 	var getInstancePool GetInstancePool
 	path := "/api/2.0/instance-pools/get"
@@ -57,14 +67,18 @@ func (a *InstancePoolsAPI) Get(ctx context.Context, request GetRequest) (*GetIns
 	return &getInstancePool, err
 }
 
-// Retrieve the information for an instance pool given its identifier.
+// Get instance pool information
+//
+// Retrieve the information for an instance pool based on its identifier.
 func (a *InstancePoolsAPI) GetByInstancePoolId(ctx context.Context, instancePoolId string) (*GetInstancePool, error) {
 	return a.Get(ctx, GetRequest{
 		InstancePoolId: instancePoolId,
 	})
 }
 
-// Returns list of Instance Pools with their statistics included
+// List instance pool info
+//
+// Gets a list of instance pools with their statistics.
 func (a *InstancePoolsAPI) List(ctx context.Context) (*ListInstancePools, error) {
 	var listInstancePools ListInstancePools
 	path := "/api/2.0/instance-pools/list"

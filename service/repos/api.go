@@ -19,6 +19,8 @@ type ReposAPI struct {
 	client *client.DatabricksClient
 }
 
+// Create a repo
+//
 // Creates a repo in the workspace and links it to the remote Git repo
 // specified. Note that repos created programmatically must be linked to a
 // remote Git repo, unlike repos created in the browser.
@@ -29,6 +31,8 @@ func (a *ReposAPI) Create(ctx context.Context, request CreateRepo) (*RepoInfo, e
 	return &repoInfo, err
 }
 
+// Deletes the repo
+//
 // Deletes the specified repo
 func (a *ReposAPI) Delete(ctx context.Context, request DeleteRequest) error {
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
@@ -36,6 +40,8 @@ func (a *ReposAPI) Delete(ctx context.Context, request DeleteRequest) error {
 	return err
 }
 
+// Deletes the repo
+//
 // Deletes the specified repo
 func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId string) error {
 	return a.Delete(ctx, DeleteRequest{
@@ -43,6 +49,8 @@ func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId string) error {
 	})
 }
 
+// Get a repo
+//
 // Returns the repo with the given repo ID.
 func (a *ReposAPI) Get(ctx context.Context, request GetRequest) (*RepoInfo, error) {
 	var repoInfo RepoInfo
@@ -51,6 +59,8 @@ func (a *ReposAPI) Get(ctx context.Context, request GetRequest) (*RepoInfo, erro
 	return &repoInfo, err
 }
 
+// Get a repo
+//
 // Returns the repo with the given repo ID.
 func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId string) (*RepoInfo, error) {
 	return a.Get(ctx, GetRequest{
@@ -58,6 +68,8 @@ func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId string) (*RepoInfo, e
 	})
 }
 
+// Get repos
+//
 // Returns repos that the calling user has Manage permissions on. Results are
 // paginated with each page containing twenty repos.
 func (a *ReposAPI) List(ctx context.Context, request ListRequest) (*ListReposResponse, error) {
@@ -67,6 +79,8 @@ func (a *ReposAPI) List(ctx context.Context, request ListRequest) (*ListReposRes
 	return &listReposResponse, err
 }
 
+// Updates the repo to the given branch or tag
+//
 // Updates the repo to a different branch or tag, or updates the repo to the
 // latest commit on the same branch.
 func (a *ReposAPI) Update(ctx context.Context, request UpdateRepo) error {
