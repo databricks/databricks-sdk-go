@@ -7,7 +7,7 @@ import (
 )
 
 func TestBasic(t *testing.T) {
-	batch, err := NewFromFile("../testdata/spec.json")
+	batch, err := NewFromFile("../testdata/spec.json", []string{})
 	assert.NoError(t, err)
 
 	assert.Len(t, batch.Packages, 1)
@@ -16,7 +16,7 @@ func TestBasic(t *testing.T) {
 // This test is used for debugging purposes
 func TestBasicDebug(t *testing.T) {
 	t.SkipNow()
-	batch, err := NewFromFile("/tmp/processed-databricks-workspace-all.json")
+	batch, err := NewFromFile("/tmp/processed-databricks-workspace-all.json", []string{})
 	assert.NoError(t, err)
 
 	m := batch.Packages["unitycatalog"].services["Catalogs"].methods["create"]

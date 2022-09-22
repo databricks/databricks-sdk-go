@@ -24,7 +24,6 @@ func main() {
 	flag.StringVar(&ctx.Spec, "spec", "", "location of the spec file")
 	flag.StringVar(&ctx.Target, "target", "", "path to directory with .codegen.json")
 	flag.BoolVar(&ctx.DryRun, "dry-run", false, "print to stdout instead of real files")
-
 	flag.Parse()
 
 	if ctx.Spec == "" {
@@ -47,10 +46,6 @@ type Context struct {
 }
 
 func (c *Context) Generate() error {
-	batch, err := code.NewFromFile(c.Spec)
-	if err != nil {
-		return err
-	}
 	f, err := os.Open(fmt.Sprintf("%s/.codegen.json", c.Target))
 	if err != nil {
 		return fmt.Errorf("no .codegen.json file in %s: %w", c.Target, err)
@@ -66,6 +61,10 @@ func (c *Context) Generate() error {
 		return fmt.Errorf(".codegen.json: %w", err)
 	}
 	render.ctx = c
+	batch, err := code.NewFromFile(c.Spec, render.IncludeTags)
+	if err != nil {
+		return err
+	}
 	render.batch = batch
 	return render.Run()
 }
@@ -77,9 +76,10 @@ type Render struct {
 
 	// We can generate SDKs in three modes: Packages, Types, Services
 	// E.g. Go is Package-focused and Java is Types+Services
-	Packages map[string]string `json:"packages,omitempty"`
-	Types    map[string]string `json:"types,omitempty"`
-	Services map[string]string `json:"services,omitempty"`
+	Packages    map[string]string `json:"packages,omitempty"`
+	Types       map[string]string `json:"types,omitempty"`
+	Services    map[string]string `json:"services,omitempty"`
+	IncludeTags []string          `json:"includeTags,omitempty"`
 }
 
 func (r *Render) Run() error {
@@ -123,7 +123,7 @@ func newPass[T named](items []T, fileset map[string]string) *Pass[T] {
 		Items:   items,
 		ctx:     &ctx,
 		fileset: newFileset,
-		tmpl:    template.Must(template.ParseFiles(tmpls...)),
+		tmpl:    template.Must(template.New("codegen").Funcs(code.HelperFuncs).ParseFiles(tmpls...)),
 	}
 }
 

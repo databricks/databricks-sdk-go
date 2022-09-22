@@ -36,6 +36,9 @@ func (n *Named) PascalName() string {
 		" ", "")
 }
 
+func (n *Named) UpperName() string {
+	return strings.ToUpper(n.Name)
+}
 func (n *Named) CamelName() string {
 	cc := n.PascalName()
 	return strings.ToLower(cc[0:1]) + cc[1:]
@@ -74,4 +77,14 @@ func (n *Named) Comment(prefix string, maxLen int) string {
 		currentLine.Reset()
 	}
 	return strings.TrimLeft(prefix, "\t ") + strings.Join(lines, "\n"+prefix)
+}
+
+func (n *Named) SnakeName() string {
+	return strings.ToLower(
+		strings.ReplaceAll(
+			strings.ReplaceAll(
+				strings.ReplaceAll(n.Name, "$", ""),
+				" ", ""),
+			"-", "_"),
+	)
 }

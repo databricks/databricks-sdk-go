@@ -40,6 +40,7 @@ type Entity struct {
 	IsFloat64  bool
 	IsBool     bool
 	IsString   bool
+	IsEmpty    bool
 	fields     map[string]Field
 }
 

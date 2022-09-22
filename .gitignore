@@ -16,4 +16,7 @@ vendor/
 
 coverage.txt
 
-.vscode/*.log
+.vscode/*.lograw-specs/**
+
+raw-specs/**
+out/**
