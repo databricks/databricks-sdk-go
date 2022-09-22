@@ -93,29 +93,3 @@ func (a *InstancePoolsAPI) ListAll(ctx context.Context) ([]InstancePoolAndStats,
 	}
 	return response.InstancePools, nil
 }
-
-func (a *InstancePoolsAPI) InstancePoolAndStatsInstancePoolNameToInstancePoolIdMap(ctx context.Context) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListAll(ctx)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.InstancePoolName] = v.InstancePoolId
-	}
-	return mapping, nil
-}
-
-func (a *InstancePoolsAPI) GetInstancePoolAndStatsByInstancePoolName(ctx context.Context, name string) (*InstancePoolAndStats, error) {
-	result, err := a.ListAll(ctx)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.InstancePoolName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("InstancePoolAndStats named '%s' does not exist", name)
-}

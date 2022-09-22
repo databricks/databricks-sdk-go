@@ -140,10 +140,6 @@ func (a *AlertsAPI) ListAlerts(ctx context.Context) ([]Alert, error) {
 	return alertList, err
 }
 
-<<<<<<< HEAD
-// Fetch an alert's refresh schedules
-//
-=======
 func (a *AlertsAPI) AlertNameToIdMap(ctx context.Context) (map[string]string, error) {
 	mapping := map[string]string{}
 	result, err := a.ListAlerts(ctx)
@@ -170,7 +166,8 @@ func (a *AlertsAPI) GetAlertByName(ctx context.Context, name string) (*Alert, er
 	return nil, fmt.Errorf("Alert named '%s' does not exist", name)
 }
 
->>>>>>> 499b182 (regenerate)
+// Fetch an alert's refresh schedules
+//
 // Alerts can have refresh schedules that specify when to refresh and evaluate
 // the associated query result.
 //
@@ -301,10 +298,6 @@ func (a *DashboardsAPI) ListDashboards(ctx context.Context, request ListDashboar
 	return &listDashboardsResponse, err
 }
 
-<<<<<<< HEAD
-// Restore a trashed dashboard
-//
-=======
 func (a *DashboardsAPI) ListDashboardsAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
 	var results []Dashboard
 	for {
@@ -349,7 +342,8 @@ func (a *DashboardsAPI) GetDashboardByName(ctx context.Context, name string) (*D
 	return nil, fmt.Errorf("Dashboard named '%s' does not exist", name)
 }
 
->>>>>>> 499b182 (regenerate)
+// Restore a trashed dashboard
+//
 // A restored dashboard appears in list views and searches and can be shared.
 func (a *DashboardsAPI) RestoreDashboard(ctx context.Context, request RestoreDashboardRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/trash/%v", request.DashboardId)
@@ -540,10 +534,6 @@ func (a *QueriesAPI) ListQueries(ctx context.Context, request ListQueriesRequest
 	return &listQueriesResponse, err
 }
 
-<<<<<<< HEAD
-// Restore a trashed query
-//
-=======
 func (a *QueriesAPI) ListQueriesAll(ctx context.Context, request ListQueriesRequest) ([]Query, error) {
 	var results []Query
 	for {
@@ -588,7 +578,8 @@ func (a *QueriesAPI) GetQueryByName(ctx context.Context, name string) (*Query, e
 	return nil, fmt.Errorf("Query named '%s' does not exist", name)
 }
 
->>>>>>> 499b182 (regenerate)
+// Restore a trashed query
+//
 // A restored query appears in list views and searches. You can use restored
 // queries for alerts.
 func (a *QueriesAPI) RestoreQuery(ctx context.Context, request RestoreQueryRequest) error {

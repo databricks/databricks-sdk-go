@@ -1334,7 +1334,7 @@ type ListNodeTypesResponse struct {
 	// The list of available Spark node types.
 	NodeTypes []NodeType `json:"node_types,omitempty"`
 	// <needs content added>
-	Success any/* ERROR */ `json:"success,omitempty"`
+	Success any/* MISSING TYPE */ `json:"success,omitempty"`
 }
 
 type LogAnalyticsInfo struct {

@@ -227,9 +227,11 @@ func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]Clust
 	return results, nil
 }
 
-// Retrieves the information for a cluster given its identifier. Clusters can be
-// described while they are running, or up to 60 days after they are terminated.
-// An example request: “/clusters/get?cluster_id=1202-211320-brick1“
+// Get cluster info
+//
+// "Retrieves the information for a cluster given its identifier. Clusters can
+// be described while they are running, or up to 60 days after they are
+// terminated.
 func (a *ClustersAPI) Get(ctx context.Context, request GetRequest) (*ClusterInfo, error) {
 	var clusterInfo ClusterInfo
 	path := "/api/2.0/clusters/get"
@@ -304,10 +306,6 @@ func (a *ClustersAPI) List(ctx context.Context, request ListRequest) (*ListClust
 	return &listClustersResponse, err
 }
 
-<<<<<<< HEAD
-// List all clusters
-//
-=======
 func (a *ClustersAPI) ListAll(ctx context.Context, request ListRequest) ([]ClusterInfo, error) {
 	response, err := a.List(ctx, request)
 	if err != nil {
@@ -342,7 +340,8 @@ func (a *ClustersAPI) GetClusterInfoByClusterName(ctx context.Context, name stri
 	return nil, fmt.Errorf("ClusterInfo named '%s' does not exist", name)
 }
 
->>>>>>> e767f34 (Unify list return types)
+// List all clusters
+//
 // Returns information about all pinned clusters, currently active clusters, up
 // to 70 of the most recently terminated interactive clusters in the past 7
 // days, and up to 30 of the most recently terminated job clusters in the past 7

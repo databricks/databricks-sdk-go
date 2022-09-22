@@ -86,11 +86,6 @@ func (a *GroupsAPI) ListGroups(ctx context.Context, request ListGroupsRequest) (
 	return &listGroupsResponse, err
 }
 
-<<<<<<< HEAD
-// Create a new group in <Workspace>
-//
-// Create one group in the <Workspace> with a unique name
-=======
 func (a *GroupsAPI) ListGroupsAll(ctx context.Context, request ListGroupsRequest) ([]Group, error) {
 	response, err := a.ListGroups(ctx, request)
 	if err != nil {
@@ -125,8 +120,9 @@ func (a *GroupsAPI) GetGroupByDisplayName(ctx context.Context, name string) (*Gr
 	return nil, fmt.Errorf("Group named '%s' does not exist", name)
 }
 
-// Create one group in the <Workspace>.
->>>>>>> e767f34 (Unify list return types)
+// Create a new group in <Workspace>
+//
+// Create one group in the <Workspace> with a unique name
 func (a *GroupsAPI) NewGroup(ctx context.Context, request Group) (*Group, error) {
 	var group Group
 	path := "/api/2.0/preview/scim/v2/Groups"
@@ -209,10 +205,6 @@ func (a *ServicePrincipalsAPI) ListServicePrincipals(ctx context.Context, reques
 	return &listServicePrincipalResponse, err
 }
 
-<<<<<<< HEAD
-// Create a new service principal in <Workspace>
-//
-=======
 func (a *ServicePrincipalsAPI) ListServicePrincipalsAll(ctx context.Context, request ListServicePrincipalsRequest) ([]ServicePrincipal, error) {
 	response, err := a.ListServicePrincipals(ctx, request)
 	if err != nil {
@@ -247,7 +239,8 @@ func (a *ServicePrincipalsAPI) GetServicePrincipalByDisplayName(ctx context.Cont
 	return nil, fmt.Errorf("ServicePrincipal named '%s' does not exist", name)
 }
 
->>>>>>> e767f34 (Unify list return types)
+// Create a new service principal in <Workspace>
+//
 // Create one service principal in the <Workspace>.
 func (a *ServicePrincipalsAPI) NewServicePrincipal(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
@@ -333,11 +326,6 @@ func (a *UsersAPI) ListUsers(ctx context.Context, request ListUsersRequest) (*Li
 	return &listUsersResponse, err
 }
 
-<<<<<<< HEAD
-// Create a new user in <Workspace>
-//
-// Create a user in the <Workspace> who will automatically added to the account.
-=======
 func (a *UsersAPI) ListUsersAll(ctx context.Context, request ListUsersRequest) ([]User, error) {
 	response, err := a.ListUsers(ctx, request)
 	if err != nil {
@@ -372,8 +360,9 @@ func (a *UsersAPI) GetUserByUserName(ctx context.Context, name string) (*User, e
 	return nil, fmt.Errorf("User named '%s' does not exist", name)
 }
 
-// Create one user in the <Workspace>.
->>>>>>> e767f34 (Unify list return types)
+// Create a new user in <Workspace>
+//
+// Create a user in the <Workspace> who will automatically added to the account.
 func (a *UsersAPI) NewUser(ctx context.Context, request User) (*User, error) {
 	var user User
 	path := "/api/2.0/preview/scim/v2/Users"

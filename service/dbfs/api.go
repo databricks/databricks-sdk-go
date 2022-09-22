@@ -126,8 +126,14 @@ func (a *DbfsAPI) List(ctx context.Context, request ListRequest) (*ListStatusRes
 	return &listStatusResponse, err
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+func (a *DbfsAPI) ListAll(ctx context.Context, request ListRequest) ([]FileInfo, error) {
+	response, err := a.List(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.Files, nil
+}
+
 // List directory contents or file details
 //
 // Lists the contents of a directory, or details of a file. If the file or
@@ -138,24 +144,6 @@ func (a *DbfsAPI) List(ctx context.Context, request ListRequest) (*ListStatusRes
 //
 // ``` { "files": [ { "path": "/a.cpp", "is_dir": false, "file_size\": 261 }, {
 // "path": "/databricks-results", "is_dir": true, "file_size\": 0 } ] } ```
-=======
-func (a *DbfsAPI) ListAll(ctx context.Context, request ListStatusRequest) ([]FileInfo, error) {
-=======
-func (a *DbfsAPI) ListAll(ctx context.Context, request ListRequest) ([]FileInfo, error) {
->>>>>>> 499b182 (regenerate)
-	response, err := a.List(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	return response.Files, nil
-}
-
-// Lists the contents of a directory, or details of the file. If the file or
-// directory does not exist, this call will throw an exception with
-// “RESOURCE_DOES_NOT_EXIST“. Example of reply: .. code:: { "files": [ {
-// "path": "/a.cpp", "is_dir": false, "file_size": 261 }, { "path":
-// "/databricks-results", "is_dir": true, "file_size": 0 } ] }
->>>>>>> e767f34 (Unify list return types)
 func (a *DbfsAPI) ListByPath(ctx context.Context, path string) (*ListStatusResponse, error) {
 	return a.List(ctx, ListRequest{
 		Path: path,

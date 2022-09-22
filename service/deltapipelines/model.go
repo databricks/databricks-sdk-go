@@ -223,7 +223,7 @@ type PipelineCluster struct {
 	AwsAttributes *PipelinesAwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
-	AzureAttributes any/* ERROR */ `json:"azure_attributes,omitempty"`
+	AzureAttributes any/* MISSING TYPE */ `json:"azure_attributes,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
 	// one destination can be specified for one cluster. If the conf is given,
@@ -364,7 +364,7 @@ type PipelineSpec struct {
 type PipelineTrigger struct {
 	Cron *CronTrigger `json:"cron,omitempty"`
 
-	Manual any/* ERROR */ `json:"manual,omitempty"`
+	Manual any/* MISSING TYPE */ `json:"manual,omitempty"`
 }
 
 type PipelinesAutoScale struct {

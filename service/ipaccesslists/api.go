@@ -90,7 +90,14 @@ func (a *IpAccessListsAPI) GetAllIpAccessLists(ctx context.Context) (*GetIPAcces
 	return &getIPAccessListResponse, err
 }
 
-<<<<<<< HEAD
+func (a *IpAccessListsAPI) GetAllIpAccessListsAll(ctx context.Context) ([]CreateIPAccessListResponse, error) {
+	response, err := a.GetAllIpAccessLists(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return response.IpAccessLists, nil
+}
+
 // Replace access list
 //
 // Replaces an IP access list, specified by its ID.
@@ -111,27 +118,6 @@ func (a *IpAccessListsAPI) GetAllIpAccessLists(ctx context.Context) (*GetIPAcces
 //
 // Note that your resulting IP access list has no effect until you enable the
 // feature. See [`/workspace-conf`](#operation/set-status).
-=======
-func (a *IpAccessListsAPI) GetAllIpAccessListsAll(ctx context.Context) ([]CreateIPAccessListResponse, error) {
-	response, err := a.GetAllIpAccessLists(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return response.IpAccessLists, nil
-}
-
-// Replace an IP access list, specified by its ID. A list can include allow
-// lists and block lists. See the top of this file for a description of how the
-// server treats allow lists and block lists at run time. When replacing an IP
-// access list: * For all allow lists and block lists combined, the API supports
-// a maximum of 1000 IP/CIDR values, where one CIDR counts as a single value.
-// Attempts to exceed that number return error 400 with `error_code` value
-// `QUOTA_EXCEEDED`. * If the resulting list would block the calling user?s
-// current IP, error 400 is returned with `error_code` value `INVALID_STATE`. It
-// can take a few minutes for the changes to take effect. Note that your
-// resulting IP access list has no effect until you enable the feature. See
-// [`/workspace-conf`](#operation/set-status)
->>>>>>> e767f34 (Unify list return types)
 func (a *IpAccessListsAPI) ReplaceIpAccessList(ctx context.Context, request ReplaceIPAccessListRequest) error {
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	err := a.client.Put(ctx, path, request)
