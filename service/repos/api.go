@@ -43,7 +43,7 @@ func (a *ReposAPI) Delete(ctx context.Context, request DeleteRequest) error {
 // Deletes the repo
 //
 // Deletes the specified repo
-func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId string) error {
+func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId int64) error {
 	return a.Delete(ctx, DeleteRequest{
 		RepoId: repoId,
 	})
@@ -62,7 +62,7 @@ func (a *ReposAPI) Get(ctx context.Context, request GetRequest) (*RepoInfo, erro
 // Get a repo
 //
 // Returns the repo with the given repo ID.
-func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId string) (*RepoInfo, error) {
+func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId int64) (*RepoInfo, error) {
 	return a.Get(ctx, GetRequest{
 		RepoId: repoId,
 	})

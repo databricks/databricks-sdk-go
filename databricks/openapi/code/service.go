@@ -18,7 +18,7 @@ type Service struct {
 }
 
 func (svc *Service) FullName() string {
-	return fmt.Sprintf("%s.%s", svc.Name, svc.Package.Name)
+	return fmt.Sprintf("%s.%s", svc.Package.Name, svc.Name)
 }
 
 func (svc *Service) Methods() (methods []*Method) {

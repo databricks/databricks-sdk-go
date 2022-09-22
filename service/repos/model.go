@@ -35,7 +35,7 @@ type RepoInfo struct {
 type UpdateRepo struct {
 	Branch string `json:"branch,omitempty"`
 	// The ID for the corresponding repo to access.
-	RepoId string `json:"-" path:"repo_id"`
+	RepoId int64 `json:"-" path:"repo_id"`
 
 	Tag string `json:"tag,omitempty"`
 }
@@ -44,12 +44,12 @@ type UpdateRepo struct {
 
 type DeleteRequest struct {
 	// The ID for the corresponding repo to access.
-	RepoId string `json:"-" path:"repo_id"`
+	RepoId int64 `json:"-" path:"repo_id"`
 }
 
 type GetRequest struct {
 	// The ID for the corresponding repo to access.
-	RepoId string `json:"-" path:"repo_id"`
+	RepoId int64 `json:"-" path:"repo_id"`
 }
 
 // SHA-1 hash representing the commit ID of the current HEAD of the repo.

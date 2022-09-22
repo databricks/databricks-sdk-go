@@ -12,6 +12,14 @@ type CreateCredentials struct {
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
 }
 
+type CreateCredentialsResponse struct {
+	CredentialId int64 `json:"credential_id,omitempty"`
+
+	GitProvider string `json:"git_provider,omitempty"`
+
+	GitUsername string `json:"git_username,omitempty"`
+}
+
 type GetCredentialResponse struct {
 	CredentialId int64 `json:"credential_id,omitempty"`
 
@@ -26,7 +34,7 @@ type GetCredentialsResponse struct {
 
 type UpdateCredentials struct {
 	// The ID for the corresponding credential to access.
-	CredentialId string `json:"-" path:"credential_id"`
+	CredentialId int64 `json:"-" path:"credential_id"`
 
 	GitProvider string `json:"git_provider,omitempty"`
 
@@ -39,12 +47,12 @@ type UpdateCredentials struct {
 
 type DeleteRequest struct {
 	// The ID for the corresponding credential to access.
-	CredentialId string `json:"-" path:"credential_id"`
+	CredentialId int64 `json:"-" path:"credential_id"`
 }
 
 type GetRequest struct {
 	// The ID for the corresponding credential to access.
-	CredentialId string `json:"-" path:"credential_id"`
+	CredentialId int64 `json:"-" path:"credential_id"`
 }
 
 // Git provider. This field is case-insensitive. The available Git providers are
