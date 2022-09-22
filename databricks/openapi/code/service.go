@@ -114,17 +114,21 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 	if svc.IsRpcStyle {
 		name = filepath.Base(path)
 	}
+	description := op.Description
+	if op.Summary != "" {
+		description = fmt.Sprintf("%s\n\n%s", op.Summary, description)
+	}
 	return &Method{
-		Named:             Named{name, op.Description},
+		Named:             Named{name, description},
 		Service:           svc,
 		Verb:              strings.ToUpper(verb),
 		Path:              path,
 		Request:           request,
 		PathParts:         svc.paramPath(path, request, params),
 		Response:          response,
+		EmptyResponseName: emptyResponse,
 		wait:              op.Wait,
 		operation:         op,
-		EmptyResponseName: emptyResponse,
 		pagination:        op.Pagination,
 		shortcut:          op.Shortcut,
 	}

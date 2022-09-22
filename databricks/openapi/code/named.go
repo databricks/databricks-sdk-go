@@ -52,9 +52,17 @@ func (n *Named) Comment(prefix string, maxLen int) string {
 	if n.Description == "" {
 		return ""
 	}
+	trimmed := strings.TrimSpace(n.Description)
+	description := strings.ReplaceAll(trimmed, "\n\n", " __BLANK__ ")
 	var lines []string
 	currentLine := strings.Builder{}
-	for _, v := range whitespace.Split(n.Description, -1) {
+	for _, v := range whitespace.Split(description, -1) {
+		if v == "__BLANK__" {
+			lines = append(lines, currentLine.String())
+			lines = append(lines, "")
+			currentLine.Reset()
+			continue
+		}
 		if len(prefix)+currentLine.Len()+len(v)+1 > maxLen {
 			lines = append(lines, currentLine.String())
 			currentLine.Reset()

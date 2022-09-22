@@ -85,7 +85,9 @@ type MavenLibrary struct {
 	// Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2".
 	Coordinates string `json:"coordinates"`
 	// List of dependences to exclude. For example: ``["slf4j:slf4j",
-	// "*:hadoop-client"]``. Maven dependency exclusions:
+	// "*:hadoop-client"]``.
+	//
+	// Maven dependency exclusions:
 	// https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html.
 	Exclusions []string `json:"exclusions,omitempty"`
 	// Maven repo to install the Maven package from. If omitted, both Maven

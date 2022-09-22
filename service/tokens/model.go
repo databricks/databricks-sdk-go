@@ -7,15 +7,14 @@ package tokens
 type CreateTokenRequest struct {
 	// Optional description to attach to the token.
 	Comment string `json:"comment,omitempty"`
-	// The lifetime of the token, in seconds. If lifetime is not specified, this
-	// token remains valid indefinitely. If the token in interal, the lifetime
-	// is at most autoInjectedTokenExpirationTime (default 2 days) in
-	// WebappConf.
+	// The lifetime of the token, in seconds.
+	//
+	// If the ifetime is not specified, this token remains valid indefinitely.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
 }
 
 type CreateTokenResponse struct {
-	// The information of the new token.
+	// The information for the new token.
 	TokenInfo *PublicTokenInfo `json:"token_info,omitempty"`
 	// The value of the new token.
 	TokenValue string `json:"token_value,omitempty"`
