@@ -90,14 +90,6 @@ func (a *IpAccessListsAPI) GetAllIpAccessLists(ctx context.Context) (*GetIPAcces
 	return &getIPAccessListResponse, err
 }
 
-func (a *IpAccessListsAPI) GetAllIpAccessListsAll(ctx context.Context) ([]CreateIPAccessListResponse, error) {
-	response, err := a.GetAllIpAccessLists(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return response.IpAccessLists, nil
-}
-
 // Replace access list
 //
 // Replaces an IP access list, specified by its ID.

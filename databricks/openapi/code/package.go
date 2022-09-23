@@ -51,6 +51,15 @@ func (pkg *Package) EmptyTypes() (types []*Named) {
 	return types
 }
 
+func (pkg *Package) HasPagination() bool {
+	for _, v := range pkg.services {
+		if v.HasPagination() {
+			return true
+		}
+	}
+	return false
+}
+
 func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool) *Entity {
 	if s.IsRef() {
 		// if schema is src, load it to this package

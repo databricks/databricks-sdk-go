@@ -7,8 +7,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/retries"
+
+	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
 func NewClusters(client *client.DatabricksClient) ClustersService {
@@ -209,24 +210,6 @@ func (a *ClustersAPI) Events(ctx context.Context, request GetEvents) (*GetEvents
 	return &getEventsResponse, err
 }
 
-func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]ClusterEvent, error) {
-	var results []ClusterEvent
-	for {
-		response, err := a.Events(ctx, request)
-		if err != nil {
-			return nil, err
-		}
-		if len(response.Events) == 0 {
-			break
-		}
-		for _, v := range response.Events {
-			results = append(results, v)
-		}
-		request.Offset += 50
-	}
-	return results, nil
-}
-
 // Get cluster info
 //
 // "Retrieves the information for a cluster given its identifier. Clusters can
@@ -304,40 +287,6 @@ func (a *ClustersAPI) List(ctx context.Context, request ListRequest) (*ListClust
 	path := "/api/2.0/clusters/list"
 	err := a.client.Get(ctx, path, request, &listClustersResponse)
 	return &listClustersResponse, err
-}
-
-func (a *ClustersAPI) ListAll(ctx context.Context, request ListRequest) ([]ClusterInfo, error) {
-	response, err := a.List(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	return response.Clusters, nil
-}
-
-func (a *ClustersAPI) ClusterInfoClusterNameToClusterIdMap(ctx context.Context, request ListRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListAll(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.ClusterName] = v.ClusterId
-	}
-	return mapping, nil
-}
-
-func (a *ClustersAPI) GetClusterInfoByClusterName(ctx context.Context, name string) (*ClusterInfo, error) {
-	result, err := a.ListAll(ctx, ListRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.ClusterName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("ClusterInfo named '%s' does not exist", name)
 }
 
 // List all clusters

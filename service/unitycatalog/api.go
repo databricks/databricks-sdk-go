@@ -83,14 +83,6 @@ func (a *CatalogsAPI) List(ctx context.Context) (*ListCatalogsResponse, error) {
 	return &listCatalogsResponse, err
 }
 
-func (a *CatalogsAPI) ListAll(ctx context.Context) ([]CatalogInfo, error) {
-	response, err := a.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return response.Catalogs, nil
-}
-
 // Update a catalog
 //
 // Updates the catalog that matches the supplied name. The caller must be either
@@ -177,14 +169,6 @@ func (a *ExternalLocationsAPI) List(ctx context.Context) (*ListExternalLocations
 	path := "/api/2.1/unity-catalog/external-locations"
 	err := a.client.Get(ctx, path, nil, &listExternalLocationsResponse)
 	return &listExternalLocationsResponse, err
-}
-
-func (a *ExternalLocationsAPI) ListAll(ctx context.Context) ([]ExternalLocationInfo, error) {
-	response, err := a.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return response.ExternalLocations, nil
 }
 
 // Update an external location
@@ -347,14 +331,6 @@ func (a *MetastoresAPI) List(ctx context.Context) (*ListMetastoresResponse, erro
 	return &listMetastoresResponse, err
 }
 
-func (a *MetastoresAPI) ListAll(ctx context.Context) ([]MetastoreInfo, error) {
-	response, err := a.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return response.Metastores, nil
-}
-
 // Update a Metastore
 //
 // Updates information for a specific Metastore. The caller must be a Metastore
@@ -452,14 +428,6 @@ func (a *ProvidersAPI) List(ctx context.Context) (*ListProvidersResponse, error)
 	path := "/api/2.1/unity-catalog/providers"
 	err := a.client.Get(ctx, path, nil, &listProvidersResponse)
 	return &listProvidersResponse, err
-}
-
-func (a *ProvidersAPI) ListAll(ctx context.Context) ([]ProviderInfo, error) {
-	response, err := a.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return response.Providers, nil
 }
 
 // List shares
@@ -644,14 +612,6 @@ func (a *RecipientsAPI) List(ctx context.Context) (*ListRecipientsResponse, erro
 	return &listRecipientsResponse, err
 }
 
-func (a *RecipientsAPI) ListAll(ctx context.Context) ([]RecipientInfo, error) {
-	response, err := a.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return response.Recipients, nil
-}
-
 // Rotate a token
 //
 // Refreshes the specified recipient's delta sharing authentication token with
@@ -750,14 +710,6 @@ func (a *SchemasAPI) List(ctx context.Context, request ListRequest) (*ListSchema
 	path := "/api/2.1/unity-catalog/schemas"
 	err := a.client.Get(ctx, path, request, &listSchemasResponse)
 	return &listSchemasResponse, err
-}
-
-func (a *SchemasAPI) ListAll(ctx context.Context, request ListRequest) ([]SchemaInfo, error) {
-	response, err := a.List(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	return response.Schemas, nil
 }
 
 // Update a schema
@@ -865,14 +817,6 @@ func (a *SharesAPI) List(ctx context.Context) (*ListSharesResponse, error) {
 	path := "/api/2.1/unity-catalog/shares"
 	err := a.client.Get(ctx, path, nil, &listSharesResponse)
 	return &listSharesResponse, err
-}
-
-func (a *SharesAPI) ListAll(ctx context.Context) ([]ShareInfo, error) {
-	response, err := a.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return response.Shares, nil
 }
 
 // Update a share
@@ -994,14 +938,6 @@ func (a *StorageCredentialsAPI) List(ctx context.Context) (*ListStorageCredentia
 	return &listStorageCredentialsResponse, err
 }
 
-func (a *StorageCredentialsAPI) ListAll(ctx context.Context) ([]StorageCredentialInfo, error) {
-	response, err := a.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return response.StorageCredentials, nil
-}
-
 // Update a credential
 //
 // Updates a storage credential on the Metastore. The caller must be the owner
@@ -1115,14 +1051,6 @@ func (a *TablesAPI) List(ctx context.Context, request ListRequest) (*ListTablesR
 	path := "/api/2.1/unity-catalog/tables"
 	err := a.client.Get(ctx, path, request, &listTablesResponse)
 	return &listTablesResponse, err
-}
-
-func (a *TablesAPI) ListAll(ctx context.Context, request ListRequest) ([]TableInfo, error) {
-	response, err := a.List(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	return response.Tables, nil
 }
 
 // List table summaries

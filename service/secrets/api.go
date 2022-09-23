@@ -133,14 +133,6 @@ func (a *SecretsAPI) ListAcls(ctx context.Context, request ListAclsRequest) (*Li
 	return &listAclsResponse, err
 }
 
-func (a *SecretsAPI) ListAclsAll(ctx context.Context, request ListAclsRequest) ([]AclItem, error) {
-	response, err := a.ListAcls(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	return response.Items, nil
-}
-
 // Lists the ACLs set on the given scope
 //
 // Users must have the “MANAGE“ permission to invoke this API.
@@ -175,14 +167,6 @@ func (a *SecretsAPI) ListScopes(ctx context.Context) (*ListScopesResponse, error
 	return &listScopesResponse, err
 }
 
-func (a *SecretsAPI) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
-	response, err := a.ListScopes(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return response.Scopes, nil
-}
-
 // Lists the secret keys that are stored at this scope. This is a metadata-only
 // operation; secret data cannot be retrieved using this API. Users need the
 // READ permission to make this call.
@@ -205,14 +189,6 @@ func (a *SecretsAPI) ListSecrets(ctx context.Context, request ListSecretsRequest
 	path := "/api/2.0/secrets/list"
 	err := a.client.Get(ctx, path, request, &listSecretsResponse)
 	return &listSecretsResponse, err
-}
-
-func (a *SecretsAPI) ListSecretsAll(ctx context.Context, request ListSecretsRequest) ([]SecretMetadata, error) {
-	response, err := a.ListSecrets(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	return response.Secrets, nil
 }
 
 // Lists the secret keys that are stored at this scope. This is a metadata-only

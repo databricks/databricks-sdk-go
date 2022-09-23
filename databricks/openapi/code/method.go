@@ -34,6 +34,7 @@ type Pagination struct {
 	Limit     *Field
 	Results   *Field
 	Entity    *Entity
+	Token     *Binding
 	Increment int
 }
 
@@ -141,9 +142,17 @@ func (m *Method) Pagination() *Pagination {
 		// we assume that method already returns body-as-array
 		return nil
 	}
+	var token *Binding
+	if m.pagination.Token != nil {
+		token = &Binding{ // reuse the same datastructure as for waiters
+			PollField: m.Request.Field(m.pagination.Token.Request),
+			Bind:      m.Response.Field(m.pagination.Token.Response),
+		}
+	}
 	results := m.Response.Field(m.pagination.Results)
 	return &Pagination{
 		Results:   results,
+		Token:     token,
 		Entity:    results.Entity.ArrayValue,
 		Offset:    m.Request.Field(m.pagination.Offset),
 		Limit:     m.Request.Field(m.pagination.Limit),

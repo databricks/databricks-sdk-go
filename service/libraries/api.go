@@ -35,9 +35,8 @@ func (a *LibrariesAPI) AllClusterStatuses(ctx context.Context) (*ListAllClusterL
 //
 // Get the status of libraries on a cluster. A status will be available for all
 // libraries installed on this cluster via the API or the libraries UI as well
-// as libraries set to be installed on all clusters via the libraries UI.
-//
-// The order of returned libraries will be as follows.
+// as libraries set to be installed on all clusters via the libraries UI. The
+// order of returned libraries will be as follows.
 //
 // 1. Libraries set to be installed on this cluster will be returned first.
 // Within this group, the final order will be order in which the libraries were
@@ -60,9 +59,8 @@ func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusR
 //
 // Get the status of libraries on a cluster. A status will be available for all
 // libraries installed on this cluster via the API or the libraries UI as well
-// as libraries set to be installed on all clusters via the libraries UI.
-//
-// The order of returned libraries will be as follows.
+// as libraries set to be installed on all clusters via the libraries UI. The
+// order of returned libraries will be as follows.
 //
 // 1. Libraries set to be installed on this cluster will be returned first.
 // Within this group, the final order will be order in which the libraries were

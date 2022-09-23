@@ -7,8 +7,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/retries"
+
+	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
 func NewJobs(client *client.DatabricksClient) JobsService {
@@ -261,24 +262,6 @@ func (a *JobsAPI) List(ctx context.Context, request ListRequest) (*ListResponse,
 	return &listResponse, err
 }
 
-func (a *JobsAPI) ListAll(ctx context.Context, request ListRequest) ([]Job, error) {
-	var results []Job
-	for {
-		response, err := a.List(ctx, request)
-		if err != nil {
-			return nil, err
-		}
-		if len(response.Jobs) == 0 {
-			break
-		}
-		for _, v := range response.Jobs {
-			results = append(results, v)
-		}
-		request.Offset += 25
-	}
-	return results, nil
-}
-
 // List runs for a job
 //
 // List runs in descending order by start time.
@@ -287,24 +270,6 @@ func (a *JobsAPI) ListRuns(ctx context.Context, request ListRunsRequest) (*ListR
 	path := "/api/2.1/jobs/runs/list"
 	err := a.client.Get(ctx, path, request, &listRunsResponse)
 	return &listRunsResponse, err
-}
-
-func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]Run, error) {
-	var results []Run
-	for {
-		response, err := a.ListRuns(ctx, request)
-		if err != nil {
-			return nil, err
-		}
-		if len(response.Runs) == 0 {
-			break
-		}
-		for _, v := range response.Runs {
-			results = append(results, v)
-		}
-		request.Offset += 25
-	}
-	return results, nil
 }
 
 // Repair a job run

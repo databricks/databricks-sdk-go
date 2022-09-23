@@ -126,14 +126,6 @@ func (a *DbfsAPI) List(ctx context.Context, request ListRequest) (*ListStatusRes
 	return &listStatusResponse, err
 }
 
-func (a *DbfsAPI) ListAll(ctx context.Context, request ListRequest) ([]FileInfo, error) {
-	response, err := a.List(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	return response.Files, nil
-}
-
 // List directory contents or file details
 //
 // Lists the contents of a directory, or details of a file. If the file or

@@ -86,40 +86,6 @@ func (a *GroupsAPI) ListGroups(ctx context.Context, request ListGroupsRequest) (
 	return &listGroupsResponse, err
 }
 
-func (a *GroupsAPI) ListGroupsAll(ctx context.Context, request ListGroupsRequest) ([]Group, error) {
-	response, err := a.ListGroups(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	return response.Resources, nil
-}
-
-func (a *GroupsAPI) GroupDisplayNameToIdMap(ctx context.Context, request ListGroupsRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListGroupsAll(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.DisplayName] = v.Id
-	}
-	return mapping, nil
-}
-
-func (a *GroupsAPI) GetGroupByDisplayName(ctx context.Context, name string) (*Group, error) {
-	result, err := a.ListGroupsAll(ctx, ListGroupsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.DisplayName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("Group named '%s' does not exist", name)
-}
-
 // Create a new group in <Workspace>
 //
 // Create one group in the <Workspace> with a unique name
@@ -203,40 +169,6 @@ func (a *ServicePrincipalsAPI) ListServicePrincipals(ctx context.Context, reques
 	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
 	err := a.client.Get(ctx, path, request, &listServicePrincipalResponse)
 	return &listServicePrincipalResponse, err
-}
-
-func (a *ServicePrincipalsAPI) ListServicePrincipalsAll(ctx context.Context, request ListServicePrincipalsRequest) ([]ServicePrincipal, error) {
-	response, err := a.ListServicePrincipals(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	return response.Resources, nil
-}
-
-func (a *ServicePrincipalsAPI) ServicePrincipalDisplayNameToIdMap(ctx context.Context, request ListServicePrincipalsRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListServicePrincipalsAll(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.DisplayName] = v.Id
-	}
-	return mapping, nil
-}
-
-func (a *ServicePrincipalsAPI) GetServicePrincipalByDisplayName(ctx context.Context, name string) (*ServicePrincipal, error) {
-	result, err := a.ListServicePrincipalsAll(ctx, ListServicePrincipalsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.DisplayName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("ServicePrincipal named '%s' does not exist", name)
 }
 
 // Create a new service principal in <Workspace>
@@ -324,40 +256,6 @@ func (a *UsersAPI) ListUsers(ctx context.Context, request ListUsersRequest) (*Li
 	path := "/api/2.0/preview/scim/v2/Users"
 	err := a.client.Get(ctx, path, request, &listUsersResponse)
 	return &listUsersResponse, err
-}
-
-func (a *UsersAPI) ListUsersAll(ctx context.Context, request ListUsersRequest) ([]User, error) {
-	response, err := a.ListUsers(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	return response.Resources, nil
-}
-
-func (a *UsersAPI) UserUserNameToIdMap(ctx context.Context, request ListUsersRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListUsersAll(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.UserName] = v.Id
-	}
-	return mapping, nil
-}
-
-func (a *UsersAPI) GetUserByUserName(ctx context.Context, name string) (*User, error) {
-	result, err := a.ListUsersAll(ctx, ListUsersRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.UserName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("User named '%s' does not exist", name)
 }
 
 // Create a new user in <Workspace>

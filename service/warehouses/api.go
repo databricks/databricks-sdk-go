@@ -7,8 +7,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/retries"
+
+	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
 func NewWarehouses(client *client.DatabricksClient) WarehousesService {
@@ -212,14 +213,6 @@ func (a *WarehousesAPI) ListWarehouses(ctx context.Context, request ListWarehous
 	path := "/api/2.0/sql/warehouses"
 	err := a.client.Get(ctx, path, request, &listWarehousesResponse)
 	return &listWarehousesResponse, err
-}
-
-func (a *WarehousesAPI) ListWarehousesAll(ctx context.Context, request ListWarehousesRequest) ([]EndpointInfo, error) {
-	response, err := a.ListWarehouses(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	return response.Warehouses, nil
 }
 
 // Sets the workspace level configuration that is shared by all SQL warehouses

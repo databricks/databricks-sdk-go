@@ -85,11 +85,3 @@ func (a *InstancePoolsAPI) List(ctx context.Context) (*ListInstancePools, error)
 	err := a.client.Get(ctx, path, nil, &listInstancePools)
 	return &listInstancePools, err
 }
-
-func (a *InstancePoolsAPI) ListAll(ctx context.Context) ([]InstancePoolAndStats, error) {
-	response, err := a.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return response.InstancePools, nil
-}

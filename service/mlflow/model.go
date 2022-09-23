@@ -453,6 +453,13 @@ type ListRegisteredModelsResponse struct {
 	RegisteredModels []RegisteredModel `json:"registered_models,omitempty"`
 }
 
+type ListRegistryWebhooks struct {
+	// Token that can be used to retrieve the next page of artifact results
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// Array of registry webhooks.
+	Webhooks []RegistryWebhook `json:"webhooks,omitempty"`
+}
+
 type LogBatch struct {
 	// Metrics to log. A single request can contain up to 1000 metrics, and up
 	// to 1000 metrics, params, and tags in total.
@@ -1245,11 +1252,13 @@ type ListRequest struct {
 	// If not specified, all webhooks associated with the specified events are
 	// listed, regardless of their associated model.
 	ModelName string `json:"-" url:"model_name,omitempty"`
+	// Token indicating the page of artifact results to fetch
+	PageToken string `json:"-" url:"page_token,omitempty"`
 }
 
 type ListResponse struct {
-	// Array of registry webhooks.
-	Webhooks []RegistryWebhook `json:"webhooks,omitempty"`
+	// Array of open transition requests.
+	Requests []Activity `json:"requests,omitempty"`
 }
 
 // Name of the model whose events would trigger this webhook.

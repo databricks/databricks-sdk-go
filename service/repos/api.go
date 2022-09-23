@@ -31,18 +31,18 @@ func (a *ReposAPI) Create(ctx context.Context, request CreateRepo) (*RepoInfo, e
 	return &repoInfo, err
 }
 
-// Deletes the repo
+// Delete a repo
 //
-// Deletes the specified repo
+// Deletes the specified repo.
 func (a *ReposAPI) Delete(ctx context.Context, request DeleteRequest) error {
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
-// Deletes the repo
+// Delete a repo
 //
-// Deletes the specified repo
+// Deletes the specified repo.
 func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId int64) error {
 	return a.Delete(ctx, DeleteRequest{
 		RepoId: repoId,
@@ -79,15 +79,7 @@ func (a *ReposAPI) List(ctx context.Context, request ListRequest) (*ListReposRes
 	return &listReposResponse, err
 }
 
-func (a *ReposAPI) ListAll(ctx context.Context, request ListRequest) ([]RepoInfo, error) {
-	response, err := a.List(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	return response.Repos, nil
-}
-
-// Updates the repo to the given branch or tag
+// Update a repo
 //
 // Updates the repo to a different branch or tag, or updates the repo to the
 // latest commit on the same branch.

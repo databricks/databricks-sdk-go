@@ -19,7 +19,7 @@ type GitCredentialsAPI struct {
 	client *client.DatabricksClient
 }
 
-// Create a Git credential entry
+// Create a credential entry
 //
 // Creates a Git credential entry for the user. Only one Git credential per user
 // is supported, so any attempts to create credentials if an entry already
@@ -32,18 +32,18 @@ func (a *GitCredentialsAPI) Create(ctx context.Context, request CreateCredential
 	return &createCredentialsResponse, err
 }
 
-// Deletes the credential
+// Delete a credential
 //
-// Deletes the specified credential
+// Deletes the specified Git credential.
 func (a *GitCredentialsAPI) Delete(ctx context.Context, request DeleteRequest) error {
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
-// Deletes the credential
+// Delete a credential
 //
-// Deletes the specified credential
+// Deletes the specified Git credential.
 func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credentialId int64) error {
 	return a.Delete(ctx, DeleteRequest{
 		CredentialId: credentialId,
@@ -52,7 +52,7 @@ func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credential
 
 // Get a credential entry
 //
-// Returns the credential with the given credential ID.
+// Gets the Git credential with the specified credential ID.
 func (a *GitCredentialsAPI) Get(ctx context.Context, request GetRequest) (*GetCredentialResponse, error) {
 	var getCredentialResponse GetCredentialResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
@@ -62,7 +62,7 @@ func (a *GitCredentialsAPI) Get(ctx context.Context, request GetRequest) (*GetCr
 
 // Get a credential entry
 //
-// Returns the credential with the given credential ID.
+// Gets the Git credential with the specified credential ID.
 func (a *GitCredentialsAPI) GetByCredentialId(ctx context.Context, credentialId int64) (*GetCredentialResponse, error) {
 	return a.Get(ctx, GetRequest{
 		CredentialId: credentialId,
@@ -71,7 +71,7 @@ func (a *GitCredentialsAPI) GetByCredentialId(ctx context.Context, credentialId 
 
 // Get Git credentials
 //
-// Returns the calling user's Git credentials. One credential per user is
+// Lists the calling user's Git credentials. One credential per user is
 // supported.
 func (a *GitCredentialsAPI) List(ctx context.Context) (*GetCredentialsResponse, error) {
 	var getCredentialsResponse GetCredentialsResponse
@@ -80,17 +80,9 @@ func (a *GitCredentialsAPI) List(ctx context.Context) (*GetCredentialsResponse, 
 	return &getCredentialsResponse, err
 }
 
-func (a *GitCredentialsAPI) ListAll(ctx context.Context) ([]GetCredentialResponse, error) {
-	response, err := a.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return response.Credentials, nil
-}
-
-// Updates the credential
+// Update a credential
 //
-// Updates the credential.
+// Updates the specified Git credential.
 func (a *GitCredentialsAPI) Update(ctx context.Context, request UpdateCredentials) error {
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	err := a.client.Patch(ctx, path, request)

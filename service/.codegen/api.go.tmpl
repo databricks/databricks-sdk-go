@@ -8,6 +8,8 @@ import (
 	{{if .HasWaits}}"time"
 
 	"github.com/databricks/databricks-sdk-go/retries"{{end}}
+	{{if .HasPagination}}"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	{{- end}}
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 {{range .Services}}
@@ -64,7 +66,8 @@ func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .R
 }
 {{end}}{{if .Pagination}}
 func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) ([]{{.Pagination.Entity.PascalName}}, error) {
-	{{if .Pagination.Offset}}var results []{{.Pagination.Entity.PascalName}}
+	{{if or .Pagination.Offset .Pagination.Token}}var results []{{.Pagination.Entity.PascalName}}
+	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	for {
 		response, err := a.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
 		if err != nil {
@@ -76,7 +79,14 @@ func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Reque
 		for _, v := range response.{{.Pagination.Results.PascalName}} {
 			results = append(results, v)
 		}
-		request.{{.Pagination.Offset.PascalName}} += {{.Pagination.Increment}}
+		{{if .Pagination.Token -}}
+		request.{{.Pagination.Token.PollField.PascalName}} = response.{{.Pagination.Token.Bind.PascalName}}
+		if response.{{.Pagination.Token.Bind.PascalName}} == "" {
+			break
+		}
+		{{- else -}}
+		request.{{.Pagination.Offset.PascalName}} += {{template "type" .Pagination.Offset.Entity}}(len(response.{{.Pagination.Results.PascalName}})) // TODO: check for duplicates
+		{{- end}}
 	}
 	return results, nil{{else if .Pagination.Results}}response, err := a.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
 	if err != nil {
