@@ -16,6 +16,10 @@ import (
 type {{.PascalName}}Service interface {
 	{{range .Methods}}
     {{.Comment "    // " 80}}
+	{{- if .Pagination}}
+	// 
+	// Use {{.PascalName}}All() to get all {{.Pagination.Entity.PascalName}} instances{{if .Pagination.MultiRequest}}, which will iterate over every result page.{{end}}
+	{{- end}}
     {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{.Response.PascalName}}{{end}}, error){{else}}error{{end}}
 	{{if .Wait}}
 	// {{.PascalName}}AndWait calls {{.PascalName}}() and waits to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state

@@ -171,6 +171,10 @@ func (m *Method) paginationItem() *Entity {
 	return m.Pagination().Entity
 }
 
+func (p *Pagination) MultiRequest() bool {
+	return p.Offset != nil || p.Token != nil
+}
+
 func (m *Method) NamedIdMap() *NamedIdMap {
 	entity := m.paginationItem()
 	if entity == nil {

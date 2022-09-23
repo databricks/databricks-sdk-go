@@ -20,7 +20,7 @@ type CreateCredentialsResponse struct {
 	GitUsername string `json:"git_username,omitempty"`
 }
 
-type GetCredentialResponse struct {
+type CredentialInfo struct {
 	CredentialId int64 `json:"credential_id,omitempty"`
 
 	GitProvider string `json:"git_provider,omitempty"`
@@ -29,7 +29,7 @@ type GetCredentialResponse struct {
 }
 
 type GetCredentialsResponse struct {
-	Credentials []GetCredentialResponse `json:"credentials,omitempty"`
+	Credentials []CredentialInfo `json:"credentials,omitempty"`
 }
 
 type UpdateCredentials struct {
