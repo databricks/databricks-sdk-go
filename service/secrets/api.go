@@ -127,7 +127,7 @@ func (a *SecretsAPI) GetAcl(ctx context.Context, request GetAclRequest) (*AclIte
 // “PERMISSION_DENIED“ if the user does not have permission to make this API
 // call.
 //
-// Use ListAclsAll to get all AclItem instances
+// Use ListAclsAll() to get all AclItem instances
 func (a *SecretsAPI) ListAcls(ctx context.Context, request ListAclsRequest) (*ListAclsResponse, error) {
 	var listAclsResponse ListAclsResponse
 	path := "/api/2.0/secrets/acls/list"
@@ -174,7 +174,7 @@ func (a *SecretsAPI) ListAclsByScope(ctx context.Context, scope string) (*ListAc
 // Throws “PERMISSION_DENIED“ if the user does not have permission to make
 // this API call.
 //
-// Use ListScopesAll to get all SecretScope instances
+// Use ListScopesAll() to get all SecretScope instances
 func (a *SecretsAPI) ListScopes(ctx context.Context) (*ListScopesResponse, error) {
 	var listScopesResponse ListScopesResponse
 	path := "/api/2.0/secrets/scopes/list"
@@ -211,7 +211,7 @@ func (a *SecretsAPI) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
 // “PERMISSION_DENIED“ if the user does not have permission to make this API
 // call.
 //
-// Use ListSecretsAll to get all SecretMetadata instances
+// Use ListSecretsAll() to get all SecretMetadata instances
 func (a *SecretsAPI) ListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error) {
 	var listSecretsResponse ListSecretsResponse
 	path := "/api/2.0/secrets/list"

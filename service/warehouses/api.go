@@ -209,7 +209,7 @@ func (a *WarehousesAPI) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetWo
 
 // Lists all SQL warehouse a user has manager permissions for.
 //
-// Use ListWarehousesAll to get all EndpointInfo instances
+// Use ListWarehousesAll() to get all EndpointInfo instances
 func (a *WarehousesAPI) ListWarehouses(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error) {
 	var listWarehousesResponse ListWarehousesResponse
 	path := "/api/2.0/sql/warehouses"

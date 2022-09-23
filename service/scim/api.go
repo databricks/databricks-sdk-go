@@ -80,7 +80,7 @@ func (a *GroupsAPI) FetchGroupById(ctx context.Context, id string) (*Group, erro
 //
 // Get all details of the groups associated with the <Workspace>.
 //
-// Use ListGroupsAll to get all Group instances
+// Use ListGroupsAll() to get all Group instances
 func (a *GroupsAPI) ListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
 	var listGroupsResponse ListGroupsResponse
 	path := "/api/2.0/preview/scim/v2/Groups"
@@ -204,7 +204,7 @@ func (a *ServicePrincipalsAPI) FetchServicePrincipalById(ctx context.Context, id
 //
 // Get multiple service principals associated with a <Workspace>.
 //
-// Use ListServicePrincipalsAll to get all ServicePrincipal instances
+// Use ListServicePrincipalsAll() to get all ServicePrincipal instances
 func (a *ServicePrincipalsAPI) ListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 	var listServicePrincipalResponse ListServicePrincipalResponse
 	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
@@ -330,7 +330,7 @@ func (a *UsersAPI) FetchUserById(ctx context.Context, id string) (*User, error) 
 //
 // Get all the users associated with a <Workspace>.
 //
-// Use ListUsersAll to get all User instances
+// Use ListUsersAll() to get all User instances
 func (a *UsersAPI) ListUsers(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
 	path := "/api/2.0/preview/scim/v2/Users"

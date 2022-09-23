@@ -204,7 +204,7 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, 
 // paginated. If there are more events to read, the response includes all the
 // nparameters necessary to request the next page of events.
 //
-// Use EventsAll to get all ClusterEvent instances, which will iterate over every result page.
+// Use EventsAll() to get all ClusterEvent instances, which will iterate over every result page.
 func (a *ClustersAPI) Events(ctx context.Context, request GetEvents) (*GetEventsResponse, error) {
 	var getEventsResponse GetEventsResponse
 	path := "/api/2.0/clusters/events"
@@ -307,7 +307,7 @@ func (a *ClustersAPI) GetByClusterIdAndWait(ctx context.Context, clusterId strin
 // clusters, all 45 terminated interactive clusters, and the 30 most recently
 // terminated job clusters.
 //
-// Use ListAll to get all ClusterInfo instances
+// Use ListAll() to get all ClusterInfo instances
 func (a *ClustersAPI) List(ctx context.Context, request ListRequest) (*ListClustersResponse, error) {
 	var listClustersResponse ListClustersResponse
 	path := "/api/2.0/clusters/list"

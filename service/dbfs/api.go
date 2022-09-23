@@ -120,7 +120,7 @@ func (a *DbfsAPI) GetStatusByPath(ctx context.Context, path string) (*FileInfo, 
 // ``` { "files": [ { "path": "/a.cpp", "is_dir": false, "file_size\": 261 }, {
 // "path": "/databricks-results", "is_dir": true, "file_size\": 0 } ] } ```
 //
-// Use ListAll to get all FileInfo instances
+// Use ListAll() to get all FileInfo instances
 func (a *DbfsAPI) List(ctx context.Context, request ListRequest) (*ListStatusResponse, error) {
 	var listStatusResponse ListStatusResponse
 	path := "/api/2.0/dbfs/list"

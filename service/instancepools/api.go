@@ -80,7 +80,7 @@ func (a *InstancePoolsAPI) GetByInstancePoolId(ctx context.Context, instancePool
 //
 // Gets a list of instance pools with their statistics.
 //
-// Use ListAll to get all InstancePoolAndStats instances
+// Use ListAll() to get all InstancePoolAndStats instances
 func (a *InstancePoolsAPI) List(ctx context.Context) (*ListInstancePools, error) {
 	var listInstancePools ListInstancePools
 	path := "/api/2.0/instance-pools/list"

@@ -297,7 +297,7 @@ func (a *DashboardsAPI) GetDashboardByDashboardId(ctx context.Context, dashboard
 //
 // Fetch a paginated list of dashboard objects.
 //
-// Use ListDashboardsAll to get all Dashboard instances, which will iterate over every result page.
+// Use ListDashboardsAll() to get all Dashboard instances, which will iterate over every result page.
 func (a *DashboardsAPI) ListDashboards(ctx context.Context, request ListDashboardsRequest) (*ListDashboardsResponse, error) {
 	var listDashboardsResponse ListDashboardsResponse
 	path := "/api/2.0/preview/sql/dashboards"
@@ -311,6 +311,7 @@ func (a *DashboardsAPI) ListDashboards(ctx context.Context, request ListDashboar
 func (a *DashboardsAPI) ListDashboardsAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
 	var results []Dashboard
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+	request.Page = 1 // start iterating from the first page
 	for {
 		response, err := a.ListDashboards(ctx, request)
 		if err != nil {
@@ -322,7 +323,7 @@ func (a *DashboardsAPI) ListDashboardsAll(ctx context.Context, request ListDashb
 		for _, v := range response.Results {
 			results = append(results, v)
 		}
-		request.Page += int(len(response.Results)) // TODO: check for duplicates
+		request.Page++
 	}
 	return results, nil
 }
@@ -540,7 +541,7 @@ func (a *QueriesAPI) GetQueryByQueryId(ctx context.Context, queryId string) (*Qu
 // Gets a list of queries. Optionally, this list can be filtered by a search
 // term.
 //
-// Use ListQueriesAll to get all Query instances, which will iterate over every result page.
+// Use ListQueriesAll() to get all Query instances, which will iterate over every result page.
 func (a *QueriesAPI) ListQueries(ctx context.Context, request ListQueriesRequest) (*ListQueriesResponse, error) {
 	var listQueriesResponse ListQueriesResponse
 	path := "/api/2.0/preview/sql/queries"
@@ -554,6 +555,7 @@ func (a *QueriesAPI) ListQueries(ctx context.Context, request ListQueriesRequest
 func (a *QueriesAPI) ListQueriesAll(ctx context.Context, request ListQueriesRequest) ([]Query, error) {
 	var results []Query
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+	request.Page = 1 // start iterating from the first page
 	for {
 		response, err := a.ListQueries(ctx, request)
 		if err != nil {
@@ -565,7 +567,7 @@ func (a *QueriesAPI) ListQueriesAll(ctx context.Context, request ListQueriesRequ
 		for _, v := range response.Results {
 			results = append(results, v)
 		}
-		request.Page += int(len(response.Results)) // TODO: check for duplicates
+		request.Page++
 	}
 	return results, nil
 }

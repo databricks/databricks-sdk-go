@@ -74,7 +74,7 @@ func (a *GitCredentialsAPI) GetByCredentialId(ctx context.Context, credentialId 
 // Lists the calling user's Git credentials. One credential per user is
 // supported.
 //
-// Use ListAll to get all CredentialInfo instances
+// Use ListAll() to get all CredentialInfo instances
 func (a *GitCredentialsAPI) List(ctx context.Context) (*GetCredentialsResponse, error) {
 	var getCredentialsResponse GetCredentialsResponse
 	path := "/api/2.0/git-credentials"

@@ -70,7 +70,7 @@ func (a *TokenManagementAPI) GetTokenInfoByTokenId(ctx context.Context, tokenId 
 //
 // Lists all tokens associated with the specified workspace or user.
 //
-// Use ListAllTokensAll to get all TokenInfo instances
+// Use ListAllTokensAll() to get all TokenInfo instances
 func (a *TokenManagementAPI) ListAllTokens(ctx context.Context, request ListAllTokensRequest) (*ListTokensResponse, error) {
 	var listTokensResponse ListTokensResponse
 	path := "/api/2.0/token-management/tokens"

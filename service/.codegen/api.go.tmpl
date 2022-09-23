@@ -26,7 +26,7 @@ type {{.PascalName}}API struct {
 {{range .Methods}}{{.Comment "// " 80}}
 {{- if .Pagination}}
 // 
-// Use {{.PascalName}}All to get all {{.Pagination.Entity.PascalName}} instances{{if .Pagination.MultiRequest}}, which will iterate over every result page.{{end}}
+// Use {{.PascalName}}All() to get all {{.Pagination.Entity.PascalName}} instances{{if .Pagination.MultiRequest}}, which will iterate over every result page.{{end}}
 {{- end}}
 func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{.Response.PascalName}}{{end}}, error){{else}}error{{end}} {
 	{{if .Response}}var {{.Response.CamelName}} {{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}{{.Response.PascalName}}{{end}}
@@ -75,7 +75,9 @@ func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .R
 func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) ([]{{.Pagination.Entity.PascalName}}, error) {
 	{{if .Pagination.MultiRequest}}var results []{{.Pagination.Entity.PascalName}}
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-	for {
+	{{if eq .Pagination.Increment 1 -}}
+	request.{{.Pagination.Offset.PascalName}} = 1 // start iterating from the first page
+	{{end}}for {
 		response, err := a.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
 		if err != nil {
 			return nil, err
@@ -91,6 +93,8 @@ func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Reque
 		if response.{{.Pagination.Token.Bind.PascalName}} == "" {
 			break
 		}
+		{{- else if eq .Pagination.Increment 1 -}}
+		request.{{.Pagination.Offset.PascalName}}++
 		{{- else -}}
 		request.{{.Pagination.Offset.PascalName}} += {{template "type" .Pagination.Offset.Entity}}(len(response.{{.Pagination.Results.PascalName}})) // TODO: check for duplicates
 		{{- end}}

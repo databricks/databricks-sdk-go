@@ -77,7 +77,7 @@ func (a *CatalogsAPI) GetCatalogByName(ctx context.Context, name string) (*GetCa
 // Metastore. The caller must be a Metastore admin, is the owner of the External
 // Location, or has privileges to access the External Location.
 //
-// Use ListAll to get all CatalogInfo instances
+// Use ListAll() to get all CatalogInfo instances
 func (a *CatalogsAPI) List(ctx context.Context) (*ListCatalogsResponse, error) {
 	var listCatalogsResponse ListCatalogsResponse
 	path := "/api/2.1/unity-catalog/catalogs"
@@ -178,7 +178,7 @@ func (a *ExternalLocationsAPI) GetExternalLocationByName(ctx context.Context, na
 // Metastore. The caller must be a Metastore admin, is the owner of the external
 // location, or has privileges to access the external location.
 //
-// Use ListAll to get all ExternalLocationInfo instances
+// Use ListAll() to get all ExternalLocationInfo instances
 func (a *ExternalLocationsAPI) List(ctx context.Context) (*ListExternalLocationsResponse, error) {
 	var listExternalLocationsResponse ListExternalLocationsResponse
 	path := "/api/2.1/unity-catalog/external-locations"
@@ -351,7 +351,7 @@ func (a *MetastoresAPI) GetMetastoreSummary(ctx context.Context) (*GetMetastoreS
 // Gets an array of the available Metastores (as MetastoreInfo objects). The
 // caller must be an admin to retrieve this info.
 //
-// Use ListAll to get all MetastoreInfo instances
+// Use ListAll() to get all MetastoreInfo instances
 func (a *MetastoresAPI) List(ctx context.Context) (*ListMetastoresResponse, error) {
 	var listMetastoresResponse ListMetastoresResponse
 	path := "/api/2.1/unity-catalog/metastores"
@@ -463,7 +463,7 @@ func (a *ProvidersAPI) GetProviderByName(ctx context.Context, name string) (*Get
 // be a Metastore admin or the owner of the providers. Providers not owned by
 // the caller are not included in the response.
 //
-// Use ListAll to get all ProviderInfo instances
+// Use ListAll() to get all ProviderInfo instances
 func (a *ProvidersAPI) List(ctx context.Context) (*ListProvidersResponse, error) {
 	var listProvidersResponse ListProvidersResponse
 	path := "/api/2.1/unity-catalog/providers"
@@ -658,7 +658,7 @@ func (a *RecipientsAPI) GetRecipientSharePermissionsByName(ctx context.Context, 
 //
 // * the caller is a Metastore admin, or * the caller is the owner.
 //
-// Use ListAll to get all RecipientInfo instances
+// Use ListAll() to get all RecipientInfo instances
 func (a *RecipientsAPI) List(ctx context.Context) (*ListRecipientsResponse, error) {
 	var listRecipientsResponse ListRecipientsResponse
 	path := "/api/2.1/unity-catalog/recipients"
@@ -771,7 +771,7 @@ func (a *SchemasAPI) GetSchemaByFullName(ctx context.Context, fullName string) (
 // catalog will be retrieved. Otherwise, only schemas owned by the caller (or
 // for which the caller has the USAGE privilege) will be retrieved.
 //
-// Use ListAll to get all SchemaInfo instances
+// Use ListAll() to get all SchemaInfo instances
 func (a *SchemasAPI) List(ctx context.Context, request ListRequest) (*ListSchemasResponse, error) {
 	var listSchemasResponse ListSchemasResponse
 	path := "/api/2.1/unity-catalog/schemas"
@@ -891,7 +891,7 @@ func (a *SharesAPI) GetSharePermissionsByName(ctx context.Context, name string) 
 // Gets an array of data object shares from the Metastore. The caller must be a
 // Metastore admin or the owner of the share.
 //
-// Use ListAll to get all ShareInfo instances
+// Use ListAll() to get all ShareInfo instances
 func (a *SharesAPI) List(ctx context.Context) (*ListSharesResponse, error) {
 	var listSharesResponse ListSharesResponse
 	path := "/api/2.1/unity-catalog/shares"
@@ -1023,7 +1023,7 @@ func (a *StorageCredentialsAPI) GetStorageCredentialsByName(ctx context.Context,
 // privilege level to access. If the caller is a Metastore admin, all storage
 // credentials will be retrieved.
 //
-// Use ListAll to get all StorageCredentialInfo instances
+// Use ListAll() to get all StorageCredentialInfo instances
 func (a *StorageCredentialsAPI) List(ctx context.Context) (*ListStorageCredentialsResponse, error) {
 	var listStorageCredentialsResponse ListStorageCredentialsResponse
 	path := "/api/2.1/unity-catalog/storage-credentials"
@@ -1151,7 +1151,7 @@ func (a *TablesAPI) GetTableByFullName(ctx context.Context, fullName string) (*G
 // also be the owner or have the USAGE privilege on the parent catalog and
 // schema.
 //
-// Use ListAll to get all TableInfo instances
+// Use ListAll() to get all TableInfo instances
 func (a *TablesAPI) List(ctx context.Context, request ListRequest) (*ListTablesResponse, error) {
 	var listTablesResponse ListTablesResponse
 	path := "/api/2.1/unity-catalog/tables"

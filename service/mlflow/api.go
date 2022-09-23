@@ -115,7 +115,7 @@ func (a *ExperimentsAPI) GetByNameByExperimentName(ctx context.Context, experime
 //
 // Gets a list of all experiments.
 //
-// Use ListAll to get all Experiment instances, which will iterate over every result page.
+// Use ListAll() to get all Experiment instances, which will iterate over every result page.
 func (a *ExperimentsAPI) List(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error) {
 	var listExperimentsResponse ListExperimentsResponse
 	path := "/api/2.0/mlflow/experiments/list"
@@ -178,7 +178,7 @@ func (a *ExperimentsAPI) RestoreByExperimentId(ctx context.Context, experimentId
 //
 // Searches for experiments that satisfy specified search criteria.
 //
-// Use SearchAll to get all Experiment instances, which will iterate over every result page.
+// Use SearchAll() to get all Experiment instances, which will iterate over every result page.
 func (a *ExperimentsAPI) Search(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error) {
 	var searchExperimentsResponse SearchExperimentsResponse
 	path := "/api/2.0/mlflow/experiments/search"
@@ -246,7 +246,7 @@ type MLflowArtifactsAPI struct {
 // is specified, the response contains only artifacts with the specified
 // prefix.",
 //
-// Use ListAll to get all FileInfo instances, which will iterate over every result page.
+// Use ListAll() to get all FileInfo instances, which will iterate over every result page.
 func (a *MLflowArtifactsAPI) List(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error) {
 	var listArtifactsResponse ListArtifactsResponse
 	path := "/api/2.0/mlflow/artifacts/list"
@@ -524,7 +524,7 @@ func (a *MLflowRunsAPI) RestoreByRunId(ctx context.Context, runId string) error 
 //
 // Search expressions can use `mlflowMetric` and `mlflowParam` keys.",
 //
-// Use SearchAll to get all Run instances, which will iterate over every result page.
+// Use SearchAll() to get all Run instances, which will iterate over every result page.
 func (a *MLflowRunsAPI) Search(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error) {
 	var searchRunsResponse SearchRunsResponse
 	path := "/api/2.0/mlflow/runs/search"
@@ -689,7 +689,7 @@ func (a *ModelVersionsAPI) GetDownloadUri(ctx context.Context, request GetModelV
 //
 // Searches for specific model versions based on the supplied __filter__.
 //
-// Use SearchAll to get all ModelVersion instances, which will iterate over every result page.
+// Use SearchAll() to get all ModelVersion instances, which will iterate over every result page.
 func (a *ModelVersionsAPI) Search(ctx context.Context, request SearchModelVersionsRequest) (*SearchModelVersionsResponse, error) {
 	var searchModelVersionsResponse SearchModelVersionsResponse
 	path := "/api/2.0/mlflow/model-versions/search"
@@ -823,7 +823,7 @@ func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*GetR
 //
 // Gets the latest version of a registered model.
 //
-// Use GetLatestVersionsAll to get all ModelVersion instances
+// Use GetLatestVersionsAll() to get all ModelVersion instances
 func (a *RegisteredModelsAPI) GetLatestVersions(ctx context.Context, request GetLatestVersionsRequest) (*GetLatestVersionsResponse, error) {
 	var getLatestVersionsResponse GetLatestVersionsResponse
 	path := "/api/2.0/mlflow/registered-models/get-latest-versions"
@@ -847,7 +847,7 @@ func (a *RegisteredModelsAPI) GetLatestVersionsAll(ctx context.Context, request 
 // Lists all available registered models, up to the limit specified in
 // __max_results__.
 //
-// Use ListAll to get all RegisteredModel instances, which will iterate over every result page.
+// Use ListAll() to get all RegisteredModel instances, which will iterate over every result page.
 func (a *RegisteredModelsAPI) List(ctx context.Context, request ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error) {
 	var listRegisteredModelsResponse ListRegisteredModelsResponse
 	path := "/api/2.0/mlflow/registered-models/list"
@@ -894,7 +894,7 @@ func (a *RegisteredModelsAPI) Rename(ctx context.Context, request RenameRegister
 //
 // Search for registered models based on the specified __filter__.
 //
-// Use SearchAll to get all RegisteredModel instances, which will iterate over every result page.
+// Use SearchAll() to get all RegisteredModel instances, which will iterate over every result page.
 func (a *RegisteredModelsAPI) Search(ctx context.Context, request SearchRegisteredModelsRequest) (*SearchRegisteredModelsResponse, error) {
 	var searchRegisteredModelsResponse SearchRegisteredModelsResponse
 	path := "/api/2.0/mlflow/registered-models/search"
@@ -995,7 +995,7 @@ func (a *RegistryWebhooksAPI) DeleteById(ctx context.Context, id string) error {
 //
 // Lists all registry webhooks.
 //
-// Use ListAll to get all RegistryWebhook instances, which will iterate over every result page.
+// Use ListAll() to get all RegistryWebhook instances, which will iterate over every result page.
 func (a *RegistryWebhooksAPI) List(ctx context.Context, request ListRequest) (*ListRegistryWebhooks, error) {
 	var listRegistryWebhooks ListRegistryWebhooks
 	path := "/api/2.0/mlflow/registry-webhooks/list"
@@ -1094,7 +1094,7 @@ func (a *TransitionRequestsAPI) Delete(ctx context.Context, request DeleteReques
 //
 // Gets a list of all open stage transition requests for the model version.
 //
-// Use ListAll to get all Activity instances
+// Use ListAll() to get all Activity instances
 func (a *TransitionRequestsAPI) List(ctx context.Context, request ListRequest) (*ListResponse, error) {
 	var listResponse ListResponse
 	path := "/api/2.0/mlflow/transition-requests/list"

@@ -256,7 +256,7 @@ func (a *JobsAPI) GetRunOutputByRunId(ctx context.Context, runId int64) (*RunOut
 //
 // Retrieves a list of jobs.
 //
-// Use ListAll to get all Job instances, which will iterate over every result page.
+// Use ListAll() to get all Job instances, which will iterate over every result page.
 func (a *JobsAPI) List(ctx context.Context, request ListRequest) (*ListResponse, error) {
 	var listResponse ListResponse
 	path := "/api/2.1/jobs/list"
@@ -290,7 +290,7 @@ func (a *JobsAPI) ListAll(ctx context.Context, request ListRequest) ([]Job, erro
 //
 // List runs in descending order by start time.
 //
-// Use ListRunsAll to get all Run instances, which will iterate over every result page.
+// Use ListRunsAll() to get all Run instances, which will iterate over every result page.
 func (a *JobsAPI) ListRuns(ctx context.Context, request ListRunsRequest) (*ListRunsResponse, error) {
 	var listRunsResponse ListRunsResponse
 	path := "/api/2.1/jobs/runs/list"

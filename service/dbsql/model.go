@@ -116,8 +116,6 @@ type Dashboard struct {
 	User *User `json:"user,omitempty"`
 	// The ID of the user that created and owns this dashboard.
 	UserId int `json:"user_id,omitempty"`
-	// Unused field.
-	Version string `json:"version,omitempty"`
 
 	Widgets []Widget `json:"widgets,omitempty"`
 }

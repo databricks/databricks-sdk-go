@@ -84,7 +84,7 @@ func (a *IpAccessListsAPI) FetchIpAccessListByIpAccessListId(ctx context.Context
 //
 // Gets all IP access lists for the specified workspace.
 //
-// Use GetAllIpAccessListsAll to get all IpAccessListInfo instances
+// Use GetAllIpAccessListsAll() to get all IpAccessListInfo instances
 func (a *IpAccessListsAPI) GetAllIpAccessLists(ctx context.Context) (*GetIPAccessListResponse, error) {
 	var getIPAccessListResponse GetIPAccessListResponse
 	path := "/api/2.0/ip-access-lists"

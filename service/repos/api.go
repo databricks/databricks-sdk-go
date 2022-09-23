@@ -74,7 +74,7 @@ func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId int64) (*RepoInfo, er
 // Returns repos that the calling user has Manage permissions on. Results are
 // paginated with each page containing twenty repos.
 //
-// Use ListAll to get all RepoInfo instances, which will iterate over every result page.
+// Use ListAll() to get all RepoInfo instances, which will iterate over every result page.
 func (a *ReposAPI) List(ctx context.Context, request ListRequest) (*ListReposResponse, error) {
 	var listReposResponse ListReposResponse
 	path := "/api/2.0/repos"

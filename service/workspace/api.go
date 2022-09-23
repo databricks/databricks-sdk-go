@@ -160,7 +160,7 @@ func (a *WorkspaceAPI) Import(ctx context.Context, request Import) error {
 // "/Users/user@example.com/PythonExampleNotebook", "language": "PYTHON",
 // "object_type": "NOTEBOOK", "object_id": 456 } ] }
 //
-// Use ListAll to get all ObjectInfo instances
+// Use ListAll() to get all ObjectInfo instances
 func (a *WorkspaceAPI) List(ctx context.Context, request ListRequest) (*ListResponse, error) {
 	var listResponse ListResponse
 	path := "/api/2.0/workspace/list"

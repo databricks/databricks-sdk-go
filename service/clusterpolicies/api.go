@@ -83,7 +83,7 @@ func (a *ClusterPoliciesAPI) GetByPolicyId(ctx context.Context, policyId string)
 //
 // Returns a list of policies accessible by the requesting user.
 //
-// Use ListAll to get all Policy instances
+// Use ListAll() to get all Policy instances
 func (a *ClusterPoliciesAPI) List(ctx context.Context) (*ListPoliciesResponse, error) {
 	var listPoliciesResponse ListPoliciesResponse
 	path := "/api/2.0/policies/clusters/list"

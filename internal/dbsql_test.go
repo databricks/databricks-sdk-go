@@ -38,3 +38,14 @@ func TestAccQueries(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, query.Query, loaded.Query)
 }
+
+func TestAccDashboards(t *testing.T) {
+	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
+	t.Log(env)
+	ctx := context.Background()
+	wsc := workspaces.New()
+
+	all, err := wsc.Dashboards.ListDashboardsAll(ctx, dbsql.ListDashboardsRequest{})
+	require.NoError(t, err)
+	t.Log(len(all))
+}
