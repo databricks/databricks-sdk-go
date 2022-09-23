@@ -67,8 +67,11 @@ func TestBasicDebug(t *testing.T) {
 	batch, err := NewFromFile("/tmp/processed-databricks-workspace-all.json", []string{})
 	assert.NoError(t, err)
 
-	m := batch.Packages["unitycatalog"].services["Catalogs"].methods["create"]
+	m := batch.Packages["dbsql"].services["Alerts"].methods["updateAlert"]
 	t.Log(m)
+
+	e := batch.Packages["dbsql"].types["EditAlert"]
+	t.Log(e)
 
 	assert.Len(t, batch.Packages, 1)
 }

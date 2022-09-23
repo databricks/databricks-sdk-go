@@ -189,7 +189,8 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 	if e.Name == "" {
 		e.Named = Named{name, s.Description}
 	}
-	return pkg.define(e)
+	pkg.define(e)
+	return pkg.types[e.Name]
 }
 
 func (pkg *Package) define(entity *Entity) *Entity {
