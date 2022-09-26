@@ -28,7 +28,7 @@ func TestAccSecrets(t *testing.T) {
 	})
 	scopes, err := wsc.Secrets.ListScopes(ctx)
 	require.NoError(t, err)
-	assert.True(t, len(scopes.Scopes) > 1)
+	assert.True(t, len(scopes.Scopes) >= 1)
 
 	put := secrets.PutSecret{
 		Scope:       scope.Scope,
