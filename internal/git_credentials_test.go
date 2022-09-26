@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAccGitCreds(t *testing.T) {
+func TestAccGitCredentials(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
@@ -24,7 +24,9 @@ func TestAccGitCreds(t *testing.T) {
 	}
 
 	cr, err := wsc.GitCredentials.Create(ctx, gitcredentials.CreateCredentials{
-		GitProvider: "azureDevOpsServicesAad",
+		GitProvider:         "gitHub",
+		GitUsername:         "test",
+		PersonalAccessToken: "test",
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -34,7 +36,7 @@ func TestAccGitCreds(t *testing.T) {
 
 	err = wsc.GitCredentials.Update(ctx, gitcredentials.UpdateCredentials{
 		CredentialId:        cr.CredentialId,
-		GitProvider:         "azureDevOpsServices",
+		GitProvider:         "gitHub",
 		GitUsername:         RandomEmail(),
 		PersonalAccessToken: RandomName(),
 	})
