@@ -89,7 +89,7 @@ type Config struct {
 	// Azure Environment (Public, UsGov, China, Germany) has specific set of API endpoints
 	Environment string `name:"azure_environment" env:"ARM_ENVIRONMENT"` // TODO: rename to AzureEnvironment
 
-	ClientID string `name:"client_id" env:"DATABRICKS_CLIENT_ID"`
+	ClientID     string `name:"client_id" env:"DATABRICKS_CLIENT_ID"`
 	ClientSecret string `name:"client_secret" env:"DATABRICKS_CLIENT_SECRET"`
 
 	RetryWaitMin     time.Duration
