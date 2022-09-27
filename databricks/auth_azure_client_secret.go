@@ -32,8 +32,11 @@ func (c AzureClientSecretCredentials) tokenSourceFor(
 	}).TokenSource(ctx)
 }
 
+// TODO: We need to expose which authentication mechanism is used to Terraform,
+// as we cannot create AKV backed secret scopes when authenticated as SP.
+// If we are authenticated as SP and wish to create one we want to fail early.
+// Also see https://github.com/databricks/terraform-provider-databricks/issues/1490.
 func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
-	// TODO: this has to be exposed for Terraform, as we cannot create AKV scopes by SPNs
 	if cfg.AzureClientID == "" || cfg.AzureClientSecret == "" || cfg.AzureTenantID == "" || cfg.AzureResourceID == "" {
 		return nil, nil
 	}
