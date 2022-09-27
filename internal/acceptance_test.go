@@ -101,3 +101,22 @@ func TestAccExplicitAzureSpnAuth(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotEmpty(t, v)
 }
+
+func TestAccDatabricksOauth(t *testing.T) {
+	ws := workspaces.New(&databricks.Config{
+		Host:         GetEnvOrSkipTest(t, "DATABRICKS_HOST"),
+		ClientID:     GetEnvOrSkipTest(t, "DATABRICKS_CLIENT_ID"),
+		ClientSecret: GetEnvOrSkipTest(t, "DATABRICKS_CLIENT_SECRET"),
+	})
+
+	ctx := context.Background()
+	versions, err := ws.Clusters.SparkVersions(ctx)
+	require.NoError(t, err)
+
+	v, err := versions.Select(clusters.SparkVersionRequest{
+		LongTermSupport: true,
+		Latest:          true,
+	})
+	assert.NoError(t, err)
+	assert.NotEmpty(t, v)
+}
