@@ -57,40 +57,38 @@ type DatabricksClient struct {
 	init sync.Once
 }
 
-// Get on path
-func (c *DatabricksClient) Get(ctx context.Context, path string, request interface{}, response interface{}) error {
-	body, err := c.perform(ctx, http.MethodGet, path, request, c.completeUrl)
+// Do sends an HTTP request against path.
+func (c *DatabricksClient) Do(ctx context.Context, method string, path string, request interface{}, response interface{}) error {
+	body, err := c.perform(ctx, method, path, request, c.completeUrl)
 	if err != nil {
 		return err
 	}
 	return c.unmarshall(path, body, &response)
+}
+
+// Get on path
+func (c *DatabricksClient) Get(ctx context.Context, path string, request interface{}, response interface{}) error {
+	return c.Do(ctx, http.MethodGet, path, request, response)
 }
 
 // Post on path
 func (c *DatabricksClient) Post(ctx context.Context, path string, request interface{}, response interface{}) error {
-	body, err := c.perform(ctx, http.MethodPost, path, request, c.completeUrl)
-	if err != nil {
-		return err
-	}
-	return c.unmarshall(path, body, &response)
+	return c.Do(ctx, http.MethodPost, path, request, response)
 }
 
 // Delete on path
 func (c *DatabricksClient) Delete(ctx context.Context, path string, request interface{}) error {
-	_, err := c.perform(ctx, http.MethodDelete, path, request, c.completeUrl)
-	return err
+	return c.Do(ctx, http.MethodDelete, path, request, nil)
 }
 
 // Patch on path
 func (c *DatabricksClient) Patch(ctx context.Context, path string, request interface{}) error {
-	_, err := c.perform(ctx, http.MethodPatch, path, request, c.completeUrl)
-	return err
+	return c.Do(ctx, http.MethodPatch, path, request, nil)
 }
 
 // Put on path
 func (c *DatabricksClient) Put(ctx context.Context, path string, request interface{}) error {
-	_, err := c.perform(ctx, http.MethodPut, path, request, c.completeUrl)
-	return err
+	return c.Do(ctx, http.MethodPut, path, request, nil)
 }
 
 func (c *DatabricksClient) unmarshall(path string, body []byte, response interface{}) error {
