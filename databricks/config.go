@@ -89,6 +89,10 @@ type Config struct {
 	// Azure Environment (Public, UsGov, China, Germany) has specific set of API endpoints
 	Environment string `name:"azure_environment" env:"ARM_ENVIRONMENT"` // TODO: rename to AzureEnvironment
 
+	ClientID    string   `name:"client_id" env:"DATABRICKS_CLIENT_ID"`
+	Scopes      []string `name:"scopes" env:"DATABRICKS_SCOPES"`
+	RedirectURL string   `name:"redirect_url"`
+
 	RetryWaitMin     time.Duration
 	RetryWaitMax     time.Duration
 	MaxRetryAttempts int

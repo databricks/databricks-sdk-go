@@ -101,3 +101,20 @@ func TestAccExplicitAzureSpnAuth(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotEmpty(t, v)
 }
+
+func TestAccDatabricksOAuthU2M(t *testing.T) {
+	ws := workspaces.New(&databricks.Config{
+		Host:     "https://..",
+		ClientID: "databricks-cli",
+	})
+	ctx := context.Background()
+	versions, err := ws.Clusters.SparkVersions(ctx)
+	require.NoError(t, err)
+
+	v, err := versions.Select(clusters.SparkVersionRequest{
+		LongTermSupport: true,
+		Latest:          true,
+	})
+	assert.NoError(t, err)
+	assert.NotEmpty(t, v)
+}

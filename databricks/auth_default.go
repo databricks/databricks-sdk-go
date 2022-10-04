@@ -12,6 +12,7 @@ var (
 	authProviders = []CredentialsProvider{
 		PatCredentials{},
 		BasicCredentials{},
+		DatabricksOAuthU2M{},
 		AzureClientSecretCredentials{},
 		AzureCliCredentials{},
 		GoogleDefaultCredentials{},
