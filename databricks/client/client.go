@@ -423,6 +423,9 @@ func makeRequestBody(method string, requestURL *string, data interface{}) ([]byt
 		*requestURL += qs
 		return requestBody, nil
 	}
+	if bytes, ok := data.([]byte); ok {
+		return bytes, nil
+	}
 	if reader, ok := data.(io.Reader); ok {
 		raw, err := io.ReadAll(reader)
 		if err != nil {
