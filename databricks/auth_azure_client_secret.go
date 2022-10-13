@@ -52,12 +52,12 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
 	logger.Infof("Generating AAD token for Service Principal (%s)", cfg.AzureClientID)
+	refreshCtx := context.Background()
+	inner := c.tokenSourceFor(refreshCtx, cfg, env, armDatabricksResourceID)
+	platform := c.tokenSourceFor(refreshCtx, cfg, env, env.ServiceManagementEndpoint)
 	return func(r *http.Request) error {
-		ctx := r.Context()
 		r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
-		return internal.ServiceToServiceVisitor(
-			c.tokenSourceFor(ctx, cfg, env, armDatabricksResourceID),
-			c.tokenSourceFor(ctx, cfg, env, env.ServiceManagementEndpoint),
+		return internal.ServiceToServiceVisitor(inner, platform,
 			"X-Databricks-Azure-SP-Management-Token")(r)
 	}, nil
 }
