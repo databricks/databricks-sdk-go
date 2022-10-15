@@ -52,5 +52,17 @@ type {{.PascalName}}Service interface {
 	{{if eq .PascalName "Clusters"}}// GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist
 	GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateCluster) (c *ClusterInfo, err error)
 	{{end}}
+	{{if eq .PascalName "Dbfs"}}// Overwrite uploads a file from supplied `io.Reader`
+	Overwrite(ctx context.Context, path string, r io.Reader) error
+	// Open returns `io.Reader` to download file in chunks
+	Open(ctx context.Context, path string) (*FileReader, error)
+	{{end}}
+	{{if eq .PascalName "Libraries"}}// UpdateLibraries installs or uninstalls specified libraries 
+	// and waits until they are in a usable state
+	UpdateLibraries(ctx context.Context, update UpdateLibraries) error
+	// WaitForLibrariesInstalled returns only once the libraries are in the usable state
+	WaitForLibrariesInstalled(ctx context.Context, wait Wait) (*ClusterLibraryStatuses, error)
+	{{end}}
+	
 }
 {{end}}
