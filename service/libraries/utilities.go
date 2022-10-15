@@ -9,6 +9,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
 	"github.com/databricks/databricks-sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 	"github.com/databricks/databricks-sdk-go/retries"
 )
 
@@ -116,10 +117,11 @@ type UpdateLibraries struct {
 	// The libraries to install.
 	Uninstall []Library
 
-	Timeout   time.Duration
+	Timeout time.Duration
 }
 
 func (a *LibrariesAPI) UpdateLibraries(ctx context.Context, update UpdateLibraries) error {
+	ctx = useragent.InContext(ctx, "sdk-feature", "update-libraries")
 	if len(update.Uninstall) > 0 {
 		err := a.Uninstall(ctx, UninstallLibraries{
 			ClusterId: update.ClusterId,
@@ -149,6 +151,7 @@ func (a *LibrariesAPI) UpdateLibraries(ctx context.Context, update UpdateLibrari
 
 // clusterID string, timeout time.Duration, isActive bool, refresh bool
 func (a *LibrariesAPI) WaitForLibrariesInstalled(ctx context.Context, wait Wait) (*ClusterLibraryStatuses, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "wait-for-libraries")
 	result, err := retries.Poll(ctx, wait.Timeout, func() (*ClusterLibraryStatuses, *retries.Err) {
 		status, err := a.ClusterStatusByClusterId(ctx, wait.ClusterID)
 		if apierr.IsMissing(err) {

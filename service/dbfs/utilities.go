@@ -5,12 +5,15 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 var b64 = base64.StdEncoding
 
 // Overwrite is like Put, but more friendly
 func (a *DbfsAPI) Overwrite(ctx context.Context, path string, r io.Reader) (err error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "dbfs-overwrite")
 	handle, err := a.Create(ctx, Create{
 		Path:      path,
 		Overwrite: true,
@@ -45,10 +48,10 @@ func (a *DbfsAPI) Overwrite(ctx context.Context, path string, r io.Reader) (err 
 }
 
 type FileReader struct {
-	Size int64
-	ctx context.Context
-	api *DbfsAPI
-	path string
+	Size   int64
+	ctx    context.Context
+	api    *DbfsAPI
+	path   string
 	offset int64
 }
 
@@ -57,7 +60,7 @@ func (r *FileReader) Read(p []byte) (n int, err error) {
 		panic("invalid call")
 	}
 	resp, err := r.api.Read(r.ctx, ReadRequest{
-		Path: r.path,
+		Path:   r.path,
 		Length: len(p),
 		Offset: int(r.offset), // TODO: make int32/in64 work properly
 	})
@@ -76,6 +79,7 @@ func (r *FileReader) Read(p []byte) (n int, err error) {
 }
 
 func (a *DbfsAPI) Open(ctx context.Context, path string) (*FileReader, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "dbfs-open")
 	info, err := a.GetStatusByPath(ctx, path)
 	if err != nil {
 		return nil, fmt.Errorf("get status: %w", err)
@@ -83,7 +87,7 @@ func (a *DbfsAPI) Open(ctx context.Context, path string) (*FileReader, error) {
 	return &FileReader{
 		Size: info.FileSize,
 		path: path,
-		ctx: ctx,
-		api: a,
+		ctx:  ctx,
+		api:  a,
 	}, nil
 }
