@@ -37,7 +37,7 @@ func (a *DbfsAPI) Overwrite(ctx context.Context, path string, r io.Reader) (err 
 			return fmt.Errorf("read: %w", err)
 		}
 		err = a.AddBlock(ctx, AddBlock{
-			Data:   b64.EncodeToString(buffer[0:n]), // TODO: check if it's enough
+			Data:   b64.EncodeToString(buffer[0:n]),
 			Handle: handle.Handle,
 		})
 		if err != nil {

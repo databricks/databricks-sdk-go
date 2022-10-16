@@ -4,6 +4,7 @@ package dbfs
 
 import (
 	"context"
+	"io"
 )
 
 // DBFS API makes it simple to interact with various data sources without having
@@ -157,4 +158,8 @@ type DbfsService interface {
 	// If ``offset + length`` exceeds the number of bytes in a file, it reads
 	// the contents until the end of file.",
 	Read(ctx context.Context, request ReadRequest) (*ReadResponse, error)
+
+	Overwrite(ctx context.Context, path string, r io.Reader) error
+
+	Open(ctx context.Context, path string) (*FileReader, error)
 }

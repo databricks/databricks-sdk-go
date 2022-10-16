@@ -140,6 +140,9 @@ func (a *LibrariesAPI) UpdateLibraries(ctx context.Context, update UpdateLibrari
 			return fmt.Errorf("install: %w", err)
 		}
 	}
+	if update.Timeout == 0 {
+		update.Timeout = 30 * time.Minute
+	}
 	_, err := a.WaitForLibrariesInstalled(ctx, Wait{
 		ClusterID: update.ClusterId,
 		Timeout:   update.Timeout,

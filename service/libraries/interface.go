@@ -65,4 +65,8 @@ type LibrariesService interface {
 	// uninstalled until the cluster is restarted. Uninstalling libraries that
 	// are not installed on the cluster will have no impact but is not an error.
 	Uninstall(ctx context.Context, request UninstallLibraries) error
+
+	UpdateLibraries(ctx context.Context, update UpdateLibraries) error
+
+	WaitForLibrariesInstalled(ctx context.Context, wait Wait) (*ClusterLibraryStatuses, error)
 }

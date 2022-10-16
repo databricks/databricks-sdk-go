@@ -1,10 +1,16 @@
 package internal
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
+	"hash/fnv"
+	"io"
+	"math/rand"
+	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
 	"github.com/databricks/databricks-sdk-go/workspaces"
@@ -12,13 +18,51 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAccListDbfsIntegration(t *testing.T) {
+func assertAcceptance(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
 	if env == "gcp" {
 		t.Skip("dbfs tests are skipped because dbfs rest api is disabled on gcp")
 	}
+}
 
+func TestAccDbfsUtilities(t *testing.T) {
+	assertAcceptance(t)
+	ctx := context.Background()
+	w := workspaces.New()
+
+	path := RandomName("/tmp/databricks-go-sdk/fake")
+	rand.Seed(time.Now().UnixNano())
+	in := make([]byte, 1.44*1e6)
+	_, _ = rand.Read(in)
+	h := fnv.New32a()
+	h.Write(in)
+	inHash := h.Sum32()
+
+	err := w.Dbfs.Overwrite(ctx, path, bytes.NewReader(in))
+	require.NoError(t, err)
+
+	defer w.Dbfs.Delete(ctx, dbfs.Delete{
+		Path: path,
+	})
+
+	r, err := w.Dbfs.Open(ctx, path)
+	require.NoError(t, err)
+
+	download, _ := os.Create("/path/to/local")
+	io.Copy(download, r)
+
+	out, err := io.ReadAll(r)
+	require.NoError(t, err)
+
+	h = fnv.New32a()
+	h.Write(out)
+	outHash := h.Sum32()
+
+	require.Equal(t, outHash, inHash)
+}
+
+func TestAccListDbfsIntegration(t *testing.T) {
+	assertAcceptance(t)
 	ctx := context.Background()
 	wsc := workspaces.New()
 	testFile1 := RandomName("test-file-1-")
