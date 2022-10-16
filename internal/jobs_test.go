@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"encoding/base64"
 	"path/filepath"
 	"testing"
 
@@ -15,7 +14,7 @@ import (
 )
 
 func createTestCluster(ctx context.Context, wsc *workspaces.WorkspacesClient, t *testing.T) string {
-	clusterName := RandomName("sdk-go-jobs-test-")
+	clusterName := RandomName(t.Name())
 
 	// Fetch list of spark runtime versions
 	sparkVersions, err := wsc.Clusters.SparkVersions(ctx)
@@ -68,14 +67,10 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	})
 
 	filePath := filepath.Join(tmpPath, RandomName("slow-"))
-	fileContent := "import time; time.sleep(10); dbutils.notebook.exit('hello')"
-	err = wsc.Workspace.Import(ctx, workspace.Import{
-		Content:   base64.StdEncoding.Strict().EncodeToString([]byte(fileContent)),
-		Format:    "SOURCE",
-		Language:  "PYTHON",
-		Overwrite: true,
-		Path:      filePath,
-	})
+	err = wsc.Workspace.Import(ctx, workspace.PythonNotebookOverwrite(filePath, `
+		import time
+		time.sleep(10)
+		dbutils.notebook.exit('hello')`))
 	require.NoError(t, err)
 
 	run, err := wsc.Jobs.SubmitAndWait(ctx, jobs.SubmitRun{
