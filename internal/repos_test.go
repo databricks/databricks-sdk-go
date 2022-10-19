@@ -21,7 +21,7 @@ func TestAccRepos(t *testing.T) {
 	require.NoError(t, err)
 
 	ri, err := wsc.Repos.Create(ctx, repos.CreateRepo{
-		Url:      "https://github.com/databricks/notebook-best-practices.git",
+		Url:      "https://github.com/shreyas-goenka/empty-repo.git",
 		Provider: "github",
 	})
 	require.NoError(t, err)
@@ -30,10 +30,10 @@ func TestAccRepos(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	assert.Equal(t, "dais-2022", ri.Branch)
+	assert.Equal(t, "main", ri.Branch)
 	err = wsc.Repos.Update(ctx, repos.UpdateRepo{
 		RepoId: ri.Id,
-		Branch: "main",
+		Branch: "foo",
 	})
 	require.NoError(t, err)
 
