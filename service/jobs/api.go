@@ -281,7 +281,7 @@ func (a *JobsAPI) ListAll(ctx context.Context, request ListRequest) ([]Job, erro
 		for _, v := range response.Jobs {
 			results = append(results, v)
 		}
-		request.Offset += int(len(response.Jobs)) // TODO: check for duplicates
+		request.Offset += int(len(response.Jobs))
 	}
 	return results, nil
 }
@@ -315,7 +315,7 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]R
 		for _, v := range response.Runs {
 			results = append(results, v)
 		}
-		request.Offset += int(len(response.Runs)) // TODO: check for duplicates
+		request.Offset += int(len(response.Runs))
 	}
 	return results, nil
 }

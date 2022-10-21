@@ -39,5 +39,5 @@ func TestAccRepos(t *testing.T) {
 
 	all, err := wsc.Repos.ListAll(ctx, repos.ListRequest{})
 	require.NoError(t, err)
-	assert.True(t, len(all) > 1)
+	assert.True(t, len(all) >= 1)
 }
