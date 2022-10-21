@@ -10,6 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/retries"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 func NewWarehouses(client *client.DatabricksClient) WarehousesService {
@@ -37,6 +38,7 @@ func CreateWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseRespon
 
 // CreateWarehouse and wait to reach RUNNING state
 func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, createWarehouseRequest CreateWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	createWarehouseResponse, err := a.CreateWarehouse(ctx, createWarehouseRequest)
 	if err != nil {
 		return nil, err
@@ -87,6 +89,7 @@ func DeleteWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseRespon
 
 // DeleteWarehouse and wait to reach DELETED state
 func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWarehouseRequest DeleteWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.DeleteWarehouse(ctx, deleteWarehouseRequest)
 	if err != nil {
 		return nil, err
@@ -146,6 +149,7 @@ func EditWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse
 
 // EditWarehouse and wait to reach RUNNING state
 func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, editWarehouseRequest EditWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.EditWarehouse(ctx, editWarehouseRequest)
 	if err != nil {
 		return nil, err
@@ -197,6 +201,7 @@ func GetWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse]
 
 // GetWarehouse and wait to reach RUNNING state
 func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouseRequest GetWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	getWarehouseResponse, err := a.GetWarehouse(ctx, getWarehouseRequest)
 	if err != nil {
 		return nil, err
@@ -298,6 +303,7 @@ func StartWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseRespons
 
 // StartWarehouse and wait to reach RUNNING state
 func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehouseRequest StartWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.StartWarehouse(ctx, startWarehouseRequest)
 	if err != nil {
 		return nil, err
@@ -348,6 +354,7 @@ func StopWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse
 
 // StopWarehouse and wait to reach STOPPED state
 func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, stopWarehouseRequest StopWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.StopWarehouse(ctx, stopWarehouseRequest)
 	if err != nil {
 		return nil, err

@@ -61,6 +61,7 @@ func CreateTimeout(dur time.Duration) retries.Option[ClusterInfo] {
 
 // Create and wait to reach RUNNING state
 func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	createClusterResponse, err := a.Create(ctx, createCluster)
 	if err != nil {
 		return nil, err
@@ -116,6 +117,7 @@ func DeleteTimeout(dur time.Duration) retries.Option[ClusterInfo] {
 
 // Delete and wait to reach TERMINATED state
 func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.Delete(ctx, deleteCluster)
 	if err != nil {
 		return nil, err
@@ -198,6 +200,7 @@ func EditTimeout(dur time.Duration) retries.Option[ClusterInfo] {
 
 // Edit and wait to reach RUNNING state
 func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.Edit(ctx, editCluster)
 	if err != nil {
 		return nil, err
@@ -289,6 +292,7 @@ func GetTimeout(dur time.Duration) retries.Option[ClusterInfo] {
 
 // Get and wait to reach RUNNING state
 func (a *ClustersAPI) GetAndWait(ctx context.Context, getRequest GetRequest, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	clusterInfo, err := a.Get(ctx, getRequest)
 	if err != nil {
 		return nil, err
@@ -507,6 +511,7 @@ func ResizeTimeout(dur time.Duration) retries.Option[ClusterInfo] {
 
 // Resize and wait to reach RUNNING state
 func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.Resize(ctx, resizeCluster)
 	if err != nil {
 		return nil, err
@@ -560,6 +565,7 @@ func RestartTimeout(dur time.Duration) retries.Option[ClusterInfo] {
 
 // Restart and wait to reach RUNNING state
 func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster RestartCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.Restart(ctx, restartCluster)
 	if err != nil {
 		return nil, err
@@ -630,6 +636,7 @@ func StartTimeout(dur time.Duration) retries.Option[ClusterInfo] {
 
 // Start and wait to reach RUNNING state
 func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.Start(ctx, startCluster)
 	if err != nil {
 		return nil, err

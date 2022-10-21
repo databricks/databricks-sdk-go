@@ -10,6 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/retries"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 func NewDeltaPipelines(client *client.DatabricksClient) DeltaPipelinesService {
@@ -36,6 +37,7 @@ func CreatePipelineTimeout(dur time.Duration) retries.Option[GetPipelineResponse
 
 // CreatePipeline and wait to reach RUNNING state
 func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPipelineRequest CreatePipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	createPipelineResponse, err := a.CreatePipeline(ctx, createPipelineRequest)
 	if err != nil {
 		return nil, err
@@ -104,6 +106,7 @@ func GetPipelineTimeout(dur time.Duration) retries.Option[GetPipelineResponse] {
 
 // GetPipeline and wait to reach RUNNING state
 func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipelineRequest GetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	getPipelineResponse, err := a.GetPipeline(ctx, getPipelineRequest)
 	if err != nil {
 		return nil, err
@@ -192,6 +195,7 @@ func ResetPipelineTimeout(dur time.Duration) retries.Option[GetPipelineResponse]
 
 // ResetPipeline and wait to reach RUNNING state
 func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipelineRequest ResetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.ResetPipeline(ctx, resetPipelineRequest)
 	if err != nil {
 		return nil, err
@@ -249,6 +253,7 @@ func StopPipelineTimeout(dur time.Duration) retries.Option[GetPipelineResponse] 
 
 // StopPipeline and wait to reach IDLE state
 func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipelineRequest StopPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.StopPipeline(ctx, stopPipelineRequest)
 	if err != nil {
 		return nil, err

@@ -59,6 +59,7 @@ func CancelRunTimeout(dur time.Duration) retries.Option[Run] {
 
 // CancelRun and wait to reach TERMINATED or SKIPPED state
 func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, options ...retries.Option[Run]) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.CancelRun(ctx, cancelRun)
 	if err != nil {
 		return nil, err
@@ -203,6 +204,7 @@ func GetRunTimeout(dur time.Duration) retries.Option[Run] {
 
 // GetRun and wait to reach TERMINATED or SKIPPED state
 func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRunRequest GetRunRequest, options ...retries.Option[Run]) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	run, err := a.GetRun(ctx, getRunRequest)
 	if err != nil {
 		return nil, err
@@ -363,6 +365,7 @@ func RepairRunTimeout(dur time.Duration) retries.Option[Run] {
 
 // RepairRun and wait to reach TERMINATED or SKIPPED state
 func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, options ...retries.Option[Run]) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	_, err := a.RepairRun(ctx, repairRun)
 	if err != nil {
 		return nil, err
@@ -426,6 +429,7 @@ func RunNowTimeout(dur time.Duration) retries.Option[Run] {
 
 // RunNow and wait to reach TERMINATED or SKIPPED state
 func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...retries.Option[Run]) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	runNowResponse, err := a.RunNow(ctx, runNow)
 	if err != nil {
 		return nil, err
@@ -482,6 +486,7 @@ func SubmitTimeout(dur time.Duration) retries.Option[Run] {
 
 // Submit and wait to reach TERMINATED or SKIPPED state
 func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, options ...retries.Option[Run]) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	submitRunResponse, err := a.Submit(ctx, submitRun)
 	if err != nil {
 		return nil, err

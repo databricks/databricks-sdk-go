@@ -10,6 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/retries"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 func NewCommandExecution(client *client.DatabricksClient) CommandExecutionService {
@@ -36,6 +37,7 @@ func CancelTimeout(dur time.Duration) retries.Option[CommandStatusResponse] {
 
 // Cancel and wait to reach Cancelled state
 func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand CancelCommand, options ...retries.Option[CommandStatusResponse]) (*CommandStatusResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.Cancel(ctx, cancelCommand)
 	if err != nil {
 		return nil, err
@@ -103,6 +105,7 @@ func CreateTimeout(dur time.Duration) retries.Option[ContextStatusResponse] {
 
 // Create and wait to reach Running state
 func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext CreateContext, options ...retries.Option[ContextStatusResponse]) (*ContextStatusResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	created, err := a.Create(ctx, createContext)
 	if err != nil {
 		return nil, err
@@ -162,6 +165,7 @@ func ExecuteTimeout(dur time.Duration) retries.Option[CommandStatusResponse] {
 
 // Execute and wait to reach Finished or Error state
 func (a *CommandExecutionAPI) ExecuteAndWait(ctx context.Context, command Command, options ...retries.Option[CommandStatusResponse]) (*CommandStatusResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	created, err := a.Execute(ctx, command)
 	if err != nil {
 		return nil, err
