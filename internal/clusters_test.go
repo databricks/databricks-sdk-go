@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"os"
 	"testing"
 	"time"
 
@@ -14,8 +13,7 @@ import (
 )
 
 func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
-	os.Setenv("DATABRICKS_CONFIG_PROFILE", "azure-deco")
-	// t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	t.Parallel()
 
 	ctx := context.Background()
