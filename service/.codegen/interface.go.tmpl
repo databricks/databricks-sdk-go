@@ -5,6 +5,7 @@ package {{.Name}}
 import (
 	"context"
 	{{if .HasWaits}}"time"{{end}}
+	{{if eq .PascalName "Dbfs"}}"io"{{end}}
 )
 
 {{range .Services}}

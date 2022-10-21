@@ -115,19 +115,6 @@ const AwsAttributesEbsVolumeTypeGeneralPurposeSsd AwsAttributesEbsVolumeType = `
 
 const AwsAttributesEbsVolumeTypeThroughputOptimizedHdd AwsAttributesEbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
 
-type AwsCpalError struct {
-	// <needs content added>
-	AwsApiErrorCode string `json:"aws_api_error_code,omitempty"`
-	// <needs content added>
-	AwsErrorMessage string `json:"aws_error_message,omitempty"`
-	// <needs content added>
-	AwsInstanceStateReason string `json:"aws_instance_state_reason,omitempty"`
-	// <needs content added>
-	AwsSpotRequestFaultCode string `json:"aws_spot_request_fault_code,omitempty"`
-	// <needs content added>
-	AwsSpotRequestStatus string `json:"aws_spot_request_status,omitempty"`
-}
-
 type AzureAttributes struct {
 	// Availability type used for all subsequent nodes past the
 	// ``first_on_demand`` ones. Note: If ``first_on_demand`` is zero (which
@@ -462,6 +449,8 @@ type ClusterInfo struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
+
+	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Tags that are added by Databricks regardless of any ``custom_tags``,
 	// including:
 	//
@@ -547,6 +536,8 @@ type ClusterInfo struct {
 	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 	// unspecified, the runtime engine is inferred from spark_version.
 	RuntimeEngine ClusterInfoRuntimeEngine `json:"runtime_engine,omitempty"`
+	// Single user name if data_security_mode is `SINGLE_USER`
+	SingleUserName string `json:"single_user_name,omitempty"`
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
@@ -676,94 +667,6 @@ type ClusterSize struct {
 	// increase from 5 to 10 as the new nodes are provisioned.
 	NumWorkers int `json:"num_workers,omitempty"`
 }
-
-type CpalFailureResponse struct {
-	// <needs content added>
-	AwsCpalErrorCode CpalFailureResponseAwsCpalErrorCode `json:"aws_cpal_error_code,omitempty"`
-	// <needs content added>
-	AwsError *AwsCpalError `json:"aws_error,omitempty"`
-	// <needs content added>
-	AzureCpalErrorCode CpalFailureResponseAzureCpalErrorCode `json:"azure_cpal_error_code,omitempty"`
-	// Deprecated after using cloud_provider_error field TODO define
-	// AzureCpalError with code and message
-	CloudProviderErrorCode string `json:"cloud_provider_error_code,omitempty"`
-	// Deprecated after using cloud_provider_error field TODO define
-	// AzureCpalError with code and message
-	CloudProviderErrorMessage string `json:"cloud_provider_error_message,omitempty"`
-	// <needs content added>
-	DelegateErrorCode CpalFailureResponseDelegateErrorCode `json:"delegate_error_code,omitempty"`
-	// <needs content added>
-	ErrorMessage string `json:"error_message,omitempty"`
-	// <needs content added>
-	StackTrace string `json:"stack_trace,omitempty"`
-}
-
-// <needs content added>
-type CpalFailureResponseAwsCpalErrorCode string
-
-const CpalFailureResponseAwsCpalErrorCodeAwsInsufficientFreeAddressesInSubnetFailure CpalFailureResponseAwsCpalErrorCode = `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsInsufficientInstanceCapacityFailure CpalFailureResponseAwsCpalErrorCode = `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsInvalidInstanceTypeFailure CpalFailureResponseAwsCpalErrorCode = `AWS_INVALID_INSTANCE_TYPE_FAILURE`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsMaxSpotInstanceCountExceeded CpalFailureResponseAwsCpalErrorCode = `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsRequestLimitExceeded CpalFailureResponseAwsCpalErrorCode = `AWS_REQUEST_LIMIT_EXCEEDED`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsServiceException CpalFailureResponseAwsCpalErrorCode = `AWS_SERVICE_EXCEPTION`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsSpotRequestFailed CpalFailureResponseAwsCpalErrorCode = `AWS_SPOT_REQUEST_FAILED`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsUnexpectedException CpalFailureResponseAwsCpalErrorCode = `AWS_UNEXPECTED_EXCEPTION`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsUnexpectedInstanceState CpalFailureResponseAwsCpalErrorCode = `AWS_UNEXPECTED_INSTANCE_STATE`
-
-const CpalFailureResponseAwsCpalErrorCodeAwsUnsupportedInstanceTypeFailure CpalFailureResponseAwsCpalErrorCode = `AWS_UNSUPPORTED_INSTANCE_TYPE_FAILURE`
-
-// <needs content added>
-type CpalFailureResponseAzureCpalErrorCode string
-
-const CpalFailureResponseAzureCpalErrorCodeAzureAuthenticationException CpalFailureResponseAzureCpalErrorCode = `AZURE_AUTHENTICATION_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureCloudException CpalFailureResponseAzureCpalErrorCode = `AZURE_CLOUD_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureInvalidDeploymentTemplate CpalFailureResponseAzureCpalErrorCode = `AZURE_INVALID_DEPLOYMENT_TEMPLATE`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureLoadBalancerConfigurationException CpalFailureResponseAzureCpalErrorCode = `AZURE_LOAD_BALANCER_CONFIGURATION_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureNotRunningVmException CpalFailureResponseAzureCpalErrorCode = `AZURE_NOT_RUNNING_VM_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureNullPointer CpalFailureResponseAzureCpalErrorCode = `AZURE_NULL_POINTER`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureOperationNotAllowedException CpalFailureResponseAzureCpalErrorCode = `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureQuotaExceededException CpalFailureResponseAzureCpalErrorCode = `AZURE_QUOTA_EXCEEDED_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureResourceManagerThrottling CpalFailureResponseAzureCpalErrorCode = `AZURE_RESOURCE_MANAGER_THROTTLING`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureResourceProviderThrottling CpalFailureResponseAzureCpalErrorCode = `AZURE_RESOURCE_PROVIDER_THROTTLING`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureServerException CpalFailureResponseAzureCpalErrorCode = `AZURE_SERVER_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureServerUnreachable CpalFailureResponseAzureCpalErrorCode = `AZURE_SERVER_UNREACHABLE`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureSpotRequestException CpalFailureResponseAzureCpalErrorCode = `AZURE_SPOT_REQUEST_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureSubnetExhaustedFailure CpalFailureResponseAzureCpalErrorCode = `AZURE_SUBNET_EXHAUSTED_FAILURE`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureUnexpectedDeploymentTemplateFailure CpalFailureResponseAzureCpalErrorCode = `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureUnknownException CpalFailureResponseAzureCpalErrorCode = `AZURE_UNKNOWN_EXCEPTION`
-
-const CpalFailureResponseAzureCpalErrorCodeAzureVnetConfigurationException CpalFailureResponseAzureCpalErrorCode = `AZURE_VNET_CONFIGURATION_EXCEPTION`
-
-// <needs content added>
-type CpalFailureResponseDelegateErrorCode string
-
-const CpalFailureResponseDelegateErrorCodeDelegateUnexpectedException CpalFailureResponseDelegateErrorCode = `DELEGATE_UNEXPECTED_EXCEPTION`
-
-const CpalFailureResponseDelegateErrorCodeNoSuchWorkerEnvironmentException CpalFailureResponseDelegateErrorCode = `NO_SUCH_WORKER_ENVIRONMENT_EXCEPTION`
 
 type CreateCluster struct {
 	// Note: This field won't be true for webapp requests. Only API users will
@@ -951,6 +854,35 @@ type DataPlaneEventDetailsEventType string
 const DataPlaneEventDetailsEventTypeNodeBlacklisted DataPlaneEventDetailsEventType = `NODE_BLACKLISTED`
 
 const DataPlaneEventDetailsEventTypeNodeExcludedDecommissioned DataPlaneEventDetailsEventType = `NODE_EXCLUDED_DECOMMISSIONED`
+
+// This describes an enum
+type DataSecurityMode string
+
+// This mode is for users migrating from legacy Passthrough on high concurrency
+// clusters.
+const DataSecurityModeLegacyPassthrough DataSecurityMode = `LEGACY_PASSTHROUGH`
+
+// This mode is for users migrating from legacy Passthrough on standard
+// clusters.
+const DataSecurityModeLegacySingleUser DataSecurityMode = `LEGACY_SINGLE_USER`
+
+// This mode is for users migrating from legacy Table ACL clusters.
+const DataSecurityModeLegacyTableAcl DataSecurityMode = `LEGACY_TABLE_ACL`
+
+// No security isolation for multiple users sharing the cluster. Data governance
+// features are not available in this mode.
+const DataSecurityModeNone DataSecurityMode = `NONE`
+
+// A secure cluster that can only be exclusively used by a single user specified
+// in `single_user_name`. Most programming languages, cluster features and data
+// governance features are available in this mode.
+const DataSecurityModeSingleUser DataSecurityMode = `SINGLE_USER`
+
+// A secure cluster that can be shared by multiple users. Cluster users are
+// fully isolated so that they cannot see each other's data and credentials.
+// Most data governance features are supported in this mode. But programming
+// languages and cluster features might be limited.
+const DataSecurityModeUserIsolation DataSecurityMode = `USER_ISOLATION`
 
 type DbfsStorageInfo struct {
 	// dbfs destination, e.g. ``dbfs:/my/path``
@@ -1329,12 +1261,8 @@ type ListClustersResponse struct {
 }
 
 type ListNodeTypesResponse struct {
-	// <needs content added>
-	Failure *CpalFailureResponse `json:"failure,omitempty"`
 	// The list of available Spark node types.
 	NodeTypes []NodeType `json:"node_types,omitempty"`
-	// <needs content added>
-	Success any/* MISSING TYPE */ `json:"success,omitempty"`
 }
 
 type LogAnalyticsInfo struct {
