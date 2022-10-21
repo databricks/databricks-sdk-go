@@ -38,19 +38,31 @@ func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}
 	return {{if .Response}}{{if not .Response.ArrayValue}}&{{end}}{{.Response.CamelName}}, {{end}}err
 }
 {{if .Wait}}
+// {{.PascalName}}Timeout overrides the default timeout of {{.Wait.Timeout}} minutes to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
+func {{.PascalName}}Timeout(dur time.Duration) retries.Option[{{.Wait.Poll.Response.PascalName}}] {
+	return retries.Timeout[{{.Wait.Poll.Response.PascalName}}](dur)
+}
+
 // {{.PascalName}} and wait to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
-func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}, timeout ...time.Duration) (*{{.Wait.Poll.Response.PascalName}}, error) {
+func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error) {
 	{{if .Wait.ForceBindRequest}}_, {{else if .Response}}{{.Response.CamelName}}, {{end}}err := a.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20*time.Minute}
+	i := retries.Info[{{.Wait.Poll.Response.PascalName}}]{Timeout: {{.Wait.Timeout}}*time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[{{.Wait.Poll.Response.PascalName}}](ctx, timeout[0], func() (*{{.Wait.Poll.Response.PascalName}}, *retries.Err) {
+	return retries.Poll[{{.Wait.Poll.Response.PascalName}}](ctx, i.Timeout, func() (*{{.Wait.Poll.Response.PascalName}}, *retries.Err) {
 		{{.Wait.Poll.Response.CamelName}}, err := a.{{.Wait.Poll.PascalName}}(ctx, {{.Wait.Poll.Request.PascalName}}{ {{range .Wait.Binding}}
 			{{.PollField.PascalName}}: {{.Bind.Of.CamelName}}.{{.Bind.PascalName}},{{end}}
 		})
+		for _, o := range options {
+			o(&retries.Info[{{.Wait.Poll.Response.PascalName}}]{
+				Info: *{{.Wait.Poll.Response.CamelName}},
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -140,11 +152,11 @@ func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}(ctx context.Context{{ran
 	})
 }
 {{end}}{{if and .Shortcut .Wait}}
-func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, timeout ...time.Duration) (*{{.Wait.Poll.Response.PascalName}}, error) {
+func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error) {
 	return a.{{.PascalName}}AndWait(ctx, {{.Request.PascalName}}{
 		{{- range .Shortcut.Params}}
 		{{.PascalName}}: {{.CamelName}},{{end}}
-	}, timeout...)
+	}, options...)
 }
 {{end}}
 {{end -}}

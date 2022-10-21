@@ -29,19 +29,31 @@ func (a *CommandExecutionAPI) Cancel(ctx context.Context, request CancelCommand)
 	return err
 }
 
+// CancelTimeout overrides the default timeout of 20 minutes to reach Cancelled state
+func CancelTimeout(dur time.Duration) retries.Option[CommandStatusResponse] {
+	return retries.Timeout[CommandStatusResponse](dur)
+}
+
 // Cancel and wait to reach Cancelled state
-func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand CancelCommand, timeout ...time.Duration) (*CommandStatusResponse, error) {
+func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand CancelCommand, options ...retries.Option[CommandStatusResponse]) (*CommandStatusResponse, error) {
 	err := a.Cancel(ctx, cancelCommand)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[CommandStatusResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[CommandStatusResponse](ctx, timeout[0], func() (*CommandStatusResponse, *retries.Err) {
+	return retries.Poll[CommandStatusResponse](ctx, i.Timeout, func() (*CommandStatusResponse, *retries.Err) {
 		commandStatusResponse, err := a.CommandStatus(ctx, CommandStatusRequest{
 			CommandId: cancelCommand.CommandId,
 		})
+		for _, o := range options {
+			o(&retries.Info[CommandStatusResponse]{
+				Info:    *commandStatusResponse,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -84,20 +96,32 @@ func (a *CommandExecutionAPI) Create(ctx context.Context, request CreateContext)
 	return &created, err
 }
 
+// CreateTimeout overrides the default timeout of 20 minutes to reach Running state
+func CreateTimeout(dur time.Duration) retries.Option[ContextStatusResponse] {
+	return retries.Timeout[ContextStatusResponse](dur)
+}
+
 // Create and wait to reach Running state
-func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext CreateContext, timeout ...time.Duration) (*ContextStatusResponse, error) {
+func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext CreateContext, options ...retries.Option[ContextStatusResponse]) (*ContextStatusResponse, error) {
 	created, err := a.Create(ctx, createContext)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[ContextStatusResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[ContextStatusResponse](ctx, timeout[0], func() (*ContextStatusResponse, *retries.Err) {
+	return retries.Poll[ContextStatusResponse](ctx, i.Timeout, func() (*ContextStatusResponse, *retries.Err) {
 		contextStatusResponse, err := a.ContextStatus(ctx, ContextStatusRequest{
 			ClusterId: createContext.ClusterId,
 			ContextId: created.Id,
 		})
+		for _, o := range options {
+			o(&retries.Info[ContextStatusResponse]{
+				Info:    *contextStatusResponse,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -131,21 +155,33 @@ func (a *CommandExecutionAPI) Execute(ctx context.Context, request Command) (*Cr
 	return &created, err
 }
 
+// ExecuteTimeout overrides the default timeout of 20 minutes to reach Finished or Error state
+func ExecuteTimeout(dur time.Duration) retries.Option[CommandStatusResponse] {
+	return retries.Timeout[CommandStatusResponse](dur)
+}
+
 // Execute and wait to reach Finished or Error state
-func (a *CommandExecutionAPI) ExecuteAndWait(ctx context.Context, command Command, timeout ...time.Duration) (*CommandStatusResponse, error) {
+func (a *CommandExecutionAPI) ExecuteAndWait(ctx context.Context, command Command, options ...retries.Option[CommandStatusResponse]) (*CommandStatusResponse, error) {
 	created, err := a.Execute(ctx, command)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[CommandStatusResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[CommandStatusResponse](ctx, timeout[0], func() (*CommandStatusResponse, *retries.Err) {
+	return retries.Poll[CommandStatusResponse](ctx, i.Timeout, func() (*CommandStatusResponse, *retries.Err) {
 		commandStatusResponse, err := a.CommandStatus(ctx, CommandStatusRequest{
 			ClusterId: command.ClusterId,
 			CommandId: created.Id,
 			ContextId: command.ContextId,
 		})
+		for _, o := range options {
+			o(&retries.Info[CommandStatusResponse]{
+				Info:    *commandStatusResponse,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}

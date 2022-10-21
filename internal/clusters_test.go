@@ -2,13 +2,63 @@ package internal
 
 import (
 	"context"
+	"os"
 	"testing"
+	"time"
 
+	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
+	os.Setenv("DATABRICKS_CONFIG_PROFILE", "azure-deco")
+	// t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+	t.Parallel()
+
+	ctx := context.Background()
+	w := workspaces.New()
+
+	// Fetch list of spark runtime versions
+	sparkVersions, err := w.Clusters.SparkVersions(ctx)
+	require.NoError(t, err)
+
+	// Select the latest LTS version
+	latestLTS, err := sparkVersions.Select(clusters.SparkVersionRequest{
+		Latest:          true,
+		LongTermSupport: true,
+	})
+	require.NoError(t, err)
+
+	// Fetch list of available node types
+	nodeTypes, err := w.Clusters.ListNodeTypes(ctx)
+	require.NoError(t, err)
+
+	// Select the smallest node type id
+	smallestWithDisk, err := nodeTypes.Smallest(clusters.NodeTypeRequest{
+		LocalDisk: true,
+	})
+	require.NoError(t, err)
+
+	var clusterId string
+
+	// Create a cluster with unreasonably low timeout
+	_, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
+		ClusterName:            RandomName(t.Name()),
+		SparkVersion:           latestLTS,
+		NodeTypeId:             smallestWithDisk,
+		AutoterminationMinutes: 10,
+		NumWorkers:             1,
+	}, clusters.CreateTimeout(15*time.Second),
+		func(i *retries.Info[clusters.ClusterInfo]) {
+			clusterId = i.Info.ClusterId
+		})
+	assert.EqualError(t, err, "timed out: Finding instances for new nodes, acquiring more instances if necessary")
+	_, err = w.Clusters.DeleteByClusterIdAndWait(ctx, clusterId)
+	assert.NoError(t, err)
+}
 
 func TestAccClustersApiIntegration(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
@@ -47,7 +97,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 		NodeTypeId:             smallestWithDisk,
 		AutoterminationMinutes: 15,
 		NumWorkers:             1,
-	})
+	}, retries.Timeout[clusters.ClusterInfo](20*time.Minute))
 	require.NoError(t, err)
 
 	t.Cleanup(func() {

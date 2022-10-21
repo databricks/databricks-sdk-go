@@ -123,6 +123,7 @@ type Wait struct {
 	Message      []string           `json:"message"`
 	Success      []string           `json:"success"`
 	Failure      []string           `json:"failure"`
+	Timeout      int                `json:"timeout,omitempty"`
 }
 
 type Binding struct {

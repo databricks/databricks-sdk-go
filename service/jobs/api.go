@@ -52,19 +52,31 @@ func (a *JobsAPI) CancelRun(ctx context.Context, request CancelRun) error {
 	return err
 }
 
+// CancelRunTimeout overrides the default timeout of 20 minutes to reach TERMINATED or SKIPPED state
+func CancelRunTimeout(dur time.Duration) retries.Option[Run] {
+	return retries.Timeout[Run](dur)
+}
+
 // CancelRun and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, timeout ...time.Duration) (*Run, error) {
+func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, options ...retries.Option[Run]) (*Run, error) {
 	err := a.CancelRun(ctx, cancelRun)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[Run]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[Run](ctx, timeout[0], func() (*Run, *retries.Err) {
+	return retries.Poll[Run](ctx, i.Timeout, func() (*Run, *retries.Err) {
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: cancelRun.RunId,
 		})
+		for _, o := range options {
+			o(&retries.Info[Run]{
+				Info:    *run,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -93,10 +105,10 @@ func (a *JobsAPI) CancelRunByRunId(ctx context.Context, runId int64) error {
 	})
 }
 
-func (a *JobsAPI) CancelRunByRunIdAndWait(ctx context.Context, runId int64, timeout ...time.Duration) (*Run, error) {
+func (a *JobsAPI) CancelRunByRunIdAndWait(ctx context.Context, runId int64, options ...retries.Option[Run]) (*Run, error) {
 	return a.CancelRunAndWait(ctx, CancelRun{
 		RunId: runId,
-	}, timeout...)
+	}, options...)
 }
 
 // Create a new job
@@ -184,19 +196,31 @@ func (a *JobsAPI) GetRun(ctx context.Context, request GetRunRequest) (*Run, erro
 	return &run, err
 }
 
+// GetRunTimeout overrides the default timeout of 20 minutes to reach TERMINATED or SKIPPED state
+func GetRunTimeout(dur time.Duration) retries.Option[Run] {
+	return retries.Timeout[Run](dur)
+}
+
 // GetRun and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRunRequest GetRunRequest, timeout ...time.Duration) (*Run, error) {
+func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRunRequest GetRunRequest, options ...retries.Option[Run]) (*Run, error) {
 	run, err := a.GetRun(ctx, getRunRequest)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[Run]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[Run](ctx, timeout[0], func() (*Run, *retries.Err) {
+	return retries.Poll[Run](ctx, i.Timeout, func() (*Run, *retries.Err) {
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: run.RunId,
 		})
+		for _, o := range options {
+			o(&retries.Info[Run]{
+				Info:    *run,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -332,19 +356,31 @@ func (a *JobsAPI) RepairRun(ctx context.Context, request RepairRun) (*RepairRunR
 	return &repairRunResponse, err
 }
 
+// RepairRunTimeout overrides the default timeout of 20 minutes to reach TERMINATED or SKIPPED state
+func RepairRunTimeout(dur time.Duration) retries.Option[Run] {
+	return retries.Timeout[Run](dur)
+}
+
 // RepairRun and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, timeout ...time.Duration) (*Run, error) {
+func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, options ...retries.Option[Run]) (*Run, error) {
 	_, err := a.RepairRun(ctx, repairRun)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[Run]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[Run](ctx, timeout[0], func() (*Run, *retries.Err) {
+	return retries.Poll[Run](ctx, i.Timeout, func() (*Run, *retries.Err) {
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: repairRun.RunId,
 		})
+		for _, o := range options {
+			o(&retries.Info[Run]{
+				Info:    *run,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -383,19 +419,31 @@ func (a *JobsAPI) RunNow(ctx context.Context, request RunNow) (*RunNowResponse, 
 	return &runNowResponse, err
 }
 
+// RunNowTimeout overrides the default timeout of 20 minutes to reach TERMINATED or SKIPPED state
+func RunNowTimeout(dur time.Duration) retries.Option[Run] {
+	return retries.Timeout[Run](dur)
+}
+
 // RunNow and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, timeout ...time.Duration) (*Run, error) {
+func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...retries.Option[Run]) (*Run, error) {
 	runNowResponse, err := a.RunNow(ctx, runNow)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[Run]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[Run](ctx, timeout[0], func() (*Run, *retries.Err) {
+	return retries.Poll[Run](ctx, i.Timeout, func() (*Run, *retries.Err) {
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: runNowResponse.RunId,
 		})
+		for _, o := range options {
+			o(&retries.Info[Run]{
+				Info:    *run,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -427,19 +475,31 @@ func (a *JobsAPI) Submit(ctx context.Context, request SubmitRun) (*SubmitRunResp
 	return &submitRunResponse, err
 }
 
+// SubmitTimeout overrides the default timeout of 20 minutes to reach TERMINATED or SKIPPED state
+func SubmitTimeout(dur time.Duration) retries.Option[Run] {
+	return retries.Timeout[Run](dur)
+}
+
 // Submit and wait to reach TERMINATED or SKIPPED state
-func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, timeout ...time.Duration) (*Run, error) {
+func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, options ...retries.Option[Run]) (*Run, error) {
 	submitRunResponse, err := a.Submit(ctx, submitRun)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[Run]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[Run](ctx, timeout[0], func() (*Run, *retries.Err) {
+	return retries.Poll[Run](ctx, i.Timeout, func() (*Run, *retries.Err) {
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: submitRunResponse.RunId,
 		})
+		for _, o := range options {
+			o(&retries.Info[Run]{
+				Info:    *run,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}

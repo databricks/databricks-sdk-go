@@ -29,19 +29,31 @@ func (a *DeltaPipelinesAPI) CreatePipeline(ctx context.Context, request CreatePi
 	return &createPipelineResponse, err
 }
 
+// CreatePipelineTimeout overrides the default timeout of 20 minutes to reach RUNNING state
+func CreatePipelineTimeout(dur time.Duration) retries.Option[GetPipelineResponse] {
+	return retries.Timeout[GetPipelineResponse](dur)
+}
+
 // CreatePipeline and wait to reach RUNNING state
-func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPipelineRequest CreatePipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
+func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPipelineRequest CreatePipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	createPipelineResponse, err := a.CreatePipeline(ctx, createPipelineRequest)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[GetPipelineResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
+	return retries.Poll[GetPipelineResponse](ctx, i.Timeout, func() (*GetPipelineResponse, *retries.Err) {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
 			PipelineId: createPipelineResponse.PipelineId,
 		})
+		for _, o := range options {
+			o(&retries.Info[GetPipelineResponse]{
+				Info:    *getPipelineResponse,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -85,19 +97,31 @@ func (a *DeltaPipelinesAPI) GetPipeline(ctx context.Context, request GetPipeline
 	return &getPipelineResponse, err
 }
 
+// GetPipelineTimeout overrides the default timeout of 20 minutes to reach RUNNING state
+func GetPipelineTimeout(dur time.Duration) retries.Option[GetPipelineResponse] {
+	return retries.Timeout[GetPipelineResponse](dur)
+}
+
 // GetPipeline and wait to reach RUNNING state
-func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipelineRequest GetPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
+func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipelineRequest GetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	getPipelineResponse, err := a.GetPipeline(ctx, getPipelineRequest)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[GetPipelineResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
+	return retries.Poll[GetPipelineResponse](ctx, i.Timeout, func() (*GetPipelineResponse, *retries.Err) {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
 			PipelineId: getPipelineResponse.PipelineId,
 		})
+		for _, o := range options {
+			o(&retries.Info[GetPipelineResponse]{
+				Info:    *getPipelineResponse,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -122,10 +146,10 @@ func (a *DeltaPipelinesAPI) GetPipelineByPipelineId(ctx context.Context, pipelin
 	})
 }
 
-func (a *DeltaPipelinesAPI) GetPipelineByPipelineIdAndWait(ctx context.Context, pipelineId string, timeout ...time.Duration) (*GetPipelineResponse, error) {
+func (a *DeltaPipelinesAPI) GetPipelineByPipelineIdAndWait(ctx context.Context, pipelineId string, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	return a.GetPipelineAndWait(ctx, GetPipelineRequest{
 		PipelineId: pipelineId,
-	}, timeout...)
+	}, options...)
 }
 
 func (a *DeltaPipelinesAPI) GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error) {
@@ -161,19 +185,31 @@ func (a *DeltaPipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipe
 	return err
 }
 
+// ResetPipelineTimeout overrides the default timeout of 20 minutes to reach RUNNING state
+func ResetPipelineTimeout(dur time.Duration) retries.Option[GetPipelineResponse] {
+	return retries.Timeout[GetPipelineResponse](dur)
+}
+
 // ResetPipeline and wait to reach RUNNING state
-func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipelineRequest ResetPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
+func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipelineRequest ResetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	err := a.ResetPipeline(ctx, resetPipelineRequest)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[GetPipelineResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
+	return retries.Poll[GetPipelineResponse](ctx, i.Timeout, func() (*GetPipelineResponse, *retries.Err) {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
 			PipelineId: resetPipelineRequest.PipelineId,
 		})
+		for _, o := range options {
+			o(&retries.Info[GetPipelineResponse]{
+				Info:    *getPipelineResponse,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -206,19 +242,31 @@ func (a *DeltaPipelinesAPI) StopPipeline(ctx context.Context, request StopPipeli
 	return err
 }
 
+// StopPipelineTimeout overrides the default timeout of 20 minutes to reach IDLE state
+func StopPipelineTimeout(dur time.Duration) retries.Option[GetPipelineResponse] {
+	return retries.Timeout[GetPipelineResponse](dur)
+}
+
 // StopPipeline and wait to reach IDLE state
-func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipelineRequest StopPipelineRequest, timeout ...time.Duration) (*GetPipelineResponse, error) {
+func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipelineRequest StopPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	err := a.StopPipeline(ctx, stopPipelineRequest)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[GetPipelineResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[GetPipelineResponse](ctx, timeout[0], func() (*GetPipelineResponse, *retries.Err) {
+	return retries.Poll[GetPipelineResponse](ctx, i.Timeout, func() (*GetPipelineResponse, *retries.Err) {
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
 			PipelineId: stopPipelineRequest.PipelineId,
 		})
+		for _, o := range options {
+			o(&retries.Info[GetPipelineResponse]{
+				Info:    *getPipelineResponse,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}

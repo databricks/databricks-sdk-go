@@ -54,19 +54,31 @@ func (a *ClustersAPI) Create(ctx context.Context, request CreateCluster) (*Creat
 	return &createClusterResponse, err
 }
 
+// CreateTimeout overrides the default timeout of 20 minutes to reach RUNNING state
+func CreateTimeout(dur time.Duration) retries.Option[ClusterInfo] {
+	return retries.Timeout[ClusterInfo](dur)
+}
+
 // Create and wait to reach RUNNING state
-func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateCluster, timeout ...time.Duration) (*ClusterInfo, error) {
+func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	createClusterResponse, err := a.Create(ctx, createCluster)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
+	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: createClusterResponse.ClusterId,
 		})
+		for _, o := range options {
+			o(&retries.Info[ClusterInfo]{
+				Info:    *clusterInfo,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -97,19 +109,31 @@ func (a *ClustersAPI) Delete(ctx context.Context, request DeleteCluster) error {
 	return err
 }
 
+// DeleteTimeout overrides the default timeout of 20 minutes to reach TERMINATED state
+func DeleteTimeout(dur time.Duration) retries.Option[ClusterInfo] {
+	return retries.Timeout[ClusterInfo](dur)
+}
+
 // Delete and wait to reach TERMINATED state
-func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteCluster, timeout ...time.Duration) (*ClusterInfo, error) {
+func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	err := a.Delete(ctx, deleteCluster)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
+	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: deleteCluster.ClusterId,
 		})
+		for _, o := range options {
+			o(&retries.Info[ClusterInfo]{
+				Info:    *clusterInfo,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -140,10 +164,10 @@ func (a *ClustersAPI) DeleteByClusterId(ctx context.Context, clusterId string) e
 	})
 }
 
-func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId string, timeout ...time.Duration) (*ClusterInfo, error) {
+func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId string, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	return a.DeleteAndWait(ctx, DeleteCluster{
 		ClusterId: clusterId,
-	}, timeout...)
+	}, options...)
 }
 
 // Update cluster configuration
@@ -167,19 +191,31 @@ func (a *ClustersAPI) Edit(ctx context.Context, request EditCluster) error {
 	return err
 }
 
+// EditTimeout overrides the default timeout of 20 minutes to reach RUNNING state
+func EditTimeout(dur time.Duration) retries.Option[ClusterInfo] {
+	return retries.Timeout[ClusterInfo](dur)
+}
+
 // Edit and wait to reach RUNNING state
-func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, timeout ...time.Duration) (*ClusterInfo, error) {
+func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	err := a.Edit(ctx, editCluster)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
+	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: editCluster.ClusterId,
 		})
+		for _, o := range options {
+			o(&retries.Info[ClusterInfo]{
+				Info:    *clusterInfo,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -246,19 +282,31 @@ func (a *ClustersAPI) Get(ctx context.Context, request GetRequest) (*ClusterInfo
 	return &clusterInfo, err
 }
 
+// GetTimeout overrides the default timeout of 20 minutes to reach RUNNING state
+func GetTimeout(dur time.Duration) retries.Option[ClusterInfo] {
+	return retries.Timeout[ClusterInfo](dur)
+}
+
 // Get and wait to reach RUNNING state
-func (a *ClustersAPI) GetAndWait(ctx context.Context, getRequest GetRequest, timeout ...time.Duration) (*ClusterInfo, error) {
+func (a *ClustersAPI) GetAndWait(ctx context.Context, getRequest GetRequest, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	clusterInfo, err := a.Get(ctx, getRequest)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
+	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: clusterInfo.ClusterId,
 		})
+		for _, o := range options {
+			o(&retries.Info[ClusterInfo]{
+				Info:    *clusterInfo,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -288,10 +336,10 @@ func (a *ClustersAPI) GetByClusterId(ctx context.Context, clusterId string) (*Cl
 	})
 }
 
-func (a *ClustersAPI) GetByClusterIdAndWait(ctx context.Context, clusterId string, timeout ...time.Duration) (*ClusterInfo, error) {
+func (a *ClustersAPI) GetByClusterIdAndWait(ctx context.Context, clusterId string, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	return a.GetAndWait(ctx, GetRequest{
 		ClusterId: clusterId,
-	}, timeout...)
+	}, options...)
 }
 
 // List all clusters
@@ -452,19 +500,31 @@ func (a *ClustersAPI) Resize(ctx context.Context, request ResizeCluster) error {
 	return err
 }
 
+// ResizeTimeout overrides the default timeout of 20 minutes to reach RUNNING state
+func ResizeTimeout(dur time.Duration) retries.Option[ClusterInfo] {
+	return retries.Timeout[ClusterInfo](dur)
+}
+
 // Resize and wait to reach RUNNING state
-func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeCluster, timeout ...time.Duration) (*ClusterInfo, error) {
+func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	err := a.Resize(ctx, resizeCluster)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
+	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: resizeCluster.ClusterId,
 		})
+		for _, o := range options {
+			o(&retries.Info[ClusterInfo]{
+				Info:    *clusterInfo,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -493,19 +553,31 @@ func (a *ClustersAPI) Restart(ctx context.Context, request RestartCluster) error
 	return err
 }
 
+// RestartTimeout overrides the default timeout of 20 minutes to reach RUNNING state
+func RestartTimeout(dur time.Duration) retries.Option[ClusterInfo] {
+	return retries.Timeout[ClusterInfo](dur)
+}
+
 // Restart and wait to reach RUNNING state
-func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster RestartCluster, timeout ...time.Duration) (*ClusterInfo, error) {
+func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster RestartCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	err := a.Restart(ctx, restartCluster)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
+	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: restartCluster.ClusterId,
 		})
+		for _, o := range options {
+			o(&retries.Info[ClusterInfo]{
+				Info:    *clusterInfo,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -551,19 +623,31 @@ func (a *ClustersAPI) Start(ctx context.Context, request StartCluster) error {
 	return err
 }
 
+// StartTimeout overrides the default timeout of 20 minutes to reach RUNNING state
+func StartTimeout(dur time.Duration) retries.Option[ClusterInfo] {
+	return retries.Timeout[ClusterInfo](dur)
+}
+
 // Start and wait to reach RUNNING state
-func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluster, timeout ...time.Duration) (*ClusterInfo, error) {
+func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	err := a.Start(ctx, startCluster)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[ClusterInfo](ctx, timeout[0], func() (*ClusterInfo, *retries.Err) {
+	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: startCluster.ClusterId,
 		})
+		for _, o := range options {
+			o(&retries.Info[ClusterInfo]{
+				Info:    *clusterInfo,
+				Timeout: i.Timeout,
+			})
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -598,10 +682,10 @@ func (a *ClustersAPI) StartByClusterId(ctx context.Context, clusterId string) er
 	})
 }
 
-func (a *ClustersAPI) StartByClusterIdAndWait(ctx context.Context, clusterId string, timeout ...time.Duration) (*ClusterInfo, error) {
+func (a *ClustersAPI) StartByClusterIdAndWait(ctx context.Context, clusterId string, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	return a.StartAndWait(ctx, StartCluster{
 		ClusterId: clusterId,
-	}, timeout...)
+	}, options...)
 }
 
 // Unpin cluster

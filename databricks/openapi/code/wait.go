@@ -19,6 +19,15 @@ type Binding struct {
 	IsResponseBind bool
 }
 
+// Timeout returns timeout in minutes, defaulting to 20
+func (w *Wait) Timeout() int {
+	t := w.Method.operation.Wait.Timeout
+	if t == 0 {
+		return 20
+	}
+	return t
+}
+
 func (w *Wait) Binding() (binding []Binding) {
 	poll := w.Poll()
 	if w.Method.wait.Binding != nil {
