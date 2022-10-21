@@ -12,7 +12,21 @@ type CreateIPAccessListRequest struct {
 	ListType ListType `json:"list_type"`
 }
 
-type CreateIPAccessListResponse struct {
+type DeleteIpAccessListRequest struct {
+	// The ID for the corresponding IP access list to modify.
+	IpAccessListId string `json:"-" path:"ip_access_list_id"`
+}
+
+type FetchIpAccessListRequest struct {
+	// The ID for the corresponding IP access list to modify.
+	IpAccessListId string `json:"-" path:"ip_access_list_id"`
+}
+
+type GetIPAccessListResponse struct {
+	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
+}
+
+type IpAccessListInfo struct {
 	AddressCount int `json:"address_count,omitempty"`
 
 	CreatedAt int64 `json:"created_at,omitempty"`
@@ -32,20 +46,6 @@ type CreateIPAccessListResponse struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 
 	UpdatedBy int64 `json:"updated_by,omitempty"`
-}
-
-type DeleteIpAccessListRequest struct {
-	// The ID for the corresponding IP access list to modify.
-	IpAccessListId string `json:"-" path:"ip_access_list_id"`
-}
-
-type FetchIpAccessListRequest struct {
-	// The ID for the corresponding IP access list to modify.
-	IpAccessListId string `json:"-" path:"ip_access_list_id"`
-}
-
-type GetIPAccessListResponse struct {
-	IpAccessLists []CreateIPAccessListResponse `json:"ip_access_lists,omitempty"`
 }
 
 type ReplaceIPAccessListRequest struct {

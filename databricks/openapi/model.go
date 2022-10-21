@@ -106,11 +106,12 @@ func (o *Operation) Name() string {
 }
 
 type Pagination struct {
-	Offset    string `json:"offset,omitempty"`
-	Limit     string `json:"limit,omitempty"`
-	Results   string `json:"results,omitempty"`
-	Increment int    `json:"increment,omitempty"`
-	Inline    bool   `json:"inline,omitempty"`
+	Offset    string   `json:"offset,omitempty"`
+	Limit     string   `json:"limit,omitempty"`
+	Results   string   `json:"results,omitempty"`
+	Increment int      `json:"increment,omitempty"`
+	Inline    bool     `json:"inline,omitempty"`
+	Token     *Binding `json:"token,omitempty"`
 }
 
 type Wait struct {

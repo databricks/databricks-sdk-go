@@ -26,9 +26,7 @@ type LibrariesService interface {
 	// Get the status of libraries on a cluster. A status will be available for
 	// all libraries installed on this cluster via the API or the libraries UI
 	// as well as libraries set to be installed on all clusters via the
-	// libraries UI.
-	//
-	// The order of returned libraries will be as follows.
+	// libraries UI. The order of returned libraries will be as follows.
 	//
 	// 1. Libraries set to be installed on this cluster will be returned first.
 	// Within this group, the final order will be order in which the libraries

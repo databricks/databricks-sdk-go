@@ -7,7 +7,7 @@ package jobs
 type AccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 
-	PermissionLevel any/* ERROR */ `json:"permission_level,omitempty"`
+	PermissionLevel any/* MISSING TYPE */ `json:"permission_level,omitempty"`
 
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 

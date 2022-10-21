@@ -31,6 +31,19 @@ func (svc *Service) Methods() (methods []*Method) {
 	return methods
 }
 
+func (svc *Service) HasPagination() bool {
+	for _, v := range svc.methods {
+		p := v.pagination
+		if p == nil {
+			continue
+		}
+		if p.Offset != "" || p.Token != nil {
+			return true
+		}
+	}
+	return false
+}
+
 func (svc *Service) paramToField(op *openapi.Operation, param openapi.Parameter) *Field {
 	named := Named{param.Name, param.Description}
 	return &Field{

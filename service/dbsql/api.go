@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 func NewAlerts(client *client.DatabricksClient) AlertsService {
@@ -31,7 +32,9 @@ func (a *AlertsAPI) CreateAlert(ctx context.Context, request EditAlert) (*Alert,
 	return &alert, err
 }
 
-// Create an alert's refresh schedule
+// Create a refresh schedule
+//
+// Creates a new refresh schedule for an alert.
 //
 // **Note:** The structure of refresh schedules is subject to change.
 func (a *AlertsAPI) CreateSchedule(ctx context.Context, request CreateRefreshSchedule) (*RefreshSchedule, error) {
@@ -44,9 +47,8 @@ func (a *AlertsAPI) CreateSchedule(ctx context.Context, request CreateRefreshSch
 // Delete an alert
 //
 // Deletes an alert. Deleted alerts are no longer accessible and cannot be
-// restored.
-//
-// **Note:** Unlike queries and dashboards, alerts cannot be moved to the trash.
+// restored. **Note:** Unlike queries and dashboards, alerts cannot be moved to
+// the trash.
 func (a *AlertsAPI) DeleteAlert(ctx context.Context, request DeleteAlertRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	err := a.client.Delete(ctx, path, request)
@@ -56,29 +58,28 @@ func (a *AlertsAPI) DeleteAlert(ctx context.Context, request DeleteAlertRequest)
 // Delete an alert
 //
 // Deletes an alert. Deleted alerts are no longer accessible and cannot be
-// restored.
-//
-// **Note:** Unlike queries and dashboards, alerts cannot be moved to the trash.
+// restored. **Note:** Unlike queries and dashboards, alerts cannot be moved to
+// the trash.
 func (a *AlertsAPI) DeleteAlertByAlertId(ctx context.Context, alertId string) error {
 	return a.DeleteAlert(ctx, DeleteAlertRequest{
 		AlertId: alertId,
 	})
 }
 
-// Delete an alert's refresh schedule
+// Delete a refresh schedule
 //
-// Deletes alert refresh schedule that specifies when to refresh and evaluate
-// the associated query result.
+// Deletes an alert's refresh schedule. The refresh schedule specifies when to
+// refresh and evaluate the associated query result.
 func (a *AlertsAPI) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v/refresh-schedules/%v", request.AlertId, request.ScheduleId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
-// Delete an alert's refresh schedule
+// Delete a refresh schedule
 //
-// Deletes alert refresh schedule that specifies when to refresh and evaluate
-// the associated query result.
+// Deletes an alert's refresh schedule. The refresh schedule specifies when to
+// refresh and evaluate the associated query result.
 func (a *AlertsAPI) DeleteScheduleByAlertIdAndScheduleId(ctx context.Context, alertId string, scheduleId string) error {
 	return a.DeleteSchedule(ctx, DeleteScheduleRequest{
 		AlertId:    alertId,
@@ -86,7 +87,7 @@ func (a *AlertsAPI) DeleteScheduleByAlertIdAndScheduleId(ctx context.Context, al
 	})
 }
 
-// Fetch an alert
+// Get an alert
 //
 // Gets an alert.
 func (a *AlertsAPI) GetAlert(ctx context.Context, request GetAlertRequest) (*Alert, error) {
@@ -96,7 +97,7 @@ func (a *AlertsAPI) GetAlert(ctx context.Context, request GetAlertRequest) (*Ale
 	return &alert, err
 }
 
-// Fetch an alert
+// Get an alert
 //
 // Gets an alert.
 func (a *AlertsAPI) GetAlertByAlertId(ctx context.Context, alertId string) (*Alert, error) {
@@ -105,12 +106,12 @@ func (a *AlertsAPI) GetAlertByAlertId(ctx context.Context, alertId string) (*Ale
 	})
 }
 
-// Fetch an alert's subscriptions
+// Get an alert's subscriptions
 //
-// An alert subscription represents exactly one recipient being notified
-// whenever the alert is triggered. The alert recipient is specified by either
-// the `user` field or the `destination` field. The `user` field is ignored if
-// `destination` is non-`null`.
+// Get the subscriptions for an alert. An alert subscription represents exactly
+// one recipient being notified whenever the alert is triggered. The alert
+// recipient is specified by either the `user` field or the `destination` field.
+// The `user` field is ignored if `destination` is non-`null`.
 func (a *AlertsAPI) GetSubscriptions(ctx context.Context, request GetSubscriptionsRequest) ([]Subscription, error) {
 	var subscriptionList []Subscription
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v/subscriptions", request.AlertId)
@@ -118,21 +119,21 @@ func (a *AlertsAPI) GetSubscriptions(ctx context.Context, request GetSubscriptio
 	return subscriptionList, err
 }
 
-// Fetch an alert's subscriptions
+// Get an alert's subscriptions
 //
-// An alert subscription represents exactly one recipient being notified
-// whenever the alert is triggered. The alert recipient is specified by either
-// the `user` field or the `destination` field. The `user` field is ignored if
-// `destination` is non-`null`.
+// Get the subscriptions for an alert. An alert subscription represents exactly
+// one recipient being notified whenever the alert is triggered. The alert
+// recipient is specified by either the `user` field or the `destination` field.
+// The `user` field is ignored if `destination` is non-`null`.
 func (a *AlertsAPI) GetSubscriptionsByAlertId(ctx context.Context, alertId string) ([]Subscription, error) {
 	return a.GetSubscriptions(ctx, GetSubscriptionsRequest{
 		AlertId: alertId,
 	})
 }
 
-// Fetch a list of alerts.
+// Get alerts
 //
-// Get a list of alerts.
+// Gets a list of alerts.
 func (a *AlertsAPI) ListAlerts(ctx context.Context) ([]Alert, error) {
 	var alertList []Alert
 	path := "/api/2.0/preview/sql/alerts"
@@ -140,10 +141,37 @@ func (a *AlertsAPI) ListAlerts(ctx context.Context) ([]Alert, error) {
 	return alertList, err
 }
 
-// Fetch an alert's refresh schedules
+func (a *AlertsAPI) AlertNameToIdMap(ctx context.Context) (map[string]string, error) {
+	mapping := map[string]string{}
+	result, err := a.ListAlerts(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		mapping[v.Name] = v.Id
+	}
+	return mapping, nil
+}
+
+func (a *AlertsAPI) GetAlertByName(ctx context.Context, name string) (*Alert, error) {
+	result, err := a.ListAlerts(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		if v.Name != name {
+			continue
+		}
+		return &v, nil
+	}
+	return nil, fmt.Errorf("Alert named '%s' does not exist", name)
+}
+
+// Get refresh schedules
 //
-// Alerts can have refresh schedules that specify when to refresh and evaluate
-// the associated query result.
+// Gets the refresh schedules for the specified alert. Alerts can have refresh
+// schedules that specify when to refresh and evaluate the associated query
+// result.
 //
 // **Note:** Although refresh schedules are returned in a list, only one refresh
 // schedule per alert is currently supported. The structure of refresh schedules
@@ -155,10 +183,11 @@ func (a *AlertsAPI) ListSchedules(ctx context.Context, request ListSchedulesRequ
 	return refreshScheduleList, err
 }
 
-// Fetch an alert's refresh schedules
+// Get refresh schedules
 //
-// Alerts can have refresh schedules that specify when to refresh and evaluate
-// the associated query result.
+// Gets the refresh schedules for the specified alert. Alerts can have refresh
+// schedules that specify when to refresh and evaluate the associated query
+// result.
 //
 // **Note:** Although refresh schedules are returned in a list, only one refresh
 // schedule per alert is currently supported. The structure of refresh schedules
@@ -196,7 +225,7 @@ func (a *AlertsAPI) UnsubscribeByAlertIdAndSubscriptionId(ctx context.Context, a
 	})
 }
 
-// Edit an alert
+// Update an alert
 //
 // Updates an alert.
 func (a *AlertsAPI) UpdateAlert(ctx context.Context, request EditAlert) error {
@@ -215,7 +244,7 @@ type DashboardsAPI struct {
 	client *client.DatabricksClient
 }
 
-// Create a new dashboard object
+// Create a dashboard object
 func (a *DashboardsAPI) CreateDashboard(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error) {
 	var dashboard Dashboard
 	path := "/api/2.0/preview/sql/dashboards"
@@ -223,7 +252,7 @@ func (a *DashboardsAPI) CreateDashboard(ctx context.Context, request CreateDashb
 	return &dashboard, err
 }
 
-// Move a dashboard to the trash
+// Remove a dashboard
 //
 // Moves a dashboard to the trash. Trashed dashboards do not appear in list
 // views or searches, and cannot be shared.
@@ -233,7 +262,7 @@ func (a *DashboardsAPI) DeleteDashboard(ctx context.Context, request DeleteDashb
 	return err
 }
 
-// Move a dashboard to the trash
+// Remove a dashboard
 //
 // Moves a dashboard to the trash. Trashed dashboards do not appear in list
 // views or searches, and cannot be shared.
@@ -243,7 +272,7 @@ func (a *DashboardsAPI) DeleteDashboardByDashboardId(ctx context.Context, dashbo
 	})
 }
 
-// Retrieve a dashboard definition
+// Retrieve a definition
 //
 // Returns a JSON representation of a dashboard object, including its
 // visualization and query objects.
@@ -254,7 +283,7 @@ func (a *DashboardsAPI) GetDashboard(ctx context.Context, request GetDashboardRe
 	return &dashboard, err
 }
 
-// Retrieve a dashboard definition
+// Retrieve a definition
 //
 // Returns a JSON representation of a dashboard object, including its
 // visualization and query objects.
@@ -264,7 +293,11 @@ func (a *DashboardsAPI) GetDashboardByDashboardId(ctx context.Context, dashboard
 	})
 }
 
-// Fetch a paginated list of dashboard objects
+// Get dashboard objects
+//
+// Fetch a paginated list of dashboard objects.
+//
+// Use ListDashboardsAll() to get all Dashboard instances, which will iterate over every result page.
 func (a *DashboardsAPI) ListDashboards(ctx context.Context, request ListDashboardsRequest) (*ListDashboardsResponse, error) {
 	var listDashboardsResponse ListDashboardsResponse
 	path := "/api/2.0/preview/sql/dashboards"
@@ -272,7 +305,56 @@ func (a *DashboardsAPI) ListDashboards(ctx context.Context, request ListDashboar
 	return &listDashboardsResponse, err
 }
 
-// Restore a trashed dashboard
+// ListDashboardsAll returns all Dashboard instances by calling ListDashboards for every result page
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *DashboardsAPI) ListDashboardsAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
+	var results []Dashboard
+	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+	request.Page = 1 // start iterating from the first page
+	for {
+		response, err := a.ListDashboards(ctx, request)
+		if err != nil {
+			return nil, err
+		}
+		if len(response.Results) == 0 {
+			break
+		}
+		for _, v := range response.Results {
+			results = append(results, v)
+		}
+		request.Page++
+	}
+	return results, nil
+}
+
+func (a *DashboardsAPI) DashboardNameToIdMap(ctx context.Context, request ListDashboardsRequest) (map[string]string, error) {
+	mapping := map[string]string{}
+	result, err := a.ListDashboardsAll(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		mapping[v.Name] = v.Id
+	}
+	return mapping, nil
+}
+
+func (a *DashboardsAPI) GetDashboardByName(ctx context.Context, name string) (*Dashboard, error) {
+	result, err := a.ListDashboardsAll(ctx, ListDashboardsRequest{})
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		if v.Name != name {
+			continue
+		}
+		return &v, nil
+	}
+	return nil, fmt.Errorf("Dashboard named '%s' does not exist", name)
+}
+
+// Restore a dashboard
 //
 // A restored dashboard appears in list views and searches and can be shared.
 func (a *DashboardsAPI) RestoreDashboard(ctx context.Context, request RestoreDashboardRequest) error {
@@ -291,7 +373,7 @@ type DataSourcesAPI struct {
 	client *client.DatabricksClient
 }
 
-// Fetch a list of SQL warehouses
+// Get a list of SQL warehouses
 //
 // Retrieves a full list of SQL warehouses available in this workspace. All
 // fields that appear in this API response are enumerated for clarity. However,
@@ -301,6 +383,32 @@ func (a *DataSourcesAPI) ListDataSources(ctx context.Context) ([]DataSource, err
 	path := "/api/2.0/preview/sql/data_sources"
 	err := a.client.Get(ctx, path, nil, &dataSourceList)
 	return dataSourceList, err
+}
+
+func (a *DataSourcesAPI) DataSourceNameToIdMap(ctx context.Context) (map[string]string, error) {
+	mapping := map[string]string{}
+	result, err := a.ListDataSources(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		mapping[v.Name] = v.Id
+	}
+	return mapping, nil
+}
+
+func (a *DataSourcesAPI) GetDataSourceByName(ctx context.Context, name string) (*DataSource, error) {
+	result, err := a.ListDataSources(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		if v.Name != name {
+			continue
+		}
+		return &v, nil
+	}
+	return nil, fmt.Errorf("DataSource named '%s' does not exist", name)
 }
 
 func NewDbsqlPermissions(client *client.DatabricksClient) DbsqlPermissionsService {
@@ -313,10 +421,10 @@ type DbsqlPermissionsAPI struct {
 	client *client.DatabricksClient
 }
 
-// Get object access control list
+// Get object ACL
 //
-// Returns a JSON representation of the access control list (ACL) for a
-// specified object.
+// Gets a JSON representation of the access control list (ACL) for a specified
+// object.
 func (a *DbsqlPermissionsAPI) GetPermissions(ctx context.Context, request GetPermissionsRequest) (*GetPermissionsResponse, error) {
 	var getPermissionsResponse GetPermissionsResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v", request.ObjectType, request.ObjectId)
@@ -324,10 +432,10 @@ func (a *DbsqlPermissionsAPI) GetPermissions(ctx context.Context, request GetPer
 	return &getPermissionsResponse, err
 }
 
-// Get object access control list
+// Get object ACL
 //
-// Returns a JSON representation of the access control list (ACL) for a
-// specified object.
+// Gets a JSON representation of the access control list (ACL) for a specified
+// object.
 func (a *DbsqlPermissionsAPI) GetPermissionsByObjectTypeAndObjectId(ctx context.Context, objectType ObjectTypePlural, objectId string) (*GetPermissionsResponse, error) {
 	return a.GetPermissions(ctx, GetPermissionsRequest{
 		ObjectType: objectType,
@@ -335,9 +443,10 @@ func (a *DbsqlPermissionsAPI) GetPermissionsByObjectTypeAndObjectId(ctx context.
 	})
 }
 
-// Set object access control list
+// Set object ACL
 //
-// Completely rewrite the access control list for a specified object.
+// Sets the access control list (ACL) for a specified object. This operation
+// will complete rewrite the ACL.
 func (a *DbsqlPermissionsAPI) SetPermissions(ctx context.Context, request SetPermissionsRequest) (*SetPermissionsResponse, error) {
 	var setPermissionsResponse SetPermissionsResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v", request.ObjectType, request.ObjectId)
@@ -347,7 +456,7 @@ func (a *DbsqlPermissionsAPI) SetPermissions(ctx context.Context, request SetPer
 
 // Transfer object ownership
 //
-// Transfer ownership of a dashboard, query, or alert to an active user.
+// Transfers ownership of a dashboard, query, or alert to an active user.
 // Requires an admin API key.
 func (a *DbsqlPermissionsAPI) TransferOwnership(ctx context.Context, request TransferOwnershipRequest) (*Success, error) {
 	var success Success
@@ -384,7 +493,7 @@ func (a *QueriesAPI) CreateQuery(ctx context.Context, request QueryPostContent) 
 	return &query, err
 }
 
-// Move a query to the trash
+// Delete a query
 //
 // Moves a query to the trash. Trashed queries immediately disappear from
 // searches and list views, and they cannot be used for alerts. The trash is
@@ -395,7 +504,7 @@ func (a *QueriesAPI) DeleteQuery(ctx context.Context, request DeleteQueryRequest
 	return err
 }
 
-// Move a query to the trash
+// Delete a query
 //
 // Moves a query to the trash. Trashed queries immediately disappear from
 // searches and list views, and they cannot be used for alerts. The trash is
@@ -406,7 +515,7 @@ func (a *QueriesAPI) DeleteQueryByQueryId(ctx context.Context, queryId string) e
 	})
 }
 
-// Retrieve a query definition.
+// Get a query definition.
 //
 // Retrieve a query object definition along with contextual permissions
 // information about the currently authenticated user.
@@ -417,7 +526,7 @@ func (a *QueriesAPI) GetQuery(ctx context.Context, request GetQueryRequest) (*Qu
 	return &query, err
 }
 
-// Retrieve a query definition.
+// Get a query definition.
 //
 // Retrieve a query object definition along with contextual permissions
 // information about the currently authenticated user.
@@ -427,10 +536,12 @@ func (a *QueriesAPI) GetQueryByQueryId(ctx context.Context, queryId string) (*Qu
 	})
 }
 
-// Retrieve list of queries
+// Get a list of queries
 //
-// Retrieves a list of queries. Optionally, this list can be filtered by a
-// search term.
+// Gets a list of queries. Optionally, this list can be filtered by a search
+// term.
+//
+// Use ListQueriesAll() to get all Query instances, which will iterate over every result page.
 func (a *QueriesAPI) ListQueries(ctx context.Context, request ListQueriesRequest) (*ListQueriesResponse, error) {
 	var listQueriesResponse ListQueriesResponse
 	path := "/api/2.0/preview/sql/queries"
@@ -438,10 +549,59 @@ func (a *QueriesAPI) ListQueries(ctx context.Context, request ListQueriesRequest
 	return &listQueriesResponse, err
 }
 
-// Restore a trashed query
+// ListQueriesAll returns all Query instances by calling ListQueries for every result page
 //
-// A restored query appears in list views and searches. You can use restored
-// queries for alerts.
+// This method is generated by Databricks SDK Code Generator.
+func (a *QueriesAPI) ListQueriesAll(ctx context.Context, request ListQueriesRequest) ([]Query, error) {
+	var results []Query
+	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+	request.Page = 1 // start iterating from the first page
+	for {
+		response, err := a.ListQueries(ctx, request)
+		if err != nil {
+			return nil, err
+		}
+		if len(response.Results) == 0 {
+			break
+		}
+		for _, v := range response.Results {
+			results = append(results, v)
+		}
+		request.Page++
+	}
+	return results, nil
+}
+
+func (a *QueriesAPI) QueryNameToIdMap(ctx context.Context, request ListQueriesRequest) (map[string]string, error) {
+	mapping := map[string]string{}
+	result, err := a.ListQueriesAll(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		mapping[v.Name] = v.Id
+	}
+	return mapping, nil
+}
+
+func (a *QueriesAPI) GetQueryByName(ctx context.Context, name string) (*Query, error) {
+	result, err := a.ListQueriesAll(ctx, ListQueriesRequest{})
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		if v.Name != name {
+			continue
+		}
+		return &v, nil
+	}
+	return nil, fmt.Errorf("Query named '%s' does not exist", name)
+}
+
+// Restore a query
+//
+// Restore a query that has been moved to the trash. A restored query appears in
+// list views and searches. You can use restored queries for alerts.
 func (a *QueriesAPI) RestoreQuery(ctx context.Context, request RestoreQueryRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/trash/%v", request.QueryId)
 	err := a.client.Post(ctx, path, request, nil)

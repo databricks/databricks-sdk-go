@@ -34,6 +34,7 @@ type Pagination struct {
 	Limit     *Field
 	Results   *Field
 	Entity    *Entity
+	Token     *Binding
 	Increment int
 }
 
@@ -141,9 +142,17 @@ func (m *Method) Pagination() *Pagination {
 		// we assume that method already returns body-as-array
 		return nil
 	}
+	var token *Binding
+	if m.pagination.Token != nil {
+		token = &Binding{ // reuse the same datastructure as for waiters
+			PollField: m.Request.Field(m.pagination.Token.Request),
+			Bind:      m.Response.Field(m.pagination.Token.Response),
+		}
+	}
 	results := m.Response.Field(m.pagination.Results)
 	return &Pagination{
 		Results:   results,
+		Token:     token,
 		Entity:    results.Entity.ArrayValue,
 		Offset:    m.Request.Field(m.pagination.Offset),
 		Limit:     m.Request.Field(m.pagination.Limit),
@@ -160,6 +169,10 @@ func (m *Method) paginationItem() *Entity {
 		return m.Response.ArrayValue
 	}
 	return m.Pagination().Entity
+}
+
+func (p *Pagination) MultiRequest() bool {
+	return p.Offset != nil || p.Token != nil
 }
 
 func (m *Method) NamedIdMap() *NamedIdMap {
@@ -188,18 +201,13 @@ func (m *Method) NamedIdMap() *NamedIdMap {
 	}
 }
 
-// GetByName returns method from the same service with x-databricks-crud:read
-func (m *Method) GetByName() *Method {
-	if m.NamedIdMap() == nil {
+// GetByName returns entity from the same service with x-databricks-crud:read
+func (m *Method) GetByName() *Entity {
+	n := m.NamedIdMap()
+	if n == nil {
 		return nil
 	}
-	for _, v := range m.Service.methods {
-		if strings.ToLower(v.operation.Crud) != "read" {
-			continue
-		}
-		return v
-	}
-	return nil
+	return n.Entity
 }
 
 func (m *Method) CanHaveResponseBody() bool {
