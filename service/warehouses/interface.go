@@ -4,6 +4,7 @@ package warehouses
 
 import (
 	"context"
+
 	"github.com/databricks/databricks-sdk-go/retries"
 )
 

@@ -11,7 +11,7 @@ import (
 )
 
 type Info[T any] struct {
-	Info T
+	Info    T
 	Timeout time.Duration
 }
 
