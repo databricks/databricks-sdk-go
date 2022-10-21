@@ -1,11 +1,11 @@
 // Cluster Libraries API
 //
 // Libraries can only be installed on a running cluster. Please use the
-// high-level [LibrariesAPI.UpdateLibraries] instead of direct calls
+// high-level [LibrariesAPI.Update] instead of direct calls
 // to [LibrariesAPI.Install], [LibrariesAPI.Uninstall],
 // and [LibrariesAPI.ClusterStatus].
 //
-//	err := w.Libraries.UpdateLibraries(ctx, libraries.UpdateLibraries{
+//	err := w.Libraries.UpdateAndWait(ctx, libraries.Update{
 //		ClusterId: clusterId,
 //		Install: []libraries.Library{
 //			{

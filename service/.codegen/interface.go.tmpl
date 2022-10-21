@@ -62,11 +62,11 @@ type {{.PascalName}}Service interface {
 	// Open returns `io.Reader` to download file in chunks
 	Open(ctx context.Context, path string) (*FileReader, error)
 	{{end}}
-	{{if eq .PascalName "Libraries"}}// UpdateLibraries installs or uninstalls specified libraries 
+	{{if eq .PascalName "Libraries"}}// UpdateAndWait installs or uninstalls specified libraries 
 	// and waits until they are in a usable state
-	UpdateLibraries(ctx context.Context, update UpdateLibraries) error
-	// WaitForLibrariesInstalled returns only once the libraries are in the usable state
-	WaitForLibrariesInstalled(ctx context.Context, wait Wait) (*ClusterLibraryStatuses, error)
+	UpdateAndWait(ctx context.Context, update Update) error
+	// Wait returns only once the libraries are in the usable state
+	Wait(ctx context.Context, wait Wait) (*ClusterLibraryStatuses, error)
 	{{end}}
 	
 }

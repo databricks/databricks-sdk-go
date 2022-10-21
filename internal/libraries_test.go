@@ -17,7 +17,7 @@ func TestAccLibraries(t *testing.T) {
 	clusterId := createTestCluster(ctx, w, t)
 	defer w.Clusters.PermanentDeleteByClusterId(ctx, clusterId)
 
-	err := w.Libraries.UpdateLibraries(ctx, libraries.UpdateLibraries{
+	err := w.Libraries.UpdateAndWait(ctx, libraries.Update{
 		ClusterId: clusterId,
 		Install: []libraries.Library{
 			{
