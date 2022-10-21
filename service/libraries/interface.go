@@ -64,7 +64,9 @@ type LibrariesService interface {
 	// are not installed on the cluster will have no impact but is not an error.
 	Uninstall(ctx context.Context, request UninstallLibraries) error
 
+	// UpdateLibraries installs or uninstalls specified libraries
+	// and waits until they are in a usable state
 	UpdateLibraries(ctx context.Context, update UpdateLibraries) error
-
+	// WaitForLibrariesInstalled returns only once the libraries are in the usable state
 	WaitForLibrariesInstalled(ctx context.Context, wait Wait) (*ClusterLibraryStatuses, error)
 }

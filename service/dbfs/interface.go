@@ -4,6 +4,7 @@ package dbfs
 
 import (
 	"context"
+
 	"io"
 )
 
@@ -165,7 +166,8 @@ type DbfsService interface {
 	// the contents until the end of file.",
 	Read(ctx context.Context, request ReadRequest) (*ReadResponse, error)
 
+	// Overwrite uploads a file from supplied `io.Reader`
 	Overwrite(ctx context.Context, path string, r io.Reader) error
-
+	// Open returns `io.Reader` to download file in chunks
 	Open(ctx context.Context, path string) (*FileReader, error)
 }
