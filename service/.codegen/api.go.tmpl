@@ -4,13 +4,11 @@ package {{.Name}}
 
 import (
 	"context"
-	{{if or .HasPathParams .HasWaits}}"fmt"{{end}}
-	{{if .HasWaits}}"time"
-
-	"github.com/databricks/databricks-sdk-go/retries"{{end}}
-	{{if .HasPagination}}"github.com/databricks/databricks-sdk-go/databricks/useragent"
-	{{- end}}
+	"fmt"
+	"time"
+	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 {{range .Services}}
 func New{{.PascalName}}(client *client.DatabricksClient) {{.PascalName}}Service {

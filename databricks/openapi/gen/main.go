@@ -6,6 +6,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"golang.org/x/exp/slices"
 	"io"
 	"io/fs"
 	"os"
@@ -83,30 +84,42 @@ type Render struct {
 }
 
 func (r *Render) Run() error {
+	var filenames []string
 	if r.Packages != nil {
-		err := newPass(r.batch.Pkgs(), r.Packages).Run()
+		pass := newPass(r.batch.Pkgs(), r.Packages)
+		err := pass.Run()
 		if err != nil {
 			return fmt.Errorf("packages: %w", err)
 		}
+		filenames = append(filenames, pass.filenames...)
 	}
 	if r.Services != nil {
-		err := newPass(r.batch.Services(), r.Services).Run()
+		pass := newPass(r.batch.Services(), r.Services)
+		err := pass.Run()
 		if err != nil {
 			return fmt.Errorf("services: %w", err)
 		}
+		filenames = append(filenames, pass.filenames...)
 	}
 	if r.Types != nil {
-		err := newPass(r.batch.Types(), r.Types).Run()
+		pass := newPass(r.batch.Types(), r.Types)
+		err := pass.Run()
 		if err != nil {
 			return fmt.Errorf("types: %w", err)
 		}
+		filenames = append(filenames, pass.filenames...)
 	}
-	split := strings.Split(r.Formatter, " ")
-	cmd := exec.Command(split[0], split[1:]...)
-	cmd.Dir = r.ctx.Target
-	err := cmd.Run()
-	if err != nil {
-		return fmt.Errorf("%s: %w", r.Formatter, err)
+	for _, formatter := range strings.Split(r.Formatter, "&&") {
+		formatter = strings.TrimSpace(formatter)
+		formatter = strings.ReplaceAll(formatter, "$FILENAMES",
+			strings.Join(filenames, " "))
+		split := strings.Split(formatter, " ")
+		cmd := exec.Command(split[0], split[1:]...)
+		cmd.Dir = r.ctx.Target
+		err := cmd.Run()
+		if err != nil {
+			return fmt.Errorf("%s: %w", formatter, err)
+		}
 	}
 	return nil
 }
@@ -119,6 +132,10 @@ func newPass[T named](items []T, fileset map[string]string) *Pass[T] {
 		tmpls = append(tmpls, filename)
 		newFileset[filepath.Base(filename)] = v
 	}
+	// add some determinism into code generation
+	slices.SortFunc(items, func(a, b T) bool {
+		return a.FullName() < b.FullName()
+	})
 	return &Pass[T]{
 		Items:   items,
 		ctx:     &ctx,
@@ -132,10 +149,11 @@ type named interface {
 }
 
 type Pass[T named] struct {
-	Items   []T
-	ctx     *Context
-	tmpl    *template.Template
-	fileset map[string]string
+	Items     []T
+	ctx       *Context
+	tmpl      *template.Template
+	fileset   map[string]string
+	filenames []string
 }
 
 func (p *Pass[T]) Run() error {
@@ -161,6 +179,7 @@ func (p *Pass[T]) File(item T, contentTRef, nameT string) error {
 	if err != nil {
 		return fmt.Errorf("exec %s: %w", nameT, err)
 	}
+	p.filenames = append(p.filenames, childFilename.String())
 	err = p.tmpl.ExecuteTemplate(&contents, contentTRef, &item)
 	if err != nil {
 		return fmt.Errorf("exec %s: %w", contentTRef, err)

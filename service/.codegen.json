@@ -1,5 +1,5 @@
 {
-  "formatter": "go fmt ./...",
+  "formatter": "go fmt ./... && goimports -w $FILENAMES",
   "packages": {
     ".codegen/api.go.tmpl": "{{.Name}}/api.go",
     ".codegen/interface.go.tmpl": "{{.Name}}/interface.go",

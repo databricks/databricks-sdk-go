@@ -4,6 +4,8 @@ package libraries
 
 import (
 	"context"
+
+	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 // Databricks Managed Libraries REST API
@@ -66,7 +68,7 @@ type LibrariesService interface {
 
 	// UpdateAndWait installs or uninstalls specified libraries
 	// and waits until they are in a usable state
-	UpdateAndWait(ctx context.Context, update Update) error
+	UpdateAndWait(ctx context.Context, update Update, options ...retries.Option[ClusterLibraryStatuses]) error
 	// Wait returns only once the libraries are in the usable state
-	Wait(ctx context.Context, wait Wait) (*ClusterLibraryStatuses, error)
+	Wait(ctx context.Context, wait Wait, options ...retries.Option[ClusterLibraryStatuses]) (*ClusterLibraryStatuses, error)
 }

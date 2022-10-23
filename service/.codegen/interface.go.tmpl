@@ -4,8 +4,8 @@ package {{.Name}}
 
 import (
 	"context"
-	{{if .HasWaits}}"github.com/databricks/databricks-sdk-go/retries"{{end}}
-	{{if eq .PascalName "Dbfs"}}"io"{{end}}
+	"io"
+	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 {{range .Services}}
@@ -64,9 +64,9 @@ type {{.PascalName}}Service interface {
 	{{end}}
 	{{if eq .PascalName "Libraries"}}// UpdateAndWait installs or uninstalls specified libraries 
 	// and waits until they are in a usable state
-	UpdateAndWait(ctx context.Context, update Update) error
+	UpdateAndWait(ctx context.Context, update Update, options ...retries.Option[ClusterLibraryStatuses]) error
 	// Wait returns only once the libraries are in the usable state
-	Wait(ctx context.Context, wait Wait) (*ClusterLibraryStatuses, error)
+	Wait(ctx context.Context, wait Wait, options ...retries.Option[ClusterLibraryStatuses]) (*ClusterLibraryStatuses, error)
 	{{end}}
 	
 }

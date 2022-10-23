@@ -7,10 +7,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/retries"
-
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 func NewCommandExecution(client *client.DatabricksClient) CommandExecutionService {
