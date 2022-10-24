@@ -53,7 +53,7 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	}
 	logger.Infof("Generating AAD token for Service Principal (%s)", cfg.AzureClientID)
 	refreshCtx := context.Background()
-	inner := c.tokenSourceFor(refreshCtx, cfg, env, armDatabricksResourceID)
+	inner := c.tokenSourceFor(refreshCtx, cfg, env, cfg.getAzureLoginAppID())
 	platform := c.tokenSourceFor(refreshCtx, cfg, env, env.ServiceManagementEndpoint)
 	return func(r *http.Request) error {
 		r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
