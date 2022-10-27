@@ -23,8 +23,8 @@ If you run [Databricks Terraform Provider](https://registry.terraform.io/provide
 1. Read any direct fields configured in `databricks.Config`.
 2. Environment variables are loaded into `*databricks.Config`.
 3. Contents of `~/.databrickscfg` is loaded into `*databricks.Config`.
-4. `databricks.Config` asserts for exactly one authentication configured.
-5. Aunthetication credentials are configured. Databricks SDK for Go transparently handles any OAuth token refresh.
+4. `databricks.Config` asserts that exactly one authentication method is configured.
+5. Authentication credentials are configured.
 
 The purpose of `~/.databrickscfg` configuration file is hold connectivity profiles with possibly clear-text credentials to Databricks Workspaces or Databricks Accounts. Almost all entries from this configuration file can be set through environment variables. The same configuration file can be read via the official Databricks GoLang SDK and Databricks Python SDK. Legacy Databricks CLI supports reading only `host`, `token`, `username`, and `password` configuration options.
 
