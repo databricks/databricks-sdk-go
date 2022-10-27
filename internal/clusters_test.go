@@ -15,12 +15,12 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
-	wsc := workspaces.New()
+	w := workspaces.New()
 
 	clusterName := RandomName("sdk-go-cluster-")
 
 	// Fetch list of spark runtime versions
-	sparkVersions, err := wsc.Clusters.SparkVersions(ctx)
+	sparkVersions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
 	// Select the latest LTS version
@@ -31,7 +31,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Fetch list of available node types
-	nodeTypes, err := wsc.Clusters.ListNodeTypes(ctx)
+	nodeTypes, err := w.Clusters.ListNodeTypes(ctx)
 	require.NoError(t, err)
 
 	// Select the smallest node type id
@@ -41,7 +41,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create cluster and wait for it to start properly
-	clstr, err := wsc.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
+	clstr, err := w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 		ClusterName:            clusterName,
 		SparkVersion:           latestLTS,
 		NodeTypeId:             smallestWithDisk,
@@ -52,25 +52,25 @@ func TestAccClustersApiIntegration(t *testing.T) {
 
 	t.Cleanup(func() {
 		// Permanently delete the cluster
-		err := wsc.Clusters.PermanentDeleteByClusterId(ctx, clstr.ClusterId)
+		err := w.Clusters.PermanentDeleteByClusterId(ctx, clstr.ClusterId)
 		require.NoError(t, err)
 	})
 
-	byId, err := wsc.Clusters.GetByClusterId(ctx, clstr.ClusterId)
+	byId, err := w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 	assert.Equal(t, clusterName, byId.ClusterName)
 	assert.Equal(t, clusters.ClusterInfoStateRunning, byId.State)
 
 	// Pin the cluster in the list
-	err = wsc.Clusters.PinByClusterId(ctx, clstr.ClusterId)
+	err = w.Clusters.PinByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 
 	// Unpin the cluster
-	err = wsc.Clusters.UnpinByClusterId(ctx, clstr.ClusterId)
+	err = w.Clusters.UnpinByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 
 	// Edit the cluster: change auto-termination and number of workers
-	err = wsc.Clusters.Edit(ctx, clusters.EditCluster{
+	err = w.Clusters.Edit(ctx, clusters.EditCluster{
 		ClusterId:    clstr.ClusterId,
 		SparkVersion: latestLTS,
 		NodeTypeId:   smallestWithDisk,
@@ -83,26 +83,26 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Assert edit changes are reflected in the cluster
-	byId, err = wsc.Clusters.GetByClusterId(ctx, clstr.ClusterId)
+	byId, err = w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 	assert.Equal(t, 10, byId.AutoterminationMinutes)
 	assert.Equal(t, 2, byId.NumWorkers)
 
 	// Terminate the cluster
-	_, err = wsc.Clusters.DeleteByClusterIdAndWait(ctx, clstr.ClusterId)
+	_, err = w.Clusters.DeleteByClusterIdAndWait(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 
 	// Assert that the cluster we've just deleted has Terminated state
-	byId, err = wsc.Clusters.GetByClusterId(ctx, clstr.ClusterId)
+	byId, err = w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 	assert.Equal(t, byId.State, clusters.ClusterInfoStateTerminated)
 
 	// Start cluster and wait until it's running again
-	_, err = wsc.Clusters.StartByClusterIdAndWait(ctx, clstr.ClusterId)
+	_, err = w.Clusters.StartByClusterIdAndWait(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 
 	// Resize the cluster back to 1 worker and wait till completion
-	byId, err = wsc.Clusters.ResizeAndWait(ctx, clusters.ResizeCluster{
+	byId, err = w.Clusters.ResizeAndWait(ctx, clusters.ResizeCluster{
 		ClusterId:  clstr.ClusterId,
 		NumWorkers: 1,
 	})
@@ -110,20 +110,20 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	assert.Equal(t, 1, byId.NumWorkers)
 
 	// Restart the cluster and wait for it to run again
-	err = wsc.Clusters.Restart(ctx, clusters.RestartCluster{
+	err = w.Clusters.Restart(ctx, clusters.RestartCluster{
 		ClusterId: clstr.ClusterId,
 	})
 	require.NoError(t, err)
 
 	// Get events for the cluster and assert its non empty
-	getEventsResponse, err := wsc.Clusters.Events(ctx, clusters.GetEvents{
+	getEventsResponse, err := w.Clusters.Events(ctx, clusters.GetEvents{
 		ClusterId: clstr.ClusterId,
 	})
 	require.NoError(t, err)
 	assert.True(t, len(getEventsResponse.Events) > 0)
 
 	// List clusters in workspace
-	listClustersResponse, err := wsc.Clusters.List(ctx, clusters.ListRequest{})
+	listClustersResponse, err := w.Clusters.List(ctx, clusters.ListRequest{})
 	require.NoError(t, err)
 
 	var seen int
