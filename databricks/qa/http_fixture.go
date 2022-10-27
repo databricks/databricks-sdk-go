@@ -141,7 +141,11 @@ func (fixtures HTTPFixtures) Apply(t *testing.T, callback func(ctx context.Conte
 
 func (fixtures HTTPFixtures) Client(t *testing.T) (*client.DatabricksClient, *httptest.Server) {
 	cfg, server := fixtures.Config(t)
-	return client.New(cfg), server
+	client, err := client.New(cfg)
+	if err != nil {
+		t.Fatalf("client: %s", err)
+	}
+	return client, server
 }
 
 func (fixtures HTTPFixtures) ApplyClient(t *testing.T, callback func(ctx context.Context, client *client.DatabricksClient)) {

@@ -51,7 +51,7 @@ func (l KnownConfigLoader) Configure(cfg *Config) error {
 		}
 		return fmt.Errorf("%s has no %s profile configured", configFile, profile)
 	}
-	logger.Infof("Loading %s profile from %s", profile, configFile)
+	logger.Debugf("Loading %s profile from %s", profile, configFile)
 	err = ConfigAttributes.ResolveFromStringMap(cfg, profileValues.KeysHash())
 	if err != nil {
 		return fmt.Errorf("%s %s profile: %w", configFile, profile, err)

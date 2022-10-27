@@ -16,7 +16,6 @@ import (
 	"runtime"
 	"sort"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks"
@@ -28,33 +27,54 @@ import (
 	"golang.org/x/time/rate"
 )
 
-type Credentials interface {
-	Name() string
-	Configure(context.Context, *DatabricksClient) (func(*http.Request) error, error)
+func New(cfg *databricks.Config) (*DatabricksClient, error) {
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	retryTimeout := time.Duration(orDefault(cfg.RetryTimeoutSeconds, 300)) * time.Second
+	httpTimeout := time.Duration(orDefault(cfg.HTTPTimeoutSeconds, 60)) * time.Second
+	rateLimiter := rate.NewLimiter(rate.Limit(orDefault(cfg.RateLimitPerSecond, 15)), 1)
+	return &DatabricksClient{
+		Config:             cfg,
+		debugHeaders:       cfg.DebugHeaders,
+		debugTruncateBytes: orDefault(cfg.DebugTruncateBytes, 96),
+		retryTimeout:       retryTimeout,
+		rateLimiter:        rateLimiter,
+		httpClient: &http.Client{
+			Timeout: httpTimeout,
+			Transport: &http.Transport{
+				Proxy: http.ProxyFromEnvironment,
+				DialContext: (&net.Dialer{
+					Timeout:   30 * time.Second,
+					KeepAlive: 30 * time.Second,
+				}).DialContext,
+				ForceAttemptHTTP2:     true,
+				MaxIdleConns:          100,
+				MaxIdleConnsPerHost:   runtime.GOMAXPROCS(0) + 1,
+				IdleConnTimeout:       180 * time.Second,
+				TLSHandshakeTimeout:   30 * time.Second,
+				ExpectContinueTimeout: 1 * time.Second,
+				TLSClientConfig: &tls.Config{
+					InsecureSkipVerify: cfg.InsecureSkipVerify,
+				},
+			},
+		},
+	}, nil
 }
 
-// Default settings
-const (
-	defaultDebugTruncateBytes = 96
-	defaultRateLimitPerSecond = 15
-	defaultHTTPTimeoutSeconds = 60
-)
-
-func New(cfg *databricks.Config) *DatabricksClient {
-	return &DatabricksClient{Config: cfg}
+type httpClient interface {
+	Do(req *http.Request) (*http.Response, error)
+	CloseIdleConnections()
 }
 
 type DatabricksClient struct {
-	Config *databricks.Config
-
-	// Databricks REST API rate limiter
-	rateLimiter *rate.Limiter
-
-	// // retryalble HTTP client
-	// httpClient *retryablehttp.Client
-	httpClient *http.Client
-
-	init sync.Once
+	Config             *databricks.Config
+	rateLimiter        *rate.Limiter
+	retryTimeout       time.Duration
+	httpClient         httpClient
+	debugHeaders       bool
+	debugTruncateBytes int
 }
 
 // Do sends an HTTP request against path.
@@ -117,7 +137,7 @@ func (c *DatabricksClient) completeUrl(r *http.Request) error {
 	if r.URL == nil {
 		return fmt.Errorf("no URL found in request")
 	}
-
+	// TODO: accounts client
 	// ctx := r.Context()
 	// av, ok := ctx.Value(Api).(ApiVersion)
 	// if !ok {
@@ -136,77 +156,7 @@ func (c *DatabricksClient) completeUrl(r *http.Request) error {
 	return nil
 }
 
-func (c *DatabricksClient) configure() {
-	if c.httpClient != nil {
-		return
-	}
-	// TODO: make these parts of DatabricksClient->ApiClient struct,
-	// so that actually used config attributes are visible in debug strings
-	if c.Config.DebugTruncateBytes == 0 {
-		c.Config.DebugTruncateBytes = defaultDebugTruncateBytes
-	}
-	if c.Config.HTTPTimeoutSeconds == 0 {
-		c.Config.HTTPTimeoutSeconds = defaultHTTPTimeoutSeconds
-	}
-	if c.Config.RateLimitPerSecond == 0 {
-		c.Config.RateLimitPerSecond = defaultRateLimitPerSecond
-	}
-	c.rateLimiter = rate.NewLimiter(rate.Limit(c.Config.RateLimitPerSecond), 1)
-	// Set up a retryable HTTP Client to handle cases where the service returns
-	// a transient error on initial creation
-	retryDelayDuration := 10 * time.Second
-	retryMaximumDuration := 5 * time.Minute
-
-	c.Config.RetryWaitMin = retryDelayDuration
-	c.Config.RetryWaitMax = retryDelayDuration
-	c.Config.MaxRetryAttempts = int(retryMaximumDuration / retryDelayDuration)
-
-	c.httpClient = &http.Client{
-		Timeout: time.Duration(c.Config.HTTPTimeoutSeconds) * time.Second,
-		Transport: &http.Transport{
-			Proxy: http.ProxyFromEnvironment,
-			DialContext: (&net.Dialer{
-				Timeout:   30 * time.Second,
-				KeepAlive: 30 * time.Second,
-			}).DialContext,
-			ForceAttemptHTTP2:     true,
-			MaxIdleConns:          100,
-			MaxIdleConnsPerHost:   runtime.GOMAXPROCS(0) + 1,
-			IdleConnTimeout:       180 * time.Second,
-			TLSHandshakeTimeout:   30 * time.Second,
-			ExpectContinueTimeout: 1 * time.Second,
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: c.Config.InsecureSkipVerify,
-			},
-		},
-	}
-}
-
-// CWE-117 prevention
-func escapeNewLines(in string) string {
-	in = strings.Replace(in, "\n", "", -1)
-	in = strings.Replace(in, "\r", "", -1)
-	return in
-}
-
-func (c *DatabricksClient) createDebugHeaders(header http.Header, host string) string {
-	headers := ""
-	if c.Config.DebugHeaders {
-		if host != "" {
-			headers += fmt.Sprintf("\n * Host: %s", escapeNewLines(host))
-		}
-		for k, v := range header {
-			trunc := onlyNBytes(strings.Join(v, ""), c.Config.DebugTruncateBytes)
-			headers += fmt.Sprintf("\n * %s: %s", k, escapeNewLines(trunc))
-		}
-		if len(headers) > 0 {
-			headers += "\n"
-		}
-	}
-	return headers
-}
-
-func (c *DatabricksClient) recursiveMask(requestMap map[string]interface{}) interface{} {
+func (c *DatabricksClient) recursiveMask(requestMap map[string]any) any {
 	for k, v := range requestMap {
 		if k == "string_value" {
 			requestMap[k] = "**REDACTED**"
@@ -220,45 +170,67 @@ func (c *DatabricksClient) recursiveMask(requestMap map[string]interface{}) inte
 			requestMap[k] = "**REDACTED**"
 			continue
 		}
-		if m, ok := v.(map[string]interface{}); ok {
+		if m, ok := v.(map[string]any); ok {
 			requestMap[k] = c.recursiveMask(m)
 			continue
 		}
-		// todo: dapi...
-		// TODO: just redact any dapiXXX & "secret": "...."...
 		if s, ok := v.(string); ok {
-			requestMap[k] = onlyNBytes(s, c.Config.DebugTruncateBytes)
+			requestMap[k] = onlyNBytes(s, c.debugTruncateBytes)
 		}
 	}
 	return requestMap
 }
 
-func (c *DatabricksClient) redactedDump(body []byte) (res string) {
+func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string) {
 	if len(body) == 0 {
 		return
 	}
-	if body[0] != '{' { // TODO: body[0] == '['
+	if body[0] == '[' {
+		var requestSlice, tmp []any
+		err := json.Unmarshal(body, &requestSlice)
+		if err != nil {
+			// error in this case is not much relevant
+			return
+		}
+		for _, v := range requestSlice {
+			x, ok := v.(map[string]any)
+			if !ok {
+				continue
+			}
+			tmp = append(tmp, c.recursiveMask(x))
+		}
+		return c.rePack(prefix, tmp)
+	}
+	if body[0] != '{' {
 		return fmt.Sprintf("[non-JSON document of %d bytes]", len(body))
 	}
-	var requestMap map[string]interface{}
+	var requestMap map[string]any
 	err := json.Unmarshal(body, &requestMap)
 	if err != nil {
 		// error in this case is not much relevant
 		return
 	}
-	rePacked, err := json.MarshalIndent(c.recursiveMask(requestMap), "", "  ")
+	return c.rePack(prefix, c.recursiveMask(requestMap))
+}
+
+func (c *DatabricksClient) rePack(prefix string, v any) string {
+	rePacked, err := json.MarshalIndent(v, "", "  ")
 	if err != nil {
 		// error in this case is not much relevant
-		return
+		return ""
 	}
 	maxBytes := 1024
-	if c.Config.DebugTruncateBytes > maxBytes {
-		maxBytes = c.Config.DebugTruncateBytes
+	if c.debugTruncateBytes > maxBytes {
+		maxBytes = c.debugTruncateBytes
 	}
-	return onlyNBytes(string(rePacked), maxBytes)
+	lines := strings.Split(onlyNBytes(string(rePacked), maxBytes), "\n")
+	return prefix + strings.Join(lines, "\n"+prefix)
 }
 
 func (c *DatabricksClient) drain(r *http.Response) {
+	if r == nil || r.Body == nil {
+		return
+	}
 	defer r.Body.Close()
 	_, err := io.Copy(ioutil.Discard, io.LimitReader(r.Body, 4096))
 	if err != nil {
@@ -266,56 +238,78 @@ func (c *DatabricksClient) drain(r *http.Response) {
 	}
 }
 
-func (c *DatabricksClient) retried(ctx context.Context, method, requestURL string,
-	requestBody []byte, visitors ...func(*http.Request) error) (resp *http.Response, err error) {
-	var lastErr error
-	for attempt := 0; ; attempt++ {
-		request, err := http.NewRequestWithContext(ctx, method, requestURL, bytes.NewBuffer(requestBody))
+func (c *DatabricksClient) attempt(ctx context.Context,
+	method, requestURL string, requestBody []byte,
+	visitors ...func(*http.Request) error) func() (*http.Response, *retries.Err) {
+	return func() (*http.Response, *retries.Err) {
+		err := c.rateLimiter.Wait(ctx)
 		if err != nil {
-			return nil, fmt.Errorf("new request: %w", err)
+			return nil, retries.Halt(err)
+		}
+		request, err := http.NewRequestWithContext(ctx, method, requestURL,
+			bytes.NewBuffer(requestBody))
+		if err != nil {
+			return nil, retries.Halt(err)
 		}
 		for _, requestVisitor := range visitors {
 			err = requestVisitor(request)
 			if err != nil {
-				return nil, fmt.Errorf("failed visitor: %w", err)
+				return nil, retries.Halt(err)
 			}
 		}
 		// request.Context() holds context potentially enhanced by visitors
 		request.Header.Set("User-Agent", useragent.FromContext(request.Context()))
-		headers := c.createDebugHeaders(request.Header, c.Config.Host)
-		logger.Debugf("%s %s %s%v", method, escapeNewLines(request.URL.Path),
-			headers, c.redactedDump(requestBody)) // lgtm [go/log-injection] lgtm [go/clear-text-logging]
+
 		// attempt the actual request
-		resp, err = c.httpClient.Do(request)
+		resp, err := c.httpClient.Do(request)
 		retry, err := apierr.CheckForRetry(ctx, resp, err)
-		lastErr = err
-		if !retry {
-			break
-		}
-		if (c.Config.MaxRetryAttempts - attempt) <= 0 {
-			break
-		}
 		if err == nil {
-			c.drain(resp)
+			return resp, nil
 		}
-		wait := retries.Backoff(attempt)
-		timer := time.NewTimer(wait)
-		select {
-		case <-ctx.Done():
-			timer.Stop()
-			c.httpClient.CloseIdleConnections()
-			return nil, fmt.Errorf("retry timed out: %w", ctx.Err())
-		case <-timer.C:
-		}
-	}
-	if lastErr == nil {
-		return resp, nil
-	}
-	defer c.httpClient.CloseIdleConnections()
-	if resp != nil {
 		c.drain(resp)
+		c.httpClient.CloseIdleConnections()
+		if retry {
+			return nil, retries.Continue(err)
+		}
+		return nil, retries.Halt(err)
 	}
-	return nil, lastErr
+}
+
+func (c *DatabricksClient) recordRequestLog(response *http.Response,
+	requestBody, responseBody []byte) {
+	sb := strings.Builder{}
+	request := response.Request
+	sb.WriteString(fmt.Sprintf("%s %s", request.Method,
+		escapeNewLines(request.URL.Path)))
+	if request.URL.RawQuery != "" {
+		sb.WriteString("?")
+		q, _ := url.QueryUnescape(request.URL.RawQuery)
+		sb.WriteString(q)
+	}
+	sb.WriteString("\n")
+	if c.debugHeaders {
+		if c.Config.Host != "" {
+			sb.WriteString("> * Host: ")
+			sb.WriteString(escapeNewLines(c.Config.Host))
+			sb.WriteString("\n")
+		}
+		for k, v := range request.Header {
+			trunc := onlyNBytes(strings.Join(v, ""), c.debugTruncateBytes)
+			sb.WriteString(fmt.Sprintf("> * %s: %s\n", k, escapeNewLines(trunc)))
+		}
+	}
+	if len(requestBody) > 0 {
+		sb.WriteString(c.redactedDump("> ", requestBody))
+		sb.WriteString("\n")
+	}
+	sb.WriteString(fmt.Sprintf("< %s %s\n", response.Proto, response.Status))
+	isEmptyJson := len(responseBody) == 2 &&
+		responseBody[0] == '{' &&
+		responseBody[1] == '}'
+	if len(responseBody) > 0 && !isEmptyJson {
+		sb.WriteString(c.redactedDump("< ", responseBody))
+	}
+	logger.Debugf(sb.String()) // lgtm [go/log-injection] lgtm [go/clear-text-logging]
 }
 
 func (c *DatabricksClient) addAuthHeaderToUserAgent(r *http.Request) error {
@@ -332,16 +326,7 @@ func (c *DatabricksClient) addConfigFieldsMask(r *http.Request) error {
 }
 
 func (c *DatabricksClient) perform(ctx context.Context, method, requestURL string, data interface{},
-	visitors ...func(*http.Request) error) (body []byte, err error) {
-	err = c.Config.EnsureResolved()
-	if err != nil {
-		return nil, err
-	}
-	c.init.Do(c.configure)
-	err = c.rateLimiter.Wait(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("rate limited: %w", err)
-	}
+	visitors ...func(*http.Request) error) (responseBody []byte, err error) {
 	requestBody, err := makeRequestBody(method, &requestURL, data)
 	if err != nil {
 		return nil, fmt.Errorf("request marshal: %w", err)
@@ -351,7 +336,8 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 		c.addAuthHeaderToUserAgent,
 		c.addConfigFieldsMask,
 	}, visitors...)
-	resp, err := c.retried(ctx, method, requestURL, requestBody, visitors...)
+	resp, err := retries.Poll(ctx, c.retryTimeout,
+		c.attempt(ctx, method, requestURL, requestBody, visitors...))
 	var ae apierr.APIError
 	if errors.As(err, &ae) {
 		// don't re-wrap, as upper layers may depend on handling common.APIError
@@ -365,18 +351,13 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 	if resp == nil {
 		return nil, fmt.Errorf("no response: %s %s", method, requestURL)
 	}
-	defer func() {
-		if ferr := resp.Body.Close(); ferr != nil {
-			err = fmt.Errorf("failed to close: %w", ferr)
-		}
-	}()
-	body, err = io.ReadAll(resp.Body)
+	responseBody, err = io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("response body: %w", err)
 	}
-	headers := c.createDebugHeaders(resp.Header, "")
-	logger.Debugf("%s %s %s <- %s %s", resp.Status, headers, c.redactedDump(body), method, strings.ReplaceAll(requestURL, "\n", ""))
-	return body, nil
+	c.recordRequestLog(resp, requestBody, responseBody)
+	c.drain(resp)
+	return responseBody, nil
 }
 
 func makeQueryString(data interface{}) (string, error) {
@@ -443,10 +424,24 @@ func makeRequestBody(method string, requestURL *string, data interface{}) ([]byt
 	return bodyBytes, nil
 }
 
+func orDefault(configured, _default int) int {
+	if configured == 0 {
+		return _default
+	}
+	return configured
+}
+
 func onlyNBytes(j string, numBytes int) string {
 	diff := len([]byte(j)) - numBytes
 	if diff > 0 {
 		return fmt.Sprintf("%s... (%d more bytes)", j[:numBytes], diff)
 	}
 	return j
+}
+
+// CWE-117 prevention
+func escapeNewLines(in string) string {
+	in = strings.Replace(in, "\n", "", -1)
+	in = strings.Replace(in, "\r", "", -1)
+	return in
 }

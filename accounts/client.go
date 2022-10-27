@@ -40,7 +40,10 @@ func New(c ...*databricks.Config) *AccountsClient {
 		// default config
 		cfg = &databricks.Config{}
 	}
-	apiClient := client.New(cfg)
+	apiClient, err := client.New(cfg)
+	if err != nil {
+		panic(err)
+	}
 	return &AccountsClient{
 		Config:                       cfg,
 		AccountPermissionAssignments: accountpermissionassignments.NewAccountPermissionAssignments(apiClient),
