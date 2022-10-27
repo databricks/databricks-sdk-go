@@ -6,6 +6,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 )
 
@@ -37,6 +38,7 @@ type CommandsHighLevelAPI struct {
 // Execute creates a spark context and executes a command and then closes context
 // Any leading whitespace is trimmed
 func (a *CommandsHighLevelAPI) Execute(ctx context.Context, clusterID, language, commandStr string) Results {
+	ctx = useragent.InContext(ctx, "sdk-feature", "command-execution")
 	cluster, err := a.clusters.Get(ctx, clusters.GetRequest{
 		ClusterId: clusterID,
 	})

@@ -19,6 +19,18 @@ type Binding struct {
 	IsResponseBind bool
 }
 
+// reasonable default timeout for the most of long-running operations
+const defaultLongRunningTimeout = 20
+
+// Timeout returns timeout in minutes, defaulting to 20
+func (w *Wait) Timeout() int {
+	t := w.Method.operation.Wait.Timeout
+	if t == 0 {
+		return defaultLongRunningTimeout
+	}
+	return t
+}
+
 func (w *Wait) Binding() (binding []Binding) {
 	poll := w.Poll()
 	if w.Method.wait.Binding != nil {

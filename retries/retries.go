@@ -10,6 +10,19 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/logger"
 )
 
+type Info[T any] struct {
+	Info    T
+	Timeout time.Duration
+}
+
+type Option[T any] func(*Info[T])
+
+func Timeout[T any](dur time.Duration) Option[T] {
+	return func(i *Info[T]) {
+		i.Timeout = dur
+	}
+}
+
 type Err struct {
 	Err  error
 	Halt bool

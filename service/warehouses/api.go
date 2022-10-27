@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/retries"
-
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 func NewWarehouses(client *client.DatabricksClient) WarehousesService {
@@ -30,21 +30,34 @@ func (a *WarehousesAPI) CreateWarehouse(ctx context.Context, request CreateWareh
 	return &createWarehouseResponse, err
 }
 
+// CreateWarehouseTimeout overrides the default timeout of 20 minutes to reach RUNNING state
+func CreateWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse] {
+	return retries.Timeout[GetWarehouseResponse](dur)
+}
+
 // CreateWarehouse and wait to reach RUNNING state
-func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, createWarehouseRequest CreateWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, createWarehouseRequest CreateWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	createWarehouseResponse, err := a.CreateWarehouse(ctx, createWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[GetWarehouseResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
+	return retries.Poll[GetWarehouseResponse](ctx, i.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: createWarehouseResponse.Id,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
+		}
+		for _, o := range options {
+			o(&retries.Info[GetWarehouseResponse]{
+				Info:    *getWarehouseResponse,
+				Timeout: i.Timeout,
+			})
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
@@ -68,21 +81,34 @@ func (a *WarehousesAPI) DeleteWarehouse(ctx context.Context, request DeleteWareh
 	return err
 }
 
+// DeleteWarehouseTimeout overrides the default timeout of 20 minutes to reach DELETED state
+func DeleteWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse] {
+	return retries.Timeout[GetWarehouseResponse](dur)
+}
+
 // DeleteWarehouse and wait to reach DELETED state
-func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWarehouseRequest DeleteWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWarehouseRequest DeleteWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.DeleteWarehouse(ctx, deleteWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[GetWarehouseResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
+	return retries.Poll[GetWarehouseResponse](ctx, i.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: deleteWarehouseRequest.Id,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
+		}
+		for _, o := range options {
+			o(&retries.Info[GetWarehouseResponse]{
+				Info:    *getWarehouseResponse,
+				Timeout: i.Timeout,
+			})
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
@@ -102,10 +128,10 @@ func (a *WarehousesAPI) DeleteWarehouseById(ctx context.Context, id string) erro
 	})
 }
 
-func (a *WarehousesAPI) DeleteWarehouseByIdAndWait(ctx context.Context, id string, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+func (a *WarehousesAPI) DeleteWarehouseByIdAndWait(ctx context.Context, id string, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
 	return a.DeleteWarehouseAndWait(ctx, DeleteWarehouseRequest{
 		Id: id,
-	}, timeout...)
+	}, options...)
 }
 
 // Edits a SQL warehouse.
@@ -115,21 +141,34 @@ func (a *WarehousesAPI) EditWarehouse(ctx context.Context, request EditWarehouse
 	return err
 }
 
+// EditWarehouseTimeout overrides the default timeout of 20 minutes to reach RUNNING state
+func EditWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse] {
+	return retries.Timeout[GetWarehouseResponse](dur)
+}
+
 // EditWarehouse and wait to reach RUNNING state
-func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, editWarehouseRequest EditWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, editWarehouseRequest EditWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.EditWarehouse(ctx, editWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[GetWarehouseResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
+	return retries.Poll[GetWarehouseResponse](ctx, i.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: editWarehouseRequest.Id,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
+		}
+		for _, o := range options {
+			o(&retries.Info[GetWarehouseResponse]{
+				Info:    *getWarehouseResponse,
+				Timeout: i.Timeout,
+			})
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
@@ -154,21 +193,34 @@ func (a *WarehousesAPI) GetWarehouse(ctx context.Context, request GetWarehouseRe
 	return &getWarehouseResponse, err
 }
 
+// GetWarehouseTimeout overrides the default timeout of 20 minutes to reach RUNNING state
+func GetWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse] {
+	return retries.Timeout[GetWarehouseResponse](dur)
+}
+
 // GetWarehouse and wait to reach RUNNING state
-func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouseRequest GetWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouseRequest GetWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	getWarehouseResponse, err := a.GetWarehouse(ctx, getWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[GetWarehouseResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
+	return retries.Poll[GetWarehouseResponse](ctx, i.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: getWarehouseResponse.Id,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
+		}
+		for _, o := range options {
+			o(&retries.Info[GetWarehouseResponse]{
+				Info:    *getWarehouseResponse,
+				Timeout: i.Timeout,
+			})
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
@@ -192,10 +244,10 @@ func (a *WarehousesAPI) GetWarehouseById(ctx context.Context, id string) (*GetWa
 	})
 }
 
-func (a *WarehousesAPI) GetWarehouseByIdAndWait(ctx context.Context, id string, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+func (a *WarehousesAPI) GetWarehouseByIdAndWait(ctx context.Context, id string, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
 	return a.GetWarehouseAndWait(ctx, GetWarehouseRequest{
 		Id: id,
-	}, timeout...)
+	}, options...)
 }
 
 // Gets the workspace level configuration that is shared by all SQL warehouses
@@ -243,21 +295,34 @@ func (a *WarehousesAPI) StartWarehouse(ctx context.Context, request StartWarehou
 	return err
 }
 
+// StartWarehouseTimeout overrides the default timeout of 20 minutes to reach RUNNING state
+func StartWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse] {
+	return retries.Timeout[GetWarehouseResponse](dur)
+}
+
 // StartWarehouse and wait to reach RUNNING state
-func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehouseRequest StartWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehouseRequest StartWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.StartWarehouse(ctx, startWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[GetWarehouseResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
+	return retries.Poll[GetWarehouseResponse](ctx, i.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: startWarehouseRequest.Id,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
+		}
+		for _, o := range options {
+			o(&retries.Info[GetWarehouseResponse]{
+				Info:    *getWarehouseResponse,
+				Timeout: i.Timeout,
+			})
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
@@ -281,21 +346,34 @@ func (a *WarehousesAPI) StopWarehouse(ctx context.Context, request StopWarehouse
 	return err
 }
 
+// StopWarehouseTimeout overrides the default timeout of 20 minutes to reach STOPPED state
+func StopWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse] {
+	return retries.Timeout[GetWarehouseResponse](dur)
+}
+
 // StopWarehouse and wait to reach STOPPED state
-func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, stopWarehouseRequest StopWarehouseRequest, timeout ...time.Duration) (*GetWarehouseResponse, error) {
+func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, stopWarehouseRequest StopWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.StopWarehouse(ctx, stopWarehouseRequest)
 	if err != nil {
 		return nil, err
 	}
-	if len(timeout) == 0 {
-		timeout = []time.Duration{20 * time.Minute}
+	i := retries.Info[GetWarehouseResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
 	}
-	return retries.Poll[GetWarehouseResponse](ctx, timeout[0], func() (*GetWarehouseResponse, *retries.Err) {
+	return retries.Poll[GetWarehouseResponse](ctx, i.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: stopWarehouseRequest.Id,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
+		}
+		for _, o := range options {
+			o(&retries.Info[GetWarehouseResponse]{
+				Info:    *getWarehouseResponse,
+				Timeout: i.Timeout,
+			})
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
