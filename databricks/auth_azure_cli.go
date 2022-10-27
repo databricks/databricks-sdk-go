@@ -15,9 +15,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/logger"
 )
 
-// List of management information
-const armDatabricksResourceID string = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
-
 type AzureCliCredentials struct {
 }
 
@@ -35,7 +32,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if !cfg.IsAzure() {
 		return nil, nil
 	}
-	ts := azureCliTokenSource{armDatabricksResourceID}
+	ts := azureCliTokenSource{cfg.getAzureLoginAppID()}
 	_, err := ts.Token()
 	if err != nil {
 		if strings.Contains(err.Error(), "No subscription found") {

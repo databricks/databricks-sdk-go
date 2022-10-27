@@ -89,6 +89,9 @@ type Config struct {
 	// Azure Environment (Public, UsGov, China, Germany) has specific set of API endpoints
 	Environment string `name:"azure_environment" env:"ARM_ENVIRONMENT"` // TODO: rename to AzureEnvironment
 
+	// Azure Login Application ID. Must be set if authenticating for non-production workspaces.
+	AzureLoginAppID string `name:"azure_login_app_id" env:"DATABRICKS_AZURE_LOGIN_APP_ID" auth:"azure"`
+
 	RetryWaitMin     time.Duration
 	RetryWaitMax     time.Duration
 	MaxRetryAttempts int

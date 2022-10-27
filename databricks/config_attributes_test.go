@@ -42,6 +42,7 @@ func TestAttributesMaskedSignature(t *testing.T) {
 	flagDebugTruncateBytes := powerOfTwo(19).Int64()
 	flagDebugHeaders := powerOfTwo(20).Int64()
 	flagRateLimit := powerOfTwo(21).Int64()
+	flagAzureLoginAppID := powerOfTwo(22).Int64()
 
 	assert.True(t, usedFields&flagHost != 0)
 	assert.False(t, usedFields&flagAccountID != 0)
@@ -64,4 +65,5 @@ func TestAttributesMaskedSignature(t *testing.T) {
 	assert.True(t, usedFields&flagDebugTruncateBytes != 0)
 	assert.False(t, usedFields&flagDebugHeaders != 0)
 	assert.False(t, usedFields&flagRateLimit != 0)
+	assert.False(t, usedFields&flagAzureLoginAppID != 0)
 }
