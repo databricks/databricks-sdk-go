@@ -50,14 +50,14 @@ func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, createWareho
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: createWarehouseResponse.Id,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
 				Info:    *getWarehouseResponse,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
@@ -101,14 +101,14 @@ func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWareho
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: deleteWarehouseRequest.Id,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
 				Info:    *getWarehouseResponse,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
@@ -161,14 +161,14 @@ func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, editWarehouseR
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: editWarehouseRequest.Id,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
 				Info:    *getWarehouseResponse,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
@@ -213,14 +213,14 @@ func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouseReq
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: getWarehouseResponse.Id,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
 				Info:    *getWarehouseResponse,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
@@ -315,14 +315,14 @@ func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehous
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: startWarehouseRequest.Id,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
 				Info:    *getWarehouseResponse,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary
@@ -366,14 +366,14 @@ func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, stopWarehouseR
 		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
 			Id: stopWarehouseRequest.Id,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
 				Info:    *getWarehouseResponse,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := getWarehouseResponse.State
 		statusMessage := getWarehouseResponse.Health.Summary

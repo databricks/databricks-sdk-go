@@ -74,14 +74,14 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: createClusterResponse.ClusterId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
 				Info:    *clusterInfo,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
@@ -130,14 +130,14 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteClu
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: deleteCluster.ClusterId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
 				Info:    *clusterInfo,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
@@ -213,14 +213,14 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, 
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: editCluster.ClusterId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
 				Info:    *clusterInfo,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
@@ -305,14 +305,14 @@ func (a *ClustersAPI) GetAndWait(ctx context.Context, getRequest GetRequest, opt
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: clusterInfo.ClusterId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
 				Info:    *clusterInfo,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
@@ -524,14 +524,14 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeClu
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: resizeCluster.ClusterId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
 				Info:    *clusterInfo,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
@@ -578,14 +578,14 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster Restart
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: restartCluster.ClusterId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
 				Info:    *clusterInfo,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
@@ -649,14 +649,14 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 		clusterInfo, err := a.Get(ctx, GetRequest{
 			ClusterId: startCluster.ClusterId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
 				Info:    *clusterInfo,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage

@@ -56,14 +56,14 @@ func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .R
 		{{.Wait.Poll.Response.CamelName}}, err := a.{{.Wait.Poll.PascalName}}(ctx, {{.Wait.Poll.Request.PascalName}}{ {{range .Wait.Binding}}
 			{{.PollField.PascalName}}: {{.Bind.Of.CamelName}}.{{.Bind.PascalName}},{{end}}
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[{{.Wait.Poll.Response.PascalName}}]{
 				Info: *{{.Wait.Poll.Response.CamelName}},
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := {{.Wait.Poll.Response.CamelName}}{{range .Wait.StatusPath}}.{{.PascalName}}{{end}}
 		statusMessage := {{if .Wait.MessagePath}}{{.Wait.Poll.Response.CamelName}}{{range .Wait.MessagePath}}.{{.PascalName}}{{end}}{{else}}fmt.Sprintf("current status: %s", status){{end}}

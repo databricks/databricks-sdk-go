@@ -156,6 +156,8 @@ func (a *LibrariesAPI) UpdateAndWait(ctx context.Context, update Update,
 			return fmt.Errorf("install: %w", err)
 		}
 	}
+	// this helps to avoid erroring out when out-of-list library gets added to
+	// the cluster manually and thereforce fails the wait on error
 	scope := make([]Library, len(update.Install)+len(update.Uninstall))
 	scope = append(scope, update.Install...)
 	scope = append(scope, update.Uninstall...)

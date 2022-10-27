@@ -72,14 +72,14 @@ func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, opt
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: cancelRun.RunId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[Run]{
 				Info:    *run,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := run.State.LifeCycleState
 		statusMessage := run.State.StateMessage
@@ -217,14 +217,14 @@ func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRunRequest GetRunRequest
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: run.RunId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[Run]{
 				Info:    *run,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := run.State.LifeCycleState
 		statusMessage := run.State.StateMessage
@@ -378,14 +378,14 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, opt
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: repairRun.RunId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[Run]{
 				Info:    *run,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := run.State.LifeCycleState
 		statusMessage := run.State.StateMessage
@@ -442,14 +442,14 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...r
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: runNowResponse.RunId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[Run]{
 				Info:    *run,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := run.State.LifeCycleState
 		statusMessage := run.State.StateMessage
@@ -499,14 +499,14 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, option
 		run, err := a.GetRun(ctx, GetRunRequest{
 			RunId: submitRunResponse.RunId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[Run]{
 				Info:    *run,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := run.State.LifeCycleState
 		statusMessage := run.State.StateMessage

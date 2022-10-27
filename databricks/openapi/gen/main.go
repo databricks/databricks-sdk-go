@@ -6,7 +6,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"golang.org/x/exp/slices"
 	"io"
 	"io/fs"
 	"os"
@@ -15,6 +14,8 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
+
+	"golang.org/x/exp/slices"
 
 	"github.com/databricks/databricks-sdk-go/databricks/openapi/code"
 )

@@ -49,14 +49,14 @@ func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPip
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
 			PipelineId: createPipelineResponse.PipelineId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[GetPipelineResponse]{
 				Info:    *getPipelineResponse,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := getPipelineResponse.State
 		statusMessage := getPipelineResponse.Cause
@@ -118,14 +118,14 @@ func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipelineR
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
 			PipelineId: getPipelineResponse.PipelineId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[GetPipelineResponse]{
 				Info:    *getPipelineResponse,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := getPipelineResponse.State
 		statusMessage := getPipelineResponse.Cause
@@ -207,14 +207,14 @@ func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipel
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
 			PipelineId: resetPipelineRequest.PipelineId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[GetPipelineResponse]{
 				Info:    *getPipelineResponse,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := getPipelineResponse.State
 		statusMessage := getPipelineResponse.Cause
@@ -265,14 +265,14 @@ func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipelin
 		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
 			PipelineId: stopPipelineRequest.PipelineId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[GetPipelineResponse]{
 				Info:    *getPipelineResponse,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := getPipelineResponse.State
 		statusMessage := getPipelineResponse.Cause

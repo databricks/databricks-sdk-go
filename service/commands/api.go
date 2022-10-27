@@ -49,14 +49,14 @@ func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand C
 		commandStatusResponse, err := a.CommandStatus(ctx, CommandStatusRequest{
 			CommandId: cancelCommand.CommandId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[CommandStatusResponse]{
 				Info:    *commandStatusResponse,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := commandStatusResponse.Status
 		statusMessage := commandStatusResponse.Results.Cause
@@ -118,14 +118,14 @@ func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext C
 			ClusterId: createContext.ClusterId,
 			ContextId: created.Id,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[ContextStatusResponse]{
 				Info:    *contextStatusResponse,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := contextStatusResponse.Status
 		statusMessage := fmt.Sprintf("current status: %s", status)
@@ -179,14 +179,14 @@ func (a *CommandExecutionAPI) ExecuteAndWait(ctx context.Context, command Comman
 			CommandId: created.Id,
 			ContextId: command.ContextId,
 		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
 		for _, o := range options {
 			o(&retries.Info[CommandStatusResponse]{
 				Info:    *commandStatusResponse,
 				Timeout: i.Timeout,
 			})
-		}
-		if err != nil {
-			return nil, retries.Halt(err)
 		}
 		status := commandStatusResponse.Status
 		statusMessage := fmt.Sprintf("current status: %s", status)
