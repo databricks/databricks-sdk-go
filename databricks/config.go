@@ -86,10 +86,10 @@ type Config struct {
 	// Maximum number of requests per second made to Databricks REST API.
 	RateLimitPerSecond int `name:"rate_limit" env:"DATABRICKS_RATE_LIMIT" auth:"-"`
 
-	// Number of seconds to keep retrying HTTP requests. Default is 300 (5 minutes)
 	// Azure Login Application ID. Must be set if authenticating for non-production workspaces.
 	AzureLoginAppID string `name:"azure_login_app_id" env:"DATABRICKS_AZURE_LOGIN_APP_ID" auth:"azure"`
 
+	// Number of seconds to keep retrying HTTP requests. Default is 300 (5 minutes)
 	RetryTimeoutSeconds int `name:"retry_timeout_seconds" auth:"-"`
 
 	Loaders []Loader
