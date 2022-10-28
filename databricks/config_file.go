@@ -43,6 +43,35 @@ func (l KnownConfigLoader) Configure(cfg *Config) error {
 	if !hasExplicitProfile {
 		profile = "DEFAULT"
 	}
+	if cfg.Host != "" && cfg.Profile == "" {
+		err := cfg.fixHostIfNeeded()
+		if err != nil {
+			return err
+		}
+		profiles := []string{}
+		for _, section := range iniFile.Sections() {
+			values := section.KeysHash()
+			canonical, err := canonicalHost(values["host"])
+			if err != nil {
+				// we're fine with other corrupt profiles
+				continue
+			}
+			if canonical != cfg.Host {
+				continue
+			}
+			profiles = append(profiles, section.Name())
+		}
+		if len(profiles) > 1 {
+			return fmt.Errorf("%s match %s in %s",
+				strings.Join(profiles, " and "),
+				cfg.Host, configFile)
+		}
+		if len(profiles) == 1 {
+			profile = profiles[0]
+			logger.Debugf("%s config profile detected for %s",
+				profile, cfg.Host)
+		}
+	}
 	profileValues := iniFile.Section(profile)
 	if len(profileValues.Keys()) == 0 {
 		if !hasExplicitProfile {

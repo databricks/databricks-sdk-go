@@ -28,9 +28,11 @@ If you run [Databricks Terraform Provider](https://registry.terraform.io/provide
 
 The purpose of `~/.databrickscfg` configuration file is hold connectivity profiles with possibly clear-text credentials to Databricks Workspaces or Databricks Accounts. Almost all entries from this configuration file can be set through environment variables. The same configuration file can be read via the official Databricks GoLang SDK and Databricks Python SDK. Legacy Databricks CLI supports reading only `host`, `token`, `username`, and `password` configuration options.
 
-### Databricks Native Authentication
- * `host` _(string)_: Databricks host for either workspace endpoint or Accounts endpoint. Environment: `DATABRICKS_HOST`.
+ * `host` _(string)_: Databricks host for either workspace endpoint or Accounts endpoint. If you specify `host`, but no other credentials either through direct configuration or through environment variables, Databricks SDK for Go will try picking up profile with the matching host from [~/.databrickscfg](#overriding-databrickscfg). This allows keeping the hostname checked in to version control, but have ability to pick up different credentials either from local development machine or production server. Environment: `DATABRICKS_HOST`.
  * `account_id` _(string)_: Databricks Account ID for Accounts endpoint. Only has effect when `host` is either `https://accounts.cloud.databricks.com/`, `https://accounts.azuredatabricks.net/`, or `https://accounts.gcp.databricks.com/`.  Environment: `DATABRICKS_ACCOUNT_ID`.
+
+### Databricks Native Authentication
+
  * `token` _(string)_: Personal Access Token (PAT). Environment: `DATABRICKS_TOKEN`.
  * `username` _(string)_: Username part of basic authentication. Only possible when `host` is `*.cloud.databricks.com` _(AWS)_. Environment: `DATABRICKS_USERNAME`.
  * `password` _(string)_: Password part of basic authentication. Only possible when `host` is `*.cloud.databricks.com` _(AWS)_. Environment: `DATABRICKS_PASSWORD`.
@@ -53,7 +55,7 @@ Databricks SDK for Go picks up Azure CLI token, if you've previously authenticat
  * `azure_tenant_id` _(string)_: Azure Active Directory Tenant ID. Environment: `ARM_TENANT_ID`
  * `azure_environment` _(string)_: Azure Environment (Public, UsGov, China, Germany) has specific set of API endpoints. Defaults to `PUBLIC`. Environment: `ARM_ENVIRONMENT`.
 
-### Overriding `~/.databrickscfg` 
+### Overriding `~/.databrickscfg`
  * `profile` _(string)_: Connection profile specified within `~/.databrickscfg`. Environment: `DATABRICKS_CONFIG_PROFILE`.
  * `config_file` _(string)_: Location of the Databricks CLI credentials file. By default, it is located in `~/.databrickscfg`. Environment: `DATABRICKS_CONFIG_FILE`.
 

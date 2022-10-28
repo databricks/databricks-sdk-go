@@ -18,6 +18,7 @@ coverage.txt
 
 .vscode/*.lograw-specs/**
 .vscode/*.log
+.azure
 
 raw-specs/**
 out/**
