@@ -109,7 +109,7 @@ func CheckForRetry(ctx context.Context, resp *http.Response, err error) (bool, e
 		// In this case don't retry and return the original error from httpclient
 		return false, err
 	}
-	if resp.StatusCode == 429 { // TODO: drain?
+	if resp.StatusCode == 429 {
 		return true, APIError{
 			ErrorCode:  "TOO_MANY_REQUESTS",
 			Message:    "Current request has to be retried",
