@@ -55,7 +55,7 @@ func (a *CommandsHighLevelAPI) Execute(ctx context.Context, clusterID, language,
 		}
 	}
 	commandStr = TrimLeadingWhitespace(commandStr)
-	logger.Infof("Executing %s command on %s:\n%s", language, clusterID, commandStr)
+	logger.Debugf("Executing %s command on %s:\n%s", language, clusterID, commandStr)
 	context, err := a.execution.CreateAndWait(ctx, CreateContext{
 		ClusterId: clusterID,
 		Language:  Language(language),
