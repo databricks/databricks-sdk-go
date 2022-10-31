@@ -587,6 +587,26 @@ const GetWorkspaceWarehouseConfigResponseSecurityPolicyNone GetWorkspaceWarehous
 
 const GetWorkspaceWarehouseConfigResponseSecurityPolicyPassthrough GetWorkspaceWarehouseConfigResponseSecurityPolicy = `PASSTHROUGH`
 
+type ListQueriesRequest struct {
+	// A filter to limit query history results. This field is optional.
+	FilterBy *QueryFilter `json:"-" url:"filter_by,omitempty"`
+	// Whether to include metrics about query.
+	IncludeMetrics bool `json:"-" url:"include_metrics,omitempty"`
+	// Limit the number of results returned in one page. The default is 100.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// A token that can be used to get the next page of results.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+}
+
+type ListQueriesResponse struct {
+	// Whether there is another page of results.
+	HasNextPage bool `json:"has_next_page,omitempty"`
+	// A token that can be used to get the next page of results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Res []QueryInfo `json:"res,omitempty"`
+}
+
 type ListWarehousesRequest struct {
 	// Service Principal which will be used to fetch the list of endpoints. If
 	// not specified, GW will use the user from the session header.
@@ -607,6 +627,126 @@ type OdbcParams struct {
 
 	Protocol string `json:"protocol,omitempty"`
 }
+
+// A filter to limit query history results. This field is optional.
+type QueryFilter struct {
+	EndpointIds []string `json:"endpoint_ids,omitempty"`
+
+	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty"`
+
+	Statuses []QueryStatus `json:"statuses,omitempty"`
+
+	UserIds []int `json:"user_ids,omitempty"`
+
+	WarehouseIds []string `json:"warehouse_ids,omitempty"`
+}
+
+type QueryInfo struct {
+	EndpointId string `json:"endpoint_id,omitempty"`
+
+	ErrorMessage string `json:"error_message,omitempty"`
+
+	ExecutionEndTimeMs int `json:"execution_end_time_ms,omitempty"`
+	// Whether more updates for the query are expected.
+	IsFinal bool `json:"is_final,omitempty"`
+
+	LookupKey string `json:"lookup_key,omitempty"`
+
+	Metrics *QueryMetrics `json:"metrics,omitempty"`
+
+	QueryEndTimeMs int `json:"query_end_time_ms,omitempty"`
+
+	QueryId string `json:"query_id,omitempty"`
+
+	QueryStartTimeMs int `json:"query_start_time_ms,omitempty"`
+
+	QueryText string `json:"query_text,omitempty"`
+
+	RowsProduced int `json:"rows_produced,omitempty"`
+
+	SparkUiUrl string `json:"spark_ui_url,omitempty"`
+
+	Status QueryStatus `json:"status,omitempty"`
+
+	UserId int `json:"user_id,omitempty"`
+
+	UserName string `json:"user_name,omitempty"`
+
+	WarehouseId string `json:"warehouse_id,omitempty"`
+}
+
+// Metrics about query execution.
+type QueryMetrics struct {
+	// Time spent loading metadata and optimizing the query, in milliseconds.
+	CompilationTimeMs int `json:"compilation_time_ms,omitempty"`
+	// Time spent executing the query, in milliseconds.
+	ExecutionTimeMs int `json:"execution_time_ms,omitempty"`
+	// Total amount of data sent over the network, in bytes.
+	NetworkSentBytes int `json:"network_sent_bytes,omitempty"`
+	// Total execution time for all individual Photon query engine tasks in the
+	// query, in milliseconds.
+	PhotonTotalTimeMs int `json:"photon_total_time_ms,omitempty"`
+	// Time spent waiting to execute the query because the SQL warehouse is
+	// already running the maximum number of concurrent queries, in
+	// milliseconds.
+	QueuedOverloadTimeMs int `json:"queued_overload_time_ms,omitempty"`
+	// Time waiting for compute resources to be provisioned for the SQL
+	// warehouse, in milliseconds.
+	QueuedProvisioningTimeMs int `json:"queued_provisioning_time_ms,omitempty"`
+	// Total size of data read by the query, in bytes.
+	ReadBytes int `json:"read_bytes,omitempty"`
+	// Size of persistent data read from the cache, in bytes.
+	ReadCacheBytes int `json:"read_cache_bytes,omitempty"`
+	// Number of files read after pruning.
+	ReadFilesCount int `json:"read_files_count,omitempty"`
+	// Number of partitions read after pruning.
+	ReadPartitionsCount int `json:"read_partitions_count,omitempty"`
+	// Size of persistent data read from cloud object storage on your cloud
+	// tenant, in bytes.
+	ReadRemoteBytes int `json:"read_remote_bytes,omitempty"`
+	// Time spent fetching the query results after the execution finished, in
+	// milliseconds.
+	ResultFetchTimeMs int `json:"result_fetch_time_ms,omitempty"`
+	// true if the query result was fetched from cache, false otherwise.
+	ResultFromCache bool `json:"result_from_cache,omitempty"`
+	// Total number of rows returned by the query.
+	RowsProducedCount int `json:"rows_produced_count,omitempty"`
+	// Total number of rows read by the query.
+	RowsReadCount int `json:"rows_read_count,omitempty"`
+	// Size of data temporarily written to disk while executing the query, in
+	// bytes.
+	SpillToDiskBytes int `json:"spill_to_disk_bytes,omitempty"`
+	// Sum of execution time for all of the query?s tasks, in milliseconds.
+	TaskTotalTimeMs int `json:"task_total_time_ms,omitempty"`
+	// Number of files that would have been read without pruning.
+	TotalFilesCount int `json:"total_files_count,omitempty"`
+	// Number of partitions that would have been read without pruning.
+	TotalPartitionsCount int `json:"total_partitions_count,omitempty"`
+	// Total execution time of the query from the client?s point of view, in
+	// milliseconds.
+	TotalTimeMs int `json:"total_time_ms,omitempty"`
+	// Size pf persistent data written to cloud object storage in your cloud
+	// tenant, in bytes.
+	WriteRemoteBytes int `json:"write_remote_bytes,omitempty"`
+}
+
+// This describes an enum
+type QueryStatus string
+
+// Query has been cancelled by the user.
+const QueryStatusCanceled QueryStatus = `CANCELED`
+
+// Query has failed.
+const QueryStatusFailed QueryStatus = `FAILED`
+
+// Query has completed.
+const QueryStatusFinished QueryStatus = `FINISHED`
+
+// Query has been received and queued.
+const QueryStatusQueued QueryStatus = `QUEUED`
+
+// Query has started.
+const QueryStatusRunning QueryStatus = `RUNNING`
 
 type RepeatedEndpointConfPairs struct {
 	// Deprecated: Use configuration_pairs
@@ -853,6 +993,13 @@ const TerminationReasonTypeServiceFault TerminationReasonType = `SERVICE_FAULT`
 
 const TerminationReasonTypeSuccess TerminationReasonType = `SUCCESS`
 
+type TimeRange struct {
+	// Limit results to queries that started before this time.
+	EndTimeMs int `json:"end_time_ms,omitempty"`
+	// Limit results to queries that started after this time.
+	StartTimeMs int `json:"start_time_ms,omitempty"`
+}
+
 type WarehouseTypePair struct {
 	// If set to false the specific warehouse type will not be be allowed as a
 	// value for warehouse_type in CreateWarehouse and EditWarehouse
@@ -868,3 +1015,29 @@ const WarehouseTypePairWarehouseTypeClassic WarehouseTypePairWarehouseType = `CL
 const WarehouseTypePairWarehouseTypePro WarehouseTypePairWarehouseType = `PRO`
 
 const WarehouseTypePairWarehouseTypeTypeUnspecified WarehouseTypePairWarehouseType = `TYPE_UNSPECIFIED`
+
+// Alias for `warehouse_id`.
+
+// Message describing why the query could not complete.
+
+// The time execution of the query ended.
+
+// A key that can be used to look up query details.
+
+// The time the query ended.
+
+// The query ID.
+
+// The time the query started.
+
+// The text of the query.
+
+// The number of results returned by the query.
+
+// URL to the query plan.
+
+// The ID of the user who ran the query.
+
+// The email address or username of the user who ran the query.
+
+// Warehouse ID.
