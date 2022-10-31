@@ -44,15 +44,11 @@ type APIErrorBody struct {
 type APIError struct {
 	ErrorCode  string
 	Message    string
-	Resource   string // TODO: remove this field?..
 	StatusCode int
 }
 
 // Error returns error message string instead of
 func (apiError APIError) Error() string {
-	if apiError.StatusCode != 404 {
-		logger.Warnf("%s:%d - %s", apiError.Resource, apiError.StatusCode, apiError.Message)
-	}
 	return apiError.Message
 }
 
@@ -80,7 +76,7 @@ func (apiError APIError) IsRetriable() bool {
 	// Handle transient errors for retries
 	for _, substring := range transientErrorStringMatches {
 		if strings.Contains(apiError.Message, substring) {
-			logger.Infof("Attempting retry because of %#v", substring)
+			logger.Debugf("Attempting retry because of %#v", substring)
 			return true
 		}
 	}
@@ -134,7 +130,6 @@ func parseErrorFromResponse(resp *http.Response) APIError {
 			Message:    err.Error(),
 			ErrorCode:  "IO_READ",
 			StatusCode: resp.StatusCode,
-			Resource:   resp.Request.URL.Path,
 		}
 	}
 	// try to read in nicely formatted API error response
@@ -168,7 +163,6 @@ func parseErrorFromResponse(resp *http.Response) APIError {
 		Message:    errorBody.Message,
 		ErrorCode:  errorBody.ErrorCode,
 		StatusCode: resp.StatusCode,
-		Resource:   resp.Request.URL.Path,
 	}
 }
 

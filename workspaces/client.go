@@ -94,7 +94,10 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		// default config
 		cfg = &databricks.Config{}
 	}
-	apiClient := client.New(cfg)
+	apiClient, err := client.New(cfg)
+	if err != nil {
+		panic(err)
+	}
 	return &WorkspacesClient{
 		Config:               cfg,
 		Alerts:               dbsql.NewAlerts(apiClient),

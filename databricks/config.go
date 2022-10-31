@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/logger"
 )
@@ -60,11 +59,12 @@ type Config struct {
 	// Azure Resource Manager ID for Azure Databricks workspace, which is exhanged for a Host
 	AzureResourceID string `name:"azure_workspace_resource_id" env:"DATABRICKS_AZURE_RESOURCE_ID" auth:"azure"`
 
-	AzureUseMSI        bool   `name:"azure_use_msi" env:"ARM_USE_MSI" auth:"azure"`
-	AzureClientSecret  string `name:"azure_client_secret" env:"ARM_CLIENT_SECRET" auth:"azure,sensitive"`
-	AzureClientID      string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure"`
-	AzureTenantID      string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure"`
-	AzurermEnvironment string `name:"azure_environment" env:"ARM_ENVIRONMENT"`
+	AzureUseMSI       bool   `name:"azure_use_msi" env:"ARM_USE_MSI" auth:"azure"`
+	AzureClientSecret string `name:"azure_client_secret" env:"ARM_CLIENT_SECRET" auth:"azure,sensitive"`
+	AzureClientID     string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure"`
+	AzureTenantID     string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure"`
+	// Azure Environment (Public, UsGov, China, Germany) has specific set of API endpoints
+	Environment string `name:"azure_environment" env:"ARM_ENVIRONMENT"` // TODO: rename to AzureEnvironment
 
 	// When multiple auth attributes are available in the environment, use the auth type
 	// specified by this argument. This argument also holds currently selected auth.
@@ -86,15 +86,11 @@ type Config struct {
 	// Maximum number of requests per second made to Databricks REST API.
 	RateLimitPerSecond int `name:"rate_limit" env:"DATABRICKS_RATE_LIMIT" auth:"-"`
 
-	// Azure Environment (Public, UsGov, China, Germany) has specific set of API endpoints
-	Environment string `name:"azure_environment" env:"ARM_ENVIRONMENT"` // TODO: rename to AzureEnvironment
-
 	// Azure Login Application ID. Must be set if authenticating for non-production workspaces.
 	AzureLoginAppID string `name:"azure_login_app_id" env:"DATABRICKS_AZURE_LOGIN_APP_ID" auth:"azure"`
 
-	RetryWaitMin     time.Duration
-	RetryWaitMax     time.Duration
-	MaxRetryAttempts int
+	// Number of seconds to keep retrying HTTP requests. Default is 300 (5 minutes)
+	RetryTimeoutSeconds int `name:"retry_timeout_seconds" auth:"-"`
 
 	Loaders []Loader
 
@@ -158,7 +154,6 @@ func (c *Config) EnsureResolved() error {
 		c.Loaders = []Loader{
 			ConfigAttributes,
 			KnownConfigLoader{},
-			TransportDefaults{},
 		}
 	}
 	for _, loader := range c.Loaders {
