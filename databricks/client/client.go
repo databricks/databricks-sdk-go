@@ -35,10 +35,11 @@ func New(cfg *databricks.Config) (*DatabricksClient, error) {
 	retryTimeout := time.Duration(orDefault(cfg.RetryTimeoutSeconds, 300)) * time.Second
 	httpTimeout := time.Duration(orDefault(cfg.HTTPTimeoutSeconds, 60)) * time.Second
 	rateLimiter := rate.NewLimiter(rate.Limit(orDefault(cfg.RateLimitPerSecond, 15)), 1)
+	debugTruncateBytes := orDefault(cfg.DebugTruncateBytes, 96)
 	return &DatabricksClient{
 		Config:             cfg,
 		debugHeaders:       cfg.DebugHeaders,
-		debugTruncateBytes: orDefault(cfg.DebugTruncateBytes, 96),
+		debugTruncateBytes: debugTruncateBytes,
 		retryTimeout:       retryTimeout,
 		rateLimiter:        rateLimiter,
 		httpClient: &http.Client{
@@ -227,12 +228,18 @@ func (c *DatabricksClient) rePack(prefix string, v any) string {
 	return prefix + strings.Join(lines, "\n"+prefix)
 }
 
-func (c *DatabricksClient) drain(r *http.Response) {
+// Fully read and close HTTP response body to release HTTP connections.
+//
+// HTTP client's Transport may not reuse HTTP/1.x "keep-alive" TCP connections
+// if the Body is not read to completion and closed.
+//
+// See: https://groups.google.com/g/golang-nuts/c/IoSvPz-rpfc
+func (c *DatabricksClient) drainToEnsureConnectionRelease(r *http.Response) {
 	if r == nil || r.Body == nil {
 		return
 	}
 	defer r.Body.Close()
-	_, err := io.Copy(ioutil.Discard, io.LimitReader(r.Body, 4096))
+	_, err := io.Copy(ioutil.Discard, r.Body)
 	if err != nil {
 		logger.Errorf("failed to drain body: %s", err)
 	}
@@ -266,7 +273,8 @@ func (c *DatabricksClient) attempt(ctx context.Context,
 		if err == nil {
 			return resp, nil
 		}
-		c.drain(resp)
+		c.drainToEnsureConnectionRelease(resp)
+		// proactively release the connections in HTTP connection pool
 		c.httpClient.CloseIdleConnections()
 		if retry {
 			return nil, retries.Continue(err)
@@ -303,10 +311,7 @@ func (c *DatabricksClient) recordRequestLog(response *http.Response,
 		sb.WriteString("\n")
 	}
 	sb.WriteString(fmt.Sprintf("< %s %s\n", response.Proto, response.Status))
-	isEmptyJson := len(responseBody) == 2 &&
-		responseBody[0] == '{' &&
-		responseBody[1] == '}'
-	if len(responseBody) > 0 && !isEmptyJson {
+	if len(responseBody) > 0 {
 		sb.WriteString(c.redactedDump("< ", responseBody))
 	}
 	logger.Debugf(sb.String()) // lgtm [go/log-injection] lgtm [go/clear-text-logging]
@@ -356,7 +361,7 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 		return nil, fmt.Errorf("response body: %w", err)
 	}
 	c.recordRequestLog(resp, requestBody, responseBody)
-	c.drain(resp)
+	c.drainToEnsureConnectionRelease(resp)
 	return responseBody, nil
 }
 

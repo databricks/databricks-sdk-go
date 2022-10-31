@@ -2,7 +2,7 @@ package logger
 
 import "log"
 
-var DefaultLogger = SimpleLogger{}
+var DefaultLogger Logger = SimpleLogger{}
 
 func Tracef(format string, v ...interface{}) {
 	DefaultLogger.Tracef(format, v...)

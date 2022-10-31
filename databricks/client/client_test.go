@@ -12,18 +12,20 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
+	"github.com/databricks/databricks-sdk-go/databricks/logger"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/time/rate"
 )
 
-type errReader int
+// errReader(true) will also fail on Close
+type errReader bool
 
 func (errReader) Read(p []byte) (n int, err error) {
 	return 0, fmt.Errorf("test error")
 }
 
 func (i errReader) Close() error {
-	if int(i) > 100 {
+	if i {
 		return fmt.Errorf("test error")
 	}
 	return nil
@@ -167,12 +169,19 @@ func TestMakeRequestBody(t *testing.T) {
 		Scope string `json:"scope" url:"scope"`
 	}
 	requestURL := "/a/b/c"
-	_, err := makeRequestBody("GET", &requestURL, x{"test"})
+	body, err := makeRequestBody("GET", &requestURL, x{"test"})
 	assert.NoError(t, err)
 	assert.Equal(t, "/a/b/c?scope=test", requestURL)
+	assert.Equal(t, 0, len(body))
 
-	body, _ := makeRequestBody("POST", &requestURL, "abc")
-	assert.Equal(t, []byte("abc"), body)
+	requestURL = "/a/b/c"
+	body, err = makeRequestBody("POST", &requestURL, x{"test"})
+	assert.NoError(t, err)
+	assert.Equal(t, "/a/b/c", requestURL)
+	x1 := `{
+  "scope": "test"
+}`
+	assert.Equal(t, []byte(x1), body)
 }
 
 func TestMakeRequestBodyFromReader(t *testing.T) {
@@ -184,7 +193,7 @@ func TestMakeRequestBodyFromReader(t *testing.T) {
 
 func TestMakeRequestBodyReaderError(t *testing.T) {
 	requestURL := "/a/b/c"
-	_, err := makeRequestBody("POST", &requestURL, errReader(1))
+	_, err := makeRequestBody("POST", &requestURL, errReader(false))
 	assert.EqualError(t, err, "failed to read from reader: test error")
 }
 
@@ -272,7 +281,7 @@ func TestSimpleRequestErrReaderBody(t *testing.T) {
 		httpClient: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: 200,
-				Body:       errReader(1),
+				Body:       errReader(false),
 				Request:    r,
 			}, nil
 		}),
@@ -290,7 +299,7 @@ func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
 		httpClient: hc(func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: 200,
-				Body:       errReader(999),
+				Body:       errReader(true),
 				Request:    r,
 			}, nil
 		}),
@@ -300,12 +309,43 @@ func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
 	assert.EqualError(t, err, "response body: test error")
 }
 
+type BufferLogger struct {
+	strings.Builder
+}
+
+func (l *BufferLogger) Tracef(format string, v ...interface{}) {
+	l.WriteString(fmt.Sprintf("[TRACE] "+format, v...))
+}
+
+func (l *BufferLogger) Debugf(format string, v ...interface{}) {
+	l.WriteString(fmt.Sprintf("[DEBUG] "+format, v...))
+}
+
+func (l *BufferLogger) Infof(format string, v ...interface{}) {
+	l.WriteString(fmt.Sprintf("[INFO] "+format, v...))
+}
+
+func (l *BufferLogger) Warnf(format string, v ...interface{}) {
+	l.WriteString(fmt.Sprintf("[WARN] "+format, v...))
+}
+
+func (l *BufferLogger) Errorf(format string, v ...interface{}) {
+	l.WriteString(fmt.Sprintf("[ERROR] "+format, v...))
+}
+
 func TestSimpleResponseRedaction(t *testing.T) {
 	cfg := databricks.NewMockConfig(func(r *http.Request) error {
 		r.Header.Add("X-For-Logging", "yes")
 		return nil
 	})
 	cfg.Host = "http://localhost:12345"
+
+	prevLogger := logger.DefaultLogger
+	bufLogger := &BufferLogger{}
+	logger.DefaultLogger = bufLogger
+	defer func() {
+		logger.DefaultLogger = prevLogger
+	}()
 
 	c := &DatabricksClient{
 		Config: cfg,
@@ -335,9 +375,21 @@ func TestSimpleResponseRedaction(t *testing.T) {
 		"c": 23,
 	}, nil)
 	assert.NoError(t, err)
+	// not testing for exact logged lines, as header order is not deterministic
+	assert.NotContains(t, bufLogger.String(), "__SENSITIVE01__")
+	assert.NotContains(t, bufLogger.String(), "__SENSITIVE02__")
+	assert.NotContains(t, bufLogger.String(), "__SENSITIVE03__")
+	assert.NotContains(t, bufLogger.String(), "12345678901234567890qwerty")
 }
 
 func TestInlineArrayDebugging(t *testing.T) {
+	prevLogger := logger.DefaultLogger
+	bufLogger := &BufferLogger{}
+	logger.DefaultLogger = bufLogger
+	defer func() {
+		logger.DefaultLogger = prevLogger
+	}()
+
 	c := &DatabricksClient{
 		Config: databricks.NewMockConfig(func(r *http.Request) error {
 			return nil
@@ -360,4 +412,12 @@ func TestInlineArrayDebugging(t *testing.T) {
 		"c": 23,
 	}, nil)
 	assert.NoError(t, err)
+
+	assert.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
+<  
+< [
+<   {
+<     "foo": "bar"
+<   }
+< ]`, bufLogger.String())
 }
