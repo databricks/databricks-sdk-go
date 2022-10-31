@@ -61,6 +61,8 @@ func (l KnownConfigLoader) Configure(cfg *Config) error {
 			}
 			profiles = append(profiles, section.Name())
 		}
+                 // in the real situations, we don't expect this to happen often (if not at all),
+                 // hence we don't trim the list
 		if len(profiles) > 1 {
 			return fmt.Errorf("%s match %s in %s",
 				strings.Join(profiles, " and "),
