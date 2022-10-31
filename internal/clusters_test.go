@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -53,7 +54,7 @@ func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
 		func(i *retries.Info[clusters.ClusterInfo]) {
 			clusterId = i.Info.ClusterId
 		})
-	assert.EqualError(t, err, "timed out: Finding instances for new nodes, acquiring more instances if necessary")
+	assert.True(t, strings.HasPrefix(err.Error(), "timed out: "))
 	_, err = w.Clusters.DeleteByClusterIdAndWait(ctx, clusterId)
 	assert.NoError(t, err)
 }
