@@ -78,6 +78,7 @@ type WorkspacesClient struct {
 	TokenManagement      tokenmanagement.TokenManagementService
 	TransitionRequests   mlflow.TransitionRequestsService
 	Queries              dbsql.QueriesService
+	QueryHistory         warehouses.QueryHistoryService
 	UnityFiles           unitycatalog.UnityFilesService
 	Users                scim.UsersService
 	Warehouses           warehouses.WarehousesService
@@ -146,6 +147,7 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		TokenManagement:      tokenmanagement.NewTokenManagement(apiClient),
 		TransitionRequests:   mlflow.NewTransitionRequests(apiClient),
 		Queries:              dbsql.NewQueries(apiClient),
+		QueryHistory:         warehouses.NewQueryHistory(apiClient),
 		UnityFiles:           unitycatalog.NewUnityFiles(apiClient),
 		Users:                scim.NewUsers(apiClient),
 		Warehouses:           warehouses.NewWarehouses(apiClient),
