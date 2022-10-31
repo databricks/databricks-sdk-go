@@ -22,6 +22,10 @@ type DeltaPipelinesAPI struct {
 	client *client.DatabricksClient
 }
 
+// Create a pipeline
+//
+// Creates a new data processing pipeline based on the requested configuration.
+// If successful, this method returns the ID of the new pipeline.
 func (a *DeltaPipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipelineRequest) (*CreatePipelineResponse, error) {
 	var createPipelineResponse CreatePipelineResponse
 	path := "/api/2.0/pipelines"
@@ -71,24 +75,34 @@ func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPip
 	})
 }
 
+// Delete a pipeline
+//
+// Deletes a pipeline.
 func (a *DeltaPipelinesAPI) DeletePipeline(ctx context.Context, request DeletePipelineRequest) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
+// Delete a pipeline
+//
+// Deletes a pipeline.
 func (a *DeltaPipelinesAPI) DeletePipelineByPipelineId(ctx context.Context, pipelineId string) error {
 	return a.DeletePipeline(ctx, DeletePipelineRequest{
 		PipelineId: pipelineId,
 	})
 }
 
+// Edit a pipeline
+//
+// Updates a pipeline with the supplied configuration.
 func (a *DeltaPipelinesAPI) EditPipeline(ctx context.Context, request EditPipelineRequest) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Put(ctx, path, request)
 	return err
 }
 
+// Get a pipeline
 func (a *DeltaPipelinesAPI) GetPipeline(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error) {
 	var getPipelineResponse GetPipelineResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
@@ -138,6 +152,7 @@ func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipelineR
 	})
 }
 
+// Get a pipeline
 func (a *DeltaPipelinesAPI) GetPipelineByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
 	return a.GetPipeline(ctx, GetPipelineRequest{
 		PipelineId: pipelineId,
@@ -150,6 +165,9 @@ func (a *DeltaPipelinesAPI) GetPipelineByPipelineIdAndWait(ctx context.Context, 
 	}, options...)
 }
 
+// Get a pipeline update
+//
+// Gets an update from an active pipeline.
 func (a *DeltaPipelinesAPI) GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error) {
 	var getUpdateResponse GetUpdateResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates/%v", request.PipelineId, request.UpdateId)
@@ -157,6 +175,9 @@ func (a *DeltaPipelinesAPI) GetUpdate(ctx context.Context, request GetUpdateRequ
 	return &getUpdateResponse, err
 }
 
+// Get a pipeline update
+//
+// Gets an update from an active pipeline.
 func (a *DeltaPipelinesAPI) GetUpdateByPipelineIdAndUpdateId(ctx context.Context, pipelineId string, updateId string) (*GetUpdateResponse, error) {
 	return a.GetUpdate(ctx, GetUpdateRequest{
 		PipelineId: pipelineId,
@@ -164,6 +185,9 @@ func (a *DeltaPipelinesAPI) GetUpdateByPipelineIdAndUpdateId(ctx context.Context
 	})
 }
 
+// List pipeline updates
+//
+// List updates for an active pipeline.
 func (a *DeltaPipelinesAPI) ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error) {
 	var listUpdatesResponse ListUpdatesResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
@@ -171,12 +195,18 @@ func (a *DeltaPipelinesAPI) ListUpdates(ctx context.Context, request ListUpdates
 	return &listUpdatesResponse, err
 }
 
+// List pipeline updates
+//
+// List updates for an active pipeline.
 func (a *DeltaPipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId string) (*ListUpdatesResponse, error) {
 	return a.ListUpdates(ctx, ListUpdatesRequest{
 		PipelineId: pipelineId,
 	})
 }
 
+// Reset a pipeline
+//
+// Resets a pipeline.
 func (a *DeltaPipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipelineRequest) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/reset", request.PipelineId)
 	err := a.client.Post(ctx, path, request, nil)
@@ -225,7 +255,9 @@ func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipel
 	})
 }
 
-// * Starts or queues a pipeline update.
+// Queue a pipeline update
+//
+// Starts or queues a pipeline update.
 func (a *DeltaPipelinesAPI) StartUpdate(ctx context.Context, request StartUpdateRequest) (*StartUpdateResponse, error) {
 	var startUpdateResponse StartUpdateResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
@@ -233,6 +265,9 @@ func (a *DeltaPipelinesAPI) StartUpdate(ctx context.Context, request StartUpdate
 	return &startUpdateResponse, err
 }
 
+// Stop a pipeline
+//
+// Stops a pipeline.
 func (a *DeltaPipelinesAPI) StopPipeline(ctx context.Context, request StopPipelineRequest) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", request.PipelineId)
 	err := a.client.Post(ctx, path, request, nil)

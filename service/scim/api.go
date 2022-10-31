@@ -19,9 +19,9 @@ type CurrentUserAPI struct {
 	client *client.DatabricksClient
 }
 
-// Fetch details about caller identity
+// Get current user info
 //
-// Get details about caller identity
+// Get details about the current method caller's identity.
 func (a *CurrentUserAPI) Me(ctx context.Context) (*User, error) {
 	var user User
 	path := "/api/2.0/preview/scim/v2/Me"
@@ -39,27 +39,27 @@ type GroupsAPI struct {
 	client *client.DatabricksClient
 }
 
-// Delete a group in <Workspace>
+// Delete a group
 //
-// Remove a group in the <Workspace>.
+// Deletes a group from the <Workspace>.
 func (a *GroupsAPI) DeleteGroup(ctx context.Context, request DeleteGroupRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
-// Delete a group in <Workspace>
+// Delete a group
 //
-// Remove a group in the <Workspace>.
+// Deletes a group from the <Workspace>.
 func (a *GroupsAPI) DeleteGroupById(ctx context.Context, id string) error {
 	return a.DeleteGroup(ctx, DeleteGroupRequest{
 		Id: id,
 	})
 }
 
-// Fetch details of a group in <Workspace>
+// Get group details
 //
-// Fetch information of one group in the <Workspace>
+// Gets the information for a specific group in the <Workspace>.
 func (a *GroupsAPI) FetchGroup(ctx context.Context, request FetchGroupRequest) (*Group, error) {
 	var group Group
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
@@ -67,18 +67,18 @@ func (a *GroupsAPI) FetchGroup(ctx context.Context, request FetchGroupRequest) (
 	return &group, err
 }
 
-// Fetch details of a group in <Workspace>
+// Get group details
 //
-// Fetch information of one group in the <Workspace>
+// Gets the information for a specific group in the <Workspace>.
 func (a *GroupsAPI) FetchGroupById(ctx context.Context, id string) (*Group, error) {
 	return a.FetchGroup(ctx, FetchGroupRequest{
 		Id: id,
 	})
 }
 
-// Fetch details of multiple groups in <Workspace>
+// List group details
 //
-// Get all details of the groups associated with the <Workspace>.
+// Gets all details of the groups associated with the <Workspace>.
 //
 // Use ListGroupsAll() to get all Group instances
 func (a *GroupsAPI) ListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
@@ -125,9 +125,10 @@ func (a *GroupsAPI) GetGroupByDisplayName(ctx context.Context, name string) (*Gr
 	return nil, fmt.Errorf("Group named '%s' does not exist", name)
 }
 
-// Create a new group in <Workspace>
+// Create a new group
 //
-// Create one group in the <Workspace> with a unique name
+// Creates a group in the <Workspace> with a unique name, using the supplied
+// group details.
 func (a *GroupsAPI) NewGroup(ctx context.Context, request Group) (*Group, error) {
 	var group Group
 	path := "/api/2.0/preview/scim/v2/Groups"
@@ -135,18 +136,18 @@ func (a *GroupsAPI) NewGroup(ctx context.Context, request Group) (*Group, error)
 	return &group, err
 }
 
-// Update details of a group
+// Update group details
 //
-// Partially update details of a group
+// Partially updates the details of a group.
 func (a *GroupsAPI) PatchGroup(ctx context.Context, request PartialUpdate) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
 
-// Update details of a group
+// Replace a group
 //
-// Update details of a group by replacing the entire entity
+// Updates the details of a group by replacing the entire group entity.
 func (a *GroupsAPI) ReplaceGroup(ctx context.Context, request Group) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	err := a.client.Put(ctx, path, request)
@@ -163,27 +164,27 @@ type ServicePrincipalsAPI struct {
 	client *client.DatabricksClient
 }
 
-// Delete a service principal in <Workspace>
+// Delete a service principal
 //
-// Delete one service principal
+// Delete a single service principal in the <Workspace>.
 func (a *ServicePrincipalsAPI) DeleteServicePrincipal(ctx context.Context, request DeleteServicePrincipalRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
 
-// Delete a service principal in <Workspace>
+// Delete a service principal
 //
-// Delete one service principal
+// Delete a single service principal in the <Workspace>.
 func (a *ServicePrincipalsAPI) DeleteServicePrincipalById(ctx context.Context, id string) error {
 	return a.DeleteServicePrincipal(ctx, DeleteServicePrincipalRequest{
 		Id: id,
 	})
 }
 
-// Fetch details of a service principal in <Workspace>
+// Get service principal details
 //
-// Fetch information of one service principal
+// Gets the details for a single service principal define in the <Workspace>.
 func (a *ServicePrincipalsAPI) FetchServicePrincipal(ctx context.Context, request FetchServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
@@ -191,18 +192,18 @@ func (a *ServicePrincipalsAPI) FetchServicePrincipal(ctx context.Context, reques
 	return &servicePrincipal, err
 }
 
-// Fetch details of a service principal in <Workspace>
+// Get service principal details
 //
-// Fetch information of one service principal
+// Gets the details for a single service principal define in the <Workspace>.
 func (a *ServicePrincipalsAPI) FetchServicePrincipalById(ctx context.Context, id string) (*ServicePrincipal, error) {
 	return a.FetchServicePrincipal(ctx, FetchServicePrincipalRequest{
 		Id: id,
 	})
 }
 
-// Fetch details of multiple service principals in <Workspace>
+// List service principals
 //
-// Get multiple service principals associated with a <Workspace>.
+// Gets the set of service principals associated with a <Workspace>.
 //
 // Use ListServicePrincipalsAll() to get all ServicePrincipal instances
 func (a *ServicePrincipalsAPI) ListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
@@ -249,9 +250,9 @@ func (a *ServicePrincipalsAPI) GetServicePrincipalByDisplayName(ctx context.Cont
 	return nil, fmt.Errorf("ServicePrincipal named '%s' does not exist", name)
 }
 
-// Create a new service principal in <Workspace>
+// Create a service principal
 //
-// Create one service principal in the <Workspace>.
+// Creates a new service principal in the <Workspace>.
 func (a *ServicePrincipalsAPI) NewServicePrincipal(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
@@ -259,9 +260,10 @@ func (a *ServicePrincipalsAPI) NewServicePrincipal(ctx context.Context, request 
 	return &servicePrincipal, err
 }
 
-// Update details of a service principal in <Workspace>
+// Update service principal details
 //
-// Partially update details of one service principal.
+// Partially updates the details of a single service principal in the
+// <Workspace>.
 func (a *ServicePrincipalsAPI) PatchServicePrincipal(ctx context.Context, request PartialUpdate) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	err := a.client.Patch(ctx, path, request)
@@ -270,7 +272,9 @@ func (a *ServicePrincipalsAPI) PatchServicePrincipal(ctx context.Context, reques
 
 // Replace service principal in <Workspace>
 //
-// Update details of one service principal.
+// Updates the details of a single service principal.
+//
+// This action replaces the existing service principal with the same name.
 func (a *ServicePrincipalsAPI) ReplaceServicePrincipal(ctx context.Context, request ServicePrincipal) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	err := a.client.Put(ctx, path, request)
@@ -287,9 +291,9 @@ type UsersAPI struct {
 	client *client.DatabricksClient
 }
 
-// Delete a user in <Workspace>
+// Delete a user
 //
-// Delete one user. Deleting a user from a workspace also removes objects
+// Deletes a user. Deleting a user from a workspace also removes objects
 // associated with the user.
 func (a *UsersAPI) DeleteUser(ctx context.Context, request DeleteUserRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
@@ -297,9 +301,9 @@ func (a *UsersAPI) DeleteUser(ctx context.Context, request DeleteUserRequest) er
 	return err
 }
 
-// Delete a user in <Workspace>
+// Delete a user
 //
-// Delete one user. Deleting a user from a workspace also removes objects
+// Deletes a user. Deleting a user from a workspace also removes objects
 // associated with the user.
 func (a *UsersAPI) DeleteUserById(ctx context.Context, id string) error {
 	return a.DeleteUser(ctx, DeleteUserRequest{
@@ -307,9 +311,9 @@ func (a *UsersAPI) DeleteUserById(ctx context.Context, id string) error {
 	})
 }
 
-// Get details of a user in <Workspace>
+// Get user details
 //
-// Fetch information of one user in <Workspace>
+// Gets information for a specific user in <Workspace>.
 func (a *UsersAPI) FetchUser(ctx context.Context, request FetchUserRequest) (*User, error) {
 	var user User
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
@@ -317,18 +321,18 @@ func (a *UsersAPI) FetchUser(ctx context.Context, request FetchUserRequest) (*Us
 	return &user, err
 }
 
-// Get details of a user in <Workspace>
+// Get user details
 //
-// Fetch information of one user in <Workspace>
+// Gets information for a specific user in <Workspace>.
 func (a *UsersAPI) FetchUserById(ctx context.Context, id string) (*User, error) {
 	return a.FetchUser(ctx, FetchUserRequest{
 		Id: id,
 	})
 }
 
-// Fetch details of multiple users in <Workspace>
+// List users
 //
-// Get all the users associated with a <Workspace>.
+// Gets details for all the users associated with a <Workspace>.
 //
 // Use ListUsersAll() to get all User instances
 func (a *UsersAPI) ListUsers(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
@@ -375,9 +379,10 @@ func (a *UsersAPI) GetUserByUserName(ctx context.Context, name string) (*User, e
 	return nil, fmt.Errorf("User named '%s' does not exist", name)
 }
 
-// Create a new user in <Workspace>
+// Create a new user
 //
-// Create a user in the <Workspace> who will automatically added to the account.
+// Creates a new user in the <Workspace>. This new user will also be added to
+// the <Workspace> account.
 func (a *UsersAPI) NewUser(ctx context.Context, request User) (*User, error) {
 	var user User
 	path := "/api/2.0/preview/scim/v2/Users"
@@ -385,18 +390,19 @@ func (a *UsersAPI) NewUser(ctx context.Context, request User) (*User, error) {
 	return &user, err
 }
 
-// Update details of a user in <Workspace>
+// Update user details
 //
-// Partially update a user resource with operations on specific attributes
+// Partially updates a user resource by applying the supplied operations on
+// specific user attributes.
 func (a *UsersAPI) PatchUser(ctx context.Context, request PartialUpdate) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
 
-// Update details of a user in <Workspace>
+// Replace a user
 //
-// Replaces user with the data supplied in request
+// Replaces a user's information with the data supplied in request.
 func (a *UsersAPI) ReplaceUser(ctx context.Context, request User) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	err := a.client.Put(ctx, path, request)

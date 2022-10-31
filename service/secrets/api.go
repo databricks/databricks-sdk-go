@@ -29,17 +29,12 @@ func (a *SecretsAPI) CreateScope(ctx context.Context, request CreateScope) error
 	return err
 }
 
+// Delete an ACL
+//
 // Deletes the given ACL on the given scope.
 //
-// Users must have the “MANAGE“ permission to invoke this API.
-//
-// Example request:
-//
-// .. code::
-//
-// { "scope": "my-secret-scope", "principal": "data-scientists" }
-//
-// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope, principal, or ACL
+// Users must have the “MANAGE“ permission to invoke this API. Throws
+// “RESOURCE_DOES_NOT_EXIST“ if no such secret scope, principal, or ACL
 // exists. Throws “PERMISSION_DENIED“ if the user does not have permission to
 // make this API call.
 func (a *SecretsAPI) DeleteAcl(ctx context.Context, request DeleteAcl) error {
@@ -48,13 +43,9 @@ func (a *SecretsAPI) DeleteAcl(ctx context.Context, request DeleteAcl) error {
 	return err
 }
 
+// Delete a secret scope
+//
 // Deletes a secret scope.
-//
-// Example request:
-//
-// .. code::
-//
-// { "scope": "my-secret-scope" }
 //
 // Throws “RESOURCE_DOES_NOT_EXIST“ if the scope does not exist. Throws
 // “PERMISSION_DENIED“ if the user does not have permission to make this API
@@ -65,13 +56,9 @@ func (a *SecretsAPI) DeleteScope(ctx context.Context, request DeleteScope) error
 	return err
 }
 
+// Delete a secret scope
+//
 // Deletes a secret scope.
-//
-// Example request:
-//
-// .. code::
-//
-// { "scope": "my-secret-scope" }
 //
 // Throws “RESOURCE_DOES_NOT_EXIST“ if the scope does not exist. Throws
 // “PERMISSION_DENIED“ if the user does not have permission to make this API
@@ -82,14 +69,10 @@ func (a *SecretsAPI) DeleteScopeByScope(ctx context.Context, scope string) error
 	})
 }
 
+// Delete a secret
+//
 // Deletes the secret stored in this secret scope. You must have “WRITE“ or
-// “MANAGE“ permission on the Secret Scope.
-//
-// Example request:
-//
-// .. code::
-//
-// { "scope": "my-secret-scope", "key": "my-secret-key" }
+// “MANAGE“ permission on the secret scope.
 //
 // Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope or secret exists.
 // Throws “PERMISSION_DENIED“ if the user does not have permission to make
@@ -100,15 +83,14 @@ func (a *SecretsAPI) DeleteSecret(ctx context.Context, request DeleteSecret) err
 	return err
 }
 
-// Describe secret ACL details
+// Get secret ACL details
 //
-// Describes the details about the given ACL, such as the group and permission.
-// Users must have the “MANAGE“ permission to invoke this API.
+// Gets the details about the given ACL, such as the group and permission. Users
+// must have the “MANAGE“ permission to invoke this API.
 //
-// Example response:\n\n.. code::\n\n {\n \"principal\": \"data-scientists\",\n
-// \"permission\": \"READ\"\n }\n\n Throws “RESOURCE_DOES_NOT_EXIST“ if no
-// such secret scope exists.\nThrows “PERMISSION_DENIED“ if the user does not
-// have permission to make this API call.
+// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
+// “PERMISSION_DENIED“ if the user does not have permission to make this API
+// call.
 func (a *SecretsAPI) GetAcl(ctx context.Context, request GetAclRequest) (*AclItem, error) {
 	var aclItem AclItem
 	path := "/api/2.0/secrets/acls/get"
@@ -116,14 +98,12 @@ func (a *SecretsAPI) GetAcl(ctx context.Context, request GetAclRequest) (*AclIte
 	return &aclItem, err
 }
 
-// Lists the ACLs set on the given scope
+// Lists ACLs
 //
-// Users must have the “MANAGE“ permission to invoke this API.
+// List the ACLs for a given secret scope. Users must have the “MANAGE“
+// permission to invoke this API.
 //
-// Example response:\n\n.. code::\n\n {\n \"acls\": [{\n \"principal\":
-// \"admins\",\n \"permission\": \"MANAGE\"\n },{\n \"principal\":
-// \"data-scientists\",\n \"permission\": \"READ\"\n }]\n }\n\nThrows
-// “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists.\nThrows
+// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
 // “PERMISSION_DENIED“ if the user does not have permission to make this API
 // call.
 //
@@ -146,14 +126,12 @@ func (a *SecretsAPI) ListAclsAll(ctx context.Context, request ListAclsRequest) (
 	return response.Items, nil
 }
 
-// Lists the ACLs set on the given scope
+// Lists ACLs
 //
-// Users must have the “MANAGE“ permission to invoke this API.
+// List the ACLs for a given secret scope. Users must have the “MANAGE“
+// permission to invoke this API.
 //
-// Example response:\n\n.. code::\n\n {\n \"acls\": [{\n \"principal\":
-// \"admins\",\n \"permission\": \"MANAGE\"\n },{\n \"principal\":
-// \"data-scientists\",\n \"permission\": \"READ\"\n }]\n }\n\nThrows
-// “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists.\nThrows
+// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
 // “PERMISSION_DENIED“ if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) ListAclsByScope(ctx context.Context, scope string) (*ListAclsResponse, error) {
@@ -162,14 +140,9 @@ func (a *SecretsAPI) ListAclsByScope(ctx context.Context, scope string) (*ListAc
 	})
 }
 
+// List all scopes
+//
 // Lists all secret scopes available in the workspace.
-//
-// Example response:
-//
-// .. code::
-//
-// { "scopes": [{ "name": "my-databricks-scope", "backend_type": "DATABRICKS"
-// },{ "name": "mount-points", "backend_type": "DATABRICKS" }] }
 //
 // Throws “PERMISSION_DENIED“ if the user does not have permission to make
 // this API call.
@@ -193,21 +166,14 @@ func (a *SecretsAPI) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
 	return response.Scopes, nil
 }
 
+// List secret keys
+//
 // Lists the secret keys that are stored at this scope. This is a metadata-only
 // operation; secret data cannot be retrieved using this API. Users need the
 // READ permission to make this call.
 //
-// Example response:
-//
-// .. code::
-//
-// { "secrets": [ { "key": "my-string-key"", "last_updated_timestamp":
-// "1520467595000" }, { "key": "my-byte-key", "last_updated_timestamp":
-// "1520467595000" }, ] }
-//
-// The lastUpdatedTimestamp returned is in milliseconds since epoch.
-//
-// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
+// The lastUpdatedTimestamp returned is in milliseconds since epoch. Throws
+// “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
 // “PERMISSION_DENIED“ if the user does not have permission to make this API
 // call.
 //
@@ -230,21 +196,14 @@ func (a *SecretsAPI) ListSecretsAll(ctx context.Context, request ListSecretsRequ
 	return response.Secrets, nil
 }
 
+// List secret keys
+//
 // Lists the secret keys that are stored at this scope. This is a metadata-only
 // operation; secret data cannot be retrieved using this API. Users need the
 // READ permission to make this call.
 //
-// Example response:
-//
-// .. code::
-//
-// { "secrets": [ { "key": "my-string-key"", "last_updated_timestamp":
-// "1520467595000" }, { "key": "my-byte-key", "last_updated_timestamp":
-// "1520467595000" }, ] }
-//
-// The lastUpdatedTimestamp returned is in milliseconds since epoch.
-//
-// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
+// The lastUpdatedTimestamp returned is in milliseconds since epoch. Throws
+// “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
 // “PERMISSION_DENIED“ if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) ListSecretsByScope(ctx context.Context, scope string) (*ListSecretsResponse, error) {
@@ -253,30 +212,26 @@ func (a *SecretsAPI) ListSecretsByScope(ctx context.Context, scope string) (*Lis
 	})
 }
 
-// Creates or overwrites the ACL associated with the given principal (user or
-// group) on the specified scope point. In general, a user or group will use the
-// most powerful permission available to them, and permissions are ordered as
-// follows:
+// Create/update an ACL
+//
+// Creates or overwrites the Access Control List (ACL) associated with the given
+// principal (user or group) on the specified scope point.
+//
+// In general, a user or group will use the most powerful permission available
+// to them, and permissions are ordered as follows:
 //
 // * “MANAGE“ - Allowed to change ACLs, and read and write to this secret
 // scope. * “WRITE“ - Allowed to read and write to this secret scope. *
 // “READ“ - Allowed to read this secret scope and list what secrets are
 // available.
 //
-// Note that in general, secret values can only be read from within a command on
-// a cluster (for example, through a notebook). There is no API to read the
-// actual secret value material outside of a cluster. However, the user's
-// permission will be applied based on who is executing the command, and they
-// must have at least READ permission.
+// Note that in general, secret values can only be read from within a
+// command\non a cluster (for example, through a notebook). There is no API to
+// read the actual secret value material outside of a cluster. However, the
+// user's permission will be applied based on who is executing the command, and
+// they must have at least READ permission.
 //
 // Users must have the “MANAGE“ permission to invoke this API.
-//
-// Example request:
-//
-// .. code::
-//
-// { "scope": "my-secret-scope", "principal": "data-scientists", "permission":
-// "READ" }
 //
 // The principal is a user or group name corresponding to an existing Databricks
 // principal to be granted or revoked access.
@@ -292,22 +247,17 @@ func (a *SecretsAPI) PutAcl(ctx context.Context, request PutAcl) error {
 	return err
 }
 
+// Add a secret
+//
 // Inserts a secret under the provided scope with the given name. If a secret
 // already exists with the same name, this command overwrites the existing
 // secret's value. The server encrypts the secret using the secret scope's
-// encryption settings before storing it. You must have “WRITE“ or “MANAGE“
-// permission on the secret scope.
+// encryption settings before storing it.
 //
-// The secret key must consist of alphanumeric characters, dashes, underscores,
-// and periods, and cannot exceed 128 characters. The maximum allowed secret
-// value size is 128 KB. The maximum number of secrets in a given scope is 1000.
-//
-// Example request:
-//
-// .. code::
-//
-// { "scope": "my-databricks-scope", "key": "my-string-key", "string_value":
-// "foobar" }
+// You must have “WRITE“ or “MANAGE“ permission on the secret scope. The
+// secret key must consist of alphanumeric characters, dashes, underscores, and
+// periods, and cannot exceed 128 characters. The maximum allowed secret value
+// size is 128 KB. The maximum number of secrets in a given scope is 1000.
 //
 // The input fields "string_value" or "bytes_value" specify the type of the
 // secret, which will determine the value returned when the secret value is

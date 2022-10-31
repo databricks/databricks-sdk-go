@@ -23,6 +23,10 @@ type CommandExecutionAPI struct {
 }
 
 // Cancel a command
+//
+// Cancels a currently running command within an execution context.
+//
+// The command ID is obtained from a prior successful call to __execute__.
 func (a *CommandExecutionAPI) Cancel(ctx context.Context, request CancelCommand) error {
 	path := "/api/1.2/commands/cancel"
 	err := a.client.Post(ctx, path, request, nil)
@@ -45,7 +49,9 @@ func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand C
 	}
 	return retries.Poll[CommandStatusResponse](ctx, i.Timeout, func() (*CommandStatusResponse, *retries.Err) {
 		commandStatusResponse, err := a.CommandStatus(ctx, CommandStatusRequest{
+			ClusterId: cancelCommand.ClusterId,
 			CommandId: cancelCommand.CommandId,
+			ContextId: cancelCommand.ContextId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -71,7 +77,12 @@ func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand C
 	})
 }
 
-// Get information about a command
+// Get command info
+//
+// Gets the status of and, if available, the results from a currently executing
+// command.
+//
+// The command ID is obtained from a prior successful call to __execute__.
 func (a *CommandExecutionAPI) CommandStatus(ctx context.Context, request CommandStatusRequest) (*CommandStatusResponse, error) {
 	var commandStatusResponse CommandStatusResponse
 	path := "/api/1.2/commands/status"
@@ -79,7 +90,9 @@ func (a *CommandExecutionAPI) CommandStatus(ctx context.Context, request Command
 	return &commandStatusResponse, err
 }
 
-// Get information about an execution context
+// Get status
+//
+// Gets the status for an execution context.
 func (a *CommandExecutionAPI) ContextStatus(ctx context.Context, request ContextStatusRequest) (*ContextStatusResponse, error) {
 	var contextStatusResponse ContextStatusResponse
 	path := "/api/1.2/contexts/status"
@@ -88,6 +101,10 @@ func (a *CommandExecutionAPI) ContextStatus(ctx context.Context, request Context
 }
 
 // Create an execution context
+//
+// Creates an execution context for running cluster commands.
+//
+// If successful, this method returns the ID of the new execution context.
 func (a *CommandExecutionAPI) Create(ctx context.Context, request CreateContext) (*Created, error) {
 	var created Created
 	path := "/api/1.2/contexts/create"
@@ -139,6 +156,8 @@ func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext C
 }
 
 // Delete an execution context
+//
+// Deletes an execution context.
 func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyContext) error {
 	path := "/api/1.2/contexts/destroy"
 	err := a.client.Post(ctx, path, request, nil)
@@ -146,6 +165,12 @@ func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyContex
 }
 
 // Run a command
+//
+// Runs a cluster command in the given execution context, using the provided
+// language.
+//
+// If successful, it returns an ID for tracking the status of the command's
+// execution.
 func (a *CommandExecutionAPI) Execute(ctx context.Context, request Command) (*Created, error) {
 	var created Created
 	path := "/api/1.2/commands/execute"
