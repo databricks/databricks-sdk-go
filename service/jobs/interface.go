@@ -5,7 +5,7 @@ package jobs
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 )
 
 // The Jobs API allows you to create, edit, and delete jobs.

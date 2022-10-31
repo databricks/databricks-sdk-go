@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
-	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 func NewWarehouses(client *client.DatabricksClient) WarehousesService {
@@ -30,12 +30,10 @@ func (a *WarehousesAPI) CreateWarehouse(ctx context.Context, request CreateWareh
 	return &createWarehouseResponse, err
 }
 
-// CreateWarehouseTimeout overrides the default timeout of 20 minutes to reach RUNNING state
-func CreateWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse] {
-	return retries.Timeout[GetWarehouseResponse](dur)
-}
-
 // CreateWarehouse and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[GetWarehouseResponse](60*time.Minute) functional option.
 func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, createWarehouseRequest CreateWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	createWarehouseResponse, err := a.CreateWarehouse(ctx, createWarehouseRequest)
@@ -81,12 +79,10 @@ func (a *WarehousesAPI) DeleteWarehouse(ctx context.Context, request DeleteWareh
 	return err
 }
 
-// DeleteWarehouseTimeout overrides the default timeout of 20 minutes to reach DELETED state
-func DeleteWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse] {
-	return retries.Timeout[GetWarehouseResponse](dur)
-}
-
 // DeleteWarehouse and wait to reach DELETED state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[GetWarehouseResponse](60*time.Minute) functional option.
 func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWarehouseRequest DeleteWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.DeleteWarehouse(ctx, deleteWarehouseRequest)
@@ -141,12 +137,10 @@ func (a *WarehousesAPI) EditWarehouse(ctx context.Context, request EditWarehouse
 	return err
 }
 
-// EditWarehouseTimeout overrides the default timeout of 20 minutes to reach RUNNING state
-func EditWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse] {
-	return retries.Timeout[GetWarehouseResponse](dur)
-}
-
 // EditWarehouse and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[GetWarehouseResponse](60*time.Minute) functional option.
 func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, editWarehouseRequest EditWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.EditWarehouse(ctx, editWarehouseRequest)
@@ -193,12 +187,10 @@ func (a *WarehousesAPI) GetWarehouse(ctx context.Context, request GetWarehouseRe
 	return &getWarehouseResponse, err
 }
 
-// GetWarehouseTimeout overrides the default timeout of 20 minutes to reach RUNNING state
-func GetWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse] {
-	return retries.Timeout[GetWarehouseResponse](dur)
-}
-
 // GetWarehouse and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[GetWarehouseResponse](60*time.Minute) functional option.
 func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouseRequest GetWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	getWarehouseResponse, err := a.GetWarehouse(ctx, getWarehouseRequest)
@@ -295,12 +287,10 @@ func (a *WarehousesAPI) StartWarehouse(ctx context.Context, request StartWarehou
 	return err
 }
 
-// StartWarehouseTimeout overrides the default timeout of 20 minutes to reach RUNNING state
-func StartWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse] {
-	return retries.Timeout[GetWarehouseResponse](dur)
-}
-
 // StartWarehouse and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[GetWarehouseResponse](60*time.Minute) functional option.
 func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehouseRequest StartWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.StartWarehouse(ctx, startWarehouseRequest)
@@ -346,12 +336,10 @@ func (a *WarehousesAPI) StopWarehouse(ctx context.Context, request StopWarehouse
 	return err
 }
 
-// StopWarehouseTimeout overrides the default timeout of 20 minutes to reach STOPPED state
-func StopWarehouseTimeout(dur time.Duration) retries.Option[GetWarehouseResponse] {
-	return retries.Timeout[GetWarehouseResponse](dur)
-}
-
 // StopWarehouse and wait to reach STOPPED state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[GetWarehouseResponse](60*time.Minute) functional option.
 func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, stopWarehouseRequest StopWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.StopWarehouse(ctx, stopWarehouseRequest)

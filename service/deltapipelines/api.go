@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
-	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 func NewDeltaPipelines(client *client.DatabricksClient) DeltaPipelinesService {
@@ -29,12 +29,10 @@ func (a *DeltaPipelinesAPI) CreatePipeline(ctx context.Context, request CreatePi
 	return &createPipelineResponse, err
 }
 
-// CreatePipelineTimeout overrides the default timeout of 20 minutes to reach RUNNING state
-func CreatePipelineTimeout(dur time.Duration) retries.Option[GetPipelineResponse] {
-	return retries.Timeout[GetPipelineResponse](dur)
-}
-
 // CreatePipeline and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
 func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPipelineRequest CreatePipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	createPipelineResponse, err := a.CreatePipeline(ctx, createPipelineRequest)
@@ -98,12 +96,10 @@ func (a *DeltaPipelinesAPI) GetPipeline(ctx context.Context, request GetPipeline
 	return &getPipelineResponse, err
 }
 
-// GetPipelineTimeout overrides the default timeout of 20 minutes to reach RUNNING state
-func GetPipelineTimeout(dur time.Duration) retries.Option[GetPipelineResponse] {
-	return retries.Timeout[GetPipelineResponse](dur)
-}
-
 // GetPipeline and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
 func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipelineRequest GetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	getPipelineResponse, err := a.GetPipeline(ctx, getPipelineRequest)
@@ -187,12 +183,10 @@ func (a *DeltaPipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipe
 	return err
 }
 
-// ResetPipelineTimeout overrides the default timeout of 20 minutes to reach RUNNING state
-func ResetPipelineTimeout(dur time.Duration) retries.Option[GetPipelineResponse] {
-	return retries.Timeout[GetPipelineResponse](dur)
-}
-
 // ResetPipeline and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
 func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipelineRequest ResetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.ResetPipeline(ctx, resetPipelineRequest)
@@ -245,12 +239,10 @@ func (a *DeltaPipelinesAPI) StopPipeline(ctx context.Context, request StopPipeli
 	return err
 }
 
-// StopPipelineTimeout overrides the default timeout of 20 minutes to reach IDLE state
-func StopPipelineTimeout(dur time.Duration) retries.Option[GetPipelineResponse] {
-	return retries.Timeout[GetPipelineResponse](dur)
-}
-
 // StopPipeline and wait to reach IDLE state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
 func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipelineRequest StopPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.StopPipeline(ctx, stopPipelineRequest)

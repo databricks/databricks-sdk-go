@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 	"time"
-	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -36,12 +36,10 @@ func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}
 	return {{if .Response}}{{if not .Response.ArrayValue}}&{{end}}{{.Response.CamelName}}, {{end}}err
 }
 {{if .Wait}}
-// {{.PascalName}}Timeout overrides the default timeout of {{.Wait.Timeout}} minutes to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
-func {{.PascalName}}Timeout(dur time.Duration) retries.Option[{{.Wait.Poll.Response.PascalName}}] {
-	return retries.Timeout[{{.Wait.Poll.Response.PascalName}}](dur)
-}
-
 // {{.PascalName}} and wait to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
+// 
+// You can override the default timeout of {{.Wait.Timeout}} minutes by calling adding 
+// retries.Timeout[{{.Wait.Poll.Response.PascalName}}](60*time.Minute) functional option.
 func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	{{if .Wait.ForceBindRequest}}_, {{else if .Response}}{{.Response.CamelName}}, {{end}}err := a.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})

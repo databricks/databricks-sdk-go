@@ -9,8 +9,8 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
 	"github.com/databricks/databricks-sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
-	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 type Wait struct {

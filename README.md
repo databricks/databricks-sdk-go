@@ -71,7 +71,7 @@ Databricks SDK for Go picks up Azure CLI token, if you've previously authenticat
 
 More than 20 methods across different Databricks APIs are the long-running operations for managing things like clusters, command execution, jobs, libraries, delta pipelines, and SQL warehouses. Let's take the example of Clusters API: once you create a cluster, you receive a cluster ID, the cluster is in the `PENDING` state, while Databricks takes care of provisioning virtual machines from the cloud provider in the background. But the cluster is only usable in `RUNNING` state. The other example is the API for running a job or repairing the run: right after the start, the run is in `PENDING` state, though the job is considered to be finished only when it's `TERMINATED` or `SKIPPED`. And of course you'd want to know the error message, when the long-running operation times out or why things fail. And sometimes you want to configure a custom timeout, other than the default 20 minutes. 
 
-To hide all of the integration specific complexity from the end user, Databricks SDK for GoLang provides a high-level API for _triggering_ the long-running operations and _waiting_ for the releated entities to reach the right state or return back the error message about the problem in case of failure. All long-running operations have the `XxxAndWait` name pattern, where `Xxx` is the operation name. All these generated methods return information about the relevant entity once the operation is finished. It's possible to configure a custom timeout to `XxxAndWait` by providing a functional option argument constructed by `XxxTimeout(time.Duration)` package-level function.
+To hide all of the integration specific complexity from the end user, Databricks SDK for GoLang provides a high-level API for _triggering_ the long-running operations and _waiting_ for the releated entities to reach the right state or return back the error message about the problem in case of failure. All long-running operations have the `XxxAndWait` name pattern, where `Xxx` is the operation name. All these generated methods return information about the relevant entity once the operation is finished. It's possible to configure a custom timeout to `XxxAndWait` by providing a functional option argument constructed by `retries.Timeout[Zzz](time.Duration)` function, where `Zzz` is the result type of `XxxAndWait`.
 
 In the following example, `CreateAndWait` will return `ClusterInfo` only once the cluster is in the `RUNNING` state, otherwise it'll timeout in 10 minutes:
 
@@ -82,7 +82,7 @@ clusterInfo, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
     NodeTypeId:             smallestWithDisk,
     AutoterminationMinutes: 10,
     NumWorkers:             1,
-}, clusters.CreateTimeout(10*time.Minute))
+}, retries.Timeout[clusters.ClusterInfo](10*time.Minute))
 ```
 
 ### Command execution on clusters

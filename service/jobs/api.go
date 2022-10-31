@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
-	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 func NewJobs(client *client.DatabricksClient) JobsService {
@@ -52,12 +52,10 @@ func (a *JobsAPI) CancelRun(ctx context.Context, request CancelRun) error {
 	return err
 }
 
-// CancelRunTimeout overrides the default timeout of 20 minutes to reach TERMINATED or SKIPPED state
-func CancelRunTimeout(dur time.Duration) retries.Option[Run] {
-	return retries.Timeout[Run](dur)
-}
-
 // CancelRun and wait to reach TERMINATED or SKIPPED state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[Run](60*time.Minute) functional option.
 func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, options ...retries.Option[Run]) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.CancelRun(ctx, cancelRun)
@@ -197,12 +195,10 @@ func (a *JobsAPI) GetRun(ctx context.Context, request GetRunRequest) (*Run, erro
 	return &run, err
 }
 
-// GetRunTimeout overrides the default timeout of 20 minutes to reach TERMINATED or SKIPPED state
-func GetRunTimeout(dur time.Duration) retries.Option[Run] {
-	return retries.Timeout[Run](dur)
-}
-
 // GetRun and wait to reach TERMINATED or SKIPPED state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[Run](60*time.Minute) functional option.
 func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRunRequest GetRunRequest, options ...retries.Option[Run]) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	run, err := a.GetRun(ctx, getRunRequest)
@@ -358,12 +354,10 @@ func (a *JobsAPI) RepairRun(ctx context.Context, request RepairRun) (*RepairRunR
 	return &repairRunResponse, err
 }
 
-// RepairRunTimeout overrides the default timeout of 20 minutes to reach TERMINATED or SKIPPED state
-func RepairRunTimeout(dur time.Duration) retries.Option[Run] {
-	return retries.Timeout[Run](dur)
-}
-
 // RepairRun and wait to reach TERMINATED or SKIPPED state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[Run](60*time.Minute) functional option.
 func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, options ...retries.Option[Run]) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	_, err := a.RepairRun(ctx, repairRun)
@@ -422,12 +416,10 @@ func (a *JobsAPI) RunNow(ctx context.Context, request RunNow) (*RunNowResponse, 
 	return &runNowResponse, err
 }
 
-// RunNowTimeout overrides the default timeout of 20 minutes to reach TERMINATED or SKIPPED state
-func RunNowTimeout(dur time.Duration) retries.Option[Run] {
-	return retries.Timeout[Run](dur)
-}
-
 // RunNow and wait to reach TERMINATED or SKIPPED state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[Run](60*time.Minute) functional option.
 func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...retries.Option[Run]) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	runNowResponse, err := a.RunNow(ctx, runNow)
@@ -479,12 +471,10 @@ func (a *JobsAPI) Submit(ctx context.Context, request SubmitRun) (*SubmitRunResp
 	return &submitRunResponse, err
 }
 
-// SubmitTimeout overrides the default timeout of 20 minutes to reach TERMINATED or SKIPPED state
-func SubmitTimeout(dur time.Duration) retries.Option[Run] {
-	return retries.Timeout[Run](dur)
-}
-
 // Submit and wait to reach TERMINATED or SKIPPED state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[Run](60*time.Minute) functional option.
 func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, options ...retries.Option[Run]) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	submitRunResponse, err := a.Submit(ctx, submitRun)
