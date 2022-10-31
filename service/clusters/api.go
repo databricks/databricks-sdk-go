@@ -86,7 +86,7 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 		switch status {
 		case ClusterInfoStateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError:
+		case ClusterInfoStateError, ClusterInfoStateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ClusterInfoStateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
@@ -221,7 +221,7 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, 
 		switch status {
 		case ClusterInfoStateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError:
+		case ClusterInfoStateError, ClusterInfoStateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ClusterInfoStateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
@@ -311,7 +311,7 @@ func (a *ClustersAPI) GetAndWait(ctx context.Context, getRequest GetRequest, opt
 		switch status {
 		case ClusterInfoStateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError:
+		case ClusterInfoStateError, ClusterInfoStateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ClusterInfoStateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
@@ -528,7 +528,7 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeClu
 		switch status {
 		case ClusterInfoStateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError:
+		case ClusterInfoStateError, ClusterInfoStateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ClusterInfoStateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
@@ -580,7 +580,7 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster Restart
 		switch status {
 		case ClusterInfoStateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError:
+		case ClusterInfoStateError, ClusterInfoStateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ClusterInfoStateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
@@ -649,7 +649,7 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 		switch status {
 		case ClusterInfoStateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError:
+		case ClusterInfoStateError, ClusterInfoStateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				ClusterInfoStateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
