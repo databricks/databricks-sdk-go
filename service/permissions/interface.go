@@ -16,7 +16,7 @@ type PermissionsService interface {
 
 	// Get object permissions
 	//
-	// Get the permission of an object. Objects can inherit permissions from
+	// Gets the permission of an object. Objects can inherit permissions from
 	// their parent objects or root objects.
 	GetObjectPermissions(ctx context.Context, request GetObjectPermissionsRequest) (*ObjectPermissions, error)
 
@@ -28,7 +28,7 @@ type PermissionsService interface {
 
 	// Get permission levels
 	//
-	// Get permission levels that a user can have.
+	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error)
 
 	// GetPermissionLevelsByRequestObjectTypeAndRequestObjectId calls GetPermissionLevels, but directly with primitive function arguments,
@@ -39,12 +39,12 @@ type PermissionsService interface {
 
 	// Set permissions
 	//
-	// Set permissions on object. Objects can inherit permissiond from their
+	// Sets permissions on object. Objects can inherit permissions from their
 	// parent objects and root objects.
 	SetObjectPermissions(ctx context.Context, request SetObjectPermissions) error
 
 	// Update permission
 	//
-	// Update permission on objects
+	// Updates the permissions on an object.
 	UpdateObjectPermissions(ctx context.Context, request UpdateObjectPermissions) error
 }

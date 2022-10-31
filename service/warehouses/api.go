@@ -22,6 +22,8 @@ type WarehousesAPI struct {
 	client *client.DatabricksClient
 }
 
+// Create a warehouse
+//
 // Creates a new SQL warehouse.
 func (a *WarehousesAPI) CreateWarehouse(ctx context.Context, request CreateWarehouseRequest) (*CreateWarehouseResponse, error) {
 	var createWarehouseResponse CreateWarehouseResponse
@@ -72,6 +74,8 @@ func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, createWareho
 	})
 }
 
+// Delete a warehouse
+//
 // Deletes a SQL warehouse.
 func (a *WarehousesAPI) DeleteWarehouse(ctx context.Context, request DeleteWarehouseRequest) error {
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
@@ -117,6 +121,8 @@ func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWareho
 	})
 }
 
+// Delete a warehouse
+//
 // Deletes a SQL warehouse.
 func (a *WarehousesAPI) DeleteWarehouseById(ctx context.Context, id string) error {
 	return a.DeleteWarehouse(ctx, DeleteWarehouseRequest{
@@ -130,7 +136,9 @@ func (a *WarehousesAPI) DeleteWarehouseByIdAndWait(ctx context.Context, id strin
 	}, options...)
 }
 
-// Edits a SQL warehouse.
+// Update a warehouse
+//
+// Updates the configuration for a SQL warehouse.
 func (a *WarehousesAPI) EditWarehouse(ctx context.Context, request EditWarehouseRequest) error {
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/edit", request.Id)
 	err := a.client.Post(ctx, path, request, nil)
@@ -179,6 +187,8 @@ func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, editWarehouseR
 	})
 }
 
+// Get warehouse info
+//
 // Gets the information for a single SQL warehouse.
 func (a *WarehousesAPI) GetWarehouse(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error) {
 	var getWarehouseResponse GetWarehouseResponse
@@ -229,6 +239,8 @@ func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouseReq
 	})
 }
 
+// Get warehouse info
+//
 // Gets the information for a single SQL warehouse.
 func (a *WarehousesAPI) GetWarehouseById(ctx context.Context, id string) (*GetWarehouseResponse, error) {
 	return a.GetWarehouse(ctx, GetWarehouseRequest{
@@ -242,6 +254,8 @@ func (a *WarehousesAPI) GetWarehouseByIdAndWait(ctx context.Context, id string, 
 	}, options...)
 }
 
+// Get a configuration
+//
 // Gets the workspace level configuration that is shared by all SQL warehouses
 // in a workspace.
 func (a *WarehousesAPI) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetWorkspaceWarehouseConfigResponse, error) {
@@ -251,7 +265,9 @@ func (a *WarehousesAPI) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetWo
 	return &getWorkspaceWarehouseConfigResponse, err
 }
 
-// Lists all SQL warehouse a user has manager permissions for.
+// List warehouses
+//
+// Lists all SQL warehouses that a user has manager permissions on.
 //
 // Use ListWarehousesAll() to get all EndpointInfo instances
 func (a *WarehousesAPI) ListWarehouses(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error) {
@@ -272,6 +288,8 @@ func (a *WarehousesAPI) ListWarehousesAll(ctx context.Context, request ListWareh
 	return response.Warehouses, nil
 }
 
+// Set a configuration
+//
 // Sets the workspace level configuration that is shared by all SQL warehouses
 // in a workspace.
 func (a *WarehousesAPI) SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) error {
@@ -280,6 +298,8 @@ func (a *WarehousesAPI) SetWorkspaceWarehouseConfig(ctx context.Context, request
 	return err
 }
 
+// Start a warehouse
+//
 // Starts a SQL warehouse.
 func (a *WarehousesAPI) StartWarehouse(ctx context.Context, request StartWarehouseRequest) error {
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/start", request.Id)
@@ -329,6 +349,8 @@ func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehous
 	})
 }
 
+// Stop a warehouse
+//
 // Stops a SQL warehouse.
 func (a *WarehousesAPI) StopWarehouse(ctx context.Context, request StopWarehouseRequest) error {
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/stop", request.Id)

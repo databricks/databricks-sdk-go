@@ -153,12 +153,16 @@ const ObjectInfoObjectTypeRepo ObjectInfoObjectType = `REPO`
 type ExportRequest struct {
 	// Flag to enable direct download. If it is ``true``, the response will be
 	// the exported file itself. Otherwise, the response contains content as
-	// base64 encoded string. See :ref:`workspace-api-export-example` for more
-	// information about how to use it.
+	// base64 encoded string.
+	//
+	// See :ref:`workspace-api-export-example` for more information about how to
+	// use it.
 	DirectDownload bool `json:"-" url:"direct_download,omitempty"`
 	// This specifies the format of the exported file. By default, this is
 	// ``SOURCE``. However it may be one of: ``SOURCE``, ``HTML``, ``JUPYTER``,
-	// ``DBC``. The value is case sensitive.
+	// ``DBC``.
+	//
+	// The value is case sensitive.
 	Format string `json:"-" url:"format,omitempty"`
 	// The absolute path of the notebook or directory. Exporting directory is
 	// only support for ``DBC`` format.

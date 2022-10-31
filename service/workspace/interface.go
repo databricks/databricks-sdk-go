@@ -23,57 +23,29 @@ type WorkspaceService interface {
 	//
 	// Object deletion cannot be undone and deleting a directory recursively is
 	// not atomic.
-	//
-	// Example of request:
-	//
-	// ```json { "path": "/Users/user-name/project", "recursive": true } ```
 	Delete(ctx context.Context, request Delete) error
 
 	// Export a notebook
 	//
-	// Exports a notebook or the contents of an entire directory. If ``path``
-	// does not exist, this call returns an error ``RESOURCE_DOES_NOT_EXIST``.
+	// Exports a notebook or the contents of an entire directory.
+	//
+	// If ``path`` does not exist, this call returns an error
+	// ``RESOURCE_DOES_NOT_EXIST``.
+	//
 	// One can only export a directory in ``DBC`` format. If the exported data
-	// would exceed size limit, this call returns an error
+	// would exceed size limit, this call returns
 	// ``MAX_NOTEBOOK_SIZE_EXCEEDED``. Currently, this API does not support
-	// exporting a library. Example of request:
+	// exporting a library.
 	//
-	// .. code :: json
-	//
-	// { "path": "/Users/user@example.com/project/ScalaExampleNotebook",
-	// "format": "SOURCE" }
-	//
-	// Example of response, where ``content`` is base64-encoded:
-	//
-	// .. code :: json
-	//
-	// { "content": "Ly8gRGF0YWJyaWNrcyBub3RlYm9vayBzb3VyY2UKMSsx", }
-	//
-	// Alternaitvely, one can download the exported file by enabling
-	// ``direct_download``:
-	//
-	// .. code :: shell
-	//
-	// curl -n -o example.scala \
-	// 'https://XX.cloud.databricks.com/api/2.0/workspace/export?path=/Users/user@example.com/ScalaExampleNotebook&direct_download=true'
+	// Alternatively, one can download the exported file by enabling
+	// ``direct_download``. Example: `curl -n -o example.scala
+	// 'https://XX.cloud.databricks.com/api/2.0/workspace/export?path=/Users/user@example.com/ScalaExampleNotebook&direct_download=true'`
 	Export(ctx context.Context, request ExportRequest) (*ExportResponse, error)
 
 	// Get status
 	//
 	// Gets the status of an object or a directory. If ``path`` does not exist,
-	// this call returns an error ``RESOURCE_DOES_NOT_EXIST``. Example of
-	// request:
-	//
-	// .. code :: json
-	//
-	// { "path": "/Users/user@example.com/project/ScaleExampleNotebook" }
-	//
-	// Example of response:
-	//
-	// .. code :: json
-	//
-	// { "path": "/Users/user@example.com/project/ScalaExampleNotebook",
-	// "language": "SCALA", "object_type": "NOTEBOOK", "object_id": 789 }
+	// this call returns an error ``RESOURCE_DOES_NOT_EXIST``.
 	GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error)
 
 	// GetStatusByPath calls GetStatus, but directly with primitive function arguments,
@@ -87,42 +59,14 @@ type WorkspaceService interface {
 	// Imports a notebook or the contents of an entire directory. If ``path``
 	// already exists and ``overwrite`` is set to ``false``, this call returns
 	// an error ``RESOURCE_ALREADY_EXISTS``. One can only use ``DBC`` format to
-	// import a directory. Example of request, where ``content`` is the
-	// base64-encoded string of ``1+1``:
-	//
-	// .. code :: json
-	//
-	// { "content": "MSsx\n", "path":
-	// "/Users/user@example.com/project/ScalaExampleNotebook", "language":
-	// "SCALA", "overwrite": true, "format": "SOURCE" }
-	//
-	// Alternatively, one can import a local file directly:
-	//
-	// .. code :: shell
-	//
-	// curl -n -F path=/Users/user@example.com/project/ScalaExampleNotebook -F
-	// language=SCALA \ -F content=@example.scala \
-	// https://XX.cloud.databricks.com/api/2.0/workspace/import
+	// import a directory.
 	Import(ctx context.Context, request Import) error
 
 	// List contents
 	//
 	// Lists the contents of a directory, or the object if it is not a
-	// directory. If the input path does not exist, this call returns an error
-	// ``RESOURCE_DOES_NOT_EXIST``. Example of request:
-	//
-	// .. code :: json
-	//
-	// { "path": "/Users/user@example.com/" }
-	//
-	// Example of response:
-	//
-	// .. code :: json
-	//
-	// { "objects": [ { "path": "/Users/user@example.com/project",
-	// "object_type": "DIRECTORY", "object_id": 123 }, { "path":
-	// "/Users/user@example.com/PythonExampleNotebook", "language": "PYTHON",
-	// "object_type": "NOTEBOOK", "object_id": 456 } ] }
+	// directory.If the input path does not exist, this call returns an error
+	// ``RESOURCE_DOES_NOT_EXIST``.
 	//
 	// Use ListAll() to get all ObjectInfo instances
 	List(ctx context.Context, request ListRequest) (*ListResponse, error)
@@ -135,14 +79,11 @@ type WorkspaceService interface {
 	// Create a directory
 	//
 	// Creates the specified directory (and necessary parent directories if they
-	// do not exist) . If there is an object (not a directory) at any prefix of
+	// do not exist). If there is an object (not a directory) at any prefix of
 	// the input path, this call returns an error ``RESOURCE_ALREADY_EXISTS``.
+	//
 	// Note that if this operation fails it may have succeeded in creating some
-	// of the necessary parrent directories. Example of request:
-	//
-	// .. code:: json
-	//
-	// { "path": "/Users/user@example.com/project" }
+	// of the necessary\nparrent directories.
 	Mkdirs(ctx context.Context, request Mkdirs) error
 
 	// MkdirsByPath calls Mkdirs, but directly with primitive function arguments,
