@@ -5,7 +5,7 @@ package clusters
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 )
 
 // <needs content added>

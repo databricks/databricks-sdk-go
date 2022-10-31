@@ -5,7 +5,7 @@ package libraries
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 )
 
 // Databricks Managed Libraries REST API

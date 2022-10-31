@@ -5,7 +5,7 @@ package warehouses
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 )
 
 // This is the high-level interface, that contains generated methods.

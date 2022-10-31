@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
-	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 func NewCommandExecution(client *client.DatabricksClient) CommandExecutionService {
@@ -29,12 +29,10 @@ func (a *CommandExecutionAPI) Cancel(ctx context.Context, request CancelCommand)
 	return err
 }
 
-// CancelTimeout overrides the default timeout of 20 minutes to reach Cancelled state
-func CancelTimeout(dur time.Duration) retries.Option[CommandStatusResponse] {
-	return retries.Timeout[CommandStatusResponse](dur)
-}
-
 // Cancel and wait to reach Cancelled state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[CommandStatusResponse](60*time.Minute) functional option.
 func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand CancelCommand, options ...retries.Option[CommandStatusResponse]) (*CommandStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.Cancel(ctx, cancelCommand)
@@ -97,12 +95,10 @@ func (a *CommandExecutionAPI) Create(ctx context.Context, request CreateContext)
 	return &created, err
 }
 
-// CreateTimeout overrides the default timeout of 20 minutes to reach Running state
-func CreateTimeout(dur time.Duration) retries.Option[ContextStatusResponse] {
-	return retries.Timeout[ContextStatusResponse](dur)
-}
-
 // Create and wait to reach Running state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[ContextStatusResponse](60*time.Minute) functional option.
 func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext CreateContext, options ...retries.Option[ContextStatusResponse]) (*ContextStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	created, err := a.Create(ctx, createContext)
@@ -157,12 +153,10 @@ func (a *CommandExecutionAPI) Execute(ctx context.Context, request Command) (*Cr
 	return &created, err
 }
 
-// ExecuteTimeout overrides the default timeout of 20 minutes to reach Finished or Error state
-func ExecuteTimeout(dur time.Duration) retries.Option[CommandStatusResponse] {
-	return retries.Timeout[CommandStatusResponse](dur)
-}
-
 // Execute and wait to reach Finished or Error state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[CommandStatusResponse](60*time.Minute) functional option.
 func (a *CommandExecutionAPI) ExecuteAndWait(ctx context.Context, command Command, options ...retries.Option[CommandStatusResponse]) (*CommandStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	created, err := a.Execute(ctx, command)

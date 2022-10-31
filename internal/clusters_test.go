@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
@@ -50,7 +50,7 @@ func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
 		NodeTypeId:             smallestWithDisk,
 		AutoterminationMinutes: 10,
 		NumWorkers:             1,
-	}, clusters.CreateTimeout(15*time.Second),
+	}, retries.Timeout[clusters.ClusterInfo](15*time.Second),
 		func(i *retries.Info[clusters.ClusterInfo]) {
 			clusterId = i.Info.ClusterId
 		})

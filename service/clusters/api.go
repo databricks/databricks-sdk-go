@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
-	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 func NewClusters(client *client.DatabricksClient) ClustersService {
@@ -54,12 +54,10 @@ func (a *ClustersAPI) Create(ctx context.Context, request CreateCluster) (*Creat
 	return &createClusterResponse, err
 }
 
-// CreateTimeout overrides the default timeout of 20 minutes to reach RUNNING state
-func CreateTimeout(dur time.Duration) retries.Option[ClusterInfo] {
-	return retries.Timeout[ClusterInfo](dur)
-}
-
 // Create and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
 func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	createClusterResponse, err := a.Create(ctx, createCluster)
@@ -110,12 +108,10 @@ func (a *ClustersAPI) Delete(ctx context.Context, request DeleteCluster) error {
 	return err
 }
 
-// DeleteTimeout overrides the default timeout of 20 minutes to reach TERMINATED state
-func DeleteTimeout(dur time.Duration) retries.Option[ClusterInfo] {
-	return retries.Timeout[ClusterInfo](dur)
-}
-
 // Delete and wait to reach TERMINATED state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
 func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.Delete(ctx, deleteCluster)
@@ -193,12 +189,10 @@ func (a *ClustersAPI) Edit(ctx context.Context, request EditCluster) error {
 	return err
 }
 
-// EditTimeout overrides the default timeout of 20 minutes to reach RUNNING state
-func EditTimeout(dur time.Duration) retries.Option[ClusterInfo] {
-	return retries.Timeout[ClusterInfo](dur)
-}
-
 // Edit and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
 func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.Edit(ctx, editCluster)
@@ -285,12 +279,10 @@ func (a *ClustersAPI) Get(ctx context.Context, request GetRequest) (*ClusterInfo
 	return &clusterInfo, err
 }
 
-// GetTimeout overrides the default timeout of 20 minutes to reach RUNNING state
-func GetTimeout(dur time.Duration) retries.Option[ClusterInfo] {
-	return retries.Timeout[ClusterInfo](dur)
-}
-
 // Get and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
 func (a *ClustersAPI) GetAndWait(ctx context.Context, getRequest GetRequest, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	clusterInfo, err := a.Get(ctx, getRequest)
@@ -504,12 +496,10 @@ func (a *ClustersAPI) Resize(ctx context.Context, request ResizeCluster) error {
 	return err
 }
 
-// ResizeTimeout overrides the default timeout of 20 minutes to reach RUNNING state
-func ResizeTimeout(dur time.Duration) retries.Option[ClusterInfo] {
-	return retries.Timeout[ClusterInfo](dur)
-}
-
 // Resize and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
 func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.Resize(ctx, resizeCluster)
@@ -558,12 +548,10 @@ func (a *ClustersAPI) Restart(ctx context.Context, request RestartCluster) error
 	return err
 }
 
-// RestartTimeout overrides the default timeout of 20 minutes to reach RUNNING state
-func RestartTimeout(dur time.Duration) retries.Option[ClusterInfo] {
-	return retries.Timeout[ClusterInfo](dur)
-}
-
 // Restart and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
 func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster RestartCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.Restart(ctx, restartCluster)
@@ -629,12 +617,10 @@ func (a *ClustersAPI) Start(ctx context.Context, request StartCluster) error {
 	return err
 }
 
-// StartTimeout overrides the default timeout of 20 minutes to reach RUNNING state
-func StartTimeout(dur time.Duration) retries.Option[ClusterInfo] {
-	return retries.Timeout[ClusterInfo](dur)
-}
-
 // Start and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
 func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.Start(ctx, startCluster)
