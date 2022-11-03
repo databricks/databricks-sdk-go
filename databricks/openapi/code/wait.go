@@ -4,10 +4,13 @@ import (
 	"golang.org/x/exp/slices"
 )
 
+// Wait represents a long-running operation, that requires multiple RPC calls
 type Wait struct {
+	// represents a method that triggers the start of the long-running operation
 	Method *Method
 }
 
+// Binding connects fields in generated code across multiple requests
 type Binding struct {
 	// Polling method request field
 	PollField *Field
@@ -31,6 +34,7 @@ func (w *Wait) Timeout() int {
 	return t
 }
 
+// Binding returns a slice of request and response connections
 func (w *Wait) Binding() (binding []Binding) {
 	poll := w.Poll()
 	if w.Method.wait.Binding != nil {
@@ -68,19 +72,21 @@ func (w *Wait) Binding() (binding []Binding) {
 	return binding
 }
 
+// ForceBindRequest is a workaround for Jobs#RepairRun,
+// that does not send run_id in response
 func (w *Wait) ForceBindRequest() bool {
 	if w.Method.Response == nil {
 		return false
 	}
 	binding := w.Binding()
-	// this was specifically added for Jobs#RepairRun,
-	// that does not send run_id in response
 	if len(binding) == 1 && !binding[0].IsResponseBind {
 		return true
 	}
 	return false
 }
 
+// Poll returns method definition for checking the state of
+// the long running operation
 func (w *Wait) Poll() *Method {
 	getStatus, ok := w.Method.Service.methods[w.Method.wait.Poll]
 	if !ok {
@@ -89,6 +95,7 @@ func (w *Wait) Poll() *Method {
 	return getStatus
 }
 
+// Success holds the successful end-states of the operation
 func (w *Wait) Success() (match []EnumEntry) {
 	enum := w.enum()
 	for _, v := range w.Method.wait.Success {
@@ -97,6 +104,7 @@ func (w *Wait) Success() (match []EnumEntry) {
 	return match
 }
 
+// Failure holds the failed end-states of the operation
 func (w *Wait) Failure() (match []EnumEntry) {
 	enum := w.enum()
 	for _, v := range w.Method.wait.Failure {
@@ -111,6 +119,8 @@ func (w *Wait) enum() map[string]EnumEntry {
 	return statusField.Entity.enum
 }
 
+// StatusPath holds the path to the field of polled entity,
+// that holds current state of the long-running operation
 func (w *Wait) StatusPath() (path []*Field) {
 	pollMethod := w.Poll()
 	pathToStatus := w.Method.wait.Field
@@ -128,6 +138,8 @@ func (w *Wait) StatusPath() (path []*Field) {
 	return path
 }
 
+// MessagePath holds the path to the field of polled entity,
+// that can tell about current inner status of the long-running operation
 func (w *Wait) MessagePath() (path []*Field) {
 	pollMethod := w.Poll()
 	current := pollMethod.Response

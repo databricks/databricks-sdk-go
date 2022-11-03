@@ -12,6 +12,7 @@ var reservedWords = []string{
 	"append", "bool", "byte", "iota", "len", "make", "new", "package",
 }
 
+// Named holds common methods for identifying and describing things
 type Named struct {
 	Name        string
 	Description string
@@ -118,6 +119,7 @@ func (n *Named) HasComment() bool {
 	return n.Description != ""
 }
 
+// Comment formats description into language-specific comment multi-line strings
 func (n *Named) Comment(prefix string, maxLen int) string {
 	if n.Description == "" {
 		return ""

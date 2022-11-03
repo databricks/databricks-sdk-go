@@ -9,6 +9,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
+// Service represents specific Databricks API
 type Service struct {
 	Named
 	IsRpcStyle          bool
@@ -17,10 +18,12 @@ type Service struct {
 	ByPathParamsMethods []*Shortcut
 }
 
+// FullName holds package name and service name
 func (svc *Service) FullName() string {
 	return fmt.Sprintf("%s.%s", svc.Package.Name, svc.Name)
 }
 
+// Methods returns sorted slice of methods
 func (svc *Service) Methods() (methods []*Method) {
 	for _, v := range svc.methods {
 		methods = append(methods, v)
@@ -31,6 +34,7 @@ func (svc *Service) Methods() (methods []*Method) {
 	return methods
 }
 
+// HasPagination returns true if any method has result iteration
 func (svc *Service) HasPagination() bool {
 	for _, v := range svc.methods {
 		p := v.pagination

@@ -8,13 +8,19 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/openapi"
 )
 
+// Method represents service RPC
 type Method struct {
 	Named
-	Service           *Service
-	Verb              string
-	Path              string
-	PathParts         []PathPart
-	Request           *Entity
+	Service *Service
+	// HTTP method name
+	Verb string
+	// Full API Path, including /api/2.x prefix
+	Path string
+	// Slice of path params, e.g. permissions/{type}/{id}
+	PathParts []PathPart
+	// Request type representation
+	Request *Entity
+	// Response type representation
 	Response          *Entity
 	EmptyResponseName Named
 	wait              *openapi.Wait
@@ -23,12 +29,21 @@ type Method struct {
 	shortcut          bool
 }
 
+// Shortcut holds definition of "shortcut" methods, that are generated for
+// methods with request entities only with required fields.
 type Shortcut struct {
 	Named
 	Params []Field
 	Method *Method
 }
 
+// Pagination holds definition of result iteration type per specific RPC.
+// Databricks as of now has a couple different types of pagination:
+//   - next_token/next_page_token + repeated field
+//   - offset/limit with zero-based offsets + repeated field
+//   - page/limit with 1-based pages + repeated field
+//   - repeated inline field
+//   - repeated field
 type Pagination struct {
 	Offset    *Field
 	Limit     *Field
@@ -38,7 +53,9 @@ type Pagination struct {
 	Increment int
 }
 
-// NamedIdMap assumes that Pagination is there
+// NamedIdMap depends on Pagination and is generated, when paginated item
+// entity has Identifier and Name fields. End-users usually use this method for
+// drop-downs or any other selectors.
 type NamedIdMap struct {
 	Id     *Field
 	Name   *Field
@@ -49,6 +66,7 @@ type NamedIdMap struct {
 	Direct bool
 }
 
+// PathPart represents required field, that is always part of the path
 type PathPart struct {
 	Prefix string
 	Field  *Field
@@ -108,6 +126,7 @@ func (m *Method) requestShortcutFields() []Field {
 	return rpcFields
 }
 
+// Shortcut creates definition from path params and single-field request entities
 func (m *Method) Shortcut() *Shortcut {
 	params := m.requestShortcutFields()
 	if len(params) == 0 {
@@ -125,6 +144,7 @@ func (m *Method) Shortcut() *Shortcut {
 	}
 }
 
+// Wait returns definition for long-running operation
 func (m *Method) Wait() *Wait {
 	if m.wait == nil {
 		return nil
@@ -134,6 +154,7 @@ func (m *Method) Wait() *Wait {
 	}
 }
 
+// Pagination returns definition for possibly multi-request result iterator
 func (m *Method) Pagination() *Pagination {
 	if m.pagination == nil {
 		return nil
@@ -175,6 +196,8 @@ func (p *Pagination) MultiRequest() bool {
 	return p.Offset != nil || p.Token != nil
 }
 
+// NamedIdMap returns name-to-id mapping retrieval definition for all
+// entities of a type
 func (m *Method) NamedIdMap() *NamedIdMap {
 	entity := m.paginationItem()
 	if entity == nil {
