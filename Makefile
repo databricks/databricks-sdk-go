@@ -24,4 +24,8 @@ vendor:
 	@echo "✓ Filling vendor folder with library code ..."
 	@go mod vendor
 
-.PHONY: fmt vendor fmt coverage test lint
+doc:
+	@echo "Open http://localhost:6060"
+	@godoc -http=localhost:6060
+
+.PHONY: fmt vendor fmt coverage test lint doc
