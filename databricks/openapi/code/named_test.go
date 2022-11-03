@@ -51,3 +51,37 @@ func TestNonConflictingCamelNames(t *testing.T) {
 	n := Named{Name: "Import"}
 	assert.True(t, n.IsNameReserved())
 }
+
+func TestNamedDecamel(t *testing.T) {
+	for in, out := range map[string][]string{
+		"BigHTMLParser": {"big", "html", "parser"},
+		"parseHTML":     {"parse", "html"},
+		"parse HTML":    {"parse", "html"},
+		"parse-HTML":    {"parse", "html"},
+		"parse_HTML":    {"parse", "html"},
+		"parseHTMLNow":  {"parse", "html", "now"},
+		"parseHtml":     {"parse", "html"},
+		"ParseHtml":     {"parse", "html"},
+		"clusterID":     {"cluster", "id"},
+		"positionX":     {"position", "x"},
+		"parseHtmlNow":  {"parse", "html", "now"},
+		"HTMLParser":    {"html", "parser"},
+		"BigO":          {"big", "o"},
+		"OCaml":         {"o", "caml"},
+	} {
+		assert.Equal(t, out, (&Named{Name: in}).splitASCII())
+	}
+}
+
+func TestNamedTransforms(t *testing.T) {
+	n := Named{Name: "bigBrownFOX"}
+	for actual, expected := range map[string]string{
+		n.CamelName():    "bigBrownFox",
+		n.PascalName():   "BigBrownFox",
+		n.ConstantName(): "BIG_BROWN_FOX",
+		n.SnakeName():    "big_brown_fox",
+		n.KebabName():    "big-brown-fox",
+	} {
+		assert.Equal(t, expected, actual)
+	}
+}

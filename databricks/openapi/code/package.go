@@ -106,6 +106,11 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 	e.IsFloat64 = s.Type == "number" && s.Format == "double"
 	e.IsInt = s.Type == "integer" || s.Type == "int"
 	e.IsEmpty = s.IsEmpty()
+	e.IsAny = s.IsAny || s.Type == "object" && s.IsEmpty()
+	e.IsIdentifier = s.IsIdentifier
+	e.IsName = s.IsName
+	e.IsComputed = s.IsComputed
+	e.RequiredOrder = s.Required
 	return e
 }
 

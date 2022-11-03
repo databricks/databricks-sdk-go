@@ -41,7 +41,22 @@ type Entity struct {
 	IsBool     bool
 	IsString   bool
 	IsEmpty    bool
-	fields     map[string]Field
+
+	// this field does not have a concrete type
+	IsAny bool
+
+	// this field holds the identifier of the entity
+	IsIdentifier bool
+
+	// this field holds a name of the entity
+	IsName bool
+
+	// this field is computed on the platform side
+	IsComputed bool
+
+	// if entity has required fields, this is the order of them
+	RequiredOrder []string
+	fields        map[string]Field
 }
 
 func (e *Entity) FullName() string {
