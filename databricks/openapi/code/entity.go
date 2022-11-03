@@ -7,6 +7,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
+// Field of a Type (Entity)
 type Field struct {
 	Named
 	Required bool
@@ -29,10 +30,11 @@ type EnumEntry struct {
 	Content string
 }
 
+// Entity represents a Type
 type Entity struct {
 	Named
 	Package    *Package
-	enum       map[string]EnumEntry // TODO: sort
+	enum       map[string]EnumEntry
 	ArrayValue *Entity
 	MapValue   *Entity
 	IsInt      bool
@@ -41,13 +43,31 @@ type Entity struct {
 	IsBool     bool
 	IsString   bool
 	IsEmpty    bool
-	fields     map[string]Field
+
+	// this field does not have a concrete type
+	IsAny bool
+
+	// this field holds the identifier of the entity
+	IsIdentifier bool
+
+	// this field holds a name of the entity
+	IsName bool
+
+	// this field is computed on the platform side
+	IsComputed bool
+
+	// if entity has required fields, this is the order of them
+	RequiredOrder []string
+	fields        map[string]Field
 }
 
+// FullName includes package name and untransformed name of the entity
 func (e *Entity) FullName() string {
 	return fmt.Sprintf("%s.%s", e.Package.Name, e.Name)
 }
 
+// PascalName overrides parent implementation by appending List
+// suffix for unnamed list types
 func (e *Entity) PascalName() string {
 	if e.Name == "" && e.ArrayValue != nil {
 		return e.ArrayValue.PascalName() + "List"
@@ -55,6 +75,8 @@ func (e *Entity) PascalName() string {
 	return e.Named.PascalName()
 }
 
+// CamelName overrides parent implementation by appending List
+// suffix for unnamed list types
 func (e *Entity) CamelName() string {
 	if e.Name == "" && e.ArrayValue != nil {
 		return e.ArrayValue.CamelName() + "List"
@@ -62,6 +84,7 @@ func (e *Entity) CamelName() string {
 	return e.Named.CamelName()
 }
 
+// Field gets field representation by name or nil
 func (e *Entity) Field(name string) *Field {
 	if e == nil {
 		// nil received: entity is not present
@@ -75,14 +98,17 @@ func (e *Entity) Field(name string) *Field {
 	return &field
 }
 
+// IsNumber returns true if field is numeric
 func (e *Entity) IsNumber() bool {
 	return e.IsInt64 || e.IsInt
 }
 
+// IsObject returns true if entity is not a Mpa and has more than zero fields
 func (e *Entity) IsObject() bool {
 	return e.MapValue == nil && len(e.fields) > 0
 }
 
+// Fields returns sorted slice of field representations
 func (e *Entity) Fields() (fields []Field) {
 	for _, v := range e.fields {
 		v.Of = e
@@ -94,6 +120,27 @@ func (e *Entity) Fields() (fields []Field) {
 	return fields
 }
 
+// Does this type have x-databricks-id field?
+func (e *Entity) HasIdentifierField() bool {
+	for _, v := range e.fields {
+		if v.Entity.IsIdentifier {
+			return true
+		}
+	}
+	return false
+}
+
+// Does this type have x-databricks-name field?
+func (e *Entity) HasNameField() bool {
+	for _, v := range e.fields {
+		if v.Entity.IsName {
+			return true
+		}
+	}
+	return false
+}
+
+// Enum returns all entries for enum entities
 func (e *Entity) Enum() (enum []EnumEntry) {
 	for _, v := range e.enum {
 		enum = append(enum, v)

@@ -12,6 +12,7 @@ type Batch struct {
 	Packages map[string]*Package
 }
 
+// NewFromFile loads OpenAPI specification from file
 func NewFromFile(name string, includeTags []string) (*Batch, error) {
 	f, err := os.Open(name)
 	if err != nil {
@@ -47,6 +48,7 @@ func NewFromFile(name string, includeTags []string) (*Batch, error) {
 	return &batch, nil
 }
 
+// Pkgs returns unsorted slice of packages
 func (b *Batch) Pkgs() (pkgs []*Package) {
 	for _, pkg := range b.Packages {
 		pkgs = append(pkgs, pkg)
@@ -54,6 +56,7 @@ func (b *Batch) Pkgs() (pkgs []*Package) {
 	return pkgs
 }
 
+// Pkgs returns unsorted slice of packages
 func (b *Batch) Types() (types []*Entity) {
 	for _, pkg := range b.Packages {
 		types = append(types, pkg.Types()...)
@@ -61,6 +64,7 @@ func (b *Batch) Types() (types []*Entity) {
 	return types
 }
 
+// Pkgs returns unsorted slice of packages
 func (b *Batch) Services() (services []*Service) {
 	for _, pkg := range b.Packages {
 		services = append(services, pkg.Services()...)

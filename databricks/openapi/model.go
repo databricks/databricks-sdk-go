@@ -14,10 +14,12 @@ type Node struct {
 	Ref          string `json:"$ref,omitempty"`
 }
 
+// IsRef flags object being a reference to a component
 func (n *Node) IsRef() bool {
 	return n.Ref != ""
 }
 
+// Components is the basename of the reference path. Usually a class name
 func (n *Node) Component() string {
 	s := strings.Split(n.Ref, "/")
 	return s[len(s)-1]
@@ -61,6 +63,7 @@ type Path struct {
 	Delete     *Operation  `json:"delete,omitempty"`
 }
 
+// Verbs returns a map of HTTP methods for a Path
 func (path *Path) Verbs() map[string]*Operation {
 	m := map[string]*Operation{}
 	if path.Get != nil {
@@ -81,6 +84,7 @@ func (path *Path) Verbs() map[string]*Operation {
 	return m
 }
 
+// Operation is the equivalent of method
 type Operation struct {
 	Node
 	Wait        *Wait            `json:"x-databricks-wait,omitempty"`
@@ -103,32 +107,6 @@ func (o *Operation) Name() string {
 		return split[1]
 	}
 	return o.OperationId
-}
-
-type Pagination struct {
-	Offset    string   `json:"offset,omitempty"`
-	Limit     string   `json:"limit,omitempty"`
-	Results   string   `json:"results,omitempty"`
-	Increment int      `json:"increment,omitempty"`
-	Inline    bool     `json:"inline,omitempty"`
-	Token     *Binding `json:"token,omitempty"`
-}
-
-type Wait struct {
-	Poll         string             `json:"poll"`
-	Bind         string             `json:"bind"`
-	BindResponse string             `json:"bindResponse,omitempty"`
-	Binding      map[string]Binding `json:"binding,omitempty"`
-	Field        []string           `json:"field"`
-	Message      []string           `json:"message"`
-	Success      []string           `json:"success"`
-	Failure      []string           `json:"failure"`
-	Timeout      int                `json:"timeout,omitempty"`
-}
-
-type Binding struct {
-	Request  string `json:"request,omitempty"`
-	Response string `json:"response,omitempty"`
 }
 
 func (o *Operation) HasTag(tag string) bool {
@@ -176,15 +154,8 @@ type Components struct {
 	Schemas    refs[*Schema]    `json:"schemas,omitempty"`
 }
 
-type Retries struct {
-	Success      []string `json:"success"`
-	Failure      []string `json:"failure"`
-	MessageField string   `json:"messageField"`
-}
-
 type Schema struct {
 	Node
-	Retries          *Retries           `json:"x-databricks-retries,omitempty"`
 	IsIdentifier     bool               `json:"x-databricks-id,omitempty"`
 	IsName           bool               `json:"x-databricks-name,omitempty"`
 	IsComputed       bool               `json:"x-databricks-computed,omitempty"`

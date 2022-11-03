@@ -1,3 +1,5 @@
+// Package holds higher-level abstractions on top of OpenAPI that are used
+// to generate code via text/template for Databricks SDK in different languages.
 package code
 
 import (
@@ -19,10 +21,12 @@ type Package struct {
 	emptyTypes []*Named
 }
 
+// FullName just returns pacakge name
 func (pkg *Package) FullName() string {
 	return pkg.Name
 }
 
+// Services returns sorted slice of services
 func (pkg *Package) Services() (types []*Service) {
 	for _, v := range pkg.services {
 		types = append(types, v)
@@ -33,6 +37,7 @@ func (pkg *Package) Services() (types []*Service) {
 	return types
 }
 
+// Types returns sorted slice of types
 func (pkg *Package) Types() (types []*Entity) {
 	for _, v := range pkg.types {
 		types = append(types, v)
@@ -43,6 +48,7 @@ func (pkg *Package) Types() (types []*Entity) {
 	return types
 }
 
+// EmptyTypes returns sorted list of types without fields
 func (pkg *Package) EmptyTypes() (types []*Named) {
 	types = append(types, pkg.emptyTypes...)
 	slices.SortFunc(types, func(a, b *Named) bool {
@@ -51,6 +57,8 @@ func (pkg *Package) EmptyTypes() (types []*Named) {
 	return types
 }
 
+// HasPagination returns try if any service within this package has result
+// iteration
 func (pkg *Package) HasPagination() bool {
 	for _, v := range pkg.services {
 		if v.HasPagination() {
@@ -106,9 +114,15 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 	e.IsFloat64 = s.Type == "number" && s.Format == "double"
 	e.IsInt = s.Type == "integer" || s.Type == "int"
 	e.IsEmpty = s.IsEmpty()
+	e.IsAny = s.IsAny || s.Type == "object" && s.IsEmpty()
+	e.IsIdentifier = s.IsIdentifier
+	e.IsName = s.IsName
+	e.IsComputed = s.IsComputed
+	e.RequiredOrder = s.Required
 	return e
 }
 
+// makeObject converts OpenAPI Schema into type representation
 func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Entity {
 	e.fields = map[string]Field{}
 	required := map[string]bool{}
@@ -212,6 +226,7 @@ func (pkg *Package) define(entity *Entity) *Entity {
 	return entity
 }
 
+// HasPathParams returns true if any service has methods that rely on path params
 func (pkg *Package) HasPathParams() bool {
 	for _, s := range pkg.services {
 		for _, m := range s.methods {
@@ -223,6 +238,7 @@ func (pkg *Package) HasPathParams() bool {
 	return false
 }
 
+// HasWaits returns true if any service has methods with long-running operations
 func (pkg *Package) HasWaits() bool {
 	for _, s := range pkg.services {
 		for _, m := range s.methods {
@@ -234,6 +250,7 @@ func (pkg *Package) HasWaits() bool {
 	return false
 }
 
+// Load takes OpenAPI specification and loads a service model
 func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 	for prefix, path := range spec.Paths {
 		for verb, op := range path.Verbs() {

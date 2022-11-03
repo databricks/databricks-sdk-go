@@ -36,7 +36,7 @@ type IpAccessListsAPI struct {
 // It can take a few minutes for the changes to take effect. **Note**: Your new
 // IP access list has no effect until you enable the feature. See
 // [`/workspace-conf`](#operation/set-status).
-func (a *IpAccessListsAPI) CreateIpAccessList(ctx context.Context, request CreateIPAccessListRequest) (*IpAccessListInfo, error) {
+func (a *IpAccessListsAPI) CreateIpAccessList(ctx context.Context, request CreateIpAccessListRequest) (*IpAccessListInfo, error) {
 	var ipAccessListInfo IpAccessListInfo
 	path := "/api/2.0/ip-access-lists"
 	err := a.client.Post(ctx, path, request, &ipAccessListInfo)
@@ -85,11 +85,11 @@ func (a *IpAccessListsAPI) FetchIpAccessListByIpAccessListId(ctx context.Context
 // Gets all IP access lists for the specified workspace.
 //
 // Use GetAllIpAccessListsAll() to get all IpAccessListInfo instances
-func (a *IpAccessListsAPI) GetAllIpAccessLists(ctx context.Context) (*GetIPAccessListResponse, error) {
-	var getIPAccessListResponse GetIPAccessListResponse
+func (a *IpAccessListsAPI) GetAllIpAccessLists(ctx context.Context) (*GetIpAccessListResponse, error) {
+	var getIpAccessListResponse GetIpAccessListResponse
 	path := "/api/2.0/ip-access-lists"
-	err := a.client.Get(ctx, path, nil, &getIPAccessListResponse)
-	return &getIPAccessListResponse, err
+	err := a.client.Get(ctx, path, nil, &getIpAccessListResponse)
+	return &getIpAccessListResponse, err
 }
 
 // GetAllIpAccessListsAll returns all IpAccessListInfo instances. This method exists for consistency purposes.
@@ -123,7 +123,7 @@ func (a *IpAccessListsAPI) GetAllIpAccessListsAll(ctx context.Context) ([]IpAcce
 //
 // Note that your resulting IP access list has no effect until you enable the
 // feature. See [`/workspace-conf`](#operation/set-status).
-func (a *IpAccessListsAPI) ReplaceIpAccessList(ctx context.Context, request ReplaceIPAccessListRequest) error {
+func (a *IpAccessListsAPI) ReplaceIpAccessList(ctx context.Context, request ReplaceIpAccessListRequest) error {
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	err := a.client.Put(ctx, path, request)
 	return err
@@ -146,7 +146,7 @@ func (a *IpAccessListsAPI) ReplaceIpAccessList(ctx context.Context, request Repl
 // It can take a few minutes for the changes to take effect. Note that your
 // resulting IP access list has no effect until you enable the feature. See
 // [`/workspace-conf`](#operation/set-status).
-func (a *IpAccessListsAPI) UpdateIpAccessList(ctx context.Context, request UpdateIPAccessListRequest) error {
+func (a *IpAccessListsAPI) UpdateIpAccessList(ctx context.Context, request UpdateIpAccessListRequest) error {
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	err := a.client.Patch(ctx, path, request)
 	return err

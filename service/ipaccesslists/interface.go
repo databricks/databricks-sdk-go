@@ -29,7 +29,7 @@ type IpAccessListsService interface {
 	// It can take a few minutes for the changes to take effect. **Note**: Your
 	// new IP access list has no effect until you enable the feature. See
 	// [`/workspace-conf`](#operation/set-status).
-	CreateIpAccessList(ctx context.Context, request CreateIPAccessListRequest) (*IpAccessListInfo, error)
+	CreateIpAccessList(ctx context.Context, request CreateIpAccessListRequest) (*IpAccessListInfo, error)
 
 	// Delete access list
 	//
@@ -58,7 +58,7 @@ type IpAccessListsService interface {
 	// Gets all IP access lists for the specified workspace.
 	//
 	// Use GetAllIpAccessListsAll() to get all IpAccessListInfo instances
-	GetAllIpAccessLists(ctx context.Context) (*GetIPAccessListResponse, error)
+	GetAllIpAccessLists(ctx context.Context) (*GetIpAccessListResponse, error)
 
 	// GetAllIpAccessListsAll calls GetAllIpAccessLists() to retrieve all available results from the platform.
 	//
@@ -86,7 +86,7 @@ type IpAccessListsService interface {
 	//
 	// Note that your resulting IP access list has no effect until you enable
 	// the feature. See [`/workspace-conf`](#operation/set-status).
-	ReplaceIpAccessList(ctx context.Context, request ReplaceIPAccessListRequest) error
+	ReplaceIpAccessList(ctx context.Context, request ReplaceIpAccessListRequest) error
 
 	// Update access list
 	//
@@ -107,5 +107,5 @@ type IpAccessListsService interface {
 	// It can take a few minutes for the changes to take effect. Note that your
 	// resulting IP access list has no effect until you enable the feature. See
 	// [`/workspace-conf`](#operation/set-status).
-	UpdateIpAccessList(ctx context.Context, request UpdateIPAccessListRequest) error
+	UpdateIpAccessList(ctx context.Context, request UpdateIpAccessListRequest) error
 }

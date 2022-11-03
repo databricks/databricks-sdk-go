@@ -4,7 +4,7 @@ package ipaccesslists
 
 // all definitions in this file are in alphabetical order
 
-type CreateIPAccessListRequest struct {
+type CreateIpAccessListRequest struct {
 	IpAddresses []string `json:"ip_addresses"`
 
 	Label string `json:"label"`
@@ -22,7 +22,7 @@ type FetchIpAccessListRequest struct {
 	IpAccessListId string `json:"-" path:"ip_access_list_id"`
 }
 
-type GetIPAccessListResponse struct {
+type GetIpAccessListResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
 
@@ -48,7 +48,7 @@ type IpAccessListInfo struct {
 	UpdatedBy int64 `json:"updated_by,omitempty"`
 }
 
-type ReplaceIPAccessListRequest struct {
+type ReplaceIpAccessListRequest struct {
 	Enabled bool `json:"enabled"`
 	// The ID for the corresponding IP access list to modify.
 	IpAccessListId string `json:"-" path:"ip_access_list_id"`
@@ -62,7 +62,7 @@ type ReplaceIPAccessListRequest struct {
 	ListType ListType `json:"list_type"`
 }
 
-type UpdateIPAccessListRequest struct {
+type UpdateIpAccessListRequest struct {
 	Enabled bool `json:"enabled,omitempty"`
 	// The ID for the corresponding IP access list to modify.
 	IpAccessListId string `json:"-" path:"ip_access_list_id"`
