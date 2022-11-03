@@ -65,6 +65,33 @@ Databricks SDK for Go picks up Azure CLI token, if you've previously authenticat
  * `debug_headers` _(bool)_: Debug HTTP headers of requests made by the application. Default is false, as headers contain sensitive data, like tokens. Environment: `DATABRICKS_DEBUG_HEADERS`.
  * `rate_limit` _(int)_: Maximum number of requests per second made to Databricks REST API. Environment: `DATABRICKS_RATE_LIMIT`
 
+### Custom Credentials Provider
+
+In some cases, you may want to have deeper control over authentication to Databricks. This can be achieved by rolling your own credentials provider, that returns HTTP request visitor:
+
+```go
+type CustomCredentials struct {}
+
+func (c *CustomCredentials) Name() string {
+	return "custom"
+}
+
+func (c *CustomCredentials) Configure(ctx context.Context, cfg *databricks.Config) (func(*http.Request) error, error) {
+	return func(r *http.Request) error {
+		token := "..."
+		r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+		return nil
+	}, nil
+}
+
+func main() {
+	w := workspaces.New(&databricks.Config{
+		Credentials: &CustomCredentials{},
+	})
+    // ..
+}
+```
+
 ## Long-running operations
 
 **Stability:** _Experimental_
@@ -218,9 +245,6 @@ TODO:
 ---
 
 - [ ] Azure MSI Auth ported
-- [ ] Try pulling up packages for Azure and Google
-- [ ] Pass tests for CommonEnvironmentClient
-- [ ] CommandFactory should be done better
 - [ ] Mention contributors from Terraform provider side
 - [ ] Support Databricks OAuth
 - [ ] Record configFixture{} compliance test JSON
