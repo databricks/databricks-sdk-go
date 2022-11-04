@@ -217,8 +217,7 @@ func (a *DbfsAPI) Move(ctx context.Context, request Move) error {
 // be thrown if this limit is exceeded.
 //
 // If you want to upload large files, use the streaming upload. For details, see
-// :ref:`dbfsDbfsServicecreate`, :ref:`dbfsDbfsServiceaddBlock` and
-// :ref:`dbfsDbfsServiceclose`.
+// :method:create, :method:addBlock, :method:close.
 func (a *DbfsAPI) Put(ctx context.Context, request Put) error {
 	path := "/api/2.0/dbfs/put"
 	err := a.client.Post(ctx, path, request, nil)

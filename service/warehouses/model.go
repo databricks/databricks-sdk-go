@@ -630,48 +630,50 @@ type OdbcParams struct {
 
 // A filter to limit query history results. This field is optional.
 type QueryFilter struct {
+	// Alias for `warehouse_ids`.
 	EndpointIds []string `json:"endpoint_ids,omitempty"`
 
 	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty"`
 
 	Statuses []QueryStatus `json:"statuses,omitempty"`
-
+	// A list of user IDs who ran the queries.
 	UserIds []int `json:"user_ids,omitempty"`
-
+	// A list of warehouse IDs.
 	WarehouseIds []string `json:"warehouse_ids,omitempty"`
 }
 
 type QueryInfo struct {
+	// Alias for `warehouse_id`.
 	EndpointId string `json:"endpoint_id,omitempty"`
-
+	// Message describing why the query could not complete.
 	ErrorMessage string `json:"error_message,omitempty"`
-
+	// The time execution of the query ended.
 	ExecutionEndTimeMs int `json:"execution_end_time_ms,omitempty"`
 	// Whether more updates for the query are expected.
 	IsFinal bool `json:"is_final,omitempty"`
-
+	// A key that can be used to look up query details.
 	LookupKey string `json:"lookup_key,omitempty"`
-
+	// Metrics about query execution.
 	Metrics *QueryMetrics `json:"metrics,omitempty"`
-
+	// The time the query ended.
 	QueryEndTimeMs int `json:"query_end_time_ms,omitempty"`
-
+	// The query ID.
 	QueryId string `json:"query_id,omitempty"`
-
+	// The time the query started.
 	QueryStartTimeMs int `json:"query_start_time_ms,omitempty"`
-
+	// The text of the query.
 	QueryText string `json:"query_text,omitempty"`
-
+	// The number of results returned by the query.
 	RowsProduced int `json:"rows_produced,omitempty"`
-
+	// URL to the query plan.
 	SparkUiUrl string `json:"spark_ui_url,omitempty"`
-
+	// This describes an enum
 	Status QueryStatus `json:"status,omitempty"`
-
+	// The ID of the user who ran the query.
 	UserId int `json:"user_id,omitempty"`
-
+	// The email address or username of the user who ran the query.
 	UserName string `json:"user_name,omitempty"`
-
+	// Warehouse ID.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 }
 

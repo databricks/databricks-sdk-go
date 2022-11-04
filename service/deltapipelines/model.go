@@ -257,9 +257,9 @@ type PipelineCluster struct {
 	Label string `json:"label,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads A
+	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
+	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and ``num_workers`` Executors for a total of ``num_workers``

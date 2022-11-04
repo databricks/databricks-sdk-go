@@ -130,6 +130,12 @@ func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Ent
 		required[v] = true
 	}
 	for k, v := range s.Properties {
+		if v.Description == "" && v.IsRef() {
+			vv := pkg.Components.Schemas.Resolve(v)
+			if vv != nil {
+				v.Description = (*vv).Description
+			}
+		}
 		named := Named{k, v.Description}
 		e.fields[k] = Field{
 			Named:    named,

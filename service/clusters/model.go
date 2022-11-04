@@ -219,11 +219,6 @@ type ClusterAttributes struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
-	//
-	// This field, along with node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// The key of the spark version running in the dataplane. This is possibly
 	// different from the spark_version (index 2). The spark_version is the raw
@@ -245,14 +240,9 @@ type ClusterAttributes struct {
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads A
+	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
-	//
-	// This field, along with driver_node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
+	// :method:listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	PolicyId string `json:"policy_id,omitempty"`
@@ -262,12 +252,8 @@ type ClusterAttributes struct {
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
-	// ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions``
+	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
-	//
-	// Example Spark confs: ``{"spark.speculation": true,
-	// "spark.streaming.ui.retainedBatches": 5}`` or
-	// ``{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}``
 	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
@@ -283,12 +269,9 @@ type ClusterAttributes struct {
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}``
 	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-	// The Spark version of the cluster, e.g. "3.3.x-scala2.11". A list of
+	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
-	// :ref:`clusterClusterServicelistSparkVersions` API call. This is the Spark
-	// version provided from the user input (API/UI) and may be different from
-	// the effective_spark_version, which is the spark version that is actually
-	// run in the dataplane. See index 45 for more context.
+	// :method:sparkVersions API call.
 	SparkVersion string `json:"spark_version,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
@@ -449,7 +432,7 @@ type ClusterInfo struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
+	// This describes an enum
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Tags that are added by Databricks regardless of any ``custom_tags``,
 	// including:
@@ -475,11 +458,6 @@ type ClusterInfo struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
-	//
-	// This field, along with node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// The key of the spark version running in the dataplane. This is possibly
 	// different from the spark_version (index 2). The spark_version is the raw
@@ -513,12 +491,7 @@ type ClusterInfo struct {
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
-	//
-	// This field, along with driver_node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
+	// :method:listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and ``num_workers`` Executors for a total of ``num_workers``
@@ -561,12 +534,9 @@ type ClusterInfo struct {
 	// all default databricks managed environmental variables are included as
 	// well.
 	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-	// The Spark version of the cluster, e.g. "3.3.x-scala2.11". A list of
+	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
-	// :ref:`clusterClusterServicelistSparkVersions` API call. This is the Spark
-	// version provided from the user input (API/UI) and may be different from
-	// the effective_spark_version, which is the spark version that is actually
-	// run in the dataplane. See index 45 for more context.
+	// :method:sparkVersions API call.
 	SparkVersion string `json:"spark_version,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
@@ -718,11 +688,6 @@ type CreateCluster struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
-	//
-	// This field, along with node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// The key of the spark version running in the dataplane. This is possibly
 	// different from the spark_version (index 2). The spark_version is the raw
@@ -744,14 +709,9 @@ type CreateCluster struct {
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads A
+	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
-	//
-	// This field, along with driver_node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
+	// :method:listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and ``num_workers`` Executors for a total of ``num_workers``
@@ -789,12 +749,9 @@ type CreateCluster struct {
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}``
 	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-	// The Spark version of the cluster, e.g. "3.3.x-scala2.11". A list of
+	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
-	// :ref:`clusterClusterServicelistSparkVersions` API call. This is the Spark
-	// version provided from the user input (API/UI) and may be different from
-	// the effective_spark_version, which is the spark version that is actually
-	// run in the dataplane. See index 45 for more context.
+	// :method:sparkVersions API call.
 	SparkVersion string `json:"spark_version,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
@@ -946,11 +903,6 @@ type EditCluster struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
-	//
-	// This field, along with node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// The key of the spark version running in the dataplane. This is possibly
 	// different from the spark_version (index 2). The spark_version is the raw
@@ -972,14 +924,9 @@ type EditCluster struct {
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads A
+	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
-	//
-	// This field, along with driver_node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
+	// :method:listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and ``num_workers`` Executors for a total of ``num_workers``
@@ -1021,12 +968,9 @@ type EditCluster struct {
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}``
 	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-	// The Spark version of the cluster, e.g. "3.3.x-scala2.11". A list of
+	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
-	// :ref:`clusterClusterServicelistSparkVersions` API call. This is the Spark
-	// version provided from the user input (API/UI) and may be different from
-	// the effective_spark_version, which is the spark version that is actually
-	// run in the dataplane. See index 45 for more context.
+	// :method:sparkVersions API call.
 	SparkVersion string `json:"spark_version,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
@@ -1652,6 +1596,10 @@ type WorkloadType struct {
 	Clients *ClientsTypes `json:"clients,omitempty"`
 }
 
+// The node type of the Spark driver. Note that this field is optional; if
+// unset, the driver node type will be set as the same value as `node_type_id`
+// defined above.
+
 type GetRequest struct {
 	// The cluster about which to retrieve information.
 	ClusterId string `json:"-" url:"cluster_id,omitempty"`
@@ -1663,3 +1611,12 @@ type ListRequest struct {
 	// in the workspace without filtering on its supported client
 	CanUseClient string `json:"-" url:"can_use_client,omitempty"`
 }
+
+// This field encodes, through a single value, the resources available to each
+// of the Spark nodes in this cluster. For example, the Spark nodes can be
+// provisioned and optimized for memory or compute intensive workloads. A list
+// of available node types can be retrieved by using the :method:listNodeTypes
+// API call.
+
+// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available
+// Spark versions can be retrieved by using the :method:sparkVersions API call.

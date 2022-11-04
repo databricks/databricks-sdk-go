@@ -47,18 +47,17 @@ type CreateInstancePool struct {
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this pool. For example, the Spark nodes can be
-	// provisioned and optimized for memory or compute intensive workloads A
+	// each of the Spark nodes in this cluster. For example, the Spark nodes can
+	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
+	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Custom Docker Image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-	// A list of preloaded Spark image versions for the pool, e.g.
-	// ["5.2.x-scala2.11"]. Pool-backed clusters started with the preloaded
-	// Spark version will start faster. A list of available Spark versions can
-	// be retrieved by using the :ref:`clusterClusterServicelistSparkVersions`
-	// API call.
+	// A list of preloaded Spark image versions for the pool. Pool-backed
+	// clusters started with the preloaded Spark version will start faster. A
+	// list of available Spark versions can be retrieved by using the
+	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 }
 
@@ -179,18 +178,17 @@ type EditInstancePool struct {
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this pool. For example, the Spark nodes can be
-	// provisioned and optimized for memory or compute-intensive workloads A
-	// Retrieve a list of available node types by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
+	// each of the Spark nodes in this cluster. For example, the Spark nodes can
+	// be provisioned and optimized for memory or compute intensive workloads. A
+	// list of available node types can be retrieved by using the
+	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Custom Docker image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-	// A list of preloaded Spark image versions for the pool, e.g.
-	// ["5.2.x-scala2.11"]. Pool-backed clusters started with the preloaded
-	// Spark version will start faster. A list of available Spark versions can
-	// be retrieved by using the :ref:`clusterClusterServicelistSparkVersions`
-	// API call.
+	// A list of preloaded Spark image versions for the pool. Pool-backed
+	// clusters started with the preloaded Spark version will start faster. A
+	// list of available Spark versions can be retrieved by using the
+	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 }
 
@@ -319,18 +317,17 @@ type GetInstancePool struct {
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this pool. For example, the Spark nodes can be
-	// provisioned and optimized for memory or compute intensive workloads A
+	// each of the Spark nodes in this cluster. For example, the Spark nodes can
+	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
+	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Custom Docker image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-	// A list of preloaded Spark image versions for the pool, e.g.
-	// ["5.2.x-scala2.11"]. Pool-backed clusters started with the preloaded
-	// Spark version will start faster. A Retrieve a list of available Spark
-	// versions by using the :ref:`clusterClusterServicelistSparkVersions` API
-	// call.
+	// A list of preloaded Spark image versions for the pool. Pool-backed
+	// clusters started with the preloaded Spark version will start faster. A
+	// list of available Spark versions can be retrieved by using the
+	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 	// Current state of the instance pool.
 	State GetInstancePoolState `json:"state,omitempty"`
@@ -402,18 +399,17 @@ type InstancePoolAndStats struct {
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this pool. For example, the Spark nodes can be
-	// provisioned and optimized for memory or compute intensive workloads
-	// Retrieve a list of available node types by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
+	// each of the Spark nodes in this cluster. For example, the Spark nodes can
+	// be provisioned and optimized for memory or compute intensive workloads. A
+	// list of available node types can be retrieved by using the
+	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Custom Docker image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-	// A list of preloaded Spark image versions for the pool, e.g.
-	// ["5.2.x-scala2.11"]. Pool-backed clusters started with the preloaded
-	// Spark version will start faster. Retrieve a list of available Spark
-	// versions can by using the :ref:`clusterClusterServicelistSparkVersions`
-	// API call.
+	// A list of preloaded Spark image versions for the pool. Pool-backed
+	// clusters started with the preloaded Spark version will start faster. A
+	// list of available Spark versions can be retrieved by using the
+	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 	// Current state of the instance pool.
 	State InstancePoolAndStatsState `json:"state,omitempty"`
@@ -540,3 +536,9 @@ type GetRequest struct {
 	// The canonical unique identifier for the instance pool.
 	InstancePoolId string `json:"-" url:"instance_pool_id,omitempty"`
 }
+
+// This field encodes, through a single value, the resources available to each
+// of the Spark nodes in this cluster. For example, the Spark nodes can be
+// provisioned and optimized for memory or compute intensive workloads. A list
+// of available node types can be retrieved by using the
+// :method:clusters/listNodeTypes API call.
