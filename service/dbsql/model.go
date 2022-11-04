@@ -6,29 +6,34 @@ package dbsql
 
 type AccessControl struct {
 	GroupName string `json:"group_name,omitempty"`
-
+	// This describes an enum
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	UserName string `json:"user_name,omitempty"`
 }
 
 type Alert struct {
+	// Timestamp when the alert was created.
 	CreatedAt string `json:"created_at,omitempty"`
 	// ID of the alert.
 	Id string `json:"id,omitempty"`
-
+	// Timestamp when the alert was last triggered.
 	LastTriggeredAt string `json:"last_triggered_at,omitempty"`
 	// Name of the alert.
 	Name string `json:"name,omitempty"`
-
+	// Alert configuration options.
 	Options *AlertOptions `json:"options,omitempty"`
 
 	Query *Query `json:"query,omitempty"`
-
+	// Number of seconds after being triggered before the alert rearms itself
+	// and can be triggered again. If `null`, alert will never be triggered
+	// again.
 	Rearm int `json:"rearm,omitempty"`
-
+	// State of the alert. Possible values are: `unknown` (yet to be evaluated),
+	// `triggered` (evaluated and fulfilled trigger conditions), or `ok`
+	// (evaluated and did not fulfill trigger conditions).
 	State AlertState `json:"state,omitempty"`
-
+	// Timestamp when the alert was last updated.
 	UpdatedAt string `json:"updated_at,omitempty"`
 
 	User *User `json:"user,omitempty"`
@@ -60,17 +65,21 @@ type AlertOptions struct {
 
 type CreateRefreshSchedule struct {
 	AlertId string `json:"-" path:"alert_id"`
-
+	// Cron string representing the refresh schedule.
 	Cron string `json:"cron"`
-
+	// ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse
+	// will be used to refresh.
 	DataSourceId string `json:"data_source_id,omitempty"`
 }
 
 type CreateSubscription struct {
+	// ID of the alert.
 	AlertId string `json:"alert_id" path:"alert_id"`
-
+	// ID of the alert subscriber (if subscribing an alert destination). Alert
+	// destinations can be configured by admins through the UI. See
+	// `%(alertDestinationsLink)s`.
 	DestinationId string `json:"destination_id,omitempty"`
-
+	// ID of the alert subscriber (if subscribing a user).
 	UserId int `json:"user_id,omitempty"`
 }
 
@@ -103,7 +112,7 @@ type Dashboard struct {
 	Name string `json:"name,omitempty"`
 
 	Options *DashboardOptions `json:"options,omitempty"`
-
+	// This describes an enum
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// URL slug. Usually mirrors the query name with dashes (`-`) instead of
 	// spaces. Appears in the URL for this query.
@@ -181,13 +190,15 @@ const DestinationTypeWebhook DestinationType = `webhook`
 
 type EditAlert struct {
 	AlertId string `json:"-" path:"alert_id"`
-
+	// Name of the alert.
 	Name string `json:"name"`
-
+	// Alert configuration options.
 	Options AlertOptions `json:"options"`
-
+	// ID of the query evaluated by the alert.
 	QueryId string `json:"query_id"`
-
+	// Number of seconds after being triggered before the alert rearms itself
+	// and can be triggered again. If `null`, alert will never be triggered
+	// again.
 	Rearm int `json:"rearm,omitempty"`
 }
 
@@ -268,7 +279,7 @@ type Query struct {
 	Name string `json:"name,omitempty"`
 
 	Options *QueryOptions `json:"options,omitempty"`
-
+	// This describes an enum
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// The text of the query to be run.
 	Query string `json:"query,omitempty"`
@@ -332,18 +343,23 @@ type QueryPostContent struct {
 }
 
 type RefreshSchedule struct {
+	// Cron string representing the refresh schedule.
 	Cron string `json:"cron,omitempty"`
-
+	// ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse
+	// will be used to refresh.
 	DataSourceId string `json:"data_source_id,omitempty"`
-
+	// ID of the refresh schedule.
 	Id string `json:"id,omitempty"`
 }
 
 type Subscription struct {
+	// ID of the alert.
 	AlertId string `json:"alert_id,omitempty"`
-
+	// Alert destination subscribed to the alert, if it exists. Alert
+	// destinations can be configured by admins through the UI. See
+	// `%(alertDestinationsLink)s`.
 	Destination *Destination `json:"destination,omitempty"`
-
+	// ID of the alert subscription.
 	Id string `json:"id,omitempty"`
 
 	User *User `json:"user,omitempty"`
@@ -403,7 +419,11 @@ type Widget struct {
 	Id int `json:"id,omitempty"`
 
 	Options *WidgetOptions `json:"options,omitempty"`
-
+	// The visualization description API changes frequently and is unsupported.
+	// You can duplicate a visualization by copying description objects received
+	// _from the API_ and then using them to create a new one with a POST
+	// request to the same endpoint. Databricks does not recommend constructing
+	// ad-hoc visualizations entirely in JSON.
 	Visualization *Visualization `json:"visualization,omitempty"`
 	// Unused field.
 	Width int `json:"width,omitempty"`
@@ -522,9 +542,9 @@ type GetPermissionsRequest struct {
 
 type GetPermissionsResponse struct {
 	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
-
+	// A singular noun object type.
 	ObjectId ObjectType `json:"object_id,omitempty"`
-
+	// An object's type and UUID, separated by a forward slash (/) character.
 	ObjectType string `json:"object_type,omitempty"`
 }
 
@@ -668,9 +688,9 @@ type SetPermissionsRequest struct {
 
 type SetPermissionsResponse struct {
 	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
-
+	// A singular noun object type.
 	ObjectId ObjectType `json:"object_id,omitempty"`
-
+	// An object's type and UUID, separated by a forward slash (/) character.
 	ObjectType string `json:"object_type,omitempty"`
 }
 

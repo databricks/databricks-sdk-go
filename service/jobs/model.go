@@ -5,12 +5,14 @@ package jobs
 // all definitions in this file are in alphabetical order
 
 type AccessControlRequest struct {
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
 	GroupName string `json:"group_name,omitempty"`
-
+	// This describes an enum
 	PermissionLevel any/* MISSING TYPE */ `json:"permission_level,omitempty"`
-
+	// Name of an Azure service principal.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
+	// Email address for the user.
 	UserName string `json:"user_name,omitempty"`
 }
 
@@ -397,7 +399,8 @@ type GitSource struct {
 	// Unique identifier of the service used to host the Git repository. The
 	// value is case insensitive.
 	GitProvider GitSourceGitProvider `json:"git_provider"`
-
+	// Read-only state of the remote repository at the time the job was run.
+	// This field is only included on job runs.
 	GitSnapshot *GitSnapshot `json:"git_snapshot,omitempty"`
 	// Name of the tag to be checked out and used by this job. This field cannot
 	// be specified in conjunction with git_branch or git_commit. The maximum
@@ -551,8 +554,13 @@ const JobSettingsFormatMultiTask JobSettingsFormat = `MULTI_TASK`
 const JobSettingsFormatSingleTask JobSettingsFormat = `SINGLE_TASK`
 
 type JobTaskSettings struct {
+	// An optional array of objects specifying the dependency graph of the task.
+	// All tasks specified in this field must complete successfully before
+	// executing this task. The key is `task_key`, and the value is the name
+	// assigned to the dependent task. This field is required when a job
+	// consists of more than one task.
 	DependsOn []TaskDependenciesItem `json:"depends_on,omitempty"`
-
+	// An optional description for this task. The maximum length is 4096 bytes.
 	Description string `json:"description,omitempty"`
 	// An optional set of email addresses that is notified when runs of this
 	// task begin or complete as well as when this task is deleted. The default
@@ -598,7 +606,10 @@ type JobTaskSettings struct {
 	// If spark_submit_task, indicates that this task must be launched by the
 	// spark submit script.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
-
+	// A unique name for the task. This field is used to refer to this task from
+	// other tasks. This field is required and must be unique within its parent
+	// job. On Update or Reset, this field is used to reference the tasks to be
+	// updated or reset. The maximum length is 100 characters.
 	TaskKey string `json:"task_key"`
 	// An optional timeout applied to each run of this job task. The default
 	// behavior is to have no timeout.
@@ -665,7 +676,9 @@ type NewCluster struct {
 	// `<destination>/<cluster-id>/driver`, while the destination of executor
 	// logs is `<destination>/<cluster-id>/executor`.
 	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
-
+	// An object with key value pairs. The key length must be between 1 and 127
+	// UTF-8 characters, inclusive. The value length must be less than or equal
+	// to 255 UTF-8 characters.
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// The optional ID of the instance pool to use for the driver node. You must
 	// also specify `instance_pool_id`. Refer to [Instance Pools
@@ -832,7 +845,7 @@ type RepairHistoryItem struct {
 	Id int64 `json:"id,omitempty"`
 	// The start time of the (repaired) run.
 	StartTime int64 `json:"start_time,omitempty"`
-
+	// The result and lifecycle state of the run.
 	State *RunState `json:"state,omitempty"`
 	// The run IDs of the task runs that ran as part of this repair history
 	// item.
@@ -996,7 +1009,12 @@ type Run struct {
 	RunName string `json:"run_name,omitempty"`
 	// The URL to the detail page of the run.
 	RunPageUrl string `json:"run_page_url,omitempty"`
-
+	// The type of the run. * `JOB_RUN` \- Normal job run. A run created with
+	// [Run now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow). *
+	// `WORKFLOW_RUN` \- Workflow run. A run created with
+	// [dbutils.notebook.run](..dev-tools/databricks-utilshtml#dbutils-workflow).
+	// * `SUBMIT_RUN` \- Submit run. A run created with [Run
+	// now](..dev-tools/api/latest/jobshtml#operation/JobsRunNow).
 	RunType RunType `json:"run_type,omitempty"`
 	// The cron schedule that triggered this run if it was triggered by the
 	// periodic scheduler.
@@ -1269,7 +1287,7 @@ type RunState struct {
 	// A description of a run?s current location in the run lifecycle. This
 	// field is always available in the response.
 	LifeCycleState RunLifeCycleState `json:"life_cycle_state,omitempty"`
-
+	// This describes an enum
 	ResultState RunResultState `json:"result_state,omitempty"`
 	// A descriptive message for the current state. This field is unstructured,
 	// and its exact format is subject to change.
@@ -1280,6 +1298,11 @@ type RunState struct {
 }
 
 type RunSubmitTaskSettings struct {
+	// An optional array of objects specifying the dependency graph of the task.
+	// All tasks specified in this field must complete successfully before
+	// executing this task. The key is `task_key`, and the value is the name
+	// assigned to the dependent task. This field is required when a job
+	// consists of more than one task.
 	DependsOn []TaskDependenciesItem `json:"depends_on,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs of this task. When running tasks on an existing cluster, you may
@@ -1305,7 +1328,10 @@ type RunSubmitTaskSettings struct {
 	// If spark_submit_task, indicates that this task must be launched by the
 	// spark submit script.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
-
+	// A unique name for the task. This field is used to refer to this task from
+	// other tasks. This field is required and must be unique within its parent
+	// job. On Update or Reset, this field is used to reference the tasks to be
+	// updated or reset. The maximum length is 100 characters.
 	TaskKey string `json:"task_key"`
 	// An optional timeout applied to each run of this job task. The default
 	// behavior is to have no timeout.
@@ -1329,9 +1355,13 @@ type RunTask struct {
 	// cluster, this field is set once the Jobs service has requested a cluster
 	// for the run.
 	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
-
+	// An optional array of objects specifying the dependency graph of the task.
+	// All tasks specified in this field must complete successfully before
+	// executing this task. The key is `task_key`, and the value is the name
+	// assigned to the dependent task. This field is required when a job
+	// consists of more than one task.
 	DependsOn []TaskDependenciesItem `json:"depends_on,omitempty"`
-
+	// An optional description for this task. The maximum length is 4096 bytes.
 	Description string `json:"description,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
@@ -1380,7 +1410,10 @@ type RunTask struct {
 	StartTime int64 `json:"start_time,omitempty"`
 	// The result and lifecycle states of the run.
 	State *RunState `json:"state,omitempty"`
-
+	// A unique name for the task. This field is used to refer to this task from
+	// other tasks. This field is required and must be unique within its parent
+	// job. On Update or Reset, this field is used to reference the tasks to be
+	// updated or reset. The maximum length is 100 characters.
 	TaskKey string `json:"task_key,omitempty"`
 }
 

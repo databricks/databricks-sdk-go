@@ -148,8 +148,7 @@ type DbfsService interface {
 	// will be thrown if this limit is exceeded.
 	//
 	// If you want to upload large files, use the streaming upload. For details,
-	// see :ref:`dbfsDbfsServicecreate`, :ref:`dbfsDbfsServiceaddBlock` and
-	// :ref:`dbfsDbfsServiceclose`.
+	// see :method:create, :method:addBlock, :method:close.
 	Put(ctx context.Context, request Put) error
 
 	// Get the contents of a file

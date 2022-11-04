@@ -21,12 +21,11 @@ type ExportResponse struct {
 }
 
 type Import struct {
-	// The base64-encoded content. This has a limit of 10 MB. If the limit
-	// (10MB) is exceeded, exception with error code
+	// The base64-encoded content. This has a limit of 10 MB.
+	//
+	// If the limit (10MB) is exceeded, exception with error code
 	// **MAX_NOTEBOOK_SIZE_EXCEEDED** will be thrown. This parameter might be
-	// absent, and instead a posted file will be used. See
-	// :ref:`workspace-api-import-example` for more information about how to use
-	// it.
+	// absent, and instead a posted file will be used.
 	Content string `json:"content,omitempty"`
 	// This specifies the format of the file to be imported. By default, this is
 	// ``SOURCE``. However it may be one of: ``SOURCE``, ``HTML``, ``JUPYTER``,
@@ -154,9 +153,6 @@ type ExportRequest struct {
 	// Flag to enable direct download. If it is ``true``, the response will be
 	// the exported file itself. Otherwise, the response contains content as
 	// base64 encoded string.
-	//
-	// See :ref:`workspace-api-export-example` for more information about how to
-	// use it.
 	DirectDownload bool `json:"-" url:"direct_download,omitempty"`
 	// This specifies the format of the exported file. By default, this is
 	// ``SOURCE``. However it may be one of: ``SOURCE``, ``HTML``, ``JUPYTER``,
