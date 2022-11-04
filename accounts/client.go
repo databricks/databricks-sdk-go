@@ -20,14 +20,14 @@ type AccountsClient struct {
 	Config                       *databricks.Config
 	AccountPermissionAssignments accountpermissionassignments.AccountPermissionAssignmentsService
 	Budgets                      budgets.BudgetsService
-	Credentials                  credentials.CredentialsService
-	CustomerManagedKeys          customermanagedkeys.CustomermanagedkeysService
-	LogDelivery                  logdelivery.LogdeliveryService
+	Credentials                  credentials.CredentialConfigurationsService
+	CustomerManagedKeys          customermanagedkeys.KeyConfigurationsService
+	LogDelivery                  logdelivery.LogDeliveryService
 	Networks                     networks.NetworkConfigurationsService
-	PrivateAccessSettings        privateaccesssettings.PrivateaccesssettingsService
-	StorageConfigurations        storageconfigurations.StorageconfigurationsService
-	UsageDownload                usagedownload.UsagedownloadService
-	VpcEndpoints                 vpcendpoints.VpcendpointsService
+	PrivateAccessSettings        privateaccesssettings.PrivateAccessSettingsService
+	StorageConfigurations        storageconfigurations.StorageConfigurationsService
+	UsageDownload                usagedownload.BillableUsageDownloadService
+	VpcEndpoints                 vpcendpoints.VpcEndpointsService
 	Workspaces                   workspaces.WorkspacesService
 }
 
@@ -47,15 +47,15 @@ func New(c ...*databricks.Config) *AccountsClient {
 	return &AccountsClient{
 		Config:                       cfg,
 		AccountPermissionAssignments: accountpermissionassignments.NewAccountPermissionAssignments(apiClient),
-		Budgets:                      budgets.New(apiClient),
-		Credentials:                  credentials.New(apiClient),
-		CustomerManagedKeys:          customermanagedkeys.New(apiClient),
-		LogDelivery:                  logdelivery.New(apiClient),
+		Budgets:                      budgets.NewBudgets(apiClient),
+		Credentials:                  credentials.NewCredentialConfigurations(apiClient),
+		CustomerManagedKeys:          customermanagedkeys.NewKeyConfigurations(apiClient),
+		LogDelivery:                  logdelivery.NewLogDelivery(apiClient),
 		Networks:                     networks.NewNetworkConfigurations(apiClient),
-		PrivateAccessSettings:        privateaccesssettings.New(apiClient),
-		StorageConfigurations:        storageconfigurations.New(apiClient),
-		UsageDownload:                usagedownload.New(apiClient),
-		VpcEndpoints:                 vpcendpoints.New(apiClient),
+		PrivateAccessSettings:        privateaccesssettings.NewPrivateAccessSettings(apiClient),
+		StorageConfigurations:        storageconfigurations.NewStorageConfigurations(apiClient),
+		UsageDownload:                usagedownload.NewBillableUsageDownload(apiClient),
+		VpcEndpoints:                 vpcendpoints.NewVpcEndpoints(apiClient),
 		Workspaces:                   workspaces.NewWorkspaces(apiClient),
 	}
 }
