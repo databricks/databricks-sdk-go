@@ -1,4 +1,4 @@
-Databricks SDK for Go
+Databricks SDK for Go (Beta)
 ---
 
 # Features
@@ -236,6 +236,10 @@ download, _ := os.Create("/path/to/local")
 remote, _ := w.Dbfs.Open(ctx, "/path/to/remote")
 _ = io.Copy(download, remote)
 ```
+
+## Interface stability
+
+During _[beta](https://docs.databricks.com/release-notes/release-types.html)_ period, Databricks is actively working on getting interfaces of Databricks SDK more stable. API clients for all services are generated from specification file, that is synchronised from main platform. You are highly encouraged to pin the exact version in the `go.mod` file and read the [changelog](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md), where we document the changes. Some types of interfaces are more stable than others. For those interfaces, that are not yet [nightly tested](https://github.com/databricks/databricks-sdk-go/tree/main/internal), we may have minor [documented](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md) backwards incompatible changes, like fixing mapping correctness from `int` to `int64`, or renaming the method or some type names to bring more consistency. 
 
 ---
 
