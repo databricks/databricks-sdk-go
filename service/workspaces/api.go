@@ -5,8 +5,11 @@ package workspaces
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 func NewWorkspaces(client *client.DatabricksClient) WorkspacesService {
@@ -43,23 +46,64 @@ type WorkspacesAPI struct {
 // plan to share one VPC with multiple workspaces, make sure you size your VPC
 // and subnets accordingly. Because a Databricks Account API network
 // configuration encapsulates this information, you cannot reuse a Databricks
-// Account API network configuration across workspaces. For information about
+// Account API network configuration across workspaces.\nFor information about
 // how to create a new workspace with this API **including error handling**, see
 // [Create a new workspace using the Account
 // API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html).
 //
 // **Important**: Customer-managed VPCs, PrivateLink, and customer-managed keys
 // are supported on a limited set of deployment and subscription types. If you
-// have questions about availability, contact your Databricks representative.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform or on a select custom plan that allows multiple workspaces per
-// account.
+// have questions about availability, contact your Databricks
+// representative.\n\nThis operation is available only if your account is on the
+// E2 version of the platform or on a select custom plan that allows multiple
+// workspaces per account.
 func (a *WorkspacesAPI) CreateWorkspace(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {
 	var workspace Workspace
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", request.AccountId)
 	err := a.client.Post(ctx, path, request, &workspace)
 	return &workspace, err
+}
+
+// CreateWorkspace and wait to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[Workspace](60*time.Minute) functional option.
+func (a *WorkspacesAPI) CreateWorkspaceAndWait(ctx context.Context, createWorkspaceRequest CreateWorkspaceRequest, options ...retries.Option[Workspace]) (*Workspace, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	workspace, err := a.CreateWorkspace(ctx, createWorkspaceRequest)
+	if err != nil {
+		return nil, err
+	}
+	i := retries.Info[Workspace]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
+	}
+	return retries.Poll[Workspace](ctx, i.Timeout, func() (*Workspace, *retries.Err) {
+		workspace, err := a.GetWorkspace(ctx, GetWorkspaceRequest{
+			WorkspaceId: workspace.WorkspaceId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		for _, o := range options {
+			o(&retries.Info[Workspace]{
+				Info:    *workspace,
+				Timeout: i.Timeout,
+			})
+		}
+		status := workspace.WorkspaceStatus
+		statusMessage := workspace.WorkspaceStatusMessage
+		switch status {
+		case WorkspaceStatusRunning: // target state
+			return workspace, nil
+		case WorkspaceStatusBanned, WorkspaceStatusFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				WorkspaceStatusRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
 }
 
 // Delete workspace

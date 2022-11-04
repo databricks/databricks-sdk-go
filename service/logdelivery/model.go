@@ -35,7 +35,7 @@ type CreateLogDeliveryConfigurationParams struct {
 	// delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
 	// For the JSON schema, see [Configure audit
 	// logging](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html)
-	LogType CreateLogDeliveryConfigurationParamsLogType `json:"log_type"`
+	LogType LogType `json:"log_type"`
 	// The file type of log delivery.
 	//
 	// * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the
@@ -46,7 +46,7 @@ type CreateLogDeliveryConfigurationParams struct {
 	// (JavaScript Object Notation) format is supported. For the schema, see the
 	// [Configuring audit
 	// logs](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
-	OutputFormat CreateLogDeliveryConfigurationParamsOutputFormat `json:"output_format"`
+	OutputFormat OutputFormat `json:"output_format"`
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
 	// the configuration](#operation/patch-log-delivery-config-status) later.
@@ -75,38 +75,26 @@ type CreateLogDeliveryConfigurationParams struct {
 	WorkspaceIdsFilter []int64 `json:"workspace_ids_filter,omitempty"`
 }
 
-// Log delivery type. Supported values are:
-//
-// * `BILLABLE_USAGE` ? Configure [billable usage log
-// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
-// For the CSV schema, see the [View billable
-// usage](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-//
-// * `AUDIT_LOGS` ? Configure [audit log
-// delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
-// For the JSON schema, see [Configure audit
-// logging](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html)
-type CreateLogDeliveryConfigurationParamsLogType string
+// This describes an enum
+type DeliveryStatus string
 
-const CreateLogDeliveryConfigurationParamsLogTypeAuditLogs CreateLogDeliveryConfigurationParamsLogType = `AUDIT_LOGS`
+// There were no log delivery attempts since the config was created.
+const DeliveryStatusCreated DeliveryStatus = `CREATED`
 
-const CreateLogDeliveryConfigurationParamsLogTypeBillableUsage CreateLogDeliveryConfigurationParamsLogType = `BILLABLE_USAGE`
+// The log delivery status as the configuration has been disabled since the
+// release of this feature or there are no workspaces in the account.
+const DeliveryStatusNotFound DeliveryStatus = `NOT_FOUND`
 
-// The file type of log delivery.
-//
-// * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV
-// (comma-separated values) format is supported. For the schema, see the [View
-// billable
-// usage](https://docs.databricks.com/administration-guide/account-settings/usage.html)
-// * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON
-// (JavaScript Object Notation) format is supported. For the schema, see the
-// [Configuring audit
-// logs](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
-type CreateLogDeliveryConfigurationParamsOutputFormat string
+// The latest attempt of log delivery has succeeded completely.
+const DeliveryStatusSucceeded DeliveryStatus = `SUCCEEDED`
 
-const CreateLogDeliveryConfigurationParamsOutputFormatCsv CreateLogDeliveryConfigurationParamsOutputFormat = `CSV`
+// The latest attempt of log delivery failed because of an Databricks internal
+// error. Contact support if it doesn't go away soon.
+const DeliveryStatusSystemFailure DeliveryStatus = `SYSTEM_FAILURE`
 
-const CreateLogDeliveryConfigurationParamsOutputFormatJson CreateLogDeliveryConfigurationParamsOutputFormat = `JSON`
+// The latest attempt of log delivery failed because of misconfiguration of
+// customer provided permissions on role or storage.
+const DeliveryStatusUserFailure DeliveryStatus = `USER_FAILURE`
 
 type GetAllLogDeliveryConfigsRequest struct {
 	// Databricks account ID of any type. For non-E2 account types, get your
@@ -181,7 +169,7 @@ type LogDeliveryConfiguration struct {
 	// delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
 	// For the JSON schema, see [Configure audit
 	// logging](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html)
-	LogType LogDeliveryConfigurationLogType `json:"log_type,omitempty"`
+	LogType LogType `json:"log_type,omitempty"`
 	// The file type of log delivery.
 	//
 	// * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the
@@ -192,7 +180,7 @@ type LogDeliveryConfiguration struct {
 	// (JavaScript Object Notation) format is supported. For the schema, see the
 	// [Configuring audit
 	// logs](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
-	OutputFormat LogDeliveryConfigurationOutputFormat `json:"output_format,omitempty"`
+	OutputFormat OutputFormat `json:"output_format,omitempty"`
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
 	// the configuration](#operation/patch-log-delivery-config-status) later.
@@ -224,6 +212,20 @@ type LogDeliveryConfiguration struct {
 	WorkspaceIdsFilter []int64 `json:"workspace_ids_filter,omitempty"`
 }
 
+// Databricks log delivery status.
+type LogDeliveryStatus struct {
+	// The UTC time for the latest log delivery attempt.
+	LastAttemptTime string `json:"last_attempt_time,omitempty"`
+	// The UTC time for the latest successful log delivery.
+	LastSuccessfulAttemptTime string `json:"last_successful_attempt_time,omitempty"`
+	// Informative message about the latest log delivery attempt. If the log
+	// delivery fails with USER_FAILURE, error details will be provided for
+	// fixing misconfigurations in cloud permissions.
+	Message string `json:"message,omitempty"`
+	// This describes an enum
+	Status DeliveryStatus `json:"status,omitempty"`
+}
+
 // Log delivery type. Supported values are:
 //
 // * `BILLABLE_USAGE` ? Configure [billable usage log
@@ -235,11 +237,11 @@ type LogDeliveryConfiguration struct {
 // delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
 // For the JSON schema, see [Configure audit
 // logging](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html)
-type LogDeliveryConfigurationLogType string
+type LogType string
 
-const LogDeliveryConfigurationLogTypeAuditLogs LogDeliveryConfigurationLogType = `AUDIT_LOGS`
+const LogTypeAuditLogs LogType = `AUDIT_LOGS`
 
-const LogDeliveryConfigurationLogTypeBillableUsage LogDeliveryConfigurationLogType = `BILLABLE_USAGE`
+const LogTypeBillableUsage LogType = `BILLABLE_USAGE`
 
 // The file type of log delivery.
 //
@@ -251,55 +253,11 @@ const LogDeliveryConfigurationLogTypeBillableUsage LogDeliveryConfigurationLogTy
 // (JavaScript Object Notation) format is supported. For the schema, see the
 // [Configuring audit
 // logs](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
-type LogDeliveryConfigurationOutputFormat string
+type OutputFormat string
 
-const LogDeliveryConfigurationOutputFormatCsv LogDeliveryConfigurationOutputFormat = `CSV`
+const OutputFormatCsv OutputFormat = `CSV`
 
-const LogDeliveryConfigurationOutputFormatJson LogDeliveryConfigurationOutputFormat = `JSON`
-
-// Databricks log delivery status.
-type LogDeliveryStatus struct {
-	// The UTC time for the latest log delivery attempt.
-	LastAttemptTime string `json:"last_attempt_time,omitempty"`
-	// The UTC time for the latest successful log delivery.
-	LastSuccessfulAttemptTime string `json:"last_successful_attempt_time,omitempty"`
-	// Informative message about the latest log delivery attempt. If the log
-	// delivery fails with USER_FAILURE, error details will be provided for
-	// fixing misconfigurations in cloud permissions.
-	Message string `json:"message,omitempty"`
-	// The status string for log delivery. Possible values are: * `CREATED`:
-	// There were no log delivery attempts since the config was created. *
-	// `SUCCEEDED`: The latest attempt of log delivery has succeeded completely.
-	// * `USER_FAILURE`: The latest attempt of log delivery failed because of
-	// misconfiguration of customer provided permissions on role or storage. *
-	// `SYSTEM_FAILURE`: The latest attempt of log delivery failed because of an
-	// Databricks internal error. Contact support if it doesn't go away soon. *
-	// `NOT_FOUND`: The log delivery status as the configuration has been
-	// disabled since the release of this feature or there are no workspaces in
-	// the account.
-	Status LogDeliveryStatusStatus `json:"status,omitempty"`
-}
-
-// The status string for log delivery. Possible values are: * `CREATED`: There
-// were no log delivery attempts since the config was created. * `SUCCEEDED`:
-// The latest attempt of log delivery has succeeded completely. *
-// `USER_FAILURE`: The latest attempt of log delivery failed because of
-// misconfiguration of customer provided permissions on role or storage. *
-// `SYSTEM_FAILURE`: The latest attempt of log delivery failed because of an
-// Databricks internal error. Contact support if it doesn't go away soon. *
-// `NOT_FOUND`: The log delivery status as the configuration has been disabled
-// since the release of this feature or there are no workspaces in the account.
-type LogDeliveryStatusStatus string
-
-const LogDeliveryStatusStatusCreated LogDeliveryStatusStatus = `CREATED`
-
-const LogDeliveryStatusStatusNotFound LogDeliveryStatusStatus = `NOT_FOUND`
-
-const LogDeliveryStatusStatusSucceeded LogDeliveryStatusStatus = `SUCCEEDED`
-
-const LogDeliveryStatusStatusSystemFailure LogDeliveryStatusStatus = `SYSTEM_FAILURE`
-
-const LogDeliveryStatusStatusUserFailure LogDeliveryStatusStatus = `USER_FAILURE`
+const OutputFormatJson OutputFormat = `JSON`
 
 type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Databricks account ID of any type. For non-E2 account types, get your

@@ -26,6 +26,24 @@ type DeleteVpcEndpointRequest struct {
 	VpcEndpointId string `json:"-" path:"vpc_endpoint_id"`
 }
 
+// This enumeration represents the type of Databricks VPC [endpoint
+// service](https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html)
+// that was used when creating this VPC endpoint.
+//
+// If the VPC endpoint connects to the Databricks control plane for either the
+// front-end connection or the back-end REST API connection, the value is
+// `WORKSPACE_ACCESS`.
+//
+// If the VPC endpoint connects to the Databricks workspace for the back-end
+// [secure cluster
+// connectivity](https://docs.databricks.com/security/secure-cluster-connectivity.html)
+// relay, the value is `DATAPLANE_RELAY_ACCESS`.
+type EndpointUseCase string
+
+const EndpointUseCaseDataplaneRelayAccess EndpointUseCase = `DATAPLANE_RELAY_ACCESS`
+
+const EndpointUseCaseWorkspaceAccess EndpointUseCase = `WORKSPACE_ACCESS`
+
 type GetAllVpcEndpointsRequest struct {
 	// Databricks account ID of any type. For non-E2 account types, get your
 	// account ID from the [Accounts
@@ -74,7 +92,7 @@ type VpcEndpoint struct {
 	// [secure cluster
 	// connectivity](https://docs.databricks.com/security/secure-cluster-connectivity.html)
 	// relay, the value is `DATAPLANE_RELAY_ACCESS`.
-	UseCase VpcEndpointUseCase `json:"use_case,omitempty"`
+	UseCase EndpointUseCase `json:"use_case,omitempty"`
 	// Databricks VPC endpoint ID. This is the Databricks-specific name of the
 	// VPC endpoint. Do not confuse this with the `aws_vpc_endpoint_id`, which
 	// is the ID within AWS of the VPC endpoint.
@@ -82,21 +100,3 @@ type VpcEndpoint struct {
 	// The human-readable name of the storage configuration.
 	VpcEndpointName string `json:"vpc_endpoint_name,omitempty"`
 }
-
-// This enumeration represents the type of Databricks VPC [endpoint
-// service](https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html)
-// that was used when creating this VPC endpoint.
-//
-// If the VPC endpoint connects to the Databricks control plane for either the
-// front-end connection or the back-end REST API connection, the value is
-// `WORKSPACE_ACCESS`.
-//
-// If the VPC endpoint connects to the Databricks workspace for the back-end
-// [secure cluster
-// connectivity](https://docs.databricks.com/security/secure-cluster-connectivity.html)
-// relay, the value is `DATAPLANE_RELAY_ACCESS`.
-type VpcEndpointUseCase string
-
-const VpcEndpointUseCaseDataplaneRelayAccess VpcEndpointUseCase = `DATAPLANE_RELAY_ACCESS`
-
-const VpcEndpointUseCaseWorkspaceAccess VpcEndpointUseCase = `WORKSPACE_ACCESS`

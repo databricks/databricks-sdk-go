@@ -93,6 +93,24 @@ type GetKeyWorkspaceHistoryRequest struct {
 	AccountId string `json:"-" path:"account_id"`
 }
 
+type KeyStatus string
+
+const KeyStatusAttached KeyStatus = `ATTACHED`
+
+const KeyStatusDetached KeyStatus = `DETACHED`
+
+const KeyStatusUnknown KeyStatus = `UNKNOWN`
+
+// This describes an enum
+type KeyUseCase string
+
+// Encrypts notebook and secret data in the control plane
+const KeyUseCaseManagedServices KeyUseCase = `MANAGED_SERVICES`
+
+// Encrypts the workspace's root S3 bucket (root DBFS and system data) and,
+// optionally, cluster EBS volumes.
+const KeyUseCaseStorage KeyUseCase = `STORAGE`
+
 type ListWorkspaceEncryptionKeyRecordsResponse struct {
 	WorkspaceEncryptionKeyRecords []WorkspaceEncryptionKeyRecord `json:"workspaceEncryptionKeyRecords,omitempty"`
 }
@@ -102,32 +120,13 @@ type WorkspaceEncryptionKeyRecord struct {
 	// ID of the encryption key configuration object.
 	CustomerManagedKeyId string `json:"customer_managed_key_id,omitempty"`
 
-	KeyStatus WorkspaceEncryptionKeyRecordKeyStatus `json:"key_status,omitempty"`
+	KeyStatus KeyStatus `json:"key_status,omitempty"`
 	// ID for the workspace-key mapping record.
 	RecordId string `json:"record_id,omitempty"`
 	// Time in epoch milliseconds when the record was added.
 	UpdateTime int64 `json:"update_time,omitempty"`
-	// Possible values are: - `MANAGED_SERVICES`: Encrypts notebook and secret
-	// data in the control plane - `STORAGE`: Encrypts the workspace's root S3
-	// bucket (root DBFS and system data) and, optionally, cluster EBS volumes.
-	UseCase WorkspaceEncryptionKeyRecordUseCase `json:"use_case,omitempty"`
+	// This describes an enum
+	UseCase KeyUseCase `json:"use_case,omitempty"`
 	// Workspace ID.
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 }
-
-type WorkspaceEncryptionKeyRecordKeyStatus string
-
-const WorkspaceEncryptionKeyRecordKeyStatusAttached WorkspaceEncryptionKeyRecordKeyStatus = `ATTACHED`
-
-const WorkspaceEncryptionKeyRecordKeyStatusDetached WorkspaceEncryptionKeyRecordKeyStatus = `DETACHED`
-
-const WorkspaceEncryptionKeyRecordKeyStatusUnknown WorkspaceEncryptionKeyRecordKeyStatus = `UNKNOWN`
-
-// Possible values are: - `MANAGED_SERVICES`: Encrypts notebook and secret data
-// in the control plane - `STORAGE`: Encrypts the workspace's root S3 bucket
-// (root DBFS and system data) and, optionally, cluster EBS volumes.
-type WorkspaceEncryptionKeyRecordUseCase string
-
-const WorkspaceEncryptionKeyRecordUseCaseManagedServices WorkspaceEncryptionKeyRecordUseCase = `MANAGED_SERVICES`
-
-const WorkspaceEncryptionKeyRecordUseCaseStorage WorkspaceEncryptionKeyRecordUseCase = `STORAGE`

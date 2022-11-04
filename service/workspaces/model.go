@@ -154,11 +154,9 @@ type CreateWorkspaceRequest struct {
 	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html)
 	// (Public Preview), this field is required.
 	NetworkId string `json:"network_id,omitempty"`
-	// The pricing tier of the workspace. If you do not provide this, the API
-	// defaults to the highest pricing tier available to your account. For
-	// pricing tier information, see [AWS
+	// The pricing tier of the workspace. For pricing tier information, see [AWS
 	// Pricing](https://databricks.com/product/aws-pricing).
-	PricingTier CreateWorkspaceRequestPricingTier `json:"pricing_tier,omitempty"`
+	PricingTier PricingTier `json:"pricing_tier,omitempty"`
 	// ID of the workspace's private access settings object. Only used for
 	// PrivateLink (Public Preview). This ID must be specified for customers
 	// using [AWS PrivateLink](https://aws.amazon.com/privatelink/) for either
@@ -179,18 +177,6 @@ type CreateWorkspaceRequest struct {
 	WorkspaceName string `json:"workspace_name"`
 }
 
-// The pricing tier of the workspace. If you do not provide this, the API
-// defaults to the highest pricing tier available to your account. For pricing
-// tier information, see [AWS
-// Pricing](https://databricks.com/product/aws-pricing).
-type CreateWorkspaceRequestPricingTier string
-
-const CreateWorkspaceRequestPricingTierEnterprise CreateWorkspaceRequestPricingTier = `ENTERPRISE`
-
-const CreateWorkspaceRequestPricingTierPremium CreateWorkspaceRequestPricingTier = `PREMIUM`
-
-const CreateWorkspaceRequestPricingTierStandard CreateWorkspaceRequestPricingTier = `STANDARD`
-
 type DeleteWorkspaceRequest struct {
 	// Databricks account ID of any type. For non-E2 account types, get your
 	// account ID from the [Accounts
@@ -199,6 +185,17 @@ type DeleteWorkspaceRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" path:"workspace_id"`
 }
+
+// Specifies the network connectivity types for the GKE nodes and the GKE master
+// network. Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for
+// the workspace. The GKE nodes will not have public IPs. Set to
+// `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a public
+// GKE cluster have public IP addresses.
+type GkeConnectivityType string
+
+const GkeConnectivityTypePrivateNodePublicMaster GkeConnectivityType = `PRIVATE_NODE_PUBLIC_MASTER`
+
+const GkeConnectivityTypePublicNodePublicMaster GkeConnectivityType = `PUBLIC_NODE_PUBLIC_MASTER`
 
 // The common network configuration fields that can be used by both
 // Databricks-managed VPCs and customer-managed VPCs.
@@ -209,29 +206,12 @@ type GcpCommonNetworkConfig struct {
 	// It must be exactly as big as `/28`.
 	GkeClusterMasterIpRange string `json:"gke_cluster_master_ip_range,omitempty"`
 	// Specifies the network connectivity types for the GKE nodes and the GKE
-	// master network.
-	//
-	// Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the
-	// workspace. The GKE nodes will not have public IPs.
-	//
-	// Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of
-	// a public GKE cluster have public IP addresses.
-	GkeConnectivityType GcpCommonNetworkConfigGkeConnectivityType `json:"gke_connectivity_type,omitempty"`
+	// master network. Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE
+	// cluster for the workspace. The GKE nodes will not have public IPs. Set to
+	// `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a
+	// public GKE cluster have public IP addresses.
+	GkeConnectivityType GkeConnectivityType `json:"gke_connectivity_type,omitempty"`
 }
-
-// Specifies the network connectivity types for the GKE nodes and the GKE master
-// network.
-//
-// Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the
-// workspace. The GKE nodes will not have public IPs.
-//
-// Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a
-// public GKE cluster have public IP addresses.
-type GcpCommonNetworkConfigGkeConnectivityType string
-
-const GcpCommonNetworkConfigGkeConnectivityTypePrivateNodePublicMaster GcpCommonNetworkConfigGkeConnectivityType = `PRIVATE_NODE_PUBLIC_MASTER`
-
-const GcpCommonNetworkConfigGkeConnectivityTypePublicNodePublicMaster GcpCommonNetworkConfigGkeConnectivityType = `PUBLIC_NODE_PUBLIC_MASTER`
 
 // The network settings for the workspace. The configurations are only for
 // Databricks-managed VPCs. It is ignored if you specify a customer-managed VPC
@@ -286,9 +266,43 @@ type GetWorkspaceRequest struct {
 	WorkspaceId int64 `json:"-" path:"workspace_id"`
 }
 
+type KeyStatus string
+
+const KeyStatusAttached KeyStatus = `ATTACHED`
+
+const KeyStatusDetached KeyStatus = `DETACHED`
+
+const KeyStatusUnknown KeyStatus = `UNKNOWN`
+
+// This describes an enum
+type KeyUseCase string
+
+// Encrypts notebook and secret data in the control plane
+const KeyUseCaseManagedServices KeyUseCase = `MANAGED_SERVICES`
+
+// Encrypts the workspace's root S3 bucket (root DBFS and system data) and,
+// optionally, cluster EBS volumes.
+const KeyUseCaseStorage KeyUseCase = `STORAGE`
+
 type ListWorkspaceEncryptionKeyRecordsResponse struct {
 	WorkspaceEncryptionKeyRecords []WorkspaceEncryptionKeyRecord `json:"workspaceEncryptionKeyRecords,omitempty"`
 }
+
+// The pricing tier of the workspace. For pricing tier information, see [AWS
+// Pricing](https://databricks.com/product/aws-pricing).
+type PricingTier string
+
+const PricingTierCommunityEdition PricingTier = `COMMUNITY_EDITION`
+
+const PricingTierDedicated PricingTier = `DEDICATED`
+
+const PricingTierEnterprise PricingTier = `ENTERPRISE`
+
+const PricingTierPremium PricingTier = `PREMIUM`
+
+const PricingTierStandard PricingTier = `STANDARD`
+
+const PricingTierUnknown PricingTier = `UNKNOWN`
 
 type UpdateWorkspaceRequest struct {
 	// Databricks account ID of any type. For non-E2 account types, get your
@@ -354,7 +368,7 @@ type Workspace struct {
 	Network *GcpNetwork `json:"network,omitempty"`
 	// The pricing tier of the workspace. For pricing tier information, see [AWS
 	// Pricing](https://databricks.com/product/aws-pricing).
-	PricingTier WorkspacePricingTier `json:"pricing_tier,omitempty"`
+	PricingTier PricingTier `json:"pricing_tier,omitempty"`
 	// ID of the workspace's private access settings object. Only used for
 	// PrivateLink (Public Preview). You must specify this ID if you are using
 	// [AWS PrivateLink](https://aws.amazon.com/privatelink/) for either
@@ -374,11 +388,8 @@ type Workspace struct {
 	WorkspaceName string `json:"workspace_name,omitempty"`
 	// The status of the workspace. For workspace creation, usually it is set to
 	// `PROVISIONING` initially. Continue to check the status until the status
-	// is `RUNNING`. For information about how to create a new workspace with
-	// this API **including error handling**, see [Create a new workspace using
-	// the Account Management
-	// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html).
-	WorkspaceStatus WorkspaceWorkspaceStatus `json:"workspace_status,omitempty"`
+	// is `RUNNING`.
+	WorkspaceStatus WorkspaceStatus `json:"workspace_status,omitempty"`
 	// Message describing the current workspace status.
 	WorkspaceStatusMessage string `json:"workspace_status_message,omitempty"`
 }
@@ -388,68 +399,30 @@ type WorkspaceEncryptionKeyRecord struct {
 	// ID of the encryption key configuration object.
 	CustomerManagedKeyId string `json:"customer_managed_key_id,omitempty"`
 
-	KeyStatus WorkspaceEncryptionKeyRecordKeyStatus `json:"key_status,omitempty"`
+	KeyStatus KeyStatus `json:"key_status,omitempty"`
 	// ID for the workspace-key mapping record.
 	RecordId string `json:"record_id,omitempty"`
 	// Time in epoch milliseconds when the record was added.
 	UpdateTime int64 `json:"update_time,omitempty"`
-	// Possible values are: - `MANAGED_SERVICES`: Encrypts notebook and secret
-	// data in the control plane - `STORAGE`: Encrypts the workspace's root S3
-	// bucket (root DBFS and system data) and, optionally, cluster EBS volumes.
-	UseCase WorkspaceEncryptionKeyRecordUseCase `json:"use_case,omitempty"`
+	// This describes an enum
+	UseCase KeyUseCase `json:"use_case,omitempty"`
 	// Workspace ID.
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 }
 
-type WorkspaceEncryptionKeyRecordKeyStatus string
-
-const WorkspaceEncryptionKeyRecordKeyStatusAttached WorkspaceEncryptionKeyRecordKeyStatus = `ATTACHED`
-
-const WorkspaceEncryptionKeyRecordKeyStatusDetached WorkspaceEncryptionKeyRecordKeyStatus = `DETACHED`
-
-const WorkspaceEncryptionKeyRecordKeyStatusUnknown WorkspaceEncryptionKeyRecordKeyStatus = `UNKNOWN`
-
-// Possible values are: - `MANAGED_SERVICES`: Encrypts notebook and secret data
-// in the control plane - `STORAGE`: Encrypts the workspace's root S3 bucket
-// (root DBFS and system data) and, optionally, cluster EBS volumes.
-type WorkspaceEncryptionKeyRecordUseCase string
-
-const WorkspaceEncryptionKeyRecordUseCaseManagedServices WorkspaceEncryptionKeyRecordUseCase = `MANAGED_SERVICES`
-
-const WorkspaceEncryptionKeyRecordUseCaseStorage WorkspaceEncryptionKeyRecordUseCase = `STORAGE`
-
-// The pricing tier of the workspace. For pricing tier information, see [AWS
-// Pricing](https://databricks.com/product/aws-pricing).
-type WorkspacePricingTier string
-
-const WorkspacePricingTierCommunityEdition WorkspacePricingTier = `COMMUNITY_EDITION`
-
-const WorkspacePricingTierDedicated WorkspacePricingTier = `DEDICATED`
-
-const WorkspacePricingTierEnterprise WorkspacePricingTier = `ENTERPRISE`
-
-const WorkspacePricingTierPremium WorkspacePricingTier = `PREMIUM`
-
-const WorkspacePricingTierStandard WorkspacePricingTier = `STANDARD`
-
-const WorkspacePricingTierUnknown WorkspacePricingTier = `UNKNOWN`
-
 // The status of the workspace. For workspace creation, usually it is set to
 // `PROVISIONING` initially. Continue to check the status until the status is
-// `RUNNING`. For information about how to create a new workspace with this API
-// **including error handling**, see [Create a new workspace using the Account
-// Management
-// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html).
-type WorkspaceWorkspaceStatus string
+// `RUNNING`.
+type WorkspaceStatus string
 
-const WorkspaceWorkspaceStatusBanned WorkspaceWorkspaceStatus = `BANNED`
+const WorkspaceStatusBanned WorkspaceStatus = `BANNED`
 
-const WorkspaceWorkspaceStatusCancelling WorkspaceWorkspaceStatus = `CANCELLING`
+const WorkspaceStatusCancelling WorkspaceStatus = `CANCELLING`
 
-const WorkspaceWorkspaceStatusFailed WorkspaceWorkspaceStatus = `FAILED`
+const WorkspaceStatusFailed WorkspaceStatus = `FAILED`
 
-const WorkspaceWorkspaceStatusNotProvisioned WorkspaceWorkspaceStatus = `NOT_PROVISIONED`
+const WorkspaceStatusNotProvisioned WorkspaceStatus = `NOT_PROVISIONED`
 
-const WorkspaceWorkspaceStatusProvisioning WorkspaceWorkspaceStatus = `PROVISIONING`
+const WorkspaceStatusProvisioning WorkspaceStatus = `PROVISIONING`
 
-const WorkspaceWorkspaceStatusRunning WorkspaceWorkspaceStatus = `RUNNING`
+const WorkspaceStatusRunning WorkspaceStatus = `RUNNING`

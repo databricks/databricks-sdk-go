@@ -38,6 +38,20 @@ type DeleteNetworkConfigRequest struct {
 	NetworkId string `json:"-" path:"network_id"`
 }
 
+// The AWS resource associated with this error: credentials, VPC, subnet,
+// security group, or network ACL.
+type ErrorType string
+
+const ErrorTypeCredentials ErrorType = `credentials`
+
+const ErrorTypeNetworkacl ErrorType = `networkAcl`
+
+const ErrorTypeSecuritygroup ErrorType = `securityGroup`
+
+const ErrorTypeSubnet ErrorType = `subnet`
+
+const ErrorTypeVpc ErrorType = `vpc`
+
 // The Google Cloud specific information for this network (for example, the VPC
 // ID, subnet ID, and secondary IP ranges).
 type GcpNetworkInfo struct {
@@ -102,17 +116,8 @@ type Network struct {
 	// The ID of the VPC associated with this network configuration. VPC IDs can
 	// be used in multiple networks.
 	VpcId string `json:"vpc_id,omitempty"`
-	// The status of this network configuration object in terms of its use in a
-	// workspace:
-	//
-	// * `UNATTACHED`: Unattached.
-	//
-	// * `VALID`: Valid.
-	//
-	// * `BROKEN`: Broken.
-	//
-	// * `WARNED`: Warned.
-	VpcStatus NetworkVpcStatus `json:"vpc_status,omitempty"`
+	// This describes an enum
+	VpcStatus VpcStatus `json:"vpc_status,omitempty"`
 	// Array of warning messages about the network configuration.
 	WarningMessages []NetworkWarning `json:"warning_messages,omitempty"`
 	// Workspace ID associated with this network configuration.
@@ -124,22 +129,8 @@ type NetworkHealth struct {
 	ErrorMessage string `json:"error_message,omitempty"`
 	// The AWS resource associated with this error: credentials, VPC, subnet,
 	// security group, or network ACL.
-	ErrorType NetworkHealthErrorType `json:"error_type,omitempty"`
+	ErrorType ErrorType `json:"error_type,omitempty"`
 }
-
-// The AWS resource associated with this error: credentials, VPC, subnet,
-// security group, or network ACL.
-type NetworkHealthErrorType string
-
-const NetworkHealthErrorTypeCredentials NetworkHealthErrorType = `credentials`
-
-const NetworkHealthErrorTypeNetworkacl NetworkHealthErrorType = `networkAcl`
-
-const NetworkHealthErrorTypeSecuritygroup NetworkHealthErrorType = `securityGroup`
-
-const NetworkHealthErrorTypeSubnet NetworkHealthErrorType = `subnet`
-
-const NetworkHealthErrorTypeVpc NetworkHealthErrorType = `vpc`
 
 // If specified, contains the VPC endpoints used to allow cluster communication
 // from this VPC over [AWS PrivateLink](https://aws.amazon.com/privatelink/).
@@ -169,37 +160,32 @@ type NetworkVpcEndpoints struct {
 	RestApi []string `json:"rest_api"`
 }
 
-// The status of this network configuration object in terms of its use in a
-// workspace:
-//
-// * `UNATTACHED`: Unattached.
-//
-// * `VALID`: Valid.
-//
-// * `BROKEN`: Broken.
-//
-// * `WARNED`: Warned.
-type NetworkVpcStatus string
-
-const NetworkVpcStatusBroken NetworkVpcStatus = `BROKEN`
-
-const NetworkVpcStatusUnattached NetworkVpcStatus = `UNATTACHED`
-
-const NetworkVpcStatusValid NetworkVpcStatus = `VALID`
-
-const NetworkVpcStatusWarned NetworkVpcStatus = `WARNED`
-
 type NetworkWarning struct {
 	// Details of the warning.
 	WarningMessage string `json:"warning_message,omitempty"`
 	// The AWS resource associated with this warning: a subnet or a security
 	// group.
-	WarningType NetworkWarningWarningType `json:"warning_type,omitempty"`
+	WarningType WarningType `json:"warning_type,omitempty"`
 }
 
+// This describes an enum
+type VpcStatus string
+
+// Broken.
+const VpcStatusBroken VpcStatus = `BROKEN`
+
+// Unattached.
+const VpcStatusUnattached VpcStatus = `UNATTACHED`
+
+// Valid.
+const VpcStatusValid VpcStatus = `VALID`
+
+// Warned.
+const VpcStatusWarned VpcStatus = `WARNED`
+
 // The AWS resource associated with this warning: a subnet or a security group.
-type NetworkWarningWarningType string
+type WarningType string
 
-const NetworkWarningWarningTypeSecuritygroup NetworkWarningWarningType = `securityGroup`
+const WarningTypeSecuritygroup WarningType = `securityGroup`
 
-const NetworkWarningWarningTypeSubnet NetworkWarningWarningType = `subnet`
+const WarningTypeSubnet WarningType = `subnet`

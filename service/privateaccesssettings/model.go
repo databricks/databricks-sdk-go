@@ -29,6 +29,21 @@ type GetPrivateAccessSettingsRequest struct {
 	PrivateAccessSettingsId string `json:"-" path:"private_access_settings_id"`
 }
 
+// The private access level controls which VPC endpoints can connect to the UI
+// or API of any workspace that attaches this private access settings object. *
+// `ANY` (deprecated): Any VPC endpoint can connect to your workspace. *
+// `ACCOUNT` level access (the default) allows only VPC endpoints that are
+// registered in your Databricks account connect to your workspace. * `ENDPOINT`
+// level access allows only specified VPC endpoints connect to your workspace.
+// For details, see `allowed_vpc_endpoint_ids`.
+type PrivateAccessLevel string
+
+const PrivateAccessLevelAccount PrivateAccessLevel = `ACCOUNT`
+
+const PrivateAccessLevelAny PrivateAccessLevel = `ANY`
+
+const PrivateAccessLevelEndpoint PrivateAccessLevel = `ENDPOINT`
+
 type PrivateAccessSettings struct {
 	// The Databricks account ID that hosts the credential.
 	AccountId string `json:"account_id,omitempty"`
@@ -53,7 +68,7 @@ type PrivateAccessSettings struct {
 	// endpoints that are registered in your Databricks account connect to your
 	// workspace. * `ENDPOINT` level access allows only specified VPC endpoints
 	// connect to your workspace. For details, see `allowed_vpc_endpoint_ids`.
-	PrivateAccessLevel PrivateAccessSettingsPrivateAccessLevel `json:"private_access_level,omitempty"`
+	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
 	// Databricks private access settings ID.
 	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
 	// The human-readable name of the private access settings object.
@@ -68,21 +83,6 @@ type PrivateAccessSettings struct {
 	// object.
 	Region string `json:"region,omitempty"`
 }
-
-// The private access level controls which VPC endpoints can connect to the UI
-// or API of any workspace that attaches this private access settings object. *
-// `ANY` (deprecated): Any VPC endpoint can connect to your workspace. *
-// `ACCOUNT` level access (the default) allows only VPC endpoints that are
-// registered in your Databricks account connect to your workspace. * `ENDPOINT`
-// level access allows only specified VPC endpoints connect to your workspace.
-// For details, see `allowed_vpc_endpoint_ids`.
-type PrivateAccessSettingsPrivateAccessLevel string
-
-const PrivateAccessSettingsPrivateAccessLevelAccount PrivateAccessSettingsPrivateAccessLevel = `ACCOUNT`
-
-const PrivateAccessSettingsPrivateAccessLevelAny PrivateAccessSettingsPrivateAccessLevel = `ANY`
-
-const PrivateAccessSettingsPrivateAccessLevelEndpoint PrivateAccessSettingsPrivateAccessLevel = `ENDPOINT`
 
 type UpsertPrivateAccessSettingsRequest struct {
 	// Databricks account ID of any type. For non-E2 account types, get your
@@ -105,15 +105,12 @@ type UpsertPrivateAccessSettingsRequest struct {
 	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
 	// The private access level controls which VPC endpoints can connect to the
 	// UI or API of any workspace that attaches this private access settings
-	// object. * `ANY` level access (deprecated) allows any VPC endpoint connect
-	// to your workspace. It is unsupported to create new
-	// `PrivateAccessSettings` objects with the deprecated `ANY` access level or
-	// update an existing object to `ANY` access level from another value. *
-	// `ACCOUNT` level access allows only VPC endpoints that are registered in
-	// your Databricks account connect to your workspace. * `ENDPOINT` level
-	// access allows only specified VPC endpoints connect to your workspace. For
-	// details, see `allowed_vpc_endpoint_ids`.
-	PrivateAccessLevel UpsertPrivateAccessSettingsRequestPrivateAccessLevel `json:"private_access_level,omitempty"`
+	// object. * `ANY` (deprecated): Any VPC endpoint can connect to your
+	// workspace. * `ACCOUNT` level access (the default) allows only VPC
+	// endpoints that are registered in your Databricks account connect to your
+	// workspace. * `ENDPOINT` level access allows only specified VPC endpoints
+	// connect to your workspace. For details, see `allowed_vpc_endpoint_ids`.
+	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" path:"private_access_settings_id"`
 	// The human-readable name of the private access settings object.
@@ -129,20 +126,3 @@ type UpsertPrivateAccessSettingsRequest struct {
 	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/regions.html).
 	Region string `json:"region"`
 }
-
-// The private access level controls which VPC endpoints can connect to the UI
-// or API of any workspace that attaches this private access settings object. *
-// `ANY` level access (deprecated) allows any VPC endpoint connect to your
-// workspace. It is unsupported to create new `PrivateAccessSettings` objects
-// with the deprecated `ANY` access level or update an existing object to `ANY`
-// access level from another value. * `ACCOUNT` level access allows only VPC
-// endpoints that are registered in your Databricks account connect to your
-// workspace. * `ENDPOINT` level access allows only specified VPC endpoints
-// connect to your workspace. For details, see `allowed_vpc_endpoint_ids`.
-type UpsertPrivateAccessSettingsRequestPrivateAccessLevel string
-
-const UpsertPrivateAccessSettingsRequestPrivateAccessLevelAccount UpsertPrivateAccessSettingsRequestPrivateAccessLevel = `ACCOUNT`
-
-const UpsertPrivateAccessSettingsRequestPrivateAccessLevelAny UpsertPrivateAccessSettingsRequestPrivateAccessLevel = `ANY`
-
-const UpsertPrivateAccessSettingsRequestPrivateAccessLevelEndpoint UpsertPrivateAccessSettingsRequestPrivateAccessLevel = `ENDPOINT`
