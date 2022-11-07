@@ -14,29 +14,22 @@ import (
 // Log delivery works with all account types. However, if your account is on the
 // E2 version of the platform or on a select custom plan that allows multiple
 // workspaces per account, you can optionally configure different storage
-// destinations for each workspace.
-//
-// Log delivery status is also provided to know the latest status of log
-// delivery attempts.
-//
-// The high-level flow of billable usage delivery:
+// destinations for each workspace. Log delivery status is also provided to know
+// the latest status of log delivery attempts. The high-level flow of billable
+// usage delivery:
 //
 // 1. **Create storage**: In AWS, [create a new AWS S3
 // bucket](https://docs.databricks.com/administration-guide/account-api/aws-storage.html)
 // with a specific bucket policy. Using Databricks APIs, call the Account API to
 // create a [storage configuration object](#operation/create-storage-config)
-// that uses the bucket name.
-//
-// 2. **Create credentials**: In AWS, create the appropriate AWS IAM role. For
-// full details, including the required IAM role policies and trust
-// relationship, see [Billable usage log
+// that uses the bucket name. 2. **Create credentials**: In AWS, create the
+// appropriate AWS IAM role. For full details, including the required IAM role
+// policies and trust relationship, see [Billable usage log
 // delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
 // Using Databricks APIs, call the Account API to create a [credential
 // configuration object](#operation/create-credential-config) that uses the IAM
-// role's ARN.
-//
-// 3. **Create log delivery configuration**: Using Databricks APIs, call the
-// Account API to [create a log delivery
+// role's ARN. 3. **Create log delivery configuration**: Using Databricks APIs,
+// call the Account API to [create a log delivery
 // configuration](#operation/create-log-delivery-config) that uses the
 // credential and storage configuration objects from previous steps. You can
 // specify if the logs should include all events of that log type in your
@@ -46,9 +39,8 @@ import (
 // level log delivery solely delivers logs related to the specified workspaces.
 // You can create multiple types of delivery configurations per account.
 //
-// For billable usage delivery:
-//
-// * For more information about billable usage logs, see [Billable usage log
+// For billable usage delivery: * For more information about billable usage
+// logs, see [Billable usage log
 // delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
 // For the CSV schema, see the [Usage
 // page](https://docs.databricks.com/administration-guide/account-settings/usage.html).
@@ -62,9 +54,8 @@ import (
 // your account. * The files are delivered daily by overwriting the month's CSV
 // file for each workspace.
 //
-// For audit log delivery:
-//
-// * For more information about about audit log delivery, see [Audit log
+// For audit log delivery: * For more information about about audit log
+// delivery, see [Audit log
 // delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html),
 // which includes information about the used JSON schema. * The delivery
 // location is

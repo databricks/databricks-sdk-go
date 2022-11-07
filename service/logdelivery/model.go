@@ -26,12 +26,12 @@ type CreateLogDeliveryConfigurationParams struct {
 	DeliveryStartTime string `json:"delivery_start_time,omitempty"`
 	// Log delivery type. Supported values are:
 	//
-	// * `BILLABLE_USAGE` ? Configure [billable usage log
+	// * `BILLABLE_USAGE` — Configure [billable usage log
 	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
 	// For the CSV schema, see the [View billable
 	// usage](https://docs.databricks.com/administration-guide/account-settings/usage.html).
 	//
-	// * `AUDIT_LOGS` ? Configure [audit log
+	// * `AUDIT_LOGS` — Configure [audit log
 	// delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
 	// For the JSON schema, see [Configure audit
 	// logging](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html)
@@ -160,12 +160,12 @@ type LogDeliveryConfiguration struct {
 	LogDeliveryStatus *LogDeliveryStatus `json:"log_delivery_status,omitempty"`
 	// Log delivery type. Supported values are:
 	//
-	// * `BILLABLE_USAGE` ? Configure [billable usage log
+	// * `BILLABLE_USAGE` — Configure [billable usage log
 	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
 	// For the CSV schema, see the [View billable
 	// usage](https://docs.databricks.com/administration-guide/account-settings/usage.html).
 	//
-	// * `AUDIT_LOGS` ? Configure [audit log
+	// * `AUDIT_LOGS` — Configure [audit log
 	// delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
 	// For the JSON schema, see [Configure audit
 	// logging](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html)
@@ -228,12 +228,12 @@ type LogDeliveryStatus struct {
 
 // Log delivery type. Supported values are:
 //
-// * `BILLABLE_USAGE` ? Configure [billable usage log
+// * `BILLABLE_USAGE` — Configure [billable usage log
 // delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
 // For the CSV schema, see the [View billable
 // usage](https://docs.databricks.com/administration-guide/account-settings/usage.html).
 //
-// * `AUDIT_LOGS` ? Configure [audit log
+// * `AUDIT_LOGS` — Configure [audit log
 // delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
 // For the JSON schema, see [Configure audit
 // logging](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html)

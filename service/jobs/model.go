@@ -97,27 +97,29 @@ type AwsAttributes struct {
 	// This feature may only be available to certain customer plans.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// The max price for AWS spot instances, as a percentage of the
-	// corresponding instance type?s on-demand price. For example, if this field
-	// is set to 50, and the cluster needs a new `i3.xlarge` spot instance, then
-	// the max price is half of the price of on-demand `i3.xlarge` instances.
-	// Similarly, if this field is set to 200, the max price is twice the price
-	// of on-demand `i3.xlarge` instances. If not specified, the default value
-	// is 100\. When spot instances are requested for this cluster, only spot
-	// instances whose max price percentage matches this field is considered.
-	// For safety, we enforce this field to be no more than 10000.
+	// corresponding instance type’s on-demand price. For example, if this
+	// field is set to 50, and the cluster needs a new `i3.xlarge` spot
+	// instance, then the max price is half of the price of on-demand
+	// `i3.xlarge` instances. Similarly, if this field is set to 200, the max
+	// price is twice the price of on-demand `i3.xlarge` instances. If not
+	// specified, the default value is 100\. When spot instances are requested
+	// for this cluster, only spot instances whose max price percentage matches
+	// this field is considered. For safety, we enforce this field to be no more
+	// than 10000.
 	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
 	// Identifier for the availability zone/datacenter in which the cluster
 	// resides. You have three options:
 	//
-	// **Specify an availability zone as a string**, for example: ?us-west-2a?.
-	// The provided availability zone must be in the same region as the
-	// Databricks deployment. For example, ?us-west-2a? is not a valid zone ID
-	// if the Databricks deployment resides in the ?us-east-1? region.
+	// **Specify an availability zone as a string**, for example:
+	// “us-west-2a”. The provided availability zone must be in the same
+	// region as the Databricks deployment. For example, “us-west-2a” is not
+	// a valid zone ID if the Databricks deployment resides in the
+	// “us-east-1” region.
 	//
-	// **Enable automatic availability zone selection (?Auto-AZ?)**, by setting
-	// the value ?auto?. Databricks selects the AZ based on available IPs in the
-	// workspace subnets and retries in other availability zones if AWS returns
-	// insufficient capacity errors.
+	// **Enable automatic availability zone selection (“Auto-AZ”)**, by
+	// setting the value “auto”. Databricks selects the AZ based on
+	// available IPs in the workspace subnets and retries in other availability
+	// zones if AWS returns insufficient capacity errors.
 	//
 	// **Do not specify a value**. If not specified, a default zone is used.
 	//
@@ -215,8 +217,8 @@ type ClusterInstance struct {
 	// to view logs by browsing to `/#setting/sparkui/$cluster_id/driver-logs`.
 	// The logs continue to be available after the run completes.
 	//
-	// The response won?t include this field if the identifier is not available
-	// yet.
+	// The response won’t include this field if the identifier is not
+	// available yet.
 	ClusterId string `json:"cluster_id,omitempty"`
 	// The canonical identifier for the Spark context used by a run. This field
 	// is filled in once the run begins execution. This value can be used to
@@ -224,8 +226,8 @@ type ClusterInstance struct {
 	// `/#setting/sparkui/$cluster_id/$spark_context_id`. The Spark UI continues
 	// to be available after the run has completed.
 	//
-	// The response won?t include this field if the identifier is not available
-	// yet.
+	// The response won’t include this field if the identifier is not
+	// available yet.
 	SparkContextId string `json:"spark_context_id,omitempty"`
 }
 
@@ -283,9 +285,9 @@ type CreateJob struct {
 	// each other, or if you want to trigger multiple runs which differ by their
 	// input parameters.
 	//
-	// This setting affects only new runs. For example, suppose the job?s
+	// This setting affects only new runs. For example, suppose the job’s
 	// concurrency is 4 and there are 4 concurrent active runs. Then setting the
-	// concurrency to 3 won?t kill any of the active runs. However, from then
+	// concurrency to 3 won’t kill any of the active runs. However, from then
 	// on, new runs are skipped unless there are fewer than 3 active runs.
 	//
 	// This value cannot exceed 1000\. Setting this value to 0 causes all new
@@ -295,8 +297,8 @@ type CreateJob struct {
 	// An optional name for the job.
 	Name string `json:"name,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
-	// the job only runs when triggered by clicking ?Run Now? in the Jobs UI or
-	// sending an API request to `runNow`.
+	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
+	// or sending an API request to `runNow`.
 	Schedule *CronSchedule `json:"schedule,omitempty"`
 	// A map of tags associated with the job. These are forwarded to the cluster
 	// as cluster tags for jobs clusters, and are subject to the same
@@ -451,7 +453,7 @@ type Job struct {
 	// The time at which this job was created in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC).
 	CreatedTime int64 `json:"created_time,omitempty"`
-	// The creator user name. This field won?t be included in the response if
+	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// The canonical identifier for this job.
@@ -517,9 +519,9 @@ type JobSettings struct {
 	// each other, or if you want to trigger multiple runs which differ by their
 	// input parameters.
 	//
-	// This setting affects only new runs. For example, suppose the job?s
+	// This setting affects only new runs. For example, suppose the job’s
 	// concurrency is 4 and there are 4 concurrent active runs. Then setting the
-	// concurrency to 3 won?t kill any of the active runs. However, from then
+	// concurrency to 3 won’t kill any of the active runs. However, from then
 	// on, new runs are skipped unless there are fewer than 3 active runs.
 	//
 	// This value cannot exceed 1000\. Setting this value to 0 causes all new
@@ -529,8 +531,8 @@ type JobSettings struct {
 	// An optional name for the job.
 	Name string `json:"name,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
-	// the job only runs when triggered by clicking ?Run Now? in the Jobs UI or
-	// sending an API request to `runNow`.
+	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
+	// or sending an API request to `runNow`.
 	Schedule *CronSchedule `json:"schedule,omitempty"`
 	// A map of tags associated with the job. These are forwarded to the cluster
 	// as cluster tags for jobs clusters, and are subject to the same
@@ -777,7 +779,7 @@ type NotebookTask struct {
 	// Use [Task parameter variables](..jobshtml#parameter-variables) to set
 	// parameters containing information about job runs.
 	//
-	// If the notebook takes a parameter that is not specified in the job?s
+	// If the notebook takes a parameter that is not specified in the job’s
 	// `base_parameters` or the `run-now` override parameters, the default value
 	// from the notebook is used.
 	//
@@ -885,7 +887,7 @@ type RepairRun struct {
 	// [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets)
 	// function.
 	//
-	// If not specified upon `run-now`, the triggered run uses the job?s base
+	// If not specified upon `run-now`, the triggered run uses the job’s base
 	// parameters.
 	//
 	// notebook_params cannot be specified in conjunction with jar_params.
@@ -958,7 +960,7 @@ type Run struct {
 	// initial attempt of a run has an attempt_number of 0\. If the initial run
 	// attempt fails, and the job has a retry policy (`max_retries` \> 0),
 	// subsequent runs are created with an `original_attempt_run_id` of the
-	// original attempt?s ID and an incrementing `attempt_number`. Runs are
+	// original attempt’s ID and an incrementing `attempt_number`. Runs are
 	// retried only until they succeed, and the maximum `attempt_number` is the
 	// same as the `max_retries` value for the job.
 	AttemptNumber int `json:"attempt_number,omitempty"`
@@ -970,9 +972,10 @@ type Run struct {
 	// cluster, this field is set once the Jobs service has requested a cluster
 	// for the run.
 	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
-	// A snapshot of the job?s cluster specification when this run was created.
+	// A snapshot of the job’s cluster specification when this run was
+	// created.
 	ClusterSpec *ClusterSpec `json:"cluster_spec,omitempty"`
-	// The creator user name. This field won?t be included in the response if
+	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
@@ -1101,7 +1104,7 @@ type RunNow struct {
 	// [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets)
 	// function.
 	//
-	// If not specified upon `run-now`, the triggered run uses the job?s base
+	// If not specified upon `run-now`, the triggered run uses the job’s base
 	// parameters.
 	//
 	// notebook_params cannot be specified in conjunction with jar_params.
@@ -1214,7 +1217,7 @@ type RunParameters struct {
 	// [dbutils.widgets.get](..dev-tools/databricks-utilshtml#dbutils-widgets)
 	// function.
 	//
-	// If not specified upon `run-now`, the triggered run uses the job?s base
+	// If not specified upon `run-now`, the triggered run uses the job’s base
 	// parameters.
 	//
 	// notebook_params cannot be specified in conjunction with jar_params.
@@ -1284,7 +1287,7 @@ const RunResultStateTimedout RunResultState = `TIMEDOUT`
 
 // The result and lifecycle state of the run.
 type RunState struct {
-	// A description of a run?s current location in the run lifecycle. This
+	// A description of a run’s current location in the run lifecycle. This
 	// field is always available in the response.
 	LifeCycleState RunLifeCycleState `json:"life_cycle_state,omitempty"`
 	// This describes an enum
@@ -1343,7 +1346,7 @@ type RunTask struct {
 	// initial attempt of a run has an attempt_number of 0\. If the initial run
 	// attempt fails, and the job has a retry policy (`max_retries` \> 0),
 	// subsequent runs are created with an `original_attempt_run_id` of the
-	// original attempt?s ID and an incrementing `attempt_number`. Runs are
+	// original attempt’s ID and an incrementing `attempt_number`. Runs are
 	// retried only until they succeed, and the maximum `attempt_number` is the
 	// same as the `max_retries` value for the job.
 	AttemptNumber int `json:"attempt_number,omitempty"`
@@ -1588,8 +1591,8 @@ type ViewItem struct {
 	// Content of the view.
 	Content string `json:"content,omitempty"`
 	// Name of the view item. In the case of code view, it would be the
-	// notebook?s name. In the case of dashboard view, it would be the
-	// dashboard?s name.
+	// notebook’s name. In the case of dashboard view, it would be the
+	// dashboard’s name.
 	Name string `json:"name,omitempty"`
 	// Type of the view item.
 	Type ViewType `json:"type,omitempty"`

@@ -30,6 +30,10 @@ type QueryHistoryService interface {
 	ListQueriesAll(ctx context.Context, request ListQueriesRequest) ([]QueryInfo, error)
 }
 
+// A SQL warehouse is a compute resource that lets you run SQL commands on data
+// objects within Databricks SQL. Compute resources are infrastructure resources
+// that provide processing capabilities in the cloud.
+//
 // This is the high-level interface, that contains generated methods.
 //
 // Evolving: this interface is under development. Method signatures may change.
