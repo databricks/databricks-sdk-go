@@ -10,6 +10,15 @@ import (
 
 // The Jobs API allows you to create, edit, and delete jobs.
 //
+// You can use a Databricks job to run a data processing or data analysis task
+// in a Databricks cluster with scalable resources. Your job can consist of a
+// single task or can be a large, multi-task workflow with complex dependencies.
+// Databricks manages the task orchestration, cluster management, monitoring,
+// and error reporting for all of your jobs. You can run your jobs immediately
+// or periodically through an easy-to-use scheduling system. You can implement
+// job tasks using notebooks, JARS, Delta Live Tables pipelines, or Python,
+// Scala, Spark submit, and Java applications.
+//
 // This is the high-level interface, that contains generated methods.
 //
 // Evolving: this interface is under development. Method signatures may change.
@@ -176,9 +185,9 @@ type JobsService interface {
 	// Create and trigger a one-time run
 	//
 	// Submit a one-time run. This endpoint allows you to submit a workload
-	// directly without creating a job. Runs submitted using this endpoint don?t
-	// display in the UI. Use the `jobs/runs/get` API to check the run state
-	// after the job is submitted.
+	// directly without creating a job. Runs submitted using this endpoint
+	// don’t display in the UI. Use the `jobs/runs/get` API to check the run
+	// state after the job is submitted.
 	Submit(ctx context.Context, request SubmitRun) (*SubmitRunResponse, error)
 
 	// SubmitAndWait calls Submit() and waits to reach TERMINATED or SKIPPED state

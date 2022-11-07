@@ -9,6 +9,14 @@ import (
 // The Repos API allows users to manage their git repos. Users can use the API
 // to access all repos that they have manage permissions on.
 //
+// Databricks Repos is a visual Git client in Databricks. It supports common Git
+// operations such a cloning a repository, committing and pushing, pulling,
+// branch management, and visual comparison of diffs when committing.
+//
+// Within Repos you can develop code in notebooks or other files and follow data
+// science and engineering code development best practices using Git for version
+// control, collaboration, and CI/CD.
+//
 // This is the high-level interface, that contains generated methods.
 //
 // Evolving: this interface is under development. Method signatures may change.

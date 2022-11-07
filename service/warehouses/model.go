@@ -718,13 +718,13 @@ type QueryMetrics struct {
 	// Size of data temporarily written to disk while executing the query, in
 	// bytes.
 	SpillToDiskBytes int `json:"spill_to_disk_bytes,omitempty"`
-	// Sum of execution time for all of the query?s tasks, in milliseconds.
+	// Sum of execution time for all of the query’s tasks, in milliseconds.
 	TaskTotalTimeMs int `json:"task_total_time_ms,omitempty"`
 	// Number of files that would have been read without pruning.
 	TotalFilesCount int `json:"total_files_count,omitempty"`
 	// Number of partitions that would have been read without pruning.
 	TotalPartitionsCount int `json:"total_partitions_count,omitempty"`
-	// Total execution time of the query from the client?s point of view, in
+	// Total execution time of the query from the client’s point of view, in
 	// milliseconds.
 	TotalTimeMs int `json:"total_time_ms,omitempty"`
 	// Size pf persistent data written to cloud object storage in your cloud

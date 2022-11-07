@@ -197,11 +197,11 @@ type CreateRegistryWebhook struct {
 	// Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A
 	// new model version was created for the associated model.
 	//
-	// * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version?s stage was
+	// * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was
 	// changed.
 	//
-	// * `TRANSITION_REQUEST_CREATED`: A user requested a model version?s stage
-	// be transitioned.
+	// * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s
+	// stage be transitioned.
 	//
 	// * `COMMENT_CREATED`: A user wrote a comment on a registered model.
 	//
@@ -461,7 +461,7 @@ type JobSpec struct {
 	// ID of the job that the webhook runs.
 	JobId string `json:"job_id"`
 	// URL of the workspace containing the job that this webhook runs. If not
-	// specified, the job?s workspace URL is assumed to be the same as the
+	// specified, the job’s workspace URL is assumed to be the same as the
 	// workspace where the webhook is created.
 	WorkspaceUrl string `json:"workspace_url,omitempty"`
 }
@@ -471,7 +471,7 @@ type JobSpecWithoutSecret struct {
 	JobId string `json:"job_id,omitempty"`
 	// URL of the workspace containing the job that this webhook runs. Defaults
 	// to the workspace URL in which the webhook is created. If not specified,
-	// the job?s workspace is assumed to be the same as the webhook?s.
+	// the job’s workspace is assumed to be the same as the webhook’s.
 	WorkspaceUrl string `json:"workspace_url,omitempty"`
 }
 
@@ -734,11 +734,11 @@ type RegistryWebhook struct {
 	// Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A
 	// new model version was created for the associated model.
 	//
-	// * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version?s stage was
+	// * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was
 	// changed.
 	//
-	// * `TRANSITION_REQUEST_CREATED`: A user requested a model version?s stage
-	// be transitioned.
+	// * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s
+	// stage be transitioned.
 	//
 	// * `COMMENT_CREATED`: A user wrote a comment on a registered model.
 	//
@@ -1228,11 +1228,11 @@ type UpdateRegistryWebhook struct {
 	// Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A
 	// new model version was created for the associated model.
 	//
-	// * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version?s stage was
+	// * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was
 	// changed.
 	//
-	// * `TRANSITION_REQUEST_CREATED`: A user requested a model version?s stage
-	// be transitioned.
+	// * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s
+	// stage be transitioned.
 	//
 	// * `COMMENT_CREATED`: A user wrote a comment on a registered model.
 	//

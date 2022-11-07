@@ -8,6 +8,9 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/retries"
 )
 
+// This API allows execution of Python, Scala, SQL, or R commands on running
+// Databricks Clusters.
+//
 // This is the high-level interface, that contains generated methods.
 //
 // Evolving: this interface is under development. Method signatures may change.

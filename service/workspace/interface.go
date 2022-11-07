@@ -6,7 +6,11 @@ import (
 	"context"
 )
 
-// <content needed>
+// The Workspace API allows you to list, import, export, and delete notebooks
+// and folders.
+//
+// A notebook is a web-based interface to a document that contains runnable
+// code, visualizations, and explanatory text.
 //
 // This is the high-level interface, that contains generated methods.
 //

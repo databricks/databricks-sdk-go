@@ -6,7 +6,14 @@ import (
 	"context"
 )
 
-// Databricks Unity Catalog: Catalogs REST API
+// A catalog is the first layer of Unity Catalog’s three-level namespace.
+// It’s used to organize your data assets. Users can see all catalogs on which
+// they have been assigned the USAGE data permission.
+//
+// In Unity Catalog, admins and data stewards manage users and their access to
+// data centrally across all of the workspaces in a Databricks account. Users in
+// different workspaces can share access to the same data, depending on
+// privileges granted centrally in Unity Catalog.
 //
 // This is the high-level interface, that contains generated methods.
 //
@@ -66,7 +73,19 @@ type CatalogsService interface {
 	Update(ctx context.Context, request UpdateCatalog) error
 }
 
-// Databricks Unity Catalog: External Locations REST API
+// An external location is an object that combines a cloud storage path with a
+// storage credential that authorizes access to the cloud storage path. Each
+// storage location is subject to Unity Catalog access-control policies that
+// control which users and groups can access the credential. If a user does not
+// have access to a storage location in Unity Catalog, the request fails and
+// Unity Catalog does not attempt to authenticate to your cloud tenant on the
+// user’s behalf.
+//
+// Databricks recommends using external locations rather than using storage
+// credentials directly.
+//
+// To create external locations, you must be a metastore admin or a user with
+// the CREATE EXTERNAL LOCATION privilege.
 //
 // This is the high-level interface, that contains generated methods.
 //
@@ -127,7 +146,21 @@ type ExternalLocationsService interface {
 	Update(ctx context.Context, request UpdateExternalLocation) error
 }
 
-// Databricks Unity Catalog: Grants REST API
+// In Unity Catalog, data is secure by default. Initially, users have no access
+// to data in a metastore. Access can be granted by either a metastore admin,
+// the owner of an object, or the owner of the catalog or schema that contains
+// the object. Securable objects in Unity Catalog are hierarchical and
+// privileges are inherited downward.
+//
+// Initially, users have no access to data in a metastore. Access can be granted
+// by either a metastore admin, the owner of an object, or the owner of the
+// catalog or schema that contains the object.
+//
+// Securable objects in Unity Catalog are hierarchical and privileges are
+// inherited downward. This means that granting a privilege on the catalog
+// automatically grants the privilege to all current and future objects within
+// the catalog. Similarly, privileges granted on a schema are inherited by all
+// current and future objects within that schema.
 //
 // This is the high-level interface, that contains generated methods.
 //
@@ -151,7 +184,20 @@ type GrantsService interface {
 	GetPermissionsBySecurableTypeAndFullName(ctx context.Context, securableType string, fullName string) (*GetPermissionsResponse, error)
 }
 
-// Databricks Unity Catalog: Metastores REST API
+// A metastore is the top-level container of objects in Unity Catalog. It stores
+// data assets (tables and views) and the permissions that govern access to
+// them. Databricks account admins can create metastores and assign them to
+// Databricks workspaces to control which workloads use each metastore. For a
+// workspace to use Unity Catalog, it must have a Unity Catalog metastore
+// attached.
+//
+// Each metastore is configured with a root storage location in a cloud storage
+// account. This storage location is used for metadata and managed tables data.
+//
+// NOTE: This metastore is distinct from the metastore included in Databricks
+// workspaces created before Unity Catalog was released. If your workspace
+// includes a legacy Hive metastore, the data in that metastore is available in
+// Unity Catalog in a catalog named hive_metastore.
 //
 // This is the high-level interface, that contains generated methods.
 //
@@ -429,7 +475,11 @@ type RecipientsService interface {
 	Update(ctx context.Context, request UpdateRecipient) error
 }
 
-// Databricks Unity Catalog: Schemas REST API
+// A schema (also called a database) is the second layer of Unity Catalog’s
+// three-level namespace. A schema organizes tables and views. To access (or
+// list) a table or view in a schema, users must have the USAGE data permission
+// on the schema and its parent catalog, and they must have the SELECT
+// permission on the table or view.
 //
 // This is the high-level interface, that contains generated methods.
 //
@@ -585,7 +635,20 @@ type SharesService interface {
 	UpdateSharePermissions(ctx context.Context, request UpdateSharePermissions) error
 }
 
-// Databricks Unity Catalog: Storage Credentials REST API
+// A storage credential represents an authentication and authorization mechanism
+// for accessing data stored on your cloud tenant, using an IAM role. Each
+// storage credential is subject to Unity Catalog access-control policies that
+// control which users and groups can access the credential. If a user does not
+// have access to a storage credential in Unity Catalog, the request fails and
+// Unity Catalog does not attempt to authenticate to your cloud tenant on the
+// user’s behalf.
+//
+// Databricks recommends using external locations rather than using storage
+// credentials directly.
+//
+// To create storage credentials, you must be a Databricks account admin. The
+// account admin who creates the storage credential can delegate ownership to
+// another user or group to manage permissions on it.
 //
 // This is the high-level interface, that contains generated methods.
 //
@@ -652,7 +715,14 @@ type StorageCredentialsService interface {
 	Update(ctx context.Context, request UpdateStorageCredential) error
 }
 
-// Databricks Unity Catalog: Tables REST API
+// A table resides in the third layer of Unity Catalog’s three-level
+// namespace. It contains rows of data. To create a table, users must have
+// CREATE and USAGE permissions on the schema, and they must have the USAGE
+// permission on its parent catalog. To query a table, users must have the
+// SELECT permission on the table, and they must have the USAGE permission on
+// its parent schema and catalog.
+//
+// A table can be managed or external.
 //
 // This is the high-level interface, that contains generated methods.
 //

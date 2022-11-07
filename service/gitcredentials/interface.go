@@ -6,6 +6,12 @@ import (
 	"context"
 )
 
+// Registers personal access token for Databricks to do operations on behalf of
+// the user.
+//
+// See [more
+// info](https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html).
+//
 // This is the high-level interface, that contains generated methods.
 //
 // Evolving: this interface is under development. Method signatures may change.

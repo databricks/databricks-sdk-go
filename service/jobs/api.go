@@ -461,7 +461,7 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...r
 // Create and trigger a one-time run
 //
 // Submit a one-time run. This endpoint allows you to submit a workload directly
-// without creating a job. Runs submitted using this endpoint don?t display in
+// without creating a job. Runs submitted using this endpoint don’t display in
 // the UI. Use the `jobs/runs/get` API to check the run state after the job is
 // submitted.
 func (a *JobsAPI) Submit(ctx context.Context, request SubmitRun) (*SubmitRunResponse, error) {
