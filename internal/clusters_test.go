@@ -25,9 +25,8 @@ func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
 	require.NoError(t, err)
 
 	// Select the latest LTS version
-	latestLTS, err := sparkVersions.Select(clusters.SparkVersionRequest{
-		Latest:          true,
-		LongTermSupport: true,
+	latest, err := sparkVersions.Select(clusters.SparkVersionRequest{
+		Latest: true,
 	})
 	require.NoError(t, err)
 
@@ -46,8 +45,9 @@ func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
 	// Create a cluster with unreasonably low timeout
 	_, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 		ClusterName:            RandomName(t.Name()),
-		SparkVersion:           latestLTS,
+		SparkVersion:           latest,
 		NodeTypeId:             smallestWithDisk,
+		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 10,
 		NumWorkers:             1,
 	}, retries.Timeout[clusters.ClusterInfo](15*time.Second),
@@ -73,9 +73,8 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Select the latest LTS version
-	latestLTS, err := sparkVersions.Select(clusters.SparkVersionRequest{
-		Latest:          true,
-		LongTermSupport: true,
+	latest, err := sparkVersions.Select(clusters.SparkVersionRequest{
+		Latest: true,
 	})
 	require.NoError(t, err)
 
@@ -92,8 +91,9 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	// Create cluster and wait for it to start properly
 	clstr, err := w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 		ClusterName:            clusterName,
-		SparkVersion:           latestLTS,
+		SparkVersion:           latest,
 		NodeTypeId:             smallestWithDisk,
+		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 15,
 		NumWorkers:             1,
 	}, retries.Timeout[clusters.ClusterInfo](20*time.Minute))
@@ -120,10 +120,11 @@ func TestAccClustersApiIntegration(t *testing.T) {
 
 	// Edit the cluster: change auto-termination and number of workers
 	err = w.Clusters.Edit(ctx, clusters.EditCluster{
-		ClusterId:    clstr.ClusterId,
-		SparkVersion: latestLTS,
-		NodeTypeId:   smallestWithDisk,
-		ClusterName:  clusterName,
+		ClusterId:      clstr.ClusterId,
+		SparkVersion:   latest,
+		NodeTypeId:     smallestWithDisk,
+		ClusterName:    clusterName,
+		InstancePoolId: GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 
 		// change auto-termination and number of workers
 		AutoterminationMinutes: 10,

@@ -21,9 +21,8 @@ func createTestCluster(ctx context.Context, wsc *workspaces.WorkspacesClient, t 
 	require.NoError(t, err)
 
 	// Select the latest LTS version
-	latestLTS, err := sparkVersions.Select(clusters.SparkVersionRequest{
-		Latest:          true,
-		LongTermSupport: true,
+	latest, err := sparkVersions.Select(clusters.SparkVersionRequest{
+		Latest: true,
 	})
 	require.NoError(t, err)
 
@@ -40,8 +39,9 @@ func createTestCluster(ctx context.Context, wsc *workspaces.WorkspacesClient, t 
 	// Create cluster and wait for it to start properly
 	clstr, err := wsc.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 		ClusterName:            clusterName,
-		SparkVersion:           latestLTS,
+		SparkVersion:           latest,
 		NodeTypeId:             smallestWithDisk,
+		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 15,
 		NumWorkers:             1,
 	})
