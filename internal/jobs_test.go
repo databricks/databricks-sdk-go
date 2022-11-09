@@ -210,7 +210,6 @@ func TestAccJobsListAllNoDuplicates(t *testing.T) {
 	// Select the latest LTS version
 	latestLTS, err := sparkVersions.Select(clusters.SparkVersionRequest{
 		Latest:          true,
-		LongTermSupport: true,
 	})
 	require.NoError(t, err)
 
