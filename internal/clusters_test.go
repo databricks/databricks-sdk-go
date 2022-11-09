@@ -30,23 +30,12 @@ func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	// Fetch list of available node types
-	nodeTypes, err := w.Clusters.ListNodeTypes(ctx)
-	require.NoError(t, err)
-
-	// Select the smallest node type id
-	smallestWithDisk, err := nodeTypes.Smallest(clusters.NodeTypeRequest{
-		LocalDisk: true,
-	})
-	require.NoError(t, err)
-
 	var clusterId string
 
 	// Create a cluster with unreasonably low timeout
 	_, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 		ClusterName:            RandomName(t.Name()),
 		SparkVersion:           latest,
-		NodeTypeId:             smallestWithDisk,
 		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 10,
 		NumWorkers:             1,
@@ -78,21 +67,10 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	// Fetch list of available node types
-	nodeTypes, err := w.Clusters.ListNodeTypes(ctx)
-	require.NoError(t, err)
-
-	// Select the smallest node type id
-	smallestWithDisk, err := nodeTypes.Smallest(clusters.NodeTypeRequest{
-		LocalDisk: true,
-	})
-	require.NoError(t, err)
-
 	// Create cluster and wait for it to start properly
 	clstr, err := w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 		ClusterName:            clusterName,
 		SparkVersion:           latest,
-		NodeTypeId:             smallestWithDisk,
 		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 15,
 		NumWorkers:             1,
@@ -122,7 +100,6 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	err = w.Clusters.Edit(ctx, clusters.EditCluster{
 		ClusterId:      clstr.ClusterId,
 		SparkVersion:   latest,
-		NodeTypeId:     smallestWithDisk,
 		ClusterName:    clusterName,
 		InstancePoolId: GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 
