@@ -15,7 +15,7 @@ func TestAccCommands(t *testing.T) {
 	ctx := context.Background()
 	wsc := workspaces.New()
 
-	clusterId := GetEnvOrSkipTest(t, "TEST_DATABRICKS_SDK_GO_CLUSTER_ID")
+	clusterId := GetEnvOrSkipTest(t, "TEST_GOSDK_CLUSTER_ID")
 
 	info, err := wsc.Clusters.GetByClusterId(ctx, clusterId)
 	require.NoError(t, err)

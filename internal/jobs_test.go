@@ -21,27 +21,16 @@ func createTestCluster(ctx context.Context, wsc *workspaces.WorkspacesClient, t 
 	require.NoError(t, err)
 
 	// Select the latest LTS version
-	latestLTS, err := sparkVersions.Select(clusters.SparkVersionRequest{
-		Latest:          true,
-		LongTermSupport: true,
-	})
-	require.NoError(t, err)
-
-	// Fetch list of available node types
-	nodeTypes, err := wsc.Clusters.ListNodeTypes(ctx)
-	require.NoError(t, err)
-
-	// Select the smallest node type id
-	smallestWithDisk, err := nodeTypes.Smallest(clusters.NodeTypeRequest{
-		LocalDisk: true,
+	latest, err := sparkVersions.Select(clusters.SparkVersionRequest{
+		Latest: true,
 	})
 	require.NoError(t, err)
 
 	// Create cluster and wait for it to start properly
 	clstr, err := wsc.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 		ClusterName:            clusterName,
-		SparkVersion:           latestLTS,
-		NodeTypeId:             smallestWithDisk,
+		SparkVersion:           latest,
+		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 15,
 		NumWorkers:             1,
 	})
@@ -209,8 +198,7 @@ func TestAccJobsListAllNoDuplicates(t *testing.T) {
 
 	// Select the latest LTS version
 	latestLTS, err := sparkVersions.Select(clusters.SparkVersionRequest{
-		Latest:          true,
-		LongTermSupport: true,
+		Latest: true,
 	})
 	require.NoError(t, err)
 
