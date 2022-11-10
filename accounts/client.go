@@ -4,31 +4,23 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/service/accountpermissionassignments"
-	"github.com/databricks/databricks-sdk-go/service/budgets"
-	"github.com/databricks/databricks-sdk-go/service/credentials"
-	"github.com/databricks/databricks-sdk-go/service/customermanagedkeys"
-	"github.com/databricks/databricks-sdk-go/service/logdelivery"
-	"github.com/databricks/databricks-sdk-go/service/networks"
-	"github.com/databricks/databricks-sdk-go/service/privateaccesssettings"
-	"github.com/databricks/databricks-sdk-go/service/storageconfigurations"
-	"github.com/databricks/databricks-sdk-go/service/usagedownload"
-	"github.com/databricks/databricks-sdk-go/service/vpcendpoints"
-	"github.com/databricks/databricks-sdk-go/service/workspaces"
+	"github.com/databricks/databricks-sdk-go/service/billing"
+	"github.com/databricks/databricks-sdk-go/service/deployment"
 )
 
 type AccountsClient struct {
 	Config                       *databricks.Config
 	AccountPermissionAssignments accountpermissionassignments.AccountPermissionAssignmentsService
-	Budgets                      budgets.BudgetsService
-	Credentials                  credentials.CredentialConfigurationsService
-	CustomerManagedKeys          customermanagedkeys.KeyConfigurationsService
-	LogDelivery                  logdelivery.LogDeliveryService
-	Networks                     networks.NetworkConfigurationsService
-	PrivateAccessSettings        privateaccesssettings.PrivateAccessSettingsService
-	StorageConfigurations        storageconfigurations.StorageConfigurationsService
-	UsageDownload                usagedownload.BillableUsageDownloadService
-	VpcEndpoints                 vpcendpoints.VpcEndpointsService
-	Workspaces                   workspaces.WorkspacesService
+	Budgets                      billing.BudgetsService
+	Credentials                  deployment.CredentialConfigurationsService
+	CustomerManagedKeys          deployment.KeyConfigurationsService
+	LogDelivery                  billing.LogDeliveryService
+	Networks                     deployment.NetworkConfigurationsService
+	PrivateAccessSettings        deployment.PrivateAccessSettingsService
+	StorageConfigurations        deployment.StorageConfigurationsService
+	UsageDownload                billing.BillableUsageDownloadService
+	VpcEndpoints                 deployment.VpcEndpointsService
+	Workspaces                   deployment.WorkspacesService
 }
 
 func New(c ...*databricks.Config) *AccountsClient {
@@ -47,15 +39,15 @@ func New(c ...*databricks.Config) *AccountsClient {
 	return &AccountsClient{
 		Config:                       cfg,
 		AccountPermissionAssignments: accountpermissionassignments.NewAccountPermissionAssignments(apiClient),
-		Budgets:                      budgets.NewBudgets(apiClient),
-		Credentials:                  credentials.NewCredentialConfigurations(apiClient),
-		CustomerManagedKeys:          customermanagedkeys.NewKeyConfigurations(apiClient),
-		LogDelivery:                  logdelivery.NewLogDelivery(apiClient),
-		Networks:                     networks.NewNetworkConfigurations(apiClient),
-		PrivateAccessSettings:        privateaccesssettings.NewPrivateAccessSettings(apiClient),
-		StorageConfigurations:        storageconfigurations.NewStorageConfigurations(apiClient),
-		UsageDownload:                usagedownload.NewBillableUsageDownload(apiClient),
-		VpcEndpoints:                 vpcendpoints.NewVpcEndpoints(apiClient),
-		Workspaces:                   workspaces.NewWorkspaces(apiClient),
+		Budgets:                      billing.NewBudgets(apiClient),
+		Credentials:                  deployment.NewCredentialConfigurations(apiClient),
+		CustomerManagedKeys:          deployment.NewKeyConfigurations(apiClient),
+		LogDelivery:                  billing.NewLogDelivery(apiClient),
+		Networks:                     deployment.NewNetworkConfigurations(apiClient),
+		PrivateAccessSettings:        deployment.NewPrivateAccessSettings(apiClient),
+		StorageConfigurations:        deployment.NewStorageConfigurations(apiClient),
+		UsageDownload:                billing.NewBillableUsageDownload(apiClient),
+		VpcEndpoints:                 deployment.NewVpcEndpoints(apiClient),
+		Workspaces:                   deployment.NewWorkspaces(apiClient),
 	}
 }
