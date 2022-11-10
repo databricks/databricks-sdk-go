@@ -14,10 +14,31 @@ type Delete struct {
 	Recursive bool `json:"recursive,omitempty"`
 }
 
+type ExportRequest struct {
+	// Flag to enable direct download. If it is ``true``, the response will be
+	// the exported file itself. Otherwise, the response contains content as
+	// base64 encoded string.
+	DirectDownload bool `json:"-" url:"direct_download,omitempty"`
+	// This specifies the format of the exported file. By default, this is
+	// ``SOURCE``. However it may be one of: ``SOURCE``, ``HTML``, ``JUPYTER``,
+	// ``DBC``.
+	//
+	// The value is case sensitive.
+	Format string `json:"-" url:"format,omitempty"`
+	// The absolute path of the notebook or directory. Exporting directory is
+	// only support for ``DBC`` format.
+	Path string `json:"-" url:"path,omitempty"`
+}
+
 type ExportResponse struct {
 	// The base64-encoded content. If the limit (10MB) is exceeded, exception
 	// with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** will be thrown.
 	Content string `json:"content,omitempty"`
+}
+
+type GetStatusRequest struct {
+	// The absolute path of the notebook or directory.
+	Path string `json:"-" url:"path,omitempty"`
 }
 
 type Import struct {
@@ -69,6 +90,13 @@ const ImportLanguageR ImportLanguage = `R`
 const ImportLanguageScala ImportLanguage = `SCALA`
 
 const ImportLanguageSql ImportLanguage = `SQL`
+
+type ListRequest struct {
+	// <content needed>
+	NotebooksModifiedAfter int `json:"-" url:"notebooks_modified_after,omitempty"`
+	// The absolute path of the notebook or directory.
+	Path string `json:"-" url:"path,omitempty"`
+}
 
 type ListResponse struct {
 	// List of objects.
@@ -148,31 +176,3 @@ const ObjectInfoObjectTypeNotebook ObjectInfoObjectType = `NOTEBOOK`
 const ObjectInfoObjectTypeProject ObjectInfoObjectType = `PROJECT`
 
 const ObjectInfoObjectTypeRepo ObjectInfoObjectType = `REPO`
-
-type ExportRequest struct {
-	// Flag to enable direct download. If it is ``true``, the response will be
-	// the exported file itself. Otherwise, the response contains content as
-	// base64 encoded string.
-	DirectDownload bool `json:"-" url:"direct_download,omitempty"`
-	// This specifies the format of the exported file. By default, this is
-	// ``SOURCE``. However it may be one of: ``SOURCE``, ``HTML``, ``JUPYTER``,
-	// ``DBC``.
-	//
-	// The value is case sensitive.
-	Format string `json:"-" url:"format,omitempty"`
-	// The absolute path of the notebook or directory. Exporting directory is
-	// only support for ``DBC`` format.
-	Path string `json:"-" url:"path,omitempty"`
-}
-
-type GetStatusRequest struct {
-	// The absolute path of the notebook or directory.
-	Path string `json:"-" url:"path,omitempty"`
-}
-
-type ListRequest struct {
-	// <content needed>
-	NotebooksModifiedAfter int `json:"-" url:"notebooks_modified_after,omitempty"`
-	// The absolute path of the notebook or directory.
-	Path string `json:"-" url:"path,omitempty"`
-}
