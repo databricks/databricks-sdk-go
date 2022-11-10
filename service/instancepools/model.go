@@ -346,6 +346,11 @@ const GetInstancePoolStateDeleted GetInstancePoolState = `DELETED`
 
 const GetInstancePoolStateStopped GetInstancePoolState = `STOPPED`
 
+type GetRequest struct {
+	// The canonical unique identifier for the instance pool.
+	InstancePoolId string `json:"-" url:"instance_pool_id,omitempty"`
+}
+
 type InstancePoolAndStats struct {
 	// Attributes related to pool running on Amazon Web Services. If not
 	// specified at pool creation, a set of default values will be used.
@@ -531,14 +536,3 @@ type PendingInstanceError struct {
 
 	Message string `json:"message,omitempty"`
 }
-
-type GetRequest struct {
-	// The canonical unique identifier for the instance pool.
-	InstancePoolId string `json:"-" url:"instance_pool_id,omitempty"`
-}
-
-// This field encodes, through a single value, the resources available to each
-// of the Spark nodes in this cluster. For example, the Spark nodes can be
-// provisioned and optimized for memory or compute intensive workloads. A list
-// of available node types can be retrieved by using the
-// :method:clusters/listNodeTypes API call.

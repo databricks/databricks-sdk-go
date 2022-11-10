@@ -59,6 +59,19 @@ type AccessControlResponse struct {
 	UserName string `json:"user_name,omitempty"`
 }
 
+type GetObjectPermissionsRequest struct {
+	ObjectId string `json:"-" path:"object_id"`
+	// <needs content>
+	ObjectType string `json:"-" path:"object_type"`
+}
+
+type GetPermissionLevelsRequest struct {
+	// <needs content>
+	RequestObjectId string `json:"-" path:"request_object_id"`
+	// <needs content>
+	RequestObjectType string `json:"-" path:"request_object_type"`
+}
+
 type GetPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
@@ -164,17 +177,4 @@ type UpdateObjectPermissions struct {
 	ObjectId string `json:"object_id,omitempty" path:"object_id"`
 
 	ObjectType string `json:"object_type,omitempty" path:"object_type"`
-}
-
-type GetObjectPermissionsRequest struct {
-	ObjectId string `json:"-" path:"object_id"`
-	// <needs content>
-	ObjectType string `json:"-" path:"object_type"`
-}
-
-type GetPermissionLevelsRequest struct {
-	// <needs content>
-	RequestObjectId string `json:"-" path:"request_object_id"`
-	// <needs content>
-	RequestObjectType string `json:"-" path:"request_object_type"`
 }

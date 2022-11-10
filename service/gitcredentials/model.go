@@ -35,8 +35,18 @@ type CredentialInfo struct {
 	GitUsername string `json:"git_username,omitempty"`
 }
 
+type DeleteRequest struct {
+	// The ID for the corresponding credential to access.
+	CredentialId int64 `json:"-" path:"credential_id"`
+}
+
 type GetCredentialsResponse struct {
 	Credentials []CredentialInfo `json:"credentials,omitempty"`
+}
+
+type GetRequest struct {
+	// The ID for the corresponding credential to access.
+	CredentialId int64 `json:"-" path:"credential_id"`
 }
 
 type UpdateCredentials struct {
@@ -51,23 +61,3 @@ type UpdateCredentials struct {
 	// provider.
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
 }
-
-// ID of the credential object in the workspace.
-
-type DeleteRequest struct {
-	// The ID for the corresponding credential to access.
-	CredentialId int64 `json:"-" path:"credential_id"`
-}
-
-type GetRequest struct {
-	// The ID for the corresponding credential to access.
-	CredentialId int64 `json:"-" path:"credential_id"`
-}
-
-// Git provider. This field is case-insensitive. The available Git providers are
-// awsCodeCommit, azureDevOpsServices,
-
-// Git username.
-
-// The personal access token used to authenticate to the corresponding Git
-// provider.
