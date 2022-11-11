@@ -5,11 +5,11 @@ package scim
 // all definitions in this file are in alphabetical order
 
 type ComplexValue struct {
-	Ref string `json:"$ref,omitempty"`
-
 	Display string `json:"display,omitempty"`
 
 	Primary bool `json:"primary,omitempty"`
+
+	Ref string `json:"$ref,omitempty"`
 
 	Type string `json:"type,omitempty"`
 
@@ -86,10 +86,10 @@ type ListGroupsRequest struct {
 }
 
 type ListGroupsResponse struct {
-	// User objects returned in the response.
-	Resources []Group `json:"Resources,omitempty"`
 	// Total results returned in the response.
 	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
+	// User objects returned in the response.
+	Resources []Group `json:"Resources,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
 	StartIndex int64 `json:"startIndex,omitempty"`
@@ -104,10 +104,10 @@ const ListGroupsSortOrderAscending ListGroupsSortOrder = `ascending`
 const ListGroupsSortOrderDescending ListGroupsSortOrder = `descending`
 
 type ListServicePrincipalResponse struct {
-	// User objects returned in the response.
-	Resources []ServicePrincipal `json:"Resources,omitempty"`
 	// Total results returned in the response.
 	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
+	// User objects returned in the response.
+	Resources []ServicePrincipal `json:"Resources,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
 	StartIndex int64 `json:"startIndex,omitempty"`
@@ -167,10 +167,10 @@ type ListUsersRequest struct {
 }
 
 type ListUsersResponse struct {
-	// User objects returned in the response.
-	Resources []User `json:"Resources,omitempty"`
 	// Total results returned in the response.
 	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
+	// User objects returned in the response.
+	Resources []User `json:"Resources,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
 	StartIndex int64 `json:"startIndex,omitempty"`

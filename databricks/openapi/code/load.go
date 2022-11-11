@@ -48,26 +48,38 @@ func NewFromFile(name string, includeTags []string) (*Batch, error) {
 	return &batch, nil
 }
 
-// Pkgs returns unsorted slice of packages
+// Pkgs returns sorted slice of packages
 func (b *Batch) Pkgs() (pkgs []*Package) {
 	for _, pkg := range b.Packages {
 		pkgs = append(pkgs, pkg)
 	}
+	// add some determinism into code generation
+	slices.SortFunc(pkgs, func(a, b *Package) bool {
+		return a.FullName() < b.FullName()
+	})
 	return pkgs
 }
 
-// Pkgs returns unsorted slice of packages
+// Pkgs returns sorted slice of packages
 func (b *Batch) Types() (types []*Entity) {
 	for _, pkg := range b.Packages {
 		types = append(types, pkg.Types()...)
 	}
+	// add some determinism into code generation
+	slices.SortFunc(types, func(a, b *Entity) bool {
+		return a.FullName() < b.FullName()
+	})
 	return types
 }
 
-// Pkgs returns unsorted slice of packages
+// Pkgs returns sorted slice of packages
 func (b *Batch) Services() (services []*Service) {
 	for _, pkg := range b.Packages {
 		services = append(services, pkg.Services()...)
 	}
+	// add some determinism into code generation
+	slices.SortFunc(services, func(a, b *Service) bool {
+		return a.FullName() < b.FullName()
+	})
 	return services
 }
