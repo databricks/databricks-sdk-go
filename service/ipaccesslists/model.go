@@ -50,6 +50,16 @@ type IpAccessListInfo struct {
 	UpdatedBy int64 `json:"updated_by,omitempty"`
 }
 
+// This describes an enum
+type ListType string
+
+// An allow list. Include this IP or range.
+const ListTypeAllow ListType = `ALLOW`
+
+// A block list. Exclude this IP or range. IP addresses in the block list are
+// excluded even if they are included in an allow list.",
+const ListTypeBlock ListType = `BLOCK`
+
 type ReplaceIpAccessListRequest struct {
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled"`
@@ -79,29 +89,3 @@ type UpdateIpAccessListRequest struct {
 	// This describes an enum
 	ListType ListType `json:"list_type,omitempty"`
 }
-
-// Total number of IP or CIDR values.
-
-// Creation timestamp in milliseconds.
-
-// User ID of the user who created this list.
-
-// Specifies whether this IP access list is enabled.
-
-// Label for the IP access list. This **cannot** be empty.
-
-// Universally unique identifier(UUID) of the IP access list.
-
-// This describes an enum
-type ListType string
-
-// An allow list. Include this IP or range.
-const ListTypeAllow ListType = `ALLOW`
-
-// A block list. Exclude this IP or range. IP addresses in the block list are
-// excluded even if they are included in an allow list.",
-const ListTypeBlock ListType = `BLOCK`
-
-// Update timestamp in milliseconds.
-
-// User ID of the user who updated this list.

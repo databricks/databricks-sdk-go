@@ -218,15 +218,6 @@ type GrantsAPI struct {
 	client *client.DatabricksClient
 }
 
-// Update permissions
-//
-// Updates the permissions for a Securable type.
-func (a *GrantsAPI) UpdatePermissions(ctx context.Context, request UpdatePermissions) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.FullName)
-	err := a.client.Patch(ctx, path, request)
-	return err
-}
-
 // Get permissions
 //
 // Gets the permissions for a Securable type.
@@ -245,6 +236,15 @@ func (a *GrantsAPI) GetPermissionsBySecurableTypeAndFullName(ctx context.Context
 		SecurableType: securableType,
 		FullName:      fullName,
 	})
+}
+
+// Update permissions
+//
+// Updates the permissions for a Securable type.
+func (a *GrantsAPI) UpdatePermissions(ctx context.Context, request UpdatePermissions) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.FullName)
+	err := a.client.Patch(ctx, path, request)
+	return err
 }
 
 func NewMetastores(client *client.DatabricksClient) MetastoresService {

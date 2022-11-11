@@ -1090,6 +1090,65 @@ const CreateTableTableTypeUnknownTableType CreateTableTableType = `UNKNOWN_TABLE
 
 const CreateTableTableTypeView CreateTableTableType = `VIEW`
 
+type DeleteCatalogRequest struct {
+	// Required. The name of the catalog.
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteExternalLocationRequest struct {
+	// Force deletion even if there are dependent external tables or mounts.
+	Force bool `json:"-" url:"force,omitempty"`
+	// Required. Name of the storage credential.
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteMetastoreAssignmentRequest struct {
+	// Query for the ID of the Metastore to delete.
+	MetastoreId string `json:"-" url:"metastore_id,omitempty"`
+	// A workspace ID.
+	WorkspaceId int `json:"-" path:"workspace_id"`
+}
+
+type DeleteMetastoreRequest struct {
+	// Force deletion even if the metastore is not empty. Default is false.
+	Force bool `json:"-" url:"force,omitempty"`
+	// Required. Unique ID of the Metastore (from URL).
+	Id string `json:"-" path:"id"`
+}
+
+type DeleteProviderRequest struct {
+	// Required. Name of the provider.
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteRecipientRequest struct {
+	// Required. Name of the recipient.
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteSchemaRequest struct {
+	// Required. Full name of the schema (from URL).
+	FullName string `json:"-" path:"full_name"`
+}
+
+type DeleteShareRequest struct {
+	// The name of the share.
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteStorageCredentialRequest struct {
+	// Force deletion even if there are dependent external locations or external
+	// tables.
+	Force bool `json:"-" url:"force,omitempty"`
+	// Required. Name of the storage credential.
+	Name string `json:"-" path:"name"`
+}
+
+type DeleteTableRequest struct {
+	// Required. Full name of the Table (from URL).
+	FullName string `json:"-" path:"full_name"`
+}
+
 type ExternalLocationInfo struct {
 	// [Create:OPT Update:OPT] User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -1140,6 +1199,16 @@ type GcpServiceAccountKey struct {
 	PrivateKey string `json:"private_key,omitempty"`
 	// The ID of the service account's private key. [Create:REQ]
 	PrivateKeyId string `json:"private_key_id,omitempty"`
+}
+
+type GetActivationUrlInfoRequest struct {
+	// Required. The one time activation url. It also accepts activation token.
+	ActivationUrl string `json:"-" path:"activation_url"`
+}
+
+type GetCatalogRequest struct {
+	// Required. The name of the catalog.
+	Name string `json:"-" path:"name"`
 }
 
 type GetCatalogResponse struct {
@@ -1208,6 +1277,11 @@ const GetCatalogResponsePrivilegesItemUsage GetCatalogResponsePrivilegesItem = `
 
 const GetCatalogResponsePrivilegesItemWriteFiles GetCatalogResponsePrivilegesItem = `WRITE_FILES`
 
+type GetExternalLocationRequest struct {
+	// Required. Name of the storage credential.
+	Name string `json:"-" path:"name"`
+}
+
 type GetExternalLocationResponse struct {
 	// [Create:OPT Update:OPT] User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -1236,6 +1310,11 @@ type GetExternalLocationResponse struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// [Create:REQ Update:OPT] Path URL of the External Location.
 	Url string `json:"url,omitempty"`
+}
+
+type GetMetastoreRequest struct {
+	// Required. Unique ID of the Metastore (from URL).
+	Id string `json:"-" path:"id"`
 }
 
 type GetMetastoreResponse struct {
@@ -1306,10 +1385,24 @@ type GetMetastoreSummaryResponse struct {
 	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
 }
 
+type GetPermissionsRequest struct {
+	// Required. Unique identifier (full name) of Securable (from URL).
+	FullName string `json:"-" path:"full_name"`
+	// Optional. List permissions granted to this principal.
+	Principal string `json:"-" url:"principal,omitempty"`
+	// Required. Type of Securable (from URL).
+	SecurableType string `json:"-" path:"securable_type"`
+}
+
 type GetPermissionsResponse struct {
 	// Note to self (acain): Unfortunately, neither json_inline nor json_map
 	// work here.
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
+}
+
+type GetProviderRequest struct {
+	// Required. Name of the provider.
+	Name string `json:"-" path:"name"`
 }
 
 type GetProviderResponse struct {
@@ -1352,6 +1445,11 @@ const GetProviderResponseAuthenticationTypeDatabricks GetProviderResponseAuthent
 const GetProviderResponseAuthenticationTypeToken GetProviderResponseAuthenticationType = `TOKEN`
 
 const GetProviderResponseAuthenticationTypeUnknown GetProviderResponseAuthenticationType = `UNKNOWN`
+
+type GetRecipientRequest struct {
+	// Required. Name of the recipient.
+	Name string `json:"-" path:"name"`
+}
 
 type GetRecipientResponse struct {
 	// [Create:IGN,Update:IGN] A boolean status field showing whether the
@@ -1396,9 +1494,19 @@ const GetRecipientResponseAuthenticationTypeToken GetRecipientResponseAuthentica
 
 const GetRecipientResponseAuthenticationTypeUnknown GetRecipientResponseAuthenticationType = `UNKNOWN`
 
+type GetRecipientSharePermissionsRequest struct {
+	// Required. The name of the Recipient.
+	Name string `json:"-" path:"name"`
+}
+
 type GetRecipientSharePermissionsResponse struct {
 	// An array of data share permissions for a recipient.
 	PermissionsOut []ShareToPrivilegeAssignment `json:"permissions_out,omitempty"`
+}
+
+type GetSchemaRequest struct {
+	// Required. Full name of the schema (from URL).
+	FullName string `json:"-" path:"full_name"`
 }
 
 type GetSchemaResponse struct {
@@ -1453,10 +1561,22 @@ const GetSchemaResponsePrivilegesItemUsage GetSchemaResponsePrivilegesItem = `US
 
 const GetSchemaResponsePrivilegesItemWriteFiles GetSchemaResponsePrivilegesItem = `WRITE_FILES`
 
+type GetSharePermissionsRequest struct {
+	// Required. The name of the share.
+	Name string `json:"-" path:"name"`
+}
+
 type GetSharePermissionsResponse struct {
 	// Note to self (acain): Unfortunately, neither json_inline nor json_map
 	// work here.
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
+}
+
+type GetShareRequest struct {
+	// Query for data to include in the share.
+	IncludeSharedData bool `json:"-" url:"include_shared_data,omitempty"`
+	// The name of the share.
+	Name string `json:"-" path:"name"`
 }
 
 type GetShareResponse struct {
@@ -1500,6 +1620,16 @@ type GetStorageCredentialResponse struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// [Create,Update:IGN] Username of user who last modified the credential.
 	UpdatedBy string `json:"updated_by,omitempty"`
+}
+
+type GetStorageCredentialsRequest struct {
+	// Required. Name of the storage credential.
+	Name string `json:"-" path:"name"`
+}
+
+type GetTableRequest struct {
+	// Required. Full name of the Table (from URL).
+	FullName string `json:"-" path:"full_name"`
 }
 
 type GetTableResponse struct {
@@ -1662,9 +1792,19 @@ type ListRecipientsResponse struct {
 	Recipients []RecipientInfo `json:"recipients,omitempty"`
 }
 
+type ListRequest struct {
+	// Optional. Parent catalog for schemas of interest.
+	CatalogName string `json:"-" url:"catalog_name,omitempty"`
+}
+
 type ListSchemasResponse struct {
 	// An array of schema information objects.
 	Schemas []SchemaInfo `json:"schemas,omitempty"`
+}
+
+type ListSharesRequest struct {
+	// Required. Name of the provider in which to list shares.
+	Name string `json:"-" path:"name"`
 }
 
 type ListSharesResponse struct {
@@ -1675,6 +1815,22 @@ type ListSharesResponse struct {
 type ListStorageCredentialsResponse struct {
 	// TODO: add pagination to UC list APIs.
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
+}
+
+type ListTableSummariesRequest struct {
+	// Required. Name of parent catalog for tables of interest.
+	CatalogName string `json:"-" url:"catalog_name,omitempty"`
+	// Optional. Maximum number of tables to return (page length). Defaults to
+	// 10000.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Optional. Opaque token to send for the next page of results (pagination).
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Optional. A sql LIKE pattern (% and _) for schema names. All schemas will
+	// be returned if not set or empty.
+	SchemaNamePattern string `json:"-" url:"schema_name_pattern,omitempty"`
+	// Optional. A sql LIKE pattern (% and _) for table names. All tables will
+	// be returned if not set or empty.
+	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
 }
 
 type ListTableSummariesResponse struct {
@@ -1959,6 +2115,11 @@ type RecipientTokenInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of recipient Token updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
+}
+
+type RetrieveTokenRequest struct {
+	// Required. The one time activation url. It also accepts activation token.
+	ActivationUrl string `json:"-" path:"activation_url"`
 }
 
 type RetrieveTokenResponse struct {
@@ -2774,164 +2935,3 @@ const UpdateTableTableTypeManaged UpdateTableTableType = `MANAGED`
 const UpdateTableTableTypeUnknownTableType UpdateTableTableType = `UNKNOWN_TABLE_TYPE`
 
 const UpdateTableTableTypeView UpdateTableTableType = `VIEW`
-
-type DeleteCatalogRequest struct {
-	// Required. The name of the catalog.
-	Name string `json:"-" path:"name"`
-}
-
-type DeleteExternalLocationRequest struct {
-	// Force deletion even if there are dependent external tables or mounts.
-	Force bool `json:"-" url:"force,omitempty"`
-	// Required. Name of the storage credential.
-	Name string `json:"-" path:"name"`
-}
-
-type DeleteMetastoreAssignmentRequest struct {
-	// Query for the ID of the Metastore to delete.
-	MetastoreId string `json:"-" url:"metastore_id,omitempty"`
-	// A workspace ID.
-	WorkspaceId int `json:"-" path:"workspace_id"`
-}
-
-type DeleteMetastoreRequest struct {
-	// Force deletion even if the metastore is not empty. Default is false.
-	Force bool `json:"-" url:"force,omitempty"`
-	// Required. Unique ID of the Metastore (from URL).
-	Id string `json:"-" path:"id"`
-}
-
-type DeleteProviderRequest struct {
-	// Required. Name of the provider.
-	Name string `json:"-" path:"name"`
-}
-
-type DeleteRecipientRequest struct {
-	// Required. Name of the recipient.
-	Name string `json:"-" path:"name"`
-}
-
-type DeleteSchemaRequest struct {
-	// Required. Full name of the schema (from URL).
-	FullName string `json:"-" path:"full_name"`
-}
-
-type DeleteShareRequest struct {
-	// The name of the share.
-	Name string `json:"-" path:"name"`
-}
-
-type DeleteStorageCredentialRequest struct {
-	// Force deletion even if there are dependent external locations or external
-	// tables.
-	Force bool `json:"-" url:"force,omitempty"`
-	// Required. Name of the storage credential.
-	Name string `json:"-" path:"name"`
-}
-
-type DeleteTableRequest struct {
-	// Required. Full name of the Table (from URL).
-	FullName string `json:"-" path:"full_name"`
-}
-
-type GetActivationUrlInfoRequest struct {
-	// Required. The one time activation url. It also accepts activation token.
-	ActivationUrl string `json:"-" path:"activation_url"`
-}
-
-type GetCatalogRequest struct {
-	// Required. The name of the catalog.
-	Name string `json:"-" path:"name"`
-}
-
-type GetExternalLocationRequest struct {
-	// Required. Name of the storage credential.
-	Name string `json:"-" path:"name"`
-}
-
-type GetMetastoreRequest struct {
-	// Required. Unique ID of the Metastore (from URL).
-	Id string `json:"-" path:"id"`
-}
-
-type GetPermissionsRequest struct {
-	// Required. Unique identifier (full name) of Securable (from URL).
-	FullName string `json:"-" path:"full_name"`
-	// Optional. List permissions granted to this principal.
-	Principal string `json:"-" url:"principal,omitempty"`
-	// Required. Type of Securable (from URL).
-	SecurableType string `json:"-" path:"securable_type"`
-}
-
-type GetProviderRequest struct {
-	// Required. Name of the provider.
-	Name string `json:"-" path:"name"`
-}
-
-type GetRecipientRequest struct {
-	// Required. Name of the recipient.
-	Name string `json:"-" path:"name"`
-}
-
-type GetRecipientSharePermissionsRequest struct {
-	// Required. The name of the Recipient.
-	Name string `json:"-" path:"name"`
-}
-
-type GetSchemaRequest struct {
-	// Required. Full name of the schema (from URL).
-	FullName string `json:"-" path:"full_name"`
-}
-
-type GetSharePermissionsRequest struct {
-	// Required. The name of the share.
-	Name string `json:"-" path:"name"`
-}
-
-type GetShareRequest struct {
-	// Query for data to include in the share.
-	IncludeSharedData bool `json:"-" url:"include_shared_data,omitempty"`
-	// The name of the share.
-	Name string `json:"-" path:"name"`
-}
-
-type GetStorageCredentialsRequest struct {
-	// Required. Name of the storage credential.
-	Name string `json:"-" path:"name"`
-}
-
-type GetTableRequest struct {
-	// Required. Full name of the Table (from URL).
-	FullName string `json:"-" path:"full_name"`
-}
-
-type ListRequest struct {
-	// Optional. Parent catalog for schemas of interest.
-	CatalogName string `json:"-" url:"catalog_name,omitempty"`
-}
-
-type ListSharesRequest struct {
-	// Required. Name of the provider in which to list shares.
-	Name string `json:"-" path:"name"`
-}
-
-type ListTableSummariesRequest struct {
-	// Required. Name of parent catalog for tables of interest.
-	CatalogName string `json:"-" url:"catalog_name,omitempty"`
-	// Optional. Maximum number of tables to return (page length). Defaults to
-	// 10000.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-	// Optional. Opaque token to send for the next page of results (pagination).
-	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Optional. A sql LIKE pattern (% and _) for schema names. All schemas will
-	// be returned if not set or empty.
-	SchemaNamePattern string `json:"-" url:"schema_name_pattern,omitempty"`
-	// Optional. A sql LIKE pattern (% and _) for table names. All tables will
-	// be returned if not set or empty.
-	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
-}
-
-type RetrieveTokenRequest struct {
-	// Required. The one time activation url. It also accepts activation token.
-	ActivationUrl string `json:"-" path:"activation_url"`
-}

@@ -11,6 +11,11 @@ type ClusterLibraryStatuses struct {
 	LibraryStatuses []LibraryFullStatus `json:"library_statuses,omitempty"`
 }
 
+type ClusterStatusRequest struct {
+	// Unique identifier of the cluster whose status should be retrieved.
+	ClusterId string `json:"-" url:"cluster_id,omitempty"`
+}
+
 type InstallLibraries struct {
 	// Unique identifier for the cluster on which to install these libraries.
 	ClusterId string `json:"cluster_id"`
@@ -118,9 +123,4 @@ type UninstallLibraries struct {
 	ClusterId string `json:"cluster_id"`
 	// The libraries to uninstall.
 	Libraries []Library `json:"libraries,omitempty"`
-}
-
-type ClusterStatusRequest struct {
-	// Unique identifier of the cluster whose status should be retrieved.
-	ClusterId string `json:"-" url:"cluster_id,omitempty"`
 }

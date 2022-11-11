@@ -51,6 +51,18 @@ type FileInfo struct {
 	Path string `json:"path,omitempty"`
 }
 
+type GetStatusRequest struct {
+	// The path of the file or directory. The path should be the absolute DBFS
+	// path (e.g. "/mnt/foo/").
+	Path string `json:"-" url:"path,omitempty"`
+}
+
+type ListRequest struct {
+	// The path of the file or directory. The path should be the absolute DBFS
+	// path (e.g. "/mnt/foo/").
+	Path string `json:"-" url:"path,omitempty"`
+}
+
 type ListStatusResponse struct {
 	// A list of FileInfo's that describe contents of directory or file. See
 	// example above.
@@ -82,27 +94,6 @@ type Put struct {
 	Path string `json:"path"`
 }
 
-type ReadResponse struct {
-	// The number of bytes read (could be less than ``length`` if we hit end of
-	// file). This refers to number of bytes read in unencoded version (response
-	// data is base64-encoded).
-	BytesRead int64 `json:"bytes_read,omitempty"`
-	// The base64-encoded contents of the file read.
-	Data string `json:"data,omitempty"`
-}
-
-type GetStatusRequest struct {
-	// The path of the file or directory. The path should be the absolute DBFS
-	// path (e.g. "/mnt/foo/").
-	Path string `json:"-" url:"path,omitempty"`
-}
-
-type ListRequest struct {
-	// The path of the file or directory. The path should be the absolute DBFS
-	// path (e.g. "/mnt/foo/").
-	Path string `json:"-" url:"path,omitempty"`
-}
-
 type ReadRequest struct {
 	// The number of bytes to read starting from the offset. This has a limit of
 	// 1 MB, and a default value of 0.5 MB.
@@ -112,4 +103,13 @@ type ReadRequest struct {
 	// The path of the file to read. The path should be the absolute DBFS path
 	// (e.g. "/mnt/foo/").
 	Path string `json:"-" url:"path,omitempty"`
+}
+
+type ReadResponse struct {
+	// The number of bytes read (could be less than ``length`` if we hit end of
+	// file). This refers to number of bytes read in unencoded version (response
+	// data is base64-encoded).
+	BytesRead int64 `json:"bytes_read,omitempty"`
+	// The base64-encoded contents of the file read.
+	Data string `json:"data,omitempty"`
 }

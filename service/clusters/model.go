@@ -1186,6 +1186,11 @@ type GetEventsResponse struct {
 	TotalCount int64 `json:"total_count,omitempty"`
 }
 
+type GetRequest struct {
+	// The cluster about which to retrieve information.
+	ClusterId string `json:"-" url:"cluster_id,omitempty"`
+}
+
 type GetSparkVersionsResponse struct {
 	// All the available Spark versions.
 	Versions []SparkVersion `json:"versions,omitempty"`
@@ -1207,6 +1212,13 @@ type ListClustersResponse struct {
 type ListNodeTypesResponse struct {
 	// The list of available Spark node types.
 	NodeTypes []NodeType `json:"node_types,omitempty"`
+}
+
+type ListRequest struct {
+	// Filter clusters based on what type of client it can be used for. Could be
+	// either NOTEBOOKS or JOBS. No input for this field will get all clusters
+	// in the workspace without filtering on its supported client
+	CanUseClient string `json:"-" url:"can_use_client,omitempty"`
 }
 
 type LogAnalyticsInfo struct {
@@ -1595,28 +1607,3 @@ type WorkloadType struct {
 	// defined what type of clients can use the cluster. E.g. Notebooks, Jobs
 	Clients *ClientsTypes `json:"clients,omitempty"`
 }
-
-// The node type of the Spark driver. Note that this field is optional; if
-// unset, the driver node type will be set as the same value as `node_type_id`
-// defined above.
-
-type GetRequest struct {
-	// The cluster about which to retrieve information.
-	ClusterId string `json:"-" url:"cluster_id,omitempty"`
-}
-
-type ListRequest struct {
-	// Filter clusters based on what type of client it can be used for. Could be
-	// either NOTEBOOKS or JOBS. No input for this field will get all clusters
-	// in the workspace without filtering on its supported client
-	CanUseClient string `json:"-" url:"can_use_client,omitempty"`
-}
-
-// This field encodes, through a single value, the resources available to each
-// of the Spark nodes in this cluster. For example, the Spark nodes can be
-// provisioned and optimized for memory or compute intensive workloads. A list
-// of available node types can be retrieved by using the :method:listNodeTypes
-// API call.
-
-// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available
-// Spark versions can be retrieved by using the :method:sparkVersions API call.

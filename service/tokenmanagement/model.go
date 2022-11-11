@@ -57,26 +57,3 @@ type TokenInfo struct {
 	// ID of the token.
 	TokenId string `json:"token_id,omitempty"`
 }
-
-// Application ID of the service principal.
-
-// Comment that describes the purpose of the token, specified by the token
-// creator.
-
-// Comment that describes the purpose of the token.
-
-// User ID of the user that created the token.
-
-// Username of the user that created the token.
-
-// Timestamp when the token was created.
-
-// Timestamp when the token expires.
-
-// The number of seconds before the token expires.
-
-// User ID of the user that owns the token.
-
-// ID of the token.
-
-// Value of the token.

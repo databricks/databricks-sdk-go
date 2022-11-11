@@ -3,6 +3,7 @@
 package mlflow
 
 // all definitions in this file are in alphabetical order
+
 // Activity recorded for the action.
 type Activity struct {
 	// This describes an enum
@@ -82,6 +83,11 @@ const ActivityTypeRequestedTransition ActivityType = `REQUESTED_TRANSITION`
 // For events performed as a side effect, such as archiving existing model
 // versions in a stage.
 const ActivityTypeSystemTransition ActivityType = `SYSTEM_TRANSITION`
+
+type ApproveResponse struct {
+	// Activity recorded for the action.
+	Activity *Activity `json:"activity,omitempty"`
+}
 
 type ApproveTransitionRequest struct {
 	// Specifies whether to archive all current model versions in the target
@@ -240,6 +246,11 @@ type CreateRegistryWebhook struct {
 	Status RegistryWebhookStatus `json:"status,omitempty"`
 }
 
+type CreateResponse struct {
+	// Comment details.
+	Comment *CommentObject `json:"comment,omitempty"`
+}
+
 type CreateRun struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"experiment_id,omitempty"`
@@ -312,6 +323,10 @@ type DeleteRegisteredModelTagRequest struct {
 	Name string `json:"-" url:"name,omitempty"`
 }
 
+type DeleteRequest struct {
+	Id string `json:"-" url:"id,omitempty"`
+}
+
 type DeleteRun struct {
 	// ID of the run to delete.
 	RunId string `json:"run_id"`
@@ -358,9 +373,29 @@ type FileInfo struct {
 	Path string `json:"path,omitempty"`
 }
 
+type GetByNameRequest struct {
+	// Name of the associated experiment.
+	ExperimentName string `json:"-" url:"experiment_name,omitempty"`
+}
+
 type GetExperimentByNameResponse struct {
 	// Experiment details.
 	Experiment *Experiment `json:"experiment,omitempty"`
+}
+
+type GetExperimentRequest struct {
+	// ID of the associated experiment.
+	ExperimentId string `json:"-" url:"experiment_id,omitempty"`
+}
+
+type GetHistoryRequest struct {
+	// Name of the metric.
+	MetricKey string `json:"-" url:"metric_key,omitempty"`
+	// ID of the run from which to fetch metric values. Must be provided.
+	RunId string `json:"-" url:"run_id,omitempty"`
+	// [Deprecated, use run_id instead] ID of the run from which to fetch metric
+	// values. This field will be removed in a future MLflow version.
+	RunUuid string `json:"-" url:"run_uuid,omitempty"`
 }
 
 type GetLatestVersionsRequest struct {
@@ -412,6 +447,23 @@ type GetRegisteredModelRequest struct {
 
 type GetRegisteredModelResponse struct {
 	RegisteredModel *RegisteredModel `json:"registered_model,omitempty"`
+}
+
+type GetRequest struct {
+	// Name of the model.
+	Name string `json:"-" url:"name,omitempty"`
+}
+
+type GetResponse struct {
+	RegisteredModel *RegisteredModelDatabricks `json:"registered_model,omitempty"`
+}
+
+type GetRunRequest struct {
+	// ID of the run to fetch. Must be provided.
+	RunId string `json:"-" url:"run_id,omitempty"`
+	// [Deprecated, use run_id instead] ID of the run to fetch. This field will
+	// be removed in a future MLflow version.
+	RunUuid string `json:"-" url:"run_uuid,omitempty"`
 }
 
 type GetRunResponse struct {
@@ -475,6 +527,19 @@ type JobSpecWithoutSecret struct {
 	WorkspaceUrl string `json:"workspace_url,omitempty"`
 }
 
+type ListArtifactsRequest struct {
+	// Token indicating the page of artifact results to fetch
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Filter artifacts matching this path (a relative path from the root
+	// artifact directory).
+	Path string `json:"-" url:"path,omitempty"`
+	// ID of the run whose artifacts to list. Must be provided.
+	RunId string `json:"-" url:"run_id,omitempty"`
+	// [Deprecated, use run_id instead] ID of the run whose artifacts to list.
+	// This field will be removed in a future MLflow version.
+	RunUuid string `json:"-" url:"run_uuid,omitempty"`
+}
+
 type ListArtifactsResponse struct {
 	// File location and metadata for artifacts.
 	Files []FileInfo `json:"files,omitempty"`
@@ -482,6 +547,20 @@ type ListArtifactsResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// Root artifact directory for the run.
 	RootUri string `json:"root_uri,omitempty"`
+}
+
+type ListExperimentsRequest struct {
+	// Maximum number of experiments desired. If `max_results` is unspecified,
+	// return all experiments. If `max_results` is too large, it'll be
+	// automatically capped at 1000. Callers of this endpoint are encouraged to
+	// pass max_results explicitly and leverage page_token to iterate through
+	// experiments.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Token indicating the page of experiments to fetch
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Qualifier for type of experiments to be returned. If unspecified, return
+	// only active experiments.
+	ViewType string `json:"-" url:"view_type,omitempty"`
 }
 
 type ListExperimentsResponse struct {
@@ -512,6 +591,23 @@ type ListRegistryWebhooks struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// Array of registry webhooks.
 	Webhooks []RegistryWebhook `json:"webhooks,omitempty"`
+}
+
+type ListRequest struct {
+	// If `events` is specified, any webhook with one or more of the specified
+	// trigger events is included in the output. If `events` is not specified,
+	// webhooks of all event types are included in the output.
+	Events []RegistryWebhookEvent `json:"-" url:"events,omitempty"`
+	// If not specified, all webhooks associated with the specified events are
+	// listed, regardless of their associated model.
+	ModelName string `json:"-" url:"model_name,omitempty"`
+	// Token indicating the page of artifact results to fetch
+	PageToken string `json:"-" url:"page_token,omitempty"`
+}
+
+type ListResponse struct {
+	// Array of open transition requests.
+	Requests []Activity `json:"requests,omitempty"`
 }
 
 type LogBatch struct {
@@ -818,6 +914,11 @@ const RegistryWebhookStatusDisabled RegistryWebhookStatus = `DISABLED`
 // real event.
 const RegistryWebhookStatusTestMode RegistryWebhookStatus = `TEST_MODE`
 
+type RejectResponse struct {
+	// Activity recorded for the action.
+	Activity *Activity `json:"activity,omitempty"`
+}
+
 type RejectTransitionRequest struct {
 	// User-provided comment on the action.
 	Comment string `json:"comment,omitempty"`
@@ -1109,6 +1210,34 @@ type SetTag struct {
 	Value string `json:"value"`
 }
 
+// This describes an enum
+type Stage string
+
+// Archived stage.
+const StageArchived Stage = `Archived`
+
+// The initial stage of a model version.
+const StageNone Stage = `None`
+
+// Production stage.
+const StageProduction Stage = `Production`
+
+// Staging or pre-production stage.
+const StageStaging Stage = `Staging`
+
+// This describes an enum
+type Status string
+
+// Request to register a new model version has failed.
+const StatusFailedRegistration Status = `FAILED_REGISTRATION`
+
+// Request to register a new model version is pending as server performs
+// background tasks.
+const StatusPendingRegistration Status = `PENDING_REGISTRATION`
+
+// Model version is ready for use.
+const StatusReady Status = `READY`
+
 // Test webhook response object.
 type TestRegistryWebhook struct {
 	// Body of the response from the webhook URL
@@ -1124,6 +1253,11 @@ type TestRegistryWebhookRequest struct {
 	Event RegistryWebhookEvent `json:"event,omitempty"`
 	// Webhook ID
 	Id string `json:"id"`
+}
+
+type TestRegistryWebhookResponse struct {
+	// Test webhook response object.
+	Webhook *TestRegistryWebhook `json:"webhook,omitempty"`
 }
 
 type TransitionModelVersionStage struct {
@@ -1189,6 +1323,10 @@ type TransitionRequest struct {
 	ToStage Stage `json:"to_stage,omitempty"`
 	// Username of the user who made the stage transition request.
 	UserId string `json:"user_id,omitempty"`
+}
+
+type TransitionStageResponse struct {
+	ModelVersion *ModelVersionDatabricks `json:"model_version,omitempty"`
 }
 
 type UpdateComment struct {
@@ -1269,6 +1407,11 @@ type UpdateRegistryWebhook struct {
 	Status RegistryWebhookStatus `json:"status,omitempty"`
 }
 
+type UpdateResponse struct {
+	// Comment details.
+	Comment *CommentObject `json:"comment,omitempty"`
+}
+
 type UpdateRun struct {
 	// Unix timestamp in milliseconds of when the run ended.
 	EndTime int64 `json:"end_time,omitempty"`
@@ -1298,186 +1441,3 @@ const UpdateRunStatusKilled UpdateRunStatus = `KILLED`
 const UpdateRunStatusRunning UpdateRunStatus = `RUNNING`
 
 const UpdateRunStatusScheduled UpdateRunStatus = `SCHEDULED`
-
-// User-provided comment associated with the activity.
-
-// Unique identifier of an activity
-
-type ApproveResponse struct {
-	// Activity recorded for the action.
-	Activity *Activity `json:"activity,omitempty"`
-}
-
-// Specifies whether to archive all current model versions in the target stage.
-
-// User-provided comment on the action.
-
-type CreateResponse struct {
-	// Comment details.
-	Comment *CommentObject `json:"comment,omitempty"`
-}
-
-// Creation time of the object, as a Unix timestamp in milliseconds.
-
-type DeleteRequest struct {
-	Id string `json:"-" url:"id,omitempty"`
-}
-
-// User-specified description for the object.
-
-type GetByNameRequest struct {
-	// Name of the associated experiment.
-	ExperimentName string `json:"-" url:"experiment_name,omitempty"`
-}
-
-type GetExperimentRequest struct {
-	// ID of the associated experiment.
-	ExperimentId string `json:"-" url:"experiment_id,omitempty"`
-}
-
-type GetHistoryRequest struct {
-	// Name of the metric.
-	MetricKey string `json:"-" url:"metric_key,omitempty"`
-	// ID of the run from which to fetch metric values. Must be provided.
-	RunId string `json:"-" url:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run from which to fetch metric
-	// values. This field will be removed in a future MLflow version.
-	RunUuid string `json:"-" url:"run_uuid,omitempty"`
-}
-
-type GetRequest struct {
-	// Name of the model.
-	Name string `json:"-" url:"name,omitempty"`
-}
-
-type GetResponse struct {
-	RegisteredModel *RegisteredModelDatabricks `json:"registered_model,omitempty"`
-}
-
-type GetRunRequest struct {
-	// ID of the run to fetch. Must be provided.
-	RunId string `json:"-" url:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run to fetch. This field will
-	// be removed in a future MLflow version.
-	RunUuid string `json:"-" url:"run_uuid,omitempty"`
-}
-
-// Unique identifier for the object.
-
-// Time of the object at last update, as a Unix timestamp in milliseconds.
-
-type ListArtifactsRequest struct {
-	// Token indicating the page of artifact results to fetch
-	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Filter artifacts matching this path (a relative path from the root
-	// artifact directory).
-	Path string `json:"-" url:"path,omitempty"`
-	// ID of the run whose artifacts to list. Must be provided.
-	RunId string `json:"-" url:"run_id,omitempty"`
-	// [Deprecated, use run_id instead] ID of the run whose artifacts to list.
-	// This field will be removed in a future MLflow version.
-	RunUuid string `json:"-" url:"run_uuid,omitempty"`
-}
-
-type ListExperimentsRequest struct {
-	// Maximum number of experiments desired. If `max_results` is unspecified,
-	// return all experiments. If `max_results` is too large, it'll be
-	// automatically capped at 1000. Callers of this endpoint are encouraged to
-	// pass max_results explicitly and leverage page_token to iterate through
-	// experiments.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-	// Token indicating the page of experiments to fetch
-	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Qualifier for type of experiments to be returned. If unspecified, return
-	// only active experiments.
-	ViewType string `json:"-" url:"view_type,omitempty"`
-}
-
-type ListRequest struct {
-	// If `events` is specified, any webhook with one or more of the specified
-	// trigger events is included in the output. If `events` is not specified,
-	// webhooks of all event types are included in the output.
-	Events []RegistryWebhookEvent `json:"-" url:"events,omitempty"`
-	// If not specified, all webhooks associated with the specified events are
-	// listed, regardless of their associated model.
-	ModelName string `json:"-" url:"model_name,omitempty"`
-	// Token indicating the page of artifact results to fetch
-	PageToken string `json:"-" url:"page_token,omitempty"`
-}
-
-type ListResponse struct {
-	// Array of open transition requests.
-	Requests []Activity `json:"requests,omitempty"`
-}
-
-// Name of the model whose events would trigger this webhook.
-
-// Name of the model.
-
-type RejectResponse struct {
-	// Activity recorded for the action.
-	Activity *Activity `json:"activity,omitempty"`
-}
-
-// User-provided comment associated with the transition request.
-
-// Unique identifier for the MLflow tracking run associated with the source
-// model artifacts.
-
-// URL of the run associated with the model artifacts, potentially in another
-// workspace.
-
-// URI that indicates the location of the source model artifacts. This is used
-// when creating the model version.
-
-// This describes an enum
-type Stage string
-
-// Archived stage.
-const StageArchived Stage = `Archived`
-
-// The initial stage of a model version.
-const StageNone Stage = `None`
-
-// Production stage.
-const StageProduction Stage = `Production`
-
-// Staging or pre-production stage.
-const StageStaging Stage = `Staging`
-
-// This describes an enum
-type Status string
-
-// Request to register a new model version has failed.
-const StatusFailedRegistration Status = `FAILED_REGISTRATION`
-
-// Request to register a new model version is pending as server performs
-// background tasks.
-const StatusPendingRegistration Status = `PENDING_REGISTRATION`
-
-// Model version is ready for use.
-const StatusReady Status = `READY`
-
-// Details on the current status, for example why registration failed.
-
-type TestRegistryWebhookResponse struct {
-	// Test webhook response object.
-	Webhook *TestRegistryWebhook `json:"webhook,omitempty"`
-}
-
-type TransitionStageResponse struct {
-	ModelVersion *ModelVersionDatabricks `json:"model_version,omitempty"`
-}
-
-type UpdateResponse struct {
-	// Comment details.
-	Comment *CommentObject `json:"comment,omitempty"`
-}
-
-// The username of the user that created the object.
-
-// Version of the model.
-
-// User-specified description for the webhook.
-
-// Webhook ID

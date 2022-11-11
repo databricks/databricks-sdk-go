@@ -1017,29 +1017,3 @@ const WarehouseTypePairWarehouseTypeClassic WarehouseTypePairWarehouseType = `CL
 const WarehouseTypePairWarehouseTypePro WarehouseTypePairWarehouseType = `PRO`
 
 const WarehouseTypePairWarehouseTypeTypeUnspecified WarehouseTypePairWarehouseType = `TYPE_UNSPECIFIED`
-
-// Alias for `warehouse_id`.
-
-// Message describing why the query could not complete.
-
-// The time execution of the query ended.
-
-// A key that can be used to look up query details.
-
-// The time the query ended.
-
-// The query ID.
-
-// The time the query started.
-
-// The text of the query.
-
-// The number of results returned by the query.
-
-// URL to the query plan.
-
-// The ID of the user who ran the query.
-
-// The email address or username of the user who ran the query.
-
-// Warehouse ID.
