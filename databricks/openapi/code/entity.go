@@ -20,7 +20,7 @@ type Field struct {
 }
 
 func (f *Field) IsOptionalObject() bool {
-	return f.Entity != nil && !f.Required && f.Entity.IsObject()
+	return f.Entity != nil && !f.Required && (f.Entity.IsObject() || f.Entity.IsExternal())
 }
 
 type EnumEntry struct {
@@ -106,6 +106,12 @@ func (e *Entity) IsNumber() bool {
 // IsObject returns true if entity is not a Mpa and has more than zero fields
 func (e *Entity) IsObject() bool {
 	return e.MapValue == nil && len(e.fields) > 0
+}
+
+// IsExternal returns true if entity is declared in external package and
+// has to be imported from it
+func (e *Entity) IsExternal() bool {
+	return e.Package != nil && len(e.Package.types) == 0
 }
 
 // Fields returns sorted slice of field representations
