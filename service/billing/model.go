@@ -216,14 +216,14 @@ type DownloadBillableUsageRequest struct {
 	AccountId string `json:"-" path:"account_id"`
 	// Format: `YYYY-MM`. Last month to return billable usage logs for. This
 	// field is required.
-	EndMonth any/* ERROR */ `json:"-" url:"end_month,omitempty"`
+	EndMonth string `json:"-" url:"end_month,omitempty"`
 	// Specify whether to include personally identifiable information in the
 	// billable usage logs, for example the email addresses of cluster creators.
 	// Handle this information with care. Defaults to false.
 	PersonalData bool `json:"-" url:"personal_data,omitempty"`
 	// Format: `YYYY-MM`. First month to return billable usage logs for. This
 	// field is required.
-	StartMonth any/* ERROR */ `json:"-" url:"start_month,omitempty"`
+	StartMonth string `json:"-" url:"start_month,omitempty"`
 }
 
 type GetAllBudgetsRequest struct {

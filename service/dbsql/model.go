@@ -262,9 +262,9 @@ type GetDashboardRequest struct {
 
 type GetPermissionsRequest struct {
 	// Object ID. An ACL is returned for the object with this UUID.
-	ObjectId any/* ERROR */ `json:"-" path:"objectId"`
+	ObjectId string `json:"-" path:"objectId"`
 	// The type of object permissions to check.
-	ObjectType any/* ERROR */ `json:"-" path:"objectType"`
+	ObjectType ObjectTypePlural `json:"-" path:"objectType"`
 }
 
 type GetPermissionsResponse struct {
@@ -364,6 +364,26 @@ const ObjectTypeDashboard ObjectType = `dashboard`
 const ObjectTypeDataSource ObjectType = `data_source`
 
 const ObjectTypeQuery ObjectType = `query`
+
+// Always a plural of the object type.
+type ObjectTypePlural string
+
+const ObjectTypePluralAlerts ObjectTypePlural = `alerts`
+
+const ObjectTypePluralDashboards ObjectTypePlural = `dashboards`
+
+const ObjectTypePluralDataSources ObjectTypePlural = `data_sources`
+
+const ObjectTypePluralQueries ObjectTypePlural = `queries`
+
+// The singular form of the type of object which can be owned.
+type OwnableObjectType string
+
+const OwnableObjectTypeAlert OwnableObjectType = `alert`
+
+const OwnableObjectTypeDashboard OwnableObjectType = `dashboard`
+
+const OwnableObjectTypeQuery OwnableObjectType = `query`
 
 type Parameter struct {
 	// The literal parameter marker that appears between double curly braces in
@@ -527,9 +547,9 @@ type SetPermissionsRequest struct {
 	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
 	// Object ID. The ACL for the object with this UUID is overwritten by this
 	// request's POST content.
-	ObjectId any/* ERROR */ `json:"-" path:"objectId"`
+	ObjectId string `json:"-" path:"objectId"`
 	// The type of object permission to set.
-	ObjectType any/* ERROR */ `json:"-" path:"objectType"`
+	ObjectType ObjectTypePlural `json:"-" path:"objectType"`
 }
 
 type SetPermissionsResponse struct {
@@ -572,7 +592,7 @@ type TransferOwnershipRequest struct {
 	// The ID of the object on which to change ownership.
 	ObjectId TransferOwnershipObjectId `json:"-" path:"objectId"`
 	// The type of object on which to change ownership.
-	ObjectType any/* ERROR */ `json:"-" path:"objectType"`
+	ObjectType OwnableObjectType `json:"-" path:"objectType"`
 }
 
 type UnsubscribeRequest struct {
