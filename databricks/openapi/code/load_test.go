@@ -1,6 +1,8 @@
 package code
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -64,14 +66,29 @@ func TestBasic(t *testing.T) {
 // This test is used for debugging purposes
 func TestBasicDebug(t *testing.T) {
 	t.SkipNow()
-	batch, err := NewFromFile("/tmp/processed-databricks-workspace-all.json", []string{})
+	home, _ := os.UserHomeDir()
+	batch, err := NewFromFile(filepath.Join(home,
+		"universe/bazel-bin/openapi/all-internal.json"), []string{})
 	assert.NoError(t, err)
 
-	m := batch.Packages["dbsql"].services["Alerts"].methods["updateAlert"]
-	t.Log(m)
-
-	e := batch.Packages["dbsql"].types["EditAlert"]
-	t.Log(e)
+	for _, pkg := range batch.Pkgs() {
+		if pkg.Name != "workspaceconf" {
+			continue
+		}
+		pkg.Types()
+		for _, svc := range pkg.Services() {
+			for _, m := range svc.Methods() {
+				pg := m.Pagination()
+				if pg != nil {
+					t.Logf("pg entity: %s", pg.Entity.PascalName())
+				}
+				w := m.Wait()
+				if w != nil {
+					t.Logf("wait: %v", w.Success())
+				}
+			}
+		}
+	}
 
 	assert.Len(t, batch.Packages, 1)
 }

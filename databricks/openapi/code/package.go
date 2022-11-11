@@ -4,6 +4,7 @@ package code
 
 import (
 	"regexp"
+	"sort"
 	"strings"
 
 	"golang.org/x/exp/slices"
@@ -19,6 +20,7 @@ type Package struct {
 	services   map[string]*Service
 	types      map[string]*Entity
 	emptyTypes []*Named
+	extImports map[string]*Entity
 }
 
 // FullName just returns pacakge name
@@ -43,7 +45,7 @@ func (pkg *Package) Types() (types []*Entity) {
 		types = append(types, v)
 	}
 	slices.SortFunc(types, func(a, b *Entity) bool {
-		return a.Name < b.Name
+		return a.PascalName() < b.PascalName()
 	})
 	return types
 }
@@ -68,8 +70,50 @@ func (pkg *Package) HasPagination() bool {
 	return false
 }
 
+func (pkg *Package) ImportedEntities() (res []*Entity) {
+	for _, e := range pkg.extImports {
+		res = append(res, e)
+	}
+	slices.SortFunc(res, func(a, b *Entity) bool {
+		return a.FullName() < b.FullName()
+	})
+	return
+}
+
+func (pkg *Package) ImportedPackages() (res []string) {
+	tmp := map[string]bool{}
+	for _, e := range pkg.extImports {
+		tmp[e.Package.Name] = true
+	}
+	for name := range tmp {
+		res = append(res, name)
+	}
+	sort.Strings(res)
+	return
+}
+
 func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool) *Entity {
 	if s.IsRef() {
+		pair := strings.Split(s.Component(), ".")
+		if len(pair) == 2 && pair[0] != pkg.Name {
+			schemaPackage := pair[0]
+			schemaType := pair[1]
+			if pkg.extImports == nil {
+				pkg.extImports = map[string]*Entity{}
+			}
+			// referred entity is declared in another package
+			pkg.extImports[s.Component()] = &Entity{
+				Named: Named{
+					Name: schemaType,
+				},
+				Package: &Package{
+					Named: Named{
+						Name: schemaPackage,
+					},
+				},
+			}
+			return pkg.extImports[s.Component()]
+		}
 		// if schema is src, load it to this package
 		src := pkg.Components.Schemas.Resolve(s)
 		if src == nil {

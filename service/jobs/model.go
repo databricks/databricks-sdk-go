@@ -2,6 +2,11 @@
 
 package jobs
 
+import (
+	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/service/libraries"
+)
+
 // all definitions in this file are in alphabetical order
 
 type AccessControlRequest struct {
@@ -15,189 +20,6 @@ type AccessControlRequest struct {
 	// Email address for the user.
 	UserName string `json:"user_name,omitempty"`
 }
-
-type AutoScale struct {
-	// The maximum number of workers to which the cluster can scale up when
-	// overloaded. max_workers must be strictly greater than min_workers.
-	MaxWorkers int `json:"max_workers,omitempty"`
-	// The minimum number of workers to which the cluster can scale down when
-	// underutilized. It is also the initial number of workers the cluster has
-	// after creation.
-	MinWorkers int `json:"min_workers,omitempty"`
-}
-
-type AwsAttributes struct {
-	// Availability type used for all subsequent nodes past the
-	// `first_on_demand` ones. **Note:** If `first_on_demand` is zero, this
-	// availability type is used for the entire cluster.
-	//
-	// `SPOT`: use spot instances. `ON_DEMAND`: use on-demand instances.
-	// `SPOT_WITH_FALLBACK`: preferably use spot instances, but fall back to
-	// on-demand instances if spot instances cannot be acquired (for example, if
-	// AWS spot prices are too high).
-	Availability AwsAttributesAvailability `json:"availability,omitempty"`
-	// The number of volumes launched for each instance. You can choose up to 10
-	// volumes. This feature is only enabled for supported node types. Legacy
-	// node types cannot specify custom EBS volumes. For node types with no
-	// instance store, at least one EBS volume needs to be specified; otherwise,
-	// cluster creation fails.
-	//
-	// These EBS volumes are mounted at `/ebs0`, `/ebs1`, and etc. Instance
-	// store volumes are mounted at `/local_disk0`, `/local_disk1`, and etc.
-	//
-	// If EBS volumes are attached, Databricks configures Spark to use only the
-	// EBS volumes for scratch storage because heterogeneously sized scratch
-	// devices can lead to inefficient disk utilization. If no EBS volumes are
-	// attached, Databricks configures Spark to use instance store volumes.
-	//
-	// If EBS volumes are specified, then the Spark configuration
-	// `spark.local.dir` is overridden.
-	EbsVolumeCount int `json:"ebs_volume_count,omitempty"`
-	// The number of IOPS per EBS gp3 volume.
-	//
-	// This value must be between 3000 and 16000.
-	//
-	// The value of IOPS and throughput is calculated based on AWS documentation
-	// to match the maximum performance of a gp2 volume with the same volume
-	// size.
-	//
-	// For more information, see the [EBS volume limit
-	// calculator](https://github.com/awslabs/aws-support-tools/tree/master/EBS/VolumeLimitCalculator).
-	EbsVolumeIops int `json:"ebs_volume_iops,omitempty"`
-	// The size of each EBS volume (in GiB) launched for each instance. For
-	// general purpose SSD, this value must be within the range 100 - 4096\. For
-	// throughput optimized HDD, this value must be within the range 500 -
-	// 4096\. Custom EBS volumes cannot be specified for the legacy node types
-	// (_memory-optimized_ and _compute-optimized_).
-	EbsVolumeSize int `json:"ebs_volume_size,omitempty"`
-	// The throughput per EBS gp3 volume, in MiB per second.
-	//
-	// This value must be between 125 and 1000.
-	EbsVolumeThroughput int `json:"ebs_volume_throughput,omitempty"`
-	// The type of EBS volume that is launched with this cluster.
-	//
-	// `GENERAL_PURPOSE_SSD`: provision extra storage using AWS gp2 EBS volumes.
-	// `THROUGHPUT_OPTIMIZED_HDD`: provision extra storage using AWS st1
-	// volumes.
-	EbsVolumeType AwsAttributesEbsVolumeType `json:"ebs_volume_type,omitempty"`
-	// The first first_on_demand nodes of the cluster are placed on on-demand
-	// instances. If this value is greater than 0, the cluster driver node is
-	// placed on an on-demand instance. If this value is greater than or equal
-	// to the current cluster size, all nodes are placed on on-demand instances.
-	// If this value is less than the current cluster size, first_on_demand
-	// nodes are placed on on-demand instances and the remainder are placed on
-	// `availability` instances. This value does not affect cluster size and
-	// cannot be mutated over the lifetime of a cluster.
-	FirstOnDemand int `json:"first_on_demand,omitempty"`
-	// Nodes for this cluster are only be placed on AWS instances with this
-	// instance profile. If omitted, nodes are placed on instances without an
-	// instance profile. The instance profile must have previously been added to
-	// the Databricks environment by an account administrator.
-	//
-	// This feature may only be available to certain customer plans.
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
-	// The max price for AWS spot instances, as a percentage of the
-	// corresponding instance type’s on-demand price. For example, if this
-	// field is set to 50, and the cluster needs a new `i3.xlarge` spot
-	// instance, then the max price is half of the price of on-demand
-	// `i3.xlarge` instances. Similarly, if this field is set to 200, the max
-	// price is twice the price of on-demand `i3.xlarge` instances. If not
-	// specified, the default value is 100\. When spot instances are requested
-	// for this cluster, only spot instances whose max price percentage matches
-	// this field is considered. For safety, we enforce this field to be no more
-	// than 10000.
-	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
-	// Identifier for the availability zone/datacenter in which the cluster
-	// resides. You have three options:
-	//
-	// **Specify an availability zone as a string**, for example:
-	// “us-west-2a”. The provided availability zone must be in the same
-	// region as the Databricks deployment. For example, “us-west-2a” is not
-	// a valid zone ID if the Databricks deployment resides in the
-	// “us-east-1” region.
-	//
-	// **Enable automatic availability zone selection (“Auto-AZ”)**, by
-	// setting the value “auto”. Databricks selects the AZ based on
-	// available IPs in the workspace subnets and retries in other availability
-	// zones if AWS returns insufficient capacity errors.
-	//
-	// **Do not specify a value**. If not specified, a default zone is used.
-	//
-	// The list of available zones as well as the default value can be found by
-	// using the [List zones](..dev-tools/api/latest/clustershtml#list-zones)
-	// API.
-	ZoneId string `json:"zone_id,omitempty"`
-}
-
-// Availability type used for all subsequent nodes past the `first_on_demand`
-// ones. **Note:** If `first_on_demand` is zero, this availability type is used
-// for the entire cluster.
-//
-// `SPOT`: use spot instances. `ON_DEMAND`: use on-demand instances.
-// `SPOT_WITH_FALLBACK`: preferably use spot instances, but fall back to
-// on-demand instances if spot instances cannot be acquired (for example, if AWS
-// spot prices are too high).
-type AwsAttributesAvailability string
-
-const AwsAttributesAvailabilityOnDemand AwsAttributesAvailability = `ON_DEMAND`
-
-const AwsAttributesAvailabilitySpot AwsAttributesAvailability = `SPOT`
-
-const AwsAttributesAvailabilitySpotWithFallback AwsAttributesAvailability = `SPOT_WITH_FALLBACK`
-
-// The type of EBS volume that is launched with this cluster.
-//
-// `GENERAL_PURPOSE_SSD`: provision extra storage using AWS gp2 EBS volumes.
-// `THROUGHPUT_OPTIMIZED_HDD`: provision extra storage using AWS st1 volumes.
-type AwsAttributesEbsVolumeType string
-
-const AwsAttributesEbsVolumeTypeGeneralPurposeSsd AwsAttributesEbsVolumeType = `GENERAL_PURPOSE_SSD`
-
-const AwsAttributesEbsVolumeTypeThroughputOptimizedHdd AwsAttributesEbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
-
-type AzureAttributes struct {
-	// Availability type used for all subsequent nodes past the
-	// `first_on_demand` ones.
-	//
-	// `SPOT_AZURE`: use spot instances. `ON_DEMAND_AZURE`: use on demand
-	// instances. `SPOT_WITH_FALLBACK_AZURE`: preferably use spot instances, but
-	// fall back to on-demand instances if spot instances cannot be acquired
-	// (for example, if Azure spot prices are too high or out of quota). Does
-	// not apply to pool availability.
-	Availability AzureAttributesAvailability `json:"availability,omitempty"`
-	// The first `first_on_demand` nodes of the cluster are placed on on-demand
-	// instances. This value must be greater than 0, or else cluster creation
-	// validation fails. If this value is greater than or equal to the current
-	// cluster size, all nodes are placed on on-demand instances. If this value
-	// is less than the current cluster size, `first_on_demand` nodes are placed
-	// on on-demand instances and the remainder are placed on availability
-	// instances. This value does not affect cluster size and cannot be mutated
-	// over the lifetime of a cluster.
-	FirstOnDemand int `json:"first_on_demand,omitempty"`
-	// The max bid price used for Azure spot instances. You can set this to
-	// greater than or equal to the current spot price. You can also set this to
-	// -1 (the default), which specifies that the instance cannot be evicted on
-	// the basis of price. The price for the instance is the current price for
-	// spot instances or the price for a standard instance. You can view
-	// historical pricing and eviction rates in the Azure portal.
-	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
-}
-
-// Availability type used for all subsequent nodes past the `first_on_demand`
-// ones.
-//
-// `SPOT_AZURE`: use spot instances. `ON_DEMAND_AZURE`: use on demand instances.
-// `SPOT_WITH_FALLBACK_AZURE`: preferably use spot instances, but fall back to
-// on-demand instances if spot instances cannot be acquired (for example, if
-// Azure spot prices are too high or out of quota). Does not apply to pool
-// availability.
-type AzureAttributesAvailability string
-
-const AzureAttributesAvailabilityOnDemandAzure AzureAttributesAvailability = `ON_DEMAND_AZURE`
-
-const AzureAttributesAvailabilitySpotAzure AzureAttributesAvailability = `SPOT_AZURE`
-
-const AzureAttributesAvailabilitySpotWithFallbackAzure AzureAttributesAvailability = `SPOT_WITH_FALLBACK_AZURE`
 
 type CancelAllRuns struct {
 	// The canonical identifier of the job to cancel all runs of. This field is
@@ -231,33 +53,18 @@ type ClusterInstance struct {
 	SparkContextId string `json:"spark_context_id,omitempty"`
 }
 
-type ClusterLogConf struct {
-	// DBFS location of cluster log. Destination must be provided. For example,
-	// `{ "dbfs" : { "destination" : "dbfs:/home/cluster_log" } }`
-	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
-	// S3 location of cluster log. `destination` and either `region` or
-	// `endpoint` must be provided. For example, `{ "s3": { "destination" :
-	// "s3://cluster_log_bucket/prefix", "region" : "us-west-2" } }`
-	S3 *S3StorageInfo `json:"s3,omitempty"`
-}
-
 type ClusterSpec struct {
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs of this job. When running jobs on an existing cluster, you may
 	// need to manually restart the cluster if it stops responding. We suggest
-	// running jobs on new clusters for greater reliability.
+	// running jobs on new clusters for greater reliability
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the job. The default value is an empty list.
-	Libraries []Library `json:"libraries,omitempty"`
+	Libraries []libraries.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster *NewCluster `json:"new_cluster,omitempty"`
+	NewCluster *clusters.ClusterInfo `json:"new_cluster,omitempty"`
 }
-
-// An object with key value pairs. The key length must be between 1 and 127
-// UTF-8 characters, inclusive. The value length must be less than or equal to
-// 255 UTF-8 characters.
-type ClusterTag map[string]string
 
 type CreateJob struct {
 	// List of permissions to set on the job.
@@ -321,6 +128,11 @@ const CreateJobFormatMultiTask CreateJobFormat = `MULTI_TASK`
 
 const CreateJobFormatSingleTask CreateJobFormat = `SINGLE_TASK`
 
+type CreateResponse struct {
+	// The canonical identifier for the newly created job.
+	JobId int64 `json:"job_id,omitempty"`
+}
+
 type CronSchedule struct {
 	// Indicate whether this schedule is paused or not.
 	PauseStatus CronSchedulePauseStatus `json:"pause_status,omitempty"`
@@ -343,11 +155,6 @@ const CronSchedulePauseStatusPaused CronSchedulePauseStatus = `PAUSED`
 
 const CronSchedulePauseStatusUnpaused CronSchedulePauseStatus = `UNPAUSED`
 
-type DbfsStorageInfo struct {
-	// DBFS destination. Example: `dbfs:/my/path`
-	Destination string `json:"destination,omitempty"`
-}
-
 type DeleteJob struct {
 	// The canonical identifier of the job to delete. This field is required.
 	JobId int64 `json:"job_id"`
@@ -363,19 +170,30 @@ type ExportRunOutput struct {
 	Views []ViewItem `json:"views,omitempty"`
 }
 
-type FileStorageInfo struct {
-	// File destination. Example: `file:/my/file.sh`
-	Destination string `json:"destination,omitempty"`
+type ExportRunRequest struct {
+	// The canonical identifier for the run. This field is required.
+	RunId int64 `json:"-" url:"run_id,omitempty"`
+	// Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
+	ViewsToExport ViewsToExport `json:"-" url:"views_to_export,omitempty"`
 }
 
-type GcpAttributes struct {
-	// Google service account email address that the cluster uses to
-	// authenticate with Google Identity. This field is used for authentication
-	// with the [GCS](..data/data-sources/google/gcshtml) and
-	// [BigQuery](..data/data-sources/google/bigqueryhtml) data sources.
-	GoogleServiceAccount string `json:"google_service_account,omitempty"`
-	// Use preemptible executors.
-	UsePreemptibleExecutors bool `json:"use_preemptible_executors,omitempty"`
+type GetRequest struct {
+	// The canonical identifier of the job to retrieve information about. This
+	// field is required.
+	JobId int64 `json:"-" url:"job_id,omitempty"`
+}
+
+type GetRunOutputRequest struct {
+	// The canonical identifier for the run. This field is required.
+	RunId int64 `json:"-" url:"run_id,omitempty"`
+}
+
+type GetRunRequest struct {
+	// Whether to include the repair history in the response.
+	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
+	// The canonical identifier of the run for which to retrieve the metadata.
+	// This field is required.
+	RunId int64 `json:"-" url:"run_id,omitempty"`
 }
 
 // Read-only state of the remote repository at the time the job was run. This
@@ -433,22 +251,6 @@ const GitSourceGitProviderGitlab GitSourceGitProvider = `gitLab`
 
 const GitSourceGitProviderGitlabenterpriseedition GitSourceGitProvider = `gitLabEnterpriseEdition`
 
-// Group name. There are two built-in groups: `users` for all users, and
-// `admins` for administrators.
-
-type InitScriptInfo struct {
-	// S3 location of init script. Destination and either region or endpoint
-	// must be provided. For example, `{ "s3": { "destination" :
-	// "s3://init_script_bucket/prefix", "region" : "us-west-2" } }`
-	S3 *S3StorageInfo `json:"S3,omitempty"`
-	// DBFS location of init script. Destination must be provided. For example,
-	// `{ "dbfs" : { "destination" : "dbfs:/home/init_script" } }`
-	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
-	// File location of init script. Destination must be provided. For example,
-	// `{ "file" : { "destination" : "file:/my/local/file.sh" } }`
-	File *FileStorageInfo `json:"file,omitempty"`
-}
-
 type Job struct {
 	// The time at which this job was created in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC).
@@ -469,7 +271,7 @@ type JobCluster struct {
 	// determine which cluster to launch for the task execution.
 	JobClusterKey string `json:"job_cluster_key"`
 
-	NewCluster *NewCluster `json:"new_cluster,omitempty"`
+	NewCluster any/* ERROR */ `json:"new_cluster,omitempty"`
 }
 
 type JobEmailNotifications struct {
@@ -578,7 +380,7 @@ type JobTaskSettings struct {
 	JobClusterKey string `json:"job_cluster_key,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the task. The default value is an empty list.
-	Libraries []Library `json:"libraries,omitempty"`
+	Libraries []libraries.Library `json:"libraries,omitempty"`
 	// An optional maximum number of times to retry an unsuccessful run. A run
 	// is considered to be unsuccessful if it completes with the `FAILED`
 	// result_state or `INTERNAL_ERROR` `life_cycle_state`. The value -1 means
@@ -590,7 +392,7 @@ type JobTaskSettings struct {
 	// unsuccessful runs are immediately retried.
 	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster *NewCluster `json:"new_cluster,omitempty"`
+	NewCluster *clusters.ClusterInfo `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -618,23 +420,55 @@ type JobTaskSettings struct {
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 }
 
-type Library struct {
-	// If cran, specification of a CRAN library to be installed.
-	Cran *RCranLibrary `json:"cran,omitempty"`
+type ListRequest struct {
+	// Whether to include task and cluster details in the response.
+	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
+	// The number of jobs to return. This value must be greater than 0 and less
+	// or equal to 25. The default value is 20.
+	Limit int `json:"-" url:"limit,omitempty"`
+	// The offset of the first job to return, relative to the most recently
+	// created job.
+	Offset int `json:"-" url:"offset,omitempty"`
+}
 
-	Egg string `json:"egg,omitempty"`
+type ListResponse struct {
+	HasMore bool `json:"has_more,omitempty"`
+	// The list of jobs.
+	Jobs []Job `json:"jobs,omitempty"`
+}
 
-	Jar string `json:"jar,omitempty"`
-	// If maven, specification of a Maven library to be installed. For example:
-	// `{ "coordinates": "org.jsoup:jsoup:1.7.2" }`
-	Maven *MavenLibrary `json:"maven,omitempty"`
-	// If pypi, specification of a PyPI library to be installed. Specifying the
-	// `repo` field is optional and if not specified, the default pip index is
-	// used. For example: `{ "package": "simplejson", "repo":
-	// "https://my-repo.com" }`
-	Pypi *PythonPyPiLibrary `json:"pypi,omitempty"`
-
-	Whl string `json:"whl,omitempty"`
+type ListRunsRequest struct {
+	// If active_only is `true`, only active runs are included in the results;
+	// otherwise, lists both active and completed runs. An active run is a run
+	// in the `PENDING`, `RUNNING`, or `TERMINATING`. This field cannot be
+	// `true` when completed_only is `true`.
+	ActiveOnly bool `json:"-" url:"active_only,omitempty"`
+	// If completed_only is `true`, only completed runs are included in the
+	// results; otherwise, lists both active and completed runs. This field
+	// cannot be `true` when active_only is `true`.
+	CompletedOnly bool `json:"-" url:"completed_only,omitempty"`
+	// Whether to include task and cluster details in the response.
+	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
+	// The job for which to list runs. If omitted, the Jobs service lists runs
+	// from all jobs.
+	JobId int64 `json:"-" url:"job_id,omitempty"`
+	// The number of runs to return. This value must be greater than 0 and less
+	// than 25. The default value is 25. If a request specifies a limit of 0,
+	// the service instead uses the maximum limit.
+	Limit int `json:"-" url:"limit,omitempty"`
+	// The offset of the first run to return, relative to the most recent run.
+	Offset int `json:"-" url:"offset,omitempty"`
+	// The type of runs to return. For a description of run types, see
+	// :method:getRun.
+	RunType ListRunsRunType `json:"-" url:"run_type,omitempty"`
+	// Show runs that started _at or after_ this value. The value must be a UTC
+	// timestamp in milliseconds. Can be combined with _start_time_to_ to filter
+	// by a time range.
+	StartTimeFrom int `json:"-" url:"start_time_from,omitempty"`
+	// Show runs that started _at or before_ this value. The value must be a UTC
+	// timestamp in milliseconds. Can be combined with _start_time_from_ to
+	// filter by a time range.
+	StartTimeTo int `json:"-" url:"start_time_to,omitempty"`
 }
 
 type ListRunsResponse struct {
@@ -645,117 +479,13 @@ type ListRunsResponse struct {
 	Runs []Run `json:"runs,omitempty"`
 }
 
-type MavenLibrary struct {
-	// Gradle-style Maven coordinates. For example: `org.jsoup:jsoup:1.7.2`.
-	// This field is required.
-	Coordinates string `json:"coordinates"`
-	// List of dependences to exclude. For example: `["slf4j:slf4j",
-	// "*:hadoop-client"]`.
-	//
-	// Maven dependency exclusions:
-	// <https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html>.
-	Exclusions []string `json:"exclusions,omitempty"`
-	// Maven repo to install the Maven package from. If omitted, both Maven
-	// Central Repository and Spark Packages are searched.
-	Repo string `json:"repo,omitempty"`
-}
+type ListRunsRunType string
 
-type NewCluster struct {
-	// If autoscale, the required parameters to automatically scale clusters up
-	// and down based on load.
-	Autoscale *AutoScale `json:"autoscale,omitempty"`
-	// Attributes related to clusters running on Amazon Web Services. If not
-	// specified at cluster creation, a set of default values is used.
-	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
-	// Defines attributes such as the instance availability type, node
-	// placement, and max bid price. If not specified during cluster creation, a
-	// set of default values is used.
-	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-	// The configuration for delivering Spark logs to a long-term storage
-	// destination. Only one destination can be specified for one cluster. If
-	// the conf is given, the logs are delivered to the destination every `5
-	// mins`. The destination of driver logs is
-	// `<destination>/<cluster-id>/driver`, while the destination of executor
-	// logs is `<destination>/<cluster-id>/executor`.
-	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
-	// An object with key value pairs. The key length must be between 1 and 127
-	// UTF-8 characters, inclusive. The value length must be less than or equal
-	// to 255 UTF-8 characters.
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// The optional ID of the instance pool to use for the driver node. You must
-	// also specify `instance_pool_id`. Refer to [Instance Pools
-	// API](..dev-tools/api/latest/instance-poolshtml) for details.
-	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
-	// The node type of the Spark driver. This field is optional; if unset, the
-	// driver node type is set as the same value as `node_type_id` defined
-	// above.
-	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
+const ListRunsRunTypeJobRun ListRunsRunType = `JOB_RUN`
 
-	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-	// Attributes related to clusters running on Google Cloud. If not specified
-	// at cluster creation, a set of default values is used.
-	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-	// The configuration for storing init scripts. Any number of scripts can be
-	// specified. The scripts are executed sequentially in the order provided.
-	// If `cluster_log_conf` is specified, init script logs are sent to
-	// `<destination>/<cluster-id>/init_scripts`.
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
-	// The optional ID of the instance pool to use for cluster nodes. If
-	// `driver_instance_pool_id` is present, `instance_pool_id` is used for
-	// worker nodes only. Otherwise, it is used for both the driver node and
-	// worker nodes. Refer to [Instance Pools
-	// API](..dev-tools/api/latest/instance-poolshtml) for details.
-	InstancePoolId string `json:"instance_pool_id,omitempty"`
-	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads A
-	// list of available node types can be retrieved by using the [List node
-	// types](..dev-tools/api/latest/clustershtml#list-node-types) API call.
-	// This field is required.
-	NodeTypeId string `json:"node_type_id"`
-	// If num_workers, number of worker nodes that this cluster must have. A
-	// cluster has one Spark driver and num_workers executors for a total of
-	// num_workers + 1 Spark nodes. When reading the properties of a cluster,
-	// this field reflects the desired number of workers rather than the actual
-	// current number of workers. For example, if a cluster is resized from 5 to
-	// 10 workers, this field immediately updates to reflect the target size of
-	// 10 workers, whereas the workers listed in `spark_info` gradually increase
-	// from 5 to 10 as the new nodes are provisioned.
-	NumWorkers int `json:"num_workers,omitempty"`
-	// A [cluster policy](..dev-tools/api/latest/policieshtml) ID.
-	PolicyId string `json:"policy_id,omitempty"`
-	// An object containing a set of optional, user-specified Spark
-	// configuration key-value pairs. You can also pass in a string of extra JVM
-	// options to the driver and the executors via
-	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
-	// respectively.
-	//
-	// Example Spark confs: `{"spark.speculation": true,
-	// "spark.streaming.ui.retainedBatches": 5}` or
-	// `{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}`
-	SparkConf map[string]any/* MISSING TYPE */ `json:"spark_conf,omitempty"`
-	// An object containing a set of optional, user-specified environment
-	// variable key-value pairs. Key-value pair of the form (X,Y) are exported
-	// as is (for example, `export X='Y'`) while launching the driver and
-	// workers.
-	//
-	// To specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend
-	// appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the following
-	// example. This ensures that all default databricks managed environmental
-	// variables are included as well.
-	//
-	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
-	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
-	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
-	SparkEnvVars map[string]any/* MISSING TYPE */ `json:"spark_env_vars,omitempty"`
-	// The Spark version of the cluster. A list of available Spark versions can
-	// be retrieved by using the [Runtime
-	// versions](..dev-tools/api/latest/clustershtml#runtime-versions) API call.
-	// This field is required.
-	SparkVersion string `json:"spark_version"`
+const ListRunsRunTypeSubmitRun ListRunsRunType = `SUBMIT_RUN`
 
-	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-}
+const ListRunsRunTypeWorkflowRun ListRunsRunType = `WORKFLOW_RUN`
 
 type NotebookOutput struct {
 	// The value passed to
@@ -805,16 +535,6 @@ type PipelineTask struct {
 	PipelineId string `json:"pipeline_id,omitempty"`
 }
 
-type PythonPyPiLibrary struct {
-	// The name of the PyPI package to install. An optional exact version
-	// specification is also supported. Examples: `simplejson` and
-	// `simplejson==3.8.0`. This field is required.
-	Package string `json:"package"`
-	// The repository where the package can be found. If not specified, the
-	// default pip index is used.
-	Repo string `json:"repo,omitempty"`
-}
-
 type PythonWheelTask struct {
 	// Named entry point to use, if it does not exist in the metadata of the
 	// package it executes the function from the package directly using
@@ -829,14 +549,6 @@ type PythonWheelTask struct {
 	// Command-line parameters passed to Python wheel task. Leave it empty if
 	// `named_parameters` is not null.
 	Parameters []string `json:"parameters,omitempty"`
-}
-
-type RCranLibrary struct {
-	// The name of the CRAN package to install. This field is required.
-	Package string `json:"package"`
-	// The repository where the package can be found. If not specified, the
-	// default CRAN repo is used.
-	Repo string `json:"repo,omitempty"`
 }
 
 type RepairHistoryItem struct {
@@ -942,6 +654,11 @@ type RepairRun struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
+}
+
+type RepairRunResponse struct {
+	// The ID of the repair.
+	RepairId int64 `json:"repair_id,omitempty"`
 }
 
 type ResetJob struct {
@@ -1314,9 +1031,9 @@ type RunSubmitTaskSettings struct {
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the task. The default value is an empty list.
-	Libraries []Library `json:"libraries,omitempty"`
+	Libraries []libraries.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster *NewCluster `json:"new_cluster,omitempty"`
+	NewCluster any/* ERROR */ `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -1383,9 +1100,9 @@ type RunTask struct {
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the job. The default value is an empty list.
-	Libraries []Library `json:"libraries,omitempty"`
+	Libraries []libraries.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster *NewCluster `json:"new_cluster,omitempty"`
+	NewCluster any/* ERROR */ `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this job must run a notebook. This field
 	// may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -1433,46 +1150,6 @@ const RunTypeJobRun RunType = `JOB_RUN`
 const RunTypeSubmitRun RunType = `SUBMIT_RUN`
 
 const RunTypeWorkflowRun RunType = `WORKFLOW_RUN`
-
-type S3StorageInfo struct {
-	// (Optional) Set canned access control list. For example:
-	// `bucket-owner-full-control`. If canned_acl is set, the cluster instance
-	// profile must have `s3:PutObjectAcl` permission on the destination bucket
-	// and prefix. The full list of possible canned ACLs can be found at
-	// <https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overviewhtml#canned-acl>.
-	// By default only the object owner gets full control. If you are using
-	// cross account role for writing data, you may want to set
-	// `bucket-owner-full-control` to make bucket owner able to read the logs.
-	CannedAcl string `json:"canned_acl,omitempty"`
-	// S3 destination. For example: `s3://my-bucket/some-prefix` You must
-	// configure the cluster with an instance profile and the instance profile
-	// must have write access to the destination. You _cannot_ use AWS keys.
-	Destination string `json:"destination,omitempty"`
-	// (Optional)Enable server side encryption, `false` by default.
-	EnableEncryption bool `json:"enable_encryption,omitempty"`
-	// (Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It is
-	// used only when encryption is enabled and the default type is `sse-s3`.
-	EncryptionType string `json:"encryption_type,omitempty"`
-	// S3 endpoint. For example: `https://s3-us-west-2.amazonaws.com`. Either
-	// region or endpoint must be set. If both are set, endpoint is used.
-	Endpoint string `json:"endpoint,omitempty"`
-	// (Optional) KMS key used if encryption is enabled and encryption type is
-	// set to `sse-kms`.
-	KmsKey string `json:"kms_key,omitempty"`
-	// S3 region. For example: `us-west-2`. Either region or endpoint must be
-	// set. If both are set, endpoint is used.
-	Region string `json:"region,omitempty"`
-}
-
-// Name of an Azure service principal.
-
-// An arbitrary object where the object key is a configuration propery name and
-// the value is a configuration property value.
-type SparkConfPair map[string]any /* MISSING TYPE */
-
-// An arbitrary object where the object key is an environment variable name and
-// the value is an environment variable value.
-type SparkEnvPair map[string]any /* MISSING TYPE */
 
 type SparkJarTask struct {
 	// Deprecated since 04/2016\. Provide a `jar` through the `libraries` field
@@ -1549,13 +1226,6 @@ type TaskDependenciesItem struct {
 	TaskKey string `json:"task_key,omitempty"`
 }
 
-// An optional description for this task. The maximum length is 4096 bytes.
-
-// A unique name for the task. This field is used to refer to this task from
-// other tasks. This field is required and must be unique within its parent job.
-// On Update or Reset, this field is used to reference the tasks to be updated
-// or reset. The maximum length is 100 characters.
-
 // This describes an enum
 type TriggerType string
 
@@ -1584,8 +1254,6 @@ type UpdateJob struct {
 	// runs. Changes to other fields are applied to future runs only.
 	NewSettings *JobSettings `json:"new_settings,omitempty"`
 }
-
-// Email address for the user.
 
 type ViewItem struct {
 	// Content of the view.
@@ -1618,98 +1286,3 @@ const ViewsToExportCode ViewsToExport = `CODE`
 
 // All dashboard views of the notebook.
 const ViewsToExportDashboards ViewsToExport = `DASHBOARDS`
-
-type CreateResponse struct {
-	// The canonical identifier for the newly created job.
-	JobId int64 `json:"job_id,omitempty"`
-}
-
-type ExportRunRequest struct {
-	// The canonical identifier for the run. This field is required.
-	RunId int64 `json:"-" url:"run_id,omitempty"`
-	// Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
-	ViewsToExport ViewsToExport `json:"-" url:"views_to_export,omitempty"`
-}
-
-type GetRequest struct {
-	// The canonical identifier of the job to retrieve information about. This
-	// field is required.
-	JobId int64 `json:"-" url:"job_id,omitempty"`
-}
-
-type GetRunOutputRequest struct {
-	// The canonical identifier for the run. This field is required.
-	RunId int64 `json:"-" url:"run_id,omitempty"`
-}
-
-type GetRunRequest struct {
-	// Whether to include the repair history in the response.
-	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
-	// The canonical identifier of the run for which to retrieve the metadata.
-	// This field is required.
-	RunId int64 `json:"-" url:"run_id,omitempty"`
-}
-
-type ListRequest struct {
-	// Whether to include task and cluster details in the response.
-	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
-	// The number of jobs to return. This value must be greater than 0 and less
-	// or equal to 25. The default value is 20.
-	Limit int `json:"-" url:"limit,omitempty"`
-	// The offset of the first job to return, relative to the most recently
-	// created job.
-	Offset int `json:"-" url:"offset,omitempty"`
-}
-
-type ListResponse struct {
-	HasMore bool `json:"has_more,omitempty"`
-	// The list of jobs.
-	Jobs []Job `json:"jobs,omitempty"`
-}
-
-type ListRunsRequest struct {
-	// If active_only is `true`, only active runs are included in the results;
-	// otherwise, lists both active and completed runs. An active run is a run
-	// in the `PENDING`, `RUNNING`, or `TERMINATING`. This field cannot be
-	// `true` when completed_only is `true`.
-	ActiveOnly bool `json:"-" url:"active_only,omitempty"`
-	// If completed_only is `true`, only completed runs are included in the
-	// results; otherwise, lists both active and completed runs. This field
-	// cannot be `true` when active_only is `true`.
-	CompletedOnly bool `json:"-" url:"completed_only,omitempty"`
-	// Whether to include task and cluster details in the response.
-	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
-	// The job for which to list runs. If omitted, the Jobs service lists runs
-	// from all jobs.
-	JobId int64 `json:"-" url:"job_id,omitempty"`
-	// The number of runs to return. This value must be greater than 0 and less
-	// than 25\. The default value is 25\. If a request specifies a limit of 0,
-	// the service instead uses the maximum limit.
-	Limit int `json:"-" url:"limit,omitempty"`
-	// The offset of the first run to return, relative to the most recent run.
-	Offset int `json:"-" url:"offset,omitempty"`
-	// The type of runs to return. For a description of run types, see
-	// [Run](..dev-tools/api/latest/jobshtml#operation/JobsRunsGet).
-	RunType ListRunsRunType `json:"-" url:"run_type,omitempty"`
-	// Show runs that started _at or after_ this value. The value must be a UTC
-	// timestamp in milliseconds. Can be combined with _start_time_to_ to filter
-	// by a time range.
-	StartTimeFrom int `json:"-" url:"start_time_from,omitempty"`
-	// Show runs that started _at or before_ this value. The value must be a UTC
-	// timestamp in milliseconds. Can be combined with _start_time_from_ to
-	// filter by a time range.
-	StartTimeTo int `json:"-" url:"start_time_to,omitempty"`
-}
-
-type ListRunsRunType string
-
-const ListRunsRunTypeJobRun ListRunsRunType = `JOB_RUN`
-
-const ListRunsRunTypeSubmitRun ListRunsRunType = `SUBMIT_RUN`
-
-const ListRunsRunTypeWorkflowRun ListRunsRunType = `WORKFLOW_RUN`
-
-type RepairRunResponse struct {
-	// The ID of the repair.
-	RepairId int64 `json:"repair_id,omitempty"`
-}
