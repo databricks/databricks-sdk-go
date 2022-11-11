@@ -1782,9 +1782,21 @@ type ListProviderSharesResponse struct {
 	Shares []ProviderShare `json:"shares,omitempty"`
 }
 
+type ListProvidersRequest struct {
+	// If not provided, all providers will be returned. If no providers exist
+	// with this ID, no results will be returned.
+	DataProviderGlobalMetastoreId string `json:"-" url:"data_provider_global_metastore_id,omitempty"`
+}
+
 type ListProvidersResponse struct {
 	// An array of provider information objects.
 	Providers []ProviderInfo `json:"providers,omitempty"`
+}
+
+type ListRecipientsRequest struct {
+	// If not provided, all recipients will be returned. If no recipients exist
+	// with this ID, no results will be returned.
+	DataRecipientGlobalMetastoreId string `json:"-" url:"data_recipient_global_metastore_id,omitempty"`
 }
 
 type ListRecipientsResponse struct {
@@ -1792,7 +1804,7 @@ type ListRecipientsResponse struct {
 	Recipients []RecipientInfo `json:"recipients,omitempty"`
 }
 
-type ListRequest struct {
+type ListSchemasRequest struct {
 	// Optional. Parent catalog for schemas of interest.
 	CatalogName string `json:"-" url:"catalog_name,omitempty"`
 }
@@ -1839,6 +1851,14 @@ type ListTableSummariesResponse struct {
 	// Only name, catalog_name, schema_name, full_name and table_type will be
 	// set.
 	Tables []TableSummary `json:"tables,omitempty"`
+}
+
+type ListTablesRequest struct {
+	// Required. Name of parent catalog for tables of interest.
+	CatalogName string `json:"-" url:"catalog_name,omitempty"`
+	// Required (for now -- may be optional for wildcard search in future).
+	// Parent schema of tables.
+	SchemaName string `json:"-" url:"schema_name,omitempty"`
 }
 
 type ListTablesResponse struct {
@@ -1913,8 +1933,13 @@ type PartitionValue struct {
 	Name string `json:"name,omitempty"`
 	// The operator to apply for the value.
 	Op PartitionValueOp `json:"op,omitempty"`
+	// The key of a Delta Sharing recipient's property. For example
+	// "databricks-account-id". When this field is set, field `value` can not be
+	// set.
+	RecipientPropertyKey string `json:"recipient_property_key,omitempty"`
 	// The value of the partition column. When this value is not set, it means
-	// `null` value.
+	// `null` value. When this field is set, field `recipient_property_key` can
+	// not be set.
 	Value string `json:"value,omitempty"`
 }
 
@@ -2002,12 +2027,11 @@ const PrivilegeAssignmentPrivilegesItemUsage PrivilegeAssignmentPrivilegesItem =
 const PrivilegeAssignmentPrivilegesItemWriteFiles PrivilegeAssignmentPrivilegesItem = `WRITE_FILES`
 
 type ProviderInfo struct {
-	// [Create,Update:IGN] Whether this provider is successfully activated by
-	// the data provider. This field is only present when the authentication
-	// type is DATABRICKS.
-	ActivatedByProvider bool `json:"activated_by_provider,omitempty"`
 	// [Create:REQ,Update:IGN] The delta sharing authentication type.
 	AuthenticationType ProviderInfoAuthenticationType `json:"authentication_type,omitempty"`
+	// [Create:IGN,Update:IGN] Cloud vendor of the provider's UC Metastore. This
+	// field is only present when the authentication type is DATABRICKS.
+	Cloud string `json:"cloud,omitempty"`
 	// [Create,Update:OPT] Description about the provider.
 	Comment string `json:"comment,omitempty"`
 	// [Create,Update:IGN] Time at which this Provider was created, in epoch
@@ -2015,17 +2039,26 @@ type ProviderInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create,Update:IGN] Username of Provider creator.
 	CreatedBy string `json:"created_by,omitempty"`
+	// [Create:IGN,Update:IGN] The global UC metastore id of the data provider
+	// This field is only present when the authentication type is DATABRICKS.
+	// The identifier is of format <cloud>:<region>:<metastore-uuid>.
+	DataProviderGlobalMetastoreId string `json:"data_provider_global_metastore_id,omitempty"`
+	// [Create:IGN,Update:IGN] UUID of the provider's UC Metastore. This field
+	// is only present when the authentication type is DATABRICKS.
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create,Update:REQ] The name of the Provider.
 	Name string `json:"name,omitempty"`
+	// [Create,Update:OPT] Username of Provider owner.
+	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] This field is only present when the authentication
 	// type is TOKEN.
 	RecipientProfile *RecipientProfile `json:"recipient_profile,omitempty"`
 	// [Create,Update:OPT] This field is only present when the authentication
 	// type is TOKEN.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
-	// [Create,Update:IGN] The server-generated one-time sharing code. This
+	// [Create:IGN,Update:IGN] Cloud region of the provider's UC Metastore. This
 	// field is only present when the authentication type is DATABRICKS.
-	SharingCode string `json:"sharing_code,omitempty"`
+	Region string `json:"region,omitempty"`
 	// [Create,Update:IGN] Time at which this Provider was created, in epoch
 	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
@@ -2056,6 +2089,9 @@ type RecipientInfo struct {
 	ActivationUrl string `json:"activation_url,omitempty"`
 	// [Create:REQ,Update:IGN] The delta sharing authentication type.
 	AuthenticationType RecipientInfoAuthenticationType `json:"authentication_type,omitempty"`
+	// [Create:IGN,Update:IGN] Cloud vendor of the recipient's UC Metastore.
+	// This field is only present when the authentication type is DATABRICKS.
+	Cloud string `json:"cloud,omitempty"`
 	// [Create:OPT,Update:OPT] Description about the recipient.
 	Comment string `json:"comment,omitempty"`
 	// [Create:IGN,Update:IGN] Time at which this recipient was created, in
@@ -2063,10 +2099,23 @@ type RecipientInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// [Create:IGN,Update:IGN] Username of recipient creator.
 	CreatedBy string `json:"created_by,omitempty"`
+	// [Create:OPT,Update:IGN] The global UC metastore id provided by the data
+	// recipient. This field is only present when the authentication type is
+	// DATABRICKS. The identifier is of format
+	// <cloud>:<region>:<metastore-uuid>.
+	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
 	// [Create:OPT,Update:OPT] IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
+	// [Create:IGN,Update:IGN] UUID of the recipient's UC Metastore. This field
+	// is only present when the authentication type is DATABRICKS.
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create:REQ,Update:OPT] Name of Recipient.
 	Name string `json:"name,omitempty"`
+	// [Create:IGN,Update:OPT] Username of Recipient owner.
+	Owner string `json:"owner,omitempty"`
+	// [Create:IGN,Update:IGN] Cloud region of the recipient's UC Metastore.
+	// This field is only present when the authentication type is DATABRICKS.
+	Region string `json:"region,omitempty"`
 	// [Create:OPT,Update:IGN] The one-time sharing code provided by the data
 	// recipient. This field is only present when the authentication type is
 	// DATABRICKS.
@@ -2248,6 +2297,13 @@ type ShareInfo struct {
 	Name string `json:"name,omitempty"`
 	// [Create: IGN] A list of shared data objects within the Share.
 	Objects []SharedDataObject `json:"objects,omitempty"`
+	// [Create:IGN,Update:OPT] Username of Share owner.
+	Owner string `json:"owner,omitempty"`
+	// [Create:IGN,Update:IGN] Time at which this Share was updated, in epoch
+	// milliseconds.
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// [Create:IGN,Update:IGN] Username of Share updater.
+	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
 type ShareToPrivilegeAssignment struct {
@@ -2263,6 +2319,9 @@ type SharedDataObject struct {
 	AddedAt int64 `json:"added_at,omitempty"`
 	// Username of the sharer. Output only field. [Update:IGN]
 	AddedBy string `json:"added_by,omitempty"`
+	// Whether to enable cdf or indicate if cdf is enabled on the shared object.
+	// [Update: OPT]
+	CdfEnabled bool `json:"cdf_enabled,omitempty"`
 	// A user-provided comment when adding the data object to the share.
 	// [Update:OPT]
 	Comment string `json:"comment,omitempty"`
@@ -2281,21 +2340,41 @@ type SharedDataObject struct {
 	// For tables, the new name must follow the format of `<schema>.<table>`.
 	// [Update:OPT]
 	SharedAs string `json:"shared_as,omitempty"`
+	// The start version associated with the object. This allows data providers
+	// to control the lowest object version that is accessible by clients. If
+	// specified, clients can query snapshots or changes for versions >=
+	// start_version. If not specified, clients can only query starting from the
+	// version of the object at the time it was added to the share.
+	//
+	// NOTE: The start_version should be <= the \"current\" version of the
+	// object. [Update: OPT]
+	StartVersion int64 `json:"start_version,omitempty"`
+	// One of: **ACTIVE**, **PERMISSION_DENIED**.
+	Status SharedDataObjectStatus `json:"status,omitempty"`
 }
 
+// One of: **ACTIVE**, **PERMISSION_DENIED**.
+type SharedDataObjectStatus string
+
+const SharedDataObjectStatusActive SharedDataObjectStatus = `ACTIVE`
+
+const SharedDataObjectStatusPermissionDenied SharedDataObjectStatus = `PERMISSION_DENIED`
+
 type SharedDataObjectUpdate struct {
-	// One of: **ADD**, **REMOVE**.
+	// One of: **ADD**, **REMOVE**, **UPDATE**.
 	Action SharedDataObjectUpdateAction `json:"action,omitempty"`
-	// The data object that is being updated (added / removed).
+	// The data object that is being added, removed, or updated.
 	DataObject *SharedDataObject `json:"data_object,omitempty"`
 }
 
-// One of: **ADD**, **REMOVE**.
+// One of: **ADD**, **REMOVE**, **UPDATE**.
 type SharedDataObjectUpdateAction string
 
 const SharedDataObjectUpdateActionAdd SharedDataObjectUpdateAction = `ADD`
 
 const SharedDataObjectUpdateActionRemove SharedDataObjectUpdateAction = `REMOVE`
+
+const SharedDataObjectUpdateActionUpdate SharedDataObjectUpdateAction = `UPDATE`
 
 type StorageCredentialInfo struct {
 	// The AWS IAM role configuration.
