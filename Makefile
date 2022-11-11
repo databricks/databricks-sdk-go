@@ -1,5 +1,9 @@
 default: build
 
+build: vendor
+	@echo "✓ Building source code with go build ..."
+	@go build -mod vendor -v
+
 fmt:
 	@echo "✓ Formatting source code with goimports ..."
 	@goimports -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
