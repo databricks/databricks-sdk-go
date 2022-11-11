@@ -63,7 +63,7 @@ type Entity struct {
 
 // FullName includes package name and untransformed name of the entity
 func (e *Entity) FullName() string {
-	return fmt.Sprintf("%s.%s", e.Package.Name, e.Name)
+	return fmt.Sprintf("%s.%s", e.Package.FullName(), e.PascalName())
 }
 
 // PascalName overrides parent implementation by appending List
@@ -121,7 +121,7 @@ func (e *Entity) Fields() (fields []Field) {
 		fields = append(fields, v)
 	}
 	slices.SortFunc(fields, func(a, b Field) bool {
-		return a.Name < b.Name
+		return a.CamelName() < b.CamelName()
 	})
 	return fields
 }

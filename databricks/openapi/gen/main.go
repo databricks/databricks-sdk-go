@@ -15,8 +15,6 @@ import (
 	"strings"
 	"text/template"
 
-	"golang.org/x/exp/slices"
-
 	"github.com/databricks/databricks-sdk-go/databricks/openapi/code"
 )
 
@@ -133,10 +131,6 @@ func newPass[T named](items []T, fileset map[string]string) *Pass[T] {
 		tmpls = append(tmpls, filename)
 		newFileset[filepath.Base(filename)] = v
 	}
-	// add some determinism into code generation
-	slices.SortFunc(items, func(a, b T) bool {
-		return a.FullName() < b.FullName()
-	})
 	return &Pass[T]{
 		Items:   items,
 		ctx:     &ctx,

@@ -25,7 +25,7 @@ type Package struct {
 
 // FullName just returns pacakge name
 func (pkg *Package) FullName() string {
-	return pkg.Name
+	return pkg.CamelName()
 }
 
 // Services returns sorted slice of services
@@ -34,7 +34,7 @@ func (pkg *Package) Services() (types []*Service) {
 		types = append(types, v)
 	}
 	slices.SortFunc(types, func(a, b *Service) bool {
-		return a.Name < b.Name
+		return a.PascalName() < b.PascalName()
 	})
 	return types
 }
@@ -54,7 +54,7 @@ func (pkg *Package) Types() (types []*Entity) {
 func (pkg *Package) EmptyTypes() (types []*Named) {
 	types = append(types, pkg.emptyTypes...)
 	slices.SortFunc(types, func(a, b *Named) bool {
-		return a.Name < b.Name
+		return a.PascalName() < b.PascalName()
 	})
 	return types
 }

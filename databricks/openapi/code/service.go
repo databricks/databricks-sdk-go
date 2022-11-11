@@ -20,7 +20,7 @@ type Service struct {
 
 // FullName holds package name and service name
 func (svc *Service) FullName() string {
-	return fmt.Sprintf("%s.%s", svc.Package.Name, svc.Name)
+	return fmt.Sprintf("%s.%s", svc.Package.FullName(), svc.PascalName())
 }
 
 // Methods returns sorted slice of methods
@@ -29,7 +29,7 @@ func (svc *Service) Methods() (methods []*Method) {
 		methods = append(methods, v)
 	}
 	slices.SortFunc(methods, func(a, b *Method) bool {
-		return a.Name < b.Name
+		return a.CamelName() < b.CamelName()
 	})
 	return methods
 }
