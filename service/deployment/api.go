@@ -192,49 +192,6 @@ func (a *KeyConfigurationsAPI) DeleteKeyConfigByAccountIdAndCustomerManagedKeyId
 	})
 }
 
-// Get all encryption key configurations
-//
-// Gets all customer-managed key configuration objects for an account. If the
-// key is specified as a workspace's managed services customer-managed key,
-// Databricks uses the key to encrypt the workspace's notebooks and secrets in
-// the control plane, in addition to Databricks SQL queries and query history.
-// If the key is specified as a workspace's storage customer-managed key, the
-// key is used to encrypt the workspace's root S3 bucket and optionally can
-// encrypt cluster EBS volumes data in the data plane.
-//
-// **Important**: Customer-managed keys are supported only for some deployment
-// types, subscription types, and AWS regions.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform.
-func (a *KeyConfigurationsAPI) GetAllKeyConfigs(ctx context.Context, request GetAllKeyConfigsRequest) ([]CustomerManagedKey, error) {
-	var customerManagedKeyList []CustomerManagedKey
-	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", request.AccountId)
-	err := a.client.Get(ctx, path, request, &customerManagedKeyList)
-	return customerManagedKeyList, err
-}
-
-// Get all encryption key configurations
-//
-// Gets all customer-managed key configuration objects for an account. If the
-// key is specified as a workspace's managed services customer-managed key,
-// Databricks uses the key to encrypt the workspace's notebooks and secrets in
-// the control plane, in addition to Databricks SQL queries and query history.
-// If the key is specified as a workspace's storage customer-managed key, the
-// key is used to encrypt the workspace's root S3 bucket and optionally can
-// encrypt cluster EBS volumes data in the data plane.
-//
-// **Important**: Customer-managed keys are supported only for some deployment
-// types, subscription types, and AWS regions.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform.
-func (a *KeyConfigurationsAPI) GetAllKeyConfigsByAccountId(ctx context.Context, accountId string) ([]CustomerManagedKey, error) {
-	return a.GetAllKeyConfigs(ctx, GetAllKeyConfigsRequest{
-		AccountId: accountId,
-	})
-}
-
 // Get encryption key configuration
 //
 // Gets a customer-managed key configuration object for an account, specified by
@@ -316,6 +273,49 @@ func (a *KeyConfigurationsAPI) GetKeyWorkspaceHistoryByAccountId(ctx context.Con
 	})
 }
 
+// Get all encryption key configurations
+//
+// Gets all customer-managed key configuration objects for an account. If the
+// key is specified as a workspace's managed services customer-managed key,
+// Databricks uses the key to encrypt the workspace's notebooks and secrets in
+// the control plane, in addition to Databricks SQL queries and query history.
+// If the key is specified as a workspace's storage customer-managed key, the
+// key is used to encrypt the workspace's root S3 bucket and optionally can
+// encrypt cluster EBS volumes data in the data plane.
+//
+// **Important**: Customer-managed keys are supported only for some deployment
+// types, subscription types, and AWS regions.
+//
+// This operation is available only if your account is on the E2 version of the
+// platform.
+func (a *KeyConfigurationsAPI) ListKeyConfigs(ctx context.Context, request ListKeyConfigsRequest) ([]CustomerManagedKey, error) {
+	var customerManagedKeyList []CustomerManagedKey
+	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", request.AccountId)
+	err := a.client.Get(ctx, path, request, &customerManagedKeyList)
+	return customerManagedKeyList, err
+}
+
+// Get all encryption key configurations
+//
+// Gets all customer-managed key configuration objects for an account. If the
+// key is specified as a workspace's managed services customer-managed key,
+// Databricks uses the key to encrypt the workspace's notebooks and secrets in
+// the control plane, in addition to Databricks SQL queries and query history.
+// If the key is specified as a workspace's storage customer-managed key, the
+// key is used to encrypt the workspace's root S3 bucket and optionally can
+// encrypt cluster EBS volumes data in the data plane.
+//
+// **Important**: Customer-managed keys are supported only for some deployment
+// types, subscription types, and AWS regions.
+//
+// This operation is available only if your account is on the E2 version of the
+// platform.
+func (a *KeyConfigurationsAPI) ListKeyConfigsByAccountId(ctx context.Context, accountId string) ([]CustomerManagedKey, error) {
+	return a.ListKeyConfigs(ctx, ListKeyConfigsRequest{
+		AccountId: accountId,
+	})
+}
+
 func NewNetworkConfigurations(client *client.DatabricksClient) NetworkConfigurationsService {
 	return &NetworkConfigurationsAPI{
 		client: client,
@@ -382,59 +382,6 @@ func (a *NetworkConfigurationsAPI) DeleteNetworkConfigByAccountIdAndNetworkId(ct
 	})
 }
 
-// Get all network configurations
-//
-// Gets a list of all Databricks network configurations for an account,
-// specified by ID.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform.
-func (a *NetworkConfigurationsAPI) GetAllNetworkConfigs(ctx context.Context, request GetAllNetworkConfigsRequest) ([]Network, error) {
-	var networkList []Network
-	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", request.AccountId)
-	err := a.client.Get(ctx, path, request, &networkList)
-	return networkList, err
-}
-
-func (a *NetworkConfigurationsAPI) NetworkNetworkNameToNetworkIdMap(ctx context.Context, request GetAllNetworkConfigsRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.GetAllNetworkConfigs(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.NetworkName] = v.NetworkId
-	}
-	return mapping, nil
-}
-
-func (a *NetworkConfigurationsAPI) GetNetworkByNetworkName(ctx context.Context, name string) (*Network, error) {
-	result, err := a.GetAllNetworkConfigs(ctx, GetAllNetworkConfigsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.NetworkName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("Network named '%s' does not exist", name)
-}
-
-// Get all network configurations
-//
-// Gets a list of all Databricks network configurations for an account,
-// specified by ID.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform.
-func (a *NetworkConfigurationsAPI) GetAllNetworkConfigsByAccountId(ctx context.Context, accountId string) ([]Network, error) {
-	return a.GetAllNetworkConfigs(ctx, GetAllNetworkConfigsRequest{
-		AccountId: accountId,
-	})
-}
-
 // Get a network configuration
 //
 // Gets a Databricks network configuration, which represents an AWS VPC and its
@@ -464,6 +411,59 @@ func (a *NetworkConfigurationsAPI) GetNetworkConfigByAccountIdAndNetworkId(ctx c
 	return a.GetNetworkConfig(ctx, GetNetworkConfigRequest{
 		AccountId: accountId,
 		NetworkId: networkId,
+	})
+}
+
+// Get all network configurations
+//
+// Gets a list of all Databricks network configurations for an account,
+// specified by ID.
+//
+// This operation is available only if your account is on the E2 version of the
+// platform.
+func (a *NetworkConfigurationsAPI) ListNetworkConfigs(ctx context.Context, request ListNetworkConfigsRequest) ([]Network, error) {
+	var networkList []Network
+	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", request.AccountId)
+	err := a.client.Get(ctx, path, request, &networkList)
+	return networkList, err
+}
+
+func (a *NetworkConfigurationsAPI) NetworkNetworkNameToNetworkIdMap(ctx context.Context, request ListNetworkConfigsRequest) (map[string]string, error) {
+	mapping := map[string]string{}
+	result, err := a.ListNetworkConfigs(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		mapping[v.NetworkName] = v.NetworkId
+	}
+	return mapping, nil
+}
+
+func (a *NetworkConfigurationsAPI) GetNetworkByNetworkName(ctx context.Context, name string) (*Network, error) {
+	result, err := a.ListNetworkConfigs(ctx, ListNetworkConfigsRequest{})
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		if v.NetworkName != name {
+			continue
+		}
+		return &v, nil
+	}
+	return nil, fmt.Errorf("Network named '%s' does not exist", name)
+}
+
+// Get all network configurations
+//
+// Gets a list of all Databricks network configurations for an account,
+// specified by ID.
+//
+// This operation is available only if your account is on the E2 version of the
+// platform.
+func (a *NetworkConfigurationsAPI) ListNetworkConfigsByAccountId(ctx context.Context, accountId string) ([]Network, error) {
+	return a.ListNetworkConfigs(ctx, ListNetworkConfigsRequest{
+		AccountId: accountId,
 	})
 }
 
@@ -540,63 +540,6 @@ func (a *PrivateAccessSettingsAPI) DeletePrivateAccessSettingsByAccountIdAndPriv
 	})
 }
 
-// Get all private access settings objects
-//
-// Gets a list of all private access settings objects for an account, specified
-// by ID.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for AWS PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
-func (a *PrivateAccessSettingsAPI) GetAllPrivateAccessSettings(ctx context.Context, request GetAllPrivateAccessSettingsRequest) ([]PrivateAccessSettings, error) {
-	var privateAccessSettingsList []PrivateAccessSettings
-	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", request.AccountId)
-	err := a.client.Get(ctx, path, request, &privateAccessSettingsList)
-	return privateAccessSettingsList, err
-}
-
-func (a *PrivateAccessSettingsAPI) PrivateAccessSettingsPrivateAccessSettingsNameToPrivateAccessSettingsIdMap(ctx context.Context, request GetAllPrivateAccessSettingsRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.GetAllPrivateAccessSettings(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.PrivateAccessSettingsName] = v.PrivateAccessSettingsId
-	}
-	return mapping, nil
-}
-
-func (a *PrivateAccessSettingsAPI) GetPrivateAccessSettingsByPrivateAccessSettingsName(ctx context.Context, name string) (*PrivateAccessSettings, error) {
-	result, err := a.GetAllPrivateAccessSettings(ctx, GetAllPrivateAccessSettingsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.PrivateAccessSettingsName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("PrivateAccessSettings named '%s' does not exist", name)
-}
-
-// Get all private access settings objects
-//
-// Gets a list of all private access settings objects for an account, specified
-// by ID.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for AWS PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
-func (a *PrivateAccessSettingsAPI) GetAllPrivateAccessSettingsByAccountId(ctx context.Context, accountId string) ([]PrivateAccessSettings, error) {
-	return a.GetAllPrivateAccessSettings(ctx, GetAllPrivateAccessSettingsRequest{
-		AccountId: accountId,
-	})
-}
-
 // Get a private access settings object
 //
 // Gets a private access settings object, which specifies how your workspace is
@@ -632,6 +575,63 @@ func (a *PrivateAccessSettingsAPI) GetPrivateAccessSettingsByAccountIdAndPrivate
 	return a.GetPrivateAccessSettings(ctx, GetPrivateAccessSettingsRequest{
 		AccountId:               accountId,
 		PrivateAccessSettingsId: privateAccessSettingsId,
+	})
+}
+
+// Get all private access settings objects
+//
+// Gets a list of all private access settings objects for an account, specified
+// by ID.
+//
+// This operation is available only if your account is on the E2 version of the
+// platform and your Databricks account is enabled for AWS PrivateLink (Public
+// Preview). Contact your Databricks representative to enable your account for
+// PrivateLink.
+func (a *PrivateAccessSettingsAPI) ListPrivateAccessSettings(ctx context.Context, request ListPrivateAccessSettingsRequest) ([]PrivateAccessSettings, error) {
+	var privateAccessSettingsList []PrivateAccessSettings
+	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", request.AccountId)
+	err := a.client.Get(ctx, path, request, &privateAccessSettingsList)
+	return privateAccessSettingsList, err
+}
+
+func (a *PrivateAccessSettingsAPI) PrivateAccessSettingsPrivateAccessSettingsNameToPrivateAccessSettingsIdMap(ctx context.Context, request ListPrivateAccessSettingsRequest) (map[string]string, error) {
+	mapping := map[string]string{}
+	result, err := a.ListPrivateAccessSettings(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		mapping[v.PrivateAccessSettingsName] = v.PrivateAccessSettingsId
+	}
+	return mapping, nil
+}
+
+func (a *PrivateAccessSettingsAPI) GetPrivateAccessSettingsByPrivateAccessSettingsName(ctx context.Context, name string) (*PrivateAccessSettings, error) {
+	result, err := a.ListPrivateAccessSettings(ctx, ListPrivateAccessSettingsRequest{})
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		if v.PrivateAccessSettingsName != name {
+			continue
+		}
+		return &v, nil
+	}
+	return nil, fmt.Errorf("PrivateAccessSettings named '%s' does not exist", name)
+}
+
+// Get all private access settings objects
+//
+// Gets a list of all private access settings objects for an account, specified
+// by ID.
+//
+// This operation is available only if your account is on the E2 version of the
+// platform and your Databricks account is enabled for AWS PrivateLink (Public
+// Preview). Contact your Databricks representative to enable your account for
+// PrivateLink.
+func (a *PrivateAccessSettingsAPI) ListPrivateAccessSettingsByAccountId(ctx context.Context, accountId string) ([]PrivateAccessSettings, error) {
+	return a.ListPrivateAccessSettings(ctx, ListPrivateAccessSettingsRequest{
+		AccountId: accountId,
 	})
 }
 
@@ -715,53 +715,6 @@ func (a *StorageConfigurationsAPI) DeleteStorageConfigByAccountIdAndStorageConfi
 	})
 }
 
-// Get all storage configurations
-//
-// Gets a list of all Databricks storage configurations for your account,
-// specified by ID.
-func (a *StorageConfigurationsAPI) GetAllStorageConfigs(ctx context.Context, request GetAllStorageConfigsRequest) ([]StorageConfiguration, error) {
-	var storageConfigurationList []StorageConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", request.AccountId)
-	err := a.client.Get(ctx, path, request, &storageConfigurationList)
-	return storageConfigurationList, err
-}
-
-func (a *StorageConfigurationsAPI) StorageConfigurationStorageConfigurationNameToStorageConfigurationIdMap(ctx context.Context, request GetAllStorageConfigsRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.GetAllStorageConfigs(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.StorageConfigurationName] = v.StorageConfigurationId
-	}
-	return mapping, nil
-}
-
-func (a *StorageConfigurationsAPI) GetStorageConfigurationByStorageConfigurationName(ctx context.Context, name string) (*StorageConfiguration, error) {
-	result, err := a.GetAllStorageConfigs(ctx, GetAllStorageConfigsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.StorageConfigurationName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("StorageConfiguration named '%s' does not exist", name)
-}
-
-// Get all storage configurations
-//
-// Gets a list of all Databricks storage configurations for your account,
-// specified by ID.
-func (a *StorageConfigurationsAPI) GetAllStorageConfigsByAccountId(ctx context.Context, accountId string) ([]StorageConfiguration, error) {
-	return a.GetAllStorageConfigs(ctx, GetAllStorageConfigsRequest{
-		AccountId: accountId,
-	})
-}
-
 // Get storage configuration
 //
 // Gets a Databricks storage configuration for an account, both specified by ID.
@@ -779,6 +732,53 @@ func (a *StorageConfigurationsAPI) GetStorageConfigByAccountIdAndStorageConfigur
 	return a.GetStorageConfig(ctx, GetStorageConfigRequest{
 		AccountId:              accountId,
 		StorageConfigurationId: storageConfigurationId,
+	})
+}
+
+// Get all storage configurations
+//
+// Gets a list of all Databricks storage configurations for your account,
+// specified by ID.
+func (a *StorageConfigurationsAPI) ListStorageConfigs(ctx context.Context, request ListStorageConfigsRequest) ([]StorageConfiguration, error) {
+	var storageConfigurationList []StorageConfiguration
+	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", request.AccountId)
+	err := a.client.Get(ctx, path, request, &storageConfigurationList)
+	return storageConfigurationList, err
+}
+
+func (a *StorageConfigurationsAPI) StorageConfigurationStorageConfigurationNameToStorageConfigurationIdMap(ctx context.Context, request ListStorageConfigsRequest) (map[string]string, error) {
+	mapping := map[string]string{}
+	result, err := a.ListStorageConfigs(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		mapping[v.StorageConfigurationName] = v.StorageConfigurationId
+	}
+	return mapping, nil
+}
+
+func (a *StorageConfigurationsAPI) GetStorageConfigurationByStorageConfigurationName(ctx context.Context, name string) (*StorageConfiguration, error) {
+	result, err := a.ListStorageConfigs(ctx, ListStorageConfigsRequest{})
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		if v.StorageConfigurationName != name {
+			continue
+		}
+		return &v, nil
+	}
+	return nil, fmt.Errorf("StorageConfiguration named '%s' does not exist", name)
+}
+
+// Get all storage configurations
+//
+// Gets a list of all Databricks storage configurations for your account,
+// specified by ID.
+func (a *StorageConfigurationsAPI) ListStorageConfigsByAccountId(ctx context.Context, accountId string) ([]StorageConfiguration, error) {
+	return a.ListStorageConfigs(ctx, ListStorageConfigsRequest{
+		AccountId: accountId,
 	})
 }
 
@@ -877,41 +877,6 @@ func (a *VpcEndpointsAPI) DeleteVpcEndpointByAccountIdAndVpcEndpointId(ctx conte
 	})
 }
 
-// Get all VPC endpoint configurations
-//
-// Gets a list of all VPC endpoints for an account, specified by ID.
-//
-// Before configuring PrivateLink, read the [Databricks article about
-// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
-//
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
-func (a *VpcEndpointsAPI) GetAllVpcEndpoints(ctx context.Context, request GetAllVpcEndpointsRequest) ([]VpcEndpoint, error) {
-	var vpcEndpointList []VpcEndpoint
-	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints", request.AccountId)
-	err := a.client.Get(ctx, path, request, &vpcEndpointList)
-	return vpcEndpointList, err
-}
-
-// Get all VPC endpoint configurations
-//
-// Gets a list of all VPC endpoints for an account, specified by ID.
-//
-// Before configuring PrivateLink, read the [Databricks article about
-// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
-//
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
-func (a *VpcEndpointsAPI) GetAllVpcEndpointsByAccountId(ctx context.Context, accountId string) ([]VpcEndpoint, error) {
-	return a.GetAllVpcEndpoints(ctx, GetAllVpcEndpointsRequest{
-		AccountId: accountId,
-	})
-}
-
 // Get a VPC endpoint configuration
 //
 // Gets a VPC endpoint configuration, which represents a [VPC
@@ -945,6 +910,41 @@ func (a *VpcEndpointsAPI) GetVpcEndpointByAccountIdAndVpcEndpointId(ctx context.
 	return a.GetVpcEndpoint(ctx, GetVpcEndpointRequest{
 		AccountId:     accountId,
 		VpcEndpointId: vpcEndpointId,
+	})
+}
+
+// Get all VPC endpoint configurations
+//
+// Gets a list of all VPC endpoints for an account, specified by ID.
+//
+// Before configuring PrivateLink, read the [Databricks article about
+// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+//
+// This operation is available only if your account is on the E2 version of the
+// platform and your Databricks account is enabled for PrivateLink (Public
+// Preview). Contact your Databricks representative to enable your account for
+// PrivateLink.
+func (a *VpcEndpointsAPI) ListVpcEndpoints(ctx context.Context, request ListVpcEndpointsRequest) ([]VpcEndpoint, error) {
+	var vpcEndpointList []VpcEndpoint
+	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints", request.AccountId)
+	err := a.client.Get(ctx, path, request, &vpcEndpointList)
+	return vpcEndpointList, err
+}
+
+// Get all VPC endpoint configurations
+//
+// Gets a list of all VPC endpoints for an account, specified by ID.
+//
+// Before configuring PrivateLink, read the [Databricks article about
+// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+//
+// This operation is available only if your account is on the E2 version of the
+// platform and your Databricks account is enabled for PrivateLink (Public
+// Preview). Contact your Databricks representative to enable your account for
+// PrivateLink.
+func (a *VpcEndpointsAPI) ListVpcEndpointsByAccountId(ctx context.Context, accountId string) ([]VpcEndpoint, error) {
+	return a.ListVpcEndpoints(ctx, ListVpcEndpointsRequest{
+		AccountId: accountId,
 	})
 }
 
@@ -1322,7 +1322,7 @@ func (a *WorkspacesAPI) GetWorkspaceKeyHistoryByAccountIdAndWorkspaceId(ctx cont
 // This operation is available only if your account is on the E2 version of the
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
-func (a *WorkspacesAPI) PatchWorkspace(ctx context.Context, request UpdateWorkspaceRequest) error {
+func (a *WorkspacesAPI) UpdateWorkspace(ctx context.Context, request UpdateWorkspaceRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", request.AccountId, request.WorkspaceId)
 	err := a.client.Patch(ctx, path, request)
 	return err

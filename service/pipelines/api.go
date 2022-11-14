@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package deltapipelines
+package pipelines
 
 import (
 	"context"
@@ -12,13 +12,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-func NewDeltaPipelines(client *client.DatabricksClient) DeltaPipelinesService {
-	return &DeltaPipelinesAPI{
+func NewPipelines(client *client.DatabricksClient) PipelinesService {
+	return &PipelinesAPI{
 		client: client,
 	}
 }
 
-type DeltaPipelinesAPI struct {
+type PipelinesAPI struct {
 	client *client.DatabricksClient
 }
 
@@ -26,7 +26,7 @@ type DeltaPipelinesAPI struct {
 //
 // Creates a new data processing pipeline based on the requested configuration.
 // If successful, this method returns the ID of the new pipeline.
-func (a *DeltaPipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipelineRequest) (*CreatePipelineResponse, error) {
+func (a *PipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipelineRequest) (*CreatePipelineResponse, error) {
 	var createPipelineResponse CreatePipelineResponse
 	path := "/api/2.0/pipelines"
 	err := a.client.Post(ctx, path, request, &createPipelineResponse)
@@ -37,7 +37,7 @@ func (a *DeltaPipelinesAPI) CreatePipeline(ctx context.Context, request CreatePi
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
-func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPipelineRequest CreatePipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+func (a *PipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPipelineRequest CreatePipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	createPipelineResponse, err := a.CreatePipeline(ctx, createPipelineRequest)
 	if err != nil {
@@ -78,7 +78,7 @@ func (a *DeltaPipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPip
 // Delete a pipeline
 //
 // Deletes a pipeline.
-func (a *DeltaPipelinesAPI) DeletePipeline(ctx context.Context, request DeletePipelineRequest) error {
+func (a *PipelinesAPI) DeletePipeline(ctx context.Context, request DeletePipelineRequest) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Delete(ctx, path, request)
 	return err
@@ -87,23 +87,14 @@ func (a *DeltaPipelinesAPI) DeletePipeline(ctx context.Context, request DeletePi
 // Delete a pipeline
 //
 // Deletes a pipeline.
-func (a *DeltaPipelinesAPI) DeletePipelineByPipelineId(ctx context.Context, pipelineId string) error {
+func (a *PipelinesAPI) DeletePipelineByPipelineId(ctx context.Context, pipelineId string) error {
 	return a.DeletePipeline(ctx, DeletePipelineRequest{
 		PipelineId: pipelineId,
 	})
 }
 
-// Edit a pipeline
-//
-// Updates a pipeline with the supplied configuration.
-func (a *DeltaPipelinesAPI) EditPipeline(ctx context.Context, request EditPipelineRequest) error {
-	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
-	err := a.client.Put(ctx, path, request)
-	return err
-}
-
 // Get a pipeline
-func (a *DeltaPipelinesAPI) GetPipeline(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error) {
+func (a *PipelinesAPI) GetPipeline(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error) {
 	var getPipelineResponse GetPipelineResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Get(ctx, path, request, &getPipelineResponse)
@@ -114,7 +105,7 @@ func (a *DeltaPipelinesAPI) GetPipeline(ctx context.Context, request GetPipeline
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
-func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipelineRequest GetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+func (a *PipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipelineRequest GetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	getPipelineResponse, err := a.GetPipeline(ctx, getPipelineRequest)
 	if err != nil {
@@ -153,13 +144,13 @@ func (a *DeltaPipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipelineR
 }
 
 // Get a pipeline
-func (a *DeltaPipelinesAPI) GetPipelineByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
+func (a *PipelinesAPI) GetPipelineByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
 	return a.GetPipeline(ctx, GetPipelineRequest{
 		PipelineId: pipelineId,
 	})
 }
 
-func (a *DeltaPipelinesAPI) GetPipelineByPipelineIdAndWait(ctx context.Context, pipelineId string, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+func (a *PipelinesAPI) GetPipelineByPipelineIdAndWait(ctx context.Context, pipelineId string, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	return a.GetPipelineAndWait(ctx, GetPipelineRequest{
 		PipelineId: pipelineId,
 	}, options...)
@@ -168,7 +159,7 @@ func (a *DeltaPipelinesAPI) GetPipelineByPipelineIdAndWait(ctx context.Context, 
 // Get a pipeline update
 //
 // Gets an update from an active pipeline.
-func (a *DeltaPipelinesAPI) GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error) {
+func (a *PipelinesAPI) GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error) {
 	var getUpdateResponse GetUpdateResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates/%v", request.PipelineId, request.UpdateId)
 	err := a.client.Get(ctx, path, request, &getUpdateResponse)
@@ -178,7 +169,7 @@ func (a *DeltaPipelinesAPI) GetUpdate(ctx context.Context, request GetUpdateRequ
 // Get a pipeline update
 //
 // Gets an update from an active pipeline.
-func (a *DeltaPipelinesAPI) GetUpdateByPipelineIdAndUpdateId(ctx context.Context, pipelineId string, updateId string) (*GetUpdateResponse, error) {
+func (a *PipelinesAPI) GetUpdateByPipelineIdAndUpdateId(ctx context.Context, pipelineId string, updateId string) (*GetUpdateResponse, error) {
 	return a.GetUpdate(ctx, GetUpdateRequest{
 		PipelineId: pipelineId,
 		UpdateId:   updateId,
@@ -188,7 +179,7 @@ func (a *DeltaPipelinesAPI) GetUpdateByPipelineIdAndUpdateId(ctx context.Context
 // List pipeline updates
 //
 // List updates for an active pipeline.
-func (a *DeltaPipelinesAPI) ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error) {
+func (a *PipelinesAPI) ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error) {
 	var listUpdatesResponse ListUpdatesResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
 	err := a.client.Get(ctx, path, request, &listUpdatesResponse)
@@ -198,7 +189,7 @@ func (a *DeltaPipelinesAPI) ListUpdates(ctx context.Context, request ListUpdates
 // List pipeline updates
 //
 // List updates for an active pipeline.
-func (a *DeltaPipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId string) (*ListUpdatesResponse, error) {
+func (a *PipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId string) (*ListUpdatesResponse, error) {
 	return a.ListUpdates(ctx, ListUpdatesRequest{
 		PipelineId: pipelineId,
 	})
@@ -207,7 +198,7 @@ func (a *DeltaPipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelin
 // Reset a pipeline
 //
 // Resets a pipeline.
-func (a *DeltaPipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipelineRequest) error {
+func (a *PipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipelineRequest) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/reset", request.PipelineId)
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -217,7 +208,7 @@ func (a *DeltaPipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipe
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
-func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipelineRequest ResetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+func (a *PipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipelineRequest ResetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.ResetPipeline(ctx, resetPipelineRequest)
 	if err != nil {
@@ -258,7 +249,7 @@ func (a *DeltaPipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipel
 // Queue a pipeline update
 //
 // Starts or queues a pipeline update.
-func (a *DeltaPipelinesAPI) StartUpdate(ctx context.Context, request StartUpdateRequest) (*StartUpdateResponse, error) {
+func (a *PipelinesAPI) StartUpdate(ctx context.Context, request StartUpdateRequest) (*StartUpdateResponse, error) {
 	var startUpdateResponse StartUpdateResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
 	err := a.client.Post(ctx, path, request, &startUpdateResponse)
@@ -268,7 +259,7 @@ func (a *DeltaPipelinesAPI) StartUpdate(ctx context.Context, request StartUpdate
 // Stop a pipeline
 //
 // Stops a pipeline.
-func (a *DeltaPipelinesAPI) StopPipeline(ctx context.Context, request StopPipelineRequest) error {
+func (a *PipelinesAPI) StopPipeline(ctx context.Context, request StopPipelineRequest) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", request.PipelineId)
 	err := a.client.Post(ctx, path, request, nil)
 	return err
@@ -278,7 +269,7 @@ func (a *DeltaPipelinesAPI) StopPipeline(ctx context.Context, request StopPipeli
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
-func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipelineRequest StopPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+func (a *PipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipelineRequest StopPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	err := a.StopPipeline(ctx, stopPipelineRequest)
 	if err != nil {
@@ -314,4 +305,13 @@ func (a *DeltaPipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipelin
 			return nil, retries.Continues(statusMessage)
 		}
 	})
+}
+
+// Edit a pipeline
+//
+// Updates a pipeline with the supplied configuration.
+func (a *PipelinesAPI) UpdatePipeline(ctx context.Context, request EditPipelineRequest) error {
+	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
+	err := a.client.Put(ctx, path, request)
+	return err
 }

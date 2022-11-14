@@ -167,23 +167,10 @@ const ColumnInfoTypeNameTimestamp ColumnInfoTypeName = `TIMESTAMP`
 const ColumnInfoTypeNameUnknownColumnTypeName ColumnInfoTypeName = `UNKNOWN_COLUMN_TYPE_NAME`
 
 type CreateCatalog struct {
-	// [Create,Update:IGN] The type of the catalog.
-	CatalogType CreateCatalogCatalogType `json:"catalog_type,omitempty"`
-	// [Create,Update:OPT] User-provided free-form text description.
+	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// [Create,Update:IGN] Time at which this Catalog was created, in epoch
-	// milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
-	// [Create,Update:IGN] Username of Catalog creator.
-	CreatedBy string `json:"created_by,omitempty"`
-	// [Create,Update:IGN] Unique identifier of parent Metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
-	// [Create:REQ Update:OPT] Name of Catalog.
-	Name string `json:"name,omitempty"`
-	// [Create:IGN,Update:OPT] Username of current owner of Catalog.
-	Owner string `json:"owner,omitempty"`
-	// [Create,Update:IGN] Privileges the user has on the Catalog.
-	Privileges []CreateCatalogPrivilegesItem `json:"privileges,omitempty"`
+	// Name of Catalog
+	Name string `json:"name"`
 	// This name ('properties') is what the client sees as the field name in
 	// messages that include PropertiesKVPairs using 'json_inline' (e.g.,
 	// TableInfo).
@@ -192,45 +179,9 @@ type CreateCatalog struct {
 	// catalog that is based on a Delta share on a remote sharing server.
 	// [Create:OPT,Update:IGN] The name of delta sharing provider.
 	ProviderName string `json:"provider_name,omitempty"`
-	// [Create:OPT,Update: IGN] The name of the share under the share provider.
+	// The name of the share under the share provider.
 	ShareName string `json:"share_name,omitempty"`
-	// [Create,Update:IGN] Time at which this Catalog was last modified, in
-	// epoch milliseconds.
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// [Create,Update:IGN] Username of user who last modified Catalog.
-	UpdatedBy string `json:"updated_by,omitempty"`
 }
-
-// [Create,Update:IGN] The type of the catalog.
-type CreateCatalogCatalogType string
-
-const CreateCatalogCatalogTypeDeltasharingCatalog CreateCatalogCatalogType = `DELTASHARING_CATALOG`
-
-const CreateCatalogCatalogTypeManagedCatalog CreateCatalogCatalogType = `MANAGED_CATALOG`
-
-const CreateCatalogCatalogTypeSystemCatalog CreateCatalogCatalogType = `SYSTEM_CATALOG`
-
-const CreateCatalogCatalogTypeUnknownCatalogType CreateCatalogCatalogType = `UNKNOWN_CATALOG_TYPE`
-
-type CreateCatalogPrivilegesItem string
-
-const CreateCatalogPrivilegesItemCreate CreateCatalogPrivilegesItem = `CREATE`
-
-const CreateCatalogPrivilegesItemCreateMount CreateCatalogPrivilegesItem = `CREATE_MOUNT`
-
-const CreateCatalogPrivilegesItemCreateTable CreateCatalogPrivilegesItem = `CREATE_TABLE`
-
-const CreateCatalogPrivilegesItemModify CreateCatalogPrivilegesItem = `MODIFY`
-
-const CreateCatalogPrivilegesItemReadFiles CreateCatalogPrivilegesItem = `READ_FILES`
-
-const CreateCatalogPrivilegesItemSelect CreateCatalogPrivilegesItem = `SELECT`
-
-const CreateCatalogPrivilegesItemUnknownPrivilege CreateCatalogPrivilegesItem = `UNKNOWN_PRIVILEGE`
-
-const CreateCatalogPrivilegesItemUsage CreateCatalogPrivilegesItem = `USAGE`
-
-const CreateCatalogPrivilegesItemWriteFiles CreateCatalogPrivilegesItem = `WRITE_FILES`
 
 type CreateCatalogResponse struct {
 	// [Create,Update:IGN] The type of the catalog.

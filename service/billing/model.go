@@ -226,26 +226,6 @@ type DownloadBillableUsageRequest struct {
 	StartMonth string `json:"-" url:"start_month,omitempty"`
 }
 
-type GetAllBudgetsRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
-}
-
-type GetAllLogDeliveryConfigsRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
-	// Filter by credential configuration ID.
-	CredentialsId string `json:"-" url:"credentials_id,omitempty"`
-	// Filter by status `ENABLED` or `DISABLED`.
-	Status LogDeliveryConfigStatus `json:"-" url:"status,omitempty"`
-	// Filter by storage configuration ID.
-	StorageConfigurationId string `json:"-" url:"storage_configuration_id,omitempty"`
-}
-
 type GetBudgetRequest struct {
 	// Databricks account ID of any type. For non-E2 account types, get your
 	// account ID from the [Accounts
@@ -262,6 +242,26 @@ type GetLogDeliveryConfigRequest struct {
 	AccountId string `json:"-" path:"account_id"`
 	// Databricks log delivery configuration ID
 	LogDeliveryConfigurationId string `json:"-" path:"log_delivery_configuration_id"`
+}
+
+type ListBudgetsRequest struct {
+	// Databricks account ID of any type. For non-E2 account types, get your
+	// account ID from the [Accounts
+	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
+	AccountId string `json:"-" path:"account_id"`
+}
+
+type ListLogDeliveryConfigsRequest struct {
+	// Databricks account ID of any type. For non-E2 account types, get your
+	// account ID from the [Accounts
+	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
+	AccountId string `json:"-" path:"account_id"`
+	// Filter by credential configuration ID.
+	CredentialsId string `json:"-" url:"credentials_id,omitempty"`
+	// Filter by status `ENABLED` or `DISABLED`.
+	Status LogDeliveryConfigStatus `json:"-" url:"status,omitempty"`
+	// Filter by storage configuration ID.
+	StorageConfigurationId string `json:"-" url:"storage_configuration_id,omitempty"`
 }
 
 // Status of log delivery configuration. Set to `ENABLED` (enabled) or
@@ -389,17 +389,6 @@ const LogTypeAuditLogs LogType = `AUDIT_LOGS`
 
 const LogTypeBillableUsage LogType = `BILLABLE_USAGE`
 
-type ModifyBudgetRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
-	// Budget configuration to be created.
-	Budget BudgetCreateRequest `json:"budget"`
-	// Budget ID
-	BudgetId string `json:"-" path:"budget_id"`
-}
-
 // The file type of log delivery.
 //
 // * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV
@@ -415,6 +404,17 @@ type OutputFormat string
 const OutputFormatCsv OutputFormat = `CSV`
 
 const OutputFormatJson OutputFormat = `JSON`
+
+type UpdateBudgetRequest struct {
+	// Databricks account ID of any type. For non-E2 account types, get your
+	// account ID from the [Accounts
+	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
+	AccountId string `json:"-" path:"account_id"`
+	// Budget configuration to be created.
+	Budget BudgetCreateRequest `json:"budget"`
+	// Budget ID
+	BudgetId string `json:"-" path:"budget_id"`
+}
 
 type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Databricks account ID of any type. For non-E2 account types, get your

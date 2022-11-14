@@ -29,7 +29,7 @@ type GetTokenInfoRequest struct {
 	TokenId string `json:"-" path:"token_id"`
 }
 
-type ListAllTokensRequest struct {
+type ListTokensRequest struct {
 	// User ID of the user that created the token.
 	CreatedById string `json:"-" url:"created_by_id,omitempty"`
 	// Username of the user that created the token.
