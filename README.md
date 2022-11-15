@@ -1,73 +1,164 @@
-Databricks SDK for Go
----
+# Databricks SDK for Go (Beta)
 
-# Features
+The Databricks SDK for Go includes functionality to accelerate development for the Databricks Lakehouse. It covers all Databricks public REST API operations. The SDK's internal HTTP client is robust and handles failures on different levels by performing intelligent retries.
 
-Databricks SDK for Go comes with a number of features to accelerate the development on top of the Databricks Lakehouse. It covers 100% of Databricks Public REST API surface. Internal HTTP client is robust and handles failures on different levels by performing intelligent retries.
+## Getting started
 
-## Configuration
+During the Beta period, you must clone and then reference this repository locally, as follows. After the Beta period, you will be able to download and reference the Databricks SDK for Go package by using familiar commands such as `go get` and `go install`.
 
-If you use conventional environment variables, the only thing required to start working with Databricks Workspaces is the following snippet:
+1. On your local development machine with Go already [installed](https://go.dev/doc/install), clone this repository into your existing Go code project's current working directory, by running the `git clone` command:
+
+   ```bash
+   git clone git@github.com:databricks/databricks-sdk-go.git
+   ```
+   
+   This command creates a folder named `databricks-sdk-go` within your project. This folder contains a local copy of the Databricks SDK for Go source code.
+   
+2. Create a `go.mod` file to track your Go code's dependencies by running the `go mod init` command, for example:
+
+   ```bash
+   go mod init sample
+   ```
+   
+3. Take a dependency on the Databricks SDK for Go package by running the `go mod edit -require` command:
+
+   ```bash
+   go mod edit -require github.com/databricks/databricks-sdk-go@v0.0.0
+   ```
+   
+4. Redirect the dependency to your locally downloaded copy of the Databricks SDK for Go by running the `go mod edit -replace` command:
+
+   ```bash
+   go mod edit -replace github.com/databricks/databricks-sdk-go@v0.0.0=./databricks-sdk-go/ 
+   ```
+
+   Your `go.mod` file should now look like this:
+   
+   ```go
+   module sample
+
+   go 1.18
+
+   require github.com/databricks/databricks-sdk-go v0.0.0
+
+   replace github.com/databricks/databricks-sdk-go v0.0.0 => ./databricks-sdk-go/
+   ```
+
+5. Within your project, create a Go code file that imports the Databricks SDK for Go, for example a file named `main.go` with the following contents:
+
+   ```go
+   package main
+
+   import (
+     "context"
+     "fmt"
+     
+     "github.com/databricks/databricks-sdk-go/workspaces"
+   )
+
+   func main() {
+     const path = "/"
+     w := workspaces.New()
+
+     resp, err := w.Workspace.GetStatusByPath(context.Background(), path)
+
+     if err != nil {
+       panic(err)
+     }
+
+     fmt.Printf("The path '%s' is a '%s'.\n", path, resp.ObjectType)
+   }
+   ```
+
+5. Add any misssing module dependencies by running the `go mod tidy` command:
+
+   ```bash
+   go mod tiny
+   ```
+   
+6. Grab copies of all packages needed to support builds and tests of packages in your `main` module, by running the `go mod vendor` command:
+
+   ```bash
+   go mod vendor
+   ```
+
+7. Set up Databricks authentication on your local development machine, if you have not done so already. For details, see the next section, "Authentication."
+8. Run your Go code file, assuming a file named `main.go`, by running the `go run` command:
+
+   ```bash
+   go run main.go
+   ```
+   
+   Assuming the preceding example code is run, the output is: 
+   
+   ```bash
+   The path '/' is a 'DIRECTORY'.   
+   ```
+
+## Authentication
+
+If you use a Databricks configuration profiles file or Databricks-specific environment variables for Databricks authentication, the only code required to start working with a Databricks workspace is the following code snippet:
 
 ```go
 w := workspaces.New()
 w./*press TAB for autocompletion*/
 ```
 
-The conventional name for the variable that holds workspace-level client of Databricks SDK for Go is `w`, the shorthand for `workspace`.
+The conventional name for the variable that holds the workspace-level client of the Databricks SDK for Go is `w`, which is shorthand for `workspace`.
 
-### Default Authentication FLow
+### Default authentication flow
 
-If you run [Databricks Terraform Provider](https://registry.terraform.io/providers/databrickslabs/databricks/latest), Databricks CLI, or applications build with Databricks SDK for other langauges, most likely they'll all interoperate nicely together. By default, the following steps are performed to authenticate the client:
+If you run the [Databricks Terraform Provider](https://registry.terraform.io/providers/databrickslabs/databricks/latest), the [Databricks CLI](https://docs.databricks.com/dev-tools/cli/index.html), or applications that target the Databricks SDKs for other langauges, most likely they will all interoperate nicely together. By default, the Databricks SDK for Go checks the following to perform Databricks authentication, in the following order:
 
-1. Read any direct fields configured in `databricks.Config`.
-2. Environment variables are loaded into `*databricks.Config`.
-3. Contents of `~/.databrickscfg` is loaded into `*databricks.Config`.
-4. `databricks.Config` asserts that exactly one authentication method is configured.
-5. Authentication credentials are configured.
+1. Read any direct fields that are hard-coded into `databricks.Config`.
+2. Read locally-set Databricks-specific environment variables for authentication into `*databricks.Config`.
+3. Read the contents of the local `.databrickscfg` file's `DEFAULT` profile from its default location (`~` for Linux or macOS, and `%USERPROFILE%` for Windows) into `*databricks.Config`.
+4. If any direct fields are NOT hard-coded in `databricks.Config`, AND Databricks-specific environment variables exist AND a `.databrickscfg` file exists in the default location with a `DEFAULT` profile, then the Databricks SDK for Go stops running and returns a "multiple authentication credentials exist" error.
+5. Otherwise, the Databricks SDK for Go performs Databricks authentication by using the information in `*databricks.Config`.
 
-The purpose of `~/.databrickscfg` configuration file is hold connectivity profiles with possibly clear-text credentials to Databricks Workspaces or Databricks Accounts. Almost all entries from this configuration file can be set through environment variables. The same configuration file can be read via the official Databricks GoLang SDK and Databricks Python SDK. Legacy Databricks CLI supports reading only `host`, `token`, `username`, and `password` configuration options.
+Depending on the type of authentication, the Databricks SDK for Go uses the following information. Presented are the `*databricks.Config` fields, their descriptions, any corresponding environment variables, and any corresponding `.databrickscfg` file fields, respectively.
 
-### Databricks Native Authentication
- * `host` _(string)_: Databricks host for either workspace endpoint or Accounts endpoint. Environment: `DATABRICKS_HOST`.
- * `account_id` _(string)_: Databricks Account ID for Accounts endpoint. Only has effect when `host` is either `https://accounts.cloud.databricks.com/`, `https://accounts.azuredatabricks.net/`, or `https://accounts.gcp.databricks.com/`.  Environment: `DATABRICKS_ACCOUNT_ID`.
- * `token` _(string)_: Personal Access Token (PAT). Environment: `DATABRICKS_TOKEN`.
- * `username` _(string)_: Username part of basic authentication. Only possible when `host` is `*.cloud.databricks.com` _(AWS)_. Environment: `DATABRICKS_USERNAME`.
- * `password` _(string)_: Password part of basic authentication. Only possible when `host` is `*.cloud.databricks.com` _(AWS)_. Environment: `DATABRICKS_PASSWORD`.
+### Databricks native authentication
 
-### Google Cloud Platform Native Authentication
+ * `host` _(string)_: The Databricks host URL for either the Databricks workspace endpoint or the Databricks accounts endpoint. Environment: `DATABRICKS_HOST`. `.databrickscfg` file: `host`.
+ * `account_id` _(string)_: The Databricks account ID for the Databricks accounts endpoint. Only has effect when `host` is either `https://accounts.cloud.databricks.com/` _(AWS)_, `https://accounts.azuredatabricks.net/` _(Azure)_, or `https://accounts.gcp.databricks.com/` _(GCP)_.  Environment: `DATABRICKS_ACCOUNT_ID`. `.databrickscfg` file: `host`.
+ * `token` _(string)_: The Databricks personal access token (PAT) or Azure Active Directory (Azure AD) token. Environment: `DATABRICKS_TOKEN`. `.databrickscfg` file: `token`.
+ * `username` _(string)_: The Databricks username part of basic authentication. Only possible when `host` is `*.cloud.databricks.com` _(AWS)_. Environment: `DATABRICKS_USERNAME`. `.databrickscfg` file: `username`.
+ * `password` _(string)_: The Databricks password part of basic authentication. Only possible when `host` is `*.cloud.databricks.com` _(AWS)_. Environment: `DATABRICKS_PASSWORD`. `.databrickscfg` file: `password`.
 
-Databricks SDK for Go picks up OAuth token in scope of Google Default Application Credentials (DAC) flow. This means that if you have run `gcloud auth application-default login` on your development machine, or launch the application on the compute, that is allowed to impersonate Service Account specified in `google_service_account`, authentication should work our of the box.
+### Google Cloud Platform native authentication
 
- * `google_service_account` _(string)_: Google Compute Platform (GCP) Service Account e-mail used for impersonation in the Default Application Credentials Flow that does not require a password. Environment: `DATABRICKS_GOOGLE_SERVICE_ACCOUNT`
+The Databricks SDK for Go picks up an OAuth token in the scope of the Google Default Application Credentials (DAC) flow. This means that if you have run `gcloud auth application-default login` on your development machine, or launch the application on the compute, that is allowed to impersonate the Google Cloud service account specified in `google_service_account`. Authentication should then work out of the box.  There are no `.databrickscfg` file equivalents for the following values.
+
+ * `google_service_account` _(string)_: The Google Compute Platform (GCP) service account e-mail used for impersonation in the Default Application Credentials Flow that does not require a password. Environment: `DATABRICKS_GOOGLE_SERVICE_ACCOUNT`.
  * `google_credentials` _(string)_: GCP Service Account Credentials JSON or the location of these credentials on the local filesustem. Environment: `GOOGLE_CREDENTIALS`.
 
-### Azure Native Authentication
+### Azure native authentication
 
-Databricks SDK for Go picks up Azure CLI token, if you've previously authenticated as User Principal by running `az login` on your machine. If you need to authenticate as Azure Active Directory Service Principal, you have to specify `azure_workspace_resource_id` and `azure_use_msi` or `azure_tenant_id`, `azure_client_id`, and `azure_client_secret`.
+The Databricks SDK for Go picks up an Azure CLI token, if you've previously authenticated as an Azure user by running `az login` on your machine. If you need to authenticate as Azure Active Directory service principal, you nyst specify `azure_workspace_resource_id` and `azure_use_msi`; or `azure_tenant_id`, `azure_client_id`, and `azure_client_secret`. There are no `.databrickscfg` file equivalents for the following values.
 
- * `azure_workspace_resource_id` _(string)_: Azure Resource Manager ID for Azure Databricks workspace, which is exhanged for a Host. Environment: `DATABRICKS_AZURE_RESOURCE_ID`.
- * `azure_use_msi` _(string)_: Instruct to use Azure Managed Service Identity passwordless authentication flow for Service Principals. Environment: `ARM_USE_MSI`. _This feature is not yet implemented in Databricks SDK for Go._
- * `azure_client_secret` _(string)_: Azure Active Directory Service Principal secret. Environment: `ARM_CLIENT_SECRET`.
- * `azure_client_id` _(string)_: Azure Active Directory Service Principal Application ID. Environment: `ARM_CLIENT_ID`
- * `azure_tenant_id` _(string)_: Azure Active Directory Tenant ID. Environment: `ARM_TENANT_ID`
- * `azure_environment` _(string)_: Azure Environment (Public, UsGov, China, Germany) has specific set of API endpoints. Defaults to `PUBLIC`. Environment: `ARM_ENVIRONMENT`.
+ * `azure_workspace_resource_id` _(string)_: The Azure Resource Manager ID for the Azure Databricks workspace, which is exchanged for a Host. Environment: `DATABRICKS_AZURE_RESOURCE_ID`.
+ * `azure_use_msi` _(string)_: `true` to use Azure Managed Service Identity passwordless authentication flow for service principals. Environment: `ARM_USE_MSI`. _This feature is not yet implemented in the Databricks SDK for Go._
+ * `azure_client_secret` _(string)_: The Azure Active Directory service principal secret. Environment: `ARM_CLIENT_SECRET`.
+ * `azure_client_id` _(string)_: The Azure Active Directory service principal Application ID. Environment: `ARM_CLIENT_ID`.
+ * `azure_tenant_id` _(string)_: The Azure Active Directory tenant ID. Environment: `ARM_TENANT_ID`.
+ * `azure_environment` _(string)_: the Azure environment type (such as Public, UsGov, China, and Germany) for a specific set of API endpoints. Defaults to `PUBLIC`. Environment: `ARM_ENVIRONMENT`.
 
-### Overriding `~/.databrickscfg` 
- * `profile` _(string)_: Connection profile specified within `~/.databrickscfg`. Environment: `DATABRICKS_CONFIG_PROFILE`.
- * `config_file` _(string)_: Location of the Databricks CLI credentials file. By default, it is located in `~/.databrickscfg`. Environment: `DATABRICKS_CONFIG_FILE`.
+### Overriding `.databrickscfg` 
+ * `profile` _(string)_: A connection profile specified within `.databrickscfg` to use instead of `DEFAULT`. Environment: `DATABRICKS_CONFIG_PROFILE`.
+ * `config_file` _(string)_: A non-default location of the Databricks CLI credentials file. Environment: `DATABRICKS_CONFIG_FILE`.
 
-### Other configuration
- * `auth_type` _(string)_: When multiple auth attributes are available in the environment, use the auth type specified by this argument. This argument also holds currently selected auth.
+### Additional authentication configuration options
+ * `auth_type` _(string)_: When multiple auth attributes are available in the environment, use the auth type specified by this argument. This argument also holds the currently selected auth.
  * `http_timeout_seconds` _(int)_: Number of seconds for HTTP timeout. Default is _60_.
  * `retry_timeout_seconds` _(int)_: Number of seconds to keep retrying HTTP requests. Default is _300 (5 minutes)_.
- * `debug_truncate_bytes` _(int)_: Truncate JSON fields in debug logs above this limit. Default is 96. Environment: `DATABRICKS_DEBUG_TRUNCATE_BYTES`
- * `debug_headers` _(bool)_: Debug HTTP headers of requests made by the application. Default is false, as headers contain sensitive data, like tokens. Environment: `DATABRICKS_DEBUG_HEADERS`.
- * `rate_limit` _(int)_: Maximum number of requests per second made to Databricks REST API. Environment: `DATABRICKS_RATE_LIMIT`
+ * `debug_truncate_bytes` _(int)_: Truncate JSON fields in debug logs above this limit. Default is 96. Environment: `DATABRICKS_DEBUG_TRUNCATE_BYTES`.
+ * `debug_headers` _(bool)_: `true` to debug HTTP headers of requests made by the application. Default is `false`, as headers contain sensitive data, such as access tokens. Environment: `DATABRICKS_DEBUG_HEADERS`.
+ * `rate_limit` _(int)_: Maximum number of requests per second made to Databricks REST API. Environment: `DATABRICKS_RATE_LIMIT`.
 
-### Custom Credentials Provider
+### Custom credentials provider
 
-In some cases, you may want to have deeper control over authentication to Databricks. This can be achieved by rolling your own credentials provider, that returns HTTP request visitor:
+In some cases, you may want to have deeper control over authentication to Databricks. This can be achieved by creating your own credentials provider that returns an HTTP request visitor:
 
 ```go
 type CustomCredentials struct {}
