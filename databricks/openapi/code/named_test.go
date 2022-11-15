@@ -58,6 +58,7 @@ func TestNamedDecamel(t *testing.T) {
 		"parseHTML":     {"parse", "html"},
 		"parse HTML":    {"parse", "html"},
 		"parse-HTML":    {"parse", "html"},
+		"parse--HTML":   {"parse", "html"},
 		"parse_HTML":    {"parse", "html"},
 		"parseHTMLNow":  {"parse", "html", "now"},
 		"parseHtml":     {"parse", "html"},
@@ -83,5 +84,31 @@ func TestNamedTransforms(t *testing.T) {
 		n.KebabName():    "big-brown-fox",
 	} {
 		assert.Equal(t, expected, actual)
+	}
+}
+
+func TestNamedSingular(t *testing.T) {
+	for in, out := range map[string]string{
+		"buses":             "bus",
+		"boxes":             "box",
+		"branches":          "branch",
+		"blitzes":           "blitz",
+		"cluster-policies":  "cluster-policy",
+		"clusters":          "cluster",
+		"dbfs":              "dbfs",
+		"alerts":            "alert",
+		"dashboards":        "dashboard",
+		"data-sources":      "data-source",
+		"dbsql-permissions": "dbsql-permission",
+		"queries":           "query",
+		"delta-pipelines":   "delta-pipeline",
+		"repos":             "repo",
+		"metastores":        "metastore",
+		"tables":            "table",
+		"workspace":         "workspace",
+		"warehouses":        "warehouse",
+	} {
+		n := &Named{Name: in}
+		assert.Equal(t, out, n.Singular().Name)
 	}
 }

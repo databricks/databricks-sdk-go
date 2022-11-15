@@ -1,6 +1,7 @@
 package code
 
 import (
+	"regexp"
 	"strings"
 	"unicode"
 )
@@ -25,6 +26,70 @@ func (n *Named) IsNameReserved() bool {
 		}
 	}
 	return false
+}
+
+func (n *Named) isNamePlural() bool {
+	if n.Name == "" {
+		return false
+	}
+	return n.Name[len(n.Name)-1] == 's'
+}
+
+// simplified ruleset for singularizing multiples
+var singularizers = []*regexTransform{
+	// branches -> branch
+	newRegexTransform("(s|ss|sh|ch|x|z)es$", "$1"),
+
+	// policies -> policy
+	newRegexTransform("([bcdfghjklmnpqrstvwxz])ies$", "${1}y"),
+
+	// permissions -> permission
+	newRegexTransform("([a-z])s$", "$1"),
+}
+
+var singularExceptions = map[string]string{
+	"dbfs":       "dbfs",
+	"warehouses": "warehouse",
+}
+
+type regexTransform struct {
+	Search  *regexp.Regexp
+	Replace string
+}
+
+func newRegexTransform(search, replace string) *regexTransform {
+	return &regexTransform{
+		Search:  regexp.MustCompile(search),
+		Replace: replace,
+	}
+}
+
+func (t *regexTransform) Transform(src string) string {
+	return t.Search.ReplaceAllString(src, t.Replace)
+}
+
+func (n *Named) Singular() *Named {
+	if !n.isNamePlural() {
+		return n
+	}
+	exception, ok := singularExceptions[strings.ToLower(n.Name)]
+	if ok {
+		return &Named{
+			Name:        exception,
+			Description: n.Description,
+		}
+	}
+	for _, t := range singularizers {
+		after := t.Transform(n.Name)
+		if after == n.Name {
+			continue
+		}
+		return &Named{
+			Name:        after,
+			Description: n.Description,
+		}
+	}
+	return n
 }
 
 // emulate positive lookaheads from JVM regex:
@@ -70,7 +135,7 @@ func (n *Named) splitASCII() (w []string) {
 		if before {
 			current = append(current, r)
 		}
-		if split {
+		if split && len(current) > 0 {
 			w = append(w, string(current))
 			current = []rune{}
 		}

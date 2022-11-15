@@ -8,7 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/commands"
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
 	"github.com/databricks/databricks-sdk-go/service/dbsql"
-	"github.com/databricks/databricks-sdk-go/service/deltapipelines"
 	"github.com/databricks/databricks-sdk-go/service/gitcredentials"
 	"github.com/databricks/databricks-sdk-go/service/globalinitscripts"
 	"github.com/databricks/databricks-sdk-go/service/instancepools"
@@ -18,6 +17,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/libraries"
 	"github.com/databricks/databricks-sdk-go/service/mlflow"
 	"github.com/databricks/databricks-sdk-go/service/permissions"
+	"github.com/databricks/databricks-sdk-go/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/service/repos"
 	"github.com/databricks/databricks-sdk-go/service/scim"
 	"github.com/databricks/databricks-sdk-go/service/secrets"
@@ -42,7 +42,6 @@ type WorkspacesClient struct {
 	DataSources          dbsql.DataSourcesService
 	Dbfs                 dbfs.DbfsService
 	DbsqlPermissions     dbsql.DbsqlPermissionsService
-	DeltaPipelines       deltapipelines.DeltaPipelinesService
 	Experiments          mlflow.ExperimentsService
 	ExternalLocations    unitycatalog.ExternalLocationsService
 	GitCredentials       gitcredentials.GitCredentialsService
@@ -61,6 +60,7 @@ type WorkspacesClient struct {
 	MLflowRuns           mlflow.MLflowRunsService
 	ModelVersions        mlflow.ModelVersionsService
 	ModelVersionComments mlflow.ModelVersionCommentsService
+	Pipelines            pipelines.PipelinesService
 	Permissions          permissions.PermissionsService
 	Providers            unitycatalog.ProvidersService
 	RecipientActivation  unitycatalog.RecipientActivationService
@@ -111,7 +111,6 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		DataSources:          dbsql.NewDataSources(apiClient),
 		Dbfs:                 dbfs.NewDbfs(apiClient),
 		DbsqlPermissions:     dbsql.NewDbsqlPermissions(apiClient),
-		DeltaPipelines:       deltapipelines.NewDeltaPipelines(apiClient),
 		Experiments:          mlflow.NewExperiments(apiClient),
 		ExternalLocations:    unitycatalog.NewExternalLocations(apiClient),
 		GitCredentials:       gitcredentials.NewGitCredentials(apiClient),
@@ -130,6 +129,7 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		MLflowRuns:           mlflow.NewMLflowRuns(apiClient),
 		ModelVersions:        mlflow.NewModelVersions(apiClient),
 		ModelVersionComments: mlflow.NewModelVersionComments(apiClient),
+		Pipelines:            pipelines.NewPipelines(apiClient),
 		Permissions:          permissions.NewPermissions(apiClient),
 		Providers:            unitycatalog.NewProviders(apiClient),
 		RecipientActivation:  unitycatalog.NewRecipientActivation(apiClient),

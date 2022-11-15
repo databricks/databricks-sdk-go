@@ -613,7 +613,7 @@ func (a *QueriesAPI) RestoreQuery(ctx context.Context, request RestoreQueryReque
 // Modify this query definition.
 //
 // **Note**: You cannot undo this operation.
-func (a *QueriesAPI) Update(ctx context.Context, request QueryPostContent) (*Query, error) {
+func (a *QueriesAPI) UpdateQuery(ctx context.Context, request QueryPostContent) (*Query, error) {
 	var query Query
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	err := a.client.Post(ctx, path, request, &query)

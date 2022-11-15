@@ -32,14 +32,14 @@ func TestAccUsers(t *testing.T) {
 	wsc := workspaces.New()
 
 	// create new user
-	user, err := wsc.Users.NewUser(ctx, scim.User{
+	user, err := wsc.Users.CreateUser(ctx, scim.User{
 		DisplayName: RandomName("Me "),
 		UserName:    RandomEmail(),
 	})
 	require.NoError(t, err)
 
 	// fetch the user by the newly created ID
-	fetch, err := wsc.Users.FetchUserById(ctx, user.Id)
+	fetch, err := wsc.Users.GetUserById(ctx, user.Id)
 	require.NoError(t, err)
 	assert.Equal(t, user.DisplayName, fetch.DisplayName)
 
@@ -63,7 +63,7 @@ func TestAccUsers(t *testing.T) {
 	require.NoError(t, err)
 
 	// and verify that user is missing
-	_, err = wsc.Users.FetchUserById(ctx, user.Id)
+	_, err = wsc.Users.GetUserById(ctx, user.Id)
 	assert.True(t, apierr.IsMissing(err))
 }
 
@@ -75,13 +75,13 @@ func TestAccGroups(t *testing.T) {
 	wsc := workspaces.New()
 
 	// create new group
-	group, err := wsc.Groups.NewGroup(ctx, scim.Group{
+	group, err := wsc.Groups.CreateGroup(ctx, scim.Group{
 		DisplayName: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 
 	// fetch the group we've just created
-	fetch, err := wsc.Groups.FetchGroupById(ctx, group.Id)
+	fetch, err := wsc.Groups.GetGroupById(ctx, group.Id)
 	require.NoError(t, err)
 	assert.Equal(t, group.DisplayName, fetch.DisplayName)
 
@@ -104,6 +104,6 @@ func TestAccGroups(t *testing.T) {
 	require.NoError(t, err)
 
 	// and verify the group is missing
-	_, err = wsc.Groups.FetchGroupById(ctx, group.Id)
+	_, err = wsc.Groups.GetGroupById(ctx, group.Id)
 	assert.True(t, apierr.IsMissing(err))
 }

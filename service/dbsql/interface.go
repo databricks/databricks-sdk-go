@@ -360,5 +360,5 @@ type QueriesService interface {
 	// Modify this query definition.
 	//
 	// **Note**: You cannot undo this operation.
-	Update(ctx context.Context, request QueryPostContent) (*Query, error)
+	UpdateQuery(ctx context.Context, request QueryPostContent) (*Query, error)
 }

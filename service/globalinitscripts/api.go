@@ -47,19 +47,6 @@ func (a *GlobalInitScriptsAPI) DeleteScriptByScriptId(ctx context.Context, scrip
 	})
 }
 
-// Get init scripts
-//
-// "Get a list of all global init scripts for this workspace. This returns all
-// properties for each script but **not** the script contents. To retrieve the
-// contents of a script, use the [get a global init
-// script](#operation/get-script) operation.
-func (a *GlobalInitScriptsAPI) GetAllScripts(ctx context.Context) ([]GlobalInitScriptDetails, error) {
-	var globalInitScriptDetailsList []GlobalInitScriptDetails
-	path := "/api/2.0/global-init-scripts"
-	err := a.client.Get(ctx, path, nil, &globalInitScriptDetailsList)
-	return globalInitScriptDetailsList, err
-}
-
 // Get an init script
 //
 // Gets all the details of a script, including its Base64-encoded contents.
@@ -77,6 +64,19 @@ func (a *GlobalInitScriptsAPI) GetScriptByScriptId(ctx context.Context, scriptId
 	return a.GetScript(ctx, GetScriptRequest{
 		ScriptId: scriptId,
 	})
+}
+
+// Get init scripts
+//
+// "Get a list of all global init scripts for this workspace. This returns all
+// properties for each script but **not** the script contents. To retrieve the
+// contents of a script, use the [get a global init
+// script](#operation/get-script) operation.
+func (a *GlobalInitScriptsAPI) ListScripts(ctx context.Context) ([]GlobalInitScriptDetails, error) {
+	var globalInitScriptDetailsList []GlobalInitScriptDetails
+	path := "/api/2.0/global-init-scripts"
+	err := a.client.Get(ctx, path, nil, &globalInitScriptDetailsList)
+	return globalInitScriptDetailsList, err
 }
 
 // Update init script

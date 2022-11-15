@@ -1,8 +1,10 @@
 package code
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -64,7 +66,7 @@ func TestBasic(t *testing.T) {
 }
 
 // This test is used for debugging purposes
-func TestBasicDebug(t *testing.T) {
+func TestMethodsReport(t *testing.T) {
 	t.SkipNow()
 	home, _ := os.UserHomeDir()
 	batch, err := NewFromFile(filepath.Join(home,
@@ -72,23 +74,38 @@ func TestBasicDebug(t *testing.T) {
 	assert.NoError(t, err)
 
 	for _, pkg := range batch.Pkgs() {
-		if pkg.Name != "workspaceconf" {
-			continue
-		}
-		pkg.Types()
 		for _, svc := range pkg.Services() {
+			singleService := strings.EqualFold(pkg.PascalName(), svc.PascalName())
+			serviceSingularKebab := svc.Singular().KebabName()
 			for _, m := range svc.Methods() {
-				pg := m.Pagination()
-				if pg != nil {
-					t.Logf("pg entity: %s", pg.Entity.PascalName())
+				var fields []string
+				if m.Request != nil {
+					for _, f := range m.Request.Fields() {
+						flag := fmt.Sprintf("--%s", f.KebabName())
+						if f.Entity.IsObject() || f.Entity.MapValue != nil {
+							flag = fmt.Sprintf("%%%s", flag)
+						}
+						fields = append(fields, flag)
+					}
 				}
-				w := m.Wait()
-				if w != nil {
-					t.Logf("wait: %v", w.Success())
-				}
+				methodWithoutService := (&Named{
+					Name: strings.ReplaceAll(
+						strings.ReplaceAll(
+							m.KebabName(), svc.KebabName(), ""),
+						serviceSingularKebab, ""),
+				}).KebabName()
+				println(fmt.Sprintf("| %s | %s | %s | %s | %v | %s | %s |",
+					pkg.KebabName(),
+					svc.KebabName(),
+					m.KebabName(),
+					methodWithoutService,
+					singleService,
+					m.operation.Crud,
+					strings.Join(fields, ", "),
+				))
 			}
 		}
 	}
 
-	assert.Len(t, batch.Packages, 1)
+	assert.Equal(t, len(batch.Packages), 1)
 }

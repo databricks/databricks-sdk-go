@@ -31,17 +31,17 @@ type DeleteUserRequest struct {
 	Id string `json:"-" path:"id"`
 }
 
-type FetchGroupRequest struct {
+type GetGroupRequest struct {
 	// Unique ID for a group in the <Workspace>.
 	Id string `json:"-" path:"id"`
 }
 
-type FetchServicePrincipalRequest struct {
+type GetServicePrincipalRequest struct {
 	// Unique ID for a service principal in the <Workspace>.
 	Id string `json:"-" path:"id"`
 }
 
-type FetchUserRequest struct {
+type GetUserRequest struct {
 	// Unique ID for a user in the <Workspace>.
 	Id string `json:"-" path:"id"`
 }

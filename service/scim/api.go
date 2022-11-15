@@ -39,6 +39,17 @@ type GroupsAPI struct {
 	client *client.DatabricksClient
 }
 
+// Create a new group
+//
+// Creates a group in the <Workspace> with a unique name, using the supplied
+// group details.
+func (a *GroupsAPI) CreateGroup(ctx context.Context, request Group) (*Group, error) {
+	var group Group
+	path := "/api/2.0/preview/scim/v2/Groups"
+	err := a.client.Post(ctx, path, request, &group)
+	return &group, err
+}
+
 // Delete a group
 //
 // Deletes a group from the <Workspace>.
@@ -60,7 +71,7 @@ func (a *GroupsAPI) DeleteGroupById(ctx context.Context, id string) error {
 // Get group details
 //
 // Gets the information for a specific group in the <Workspace>.
-func (a *GroupsAPI) FetchGroup(ctx context.Context, request FetchGroupRequest) (*Group, error) {
+func (a *GroupsAPI) GetGroup(ctx context.Context, request GetGroupRequest) (*Group, error) {
 	var group Group
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	err := a.client.Get(ctx, path, request, &group)
@@ -70,8 +81,8 @@ func (a *GroupsAPI) FetchGroup(ctx context.Context, request FetchGroupRequest) (
 // Get group details
 //
 // Gets the information for a specific group in the <Workspace>.
-func (a *GroupsAPI) FetchGroupById(ctx context.Context, id string) (*Group, error) {
-	return a.FetchGroup(ctx, FetchGroupRequest{
+func (a *GroupsAPI) GetGroupById(ctx context.Context, id string) (*Group, error) {
+	return a.GetGroup(ctx, GetGroupRequest{
 		Id: id,
 	})
 }
@@ -125,17 +136,6 @@ func (a *GroupsAPI) GetGroupByDisplayName(ctx context.Context, name string) (*Gr
 	return nil, fmt.Errorf("Group named '%s' does not exist", name)
 }
 
-// Create a new group
-//
-// Creates a group in the <Workspace> with a unique name, using the supplied
-// group details.
-func (a *GroupsAPI) NewGroup(ctx context.Context, request Group) (*Group, error) {
-	var group Group
-	path := "/api/2.0/preview/scim/v2/Groups"
-	err := a.client.Post(ctx, path, request, &group)
-	return &group, err
-}
-
 // Update group details
 //
 // Partially updates the details of a group.
@@ -148,7 +148,7 @@ func (a *GroupsAPI) PatchGroup(ctx context.Context, request PartialUpdate) error
 // Replace a group
 //
 // Updates the details of a group by replacing the entire group entity.
-func (a *GroupsAPI) ReplaceGroup(ctx context.Context, request Group) error {
+func (a *GroupsAPI) UpdateGroup(ctx context.Context, request Group) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	err := a.client.Put(ctx, path, request)
 	return err
@@ -162,6 +162,16 @@ func NewServicePrincipals(client *client.DatabricksClient) ServicePrincipalsServ
 
 type ServicePrincipalsAPI struct {
 	client *client.DatabricksClient
+}
+
+// Create a service principal
+//
+// Creates a new service principal in the <Workspace>.
+func (a *ServicePrincipalsAPI) CreateServicePrincipal(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
+	var servicePrincipal ServicePrincipal
+	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
+	err := a.client.Post(ctx, path, request, &servicePrincipal)
+	return &servicePrincipal, err
 }
 
 // Delete a service principal
@@ -185,7 +195,7 @@ func (a *ServicePrincipalsAPI) DeleteServicePrincipalById(ctx context.Context, i
 // Get service principal details
 //
 // Gets the details for a single service principal define in the <Workspace>.
-func (a *ServicePrincipalsAPI) FetchServicePrincipal(ctx context.Context, request FetchServicePrincipalRequest) (*ServicePrincipal, error) {
+func (a *ServicePrincipalsAPI) GetServicePrincipal(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	err := a.client.Get(ctx, path, request, &servicePrincipal)
@@ -195,8 +205,8 @@ func (a *ServicePrincipalsAPI) FetchServicePrincipal(ctx context.Context, reques
 // Get service principal details
 //
 // Gets the details for a single service principal define in the <Workspace>.
-func (a *ServicePrincipalsAPI) FetchServicePrincipalById(ctx context.Context, id string) (*ServicePrincipal, error) {
-	return a.FetchServicePrincipal(ctx, FetchServicePrincipalRequest{
+func (a *ServicePrincipalsAPI) GetServicePrincipalById(ctx context.Context, id string) (*ServicePrincipal, error) {
+	return a.GetServicePrincipal(ctx, GetServicePrincipalRequest{
 		Id: id,
 	})
 }
@@ -250,16 +260,6 @@ func (a *ServicePrincipalsAPI) GetServicePrincipalByDisplayName(ctx context.Cont
 	return nil, fmt.Errorf("ServicePrincipal named '%s' does not exist", name)
 }
 
-// Create a service principal
-//
-// Creates a new service principal in the <Workspace>.
-func (a *ServicePrincipalsAPI) NewServicePrincipal(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
-	var servicePrincipal ServicePrincipal
-	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
-	err := a.client.Post(ctx, path, request, &servicePrincipal)
-	return &servicePrincipal, err
-}
-
 // Update service principal details
 //
 // Partially updates the details of a single service principal in the
@@ -275,7 +275,7 @@ func (a *ServicePrincipalsAPI) PatchServicePrincipal(ctx context.Context, reques
 // Updates the details of a single service principal.
 //
 // This action replaces the existing service principal with the same name.
-func (a *ServicePrincipalsAPI) ReplaceServicePrincipal(ctx context.Context, request ServicePrincipal) error {
+func (a *ServicePrincipalsAPI) UpdateServicePrincipal(ctx context.Context, request ServicePrincipal) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	err := a.client.Put(ctx, path, request)
 	return err
@@ -289,6 +289,17 @@ func NewUsers(client *client.DatabricksClient) UsersService {
 
 type UsersAPI struct {
 	client *client.DatabricksClient
+}
+
+// Create a new user
+//
+// Creates a new user in the <Workspace>. This new user will also be added to
+// the <Workspace> account.
+func (a *UsersAPI) CreateUser(ctx context.Context, request User) (*User, error) {
+	var user User
+	path := "/api/2.0/preview/scim/v2/Users"
+	err := a.client.Post(ctx, path, request, &user)
+	return &user, err
 }
 
 // Delete a user
@@ -314,7 +325,7 @@ func (a *UsersAPI) DeleteUserById(ctx context.Context, id string) error {
 // Get user details
 //
 // Gets information for a specific user in <Workspace>.
-func (a *UsersAPI) FetchUser(ctx context.Context, request FetchUserRequest) (*User, error) {
+func (a *UsersAPI) GetUser(ctx context.Context, request GetUserRequest) (*User, error) {
 	var user User
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	err := a.client.Get(ctx, path, request, &user)
@@ -324,8 +335,8 @@ func (a *UsersAPI) FetchUser(ctx context.Context, request FetchUserRequest) (*Us
 // Get user details
 //
 // Gets information for a specific user in <Workspace>.
-func (a *UsersAPI) FetchUserById(ctx context.Context, id string) (*User, error) {
-	return a.FetchUser(ctx, FetchUserRequest{
+func (a *UsersAPI) GetUserById(ctx context.Context, id string) (*User, error) {
+	return a.GetUser(ctx, GetUserRequest{
 		Id: id,
 	})
 }
@@ -379,17 +390,6 @@ func (a *UsersAPI) GetUserByUserName(ctx context.Context, name string) (*User, e
 	return nil, fmt.Errorf("User named '%s' does not exist", name)
 }
 
-// Create a new user
-//
-// Creates a new user in the <Workspace>. This new user will also be added to
-// the <Workspace> account.
-func (a *UsersAPI) NewUser(ctx context.Context, request User) (*User, error) {
-	var user User
-	path := "/api/2.0/preview/scim/v2/Users"
-	err := a.client.Post(ctx, path, request, &user)
-	return &user, err
-}
-
 // Update user details
 //
 // Partially updates a user resource by applying the supplied operations on
@@ -403,7 +403,7 @@ func (a *UsersAPI) PatchUser(ctx context.Context, request PartialUpdate) error {
 // Replace a user
 //
 // Replaces a user's information with the data supplied in request.
-func (a *UsersAPI) ReplaceUser(ctx context.Context, request User) error {
+func (a *UsersAPI) UpdateUser(ctx context.Context, request User) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	err := a.client.Put(ctx, path, request)
 	return err

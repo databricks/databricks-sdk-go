@@ -1,4 +1,4 @@
-// Usage: go run databricks/openapi/gen/main.go -spec /private/tmp/processed-databricks-workspace-all.json -target service
+// Usage: go run databricks/openapi/gen/main.go -spec ~/universe/bazel-bin/openapi/all-internal.json -target service
 package main
 
 import (
