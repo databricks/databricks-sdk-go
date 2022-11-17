@@ -370,13 +370,13 @@ func main() {
 
 ## Long-running operations
 
-**Stability:** _Experimental_
+**Stability:** [Experimental](https://docs.databricks.com/release-notes/release-types.html)
 
-More than 20 methods across different Databricks APIs are the long-running operations for managing things like clusters, command execution, jobs, libraries, delta pipelines, and SQL warehouses. Let's take the example of Clusters API: once you create a cluster, you receive a cluster ID, the cluster is in the `PENDING` state, while Databricks takes care of provisioning virtual machines from the cloud provider in the background. But the cluster is only usable in `RUNNING` state. The other example is the API for running a job or repairing the run: right after the start, the run is in `PENDING` state, though the job is considered to be finished only when it's `TERMINATED` or `SKIPPED`. And of course you'd want to know the error message, when the long-running operation times out or why things fail. And sometimes you want to configure a custom timeout, other than the default 20 minutes. 
+More than 20 methods across different Databricks APIs are long-running operations for managing things like clusters, command execution, jobs, libraries, Delta Live Tables pipelines, and Databricks SQL warehouses. For example, in the Clusters API, once you create a cluster, you receive a cluster ID, and the cluster is in the `PENDING` state while Databricks takes care of provisioning virtual machines from the cloud provider in the background. But the cluster is only usable in the `RUNNING` state. Another example is the API for running a job or repairing the run: right after the run starts, the run is in the `PENDING` state, though the job is considered to be finished only when it is in the `TERMINATED` or `SKIPPED` states. And of course you. would want to know the error message when the long-running operation times out or why things fail. And sometimes you want to configure a custom timeout other than the default of 20 minutes. 
 
-To hide all of the integration specific complexity from the end user, Databricks SDK for GoLang provides a high-level API for _triggering_ the long-running operations and _waiting_ for the releated entities to reach the right state or return back the error message about the problem in case of failure. All long-running operations have the `XxxAndWait` name pattern, where `Xxx` is the operation name. All these generated methods return information about the relevant entity once the operation is finished. It's possible to configure a custom timeout to `XxxAndWait` by providing a functional option argument constructed by `retries.Timeout[Zzz](time.Duration)` function, where `Zzz` is the result type of `XxxAndWait`.
+To hide all of the integration-specific complexity from the end user, Databricks SDK for Go provides a high-level API for _triggering_ the long-running operations and _waiting_ for the releated entities to reach the right state or return back the error message about the problem in case of failure. All long-running operations have the `XxxAndWait` name pattern, where `Xxx` is the operation name. All these generated methods return information about the relevant entity once the operation is finished. It is possible to configure a custom timeout to `XxxAndWait` by providing a functional option argument constructed by `retries.Timeout[Zzz](time.Duration)` function, where `Zzz` is the result type of `XxxAndWait`.
 
-In the following example, `CreateAndWait` will return `ClusterInfo` only once the cluster is in the `RUNNING` state, otherwise it'll timeout in 10 minutes:
+In the following example, `CreateAndWait` returns `ClusterInfo` only once the cluster is in the `RUNNING` state, otherwise it will timeout in 10 minutes:
 
 ```go
 clusterInfo, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
@@ -390,9 +390,9 @@ clusterInfo, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 
 ### Command execution on clusters
 
-**Stability:** _Experimental_
+**Stability:** [Experimental](https://docs.databricks.com/release-notes/release-types.html)
 
-You can run Python, Scala, R, or SQL code on running interactive Databricks clusters and get the results back. All supplied code gets leading whitespace removed, so that you could easily embed Python code into Go applications. This high-level wrapper came from the Databricks Terraform provider, where it was tested for 2+ years for use-cases like [DBFS mounts](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/mount) or [sql permissions](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/sql_permissions). This interface hides the intricate complexity of all internal APIs involved to simplify the unit-testing experience for command execution. We're not recommending to use lower-level interfaces for command execution. Execution timeout is 20 minutes and canno be overriden for the sake of interface simplicity, meaning that you should only use this API if you have some relatively executions to perform. Please use jobs in case your commands have to run longer than 20 minutes. Or [database/sql driver](https://github.com/databricks/databricks-sql-go) in case your workload type is purely for business intelligence.
+You can run Python, Scala, R, or SQL code on running interactive Databricks clusters and get the results back. All supplied code gets leading whitespace removed, so that you could easily embed Python code into Go applications. This high-level wrapper comes from the Databricks Terraform provider, where it was tested for over 2 years for use cases such as [DBFS mounts](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/mount) and [SQL permissions](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/sql_permissions). This interface hides the intricate complexity of all internal APIs involved to simplify the unit-testing experience for command execution. Databricks does not recommending that you use lower-level interfaces for command execution. The execution timeout is 20 minutes and cannot be overriden for the sake of interface simplicity, meaning that you should only use this API if you have some relatively complex executions to perform. Please use jobs in case your commands must run longer than 20 minutes. Or use the [Databricks SQL Driver for Go](https://github.com/databricks/databricks-sql-go) in case your workload type is purely for business intelligence.
 
 ```go
 res := w.CommandExecutor.Execute(ctx, clusterId, "python", "print(1)")
@@ -405,9 +405,9 @@ println(res.Text())
 
 ### Cluster library management
 
-**Stability:** _Beta_
+**Stability:** [Beta](https://docs.databricks.com/release-notes/release-types.html)
 
-You can install or uninstall libraries on running Databricks clusters. `UpdateAndWait` follows all conventions of [long-running operations](#long-running-operations) and wraps `Install` and `Uninstall` operations, followed by checking for installation status of the cluster, exposing error messages back in a simplified way. This high-level wrapper came from the Databricks Terraform provider, where it was tested for 2+ years in [databricks_cluster](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/cluster) and [databricks_library](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/library) resources. We recommend to use `UpdateAndWait` as the only API to for cluster library management.
+You can install or uninstall libraries on running Databricks clusters. `UpdateAndWait` follows all conventions of [long-running operations](#long-running-operations) and wraps `Install` and `Uninstall` operations, followed by checking for the installation status of the cluster, exposing error messages back in a simplified way. This high-level wrapper came from the Databricks Terraform provider, where it was tested for over 2 years in the [databricks_cluster](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/cluster) and [databricks_library](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/library) resources. Databricks recommends that you use `UpdateAndWait` as the only API for cluster library management.
 
 ```go
 err = w.Libraries.UpdateAndWait(ctx, libraries.Update{
@@ -426,7 +426,7 @@ err = w.Libraries.UpdateAndWait(ctx, libraries.Update{
 
 **Stability:** _Experimental_
 
-You can track the intermediate state of the long-running operation while waiting to reach the correct state by supplying `func(i *retries.Info[Zzz])` functional option, where `Zzz` is the return type of `XxxAndWait` method:
+You can track the intermediate state of a long-running operation while waiting to reach the correct state by supplying the `func(i *retries.Info[Zzz])` functional option, where `Zzz` is the return type of the `XxxAndWait` method:
 
 ```go
 clusterInfo, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
@@ -438,9 +438,9 @@ clusterInfo, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 
 ## Paginated responses
 
-**Stability:** _Experimental_
+**Stability:** [Experimental](https://docs.databricks.com/release-notes/release-types.html)
 
-On the platform side, some Databricks APIs have result pagination and some of them don't. Some APIs follow the offset+limit pagination, some start their offsets from 0, some from 1, some use the cursor-based iteration, and others just return all results in the single response. Databricks SDK for Go hides this intricate complexity and generates a more high-level interface for retrieving all results of a certain entity type. Naming pattern is `XxxAll`, where `Xxx` is the name of the method to retrieve a single page of results.
+On the platform side, some Databricks APIs have result pagination, and some of them do not. Some APIs follow the offset-plus-limit pagination, some start their offsets from 0 and some from 1, some use the cursor-based iteration, and others just return all results in a single response. The Databricks SDK for Go hides this intricate complexity and generates a more high-level interface for retrieving all results of a certain entity type. The naming pattern is `XxxAll`, where `Xxx` is the name of the method to retrieve a single page of results.
 
 ```go
 all, err := w.Repos.ListAll(ctx, repos.ListRequest{})
@@ -454,18 +454,18 @@ for _, repo := range all {
 
 ## Node type and Databricks Runtime selectors
 
-**Stability:** _Beta_
+**Stability:** [Beta](https://docs.databricks.com/release-notes/release-types.html)
 
-Databricks SDK for Go provides selector methods, that make developing multi-cloud applications easier and just rely on characteristics of the virtual machine, like number of cores or availability of local disks, or always picking up the latest Databricks Runtime for the interactive cluster or per-job cluster.
+The Databricks SDK for Go provides selector methods that make developing multi-cloud applications easier and just rely on characteristics of the virtual machine, such as the number of cores or availability of local disks or always picking up the latest Databricks Runtime for the interactive cluster or per-job cluster.
 
 ```go
-// Fetch list of spark runtime versions
+// Fetch the list of spark runtime versions.
 sparkVersions, err := w.Clusters.SparkVersions(ctx)
 if err != nil {
     return err
 }
 
-// Select the latest LTS version
+// Select the latest LTS version.
 latestLTS, err := sparkVersions.Select(clusters.SparkVersionRequest{
     Latest:          true,
     LongTermSupport: true,
@@ -474,13 +474,13 @@ if err != nil {
     return err
 }
 
-// Fetch list of available node types
+// Fetch the list of available node types.
 nodeTypes, err := w.Clusters.ListNodeTypes(ctx)
 if err != nil {
     return err
 }
 
-// Select the smallest node type id
+// Select the smallest node type ID.
 smallestWithDisk, err := nodeTypes.Smallest(clusters.NodeTypeRequest{
     LocalDisk: true,
 })
@@ -488,7 +488,7 @@ if err != nil {
     return err
 }
 
-// Create cluster and wait for it to start properly
+// Create the cluster and wait for it to start properly.
 runningCluster, err := w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
     ClusterName:            clusterName,
     SparkVersion:           latestLTS,
@@ -500,9 +500,9 @@ runningCluster, err := w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 
 ## `io.Reader` integration for DBFS
 
-**Stability:** _Beta_
+**Stability:** [Beta](https://docs.databricks.com/release-notes/release-types.html)
 
-Please use higher-level `w.Dbfs.Open` and `w.Dbfs.Overwrite` to work with remote files via `io.Reader` interface. Internally, these methods wrap the low-level intricacies of working with Databricks REST APIs, providing a convenient interface to you as a developer.
+Use the higher-level `w.Dbfs.Open` and `w.Dbfs.Overwrite` methods to work with remote files through the `io.Reader` interface. Internally, these methods wrap the low-level intricacies of working with Databricks REST APIs, providing a convenient interface to you as a developer.
 
 ```go
 upload, _ := os.Open("/path/to/local/file.ext")
