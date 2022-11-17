@@ -43,8 +43,7 @@ type Activity struct {
 	//
 	// * `Archived`: Archived stage.
 	ToStage Stage `json:"to_stage,omitempty"`
-	// Username of the user who created the activity, e.g. the user who made the
-	// stage transition request.
+	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
 }
 
@@ -130,7 +129,7 @@ type CommentObject struct {
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// Time of the object at last update, as a Unix timestamp in milliseconds.
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-	// Username of the user who made the comment.
+	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
 }
 
@@ -238,9 +237,7 @@ type CreateRegistryWebhook struct {
 	HttpUrlSpec *HttpUrlSpec `json:"http_url_spec,omitempty"`
 
 	JobSpec *JobSpec `json:"job_spec,omitempty"`
-	// If model name is not specified, a registry-wide webhook is created that
-	// listens for the specified events across all versions of all registered
-	// models.
+	// Name of the model whose events would trigger this webhook.
 	ModelName string `json:"model_name,omitempty"`
 	// This describes an enum
 	Status RegistryWebhookStatus `json:"status,omitempty"`
@@ -1321,7 +1318,7 @@ type TransitionRequest struct {
 	//
 	// * `Archived`: Archived stage.
 	ToStage Stage `json:"to_stage,omitempty"`
-	// Username of the user who made the stage transition request.
+	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
 }
 

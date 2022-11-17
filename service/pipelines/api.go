@@ -26,7 +26,7 @@ type PipelinesAPI struct {
 //
 // Creates a new data processing pipeline based on the requested configuration.
 // If successful, this method returns the ID of the new pipeline.
-func (a *PipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipelineRequest) (*CreatePipelineResponse, error) {
+func (a *PipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error) {
 	var createPipelineResponse CreatePipelineResponse
 	path := "/api/2.0/pipelines"
 	err := a.client.Post(ctx, path, request, &createPipelineResponse)
@@ -37,9 +37,9 @@ func (a *PipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipelin
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
-func (a *PipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPipelineRequest CreatePipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+func (a *PipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPipeline CreatePipeline, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	createPipelineResponse, err := a.CreatePipeline(ctx, createPipelineRequest)
+	createPipelineResponse, err := a.CreatePipeline(ctx, createPipeline)
 	if err != nil {
 		return nil, err
 	}
@@ -249,7 +249,7 @@ func (a *PipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipelineRe
 // Queue a pipeline update
 //
 // Starts or queues a pipeline update.
-func (a *PipelinesAPI) StartUpdate(ctx context.Context, request StartUpdateRequest) (*StartUpdateResponse, error) {
+func (a *PipelinesAPI) StartUpdate(ctx context.Context, request StartUpdate) (*StartUpdateResponse, error) {
 	var startUpdateResponse StartUpdateResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
 	err := a.client.Post(ctx, path, request, &startUpdateResponse)
@@ -310,7 +310,7 @@ func (a *PipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipelineRequ
 // Edit a pipeline
 //
 // Updates a pipeline with the supplied configuration.
-func (a *PipelinesAPI) UpdatePipeline(ctx context.Context, request EditPipelineRequest) error {
+func (a *PipelinesAPI) UpdatePipeline(ctx context.Context, request EditPipeline) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Put(ctx, path, request)
 	return err

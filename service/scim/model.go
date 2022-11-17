@@ -17,36 +17,50 @@ type ComplexValue struct {
 }
 
 type DeleteGroupRequest struct {
-	// Unique ID for a group in the <Workspace>.
+	// Databricks Account ID
+	AccountId string `json:"-" path:"account_id"`
+	// Unique ID for a group in the Databricks Account.
 	Id string `json:"-" path:"id"`
 }
 
 type DeleteServicePrincipalRequest struct {
-	// Unique ID for a service principal in the <Workspace>.
+	// Databricks Account ID
+	AccountId string `json:"-" path:"account_id"`
+	// Unique ID for a service principal in the Databricks Account.
 	Id string `json:"-" path:"id"`
 }
 
 type DeleteUserRequest struct {
-	// Unique ID for a user in the <Workspace>.
+	// Databricks Account ID
+	AccountId string `json:"-" path:"account_id"`
+	// Unique ID for a user in the Databricks Account.
 	Id string `json:"-" path:"id"`
 }
 
 type GetGroupRequest struct {
-	// Unique ID for a group in the <Workspace>.
+	// Databricks Account ID
+	AccountId string `json:"-" path:"account_id"`
+	// Unique ID for a group in the Databricks Account.
 	Id string `json:"-" path:"id"`
 }
 
 type GetServicePrincipalRequest struct {
-	// Unique ID for a service principal in the <Workspace>.
+	// Databricks Account ID
+	AccountId string `json:"-" path:"account_id"`
+	// Unique ID for a service principal in the Databricks Account.
 	Id string `json:"-" path:"id"`
 }
 
 type GetUserRequest struct {
-	// Unique ID for a user in the <Workspace>.
+	// Databricks Account ID
+	AccountId string `json:"-" path:"account_id"`
+	// Unique ID for a user in the Databricks Account.
 	Id string `json:"-" path:"id"`
 }
 
 type Group struct {
+	// Databricks Account ID
+	AccountId string `json:"-" path:"account_id"`
 	// String that represents a human-readable group name
 	DisplayName string `json:"displayName,omitempty"`
 
@@ -64,6 +78,8 @@ type Group struct {
 }
 
 type ListGroupsRequest struct {
+	// Databricks Account ID
+	AccountId string `json:"-" path:"account_id"`
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
@@ -116,6 +132,8 @@ type ListServicePrincipalResponse struct {
 }
 
 type ListServicePrincipalsRequest struct {
+	// Databricks Account ID
+	AccountId string `json:"-" path:"account_id"`
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
@@ -144,6 +162,8 @@ const ListServicePrincipalsSortOrderAscending ListServicePrincipalsSortOrder = `
 const ListServicePrincipalsSortOrderDescending ListServicePrincipalsSortOrder = `descending`
 
 type ListUsersRequest struct {
+	// Databricks Account ID
+	AccountId string `json:"-" path:"account_id"`
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
@@ -192,7 +212,9 @@ type Name struct {
 }
 
 type PartialUpdate struct {
-	// Unique ID for a group in the <Workspace>.
+	// Databricks Account ID
+	AccountId string `json:"-" path:"account_id"`
+	// Unique ID for a group in the Databricks Account.
 	Id string `json:"-" path:"id"`
 
 	Operations []Patch `json:"operations,omitempty"`
@@ -217,12 +239,13 @@ const PatchOpRemove PatchOp = `remove`
 const PatchOpReplace PatchOp = `replace`
 
 type ServicePrincipal struct {
+	// Databricks Account ID
+	AccountId string `json:"-" path:"account_id"`
 	// If this user is active
 	Active bool `json:"active,omitempty"`
 	// UUID relating to the service principal
 	ApplicationId string `json:"applicationId,omitempty"`
-	// String that represents a concatenation of given and family names. For
-	// example `John Smith`.
+	// String that represents a concatenation of given and family names.
 	DisplayName string `json:"displayName,omitempty"`
 
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
@@ -237,6 +260,8 @@ type ServicePrincipal struct {
 }
 
 type User struct {
+	// Databricks Account ID
+	AccountId string `json:"-" path:"account_id"`
 	// If this user is active
 	Active bool `json:"active,omitempty"`
 	// String that represents a concatenation of given and family names. For

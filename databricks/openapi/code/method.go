@@ -205,6 +205,10 @@ func (m *Method) NamedIdMap() *NamedIdMap {
 	}
 	var id, name *Field
 	for _, f := range entity.fields {
+		// FIXME(nfx) bring back the functionality later
+		if f.Schema == nil {
+			continue
+		}
 		local := f
 		if f.Schema.IsIdentifier {
 			id = &local

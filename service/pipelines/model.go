@@ -2,9 +2,14 @@
 
 package pipelines
 
+import (
+	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/service/libraries"
+)
+
 // all definitions in this file are in alphabetical order
 
-type CreatePipelineRequest struct {
+type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
@@ -61,7 +66,7 @@ type DeletePipelineRequest struct {
 	PipelineId string `json:"-" path:"pipeline_id"`
 }
 
-type EditPipelineRequest struct {
+type EditPipeline struct {
 	// If false, deployment will fail if name has changed and conflicts the name
 	// of another pipeline.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
@@ -95,8 +100,8 @@ type EditPipelineRequest struct {
 	Name string `json:"name,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
-
-	PipelineId string `json:"-" path:"pipeline_id"`
+	// Unique identifier for this pipeline.
+	PipelineId string `json:"pipeline_id,omitempty" path:"pipeline_id"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// Target schema (database) to add tables in this pipeline to.
@@ -217,20 +222,20 @@ type PipelineCluster struct {
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
-	Autoscale *PipelinesAutoScale `json:"autoscale,omitempty"`
+	Autoscale *clusters.AutoScale `json:"autoscale,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
-	AwsAttributes *PipelinesAwsAttributes `json:"aws_attributes,omitempty"`
+	AwsAttributes *clusters.AwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
-	AzureAttributes any/* MISSING TYPE */ `json:"azure_attributes,omitempty"`
+	AzureAttributes *clusters.AzureAttributes `json:"azure_attributes,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
 	// one destination can be specified for one cluster. If the conf is given,
 	// the logs will be delivered to the destination every ``5 mins``. The
 	// destination of driver logs is ``$destination/$clusterId/driver``, while
 	// the destination of executor logs is ``$destination/$clusterId/executor``.
-	ClusterLogConf *PipelinesClusterLogConf `json:"cluster_log_conf,omitempty"`
+	ClusterLogConf *clusters.ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to ``default_tags``. Notes:
@@ -250,7 +255,7 @@ type PipelineCluster struct {
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
-	GcpAttributes *PipelinesGcpAttributes `json:"gcp_attributes,omitempty"`
+	GcpAttributes *clusters.GcpAttributes `json:"gcp_attributes,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// Cluster label
@@ -275,14 +280,8 @@ type PipelineCluster struct {
 	// The ID of the cluster policy used to create the cluster if applicable.
 	PolicyId string `json:"policy_id,omitempty"`
 	// An object containing a set of optional, user-specified Spark
-	// configuration key-value pairs. Users can also pass in a string of extra
-	// JVM options to the driver and the executors via
-	// ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions``
-	// respectively.
-	//
-	// Example Spark confs: ``{"spark.speculation": true,
-	// "spark.streaming.ui.retainedBatches": 5}`` or
-	// ``{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}``
+	// configuration key-value pairs. See :method:clusters/create for more
+	// details.
 	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
@@ -313,7 +312,7 @@ type PipelineLibrary struct {
 	Jar string `json:"jar,omitempty"`
 	// Specification of a maven library to be installed. For example: ``{
 	// "coordinates": "org.jsoup:jsoup:1.7.2" }``
-	Maven *PipelinesMavenLibrary `json:"maven,omitempty"`
+	Maven *libraries.MavenLibrary `json:"maven,omitempty"`
 	// The path to a notebook that defines a pipeline and is stored in the
 	// Databricks workspace. For example: ``{ "notebook" : { "path" :
 	// "/my-pipeline-notebook-path" } }``. Currently, only Scala notebooks are
@@ -367,136 +366,12 @@ type PipelineTrigger struct {
 	Manual any/* MISSING TYPE */ `json:"manual,omitempty"`
 }
 
-type PipelinesAutoScale struct {
-	// The maximum number of workers to which the cluster can scale up when
-	// overloaded. Note that ``max_workers`` must be strictly greater than
-	// ``min_workers``.
-	MaxWorkers int `json:"max_workers,omitempty"`
-	// The minimum number of workers to which the cluster can scale down when
-	// underutilized. It is also the initial number of workers the cluster will
-	// have after creation.
-	MinWorkers int `json:"min_workers,omitempty"`
-	// The autoscaling mode. This is an additional field available in DLT only.
-	// This is used to specify the autoscaling algorithm to be used for this
-	// autoscaling cluster. Decision Doc here:
-	// https://docs.google.com/document/d/1Eojc1a5raIyApDz_2NYyoltDlimjXzqkTgwFwDQoGnw/edit?usp=sharing
-	Mode string `json:"mode,omitempty"`
-}
-
-type PipelinesAwsAttributes struct {
-	// The first ``first_on_demand`` nodes of the cluster will be placed on
-	// on-demand instances. If this value is greater than 0, the cluster driver
-	// node in particular will be placed on an on-demand instance. If this value
-	// is greater than or equal to the current cluster size, all nodes will be
-	// placed on on-demand instances. If this value is less than the current
-	// cluster size, ``first_on_demand`` nodes will be placed on on-demand
-	// instances and the remainder will be placed on ``availability`` instances.
-	// Note that this value does not affect cluster size and cannot currently be
-	// mutated over the lifetime of a cluster.
-	FirstOnDemand int `json:"first_on_demand,omitempty"`
-	// Nodes for this cluster will only be placed on AWS instances with this
-	// instance profile. If ommitted, nodes will be placed on instances without
-	// an IAM instance profile. The instance profile must have previously been
-	// added to the Databricks environment by an account administrator.
-	//
-	// This feature may only be available to certain customer plans.
-	//
-	// If this field is ommitted, we will pull in the default from the conf if
-	// it exists.
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
-	// Identifier for the availability zone/datacenter in which the cluster
-	// resides. This string will be of a form like "us-west-2a". The provided
-	// availability zone must be in the same region as the Databricks
-	// deployment. For example, "us-west-2a" is not a valid zone id if the
-	// Databricks deployment resides in the "us-east-1" region. This is an
-	// optional field at cluster creation, and if not specified, a default zone
-	// will be used. If the zone specified is "auto", will try to place cluster
-	// in a zone with high availability, and will retry placement in a different
-	// AZ if there is not enough capacity. See [[AutoAZHelper.scala]] for more
-	// details. The list of available zones as well as the default value can be
-	// found by using the `List Zones`_ method.
-	ZoneId string `json:"zone_id,omitempty"`
-}
-
-type PipelinesClusterLogConf struct {
-	// destination needs to be provided. e.g. ``{ "dbfs" : { "destination" :
-	// "dbfs:/home/cluster_log" } }``
-	Dbfs *PipelinesDbfsStorageInfo `json:"dbfs,omitempty"`
-	// destination and either region or endpoint should also be provided. e.g.
-	// ``{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
-	// "us-west-2" } }`` Cluster iam role is used to access s3, please make sure
-	// the cluster iam role in ``instance_profile_arn`` has permission to write
-	// data to the s3 destination.
-	S3 *PipelinesS3StorageInfo `json:"s3,omitempty"`
-}
-
-type PipelinesDbfsStorageInfo struct {
-	// dbfs destination, e.g. ``dbfs:/my/path``
-	Destination string `json:"destination,omitempty"`
-}
-
-type PipelinesGcpAttributes struct {
-	// If provided, the cluster will impersonate the google service account when
-	// accessing gcloud services (like GCS). The google service account must
-	// have previously been added to the Databricks environment by an account
-	// administrator.
-	GoogleServiceAccount string `json:"google_service_account,omitempty"`
-}
-
-type PipelinesMavenLibrary struct {
-	// Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2".
-	Coordinates string `json:"coordinates"`
-	// List of dependences to exclude. For example: ``["slf4j:slf4j",
-	// "*:hadoop-client"]``.
-	//
-	// Maven dependency exclusions:
-	// https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html.
-	Exclusions []string `json:"exclusions,omitempty"`
-	// Maven repo to install the Maven package from. If omitted, both Maven
-	// Central Repository and Spark Packages are searched.
-	Repo string `json:"repo,omitempty"`
-}
-
-type PipelinesS3StorageInfo struct {
-	// (Optional) Set canned access control list for the logs, e.g.
-	// ``bucket-owner-full-control``. If ``canned_cal`` is set, please make sure
-	// the cluster iam role has ``s3:PutObjectAcl`` permission on the
-	// destination bucket and prefix. The full list of possible canned acl can
-	// be found at
-	// http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl.
-	// Please also note that by default only the object owner gets full
-	// controls. If you are using cross account role for writing data, you may
-	// want to set ``bucket-owner-full-control`` to make bucket owner able to
-	// read the logs.
-	CannedAcl string `json:"canned_acl,omitempty"`
-	// S3 destination, e.g. ``s3://my-bucket/some-prefix`` Note that logs will
-	// be delivered using cluster iam role, please make sure you set cluster iam
-	// role and the role has write access to the destination. Please also note
-	// that you cannot use AWS keys to deliver logs.
-	Destination string `json:"destination,omitempty"`
-	// (Optional) Flag to enable server side encryption, ``false`` by default.
-	EnableEncryption bool `json:"enable_encryption,omitempty"`
-	// (Optional) The encryption type, it could be ``sse-s3`` or ``sse-kms``. It
-	// will be used only when encryption is enabled and the default type is
-	// ``sse-s3``.
-	EncryptionType string `json:"encryption_type,omitempty"`
-	// S3 endpoint, e.g. ``https://s3-us-west-2.amazonaws.com``. Either region
-	// or endpoint needs to be set. If both are set, endpoint will be used.
-	Endpoint string `json:"endpoint,omitempty"`
-	// (Optional) Kms key which will be used if encryption is enabled and
-	// encryption type is set to ``sse-kms``.
-	KmsKey string `json:"kms_key,omitempty"`
-	// S3 region, e.g. ``us-west-2``. Either region or endpoint needs to be set.
-	// If both are set, endpoint will be used.
-	Region string `json:"region,omitempty"`
-}
-
 type ResetPipelineRequest struct {
 	PipelineId string `json:"-" path:"pipeline_id"`
 }
 
-type StartUpdateRequest struct {
-	Cause StartUpdateRequestCause `json:"cause,omitempty"`
+type StartUpdate struct {
+	Cause StartUpdateCause `json:"cause,omitempty"`
 	// If true, this update will reset all tables before running.
 	FullRefresh bool `json:"full_refresh,omitempty"`
 	// A list of tables to update with fullRefresh. If both refresh_selection
@@ -513,19 +388,19 @@ type StartUpdateRequest struct {
 	RefreshSelection []string `json:"refresh_selection,omitempty"`
 }
 
-type StartUpdateRequestCause string
+type StartUpdateCause string
 
-const StartUpdateRequestCauseApiCall StartUpdateRequestCause = `API_CALL`
+const StartUpdateCauseApiCall StartUpdateCause = `API_CALL`
 
-const StartUpdateRequestCauseJobTask StartUpdateRequestCause = `JOB_TASK`
+const StartUpdateCauseJobTask StartUpdateCause = `JOB_TASK`
 
-const StartUpdateRequestCauseRetryOnFailure StartUpdateRequestCause = `RETRY_ON_FAILURE`
+const StartUpdateCauseRetryOnFailure StartUpdateCause = `RETRY_ON_FAILURE`
 
-const StartUpdateRequestCauseSchemaChange StartUpdateRequestCause = `SCHEMA_CHANGE`
+const StartUpdateCauseSchemaChange StartUpdateCause = `SCHEMA_CHANGE`
 
-const StartUpdateRequestCauseServiceUpgrade StartUpdateRequestCause = `SERVICE_UPGRADE`
+const StartUpdateCauseServiceUpgrade StartUpdateCause = `SERVICE_UPGRADE`
 
-const StartUpdateRequestCauseUserAction StartUpdateRequestCause = `USER_ACTION`
+const StartUpdateCauseUserAction StartUpdateCause = `USER_ACTION`
 
 type StartUpdateResponse struct {
 	UpdateId string `json:"update_id,omitempty"`

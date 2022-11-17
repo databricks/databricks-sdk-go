@@ -100,32 +100,6 @@ func (a *CredentialConfigurationsAPI) ListCredentials(ctx context.Context, reque
 	return credentialList, err
 }
 
-func (a *CredentialConfigurationsAPI) CredentialCredentialsNameToCredentialsIdMap(ctx context.Context, request ListCredentialsRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListCredentials(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.CredentialsName] = v.CredentialsId
-	}
-	return mapping, nil
-}
-
-func (a *CredentialConfigurationsAPI) GetCredentialByCredentialsName(ctx context.Context, name string) (*Credential, error) {
-	result, err := a.ListCredentials(ctx, ListCredentialsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.CredentialsName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("Credential named '%s' does not exist", name)
-}
-
 // Get all credential configurations
 //
 // Gets all Databricks credential configurations associated with an account
@@ -428,32 +402,6 @@ func (a *NetworkConfigurationsAPI) ListNetworkConfigs(ctx context.Context, reque
 	return networkList, err
 }
 
-func (a *NetworkConfigurationsAPI) NetworkNetworkNameToNetworkIdMap(ctx context.Context, request ListNetworkConfigsRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListNetworkConfigs(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.NetworkName] = v.NetworkId
-	}
-	return mapping, nil
-}
-
-func (a *NetworkConfigurationsAPI) GetNetworkByNetworkName(ctx context.Context, name string) (*Network, error) {
-	result, err := a.ListNetworkConfigs(ctx, ListNetworkConfigsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.NetworkName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("Network named '%s' does not exist", name)
-}
-
 // Get all network configurations
 //
 // Gets a list of all Databricks network configurations for an account,
@@ -594,32 +542,6 @@ func (a *PrivateAccessSettingsAPI) ListPrivateAccessSettings(ctx context.Context
 	return privateAccessSettingsList, err
 }
 
-func (a *PrivateAccessSettingsAPI) PrivateAccessSettingsPrivateAccessSettingsNameToPrivateAccessSettingsIdMap(ctx context.Context, request ListPrivateAccessSettingsRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListPrivateAccessSettings(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.PrivateAccessSettingsName] = v.PrivateAccessSettingsId
-	}
-	return mapping, nil
-}
-
-func (a *PrivateAccessSettingsAPI) GetPrivateAccessSettingsByPrivateAccessSettingsName(ctx context.Context, name string) (*PrivateAccessSettings, error) {
-	result, err := a.ListPrivateAccessSettings(ctx, ListPrivateAccessSettingsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.PrivateAccessSettingsName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("PrivateAccessSettings named '%s' does not exist", name)
-}
-
 // Get all private access settings objects
 //
 // Gets a list of all private access settings objects for an account, specified
@@ -746,32 +668,6 @@ func (a *StorageConfigurationsAPI) ListStorageConfigs(ctx context.Context, reque
 	return storageConfigurationList, err
 }
 
-func (a *StorageConfigurationsAPI) StorageConfigurationStorageConfigurationNameToStorageConfigurationIdMap(ctx context.Context, request ListStorageConfigsRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListStorageConfigs(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.StorageConfigurationName] = v.StorageConfigurationId
-	}
-	return mapping, nil
-}
-
-func (a *StorageConfigurationsAPI) GetStorageConfigurationByStorageConfigurationName(ctx context.Context, name string) (*StorageConfiguration, error) {
-	result, err := a.ListStorageConfigs(ctx, ListStorageConfigsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.StorageConfigurationName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("StorageConfiguration named '%s' does not exist", name)
-}
-
 // Get all storage configurations
 //
 // Gets a list of all Databricks storage configurations for your account,
@@ -800,12 +696,12 @@ type VpcEndpointsAPI struct {
 // PrivateLink](https://aws.amazon.com/privatelink).
 //
 // **Important**: When you register a VPC endpoint to the Databricks workspace
-// VPC endpoint service for any workspace, **in this release <Databricks>
-// enables front-end (web application and REST API) access from the source
-// network of the VPC endpoint to all workspaces in that AWS region in your
-// <Databricks> account if the workspaces have any PrivateLink connections in
-// their workspace configuration**. If you have questions about this behavior,
-// contact your Databricks representative.
+// VPC endpoint service for any workspace, **in this release Databricks enables
+// front-end (web application and REST API) access from the source network of
+// the VPC endpoint to all workspaces in that AWS region in your Databricks
+// account if the workspaces have any PrivateLink connections in their workspace
+// configuration**. If you have questions about this behavior, contact your
+// Databricks representative.
 //
 // Within AWS, your VPC endpoint stays in `pendingAcceptance` state until you
 // register it in a VPC endpoint configuration through the Account API. After
@@ -1087,32 +983,6 @@ func (a *WorkspacesAPI) GetAllWorkspaces(ctx context.Context, request GetAllWork
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", request.AccountId)
 	err := a.client.Get(ctx, path, request, &workspaceList)
 	return workspaceList, err
-}
-
-func (a *WorkspacesAPI) WorkspaceWorkspaceNameToWorkspaceIdMap(ctx context.Context, request GetAllWorkspacesRequest) (map[string]int64, error) {
-	mapping := map[string]int64{}
-	result, err := a.GetAllWorkspaces(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.WorkspaceName] = v.WorkspaceId
-	}
-	return mapping, nil
-}
-
-func (a *WorkspacesAPI) GetWorkspaceByWorkspaceName(ctx context.Context, name string) (*Workspace, error) {
-	result, err := a.GetAllWorkspaces(ctx, GetAllWorkspacesRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.WorkspaceName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("Workspace named '%s' does not exist", name)
 }
 
 // Get all workspaces
