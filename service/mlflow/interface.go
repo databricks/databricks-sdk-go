@@ -147,10 +147,11 @@ type MLflowDatabricksService interface {
 
 	// Get model
 	//
-	// Get the details of a model. This is a <Workspace> version of the [MLflow
+	// Get the details of a model. This is a Databricks Workspace version of the
+	// [MLflow
 	// endpoint](https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel)
-	// that also returns the model's <Workspace> ID and the permission level of
-	// the requesting user on the model.
+	// that also returns the model's Databricks Workspace ID and the permission
+	// level of the requesting user on the model.
 	Get(ctx context.Context, request GetRequest) (*GetResponse, error)
 
 	// GetByName calls Get, but directly with primitive function arguments,
@@ -161,8 +162,8 @@ type MLflowDatabricksService interface {
 
 	// Transition a stage
 	//
-	// Transition a model version's stage. This is a <Workspace> version of the
-	// [MLflow
+	// Transition a model version's stage. This is a Databricks Workspace
+	// version of the [MLflow
 	// endpoint](https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage)
 	// that also accepts a comment associated with the transition to be
 	// recorded.",

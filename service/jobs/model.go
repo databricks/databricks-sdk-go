@@ -271,7 +271,7 @@ type JobCluster struct {
 	// determine which cluster to launch for the task execution.
 	JobClusterKey string `json:"job_cluster_key"`
 
-	NewCluster any/* ERROR */ `json:"new_cluster,omitempty"`
+	NewCluster *clusters.ClusterInfo `json:"new_cluster,omitempty"`
 }
 
 type JobEmailNotifications struct {
@@ -1033,7 +1033,7 @@ type RunSubmitTaskSettings struct {
 	// executes the task. The default value is an empty list.
 	Libraries []libraries.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster any/* ERROR */ `json:"new_cluster,omitempty"`
+	NewCluster *clusters.ClusterInfo `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -1102,7 +1102,7 @@ type RunTask struct {
 	// executes the job. The default value is an empty list.
 	Libraries []libraries.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster any/* ERROR */ `json:"new_cluster,omitempty"`
+	NewCluster *clusters.ClusterInfo `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this job must run a notebook. This field
 	// may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`

@@ -128,32 +128,6 @@ func (a *BudgetsAPI) ListBudgetsAll(ctx context.Context, request ListBudgetsRequ
 	return response.Budgets, nil
 }
 
-func (a *BudgetsAPI) BudgetWithStatusNameToBudgetIdMap(ctx context.Context, request ListBudgetsRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListBudgetsAll(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.Name] = v.BudgetId
-	}
-	return mapping, nil
-}
-
-func (a *BudgetsAPI) GetBudgetWithStatusByName(ctx context.Context, name string) (*BudgetWithStatus, error) {
-	result, err := a.ListBudgetsAll(ctx, ListBudgetsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.Name != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("BudgetWithStatus named '%s' does not exist", name)
-}
-
 // Get all budgets
 //
 // Gets all budgets associated with this account, including noncumulative status

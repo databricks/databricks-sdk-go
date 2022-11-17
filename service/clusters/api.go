@@ -370,32 +370,6 @@ func (a *ClustersAPI) ListAll(ctx context.Context, request ListRequest) ([]Clust
 	return response.Clusters, nil
 }
 
-func (a *ClustersAPI) ClusterInfoClusterNameToClusterIdMap(ctx context.Context, request ListRequest) (map[string]string, error) {
-	mapping := map[string]string{}
-	result, err := a.ListAll(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		mapping[v.ClusterName] = v.ClusterId
-	}
-	return mapping, nil
-}
-
-func (a *ClustersAPI) GetClusterInfoByClusterName(ctx context.Context, name string) (*ClusterInfo, error) {
-	result, err := a.ListAll(ctx, ListRequest{})
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.ClusterName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("ClusterInfo named '%s' does not exist", name)
-}
-
 // List all clusters
 //
 // Returns information about all pinned clusters, currently active clusters, up

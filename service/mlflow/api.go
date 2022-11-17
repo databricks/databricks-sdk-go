@@ -291,10 +291,11 @@ type MLflowDatabricksAPI struct {
 
 // Get model
 //
-// Get the details of a model. This is a <Workspace> version of the [MLflow
+// Get the details of a model. This is a Databricks Workspace version of the
+// [MLflow
 // endpoint](https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel)
-// that also returns the model's <Workspace> ID and the permission level of the
-// requesting user on the model.
+// that also returns the model's Databricks Workspace ID and the permission
+// level of the requesting user on the model.
 func (a *MLflowDatabricksAPI) Get(ctx context.Context, request GetRequest) (*GetResponse, error) {
 	var getResponse GetResponse
 	path := "/api/2.0/mlflow/databricks/registered-models/get"
@@ -304,10 +305,11 @@ func (a *MLflowDatabricksAPI) Get(ctx context.Context, request GetRequest) (*Get
 
 // Get model
 //
-// Get the details of a model. This is a <Workspace> version of the [MLflow
+// Get the details of a model. This is a Databricks Workspace version of the
+// [MLflow
 // endpoint](https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel)
-// that also returns the model's <Workspace> ID and the permission level of the
-// requesting user on the model.
+// that also returns the model's Databricks Workspace ID and the permission
+// level of the requesting user on the model.
 func (a *MLflowDatabricksAPI) GetByName(ctx context.Context, name string) (*GetResponse, error) {
 	return a.Get(ctx, GetRequest{
 		Name: name,
@@ -316,8 +318,8 @@ func (a *MLflowDatabricksAPI) GetByName(ctx context.Context, name string) (*GetR
 
 // Transition a stage
 //
-// Transition a model version's stage. This is a <Workspace> version of the
-// [MLflow
+// Transition a model version's stage. This is a Databricks Workspace version of
+// the [MLflow
 // endpoint](https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage)
 // that also accepts a comment associated with the transition to be recorded.",
 func (a *MLflowDatabricksAPI) TransitionStage(ctx context.Context, request TransitionModelVersionStageDatabricks) (*TransitionStageResponse, error) {

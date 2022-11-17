@@ -10,6 +10,15 @@ type Channel struct {
 	Name ChannelName `json:"name,omitempty"`
 }
 
+// Channel information for the SQL warehouse at the time of query execution
+type ChannelInfo struct {
+	// DBSQL Version the channel is mapped to
+	DbsqlVersion string `json:"dbsql_version,omitempty"`
+	// Name of the channel
+	Name ChannelName `json:"name,omitempty"`
+}
+
+// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -628,11 +637,23 @@ type OdbcParams struct {
 	Protocol string `json:"protocol,omitempty"`
 }
 
+// Whether plans exist for the execution, or the reason why they are missing
+type PlansState string
+
+const PlansStateEmpty PlansState = `EMPTY`
+
+const PlansStateExists PlansState = `EXISTS`
+
+const PlansStateIgnoredLargePlansSize PlansState = `IGNORED_LARGE_PLANS_SIZE`
+
+const PlansStateIgnoredSmallDuration PlansState = `IGNORED_SMALL_DURATION`
+
+const PlansStateIgnoredSparkPlanType PlansState = `IGNORED_SPARK_PLAN_TYPE`
+
+const PlansStateUnknown PlansState = `UNKNOWN`
+
 // A filter to limit query history results. This field is optional.
 type QueryFilter struct {
-	// Alias for `warehouse_ids`.
-	EndpointIds []string `json:"endpoint_ids,omitempty"`
-
 	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty"`
 
 	Statuses []QueryStatus `json:"statuses,omitempty"`
@@ -643,10 +664,20 @@ type QueryFilter struct {
 }
 
 type QueryInfo struct {
+	// Channel information for the SQL warehouse at the time of query execution
+	ChannelUsed *ChannelInfo `json:"channel_used,omitempty"`
+	// Total execution time of the query from the client’s point of view, in
+	// milliseconds.
+	Duration int `json:"duration,omitempty"`
 	// Alias for `warehouse_id`.
 	EndpointId string `json:"endpoint_id,omitempty"`
 	// Message describing why the query could not complete.
 	ErrorMessage string `json:"error_message,omitempty"`
+	// The ID of the user whose credentials were used to run the query.
+	ExecutedAsUserId int `json:"executed_as_user_id,omitempty"`
+	// The email address or username of the user whose credentials were used to
+	// run the query.
+	ExecutedAsUserName string `json:"executed_as_user_name,omitempty"`
 	// The time execution of the query ended.
 	ExecutionEndTimeMs int `json:"execution_end_time_ms,omitempty"`
 	// Whether more updates for the query are expected.
@@ -655,6 +686,8 @@ type QueryInfo struct {
 	LookupKey string `json:"lookup_key,omitempty"`
 	// Metrics about query execution.
 	Metrics *QueryMetrics `json:"metrics,omitempty"`
+	// Whether plans exist for the execution, or the reason why they are missing
+	PlansState PlansState `json:"plans_state,omitempty"`
 	// The time the query ended.
 	QueryEndTimeMs int `json:"query_end_time_ms,omitempty"`
 	// The query ID.
@@ -667,6 +700,8 @@ type QueryInfo struct {
 	RowsProduced int `json:"rows_produced,omitempty"`
 	// URL to the query plan.
 	SparkUiUrl string `json:"spark_ui_url,omitempty"`
+	// Type of statement for this query
+	StatementType QueryStatementType `json:"statement_type,omitempty"`
 	// This describes an enum
 	Status QueryStatus `json:"status,omitempty"`
 	// The ID of the user who ran the query.
@@ -731,6 +766,53 @@ type QueryMetrics struct {
 	// tenant, in bytes.
 	WriteRemoteBytes int `json:"write_remote_bytes,omitempty"`
 }
+
+// Type of statement for this query
+type QueryStatementType string
+
+const QueryStatementTypeAlter QueryStatementType = `ALTER`
+
+const QueryStatementTypeAnalyze QueryStatementType = `ANALYZE`
+
+const QueryStatementTypeCopy QueryStatementType = `COPY`
+
+const QueryStatementTypeCreate QueryStatementType = `CREATE`
+
+const QueryStatementTypeDelete QueryStatementType = `DELETE`
+
+const QueryStatementTypeDescribe QueryStatementType = `DESCRIBE`
+
+const QueryStatementTypeDrop QueryStatementType = `DROP`
+
+const QueryStatementTypeExplain QueryStatementType = `EXPLAIN`
+
+const QueryStatementTypeGrant QueryStatementType = `GRANT`
+
+const QueryStatementTypeInsert QueryStatementType = `INSERT`
+
+const QueryStatementTypeMerge QueryStatementType = `MERGE`
+
+const QueryStatementTypeOptimize QueryStatementType = `OPTIMIZE`
+
+const QueryStatementTypeOther QueryStatementType = `OTHER`
+
+const QueryStatementTypeRefresh QueryStatementType = `REFRESH`
+
+const QueryStatementTypeReplace QueryStatementType = `REPLACE`
+
+const QueryStatementTypeRevoke QueryStatementType = `REVOKE`
+
+const QueryStatementTypeSelect QueryStatementType = `SELECT`
+
+const QueryStatementTypeSet QueryStatementType = `SET`
+
+const QueryStatementTypeShow QueryStatementType = `SHOW`
+
+const QueryStatementTypeTruncate QueryStatementType = `TRUNCATE`
+
+const QueryStatementTypeUpdate QueryStatementType = `UPDATE`
+
+const QueryStatementTypeUse QueryStatementType = `USE`
 
 // This describes an enum
 type QueryStatus string
