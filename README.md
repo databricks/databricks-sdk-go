@@ -150,7 +150,7 @@ The Databricks SDK for Go uses the following Databricks authentication methods i
 
 1. [Databricks native authentication](#databricks-native-authentication), regardless of cloud provider. If this fails, the SDK will move on to attempt Azure native authentication.
 2. [Azure native authentication](#azure-native-authentication). For Google Cloud Platform accounts and workspaces, the SDK will still attempt Azure native authentication; however, these attempts will of course fail, and the SDK will then move on to attempt Google Cloud Platform native authentication.
-3. [Google Cloud Platform native authentication](#google-cloud-provider-native-authentication). For Azure accounts and workspaces, if step 2 fails, the SDK will still attempt Google Cloud Platform native authentication, but these attempts will of course fail as well.
+3. [Google Cloud Platform native authentication](#google-cloud-platform-native-authentication). For Azure accounts and workspaces, if step 2 fails, the SDK will still attempt Google Cloud Platform native authentication, but these attempts will of course fail as well.
 4. If the SDK is still unsuccessful, it will return an error and the code stops running.
 
 You can instruct the Databricks SDK for Go to move directly to a specific Databricks authentication method by setting the `AuthType` field in `*databricks.Config` as described in the following sections.
@@ -446,6 +446,12 @@ clusterInfo, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 }, retries.Timeout[clusters.ClusterInfo](10*time.Minute))
 ```
 
+### In this section
+
+- [Command execution on clusters](#command-execution-on-clusters)
+- [Cluster library management](#cluster-library-management)
+- [Advanced usage](#advanced-usage)
+
 <a id="command-execution-on-clusters"/>
 
 ### Command execution on clusters
@@ -488,7 +494,7 @@ err = w.Libraries.UpdateAndWait(ctx, libraries.Update{
 
 ### Advanced usage
 
-**Stability:** _Experimental_
+**Stability:** [Experimental](https://docs.databricks.com/release-notes/release-types.html)
 
 You can track the intermediate state of a long-running operation while waiting to reach the correct state by supplying the `func(i *retries.Info[Zzz])` functional option, where `Zzz` is the return type of the `XxxAndWait` method:
 
