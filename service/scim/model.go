@@ -17,50 +17,36 @@ type ComplexValue struct {
 }
 
 type DeleteGroupRequest struct {
-	// Databricks Account ID
-	AccountId string `json:"-" path:"account_id"`
 	// Unique ID for a group in the Databricks Account.
 	Id string `json:"-" path:"id"`
 }
 
 type DeleteServicePrincipalRequest struct {
-	// Databricks Account ID
-	AccountId string `json:"-" path:"account_id"`
 	// Unique ID for a service principal in the Databricks Account.
 	Id string `json:"-" path:"id"`
 }
 
 type DeleteUserRequest struct {
-	// Databricks Account ID
-	AccountId string `json:"-" path:"account_id"`
 	// Unique ID for a user in the Databricks Account.
 	Id string `json:"-" path:"id"`
 }
 
 type GetGroupRequest struct {
-	// Databricks Account ID
-	AccountId string `json:"-" path:"account_id"`
 	// Unique ID for a group in the Databricks Account.
 	Id string `json:"-" path:"id"`
 }
 
 type GetServicePrincipalRequest struct {
-	// Databricks Account ID
-	AccountId string `json:"-" path:"account_id"`
 	// Unique ID for a service principal in the Databricks Account.
 	Id string `json:"-" path:"id"`
 }
 
 type GetUserRequest struct {
-	// Databricks Account ID
-	AccountId string `json:"-" path:"account_id"`
 	// Unique ID for a user in the Databricks Account.
 	Id string `json:"-" path:"id"`
 }
 
 type Group struct {
-	// Databricks Account ID
-	AccountId string `json:"-" path:"account_id"`
 	// String that represents a human-readable group name
 	DisplayName string `json:"displayName,omitempty"`
 
@@ -78,8 +64,6 @@ type Group struct {
 }
 
 type ListGroupsRequest struct {
-	// Databricks Account ID
-	AccountId string `json:"-" path:"account_id"`
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
@@ -132,8 +116,6 @@ type ListServicePrincipalResponse struct {
 }
 
 type ListServicePrincipalsRequest struct {
-	// Databricks Account ID
-	AccountId string `json:"-" path:"account_id"`
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
@@ -162,8 +144,6 @@ const ListServicePrincipalsSortOrderAscending ListServicePrincipalsSortOrder = `
 const ListServicePrincipalsSortOrderDescending ListServicePrincipalsSortOrder = `descending`
 
 type ListUsersRequest struct {
-	// Databricks Account ID
-	AccountId string `json:"-" path:"account_id"`
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
@@ -212,8 +192,6 @@ type Name struct {
 }
 
 type PartialUpdate struct {
-	// Databricks Account ID
-	AccountId string `json:"-" path:"account_id"`
 	// Unique ID for a group in the Databricks Account.
 	Id string `json:"-" path:"id"`
 
@@ -239,8 +217,6 @@ const PatchOpRemove PatchOp = `remove`
 const PatchOpReplace PatchOp = `replace`
 
 type ServicePrincipal struct {
-	// Databricks Account ID
-	AccountId string `json:"-" path:"account_id"`
 	// If this user is active
 	Active bool `json:"active,omitempty"`
 	// UUID relating to the service principal
@@ -260,8 +236,6 @@ type ServicePrincipal struct {
 }
 
 type User struct {
-	// Databricks Account ID
-	AccountId string `json:"-" path:"account_id"`
 	// If this user is active
 	Active bool `json:"active,omitempty"`
 	// String that represents a concatenation of given and family names. For

@@ -13,6 +13,7 @@ import (
 type Service struct {
 	Named
 	IsRpcStyle          bool
+	IsAccounts          bool
 	Package             *Package
 	methods             map[string]*Method
 	ByPathParamsMethods []*Shortcut
@@ -104,16 +105,31 @@ func (svc *Service) paramPath(path string, request *Entity, params []openapi.Par
 			pathParams++
 		}
 	}
+	if svc.IsAccounts && pathParams == 0 {
+		// account-level services do always have `/accounts/2.0` in path
+		pathParams++
+	}
 	if pathParams == 0 {
 		return
 	}
 	for _, v := range pathPairRE.FindAllStringSubmatch(path, -1) {
-		field, ok := request.fields[v[3]]
-		if !ok {
-			parts = append(parts, PathPart{v[1], nil})
+		prefix := v[1]
+		name := v[3]
+		if svc.IsAccounts && name == "account_id" {
+			parts = append(parts, PathPart{prefix, nil, true})
 			continue
 		}
-		parts = append(parts, PathPart{v[1], &field})
+		if request == nil {
+			// e.g. POST /api/2.0/accounts/{account_id}/budget
+			parts = append(parts, PathPart{prefix, nil, false})
+			continue
+		}
+		field, ok := request.fields[name]
+		if !ok {
+			parts = append(parts, PathPart{prefix, nil, false})
+			continue
+		}
+		parts = append(parts, PathPart{prefix, &field, false})
 	}
 	return
 }

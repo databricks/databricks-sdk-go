@@ -25,7 +25,7 @@ type AccountGroupsAPI struct {
 // supplied group details.
 func (a *AccountGroupsAPI) CreateGroup(ctx context.Context, request Group) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", request.AccountId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.Config.AccountID)
 	err := a.client.Post(ctx, path, request, &group)
 	return &group, err
 }
@@ -34,7 +34,7 @@ func (a *AccountGroupsAPI) CreateGroup(ctx context.Context, request Group) (*Gro
 //
 // Deletes a group from the Databricks Account.
 func (a *AccountGroupsAPI) DeleteGroup(ctx context.Context, request DeleteGroupRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", request.AccountId, request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.Config.AccountID, request.Id)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
@@ -42,10 +42,9 @@ func (a *AccountGroupsAPI) DeleteGroup(ctx context.Context, request DeleteGroupR
 // Delete a group
 //
 // Deletes a group from the Databricks Account.
-func (a *AccountGroupsAPI) DeleteGroupByAccountIdAndId(ctx context.Context, accountId string, id string) error {
+func (a *AccountGroupsAPI) DeleteGroupById(ctx context.Context, id string) error {
 	return a.DeleteGroup(ctx, DeleteGroupRequest{
-		AccountId: accountId,
-		Id:        id,
+		Id: id,
 	})
 }
 
@@ -54,7 +53,7 @@ func (a *AccountGroupsAPI) DeleteGroupByAccountIdAndId(ctx context.Context, acco
 // Gets the information for a specific group in the Databricks Account.
 func (a *AccountGroupsAPI) GetGroup(ctx context.Context, request GetGroupRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", request.AccountId, request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.Config.AccountID, request.Id)
 	err := a.client.Get(ctx, path, request, &group)
 	return &group, err
 }
@@ -62,10 +61,9 @@ func (a *AccountGroupsAPI) GetGroup(ctx context.Context, request GetGroupRequest
 // Get group details
 //
 // Gets the information for a specific group in the Databricks Account.
-func (a *AccountGroupsAPI) GetGroupByAccountIdAndId(ctx context.Context, accountId string, id string) (*Group, error) {
+func (a *AccountGroupsAPI) GetGroupById(ctx context.Context, id string) (*Group, error) {
 	return a.GetGroup(ctx, GetGroupRequest{
-		AccountId: accountId,
-		Id:        id,
+		Id: id,
 	})
 }
 
@@ -76,7 +74,7 @@ func (a *AccountGroupsAPI) GetGroupByAccountIdAndId(ctx context.Context, account
 // Use ListGroupsAll() to get all Group instances
 func (a *AccountGroupsAPI) ListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
 	var listGroupsResponse ListGroupsResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", request.AccountId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.Config.AccountID)
 	err := a.client.Get(ctx, path, request, &listGroupsResponse)
 	return &listGroupsResponse, err
 }
@@ -92,20 +90,11 @@ func (a *AccountGroupsAPI) ListGroupsAll(ctx context.Context, request ListGroups
 	return response.Resources, nil
 }
 
-// List group details
-//
-// Gets all details of the groups associated with the Databricks Account.
-func (a *AccountGroupsAPI) ListGroupsByAccountId(ctx context.Context, accountId string) (*ListGroupsResponse, error) {
-	return a.ListGroups(ctx, ListGroupsRequest{
-		AccountId: accountId,
-	})
-}
-
 // Update group details
 //
 // Partially updates the details of a group.
 func (a *AccountGroupsAPI) PatchGroup(ctx context.Context, request PartialUpdate) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", request.AccountId, request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.Config.AccountID, request.Id)
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
@@ -114,7 +103,7 @@ func (a *AccountGroupsAPI) PatchGroup(ctx context.Context, request PartialUpdate
 //
 // Updates the details of a group by replacing the entire group entity.
 func (a *AccountGroupsAPI) UpdateGroup(ctx context.Context, request Group) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", request.AccountId, request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.Config.AccountID, request.Id)
 	err := a.client.Put(ctx, path, request)
 	return err
 }
@@ -134,7 +123,7 @@ type AccountServicePrincipalsAPI struct {
 // Creates a new service principal in the Databricks Account.
 func (a *AccountServicePrincipalsAPI) CreateServicePrincipal(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", request.AccountId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.Config.AccountID)
 	err := a.client.Post(ctx, path, request, &servicePrincipal)
 	return &servicePrincipal, err
 }
@@ -143,7 +132,7 @@ func (a *AccountServicePrincipalsAPI) CreateServicePrincipal(ctx context.Context
 //
 // Delete a single service principal in the Databricks Account.
 func (a *AccountServicePrincipalsAPI) DeleteServicePrincipal(ctx context.Context, request DeleteServicePrincipalRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", request.AccountId, request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.Config.AccountID, request.Id)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
@@ -151,10 +140,9 @@ func (a *AccountServicePrincipalsAPI) DeleteServicePrincipal(ctx context.Context
 // Delete a service principal
 //
 // Delete a single service principal in the Databricks Account.
-func (a *AccountServicePrincipalsAPI) DeleteServicePrincipalByAccountIdAndId(ctx context.Context, accountId string, id string) error {
+func (a *AccountServicePrincipalsAPI) DeleteServicePrincipalById(ctx context.Context, id string) error {
 	return a.DeleteServicePrincipal(ctx, DeleteServicePrincipalRequest{
-		AccountId: accountId,
-		Id:        id,
+		Id: id,
 	})
 }
 
@@ -164,7 +152,7 @@ func (a *AccountServicePrincipalsAPI) DeleteServicePrincipalByAccountIdAndId(ctx
 // Account.
 func (a *AccountServicePrincipalsAPI) GetServicePrincipal(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", request.AccountId, request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.Config.AccountID, request.Id)
 	err := a.client.Get(ctx, path, request, &servicePrincipal)
 	return &servicePrincipal, err
 }
@@ -173,10 +161,9 @@ func (a *AccountServicePrincipalsAPI) GetServicePrincipal(ctx context.Context, r
 //
 // Gets the details for a single service principal define in the Databricks
 // Account.
-func (a *AccountServicePrincipalsAPI) GetServicePrincipalByAccountIdAndId(ctx context.Context, accountId string, id string) (*ServicePrincipal, error) {
+func (a *AccountServicePrincipalsAPI) GetServicePrincipalById(ctx context.Context, id string) (*ServicePrincipal, error) {
 	return a.GetServicePrincipal(ctx, GetServicePrincipalRequest{
-		AccountId: accountId,
-		Id:        id,
+		Id: id,
 	})
 }
 
@@ -187,7 +174,7 @@ func (a *AccountServicePrincipalsAPI) GetServicePrincipalByAccountIdAndId(ctx co
 // Use ListServicePrincipalsAll() to get all ServicePrincipal instances
 func (a *AccountServicePrincipalsAPI) ListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 	var listServicePrincipalResponse ListServicePrincipalResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", request.AccountId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.Config.AccountID)
 	err := a.client.Get(ctx, path, request, &listServicePrincipalResponse)
 	return &listServicePrincipalResponse, err
 }
@@ -203,21 +190,12 @@ func (a *AccountServicePrincipalsAPI) ListServicePrincipalsAll(ctx context.Conte
 	return response.Resources, nil
 }
 
-// List service principals
-//
-// Gets the set of service principals associated with a Databricks Account.
-func (a *AccountServicePrincipalsAPI) ListServicePrincipalsByAccountId(ctx context.Context, accountId string) (*ListServicePrincipalResponse, error) {
-	return a.ListServicePrincipals(ctx, ListServicePrincipalsRequest{
-		AccountId: accountId,
-	})
-}
-
 // Update service principal details
 //
 // Partially updates the details of a single service principal in the Databricks
 // Account.
 func (a *AccountServicePrincipalsAPI) PatchServicePrincipal(ctx context.Context, request PartialUpdate) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", request.AccountId, request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.Config.AccountID, request.Id)
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
@@ -228,7 +206,7 @@ func (a *AccountServicePrincipalsAPI) PatchServicePrincipal(ctx context.Context,
 //
 // This action replaces the existing service principal with the same name.
 func (a *AccountServicePrincipalsAPI) UpdateServicePrincipal(ctx context.Context, request ServicePrincipal) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", request.AccountId, request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.Config.AccountID, request.Id)
 	err := a.client.Put(ctx, path, request)
 	return err
 }
@@ -249,7 +227,7 @@ type AccountUsersAPI struct {
 // added to the Databricks account.
 func (a *AccountUsersAPI) CreateUser(ctx context.Context, request User) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", request.AccountId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.Config.AccountID)
 	err := a.client.Post(ctx, path, request, &user)
 	return &user, err
 }
@@ -259,7 +237,7 @@ func (a *AccountUsersAPI) CreateUser(ctx context.Context, request User) (*User, 
 // Deletes a user. Deleting a user from a Databricks Account also removes
 // objects associated with the user.
 func (a *AccountUsersAPI) DeleteUser(ctx context.Context, request DeleteUserRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", request.AccountId, request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.Config.AccountID, request.Id)
 	err := a.client.Delete(ctx, path, request)
 	return err
 }
@@ -268,10 +246,9 @@ func (a *AccountUsersAPI) DeleteUser(ctx context.Context, request DeleteUserRequ
 //
 // Deletes a user. Deleting a user from a Databricks Account also removes
 // objects associated with the user.
-func (a *AccountUsersAPI) DeleteUserByAccountIdAndId(ctx context.Context, accountId string, id string) error {
+func (a *AccountUsersAPI) DeleteUserById(ctx context.Context, id string) error {
 	return a.DeleteUser(ctx, DeleteUserRequest{
-		AccountId: accountId,
-		Id:        id,
+		Id: id,
 	})
 }
 
@@ -280,7 +257,7 @@ func (a *AccountUsersAPI) DeleteUserByAccountIdAndId(ctx context.Context, accoun
 // Gets information for a specific user in Databricks Account.
 func (a *AccountUsersAPI) GetUser(ctx context.Context, request GetUserRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", request.AccountId, request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.Config.AccountID, request.Id)
 	err := a.client.Get(ctx, path, request, &user)
 	return &user, err
 }
@@ -288,10 +265,9 @@ func (a *AccountUsersAPI) GetUser(ctx context.Context, request GetUserRequest) (
 // Get user details
 //
 // Gets information for a specific user in Databricks Account.
-func (a *AccountUsersAPI) GetUserByAccountIdAndId(ctx context.Context, accountId string, id string) (*User, error) {
+func (a *AccountUsersAPI) GetUserById(ctx context.Context, id string) (*User, error) {
 	return a.GetUser(ctx, GetUserRequest{
-		AccountId: accountId,
-		Id:        id,
+		Id: id,
 	})
 }
 
@@ -302,7 +278,7 @@ func (a *AccountUsersAPI) GetUserByAccountIdAndId(ctx context.Context, accountId
 // Use ListUsersAll() to get all User instances
 func (a *AccountUsersAPI) ListUsers(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", request.AccountId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.Config.AccountID)
 	err := a.client.Get(ctx, path, request, &listUsersResponse)
 	return &listUsersResponse, err
 }
@@ -318,21 +294,12 @@ func (a *AccountUsersAPI) ListUsersAll(ctx context.Context, request ListUsersReq
 	return response.Resources, nil
 }
 
-// List users
-//
-// Gets details for all the users associated with a Databricks Account.
-func (a *AccountUsersAPI) ListUsersByAccountId(ctx context.Context, accountId string) (*ListUsersResponse, error) {
-	return a.ListUsers(ctx, ListUsersRequest{
-		AccountId: accountId,
-	})
-}
-
 // Update user details
 //
 // Partially updates a user resource by applying the supplied operations on
 // specific user attributes.
 func (a *AccountUsersAPI) PatchUser(ctx context.Context, request PartialUpdate) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", request.AccountId, request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.Config.AccountID, request.Id)
 	err := a.client.Patch(ctx, path, request)
 	return err
 }
@@ -341,7 +308,7 @@ func (a *AccountUsersAPI) PatchUser(ctx context.Context, request PartialUpdate) 
 //
 // Replaces a user's information with the data supplied in request.
 func (a *AccountUsersAPI) UpdateUser(ctx context.Context, request User) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", request.AccountId, request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.Config.AccountID, request.Id)
 	err := a.client.Put(ctx, path, request)
 	return err
 }

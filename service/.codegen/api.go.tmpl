@@ -30,7 +30,7 @@ func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}
 	{{if .Response}}var {{.Response.CamelName}} {{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}{{.Response.PascalName}}{{end}}
 	{{end -}}
 	path := {{if .PathParts -}}
-		fmt.Sprintf("{{range  .PathParts}}{{.Prefix}}{{if .Field}}%v{{end}}{{ end }}"{{ range .PathParts }}{{if .Field}}, request.{{.Field.PascalName}}{{end}}{{ end }})
+		fmt.Sprintf("{{range  .PathParts}}{{.Prefix}}{{if or .Field .IsAccountId}}%v{{end}}{{ end }}"{{ range .PathParts }}{{if .Field}}, request.{{.Field.PascalName}}{{ else if .IsAccountId }}, a.client.Config.AccountID{{end}}{{ end }})
 	{{- else}}"{{.Path}}"{{end}}
 	err := a.client.{{.TitleVerb}}(ctx, path, {{if .Request}}request{{else}}nil{{end}}{{if .Response}}, &{{.Response.CamelName}}{{else if .CanHaveResponseBody}}, nil{{end}})
 	return {{if .Response}}{{if not .Response.ArrayValue}}&{{end}}{{.Response.CamelName}}, {{end}}err

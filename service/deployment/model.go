@@ -42,22 +42,12 @@ type CreateAwsKeyInfo struct {
 }
 
 type CreateCredentialRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
-
 	AwsCredentials AwsCredentials `json:"aws_credentials"`
 	// The human-readable name of the credential configuration object.
 	CredentialsName string `json:"credentials_name"`
 }
 
 type CreateCustomerManagedKeyRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
-
 	AwsKeyInfo CreateAwsKeyInfo `json:"aws_key_info"`
 	// The cases that the key can be used for. Include one or both of these
 	// options: * `MANAGED_SERVICES`: Encrypts notebook and secret data in the
@@ -109,10 +99,6 @@ type CreateGcpNetwork struct {
 }
 
 type CreateNetworkRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// The Google Cloud specific information for this network (for example, the
 	// VPC ID, subnet ID, and secondary IP ranges).
 	GcpNetworkInfo *GcpNetworkInfo `json:"gcp_network_info,omitempty"`
@@ -134,10 +120,6 @@ type CreateNetworkRequest struct {
 }
 
 type CreateStorageConfigurationRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Root S3 bucket information.
 	RootBucketInfo RootBucketInfo `json:"root_bucket_info"`
 	// The human-readable name of the storage configuration.
@@ -145,10 +127,6 @@ type CreateStorageConfigurationRequest struct {
 }
 
 type CreateVpcEndpointRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// The ID of the VPC endpoint object in AWS.
 	AwsVpcEndpointId string `json:"aws_vpc_endpoint_id"`
 	// The AWS region in which this VPC endpoint object exists.
@@ -158,10 +136,6 @@ type CreateVpcEndpointRequest struct {
 }
 
 type CreateWorkspaceRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// The AWS region of the workspace's data plane.
 	AwsRegion string `json:"aws_region,omitempty"`
 	// The cloud provider which the workspace uses. For Google Cloud workspaces,
@@ -298,64 +272,36 @@ type CustomerManagedKey struct {
 }
 
 type DeleteCredentialConfigRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Databricks Account API credential configuration ID
 	CredentialsId string `json:"-" path:"credentials_id"`
 }
 
 type DeleteKeyConfigRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Databricks encryption key configuration ID.
 	CustomerManagedKeyId string `json:"-" path:"customer_managed_key_id"`
 }
 
 type DeleteNetworkConfigRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Databricks Account API network configuration ID.
 	NetworkId string `json:"-" path:"network_id"`
 }
 
 type DeletePrivateAccessSettingsRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" path:"private_access_settings_id"`
 }
 
 type DeleteStorageConfigRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Databricks Account API storage configuration ID.
 	StorageConfigurationId string `json:"-" path:"storage_configuration_id"`
 }
 
 type DeleteVpcEndpointRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Databricks VPC endpoint ID.
 	VpcEndpointId string `json:"-" path:"vpc_endpoint_id"`
 }
 
 type DeleteWorkspaceRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" path:"workspace_id"`
 }
@@ -459,88 +405,42 @@ type GcpProjectContainer struct {
 	ProjectId string `json:"project_id,omitempty"`
 }
 
-type GetAllWorkspacesRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
-}
-
 type GetCredentialConfigRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Databricks Account API credential configuration ID
 	CredentialsId string `json:"-" path:"credentials_id"`
 }
 
 type GetKeyConfigRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Databricks encryption key configuration ID.
 	CustomerManagedKeyId string `json:"-" path:"customer_managed_key_id"`
 }
 
-type GetKeyWorkspaceHistoryRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
-}
-
 type GetNetworkConfigRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Databricks Account API network configuration ID.
 	NetworkId string `json:"-" path:"network_id"`
 }
 
 type GetPrivateAccessSettingsRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" path:"private_access_settings_id"`
 }
 
 type GetStorageConfigRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Databricks Account API storage configuration ID.
 	StorageConfigurationId string `json:"-" path:"storage_configuration_id"`
 }
 
 type GetVpcEndpointRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Databricks VPC endpoint ID.
 	VpcEndpointId string `json:"-" path:"vpc_endpoint_id"`
 }
 
 type GetWorkspaceKeyHistoryRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" path:"workspace_id"`
 }
 
 type GetWorkspaceRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" path:"workspace_id"`
 }
@@ -573,48 +473,6 @@ const KeyUseCaseManagedServices KeyUseCase = `MANAGED_SERVICES`
 // Encrypts the workspace's root S3 bucket (root DBFS and system data) and,
 // optionally, cluster EBS volumes.
 const KeyUseCaseStorage KeyUseCase = `STORAGE`
-
-type ListCredentialsRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
-}
-
-type ListKeyConfigsRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
-}
-
-type ListNetworkConfigsRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
-}
-
-type ListPrivateAccessSettingsRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
-}
-
-type ListStorageConfigsRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
-}
-
-type ListVpcEndpointsRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
-}
 
 type ListWorkspaceEncryptionKeyRecordsResponse struct {
 	WorkspaceEncryptionKeyRecords []WorkspaceEncryptionKeyRecord `json:"workspaceEncryptionKeyRecords,omitempty"`
@@ -796,10 +654,6 @@ type StsRole struct {
 }
 
 type UpdateWorkspaceRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// The AWS region of the workspace's data plane (for example, `us-west-2`).
 	// This parameter is available only for updating failed workspaces.
 	AwsRegion string `json:"aws_region,omitempty"`
@@ -830,10 +684,6 @@ type UpdateWorkspaceRequest struct {
 }
 
 type UpsertPrivateAccessSettingsRequest struct {
-	// Databricks account ID of any type. For non-E2 account types, get your
-	// account ID from the [Accounts
-	// Console](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	AccountId string `json:"-" path:"account_id"`
 	// An array of Databricks VPC endpoint IDs. This is the Databricks ID that
 	// is returned when registering the VPC endpoint configuration in your
 	// Databricks account. This is not the ID of the VPC endpoint in AWS.

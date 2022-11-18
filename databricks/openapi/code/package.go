@@ -302,6 +302,19 @@ func (pkg *Package) HasWaits() bool {
 
 // Load takes OpenAPI specification and loads a service model
 func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
+	accountServices := map[string]bool{}
+	var accountsRE = regexp.MustCompile(`/accounts/`)
+	for prefix, path := range spec.Paths {
+		for _, op := range path.Verbs() {
+			if !op.HasTag(tag.Name) {
+				continue
+			}
+			if !accountsRE.MatchString(prefix) {
+				continue
+			}
+			accountServices[tag.Service] = true
+		}
+	}
 	for prefix, path := range spec.Paths {
 		for verb, op := range path.Verbs() {
 			if !op.HasTag(tag.Name) {
@@ -311,6 +324,7 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 			if !ok {
 				svc = &Service{
 					Package:    pkg,
+					IsAccounts: accountServices[tag.Service],
 					IsRpcStyle: tag.PathStyle == "rpc",
 					methods:    map[string]*Method{},
 					Named: Named{
@@ -327,6 +341,10 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 					param := *pkg.Components.Parameters.Resolve(&v)
 					if param == nil {
 						return nil
+					}
+					// do not propagate common path parameter to account-level APIs
+					if svc.IsAccounts && param.In == "path" && param.Name == "account_id" {
+						continue
 					}
 					if seenParams[param.Name] {
 						continue
