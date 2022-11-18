@@ -59,6 +59,20 @@ type AccessControlResponse struct {
 	UserName string `json:"user_name,omitempty"`
 }
 
+type CreateWorkspaceAssignments struct {
+	// Array of permissions assignments to apply to a workspace.
+	PermissionAssignments []PermissionAssignmentInput `json:"permission_assignments,omitempty"`
+	// The workspace ID for the account.
+	WorkspaceId int64 `json:"-" path:"workspace_id"`
+}
+
+type DeleteRequest struct {
+	// The ID of the service principal.
+	PrincipalId int64 `json:"-" path:"principal_id"`
+	// The workspace ID.
+	WorkspaceId int64 `json:"-" path:"workspace_id"`
+}
+
 type GetObjectPermissionsRequest struct {
 	ObjectId string `json:"-" path:"object_id"`
 	// <needs content>
@@ -77,6 +91,16 @@ type GetPermissionLevelsResponse struct {
 	PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
 }
 
+type GetRequest struct {
+	// The workspace ID.
+	WorkspaceId int64 `json:"-" path:"workspace_id"`
+}
+
+type ListRequest struct {
+	// The workspace ID for the account.
+	WorkspaceId int64 `json:"-" path:"workspace_id"`
+}
+
 type ObjectPermissions struct {
 	AccessControlList []AccessControlResponse `json:"access_control_list,omitempty"`
 
@@ -91,6 +115,38 @@ type Permission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	PermissionLevel PermissionPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type PermissionAssignment struct {
+	// Error response associated with a workspace permission assignment, if any.
+	Error string `json:"error,omitempty"`
+	// The permissions level of the service principal.
+	Permissions []WorkspacePermission `json:"permissions,omitempty"`
+	// Information about the service principal assigned for the workspace.
+	Principal *PrincipalOutput `json:"principal,omitempty"`
+}
+
+type PermissionAssignmentInput struct {
+	// The group name for the service principal.
+	GroupName string `json:"group_name,omitempty"`
+	// Array of permissions to apply to the workspace for the service principal.
+	Permissions []WorkspacePermission `json:"permissions,omitempty"`
+	// The name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// The username of the owner of the service principal.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type PermissionAssignments struct {
+	// Array of permissions assignments defined for a workspace.
+	PermissionAssignments []PermissionAssignment `json:"permission_assignments,omitempty"`
+}
+
+type PermissionOutput struct {
+	// The results of a permissions query.
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel WorkspacePermission `json:"permission_level,omitempty"`
 }
 
 type PermissionPermissionLevel string
@@ -163,6 +219,19 @@ const PermissionsDescriptionPermissionLevelCanViewMetadata PermissionsDescriptio
 
 const PermissionsDescriptionPermissionLevelIsOwner PermissionsDescriptionPermissionLevel = `IS_OWNER`
 
+type PrincipalOutput struct {
+	// The display name of the service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// The group name for the service principal.
+	GroupName string `json:"group_name,omitempty"`
+	// The unique, opaque id of the principal.
+	PrincipalId int64 `json:"principal_id,omitempty"`
+	// The name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// The username of the owner of the service principal.
+	UserName string `json:"user_name,omitempty"`
+}
+
 type SetObjectPermissions struct {
 	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
 
@@ -177,4 +246,31 @@ type UpdateObjectPermissions struct {
 	ObjectId string `json:"object_id,omitempty" path:"object_id"`
 
 	ObjectType string `json:"object_type,omitempty" path:"object_type"`
+}
+
+type UpdateWorkspaceAssignments struct {
+	// Array of permissions assignments to update on the workspace.
+	Permissions []WorkspacePermission `json:"permissions,omitempty"`
+	// The ID of the service principal.
+	PrincipalId int64 `json:"-" path:"principal_id"`
+	// The workspace ID.
+	WorkspaceId int64 `json:"-" path:"workspace_id"`
+}
+
+type WorkspaceAssignmentsCreated struct {
+	// Array of permissions assignments applied to a workspace.
+	PermissionAssignments []PermissionAssignment `json:"permission_assignments,omitempty"`
+}
+
+type WorkspacePermission string
+
+const WorkspacePermissionAdmin WorkspacePermission = `ADMIN`
+
+const WorkspacePermissionUnknown WorkspacePermission = `UNKNOWN`
+
+const WorkspacePermissionUser WorkspacePermission = `USER`
+
+type WorkspacePermissions struct {
+	// Array of permissions defined for a workspace.
+	Permissions []PermissionOutput `json:"permissions,omitempty"`
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -25,6 +26,15 @@ func GetEnvOrSkipTest(t *testing.T, name string) string {
 		t.Skipf("Environment variable %s is missing", name)
 	}
 	return value
+}
+
+func GetEnvInt64OrSkipTest(t *testing.T, name string) int64 {
+	v := GetEnvOrSkipTest(t, name)
+	i, err := strconv.ParseInt(v, 10, 64)
+	if err != nil {
+		t.Skipf("`%s` is not int64: %s", v, err)
+	}
+	return i
 }
 
 // RandomEmail generates random email
