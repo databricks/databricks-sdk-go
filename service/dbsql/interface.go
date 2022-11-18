@@ -205,9 +205,10 @@ type DataSourcesService interface {
 	ListDataSources(ctx context.Context) ([]DataSource, error)
 }
 
-// The SQL Permissions API is similar to the endpoints of the Permissions API.
-// However, this exposes only one endpoint, which gets the Access Control List
-// for a given object. You cannot modify any permissions using this API.
+// The SQL Permissions API is similar to the endpoints of the
+// :method:permissions/setobjectpermissions. However, this exposes only one
+// endpoint, which gets the Access Control List for a given object. You cannot
+// modify any permissions using this API.
 //
 // There are three levels of permission:
 //

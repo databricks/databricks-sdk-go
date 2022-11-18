@@ -43,11 +43,13 @@ type Alert struct {
 type AlertOptions struct {
 	// Name of column in the query result to compare in alert evaluation.
 	Column string `json:"column"`
-	// Custom body of alert notification, if it exists. See `%(alertsLink)s` for
-	// custom templating instructions.
+	// Custom body of alert notification, if it exists. See
+	// [here](https://docs.databricks.com/sql/user/alerts/index.html) for custom
+	// templating instructions.
 	CustomBody string `json:"custom_body,omitempty"`
 	// Custom subject of alert notification, if it exists. This includes email
-	// subject, Slack notification header, etc. See `%(alertsLink)s` for custom
+	// subject, Slack notification header, etc. See
+	// [here](https://docs.databricks.com/sql/user/alerts/index.html) for custom
 	// templating instructions.
 	CustomSubject string `json:"custom_subject,omitempty"`
 	// Whether or not the alert is muted. If an alert is muted, it will not
@@ -109,7 +111,7 @@ type CreateSubscription struct {
 	AlertId string `json:"alert_id" path:"alert_id"`
 	// ID of the alert subscriber (if subscribing an alert destination). Alert
 	// destinations can be configured by admins through the UI. See
-	// `%(alertDestinationsLink)s`.
+	// [here](/sql/admin/alert-destinations.html).
 	DestinationId string `json:"destination_id,omitempty"`
 	// ID of the alert subscriber (if subscribing a user).
 	UserId int `json:"user_id,omitempty"`
@@ -211,7 +213,8 @@ type DeleteScheduleRequest struct {
 }
 
 // Alert destination subscribed to the alert, if it exists. Alert destinations
-// can be configured by admins through the UI. See `%(alertDestinationsLink)s`.
+// can be configured by admins through the UI. See
+// [here](https://docs.databricks.com/sql/admin/alert-destinations.html).
 type Destination struct {
 	// ID of the alert destination.
 	Id string `json:"id,omitempty"`
@@ -565,7 +568,7 @@ type Subscription struct {
 	AlertId string `json:"alert_id,omitempty"`
 	// Alert destination subscribed to the alert, if it exists. Alert
 	// destinations can be configured by admins through the UI. See
-	// `%(alertDestinationsLink)s`.
+	// [here](https://docs.databricks.com/sql/admin/alert-destinations.html).
 	Destination *Destination `json:"destination,omitempty"`
 	// ID of the alert subscription.
 	Id string `json:"id,omitempty"`
