@@ -63,8 +63,8 @@ type Config struct {
 	AzureClientSecret string `name:"azure_client_secret" env:"ARM_CLIENT_SECRET" auth:"azure,sensitive"`
 	AzureClientID     string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure"`
 	AzureTenantID     string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure"`
-	// Azure Environment (Public, UsGov, China, Germany) has specific set of API endpoints
-	Environment string `name:"azure_environment" env:"ARM_ENVIRONMENT"` // TODO: rename to AzureEnvironment
+	// AzureEnvironment (Public, UsGov, China, Germany) has specific set of API endpoints.
+	AzureEnvironment string `name:"azure_environment" env:"ARM_ENVIRONMENT"`
 
 	// When multiple auth attributes are available in the environment, use the auth type
 	// specified by this argument. This argument also holds currently selected auth.

@@ -57,12 +57,12 @@ var (
 )
 
 func (c *Config) GetAzureEnvironment() (azureEnvironment, error) {
-	if c.Environment == "" {
-		c.Environment = "public"
+	if c.AzureEnvironment == "" {
+		c.AzureEnvironment = "public"
 	}
-	env, ok := azureEnvironments[strings.ToUpper(c.Environment)]
+	env, ok := azureEnvironments[strings.ToUpper(c.AzureEnvironment)]
 	if !ok {
-		return env, fmt.Errorf("azure envionment not found: %s", c.Environment)
+		return env, fmt.Errorf("azure envionment not found: %s", c.AzureEnvironment)
 	}
 	return env, nil
 }
