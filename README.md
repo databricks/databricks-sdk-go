@@ -175,36 +175,66 @@ For example, to print Databricks PAT authentication settings:
 package main
 
 import (
+  "bufio"
   "fmt"
+  "os"
+  "strings"
 
   "github.com/databricks/databricks-sdk-go/workspaces"
+  // "github.com/databricks/databricks-sdk-go/databricks"
 )
 
 func main() {
-  w := workspaces.New()
+  /*
+   * Perform Databricks token authentication for a Databricks workspace.
+   *
+   * Choose from one of the following authentication options:
+   */
 
-  /* Databricks highly discourages hard-coding authentication information
-     in *databricks.Config, as it risks storing access tokens in plain text
-     in version control systems. Databricks recommends that you use
-     environment variables or configuration profiles instead.
-     
-     If you absolutely must hard-code authentication information in 
-     *databricks.Config, you must also import
-     "github.com/databricks/databricks-sdk-go/databricks".
-     
-  w := workspaces.New(&databricks.Config{
-    AuthType: "pat",
-    Host:     "<my-host-url>",
-    Token:    "<my-token>",
-  })
-  */
+  /*
+   * Option 1: To use Databricks token authentication by default, uncomment
+   * the following line of code and then run. This assumes you have already set
+   * your Databricks workspace URL and token through one of:
+   *
+   * - A Databricks configuration profile named DEFAULT.
+   * - The environment variables DATABRICKS_HOST and DATABRICKS_TOKEN.
+   */
 
-  fmt.Printf("The host is '%s', and the token is '%s'.",
+  // w := workspaces.New()
+
+  /* 
+   * Option 2: To ask the user at run time for the needed information,
+   * uncomment the following code, uncomment the import
+   * "github.com/databricks/databricks-sdk-go/databricks"
+   * and then run.
+   */
+
+  // w := workspaces.New(&databricks.Config{
+  //   AuthType: "pat",
+  //   Host:     askFor("Databricks workspace URL:"),
+  //   Token:    askFor("Access token:"),
+  // })
+
+  fmt.Printf("The workspace URL is '%s', and the token is '%s'.\n",
     w.Config.Host,
     w.Config.Token,
   )
-  
+
   // Now call the Databricks workspace APIs as desired...
+}
+
+// For Option 2, ask the user for the missing information.
+func askFor(prompt string) string {
+  var s string
+  r := bufio.NewReader(os.Stdin)
+  for {
+    fmt.Fprint(os.Stdout, prompt+" ")
+    s, _ = r.ReadString('\n')
+    if s != "" {
+      break
+    }
+  }
+  return strings.TrimSpace(s)
 }
 ```
 
@@ -229,31 +259,46 @@ For example, to print Azure client secret authentication settings:
 package main
 
 import (
+  "bufio"
   "fmt"
+  "os"
+  "strings"
 
+  "github.com/databricks/databricks-sdk-go/databricks"
   "github.com/databricks/databricks-sdk-go/workspaces"
 )
 
 func main() {
-  w := workspaces.New()
+  /*
+   * Perform Azure client secret authentication for a Databricks workspace.
+   * 
+   * Choose from one of the following authentication options:
+   */
 
-  /* Databricks highly discourages hard-coding authentication information
-     in *databricks.Config, as it risks storing client secrets in plain text
-     in version control systems. Databricks recommends that you use
-     environment variables instead.
-     
-     If you absolutely must hard-code authentication information in 
-     *databricks.Config, you must also import
-     "github.com/databricks/databricks-sdk-go/databricks".
-     
-  w := workspaces.New(&databricks.Config{
-    AuthType:          "azure-client-secret",
-    AzureResourceID:   "<my-resource-id>",
-    AzureTenantID:     "<my-tenant-id>",
-    AzureClientID:     "<my-client-id>",
-    AzureClientSecret: "<my-client-secret>",
-  })
-  */
+  /*
+   * Option 1: Uncomment the following line of code and then run. This
+   * assumes you have already set the following environment variables:
+   *
+   * - DATABRICKS_AZURE_RESOURCE_ID
+   * - ARM_TENANT_ID
+   * - ARM_CLIENT_ID
+   * - ARM_CLIENT_SECRET
+   */
+
+  // w := workspaces.New(&databricks.Config{AuthType: "azure-client-secret"})
+
+  /* 
+   * Option 2: To ask the user at run time for the needed information,
+   * uncomment the following code and then run.
+   */
+
+  // w := workspaces.New(&databricks.Config{
+  //   AuthType:          "azure-client-secret",
+  //   AzureResourceID:   askFor("Azure resource ID for your Azure Databricks workspace:"),
+  //   AzureTenantID:     askFor("Azure tenant ID for your Azure AD service principal:"),
+  //   AzureClientID:     askFor("Azure client ID for your Azure AD service principal:"),
+  //   AzureClientSecret: askFor("Azure client secret for your Azure AD service principal:"),
+  // })
 
   fmt.Printf("The resource ID is '%s', the tenant ID is '%s', "+
     "the client ID is '%s', and the client secret is '%s'.",
@@ -262,8 +307,22 @@ func main() {
     w.Config.AzureClientID,
     w.Config.AzureClientSecret,
   )
-  
+
   // Now call the Databricks workspace APIs as desired...
+}
+
+// For Option 2, ask the user for the missing information.
+func askFor(prompt string) string {
+  var s string
+  r := bufio.NewReader(os.Stdin)
+  for {
+    fmt.Fprint(os.Stdout, prompt+" ")
+    s, _ = r.ReadString('\n')
+    if s != "" {
+      break
+    }
+  }
+  return strings.TrimSpace(s)
 }
 ```
 
@@ -284,36 +343,61 @@ For example, to print GCP ID authentication settings:
 package main
 
 import (
+  "bufio"
   "fmt"
+  "os"
+  "strings"
 
+  "github.com/databricks/databricks-sdk-go/databricks"
   "github.com/databricks/databricks-sdk-go/workspaces"
 )
 
 func main() {
-  w := workspaces.New()
+  /*
+   * Perform Google Cloud Platform ID authentication for a Databricks workspace.
+   *
+   * Choose from one of the following authentication options:
+   */
 
-  /* Databricks highly discourages hard-coding authentication information
-     in *databricks.Config, as it risks storing credentials in plain text
-     in version control systems. Databricks recommends that you use
-     environment variables instead.
-     
-     If you absolutely must hard-code authentication information in 
-     *databricks.Config, you must also import
-     "github.com/databricks/databricks-sdk-go/databricks".
-     
-  w := workspaces.New(&databricks.Config{
-    AuthType:             "google-id",
-    Host:                 "https://1234567890123456.7.gcp.databricks.com",
-    GoogleServiceAccount: "my-service-account@example.iam.gserviceaccount.com",
-  })
-  */
+  /*
+   * Option 1: Uncomment the following line of code and then run. This
+   * assumes you have already set the environment variables
+   * DATABRICKS_HOST and GOOGLE_SERVICE_ACCOUNT.
+   */
 
-  fmt.Printf("The host is '%s', and the service account is '%s'.",
+  // w := workspaces.New(&databricks.Config{AuthType: "google-id"})
+
+  /*
+   * Option 2: To ask the user at run time for the needed information,
+   * uncomment the following code and then run.
+   */
+
+  // w := workspaces.New(&databricks.Config{
+  //   AuthType:             "google-id",
+  //   Host:                 askFor("Databricks workspace URL:"),
+  //   GoogleServiceAccount: askFor("Google Cloud Platform service account's email address:"),
+  // })
+
+  fmt.Printf("The host is '%s', and the service account email is '%s'.",
     w.Config.Host,
     w.Config.GoogleServiceAccount,
   )
-  
+
   // Now call the Databricks workspace APIs as desired...
+}
+
+// For Option 2, ask the user for the missing information.
+func askFor(prompt string) string {
+  var s string
+  r := bufio.NewReader(os.Stdin)
+  for {
+    fmt.Fprint(os.Stdout, prompt+" ")
+    s, _ = r.ReadString('\n')
+    if s != "" {
+      break
+    }
+  }
+  return strings.TrimSpace(s)
 }
 ```
 
