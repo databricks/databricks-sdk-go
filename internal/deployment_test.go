@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAccAccountStorage(t *testing.T) {
+func TestMwsAccStorage(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
@@ -43,7 +43,7 @@ func TestAccAccountStorage(t *testing.T) {
 	assert.True(t, len(configs) > 0)
 }
 
-func TestAccAccountNetworks(t *testing.T) {
+func TestMwsAccNetworks(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
@@ -73,7 +73,7 @@ func TestAccAccountNetworks(t *testing.T) {
 	assert.True(t, len(configs) > 0)
 }
 
-func TestAccAccountCredentials(t *testing.T) {
+func TestMwsAccCredentials(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
