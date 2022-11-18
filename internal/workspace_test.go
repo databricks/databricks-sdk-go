@@ -15,13 +15,17 @@ import (
 func TestAccListWorkspaceIntegration(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	ctx := context.Background()
-	wsc := workspaces.New()
+	w := workspaces.New()
+	if w.Config.IsAccountsClient() {
+		t.SkipNow()
+	}
+
 	testDirPath := RandomName("/tmp/databricks-go-sdk/integration/workspace/TestDir-")
 	testFileName := RandomName("test-file-")
 
 	t.Cleanup(func() {
 		// Delete the test directory
-		err := wsc.Workspace.Delete(ctx, workspace.Delete{
+		err := w.Workspace.Delete(ctx, workspace.Delete{
 			Path:      testDirPath,
 			Recursive: true,
 		})
@@ -29,11 +33,11 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	})
 
 	// Make test directory
-	err := wsc.Workspace.MkdirsByPath(ctx, testDirPath)
+	err := w.Workspace.MkdirsByPath(ctx, testDirPath)
 	require.NoError(t, err)
 
 	// Import the test notebook
-	err = wsc.Workspace.Import(ctx, workspace.Import{
+	err = w.Workspace.Import(ctx, workspace.Import{
 		Path:      filepath.Join(testDirPath, testFileName),
 		Format:    "SOURCE",
 		Language:  "PYTHON",
@@ -43,14 +47,14 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Get test notebook status
-	getStatusResponse, err := wsc.Workspace.GetStatusByPath(ctx, filepath.Join(testDirPath, testFileName))
+	getStatusResponse, err := w.Workspace.GetStatusByPath(ctx, filepath.Join(testDirPath, testFileName))
 	require.NoError(t, err)
 	assert.True(t, getStatusResponse.Language == "PYTHON")
 	assert.True(t, getStatusResponse.Path == filepath.Join(testDirPath, testFileName))
 	assert.True(t, string(getStatusResponse.ObjectType) == "NOTEBOOK")
 
 	// Export the notebook and assert the contents
-	exportResponse, err := wsc.Workspace.Export(ctx, workspace.ExportRequest{
+	exportResponse, err := w.Workspace.Export(ctx, workspace.ExportRequest{
 		DirectDownload: false,
 		Format:         "SOURCE",
 		Path:           filepath.Join(testDirPath, testFileName),
@@ -59,7 +63,7 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	assert.True(t, exportResponse.Content == base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")))
 
 	// Assert the test notebook is present in test dir using list api
-	listReponse, err := wsc.Workspace.List(ctx, workspace.ListRequest{
+	listReponse, err := w.Workspace.List(ctx, workspace.ListRequest{
 		Path: testDirPath,
 	})
 	require.NoError(t, err)

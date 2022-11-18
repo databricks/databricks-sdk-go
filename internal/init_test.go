@@ -11,7 +11,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks"
 )
 
-const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+const fullCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+const hexCharset = "0123456789abcdef"
 
 func init() {
 	databricks.WithProduct("integration-tests", databricks.Version())
@@ -38,10 +39,23 @@ func RandomName(prefix ...string) string {
 	randLen := 12
 	b := make([]byte, randLen)
 	for i := range b {
-		b[i] = charset[rand.Intn(randLen)]
+		b[i] = fullCharset[rand.Intn(randLen)]
 	}
 	if len(prefix) > 0 {
 		return fmt.Sprintf("%s%s", strings.Join(prefix, ""), b)
+	}
+	return string(b)
+}
+
+func RandomHex(prefix string, randLen int) string {
+	rand.Seed(time.Now().UnixNano())
+
+	b := make([]byte, randLen)
+	for i := range b {
+		b[i] = hexCharset[rand.Intn(randLen)%len(hexCharset)]
+	}
+	if len(prefix) > 0 {
+		return fmt.Sprintf("%s%s", prefix, b)
 	}
 	return string(b)
 }

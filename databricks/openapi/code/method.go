@@ -68,8 +68,9 @@ type NamedIdMap struct {
 
 // PathPart represents required field, that is always part of the path
 type PathPart struct {
-	Prefix string
-	Field  *Field
+	Prefix      string
+	Field       *Field
+	IsAccountId bool
 }
 
 var pathPairRE = regexp.MustCompile(`(?m)([^\{]+)(\{(\w+)\})?`)

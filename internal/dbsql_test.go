@@ -14,15 +14,18 @@ func TestAccQueries(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	wsc := workspaces.New()
+	w := workspaces.New()
+	if w.Config.IsAccountsClient() {
+		t.SkipNow()
+	}
 
-	srcs, err := wsc.DataSources.ListDataSources(ctx)
+	srcs, err := w.DataSources.ListDataSources(ctx)
 	require.NoError(t, err)
 	if len(srcs) == 0 {
 		t.Skipf("no sql warehouses found")
 	}
 
-	query, err := wsc.Queries.CreateQuery(ctx, dbsql.QueryPostContent{
+	query, err := w.Queries.CreateQuery(ctx, dbsql.QueryPostContent{
 		Name:         RandomName("go-sdk/test/"),
 		DataSourceId: srcs[0].Id,
 		Description:  "test query from Go SDK",
@@ -30,11 +33,11 @@ func TestAccQueries(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := wsc.Queries.DeleteQueryByQueryId(ctx, query.Id)
+		err := w.Queries.DeleteQueryByQueryId(ctx, query.Id)
 		require.NoError(t, err)
 	})
 
-	loaded, err := wsc.Queries.GetQueryByQueryId(ctx, query.Id)
+	loaded, err := w.Queries.GetQueryByQueryId(ctx, query.Id)
 	require.NoError(t, err)
 	assert.Equal(t, query.Query, loaded.Query)
 }
@@ -43,9 +46,12 @@ func TestAccDashboards(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	wsc := workspaces.New()
+	w := workspaces.New()
+	if w.Config.IsAccountsClient() {
+		t.SkipNow()
+	}
 
-	all, err := wsc.Dashboards.ListDashboardsAll(ctx, dbsql.ListDashboardsRequest{})
+	all, err := w.Dashboards.ListDashboardsAll(ctx, dbsql.ListDashboardsRequest{})
 	require.NoError(t, err)
 	t.Log(len(all))
 }
@@ -54,15 +60,18 @@ func TestAccQueriesList(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	wsc := workspaces.New()
+	w := workspaces.New()
+	if w.Config.IsAccountsClient() {
+		t.SkipNow()
+	}
 
-	srcs, err := wsc.DataSources.ListDataSources(ctx)
+	srcs, err := w.DataSources.ListDataSources(ctx)
 	require.NoError(t, err)
 	if len(srcs) == 0 {
 		t.Skipf("no sql warehouses found")
 	}
 	for i := 0; i < 34; i++ {
-		query, err := wsc.Queries.CreateQuery(ctx, dbsql.QueryPostContent{
+		query, err := w.Queries.CreateQuery(ctx, dbsql.QueryPostContent{
 			Name:         RandomName("go-sdk/test/"),
 			DataSourceId: srcs[0].Id,
 			Description:  "test query from Go SDK",
@@ -70,23 +79,23 @@ func TestAccQueriesList(t *testing.T) {
 		})
 		require.NoError(t, err)
 		t.Cleanup(func() {
-			err := wsc.Queries.DeleteQueryByQueryId(ctx, query.Id)
+			err := w.Queries.DeleteQueryByQueryId(ctx, query.Id)
 			require.NoError(t, err)
 		})
 	}
 	var qs1, qs2, qs3 []dbsql.Query
 	{
-		result, err := wsc.Queries.ListQueries(ctx, dbsql.ListQueriesRequest{PageSize: 10})
+		result, err := w.Queries.ListQueries(ctx, dbsql.ListQueriesRequest{PageSize: 10})
 		require.NoError(t, err)
 		qs1 = result.Results
 	}
 	{
-		result, err := wsc.Queries.ListQueriesAll(ctx, dbsql.ListQueriesRequest{})
+		result, err := w.Queries.ListQueriesAll(ctx, dbsql.ListQueriesRequest{})
 		require.NoError(t, err)
 		qs2 = result
 	}
 	{
-		result, err := wsc.Queries.ListQueriesAll(ctx, dbsql.ListQueriesRequest{PageSize: 10})
+		result, err := w.Queries.ListQueriesAll(ctx, dbsql.ListQueriesRequest{PageSize: 10})
 		require.NoError(t, err)
 		qs3 = result
 	}

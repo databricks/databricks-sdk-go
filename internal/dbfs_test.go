@@ -29,6 +29,9 @@ func TestAccDbfsUtilities(t *testing.T) {
 	assertAcceptance(t)
 	ctx := context.Background()
 	w := workspaces.New()
+	if w.Config.IsAccountsClient() {
+		t.SkipNow()
+	}
 
 	path := RandomName("/tmp/databricks-go-sdk/fake")
 	rand.Seed(time.Now().UnixNano())
@@ -65,6 +68,9 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	assertAcceptance(t)
 	ctx := context.Background()
 	w := workspaces.New()
+	if w.Config.IsAccountsClient() {
+		t.SkipNow()
+	}
 	testFile1 := RandomName("test-file-1-")
 	testFile2 := RandomName("test-file-2-")
 	dbfsTestDirPath1 := RandomName("/tmp/databricks-go-sdk/integration/dbfs/TestDir1-")
