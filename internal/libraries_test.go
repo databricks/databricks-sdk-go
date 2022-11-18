@@ -13,6 +13,9 @@ func TestAccLibraries(t *testing.T) {
 	GetEnvOrSkipTest(t, "CLOUD_ENV")
 	ctx := context.Background()
 	w := workspaces.New()
+	if w.Config.IsAccountsClient() {
+		t.SkipNow()
+	}
 
 	clusterId := createTestCluster(ctx, w, t)
 	defer w.Clusters.PermanentDeleteByClusterId(ctx, clusterId)

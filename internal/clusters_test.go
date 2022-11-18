@@ -19,6 +19,9 @@ func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
 
 	ctx := context.Background()
 	w := workspaces.New()
+	if w.Config.IsAccountsClient() {
+		t.SkipNow()
+	}
 
 	// Fetch list of spark runtime versions
 	sparkVersions, err := w.Clusters.SparkVersions(ctx)
@@ -54,6 +57,9 @@ func TestAccClustersApiIntegration(t *testing.T) {
 
 	ctx := context.Background()
 	w := workspaces.New()
+	if w.Config.IsAccountsClient() {
+		t.SkipNow()
+	}
 
 	clusterName := RandomName("sdk-go-cluster-")
 

@@ -17,6 +17,9 @@ func TestAccRepos(t *testing.T) {
 	t.Log(env)
 	ctx := context.Background()
 	w := workspaces.New()
+	if w.Config.IsAccountsClient() {
+		t.SkipNow()
+	}
 
 	// Skip this test if "Files in Repos" is not enabled.
 	conf, err := w.WorkspaceConf.GetStatus(ctx, workspaceconf.GetStatusRequest{
