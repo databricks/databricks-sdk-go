@@ -69,6 +69,10 @@ During the Beta period, you must clone and then reference this repository locall
      
      "github.com/databricks/databricks-sdk-go/workspaces"
    )
+   
+   func init() {
+     databricks.WithProduct("your-product", "0.0.1")
+   }
 
    func main() {
      const path = "/"
@@ -138,30 +142,32 @@ The conventional name for the variable that holds the workspace-level client of 
 
 ### Default authentication flow
 
-If you run the [Databricks Terraform Provider](https://registry.terraform.io/providers/databrickslabs/databricks/latest), the [Databricks CLI](https://docs.databricks.com/dev-tools/cli/index.html), or applications that target the Databricks SDKs for other langauges, most likely they will all interoperate nicely together. By default, the Databricks SDK for Go checks the following to perform [Databricks authentication](https://docs.databricks.com/dev-tools/auth.html), in the following order for each of its supported Databricks authentication methods:
+If you run the [Databricks Terraform Provider](https://registry.terraform.io/providers/databrickslabs/databricks/latest), the [Databricks CLI](https://docs.databricks.com/dev-tools/cli/index.html), or applications that target the Databricks SDKs for other langauges, most likely they will all interoperate nicely together. By default, the Databricks SDK for Go tries the following [authentication](https://docs.databricks.com/dev-tools/auth.html) methods, in the following order, until it succeeds:
 
-1. Read any direct fields that are hard-coded into `*databricks.Config`.
-2. Read locally-set Databricks-specific [environment variables](https://docs.databricks.com/dev-tools/auth.html#environment-variables) for authentication into `*databricks.Config`, as applicable for the current Databricks authentication method.
-3. As applicable for the current Databricks authentication method, reads the contents of the local `.databrickscfg` file's `DEFAULT` [configuration profile](https://docs.databricks.com/dev-tools/auth.html#configuration-profiles) from its default location (`~` for Linux or macOS, and `%USERPROFILE%` for Windows) into `*databricks.Config`.
-4. If any direct fields are NOT hard-coded in `databricks.Config`, AND Databricks-specific environment variables exist AND a `.databrickscfg` file exists in the default location with a `DEFAULT` profile, then the Databricks SDK for Go stops running and returns the error `panic: validate: more than one authorization method configured`. To fix this error, either remove the duplicated Databricks-specific environment variables or remove the `DEFAULT` profile from the `.databrickscfg` file.
-5. Otherwise, the Databricks SDK for Go performs Databricks authentication by using the information in `*databricks.Config`. As applicable for the current Databricks authentication method, the SDK attempts to get related authentication information from the Azure CLI or Google Cloud CLI.
+1. [Databricks native authentication](#databricks-native-authentication)
+2. [Azure native authentication](#azure-native-authentication)
+3. [Google Cloud Platform native authentication](#google-cloud-platform-native-authentication)
+4. If the SDK is unsuccessful at this point, it returns an authentication error and stops running.
 
-The Databricks SDK for Go uses the following Databricks authentication methods in the following order to attempt to authenticate with your Databricks account, workspace, or both. Once the SDK successfully authenticates, it skips the remaining methods:
+You can instruct the Databricks SDK for Go to use a specific authentication method by setting the `AuthType` field in `*databricks.Config` as described in the following sections.
 
-1. [Databricks native authentication](#databricks-native-authentication), regardless of cloud provider. If this fails, the SDK will move on to attempt Azure native authentication.
-2. [Azure native authentication](#azure-native-authentication). For Google Cloud Platform accounts and workspaces, the SDK will still attempt Azure native authentication; however, these attempts will of course fail, and the SDK will then move on to attempt Google Cloud Platform native authentication.
-3. [Google Cloud Platform native authentication](#google-cloud-platform-native-authentication). For Azure accounts and workspaces, if step 2 fails, the SDK will still attempt Google Cloud Platform native authentication, but these attempts will of course fail as well.
-4. If the SDK is still unsuccessful, it will return an error and the code stops running.
+For each authentication method, the SDK searches for compatible authentication credentials in the following locations, in the following order. Once the SDK finds a compatible set of credentials that it can use, it stops searching:
 
-You can instruct the Databricks SDK for Go to move directly to a specific Databricks authentication method by setting the `AuthType` field in `*databricks.Config` as described in the following sections.
+1. Credentials that hard-coded into `*databricks.Config`.
 
-Depending on the Databricks authentication method, the Databricks SDK for Go uses the following information. Presented are the `*databricks.Config` fields, their descriptions, any corresponding environment variables, and any corresponding `.databrickscfg` file fields, respectively.
+   **Caution**: Databricks does not recommend hard-coding credentials into `*databricks.Config`, as they can be exposed in plain text in version control systems. Use environment variables or configuration profiles instead.
+
+2. Credentials in Databricks-specific [environment variables](https://docs.databricks.com/dev-tools/auth.html#environment-variables).
+3. For Databricks native authentication, credentials in the `.databrickscfg` file's `DEFAULT` [configuration profile](https://docs.databricks.com/dev-tools/auth.html#configuration-profiles) from its default location (`~` for Linux or macOS, and `%USERPROFILE%` for Windows).
+4. For Azure or Google Cloud Platform native authentication, the SDK searches for credentials through the Azure CLI or Google Cloud CLI as needed.
+
+Depending on the Databricks authentication method, the SDK uses the following information. Presented are the `*databricks.Config` fields, their descriptions, any corresponding environment variables, and any corresponding `.databrickscfg` file fields, respectively.
 
 <a id="databricks-native-authentication"/>
 
 ### Databricks native authentication
 
-By default, the Databricks SDK for Go initially tries Databricks personal access token (PAT) authentication (`AuthType: "pat"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries Databricks basic (username/password) authentication (`AuthType: "basic"` in `*databricks.Config`).
+By default, the Databricks SDK for Go initially tries Databricks token authentication (`AuthType: "pat"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries Databricks basic (username/password) authentication (`AuthType: "basic"` in `*databricks.Config`).
 
  * `host` _(string)_: The Databricks host URL for either the Databricks workspace endpoint or the Databricks accounts endpoint. Environment: `DATABRICKS_HOST`. `.databrickscfg` file: `host`.
  * `account_id` _(string)_: The Databricks account ID for the Databricks accounts endpoint. Only has effect when `host` is either `https://accounts.cloud.databricks.com/` _(AWS)_, `https://accounts.azuredatabricks.net/` _(Azure)_, or `https://accounts.gcp.databricks.com/` _(GCP)_.  Environment: `DATABRICKS_ACCOUNT_ID`. `.databrickscfg` file: `host`.
@@ -169,7 +175,7 @@ By default, the Databricks SDK for Go initially tries Databricks personal access
  * `username` _(string)_: The Databricks username part of basic authentication. Only possible when `host` is `*.cloud.databricks.com` _(AWS)_. Environment: `DATABRICKS_USERNAME`. `.databrickscfg` file: `username`.
  * `password` _(string)_: The Databricks password part of basic authentication. Only possible when `host` is `*.cloud.databricks.com` _(AWS)_. Environment: `DATABRICKS_PASSWORD`. `.databrickscfg` file: `password`.
 
-For example, to print Databricks PAT authentication settings:
+For example, to use Databricks token authentication:
 
 ```go
 package main
@@ -184,30 +190,28 @@ import (
   // "github.com/databricks/databricks-sdk-go/databricks"
 )
 
-func main() {
-  /*
-   * Perform Databricks token authentication for a Databricks workspace.
-   *
-   * Choose from one of the following authentication options:
-   */
+func init() {
+  databricks.WithProduct("your-product", "0.0.1")
+}
 
-  /*
-   * Option 1: To use Databricks token authentication by default, uncomment
-   * the following line of code and then run. This assumes you have already set
-   * your Databricks workspace URL and token through one of:
-   *
-   * - A Databricks configuration profile named DEFAULT.
-   * - The environment variables DATABRICKS_HOST and DATABRICKS_TOKEN.
-   */
+func main() {
+  // Perform Databricks token authentication for a Databricks workspace.
+  // 
+  // Choose from one of the following authentication options:
+  //
+  // Option 1: To use Databricks token authentication by default, uncomment
+  // the following code and then run. This assumes you have already set
+  // your Databricks workspace URL and token through one of:
+  //
+  // - A Databricks configuration profile named DEFAULT.
+  // - The environment variables DATABRICKS_HOST and DATABRICKS_TOKEN.
 
   // w := workspaces.New()
 
-  /* 
-   * Option 2: To ask the user at run time for the needed information,
-   * uncomment the following code, uncomment the import
-   * "github.com/databricks/databricks-sdk-go/databricks"
-   * and then run.
-   */
+  // Option 2: To ask the user at run time for the needed information,
+  // uncomment the following code, uncomment the import
+  // "github.com/databricks/databricks-sdk-go/databricks"
+  // and then run.
 
   // w := workspaces.New(&databricks.Config{
   //   AuthType: "pat",
@@ -223,7 +227,8 @@ func main() {
   // Now call the Databricks workspace APIs as desired...
 }
 
-// For Option 2, ask the user for the missing information.
+// For Option 2, use this helper function to ask the user for
+// the missing information.
 func askFor(prompt string) string {
   var s string
   r := bufio.NewReader(os.Stdin)
@@ -253,7 +258,7 @@ The Databricks SDK for Go picks up an Azure CLI token, if you've previously auth
  * `azure_tenant_id` _(string)_: The Azure Active Directory service principal's tenant ID. Environment: `ARM_TENANT_ID`.
  * `azure_environment` _(string)_: the Azure environment type (such as Public, UsGov, China, and Germany) for a specific set of API endpoints. Defaults to `PUBLIC`. Environment: `ARM_ENVIRONMENT`.
 
-For example, to print Azure client secret authentication settings:
+For example, to use Azure client secret authentication:
 
 ```go
 package main
@@ -268,29 +273,27 @@ import (
   "github.com/databricks/databricks-sdk-go/workspaces"
 )
 
-func main() {
-  /*
-   * Perform Azure client secret authentication for a Databricks workspace.
-   * 
-   * Choose from one of the following authentication options:
-   */
+func init() {
+  databricks.WithProduct("your-product", "0.0.1")
+}
 
-  /*
-   * Option 1: Uncomment the following line of code and then run. This
-   * assumes you have already set the following environment variables:
-   *
-   * - DATABRICKS_AZURE_RESOURCE_ID
-   * - ARM_TENANT_ID
-   * - ARM_CLIENT_ID
-   * - ARM_CLIENT_SECRET
-   */
+func main() {
+  // Perform Azure client secret authentication for a Databricks workspace.
+  //  
+  // Choose from one of the following authentication options:
+  //
+  // Option 1: Uncomment the following code and then run. This
+  // assumes you have already set the following environment variables:
+  //
+  // - DATABRICKS_AZURE_RESOURCE_ID
+  // - ARM_TENANT_ID
+  // - ARM_CLIENT_ID
+  // - ARM_CLIENT_SECRET
 
   // w := workspaces.New(&databricks.Config{AuthType: "azure-client-secret"})
 
-  /* 
-   * Option 2: To ask the user at run time for the needed information,
-   * uncomment the following code and then run.
-   */
+  // Option 2: To ask the user at run time for the needed information,
+  // uncomment the following code and then run.
 
   // w := workspaces.New(&databricks.Config{
   //   AuthType:          "azure-client-secret",
@@ -311,7 +314,8 @@ func main() {
   // Now call the Databricks workspace APIs as desired...
 }
 
-// For Option 2, ask the user for the missing information.
+// For Option 2, use this helper function to ask the user for
+// the missing information.
 func askFor(prompt string) string {
   var s string
   r := bufio.NewReader(os.Stdin)
@@ -337,7 +341,7 @@ The Databricks SDK for Go picks up an OAuth token in the scope of the Google Def
  * `google_service_account` _(string)_: The Google Cloud Platform (GCP) service account e-mail used for impersonation in the Default Application Credentials Flow that does not require a password. Environment: `DATABRICKS_GOOGLE_SERVICE_ACCOUNT`.
  * `google_credentials` _(string)_: GCP Service Account Credentials JSON or the location of these credentials on the local filesustem. Environment: `GOOGLE_CREDENTIALS`.
 
-For example, to print GCP ID authentication settings:
+For example, to use GCP ID authentication:
 
 ```go
 package main
@@ -352,25 +356,23 @@ import (
   "github.com/databricks/databricks-sdk-go/workspaces"
 )
 
-func main() {
-  /*
-   * Perform Google Cloud Platform ID authentication for a Databricks workspace.
-   *
-   * Choose from one of the following authentication options:
-   */
+func init() {
+  databricks.WithProduct("your-product", "0.0.1")
+}
 
-  /*
-   * Option 1: Uncomment the following line of code and then run. This
-   * assumes you have already set the environment variables
-   * DATABRICKS_HOST and GOOGLE_SERVICE_ACCOUNT.
-   */
+func main() {
+  // Perform Google Cloud Platform ID authentication for a Databricks workspace.
+  // 
+  // Choose from one of the following authentication options:
+  //
+  // Option 1: Uncomment the following code and then run. This
+  // assumes you have already set the environment variables
+  // DATABRICKS_HOST and GOOGLE_SERVICE_ACCOUNT.
 
   // w := workspaces.New(&databricks.Config{AuthType: "google-id"})
 
-  /*
-   * Option 2: To ask the user at run time for the needed information,
-   * uncomment the following code and then run.
-   */
+  // Option 2: To ask the user at run time for the needed information,
+  // uncomment the following code and then run.
 
   // w := workspaces.New(&databricks.Config{
   //   AuthType:             "google-id",
@@ -386,7 +388,8 @@ func main() {
   // Now call the Databricks workspace APIs as desired...
 }
 
-// For Option 2, ask the user for the missing information.
+// For Option 2, use this helper function ask the user for 
+// the missing information.
 func askFor(prompt string) string {
   var s string
   r := bufio.NewReader(os.Stdin)
@@ -421,6 +424,10 @@ import (
   "github.com/databricks/databricks-sdk-go/databricks"
   "github.com/databricks/databricks-sdk-go/workspaces"
 )
+
+func init() {
+  databricks.WithProduct("your-product", "0.0.1")
+}
 
 func main() {
   w := workspaces.New(&databricks.Config{
@@ -461,6 +468,10 @@ import (
   "github.com/databricks/databricks-sdk-go/databricks"
   "github.com/databricks/databricks-sdk-go/workspaces"
 )
+
+func init() {
+  databricks.WithProduct("your-product", "0.0.1")
+}
 
 func main() {
   w := workspaces.New(&databricks.Config{
