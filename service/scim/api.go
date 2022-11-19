@@ -42,7 +42,7 @@ func (a *AccountGroupsAPI) DeleteGroup(ctx context.Context, request DeleteGroupR
 // Delete a group
 //
 // Deletes a group from the Databricks Account.
-func (a *AccountGroupsAPI) DeleteGroupById(ctx context.Context, id int64) error {
+func (a *AccountGroupsAPI) DeleteGroupById(ctx context.Context, id string) error {
 	return a.DeleteGroup(ctx, DeleteGroupRequest{
 		Id: id,
 	})
@@ -61,7 +61,7 @@ func (a *AccountGroupsAPI) GetGroup(ctx context.Context, request GetGroupRequest
 // Get group details
 //
 // Gets the information for a specific group in the Databricks Account.
-func (a *AccountGroupsAPI) GetGroupById(ctx context.Context, id int64) (*Group, error) {
+func (a *AccountGroupsAPI) GetGroupById(ctx context.Context, id string) (*Group, error) {
 	return a.GetGroup(ctx, GetGroupRequest{
 		Id: id,
 	})
@@ -140,7 +140,7 @@ func (a *AccountServicePrincipalsAPI) DeleteServicePrincipal(ctx context.Context
 // Delete a service principal
 //
 // Delete a single service principal in the Databricks Account.
-func (a *AccountServicePrincipalsAPI) DeleteServicePrincipalById(ctx context.Context, id int64) error {
+func (a *AccountServicePrincipalsAPI) DeleteServicePrincipalById(ctx context.Context, id string) error {
 	return a.DeleteServicePrincipal(ctx, DeleteServicePrincipalRequest{
 		Id: id,
 	})
@@ -161,7 +161,7 @@ func (a *AccountServicePrincipalsAPI) GetServicePrincipal(ctx context.Context, r
 //
 // Gets the details for a single service principal define in the Databricks
 // Account.
-func (a *AccountServicePrincipalsAPI) GetServicePrincipalById(ctx context.Context, id int64) (*ServicePrincipal, error) {
+func (a *AccountServicePrincipalsAPI) GetServicePrincipalById(ctx context.Context, id string) (*ServicePrincipal, error) {
 	return a.GetServicePrincipal(ctx, GetServicePrincipalRequest{
 		Id: id,
 	})
@@ -246,7 +246,7 @@ func (a *AccountUsersAPI) DeleteUser(ctx context.Context, request DeleteUserRequ
 //
 // Deletes a user. Deleting a user from a Databricks Account also removes
 // objects associated with the user.
-func (a *AccountUsersAPI) DeleteUserById(ctx context.Context, id int64) error {
+func (a *AccountUsersAPI) DeleteUserById(ctx context.Context, id string) error {
 	return a.DeleteUser(ctx, DeleteUserRequest{
 		Id: id,
 	})
@@ -265,7 +265,7 @@ func (a *AccountUsersAPI) GetUser(ctx context.Context, request GetUserRequest) (
 // Get user details
 //
 // Gets information for a specific user in Databricks Account.
-func (a *AccountUsersAPI) GetUserById(ctx context.Context, id int64) (*User, error) {
+func (a *AccountUsersAPI) GetUserById(ctx context.Context, id string) (*User, error) {
 	return a.GetUser(ctx, GetUserRequest{
 		Id: id,
 	})
@@ -366,7 +366,7 @@ func (a *GroupsAPI) DeleteGroup(ctx context.Context, request DeleteGroupRequest)
 // Delete a group
 //
 // Deletes a group from the Databricks Workspace.
-func (a *GroupsAPI) DeleteGroupById(ctx context.Context, id int64) error {
+func (a *GroupsAPI) DeleteGroupById(ctx context.Context, id string) error {
 	return a.DeleteGroup(ctx, DeleteGroupRequest{
 		Id: id,
 	})
@@ -385,7 +385,7 @@ func (a *GroupsAPI) GetGroup(ctx context.Context, request GetGroupRequest) (*Gro
 // Get group details
 //
 // Gets the information for a specific group in the Databricks Workspace.
-func (a *GroupsAPI) GetGroupById(ctx context.Context, id int64) (*Group, error) {
+func (a *GroupsAPI) GetGroupById(ctx context.Context, id string) (*Group, error) {
 	return a.GetGroup(ctx, GetGroupRequest{
 		Id: id,
 	})
@@ -464,7 +464,7 @@ func (a *ServicePrincipalsAPI) DeleteServicePrincipal(ctx context.Context, reque
 // Delete a service principal
 //
 // Delete a single service principal in the Databricks Workspace.
-func (a *ServicePrincipalsAPI) DeleteServicePrincipalById(ctx context.Context, id int64) error {
+func (a *ServicePrincipalsAPI) DeleteServicePrincipalById(ctx context.Context, id string) error {
 	return a.DeleteServicePrincipal(ctx, DeleteServicePrincipalRequest{
 		Id: id,
 	})
@@ -485,7 +485,7 @@ func (a *ServicePrincipalsAPI) GetServicePrincipal(ctx context.Context, request 
 //
 // Gets the details for a single service principal define in the Databricks
 // Workspace.
-func (a *ServicePrincipalsAPI) GetServicePrincipalById(ctx context.Context, id int64) (*ServicePrincipal, error) {
+func (a *ServicePrincipalsAPI) GetServicePrincipalById(ctx context.Context, id string) (*ServicePrincipal, error) {
 	return a.GetServicePrincipal(ctx, GetServicePrincipalRequest{
 		Id: id,
 	})
@@ -570,7 +570,7 @@ func (a *UsersAPI) DeleteUser(ctx context.Context, request DeleteUserRequest) er
 //
 // Deletes a user. Deleting a user from a Databricks Workspace also removes
 // objects associated with the user.
-func (a *UsersAPI) DeleteUserById(ctx context.Context, id int64) error {
+func (a *UsersAPI) DeleteUserById(ctx context.Context, id string) error {
 	return a.DeleteUser(ctx, DeleteUserRequest{
 		Id: id,
 	})
@@ -589,7 +589,7 @@ func (a *UsersAPI) GetUser(ctx context.Context, request GetUserRequest) (*User, 
 // Get user details
 //
 // Gets information for a specific user in Databricks Workspace.
-func (a *UsersAPI) GetUserById(ctx context.Context, id int64) (*User, error) {
+func (a *UsersAPI) GetUserById(ctx context.Context, id string) (*User, error) {
 	return a.GetUser(ctx, GetUserRequest{
 		Id: id,
 	})

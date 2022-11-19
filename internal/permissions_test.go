@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"strconv"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/accounts"
@@ -30,6 +31,9 @@ func TestMwsAccWorkspaceAssignment(t *testing.T) {
 		require.NoError(t, err)
 	}()
 
+	spnId, err := strconv.ParseInt(spn.Id, 10, 64)
+	require.NoError(t, err)
+
 	workspaceId := GetEnvInt64OrSkipTest(t, "TEST_WORKSPACE_ID")
 	_, err = a.WorkspaceAssignment.Create(ctx, permissions.CreateWorkspaceAssignments{
 		WorkspaceId: workspaceId,
@@ -44,7 +48,7 @@ func TestMwsAccWorkspaceAssignment(t *testing.T) {
 	})
 	require.NoError(t, err)
 	defer func() {
-		err = a.WorkspaceAssignment.DeleteByWorkspaceIdAndPrincipalId(ctx, workspaceId, spn.Id)
+		err = a.WorkspaceAssignment.DeleteByWorkspaceIdAndPrincipalId(ctx, workspaceId, spnId)
 	}()
 
 	all, err := a.WorkspaceAssignment.ListByWorkspaceId(ctx, workspaceId)
@@ -52,7 +56,7 @@ func TestMwsAccWorkspaceAssignment(t *testing.T) {
 
 	var found bool
 	for _, v := range all.PermissionAssignments {
-		if v.Principal.PrincipalId == spn.Id {
+		if v.Principal.PrincipalId == spnId {
 			found = true
 		}
 	}

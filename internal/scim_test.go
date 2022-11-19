@@ -58,7 +58,7 @@ func TestAccUsers(t *testing.T) {
 	require.NoError(t, err)
 
 	// verify that the user we've creates is in the list
-	namesToIds := map[string]int64{}
+	namesToIds := map[string]string{}
 	for _, u := range allUsers.Resources {
 		namesToIds[u.UserName] = u.Id
 	}
@@ -102,7 +102,7 @@ func TestAccGroups(t *testing.T) {
 	require.NoError(t, err)
 
 	// verify that the group we've creates is in the list
-	namesToIds := map[string]int64{}
+	namesToIds := map[string]string{}
 	for _, u := range allGroups.Resources {
 		namesToIds[u.DisplayName] = u.Id
 	}
