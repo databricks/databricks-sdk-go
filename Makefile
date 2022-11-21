@@ -6,17 +6,17 @@ build: vendor
 
 fmt:
 	@echo "✓ Formatting source code with goimports ..."
-	@goimports -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
+	@go run golang.org/x/tools/cmd/goimports@latest -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 	@echo "✓ Formatting source code with gofmt ..."
 	@gofmt -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 
 lint: vendor
 	@echo "✓ Linting source code with https://staticcheck.io/ ..."
-	@staticcheck ./...
+	@go run honnef.co/go/tools/cmd/staticcheck@latest ./...
 
 test: lint
 	@echo "✓ Running tests ..."
-	@gotestsum --format pkgname-and-test-fails \
+	@go run gotest.tools/gotestsum@latest --format pkgname-and-test-fails \
 		--no-summary=skipped --raw-command go test -v \
 		-json -short -coverprofile=coverage.txt ./...
 
@@ -30,6 +30,6 @@ vendor:
 
 doc:
 	@echo "Open http://localhost:6060"
-	@godoc -http=localhost:6060
+	@go run golang.org/x/tools/cmd/godoc@latest -http=localhost:6060
 
 .PHONY: fmt vendor fmt coverage test lint doc
