@@ -12,14 +12,31 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-func NewPipelines(client *client.DatabricksClient) PipelinesService {
+func NewPipelines(client *client.DatabricksClient) *PipelinesAPI {
 	return &PipelinesAPI{
-		client: client,
+		PipelinesService: &pipelinesAPI{
+			client: client,
+		},
 	}
 }
 
+// The Delta Live Tables API allows you to create, edit, delete, start, and view
+// details about pipelines.
+//
+// Delta Live Tables is a framework for building reliable, maintainable, and
+// testable data processing pipelines. You define the transformations to perform
+// on your data, and Delta Live Tables manages task orchestration, cluster
+// management, monitoring, data quality, and error handling.
+//
+// Instead of defining your data pipelines using a series of separate Apache
+// Spark tasks, Delta Live Tables manages how your data is transformed based on
+// a target schema you define for each processing step. You can also enforce
+// data quality with Delta Live Tables expectations. Expectations allow you to
+// define expected data quality and specify how to handle records that fail
+// those expectations.
 type PipelinesAPI struct {
-	client *client.DatabricksClient
+	// PipelinesService contains low-level REST API interface.
+	PipelinesService
 }
 
 // Create a pipeline
@@ -27,13 +44,10 @@ type PipelinesAPI struct {
 // Creates a new data processing pipeline based on the requested configuration.
 // If successful, this method returns the ID of the new pipeline.
 func (a *PipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error) {
-	var createPipelineResponse CreatePipelineResponse
-	path := "/api/2.0/pipelines"
-	err := a.client.Post(ctx, path, request, &createPipelineResponse)
-	return &createPipelineResponse, err
+	return a.PipelinesService.CreatePipeline(ctx, request)
 }
 
-// CreatePipeline and wait to reach RUNNING state
+// Calls [PipelinesAPI.CreatePipeline] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
@@ -79,9 +93,7 @@ func (a *PipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPipeline
 //
 // Deletes a pipeline.
 func (a *PipelinesAPI) DeletePipeline(ctx context.Context, request DeletePipelineRequest) error {
-	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.PipelinesService.DeletePipeline(ctx, request)
 }
 
 // Delete a pipeline
@@ -95,13 +107,10 @@ func (a *PipelinesAPI) DeletePipelineByPipelineId(ctx context.Context, pipelineI
 
 // Get a pipeline
 func (a *PipelinesAPI) GetPipeline(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error) {
-	var getPipelineResponse GetPipelineResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
-	err := a.client.Get(ctx, path, request, &getPipelineResponse)
-	return &getPipelineResponse, err
+	return a.PipelinesService.GetPipeline(ctx, request)
 }
 
-// GetPipeline and wait to reach RUNNING state
+// Calls [PipelinesAPI.GetPipeline] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
@@ -160,10 +169,7 @@ func (a *PipelinesAPI) GetPipelineByPipelineIdAndWait(ctx context.Context, pipel
 //
 // Gets an update from an active pipeline.
 func (a *PipelinesAPI) GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error) {
-	var getUpdateResponse GetUpdateResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates/%v", request.PipelineId, request.UpdateId)
-	err := a.client.Get(ctx, path, request, &getUpdateResponse)
-	return &getUpdateResponse, err
+	return a.PipelinesService.GetUpdate(ctx, request)
 }
 
 // Get a pipeline update
@@ -180,10 +186,7 @@ func (a *PipelinesAPI) GetUpdateByPipelineIdAndUpdateId(ctx context.Context, pip
 //
 // List updates for an active pipeline.
 func (a *PipelinesAPI) ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error) {
-	var listUpdatesResponse ListUpdatesResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
-	err := a.client.Get(ctx, path, request, &listUpdatesResponse)
-	return &listUpdatesResponse, err
+	return a.PipelinesService.ListUpdates(ctx, request)
 }
 
 // List pipeline updates
@@ -199,12 +202,10 @@ func (a *PipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId s
 //
 // Resets a pipeline.
 func (a *PipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipelineRequest) error {
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/reset", request.PipelineId)
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.PipelinesService.ResetPipeline(ctx, request)
 }
 
-// ResetPipeline and wait to reach RUNNING state
+// Calls [PipelinesAPI.ResetPipeline] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
@@ -250,22 +251,17 @@ func (a *PipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipelineRe
 //
 // Starts or queues a pipeline update.
 func (a *PipelinesAPI) StartUpdate(ctx context.Context, request StartUpdate) (*StartUpdateResponse, error) {
-	var startUpdateResponse StartUpdateResponse
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
-	err := a.client.Post(ctx, path, request, &startUpdateResponse)
-	return &startUpdateResponse, err
+	return a.PipelinesService.StartUpdate(ctx, request)
 }
 
 // Stop a pipeline
 //
 // Stops a pipeline.
 func (a *PipelinesAPI) StopPipeline(ctx context.Context, request StopPipelineRequest) error {
-	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", request.PipelineId)
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.PipelinesService.StopPipeline(ctx, request)
 }
 
-// StopPipeline and wait to reach IDLE state
+// Calls [PipelinesAPI.StopPipeline] and waits to reach IDLE state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
@@ -311,6 +307,68 @@ func (a *PipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipelineRequ
 //
 // Updates a pipeline with the supplied configuration.
 func (a *PipelinesAPI) UpdatePipeline(ctx context.Context, request EditPipeline) error {
+	return a.PipelinesService.UpdatePipeline(ctx, request)
+}
+
+// unexported type that holds implementations of just Pipelines API methods
+type pipelinesAPI struct {
+	client *client.DatabricksClient
+}
+
+func (a *pipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error) {
+	var createPipelineResponse CreatePipelineResponse
+	path := "/api/2.0/pipelines"
+	err := a.client.Post(ctx, path, request, &createPipelineResponse)
+	return &createPipelineResponse, err
+}
+
+func (a *pipelinesAPI) DeletePipeline(ctx context.Context, request DeletePipelineRequest) error {
+	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
+	err := a.client.Delete(ctx, path, request)
+	return err
+}
+
+func (a *pipelinesAPI) GetPipeline(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error) {
+	var getPipelineResponse GetPipelineResponse
+	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
+	err := a.client.Get(ctx, path, request, &getPipelineResponse)
+	return &getPipelineResponse, err
+}
+
+func (a *pipelinesAPI) GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error) {
+	var getUpdateResponse GetUpdateResponse
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates/%v", request.PipelineId, request.UpdateId)
+	err := a.client.Get(ctx, path, request, &getUpdateResponse)
+	return &getUpdateResponse, err
+}
+
+func (a *pipelinesAPI) ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error) {
+	var listUpdatesResponse ListUpdatesResponse
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
+	err := a.client.Get(ctx, path, request, &listUpdatesResponse)
+	return &listUpdatesResponse, err
+}
+
+func (a *pipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipelineRequest) error {
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/reset", request.PipelineId)
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
+
+func (a *pipelinesAPI) StartUpdate(ctx context.Context, request StartUpdate) (*StartUpdateResponse, error) {
+	var startUpdateResponse StartUpdateResponse
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
+	err := a.client.Post(ctx, path, request, &startUpdateResponse)
+	return &startUpdateResponse, err
+}
+
+func (a *pipelinesAPI) StopPipeline(ctx context.Context, request StopPipelineRequest) error {
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", request.PipelineId)
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
+
+func (a *pipelinesAPI) UpdatePipeline(ctx context.Context, request EditPipeline) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Put(ctx, path, request)
 	return err

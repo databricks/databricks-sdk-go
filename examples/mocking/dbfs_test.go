@@ -1,42 +1,46 @@
-package sample
+package mocking
 
 import (
 	"context"
-	"sample/mocks"
+	"mocking/mocks"
+	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
 	_ "github.com/golang/mock/mockgen/model"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
 	"github.com/databricks/databricks-sdk-go/workspaces"
 )
 
-//go:generate mockgen -package=mocks -destination=mocks/dbfs.go github.com/databricks/databricks-sdk-go/service/dbfs DbfsService
+//go:generate go run github.com/golang/mock/mockgen@latest -package=mocks -destination=mocks/dbfs.go github.com/databricks/databricks-sdk-go/service/dbfs DbfsService
 
-func TestClusters(t *testing.T) {
+func TestDbfsHighLevelAPI(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m := mocks.New MockDbfsService(ctrl)
+	mockDbfs := mocks.NewMockDbfsService(ctrl)
 
 	ctx := context.Background()
-	m.EXPECT().
-		Create(gomock.Any(), gomock.Any()).
-		DoAndReturn(func(_, _ any) (*dbfs.CreateResponse, error) {
-			return &dbfs.CreateResponse{
-				Handle: 123,
-			}, nil
-		})
+	mockDbfs.EXPECT().Create(gomock.Any(), gomock.Eq(dbfs.Create{
+		Path:      "/a/b/c",
+		Overwrite: true,
+	})).Return(&dbfs.CreateResponse{
+		Handle: 123,
+	}, nil)
+	mockDbfs.EXPECT().AddBlock(gomock.Any(), gomock.Eq(dbfs.AddBlock{
+		Handle: 123,
+		Data:   "YWJj",
+	}))
+	mockDbfs.EXPECT().Close(gomock.Any(), gomock.Eq(dbfs.Close{
+		Handle: 123,
+	}))
 
-	w := workspaces.New()
-	w.Dbfs = m
+	w := workspaces.New(databricks.NewMockConfig(nil))
+	w.Dbfs.DbfsService = mockDbfs
 
-	h, err := w.Dbfs.Create(ctx, dbfs.Create{
-		Path: "/a/b/c",
-	})
+	err := w.Dbfs.Overwrite(ctx, "/a/b/c", strings.NewReader("abc"))
 	assert.NoError(t, err)
-
-	assert.Equal(t, int64(123), h.Handle)
 }

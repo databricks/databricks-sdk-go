@@ -79,13 +79,22 @@ type Render struct {
 	Packages    map[string]string `json:"packages,omitempty"`
 	Types       map[string]string `json:"types,omitempty"`
 	Services    map[string]string `json:"services,omitempty"`
+	Batch       map[string]string `json:"batch,omitempty"`
 	IncludeTags []string          `json:"includeTags,omitempty"`
 }
 
 func (r *Render) Run() error {
 	var filenames []string
+	if r.Batch != nil {
+		pass := newPass([]named{r.batch}, r.Batch)
+		err := pass.Run()
+		if err != nil {
+			return fmt.Errorf("batch: %w", err)
+		}
+		filenames = append(filenames, pass.filenames...)
+	}
 	if r.Packages != nil {
-		pass := newPass(r.batch.Pkgs(), r.Packages)
+		pass := newPass(r.batch.Packages(), r.Packages)
 		err := pass.Run()
 		if err != nil {
 			return fmt.Errorf("packages: %w", err)

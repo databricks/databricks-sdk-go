@@ -15,10 +15,10 @@ func TestBasic(t *testing.T) {
 	batch, err := NewFromFile("../testdata/spec.json", []string{})
 	require.NoError(t, err)
 
-	require.Len(t, batch.Pkgs(), 1)
+	require.Len(t, batch.Packages(), 1)
 	require.Len(t, batch.Services(), 1)
 	require.Len(t, batch.Types(), 14)
-	commands, ok := batch.Packages["commands"]
+	commands, ok := batch.packages["commands"]
 	require.True(t, ok)
 
 	assert.Equal(t, "commands", commands.FullName())
@@ -73,7 +73,7 @@ func TestMethodsReport(t *testing.T) {
 		"universe/bazel-bin/openapi/all-internal.json"), []string{})
 	assert.NoError(t, err)
 
-	for _, pkg := range batch.Pkgs() {
+	for _, pkg := range batch.Packages() {
 		for _, svc := range pkg.Services() {
 			singleService := strings.EqualFold(pkg.PascalName(), svc.PascalName())
 			serviceSingularKebab := svc.Singular().KebabName()
@@ -107,5 +107,5 @@ func TestMethodsReport(t *testing.T) {
 		}
 	}
 
-	assert.Equal(t, len(batch.Packages), 1)
+	assert.Equal(t, len(batch.packages), 1)
 }

@@ -3,13 +3,14 @@ package code
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/openapi"
 	"golang.org/x/exp/slices"
 )
 
 type Batch struct {
-	Packages map[string]*Package
+	packages map[string]*Package
 }
 
 // NewFromFile loads OpenAPI specification from file
@@ -24,13 +25,13 @@ func NewFromFile(name string, includeTags []string) (*Batch, error) {
 		return nil, fmt.Errorf("spec from %s: %w", name, err)
 	}
 	batch := Batch{
-		Packages: map[string]*Package{},
+		packages: map[string]*Package{},
 	}
 	for _, tag := range spec.Tags {
 		if len(includeTags) != 0 && !slices.Contains(includeTags, tag.Name) {
 			continue
 		}
-		pkg, ok := batch.Packages[tag.Package]
+		pkg, ok := batch.packages[tag.Package]
 		if !ok {
 			pkg = &Package{
 				Named:      Named{tag.Package, tag.Description},
@@ -38,7 +39,7 @@ func NewFromFile(name string, includeTags []string) (*Batch, error) {
 				services:   map[string]*Service{},
 				types:      map[string]*Entity{},
 			}
-			batch.Packages[tag.Package] = pkg
+			batch.packages[tag.Package] = pkg
 		}
 		err := pkg.Load(spec, &tag)
 		if err != nil {
@@ -48,9 +49,13 @@ func NewFromFile(name string, includeTags []string) (*Batch, error) {
 	return &batch, nil
 }
 
-// Pkgs returns sorted slice of packages
-func (b *Batch) Pkgs() (pkgs []*Package) {
-	for _, pkg := range b.Packages {
+func (b *Batch) FullName() string {
+	return "all"
+}
+
+// Packages returns sorted slice of packages
+func (b *Batch) Packages() (pkgs []*Package) {
+	for _, pkg := range b.packages {
 		pkgs = append(pkgs, pkg)
 	}
 	// add some determinism into code generation
@@ -62,7 +67,7 @@ func (b *Batch) Pkgs() (pkgs []*Package) {
 
 // Pkgs returns sorted slice of packages
 func (b *Batch) Types() (types []*Entity) {
-	for _, pkg := range b.Packages {
+	for _, pkg := range b.packages {
 		types = append(types, pkg.Types()...)
 	}
 	// add some determinism into code generation
@@ -74,12 +79,25 @@ func (b *Batch) Types() (types []*Entity) {
 
 // Pkgs returns sorted slice of packages
 func (b *Batch) Services() (services []*Service) {
-	for _, pkg := range b.Packages {
+	for _, pkg := range b.packages {
 		services = append(services, pkg.Services()...)
+	}
+	// we'll have more and more account level equivalents of APIs that are
+	// currently workspace-level. In the AccountsClient we're striping
+	// the `Account` prefix, so that naming and ordering is more logical.
+	// this requires us to do the proper sorting of services.
+	norm := func(name string) string {
+		if !strings.HasPrefix(name, "Account") {
+			return name
+		}
+		return name[7:] + "Account"
 	}
 	// add some determinism into code generation
 	slices.SortFunc(services, func(a, b *Service) bool {
-		return a.FullName() < b.FullName()
+		// not using .FullName() here, as in "batch" context
+		// services have to be sorted globally, not only within a package.
+		// alternatively we may think on adding .ReverseFullName() to sort on.
+		return norm(a.Name) < norm(b.Name)
 	})
 	return services
 }

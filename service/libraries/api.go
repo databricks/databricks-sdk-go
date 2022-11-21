@@ -8,14 +8,37 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewLibraries(client *client.DatabricksClient) LibrariesService {
+func NewLibraries(client *client.DatabricksClient) *LibrariesAPI {
 	return &LibrariesAPI{
-		client: client,
+		LibrariesService: &librariesAPI{
+			client: client,
+		},
 	}
 }
 
+// The Libraries API allows you to install and uninstall libraries and get the
+// status of libraries on a cluster.
+//
+// To make third-party or custom code available to notebooks and jobs running on
+// your clusters, you can install a library. Libraries can be written in Python,
+// Java, Scala, and R. You can upload Java, Scala, and Python libraries and
+// point to external packages in PyPI, Maven, and CRAN repositories.
+//
+// Cluster libraries can be used by all notebooks running on a cluster. You can
+// install a cluster library directly from a public repository such as PyPI or
+// Maven, using a previously installed workspace library, or using an init
+// script.
+//
+// When you install a library on a cluster, a notebook already attached to that
+// cluster will not immediately see the new library. You must first detach and
+// then reattach the notebook to the cluster.
+//
+// When you uninstall a library from a cluster, the library is removed only when
+// you restart the cluster. Until you restart the cluster, the status of the
+// uninstalled library appears as Uninstall pending restart.
 type LibrariesAPI struct {
-	client *client.DatabricksClient
+	// LibrariesService contains low-level REST API interface.
+	LibrariesService
 }
 
 // Get all statuses
@@ -25,10 +48,7 @@ type LibrariesAPI struct {
 // as well as libraries set to be installed on all clusters via the libraries
 // UI.
 func (a *LibrariesAPI) AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error) {
-	var listAllClusterLibraryStatusesResponse ListAllClusterLibraryStatusesResponse
-	path := "/api/2.0/libraries/all-cluster-statuses"
-	err := a.client.Get(ctx, path, nil, &listAllClusterLibraryStatusesResponse)
-	return &listAllClusterLibraryStatusesResponse, err
+	return a.LibrariesService.AllClusterStatuses(ctx)
 }
 
 // Get status
@@ -49,10 +69,7 @@ func (a *LibrariesAPI) AllClusterStatuses(ctx context.Context) (*ListAllClusterL
 // clusters, but now marked for removal. Within this group there is no order
 // guarantee.
 func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusRequest) (*ClusterLibraryStatuses, error) {
-	var clusterLibraryStatuses ClusterLibraryStatuses
-	path := "/api/2.0/libraries/cluster-status"
-	err := a.client.Get(ctx, path, request, &clusterLibraryStatuses)
-	return &clusterLibraryStatuses, err
+	return a.LibrariesService.ClusterStatus(ctx, request)
 }
 
 // Get status
@@ -87,9 +104,7 @@ func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId s
 // union of the libraries specified via this method and the libraries set to be
 // installed on all clusters via the libraries UI.
 func (a *LibrariesAPI) Install(ctx context.Context, request InstallLibraries) error {
-	path := "/api/2.0/libraries/install"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.LibrariesService.Install(ctx, request)
 }
 
 // Uninstall libraries
@@ -98,6 +113,35 @@ func (a *LibrariesAPI) Install(ctx context.Context, request InstallLibraries) er
 // uninstalled until the cluster is restarted. Uninstalling libraries that are
 // not installed on the cluster will have no impact but is not an error.
 func (a *LibrariesAPI) Uninstall(ctx context.Context, request UninstallLibraries) error {
+	return a.LibrariesService.Uninstall(ctx, request)
+}
+
+// unexported type that holds implementations of just Libraries API methods
+type librariesAPI struct {
+	client *client.DatabricksClient
+}
+
+func (a *librariesAPI) AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error) {
+	var listAllClusterLibraryStatusesResponse ListAllClusterLibraryStatusesResponse
+	path := "/api/2.0/libraries/all-cluster-statuses"
+	err := a.client.Get(ctx, path, nil, &listAllClusterLibraryStatusesResponse)
+	return &listAllClusterLibraryStatusesResponse, err
+}
+
+func (a *librariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusRequest) (*ClusterLibraryStatuses, error) {
+	var clusterLibraryStatuses ClusterLibraryStatuses
+	path := "/api/2.0/libraries/cluster-status"
+	err := a.client.Get(ctx, path, request, &clusterLibraryStatuses)
+	return &clusterLibraryStatuses, err
+}
+
+func (a *librariesAPI) Install(ctx context.Context, request InstallLibraries) error {
+	path := "/api/2.0/libraries/install"
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
+
+func (a *librariesAPI) Uninstall(ctx context.Context, request UninstallLibraries) error {
 	path := "/api/2.0/libraries/uninstall"
 	err := a.client.Post(ctx, path, request, nil)
 	return err

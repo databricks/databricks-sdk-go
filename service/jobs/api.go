@@ -12,14 +12,27 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-func NewJobs(client *client.DatabricksClient) JobsService {
+func NewJobs(client *client.DatabricksClient) *JobsAPI {
 	return &JobsAPI{
-		client: client,
+		JobsService: &jobsAPI{
+			client: client,
+		},
 	}
 }
 
+// The Jobs API allows you to create, edit, and delete jobs.
+//
+// You can use a Databricks job to run a data processing or data analysis task
+// in a Databricks cluster with scalable resources. Your job can consist of a
+// single task or can be a large, multi-task workflow with complex dependencies.
+// Databricks manages the task orchestration, cluster management, monitoring,
+// and error reporting for all of your jobs. You can run your jobs immediately
+// or periodically through an easy-to-use scheduling system. You can implement
+// job tasks using notebooks, JARS, Delta Live Tables pipelines, or Python,
+// Scala, Spark submit, and Java applications.
 type JobsAPI struct {
-	client *client.DatabricksClient
+	// JobsService contains low-level REST API interface.
+	JobsService
 }
 
 // Cancel all runs of a job
@@ -27,9 +40,7 @@ type JobsAPI struct {
 // Cancels all active runs of a job. The runs are canceled asynchronously, so it
 // doesn't prevent new runs from being started.
 func (a *JobsAPI) CancelAllRuns(ctx context.Context, request CancelAllRuns) error {
-	path := "/api/2.1/jobs/runs/cancel-all"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.JobsService.CancelAllRuns(ctx, request)
 }
 
 // Cancel all runs of a job
@@ -47,12 +58,10 @@ func (a *JobsAPI) CancelAllRunsByJobId(ctx context.Context, jobId int64) error {
 // Cancels a job run. The run is canceled asynchronously, so it may still be
 // running when this request completes.
 func (a *JobsAPI) CancelRun(ctx context.Context, request CancelRun) error {
-	path := "/api/2.1/jobs/runs/cancel"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.JobsService.CancelRun(ctx, request)
 }
 
-// CancelRun and wait to reach TERMINATED or SKIPPED state
+// Calls [JobsAPI.CancelRun] and waits to reach TERMINATED or SKIPPED state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[Run](60*time.Minute) functional option.
@@ -114,19 +123,14 @@ func (a *JobsAPI) CancelRunByRunIdAndWait(ctx context.Context, runId int64, opti
 //
 // Create a new job.
 func (a *JobsAPI) Create(ctx context.Context, request CreateJob) (*CreateResponse, error) {
-	var createResponse CreateResponse
-	path := "/api/2.1/jobs/create"
-	err := a.client.Post(ctx, path, request, &createResponse)
-	return &createResponse, err
+	return a.JobsService.Create(ctx, request)
 }
 
 // Delete a job
 //
 // Deletes a job.
 func (a *JobsAPI) Delete(ctx context.Context, request DeleteJob) error {
-	path := "/api/2.1/jobs/delete"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.JobsService.Delete(ctx, request)
 }
 
 // Delete a job
@@ -142,9 +146,7 @@ func (a *JobsAPI) DeleteByJobId(ctx context.Context, jobId int64) error {
 //
 // Deletes a non-active run. Returns an error if the run is active.
 func (a *JobsAPI) DeleteRun(ctx context.Context, request DeleteRun) error {
-	path := "/api/2.1/jobs/runs/delete"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.JobsService.DeleteRun(ctx, request)
 }
 
 // Delete a job run
@@ -160,20 +162,14 @@ func (a *JobsAPI) DeleteRunByRunId(ctx context.Context, runId int64) error {
 //
 // Export and retrieve the job run task.
 func (a *JobsAPI) ExportRun(ctx context.Context, request ExportRunRequest) (*ExportRunOutput, error) {
-	var exportRunOutput ExportRunOutput
-	path := "/api/2.1/jobs/runs/export"
-	err := a.client.Get(ctx, path, request, &exportRunOutput)
-	return &exportRunOutput, err
+	return a.JobsService.ExportRun(ctx, request)
 }
 
 // Get a single job
 //
 // Retrieves the details for a single job.
 func (a *JobsAPI) Get(ctx context.Context, request GetRequest) (*Job, error) {
-	var job Job
-	path := "/api/2.1/jobs/get"
-	err := a.client.Get(ctx, path, request, &job)
-	return &job, err
+	return a.JobsService.Get(ctx, request)
 }
 
 // Get a single job
@@ -189,13 +185,10 @@ func (a *JobsAPI) GetByJobId(ctx context.Context, jobId int64) (*Job, error) {
 //
 // Retrieve the metadata of a run.
 func (a *JobsAPI) GetRun(ctx context.Context, request GetRunRequest) (*Run, error) {
-	var run Run
-	path := "/api/2.1/jobs/runs/get"
-	err := a.client.Get(ctx, path, request, &run)
-	return &run, err
+	return a.JobsService.GetRun(ctx, request)
 }
 
-// GetRun and wait to reach TERMINATED or SKIPPED state
+// Calls [JobsAPI.GetRun] and waits to reach TERMINATED or SKIPPED state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[Run](60*time.Minute) functional option.
@@ -250,10 +243,7 @@ func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRunRequest GetRunRequest
 // automatically removed after 60 days. If you to want to reference them beyond
 // 60 days, you must save old run results before they expire.
 func (a *JobsAPI) GetRunOutput(ctx context.Context, request GetRunOutputRequest) (*RunOutput, error) {
-	var runOutput RunOutput
-	path := "/api/2.1/jobs/runs/get-output"
-	err := a.client.Get(ctx, path, request, &runOutput)
-	return &runOutput, err
+	return a.JobsService.GetRunOutput(ctx, request)
 }
 
 // Get the output for a single run
@@ -278,16 +268,6 @@ func (a *JobsAPI) GetRunOutputByRunId(ctx context.Context, runId int64) (*RunOut
 //
 // Retrieves a list of jobs.
 //
-// Use ListAll() to get all Job instances, which will iterate over every result page.
-func (a *JobsAPI) List(ctx context.Context, request ListRequest) (*ListResponse, error) {
-	var listResponse ListResponse
-	path := "/api/2.1/jobs/list"
-	err := a.client.Get(ctx, path, request, &listResponse)
-	return &listResponse, err
-}
-
-// ListAll returns all Job instances by calling List for every result page
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *JobsAPI) ListAll(ctx context.Context, request ListRequest) ([]Job, error) {
 	var results []Job
@@ -311,16 +291,6 @@ func (a *JobsAPI) ListAll(ctx context.Context, request ListRequest) ([]Job, erro
 // List runs for a job
 //
 // List runs in descending order by start time.
-//
-// Use ListRunsAll() to get all Run instances, which will iterate over every result page.
-func (a *JobsAPI) ListRuns(ctx context.Context, request ListRunsRequest) (*ListRunsResponse, error) {
-	var listRunsResponse ListRunsResponse
-	path := "/api/2.1/jobs/runs/list"
-	err := a.client.Get(ctx, path, request, &listRunsResponse)
-	return &listRunsResponse, err
-}
-
-// ListRunsAll returns all Run instances by calling ListRuns for every result page
 //
 // This method is generated by Databricks SDK Code Generator.
 func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]Run, error) {
@@ -348,13 +318,10 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]R
 // They use the current job and task settings, and can be viewed in the history
 // for the original job run.
 func (a *JobsAPI) RepairRun(ctx context.Context, request RepairRun) (*RepairRunResponse, error) {
-	var repairRunResponse RepairRunResponse
-	path := "/api/2.1/jobs/runs/repair"
-	err := a.client.Post(ctx, path, request, &repairRunResponse)
-	return &repairRunResponse, err
+	return a.JobsService.RepairRun(ctx, request)
 }
 
-// RepairRun and wait to reach TERMINATED or SKIPPED state
+// Calls [JobsAPI.RepairRun] and waits to reach TERMINATED or SKIPPED state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[Run](60*time.Minute) functional option.
@@ -401,22 +368,17 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, opt
 // Overwrites all the settings for a specific job. Use the Update endpoint to
 // update job settings partially.
 func (a *JobsAPI) Reset(ctx context.Context, request ResetJob) error {
-	path := "/api/2.1/jobs/reset"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.JobsService.Reset(ctx, request)
 }
 
 // Trigger a new job run
 //
 // Run a job and return the `run_id` of the triggered run.
 func (a *JobsAPI) RunNow(ctx context.Context, request RunNow) (*RunNowResponse, error) {
-	var runNowResponse RunNowResponse
-	path := "/api/2.1/jobs/run-now"
-	err := a.client.Post(ctx, path, request, &runNowResponse)
-	return &runNowResponse, err
+	return a.JobsService.RunNow(ctx, request)
 }
 
-// RunNow and wait to reach TERMINATED or SKIPPED state
+// Calls [JobsAPI.RunNow] and waits to reach TERMINATED or SKIPPED state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[Run](60*time.Minute) functional option.
@@ -465,13 +427,10 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...r
 // the UI. Use the `jobs/runs/get` API to check the run state after the job is
 // submitted.
 func (a *JobsAPI) Submit(ctx context.Context, request SubmitRun) (*SubmitRunResponse, error) {
-	var submitRunResponse SubmitRunResponse
-	path := "/api/2.1/jobs/runs/submit"
-	err := a.client.Post(ctx, path, request, &submitRunResponse)
-	return &submitRunResponse, err
+	return a.JobsService.Submit(ctx, request)
 }
 
-// Submit and wait to reach TERMINATED or SKIPPED state
+// Calls [JobsAPI.Submit] and waits to reach TERMINATED or SKIPPED state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[Run](60*time.Minute) functional option.
@@ -518,6 +477,115 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, option
 // Add, update, or remove specific settings of an existing job. Use the ResetJob
 // to overwrite all job settings.
 func (a *JobsAPI) Update(ctx context.Context, request UpdateJob) error {
+	return a.JobsService.Update(ctx, request)
+}
+
+// unexported type that holds implementations of just Jobs API methods
+type jobsAPI struct {
+	client *client.DatabricksClient
+}
+
+func (a *jobsAPI) CancelAllRuns(ctx context.Context, request CancelAllRuns) error {
+	path := "/api/2.1/jobs/runs/cancel-all"
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
+
+func (a *jobsAPI) CancelRun(ctx context.Context, request CancelRun) error {
+	path := "/api/2.1/jobs/runs/cancel"
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
+
+func (a *jobsAPI) Create(ctx context.Context, request CreateJob) (*CreateResponse, error) {
+	var createResponse CreateResponse
+	path := "/api/2.1/jobs/create"
+	err := a.client.Post(ctx, path, request, &createResponse)
+	return &createResponse, err
+}
+
+func (a *jobsAPI) Delete(ctx context.Context, request DeleteJob) error {
+	path := "/api/2.1/jobs/delete"
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
+
+func (a *jobsAPI) DeleteRun(ctx context.Context, request DeleteRun) error {
+	path := "/api/2.1/jobs/runs/delete"
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
+
+func (a *jobsAPI) ExportRun(ctx context.Context, request ExportRunRequest) (*ExportRunOutput, error) {
+	var exportRunOutput ExportRunOutput
+	path := "/api/2.1/jobs/runs/export"
+	err := a.client.Get(ctx, path, request, &exportRunOutput)
+	return &exportRunOutput, err
+}
+
+func (a *jobsAPI) Get(ctx context.Context, request GetRequest) (*Job, error) {
+	var job Job
+	path := "/api/2.1/jobs/get"
+	err := a.client.Get(ctx, path, request, &job)
+	return &job, err
+}
+
+func (a *jobsAPI) GetRun(ctx context.Context, request GetRunRequest) (*Run, error) {
+	var run Run
+	path := "/api/2.1/jobs/runs/get"
+	err := a.client.Get(ctx, path, request, &run)
+	return &run, err
+}
+
+func (a *jobsAPI) GetRunOutput(ctx context.Context, request GetRunOutputRequest) (*RunOutput, error) {
+	var runOutput RunOutput
+	path := "/api/2.1/jobs/runs/get-output"
+	err := a.client.Get(ctx, path, request, &runOutput)
+	return &runOutput, err
+}
+
+func (a *jobsAPI) List(ctx context.Context, request ListRequest) (*ListResponse, error) {
+	var listResponse ListResponse
+	path := "/api/2.1/jobs/list"
+	err := a.client.Get(ctx, path, request, &listResponse)
+	return &listResponse, err
+}
+
+func (a *jobsAPI) ListRuns(ctx context.Context, request ListRunsRequest) (*ListRunsResponse, error) {
+	var listRunsResponse ListRunsResponse
+	path := "/api/2.1/jobs/runs/list"
+	err := a.client.Get(ctx, path, request, &listRunsResponse)
+	return &listRunsResponse, err
+}
+
+func (a *jobsAPI) RepairRun(ctx context.Context, request RepairRun) (*RepairRunResponse, error) {
+	var repairRunResponse RepairRunResponse
+	path := "/api/2.1/jobs/runs/repair"
+	err := a.client.Post(ctx, path, request, &repairRunResponse)
+	return &repairRunResponse, err
+}
+
+func (a *jobsAPI) Reset(ctx context.Context, request ResetJob) error {
+	path := "/api/2.1/jobs/reset"
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
+
+func (a *jobsAPI) RunNow(ctx context.Context, request RunNow) (*RunNowResponse, error) {
+	var runNowResponse RunNowResponse
+	path := "/api/2.1/jobs/run-now"
+	err := a.client.Post(ctx, path, request, &runNowResponse)
+	return &runNowResponse, err
+}
+
+func (a *jobsAPI) Submit(ctx context.Context, request SubmitRun) (*SubmitRunResponse, error) {
+	var submitRunResponse SubmitRunResponse
+	path := "/api/2.1/jobs/runs/submit"
+	err := a.client.Post(ctx, path, request, &submitRunResponse)
+	return &submitRunResponse, err
+}
+
+func (a *jobsAPI) Update(ctx context.Context, request UpdateJob) error {
 	path := "/api/2.1/jobs/update"
 	err := a.client.Post(ctx, path, request, nil)
 	return err

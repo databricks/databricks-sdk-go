@@ -12,14 +12,22 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-func NewCredentialConfigurations(client *client.DatabricksClient) CredentialConfigurationsService {
+func NewCredentialConfigurations(client *client.DatabricksClient) *CredentialConfigurationsAPI {
 	return &CredentialConfigurationsAPI{
-		client: client,
+		CredentialConfigurationsService: &credentialConfigurationsAPI{
+			client: client,
+		},
 	}
 }
 
+// These APIs manage credential configurations for this workspace. Databricks
+// needs access to a cross-account service IAM role in your AWS account so that
+// Databricks can deploy clusters in the appropriate VPC for the new workspace.
+// A credential configuration encapsulates this role information, and its ID is
+// used when creating a new workspace.
 type CredentialConfigurationsAPI struct {
-	client *client.DatabricksClient
+	// CredentialConfigurationsService contains low-level REST API interface.
+	CredentialConfigurationsService
 }
 
 // Create credential configuration
@@ -38,10 +46,7 @@ type CredentialConfigurationsAPI struct {
 // [Create a new workspace using the Account
 // API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html)
 func (a *CredentialConfigurationsAPI) CreateCredentialConfig(ctx context.Context, request CreateCredentialRequest) (*Credential, error) {
-	var credential Credential
-	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials", a.client.Config.AccountID)
-	err := a.client.Post(ctx, path, request, &credential)
-	return &credential, err
+	return a.CredentialConfigurationsService.CreateCredentialConfig(ctx, request)
 }
 
 // Delete credential configuration
@@ -50,9 +55,7 @@ func (a *CredentialConfigurationsAPI) CreateCredentialConfig(ctx context.Context
 // specified by ID. You cannot delete a credential that is associated with any
 // workspace.
 func (a *CredentialConfigurationsAPI) DeleteCredentialConfig(ctx context.Context, request DeleteCredentialConfigRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.Config.AccountID, request.CredentialsId)
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.CredentialConfigurationsService.DeleteCredentialConfig(ctx, request)
 }
 
 // Delete credential configuration
@@ -71,10 +74,7 @@ func (a *CredentialConfigurationsAPI) DeleteCredentialConfigByCredentialsId(ctx 
 // Gets a Databricks credential configuration object for an account, both
 // specified by ID.
 func (a *CredentialConfigurationsAPI) GetCredentialConfig(ctx context.Context, request GetCredentialConfigRequest) (*Credential, error) {
-	var credential Credential
-	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.Config.AccountID, request.CredentialsId)
-	err := a.client.Get(ctx, path, request, &credential)
-	return &credential, err
+	return a.CredentialConfigurationsService.GetCredentialConfig(ctx, request)
 }
 
 // Get credential configuration
@@ -92,20 +92,68 @@ func (a *CredentialConfigurationsAPI) GetCredentialConfigByCredentialsId(ctx con
 // Gets all Databricks credential configurations associated with an account
 // specified by ID.
 func (a *CredentialConfigurationsAPI) ListCredentials(ctx context.Context) ([]Credential, error) {
+	return a.CredentialConfigurationsService.ListCredentials(ctx)
+}
+
+// unexported type that holds implementations of just CredentialConfigurations API methods
+type credentialConfigurationsAPI struct {
+	client *client.DatabricksClient
+}
+
+func (a *credentialConfigurationsAPI) CreateCredentialConfig(ctx context.Context, request CreateCredentialRequest) (*Credential, error) {
+	var credential Credential
+	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials", a.client.Config.AccountID)
+	err := a.client.Post(ctx, path, request, &credential)
+	return &credential, err
+}
+
+func (a *credentialConfigurationsAPI) DeleteCredentialConfig(ctx context.Context, request DeleteCredentialConfigRequest) error {
+	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.Config.AccountID, request.CredentialsId)
+	err := a.client.Delete(ctx, path, request)
+	return err
+}
+
+func (a *credentialConfigurationsAPI) GetCredentialConfig(ctx context.Context, request GetCredentialConfigRequest) (*Credential, error) {
+	var credential Credential
+	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.Config.AccountID, request.CredentialsId)
+	err := a.client.Get(ctx, path, request, &credential)
+	return &credential, err
+}
+
+func (a *credentialConfigurationsAPI) ListCredentials(ctx context.Context) ([]Credential, error) {
 	var credentialList []Credential
 	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials", a.client.Config.AccountID)
 	err := a.client.Get(ctx, path, nil, &credentialList)
 	return credentialList, err
 }
 
-func NewKeyConfigurations(client *client.DatabricksClient) KeyConfigurationsService {
+func NewKeyConfigurations(client *client.DatabricksClient) *KeyConfigurationsAPI {
 	return &KeyConfigurationsAPI{
-		client: client,
+		KeyConfigurationsService: &keyConfigurationsAPI{
+			client: client,
+		},
 	}
 }
 
+// These APIs manage encryption key configurations for this workspace
+// (optional). A key configuration encapsulates the AWS KMS key information and
+// some information about how the key configuration can be used. There are two
+// possible uses for key configurations:
+//
+// * Managed services: A key configuration can be used to encrypt a workspace's
+// notebook and secret data in the control plane, as well as Databricks SQL
+// queries and query history. * Storage: A key configuration can be used to
+// encrypt a workspace's DBFS and EBS data in the data plane.
+//
+// In both of these cases, the key configuration's ID is used when creating a
+// new workspace. This Preview feature is available if your account is on the E2
+// version of the platform. Updating a running workspace with workspace storage
+// encryption requires that the workspace is on the E2 version of the platform.
+// If you have an older workspace, it might not be on the E2 version of the
+// platform. If you are not sure, contact your Databricks reprsentative.
 type KeyConfigurationsAPI struct {
-	client *client.DatabricksClient
+	// KeyConfigurationsService contains low-level REST API interface.
+	KeyConfigurationsService
 }
 
 // Create encryption key configuration
@@ -127,10 +175,7 @@ type KeyConfigurationsAPI struct {
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
 func (a *KeyConfigurationsAPI) CreateKeyConfig(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error) {
-	var customerManagedKey CustomerManagedKey
-	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", a.client.Config.AccountID)
-	err := a.client.Post(ctx, path, request, &customerManagedKey)
-	return &customerManagedKey, err
+	return a.KeyConfigurationsService.CreateKeyConfig(ctx, request)
 }
 
 // Delete encryption key configuration
@@ -138,9 +183,7 @@ func (a *KeyConfigurationsAPI) CreateKeyConfig(ctx context.Context, request Crea
 // Deletes a customer-managed key configuration object for an account. You
 // cannot delete a configuration that is associated with a running workspace.
 func (a *KeyConfigurationsAPI) DeleteKeyConfig(ctx context.Context, request DeleteKeyConfigRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.Config.AccountID, request.CustomerManagedKeyId)
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.KeyConfigurationsService.DeleteKeyConfig(ctx, request)
 }
 
 // Delete encryption key configuration
@@ -171,10 +214,7 @@ func (a *KeyConfigurationsAPI) DeleteKeyConfigByCustomerManagedKeyId(ctx context
 // This operation is available only if your account is on the E2 version of the
 // platform.
 func (a *KeyConfigurationsAPI) GetKeyConfig(ctx context.Context, request GetKeyConfigRequest) (*CustomerManagedKey, error) {
-	var customerManagedKey CustomerManagedKey
-	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.Config.AccountID, request.CustomerManagedKeyId)
-	err := a.client.Get(ctx, path, request, &customerManagedKey)
-	return &customerManagedKey, err
+	return a.KeyConfigurationsService.GetKeyConfig(ctx, request)
 }
 
 // Get encryption key configuration
@@ -211,10 +251,7 @@ func (a *KeyConfigurationsAPI) GetKeyConfigByCustomerManagedKeyId(ctx context.Co
 // This operation is available only if your account is on the E2 version of the
 // platform.
 func (a *KeyConfigurationsAPI) GetKeyWorkspaceHistory(ctx context.Context) (*ListWorkspaceEncryptionKeyRecordsResponse, error) {
-	var listWorkspaceEncryptionKeyRecordsResponse ListWorkspaceEncryptionKeyRecordsResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-key-history", a.client.Config.AccountID)
-	err := a.client.Get(ctx, path, nil, &listWorkspaceEncryptionKeyRecordsResponse)
-	return &listWorkspaceEncryptionKeyRecordsResponse, err
+	return a.KeyConfigurationsService.GetKeyWorkspaceHistory(ctx)
 }
 
 // Get all encryption key configurations
@@ -233,20 +270,63 @@ func (a *KeyConfigurationsAPI) GetKeyWorkspaceHistory(ctx context.Context) (*Lis
 // This operation is available only if your account is on the E2 version of the
 // platform.
 func (a *KeyConfigurationsAPI) ListKeyConfigs(ctx context.Context) ([]CustomerManagedKey, error) {
+	return a.KeyConfigurationsService.ListKeyConfigs(ctx)
+}
+
+// unexported type that holds implementations of just KeyConfigurations API methods
+type keyConfigurationsAPI struct {
+	client *client.DatabricksClient
+}
+
+func (a *keyConfigurationsAPI) CreateKeyConfig(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error) {
+	var customerManagedKey CustomerManagedKey
+	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", a.client.Config.AccountID)
+	err := a.client.Post(ctx, path, request, &customerManagedKey)
+	return &customerManagedKey, err
+}
+
+func (a *keyConfigurationsAPI) DeleteKeyConfig(ctx context.Context, request DeleteKeyConfigRequest) error {
+	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.Config.AccountID, request.CustomerManagedKeyId)
+	err := a.client.Delete(ctx, path, request)
+	return err
+}
+
+func (a *keyConfigurationsAPI) GetKeyConfig(ctx context.Context, request GetKeyConfigRequest) (*CustomerManagedKey, error) {
+	var customerManagedKey CustomerManagedKey
+	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.Config.AccountID, request.CustomerManagedKeyId)
+	err := a.client.Get(ctx, path, request, &customerManagedKey)
+	return &customerManagedKey, err
+}
+
+func (a *keyConfigurationsAPI) GetKeyWorkspaceHistory(ctx context.Context) (*ListWorkspaceEncryptionKeyRecordsResponse, error) {
+	var listWorkspaceEncryptionKeyRecordsResponse ListWorkspaceEncryptionKeyRecordsResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-key-history", a.client.Config.AccountID)
+	err := a.client.Get(ctx, path, nil, &listWorkspaceEncryptionKeyRecordsResponse)
+	return &listWorkspaceEncryptionKeyRecordsResponse, err
+}
+
+func (a *keyConfigurationsAPI) ListKeyConfigs(ctx context.Context) ([]CustomerManagedKey, error) {
 	var customerManagedKeyList []CustomerManagedKey
 	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", a.client.Config.AccountID)
 	err := a.client.Get(ctx, path, nil, &customerManagedKeyList)
 	return customerManagedKeyList, err
 }
 
-func NewNetworkConfigurations(client *client.DatabricksClient) NetworkConfigurationsService {
+func NewNetworkConfigurations(client *client.DatabricksClient) *NetworkConfigurationsAPI {
 	return &NetworkConfigurationsAPI{
-		client: client,
+		NetworkConfigurationsService: &networkConfigurationsAPI{
+			client: client,
+		},
 	}
 }
 
+// These APIs manage network configurations for customer-managed VPCs
+// (optional). A network configuration encapsulates the IDs for AWS VPCs,
+// subnets, and security groups. Its ID is used when creating a new workspace if
+// you use customer-managed VPCs.
 type NetworkConfigurationsAPI struct {
-	client *client.DatabricksClient
+	// NetworkConfigurationsService contains low-level REST API interface.
+	NetworkConfigurationsService
 }
 
 // Create network configuration
@@ -270,10 +350,7 @@ type NetworkConfigurationsAPI struct {
 // This operation is available only if your account is on the E2 version of the
 // platform.
 func (a *NetworkConfigurationsAPI) CreateNetworkConfig(ctx context.Context, request CreateNetworkRequest) (*Network, error) {
-	var network Network
-	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", a.client.Config.AccountID)
-	err := a.client.Post(ctx, path, request, &network)
-	return &network, err
+	return a.NetworkConfigurationsService.CreateNetworkConfig(ctx, request)
 }
 
 // Delete network configuration
@@ -285,9 +362,7 @@ func (a *NetworkConfigurationsAPI) CreateNetworkConfig(ctx context.Context, requ
 // This operation is available only if your account is on the E2 version of the
 // platform.
 func (a *NetworkConfigurationsAPI) DeleteNetworkConfig(ctx context.Context, request DeleteNetworkConfigRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.Config.AccountID, request.NetworkId)
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.NetworkConfigurationsService.DeleteNetworkConfig(ctx, request)
 }
 
 // Delete network configuration
@@ -314,10 +389,7 @@ func (a *NetworkConfigurationsAPI) DeleteNetworkConfigByNetworkId(ctx context.Co
 // This operation is available only if your account is on the E2 version of the
 // platform.
 func (a *NetworkConfigurationsAPI) GetNetworkConfig(ctx context.Context, request GetNetworkConfigRequest) (*Network, error) {
-	var network Network
-	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.Config.AccountID, request.NetworkId)
-	err := a.client.Get(ctx, path, request, &network)
-	return &network, err
+	return a.NetworkConfigurationsService.GetNetworkConfig(ctx, request)
 }
 
 // Get a network configuration
@@ -343,20 +415,60 @@ func (a *NetworkConfigurationsAPI) GetNetworkConfigByNetworkId(ctx context.Conte
 // This operation is available only if your account is on the E2 version of the
 // platform.
 func (a *NetworkConfigurationsAPI) ListNetworkConfigs(ctx context.Context) ([]Network, error) {
+	return a.NetworkConfigurationsService.ListNetworkConfigs(ctx)
+}
+
+// unexported type that holds implementations of just NetworkConfigurations API methods
+type networkConfigurationsAPI struct {
+	client *client.DatabricksClient
+}
+
+func (a *networkConfigurationsAPI) CreateNetworkConfig(ctx context.Context, request CreateNetworkRequest) (*Network, error) {
+	var network Network
+	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", a.client.Config.AccountID)
+	err := a.client.Post(ctx, path, request, &network)
+	return &network, err
+}
+
+func (a *networkConfigurationsAPI) DeleteNetworkConfig(ctx context.Context, request DeleteNetworkConfigRequest) error {
+	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.Config.AccountID, request.NetworkId)
+	err := a.client.Delete(ctx, path, request)
+	return err
+}
+
+func (a *networkConfigurationsAPI) GetNetworkConfig(ctx context.Context, request GetNetworkConfigRequest) (*Network, error) {
+	var network Network
+	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.Config.AccountID, request.NetworkId)
+	err := a.client.Get(ctx, path, request, &network)
+	return &network, err
+}
+
+func (a *networkConfigurationsAPI) ListNetworkConfigs(ctx context.Context) ([]Network, error) {
 	var networkList []Network
 	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", a.client.Config.AccountID)
 	err := a.client.Get(ctx, path, nil, &networkList)
 	return networkList, err
 }
 
-func NewPrivateAccessSettings(client *client.DatabricksClient) PrivateAccessSettingsService {
+func NewPrivateAccessSettings(client *client.DatabricksClient) *PrivateAccessSettingsAPI {
 	return &PrivateAccessSettingsAPI{
-		client: client,
+		PrivateAccessSettingsService: &privateAccessSettingsAPI{
+			client: client,
+		},
 	}
 }
 
+// These APIs manage private access settings for this account. A private access
+// settings object specifies how your workspace is accessed using AWS
+// PrivateLink. Each workspace that has any PrivateLink connections must include
+// the ID for a private access settings object is in its workspace configuration
+// object. Your account must be enabled for PrivateLink to use these APIs.
+// Before configuring PrivateLink, it is important to read the [Databricks
+// article about
+// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
 type PrivateAccessSettingsAPI struct {
-	client *client.DatabricksClient
+	// PrivateAccessSettingsService contains low-level REST API interface.
+	PrivateAccessSettingsService
 }
 
 // Create private access settings
@@ -379,10 +491,7 @@ type PrivateAccessSettingsAPI struct {
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
 func (a *PrivateAccessSettingsAPI) CreatePrivateAccessSettings(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
-	var privateAccessSettings PrivateAccessSettings
-	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", a.client.Config.AccountID)
-	err := a.client.Post(ctx, path, request, &privateAccessSettings)
-	return &privateAccessSettings, err
+	return a.PrivateAccessSettingsService.CreatePrivateAccessSettings(ctx, request)
 }
 
 // Delete a private access settings object
@@ -398,9 +507,7 @@ func (a *PrivateAccessSettingsAPI) CreatePrivateAccessSettings(ctx context.Conte
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
 func (a *PrivateAccessSettingsAPI) DeletePrivateAccessSettings(ctx context.Context, request DeletePrivateAccessSettingsRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.Config.AccountID, request.PrivateAccessSettingsId)
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.PrivateAccessSettingsService.DeletePrivateAccessSettings(ctx, request)
 }
 
 // Delete a private access settings object
@@ -434,10 +541,7 @@ func (a *PrivateAccessSettingsAPI) DeletePrivateAccessSettingsByPrivateAccessSet
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
 func (a *PrivateAccessSettingsAPI) GetPrivateAccessSettings(ctx context.Context, request GetPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
-	var privateAccessSettings PrivateAccessSettings
-	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.Config.AccountID, request.PrivateAccessSettingsId)
-	err := a.client.Get(ctx, path, request, &privateAccessSettings)
-	return &privateAccessSettings, err
+	return a.PrivateAccessSettingsService.GetPrivateAccessSettings(ctx, request)
 }
 
 // Get a private access settings object
@@ -468,10 +572,7 @@ func (a *PrivateAccessSettingsAPI) GetPrivateAccessSettingsByPrivateAccessSettin
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
 func (a *PrivateAccessSettingsAPI) ListPrivateAccessSettings(ctx context.Context) ([]PrivateAccessSettings, error) {
-	var privateAccessSettingsList []PrivateAccessSettings
-	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", a.client.Config.AccountID)
-	err := a.client.Get(ctx, path, nil, &privateAccessSettingsList)
-	return privateAccessSettingsList, err
+	return a.PrivateAccessSettingsService.ListPrivateAccessSettings(ctx)
 }
 
 // Replace private access settings
@@ -500,19 +601,64 @@ func (a *PrivateAccessSettingsAPI) ListPrivateAccessSettings(ctx context.Context
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
 func (a *PrivateAccessSettingsAPI) ReplacePrivateAccessSettings(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
+	return a.PrivateAccessSettingsService.ReplacePrivateAccessSettings(ctx, request)
+}
+
+// unexported type that holds implementations of just PrivateAccessSettings API methods
+type privateAccessSettingsAPI struct {
+	client *client.DatabricksClient
+}
+
+func (a *privateAccessSettingsAPI) CreatePrivateAccessSettings(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
+	var privateAccessSettings PrivateAccessSettings
+	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", a.client.Config.AccountID)
+	err := a.client.Post(ctx, path, request, &privateAccessSettings)
+	return &privateAccessSettings, err
+}
+
+func (a *privateAccessSettingsAPI) DeletePrivateAccessSettings(ctx context.Context, request DeletePrivateAccessSettingsRequest) error {
+	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.Config.AccountID, request.PrivateAccessSettingsId)
+	err := a.client.Delete(ctx, path, request)
+	return err
+}
+
+func (a *privateAccessSettingsAPI) GetPrivateAccessSettings(ctx context.Context, request GetPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
+	var privateAccessSettings PrivateAccessSettings
+	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.Config.AccountID, request.PrivateAccessSettingsId)
+	err := a.client.Get(ctx, path, request, &privateAccessSettings)
+	return &privateAccessSettings, err
+}
+
+func (a *privateAccessSettingsAPI) ListPrivateAccessSettings(ctx context.Context) ([]PrivateAccessSettings, error) {
+	var privateAccessSettingsList []PrivateAccessSettings
+	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", a.client.Config.AccountID)
+	err := a.client.Get(ctx, path, nil, &privateAccessSettingsList)
+	return privateAccessSettingsList, err
+}
+
+func (a *privateAccessSettingsAPI) ReplacePrivateAccessSettings(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.Config.AccountID, request.PrivateAccessSettingsId)
 	err := a.client.Put(ctx, path, request)
 	return err
 }
 
-func NewStorageConfigurations(client *client.DatabricksClient) StorageConfigurationsService {
+func NewStorageConfigurations(client *client.DatabricksClient) *StorageConfigurationsAPI {
 	return &StorageConfigurationsAPI{
-		client: client,
+		StorageConfigurationsService: &storageConfigurationsAPI{
+			client: client,
+		},
 	}
 }
 
+// These APIs manage storage configurations for this workspace. A root storage
+// S3 bucket in your account is required to store objects like cluster logs,
+// notebook revisions, and job results. You can also use the root storage S3
+// bucket for storage of non-production DBFS data. A storage configuration
+// encapsulates this bucket information, and its ID is used when creating a new
+// workspace.
 type StorageConfigurationsAPI struct {
-	client *client.DatabricksClient
+	// StorageConfigurationsService contains low-level REST API interface.
+	StorageConfigurationsService
 }
 
 // Create new storage configuration
@@ -527,10 +673,7 @@ type StorageConfigurationsAPI struct {
 // [Create a new workspace using the Account
 // API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html)
 func (a *StorageConfigurationsAPI) CreateStorageConfig(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error) {
-	var storageConfiguration StorageConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", a.client.Config.AccountID)
-	err := a.client.Post(ctx, path, request, &storageConfiguration)
-	return &storageConfiguration, err
+	return a.StorageConfigurationsService.CreateStorageConfig(ctx, request)
 }
 
 // Delete storage configuration
@@ -538,9 +681,7 @@ func (a *StorageConfigurationsAPI) CreateStorageConfig(ctx context.Context, requ
 // Deletes a Databricks storage configuration. You cannot delete a storage
 // configuration that is associated with any workspace.
 func (a *StorageConfigurationsAPI) DeleteStorageConfig(ctx context.Context, request DeleteStorageConfigRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.Config.AccountID, request.StorageConfigurationId)
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.StorageConfigurationsService.DeleteStorageConfig(ctx, request)
 }
 
 // Delete storage configuration
@@ -557,10 +698,7 @@ func (a *StorageConfigurationsAPI) DeleteStorageConfigByStorageConfigurationId(c
 //
 // Gets a Databricks storage configuration for an account, both specified by ID.
 func (a *StorageConfigurationsAPI) GetStorageConfig(ctx context.Context, request GetStorageConfigRequest) (*StorageConfiguration, error) {
-	var storageConfiguration StorageConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.Config.AccountID, request.StorageConfigurationId)
-	err := a.client.Get(ctx, path, request, &storageConfiguration)
-	return &storageConfiguration, err
+	return a.StorageConfigurationsService.GetStorageConfig(ctx, request)
 }
 
 // Get storage configuration
@@ -577,20 +715,61 @@ func (a *StorageConfigurationsAPI) GetStorageConfigByStorageConfigurationId(ctx 
 // Gets a list of all Databricks storage configurations for your account,
 // specified by ID.
 func (a *StorageConfigurationsAPI) ListStorageConfigs(ctx context.Context) ([]StorageConfiguration, error) {
+	return a.StorageConfigurationsService.ListStorageConfigs(ctx)
+}
+
+// unexported type that holds implementations of just StorageConfigurations API methods
+type storageConfigurationsAPI struct {
+	client *client.DatabricksClient
+}
+
+func (a *storageConfigurationsAPI) CreateStorageConfig(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error) {
+	var storageConfiguration StorageConfiguration
+	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", a.client.Config.AccountID)
+	err := a.client.Post(ctx, path, request, &storageConfiguration)
+	return &storageConfiguration, err
+}
+
+func (a *storageConfigurationsAPI) DeleteStorageConfig(ctx context.Context, request DeleteStorageConfigRequest) error {
+	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.Config.AccountID, request.StorageConfigurationId)
+	err := a.client.Delete(ctx, path, request)
+	return err
+}
+
+func (a *storageConfigurationsAPI) GetStorageConfig(ctx context.Context, request GetStorageConfigRequest) (*StorageConfiguration, error) {
+	var storageConfiguration StorageConfiguration
+	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.Config.AccountID, request.StorageConfigurationId)
+	err := a.client.Get(ctx, path, request, &storageConfiguration)
+	return &storageConfiguration, err
+}
+
+func (a *storageConfigurationsAPI) ListStorageConfigs(ctx context.Context) ([]StorageConfiguration, error) {
 	var storageConfigurationList []StorageConfiguration
 	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", a.client.Config.AccountID)
 	err := a.client.Get(ctx, path, nil, &storageConfigurationList)
 	return storageConfigurationList, err
 }
 
-func NewVpcEndpoints(client *client.DatabricksClient) VpcEndpointsService {
+func NewVpcEndpoints(client *client.DatabricksClient) *VpcEndpointsAPI {
 	return &VpcEndpointsAPI{
-		client: client,
+		VpcEndpointsService: &vpcEndpointsAPI{
+			client: client,
+		},
 	}
 }
 
+// These APIs manage VPC endpoint configurations for this account. This object
+// registers an AWS VPC endpoint in your Databricks account so your workspace
+// can use it with AWS PrivateLink. Your VPC endpoint connects to one of two VPC
+// endpoint services -- one for workspace (both for front-end connection and for
+// back-end connection to REST APIs) and one for the back-end secure cluster
+// connectivity relay from the data plane. Your account must be enabled for
+// PrivateLink to use these APIs. Before configuring PrivateLink, it is
+// important to read the [Databricks article about
+// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
 type VpcEndpointsAPI struct {
-	client *client.DatabricksClient
+	// VpcEndpointsService contains low-level REST API interface.
+	VpcEndpointsService
 }
 
 // Create VPC endpoint configuration
@@ -623,10 +802,7 @@ type VpcEndpointsAPI struct {
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
 func (a *VpcEndpointsAPI) CreateVpcEndpoint(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error) {
-	var vpcEndpoint VpcEndpoint
-	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints", a.client.Config.AccountID)
-	err := a.client.Post(ctx, path, request, &vpcEndpoint)
-	return &vpcEndpoint, err
+	return a.VpcEndpointsService.CreateVpcEndpoint(ctx, request)
 }
 
 // Delete VPC endpoint configuration
@@ -648,9 +824,7 @@ func (a *VpcEndpointsAPI) CreateVpcEndpoint(ctx context.Context, request CreateV
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
 func (a *VpcEndpointsAPI) DeleteVpcEndpoint(ctx context.Context, request DeleteVpcEndpointRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.Config.AccountID, request.VpcEndpointId)
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.VpcEndpointsService.DeleteVpcEndpoint(ctx, request)
 }
 
 // Delete VPC endpoint configuration
@@ -689,10 +863,7 @@ func (a *VpcEndpointsAPI) DeleteVpcEndpointByVpcEndpointId(ctx context.Context, 
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
 func (a *VpcEndpointsAPI) GetVpcEndpoint(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
-	var vpcEndpoint VpcEndpoint
-	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.Config.AccountID, request.VpcEndpointId)
-	err := a.client.Get(ctx, path, request, &vpcEndpoint)
-	return &vpcEndpoint, err
+	return a.VpcEndpointsService.GetVpcEndpoint(ctx, request)
 }
 
 // Get a VPC endpoint configuration
@@ -724,20 +895,61 @@ func (a *VpcEndpointsAPI) GetVpcEndpointByVpcEndpointId(ctx context.Context, vpc
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
 func (a *VpcEndpointsAPI) ListVpcEndpoints(ctx context.Context) ([]VpcEndpoint, error) {
+	return a.VpcEndpointsService.ListVpcEndpoints(ctx)
+}
+
+// unexported type that holds implementations of just VpcEndpoints API methods
+type vpcEndpointsAPI struct {
+	client *client.DatabricksClient
+}
+
+func (a *vpcEndpointsAPI) CreateVpcEndpoint(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error) {
+	var vpcEndpoint VpcEndpoint
+	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints", a.client.Config.AccountID)
+	err := a.client.Post(ctx, path, request, &vpcEndpoint)
+	return &vpcEndpoint, err
+}
+
+func (a *vpcEndpointsAPI) DeleteVpcEndpoint(ctx context.Context, request DeleteVpcEndpointRequest) error {
+	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.Config.AccountID, request.VpcEndpointId)
+	err := a.client.Delete(ctx, path, request)
+	return err
+}
+
+func (a *vpcEndpointsAPI) GetVpcEndpoint(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
+	var vpcEndpoint VpcEndpoint
+	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.Config.AccountID, request.VpcEndpointId)
+	err := a.client.Get(ctx, path, request, &vpcEndpoint)
+	return &vpcEndpoint, err
+}
+
+func (a *vpcEndpointsAPI) ListVpcEndpoints(ctx context.Context) ([]VpcEndpoint, error) {
 	var vpcEndpointList []VpcEndpoint
 	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints", a.client.Config.AccountID)
 	err := a.client.Get(ctx, path, nil, &vpcEndpointList)
 	return vpcEndpointList, err
 }
 
-func NewWorkspaces(client *client.DatabricksClient) WorkspacesService {
+func NewWorkspaces(client *client.DatabricksClient) *WorkspacesAPI {
 	return &WorkspacesAPI{
-		client: client,
+		WorkspacesService: &workspacesAPI{
+			client: client,
+		},
 	}
 }
 
+// These APIs manage workspaces for this account. A Databricks workspace is an
+// environment for accessing all of your Databricks assets. The workspace
+// organizes objects (notebooks, libraries, and experiments) into folders, and
+// provides access to data and computational resources such as clusters and
+// jobs.
+//
+// These endpoints are available if your account is on the E2 version of the
+// platform or on a select custom plan that allows multiple workspaces per
+// account.
 type WorkspacesAPI struct {
-	client *client.DatabricksClient
+	// WorkspacesService contains low-level REST API interface.
+	WorkspacesService
 }
 
 // Create a new workspace
@@ -776,13 +988,10 @@ type WorkspacesAPI struct {
 // E2 version of the platform or on a select custom plan that allows multiple
 // workspaces per account.
 func (a *WorkspacesAPI) CreateWorkspace(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {
-	var workspace Workspace
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", a.client.Config.AccountID)
-	err := a.client.Post(ctx, path, request, &workspace)
-	return &workspace, err
+	return a.WorkspacesService.CreateWorkspace(ctx, request)
 }
 
-// CreateWorkspace and wait to reach RUNNING state
+// Calls [WorkspacesAPI.CreateWorkspace] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[Workspace](60*time.Minute) functional option.
@@ -835,9 +1044,7 @@ func (a *WorkspacesAPI) CreateWorkspaceAndWait(ctx context.Context, createWorksp
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
 func (a *WorkspacesAPI) DeleteWorkspace(ctx context.Context, request DeleteWorkspaceRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.Config.AccountID, request.WorkspaceId)
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.WorkspacesService.DeleteWorkspace(ctx, request)
 }
 
 // Delete workspace
@@ -864,10 +1071,7 @@ func (a *WorkspacesAPI) DeleteWorkspaceByWorkspaceId(ctx context.Context, worksp
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
 func (a *WorkspacesAPI) GetAllWorkspaces(ctx context.Context) ([]Workspace, error) {
-	var workspaceList []Workspace
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", a.client.Config.AccountID)
-	err := a.client.Get(ctx, path, nil, &workspaceList)
-	return workspaceList, err
+	return a.WorkspacesService.GetAllWorkspaces(ctx)
 }
 
 // Get workspace
@@ -886,10 +1090,7 @@ func (a *WorkspacesAPI) GetAllWorkspaces(ctx context.Context) ([]Workspace, erro
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
 func (a *WorkspacesAPI) GetWorkspace(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error) {
-	var workspace Workspace
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.Config.AccountID, request.WorkspaceId)
-	err := a.client.Get(ctx, path, request, &workspace)
-	return &workspace, err
+	return a.WorkspacesService.GetWorkspace(ctx, request)
 }
 
 // Get workspace
@@ -930,10 +1131,7 @@ func (a *WorkspacesAPI) GetWorkspaceByWorkspaceId(ctx context.Context, workspace
 // This operation is available only if your account is on the E2 version of the
 // platform.
 func (a *WorkspacesAPI) GetWorkspaceKeyHistory(ctx context.Context, request GetWorkspaceKeyHistoryRequest) (*ListWorkspaceEncryptionKeyRecordsResponse, error) {
-	var listWorkspaceEncryptionKeyRecordsResponse ListWorkspaceEncryptionKeyRecordsResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/customer-managed-key-history", a.client.Config.AccountID, request.WorkspaceId)
-	err := a.client.Get(ctx, path, request, &listWorkspaceEncryptionKeyRecordsResponse)
-	return &listWorkspaceEncryptionKeyRecordsResponse, err
+	return a.WorkspacesService.GetWorkspaceKeyHistory(ctx, request)
 }
 
 // Get the history of a workspace's associations with keys
@@ -1063,6 +1261,49 @@ func (a *WorkspacesAPI) GetWorkspaceKeyHistoryByWorkspaceId(ctx context.Context,
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
 func (a *WorkspacesAPI) UpdateWorkspace(ctx context.Context, request UpdateWorkspaceRequest) error {
+	return a.WorkspacesService.UpdateWorkspace(ctx, request)
+}
+
+// unexported type that holds implementations of just Workspaces API methods
+type workspacesAPI struct {
+	client *client.DatabricksClient
+}
+
+func (a *workspacesAPI) CreateWorkspace(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {
+	var workspace Workspace
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", a.client.Config.AccountID)
+	err := a.client.Post(ctx, path, request, &workspace)
+	return &workspace, err
+}
+
+func (a *workspacesAPI) DeleteWorkspace(ctx context.Context, request DeleteWorkspaceRequest) error {
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.Config.AccountID, request.WorkspaceId)
+	err := a.client.Delete(ctx, path, request)
+	return err
+}
+
+func (a *workspacesAPI) GetAllWorkspaces(ctx context.Context) ([]Workspace, error) {
+	var workspaceList []Workspace
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", a.client.Config.AccountID)
+	err := a.client.Get(ctx, path, nil, &workspaceList)
+	return workspaceList, err
+}
+
+func (a *workspacesAPI) GetWorkspace(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error) {
+	var workspace Workspace
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.Config.AccountID, request.WorkspaceId)
+	err := a.client.Get(ctx, path, request, &workspace)
+	return &workspace, err
+}
+
+func (a *workspacesAPI) GetWorkspaceKeyHistory(ctx context.Context, request GetWorkspaceKeyHistoryRequest) (*ListWorkspaceEncryptionKeyRecordsResponse, error) {
+	var listWorkspaceEncryptionKeyRecordsResponse ListWorkspaceEncryptionKeyRecordsResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/customer-managed-key-history", a.client.Config.AccountID, request.WorkspaceId)
+	err := a.client.Get(ctx, path, request, &listWorkspaceEncryptionKeyRecordsResponse)
+	return &listWorkspaceEncryptionKeyRecordsResponse, err
+}
+
+func (a *workspacesAPI) UpdateWorkspace(ctx context.Context, request UpdateWorkspaceRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.Config.AccountID, request.WorkspaceId)
 	err := a.client.Patch(ctx, path, request)
 	return err
