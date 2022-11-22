@@ -200,6 +200,18 @@ func TestConfig_ConflictingEnvs_AuthType(t *testing.T) {
 	}.apply(t)
 }
 
+func TestConfig_ConflictingEnvs_ConfigProfile(t *testing.T) {
+	configFixture{
+		env: map[string]string{
+			"DATABRICKS_HOST":           "x",
+			"DATABRICKS_TOKEN":          "x",
+			"DATABRICKS_CONFIG_PROFILE": "DEFAULT",
+			"HOME":                      "testdata",
+		},
+		assertError: "resolve: testdata/.databrickscfg DEFAULT profile: attributes already set: host, token. Config: host=x, token=***, profile=DEFAULT. Env: DATABRICKS_HOST, DATABRICKS_TOKEN, DATABRICKS_CONFIG_PROFILE",
+	}.apply(t)
+}
+
 func TestConfig_ConfigFile(t *testing.T) {
 	configFixture{
 		env: map[string]string{
@@ -239,8 +251,7 @@ func TestConfig_ConfigProfileAndToken(t *testing.T) {
 			"DATABRICKS_CONFIG_PROFILE": "nohost",
 			"HOME":                      "testdata",
 		},
-		assertError: "default auth: cannot configure default credentials. " +
-			"Config: token=***, profile=nohost. Env: DATABRICKS_TOKEN, DATABRICKS_CONFIG_PROFILE",
+		assertError: "resolve: testdata/.databrickscfg nohost profile: attributes already set: token. Config: token=***, profile=nohost. Env: DATABRICKS_TOKEN, DATABRICKS_CONFIG_PROFILE",
 	}.apply(t)
 }
 
@@ -326,22 +337,6 @@ func TestConfig_AzureCliHostAndResourceID(t *testing.T) {
 		env: map[string]string{
 			"PATH": testdataPath(),
 			"HOME": "testdata/azure",
-		},
-		assertAzure: true,
-		assertHost:  "https://x",
-		assertAuth:  "azure-cli",
-	}.apply(t)
-}
-
-func TestConfig_AzureCliHostAndResourceID_ConfigurationPrecedence(t *testing.T) {
-	configFixture{
-		// omit request to management endpoint to get workspace properties
-		azureResourceID: azResourceID,
-		host:            "x",
-		env: map[string]string{
-			"PATH":                      testdataPath(),
-			"HOME":                      "testdata/azure",
-			"DATABRICKS_CONFIG_PROFILE": "justhost",
 		},
 		assertAzure: true,
 		assertHost:  "https://x",
