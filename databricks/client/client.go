@@ -78,6 +78,12 @@ type DatabricksClient struct {
 	debugTruncateBytes int
 }
 
+// ConfiguredAccountID returns Databricks Account ID if it's provided in config,
+// empty string otherwise
+func (c *DatabricksClient) ConfiguredAccountID() string {
+	return c.Config.AccountID
+}
+
 // Do sends an HTTP request against path.
 func (c *DatabricksClient) Do(ctx context.Context, method string, path string, request interface{}, response interface{}) error {
 	body, err := c.perform(ctx, method, path, request, c.completeUrl)
@@ -85,31 +91,6 @@ func (c *DatabricksClient) Do(ctx context.Context, method string, path string, r
 		return err
 	}
 	return c.unmarshall(path, body, &response)
-}
-
-// Get on path
-func (c *DatabricksClient) Get(ctx context.Context, path string, request interface{}, response interface{}) error {
-	return c.Do(ctx, http.MethodGet, path, request, response)
-}
-
-// Post on path
-func (c *DatabricksClient) Post(ctx context.Context, path string, request interface{}, response interface{}) error {
-	return c.Do(ctx, http.MethodPost, path, request, response)
-}
-
-// Delete on path
-func (c *DatabricksClient) Delete(ctx context.Context, path string, request interface{}) error {
-	return c.Do(ctx, http.MethodDelete, path, request, nil)
-}
-
-// Patch on path
-func (c *DatabricksClient) Patch(ctx context.Context, path string, request interface{}) error {
-	return c.Do(ctx, http.MethodPatch, path, request, nil)
-}
-
-// Put on path
-func (c *DatabricksClient) Put(ctx context.Context, path string, request interface{}) error {
-	return c.Do(ctx, http.MethodPut, path, request, nil)
 }
 
 func (c *DatabricksClient) unmarshall(path string, body []byte, response interface{}) error {
@@ -122,38 +103,17 @@ func (c *DatabricksClient) unmarshall(path string, body []byte, response interfa
 	return json.Unmarshal(body, &response)
 }
 
-type contextKey int
-
-const Api contextKey = 5
-
-type ApiVersion string
-
-const (
-	API_1_2 ApiVersion = "1.2"
-	API_2_0 ApiVersion = "2.0"
-	API_2_1 ApiVersion = "2.1"
-)
-
 func (c *DatabricksClient) completeUrl(r *http.Request) error {
 	if r.URL == nil {
 		return fmt.Errorf("no URL found in request")
 	}
-	// TODO: accounts client
-	// ctx := r.Context()
-	// av, ok := ctx.Value(Api).(ApiVersion)
-	// if !ok {
-	// 	av = API_2_0
-	// }
-	//r.URL.Path = fmt.Sprintf("/api/%s%s", av, r.URL.Path)
 	r.Header.Set("Content-Type", "application/json")
-
 	url, err := url.Parse(c.Config.Host)
 	if err != nil {
 		return err
 	}
 	r.URL.Host = url.Host
 	r.URL.Scheme = url.Scheme
-
 	return nil
 }
 

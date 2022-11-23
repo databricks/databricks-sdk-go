@@ -4,6 +4,7 @@ package instancepools
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
@@ -16,32 +17,32 @@ type instancePoolsImpl struct {
 func (a *instancePoolsImpl) Create(ctx context.Context, request CreateInstancePool) (*CreateInstancePoolResponse, error) {
 	var createInstancePoolResponse CreateInstancePoolResponse
 	path := "/api/2.0/instance-pools/create"
-	err := a.client.Post(ctx, path, request, &createInstancePoolResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, request, &createInstancePoolResponse)
 	return &createInstancePoolResponse, err
 }
 
 func (a *instancePoolsImpl) Delete(ctx context.Context, request DeleteInstancePool) error {
 	path := "/api/2.0/instance-pools/delete"
-	err := a.client.Post(ctx, path, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
 	return err
 }
 
 func (a *instancePoolsImpl) Edit(ctx context.Context, request EditInstancePool) error {
 	path := "/api/2.0/instance-pools/edit"
-	err := a.client.Post(ctx, path, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
 	return err
 }
 
 func (a *instancePoolsImpl) Get(ctx context.Context, request GetRequest) (*GetInstancePool, error) {
 	var getInstancePool GetInstancePool
 	path := "/api/2.0/instance-pools/get"
-	err := a.client.Get(ctx, path, request, &getInstancePool)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getInstancePool)
 	return &getInstancePool, err
 }
 
 func (a *instancePoolsImpl) List(ctx context.Context) (*ListInstancePools, error) {
 	var listInstancePools ListInstancePools
 	path := "/api/2.0/instance-pools/list"
-	err := a.client.Get(ctx, path, nil, &listInstancePools)
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &listInstancePools)
 	return &listInstancePools, err
 }
