@@ -4,11 +4,9 @@ package secrets
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewSecrets(client *client.DatabricksClient) *SecretsAPI {
+func NewSecrets(client databricksClient) *SecretsAPI {
 	return &SecretsAPI{
 		impl: &secretsImpl{
 			client: client,

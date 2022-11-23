@@ -5,11 +5,10 @@ package repos
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
-	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-func NewRepos(client *client.DatabricksClient) *ReposAPI {
+func NewRepos(client databricksClient) *ReposAPI {
 	return &ReposAPI{
 		impl: &reposImpl{
 			client: client,

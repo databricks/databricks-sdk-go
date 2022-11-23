@@ -7,14 +7,21 @@ import (
 	"fmt"
 	"time"
 	"net/http"
-	"github.com/databricks/databricks-sdk-go/databricks/retries"
-	"github.com/databricks/databricks-sdk-go/databricks/client"
-	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
+
 {{range .Services}}
 // unexported type that holds implementations of just {{.Name}} API methods
 type {{.CamelName}}Impl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 {{range .Methods}}

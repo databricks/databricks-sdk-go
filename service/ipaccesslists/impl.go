@@ -6,13 +6,17 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just IpAccessLists API methods
 type ipAccessListsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *ipAccessListsImpl) CreateIpAccessList(ctx context.Context, request CreateIpAccessListRequest) (*IpAccessListInfo, error) {

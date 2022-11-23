@@ -6,13 +6,17 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just Pipelines API methods
 type pipelinesImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *pipelinesImpl) CreatePipeline(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error) {

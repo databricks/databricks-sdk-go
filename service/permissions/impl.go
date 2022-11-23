@@ -6,13 +6,17 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just Permissions API methods
 type permissionsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *permissionsImpl) GetObjectPermissions(ctx context.Context, request GetObjectPermissionsRequest) (*ObjectPermissions, error) {
@@ -43,7 +47,7 @@ func (a *permissionsImpl) UpdateObjectPermissions(ctx context.Context, request U
 
 // unexported type that holds implementations of just WorkspaceAssignment API methods
 type workspaceAssignmentImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *workspaceAssignmentImpl) Create(ctx context.Context, request CreateWorkspaceAssignments) (*WorkspaceAssignmentsCreated, error) {

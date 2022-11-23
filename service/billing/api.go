@@ -4,11 +4,9 @@ package billing
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewBillableUsageDownload(client *client.DatabricksClient) *BillableUsageDownloadAPI {
+func NewBillableUsageDownload(client databricksClient) *BillableUsageDownloadAPI {
 	return &BillableUsageDownloadAPI{
 		impl: &billableUsageDownloadImpl{
 			client: client,
@@ -46,7 +44,7 @@ func (a *BillableUsageDownloadAPI) DownloadBillableUsage(ctx context.Context, re
 	return a.impl.DownloadBillableUsage(ctx, request)
 }
 
-func NewBudgets(client *client.DatabricksClient) *BudgetsAPI {
+func NewBudgets(client databricksClient) *BudgetsAPI {
 	return &BudgetsAPI{
 		impl: &budgetsImpl{
 			client: client,
@@ -137,7 +135,7 @@ func (a *BudgetsAPI) UpdateBudget(ctx context.Context, request UpdateBudgetReque
 	return a.impl.UpdateBudget(ctx, request)
 }
 
-func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
+func NewLogDelivery(client databricksClient) *LogDeliveryAPI {
 	return &LogDeliveryAPI{
 		impl: &logDeliveryImpl{
 			client: client,

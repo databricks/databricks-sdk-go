@@ -4,11 +4,9 @@ package permissions
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewPermissions(client *client.DatabricksClient) *PermissionsAPI {
+func NewPermissions(client databricksClient) *PermissionsAPI {
 	return &PermissionsAPI{
 		impl: &permissionsImpl{
 			client: client,
@@ -87,7 +85,7 @@ func (a *PermissionsAPI) UpdateObjectPermissions(ctx context.Context, request Up
 	return a.impl.UpdateObjectPermissions(ctx, request)
 }
 
-func NewWorkspaceAssignment(client *client.DatabricksClient) *WorkspaceAssignmentAPI {
+func NewWorkspaceAssignment(client databricksClient) *WorkspaceAssignmentAPI {
 	return &WorkspaceAssignmentAPI{
 		impl: &workspaceAssignmentImpl{
 			client: client,

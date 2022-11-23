@@ -7,12 +7,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
-	"github.com/databricks/databricks-sdk-go/databricks/retries"
-	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-func NewClusters(client *client.DatabricksClient) *ClustersAPI {
+func NewClusters(client databricksClient) *ClustersAPI {
 	return &ClustersAPI{
 		impl: &clustersImpl{
 			client: client,
@@ -667,7 +666,7 @@ func (a *ClustersAPI) UnpinByClusterId(ctx context.Context, clusterId string) er
 	})
 }
 
-func NewInstanceProfiles(client *client.DatabricksClient) *InstanceProfilesAPI {
+func NewInstanceProfiles(client databricksClient) *InstanceProfilesAPI {
 	return &InstanceProfilesAPI{
 		impl: &instanceProfilesImpl{
 			client: client,

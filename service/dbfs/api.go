@@ -4,11 +4,9 @@ package dbfs
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewDbfs(client *client.DatabricksClient) *DbfsAPI {
+func NewDbfs(client databricksClient) *DbfsAPI {
 	return &DbfsAPI{
 		impl: &dbfsImpl{
 			client: client,

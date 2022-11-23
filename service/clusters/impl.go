@@ -5,13 +5,17 @@ package clusters
 import (
 	"context"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just Clusters API methods
 type clustersImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *clustersImpl) ChangeOwner(ctx context.Context, request ChangeClusterOwner) error {
@@ -119,7 +123,7 @@ func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 
 // unexported type that holds implementations of just InstanceProfiles API methods
 type instanceProfilesImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *instanceProfilesImpl) Add(ctx context.Context, request AddInstanceProfile) error {

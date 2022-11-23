@@ -4,11 +4,9 @@ package libraries
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewLibraries(client *client.DatabricksClient) *LibrariesAPI {
+func NewLibraries(client databricksClient) *LibrariesAPI {
 	return &LibrariesAPI{
 		impl: &librariesImpl{
 			client: client,

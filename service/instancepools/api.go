@@ -4,11 +4,9 @@ package instancepools
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewInstancePools(client *client.DatabricksClient) *InstancePoolsAPI {
+func NewInstancePools(client databricksClient) *InstancePoolsAPI {
 	return &InstancePoolsAPI{
 		impl: &instancePoolsImpl{
 			client: client,

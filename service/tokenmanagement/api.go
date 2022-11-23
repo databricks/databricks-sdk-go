@@ -4,11 +4,9 @@ package tokenmanagement
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewTokenManagement(client *client.DatabricksClient) *TokenManagementAPI {
+func NewTokenManagement(client databricksClient) *TokenManagementAPI {
 	return &TokenManagementAPI{
 		impl: &tokenManagementImpl{
 			client: client,

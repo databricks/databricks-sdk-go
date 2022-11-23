@@ -5,11 +5,10 @@ package dbsql
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
-	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-func NewAlerts(client *client.DatabricksClient) *AlertsAPI {
+func NewAlerts(client databricksClient) *AlertsAPI {
 	return &AlertsAPI{
 		impl: &alertsImpl{
 			client: client,
@@ -198,7 +197,7 @@ func (a *AlertsAPI) UpdateAlert(ctx context.Context, request EditAlert) error {
 	return a.impl.UpdateAlert(ctx, request)
 }
 
-func NewDashboards(client *client.DatabricksClient) *DashboardsAPI {
+func NewDashboards(client databricksClient) *DashboardsAPI {
 	return &DashboardsAPI{
 		impl: &dashboardsImpl{
 			client: client,
@@ -302,7 +301,7 @@ func (a *DashboardsAPI) RestoreDashboard(ctx context.Context, request RestoreDas
 	return a.impl.RestoreDashboard(ctx, request)
 }
 
-func NewDataSources(client *client.DatabricksClient) *DataSourcesAPI {
+func NewDataSources(client databricksClient) *DataSourcesAPI {
 	return &DataSourcesAPI{
 		impl: &dataSourcesImpl{
 			client: client,
@@ -347,7 +346,7 @@ func (a *DataSourcesAPI) ListDataSources(ctx context.Context) ([]DataSource, err
 	return a.impl.ListDataSources(ctx)
 }
 
-func NewDbsqlPermissions(client *client.DatabricksClient) *DbsqlPermissionsAPI {
+func NewDbsqlPermissions(client databricksClient) *DbsqlPermissionsAPI {
 	return &DbsqlPermissionsAPI{
 		impl: &dbsqlPermissionsImpl{
 			client: client,
@@ -421,7 +420,7 @@ func (a *DbsqlPermissionsAPI) TransferOwnership(ctx context.Context, request Tra
 	return a.impl.TransferOwnership(ctx, request)
 }
 
-func NewQueries(client *client.DatabricksClient) *QueriesAPI {
+func NewQueries(client databricksClient) *QueriesAPI {
 	return &QueriesAPI{
 		impl: &queriesImpl{
 			client: client,

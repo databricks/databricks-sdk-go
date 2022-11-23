@@ -5,13 +5,17 @@ package libraries
 import (
 	"context"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just Libraries API methods
 type librariesImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *librariesImpl) AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error) {

@@ -4,11 +4,9 @@ package clusterpolicies
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewClusterPolicies(client *client.DatabricksClient) *ClusterPoliciesAPI {
+func NewClusterPolicies(client databricksClient) *ClusterPoliciesAPI {
 	return &ClusterPoliciesAPI{
 		impl: &clusterPoliciesImpl{
 			client: client,

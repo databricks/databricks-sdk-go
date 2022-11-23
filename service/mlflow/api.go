@@ -5,11 +5,10 @@ package mlflow
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
-	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-func NewExperiments(client *client.DatabricksClient) *ExperimentsAPI {
+func NewExperiments(client databricksClient) *ExperimentsAPI {
 	return &ExperimentsAPI{
 		impl: &experimentsImpl{
 			client: client,
@@ -209,7 +208,7 @@ func (a *ExperimentsAPI) Update(ctx context.Context, request UpdateExperiment) e
 	return a.impl.Update(ctx, request)
 }
 
-func NewMLflowArtifacts(client *client.DatabricksClient) *MLflowArtifactsAPI {
+func NewMLflowArtifacts(client databricksClient) *MLflowArtifactsAPI {
 	return &MLflowArtifactsAPI{
 		impl: &mLflowArtifactsImpl{
 			client: client,
@@ -264,7 +263,7 @@ func (a *MLflowArtifactsAPI) ListAll(ctx context.Context, request ListArtifactsR
 	return results, nil
 }
 
-func NewMLflowDatabricks(client *client.DatabricksClient) *MLflowDatabricksAPI {
+func NewMLflowDatabricks(client databricksClient) *MLflowDatabricksAPI {
 	return &MLflowDatabricksAPI{
 		impl: &mLflowDatabricksImpl{
 			client: client,
@@ -326,7 +325,7 @@ func (a *MLflowDatabricksAPI) TransitionStage(ctx context.Context, request Trans
 	return a.impl.TransitionStage(ctx, request)
 }
 
-func NewMLflowMetrics(client *client.DatabricksClient) *MLflowMetricsAPI {
+func NewMLflowMetrics(client databricksClient) *MLflowMetricsAPI {
 	return &MLflowMetricsAPI{
 		impl: &mLflowMetricsImpl{
 			client: client,
@@ -359,7 +358,7 @@ func (a *MLflowMetricsAPI) GetHistory(ctx context.Context, request GetHistoryReq
 	return a.impl.GetHistory(ctx, request)
 }
 
-func NewMLflowRuns(client *client.DatabricksClient) *MLflowRunsAPI {
+func NewMLflowRuns(client databricksClient) *MLflowRunsAPI {
 	return &MLflowRunsAPI{
 		impl: &mLflowRunsImpl{
 			client: client,
@@ -561,7 +560,7 @@ func (a *MLflowRunsAPI) Update(ctx context.Context, request UpdateRun) (*UpdateR
 	return a.impl.Update(ctx, request)
 }
 
-func NewModelVersionComments(client *client.DatabricksClient) *ModelVersionCommentsAPI {
+func NewModelVersionComments(client databricksClient) *ModelVersionCommentsAPI {
 	return &ModelVersionCommentsAPI{
 		impl: &modelVersionCommentsImpl{
 			client: client,
@@ -619,7 +618,7 @@ func (a *ModelVersionCommentsAPI) Update(ctx context.Context, request UpdateComm
 	return a.impl.Update(ctx, request)
 }
 
-func NewModelVersions(client *client.DatabricksClient) *ModelVersionsAPI {
+func NewModelVersions(client databricksClient) *ModelVersionsAPI {
 	return &ModelVersionsAPI{
 		impl: &modelVersionsImpl{
 			client: client,
@@ -728,7 +727,7 @@ func (a *ModelVersionsAPI) Update(ctx context.Context, request UpdateModelVersio
 	return a.impl.Update(ctx, request)
 }
 
-func NewRegisteredModels(client *client.DatabricksClient) *RegisteredModelsAPI {
+func NewRegisteredModels(client databricksClient) *RegisteredModelsAPI {
 	return &RegisteredModelsAPI{
 		impl: &registeredModelsImpl{
 			client: client,
@@ -892,7 +891,7 @@ func (a *RegisteredModelsAPI) Update(ctx context.Context, request UpdateRegister
 	return a.impl.Update(ctx, request)
 }
 
-func NewRegistryWebhooks(client *client.DatabricksClient) *RegistryWebhooksAPI {
+func NewRegistryWebhooks(client databricksClient) *RegistryWebhooksAPI {
 	return &RegistryWebhooksAPI{
 		impl: &registryWebhooksImpl{
 			client: client,
@@ -994,7 +993,7 @@ func (a *RegistryWebhooksAPI) Update(ctx context.Context, request UpdateRegistry
 	return a.impl.Update(ctx, request)
 }
 
-func NewTransitionRequests(client *client.DatabricksClient) *TransitionRequestsAPI {
+func NewTransitionRequests(client databricksClient) *TransitionRequestsAPI {
 	return &TransitionRequestsAPI{
 		impl: &transitionRequestsImpl{
 			client: client,

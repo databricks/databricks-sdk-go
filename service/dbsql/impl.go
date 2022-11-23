@@ -6,13 +6,17 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just Alerts API methods
 type alertsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *alertsImpl) CreateAlert(ctx context.Context, request EditAlert) (*Alert, error) {
@@ -90,7 +94,7 @@ func (a *alertsImpl) UpdateAlert(ctx context.Context, request EditAlert) error {
 
 // unexported type that holds implementations of just Dashboards API methods
 type dashboardsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *dashboardsImpl) CreateDashboard(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error) {
@@ -128,7 +132,7 @@ func (a *dashboardsImpl) RestoreDashboard(ctx context.Context, request RestoreDa
 
 // unexported type that holds implementations of just DataSources API methods
 type dataSourcesImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *dataSourcesImpl) ListDataSources(ctx context.Context) ([]DataSource, error) {
@@ -140,7 +144,7 @@ func (a *dataSourcesImpl) ListDataSources(ctx context.Context) ([]DataSource, er
 
 // unexported type that holds implementations of just DbsqlPermissions API methods
 type dbsqlPermissionsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *dbsqlPermissionsImpl) GetPermissions(ctx context.Context, request GetPermissionsRequest) (*GetPermissionsResponse, error) {
@@ -166,7 +170,7 @@ func (a *dbsqlPermissionsImpl) TransferOwnership(ctx context.Context, request Tr
 
 // unexported type that holds implementations of just Queries API methods
 type queriesImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *queriesImpl) CreateQuery(ctx context.Context, request QueryPostContent) (*Query, error) {

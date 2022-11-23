@@ -4,11 +4,9 @@ package scim
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewAccountGroups(client *client.DatabricksClient) *AccountGroupsAPI {
+func NewAccountGroups(client databricksClient) *AccountGroupsAPI {
 	return &AccountGroupsAPI{
 		impl: &accountGroupsImpl{
 			client: client,
@@ -108,7 +106,7 @@ func (a *AccountGroupsAPI) UpdateGroup(ctx context.Context, request Group) error
 	return a.impl.UpdateGroup(ctx, request)
 }
 
-func NewAccountServicePrincipals(client *client.DatabricksClient) *AccountServicePrincipalsAPI {
+func NewAccountServicePrincipals(client databricksClient) *AccountServicePrincipalsAPI {
 	return &AccountServicePrincipalsAPI{
 		impl: &accountServicePrincipalsImpl{
 			client: client,
@@ -211,7 +209,7 @@ func (a *AccountServicePrincipalsAPI) UpdateServicePrincipal(ctx context.Context
 	return a.impl.UpdateServicePrincipal(ctx, request)
 }
 
-func NewAccountUsers(client *client.DatabricksClient) *AccountUsersAPI {
+func NewAccountUsers(client databricksClient) *AccountUsersAPI {
 	return &AccountUsersAPI{
 		impl: &accountUsersImpl{
 			client: client,
@@ -318,7 +316,7 @@ func (a *AccountUsersAPI) UpdateUser(ctx context.Context, request User) error {
 	return a.impl.UpdateUser(ctx, request)
 }
 
-func NewCurrentUser(client *client.DatabricksClient) *CurrentUserAPI {
+func NewCurrentUser(client databricksClient) *CurrentUserAPI {
 	return &CurrentUserAPI{
 		impl: &currentUserImpl{
 			client: client,
@@ -353,7 +351,7 @@ func (a *CurrentUserAPI) Me(ctx context.Context) (*User, error) {
 	return a.impl.Me(ctx)
 }
 
-func NewGroups(client *client.DatabricksClient) *GroupsAPI {
+func NewGroups(client databricksClient) *GroupsAPI {
 	return &GroupsAPI{
 		impl: &groupsImpl{
 			client: client,
@@ -453,7 +451,7 @@ func (a *GroupsAPI) UpdateGroup(ctx context.Context, request Group) error {
 	return a.impl.UpdateGroup(ctx, request)
 }
 
-func NewServicePrincipals(client *client.DatabricksClient) *ServicePrincipalsAPI {
+func NewServicePrincipals(client databricksClient) *ServicePrincipalsAPI {
 	return &ServicePrincipalsAPI{
 		impl: &servicePrincipalsImpl{
 			client: client,
@@ -556,7 +554,7 @@ func (a *ServicePrincipalsAPI) UpdateServicePrincipal(ctx context.Context, reque
 	return a.impl.UpdateServicePrincipal(ctx, request)
 }
 
-func NewUsers(client *client.DatabricksClient) *UsersAPI {
+func NewUsers(client databricksClient) *UsersAPI {
 	return &UsersAPI{
 		impl: &usersImpl{
 			client: client,

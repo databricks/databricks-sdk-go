@@ -6,13 +6,17 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just BillableUsageDownload API methods
 type billableUsageDownloadImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *billableUsageDownloadImpl) DownloadBillableUsage(ctx context.Context, request DownloadBillableUsageRequest) error {
@@ -23,7 +27,7 @@ func (a *billableUsageDownloadImpl) DownloadBillableUsage(ctx context.Context, r
 
 // unexported type that holds implementations of just Budgets API methods
 type budgetsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *budgetsImpl) CreateBudget(ctx context.Context, request CreateBudgetRequest) (*BudgetWithStatus, error) {
@@ -61,7 +65,7 @@ func (a *budgetsImpl) UpdateBudget(ctx context.Context, request UpdateBudgetRequ
 
 // unexported type that holds implementations of just LogDelivery API methods
 type logDeliveryImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *logDeliveryImpl) CreateLogDeliveryConfig(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error) {

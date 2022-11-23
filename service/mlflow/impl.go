@@ -5,13 +5,17 @@ package mlflow
 import (
 	"context"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just Experiments API methods
 type experimentsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *experimentsImpl) Create(ctx context.Context, request CreateExperiment) (*CreateExperimentResponse, error) {
@@ -75,7 +79,7 @@ func (a *experimentsImpl) Update(ctx context.Context, request UpdateExperiment) 
 
 // unexported type that holds implementations of just MLflowArtifacts API methods
 type mLflowArtifactsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *mLflowArtifactsImpl) List(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error) {
@@ -87,7 +91,7 @@ func (a *mLflowArtifactsImpl) List(ctx context.Context, request ListArtifactsReq
 
 // unexported type that holds implementations of just MLflowDatabricks API methods
 type mLflowDatabricksImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *mLflowDatabricksImpl) Get(ctx context.Context, request GetRequest) (*GetResponse, error) {
@@ -106,7 +110,7 @@ func (a *mLflowDatabricksImpl) TransitionStage(ctx context.Context, request Tran
 
 // unexported type that holds implementations of just MLflowMetrics API methods
 type mLflowMetricsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *mLflowMetricsImpl) GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error) {
@@ -118,7 +122,7 @@ func (a *mLflowMetricsImpl) GetHistory(ctx context.Context, request GetHistoryRe
 
 // unexported type that holds implementations of just MLflowRuns API methods
 type mLflowRunsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *mLflowRunsImpl) Create(ctx context.Context, request CreateRun) (*CreateRunResponse, error) {
@@ -199,7 +203,7 @@ func (a *mLflowRunsImpl) Update(ctx context.Context, request UpdateRun) (*Update
 
 // unexported type that holds implementations of just ModelVersionComments API methods
 type modelVersionCommentsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *modelVersionCommentsImpl) Create(ctx context.Context, request CreateComment) (*CreateResponse, error) {
@@ -224,7 +228,7 @@ func (a *modelVersionCommentsImpl) Update(ctx context.Context, request UpdateCom
 
 // unexported type that holds implementations of just ModelVersions API methods
 type modelVersionsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *modelVersionsImpl) Create(ctx context.Context, request CreateModelVersionRequest) (*CreateModelVersionResponse, error) {
@@ -288,7 +292,7 @@ func (a *modelVersionsImpl) Update(ctx context.Context, request UpdateModelVersi
 
 // unexported type that holds implementations of just RegisteredModels API methods
 type registeredModelsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *registeredModelsImpl) Create(ctx context.Context, request CreateRegisteredModelRequest) (*CreateRegisteredModelResponse, error) {
@@ -359,7 +363,7 @@ func (a *registeredModelsImpl) Update(ctx context.Context, request UpdateRegiste
 
 // unexported type that holds implementations of just RegistryWebhooks API methods
 type registryWebhooksImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *registryWebhooksImpl) Create(ctx context.Context, request CreateRegistryWebhook) (*CreateResponse, error) {
@@ -397,7 +401,7 @@ func (a *registryWebhooksImpl) Update(ctx context.Context, request UpdateRegistr
 
 // unexported type that holds implementations of just TransitionRequests API methods
 type transitionRequestsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *transitionRequestsImpl) Approve(ctx context.Context, request ApproveTransitionRequest) (*ApproveResponse, error) {

@@ -4,11 +4,9 @@ package tokens
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewTokens(client *client.DatabricksClient) *TokensAPI {
+func NewTokens(client databricksClient) *TokensAPI {
 	return &TokensAPI{
 		impl: &tokensImpl{
 			client: client,

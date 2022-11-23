@@ -4,11 +4,9 @@ package globalinitscripts
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewGlobalInitScripts(client *client.DatabricksClient) *GlobalInitScriptsAPI {
+func NewGlobalInitScripts(client databricksClient) *GlobalInitScriptsAPI {
 	return &GlobalInitScriptsAPI{
 		impl: &globalInitScriptsImpl{
 			client: client,

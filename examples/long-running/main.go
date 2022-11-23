@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
-	"github.com/databricks/databricks-sdk-go/workspaces"
 )
 
 func main() {
-	w := workspaces.Must(workspaces.NewClient())
+	w := databricks.Must(databricks.NewWorkspaceClient())
 	ctx := context.Background()
 
 	// Fetch list of spark runtime versions

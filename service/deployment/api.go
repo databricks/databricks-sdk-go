@@ -7,12 +7,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
-	"github.com/databricks/databricks-sdk-go/databricks/retries"
-	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-func NewCredentialConfigurations(client *client.DatabricksClient) *CredentialConfigurationsAPI {
+func NewCredentialConfigurations(client databricksClient) *CredentialConfigurationsAPI {
 	return &CredentialConfigurationsAPI{
 		impl: &credentialConfigurationsImpl{
 			client: client,
@@ -108,7 +107,7 @@ func (a *CredentialConfigurationsAPI) ListCredentials(ctx context.Context) ([]Cr
 	return a.impl.ListCredentials(ctx)
 }
 
-func NewKeyConfigurations(client *client.DatabricksClient) *KeyConfigurationsAPI {
+func NewKeyConfigurations(client databricksClient) *KeyConfigurationsAPI {
 	return &KeyConfigurationsAPI{
 		impl: &keyConfigurationsImpl{
 			client: client,
@@ -267,7 +266,7 @@ func (a *KeyConfigurationsAPI) ListKeyConfigs(ctx context.Context) ([]CustomerMa
 	return a.impl.ListKeyConfigs(ctx)
 }
 
-func NewNetworkConfigurations(client *client.DatabricksClient) *NetworkConfigurationsAPI {
+func NewNetworkConfigurations(client databricksClient) *NetworkConfigurationsAPI {
 	return &NetworkConfigurationsAPI{
 		impl: &networkConfigurationsImpl{
 			client: client,
@@ -386,7 +385,7 @@ func (a *NetworkConfigurationsAPI) ListNetworkConfigs(ctx context.Context) ([]Ne
 	return a.impl.ListNetworkConfigs(ctx)
 }
 
-func NewPrivateAccessSettings(client *client.DatabricksClient) *PrivateAccessSettingsAPI {
+func NewPrivateAccessSettings(client databricksClient) *PrivateAccessSettingsAPI {
 	return &PrivateAccessSettingsAPI{
 		impl: &privateAccessSettingsImpl{
 			client: client,
@@ -553,7 +552,7 @@ func (a *PrivateAccessSettingsAPI) ReplacePrivateAccessSettings(ctx context.Cont
 	return a.impl.ReplacePrivateAccessSettings(ctx, request)
 }
 
-func NewStorageConfigurations(client *client.DatabricksClient) *StorageConfigurationsAPI {
+func NewStorageConfigurations(client databricksClient) *StorageConfigurationsAPI {
 	return &StorageConfigurationsAPI{
 		impl: &storageConfigurationsImpl{
 			client: client,
@@ -642,7 +641,7 @@ func (a *StorageConfigurationsAPI) ListStorageConfigs(ctx context.Context) ([]St
 	return a.impl.ListStorageConfigs(ctx)
 }
 
-func NewVpcEndpoints(client *client.DatabricksClient) *VpcEndpointsAPI {
+func NewVpcEndpoints(client databricksClient) *VpcEndpointsAPI {
 	return &VpcEndpointsAPI{
 		impl: &vpcEndpointsImpl{
 			client: client,
@@ -803,7 +802,7 @@ func (a *VpcEndpointsAPI) ListVpcEndpoints(ctx context.Context) ([]VpcEndpoint, 
 	return a.impl.ListVpcEndpoints(ctx)
 }
 
-func NewWorkspaces(client *client.DatabricksClient) *WorkspacesAPI {
+func NewWorkspaces(client databricksClient) *WorkspacesAPI {
 	return &WorkspacesAPI{
 		impl: &workspacesImpl{
 			client: client,

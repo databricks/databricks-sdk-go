@@ -6,13 +6,17 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just CredentialConfigurations API methods
 type credentialConfigurationsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *credentialConfigurationsImpl) CreateCredentialConfig(ctx context.Context, request CreateCredentialRequest) (*Credential, error) {
@@ -44,7 +48,7 @@ func (a *credentialConfigurationsImpl) ListCredentials(ctx context.Context) ([]C
 
 // unexported type that holds implementations of just KeyConfigurations API methods
 type keyConfigurationsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *keyConfigurationsImpl) CreateKeyConfig(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error) {
@@ -83,7 +87,7 @@ func (a *keyConfigurationsImpl) ListKeyConfigs(ctx context.Context) ([]CustomerM
 
 // unexported type that holds implementations of just NetworkConfigurations API methods
 type networkConfigurationsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *networkConfigurationsImpl) CreateNetworkConfig(ctx context.Context, request CreateNetworkRequest) (*Network, error) {
@@ -115,7 +119,7 @@ func (a *networkConfigurationsImpl) ListNetworkConfigs(ctx context.Context) ([]N
 
 // unexported type that holds implementations of just PrivateAccessSettings API methods
 type privateAccessSettingsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *privateAccessSettingsImpl) CreatePrivateAccessSettings(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
@@ -153,7 +157,7 @@ func (a *privateAccessSettingsImpl) ReplacePrivateAccessSettings(ctx context.Con
 
 // unexported type that holds implementations of just StorageConfigurations API methods
 type storageConfigurationsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *storageConfigurationsImpl) CreateStorageConfig(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error) {
@@ -185,7 +189,7 @@ func (a *storageConfigurationsImpl) ListStorageConfigs(ctx context.Context) ([]S
 
 // unexported type that holds implementations of just VpcEndpoints API methods
 type vpcEndpointsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *vpcEndpointsImpl) CreateVpcEndpoint(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error) {
@@ -217,7 +221,7 @@ func (a *vpcEndpointsImpl) ListVpcEndpoints(ctx context.Context) ([]VpcEndpoint,
 
 // unexported type that holds implementations of just Workspaces API methods
 type workspacesImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *workspacesImpl) CreateWorkspace(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {

@@ -4,11 +4,9 @@ package unitycatalog
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewCatalogs(client *client.DatabricksClient) *CatalogsAPI {
+func NewCatalogs(client databricksClient) *CatalogsAPI {
 	return &CatalogsAPI{
 		impl: &catalogsImpl{
 			client: client,
@@ -110,7 +108,7 @@ func (a *CatalogsAPI) Update(ctx context.Context, request UpdateCatalog) error {
 	return a.impl.Update(ctx, request)
 }
 
-func NewExternalLocations(client *client.DatabricksClient) *ExternalLocationsAPI {
+func NewExternalLocations(client databricksClient) *ExternalLocationsAPI {
 	return &ExternalLocationsAPI{
 		impl: &externalLocationsImpl{
 			client: client,
@@ -220,7 +218,7 @@ func (a *ExternalLocationsAPI) Update(ctx context.Context, request UpdateExterna
 	return a.impl.Update(ctx, request)
 }
 
-func NewGrants(client *client.DatabricksClient) *GrantsAPI {
+func NewGrants(client databricksClient) *GrantsAPI {
 	return &GrantsAPI{
 		impl: &grantsImpl{
 			client: client,
@@ -285,7 +283,7 @@ func (a *GrantsAPI) UpdatePermissions(ctx context.Context, request UpdatePermiss
 	return a.impl.UpdatePermissions(ctx, request)
 }
 
-func NewMetastores(client *client.DatabricksClient) *MetastoresAPI {
+func NewMetastores(client databricksClient) *MetastoresAPI {
 	return &MetastoresAPI{
 		impl: &metastoresImpl{
 			client: client,
@@ -432,7 +430,7 @@ func (a *MetastoresAPI) UpdateMetastoreAssignment(ctx context.Context, request U
 	return a.impl.UpdateMetastoreAssignment(ctx, request)
 }
 
-func NewProviders(client *client.DatabricksClient) *ProvidersAPI {
+func NewProviders(client databricksClient) *ProvidersAPI {
 	return &ProvidersAPI{
 		impl: &providersImpl{
 			client: client,
@@ -550,7 +548,7 @@ func (a *ProvidersAPI) Update(ctx context.Context, request UpdateProvider) error
 	return a.impl.Update(ctx, request)
 }
 
-func NewRecipientActivation(client *client.DatabricksClient) *RecipientActivationAPI {
+func NewRecipientActivation(client databricksClient) *RecipientActivationAPI {
 	return &RecipientActivationAPI{
 		impl: &recipientActivationImpl{
 			client: client,
@@ -611,7 +609,7 @@ func (a *RecipientActivationAPI) RetrieveTokenByActivationUrl(ctx context.Contex
 	})
 }
 
-func NewRecipients(client *client.DatabricksClient) *RecipientsAPI {
+func NewRecipients(client databricksClient) *RecipientsAPI {
 	return &RecipientsAPI{
 		impl: &recipientsImpl{
 			client: client,
@@ -736,7 +734,7 @@ func (a *RecipientsAPI) Update(ctx context.Context, request UpdateRecipient) err
 	return a.impl.Update(ctx, request)
 }
 
-func NewSchemas(client *client.DatabricksClient) *SchemasAPI {
+func NewSchemas(client databricksClient) *SchemasAPI {
 	return &SchemasAPI{
 		impl: &schemasImpl{
 			client: client,
@@ -839,7 +837,7 @@ func (a *SchemasAPI) Update(ctx context.Context, request UpdateSchema) error {
 	return a.impl.Update(ctx, request)
 }
 
-func NewShares(client *client.DatabricksClient) *SharesAPI {
+func NewShares(client databricksClient) *SharesAPI {
 	return &SharesAPI{
 		impl: &sharesImpl{
 			client: client,
@@ -975,7 +973,7 @@ func (a *SharesAPI) UpdateSharePermissions(ctx context.Context, request UpdateSh
 	return a.impl.UpdateSharePermissions(ctx, request)
 }
 
-func NewStorageCredentials(client *client.DatabricksClient) *StorageCredentialsAPI {
+func NewStorageCredentials(client databricksClient) *StorageCredentialsAPI {
 	return &StorageCredentialsAPI{
 		impl: &storageCredentialsImpl{
 			client: client,
@@ -1092,7 +1090,7 @@ func (a *StorageCredentialsAPI) Update(ctx context.Context, request UpdateStorag
 	return a.impl.Update(ctx, request)
 }
 
-func NewTables(client *client.DatabricksClient) *TablesAPI {
+func NewTables(client databricksClient) *TablesAPI {
 	return &TablesAPI{
 		impl: &tablesImpl{
 			client: client,
@@ -1236,7 +1234,7 @@ func (a *TablesAPI) Update(ctx context.Context, request UpdateTable) error {
 	return a.impl.Update(ctx, request)
 }
 
-func NewUnityFiles(client *client.DatabricksClient) *UnityFilesAPI {
+func NewUnityFiles(client databricksClient) *UnityFilesAPI {
 	return &UnityFilesAPI{
 		impl: &unityFilesImpl{
 			client: client,

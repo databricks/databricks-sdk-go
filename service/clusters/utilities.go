@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/databricks/databricks-sdk-go/databricks/logger"
+	"github.com/databricks/databricks-sdk-go/logger"
 )
 
 // getOrCreateClusterMutex guards "mounting" cluster creation to prevent multiple
@@ -77,7 +77,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	if !ok {
 		return nil, fmt.Errorf("cannot get raw clusters API")
 	}
-	if api.client.Config.IsAws() {
+	if api.client.IsAws() {
 		r.AwsAttributes = &AwsAttributes{
 			Availability: "SPOT",
 		}

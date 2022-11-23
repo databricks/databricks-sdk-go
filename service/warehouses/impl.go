@@ -6,13 +6,17 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just QueryHistory API methods
 type queryHistoryImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *queryHistoryImpl) ListQueries(ctx context.Context, request ListQueriesRequest) (*ListQueriesResponse, error) {
@@ -24,7 +28,7 @@ func (a *queryHistoryImpl) ListQueries(ctx context.Context, request ListQueriesR
 
 // unexported type that holds implementations of just Warehouses API methods
 type warehousesImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *warehousesImpl) CreateWarehouse(ctx context.Context, request CreateWarehouseRequest) (*CreateWarehouseResponse, error) {

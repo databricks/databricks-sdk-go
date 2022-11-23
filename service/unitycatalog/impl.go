@@ -6,13 +6,17 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just Catalogs API methods
 type catalogsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *catalogsImpl) Create(ctx context.Context, request CreateCatalog) (*CreateCatalogResponse, error) {
@@ -50,7 +54,7 @@ func (a *catalogsImpl) Update(ctx context.Context, request UpdateCatalog) error 
 
 // unexported type that holds implementations of just ExternalLocations API methods
 type externalLocationsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExternalLocation) (*CreateExternalLocationResponse, error) {
@@ -88,7 +92,7 @@ func (a *externalLocationsImpl) Update(ctx context.Context, request UpdateExtern
 
 // unexported type that holds implementations of just Grants API methods
 type grantsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *grantsImpl) GetPermissions(ctx context.Context, request GetPermissionsRequest) (*GetPermissionsResponse, error) {
@@ -106,7 +110,7 @@ func (a *grantsImpl) UpdatePermissions(ctx context.Context, request UpdatePermis
 
 // unexported type that holds implementations of just Metastores API methods
 type metastoresImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*CreateMetastoreResponse, error) {
@@ -169,7 +173,7 @@ func (a *metastoresImpl) UpdateMetastoreAssignment(ctx context.Context, request 
 
 // unexported type that holds implementations of just Providers API methods
 type providersImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*CreateProviderResponse, error) {
@@ -214,7 +218,7 @@ func (a *providersImpl) Update(ctx context.Context, request UpdateProvider) erro
 
 // unexported type that holds implementations of just RecipientActivation API methods
 type recipientActivationImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *recipientActivationImpl) GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) error {
@@ -232,7 +236,7 @@ func (a *recipientActivationImpl) RetrieveToken(ctx context.Context, request Ret
 
 // unexported type that holds implementations of just Recipients API methods
 type recipientsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*CreateRecipientResponse, error) {
@@ -284,7 +288,7 @@ func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) er
 
 // unexported type that holds implementations of just Schemas API methods
 type schemasImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *schemasImpl) Create(ctx context.Context, request CreateSchema) (*CreateSchemaResponse, error) {
@@ -322,7 +326,7 @@ func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) error {
 
 // unexported type that holds implementations of just Shares API methods
 type sharesImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*CreateShareResponse, error) {
@@ -373,7 +377,7 @@ func (a *sharesImpl) UpdateSharePermissions(ctx context.Context, request UpdateS
 
 // unexported type that holds implementations of just StorageCredentials API methods
 type storageCredentialsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *storageCredentialsImpl) Create(ctx context.Context, request CreateStorageCredential) (*CreateStorageCredentialResponse, error) {
@@ -411,7 +415,7 @@ func (a *storageCredentialsImpl) Update(ctx context.Context, request UpdateStora
 
 // unexported type that holds implementations of just Tables API methods
 type tablesImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *tablesImpl) Create(ctx context.Context, request CreateTable) (*CreateTableResponse, error) {
@@ -463,7 +467,7 @@ func (a *tablesImpl) Update(ctx context.Context, request UpdateTable) error {
 
 // unexported type that holds implementations of just UnityFiles API methods
 type unityFilesImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *unityFilesImpl) ListFiles(ctx context.Context, request ListFilesRequest) (*ListFilesResponse, error) {

@@ -4,11 +4,9 @@ package gitcredentials
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewGitCredentials(client *client.DatabricksClient) *GitCredentialsAPI {
+func NewGitCredentials(client databricksClient) *GitCredentialsAPI {
 	return &GitCredentialsAPI{
 		impl: &gitCredentialsImpl{
 			client: client,

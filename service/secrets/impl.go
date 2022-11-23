@@ -5,13 +5,17 @@ package secrets
 import (
 	"context"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just Secrets API methods
 type secretsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) error {

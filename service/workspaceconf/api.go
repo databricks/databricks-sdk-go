@@ -4,11 +4,9 @@ package workspaceconf
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewWorkspaceConf(client *client.DatabricksClient) *WorkspaceConfAPI {
+func NewWorkspaceConf(client databricksClient) *WorkspaceConfAPI {
 	return &WorkspaceConfAPI{
 		impl: &workspaceConfImpl{
 			client: client,

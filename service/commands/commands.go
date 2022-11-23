@@ -4,10 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
-	"github.com/databricks/databricks-sdk-go/databricks/logger"
-	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 // CommandExecutor creates a spark context and executes a command and then closes context
@@ -22,7 +21,7 @@ func (m CommandMock) Execute(_ context.Context, _, _, commandStr string) Results
 	return m(commandStr)
 }
 
-func NewCommandExecutor(client *client.DatabricksClient) CommandExecutor {
+func NewCommandExecutor(client databricksClient) CommandExecutor {
 	return &CommandsHighLevelAPI{
 		clusters:  clusters.NewClusters(client),
 		execution: NewCommandExecution(client),

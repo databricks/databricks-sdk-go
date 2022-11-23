@@ -5,13 +5,17 @@ package clusterpolicies
 import (
 	"context"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just ClusterPolicies API methods
 type clusterPoliciesImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *clusterPoliciesImpl) Create(ctx context.Context, request CreatePolicy) (*CreatePolicyResponse, error) {

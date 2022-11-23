@@ -1,16 +1,15 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package workspaces
+package databricks
 
 import (
-	"github.com/databricks/databricks-sdk-go/databricks"
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/client"
 	{{range .Packages}}
 	"github.com/databricks/databricks-sdk-go/service/{{.Name}}"{{end}}
 )
 
-type WorkspacesClient struct {
-	Config *databricks.Config
+type WorkspaceClient struct {
+	Config *Config
 
 	{{range .Services}}{{if not .IsAccounts}}
 	{{- if eq .Name "CommandExecution" -}}
@@ -24,30 +23,30 @@ type WorkspacesClient struct {
 }
 
 // Must panics if error is not nil. It's intended to be used with 
-// [workspaces.NewClient] for variable initializations
-func Must(wsClient *WorkspacesClient, err error) *WorkspacesClient {
+// [databricks.NewWorkspaceClient] for variable initializations
+func Must[T any](c T, err error) T {
 	if err != nil {
 		panic(err)
 	}
-	return wsClient
+	return c
 }
 
 // NewClient creates new Databricks SDK client for Workspaces or returns error
 // in case configuration is wrong
-func NewClient(c ...*databricks.Config) (*WorkspacesClient, error) {
-	var cfg *databricks.Config
+func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
+	var cfg *Config
 	if len(c) == 1 {
 		// first config
 		cfg = c[0]
 	} else {
 		// default config
-		cfg = &databricks.Config{}
+		cfg = &Config{}
 	}
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
-	return &WorkspacesClient{
+	return &WorkspaceClient{
 		Config: cfg,
 		{{range .Services}}{{if not .IsAccounts}}
 		{{- if eq .Name "CommandExecution" -}}

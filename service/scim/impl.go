@@ -6,13 +6,17 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just AccountGroups API methods
 type accountGroupsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *accountGroupsImpl) CreateGroup(ctx context.Context, request Group) (*Group, error) {
@@ -56,7 +60,7 @@ func (a *accountGroupsImpl) UpdateGroup(ctx context.Context, request Group) erro
 
 // unexported type that holds implementations of just AccountServicePrincipals API methods
 type accountServicePrincipalsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *accountServicePrincipalsImpl) CreateServicePrincipal(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
@@ -100,7 +104,7 @@ func (a *accountServicePrincipalsImpl) UpdateServicePrincipal(ctx context.Contex
 
 // unexported type that holds implementations of just AccountUsers API methods
 type accountUsersImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *accountUsersImpl) CreateUser(ctx context.Context, request User) (*User, error) {
@@ -144,7 +148,7 @@ func (a *accountUsersImpl) UpdateUser(ctx context.Context, request User) error {
 
 // unexported type that holds implementations of just CurrentUser API methods
 type currentUserImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *currentUserImpl) Me(ctx context.Context) (*User, error) {
@@ -156,7 +160,7 @@ func (a *currentUserImpl) Me(ctx context.Context) (*User, error) {
 
 // unexported type that holds implementations of just Groups API methods
 type groupsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *groupsImpl) CreateGroup(ctx context.Context, request Group) (*Group, error) {
@@ -200,7 +204,7 @@ func (a *groupsImpl) UpdateGroup(ctx context.Context, request Group) error {
 
 // unexported type that holds implementations of just ServicePrincipals API methods
 type servicePrincipalsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *servicePrincipalsImpl) CreateServicePrincipal(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
@@ -244,7 +248,7 @@ func (a *servicePrincipalsImpl) UpdateServicePrincipal(ctx context.Context, requ
 
 // unexported type that holds implementations of just Users API methods
 type usersImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *usersImpl) CreateUser(ctx context.Context, request User) (*User, error) {

@@ -7,12 +7,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
-	"github.com/databricks/databricks-sdk-go/databricks/retries"
-	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-func NewPipelines(client *client.DatabricksClient) *PipelinesAPI {
+func NewPipelines(client databricksClient) *PipelinesAPI {
 	return &PipelinesAPI{
 		impl: &pipelinesImpl{
 			client: client,

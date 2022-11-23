@@ -5,13 +5,17 @@ package jobs
 import (
 	"context"
 	"net/http"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
+
+type databricksClient interface {
+	Do(ctx context.Context, method string, path string, request any, response any) error
+	ConfiguredAccountID() string
+	IsAws() bool
+}
 
 // unexported type that holds implementations of just Jobs API methods
 type jobsImpl struct {
-	client *client.DatabricksClient
+	client databricksClient
 }
 
 func (a *jobsImpl) CancelAllRuns(ctx context.Context, request CancelAllRuns) error {

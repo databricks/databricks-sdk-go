@@ -4,11 +4,9 @@ package ipaccesslists
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewIpAccessLists(client *client.DatabricksClient) *IpAccessListsAPI {
+func NewIpAccessLists(client databricksClient) *IpAccessListsAPI {
 	return &IpAccessListsAPI{
 		impl: &ipAccessListsImpl{
 			client: client,

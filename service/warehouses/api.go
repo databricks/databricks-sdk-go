@@ -7,12 +7,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
-	"github.com/databricks/databricks-sdk-go/databricks/retries"
-	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-func NewQueryHistory(client *client.DatabricksClient) *QueryHistoryAPI {
+func NewQueryHistory(client databricksClient) *QueryHistoryAPI {
 	return &QueryHistoryAPI{
 		impl: &queryHistoryImpl{
 			client: client,
@@ -68,7 +67,7 @@ func (a *QueryHistoryAPI) ListQueriesAll(ctx context.Context, request ListQuerie
 	return results, nil
 }
 
-func NewWarehouses(client *client.DatabricksClient) *WarehousesAPI {
+func NewWarehouses(client databricksClient) *WarehousesAPI {
 	return &WarehousesAPI{
 		impl: &warehousesImpl{
 			client: client,
