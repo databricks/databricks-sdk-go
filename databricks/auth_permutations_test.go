@@ -76,6 +76,18 @@ func TestConfig_NoParams(t *testing.T) {
 	}.apply(t)
 }
 
+func TestConfig_EnvIfAttrSet(t *testing.T) {
+	configFixture{
+		host:  "x",
+		token: "y",
+		env: map[string]string{
+			"DATABRICKS_HOST":  "host",
+			"DATABRICKS_TOKEN": "token",
+		},
+		assertError: "resolve: attributes already set: host, token. Config: host=x, token=***. Env: DATABRICKS_HOST, DATABRICKS_TOKEN",
+	}.apply(t)
+}
+
 func TestConfig_HostEnv(t *testing.T) {
 	configFixture{
 		env: map[string]string{

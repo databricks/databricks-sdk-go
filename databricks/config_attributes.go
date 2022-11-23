@@ -82,13 +82,14 @@ func (a Attributes) Name() string {
 
 // Configure implements Loader interface for environment variables
 func (a Attributes) Configure(cfg *Config) error {
+	var alreadySet []ConfigAttribute
 	for _, attr := range a {
-		if !attr.IsZero(cfg) {
-			// don't overwtite a value previously set
-			continue
-		}
 		v := attr.ReadEnv()
 		if v == "" {
+			continue
+		}
+		if !attr.IsZero(cfg) {
+			alreadySet = append(alreadySet, attr)
 			continue
 		}
 		err := attr.SetS(cfg, v)
@@ -96,6 +97,15 @@ func (a Attributes) Configure(cfg *Config) error {
 			return err
 		}
 	}
+
+	if len(alreadySet) > 0 {
+		var names []string
+		for _, attr := range alreadySet {
+			names = append(names, attr.Name)
+		}
+		return fmt.Errorf("attributes already set: %s", strings.Join(names, ", "))
+	}
+
 	return nil
 }
 
