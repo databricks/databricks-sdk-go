@@ -4,6 +4,7 @@ package workspaceconf
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
@@ -16,12 +17,12 @@ type workspaceConfImpl struct {
 func (a *workspaceConfImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*WorkspaceConf, error) {
 	var workspaceConf WorkspaceConf
 	path := "/api/2.0/workspace-conf"
-	err := a.client.Get(ctx, path, request, &workspaceConf)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &workspaceConf)
 	return &workspaceConf, err
 }
 
 func (a *workspaceConfImpl) SetStatus(ctx context.Context, request WorkspaceConf) error {
 	path := "/api/2.0/workspace-conf"
-	err := a.client.Patch(ctx, path, request)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
 }
