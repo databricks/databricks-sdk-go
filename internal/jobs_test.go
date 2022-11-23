@@ -43,7 +43,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
-	w := workspaces.New()
+	w := workspaces.Must(workspaces.NewClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -193,7 +193,7 @@ func TestAccJobsListAllNoDuplicates(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	w := workspaces.New()
+	w := workspaces.Must(workspaces.NewClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}

@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	w := workspaces.New()
+	w := workspaces.Must(workspaces.NewClient())
 	all, err := w.Clusters.ListAll(context.Background(), clusters.ListRequest{})
 	if err != nil {
 		panic(err)

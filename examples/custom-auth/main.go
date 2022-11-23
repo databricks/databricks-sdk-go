@@ -30,10 +30,10 @@ func (c *CustomCredentials) Configure(
 }
 
 func main() {
-	w := workspaces.New(&databricks.Config{
+	w := workspaces.Must(workspaces.NewClient(&databricks.Config{
 		Host:        askFor("Host:"),
 		Credentials: &CustomCredentials{},
-	})
+	}))
 	all, err := w.Clusters.ListAll(context.Background(), clusters.ListRequest{})
 	if err != nil {
 		panic(err)

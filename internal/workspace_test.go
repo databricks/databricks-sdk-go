@@ -15,7 +15,7 @@ import (
 func TestAccListWorkspaceIntegration(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	ctx := context.Background()
-	w := workspaces.New()
+	w := workspaces.Must(workspaces.NewClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}

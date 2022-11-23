@@ -3,6 +3,8 @@
 package accounts
 
 import (
+	"fmt"
+
 	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 
@@ -201,7 +203,18 @@ type AccountsClient struct {
 	Workspaces *deployment.WorkspacesAPI
 }
 
-func New(c ...*databricks.Config) *AccountsClient {
+// Must panics if error is not nil. It's intended to be used with
+// [accounts.NewClient] for variable initializations
+func Must(acctClient *AccountsClient, err error) *AccountsClient {
+	if err != nil {
+		panic(err)
+	}
+	return acctClient
+}
+
+// NewClient creates new Databricks SDK client for Accounts or returns error
+// in case configuration is wrong
+func NewClient(c ...*databricks.Config) (*AccountsClient, error) {
 	var cfg *databricks.Config
 	if len(c) == 1 {
 		// first config
@@ -215,11 +228,11 @@ func New(c ...*databricks.Config) *AccountsClient {
 		panic(err)
 	}
 	if cfg.AccountID == "" {
-		panic("AccountID is not specified on config")
+		return nil, fmt.Errorf("AccountID is not specified on config")
 	}
 	apiClient, err := client.New(cfg)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	return &AccountsClient{
 		Config: cfg,
@@ -238,5 +251,5 @@ func New(c ...*databricks.Config) *AccountsClient {
 		VpcEndpoints:             deployment.NewVpcEndpoints(apiClient),
 		WorkspaceAssignment:      permissions.NewWorkspaceAssignment(apiClient),
 		Workspaces:               deployment.NewWorkspaces(apiClient),
-	}
+	}, nil
 }
