@@ -231,12 +231,12 @@ func (c *Config) fixHostIfNeeded() error {
 	return nil
 }
 
-func (cfg *Config) GetAuthType() string         { return cfg.AuthType }
-func (cfg *Config) GetAccountID() string        { return cfg.AccountID }
-func (cfg *Config) GetHost() string             { return cfg.Host }
-func (cfg *Config) GetRetryTimeoutSeconds() int { return cfg.RetryTimeoutSeconds }
-func (cfg *Config) GetRateLimitPerSecond() int  { return cfg.RateLimitPerSecond }
-func (cfg *Config) GetHTTPTimeoutSeconds() int  { return cfg.HTTPTimeoutSeconds }
-func (cfg *Config) GetDebugTruncateBytes() int  { return cfg.DebugTruncateBytes }
-func (cfg *Config) IsDebugHeaders() bool        { return cfg.DebugHeaders }
-func (cfg *Config) IsInsecureSkipVerify() bool  { return cfg.InsecureSkipVerify }
+func (c *Config) GetAuthType() string         { return c.AuthType }
+func (c *Config) GetAccountID() string        { return c.AccountID }
+func (c *Config) GetHost() string             { return c.Host }
+func (c *Config) GetRetryTimeoutSeconds() int { return c.RetryTimeoutSeconds }
+func (c *Config) GetRateLimitPerSecond() int  { return c.RateLimitPerSecond }
+func (c *Config) GetHTTPTimeoutSeconds() int  { return c.HTTPTimeoutSeconds }
+func (c *Config) GetDebugTruncateBytes() int  { return c.DebugTruncateBytes }
+func (c *Config) IsDebugHeaders() bool        { return c.DebugHeaders }
+func (c *Config) IsInsecureSkipVerify() bool  { return c.InsecureSkipVerify }
