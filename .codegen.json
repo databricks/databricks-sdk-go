@@ -1,0 +1,13 @@
+{
+  "formatter": "go fmt ./... && go run golang.org/x/tools/cmd/goimports@latest -w $FILENAMES",
+  "packages": {
+    ".codegen/api.go.tmpl": "service/{{.Name}}/api.go",
+    ".codegen/impl.go.tmpl": "service/{{.Name}}/impl.go",
+    ".codegen/interface.go.tmpl": "service/{{.Name}}/interface.go",
+    ".codegen/model.go.tmpl": "service/{{.Name}}/model.go"
+  },
+  "batch": {
+    ".codegen/workspaces.go.tmpl": "workspaces/client.go",
+    ".codegen/accounts.go.tmpl": "accounts/client.go"
+  }
+}
