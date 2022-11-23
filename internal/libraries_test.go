@@ -12,7 +12,7 @@ import (
 func TestAccLibraries(t *testing.T) {
 	GetEnvOrSkipTest(t, "CLOUD_ENV")
 	ctx := context.Background()
-	w := workspaces.MustNewClient()
+	w := workspaces.Must(workspaces.NewClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}

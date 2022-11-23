@@ -13,14 +13,14 @@ import (
 )
 
 func main() {
-	w := workspaces.MustNewClient(&databricks.Config{
+	w := workspaces.Must(workspaces.NewClient(&databricks.Config{
 		Host:              askFor("Host:"),
 		AzureResourceID:   askFor("Azure Resource ID:"),
 		AzureTenantID:     askFor("AAD Tenant ID:"),
 		AzureClientID:     askFor("AAD Client ID:"),
 		AzureClientSecret: askFor("AAD Client Secret:"),
 		Credentials:       databricks.AzureClientSecretCredentials{},
-	})
+	}))
 	all, err := w.Clusters.ListAll(context.Background(), clusters.ListRequest{})
 	if err != nil {
 		panic(err)

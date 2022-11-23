@@ -76,7 +76,7 @@ During the Beta period, you must clone and then reference this repository locall
 
    func main() {
      const path = "/"
-     w := workspaces.MustNewClient()
+     w := workspaces.Must(workspaces.NewClient())
 
      resp, err := w.Workspace.GetStatusByPath(context.Background(), path)
 
@@ -122,7 +122,7 @@ During the Beta period, you must clone and then reference this repository locall
 If you use Databricks [configuration profiles](https://docs.databricks.com/dev-tools/auth.html#configuration-profiles) or Databricks-specific [environment variables](https://docs.databricks.com/dev-tools/auth.html#environment-variables) for [Databricks authentication](https://docs.databricks.com/dev-tools/auth.html), the only code required to start working with a Databricks workspace is the following code snippet, which instructs the Databricks SDK for Go to use its [default authentication flow](#default-authentication-flow):
 
 ```go
-w := workspaces.MustNewClient()
+w := workspaces.Must(workspaces.NewClient())
 w./*press TAB for autocompletion*/
 ```
 
@@ -206,18 +206,18 @@ func main() {
   // - A Databricks configuration profile named DEFAULT.
   // - The environment variables DATABRICKS_HOST and DATABRICKS_TOKEN.
 
-  // w := workspaces.MustNewClient()
+  // w := workspaces.Must(workspaces.NewClient())
 
   // Option 2: To ask the user at run time for the needed information,
   // uncomment the following code, uncomment the import
   // "github.com/databricks/databricks-sdk-go/databricks"
   // and then run.
 
-  // w := workspaces.MustNewClient(&databricks.Config{
+  // w := workspaces.Must(workspaces.NewClient(&databricks.Config{
   //   AuthType: "pat",
   //   Host:     askFor("Databricks workspace URL:"),
   //   Token:    askFor("Access token:"),
-  // })
+  // }))
 
   fmt.Printf("The workspace URL is '%s', and the token is '%s'.\n",
     w.Config.Host,
@@ -231,7 +231,7 @@ func main() {
 // the missing information.
 func askFor(prompt string) string {
   var s string
-  r := bufio.MustNewClientReader(os.Stdin)
+  r := bufio.MustNew(os.Stdin)
   for {
     fmt.Fprint(os.Stdout, prompt+" ")
     s, _ = r.ReadString('\n')
@@ -290,18 +290,18 @@ func main() {
   // - ARM_CLIENT_ID
   // - ARM_CLIENT_SECRET
 
-  // w := workspaces.MustNewClient(&databricks.Config{AuthType: "azure-client-secret"})
+  // w := workspaces.Must(workspaces.NewClient(&databricks.Config{AuthType: "azure-client-secret"}))
 
   // Option 2: To ask the user at run time for the needed information,
   // uncomment the following code and then run.
 
-  // w := workspaces.MustNewClient(&databricks.Config{
+  // w := workspaces.Must(workspaces.NewClient(&databricks.Config{
   //   AuthType:          "azure-client-secret",
   //   AzureResourceID:   askFor("Azure resource ID for your Azure Databricks workspace:"),
   //   AzureTenantID:     askFor("Azure tenant ID for your Azure AD service principal:"),
   //   AzureClientID:     askFor("Azure client ID for your Azure AD service principal:"),
   //   AzureClientSecret: askFor("Azure client secret for your Azure AD service principal:"),
-  // })
+  // }))
 
   fmt.Printf("The resource ID is '%s', the tenant ID is '%s', "+
     "the client ID is '%s', and the client secret is '%s'.",
@@ -318,7 +318,7 @@ func main() {
 // the missing information.
 func askFor(prompt string) string {
   var s string
-  r := bufio.MustNewClientReader(os.Stdin)
+  r := bufio.MustNew(os.Stdin)
   for {
     fmt.Fprint(os.Stdout, prompt+" ")
     s, _ = r.ReadString('\n')
@@ -369,16 +369,16 @@ func main() {
   // assumes you have already set the environment variables
   // DATABRICKS_HOST and GOOGLE_SERVICE_ACCOUNT.
 
-  // w := workspaces.MustNewClient(&databricks.Config{AuthType: "google-id"})
+  // w := workspaces.Must(workspaces.NewClient(&databricks.Config{AuthType: "google-id"}))
 
   // Option 2: To ask the user at run time for the needed information,
   // uncomment the following code and then run.
 
-  // w := workspaces.MustNewClient(&databricks.Config{
+  // w := workspaces.Must(workspaces.NewClient(&databricks.Config{
   //   AuthType:             "google-id",
   //   Host:                 askFor("Databricks workspace URL:"),
   //   GoogleServiceAccount: askFor("Google Cloud Platform service account's email address:"),
-  // })
+  // }))
 
   fmt.Printf("The host is '%s', and the service account email is '%s'.",
     w.Config.Host,
@@ -392,7 +392,7 @@ func main() {
 // the missing information.
 func askFor(prompt string) string {
   var s string
-  r := bufio.MustNewClientReader(os.Stdin)
+  r := bufio.MustNew(os.Stdin)
   for {
     fmt.Fprint(os.Stdout, prompt+" ")
     s, _ = r.ReadString('\n')
@@ -430,10 +430,10 @@ func init() {
 }
 
 func main() {
-  w := workspaces.MustNewClient(&databricks.Config{
+  w := workspaces.Must(workspaces.NewClient(&databricks.Config{
     AuthType: "pat",
     Profile:  "MYPROFILE",
-  })
+  }))
 
   fmt.Printf("Using authorization type '%s', the profile is '%s'.",
     w.Config.AuthType,
@@ -474,9 +474,9 @@ func init() {
 }
 
 func main() {
-  w := workspaces.MustNewClient(&databricks.Config{
+  w := workspaces.Must(workspaces.NewClient(&databricks.Config{
     DebugHeaders: true,
-  })
+  }))
 
   fmt.Printf("Debug headers is '%t'.", w.Config.DebugHeaders,)
   
@@ -506,9 +506,9 @@ func (c *CustomCredentials) Configure(ctx context.Context, cfg *databricks.Confi
 }
 
 func main() {
-	w := workspaces.MustNewClient(&databricks.Config{
+	w := workspaces.Must(workspaces.NewClient(&databricks.Config{
 		Credentials: &CustomCredentials{},
-	})
+	}))
     // ..
 }
 ```

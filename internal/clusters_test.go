@@ -18,7 +18,7 @@ func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
-	w := workspaces.MustNewClient()
+	w := workspaces.Must(workspaces.NewClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -56,7 +56,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
-	w := workspaces.MustNewClient()
+	w := workspaces.Must(workspaces.NewClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}

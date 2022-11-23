@@ -28,7 +28,7 @@ func assertAcceptance(t *testing.T) {
 func TestAccDbfsUtilities(t *testing.T) {
 	assertAcceptance(t)
 	ctx := context.Background()
-	w := workspaces.MustNewClient()
+	w := workspaces.Must(workspaces.NewClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -67,7 +67,7 @@ func TestAccDbfsUtilities(t *testing.T) {
 func TestAccListDbfsIntegration(t *testing.T) {
 	assertAcceptance(t)
 	ctx := context.Background()
-	w := workspaces.MustNewClient()
+	w := workspaces.Must(workspaces.NewClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}

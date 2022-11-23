@@ -15,7 +15,7 @@ import (
 
 func TestAccDefaultCredentials(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	w := workspaces.MustNewClient()
+	w := workspaces.Must(workspaces.NewClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -34,9 +34,9 @@ func TestAccDefaultCredentials(t *testing.T) {
 // TODO: add CredentialProviderChain
 
 func TestAccExplicitDatabricksCfg(t *testing.T) {
-	w := workspaces.MustNewClient(&databricks.Config{
+	w := workspaces.Must(workspaces.NewClient(&databricks.Config{
 		Profile: GetEnvOrSkipTest(t, "DATABRICKS_CONFIG_PROFILE"),
-	})
+	}))
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -71,10 +71,10 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 		t.Fatalf("error running az: %s (%s)", err, out)
 	}
 
-	w := workspaces.MustNewClient(&databricks.Config{
+	w := workspaces.Must(workspaces.NewClient(&databricks.Config{
 		AzureResourceID: GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
 		Credentials:     databricks.AzureCliCredentials{},
-	})
+	}))
 	ctx := context.Background()
 	versions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
@@ -88,13 +88,13 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 }
 
 func TestAccExplicitAzureSpnAuth(t *testing.T) {
-	w := workspaces.MustNewClient(&databricks.Config{
+	w := workspaces.Must(workspaces.NewClient(&databricks.Config{
 		AzureTenantID:     GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
 		AzureClientID:     GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
 		AzureClientSecret: GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET"),
 		AzureResourceID:   GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
 		Credentials:       databricks.AzureClientSecretCredentials{},
-	})
+	}))
 	ctx := context.Background()
 	versions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)

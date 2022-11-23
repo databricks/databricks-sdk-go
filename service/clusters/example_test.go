@@ -9,7 +9,7 @@ import (
 )
 
 func ExampleClustersAPI() {
-	w := workspaces.MustNewClient()
+	w := workspaces.Must(workspaces.NewClient())
 	ctx := context.Background()
 
 	// Fetch list of spark runtime versions

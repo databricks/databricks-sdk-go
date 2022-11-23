@@ -16,9 +16,9 @@ func TestMwsAccWorkspaceAssignment(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	a := accounts.MustNewClient(&databricks.Config{
+	a := accounts.Must(accounts.NewClient(&databricks.Config{
 		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
-	})
+	}))
 	if !a.Config.IsAccountsClient() || !a.Config.IsAws() {
 		t.SkipNow()
 	}

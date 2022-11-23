@@ -494,10 +494,9 @@ type WorkspacesClient struct {
 	WorkspaceConf *workspaceconf.WorkspaceConfAPI
 }
 
-// NewClient creates new Databricks SDK client for Workspaces or panics
-// in case configuration is wrong
-func MustNewClient(maybeConfig ...*databricks.Config) *WorkspacesClient {
-	wsClient, err := NewClient(maybeConfig...)
+// Must panics if error is not nil. It's intended to be used with
+// [workspaces.NewClient] for variable initializations
+func Must(wsClient *WorkspacesClient, err error) *WorkspacesClient {
 	if err != nil {
 		panic(err)
 	}

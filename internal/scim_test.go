@@ -16,7 +16,7 @@ func TestAccCurrentUser(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.TODO()
-	w := workspaces.MustNewClient()
+	w := workspaces.Must(workspaces.NewClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -32,7 +32,7 @@ func TestAccUsers(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.TODO()
-	w := workspaces.MustNewClient()
+	w := workspaces.Must(workspaces.NewClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -78,7 +78,7 @@ func TestAccGroups(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.TODO()
-	w := workspaces.MustNewClient()
+	w := workspaces.Must(workspaces.NewClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}

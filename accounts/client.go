@@ -203,10 +203,9 @@ type AccountsClient struct {
 	Workspaces *deployment.WorkspacesAPI
 }
 
-// NewClient creates new Databricks SDK client for Accounts or panics
-// in case configuration is wrong
-func MustNewClient(c ...*databricks.Config) *AccountsClient {
-	acctClient, err := NewClient(c...)
+// Must panics if error is not nil. It's intended to be used with
+// [accounts.NewClient] for variable initializations
+func Must(acctClient *AccountsClient, err error) *AccountsClient {
 	if err != nil {
 		panic(err)
 	}

@@ -13,7 +13,7 @@ func TestAccCommands(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	wsc := workspaces.MustNewClient()
+	wsc := workspaces.Must(workspaces.NewClient())
 
 	clusterId := GetEnvOrSkipTest(t, "TEST_GOSDK_CLUSTER_ID")
 
