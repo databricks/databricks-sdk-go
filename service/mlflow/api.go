@@ -441,16 +441,7 @@ func (a *MLflowRunsAPI) Get(ctx context.Context, request GetRunRequest) (*GetRun
 //
 // You can write metrics, params, and tags in interleaving fashion, but within a
 // given entity type are guaranteed to follow the order specified in the request
-// body. That is, for an API request like:
-//
-// ``` { "run_id": "2a14ed5c6a87499199e0106c3501eab8", "metrics": [ { "key":
-// "mae", "value": 2.5, "timestamp": 1552550804 }, { "key": "rmse", "value":
-// 2.7, "timestamp": 1552550804 }], "params": [ { \"key\": \"model_class\",
-// \"value\": \"LogisticRegression\" }] } ```
-//
-// the server is guaranteed to write metric "rmse" after "mae", though it may
-// write the param __model_class__ before both metrics, after "mae", or after
-// both metrics.
+// body.
 //
 // The overwrite behavior for metrics, params, and tags is as follows:
 //

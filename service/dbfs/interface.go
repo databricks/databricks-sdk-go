@@ -18,9 +18,6 @@ type DbfsService interface {
 	//
 	// If the block of data exceeds 1 MB, this call will throw an exception with
 	// ``MAX_BLOCK_SIZE_EXCEEDED``.
-	//
-	// Example of request: ``` { "data": "ZGF0YWJyaWNrcwo=", "handle": 7904256 }
-	// ```
 	AddBlock(ctx context.Context, request AddBlock) error
 
 	// Close the stream
@@ -45,11 +42,24 @@ type DbfsService interface {
 
 	// Delete a file/directory
 	//
-	// "Deletes the file or directory (optionally, recursively delete all files
-	// in the directory).
+	// Delete the file or directory (optionally recursively delete all files in
+	// the directory). This call throws an exception with `IO_ERROR` if the path
+	// is a non-empty directory and `recursive` is set to `false` or on other
+	// similar errors.
 	//
-	// This all throws an exception with ``IO_ERROR`` if the path is a non-empty
-	// directory and recursive is set to `false` or other similar errors.",
+	// When you delete a large number of files, the delete operation is done in
+	// increments. The call returns a response after approximately 45 seconds
+	// with an error message (503 Service Unavailable) asking you to re-invoke
+	// the delete operation until the directory structure is fully deleted.
+	//
+	// For operations that delete more than 10K files, we discourage using the
+	// DBFS REST API, but advise you to perform such operations in the context
+	// of a cluster, using the [File system utility
+	// (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs). `dbutils.fs`
+	// covers the functional scope of the DBFS REST API, but from notebooks.
+	// Running such operations using notebooks provides better control and
+	// manageability, such as selective deletes, and the possibility to automate
+	// periodic delete jobs.
 	Delete(ctx context.Context, request Delete) error
 
 	// Get the information of a file or directory
@@ -61,15 +71,18 @@ type DbfsService interface {
 
 	// List directory contents or file details
 	//
-	// Lists the contents of a directory, or details of a file. If the file or
+	// List the contents of a directory, or details of the file. If the file or
 	// directory does not exist, this call throws an exception with
-	// ``RESOURCE_DOES_NOT_EXIST``.
+	// `RESOURCE_DOES_NOT_EXIST`.
 	//
-	// Example of reply:
-	//
-	// ``` { "files": [ { "path": "/a.cpp", "is_dir": false, "file_size\": 261
-	// }, { "path": "/databricks-results", "is_dir": true, "file_size\": 0 } ] }
-	// ```
+	// When calling list on a large directory, the list operation will time out
+	// after approximately 60 seconds. We strongly recommend using list only on
+	// directories containing less than 10K files and discourage using the DBFS
+	// REST API for operations that list more than 10K files. Instead, we
+	// recommend that you perform such operations in the context of a cluster,
+	// using the [File system utility
+	// (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs), which
+	// provides the same functionality without timing out.
 	//
 	// Use ListAll() to get all FileInfo instances
 	List(ctx context.Context, request ListRequest) (*ListStatusResponse, error)
@@ -80,7 +93,7 @@ type DbfsService interface {
 	// not exist. If a file (not a directory) exists at any prefix of the input
 	// path, this call throws an exception with ``RESOURCE_ALREADY_EXISTS``.
 	// **Note**: If this operation fails, it might have succeeded in creating
-	// some of the necessary parent directories.",
+	// some of the necessary parent directories.
 	Mkdirs(ctx context.Context, request MkDirs) error
 
 	// Move a file
@@ -98,15 +111,6 @@ type DbfsService interface {
 	// Uploads a file through the use of multipart form post. It is mainly used
 	// for streaming uploads, but can also be used as a convenient single call
 	// for data upload.
-	//
-	// Example usage:
-	//
-	// ``` curl -u USER:PASS -F contents=@localsrc -F
-	// path="https://XX.cloud.databricks.com/api/2.0/dbfs/put" ```
-	//
-	// Please note that ``localsrc`` is the path to a local file to upload and
-	// this usage is only supported with multipart form post (such as using -F
-	// or --form with curl).
 	//
 	// Alternatively you can pass contents as base64 string.
 	//

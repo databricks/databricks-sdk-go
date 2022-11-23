@@ -34,8 +34,7 @@ type CreateInstancePool struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
-	// The fleet related setting to power the instance pool. Note: This inline
-	// this message can be difficult to interpret/manage
+	// The fleet related setting to power the instance pool.
 	InstancePoolFleetAttributes *InstancePoolFleetAttributes `json:"instance_pool_fleet_attributes,omitempty"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.

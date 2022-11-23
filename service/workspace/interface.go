@@ -36,10 +36,6 @@ type WorkspaceService interface {
 	// would exceed size limit, this call returns
 	// ``MAX_NOTEBOOK_SIZE_EXCEEDED``. Currently, this API does not support
 	// exporting a library.
-	//
-	// Alternatively, one can download the exported file by enabling
-	// ``direct_download``. Example: `curl -n -o example.scala
-	// 'https://XX.cloud.databricks.com/api/2.0/workspace/export?path=/Users/user@example.com/ScalaExampleNotebook&direct_download=true'`
 	Export(ctx context.Context, request ExportRequest) (*ExportResponse, error)
 
 	// Get status

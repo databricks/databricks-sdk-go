@@ -30,6 +30,12 @@ func NewJobs(client *client.DatabricksClient) *JobsAPI {
 // or periodically through an easy-to-use scheduling system. You can implement
 // job tasks using notebooks, JARS, Delta Live Tables pipelines, or Python,
 // Scala, Spark submit, and Java applications.
+//
+// You should never hard code secrets or store them in plain text. Use the
+// :service:secrets to manage secrets in the [Databricks
+// CLI](https://docs.databricks.com/dev-tools/cli/index.html). Use the [Secrets
+// utility](https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets)
+// to reference secrets in notebooks and jobs.
 type JobsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(JobsService)
@@ -247,9 +253,9 @@ func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRunRequest GetRunRequest
 //
 // Retrieve the output and metadata of a single task run. When a notebook task
 // returns a value through the `dbutils.notebook.exit()` call, you can use this
-// endpoint to retrieve that value. " + serviceName + " restricts this API to
-// returning the first 5 MB of the output. To return a larger result, you can
-// store job results in a cloud storage service.
+// endpoint to retrieve that value. Databricks restricts this API to returning
+// the first 5 MB of the output. To return a larger result, you can store job
+// results in a cloud storage service.
 //
 // This endpoint validates that the __run_id__ parameter is valid and returns an
 // HTTP status code 400 if the __run_id__ parameter is invalid. Runs are
@@ -263,9 +269,9 @@ func (a *JobsAPI) GetRunOutput(ctx context.Context, request GetRunOutputRequest)
 //
 // Retrieve the output and metadata of a single task run. When a notebook task
 // returns a value through the `dbutils.notebook.exit()` call, you can use this
-// endpoint to retrieve that value. " + serviceName + " restricts this API to
-// returning the first 5 MB of the output. To return a larger result, you can
-// store job results in a cloud storage service.
+// endpoint to retrieve that value. Databricks restricts this API to returning
+// the first 5 MB of the output. To return a larger result, you can store job
+// results in a cloud storage service.
 //
 // This endpoint validates that the __run_id__ parameter is valid and returns an
 // HTTP status code 400 if the __run_id__ parameter is invalid. Runs are

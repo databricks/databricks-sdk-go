@@ -38,11 +38,10 @@ func (a *TokensAPI) Impl() TokensService {
 
 // Create a user token
 //
-// Creates and returns a token for a user.
-//
-// If this call is made through token authentication, it creates a token with
-// the same client ID as the authenticated token. If the user's token quota is
-// exceeded, this call returns an error **QUOTA_EXCEEDED**.
+// Creates and returns a token for a user. If this call is made through token
+// authentication, it creates a token with the same client ID as the
+// authenticated token. If the user's token quota is exceeded, this call returns
+// an error **QUOTA_EXCEEDED**.
 func (a *TokensAPI) Create(ctx context.Context, request CreateTokenRequest) (*CreateTokenResponse, error) {
 	return a.impl.Create(ctx, request)
 }

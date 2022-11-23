@@ -20,8 +20,7 @@ type Close struct {
 type Create struct {
 	// The flag that specifies whether to overwrite existing file/files.
 	Overwrite bool `json:"overwrite,omitempty"`
-	// The path of the new file. The path should be the absolute DBFS path (e.g.
-	// "/mnt/foo.txt").
+	// The path of the new file. The path should be the absolute DBFS path.
 	Path string `json:"path"`
 }
 
@@ -33,7 +32,7 @@ type CreateResponse struct {
 
 type Delete struct {
 	// The path of the file or directory to delete. The path should be the
-	// absolute DBFS path (e.g. "/mnt/foo/").
+	// absolute DBFS path.
 	Path string `json:"path"`
 	// Whether or not to recursively delete the directory's contents. Deleting
 	// empty directories can be done without providing the recursive flag.
@@ -53,13 +52,13 @@ type FileInfo struct {
 
 type GetStatusRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
-	// path (e.g. "/mnt/foo/").
+	// path.
 	Path string `json:"-" url:"path,omitempty"`
 }
 
 type ListRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
-	// path (e.g. "/mnt/foo/").
+	// path.
 	Path string `json:"-" url:"path,omitempty"`
 }
 
@@ -70,17 +69,16 @@ type ListStatusResponse struct {
 }
 
 type MkDirs struct {
-	// The path of the new directory. The path should be the absolute DBFS path
-	// (e.g. "/mnt/foo/").
+	// The path of the new directory. The path should be the absolute DBFS path.
 	Path string `json:"path"`
 }
 
 type Move struct {
 	// The destination path of the file or directory. The path should be the
-	// absolute DBFS path (e.g. "/mnt/bar/").
+	// absolute DBFS path.
 	DestinationPath string `json:"destination_path"`
 	// The source path of the file or directory. The path should be the absolute
-	// DBFS path (e.g. "/mnt/foo/").
+	// DBFS path.
 	SourcePath string `json:"source_path"`
 }
 
@@ -89,8 +87,7 @@ type Put struct {
 	Contents string `json:"contents,omitempty"`
 	// The flag that specifies whether to overwrite existing file/files.
 	Overwrite bool `json:"overwrite,omitempty"`
-	// The path of the new file. The path should be the absolute DBFS path (e.g.
-	// "/mnt/foo/").
+	// The path of the new file. The path should be the absolute DBFS path.
 	Path string `json:"path"`
 }
 
@@ -100,8 +97,7 @@ type ReadRequest struct {
 	Length int `json:"-" url:"length,omitempty"`
 	// The offset to read from in bytes.
 	Offset int `json:"-" url:"offset,omitempty"`
-	// The path of the file to read. The path should be the absolute DBFS path
-	// (e.g. "/mnt/foo/").
+	// The path of the file to read. The path should be the absolute DBFS path.
 	Path string `json:"-" url:"path,omitempty"`
 }
 

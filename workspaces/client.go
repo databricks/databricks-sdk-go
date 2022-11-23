@@ -232,6 +232,13 @@ type WorkspacesClient struct {
 	// Instance provider billing does apply. See pricing.
 	InstancePools *instancepools.InstancePoolsAPI
 
+	// The Instance Profiles API allows admins to add, list, and remove instance
+	// profiles that users can launch clusters with. Regular users can list the
+	// instance profiles available to them. See [Secure access to S3
+	// buckets](https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html)
+	// using instance profiles for more information.
+	InstanceProfiles *clusters.InstanceProfilesAPI
+
 	// The IP Access List API enables Databricks admins to configure IP access
 	// lists for a workspace.
 	//
@@ -267,6 +274,13 @@ type WorkspacesClient struct {
 	// scheduling system. You can implement job tasks using notebooks, JARS,
 	// Delta Live Tables pipelines, or Python, Scala, Spark submit, and Java
 	// applications.
+	//
+	// You should never hard code secrets or store them in plain text. Use the
+	// :service:secrets to manage secrets in the [Databricks
+	// CLI](https://docs.databricks.com/dev-tools/cli/index.html). Use the
+	// [Secrets
+	// utility](https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets)
+	// to reference secrets in notebooks and jobs.
 	Jobs *jobs.JobsAPI
 
 	// The Libraries API allows you to install and uninstall libraries and get
@@ -512,6 +526,7 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		Grants:               unitycatalog.NewGrants(apiClient),
 		Groups:               scim.NewGroups(apiClient),
 		InstancePools:        instancepools.NewInstancePools(apiClient),
+		InstanceProfiles:     clusters.NewInstanceProfiles(apiClient),
 		IpAccessLists:        ipaccesslists.NewIpAccessLists(apiClient),
 		Jobs:                 jobs.NewJobs(apiClient),
 		Libraries:            libraries.NewLibraries(apiClient),

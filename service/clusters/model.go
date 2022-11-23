@@ -4,6 +4,35 @@ package clusters
 
 // all definitions in this file are in alphabetical order
 
+type AddInstanceProfile struct {
+	// The AWS IAM role ARN of the role associated with the instance profile.
+	// This field is required if your role name and instance profile name do not
+	// match and you want to use the instance profile with [Databricks SQL
+	// Serverless](https://docs.databricks.com/sql/admin/serverless.html).
+	//
+	// Otherwise, this field is optional.
+	IamRoleArn string `json:"iam_role_arn,omitempty"`
+	// The AWS ARN of the instance profile to register with Databricks. This
+	// field is required.
+	InstanceProfileArn string `json:"instance_profile_arn"`
+	// By default, Databricks validates that it has sufficient permissions to
+	// launch instances with the instance profile. This validation uses AWS
+	// dry-run mode for the RunInstances API. If validation fails with an error
+	// message that does not indicate an IAM related permission issue, (e.g.
+	// `Your requested instance type is not supported in your requested
+	// availability zone`), you can pass this flag to skip the validation and
+	// forcibly add the instance profile.
+	IsMetaInstanceProfile bool `json:"is_meta_instance_profile,omitempty"`
+	// By default, Databricks validates that it has sufficient permissions to
+	// launch instances with the instance profile. This validation uses AWS
+	// dry-run mode for the RunInstances API. If validation fails with an error
+	// message that does not indicate an IAM related permission issue, (e.g.
+	// “Your requested instance type is not supported in your requested
+	// availability zone”), you can pass this flag to skip the validation and
+	// forcibly add the instance profile.
+	SkipValidation bool `json:"skip_validation,omitempty"`
+}
+
 type AutoScale struct {
 	// The maximum number of workers to which the cluster can scale up when
 	// overloaded. Note that ``max_workers`` must be strictly greater than
@@ -1196,6 +1225,27 @@ type GetSparkVersionsResponse struct {
 	Versions []SparkVersion `json:"versions,omitempty"`
 }
 
+type InstanceProfile struct {
+	// The AWS IAM role ARN of the role associated with the instance profile.
+	// This field is required if your role name and instance profile name do not
+	// match and you want to use the instance profile with [Databricks SQL
+	// Serverless](https://docs.databricks.com/sql/admin/serverless.html).
+	//
+	// Otherwise, this field is optional.
+	IamRoleArn string `json:"iam_role_arn,omitempty"`
+	// The AWS ARN of the instance profile to register with Databricks. This
+	// field is required.
+	InstanceProfileArn string `json:"instance_profile_arn"`
+	// By default, Databricks validates that it has sufficient permissions to
+	// launch instances with the instance profile. This validation uses AWS
+	// dry-run mode for the RunInstances API. If validation fails with an error
+	// message that does not indicate an IAM related permission issue, (e.g.
+	// `Your requested instance type is not supported in your requested
+	// availability zone`), you can pass this flag to skip the validation and
+	// forcibly add the instance profile.
+	IsMetaInstanceProfile bool `json:"is_meta_instance_profile,omitempty"`
+}
+
 type ListAvailableZonesResponse struct {
 	// The availability zone if no ``zone_id`` is provided in the cluster
 	// creation request.
@@ -1207,6 +1257,11 @@ type ListAvailableZonesResponse struct {
 type ListClustersResponse struct {
 	// <needs content added>
 	Clusters []ClusterInfo `json:"clusters,omitempty"`
+}
+
+type ListInstanceProfilesResponse struct {
+	// A list of instance profiles that the user can access.
+	InstanceProfiles []InstanceProfile `json:"instance_profiles,omitempty"`
 }
 
 type ListNodeTypesResponse struct {
@@ -1304,6 +1359,11 @@ type PermanentDeleteCluster struct {
 type PinCluster struct {
 	// <needs content added>
 	ClusterId string `json:"cluster_id"`
+}
+
+type RemoveInstanceProfile struct {
+	// The ARN of the instance profile to remove. This field is required.
+	InstanceProfileArn string `json:"instance_profile_arn"`
 }
 
 type ResizeCluster struct {
