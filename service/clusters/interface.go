@@ -182,3 +182,53 @@ type ClustersService interface {
 	// effect. This API can only be called by workspace admins.
 	Unpin(ctx context.Context, request UnpinCluster) error
 }
+
+// The Instance Profiles API allows admins to add, list, and remove instance
+// profiles that users can launch clusters with. Regular users can list the
+// instance profiles available to them. See [Secure access to S3
+// buckets](https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html)
+// using instance profiles for more information.
+type InstanceProfilesService interface {
+
+	// Register an instance profile
+	//
+	// In the UI, you can select the instance profile when launching clusters.
+	// This API is only available to admin users.
+	Add(ctx context.Context, request AddInstanceProfile) error
+
+	// Edit an instance profile
+	//
+	// The only supported field to change is the optional IAM role ARN
+	// associated with the instance profile. It is required to specify the IAM
+	// role ARN if both of the following are true:
+	//
+	// * Your role name and instance profile name do not match. The name is the
+	// part after the last slash in each ARN. * You want to use the instance
+	// profile with [Databricks SQL
+	// Serverless](https://docs.databricks.com/sql/admin/serverless.html).
+	//
+	// To understand where these fields are in the AWS console, see [Enable
+	// serverless SQL
+	// warehouses](https://docs.databricks.com/sql/admin/serverless.html).
+	//
+	// This API is only available to admin users.
+	Edit(ctx context.Context, request InstanceProfile) error
+
+	// List available instance profiles
+	//
+	// List the instance profiles that the calling user can use to launch a
+	// cluster.
+	//
+	// This API is available to all users.
+	//
+	// Use ListAll() to get all InstanceProfile instances
+	List(ctx context.Context) (*ListInstanceProfilesResponse, error)
+
+	// Remove the instance profile
+	//
+	// Remove the instance profile with the provided ARN. Existing clusters with
+	// this instance profile will continue to function.
+	//
+	// This API is only accessible to admin users.
+	Remove(ctx context.Context, request RemoveInstanceProfile) error
+}

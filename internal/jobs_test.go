@@ -223,7 +223,7 @@ func TestAccJobsListAllNoDuplicates(t *testing.T) {
 			Name: RandomName(t.Name()),
 			Tasks: []jobs.JobTaskSettings{{
 				Description: "test",
-				NewCluster: &clusters.ClusterInfo{
+				NewCluster: &clusters.CreateCluster{
 					SparkVersion: latestLTS,
 					NodeTypeId:   smallestWithDisk,
 					NumWorkers:   1,

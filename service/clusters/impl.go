@@ -115,3 +115,33 @@ func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 	err := a.client.Post(ctx, path, request, nil)
 	return err
 }
+
+// unexported type that holds implementations of just InstanceProfiles API methods
+type instanceProfilesImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *instanceProfilesImpl) Add(ctx context.Context, request AddInstanceProfile) error {
+	path := "/api/2.0/instance-profiles/add"
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
+
+func (a *instanceProfilesImpl) Edit(ctx context.Context, request InstanceProfile) error {
+	path := "/api/2.0/instance-profiles/edit"
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
+
+func (a *instanceProfilesImpl) List(ctx context.Context) (*ListInstanceProfilesResponse, error) {
+	var listInstanceProfilesResponse ListInstanceProfilesResponse
+	path := "/api/2.0/instance-profiles/list"
+	err := a.client.Get(ctx, path, nil, &listInstanceProfilesResponse)
+	return &listInstanceProfilesResponse, err
+}
+
+func (a *instanceProfilesImpl) Remove(ctx context.Context, request RemoveInstanceProfile) error {
+	path := "/api/2.0/instance-profiles/remove"
+	err := a.client.Post(ctx, path, request, nil)
+	return err
+}
