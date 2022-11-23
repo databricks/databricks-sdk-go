@@ -14,7 +14,7 @@ func TestAccGitCredentials(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	w := workspaces.New()
+	w := workspaces.MustNewClient()
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}

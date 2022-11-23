@@ -30,7 +30,7 @@ func (c *CustomCredentials) Configure(
 }
 
 func main() {
-	w := workspaces.New(&databricks.Config{
+	w := workspaces.MustNewClient(&databricks.Config{
 		Host:        askFor("Host:"),
 		Credentials: &CustomCredentials{},
 	})

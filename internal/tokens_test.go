@@ -15,7 +15,7 @@ func TestAccTokens(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	w := workspaces.New()
+	w := workspaces.MustNewClient()
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -30,7 +30,7 @@ func TestAccTokens(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	wscInner := workspaces.New(&databricks.Config{
+	wscInner := workspaces.MustNewClient(&databricks.Config{
 		Host:     w.Config.Host,
 		Token:    token.TokenValue,
 		AuthType: "pat",

@@ -38,7 +38,7 @@ func TestDbfsHighLevelAPI(t *testing.T) {
 		Handle: 123,
 	}))
 
-	w := workspaces.New(databricks.NewMockConfig(nil))
+	w := workspaces.MustNewClient(databricks.NewMockConfig(nil))
 	w.Dbfs.WithImpl(mockDbfs)
 
 	err := w.Dbfs.Overwrite(ctx, "/a/b/c", strings.NewReader("abc"))

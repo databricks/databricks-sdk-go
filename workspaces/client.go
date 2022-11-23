@@ -494,7 +494,19 @@ type WorkspacesClient struct {
 	WorkspaceConf *workspaceconf.WorkspaceConfAPI
 }
 
-func New(c ...*databricks.Config) *WorkspacesClient {
+// NewClient creates new Databricks SDK client for Workspaces or panics
+// in case configuration is wrong
+func MustNewClient(maybeConfig ...*databricks.Config) *WorkspacesClient {
+	wsClient, err := NewClient(maybeConfig...)
+	if err != nil {
+		panic(err)
+	}
+	return wsClient
+}
+
+// NewClient creates new Databricks SDK client for Workspaces or returns error
+// in case configuration is wrong
+func NewClient(c ...*databricks.Config) (*WorkspacesClient, error) {
 	var cfg *databricks.Config
 	if len(c) == 1 {
 		// first config
@@ -505,7 +517,7 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 	}
 	apiClient, err := client.New(cfg)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	return &WorkspacesClient{
 		Config:               cfg,
@@ -561,5 +573,5 @@ func New(c ...*databricks.Config) *WorkspacesClient {
 		Warehouses:           warehouses.NewWarehouses(apiClient),
 		Workspace:            workspace.NewWorkspace(apiClient),
 		WorkspaceConf:        workspaceconf.NewWorkspaceConf(apiClient),
-	}
+	}, nil
 }
