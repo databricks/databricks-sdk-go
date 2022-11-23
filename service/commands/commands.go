@@ -31,8 +31,8 @@ func NewCommandExecutor(client *client.DatabricksClient) CommandExecutor {
 
 // CommandsHighLevelAPI exposes more friendly wrapper over command execution
 type CommandsHighLevelAPI struct {
-	clusters  clusters.ClustersService
-	execution CommandExecutionService
+	clusters  *clusters.ClustersAPI
+	execution *CommandExecutionAPI
 }
 
 // Execute creates a spark context and executes a command and then closes context

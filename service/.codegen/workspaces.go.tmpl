@@ -1,0 +1,48 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package workspaces
+
+import (
+	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/databricks/client"
+	{{range .Packages}}
+	"github.com/databricks/databricks-sdk-go/service/{{.Name}}"{{end}}
+)
+
+type WorkspacesClient struct {
+	Config *databricks.Config
+
+	{{range .Services}}{{if not .IsAccounts}}
+	{{- if eq .Name "CommandExecution" -}}
+	// This API allows executing commands on running clusters.
+	CommandExecutor commands.CommandExecutor
+
+	{{else}}{{.Comment "    // " 80}}
+	{{.Name}} *{{.Package.Name}}.{{.Name}}API
+
+	{{end}}{{end}}{{end}}
+}
+
+func New(c ...*databricks.Config) *WorkspacesClient {
+	var cfg *databricks.Config
+	if len(c) == 1 {
+		// first config
+		cfg = c[0]
+	} else {
+		// default config
+		cfg = &databricks.Config{}
+	}
+	apiClient, err := client.New(cfg)
+	if err != nil {
+		panic(err)
+	}
+	return &WorkspacesClient{
+		Config: cfg,
+		{{range .Services}}{{if not .IsAccounts}}
+		{{- if eq .Name "CommandExecution" -}}
+		CommandExecutor: commands.NewCommandExecutor(apiClient),
+		{{else -}}
+		{{.Name}}: {{.Package.Name}}.New{{.Name}}(apiClient),
+		{{end -}}{{end}}{{end}}
+	}
+}

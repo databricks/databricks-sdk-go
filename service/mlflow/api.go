@@ -9,14 +9,30 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-func NewExperiments(client *client.DatabricksClient) ExperimentsService {
+func NewExperiments(client *client.DatabricksClient) *ExperimentsAPI {
 	return &ExperimentsAPI{
-		client: client,
+		impl: &experimentsImpl{
+			client: client,
+		},
 	}
 }
 
 type ExperimentsAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(ExperimentsService)
+	impl ExperimentsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *ExperimentsAPI) WithImpl(impl ExperimentsService) *ExperimentsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Experiments API implementation
+func (a *ExperimentsAPI) Impl() ExperimentsService {
+	return a.impl
 }
 
 // Create experiment
@@ -29,10 +45,7 @@ type ExperimentsAPI struct {
 // Throws “RESOURCE_ALREADY_EXISTS“ if a experiment with the given name
 // exists.
 func (a *ExperimentsAPI) Create(ctx context.Context, request CreateExperiment) (*CreateExperimentResponse, error) {
-	var createExperimentResponse CreateExperimentResponse
-	path := "/api/2.0/mlflow/experiments/create"
-	err := a.client.Post(ctx, path, request, &createExperimentResponse)
-	return &createExperimentResponse, err
+	return a.impl.Create(ctx, request)
 }
 
 // Delete an experiment
@@ -41,9 +54,7 @@ func (a *ExperimentsAPI) Create(ctx context.Context, request CreateExperiment) (
 // for deletion. If the experiment uses FileStore, artifacts associated with
 // experiment are also deleted.
 func (a *ExperimentsAPI) Delete(ctx context.Context, request DeleteExperiment) error {
-	path := "/api/2.0/mlflow/experiments/delete"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete an experiment
@@ -52,7 +63,7 @@ func (a *ExperimentsAPI) Delete(ctx context.Context, request DeleteExperiment) e
 // for deletion. If the experiment uses FileStore, artifacts associated with
 // experiment are also deleted.
 func (a *ExperimentsAPI) DeleteByExperimentId(ctx context.Context, experimentId string) error {
-	return a.Delete(ctx, DeleteExperiment{
+	return a.impl.Delete(ctx, DeleteExperiment{
 		ExperimentId: experimentId,
 	})
 }
@@ -61,17 +72,14 @@ func (a *ExperimentsAPI) DeleteByExperimentId(ctx context.Context, experimentId 
 //
 // Gets metadata for an experiment. This method works on deleted experiments.
 func (a *ExperimentsAPI) Get(ctx context.Context, request GetExperimentRequest) (*Experiment, error) {
-	var experiment Experiment
-	path := "/api/2.0/mlflow/experiments/get"
-	err := a.client.Get(ctx, path, request, &experiment)
-	return &experiment, err
+	return a.impl.Get(ctx, request)
 }
 
 // Get an experiment
 //
 // Gets metadata for an experiment. This method works on deleted experiments.
 func (a *ExperimentsAPI) GetByExperimentId(ctx context.Context, experimentId string) (*Experiment, error) {
-	return a.Get(ctx, GetExperimentRequest{
+	return a.impl.Get(ctx, GetExperimentRequest{
 		ExperimentId: experimentId,
 	})
 }
@@ -88,10 +96,7 @@ func (a *ExperimentsAPI) GetByExperimentId(ctx context.Context, experimentId str
 // Throws “RESOURCE_DOES_NOT_EXIST“ if no experiment with the specified name
 // exists.S
 func (a *ExperimentsAPI) GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error) {
-	var getExperimentByNameResponse GetExperimentByNameResponse
-	path := "/api/2.0/mlflow/experiments/get-by-name"
-	err := a.client.Get(ctx, path, request, &getExperimentByNameResponse)
-	return &getExperimentByNameResponse, err
+	return a.impl.GetByName(ctx, request)
 }
 
 // Get metadata
@@ -106,7 +111,7 @@ func (a *ExperimentsAPI) GetByName(ctx context.Context, request GetByNameRequest
 // Throws “RESOURCE_DOES_NOT_EXIST“ if no experiment with the specified name
 // exists.S
 func (a *ExperimentsAPI) GetByNameByExperimentName(ctx context.Context, experimentName string) (*GetExperimentByNameResponse, error) {
-	return a.GetByName(ctx, GetByNameRequest{
+	return a.impl.GetByName(ctx, GetByNameRequest{
 		ExperimentName: experimentName,
 	})
 }
@@ -115,22 +120,12 @@ func (a *ExperimentsAPI) GetByNameByExperimentName(ctx context.Context, experime
 //
 // Gets a list of all experiments.
 //
-// Use ListAll() to get all Experiment instances, which will iterate over every result page.
-func (a *ExperimentsAPI) List(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error) {
-	var listExperimentsResponse ListExperimentsResponse
-	path := "/api/2.0/mlflow/experiments/list"
-	err := a.client.Get(ctx, path, request, &listExperimentsResponse)
-	return &listExperimentsResponse, err
-}
-
-// ListAll returns all Experiment instances by calling List for every result page
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *ExperimentsAPI) ListAll(ctx context.Context, request ListExperimentsRequest) ([]Experiment, error) {
 	var results []Experiment
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	for {
-		response, err := a.List(ctx, request)
+		response, err := a.impl.List(ctx, request)
 		if err != nil {
 			return nil, err
 		}
@@ -156,9 +151,7 @@ func (a *ExperimentsAPI) ListAll(ctx context.Context, request ListExperimentsReq
 // “RESOURCE_DOES_NOT_EXIST“ if experiment was never created or was
 // permanently deleted.",
 func (a *ExperimentsAPI) Restore(ctx context.Context, request RestoreExperiment) error {
-	path := "/api/2.0/mlflow/experiments/restore"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Restore(ctx, request)
 }
 
 // Restores an experiment
@@ -169,7 +162,7 @@ func (a *ExperimentsAPI) Restore(ctx context.Context, request RestoreExperiment)
 // “RESOURCE_DOES_NOT_EXIST“ if experiment was never created or was
 // permanently deleted.",
 func (a *ExperimentsAPI) RestoreByExperimentId(ctx context.Context, experimentId string) error {
-	return a.Restore(ctx, RestoreExperiment{
+	return a.impl.Restore(ctx, RestoreExperiment{
 		ExperimentId: experimentId,
 	})
 }
@@ -178,22 +171,12 @@ func (a *ExperimentsAPI) RestoreByExperimentId(ctx context.Context, experimentId
 //
 // Searches for experiments that satisfy specified search criteria.
 //
-// Use SearchAll() to get all Experiment instances, which will iterate over every result page.
-func (a *ExperimentsAPI) Search(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error) {
-	var searchExperimentsResponse SearchExperimentsResponse
-	path := "/api/2.0/mlflow/experiments/search"
-	err := a.client.Post(ctx, path, request, &searchExperimentsResponse)
-	return &searchExperimentsResponse, err
-}
-
-// SearchAll returns all Experiment instances by calling Search for every result page
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *ExperimentsAPI) SearchAll(ctx context.Context, request SearchExperiments) ([]Experiment, error) {
 	var results []Experiment
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	for {
-		response, err := a.Search(ctx, request)
+		response, err := a.impl.Search(ctx, request)
 		if err != nil {
 			return nil, err
 		}
@@ -216,28 +199,40 @@ func (a *ExperimentsAPI) SearchAll(ctx context.Context, request SearchExperiment
 // Sets a tag on an experiment. Experiment tags are metadata that can be
 // updated.
 func (a *ExperimentsAPI) SetExperimentTag(ctx context.Context, request SetExperimentTag) error {
-	path := "/api/2.0/mlflow/experiments/set-experiment-tag"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.SetExperimentTag(ctx, request)
 }
 
 // Update an experiment
 //
 // Updates experiment metadata.
 func (a *ExperimentsAPI) Update(ctx context.Context, request UpdateExperiment) error {
-	path := "/api/2.0/mlflow/experiments/update"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Update(ctx, request)
 }
 
-func NewMLflowArtifacts(client *client.DatabricksClient) MLflowArtifactsService {
+func NewMLflowArtifacts(client *client.DatabricksClient) *MLflowArtifactsAPI {
 	return &MLflowArtifactsAPI{
-		client: client,
+		impl: &mLflowArtifactsImpl{
+			client: client,
+		},
 	}
 }
 
 type MLflowArtifactsAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(MLflowArtifactsService)
+	impl MLflowArtifactsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *MLflowArtifactsAPI) WithImpl(impl MLflowArtifactsService) *MLflowArtifactsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level MLflowArtifacts API implementation
+func (a *MLflowArtifactsAPI) Impl() MLflowArtifactsService {
+	return a.impl
 }
 
 // Get all artifacts
@@ -246,22 +241,12 @@ type MLflowArtifactsAPI struct {
 // is specified, the response contains only artifacts with the specified
 // prefix.",
 //
-// Use ListAll() to get all FileInfo instances, which will iterate over every result page.
-func (a *MLflowArtifactsAPI) List(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error) {
-	var listArtifactsResponse ListArtifactsResponse
-	path := "/api/2.0/mlflow/artifacts/list"
-	err := a.client.Get(ctx, path, request, &listArtifactsResponse)
-	return &listArtifactsResponse, err
-}
-
-// ListAll returns all FileInfo instances by calling List for every result page
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *MLflowArtifactsAPI) ListAll(ctx context.Context, request ListArtifactsRequest) ([]FileInfo, error) {
 	var results []FileInfo
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	for {
-		response, err := a.List(ctx, request)
+		response, err := a.impl.List(ctx, request)
 		if err != nil {
 			return nil, err
 		}
@@ -279,14 +264,32 @@ func (a *MLflowArtifactsAPI) ListAll(ctx context.Context, request ListArtifactsR
 	return results, nil
 }
 
-func NewMLflowDatabricks(client *client.DatabricksClient) MLflowDatabricksService {
+func NewMLflowDatabricks(client *client.DatabricksClient) *MLflowDatabricksAPI {
 	return &MLflowDatabricksAPI{
-		client: client,
+		impl: &mLflowDatabricksImpl{
+			client: client,
+		},
 	}
 }
 
+// These endpoints are modified versions of the MLflow API that accept
+// additional input parameters or return additional information.
 type MLflowDatabricksAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(MLflowDatabricksService)
+	impl MLflowDatabricksService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *MLflowDatabricksAPI) WithImpl(impl MLflowDatabricksService) *MLflowDatabricksAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level MLflowDatabricks API implementation
+func (a *MLflowDatabricksAPI) Impl() MLflowDatabricksService {
+	return a.impl
 }
 
 // Get model
@@ -297,10 +300,7 @@ type MLflowDatabricksAPI struct {
 // that also returns the model's Databricks Workspace ID and the permission
 // level of the requesting user on the model.
 func (a *MLflowDatabricksAPI) Get(ctx context.Context, request GetRequest) (*GetResponse, error) {
-	var getResponse GetResponse
-	path := "/api/2.0/mlflow/databricks/registered-models/get"
-	err := a.client.Get(ctx, path, request, &getResponse)
-	return &getResponse, err
+	return a.impl.Get(ctx, request)
 }
 
 // Get model
@@ -311,7 +311,7 @@ func (a *MLflowDatabricksAPI) Get(ctx context.Context, request GetRequest) (*Get
 // that also returns the model's Databricks Workspace ID and the permission
 // level of the requesting user on the model.
 func (a *MLflowDatabricksAPI) GetByName(ctx context.Context, name string) (*GetResponse, error) {
-	return a.Get(ctx, GetRequest{
+	return a.impl.Get(ctx, GetRequest{
 		Name: name,
 	})
 }
@@ -323,40 +323,66 @@ func (a *MLflowDatabricksAPI) GetByName(ctx context.Context, name string) (*GetR
 // endpoint](https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage)
 // that also accepts a comment associated with the transition to be recorded.",
 func (a *MLflowDatabricksAPI) TransitionStage(ctx context.Context, request TransitionModelVersionStageDatabricks) (*TransitionStageResponse, error) {
-	var transitionStageResponse TransitionStageResponse
-	path := "/api/2.0/mlflow/databricks/model-versions/transition-stage"
-	err := a.client.Post(ctx, path, request, &transitionStageResponse)
-	return &transitionStageResponse, err
+	return a.impl.TransitionStage(ctx, request)
 }
 
-func NewMLflowMetrics(client *client.DatabricksClient) MLflowMetricsService {
+func NewMLflowMetrics(client *client.DatabricksClient) *MLflowMetricsAPI {
 	return &MLflowMetricsAPI{
-		client: client,
+		impl: &mLflowMetricsImpl{
+			client: client,
+		},
 	}
 }
 
 type MLflowMetricsAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(MLflowMetricsService)
+	impl MLflowMetricsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *MLflowMetricsAPI) WithImpl(impl MLflowMetricsService) *MLflowMetricsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level MLflowMetrics API implementation
+func (a *MLflowMetricsAPI) Impl() MLflowMetricsService {
+	return a.impl
 }
 
 // Get all history
 //
 // Gets a list of all values for the specified metric for a given run.
 func (a *MLflowMetricsAPI) GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error) {
-	var getMetricHistoryResponse GetMetricHistoryResponse
-	path := "/api/2.0/mlflow/metrics/get-history"
-	err := a.client.Get(ctx, path, request, &getMetricHistoryResponse)
-	return &getMetricHistoryResponse, err
+	return a.impl.GetHistory(ctx, request)
 }
 
-func NewMLflowRuns(client *client.DatabricksClient) MLflowRunsService {
+func NewMLflowRuns(client *client.DatabricksClient) *MLflowRunsAPI {
 	return &MLflowRunsAPI{
-		client: client,
+		impl: &mLflowRunsImpl{
+			client: client,
+		},
 	}
 }
 
 type MLflowRunsAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(MLflowRunsService)
+	impl MLflowRunsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *MLflowRunsAPI) WithImpl(impl MLflowRunsService) *MLflowRunsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level MLflowRuns API implementation
+func (a *MLflowRunsAPI) Impl() MLflowRunsService {
+	return a.impl
 }
 
 // Create a run
@@ -366,26 +392,21 @@ type MLflowRunsAPI struct {
 // `mlflowParam`, `mlflowMetric` and `mlflowRunTag` associated with a single
 // execution.
 func (a *MLflowRunsAPI) Create(ctx context.Context, request CreateRun) (*CreateRunResponse, error) {
-	var createRunResponse CreateRunResponse
-	path := "/api/2.0/mlflow/runs/create"
-	err := a.client.Post(ctx, path, request, &createRunResponse)
-	return &createRunResponse, err
+	return a.impl.Create(ctx, request)
 }
 
 // Delete a run
 //
 // Marks a run for deletion.
 func (a *MLflowRunsAPI) Delete(ctx context.Context, request DeleteRun) error {
-	path := "/api/2.0/mlflow/runs/delete"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a run
 //
 // Marks a run for deletion.
 func (a *MLflowRunsAPI) DeleteByRunId(ctx context.Context, runId string) error {
-	return a.Delete(ctx, DeleteRun{
+	return a.impl.Delete(ctx, DeleteRun{
 		RunId: runId,
 	})
 }
@@ -395,9 +416,7 @@ func (a *MLflowRunsAPI) DeleteByRunId(ctx context.Context, runId string) error {
 // Deletes a tag on a run. Tags are run metadata that can be updated during a
 // run and after a run completes.
 func (a *MLflowRunsAPI) DeleteTag(ctx context.Context, request DeleteTag) error {
-	path := "/api/2.0/mlflow/runs/delete-tag"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.DeleteTag(ctx, request)
 }
 
 // Get a run
@@ -409,10 +428,7 @@ func (a *MLflowRunsAPI) DeleteTag(ctx context.Context, request DeleteTag) error 
 // If there are multiple values with the latest timestamp, return the maximum of
 // these values.
 func (a *MLflowRunsAPI) Get(ctx context.Context, request GetRunRequest) (*GetRunResponse, error) {
-	var getRunResponse GetRunResponse
-	path := "/api/2.0/mlflow/runs/get"
-	err := a.client.Get(ctx, path, request, &getRunResponse)
-	return &getRunResponse, err
+	return a.impl.Get(ctx, request)
 }
 
 // Log a batch
@@ -464,9 +480,7 @@ func (a *MLflowRunsAPI) Get(ctx context.Context, request GetRunRequest) (*GetRun
 // * Metric keyes, param keys, and tag keys can be up to 250 characters in
 // length * Parameter and tag values can be up to 250 characters in length
 func (a *MLflowRunsAPI) LogBatch(ctx context.Context, request LogBatch) error {
-	path := "/api/2.0/mlflow/runs/log-batch"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.LogBatch(ctx, request)
 }
 
 // Log a metric
@@ -475,9 +489,7 @@ func (a *MLflowRunsAPI) LogBatch(ctx context.Context, request LogBatch) error {
 // value) with an associated timestamp. Examples include the various metrics
 // that represent ML model accuracy. A metric can be logged multiple times.
 func (a *MLflowRunsAPI) LogMetric(ctx context.Context, request LogMetric) error {
-	path := "/api/2.0/mlflow/runs/log-metric"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.LogMetric(ctx, request)
 }
 
 // Log a model
@@ -485,9 +497,7 @@ func (a *MLflowRunsAPI) LogMetric(ctx context.Context, request LogMetric) error 
 // **NOTE:** Experimental: This API may change or be removed in a future release
 // without warning.
 func (a *MLflowRunsAPI) LogModel(ctx context.Context, request LogModel) error {
-	path := "/api/2.0/mlflow/runs/log-model"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.LogModel(ctx, request)
 }
 
 // Log a param
@@ -497,25 +507,21 @@ func (a *MLflowRunsAPI) LogModel(ctx context.Context, request LogModel) error {
 // constant dates and values used in an ETL pipeline. A param can be logged only
 // once for a run.
 func (a *MLflowRunsAPI) LogParameter(ctx context.Context, request LogParam) error {
-	path := "/api/2.0/mlflow/runs/log-parameter"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.LogParameter(ctx, request)
 }
 
 // Restore a run
 //
 // Restores a deleted run.
 func (a *MLflowRunsAPI) Restore(ctx context.Context, request RestoreRun) error {
-	path := "/api/2.0/mlflow/runs/restore"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Restore(ctx, request)
 }
 
 // Restore a run
 //
 // Restores a deleted run.
 func (a *MLflowRunsAPI) RestoreByRunId(ctx context.Context, runId string) error {
-	return a.Restore(ctx, RestoreRun{
+	return a.impl.Restore(ctx, RestoreRun{
 		RunId: runId,
 	})
 }
@@ -526,22 +532,12 @@ func (a *MLflowRunsAPI) RestoreByRunId(ctx context.Context, runId string) error 
 //
 // Search expressions can use `mlflowMetric` and `mlflowParam` keys.",
 //
-// Use SearchAll() to get all Run instances, which will iterate over every result page.
-func (a *MLflowRunsAPI) Search(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error) {
-	var searchRunsResponse SearchRunsResponse
-	path := "/api/2.0/mlflow/runs/search"
-	err := a.client.Post(ctx, path, request, &searchRunsResponse)
-	return &searchRunsResponse, err
-}
-
-// SearchAll returns all Run instances by calling Search for every result page
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *MLflowRunsAPI) SearchAll(ctx context.Context, request SearchRuns) ([]Run, error) {
 	var results []Run
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	for {
-		response, err := a.Search(ctx, request)
+		response, err := a.impl.Search(ctx, request)
 		if err != nil {
 			return nil, err
 		}
@@ -564,29 +560,40 @@ func (a *MLflowRunsAPI) SearchAll(ctx context.Context, request SearchRuns) ([]Ru
 // Sets a tag on a run. Tags are run metadata that can be updated during a run
 // and after a run completes.
 func (a *MLflowRunsAPI) SetTag(ctx context.Context, request SetTag) error {
-	path := "/api/2.0/mlflow/runs/set-tag"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.SetTag(ctx, request)
 }
 
 // Update a run
 //
 // Updates run metadata.
 func (a *MLflowRunsAPI) Update(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error) {
-	var updateRunResponse UpdateRunResponse
-	path := "/api/2.0/mlflow/runs/update"
-	err := a.client.Post(ctx, path, request, &updateRunResponse)
-	return &updateRunResponse, err
+	return a.impl.Update(ctx, request)
 }
 
-func NewModelVersionComments(client *client.DatabricksClient) ModelVersionCommentsService {
+func NewModelVersionComments(client *client.DatabricksClient) *ModelVersionCommentsAPI {
 	return &ModelVersionCommentsAPI{
-		client: client,
+		impl: &modelVersionCommentsImpl{
+			client: client,
+		},
 	}
 }
 
 type ModelVersionCommentsAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(ModelVersionCommentsService)
+	impl ModelVersionCommentsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *ModelVersionCommentsAPI) WithImpl(impl ModelVersionCommentsService) *ModelVersionCommentsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level ModelVersionComments API implementation
+func (a *ModelVersionCommentsAPI) Impl() ModelVersionCommentsService {
+	return a.impl
 }
 
 // Post a comment
@@ -595,26 +602,21 @@ type ModelVersionCommentsAPI struct {
 // user or programmatically to display relevant information about the model. For
 // example, test results or deployment errors.
 func (a *ModelVersionCommentsAPI) Create(ctx context.Context, request CreateComment) (*CreateResponse, error) {
-	var createResponse CreateResponse
-	path := "/api/2.0/mlflow/comments/create"
-	err := a.client.Post(ctx, path, request, &createResponse)
-	return &createResponse, err
+	return a.impl.Create(ctx, request)
 }
 
 // Delete a comment
 //
 // Deletes a comment on a model version.
 func (a *ModelVersionCommentsAPI) Delete(ctx context.Context, request DeleteRequest) error {
-	path := "/api/2.0/mlflow/comments/delete"
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a comment
 //
 // Deletes a comment on a model version.
 func (a *ModelVersionCommentsAPI) DeleteById(ctx context.Context, id string) error {
-	return a.Delete(ctx, DeleteRequest{
+	return a.impl.Delete(ctx, DeleteRequest{
 		Id: id,
 	})
 }
@@ -623,90 +625,80 @@ func (a *ModelVersionCommentsAPI) DeleteById(ctx context.Context, id string) err
 //
 // Post an edit to a comment on a model version.
 func (a *ModelVersionCommentsAPI) Update(ctx context.Context, request UpdateComment) (*UpdateResponse, error) {
-	var updateResponse UpdateResponse
-	path := "/api/2.0/mlflow/comments/update"
-	err := a.client.Post(ctx, path, request, &updateResponse)
-	return &updateResponse, err
+	return a.impl.Update(ctx, request)
 }
 
-func NewModelVersions(client *client.DatabricksClient) ModelVersionsService {
+func NewModelVersions(client *client.DatabricksClient) *ModelVersionsAPI {
 	return &ModelVersionsAPI{
-		client: client,
+		impl: &modelVersionsImpl{
+			client: client,
+		},
 	}
 }
 
 type ModelVersionsAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(ModelVersionsService)
+	impl ModelVersionsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *ModelVersionsAPI) WithImpl(impl ModelVersionsService) *ModelVersionsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level ModelVersions API implementation
+func (a *ModelVersionsAPI) Impl() ModelVersionsService {
+	return a.impl
 }
 
 // Create a model version
 //
 // Creates a model version.
 func (a *ModelVersionsAPI) Create(ctx context.Context, request CreateModelVersionRequest) (*CreateModelVersionResponse, error) {
-	var createModelVersionResponse CreateModelVersionResponse
-	path := "/api/2.0/mlflow/model-versions/create"
-	err := a.client.Post(ctx, path, request, &createModelVersionResponse)
-	return &createModelVersionResponse, err
+	return a.impl.Create(ctx, request)
 }
 
 // Delete a model version.
 //
 // Deletes a model version.
 func (a *ModelVersionsAPI) Delete(ctx context.Context, request DeleteModelVersionRequest) error {
-	path := "/api/2.0/mlflow/model-versions/delete"
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a model version tag
 //
 // Deletes a model version tag.
 func (a *ModelVersionsAPI) DeleteTag(ctx context.Context, request DeleteModelVersionTagRequest) error {
-	path := "/api/2.0/mlflow/model-versions/delete-tag"
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.impl.DeleteTag(ctx, request)
 }
 
 // Get a model version
 //
 // Get a model version.
 func (a *ModelVersionsAPI) Get(ctx context.Context, request GetModelVersionRequest) (*GetModelVersionResponse, error) {
-	var getModelVersionResponse GetModelVersionResponse
-	path := "/api/2.0/mlflow/model-versions/get"
-	err := a.client.Get(ctx, path, request, &getModelVersionResponse)
-	return &getModelVersionResponse, err
+	return a.impl.Get(ctx, request)
 }
 
 // Get a model version URI
 //
 // Gets a URI to download the model version.
 func (a *ModelVersionsAPI) GetDownloadUri(ctx context.Context, request GetModelVersionDownloadUriRequest) (*GetModelVersionDownloadUriResponse, error) {
-	var getModelVersionDownloadUriResponse GetModelVersionDownloadUriResponse
-	path := "/api/2.0/mlflow/model-versions/get-download-uri"
-	err := a.client.Get(ctx, path, request, &getModelVersionDownloadUriResponse)
-	return &getModelVersionDownloadUriResponse, err
+	return a.impl.GetDownloadUri(ctx, request)
 }
 
 // Searches model versions
 //
 // Searches for specific model versions based on the supplied __filter__.
 //
-// Use SearchAll() to get all ModelVersion instances, which will iterate over every result page.
-func (a *ModelVersionsAPI) Search(ctx context.Context, request SearchModelVersionsRequest) (*SearchModelVersionsResponse, error) {
-	var searchModelVersionsResponse SearchModelVersionsResponse
-	path := "/api/2.0/mlflow/model-versions/search"
-	err := a.client.Get(ctx, path, request, &searchModelVersionsResponse)
-	return &searchModelVersionsResponse, err
-}
-
-// SearchAll returns all ModelVersion instances by calling Search for every result page
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *ModelVersionsAPI) SearchAll(ctx context.Context, request SearchModelVersionsRequest) ([]ModelVersion, error) {
 	var results []ModelVersion
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	for {
-		response, err := a.Search(ctx, request)
+		response, err := a.impl.Search(ctx, request)
 		if err != nil {
 			return nil, err
 		}
@@ -728,38 +720,47 @@ func (a *ModelVersionsAPI) SearchAll(ctx context.Context, request SearchModelVer
 //
 // Sets a model version tag.
 func (a *ModelVersionsAPI) SetTag(ctx context.Context, request SetModelVersionTagRequest) error {
-	path := "/api/2.0/mlflow/model-versions/set-tag"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.SetTag(ctx, request)
 }
 
 // Transition a stage
 //
 // Transition to the next model stage.
 func (a *ModelVersionsAPI) TransitionStage(ctx context.Context, request TransitionModelVersionStage) (*TransitionModelVersionStageResponse, error) {
-	var transitionModelVersionStageResponse TransitionModelVersionStageResponse
-	path := "/api/2.0/mlflow/model-versions/transition-stage"
-	err := a.client.Post(ctx, path, request, &transitionModelVersionStageResponse)
-	return &transitionModelVersionStageResponse, err
+	return a.impl.TransitionStage(ctx, request)
 }
 
 // Update model version
 //
 // Updates the model version.
 func (a *ModelVersionsAPI) Update(ctx context.Context, request UpdateModelVersionRequest) error {
-	path := "/api/2.0/mlflow/model-versions/update"
-	err := a.client.Patch(ctx, path, request)
-	return err
+	return a.impl.Update(ctx, request)
 }
 
-func NewRegisteredModels(client *client.DatabricksClient) RegisteredModelsService {
+func NewRegisteredModels(client *client.DatabricksClient) *RegisteredModelsAPI {
 	return &RegisteredModelsAPI{
-		client: client,
+		impl: &registeredModelsImpl{
+			client: client,
+		},
 	}
 }
 
 type RegisteredModelsAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(RegisteredModelsService)
+	impl RegisteredModelsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *RegisteredModelsAPI) WithImpl(impl RegisteredModelsService) *RegisteredModelsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level RegisteredModels API implementation
+func (a *RegisteredModelsAPI) Impl() RegisteredModelsService {
+	return a.impl
 }
 
 // Create a model
@@ -769,26 +770,21 @@ type RegisteredModelsAPI struct {
 // Throws “RESOURCE_ALREADY_EXISTS“ if a registered model with the given name
 // exists.
 func (a *RegisteredModelsAPI) Create(ctx context.Context, request CreateRegisteredModelRequest) (*CreateRegisteredModelResponse, error) {
-	var createRegisteredModelResponse CreateRegisteredModelResponse
-	path := "/api/2.0/mlflow/registered-models/create"
-	err := a.client.Post(ctx, path, request, &createRegisteredModelResponse)
-	return &createRegisteredModelResponse, err
+	return a.impl.Create(ctx, request)
 }
 
 // Delete a model
 //
 // Deletes a registered model.
 func (a *RegisteredModelsAPI) Delete(ctx context.Context, request DeleteRegisteredModelRequest) error {
-	path := "/api/2.0/mlflow/registered-models/delete"
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a model
 //
 // Deletes a registered model.
 func (a *RegisteredModelsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.Delete(ctx, DeleteRegisteredModelRequest{
+	return a.impl.Delete(ctx, DeleteRegisteredModelRequest{
 		Name: name,
 	})
 }
@@ -797,26 +793,21 @@ func (a *RegisteredModelsAPI) DeleteByName(ctx context.Context, name string) err
 //
 // Deletes the tag for a registered model.
 func (a *RegisteredModelsAPI) DeleteTag(ctx context.Context, request DeleteRegisteredModelTagRequest) error {
-	path := "/api/2.0/mlflow/registered-models/delete-tag"
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.impl.DeleteTag(ctx, request)
 }
 
 // Get a model
 //
 // Gets the registered model that matches the specified ID.
 func (a *RegisteredModelsAPI) Get(ctx context.Context, request GetRegisteredModelRequest) (*GetRegisteredModelResponse, error) {
-	var getRegisteredModelResponse GetRegisteredModelResponse
-	path := "/api/2.0/mlflow/registered-models/get"
-	err := a.client.Get(ctx, path, request, &getRegisteredModelResponse)
-	return &getRegisteredModelResponse, err
+	return a.impl.Get(ctx, request)
 }
 
 // Get a model
 //
 // Gets the registered model that matches the specified ID.
 func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*GetRegisteredModelResponse, error) {
-	return a.Get(ctx, GetRegisteredModelRequest{
+	return a.impl.Get(ctx, GetRegisteredModelRequest{
 		Name: name,
 	})
 }
@@ -825,19 +816,9 @@ func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*GetR
 //
 // Gets the latest version of a registered model.
 //
-// Use GetLatestVersionsAll() to get all ModelVersion instances
-func (a *RegisteredModelsAPI) GetLatestVersions(ctx context.Context, request GetLatestVersionsRequest) (*GetLatestVersionsResponse, error) {
-	var getLatestVersionsResponse GetLatestVersionsResponse
-	path := "/api/2.0/mlflow/registered-models/get-latest-versions"
-	err := a.client.Post(ctx, path, request, &getLatestVersionsResponse)
-	return &getLatestVersionsResponse, err
-}
-
-// GetLatestVersionsAll returns all ModelVersion instances. This method exists for consistency purposes.
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *RegisteredModelsAPI) GetLatestVersionsAll(ctx context.Context, request GetLatestVersionsRequest) ([]ModelVersion, error) {
-	response, err := a.GetLatestVersions(ctx, request)
+	response, err := a.impl.GetLatestVersions(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -849,22 +830,12 @@ func (a *RegisteredModelsAPI) GetLatestVersionsAll(ctx context.Context, request 
 // Lists all available registered models, up to the limit specified in
 // __max_results__.
 //
-// Use ListAll() to get all RegisteredModel instances, which will iterate over every result page.
-func (a *RegisteredModelsAPI) List(ctx context.Context, request ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error) {
-	var listRegisteredModelsResponse ListRegisteredModelsResponse
-	path := "/api/2.0/mlflow/registered-models/list"
-	err := a.client.Get(ctx, path, request, &listRegisteredModelsResponse)
-	return &listRegisteredModelsResponse, err
-}
-
-// ListAll returns all RegisteredModel instances by calling List for every result page
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *RegisteredModelsAPI) ListAll(ctx context.Context, request ListRegisteredModelsRequest) ([]RegisteredModel, error) {
 	var results []RegisteredModel
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	for {
-		response, err := a.List(ctx, request)
+		response, err := a.impl.List(ctx, request)
 		if err != nil {
 			return nil, err
 		}
@@ -886,32 +857,19 @@ func (a *RegisteredModelsAPI) ListAll(ctx context.Context, request ListRegistere
 //
 // Renames a registered model.
 func (a *RegisteredModelsAPI) Rename(ctx context.Context, request RenameRegisteredModelRequest) (*RenameRegisteredModelResponse, error) {
-	var renameRegisteredModelResponse RenameRegisteredModelResponse
-	path := "/api/2.0/mlflow/registered-models/rename"
-	err := a.client.Post(ctx, path, request, &renameRegisteredModelResponse)
-	return &renameRegisteredModelResponse, err
+	return a.impl.Rename(ctx, request)
 }
 
 // Search models
 //
 // Search for registered models based on the specified __filter__.
 //
-// Use SearchAll() to get all RegisteredModel instances, which will iterate over every result page.
-func (a *RegisteredModelsAPI) Search(ctx context.Context, request SearchRegisteredModelsRequest) (*SearchRegisteredModelsResponse, error) {
-	var searchRegisteredModelsResponse SearchRegisteredModelsResponse
-	path := "/api/2.0/mlflow/registered-models/search"
-	err := a.client.Get(ctx, path, request, &searchRegisteredModelsResponse)
-	return &searchRegisteredModelsResponse, err
-}
-
-// SearchAll returns all RegisteredModel instances by calling Search for every result page
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *RegisteredModelsAPI) SearchAll(ctx context.Context, request SearchRegisteredModelsRequest) ([]RegisteredModel, error) {
 	var results []RegisteredModel
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	for {
-		response, err := a.Search(ctx, request)
+		response, err := a.impl.Search(ctx, request)
 		if err != nil {
 			return nil, err
 		}
@@ -933,28 +891,40 @@ func (a *RegisteredModelsAPI) SearchAll(ctx context.Context, request SearchRegis
 //
 // Sets a tag on a registered model.
 func (a *RegisteredModelsAPI) SetTag(ctx context.Context, request SetRegisteredModelTagRequest) error {
-	path := "/api/2.0/mlflow/registered-models/set-tag"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.SetTag(ctx, request)
 }
 
 // Update model
 //
 // Updates a registered model.
 func (a *RegisteredModelsAPI) Update(ctx context.Context, request UpdateRegisteredModelRequest) error {
-	path := "/api/2.0/mlflow/registered-models/update"
-	err := a.client.Patch(ctx, path, request)
-	return err
+	return a.impl.Update(ctx, request)
 }
 
-func NewRegistryWebhooks(client *client.DatabricksClient) RegistryWebhooksService {
+func NewRegistryWebhooks(client *client.DatabricksClient) *RegistryWebhooksAPI {
 	return &RegistryWebhooksAPI{
-		client: client,
+		impl: &registryWebhooksImpl{
+			client: client,
+		},
 	}
 }
 
 type RegistryWebhooksAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(RegistryWebhooksService)
+	impl RegistryWebhooksService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *RegistryWebhooksAPI) WithImpl(impl RegistryWebhooksService) *RegistryWebhooksAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level RegistryWebhooks API implementation
+func (a *RegistryWebhooksAPI) Impl() RegistryWebhooksService {
+	return a.impl
 }
 
 // Create a webhook
@@ -963,10 +933,7 @@ type RegistryWebhooksAPI struct {
 //
 // Creates a registry webhook.
 func (a *RegistryWebhooksAPI) Create(ctx context.Context, request CreateRegistryWebhook) (*CreateResponse, error) {
-	var createResponse CreateResponse
-	path := "/api/2.0/mlflow/registry-webhooks/create"
-	err := a.client.Post(ctx, path, request, &createResponse)
-	return &createResponse, err
+	return a.impl.Create(ctx, request)
 }
 
 // Delete a webhook
@@ -975,9 +942,7 @@ func (a *RegistryWebhooksAPI) Create(ctx context.Context, request CreateRegistry
 //
 // Deletes a registry webhook.
 func (a *RegistryWebhooksAPI) Delete(ctx context.Context, request DeleteRequest) error {
-	path := "/api/2.0/mlflow/registry-webhooks/delete"
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a webhook
@@ -986,7 +951,7 @@ func (a *RegistryWebhooksAPI) Delete(ctx context.Context, request DeleteRequest)
 //
 // Deletes a registry webhook.
 func (a *RegistryWebhooksAPI) DeleteById(ctx context.Context, id string) error {
-	return a.Delete(ctx, DeleteRequest{
+	return a.impl.Delete(ctx, DeleteRequest{
 		Id: id,
 	})
 }
@@ -997,22 +962,12 @@ func (a *RegistryWebhooksAPI) DeleteById(ctx context.Context, id string) error {
 //
 // Lists all registry webhooks.
 //
-// Use ListAll() to get all RegistryWebhook instances, which will iterate over every result page.
-func (a *RegistryWebhooksAPI) List(ctx context.Context, request ListRequest) (*ListRegistryWebhooks, error) {
-	var listRegistryWebhooks ListRegistryWebhooks
-	path := "/api/2.0/mlflow/registry-webhooks/list"
-	err := a.client.Get(ctx, path, request, &listRegistryWebhooks)
-	return &listRegistryWebhooks, err
-}
-
-// ListAll returns all RegistryWebhook instances by calling List for every result page
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *RegistryWebhooksAPI) ListAll(ctx context.Context, request ListRequest) ([]RegistryWebhook, error) {
 	var results []RegistryWebhook
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	for {
-		response, err := a.List(ctx, request)
+		response, err := a.impl.List(ctx, request)
 		if err != nil {
 			return nil, err
 		}
@@ -1036,10 +991,7 @@ func (a *RegistryWebhooksAPI) ListAll(ctx context.Context, request ListRequest) 
 //
 // Tests a registry webhook.
 func (a *RegistryWebhooksAPI) Test(ctx context.Context, request TestRegistryWebhookRequest) (*TestRegistryWebhookResponse, error) {
-	var testRegistryWebhookResponse TestRegistryWebhookResponse
-	path := "/api/2.0/mlflow/registry-webhooks/test"
-	err := a.client.Post(ctx, path, request, &testRegistryWebhookResponse)
-	return &testRegistryWebhookResponse, err
+	return a.impl.Test(ctx, request)
 }
 
 // Update a webhook
@@ -1048,67 +1000,63 @@ func (a *RegistryWebhooksAPI) Test(ctx context.Context, request TestRegistryWebh
 //
 // Updates a registry webhook.
 func (a *RegistryWebhooksAPI) Update(ctx context.Context, request UpdateRegistryWebhook) error {
-	path := "/api/2.0/mlflow/registry-webhooks/update"
-	err := a.client.Patch(ctx, path, request)
-	return err
+	return a.impl.Update(ctx, request)
 }
 
-func NewTransitionRequests(client *client.DatabricksClient) TransitionRequestsService {
+func NewTransitionRequests(client *client.DatabricksClient) *TransitionRequestsAPI {
 	return &TransitionRequestsAPI{
-		client: client,
+		impl: &transitionRequestsImpl{
+			client: client,
+		},
 	}
 }
 
 type TransitionRequestsAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(TransitionRequestsService)
+	impl TransitionRequestsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *TransitionRequestsAPI) WithImpl(impl TransitionRequestsService) *TransitionRequestsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level TransitionRequests API implementation
+func (a *TransitionRequestsAPI) Impl() TransitionRequestsService {
+	return a.impl
 }
 
 // Approve transition requests
 //
 // Approves a model version stage transition request.
 func (a *TransitionRequestsAPI) Approve(ctx context.Context, request ApproveTransitionRequest) (*ApproveResponse, error) {
-	var approveResponse ApproveResponse
-	path := "/api/2.0/mlflow/transition-requests/approve"
-	err := a.client.Post(ctx, path, request, &approveResponse)
-	return &approveResponse, err
+	return a.impl.Approve(ctx, request)
 }
 
 // Make a transition request
 //
 // Creates a model version stage transition request.
 func (a *TransitionRequestsAPI) Create(ctx context.Context, request CreateTransitionRequest) (*CreateResponse, error) {
-	var createResponse CreateResponse
-	path := "/api/2.0/mlflow/transition-requests/create"
-	err := a.client.Post(ctx, path, request, &createResponse)
-	return &createResponse, err
+	return a.impl.Create(ctx, request)
 }
 
 // Delete a ransition request
 //
 // Cancels a model version stage transition request.
 func (a *TransitionRequestsAPI) Delete(ctx context.Context, request DeleteRequest) error {
-	path := "/api/2.0/mlflow/transition-requests/delete"
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // List transition requests
 //
 // Gets a list of all open stage transition requests for the model version.
 //
-// Use ListAll() to get all Activity instances
-func (a *TransitionRequestsAPI) List(ctx context.Context, request ListRequest) (*ListResponse, error) {
-	var listResponse ListResponse
-	path := "/api/2.0/mlflow/transition-requests/list"
-	err := a.client.Get(ctx, path, request, &listResponse)
-	return &listResponse, err
-}
-
-// ListAll returns all Activity instances. This method exists for consistency purposes.
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *TransitionRequestsAPI) ListAll(ctx context.Context, request ListRequest) ([]Activity, error) {
-	response, err := a.List(ctx, request)
+	response, err := a.impl.List(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -1119,8 +1067,5 @@ func (a *TransitionRequestsAPI) ListAll(ctx context.Context, request ListRequest
 //
 // Rejects a model version stage transition request.
 func (a *TransitionRequestsAPI) Reject(ctx context.Context, request RejectTransitionRequest) (*RejectResponse, error) {
-	var rejectResponse RejectResponse
-	path := "/api/2.0/mlflow/transition-requests/reject"
-	err := a.client.Post(ctx, path, request, &rejectResponse)
-	return &rejectResponse, err
+	return a.impl.Reject(ctx, request)
 }

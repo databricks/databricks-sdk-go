@@ -149,18 +149,18 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Get events for the cluster and assert its non empty
-	getEventsResponse, err := w.Clusters.Events(ctx, clusters.GetEvents{
+	events, err := w.Clusters.EventsAll(ctx, clusters.GetEvents{
 		ClusterId: clstr.ClusterId,
 	})
 	require.NoError(t, err)
-	assert.True(t, len(getEventsResponse.Events) > 0)
+	assert.True(t, len(events) > 0)
 
 	// List clusters in workspace
-	listClustersResponse, err := w.Clusters.List(ctx, clusters.ListRequest{})
+	clusters, err := w.Clusters.ListAll(ctx, clusters.ListRequest{})
 	require.NoError(t, err)
 
 	var seen int
-	for _, clusterInfo := range listClustersResponse.Clusters {
+	for _, clusterInfo := range clusters {
 		if clusterInfo.ClusterId == clstr.ClusterId {
 			seen++
 		}

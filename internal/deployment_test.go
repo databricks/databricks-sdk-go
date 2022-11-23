@@ -53,7 +53,7 @@ func TestMwsAccNetworks(t *testing.T) {
 	if !a.Config.IsAccountsClient() || !a.Config.IsAws() {
 		t.SkipNow()
 	}
-	netw, err := a.Networks.CreateNetworkConfig(ctx, deployment.CreateNetworkRequest{
+	netw, err := a.NetworkConfigurations.CreateNetworkConfig(ctx, deployment.CreateNetworkRequest{
 		NetworkName:      RandomName("sdk-"),
 		VpcId:            RandomHex("vpc-", 17),
 		SubnetIds:        []string{RandomHex("subnet-", 17), RandomHex("subnet-", 17)},
@@ -61,14 +61,14 @@ func TestMwsAccNetworks(t *testing.T) {
 	})
 	require.NoError(t, err)
 	defer func() {
-		err = a.Networks.DeleteNetworkConfigByNetworkId(ctx, netw.NetworkId)
+		err = a.NetworkConfigurations.DeleteNetworkConfigByNetworkId(ctx, netw.NetworkId)
 		require.NoError(t, err)
 	}()
 
-	_, err = a.Networks.GetNetworkConfigByNetworkId(ctx, netw.NetworkId)
+	_, err = a.NetworkConfigurations.GetNetworkConfigByNetworkId(ctx, netw.NetworkId)
 	require.NoError(t, err)
 
-	configs, err := a.Networks.ListNetworkConfigs(ctx)
+	configs, err := a.NetworkConfigurations.ListNetworkConfigs(ctx)
 	require.NoError(t, err)
 	assert.True(t, len(configs) > 0)
 }
@@ -83,7 +83,7 @@ func TestMwsAccCredentials(t *testing.T) {
 	if !a.Config.IsAccountsClient() || !a.Config.IsAws() {
 		t.SkipNow()
 	}
-	role, err := a.Credentials.CreateCredentialConfig(ctx, deployment.CreateCredentialRequest{
+	role, err := a.CredentialConfigurations.CreateCredentialConfig(ctx, deployment.CreateCredentialRequest{
 		CredentialsName: RandomName("sdk-"),
 		AwsCredentials: deployment.AwsCredentials{
 			StsRole: &deployment.StsRole{
@@ -94,14 +94,14 @@ func TestMwsAccCredentials(t *testing.T) {
 	require.NoError(t, err)
 
 	defer func() {
-		err = a.Credentials.DeleteCredentialConfigByCredentialsId(ctx, role.CredentialsId)
+		err = a.CredentialConfigurations.DeleteCredentialConfigByCredentialsId(ctx, role.CredentialsId)
 		require.NoError(t, err)
 	}()
 
-	_, err = a.Credentials.GetCredentialConfigByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.CredentialConfigurations.GetCredentialConfigByCredentialsId(ctx, role.CredentialsId)
 	require.NoError(t, err)
 
-	configs, err := a.Credentials.ListCredentials(ctx)
+	configs, err := a.CredentialConfigurations.ListCredentials(ctx)
 	require.NoError(t, err)
 	assert.True(t, len(configs) > 0)
 }

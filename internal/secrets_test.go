@@ -29,9 +29,9 @@ func TestAccSecrets(t *testing.T) {
 		err = w.Secrets.DeleteScopeByScope(ctx, scope.Scope)
 		require.NoError(t, err)
 	})
-	scopes, err := w.Secrets.ListScopes(ctx)
+	scopes, err := w.Secrets.ListScopesAll(ctx)
 	require.NoError(t, err)
-	assert.True(t, len(scopes.Scopes) >= 1)
+	assert.True(t, len(scopes) >= 1)
 
 	put := secrets.PutSecret{
 		Scope:       scope.Scope,

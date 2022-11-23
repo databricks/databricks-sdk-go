@@ -12,14 +12,57 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-func NewClusters(client *client.DatabricksClient) ClustersService {
+func NewClusters(client *client.DatabricksClient) *ClustersAPI {
 	return &ClustersAPI{
-		client: client,
+		impl: &clustersImpl{
+			client: client,
+		},
 	}
 }
 
+// The Clusters API allows you to create, start, edit, list, terminate, and
+// delete clusters.
+//
+// Databricks maps cluster node instance types to compute units known as DBUs.
+// See the instance type pricing page for a list of the supported instance types
+// and their corresponding DBUs.
+//
+// A Databricks cluster is a set of computation resources and configurations on
+// which you run data engineering, data science, and data analytics workloads,
+// such as production ETL pipelines, streaming analytics, ad-hoc analytics, and
+// machine learning.
+//
+// You run these workloads as a set of commands in a notebook or as an automated
+// job. Databricks makes a distinction between all-purpose clusters and job
+// clusters. You use all-purpose clusters to analyze data collaboratively using
+// interactive notebooks. You use job clusters to run fast and robust automated
+// jobs.
+//
+// You can create an all-purpose cluster using the UI, CLI, or REST API. You can
+// manually terminate and restart an all-purpose cluster. Multiple users can
+// share such clusters to do collaborative interactive analysis.
+//
+// IMPORTANT: Databricks retains cluster configuration information for up to 200
+// all-purpose clusters terminated in the last 30 days and up to 30 job clusters
+// recently terminated by the job scheduler. To keep an all-purpose cluster
+// configuration even after it has been terminated for more than 30 days, an
+// administrator can pin a cluster to the cluster list.
 type ClustersAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(ClustersService)
+	impl ClustersService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *ClustersAPI) WithImpl(impl ClustersService) *ClustersAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Clusters API implementation
+func (a *ClustersAPI) Impl() ClustersService {
+	return a.impl
 }
 
 // Change cluster owner
@@ -27,9 +70,7 @@ type ClustersAPI struct {
 // Change the owner of the cluster. You must be an admin to perform this
 // operation.
 func (a *ClustersAPI) ChangeOwner(ctx context.Context, request ChangeClusterOwner) error {
-	path := "/api/2.0/clusters/change-owner"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.ChangeOwner(ctx, request)
 }
 
 // Create new cluster
@@ -48,13 +89,10 @@ func (a *ClustersAPI) ChangeOwner(ctx context.Context, request ChangeClusterOwne
 // creation will succeed. Otherwise the cluster will terminate with an
 // informative error message.
 func (a *ClustersAPI) Create(ctx context.Context, request CreateCluster) (*CreateClusterResponse, error) {
-	var createClusterResponse CreateClusterResponse
-	path := "/api/2.0/clusters/create"
-	err := a.client.Post(ctx, path, request, &createClusterResponse)
-	return &createClusterResponse, err
+	return a.impl.Create(ctx, request)
 }
 
-// Create and wait to reach RUNNING state
+// Calls [ClustersAPI.Create] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
@@ -103,12 +141,10 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 // “TERMINATED“ state. If the cluster is already in a “TERMINATING“ or
 // “TERMINATED“ state, nothing will happen.
 func (a *ClustersAPI) Delete(ctx context.Context, request DeleteCluster) error {
-	path := "/api/2.0/clusters/delete"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
-// Delete and wait to reach TERMINATED state
+// Calls [ClustersAPI.Delete] and waits to reach TERMINATED state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
@@ -157,7 +193,7 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteClu
 // “TERMINATED“ state. If the cluster is already in a “TERMINATING“ or
 // “TERMINATED“ state, nothing will happen.
 func (a *ClustersAPI) DeleteByClusterId(ctx context.Context, clusterId string) error {
-	return a.Delete(ctx, DeleteCluster{
+	return a.impl.Delete(ctx, DeleteCluster{
 		ClusterId: clusterId,
 	})
 }
@@ -184,12 +220,10 @@ func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId st
 //
 // Clusters created by the Databricks Jobs service cannot be edited.
 func (a *ClustersAPI) Edit(ctx context.Context, request EditCluster) error {
-	path := "/api/2.0/clusters/edit"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Edit(ctx, request)
 }
 
-// Edit and wait to reach RUNNING state
+// Calls [ClustersAPI.Edit] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
@@ -237,22 +271,12 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, 
 // paginated. If there are more events to read, the response includes all the
 // nparameters necessary to request the next page of events.
 //
-// Use EventsAll() to get all ClusterEvent instances, which will iterate over every result page.
-func (a *ClustersAPI) Events(ctx context.Context, request GetEvents) (*GetEventsResponse, error) {
-	var getEventsResponse GetEventsResponse
-	path := "/api/2.0/clusters/events"
-	err := a.client.Post(ctx, path, request, &getEventsResponse)
-	return &getEventsResponse, err
-}
-
-// EventsAll returns all ClusterEvent instances by calling Events for every result page
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]ClusterEvent, error) {
 	var results []ClusterEvent
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	for {
-		response, err := a.Events(ctx, request)
+		response, err := a.impl.Events(ctx, request)
 		if err != nil {
 			return nil, err
 		}
@@ -273,13 +297,10 @@ func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]Clust
 // be described while they are running, or up to 60 days after they are
 // terminated.
 func (a *ClustersAPI) Get(ctx context.Context, request GetRequest) (*ClusterInfo, error) {
-	var clusterInfo ClusterInfo
-	path := "/api/2.0/clusters/get"
-	err := a.client.Get(ctx, path, request, &clusterInfo)
-	return &clusterInfo, err
+	return a.impl.Get(ctx, request)
 }
 
-// Get and wait to reach RUNNING state
+// Calls [ClustersAPI.Get] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
@@ -327,7 +348,7 @@ func (a *ClustersAPI) GetAndWait(ctx context.Context, getRequest GetRequest, opt
 // be described while they are running, or up to 60 days after they are
 // terminated.
 func (a *ClustersAPI) GetByClusterId(ctx context.Context, clusterId string) (*ClusterInfo, error) {
-	return a.Get(ctx, GetRequest{
+	return a.impl.Get(ctx, GetRequest{
 		ClusterId: clusterId,
 	})
 }
@@ -351,19 +372,9 @@ func (a *ClustersAPI) GetByClusterIdAndWait(ctx context.Context, clusterId strin
 // clusters, all 45 terminated interactive clusters, and the 30 most recently
 // terminated job clusters.
 //
-// Use ListAll() to get all ClusterInfo instances
-func (a *ClustersAPI) List(ctx context.Context, request ListRequest) (*ListClustersResponse, error) {
-	var listClustersResponse ListClustersResponse
-	path := "/api/2.0/clusters/list"
-	err := a.client.Get(ctx, path, request, &listClustersResponse)
-	return &listClustersResponse, err
-}
-
-// ListAll returns all ClusterInfo instances. This method exists for consistency purposes.
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *ClustersAPI) ListAll(ctx context.Context, request ListRequest) ([]ClusterInfo, error) {
-	response, err := a.List(ctx, request)
+	response, err := a.impl.List(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -383,7 +394,7 @@ func (a *ClustersAPI) ListAll(ctx context.Context, request ListRequest) ([]Clust
 // clusters, all 45 terminated interactive clusters, and the 30 most recently
 // terminated job clusters.
 func (a *ClustersAPI) ListByCanUseClient(ctx context.Context, canUseClient string) (*ListClustersResponse, error) {
-	return a.List(ctx, ListRequest{
+	return a.impl.List(ctx, ListRequest{
 		CanUseClient: canUseClient,
 	})
 }
@@ -393,10 +404,7 @@ func (a *ClustersAPI) ListByCanUseClient(ctx context.Context, canUseClient strin
 // Returns a list of supported Spark node types. These node types can be used to
 // launch a cluster.
 func (a *ClustersAPI) ListNodeTypes(ctx context.Context) (*ListNodeTypesResponse, error) {
-	var listNodeTypesResponse ListNodeTypesResponse
-	path := "/api/2.0/clusters/list-node-types"
-	err := a.client.Get(ctx, path, nil, &listNodeTypesResponse)
-	return &listNodeTypesResponse, err
+	return a.impl.ListNodeTypes(ctx)
 }
 
 // List availability zones
@@ -404,10 +412,7 @@ func (a *ClustersAPI) ListNodeTypes(ctx context.Context) (*ListNodeTypesResponse
 // Returns a list of availability zones where clusters can be created in (For
 // example, us-west-2a). These zones can be used to launch a cluster.
 func (a *ClustersAPI) ListZones(ctx context.Context) (*ListAvailableZonesResponse, error) {
-	var listAvailableZonesResponse ListAvailableZonesResponse
-	path := "/api/2.0/clusters/list-zones"
-	err := a.client.Get(ctx, path, nil, &listAvailableZonesResponse)
-	return &listAvailableZonesResponse, err
+	return a.impl.ListZones(ctx)
 }
 
 // Permanently delete cluster
@@ -419,9 +424,7 @@ func (a *ClustersAPI) ListZones(ctx context.Context) (*ListAvailableZonesRespons
 // cluster list, and API users can no longer perform any action on permanently
 // deleted clusters.
 func (a *ClustersAPI) PermanentDelete(ctx context.Context, request PermanentDeleteCluster) error {
-	path := "/api/2.0/clusters/permanent-delete"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.PermanentDelete(ctx, request)
 }
 
 // Permanently delete cluster
@@ -433,7 +436,7 @@ func (a *ClustersAPI) PermanentDelete(ctx context.Context, request PermanentDele
 // cluster list, and API users can no longer perform any action on permanently
 // deleted clusters.
 func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId string) error {
-	return a.PermanentDelete(ctx, PermanentDeleteCluster{
+	return a.impl.PermanentDelete(ctx, PermanentDeleteCluster{
 		ClusterId: clusterId,
 	})
 }
@@ -444,9 +447,7 @@ func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId 
 // ListClusters API. Pinning a cluster that is already pinned will have no
 // effect. This API can only be called by workspace admins.
 func (a *ClustersAPI) Pin(ctx context.Context, request PinCluster) error {
-	path := "/api/2.0/clusters/pin"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Pin(ctx, request)
 }
 
 // Pin cluster
@@ -455,7 +456,7 @@ func (a *ClustersAPI) Pin(ctx context.Context, request PinCluster) error {
 // ListClusters API. Pinning a cluster that is already pinned will have no
 // effect. This API can only be called by workspace admins.
 func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) error {
-	return a.Pin(ctx, PinCluster{
+	return a.impl.Pin(ctx, PinCluster{
 		ClusterId: clusterId,
 	})
 }
@@ -465,12 +466,10 @@ func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) erro
 // Resizes a cluster to have a desired number of workers. This will fail unless
 // the cluster is in a `RUNNING` state.
 func (a *ClustersAPI) Resize(ctx context.Context, request ResizeCluster) error {
-	path := "/api/2.0/clusters/resize"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Resize(ctx, request)
 }
 
-// Resize and wait to reach RUNNING state
+// Calls [ClustersAPI.Resize] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
@@ -517,12 +516,10 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeClu
 // Restarts a Spark cluster with the supplied ID. If the cluster is not
 // currently in a `RUNNING` state, nothing will happen.
 func (a *ClustersAPI) Restart(ctx context.Context, request RestartCluster) error {
-	path := "/api/2.0/clusters/restart"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Restart(ctx, request)
 }
 
-// Restart and wait to reach RUNNING state
+// Calls [ClustersAPI.Restart] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
@@ -569,10 +566,7 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster Restart
 // Returns the list of available Spark versions. These versions can be used to
 // launch a cluster.
 func (a *ClustersAPI) SparkVersions(ctx context.Context) (*GetSparkVersionsResponse, error) {
-	var getSparkVersionsResponse GetSparkVersionsResponse
-	path := "/api/2.0/clusters/spark-versions"
-	err := a.client.Get(ctx, path, nil, &getSparkVersionsResponse)
-	return &getSparkVersionsResponse, err
+	return a.impl.SparkVersions(ctx)
 }
 
 // Start terminated cluster
@@ -586,12 +580,10 @@ func (a *ClustersAPI) SparkVersions(ctx context.Context) (*GetSparkVersionsRespo
 // nodes. * If the cluster is not currently in a “TERMINATED“ state, nothing
 // will happen. * Clusters launched to run a job cannot be started.
 func (a *ClustersAPI) Start(ctx context.Context, request StartCluster) error {
-	path := "/api/2.0/clusters/start"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Start(ctx, request)
 }
 
-// Start and wait to reach RUNNING state
+// Calls [ClustersAPI.Start] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
@@ -644,7 +636,7 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 // nodes. * If the cluster is not currently in a “TERMINATED“ state, nothing
 // will happen. * Clusters launched to run a job cannot be started.
 func (a *ClustersAPI) StartByClusterId(ctx context.Context, clusterId string) error {
-	return a.Start(ctx, StartCluster{
+	return a.impl.Start(ctx, StartCluster{
 		ClusterId: clusterId,
 	})
 }
@@ -661,9 +653,7 @@ func (a *ClustersAPI) StartByClusterIdAndWait(ctx context.Context, clusterId str
 // ListClusters API. Unpinning a cluster that is not pinned will have no effect.
 // This API can only be called by workspace admins.
 func (a *ClustersAPI) Unpin(ctx context.Context, request UnpinCluster) error {
-	path := "/api/2.0/clusters/unpin"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Unpin(ctx, request)
 }
 
 // Unpin cluster
@@ -672,7 +662,7 @@ func (a *ClustersAPI) Unpin(ctx context.Context, request UnpinCluster) error {
 // ListClusters API. Unpinning a cluster that is not pinned will have no effect.
 // This API can only be called by workspace admins.
 func (a *ClustersAPI) UnpinByClusterId(ctx context.Context, clusterId string) error {
-	return a.Unpin(ctx, UnpinCluster{
+	return a.impl.Unpin(ctx, UnpinCluster{
 		ClusterId: clusterId,
 	})
 }

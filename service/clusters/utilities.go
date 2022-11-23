@@ -25,11 +25,11 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 		err = fmt.Errorf("you can only specify 1 custom cluster conf, not %d", len(custom))
 		return
 	}
-	clusters, err := a.List(ctx, ListRequest{})
+	clusters, err := a.ListAll(ctx, ListRequest{})
 	if err != nil {
 		return
 	}
-	for _, cl := range clusters.Clusters {
+	for _, cl := range clusters {
 		if cl.ClusterName != name {
 			continue
 		}
@@ -73,7 +73,11 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 		NodeTypeId:             smallestNodeType,
 		AutoterminationMinutes: 10,
 	}
-	if a.client.Config.IsAws() {
+	api, ok := a.impl.(*clustersImpl)
+	if !ok {
+		return nil, fmt.Errorf("cannot get raw clusters API")
+	}
+	if api.client.Config.IsAws() {
 		r.AwsAttributes = &AwsAttributes{
 			Availability: "SPOT",
 		}

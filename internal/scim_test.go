@@ -50,7 +50,7 @@ func TestAccUsers(t *testing.T) {
 	assert.Equal(t, user.DisplayName, fetch.DisplayName)
 
 	// list all users
-	allUsers, err := w.Users.ListUsers(ctx, scim.ListUsersRequest{
+	allUsers, err := w.Users.ListUsersAll(ctx, scim.ListUsersRequest{
 		Attributes: "id,userName",
 		SortBy:     "userName",
 		SortOrder:  scim.ListUsersSortOrderDescending,
@@ -59,7 +59,7 @@ func TestAccUsers(t *testing.T) {
 
 	// verify that the user we've creates is in the list
 	namesToIds := map[string]string{}
-	for _, u := range allUsers.Resources {
+	for _, u := range allUsers {
 		namesToIds[u.UserName] = u.Id
 	}
 	assert.Equal(t, user.Id, namesToIds[user.UserName])
@@ -95,7 +95,7 @@ func TestAccGroups(t *testing.T) {
 	assert.Equal(t, group.DisplayName, fetch.DisplayName)
 
 	// list all groups that start with `go-sdk-`
-	allGroups, err := w.Groups.ListGroups(ctx, scim.ListGroupsRequest{
+	allGroups, err := w.Groups.ListGroupsAll(ctx, scim.ListGroupsRequest{
 		SortOrder: scim.ListGroupsSortOrderDescending,
 		Filter:    "displayName sw 'go-sdk-'",
 	})
@@ -103,7 +103,7 @@ func TestAccGroups(t *testing.T) {
 
 	// verify that the group we've creates is in the list
 	namesToIds := map[string]string{}
-	for _, u := range allGroups.Resources {
+	for _, u := range allGroups {
 		namesToIds[u.DisplayName] = u.Id
 	}
 	assert.Equal(t, group.Id, namesToIds[group.DisplayName])

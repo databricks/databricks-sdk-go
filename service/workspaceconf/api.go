@@ -8,24 +8,38 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewWorkspaceConf(client *client.DatabricksClient) WorkspaceConfService {
+func NewWorkspaceConf(client *client.DatabricksClient) *WorkspaceConfAPI {
 	return &WorkspaceConfAPI{
-		client: client,
+		impl: &workspaceConfImpl{
+			client: client,
+		},
 	}
 }
 
+// This API allows updating known workspace settings for advanced users.
 type WorkspaceConfAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(WorkspaceConfService)
+	impl WorkspaceConfService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *WorkspaceConfAPI) WithImpl(impl WorkspaceConfService) *WorkspaceConfAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level WorkspaceConf API implementation
+func (a *WorkspaceConfAPI) Impl() WorkspaceConfService {
+	return a.impl
 }
 
 // Check configuration status
 //
 // Gets the configuration status for a workspace.
 func (a *WorkspaceConfAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*WorkspaceConf, error) {
-	var workspaceConf WorkspaceConf
-	path := "/api/2.0/workspace-conf"
-	err := a.client.Get(ctx, path, request, &workspaceConf)
-	return &workspaceConf, err
+	return a.impl.GetStatus(ctx, request)
 }
 
 // Enable/disable features
@@ -33,7 +47,5 @@ func (a *WorkspaceConfAPI) GetStatus(ctx context.Context, request GetStatusReque
 // Sets the configuration status for a workspace, including enabling or
 // disabling it.
 func (a *WorkspaceConfAPI) SetStatus(ctx context.Context, request WorkspaceConf) error {
-	path := "/api/2.0/workspace-conf"
-	err := a.client.Patch(ctx, path, request)
-	return err
+	return a.impl.SetStatus(ctx, request)
 }

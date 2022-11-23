@@ -71,7 +71,7 @@ During the Beta period, you must clone and then reference this repository locall
    )
    
    func init() {
-     databricks.WithProduct("your-product", "0.0.1")
+     databricks.WithProduct("awesome-product", "0.0.1")
    }
 
    func main() {
@@ -191,7 +191,7 @@ import (
 )
 
 func init() {
-  databricks.WithProduct("your-product", "0.0.1")
+  databricks.WithProduct("awesome-product", "0.0.1")
 }
 
 func main() {
@@ -274,7 +274,7 @@ import (
 )
 
 func init() {
-  databricks.WithProduct("your-product", "0.0.1")
+  databricks.WithProduct("awesome-product", "0.0.1")
 }
 
 func main() {
@@ -357,7 +357,7 @@ import (
 )
 
 func init() {
-  databricks.WithProduct("your-product", "0.0.1")
+  databricks.WithProduct("awesome-product", "0.0.1")
 }
 
 func main() {
@@ -426,7 +426,7 @@ import (
 )
 
 func init() {
-  databricks.WithProduct("your-product", "0.0.1")
+  databricks.WithProduct("awesome-product", "0.0.1")
 }
 
 func main() {
@@ -470,7 +470,7 @@ import (
 )
 
 func init() {
-  databricks.WithProduct("your-product", "0.0.1")
+  databricks.WithProduct("awesome-product", "0.0.1")
 }
 
 func main() {

@@ -12,14 +12,32 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-func NewCommandExecution(client *client.DatabricksClient) CommandExecutionService {
+func NewCommandExecution(client *client.DatabricksClient) *CommandExecutionAPI {
 	return &CommandExecutionAPI{
-		client: client,
+		impl: &commandExecutionImpl{
+			client: client,
+		},
 	}
 }
 
+// This API allows execution of Python, Scala, SQL, or R commands on running
+// Databricks Clusters.
 type CommandExecutionAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(CommandExecutionService)
+	impl CommandExecutionService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *CommandExecutionAPI) WithImpl(impl CommandExecutionService) *CommandExecutionAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level CommandExecution API implementation
+func (a *CommandExecutionAPI) Impl() CommandExecutionService {
+	return a.impl
 }
 
 // Cancel a command
@@ -28,12 +46,10 @@ type CommandExecutionAPI struct {
 //
 // The command ID is obtained from a prior successful call to __execute__.
 func (a *CommandExecutionAPI) Cancel(ctx context.Context, request CancelCommand) error {
-	path := "/api/1.2/commands/cancel"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Cancel(ctx, request)
 }
 
-// Cancel and wait to reach Cancelled state
+// Calls [CommandExecutionAPI.Cancel] and waits to reach Cancelled state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[CommandStatusResponse](60*time.Minute) functional option.
@@ -84,20 +100,14 @@ func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand C
 //
 // The command ID is obtained from a prior successful call to __execute__.
 func (a *CommandExecutionAPI) CommandStatus(ctx context.Context, request CommandStatusRequest) (*CommandStatusResponse, error) {
-	var commandStatusResponse CommandStatusResponse
-	path := "/api/1.2/commands/status"
-	err := a.client.Get(ctx, path, request, &commandStatusResponse)
-	return &commandStatusResponse, err
+	return a.impl.CommandStatus(ctx, request)
 }
 
 // Get status
 //
 // Gets the status for an execution context.
 func (a *CommandExecutionAPI) ContextStatus(ctx context.Context, request ContextStatusRequest) (*ContextStatusResponse, error) {
-	var contextStatusResponse ContextStatusResponse
-	path := "/api/1.2/contexts/status"
-	err := a.client.Get(ctx, path, request, &contextStatusResponse)
-	return &contextStatusResponse, err
+	return a.impl.ContextStatus(ctx, request)
 }
 
 // Create an execution context
@@ -106,13 +116,10 @@ func (a *CommandExecutionAPI) ContextStatus(ctx context.Context, request Context
 //
 // If successful, this method returns the ID of the new execution context.
 func (a *CommandExecutionAPI) Create(ctx context.Context, request CreateContext) (*Created, error) {
-	var created Created
-	path := "/api/1.2/contexts/create"
-	err := a.client.Post(ctx, path, request, &created)
-	return &created, err
+	return a.impl.Create(ctx, request)
 }
 
-// Create and wait to reach Running state
+// Calls [CommandExecutionAPI.Create] and waits to reach Running state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ContextStatusResponse](60*time.Minute) functional option.
@@ -159,9 +166,7 @@ func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext C
 //
 // Deletes an execution context.
 func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyContext) error {
-	path := "/api/1.2/contexts/destroy"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Destroy(ctx, request)
 }
 
 // Run a command
@@ -172,13 +177,10 @@ func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyContex
 // If successful, it returns an ID for tracking the status of the command's
 // execution.
 func (a *CommandExecutionAPI) Execute(ctx context.Context, request Command) (*Created, error) {
-	var created Created
-	path := "/api/1.2/commands/execute"
-	err := a.client.Post(ctx, path, request, &created)
-	return &created, err
+	return a.impl.Execute(ctx, request)
 }
 
-// Execute and wait to reach Finished or Error state
+// Calls [CommandExecutionAPI.Execute] and waits to reach Finished or Error state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[CommandStatusResponse](60*time.Minute) functional option.

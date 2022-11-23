@@ -4,19 +4,36 @@ package permissions
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
-func NewPermissions(client *client.DatabricksClient) PermissionsService {
+func NewPermissions(client *client.DatabricksClient) *PermissionsAPI {
 	return &PermissionsAPI{
-		client: client,
+		impl: &permissionsImpl{
+			client: client,
+		},
 	}
 }
 
+// Permissions API are used to create read, write, edit, update and manage
+// access for various users on different objects and endpoints.
 type PermissionsAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(PermissionsService)
+	impl PermissionsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *PermissionsAPI) WithImpl(impl PermissionsService) *PermissionsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Permissions API implementation
+func (a *PermissionsAPI) Impl() PermissionsService {
+	return a.impl
 }
 
 // Get object permissions
@@ -24,10 +41,7 @@ type PermissionsAPI struct {
 // Gets the permission of an object. Objects can inherit permissions from their
 // parent objects or root objects.
 func (a *PermissionsAPI) GetObjectPermissions(ctx context.Context, request GetObjectPermissionsRequest) (*ObjectPermissions, error) {
-	var objectPermissions ObjectPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
-	err := a.client.Get(ctx, path, request, &objectPermissions)
-	return &objectPermissions, err
+	return a.impl.GetObjectPermissions(ctx, request)
 }
 
 // Get object permissions
@@ -35,7 +49,7 @@ func (a *PermissionsAPI) GetObjectPermissions(ctx context.Context, request GetOb
 // Gets the permission of an object. Objects can inherit permissions from their
 // parent objects or root objects.
 func (a *PermissionsAPI) GetObjectPermissionsByObjectTypeAndObjectId(ctx context.Context, objectType string, objectId string) (*ObjectPermissions, error) {
-	return a.GetObjectPermissions(ctx, GetObjectPermissionsRequest{
+	return a.impl.GetObjectPermissions(ctx, GetObjectPermissionsRequest{
 		ObjectType: objectType,
 		ObjectId:   objectId,
 	})
@@ -45,17 +59,14 @@ func (a *PermissionsAPI) GetObjectPermissionsByObjectTypeAndObjectId(ctx context
 //
 // Gets the permission levels that a user can have on an object.
 func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error) {
-	var getPermissionLevelsResponse GetPermissionLevelsResponse
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", request.RequestObjectType, request.RequestObjectId)
-	err := a.client.Get(ctx, path, request, &getPermissionLevelsResponse)
-	return &getPermissionLevelsResponse, err
+	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get permission levels
 //
 // Gets the permission levels that a user can have on an object.
 func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error) {
-	return a.GetPermissionLevels(ctx, GetPermissionLevelsRequest{
+	return a.impl.GetPermissionLevels(ctx, GetPermissionLevelsRequest{
 		RequestObjectType: requestObjectType,
 		RequestObjectId:   requestObjectId,
 	})
@@ -66,38 +77,48 @@ func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectI
 // Sets permissions on object. Objects can inherit permissions from their parent
 // objects and root objects.
 func (a *PermissionsAPI) SetObjectPermissions(ctx context.Context, request SetObjectPermissions) error {
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
-	err := a.client.Put(ctx, path, request)
-	return err
+	return a.impl.SetObjectPermissions(ctx, request)
 }
 
 // Update permission
 //
 // Updates the permissions on an object.
 func (a *PermissionsAPI) UpdateObjectPermissions(ctx context.Context, request UpdateObjectPermissions) error {
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
-	err := a.client.Patch(ctx, path, request)
-	return err
+	return a.impl.UpdateObjectPermissions(ctx, request)
 }
 
-func NewWorkspaceAssignment(client *client.DatabricksClient) WorkspaceAssignmentService {
+func NewWorkspaceAssignment(client *client.DatabricksClient) *WorkspaceAssignmentAPI {
 	return &WorkspaceAssignmentAPI{
-		client: client,
+		impl: &workspaceAssignmentImpl{
+			client: client,
+		},
 	}
 }
 
+// Databricks Workspace Assignment REST API
 type WorkspaceAssignmentAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(WorkspaceAssignmentService)
+	impl WorkspaceAssignmentService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *WorkspaceAssignmentAPI) WithImpl(impl WorkspaceAssignmentService) *WorkspaceAssignmentAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level WorkspaceAssignment API implementation
+func (a *WorkspaceAssignmentAPI) Impl() WorkspaceAssignmentService {
+	return a.impl
 }
 
 // Create permission assignments
 //
 // Create new permission assignments for the specified account and workspace.
 func (a *WorkspaceAssignmentAPI) Create(ctx context.Context, request CreateWorkspaceAssignments) (*WorkspaceAssignmentsCreated, error) {
-	var workspaceAssignmentsCreated WorkspaceAssignmentsCreated
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/workspaces/%v/permissionassignments", a.client.Config.AccountID, request.WorkspaceId)
-	err := a.client.Post(ctx, path, request, &workspaceAssignmentsCreated)
-	return &workspaceAssignmentsCreated, err
+	return a.impl.Create(ctx, request)
 }
 
 // Delete permissions assignment
@@ -105,9 +126,7 @@ func (a *WorkspaceAssignmentAPI) Create(ctx context.Context, request CreateWorks
 // Deletes the workspace permissions assignment for a given account and
 // workspace using the specified service principal.
 func (a *WorkspaceAssignmentAPI) Delete(ctx context.Context, request DeleteRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.Config.AccountID, request.WorkspaceId, request.PrincipalId)
-	err := a.client.Delete(ctx, path, request)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete permissions assignment
@@ -115,7 +134,7 @@ func (a *WorkspaceAssignmentAPI) Delete(ctx context.Context, request DeleteReque
 // Deletes the workspace permissions assignment for a given account and
 // workspace using the specified service principal.
 func (a *WorkspaceAssignmentAPI) DeleteByWorkspaceIdAndPrincipalId(ctx context.Context, workspaceId int64, principalId int64) error {
-	return a.Delete(ctx, DeleteRequest{
+	return a.impl.Delete(ctx, DeleteRequest{
 		WorkspaceId: workspaceId,
 		PrincipalId: principalId,
 	})
@@ -126,10 +145,7 @@ func (a *WorkspaceAssignmentAPI) DeleteByWorkspaceIdAndPrincipalId(ctx context.C
 // Get an array of workspace permissions for the specified account and
 // workspace.
 func (a *WorkspaceAssignmentAPI) Get(ctx context.Context, request GetRequest) (*WorkspacePermissions, error) {
-	var workspacePermissions WorkspacePermissions
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/workspaces/%v/permissionassignments/permissions", a.client.Config.AccountID, request.WorkspaceId)
-	err := a.client.Get(ctx, path, request, &workspacePermissions)
-	return &workspacePermissions, err
+	return a.impl.Get(ctx, request)
 }
 
 // List workspace permissions
@@ -137,7 +153,7 @@ func (a *WorkspaceAssignmentAPI) Get(ctx context.Context, request GetRequest) (*
 // Get an array of workspace permissions for the specified account and
 // workspace.
 func (a *WorkspaceAssignmentAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*WorkspacePermissions, error) {
-	return a.Get(ctx, GetRequest{
+	return a.impl.Get(ctx, GetRequest{
 		WorkspaceId: workspaceId,
 	})
 }
@@ -147,19 +163,9 @@ func (a *WorkspaceAssignmentAPI) GetByWorkspaceId(ctx context.Context, workspace
 // Get the permission assignments for the specified Databricks Account and
 // Databricks Workspace.
 //
-// Use ListAll() to get all PermissionAssignment instances
-func (a *WorkspaceAssignmentAPI) List(ctx context.Context, request ListRequest) (*PermissionAssignments, error) {
-	var permissionAssignments PermissionAssignments
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/workspaces/%v/permissionassignments", a.client.Config.AccountID, request.WorkspaceId)
-	err := a.client.Get(ctx, path, request, &permissionAssignments)
-	return &permissionAssignments, err
-}
-
-// ListAll returns all PermissionAssignment instances. This method exists for consistency purposes.
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *WorkspaceAssignmentAPI) ListAll(ctx context.Context, request ListRequest) ([]PermissionAssignment, error) {
-	response, err := a.List(ctx, request)
+	response, err := a.impl.List(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +177,7 @@ func (a *WorkspaceAssignmentAPI) ListAll(ctx context.Context, request ListReques
 // Get the permission assignments for the specified Databricks Account and
 // Databricks Workspace.
 func (a *WorkspaceAssignmentAPI) ListByWorkspaceId(ctx context.Context, workspaceId int64) (*PermissionAssignments, error) {
-	return a.List(ctx, ListRequest{
+	return a.impl.List(ctx, ListRequest{
 		WorkspaceId: workspaceId,
 	})
 }
@@ -181,7 +187,5 @@ func (a *WorkspaceAssignmentAPI) ListByWorkspaceId(ctx context.Context, workspac
 // Updates the workspace permissions assignment for a given account and
 // workspace using the specified service principal.
 func (a *WorkspaceAssignmentAPI) Update(ctx context.Context, request UpdateWorkspaceAssignments) error {
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.Config.AccountID, request.WorkspaceId, request.PrincipalId)
-	err := a.client.Put(ctx, path, request)
-	return err
+	return a.impl.Update(ctx, request)
 }

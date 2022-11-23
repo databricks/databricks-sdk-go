@@ -167,13 +167,13 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, byId.Settings.Name, newName)
 
-	jobList, err := w.Jobs.List(ctx, jobs.ListRequest{
+	jobList, err := w.Jobs.ListAll(ctx, jobs.ListRequest{
 		ExpandTasks: false,
 	})
 	require.NoError(t, err)
 
 	var jobsIdList []int64
-	for _, job := range jobList.Jobs {
+	for _, job := range jobList {
 		jobsIdList = append(jobsIdList, job.JobId)
 	}
 	assert.Contains(t, jobsIdList, createdJob.JobId)
@@ -181,9 +181,9 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	err = w.Jobs.DeleteByJobId(ctx, createdJob.JobId)
 	require.NoError(t, err)
 
-	jobList, err = w.Jobs.List(ctx, jobs.ListRequest{})
+	jobList, err = w.Jobs.ListAll(ctx, jobs.ListRequest{})
 	require.NoError(t, err)
-	for _, job := range jobList.Jobs {
+	for _, job := range jobList {
 		// TODO: change assertion to by-name
 		assert.NotEqual(t, job.JobId, createdJob.JobId)
 	}
