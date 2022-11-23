@@ -231,7 +231,7 @@ func main() {
 // the missing information.
 func askFor(prompt string) string {
   var s string
-  r := bufio.MustNew(os.Stdin)
+  r := bufio.NewReader(os.Stdin)
   for {
     fmt.Fprint(os.Stdout, prompt+" ")
     s, _ = r.ReadString('\n')
@@ -318,7 +318,7 @@ func main() {
 // the missing information.
 func askFor(prompt string) string {
   var s string
-  r := bufio.MustNew(os.Stdin)
+  r := bufio.NewReader(os.Stdin)
   for {
     fmt.Fprint(os.Stdout, prompt+" ")
     s, _ = r.ReadString('\n')
@@ -392,7 +392,7 @@ func main() {
 // the missing information.
 func askFor(prompt string) string {
   var s string
-  r := bufio.MustNew(os.Stdin)
+  r := bufio.NewReader(os.Stdin)
   for {
     fmt.Fprint(os.Stdout, prompt+" ")
     s, _ = r.ReadString('\n')
