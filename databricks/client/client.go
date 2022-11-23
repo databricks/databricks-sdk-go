@@ -323,13 +323,6 @@ func (c *DatabricksClient) addAuthHeaderToUserAgent(r *http.Request) error {
 	return nil
 }
 
-func (c *DatabricksClient) addConfigFieldsMask(r *http.Request) error {
-	mask := databricks.ConfigAttributes.FieldNamesMask(c.Config)
-	ctx := useragent.InContext(r.Context(), "config-mask", mask)
-	*r = *r.WithContext(ctx) // replace request
-	return nil
-}
-
 func (c *DatabricksClient) perform(ctx context.Context, method, requestURL string, data interface{},
 	visitors ...func(*http.Request) error) (responseBody []byte, err error) {
 	requestBody, err := makeRequestBody(method, &requestURL, data)
@@ -339,7 +332,6 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 	visitors = append([]func(*http.Request) error{
 		c.Config.Authenticate,
 		c.addAuthHeaderToUserAgent,
-		c.addConfigFieldsMask,
 	}, visitors...)
 	resp, err := retries.Poll(ctx, c.retryTimeout,
 		c.attempt(ctx, method, requestURL, requestBody, visitors...))
