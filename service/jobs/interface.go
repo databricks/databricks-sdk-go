@@ -85,7 +85,7 @@ type JobsService interface {
 	// Retrieves a list of jobs.
 	//
 	// Use ListAll() to get all Job instances, which will iterate over every result page.
-	List(ctx context.Context, request ListRequest) (*ListResponse, error)
+	List(ctx context.Context, request ListRequest) (*ListJobsResponse, error)
 
 	// List runs for a job
 	//

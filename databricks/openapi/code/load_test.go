@@ -67,7 +67,7 @@ func TestBasic(t *testing.T) {
 
 // This test is used for debugging purposes
 func TestMethodsReport(t *testing.T) {
-	t.SkipNow()
+	//t.SkipNow()
 	home, _ := os.UserHomeDir()
 	batch, err := NewFromFile(filepath.Join(home,
 		"universe/bazel-bin/openapi/all-internal.json"), []string{})
@@ -78,6 +78,11 @@ func TestMethodsReport(t *testing.T) {
 			singleService := strings.EqualFold(pkg.PascalName(), svc.PascalName())
 			serviceSingularKebab := svc.Singular().KebabName()
 			for _, m := range svc.Methods() {
+				nid := m.NamedIdMap()
+				if nid == nil {
+					continue
+				}
+
 				var fields []string
 				if m.Request != nil {
 					for _, f := range m.Request.Fields() {

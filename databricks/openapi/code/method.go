@@ -57,9 +57,9 @@ type Pagination struct {
 // entity has Identifier and Name fields. End-users usually use this method for
 // drop-downs or any other selectors.
 type NamedIdMap struct {
-	Id     *Field
-	Name   *Field
-	Entity *Entity
+	Id       *Field
+	NamePath []*Field
+	Entity   *Entity
 
 	// if List method returns []Item directly
 	// without generated iteration wrapper
@@ -190,7 +190,8 @@ func (m *Method) paginationItem() *Entity {
 		// we assume that method already returns body-as-array
 		return m.Response.ArrayValue
 	}
-	return m.Pagination().Entity
+	p := m.Pagination()
+	return p.Entity
 }
 
 func (p *Pagination) MultiRequest() bool {
@@ -204,9 +205,12 @@ func (m *Method) NamedIdMap() *NamedIdMap {
 	if entity == nil {
 		return nil
 	}
-	var id, name *Field
+	if !entity.HasIdentifierField() {
+		return nil
+	}
+	var id *Field
+	var namePath []*Field
 	for _, f := range entity.fields {
-		// FIXME(nfx) bring back the functionality later
 		if f.Schema == nil {
 			continue
 		}
@@ -214,18 +218,34 @@ func (m *Method) NamedIdMap() *NamedIdMap {
 		if f.Schema.IsIdentifier {
 			id = &local
 		}
-		if f.Schema.IsName {
-			name = &local
+		if f.Entity.IsName {
+			namePath = append(namePath, &local)
+			if !f.Entity.IsObject() {
+				continue
+			}
+			if !f.Entity.HasNameField() {
+				continue
+			}
+			// job list: {"id": 1234, "settings": {"name": "..."}}
+			for _, innerField := range f.Entity.fields {
+				if innerField.Schema == nil {
+					continue
+				}
+				if innerField.Schema.IsName {
+					local2 := innerField
+					namePath = append(namePath, &local2)
+				}
+			}
 		}
 	}
-	if id == nil || name == nil {
+	if len(namePath) == 0 {
 		return nil
 	}
 	return &NamedIdMap{
-		Id:     id,
-		Name:   name,
-		Entity: entity,
-		Direct: m.Response.ArrayValue != nil,
+		Id:       id,
+		NamePath: namePath,
+		Entity:   entity,
+		Direct:   m.Response.ArrayValue != nil,
 	}
 }
 

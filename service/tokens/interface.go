@@ -29,5 +29,7 @@ type TokensService interface {
 	// List tokens
 	//
 	// Lists all the valid tokens for a user-workspace pair.
+	//
+	// Use ListAll() to get all PublicTokenInfo instances
 	List(ctx context.Context) (*ListTokensResponse, error)
 }

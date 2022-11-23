@@ -466,6 +466,12 @@ type JobTaskSettings struct {
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 }
 
+type ListJobsResponse struct {
+	HasMore bool `json:"has_more,omitempty"`
+	// The list of jobs.
+	Jobs []Job `json:"jobs,omitempty"`
+}
+
 type ListRequest struct {
 	// Whether to include task and cluster details in the response.
 	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
@@ -477,12 +483,6 @@ type ListRequest struct {
 	// The offset of the first job to return, relative to the most recently
 	// created job.
 	Offset int `json:"-" url:"offset,omitempty"`
-}
-
-type ListResponse struct {
-	HasMore bool `json:"has_more,omitempty"`
-	// The list of jobs.
-	Jobs []Job `json:"jobs,omitempty"`
 }
 
 type ListRunsRequest struct {

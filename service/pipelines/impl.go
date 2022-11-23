@@ -42,6 +42,13 @@ func (a *pipelinesImpl) GetUpdate(ctx context.Context, request GetUpdateRequest)
 	return &getUpdateResponse, err
 }
 
+func (a *pipelinesImpl) ListPipelines(ctx context.Context, request ListPipelinesRequest) (*ListPipelinesResponse, error) {
+	var listPipelinesResponse ListPipelinesResponse
+	path := "/api/2.0/pipelines"
+	err := a.client.Do(ctx, http.MethodGet, path, request, &listPipelinesResponse)
+	return &listPipelinesResponse, err
+}
+
 func (a *pipelinesImpl) ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error) {
 	var listUpdatesResponse ListUpdatesResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
