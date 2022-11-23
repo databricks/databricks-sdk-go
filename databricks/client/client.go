@@ -174,17 +174,73 @@ func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string)
 	return c.rePack(prefix, c.recursiveMask(requestMap))
 }
 
-func (c *DatabricksClient) rePack(prefix string, v any) string {
-	rePacked, err := json.MarshalIndent(v, "", "  ")
-	if err != nil {
-		// error in this case is not much relevant
-		return ""
+func recursiveMarshal(v any, budget int) (json.RawMessage, error) {
+	if m, ok := v.(map[string]any); ok {
+		var tmp = make(map[string]any)
+		for k := range m {
+			out, err := recursiveMarshal(m[k], budget)
+			if err != nil {
+				return nil, err
+			}
+			tmp[k] = out
+			budget -= len(out)
+		}
+		buf, err := json.Marshal(tmp)
+		if err != nil {
+			return nil, err
+		}
+		return buf, nil
 	}
+
+	if s, ok := v.([]any); ok {
+		// Keep going until out of budget.
+		var tmp []any
+		for i := range s {
+			out, err := recursiveMarshal(s[i], budget)
+			if err != nil {
+				return nil, err
+			}
+			tmp = append(tmp, out)
+			budget -= len(out)
+
+			// Ensure the slice emits at least 1 element.
+			if budget <= 0 {
+				tmp = append(tmp, fmt.Sprintf("... (%d more elements)", len(s)-len(tmp)))
+				break
+			}
+		}
+
+		buf, err := json.Marshal(tmp)
+		if err != nil {
+			return nil, err
+		}
+		return buf, nil
+	}
+
+	// In doubt; just marshal the entire thing.
+	buf, err := json.Marshal(v)
+	if err != nil {
+		return nil, err
+	}
+	return buf, nil
+}
+
+func (c *DatabricksClient) rePack(prefix string, v any) string {
 	maxBytes := 1024
 	if c.debugTruncateBytes > maxBytes {
 		maxBytes = c.debugTruncateBytes
 	}
-	lines := strings.Split(onlyNBytes(string(rePacked), maxBytes), "\n")
+	raw, err := recursiveMarshal(v, maxBytes)
+	if err != nil {
+		// error in this case is not much relevant
+		return ""
+	}
+	var buf bytes.Buffer
+	err = json.Indent(&buf, raw, "", "  ")
+	if err != nil {
+		return ""
+	}
+	lines := strings.Split(buf.String(), "\n")
 	return prefix + strings.Join(lines, "\n"+prefix)
 }
 
