@@ -32,4 +32,7 @@ doc:
 	@echo "Open http://localhost:6060"
 	@go run golang.org/x/tools/cmd/godoc@latest -http=localhost:6060
 
+install-codegen: vendor
+	@go build -o ~/go/bin/openapi-codegen databricks/openapi/gen/main.go
+
 .PHONY: fmt vendor fmt coverage test lint doc

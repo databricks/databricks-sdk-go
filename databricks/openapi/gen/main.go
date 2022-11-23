@@ -1,4 +1,4 @@
-// Usage: go run databricks/openapi/gen/main.go -spec ~/universe/bazel-bin/openapi/all-internal.json -target service
+// Usage: openapi-codegen
 package main
 
 import (
@@ -21,22 +21,52 @@ import (
 var ctx Context
 
 func main() {
-	flag.StringVar(&ctx.Spec, "spec", "", "location of the spec file")
-	flag.StringVar(&ctx.Target, "target", "", "path to directory with .codegen.json")
+	cfg, err := getConfig()
+	if err != nil {
+		cfg = &Config{}
+		fmt.Printf("WARN: %s\n\n", err)
+	}
+	workDir, _ := os.Getwd()
+	flag.StringVar(&ctx.Spec, "spec", cfg.Spec, "location of the spec file")
+	flag.StringVar(&ctx.Target, "target", workDir, "path to directory with .codegen.json")
 	flag.BoolVar(&ctx.DryRun, "dry-run", false, "print to stdout instead of real files")
 	flag.Parse()
-
 	if ctx.Spec == "" {
 		println("USAGE: go run databricks/openapi/gen/main.go -spec /path/to/spec.json")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
-
-	err := ctx.Generate()
+	err = ctx.Generate()
 	if err != nil {
 		fmt.Printf("ERROR: %s\n\n", err)
 		os.Exit(1)
 	}
+}
+
+type Config struct {
+	Spec string `json:"spec"`
+}
+
+func getConfig() (*Config, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return nil, fmt.Errorf("home: %w", err)
+	}
+	loc := filepath.Join(home, ".openapi-codegen.json")
+	f, err := os.Open(loc)
+	if err != nil {
+		return nil, fmt.Errorf("open %s: %w", loc, err)
+	}
+	raw, err := io.ReadAll(f)
+	if err != nil {
+		return nil, fmt.Errorf("read all: %w", err)
+	}
+	var config Config
+	err = json.Unmarshal(raw, &config)
+	if err != nil {
+		return nil, fmt.Errorf("parse %s: %w", loc, err)
+	}
+	return &config, nil
 }
 
 type Context struct {
