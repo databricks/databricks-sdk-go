@@ -2,6 +2,7 @@ package databricks
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 
@@ -49,4 +50,40 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		return visitor, nil
 	}
 	return nil, fmt.Errorf("cannot configure default credentials")
+}
+
+type PatCredentials struct {
+}
+
+func (c PatCredentials) Name() string {
+	return "pat"
+}
+
+func (c PatCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+	if cfg.Token == "" || cfg.Host == "" {
+		return nil, nil
+	}
+	return func(r *http.Request) error {
+		r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", cfg.Token))
+		return nil
+	}, nil
+}
+
+type BasicCredentials struct {
+}
+
+func (c BasicCredentials) Name() string {
+	return "basic"
+}
+
+func (c BasicCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+	if cfg.Username == "" || cfg.Password == "" || cfg.Host == "" {
+		return nil, nil
+	}
+	tokenUnB64 := fmt.Sprintf("%s:%s", cfg.Username, cfg.Password)
+	b64 := base64.StdEncoding.EncodeToString([]byte(tokenUnB64))
+	return func(r *http.Request) error {
+		r.Header.Set("Authorization", fmt.Sprintf("Basic %s", b64))
+		return nil
+	}, nil
 }
