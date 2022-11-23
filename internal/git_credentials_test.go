@@ -19,9 +19,9 @@ func TestAccGitCredentials(t *testing.T) {
 		t.SkipNow()
 	}
 
-	list, err := w.GitCredentials.List(ctx)
+	list, err := w.GitCredentials.ListAll(ctx)
 	require.NoError(t, err)
-	for _, v := range list.Credentials {
+	for _, v := range list {
 		err = w.GitCredentials.DeleteByCredentialId(ctx, v.CredentialId)
 		require.NoError(t, err)
 	}

@@ -4,7 +4,6 @@ package repos
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -12,7 +11,7 @@ import (
 
 func NewRepos(client *client.DatabricksClient) *ReposAPI {
 	return &ReposAPI{
-		ReposService: &reposAPI{
+		impl: &reposImpl{
 			client: client,
 		},
 	}
@@ -29,8 +28,21 @@ func NewRepos(client *client.DatabricksClient) *ReposAPI {
 // science and engineering code development best practices using Git for version
 // control, collaboration, and CI/CD.
 type ReposAPI struct {
-	// ReposService contains low-level REST API interface.
-	ReposService
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(ReposService)
+	impl ReposService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *ReposAPI) WithImpl(impl ReposService) *ReposAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Repos API implementation
+func (a *ReposAPI) Impl() ReposService {
+	return a.impl
 }
 
 // Create a repo
@@ -39,21 +51,21 @@ type ReposAPI struct {
 // specified. Note that repos created programmatically must be linked to a
 // remote Git repo, unlike repos created in the browser.
 func (a *ReposAPI) Create(ctx context.Context, request CreateRepo) (*RepoInfo, error) {
-	return a.ReposService.Create(ctx, request)
+	return a.impl.Create(ctx, request)
 }
 
 // Delete a repo
 //
 // Deletes the specified repo.
 func (a *ReposAPI) Delete(ctx context.Context, request DeleteRequest) error {
-	return a.ReposService.Delete(ctx, request)
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a repo
 //
 // Deletes the specified repo.
 func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId int64) error {
-	return a.Delete(ctx, DeleteRequest{
+	return a.impl.Delete(ctx, DeleteRequest{
 		RepoId: repoId,
 	})
 }
@@ -62,14 +74,14 @@ func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId int64) error {
 //
 // Returns the repo with the given repo ID.
 func (a *ReposAPI) Get(ctx context.Context, request GetRequest) (*RepoInfo, error) {
-	return a.ReposService.Get(ctx, request)
+	return a.impl.Get(ctx, request)
 }
 
 // Get a repo
 //
 // Returns the repo with the given repo ID.
 func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId int64) (*RepoInfo, error) {
-	return a.Get(ctx, GetRequest{
+	return a.impl.Get(ctx, GetRequest{
 		RepoId: repoId,
 	})
 }
@@ -84,7 +96,7 @@ func (a *ReposAPI) ListAll(ctx context.Context, request ListRequest) ([]RepoInfo
 	var results []RepoInfo
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	for {
-		response, err := a.List(ctx, request)
+		response, err := a.impl.List(ctx, request)
 		if err != nil {
 			return nil, err
 		}
@@ -107,43 +119,5 @@ func (a *ReposAPI) ListAll(ctx context.Context, request ListRequest) ([]RepoInfo
 // Updates the repo to a different branch or tag, or updates the repo to the
 // latest commit on the same branch.
 func (a *ReposAPI) Update(ctx context.Context, request UpdateRepo) error {
-	return a.ReposService.Update(ctx, request)
-}
-
-// unexported type that holds implementations of just Repos API methods
-type reposAPI struct {
-	client *client.DatabricksClient
-}
-
-func (a *reposAPI) Create(ctx context.Context, request CreateRepo) (*RepoInfo, error) {
-	var repoInfo RepoInfo
-	path := "/api/2.0/repos"
-	err := a.client.Post(ctx, path, request, &repoInfo)
-	return &repoInfo, err
-}
-
-func (a *reposAPI) Delete(ctx context.Context, request DeleteRequest) error {
-	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
-	err := a.client.Delete(ctx, path, request)
-	return err
-}
-
-func (a *reposAPI) Get(ctx context.Context, request GetRequest) (*RepoInfo, error) {
-	var repoInfo RepoInfo
-	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
-	err := a.client.Get(ctx, path, request, &repoInfo)
-	return &repoInfo, err
-}
-
-func (a *reposAPI) List(ctx context.Context, request ListRequest) (*ListReposResponse, error) {
-	var listReposResponse ListReposResponse
-	path := "/api/2.0/repos"
-	err := a.client.Get(ctx, path, request, &listReposResponse)
-	return &listReposResponse, err
-}
-
-func (a *reposAPI) Update(ctx context.Context, request UpdateRepo) error {
-	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
-	err := a.client.Patch(ctx, path, request)
-	return err
+	return a.impl.Update(ctx, request)
 }

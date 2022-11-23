@@ -85,7 +85,7 @@ func TestAccQueriesList(t *testing.T) {
 	}
 	var qs1, qs2, qs3 []dbsql.Query
 	{
-		result, err := w.Queries.ListQueries(ctx, dbsql.ListQueriesRequest{PageSize: 10})
+		result, err := w.Queries.Impl().ListQueries(ctx, dbsql.ListQueriesRequest{PageSize: 10})
 		require.NoError(t, err)
 		qs1 = result.Results
 	}

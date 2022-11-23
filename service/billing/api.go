@@ -4,14 +4,13 @@ package billing
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 )
 
 func NewBillableUsageDownload(client *client.DatabricksClient) *BillableUsageDownloadAPI {
 	return &BillableUsageDownloadAPI{
-		BillableUsageDownloadService: &billableUsageDownloadAPI{
+		impl: &billableUsageDownloadImpl{
 			client: client,
 		},
 	}
@@ -20,8 +19,21 @@ func NewBillableUsageDownload(client *client.DatabricksClient) *BillableUsageDow
 // This API allows you to download billable usage logs for the specified account
 // and date range. This feature works with all account types.
 type BillableUsageDownloadAPI struct {
-	// BillableUsageDownloadService contains low-level REST API interface.
-	BillableUsageDownloadService
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(BillableUsageDownloadService)
+	impl BillableUsageDownloadService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *BillableUsageDownloadAPI) WithImpl(impl BillableUsageDownloadService) *BillableUsageDownloadAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level BillableUsageDownload API implementation
+func (a *BillableUsageDownloadAPI) Impl() BillableUsageDownloadService {
+	return a.impl
 }
 
 // Return billable usage logs
@@ -31,23 +43,12 @@ type BillableUsageDownloadAPI struct {
 // schema](https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema).
 // Note that this method might take multiple seconds to complete.
 func (a *BillableUsageDownloadAPI) DownloadBillableUsage(ctx context.Context, request DownloadBillableUsageRequest) error {
-	return a.BillableUsageDownloadService.DownloadBillableUsage(ctx, request)
-}
-
-// unexported type that holds implementations of just BillableUsageDownload API methods
-type billableUsageDownloadAPI struct {
-	client *client.DatabricksClient
-}
-
-func (a *billableUsageDownloadAPI) DownloadBillableUsage(ctx context.Context, request DownloadBillableUsageRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/usage/download", a.client.Config.AccountID)
-	err := a.client.Get(ctx, path, request, nil)
-	return err
+	return a.impl.DownloadBillableUsage(ctx, request)
 }
 
 func NewBudgets(client *client.DatabricksClient) *BudgetsAPI {
 	return &BudgetsAPI{
-		BudgetsService: &budgetsAPI{
+		impl: &budgetsImpl{
 			client: client,
 		},
 	}
@@ -56,29 +57,42 @@ func NewBudgets(client *client.DatabricksClient) *BudgetsAPI {
 // These APIs manage budget configuration including notifications for exceeding
 // a budget for a period. They can also retrieve the status of each budget.
 type BudgetsAPI struct {
-	// BudgetsService contains low-level REST API interface.
-	BudgetsService
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(BudgetsService)
+	impl BudgetsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *BudgetsAPI) WithImpl(impl BudgetsService) *BudgetsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Budgets API implementation
+func (a *BudgetsAPI) Impl() BudgetsService {
+	return a.impl
 }
 
 // Create a new budget
 //
 // Creates a new budget in the specified account.
 func (a *BudgetsAPI) CreateBudget(ctx context.Context, request CreateBudgetRequest) (*BudgetWithStatus, error) {
-	return a.BudgetsService.CreateBudget(ctx, request)
+	return a.impl.CreateBudget(ctx, request)
 }
 
 // Delete budget
 //
 // Deletes the budget specified by its UUID.
 func (a *BudgetsAPI) DeleteBudget(ctx context.Context, request DeleteBudgetRequest) error {
-	return a.BudgetsService.DeleteBudget(ctx, request)
+	return a.impl.DeleteBudget(ctx, request)
 }
 
 // Delete budget
 //
 // Deletes the budget specified by its UUID.
 func (a *BudgetsAPI) DeleteBudgetByBudgetId(ctx context.Context, budgetId string) error {
-	return a.DeleteBudget(ctx, DeleteBudgetRequest{
+	return a.impl.DeleteBudget(ctx, DeleteBudgetRequest{
 		BudgetId: budgetId,
 	})
 }
@@ -88,7 +102,7 @@ func (a *BudgetsAPI) DeleteBudgetByBudgetId(ctx context.Context, budgetId string
 // Gets the budget specified by its UUID, including noncumulative status for
 // each day that the budget is configured to include.
 func (a *BudgetsAPI) GetBudget(ctx context.Context, request GetBudgetRequest) (*BudgetWithStatus, error) {
-	return a.BudgetsService.GetBudget(ctx, request)
+	return a.impl.GetBudget(ctx, request)
 }
 
 // Get budget and its status
@@ -96,7 +110,7 @@ func (a *BudgetsAPI) GetBudget(ctx context.Context, request GetBudgetRequest) (*
 // Gets the budget specified by its UUID, including noncumulative status for
 // each day that the budget is configured to include.
 func (a *BudgetsAPI) GetBudgetByBudgetId(ctx context.Context, budgetId string) (*BudgetWithStatus, error) {
-	return a.GetBudget(ctx, GetBudgetRequest{
+	return a.impl.GetBudget(ctx, GetBudgetRequest{
 		BudgetId: budgetId,
 	})
 }
@@ -108,7 +122,7 @@ func (a *BudgetsAPI) GetBudgetByBudgetId(ctx context.Context, budgetId string) (
 //
 // This method is generated by Databricks SDK Code Generator.
 func (a *BudgetsAPI) ListBudgetsAll(ctx context.Context) ([]BudgetWithStatus, error) {
-	response, err := a.ListBudgets(ctx)
+	response, err := a.impl.ListBudgets(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -120,50 +134,12 @@ func (a *BudgetsAPI) ListBudgetsAll(ctx context.Context) ([]BudgetWithStatus, er
 // Modifies a budget in this account. Budget properties are completely
 // overwritten.
 func (a *BudgetsAPI) UpdateBudget(ctx context.Context, request UpdateBudgetRequest) error {
-	return a.BudgetsService.UpdateBudget(ctx, request)
-}
-
-// unexported type that holds implementations of just Budgets API methods
-type budgetsAPI struct {
-	client *client.DatabricksClient
-}
-
-func (a *budgetsAPI) CreateBudget(ctx context.Context, request CreateBudgetRequest) (*BudgetWithStatus, error) {
-	var budgetWithStatus BudgetWithStatus
-	path := fmt.Sprintf("/api/2.0/accounts/%v/budget", a.client.Config.AccountID)
-	err := a.client.Post(ctx, path, request, &budgetWithStatus)
-	return &budgetWithStatus, err
-}
-
-func (a *budgetsAPI) DeleteBudget(ctx context.Context, request DeleteBudgetRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.Config.AccountID, request.BudgetId)
-	err := a.client.Delete(ctx, path, request)
-	return err
-}
-
-func (a *budgetsAPI) GetBudget(ctx context.Context, request GetBudgetRequest) (*BudgetWithStatus, error) {
-	var budgetWithStatus BudgetWithStatus
-	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.Config.AccountID, request.BudgetId)
-	err := a.client.Get(ctx, path, request, &budgetWithStatus)
-	return &budgetWithStatus, err
-}
-
-func (a *budgetsAPI) ListBudgets(ctx context.Context) (*BudgetList, error) {
-	var budgetList BudgetList
-	path := fmt.Sprintf("/api/2.0/accounts/%v/budget", a.client.Config.AccountID)
-	err := a.client.Get(ctx, path, nil, &budgetList)
-	return &budgetList, err
-}
-
-func (a *budgetsAPI) UpdateBudget(ctx context.Context, request UpdateBudgetRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.Config.AccountID, request.BudgetId)
-	err := a.client.Patch(ctx, path, request)
-	return err
+	return a.impl.UpdateBudget(ctx, request)
 }
 
 func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
 	return &LogDeliveryAPI{
-		LogDeliveryService: &logDeliveryAPI{
+		impl: &logDeliveryImpl{
 			client: client,
 		},
 	}
@@ -234,8 +210,21 @@ func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
 // for details. * Auditable events are typically available in logs within 15
 // minutes.
 type LogDeliveryAPI struct {
-	// LogDeliveryService contains low-level REST API interface.
-	LogDeliveryService
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(LogDeliveryService)
+	impl LogDeliveryService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *LogDeliveryAPI) WithImpl(impl LogDeliveryService) *LogDeliveryAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level LogDelivery API implementation
+func (a *LogDeliveryAPI) Impl() LogDeliveryService {
+	return a.impl
 }
 
 // Create a new log delivery configuration
@@ -266,7 +255,7 @@ type LogDeliveryAPI struct {
 // [Enable or disable log delivery
 // configuration](#operation/patch-log-delivery-config-status)).
 func (a *LogDeliveryAPI) CreateLogDeliveryConfig(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error) {
-	return a.LogDeliveryService.CreateLogDeliveryConfig(ctx, request)
+	return a.impl.CreateLogDeliveryConfig(ctx, request)
 }
 
 // Get log delivery configuration
@@ -274,7 +263,7 @@ func (a *LogDeliveryAPI) CreateLogDeliveryConfig(ctx context.Context, request Wr
 // Gets a Databricks log delivery configuration object for an account, both
 // specified by ID.
 func (a *LogDeliveryAPI) GetLogDeliveryConfig(ctx context.Context, request GetLogDeliveryConfigRequest) (*WrappedLogDeliveryConfiguration, error) {
-	return a.LogDeliveryService.GetLogDeliveryConfig(ctx, request)
+	return a.impl.GetLogDeliveryConfig(ctx, request)
 }
 
 // Get log delivery configuration
@@ -282,7 +271,7 @@ func (a *LogDeliveryAPI) GetLogDeliveryConfig(ctx context.Context, request GetLo
 // Gets a Databricks log delivery configuration object for an account, both
 // specified by ID.
 func (a *LogDeliveryAPI) GetLogDeliveryConfigByLogDeliveryConfigurationId(ctx context.Context, logDeliveryConfigurationId string) (*WrappedLogDeliveryConfiguration, error) {
-	return a.GetLogDeliveryConfig(ctx, GetLogDeliveryConfigRequest{
+	return a.impl.GetLogDeliveryConfig(ctx, GetLogDeliveryConfigRequest{
 		LogDeliveryConfigurationId: logDeliveryConfigurationId,
 	})
 }
@@ -294,7 +283,7 @@ func (a *LogDeliveryAPI) GetLogDeliveryConfigByLogDeliveryConfigurationId(ctx co
 //
 // This method is generated by Databricks SDK Code Generator.
 func (a *LogDeliveryAPI) ListLogDeliveryConfigsAll(ctx context.Context, request ListLogDeliveryConfigsRequest) ([]LogDeliveryConfiguration, error) {
-	response, err := a.ListLogDeliveryConfigs(ctx, request)
+	response, err := a.impl.ListLogDeliveryConfigs(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -309,37 +298,5 @@ func (a *LogDeliveryAPI) ListLogDeliveryConfigsAll(ctx context.Context, request 
 // if this would violate the delivery configuration limits described under
 // [Create log delivery](#operation/create-log-delivery-config).
 func (a *LogDeliveryAPI) PatchLogDeliveryConfigStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
-	return a.LogDeliveryService.PatchLogDeliveryConfigStatus(ctx, request)
-}
-
-// unexported type that holds implementations of just LogDelivery API methods
-type logDeliveryAPI struct {
-	client *client.DatabricksClient
-}
-
-func (a *logDeliveryAPI) CreateLogDeliveryConfig(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error) {
-	var wrappedLogDeliveryConfiguration WrappedLogDeliveryConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.Config.AccountID)
-	err := a.client.Post(ctx, path, request, &wrappedLogDeliveryConfiguration)
-	return &wrappedLogDeliveryConfiguration, err
-}
-
-func (a *logDeliveryAPI) GetLogDeliveryConfig(ctx context.Context, request GetLogDeliveryConfigRequest) (*WrappedLogDeliveryConfiguration, error) {
-	var wrappedLogDeliveryConfiguration WrappedLogDeliveryConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.Config.AccountID, request.LogDeliveryConfigurationId)
-	err := a.client.Get(ctx, path, request, &wrappedLogDeliveryConfiguration)
-	return &wrappedLogDeliveryConfiguration, err
-}
-
-func (a *logDeliveryAPI) ListLogDeliveryConfigs(ctx context.Context, request ListLogDeliveryConfigsRequest) (*WrappedLogDeliveryConfigurations, error) {
-	var wrappedLogDeliveryConfigurations WrappedLogDeliveryConfigurations
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.Config.AccountID)
-	err := a.client.Get(ctx, path, request, &wrappedLogDeliveryConfigurations)
-	return &wrappedLogDeliveryConfigurations, err
-}
-
-func (a *logDeliveryAPI) PatchLogDeliveryConfigStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.Config.AccountID, request.LogDeliveryConfigurationId)
-	err := a.client.Patch(ctx, path, request)
-	return err
+	return a.impl.PatchLogDeliveryConfigStatus(ctx, request)
 }

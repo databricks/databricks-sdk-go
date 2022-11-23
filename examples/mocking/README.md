@@ -41,11 +41,11 @@ mockDbfs.EXPECT().Create(gomock.Any(), gomock.Eq(dbfs.Create{
 
 ## Testing idioms with Databricks SDK for Go
 
-You can stub out the auth with the `databricks.NewMockConfig(nil)` helper function. Every service has a public property with the name of the service plus `Service` suffix. You have to manually set the stubs for every service that is called in unit tests.
+You can stub out the auth with the `databricks.NewMockConfig(nil)` helper function. Every service has a public `WithImpl()` method, that you can use to set the stubs for every service that is called in the unit tests.
 
 ```go
 w := workspaces.New(databricks.NewMockConfig(nil))
-w.Dbfs.DbfsService = mockDbfs
+w.Dbfs.WithImpl(mockDbfs)
 ```
 
 ## Running this example

@@ -2,6 +2,7 @@
   "formatter": "go fmt ./... && go run golang.org/x/tools/cmd/goimports@latest -w $FILENAMES",
   "packages": {
     ".codegen/api.go.tmpl": "{{.Name}}/api.go",
+    ".codegen/impl.go.tmpl": "{{.Name}}/impl.go",
     ".codegen/interface.go.tmpl": "{{.Name}}/interface.go",
     ".codegen/model.go.tmpl": "{{.Name}}/model.go"
   },

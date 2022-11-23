@@ -10,7 +10,7 @@ import (
 
 func NewLibraries(client *client.DatabricksClient) *LibrariesAPI {
 	return &LibrariesAPI{
-		LibrariesService: &librariesAPI{
+		impl: &librariesImpl{
 			client: client,
 		},
 	}
@@ -37,8 +37,21 @@ func NewLibraries(client *client.DatabricksClient) *LibrariesAPI {
 // you restart the cluster. Until you restart the cluster, the status of the
 // uninstalled library appears as Uninstall pending restart.
 type LibrariesAPI struct {
-	// LibrariesService contains low-level REST API interface.
-	LibrariesService
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(LibrariesService)
+	impl LibrariesService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *LibrariesAPI) WithImpl(impl LibrariesService) *LibrariesAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Libraries API implementation
+func (a *LibrariesAPI) Impl() LibrariesService {
+	return a.impl
 }
 
 // Get all statuses
@@ -48,7 +61,7 @@ type LibrariesAPI struct {
 // as well as libraries set to be installed on all clusters via the libraries
 // UI.
 func (a *LibrariesAPI) AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error) {
-	return a.LibrariesService.AllClusterStatuses(ctx)
+	return a.impl.AllClusterStatuses(ctx)
 }
 
 // Get status
@@ -69,7 +82,7 @@ func (a *LibrariesAPI) AllClusterStatuses(ctx context.Context) (*ListAllClusterL
 // clusters, but now marked for removal. Within this group there is no order
 // guarantee.
 func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusRequest) (*ClusterLibraryStatuses, error) {
-	return a.LibrariesService.ClusterStatus(ctx, request)
+	return a.impl.ClusterStatus(ctx, request)
 }
 
 // Get status
@@ -90,7 +103,7 @@ func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusR
 // clusters, but now marked for removal. Within this group there is no order
 // guarantee.
 func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId string) (*ClusterLibraryStatuses, error) {
-	return a.ClusterStatus(ctx, ClusterStatusRequest{
+	return a.impl.ClusterStatus(ctx, ClusterStatusRequest{
 		ClusterId: clusterId,
 	})
 }
@@ -104,7 +117,7 @@ func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId s
 // union of the libraries specified via this method and the libraries set to be
 // installed on all clusters via the libraries UI.
 func (a *LibrariesAPI) Install(ctx context.Context, request InstallLibraries) error {
-	return a.LibrariesService.Install(ctx, request)
+	return a.impl.Install(ctx, request)
 }
 
 // Uninstall libraries
@@ -113,36 +126,5 @@ func (a *LibrariesAPI) Install(ctx context.Context, request InstallLibraries) er
 // uninstalled until the cluster is restarted. Uninstalling libraries that are
 // not installed on the cluster will have no impact but is not an error.
 func (a *LibrariesAPI) Uninstall(ctx context.Context, request UninstallLibraries) error {
-	return a.LibrariesService.Uninstall(ctx, request)
-}
-
-// unexported type that holds implementations of just Libraries API methods
-type librariesAPI struct {
-	client *client.DatabricksClient
-}
-
-func (a *librariesAPI) AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error) {
-	var listAllClusterLibraryStatusesResponse ListAllClusterLibraryStatusesResponse
-	path := "/api/2.0/libraries/all-cluster-statuses"
-	err := a.client.Get(ctx, path, nil, &listAllClusterLibraryStatusesResponse)
-	return &listAllClusterLibraryStatusesResponse, err
-}
-
-func (a *librariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusRequest) (*ClusterLibraryStatuses, error) {
-	var clusterLibraryStatuses ClusterLibraryStatuses
-	path := "/api/2.0/libraries/cluster-status"
-	err := a.client.Get(ctx, path, request, &clusterLibraryStatuses)
-	return &clusterLibraryStatuses, err
-}
-
-func (a *librariesAPI) Install(ctx context.Context, request InstallLibraries) error {
-	path := "/api/2.0/libraries/install"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
-}
-
-func (a *librariesAPI) Uninstall(ctx context.Context, request UninstallLibraries) error {
-	path := "/api/2.0/libraries/uninstall"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Uninstall(ctx, request)
 }

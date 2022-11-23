@@ -6,7 +6,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
 	{{range .Packages}}
-	"github.com/databricks/databricks-sdk-go/service/{{.Name}}"{{end}}
+	"github.com/databricks/databricks-sdk-go/service/{{.Name}}"
+	{{- end}}
 )
 
 type AccountsClient struct {

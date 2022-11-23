@@ -14,7 +14,7 @@ import (
 
 func NewQueryHistory(client *client.DatabricksClient) *QueryHistoryAPI {
 	return &QueryHistoryAPI{
-		QueryHistoryService: &queryHistoryAPI{
+		impl: &queryHistoryImpl{
 			client: client,
 		},
 	}
@@ -22,8 +22,21 @@ func NewQueryHistory(client *client.DatabricksClient) *QueryHistoryAPI {
 
 // Access the history of queries through SQL warehouses.
 type QueryHistoryAPI struct {
-	// QueryHistoryService contains low-level REST API interface.
-	QueryHistoryService
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(QueryHistoryService)
+	impl QueryHistoryService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *QueryHistoryAPI) WithImpl(impl QueryHistoryService) *QueryHistoryAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level QueryHistory API implementation
+func (a *QueryHistoryAPI) Impl() QueryHistoryService {
+	return a.impl
 }
 
 // List
@@ -37,7 +50,7 @@ func (a *QueryHistoryAPI) ListQueriesAll(ctx context.Context, request ListQuerie
 	var results []QueryInfo
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	for {
-		response, err := a.ListQueries(ctx, request)
+		response, err := a.impl.ListQueries(ctx, request)
 		if err != nil {
 			return nil, err
 		}
@@ -55,21 +68,9 @@ func (a *QueryHistoryAPI) ListQueriesAll(ctx context.Context, request ListQuerie
 	return results, nil
 }
 
-// unexported type that holds implementations of just QueryHistory API methods
-type queryHistoryAPI struct {
-	client *client.DatabricksClient
-}
-
-func (a *queryHistoryAPI) ListQueries(ctx context.Context, request ListQueriesRequest) (*ListQueriesResponse, error) {
-	var listQueriesResponse ListQueriesResponse
-	path := "/api/2.0/sql/history/queries"
-	err := a.client.Get(ctx, path, request, &listQueriesResponse)
-	return &listQueriesResponse, err
-}
-
 func NewWarehouses(client *client.DatabricksClient) *WarehousesAPI {
 	return &WarehousesAPI{
-		WarehousesService: &warehousesAPI{
+		impl: &warehousesImpl{
 			client: client,
 		},
 	}
@@ -79,15 +80,28 @@ func NewWarehouses(client *client.DatabricksClient) *WarehousesAPI {
 // objects within Databricks SQL. Compute resources are infrastructure resources
 // that provide processing capabilities in the cloud.
 type WarehousesAPI struct {
-	// WarehousesService contains low-level REST API interface.
-	WarehousesService
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(WarehousesService)
+	impl WarehousesService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *WarehousesAPI) WithImpl(impl WarehousesService) *WarehousesAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Warehouses API implementation
+func (a *WarehousesAPI) Impl() WarehousesService {
+	return a.impl
 }
 
 // Create a warehouse
 //
 // Creates a new SQL warehouse.
 func (a *WarehousesAPI) CreateWarehouse(ctx context.Context, request CreateWarehouseRequest) (*CreateWarehouseResponse, error) {
-	return a.WarehousesService.CreateWarehouse(ctx, request)
+	return a.impl.CreateWarehouse(ctx, request)
 }
 
 // Calls [WarehousesAPI.CreateWarehouse] and waits to reach RUNNING state
@@ -136,7 +150,7 @@ func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, createWareho
 //
 // Deletes a SQL warehouse.
 func (a *WarehousesAPI) DeleteWarehouse(ctx context.Context, request DeleteWarehouseRequest) error {
-	return a.WarehousesService.DeleteWarehouse(ctx, request)
+	return a.impl.DeleteWarehouse(ctx, request)
 }
 
 // Calls [WarehousesAPI.DeleteWarehouse] and waits to reach DELETED state
@@ -181,7 +195,7 @@ func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWareho
 //
 // Deletes a SQL warehouse.
 func (a *WarehousesAPI) DeleteWarehouseById(ctx context.Context, id string) error {
-	return a.DeleteWarehouse(ctx, DeleteWarehouseRequest{
+	return a.impl.DeleteWarehouse(ctx, DeleteWarehouseRequest{
 		Id: id,
 	})
 }
@@ -196,7 +210,7 @@ func (a *WarehousesAPI) DeleteWarehouseByIdAndWait(ctx context.Context, id strin
 //
 // Updates the configuration for a SQL warehouse.
 func (a *WarehousesAPI) EditWarehouse(ctx context.Context, request EditWarehouseRequest) error {
-	return a.WarehousesService.EditWarehouse(ctx, request)
+	return a.impl.EditWarehouse(ctx, request)
 }
 
 // Calls [WarehousesAPI.EditWarehouse] and waits to reach RUNNING state
@@ -245,7 +259,7 @@ func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, editWarehouseR
 //
 // Gets the information for a single SQL warehouse.
 func (a *WarehousesAPI) GetWarehouse(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error) {
-	return a.WarehousesService.GetWarehouse(ctx, request)
+	return a.impl.GetWarehouse(ctx, request)
 }
 
 // Calls [WarehousesAPI.GetWarehouse] and waits to reach RUNNING state
@@ -294,7 +308,7 @@ func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouseReq
 //
 // Gets the information for a single SQL warehouse.
 func (a *WarehousesAPI) GetWarehouseById(ctx context.Context, id string) (*GetWarehouseResponse, error) {
-	return a.GetWarehouse(ctx, GetWarehouseRequest{
+	return a.impl.GetWarehouse(ctx, GetWarehouseRequest{
 		Id: id,
 	})
 }
@@ -310,7 +324,7 @@ func (a *WarehousesAPI) GetWarehouseByIdAndWait(ctx context.Context, id string, 
 // Gets the workspace level configuration that is shared by all SQL warehouses
 // in a workspace.
 func (a *WarehousesAPI) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetWorkspaceWarehouseConfigResponse, error) {
-	return a.WarehousesService.GetWorkspaceWarehouseConfig(ctx)
+	return a.impl.GetWorkspaceWarehouseConfig(ctx)
 }
 
 // List warehouses
@@ -319,7 +333,7 @@ func (a *WarehousesAPI) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetWo
 //
 // This method is generated by Databricks SDK Code Generator.
 func (a *WarehousesAPI) ListWarehousesAll(ctx context.Context, request ListWarehousesRequest) ([]EndpointInfo, error) {
-	response, err := a.ListWarehouses(ctx, request)
+	response, err := a.impl.ListWarehouses(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -331,14 +345,14 @@ func (a *WarehousesAPI) ListWarehousesAll(ctx context.Context, request ListWareh
 // Sets the workspace level configuration that is shared by all SQL warehouses
 // in a workspace.
 func (a *WarehousesAPI) SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) error {
-	return a.WarehousesService.SetWorkspaceWarehouseConfig(ctx, request)
+	return a.impl.SetWorkspaceWarehouseConfig(ctx, request)
 }
 
 // Start a warehouse
 //
 // Starts a SQL warehouse.
 func (a *WarehousesAPI) StartWarehouse(ctx context.Context, request StartWarehouseRequest) error {
-	return a.WarehousesService.StartWarehouse(ctx, request)
+	return a.impl.StartWarehouse(ctx, request)
 }
 
 // Calls [WarehousesAPI.StartWarehouse] and waits to reach RUNNING state
@@ -387,7 +401,7 @@ func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehous
 //
 // Stops a SQL warehouse.
 func (a *WarehousesAPI) StopWarehouse(ctx context.Context, request StopWarehouseRequest) error {
-	return a.WarehousesService.StopWarehouse(ctx, request)
+	return a.impl.StopWarehouse(ctx, request)
 }
 
 // Calls [WarehousesAPI.StopWarehouse] and waits to reach STOPPED state
@@ -426,67 +440,4 @@ func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, stopWarehouseR
 			return nil, retries.Continues(statusMessage)
 		}
 	})
-}
-
-// unexported type that holds implementations of just Warehouses API methods
-type warehousesAPI struct {
-	client *client.DatabricksClient
-}
-
-func (a *warehousesAPI) CreateWarehouse(ctx context.Context, request CreateWarehouseRequest) (*CreateWarehouseResponse, error) {
-	var createWarehouseResponse CreateWarehouseResponse
-	path := "/api/2.0/sql/warehouses"
-	err := a.client.Post(ctx, path, request, &createWarehouseResponse)
-	return &createWarehouseResponse, err
-}
-
-func (a *warehousesAPI) DeleteWarehouse(ctx context.Context, request DeleteWarehouseRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
-	err := a.client.Delete(ctx, path, request)
-	return err
-}
-
-func (a *warehousesAPI) EditWarehouse(ctx context.Context, request EditWarehouseRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/edit", request.Id)
-	err := a.client.Post(ctx, path, request, nil)
-	return err
-}
-
-func (a *warehousesAPI) GetWarehouse(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error) {
-	var getWarehouseResponse GetWarehouseResponse
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
-	err := a.client.Get(ctx, path, request, &getWarehouseResponse)
-	return &getWarehouseResponse, err
-}
-
-func (a *warehousesAPI) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetWorkspaceWarehouseConfigResponse, error) {
-	var getWorkspaceWarehouseConfigResponse GetWorkspaceWarehouseConfigResponse
-	path := "/api/2.0/sql/config/warehouses"
-	err := a.client.Get(ctx, path, nil, &getWorkspaceWarehouseConfigResponse)
-	return &getWorkspaceWarehouseConfigResponse, err
-}
-
-func (a *warehousesAPI) ListWarehouses(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error) {
-	var listWarehousesResponse ListWarehousesResponse
-	path := "/api/2.0/sql/warehouses"
-	err := a.client.Get(ctx, path, request, &listWarehousesResponse)
-	return &listWarehousesResponse, err
-}
-
-func (a *warehousesAPI) SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) error {
-	path := "/api/2.0/sql/config/warehouses"
-	err := a.client.Put(ctx, path, request)
-	return err
-}
-
-func (a *warehousesAPI) StartWarehouse(ctx context.Context, request StartWarehouseRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/start", request.Id)
-	err := a.client.Post(ctx, path, request, nil)
-	return err
-}
-
-func (a *warehousesAPI) StopWarehouse(ctx context.Context, request StopWarehouseRequest) error {
-	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/stop", request.Id)
-	err := a.client.Post(ctx, path, request, nil)
-	return err
 }
