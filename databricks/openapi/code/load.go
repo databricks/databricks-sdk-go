@@ -58,7 +58,7 @@ func (b *Batch) Packages() (pkgs []*Package) {
 	for _, pkg := range b.packages {
 		pkgs = append(pkgs, pkg)
 	}
-	// add some determinism into code generation for globally stable order in 
+	// add some determinism into code generation for globally stable order in
 	// files like for workspaces/accounts clinets.
 	slices.SortFunc(pkgs, func(a, b *Package) bool {
 		return a.FullName() < b.FullName()
@@ -71,7 +71,7 @@ func (b *Batch) Types() (types []*Entity) {
 	for _, pkg := range b.packages {
 		types = append(types, pkg.Types()...)
 	}
-	// add some determinism into code generation for globally stable order in 
+	// add some determinism into code generation for globally stable order in
 	// files like api.go and/or {{.Package.Name}}.py and clients.
 	slices.SortFunc(types, func(a, b *Entity) bool {
 		return a.FullName() < b.FullName()
@@ -92,7 +92,7 @@ func (b *Batch) Services() (services []*Service) {
 	//  - Groups: scim.NewAccountGroups(apiClient),
 	//  - ServicePrincipals: scim.NewAccountServicePrincipals(apiClient),
 	//  - Users: scim.NewAccountUsers(apiClient),
-	// 
+	//
 	// more services may follow this pattern in the future.
 	norm := func(name string) string {
 		if !strings.HasPrefix(name, "Account") {
@@ -101,7 +101,7 @@ func (b *Batch) Services() (services []*Service) {
 		// sorting-only rename: AccountGroups -> GroupsAccount
 		return name[7:] + "Account"
 	}
-	// add some determinism into code generation for globally stable order in 
+	// add some determinism into code generation for globally stable order in
 	// files like api.go and/or {{.Package.Name}}.py and clients.
 	slices.SortFunc(services, func(a, b *Service) bool {
 		// not using .FullName() here, as in "batch" context
