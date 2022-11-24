@@ -3,7 +3,7 @@
 package databricks
 
 import (
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/client"
 	{{range .Packages}}
 	"github.com/databricks/databricks-sdk-go/service/{{.Name}}"
 	{{- end}}
@@ -20,8 +20,8 @@ type AccountClient struct {
     {{end}}{{end}}
 }
 
-// NewClient creates new Databricks SDK client for Accounts or returns error
-// in case configuration is wrong
+// NewAccountClient creates new Databricks SDK client for Accounts or returns
+// error in case configuration is wrong
 func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	var cfg *config.Config
 	if len(c) == 1 {

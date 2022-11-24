@@ -5,7 +5,7 @@ package permissions
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/client"
 )
 
 func NewPermissions(client *client.DatabricksClient) *PermissionsAPI {

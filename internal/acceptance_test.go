@@ -5,8 +5,8 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
-	"github.com/databricks/databricks-sdk-go/databricks/config"
+	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/stretchr/testify/assert"

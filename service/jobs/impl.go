@@ -6,7 +6,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/client"
 )
 
 // unexported type that holds implementations of just Jobs API methods
