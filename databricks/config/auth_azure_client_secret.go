@@ -1,4 +1,4 @@
-package databricks
+package config
 
 import (
 	"context"
@@ -9,7 +9,6 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 
-	"github.com/databricks/databricks-sdk-go/databricks/internal"
 	"github.com/databricks/databricks-sdk-go/databricks/logger"
 )
 
@@ -57,7 +56,7 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	platform := c.tokenSourceFor(refreshCtx, cfg, env, env.ServiceManagementEndpoint)
 	return func(r *http.Request) error {
 		r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
-		return internal.ServiceToServiceVisitor(inner, platform,
+		return serviceToServiceVisitor(inner, platform,
 			"X-Databricks-Azure-SP-Management-Token")(r)
 	}, nil
 }

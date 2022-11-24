@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
-	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -18,7 +18,7 @@ func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
-	w := workspaces.Must(workspaces.NewClient())
+	w := databricks.Must(databricks.NewWorkspaceClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -56,7 +56,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
-	w := workspaces.Must(workspaces.NewClient())
+	w := databricks.Must(databricks.NewWorkspaceClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}

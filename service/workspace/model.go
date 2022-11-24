@@ -14,6 +14,21 @@ type Delete struct {
 	Recursive bool `json:"recursive,omitempty"`
 }
 
+// This specifies the format of the file to be imported. By default, this is
+// “SOURCE“. However it may be one of: “SOURCE“, “HTML“, “JUPYTER“,
+// “DBC“. The value is case sensitive.
+type ExportFormat string
+
+const ExportFormatDbc ExportFormat = `DBC`
+
+const ExportFormatHtml ExportFormat = `HTML`
+
+const ExportFormatJupyter ExportFormat = `JUPYTER`
+
+const ExportFormatRMarkdown ExportFormat = `R_MARKDOWN`
+
+const ExportFormatSource ExportFormat = `SOURCE`
+
 type ExportRequest struct {
 	// Flag to enable direct download. If it is ``true``, the response will be
 	// the exported file itself. Otherwise, the response contains content as
@@ -24,7 +39,7 @@ type ExportRequest struct {
 	// ``DBC``.
 	//
 	// The value is case sensitive.
-	Format string `json:"-" url:"format,omitempty"`
+	Format ExportFormat `json:"-" url:"format,omitempty"`
 	// The absolute path of the notebook or directory. Exporting directory is
 	// only support for ``DBC`` format.
 	Path string `json:"-" url:"path,omitempty"`
@@ -51,10 +66,10 @@ type Import struct {
 	// This specifies the format of the file to be imported. By default, this is
 	// ``SOURCE``. However it may be one of: ``SOURCE``, ``HTML``, ``JUPYTER``,
 	// ``DBC``. The value is case sensitive.
-	Format ImportFormat `json:"format,omitempty"`
-	// The language. If format is set to ``SOURCE``, this field is required;
-	// otherwise, it will be ignored.
-	Language ImportLanguage `json:"language,omitempty"`
+	Format ExportFormat `json:"format,omitempty"`
+	// The language of the object. This value is set only if the object type is
+	// ``NOTEBOOK``.
+	Language Language `json:"language,omitempty"`
 	// The flag that specifies whether to overwrite existing object. It is
 	// ``false`` by default. For ``DBC`` format, ``overwrite`` is not supported
 	// since it may contain a directory.
@@ -64,32 +79,17 @@ type Import struct {
 	Path string `json:"path"`
 }
 
-// This specifies the format of the file to be imported. By default, this is
-// “SOURCE“. However it may be one of: “SOURCE“, “HTML“, “JUPYTER“,
-// “DBC“. The value is case sensitive.
-type ImportFormat string
+// The language of the object. This value is set only if the object type is
+// “NOTEBOOK“.
+type Language string
 
-const ImportFormatDbc ImportFormat = `DBC`
+const LanguagePython Language = `PYTHON`
 
-const ImportFormatHtml ImportFormat = `HTML`
+const LanguageR Language = `R`
 
-const ImportFormatJupyter ImportFormat = `JUPYTER`
+const LanguageScala Language = `SCALA`
 
-const ImportFormatRMarkdown ImportFormat = `R_MARKDOWN`
-
-const ImportFormatSource ImportFormat = `SOURCE`
-
-// The language. If format is set to “SOURCE“, this field is required;
-// otherwise, it will be ignored.
-type ImportLanguage string
-
-const ImportLanguagePython ImportLanguage = `PYTHON`
-
-const ImportLanguageR ImportLanguage = `R`
-
-const ImportLanguageScala ImportLanguage = `SCALA`
-
-const ImportLanguageSql ImportLanguage = `SQL`
+const LanguageSql Language = `SQL`
 
 type ListRequest struct {
 	// <content needed>
@@ -111,68 +111,32 @@ type Mkdirs struct {
 }
 
 type ObjectInfo struct {
-	// The location (bucket and prefix) enum value of the content blob. This
-	// field is used in conjunction with the blob_path field to determine where
-	// the blob is located.
-	BlobLocation ObjectInfoBlobLocation `json:"blob_location,omitempty"`
-	// ========= File metadata. These values are set only if the object type is
-	// ``FILE``. ===========//
-	BlobPath string `json:"blob_path,omitempty"`
-	// <content needed>
-	ContentSha256Hex string `json:"content_sha256_hex,omitempty"`
 	// <content needed>
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The language of the object. This value is set only if the object type is
 	// ``NOTEBOOK``.
-	Language ObjectInfoLanguage `json:"language,omitempty"`
-	// <content needed>
-	MetadataVersion int `json:"metadata_version,omitempty"`
+	Language Language `json:"language,omitempty"`
 	// <content needed>
 	ModifiedAt int64 `json:"modified_at,omitempty"`
 	// <content needed>
 	ObjectId int64 `json:"object_id,omitempty"`
-	// <content needed>
-	ObjectType ObjectInfoObjectType `json:"object_type,omitempty"`
+	// The type of the object in workspace.
+	ObjectType ObjectType `json:"object_type,omitempty"`
 	// The absolute path of the object.
 	Path string `json:"path,omitempty"`
 	// <content needed>
 	Size int64 `json:"size,omitempty"`
 }
 
-// The location (bucket and prefix) enum value of the content blob. This field
-// is used in conjunction with the blob_path field to determine where the blob
-// is located.
-type ObjectInfoBlobLocation string
+// The type of the object in workspace.
+type ObjectType string
 
-const ObjectInfoBlobLocationDbfsRoot ObjectInfoBlobLocation = `DBFS_ROOT`
+const ObjectTypeDirectory ObjectType = `DIRECTORY`
 
-const ObjectInfoBlobLocationInternalDbfsJobs ObjectInfoBlobLocation = `INTERNAL_DBFS_JOBS`
+const ObjectTypeFile ObjectType = `FILE`
 
-// The language of the object. This value is set only if the object type is
-// “NOTEBOOK“.
-type ObjectInfoLanguage string
+const ObjectTypeLibrary ObjectType = `LIBRARY`
 
-const ObjectInfoLanguagePython ObjectInfoLanguage = `PYTHON`
+const ObjectTypeNotebook ObjectType = `NOTEBOOK`
 
-const ObjectInfoLanguageR ObjectInfoLanguage = `R`
-
-const ObjectInfoLanguageScala ObjectInfoLanguage = `SCALA`
-
-const ObjectInfoLanguageSql ObjectInfoLanguage = `SQL`
-
-// <content needed>
-type ObjectInfoObjectType string
-
-const ObjectInfoObjectTypeDirectory ObjectInfoObjectType = `DIRECTORY`
-
-const ObjectInfoObjectTypeFile ObjectInfoObjectType = `FILE`
-
-const ObjectInfoObjectTypeLibrary ObjectInfoObjectType = `LIBRARY`
-
-const ObjectInfoObjectTypeMlflowExperiment ObjectInfoObjectType = `MLFLOW_EXPERIMENT`
-
-const ObjectInfoObjectTypeNotebook ObjectInfoObjectType = `NOTEBOOK`
-
-const ObjectInfoObjectTypeProject ObjectInfoObjectType = `PROJECT`
-
-const ObjectInfoObjectTypeRepo ObjectInfoObjectType = `REPO`
+const ObjectTypeRepo ObjectType = `REPO`

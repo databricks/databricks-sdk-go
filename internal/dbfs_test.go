@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
-	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -28,7 +28,7 @@ func assertAcceptance(t *testing.T) {
 func TestAccDbfsUtilities(t *testing.T) {
 	assertAcceptance(t)
 	ctx := context.Background()
-	w := workspaces.Must(workspaces.NewClient())
+	w := databricks.Must(databricks.NewWorkspaceClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -67,7 +67,7 @@ func TestAccDbfsUtilities(t *testing.T) {
 func TestAccListDbfsIntegration(t *testing.T) {
 	assertAcceptance(t)
 	ctx := context.Background()
-	w := workspaces.Must(workspaces.NewClient())
+	w := databricks.Must(databricks.NewWorkspaceClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}

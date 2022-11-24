@@ -1,4 +1,4 @@
-package databricks
+package config
 
 import "net/http"
 

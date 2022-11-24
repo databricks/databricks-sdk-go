@@ -1,4 +1,4 @@
-package databricks
+package config
 
 import (
 	"context"
@@ -11,7 +11,6 @@ import (
 
 	"golang.org/x/oauth2"
 
-	"github.com/databricks/databricks-sdk-go/databricks/internal"
 	"github.com/databricks/databricks-sdk-go/databricks/logger"
 )
 
@@ -51,7 +50,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
 	logger.Infof("Using Azure CLI authentication with AAD tokens")
-	return internal.RefreshableVisitor(&ts), nil
+	return refreshableVisitor(&ts), nil
 }
 
 type azureCliTokenSource struct {

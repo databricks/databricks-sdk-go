@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/accounts"
 	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/service/permissions"
 	"github.com/databricks/databricks-sdk-go/service/scim"
@@ -16,7 +15,7 @@ func TestMwsAccWorkspaceAssignment(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	a := accounts.Must(accounts.NewClient(&databricks.Config{
+	a := databricks.Must(databricks.NewAccountClient(&databricks.Config{
 		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
 	}))
 	if !a.Config.IsAccountsClient() || !a.Config.IsAws() {

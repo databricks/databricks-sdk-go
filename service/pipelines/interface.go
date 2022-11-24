@@ -42,6 +42,13 @@ type PipelinesService interface {
 	// Gets an update from an active pipeline.
 	GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error)
 
+	// List pipelines
+	//
+	// Lists pipelines defined in the Delta Live Tables system.
+	//
+	// Use ListPipelinesAll() to get all PipelineStateInfo instances, which will iterate over every result page.
+	ListPipelines(ctx context.Context, request ListPipelinesRequest) (*ListPipelinesResponse, error)
+
 	// List pipeline updates
 	//
 	// List updates for an active pipeline.

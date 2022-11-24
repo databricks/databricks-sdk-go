@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/accounts"
 	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/service/deployment"
 	"github.com/stretchr/testify/assert"
@@ -15,7 +14,7 @@ func TestMwsAccStorage(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	a := accounts.Must(accounts.NewClient(&databricks.Config{
+	a := databricks.Must(databricks.NewAccountClient(&databricks.Config{
 		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
 	}))
 	if !a.Config.IsAccountsClient() || !a.Config.IsAws() {
@@ -47,7 +46,7 @@ func TestMwsAccNetworks(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	a := accounts.Must(accounts.NewClient(&databricks.Config{
+	a := databricks.Must(databricks.NewAccountClient(&databricks.Config{
 		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
 	}))
 	if !a.Config.IsAccountsClient() || !a.Config.IsAws() {
@@ -77,7 +76,7 @@ func TestMwsAccCredentials(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	a := accounts.Must(accounts.NewClient(&databricks.Config{
+	a := databricks.Must(databricks.NewAccountClient(&databricks.Config{
 		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
 	}))
 	if !a.Config.IsAccountsClient() || !a.Config.IsAws() {

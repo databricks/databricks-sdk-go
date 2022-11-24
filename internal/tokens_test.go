@@ -6,7 +6,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/service/tokens"
-	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -15,7 +14,7 @@ func TestAccTokens(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	w := workspaces.Must(workspaces.NewClient())
+	w := databricks.Must(databricks.NewWorkspaceClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -30,7 +29,7 @@ func TestAccTokens(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	wscInner := workspaces.Must(workspaces.NewClient(&databricks.Config{
+	wscInner := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		Host:     w.Config.Host,
 		Token:    token.TokenValue,
 		AuthType: "pat",

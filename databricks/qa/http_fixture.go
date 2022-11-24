@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -43,7 +43,7 @@ var HTTPFailures = []HTTPFixture{
 type HTTPFixtures []HTTPFixture
 
 // Client creates DatabricksClient for emulated HTTP server
-func (fixtures HTTPFixtures) Config(t *testing.T) (*databricks.Config, *httptest.Server) {
+func (fixtures HTTPFixtures) Config(t *testing.T) (*config.Config, *httptest.Server) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		found := false
 		for i, fixture := range fixtures {
@@ -124,8 +124,8 @@ func (fixtures HTTPFixtures) Config(t *testing.T) (*databricks.Config, *httptest
 			t.FailNow()
 		}
 	}))
-	return &databricks.Config{
-		Credentials:      databricks.PatCredentials{},
+	return &config.Config{
+		//Credentials:      databricks.PatCredentials{},
 		Host:             server.URL,
 		Token:            "x",
 		AzureEnvironment: "public",
@@ -133,7 +133,7 @@ func (fixtures HTTPFixtures) Config(t *testing.T) (*databricks.Config, *httptest
 }
 
 // HTTPFixturesApply is a helper method for executing a callback and closing emulated server after
-func (fixtures HTTPFixtures) Apply(t *testing.T, callback func(ctx context.Context, cfg *databricks.Config)) {
+func (fixtures HTTPFixtures) Apply(t *testing.T, callback func(ctx context.Context, cfg *config.Config)) {
 	cfg, server := fixtures.Config(t)
 	defer server.Close()
 	callback(context.Background(), cfg)

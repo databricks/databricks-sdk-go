@@ -67,7 +67,7 @@ During the Beta period, you must clone and then reference this repository locall
      "context"
      "fmt"
      
-     "github.com/databricks/databricks-sdk-go/workspaces"
+     "github.com/databricks/databricks-sdk-go/databricks"
    )
    
    func init() {
@@ -76,7 +76,7 @@ During the Beta period, you must clone and then reference this repository locall
 
    func main() {
      const path = "/"
-     w := workspaces.Must(workspaces.NewClient())
+     w := databricks.Must(databricks.NewWorkspaceClient())
 
      resp, err := w.Workspace.GetStatusByPath(context.Background(), path)
 
@@ -122,7 +122,7 @@ During the Beta period, you must clone and then reference this repository locall
 If you use Databricks [configuration profiles](https://docs.databricks.com/dev-tools/auth.html#configuration-profiles) or Databricks-specific [environment variables](https://docs.databricks.com/dev-tools/auth.html#environment-variables) for [Databricks authentication](https://docs.databricks.com/dev-tools/auth.html), the only code required to start working with a Databricks workspace is the following code snippet, which instructs the Databricks SDK for Go to use its [default authentication flow](#default-authentication-flow):
 
 ```go
-w := workspaces.Must(workspaces.NewClient())
+w := databricks.Must(databricks.NewWorkspaceClient())
 w./*press TAB for autocompletion*/
 ```
 
@@ -186,8 +186,7 @@ import (
   "os"
   "strings"
 
-  "github.com/databricks/databricks-sdk-go/workspaces"
-  // "github.com/databricks/databricks-sdk-go/databricks"
+  "github.com/databricks/databricks-sdk-go/databricks"
 )
 
 func init() {
@@ -206,14 +205,14 @@ func main() {
   // - A Databricks configuration profile named DEFAULT.
   // - The environment variables DATABRICKS_HOST and DATABRICKS_TOKEN.
 
-  // w := workspaces.Must(workspaces.NewClient())
+  // w := databricks.Must(databricks.NewWorkspaceClient())
 
   // Option 2: To ask the user at run time for the needed information,
   // uncomment the following code, uncomment the import
   // "github.com/databricks/databricks-sdk-go/databricks"
   // and then run.
 
-  // w := workspaces.Must(workspaces.NewClient(&databricks.Config{
+  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
   //   AuthType: "pat",
   //   Host:     askFor("Databricks workspace URL:"),
   //   Token:    askFor("Access token:"),
@@ -270,7 +269,6 @@ import (
   "strings"
 
   "github.com/databricks/databricks-sdk-go/databricks"
-  "github.com/databricks/databricks-sdk-go/workspaces"
 )
 
 func init() {
@@ -290,12 +288,12 @@ func main() {
   // - ARM_CLIENT_ID
   // - ARM_CLIENT_SECRET
 
-  // w := workspaces.Must(workspaces.NewClient(&databricks.Config{AuthType: "azure-client-secret"}))
+  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{AuthType: "azure-client-secret"}))
 
   // Option 2: To ask the user at run time for the needed information,
   // uncomment the following code and then run.
 
-  // w := workspaces.Must(workspaces.NewClient(&databricks.Config{
+  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
   //   AuthType:          "azure-client-secret",
   //   AzureResourceID:   askFor("Azure resource ID for your Azure Databricks workspace:"),
   //   AzureTenantID:     askFor("Azure tenant ID for your Azure AD service principal:"),
@@ -353,7 +351,6 @@ import (
   "strings"
 
   "github.com/databricks/databricks-sdk-go/databricks"
-  "github.com/databricks/databricks-sdk-go/workspaces"
 )
 
 func init() {
@@ -369,12 +366,12 @@ func main() {
   // assumes you have already set the environment variables
   // DATABRICKS_HOST and GOOGLE_SERVICE_ACCOUNT.
 
-  // w := workspaces.Must(workspaces.NewClient(&databricks.Config{AuthType: "google-id"}))
+  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{AuthType: "google-id"}))
 
   // Option 2: To ask the user at run time for the needed information,
   // uncomment the following code and then run.
 
-  // w := workspaces.Must(workspaces.NewClient(&databricks.Config{
+  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
   //   AuthType:             "google-id",
   //   Host:                 askFor("Databricks workspace URL:"),
   //   GoogleServiceAccount: askFor("Google Cloud Platform service account's email address:"),
@@ -422,7 +419,6 @@ import (
   "fmt"
 
   "github.com/databricks/databricks-sdk-go/databricks"
-  "github.com/databricks/databricks-sdk-go/workspaces"
 )
 
 func init() {
@@ -430,7 +426,7 @@ func init() {
 }
 
 func main() {
-  w := workspaces.Must(workspaces.NewClient(&databricks.Config{
+  w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
     AuthType: "pat",
     Profile:  "MYPROFILE",
   }))
@@ -466,7 +462,6 @@ import (
   "fmt"
 
   "github.com/databricks/databricks-sdk-go/databricks"
-  "github.com/databricks/databricks-sdk-go/workspaces"
 )
 
 func init() {
@@ -474,7 +469,7 @@ func init() {
 }
 
 func main() {
-  w := workspaces.Must(workspaces.NewClient(&databricks.Config{
+  w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
     DebugHeaders: true,
   }))
 
@@ -497,7 +492,7 @@ func (c *CustomCredentials) Name() string {
 	return "custom"
 }
 
-func (c *CustomCredentials) Configure(ctx context.Context, cfg *databricks.Config) (func(*http.Request) error, error) {
+func (c *CustomCredentials) Configure(ctx context.Context, cfg *config.Config) (func(*http.Request) error, error) {
 	return func(r *http.Request) error {
 		token := "..."
 		r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
@@ -506,7 +501,7 @@ func (c *CustomCredentials) Configure(ctx context.Context, cfg *databricks.Confi
 }
 
 func main() {
-	w := workspaces.Must(workspaces.NewClient(&databricks.Config{
+	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		Credentials: &CustomCredentials{},
 	}))
     // ..

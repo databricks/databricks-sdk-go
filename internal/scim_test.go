@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
 	"github.com/databricks/databricks-sdk-go/service/scim"
-	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -16,7 +16,7 @@ func TestAccCurrentUser(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.TODO()
-	w := workspaces.Must(workspaces.NewClient())
+	w := databricks.Must(databricks.NewWorkspaceClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -32,7 +32,7 @@ func TestAccUsers(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.TODO()
-	w := workspaces.Must(workspaces.NewClient())
+	w := databricks.Must(databricks.NewWorkspaceClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -78,7 +78,7 @@ func TestAccGroups(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.TODO()
-	w := workspaces.Must(workspaces.NewClient())
+	w := databricks.Must(databricks.NewWorkspaceClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}

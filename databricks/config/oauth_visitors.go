@@ -1,4 +1,4 @@
-package internal
+package config
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func ServiceToServiceVisitor(inner, cloud oauth2.TokenSource, header string) func(r *http.Request) error {
+func serviceToServiceVisitor(inner, cloud oauth2.TokenSource, header string) func(r *http.Request) error {
 	refreshableInner := oauth2.ReuseTokenSource(nil, inner)
 	refreshableCloud := oauth2.ReuseTokenSource(nil, cloud)
 	return func(r *http.Request) error {
@@ -25,7 +25,7 @@ func ServiceToServiceVisitor(inner, cloud oauth2.TokenSource, header string) fun
 	}
 }
 
-func RefreshableVisitor(inner oauth2.TokenSource) func(r *http.Request) error {
+func refreshableVisitor(inner oauth2.TokenSource) func(r *http.Request) error {
 	refreshableInner := oauth2.ReuseTokenSource(nil, inner)
 	return func(r *http.Request) error {
 		inner, err := refreshableInner.Token()
