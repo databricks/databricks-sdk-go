@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/databricks/internal"
+	"github.com/databricks/databricks-sdk-go/databricks/version"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -26,7 +26,7 @@ func TestFromContext_Default(t *testing.T) {
 	userAgent := FromContext(context.Background())
 	// tests may be developed and run on different versions of different things
 	expectedFormat := "unknown/0.0.0 databricks-sdk-go/%s go/%s os/%s"
-	expected := fmt.Sprintf(expectedFormat, internal.Version, goVersion(), runtime.GOOS)
+	expected := fmt.Sprintf(expectedFormat, version.Version, goVersion(), runtime.GOOS)
 	assert.Equal(t, expected, userAgent)
 }
 
@@ -39,6 +39,6 @@ func TestFromContext_Custom(t *testing.T) {
 
 	// tests may be developed and run on different versions of different things
 	expectedFormat := "unit-tests/0.0.1 databricks-sdk-go/%s go/%s os/%s pulumi/3.8.4 a/b terraform/1.2.5"
-	expected := fmt.Sprintf(expectedFormat, internal.Version, goVersion(), runtime.GOOS)
+	expected := fmt.Sprintf(expectedFormat, version.Version, goVersion(), runtime.GOOS)
 	assert.Equal(t, expected, userAgent)
 }

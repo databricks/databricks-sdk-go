@@ -18,8 +18,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/databricks/databricks-sdk-go/databricks/logger"
 	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -27,7 +27,7 @@ import (
 	"golang.org/x/time/rate"
 )
 
-func New(cfg *databricks.Config) (*DatabricksClient, error) {
+func New(cfg *config.Config) (*DatabricksClient, error) {
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -70,7 +70,7 @@ type httpClient interface {
 }
 
 type DatabricksClient struct {
-	Config             *databricks.Config
+	Config             *config.Config
 	rateLimiter        *rate.Limiter
 	retryTimeout       time.Duration
 	httpClient         httpClient

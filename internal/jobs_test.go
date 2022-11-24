@@ -5,15 +5,15 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
-	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func createTestCluster(ctx context.Context, w *workspaces.WorkspacesClient, t *testing.T) string {
+func createTestCluster(ctx context.Context, w *databricks.WorkspaceClient, t *testing.T) string {
 	clusterName := RandomName(t.Name())
 
 	// Fetch list of spark runtime versions
@@ -43,7 +43,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
-	w := workspaces.Must(workspaces.NewClient())
+	w := databricks.Must(databricks.NewWorkspaceClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}
@@ -193,7 +193,7 @@ func TestAccJobsListAllNoDuplicates(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	w := workspaces.Must(workspaces.NewClient())
+	w := databricks.Must(databricks.NewWorkspaceClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}

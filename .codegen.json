@@ -7,7 +7,7 @@
     ".codegen/model.go.tmpl": "service/{{.Name}}/model.go"
   },
   "batch": {
-    ".codegen/workspaces.go.tmpl": "workspaces/client.go",
-    ".codegen/accounts.go.tmpl": "accounts/client.go"
+    ".codegen/workspaces.go.tmpl": "databricks/workspace_client.go",
+    ".codegen/accounts.go.tmpl": "databricks/account_client.go"
   }
 }

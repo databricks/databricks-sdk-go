@@ -1,10 +1,10 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package workspaces
+package databricks
 
 import (
-	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 
 	"github.com/databricks/databricks-sdk-go/service/clusterpolicies"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
@@ -31,8 +31,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/workspaceconf"
 )
 
-type WorkspacesClient struct {
-	Config *databricks.Config
+type WorkspaceClient struct {
+	Config *config.Config
 
 	// The alerts API can be used to perform CRUD operations on alerts. An alert
 	// is a Databricks SQL object that periodically runs a query, evaluates a
@@ -494,31 +494,22 @@ type WorkspacesClient struct {
 	WorkspaceConf *workspaceconf.WorkspaceConfAPI
 }
 
-// Must panics if error is not nil. It's intended to be used with
-// [workspaces.NewClient] for variable initializations
-func Must(wsClient *WorkspacesClient, err error) *WorkspacesClient {
-	if err != nil {
-		panic(err)
-	}
-	return wsClient
-}
-
 // NewClient creates new Databricks SDK client for Workspaces or returns error
 // in case configuration is wrong
-func NewClient(c ...*databricks.Config) (*WorkspacesClient, error) {
-	var cfg *databricks.Config
+func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
+	var cfg *config.Config
 	if len(c) == 1 {
 		// first config
-		cfg = c[0]
+		cfg = (*config.Config)(c[0])
 	} else {
 		// default config
-		cfg = &databricks.Config{}
+		cfg = &config.Config{}
 	}
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
-	return &WorkspacesClient{
+	return &WorkspaceClient{
 		Config:               cfg,
 		Alerts:               dbsql.NewAlerts(apiClient),
 		Catalogs:             unitycatalog.NewCatalogs(apiClient),

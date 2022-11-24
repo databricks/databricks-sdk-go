@@ -8,18 +8,18 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
-	"github.com/databricks/databricks-sdk-go/workspaces"
 )
 
 func main() {
-	w := workspaces.Must(workspaces.NewClient(&databricks.Config{
+	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		Host:              askFor("Host:"),
 		AzureResourceID:   askFor("Azure Resource ID:"),
 		AzureTenantID:     askFor("AAD Tenant ID:"),
 		AzureClientID:     askFor("AAD Client ID:"),
 		AzureClientSecret: askFor("AAD Client Secret:"),
-		Credentials:       databricks.AzureClientSecretCredentials{},
+		Credentials:       config.AzureClientSecretCredentials{},
 	}))
 	all, err := w.Clusters.ListAll(context.Background(), clusters.ListRequest{})
 	if err != nil {
