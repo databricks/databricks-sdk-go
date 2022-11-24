@@ -1,7 +1,6 @@
 package workspace
 
 import (
-	"context"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -37,29 +36,4 @@ func PythonNotebookOverwriteReader(path string, r io.Reader) (Import, error) {
 
 func (r *ExportResponse) Bytes() ([]byte, error) {
 	return b64.DecodeString(r.Content)
-}
-
-// RecursiveList traverses the workspace tree and returns all non-directory
-// objects under the path
-func (a *WorkspaceAPI) RecursiveList(ctx context.Context, path string) ([]ObjectInfo, error) {
-	var results []ObjectInfo
-	queue := []string{path}
-	for len(queue) > 0 {
-		path := queue[0]
-		queue = queue[1:]
-		batch, err := a.ListAll(ctx, ListRequest{
-			Path: path,
-		})
-		if err != nil {
-			return nil, fmt.Errorf("list %s: %w", path, err)
-		}
-		for _, v := range batch {
-			if v.ObjectType == ObjectTypeDirectory {
-				queue = append(queue, v.Path)
-				continue
-			}
-			results = append(results, v)
-		}
-	}
-	return results, nil
 }
