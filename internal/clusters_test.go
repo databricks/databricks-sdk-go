@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
-	"github.com/databricks/databricks-sdk-go/databricks/retries"
+	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

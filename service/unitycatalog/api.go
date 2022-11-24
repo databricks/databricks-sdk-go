@@ -5,7 +5,7 @@ package unitycatalog
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/client"
 )
 
 func NewCatalogs(client *client.DatabricksClient) *CatalogsAPI {
