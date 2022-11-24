@@ -28,8 +28,8 @@ func PythonNotebookOverwriteReader(path string, r io.Reader) (Import, error) {
 	return Import{
 		Path:      path,
 		Overwrite: true,
-		Format:    ImportFormatSource,
-		Language:  ImportLanguagePython,
+		Format:    ExportFormatSource,
+		Language:  LanguagePython,
 		Content:   b64.EncodeToString(raw),
 	}, nil
 }

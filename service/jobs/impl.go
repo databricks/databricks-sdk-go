@@ -73,11 +73,11 @@ func (a *jobsImpl) GetRunOutput(ctx context.Context, request GetRunOutputRequest
 	return &runOutput, err
 }
 
-func (a *jobsImpl) List(ctx context.Context, request ListRequest) (*ListResponse, error) {
-	var listResponse ListResponse
+func (a *jobsImpl) List(ctx context.Context, request ListRequest) (*ListJobsResponse, error) {
+	var listJobsResponse ListJobsResponse
 	path := "/api/2.1/jobs/list"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listResponse)
-	return &listResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &listJobsResponse)
+	return &listJobsResponse, err
 }
 
 func (a *jobsImpl) ListRuns(ctx context.Context, request ListRunsRequest) (*ListRunsResponse, error) {

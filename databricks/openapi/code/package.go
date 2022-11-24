@@ -134,6 +134,12 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		e.Named.Name = strings.Join(path, "")
 		pkg.define(e)
 	}
+	e.IsEmpty = s.IsEmpty()
+	e.IsAny = s.IsAny || s.Type == "object" && s.IsEmpty()
+	e.IsIdentifier = s.IsIdentifier
+	e.IsName = s.IsName
+	e.IsComputed = s.IsComputed
+	e.RequiredOrder = s.Required
 	// enum
 	if len(s.Enum) != 0 {
 		return pkg.makeEnum(e, s, path)
@@ -157,12 +163,6 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 	e.IsInt64 = s.Type == "integer" && s.Format == "int64"
 	e.IsFloat64 = s.Type == "number" && s.Format == "double"
 	e.IsInt = s.Type == "integer" || s.Type == "int"
-	e.IsEmpty = s.IsEmpty()
-	e.IsAny = s.IsAny || s.Type == "object" && s.IsEmpty()
-	e.IsIdentifier = s.IsIdentifier
-	e.IsName = s.IsName
-	e.IsComputed = s.IsComputed
-	e.RequiredOrder = s.Required
 	return e
 }
 

@@ -145,7 +145,7 @@ type GetPipelineResponse struct {
 	// `ListPipelines`.
 	Spec *PipelineSpec `json:"spec,omitempty"`
 	// The pipeline state.
-	State GetPipelineResponseState `json:"state,omitempty"`
+	State PipelineState `json:"state,omitempty"`
 }
 
 // The health of a pipeline.
@@ -154,27 +154,6 @@ type GetPipelineResponseHealth string
 const GetPipelineResponseHealthHealthy GetPipelineResponseHealth = `HEALTHY`
 
 const GetPipelineResponseHealthUnhealthy GetPipelineResponseHealth = `UNHEALTHY`
-
-// The pipeline state.
-type GetPipelineResponseState string
-
-const GetPipelineResponseStateDeleted GetPipelineResponseState = `DELETED`
-
-const GetPipelineResponseStateDeploying GetPipelineResponseState = `DEPLOYING`
-
-const GetPipelineResponseStateFailed GetPipelineResponseState = `FAILED`
-
-const GetPipelineResponseStateIdle GetPipelineResponseState = `IDLE`
-
-const GetPipelineResponseStateRecovering GetPipelineResponseState = `RECOVERING`
-
-const GetPipelineResponseStateResetting GetPipelineResponseState = `RESETTING`
-
-const GetPipelineResponseStateRunning GetPipelineResponseState = `RUNNING`
-
-const GetPipelineResponseStateStarting GetPipelineResponseState = `STARTING`
-
-const GetPipelineResponseStateStopping GetPipelineResponseState = `STOPPING`
 
 type GetUpdateRequest struct {
 	// The ID of the pipeline.
@@ -186,6 +165,37 @@ type GetUpdateRequest struct {
 type GetUpdateResponse struct {
 	// The current update info.
 	Update *UpdateInfo `json:"update,omitempty"`
+}
+
+type ListPipelinesRequest struct {
+	// Select a subset of results based on the specified criteria. The supported
+	// filters are:
+	//
+	// * `notebook='<path>'` to select pipelines that reference the provided
+	// notebook path. * `name LIKE '[pattern]'` to select pipelines with a name
+	// that matches pattern. Wildcards are supported, for example: `name LIKE
+	// '%shopping%'`
+	//
+	// Composite filters are not supported. This field is optional.
+	Filter string `json:"-" url:"filter,omitempty"`
+	// The maximum number of entries to return in a single page. The system may
+	// return fewer than max_results events in a response, even if there are
+	// more events available. This field is optional. The default value is 25.
+	// The maximum value is 100. An error is returned if the value of
+	// max_results is greater than 100.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// A list of strings specifying the order of results. Supported order_by
+	// fields are id and name. The default is id asc. This field is optional.
+	OrderBy []string `json:"-" url:"order_by,omitempty"`
+	// Page token returned by previous call
+	PageToken string `json:"-" url:"page_token,omitempty"`
+}
+
+type ListPipelinesResponse struct {
+	// If present, a token to fetch the next page of events.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// The list of events matching the request criteria.
+	Statuses []PipelineStateInfo `json:"statuses,omitempty"`
 }
 
 type ListUpdatesRequest struct {
@@ -358,6 +368,46 @@ type PipelineSpec struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+}
+
+// The pipeline state.
+type PipelineState string
+
+const PipelineStateDeleted PipelineState = `DELETED`
+
+const PipelineStateDeploying PipelineState = `DEPLOYING`
+
+const PipelineStateFailed PipelineState = `FAILED`
+
+const PipelineStateIdle PipelineState = `IDLE`
+
+const PipelineStateRecovering PipelineState = `RECOVERING`
+
+const PipelineStateResetting PipelineState = `RESETTING`
+
+const PipelineStateRunning PipelineState = `RUNNING`
+
+const PipelineStateStarting PipelineState = `STARTING`
+
+const PipelineStateStopping PipelineState = `STOPPING`
+
+type PipelineStateInfo struct {
+	// The unique identifier of the cluster running the pipeline.
+	ClusterId string `json:"cluster_id,omitempty"`
+	// The username of the pipeline creator.
+	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// Status of the latest updates for the pipeline. Ordered with the newest
+	// update first.
+	LatestUpdates []UpdateStateInfo `json:"latest_updates,omitempty"`
+	// The user-friendly name of the pipeline.
+	Name string `json:"name,omitempty"`
+	// The unique identifier of the pipeline.
+	PipelineId string `json:"pipeline_id,omitempty"`
+	// The username that the pipeline runs as. This is a read only value derived
+	// from the pipeline owner.
+	RunAsUserName string `json:"run_as_user_name,omitempty"`
+	// The pipeline state.
+	State PipelineState `json:"state,omitempty"`
 }
 
 type PipelineTrigger struct {
