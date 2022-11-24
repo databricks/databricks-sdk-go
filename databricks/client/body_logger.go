@@ -62,18 +62,18 @@ func (b bodyLogger) recursiveMarshalSlice(s []any, budget int) (json.RawMessage,
 	// The first element of a slice appears in the output, regardless of character budget.
 	// Subsequent elements are included if the budget allows.
 	for i := range s {
+		// If we're out of character budget, include trailer.
+		if i > 0 && budget <= 0 {
+			out = append(out, fmt.Sprintf("... (%d additional elements)", len(s)-len(out)))
+			break
+		}
+
 		raw, err := b.recursiveMarshal(s[i], budget)
 		if err != nil {
 			return nil, err
 		}
 		out = append(out, raw)
 		budget -= len(raw)
-
-		// If we're out of character budget, include trailer.
-		if budget <= 0 {
-			out = append(out, fmt.Sprintf("... (%d additional elements)", len(s)-len(out)))
-			break
-		}
 	}
 
 	return json.Marshal(out)
