@@ -2,8 +2,8 @@ package databricks
 
 import (
 	"github.com/databricks/databricks-sdk-go/databricks/config"
-	"github.com/databricks/databricks-sdk-go/databricks/internal"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/databricks/version"
 )
 
 type Config config.Config
@@ -19,7 +19,7 @@ func Must[T any](c T, err error) T {
 
 // Version of this SDK
 func Version() string {
-	return internal.Version
+	return version.Version
 }
 
 // WithProduct is expected to be set by developers to differentiate their app from others.

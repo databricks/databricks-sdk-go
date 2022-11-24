@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/databricks/databricks-sdk-go/databricks/internal"
 	"github.com/databricks/databricks-sdk-go/databricks/logger"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/idtoken"
@@ -43,7 +42,7 @@ func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (func(*ht
 		return nil, fmt.Errorf("could not obtain OAuth2 token from JSON: %w", err)
 	}
 	logger.Infof("Using Google Credentials")
-	return internal.ServiceToServiceVisitor(inner, creds.TokenSource, "X-Databricks-GCP-SA-Access-Token"), nil
+	return serviceToServiceVisitor(inner, creds.TokenSource, "X-Databricks-GCP-SA-Access-Token"), nil
 }
 
 // Reads credentials as JSON. Credentials can be either a path to JSON file,

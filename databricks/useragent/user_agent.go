@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/internal"
+	"github.com/databricks/databricks-sdk-go/databricks/version"
 	"golang.org/x/mod/semver"
 )
 
@@ -57,7 +57,7 @@ func InContext(ctx context.Context, k, v string) context.Context {
 func FromContext(ctx context.Context) string {
 	base := data{
 		{product, productVersion},
-		{SdkName, internal.Version},
+		{SdkName, version.Version},
 		{"go", goVersion()},
 		{"os", runtime.GOOS},
 	}
