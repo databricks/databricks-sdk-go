@@ -356,10 +356,13 @@ func TestSimpleResponseRedaction(t *testing.T) {
 				Status:     "200 Fine",
 				Body: io.NopCloser(strings.NewReader(`{
 					"string_value": "__SENSITIVE01__",
-					"inner": [
+					"inner": {
+					  "token_value": "__SENSITIVE02__",
+					  "content": "__SENSITIVE03__"
+					},
+					"list": [
 					  {
-					    "token_value": "__SENSITIVE02__",
-					    "content": "__SENSITIVE03__"
+						"token_value": "__SENSITIVE04__"
 					  }
 					],
 					"longer": "12345678901234567890qwerty"
@@ -381,6 +384,7 @@ func TestSimpleResponseRedaction(t *testing.T) {
 	assert.NotContains(t, bufLogger.String(), "__SENSITIVE01__")
 	assert.NotContains(t, bufLogger.String(), "__SENSITIVE02__")
 	assert.NotContains(t, bufLogger.String(), "__SENSITIVE03__")
+	assert.NotContains(t, bufLogger.String(), "__SENSITIVE04__")
 	assert.NotContains(t, bufLogger.String(), "12345678901234567890qwerty")
 }
 
