@@ -117,75 +117,10 @@ func (c *DatabricksClient) completeUrl(r *http.Request) error {
 	return nil
 }
 
-func (c *DatabricksClient) recursiveMask(requestMap map[string]any) any {
-	for k, v := range requestMap {
-		if k == "string_value" {
-			requestMap[k] = "**REDACTED**"
-			continue
-		}
-		if k == "token_value" {
-			requestMap[k] = "**REDACTED**"
-			continue
-		}
-		if k == "content" {
-			requestMap[k] = "**REDACTED**"
-			continue
-		}
-		if m, ok := v.(map[string]any); ok {
-			requestMap[k] = c.recursiveMask(m)
-			continue
-		}
-		if s, ok := v.(string); ok {
-			requestMap[k] = onlyNBytes(s, c.debugTruncateBytes)
-		}
-	}
-	return requestMap
-}
-
 func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string) {
-	if len(body) == 0 {
-		return
-	}
-	if body[0] == '[' {
-		var requestSlice, tmp []any
-		err := json.Unmarshal(body, &requestSlice)
-		if err != nil {
-			// error in this case is not much relevant
-			return
-		}
-		for _, v := range requestSlice {
-			x, ok := v.(map[string]any)
-			if !ok {
-				continue
-			}
-			tmp = append(tmp, c.recursiveMask(x))
-		}
-		return c.rePack(prefix, tmp)
-	}
-	if body[0] != '{' {
-		return fmt.Sprintf("[non-JSON document of %d bytes]", len(body))
-	}
-	var requestMap map[string]any
-	err := json.Unmarshal(body, &requestMap)
-	if err != nil {
-		// error in this case is not much relevant
-		return
-	}
-	return c.rePack(prefix, c.recursiveMask(requestMap))
-}
-
-func (c *DatabricksClient) rePack(prefix string, v any) string {
-	rePacked, err := json.MarshalIndent(v, "", "  ")
-	if err != nil {
-		// error in this case is not much relevant
-		return ""
-	}
-	maxBytes := 1024
-	if c.debugTruncateBytes > maxBytes {
-		maxBytes = c.debugTruncateBytes
-	}
-	lines := strings.Split(onlyNBytes(string(rePacked), maxBytes), "\n")
-	return prefix + strings.Join(lines, "\n"+prefix)
+	return bodyLogger{
+		debugTruncateBytes: c.debugTruncateBytes,
+	}.redactedDump(prefix, body)
 }
 
 // Fully read and close HTTP response body to release HTTP connections.
@@ -386,14 +321,6 @@ func orDefault(configured, _default int) int {
 		return _default
 	}
 	return configured
-}
-
-func onlyNBytes(j string, numBytes int) string {
-	diff := len([]byte(j)) - numBytes
-	if diff > 0 {
-		return fmt.Sprintf("%s... (%d more bytes)", j[:numBytes], diff)
-	}
-	return j
 }
 
 // CWE-117 prevention
