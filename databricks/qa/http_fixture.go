@@ -125,7 +125,7 @@ func (fixtures HTTPFixtures) Config(t *testing.T) (*config.Config, *httptest.Ser
 		}
 	}))
 	return &config.Config{
-		//Credentials:      databricks.PatCredentials{},
+		Credentials:      config.PatCredentials{},
 		Host:             server.URL,
 		Token:            "x",
 		AzureEnvironment: "public",

@@ -9,7 +9,7 @@ import (
 type Config config.Config
 
 // Must panics if error is not nil. It's intended to be used with
-// [databricks.NewWorkspaceClient] for variable initializations
+// [databricks.NewWorkspaceClient] and [databricks.NewAccountClient].
 func Must[T any](c T, err error) T {
 	if err != nil {
 		panic(err)
