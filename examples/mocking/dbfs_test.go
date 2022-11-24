@@ -38,7 +38,7 @@ func TestDbfsHighLevelAPI(t *testing.T) {
 	}))
 
 	w, err := databricks.NewWorkspaceClient()
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	w.Dbfs.WithImpl(mockDbfs)
 
