@@ -63,8 +63,12 @@ type Config struct {
 	AzureClientSecret string `name:"azure_client_secret" env:"ARM_CLIENT_SECRET" auth:"azure,sensitive"`
 	AzureClientID     string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure"`
 	AzureTenantID     string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure"`
+
 	// AzureEnvironment (Public, UsGov, China, Germany) has specific set of API endpoints.
 	AzureEnvironment string `name:"azure_environment" env:"ARM_ENVIRONMENT"`
+
+	// Azure Login Application ID. Must be set if authenticating for non-production workspaces.
+	AzureLoginAppID string `name:"azure_login_app_id" env:"DATABRICKS_AZURE_LOGIN_APP_ID" auth:"azure"`
 
 	// When multiple auth attributes are available in the environment, use the auth type
 	// specified by this argument. This argument also holds currently selected auth.
@@ -85,9 +89,6 @@ type Config struct {
 
 	// Maximum number of requests per second made to Databricks REST API.
 	RateLimitPerSecond int `name:"rate_limit" env:"DATABRICKS_RATE_LIMIT" auth:"-"`
-
-	// Azure Login Application ID. Must be set if authenticating for non-production workspaces.
-	AzureLoginAppID string `name:"azure_login_app_id" env:"DATABRICKS_AZURE_LOGIN_APP_ID" auth:"azure"`
 
 	// Number of seconds to keep retrying HTTP requests. Default is 300 (5 minutes)
 	RetryTimeoutSeconds int `name:"retry_timeout_seconds" auth:"-"`
