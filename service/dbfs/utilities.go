@@ -91,3 +91,29 @@ func (a *DbfsAPI) Open(ctx context.Context, path string) (*FileReader, error) {
 		api:  a,
 	}, nil
 }
+
+// RecursiveList traverses the DBFS tree and returns all non-directory
+// objects under the path
+func (a DbfsAPI) RecursiveList(ctx context.Context, path string) ([]FileInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "recursive-list")
+	var results []FileInfo
+	queue := []string{path}
+	for len(queue) > 0 {
+		path := queue[0]
+		queue = queue[1:]
+		batch, err := a.ListAll(ctx, ListRequest{
+			Path: path,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("list %s: %w", path, err)
+		}
+		for _, v := range batch {
+			if v.IsDir {
+				queue = append(queue, v.Path)
+				continue
+			}
+			results = append(results, v)
+		}
+	}
+	return results, nil
+}
