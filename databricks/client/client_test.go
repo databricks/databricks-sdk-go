@@ -362,7 +362,7 @@ func TestSimpleResponseRedaction(t *testing.T) {
 					},
 					"list": [
 					  {
-						"token_value": "__SENSITIVE04__"
+					    "token_value": "__SENSITIVE04__"
 					  }
 					],
 					"longer": "12345678901234567890qwerty"
