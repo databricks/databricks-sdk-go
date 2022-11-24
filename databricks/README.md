@@ -69,7 +69,6 @@ classDiagram
         DebugString(Config) string
         Validate(Config) error
         ResolveFromStringMap(Config, map) error
-        ResolveFromAnyMap(Config, map) error
     }
 
     Config --* DatabricksClient

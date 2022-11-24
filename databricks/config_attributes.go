@@ -74,18 +74,21 @@ func (a Attributes) Validate(cfg *Config) error {
 		strings.Join(names, " and "))
 }
 
-// Name implements Loader interface for environment variables
-func (a Attributes) Name() string {
+func (a Attributes) EnvironmentLoader() Loader {
+	return environmentLoader{a}
+}
+
+// Implements a configuration [Loader] for environment variables.
+type environmentLoader struct {
+	Attributes
+}
+
+func (a environmentLoader) Name() string {
 	return "environment"
 }
 
-// Configure implements Loader interface for environment variables
-func (a Attributes) Configure(cfg *Config) error {
-	for _, attr := range a {
-		if !attr.IsZero(cfg) {
-			// don't overwtite a value previously set
-			continue
-		}
+func (a environmentLoader) Configure(cfg *Config) error {
+	for _, attr := range a.Attributes {
 		v := attr.ReadEnv()
 		if v == "" {
 			continue
@@ -100,10 +103,6 @@ func (a Attributes) Configure(cfg *Config) error {
 
 func (a Attributes) ResolveFromStringMap(cfg *Config, m map[string]string) error {
 	for _, attr := range a {
-		if !attr.IsZero(cfg) {
-			// don't overwtite a value previously set
-			continue
-		}
 		v, ok := m[attr.Name]
 		if !ok || v == "" {
 			continue
@@ -116,17 +115,19 @@ func (a Attributes) ResolveFromStringMap(cfg *Config, m map[string]string) error
 	return nil
 }
 
-func (a Attributes) ResolveFromAnyMap(cfg *Config, m map[string]interface{}) error {
+func (a Attributes) Merge(dst *Config, src *Config) error {
 	for _, attr := range a {
-		if !attr.IsZero(cfg) {
-			// don't overwtite a value previously set
+		// Ignore if this attribute isn't set at the source.
+		if attr.IsZero(src) {
 			continue
 		}
-		v, ok := m[attr.Name]
-		if !ok {
-			continue
+
+		// It is not allowed to override attributes that are already set.
+		if !attr.IsZero(dst) {
+			return fmt.Errorf("cannot override %s", attr.Name)
 		}
-		err := attr.Set(cfg, v)
+
+		err := attr.Set(dst, attr.Get(src))
 		if err != nil {
 			return err
 		}

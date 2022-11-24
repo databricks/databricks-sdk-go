@@ -141,6 +141,30 @@ func (c *Config) IsAccountsClient() bool {
 	return strings.HasPrefix(c.Host, "https://accounts.")
 }
 
+func createConfigurationFromLoaders(loaders []Loader) (*Config, error) {
+	if len(loaders) == 0 {
+		loaders = []Loader{
+			// Load from environment variables.
+			ConfigAttributes.EnvironmentLoader(),
+			// Read from ~/.databrickscfg if applicable.
+			KnownConfigLoader{},
+			// Load from environment variables again (they have precedence).
+			ConfigAttributes.EnvironmentLoader(),
+		}
+	}
+
+	var config Config
+	for _, loader := range loaders {
+		logger.Tracef("Loading config from %s", loader.Name())
+		err := loader.Configure(&config)
+		if err != nil {
+			return nil, config.wrapDebug(err)
+		}
+	}
+
+	return &config, nil
+}
+
 func (c *Config) EnsureResolved() error {
 	if c.resolved {
 		return nil
@@ -150,21 +174,19 @@ func (c *Config) EnsureResolved() error {
 	if c.resolved {
 		return nil
 	}
-	if len(c.Loaders) == 0 {
-		c.Loaders = []Loader{
-			ConfigAttributes,
-			KnownConfigLoader{},
-		}
-	}
-	for _, loader := range c.Loaders {
-		logger.Tracef("Loading config via %s", loader.Name())
-		err := loader.Configure(c)
-		if err != nil {
 
-			return c.wrapDebug(fmt.Errorf("resolve: %w", err))
-		}
+	// Create a new configuration using the configured loaders.
+	fresh, err := createConfigurationFromLoaders(c.Loaders)
+	if err != nil {
+		return fmt.Errorf("resolve: %w", err)
 	}
-	err := ConfigAttributes.Validate(c)
+
+	err = ConfigAttributes.Merge(c, fresh)
+	if err != nil {
+		return c.wrapDebug(fmt.Errorf("merge: %w", err))
+	}
+
+	err = ConfigAttributes.Validate(c)
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("validate: %w", err))
 	}

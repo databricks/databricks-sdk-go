@@ -52,7 +52,12 @@ func (a *ConfigAttribute) SetS(cfg *Config, v string) error {
 	}
 }
 
-func (a *ConfigAttribute) Set(cfg *Config, i interface{}) error {
+func (a *ConfigAttribute) Get(cfg *Config) any {
+	rv := reflect.ValueOf(cfg)
+	return rv.Elem().Field(a.num).Interface()
+}
+
+func (a *ConfigAttribute) Set(cfg *Config, i any) error {
 	rv := reflect.ValueOf(cfg)
 	field := rv.Elem().Field(a.num)
 	switch a.Kind {
