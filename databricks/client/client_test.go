@@ -356,10 +356,12 @@ func TestSimpleResponseRedaction(t *testing.T) {
 				Status:     "200 Fine",
 				Body: io.NopCloser(strings.NewReader(`{
 					"string_value": "__SENSITIVE01__",
-					"inner": {
-					  "token_value": "__SENSITIVE02__",
-					  "content": "__SENSITIVE03__"
-					},
+					"inner": [
+					  {
+					    "token_value": "__SENSITIVE02__",
+					    "content": "__SENSITIVE03__"
+					  }
+					],
 					"longer": "12345678901234567890qwerty"
 				}`)),
 				Request: r,
