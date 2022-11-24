@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
-	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -15,7 +15,7 @@ import (
 func TestAccListWorkspaceIntegration(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	ctx := context.Background()
-	w := workspaces.Must(workspaces.NewClient())
+	w := databricks.Must(databricks.NewWorkspaceClient())
 	if w.Config.IsAccountsClient() {
 		t.SkipNow()
 	}

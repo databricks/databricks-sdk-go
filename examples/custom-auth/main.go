@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
-	"github.com/databricks/databricks-sdk-go/workspaces"
 )
 
 type CustomCredentials struct{}
@@ -20,7 +20,7 @@ func (c *CustomCredentials) Name() string {
 }
 
 func (c *CustomCredentials) Configure(
-	ctx context.Context, cfg *databricks.Config,
+	ctx context.Context, cfg *config.Config,
 ) (func(*http.Request) error, error) {
 	return func(r *http.Request) error {
 		token := askFor("Token:")
@@ -30,7 +30,7 @@ func (c *CustomCredentials) Configure(
 }
 
 func main() {
-	w := workspaces.Must(workspaces.NewClient(&databricks.Config{
+	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		Host:        askFor("Host:"),
 		Credentials: &CustomCredentials{},
 	}))

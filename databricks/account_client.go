@@ -1,12 +1,12 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package accounts
+package databricks
 
 import (
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/deployment"
@@ -14,8 +14,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/scim"
 )
 
-type AccountsClient struct {
-	Config *databricks.Config
+type AccountClient struct {
+	Config *config.Config
 
 	// This API allows you to download billable usage logs for the specified
 	// account and date range. This feature works with all account types.
@@ -203,25 +203,16 @@ type AccountsClient struct {
 	Workspaces *deployment.WorkspacesAPI
 }
 
-// Must panics if error is not nil. It's intended to be used with
-// [accounts.NewClient] for variable initializations
-func Must(acctClient *AccountsClient, err error) *AccountsClient {
-	if err != nil {
-		panic(err)
-	}
-	return acctClient
-}
-
 // NewClient creates new Databricks SDK client for Accounts or returns error
 // in case configuration is wrong
-func NewClient(c ...*databricks.Config) (*AccountsClient, error) {
-	var cfg *databricks.Config
+func NewAccountClient(c ...*Config) (*AccountClient, error) {
+	var cfg *config.Config
 	if len(c) == 1 {
 		// first config
-		cfg = c[0]
+		cfg = (*config.Config)(c[0])
 	} else {
 		// default config
-		cfg = &databricks.Config{}
+		cfg = &config.Config{}
 	}
 	err := cfg.EnsureResolved()
 	if err != nil {
@@ -234,7 +225,7 @@ func NewClient(c ...*databricks.Config) (*AccountsClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &AccountsClient{
+	return &AccountClient{
 		Config: cfg,
 
 		BillableUsageDownload:    billing.NewBillableUsageDownload(apiClient),

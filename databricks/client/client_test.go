@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
+	"github.com/databricks/databricks-sdk-go/databricks/config"
 	"github.com/databricks/databricks-sdk-go/databricks/logger"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/time/rate"
@@ -40,7 +40,7 @@ func (cb hc) Do(r *http.Request) (*http.Response, error) {
 func (cb hc) CloseIdleConnections() {}
 
 func TestNew(t *testing.T) {
-	c, err := New(&databricks.Config{
+	c, err := New(&config.Config{
 		ConfigFile: "/dev/null",
 	})
 	assert.NoError(t, err)
@@ -51,7 +51,7 @@ func TestNew(t *testing.T) {
 
 func TestSimpleRequestFails(t *testing.T) {
 	c := &DatabricksClient{
-		Config: databricks.NewMockConfig(func(r *http.Request) error {
+		Config: config.NewMockConfig(func(r *http.Request) error {
 			r.Header.Add("Authenticated", "yes")
 			return nil
 		}),
@@ -76,7 +76,7 @@ func TestSimpleRequestSucceeds(t *testing.T) {
 		Foo int `json:"foo"`
 	}
 	c := &DatabricksClient{
-		Config: databricks.NewMockConfig(func(r *http.Request) error {
+		Config: config.NewMockConfig(func(r *http.Request) error {
 			return nil
 		}),
 		httpClient: hc(func(r *http.Request) (*http.Response, error) {
@@ -100,7 +100,7 @@ func TestSimpleRequestRetried(t *testing.T) {
 	}
 	var retried [1]bool
 	c := &DatabricksClient{
-		Config: databricks.NewMockConfig(func(r *http.Request) error {
+		Config: config.NewMockConfig(func(r *http.Request) error {
 			return nil
 		}),
 		httpClient: hc(func(r *http.Request) (*http.Response, error) {
@@ -238,7 +238,7 @@ func TestFailPerformChannel(t *testing.T) {
 
 func TestSimpleRequestAPIError(t *testing.T) {
 	c := &DatabricksClient{
-		Config: databricks.NewMockConfig(func(r *http.Request) error {
+		Config: config.NewMockConfig(func(r *http.Request) error {
 			return nil
 		}),
 		httpClient: hc(func(r *http.Request) (*http.Response, error) {
@@ -261,7 +261,7 @@ func TestSimpleRequestAPIError(t *testing.T) {
 
 func TestSimpleRequestNilResponseNoError(t *testing.T) {
 	c := &DatabricksClient{
-		Config: databricks.NewMockConfig(func(r *http.Request) error {
+		Config: config.NewMockConfig(func(r *http.Request) error {
 			return nil
 		}),
 		httpClient: hc(func(r *http.Request) (*http.Response, error) {
@@ -275,7 +275,7 @@ func TestSimpleRequestNilResponseNoError(t *testing.T) {
 
 func TestSimpleRequestErrReaderBody(t *testing.T) {
 	c := &DatabricksClient{
-		Config: databricks.NewMockConfig(func(r *http.Request) error {
+		Config: config.NewMockConfig(func(r *http.Request) error {
 			return nil
 		}),
 		httpClient: hc(func(r *http.Request) (*http.Response, error) {
@@ -293,7 +293,7 @@ func TestSimpleRequestErrReaderBody(t *testing.T) {
 
 func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
 	c := &DatabricksClient{
-		Config: databricks.NewMockConfig(func(r *http.Request) error {
+		Config: config.NewMockConfig(func(r *http.Request) error {
 			return nil
 		}),
 		httpClient: hc(func(r *http.Request) (*http.Response, error) {
@@ -334,7 +334,7 @@ func (l *BufferLogger) Errorf(format string, v ...interface{}) {
 }
 
 func TestSimpleResponseRedaction(t *testing.T) {
-	cfg := databricks.NewMockConfig(func(r *http.Request) error {
+	cfg := config.NewMockConfig(func(r *http.Request) error {
 		r.Header.Add("X-For-Logging", "yes")
 		return nil
 	})
@@ -397,7 +397,7 @@ func TestInlineArrayDebugging(t *testing.T) {
 	}()
 
 	c := &DatabricksClient{
-		Config: databricks.NewMockConfig(func(r *http.Request) error {
+		Config: config.NewMockConfig(func(r *http.Request) error {
 			return nil
 		}),
 		httpClient: hc(func(r *http.Request) (*http.Response, error) {

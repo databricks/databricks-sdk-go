@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/workspaces"
+	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -13,7 +13,7 @@ func TestAccCommands(t *testing.T) {
 	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
 	t.Log(env)
 	ctx := context.Background()
-	wsc := workspaces.Must(workspaces.NewClient())
+	wsc := databricks.Must(databricks.NewWorkspaceClient())
 
 	clusterId := GetEnvOrSkipTest(t, "TEST_GOSDK_CLUSTER_ID")
 
