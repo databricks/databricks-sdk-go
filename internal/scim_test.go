@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
-	"github.com/databricks/databricks-sdk-go/databricks/apierr"
+	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/service/scim"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

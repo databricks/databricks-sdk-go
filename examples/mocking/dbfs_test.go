@@ -10,9 +10,8 @@ import (
 	_ "github.com/golang/mock/mockgen/model"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
-	"github.com/databricks/databricks-sdk-go/workspaces"
 )
 
 //go:generate go run github.com/golang/mock/mockgen@latest -package=mocks -destination=mocks/dbfs.go github.com/databricks/databricks-sdk-go/service/dbfs DbfsService
@@ -38,9 +37,11 @@ func TestDbfsHighLevelAPI(t *testing.T) {
 		Handle: 123,
 	}))
 
-	w := workspaces.Must(workspaces.NewClient(databricks.NewMockConfig(nil)))
+	w, err := databricks.NewWorkspaceClient()
+	require.NoError(t, err)
+
 	w.Dbfs.WithImpl(mockDbfs)
 
-	err := w.Dbfs.Overwrite(ctx, "/a/b/c", strings.NewReader("abc"))
+	err = w.Dbfs.Overwrite(ctx, "/a/b/c", strings.NewReader("abc"))
 	assert.NoError(t, err)
 }

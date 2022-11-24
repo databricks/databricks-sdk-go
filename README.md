@@ -67,7 +67,7 @@ During the Beta period, you must clone and then reference this repository locall
      "context"
      "fmt"
      
-     "github.com/databricks/databricks-sdk-go/databricks"
+     "github.com/databricks/databricks-sdk-go"
    )
    
    func init() {
@@ -186,7 +186,7 @@ import (
   "os"
   "strings"
 
-  "github.com/databricks/databricks-sdk-go/databricks"
+  "github.com/databricks/databricks-sdk-go"
 )
 
 func init() {
@@ -209,7 +209,7 @@ func main() {
 
   // Option 2: To ask the user at run time for the needed information,
   // uncomment the following code, uncomment the import
-  // "github.com/databricks/databricks-sdk-go/databricks"
+  // "github.com/databricks/databricks-sdk-go"
   // and then run.
 
   // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
@@ -268,7 +268,7 @@ import (
   "os"
   "strings"
 
-  "github.com/databricks/databricks-sdk-go/databricks"
+  "github.com/databricks/databricks-sdk-go"
 )
 
 func init() {
@@ -350,7 +350,7 @@ import (
   "os"
   "strings"
 
-  "github.com/databricks/databricks-sdk-go/databricks"
+  "github.com/databricks/databricks-sdk-go"
 )
 
 func init() {
@@ -418,7 +418,7 @@ package main
 import (
   "fmt"
 
-  "github.com/databricks/databricks-sdk-go/databricks"
+  "github.com/databricks/databricks-sdk-go"
 )
 
 func init() {
@@ -461,7 +461,7 @@ package main
 import (
   "fmt"
 
-  "github.com/databricks/databricks-sdk-go/databricks"
+  "github.com/databricks/databricks-sdk-go"
 )
 
 func init() {

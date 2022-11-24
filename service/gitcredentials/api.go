@@ -6,8 +6,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
-	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 func NewGitCredentials(client *client.DatabricksClient) *GitCredentialsAPI {

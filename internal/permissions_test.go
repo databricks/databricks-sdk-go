@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/permissions"
 	"github.com/databricks/databricks-sdk-go/service/scim"
 	"github.com/stretchr/testify/require"

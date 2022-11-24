@@ -3,7 +3,7 @@
 package databricks
 
 import (
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/client"
 	{{range .Packages}}
 	"github.com/databricks/databricks-sdk-go/service/{{.Name}}"{{end}}
 )
@@ -22,8 +22,8 @@ type WorkspaceClient struct {
 	{{end}}{{end}}{{end}}
 }
 
-// NewClient creates new Databricks SDK client for Workspaces or returns error
-// in case configuration is wrong
+// NewWorkspaceClient creates new Databricks SDK client for Workspaces or 
+// returns error in case configuration is wrong
 func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	var cfg *config.Config
 	if len(c) == 1 {
