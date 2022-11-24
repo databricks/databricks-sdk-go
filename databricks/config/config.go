@@ -146,11 +146,11 @@ func createConfigurationFromLoaders(loaders []Loader) (*Config, error) {
 	if len(loaders) == 0 {
 		loaders = []Loader{
 			// Load from environment variables.
-			ConfigAttributes.EnvironmentLoader(),
+			environmentVariableLoader{},
 			// Read from ~/.databrickscfg if applicable.
-			KnownConfigLoader{},
+			configFileLoader{},
 			// Load from environment variables again (they have precedence).
-			ConfigAttributes.EnvironmentLoader(),
+			environmentVariableLoader{},
 		}
 	}
 
@@ -182,15 +182,20 @@ func (c *Config) EnsureResolved() error {
 		return fmt.Errorf("resolve: %w", err)
 	}
 
+	// Merge attributes from fresh configuration into self.
+	// Note that only attributes that aren't yet set on self can be set.
 	err = ConfigAttributes.Merge(c, fresh)
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("merge: %w", err))
 	}
 
+	// Validate ensures the configuration unambiguously points to a single
+	// authentication mechanism.
 	err = ConfigAttributes.Validate(c)
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("validate: %w", err))
 	}
+
 	c.resolved = true
 	return nil
 }

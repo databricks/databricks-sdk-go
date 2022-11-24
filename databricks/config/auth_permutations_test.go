@@ -139,6 +139,19 @@ func TestConfig_BasicAuth(t *testing.T) {
 	}.apply(t)
 }
 
+func TestConfig_AttributePrecedence(t *testing.T) {
+	configFixture{
+		host: "y",
+		env: map[string]string{
+			"DATABRICKS_HOST":     "x",
+			"DATABRICKS_USERNAME": "x",
+			"DATABRICKS_PASSWORD": "x",
+		},
+		assertAuth: "basic",
+		assertHost: "https://y",
+	}.apply(t)
+}
+
 func TestConfig_BasicAuth_Mix(t *testing.T) {
 	configFixture{
 		host:     "y",
@@ -324,13 +337,14 @@ func TestConfig_AzureCliHostAndResourceID_ConfigurationPrecedence(t *testing.T) 
 	configFixture{
 		// omit request to management endpoint to get workspace properties
 		azureResourceID: azResourceID,
+		host:            "x",
 		env: map[string]string{
 			"PATH":                      testdataPath(),
 			"HOME":                      "testdata/azure",
 			"DATABRICKS_CONFIG_PROFILE": "justhost",
 		},
 		assertAzure: true,
-		assertHost:  "https://adb-123.4.azuredatabricks.net",
+		assertHost:  "https://x",
 		assertAuth:  "azure-cli",
 	}.apply(t)
 }

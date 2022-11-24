@@ -13,6 +13,26 @@ var ConfigAttributes = loadAttrs()
 // Attributes holds meta-representation of Config configuration options
 type Attributes []ConfigAttribute
 
+type environmentVariableLoader struct{}
+
+func (l environmentVariableLoader) Name() string {
+	return "environment"
+}
+
+func (l environmentVariableLoader) Configure(cfg *Config) error {
+	for _, attr := range ConfigAttributes {
+		v := attr.ReadEnv()
+		if v == "" {
+			continue
+		}
+		err := attr.SetS(cfg, v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (a Attributes) DebugString(cfg *Config) string {
 	buf := []string{}
 	attrsUsed := []string{}
@@ -74,33 +94,6 @@ func (a Attributes) Validate(cfg *Config) error {
 		strings.Join(names, " and "))
 }
 
-func (a Attributes) EnvironmentLoader() Loader {
-	return environmentLoader{a}
-}
-
-// Implements a configuration [Loader] for environment variables.
-type environmentLoader struct {
-	Attributes
-}
-
-func (a environmentLoader) Name() string {
-	return "environment"
-}
-
-func (a environmentLoader) Configure(cfg *Config) error {
-	for _, attr := range a.Attributes {
-		v := attr.ReadEnv()
-		if v == "" {
-			continue
-		}
-		err := attr.SetS(cfg, v)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func (a Attributes) ResolveFromStringMap(cfg *Config, m map[string]string) error {
 	for _, attr := range a {
 		v, ok := m[attr.Name]
@@ -115,6 +108,8 @@ func (a Attributes) ResolveFromStringMap(cfg *Config, m map[string]string) error
 	return nil
 }
 
+// Merge takes attributes from src and sets them on dst.
+// Attributes that are already set on dst are skipped.
 func (a Attributes) Merge(dst *Config, src *Config) error {
 	for _, attr := range a {
 		// Ignore if this attribute isn't set at the source.
@@ -122,9 +117,12 @@ func (a Attributes) Merge(dst *Config, src *Config) error {
 			continue
 		}
 
-		// It is not allowed to override attributes that are already set.
+		// Ignore if this attribute is already set at the destination.
+		// If so, the configuration struct was populated with values
+		// by the caller. These always take precedence over attributes
+		// that were set through the environment.
 		if !attr.IsZero(dst) {
-			return fmt.Errorf("cannot override %s", attr.Name)
+			continue
 		}
 
 		err := attr.Set(dst, attr.Get(src))

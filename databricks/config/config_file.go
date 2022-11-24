@@ -9,13 +9,13 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-type KnownConfigLoader struct{}
+type configFileLoader struct{}
 
-func (l KnownConfigLoader) Name() string {
+func (l configFileLoader) Name() string {
 	return "config-file"
 }
 
-func (l KnownConfigLoader) Configure(cfg *Config) error {
+func (l configFileLoader) Configure(cfg *Config) error {
 	configFile := cfg.ConfigFile
 	if configFile == "" {
 		configFile = "~/.databrickscfg"
