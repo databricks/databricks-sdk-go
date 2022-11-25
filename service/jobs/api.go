@@ -291,6 +291,8 @@ func (a *JobsAPI) GetRunOutputByRunId(ctx context.Context, runId int64) (*RunOut
 func (a *JobsAPI) ListAll(ctx context.Context, request ListRequest) ([]Job, error) {
 	var results []Job
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+	// deduplicate items that may have been added during iteration
+	seen := map[int64]bool{}
 	for {
 		response, err := a.impl.List(ctx, request)
 		if err != nil {
@@ -300,6 +302,12 @@ func (a *JobsAPI) ListAll(ctx context.Context, request ListRequest) ([]Job, erro
 			break
 		}
 		for _, v := range response.Jobs {
+			id := v.JobId
+			if seen[id] {
+				// item was added during iteration
+				continue
+			}
+			seen[id] = true
 			results = append(results, v)
 		}
 		request.Offset += int(len(response.Jobs))
@@ -368,6 +376,8 @@ func (a *JobsAPI) GetJobBySettingsName(ctx context.Context, name string) (*Job, 
 func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]Run, error) {
 	var results []Run
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+	// deduplicate items that may have been added during iteration
+	seen := map[int64]bool{}
 	for {
 		response, err := a.impl.ListRuns(ctx, request)
 		if err != nil {
@@ -377,6 +387,12 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]R
 			break
 		}
 		for _, v := range response.Runs {
+			id := v.RunId
+			if seen[id] {
+				// item was added during iteration
+				continue
+			}
+			seen[id] = true
 			results = append(results, v)
 		}
 		request.Offset += int(len(response.Runs))

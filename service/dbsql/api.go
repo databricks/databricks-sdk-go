@@ -332,6 +332,8 @@ func (a *DashboardsAPI) GetDashboardByDashboardId(ctx context.Context, dashboard
 func (a *DashboardsAPI) ListDashboardsAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
 	var results []Dashboard
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+	// deduplicate items that may have been added during iteration
+	seen := map[string]bool{}
 	request.Page = 1 // start iterating from the first page
 	for {
 		response, err := a.impl.ListDashboards(ctx, request)
@@ -342,6 +344,12 @@ func (a *DashboardsAPI) ListDashboardsAll(ctx context.Context, request ListDashb
 			break
 		}
 		for _, v := range response.Results {
+			id := v.Id
+			if seen[id] {
+				// item was added during iteration
+				continue
+			}
+			seen[id] = true
 			results = append(results, v)
 		}
 		request.Page++
@@ -672,6 +680,8 @@ func (a *QueriesAPI) GetQueryByQueryId(ctx context.Context, queryId string) (*Qu
 func (a *QueriesAPI) ListQueriesAll(ctx context.Context, request ListQueriesRequest) ([]Query, error) {
 	var results []Query
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+	// deduplicate items that may have been added during iteration
+	seen := map[string]bool{}
 	request.Page = 1 // start iterating from the first page
 	for {
 		response, err := a.impl.ListQueries(ctx, request)
@@ -682,6 +692,12 @@ func (a *QueriesAPI) ListQueriesAll(ctx context.Context, request ListQueriesRequ
 			break
 		}
 		for _, v := range response.Results {
+			id := v.Id
+			if seen[id] {
+				// item was added during iteration
+				continue
+			}
+			seen[id] = true
 			results = append(results, v)
 		}
 		request.Page++

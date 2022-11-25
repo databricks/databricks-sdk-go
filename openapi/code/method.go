@@ -194,6 +194,10 @@ func (m *Method) paginationItem() *Entity {
 	return p.Entity
 }
 
+func (p *Pagination) NeedsOffsetDedupe() bool {
+	return p.Offset != nil && p.Entity.HasIdentifierField()
+}
+
 func (p *Pagination) MultiRequest() bool {
 	return p.Offset != nil || p.Token != nil
 }

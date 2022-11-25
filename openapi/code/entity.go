@@ -128,12 +128,17 @@ func (e *Entity) Fields() (fields []Field) {
 
 // Does this type have x-databricks-id field?
 func (e *Entity) HasIdentifierField() bool {
+	return e.IdentifierField() != nil
+}
+
+// Return field with x-databricks-id
+func (e *Entity) IdentifierField() *Field {
 	for _, v := range e.fields {
 		if v.Entity.IsIdentifier {
-			return true
+			return &v
 		}
 	}
-	return false
+	return nil
 }
 
 // Does this type have x-databricks-name field?
