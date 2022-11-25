@@ -10,10 +10,10 @@ import (
 
 var ConfigAttributes = loadAttrs()
 
-// Attributes holds meta-representation of Config configuration options
-type Attributes []ConfigAttribute
+// attributes holds meta-representation of Config configuration options
+type attributes []ConfigAttribute
 
-func (a Attributes) DebugString(cfg *Config) string {
+func (a attributes) DebugString(cfg *Config) string {
 	buf := []string{}
 	attrsUsed := []string{}
 	envsUsed := []string{}
@@ -47,7 +47,7 @@ func (a Attributes) DebugString(cfg *Config) string {
 	return strings.Join(buf, ". ")
 }
 
-func (a Attributes) Validate(cfg *Config) error {
+func (a attributes) Validate(cfg *Config) error {
 	authsUsed := map[string]bool{}
 	for _, attr := range a {
 		if attr.IsZero(cfg) {
@@ -75,12 +75,12 @@ func (a Attributes) Validate(cfg *Config) error {
 }
 
 // Name implements Loader interface for environment variables
-func (a Attributes) Name() string {
+func (a attributes) Name() string {
 	return "environment"
 }
 
 // Configure implements Loader interface for environment variables
-func (a Attributes) Configure(cfg *Config) error {
+func (a attributes) Configure(cfg *Config) error {
 	for _, attr := range a {
 		if !attr.IsZero(cfg) {
 			// don't overwtite a value previously set
@@ -98,7 +98,7 @@ func (a Attributes) Configure(cfg *Config) error {
 	return nil
 }
 
-func (a Attributes) ResolveFromStringMap(cfg *Config, m map[string]string) error {
+func (a attributes) ResolveFromStringMap(cfg *Config, m map[string]string) error {
 	for _, attr := range a {
 		if !attr.IsZero(cfg) {
 			// don't overwtite a value previously set
@@ -116,7 +116,7 @@ func (a Attributes) ResolveFromStringMap(cfg *Config, m map[string]string) error
 	return nil
 }
 
-func (a Attributes) ResolveFromAnyMap(cfg *Config, m map[string]interface{}) error {
+func (a attributes) ResolveFromAnyMap(cfg *Config, m map[string]interface{}) error {
 	for _, attr := range a {
 		if !attr.IsZero(cfg) {
 			// don't overwtite a value previously set
@@ -134,7 +134,7 @@ func (a Attributes) ResolveFromAnyMap(cfg *Config, m map[string]interface{}) err
 	return nil
 }
 
-func loadAttrs() (attrs Attributes) {
+func loadAttrs() (attrs attributes) {
 	t := reflect.TypeOf(Config{})
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
