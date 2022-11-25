@@ -164,10 +164,16 @@ func (a *{{.Service.Name}}API) Get{{.NamedIdMap.Entity.PascalName}}By{{range .Na
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v{{range .NamedIdMap.NamePath}}.{{.PascalName}}{{end}} != name {
+		key := v{{range .NamedIdMap.NamePath}}.{{.PascalName}}{{end}}
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate {{range .NamedIdMap.NamePath}}.{{.PascalName}}{{end}}: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("{{.NamedIdMap.Entity.PascalName}} named '%s' does not exist", name)

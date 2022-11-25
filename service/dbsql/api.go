@@ -180,10 +180,16 @@ func (a *AlertsAPI) GetAlertByName(ctx context.Context, name string) (*Alert, er
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.Name != name {
+		key := v.Name
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .Name: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("Alert named '%s' does not exist", name)
@@ -381,10 +387,16 @@ func (a *DashboardsAPI) GetDashboardByName(ctx context.Context, name string) (*D
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.Name != name {
+		key := v.Name
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .Name: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("Dashboard named '%s' does not exist", name)
@@ -480,10 +492,16 @@ func (a *DataSourcesAPI) GetDataSourceByName(ctx context.Context, name string) (
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.Name != name {
+		key := v.Name
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .Name: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("DataSource named '%s' does not exist", name)
@@ -709,10 +727,16 @@ func (a *QueriesAPI) GetQueryByName(ctx context.Context, name string) (*Query, e
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.Name != name {
+		key := v.Name
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .Name: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("Query named '%s' does not exist", name)

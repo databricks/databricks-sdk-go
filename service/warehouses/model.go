@@ -618,7 +618,7 @@ type ListQueriesResponse struct {
 
 type ListWarehousesRequest struct {
 	// Service Principal which will be used to fetch the list of endpoints. If
-	// not specified, GW will use the user from the session header.
+	// not specified, the user from the session header is used.
 	RunAsUserId int `json:"-" url:"run_as_user_id,omitempty"`
 }
 

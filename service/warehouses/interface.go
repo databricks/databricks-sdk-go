@@ -44,7 +44,7 @@ type WarehousesService interface {
 	// Gets the information for a single SQL warehouse.
 	GetWarehouse(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error)
 
-	// Get a configuration
+	// Get the workspace configuration
 	//
 	// Gets the workspace level configuration that is shared by all SQL
 	// warehouses in a workspace.
@@ -57,7 +57,7 @@ type WarehousesService interface {
 	// Use ListWarehousesAll() to get all EndpointInfo instances
 	ListWarehouses(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error)
 
-	// Set a configuration
+	// Set the workspace configuration
 	//
 	// Sets the workspace level configuration that is shared by all SQL
 	// warehouses in a workspace.

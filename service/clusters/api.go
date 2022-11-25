@@ -419,10 +419,16 @@ func (a *ClustersAPI) GetClusterInfoByClusterName(ctx context.Context, name stri
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.ClusterName != name {
+		key := v.ClusterName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .ClusterName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("ClusterInfo named '%s' does not exist", name)

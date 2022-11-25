@@ -153,10 +153,16 @@ func (a *InstancePoolsAPI) GetInstancePoolAndStatsByInstancePoolName(ctx context
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.InstancePoolName != name {
+		key := v.InstancePoolName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .InstancePoolName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("InstancePoolAndStats named '%s' does not exist", name)

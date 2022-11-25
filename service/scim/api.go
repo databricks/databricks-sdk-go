@@ -134,10 +134,16 @@ func (a *AccountGroupsAPI) GetGroupByDisplayName(ctx context.Context, name strin
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.DisplayName != name {
+		key := v.DisplayName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .DisplayName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("Group named '%s' does not exist", name)
@@ -281,10 +287,16 @@ func (a *AccountServicePrincipalsAPI) GetServicePrincipalByDisplayName(ctx conte
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.DisplayName != name {
+		key := v.DisplayName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .DisplayName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("ServicePrincipal named '%s' does not exist", name)
@@ -437,10 +449,16 @@ func (a *AccountUsersAPI) GetUserByUserName(ctx context.Context, name string) (*
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.UserName != name {
+		key := v.UserName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .UserName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("User named '%s' does not exist", name)
@@ -620,10 +638,16 @@ func (a *GroupsAPI) GetGroupByDisplayName(ctx context.Context, name string) (*Gr
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.DisplayName != name {
+		key := v.DisplayName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .DisplayName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("Group named '%s' does not exist", name)
@@ -767,10 +791,16 @@ func (a *ServicePrincipalsAPI) GetServicePrincipalByDisplayName(ctx context.Cont
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.DisplayName != name {
+		key := v.DisplayName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .DisplayName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("ServicePrincipal named '%s' does not exist", name)
@@ -923,10 +953,16 @@ func (a *UsersAPI) GetUserByUserName(ctx context.Context, name string) (*User, e
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.UserName != name {
+		key := v.UserName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .UserName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("User named '%s' does not exist", name)
