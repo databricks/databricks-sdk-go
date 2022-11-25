@@ -169,10 +169,16 @@ func (a *BudgetsAPI) GetBudgetWithStatusByName(ctx context.Context, name string)
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.Name != name {
+		key := v.Name
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .Name: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("BudgetWithStatus named '%s' does not exist", name)
@@ -377,10 +383,16 @@ func (a *LogDeliveryAPI) GetLogDeliveryConfigurationByConfigName(ctx context.Con
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.ConfigName != name {
+		key := v.ConfigName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .ConfigName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("LogDeliveryConfiguration named '%s' does not exist", name)

@@ -153,10 +153,16 @@ func (a *ReposAPI) GetRepoInfoByPath(ctx context.Context, name string) (*RepoInf
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.Path != name {
+		key := v.Path
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .Path: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("RepoInfo named '%s' does not exist", name)

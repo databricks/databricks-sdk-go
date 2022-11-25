@@ -135,10 +135,16 @@ func (a *GitCredentialsAPI) GetCredentialInfoByGitProvider(ctx context.Context, 
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.GitProvider != name {
+		key := v.GitProvider
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .GitProvider: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("CredentialInfo named '%s' does not exist", name)

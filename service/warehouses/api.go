@@ -319,7 +319,7 @@ func (a *WarehousesAPI) GetWarehouseByIdAndWait(ctx context.Context, id string, 
 	}, options...)
 }
 
-// Get a configuration
+// Get the workspace configuration
 //
 // Gets the workspace level configuration that is shared by all SQL warehouses
 // in a workspace.
@@ -378,16 +378,22 @@ func (a *WarehousesAPI) GetEndpointInfoByName(ctx context.Context, name string) 
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.Name != name {
+		key := v.Name
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .Name: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("EndpointInfo named '%s' does not exist", name)
 }
 
-// Set a configuration
+// Set the workspace configuration
 //
 // Sets the workspace level configuration that is shared by all SQL warehouses
 // in a workspace.

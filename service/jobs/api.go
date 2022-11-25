@@ -345,10 +345,16 @@ func (a *JobsAPI) GetJobBySettingsName(ctx context.Context, name string) (*Job, 
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.Settings.Name != name {
+		key := v.Settings.Name
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .Settings.Name: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("Job named '%s' does not exist", name)

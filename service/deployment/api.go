@@ -146,10 +146,16 @@ func (a *CredentialConfigurationsAPI) GetCredentialByCredentialsName(ctx context
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.CredentialsName != name {
+		key := v.CredentialsName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .CredentialsName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("Credential named '%s' does not exist", name)
@@ -471,10 +477,16 @@ func (a *NetworkConfigurationsAPI) GetNetworkByNetworkName(ctx context.Context, 
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.NetworkName != name {
+		key := v.NetworkName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .NetworkName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("Network named '%s' does not exist", name)
@@ -656,10 +668,16 @@ func (a *PrivateAccessSettingsAPI) GetPrivateAccessSettingsByPrivateAccessSettin
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.PrivateAccessSettingsName != name {
+		key := v.PrivateAccessSettingsName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .PrivateAccessSettingsName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("PrivateAccessSettings named '%s' does not exist", name)
@@ -821,10 +839,16 @@ func (a *StorageConfigurationsAPI) GetStorageConfigurationByStorageConfiguration
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.StorageConfigurationName != name {
+		key := v.StorageConfigurationName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .StorageConfigurationName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("StorageConfiguration named '%s' does not exist", name)
@@ -1186,10 +1210,16 @@ func (a *WorkspacesAPI) GetWorkspaceByWorkspaceName(ctx context.Context, name st
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.WorkspaceName != name {
+		key := v.WorkspaceName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .WorkspaceName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("Workspace named '%s' does not exist", name)

@@ -162,10 +162,16 @@ func (a *IpAccessListsAPI) GetIpAccessListInfoByLabel(ctx context.Context, name 
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.Label != name {
+		key := v.Label
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .Label: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("IpAccessListInfo named '%s' does not exist", name)

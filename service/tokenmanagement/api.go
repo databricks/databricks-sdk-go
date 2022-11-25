@@ -129,10 +129,16 @@ func (a *TokenManagementAPI) GetTokenInfoByComment(ctx context.Context, name str
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.Comment != name {
+		key := v.Comment
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .Comment: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("TokenInfo named '%s' does not exist", name)

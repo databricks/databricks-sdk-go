@@ -133,10 +133,16 @@ func (a *GlobalInitScriptsAPI) GetGlobalInitScriptDetailsByName(ctx context.Cont
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.Name != name {
+		key := v.Name
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .Name: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("GlobalInitScriptDetails named '%s' does not exist", name)
