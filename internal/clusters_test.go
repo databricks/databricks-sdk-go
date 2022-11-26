@@ -13,15 +13,20 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	t.Parallel()
-
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
+func sharedRunningCluster(t *testing.T, ctx context.Context,
+	w *databricks.WorkspaceClient) string {
+	clusterId := GetEnvOrSkipTest(t, "TEST_GOSDK_CLUSTER_ID")
+	info, err := w.Clusters.GetByClusterId(ctx, clusterId)
+	require.NoError(t, err)
+	if !info.IsRunningOrResizing() {
+		_, err = w.Clusters.StartByClusterIdAndWait(ctx, clusterId)
+		require.NoError(t, err)
 	}
+	return clusterId
+}
+
+func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
+	ctx, w := workspaceTest(t)
 
 	// Fetch list of spark runtime versions
 	sparkVersions, err := w.Clusters.SparkVersions(ctx)
@@ -48,18 +53,32 @@ func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
 		})
 	assert.True(t, strings.HasPrefix(err.Error(), "timed out: "))
 	_, err = w.Clusters.DeleteByClusterIdAndWait(ctx, clusterId)
-	assert.NoError(t, err)
+	require.NoError(t, err)
+}
+
+func TestAccAwsInstanceProfiles(t *testing.T) {
+	ctx, w := workspaceTest(t)
+	if !w.Config.IsAws() {
+		t.Skipf("runs only on AWS")
+	}
+
+	arn := "arn:aws:iam::000000000000:role/abc"
+	err := w.InstanceProfiles.Add(ctx, clusters.AddInstanceProfile{
+		InstanceProfileArn: arn,
+		SkipValidation:     true,
+		IamRoleArn:         "arn:aws:iam::000000000000:role/bcd",
+	})
+	require.NoError(t, err)
+
+	defer w.InstanceProfiles.RemoveByInstanceProfileArn(ctx, arn)
+
+	all, err := w.InstanceProfiles.ListAll(ctx)
+	require.NoError(t, err)
+	assert.True(t, len(all) > 1)
 }
 
 func TestAccClustersApiIntegration(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	t.Parallel()
-
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	clusterName := RandomName("sdk-go-cluster-")
 
@@ -156,15 +175,8 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	assert.True(t, len(events) > 0)
 
 	// List clusters in workspace
-	clusters, err := w.Clusters.ListAll(ctx, clusters.ListRequest{})
+	clusterNames, err := w.Clusters.ClusterInfoClusterNameToClusterIdMap(ctx,
+		clusters.ListRequest{})
 	require.NoError(t, err)
-
-	var seen int
-	for _, clusterInfo := range clusters {
-		if clusterInfo.ClusterId == clstr.ClusterId {
-			seen++
-		}
-	}
-	// The test clusters should only occur once in the list clusters response
-	assert.True(t, seen == 1)
+	assert.Contains(t, clusterNames, clusterName)
 }

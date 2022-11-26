@@ -1,10 +1,8 @@
 package internal
 
 import (
-	"context"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/service/scim"
 	"github.com/stretchr/testify/assert"
@@ -12,30 +10,16 @@ import (
 )
 
 func TestAccCurrentUser(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	t.Parallel()
-
-	ctx := context.TODO()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	me, err := w.CurrentUser.Me(ctx)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	assert.NotEmpty(t, me.UserName)
 }
 
 func TestAccUsers(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	t.Parallel()
-
-	ctx := context.TODO()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	// create new user
 	user, err := w.Users.CreateUser(ctx, scim.User{
@@ -58,10 +42,11 @@ func TestAccUsers(t *testing.T) {
 	require.NoError(t, err)
 
 	// verify that the user we've creates is in the list
-	namesToIds := map[string]string{}
-	for _, u := range allUsers {
-		namesToIds[u.UserName] = u.Id
-	}
+	namesToIds, err := w.Users.UserUserNameToIdMap(ctx, scim.ListUsersRequest{
+		Attributes: "id,userName",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, len(namesToIds), len(allUsers))
 	assert.Equal(t, user.Id, namesToIds[user.UserName])
 
 	// remove user by ID
@@ -74,14 +59,7 @@ func TestAccUsers(t *testing.T) {
 }
 
 func TestAccGroups(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	t.Parallel()
-
-	ctx := context.TODO()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	// create new group
 	group, err := w.Groups.CreateGroup(ctx, scim.Group{
@@ -95,17 +73,11 @@ func TestAccGroups(t *testing.T) {
 	assert.Equal(t, group.DisplayName, fetch.DisplayName)
 
 	// list all groups that start with `go-sdk-`
-	allGroups, err := w.Groups.ListGroupsAll(ctx, scim.ListGroupsRequest{
+	namesToIds, err := w.Groups.GroupDisplayNameToIdMap(ctx, scim.ListGroupsRequest{
 		SortOrder: scim.ListGroupsSortOrderDescending,
 		Filter:    "displayName sw 'go-sdk-'",
 	})
 	require.NoError(t, err)
-
-	// verify that the group we've creates is in the list
-	namesToIds := map[string]string{}
-	for _, u := range allGroups {
-		namesToIds[u.DisplayName] = u.Id
-	}
 	assert.Equal(t, group.Id, namesToIds[group.DisplayName])
 
 	// remove group by ID

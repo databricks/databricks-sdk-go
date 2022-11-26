@@ -1,15 +1,20 @@
 package internal
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"os"
+	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/config"
 )
 
 const fullCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -19,11 +24,45 @@ func init() {
 	databricks.WithProduct("integration-tests", databricks.Version())
 }
 
+// prelude for all workspace-level tests
+func workspaceTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) {
+	loadDebugEnvIfRunsFromIDE(t, "workspace")
+	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+	if os.Getenv("DATABRICKS_ACCOUNT_ID") != "" {
+		t.Skipf("Skipping workspace test on account level")
+	}
+	t.Parallel()
+	ctx := context.Background()
+	return ctx, databricks.Must(databricks.NewWorkspaceClient())
+}
+
+// prelude for all account-level tests
+func accountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
+	loadDebugEnvIfRunsFromIDE(t, "account")
+	cfg := &config.Config{
+		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
+	}
+	if !cfg.IsAccountsClient() {
+		t.Skipf("Not in account env: %s/%s", cfg.AccountID, cfg.Host)
+	}
+	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+	t.Parallel()
+	ctx := context.Background()
+	return ctx, databricks.Must(databricks.NewAccountClient(
+		(*databricks.Config)(cfg)))
+}
+
 // GetEnvOrSkipTest proceeds with test only with that env variable
 func GetEnvOrSkipTest(t *testing.T, name string) string {
 	value := os.Getenv(name)
 	if value == "" {
-		t.Skipf("Environment variable %s is missing", name)
+		skipf := t.Skipf
+		if isInDebug() {
+			// VSCode "debug test" feature doesn't show dlv logs,
+			// so that we fail here for maintainer productivity.
+			skipf = t.Fatalf
+		}
+		skipf("Environment variable %s is missing", name)
 	}
 	return value
 }
@@ -68,4 +107,37 @@ func RandomHex(prefix string, randLen int) string {
 		return fmt.Sprintf("%s%s", prefix, b)
 	}
 	return string(b)
+}
+
+// detects if test is run from "debug test" feature in VSCode
+func isInDebug() bool {
+	ex, _ := os.Executable()
+	return path.Base(ex) == "__debug_bin"
+}
+
+// loads debug environment from ~/.databricks/debug-env.json
+func loadDebugEnvIfRunsFromIDE(t *testing.T, key string) {
+	if !isInDebug() {
+		return
+	}
+	home, err := os.UserHomeDir()
+	if err != nil {
+		t.Fatalf("cannot find user home: %s", err)
+	}
+	raw, err := os.ReadFile(filepath.Join(home, ".databricks/debug-env.json"))
+	if err != nil {
+		t.Fatalf("cannot load ~/.databricks/debug-env.json: %s", err)
+	}
+	var conf map[string]map[string]string
+	err = json.Unmarshal(raw, &conf)
+	if err != nil {
+		t.Fatalf("cannot parse ~/.databricks/debug-env.json: %s", err)
+	}
+	vars, ok := conf[key]
+	if !ok {
+		t.Fatalf("~/.databricks/debug-env.json#%s not configured", key)
+	}
+	for k, v := range vars {
+		os.Setenv(k, v)
+	}
 }

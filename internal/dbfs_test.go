@@ -2,38 +2,28 @@ package internal
 
 import (
 	"bytes"
-	"context"
 	"encoding/base64"
 	"hash/fnv"
 	"io"
 	"math/rand"
 	"os"
+	"path"
 	"path/filepath"
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func assertAcceptance(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	if env == "gcp" {
-		t.Skip("dbfs tests are skipped because dbfs rest api is disabled on gcp")
-	}
-}
-
 func TestAccDbfsUtilities(t *testing.T) {
-	assertAcceptance(t)
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
+	ctx, w := workspaceTest(t)
+	if w.Config.IsGcp() {
+		t.Skip("dbfs not available on gcp")
 	}
 
-	path := RandomName("/tmp/databricks-go-sdk/fake")
+	path := RandomName("/tmp/.sdk/fake")
 	rand.Seed(time.Now().UnixNano())
 	in := make([]byte, 1.44*1e6)
 	_, _ = rand.Read(in)
@@ -65,39 +55,38 @@ func TestAccDbfsUtilities(t *testing.T) {
 }
 
 func TestAccListDbfsIntegration(t *testing.T) {
-	assertAcceptance(t)
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
+	ctx, w := workspaceTest(t)
+	if w.Config.IsGcp() {
+		t.Skip("dbfs not available on gcp")
 	}
-	testFile1 := RandomName("test-file-1-")
-	testFile2 := RandomName("test-file-2-")
-	dbfsTestDirPath1 := RandomName("/tmp/databricks-go-sdk/integration/dbfs/TestDir1-")
-	dbfsTestDirPath2 := RandomName("/tmp/databricks-go-sdk/integration/dbfs/TestDir2-")
+
+	testFile1 := RandomName("f001-")
+	testFile2 := RandomName("f002-")
+	testPath1 := RandomName("/tmp/.sdk/001-")
+	testPath2 := RandomName("/tmp/.sdk/002-")
 
 	t.Cleanup(func() {
 		// recursively delete the test dir1 and any test files inside it
 		err := w.Dbfs.Delete(ctx, dbfs.Delete{
-			Path:      dbfsTestDirPath1,
+			Path:      testPath1,
 			Recursive: true,
 		})
 		require.NoError(t, err)
 		// recursively delete the test dir2 and any test files inside it
 		err = w.Dbfs.Delete(ctx, dbfs.Delete{
-			Path:      dbfsTestDirPath2,
+			Path:      testPath2,
 			Recursive: true,
 		})
 		require.NoError(t, err)
 	})
 
 	// make test dir2 in workspace root
-	err := w.Dbfs.MkdirsByPath(ctx, dbfsTestDirPath2)
+	err := w.Dbfs.MkdirsByPath(ctx, testPath2)
 	require.NoError(t, err)
 
 	// create testFile1 in test dir2
 	createdFile, err := w.Dbfs.Create(ctx, dbfs.Create{
-		Path:      filepath.Join(dbfsTestDirPath2, testFile1),
+		Path:      filepath.Join(testPath2, testFile1),
 		Overwrite: true,
 	})
 	require.NoError(t, err)
@@ -114,36 +103,36 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Get testFile1 status
-	testFileStatus, err := w.Dbfs.GetStatusByPath(ctx, filepath.Join(dbfsTestDirPath2, testFile1))
+	testFileStatus, err := w.Dbfs.GetStatusByPath(ctx, filepath.Join(testPath2, testFile1))
 	require.NoError(t, err)
-	assert.True(t, testFileStatus.Path == filepath.Join(dbfsTestDirPath2, testFile1))
+	assert.True(t, testFileStatus.Path == filepath.Join(testPath2, testFile1))
 	assert.True(t, testFileStatus.IsDir == false)
 
 	// List all files in test dir2 and assert testFile1 is found
-	listOfFilesInWorkspaceRoot, err := w.Dbfs.ListByPath(ctx, dbfsTestDirPath2)
+	listOfFilesInWorkspaceRoot, err := w.Dbfs.ListByPath(ctx, testPath2)
 	require.NoError(t, err)
 	foundTestFile := false
 	for _, fileInfo := range listOfFilesInWorkspaceRoot.Files {
-		if fileInfo.Path == filepath.Join(dbfsTestDirPath2, testFile1) {
+		if fileInfo.Path == filepath.Join(testPath2, testFile1) {
 			foundTestFile = true
 		}
 	}
 	assert.True(t, foundTestFile)
 
 	// make test dir1 in workspace root
-	err = w.Dbfs.MkdirsByPath(ctx, dbfsTestDirPath1)
+	err = w.Dbfs.MkdirsByPath(ctx, testPath1)
 	require.NoError(t, err)
 
 	// move testFile1 to test dir1
 	err = w.Dbfs.Move(ctx, dbfs.Move{
-		SourcePath:      filepath.Join(dbfsTestDirPath2, testFile1),
-		DestinationPath: filepath.Join(dbfsTestDirPath1, testFile1),
+		SourcePath:      filepath.Join(testPath2, testFile1),
+		DestinationPath: filepath.Join(testPath1, testFile1),
 	})
 	require.NoError(t, err)
 
 	// put a new file testFile2 in test dir1
 	err = w.Dbfs.Put(ctx, dbfs.Put{
-		Path:      filepath.Join(dbfsTestDirPath1, testFile2),
+		Path:      filepath.Join(testPath1, testFile2),
 		Contents:  base64.StdEncoding.EncodeToString([]byte("Bye Bye, World!")),
 		Overwrite: true,
 	})
@@ -151,15 +140,19 @@ func TestAccListDbfsIntegration(t *testing.T) {
 
 	// assert on contents of testFile1
 	contentsTestFile, err := w.Dbfs.Read(ctx, dbfs.ReadRequest{
-		Path: filepath.Join(dbfsTestDirPath1, testFile1),
+		Path: filepath.Join(testPath1, testFile1),
 	})
 	require.NoError(t, err)
 	assert.True(t, contentsTestFile.Data == base64.StdEncoding.EncodeToString([]byte("Hello, World!")))
 
 	// assert on contents of testFile2
 	contentsByeByeWorldFile, err := w.Dbfs.Read(ctx, dbfs.ReadRequest{
-		Path: filepath.Join(dbfsTestDirPath1, testFile2),
+		Path: filepath.Join(testPath1, testFile2),
 	})
 	require.NoError(t, err)
 	assert.True(t, contentsByeByeWorldFile.Data == base64.StdEncoding.EncodeToString([]byte("Bye Bye, World!")))
+
+	files, err := w.Dbfs.RecursiveList(ctx, path.Dir(testPath1))
+	require.NoError(t, err)
+	assert.True(t, len(files) >= 2)
 }

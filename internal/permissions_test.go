@@ -1,24 +1,17 @@
 package internal
 
 import (
-	"context"
 	"strconv"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/permissions"
 	"github.com/databricks/databricks-sdk-go/service/scim"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMwsAccWorkspaceAssignment(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	a := databricks.Must(databricks.NewAccountClient(&databricks.Config{
-		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
-	}))
-	if !a.Config.IsAccountsClient() || !a.Config.IsAws() {
+	ctx, a := accountTest(t)
+	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
 	spn, err := a.ServicePrincipals.CreateServicePrincipal(ctx, scim.ServicePrincipal{

@@ -1,26 +1,22 @@
 package internal
 
 import (
-	"context"
 	"encoding/base64"
 	"path/filepath"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccListWorkspaceIntegration(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
-	testDirPath := RandomName("/tmp/databricks-go-sdk/integration/workspace/TestDir-")
+	me, err := w.CurrentUser.Me(ctx)
+	require.NoError(t, err)
+
+	testDirPath := RandomName("/Users/", me.UserName, "/.sdk/t-")
 	testFileName := RandomName("test-file-")
 
 	t.Cleanup(func() {
@@ -33,7 +29,7 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	})
 
 	// Make test directory
-	err := w.Workspace.MkdirsByPath(ctx, testDirPath)
+	err = w.Workspace.MkdirsByPath(ctx, testDirPath)
 	require.NoError(t, err)
 
 	// Import the test notebook
@@ -67,11 +63,15 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 		Path: testDirPath,
 	})
 	require.NoError(t, err)
-	foundTestNotebook := false
-	for _, objectInfo := range objects {
-		if objectInfo.Path == filepath.Join(testDirPath, testFileName) {
-			foundTestNotebook = true
-		}
-	}
-	assert.True(t, foundTestNotebook)
+
+	paths, err := w.Workspace.ObjectInfoPathToObjectIdMap(ctx, workspace.ListRequest{
+		Path: testDirPath,
+	})
+	require.NoError(t, err)
+	assert.Equal(t, len(objects), len(paths))
+	assert.Contains(t, paths, filepath.Join(testDirPath, testFileName))
+
+	allMyNotebooks, err := w.Workspace.RecursiveList(ctx, filepath.Join("/Users", me.UserName))
+	require.NoError(t, err)
+	assert.True(t, len(allMyNotebooks) > 1)
 }

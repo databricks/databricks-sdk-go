@@ -27,7 +27,7 @@ func TestAccDefaultCredentials(t *testing.T) {
 		LongTermSupport: true,
 		Latest:          true,
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.NotEmpty(t, v)
 }
 
@@ -48,7 +48,7 @@ func TestAccExplicitDatabricksCfg(t *testing.T) {
 		LongTermSupport: true,
 		Latest:          true,
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.NotEmpty(t, v)
 }
 
@@ -83,7 +83,7 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 		LongTermSupport: true,
 		Latest:          true,
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.NotEmpty(t, v)
 }
 
@@ -103,6 +103,6 @@ func TestAccExplicitAzureSpnAuth(t *testing.T) {
 		LongTermSupport: true,
 		Latest:          true,
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.NotEmpty(t, v)
 }

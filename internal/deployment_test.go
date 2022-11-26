@@ -1,23 +1,16 @@
 package internal
 
 import (
-	"context"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/deployment"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMwsAccStorage(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	a := databricks.Must(databricks.NewAccountClient(&databricks.Config{
-		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
-	}))
-	if !a.Config.IsAccountsClient() || !a.Config.IsAws() {
+	ctx, a := accountTest(t)
+	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
 
@@ -43,13 +36,8 @@ func TestMwsAccStorage(t *testing.T) {
 }
 
 func TestMwsAccNetworks(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	a := databricks.Must(databricks.NewAccountClient(&databricks.Config{
-		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
-	}))
-	if !a.Config.IsAccountsClient() || !a.Config.IsAws() {
+	ctx, a := accountTest(t)
+	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
 	netw, err := a.NetworkConfigurations.CreateNetworkConfig(ctx, deployment.CreateNetworkRequest{
@@ -73,13 +61,8 @@ func TestMwsAccNetworks(t *testing.T) {
 }
 
 func TestMwsAccCredentials(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	a := databricks.Must(databricks.NewAccountClient(&databricks.Config{
-		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
-	}))
-	if !a.Config.IsAccountsClient() || !a.Config.IsAws() {
+	ctx, a := accountTest(t)
+	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
 	role, err := a.CredentialConfigurations.CreateCredentialConfig(ctx, deployment.CreateCredentialRequest{

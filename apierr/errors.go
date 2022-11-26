@@ -19,12 +19,14 @@ var (
 		"does not have any associated worker environments",
 		"There is no worker environment with id",
 		"Unknown worker environment",
+		"context deadline exceeded",
 		"ClusterNotReadyException",
 		"connection reset by peer",
 		"TLS handshake timeout",
 		"connection refused",
 		"Unexpected error",
 		"i/o timeout",
+		"EOF",
 	}
 )
 

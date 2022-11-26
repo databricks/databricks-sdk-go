@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"context"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go"
@@ -11,13 +10,7 @@ import (
 )
 
 func TestAccTokens(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	token, err := w.Tokens.Create(ctx, tokens.CreateTokenRequest{
 		Comment:         "xyz",
@@ -28,6 +21,10 @@ func TestAccTokens(t *testing.T) {
 		err = w.Tokens.DeleteByTokenId(ctx, token.TokenInfo.TokenId)
 		require.NoError(t, err)
 	})
+
+	names, err := w.Tokens.PublicTokenInfoCommentToTokenIdMap(ctx)
+	require.NoError(t, err)
+	assert.True(t, len(names) >= 1)
 
 	wscInner := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		Host:     w.Config.Host,

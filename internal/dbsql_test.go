@@ -1,23 +1,15 @@
 package internal
 
 import (
-	"context"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/dbsql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccQueries(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	srcs, err := w.DataSources.ListDataSources(ctx)
 	require.NoError(t, err)
@@ -43,13 +35,7 @@ func TestAccQueries(t *testing.T) {
 }
 
 func TestAccDashboards(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	all, err := w.Dashboards.ListDashboardsAll(ctx, dbsql.ListDashboardsRequest{})
 	require.NoError(t, err)
@@ -57,13 +43,7 @@ func TestAccDashboards(t *testing.T) {
 }
 
 func TestAccQueriesList(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	srcs, err := w.DataSources.ListDataSources(ctx)
 	require.NoError(t, err)

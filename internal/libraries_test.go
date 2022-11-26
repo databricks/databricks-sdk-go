@@ -1,24 +1,15 @@
 package internal
 
 import (
-	"context"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/libraries"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAccLibraries(t *testing.T) {
-	GetEnvOrSkipTest(t, "CLOUD_ENV")
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
-
-	clusterId := createTestCluster(ctx, w, t)
-	defer w.Clusters.PermanentDeleteByClusterId(ctx, clusterId)
+	ctx, w := workspaceTest(t)
+	clusterId := sharedRunningCluster(t, ctx, w)
 
 	err := w.Libraries.UpdateAndWait(ctx, libraries.Update{
 		ClusterId: clusterId,
@@ -30,5 +21,5 @@ func TestAccLibraries(t *testing.T) {
 			},
 		},
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
