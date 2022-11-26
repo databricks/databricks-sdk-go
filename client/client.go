@@ -168,12 +168,24 @@ func (c *DatabricksClient) attempt(ctx context.Context,
 		if err == nil {
 			return resp, nil
 		}
+		if resp == nil {
+			// in cases like TLS handshake timeout we don't have a response,
+			// but we still want to create a stub for debug logging purposes.
+			resp = &http.Response{
+				Body:    io.NopCloser(&bytes.Reader{}),
+				Proto:   "IO ERROR",
+				Status:  err.Error(),
+				Request: request,
+			}
+		}
+		responseBody, _ := io.ReadAll(resp.Body)
 		c.drainToEnsureConnectionRelease(resp)
 		// proactively release the connections in HTTP connection pool
 		c.httpClient.CloseIdleConnections()
 		if retry {
 			return nil, retries.Continue(err)
 		}
+		c.recordRequestLog(resp, requestBody, responseBody)
 		return nil, retries.Halt(err)
 	}
 }
@@ -236,6 +248,8 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 		return nil, ae
 	}
 	if err != nil {
+		// reproduce: turn off internet connection mid-request. needs logging.
+		// failed to poll. timeouts exhausted after 5 minutes.
 		// i don't even know which errors in the real world would end up here.
 		// `retryablehttp` package nicely wraps _everything_ to `url.Error`.
 		return nil, fmt.Errorf("failed request: %w", err)
@@ -247,6 +261,8 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 	if err != nil {
 		return nil, fmt.Errorf("response body: %w", err)
 	}
+	// TODO: FIXME: should do with defer statement
+	// proposed new sig: c.recordRequestLog(request, resp, requestBody, responseBody)
 	c.recordRequestLog(resp, requestBody, responseBody)
 	c.drainToEnsureConnectionRelease(resp)
 	return responseBody, nil
@@ -271,6 +287,9 @@ func makeQueryString(data interface{}) (string, error) {
 				strings.Replace(url.QueryEscape(fmt.Sprintf("%v", k.Interface())), "+", "%20", -1),
 				strings.Replace(url.QueryEscape(fmt.Sprintf("%v", v.Interface())), "+", "%20", -1)))
 		}
+		if len(s) == 0 {
+			return "", nil
+		}
 		return "?" + strings.Join(s, "&"), nil
 	}
 	if inputType.Kind() == reflect.Struct {
@@ -278,7 +297,11 @@ func makeQueryString(data interface{}) (string, error) {
 		if err != nil {
 			return "", fmt.Errorf("cannot create query string: %w", err)
 		}
-		return "?" + params.Encode(), nil
+		encoded := params.Encode()
+		if encoded == "" {
+			return "", nil
+		}
+		return "?" + encoded, nil
 	}
 	return "", fmt.Errorf("unsupported query string data: %#v", data)
 }
@@ -293,7 +316,7 @@ func makeRequestBody(method string, requestURL *string, data interface{}) ([]byt
 		if err != nil {
 			return nil, err
 		}
-		*requestURL += qs
+		*requestURL += qs // TODO: concat with ? on this level
 		return requestBody, nil
 	}
 	if bytes, ok := data.([]byte); ok {

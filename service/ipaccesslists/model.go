@@ -4,7 +4,7 @@ package ipaccesslists
 
 // all definitions in this file are in alphabetical order
 
-type CreateIpAccessListRequest struct {
+type CreateIpAccessList struct {
 	// Array of IP addresses or CIDR values to be added to the IP access list.
 	IpAddresses []string `json:"ip_addresses"`
 	// Label for the IP access list. This **cannot** be empty.
@@ -13,18 +13,26 @@ type CreateIpAccessListRequest struct {
 	ListType ListType `json:"list_type"`
 }
 
-type DeleteIpAccessListRequest struct {
-	// The ID for the corresponding IP access list to modify.
-	IpAccessListId string `json:"-" path:"ip_access_list_id"`
+type CreateIpAccessListResponse struct {
+	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
-type FetchIpAccessListRequest struct {
+type DeleteRequest struct {
 	// The ID for the corresponding IP access list to modify.
-	IpAccessListId string `json:"-" path:"ip_access_list_id"`
+	IpAccessListId string `json:"-" url:"-"`
+}
+
+type FetchIpAccessListResponse struct {
+	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
 type GetIpAccessListResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
+}
+
+type GetRequest struct {
+	// The ID for the corresponding IP access list to modify.
+	IpAccessListId string `json:"-" url:"-"`
 }
 
 type IpAccessListInfo struct {
@@ -60,11 +68,11 @@ const ListTypeAllow ListType = `ALLOW`
 // excluded even if they are included in an allow list.",
 const ListTypeBlock ListType = `BLOCK`
 
-type ReplaceIpAccessListRequest struct {
+type ReplaceIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled"`
 	// The ID for the corresponding IP access list to modify.
-	IpAccessListId string `json:"-" path:"ip_access_list_id"`
+	IpAccessListId string `json:"-" url:"-"`
 	// Array of IP addresses or CIDR values to be added to the IP access list.
 	IpAddresses []string `json:"ip_addresses"`
 	// Label for the IP access list. This **cannot** be empty.
@@ -75,11 +83,11 @@ type ReplaceIpAccessListRequest struct {
 	ListType ListType `json:"list_type"`
 }
 
-type UpdateIpAccessListRequest struct {
+type UpdateIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled,omitempty"`
 	// The ID for the corresponding IP access list to modify.
-	IpAccessListId string `json:"-" path:"ip_access_list_id"`
+	IpAccessListId string `json:"-" url:"-"`
 	// Array of IP addresses or CIDR values to be added to the IP access list.
 	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.

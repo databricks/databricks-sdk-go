@@ -352,7 +352,7 @@ type CreateMetastoreAssignment struct {
 	// The ID of the Metastore.
 	MetastoreId string `json:"metastore_id"`
 	// A workspace ID.
-	WorkspaceId int `json:"-" path:"workspace_id"`
+	WorkspaceId int `json:"-" url:"-"`
 }
 
 type CreateMetastorePrivilegesItem string
@@ -1043,48 +1043,48 @@ const CreateTableTableTypeView CreateTableTableType = `VIEW`
 
 type DeleteCatalogRequest struct {
 	// Required. The name of the catalog.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type DeleteExternalLocationRequest struct {
 	// Force deletion even if there are dependent external tables or mounts.
 	Force bool `json:"-" url:"force,omitempty"`
 	// Required. Name of the storage credential.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type DeleteMetastoreAssignmentRequest struct {
 	// Query for the ID of the Metastore to delete.
-	MetastoreId string `json:"-" url:"metastore_id,omitempty"`
+	MetastoreId string `json:"-" url:"metastore_id"`
 	// A workspace ID.
-	WorkspaceId int `json:"-" path:"workspace_id"`
+	WorkspaceId int `json:"-" url:"-"`
 }
 
 type DeleteMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
 	Force bool `json:"-" url:"force,omitempty"`
 	// Required. Unique ID of the Metastore (from URL).
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type DeleteProviderRequest struct {
 	// Required. Name of the provider.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type DeleteRecipientRequest struct {
 	// Required. Name of the recipient.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type DeleteSchemaRequest struct {
 	// Required. Full name of the schema (from URL).
-	FullName string `json:"-" path:"full_name"`
+	FullName string `json:"-" url:"-"`
 }
 
 type DeleteShareRequest struct {
 	// The name of the share.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type DeleteStorageCredentialRequest struct {
@@ -1092,12 +1092,12 @@ type DeleteStorageCredentialRequest struct {
 	// tables.
 	Force bool `json:"-" url:"force,omitempty"`
 	// Required. Name of the storage credential.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type DeleteTableRequest struct {
 	// Required. Full name of the Table (from URL).
-	FullName string `json:"-" path:"full_name"`
+	FullName string `json:"-" url:"-"`
 }
 
 type ExternalLocationInfo struct {
@@ -1154,12 +1154,12 @@ type GcpServiceAccountKey struct {
 
 type GetActivationUrlInfoRequest struct {
 	// Required. The one time activation url. It also accepts activation token.
-	ActivationUrl string `json:"-" path:"activation_url"`
+	ActivationUrl string `json:"-" url:"-"`
 }
 
 type GetCatalogRequest struct {
 	// Required. The name of the catalog.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type GetCatalogResponse struct {
@@ -1230,7 +1230,7 @@ const GetCatalogResponsePrivilegesItemWriteFiles GetCatalogResponsePrivilegesIte
 
 type GetExternalLocationRequest struct {
 	// Required. Name of the storage credential.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type GetExternalLocationResponse struct {
@@ -1265,7 +1265,7 @@ type GetExternalLocationResponse struct {
 
 type GetMetastoreRequest struct {
 	// Required. Unique ID of the Metastore (from URL).
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type GetMetastoreResponse struct {
@@ -1338,11 +1338,11 @@ type GetMetastoreSummaryResponse struct {
 
 type GetPermissionsRequest struct {
 	// Required. Unique identifier (full name) of Securable (from URL).
-	FullName string `json:"-" path:"full_name"`
+	FullName string `json:"-" url:"-"`
 	// Optional. List permissions granted to this principal.
 	Principal string `json:"-" url:"principal,omitempty"`
 	// Required. Type of Securable (from URL).
-	SecurableType string `json:"-" path:"securable_type"`
+	SecurableType string `json:"-" url:"-"`
 }
 
 type GetPermissionsResponse struct {
@@ -1353,7 +1353,7 @@ type GetPermissionsResponse struct {
 
 type GetProviderRequest struct {
 	// Required. Name of the provider.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type GetProviderResponse struct {
@@ -1399,7 +1399,7 @@ const GetProviderResponseAuthenticationTypeUnknown GetProviderResponseAuthentica
 
 type GetRecipientRequest struct {
 	// Required. Name of the recipient.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type GetRecipientResponse struct {
@@ -1447,7 +1447,7 @@ const GetRecipientResponseAuthenticationTypeUnknown GetRecipientResponseAuthenti
 
 type GetRecipientSharePermissionsRequest struct {
 	// Required. The name of the Recipient.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type GetRecipientSharePermissionsResponse struct {
@@ -1457,7 +1457,7 @@ type GetRecipientSharePermissionsResponse struct {
 
 type GetSchemaRequest struct {
 	// Required. Full name of the schema (from URL).
-	FullName string `json:"-" path:"full_name"`
+	FullName string `json:"-" url:"-"`
 }
 
 type GetSchemaResponse struct {
@@ -1514,7 +1514,7 @@ const GetSchemaResponsePrivilegesItemWriteFiles GetSchemaResponsePrivilegesItem 
 
 type GetSharePermissionsRequest struct {
 	// Required. The name of the share.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type GetSharePermissionsResponse struct {
@@ -1527,7 +1527,7 @@ type GetShareRequest struct {
 	// Query for data to include in the share.
 	IncludeSharedData bool `json:"-" url:"include_shared_data,omitempty"`
 	// The name of the share.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type GetShareResponse struct {
@@ -1575,12 +1575,12 @@ type GetStorageCredentialResponse struct {
 
 type GetStorageCredentialsRequest struct {
 	// Required. Name of the storage credential.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type GetTableRequest struct {
 	// Required. Full name of the Table (from URL).
-	FullName string `json:"-" path:"full_name"`
+	FullName string `json:"-" url:"-"`
 }
 
 type GetTableResponse struct {
@@ -1715,7 +1715,7 @@ type ListFilesRequest struct {
 	// Optional. Limit on number of results to return.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Required. Path URL to list files from.
-	Url string `json:"-" url:"url,omitempty"`
+	Url string `json:"-" url:"url"`
 }
 
 type ListFilesResponse struct {
@@ -1767,7 +1767,7 @@ type ListSchemasResponse struct {
 
 type ListSharesRequest struct {
 	// Required. Name of the provider in which to list shares.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type ListSharesResponse struct {
@@ -2119,7 +2119,7 @@ type RecipientTokenInfo struct {
 
 type RetrieveTokenRequest struct {
 	// Required. The one time activation url. It also accepts activation token.
-	ActivationUrl string `json:"-" path:"activation_url"`
+	ActivationUrl string `json:"-" url:"-"`
 }
 
 type RetrieveTokenResponse struct {
@@ -2139,7 +2139,7 @@ type RotateRecipientToken struct {
 	// the existing token immediately, negative number will return an error.
 	ExistingTokenExpireInSeconds int64 `json:"existing_token_expire_in_seconds,omitempty"`
 	// Required. The name of the recipient.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type RotateRecipientTokenResponse struct {
@@ -2506,7 +2506,7 @@ type UpdateCatalog struct {
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create:REQ Update:OPT] Name of Catalog.
-	Name string `json:"name,omitempty" path:"name"`
+	Name string `json:"name,omitempty" url:"-"`
 	// [Create:IGN,Update:OPT] Username of current owner of Catalog.
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Privileges the user has on the Catalog.
@@ -2580,7 +2580,7 @@ type UpdateExternalLocation struct {
 	// Location.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create:REQ Update:OPT] Name of the External Location.
-	Name string `json:"name,omitempty" path:"name"`
+	Name string `json:"name,omitempty" url:"-"`
 	// [Create:IGN Update:OPT] The owner of the External Location.
 	Owner string `json:"owner,omitempty"`
 	// [Create,Update:IGN] Time at which this was last modified, in epoch
@@ -2609,7 +2609,7 @@ type UpdateMetastore struct {
 	// seconds
 	DeltaSharingRecipientTokenLifetimeInSeconds int `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// Required. Unique ID of the Metastore (from URL).
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 	// [Create,Update:IGN] Unique identifier of Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create:REQ Update:OPT] Name of Metastore.
@@ -2638,7 +2638,7 @@ type UpdateMetastoreAssignment struct {
 	// The unique ID of the Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// A workspace ID.
-	WorkspaceId int `json:"-" path:"workspace_id"`
+	WorkspaceId int `json:"-" url:"-"`
 }
 
 type UpdateMetastorePrivilegesItem string
@@ -2665,11 +2665,11 @@ type UpdatePermissions struct {
 	// Array of permissions change objects.
 	Changes []PermissionsChange `json:"changes,omitempty"`
 	// Required. Unique identifier (full name) of Securable (from URL).
-	FullName string `json:"-" path:"full_name"`
+	FullName string `json:"-" url:"-"`
 	// Optional. List permissions granted to this principal.
 	Principal string `json:"-" url:"principal,omitempty"`
 	// Required. Type of Securable (from URL).
-	SecurableType string `json:"-" path:"securable_type"`
+	SecurableType string `json:"-" url:"-"`
 }
 
 type UpdateProvider struct {
@@ -2687,7 +2687,7 @@ type UpdateProvider struct {
 	// [Create,Update:IGN] Username of Provider creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create, Update:REQ] The name of the Provider.
-	Name string `json:"name,omitempty" path:"name"`
+	Name string `json:"name,omitempty" url:"-"`
 	// [Create,Update:IGN] This field is only present when the authentication
 	// type is TOKEN.
 	RecipientProfile *RecipientProfile `json:"recipient_profile,omitempty"`
@@ -2732,7 +2732,7 @@ type UpdateRecipient struct {
 	// [Create:OPT,Update:OPT] IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// [Create:REQ,Update:OPT] Name of Recipient.
-	Name string `json:"name,omitempty" path:"name"`
+	Name string `json:"name,omitempty" url:"-"`
 	// [Create:OPT,Update:IGN] The one-time sharing code provided by the data
 	// recipient. This field is only present when the authentication type is
 	// DATABRICKS.
@@ -2768,7 +2768,7 @@ type UpdateSchema struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// [Create,Update:IGN] Full name of Schema, in form of
 	// <catalog_name>.<schema_name>.
-	FullName string `json:"full_name,omitempty" path:"full_name"`
+	FullName string `json:"full_name,omitempty" url:"-"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create:REQ Update:OPT] Name of Schema, relative to parent Catalog.
@@ -2810,7 +2810,7 @@ const UpdateSchemaPrivilegesItemWriteFiles UpdateSchemaPrivilegesItem = `WRITE_F
 
 type UpdateShare struct {
 	// The name of the share.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 	// Array of shared data object updates.
 	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
 }
@@ -2819,7 +2819,7 @@ type UpdateSharePermissions struct {
 	// Array of permission changes.
 	Changes []PermissionsChange `json:"changes,omitempty"`
 	// Required. The name of the share.
-	Name string `json:"-" path:"name"`
+	Name string `json:"-" url:"-"`
 }
 
 type UpdateStorageCredential struct {
@@ -2842,7 +2842,7 @@ type UpdateStorageCredential struct {
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create:REQ, Update:OPT] The credential name. The name MUST be unique
 	// within the Metastore.
-	Name string `json:"name,omitempty" path:"name"`
+	Name string `json:"name,omitempty" url:"-"`
 	// [Create:IGN Update:OPT] Username of current owner of credential.
 	Owner string `json:"owner,omitempty"`
 	// Optional. Supplying true to this argument skips validation of the updated
@@ -2875,7 +2875,7 @@ type UpdateTable struct {
 	DataSourceFormat UpdateTableDataSourceFormat `json:"data_source_format,omitempty"`
 	// [Create,Update:IGN] Full name of Table, in form of
 	// <catalog_name>.<schema_name>.<table_name>
-	FullName string `json:"full_name,omitempty" path:"full_name"`
+	FullName string `json:"full_name,omitempty" url:"-"`
 	// [Create,Update:IGN] Unique identifier of parent Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// [Create:REQ Update:OPT] Name of Table, relative to parent Schema.

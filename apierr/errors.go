@@ -101,7 +101,7 @@ func CheckForRetry(ctx context.Context, resp *http.Response, err error) (bool, e
 	if ue, ok := err.(*url.Error); ok {
 		apiError := APIError{
 			ErrorCode:  "IO_ERROR",
-			StatusCode: 523,
+			StatusCode: 503,
 			Message:    ue.Error(),
 		}
 		return apiError.IsRetriable(), apiError
@@ -110,6 +110,13 @@ func CheckForRetry(ctx context.Context, resp *http.Response, err error) (bool, e
 		// If response is nil we can't make retry choices.
 		// In this case don't retry and return the original error from httpclient
 		return false, err
+	}
+	if resp.StatusCode == 503 {
+		return true, APIError{
+			ErrorCode:  "SERVICE_UNAVAILABLE",
+			Message:    "Service Unavailable",
+			StatusCode: 503,
+		}
 	}
 	if resp.StatusCode == 429 {
 		return true, APIError{

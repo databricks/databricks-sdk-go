@@ -133,7 +133,7 @@ type CreateWarehouseResponse struct {
 
 type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type EditWarehouseRequest struct {
@@ -175,7 +175,7 @@ type EditWarehouseRequest struct {
 	// Defaults to value in global endpoint settings
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// Required. Id of the warehouse to configure.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
@@ -418,7 +418,7 @@ type EndpointTags struct {
 
 type GetWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type GetWarehouseResponse struct {
@@ -887,12 +887,12 @@ const SetWorkspaceWarehouseConfigRequestSecurityPolicyPassthrough SetWorkspaceWa
 
 type StartWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type StopWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type TerminationReason struct {

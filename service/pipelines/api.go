@@ -60,48 +60,6 @@ func (a *PipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipelin
 	return a.impl.CreatePipeline(ctx, request)
 }
 
-// Calls [PipelinesAPI.CreatePipeline] and waits to reach RUNNING state
-//
-// You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
-func (a *PipelinesAPI) CreatePipelineAndWait(ctx context.Context, createPipeline CreatePipeline, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	createPipelineResponse, err := a.CreatePipeline(ctx, createPipeline)
-	if err != nil {
-		return nil, err
-	}
-	i := retries.Info[GetPipelineResponse]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[GetPipelineResponse](ctx, i.Timeout, func() (*GetPipelineResponse, *retries.Err) {
-		getPipelineResponse, err := a.GetPipeline(ctx, GetPipelineRequest{
-			PipelineId: createPipelineResponse.PipelineId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
-		for _, o := range options {
-			o(&retries.Info[GetPipelineResponse]{
-				Info:    *getPipelineResponse,
-				Timeout: i.Timeout,
-			})
-		}
-		status := getPipelineResponse.State
-		statusMessage := getPipelineResponse.Cause
-		switch status {
-		case PipelineStateRunning: // target state
-			return getPipelineResponse, nil
-		case PipelineStateFailed:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				PipelineStateRunning, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
-}
-
 // Delete a pipeline
 //
 // Deletes a pipeline.

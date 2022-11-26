@@ -18,32 +18,32 @@ type ComplexValue struct {
 
 type DeleteGroupRequest struct {
 	// Unique ID for a group in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type DeleteUserRequest struct {
 	// Unique ID for a user in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type GetGroupRequest struct {
 	// Unique ID for a group in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type GetServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type GetUserRequest struct {
 	// Unique ID for a user in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type Group struct {
@@ -56,7 +56,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty" path:"id"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 
@@ -193,7 +193,7 @@ type Name struct {
 
 type PartialUpdate struct {
 	// Unique ID for a group in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 
 	Operations []Patch `json:"operations,omitempty"`
 }
@@ -230,7 +230,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty" path:"id"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 }
@@ -250,7 +250,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty" path:"id"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Name *Name `json:"name,omitempty"`
 

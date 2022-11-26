@@ -18,9 +18,18 @@ func sharedRunningCluster(t *testing.T, ctx context.Context,
 	clusterId := GetEnvOrSkipTest(t, "TEST_GOSDK_CLUSTER_ID")
 	info, err := w.Clusters.GetByClusterId(ctx, clusterId)
 	require.NoError(t, err)
-	if !info.IsRunningOrResizing() {
-		_, err = w.Clusters.StartByClusterIdAndWait(ctx, clusterId)
+
+	switch info.State {
+	// TODO: OpenAPI: clusters.ClusterInfoStatePending -> clusters.StatePending
+	case clusters.StateRunning:
+		// noop
+	case clusters.StatePending,
+		clusters.StateResizing,
+		clusters.StateRestarting:
+		_, err = w.Clusters.GetByClusterIdAndWait(ctx, clusterId)
 		require.NoError(t, err)
+	default:
+		t.Errorf("Cluster is in %s state", info.State)
 	}
 	return clusterId
 }
@@ -62,7 +71,7 @@ func TestAccAwsInstanceProfiles(t *testing.T) {
 		t.Skipf("runs only on AWS")
 	}
 
-	arn := "arn:aws:iam::000000000000:role/abc"
+	arn := "arn:aws:iam::000000000000:instance-profile/abc"
 	err := w.InstanceProfiles.Add(ctx, clusters.AddInstanceProfile{
 		InstanceProfileArn: arn,
 		SkipValidation:     true,
@@ -74,7 +83,7 @@ func TestAccAwsInstanceProfiles(t *testing.T) {
 
 	all, err := w.InstanceProfiles.ListAll(ctx)
 	require.NoError(t, err)
-	assert.True(t, len(all) > 1)
+	assert.True(t, len(all) >= 1)
 }
 
 func TestAccClustersApiIntegration(t *testing.T) {
@@ -111,7 +120,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	byId, err := w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 	assert.Equal(t, clusterName, byId.ClusterName)
-	assert.Equal(t, clusters.ClusterInfoStateRunning, byId.State)
+	assert.Equal(t, clusters.StateRunning, byId.State)
 
 	// Pin the cluster in the list
 	err = w.Clusters.PinByClusterId(ctx, clstr.ClusterId)
@@ -147,7 +156,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	// Assert that the cluster we've just deleted has Terminated state
 	byId, err = w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
-	assert.Equal(t, byId.State, clusters.ClusterInfoStateTerminated)
+	assert.Equal(t, byId.State, clusters.StateTerminated)
 
 	// Start cluster and wait until it's running again
 	_, err = w.Clusters.StartByClusterIdAndWait(ctx, clstr.ClusterId)

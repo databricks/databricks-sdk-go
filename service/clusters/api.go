@@ -122,11 +122,11 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateRunning: // target state
+		case StateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError, ClusterInfoStateTerminated:
+		case StateError, StateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -174,11 +174,11 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteClu
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateTerminated: // target state
+		case StateTerminated: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError:
+		case StateError:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateTerminated, status, statusMessage)
+				StateTerminated, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -253,11 +253,11 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, 
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateRunning: // target state
+		case StateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError, ClusterInfoStateTerminated:
+		case StateError, StateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -333,11 +333,11 @@ func (a *ClustersAPI) GetAndWait(ctx context.Context, getRequest GetRequest, opt
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateRunning: // target state
+		case StateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError, ClusterInfoStateTerminated:
+		case StateError, StateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -555,11 +555,11 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeClu
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateRunning: // target state
+		case StateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError, ClusterInfoStateTerminated:
+		case StateError, StateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -605,11 +605,11 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster Restart
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateRunning: // target state
+		case StateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError, ClusterInfoStateTerminated:
+		case StateError, StateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -669,11 +669,11 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateRunning: // target state
+		case StateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError, ClusterInfoStateTerminated:
+		case StateError, StateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)

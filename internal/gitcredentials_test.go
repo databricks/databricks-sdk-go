@@ -44,5 +44,5 @@ func TestAccGitCredentials(t *testing.T) {
 
 	names, err := w.GitCredentials.CredentialInfoGitProviderToCredentialIdMap(ctx)
 	require.NoError(t, err)
-	assert.Contains(t, names, load.GitUsername)
+	assert.Contains(t, names, load.GitProvider)
 }

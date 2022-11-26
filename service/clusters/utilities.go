@@ -14,7 +14,7 @@ import (
 var getOrCreateClusterMutex sync.Mutex
 
 func (ci *ClusterInfo) IsRunningOrResizing() bool {
-	return ci.State == ClusterInfoStateRunning || ci.State == ClusterInfoStateResizing
+	return ci.State == StateRunning || ci.State == StateResizing
 }
 
 // GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist

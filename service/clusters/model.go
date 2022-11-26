@@ -575,7 +575,7 @@ type ClusterInfo struct {
 	// received (when the cluster entered a ``PENDING`` state).
 	StartTime int64 `json:"start_time,omitempty"`
 	// Current state of the cluster.
-	State ClusterInfoState `json:"state,omitempty"`
+	State State `json:"state,omitempty"`
 	// A message associated with the most recent state transition (e.g., the
 	// reason why the cluster entered a ``TERMINATED`` state).
 	StateMessage string `json:"state_message,omitempty"`
@@ -617,25 +617,6 @@ const ClusterInfoRuntimeEngineNull ClusterInfoRuntimeEngine = `NULL`
 const ClusterInfoRuntimeEnginePhoton ClusterInfoRuntimeEngine = `PHOTON`
 
 const ClusterInfoRuntimeEngineStandard ClusterInfoRuntimeEngine = `STANDARD`
-
-// Current state of the cluster.
-type ClusterInfoState string
-
-const ClusterInfoStateError ClusterInfoState = `ERROR`
-
-const ClusterInfoStatePending ClusterInfoState = `PENDING`
-
-const ClusterInfoStateResizing ClusterInfoState = `RESIZING`
-
-const ClusterInfoStateRestarting ClusterInfoState = `RESTARTING`
-
-const ClusterInfoStateRunning ClusterInfoState = `RUNNING`
-
-const ClusterInfoStateTerminated ClusterInfoState = `TERMINATED`
-
-const ClusterInfoStateTerminating ClusterInfoState = `TERMINATING`
-
-const ClusterInfoStateUnknown ClusterInfoState = `UNKNOWN`
 
 type ClusterLogConf struct {
 	// destination needs to be provided. e.g. ``{ "dbfs" : { "destination" :
@@ -1217,7 +1198,7 @@ type GetEventsResponse struct {
 
 type GetRequest struct {
 	// The cluster about which to retrieve information.
-	ClusterId string `json:"-" url:"cluster_id,omitempty"`
+	ClusterId string `json:"-" url:"cluster_id"`
 }
 
 type GetSparkVersionsResponse struct {
@@ -1475,6 +1456,25 @@ type StartCluster struct {
 	// The cluster to be started.
 	ClusterId string `json:"cluster_id"`
 }
+
+// Current state of the cluster.
+type State string
+
+const StateError State = `ERROR`
+
+const StatePending State = `PENDING`
+
+const StateResizing State = `RESIZING`
+
+const StateRestarting State = `RESTARTING`
+
+const StateRunning State = `RUNNING`
+
+const StateTerminated State = `TERMINATED`
+
+const StateTerminating State = `TERMINATING`
+
+const StateUnknown State = `UNKNOWN`
 
 type TerminationReason struct {
 	// status code indicating why the cluster was terminated

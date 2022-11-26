@@ -53,13 +53,13 @@ type FileInfo struct {
 type GetStatusRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
-	Path string `json:"-" url:"path,omitempty"`
+	Path string `json:"-" url:"path"`
 }
 
 type ListRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
-	Path string `json:"-" url:"path,omitempty"`
+	Path string `json:"-" url:"path"`
 }
 
 type ListStatusResponse struct {
@@ -98,7 +98,7 @@ type ReadRequest struct {
 	// The offset to read from in bytes.
 	Offset int `json:"-" url:"offset,omitempty"`
 	// The path of the file to read. The path should be the absolute DBFS path.
-	Path string `json:"-" url:"path,omitempty"`
+	Path string `json:"-" url:"path"`
 }
 
 type ReadResponse struct {

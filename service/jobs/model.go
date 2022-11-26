@@ -205,7 +205,7 @@ type ExportRunOutput struct {
 
 type ExportRunRequest struct {
 	// The canonical identifier for the run. This field is required.
-	RunId int64 `json:"-" url:"run_id,omitempty"`
+	RunId int64 `json:"-" url:"run_id"`
 	// Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
 	ViewsToExport ViewsToExport `json:"-" url:"views_to_export,omitempty"`
 }
@@ -213,12 +213,12 @@ type ExportRunRequest struct {
 type GetRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
-	JobId int64 `json:"-" url:"job_id,omitempty"`
+	JobId int64 `json:"-" url:"job_id"`
 }
 
 type GetRunOutputRequest struct {
 	// The canonical identifier for the run. This field is required.
-	RunId int64 `json:"-" url:"run_id,omitempty"`
+	RunId int64 `json:"-" url:"run_id"`
 }
 
 type GetRunRequest struct {
@@ -226,7 +226,7 @@ type GetRunRequest struct {
 	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
-	RunId int64 `json:"-" url:"run_id,omitempty"`
+	RunId int64 `json:"-" url:"run_id"`
 }
 
 // Read-only state of the remote repository at the time the job was run. This

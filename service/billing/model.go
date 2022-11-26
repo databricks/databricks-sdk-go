@@ -177,7 +177,7 @@ type CreateLogDeliveryConfigurationParams struct {
 
 type DeleteBudgetRequest struct {
 	// Budget ID
-	BudgetId string `json:"-" path:"budget_id"`
+	BudgetId string `json:"-" url:"-"`
 }
 
 // This describes an enum
@@ -204,24 +204,24 @@ const DeliveryStatusUserFailure DeliveryStatus = `USER_FAILURE`
 type DownloadBillableUsageRequest struct {
 	// Format: `YYYY-MM`. Last month to return billable usage logs for. This
 	// field is required.
-	EndMonth string `json:"-" url:"end_month,omitempty"`
+	EndMonth string `json:"-" url:"end_month"`
 	// Specify whether to include personally identifiable information in the
 	// billable usage logs, for example the email addresses of cluster creators.
 	// Handle this information with care. Defaults to false.
 	PersonalData bool `json:"-" url:"personal_data,omitempty"`
 	// Format: `YYYY-MM`. First month to return billable usage logs for. This
 	// field is required.
-	StartMonth string `json:"-" url:"start_month,omitempty"`
+	StartMonth string `json:"-" url:"start_month"`
 }
 
 type GetBudgetRequest struct {
 	// Budget ID
-	BudgetId string `json:"-" path:"budget_id"`
+	BudgetId string `json:"-" url:"-"`
 }
 
 type GetLogDeliveryConfigRequest struct {
 	// Databricks log delivery configuration ID
-	LogDeliveryConfigurationId string `json:"-" path:"log_delivery_configuration_id"`
+	LogDeliveryConfigurationId string `json:"-" url:"-"`
 }
 
 type ListLogDeliveryConfigsRequest struct {
@@ -378,12 +378,12 @@ type UpdateBudgetRequest struct {
 	// Budget configuration to be created.
 	Budget BudgetCreateRequest `json:"budget"`
 	// Budget ID
-	BudgetId string `json:"-" path:"budget_id"`
+	BudgetId string `json:"-" url:"-"`
 }
 
 type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Databricks log delivery configuration ID
-	LogDeliveryConfigurationId string `json:"-" path:"log_delivery_configuration_id"`
+	LogDeliveryConfigurationId string `json:"-" url:"-"`
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
 	// the configuration](#operation/patch-log-delivery-config-status) later.

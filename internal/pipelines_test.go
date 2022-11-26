@@ -17,7 +17,10 @@ func TestAccPipelines(t *testing.T) {
 	me, err := w.CurrentUser.Me(ctx)
 	require.NoError(t, err)
 
-	notebook := filepath.Join("/Users", me.DisplayName, ".sdk", RandomName("n-"))
+	notebook := filepath.Join("/Users", me.UserName, ".sdk", RandomName("n-"))
+	err = w.Workspace.MkdirsByPath(ctx, filepath.Dir(notebook))
+	require.NoError(t, err)
+
 	err = w.Workspace.Import(ctx, workspace.Import{
 		Content:   base64.StdEncoding.EncodeToString([]byte(dltNotebook)),
 		Format:    workspace.ExportFormatSource,
@@ -39,14 +42,14 @@ func TestAccPipelines(t *testing.T) {
 		{
 			InstancePoolId: GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 			Label:          "default",
-			NumWorkers:     2,
+			NumWorkers:     1,
 			CustomTags: map[string]string{
 				"cluster_type": "default",
 			},
 		},
 	}
 
-	created, err := w.Pipelines.CreatePipelineAndWait(ctx, pipelines.CreatePipeline{
+	created, err := w.Pipelines.CreatePipeline(ctx, pipelines.CreatePipeline{
 		Continuous: false,
 		Name:       RandomName("go-sdk-"),
 		Libraries:  libs,

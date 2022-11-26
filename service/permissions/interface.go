@@ -10,27 +10,27 @@ import (
 // access for various users on different objects and endpoints.
 type PermissionsService interface {
 
-	// Get object permissions
-	//
-	// Gets the permission of an object. Objects can inherit permissions from
-	// their parent objects or root objects.
-	GetObjectPermissions(ctx context.Context, request GetObjectPermissionsRequest) (*ObjectPermissions, error)
-
 	// Get permission levels
 	//
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error)
 
+	// Get object permissions
+	//
+	// Gets the permission of an object. Objects can inherit permissions from
+	// their parent objects or root objects.
+	GetPermissions(ctx context.Context, request GetPermissionsRequest) (*ObjectPermissions, error)
+
 	// Set permissions
 	//
 	// Sets permissions on object. Objects can inherit permissions from their
 	// parent objects and root objects.
-	SetObjectPermissions(ctx context.Context, request SetObjectPermissions) error
+	Set(ctx context.Context, request PermissionsRequest) error
 
 	// Update permission
 	//
 	// Updates the permissions on an object.
-	UpdateObjectPermissions(ctx context.Context, request UpdateObjectPermissions) error
+	Update(ctx context.Context, request PermissionsRequest) error
 }
 
 // Databricks Workspace Assignment REST API

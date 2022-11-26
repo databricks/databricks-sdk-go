@@ -35,11 +35,11 @@ func (a *globalInitScriptsImpl) GetScript(ctx context.Context, request GetScript
 	return &globalInitScriptDetailsWithContent, err
 }
 
-func (a *globalInitScriptsImpl) ListScripts(ctx context.Context) ([]GlobalInitScriptDetails, error) {
-	var globalInitScriptDetailsList []GlobalInitScriptDetails
+func (a *globalInitScriptsImpl) ListScripts(ctx context.Context) (*ListGlobalInitScriptsResponse, error) {
+	var listGlobalInitScriptsResponse ListGlobalInitScriptsResponse
 	path := "/api/2.0/global-init-scripts"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &globalInitScriptDetailsList)
-	return globalInitScriptDetailsList, err
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &listGlobalInitScriptsResponse)
+	return &listGlobalInitScriptsResponse, err
 }
 
 func (a *globalInitScriptsImpl) UpdateScript(ctx context.Context, request GlobalInitScriptUpdateRequest) error {

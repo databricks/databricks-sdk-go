@@ -15,40 +15,40 @@ type ipAccessListsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *ipAccessListsImpl) CreateIpAccessList(ctx context.Context, request CreateIpAccessListRequest) (*IpAccessListInfo, error) {
-	var ipAccessListInfo IpAccessListInfo
+func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
+	var createIpAccessListResponse CreateIpAccessListResponse
 	path := "/api/2.0/ip-access-lists"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &ipAccessListInfo)
-	return &ipAccessListInfo, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, &createIpAccessListResponse)
+	return &createIpAccessListResponse, err
 }
 
-func (a *ipAccessListsImpl) DeleteIpAccessList(ctx context.Context, request DeleteIpAccessListRequest) error {
+func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteRequest) error {
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *ipAccessListsImpl) FetchIpAccessList(ctx context.Context, request FetchIpAccessListRequest) (*IpAccessListInfo, error) {
-	var ipAccessListInfo IpAccessListInfo
+func (a *ipAccessListsImpl) Get(ctx context.Context, request GetRequest) (*FetchIpAccessListResponse, error) {
+	var fetchIpAccessListResponse FetchIpAccessListResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &ipAccessListInfo)
-	return &ipAccessListInfo, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &fetchIpAccessListResponse)
+	return &fetchIpAccessListResponse, err
 }
 
-func (a *ipAccessListsImpl) ListIpAccessLists(ctx context.Context) (*GetIpAccessListResponse, error) {
+func (a *ipAccessListsImpl) List(ctx context.Context) (*GetIpAccessListResponse, error) {
 	var getIpAccessListResponse GetIpAccessListResponse
 	path := "/api/2.0/ip-access-lists"
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &getIpAccessListResponse)
 	return &getIpAccessListResponse, err
 }
 
-func (a *ipAccessListsImpl) ReplaceIpAccessList(ctx context.Context, request ReplaceIpAccessListRequest) error {
+func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
 	return err
 }
 
-func (a *ipAccessListsImpl) UpdateIpAccessList(ctx context.Context, request UpdateIpAccessListRequest) error {
+func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err

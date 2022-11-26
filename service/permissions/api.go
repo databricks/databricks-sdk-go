@@ -36,25 +36,6 @@ func (a *PermissionsAPI) Impl() PermissionsService {
 	return a.impl
 }
 
-// Get object permissions
-//
-// Gets the permission of an object. Objects can inherit permissions from their
-// parent objects or root objects.
-func (a *PermissionsAPI) GetObjectPermissions(ctx context.Context, request GetObjectPermissionsRequest) (*ObjectPermissions, error) {
-	return a.impl.GetObjectPermissions(ctx, request)
-}
-
-// Get object permissions
-//
-// Gets the permission of an object. Objects can inherit permissions from their
-// parent objects or root objects.
-func (a *PermissionsAPI) GetObjectPermissionsByObjectTypeAndObjectId(ctx context.Context, objectType string, objectId string) (*ObjectPermissions, error) {
-	return a.impl.GetObjectPermissions(ctx, GetObjectPermissionsRequest{
-		ObjectType: objectType,
-		ObjectId:   objectId,
-	})
-}
-
 // Get permission levels
 //
 // Gets the permission levels that a user can have on an object.
@@ -65,10 +46,29 @@ func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPer
 // Get permission levels
 //
 // Gets the permission levels that a user can have on an object.
-func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error) {
+func (a *PermissionsAPI) GetPermissionLevelsByObjectTypeAndId(ctx context.Context, objectType string, id string) (*GetPermissionLevelsResponse, error) {
 	return a.impl.GetPermissionLevels(ctx, GetPermissionLevelsRequest{
-		RequestObjectType: requestObjectType,
-		RequestObjectId:   requestObjectId,
+		ObjectType: objectType,
+		Id:         id,
+	})
+}
+
+// Get object permissions
+//
+// Gets the permission of an object. Objects can inherit permissions from their
+// parent objects or root objects.
+func (a *PermissionsAPI) GetPermissions(ctx context.Context, request GetPermissionsRequest) (*ObjectPermissions, error) {
+	return a.impl.GetPermissions(ctx, request)
+}
+
+// Get object permissions
+//
+// Gets the permission of an object. Objects can inherit permissions from their
+// parent objects or root objects.
+func (a *PermissionsAPI) GetPermissionsByObjectTypeAndId(ctx context.Context, objectType string, id string) (*ObjectPermissions, error) {
+	return a.impl.GetPermissions(ctx, GetPermissionsRequest{
+		ObjectType: objectType,
+		Id:         id,
 	})
 }
 
@@ -76,15 +76,15 @@ func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectI
 //
 // Sets permissions on object. Objects can inherit permissions from their parent
 // objects and root objects.
-func (a *PermissionsAPI) SetObjectPermissions(ctx context.Context, request SetObjectPermissions) error {
-	return a.impl.SetObjectPermissions(ctx, request)
+func (a *PermissionsAPI) Set(ctx context.Context, request PermissionsRequest) error {
+	return a.impl.Set(ctx, request)
 }
 
 // Update permission
 //
 // Updates the permissions on an object.
-func (a *PermissionsAPI) UpdateObjectPermissions(ctx context.Context, request UpdateObjectPermissions) error {
-	return a.impl.UpdateObjectPermissions(ctx, request)
+func (a *PermissionsAPI) Update(ctx context.Context, request PermissionsRequest) error {
+	return a.impl.Update(ctx, request)
 }
 
 func NewWorkspaceAssignment(client *client.DatabricksClient) *WorkspaceAssignmentAPI {

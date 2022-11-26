@@ -63,7 +63,7 @@ type CronTrigger struct {
 }
 
 type DeletePipelineRequest struct {
-	PipelineId string `json:"-" path:"pipeline_id"`
+	PipelineId string `json:"-" url:"-"`
 }
 
 type EditPipeline struct {
@@ -101,7 +101,7 @@ type EditPipeline struct {
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
-	PipelineId string `json:"pipeline_id,omitempty" path:"pipeline_id"`
+	PipelineId string `json:"pipeline_id,omitempty" url:"-"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// Target schema (database) to add tables in this pipeline to.
@@ -118,7 +118,7 @@ type Filters struct {
 }
 
 type GetPipelineRequest struct {
-	PipelineId string `json:"-" path:"pipeline_id"`
+	PipelineId string `json:"-" url:"-"`
 }
 
 type GetPipelineResponse struct {
@@ -157,9 +157,9 @@ const GetPipelineResponseHealthUnhealthy GetPipelineResponseHealth = `UNHEALTHY`
 
 type GetUpdateRequest struct {
 	// The ID of the pipeline.
-	PipelineId string `json:"-" path:"pipeline_id"`
+	PipelineId string `json:"-" url:"-"`
 	// The ID of the update.
-	UpdateId string `json:"-" path:"update_id"`
+	UpdateId string `json:"-" url:"-"`
 }
 
 type GetUpdateResponse struct {
@@ -204,7 +204,7 @@ type ListUpdatesRequest struct {
 	// Page token returned by previous call
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The pipeline to return updates for.
-	PipelineId string `json:"-" path:"pipeline_id"`
+	PipelineId string `json:"-" url:"-"`
 	// If present, returns updates until and including this update_id.
 	UntilUpdateId string `json:"-" url:"until_update_id,omitempty"`
 }
@@ -417,7 +417,7 @@ type PipelineTrigger struct {
 }
 
 type ResetPipelineRequest struct {
-	PipelineId string `json:"-" path:"pipeline_id"`
+	PipelineId string `json:"-" url:"-"`
 }
 
 type StartUpdate struct {
@@ -430,7 +430,7 @@ type StartUpdate struct {
 	// before the refresh.
 	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
 
-	PipelineId string `json:"-" path:"pipeline_id"`
+	PipelineId string `json:"-" url:"-"`
 	// A list of tables to update without fullRefresh. If both refresh_selection
 	// and full_refresh_selection are empty, this is a full graph update. Full
 	// Refresh on a table means that the states of the table will be reset
@@ -457,7 +457,7 @@ type StartUpdateResponse struct {
 }
 
 type StopPipelineRequest struct {
-	PipelineId string `json:"-" path:"pipeline_id"`
+	PipelineId string `json:"-" url:"-"`
 }
 
 type UpdateInfo struct {

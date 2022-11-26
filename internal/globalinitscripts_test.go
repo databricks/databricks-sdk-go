@@ -32,7 +32,7 @@ func TestAccGlobalInitScripts(t *testing.T) {
 	script, err := w.GlobalInitScripts.GetScriptByScriptId(ctx, created.ScriptId)
 	require.NoError(t, err)
 
-	all, err := w.GlobalInitScripts.ListScripts(ctx)
+	all, err := w.GlobalInitScripts.ListScriptsAll(ctx)
 	require.NoError(t, err)
 
 	names, err := w.GlobalInitScripts.GlobalInitScriptDetailsNameToScriptIdMap(ctx)
@@ -40,7 +40,6 @@ func TestAccGlobalInitScripts(t *testing.T) {
 	assert.Equal(t, len(all), len(names))
 	assert.Equal(t, script.ScriptId, names[script.Name])
 
-	// TODO: content on load?...
 	byName, err := w.GlobalInitScripts.GetGlobalInitScriptDetailsByName(ctx, script.Name)
 	require.NoError(t, err)
 	assert.Equal(t, byName.ScriptId, script.ScriptId)

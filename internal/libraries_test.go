@@ -22,4 +22,16 @@ func TestAccLibraries(t *testing.T) {
 		},
 	})
 	require.NoError(t, err)
+
+	err = w.Libraries.UpdateAndWait(ctx, libraries.Update{
+		ClusterId: clusterId,
+		Uninstall: []libraries.Library{
+			{
+				Pypi: &libraries.PythonPyPiLibrary{
+					Package: "dbl-tempo",
+				},
+			},
+		},
+	})
+	require.NoError(t, err)
 }
