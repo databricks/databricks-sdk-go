@@ -73,7 +73,18 @@ func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .R
 			})
 		}
 		status := {{.Wait.Poll.Response.CamelName}}{{range .Wait.StatusPath}}.{{.PascalName}}{{end}}
-		statusMessage := {{if .Wait.MessagePath}}{{.Wait.Poll.Response.CamelName}}{{range .Wait.MessagePath}}.{{.PascalName}}{{end}}{{else}}fmt.Sprintf("current status: %s", status){{end}}
+		{{if .Wait.MessagePath -}}
+		{{if .Wait.ComplexMessagePath -}}
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if ({{.Wait.Poll.Response.CamelName}}.{{.Wait.MessagePathHead.PascalName}} != nil) {
+			statusMessage = {{.Wait.Poll.Response.CamelName}}{{range .Wait.MessagePath}}.{{.PascalName}}{{end}}
+		}
+		{{- else -}}
+		statusMessage := {{.Wait.Poll.Response.CamelName}}{{range .Wait.MessagePath}}.{{.PascalName}}{{end}}
+		{{- end}}
+		{{- else -}}
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		{{- end}}
 		switch status {
 		case {{range $i, $e := .Wait.Success}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}: // target state
 			return {{.Wait.Poll.Response.CamelName}}, nil

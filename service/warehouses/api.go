@@ -132,7 +132,10 @@ func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, createWareho
 			})
 		}
 		status := getWarehouseResponse.State
-		statusMessage := getWarehouseResponse.Health.Summary
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if getWarehouseResponse.Health != nil {
+			statusMessage = getWarehouseResponse.Health.Summary
+		}
 		switch status {
 		case GetWarehouseResponseStateRunning: // target state
 			return getWarehouseResponse, nil
@@ -181,7 +184,10 @@ func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWareho
 			})
 		}
 		status := getWarehouseResponse.State
-		statusMessage := getWarehouseResponse.Health.Summary
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if getWarehouseResponse.Health != nil {
+			statusMessage = getWarehouseResponse.Health.Summary
+		}
 		switch status {
 		case GetWarehouseResponseStateDeleted: // target state
 			return getWarehouseResponse, nil
@@ -241,7 +247,10 @@ func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, editWarehouseR
 			})
 		}
 		status := getWarehouseResponse.State
-		statusMessage := getWarehouseResponse.Health.Summary
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if getWarehouseResponse.Health != nil {
+			statusMessage = getWarehouseResponse.Health.Summary
+		}
 		switch status {
 		case GetWarehouseResponseStateRunning: // target state
 			return getWarehouseResponse, nil
@@ -290,7 +299,10 @@ func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouse Ge
 			})
 		}
 		status := getWarehouseResponse.State
-		statusMessage := getWarehouseResponse.Health.Summary
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if getWarehouseResponse.Health != nil {
+			statusMessage = getWarehouseResponse.Health.Summary
+		}
 		switch status {
 		case GetWarehouseResponseStateRunning: // target state
 			return getWarehouseResponse, nil
@@ -436,7 +448,10 @@ func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehous
 			})
 		}
 		status := getWarehouseResponse.State
-		statusMessage := getWarehouseResponse.Health.Summary
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if getWarehouseResponse.Health != nil {
+			statusMessage = getWarehouseResponse.Health.Summary
+		}
 		switch status {
 		case GetWarehouseResponseStateRunning: // target state
 			return getWarehouseResponse, nil
@@ -485,7 +500,10 @@ func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, stopWarehouse 
 			})
 		}
 		status := getWarehouseResponse.State
-		statusMessage := getWarehouseResponse.Health.Summary
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if getWarehouseResponse.Health != nil {
+			statusMessage = getWarehouseResponse.Health.Summary
+		}
 		switch status {
 		case GetWarehouseResponseStateStopped: // target state
 			return getWarehouseResponse, nil
