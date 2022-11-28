@@ -6,7 +6,7 @@ package workspaceconf
 
 // Check configuration status
 type GetStatus struct {
-	Keys string `json:"-" url:"keys,omitempty"`
+	Keys string `json:"-" url:"keys"`
 }
 
 type WorkspaceConf map[string]string

@@ -274,43 +274,43 @@ type CustomerManagedKey struct {
 // Delete credential configuration
 type DeleteCredentialRequest struct {
 	// Databricks Account API credential configuration ID
-	CredentialsId string `json:"-" path:"credentials_id"`
+	CredentialsId string `json:"-" url:"-"`
 }
 
 // Delete encryption key configuration
 type DeleteEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
-	CustomerManagedKeyId string `json:"-" path:"customer_managed_key_id"`
+	CustomerManagedKeyId string `json:"-" url:"-"`
 }
 
 // Delete network configuration
 type DeleteNetworkRequest struct {
 	// Databricks Account API network configuration ID.
-	NetworkId string `json:"-" path:"network_id"`
+	NetworkId string `json:"-" url:"-"`
 }
 
 // Delete a private access settings object
 type DeletePrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
-	PrivateAccessSettingsId string `json:"-" path:"private_access_settings_id"`
+	PrivateAccessSettingsId string `json:"-" url:"-"`
 }
 
 // Delete storage configuration
 type DeleteStorageRequest struct {
 	// Databricks Account API storage configuration ID.
-	StorageConfigurationId string `json:"-" path:"storage_configuration_id"`
+	StorageConfigurationId string `json:"-" url:"-"`
 }
 
 // Delete VPC endpoint configuration
 type DeleteVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
-	VpcEndpointId string `json:"-" path:"vpc_endpoint_id"`
+	VpcEndpointId string `json:"-" url:"-"`
 }
 
 // Delete workspace
 type DeleteWorkspaceRequest struct {
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" path:"workspace_id"`
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 // This enumeration represents the type of Databricks VPC [endpoint
@@ -415,49 +415,49 @@ type GcpProjectContainer struct {
 // Get credential configuration
 type GetCredentialRequest struct {
 	// Databricks Account API credential configuration ID
-	CredentialsId string `json:"-" path:"credentials_id"`
+	CredentialsId string `json:"-" url:"-"`
 }
 
 // Get encryption key configuration
 type GetEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
-	CustomerManagedKeyId string `json:"-" path:"customer_managed_key_id"`
+	CustomerManagedKeyId string `json:"-" url:"-"`
 }
 
 // Get a network configuration
 type GetNetworkRequest struct {
 	// Databricks Account API network configuration ID.
-	NetworkId string `json:"-" path:"network_id"`
+	NetworkId string `json:"-" url:"-"`
 }
 
 // Get a private access settings object
 type GetPrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
-	PrivateAccessSettingsId string `json:"-" path:"private_access_settings_id"`
+	PrivateAccessSettingsId string `json:"-" url:"-"`
 }
 
 // Get storage configuration
 type GetStorageRequest struct {
 	// Databricks Account API storage configuration ID.
-	StorageConfigurationId string `json:"-" path:"storage_configuration_id"`
+	StorageConfigurationId string `json:"-" url:"-"`
 }
 
 // Get a VPC endpoint configuration
 type GetVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
-	VpcEndpointId string `json:"-" path:"vpc_endpoint_id"`
+	VpcEndpointId string `json:"-" url:"-"`
 }
 
 // Get the history of a workspace's associations with keys
 type GetWorkspaceKeyHistoryRequest struct {
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" path:"workspace_id"`
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 // Get workspace
 type GetWorkspaceRequest struct {
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" path:"workspace_id"`
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 // Specifies the network connectivity types for the GKE nodes and the GKE master
@@ -695,7 +695,7 @@ type UpdateWorkspaceRequest struct {
 	// parameter is available for updating both failed and running workspaces.
 	StorageCustomerManagedKeyId string `json:"storage_customer_managed_key_id,omitempty"`
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" path:"workspace_id"`
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 type UpsertPrivateAccessSettingsRequest struct {
@@ -722,7 +722,7 @@ type UpsertPrivateAccessSettingsRequest struct {
 	// connect to your workspace. For details, see `allowed_vpc_endpoint_ids`.
 	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
 	// Databricks Account API private access settings ID.
-	PrivateAccessSettingsId string `json:"-" path:"private_access_settings_id"`
+	PrivateAccessSettingsId string `json:"-" url:"-"`
 	// The human-readable name of the private access settings object.
 	PrivateAccessSettingsName string `json:"private_access_settings_name"`
 	// Determines if the workspace can be accessed over public internet. For

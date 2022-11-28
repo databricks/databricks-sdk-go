@@ -30,30 +30,30 @@ type CreateWorkspaceAssignments struct {
 	// Array of permissions assignments to apply to a workspace.
 	PermissionAssignments []PermissionAssignmentInput `json:"permission_assignments,omitempty"`
 	// The workspace ID for the account.
-	WorkspaceId int64 `json:"-" path:"workspace_id"`
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 // Delete permissions assignment
 type DeleteWorkspaceAssignmentRequest struct {
 	// The ID of the service principal.
-	PrincipalId int64 `json:"-" path:"principal_id"`
+	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID.
-	WorkspaceId int64 `json:"-" path:"workspace_id"`
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 // Get object permissions
 type Get struct {
-	RequestObjectId string `json:"-" path:"request_object_id"`
+	RequestObjectId string `json:"-" url:"-"`
 	// <needs content>
-	RequestObjectType string `json:"-" path:"request_object_type"`
+	RequestObjectType string `json:"-" url:"-"`
 }
 
 // Get permission levels
 type GetPermissionLevels struct {
 	// <needs content>
-	RequestObjectId string `json:"-" path:"request_object_id"`
+	RequestObjectId string `json:"-" url:"-"`
 	// <needs content>
-	RequestObjectType string `json:"-" path:"request_object_type"`
+	RequestObjectType string `json:"-" url:"-"`
 }
 
 type GetPermissionLevelsResponse struct {
@@ -64,13 +64,13 @@ type GetPermissionLevelsResponse struct {
 // List workspace permissions
 type GetWorkspaceAssignmentRequest struct {
 	// The workspace ID.
-	WorkspaceId int64 `json:"-" path:"workspace_id"`
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 // Get permission assignments
 type ListWorkspaceAssignmentRequest struct {
 	// The workspace ID for the account.
-	WorkspaceId int64 `json:"-" path:"workspace_id"`
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 type ObjectPermissions struct {
@@ -163,9 +163,9 @@ type PermissionsDescription struct {
 type PermissionsRequest struct {
 	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
 
-	RequestObjectId string `json:"-" path:"request_object_id"`
+	RequestObjectId string `json:"-" url:"-"`
 	// <needs content>
-	RequestObjectType string `json:"-" path:"request_object_type"`
+	RequestObjectType string `json:"-" url:"-"`
 }
 
 type PrincipalOutput struct {
@@ -185,9 +185,9 @@ type UpdateWorkspaceAssignments struct {
 	// Array of permissions assignments to update on the workspace.
 	Permissions []WorkspacePermission `json:"permissions,omitempty"`
 	// The ID of the service principal.
-	PrincipalId int64 `json:"-" path:"principal_id"`
+	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID.
-	WorkspaceId int64 `json:"-" path:"workspace_id"`
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 type WorkspaceAssignmentsCreated struct {

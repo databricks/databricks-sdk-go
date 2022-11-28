@@ -22,13 +22,13 @@ type CreateOboTokenResponse struct {
 // Delete a token
 type DeleteToken struct {
 	// The ID of the token to get.
-	TokenId string `json:"-" path:"token_id"`
+	TokenId string `json:"-" url:"-"`
 }
 
 // Get token info
 type GetTokenInfo struct {
 	// The ID of the token to get.
-	TokenId string `json:"-" path:"token_id"`
+	TokenId string `json:"-" url:"-"`
 }
 
 // List all tokens

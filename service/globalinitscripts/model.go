@@ -12,13 +12,13 @@ type CreateScriptResponse struct {
 // Delete init script
 type DeleteScript struct {
 	// The ID of the global init script.
-	ScriptId string `json:"-" path:"script_id"`
+	ScriptId string `json:"-" url:"-"`
 }
 
 // Get an init script
 type GetScript struct {
 	// The ID of the global init script.
-	ScriptId string `json:"-" path:"script_id"`
+	ScriptId string `json:"-" url:"-"`
 }
 
 type GlobalInitScriptCreateRequest struct {
@@ -109,7 +109,7 @@ type GlobalInitScriptUpdateRequest struct {
 	// The Base64-encoded content of the script.
 	Script string `json:"script,omitempty"`
 	// The ID of the global init script.
-	ScriptId string `json:"-" path:"script_id"`
+	ScriptId string `json:"-" url:"-"`
 }
 
 type ListGlobalInitScriptsResponse struct {

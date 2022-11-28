@@ -99,7 +99,7 @@ type CreateDashboardRequest struct {
 }
 
 type CreateRefreshSchedule struct {
-	AlertId string `json:"-" path:"alert_id"`
+	AlertId string `json:"-" url:"-"`
 	// Cron string representing the refresh schedule.
 	Cron string `json:"cron"`
 	// ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse
@@ -109,7 +109,7 @@ type CreateRefreshSchedule struct {
 
 type CreateSubscription struct {
 	// ID of the alert.
-	AlertId string `json:"alert_id" path:"alert_id"`
+	AlertId string `json:"alert_id" url:"-"`
 	// ID of the alert subscriber (if subscribing an alert destination). Alert
 	// destinations can be configured by admins through the UI. See
 	// [here](/sql/admin/alert-destinations.html).
@@ -197,24 +197,24 @@ type DataSource struct {
 
 // Delete an alert
 type DeleteAlertRequest struct {
-	AlertId string `json:"-" path:"alert_id"`
+	AlertId string `json:"-" url:"-"`
 }
 
 // Remove a dashboard
 type DeleteDashboardRequest struct {
-	DashboardId string `json:"-" path:"dashboard_id"`
+	DashboardId string `json:"-" url:"-"`
 }
 
 // Delete a query
 type DeleteQueryRequest struct {
-	QueryId string `json:"-" path:"query_id"`
+	QueryId string `json:"-" url:"-"`
 }
 
 // Delete a refresh schedule
 type DeleteScheduleRequest struct {
-	AlertId string `json:"-" path:"alert_id"`
+	AlertId string `json:"-" url:"-"`
 
-	ScheduleId string `json:"-" path:"schedule_id"`
+	ScheduleId string `json:"-" url:"-"`
 }
 
 // Alert destination subscribed to the alert, if it exists. Alert destinations
@@ -247,7 +247,7 @@ const DestinationTypeSlack DestinationType = `slack`
 const DestinationTypeWebhook DestinationType = `webhook`
 
 type EditAlert struct {
-	AlertId string `json:"-" path:"alert_id"`
+	AlertId string `json:"-" url:"-"`
 	// Name of the alert.
 	Name string `json:"name"`
 	// Alert configuration options.
@@ -262,20 +262,20 @@ type EditAlert struct {
 
 // Get an alert
 type GetAlertRequest struct {
-	AlertId string `json:"-" path:"alert_id"`
+	AlertId string `json:"-" url:"-"`
 }
 
 // Retrieve a definition
 type GetDashboardRequest struct {
-	DashboardId string `json:"-" path:"dashboard_id"`
+	DashboardId string `json:"-" url:"-"`
 }
 
 // Get object ACL
 type GetPermissionsRequest struct {
 	// Object ID. An ACL is returned for the object with this UUID.
-	ObjectId string `json:"-" path:"objectId"`
+	ObjectId string `json:"-" url:"-"`
 	// The type of object permissions to check.
-	ObjectType ObjectTypePlural `json:"-" path:"objectType"`
+	ObjectType ObjectTypePlural `json:"-" url:"-"`
 }
 
 type GetPermissionsResponse struct {
@@ -288,12 +288,12 @@ type GetPermissionsResponse struct {
 
 // Get a query definition.
 type GetQueryRequest struct {
-	QueryId string `json:"-" path:"query_id"`
+	QueryId string `json:"-" url:"-"`
 }
 
 // Get an alert's subscriptions
 type GetSubscriptionsRequest struct {
-	AlertId string `json:"-" path:"alert_id"`
+	AlertId string `json:"-" url:"-"`
 }
 
 type ListDashboardsOrder string
@@ -367,7 +367,7 @@ type ListQueriesResponse struct {
 
 // Get refresh schedules
 type ListSchedulesRequest struct {
-	AlertId string `json:"-" path:"alert_id"`
+	AlertId string `json:"-" url:"-"`
 }
 
 // A singular noun object type.
@@ -533,7 +533,7 @@ type QueryPostContent struct {
 	// The text of the query.
 	Query string `json:"query,omitempty"`
 
-	QueryId string `json:"-" path:"query_id"`
+	QueryId string `json:"-" url:"-"`
 	// JSON object that describes the scheduled execution frequency. A schedule
 	// object includes `interval`, `time`, `day_of_week`, and `until` fields. If
 	// a scheduled is supplied, then only `interval` is required. All other
@@ -553,12 +553,12 @@ type RefreshSchedule struct {
 
 // Restore a dashboard
 type RestoreDashboardRequest struct {
-	DashboardId string `json:"-" path:"dashboard_id"`
+	DashboardId string `json:"-" url:"-"`
 }
 
 // Restore a query
 type RestoreQueryRequest struct {
-	QueryId string `json:"-" path:"query_id"`
+	QueryId string `json:"-" url:"-"`
 }
 
 // Set object ACL
@@ -566,9 +566,9 @@ type SetPermissionsRequest struct {
 	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
 	// Object ID. The ACL for the object with this UUID is overwritten by this
 	// request's POST content.
-	ObjectId string `json:"-" path:"objectId"`
+	ObjectId string `json:"-" url:"-"`
 	// The type of object permission to set.
-	ObjectType ObjectTypePlural `json:"-" path:"objectType"`
+	ObjectType ObjectTypePlural `json:"-" url:"-"`
 }
 
 type SetPermissionsResponse struct {
@@ -610,16 +610,16 @@ type TransferOwnershipRequest struct {
 	// Email address for the new owner, who must exist in the workspace.
 	NewOwner string `json:"new_owner,omitempty"`
 	// The ID of the object on which to change ownership.
-	ObjectId TransferOwnershipObjectId `json:"-" path:"objectId"`
+	ObjectId TransferOwnershipObjectId `json:"-" url:"-"`
 	// The type of object on which to change ownership.
-	ObjectType OwnableObjectType `json:"-" path:"objectType"`
+	ObjectType OwnableObjectType `json:"-" url:"-"`
 }
 
 // Unsubscribe to an alert
 type UnsubscribeRequest struct {
-	AlertId string `json:"-" path:"alert_id"`
+	AlertId string `json:"-" url:"-"`
 
-	SubscriptionId string `json:"-" path:"subscription_id"`
+	SubscriptionId string `json:"-" url:"-"`
 }
 
 type User struct {

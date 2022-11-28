@@ -292,41 +292,41 @@ type DeleteExperiment struct {
 
 // Delete a comment
 type DeleteModelVersionCommentRequest struct {
-	Id string `json:"-" url:"id,omitempty"`
+	Id string `json:"-" url:"id"`
 }
 
 // Delete a model version.
 type DeleteModelVersionRequest struct {
 	// Name of the registered model
-	Name string `json:"-" url:"name,omitempty"`
+	Name string `json:"-" url:"name"`
 	// Model version number
-	Version string `json:"-" url:"version,omitempty"`
+	Version string `json:"-" url:"version"`
 }
 
 // Delete a model version tag
 type DeleteModelVersionTagRequest struct {
 	// Name of the tag. The name must be an exact match; wild-card deletion is
 	// not supported. Maximum size is 250 bytes.
-	Key string `json:"-" url:"key,omitempty"`
+	Key string `json:"-" url:"key"`
 	// Name of the registered model that the tag was logged under.
-	Name string `json:"-" url:"name,omitempty"`
+	Name string `json:"-" url:"name"`
 	// Model version number that the tag was logged under.
-	Version string `json:"-" url:"version,omitempty"`
+	Version string `json:"-" url:"version"`
 }
 
 // Delete a model
 type DeleteRegisteredModelRequest struct {
 	// Registered model unique name identifier.
-	Name string `json:"-" url:"name,omitempty"`
+	Name string `json:"-" url:"name"`
 }
 
 // Delete a model tag
 type DeleteRegisteredModelTagRequest struct {
 	// Name of the tag. The name must be an exact match; wild-card deletion is
 	// not supported. Maximum size is 250 bytes.
-	Key string `json:"-" url:"key,omitempty"`
+	Key string `json:"-" url:"key"`
 	// Name of the registered model that the tag was logged under.
-	Name string `json:"-" url:"name,omitempty"`
+	Name string `json:"-" url:"name"`
 }
 
 // Delete a webhook
@@ -354,9 +354,9 @@ type DeleteTransitionRequestRequest struct {
 	// Username of the user who created this request. Of the transition requests
 	// matching the specified details, only the one transition created by this
 	// user will be deleted.
-	Creator string `json:"-" url:"creator,omitempty"`
+	Creator string `json:"-" url:"creator"`
 	// Name of the model.
-	Name string `json:"-" url:"name,omitempty"`
+	Name string `json:"-" url:"name"`
 	// Target stage of the transition request. Valid values are:
 	//
 	// * `None`: The initial stage of a model version.
@@ -366,9 +366,9 @@ type DeleteTransitionRequestRequest struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
-	Stage string `json:"-" url:"stage,omitempty"`
+	Stage string `json:"-" url:"stage"`
 	// Version of the model.
-	Version string `json:"-" url:"version,omitempty"`
+	Version string `json:"-" url:"version"`
 }
 
 type Experiment struct {
@@ -408,7 +408,7 @@ type FileInfo struct {
 // Get metadata
 type GetByNameRequest struct {
 	// Name of the associated experiment.
-	ExperimentName string `json:"-" url:"experiment_name,omitempty"`
+	ExperimentName string `json:"-" url:"experiment_name"`
 }
 
 type GetExperimentByNameResponse struct {
@@ -419,13 +419,13 @@ type GetExperimentByNameResponse struct {
 // Get an experiment
 type GetExperimentRequest struct {
 	// ID of the associated experiment.
-	ExperimentId string `json:"-" url:"experiment_id,omitempty"`
+	ExperimentId string `json:"-" url:"experiment_id"`
 }
 
 // Get all history
 type GetHistoryRequest struct {
 	// Name of the metric.
-	MetricKey string `json:"-" url:"metric_key,omitempty"`
+	MetricKey string `json:"-" url:"metric_key"`
 	// ID of the run from which to fetch metric values. Must be provided.
 	RunId string `json:"-" url:"run_id,omitempty"`
 	// [Deprecated, use run_id instead] ID of the run from which to fetch metric
@@ -450,7 +450,7 @@ type GetLatestVersionsResponse struct {
 // Get model
 type GetMLflowDatabrickRequest struct {
 	// Name of the model.
-	Name string `json:"-" url:"name,omitempty"`
+	Name string `json:"-" url:"name"`
 }
 
 type GetMetricHistoryResponse struct {
@@ -461,9 +461,9 @@ type GetMetricHistoryResponse struct {
 // Get a model version URI
 type GetModelVersionDownloadUriRequest struct {
 	// Name of the registered model
-	Name string `json:"-" url:"name,omitempty"`
+	Name string `json:"-" url:"name"`
 	// Model version number
-	Version string `json:"-" url:"version,omitempty"`
+	Version string `json:"-" url:"version"`
 }
 
 type GetModelVersionDownloadUriResponse struct {
@@ -474,9 +474,9 @@ type GetModelVersionDownloadUriResponse struct {
 // Get a model version
 type GetModelVersionRequest struct {
 	// Name of the registered model
-	Name string `json:"-" url:"name,omitempty"`
+	Name string `json:"-" url:"name"`
 	// Model version number
-	Version string `json:"-" url:"version,omitempty"`
+	Version string `json:"-" url:"version"`
 }
 
 type GetModelVersionResponse struct {
@@ -486,7 +486,7 @@ type GetModelVersionResponse struct {
 // Get a model
 type GetRegisteredModelRequest struct {
 	// Registered model unique name identifier.
-	Name string `json:"-" url:"name,omitempty"`
+	Name string `json:"-" url:"name"`
 }
 
 type GetRegisteredModelResponse struct {
@@ -657,9 +657,9 @@ type ListResponse struct {
 // List transition requests
 type ListTransitionRequestsRequest struct {
 	// Name of the model.
-	Name string `json:"-" url:"name,omitempty"`
+	Name string `json:"-" url:"name"`
 	// Version of the model.
-	Version string `json:"-" url:"version,omitempty"`
+	Version string `json:"-" url:"version"`
 }
 
 type LogBatch struct {

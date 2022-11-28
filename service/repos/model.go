@@ -20,13 +20,13 @@ type CreateRepo struct {
 // Delete a repo
 type Delete struct {
 	// The ID for the corresponding repo to access.
-	RepoId int64 `json:"-" path:"repo_id"`
+	RepoId int64 `json:"-" url:"-"`
 }
 
 // Get a repo
 type Get struct {
 	// The ID for the corresponding repo to access.
-	RepoId int64 `json:"-" path:"repo_id"`
+	RepoId int64 `json:"-" url:"-"`
 }
 
 // Get repos
@@ -70,7 +70,7 @@ type UpdateRepo struct {
 	// Branch that the local version of the repo is checked out to.
 	Branch string `json:"branch,omitempty"`
 	// The ID for the corresponding repo to access.
-	RepoId int64 `json:"-" path:"repo_id"`
+	RepoId int64 `json:"-" url:"-"`
 	// Tag that the local version of the repo is checked out to. Updating the
 	// repo to a tag puts the repo in a detached HEAD state. Before committing
 	// new changes, you must update the repo to a branch instead of the detached

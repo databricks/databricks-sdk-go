@@ -38,13 +38,13 @@ type CredentialInfo struct {
 // Delete a credential
 type Delete struct {
 	// The ID for the corresponding credential to access.
-	CredentialId int64 `json:"-" path:"credential_id"`
+	CredentialId int64 `json:"-" url:"-"`
 }
 
 // Get a credential entry
 type Get struct {
 	// The ID for the corresponding credential to access.
-	CredentialId int64 `json:"-" path:"credential_id"`
+	CredentialId int64 `json:"-" url:"-"`
 }
 
 type GetCredentialsResponse struct {
@@ -53,7 +53,7 @@ type GetCredentialsResponse struct {
 
 type UpdateCredentials struct {
 	// The ID for the corresponding credential to access.
-	CredentialId int64 `json:"-" path:"credential_id"`
+	CredentialId int64 `json:"-" url:"-"`
 	// Git provider. This field is case-insensitive. The available Git providers
 	// are awsCodeCommit, azureDevOpsServices,
 	GitProvider string `json:"git_provider,omitempty"`
