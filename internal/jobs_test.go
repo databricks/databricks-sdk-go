@@ -1,11 +1,8 @@
 package internal
 
 import (
-	"context"
-	"path/filepath"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
@@ -13,53 +10,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createTestCluster(ctx context.Context, w *databricks.WorkspaceClient, t *testing.T) string {
-	clusterName := RandomName(t.Name())
-
-	// Fetch list of spark runtime versions
-	sparkVersions, err := w.Clusters.SparkVersions(ctx)
-	require.NoError(t, err)
-
-	// Select the latest LTS version
-	latest, err := sparkVersions.Select(clusters.SparkVersionRequest{
-		Latest: true,
-	})
-	require.NoError(t, err)
-
-	// Create cluster and wait for it to start properly
-	clstr, err := w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
-		ClusterName:            clusterName,
-		SparkVersion:           latest,
-		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
-		AutoterminationMinutes: 15,
-		NumWorkers:             1,
-	})
-	require.NoError(t, err)
-	return clstr.ClusterId
-}
-
 func TestAccJobsApiFullIntegration(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	t.Parallel()
+	ctx, w := workspaceTest(t)
+	clusterId := sharedRunningCluster(t, ctx, w)
+	notebookPath := myNotebookPath(t, w)
 
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
-
-	clusterId := createTestCluster(ctx, w, t)
-	defer w.Clusters.PermanentDeleteByClusterId(ctx, clusterId)
-
-	tmpPath := RandomName("/tmp/jobs-test")
-	err := w.Workspace.MkdirsByPath(ctx, tmpPath)
-	require.NoError(t, err)
-	defer w.Workspace.Delete(ctx, workspace.Delete{
-		Path: tmpPath,
-	})
-
-	filePath := filepath.Join(tmpPath, RandomName("slow-"))
-	err = w.Workspace.Import(ctx, workspace.PythonNotebookOverwrite(filePath, `
+	err := w.Workspace.Import(ctx, workspace.PythonNotebookOverwrite(notebookPath, `
 		import time
 		time.sleep(10)
 		dbutils.notebook.exit('hello')`))
@@ -70,7 +26,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 		Tasks: []jobs.RunSubmitTaskSettings{{
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
-				NotebookPath: filePath,
+				NotebookPath: notebookPath,
 			},
 			TaskKey: RandomName(),
 		}},
@@ -88,7 +44,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 			Description:       "test",
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
-				NotebookPath: filePath,
+				NotebookPath: notebookPath,
 			},
 			TaskKey:        "test",
 			TimeoutSeconds: 0,
@@ -172,31 +128,16 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	var jobsIdList []int64
-	for _, job := range jobList {
-		jobsIdList = append(jobsIdList, job.JobId)
-	}
-	assert.Contains(t, jobsIdList, createdJob.JobId)
-
-	err = w.Jobs.DeleteByJobId(ctx, createdJob.JobId)
+	names, err := w.Jobs.JobSettingsNameToJobIdMap(ctx, jobs.List{
+		ExpandTasks: false,
+	})
 	require.NoError(t, err)
-
-	jobList, err = w.Jobs.ListAll(ctx, jobs.List{})
-	require.NoError(t, err)
-	for _, job := range jobList {
-		// TODO: change assertion to by-name
-		assert.NotEqual(t, job.JobId, createdJob.JobId)
-	}
+	assert.Contains(t, names, newName)
+	assert.Equal(t, len(jobList), len(names))
 }
 
 func TestAccJobsListAllNoDuplicates(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	// Fetch list of spark runtime versions
 	sparkVersions, err := w.Clusters.SparkVersions(ctx)

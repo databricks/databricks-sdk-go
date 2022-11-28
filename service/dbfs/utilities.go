@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
@@ -104,6 +105,10 @@ func (a DbfsAPI) RecursiveList(ctx context.Context, path string) ([]FileInfo, er
 		batch, err := a.ListAll(ctx, List{
 			Path: path,
 		})
+		if apierr.IsMissing(err) {
+			// skip on path deleted during iteration
+			continue
+		}
 		if err != nil {
 			return nil, fmt.Errorf("list %s: %w", path, err)
 		}
