@@ -14,7 +14,7 @@ type ClusterLibraryStatuses struct {
 // Get status
 type ClusterStatus struct {
 	// Unique identifier of the cluster whose status should be retrieved.
-	ClusterId string `json:"-" url:"cluster_id,omitempty"`
+	ClusterId string `json:"-" url:"cluster_id"`
 }
 
 type InstallLibraries struct {

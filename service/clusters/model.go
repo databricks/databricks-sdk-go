@@ -1104,7 +1104,7 @@ const GcpAttributesAvailabilityPreemptibleWithFallbackGcp GcpAttributesAvailabil
 // Get cluster info
 type Get struct {
 	// The cluster about which to retrieve information.
-	ClusterId string `json:"-" url:"cluster_id,omitempty"`
+	ClusterId string `json:"-" url:"cluster_id"`
 }
 
 type GetEvents struct {

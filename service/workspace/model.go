@@ -27,7 +27,7 @@ type Export struct {
 	Format ExportFormat `json:"-" url:"format,omitempty"`
 	// The absolute path of the notebook or directory. Exporting directory is
 	// only support for `DBC` format.
-	Path string `json:"-" url:"path,omitempty"`
+	Path string `json:"-" url:"path"`
 }
 
 // This specifies the format of the file to be imported. By default, this is
@@ -54,7 +54,7 @@ type ExportResponse struct {
 // Get status
 type GetStatus struct {
 	// The absolute path of the notebook or directory.
-	Path string `json:"-" url:"path,omitempty"`
+	Path string `json:"-" url:"path"`
 }
 
 type Import struct {
@@ -97,7 +97,7 @@ type List struct {
 	// <content needed>
 	NotebooksModifiedAfter int `json:"-" url:"notebooks_modified_after,omitempty"`
 	// The absolute path of the notebook or directory.
-	Path string `json:"-" url:"path,omitempty"`
+	Path string `json:"-" url:"path"`
 }
 
 type ListResponse struct {
