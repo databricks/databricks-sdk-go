@@ -1,0 +1,135 @@
+package internal
+
+import (
+	"testing"
+
+	"github.com/databricks/databricks-sdk-go/service/billing"
+	"github.com/databricks/databricks-sdk-go/service/deployment"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func TestMwsAccUsageDownload(t *testing.T) {
+	ctx, a := accountTest(t)
+	if !a.Config.IsAws() {
+		t.SkipNow()
+	}
+	// TODO: fix SDK to handle raw responses
+	err := a.BillableUsage.Download(ctx, billing.DownloadRequest{
+		StartMonth: "2022-01",
+		EndMonth:   "2022-02",
+	})
+	require.NoError(t, err)
+}
+
+func TestMwsAccLogDelivery(t *testing.T) {
+	t.Skip("no log delivery ARNs configured yet")
+	ctx, a := accountTest(t)
+	if !a.Config.IsAws() {
+		t.SkipNow()
+	}
+	creds, err := a.Credentials.Create(ctx, deployment.CreateCredentialRequest{
+		CredentialsName: RandomName("sdk-"),
+		AwsCredentials: deployment.AwsCredentials{
+			StsRole: &deployment.StsRole{
+				// TODO: create log delivery ARNs
+				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
+			},
+		},
+	})
+	require.NoError(t, err)
+	defer a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
+
+	bucket, err := a.Storage.Create(ctx, deployment.CreateStorageConfigurationRequest{
+		StorageConfigurationName: RandomName("sdk-"),
+		RootBucketInfo: deployment.RootBucketInfo{
+			BucketName: RandomName("sdk-bucket-"),
+		},
+	})
+	require.NoError(t, err)
+	defer a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
+
+	// TODO: OpenAPI: x-databricks-sdk-inline on schema
+	created, err := a.LogDelivery.Create(ctx, billing.WrappedCreateLogDeliveryConfiguration{
+		LogDeliveryConfiguration: &billing.CreateLogDeliveryConfigurationParams{
+			ConfigName:             RandomName("sdk-go-"),
+			CredentialsId:          creds.CredentialsId,
+			StorageConfigurationId: bucket.StorageConfigurationId,
+			LogType:                billing.LogTypeAuditLogs,
+			OutputFormat:           billing.OutputFormatJson,
+		},
+	})
+	require.NoError(t, err)
+	defer a.LogDelivery.PatchStatus(ctx, billing.UpdateLogDeliveryConfigurationStatusRequest{
+		LogDeliveryConfigurationId: created.LogDeliveryConfiguration.ConfigId,
+		Status:                     billing.LogDeliveryConfigStatusDisabled,
+	})
+
+	byId, err := a.LogDelivery.GetByLogDeliveryConfigurationId(ctx, created.LogDeliveryConfiguration.ConfigId)
+	require.NoError(t, err)
+	assert.Equal(t, billing.LogDeliveryConfigStatusDisabled, byId.LogDeliveryConfiguration.Status)
+
+	all, err := a.LogDelivery.ListAll(ctx, billing.ListLogDeliveryRequest{})
+	require.NoError(t, err)
+
+	names, err := a.LogDelivery.LogDeliveryConfigurationConfigNameToConfigIdMap(ctx, billing.ListLogDeliveryRequest{})
+	require.NoError(t, err)
+	assert.Equal(t, len(all), len(names))
+	assert.Equal(t, created.LogDeliveryConfiguration.ConfigId, names[created.LogDeliveryConfiguration.ConfigName])
+}
+
+func TestMwsAccBudgets(t *testing.T) {
+	ctx, a := accountTest(t)
+	if !a.Config.IsAws() {
+		t.SkipNow()
+	}
+
+	// TODO: OpenAPI: x-databricks-sdk-inline on schema
+	created, err := a.Budgets.Create(ctx, billing.WrappedBudget{
+		Budget: billing.Budget{
+			Name:         RandomName("go-sdk-"),
+			Filter:       "tag.tagName = 'all'",
+			Period:       "1 month",
+			StartDate:    "2022-01-01",
+			TargetAmount: "100",
+			Alerts: []billing.BudgetAlert{
+				{
+					EmailNotifications: []string{"admin@example.com"},
+					MinPercentage:      50,
+				},
+			},
+		},
+	})
+	require.NoError(t, err)
+	defer a.Budgets.DeleteByBudgetId(ctx, created.Budget.BudgetId)
+
+	err = a.Budgets.Update(ctx, billing.WrappedBudget{
+		BudgetId: created.Budget.BudgetId,
+		Budget: billing.Budget{
+			Name:         RandomName("go-sdk-updated-"),
+			Filter:       "tag.tagName = 'all'",
+			Period:       "1 month",
+			StartDate:    "2022-01-01",
+			TargetAmount: "100",
+			Alerts: []billing.BudgetAlert{
+				{
+					EmailNotifications: []string{"admin@example.com"},
+					MinPercentage:      70,
+				},
+			},
+		},
+	})
+	require.NoError(t, err)
+
+	byId, err := a.Budgets.GetByBudgetId(ctx, created.Budget.BudgetId)
+	require.NoError(t, err)
+	assert.NotEqual(t, created.Budget.Name, byId.Budget.Name)
+
+	all, err := a.Budgets.ListAll(ctx)
+	require.NoError(t, err)
+
+	names, err := a.Budgets.BudgetWithStatusNameToBudgetIdMap(ctx)
+	require.NoError(t, err)
+	assert.Equal(t, len(all), len(names))
+	assert.Equal(t, created.Budget.BudgetId, names[byId.Budget.Name])
+}

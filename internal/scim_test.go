@@ -11,31 +11,24 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAccCurrentUser(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	t.Parallel()
+func me(t *testing.T, w *databricks.WorkspaceClient) *scim.User {
+	ctx := context.Background()
+	me, err := w.CurrentUser.Me(ctx)
+	require.NoError(t, err)
+	return me
+}
 
-	ctx := context.TODO()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+func TestAccCurrentUser(t *testing.T) {
+	ctx, w := workspaceTest(t)
 
 	me, err := w.CurrentUser.Me(ctx)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	assert.NotEmpty(t, me.UserName)
 }
 
 func TestAccUsers(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	t.Parallel()
-
-	ctx := context.TODO()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	// create new user
 	user, err := w.Users.Create(ctx, scim.User{
@@ -58,10 +51,11 @@ func TestAccUsers(t *testing.T) {
 	require.NoError(t, err)
 
 	// verify that the user we've creates is in the list
-	namesToIds := map[string]string{}
-	for _, u := range allUsers {
-		namesToIds[u.UserName] = u.Id
-	}
+	namesToIds, err := w.Users.UserUserNameToIdMap(ctx, scim.ListUsersRequest{
+		Attributes: "id,userName",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, len(namesToIds), len(allUsers))
 	assert.Equal(t, user.Id, namesToIds[user.UserName])
 
 	// remove user by ID
@@ -74,14 +68,7 @@ func TestAccUsers(t *testing.T) {
 }
 
 func TestAccGroups(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	t.Parallel()
-
-	ctx := context.TODO()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	// create new group
 	group, err := w.Groups.Create(ctx, scim.Group{
@@ -95,17 +82,11 @@ func TestAccGroups(t *testing.T) {
 	assert.Equal(t, group.DisplayName, fetch.DisplayName)
 
 	// list all groups that start with `go-sdk-`
-	allGroups, err := w.Groups.ListAll(ctx, scim.ListGroupsRequest{
+	namesToIds, err := w.Groups.GroupDisplayNameToIdMap(ctx, scim.ListGroupsRequest{
 		SortOrder: scim.ListSortOrderDescending,
 		Filter:    "displayName sw 'go-sdk-'",
 	})
 	require.NoError(t, err)
-
-	// verify that the group we've creates is in the list
-	namesToIds := map[string]string{}
-	for _, u := range allGroups {
-		namesToIds[u.DisplayName] = u.Id
-	}
 	assert.Equal(t, group.Id, namesToIds[group.DisplayName])
 
 	// remove group by ID
@@ -115,4 +96,42 @@ func TestAccGroups(t *testing.T) {
 	// and verify the group is missing
 	_, err = w.Groups.GetById(ctx, group.Id)
 	assert.True(t, apierr.IsMissing(err))
+}
+
+func TestAccServicePrincipalsOnAWS(t *testing.T) {
+	ctx, w := workspaceTest(t)
+	if !w.Config.IsAws() {
+		t.Skip("test only for aws")
+	}
+
+	created, err := w.ServicePrincipals.Create(ctx, scim.ServicePrincipal{
+		DisplayName: RandomName("go-sdk-"),
+	})
+	require.NoError(t, err)
+
+	t.Cleanup(func() {
+		err := w.ServicePrincipals.DeleteById(ctx, created.Id)
+		require.NoError(t, err)
+	})
+	err = w.ServicePrincipals.Update(ctx, scim.ServicePrincipal{
+		Id:          created.Id,
+		DisplayName: RandomName("go-sdk-updated-"),
+		Roles: []scim.ComplexValue{
+			{
+				Value: "xyz",
+			},
+		},
+	})
+	require.NoError(t, err)
+
+	byId, err := w.ServicePrincipals.GetById(ctx, created.Id)
+	require.NoError(t, err)
+
+	all, err := w.ServicePrincipals.ListAll(ctx, scim.ListServicePrincipalsRequest{})
+	require.NoError(t, err)
+
+	names, err := w.ServicePrincipals.ServicePrincipalDisplayNameToIdMap(ctx, scim.ListServicePrincipalsRequest{})
+	require.NoError(t, err)
+	assert.Equal(t, len(names), len(all))
+	assert.Equal(t, byId.Id, names[byId.DisplayName])
 }

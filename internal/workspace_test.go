@@ -12,33 +12,31 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAccListWorkspaceIntegration(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+func myNotebookPath(t *testing.T, w *databricks.WorkspaceClient) string {
 	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	testDir := filepath.Join("/Users", me(t, w).UserName, ".sdk", RandomName("t-"))
+	notebook := filepath.Join(testDir, RandomName("n-"))
 
-	testDirPath := RandomName("/tmp/databricks-go-sdk/integration/workspace/TestDir-")
-	testFileName := RandomName("test-file-")
-
+	err := w.Workspace.MkdirsByPath(ctx, testDir)
+	require.NoError(t, err)
 	t.Cleanup(func() {
-		// Delete the test directory
-		err := w.Workspace.Delete(ctx, workspace.Delete{
-			Path:      testDirPath,
+		err = w.Workspace.Delete(ctx, workspace.Delete{
+			Path:      testDir,
 			Recursive: true,
 		})
 		require.NoError(t, err)
 	})
 
-	// Make test directory
-	err := w.Workspace.MkdirsByPath(ctx, testDirPath)
-	require.NoError(t, err)
+	return notebook
+}
+
+func TestAccWorkspaceIntegration(t *testing.T) {
+	ctx, w := workspaceTest(t)
+	notebook := myNotebookPath(t, w)
 
 	// Import the test notebook
-	err = w.Workspace.Import(ctx, workspace.Import{
-		Path:      filepath.Join(testDirPath, testFileName),
+	err := w.Workspace.Import(ctx, workspace.Import{
+		Path:      notebook,
 		Format:    "SOURCE",
 		Language:  "PYTHON",
 		Content:   base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")),
@@ -47,31 +45,35 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Get test notebook status
-	getStatusResponse, err := w.Workspace.GetStatusByPath(ctx, filepath.Join(testDirPath, testFileName))
+	getStatusResponse, err := w.Workspace.GetStatusByPath(ctx, notebook)
 	require.NoError(t, err)
 	assert.True(t, getStatusResponse.Language == "PYTHON")
-	assert.True(t, getStatusResponse.Path == filepath.Join(testDirPath, testFileName))
+	assert.True(t, getStatusResponse.Path == notebook)
 	assert.True(t, string(getStatusResponse.ObjectType) == "NOTEBOOK")
 
 	// Export the notebook and assert the contents
 	exportResponse, err := w.Workspace.Export(ctx, workspace.Export{
 		DirectDownload: false,
 		Format:         "SOURCE",
-		Path:           filepath.Join(testDirPath, testFileName),
+		Path:           notebook,
 	})
 	require.NoError(t, err)
 	assert.True(t, exportResponse.Content == base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")))
 
 	// Assert the test notebook is present in test dir using list api
 	objects, err := w.Workspace.ListAll(ctx, workspace.List{
-		Path: testDirPath,
+		Path: filepath.Dir(notebook),
 	})
 	require.NoError(t, err)
-	foundTestNotebook := false
-	for _, objectInfo := range objects {
-		if objectInfo.Path == filepath.Join(testDirPath, testFileName) {
-			foundTestNotebook = true
-		}
-	}
-	assert.True(t, foundTestNotebook)
+
+	paths, err := w.Workspace.ObjectInfoPathToObjectIdMap(ctx, workspace.List{
+		Path: filepath.Dir(notebook),
+	})
+	require.NoError(t, err)
+	assert.Equal(t, len(objects), len(paths))
+	assert.Contains(t, paths, notebook)
+
+	allMyNotebooks, err := w.Workspace.RecursiveList(ctx, filepath.Join("/Users", me(t, w).UserName))
+	require.NoError(t, err)
+	assert.True(t, len(allMyNotebooks) >= 1)
 }
