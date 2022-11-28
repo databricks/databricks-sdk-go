@@ -57,6 +57,7 @@ type Pagination struct {
 // entity has Identifier and Name fields. End-users usually use this method for
 // drop-downs or any other selectors.
 type NamedIdMap struct {
+	Named
 	Id       *Field
 	NamePath []*Field
 	Entity   *Entity
@@ -245,7 +246,17 @@ func (m *Method) NamedIdMap() *NamedIdMap {
 	if len(namePath) == 0 {
 		return nil
 	}
+	nameParts := []string{entity.PascalName()}
+	for _, v := range namePath {
+		nameParts = append(nameParts, v.PascalName())
+	}
+	nameParts = append(nameParts, "To")
+	nameParts = append(nameParts, id.PascalName())
+	nameParts = append(nameParts, "Map")
 	return &NamedIdMap{
+		Named: Named{
+			Name: strings.Join(nameParts, ""),
+		},
 		Id:       id,
 		NamePath: namePath,
 		Entity:   entity,
