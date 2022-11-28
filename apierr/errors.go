@@ -19,12 +19,14 @@ var (
 		"does not have any associated worker environments",
 		"There is no worker environment with id",
 		"Unknown worker environment",
+		"context deadline exceeded",
 		"ClusterNotReadyException",
 		"connection reset by peer",
 		"TLS handshake timeout",
 		"connection refused",
 		"Unexpected error",
 		"i/o timeout",
+		"EOF",
 	}
 )
 
@@ -95,11 +97,10 @@ func NotFound(message string) APIError {
 
 // CheckForRetry inspects HTTP errors from the Databricks API for known transient errors on Workspace creation
 func CheckForRetry(ctx context.Context, resp *http.Response, err error) (bool, error) {
-	// TODO: port baseRetryPolicy from vendor/github.com/hashicorp/go-retryablehttp/client.go
 	if ue, ok := err.(*url.Error); ok {
 		apiError := APIError{
 			ErrorCode:  "IO_ERROR",
-			StatusCode: 523,
+			StatusCode: 503,
 			Message:    ue.Error(),
 		}
 		return apiError.IsRetriable(), apiError
@@ -108,6 +109,14 @@ func CheckForRetry(ctx context.Context, resp *http.Response, err error) (bool, e
 		// If response is nil we can't make retry choices.
 		// In this case don't retry and return the original error from httpclient
 		return false, err
+	}
+	if resp.StatusCode >= 500 && resp.StatusCode != 501 {
+		// TODO: or should it rather be handled in parseErrorFromResponse?..
+		return true, APIError{
+			ErrorCode:  "SERVICE_UNAVAILABLE",
+			Message:    "Service Unavailable",
+			StatusCode: 503,
+		}
 	}
 	if resp.StatusCode == 429 {
 		return true, APIError{

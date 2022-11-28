@@ -201,7 +201,7 @@ func (c *DatabricksClient) recordRequestLog(response *http.Response,
 			sb.WriteString(fmt.Sprintf("> * %s: %s\n", k, escapeNewLines(trunc)))
 		}
 	}
-	if len(requestBody) > 0 {
+	if request.Method != http.MethodGet && request.Method != http.MethodDelete && len(requestBody) > 0 {
 		sb.WriteString(c.redactedDump("> ", requestBody))
 		sb.WriteString("\n")
 	}
@@ -218,8 +218,42 @@ func (c *DatabricksClient) addAuthHeaderToUserAgent(r *http.Request) error {
 	return nil
 }
 
-func (c *DatabricksClient) perform(ctx context.Context, method, requestURL string, data interface{},
-	visitors ...func(*http.Request) error) (responseBody []byte, err error) {
+func (c *DatabricksClient) logRequest(method, requestURL string,
+	requestBody, responseBody []byte, resp *http.Response, err error) {
+	sb := strings.Builder{}
+	sb.WriteString(fmt.Sprintf("%s %s\n", method, escapeNewLines(requestURL)))
+	if c.debugHeaders {
+		if c.Config.Host != "" {
+			sb.WriteString("> * Host: ")
+			sb.WriteString(escapeNewLines(c.Config.Host))
+			sb.WriteString("\n")
+		}
+		if resp != nil && resp.Request != nil {
+			for k, v := range resp.Request.Header {
+				trunc := onlyNBytes(strings.Join(v, ""), c.debugTruncateBytes)
+				sb.WriteString(fmt.Sprintf("> * %s: %s\n", k, escapeNewLines(trunc)))
+			}
+		}
+	}
+	bodylessRequest := method == "GET" || method == "DELETE"
+	if !bodylessRequest && len(requestBody) > 0 {
+		sb.WriteString(c.redactedDump("> ", requestBody))
+		sb.WriteString("\n")
+	}
+	if err != nil {
+		sb.WriteString(fmt.Sprintf("[!] %s\n", err))
+	}
+	if resp != nil {
+		sb.WriteString(fmt.Sprintf("< %s %s\n", resp.Proto, resp.Status))
+	}
+	if len(responseBody) > 0 {
+		sb.WriteString(c.redactedDump("< ", responseBody))
+	}
+	logger.Debugf(sb.String()) // lgtm [go/log-injection] lgtm [go/clear-text-logging]
+}
+
+func (c *DatabricksClient) perform(ctx context.Context, method, requestURL string,
+	data interface{}, visitors ...func(*http.Request) error) (responseBody []byte, err error) {
 	requestBody, err := makeRequestBody(method, &requestURL, data)
 	if err != nil {
 		return nil, fmt.Errorf("request marshal: %w", err)
@@ -230,6 +264,8 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 	}, visitors...)
 	resp, err := retries.Poll(ctx, c.retryTimeout,
 		c.attempt(ctx, method, requestURL, requestBody, visitors...))
+
+	defer c.logRequest(method, requestURL, requestBody, responseBody, resp, err)
 	var ae apierr.APIError
 	if errors.As(err, &ae) {
 		// don't re-wrap, as upper layers may depend on handling common.APIError
@@ -237,7 +273,6 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 	}
 	if err != nil {
 		// i don't even know which errors in the real world would end up here.
-		// `retryablehttp` package nicely wraps _everything_ to `url.Error`.
 		return nil, fmt.Errorf("failed request: %w", err)
 	}
 	if resp == nil {
@@ -247,7 +282,7 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 	if err != nil {
 		return nil, fmt.Errorf("response body: %w", err)
 	}
-	c.recordRequestLog(resp, requestBody, responseBody)
+	//c.recordRequestLog(resp, requestBody, responseBody)
 	c.drainToEnsureConnectionRelease(resp)
 	return responseBody, nil
 }
@@ -285,10 +320,11 @@ func makeQueryString(data interface{}) (string, error) {
 
 func makeRequestBody(method string, requestURL *string, data interface{}) ([]byte, error) {
 	var requestBody []byte
-	if data == nil && (method == "DELETE" || method == "GET") {
+	hasQueryString := method == "DELETE" || method == "GET"
+	if data == nil && hasQueryString {
 		return requestBody, nil
 	}
-	if method == "GET" {
+	if hasQueryString {
 		qs, err := makeQueryString(data)
 		if err != nil {
 			return nil, err
