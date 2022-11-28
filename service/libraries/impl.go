@@ -21,7 +21,7 @@ func (a *librariesImpl) AllClusterStatuses(ctx context.Context) (*ListAllCluster
 	return &listAllClusterLibraryStatusesResponse, err
 }
 
-func (a *librariesImpl) ClusterStatus(ctx context.Context, request ClusterStatusRequest) (*ClusterLibraryStatuses, error) {
+func (a *librariesImpl) ClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error) {
 	var clusterLibraryStatuses ClusterLibraryStatuses
 	path := "/api/2.0/libraries/cluster-status"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &clusterLibraryStatuses)

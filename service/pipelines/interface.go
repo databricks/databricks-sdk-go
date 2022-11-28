@@ -32,32 +32,32 @@ type PipelinesService interface {
 	// Delete a pipeline
 	//
 	// Deletes a pipeline.
-	DeletePipeline(ctx context.Context, request DeletePipelineRequest) error
+	DeletePipeline(ctx context.Context, request DeletePipeline) error
 
 	// Get a pipeline
-	GetPipeline(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error)
+	GetPipeline(ctx context.Context, request GetPipeline) (*GetPipelineResponse, error)
 
 	// Get a pipeline update
 	//
 	// Gets an update from an active pipeline.
-	GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error)
+	GetUpdate(ctx context.Context, request GetUpdate) (*GetUpdateResponse, error)
 
 	// List pipelines
 	//
 	// Lists pipelines defined in the Delta Live Tables system.
 	//
 	// Use ListPipelinesAll() to get all PipelineStateInfo instances, which will iterate over every result page.
-	ListPipelines(ctx context.Context, request ListPipelinesRequest) (*ListPipelinesResponse, error)
+	ListPipelines(ctx context.Context, request ListPipelines) (*ListPipelinesResponse, error)
 
 	// List pipeline updates
 	//
 	// List updates for an active pipeline.
-	ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error)
+	ListUpdates(ctx context.Context, request ListUpdates) (*ListUpdatesResponse, error)
 
 	// Reset a pipeline
 	//
 	// Resets a pipeline.
-	ResetPipeline(ctx context.Context, request ResetPipelineRequest) error
+	ResetPipeline(ctx context.Context, request ResetPipeline) error
 
 	// Queue a pipeline update
 	//
@@ -67,7 +67,7 @@ type PipelinesService interface {
 	// Stop a pipeline
 	//
 	// Stops a pipeline.
-	StopPipeline(ctx context.Context, request StopPipelineRequest) error
+	StopPipeline(ctx context.Context, request StopPipeline) error
 
 	// Edit a pipeline
 	//

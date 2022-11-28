@@ -19,17 +19,17 @@ type TokenManagementService interface {
 	// Delete a token
 	//
 	// Deletes a token, specified by its ID.
-	DeleteToken(ctx context.Context, request DeleteTokenRequest) error
+	DeleteToken(ctx context.Context, request DeleteToken) error
 
 	// Get token info
 	//
 	// Gets information about a token, specified by its ID.
-	GetTokenInfo(ctx context.Context, request GetTokenInfoRequest) (*TokenInfo, error)
+	GetTokenInfo(ctx context.Context, request GetTokenInfo) (*TokenInfo, error)
 
 	// List all tokens
 	//
 	// Lists all tokens associated with the specified workspace or user.
 	//
 	// Use ListTokensAll() to get all TokenInfo instances
-	ListTokens(ctx context.Context, request ListTokensRequest) (*ListTokensResponse, error)
+	ListTokens(ctx context.Context, request ListTokens) (*ListTokensResponse, error)
 }

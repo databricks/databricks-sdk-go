@@ -45,9 +45,9 @@ type ClustersService interface {
 	//
 	// Creates a new Spark cluster. This method will acquire new instances from
 	// the cloud provider if necessary. This method is asynchronous; the
-	// returned ``cluster_id`` can be used to poll the cluster status. When this
-	// method returns, the cluster will be in\na ``PENDING`` state. The cluster
-	// will be usable once it enters a ``RUNNING`` state.
+	// returned `cluster_id` can be used to poll the cluster status. When this
+	// method returns, the cluster will be in\na `PENDING` state. The cluster
+	// will be usable once it enters a `RUNNING` state.
 	//
 	// Note: Databricks may not be able to acquire some of the requested nodes,
 	// due to cloud provider limitations (account limits, spot price, etc.) or
@@ -62,23 +62,23 @@ type ClustersService interface {
 	//
 	// Terminates the Spark cluster with the specified ID. The cluster is
 	// removed asynchronously. Once the termination has completed, the cluster
-	// will be in a ``TERMINATED`` state. If the cluster is already in a
-	// ``TERMINATING`` or ``TERMINATED`` state, nothing will happen.
+	// will be in a `TERMINATED` state. If the cluster is already in a
+	// `TERMINATING` or `TERMINATED` state, nothing will happen.
 	Delete(ctx context.Context, request DeleteCluster) error
 
 	// Update cluster configuration
 	//
 	// Updates the configuration of a cluster to match the provided attributes
-	// and size. A cluster can be updated if it is in a ``RUNNING`` or
-	// ``TERMINATED`` state.
+	// and size. A cluster can be updated if it is in a `RUNNING` or
+	// `TERMINATED` state.
 	//
-	// If a cluster is updated while in a ``RUNNING`` state, it will be
-	// restarted so that the new attributes can take effect.
+	// If a cluster is updated while in a `RUNNING` state, it will be restarted
+	// so that the new attributes can take effect.
 	//
-	// If a cluster is updated while in a ``TERMINATED`` state, it will remain
-	// ``TERMINATED``. The next time it is started using the ``clusters/start``
-	// API, the new attributes will take effect. Any attempt to update a cluster
-	// in any other state will be rejected with an ``INVALID_STATE`` error code.
+	// If a cluster is updated while in a `TERMINATED` state, it will remain
+	// `TERMINATED`. The next time it is started using the `clusters/start` API,
+	// the new attributes will take effect. Any attempt to update a cluster in
+	// any other state will be rejected with an `INVALID_STATE` error code.
 	//
 	// Clusters created by the Databricks Jobs service cannot be edited.
 	Edit(ctx context.Context, request EditCluster) error
@@ -97,7 +97,7 @@ type ClustersService interface {
 	// "Retrieves the information for a cluster given its identifier. Clusters
 	// can be described while they are running, or up to 60 days after they are
 	// terminated.
-	Get(ctx context.Context, request GetRequest) (*ClusterInfo, error)
+	Get(ctx context.Context, request Get) (*ClusterInfo, error)
 
 	// List all clusters
 	//
@@ -113,7 +113,7 @@ type ClustersService interface {
 	// most recently terminated job clusters.
 	//
 	// Use ListAll() to get all ClusterInfo instances
-	List(ctx context.Context, request ListRequest) (*ListClustersResponse, error)
+	List(ctx context.Context, request List) (*ListClustersResponse, error)
 
 	// List node types
 	//
@@ -170,7 +170,7 @@ type ClustersService interface {
 	// * The previous cluster id and attributes are preserved. * The cluster
 	// starts with the last specified cluster size. * If the previous cluster
 	// was an autoscaling cluster, the current cluster starts with the minimum
-	// number of nodes. * If the cluster is not currently in a ``TERMINATED``
+	// number of nodes. * If the cluster is not currently in a `TERMINATED`
 	// state, nothing will happen. * Clusters launched to run a job cannot be
 	// started.
 	Start(ctx context.Context, request StartCluster) error

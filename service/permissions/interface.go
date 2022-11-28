@@ -14,23 +14,23 @@ type PermissionsService interface {
 	//
 	// Gets the permission of an object. Objects can inherit permissions from
 	// their parent objects or root objects.
-	GetObjectPermissions(ctx context.Context, request GetObjectPermissionsRequest) (*ObjectPermissions, error)
+	Get(ctx context.Context, request Get) (*ObjectPermissions, error)
 
 	// Get permission levels
 	//
 	// Gets the permission levels that a user can have on an object.
-	GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error)
+	GetPermissionLevels(ctx context.Context, request GetPermissionLevels) (*GetPermissionLevelsResponse, error)
 
 	// Set permissions
 	//
 	// Sets permissions on object. Objects can inherit permissions from their
 	// parent objects and root objects.
-	SetObjectPermissions(ctx context.Context, request SetObjectPermissions) error
+	Set(ctx context.Context, request PermissionsRequest) error
 
 	// Update permission
 	//
 	// Updates the permissions on an object.
-	UpdateObjectPermissions(ctx context.Context, request UpdateObjectPermissions) error
+	Update(ctx context.Context, request PermissionsRequest) error
 }
 
 // Databricks Workspace Assignment REST API
@@ -46,13 +46,13 @@ type WorkspaceAssignmentService interface {
 	//
 	// Deletes the workspace permissions assignment for a given account and
 	// workspace using the specified service principal.
-	Delete(ctx context.Context, request DeleteRequest) error
+	Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error
 
 	// List workspace permissions
 	//
 	// Get an array of workspace permissions for the specified account and
 	// workspace.
-	Get(ctx context.Context, request GetRequest) (*WorkspacePermissions, error)
+	Get(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspacePermissions, error)
 
 	// Get permission assignments
 	//
@@ -60,7 +60,7 @@ type WorkspaceAssignmentService interface {
 	// Databricks Workspace.
 	//
 	// Use ListAll() to get all PermissionAssignment instances
-	List(ctx context.Context, request ListRequest) (*PermissionAssignments, error)
+	List(ctx context.Context, request ListWorkspaceAssignmentRequest) (*PermissionAssignments, error)
 
 	// Update permissions assignment
 	//

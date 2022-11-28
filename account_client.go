@@ -19,7 +19,7 @@ type AccountClient struct {
 
 	// This API allows you to download billable usage logs for the specified
 	// account and date range. This feature works with all account types.
-	BillableUsageDownload *billing.BillableUsageDownloadAPI
+	BillableUsage *billing.BillableUsageAPI
 
 	// These APIs manage budget configuration including notifications for
 	// exceeding a budget for a period. They can also retrieve the status of
@@ -31,16 +31,7 @@ type AccountClient struct {
 	// account so that Databricks can deploy clusters in the appropriate VPC for
 	// the new workspace. A credential configuration encapsulates this role
 	// information, and its ID is used when creating a new workspace.
-	CredentialConfigurations *deployment.CredentialConfigurationsAPI
-
-	// Groups simplify identity management, making it easier to assign access to
-	// Databricks Account, data, and other securable objects.
-	//
-	// It is best practice to assign access to workspaces and access-control
-	// policies in Unity Catalog to groups, instead of to users individually.
-	// All Databricks Account identities can be assigned as members of groups,
-	// and members inherit permissions that are assigned to their group.
-	Groups *scim.AccountGroupsAPI
+	Credentials *deployment.CredentialsAPI
 
 	// These APIs manage encryption key configurations for this workspace
 	// (optional). A key configuration encapsulates the AWS KMS key information
@@ -59,7 +50,16 @@ type AccountClient struct {
 	// version of the platform. If you have an older workspace, it might not be
 	// on the E2 version of the platform. If you are not sure, contact your
 	// Databricks reprsentative.
-	KeyConfigurations *deployment.KeyConfigurationsAPI
+	EncryptionKeys *deployment.EncryptionKeysAPI
+
+	// Groups simplify identity management, making it easier to assign access to
+	// Databricks Account, data, and other securable objects.
+	//
+	// It is best practice to assign access to workspaces and access-control
+	// policies in Unity Catalog to groups, instead of to users individually.
+	// All Databricks Account identities can be assigned as members of groups,
+	// and members inherit permissions that are assigned to their group.
+	Groups *scim.AccountGroupsAPI
 
 	// These APIs manage log delivery configurations for this account. The two
 	// supported log types for this API are _billable usage logs_ and _audit
@@ -133,7 +133,7 @@ type AccountClient struct {
 	// (optional). A network configuration encapsulates the IDs for AWS VPCs,
 	// subnets, and security groups. Its ID is used when creating a new
 	// workspace if you use customer-managed VPCs.
-	NetworkConfigurations *deployment.NetworkConfigurationsAPI
+	Networks *deployment.NetworksAPI
 
 	// These APIs manage private access settings for this account. A private
 	// access settings object specifies how your workspace is accessed using AWS
@@ -143,7 +143,7 @@ type AccountClient struct {
 	// these APIs. Before configuring PrivateLink, it is important to read the
 	// [Databricks article about
 	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
-	PrivateAccessSettings *deployment.PrivateAccessSettingsAPI
+	PrivateAccess *deployment.PrivateAccessAPI
 
 	// Identities for use with jobs, automated tools, and systems such as
 	// scripts, apps, and CI/CD platforms. Databricks recommends creating
@@ -160,7 +160,7 @@ type AccountClient struct {
 	// root storage S3 bucket for storage of non-production DBFS data. A storage
 	// configuration encapsulates this bucket information, and its ID is used
 	// when creating a new workspace.
-	StorageConfigurations *deployment.StorageConfigurationsAPI
+	Storage *deployment.StorageAPI
 
 	// User identities recognized by Databricks and represented by email
 	// addresses.
@@ -228,19 +228,19 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	return &AccountClient{
 		Config: cfg,
 
-		BillableUsageDownload:    billing.NewBillableUsageDownload(apiClient),
-		Budgets:                  billing.NewBudgets(apiClient),
-		CredentialConfigurations: deployment.NewCredentialConfigurations(apiClient),
-		Groups:                   scim.NewAccountGroups(apiClient),
-		KeyConfigurations:        deployment.NewKeyConfigurations(apiClient),
-		LogDelivery:              billing.NewLogDelivery(apiClient),
-		NetworkConfigurations:    deployment.NewNetworkConfigurations(apiClient),
-		PrivateAccessSettings:    deployment.NewPrivateAccessSettings(apiClient),
-		ServicePrincipals:        scim.NewAccountServicePrincipals(apiClient),
-		StorageConfigurations:    deployment.NewStorageConfigurations(apiClient),
-		Users:                    scim.NewAccountUsers(apiClient),
-		VpcEndpoints:             deployment.NewVpcEndpoints(apiClient),
-		WorkspaceAssignment:      permissions.NewWorkspaceAssignment(apiClient),
-		Workspaces:               deployment.NewWorkspaces(apiClient),
+		BillableUsage:       billing.NewBillableUsage(apiClient),
+		Budgets:             billing.NewBudgets(apiClient),
+		Credentials:         deployment.NewCredentials(apiClient),
+		EncryptionKeys:      deployment.NewEncryptionKeys(apiClient),
+		Groups:              scim.NewAccountGroups(apiClient),
+		LogDelivery:         billing.NewLogDelivery(apiClient),
+		Networks:            deployment.NewNetworks(apiClient),
+		PrivateAccess:       deployment.NewPrivateAccess(apiClient),
+		ServicePrincipals:   scim.NewAccountServicePrincipals(apiClient),
+		Storage:             deployment.NewStorage(apiClient),
+		Users:               scim.NewAccountUsers(apiClient),
+		VpcEndpoints:        deployment.NewVpcEndpoints(apiClient),
+		WorkspaceAssignment: permissions.NewWorkspaceAssignment(apiClient),
+		Workspaces:          deployment.NewWorkspaces(apiClient),
 	}, nil
 }

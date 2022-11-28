@@ -1041,11 +1041,13 @@ const CreateTableTableTypeUnknownTableType CreateTableTableType = `UNKNOWN_TABLE
 
 const CreateTableTableTypeView CreateTableTableType = `VIEW`
 
+// Delete a catalog
 type DeleteCatalogRequest struct {
 	// Required. The name of the catalog.
 	Name string `json:"-" path:"name"`
 }
 
+// Delete an external location
 type DeleteExternalLocationRequest struct {
 	// Force deletion even if there are dependent external tables or mounts.
 	Force bool `json:"-" url:"force,omitempty"`
@@ -1053,13 +1055,7 @@ type DeleteExternalLocationRequest struct {
 	Name string `json:"-" path:"name"`
 }
 
-type DeleteMetastoreAssignmentRequest struct {
-	// Query for the ID of the Metastore to delete.
-	MetastoreId string `json:"-" url:"metastore_id,omitempty"`
-	// A workspace ID.
-	WorkspaceId int `json:"-" path:"workspace_id"`
-}
-
+// Delete a Metastore
 type DeleteMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
 	Force bool `json:"-" url:"force,omitempty"`
@@ -1067,26 +1063,31 @@ type DeleteMetastoreRequest struct {
 	Id string `json:"-" path:"id"`
 }
 
+// Delete a provider
 type DeleteProviderRequest struct {
 	// Required. Name of the provider.
 	Name string `json:"-" path:"name"`
 }
 
+// Delete a share recipient
 type DeleteRecipientRequest struct {
 	// Required. Name of the recipient.
 	Name string `json:"-" path:"name"`
 }
 
+// Delete a schema
 type DeleteSchemaRequest struct {
 	// Required. Full name of the schema (from URL).
 	FullName string `json:"-" path:"full_name"`
 }
 
+// Delete a share
 type DeleteShareRequest struct {
 	// The name of the share.
 	Name string `json:"-" path:"name"`
 }
 
+// Delete a credential
 type DeleteStorageCredentialRequest struct {
 	// Force deletion even if there are dependent external locations or external
 	// tables.
@@ -1095,6 +1096,7 @@ type DeleteStorageCredentialRequest struct {
 	Name string `json:"-" path:"name"`
 }
 
+// Delete a table
 type DeleteTableRequest struct {
 	// Required. Full name of the Table (from URL).
 	FullName string `json:"-" path:"full_name"`
@@ -1130,19 +1132,6 @@ type ExternalLocationInfo struct {
 	Url string `json:"url,omitempty"`
 }
 
-type FileInfo struct {
-	// Whether the object represents a directory or a file.
-	IsDir bool `json:"is_dir,omitempty"`
-	// Modification time, unix epoch.
-	Mtime int64 `json:"mtime,omitempty"`
-	// Name of the object.
-	Name string `json:"name,omitempty"`
-	// Path URI of the storage object.
-	Path string `json:"path,omitempty"`
-	// Size in bytes.
-	Size int64 `json:"size,omitempty"`
-}
-
 type GcpServiceAccountKey struct {
 	// The email of the service account. [Create:REQ].
 	Email string `json:"email,omitempty"`
@@ -1152,11 +1141,13 @@ type GcpServiceAccountKey struct {
 	PrivateKeyId string `json:"private_key_id,omitempty"`
 }
 
+// Get a share activation URL
 type GetActivationUrlInfoRequest struct {
 	// Required. The one time activation url. It also accepts activation token.
 	ActivationUrl string `json:"-" path:"activation_url"`
 }
 
+// Get a catalog
 type GetCatalogRequest struct {
 	// Required. The name of the catalog.
 	Name string `json:"-" path:"name"`
@@ -1228,6 +1219,7 @@ const GetCatalogResponsePrivilegesItemUsage GetCatalogResponsePrivilegesItem = `
 
 const GetCatalogResponsePrivilegesItemWriteFiles GetCatalogResponsePrivilegesItem = `WRITE_FILES`
 
+// Get an external location
 type GetExternalLocationRequest struct {
 	// Required. Name of the storage credential.
 	Name string `json:"-" path:"name"`
@@ -1263,6 +1255,17 @@ type GetExternalLocationResponse struct {
 	Url string `json:"url,omitempty"`
 }
 
+// Get permissions
+type GetGrantRequest struct {
+	// Required. Unique identifier (full name) of Securable (from URL).
+	FullName string `json:"-" path:"full_name"`
+	// Optional. List permissions granted to this principal.
+	Principal string `json:"-" url:"principal,omitempty"`
+	// Required. Type of Securable (from URL).
+	SecurableType string `json:"-" path:"securable_type"`
+}
+
+// Get a Metastore
 type GetMetastoreRequest struct {
 	// Required. Unique ID of the Metastore (from URL).
 	Id string `json:"-" path:"id"`
@@ -1336,21 +1339,13 @@ type GetMetastoreSummaryResponse struct {
 	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
 }
 
-type GetPermissionsRequest struct {
-	// Required. Unique identifier (full name) of Securable (from URL).
-	FullName string `json:"-" path:"full_name"`
-	// Optional. List permissions granted to this principal.
-	Principal string `json:"-" url:"principal,omitempty"`
-	// Required. Type of Securable (from URL).
-	SecurableType string `json:"-" path:"securable_type"`
-}
-
 type GetPermissionsResponse struct {
 	// Note to self (acain): Unfortunately, neither json_inline nor json_map
 	// work here.
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
 }
 
+// Get a provider
 type GetProviderRequest struct {
 	// Required. Name of the provider.
 	Name string `json:"-" path:"name"`
@@ -1397,6 +1392,7 @@ const GetProviderResponseAuthenticationTypeToken GetProviderResponseAuthenticati
 
 const GetProviderResponseAuthenticationTypeUnknown GetProviderResponseAuthenticationType = `UNKNOWN`
 
+// Get a share recipient
 type GetRecipientRequest struct {
 	// Required. Name of the recipient.
 	Name string `json:"-" path:"name"`
@@ -1445,16 +1441,12 @@ const GetRecipientResponseAuthenticationTypeToken GetRecipientResponseAuthentica
 
 const GetRecipientResponseAuthenticationTypeUnknown GetRecipientResponseAuthenticationType = `UNKNOWN`
 
-type GetRecipientSharePermissionsRequest struct {
-	// Required. The name of the Recipient.
-	Name string `json:"-" path:"name"`
-}
-
 type GetRecipientSharePermissionsResponse struct {
 	// An array of data share permissions for a recipient.
 	PermissionsOut []ShareToPrivilegeAssignment `json:"permissions_out,omitempty"`
 }
 
+// Get a schema
 type GetSchemaRequest struct {
 	// Required. Full name of the schema (from URL).
 	FullName string `json:"-" path:"full_name"`
@@ -1512,17 +1504,13 @@ const GetSchemaResponsePrivilegesItemUsage GetSchemaResponsePrivilegesItem = `US
 
 const GetSchemaResponsePrivilegesItemWriteFiles GetSchemaResponsePrivilegesItem = `WRITE_FILES`
 
-type GetSharePermissionsRequest struct {
-	// Required. The name of the share.
-	Name string `json:"-" path:"name"`
-}
-
 type GetSharePermissionsResponse struct {
 	// Note to self (acain): Unfortunately, neither json_inline nor json_map
 	// work here.
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
 }
 
+// Get a share
 type GetShareRequest struct {
 	// Query for data to include in the share.
 	IncludeSharedData bool `json:"-" url:"include_shared_data,omitempty"`
@@ -1541,6 +1529,12 @@ type GetShareResponse struct {
 	Name string `json:"name,omitempty"`
 	// [Create: IGN] A list of shared data objects within the Share.
 	Objects []SharedDataObject `json:"objects,omitempty"`
+}
+
+// Get a credential
+type GetStorageCredentialRequest struct {
+	// Required. Name of the storage credential.
+	Name string `json:"-" path:"name"`
 }
 
 type GetStorageCredentialResponse struct {
@@ -1573,11 +1567,7 @@ type GetStorageCredentialResponse struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
-type GetStorageCredentialsRequest struct {
-	// Required. Name of the storage credential.
-	Name string `json:"-" path:"name"`
-}
-
+// Get a table
 type GetTableRequest struct {
 	// Required. Full name of the Table (from URL).
 	FullName string `json:"-" path:"full_name"`
@@ -1709,20 +1699,6 @@ type ListExternalLocationsResponse struct {
 	ExternalLocations []ExternalLocationInfo `json:"external_locations,omitempty"`
 }
 
-type ListFilesRequest struct {
-	// Optional. Name of a Storage Credential to use for accessing the URL.
-	CredentialName string `json:"-" url:"credential_name,omitempty"`
-	// Optional. Limit on number of results to return.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-	// Required. Path URL to list files from.
-	Url string `json:"-" url:"url,omitempty"`
-}
-
-type ListFilesResponse struct {
-	// An array of file information objects.
-	Files []FileInfo `json:"files,omitempty"`
-}
-
 type ListMetastoresResponse struct {
 	// An array of Metastore information objects.
 	Metastores []MetastoreInfo `json:"metastores,omitempty"`
@@ -1733,6 +1709,7 @@ type ListProviderSharesResponse struct {
 	Shares []ProviderShare `json:"shares,omitempty"`
 }
 
+// List providers
 type ListProvidersRequest struct {
 	// If not provided, all providers will be returned. If no providers exist
 	// with this ID, no results will be returned.
@@ -1744,6 +1721,7 @@ type ListProvidersResponse struct {
 	Providers []ProviderInfo `json:"providers,omitempty"`
 }
 
+// List share recipients
 type ListRecipientsRequest struct {
 	// If not provided, all recipients will be returned. If no recipients exist
 	// with this ID, no results will be returned.
@@ -1755,6 +1733,7 @@ type ListRecipientsResponse struct {
 	Recipients []RecipientInfo `json:"recipients,omitempty"`
 }
 
+// List schemas
 type ListSchemasRequest struct {
 	// Optional. Parent catalog for schemas of interest.
 	CatalogName string `json:"-" url:"catalog_name,omitempty"`
@@ -1765,6 +1744,7 @@ type ListSchemasResponse struct {
 	Schemas []SchemaInfo `json:"schemas,omitempty"`
 }
 
+// List shares
 type ListSharesRequest struct {
 	// Required. Name of the provider in which to list shares.
 	Name string `json:"-" path:"name"`
@@ -1780,22 +1760,6 @@ type ListStorageCredentialsResponse struct {
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
 }
 
-type ListTableSummariesRequest struct {
-	// Required. Name of parent catalog for tables of interest.
-	CatalogName string `json:"-" url:"catalog_name,omitempty"`
-	// Optional. Maximum number of tables to return (page length). Defaults to
-	// 10000.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-	// Optional. Opaque token to send for the next page of results (pagination).
-	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Optional. A sql LIKE pattern (% and _) for schema names. All schemas will
-	// be returned if not set or empty.
-	SchemaNamePattern string `json:"-" url:"schema_name_pattern,omitempty"`
-	// Optional. A sql LIKE pattern (% and _) for table names. All tables will
-	// be returned if not set or empty.
-	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
-}
-
 type ListTableSummariesResponse struct {
 	// Optional. Opaque token for pagination. Empty if there's no more page.
 	NextPageToken string `json:"next_page_token,omitempty"`
@@ -1804,6 +1768,7 @@ type ListTableSummariesResponse struct {
 	Tables []TableSummary `json:"tables,omitempty"`
 }
 
+// List tables
 type ListTablesRequest struct {
 	// Required. Name of parent catalog for tables of interest.
 	CatalogName string `json:"-" url:"catalog_name,omitempty"`
@@ -2117,6 +2082,7 @@ type RecipientTokenInfo struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
+// Get an access token
 type RetrieveTokenRequest struct {
 	// Required. The one time activation url. It also accepts activation token.
 	ActivationUrl string `json:"-" path:"activation_url"`
@@ -2255,6 +2221,12 @@ type ShareInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// [Create:IGN,Update:IGN] Username of Share updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
+}
+
+// Get share permissions
+type SharePermissionsRequest struct {
+	// Required. The name of the Recipient.
+	Name string `json:"-" path:"name"`
 }
 
 type ShareToPrivilegeAssignment struct {
@@ -2475,6 +2447,23 @@ const TableInfoTableTypeUnknownTableType TableInfoTableType = `UNKNOWN_TABLE_TYP
 
 const TableInfoTableTypeView TableInfoTableType = `VIEW`
 
+// List table summaries
+type TableSummariesRequest struct {
+	// Required. Name of parent catalog for tables of interest.
+	CatalogName string `json:"-" url:"catalog_name,omitempty"`
+	// Optional. Maximum number of tables to return (page length). Defaults to
+	// 10000.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Optional. Opaque token to send for the next page of results (pagination).
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Optional. A sql LIKE pattern (% and _) for schema names. All schemas will
+	// be returned if not set or empty.
+	SchemaNamePattern string `json:"-" url:"schema_name_pattern,omitempty"`
+	// Optional. A sql LIKE pattern (% and _) for table names. All tables will
+	// be returned if not set or empty.
+	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
+}
+
 type TableSummary struct {
 	// The full name of the table.
 	FullName string `json:"full_name,omitempty"`
@@ -2492,6 +2481,14 @@ const TableSummaryTableTypeManaged TableSummaryTableType = `MANAGED`
 const TableSummaryTableTypeUnknownTableType TableSummaryTableType = `UNKNOWN_TABLE_TYPE`
 
 const TableSummaryTableTypeView TableSummaryTableType = `VIEW`
+
+// Delete an assignment
+type UnassignRequest struct {
+	// Query for the ID of the Metastore to delete.
+	MetastoreId string `json:"-" url:"metastore_id,omitempty"`
+	// A workspace ID.
+	WorkspaceId int `json:"-" path:"workspace_id"`
+}
 
 type UpdateCatalog struct {
 	// [Create,Update:IGN] The type of the catalog.

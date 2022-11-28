@@ -35,18 +35,20 @@ type CredentialInfo struct {
 	GitUsername string `json:"git_username,omitempty"`
 }
 
-type DeleteRequest struct {
+// Delete a credential
+type Delete struct {
+	// The ID for the corresponding credential to access.
+	CredentialId int64 `json:"-" path:"credential_id"`
+}
+
+// Get a credential entry
+type Get struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" path:"credential_id"`
 }
 
 type GetCredentialsResponse struct {
 	Credentials []CredentialInfo `json:"credentials,omitempty"`
-}
-
-type GetRequest struct {
-	// The ID for the corresponding credential to access.
-	CredentialId int64 `json:"-" path:"credential_id"`
 }
 
 type UpdateCredentials struct {

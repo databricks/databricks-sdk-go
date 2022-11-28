@@ -50,6 +50,7 @@ var singularizers = []*regexTransform{
 var singularExceptions = map[string]string{
 	"dbfs":       "dbfs",
 	"warehouses": "warehouse",
+	"databricks": "databricks",
 }
 
 type regexTransform struct {

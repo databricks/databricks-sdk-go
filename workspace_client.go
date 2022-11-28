@@ -461,9 +461,6 @@ type WorkspaceClient struct {
 
 	TransitionRequests *mlflow.TransitionRequestsAPI
 
-	// Databricks Unity Catalog: Files REST API
-	UnityFiles *unitycatalog.UnityFilesAPI
-
 	// User identities recognized by Databricks and represented by email
 	// addresses.
 	//
@@ -558,7 +555,6 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		TokenManagement:      tokenmanagement.NewTokenManagement(apiClient),
 		Tokens:               tokens.NewTokens(apiClient),
 		TransitionRequests:   mlflow.NewTransitionRequests(apiClient),
-		UnityFiles:           unitycatalog.NewUnityFiles(apiClient),
 		Users:                scim.NewUsers(apiClient),
 		Warehouses:           warehouses.NewWarehouses(apiClient),
 		Workspace:            workspace.NewWorkspace(apiClient),

@@ -15,40 +15,40 @@ type accountGroupsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountGroupsImpl) CreateGroup(ctx context.Context, request Group) (*Group, error) {
+func (a *accountGroupsImpl) Create(ctx context.Context, request Group) (*Group, error) {
 	var group Group
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodPost, path, request, &group)
 	return &group, err
 }
 
-func (a *accountGroupsImpl) DeleteGroup(ctx context.Context, request DeleteGroupRequest) error {
+func (a *accountGroupsImpl) Delete(ctx context.Context, request DeleteGroupRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *accountGroupsImpl) GetGroup(ctx context.Context, request GetGroupRequest) (*Group, error) {
+func (a *accountGroupsImpl) Get(ctx context.Context, request GetGroupRequest) (*Group, error) {
 	var group Group
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &group)
 	return &group, err
 }
 
-func (a *accountGroupsImpl) ListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
+func (a *accountGroupsImpl) List(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
 	var listGroupsResponse ListGroupsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listGroupsResponse)
 	return &listGroupsResponse, err
 }
 
-func (a *accountGroupsImpl) PatchGroup(ctx context.Context, request PartialUpdate) error {
+func (a *accountGroupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
 }
 
-func (a *accountGroupsImpl) UpdateGroup(ctx context.Context, request Group) error {
+func (a *accountGroupsImpl) Update(ctx context.Context, request Group) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
 	return err
@@ -59,40 +59,40 @@ type accountServicePrincipalsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountServicePrincipalsImpl) CreateServicePrincipal(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
+func (a *accountServicePrincipalsImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodPost, path, request, &servicePrincipal)
 	return &servicePrincipal, err
 }
 
-func (a *accountServicePrincipalsImpl) DeleteServicePrincipal(ctx context.Context, request DeleteServicePrincipalRequest) error {
+func (a *accountServicePrincipalsImpl) Delete(ctx context.Context, request DeleteServicePrincipalRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *accountServicePrincipalsImpl) GetServicePrincipal(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
+func (a *accountServicePrincipalsImpl) Get(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &servicePrincipal)
 	return &servicePrincipal, err
 }
 
-func (a *accountServicePrincipalsImpl) ListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
+func (a *accountServicePrincipalsImpl) List(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 	var listServicePrincipalResponse ListServicePrincipalResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listServicePrincipalResponse)
 	return &listServicePrincipalResponse, err
 }
 
-func (a *accountServicePrincipalsImpl) PatchServicePrincipal(ctx context.Context, request PartialUpdate) error {
+func (a *accountServicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
 }
 
-func (a *accountServicePrincipalsImpl) UpdateServicePrincipal(ctx context.Context, request ServicePrincipal) error {
+func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
 	return err
@@ -103,40 +103,40 @@ type accountUsersImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountUsersImpl) CreateUser(ctx context.Context, request User) (*User, error) {
+func (a *accountUsersImpl) Create(ctx context.Context, request User) (*User, error) {
 	var user User
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodPost, path, request, &user)
 	return &user, err
 }
 
-func (a *accountUsersImpl) DeleteUser(ctx context.Context, request DeleteUserRequest) error {
+func (a *accountUsersImpl) Delete(ctx context.Context, request DeleteUserRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *accountUsersImpl) GetUser(ctx context.Context, request GetUserRequest) (*User, error) {
+func (a *accountUsersImpl) Get(ctx context.Context, request GetUserRequest) (*User, error) {
 	var user User
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &user)
 	return &user, err
 }
 
-func (a *accountUsersImpl) ListUsers(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
+func (a *accountUsersImpl) List(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listUsersResponse)
 	return &listUsersResponse, err
 }
 
-func (a *accountUsersImpl) PatchUser(ctx context.Context, request PartialUpdate) error {
+func (a *accountUsersImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
 }
 
-func (a *accountUsersImpl) UpdateUser(ctx context.Context, request User) error {
+func (a *accountUsersImpl) Update(ctx context.Context, request User) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
 	return err
@@ -159,40 +159,40 @@ type groupsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *groupsImpl) CreateGroup(ctx context.Context, request Group) (*Group, error) {
+func (a *groupsImpl) Create(ctx context.Context, request Group) (*Group, error) {
 	var group Group
 	path := "/api/2.0/preview/scim/v2/Groups"
 	err := a.client.Do(ctx, http.MethodPost, path, request, &group)
 	return &group, err
 }
 
-func (a *groupsImpl) DeleteGroup(ctx context.Context, request DeleteGroupRequest) error {
+func (a *groupsImpl) Delete(ctx context.Context, request DeleteGroupRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *groupsImpl) GetGroup(ctx context.Context, request GetGroupRequest) (*Group, error) {
+func (a *groupsImpl) Get(ctx context.Context, request GetGroupRequest) (*Group, error) {
 	var group Group
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &group)
 	return &group, err
 }
 
-func (a *groupsImpl) ListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
+func (a *groupsImpl) List(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
 	var listGroupsResponse ListGroupsResponse
 	path := "/api/2.0/preview/scim/v2/Groups"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listGroupsResponse)
 	return &listGroupsResponse, err
 }
 
-func (a *groupsImpl) PatchGroup(ctx context.Context, request PartialUpdate) error {
+func (a *groupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
 }
 
-func (a *groupsImpl) UpdateGroup(ctx context.Context, request Group) error {
+func (a *groupsImpl) Update(ctx context.Context, request Group) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
 	return err
@@ -203,40 +203,40 @@ type servicePrincipalsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *servicePrincipalsImpl) CreateServicePrincipal(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
+func (a *servicePrincipalsImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
 	err := a.client.Do(ctx, http.MethodPost, path, request, &servicePrincipal)
 	return &servicePrincipal, err
 }
 
-func (a *servicePrincipalsImpl) DeleteServicePrincipal(ctx context.Context, request DeleteServicePrincipalRequest) error {
+func (a *servicePrincipalsImpl) Delete(ctx context.Context, request DeleteServicePrincipalRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *servicePrincipalsImpl) GetServicePrincipal(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
+func (a *servicePrincipalsImpl) Get(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &servicePrincipal)
 	return &servicePrincipal, err
 }
 
-func (a *servicePrincipalsImpl) ListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
+func (a *servicePrincipalsImpl) List(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 	var listServicePrincipalResponse ListServicePrincipalResponse
 	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listServicePrincipalResponse)
 	return &listServicePrincipalResponse, err
 }
 
-func (a *servicePrincipalsImpl) PatchServicePrincipal(ctx context.Context, request PartialUpdate) error {
+func (a *servicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
 }
 
-func (a *servicePrincipalsImpl) UpdateServicePrincipal(ctx context.Context, request ServicePrincipal) error {
+func (a *servicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
 	return err
@@ -247,40 +247,40 @@ type usersImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *usersImpl) CreateUser(ctx context.Context, request User) (*User, error) {
+func (a *usersImpl) Create(ctx context.Context, request User) (*User, error) {
 	var user User
 	path := "/api/2.0/preview/scim/v2/Users"
 	err := a.client.Do(ctx, http.MethodPost, path, request, &user)
 	return &user, err
 }
 
-func (a *usersImpl) DeleteUser(ctx context.Context, request DeleteUserRequest) error {
+func (a *usersImpl) Delete(ctx context.Context, request DeleteUserRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *usersImpl) GetUser(ctx context.Context, request GetUserRequest) (*User, error) {
+func (a *usersImpl) Get(ctx context.Context, request GetUserRequest) (*User, error) {
 	var user User
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &user)
 	return &user, err
 }
 
-func (a *usersImpl) ListUsers(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
+func (a *usersImpl) List(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
 	path := "/api/2.0/preview/scim/v2/Users"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listUsersResponse)
 	return &listUsersResponse, err
 }
 
-func (a *usersImpl) PatchUser(ctx context.Context, request PartialUpdate) error {
+func (a *usersImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
 }
 
-func (a *usersImpl) UpdateUser(ctx context.Context, request User) error {
+func (a *usersImpl) Update(ctx context.Context, request User) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
 	return err

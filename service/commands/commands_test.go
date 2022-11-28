@@ -25,7 +25,7 @@ func commonFixtureWithStatusResponse(response CommandStatusResponse) qa.HTTPFixt
 				SparkVersion:           "7.1-scala12",
 				NodeTypeId:             "i3.xlarge",
 				AutoterminationMinutes: 15,
-				State:                  clusters.ClusterInfoStateRunning,
+				State:                  clusters.StateRunning,
 			},
 		},
 		{

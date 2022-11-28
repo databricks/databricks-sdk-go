@@ -34,7 +34,8 @@ type EditPolicy struct {
 	PolicyId string `json:"policy_id"`
 }
 
-type GetRequest struct {
+// Get entity
+type Get struct {
 	// Canonical unique identifier for the cluster policy.
 	PolicyId string `json:"-" url:"policy_id,omitempty"`
 }

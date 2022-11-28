@@ -24,12 +24,12 @@ type GitCredentialsService interface {
 	// Delete a credential
 	//
 	// Deletes the specified Git credential.
-	Delete(ctx context.Context, request DeleteRequest) error
+	Delete(ctx context.Context, request Delete) error
 
 	// Get a credential entry
 	//
 	// Gets the Git credential with the specified credential ID.
-	Get(ctx context.Context, request GetRequest) (*CredentialInfo, error)
+	Get(ctx context.Context, request Get) (*CredentialInfo, error)
 
 	// Get Git credentials
 	//

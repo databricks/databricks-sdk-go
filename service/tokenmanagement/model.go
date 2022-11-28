@@ -19,17 +19,20 @@ type CreateOboTokenResponse struct {
 	TokenValue string `json:"token_value,omitempty"`
 }
 
-type DeleteTokenRequest struct {
+// Delete a token
+type DeleteToken struct {
 	// The ID of the token to get.
 	TokenId string `json:"-" path:"token_id"`
 }
 
-type GetTokenInfoRequest struct {
+// Get token info
+type GetTokenInfo struct {
 	// The ID of the token to get.
 	TokenId string `json:"-" path:"token_id"`
 }
 
-type ListTokensRequest struct {
+// List all tokens
+type ListTokens struct {
 	// User ID of the user that created the token.
 	CreatedById string `json:"-" url:"created_by_id,omitempty"`
 	// Username of the user that created the token.

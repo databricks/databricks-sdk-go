@@ -605,7 +605,7 @@ clusterInfo, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 On the platform side, some Databricks APIs have result pagination, and some of them do not. Some APIs follow the offset-plus-limit pagination, some start their offsets from 0 and some from 1, some use the cursor-based iteration, and others just return all results in a single response. The Databricks SDK for Go hides this intricate complexity and generates a more high-level interface for retrieving all results of a certain entity type. The naming pattern is `XxxAll`, where `Xxx` is the name of the method to retrieve a single page of results.
 
 ```go
-all, err := w.Repos.ListAll(ctx, repos.ListRequest{})
+all, err := w.Repos.ListAll(ctx, repos.List{})
 if err != nil {
     return fmt.Errorf("list repos: %w", err)
 }

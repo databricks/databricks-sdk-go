@@ -150,14 +150,14 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// assert on contents of testFile1
-	contentsTestFile, err := w.Dbfs.Read(ctx, dbfs.ReadRequest{
+	contentsTestFile, err := w.Dbfs.Read(ctx, dbfs.Read{
 		Path: filepath.Join(dbfsTestDirPath1, testFile1),
 	})
 	require.NoError(t, err)
 	assert.True(t, contentsTestFile.Data == base64.StdEncoding.EncodeToString([]byte("Hello, World!")))
 
 	// assert on contents of testFile2
-	contentsByeByeWorldFile, err := w.Dbfs.Read(ctx, dbfs.ReadRequest{
+	contentsByeByeWorldFile, err := w.Dbfs.Read(ctx, dbfs.Read{
 		Path: filepath.Join(dbfsTestDirPath1, testFile2),
 	})
 	require.NoError(t, err)

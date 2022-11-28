@@ -54,7 +54,7 @@ func (a *GitCredentialsAPI) Create(ctx context.Context, request CreateCredential
 // Delete a credential
 //
 // Deletes the specified Git credential.
-func (a *GitCredentialsAPI) Delete(ctx context.Context, request DeleteRequest) error {
+func (a *GitCredentialsAPI) Delete(ctx context.Context, request Delete) error {
 	return a.impl.Delete(ctx, request)
 }
 
@@ -62,7 +62,7 @@ func (a *GitCredentialsAPI) Delete(ctx context.Context, request DeleteRequest) e
 //
 // Deletes the specified Git credential.
 func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credentialId int64) error {
-	return a.impl.Delete(ctx, DeleteRequest{
+	return a.impl.Delete(ctx, Delete{
 		CredentialId: credentialId,
 	})
 }
@@ -70,7 +70,7 @@ func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credential
 // Get a credential entry
 //
 // Gets the Git credential with the specified credential ID.
-func (a *GitCredentialsAPI) Get(ctx context.Context, request GetRequest) (*CredentialInfo, error) {
+func (a *GitCredentialsAPI) Get(ctx context.Context, request Get) (*CredentialInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -78,7 +78,7 @@ func (a *GitCredentialsAPI) Get(ctx context.Context, request GetRequest) (*Crede
 //
 // Gets the Git credential with the specified credential ID.
 func (a *GitCredentialsAPI) GetByCredentialId(ctx context.Context, credentialId int64) (*CredentialInfo, error) {
-	return a.impl.Get(ctx, GetRequest{
+	return a.impl.Get(ctx, Get{
 		CredentialId: credentialId,
 	})
 }

@@ -28,12 +28,12 @@ type ReposService interface {
 	// Delete a repo
 	//
 	// Deletes the specified repo.
-	Delete(ctx context.Context, request DeleteRequest) error
+	Delete(ctx context.Context, request Delete) error
 
 	// Get a repo
 	//
 	// Returns the repo with the given repo ID.
-	Get(ctx context.Context, request GetRequest) (*RepoInfo, error)
+	Get(ctx context.Context, request Get) (*RepoInfo, error)
 
 	// Get repos
 	//
@@ -41,7 +41,7 @@ type ReposService interface {
 	// are paginated with each page containing twenty repos.
 	//
 	// Use ListAll() to get all RepoInfo instances, which will iterate over every result page.
-	List(ctx context.Context, request ListRequest) (*ListReposResponse, error)
+	List(ctx context.Context, request List) (*ListReposResponse, error)
 
 	// Update a repo
 	//

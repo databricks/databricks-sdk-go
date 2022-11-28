@@ -271,36 +271,43 @@ type CustomerManagedKey struct {
 	UseCases []string `json:"use_cases,omitempty"`
 }
 
-type DeleteCredentialConfigRequest struct {
+// Delete credential configuration
+type DeleteCredentialRequest struct {
 	// Databricks Account API credential configuration ID
 	CredentialsId string `json:"-" path:"credentials_id"`
 }
 
-type DeleteKeyConfigRequest struct {
+// Delete encryption key configuration
+type DeleteEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
 	CustomerManagedKeyId string `json:"-" path:"customer_managed_key_id"`
 }
 
-type DeleteNetworkConfigRequest struct {
+// Delete network configuration
+type DeleteNetworkRequest struct {
 	// Databricks Account API network configuration ID.
 	NetworkId string `json:"-" path:"network_id"`
 }
 
-type DeletePrivateAccessSettingsRequest struct {
+// Delete a private access settings object
+type DeletePrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" path:"private_access_settings_id"`
 }
 
-type DeleteStorageConfigRequest struct {
+// Delete storage configuration
+type DeleteStorageRequest struct {
 	// Databricks Account API storage configuration ID.
 	StorageConfigurationId string `json:"-" path:"storage_configuration_id"`
 }
 
+// Delete VPC endpoint configuration
 type DeleteVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
 	VpcEndpointId string `json:"-" path:"vpc_endpoint_id"`
 }
 
+// Delete workspace
 type DeleteWorkspaceRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" path:"workspace_id"`
@@ -405,41 +412,49 @@ type GcpProjectContainer struct {
 	ProjectId string `json:"project_id,omitempty"`
 }
 
-type GetCredentialConfigRequest struct {
+// Get credential configuration
+type GetCredentialRequest struct {
 	// Databricks Account API credential configuration ID
 	CredentialsId string `json:"-" path:"credentials_id"`
 }
 
-type GetKeyConfigRequest struct {
+// Get encryption key configuration
+type GetEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
 	CustomerManagedKeyId string `json:"-" path:"customer_managed_key_id"`
 }
 
-type GetNetworkConfigRequest struct {
+// Get a network configuration
+type GetNetworkRequest struct {
 	// Databricks Account API network configuration ID.
 	NetworkId string `json:"-" path:"network_id"`
 }
 
-type GetPrivateAccessSettingsRequest struct {
+// Get a private access settings object
+type GetPrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" path:"private_access_settings_id"`
 }
 
-type GetStorageConfigRequest struct {
+// Get storage configuration
+type GetStorageRequest struct {
 	// Databricks Account API storage configuration ID.
 	StorageConfigurationId string `json:"-" path:"storage_configuration_id"`
 }
 
+// Get a VPC endpoint configuration
 type GetVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
 	VpcEndpointId string `json:"-" path:"vpc_endpoint_id"`
 }
 
+// Get the history of a workspace's associations with keys
 type GetWorkspaceKeyHistoryRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" path:"workspace_id"`
 }
 
+// Get workspace
 type GetWorkspaceRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" path:"workspace_id"`

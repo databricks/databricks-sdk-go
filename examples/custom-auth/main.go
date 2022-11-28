@@ -34,7 +34,7 @@ func main() {
 		Host:        askFor("Host:"),
 		Credentials: &CustomCredentials{},
 	}))
-	all, err := w.Clusters.ListAll(context.Background(), clusters.ListRequest{})
+	all, err := w.Clusters.ListAll(context.Background(), clusters.List{})
 	if err != nil {
 		panic(err)
 	}

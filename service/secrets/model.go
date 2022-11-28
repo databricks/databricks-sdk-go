@@ -28,15 +28,15 @@ type AzureKeyVaultSecretScopeMetadata struct {
 }
 
 type CreateScope struct {
-	// The principal that is initially granted ``MANAGE`` permission to the
+	// The principal that is initially granted `MANAGE` permission to the
 	// created scope.
 	InitialManagePrincipal string `json:"initial_manage_principal,omitempty"`
-	// The metadata for the secret scope if the type is ``AZURE_KEYVAULT``
+	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
 	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata `json:"keyvault_metadata,omitempty"`
 	// Scope name requested by the user. Scope names are unique.
 	Scope string `json:"scope"`
 	// The backend type the scope will be created with. If not specified, will
-	// default to ``DATABRICKS``
+	// default to `DATABRICKS`
 	ScopeBackendType ScopeBackendType `json:"scope_backend_type,omitempty"`
 }
 
@@ -59,14 +59,16 @@ type DeleteSecret struct {
 	Scope string `json:"scope"`
 }
 
-type GetAclRequest struct {
+// Get secret ACL details
+type GetAcl struct {
 	// The principal to fetch ACL information for.
 	Principal string `json:"-" url:"principal,omitempty"`
 	// The name of the scope to fetch ACL information from.
 	Scope string `json:"-" url:"scope,omitempty"`
 }
 
-type ListAclsRequest struct {
+// Lists ACLs
+type ListAcls struct {
 	// The name of the scope to fetch ACL information from.
 	Scope string `json:"-" url:"scope,omitempty"`
 }
@@ -81,7 +83,8 @@ type ListScopesResponse struct {
 	Scopes []SecretScope `json:"scopes,omitempty"`
 }
 
-type ListSecretsRequest struct {
+// List secret keys
+type ListSecrets struct {
 	// The name of the scope to list secrets within.
 	Scope string `json:"-" url:"scope,omitempty"`
 }
@@ -127,7 +130,7 @@ type SecretMetadata struct {
 type SecretScope struct {
 	// The type of secret scope backend.
 	BackendType ScopeBackendType `json:"backend_type,omitempty"`
-	// The metadata for the secret scope if the type is ``AZURE_KEYVAULT``
+	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
 	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata `json:"keyvault_metadata,omitempty"`
 	// A unique name to identify the secret scope.
 	Name string `json:"name,omitempty"`

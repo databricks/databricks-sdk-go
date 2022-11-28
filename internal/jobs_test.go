@@ -103,7 +103,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotEmpty(t, run.Tasks)
 
-	exportedView, err := w.Jobs.ExportRun(ctx, jobs.ExportRunRequest{
+	exportedView, err := w.Jobs.ExportRun(ctx, jobs.ExportRun{
 		RunId:         run.Tasks[0].RunId,
 		ViewsToExport: "CODE",
 	})
@@ -167,7 +167,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, byId.Settings.Name, newName)
 
-	jobList, err := w.Jobs.ListAll(ctx, jobs.ListRequest{
+	jobList, err := w.Jobs.ListAll(ctx, jobs.List{
 		ExpandTasks: false,
 	})
 	require.NoError(t, err)
@@ -181,7 +181,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	err = w.Jobs.DeleteByJobId(ctx, createdJob.JobId)
 	require.NoError(t, err)
 
-	jobList, err = w.Jobs.ListAll(ctx, jobs.ListRequest{})
+	jobList, err = w.Jobs.ListAll(ctx, jobs.List{})
 	require.NoError(t, err)
 	for _, job := range jobList {
 		// TODO: change assertion to by-name
@@ -241,7 +241,7 @@ func TestAccJobsListAllNoDuplicates(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
-	all, err := w.Jobs.ListAll(ctx, jobs.ListRequest{})
+	all, err := w.Jobs.ListAll(ctx, jobs.List{})
 	require.NoError(t, err)
 	ids := map[int64]bool{}
 	for _, v := range all {

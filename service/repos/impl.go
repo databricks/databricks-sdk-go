@@ -22,20 +22,20 @@ func (a *reposImpl) Create(ctx context.Context, request CreateRepo) (*RepoInfo, 
 	return &repoInfo, err
 }
 
-func (a *reposImpl) Delete(ctx context.Context, request DeleteRequest) error {
+func (a *reposImpl) Delete(ctx context.Context, request Delete) error {
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *reposImpl) Get(ctx context.Context, request GetRequest) (*RepoInfo, error) {
+func (a *reposImpl) Get(ctx context.Context, request Get) (*RepoInfo, error) {
 	var repoInfo RepoInfo
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &repoInfo)
 	return &repoInfo, err
 }
 
-func (a *reposImpl) List(ctx context.Context, request ListRequest) (*ListReposResponse, error) {
+func (a *reposImpl) List(ctx context.Context, request List) (*ListReposResponse, error) {
 	var listReposResponse ListReposResponse
 	path := "/api/2.0/repos"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listReposResponse)

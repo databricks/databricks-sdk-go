@@ -15,28 +15,28 @@ type permissionsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *permissionsImpl) GetObjectPermissions(ctx context.Context, request GetObjectPermissionsRequest) (*ObjectPermissions, error) {
+func (a *permissionsImpl) Get(ctx context.Context, request Get) (*ObjectPermissions, error) {
 	var objectPermissions ObjectPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &objectPermissions)
 	return &objectPermissions, err
 }
 
-func (a *permissionsImpl) GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error) {
+func (a *permissionsImpl) GetPermissionLevels(ctx context.Context, request GetPermissionLevels) (*GetPermissionLevelsResponse, error) {
 	var getPermissionLevelsResponse GetPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", request.RequestObjectType, request.RequestObjectId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getPermissionLevelsResponse)
 	return &getPermissionLevelsResponse, err
 }
 
-func (a *permissionsImpl) SetObjectPermissions(ctx context.Context, request SetObjectPermissions) error {
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
+func (a *permissionsImpl) Set(ctx context.Context, request PermissionsRequest) error {
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
 	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
 	return err
 }
 
-func (a *permissionsImpl) UpdateObjectPermissions(ctx context.Context, request UpdateObjectPermissions) error {
-	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.ObjectType, request.ObjectId)
+func (a *permissionsImpl) Update(ctx context.Context, request PermissionsRequest) error {
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
 }
@@ -53,20 +53,20 @@ func (a *workspaceAssignmentImpl) Create(ctx context.Context, request CreateWork
 	return &workspaceAssignmentsCreated, err
 }
 
-func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteRequest) error {
+func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *workspaceAssignmentImpl) Get(ctx context.Context, request GetRequest) (*WorkspacePermissions, error) {
+func (a *workspaceAssignmentImpl) Get(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspacePermissions, error) {
 	var workspacePermissions WorkspacePermissions
 	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/workspaces/%v/permissionassignments/permissions", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &workspacePermissions)
 	return &workspacePermissions, err
 }
 
-func (a *workspaceAssignmentImpl) List(ctx context.Context, request ListRequest) (*PermissionAssignments, error) {
+func (a *workspaceAssignmentImpl) List(ctx context.Context, request ListWorkspaceAssignmentRequest) (*PermissionAssignments, error) {
 	var permissionAssignments PermissionAssignments
 	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/workspaces/%v/permissionassignments", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &permissionAssignments)
