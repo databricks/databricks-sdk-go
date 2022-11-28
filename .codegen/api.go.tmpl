@@ -117,12 +117,7 @@ func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Reque
 			{{- end}}
 			results = append(results, v)
 		}
-		{{if eq .Path "/api/2.0/clusters/events" -}}
-		if response.NextPage == nil {
-			break
-		}
-		request = *response.NextPage
-		{{- else if .Pagination.Token -}}
+		{{if .Pagination.Token -}}
 		request.{{.Pagination.Token.PollField.PascalName}} = response.{{.Pagination.Token.Bind.PascalName}}
 		if response.{{.Pagination.Token.Bind.PascalName}} == "" {
 			break

@@ -285,10 +285,7 @@ func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]Clust
 		for _, v := range response.Events {
 			results = append(results, v)
 		}
-		if response.NextPage == nil {
-			break
-		}
-		request = *response.NextPage
+		request.Offset += int64(len(response.Events))
 	}
 	return results, nil
 }
