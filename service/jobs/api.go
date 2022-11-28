@@ -108,7 +108,10 @@ func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, opt
 			})
 		}
 		status := run.State.LifeCycleState
-		statusMessage := run.State.StateMessage
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
 		switch status {
 		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
 			return run, nil
@@ -235,7 +238,10 @@ func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRun GetRun, options ...r
 			})
 		}
 		status := run.State.LifeCycleState
-		statusMessage := run.State.StateMessage
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
 		switch status {
 		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
 			return run, nil
@@ -437,7 +443,10 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, opt
 			})
 		}
 		status := run.State.LifeCycleState
-		statusMessage := run.State.StateMessage
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
 		switch status {
 		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
 			return run, nil
@@ -494,7 +503,10 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...r
 			})
 		}
 		status := run.State.LifeCycleState
-		statusMessage := run.State.StateMessage
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
 		switch status {
 		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
 			return run, nil
@@ -546,7 +558,10 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, option
 			})
 		}
 		status := run.State.LifeCycleState
-		statusMessage := run.State.StateMessage
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
 		switch status {
 		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
 			return run, nil
