@@ -22,20 +22,20 @@ func (a *tokenManagementImpl) CreateOboToken(ctx context.Context, request Create
 	return &createOboTokenResponse, err
 }
 
-func (a *tokenManagementImpl) DeleteToken(ctx context.Context, request DeleteTokenRequest) error {
+func (a *tokenManagementImpl) DeleteToken(ctx context.Context, request DeleteToken) error {
 	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", request.TokenId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *tokenManagementImpl) GetTokenInfo(ctx context.Context, request GetTokenInfoRequest) (*TokenInfo, error) {
+func (a *tokenManagementImpl) GetTokenInfo(ctx context.Context, request GetTokenInfo) (*TokenInfo, error) {
 	var tokenInfo TokenInfo
 	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", request.TokenId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &tokenInfo)
 	return &tokenInfo, err
 }
 
-func (a *tokenManagementImpl) ListTokens(ctx context.Context, request ListTokensRequest) (*ListTokensResponse, error) {
+func (a *tokenManagementImpl) ListTokens(ctx context.Context, request ListTokens) (*ListTokensResponse, error) {
 	var listTokensResponse ListTokensResponse
 	path := "/api/2.0/token-management/tokens"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listTokensResponse)

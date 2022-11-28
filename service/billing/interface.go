@@ -8,7 +8,7 @@ import (
 
 // This API allows you to download billable usage logs for the specified account
 // and date range. This feature works with all account types.
-type BillableUsageDownloadService interface {
+type BillableUsageService interface {
 
 	// Return billable usage logs
 	//
@@ -16,7 +16,7 @@ type BillableUsageDownloadService interface {
 	// date range. For the data schema, see [CSV file
 	// schema](https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema).
 	// Note that this method might take multiple seconds to complete.
-	DownloadBillableUsage(ctx context.Context, request DownloadBillableUsageRequest) error
+	Download(ctx context.Context, request DownloadRequest) error
 }
 
 // These APIs manage budget configuration including notifications for exceeding
@@ -26,32 +26,32 @@ type BudgetsService interface {
 	// Create a new budget
 	//
 	// Creates a new budget in the specified account.
-	CreateBudget(ctx context.Context, request CreateBudgetRequest) (*BudgetWithStatus, error)
+	Create(ctx context.Context, request WrappedBudget) (*WrappedBudgetWithStatus, error)
 
 	// Delete budget
 	//
 	// Deletes the budget specified by its UUID.
-	DeleteBudget(ctx context.Context, request DeleteBudgetRequest) error
+	Delete(ctx context.Context, request DeleteBudgetRequest) error
 
 	// Get budget and its status
 	//
 	// Gets the budget specified by its UUID, including noncumulative status for
 	// each day that the budget is configured to include.
-	GetBudget(ctx context.Context, request GetBudgetRequest) (*BudgetWithStatus, error)
+	Get(ctx context.Context, request GetBudgetRequest) (*WrappedBudgetWithStatus, error)
 
 	// Get all budgets
 	//
 	// Gets all budgets associated with this account, including noncumulative
 	// status for each day that the budget is configured to include.
 	//
-	// Use ListBudgetsAll() to get all BudgetWithStatus instances
-	ListBudgets(ctx context.Context) (*BudgetList, error)
+	// Use ListAll() to get all BudgetWithStatus instances
+	List(ctx context.Context) (*BudgetList, error)
 
 	// Modify budget
 	//
 	// Modifies a budget in this account. Budget properties are completely
 	// overwritten.
-	UpdateBudget(ctx context.Context, request UpdateBudgetRequest) error
+	Update(ctx context.Context, request WrappedBudget) error
 }
 
 // These APIs manage log delivery configurations for this account. The two
@@ -148,21 +148,21 @@ type LogDeliveryService interface {
 	// You cannot delete a log delivery configuration, but you can disable it
 	// (see [Enable or disable log delivery
 	// configuration](#operation/patch-log-delivery-config-status)).
-	CreateLogDeliveryConfig(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error)
+	Create(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error)
 
 	// Get log delivery configuration
 	//
 	// Gets a Databricks log delivery configuration object for an account, both
 	// specified by ID.
-	GetLogDeliveryConfig(ctx context.Context, request GetLogDeliveryConfigRequest) (*WrappedLogDeliveryConfiguration, error)
+	Get(ctx context.Context, request GetLogDeliveryRequest) (*WrappedLogDeliveryConfiguration, error)
 
 	// Get all log delivery configurations
 	//
 	// Gets all Databricks log delivery configurations associated with an
 	// account specified by ID.
 	//
-	// Use ListLogDeliveryConfigsAll() to get all LogDeliveryConfiguration instances
-	ListLogDeliveryConfigs(ctx context.Context, request ListLogDeliveryConfigsRequest) (*WrappedLogDeliveryConfigurations, error)
+	// Use ListAll() to get all LogDeliveryConfiguration instances
+	List(ctx context.Context, request ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error)
 
 	// Enable or disable log delivery configuration
 	//
@@ -172,5 +172,5 @@ type LogDeliveryService interface {
 	// configuration if this would violate the delivery configuration limits
 	// described under [Create log
 	// delivery](#operation/create-log-delivery-config).
-	PatchLogDeliveryConfigStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error
+	PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error
 }

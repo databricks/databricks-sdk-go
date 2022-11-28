@@ -34,7 +34,7 @@ func (a *warehousesImpl) CreateWarehouse(ctx context.Context, request CreateWare
 	return &createWarehouseResponse, err
 }
 
-func (a *warehousesImpl) DeleteWarehouse(ctx context.Context, request DeleteWarehouseRequest) error {
+func (a *warehousesImpl) DeleteWarehouse(ctx context.Context, request DeleteWarehouse) error {
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
@@ -46,7 +46,7 @@ func (a *warehousesImpl) EditWarehouse(ctx context.Context, request EditWarehous
 	return err
 }
 
-func (a *warehousesImpl) GetWarehouse(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error) {
+func (a *warehousesImpl) GetWarehouse(ctx context.Context, request GetWarehouse) (*GetWarehouseResponse, error) {
 	var getWarehouseResponse GetWarehouseResponse
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getWarehouseResponse)
@@ -60,7 +60,7 @@ func (a *warehousesImpl) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetW
 	return &getWorkspaceWarehouseConfigResponse, err
 }
 
-func (a *warehousesImpl) ListWarehouses(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error) {
+func (a *warehousesImpl) ListWarehouses(ctx context.Context, request ListWarehouses) (*ListWarehousesResponse, error) {
 	var listWarehousesResponse ListWarehousesResponse
 	path := "/api/2.0/sql/warehouses"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listWarehousesResponse)
@@ -73,13 +73,13 @@ func (a *warehousesImpl) SetWorkspaceWarehouseConfig(ctx context.Context, reques
 	return err
 }
 
-func (a *warehousesImpl) StartWarehouse(ctx context.Context, request StartWarehouseRequest) error {
+func (a *warehousesImpl) StartWarehouse(ctx context.Context, request StartWarehouse) error {
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/start", request.Id)
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
 	return err
 }
 
-func (a *warehousesImpl) StopWarehouse(ctx context.Context, request StopWarehouseRequest) error {
+func (a *warehousesImpl) StopWarehouse(ctx context.Context, request StopWarehouse) error {
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/stop", request.Id)
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
 	return err

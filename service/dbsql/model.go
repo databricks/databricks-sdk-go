@@ -76,6 +76,7 @@ const AlertStateTriggered AlertState = `triggered`
 
 const AlertStateUnknown AlertState = `unknown`
 
+// Create a dashboard object
 type CreateDashboardRequest struct {
 	// In the web application, query filters that share a name are coupled to a
 	// single selection box if this value is true.
@@ -114,7 +115,7 @@ type CreateSubscription struct {
 	// [here](/sql/admin/alert-destinations.html).
 	DestinationId string `json:"destination_id,omitempty"`
 	// ID of the alert subscriber (if subscribing a user).
-	UserId int `json:"user_id,omitempty"`
+	UserId int64 `json:"user_id,omitempty"`
 }
 
 // A JSON representing a dashboard containing widgets of visualizations and text
@@ -194,18 +195,22 @@ type DataSource struct {
 	WarehouseId string `json:"warehouse_id,omitempty"`
 }
 
+// Delete an alert
 type DeleteAlertRequest struct {
 	AlertId string `json:"-" path:"alert_id"`
 }
 
+// Remove a dashboard
 type DeleteDashboardRequest struct {
 	DashboardId string `json:"-" path:"dashboard_id"`
 }
 
+// Delete a query
 type DeleteQueryRequest struct {
 	QueryId string `json:"-" path:"query_id"`
 }
 
+// Delete a refresh schedule
 type DeleteScheduleRequest struct {
 	AlertId string `json:"-" path:"alert_id"`
 
@@ -255,14 +260,17 @@ type EditAlert struct {
 	Rearm int `json:"rearm,omitempty"`
 }
 
+// Get an alert
 type GetAlertRequest struct {
 	AlertId string `json:"-" path:"alert_id"`
 }
 
+// Retrieve a definition
 type GetDashboardRequest struct {
 	DashboardId string `json:"-" path:"dashboard_id"`
 }
 
+// Get object ACL
 type GetPermissionsRequest struct {
 	// Object ID. An ACL is returned for the object with this UUID.
 	ObjectId string `json:"-" path:"objectId"`
@@ -278,10 +286,12 @@ type GetPermissionsResponse struct {
 	ObjectType string `json:"object_type,omitempty"`
 }
 
+// Get a query definition.
 type GetQueryRequest struct {
 	QueryId string `json:"-" path:"query_id"`
 }
 
+// Get an alert's subscriptions
 type GetSubscriptionsRequest struct {
 	AlertId string `json:"-" path:"alert_id"`
 }
@@ -292,6 +302,7 @@ const ListDashboardsOrderCreatedAt ListDashboardsOrder = `created_at`
 
 const ListDashboardsOrderName ListDashboardsOrder = `name`
 
+// Get dashboard objects
 type ListDashboardsRequest struct {
 	// Name of dashboard attribute to order by.
 	Order ListDashboardsOrder `json:"-" url:"order,omitempty"`
@@ -314,6 +325,7 @@ type ListDashboardsResponse struct {
 	Results []Dashboard `json:"results,omitempty"`
 }
 
+// Get a list of queries
 type ListQueriesRequest struct {
 	// Name of query attribute to order by. Default sort order is ascending.
 	// Append a dash (`-`) to order descending instead.
@@ -353,6 +365,7 @@ type ListQueriesResponse struct {
 	Results []Query `json:"results,omitempty"`
 }
 
+// Get refresh schedules
 type ListSchedulesRequest struct {
 	AlertId string `json:"-" path:"alert_id"`
 }
@@ -538,14 +551,17 @@ type RefreshSchedule struct {
 	Id string `json:"id,omitempty"`
 }
 
+// Restore a dashboard
 type RestoreDashboardRequest struct {
 	DashboardId string `json:"-" path:"dashboard_id"`
 }
 
+// Restore a query
 type RestoreQueryRequest struct {
 	QueryId string `json:"-" path:"query_id"`
 }
 
+// Set object ACL
 type SetPermissionsRequest struct {
 	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
 	// Object ID. The ACL for the object with this UUID is overwritten by this
@@ -589,6 +605,7 @@ type TransferOwnershipObjectId struct {
 	NewOwner string `json:"new_owner,omitempty"`
 }
 
+// Transfer object ownership
 type TransferOwnershipRequest struct {
 	// Email address for the new owner, who must exist in the workspace.
 	NewOwner string `json:"new_owner,omitempty"`
@@ -598,6 +615,7 @@ type TransferOwnershipRequest struct {
 	ObjectType OwnableObjectType `json:"-" path:"objectType"`
 }
 
+// Unsubscribe to an alert
 type UnsubscribeRequest struct {
 	AlertId string `json:"-" path:"alert_id"`
 

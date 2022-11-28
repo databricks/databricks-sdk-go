@@ -97,7 +97,7 @@ func (a *ClusterPoliciesAPI) Edit(ctx context.Context, request EditPolicy) error
 //
 // Get a cluster policy entity. Creation and editing is available to admins
 // only.
-func (a *ClusterPoliciesAPI) Get(ctx context.Context, request GetRequest) (*Policy, error) {
+func (a *ClusterPoliciesAPI) Get(ctx context.Context, request Get) (*Policy, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -106,7 +106,7 @@ func (a *ClusterPoliciesAPI) Get(ctx context.Context, request GetRequest) (*Poli
 // Get a cluster policy entity. Creation and editing is available to admins
 // only.
 func (a *ClusterPoliciesAPI) GetByPolicyId(ctx context.Context, policyId string) (*Policy, error) {
-	return a.impl.Get(ctx, GetRequest{
+	return a.impl.Get(ctx, Get{
 		PolicyId: policyId,
 	})
 }

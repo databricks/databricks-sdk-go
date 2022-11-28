@@ -81,7 +81,7 @@ func (a *LibrariesAPI) AllClusterStatuses(ctx context.Context) (*ListAllClusterL
 // 3. Libraries that were previously requested on this cluster or on all
 // clusters, but now marked for removal. Within this group there is no order
 // guarantee.
-func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusRequest) (*ClusterLibraryStatuses, error) {
+func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error) {
 	return a.impl.ClusterStatus(ctx, request)
 }
 
@@ -103,7 +103,7 @@ func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusR
 // clusters, but now marked for removal. Within this group there is no order
 // guarantee.
 func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId string) (*ClusterLibraryStatuses, error) {
-	return a.impl.ClusterStatus(ctx, ClusterStatusRequest{
+	return a.impl.ClusterStatus(ctx, ClusterStatus{
 		ClusterId: clusterId,
 	})
 }

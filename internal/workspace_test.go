@@ -54,7 +54,7 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	assert.True(t, string(getStatusResponse.ObjectType) == "NOTEBOOK")
 
 	// Export the notebook and assert the contents
-	exportResponse, err := w.Workspace.Export(ctx, workspace.ExportRequest{
+	exportResponse, err := w.Workspace.Export(ctx, workspace.Export{
 		DirectDownload: false,
 		Format:         "SOURCE",
 		Path:           filepath.Join(testDirPath, testFileName),
@@ -63,7 +63,7 @@ func TestAccListWorkspaceIntegration(t *testing.T) {
 	assert.True(t, exportResponse.Content == base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")))
 
 	// Assert the test notebook is present in test dir using list api
-	objects, err := w.Workspace.ListAll(ctx, workspace.ListRequest{
+	objects, err := w.Workspace.ListAll(ctx, workspace.List{
 		Path: testDirPath,
 	})
 	require.NoError(t, err)

@@ -49,7 +49,7 @@ func (a *WorkspaceAPI) RecursiveList(ctx context.Context, path string) ([]Object
 	for len(queue) > 0 {
 		path := queue[0]
 		queue = queue[1:]
-		batch, err := a.ListAll(ctx, ListRequest{
+		batch, err := a.ListAll(ctx, List{
 			Path: path,
 		})
 		if err != nil {

@@ -40,25 +40,25 @@ func (a *PermissionsAPI) Impl() PermissionsService {
 //
 // Gets the permission of an object. Objects can inherit permissions from their
 // parent objects or root objects.
-func (a *PermissionsAPI) GetObjectPermissions(ctx context.Context, request GetObjectPermissionsRequest) (*ObjectPermissions, error) {
-	return a.impl.GetObjectPermissions(ctx, request)
+func (a *PermissionsAPI) Get(ctx context.Context, request Get) (*ObjectPermissions, error) {
+	return a.impl.Get(ctx, request)
 }
 
 // Get object permissions
 //
 // Gets the permission of an object. Objects can inherit permissions from their
 // parent objects or root objects.
-func (a *PermissionsAPI) GetObjectPermissionsByObjectTypeAndObjectId(ctx context.Context, objectType string, objectId string) (*ObjectPermissions, error) {
-	return a.impl.GetObjectPermissions(ctx, GetObjectPermissionsRequest{
-		ObjectType: objectType,
-		ObjectId:   objectId,
+func (a *PermissionsAPI) GetByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*ObjectPermissions, error) {
+	return a.impl.Get(ctx, Get{
+		RequestObjectType: requestObjectType,
+		RequestObjectId:   requestObjectId,
 	})
 }
 
 // Get permission levels
 //
 // Gets the permission levels that a user can have on an object.
-func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error) {
+func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPermissionLevels) (*GetPermissionLevelsResponse, error) {
 	return a.impl.GetPermissionLevels(ctx, request)
 }
 
@@ -66,7 +66,7 @@ func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPer
 //
 // Gets the permission levels that a user can have on an object.
 func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error) {
-	return a.impl.GetPermissionLevels(ctx, GetPermissionLevelsRequest{
+	return a.impl.GetPermissionLevels(ctx, GetPermissionLevels{
 		RequestObjectType: requestObjectType,
 		RequestObjectId:   requestObjectId,
 	})
@@ -76,15 +76,15 @@ func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectI
 //
 // Sets permissions on object. Objects can inherit permissions from their parent
 // objects and root objects.
-func (a *PermissionsAPI) SetObjectPermissions(ctx context.Context, request SetObjectPermissions) error {
-	return a.impl.SetObjectPermissions(ctx, request)
+func (a *PermissionsAPI) Set(ctx context.Context, request PermissionsRequest) error {
+	return a.impl.Set(ctx, request)
 }
 
 // Update permission
 //
 // Updates the permissions on an object.
-func (a *PermissionsAPI) UpdateObjectPermissions(ctx context.Context, request UpdateObjectPermissions) error {
-	return a.impl.UpdateObjectPermissions(ctx, request)
+func (a *PermissionsAPI) Update(ctx context.Context, request PermissionsRequest) error {
+	return a.impl.Update(ctx, request)
 }
 
 func NewWorkspaceAssignment(client *client.DatabricksClient) *WorkspaceAssignmentAPI {
@@ -125,7 +125,7 @@ func (a *WorkspaceAssignmentAPI) Create(ctx context.Context, request CreateWorks
 //
 // Deletes the workspace permissions assignment for a given account and
 // workspace using the specified service principal.
-func (a *WorkspaceAssignmentAPI) Delete(ctx context.Context, request DeleteRequest) error {
+func (a *WorkspaceAssignmentAPI) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
 	return a.impl.Delete(ctx, request)
 }
 
@@ -134,7 +134,7 @@ func (a *WorkspaceAssignmentAPI) Delete(ctx context.Context, request DeleteReque
 // Deletes the workspace permissions assignment for a given account and
 // workspace using the specified service principal.
 func (a *WorkspaceAssignmentAPI) DeleteByWorkspaceIdAndPrincipalId(ctx context.Context, workspaceId int64, principalId int64) error {
-	return a.impl.Delete(ctx, DeleteRequest{
+	return a.impl.Delete(ctx, DeleteWorkspaceAssignmentRequest{
 		WorkspaceId: workspaceId,
 		PrincipalId: principalId,
 	})
@@ -144,7 +144,7 @@ func (a *WorkspaceAssignmentAPI) DeleteByWorkspaceIdAndPrincipalId(ctx context.C
 //
 // Get an array of workspace permissions for the specified account and
 // workspace.
-func (a *WorkspaceAssignmentAPI) Get(ctx context.Context, request GetRequest) (*WorkspacePermissions, error) {
+func (a *WorkspaceAssignmentAPI) Get(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspacePermissions, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -153,7 +153,7 @@ func (a *WorkspaceAssignmentAPI) Get(ctx context.Context, request GetRequest) (*
 // Get an array of workspace permissions for the specified account and
 // workspace.
 func (a *WorkspaceAssignmentAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*WorkspacePermissions, error) {
-	return a.impl.Get(ctx, GetRequest{
+	return a.impl.Get(ctx, GetWorkspaceAssignmentRequest{
 		WorkspaceId: workspaceId,
 	})
 }
@@ -164,7 +164,7 @@ func (a *WorkspaceAssignmentAPI) GetByWorkspaceId(ctx context.Context, workspace
 // Databricks Workspace.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *WorkspaceAssignmentAPI) ListAll(ctx context.Context, request ListRequest) ([]PermissionAssignment, error) {
+func (a *WorkspaceAssignmentAPI) ListAll(ctx context.Context, request ListWorkspaceAssignmentRequest) ([]PermissionAssignment, error) {
 	response, err := a.impl.List(ctx, request)
 	if err != nil {
 		return nil, err
@@ -177,7 +177,7 @@ func (a *WorkspaceAssignmentAPI) ListAll(ctx context.Context, request ListReques
 // Get the permission assignments for the specified Databricks Account and
 // Databricks Workspace.
 func (a *WorkspaceAssignmentAPI) ListByWorkspaceId(ctx context.Context, workspaceId int64) (*PermissionAssignments, error) {
-	return a.impl.List(ctx, ListRequest{
+	return a.impl.List(ctx, ListWorkspaceAssignmentRequest{
 		WorkspaceId: workspaceId,
 	})
 }

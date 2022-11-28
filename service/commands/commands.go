@@ -39,7 +39,7 @@ type CommandsHighLevelAPI struct {
 // Any leading whitespace is trimmed
 func (a *CommandsHighLevelAPI) Execute(ctx context.Context, clusterID, language, commandStr string) Results {
 	ctx = useragent.InContext(ctx, "sdk-feature", "command-execution")
-	cluster, err := a.clusters.Get(ctx, clusters.GetRequest{
+	cluster, err := a.clusters.Get(ctx, clusters.Get{
 		ClusterId: clusterID,
 	})
 	if err != nil {

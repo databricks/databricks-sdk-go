@@ -92,7 +92,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	byId, err := w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 	assert.Equal(t, clusterName, byId.ClusterName)
-	assert.Equal(t, clusters.ClusterInfoStateRunning, byId.State)
+	assert.Equal(t, clusters.StateRunning, byId.State)
 
 	// Pin the cluster in the list
 	err = w.Clusters.PinByClusterId(ctx, clstr.ClusterId)
@@ -128,7 +128,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	// Assert that the cluster we've just deleted has Terminated state
 	byId, err = w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
-	assert.Equal(t, byId.State, clusters.ClusterInfoStateTerminated)
+	assert.Equal(t, byId.State, clusters.StateTerminated)
 
 	// Start cluster and wait until it's running again
 	_, err = w.Clusters.StartByClusterIdAndWait(ctx, clstr.ClusterId)
@@ -156,7 +156,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	assert.True(t, len(events) > 0)
 
 	// List clusters in workspace
-	clusters, err := w.Clusters.ListAll(ctx, clusters.ListRequest{})
+	clusters, err := w.Clusters.ListAll(ctx, clusters.List{})
 	require.NoError(t, err)
 
 	var seen int

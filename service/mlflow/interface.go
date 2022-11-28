@@ -15,7 +15,7 @@ type ExperimentsService interface {
 	// already exist and fails if another experiment with the same name already
 	// exists.
 	//
-	// Throws ``RESOURCE_ALREADY_EXISTS`` if a experiment with the given name
+	// Throws `RESOURCE_ALREADY_EXISTS` if a experiment with the given name
 	// exists.
 	Create(ctx context.Context, request CreateExperiment) (*CreateExperimentResponse, error)
 
@@ -41,8 +41,8 @@ type ExperimentsService interface {
 	// multiple deleted\nexperiments share the same name, the API will return
 	// one of them.
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no experiment with the specified
-	// name exists.S
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name
+	// exists.S
 	GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error)
 
 	// List experiments
@@ -57,7 +57,7 @@ type ExperimentsService interface {
 	// "Restore an experiment marked for deletion. This also
 	// restores\nassociated metadata, runs, metrics, params, and tags. If
 	// experiment uses FileStore, underlying\nartifacts associated with
-	// experiment are also restored.\n\nThrows ``RESOURCE_DOES_NOT_EXIST`` if
+	// experiment are also restored.\n\nThrows `RESOURCE_DOES_NOT_EXIST` if
 	// experiment was never created or was permanently deleted.",
 	Restore(ctx context.Context, request RestoreExperiment) error
 
@@ -84,8 +84,8 @@ type MLflowArtifactsService interface {
 
 	// Get all artifacts
 	//
-	// List artifacts for a run. Takes an optional ``artifact_path`` prefix. If
-	// it is specified, the response contains only artifacts with the specified
+	// List artifacts for a run. Takes an optional `artifact_path` prefix. If it
+	// is specified, the response contains only artifacts with the specified
 	// prefix.",
 	//
 	// Use ListAll() to get all FileInfo instances, which will iterate over every result page.
@@ -103,7 +103,7 @@ type MLflowDatabricksService interface {
 	// endpoint](https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel)
 	// that also returns the model's Databricks Workspace ID and the permission
 	// level of the requesting user on the model.
-	Get(ctx context.Context, request GetRequest) (*GetResponse, error)
+	Get(ctx context.Context, request GetMLflowDatabrickRequest) (*GetResponse, error)
 
 	// Transition a stage
 	//
@@ -259,7 +259,7 @@ type ModelVersionCommentsService interface {
 	// Delete a comment
 	//
 	// Deletes a comment on a model version.
-	Delete(ctx context.Context, request DeleteRequest) error
+	Delete(ctx context.Context, request DeleteModelVersionCommentRequest) error
 
 	// Update a comment
 	//
@@ -324,7 +324,7 @@ type RegisteredModelsService interface {
 	// Creates a new registered model with the name specified in the request
 	// body.
 	//
-	// Throws ``RESOURCE_ALREADY_EXISTS`` if a registered model with the given
+	// Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given
 	// name exists.
 	Create(ctx context.Context, request CreateRegisteredModelRequest) (*CreateRegisteredModelResponse, error)
 
@@ -395,7 +395,7 @@ type RegistryWebhooksService interface {
 	// **NOTE:** This endpoint is in Public Preview.
 	//
 	// Deletes a registry webhook.
-	Delete(ctx context.Context, request DeleteRequest) error
+	Delete(ctx context.Context, request DeleteRegistryWebhookRequest) error
 
 	// List registry webhooks
 	//
@@ -404,7 +404,7 @@ type RegistryWebhooksService interface {
 	// Lists all registry webhooks.
 	//
 	// Use ListAll() to get all RegistryWebhook instances, which will iterate over every result page.
-	List(ctx context.Context, request ListRequest) (*ListRegistryWebhooks, error)
+	List(ctx context.Context, request ListRegistryWebhooksRequest) (*ListRegistryWebhooks, error)
 
 	// Test a webhook
 	//
@@ -436,14 +436,14 @@ type TransitionRequestsService interface {
 	// Delete a ransition request
 	//
 	// Cancels a model version stage transition request.
-	Delete(ctx context.Context, request DeleteRequest) error
+	Delete(ctx context.Context, request DeleteTransitionRequestRequest) error
 
 	// List transition requests
 	//
 	// Gets a list of all open stage transition requests for the model version.
 	//
 	// Use ListAll() to get all Activity instances
-	List(ctx context.Context, request ListRequest) (*ListResponse, error)
+	List(ctx context.Context, request ListTransitionRequestsRequest) (*ListResponse, error)
 
 	// Reject a transition request
 	//
