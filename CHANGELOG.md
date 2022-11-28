@@ -2,4 +2,4 @@
 
 ## 0.1.0
 
- * Initial release of Databricks SDK for Go.
+ * Initial release of the Databricks SDK for Go.
