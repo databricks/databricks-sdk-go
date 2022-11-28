@@ -93,7 +93,10 @@ func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .R
 func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) ([]{{.Pagination.Entity.PascalName}}, error) {
 	{{if .Pagination.MultiRequest}}var results []{{.Pagination.Entity.PascalName}}
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-	{{if eq .Pagination.Increment 1 -}}
+	{{if .Pagination.NeedsOffsetDedupe -}}
+	// deduplicate items that may have been added during iteration
+	seen := map[{{template "type" .Pagination.Entity.IdentifierField.Entity}}]bool{}
+	{{end}}{{if eq .Pagination.Increment 1 -}}
 	request.{{.Pagination.Offset.PascalName}} = 1 // start iterating from the first page
 	{{end}}for {
 		response, err := a.impl.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
@@ -104,6 +107,14 @@ func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Reque
 			break
 		}
 		for _, v := range response.{{.Pagination.Results.PascalName}} {
+			{{- if .Pagination.NeedsOffsetDedupe -}}
+			id := v.{{.Pagination.Entity.IdentifierField.PascalName}}
+			if seen[id] {
+				// item was added during iteration
+				continue
+			}
+			seen[id] = true
+			{{- end}}
 			results = append(results, v)
 		}
 		{{if .Pagination.Token -}}
