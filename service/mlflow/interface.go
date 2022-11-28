@@ -15,7 +15,7 @@ type ExperimentsService interface {
 	// already exist and fails if another experiment with the same name already
 	// exists.
 	//
-	// Throws ``RESOURCE_ALREADY_EXISTS`` if a experiment with the given name
+	// Throws `RESOURCE_ALREADY_EXISTS` if a experiment with the given name
 	// exists.
 	Create(ctx context.Context, request CreateExperiment) (*CreateExperimentResponse, error)
 
@@ -41,8 +41,8 @@ type ExperimentsService interface {
 	// multiple deleted\nexperiments share the same name, the API will return
 	// one of them.
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no experiment with the specified
-	// name exists.S
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name
+	// exists.S
 	GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error)
 
 	// List experiments
@@ -57,7 +57,7 @@ type ExperimentsService interface {
 	// "Restore an experiment marked for deletion. This also
 	// restores\nassociated metadata, runs, metrics, params, and tags. If
 	// experiment uses FileStore, underlying\nartifacts associated with
-	// experiment are also restored.\n\nThrows ``RESOURCE_DOES_NOT_EXIST`` if
+	// experiment are also restored.\n\nThrows `RESOURCE_DOES_NOT_EXIST` if
 	// experiment was never created or was permanently deleted.",
 	Restore(ctx context.Context, request RestoreExperiment) error
 
@@ -84,8 +84,8 @@ type MLflowArtifactsService interface {
 
 	// Get all artifacts
 	//
-	// List artifacts for a run. Takes an optional ``artifact_path`` prefix. If
-	// it is specified, the response contains only artifacts with the specified
+	// List artifacts for a run. Takes an optional `artifact_path` prefix. If it
+	// is specified, the response contains only artifacts with the specified
 	// prefix.",
 	//
 	// Use ListAll() to get all FileInfo instances, which will iterate over every result page.
@@ -324,7 +324,7 @@ type RegisteredModelsService interface {
 	// Creates a new registered model with the name specified in the request
 	// body.
 	//
-	// Throws ``RESOURCE_ALREADY_EXISTS`` if a registered model with the given
+	// Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given
 	// name exists.
 	Create(ctx context.Context, request CreateRegisteredModelRequest) (*CreateRegisteredModelResponse, error)
 

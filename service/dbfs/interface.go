@@ -14,16 +14,16 @@ type DbfsService interface {
 	//
 	// Appends a block of data to the stream specified by the input handle. If
 	// the handle does not exist, this call will throw an exception with
-	// ``RESOURCE_DOES_NOT_EXIST``.
+	// `RESOURCE_DOES_NOT_EXIST`.
 	//
 	// If the block of data exceeds 1 MB, this call will throw an exception with
-	// ``MAX_BLOCK_SIZE_EXCEEDED``.
+	// `MAX_BLOCK_SIZE_EXCEEDED`.
 	AddBlock(ctx context.Context, request AddBlock) error
 
 	// Close the stream
 	//
 	// Closes the stream specified by the input handle. If the handle does not
-	// exist, this call throws an exception with ``RESOURCE_DOES_NOT_EXIST``.
+	// exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
 	Close(ctx context.Context, request Close) error
 
 	// Open a stream
@@ -31,7 +31,7 @@ type DbfsService interface {
 	// "Opens a stream to write to a file and returns a handle to this stream.
 	// There is a 10 minute idle timeout on this handle. If a file or directory
 	// already exists on the given path and __overwrite__ is set to `false`,
-	// this call throws an exception with ``RESOURCE_ALREADY_EXISTS``.
+	// this call throws an exception with `RESOURCE_ALREADY_EXISTS`.
 	//
 	// A typical workflow for file upload would be:
 	//
@@ -66,7 +66,7 @@ type DbfsService interface {
 	//
 	// Gets the file information for a file or directory. If the file or
 	// directory does not exist, this call throws an exception with
-	// ``RESOURCE_DOES_NOT_EXIST``.
+	// `RESOURCE_DOES_NOT_EXIST`.
 	GetStatus(ctx context.Context, request GetStatus) (*FileInfo, error)
 
 	// List directory contents or file details
@@ -91,7 +91,7 @@ type DbfsService interface {
 	//
 	// Creates the given directory and necessary parent directories if they do
 	// not exist. If a file (not a directory) exists at any prefix of the input
-	// path, this call throws an exception with ``RESOURCE_ALREADY_EXISTS``.
+	// path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`.
 	// **Note**: If this operation fails, it might have succeeded in creating
 	// some of the necessary parent directories.
 	Mkdirs(ctx context.Context, request MkDirs) error
@@ -100,8 +100,8 @@ type DbfsService interface {
 	//
 	// Moves a file from one location to another location within DBFS. If the
 	// source file does not exist, this call throws an exception with
-	// ``RESOURCE_DOES_NOT_EXIST``. If a file already exists in the destination
-	// path, this call throws an exception with ``RESOURCE_ALREADY_EXISTS``. If
+	// `RESOURCE_DOES_NOT_EXIST`. If a file already exists in the destination
+	// path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If
 	// the given source path is a directory, this call always recursively moves
 	// all files.",
 	Move(ctx context.Context, request Move) error
@@ -115,8 +115,8 @@ type DbfsService interface {
 	// Alternatively you can pass contents as base64 string.
 	//
 	// The amount of data that can be passed (when not streaming) using the
-	// __contents__ parameter is limited to 1 MB. ``MAX_BLOCK_SIZE_EXCEEDED``
-	// will be thrown if this limit is exceeded.
+	// __contents__ parameter is limited to 1 MB. `MAX_BLOCK_SIZE_EXCEEDED` will
+	// be thrown if this limit is exceeded.
 	//
 	// If you want to upload large files, use the streaming upload. For details,
 	// see :method:create, :method:addBlock, :method:close.
@@ -125,13 +125,13 @@ type DbfsService interface {
 	// Get the contents of a file
 	//
 	// "Returns the contents of a file. If the file does not exist, this call
-	// throws an exception with ``RESOURCE_DOES_NOT_EXIST``. If the path is a
+	// throws an exception with `RESOURCE_DOES_NOT_EXIST`. If the path is a
 	// directory, the read length is negative, or if the offset is negative,
-	// this call throws an exception with ``INVALID_PARAMETER_VALUE``. If the
-	// read length exceeds 1 MB, this call throws an\nexception with
-	// ``MAX_READ_SIZE_EXCEEDED``.
+	// this call throws an exception with `INVALID_PARAMETER_VALUE`. If the read
+	// length exceeds 1 MB, this call throws an\nexception with
+	// `MAX_READ_SIZE_EXCEEDED`.
 	//
-	// If ``offset + length`` exceeds the number of bytes in a file, it reads
-	// the contents until the end of file.",
+	// If `offset + length` exceeds the number of bytes in a file, it reads the
+	// contents until the end of file.",
 	Read(ctx context.Context, request Read) (*ReadResponse, error)
 }

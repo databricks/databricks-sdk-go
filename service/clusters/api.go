@@ -77,9 +77,9 @@ func (a *ClustersAPI) ChangeOwner(ctx context.Context, request ChangeClusterOwne
 //
 // Creates a new Spark cluster. This method will acquire new instances from the
 // cloud provider if necessary. This method is asynchronous; the returned
-// “cluster_id“ can be used to poll the cluster status. When this method
-// returns, the cluster will be in\na “PENDING“ state. The cluster will be
-// usable once it enters a “RUNNING“ state.
+// `cluster_id` can be used to poll the cluster status. When this method
+// returns, the cluster will be in\na `PENDING` state. The cluster will be
+// usable once it enters a `RUNNING` state.
 //
 // Note: Databricks may not be able to acquire some of the requested nodes, due
 // to cloud provider limitations (account limits, spot price, etc.) or transient
@@ -138,8 +138,8 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 //
 // Terminates the Spark cluster with the specified ID. The cluster is removed
 // asynchronously. Once the termination has completed, the cluster will be in a
-// “TERMINATED“ state. If the cluster is already in a “TERMINATING“ or
-// “TERMINATED“ state, nothing will happen.
+// `TERMINATED` state. If the cluster is already in a `TERMINATING` or
+// `TERMINATED` state, nothing will happen.
 func (a *ClustersAPI) Delete(ctx context.Context, request DeleteCluster) error {
 	return a.impl.Delete(ctx, request)
 }
@@ -190,8 +190,8 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteClu
 //
 // Terminates the Spark cluster with the specified ID. The cluster is removed
 // asynchronously. Once the termination has completed, the cluster will be in a
-// “TERMINATED“ state. If the cluster is already in a “TERMINATING“ or
-// “TERMINATED“ state, nothing will happen.
+// `TERMINATED` state. If the cluster is already in a `TERMINATING` or
+// `TERMINATED` state, nothing will happen.
 func (a *ClustersAPI) DeleteByClusterId(ctx context.Context, clusterId string) error {
 	return a.impl.Delete(ctx, DeleteCluster{
 		ClusterId: clusterId,
@@ -207,16 +207,15 @@ func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId st
 // Update cluster configuration
 //
 // Updates the configuration of a cluster to match the provided attributes and
-// size. A cluster can be updated if it is in a “RUNNING“ or “TERMINATED“
-// state.
+// size. A cluster can be updated if it is in a `RUNNING` or `TERMINATED` state.
 //
-// If a cluster is updated while in a “RUNNING“ state, it will be restarted so
+// If a cluster is updated while in a `RUNNING` state, it will be restarted so
 // that the new attributes can take effect.
 //
-// If a cluster is updated while in a “TERMINATED“ state, it will remain
-// “TERMINATED“. The next time it is started using the “clusters/start“ API,
-// the new attributes will take effect. Any attempt to update a cluster in any
-// other state will be rejected with an “INVALID_STATE“ error code.
+// If a cluster is updated while in a `TERMINATED` state, it will remain
+// `TERMINATED`. The next time it is started using the `clusters/start` API, the
+// new attributes will take effect. Any attempt to update a cluster in any other
+// state will be rejected with an `INVALID_STATE` error code.
 //
 // Clusters created by the Databricks Jobs service cannot be edited.
 func (a *ClustersAPI) Edit(ctx context.Context, request EditCluster) error {
@@ -633,7 +632,7 @@ func (a *ClustersAPI) SparkVersions(ctx context.Context) (*GetSparkVersionsRespo
 // * The previous cluster id and attributes are preserved. * The cluster starts
 // with the last specified cluster size. * If the previous cluster was an
 // autoscaling cluster, the current cluster starts with the minimum number of
-// nodes. * If the cluster is not currently in a “TERMINATED“ state, nothing
+// nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
 // will happen. * Clusters launched to run a job cannot be started.
 func (a *ClustersAPI) Start(ctx context.Context, request StartCluster) error {
 	return a.impl.Start(ctx, request)
@@ -689,7 +688,7 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 // * The previous cluster id and attributes are preserved. * The cluster starts
 // with the last specified cluster size. * If the previous cluster was an
 // autoscaling cluster, the current cluster starts with the minimum number of
-// nodes. * If the cluster is not currently in a “TERMINATED“ state, nothing
+// nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
 // will happen. * Clusters launched to run a job cannot be started.
 func (a *ClustersAPI) StartByClusterId(ctx context.Context, clusterId string) error {
 	return a.impl.Start(ctx, StartCluster{

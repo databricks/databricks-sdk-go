@@ -105,7 +105,7 @@ type Read struct {
 }
 
 type ReadResponse struct {
-	// The number of bytes read (could be less than ``length`` if we hit end of
+	// The number of bytes read (could be less than `length` if we hit end of
 	// file). This refers to number of bytes read in unencoded version (response
 	// data is base64-encoded).
 	BytesRead int64 `json:"bytes_read,omitempty"`

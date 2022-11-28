@@ -40,10 +40,10 @@ func (a *DbfsAPI) Impl() DbfsService {
 //
 // Appends a block of data to the stream specified by the input handle. If the
 // handle does not exist, this call will throw an exception with
-// “RESOURCE_DOES_NOT_EXIST“.
+// `RESOURCE_DOES_NOT_EXIST`.
 //
 // If the block of data exceeds 1 MB, this call will throw an exception with
-// “MAX_BLOCK_SIZE_EXCEEDED“.
+// `MAX_BLOCK_SIZE_EXCEEDED`.
 func (a *DbfsAPI) AddBlock(ctx context.Context, request AddBlock) error {
 	return a.impl.AddBlock(ctx, request)
 }
@@ -51,7 +51,7 @@ func (a *DbfsAPI) AddBlock(ctx context.Context, request AddBlock) error {
 // Close the stream
 //
 // Closes the stream specified by the input handle. If the handle does not
-// exist, this call throws an exception with “RESOURCE_DOES_NOT_EXIST“.
+// exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
 func (a *DbfsAPI) Close(ctx context.Context, request Close) error {
 	return a.impl.Close(ctx, request)
 }
@@ -59,7 +59,7 @@ func (a *DbfsAPI) Close(ctx context.Context, request Close) error {
 // Close the stream
 //
 // Closes the stream specified by the input handle. If the handle does not
-// exist, this call throws an exception with “RESOURCE_DOES_NOT_EXIST“.
+// exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
 func (a *DbfsAPI) CloseByHandle(ctx context.Context, handle int64) error {
 	return a.impl.Close(ctx, Close{
 		Handle: handle,
@@ -71,7 +71,7 @@ func (a *DbfsAPI) CloseByHandle(ctx context.Context, handle int64) error {
 // "Opens a stream to write to a file and returns a handle to this stream. There
 // is a 10 minute idle timeout on this handle. If a file or directory already
 // exists on the given path and __overwrite__ is set to `false`, this call
-// throws an exception with “RESOURCE_ALREADY_EXISTS“.
+// throws an exception with `RESOURCE_ALREADY_EXISTS`.
 //
 // A typical workflow for file upload would be:
 //
@@ -109,8 +109,7 @@ func (a *DbfsAPI) Delete(ctx context.Context, request Delete) error {
 // Get the information of a file or directory
 //
 // Gets the file information for a file or directory. If the file or directory
-// does not exist, this call throws an exception with
-// “RESOURCE_DOES_NOT_EXIST“.
+// does not exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
 func (a *DbfsAPI) GetStatus(ctx context.Context, request GetStatus) (*FileInfo, error) {
 	return a.impl.GetStatus(ctx, request)
 }
@@ -118,8 +117,7 @@ func (a *DbfsAPI) GetStatus(ctx context.Context, request GetStatus) (*FileInfo, 
 // Get the information of a file or directory
 //
 // Gets the file information for a file or directory. If the file or directory
-// does not exist, this call throws an exception with
-// “RESOURCE_DOES_NOT_EXIST“.
+// does not exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
 func (a *DbfsAPI) GetStatusByPath(ctx context.Context, path string) (*FileInfo, error) {
 	return a.impl.GetStatus(ctx, GetStatus{
 		Path: path,
@@ -172,7 +170,7 @@ func (a *DbfsAPI) ListByPath(ctx context.Context, path string) (*ListStatusRespo
 //
 // Creates the given directory and necessary parent directories if they do not
 // exist. If a file (not a directory) exists at any prefix of the input path,
-// this call throws an exception with “RESOURCE_ALREADY_EXISTS“. **Note**: If
+// this call throws an exception with `RESOURCE_ALREADY_EXISTS`. **Note**: If
 // this operation fails, it might have succeeded in creating some of the
 // necessary parent directories.
 func (a *DbfsAPI) Mkdirs(ctx context.Context, request MkDirs) error {
@@ -183,7 +181,7 @@ func (a *DbfsAPI) Mkdirs(ctx context.Context, request MkDirs) error {
 //
 // Creates the given directory and necessary parent directories if they do not
 // exist. If a file (not a directory) exists at any prefix of the input path,
-// this call throws an exception with “RESOURCE_ALREADY_EXISTS“. **Note**: If
+// this call throws an exception with `RESOURCE_ALREADY_EXISTS`. **Note**: If
 // this operation fails, it might have succeeded in creating some of the
 // necessary parent directories.
 func (a *DbfsAPI) MkdirsByPath(ctx context.Context, path string) error {
@@ -196,10 +194,9 @@ func (a *DbfsAPI) MkdirsByPath(ctx context.Context, path string) error {
 //
 // Moves a file from one location to another location within DBFS. If the source
 // file does not exist, this call throws an exception with
-// “RESOURCE_DOES_NOT_EXIST“. If a file already exists in the destination
-// path, this call throws an exception with “RESOURCE_ALREADY_EXISTS“. If the
-// given source path is a directory, this call always recursively moves all
-// files.",
+// `RESOURCE_DOES_NOT_EXIST`. If a file already exists in the destination path,
+// this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If the given
+// source path is a directory, this call always recursively moves all files.",
 func (a *DbfsAPI) Move(ctx context.Context, request Move) error {
 	return a.impl.Move(ctx, request)
 }
@@ -213,8 +210,8 @@ func (a *DbfsAPI) Move(ctx context.Context, request Move) error {
 // Alternatively you can pass contents as base64 string.
 //
 // The amount of data that can be passed (when not streaming) using the
-// __contents__ parameter is limited to 1 MB. “MAX_BLOCK_SIZE_EXCEEDED“ will
-// be thrown if this limit is exceeded.
+// __contents__ parameter is limited to 1 MB. `MAX_BLOCK_SIZE_EXCEEDED` will be
+// thrown if this limit is exceeded.
 //
 // If you want to upload large files, use the streaming upload. For details, see
 // :method:create, :method:addBlock, :method:close.
@@ -225,12 +222,12 @@ func (a *DbfsAPI) Put(ctx context.Context, request Put) error {
 // Get the contents of a file
 //
 // "Returns the contents of a file. If the file does not exist, this call throws
-// an exception with “RESOURCE_DOES_NOT_EXIST“. If the path is a directory,
-// the read length is negative, or if the offset is negative, this call throws
-// an exception with “INVALID_PARAMETER_VALUE“. If the read length exceeds 1
-// MB, this call throws an\nexception with “MAX_READ_SIZE_EXCEEDED“.
+// an exception with `RESOURCE_DOES_NOT_EXIST`. If the path is a directory, the
+// read length is negative, or if the offset is negative, this call throws an
+// exception with `INVALID_PARAMETER_VALUE`. If the read length exceeds 1 MB,
+// this call throws an\nexception with `MAX_READ_SIZE_EXCEEDED`.
 //
-// If “offset + length“ exceeds the number of bytes in a file, it reads the
+// If `offset + length` exceeds the number of bytes in a file, it reads the
 // contents until the end of file.",
 func (a *DbfsAPI) Read(ctx context.Context, request Read) (*ReadResponse, error) {
 	return a.impl.Read(ctx, request)

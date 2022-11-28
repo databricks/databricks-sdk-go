@@ -31,9 +31,9 @@ type SecretsService interface {
 	//
 	// Deletes the given ACL on the given scope.
 	//
-	// Users must have the ``MANAGE`` permission to invoke this API. Throws
-	// ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope, principal, or ACL
-	// exists. Throws ``PERMISSION_DENIED`` if the user does not have permission
+	// Users must have the `MANAGE` permission to invoke this API. Throws
+	// `RESOURCE_DOES_NOT_EXIST` if no such secret scope, principal, or ACL
+	// exists. Throws `PERMISSION_DENIED` if the user does not have permission
 	// to make this API call.
 	DeleteAcl(ctx context.Context, request DeleteAcl) error
 
@@ -41,39 +41,39 @@ type SecretsService interface {
 	//
 	// Deletes a secret scope.
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if the scope does not exist. Throws
-	// ``PERMISSION_DENIED`` if the user does not have permission to make this
-	// API call.
+	// Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws
+	// `PERMISSION_DENIED` if the user does not have permission to make this API
+	// call.
 	DeleteScope(ctx context.Context, request DeleteScope) error
 
 	// Delete a secret
 	//
-	// Deletes the secret stored in this secret scope. You must have ``WRITE``
-	// or ``MANAGE`` permission on the secret scope.
+	// Deletes the secret stored in this secret scope. You must have `WRITE` or
+	// `MANAGE` permission on the secret scope.
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret
-	// exists. Throws ``PERMISSION_DENIED`` if the user does not have permission
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope or secret
+	// exists. Throws `PERMISSION_DENIED` if the user does not have permission
 	// to make this API call.
 	DeleteSecret(ctx context.Context, request DeleteSecret) error
 
 	// Get secret ACL details
 	//
 	// Gets the details about the given ACL, such as the group and permission.
-	// Users must have the ``MANAGE`` permission to invoke this API.
+	// Users must have the `MANAGE` permission to invoke this API.
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
-	// ``PERMISSION_DENIED`` if the user does not have permission to make this
-	// API call.
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+	// `PERMISSION_DENIED` if the user does not have permission to make this API
+	// call.
 	GetAcl(ctx context.Context, request GetAcl) (*AclItem, error)
 
 	// Lists ACLs
 	//
-	// List the ACLs for a given secret scope. Users must have the ``MANAGE``
+	// List the ACLs for a given secret scope. Users must have the `MANAGE`
 	// permission to invoke this API.
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
-	// ``PERMISSION_DENIED`` if the user does not have permission to make this
-	// API call.
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+	// `PERMISSION_DENIED` if the user does not have permission to make this API
+	// call.
 	//
 	// Use ListAclsAll() to get all AclItem instances
 	ListAcls(ctx context.Context, request ListAcls) (*ListAclsResponse, error)
@@ -82,7 +82,7 @@ type SecretsService interface {
 	//
 	// Lists all secret scopes available in the workspace.
 	//
-	// Throws ``PERMISSION_DENIED`` if the user does not have permission to make
+	// Throws `PERMISSION_DENIED` if the user does not have permission to make
 	// this API call.
 	//
 	// Use ListScopesAll() to get all SecretScope instances
@@ -95,9 +95,9 @@ type SecretsService interface {
 	// Users need the READ permission to make this call.
 	//
 	// The lastUpdatedTimestamp returned is in milliseconds since epoch. Throws
-	// ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
-	// ``PERMISSION_DENIED`` if the user does not have permission to make this
-	// API call.
+	// `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+	// `PERMISSION_DENIED` if the user does not have permission to make this API
+	// call.
 	//
 	// Use ListSecretsAll() to get all SecretMetadata instances
 	ListSecrets(ctx context.Context, request ListSecrets) (*ListSecretsResponse, error)
@@ -110,9 +110,9 @@ type SecretsService interface {
 	// In general, a user or group will use the most powerful permission
 	// available to them, and permissions are ordered as follows:
 	//
-	// * ``MANAGE`` - Allowed to change ACLs, and read and write to this secret
-	// scope. * ``WRITE`` - Allowed to read and write to this secret scope. *
-	// ``READ`` - Allowed to read this secret scope and list what secrets are
+	// * `MANAGE` - Allowed to change ACLs, and read and write to this secret
+	// scope. * `WRITE` - Allowed to read and write to this secret scope. *
+	// `READ` - Allowed to read this secret scope and list what secrets are
 	// available.
 	//
 	// Note that in general, secret values can only be read from within a
@@ -121,15 +121,15 @@ type SecretsService interface {
 	// the user's permission will be applied based on who is executing the
 	// command, and they must have at least READ permission.
 	//
-	// Users must have the ``MANAGE`` permission to invoke this API.
+	// Users must have the `MANAGE` permission to invoke this API.
 	//
 	// The principal is a user or group name corresponding to an existing
 	// Databricks principal to be granted or revoked access.
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
-	// ``RESOURCE_ALREADY_EXISTS`` if a permission for the principal already
-	// exists. Throws ``INVALID_PARAMETER_VALUE`` if the permission is invalid.
-	// Throws ``PERMISSION_DENIED`` if the user does not have permission to make
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+	// `RESOURCE_ALREADY_EXISTS` if a permission for the principal already
+	// exists. Throws `INVALID_PARAMETER_VALUE` if the permission is invalid.
+	// Throws `PERMISSION_DENIED` if the user does not have permission to make
 	// this API call.
 	PutAcl(ctx context.Context, request PutAcl) error
 
@@ -140,7 +140,7 @@ type SecretsService interface {
 	// existing secret's value. The server encrypts the secret using the secret
 	// scope's encryption settings before storing it.
 	//
-	// You must have ``WRITE`` or ``MANAGE`` permission on the secret scope. The
+	// You must have `WRITE` or `MANAGE` permission on the secret scope. The
 	// secret key must consist of alphanumeric characters, dashes, underscores,
 	// and periods, and cannot exceed 128 characters. The maximum allowed secret
 	// value size is 128 KB. The maximum number of secrets in a given scope is
@@ -150,10 +150,10 @@ type SecretsService interface {
 	// secret, which will determine the value returned when the secret value is
 	// requested. Exactly one must be specified.
 	//
-	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
-	// ``RESOURCE_LIMIT_EXCEEDED`` if maximum number of secrets in scope is
-	// exceeded. Throws ``INVALID_PARAMETER_VALUE`` if the key name or value
-	// length is invalid. Throws ``PERMISSION_DENIED`` if the user does not have
+	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+	// `RESOURCE_LIMIT_EXCEEDED` if maximum number of secrets in scope is
+	// exceeded. Throws `INVALID_PARAMETER_VALUE` if the key name or value
+	// length is invalid. Throws `PERMISSION_DENIED` if the user does not have
 	// permission to make this API call.
 	PutSecret(ctx context.Context, request PutSecret) error
 }

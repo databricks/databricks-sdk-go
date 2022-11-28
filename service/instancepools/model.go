@@ -13,7 +13,7 @@ type CreateInstancePool struct {
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes:
+	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
@@ -83,10 +83,10 @@ type DiskSpec struct {
 	// Databricks will configure Spark to use instance store disks.
 	//
 	// Note: If disks are specified, then the Spark configuration
-	// ``spark.local.dir`` will be overridden.
+	// `spark.local.dir` will be overridden.
 	//
-	// Disks will be mounted at: - For AWS: ``/ebs0``, ``/ebs1``, and etc. - For
-	// Azure: ``/remote_volume0``, ``/remote_volume1``, and etc.
+	// Disks will be mounted at: - For AWS: `/ebs0`, `/ebs1`, and etc. - For
+	// Azure: `/remote_volume0`, `/remote_volume1`, and etc.
 	DiskCount int `json:"disk_count,omitempty"`
 
 	DiskIops int `json:"disk_iops,omitempty"`
@@ -144,7 +144,7 @@ type EditInstancePool struct {
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes:
+	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows up to 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
@@ -278,11 +278,11 @@ type GetInstancePool struct {
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes:
+	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Tags that are added by Databricks regardless of any ``custom_tags``,
+	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
 	//
 	// - Vendor: Databricks
@@ -360,11 +360,11 @@ type InstancePoolAndStats struct {
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes:
+	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows up to 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Tags that are added by Databricks regardless of any ``custom_tags``,
+	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
 	//
 	// - Vendor: Databricks
@@ -441,12 +441,12 @@ type InstancePoolAwsAttributes struct {
 	Availability InstancePoolAwsAttributesAvailability `json:"availability,omitempty"`
 	// Calculates the bid price for AWS spot instances, as a percentage of the
 	// corresponding instance type's on-demand price. For example, if this field
-	// is set to 50, and the cluster needs a new ``r3.xlarge`` spot instance,
-	// then the bid price is half of the price of on-demand ``r3.xlarge``
-	// instances. Similarly, if this field is set to 200, the bid price is twice
-	// the price of on-demand ``r3.xlarge`` instances. If not specified, the
-	// default value is 100. When spot instances are requested for this cluster,
-	// only spot instances whose bid price percentage matches this field will be
+	// is set to 50, and the cluster needs a new `r3.xlarge` spot instance, then
+	// the bid price is half of the price of on-demand `r3.xlarge` instances.
+	// Similarly, if this field is set to 200, the bid price is twice the price
+	// of on-demand `r3.xlarge` instances. If not specified, the default value
+	// is 100. When spot instances are requested for this cluster, only spot
+	// instances whose bid price percentage matches this field will be
 	// considered. Note that, for safety, we enforce this field to be no more
 	// than 10000.
 	//
