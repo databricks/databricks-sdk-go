@@ -10,6 +10,15 @@ type Channel struct {
 	Name ChannelName `json:"name,omitempty"`
 }
 
+// Channel information for the SQL warehouse at the time of query execution
+type ChannelInfo struct {
+	// DBSQL Version the channel is mapped to
+	DbsqlVersion string `json:"dbsql_version,omitempty"`
+	// Name of the channel
+	Name ChannelName `json:"name,omitempty"`
+}
+
+// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -122,9 +131,10 @@ type CreateWarehouseResponse struct {
 	Id string `json:"id,omitempty"`
 }
 
-type DeleteWarehouseRequest struct {
+// Delete a warehouse
+type DeleteWarehouse struct {
 	// Required. Id of the SQL warehouse.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type EditWarehouseRequest struct {
@@ -166,7 +176,7 @@ type EditWarehouseRequest struct {
 	// Defaults to value in global endpoint settings
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// Required. Id of the warehouse to configure.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
@@ -407,9 +417,10 @@ type EndpointTags struct {
 	CustomTags []EndpointTagPair `json:"custom_tags,omitempty"`
 }
 
-type GetWarehouseRequest struct {
+// Get warehouse info
+type GetWarehouse struct {
 	// Required. Id of the SQL warehouse.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type GetWarehouseResponse struct {
@@ -587,6 +598,7 @@ const GetWorkspaceWarehouseConfigResponseSecurityPolicyNone GetWorkspaceWarehous
 
 const GetWorkspaceWarehouseConfigResponseSecurityPolicyPassthrough GetWorkspaceWarehouseConfigResponseSecurityPolicy = `PASSTHROUGH`
 
+// List
 type ListQueriesRequest struct {
 	// A filter to limit query history results. This field is optional.
 	FilterBy *QueryFilter `json:"-" url:"filter_by,omitempty"`
@@ -607,9 +619,10 @@ type ListQueriesResponse struct {
 	Res []QueryInfo `json:"res,omitempty"`
 }
 
-type ListWarehousesRequest struct {
+// List warehouses
+type ListWarehouses struct {
 	// Service Principal which will be used to fetch the list of endpoints. If
-	// not specified, GW will use the user from the session header.
+	// not specified, the user from the session header is used.
 	RunAsUserId int `json:"-" url:"run_as_user_id,omitempty"`
 }
 
@@ -628,50 +641,78 @@ type OdbcParams struct {
 	Protocol string `json:"protocol,omitempty"`
 }
 
+// Whether plans exist for the execution, or the reason why they are missing
+type PlansState string
+
+const PlansStateEmpty PlansState = `EMPTY`
+
+const PlansStateExists PlansState = `EXISTS`
+
+const PlansStateIgnoredLargePlansSize PlansState = `IGNORED_LARGE_PLANS_SIZE`
+
+const PlansStateIgnoredSmallDuration PlansState = `IGNORED_SMALL_DURATION`
+
+const PlansStateIgnoredSparkPlanType PlansState = `IGNORED_SPARK_PLAN_TYPE`
+
+const PlansStateUnknown PlansState = `UNKNOWN`
+
 // A filter to limit query history results. This field is optional.
 type QueryFilter struct {
-	EndpointIds []string `json:"endpoint_ids,omitempty"`
-
 	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty"`
 
 	Statuses []QueryStatus `json:"statuses,omitempty"`
-
+	// A list of user IDs who ran the queries.
 	UserIds []int `json:"user_ids,omitempty"`
-
+	// A list of warehouse IDs.
 	WarehouseIds []string `json:"warehouse_ids,omitempty"`
 }
 
 type QueryInfo struct {
+	// Channel information for the SQL warehouse at the time of query execution
+	ChannelUsed *ChannelInfo `json:"channel_used,omitempty"`
+	// Total execution time of the query from the client’s point of view, in
+	// milliseconds.
+	Duration int `json:"duration,omitempty"`
+	// Alias for `warehouse_id`.
 	EndpointId string `json:"endpoint_id,omitempty"`
-
+	// Message describing why the query could not complete.
 	ErrorMessage string `json:"error_message,omitempty"`
-
+	// The ID of the user whose credentials were used to run the query.
+	ExecutedAsUserId int `json:"executed_as_user_id,omitempty"`
+	// The email address or username of the user whose credentials were used to
+	// run the query.
+	ExecutedAsUserName string `json:"executed_as_user_name,omitempty"`
+	// The time execution of the query ended.
 	ExecutionEndTimeMs int `json:"execution_end_time_ms,omitempty"`
 	// Whether more updates for the query are expected.
 	IsFinal bool `json:"is_final,omitempty"`
-
+	// A key that can be used to look up query details.
 	LookupKey string `json:"lookup_key,omitempty"`
-
+	// Metrics about query execution.
 	Metrics *QueryMetrics `json:"metrics,omitempty"`
-
+	// Whether plans exist for the execution, or the reason why they are missing
+	PlansState PlansState `json:"plans_state,omitempty"`
+	// The time the query ended.
 	QueryEndTimeMs int `json:"query_end_time_ms,omitempty"`
-
+	// The query ID.
 	QueryId string `json:"query_id,omitempty"`
-
+	// The time the query started.
 	QueryStartTimeMs int `json:"query_start_time_ms,omitempty"`
-
+	// The text of the query.
 	QueryText string `json:"query_text,omitempty"`
-
+	// The number of results returned by the query.
 	RowsProduced int `json:"rows_produced,omitempty"`
-
+	// URL to the query plan.
 	SparkUiUrl string `json:"spark_ui_url,omitempty"`
-
+	// Type of statement for this query
+	StatementType QueryStatementType `json:"statement_type,omitempty"`
+	// This describes an enum
 	Status QueryStatus `json:"status,omitempty"`
-
+	// The ID of the user who ran the query.
 	UserId int `json:"user_id,omitempty"`
-
+	// The email address or username of the user who ran the query.
 	UserName string `json:"user_name,omitempty"`
-
+	// Warehouse ID.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 }
 
@@ -716,19 +757,66 @@ type QueryMetrics struct {
 	// Size of data temporarily written to disk while executing the query, in
 	// bytes.
 	SpillToDiskBytes int `json:"spill_to_disk_bytes,omitempty"`
-	// Sum of execution time for all of the query?s tasks, in milliseconds.
+	// Sum of execution time for all of the query’s tasks, in milliseconds.
 	TaskTotalTimeMs int `json:"task_total_time_ms,omitempty"`
 	// Number of files that would have been read without pruning.
 	TotalFilesCount int `json:"total_files_count,omitempty"`
 	// Number of partitions that would have been read without pruning.
 	TotalPartitionsCount int `json:"total_partitions_count,omitempty"`
-	// Total execution time of the query from the client?s point of view, in
+	// Total execution time of the query from the client’s point of view, in
 	// milliseconds.
 	TotalTimeMs int `json:"total_time_ms,omitempty"`
 	// Size pf persistent data written to cloud object storage in your cloud
 	// tenant, in bytes.
 	WriteRemoteBytes int `json:"write_remote_bytes,omitempty"`
 }
+
+// Type of statement for this query
+type QueryStatementType string
+
+const QueryStatementTypeAlter QueryStatementType = `ALTER`
+
+const QueryStatementTypeAnalyze QueryStatementType = `ANALYZE`
+
+const QueryStatementTypeCopy QueryStatementType = `COPY`
+
+const QueryStatementTypeCreate QueryStatementType = `CREATE`
+
+const QueryStatementTypeDelete QueryStatementType = `DELETE`
+
+const QueryStatementTypeDescribe QueryStatementType = `DESCRIBE`
+
+const QueryStatementTypeDrop QueryStatementType = `DROP`
+
+const QueryStatementTypeExplain QueryStatementType = `EXPLAIN`
+
+const QueryStatementTypeGrant QueryStatementType = `GRANT`
+
+const QueryStatementTypeInsert QueryStatementType = `INSERT`
+
+const QueryStatementTypeMerge QueryStatementType = `MERGE`
+
+const QueryStatementTypeOptimize QueryStatementType = `OPTIMIZE`
+
+const QueryStatementTypeOther QueryStatementType = `OTHER`
+
+const QueryStatementTypeRefresh QueryStatementType = `REFRESH`
+
+const QueryStatementTypeReplace QueryStatementType = `REPLACE`
+
+const QueryStatementTypeRevoke QueryStatementType = `REVOKE`
+
+const QueryStatementTypeSelect QueryStatementType = `SELECT`
+
+const QueryStatementTypeSet QueryStatementType = `SET`
+
+const QueryStatementTypeShow QueryStatementType = `SHOW`
+
+const QueryStatementTypeTruncate QueryStatementType = `TRUNCATE`
+
+const QueryStatementTypeUpdate QueryStatementType = `UPDATE`
+
+const QueryStatementTypeUse QueryStatementType = `USE`
 
 // This describes an enum
 type QueryStatus string
@@ -801,14 +889,16 @@ const SetWorkspaceWarehouseConfigRequestSecurityPolicyNone SetWorkspaceWarehouse
 
 const SetWorkspaceWarehouseConfigRequestSecurityPolicyPassthrough SetWorkspaceWarehouseConfigRequestSecurityPolicy = `PASSTHROUGH`
 
-type StartWarehouseRequest struct {
+// Start a warehouse
+type StartWarehouse struct {
 	// Required. Id of the SQL warehouse.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
-type StopWarehouseRequest struct {
+// Stop a warehouse
+type StopWarehouse struct {
 	// Required. Id of the SQL warehouse.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type TerminationReason struct {
@@ -1015,29 +1105,3 @@ const WarehouseTypePairWarehouseTypeClassic WarehouseTypePairWarehouseType = `CL
 const WarehouseTypePairWarehouseTypePro WarehouseTypePairWarehouseType = `PRO`
 
 const WarehouseTypePairWarehouseTypeTypeUnspecified WarehouseTypePairWarehouseType = `TYPE_UNSPECIFIED`
-
-// Alias for `warehouse_id`.
-
-// Message describing why the query could not complete.
-
-// The time execution of the query ended.
-
-// A key that can be used to look up query details.
-
-// The time the query ended.
-
-// The query ID.
-
-// The time the query started.
-
-// The text of the query.
-
-// The number of results returned by the query.
-
-// URL to the query plan.
-
-// The ID of the user who ran the query.
-
-// The email address or username of the user who ran the query.
-
-// Warehouse ID.

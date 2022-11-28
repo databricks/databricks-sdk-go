@@ -1,0 +1,47 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package {{.Name}}
+
+import (
+	{{range .ImportedPackages}}
+	"github.com/databricks/databricks-sdk-go/service/{{.}}"{{end}}
+)
+
+// all definitions in this file are in alphabetical order
+{{range .Types}}
+{{if .Fields -}}{{.Comment "// " 80}}
+type {{.PascalName}} struct {
+    {{- range .Fields}}
+    {{.Comment "    // " 80}}
+    {{.PascalName}} {{if .IsOptionalObject}}*{{end}}{{template "type" .Entity}} `{{template "field-tag" . }}`{{end}}
+}
+{{else if .MapValue}}{{.Comment "// " 80}}
+type {{.PascalName}} {{template "type" .}}
+{{else if .Enum}}{{.Comment "// " 80}}
+type {{.PascalName}} string
+{{range .Enum }}
+{{.Comment "// " 80}}
+const {{.Entity.PascalName}}{{.PascalName}} {{.Entity.PascalName}} = `{{.Content}}`{{end}}{{end}}
+{{end}}
+
+{{- define "field-tag" -}}
+	{{if .IsJson}}json:"{{.Name}}{{if not .Required}},omitempty{{end}}"{{else}}json:"-"{{end -}}
+	{{if .IsPath}} url:"-"{{end -}}
+	{{if .IsQuery}} url:"{{.Name}}{{if not .Required}},omitempty{{end}}"{{end -}}
+{{- end -}}
+
+{{- define "type" -}}
+	{{- if not . }}any /* ERROR */
+	{{- else if .IsString}}string
+	{{- else if .IsBool}}bool
+	{{- else if .IsInt64}}int64
+	{{- else if .IsFloat64}}float64
+	{{- else if .IsInt}}int
+	{{- else if .ArrayValue }}[]{{template "type" .ArrayValue}}
+	{{- else if .MapValue }}map[string]{{template "type" .MapValue}}
+	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
+	{{- else if .IsObject }}{{.PascalName}}
+	{{- else if .Enum }}{{.PascalName}}
+	{{- else}}any /* MISSING TYPE */
+	{{- end -}}
+{{- end -}}

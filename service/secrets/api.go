@@ -5,17 +5,45 @@ package secrets
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/client"
 )
 
-func NewSecrets(client *client.DatabricksClient) SecretsService {
+func NewSecrets(client *client.DatabricksClient) *SecretsAPI {
 	return &SecretsAPI{
-		client: client,
+		impl: &secretsImpl{
+			client: client,
+		},
 	}
 }
 
+// The Secrets API allows you to manage secrets, secret scopes, and access
+// permissions.
+//
+// Sometimes accessing data requires that you authenticate to external data
+// sources through JDBC. Instead of directly entering your credentials into a
+// notebook, use Databricks secrets to store your credentials and reference them
+// in notebooks and jobs.
+//
+// Administrators, secret creators, and users granted permission can read
+// Databricks secrets. While Databricks makes an effort to redact secret values
+// that might be displayed in notebooks, it is not possible to prevent such
+// users from reading secrets.
 type SecretsAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(SecretsService)
+	impl SecretsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *SecretsAPI) WithImpl(impl SecretsService) *SecretsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Secrets API implementation
+func (a *SecretsAPI) Impl() SecretsService {
+	return a.impl
 }
 
 // Create a new secret scope
@@ -24,102 +52,81 @@ type SecretsAPI struct {
 // and periods, and may not exceed 128 characters. The maximum number of scopes
 // in a workspace is 100.
 func (a *SecretsAPI) CreateScope(ctx context.Context, request CreateScope) error {
-	path := "/api/2.0/secrets/scopes/create"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.CreateScope(ctx, request)
 }
 
 // Delete an ACL
 //
 // Deletes the given ACL on the given scope.
 //
-// Users must have the “MANAGE“ permission to invoke this API. Throws
-// “RESOURCE_DOES_NOT_EXIST“ if no such secret scope, principal, or ACL
-// exists. Throws “PERMISSION_DENIED“ if the user does not have permission to
-// make this API call.
+// Users must have the `MANAGE` permission to invoke this API. Throws
+// `RESOURCE_DOES_NOT_EXIST` if no such secret scope, principal, or ACL exists.
+// Throws `PERMISSION_DENIED` if the user does not have permission to make this
+// API call.
 func (a *SecretsAPI) DeleteAcl(ctx context.Context, request DeleteAcl) error {
-	path := "/api/2.0/secrets/acls/delete"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.DeleteAcl(ctx, request)
 }
 
 // Delete a secret scope
 //
 // Deletes a secret scope.
 //
-// Throws “RESOURCE_DOES_NOT_EXIST“ if the scope does not exist. Throws
-// “PERMISSION_DENIED“ if the user does not have permission to make this API
+// Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) DeleteScope(ctx context.Context, request DeleteScope) error {
-	path := "/api/2.0/secrets/scopes/delete"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.DeleteScope(ctx, request)
 }
 
 // Delete a secret scope
 //
 // Deletes a secret scope.
 //
-// Throws “RESOURCE_DOES_NOT_EXIST“ if the scope does not exist. Throws
-// “PERMISSION_DENIED“ if the user does not have permission to make this API
+// Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) DeleteScopeByScope(ctx context.Context, scope string) error {
-	return a.DeleteScope(ctx, DeleteScope{
+	return a.impl.DeleteScope(ctx, DeleteScope{
 		Scope: scope,
 	})
 }
 
 // Delete a secret
 //
-// Deletes the secret stored in this secret scope. You must have “WRITE“ or
-// “MANAGE“ permission on the secret scope.
+// Deletes the secret stored in this secret scope. You must have `WRITE` or
+// `MANAGE` permission on the secret scope.
 //
-// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope or secret exists.
-// Throws “PERMISSION_DENIED“ if the user does not have permission to make
-// this API call.
+// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope or secret exists.
+// Throws `PERMISSION_DENIED` if the user does not have permission to make this
+// API call.
 func (a *SecretsAPI) DeleteSecret(ctx context.Context, request DeleteSecret) error {
-	path := "/api/2.0/secrets/delete"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.DeleteSecret(ctx, request)
 }
 
 // Get secret ACL details
 //
 // Gets the details about the given ACL, such as the group and permission. Users
-// must have the “MANAGE“ permission to invoke this API.
+// must have the `MANAGE` permission to invoke this API.
 //
-// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
-// “PERMISSION_DENIED“ if the user does not have permission to make this API
+// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
-func (a *SecretsAPI) GetAcl(ctx context.Context, request GetAclRequest) (*AclItem, error) {
-	var aclItem AclItem
-	path := "/api/2.0/secrets/acls/get"
-	err := a.client.Get(ctx, path, request, &aclItem)
-	return &aclItem, err
+func (a *SecretsAPI) GetAcl(ctx context.Context, request GetAcl) (*AclItem, error) {
+	return a.impl.GetAcl(ctx, request)
 }
 
 // Lists ACLs
 //
-// List the ACLs for a given secret scope. Users must have the “MANAGE“
+// List the ACLs for a given secret scope. Users must have the `MANAGE`
 // permission to invoke this API.
 //
-// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
-// “PERMISSION_DENIED“ if the user does not have permission to make this API
+// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 //
-// Use ListAclsAll() to get all AclItem instances
-func (a *SecretsAPI) ListAcls(ctx context.Context, request ListAclsRequest) (*ListAclsResponse, error) {
-	var listAclsResponse ListAclsResponse
-	path := "/api/2.0/secrets/acls/list"
-	err := a.client.Get(ctx, path, request, &listAclsResponse)
-	return &listAclsResponse, err
-}
-
-// ListAclsAll returns all AclItem instances. This method exists for consistency purposes.
-//
 // This method is generated by Databricks SDK Code Generator.
-func (a *SecretsAPI) ListAclsAll(ctx context.Context, request ListAclsRequest) ([]AclItem, error) {
-	response, err := a.ListAcls(ctx, request)
+func (a *SecretsAPI) ListAclsAll(ctx context.Context, request ListAcls) ([]AclItem, error) {
+	response, err := a.impl.ListAcls(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -128,14 +135,14 @@ func (a *SecretsAPI) ListAclsAll(ctx context.Context, request ListAclsRequest) (
 
 // Lists ACLs
 //
-// List the ACLs for a given secret scope. Users must have the “MANAGE“
+// List the ACLs for a given secret scope. Users must have the `MANAGE`
 // permission to invoke this API.
 //
-// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
-// “PERMISSION_DENIED“ if the user does not have permission to make this API
+// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) ListAclsByScope(ctx context.Context, scope string) (*ListAclsResponse, error) {
-	return a.ListAcls(ctx, ListAclsRequest{
+	return a.impl.ListAcls(ctx, ListAcls{
 		Scope: scope,
 	})
 }
@@ -144,22 +151,12 @@ func (a *SecretsAPI) ListAclsByScope(ctx context.Context, scope string) (*ListAc
 //
 // Lists all secret scopes available in the workspace.
 //
-// Throws “PERMISSION_DENIED“ if the user does not have permission to make
-// this API call.
-//
-// Use ListScopesAll() to get all SecretScope instances
-func (a *SecretsAPI) ListScopes(ctx context.Context) (*ListScopesResponse, error) {
-	var listScopesResponse ListScopesResponse
-	path := "/api/2.0/secrets/scopes/list"
-	err := a.client.Get(ctx, path, nil, &listScopesResponse)
-	return &listScopesResponse, err
-}
-
-// ListScopesAll returns all SecretScope instances. This method exists for consistency purposes.
+// Throws `PERMISSION_DENIED` if the user does not have permission to make this
+// API call.
 //
 // This method is generated by Databricks SDK Code Generator.
 func (a *SecretsAPI) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
-	response, err := a.ListScopes(ctx)
+	response, err := a.impl.ListScopes(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -173,23 +170,13 @@ func (a *SecretsAPI) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
 // READ permission to make this call.
 //
 // The lastUpdatedTimestamp returned is in milliseconds since epoch. Throws
-// “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
-// “PERMISSION_DENIED“ if the user does not have permission to make this API
+// `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 //
-// Use ListSecretsAll() to get all SecretMetadata instances
-func (a *SecretsAPI) ListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error) {
-	var listSecretsResponse ListSecretsResponse
-	path := "/api/2.0/secrets/list"
-	err := a.client.Get(ctx, path, request, &listSecretsResponse)
-	return &listSecretsResponse, err
-}
-
-// ListSecretsAll returns all SecretMetadata instances. This method exists for consistency purposes.
-//
 // This method is generated by Databricks SDK Code Generator.
-func (a *SecretsAPI) ListSecretsAll(ctx context.Context, request ListSecretsRequest) ([]SecretMetadata, error) {
-	response, err := a.ListSecrets(ctx, request)
+func (a *SecretsAPI) ListSecretsAll(ctx context.Context, request ListSecrets) ([]SecretMetadata, error) {
+	response, err := a.impl.ListSecrets(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -203,11 +190,11 @@ func (a *SecretsAPI) ListSecretsAll(ctx context.Context, request ListSecretsRequ
 // READ permission to make this call.
 //
 // The lastUpdatedTimestamp returned is in milliseconds since epoch. Throws
-// “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
-// “PERMISSION_DENIED“ if the user does not have permission to make this API
+// `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) ListSecretsByScope(ctx context.Context, scope string) (*ListSecretsResponse, error) {
-	return a.ListSecrets(ctx, ListSecretsRequest{
+	return a.impl.ListSecrets(ctx, ListSecrets{
 		Scope: scope,
 	})
 }
@@ -220,10 +207,9 @@ func (a *SecretsAPI) ListSecretsByScope(ctx context.Context, scope string) (*Lis
 // In general, a user or group will use the most powerful permission available
 // to them, and permissions are ordered as follows:
 //
-// * “MANAGE“ - Allowed to change ACLs, and read and write to this secret
-// scope. * “WRITE“ - Allowed to read and write to this secret scope. *
-// “READ“ - Allowed to read this secret scope and list what secrets are
-// available.
+// * `MANAGE` - Allowed to change ACLs, and read and write to this secret scope.
+// * `WRITE` - Allowed to read and write to this secret scope. * `READ` -
+// Allowed to read this secret scope and list what secrets are available.
 //
 // Note that in general, secret values can only be read from within a
 // command\non a cluster (for example, through a notebook). There is no API to
@@ -231,20 +217,18 @@ func (a *SecretsAPI) ListSecretsByScope(ctx context.Context, scope string) (*Lis
 // user's permission will be applied based on who is executing the command, and
 // they must have at least READ permission.
 //
-// Users must have the “MANAGE“ permission to invoke this API.
+// Users must have the `MANAGE` permission to invoke this API.
 //
 // The principal is a user or group name corresponding to an existing Databricks
 // principal to be granted or revoked access.
 //
-// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
-// “RESOURCE_ALREADY_EXISTS“ if a permission for the principal already exists.
-// Throws “INVALID_PARAMETER_VALUE“ if the permission is invalid. Throws
-// “PERMISSION_DENIED“ if the user does not have permission to make this API
+// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `RESOURCE_ALREADY_EXISTS` if a permission for the principal already exists.
+// Throws `INVALID_PARAMETER_VALUE` if the permission is invalid. Throws
+// `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
 func (a *SecretsAPI) PutAcl(ctx context.Context, request PutAcl) error {
-	path := "/api/2.0/secrets/acls/put"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.PutAcl(ctx, request)
 }
 
 // Add a secret
@@ -254,8 +238,8 @@ func (a *SecretsAPI) PutAcl(ctx context.Context, request PutAcl) error {
 // secret's value. The server encrypts the secret using the secret scope's
 // encryption settings before storing it.
 //
-// You must have “WRITE“ or “MANAGE“ permission on the secret scope. The
-// secret key must consist of alphanumeric characters, dashes, underscores, and
+// You must have `WRITE` or `MANAGE` permission on the secret scope. The secret
+// key must consist of alphanumeric characters, dashes, underscores, and
 // periods, and cannot exceed 128 characters. The maximum allowed secret value
 // size is 128 KB. The maximum number of secrets in a given scope is 1000.
 //
@@ -263,13 +247,11 @@ func (a *SecretsAPI) PutAcl(ctx context.Context, request PutAcl) error {
 // secret, which will determine the value returned when the secret value is
 // requested. Exactly one must be specified.
 //
-// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
-// “RESOURCE_LIMIT_EXCEEDED“ if maximum number of secrets in scope is
-// exceeded. Throws “INVALID_PARAMETER_VALUE“ if the key name or value length
-// is invalid. Throws “PERMISSION_DENIED“ if the user does not have permission
-// to make this API call.
+// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
+// `RESOURCE_LIMIT_EXCEEDED` if maximum number of secrets in scope is exceeded.
+// Throws `INVALID_PARAMETER_VALUE` if the key name or value length is invalid.
+// Throws `PERMISSION_DENIED` if the user does not have permission to make this
+// API call.
 func (a *SecretsAPI) PutSecret(ctx context.Context, request PutSecret) error {
-	path := "/api/2.0/secrets/put"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.PutSecret(ctx, request)
 }

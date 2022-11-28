@@ -1,0 +1,24 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package {{.Name}}
+
+import (
+	"context"
+	"io"
+	"github.com/databricks/databricks-sdk-go/retries"
+)
+
+{{range .Services}}
+{{.Comment "// " 80}}
+type {{.PascalName}}Service interface {
+	{{range .Methods}}
+    {{.Comment "    // " 80}}
+	{{- if .Pagination}}
+	// 
+	// Use {{.PascalName}}All() to get all {{.Pagination.Entity.PascalName}} instances{{if .Pagination.MultiRequest}}, which will iterate over every result page.{{end}}
+	{{- end}}
+    {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{.Response.PascalName}}{{end}}, error){{else}}error{{end}}
+	{{end -}}
+}
+
+{{end}}

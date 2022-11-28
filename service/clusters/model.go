@@ -4,10 +4,39 @@ package clusters
 
 // all definitions in this file are in alphabetical order
 
+type AddInstanceProfile struct {
+	// The AWS IAM role ARN of the role associated with the instance profile.
+	// This field is required if your role name and instance profile name do not
+	// match and you want to use the instance profile with [Databricks SQL
+	// Serverless](https://docs.databricks.com/sql/admin/serverless.html).
+	//
+	// Otherwise, this field is optional.
+	IamRoleArn string `json:"iam_role_arn,omitempty"`
+	// The AWS ARN of the instance profile to register with Databricks. This
+	// field is required.
+	InstanceProfileArn string `json:"instance_profile_arn"`
+	// By default, Databricks validates that it has sufficient permissions to
+	// launch instances with the instance profile. This validation uses AWS
+	// dry-run mode for the RunInstances API. If validation fails with an error
+	// message that does not indicate an IAM related permission issue, (e.g.
+	// `Your requested instance type is not supported in your requested
+	// availability zone`), you can pass this flag to skip the validation and
+	// forcibly add the instance profile.
+	IsMetaInstanceProfile bool `json:"is_meta_instance_profile,omitempty"`
+	// By default, Databricks validates that it has sufficient permissions to
+	// launch instances with the instance profile. This validation uses AWS
+	// dry-run mode for the RunInstances API. If validation fails with an error
+	// message that does not indicate an IAM related permission issue, (e.g.
+	// “Your requested instance type is not supported in your requested
+	// availability zone”), you can pass this flag to skip the validation and
+	// forcibly add the instance profile.
+	SkipValidation bool `json:"skip_validation,omitempty"`
+}
+
 type AutoScale struct {
 	// The maximum number of workers to which the cluster can scale up when
-	// overloaded. Note that ``max_workers`` must be strictly greater than
-	// ``min_workers``.
+	// overloaded. Note that `max_workers` must be strictly greater than
+	// `min_workers`.
 	MaxWorkers int `json:"max_workers,omitempty"`
 	// The minimum number of workers to which the cluster can scale down when
 	// underutilized. It is also the initial number of workers the cluster will
@@ -17,7 +46,7 @@ type AutoScale struct {
 
 type AwsAttributes struct {
 	// Availability type used for all subsequent nodes past the
-	// ``first_on_demand`` ones. Note: If ``first_on_demand`` is zero, this
+	// `first_on_demand` ones. Note: If `first_on_demand` is zero, this
 	// availability type will be used for the entire cluster.
 	Availability AwsAttributesAvailability `json:"availability,omitempty"`
 	// The number of volumes launched for each instance. Users can choose up to
@@ -26,9 +55,8 @@ type AwsAttributes struct {
 	// instance store, at least one EBS volume needs to be specified; otherwise,
 	// cluster creation will fail.
 	//
-	// These EBS volumes will be mounted at ``/ebs0``, ``/ebs1``, and etc.
-	// Instance store volumes will be mounted at ``/local_disk0``,
-	// ``/local_disk1``, and etc.
+	// These EBS volumes will be mounted at `/ebs0`, `/ebs1`, and etc. Instance
+	// store volumes will be mounted at `/local_disk0`, `/local_disk1`, and etc.
 	//
 	// If EBS volumes are attached, Databricks will configure Spark to use only
 	// the EBS volumes for scratch storage because heterogenously sized scratch
@@ -36,7 +64,7 @@ type AwsAttributes struct {
 	// attached, Databricks will configure Spark to use instance store volumes.
 	//
 	// Please note that if EBS volumes are specified, then the Spark
-	// configuration ``spark.local.dir`` will be overridden.
+	// configuration `spark.local.dir` will be overridden.
 	EbsVolumeCount int `json:"ebs_volume_count,omitempty"`
 	// <needs content added>
 	EbsVolumeIops int `json:"ebs_volume_iops,omitempty"`
@@ -48,13 +76,13 @@ type AwsAttributes struct {
 	EbsVolumeThroughput int `json:"ebs_volume_throughput,omitempty"`
 	// The type of EBS volumes that will be launched with this cluster.
 	EbsVolumeType AwsAttributesEbsVolumeType `json:"ebs_volume_type,omitempty"`
-	// The first ``first_on_demand`` nodes of the cluster will be placed on
+	// The first `first_on_demand` nodes of the cluster will be placed on
 	// on-demand instances. If this value is greater than 0, the cluster driver
 	// node in particular will be placed on an on-demand instance. If this value
 	// is greater than or equal to the current cluster size, all nodes will be
 	// placed on on-demand instances. If this value is less than the current
-	// cluster size, ``first_on_demand`` nodes will be placed on on-demand
-	// instances and the remainder will be placed on ``availability`` instances.
+	// cluster size, `first_on_demand` nodes will be placed on on-demand
+	// instances and the remainder will be placed on `availability` instances.
 	// Note that this value does not affect cluster size and cannot currently be
 	// mutated over the lifetime of a cluster.
 	FirstOnDemand int `json:"first_on_demand,omitempty"`
@@ -70,12 +98,12 @@ type AwsAttributes struct {
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// The bid price for AWS spot instances, as a percentage of the
 	// corresponding instance type's on-demand price. For example, if this field
-	// is set to 50, and the cluster needs a new ``r3.xlarge`` spot instance,
-	// then the bid price is half of the price of on-demand ``r3.xlarge``
-	// instances. Similarly, if this field is set to 200, the bid price is twice
-	// the price of on-demand ``r3.xlarge`` instances. If not specified, the
-	// default value is 100. When spot instances are requested for this cluster,
-	// only spot instances whose bid price percentage matches this field will be
+	// is set to 50, and the cluster needs a new `r3.xlarge` spot instance, then
+	// the bid price is half of the price of on-demand `r3.xlarge` instances.
+	// Similarly, if this field is set to 200, the bid price is twice the price
+	// of on-demand `r3.xlarge` instances. If not specified, the default value
+	// is 100. When spot instances are requested for this cluster, only spot
+	// instances whose bid price percentage matches this field will be
 	// considered. Note that, for safety, we enforce this field to be no more
 	// than 10000.
 	//
@@ -97,9 +125,9 @@ type AwsAttributes struct {
 	ZoneId string `json:"zone_id,omitempty"`
 }
 
-// Availability type used for all subsequent nodes past the “first_on_demand“
-// ones. Note: If “first_on_demand“ is zero, this availability type will be
-// used for the entire cluster.
+// Availability type used for all subsequent nodes past the `first_on_demand`
+// ones. Note: If `first_on_demand` is zero, this availability type will be used
+// for the entire cluster.
 type AwsAttributesAvailability string
 
 const AwsAttributesAvailabilityOnDemand AwsAttributesAvailability = `ON_DEMAND`
@@ -117,17 +145,17 @@ const AwsAttributesEbsVolumeTypeThroughputOptimizedHdd AwsAttributesEbsVolumeTyp
 
 type AzureAttributes struct {
 	// Availability type used for all subsequent nodes past the
-	// ``first_on_demand`` ones. Note: If ``first_on_demand`` is zero (which
-	// only happens on pool clusters), this availability type will be used for
-	// the entire cluster.
+	// `first_on_demand` ones. Note: If `first_on_demand` is zero (which only
+	// happens on pool clusters), this availability type will be used for the
+	// entire cluster.
 	Availability AzureAttributesAvailability `json:"availability,omitempty"`
-	// The first ``first_on_demand`` nodes of the cluster will be placed on
+	// The first `first_on_demand` nodes of the cluster will be placed on
 	// on-demand instances. This value should be greater than 0, to make sure
 	// the cluster driver node is placed on an on-demand instance. If this value
 	// is greater than or equal to the current cluster size, all nodes will be
 	// placed on on-demand instances. If this value is less than the current
-	// cluster size, ``first_on_demand`` nodes will be placed on on-demand
-	// instances and the remainder will be placed on ``availability`` instances.
+	// cluster size, `first_on_demand` nodes will be placed on on-demand
+	// instances and the remainder will be placed on `availability` instances.
 	// Note that this value does not affect cluster size and cannot currently be
 	// mutated over the lifetime of a cluster.
 	FirstOnDemand int `json:"first_on_demand,omitempty"`
@@ -141,8 +169,8 @@ type AzureAttributes struct {
 	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
 }
 
-// Availability type used for all subsequent nodes past the “first_on_demand“
-// ones. Note: If “first_on_demand“ is zero (which only happens on pool
+// Availability type used for all subsequent nodes past the `first_on_demand`
+// ones. Note: If `first_on_demand` is zero (which only happens on pool
 // clusters), this availability type will be used for the entire cluster.
 type AzureAttributesAvailability string
 
@@ -192,9 +220,9 @@ type ClusterAttributes struct {
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
 	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every ``5 mins``. The
-	// destination of driver logs is ``$destination/$clusterId/driver``, while
-	// the destination of executor logs is ``$destination/$clusterId/executor``.
+	// the logs will be delivered to the destination every `5 mins`. The
+	// destination of driver logs is `$destination/$clusterId/driver`, while the
+	// destination of executor logs is `$destination/$clusterId/executor`.
 	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
@@ -205,7 +233,7 @@ type ClusterAttributes struct {
 	ClusterSource ClusterAttributesClusterSource `json:"cluster_source,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes:
+	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	//
@@ -219,11 +247,6 @@ type ClusterAttributes struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
-	//
-	// This field, along with node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// The key of the spark version running in the dataplane. This is possibly
 	// different from the spark_version (index 2). The spark_version is the raw
@@ -245,14 +268,9 @@ type ClusterAttributes struct {
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads A
+	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
-	//
-	// This field, along with driver_node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
+	// :method:listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	PolicyId string `json:"policy_id,omitempty"`
@@ -262,37 +280,30 @@ type ClusterAttributes struct {
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
-	// ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions``
+	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
-	//
-	// Example Spark confs: ``{"spark.speculation": true,
-	// "spark.streaming.ui.retainedBatches": 5}`` or
-	// ``{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}``
 	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
-	// (X,Y) will be exported as is (i.e., ``export X='Y'``) while launching the
+	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
 	// driver and workers.
 	//
-	// In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we
-	// recommend appending them to ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the
+	// In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
+	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
 	// example below. This ensures that all default databricks managed
 	// environmental variables are included as well.
 	//
-	// Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m",
-	// "SPARK_LOCAL_DIRS": "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS":
-	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}``
+	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
+	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
+	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
 	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-	// The Spark version of the cluster, e.g. "3.3.x-scala2.11". A list of
+	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
-	// :ref:`clusterClusterServicelistSparkVersions` API call. This is the Spark
-	// version provided from the user input (API/UI) and may be different from
-	// the effective_spark_version, which is the spark version that is actually
-	// run in the dataplane. See index 45 for more context.
+	// :method:sparkVersions API call.
 	SparkVersion string `json:"spark_version,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
-	// user name ``ubuntu`` on port ``2200``. Up to 10 keys can be specified.
+	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
@@ -422,9 +433,9 @@ type ClusterInfo struct {
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
 	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every ``5 mins``. The
-	// destination of driver logs is ``$destination/$clusterId/driver``, while
-	// the destination of executor logs is ``$destination/$clusterId/executor``.
+	// the logs will be delivered to the destination every `5 mins`. The
+	// destination of driver logs is `$destination/$clusterId/driver`, while the
+	// destination of executor logs is `$destination/$clusterId/executor`.
 	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster log delivery status.
 	ClusterLogStatus *LogSyncStatus `json:"cluster_log_status,omitempty"`
@@ -442,16 +453,16 @@ type ClusterInfo struct {
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes:
+	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	//
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
+	// This describes an enum
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-	// Tags that are added by Databricks regardless of any ``custom_tags``,
+	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
 	//
 	// - Vendor: Databricks
@@ -475,11 +486,6 @@ type ClusterInfo struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
-	//
-	// This field, along with node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// The key of the spark version running in the dataplane. This is possibly
 	// different from the spark_version (index 2). The spark_version is the raw
@@ -513,22 +519,17 @@ type ClusterInfo struct {
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
-	//
-	// This field, along with driver_node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
+	// :method:listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
-	// Spark Driver and ``num_workers`` Executors for a total of ``num_workers``
-	// + 1 Spark nodes.
+	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
+	// Spark nodes.
 	//
 	// Note: When reading the properties of a cluster, this field reflects the
 	// desired number of workers rather than the actual current number of
 	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
 	// field will immediately be updated to reflect the target size of 10
-	// workers, whereas the workers listed in ``spark_info`` will gradually
+	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
@@ -541,12 +542,12 @@ type ClusterInfo struct {
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
-	// ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions``
+	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
 	//
-	// Example Spark confs: ``{"spark.speculation": true,
-	// "spark.streaming.ui.retainedBatches": 5}`` or
-	// ``{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}``
+	// Example Spark confs: `{"spark.speculation": true,
+	// "spark.streaming.ui.retainedBatches": 5}` or
+	// `{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}`
 	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// A canonical SparkContext identifier. This value *does* change when the
 	// Spark driver restarts. The pair `(cluster_id, spark_context_id)` is a
@@ -556,35 +557,31 @@ type ClusterInfo struct {
 	// variable key-value pairs. Please note that key-value pair of the form
 	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
 	// driver and workers. In order to specify an additional set of
-	// ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them to
-	// ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example. This ensures that
-	// all default databricks managed environmental variables are included as
-	// well.
+	// `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
+	// `$SPARK_DAEMON_JAVA_OPTS` as shown in the example. This ensures that all
+	// default databricks managed environmental variables are included as well.
 	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-	// The Spark version of the cluster, e.g. "3.3.x-scala2.11". A list of
+	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
-	// :ref:`clusterClusterServicelistSparkVersions` API call. This is the Spark
-	// version provided from the user input (API/UI) and may be different from
-	// the effective_spark_version, which is the spark version that is actually
-	// run in the dataplane. See index 45 for more context.
+	// :method:sparkVersions API call.
 	SparkVersion string `json:"spark_version,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
-	// user name ``ubuntu`` on port ``2200``. Up to 10 keys can be specified.
+	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// Time (in epoch milliseconds) when the cluster creation request was
-	// received (when the cluster entered a ``PENDING`` state).
+	// received (when the cluster entered a `PENDING` state).
 	StartTime int64 `json:"start_time,omitempty"`
 	// Current state of the cluster.
-	State ClusterInfoState `json:"state,omitempty"`
+	State State `json:"state,omitempty"`
 	// A message associated with the most recent state transition (e.g., the
-	// reason why the cluster entered a ``TERMINATED`` state).
+	// reason why the cluster entered a `TERMINATED` state).
 	StateMessage string `json:"state_message,omitempty"`
 	// Time (in epoch milliseconds) when the cluster was terminated, if
 	// applicable.
 	TerminatedTime int64 `json:"terminated_time,omitempty"`
 	// Information about why the cluster was terminated. This field only appears
-	// when the cluster is in a ``TERMINATING`` or ``TERMINATED`` state.
+	// when the cluster is in a `TERMINATING` or `TERMINATED` state.
 	TerminationReason *TerminationReason `json:"termination_reason,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
@@ -619,33 +616,14 @@ const ClusterInfoRuntimeEnginePhoton ClusterInfoRuntimeEngine = `PHOTON`
 
 const ClusterInfoRuntimeEngineStandard ClusterInfoRuntimeEngine = `STANDARD`
 
-// Current state of the cluster.
-type ClusterInfoState string
-
-const ClusterInfoStateError ClusterInfoState = `ERROR`
-
-const ClusterInfoStatePending ClusterInfoState = `PENDING`
-
-const ClusterInfoStateResizing ClusterInfoState = `RESIZING`
-
-const ClusterInfoStateRestarting ClusterInfoState = `RESTARTING`
-
-const ClusterInfoStateRunning ClusterInfoState = `RUNNING`
-
-const ClusterInfoStateTerminated ClusterInfoState = `TERMINATED`
-
-const ClusterInfoStateTerminating ClusterInfoState = `TERMINATING`
-
-const ClusterInfoStateUnknown ClusterInfoState = `UNKNOWN`
-
 type ClusterLogConf struct {
-	// destination needs to be provided. e.g. ``{ "dbfs" : { "destination" :
-	// "dbfs:/home/cluster_log" } }``
+	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
+	// "dbfs:/home/cluster_log" } }`
 	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
 	// destination and either region or endpoint should also be provided. e.g.
-	// ``{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
-	// "us-west-2" } }`` Cluster iam role is used to access s3, please make sure
-	// the cluster iam role in ``instance_profile_arn`` has permission to write
+	// `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
+	// "us-west-2" } }` Cluster iam role is used to access s3, please make sure
+	// the cluster iam role in `instance_profile_arn` has permission to write
 	// data to the s3 destination.
 	S3 *S3StorageInfo `json:"s3,omitempty"`
 }
@@ -656,14 +634,14 @@ type ClusterSize struct {
 	// or later.
 	Autoscale *AutoScale `json:"autoscale,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
-	// Spark Driver and ``num_workers`` Executors for a total of ``num_workers``
-	// + 1 Spark nodes.
+	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
+	// Spark nodes.
 	//
 	// Note: When reading the properties of a cluster, this field reflects the
 	// desired number of workers rather than the actual current number of
 	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
 	// field will immediately be updated to reflect the target size of 10
-	// workers, whereas the workers listed in ``spark_info`` will gradually
+	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	NumWorkers int `json:"num_workers,omitempty"`
 }
@@ -691,9 +669,9 @@ type CreateCluster struct {
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
 	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every ``5 mins``. The
-	// destination of driver logs is ``$destination/$clusterId/driver``, while
-	// the destination of executor logs is ``$destination/$clusterId/executor``.
+	// the logs will be delivered to the destination every `5 mins`. The
+	// destination of driver logs is `$destination/$clusterId/driver`, while the
+	// destination of executor logs is `$destination/$clusterId/executor`.
 	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
@@ -704,7 +682,7 @@ type CreateCluster struct {
 	ClusterSource CreateClusterClusterSource `json:"cluster_source,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes:
+	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	//
@@ -718,11 +696,6 @@ type CreateCluster struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
-	//
-	// This field, along with node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// The key of the spark version running in the dataplane. This is possibly
 	// different from the spark_version (index 2). The spark_version is the raw
@@ -744,24 +717,19 @@ type CreateCluster struct {
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads A
+	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
-	//
-	// This field, along with driver_node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
+	// :method:listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
-	// Spark Driver and ``num_workers`` Executors for a total of ``num_workers``
-	// + 1 Spark nodes.
+	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
+	// Spark nodes.
 	//
 	// Note: When reading the properties of a cluster, this field reflects the
 	// desired number of workers rather than the actual current number of
 	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
 	// field will immediately be updated to reflect the target size of 10
-	// workers, whereas the workers listed in ``spark_info`` will gradually
+	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
@@ -772,33 +740,30 @@ type CreateCluster struct {
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
-	// ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions``
+	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
 	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
-	// (X,Y) will be exported as is (i.e., ``export X='Y'``) while launching the
+	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
 	// driver and workers.
 	//
-	// In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we
-	// recommend appending them to ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the
+	// In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
+	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
 	// example below. This ensures that all default databricks managed
 	// environmental variables are included as well.
 	//
-	// Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m",
-	// "SPARK_LOCAL_DIRS": "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS":
-	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}``
+	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
+	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
+	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
 	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-	// The Spark version of the cluster, e.g. "3.3.x-scala2.11". A list of
+	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
-	// :ref:`clusterClusterServicelistSparkVersions` API call. This is the Spark
-	// version provided from the user input (API/UI) and may be different from
-	// the effective_spark_version, which is the spark version that is actually
-	// run in the dataplane. See index 45 for more context.
+	// :method:sparkVersions API call.
 	SparkVersion string `json:"spark_version,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
-	// user name ``ubuntu`` on port ``2200``. Up to 10 keys can be specified.
+	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
@@ -885,7 +850,7 @@ const DataSecurityModeSingleUser DataSecurityMode = `SINGLE_USER`
 const DataSecurityModeUserIsolation DataSecurityMode = `USER_ISOLATION`
 
 type DbfsStorageInfo struct {
-	// dbfs destination, e.g. ``dbfs:/my/path``
+	// dbfs destination, e.g. `dbfs:/my/path`
 	Destination string `json:"destination,omitempty"`
 }
 
@@ -919,9 +884,9 @@ type EditCluster struct {
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
 	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every ``5 mins``. The
-	// destination of driver logs is ``$destination/$clusterId/driver``, while
-	// the destination of executor logs is ``$destination/$clusterId/executor``.
+	// the logs will be delivered to the destination every `5 mins`. The
+	// destination of driver logs is `$destination/$clusterId/driver`, while the
+	// destination of executor logs is `$destination/$clusterId/executor`.
 	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
@@ -932,7 +897,7 @@ type EditCluster struct {
 	ClusterSource EditClusterClusterSource `json:"cluster_source,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes:
+	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	//
@@ -946,11 +911,6 @@ type EditCluster struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
-	//
-	// This field, along with node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// The key of the spark version running in the dataplane. This is possibly
 	// different from the spark_version (index 2). The spark_version is the raw
@@ -972,24 +932,19 @@ type EditCluster struct {
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads A
+	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
-	//
-	// This field, along with driver_node_type_id, should not be set if
-	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
-	// and virtual_cluster_size are specified, driver_node_type_id and
-	// node_type_id take precedence.
+	// :method:listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
-	// Spark Driver and ``num_workers`` Executors for a total of ``num_workers``
-	// + 1 Spark nodes.
+	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
+	// Spark nodes.
 	//
 	// Note: When reading the properties of a cluster, this field reflects the
 	// desired number of workers rather than the actual current number of
 	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
 	// field will immediately be updated to reflect the target size of 10
-	// workers, whereas the workers listed in ``spark_info`` will gradually
+	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
@@ -1000,37 +955,34 @@ type EditCluster struct {
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
-	// ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions``
+	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
 	//
-	// Example Spark confs: ``{"spark.speculation": true,
-	// "spark.streaming.ui.retainedBatches": 5}`` or
-	// ``{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}``
+	// Example Spark confs: `{"spark.speculation": true,
+	// "spark.streaming.ui.retainedBatches": 5}` or
+	// `{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}`
 	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
-	// (X,Y) will be exported as is (i.e., ``export X='Y'``) while launching the
+	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
 	// driver and workers.
 	//
-	// In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we
-	// recommend appending them to ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the
+	// In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
+	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
 	// example below. This ensures that all default databricks managed
 	// environmental variables are included as well.
 	//
-	// Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m",
-	// "SPARK_LOCAL_DIRS": "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS":
-	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}``
+	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
+	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
+	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
 	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-	// The Spark version of the cluster, e.g. "3.3.x-scala2.11". A list of
+	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
-	// :ref:`clusterClusterServicelistSparkVersions` API call. This is the Spark
-	// version provided from the user input (API/UI) and may be different from
-	// the effective_spark_version, which is the spark version that is actually
-	// run in the dataplane. See index 45 for more context.
+	// :method:sparkVersions API call.
 	SparkVersion string `json:"spark_version,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
-	// user name ``ubuntu`` on port ``2200``. Up to 10 keys can be specified.
+	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// <needs content added>
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
@@ -1149,6 +1101,12 @@ const GcpAttributesAvailabilityPreemptibleGcp GcpAttributesAvailability = `PREEM
 
 const GcpAttributesAvailabilityPreemptibleWithFallbackGcp GcpAttributesAvailability = `PREEMPTIBLE_WITH_FALLBACK_GCP`
 
+// Get cluster info
+type Get struct {
+	// The cluster about which to retrieve information.
+	ClusterId string `json:"-" url:"cluster_id"`
+}
+
 type GetEvents struct {
 	// The ID of the cluster to retrieve events about.
 	ClusterId string `json:"cluster_id"`
@@ -1247,9 +1205,38 @@ type GetSparkVersionsResponse struct {
 	Versions []SparkVersion `json:"versions,omitempty"`
 }
 
+type InstanceProfile struct {
+	// The AWS IAM role ARN of the role associated with the instance profile.
+	// This field is required if your role name and instance profile name do not
+	// match and you want to use the instance profile with [Databricks SQL
+	// Serverless](https://docs.databricks.com/sql/admin/serverless.html).
+	//
+	// Otherwise, this field is optional.
+	IamRoleArn string `json:"iam_role_arn,omitempty"`
+	// The AWS ARN of the instance profile to register with Databricks. This
+	// field is required.
+	InstanceProfileArn string `json:"instance_profile_arn"`
+	// By default, Databricks validates that it has sufficient permissions to
+	// launch instances with the instance profile. This validation uses AWS
+	// dry-run mode for the RunInstances API. If validation fails with an error
+	// message that does not indicate an IAM related permission issue, (e.g.
+	// `Your requested instance type is not supported in your requested
+	// availability zone`), you can pass this flag to skip the validation and
+	// forcibly add the instance profile.
+	IsMetaInstanceProfile bool `json:"is_meta_instance_profile,omitempty"`
+}
+
+// List all clusters
+type List struct {
+	// Filter clusters based on what type of client it can be used for. Could be
+	// either NOTEBOOKS or JOBS. No input for this field will get all clusters
+	// in the workspace without filtering on its supported client
+	CanUseClient string `json:"-" url:"can_use_client,omitempty"`
+}
+
 type ListAvailableZonesResponse struct {
-	// The availability zone if no ``zone_id`` is provided in the cluster
-	// creation request.
+	// The availability zone if no `zone_id` is provided in the cluster creation
+	// request.
 	DefaultZone string `json:"default_zone,omitempty"`
 	// The list of available zones (e.g., ['us-west-2c', 'us-east-2']).
 	Zones []string `json:"zones,omitempty"`
@@ -1258,6 +1245,11 @@ type ListAvailableZonesResponse struct {
 type ListClustersResponse struct {
 	// <needs content added>
 	Clusters []ClusterInfo `json:"clusters,omitempty"`
+}
+
+type ListInstanceProfilesResponse struct {
+	// A list of instance profiles that the user can access.
+	InstanceProfiles []InstanceProfile `json:"instance_profiles,omitempty"`
 }
 
 type ListNodeTypesResponse struct {
@@ -1274,7 +1266,7 @@ type LogAnalyticsInfo struct {
 
 type LogSyncStatus struct {
 	// The timestamp of last attempt. If the last attempt fails,
-	// ``last_exception`` will contain the exception in the last attempt.
+	// `last_exception` will contain the exception in the last attempt.
 	LastAttempted int64 `json:"last_attempted,omitempty"`
 	// The exception thrown in the last attempt, it would be null (omitted in
 	// the response) if there is no exception in last attempted.
@@ -1350,6 +1342,11 @@ type PinCluster struct {
 	ClusterId string `json:"cluster_id"`
 }
 
+type RemoveInstanceProfile struct {
+	// The ARN of the instance profile to remove. This field is required.
+	InstanceProfileArn string `json:"instance_profile_arn"`
+}
+
 type ResizeCluster struct {
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
@@ -1358,14 +1355,14 @@ type ResizeCluster struct {
 	// The cluster to be resized.
 	ClusterId string `json:"cluster_id"`
 	// Number of worker nodes that this cluster should have. A cluster has one
-	// Spark Driver and ``num_workers`` Executors for a total of ``num_workers``
-	// + 1 Spark nodes.
+	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
+	// Spark nodes.
 	//
 	// Note: When reading the properties of a cluster, this field reflects the
 	// desired number of workers rather than the actual current number of
 	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
 	// field will immediately be updated to reflect the target size of 10
-	// workers, whereas the workers listed in ``spark_info`` will gradually
+	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	NumWorkers int `json:"num_workers,omitempty"`
 }
@@ -1379,34 +1376,33 @@ type RestartCluster struct {
 
 type S3StorageInfo struct {
 	// (Optional) Set canned access control list for the logs, e.g.
-	// ``bucket-owner-full-control``. If ``canned_cal`` is set, please make sure
-	// the cluster iam role has ``s3:PutObjectAcl`` permission on the
-	// destination bucket and prefix. The full list of possible canned acl can
-	// be found at
+	// `bucket-owner-full-control`. If `canned_cal` is set, please make sure the
+	// cluster iam role has `s3:PutObjectAcl` permission on the destination
+	// bucket and prefix. The full list of possible canned acl can be found at
 	// http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl.
 	// Please also note that by default only the object owner gets full
 	// controls. If you are using cross account role for writing data, you may
-	// want to set ``bucket-owner-full-control`` to make bucket owner able to
-	// read the logs.
+	// want to set `bucket-owner-full-control` to make bucket owner able to read
+	// the logs.
 	CannedAcl string `json:"canned_acl,omitempty"`
-	// S3 destination, e.g. ``s3://my-bucket/some-prefix`` Note that logs will
-	// be delivered using cluster iam role, please make sure you set cluster iam
+	// S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be
+	// delivered using cluster iam role, please make sure you set cluster iam
 	// role and the role has write access to the destination. Please also note
 	// that you cannot use AWS keys to deliver logs.
 	Destination string `json:"destination,omitempty"`
-	// (Optional) Flag to enable server side encryption, ``false`` by default.
+	// (Optional) Flag to enable server side encryption, `false` by default.
 	EnableEncryption bool `json:"enable_encryption,omitempty"`
-	// (Optional) The encryption type, it could be ``sse-s3`` or ``sse-kms``. It
+	// (Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It
 	// will be used only when encryption is enabled and the default type is
-	// ``sse-s3``.
+	// `sse-s3`.
 	EncryptionType string `json:"encryption_type,omitempty"`
-	// S3 endpoint, e.g. ``https://s3-us-west-2.amazonaws.com``. Either region
-	// or endpoint needs to be set. If both are set, endpoint will be used.
+	// S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or
+	// endpoint needs to be set. If both are set, endpoint will be used.
 	Endpoint string `json:"endpoint,omitempty"`
 	// (Optional) Kms key which will be used if encryption is enabled and
-	// encryption type is set to ``sse-kms``.
+	// encryption type is set to `sse-kms`.
 	KmsKey string `json:"kms_key,omitempty"`
-	// S3 region, e.g. ``us-west-2``. Either region or endpoint needs to be set.
+	// S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set.
 	// If both are set, endpoint will be used.
 	Region string `json:"region,omitempty"`
 }
@@ -1459,6 +1455,25 @@ type StartCluster struct {
 	// The cluster to be started.
 	ClusterId string `json:"cluster_id"`
 }
+
+// Current state of the cluster.
+type State string
+
+const StateError State = `ERROR`
+
+const StatePending State = `PENDING`
+
+const StateResizing State = `RESIZING`
+
+const StateRestarting State = `RESTARTING`
+
+const StateRunning State = `RUNNING`
+
+const StateTerminated State = `TERMINATED`
+
+const StateTerminating State = `TERMINATING`
+
+const StateUnknown State = `UNKNOWN`
 
 type TerminationReason struct {
 	// status code indicating why the cluster was terminated
@@ -1650,16 +1665,4 @@ type UnpinCluster struct {
 type WorkloadType struct {
 	// defined what type of clients can use the cluster. E.g. Notebooks, Jobs
 	Clients *ClientsTypes `json:"clients,omitempty"`
-}
-
-type GetRequest struct {
-	// The cluster about which to retrieve information.
-	ClusterId string `json:"-" url:"cluster_id,omitempty"`
-}
-
-type ListRequest struct {
-	// Filter clusters based on what type of client it can be used for. Could be
-	// either NOTEBOOKS or JOBS. No input for this field will get all clusters
-	// in the workspace without filtering on its supported client
-	CanUseClient string `json:"-" url:"can_use_client,omitempty"`
 }

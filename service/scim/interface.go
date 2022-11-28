@@ -6,9 +6,145 @@ import (
 	"context"
 )
 
-// This is the high-level interface, that contains generated methods.
+// Groups simplify identity management, making it easier to assign access to
+// Databricks Account, data, and other securable objects.
 //
-// Evolving: this interface is under development. Method signatures may change.
+// It is best practice to assign access to workspaces and access-control
+// policies in Unity Catalog to groups, instead of to users individually. All
+// Databricks Account identities can be assigned as members of groups, and
+// members inherit permissions that are assigned to their group.
+type AccountGroupsService interface {
+
+	// Create a new group
+	//
+	// Creates a group in the Databricks Account with a unique name, using the
+	// supplied group details.
+	Create(ctx context.Context, request Group) (*Group, error)
+
+	// Delete a group
+	//
+	// Deletes a group from the Databricks Account.
+	Delete(ctx context.Context, request DeleteGroupRequest) error
+
+	// Get group details
+	//
+	// Gets the information for a specific group in the Databricks Account.
+	Get(ctx context.Context, request GetGroupRequest) (*Group, error)
+
+	// List group details
+	//
+	// Gets all details of the groups associated with the Databricks Account.
+	//
+	// Use ListAll() to get all Group instances
+	List(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error)
+
+	// Update group details
+	//
+	// Partially updates the details of a group.
+	Patch(ctx context.Context, request PartialUpdate) error
+
+	// Replace a group
+	//
+	// Updates the details of a group by replacing the entire group entity.
+	Update(ctx context.Context, request Group) error
+}
+
+// Identities for use with jobs, automated tools, and systems such as scripts,
+// apps, and CI/CD platforms. Databricks recommends creating service principals
+// to run production jobs or modify production data. If all processes that act
+// on production data run with service principals, interactive users do not need
+// any write, delete, or modify privileges in production. This eliminates the
+// risk of a user overwriting production data by accident.
+type AccountServicePrincipalsService interface {
+
+	// Create a service principal
+	//
+	// Creates a new service principal in the Databricks Account.
+	Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error)
+
+	// Delete a service principal
+	//
+	// Delete a single service principal in the Databricks Account.
+	Delete(ctx context.Context, request DeleteServicePrincipalRequest) error
+
+	// Get service principal details
+	//
+	// Gets the details for a single service principal define in the Databricks
+	// Account.
+	Get(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error)
+
+	// List service principals
+	//
+	// Gets the set of service principals associated with a Databricks Account.
+	//
+	// Use ListAll() to get all ServicePrincipal instances
+	List(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
+
+	// Update service principal details
+	//
+	// Partially updates the details of a single service principal in the
+	// Databricks Account.
+	Patch(ctx context.Context, request PartialUpdate) error
+
+	// Replace service principal
+	//
+	// Updates the details of a single service principal.
+	//
+	// This action replaces the existing service principal with the same name.
+	Update(ctx context.Context, request ServicePrincipal) error
+}
+
+// User identities recognized by Databricks and represented by email addresses.
+//
+// Databricks recommends using SCIM provisioning to sync users and groups
+// automatically from your identity provider to your Databricks Account. SCIM
+// streamlines onboarding a new employee or team by using your identity provider
+// to create users and groups in Databricks Account and give them the proper
+// level of access. When a user leaves your organization or no longer needs
+// access to Databricks Account, admins can terminate the user in your identity
+// provider and that user’s account will also be removed from Databricks
+// Account. This ensures a consistent offboarding process and prevents
+// unauthorized users from accessing sensitive data.
+type AccountUsersService interface {
+
+	// Create a new user
+	//
+	// Creates a new user in the Databricks Account. This new user will also be
+	// added to the Databricks account.
+	Create(ctx context.Context, request User) (*User, error)
+
+	// Delete a user
+	//
+	// Deletes a user. Deleting a user from a Databricks Account also removes
+	// objects associated with the user.
+	Delete(ctx context.Context, request DeleteUserRequest) error
+
+	// Get user details
+	//
+	// Gets information for a specific user in Databricks Account.
+	Get(ctx context.Context, request GetUserRequest) (*User, error)
+
+	// List users
+	//
+	// Gets details for all the users associated with a Databricks Account.
+	//
+	// Use ListAll() to get all User instances
+	List(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error)
+
+	// Update user details
+	//
+	// Partially updates a user resource by applying the supplied operations on
+	// specific user attributes.
+	Patch(ctx context.Context, request PartialUpdate) error
+
+	// Replace a user
+	//
+	// Replaces a user's information with the data supplied in request.
+	Update(ctx context.Context, request User) error
+}
+
+// This API allows retrieving information about currently authenticated user or
+// service principal.
 type CurrentUserService interface {
 
 	// Get current user info
@@ -17,205 +153,140 @@ type CurrentUserService interface {
 	Me(ctx context.Context) (*User, error)
 }
 
-// This is the high-level interface, that contains generated methods.
+// Groups simplify identity management, making it easier to assign access to
+// Databricks Workspace, data, and other securable objects.
 //
-// Evolving: this interface is under development. Method signatures may change.
+// It is best practice to assign access to workspaces and access-control
+// policies in Unity Catalog to groups, instead of to users individually. All
+// Databricks Workspace identities can be assigned as members of groups, and
+// members inherit permissions that are assigned to their group.
 type GroupsService interface {
-
-	// Delete a group
-	//
-	// Deletes a group from the <Workspace>.
-	DeleteGroup(ctx context.Context, request DeleteGroupRequest) error
-
-	// DeleteGroupById calls DeleteGroup, but directly with primitive function arguments,
-	// instead of constructing request instance.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	DeleteGroupById(ctx context.Context, id string) error
-
-	// Get group details
-	//
-	// Gets the information for a specific group in the <Workspace>.
-	FetchGroup(ctx context.Context, request FetchGroupRequest) (*Group, error)
-
-	// FetchGroupById calls FetchGroup, but directly with primitive function arguments,
-	// instead of constructing request instance.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	FetchGroupById(ctx context.Context, id string) (*Group, error)
-
-	// List group details
-	//
-	// Gets all details of the groups associated with the <Workspace>.
-	//
-	// Use ListGroupsAll() to get all Group instances
-	ListGroups(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error)
-
-	// ListGroupsAll calls ListGroups() to retrieve all available results from the platform.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	ListGroupsAll(ctx context.Context, request ListGroupsRequest) ([]Group, error)
-
-	// GroupDisplayNameToIdMap retrieves a mapping to access ID by name
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	GroupDisplayNameToIdMap(ctx context.Context, request ListGroupsRequest) (map[string]string, error)
-
-	// GetGroupByDisplayName retrieves Group by name.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	GetGroupByDisplayName(ctx context.Context, name string) (*Group, error)
 
 	// Create a new group
 	//
-	// Creates a group in the <Workspace> with a unique name, using the supplied
-	// group details.
-	NewGroup(ctx context.Context, request Group) (*Group, error)
+	// Creates a group in the Databricks Workspace with a unique name, using the
+	// supplied group details.
+	Create(ctx context.Context, request Group) (*Group, error)
+
+	// Delete a group
+	//
+	// Deletes a group from the Databricks Workspace.
+	Delete(ctx context.Context, request DeleteGroupRequest) error
+
+	// Get group details
+	//
+	// Gets the information for a specific group in the Databricks Workspace.
+	Get(ctx context.Context, request GetGroupRequest) (*Group, error)
+
+	// List group details
+	//
+	// Gets all details of the groups associated with the Databricks Workspace.
+	//
+	// Use ListAll() to get all Group instances
+	List(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error)
 
 	// Update group details
 	//
 	// Partially updates the details of a group.
-	PatchGroup(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) error
 
 	// Replace a group
 	//
 	// Updates the details of a group by replacing the entire group entity.
-	ReplaceGroup(ctx context.Context, request Group) error
+	Update(ctx context.Context, request Group) error
 }
 
-// This is the high-level interface, that contains generated methods.
-//
-// Evolving: this interface is under development. Method signatures may change.
+// Identities for use with jobs, automated tools, and systems such as scripts,
+// apps, and CI/CD platforms. Databricks recommends creating service principals
+// to run production jobs or modify production data. If all processes that act
+// on production data run with service principals, interactive users do not need
+// any write, delete, or modify privileges in production. This eliminates the
+// risk of a user overwriting production data by accident.
 type ServicePrincipalsService interface {
-
-	// Delete a service principal
-	//
-	// Delete a single service principal in the <Workspace>.
-	DeleteServicePrincipal(ctx context.Context, request DeleteServicePrincipalRequest) error
-
-	// DeleteServicePrincipalById calls DeleteServicePrincipal, but directly with primitive function arguments,
-	// instead of constructing request instance.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	DeleteServicePrincipalById(ctx context.Context, id string) error
-
-	// Get service principal details
-	//
-	// Gets the details for a single service principal define in the
-	// <Workspace>.
-	FetchServicePrincipal(ctx context.Context, request FetchServicePrincipalRequest) (*ServicePrincipal, error)
-
-	// FetchServicePrincipalById calls FetchServicePrincipal, but directly with primitive function arguments,
-	// instead of constructing request instance.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	FetchServicePrincipalById(ctx context.Context, id string) (*ServicePrincipal, error)
-
-	// List service principals
-	//
-	// Gets the set of service principals associated with a <Workspace>.
-	//
-	// Use ListServicePrincipalsAll() to get all ServicePrincipal instances
-	ListServicePrincipals(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
-
-	// ListServicePrincipalsAll calls ListServicePrincipals() to retrieve all available results from the platform.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	ListServicePrincipalsAll(ctx context.Context, request ListServicePrincipalsRequest) ([]ServicePrincipal, error)
-
-	// ServicePrincipalDisplayNameToIdMap retrieves a mapping to access ID by name
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	ServicePrincipalDisplayNameToIdMap(ctx context.Context, request ListServicePrincipalsRequest) (map[string]string, error)
-
-	// GetServicePrincipalByDisplayName retrieves ServicePrincipal by name.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	GetServicePrincipalByDisplayName(ctx context.Context, name string) (*ServicePrincipal, error)
 
 	// Create a service principal
 	//
-	// Creates a new service principal in the <Workspace>.
-	NewServicePrincipal(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error)
+	// Creates a new service principal in the Databricks Workspace.
+	Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error)
+
+	// Delete a service principal
+	//
+	// Delete a single service principal in the Databricks Workspace.
+	Delete(ctx context.Context, request DeleteServicePrincipalRequest) error
+
+	// Get service principal details
+	//
+	// Gets the details for a single service principal define in the Databricks
+	// Workspace.
+	Get(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error)
+
+	// List service principals
+	//
+	// Gets the set of service principals associated with a Databricks
+	// Workspace.
+	//
+	// Use ListAll() to get all ServicePrincipal instances
+	List(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
 
 	// Update service principal details
 	//
 	// Partially updates the details of a single service principal in the
-	// <Workspace>.
-	PatchServicePrincipal(ctx context.Context, request PartialUpdate) error
+	// Databricks Workspace.
+	Patch(ctx context.Context, request PartialUpdate) error
 
-	// Replace service principal in <Workspace>
+	// Replace service principal
 	//
 	// Updates the details of a single service principal.
 	//
 	// This action replaces the existing service principal with the same name.
-	ReplaceServicePrincipal(ctx context.Context, request ServicePrincipal) error
+	Update(ctx context.Context, request ServicePrincipal) error
 }
 
-// This is the high-level interface, that contains generated methods.
+// User identities recognized by Databricks and represented by email addresses.
 //
-// Evolving: this interface is under development. Method signatures may change.
+// Databricks recommends using SCIM provisioning to sync users and groups
+// automatically from your identity provider to your Databricks Workspace. SCIM
+// streamlines onboarding a new employee or team by using your identity provider
+// to create users and groups in Databricks Workspace and give them the proper
+// level of access. When a user leaves your organization or no longer needs
+// access to Databricks Workspace, admins can terminate the user in your
+// identity provider and that user’s account will also be removed from
+// Databricks Workspace. This ensures a consistent offboarding process and
+// prevents unauthorized users from accessing sensitive data.
 type UsersService interface {
-
-	// Delete a user
-	//
-	// Deletes a user. Deleting a user from a workspace also removes objects
-	// associated with the user.
-	DeleteUser(ctx context.Context, request DeleteUserRequest) error
-
-	// DeleteUserById calls DeleteUser, but directly with primitive function arguments,
-	// instead of constructing request instance.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	DeleteUserById(ctx context.Context, id string) error
-
-	// Get user details
-	//
-	// Gets information for a specific user in <Workspace>.
-	FetchUser(ctx context.Context, request FetchUserRequest) (*User, error)
-
-	// FetchUserById calls FetchUser, but directly with primitive function arguments,
-	// instead of constructing request instance.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	FetchUserById(ctx context.Context, id string) (*User, error)
-
-	// List users
-	//
-	// Gets details for all the users associated with a <Workspace>.
-	//
-	// Use ListUsersAll() to get all User instances
-	ListUsers(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error)
-
-	// ListUsersAll calls ListUsers() to retrieve all available results from the platform.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	ListUsersAll(ctx context.Context, request ListUsersRequest) ([]User, error)
-
-	// UserUserNameToIdMap retrieves a mapping to access ID by name
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	UserUserNameToIdMap(ctx context.Context, request ListUsersRequest) (map[string]string, error)
-
-	// GetUserByUserName retrieves User by name.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	GetUserByUserName(ctx context.Context, name string) (*User, error)
 
 	// Create a new user
 	//
-	// Creates a new user in the <Workspace>. This new user will also be added
-	// to the <Workspace> account.
-	NewUser(ctx context.Context, request User) (*User, error)
+	// Creates a new user in the Databricks Workspace. This new user will also
+	// be added to the Databricks account.
+	Create(ctx context.Context, request User) (*User, error)
+
+	// Delete a user
+	//
+	// Deletes a user. Deleting a user from a Databricks Workspace also removes
+	// objects associated with the user.
+	Delete(ctx context.Context, request DeleteUserRequest) error
+
+	// Get user details
+	//
+	// Gets information for a specific user in Databricks Workspace.
+	Get(ctx context.Context, request GetUserRequest) (*User, error)
+
+	// List users
+	//
+	// Gets details for all the users associated with a Databricks Workspace.
+	//
+	// Use ListAll() to get all User instances
+	List(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error)
 
 	// Update user details
 	//
 	// Partially updates a user resource by applying the supplied operations on
 	// specific user attributes.
-	PatchUser(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) error
 
 	// Replace a user
 	//
 	// Replaces a user's information with the data supplied in request.
-	ReplaceUser(ctx context.Context, request User) error
+	Update(ctx context.Context, request User) error
 }

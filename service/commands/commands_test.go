@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/databricks/databricks-sdk-go/databricks/apierr"
-	"github.com/databricks/databricks-sdk-go/databricks/client"
-	"github.com/databricks/databricks-sdk-go/databricks/qa"
+	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 )
 
@@ -25,7 +25,7 @@ func commonFixtureWithStatusResponse(response CommandStatusResponse) qa.HTTPFixt
 				SparkVersion:           "7.1-scala12",
 				NodeTypeId:             "i3.xlarge",
 				AutoterminationMinutes: 15,
-				State:                  clusters.ClusterInfoStateRunning,
+				State:                  clusters.StateRunning,
 			},
 		},
 		{

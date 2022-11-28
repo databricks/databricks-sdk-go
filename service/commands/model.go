@@ -37,6 +37,15 @@ const CommandStatusQueued CommandStatus = `Queued`
 
 const CommandStatusRunning CommandStatus = `Running`
 
+// Get command info
+type CommandStatusRequest struct {
+	ClusterId string `json:"-" url:"clusterId"`
+
+	CommandId string `json:"-" url:"commandId"`
+
+	ContextId string `json:"-" url:"contextId"`
+}
+
 type CommandStatusResponse struct {
 	Id string `json:"id,omitempty"`
 
@@ -52,6 +61,13 @@ const ContextStatusError ContextStatus = `Error`
 const ContextStatusPending ContextStatus = `Pending`
 
 const ContextStatusRunning ContextStatus = `Running`
+
+// Get status
+type ContextStatusRequest struct {
+	ClusterId string `json:"-" url:"clusterId"`
+
+	ContextId string `json:"-" url:"contextId"`
+}
 
 type ContextStatusResponse struct {
 	Id string `json:"id,omitempty"`
@@ -118,18 +134,4 @@ type Results struct {
 	Summary string `json:"summary,omitempty"`
 	// true if partial results are returned.
 	Truncated bool `json:"truncated,omitempty"`
-}
-
-type CommandStatusRequest struct {
-	ClusterId string `json:"-" url:"clusterId,omitempty"`
-
-	CommandId string `json:"-" url:"commandId,omitempty"`
-
-	ContextId string `json:"-" url:"contextId,omitempty"`
-}
-
-type ContextStatusRequest struct {
-	ClusterId string `json:"-" url:"clusterId,omitempty"`
-
-	ContextId string `json:"-" url:"contextId,omitempty"`
 }

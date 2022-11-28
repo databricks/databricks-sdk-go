@@ -1,0 +1,52 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package databricks
+
+import (
+	"github.com/databricks/databricks-sdk-go/client"
+	{{range .Packages}}
+	"github.com/databricks/databricks-sdk-go/service/{{.Name}}"
+	{{- end}}
+)
+
+type AccountClient struct {
+	Config *config.Config
+
+	{{range .Services}}{{if .IsAccounts}}
+	{{.Comment "    // " 80}}
+	{{if eq .Package.Name "scim" -}}
+		{{trim_prefix .Name "Account"}} 
+	{{- else}}{{.Name}}{{end}} *{{.Package.Name}}.{{.Name}}API
+    {{end}}{{end}}
+}
+
+// NewAccountClient creates new Databricks SDK client for Accounts or returns
+// error in case configuration is wrong
+func NewAccountClient(c ...*Config) (*AccountClient, error) {
+	var cfg *config.Config
+	if len(c) == 1 {
+		// first config
+		cfg = (*config.Config)(c[0])
+	} else {
+		// default config
+		cfg = &config.Config{}
+	}
+	err := cfg.EnsureResolved()
+	if err != nil {
+		panic(err)
+	}
+	if cfg.AccountID == "" {
+		return nil, fmt.Errorf("AccountID is not specified on config")
+	}
+	apiClient, err := client.New(cfg)
+	if err != nil {
+		return nil, err
+	}
+	return &AccountClient{
+		Config: cfg,
+		{{range .Services}}{{if .IsAccounts}}
+		{{if eq .Package.Name "scim" -}}
+			{{trim_prefix .Name "Account"}} 
+		{{- else}}{{.Name}}{{end}}: {{.Package.Name}}.New{{.Name}}(apiClient),{{end}}{{end}}
+	}, nil
+}

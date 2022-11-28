@@ -5,20 +5,22 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
-	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccDefaultCredentials(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	ws := workspaces.New()
-
+	w := databricks.Must(databricks.NewWorkspaceClient())
+	if w.Config.IsAccountsClient() {
+		t.SkipNow()
+	}
 	ctx := context.Background()
-	versions, err := ws.Clusters.SparkVersions(ctx)
+	versions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
 	v, err := versions.Select(clusters.SparkVersionRequest{
@@ -32,11 +34,14 @@ func TestAccDefaultCredentials(t *testing.T) {
 // TODO: add CredentialProviderChain
 
 func TestAccExplicitDatabricksCfg(t *testing.T) {
-	ws := workspaces.New(&databricks.Config{
+	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		Profile: GetEnvOrSkipTest(t, "DATABRICKS_CONFIG_PROFILE"),
-	})
+	}))
+	if w.Config.IsAccountsClient() {
+		t.SkipNow()
+	}
 	ctx := context.Background()
-	versions, err := ws.Clusters.SparkVersions(ctx)
+	versions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
 	v, err := versions.Select(clusters.SparkVersionRequest{
@@ -66,12 +71,12 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 		t.Fatalf("error running az: %s (%s)", err, out)
 	}
 
-	ws := workspaces.New(&databricks.Config{
+	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		AzureResourceID: GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
-		Credentials:     databricks.AzureCliCredentials{},
-	})
+		Credentials:     config.AzureCliCredentials{},
+	}))
 	ctx := context.Background()
-	versions, err := ws.Clusters.SparkVersions(ctx)
+	versions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
 	v, err := versions.Select(clusters.SparkVersionRequest{
@@ -83,15 +88,15 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 }
 
 func TestAccExplicitAzureSpnAuth(t *testing.T) {
-	ws := workspaces.New(&databricks.Config{
+	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		AzureTenantID:     GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
 		AzureClientID:     GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
 		AzureClientSecret: GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET"),
 		AzureResourceID:   GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
-		Credentials:       databricks.AzureClientSecretCredentials{},
-	})
+		Credentials:       config.AzureClientSecretCredentials{},
+	}))
 	ctx := context.Background()
-	versions, err := ws.Clusters.SparkVersions(ctx)
+	versions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
 	v, err := versions.Select(clusters.SparkVersionRequest{

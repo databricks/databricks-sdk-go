@@ -7,19 +7,62 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
-	"github.com/databricks/databricks-sdk-go/databricks/retries"
-	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-func NewClusters(client *client.DatabricksClient) ClustersService {
+func NewClusters(client *client.DatabricksClient) *ClustersAPI {
 	return &ClustersAPI{
-		client: client,
+		impl: &clustersImpl{
+			client: client,
+		},
 	}
 }
 
+// The Clusters API allows you to create, start, edit, list, terminate, and
+// delete clusters.
+//
+// Databricks maps cluster node instance types to compute units known as DBUs.
+// See the instance type pricing page for a list of the supported instance types
+// and their corresponding DBUs.
+//
+// A Databricks cluster is a set of computation resources and configurations on
+// which you run data engineering, data science, and data analytics workloads,
+// such as production ETL pipelines, streaming analytics, ad-hoc analytics, and
+// machine learning.
+//
+// You run these workloads as a set of commands in a notebook or as an automated
+// job. Databricks makes a distinction between all-purpose clusters and job
+// clusters. You use all-purpose clusters to analyze data collaboratively using
+// interactive notebooks. You use job clusters to run fast and robust automated
+// jobs.
+//
+// You can create an all-purpose cluster using the UI, CLI, or REST API. You can
+// manually terminate and restart an all-purpose cluster. Multiple users can
+// share such clusters to do collaborative interactive analysis.
+//
+// IMPORTANT: Databricks retains cluster configuration information for up to 200
+// all-purpose clusters terminated in the last 30 days and up to 30 job clusters
+// recently terminated by the job scheduler. To keep an all-purpose cluster
+// configuration even after it has been terminated for more than 30 days, an
+// administrator can pin a cluster to the cluster list.
 type ClustersAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(ClustersService)
+	impl ClustersService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *ClustersAPI) WithImpl(impl ClustersService) *ClustersAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Clusters API implementation
+func (a *ClustersAPI) Impl() ClustersService {
+	return a.impl
 }
 
 // Change cluster owner
@@ -27,18 +70,16 @@ type ClustersAPI struct {
 // Change the owner of the cluster. You must be an admin to perform this
 // operation.
 func (a *ClustersAPI) ChangeOwner(ctx context.Context, request ChangeClusterOwner) error {
-	path := "/api/2.0/clusters/change-owner"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.ChangeOwner(ctx, request)
 }
 
 // Create new cluster
 //
 // Creates a new Spark cluster. This method will acquire new instances from the
 // cloud provider if necessary. This method is asynchronous; the returned
-// “cluster_id“ can be used to poll the cluster status. When this method
-// returns, the cluster will be in\na “PENDING“ state. The cluster will be
-// usable once it enters a “RUNNING“ state.
+// `cluster_id` can be used to poll the cluster status. When this method
+// returns, the cluster will be in\na `PENDING` state. The cluster will be
+// usable once it enters a `RUNNING` state.
 //
 // Note: Databricks may not be able to acquire some of the requested nodes, due
 // to cloud provider limitations (account limits, spot price, etc.) or transient
@@ -48,13 +89,10 @@ func (a *ClustersAPI) ChangeOwner(ctx context.Context, request ChangeClusterOwne
 // creation will succeed. Otherwise the cluster will terminate with an
 // informative error message.
 func (a *ClustersAPI) Create(ctx context.Context, request CreateCluster) (*CreateClusterResponse, error) {
-	var createClusterResponse CreateClusterResponse
-	path := "/api/2.0/clusters/create"
-	err := a.client.Post(ctx, path, request, &createClusterResponse)
-	return &createClusterResponse, err
+	return a.impl.Create(ctx, request)
 }
 
-// Create and wait to reach RUNNING state
+// Calls [ClustersAPI.Create] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
@@ -69,7 +107,7 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 		o(&i)
 	}
 	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetRequest{
+		clusterInfo, err := a.Get(ctx, Get{
 			ClusterId: createClusterResponse.ClusterId,
 		})
 		if err != nil {
@@ -84,11 +122,11 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateRunning: // target state
+		case StateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError, ClusterInfoStateTerminated:
+		case StateError, StateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -100,15 +138,13 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 //
 // Terminates the Spark cluster with the specified ID. The cluster is removed
 // asynchronously. Once the termination has completed, the cluster will be in a
-// “TERMINATED“ state. If the cluster is already in a “TERMINATING“ or
-// “TERMINATED“ state, nothing will happen.
+// `TERMINATED` state. If the cluster is already in a `TERMINATING` or
+// `TERMINATED` state, nothing will happen.
 func (a *ClustersAPI) Delete(ctx context.Context, request DeleteCluster) error {
-	path := "/api/2.0/clusters/delete"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
-// Delete and wait to reach TERMINATED state
+// Calls [ClustersAPI.Delete] and waits to reach TERMINATED state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
@@ -123,7 +159,7 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteClu
 		o(&i)
 	}
 	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetRequest{
+		clusterInfo, err := a.Get(ctx, Get{
 			ClusterId: deleteCluster.ClusterId,
 		})
 		if err != nil {
@@ -138,11 +174,11 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteClu
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateTerminated: // target state
+		case StateTerminated: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError:
+		case StateError:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateTerminated, status, statusMessage)
+				StateTerminated, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -154,10 +190,10 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteClu
 //
 // Terminates the Spark cluster with the specified ID. The cluster is removed
 // asynchronously. Once the termination has completed, the cluster will be in a
-// “TERMINATED“ state. If the cluster is already in a “TERMINATING“ or
-// “TERMINATED“ state, nothing will happen.
+// `TERMINATED` state. If the cluster is already in a `TERMINATING` or
+// `TERMINATED` state, nothing will happen.
 func (a *ClustersAPI) DeleteByClusterId(ctx context.Context, clusterId string) error {
-	return a.Delete(ctx, DeleteCluster{
+	return a.impl.Delete(ctx, DeleteCluster{
 		ClusterId: clusterId,
 	})
 }
@@ -171,25 +207,22 @@ func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId st
 // Update cluster configuration
 //
 // Updates the configuration of a cluster to match the provided attributes and
-// size. A cluster can be updated if it is in a “RUNNING“ or “TERMINATED“
-// state.
+// size. A cluster can be updated if it is in a `RUNNING` or `TERMINATED` state.
 //
-// If a cluster is updated while in a “RUNNING“ state, it will be restarted so
+// If a cluster is updated while in a `RUNNING` state, it will be restarted so
 // that the new attributes can take effect.
 //
-// If a cluster is updated while in a “TERMINATED“ state, it will remain
-// “TERMINATED“. The next time it is started using the “clusters/start“ API,
-// the new attributes will take effect. Any attempt to update a cluster in any
-// other state will be rejected with an “INVALID_STATE“ error code.
+// If a cluster is updated while in a `TERMINATED` state, it will remain
+// `TERMINATED`. The next time it is started using the `clusters/start` API, the
+// new attributes will take effect. Any attempt to update a cluster in any other
+// state will be rejected with an `INVALID_STATE` error code.
 //
 // Clusters created by the Databricks Jobs service cannot be edited.
 func (a *ClustersAPI) Edit(ctx context.Context, request EditCluster) error {
-	path := "/api/2.0/clusters/edit"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Edit(ctx, request)
 }
 
-// Edit and wait to reach RUNNING state
+// Calls [ClustersAPI.Edit] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
@@ -204,7 +237,7 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, 
 		o(&i)
 	}
 	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetRequest{
+		clusterInfo, err := a.Get(ctx, Get{
 			ClusterId: editCluster.ClusterId,
 		})
 		if err != nil {
@@ -219,11 +252,11 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, 
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateRunning: // target state
+		case StateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError, ClusterInfoStateTerminated:
+		case StateError, StateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -237,22 +270,12 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, 
 // paginated. If there are more events to read, the response includes all the
 // nparameters necessary to request the next page of events.
 //
-// Use EventsAll() to get all ClusterEvent instances, which will iterate over every result page.
-func (a *ClustersAPI) Events(ctx context.Context, request GetEvents) (*GetEventsResponse, error) {
-	var getEventsResponse GetEventsResponse
-	path := "/api/2.0/clusters/events"
-	err := a.client.Post(ctx, path, request, &getEventsResponse)
-	return &getEventsResponse, err
-}
-
-// EventsAll returns all ClusterEvent instances by calling Events for every result page
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]ClusterEvent, error) {
 	var results []ClusterEvent
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	for {
-		response, err := a.Events(ctx, request)
+		response, err := a.impl.Events(ctx, request)
 		if err != nil {
 			return nil, err
 		}
@@ -262,7 +285,10 @@ func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]Clust
 		for _, v := range response.Events {
 			results = append(results, v)
 		}
-		request.Offset += int64(len(response.Events))
+		if response.NextPage == nil {
+			break
+		}
+		request = *response.NextPage
 	}
 	return results, nil
 }
@@ -272,20 +298,17 @@ func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]Clust
 // "Retrieves the information for a cluster given its identifier. Clusters can
 // be described while they are running, or up to 60 days after they are
 // terminated.
-func (a *ClustersAPI) Get(ctx context.Context, request GetRequest) (*ClusterInfo, error) {
-	var clusterInfo ClusterInfo
-	path := "/api/2.0/clusters/get"
-	err := a.client.Get(ctx, path, request, &clusterInfo)
-	return &clusterInfo, err
+func (a *ClustersAPI) Get(ctx context.Context, request Get) (*ClusterInfo, error) {
+	return a.impl.Get(ctx, request)
 }
 
-// Get and wait to reach RUNNING state
+// Calls [ClustersAPI.Get] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
-func (a *ClustersAPI) GetAndWait(ctx context.Context, getRequest GetRequest, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+func (a *ClustersAPI) GetAndWait(ctx context.Context, get Get, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	clusterInfo, err := a.Get(ctx, getRequest)
+	clusterInfo, err := a.Get(ctx, get)
 	if err != nil {
 		return nil, err
 	}
@@ -294,7 +317,7 @@ func (a *ClustersAPI) GetAndWait(ctx context.Context, getRequest GetRequest, opt
 		o(&i)
 	}
 	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetRequest{
+		clusterInfo, err := a.Get(ctx, Get{
 			ClusterId: clusterInfo.ClusterId,
 		})
 		if err != nil {
@@ -309,11 +332,11 @@ func (a *ClustersAPI) GetAndWait(ctx context.Context, getRequest GetRequest, opt
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateRunning: // target state
+		case StateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError, ClusterInfoStateTerminated:
+		case StateError, StateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -327,13 +350,13 @@ func (a *ClustersAPI) GetAndWait(ctx context.Context, getRequest GetRequest, opt
 // be described while they are running, or up to 60 days after they are
 // terminated.
 func (a *ClustersAPI) GetByClusterId(ctx context.Context, clusterId string) (*ClusterInfo, error) {
-	return a.Get(ctx, GetRequest{
+	return a.impl.Get(ctx, Get{
 		ClusterId: clusterId,
 	})
 }
 
 func (a *ClustersAPI) GetByClusterIdAndWait(ctx context.Context, clusterId string, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
-	return a.GetAndWait(ctx, GetRequest{
+	return a.GetAndWait(ctx, Get{
 		ClusterId: clusterId,
 	}, options...)
 }
@@ -351,46 +374,63 @@ func (a *ClustersAPI) GetByClusterIdAndWait(ctx context.Context, clusterId strin
 // clusters, all 45 terminated interactive clusters, and the 30 most recently
 // terminated job clusters.
 //
-// Use ListAll() to get all ClusterInfo instances
-func (a *ClustersAPI) List(ctx context.Context, request ListRequest) (*ListClustersResponse, error) {
-	var listClustersResponse ListClustersResponse
-	path := "/api/2.0/clusters/list"
-	err := a.client.Get(ctx, path, request, &listClustersResponse)
-	return &listClustersResponse, err
-}
-
-// ListAll returns all ClusterInfo instances. This method exists for consistency purposes.
-//
 // This method is generated by Databricks SDK Code Generator.
-func (a *ClustersAPI) ListAll(ctx context.Context, request ListRequest) ([]ClusterInfo, error) {
-	response, err := a.List(ctx, request)
+func (a *ClustersAPI) ListAll(ctx context.Context, request List) ([]ClusterInfo, error) {
+	response, err := a.impl.List(ctx, request)
 	if err != nil {
 		return nil, err
 	}
 	return response.Clusters, nil
 }
 
-func (a *ClustersAPI) ClusterInfoClusterNameToClusterIdMap(ctx context.Context, request ListRequest) (map[string]string, error) {
+// ClusterInfoClusterNameToClusterIdMap calls [ClustersAPI.ListAll] and creates a map of results with [ClusterInfo].ClusterName as key and [ClusterInfo].ClusterId as value.
+//
+// Returns an error if there's more than one [ClusterInfo] with the same .ClusterName.
+//
+// Note: All [ClusterInfo] instances are loaded into memory before creating a map.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *ClustersAPI) ClusterInfoClusterNameToClusterIdMap(ctx context.Context, request List) (map[string]string, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
 	if err != nil {
 		return nil, err
 	}
 	for _, v := range result {
-		mapping[v.ClusterName] = v.ClusterId
+		key := v.ClusterName
+		_, duplicate := mapping[key]
+		if duplicate {
+			return nil, fmt.Errorf("duplicate .ClusterName: %s", key)
+		}
+		mapping[key] = v.ClusterId
 	}
 	return mapping, nil
 }
 
+// GetClusterInfoByClusterName calls [ClustersAPI.ClusterInfoClusterNameToClusterIdMap] and returns a single [ClusterInfo].
+//
+// Returns an error if there's more than one [ClusterInfo] with the same .ClusterName.
+//
+// Note: All [ClusterInfo] instances are loaded into memory before creating a map.
+//
+// This method is generated by Databricks SDK Code Generator.
 func (a *ClustersAPI) GetClusterInfoByClusterName(ctx context.Context, name string) (*ClusterInfo, error) {
-	result, err := a.ListAll(ctx, ListRequest{})
+	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
+	result, err := a.ListAll(ctx, List{})
 	if err != nil {
 		return nil, err
 	}
+	duplicates := map[string]bool{}
 	for _, v := range result {
-		if v.ClusterName != name {
+		key := v.ClusterName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .ClusterName: %s", key)
+		}
+		if key != name {
 			continue
 		}
+		duplicates[key] = true
 		return &v, nil
 	}
 	return nil, fmt.Errorf("ClusterInfo named '%s' does not exist", name)
@@ -409,7 +449,7 @@ func (a *ClustersAPI) GetClusterInfoByClusterName(ctx context.Context, name stri
 // clusters, all 45 terminated interactive clusters, and the 30 most recently
 // terminated job clusters.
 func (a *ClustersAPI) ListByCanUseClient(ctx context.Context, canUseClient string) (*ListClustersResponse, error) {
-	return a.List(ctx, ListRequest{
+	return a.impl.List(ctx, List{
 		CanUseClient: canUseClient,
 	})
 }
@@ -419,10 +459,7 @@ func (a *ClustersAPI) ListByCanUseClient(ctx context.Context, canUseClient strin
 // Returns a list of supported Spark node types. These node types can be used to
 // launch a cluster.
 func (a *ClustersAPI) ListNodeTypes(ctx context.Context) (*ListNodeTypesResponse, error) {
-	var listNodeTypesResponse ListNodeTypesResponse
-	path := "/api/2.0/clusters/list-node-types"
-	err := a.client.Get(ctx, path, nil, &listNodeTypesResponse)
-	return &listNodeTypesResponse, err
+	return a.impl.ListNodeTypes(ctx)
 }
 
 // List availability zones
@@ -430,10 +467,7 @@ func (a *ClustersAPI) ListNodeTypes(ctx context.Context) (*ListNodeTypesResponse
 // Returns a list of availability zones where clusters can be created in (For
 // example, us-west-2a). These zones can be used to launch a cluster.
 func (a *ClustersAPI) ListZones(ctx context.Context) (*ListAvailableZonesResponse, error) {
-	var listAvailableZonesResponse ListAvailableZonesResponse
-	path := "/api/2.0/clusters/list-zones"
-	err := a.client.Get(ctx, path, nil, &listAvailableZonesResponse)
-	return &listAvailableZonesResponse, err
+	return a.impl.ListZones(ctx)
 }
 
 // Permanently delete cluster
@@ -445,9 +479,7 @@ func (a *ClustersAPI) ListZones(ctx context.Context) (*ListAvailableZonesRespons
 // cluster list, and API users can no longer perform any action on permanently
 // deleted clusters.
 func (a *ClustersAPI) PermanentDelete(ctx context.Context, request PermanentDeleteCluster) error {
-	path := "/api/2.0/clusters/permanent-delete"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.PermanentDelete(ctx, request)
 }
 
 // Permanently delete cluster
@@ -459,7 +491,7 @@ func (a *ClustersAPI) PermanentDelete(ctx context.Context, request PermanentDele
 // cluster list, and API users can no longer perform any action on permanently
 // deleted clusters.
 func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId string) error {
-	return a.PermanentDelete(ctx, PermanentDeleteCluster{
+	return a.impl.PermanentDelete(ctx, PermanentDeleteCluster{
 		ClusterId: clusterId,
 	})
 }
@@ -470,9 +502,7 @@ func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId 
 // ListClusters API. Pinning a cluster that is already pinned will have no
 // effect. This API can only be called by workspace admins.
 func (a *ClustersAPI) Pin(ctx context.Context, request PinCluster) error {
-	path := "/api/2.0/clusters/pin"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Pin(ctx, request)
 }
 
 // Pin cluster
@@ -481,7 +511,7 @@ func (a *ClustersAPI) Pin(ctx context.Context, request PinCluster) error {
 // ListClusters API. Pinning a cluster that is already pinned will have no
 // effect. This API can only be called by workspace admins.
 func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) error {
-	return a.Pin(ctx, PinCluster{
+	return a.impl.Pin(ctx, PinCluster{
 		ClusterId: clusterId,
 	})
 }
@@ -491,12 +521,10 @@ func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) erro
 // Resizes a cluster to have a desired number of workers. This will fail unless
 // the cluster is in a `RUNNING` state.
 func (a *ClustersAPI) Resize(ctx context.Context, request ResizeCluster) error {
-	path := "/api/2.0/clusters/resize"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Resize(ctx, request)
 }
 
-// Resize and wait to reach RUNNING state
+// Calls [ClustersAPI.Resize] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
@@ -511,7 +539,7 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeClu
 		o(&i)
 	}
 	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetRequest{
+		clusterInfo, err := a.Get(ctx, Get{
 			ClusterId: resizeCluster.ClusterId,
 		})
 		if err != nil {
@@ -526,11 +554,11 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeClu
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateRunning: // target state
+		case StateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError, ClusterInfoStateTerminated:
+		case StateError, StateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -543,12 +571,10 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeClu
 // Restarts a Spark cluster with the supplied ID. If the cluster is not
 // currently in a `RUNNING` state, nothing will happen.
 func (a *ClustersAPI) Restart(ctx context.Context, request RestartCluster) error {
-	path := "/api/2.0/clusters/restart"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Restart(ctx, request)
 }
 
-// Restart and wait to reach RUNNING state
+// Calls [ClustersAPI.Restart] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
@@ -563,7 +589,7 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster Restart
 		o(&i)
 	}
 	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetRequest{
+		clusterInfo, err := a.Get(ctx, Get{
 			ClusterId: restartCluster.ClusterId,
 		})
 		if err != nil {
@@ -578,11 +604,11 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster Restart
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateRunning: // target state
+		case StateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError, ClusterInfoStateTerminated:
+		case StateError, StateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -595,10 +621,7 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster Restart
 // Returns the list of available Spark versions. These versions can be used to
 // launch a cluster.
 func (a *ClustersAPI) SparkVersions(ctx context.Context) (*GetSparkVersionsResponse, error) {
-	var getSparkVersionsResponse GetSparkVersionsResponse
-	path := "/api/2.0/clusters/spark-versions"
-	err := a.client.Get(ctx, path, nil, &getSparkVersionsResponse)
-	return &getSparkVersionsResponse, err
+	return a.impl.SparkVersions(ctx)
 }
 
 // Start terminated cluster
@@ -609,15 +632,13 @@ func (a *ClustersAPI) SparkVersions(ctx context.Context) (*GetSparkVersionsRespo
 // * The previous cluster id and attributes are preserved. * The cluster starts
 // with the last specified cluster size. * If the previous cluster was an
 // autoscaling cluster, the current cluster starts with the minimum number of
-// nodes. * If the cluster is not currently in a “TERMINATED“ state, nothing
+// nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
 // will happen. * Clusters launched to run a job cannot be started.
 func (a *ClustersAPI) Start(ctx context.Context, request StartCluster) error {
-	path := "/api/2.0/clusters/start"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Start(ctx, request)
 }
 
-// Start and wait to reach RUNNING state
+// Calls [ClustersAPI.Start] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
@@ -632,7 +653,7 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 		o(&i)
 	}
 	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetRequest{
+		clusterInfo, err := a.Get(ctx, Get{
 			ClusterId: startCluster.ClusterId,
 		})
 		if err != nil {
@@ -647,11 +668,11 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 		status := clusterInfo.State
 		statusMessage := clusterInfo.StateMessage
 		switch status {
-		case ClusterInfoStateRunning: // target state
+		case StateRunning: // target state
 			return clusterInfo, nil
-		case ClusterInfoStateError, ClusterInfoStateTerminated:
+		case StateError, StateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ClusterInfoStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -667,10 +688,10 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 // * The previous cluster id and attributes are preserved. * The cluster starts
 // with the last specified cluster size. * If the previous cluster was an
 // autoscaling cluster, the current cluster starts with the minimum number of
-// nodes. * If the cluster is not currently in a “TERMINATED“ state, nothing
+// nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
 // will happen. * Clusters launched to run a job cannot be started.
 func (a *ClustersAPI) StartByClusterId(ctx context.Context, clusterId string) error {
-	return a.Start(ctx, StartCluster{
+	return a.impl.Start(ctx, StartCluster{
 		ClusterId: clusterId,
 	})
 }
@@ -687,9 +708,7 @@ func (a *ClustersAPI) StartByClusterIdAndWait(ctx context.Context, clusterId str
 // ListClusters API. Unpinning a cluster that is not pinned will have no effect.
 // This API can only be called by workspace admins.
 func (a *ClustersAPI) Unpin(ctx context.Context, request UnpinCluster) error {
-	path := "/api/2.0/clusters/unpin"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Unpin(ctx, request)
 }
 
 // Unpin cluster
@@ -698,7 +717,103 @@ func (a *ClustersAPI) Unpin(ctx context.Context, request UnpinCluster) error {
 // ListClusters API. Unpinning a cluster that is not pinned will have no effect.
 // This API can only be called by workspace admins.
 func (a *ClustersAPI) UnpinByClusterId(ctx context.Context, clusterId string) error {
-	return a.Unpin(ctx, UnpinCluster{
+	return a.impl.Unpin(ctx, UnpinCluster{
 		ClusterId: clusterId,
+	})
+}
+
+func NewInstanceProfiles(client *client.DatabricksClient) *InstanceProfilesAPI {
+	return &InstanceProfilesAPI{
+		impl: &instanceProfilesImpl{
+			client: client,
+		},
+	}
+}
+
+// The Instance Profiles API allows admins to add, list, and remove instance
+// profiles that users can launch clusters with. Regular users can list the
+// instance profiles available to them. See [Secure access to S3
+// buckets](https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html)
+// using instance profiles for more information.
+type InstanceProfilesAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(InstanceProfilesService)
+	impl InstanceProfilesService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *InstanceProfilesAPI) WithImpl(impl InstanceProfilesService) *InstanceProfilesAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level InstanceProfiles API implementation
+func (a *InstanceProfilesAPI) Impl() InstanceProfilesService {
+	return a.impl
+}
+
+// Register an instance profile
+//
+// In the UI, you can select the instance profile when launching clusters. This
+// API is only available to admin users.
+func (a *InstanceProfilesAPI) Add(ctx context.Context, request AddInstanceProfile) error {
+	return a.impl.Add(ctx, request)
+}
+
+// Edit an instance profile
+//
+// The only supported field to change is the optional IAM role ARN associated
+// with the instance profile. It is required to specify the IAM role ARN if both
+// of the following are true:
+//
+// * Your role name and instance profile name do not match. The name is the part
+// after the last slash in each ARN. * You want to use the instance profile with
+// [Databricks SQL
+// Serverless](https://docs.databricks.com/sql/admin/serverless.html).
+//
+// To understand where these fields are in the AWS console, see [Enable
+// serverless SQL
+// warehouses](https://docs.databricks.com/sql/admin/serverless.html).
+//
+// This API is only available to admin users.
+func (a *InstanceProfilesAPI) Edit(ctx context.Context, request InstanceProfile) error {
+	return a.impl.Edit(ctx, request)
+}
+
+// List available instance profiles
+//
+// List the instance profiles that the calling user can use to launch a cluster.
+//
+// This API is available to all users.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *InstanceProfilesAPI) ListAll(ctx context.Context) ([]InstanceProfile, error) {
+	response, err := a.impl.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return response.InstanceProfiles, nil
+}
+
+// Remove the instance profile
+//
+// Remove the instance profile with the provided ARN. Existing clusters with
+// this instance profile will continue to function.
+//
+// This API is only accessible to admin users.
+func (a *InstanceProfilesAPI) Remove(ctx context.Context, request RemoveInstanceProfile) error {
+	return a.impl.Remove(ctx, request)
+}
+
+// Remove the instance profile
+//
+// Remove the instance profile with the provided ARN. Existing clusters with
+// this instance profile will continue to function.
+//
+// This API is only accessible to admin users.
+func (a *InstanceProfilesAPI) RemoveByInstanceProfileArn(ctx context.Context, instanceProfileArn string) error {
+	return a.impl.Remove(ctx, RemoveInstanceProfile{
+		InstanceProfileArn: instanceProfileArn,
 	})
 }

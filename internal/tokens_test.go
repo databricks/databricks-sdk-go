@@ -1,41 +1,38 @@
 package internal
 
 import (
-	"context"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/databricks"
+	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/tokens"
-	"github.com/databricks/databricks-sdk-go/workspaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccTokens(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	wsc := workspaces.New()
+	ctx, w := workspaceTest(t)
 
-	token, err := wsc.Tokens.Create(ctx, tokens.CreateTokenRequest{
+	token, err := w.Tokens.Create(ctx, tokens.CreateTokenRequest{
 		Comment:         "xyz",
 		LifetimeSeconds: 300,
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = wsc.Tokens.DeleteByTokenId(ctx, token.TokenInfo.TokenId)
+		err = w.Tokens.DeleteByTokenId(ctx, token.TokenInfo.TokenId)
 		require.NoError(t, err)
 	})
 
-	wscInner := workspaces.New(&databricks.Config{
-		Host:     wsc.Config.Host,
+	names, err := w.Tokens.PublicTokenInfoCommentToTokenIdMap(ctx)
+	require.NoError(t, err)
+	assert.True(t, len(names) >= 1)
+
+	wscInner := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
+		Host:     w.Config.Host,
 		Token:    token.TokenValue,
 		AuthType: "pat",
-	})
+	}))
 
-	me, err := wsc.CurrentUser.Me(ctx)
-	require.NoError(t, err)
 	me2, err := wscInner.CurrentUser.Me(ctx)
 	require.NoError(t, err)
-	assert.Equal(t, me2.UserName, me.UserName)
+	assert.Equal(t, me2.UserName, me(t, w).UserName)
 }

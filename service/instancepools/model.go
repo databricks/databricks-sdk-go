@@ -13,7 +13,7 @@ type CreateInstancePool struct {
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes:
+	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
@@ -34,8 +34,7 @@ type CreateInstancePool struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
-	// The fleet related setting to power the instance pool. Note: This inline
-	// this message can be difficult to interpret/manage
+	// The fleet related setting to power the instance pool.
 	InstancePoolFleetAttributes *InstancePoolFleetAttributes `json:"instance_pool_fleet_attributes,omitempty"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
@@ -47,18 +46,17 @@ type CreateInstancePool struct {
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this pool. For example, the Spark nodes can be
-	// provisioned and optimized for memory or compute intensive workloads A
+	// each of the Spark nodes in this cluster. For example, the Spark nodes can
+	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
+	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Custom Docker Image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-	// A list of preloaded Spark image versions for the pool, e.g.
-	// ["5.2.x-scala2.11"]. Pool-backed clusters started with the preloaded
-	// Spark version will start faster. A list of available Spark versions can
-	// be retrieved by using the :ref:`clusterClusterServicelistSparkVersions`
-	// API call.
+	// A list of preloaded Spark image versions for the pool. Pool-backed
+	// clusters started with the preloaded Spark version will start faster. A
+	// list of available Spark versions can be retrieved by using the
+	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 }
 
@@ -85,10 +83,10 @@ type DiskSpec struct {
 	// Databricks will configure Spark to use instance store disks.
 	//
 	// Note: If disks are specified, then the Spark configuration
-	// ``spark.local.dir`` will be overridden.
+	// `spark.local.dir` will be overridden.
 	//
-	// Disks will be mounted at: - For AWS: ``/ebs0``, ``/ebs1``, and etc. - For
-	// Azure: ``/remote_volume0``, ``/remote_volume1``, and etc.
+	// Disks will be mounted at: - For AWS: `/ebs0`, `/ebs1`, and etc. - For
+	// Azure: `/remote_volume0`, `/remote_volume1`, and etc.
 	DiskCount int `json:"disk_count,omitempty"`
 
 	DiskIops int `json:"disk_iops,omitempty"`
@@ -146,7 +144,7 @@ type EditInstancePool struct {
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes:
+	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows up to 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
@@ -179,18 +177,17 @@ type EditInstancePool struct {
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this pool. For example, the Spark nodes can be
-	// provisioned and optimized for memory or compute-intensive workloads A
-	// Retrieve a list of available node types by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
+	// each of the Spark nodes in this cluster. For example, the Spark nodes can
+	// be provisioned and optimized for memory or compute intensive workloads. A
+	// list of available node types can be retrieved by using the
+	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Custom Docker image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-	// A list of preloaded Spark image versions for the pool, e.g.
-	// ["5.2.x-scala2.11"]. Pool-backed clusters started with the preloaded
-	// Spark version will start faster. A list of available Spark versions can
-	// be retrieved by using the :ref:`clusterClusterServicelistSparkVersions`
-	// API call.
+	// A list of preloaded Spark image versions for the pool. Pool-backed
+	// clusters started with the preloaded Spark version will start faster. A
+	// list of available Spark versions can be retrieved by using the
+	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 }
 
@@ -266,6 +263,12 @@ const FleetSpotOptionAllocationStrategyLowestPrice FleetSpotOptionAllocationStra
 
 const FleetSpotOptionAllocationStrategyPrioritized FleetSpotOptionAllocationStrategy = `PRIORITIZED`
 
+// Get instance pool information
+type Get struct {
+	// The canonical unique identifier for the instance pool.
+	InstancePoolId string `json:"-" url:"instance_pool_id,omitempty"`
+}
+
 type GetInstancePool struct {
 	// Attributes related to pool running on Amazon Web Services. If not
 	// specified at pool creation, a set of default values will be used.
@@ -275,11 +278,11 @@ type GetInstancePool struct {
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes:
+	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Tags that are added by Databricks regardless of any ``custom_tags``,
+	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
 	//
 	// - Vendor: Databricks
@@ -319,18 +322,17 @@ type GetInstancePool struct {
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this pool. For example, the Spark nodes can be
-	// provisioned and optimized for memory or compute intensive workloads A
+	// each of the Spark nodes in this cluster. For example, the Spark nodes can
+	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
+	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Custom Docker image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-	// A list of preloaded Spark image versions for the pool, e.g.
-	// ["5.2.x-scala2.11"]. Pool-backed clusters started with the preloaded
-	// Spark version will start faster. A Retrieve a list of available Spark
-	// versions by using the :ref:`clusterClusterServicelistSparkVersions` API
-	// call.
+	// A list of preloaded Spark image versions for the pool. Pool-backed
+	// clusters started with the preloaded Spark version will start faster. A
+	// list of available Spark versions can be retrieved by using the
+	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 	// Current state of the instance pool.
 	State GetInstancePoolState `json:"state,omitempty"`
@@ -358,11 +360,11 @@ type InstancePoolAndStats struct {
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes:
+	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows up to 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Tags that are added by Databricks regardless of any ``custom_tags``,
+	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
 	//
 	// - Vendor: Databricks
@@ -402,18 +404,17 @@ type InstancePoolAndStats struct {
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this pool. For example, the Spark nodes can be
-	// provisioned and optimized for memory or compute intensive workloads
-	// Retrieve a list of available node types by using the
-	// :ref:`clusterClusterServicelistNodeTypes` API call.
+	// each of the Spark nodes in this cluster. For example, the Spark nodes can
+	// be provisioned and optimized for memory or compute intensive workloads. A
+	// list of available node types can be retrieved by using the
+	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Custom Docker image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-	// A list of preloaded Spark image versions for the pool, e.g.
-	// ["5.2.x-scala2.11"]. Pool-backed clusters started with the preloaded
-	// Spark version will start faster. Retrieve a list of available Spark
-	// versions can by using the :ref:`clusterClusterServicelistSparkVersions`
-	// API call.
+	// A list of preloaded Spark image versions for the pool. Pool-backed
+	// clusters started with the preloaded Spark version will start faster. A
+	// list of available Spark versions can be retrieved by using the
+	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 	// Current state of the instance pool.
 	State InstancePoolAndStatsState `json:"state,omitempty"`
@@ -440,12 +441,12 @@ type InstancePoolAwsAttributes struct {
 	Availability InstancePoolAwsAttributesAvailability `json:"availability,omitempty"`
 	// Calculates the bid price for AWS spot instances, as a percentage of the
 	// corresponding instance type's on-demand price. For example, if this field
-	// is set to 50, and the cluster needs a new ``r3.xlarge`` spot instance,
-	// then the bid price is half of the price of on-demand ``r3.xlarge``
-	// instances. Similarly, if this field is set to 200, the bid price is twice
-	// the price of on-demand ``r3.xlarge`` instances. If not specified, the
-	// default value is 100. When spot instances are requested for this cluster,
-	// only spot instances whose bid price percentage matches this field will be
+	// is set to 50, and the cluster needs a new `r3.xlarge` spot instance, then
+	// the bid price is half of the price of on-demand `r3.xlarge` instances.
+	// Similarly, if this field is set to 200, the bid price is twice the price
+	// of on-demand `r3.xlarge` instances. If not specified, the default value
+	// is 100. When spot instances are requested for this cluster, only spot
+	// instances whose bid price percentage matches this field will be
 	// considered. Note that, for safety, we enforce this field to be no more
 	// than 10000.
 	//
@@ -534,9 +535,4 @@ type PendingInstanceError struct {
 	InstanceId string `json:"instance_id,omitempty"`
 
 	Message string `json:"message,omitempty"`
-}
-
-type GetRequest struct {
-	// The canonical unique identifier for the instance pool.
-	InstancePoolId string `json:"-" url:"instance_pool_id,omitempty"`
 }

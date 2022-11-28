@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/databricks/databricks-sdk-go/databricks/useragent"
+	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 var b64 = base64.StdEncoding
@@ -59,7 +60,7 @@ func (r *FileReader) Read(p []byte) (n int, err error) {
 	if r.api == nil {
 		panic("invalid call")
 	}
-	resp, err := r.api.Read(r.ctx, ReadRequest{
+	resp, err := r.api.Read(r.ctx, Read{
 		Path:   r.path,
 		Length: len(p),
 		Offset: int(r.offset), // TODO: make int32/in64 work properly
@@ -90,4 +91,34 @@ func (a *DbfsAPI) Open(ctx context.Context, path string) (*FileReader, error) {
 		ctx:  ctx,
 		api:  a,
 	}, nil
+}
+
+// RecursiveList traverses the DBFS tree and returns all non-directory
+// objects under the path
+func (a DbfsAPI) RecursiveList(ctx context.Context, path string) ([]FileInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "recursive-list")
+	var results []FileInfo
+	queue := []string{path}
+	for len(queue) > 0 {
+		path := queue[0]
+		queue = queue[1:]
+		batch, err := a.ListAll(ctx, List{
+			Path: path,
+		})
+		if apierr.IsMissing(err) {
+			// skip on path deleted during iteration
+			continue
+		}
+		if err != nil {
+			return nil, fmt.Errorf("list %s: %w", path, err)
+		}
+		for _, v := range batch {
+			if v.IsDir {
+				queue = append(queue, v.Path)
+				continue
+			}
+			results = append(results, v)
+		}
+	}
+	return results, nil
 }

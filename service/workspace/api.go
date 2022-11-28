@@ -4,139 +4,189 @@ package workspace
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-func NewWorkspace(client *client.DatabricksClient) WorkspaceService {
+func NewWorkspace(client *client.DatabricksClient) *WorkspaceAPI {
 	return &WorkspaceAPI{
-		client: client,
+		impl: &workspaceImpl{
+			client: client,
+		},
 	}
 }
 
+// The Workspace API allows you to list, import, export, and delete notebooks
+// and folders.
+//
+// A notebook is a web-based interface to a document that contains runnable
+// code, visualizations, and explanatory text.
 type WorkspaceAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(WorkspaceService)
+	impl WorkspaceService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *WorkspaceAPI) WithImpl(impl WorkspaceService) *WorkspaceAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Workspace API implementation
+func (a *WorkspaceAPI) Impl() WorkspaceService {
+	return a.impl
 }
 
 // Delete a workspace object
 //
 // Deletes an object or a directory (and optionally recursively deletes all
-// objects in the directory). * If “path“ does not exist, this call returns an
-// error “RESOURCE_DOES_NOT_EXIST“. * If “path“ is a non-empty directory and
-// “recursive“ is set to “false“, this call returns an error
-// “DIRECTORY_NOT_EMPTY“.
+// objects in the directory). * If `path` does not exist, this call returns an
+// error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a non-empty directory and
+// `recursive` is set to `false`, this call returns an error
+// `DIRECTORY_NOT_EMPTY`.
 //
 // Object deletion cannot be undone and deleting a directory recursively is not
 // atomic.
 func (a *WorkspaceAPI) Delete(ctx context.Context, request Delete) error {
-	path := "/api/2.0/workspace/delete"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Export a notebook
 //
 // Exports a notebook or the contents of an entire directory.
 //
-// If “path“ does not exist, this call returns an error
-// “RESOURCE_DOES_NOT_EXIST“.
+// If `path` does not exist, this call returns an error
+// `RESOURCE_DOES_NOT_EXIST`.
 //
-// One can only export a directory in “DBC“ format. If the exported data would
-// exceed size limit, this call returns “MAX_NOTEBOOK_SIZE_EXCEEDED“.
-// Currently, this API does not support exporting a library.
-//
-// Alternatively, one can download the exported file by enabling
-// “direct_download“. Example: `curl -n -o example.scala
-// 'https://XX.cloud.databricks.com/api/2.0/workspace/export?path=/Users/user@example.com/ScalaExampleNotebook&direct_download=true'`
-func (a *WorkspaceAPI) Export(ctx context.Context, request ExportRequest) (*ExportResponse, error) {
-	var exportResponse ExportResponse
-	path := "/api/2.0/workspace/export"
-	err := a.client.Get(ctx, path, request, &exportResponse)
-	return &exportResponse, err
+// One can only export a directory in `DBC` format. If the exported data would
+// exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`. Currently,
+// this API does not support exporting a library.
+func (a *WorkspaceAPI) Export(ctx context.Context, request Export) (*ExportResponse, error) {
+	return a.impl.Export(ctx, request)
 }
 
 // Get status
 //
-// Gets the status of an object or a directory. If “path“ does not exist, this
-// call returns an error “RESOURCE_DOES_NOT_EXIST“.
-func (a *WorkspaceAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error) {
-	var objectInfo ObjectInfo
-	path := "/api/2.0/workspace/get-status"
-	err := a.client.Get(ctx, path, request, &objectInfo)
-	return &objectInfo, err
+// Gets the status of an object or a directory. If `path` does not exist, this
+// call returns an error `RESOURCE_DOES_NOT_EXIST`.
+func (a *WorkspaceAPI) GetStatus(ctx context.Context, request GetStatus) (*ObjectInfo, error) {
+	return a.impl.GetStatus(ctx, request)
 }
 
 // Get status
 //
-// Gets the status of an object or a directory. If “path“ does not exist, this
-// call returns an error “RESOURCE_DOES_NOT_EXIST“.
+// Gets the status of an object or a directory. If `path` does not exist, this
+// call returns an error `RESOURCE_DOES_NOT_EXIST`.
 func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*ObjectInfo, error) {
-	return a.GetStatus(ctx, GetStatusRequest{
+	return a.impl.GetStatus(ctx, GetStatus{
 		Path: path,
 	})
 }
 
 // Import a notebook
 //
-// Imports a notebook or the contents of an entire directory. If “path“
-// already exists and “overwrite“ is set to “false“, this call returns an
-// error “RESOURCE_ALREADY_EXISTS“. One can only use “DBC“ format to import
-// a directory.
+// Imports a notebook or the contents of an entire directory. If `path` already
+// exists and `overwrite` is set to `false`, this call returns an error
+// `RESOURCE_ALREADY_EXISTS`. One can only use `DBC` format to import a
+// directory.
 func (a *WorkspaceAPI) Import(ctx context.Context, request Import) error {
-	path := "/api/2.0/workspace/import"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Import(ctx, request)
 }
 
 // List contents
 //
 // Lists the contents of a directory, or the object if it is not a directory.If
 // the input path does not exist, this call returns an error
-// “RESOURCE_DOES_NOT_EXIST“.
-//
-// Use ListAll() to get all ObjectInfo instances
-func (a *WorkspaceAPI) List(ctx context.Context, request ListRequest) (*ListResponse, error) {
-	var listResponse ListResponse
-	path := "/api/2.0/workspace/list"
-	err := a.client.Get(ctx, path, request, &listResponse)
-	return &listResponse, err
-}
-
-// ListAll returns all ObjectInfo instances. This method exists for consistency purposes.
+// `RESOURCE_DOES_NOT_EXIST`.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *WorkspaceAPI) ListAll(ctx context.Context, request ListRequest) ([]ObjectInfo, error) {
-	response, err := a.List(ctx, request)
+func (a *WorkspaceAPI) ListAll(ctx context.Context, request List) ([]ObjectInfo, error) {
+	response, err := a.impl.List(ctx, request)
 	if err != nil {
 		return nil, err
 	}
 	return response.Objects, nil
 }
 
-// Create a directory
+// ObjectInfoPathToObjectIdMap calls [WorkspaceAPI.ListAll] and creates a map of results with [ObjectInfo].Path as key and [ObjectInfo].ObjectId as value.
 //
-// Creates the specified directory (and necessary parent directories if they do
-// not exist). If there is an object (not a directory) at any prefix of the
-// input path, this call returns an error “RESOURCE_ALREADY_EXISTS“.
+// Returns an error if there's more than one [ObjectInfo] with the same .Path.
 //
-// Note that if this operation fails it may have succeeded in creating some of
-// the necessary\nparrent directories.
-func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request Mkdirs) error {
-	path := "/api/2.0/workspace/mkdirs"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+// Note: All [ObjectInfo] instances are loaded into memory before creating a map.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *WorkspaceAPI) ObjectInfoPathToObjectIdMap(ctx context.Context, request List) (map[string]int64, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
+	mapping := map[string]int64{}
+	result, err := a.ListAll(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		key := v.Path
+		_, duplicate := mapping[key]
+		if duplicate {
+			return nil, fmt.Errorf("duplicate .Path: %s", key)
+		}
+		mapping[key] = v.ObjectId
+	}
+	return mapping, nil
+}
+
+// GetObjectInfoByPath calls [WorkspaceAPI.ObjectInfoPathToObjectIdMap] and returns a single [ObjectInfo].
+//
+// Returns an error if there's more than one [ObjectInfo] with the same .Path.
+//
+// Note: All [ObjectInfo] instances are loaded into memory before creating a map.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *WorkspaceAPI) GetObjectInfoByPath(ctx context.Context, name string) (*ObjectInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
+	result, err := a.ListAll(ctx, List{})
+	if err != nil {
+		return nil, err
+	}
+	duplicates := map[string]bool{}
+	for _, v := range result {
+		key := v.Path
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .Path: %s", key)
+		}
+		if key != name {
+			continue
+		}
+		duplicates[key] = true
+		return &v, nil
+	}
+	return nil, fmt.Errorf("ObjectInfo named '%s' does not exist", name)
 }
 
 // Create a directory
 //
 // Creates the specified directory (and necessary parent directories if they do
 // not exist). If there is an object (not a directory) at any prefix of the
-// input path, this call returns an error “RESOURCE_ALREADY_EXISTS“.
+// input path, this call returns an error `RESOURCE_ALREADY_EXISTS`.
+//
+// Note that if this operation fails it may have succeeded in creating some of
+// the necessary\nparrent directories.
+func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request Mkdirs) error {
+	return a.impl.Mkdirs(ctx, request)
+}
+
+// Create a directory
+//
+// Creates the specified directory (and necessary parent directories if they do
+// not exist). If there is an object (not a directory) at any prefix of the
+// input path, this call returns an error `RESOURCE_ALREADY_EXISTS`.
 //
 // Note that if this operation fails it may have succeeded in creating some of
 // the necessary\nparrent directories.
 func (a *WorkspaceAPI) MkdirsByPath(ctx context.Context, path string) error {
-	return a.Mkdirs(ctx, Mkdirs{
+	return a.impl.Mkdirs(ctx, Mkdirs{
 		Path: path,
 	})
 }

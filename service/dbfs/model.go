@@ -20,8 +20,7 @@ type Close struct {
 type Create struct {
 	// The flag that specifies whether to overwrite existing file/files.
 	Overwrite bool `json:"overwrite,omitempty"`
-	// The path of the new file. The path should be the absolute DBFS path (e.g.
-	// "/mnt/foo.txt").
+	// The path of the new file. The path should be the absolute DBFS path.
 	Path string `json:"path"`
 }
 
@@ -33,7 +32,7 @@ type CreateResponse struct {
 
 type Delete struct {
 	// The path of the file or directory to delete. The path should be the
-	// absolute DBFS path (e.g. "/mnt/foo/").
+	// absolute DBFS path.
 	Path string `json:"path"`
 	// Whether or not to recursively delete the directory's contents. Deleting
 	// empty directories can be done without providing the recursive flag.
@@ -51,6 +50,20 @@ type FileInfo struct {
 	Path string `json:"path,omitempty"`
 }
 
+// Get the information of a file or directory
+type GetStatus struct {
+	// The path of the file or directory. The path should be the absolute DBFS
+	// path.
+	Path string `json:"-" url:"path"`
+}
+
+// List directory contents or file details
+type List struct {
+	// The path of the file or directory. The path should be the absolute DBFS
+	// path.
+	Path string `json:"-" url:"path"`
+}
+
 type ListStatusResponse struct {
 	// A list of FileInfo's that describe contents of directory or file. See
 	// example above.
@@ -58,17 +71,16 @@ type ListStatusResponse struct {
 }
 
 type MkDirs struct {
-	// The path of the new directory. The path should be the absolute DBFS path
-	// (e.g. "/mnt/foo/").
+	// The path of the new directory. The path should be the absolute DBFS path.
 	Path string `json:"path"`
 }
 
 type Move struct {
 	// The destination path of the file or directory. The path should be the
-	// absolute DBFS path (e.g. "/mnt/bar/").
+	// absolute DBFS path.
 	DestinationPath string `json:"destination_path"`
 	// The source path of the file or directory. The path should be the absolute
-	// DBFS path (e.g. "/mnt/foo/").
+	// DBFS path.
 	SourcePath string `json:"source_path"`
 }
 
@@ -77,39 +89,26 @@ type Put struct {
 	Contents string `json:"contents,omitempty"`
 	// The flag that specifies whether to overwrite existing file/files.
 	Overwrite bool `json:"overwrite,omitempty"`
-	// The path of the new file. The path should be the absolute DBFS path (e.g.
-	// "/mnt/foo/").
+	// The path of the new file. The path should be the absolute DBFS path.
 	Path string `json:"path"`
 }
 
-type ReadResponse struct {
-	// The number of bytes read (could be less than ``length`` if we hit end of
-	// file). This refers to number of bytes read in unencoded version (response
-	// data is base64-encoded).
-	BytesRead int64 `json:"bytes_read,omitempty"`
-	// The base64-encoded contents of the file read.
-	Data string `json:"data,omitempty"`
-}
-
-type GetStatusRequest struct {
-	// The path of the file or directory. The path should be the absolute DBFS
-	// path (e.g. "/mnt/foo/").
-	Path string `json:"-" url:"path,omitempty"`
-}
-
-type ListRequest struct {
-	// The path of the file or directory. The path should be the absolute DBFS
-	// path (e.g. "/mnt/foo/").
-	Path string `json:"-" url:"path,omitempty"`
-}
-
-type ReadRequest struct {
+// Get the contents of a file
+type Read struct {
 	// The number of bytes to read starting from the offset. This has a limit of
 	// 1 MB, and a default value of 0.5 MB.
 	Length int `json:"-" url:"length,omitempty"`
 	// The offset to read from in bytes.
 	Offset int `json:"-" url:"offset,omitempty"`
-	// The path of the file to read. The path should be the absolute DBFS path
-	// (e.g. "/mnt/foo/").
-	Path string `json:"-" url:"path,omitempty"`
+	// The path of the file to read. The path should be the absolute DBFS path.
+	Path string `json:"-" url:"path"`
+}
+
+type ReadResponse struct {
+	// The number of bytes read (could be less than `length` if we hit end of
+	// file). This refers to number of bytes read in unencoded version (response
+	// data is base64-encoded).
+	BytesRead int64 `json:"bytes_read,omitempty"`
+	// The base64-encoded contents of the file read.
+	Data string `json:"data,omitempty"`
 }

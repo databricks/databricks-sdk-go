@@ -6,29 +6,34 @@ package dbsql
 
 type AccessControl struct {
 	GroupName string `json:"group_name,omitempty"`
-
+	// This describes an enum
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	UserName string `json:"user_name,omitempty"`
 }
 
 type Alert struct {
+	// Timestamp when the alert was created.
 	CreatedAt string `json:"created_at,omitempty"`
 	// ID of the alert.
 	Id string `json:"id,omitempty"`
-
+	// Timestamp when the alert was last triggered.
 	LastTriggeredAt string `json:"last_triggered_at,omitempty"`
 	// Name of the alert.
 	Name string `json:"name,omitempty"`
-
+	// Alert configuration options.
 	Options *AlertOptions `json:"options,omitempty"`
 
 	Query *Query `json:"query,omitempty"`
-
+	// Number of seconds after being triggered before the alert rearms itself
+	// and can be triggered again. If `null`, alert will never be triggered
+	// again.
 	Rearm int `json:"rearm,omitempty"`
-
+	// State of the alert. Possible values are: `unknown` (yet to be evaluated),
+	// `triggered` (evaluated and fulfilled trigger conditions), or `ok`
+	// (evaluated and did not fulfill trigger conditions).
 	State AlertState `json:"state,omitempty"`
-
+	// Timestamp when the alert was last updated.
 	UpdatedAt string `json:"updated_at,omitempty"`
 
 	User *User `json:"user,omitempty"`
@@ -38,11 +43,13 @@ type Alert struct {
 type AlertOptions struct {
 	// Name of column in the query result to compare in alert evaluation.
 	Column string `json:"column"`
-	// Custom body of alert notification, if it exists. See `%(alertsLink)s` for
-	// custom templating instructions.
+	// Custom body of alert notification, if it exists. See
+	// [here](https://docs.databricks.com/sql/user/alerts/index.html) for custom
+	// templating instructions.
 	CustomBody string `json:"custom_body,omitempty"`
 	// Custom subject of alert notification, if it exists. This includes email
-	// subject, Slack notification header, etc. See `%(alertsLink)s` for custom
+	// subject, Slack notification header, etc. See
+	// [here](https://docs.databricks.com/sql/user/alerts/index.html) for custom
 	// templating instructions.
 	CustomSubject string `json:"custom_subject,omitempty"`
 	// Whether or not the alert is muted. If an alert is muted, it will not
@@ -58,20 +65,57 @@ type AlertOptions struct {
 	Value string `json:"value"`
 }
 
+// State of the alert. Possible values are: `unknown` (yet to be evaluated),
+// `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated
+// and did not fulfill trigger conditions).
+type AlertState string
+
+const AlertStateOk AlertState = `ok`
+
+const AlertStateTriggered AlertState = `triggered`
+
+const AlertStateUnknown AlertState = `unknown`
+
+// Create a dashboard object
+type CreateDashboardRequest struct {
+	// In the web application, query filters that share a name are coupled to a
+	// single selection box if this value is true.
+	DashboardFiltersEnabled bool `json:"dashboard_filters_enabled,omitempty"`
+	// Draft dashboards only appear in list views for their owners.
+	IsDraft bool `json:"is_draft,omitempty"`
+	// Indicates whether the dashboard is trashed. Trashed dashboards don't
+	// appear in list views.
+	IsTrashed bool `json:"is_trashed,omitempty"`
+	// The title of this dashboard that appears in list views and at the top of
+	// the dashboard page.
+	Name string `json:"name,omitempty"`
+
+	Tags []string `json:"tags,omitempty"`
+	// An array of widget objects. A complete description of widget objects can
+	// be found in the response to [Retrieve A Dashboard
+	// Definition](#operation/sql-analytics-fetch-dashboard). Databricks does
+	// not recommend creating new widgets via this API.
+	Widgets []Widget `json:"widgets,omitempty"`
+}
+
 type CreateRefreshSchedule struct {
-	AlertId string `json:"-" path:"alert_id"`
-
+	AlertId string `json:"-" url:"-"`
+	// Cron string representing the refresh schedule.
 	Cron string `json:"cron"`
-
+	// ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse
+	// will be used to refresh.
 	DataSourceId string `json:"data_source_id,omitempty"`
 }
 
 type CreateSubscription struct {
-	AlertId string `json:"alert_id" path:"alert_id"`
-
+	// ID of the alert.
+	AlertId string `json:"alert_id" url:"-"`
+	// ID of the alert subscriber (if subscribing an alert destination). Alert
+	// destinations can be configured by admins through the UI. See
+	// [here](/sql/admin/alert-destinations.html).
 	DestinationId string `json:"destination_id,omitempty"`
-
-	UserId int `json:"user_id,omitempty"`
+	// ID of the alert subscriber (if subscribing a user).
+	UserId int64 `json:"user_id,omitempty"`
 }
 
 // A JSON representing a dashboard containing widgets of visualizations and text
@@ -103,7 +147,7 @@ type Dashboard struct {
 	Name string `json:"name,omitempty"`
 
 	Options *DashboardOptions `json:"options,omitempty"`
-
+	// This describes an enum
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// URL slug. Usually mirrors the query name with dashes (`-`) instead of
 	// spaces. Appears in the URL for this query.
@@ -151,8 +195,31 @@ type DataSource struct {
 	WarehouseId string `json:"warehouse_id,omitempty"`
 }
 
+// Delete an alert
+type DeleteAlertRequest struct {
+	AlertId string `json:"-" url:"-"`
+}
+
+// Remove a dashboard
+type DeleteDashboardRequest struct {
+	DashboardId string `json:"-" url:"-"`
+}
+
+// Delete a query
+type DeleteQueryRequest struct {
+	QueryId string `json:"-" url:"-"`
+}
+
+// Delete a refresh schedule
+type DeleteScheduleRequest struct {
+	AlertId string `json:"-" url:"-"`
+
+	ScheduleId string `json:"-" url:"-"`
+}
+
 // Alert destination subscribed to the alert, if it exists. Alert destinations
-// can be configured by admins through the UI. See `%(alertDestinationsLink)s`.
+// can be configured by admins through the UI. See
+// [here](https://docs.databricks.com/sql/admin/alert-destinations.html).
 type Destination struct {
 	// ID of the alert destination.
 	Id string `json:"id,omitempty"`
@@ -180,16 +247,159 @@ const DestinationTypeSlack DestinationType = `slack`
 const DestinationTypeWebhook DestinationType = `webhook`
 
 type EditAlert struct {
-	AlertId string `json:"-" path:"alert_id"`
-
+	AlertId string `json:"-" url:"-"`
+	// Name of the alert.
 	Name string `json:"name"`
-
+	// Alert configuration options.
 	Options AlertOptions `json:"options"`
-
+	// ID of the query evaluated by the alert.
 	QueryId string `json:"query_id"`
-
+	// Number of seconds after being triggered before the alert rearms itself
+	// and can be triggered again. If `null`, alert will never be triggered
+	// again.
 	Rearm int `json:"rearm,omitempty"`
 }
+
+// Get an alert
+type GetAlertRequest struct {
+	AlertId string `json:"-" url:"-"`
+}
+
+// Retrieve a definition
+type GetDashboardRequest struct {
+	DashboardId string `json:"-" url:"-"`
+}
+
+// Get object ACL
+type GetPermissionsRequest struct {
+	// Object ID. An ACL is returned for the object with this UUID.
+	ObjectId string `json:"-" url:"-"`
+	// The type of object permissions to check.
+	ObjectType ObjectTypePlural `json:"-" url:"-"`
+}
+
+type GetPermissionsResponse struct {
+	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
+	// A singular noun object type.
+	ObjectId ObjectType `json:"object_id,omitempty"`
+	// An object's type and UUID, separated by a forward slash (/) character.
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+// Get a query definition.
+type GetQueryRequest struct {
+	QueryId string `json:"-" url:"-"`
+}
+
+// Get an alert's subscriptions
+type GetSubscriptionsRequest struct {
+	AlertId string `json:"-" url:"-"`
+}
+
+type ListDashboardsOrder string
+
+const ListDashboardsOrderCreatedAt ListDashboardsOrder = `created_at`
+
+const ListDashboardsOrderName ListDashboardsOrder = `name`
+
+// Get dashboard objects
+type ListDashboardsRequest struct {
+	// Name of dashboard attribute to order by.
+	Order ListDashboardsOrder `json:"-" url:"order,omitempty"`
+	// Page number to retrieve.
+	Page int `json:"-" url:"page,omitempty"`
+	// Number of dashboards to return per page.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Full text search term.
+	Q string `json:"-" url:"q,omitempty"`
+}
+
+type ListDashboardsResponse struct {
+	// The total number of dashboards.
+	Count int `json:"count,omitempty"`
+	// The current page being displayed.
+	Page int `json:"page,omitempty"`
+	// The number of dashboards per page.
+	PageSize int `json:"page_size,omitempty"`
+	// List of dashboards returned.
+	Results []Dashboard `json:"results,omitempty"`
+}
+
+// Get a list of queries
+type ListQueriesRequest struct {
+	// Name of query attribute to order by. Default sort order is ascending.
+	// Append a dash (`-`) to order descending instead.
+	//
+	// - `name`: The name of the query.
+	//
+	// - `created_at`: The timestamp the query was created.
+	//
+	// - `schedule`: The refresh interval for each query. For example: "Every 5
+	// Hours" or "Every 5 Minutes". "Never" is treated as the highest value for
+	// sorting.
+	//
+	// - `runtime`: The time it took to run this query. This is blank for
+	// parameterized queries. A blank value is treated as the highest value for
+	// sorting.
+	//
+	// - `executed_at`: The timestamp when the query was last run.
+	//
+	// - `created_by`: The user name of the user that created the query.
+	Order string `json:"-" url:"order,omitempty"`
+	// Page number to retrieve.
+	Page int `json:"-" url:"page,omitempty"`
+	// Number of queries to return per page.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Full text search term
+	Q string `json:"-" url:"q,omitempty"`
+}
+
+type ListQueriesResponse struct {
+	// The total number of queries.
+	Count int `json:"count,omitempty"`
+	// The page number that is currently displayed.
+	Page int `json:"page,omitempty"`
+	// The number of queries per page.
+	PageSize int `json:"page_size,omitempty"`
+	// List of queries returned.
+	Results []Query `json:"results,omitempty"`
+}
+
+// Get refresh schedules
+type ListSchedulesRequest struct {
+	AlertId string `json:"-" url:"-"`
+}
+
+// A singular noun object type.
+type ObjectType string
+
+const ObjectTypeAlert ObjectType = `alert`
+
+const ObjectTypeDashboard ObjectType = `dashboard`
+
+const ObjectTypeDataSource ObjectType = `data_source`
+
+const ObjectTypeQuery ObjectType = `query`
+
+// Always a plural of the object type.
+type ObjectTypePlural string
+
+const ObjectTypePluralAlerts ObjectTypePlural = `alerts`
+
+const ObjectTypePluralDashboards ObjectTypePlural = `dashboards`
+
+const ObjectTypePluralDataSources ObjectTypePlural = `data_sources`
+
+const ObjectTypePluralQueries ObjectTypePlural = `queries`
+
+// The singular form of the type of object which can be owned.
+type OwnableObjectType string
+
+const OwnableObjectTypeAlert OwnableObjectType = `alert`
+
+const OwnableObjectTypeDashboard OwnableObjectType = `dashboard`
+
+const OwnableObjectTypeQuery OwnableObjectType = `query`
 
 type Parameter struct {
 	// The literal parameter marker that appears between double curly braces in
@@ -268,7 +478,7 @@ type Query struct {
 	Name string `json:"name,omitempty"`
 
 	Options *QueryOptions `json:"options,omitempty"`
-
+	// This describes an enum
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// The text of the query to be run.
 	Query string `json:"query,omitempty"`
@@ -323,7 +533,7 @@ type QueryPostContent struct {
 	// The text of the query.
 	Query string `json:"query,omitempty"`
 
-	QueryId string `json:"-" path:"query_id"`
+	QueryId string `json:"-" url:"-"`
 	// JSON object that describes the scheduled execution frequency. A schedule
 	// object includes `interval`, `time`, `day_of_week`, and `until` fields. If
 	// a scheduled is supplied, then only `interval` is required. All other
@@ -332,18 +542,51 @@ type QueryPostContent struct {
 }
 
 type RefreshSchedule struct {
+	// Cron string representing the refresh schedule.
 	Cron string `json:"cron,omitempty"`
-
+	// ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse
+	// will be used to refresh.
 	DataSourceId string `json:"data_source_id,omitempty"`
-
+	// ID of the refresh schedule.
 	Id string `json:"id,omitempty"`
 }
 
+// Restore a dashboard
+type RestoreDashboardRequest struct {
+	DashboardId string `json:"-" url:"-"`
+}
+
+// Restore a query
+type RestoreQueryRequest struct {
+	QueryId string `json:"-" url:"-"`
+}
+
+// Set object ACL
+type SetPermissionsRequest struct {
+	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
+	// Object ID. The ACL for the object with this UUID is overwritten by this
+	// request's POST content.
+	ObjectId string `json:"-" url:"-"`
+	// The type of object permission to set.
+	ObjectType ObjectTypePlural `json:"-" url:"-"`
+}
+
+type SetPermissionsResponse struct {
+	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
+	// A singular noun object type.
+	ObjectId ObjectType `json:"object_id,omitempty"`
+	// An object's type and UUID, separated by a forward slash (/) character.
+	ObjectType string `json:"object_type,omitempty"`
+}
+
 type Subscription struct {
+	// ID of the alert.
 	AlertId string `json:"alert_id,omitempty"`
-
+	// Alert destination subscribed to the alert, if it exists. Alert
+	// destinations can be configured by admins through the UI. See
+	// [here](https://docs.databricks.com/sql/admin/alert-destinations.html).
 	Destination *Destination `json:"destination,omitempty"`
-
+	// ID of the alert subscription.
 	Id string `json:"id,omitempty"`
 
 	User *User `json:"user,omitempty"`
@@ -357,8 +600,27 @@ type SuccessMessage string
 
 const SuccessMessageSuccess SuccessMessage = `Success`
 
-// Tags can be applied to dashboards and queries. They are used for filtering
-// list views.
+type TransferOwnershipObjectId struct {
+	// Email address for the new owner, who must exist in the workspace.
+	NewOwner string `json:"new_owner,omitempty"`
+}
+
+// Transfer object ownership
+type TransferOwnershipRequest struct {
+	// Email address for the new owner, who must exist in the workspace.
+	NewOwner string `json:"new_owner,omitempty"`
+	// The ID of the object on which to change ownership.
+	ObjectId TransferOwnershipObjectId `json:"-" url:"-"`
+	// The type of object on which to change ownership.
+	ObjectType OwnableObjectType `json:"-" url:"-"`
+}
+
+// Unsubscribe to an alert
+type UnsubscribeRequest struct {
+	AlertId string `json:"-" url:"-"`
+
+	SubscriptionId string `json:"-" url:"-"`
+}
 
 type User struct {
 	Email string `json:"email,omitempty"`
@@ -403,7 +665,11 @@ type Widget struct {
 	Id int `json:"id,omitempty"`
 
 	Options *WidgetOptions `json:"options,omitempty"`
-
+	// The visualization description API changes frequently and is unsupported.
+	// You can duplicate a visualization by copying description objects received
+	// _from the API_ and then using them to create a new one with a POST
+	// request to the same endpoint. Databricks does not recommend constructing
+	// ad-hoc visualizations entirely in JSON.
 	Visualization *Visualization `json:"visualization,omitempty"`
 	// Unused field.
 	Width int `json:"width,omitempty"`
@@ -430,266 +696,4 @@ type WidgetOptions struct {
 	Text string `json:"text,omitempty"`
 	// Timestamp of the last time this object was updated.
 	UpdatedAt string `json:"updated_at,omitempty"`
-}
-
-// Timestamp when the alert was created.
-
-// ID of the alert.
-
-// Timestamp when the alert was last triggered.
-
-// Name of the alert.
-
-// ID of the query evaluated by the alert.
-
-// Number of seconds after being triggered before the alert rearms itself and
-// can be triggered again. If `null`, alert will never be triggered again.
-
-// State of the alert. Possible values are: `unknown` (yet to be evaluated),
-// `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated
-// and did not fulfill trigger conditions).
-type AlertState string
-
-const AlertStateOk AlertState = `ok`
-
-const AlertStateTriggered AlertState = `triggered`
-
-const AlertStateUnknown AlertState = `unknown`
-
-// ID of the alert subscriber (if subscribing an alert destination). Alert
-// destinations can be configured by admins through the UI. See
-// `%(alertDestinationsLink)s`.
-
-// ID of the alert subscription.
-
-// ID of the alert subscriber (if subscribing a user).
-
-// Timestamp when the alert was last updated.
-
-type CreateDashboardRequest struct {
-	// In the web application, query filters that share a name are coupled to a
-	// single selection box if this value is true.
-	DashboardFiltersEnabled bool `json:"dashboard_filters_enabled,omitempty"`
-	// Draft dashboards only appear in list views for their owners.
-	IsDraft bool `json:"is_draft,omitempty"`
-	// Indicates whether the dashboard is trashed. Trashed dashboards don't
-	// appear in list views.
-	IsTrashed bool `json:"is_trashed,omitempty"`
-	// The title of this dashboard that appears in list views and at the top of
-	// the dashboard page.
-	Name string `json:"name,omitempty"`
-
-	Tags []string `json:"tags,omitempty"`
-	// An array of widget objects. A complete description of widget objects can
-	// be found in the response to [Retrieve A Dashboard
-	// Definition](#operation/sql-analytics-fetch-dashboard). Databricks does
-	// not recommend creating new widgets via this API.
-	Widgets []Widget `json:"widgets,omitempty"`
-}
-
-type DeleteAlertRequest struct {
-	AlertId string `json:"-" path:"alert_id"`
-}
-
-type DeleteDashboardRequest struct {
-	DashboardId string `json:"-" path:"dashboard_id"`
-}
-
-type DeleteQueryRequest struct {
-	QueryId string `json:"-" path:"query_id"`
-}
-
-type DeleteScheduleRequest struct {
-	AlertId string `json:"-" path:"alert_id"`
-
-	ScheduleId string `json:"-" path:"schedule_id"`
-}
-
-type GetAlertRequest struct {
-	AlertId string `json:"-" path:"alert_id"`
-}
-
-type GetDashboardRequest struct {
-	DashboardId string `json:"-" path:"dashboard_id"`
-}
-
-type GetPermissionsRequest struct {
-	// Object ID. An ACL is returned for the object with this UUID.
-	ObjectId string `json:"-" path:"objectId"`
-	// The type of object permissions to check.
-	ObjectType ObjectTypePlural `json:"-" path:"objectType"`
-}
-
-type GetPermissionsResponse struct {
-	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
-
-	ObjectId ObjectType `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
-}
-
-type GetQueryRequest struct {
-	QueryId string `json:"-" path:"query_id"`
-}
-
-type GetSubscriptionsRequest struct {
-	AlertId string `json:"-" path:"alert_id"`
-}
-
-type ListDashboardsOrder string
-
-const ListDashboardsOrderCreatedAt ListDashboardsOrder = `created_at`
-
-const ListDashboardsOrderName ListDashboardsOrder = `name`
-
-type ListDashboardsRequest struct {
-	// Name of dashboard attribute to order by.
-	Order ListDashboardsOrder `json:"-" url:"order,omitempty"`
-	// Page number to retrieve.
-	Page int `json:"-" url:"page,omitempty"`
-	// Number of dashboards to return per page.
-	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Full text search term.
-	Q string `json:"-" url:"q,omitempty"`
-}
-
-type ListDashboardsResponse struct {
-	// The total number of dashboards.
-	Count int `json:"count,omitempty"`
-	// The current page being displayed.
-	Page int `json:"page,omitempty"`
-	// The number of dashboards per page.
-	PageSize int `json:"page_size,omitempty"`
-	// List of dashboards returned.
-	Results []Dashboard `json:"results,omitempty"`
-}
-
-type ListQueriesRequest struct {
-	// Name of query attribute to order by. Default sort order is ascending.
-	// Append a dash (`-`) to order descending instead.
-	//
-	// - `name`: The name of the query.
-	//
-	// - `created_at`: The timestamp the query was created.
-	//
-	// - `schedule`: The refresh interval for each query. For example: "Every 5
-	// Hours" or "Every 5 Minutes". "Never" is treated as the highest value for
-	// sorting.
-	//
-	// - `runtime`: The time it took to run this query. This is blank for
-	// parameterized queries. A blank value is treated as the highest value for
-	// sorting.
-	//
-	// - `executed_at`: The timestamp when the query was last run.
-	//
-	// - `created_by`: The user name of the user that created the query.
-	Order string `json:"-" url:"order,omitempty"`
-	// Page number to retrieve.
-	Page int `json:"-" url:"page,omitempty"`
-	// Number of queries to return per page.
-	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Full text search term
-	Q string `json:"-" url:"q,omitempty"`
-}
-
-type ListQueriesResponse struct {
-	// The total number of queries.
-	Count int `json:"count,omitempty"`
-	// The page number that is currently displayed.
-	Page int `json:"page,omitempty"`
-	// The number of queries per page.
-	PageSize int `json:"page_size,omitempty"`
-	// List of queries returned.
-	Results []Query `json:"results,omitempty"`
-}
-
-type ListSchedulesRequest struct {
-	AlertId string `json:"-" path:"alert_id"`
-}
-
-// A UUID generated by the application.
-
-// A singular noun object type.
-type ObjectType string
-
-const ObjectTypeAlert ObjectType = `alert`
-
-const ObjectTypeDashboard ObjectType = `dashboard`
-
-const ObjectTypeDataSource ObjectType = `data_source`
-
-const ObjectTypeQuery ObjectType = `query`
-
-// An object's type and UUID, separated by a forward slash (/) character.
-
-// Always a plural of the object type.
-type ObjectTypePlural string
-
-const ObjectTypePluralAlerts ObjectTypePlural = `alerts`
-
-const ObjectTypePluralDashboards ObjectTypePlural = `dashboards`
-
-const ObjectTypePluralDataSources ObjectTypePlural = `data_sources`
-
-const ObjectTypePluralQueries ObjectTypePlural = `queries`
-
-// The singular form of the type of object which can be owned.
-type OwnableObjectType string
-
-const OwnableObjectTypeAlert OwnableObjectType = `alert`
-
-const OwnableObjectTypeDashboard OwnableObjectType = `dashboard`
-
-const OwnableObjectTypeQuery OwnableObjectType = `query`
-
-// Cron string representing the refresh schedule.
-
-// ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse
-// will be used to refresh.
-
-// ID of the refresh schedule.
-
-type RestoreDashboardRequest struct {
-	DashboardId string `json:"-" path:"dashboard_id"`
-}
-
-type RestoreQueryRequest struct {
-	QueryId string `json:"-" path:"query_id"`
-}
-
-type SetPermissionsRequest struct {
-	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
-	// Object ID. The ACL for the object with this UUID is overwritten by this
-	// request's POST content.
-	ObjectId string `json:"-" path:"objectId"`
-	// The type of object permission to set.
-	ObjectType ObjectTypePlural `json:"-" path:"objectType"`
-}
-
-type SetPermissionsResponse struct {
-	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
-
-	ObjectId ObjectType `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
-}
-
-type TransferOwnershipObjectId struct {
-	// Email address for the new owner, who must exist in the workspace.
-	NewOwner string `json:"new_owner,omitempty"`
-}
-
-type TransferOwnershipRequest struct {
-	// Email address for the new owner, who must exist in the workspace.
-	NewOwner string `json:"new_owner,omitempty"`
-	// The ID of the object on which to change ownership.
-	ObjectId TransferOwnershipObjectId `json:"-" path:"objectId"`
-	// The type of object on which to change ownership.
-	ObjectType OwnableObjectType `json:"-" path:"objectType"`
-}
-
-type UnsubscribeRequest struct {
-	AlertId string `json:"-" path:"alert_id"`
-
-	SubscriptionId string `json:"-" path:"subscription_id"`
 }

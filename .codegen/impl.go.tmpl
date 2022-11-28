@@ -1,0 +1,31 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package {{.Name}}
+
+import (
+	"context"
+	"fmt"
+	"time"
+	"net/http"
+	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/useragent"
+)
+{{range .Services}}
+// unexported type that holds implementations of just {{.Name}} API methods
+type {{.CamelName}}Impl struct {
+	client *client.DatabricksClient
+}
+
+{{range .Methods}}
+func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{.Response.PascalName}}{{end}}, error){{else}}error{{end}} {
+	{{if .Response}}var {{.Response.CamelName}} {{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}{{.Response.PascalName}}{{end}}
+	{{end -}}
+	path := {{if .PathParts -}}
+		fmt.Sprintf("{{range  .PathParts}}{{.Prefix}}{{if or .Field .IsAccountId}}%v{{end}}{{ end }}"{{ range .PathParts }}{{if .Field}}, request.{{.Field.PascalName}}{{ else if .IsAccountId }}, a.client.ConfiguredAccountID(){{end}}{{ end }})
+	{{- else}}"{{.Path}}"{{end}}
+	err := a.client.Do(ctx, http.Method{{.TitleVerb}}, path, {{if .Request}}request{{else}}nil{{end}}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})
+	return {{if .Response}}{{if not .Response.ArrayValue}}&{{end}}{{.Response.CamelName}}, {{end}}err
+}
+{{end -}}
+{{end}}

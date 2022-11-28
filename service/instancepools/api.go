@@ -4,28 +4,61 @@ package instancepools
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-func NewInstancePools(client *client.DatabricksClient) InstancePoolsService {
+func NewInstancePools(client *client.DatabricksClient) *InstancePoolsAPI {
 	return &InstancePoolsAPI{
-		client: client,
+		impl: &instancePoolsImpl{
+			client: client,
+		},
 	}
 }
 
+// Instance Pools API are used to create, edit, delete and list instance pools
+// by using ready-to-use cloud instances which reduces a cluster start and
+// auto-scaling times.
+//
+// Databricks pools reduce cluster start and auto-scaling times by maintaining a
+// set of idle, ready-to-use instances. When a cluster is attached to a pool,
+// cluster nodes are created using the pool’s idle instances. If the pool has
+// no idle instances, the pool expands by allocating a new instance from the
+// instance provider in order to accommodate the cluster’s request. When a
+// cluster releases an instance, it returns to the pool and is free for another
+// cluster to use. Only clusters attached to a pool can use that pool’s idle
+// instances.
+//
+// You can specify a different pool for the driver node and worker nodes, or use
+// the same pool for both.
+//
+// Databricks does not charge DBUs while instances are idle in the pool.
+// Instance provider billing does apply. See pricing.
 type InstancePoolsAPI struct {
-	client *client.DatabricksClient
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(InstancePoolsService)
+	impl InstancePoolsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *InstancePoolsAPI) WithImpl(impl InstancePoolsService) *InstancePoolsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level InstancePools API implementation
+func (a *InstancePoolsAPI) Impl() InstancePoolsService {
+	return a.impl
 }
 
 // Create a new instance pool
 //
 // Creates a new instance pool using idle and ready-to-use cloud instances.
 func (a *InstancePoolsAPI) Create(ctx context.Context, request CreateInstancePool) (*CreateInstancePoolResponse, error) {
-	var createInstancePoolResponse CreateInstancePoolResponse
-	path := "/api/2.0/instance-pools/create"
-	err := a.client.Post(ctx, path, request, &createInstancePoolResponse)
-	return &createInstancePoolResponse, err
+	return a.impl.Create(ctx, request)
 }
 
 // Delete an instance pool
@@ -33,9 +66,7 @@ func (a *InstancePoolsAPI) Create(ctx context.Context, request CreateInstancePoo
 // Deletes the instance pool permanently. The idle instances in the pool are
 // terminated asynchronously.
 func (a *InstancePoolsAPI) Delete(ctx context.Context, request DeleteInstancePool) error {
-	path := "/api/2.0/instance-pools/delete"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete an instance pool
@@ -43,7 +74,7 @@ func (a *InstancePoolsAPI) Delete(ctx context.Context, request DeleteInstancePoo
 // Deletes the instance pool permanently. The idle instances in the pool are
 // terminated asynchronously.
 func (a *InstancePoolsAPI) DeleteByInstancePoolId(ctx context.Context, instancePoolId string) error {
-	return a.Delete(ctx, DeleteInstancePool{
+	return a.impl.Delete(ctx, DeleteInstancePool{
 		InstancePoolId: instancePoolId,
 	})
 }
@@ -52,26 +83,21 @@ func (a *InstancePoolsAPI) DeleteByInstancePoolId(ctx context.Context, instanceP
 //
 // Modifies the configuration of an existing instance pool.
 func (a *InstancePoolsAPI) Edit(ctx context.Context, request EditInstancePool) error {
-	path := "/api/2.0/instance-pools/edit"
-	err := a.client.Post(ctx, path, request, nil)
-	return err
+	return a.impl.Edit(ctx, request)
 }
 
 // Get instance pool information
 //
 // Retrieve the information for an instance pool based on its identifier.
-func (a *InstancePoolsAPI) Get(ctx context.Context, request GetRequest) (*GetInstancePool, error) {
-	var getInstancePool GetInstancePool
-	path := "/api/2.0/instance-pools/get"
-	err := a.client.Get(ctx, path, request, &getInstancePool)
-	return &getInstancePool, err
+func (a *InstancePoolsAPI) Get(ctx context.Context, request Get) (*GetInstancePool, error) {
+	return a.impl.Get(ctx, request)
 }
 
 // Get instance pool information
 //
 // Retrieve the information for an instance pool based on its identifier.
 func (a *InstancePoolsAPI) GetByInstancePoolId(ctx context.Context, instancePoolId string) (*GetInstancePool, error) {
-	return a.Get(ctx, GetRequest{
+	return a.impl.Get(ctx, Get{
 		InstancePoolId: instancePoolId,
 	})
 }
@@ -80,21 +106,64 @@ func (a *InstancePoolsAPI) GetByInstancePoolId(ctx context.Context, instancePool
 //
 // Gets a list of instance pools with their statistics.
 //
-// Use ListAll() to get all InstancePoolAndStats instances
-func (a *InstancePoolsAPI) List(ctx context.Context) (*ListInstancePools, error) {
-	var listInstancePools ListInstancePools
-	path := "/api/2.0/instance-pools/list"
-	err := a.client.Get(ctx, path, nil, &listInstancePools)
-	return &listInstancePools, err
-}
-
-// ListAll returns all InstancePoolAndStats instances. This method exists for consistency purposes.
-//
 // This method is generated by Databricks SDK Code Generator.
 func (a *InstancePoolsAPI) ListAll(ctx context.Context) ([]InstancePoolAndStats, error) {
-	response, err := a.List(ctx)
+	response, err := a.impl.List(ctx)
 	if err != nil {
 		return nil, err
 	}
 	return response.InstancePools, nil
+}
+
+// InstancePoolAndStatsInstancePoolNameToInstancePoolIdMap calls [InstancePoolsAPI.ListAll] and creates a map of results with [InstancePoolAndStats].InstancePoolName as key and [InstancePoolAndStats].InstancePoolId as value.
+//
+// Returns an error if there's more than one [InstancePoolAndStats] with the same .InstancePoolName.
+//
+// Note: All [InstancePoolAndStats] instances are loaded into memory before creating a map.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *InstancePoolsAPI) InstancePoolAndStatsInstancePoolNameToInstancePoolIdMap(ctx context.Context) (map[string]string, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
+	mapping := map[string]string{}
+	result, err := a.ListAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		key := v.InstancePoolName
+		_, duplicate := mapping[key]
+		if duplicate {
+			return nil, fmt.Errorf("duplicate .InstancePoolName: %s", key)
+		}
+		mapping[key] = v.InstancePoolId
+	}
+	return mapping, nil
+}
+
+// GetInstancePoolAndStatsByInstancePoolName calls [InstancePoolsAPI.InstancePoolAndStatsInstancePoolNameToInstancePoolIdMap] and returns a single [InstancePoolAndStats].
+//
+// Returns an error if there's more than one [InstancePoolAndStats] with the same .InstancePoolName.
+//
+// Note: All [InstancePoolAndStats] instances are loaded into memory before creating a map.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *InstancePoolsAPI) GetInstancePoolAndStatsByInstancePoolName(ctx context.Context, name string) (*InstancePoolAndStats, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
+	result, err := a.ListAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+	duplicates := map[string]bool{}
+	for _, v := range result {
+		key := v.InstancePoolName
+		if duplicates[key] {
+			return nil, fmt.Errorf("duplicate .InstancePoolName: %s", key)
+		}
+		if key != name {
+			continue
+		}
+		duplicates[key] = true
+		return &v, nil
+	}
+	return nil, fmt.Errorf("InstancePoolAndStats named '%s' does not exist", name)
 }

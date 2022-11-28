@@ -1,21 +1,15 @@
 package internal
 
 import (
-	"context"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/libraries"
-	"github.com/databricks/databricks-sdk-go/workspaces"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAccLibraries(t *testing.T) {
-	GetEnvOrSkipTest(t, "CLOUD_ENV")
-	ctx := context.Background()
-	w := workspaces.New()
-
-	clusterId := createTestCluster(ctx, w, t)
-	defer w.Clusters.PermanentDeleteByClusterId(ctx, clusterId)
+	ctx, w := workspaceTest(t)
+	clusterId := sharedRunningCluster(t, ctx, w)
 
 	err := w.Libraries.UpdateAndWait(ctx, libraries.Update{
 		ClusterId: clusterId,
@@ -27,5 +21,17 @@ func TestAccLibraries(t *testing.T) {
 			},
 		},
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
+
+	err = w.Libraries.UpdateAndWait(ctx, libraries.Update{
+		ClusterId: clusterId,
+		Uninstall: []libraries.Library{
+			{
+				Pypi: &libraries.PythonPyPiLibrary{
+					Package: "dbl-tempo",
+				},
+			},
+		},
+	})
+	require.NoError(t, err)
 }

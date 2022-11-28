@@ -47,7 +47,7 @@
 		"prefix": "ife",
 		"body": [
 			"if err != nil {",
-			"    return err",
+			"    return fmt.Errorf(\"$1: %w\", err)",
 			"}"
 		],
 		"description": "if err != nil return err"
@@ -72,6 +72,13 @@
 		  "assert.NoError(t, err)"
 		],
 		"description": "assert.NoError"
+	},
+	"require.NoError": {
+		"prefix": "rnoe",
+		"body": [
+		  "require.NoError(t, err)"
+		],
+		"description": "require.NoError"
 	},
 	"err :=": {
 		"prefix": "e",

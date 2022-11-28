@@ -6,15 +6,13 @@ import (
 	"context"
 )
 
-// This is the high-level interface, that contains generated methods.
-//
-// Evolving: this interface is under development. Method signatures may change.
+// This API allows updating known workspace settings for advanced users.
 type WorkspaceConfService interface {
 
 	// Check configuration status
 	//
 	// Gets the configuration status for a workspace.
-	GetStatus(ctx context.Context, request GetStatusRequest) (*WorkspaceConf, error)
+	GetStatus(ctx context.Context, request GetStatus) (*WorkspaceConf, error)
 
 	// Enable/disable features
 	//
