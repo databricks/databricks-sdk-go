@@ -22,13 +22,13 @@ func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessLi
 	return &createIpAccessListResponse, err
 }
 
-func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteRequest) error {
+func (a *ipAccessListsImpl) Delete(ctx context.Context, request Delete) error {
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *ipAccessListsImpl) Get(ctx context.Context, request GetRequest) (*FetchIpAccessListResponse, error) {
+func (a *ipAccessListsImpl) Get(ctx context.Context, request Get) (*FetchIpAccessListResponse, error) {
 	var fetchIpAccessListResponse FetchIpAccessListResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &fetchIpAccessListResponse)

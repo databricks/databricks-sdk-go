@@ -64,7 +64,7 @@ type SecretsService interface {
 	// Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws
 	// ``PERMISSION_DENIED`` if the user does not have permission to make this
 	// API call.
-	GetAcl(ctx context.Context, request GetAclRequest) (*AclItem, error)
+	GetAcl(ctx context.Context, request GetAcl) (*AclItem, error)
 
 	// Lists ACLs
 	//
@@ -76,7 +76,7 @@ type SecretsService interface {
 	// API call.
 	//
 	// Use ListAclsAll() to get all AclItem instances
-	ListAcls(ctx context.Context, request ListAclsRequest) (*ListAclsResponse, error)
+	ListAcls(ctx context.Context, request ListAcls) (*ListAclsResponse, error)
 
 	// List all scopes
 	//
@@ -100,7 +100,7 @@ type SecretsService interface {
 	// API call.
 	//
 	// Use ListSecretsAll() to get all SecretMetadata instances
-	ListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error)
+	ListSecrets(ctx context.Context, request ListSecrets) (*ListSecretsResponse, error)
 
 	// Create/update an ACL
 	//

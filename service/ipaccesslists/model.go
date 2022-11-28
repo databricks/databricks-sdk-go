@@ -17,7 +17,8 @@ type CreateIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
-type DeleteRequest struct {
+// Delete access list
+type Delete struct {
 	// The ID for the corresponding IP access list to modify.
 	IpAccessListId string `json:"-" url:"-"`
 }
@@ -26,13 +27,14 @@ type FetchIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
-type GetIpAccessListResponse struct {
-	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
-}
-
-type GetRequest struct {
+// Get access list
+type Get struct {
 	// The ID for the corresponding IP access list to modify.
 	IpAccessListId string `json:"-" url:"-"`
+}
+
+type GetIpAccessListResponse struct {
+	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
 
 type IpAccessListInfo struct {

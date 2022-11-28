@@ -32,7 +32,7 @@ type WarehousesService interface {
 	// Delete a warehouse
 	//
 	// Deletes a SQL warehouse.
-	DeleteWarehouse(ctx context.Context, request DeleteWarehouseRequest) error
+	DeleteWarehouse(ctx context.Context, request DeleteWarehouse) error
 
 	// Update a warehouse
 	//
@@ -42,7 +42,7 @@ type WarehousesService interface {
 	// Get warehouse info
 	//
 	// Gets the information for a single SQL warehouse.
-	GetWarehouse(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error)
+	GetWarehouse(ctx context.Context, request GetWarehouse) (*GetWarehouseResponse, error)
 
 	// Get the workspace configuration
 	//
@@ -55,7 +55,7 @@ type WarehousesService interface {
 	// Lists all SQL warehouses that a user has manager permissions on.
 	//
 	// Use ListWarehousesAll() to get all EndpointInfo instances
-	ListWarehouses(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error)
+	ListWarehouses(ctx context.Context, request ListWarehouses) (*ListWarehousesResponse, error)
 
 	// Set the workspace configuration
 	//
@@ -66,10 +66,10 @@ type WarehousesService interface {
 	// Start a warehouse
 	//
 	// Starts a SQL warehouse.
-	StartWarehouse(ctx context.Context, request StartWarehouseRequest) error
+	StartWarehouse(ctx context.Context, request StartWarehouse) error
 
 	// Stop a warehouse
 	//
 	// Stops a SQL warehouse.
-	StopWarehouse(ctx context.Context, request StopWarehouseRequest) error
+	StopWarehouse(ctx context.Context, request StopWarehouse) error
 }

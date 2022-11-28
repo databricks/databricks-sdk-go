@@ -136,6 +136,30 @@ func (e *Entity) HasIdentifierField() bool {
 	return false
 }
 
+func (e *Entity) IdentifierField() *Field {
+	if e == nil {
+		return nil
+	}
+	for _, v := range e.fields {
+		if v.Entity.IsIdentifier {
+			return &v
+		}
+	}
+	return nil
+}
+
+func (e *Entity) NameField() *Field {
+	if e == nil {
+		return nil
+	}
+	for _, v := range e.fields {
+		if v.Entity.IsName {
+			return &v
+		}
+	}
+	return nil
+}
+
 // Does this type have x-databricks-name field?
 func (e *Entity) HasNameField() bool {
 	for _, v := range e.fields {

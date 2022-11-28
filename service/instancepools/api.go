@@ -89,7 +89,7 @@ func (a *InstancePoolsAPI) Edit(ctx context.Context, request EditInstancePool) e
 // Get instance pool information
 //
 // Retrieve the information for an instance pool based on its identifier.
-func (a *InstancePoolsAPI) Get(ctx context.Context, request GetRequest) (*GetInstancePool, error) {
+func (a *InstancePoolsAPI) Get(ctx context.Context, request Get) (*GetInstancePool, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -97,7 +97,7 @@ func (a *InstancePoolsAPI) Get(ctx context.Context, request GetRequest) (*GetIns
 //
 // Retrieve the information for an instance pool based on its identifier.
 func (a *InstancePoolsAPI) GetByInstancePoolId(ctx context.Context, instancePoolId string) (*GetInstancePool, error) {
-	return a.impl.Get(ctx, GetRequest{
+	return a.impl.Get(ctx, Get{
 		InstancePoolId: instancePoolId,
 	})
 }

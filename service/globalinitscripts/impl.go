@@ -22,13 +22,13 @@ func (a *globalInitScriptsImpl) CreateScript(ctx context.Context, request Global
 	return &createScriptResponse, err
 }
 
-func (a *globalInitScriptsImpl) DeleteScript(ctx context.Context, request DeleteScriptRequest) error {
+func (a *globalInitScriptsImpl) DeleteScript(ctx context.Context, request DeleteScript) error {
 	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *globalInitScriptsImpl) GetScript(ctx context.Context, request GetScriptRequest) (*GlobalInitScriptDetailsWithContent, error) {
+func (a *globalInitScriptsImpl) GetScript(ctx context.Context, request GetScript) (*GlobalInitScriptDetailsWithContent, error) {
 	var globalInitScriptDetailsWithContent GlobalInitScriptDetailsWithContent
 	path := fmt.Sprintf("/api/2.0/global-init-scripts/%v", request.ScriptId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &globalInitScriptDetailsWithContent)

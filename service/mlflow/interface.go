@@ -103,7 +103,7 @@ type MLflowDatabricksService interface {
 	// endpoint](https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel)
 	// that also returns the model's Databricks Workspace ID and the permission
 	// level of the requesting user on the model.
-	Get(ctx context.Context, request GetRequest) (*GetResponse, error)
+	Get(ctx context.Context, request GetMLflowDatabrickRequest) (*GetResponse, error)
 
 	// Transition a stage
 	//
@@ -259,7 +259,7 @@ type ModelVersionCommentsService interface {
 	// Delete a comment
 	//
 	// Deletes a comment on a model version.
-	Delete(ctx context.Context, request DeleteRequest) error
+	Delete(ctx context.Context, request DeleteModelVersionCommentRequest) error
 
 	// Update a comment
 	//
@@ -395,7 +395,7 @@ type RegistryWebhooksService interface {
 	// **NOTE:** This endpoint is in Public Preview.
 	//
 	// Deletes a registry webhook.
-	Delete(ctx context.Context, request DeleteRequest) error
+	Delete(ctx context.Context, request DeleteRegistryWebhookRequest) error
 
 	// List registry webhooks
 	//
@@ -404,7 +404,7 @@ type RegistryWebhooksService interface {
 	// Lists all registry webhooks.
 	//
 	// Use ListAll() to get all RegistryWebhook instances, which will iterate over every result page.
-	List(ctx context.Context, request ListRequest) (*ListRegistryWebhooks, error)
+	List(ctx context.Context, request ListRegistryWebhooksRequest) (*ListRegistryWebhooks, error)
 
 	// Test a webhook
 	//
@@ -436,14 +436,14 @@ type TransitionRequestsService interface {
 	// Delete a ransition request
 	//
 	// Cancels a model version stage transition request.
-	Delete(ctx context.Context, request DeleteRequest) error
+	Delete(ctx context.Context, request DeleteTransitionRequestRequest) error
 
 	// List transition requests
 	//
 	// Gets a list of all open stage transition requests for the model version.
 	//
 	// Use ListAll() to get all Activity instances
-	List(ctx context.Context, request ListRequest) (*ListResponse, error)
+	List(ctx context.Context, request ListTransitionRequestsRequest) (*ListResponse, error)
 
 	// Reject a transition request
 	//

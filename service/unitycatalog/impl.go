@@ -22,20 +22,20 @@ func (a *catalogsImpl) Create(ctx context.Context, request CreateCatalog) (*Crea
 	return &createCatalogResponse, err
 }
 
-func (a *catalogsImpl) DeleteCatalog(ctx context.Context, request DeleteCatalogRequest) error {
+func (a *catalogsImpl) Delete(ctx context.Context, request DeleteCatalogRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.Name)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *catalogsImpl) GetCatalog(ctx context.Context, request GetCatalogRequest) (*GetCatalogResponse, error) {
+func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*GetCatalogResponse, error) {
 	var getCatalogResponse GetCatalogResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.Name)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getCatalogResponse)
 	return &getCatalogResponse, err
 }
 
-func (a *catalogsImpl) ListCatalogs(ctx context.Context) (*ListCatalogsResponse, error) {
+func (a *catalogsImpl) List(ctx context.Context) (*ListCatalogsResponse, error) {
 	var listCatalogsResponse ListCatalogsResponse
 	path := "/api/2.1/unity-catalog/catalogs"
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &listCatalogsResponse)
@@ -60,20 +60,20 @@ func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExtern
 	return &createExternalLocationResponse, err
 }
 
-func (a *externalLocationsImpl) DeleteExternalLocation(ctx context.Context, request DeleteExternalLocationRequest) error {
+func (a *externalLocationsImpl) Delete(ctx context.Context, request DeleteExternalLocationRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.Name)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *externalLocationsImpl) GetExternalLocation(ctx context.Context, request GetExternalLocationRequest) (*GetExternalLocationResponse, error) {
+func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLocationRequest) (*GetExternalLocationResponse, error) {
 	var getExternalLocationResponse GetExternalLocationResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.Name)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getExternalLocationResponse)
 	return &getExternalLocationResponse, err
 }
 
-func (a *externalLocationsImpl) ListExternalLocations(ctx context.Context) (*ListExternalLocationsResponse, error) {
+func (a *externalLocationsImpl) List(ctx context.Context) (*ListExternalLocationsResponse, error) {
 	var listExternalLocationsResponse ListExternalLocationsResponse
 	path := "/api/2.1/unity-catalog/external-locations"
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &listExternalLocationsResponse)
@@ -91,14 +91,14 @@ type grantsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *grantsImpl) GetPermissions(ctx context.Context, request GetPermissionsRequest) (*GetPermissionsResponse, error) {
+func (a *grantsImpl) Get(ctx context.Context, request GetGrantRequest) (*GetPermissionsResponse, error) {
 	var getPermissionsResponse GetPermissionsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.FullName)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getPermissionsResponse)
 	return &getPermissionsResponse, err
 }
 
-func (a *grantsImpl) UpdatePermissions(ctx context.Context, request UpdatePermissions) error {
+func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.FullName)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
@@ -109,6 +109,12 @@ type metastoresImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssignment) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
+	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
+	return err
+}
+
 func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*CreateMetastoreResponse, error) {
 	var createMetastoreResponse CreateMetastoreResponse
 	path := "/api/2.1/unity-catalog/metastores"
@@ -116,43 +122,37 @@ func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*
 	return &createMetastoreResponse, err
 }
 
-func (a *metastoresImpl) CreateMetastoreAssignment(ctx context.Context, request CreateMetastoreAssignment) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
-	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
-	return err
-}
-
-func (a *metastoresImpl) DeleteMetastore(ctx context.Context, request DeleteMetastoreRequest) error {
+func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *metastoresImpl) DeleteMetastoreAssignment(ctx context.Context, request DeleteMetastoreAssignmentRequest) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
-	return err
-}
-
-func (a *metastoresImpl) GetMetastore(ctx context.Context, request GetMetastoreRequest) (*GetMetastoreResponse, error) {
+func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (*GetMetastoreResponse, error) {
 	var getMetastoreResponse GetMetastoreResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getMetastoreResponse)
 	return &getMetastoreResponse, err
 }
 
-func (a *metastoresImpl) GetMetastoreSummary(ctx context.Context) (*GetMetastoreSummaryResponse, error) {
+func (a *metastoresImpl) List(ctx context.Context) (*ListMetastoresResponse, error) {
+	var listMetastoresResponse ListMetastoresResponse
+	path := "/api/2.1/unity-catalog/metastores"
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &listMetastoresResponse)
+	return &listMetastoresResponse, err
+}
+
+func (a *metastoresImpl) Summary(ctx context.Context) (*GetMetastoreSummaryResponse, error) {
 	var getMetastoreSummaryResponse GetMetastoreSummaryResponse
 	path := "/api/2.1/unity-catalog/metastore_summary"
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &getMetastoreSummaryResponse)
 	return &getMetastoreSummaryResponse, err
 }
 
-func (a *metastoresImpl) ListMetastores(ctx context.Context) (*ListMetastoresResponse, error) {
-	var listMetastoresResponse ListMetastoresResponse
-	path := "/api/2.1/unity-catalog/metastores"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &listMetastoresResponse)
-	return &listMetastoresResponse, err
+func (a *metastoresImpl) Unassign(ctx context.Context, request UnassignRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
+	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	return err
 }
 
 func (a *metastoresImpl) Update(ctx context.Context, request UpdateMetastore) error {
@@ -161,7 +161,7 @@ func (a *metastoresImpl) Update(ctx context.Context, request UpdateMetastore) er
 	return err
 }
 
-func (a *metastoresImpl) UpdateMetastoreAssignment(ctx context.Context, request UpdateMetastoreAssignment) error {
+func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
@@ -179,20 +179,20 @@ func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*Cr
 	return &createProviderResponse, err
 }
 
-func (a *providersImpl) DeleteProvider(ctx context.Context, request DeleteProviderRequest) error {
+func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *providersImpl) GetProvider(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
+func (a *providersImpl) Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
 	var getProviderResponse GetProviderResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getProviderResponse)
 	return &getProviderResponse, err
 }
 
-func (a *providersImpl) ListProviders(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error) {
+func (a *providersImpl) List(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error) {
 	var listProvidersResponse ListProvidersResponse
 	path := "/api/2.1/unity-catalog/providers"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listProvidersResponse)
@@ -242,38 +242,38 @@ func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*
 	return &createRecipientResponse, err
 }
 
-func (a *recipientsImpl) DeleteRecipient(ctx context.Context, request DeleteRecipientRequest) error {
+func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *recipientsImpl) GetRecipient(ctx context.Context, request GetRecipientRequest) (*GetRecipientResponse, error) {
+func (a *recipientsImpl) Get(ctx context.Context, request GetRecipientRequest) (*GetRecipientResponse, error) {
 	var getRecipientResponse GetRecipientResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getRecipientResponse)
 	return &getRecipientResponse, err
 }
 
-func (a *recipientsImpl) GetRecipientSharePermissions(ctx context.Context, request GetRecipientSharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error) {
-	var getRecipientSharePermissionsResponse GetRecipientSharePermissionsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/share-permissions", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getRecipientSharePermissionsResponse)
-	return &getRecipientSharePermissionsResponse, err
-}
-
-func (a *recipientsImpl) ListRecipients(ctx context.Context, request ListRecipientsRequest) (*ListRecipientsResponse, error) {
+func (a *recipientsImpl) List(ctx context.Context, request ListRecipientsRequest) (*ListRecipientsResponse, error) {
 	var listRecipientsResponse ListRecipientsResponse
 	path := "/api/2.1/unity-catalog/recipients"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listRecipientsResponse)
 	return &listRecipientsResponse, err
 }
 
-func (a *recipientsImpl) RotateRecipientToken(ctx context.Context, request RotateRecipientToken) (*RotateRecipientTokenResponse, error) {
+func (a *recipientsImpl) RotateToken(ctx context.Context, request RotateRecipientToken) (*RotateRecipientTokenResponse, error) {
 	var rotateRecipientTokenResponse RotateRecipientTokenResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/rotate-token", request.Name)
 	err := a.client.Do(ctx, http.MethodPost, path, request, &rotateRecipientTokenResponse)
 	return &rotateRecipientTokenResponse, err
+}
+
+func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error) {
+	var getRecipientSharePermissionsResponse GetRecipientSharePermissionsResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/share-permissions", request.Name)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getRecipientSharePermissionsResponse)
+	return &getRecipientSharePermissionsResponse, err
 }
 
 func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) error {
@@ -294,20 +294,20 @@ func (a *schemasImpl) Create(ctx context.Context, request CreateSchema) (*Create
 	return &createSchemaResponse, err
 }
 
-func (a *schemasImpl) DeleteSchema(ctx context.Context, request DeleteSchemaRequest) error {
+func (a *schemasImpl) Delete(ctx context.Context, request DeleteSchemaRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullName)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *schemasImpl) GetSchema(ctx context.Context, request GetSchemaRequest) (*GetSchemaResponse, error) {
+func (a *schemasImpl) Get(ctx context.Context, request GetSchemaRequest) (*GetSchemaResponse, error) {
 	var getSchemaResponse GetSchemaResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullName)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getSchemaResponse)
 	return &getSchemaResponse, err
 }
 
-func (a *schemasImpl) ListSchemas(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error) {
+func (a *schemasImpl) List(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error) {
 	var listSchemasResponse ListSchemasResponse
 	path := "/api/2.1/unity-catalog/schemas"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listSchemasResponse)
@@ -332,31 +332,31 @@ func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*CreateSh
 	return &createShareResponse, err
 }
 
-func (a *sharesImpl) DeleteShare(ctx context.Context, request DeleteShareRequest) error {
+func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *sharesImpl) GetShare(ctx context.Context, request GetShareRequest) (*GetShareResponse, error) {
+func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*GetShareResponse, error) {
 	var getShareResponse GetShareResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getShareResponse)
 	return &getShareResponse, err
 }
 
-func (a *sharesImpl) GetSharePermissions(ctx context.Context, request GetSharePermissionsRequest) (*GetSharePermissionsResponse, error) {
-	var getSharePermissionsResponse GetSharePermissionsResponse
-	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getSharePermissionsResponse)
-	return &getSharePermissionsResponse, err
-}
-
-func (a *sharesImpl) ListShares(ctx context.Context) (*ListSharesResponse, error) {
+func (a *sharesImpl) List(ctx context.Context) (*ListSharesResponse, error) {
 	var listSharesResponse ListSharesResponse
 	path := "/api/2.1/unity-catalog/shares"
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &listSharesResponse)
 	return &listSharesResponse, err
+}
+
+func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetSharePermissionsResponse, error) {
+	var getSharePermissionsResponse GetSharePermissionsResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getSharePermissionsResponse)
+	return &getSharePermissionsResponse, err
 }
 
 func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) error {
@@ -365,7 +365,7 @@ func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) error {
 	return err
 }
 
-func (a *sharesImpl) UpdateSharePermissions(ctx context.Context, request UpdateSharePermissions) error {
+func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateSharePermissions) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
@@ -383,20 +383,20 @@ func (a *storageCredentialsImpl) Create(ctx context.Context, request CreateStora
 	return &createStorageCredentialResponse, err
 }
 
-func (a *storageCredentialsImpl) DeleteStorageCredential(ctx context.Context, request DeleteStorageCredentialRequest) error {
+func (a *storageCredentialsImpl) Delete(ctx context.Context, request DeleteStorageCredentialRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *storageCredentialsImpl) GetStorageCredentials(ctx context.Context, request GetStorageCredentialsRequest) (*GetStorageCredentialResponse, error) {
+func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCredentialRequest) (*GetStorageCredentialResponse, error) {
 	var getStorageCredentialResponse GetStorageCredentialResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getStorageCredentialResponse)
 	return &getStorageCredentialResponse, err
 }
 
-func (a *storageCredentialsImpl) ListStorageCredentials(ctx context.Context) (*ListStorageCredentialsResponse, error) {
+func (a *storageCredentialsImpl) List(ctx context.Context) (*ListStorageCredentialsResponse, error) {
 	var listStorageCredentialsResponse ListStorageCredentialsResponse
 	path := "/api/2.1/unity-catalog/storage-credentials"
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &listStorageCredentialsResponse)
@@ -428,47 +428,35 @@ func (a *tablesImpl) CreateStagingTable(ctx context.Context, request CreateStagi
 	return &createStagingTableResponse, err
 }
 
-func (a *tablesImpl) DeleteTable(ctx context.Context, request DeleteTableRequest) error {
+func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *tablesImpl) GetTable(ctx context.Context, request GetTableRequest) (*GetTableResponse, error) {
+func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*GetTableResponse, error) {
 	var getTableResponse GetTableResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getTableResponse)
 	return &getTableResponse, err
 }
 
-func (a *tablesImpl) ListTableSummaries(ctx context.Context, request ListTableSummariesRequest) (*ListTableSummariesResponse, error) {
-	var listTableSummariesResponse ListTableSummariesResponse
-	path := "/api/2.1/unity-catalog/table-summaries"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listTableSummariesResponse)
-	return &listTableSummariesResponse, err
-}
-
-func (a *tablesImpl) ListTables(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error) {
+func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error) {
 	var listTablesResponse ListTablesResponse
 	path := "/api/2.1/unity-catalog/tables"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listTablesResponse)
 	return &listTablesResponse, err
 }
 
+func (a *tablesImpl) TableSummaries(ctx context.Context, request TableSummariesRequest) (*ListTableSummariesResponse, error) {
+	var listTableSummariesResponse ListTableSummariesResponse
+	path := "/api/2.1/unity-catalog/table-summaries"
+	err := a.client.Do(ctx, http.MethodGet, path, request, &listTableSummariesResponse)
+	return &listTableSummariesResponse, err
+}
+
 func (a *tablesImpl) Update(ctx context.Context, request UpdateTable) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
-}
-
-// unexported type that holds implementations of just UnityFiles API methods
-type unityFilesImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *unityFilesImpl) ListFiles(ctx context.Context, request ListFilesRequest) (*ListFilesResponse, error) {
-	var listFilesResponse ListFilesResponse
-	path := "/api/2.1/unity-catalog/files"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listFilesResponse)
-	return &listFilesResponse, err
 }

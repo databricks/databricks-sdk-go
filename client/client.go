@@ -213,7 +213,7 @@ func (c *DatabricksClient) recordRequestLog(response *http.Response,
 			sb.WriteString(fmt.Sprintf("> * %s: %s\n", k, escapeNewLines(trunc)))
 		}
 	}
-	if len(requestBody) > 0 {
+	if request.Method != http.MethodGet && request.Method != http.MethodDelete && len(requestBody) > 0 {
 		sb.WriteString(c.redactedDump("> ", requestBody))
 		sb.WriteString("\n")
 	}
@@ -311,7 +311,7 @@ func makeRequestBody(method string, requestURL *string, data interface{}) ([]byt
 	if data == nil && (method == "DELETE" || method == "GET") {
 		return requestBody, nil
 	}
-	if method == "GET" {
+	if method == "GET" || method == "DELETE" {
 		qs, err := makeQueryString(data)
 		if err != nil {
 			return nil, err

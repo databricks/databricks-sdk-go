@@ -11,7 +11,7 @@ import (
 // Databricks can deploy clusters in the appropriate VPC for the new workspace.
 // A credential configuration encapsulates this role information, and its ID is
 // used when creating a new workspace.
-type CredentialConfigurationsService interface {
+type CredentialsService interface {
 
 	// Create credential configuration
 	//
@@ -28,26 +28,26 @@ type CredentialConfigurationsService interface {
 	// For information about how to create a new workspace with this API, see
 	// [Create a new workspace using the Account
 	// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html)
-	CreateCredentialConfig(ctx context.Context, request CreateCredentialRequest) (*Credential, error)
+	Create(ctx context.Context, request CreateCredentialRequest) (*Credential, error)
 
 	// Delete credential configuration
 	//
 	// Deletes a Databricks credential configuration object for an account, both
 	// specified by ID. You cannot delete a credential that is associated with
 	// any workspace.
-	DeleteCredentialConfig(ctx context.Context, request DeleteCredentialConfigRequest) error
+	Delete(ctx context.Context, request DeleteCredentialRequest) error
 
 	// Get credential configuration
 	//
 	// Gets a Databricks credential configuration object for an account, both
 	// specified by ID.
-	GetCredentialConfig(ctx context.Context, request GetCredentialConfigRequest) (*Credential, error)
+	Get(ctx context.Context, request GetCredentialRequest) (*Credential, error)
 
 	// Get all credential configurations
 	//
 	// Gets all Databricks credential configurations associated with an account
 	// specified by ID.
-	ListCredentials(ctx context.Context) ([]Credential, error)
+	List(ctx context.Context) ([]Credential, error)
 }
 
 // These APIs manage encryption key configurations for this workspace
@@ -66,7 +66,7 @@ type CredentialConfigurationsService interface {
 // encryption requires that the workspace is on the E2 version of the platform.
 // If you have an older workspace, it might not be on the E2 version of the
 // platform. If you are not sure, contact your Databricks reprsentative.
-type KeyConfigurationsService interface {
+type EncryptionKeysService interface {
 
 	// Create encryption key configuration
 	//
@@ -86,14 +86,14 @@ type KeyConfigurationsService interface {
 	// This operation is available only if your account is on the E2 version of
 	// the platform or on a select custom plan that allows multiple workspaces
 	// per account.
-	CreateKeyConfig(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error)
+	Create(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error)
 
 	// Delete encryption key configuration
 	//
 	// Deletes a customer-managed key configuration object for an account. You
 	// cannot delete a configuration that is associated with a running
 	// workspace.
-	DeleteKeyConfig(ctx context.Context, request DeleteKeyConfigRequest) error
+	Delete(ctx context.Context, request DeleteEncryptionKeyRequest) error
 
 	// Get encryption key configuration
 	//
@@ -112,7 +112,7 @@ type KeyConfigurationsService interface {
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform.
-	GetKeyConfig(ctx context.Context, request GetKeyConfigRequest) (*CustomerManagedKey, error)
+	Get(ctx context.Context, request GetEncryptionKeyRequest) (*CustomerManagedKey, error)
 
 	// Get history of a key's associations with workspaces
 	//
@@ -142,14 +142,14 @@ type KeyConfigurationsService interface {
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform.
-	ListKeyConfigs(ctx context.Context) ([]CustomerManagedKey, error)
+	List(ctx context.Context) ([]CustomerManagedKey, error)
 }
 
 // These APIs manage network configurations for customer-managed VPCs
 // (optional). A network configuration encapsulates the IDs for AWS VPCs,
 // subnets, and security groups. Its ID is used when creating a new workspace if
 // you use customer-managed VPCs.
-type NetworkConfigurationsService interface {
+type NetworksService interface {
 
 	// Create network configuration
 	//
@@ -173,7 +173,7 @@ type NetworkConfigurationsService interface {
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform.
-	CreateNetworkConfig(ctx context.Context, request CreateNetworkRequest) (*Network, error)
+	Create(ctx context.Context, request CreateNetworkRequest) (*Network, error)
 
 	// Delete network configuration
 	//
@@ -183,7 +183,7 @@ type NetworkConfigurationsService interface {
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform.
-	DeleteNetworkConfig(ctx context.Context, request DeleteNetworkConfigRequest) error
+	Delete(ctx context.Context, request DeleteNetworkRequest) error
 
 	// Get a network configuration
 	//
@@ -194,7 +194,7 @@ type NetworkConfigurationsService interface {
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform.
-	GetNetworkConfig(ctx context.Context, request GetNetworkConfigRequest) (*Network, error)
+	Get(ctx context.Context, request GetNetworkRequest) (*Network, error)
 
 	// Get all network configurations
 	//
@@ -203,7 +203,7 @@ type NetworkConfigurationsService interface {
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform.
-	ListNetworkConfigs(ctx context.Context) ([]Network, error)
+	List(ctx context.Context) ([]Network, error)
 }
 
 // These APIs manage private access settings for this account. A private access
@@ -214,7 +214,7 @@ type NetworkConfigurationsService interface {
 // Before configuring PrivateLink, it is important to read the [Databricks
 // article about
 // PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
-type PrivateAccessSettingsService interface {
+type PrivateAccessService interface {
 
 	// Create private access settings
 	//
@@ -236,7 +236,7 @@ type PrivateAccessSettingsService interface {
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
-	CreatePrivateAccessSettings(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error)
+	Create(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error)
 
 	// Delete a private access settings object
 	//
@@ -251,7 +251,7 @@ type PrivateAccessSettingsService interface {
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
-	DeletePrivateAccessSettings(ctx context.Context, request DeletePrivateAccessSettingsRequest) error
+	Delete(ctx context.Context, request DeletePrivateAccesRequest) error
 
 	// Get a private access settings object
 	//
@@ -265,7 +265,7 @@ type PrivateAccessSettingsService interface {
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
-	GetPrivateAccessSettings(ctx context.Context, request GetPrivateAccessSettingsRequest) (*PrivateAccessSettings, error)
+	Get(ctx context.Context, request GetPrivateAccesRequest) (*PrivateAccessSettings, error)
 
 	// Get all private access settings objects
 	//
@@ -276,7 +276,7 @@ type PrivateAccessSettingsService interface {
 	// the platform and your Databricks account is enabled for AWS PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
-	ListPrivateAccessSettings(ctx context.Context) ([]PrivateAccessSettings, error)
+	List(ctx context.Context) ([]PrivateAccessSettings, error)
 
 	// Replace private access settings
 	//
@@ -304,7 +304,7 @@ type PrivateAccessSettingsService interface {
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
-	ReplacePrivateAccessSettings(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error
+	Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error
 }
 
 // These APIs manage storage configurations for this workspace. A root storage
@@ -313,7 +313,7 @@ type PrivateAccessSettingsService interface {
 // bucket for storage of non-production DBFS data. A storage configuration
 // encapsulates this bucket information, and its ID is used when creating a new
 // workspace.
-type StorageConfigurationsService interface {
+type StorageService interface {
 
 	// Create new storage configuration
 	//
@@ -326,25 +326,25 @@ type StorageConfigurationsService interface {
 	// For information about how to create a new workspace with this API, see
 	// [Create a new workspace using the Account
 	// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html)
-	CreateStorageConfig(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error)
+	Create(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error)
 
 	// Delete storage configuration
 	//
 	// Deletes a Databricks storage configuration. You cannot delete a storage
 	// configuration that is associated with any workspace.
-	DeleteStorageConfig(ctx context.Context, request DeleteStorageConfigRequest) error
+	Delete(ctx context.Context, request DeleteStorageRequest) error
 
 	// Get storage configuration
 	//
 	// Gets a Databricks storage configuration for an account, both specified by
 	// ID.
-	GetStorageConfig(ctx context.Context, request GetStorageConfigRequest) (*StorageConfiguration, error)
+	Get(ctx context.Context, request GetStorageRequest) (*StorageConfiguration, error)
 
 	// Get all storage configurations
 	//
 	// Gets a list of all Databricks storage configurations for your account,
 	// specified by ID.
-	ListStorageConfigs(ctx context.Context) ([]StorageConfiguration, error)
+	List(ctx context.Context) ([]StorageConfiguration, error)
 }
 
 // These APIs manage VPC endpoint configurations for this account. This object
@@ -388,7 +388,7 @@ type VpcEndpointsService interface {
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
-	CreateVpcEndpoint(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error)
+	Create(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error)
 
 	// Delete VPC endpoint configuration
 	//
@@ -408,7 +408,7 @@ type VpcEndpointsService interface {
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
-	DeleteVpcEndpoint(ctx context.Context, request DeleteVpcEndpointRequest) error
+	Delete(ctx context.Context, request DeleteVpcEndpointRequest) error
 
 	// Get a VPC endpoint configuration
 	//
@@ -421,7 +421,7 @@ type VpcEndpointsService interface {
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
-	GetVpcEndpoint(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error)
+	Get(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error)
 
 	// Get all VPC endpoint configurations
 	//
@@ -434,7 +434,7 @@ type VpcEndpointsService interface {
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
-	ListVpcEndpoints(ctx context.Context) ([]VpcEndpoint, error)
+	List(ctx context.Context) ([]VpcEndpoint, error)
 }
 
 // These APIs manage workspaces for this account. A Databricks workspace is an
@@ -485,7 +485,7 @@ type WorkspacesService interface {
 	// representative.\n\nThis operation is available only if your account is on
 	// the E2 version of the platform or on a select custom plan that allows
 	// multiple workspaces per account.
-	CreateWorkspace(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error)
+	Create(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error)
 
 	// Delete workspace
 	//
@@ -497,17 +497,7 @@ type WorkspacesService interface {
 	// This operation is available only if your account is on the E2 version of
 	// the platform or on a select custom plan that allows multiple workspaces
 	// per account.
-	DeleteWorkspace(ctx context.Context, request DeleteWorkspaceRequest) error
-
-	// Get all workspaces
-	//
-	// Gets a list of all workspaces associated with an account, specified by
-	// ID.
-	//
-	// This operation is available only if your account is on the E2 version of
-	// the platform or on a select custom plan that allows multiple workspaces
-	// per account.
-	GetAllWorkspaces(ctx context.Context) ([]Workspace, error)
+	Delete(ctx context.Context, request DeleteWorkspaceRequest) error
 
 	// Get workspace
 	//
@@ -525,7 +515,7 @@ type WorkspacesService interface {
 	// This operation is available only if your account is on the E2 version of
 	// the platform or on a select custom plan that allows multiple workspaces
 	// per account.
-	GetWorkspace(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error)
+	Get(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error)
 
 	// Get the history of a workspace's associations with keys
 	//
@@ -544,6 +534,16 @@ type WorkspacesService interface {
 	// This operation is available only if your account is on the E2 version of
 	// the platform.
 	GetWorkspaceKeyHistory(ctx context.Context, request GetWorkspaceKeyHistoryRequest) (*ListWorkspaceEncryptionKeyRecordsResponse, error)
+
+	// Get all workspaces
+	//
+	// Gets a list of all workspaces associated with an account, specified by
+	// ID.
+	//
+	// This operation is available only if your account is on the E2 version of
+	// the platform or on a select custom plan that allows multiple workspaces
+	// per account.
+	List(ctx context.Context) ([]Workspace, error)
 
 	// Update workspace configuration
 	//
@@ -655,5 +655,5 @@ type WorkspacesService interface {
 	// This operation is available only if your account is on the E2 version of
 	// the platform or on a select custom plan that allows multiple workspaces
 	// per account.
-	UpdateWorkspace(ctx context.Context, request UpdateWorkspaceRequest) error
+	Update(ctx context.Context, request UpdateWorkspaceRequest) error
 }

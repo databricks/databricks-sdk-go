@@ -20,14 +20,14 @@ func (a *workspaceImpl) Delete(ctx context.Context, request Delete) error {
 	return err
 }
 
-func (a *workspaceImpl) Export(ctx context.Context, request ExportRequest) (*ExportResponse, error) {
+func (a *workspaceImpl) Export(ctx context.Context, request Export) (*ExportResponse, error) {
 	var exportResponse ExportResponse
 	path := "/api/2.0/workspace/export"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &exportResponse)
 	return &exportResponse, err
 }
 
-func (a *workspaceImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error) {
+func (a *workspaceImpl) GetStatus(ctx context.Context, request GetStatus) (*ObjectInfo, error) {
 	var objectInfo ObjectInfo
 	path := "/api/2.0/workspace/get-status"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &objectInfo)
@@ -40,7 +40,7 @@ func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
 	return err
 }
 
-func (a *workspaceImpl) List(ctx context.Context, request ListRequest) (*ListResponse, error) {
+func (a *workspaceImpl) List(ctx context.Context, request List) (*ListResponse, error) {
 	var listResponse ListResponse
 	path := "/api/2.0/workspace/list"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listResponse)

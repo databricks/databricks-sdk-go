@@ -37,6 +37,7 @@ const CommandStatusQueued CommandStatus = `Queued`
 
 const CommandStatusRunning CommandStatus = `Running`
 
+// Get command info
 type CommandStatusRequest struct {
 	ClusterId string `json:"-" url:"clusterId"`
 
@@ -61,6 +62,7 @@ const ContextStatusPending ContextStatus = `Pending`
 
 const ContextStatusRunning ContextStatus = `Running`
 
+// Get status
 type ContextStatusRequest struct {
 	ClusterId string `json:"-" url:"clusterId"`
 

@@ -9,6 +9,7 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/service/scim"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -80,6 +81,12 @@ func TestAccAwsInstanceProfiles(t *testing.T) {
 	require.NoError(t, err)
 
 	defer w.InstanceProfiles.RemoveByInstanceProfileArn(ctx, arn)
+
+	err = w.InstanceProfiles.Edit(ctx, clusters.InstanceProfile{
+		InstanceProfileArn: arn,
+		IamRoleArn:         "arn:aws:iam::000000000000:role/bcdf",
+	})
+	require.NoError(t, err)
 
 	all, err := w.InstanceProfiles.ListAll(ctx)
 	require.NoError(t, err)
@@ -183,9 +190,35 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, len(events) > 0)
 
-	// List clusters in workspace
-	clusterNames, err := w.Clusters.ClusterInfoClusterNameToClusterIdMap(ctx,
-		clusters.ListRequest{})
+	all, err := w.Clusters.ListAll(ctx, clusters.List{})
 	require.NoError(t, err)
-	assert.Contains(t, clusterNames, clusterName)
+
+	// List clusters in workspace
+	names, err := w.Clusters.ClusterInfoClusterNameToClusterIdMap(ctx,
+		clusters.List{})
+	require.NoError(t, err)
+	assert.Equal(t, len(all), len(names))
+	assert.Contains(t, names, clusterName)
+
+	otherOwner, err := w.Users.Create(ctx, scim.User{
+		UserName: RandomEmail("sdk-go-"),
+	})
+	require.NoError(t, err)
+	defer w.Users.DeleteById(ctx, otherOwner.Id)
+
+	err = w.Clusters.ChangeOwner(ctx, clusters.ChangeClusterOwner{
+		ClusterId:     clstr.ClusterId,
+		OwnerUsername: otherOwner.UserName,
+	})
+	require.NoError(t, err)
+
+	nodes, err := w.Clusters.ListNodeTypes(ctx)
+	require.NoError(t, err)
+	assert.True(t, len(nodes.NodeTypes) > 1)
+
+	if w.Config.IsAws() {
+		zones, err := w.Clusters.ListZones(ctx)
+		require.NoError(t, err)
+		assert.True(t, len(zones.Zones) > 1)
+	}
 }

@@ -25,7 +25,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 		err = fmt.Errorf("you can only specify 1 custom cluster conf, not %d", len(custom))
 		return
 	}
-	clusters, err := a.ListAll(ctx, ListRequest{})
+	clusters, err := a.ListAll(ctx, List{})
 	if err != nil {
 		return
 	}

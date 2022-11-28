@@ -59,14 +59,16 @@ type DeleteSecret struct {
 	Scope string `json:"scope"`
 }
 
-type GetAclRequest struct {
+// Get secret ACL details
+type GetAcl struct {
 	// The principal to fetch ACL information for.
 	Principal string `json:"-" url:"principal"`
 	// The name of the scope to fetch ACL information from.
 	Scope string `json:"-" url:"scope"`
 }
 
-type ListAclsRequest struct {
+// Lists ACLs
+type ListAcls struct {
 	// The name of the scope to fetch ACL information from.
 	Scope string `json:"-" url:"scope"`
 }
@@ -81,7 +83,8 @@ type ListScopesResponse struct {
 	Scopes []SecretScope `json:"scopes,omitempty"`
 }
 
-type ListSecretsRequest struct {
+// List secret keys
+type ListSecrets struct {
 	// The name of the scope to list secrets within.
 	Scope string `json:"-" url:"scope"`
 }

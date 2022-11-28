@@ -53,12 +53,12 @@ type IpAccessListsService interface {
 	// Delete access list
 	//
 	// Deletes an IP access list, specified by its list ID.
-	Delete(ctx context.Context, request DeleteRequest) error
+	Delete(ctx context.Context, request Delete) error
 
 	// Get access list
 	//
 	// Gets an IP access list, specified by its list ID.
-	Get(ctx context.Context, request GetRequest) (*FetchIpAccessListResponse, error)
+	Get(ctx context.Context, request Get) (*FetchIpAccessListResponse, error)
 
 	// Get access lists
 	//

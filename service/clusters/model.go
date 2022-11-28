@@ -1103,6 +1103,12 @@ const GcpAttributesAvailabilityPreemptibleGcp GcpAttributesAvailability = `PREEM
 
 const GcpAttributesAvailabilityPreemptibleWithFallbackGcp GcpAttributesAvailability = `PREEMPTIBLE_WITH_FALLBACK_GCP`
 
+// Get cluster info
+type Get struct {
+	// The cluster about which to retrieve information.
+	ClusterId string `json:"-" url:"cluster_id"`
+}
+
 type GetEvents struct {
 	// The ID of the cluster to retrieve events about.
 	ClusterId string `json:"cluster_id"`
@@ -1196,11 +1202,6 @@ type GetEventsResponse struct {
 	TotalCount int64 `json:"total_count,omitempty"`
 }
 
-type GetRequest struct {
-	// The cluster about which to retrieve information.
-	ClusterId string `json:"-" url:"cluster_id"`
-}
-
 type GetSparkVersionsResponse struct {
 	// All the available Spark versions.
 	Versions []SparkVersion `json:"versions,omitempty"`
@@ -1227,6 +1228,14 @@ type InstanceProfile struct {
 	IsMetaInstanceProfile bool `json:"is_meta_instance_profile,omitempty"`
 }
 
+// List all clusters
+type List struct {
+	// Filter clusters based on what type of client it can be used for. Could be
+	// either NOTEBOOKS or JOBS. No input for this field will get all clusters
+	// in the workspace without filtering on its supported client
+	CanUseClient string `json:"-" url:"can_use_client,omitempty"`
+}
+
 type ListAvailableZonesResponse struct {
 	// The availability zone if no ``zone_id`` is provided in the cluster
 	// creation request.
@@ -1248,13 +1257,6 @@ type ListInstanceProfilesResponse struct {
 type ListNodeTypesResponse struct {
 	// The list of available Spark node types.
 	NodeTypes []NodeType `json:"node_types,omitempty"`
-}
-
-type ListRequest struct {
-	// Filter clusters based on what type of client it can be used for. Could be
-	// either NOTEBOOKS or JOBS. No input for this field will get all clusters
-	// in the workspace without filtering on its supported client
-	CanUseClient string `json:"-" url:"can_use_client,omitempty"`
 }
 
 type LogAnalyticsInfo struct {

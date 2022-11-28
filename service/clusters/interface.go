@@ -97,7 +97,7 @@ type ClustersService interface {
 	// "Retrieves the information for a cluster given its identifier. Clusters
 	// can be described while they are running, or up to 60 days after they are
 	// terminated.
-	Get(ctx context.Context, request GetRequest) (*ClusterInfo, error)
+	Get(ctx context.Context, request Get) (*ClusterInfo, error)
 
 	// List all clusters
 	//
@@ -113,7 +113,7 @@ type ClustersService interface {
 	// most recently terminated job clusters.
 	//
 	// Use ListAll() to get all ClusterInfo instances
-	List(ctx context.Context, request ListRequest) (*ListClustersResponse, error)
+	List(ctx context.Context, request List) (*ListClustersResponse, error)
 
 	// List node types
 	//

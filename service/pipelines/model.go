@@ -62,7 +62,8 @@ type CronTrigger struct {
 	TimezoneId string `json:"timezone_id,omitempty"`
 }
 
-type DeletePipelineRequest struct {
+// Delete a pipeline
+type DeletePipeline struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
@@ -117,7 +118,8 @@ type Filters struct {
 	Include []string `json:"include,omitempty"`
 }
 
-type GetPipelineRequest struct {
+// Get a pipeline
+type GetPipeline struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
@@ -155,7 +157,8 @@ const GetPipelineResponseHealthHealthy GetPipelineResponseHealth = `HEALTHY`
 
 const GetPipelineResponseHealthUnhealthy GetPipelineResponseHealth = `UNHEALTHY`
 
-type GetUpdateRequest struct {
+// Get a pipeline update
+type GetUpdate struct {
 	// The ID of the pipeline.
 	PipelineId string `json:"-" url:"-"`
 	// The ID of the update.
@@ -167,7 +170,8 @@ type GetUpdateResponse struct {
 	Update *UpdateInfo `json:"update,omitempty"`
 }
 
-type ListPipelinesRequest struct {
+// List pipelines
+type ListPipelines struct {
 	// Select a subset of results based on the specified criteria. The supported
 	// filters are:
 	//
@@ -198,7 +202,8 @@ type ListPipelinesResponse struct {
 	Statuses []PipelineStateInfo `json:"statuses,omitempty"`
 }
 
-type ListUpdatesRequest struct {
+// List pipeline updates
+type ListUpdates struct {
 	// Max number of entries to return in a single page.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Page token returned by previous call
@@ -416,7 +421,8 @@ type PipelineTrigger struct {
 	Manual any/* MISSING TYPE */ `json:"manual,omitempty"`
 }
 
-type ResetPipelineRequest struct {
+// Reset a pipeline
+type ResetPipeline struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
@@ -456,7 +462,8 @@ type StartUpdateResponse struct {
 	UpdateId string `json:"update_id,omitempty"`
 }
 
-type StopPipelineRequest struct {
+// Stop a pipeline
+type StopPipeline struct {
 	PipelineId string `json:"-" url:"-"`
 }
 

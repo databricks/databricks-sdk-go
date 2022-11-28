@@ -33,18 +33,27 @@ type CreateWorkspaceAssignments struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-type DeleteRequest struct {
+// Delete permissions assignment
+type DeleteWorkspaceAssignmentRequest struct {
 	// The ID of the service principal.
 	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-type GetPermissionLevelsRequest struct {
+// Get object permissions
+type Get struct {
+	RequestObjectId string `json:"-" url:"-"`
 	// <needs content>
-	Id string `json:"-" url:"-"`
+	RequestObjectType string `json:"-" url:"-"`
+}
+
+// Get permission levels
+type GetPermissionLevels struct {
 	// <needs content>
-	ObjectType string `json:"-" url:"-"`
+	RequestObjectId string `json:"-" url:"-"`
+	// <needs content>
+	RequestObjectType string `json:"-" url:"-"`
 }
 
 type GetPermissionLevelsResponse struct {
@@ -52,18 +61,14 @@ type GetPermissionLevelsResponse struct {
 	PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-type GetPermissionsRequest struct {
-	Id string `json:"-" url:"-"`
-	// <needs content>
-	ObjectType string `json:"-" url:"-"`
-}
-
-type GetRequest struct {
+// List workspace permissions
+type GetWorkspaceAssignmentRequest struct {
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-type ListRequest struct {
+// Get permission assignments
+type ListWorkspaceAssignmentRequest struct {
 	// The workspace ID for the account.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
@@ -71,7 +76,7 @@ type ListRequest struct {
 type ObjectPermissions struct {
 	AccessControlList []AccessControlResponse `json:"access_control_list,omitempty"`
 
-	Id string `json:"id,omitempty"`
+	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
 }
@@ -158,9 +163,9 @@ type PermissionsDescription struct {
 type PermissionsRequest struct {
 	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
 
-	Id string `json:"id,omitempty" url:"-"`
-
-	ObjectType string `json:"object_type,omitempty" url:"-"`
+	RequestObjectId string `json:"-" url:"-"`
+	// <needs content>
+	RequestObjectType string `json:"-" url:"-"`
 }
 
 type PrincipalOutput struct {

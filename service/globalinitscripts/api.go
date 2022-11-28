@@ -56,7 +56,7 @@ func (a *GlobalInitScriptsAPI) CreateScript(ctx context.Context, request GlobalI
 // Delete init script
 //
 // Deletes a global init script.
-func (a *GlobalInitScriptsAPI) DeleteScript(ctx context.Context, request DeleteScriptRequest) error {
+func (a *GlobalInitScriptsAPI) DeleteScript(ctx context.Context, request DeleteScript) error {
 	return a.impl.DeleteScript(ctx, request)
 }
 
@@ -64,7 +64,7 @@ func (a *GlobalInitScriptsAPI) DeleteScript(ctx context.Context, request DeleteS
 //
 // Deletes a global init script.
 func (a *GlobalInitScriptsAPI) DeleteScriptByScriptId(ctx context.Context, scriptId string) error {
-	return a.impl.DeleteScript(ctx, DeleteScriptRequest{
+	return a.impl.DeleteScript(ctx, DeleteScript{
 		ScriptId: scriptId,
 	})
 }
@@ -72,7 +72,7 @@ func (a *GlobalInitScriptsAPI) DeleteScriptByScriptId(ctx context.Context, scrip
 // Get an init script
 //
 // Gets all the details of a script, including its Base64-encoded contents.
-func (a *GlobalInitScriptsAPI) GetScript(ctx context.Context, request GetScriptRequest) (*GlobalInitScriptDetailsWithContent, error) {
+func (a *GlobalInitScriptsAPI) GetScript(ctx context.Context, request GetScript) (*GlobalInitScriptDetailsWithContent, error) {
 	return a.impl.GetScript(ctx, request)
 }
 
@@ -80,7 +80,7 @@ func (a *GlobalInitScriptsAPI) GetScript(ctx context.Context, request GetScriptR
 //
 // Gets all the details of a script, including its Base64-encoded contents.
 func (a *GlobalInitScriptsAPI) GetScriptByScriptId(ctx context.Context, scriptId string) (*GlobalInitScriptDetailsWithContent, error) {
-	return a.impl.GetScript(ctx, GetScriptRequest{
+	return a.impl.GetScript(ctx, GetScript{
 		ScriptId: scriptId,
 	})
 }

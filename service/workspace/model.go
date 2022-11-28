@@ -14,22 +14,8 @@ type Delete struct {
 	Recursive bool `json:"recursive,omitempty"`
 }
 
-// This specifies the format of the file to be imported. By default, this is
-// “SOURCE“. However it may be one of: “SOURCE“, “HTML“, “JUPYTER“,
-// “DBC“. The value is case sensitive.
-type ExportFormat string
-
-const ExportFormatDbc ExportFormat = `DBC`
-
-const ExportFormatHtml ExportFormat = `HTML`
-
-const ExportFormatJupyter ExportFormat = `JUPYTER`
-
-const ExportFormatRMarkdown ExportFormat = `R_MARKDOWN`
-
-const ExportFormatSource ExportFormat = `SOURCE`
-
-type ExportRequest struct {
+// Export a notebook
+type Export struct {
 	// Flag to enable direct download. If it is ``true``, the response will be
 	// the exported file itself. Otherwise, the response contains content as
 	// base64 encoded string.
@@ -45,13 +31,29 @@ type ExportRequest struct {
 	Path string `json:"-" url:"path"`
 }
 
+// This specifies the format of the file to be imported. By default, this is
+// “SOURCE“. However it may be one of: “SOURCE“, “HTML“, “JUPYTER“,
+// “DBC“. The value is case sensitive.
+type ExportFormat string
+
+const ExportFormatDbc ExportFormat = `DBC`
+
+const ExportFormatHtml ExportFormat = `HTML`
+
+const ExportFormatJupyter ExportFormat = `JUPYTER`
+
+const ExportFormatRMarkdown ExportFormat = `R_MARKDOWN`
+
+const ExportFormatSource ExportFormat = `SOURCE`
+
 type ExportResponse struct {
 	// The base64-encoded content. If the limit (10MB) is exceeded, exception
 	// with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** will be thrown.
 	Content string `json:"content,omitempty"`
 }
 
-type GetStatusRequest struct {
+// Get status
+type GetStatus struct {
 	// The absolute path of the notebook or directory.
 	Path string `json:"-" url:"path"`
 }
@@ -91,7 +93,8 @@ const LanguageScala Language = `SCALA`
 
 const LanguageSql Language = `SQL`
 
-type ListRequest struct {
+// List contents
+type List struct {
 	// <content needed>
 	NotebooksModifiedAfter int `json:"-" url:"notebooks_modified_after,omitempty"`
 	// The absolute path of the notebook or directory.

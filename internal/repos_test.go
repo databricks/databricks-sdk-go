@@ -14,7 +14,7 @@ func TestAccRepos(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	// Skip this test if "Files in Repos" is not enabled.
-	conf, err := w.WorkspaceConf.GetStatus(ctx, workspaceconf.GetStatusRequest{
+	conf, err := w.WorkspaceConf.GetStatus(ctx, workspaceconf.GetStatus{
 		Keys: "enableWorkspaceFilesystem",
 	})
 	require.NoError(t, err)
@@ -45,11 +45,11 @@ func TestAccRepos(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	all, err := w.Repos.ListAll(ctx, repos.ListRequest{})
+	all, err := w.Repos.ListAll(ctx, repos.List{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 
-	paths, err := w.Repos.RepoInfoPathToIdMap(ctx, repos.ListRequest{
+	paths, err := w.Repos.RepoInfoPathToIdMap(ctx, repos.List{
 		PathPrefix: "/",
 	})
 	require.NoError(t, err)

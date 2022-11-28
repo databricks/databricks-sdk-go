@@ -59,7 +59,7 @@ func (r *FileReader) Read(p []byte) (n int, err error) {
 	if r.api == nil {
 		panic("invalid call")
 	}
-	resp, err := r.api.Read(r.ctx, ReadRequest{
+	resp, err := r.api.Read(r.ctx, Read{
 		Path:   r.path,
 		Length: len(p),
 		Offset: int(r.offset), // TODO: make int32/in64 work properly
@@ -101,7 +101,7 @@ func (a DbfsAPI) RecursiveList(ctx context.Context, path string) ([]FileInfo, er
 	for len(queue) > 0 {
 		path := queue[0]
 		queue = queue[1:]
-		batch, err := a.ListAll(ctx, ListRequest{
+		batch, err := a.ListAll(ctx, List{
 			Path: path,
 		})
 		if err != nil {

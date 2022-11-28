@@ -10,16 +10,16 @@ import (
 // access for various users on different objects and endpoints.
 type PermissionsService interface {
 
-	// Get permission levels
-	//
-	// Gets the permission levels that a user can have on an object.
-	GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error)
-
 	// Get object permissions
 	//
 	// Gets the permission of an object. Objects can inherit permissions from
 	// their parent objects or root objects.
-	GetPermissions(ctx context.Context, request GetPermissionsRequest) (*ObjectPermissions, error)
+	Get(ctx context.Context, request Get) (*ObjectPermissions, error)
+
+	// Get permission levels
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetPermissionLevels(ctx context.Context, request GetPermissionLevels) (*GetPermissionLevelsResponse, error)
 
 	// Set permissions
 	//
@@ -46,13 +46,13 @@ type WorkspaceAssignmentService interface {
 	//
 	// Deletes the workspace permissions assignment for a given account and
 	// workspace using the specified service principal.
-	Delete(ctx context.Context, request DeleteRequest) error
+	Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error
 
 	// List workspace permissions
 	//
 	// Get an array of workspace permissions for the specified account and
 	// workspace.
-	Get(ctx context.Context, request GetRequest) (*WorkspacePermissions, error)
+	Get(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspacePermissions, error)
 
 	// Get permission assignments
 	//
@@ -60,7 +60,7 @@ type WorkspaceAssignmentService interface {
 	// Databricks Workspace.
 	//
 	// Use ListAll() to get all PermissionAssignment instances
-	List(ctx context.Context, request ListRequest) (*PermissionAssignments, error)
+	List(ctx context.Context, request ListWorkspaceAssignmentRequest) (*PermissionAssignments, error)
 
 	// Update permissions assignment
 	//

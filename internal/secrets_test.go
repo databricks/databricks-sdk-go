@@ -44,7 +44,7 @@ func TestAccSecrets(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, len(scrts.Secrets) == 1)
 
-	group, err := w.Groups.CreateGroup(ctx, scim.Group{
+	group, err := w.Groups.Create(ctx, scim.Group{
 		DisplayName: RandomName("sdk-go-secret-managers"),
 	})
 	require.NoError(t, err)

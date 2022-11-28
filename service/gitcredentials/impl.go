@@ -22,13 +22,13 @@ func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentia
 	return &createCredentialsResponse, err
 }
 
-func (a *gitCredentialsImpl) Delete(ctx context.Context, request DeleteRequest) error {
+func (a *gitCredentialsImpl) Delete(ctx context.Context, request Delete) error {
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *gitCredentialsImpl) Get(ctx context.Context, request GetRequest) (*CredentialInfo, error) {
+func (a *gitCredentialsImpl) Get(ctx context.Context, request Get) (*CredentialInfo, error) {
 	var credentialInfo CredentialInfo
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &credentialInfo)

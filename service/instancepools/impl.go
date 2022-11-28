@@ -33,7 +33,7 @@ func (a *instancePoolsImpl) Edit(ctx context.Context, request EditInstancePool) 
 	return err
 }
 
-func (a *instancePoolsImpl) Get(ctx context.Context, request GetRequest) (*GetInstancePool, error) {
+func (a *instancePoolsImpl) Get(ctx context.Context, request Get) (*GetInstancePool, error) {
 	var getInstancePool GetInstancePool
 	path := "/api/2.0/instance-pools/get"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getInstancePool)

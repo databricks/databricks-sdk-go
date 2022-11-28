@@ -38,14 +38,14 @@ func (a *secretsImpl) DeleteSecret(ctx context.Context, request DeleteSecret) er
 	return err
 }
 
-func (a *secretsImpl) GetAcl(ctx context.Context, request GetAclRequest) (*AclItem, error) {
+func (a *secretsImpl) GetAcl(ctx context.Context, request GetAcl) (*AclItem, error) {
 	var aclItem AclItem
 	path := "/api/2.0/secrets/acls/get"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &aclItem)
 	return &aclItem, err
 }
 
-func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) (*ListAclsResponse, error) {
+func (a *secretsImpl) ListAcls(ctx context.Context, request ListAcls) (*ListAclsResponse, error) {
 	var listAclsResponse ListAclsResponse
 	path := "/api/2.0/secrets/acls/list"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listAclsResponse)
@@ -59,7 +59,7 @@ func (a *secretsImpl) ListScopes(ctx context.Context) (*ListScopesResponse, erro
 	return &listScopesResponse, err
 }
 
-func (a *secretsImpl) ListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error) {
+func (a *secretsImpl) ListSecrets(ctx context.Context, request ListSecrets) (*ListSecretsResponse, error) {
 	var listSecretsResponse ListSecretsResponse
 	path := "/api/2.0/secrets/list"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listSecretsResponse)

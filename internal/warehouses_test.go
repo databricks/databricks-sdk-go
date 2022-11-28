@@ -33,10 +33,10 @@ func TestAccSqlWarehouses(t *testing.T) {
 	wh, err := w.Warehouses.GetWarehouseById(ctx, created.Id)
 	require.NoError(t, err)
 
-	all, err := w.Warehouses.ListWarehousesAll(ctx, warehouses.ListWarehousesRequest{})
+	all, err := w.Warehouses.ListWarehousesAll(ctx, warehouses.ListWarehouses{})
 	require.NoError(t, err)
 
-	names, err := w.Warehouses.EndpointInfoNameToIdMap(ctx, warehouses.ListWarehousesRequest{})
+	names, err := w.Warehouses.EndpointInfoNameToIdMap(ctx, warehouses.ListWarehouses{})
 	require.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
 	assert.Equal(t, wh.Id, names[wh.Name])

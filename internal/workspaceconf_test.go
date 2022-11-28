@@ -10,7 +10,7 @@ import (
 
 func TestAccWorkspaceConf(t *testing.T) {
 	ctx, w := workspaceTest(t)
-	conf, err := w.WorkspaceConf.GetStatus(ctx, workspaceconf.GetStatusRequest{
+	conf, err := w.WorkspaceConf.GetStatus(ctx, workspaceconf.GetStatus{
 		Keys: "maxTokenLifetimeDays,enableIpAccessLists,enableWorkspaceFilesystem",
 	})
 	require.NoError(t, err)

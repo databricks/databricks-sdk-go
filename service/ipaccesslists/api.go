@@ -82,7 +82,7 @@ func (a *IpAccessListsAPI) Create(ctx context.Context, request CreateIpAccessLis
 // Delete access list
 //
 // Deletes an IP access list, specified by its list ID.
-func (a *IpAccessListsAPI) Delete(ctx context.Context, request DeleteRequest) error {
+func (a *IpAccessListsAPI) Delete(ctx context.Context, request Delete) error {
 	return a.impl.Delete(ctx, request)
 }
 
@@ -90,7 +90,7 @@ func (a *IpAccessListsAPI) Delete(ctx context.Context, request DeleteRequest) er
 //
 // Deletes an IP access list, specified by its list ID.
 func (a *IpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) error {
-	return a.impl.Delete(ctx, DeleteRequest{
+	return a.impl.Delete(ctx, Delete{
 		IpAccessListId: ipAccessListId,
 	})
 }
@@ -98,7 +98,7 @@ func (a *IpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessL
 // Get access list
 //
 // Gets an IP access list, specified by its list ID.
-func (a *IpAccessListsAPI) Get(ctx context.Context, request GetRequest) (*FetchIpAccessListResponse, error) {
+func (a *IpAccessListsAPI) Get(ctx context.Context, request Get) (*FetchIpAccessListResponse, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -106,7 +106,7 @@ func (a *IpAccessListsAPI) Get(ctx context.Context, request GetRequest) (*FetchI
 //
 // Gets an IP access list, specified by its list ID.
 func (a *IpAccessListsAPI) GetByIpAccessListId(ctx context.Context, ipAccessListId string) (*FetchIpAccessListResponse, error) {
-	return a.impl.Get(ctx, GetRequest{
+	return a.impl.Get(ctx, Get{
 		IpAccessListId: ipAccessListId,
 	})
 }

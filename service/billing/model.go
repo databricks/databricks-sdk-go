@@ -4,17 +4,8 @@ package billing
 
 // all definitions in this file are in alphabetical order
 
-type BudgetAlert struct {
-	// List of email addresses to be notified when budget percentage is exceeded
-	// in the given period.
-	EmailNotifications []string `json:"email_notifications,omitempty"`
-	// Percentage of the target amount used in the currect period that will
-	// trigger a notification.
-	MinPercentage int `json:"min_percentage,omitempty"`
-}
-
 // Budget configuration to be created.
-type BudgetCreateRequest struct {
+type Budget struct {
 	Alerts []BudgetAlert `json:"alerts,omitempty"`
 	// Optional end date of the budget.
 	EndDate string `json:"end_date,omitempty"`
@@ -44,6 +35,15 @@ type BudgetCreateRequest struct {
 	StartDate string `json:"start_date"`
 	// Target amount of the budget per period in USD.
 	TargetAmount string `json:"target_amount"`
+}
+
+type BudgetAlert struct {
+	// List of email addresses to be notified when budget percentage is exceeded
+	// in the given period.
+	EmailNotifications []string `json:"email_notifications,omitempty"`
+	// Percentage of the target amount used in the currect period that will
+	// trigger a notification.
+	MinPercentage int `json:"min_percentage,omitempty"`
 }
 
 // List of budgets.
@@ -99,19 +99,14 @@ type BudgetWithStatusStatusDailyItem struct {
 	Date string `json:"date,omitempty"`
 }
 
-type CreateBudgetRequest struct {
-	// Budget configuration to be created.
-	Budget BudgetCreateRequest `json:"budget"`
-}
-
 type CreateLogDeliveryConfigurationParams struct {
 	// The optional human-readable name of the log delivery configuration.
 	// Defaults to empty.
 	ConfigName string `json:"config_name,omitempty"`
-	// The ID for a [Databricks credential
-	// configuration](#operation/create-credential-config) that represents the
-	// AWS IAM role with policy and trust relationship as described in the main
-	// billable usage documentation page. See [Configure billable usage
+	// The ID for a method:CredetialConfigurations/createCredentialConfig that
+	// represents the AWS IAM role with policy and trust relationship as
+	// described in the main billable usage documentation page. See [Configure
+	// billable usage
 	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
 	CredentialsId string `json:"credentials_id"`
 	// The optional delivery path prefix within Amazon S3 storage. Defaults to
@@ -153,10 +148,9 @@ type CreateLogDeliveryConfigurationParams struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status,omitempty"`
-	// "The ID for a [Databricks storage
-	// configuration](#operation/create-storage-config) that represents the S3
-	// bucket with bucket policy as described in the main billable usage
-	// documentation page. See [Configure billable usage
+	// "The ID for a method:StorageConfiguration/createCredentialConfig that
+	// represents the S3 bucket with bucket policy as described in the main
+	// billable usage documentation page. See [Configure billable usage
 	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html)."
 	StorageConfigurationId string `json:"storage_configuration_id"`
 	// Optional filter that specifies workspace IDs to deliver logs for. By
@@ -175,6 +169,7 @@ type CreateLogDeliveryConfigurationParams struct {
 	WorkspaceIdsFilter []int64 `json:"workspace_ids_filter,omitempty"`
 }
 
+// Delete budget
 type DeleteBudgetRequest struct {
 	// Budget ID
 	BudgetId string `json:"-" url:"-"`
@@ -201,7 +196,8 @@ const DeliveryStatusSystemFailure DeliveryStatus = `SYSTEM_FAILURE`
 // customer provided permissions on role or storage.
 const DeliveryStatusUserFailure DeliveryStatus = `USER_FAILURE`
 
-type DownloadBillableUsageRequest struct {
+// Return billable usage logs
+type DownloadRequest struct {
 	// Format: `YYYY-MM`. Last month to return billable usage logs for. This
 	// field is required.
 	EndMonth string `json:"-" url:"end_month"`
@@ -214,17 +210,20 @@ type DownloadBillableUsageRequest struct {
 	StartMonth string `json:"-" url:"start_month"`
 }
 
+// Get budget and its status
 type GetBudgetRequest struct {
 	// Budget ID
 	BudgetId string `json:"-" url:"-"`
 }
 
-type GetLogDeliveryConfigRequest struct {
+// Get log delivery configuration
+type GetLogDeliveryRequest struct {
 	// Databricks log delivery configuration ID
 	LogDeliveryConfigurationId string `json:"-" url:"-"`
 }
 
-type ListLogDeliveryConfigsRequest struct {
+// Get all log delivery configurations
+type ListLogDeliveryRequest struct {
 	// Filter by credential configuration ID.
 	CredentialsId string `json:"-" url:"credentials_id,omitempty"`
 	// Filter by status `ENABLED` or `DISABLED`.
@@ -255,10 +254,10 @@ type LogDeliveryConfiguration struct {
 	// Time in epoch milliseconds when the log delivery configuration was
 	// created.
 	CreationTime int64 `json:"creation_time,omitempty"`
-	// The ID for a [Databricks credential
-	// configuration](#operation/create-credential-config) that represents the
-	// AWS IAM role with policy and trust relationship as described in the main
-	// billable usage documentation page. See [Configure billable usage
+	// The ID for a method:CredetialConfigurations/createCredentialConfig that
+	// represents the AWS IAM role with policy and trust relationship as
+	// described in the main billable usage documentation page. See [Configure
+	// billable usage
 	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
 	CredentialsId string `json:"credentials_id,omitempty"`
 	// The optional delivery path prefix within Amazon S3 storage. Defaults to
@@ -302,10 +301,9 @@ type LogDeliveryConfiguration struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status,omitempty"`
-	// "The ID for a [Databricks storage
-	// configuration](#operation/create-storage-config) that represents the S3
-	// bucket with bucket policy as described in the main billable usage
-	// documentation page. See [Configure billable usage
+	// "The ID for a method:StorageConfiguration/createCredentialConfig that
+	// represents the S3 bucket with bucket policy as described in the main
+	// billable usage documentation page. See [Configure billable usage
 	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html)."
 	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
 	// Time in epoch milliseconds when the log delivery configuration was
@@ -374,13 +372,6 @@ const OutputFormatCsv OutputFormat = `CSV`
 
 const OutputFormatJson OutputFormat = `JSON`
 
-type UpdateBudgetRequest struct {
-	// Budget configuration to be created.
-	Budget BudgetCreateRequest `json:"budget"`
-	// Budget ID
-	BudgetId string `json:"-" url:"-"`
-}
-
 type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Databricks log delivery configuration ID
 	LogDeliveryConfigurationId string `json:"-" url:"-"`
@@ -390,6 +381,18 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status"`
+}
+
+type WrappedBudget struct {
+	// Budget configuration to be created.
+	Budget Budget `json:"budget"`
+	// Budget ID
+	BudgetId string `json:"-" url:"-"`
+}
+
+type WrappedBudgetWithStatus struct {
+	// Budget configuration with daily status.
+	Budget BudgetWithStatus `json:"budget"`
 }
 
 type WrappedCreateLogDeliveryConfiguration struct {

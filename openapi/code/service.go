@@ -24,6 +24,10 @@ func (svc *Service) FullName() string {
 	return fmt.Sprintf("%s.%s", svc.Package.FullName(), svc.PascalName())
 }
 
+func (svc *Service) MatchesPackageName() bool {
+	return strings.ToLower(svc.Name) == svc.Package.Name
+}
+
 // Methods returns sorted slice of methods
 func (svc *Service) Methods() (methods []*Method) {
 	for _, v := range svc.methods {
@@ -33,6 +37,56 @@ func (svc *Service) Methods() (methods []*Method) {
 		return a.CamelName() < b.CamelName()
 	})
 	return methods
+}
+
+func (svc *Service) MethodCreate() *Method {
+	for _, m := range svc.methods {
+		if m.operation.Crud != "create" {
+			continue
+		}
+		return m
+	}
+	return nil
+}
+
+func (svc *Service) MethodRead() *Method {
+	for _, m := range svc.methods {
+		if m.operation.Crud != "read" {
+			continue
+		}
+		return m
+	}
+	return nil
+}
+
+func (svc *Service) MethodUpdate() *Method {
+	for _, m := range svc.methods {
+		if m.operation.Crud != "update" {
+			continue
+		}
+		return m
+	}
+	return nil
+}
+
+func (svc *Service) MethodDelete() *Method {
+	for _, m := range svc.methods {
+		if m.operation.Crud != "delete" {
+			continue
+		}
+		return m
+	}
+	return nil
+}
+
+func (svc *Service) MethodList() *Method {
+	for _, m := range svc.methods {
+		if m.operation.Crud != "list" {
+			continue
+		}
+		return m
+	}
+	return nil
 }
 
 // HasPagination returns true if any method has result iteration
@@ -63,6 +117,16 @@ func (svc *Service) paramToField(op *openapi.Operation, param openapi.Parameter)
 	}
 }
 
+var crudNames = map[string]bool{
+	"create":  true,
+	"read":    true,
+	"get":     true,
+	"update":  true,
+	"replace": true,
+	"delete":  true,
+	"list":    true,
+}
+
 func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation) *Entity {
 	if op.RequestBody == nil && len(params) == 0 {
 		return nil
@@ -91,8 +155,22 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 		request.fields[param.Name] = field
 	}
 	if request.Name == "" {
+		request.Description = op.Summary
 		// when there was a merge of params with a request or new entity was made
-		request.Name = op.Name() + "Request"
+		signularServiceName := svc.Singular().PascalName()
+		notExplicit := !strings.Contains(op.Name(), signularServiceName)
+		if svc.MatchesPackageName() {
+			request.Name = op.Name()
+		} else if op.Name() == "list" && notExplicit {
+			request.Name = op.Name() + svc.Name + "Request"
+		} else if crudNames[strings.ToLower(op.Name())] {
+			request.Name = op.Name() + signularServiceName + "Request"
+		} else {
+			request.Name = op.Name() + "Request"
+		}
+		if svc.Package.Name == "scim" {
+			request.Name = strings.ReplaceAll(request.Name, "Account", "")
+		}
 		svc.Package.define(request)
 	}
 	return request

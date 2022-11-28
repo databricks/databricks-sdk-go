@@ -263,6 +263,12 @@ const FleetSpotOptionAllocationStrategyLowestPrice FleetSpotOptionAllocationStra
 
 const FleetSpotOptionAllocationStrategyPrioritized FleetSpotOptionAllocationStrategy = `PRIORITIZED`
 
+// Get instance pool information
+type Get struct {
+	// The canonical unique identifier for the instance pool.
+	InstancePoolId string `json:"-" url:"instance_pool_id,omitempty"`
+}
+
 type GetInstancePool struct {
 	// Attributes related to pool running on Amazon Web Services. If not
 	// specified at pool creation, a set of default values will be used.
@@ -344,11 +350,6 @@ const GetInstancePoolStateActive GetInstancePoolState = `ACTIVE`
 const GetInstancePoolStateDeleted GetInstancePoolState = `DELETED`
 
 const GetInstancePoolStateStopped GetInstancePoolState = `STOPPED`
-
-type GetRequest struct {
-	// The canonical unique identifier for the instance pool.
-	InstancePoolId string `json:"-" url:"instance_pool_id,omitempty"`
-}
 
 type InstancePoolAndStats struct {
 	// Attributes related to pool running on Amazon Web Services. If not

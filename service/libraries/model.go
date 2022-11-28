@@ -11,7 +11,8 @@ type ClusterLibraryStatuses struct {
 	LibraryStatuses []LibraryFullStatus `json:"library_statuses,omitempty"`
 }
 
-type ClusterStatusRequest struct {
+// Get status
+type ClusterStatus struct {
 	// Unique identifier of the cluster whose status should be retrieved.
 	ClusterId string `json:"-" url:"cluster_id"`
 }

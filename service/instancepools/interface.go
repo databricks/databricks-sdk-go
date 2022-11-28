@@ -45,7 +45,7 @@ type InstancePoolsService interface {
 	// Get instance pool information
 	//
 	// Retrieve the information for an instance pool based on its identifier.
-	Get(ctx context.Context, request GetRequest) (*GetInstancePool, error)
+	Get(ctx context.Context, request Get) (*GetInstancePool, error)
 
 	// List instance pool info
 	//

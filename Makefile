@@ -35,4 +35,7 @@ doc:
 install-codegen: vendor
 	@go build -o ~/go/bin/openapi-codegen databricks/openapi/gen/main.go
 
+gen: vendor
+	@go run openapi/gen/main.go
+
 .PHONY: fmt vendor fmt coverage test lint doc

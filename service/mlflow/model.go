@@ -290,6 +290,12 @@ type DeleteExperiment struct {
 	ExperimentId string `json:"experiment_id"`
 }
 
+// Delete a comment
+type DeleteModelVersionCommentRequest struct {
+	Id string `json:"-" url:"id"`
+}
+
+// Delete a model version.
 type DeleteModelVersionRequest struct {
 	// Name of the registered model
 	Name string `json:"-" url:"name"`
@@ -297,6 +303,7 @@ type DeleteModelVersionRequest struct {
 	Version string `json:"-" url:"version"`
 }
 
+// Delete a model version tag
 type DeleteModelVersionTagRequest struct {
 	// Name of the tag. The name must be an exact match; wild-card deletion is
 	// not supported. Maximum size is 250 bytes.
@@ -307,11 +314,13 @@ type DeleteModelVersionTagRequest struct {
 	Version string `json:"-" url:"version"`
 }
 
+// Delete a model
 type DeleteRegisteredModelRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"-" url:"name"`
 }
 
+// Delete a model tag
 type DeleteRegisteredModelTagRequest struct {
 	// Name of the tag. The name must be an exact match; wild-card deletion is
 	// not supported. Maximum size is 250 bytes.
@@ -320,8 +329,10 @@ type DeleteRegisteredModelTagRequest struct {
 	Name string `json:"-" url:"name"`
 }
 
-type DeleteRequest struct {
-	Id string `json:"-" url:"id"`
+// Delete a webhook
+type DeleteRegistryWebhookRequest struct {
+	// Webhook ID required to delete a registry webhook.
+	Id string `json:"-" url:"id,omitempty"`
 }
 
 type DeleteRun struct {
@@ -334,6 +345,30 @@ type DeleteTag struct {
 	Key string `json:"key"`
 	// ID of the run that the tag was logged under. Must be provided.
 	RunId string `json:"run_id"`
+}
+
+// Delete a ransition request
+type DeleteTransitionRequestRequest struct {
+	// User-provided comment on the action.
+	Comment string `json:"-" url:"comment,omitempty"`
+	// Username of the user who created this request. Of the transition requests
+	// matching the specified details, only the one transition created by this
+	// user will be deleted.
+	Creator string `json:"-" url:"creator"`
+	// Name of the model.
+	Name string `json:"-" url:"name"`
+	// Target stage of the transition request. Valid values are:
+	//
+	// * `None`: The initial stage of a model version.
+	//
+	// * `Staging`: Staging or pre-production stage.
+	//
+	// * `Production`: Production stage.
+	//
+	// * `Archived`: Archived stage.
+	Stage string `json:"-" url:"stage"`
+	// Version of the model.
+	Version string `json:"-" url:"version"`
 }
 
 type Experiment struct {
@@ -370,6 +405,7 @@ type FileInfo struct {
 	Path string `json:"path,omitempty"`
 }
 
+// Get metadata
 type GetByNameRequest struct {
 	// Name of the associated experiment.
 	ExperimentName string `json:"-" url:"experiment_name"`
@@ -380,11 +416,13 @@ type GetExperimentByNameResponse struct {
 	Experiment *Experiment `json:"experiment,omitempty"`
 }
 
+// Get an experiment
 type GetExperimentRequest struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"-" url:"experiment_id"`
 }
 
+// Get all history
 type GetHistoryRequest struct {
 	// Name of the metric.
 	MetricKey string `json:"-" url:"metric_key"`
@@ -409,11 +447,18 @@ type GetLatestVersionsResponse struct {
 	ModelVersions []ModelVersion `json:"model_versions,omitempty"`
 }
 
+// Get model
+type GetMLflowDatabrickRequest struct {
+	// Name of the model.
+	Name string `json:"-" url:"name"`
+}
+
 type GetMetricHistoryResponse struct {
 	// All logged values for this metric.
 	Metrics []Metric `json:"metrics,omitempty"`
 }
 
+// Get a model version URI
 type GetModelVersionDownloadUriRequest struct {
 	// Name of the registered model
 	Name string `json:"-" url:"name"`
@@ -426,6 +471,7 @@ type GetModelVersionDownloadUriResponse struct {
 	ArtifactUri string `json:"artifact_uri,omitempty"`
 }
 
+// Get a model version
 type GetModelVersionRequest struct {
 	// Name of the registered model
 	Name string `json:"-" url:"name"`
@@ -437,6 +483,7 @@ type GetModelVersionResponse struct {
 	ModelVersion *ModelVersion `json:"model_version,omitempty"`
 }
 
+// Get a model
 type GetRegisteredModelRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"-" url:"name"`
@@ -446,15 +493,11 @@ type GetRegisteredModelResponse struct {
 	RegisteredModel *RegisteredModel `json:"registered_model,omitempty"`
 }
 
-type GetRequest struct {
-	// Name of the model.
-	Name string `json:"-" url:"name"`
-}
-
 type GetResponse struct {
 	RegisteredModel *RegisteredModelDatabricks `json:"registered_model,omitempty"`
 }
 
+// Get a run
 type GetRunRequest struct {
 	// ID of the run to fetch. Must be provided.
 	RunId string `json:"-" url:"run_id,omitempty"`
@@ -524,6 +567,7 @@ type JobSpecWithoutSecret struct {
 	WorkspaceUrl string `json:"workspace_url,omitempty"`
 }
 
+// Get all artifacts
 type ListArtifactsRequest struct {
 	// Token indicating the page of artifact results to fetch
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -546,6 +590,7 @@ type ListArtifactsResponse struct {
 	RootUri string `json:"root_uri,omitempty"`
 }
 
+// List experiments
 type ListExperimentsRequest struct {
 	// Maximum number of experiments desired. If `max_results` is unspecified,
 	// return all experiments. If `max_results` is too large, it'll be
@@ -569,6 +614,7 @@ type ListExperimentsResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 }
 
+// List models
 type ListRegisteredModelsRequest struct {
 	// Maximum number of registered models desired. Max threshold is 1000.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
@@ -590,7 +636,8 @@ type ListRegistryWebhooks struct {
 	Webhooks []RegistryWebhook `json:"webhooks,omitempty"`
 }
 
-type ListRequest struct {
+// List registry webhooks
+type ListRegistryWebhooksRequest struct {
 	// If `events` is specified, any webhook with one or more of the specified
 	// trigger events is included in the output. If `events` is not specified,
 	// webhooks of all event types are included in the output.
@@ -605,6 +652,14 @@ type ListRequest struct {
 type ListResponse struct {
 	// Array of open transition requests.
 	Requests []Activity `json:"requests,omitempty"`
+}
+
+// List transition requests
+type ListTransitionRequestsRequest struct {
+	// Name of the model.
+	Name string `json:"-" url:"name"`
+	// Version of the model.
+	Version string `json:"-" url:"version"`
 }
 
 type LogBatch struct {
@@ -1055,6 +1110,7 @@ const SearchExperimentsViewTypeAll SearchExperimentsViewType = `ALL`
 
 const SearchExperimentsViewTypeDeletedOnly SearchExperimentsViewType = `DELETED_ONLY`
 
+// Searches model versions
 type SearchModelVersionsRequest struct {
 	// String filter condition, like "name='my-model-name'". Must be a single
 	// boolean condition, with string values wrapped in single quotes.
@@ -1078,6 +1134,7 @@ type SearchModelVersionsResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 }
 
+// Search models
 type SearchRegisteredModelsRequest struct {
 	// String filter condition, like "name LIKE 'my-model-name'". Interpreted in
 	// the backend automatically as "name LIKE '%my-model-name%'". Single

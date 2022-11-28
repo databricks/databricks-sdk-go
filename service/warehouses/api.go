@@ -119,7 +119,7 @@ func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, createWareho
 		o(&i)
 	}
 	return retries.Poll[GetWarehouseResponse](ctx, i.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
-		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
+		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouse{
 			Id: createWarehouseResponse.Id,
 		})
 		if err != nil {
@@ -149,7 +149,7 @@ func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, createWareho
 // Delete a warehouse
 //
 // Deletes a SQL warehouse.
-func (a *WarehousesAPI) DeleteWarehouse(ctx context.Context, request DeleteWarehouseRequest) error {
+func (a *WarehousesAPI) DeleteWarehouse(ctx context.Context, request DeleteWarehouse) error {
 	return a.impl.DeleteWarehouse(ctx, request)
 }
 
@@ -157,9 +157,9 @@ func (a *WarehousesAPI) DeleteWarehouse(ctx context.Context, request DeleteWareh
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetWarehouseResponse](60*time.Minute) functional option.
-func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWarehouseRequest DeleteWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWarehouse DeleteWarehouse, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	err := a.DeleteWarehouse(ctx, deleteWarehouseRequest)
+	err := a.DeleteWarehouse(ctx, deleteWarehouse)
 	if err != nil {
 		return nil, err
 	}
@@ -168,8 +168,8 @@ func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWareho
 		o(&i)
 	}
 	return retries.Poll[GetWarehouseResponse](ctx, i.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
-		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
-			Id: deleteWarehouseRequest.Id,
+		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouse{
+			Id: deleteWarehouse.Id,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -195,13 +195,13 @@ func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWareho
 //
 // Deletes a SQL warehouse.
 func (a *WarehousesAPI) DeleteWarehouseById(ctx context.Context, id string) error {
-	return a.impl.DeleteWarehouse(ctx, DeleteWarehouseRequest{
+	return a.impl.DeleteWarehouse(ctx, DeleteWarehouse{
 		Id: id,
 	})
 }
 
 func (a *WarehousesAPI) DeleteWarehouseByIdAndWait(ctx context.Context, id string, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
-	return a.DeleteWarehouseAndWait(ctx, DeleteWarehouseRequest{
+	return a.DeleteWarehouseAndWait(ctx, DeleteWarehouse{
 		Id: id,
 	}, options...)
 }
@@ -228,7 +228,7 @@ func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, editWarehouseR
 		o(&i)
 	}
 	return retries.Poll[GetWarehouseResponse](ctx, i.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
-		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
+		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouse{
 			Id: editWarehouseRequest.Id,
 		})
 		if err != nil {
@@ -258,7 +258,7 @@ func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, editWarehouseR
 // Get warehouse info
 //
 // Gets the information for a single SQL warehouse.
-func (a *WarehousesAPI) GetWarehouse(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error) {
+func (a *WarehousesAPI) GetWarehouse(ctx context.Context, request GetWarehouse) (*GetWarehouseResponse, error) {
 	return a.impl.GetWarehouse(ctx, request)
 }
 
@@ -266,9 +266,9 @@ func (a *WarehousesAPI) GetWarehouse(ctx context.Context, request GetWarehouseRe
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetWarehouseResponse](60*time.Minute) functional option.
-func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouseRequest GetWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouse GetWarehouse, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	getWarehouseResponse, err := a.GetWarehouse(ctx, getWarehouseRequest)
+	getWarehouseResponse, err := a.GetWarehouse(ctx, getWarehouse)
 	if err != nil {
 		return nil, err
 	}
@@ -277,7 +277,7 @@ func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouseReq
 		o(&i)
 	}
 	return retries.Poll[GetWarehouseResponse](ctx, i.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
-		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
+		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouse{
 			Id: getWarehouseResponse.Id,
 		})
 		if err != nil {
@@ -308,13 +308,13 @@ func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouseReq
 //
 // Gets the information for a single SQL warehouse.
 func (a *WarehousesAPI) GetWarehouseById(ctx context.Context, id string) (*GetWarehouseResponse, error) {
-	return a.impl.GetWarehouse(ctx, GetWarehouseRequest{
+	return a.impl.GetWarehouse(ctx, GetWarehouse{
 		Id: id,
 	})
 }
 
 func (a *WarehousesAPI) GetWarehouseByIdAndWait(ctx context.Context, id string, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
-	return a.GetWarehouseAndWait(ctx, GetWarehouseRequest{
+	return a.GetWarehouseAndWait(ctx, GetWarehouse{
 		Id: id,
 	}, options...)
 }
@@ -332,7 +332,7 @@ func (a *WarehousesAPI) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetWo
 // Lists all SQL warehouses that a user has manager permissions on.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *WarehousesAPI) ListWarehousesAll(ctx context.Context, request ListWarehousesRequest) ([]EndpointInfo, error) {
+func (a *WarehousesAPI) ListWarehousesAll(ctx context.Context, request ListWarehouses) ([]EndpointInfo, error) {
 	response, err := a.impl.ListWarehouses(ctx, request)
 	if err != nil {
 		return nil, err
@@ -347,7 +347,7 @@ func (a *WarehousesAPI) ListWarehousesAll(ctx context.Context, request ListWareh
 // Note: All [EndpointInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *WarehousesAPI) EndpointInfoNameToIdMap(ctx context.Context, request ListWarehousesRequest) (map[string]string, error) {
+func (a *WarehousesAPI) EndpointInfoNameToIdMap(ctx context.Context, request ListWarehouses) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListWarehousesAll(ctx, request)
@@ -374,7 +374,7 @@ func (a *WarehousesAPI) EndpointInfoNameToIdMap(ctx context.Context, request Lis
 // This method is generated by Databricks SDK Code Generator.
 func (a *WarehousesAPI) GetEndpointInfoByName(ctx context.Context, name string) (*EndpointInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
-	result, err := a.ListWarehousesAll(ctx, ListWarehousesRequest{})
+	result, err := a.ListWarehousesAll(ctx, ListWarehouses{})
 	if err != nil {
 		return nil, err
 	}
@@ -404,7 +404,7 @@ func (a *WarehousesAPI) SetWorkspaceWarehouseConfig(ctx context.Context, request
 // Start a warehouse
 //
 // Starts a SQL warehouse.
-func (a *WarehousesAPI) StartWarehouse(ctx context.Context, request StartWarehouseRequest) error {
+func (a *WarehousesAPI) StartWarehouse(ctx context.Context, request StartWarehouse) error {
 	return a.impl.StartWarehouse(ctx, request)
 }
 
@@ -412,9 +412,9 @@ func (a *WarehousesAPI) StartWarehouse(ctx context.Context, request StartWarehou
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetWarehouseResponse](60*time.Minute) functional option.
-func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehouseRequest StartWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehouse StartWarehouse, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	err := a.StartWarehouse(ctx, startWarehouseRequest)
+	err := a.StartWarehouse(ctx, startWarehouse)
 	if err != nil {
 		return nil, err
 	}
@@ -423,8 +423,8 @@ func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehous
 		o(&i)
 	}
 	return retries.Poll[GetWarehouseResponse](ctx, i.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
-		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
-			Id: startWarehouseRequest.Id,
+		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouse{
+			Id: startWarehouse.Id,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -453,7 +453,7 @@ func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehous
 // Stop a warehouse
 //
 // Stops a SQL warehouse.
-func (a *WarehousesAPI) StopWarehouse(ctx context.Context, request StopWarehouseRequest) error {
+func (a *WarehousesAPI) StopWarehouse(ctx context.Context, request StopWarehouse) error {
 	return a.impl.StopWarehouse(ctx, request)
 }
 
@@ -461,9 +461,9 @@ func (a *WarehousesAPI) StopWarehouse(ctx context.Context, request StopWarehouse
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetWarehouseResponse](60*time.Minute) functional option.
-func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, stopWarehouseRequest StopWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, stopWarehouse StopWarehouse, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	err := a.StopWarehouse(ctx, stopWarehouseRequest)
+	err := a.StopWarehouse(ctx, stopWarehouse)
 	if err != nil {
 		return nil, err
 	}
@@ -472,8 +472,8 @@ func (a *WarehousesAPI) StopWarehouseAndWait(ctx context.Context, stopWarehouseR
 		o(&i)
 	}
 	return retries.Poll[GetWarehouseResponse](ctx, i.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
-		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouseRequest{
-			Id: stopWarehouseRequest.Id,
+		getWarehouseResponse, err := a.GetWarehouse(ctx, GetWarehouse{
+			Id: stopWarehouse.Id,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)

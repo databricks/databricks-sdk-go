@@ -29,8 +29,20 @@ func workspaceTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) 
 	loadDebugEnvIfRunsFromIDE(t, "workspace")
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	if os.Getenv("DATABRICKS_ACCOUNT_ID") != "" {
-		t.Skipf("Skipping workspace test on account level")
+		skipf(t)("Skipping workspace test on account level")
 	}
+	t.Parallel()
+	ctx := context.Background()
+	return ctx, databricks.Must(databricks.NewWorkspaceClient())
+}
+
+// prelude for all workspace-level UC tests
+func ucwsTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) {
+	loadDebugEnvIfRunsFromIDE(t, "ucws")
+	if os.Getenv("DATABRICKS_ACCOUNT_ID") != "" {
+		skipf(t)("Skipping workspace test on account level")
+	}
+	GetEnvOrSkipTest(t, "TEST_METASTORE_ID")
 	t.Parallel()
 	ctx := context.Background()
 	return ctx, databricks.Must(databricks.NewWorkspaceClient())
@@ -42,8 +54,12 @@ func accountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 	cfg := &config.Config{
 		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
 	}
+	err := cfg.EnsureResolved()
+	if err != nil {
+		skipf(t)("error: %s", err)
+	}
 	if !cfg.IsAccountsClient() {
-		t.Skipf("Not in account env: %s/%s", cfg.AccountID, cfg.Host)
+		skipf(t)("Not in account env: %s/%s", cfg.AccountID, cfg.Host)
 	}
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	t.Parallel()
@@ -56,13 +72,7 @@ func accountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 func GetEnvOrSkipTest(t *testing.T, name string) string {
 	value := os.Getenv(name)
 	if value == "" {
-		skipf := t.Skipf
-		if isInDebug() {
-			// VSCode "debug test" feature doesn't show dlv logs,
-			// so that we fail here for maintainer productivity.
-			skipf = t.Fatalf
-		}
-		skipf("Environment variable %s is missing", name)
+		skipf(t)("Environment variable %s is missing", name)
 	}
 	return value
 }
@@ -71,7 +81,7 @@ func GetEnvInt64OrSkipTest(t *testing.T, name string) int64 {
 	v := GetEnvOrSkipTest(t, name)
 	i, err := strconv.ParseInt(v, 10, 64)
 	if err != nil {
-		t.Skipf("`%s` is not int64: %s", v, err)
+		skipf(t)("`%s` is not int64: %s", v, err)
 	}
 	return i
 }
@@ -107,6 +117,15 @@ func RandomHex(prefix string, randLen int) string {
 		return fmt.Sprintf("%s%s", prefix, b)
 	}
 	return string(b)
+}
+
+func skipf(t *testing.T) func(format string, args ...any) {
+	if isInDebug() {
+		// VSCode "debug test" feature doesn't show dlv logs,
+		// so that we fail here for maintainer productivity.
+		return t.Fatalf
+	}
+	return t.Skipf
 }
 
 // detects if test is run from "debug test" feature in VSCode

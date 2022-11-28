@@ -33,7 +33,7 @@ func (a *clusterPoliciesImpl) Edit(ctx context.Context, request EditPolicy) erro
 	return err
 }
 
-func (a *clusterPoliciesImpl) Get(ctx context.Context, request GetRequest) (*Policy, error) {
+func (a *clusterPoliciesImpl) Get(ctx context.Context, request Get) (*Policy, error) {
 	var policy Policy
 	path := "/api/2.0/policies/clusters/get"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &policy)

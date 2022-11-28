@@ -26,12 +26,12 @@ type GlobalInitScriptsService interface {
 	// Delete init script
 	//
 	// Deletes a global init script.
-	DeleteScript(ctx context.Context, request DeleteScriptRequest) error
+	DeleteScript(ctx context.Context, request DeleteScript) error
 
 	// Get an init script
 	//
 	// Gets all the details of a script, including its Base64-encoded contents.
-	GetScript(ctx context.Context, request GetScriptRequest) (*GlobalInitScriptDetailsWithContent, error)
+	GetScript(ctx context.Context, request GetScript) (*GlobalInitScriptDetailsWithContent, error)
 
 	// Get init scripts
 	//

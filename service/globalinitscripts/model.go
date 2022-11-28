@@ -9,12 +9,14 @@ type CreateScriptResponse struct {
 	ScriptId string `json:"script_id,omitempty"`
 }
 
-type DeleteScriptRequest struct {
+// Delete init script
+type DeleteScript struct {
 	// The ID of the global init script.
 	ScriptId string `json:"-" url:"-"`
 }
 
-type GetScriptRequest struct {
+// Get an init script
+type GetScript struct {
 	// The ID of the global init script.
 	ScriptId string `json:"-" url:"-"`
 }

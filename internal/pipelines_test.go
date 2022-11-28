@@ -70,10 +70,10 @@ func TestAccPipelines(t *testing.T) {
 	pipeline, err := w.Pipelines.GetPipelineByPipelineId(ctx, created.PipelineId)
 	require.NoError(t, err)
 
-	all, err := w.Pipelines.ListPipelinesAll(ctx, pipelines.ListPipelinesRequest{})
+	all, err := w.Pipelines.ListPipelinesAll(ctx, pipelines.ListPipelines{})
 	require.NoError(t, err)
 
-	names, err := w.Pipelines.PipelineStateInfoNameToPipelineIdMap(ctx, pipelines.ListPipelinesRequest{})
+	names, err := w.Pipelines.PipelineStateInfoNameToPipelineIdMap(ctx, pipelines.ListPipelines{})
 	require.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
 	assert.Equal(t, pipeline.PipelineId, names[pipeline.Name])
