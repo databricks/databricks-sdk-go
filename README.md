@@ -78,7 +78,6 @@ During the Beta period, you must clone and then reference this repository locall
      
      // Disable printing debug information to output.
      // Comment the following code to enable printing debug information.
-     // Note that debug details might contain sensitive information.
      log.SetOutput(io.Discard)
    }
 
@@ -207,7 +206,6 @@ func init() {
   
   // Disable printing debug information to output.
   // Comment the following code to enable printing debug information.
-  // Note that debug details might contain sensitive information.
   log.SetOutput(io.Discard)
 }
 
@@ -297,7 +295,6 @@ func init() {
   
   // Disable printing debug information to output.
   // Comment the following code to enable printing debug information.
-  // Note that debug details might contain sensitive information.
   log.SetOutput(io.Discard)
 }
 
@@ -389,7 +386,6 @@ func init() {
   
   // Disable printing debug information to output.
   // Comment the following code to enable printing debug information.
-  // Note that debug details might contain sensitive information.
   log.SetOutput(io.Discard)
 }
 
@@ -467,7 +463,6 @@ func init() {
   
   // Disable printing debug information to output.
   // Comment the following code to enable printing debug information.
-  // Note that debug details might contain sensitive information.
   log.SetOutput(io.Discard)
 }
 
@@ -520,7 +515,6 @@ func init() {
   
   // Disable printing debug information to output.
   // Comment the following code to enable printing debug information.
-  // Note that debug details might contain sensitive information.
   log.SetOutput(io.Discard)
 }
 
