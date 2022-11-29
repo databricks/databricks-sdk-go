@@ -56,7 +56,7 @@ func (fixtures HTTPFixtures) Config(t *testing.T) (*config.Config, *httptest.Ser
 				if fixture.ExpectedRequest != nil {
 					buf := new(bytes.Buffer)
 					_, err := buf.ReadFrom(req.Body)
-					assert.NoError(t, err, err) // TODO: verify it doesn't get compiled to target binaries
+					assert.NoError(t, err, err)
 					jsonStr, err := json.Marshal(fixture.ExpectedRequest)
 					assert.NoError(t, err, err)
 					assert.JSONEq(t, string(jsonStr), buf.String(), "json strings do not match")

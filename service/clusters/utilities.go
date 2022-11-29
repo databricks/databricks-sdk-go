@@ -46,7 +46,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	}
 	nodeTypes, err := a.ListNodeTypes(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("list node types: %w", err) // TODO: GENERATOR: prefix method name
+		return nil, fmt.Errorf("list node types: %w", err)
 	}
 	smallestNodeType, err := nodeTypes.Smallest(NodeTypeRequest{
 		LocalDisk: true,
@@ -57,7 +57,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	logger.Infof("Creating an autoterminating cluster with node type %s", smallestNodeType)
 	versions, err := a.SparkVersions(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("list spark versions: %w", err) // TODO: GENERATOR: prefix method name
+		return nil, fmt.Errorf("list spark versions: %w", err)
 	}
 	version, err := versions.Select(SparkVersionRequest{
 		Latest:          true,
