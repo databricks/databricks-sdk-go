@@ -165,7 +165,7 @@ For each authentication method, the SDK searches for compatible authentication c
    **Caution**: Databricks does not recommend hard-coding credentials into `*databricks.Config`, as they can be exposed in plain text in version control systems. Use environment variables or configuration profiles instead.
 
 2. Credentials in Databricks-specific [environment variables](https://docs.databricks.com/dev-tools/auth.html#environment-variables).
-3. For Databricks native authentication, credentials in the `.databrickscfg` file's `DEFAULT` [configuration profile](https://docs.databricks.com/dev-tools/auth.html#configuration-profiles) from its default location (`~` for Linux or macOS, and `%USERPROFILE%` for Windows).
+3. For Databricks native authentication, credentials in the `.databrickscfg` file's `DEFAULT` [configuration profile](https://docs.databricks.com/dev-tools/auth.html#configuration-profiles) from its default file location (`~` for Linux or macOS, and `%USERPROFILE%` for Windows).
 4. For Azure or Google Cloud Platform native authentication, the SDK searches for credentials through the Azure CLI or Google Cloud CLI as needed.
 
 Depending on the Databricks authentication method, the SDK uses the following information. Presented are the `*databricks.Config` arguments, their descriptions, any corresponding environment variables, and any corresponding `.databrickscfg` file fields, respectively.
@@ -176,13 +176,16 @@ Depending on the Databricks authentication method, the SDK uses the following in
 
 By default, the Databricks SDK for Go initially tries Databricks token authentication (`AuthType: "pat"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries Databricks basic (username/password) authentication (`AuthType: "basic"` in `*databricks.Config`).
 
-| `*databricks.Config` argument | Description | Envrionment variable | `.databrickscfg` file field |
-|-------------------------------|-------------|----------------------|-----------------------------|
-| `Host` | _(String)_ The Databricks host URL for either the Databricks workspace endpoint or the Databricks accounts endpoint. | `DATABRICKS_HOST` | `host` |     
-| `AccountID` | _(String)_ The Databricks account ID for the Databricks accounts endpoint. Only has effect when `Host` is either `https://accounts.cloud.databricks.com/` _(AWS)_, `https://accounts.azuredatabricks.net/` _(Azure)_, or `https://accounts.gcp.databricks.com/` _(GCP)_. | `DATABRICKS_ACCOUNT_ID` | `host` |
-| `Token` | _(String)_ The Databricks personal access token (PAT) _(AWS, Azure, and GCP)_ or Azure Active Directory (Azure AD) token _(Azure)_. | `DATABRICKS_TOKEN` | `token` |
-| `Username` | _(String)_ The Databricks username part of basic authentication. Only possible when `Host` is `*.cloud.databricks.com` _(AWS)_. | `DATABRICKS_USERNAME` | `username` |
-| `Password` | _(String)_ The Databricks password part of basic authentication. Only possible when `Host` is `*.cloud.databricks.com` _(AWS)_. | `DATABRICKS_PASSWORD` | `password` |
+- For Databricks token authentication, you must provide `Host` and `Token`; or their environment variable or `.databrickscfg` file field equivalents.
+- For Databricks basic authentication, you must provide `Host`, `Username`, and `Password` _(for AWS workspace-level operations)_; or `Host`, `AccountID`, `Username`, and `Password` _(for AWS, Azure, or GCP account-level operations)_; or their environment variable or `.databrickscfg` file field equivalents.
+
+| `*databricks.Config` argument | Description | Environment variable / `.databrickscfg` file field |
+|-------------------------------|-------------|----------------------------------------------------|
+| `Host` | _(String)_ The Databricks host URL for either the Databricks workspace endpoint or the Databricks accounts endpoint. | `DATABRICKS_HOST` /  `host` |     
+| `AccountID` | _(String)_ The Databricks account ID for the Databricks accounts endpoint. Only has effect when `Host` is either `https://accounts.cloud.databricks.com/` _(AWS)_, `https://accounts.azuredatabricks.net/` _(Azure)_, or `https://accounts.gcp.databricks.com/` _(GCP)_. | `DATABRICKS_ACCOUNT_ID` / `account_id` |
+| `Token` | _(String)_ The Databricks personal access token (PAT) _(AWS, Azure, and GCP)_ or Azure Active Directory (Azure AD) token _(Azure)_. | `DATABRICKS_TOKEN` / `token` |
+| `Username` | _(String)_ The Databricks username part of basic authentication. Only possible when `Host` is `*.cloud.databricks.com` _(AWS)_. | `DATABRICKS_USERNAME` / `username` |
+| `Password` | _(String)_ The Databricks password part of basic authentication. Only possible when `Host` is `*.cloud.databricks.com` _(AWS)_. | `DATABRICKS_PASSWORD` / `password` |
 
 For example, to use Databricks token authentication:
 
@@ -216,10 +219,8 @@ func main() {
   //
   // Option 1: To use Databricks token authentication by default, uncomment
   // the following code and then run. This assumes you have already set
-  // your Databricks workspace URL and token through one of:
-  //
-  // - A Databricks configuration profile named DEFAULT.
-  // - The environment variables DATABRICKS_HOST and DATABRICKS_TOKEN.
+  // the correct environment variables or .databrickscfg file field equivalents
+  // for Host and Token.
 
   // w := databricks.Must(databricks.NewWorkspaceClient())
 
@@ -262,16 +263,21 @@ func askFor(prompt string) string {
 
 By default, the Databricks SDK for Go first tries Azure client secret authentication (`AuthType: "azure-client-secret"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries Azure CLI authentication (`AuthType: "azure-cli"` in `*databricks.Config`). See [Manage service principals](https://learn.microsoft.com/azure/databricks/administration-guide/users-groups/service-principals).
 
-The Databricks SDK for Go picks up an Azure CLI token, if you've previously authenticated as an Azure user by running `az login` on your machine. See [Get Azure AD tokens for users by using the Azure CLI](https://learn.microsoft.com/azure/databricks/dev-tools/api/latest/aad/user-aad-token). If you need to authenticate as Azure Active Directory service principal, you must specify `AzureResourceID` and `AzureUseMSI`; or `AzureResourceID`, `AzureTenantID`, `AzureClientID`, and `AzureClientSecret`. See [Add a service principal to your Azure Databricks account](https://learn.microsoft.com/azure/databricks/administration-guide/users-groups/service-principals#add-sp-account). There are no `.databrickscfg` file equivalents for the following values.
+The Databricks SDK for Go picks up an Azure CLI token, if you've previously authenticated as an Azure user by running `az login` on your machine. See [Get Azure AD tokens for users by using the Azure CLI](https://learn.microsoft.com/azure/databricks/dev-tools/api/latest/aad/user-aad-token). 
 
-| `*databricks.Config` argument | Description | Envrionment variable |
-|-------------------------------|-------------|----------------------|
-| `AzureResourceID` | _(String)_ The Azure Resource Manager ID for the Azure Databricks workspace, which is exchanged for a Databricks host URL. |  `DATABRICKS_AZURE_RESOURCE_ID` |
-| `AzureUseMSI` | _(Boolean)_ `true` to use Azure Managed Service Identity passwordless authentication flow for service principals. _This feature is not yet implemented in the Databricks SDK for Go._ | `ARM_USE_MSI` |
-| `AzureClientSecret` | _(String)_ The Azure AD service principal's client secret. | `ARM_CLIENT_SECRET` |
-| `AzureClientID` | _(String)_ The Azure AD service principal's application ID. | `ARM_CLIENT_ID` |
-| `AzureTenantID` | _(String)_ The Azure AD service principal's tenant ID. | `ARM_TENANT_ID` |
-| `AzureEnvironment`| _(String)_ The Azure environment type (such as Public, UsGov, China, and Germany) for a specific set of API endpoints. Defaults to `PUBLIC`. | `ARM_ENVIRONMENT` |
+To authenticate as an Azure Active Directory (Azure AD) service principal, you must provide one of the following. See also [Add a service principal to your Azure Databricks account](https://learn.microsoft.com/azure/databricks/administration-guide/users-groups/service-principals#add-sp-account):
+
+- `AzureResourceID`, `AzureClientSecret`, `AzureClientID`, and `AzureTenantID`; or their environment variable or `.databrickscfg` file field equivalents.
+- `AzureResourceID` and `AzureUseMSI`; or their environment variable or `.databrickscfg` file field equivalents.
+
+| `*databricks.Config` argument | Description | Environment variable / `.databrickscfg` file field |
+|-------------------------------|-------------|----------------------------------------------------|
+| `AzureResourceID` | _(String)_ The Azure Resource Manager ID for the Azure Databricks workspace, which is exchanged for a Databricks host URL. |  `DATABRICKS_AZURE_RESOURCE_ID` / `azure_workspace_resource_id` |
+| `AzureUseMSI` | _(Boolean)_ `true` to use Azure Managed Service Identity passwordless authentication flow for service principals. _This feature is not yet implemented in the Databricks SDK for Go._ | `ARM_USE_MSI` / `azure_use_msi` |
+| `AzureClientSecret` | _(String)_ The Azure AD service principal's client secret. | `ARM_CLIENT_SECRET` / `azure_client_secret` |
+| `AzureClientID` | _(String)_ The Azure AD service principal's application ID. | `ARM_CLIENT_ID` / `azure_client_id` |
+| `AzureTenantID` | _(String)_ The Azure AD service principal's tenant ID. | `ARM_TENANT_ID` / `azure_tenant_id` |
+| `AzureEnvironment`| _(String)_ The Azure environment type (such as Public, UsGov, China, and Germany) for a specific set of API endpoints. Defaults to `PUBLIC`. | `ARM_ENVIRONMENT` / `azure_environment` |
 
 For example, to use Azure client secret authentication:
 
@@ -303,13 +309,9 @@ func main() {
   //  
   // Choose from one of the following authentication options:
   //
-  // Option 1: Uncomment the following code and then run. This
-  // assumes you have already set the following environment variables:
-  //
-  // - DATABRICKS_AZURE_RESOURCE_ID
-  // - ARM_TENANT_ID
-  // - ARM_CLIENT_ID
-  // - ARM_CLIENT_SECRET
+  // Option 1: Uncomment the following code and then run. This assumes you have already set
+  // the correct environment variables or .databrickscfg file field equivalents for
+  // AzureResourceID, AzureTenantID, AzureClientID, and AzureClientSecret.
 
   // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{AuthType: "azure-client-secret"}))
 
@@ -357,12 +359,17 @@ func askFor(prompt string) string {
 
 By default, the Databricks SDK for Go first tries Google Cloud Platform (GCP) ID authentication (`AuthType: "google-id"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries GCP credentials authentication (`AuthType: "google-credentials"` in `*databricks.Config`).
 
-The Databricks SDK for Go picks up an OAuth token in the scope of the Google Default Application Credentials (DAC) flow. This means that if you have run `gcloud auth application-default login` on your development machine, or launch the application on the compute, that is allowed to impersonate the Google Cloud service account specified in `GoogleServiceAccount`. Authentication should then work out of the box. See [Creating and managing service accounts](https://cloud.google.com/iam/docs/creating-managing-service-accounts). There are no `.databrickscfg` file equivalents for the following values.
+The Databricks SDK for Go picks up an OAuth token in the scope of the Google Default Application Credentials (DAC) flow. This means that if you have run `gcloud auth application-default login` on your development machine, or launch the application on the compute, that is allowed to impersonate the Google Cloud service account specified in `GoogleServiceAccount`. Authentication should then work out of the box. See [Creating and managing service accounts](https://cloud.google.com/iam/docs/creating-managing-service-accounts).
 
-| `*databricks.Config` argument | Description | Envrionment variable |
-|-------------------------------|-------------|----------------------|
-| `GoogleServiceAccount`| _(String)_ The Google Cloud Platform (GCP) service account e-mail used for impersonation in the Default Application Credentials Flow that does not require a password. | `DATABRICKS_GOOGLE_SERVICE_ACCOUNT` |
-| `GoogleCredentials`| _(String)_ GCP Service Account Credentials JSON or the location of these credentials on the local filesystem. | `GOOGLE_CREDENTIALS` |
+To authenticate as a Google Cloud service account, you must provide one of the following:
+
+- `Host` and `GoogleServiceAccount`; or their environment variable or `.databrickscfg` file field equivalents.
+- `Host` and `GoogleCredentials`; or their environment variable or `.databrickscfg` file field equivalents.
+
+| `*databricks.Config` argument | Description | Environment variable / `.databrickscfg` file field |
+|-------------------------------|-------------|----------------------------------------------------|
+| `GoogleServiceAccount`| _(String)_ The Google Cloud Platform (GCP) service account e-mail used for impersonation in the Default Application Credentials Flow that does not require a password. | `DATABRICKS_GOOGLE_SERVICE_ACCOUNT` / `google_service_account` |
+| `GoogleCredentials`| _(String)_ GCP Service Account Credentials JSON or the location of these credentials on the local filesystem. | `GOOGLE_CREDENTIALS` / `google_credentials` |
 
 For example, to use GCP ID authentication:
 
@@ -394,9 +401,9 @@ func main() {
   // 
   // Choose from one of the following authentication options:
   //
-  // Option 1: Uncomment the following code and then run. This
-  // assumes you have already set the environment variables
-  // DATABRICKS_HOST and GOOGLE_SERVICE_ACCOUNT.
+  // Option 1: Uncomment the following code and then run. This assumes you have already set
+  // the correct environment variables or .databrickscfg file field equivalents for 
+  // Host and GoogleServiceAccount.
 
   // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{AuthType: "google-id"}))
 
@@ -439,7 +446,7 @@ func askFor(prompt string) string {
 
 For [Databricks native authentication](#databricks-native-authentication), you can override the default behavior in `*databricks.Config` for using `.databrickscfg` as follows:
 
-| `*databricks.Config` argument | Description | Envrionment variable |
+| `*databricks.Config` argument | Description | Environment variable |
 |-------------------------------|-------------|----------------------|
 | `Profile` | _(String)_ A connection profile specified within `.databrickscfg` to use instead of `DEFAULT`. | `DATABRICKS_CONFIG_PROFILE` |
 | `ConfigFile` | _(String)_ A non-default location of the Databricks CLI credentials file. | `DATABRICKS_CONFIG_FILE` |
@@ -487,11 +494,11 @@ func main() {
 
 For all authentication methods, you can override the default behavior in `*databricks.Config` as follows:
 
-| `*databricks.Config` argument | Description | Envrionment variable |
+| `*databricks.Config` argument | Description | Environment variable |
 |-------------------------------|-------------|----------------------|
-| `AuthType` | _(String)_ When multiple auth attributes are available in the environment, use the auth type specified by this argument. This argument also holds the currently selected auth. | (None) |
-| `HTTPTimeoutSeconds` | _(Integer)_ Number of seconds for HTTP timeout. Default is _60_. | (None) |
-| `RetryTimeoutSeconds`| _(Integer)_ Number of seconds to keep retrying HTTP requests. Default is _300 (5 minutes)_. | (None) |
+| `AuthType` | _(String)_ When multiple auth attributes are available in the environment, use the auth type specified by this argument. This argument also holds the currently selected auth. | _(None)_ |
+| `HTTPTimeoutSeconds` | _(Integer)_ Number of seconds for HTTP timeout. Default is _60_. | _(None)_ |
+| `RetryTimeoutSeconds`| _(Integer)_ Number of seconds to keep retrying HTTP requests. Default is _300 (5 minutes)_. | _(None)_ |
 | `DebugTruncateBytes` | _(Integer)_ Truncate JSON fields in debug logs above this limit. Default is 96. | `DATABRICKS_DEBUG_TRUNCATE_BYTES` |
 | `DebugHeaders` | _(Boolean)_ `true` to debug HTTP headers of requests made by the application. Default is `false`, as headers contain sensitive data, such as access tokens. | `DATABRICKS_DEBUG_HEADERS` |
 | `RateLimit` | _(Integer)_ Maximum number of requests per second made to Databricks REST API. | `DATABRICKS_RATE_LIMIT` |
