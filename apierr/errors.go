@@ -95,7 +95,6 @@ func NotFound(message string) APIError {
 
 // CheckForRetry inspects HTTP errors from the Databricks API for known transient errors on Workspace creation
 func CheckForRetry(ctx context.Context, resp *http.Response, err error) (bool, error) {
-	// TODO: port baseRetryPolicy from vendor/github.com/hashicorp/go-retryablehttp/client.go
 	if ue, ok := err.(*url.Error); ok {
 		apiError := APIError{
 			ErrorCode:  "IO_ERROR",
