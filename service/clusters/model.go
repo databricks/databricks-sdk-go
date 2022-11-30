@@ -46,9 +46,11 @@ type AutoScale struct {
 
 type AwsAttributes struct {
 	// Availability type used for all subsequent nodes past the
-	// `first_on_demand` ones. Note: If `first_on_demand` is zero, this
-	// availability type will be used for the entire cluster.
-	Availability AwsAttributesAvailability `json:"availability,omitempty"`
+	// `first_on_demand` ones.
+	//
+	// Note: If `first_on_demand` is zero, this availability type will be used
+	// for the entire cluster.
+	Availability AwsAvailability `json:"availability,omitempty"`
 	// The number of volumes launched for each instance. Users can choose up to
 	// 10 volumes. This feature is only enabled for supported node types. Legacy
 	// node types cannot specify custom EBS volumes. For node types with no
@@ -75,7 +77,7 @@ type AwsAttributes struct {
 	// <needs content added>
 	EbsVolumeThroughput int `json:"ebs_volume_throughput,omitempty"`
 	// The type of EBS volumes that will be launched with this cluster.
-	EbsVolumeType AwsAttributesEbsVolumeType `json:"ebs_volume_type,omitempty"`
+	EbsVolumeType EbsVolumeType `json:"ebs_volume_type,omitempty"`
 	// The first `first_on_demand` nodes of the cluster will be placed on
 	// on-demand instances. If this value is greater than 0, the cluster driver
 	// node in particular will be placed on an on-demand instance. If this value
@@ -126,29 +128,24 @@ type AwsAttributes struct {
 }
 
 // Availability type used for all subsequent nodes past the `first_on_demand`
-// ones. Note: If `first_on_demand` is zero, this availability type will be used
-// for the entire cluster.
-type AwsAttributesAvailability string
+// ones.
+//
+// Note: If `first_on_demand` is zero, this availability type will be used for
+// the entire cluster.
+type AwsAvailability string
 
-const AwsAttributesAvailabilityOnDemand AwsAttributesAvailability = `ON_DEMAND`
+const AwsAvailabilityOnDemand AwsAvailability = `ON_DEMAND`
 
-const AwsAttributesAvailabilitySpot AwsAttributesAvailability = `SPOT`
+const AwsAvailabilitySpot AwsAvailability = `SPOT`
 
-const AwsAttributesAvailabilitySpotWithFallback AwsAttributesAvailability = `SPOT_WITH_FALLBACK`
-
-// The type of EBS volumes that will be launched with this cluster.
-type AwsAttributesEbsVolumeType string
-
-const AwsAttributesEbsVolumeTypeGeneralPurposeSsd AwsAttributesEbsVolumeType = `GENERAL_PURPOSE_SSD`
-
-const AwsAttributesEbsVolumeTypeThroughputOptimizedHdd AwsAttributesEbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
+const AwsAvailabilitySpotWithFallback AwsAvailability = `SPOT_WITH_FALLBACK`
 
 type AzureAttributes struct {
 	// Availability type used for all subsequent nodes past the
 	// `first_on_demand` ones. Note: If `first_on_demand` is zero (which only
 	// happens on pool clusters), this availability type will be used for the
 	// entire cluster.
-	Availability AzureAttributesAvailability `json:"availability,omitempty"`
+	Availability AzureAvailability `json:"availability,omitempty"`
 	// The first `first_on_demand` nodes of the cluster will be placed on
 	// on-demand instances. This value should be greater than 0, to make sure
 	// the cluster driver node is placed on an on-demand instance. If this value
@@ -172,13 +169,13 @@ type AzureAttributes struct {
 // Availability type used for all subsequent nodes past the `first_on_demand`
 // ones. Note: If `first_on_demand` is zero (which only happens on pool
 // clusters), this availability type will be used for the entire cluster.
-type AzureAttributesAvailability string
+type AzureAvailability string
 
-const AzureAttributesAvailabilityOnDemandAzure AzureAttributesAvailability = `ON_DEMAND_AZURE`
+const AzureAvailabilityOnDemandAzure AzureAvailability = `ON_DEMAND_AZURE`
 
-const AzureAttributesAvailabilitySpotAzure AzureAttributesAvailability = `SPOT_AZURE`
+const AzureAvailabilitySpotAzure AzureAvailability = `SPOT_AZURE`
 
-const AzureAttributesAvailabilitySpotWithFallbackAzure AzureAttributesAvailability = `SPOT_WITH_FALLBACK_AZURE`
+const AzureAvailabilitySpotWithFallbackAzure AzureAvailability = `SPOT_WITH_FALLBACK_AZURE`
 
 type ChangeClusterOwner struct {
 	// <needs content added>
@@ -230,7 +227,7 @@ type ClusterAttributes struct {
 	// Determines whether the cluster was created by a user through the UI,
 	// created by the Databricks Jobs Scheduler, or through an API request. This
 	// is the same as cluster_creator, but read only.
-	ClusterSource ClusterAttributesClusterSource `json:"cluster_source,omitempty"`
+	ClusterSource ClusterSource `json:"cluster_source,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -276,7 +273,7 @@ type ClusterAttributes struct {
 	PolicyId string `json:"policy_id,omitempty"`
 	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 	// unspecified, the runtime engine is inferred from spark_version.
-	RuntimeEngine ClusterAttributesRuntimeEngine `json:"runtime_engine,omitempty"`
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
@@ -309,35 +306,6 @@ type ClusterAttributes struct {
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 }
 
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-type ClusterAttributesClusterSource string
-
-const ClusterAttributesClusterSourceApi ClusterAttributesClusterSource = `API`
-
-const ClusterAttributesClusterSourceJob ClusterAttributesClusterSource = `JOB`
-
-const ClusterAttributesClusterSourceModels ClusterAttributesClusterSource = `MODELS`
-
-const ClusterAttributesClusterSourcePipeline ClusterAttributesClusterSource = `PIPELINE`
-
-const ClusterAttributesClusterSourcePipelineMaintenance ClusterAttributesClusterSource = `PIPELINE_MAINTENANCE`
-
-const ClusterAttributesClusterSourceSql ClusterAttributesClusterSource = `SQL`
-
-const ClusterAttributesClusterSourceUi ClusterAttributesClusterSource = `UI`
-
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-type ClusterAttributesRuntimeEngine string
-
-const ClusterAttributesRuntimeEngineNull ClusterAttributesRuntimeEngine = `NULL`
-
-const ClusterAttributesRuntimeEnginePhoton ClusterAttributesRuntimeEngine = `PHOTON`
-
-const ClusterAttributesRuntimeEngineStandard ClusterAttributesRuntimeEngine = `STANDARD`
-
 type ClusterEvent struct {
 	// <needs content added>
 	ClusterId string `json:"cluster_id"`
@@ -349,62 +317,9 @@ type ClusterEvent struct {
 	// milliseconds since the Unix epoch. If not provided, this will be assigned
 	// by the Timeline service.
 	Timestamp int64 `json:"timestamp,omitempty"`
-	// <needs content added>
-	Type ClusterEventType `json:"type,omitempty"`
+
+	Type EventType `json:"type,omitempty"`
 }
-
-// <needs content added>
-type ClusterEventType string
-
-const ClusterEventTypeAutoscalingStatsReport ClusterEventType = `AUTOSCALING_STATS_REPORT`
-
-const ClusterEventTypeCreating ClusterEventType = `CREATING`
-
-const ClusterEventTypeDbfsDown ClusterEventType = `DBFS_DOWN`
-
-const ClusterEventTypeDidNotExpandDisk ClusterEventType = `DID_NOT_EXPAND_DISK`
-
-const ClusterEventTypeDriverHealthy ClusterEventType = `DRIVER_HEALTHY`
-
-const ClusterEventTypeDriverNotResponding ClusterEventType = `DRIVER_NOT_RESPONDING`
-
-const ClusterEventTypeDriverUnavailable ClusterEventType = `DRIVER_UNAVAILABLE`
-
-const ClusterEventTypeEdited ClusterEventType = `EDITED`
-
-const ClusterEventTypeExpandedDisk ClusterEventType = `EXPANDED_DISK`
-
-const ClusterEventTypeFailedToExpandDisk ClusterEventType = `FAILED_TO_EXPAND_DISK`
-
-const ClusterEventTypeInitScriptsFinished ClusterEventType = `INIT_SCRIPTS_FINISHED`
-
-const ClusterEventTypeInitScriptsStarted ClusterEventType = `INIT_SCRIPTS_STARTED`
-
-const ClusterEventTypeMetastoreDown ClusterEventType = `METASTORE_DOWN`
-
-const ClusterEventTypeNodeBlacklisted ClusterEventType = `NODE_BLACKLISTED`
-
-const ClusterEventTypeNodeExcludedDecommissioned ClusterEventType = `NODE_EXCLUDED_DECOMMISSIONED`
-
-const ClusterEventTypeNodesLost ClusterEventType = `NODES_LOST`
-
-const ClusterEventTypePinned ClusterEventType = `PINNED`
-
-const ClusterEventTypeResizing ClusterEventType = `RESIZING`
-
-const ClusterEventTypeRestarting ClusterEventType = `RESTARTING`
-
-const ClusterEventTypeRunning ClusterEventType = `RUNNING`
-
-const ClusterEventTypeSparkException ClusterEventType = `SPARK_EXCEPTION`
-
-const ClusterEventTypeStarting ClusterEventType = `STARTING`
-
-const ClusterEventTypeTerminating ClusterEventType = `TERMINATING`
-
-const ClusterEventTypeUnpinned ClusterEventType = `UNPINNED`
-
-const ClusterEventTypeUpsizeCompleted ClusterEventType = `UPSIZE_COMPLETED`
 
 type ClusterInfo struct {
 	// Parameters needed in order to automatically scale clusters up and down
@@ -447,7 +362,7 @@ type ClusterInfo struct {
 	// Determines whether the cluster was created by a user through the UI,
 	// created by the Databricks Jobs Scheduler, or through an API request. This
 	// is the same as cluster_creator, but read only.
-	ClusterSource ClusterInfoClusterSource `json:"cluster_source,omitempty"`
+	ClusterSource ClusterSource `json:"cluster_source,omitempty"`
 	// Creator user name. The field won't be included in the response if the
 	// user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
@@ -536,7 +451,7 @@ type ClusterInfo struct {
 	PolicyId string `json:"policy_id,omitempty"`
 	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 	// unspecified, the runtime engine is inferred from spark_version.
-	RuntimeEngine ClusterInfoRuntimeEngine `json:"runtime_engine,omitempty"`
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// Single user name if data_security_mode is `SINGLE_USER`
 	SingleUserName string `json:"single_user_name,omitempty"`
 	// An object containing a set of optional, user-specified Spark
@@ -587,35 +502,6 @@ type ClusterInfo struct {
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 }
 
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-type ClusterInfoClusterSource string
-
-const ClusterInfoClusterSourceApi ClusterInfoClusterSource = `API`
-
-const ClusterInfoClusterSourceJob ClusterInfoClusterSource = `JOB`
-
-const ClusterInfoClusterSourceModels ClusterInfoClusterSource = `MODELS`
-
-const ClusterInfoClusterSourcePipeline ClusterInfoClusterSource = `PIPELINE`
-
-const ClusterInfoClusterSourcePipelineMaintenance ClusterInfoClusterSource = `PIPELINE_MAINTENANCE`
-
-const ClusterInfoClusterSourceSql ClusterInfoClusterSource = `SQL`
-
-const ClusterInfoClusterSourceUi ClusterInfoClusterSource = `UI`
-
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-type ClusterInfoRuntimeEngine string
-
-const ClusterInfoRuntimeEngineNull ClusterInfoRuntimeEngine = `NULL`
-
-const ClusterInfoRuntimeEnginePhoton ClusterInfoRuntimeEngine = `PHOTON`
-
-const ClusterInfoRuntimeEngineStandard ClusterInfoRuntimeEngine = `STANDARD`
-
 type ClusterLogConf struct {
 	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
 	// "dbfs:/home/cluster_log" } }`
@@ -645,6 +531,25 @@ type ClusterSize struct {
 	// increase from 5 to 10 as the new nodes are provisioned.
 	NumWorkers int `json:"num_workers,omitempty"`
 }
+
+// Determines whether the cluster was created by a user through the UI, created
+// by the Databricks Jobs Scheduler, or through an API request. This is the same
+// as cluster_creator, but read only.
+type ClusterSource string
+
+const ClusterSourceApi ClusterSource = `API`
+
+const ClusterSourceJob ClusterSource = `JOB`
+
+const ClusterSourceModels ClusterSource = `MODELS`
+
+const ClusterSourcePipeline ClusterSource = `PIPELINE`
+
+const ClusterSourcePipelineMaintenance ClusterSource = `PIPELINE_MAINTENANCE`
+
+const ClusterSourceSql ClusterSource = `SQL`
+
+const ClusterSourceUi ClusterSource = `UI`
 
 type CreateCluster struct {
 	// Note: This field won't be true for webapp requests. Only API users will
@@ -679,7 +584,7 @@ type CreateCluster struct {
 	// Determines whether the cluster was created by a user through the UI,
 	// created by the Databricks Jobs Scheduler, or through an API request. This
 	// is the same as cluster_creator, but read only.
-	ClusterSource CreateClusterClusterSource `json:"cluster_source,omitempty"`
+	ClusterSource ClusterSource `json:"cluster_source,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -736,7 +641,7 @@ type CreateCluster struct {
 	PolicyId string `json:"policy_id,omitempty"`
 	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 	// unspecified, the runtime engine is inferred from spark_version.
-	RuntimeEngine CreateClusterRuntimeEngine `json:"runtime_engine,omitempty"`
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
@@ -769,38 +674,9 @@ type CreateCluster struct {
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 }
 
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-type CreateClusterClusterSource string
-
-const CreateClusterClusterSourceApi CreateClusterClusterSource = `API`
-
-const CreateClusterClusterSourceJob CreateClusterClusterSource = `JOB`
-
-const CreateClusterClusterSourceModels CreateClusterClusterSource = `MODELS`
-
-const CreateClusterClusterSourcePipeline CreateClusterClusterSource = `PIPELINE`
-
-const CreateClusterClusterSourcePipelineMaintenance CreateClusterClusterSource = `PIPELINE_MAINTENANCE`
-
-const CreateClusterClusterSourceSql CreateClusterClusterSource = `SQL`
-
-const CreateClusterClusterSourceUi CreateClusterClusterSource = `UI`
-
 type CreateClusterResponse struct {
 	ClusterId string `json:"cluster_id,omitempty"`
 }
-
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-type CreateClusterRuntimeEngine string
-
-const CreateClusterRuntimeEngineNull CreateClusterRuntimeEngine = `NULL`
-
-const CreateClusterRuntimeEnginePhoton CreateClusterRuntimeEngine = `PHOTON`
-
-const CreateClusterRuntimeEngineStandard CreateClusterRuntimeEngine = `STANDARD`
 
 type DataPlaneEventDetails struct {
 	// <needs content added>
@@ -859,6 +735,13 @@ type DeleteCluster struct {
 	ClusterId string `json:"cluster_id"`
 }
 
+// The type of EBS volumes that will be launched with this cluster.
+type EbsVolumeType string
+
+const EbsVolumeTypeGeneralPurposeSsd EbsVolumeType = `GENERAL_PURPOSE_SSD`
+
+const EbsVolumeTypeThroughputOptimizedHdd EbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
+
 type EditCluster struct {
 	// Note: This field won't be true for webapp requests. Only API users will
 	// check this field.
@@ -894,7 +777,7 @@ type EditCluster struct {
 	// Determines whether the cluster was created by a user through the UI,
 	// created by the Databricks Jobs Scheduler, or through an API request. This
 	// is the same as cluster_creator, but read only.
-	ClusterSource EditClusterClusterSource `json:"cluster_source,omitempty"`
+	ClusterSource ClusterSource `json:"cluster_source,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -951,7 +834,7 @@ type EditCluster struct {
 	PolicyId string `json:"policy_id,omitempty"`
 	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 	// unspecified, the runtime engine is inferred from spark_version.
-	RuntimeEngine EditClusterRuntimeEngine `json:"runtime_engine,omitempty"`
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
@@ -987,35 +870,6 @@ type EditCluster struct {
 	// <needs content added>
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 }
-
-// Determines whether the cluster was created by a user through the UI, created
-// by the Databricks Jobs Scheduler, or through an API request. This is the same
-// as cluster_creator, but read only.
-type EditClusterClusterSource string
-
-const EditClusterClusterSourceApi EditClusterClusterSource = `API`
-
-const EditClusterClusterSourceJob EditClusterClusterSource = `JOB`
-
-const EditClusterClusterSourceModels EditClusterClusterSource = `MODELS`
-
-const EditClusterClusterSourcePipeline EditClusterClusterSource = `PIPELINE`
-
-const EditClusterClusterSourcePipelineMaintenance EditClusterClusterSource = `PIPELINE_MAINTENANCE`
-
-const EditClusterClusterSourceSql EditClusterClusterSource = `SQL`
-
-const EditClusterClusterSourceUi EditClusterClusterSource = `UI`
-
-// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-// unspecified, the runtime engine is inferred from spark_version.
-type EditClusterRuntimeEngine string
-
-const EditClusterRuntimeEngineNull EditClusterRuntimeEngine = `NULL`
-
-const EditClusterRuntimeEnginePhoton EditClusterRuntimeEngine = `PHOTON`
-
-const EditClusterRuntimeEngineStandard EditClusterRuntimeEngine = `STANDARD`
 
 type EventDetails struct {
 	// * For created clusters, the attributes of the cluster. * For edited
@@ -1076,11 +930,63 @@ const EventDetailsCauseReplaceBadNodes EventDetailsCause = `REPLACE_BAD_NODES`
 
 const EventDetailsCauseUserRequest EventDetailsCause = `USER_REQUEST`
 
+type EventType string
+
+const EventTypeAutoscalingStatsReport EventType = `AUTOSCALING_STATS_REPORT`
+
+const EventTypeCreating EventType = `CREATING`
+
+const EventTypeDbfsDown EventType = `DBFS_DOWN`
+
+const EventTypeDidNotExpandDisk EventType = `DID_NOT_EXPAND_DISK`
+
+const EventTypeDriverHealthy EventType = `DRIVER_HEALTHY`
+
+const EventTypeDriverNotResponding EventType = `DRIVER_NOT_RESPONDING`
+
+const EventTypeDriverUnavailable EventType = `DRIVER_UNAVAILABLE`
+
+const EventTypeEdited EventType = `EDITED`
+
+const EventTypeExpandedDisk EventType = `EXPANDED_DISK`
+
+const EventTypeFailedToExpandDisk EventType = `FAILED_TO_EXPAND_DISK`
+
+const EventTypeInitScriptsFinished EventType = `INIT_SCRIPTS_FINISHED`
+
+const EventTypeInitScriptsStarted EventType = `INIT_SCRIPTS_STARTED`
+
+const EventTypeMetastoreDown EventType = `METASTORE_DOWN`
+
+const EventTypeNodeBlacklisted EventType = `NODE_BLACKLISTED`
+
+const EventTypeNodeExcludedDecommissioned EventType = `NODE_EXCLUDED_DECOMMISSIONED`
+
+const EventTypeNodesLost EventType = `NODES_LOST`
+
+const EventTypePinned EventType = `PINNED`
+
+const EventTypeResizing EventType = `RESIZING`
+
+const EventTypeRestarting EventType = `RESTARTING`
+
+const EventTypeRunning EventType = `RUNNING`
+
+const EventTypeSparkException EventType = `SPARK_EXCEPTION`
+
+const EventTypeStarting EventType = `STARTING`
+
+const EventTypeTerminating EventType = `TERMINATING`
+
+const EventTypeUnpinned EventType = `UNPINNED`
+
+const EventTypeUpsizeCompleted EventType = `UPSIZE_COMPLETED`
+
 type GcpAttributes struct {
 	// This field determines whether the spark executors will be scheduled to
 	// run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback
 	// to on-demand VMs if the former is unavailable.
-	Availability GcpAttributesAvailability `json:"availability,omitempty"`
+	Availability GcpAvailability `json:"availability,omitempty"`
 	// boot disk size in GB
 	BootDiskSize int `json:"boot_disk_size,omitempty"`
 	// If provided, the cluster will impersonate the google service account when
@@ -1093,13 +999,13 @@ type GcpAttributes struct {
 // This field determines whether the spark executors will be scheduled to run on
 // preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to
 // on-demand VMs if the former is unavailable.
-type GcpAttributesAvailability string
+type GcpAvailability string
 
-const GcpAttributesAvailabilityOnDemandGcp GcpAttributesAvailability = `ON_DEMAND_GCP`
+const GcpAvailabilityOnDemandGcp GcpAvailability = `ON_DEMAND_GCP`
 
-const GcpAttributesAvailabilityPreemptibleGcp GcpAttributesAvailability = `PREEMPTIBLE_GCP`
+const GcpAvailabilityPreemptibleGcp GcpAvailability = `PREEMPTIBLE_GCP`
 
-const GcpAttributesAvailabilityPreemptibleWithFallbackGcp GcpAttributesAvailability = `PREEMPTIBLE_WITH_FALLBACK_GCP`
+const GcpAvailabilityPreemptibleWithFallbackGcp GcpAvailability = `PREEMPTIBLE_WITH_FALLBACK_GCP`
 
 // Get cluster info
 type Get struct {
@@ -1115,7 +1021,7 @@ type GetEvents struct {
 	EndTime int64 `json:"end_time,omitempty"`
 	// An optional set of event types to filter on. If empty, all event types
 	// are returned.
-	EventTypes []GetEventsEventTypesItem `json:"event_types,omitempty"`
+	EventTypes []EventType `json:"event_types,omitempty"`
 	// The maximum number of events to include in a page of events. Defaults to
 	// 50, and maximum allowed value is 500.
 	Limit int64 `json:"limit,omitempty"`
@@ -1129,58 +1035,6 @@ type GetEvents struct {
 	// from the beginning of time.
 	StartTime int64 `json:"start_time,omitempty"`
 }
-
-type GetEventsEventTypesItem string
-
-const GetEventsEventTypesItemAutoscalingStatsReport GetEventsEventTypesItem = `AUTOSCALING_STATS_REPORT`
-
-const GetEventsEventTypesItemCreating GetEventsEventTypesItem = `CREATING`
-
-const GetEventsEventTypesItemDbfsDown GetEventsEventTypesItem = `DBFS_DOWN`
-
-const GetEventsEventTypesItemDidNotExpandDisk GetEventsEventTypesItem = `DID_NOT_EXPAND_DISK`
-
-const GetEventsEventTypesItemDriverHealthy GetEventsEventTypesItem = `DRIVER_HEALTHY`
-
-const GetEventsEventTypesItemDriverNotResponding GetEventsEventTypesItem = `DRIVER_NOT_RESPONDING`
-
-const GetEventsEventTypesItemDriverUnavailable GetEventsEventTypesItem = `DRIVER_UNAVAILABLE`
-
-const GetEventsEventTypesItemEdited GetEventsEventTypesItem = `EDITED`
-
-const GetEventsEventTypesItemExpandedDisk GetEventsEventTypesItem = `EXPANDED_DISK`
-
-const GetEventsEventTypesItemFailedToExpandDisk GetEventsEventTypesItem = `FAILED_TO_EXPAND_DISK`
-
-const GetEventsEventTypesItemInitScriptsFinished GetEventsEventTypesItem = `INIT_SCRIPTS_FINISHED`
-
-const GetEventsEventTypesItemInitScriptsStarted GetEventsEventTypesItem = `INIT_SCRIPTS_STARTED`
-
-const GetEventsEventTypesItemMetastoreDown GetEventsEventTypesItem = `METASTORE_DOWN`
-
-const GetEventsEventTypesItemNodeBlacklisted GetEventsEventTypesItem = `NODE_BLACKLISTED`
-
-const GetEventsEventTypesItemNodeExcludedDecommissioned GetEventsEventTypesItem = `NODE_EXCLUDED_DECOMMISSIONED`
-
-const GetEventsEventTypesItemNodesLost GetEventsEventTypesItem = `NODES_LOST`
-
-const GetEventsEventTypesItemPinned GetEventsEventTypesItem = `PINNED`
-
-const GetEventsEventTypesItemResizing GetEventsEventTypesItem = `RESIZING`
-
-const GetEventsEventTypesItemRestarting GetEventsEventTypesItem = `RESTARTING`
-
-const GetEventsEventTypesItemRunning GetEventsEventTypesItem = `RUNNING`
-
-const GetEventsEventTypesItemSparkException GetEventsEventTypesItem = `SPARK_EXCEPTION`
-
-const GetEventsEventTypesItemStarting GetEventsEventTypesItem = `STARTING`
-
-const GetEventsEventTypesItemTerminating GetEventsEventTypesItem = `TERMINATING`
-
-const GetEventsEventTypesItemUnpinned GetEventsEventTypesItem = `UNPINNED`
-
-const GetEventsEventTypesItemUpsizeCompleted GetEventsEventTypesItem = `UPSIZE_COMPLETED`
 
 // The order to list events in; either "ASC" or "DESC". Defaults to "DESC".
 type GetEventsOrder string
@@ -1373,6 +1227,16 @@ type RestartCluster struct {
 	// <needs content added>
 	RestartUser string `json:"restart_user,omitempty"`
 }
+
+// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
+// unspecified, the runtime engine is inferred from spark_version.
+type RuntimeEngine string
+
+const RuntimeEngineNull RuntimeEngine = `NULL`
+
+const RuntimeEnginePhoton RuntimeEngine = `PHOTON`
+
+const RuntimeEngineStandard RuntimeEngine = `STANDARD`
 
 type S3StorageInfo struct {
 	// (Optional) Set canned access control list for the logs, e.g.
