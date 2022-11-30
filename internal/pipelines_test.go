@@ -42,6 +42,7 @@ func TestAccPipelines(t *testing.T) {
 		},
 	}
 
+	// TODO: OpenAPI: normalize CRUD for operationIds
 	created, err := w.Pipelines.CreatePipeline(ctx, pipelines.CreatePipeline{
 		Continuous: false,
 		Name:       RandomName("go-sdk-"),
@@ -60,7 +61,7 @@ func TestAccPipelines(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	pipeline, err := w.Pipelines.GetPipelineByPipelineId(ctx, created.PipelineId)
+	byId, err := w.Pipelines.GetPipelineByPipelineId(ctx, created.PipelineId)
 	require.NoError(t, err)
 
 	all, err := w.Pipelines.ListPipelinesAll(ctx, pipelines.ListPipelines{})
@@ -69,11 +70,11 @@ func TestAccPipelines(t *testing.T) {
 	names, err := w.Pipelines.PipelineStateInfoNameToPipelineIdMap(ctx, pipelines.ListPipelines{})
 	require.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
-	assert.Equal(t, pipeline.PipelineId, names[pipeline.Name])
+	assert.Equal(t, byId.PipelineId, names[byId.Name])
 
-	byName, err := w.Pipelines.GetPipelineStateInfoByName(ctx, pipeline.Name)
+	byName, err := w.Pipelines.GetByName(ctx, byId.Name)
 	require.NoError(t, err)
-	assert.Equal(t, byName.PipelineId, pipeline.PipelineId)
+	assert.Equal(t, byName.PipelineId, byId.PipelineId)
 }
 
 // taken from Databricks Terraform Provider acceptance tests

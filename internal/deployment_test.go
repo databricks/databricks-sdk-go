@@ -27,8 +27,12 @@ func TestMwsAccStorage(t *testing.T) {
 		require.NoError(t, err)
 	}()
 
-	_, err = a.Storage.GetByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+	byId, err := a.Storage.GetByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 	require.NoError(t, err)
+
+	byName, err := a.Storage.GetByStorageConfigurationName(ctx, byId.StorageConfigurationName)
+	require.NoError(t, err)
+	assert.Equal(t, byId.StorageConfigurationId, byName.StorageConfigurationId)
 
 	configs, err := a.Storage.List(ctx)
 	require.NoError(t, err)
@@ -52,8 +56,12 @@ func TestMwsAccNetworks(t *testing.T) {
 		require.NoError(t, err)
 	}()
 
-	_, err = a.Networks.GetByNetworkId(ctx, netw.NetworkId)
+	byId, err := a.Networks.GetByNetworkId(ctx, netw.NetworkId)
 	require.NoError(t, err)
+
+	byName, err := a.Networks.GetByNetworkName(ctx, byId.NetworkName)
+	require.NoError(t, err)
+	assert.Equal(t, byId.NetworkId, byName.NetworkId)
 
 	configs, err := a.Networks.List(ctx)
 	require.NoError(t, err)
@@ -80,8 +88,12 @@ func TestMwsAccCredentials(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	_, err = a.Credentials.GetByCredentialsId(ctx, role.CredentialsId)
+	byId, err := a.Credentials.GetByCredentialsId(ctx, role.CredentialsId)
 	require.NoError(t, err)
+
+	byName, err := a.Credentials.GetByCredentialsName(ctx, byId.CredentialsName)
+	require.NoError(t, err)
+	assert.Equal(t, byId.CredentialsId, byName.CredentialsId)
 
 	configs, err := a.Credentials.List(ctx)
 	require.NoError(t, err)
@@ -108,6 +120,7 @@ func TestMwsAccEncryptionKeys(t *testing.T) {
 		require.NoError(t, err)
 	})
 
+	// TODO: OpenAPI: x-databricks-name & x-databricks-id
 	byId, err := a.EncryptionKeys.GetByCustomerManagedKeyId(ctx, created.CustomerManagedKeyId)
 	require.NoError(t, err)
 	assert.Equal(t, "MANAGED_SERVICES", byId.UseCases[0])
@@ -144,6 +157,10 @@ func TestMwsAccPrivateAccess(t *testing.T) {
 	byId, err := a.PrivateAccess.GetByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
 	require.NoError(t, err)
 
+	byName, err := a.PrivateAccess.GetByPrivateAccessSettingsName(ctx, byId.PrivateAccessSettingsName)
+	require.NoError(t, err)
+	assert.Equal(t, byId.PrivateAccessSettingsId, byName.PrivateAccessSettingsId)
+
 	all, err := a.PrivateAccess.List(ctx)
 	require.NoError(t, err)
 
@@ -171,6 +188,7 @@ func TestMwsAccVpcEndpoints(t *testing.T) {
 		require.NoError(t, err)
 	})
 
+	// TODO: OpenAPI: x-databricks-name/x-databricks-id
 	byId, err := a.VpcEndpoints.GetByVpcEndpointId(ctx, created.VpcEndpointId)
 	require.NoError(t, err)
 	assert.Equal(t, deployment.EndpointUseCaseDataplaneRelayAccess, byId.UseCase)
@@ -253,6 +271,10 @@ func TestMwsAccWorkspaces(t *testing.T) {
 
 	byId, err := a.Workspaces.GetByWorkspaceId(ctx, created.WorkspaceId)
 	require.NoError(t, err)
+
+	byName, err := a.Workspaces.GetByWorkspaceName(ctx, byId.WorkspaceName)
+	require.NoError(t, err)
+	assert.Equal(t, byId.WorkspaceId, byName.WorkspaceId)
 
 	all, err := a.Workspaces.List(ctx)
 	require.NoError(t, err)

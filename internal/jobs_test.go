@@ -123,17 +123,15 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, byId.Settings.Name, newName)
 
+	byName, err := w.Jobs.GetBySettingsName(ctx, newName)
+	require.NoError(t, err)
+	assert.Equal(t, byId.JobId, byName.JobId)
+
 	jobList, err := w.Jobs.ListAll(ctx, jobs.List{
 		ExpandTasks: false,
 	})
 	require.NoError(t, err)
-
-	names, err := w.Jobs.JobSettingsNameToJobIdMap(ctx, jobs.List{
-		ExpandTasks: false,
-	})
-	require.NoError(t, err)
-	assert.Contains(t, names, newName)
-	assert.Equal(t, len(jobList), len(names))
+	assert.True(t, len(jobList) >= 1)
 }
 
 func TestAccJobsListAllNoDuplicates(t *testing.T) {

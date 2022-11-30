@@ -28,7 +28,6 @@ func sharedRunningCluster(t *testing.T, ctx context.Context,
 	require.NoError(t, err)
 
 	switch info.State {
-	// TODO: OpenAPI: clusters.ClusterInfoStatePending -> clusters.StatePending
 	case clusters.StateRunning:
 		// noop
 	case clusters.StateTerminated:
@@ -174,6 +173,10 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	byId, err = w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 	assert.Equal(t, byId.State, clusters.StateTerminated)
+
+	byName, err := w.Clusters.GetByClusterName(ctx, byId.ClusterName)
+	require.NoError(t, err)
+	assert.Equal(t, byId.ClusterId, byName.ClusterId)
 
 	// Start cluster and wait until it's running again
 	_, err = w.Clusters.StartByClusterIdAndWait(ctx, clstr.ClusterId)

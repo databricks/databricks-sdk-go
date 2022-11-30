@@ -13,7 +13,7 @@ func TestAccTokens(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	token, err := w.Tokens.Create(ctx, tokens.CreateTokenRequest{
-		Comment:         "xyz",
+		Comment:         RandomName("go-sdk-"),
 		LifetimeSeconds: 300,
 	})
 	require.NoError(t, err)
@@ -22,9 +22,13 @@ func TestAccTokens(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	names, err := w.Tokens.PublicTokenInfoCommentToTokenIdMap(ctx)
+	all, err := w.Tokens.ListAll(ctx)
 	require.NoError(t, err)
-	assert.True(t, len(names) >= 1)
+	assert.True(t, len(all) >= 1)
+
+	byName, err := w.Tokens.GetByComment(ctx, token.TokenInfo.Comment)
+	require.NoError(t, err)
+	assert.Equal(t, token.TokenInfo.TokenId, byName.TokenId)
 
 	wscInner := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		Host:     w.Config.Host,
