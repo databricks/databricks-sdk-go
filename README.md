@@ -13,6 +13,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 - [Paginated responses](#paginated-responses)
 - [Node type and Databricks Runtime selectors](#node-type-and-databricks-runtime-selectors)
 - [io.Reader integration for DBFS](#io-reader-integration-for-dbfs)
+- [Interface stability](#interface-stability)
 
 <a id="getting-started"/>
 
@@ -671,6 +672,25 @@ for _, repo := range all {
 }
 ```
 
+<a id="get-by-name"/>
+
+### `GetByName` utility methods
+
+**Stability:** [Experimental](https://docs.databricks.com/release-notes/release-types.html)
+
+On the platform side, most of the Databricks APIs could be retrieved primarily by their identifiers. In some common workflows, it's easier to reason about workspace objects by their names. To simplify development experience and speed-up proof-of-concepts, the Databricks SDK for Go generates code for `GetByName` client-side utilities. Please keep in mind, that some Databricks APIs don't enforce unique names on objects and these generated helpers return an error whenever duplicate name is detected.
+
+```go
+repo, err := w.Repos.GetByPath(ctx, path)
+if err != nil {
+    return err
+}
+return w.Repos.Update(ctx, repos.UpdateRepo{
+    RepoId: repo.Id,
+    Branch: tag,
+})
+```
+
 <a id="node-type-and-databricks-runtime-selectors"/>
 
 ## Node type and Databricks Runtime selectors
@@ -735,6 +755,8 @@ download, _ := os.Create("/path/to/local")
 remote, _ := w.Dbfs.Open(ctx, "/path/to/remote")
 _ = io.Copy(download, remote)
 ```
+
+<a id="interface-stability"/>
 
 ## Interface stability
 

@@ -11,9 +11,10 @@ import (
 func TestAccSqlWarehouses(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
+	// TODO: OpenAPI: CRUD operationId
 	created, err := w.Warehouses.CreateWarehouseAndWait(ctx, warehouses.CreateWarehouseRequest{
 		Name:           RandomName("go-sdk-"),
-		ClusterSize:    "2X-Small", // TODO: add enum
+		ClusterSize:    "2X-Small", // TODO: OpenAPI: add enum
 		MaxNumClusters: 1,
 		AutoStopMins:   10,
 	})
@@ -41,7 +42,7 @@ func TestAccSqlWarehouses(t *testing.T) {
 	assert.Equal(t, len(all), len(names))
 	assert.Equal(t, wh.Id, names[wh.Name])
 
-	byName, err := w.Warehouses.GetEndpointInfoByName(ctx, wh.Name)
+	byName, err := w.Warehouses.GetByName(ctx, wh.Name)
 	require.NoError(t, err)
 	assert.Equal(t, wh.Id, byName.Id)
 }

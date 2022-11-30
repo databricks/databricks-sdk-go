@@ -42,6 +42,10 @@ func TestAccUsers(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, user.DisplayName, fetch.DisplayName)
 
+	byName, err := w.Users.GetByUserName(ctx, fetch.UserName)
+	require.NoError(t, err)
+	assert.Equal(t, fetch.Id, byName.Id)
+
 	// list all users
 	allUsers, err := w.Users.ListAll(ctx, scim.ListUsersRequest{
 		Attributes: "id,userName",
@@ -80,6 +84,10 @@ func TestAccGroups(t *testing.T) {
 	fetch, err := w.Groups.GetById(ctx, group.Id)
 	require.NoError(t, err)
 	assert.Equal(t, group.DisplayName, fetch.DisplayName)
+
+	byName, err := w.Groups.GetByDisplayName(ctx, fetch.DisplayName)
+	require.NoError(t, err)
+	assert.Equal(t, fetch.Id, byName.Id)
 
 	// list all groups that start with `go-sdk-`
 	namesToIds, err := w.Groups.GroupDisplayNameToIdMap(ctx, scim.ListGroupsRequest{
@@ -126,6 +134,10 @@ func TestAccServicePrincipalsOnAWS(t *testing.T) {
 
 	byId, err := w.ServicePrincipals.GetById(ctx, created.Id)
 	require.NoError(t, err)
+
+	byName, err := w.ServicePrincipals.GetByDisplayName(ctx, byId.DisplayName)
+	require.NoError(t, err)
+	assert.Equal(t, byId.Id, byName.Id)
 
 	all, err := w.ServicePrincipals.ListAll(ctx, scim.ListServicePrincipalsRequest{})
 	require.NoError(t, err)

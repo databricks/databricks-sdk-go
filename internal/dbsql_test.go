@@ -18,6 +18,7 @@ func TestAccQueries(t *testing.T) {
 		t.Skipf("no sql warehouses found")
 	}
 
+	// TODO: OpenAPI: CRUD names for operationId
 	query, err := w.Queries.CreateQuery(ctx, dbsql.QueryPostContent{
 		Name:         RandomName("go-sdk/test/"),
 		DataSourceId: srcs[0].Id,
@@ -25,14 +26,18 @@ func TestAccQueries(t *testing.T) {
 		Query:        "SHOW TABLES",
 	})
 	require.NoError(t, err)
-
-	err = w.Queries.DeleteQueryByQueryId(ctx, query.Id)
-	require.NoError(t, err)
-
-	err = w.Queries.RestoreQuery(ctx, dbsql.RestoreQueryRequest{
-		QueryId: query.Id,
+	t.Cleanup(func() {
+		err = w.Queries.DeleteQueryByQueryId(ctx, query.Id)
+		require.NoError(t, err)
 	})
+
+	byId, err := w.Queries.GetQueryByQueryId(ctx, query.Id)
 	require.NoError(t, err)
+	assert.Equal(t, query.Query, byId.Query)
+
+	byName, err := w.Queries.GetByName(ctx, byId.Name)
+	require.NoError(t, err)
+	assert.Equal(t, byId.Id, byName.Id)
 
 	updated, err := w.Queries.UpdateQuery(ctx, dbsql.QueryPostContent{
 		QueryId:      query.Id,
@@ -42,11 +47,7 @@ func TestAccQueries(t *testing.T) {
 		Query:        "SELECT 2+2",
 	})
 	require.NoError(t, err)
-
-	loaded, err := w.Queries.GetQueryByQueryId(ctx, query.Id)
-	require.NoError(t, err)
-	assert.NotEqual(t, query.Query, loaded.Query)
-	assert.Equal(t, updated.Query, loaded.Query)
+	assert.NotEqual(t, updated.Query, byId.Query)
 }
 
 func TestAccAlerts(t *testing.T) {
@@ -67,6 +68,7 @@ func TestAccAlerts(t *testing.T) {
 	require.NoError(t, err)
 	defer w.Queries.DeleteQueryByQueryId(ctx, query.Id)
 
+	// TODO: OpenAPI: CRUD names for operationId
 	alert, err := w.Alerts.CreateAlert(ctx, dbsql.EditAlert{
 		Name:    RandomName("go-sdk-"),
 		QueryId: query.Id,
@@ -83,6 +85,10 @@ func TestAccAlerts(t *testing.T) {
 
 	byId, err := w.Alerts.GetAlertByAlertId(ctx, alert.Id)
 	require.NoError(t, err)
+
+	byName, err := w.Alerts.GetByName(ctx, byId.Name)
+	require.NoError(t, err)
+	assert.Equal(t, byId.Id, byName.Id)
 
 	all, err := w.Alerts.ListAlerts(ctx)
 	require.NoError(t, err)
@@ -127,6 +133,7 @@ func TestAccAlerts(t *testing.T) {
 func TestAccDashboards(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
+	// TODO: OpenAPI: CRUD names for operationId
 	created, err := w.Dashboards.CreateDashboard(ctx, dbsql.CreateDashboardRequest{
 		Name:                    RandomName("go-sdk-"),
 		DashboardFiltersEnabled: false,
@@ -138,6 +145,10 @@ func TestAccDashboards(t *testing.T) {
 
 	byId, err := w.Dashboards.GetDashboardByDashboardId(ctx, created.Id)
 	require.NoError(t, err)
+
+	byName, err := w.Dashboards.GetByName(ctx, byId.Name)
+	require.NoError(t, err)
+	assert.Equal(t, byId.Id, byName.Id)
 
 	all, err := w.Dashboards.ListDashboardsAll(ctx, dbsql.ListDashboardsRequest{})
 	require.NoError(t, err)

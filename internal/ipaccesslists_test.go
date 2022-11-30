@@ -29,7 +29,7 @@ func TestAccIpAccessLists(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	list, err := w.IpAccessLists.GetByIpAccessListId(ctx, created.IpAccessList.ListId)
+	byId, err := w.IpAccessLists.GetByIpAccessListId(ctx, created.IpAccessList.ListId)
 	require.NoError(t, err)
 
 	all, err := w.IpAccessLists.ListAll(ctx)
@@ -38,9 +38,9 @@ func TestAccIpAccessLists(t *testing.T) {
 	names, err := w.IpAccessLists.IpAccessListInfoLabelToListIdMap(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
-	assert.Equal(t, list.IpAccessList.ListId, names[list.IpAccessList.Label])
+	assert.Equal(t, byId.IpAccessList.ListId, names[byId.IpAccessList.Label])
 
-	byName, err := w.IpAccessLists.GetIpAccessListInfoByLabel(ctx, list.IpAccessList.Label)
+	byName, err := w.IpAccessLists.GetByLabel(ctx, byId.IpAccessList.Label)
 	require.NoError(t, err)
-	assert.Equal(t, list.IpAccessList.ListId, byName.ListId)
+	assert.Equal(t, byId.IpAccessList.ListId, byName.ListId)
 }

@@ -26,9 +26,9 @@ func TestAccClusterPolicies(t *testing.T) {
 	policy, err := w.ClusterPolicies.GetByPolicyId(ctx, created.PolicyId)
 	require.NoError(t, err)
 
-	byName, err := w.ClusterPolicies.GetPolicyByName(ctx, policy.Name)
+	byName, err := w.ClusterPolicies.GetByName(ctx, policy.Name)
 	require.NoError(t, err)
-	assert.Equal(t, policy.Name, byName.Name)
+	assert.Equal(t, policy.PolicyId, byName.PolicyId)
 
 	all, err := w.ClusterPolicies.ListAll(ctx)
 	require.NoError(t, err)

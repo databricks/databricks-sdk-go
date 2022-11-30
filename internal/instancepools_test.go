@@ -35,7 +35,7 @@ func TestAccInstancePools(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	pool, err := w.InstancePools.GetByInstancePoolId(ctx, created.InstancePoolId)
+	byId, err := w.InstancePools.GetByInstancePoolId(ctx, created.InstancePoolId)
 	require.NoError(t, err)
 
 	all, err := w.InstancePools.ListAll(ctx)
@@ -44,9 +44,9 @@ func TestAccInstancePools(t *testing.T) {
 	names, err := w.InstancePools.InstancePoolAndStatsInstancePoolNameToInstancePoolIdMap(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
-	assert.Equal(t, pool.InstancePoolId, names[pool.InstancePoolName])
+	assert.Equal(t, byId.InstancePoolId, names[byId.InstancePoolName])
 
-	byName, err := w.InstancePools.GetInstancePoolAndStatsByInstancePoolName(ctx, pool.InstancePoolName)
+	byName, err := w.InstancePools.GetByInstancePoolName(ctx, byId.InstancePoolName)
 	require.NoError(t, err)
-	assert.Equal(t, byName.InstancePoolId, pool.InstancePoolId)
+	assert.Equal(t, byName.InstancePoolId, byId.InstancePoolId)
 }

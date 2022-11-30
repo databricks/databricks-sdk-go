@@ -23,7 +23,6 @@ func TestMwsAccUsageDownload(t *testing.T) {
 }
 
 func TestMwsAccLogDelivery(t *testing.T) {
-	t.Skip("no log delivery ARNs configured yet")
 	ctx, a := accountTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
@@ -32,8 +31,7 @@ func TestMwsAccLogDelivery(t *testing.T) {
 		CredentialsName: RandomName("sdk-"),
 		AwsCredentials: deployment.AwsCredentials{
 			StsRole: &deployment.StsRole{
-				// TODO: create log delivery ARNs
-				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
+				RoleArn: GetEnvOrSkipTest(t, "TEST_LOGDELIVERY_ARN"),
 			},
 		},
 	})
@@ -71,11 +69,12 @@ func TestMwsAccLogDelivery(t *testing.T) {
 
 	all, err := a.LogDelivery.ListAll(ctx, billing.ListLogDeliveryRequest{})
 	require.NoError(t, err)
+	assert.True(t, len(all) >= 1)
 
-	names, err := a.LogDelivery.LogDeliveryConfigurationConfigNameToConfigIdMap(ctx, billing.ListLogDeliveryRequest{})
+	byName, err := a.LogDelivery.GetByConfigName(ctx, byId.LogDeliveryConfiguration.ConfigName)
 	require.NoError(t, err)
-	assert.Equal(t, len(all), len(names))
-	assert.Equal(t, created.LogDeliveryConfiguration.ConfigId, names[created.LogDeliveryConfiguration.ConfigName])
+
+	assert.Equal(t, byId.LogDeliveryConfiguration.ConfigId, byName.ConfigId)
 }
 
 func TestMwsAccBudgets(t *testing.T) {
@@ -125,8 +124,13 @@ func TestMwsAccBudgets(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotEqual(t, created.Budget.Name, byId.Budget.Name)
 
+	byName, err := a.Budgets.GetByName(ctx, byId.Budget.Name)
+	require.NoError(t, err)
+	assert.Equal(t, byId.Budget.BudgetId, byName.BudgetId)
+
 	all, err := a.Budgets.ListAll(ctx)
 	require.NoError(t, err)
+	assert.True(t, len(all) >= 1)
 
 	names, err := a.Budgets.BudgetWithStatusNameToBudgetIdMap(ctx)
 	require.NoError(t, err)

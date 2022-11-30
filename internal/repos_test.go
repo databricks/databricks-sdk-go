@@ -42,6 +42,13 @@ func TestAccRepos(t *testing.T) {
 	})
 	require.NoError(t, err)
 
+	byId, err := w.Repos.GetByRepoId(ctx, ri.Id)
+	require.NoError(t, err)
+
+	byName, err := w.Repos.GetByPath(ctx, byId.Path)
+	require.NoError(t, err)
+	assert.Equal(t, byId.Id, byName.Id)
+
 	all, err := w.Repos.ListAll(ctx, repos.List{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)

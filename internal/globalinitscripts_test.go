@@ -12,6 +12,7 @@ import (
 func TestAccGlobalInitScripts(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
+	// TODO: OpenAPI: CRUD names for operationId
 	created, err := w.GlobalInitScripts.CreateScript(ctx, globalinitscripts.GlobalInitScriptCreateRequest{
 		Name:     RandomName("go-sdk-"),
 		Script:   base64.StdEncoding.EncodeToString([]byte("echo 1")),
@@ -29,7 +30,7 @@ func TestAccGlobalInitScripts(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	script, err := w.GlobalInitScripts.GetScriptByScriptId(ctx, created.ScriptId)
+	byId, err := w.GlobalInitScripts.GetScriptByScriptId(ctx, created.ScriptId)
 	require.NoError(t, err)
 
 	all, err := w.GlobalInitScripts.ListScriptsAll(ctx)
@@ -38,9 +39,9 @@ func TestAccGlobalInitScripts(t *testing.T) {
 	names, err := w.GlobalInitScripts.GlobalInitScriptDetailsNameToScriptIdMap(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
-	assert.Equal(t, script.ScriptId, names[script.Name])
+	assert.Equal(t, byId.ScriptId, names[byId.Name])
 
-	byName, err := w.GlobalInitScripts.GetGlobalInitScriptDetailsByName(ctx, script.Name)
+	byName, err := w.GlobalInitScripts.GetByName(ctx, byId.Name)
 	require.NoError(t, err)
-	assert.Equal(t, byName.ScriptId, script.ScriptId)
+	assert.Equal(t, byName.ScriptId, byId.ScriptId)
 }
