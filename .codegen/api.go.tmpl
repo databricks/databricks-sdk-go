@@ -199,7 +199,7 @@ func (a *{{.Service.Name}}API) GetBy{{range .NamedIdMap.NamePath}}{{.PascalName}
 		return nil, fmt.Errorf("{{.GetByName.PascalName}} named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d {{.GetByName.PascalName}} named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of {{.GetByName.PascalName}} named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
