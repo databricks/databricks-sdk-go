@@ -21,32 +21,18 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 
 During the Beta period, you must clone and then reference this repository locally, as follows. After the Beta period, you will be able to download and reference the Databricks SDK for Go package by using familiar commands such as `go get` and `go install`.
 
-1. On your local development machine with Go already [installed](https://go.dev/doc/install) and a Go code [project](https://go.dev/doc/code) active, clone this repository into your existing Go code project's current working directory, by running the `git clone` command:
-
-   ```bash
-   git clone git@github.com:databricks/databricks-sdk-go.git
-   ```
-   
-   This command creates a folder named `databricks-sdk-go` within your project. This folder contains a local copy of the Databricks SDK for Go source code.
-   
-2. Create a `go.mod` file to track your Go code's dependencies by running the `go mod init` command, for example:
+1. On your local development machine with Go already [installed](https://go.dev/doc/install) and a Go code [project](https://go.dev/doc/code) active, create a `go.mod` file to track your Go code's dependencies by running the `go mod init` command, for example:
 
    ```bash
    go mod init sample
    ```
    
-3. Take a dependency on the Databricks SDK for Go package by running the `go mod edit -require` command:
+2. Take a dependency on the Databricks SDK for Go package by running the `go mod edit -require` command:
 
    ```bash
-   go mod edit -require github.com/databricks/databricks-sdk-go@v0.0.0
+   go mod edit -require github.com/databricks/databricks-sdk-go@v0.1.0
    ```
    
-4. Redirect the dependency to your locally downloaded copy of the Databricks SDK for Go by running the `go mod edit -replace` command:
-
-   ```bash
-   go mod edit -replace github.com/databricks/databricks-sdk-go@v0.0.0=./databricks-sdk-go/ 
-   ```
-
    Your `go.mod` file should now look like this:
    
    ```go
@@ -54,12 +40,12 @@ During the Beta period, you must clone and then reference this repository locall
 
    go 1.18
 
-   require github.com/databricks/databricks-sdk-go v0.0.0
+   require github.com/databricks/databricks-sdk-go v0.1.0
 
-   replace github.com/databricks/databricks-sdk-go v0.0.0 => ./databricks-sdk-go/
+   // indirect dependencies
    ```
 
-5. Within your project, create a Go code file that imports the Databricks SDK for Go. The following example, in a file named `main.go` with the following contents, simply reports the object type that represents the root directory in your Databricks workspace (in this case, `DIRECTORY`):
+3. Within your project, create a Go code file that imports the Databricks SDK for Go. The following example, in a file named `main.go` with the following contents, simply reports the object type that represents the root directory in your Databricks workspace (in this case, `DIRECTORY`):
 
    ```go
    package main
@@ -96,7 +82,7 @@ During the Beta period, you must clone and then reference this repository locall
    }
    ```
 
-6. Add any misssing module dependencies by running the `go mod tidy` command:
+4. Add any misssing module dependencies by running the `go mod tidy` command:
 
    ```bash
    go mod tidy
@@ -104,14 +90,14 @@ During the Beta period, you must clone and then reference this repository locall
    
    **Note**: If you get the error `go: warning: "all" matched no packages`, you forgot to add the preceding Go code file that imports the Databricks SDK for Go. 
    
-7. Grab copies of all packages needed to support builds and tests of packages in your `main` module, by running the `go mod vendor` command:
+5. Grab copies of all packages needed to support builds and tests of packages in your `main` module, by running the `go mod vendor` command:
 
    ```bash
    go mod vendor
    ```
 
-8. Set up Databricks authentication on your local development machine, if you have not done so already. For details, see the next section, [Authentication](#authentication).
-9. Run your Go code file, assuming a file named `main.go`, by running the `go run` command:
+6. Set up Databricks authentication on your local development machine, if you have not done so already. For details, see the next section, [Authentication](#authentication).
+7. Run your Go code file, assuming a file named `main.go`, by running the `go run` command:
 
    ```bash
    go run main.go
