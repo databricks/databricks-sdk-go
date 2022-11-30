@@ -179,7 +179,7 @@ func (a *BudgetsAPI) GetByName(ctx context.Context, name string) (*BudgetWithSta
 		return nil, fmt.Errorf("BudgetWithStatus named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d BudgetWithStatus named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of BudgetWithStatus named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -393,7 +393,7 @@ func (a *LogDeliveryAPI) GetByConfigName(ctx context.Context, name string) (*Log
 		return nil, fmt.Errorf("LogDeliveryConfiguration named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d LogDeliveryConfiguration named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of LogDeliveryConfiguration named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }

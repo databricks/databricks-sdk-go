@@ -431,7 +431,7 @@ func (a *ClustersAPI) GetByClusterName(ctx context.Context, name string) (*Clust
 		return nil, fmt.Errorf("ClusterInfo named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d ClusterInfo named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of ClusterInfo named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }

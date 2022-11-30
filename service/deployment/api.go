@@ -156,7 +156,7 @@ func (a *CredentialsAPI) GetByCredentialsName(ctx context.Context, name string) 
 		return nil, fmt.Errorf("Credential named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d Credential named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of Credential named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -487,7 +487,7 @@ func (a *NetworksAPI) GetByNetworkName(ctx context.Context, name string) (*Netwo
 		return nil, fmt.Errorf("Network named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d Network named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of Network named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -678,7 +678,7 @@ func (a *PrivateAccessAPI) GetByPrivateAccessSettingsName(ctx context.Context, n
 		return nil, fmt.Errorf("PrivateAccessSettings named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d PrivateAccessSettings named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of PrivateAccessSettings named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -849,7 +849,7 @@ func (a *StorageAPI) GetByStorageConfigurationName(ctx context.Context, name str
 		return nil, fmt.Errorf("StorageConfiguration named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d StorageConfiguration named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of StorageConfiguration named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -1302,7 +1302,7 @@ func (a *WorkspacesAPI) GetByWorkspaceName(ctx context.Context, name string) (*W
 		return nil, fmt.Errorf("Workspace named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d Workspace named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of Workspace named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }

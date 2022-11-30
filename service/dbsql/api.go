@@ -190,7 +190,7 @@ func (a *AlertsAPI) GetByName(ctx context.Context, name string) (*Alert, error) 
 		return nil, fmt.Errorf("Alert named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d Alert named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of Alert named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -405,7 +405,7 @@ func (a *DashboardsAPI) GetByName(ctx context.Context, name string) (*Dashboard,
 		return nil, fmt.Errorf("Dashboard named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d Dashboard named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of Dashboard named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -510,7 +510,7 @@ func (a *DataSourcesAPI) GetByName(ctx context.Context, name string) (*DataSourc
 		return nil, fmt.Errorf("DataSource named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d DataSource named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of DataSource named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -753,7 +753,7 @@ func (a *QueriesAPI) GetByName(ctx context.Context, name string) (*Query, error)
 		return nil, fmt.Errorf("Query named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d Query named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of Query named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }

@@ -400,7 +400,7 @@ func (a *WarehousesAPI) GetByName(ctx context.Context, name string) (*EndpointIn
 		return nil, fmt.Errorf("EndpointInfo named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d EndpointInfo named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of EndpointInfo named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }

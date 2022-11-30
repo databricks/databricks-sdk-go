@@ -40,7 +40,7 @@ func TestAccGitCredentials(t *testing.T) {
 	byId, err := w.GitCredentials.GetByCredentialId(ctx, cr.CredentialId)
 	require.NoError(t, err)
 	assert.NotEqual(t, cr.GitUsername, byId.GitUsername)
-	
+
 	byName, err := w.GitCredentials.GetByGitProvider(ctx, byId.GitProvider)
 	require.NoError(t, err)
 	assert.Equal(t, byId.GitUsername, byName.GitUsername)

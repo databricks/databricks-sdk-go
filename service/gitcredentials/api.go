@@ -145,7 +145,7 @@ func (a *GitCredentialsAPI) GetByGitProvider(ctx context.Context, name string) (
 		return nil, fmt.Errorf("CredentialInfo named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d CredentialInfo named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of CredentialInfo named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }

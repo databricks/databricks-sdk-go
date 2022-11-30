@@ -144,7 +144,7 @@ func (a *AccountGroupsAPI) GetByDisplayName(ctx context.Context, name string) (*
 		return nil, fmt.Errorf("Group named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d Group named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of Group named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -297,7 +297,7 @@ func (a *AccountServicePrincipalsAPI) GetByDisplayName(ctx context.Context, name
 		return nil, fmt.Errorf("ServicePrincipal named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d ServicePrincipal named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of ServicePrincipal named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -459,7 +459,7 @@ func (a *AccountUsersAPI) GetByUserName(ctx context.Context, name string) (*User
 		return nil, fmt.Errorf("User named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d User named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of User named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -648,7 +648,7 @@ func (a *GroupsAPI) GetByDisplayName(ctx context.Context, name string) (*Group, 
 		return nil, fmt.Errorf("Group named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d Group named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of Group named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -801,7 +801,7 @@ func (a *ServicePrincipalsAPI) GetByDisplayName(ctx context.Context, name string
 		return nil, fmt.Errorf("ServicePrincipal named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d ServicePrincipal named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of ServicePrincipal named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -963,7 +963,7 @@ func (a *UsersAPI) GetByUserName(ctx context.Context, name string) (*User, error
 		return nil, fmt.Errorf("User named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d User named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of User named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }

@@ -172,7 +172,7 @@ func (a *ClusterPoliciesAPI) GetByName(ctx context.Context, name string) (*Polic
 		return nil, fmt.Errorf("Policy named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d Policy named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of Policy named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }

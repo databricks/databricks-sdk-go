@@ -369,7 +369,7 @@ func (a *JobsAPI) GetBySettingsName(ctx context.Context, name string) (*Job, err
 		return nil, fmt.Errorf("Job named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d Job named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of Job named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }

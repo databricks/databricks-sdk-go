@@ -163,7 +163,7 @@ func (a *InstancePoolsAPI) GetByInstancePoolName(ctx context.Context, name strin
 		return nil, fmt.Errorf("InstancePoolAndStats named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d InstancePoolAndStats named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of InstancePoolAndStats named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }

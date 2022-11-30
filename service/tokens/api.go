@@ -131,7 +131,7 @@ func (a *TokensAPI) GetByComment(ctx context.Context, name string) (*PublicToken
 		return nil, fmt.Errorf("PublicTokenInfo named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d PublicTokenInfo named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of PublicTokenInfo named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
