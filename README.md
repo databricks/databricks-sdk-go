@@ -1,6 +1,6 @@
-# Databricks SDK for Go (Beta)
+# Databricks SDK for Go
 
-**Stability**: [Beta](https://docs.databricks.com/release-notes/release-types.html) (unless otherwise noted in the following sections)
+**Stability**: [Experimental](https://docs.databricks.com/release-notes/release-types.html)
 
 The Databricks SDK for Go includes functionality to accelerate development with [Go](https://go.dev) for the Databricks Lakehouse. It covers all public [Databricks REST API](https://docs.databricks.com/dev-tools/api/index.html) operations. The SDK's internal HTTP client is robust and handles failures on different levels by performing intelligent retries.
 
@@ -18,8 +18,6 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 <a id="getting-started"/>
 
 ## Getting started
-
-During the Beta period, you must clone and then reference this repository locally, as follows. After the Beta period, you will be able to download and reference the Databricks SDK for Go package by using familiar commands such as `go get` and `go install`.
 
 1. On your local development machine with Go already [installed](https://go.dev/doc/install) and a Go code [project](https://go.dev/doc/code) active, create a `go.mod` file to track your Go code's dependencies by running the `go mod init` command, for example:
 
@@ -42,7 +40,7 @@ During the Beta period, you must clone and then reference this repository locall
 
    require github.com/databricks/databricks-sdk-go v0.1.0
 
-   // indirect dependencies
+   // Indirect dependencies will go here.
    ```
 
 3. Within your project, create a Go code file that imports the Databricks SDK for Go. The following example, in a file named `main.go` with the following contents, simply reports the object type that represents the root directory in your Databricks workspace (in this case, `DIRECTORY`):
@@ -562,8 +560,6 @@ To find code examples that demonstrate how to call the Databricks SDK for Go, se
 
 ## Long-running operations
 
-**Stability:** [Experimental](https://docs.databricks.com/release-notes/release-types.html)
-
 More than 20 methods across different Databricks APIs are long-running operations for managing things like clusters, command execution, jobs, libraries, Delta Live Tables pipelines, and Databricks SQL warehouses. For example, in the Clusters API, once you create a cluster, you receive a cluster ID, and the cluster is in the `PENDING` state while Databricks takes care of provisioning virtual machines from the cloud provider in the background. But the cluster is only usable in the `RUNNING` state. Another example is the API for running a job or repairing the run: right after the run starts, the run is in the `PENDING` state, though the job is considered to be finished only when it is in the `TERMINATED` or `SKIPPED` states. And of course you. would want to know the error message when the long-running operation times out or why things fail. And sometimes you want to configure a custom timeout other than the default of 20 minutes. 
 
 To hide all of the integration-specific complexity from the end user, Databricks SDK for Go provides a high-level API for _triggering_ the long-running operations and _waiting_ for the releated entities to reach the right state or return back the error message about the problem in case of failure. All long-running operations have the `XxxAndWait` name pattern, where `Xxx` is the operation name. All these generated methods return information about the relevant entity once the operation is finished. It is possible to configure a custom timeout to `XxxAndWait` by providing a functional option argument constructed by `retries.Timeout[Zzz](time.Duration)` function, where `Zzz` is the result type of `XxxAndWait`.
@@ -590,8 +586,6 @@ clusterInfo, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 
 ### Command execution on clusters
 
-**Stability:** [Experimental](https://docs.databricks.com/release-notes/release-types.html)
-
 You can run Python, Scala, R, or SQL code on running interactive Databricks clusters and get the results back. All supplied code gets leading whitespace removed, so that you could easily embed Python code into Go applications. This high-level wrapper comes from the Databricks Terraform provider, where it was tested for over 2 years for use cases such as [DBFS mounts](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/mount) and [SQL permissions](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/sql_permissions). This interface hides the intricate complexity of all internal APIs involved to simplify the unit-testing experience for command execution. Databricks does not recommending that you use lower-level interfaces for command execution. The execution timeout is 20 minutes and cannot be overriden for the sake of interface simplicity, meaning that you should only use this API if you have some relatively complex executions to perform. Please use jobs in case your commands must run longer than 20 minutes. Or use the [Databricks SQL Driver for Go](https://github.com/databricks/databricks-sql-go) in case your workload type is purely for business intelligence.
 
 ```go
@@ -606,8 +600,6 @@ println(res.Text())
 <a id="cluster-library-management"/>
 
 ### Cluster library management
-
-**Stability:** [Beta](https://docs.databricks.com/release-notes/release-types.html)
 
 You can install or uninstall libraries on running Databricks clusters. `UpdateAndWait` follows all conventions of [long-running operations](#long-running-operations) and wraps `Install` and `Uninstall` operations, followed by checking for the installation status of the cluster, exposing error messages back in a simplified way. This high-level wrapper came from the Databricks Terraform provider, where it was tested for over 2 years in the [databricks_cluster](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/cluster) and [databricks_library](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/library) resources. Databricks recommends that you use `UpdateAndWait` as the only API for cluster library management.
 
@@ -628,8 +620,6 @@ err = w.Libraries.UpdateAndWait(ctx, libraries.Update{
 
 ### Advanced usage
 
-**Stability:** [Experimental](https://docs.databricks.com/release-notes/release-types.html)
-
 You can track the intermediate state of a long-running operation while waiting to reach the correct state by supplying the `func(i *retries.Info[Zzz])` functional option, where `Zzz` is the return type of the `XxxAndWait` method:
 
 ```go
@@ -643,8 +633,6 @@ clusterInfo, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 <a id="paginated-responses"/>
 
 ## Paginated responses
-
-**Stability:** [Experimental](https://docs.databricks.com/release-notes/release-types.html)
 
 On the platform side, some Databricks APIs have result pagination, and some of them do not. Some APIs follow the offset-plus-limit pagination, some start their offsets from 0 and some from 1, some use the cursor-based iteration, and others just return all results in a single response. The Databricks SDK for Go hides this intricate complexity and generates a more high-level interface for retrieving all results of a certain entity type. The naming pattern is `XxxAll`, where `Xxx` is the name of the method to retrieve a single page of results.
 
@@ -662,8 +650,6 @@ for _, repo := range all {
 
 ### `GetByName` utility methods
 
-**Stability:** [Experimental](https://docs.databricks.com/release-notes/release-types.html)
-
 On the platform side, most of the Databricks APIs could be retrieved primarily by their identifiers. In some common workflows, it's easier to reason about workspace objects by their names. To simplify development experience and speed-up proof-of-concepts, the Databricks SDK for Go generates code for `GetByName` client-side utilities. Please keep in mind, that some Databricks APIs don't enforce unique names on objects and these generated helpers return an error whenever duplicate name is detected.
 
 ```go
@@ -680,8 +666,6 @@ return w.Repos.Update(ctx, repos.UpdateRepo{
 <a id="node-type-and-databricks-runtime-selectors"/>
 
 ## Node type and Databricks Runtime selectors
-
-**Stability:** [Beta](https://docs.databricks.com/release-notes/release-types.html)
 
 The Databricks SDK for Go provides selector methods that make developing multi-cloud applications easier and just rely on characteristics of the virtual machine, such as the number of cores or availability of local disks or always picking up the latest Databricks Runtime for the interactive cluster or per-job cluster.
 
@@ -729,8 +713,6 @@ runningCluster, err := w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 
 ## `io.Reader` integration for DBFS
 
-**Stability:** [Beta](https://docs.databricks.com/release-notes/release-types.html)
-
 Use the higher-level `w.Dbfs.Open` and `w.Dbfs.Overwrite` methods to work with remote files through the `io.Reader` interface. Internally, these methods wrap the low-level intricacies of working with Databricks REST APIs, providing a convenient interface to you as a developer.
 
 ```go
@@ -746,4 +728,4 @@ _ = io.Copy(download, remote)
 
 ## Interface stability
 
-During the _[beta](https://docs.databricks.com/release-notes/release-types.html)_ period, Databricks is actively working on stabilizing the Databricks SDK for Go's interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to pin the exact version in the `go.mod` file and read the [changelog](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md) where Databricks documents the changes. Some types of interfaces are more stable than others. For those interfaces that are not yet [nightly tested](https://github.com/databricks/databricks-sdk-go/tree/main/internal), Databricks may have minor [documented](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md) backwards incompatible changes, such as fixing mapping correctness from `int` to `int64` or renaming the methods or some type names to bring more consistency. 
+During the [Experimental](https://docs.databricks.com/release-notes/release-types.html) period, Databricks is actively working on stabilizing the Databricks SDK for Go's interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to pin the exact version in the `go.mod` file and read the [changelog](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md) where Databricks documents the changes. Some types of interfaces are more stable than others. For those interfaces that are not yet [nightly tested](https://github.com/databricks/databricks-sdk-go/tree/main/internal), Databricks may have minor [documented](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md) backward-incompatible changes, such as fixing mapping correctness from `int` to `int64` or renaming the methods or some type names to bring more consistency. 
