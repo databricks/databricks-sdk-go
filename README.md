@@ -180,43 +180,25 @@ package main
 import (
   "io"
   "log"
-  "bufio"
   "fmt"
-  "os"
-  "strings"
 
   "github.com/databricks/databricks-sdk-go"
 )
 
 func init() {
-  // Replace with your own product's name and version.
   databricks.WithProduct("awesome-product", "0.0.1")
   
-  // Disable printing debug information to output.
-  // Comment the following code to enable printing debug information.
   log.SetOutput(io.Discard)
 }
 
 func main() {
   // Perform Databricks token authentication for a Databricks workspace.
   // 
-  // Choose from one of the following authentication options:
-  //
-  // Option 1: To use Databricks token authentication by default, uncomment
-  // the following code and then run. This assumes you have already set
+  // Use Databricks token authentication by default. This assumes you have already set
   // the correct environment variables or .databrickscfg file field equivalents
   // for Host and Token.
 
-  // w := databricks.Must(databricks.NewWorkspaceClient())
-
-  // Option 2: To ask the user at run time for the needed information,
-  // uncomment the following code and then run.
-
-  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-  //   AuthType: "pat",
-  //   Host:     askFor("Databricks workspace URL:"),
-  //   Token:    askFor("Access token:"),
-  // }))
+  w := databricks.Must(databricks.NewWorkspaceClient())
 
   fmt.Printf("The workspace URL is '%s', and the token is '%s'.\n",
     w.Config.Host,
@@ -224,21 +206,6 @@ func main() {
   )
 
   // Now call the Databricks workspace APIs as desired...
-}
-
-// For Option 2, use this helper function to ask the user for
-// the missing information.
-func askFor(prompt string) string {
-  var s string
-  r := bufio.NewReader(os.Stdin)
-  for {
-    fmt.Fprint(os.Stdout, prompt+" ")
-    s, _ = r.ReadString('\n')
-    if s != "" {
-      break
-    }
-  }
-  return strings.TrimSpace(s)
 }
 ```
 
@@ -272,44 +239,25 @@ package main
 import (
   "io"
   "log"
-  "bufio"
   "fmt"
-  "os"
-  "strings"
 
   "github.com/databricks/databricks-sdk-go"
 )
 
 func init() {
-  // Replace with your own product's name and version.
   databricks.WithProduct("awesome-product", "0.0.1")
-  
-  // Disable printing debug information to output.
-  // Comment the following code to enable printing debug information.
+
   log.SetOutput(io.Discard)
 }
 
 func main() {
   // Perform Azure client secret authentication for a Databricks workspace.
   //  
-  // Choose from one of the following authentication options:
-  //
-  // Option 1: Uncomment the following code and then run. This assumes you have already set
-  // the correct environment variables or .databrickscfg file field equivalents for
+  // This assumes you have already set the correct environment variables or
+  // .databrickscfg file field equivalents for
   // AzureResourceID, AzureTenantID, AzureClientID, and AzureClientSecret.
 
-  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{AuthType: "azure-client-secret"}))
-
-  // Option 2: To ask the user at run time for the needed information,
-  // uncomment the following code and then run.
-
-  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-  //   AuthType:          "azure-client-secret",
-  //   AzureResourceID:   askFor("Azure resource ID for your Azure Databricks workspace:"),
-  //   AzureTenantID:     askFor("Azure tenant ID for your Azure AD service principal:"),
-  //   AzureClientID:     askFor("Azure client ID for your Azure AD service principal:"),
-  //   AzureClientSecret: askFor("Azure client secret for your Azure AD service principal:"),
-  // }))
+  w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{AuthType: "azure-client-secret"}))
 
   fmt.Printf("The resource ID is '%s', the tenant ID is '%s', "+
     "the client ID is '%s', and the client secret is '%s'.",
@@ -320,21 +268,6 @@ func main() {
   )
 
   // Now call the Databricks workspace APIs as desired...
-}
-
-// For Option 2, use this helper function to ask the user for
-// the missing information.
-func askFor(prompt string) string {
-  var s string
-  r := bufio.NewReader(os.Stdin)
-  for {
-    fmt.Fprint(os.Stdout, prompt+" ")
-    s, _ = r.ReadString('\n')
-    if s != "" {
-      break
-    }
-  }
-  return strings.TrimSpace(s)
 }
 ```
 
@@ -364,42 +297,25 @@ package main
 import (
   "io"
   "log"
-  "bufio"
   "fmt"
-  "os"
-  "strings"
 
   "github.com/databricks/databricks-sdk-go"
 )
 
 func init() {
-  // Replace with your own product's name and version.
   databricks.WithProduct("awesome-product", "0.0.1")
   
-  // Disable printing debug information to output.
-  // Comment the following code to enable printing debug information.
   log.SetOutput(io.Discard)
 }
 
 func main() {
   // Perform Google Cloud Platform ID authentication for a Databricks workspace.
   // 
-  // Choose from one of the following authentication options:
-  //
-  // Option 1: Uncomment the following code and then run. This assumes you have already set
-  // the correct environment variables or .databrickscfg file field equivalents for 
+  // This assumes you have already set the correct environment variables or 
+  // .databrickscfg file field equivalents for 
   // Host and GoogleServiceAccount.
 
-  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{AuthType: "google-id"}))
-
-  // Option 2: To ask the user at run time for the needed information,
-  // uncomment the following code and then run.
-
-  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-  //   AuthType:             "google-id",
-  //   Host:                 askFor("Databricks workspace URL:"),
-  //   GoogleServiceAccount: askFor("Google Cloud Platform service account's email address:"),
-  // }))
+  w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{AuthType: "google-id"}))
 
   fmt.Printf("The host is '%s', and the service account email is '%s'.",
     w.Config.Host,
@@ -407,21 +323,6 @@ func main() {
   )
 
   // Now call the Databricks workspace APIs as desired...
-}
-
-// For Option 2, use this helper function ask the user for 
-// the missing information.
-func askFor(prompt string) string {
-  var s string
-  r := bufio.NewReader(os.Stdin)
-  for {
-    fmt.Fprint(os.Stdout, prompt+" ")
-    s, _ = r.ReadString('\n')
-    if s != "" {
-      break
-    }
-  }
-  return strings.TrimSpace(s)
 }
 ```
 
@@ -450,11 +351,8 @@ import (
 )
 
 func init() {
-  // Replace with your own product's name and version.
   databricks.WithProduct("awesome-product", "0.0.1")
-  
-  // Disable printing debug information to output.
-  // Comment the following code to enable printing debug information.
+
   log.SetOutput(io.Discard)
 }
 
@@ -502,11 +400,8 @@ import (
 )
 
 func init() {
-  // Replace with your own product's name and version.
   databricks.WithProduct("awesome-product", "0.0.1")
   
-  // Disable printing debug information to output.
-  // Comment the following code to enable printing debug information.
   log.SetOutput(io.Discard)
 }
 
@@ -518,6 +413,65 @@ func main() {
   fmt.Printf("Debug headers is '%t'.", w.Config.DebugHeaders,)
   
   // Now call the Databricks workspace APIs as desired...
+}
+```
+
+### Asking the user for information at run time
+
+Instead of using environment variables or `.databrickscfg` file fields to get Databricks authentication settings (or any other needed information), you can ask the user to provide these settings while your code runs. 
+
+There are many ways in Go to ask the user for information at run time. The following example uses a custom function named `askFor` to get the missing `Host` and `Token` arguments while the code runs.
+
+```go
+package main
+
+import (
+  "io"
+  "log"
+  "bufio"
+  "fmt"
+  "os"
+  "strings"
+
+  "github.com/databricks/databricks-sdk-go"
+)
+
+func init() {
+  databricks.WithProduct("awesome-product", "0.0.1")
+  
+  log.SetOutput(io.Discard)
+}
+
+func main() {
+  // Perform Databricks token authentication for a Databricks workspace.
+  // 
+  // Ask the user at run time for the needed information.
+
+  w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
+    AuthType: "pat",
+    Host:     askFor("Databricks workspace URL:"),
+    Token:    askFor("Access token:"),
+  }))
+
+  fmt.Printf("The workspace URL is '%s', and the token is '%s'.\n",
+    w.Config.Host,
+    w.Config.Token,
+  )
+
+  // Now call the Databricks workspace APIs as desired...
+}
+
+func askFor(prompt string) string {
+  var s string
+  r := bufio.NewReader(os.Stdin)
+  for {
+    fmt.Fprint(os.Stdout, prompt+" ")
+    s, _ = r.ReadString('\n')
+    if s != "" {
+      break
+    }
+  }
+  return strings.TrimSpace(s)
 }
 ```
 
