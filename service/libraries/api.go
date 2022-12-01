@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster.
 package libraries
 
 import (

@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// DBFS API makes it simple to interact with various data sources without having to include a users credentials every time to read a file.
 package dbfs
 
 import (

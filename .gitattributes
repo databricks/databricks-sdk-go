@@ -2,5 +2,6 @@ service/*/api.go linguist-generated=true
 service/*/impl.go linguist-generated=true
 service/*/interface.go linguist-generated=true
 service/*/model.go linguist-generated=true
+service/pkg.go linguist-generated=true
 workspace_client.go linguist-generated=true
 account_client.go linguist-generated=true

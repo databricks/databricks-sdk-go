@@ -1,0 +1,18 @@
+// Databricks SDK for Go APIs
+// 
+//{{range .Services}}{{if .Description}} - [{{.Package.Name}}.{{.PascalName}}API]: {{.FirstSentence}}
+//
+//{{end}}{{end}}
+package service
+
+import (
+{{range .Packages}}"github.com/databricks/databricks-sdk-go/service/{{.Name}}"
+{{end}}
+)
+
+// trick godoc to use it as relative import
+// See: https://pkg.go.dev/golang.org/x/tools/internal/imports#ImportPathToAssumedName
+var (
+{{range .Services}}_ *{{.Package.Name}}.{{.PascalName}}API = nil
+{{end}}
+)

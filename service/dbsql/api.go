@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// These APIs allow you to manage Alerts, Dashboards, Data Sources, Dbsql Permissions, Queries, and etc.
 package dbsql
 
 import (

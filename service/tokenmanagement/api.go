@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// Enables administrators to get all tokens and delete tokens for other users.
 package tokenmanagement
 
 import (

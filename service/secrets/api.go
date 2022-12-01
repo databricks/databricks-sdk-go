@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// The Secrets API allows you to manage secrets, secret scopes, and access permissions.
 package secrets
 
 import (
