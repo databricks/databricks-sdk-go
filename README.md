@@ -11,11 +11,10 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 - [Code examples](#code-examples)
 - [Long running operations](#long-running-operations)
 - [Paginated responses](#paginated-responses)
+- [GetByName utility methods](#getbyname-utility-methods)
 - [Node type and Databricks Runtime selectors](#node-type-and-databricks-runtime-selectors)
-- [io.Reader integration for DBFS](#io-reader-integration-for-dbfs)
+- [io.Reader integration for DBFS](#ioreader-integration-for-dbfs)
 - [Interface stability](#interface-stability)
-
-<a id="getting-started"/>
 
 ## Getting started
 
@@ -107,8 +106,6 @@ The Databricks SDK for Go includes functionality to accelerate development with 
    The path '/' is a 'DIRECTORY'.   
    ```
 
-<a id="authentication"/>
-
 ## Authentication
 
 If you use Databricks [configuration profiles](https://docs.databricks.com/dev-tools/auth.html#configuration-profiles) or Databricks-specific [environment variables](https://docs.databricks.com/dev-tools/auth.html#environment-variables) for [Databricks authentication](https://docs.databricks.com/dev-tools/auth.html), the only code required to start working with a Databricks workspace is the following code snippet, which instructs the Databricks SDK for Go to use its [default authentication flow](#default-authentication-flow):
@@ -129,8 +126,6 @@ The conventional name for the variable that holds the workspace-level client of 
 - [Overriding .databrickscfg](#overriding-databrickscfg)
 - [Additional authentication configuration options](#additional-authentication-configuration-options)
 - [Custom credentials provider](#custom-credentials-provider)
-
-<a id="default-authentication-flow"/>
 
 ### Default authentication flow
 
@@ -154,8 +149,6 @@ For each authentication method, the SDK searches for compatible authentication c
 4. For Azure or Google Cloud Platform native authentication, the SDK searches for credentials through the Azure CLI or Google Cloud CLI as needed.
 
 Depending on the Databricks authentication method, the SDK uses the following information. Presented are the `*databricks.Config` arguments, their descriptions, any corresponding environment variables, and any corresponding `.databrickscfg` file fields, respectively.
-
-<a id="databricks-native-authentication"/>
 
 ### Databricks native authentication
 
@@ -241,8 +234,6 @@ func askFor(prompt string) string {
   return strings.TrimSpace(s)
 }
 ```
-
-<a id="azure-native-authentication"/>
 
 ### Azure native authentication
 
@@ -338,8 +329,6 @@ func askFor(prompt string) string {
 }
 ```
 
-<a id="google-cloud-platform-native-authentication"/>
-
 ### Google Cloud Platform native authentication
 
 By default, the Databricks SDK for Go first tries Google Cloud Platform (GCP) ID authentication (`AuthType: "google-id"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries GCP credentials authentication (`AuthType: "google-credentials"` in `*databricks.Config`).
@@ -425,8 +414,6 @@ func askFor(prompt string) string {
 }
 ```
 
-<a id="overriding-databrickscfg"/>
-
 ### Overriding `.databrickscfg` 
 
 For [Databricks native authentication](#databricks-native-authentication), you can override the default behavior in `*databricks.Config` for using `.databrickscfg` as follows:
@@ -472,8 +459,6 @@ func main() {
   // Now call the Databricks workspace APIs as desired...
 }
 ```
-
-<a id="additional-authentication-configuration-options"/>
 
 ### Additional authentication configuration options
 
@@ -521,8 +506,6 @@ func main() {
 }
 ```
 
-<a id="custom-credentials-provider"/>
-
 ### Custom credentials provider
 
 In some cases, you may want to have deeper control over authentication to Databricks. This can be achieved by creating your own credentials provider that returns an HTTP request visitor:
@@ -550,13 +533,9 @@ func main() {
 }
 ```
 
-<a id="code-examples"/>
-
 ## Code examples
 
-To find code examples that demonstrate how to call the Databricks SDK for Go, see the top-level [examples](/examples) folder within this repository.
-
-<a id="long-running-operations"/>
+To find code examples that demonstrate how to call the Databricks SDK for Go, see the top-level [examples](/examples) folder within this repository
 
 ## Long-running operations
 
@@ -582,8 +561,6 @@ clusterInfo, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 - [Cluster library management](#cluster-library-management)
 - [Advanced usage](#advanced-usage)
 
-<a id="command-execution-on-clusters"/>
-
 ### Command execution on clusters
 
 You can run Python, Scala, R, or SQL code on running interactive Databricks clusters and get the results back. All supplied code gets leading whitespace removed, so that you could easily embed Python code into Go applications. This high-level wrapper comes from the Databricks Terraform provider, where it was tested for over 2 years for use cases such as [DBFS mounts](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/mount) and [SQL permissions](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/sql_permissions). This interface hides the intricate complexity of all internal APIs involved to simplify the unit-testing experience for command execution. Databricks does not recommending that you use lower-level interfaces for command execution. The execution timeout is 20 minutes and cannot be overriden for the sake of interface simplicity, meaning that you should only use this API if you have some relatively complex executions to perform. Please use jobs in case your commands must run longer than 20 minutes. Or use the [Databricks SQL Driver for Go](https://github.com/databricks/databricks-sql-go) in case your workload type is purely for business intelligence.
@@ -596,8 +573,6 @@ if res.Failed() {
 println(res.Text())
 // Out: 1
 ```
-
-<a id="cluster-library-management"/>
 
 ### Cluster library management
 
@@ -616,8 +591,6 @@ err = w.Libraries.UpdateAndWait(ctx, libraries.Update{
 })
 ```
 
-<a id="advanced-usage"/>
-
 ### Advanced usage
 
 You can track the intermediate state of a long-running operation while waiting to reach the correct state by supplying the `func(i *retries.Info[Zzz])` functional option, where `Zzz` is the return type of the `XxxAndWait` method:
@@ -629,8 +602,6 @@ clusterInfo, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
     updateIntermediateState(i.Info.StateMessage)
 })
 ```
-
-<a id="paginated-responses"/>
 
 ## Paginated responses
 
@@ -646,9 +617,7 @@ for _, repo := range all {
 }
 ```
 
-<a id="get-by-name"/>
-
-### `GetByName` utility methods
+## `GetByName` utility methods
 
 On the platform side, most of the Databricks APIs could be retrieved primarily by their identifiers. In some common workflows, it's easier to reason about workspace objects by their names. To simplify development experience and speed-up proof-of-concepts, the Databricks SDK for Go generates code for `GetByName` client-side utilities. Please keep in mind, that some Databricks APIs don't enforce unique names on objects and these generated helpers return an error whenever duplicate name is detected.
 
@@ -662,8 +631,6 @@ return w.Repos.Update(ctx, repos.UpdateRepo{
     Branch: tag,
 })
 ```
-
-<a id="node-type-and-databricks-runtime-selectors"/>
 
 ## Node type and Databricks Runtime selectors
 
@@ -709,8 +676,6 @@ runningCluster, err := w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 })
 ```
 
-<a id="io-reader-integration-for-dbfs"/>
-
 ## `io.Reader` integration for DBFS
 
 Use the higher-level `w.Dbfs.Open` and `w.Dbfs.Overwrite` methods to work with remote files through the `io.Reader` interface. Internally, these methods wrap the low-level intricacies of working with Databricks REST APIs, providing a convenient interface to you as a developer.
@@ -723,8 +688,6 @@ download, _ := os.Create("/path/to/local")
 remote, _ := w.Dbfs.Open(ctx, "/path/to/remote")
 _ = io.Copy(download, remote)
 ```
-
-<a id="interface-stability"/>
 
 ## Interface stability
 
