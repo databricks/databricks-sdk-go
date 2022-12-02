@@ -147,7 +147,10 @@ func createConfigurationFromLoaders(src *Config) (*Config, error) {
 	if len(loaders) == 0 {
 		loaders = []Loader{
 			// Load from environment variables.
-			environmentVariableLoader{},
+			environmentVariableLoader{[]string{
+				"profile",
+				"config_file",
+			}},
 			// Read from ~/.databrickscfg if applicable.
 			configFileLoader{},
 			// Load from environment variables again (they have precedence).

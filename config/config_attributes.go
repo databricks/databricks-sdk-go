@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+
+	"golang.org/x/exp/slices"
 )
 
 var ConfigAttributes = loadAttrs()
@@ -13,7 +15,9 @@ var ConfigAttributes = loadAttrs()
 // attributes holds meta-representation of Config configuration options
 type attributes []ConfigAttribute
 
-type environmentVariableLoader struct{}
+type environmentVariableLoader struct {
+	fields []string
+}
 
 func (l environmentVariableLoader) Name() string {
 	return "environment"
@@ -21,6 +25,10 @@ func (l environmentVariableLoader) Name() string {
 
 func (l environmentVariableLoader) Configure(cfg *Config) error {
 	for _, attr := range ConfigAttributes {
+		// If the fields array is non-empty, test the current attribute is listed.
+		if len(l.fields) > 0 && !slices.Contains(l.fields, attr.Name) {
+			continue
+		}
 		v := attr.ReadEnv()
 		if v == "" {
 			continue
