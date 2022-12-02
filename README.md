@@ -14,97 +14,92 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 - [GetByName utility methods](#getbyname-utility-methods)
 - [Node type and Databricks Runtime selectors](#node-type-and-databricks-runtime-selectors)
 - [io.Reader integration for DBFS](#ioreader-integration-for-dbfs)
+- [Logging](#logging)
 - [Interface stability](#interface-stability)
 
 ## Getting started
 
 1. On your local development machine with Go already [installed](https://go.dev/doc/install) and a Go code [project](https://go.dev/doc/code) active, create a `go.mod` file to track your Go code's dependencies by running the `go mod init` command, for example:
 
-   ```bash
-   go mod init sample
-   ```
+    ```bash
+    go mod init sample
+    ```
    
 2. Take a dependency on the Databricks SDK for Go package by running the `go mod edit -require` command:
 
-   ```bash
-   go mod edit -require github.com/databricks/databricks-sdk-go@v0.1.0
-   ```
+    ```bash
+    go mod edit -require github.com/databricks/databricks-sdk-go@v0.1.0
+    ```
    
    Your `go.mod` file should now look like this:
    
-   ```go
-   module sample
+    ```go
+    module sample
 
-   go 1.18
+    go 1.18
 
-   require github.com/databricks/databricks-sdk-go v0.1.0
+    require github.com/databricks/databricks-sdk-go v0.1.0
 
-   // Indirect dependencies will go here.
-   ```
+    // Indirect dependencies will go here.
+    ```
 
-3. Within your project, create a Go code file that imports the Databricks SDK for Go. The following example, in a file named `main.go` with the following contents, simply reports the object type that represents the root directory in your Databricks workspace (in this case, `DIRECTORY`):
+3. Within your project, create a Go code file that imports the Databricks SDK for Go. The following example, in a file named `main.go` with the following contents, simply lists all the clusters in your Databricks workspace:
 
-   ```go
-   package main
+    ```go
+    package main
 
-   import (
-     "context"
-     "fmt"
-     "io"
-     "log"
-     
-     "github.com/databricks/databricks-sdk-go"
-   )
-   
-   func init() {
-     // Replace with your own product's name and version.
-     databricks.WithProduct("awesome-product", "0.0.1")
-     
-     // Disable printing debug information to output.
-     // Comment the following code to enable printing debug information.
-     log.SetOutput(io.Discard)
-   }
+    import (
+      "context"
 
-   func main() {
-     const path = "/"
-     w := databricks.Must(databricks.NewWorkspaceClient())
+      "github.com/databricks/databricks-sdk-go"
+      "github.com/databricks/databricks-sdk-go/service/clusters"
+    )
 
-     resp, err := w.Workspace.GetStatusByPath(context.Background(), path)
-
-     if err != nil {
-       panic(err)
-     }
-
-     fmt.Printf("The path '%s' is a '%s'.\n", path, resp.ObjectType)
-   }
-   ```
+    func main() {
+      w := databricks.Must(databricks.NewWorkspaceClient())
+      all, err := w.Clusters.ListAll(context.Background(), clusters.List{})
+      if err != nil {
+        panic(err)
+      }
+      for _, c := range all {
+        println(c.ClusterName)
+      }
+    }
+    ```
 
 4. Add any misssing module dependencies by running the `go mod tidy` command:
 
-   ```bash
-   go mod tidy
-   ```
+    ```bash
+    go mod tidy
+    ```
    
    **Note**: If you get the error `go: warning: "all" matched no packages`, you forgot to add the preceding Go code file that imports the Databricks SDK for Go. 
    
 5. Grab copies of all packages needed to support builds and tests of packages in your `main` module, by running the `go mod vendor` command:
 
-   ```bash
-   go mod vendor
-   ```
+    ```bash
+    go mod vendor
+    ```
 
-6. Set up Databricks authentication on your local development machine, if you have not done so already. For details, see the next section, [Authentication](#authentication).
+6. Set up Databricks authentication on your local development machine by running [`databricks configure`](https://docs.databricks.com/dev-tools/cli/index.html#set-up-authentication) command, if you have not done so already. For details, see the next section, [Authentication](#authentication).
+
 7. Run your Go code file, assuming a file named `main.go`, by running the `go run` command:
 
-   ```bash
-   go run main.go
-   ```
+    ```bash
+    go run main.go
+    ```
    
-   Assuming the preceding example code is run, the output is: 
-   
-   ```bash
-   The path '/' is a 'DIRECTORY'.   
-   ```
+    Assuming the preceding example code is run, the output is: 
+  
+    ```bash
+    [TRACE] Loading config via environment
+    [TRACE] Loading config via config-file
+    ...
+    [TRACE] Attempting to configure auth: pat
+    [TRACE] Attempting to configure auth: basic
+    [TRACE] Attempting to configure auth: azure-client-secret
+    ...
+    ```
 
 ## Authentication
 
@@ -171,67 +166,45 @@ For example, to use Databricks token authentication:
 package main
 
 import (
-  "io"
-  "log"
-  "bufio"
-  "fmt"
-  "os"
-  "strings"
+	"bufio"
+	"context"
+	"fmt"
+	"os"
+	"strings"
 
-  "github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/config"
 )
 
-func init() {
-  // Replace with your own product's name and version.
-  databricks.WithProduct("awesome-product", "0.0.1")
-  
-  // Disable printing debug information to output.
-  // Comment the following code to enable printing debug information.
-  log.SetOutput(io.Discard)
-}
-
 func main() {
-  // Perform Databricks token authentication for a Databricks workspace.
-  // 
-  // Choose from one of the following authentication options:
-  //
-  // Option 1: To use Databricks token authentication by default, uncomment
-  // the following code and then run. This assumes you have already set
-  // the correct environment variables or .databrickscfg file field equivalents
-  // for Host and Token.
-
-  // w := databricks.Must(databricks.NewWorkspaceClient())
-
-  // Option 2: To ask the user at run time for the needed information,
-  // uncomment the following code and then run.
-
-  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-  //   AuthType: "pat",
-  //   Host:     askFor("Databricks workspace URL:"),
-  //   Token:    askFor("Access token:"),
-  // }))
-
-  fmt.Printf("The workspace URL is '%s', and the token is '%s'.\n",
-    w.Config.Host,
-    w.Config.Token,
-  )
-
-  // Now call the Databricks workspace APIs as desired...
+	// Perform Databricks token authentication for a Databricks workspace.
+	w, err := databricks.NewWorkspaceClient(&databricks.Config{
+		Host:        askFor("Host:"),                  // workspace url
+		Token:       askFor("Personal Access Token:"), // PAT
+		Credentials: config.PatCredentials{},          // enforce PAT auth
+	})
+	if err != nil {
+		panic(err)
+	}
+	me, err := w.CurrentUser.Me(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Hello, my name is %s!\n", me.DisplayName)
 }
 
-// For Option 2, use this helper function to ask the user for
-// the missing information.
 func askFor(prompt string) string {
-  var s string
-  r := bufio.NewReader(os.Stdin)
-  for {
-    fmt.Fprint(os.Stdout, prompt+" ")
-    s, _ = r.ReadString('\n')
-    if s != "" {
-      break
-    }
-  }
-  return strings.TrimSpace(s)
+	var s string
+	r := bufio.NewReader(os.Stdin)
+	for {
+		fmt.Fprint(os.Stdout, prompt+" ")
+		s, _ = r.ReadString('\n')
+		s = strings.TrimSpace(s)
+		if s != "" {
+			break
+		}
+	}
+	return s
 }
 ```
 
@@ -258,75 +231,14 @@ To authenticate as an Azure Active Directory (Azure AD) service principal, you m
 For example, to use Azure client secret authentication:
 
 ```go
-package main
-
-import (
-  "io"
-  "log"
-  "bufio"
-  "fmt"
-  "os"
-  "strings"
-
-  "github.com/databricks/databricks-sdk-go"
-)
-
-func init() {
-  // Replace with your own product's name and version.
-  databricks.WithProduct("awesome-product", "0.0.1")
-  
-  // Disable printing debug information to output.
-  // Comment the following code to enable printing debug information.
-  log.SetOutput(io.Discard)
-}
-
-func main() {
-  // Perform Azure client secret authentication for a Databricks workspace.
-  //  
-  // Choose from one of the following authentication options:
-  //
-  // Option 1: Uncomment the following code and then run. This assumes you have already set
-  // the correct environment variables or .databrickscfg file field equivalents for
-  // AzureResourceID, AzureTenantID, AzureClientID, and AzureClientSecret.
-
-  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{AuthType: "azure-client-secret"}))
-
-  // Option 2: To ask the user at run time for the needed information,
-  // uncomment the following code and then run.
-
-  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-  //   AuthType:          "azure-client-secret",
-  //   AzureResourceID:   askFor("Azure resource ID for your Azure Databricks workspace:"),
-  //   AzureTenantID:     askFor("Azure tenant ID for your Azure AD service principal:"),
-  //   AzureClientID:     askFor("Azure client ID for your Azure AD service principal:"),
-  //   AzureClientSecret: askFor("Azure client secret for your Azure AD service principal:"),
-  // }))
-
-  fmt.Printf("The resource ID is '%s', the tenant ID is '%s', "+
-    "the client ID is '%s', and the client secret is '%s'.",
-    w.Config.AzureResourceID,
-    w.Config.AzureTenantID,
-    w.Config.AzureClientID,
-    w.Config.AzureClientSecret,
-  )
-
-  // Now call the Databricks workspace APIs as desired...
-}
-
-// For Option 2, use this helper function to ask the user for
-// the missing information.
-func askFor(prompt string) string {
-  var s string
-  r := bufio.NewReader(os.Stdin)
-  for {
-    fmt.Fprint(os.Stdout, prompt+" ")
-    s, _ = r.ReadString('\n')
-    if s != "" {
-      break
-    }
-  }
-  return strings.TrimSpace(s)
-}
+w, err := databricks.NewWorkspaceClient(&databricks.Config{
+  Host:              askFor("Host:"),
+  AzureResourceID:   askFor("Azure Resource ID:"),
+  AzureTenantID:     askFor("AAD Tenant ID:"),
+  AzureClientID:     askFor("AAD Client ID:"),
+  AzureClientSecret: askFor("AAD Client Secret:"),
+  Credentials:       config.AzureClientSecretCredentials{},
+})
 ```
 
 ### Google Cloud Platform native authentication
@@ -345,73 +257,14 @@ To authenticate as a Google Cloud service account, you must provide one of the f
 | `GoogleServiceAccount`| _(String)_ The Google Cloud Platform (GCP) service account e-mail used for impersonation in the Default Application Credentials Flow that does not require a password. | `DATABRICKS_GOOGLE_SERVICE_ACCOUNT` / `google_service_account` |
 | `GoogleCredentials`| _(String)_ GCP Service Account Credentials JSON or the location of these credentials on the local filesystem. | `GOOGLE_CREDENTIALS` / `google_credentials` |
 
-For example, to use GCP ID authentication:
+For example, to use Google ID authentication:
 
 ```go
-package main
-
-import (
-  "io"
-  "log"
-  "bufio"
-  "fmt"
-  "os"
-  "strings"
-
-  "github.com/databricks/databricks-sdk-go"
-)
-
-func init() {
-  // Replace with your own product's name and version.
-  databricks.WithProduct("awesome-product", "0.0.1")
-  
-  // Disable printing debug information to output.
-  // Comment the following code to enable printing debug information.
-  log.SetOutput(io.Discard)
-}
-
-func main() {
-  // Perform Google Cloud Platform ID authentication for a Databricks workspace.
-  // 
-  // Choose from one of the following authentication options:
-  //
-  // Option 1: Uncomment the following code and then run. This assumes you have already set
-  // the correct environment variables or .databrickscfg file field equivalents for 
-  // Host and GoogleServiceAccount.
-
-  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{AuthType: "google-id"}))
-
-  // Option 2: To ask the user at run time for the needed information,
-  // uncomment the following code and then run.
-
-  // w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-  //   AuthType:             "google-id",
-  //   Host:                 askFor("Databricks workspace URL:"),
-  //   GoogleServiceAccount: askFor("Google Cloud Platform service account's email address:"),
-  // }))
-
-  fmt.Printf("The host is '%s', and the service account email is '%s'.",
-    w.Config.Host,
-    w.Config.GoogleServiceAccount,
-  )
-
-  // Now call the Databricks workspace APIs as desired...
-}
-
-// For Option 2, use this helper function ask the user for 
-// the missing information.
-func askFor(prompt string) string {
-  var s string
-  r := bufio.NewReader(os.Stdin)
-  for {
-    fmt.Fprint(os.Stdout, prompt+" ")
-    s, _ = r.ReadString('\n')
-    if s != "" {
-      break
-    }
-  }
-  return strings.TrimSpace(s)
-}
+w, err := databricks.NewWorkspaceClient(&databricks.Config{
+  Host:                 askFor("Host:"),
+  GoogleServiceAccount: askFor("Google Service Account:"),
+  Credentials:          config.GoogleDefaultCredentials{},
+})
 ```
 
 ### Overriding `.databrickscfg` 
@@ -426,38 +279,10 @@ For [Databricks native authentication](#databricks-native-authentication), you c
 For example, to use a profile named `MYPROFILE` instead of `DEFAULT`:
 
 ```go
-package main
-
-import (
-  "io"
-  "log"
-  "fmt"
-
-  "github.com/databricks/databricks-sdk-go"
-)
-
-func init() {
-  // Replace with your own product's name and version.
-  databricks.WithProduct("awesome-product", "0.0.1")
-  
-  // Disable printing debug information to output.
-  // Comment the following code to enable printing debug information.
-  log.SetOutput(io.Discard)
-}
-
-func main() {
-  w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-    AuthType: "pat",
-    Profile:  "MYPROFILE",
-  }))
-
-  fmt.Printf("Using authorization type '%s', the profile is '%s'.",
-    w.Config.AuthType,
-    w.Config.Profile,
-  )
-
-  // Now call the Databricks workspace APIs as desired...
-}
+w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
+  Profile:  "MYPROFILE",
+}))
+// Now call the Databricks workspace APIs as desired...
 ```
 
 ### Additional authentication configuration options
@@ -476,34 +301,10 @@ For all authentication methods, you can override the default behavior in `*datab
 For example, to turn on debug HTTP headers:
 
 ```go
-package main
-
-import (
-  "io"
-  "log"
-  "fmt"
-
-  "github.com/databricks/databricks-sdk-go"
-)
-
-func init() {
-  // Replace with your own product's name and version.
-  databricks.WithProduct("awesome-product", "0.0.1")
-  
-  // Disable printing debug information to output.
-  // Comment the following code to enable printing debug information.
-  log.SetOutput(io.Discard)
-}
-
-func main() {
-  w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-    DebugHeaders: true,
-  }))
-
-  fmt.Printf("Debug headers is '%t'.", w.Config.DebugHeaders,)
-  
-  // Now call the Databricks workspace APIs as desired...
-}
+w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
+  DebugHeaders: true,
+}))  
+// Now call the Databricks workspace APIs as desired...
 ```
 
 ### Custom credentials provider
@@ -688,6 +489,12 @@ download, _ := os.Create("/path/to/local")
 remote, _ := w.Dbfs.Open(ctx, "/path/to/remote")
 _ = io.Copy(download, remote)
 ```
+
+## Logging
+
+By default, Databricks SDK for Go uses [logger.SimpleLogger](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/logger#Logger), which is a levelled proxy to `log.Printf`, printing to `os.Stderr`. You can disable logging completely by adding `log.SetOutput(io.Discard)` to your `init()` function. You are encouraged to override `logging.DefaultLogger` with your own implementation that follows the [logger.Logger](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/logger#Logger) interface. 
+
+Current Logger interface will evolve in the future versions of Databricks SDK for Go.
 
 ## Interface stability
 
