@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// The Jobs API allows you to create, edit, and delete jobs.
 package jobs
 
 import (

@@ -8,6 +8,7 @@
   },
   "batch": {
     ".codegen/workspaces.go.tmpl": "workspace_client.go",
-    ".codegen/accounts.go.tmpl": "account_client.go"
+    ".codegen/accounts.go.tmpl": "account_client.go",
+    ".codegen/service-pkg.go.tmpl": "service/pkg.go"
   }
 }

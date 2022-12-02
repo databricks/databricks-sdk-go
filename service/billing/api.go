@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// These APIs allow you to manage Billable Usage, Budgets, Log Delivery, etc.
 package billing
 
 import (

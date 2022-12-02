@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// This API allows updating known workspace settings for advanced users.
 package workspaceconf
 
 import (

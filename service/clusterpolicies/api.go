@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// Cluster policy limits the ability to configure clusters based on a set of rules.
 package clusterpolicies
 
 import (

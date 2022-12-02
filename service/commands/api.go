@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters.
 package commands
 
 import (

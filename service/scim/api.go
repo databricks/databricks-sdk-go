@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// These APIs allow you to manage Account Groups, Account Service Principals, Account Users, Current User, Groups, Service Principals, Users, etc.
 package scim
 
 import (

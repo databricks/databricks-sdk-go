@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// Registers personal access token for Databricks to do operations on behalf of the user.
 package gitcredentials
 
 import (

@@ -160,6 +160,11 @@ func (n *Named) PascalName() string {
 	return sb.String()
 }
 
+// TitleName creates Names Likes This
+func (n *Named) TitleName() string {
+	return strings.Title(strings.Join(n.splitASCII(), " "))
+}
+
 // CamelName creates namesLikesThis
 func (n *Named) CamelName() string {
 	cc := n.PascalName()
@@ -183,6 +188,19 @@ func (n *Named) KebabName() string {
 
 func (n *Named) HasComment() bool {
 	return n.Description != ""
+}
+
+func (n *Named) FirstSentence() string {
+	if n.Description == "" {
+		return ""
+	}
+	norm := whitespace.ReplaceAllString(n.Description, " ")
+	trimmed := strings.TrimSpace(norm)
+	sentences := strings.Split(trimmed, ". ")
+	if len(sentences) > 0 {
+		return strings.TrimSuffix(sentences[0], ".") + "."
+	}
+	return ""
 }
 
 // Comment formats description into language-specific comment multi-line strings

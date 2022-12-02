@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// These APIs allow you to manage Experiments, M Lflow Artifacts, M Lflow Databricks, M Lflow Metrics, M Lflow Runs, Model Version Comments, Model Versions, Registered Models, Registry Webhooks, Transition Requests, etc.
 package mlflow
 
 import (

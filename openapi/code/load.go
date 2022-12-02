@@ -34,7 +34,7 @@ func NewFromFile(name string, includeTags []string) (*Batch, error) {
 		pkg, ok := batch.packages[tag.Package]
 		if !ok {
 			pkg = &Package{
-				Named:      Named{tag.Package, tag.Description},
+				Named:      Named{tag.Package, ""},
 				Components: spec.Components,
 				services:   map[string]*Service{},
 				types:      map[string]*Entity{},
@@ -44,6 +44,16 @@ func NewFromFile(name string, includeTags []string) (*Batch, error) {
 		err := pkg.Load(spec, &tag)
 		if err != nil {
 			return nil, fmt.Errorf("fail to load %s: %w", tag.Name, err)
+		}
+	}
+	// add some packages at least some description
+	for _, pkg := range batch.packages {
+		if len(pkg.services) > 1 {
+			continue
+		}
+		// we know that we have just one service
+		for _, svc := range pkg.services {
+			pkg.Description = svc.FirstSentence()
 		}
 	}
 	return &batch, nil

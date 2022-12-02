@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// The IP Access List API enables Databricks admins to configure IP access lists for a workspace.
 package ipaccesslists
 
 import (

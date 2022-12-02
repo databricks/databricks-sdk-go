@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// The Global Init Scripts API enables Workspace administrators to configure global initialization scripts for their workspace.
 package globalinitscripts
 
 import (

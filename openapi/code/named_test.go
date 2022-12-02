@@ -82,6 +82,7 @@ func TestNamedTransforms(t *testing.T) {
 		n.ConstantName(): "BIG_BROWN_FOX",
 		n.SnakeName():    "big_brown_fox",
 		n.KebabName():    "big-brown-fox",
+		n.TitleName():    "Big Brown Fox",
 	} {
 		assert.Equal(t, expected, actual)
 	}
