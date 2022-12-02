@@ -48,6 +48,13 @@ type Config struct {
 	// Connection profile specified within ~/.databrickscfg.
 	Profile string `name:"profile" env:"DATABRICKS_CONFIG_PROFILE"`
 
+	// If you specify `host`, but no other credentials either through direct configuration
+	// or through environment variables, Databricks SDK for Go will try picking up profile
+	// with the matching host from ~/.databrickscfg. This allows keeping the hostname checked
+	// in to version control, but have ability to pick up different credentials either from
+	// local development machine or production server.
+	ResolveProfile bool `name:"resolve_profile" env:"DATABRICKS_PROFILE_RESOLVE"`
+
 	// Location of the Databricks CLI credentials file, that is created
 	// by `databricks configure --token` command. By default, it is located
 	// in ~/.databrickscfg.

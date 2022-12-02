@@ -43,7 +43,7 @@ func (l KnownConfigLoader) Configure(cfg *Config) error {
 	if !hasExplicitProfile {
 		profile = "DEFAULT"
 	}
-	if cfg.Host != "" && cfg.Profile == "" {
+	if cfg.ResolveProfile && cfg.Host != "" && cfg.Profile == "" {
 		err := cfg.fixHostIfNeeded()
 		if err != nil {
 			return err

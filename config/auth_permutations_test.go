@@ -235,21 +235,35 @@ func TestConfig_PatFromDatabricksCfg_NohostProfile(t *testing.T) {
 func TestConfig_Implicit_DatabricksCfg_Profile_ThroughHost(t *testing.T) {
 	configFixture{
 		env: map[string]string{
-			"HOME":            "testdata",
-			"DATABRICKS_HOST": "https://dbc-XXXXXXXX-ABCD.cloud.databricks.com",
+			"HOME":                       "testdata",
+			"DATABRICKS_PROFILE_RESOLVE": "true",
+			"DATABRICKS_HOST":            "https://dbc-XXXXXXXX-ABCD.cloud.databricks.com",
 		},
 		assertHost: "https://dbc-XXXXXXXX-ABCD.cloud.databricks.com",
 		assertAuth: "basic",
 	}.apply(t)
 }
 
+func TestConfig_Implicit_DatabricksCfg_Profile_ThroughHost_WithToken(t *testing.T) {
+	configFixture{
+		env: map[string]string{
+			"HOME":                       "testdata",
+			"DATABRICKS_PROFILE_RESOLVE": "true",
+			"DATABRICKS_HOST":            "https://dbc-XXXXXXXX-ABCD.cloud.databricks.com",
+			"DATABRICKS_TOKEN":           "abcd",
+		},
+		assertError: "validate: more than one authorization method configured: basic and pat. Config: host=https://dbc-XXXXXXXX-ABCD.cloud.databricks.com, token=***, username=abc, password=***, resolve_profile=true. Env: DATABRICKS_HOST, DATABRICKS_TOKEN, DATABRICKS_PROFILE_RESOLVE",
+	}.apply(t)
+}
+
 func TestConfig_Implicit_DatabricksCfg_Profile_Conflicts(t *testing.T) {
 	configFixture{
 		env: map[string]string{
-			"HOME":            "testdata",
-			"DATABRICKS_HOST": "https://adb-123.4.azuredatabricks.net",
+			"HOME":                       "testdata",
+			"DATABRICKS_PROFILE_RESOLVE": "true",
+			"DATABRICKS_HOST":            "https://adb-123.4.azuredatabricks.net",
 		},
-		assertError: "resolve: azure-justhost and azure-pat and azure-spn match https://adb-123.4.azuredatabricks.net in testdata/.databrickscfg. Config: host=https://adb-123.4.azuredatabricks.net. Env: DATABRICKS_HOST",
+		assertError: "resolve: azure-justhost and azure-pat and azure-spn match https://adb-123.4.azuredatabricks.net in testdata/.databrickscfg. Config: host=https://adb-123.4.azuredatabricks.net, resolve_profile=true. Env: DATABRICKS_HOST, DATABRICKS_PROFILE_RESOLVE",
 	}.apply(t)
 }
 
@@ -379,7 +393,7 @@ func TestConfig_AzureAndPasswordConflict(t *testing.T) { // TODO: this breaks
 			"HOME":                "testdata/azure",
 			"DATABRICKS_USERNAME": "x",
 		},
-		assertError: "validate: more than one authorization method configured: azure and basic. Config: host=https://x, username=x, azure_workspace_resource_id=/sub/rg/ws. Env: DATABRICKS_USERNAME",
+		assertError: "validate: more than one authorization method configured: azure and basic. Config: host=x, username=x, azure_workspace_resource_id=/sub/rg/ws. Env: DATABRICKS_USERNAME",
 	}.apply(t)
 }
 
