@@ -160,7 +160,7 @@ func (n *Named) PascalName() string {
 	return sb.String()
 }
 
-// PascalName creates Names Likes This
+// TitleName creates Names Likes This
 func (n *Named) TitleName() string {
 	return strings.Title(strings.Join(n.splitASCII(), " "))
 }
