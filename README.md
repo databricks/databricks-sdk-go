@@ -28,7 +28,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 2. Take a dependency on the Databricks SDK for Go package by running the `go mod edit -require` command:
 
     ```bash
-    go mod edit -require github.com/databricks/databricks-sdk-go@v0.1.0
+    go mod edit -require github.com/databricks/databricks-sdk-go@v0.1.1
     ```
    
    Your `go.mod` file should now look like this:
@@ -38,7 +38,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 
     go 1.18
 
-    require github.com/databricks/databricks-sdk-go v0.1.0
+    require github.com/databricks/databricks-sdk-go v0.1.1
 
     // Indirect dependencies will go here.
     ```
