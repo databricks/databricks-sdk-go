@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Catalogs, External Locations, Grants, Metastores, Providers, Recipient Activation, Recipients, Schemas, Shares, Storage Credentials, Tables, and etc.
+// These APIs allow you to manage Catalogs, External Locations, Grants, Metastores, Providers, Recipient Activation, Recipients, Schemas, Shares, Storage Credentials, Tables, etc.
 package unitycatalog
 
 import (

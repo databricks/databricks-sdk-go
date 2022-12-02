@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Credentials, Encryption Keys, Networks, Private Access, Storage, Vpc Endpoints, Workspaces, and etc.
+// These APIs allow you to manage Credentials, Encryption Keys, Networks, Private Access, Storage, Vpc Endpoints, Workspaces, etc.
 package deployment
 
 import (
