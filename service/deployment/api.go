@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// These APIs allow you to manage Credentials, Encryption Keys, Networks, Private Access, Storage, Vpc Endpoints, Workspaces, etc.
 package deployment
 
 import (
@@ -12,9 +13,9 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-func NewCredentialConfigurations(client *client.DatabricksClient) *CredentialConfigurationsAPI {
-	return &CredentialConfigurationsAPI{
-		impl: &credentialConfigurationsImpl{
+func NewCredentials(client *client.DatabricksClient) *CredentialsAPI {
+	return &CredentialsAPI{
+		impl: &credentialsImpl{
 			client: client,
 		},
 	}
@@ -25,21 +26,21 @@ func NewCredentialConfigurations(client *client.DatabricksClient) *CredentialCon
 // Databricks can deploy clusters in the appropriate VPC for the new workspace.
 // A credential configuration encapsulates this role information, and its ID is
 // used when creating a new workspace.
-type CredentialConfigurationsAPI struct {
+type CredentialsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(CredentialConfigurationsService)
-	impl CredentialConfigurationsService
+	// through WithImpl(CredentialsService)
+	impl CredentialsService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *CredentialConfigurationsAPI) WithImpl(impl CredentialConfigurationsService) *CredentialConfigurationsAPI {
+func (a *CredentialsAPI) WithImpl(impl CredentialsService) *CredentialsAPI {
 	a.impl = impl
 	return a
 }
 
-// Impl returns low-level CredentialConfigurations API implementation
-func (a *CredentialConfigurationsAPI) Impl() CredentialConfigurationsService {
+// Impl returns low-level Credentials API implementation
+func (a *CredentialsAPI) Impl() CredentialsService {
 	return a.impl
 }
 
@@ -58,8 +59,8 @@ func (a *CredentialConfigurationsAPI) Impl() CredentialConfigurationsService {
 // For information about how to create a new workspace with this API, see
 // [Create a new workspace using the Account
 // API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html)
-func (a *CredentialConfigurationsAPI) CreateCredentialConfig(ctx context.Context, request CreateCredentialRequest) (*Credential, error) {
-	return a.impl.CreateCredentialConfig(ctx, request)
+func (a *CredentialsAPI) Create(ctx context.Context, request CreateCredentialRequest) (*Credential, error) {
+	return a.impl.Create(ctx, request)
 }
 
 // Delete credential configuration
@@ -67,8 +68,8 @@ func (a *CredentialConfigurationsAPI) CreateCredentialConfig(ctx context.Context
 // Deletes a Databricks credential configuration object for an account, both
 // specified by ID. You cannot delete a credential that is associated with any
 // workspace.
-func (a *CredentialConfigurationsAPI) DeleteCredentialConfig(ctx context.Context, request DeleteCredentialConfigRequest) error {
-	return a.impl.DeleteCredentialConfig(ctx, request)
+func (a *CredentialsAPI) Delete(ctx context.Context, request DeleteCredentialRequest) error {
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete credential configuration
@@ -76,8 +77,8 @@ func (a *CredentialConfigurationsAPI) DeleteCredentialConfig(ctx context.Context
 // Deletes a Databricks credential configuration object for an account, both
 // specified by ID. You cannot delete a credential that is associated with any
 // workspace.
-func (a *CredentialConfigurationsAPI) DeleteCredentialConfigByCredentialsId(ctx context.Context, credentialsId string) error {
-	return a.impl.DeleteCredentialConfig(ctx, DeleteCredentialConfigRequest{
+func (a *CredentialsAPI) DeleteByCredentialsId(ctx context.Context, credentialsId string) error {
+	return a.impl.Delete(ctx, DeleteCredentialRequest{
 		CredentialsId: credentialsId,
 	})
 }
@@ -86,16 +87,16 @@ func (a *CredentialConfigurationsAPI) DeleteCredentialConfigByCredentialsId(ctx 
 //
 // Gets a Databricks credential configuration object for an account, both
 // specified by ID.
-func (a *CredentialConfigurationsAPI) GetCredentialConfig(ctx context.Context, request GetCredentialConfigRequest) (*Credential, error) {
-	return a.impl.GetCredentialConfig(ctx, request)
+func (a *CredentialsAPI) Get(ctx context.Context, request GetCredentialRequest) (*Credential, error) {
+	return a.impl.Get(ctx, request)
 }
 
 // Get credential configuration
 //
 // Gets a Databricks credential configuration object for an account, both
 // specified by ID.
-func (a *CredentialConfigurationsAPI) GetCredentialConfigByCredentialsId(ctx context.Context, credentialsId string) (*Credential, error) {
-	return a.impl.GetCredentialConfig(ctx, GetCredentialConfigRequest{
+func (a *CredentialsAPI) GetByCredentialsId(ctx context.Context, credentialsId string) (*Credential, error) {
+	return a.impl.Get(ctx, GetCredentialRequest{
 		CredentialsId: credentialsId,
 	})
 }
@@ -104,21 +105,21 @@ func (a *CredentialConfigurationsAPI) GetCredentialConfigByCredentialsId(ctx con
 //
 // Gets all Databricks credential configurations associated with an account
 // specified by ID.
-func (a *CredentialConfigurationsAPI) ListCredentials(ctx context.Context) ([]Credential, error) {
-	return a.impl.ListCredentials(ctx)
+func (a *CredentialsAPI) List(ctx context.Context) ([]Credential, error) {
+	return a.impl.List(ctx)
 }
 
-// CredentialCredentialsNameToCredentialsIdMap calls [CredentialConfigurationsAPI.ListCredentials] and creates a map of results with [Credential].CredentialsName as key and [Credential].CredentialsId as value.
+// CredentialCredentialsNameToCredentialsIdMap calls [CredentialsAPI.List] and creates a map of results with [Credential].CredentialsName as key and [Credential].CredentialsId as value.
 //
 // Returns an error if there's more than one [Credential] with the same .CredentialsName.
 //
 // Note: All [Credential] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *CredentialConfigurationsAPI) CredentialCredentialsNameToCredentialsIdMap(ctx context.Context) (map[string]string, error) {
+func (a *CredentialsAPI) CredentialCredentialsNameToCredentialsIdMap(ctx context.Context) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
-	result, err := a.ListCredentials(ctx)
+	result, err := a.List(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -133,31 +134,37 @@ func (a *CredentialConfigurationsAPI) CredentialCredentialsNameToCredentialsIdMa
 	return mapping, nil
 }
 
-// GetCredentialByCredentialsName calls [CredentialConfigurationsAPI.CredentialCredentialsNameToCredentialsIdMap] and returns a single [Credential].
+// GetByCredentialsName calls [CredentialsAPI.CredentialCredentialsNameToCredentialsIdMap] and returns a single [Credential].
 //
 // Returns an error if there's more than one [Credential] with the same .CredentialsName.
 //
-// Note: All [Credential] instances are loaded into memory before creating a map.
+// Note: All [Credential] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *CredentialConfigurationsAPI) GetCredentialByCredentialsName(ctx context.Context, name string) (*Credential, error) {
+func (a *CredentialsAPI) GetByCredentialsName(ctx context.Context, name string) (*Credential, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
-	result, err := a.ListCredentials(ctx)
+	result, err := a.List(ctx)
 	if err != nil {
 		return nil, err
 	}
+	tmp := map[string][]Credential{}
 	for _, v := range result {
-		if v.CredentialsName != name {
-			continue
-		}
-		return &v, nil
+		key := v.CredentialsName
+		tmp[key] = append(tmp[key], v)
 	}
-	return nil, fmt.Errorf("Credential named '%s' does not exist", name)
+	alternatives, ok := tmp[name]
+	if !ok || len(alternatives) == 0 {
+		return nil, fmt.Errorf("Credential named '%s' does not exist", name)
+	}
+	if len(alternatives) > 1 {
+		return nil, fmt.Errorf("there are %d instances of Credential named '%s'", len(alternatives), name)
+	}
+	return &alternatives[0], nil
 }
 
-func NewKeyConfigurations(client *client.DatabricksClient) *KeyConfigurationsAPI {
-	return &KeyConfigurationsAPI{
-		impl: &keyConfigurationsImpl{
+func NewEncryptionKeys(client *client.DatabricksClient) *EncryptionKeysAPI {
+	return &EncryptionKeysAPI{
+		impl: &encryptionKeysImpl{
 			client: client,
 		},
 	}
@@ -179,21 +186,21 @@ func NewKeyConfigurations(client *client.DatabricksClient) *KeyConfigurationsAPI
 // encryption requires that the workspace is on the E2 version of the platform.
 // If you have an older workspace, it might not be on the E2 version of the
 // platform. If you are not sure, contact your Databricks reprsentative.
-type KeyConfigurationsAPI struct {
+type EncryptionKeysAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(KeyConfigurationsService)
-	impl KeyConfigurationsService
+	// through WithImpl(EncryptionKeysService)
+	impl EncryptionKeysService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *KeyConfigurationsAPI) WithImpl(impl KeyConfigurationsService) *KeyConfigurationsAPI {
+func (a *EncryptionKeysAPI) WithImpl(impl EncryptionKeysService) *EncryptionKeysAPI {
 	a.impl = impl
 	return a
 }
 
-// Impl returns low-level KeyConfigurations API implementation
-func (a *KeyConfigurationsAPI) Impl() KeyConfigurationsService {
+// Impl returns low-level EncryptionKeys API implementation
+func (a *EncryptionKeysAPI) Impl() EncryptionKeysService {
 	return a.impl
 }
 
@@ -215,24 +222,24 @@ func (a *KeyConfigurationsAPI) Impl() KeyConfigurationsService {
 // This operation is available only if your account is on the E2 version of the
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
-func (a *KeyConfigurationsAPI) CreateKeyConfig(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error) {
-	return a.impl.CreateKeyConfig(ctx, request)
+func (a *EncryptionKeysAPI) Create(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error) {
+	return a.impl.Create(ctx, request)
 }
 
 // Delete encryption key configuration
 //
 // Deletes a customer-managed key configuration object for an account. You
 // cannot delete a configuration that is associated with a running workspace.
-func (a *KeyConfigurationsAPI) DeleteKeyConfig(ctx context.Context, request DeleteKeyConfigRequest) error {
-	return a.impl.DeleteKeyConfig(ctx, request)
+func (a *EncryptionKeysAPI) Delete(ctx context.Context, request DeleteEncryptionKeyRequest) error {
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete encryption key configuration
 //
 // Deletes a customer-managed key configuration object for an account. You
 // cannot delete a configuration that is associated with a running workspace.
-func (a *KeyConfigurationsAPI) DeleteKeyConfigByCustomerManagedKeyId(ctx context.Context, customerManagedKeyId string) error {
-	return a.impl.DeleteKeyConfig(ctx, DeleteKeyConfigRequest{
+func (a *EncryptionKeysAPI) DeleteByCustomerManagedKeyId(ctx context.Context, customerManagedKeyId string) error {
+	return a.impl.Delete(ctx, DeleteEncryptionKeyRequest{
 		CustomerManagedKeyId: customerManagedKeyId,
 	})
 }
@@ -254,8 +261,8 @@ func (a *KeyConfigurationsAPI) DeleteKeyConfigByCustomerManagedKeyId(ctx context
 //
 // This operation is available only if your account is on the E2 version of the
 // platform.
-func (a *KeyConfigurationsAPI) GetKeyConfig(ctx context.Context, request GetKeyConfigRequest) (*CustomerManagedKey, error) {
-	return a.impl.GetKeyConfig(ctx, request)
+func (a *EncryptionKeysAPI) Get(ctx context.Context, request GetEncryptionKeyRequest) (*CustomerManagedKey, error) {
+	return a.impl.Get(ctx, request)
 }
 
 // Get encryption key configuration
@@ -275,8 +282,8 @@ func (a *KeyConfigurationsAPI) GetKeyConfig(ctx context.Context, request GetKeyC
 //
 // This operation is available only if your account is on the E2 version of the
 // platform.
-func (a *KeyConfigurationsAPI) GetKeyConfigByCustomerManagedKeyId(ctx context.Context, customerManagedKeyId string) (*CustomerManagedKey, error) {
-	return a.impl.GetKeyConfig(ctx, GetKeyConfigRequest{
+func (a *EncryptionKeysAPI) GetByCustomerManagedKeyId(ctx context.Context, customerManagedKeyId string) (*CustomerManagedKey, error) {
+	return a.impl.Get(ctx, GetEncryptionKeyRequest{
 		CustomerManagedKeyId: customerManagedKeyId,
 	})
 }
@@ -291,7 +298,7 @@ func (a *KeyConfigurationsAPI) GetKeyConfigByCustomerManagedKeyId(ctx context.Co
 //
 // This operation is available only if your account is on the E2 version of the
 // platform.
-func (a *KeyConfigurationsAPI) GetKeyWorkspaceHistory(ctx context.Context) (*ListWorkspaceEncryptionKeyRecordsResponse, error) {
+func (a *EncryptionKeysAPI) GetKeyWorkspaceHistory(ctx context.Context) (*ListWorkspaceEncryptionKeyRecordsResponse, error) {
 	return a.impl.GetKeyWorkspaceHistory(ctx)
 }
 
@@ -310,13 +317,13 @@ func (a *KeyConfigurationsAPI) GetKeyWorkspaceHistory(ctx context.Context) (*Lis
 //
 // This operation is available only if your account is on the E2 version of the
 // platform.
-func (a *KeyConfigurationsAPI) ListKeyConfigs(ctx context.Context) ([]CustomerManagedKey, error) {
-	return a.impl.ListKeyConfigs(ctx)
+func (a *EncryptionKeysAPI) List(ctx context.Context) ([]CustomerManagedKey, error) {
+	return a.impl.List(ctx)
 }
 
-func NewNetworkConfigurations(client *client.DatabricksClient) *NetworkConfigurationsAPI {
-	return &NetworkConfigurationsAPI{
-		impl: &networkConfigurationsImpl{
+func NewNetworks(client *client.DatabricksClient) *NetworksAPI {
+	return &NetworksAPI{
+		impl: &networksImpl{
 			client: client,
 		},
 	}
@@ -326,21 +333,21 @@ func NewNetworkConfigurations(client *client.DatabricksClient) *NetworkConfigura
 // (optional). A network configuration encapsulates the IDs for AWS VPCs,
 // subnets, and security groups. Its ID is used when creating a new workspace if
 // you use customer-managed VPCs.
-type NetworkConfigurationsAPI struct {
+type NetworksAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(NetworkConfigurationsService)
-	impl NetworkConfigurationsService
+	// through WithImpl(NetworksService)
+	impl NetworksService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *NetworkConfigurationsAPI) WithImpl(impl NetworkConfigurationsService) *NetworkConfigurationsAPI {
+func (a *NetworksAPI) WithImpl(impl NetworksService) *NetworksAPI {
 	a.impl = impl
 	return a
 }
 
-// Impl returns low-level NetworkConfigurations API implementation
-func (a *NetworkConfigurationsAPI) Impl() NetworkConfigurationsService {
+// Impl returns low-level Networks API implementation
+func (a *NetworksAPI) Impl() NetworksService {
 	return a.impl
 }
 
@@ -364,8 +371,8 @@ func (a *NetworkConfigurationsAPI) Impl() NetworkConfigurationsService {
 //
 // This operation is available only if your account is on the E2 version of the
 // platform.
-func (a *NetworkConfigurationsAPI) CreateNetworkConfig(ctx context.Context, request CreateNetworkRequest) (*Network, error) {
-	return a.impl.CreateNetworkConfig(ctx, request)
+func (a *NetworksAPI) Create(ctx context.Context, request CreateNetworkRequest) (*Network, error) {
+	return a.impl.Create(ctx, request)
 }
 
 // Delete network configuration
@@ -376,8 +383,8 @@ func (a *NetworkConfigurationsAPI) CreateNetworkConfig(ctx context.Context, requ
 //
 // This operation is available only if your account is on the E2 version of the
 // platform.
-func (a *NetworkConfigurationsAPI) DeleteNetworkConfig(ctx context.Context, request DeleteNetworkConfigRequest) error {
-	return a.impl.DeleteNetworkConfig(ctx, request)
+func (a *NetworksAPI) Delete(ctx context.Context, request DeleteNetworkRequest) error {
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete network configuration
@@ -388,8 +395,8 @@ func (a *NetworkConfigurationsAPI) DeleteNetworkConfig(ctx context.Context, requ
 //
 // This operation is available only if your account is on the E2 version of the
 // platform.
-func (a *NetworkConfigurationsAPI) DeleteNetworkConfigByNetworkId(ctx context.Context, networkId string) error {
-	return a.impl.DeleteNetworkConfig(ctx, DeleteNetworkConfigRequest{
+func (a *NetworksAPI) DeleteByNetworkId(ctx context.Context, networkId string) error {
+	return a.impl.Delete(ctx, DeleteNetworkRequest{
 		NetworkId: networkId,
 	})
 }
@@ -403,8 +410,8 @@ func (a *NetworkConfigurationsAPI) DeleteNetworkConfigByNetworkId(ctx context.Co
 //
 // This operation is available only if your account is on the E2 version of the
 // platform.
-func (a *NetworkConfigurationsAPI) GetNetworkConfig(ctx context.Context, request GetNetworkConfigRequest) (*Network, error) {
-	return a.impl.GetNetworkConfig(ctx, request)
+func (a *NetworksAPI) Get(ctx context.Context, request GetNetworkRequest) (*Network, error) {
+	return a.impl.Get(ctx, request)
 }
 
 // Get a network configuration
@@ -416,8 +423,8 @@ func (a *NetworkConfigurationsAPI) GetNetworkConfig(ctx context.Context, request
 //
 // This operation is available only if your account is on the E2 version of the
 // platform.
-func (a *NetworkConfigurationsAPI) GetNetworkConfigByNetworkId(ctx context.Context, networkId string) (*Network, error) {
-	return a.impl.GetNetworkConfig(ctx, GetNetworkConfigRequest{
+func (a *NetworksAPI) GetByNetworkId(ctx context.Context, networkId string) (*Network, error) {
+	return a.impl.Get(ctx, GetNetworkRequest{
 		NetworkId: networkId,
 	})
 }
@@ -429,21 +436,21 @@ func (a *NetworkConfigurationsAPI) GetNetworkConfigByNetworkId(ctx context.Conte
 //
 // This operation is available only if your account is on the E2 version of the
 // platform.
-func (a *NetworkConfigurationsAPI) ListNetworkConfigs(ctx context.Context) ([]Network, error) {
-	return a.impl.ListNetworkConfigs(ctx)
+func (a *NetworksAPI) List(ctx context.Context) ([]Network, error) {
+	return a.impl.List(ctx)
 }
 
-// NetworkNetworkNameToNetworkIdMap calls [NetworkConfigurationsAPI.ListNetworkConfigs] and creates a map of results with [Network].NetworkName as key and [Network].NetworkId as value.
+// NetworkNetworkNameToNetworkIdMap calls [NetworksAPI.List] and creates a map of results with [Network].NetworkName as key and [Network].NetworkId as value.
 //
 // Returns an error if there's more than one [Network] with the same .NetworkName.
 //
 // Note: All [Network] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *NetworkConfigurationsAPI) NetworkNetworkNameToNetworkIdMap(ctx context.Context) (map[string]string, error) {
+func (a *NetworksAPI) NetworkNetworkNameToNetworkIdMap(ctx context.Context) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
-	result, err := a.ListNetworkConfigs(ctx)
+	result, err := a.List(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -458,31 +465,37 @@ func (a *NetworkConfigurationsAPI) NetworkNetworkNameToNetworkIdMap(ctx context.
 	return mapping, nil
 }
 
-// GetNetworkByNetworkName calls [NetworkConfigurationsAPI.NetworkNetworkNameToNetworkIdMap] and returns a single [Network].
+// GetByNetworkName calls [NetworksAPI.NetworkNetworkNameToNetworkIdMap] and returns a single [Network].
 //
 // Returns an error if there's more than one [Network] with the same .NetworkName.
 //
-// Note: All [Network] instances are loaded into memory before creating a map.
+// Note: All [Network] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *NetworkConfigurationsAPI) GetNetworkByNetworkName(ctx context.Context, name string) (*Network, error) {
+func (a *NetworksAPI) GetByNetworkName(ctx context.Context, name string) (*Network, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
-	result, err := a.ListNetworkConfigs(ctx)
+	result, err := a.List(ctx)
 	if err != nil {
 		return nil, err
 	}
+	tmp := map[string][]Network{}
 	for _, v := range result {
-		if v.NetworkName != name {
-			continue
-		}
-		return &v, nil
+		key := v.NetworkName
+		tmp[key] = append(tmp[key], v)
 	}
-	return nil, fmt.Errorf("Network named '%s' does not exist", name)
+	alternatives, ok := tmp[name]
+	if !ok || len(alternatives) == 0 {
+		return nil, fmt.Errorf("Network named '%s' does not exist", name)
+	}
+	if len(alternatives) > 1 {
+		return nil, fmt.Errorf("there are %d instances of Network named '%s'", len(alternatives), name)
+	}
+	return &alternatives[0], nil
 }
 
-func NewPrivateAccessSettings(client *client.DatabricksClient) *PrivateAccessSettingsAPI {
-	return &PrivateAccessSettingsAPI{
-		impl: &privateAccessSettingsImpl{
+func NewPrivateAccess(client *client.DatabricksClient) *PrivateAccessAPI {
+	return &PrivateAccessAPI{
+		impl: &privateAccessImpl{
 			client: client,
 		},
 	}
@@ -496,21 +509,21 @@ func NewPrivateAccessSettings(client *client.DatabricksClient) *PrivateAccessSet
 // Before configuring PrivateLink, it is important to read the [Databricks
 // article about
 // PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
-type PrivateAccessSettingsAPI struct {
+type PrivateAccessAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(PrivateAccessSettingsService)
-	impl PrivateAccessSettingsService
+	// through WithImpl(PrivateAccessService)
+	impl PrivateAccessService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *PrivateAccessSettingsAPI) WithImpl(impl PrivateAccessSettingsService) *PrivateAccessSettingsAPI {
+func (a *PrivateAccessAPI) WithImpl(impl PrivateAccessService) *PrivateAccessAPI {
 	a.impl = impl
 	return a
 }
 
-// Impl returns low-level PrivateAccessSettings API implementation
-func (a *PrivateAccessSettingsAPI) Impl() PrivateAccessSettingsService {
+// Impl returns low-level PrivateAccess API implementation
+func (a *PrivateAccessAPI) Impl() PrivateAccessService {
 	return a.impl
 }
 
@@ -533,8 +546,8 @@ func (a *PrivateAccessSettingsAPI) Impl() PrivateAccessSettingsService {
 // platform and your Databricks account is enabled for PrivateLink (Public
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
-func (a *PrivateAccessSettingsAPI) CreatePrivateAccessSettings(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
-	return a.impl.CreatePrivateAccessSettings(ctx, request)
+func (a *PrivateAccessAPI) Create(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
+	return a.impl.Create(ctx, request)
 }
 
 // Delete a private access settings object
@@ -549,8 +562,8 @@ func (a *PrivateAccessSettingsAPI) CreatePrivateAccessSettings(ctx context.Conte
 // platform and your Databricks account is enabled for PrivateLink (Public
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
-func (a *PrivateAccessSettingsAPI) DeletePrivateAccessSettings(ctx context.Context, request DeletePrivateAccessSettingsRequest) error {
-	return a.impl.DeletePrivateAccessSettings(ctx, request)
+func (a *PrivateAccessAPI) Delete(ctx context.Context, request DeletePrivateAccesRequest) error {
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a private access settings object
@@ -565,8 +578,8 @@ func (a *PrivateAccessSettingsAPI) DeletePrivateAccessSettings(ctx context.Conte
 // platform and your Databricks account is enabled for PrivateLink (Public
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
-func (a *PrivateAccessSettingsAPI) DeletePrivateAccessSettingsByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) error {
-	return a.impl.DeletePrivateAccessSettings(ctx, DeletePrivateAccessSettingsRequest{
+func (a *PrivateAccessAPI) DeleteByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) error {
+	return a.impl.Delete(ctx, DeletePrivateAccesRequest{
 		PrivateAccessSettingsId: privateAccessSettingsId,
 	})
 }
@@ -583,8 +596,8 @@ func (a *PrivateAccessSettingsAPI) DeletePrivateAccessSettingsByPrivateAccessSet
 // platform and your Databricks account is enabled for PrivateLink (Public
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
-func (a *PrivateAccessSettingsAPI) GetPrivateAccessSettings(ctx context.Context, request GetPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
-	return a.impl.GetPrivateAccessSettings(ctx, request)
+func (a *PrivateAccessAPI) Get(ctx context.Context, request GetPrivateAccesRequest) (*PrivateAccessSettings, error) {
+	return a.impl.Get(ctx, request)
 }
 
 // Get a private access settings object
@@ -599,8 +612,8 @@ func (a *PrivateAccessSettingsAPI) GetPrivateAccessSettings(ctx context.Context,
 // platform and your Databricks account is enabled for PrivateLink (Public
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
-func (a *PrivateAccessSettingsAPI) GetPrivateAccessSettingsByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) (*PrivateAccessSettings, error) {
-	return a.impl.GetPrivateAccessSettings(ctx, GetPrivateAccessSettingsRequest{
+func (a *PrivateAccessAPI) GetByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) (*PrivateAccessSettings, error) {
+	return a.impl.Get(ctx, GetPrivateAccesRequest{
 		PrivateAccessSettingsId: privateAccessSettingsId,
 	})
 }
@@ -614,21 +627,21 @@ func (a *PrivateAccessSettingsAPI) GetPrivateAccessSettingsByPrivateAccessSettin
 // platform and your Databricks account is enabled for AWS PrivateLink (Public
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
-func (a *PrivateAccessSettingsAPI) ListPrivateAccessSettings(ctx context.Context) ([]PrivateAccessSettings, error) {
-	return a.impl.ListPrivateAccessSettings(ctx)
+func (a *PrivateAccessAPI) List(ctx context.Context) ([]PrivateAccessSettings, error) {
+	return a.impl.List(ctx)
 }
 
-// PrivateAccessSettingsPrivateAccessSettingsNameToPrivateAccessSettingsIdMap calls [PrivateAccessSettingsAPI.ListPrivateAccessSettings] and creates a map of results with [PrivateAccessSettings].PrivateAccessSettingsName as key and [PrivateAccessSettings].PrivateAccessSettingsId as value.
+// PrivateAccessSettingsPrivateAccessSettingsNameToPrivateAccessSettingsIdMap calls [PrivateAccessAPI.List] and creates a map of results with [PrivateAccessSettings].PrivateAccessSettingsName as key and [PrivateAccessSettings].PrivateAccessSettingsId as value.
 //
 // Returns an error if there's more than one [PrivateAccessSettings] with the same .PrivateAccessSettingsName.
 //
 // Note: All [PrivateAccessSettings] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *PrivateAccessSettingsAPI) PrivateAccessSettingsPrivateAccessSettingsNameToPrivateAccessSettingsIdMap(ctx context.Context) (map[string]string, error) {
+func (a *PrivateAccessAPI) PrivateAccessSettingsPrivateAccessSettingsNameToPrivateAccessSettingsIdMap(ctx context.Context) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
-	result, err := a.ListPrivateAccessSettings(ctx)
+	result, err := a.List(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -643,26 +656,32 @@ func (a *PrivateAccessSettingsAPI) PrivateAccessSettingsPrivateAccessSettingsNam
 	return mapping, nil
 }
 
-// GetPrivateAccessSettingsByPrivateAccessSettingsName calls [PrivateAccessSettingsAPI.PrivateAccessSettingsPrivateAccessSettingsNameToPrivateAccessSettingsIdMap] and returns a single [PrivateAccessSettings].
+// GetByPrivateAccessSettingsName calls [PrivateAccessAPI.PrivateAccessSettingsPrivateAccessSettingsNameToPrivateAccessSettingsIdMap] and returns a single [PrivateAccessSettings].
 //
 // Returns an error if there's more than one [PrivateAccessSettings] with the same .PrivateAccessSettingsName.
 //
-// Note: All [PrivateAccessSettings] instances are loaded into memory before creating a map.
+// Note: All [PrivateAccessSettings] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *PrivateAccessSettingsAPI) GetPrivateAccessSettingsByPrivateAccessSettingsName(ctx context.Context, name string) (*PrivateAccessSettings, error) {
+func (a *PrivateAccessAPI) GetByPrivateAccessSettingsName(ctx context.Context, name string) (*PrivateAccessSettings, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
-	result, err := a.ListPrivateAccessSettings(ctx)
+	result, err := a.List(ctx)
 	if err != nil {
 		return nil, err
 	}
+	tmp := map[string][]PrivateAccessSettings{}
 	for _, v := range result {
-		if v.PrivateAccessSettingsName != name {
-			continue
-		}
-		return &v, nil
+		key := v.PrivateAccessSettingsName
+		tmp[key] = append(tmp[key], v)
 	}
-	return nil, fmt.Errorf("PrivateAccessSettings named '%s' does not exist", name)
+	alternatives, ok := tmp[name]
+	if !ok || len(alternatives) == 0 {
+		return nil, fmt.Errorf("PrivateAccessSettings named '%s' does not exist", name)
+	}
+	if len(alternatives) > 1 {
+		return nil, fmt.Errorf("there are %d instances of PrivateAccessSettings named '%s'", len(alternatives), name)
+	}
+	return &alternatives[0], nil
 }
 
 // Replace private access settings
@@ -690,13 +709,13 @@ func (a *PrivateAccessSettingsAPI) GetPrivateAccessSettingsByPrivateAccessSettin
 // platform and your Databricks account is enabled for PrivateLink (Public
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
-func (a *PrivateAccessSettingsAPI) ReplacePrivateAccessSettings(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
-	return a.impl.ReplacePrivateAccessSettings(ctx, request)
+func (a *PrivateAccessAPI) Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
+	return a.impl.Replace(ctx, request)
 }
 
-func NewStorageConfigurations(client *client.DatabricksClient) *StorageConfigurationsAPI {
-	return &StorageConfigurationsAPI{
-		impl: &storageConfigurationsImpl{
+func NewStorage(client *client.DatabricksClient) *StorageAPI {
+	return &StorageAPI{
+		impl: &storageImpl{
 			client: client,
 		},
 	}
@@ -708,21 +727,21 @@ func NewStorageConfigurations(client *client.DatabricksClient) *StorageConfigura
 // bucket for storage of non-production DBFS data. A storage configuration
 // encapsulates this bucket information, and its ID is used when creating a new
 // workspace.
-type StorageConfigurationsAPI struct {
+type StorageAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(StorageConfigurationsService)
-	impl StorageConfigurationsService
+	// through WithImpl(StorageService)
+	impl StorageService
 }
 
 // WithImpl could be used to override low-level API implementations for unit
 // testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *StorageConfigurationsAPI) WithImpl(impl StorageConfigurationsService) *StorageConfigurationsAPI {
+func (a *StorageAPI) WithImpl(impl StorageService) *StorageAPI {
 	a.impl = impl
 	return a
 }
 
-// Impl returns low-level StorageConfigurations API implementation
-func (a *StorageConfigurationsAPI) Impl() StorageConfigurationsService {
+// Impl returns low-level Storage API implementation
+func (a *StorageAPI) Impl() StorageService {
 	return a.impl
 }
 
@@ -737,24 +756,24 @@ func (a *StorageConfigurationsAPI) Impl() StorageConfigurationsService {
 // For information about how to create a new workspace with this API, see
 // [Create a new workspace using the Account
 // API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html)
-func (a *StorageConfigurationsAPI) CreateStorageConfig(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error) {
-	return a.impl.CreateStorageConfig(ctx, request)
+func (a *StorageAPI) Create(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error) {
+	return a.impl.Create(ctx, request)
 }
 
 // Delete storage configuration
 //
 // Deletes a Databricks storage configuration. You cannot delete a storage
 // configuration that is associated with any workspace.
-func (a *StorageConfigurationsAPI) DeleteStorageConfig(ctx context.Context, request DeleteStorageConfigRequest) error {
-	return a.impl.DeleteStorageConfig(ctx, request)
+func (a *StorageAPI) Delete(ctx context.Context, request DeleteStorageRequest) error {
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete storage configuration
 //
 // Deletes a Databricks storage configuration. You cannot delete a storage
 // configuration that is associated with any workspace.
-func (a *StorageConfigurationsAPI) DeleteStorageConfigByStorageConfigurationId(ctx context.Context, storageConfigurationId string) error {
-	return a.impl.DeleteStorageConfig(ctx, DeleteStorageConfigRequest{
+func (a *StorageAPI) DeleteByStorageConfigurationId(ctx context.Context, storageConfigurationId string) error {
+	return a.impl.Delete(ctx, DeleteStorageRequest{
 		StorageConfigurationId: storageConfigurationId,
 	})
 }
@@ -762,15 +781,15 @@ func (a *StorageConfigurationsAPI) DeleteStorageConfigByStorageConfigurationId(c
 // Get storage configuration
 //
 // Gets a Databricks storage configuration for an account, both specified by ID.
-func (a *StorageConfigurationsAPI) GetStorageConfig(ctx context.Context, request GetStorageConfigRequest) (*StorageConfiguration, error) {
-	return a.impl.GetStorageConfig(ctx, request)
+func (a *StorageAPI) Get(ctx context.Context, request GetStorageRequest) (*StorageConfiguration, error) {
+	return a.impl.Get(ctx, request)
 }
 
 // Get storage configuration
 //
 // Gets a Databricks storage configuration for an account, both specified by ID.
-func (a *StorageConfigurationsAPI) GetStorageConfigByStorageConfigurationId(ctx context.Context, storageConfigurationId string) (*StorageConfiguration, error) {
-	return a.impl.GetStorageConfig(ctx, GetStorageConfigRequest{
+func (a *StorageAPI) GetByStorageConfigurationId(ctx context.Context, storageConfigurationId string) (*StorageConfiguration, error) {
+	return a.impl.Get(ctx, GetStorageRequest{
 		StorageConfigurationId: storageConfigurationId,
 	})
 }
@@ -779,21 +798,21 @@ func (a *StorageConfigurationsAPI) GetStorageConfigByStorageConfigurationId(ctx 
 //
 // Gets a list of all Databricks storage configurations for your account,
 // specified by ID.
-func (a *StorageConfigurationsAPI) ListStorageConfigs(ctx context.Context) ([]StorageConfiguration, error) {
-	return a.impl.ListStorageConfigs(ctx)
+func (a *StorageAPI) List(ctx context.Context) ([]StorageConfiguration, error) {
+	return a.impl.List(ctx)
 }
 
-// StorageConfigurationStorageConfigurationNameToStorageConfigurationIdMap calls [StorageConfigurationsAPI.ListStorageConfigs] and creates a map of results with [StorageConfiguration].StorageConfigurationName as key and [StorageConfiguration].StorageConfigurationId as value.
+// StorageConfigurationStorageConfigurationNameToStorageConfigurationIdMap calls [StorageAPI.List] and creates a map of results with [StorageConfiguration].StorageConfigurationName as key and [StorageConfiguration].StorageConfigurationId as value.
 //
 // Returns an error if there's more than one [StorageConfiguration] with the same .StorageConfigurationName.
 //
 // Note: All [StorageConfiguration] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *StorageConfigurationsAPI) StorageConfigurationStorageConfigurationNameToStorageConfigurationIdMap(ctx context.Context) (map[string]string, error) {
+func (a *StorageAPI) StorageConfigurationStorageConfigurationNameToStorageConfigurationIdMap(ctx context.Context) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
-	result, err := a.ListStorageConfigs(ctx)
+	result, err := a.List(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -808,26 +827,32 @@ func (a *StorageConfigurationsAPI) StorageConfigurationStorageConfigurationNameT
 	return mapping, nil
 }
 
-// GetStorageConfigurationByStorageConfigurationName calls [StorageConfigurationsAPI.StorageConfigurationStorageConfigurationNameToStorageConfigurationIdMap] and returns a single [StorageConfiguration].
+// GetByStorageConfigurationName calls [StorageAPI.StorageConfigurationStorageConfigurationNameToStorageConfigurationIdMap] and returns a single [StorageConfiguration].
 //
 // Returns an error if there's more than one [StorageConfiguration] with the same .StorageConfigurationName.
 //
-// Note: All [StorageConfiguration] instances are loaded into memory before creating a map.
+// Note: All [StorageConfiguration] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *StorageConfigurationsAPI) GetStorageConfigurationByStorageConfigurationName(ctx context.Context, name string) (*StorageConfiguration, error) {
+func (a *StorageAPI) GetByStorageConfigurationName(ctx context.Context, name string) (*StorageConfiguration, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
-	result, err := a.ListStorageConfigs(ctx)
+	result, err := a.List(ctx)
 	if err != nil {
 		return nil, err
 	}
+	tmp := map[string][]StorageConfiguration{}
 	for _, v := range result {
-		if v.StorageConfigurationName != name {
-			continue
-		}
-		return &v, nil
+		key := v.StorageConfigurationName
+		tmp[key] = append(tmp[key], v)
 	}
-	return nil, fmt.Errorf("StorageConfiguration named '%s' does not exist", name)
+	alternatives, ok := tmp[name]
+	if !ok || len(alternatives) == 0 {
+		return nil, fmt.Errorf("StorageConfiguration named '%s' does not exist", name)
+	}
+	if len(alternatives) > 1 {
+		return nil, fmt.Errorf("there are %d instances of StorageConfiguration named '%s'", len(alternatives), name)
+	}
+	return &alternatives[0], nil
 }
 
 func NewVpcEndpoints(client *client.DatabricksClient) *VpcEndpointsAPI {
@@ -894,8 +919,8 @@ func (a *VpcEndpointsAPI) Impl() VpcEndpointsService {
 // platform and your Databricks account is enabled for PrivateLink (Public
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
-func (a *VpcEndpointsAPI) CreateVpcEndpoint(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error) {
-	return a.impl.CreateVpcEndpoint(ctx, request)
+func (a *VpcEndpointsAPI) Create(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error) {
+	return a.impl.Create(ctx, request)
 }
 
 // Delete VPC endpoint configuration
@@ -916,8 +941,8 @@ func (a *VpcEndpointsAPI) CreateVpcEndpoint(ctx context.Context, request CreateV
 // platform and your Databricks account is enabled for PrivateLink (Public
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
-func (a *VpcEndpointsAPI) DeleteVpcEndpoint(ctx context.Context, request DeleteVpcEndpointRequest) error {
-	return a.impl.DeleteVpcEndpoint(ctx, request)
+func (a *VpcEndpointsAPI) Delete(ctx context.Context, request DeleteVpcEndpointRequest) error {
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete VPC endpoint configuration
@@ -938,8 +963,8 @@ func (a *VpcEndpointsAPI) DeleteVpcEndpoint(ctx context.Context, request DeleteV
 // platform and your Databricks account is enabled for PrivateLink (Public
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
-func (a *VpcEndpointsAPI) DeleteVpcEndpointByVpcEndpointId(ctx context.Context, vpcEndpointId string) error {
-	return a.impl.DeleteVpcEndpoint(ctx, DeleteVpcEndpointRequest{
+func (a *VpcEndpointsAPI) DeleteByVpcEndpointId(ctx context.Context, vpcEndpointId string) error {
+	return a.impl.Delete(ctx, DeleteVpcEndpointRequest{
 		VpcEndpointId: vpcEndpointId,
 	})
 }
@@ -955,8 +980,8 @@ func (a *VpcEndpointsAPI) DeleteVpcEndpointByVpcEndpointId(ctx context.Context, 
 // platform and your Databricks account is enabled for PrivateLink (Public
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
-func (a *VpcEndpointsAPI) GetVpcEndpoint(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
-	return a.impl.GetVpcEndpoint(ctx, request)
+func (a *VpcEndpointsAPI) Get(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
+	return a.impl.Get(ctx, request)
 }
 
 // Get a VPC endpoint configuration
@@ -970,8 +995,8 @@ func (a *VpcEndpointsAPI) GetVpcEndpoint(ctx context.Context, request GetVpcEndp
 // platform and your Databricks account is enabled for PrivateLink (Public
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
-func (a *VpcEndpointsAPI) GetVpcEndpointByVpcEndpointId(ctx context.Context, vpcEndpointId string) (*VpcEndpoint, error) {
-	return a.impl.GetVpcEndpoint(ctx, GetVpcEndpointRequest{
+func (a *VpcEndpointsAPI) GetByVpcEndpointId(ctx context.Context, vpcEndpointId string) (*VpcEndpoint, error) {
+	return a.impl.Get(ctx, GetVpcEndpointRequest{
 		VpcEndpointId: vpcEndpointId,
 	})
 }
@@ -987,8 +1012,8 @@ func (a *VpcEndpointsAPI) GetVpcEndpointByVpcEndpointId(ctx context.Context, vpc
 // platform and your Databricks account is enabled for PrivateLink (Public
 // Preview). Contact your Databricks representative to enable your account for
 // PrivateLink.
-func (a *VpcEndpointsAPI) ListVpcEndpoints(ctx context.Context) ([]VpcEndpoint, error) {
-	return a.impl.ListVpcEndpoints(ctx)
+func (a *VpcEndpointsAPI) List(ctx context.Context) ([]VpcEndpoint, error) {
+	return a.impl.List(ctx)
 }
 
 func NewWorkspaces(client *client.DatabricksClient) *WorkspacesAPI {
@@ -1061,17 +1086,17 @@ func (a *WorkspacesAPI) Impl() WorkspacesService {
 // representative.\n\nThis operation is available only if your account is on the
 // E2 version of the platform or on a select custom plan that allows multiple
 // workspaces per account.
-func (a *WorkspacesAPI) CreateWorkspace(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {
-	return a.impl.CreateWorkspace(ctx, request)
+func (a *WorkspacesAPI) Create(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {
+	return a.impl.Create(ctx, request)
 }
 
-// Calls [WorkspacesAPI.CreateWorkspace] and waits to reach RUNNING state
+// Calls [WorkspacesAPI.Create] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[Workspace](60*time.Minute) functional option.
-func (a *WorkspacesAPI) CreateWorkspaceAndWait(ctx context.Context, createWorkspaceRequest CreateWorkspaceRequest, options ...retries.Option[Workspace]) (*Workspace, error) {
+func (a *WorkspacesAPI) CreateAndWait(ctx context.Context, createWorkspaceRequest CreateWorkspaceRequest, options ...retries.Option[Workspace]) (*Workspace, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	workspace, err := a.CreateWorkspace(ctx, createWorkspaceRequest)
+	workspace, err := a.Create(ctx, createWorkspaceRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -1080,7 +1105,7 @@ func (a *WorkspacesAPI) CreateWorkspaceAndWait(ctx context.Context, createWorksp
 		o(&i)
 	}
 	return retries.Poll[Workspace](ctx, i.Timeout, func() (*Workspace, *retries.Err) {
-		workspace, err := a.GetWorkspace(ctx, GetWorkspaceRequest{
+		workspace, err := a.Get(ctx, GetWorkspaceRequest{
 			WorkspaceId: workspace.WorkspaceId,
 		})
 		if err != nil {
@@ -1117,8 +1142,8 @@ func (a *WorkspacesAPI) CreateWorkspaceAndWait(ctx context.Context, createWorksp
 // This operation is available only if your account is on the E2 version of the
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
-func (a *WorkspacesAPI) DeleteWorkspace(ctx context.Context, request DeleteWorkspaceRequest) error {
-	return a.impl.DeleteWorkspace(ctx, request)
+func (a *WorkspacesAPI) Delete(ctx context.Context, request DeleteWorkspaceRequest) error {
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete workspace
@@ -1131,68 +1156,29 @@ func (a *WorkspacesAPI) DeleteWorkspace(ctx context.Context, request DeleteWorks
 // This operation is available only if your account is on the E2 version of the
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
-func (a *WorkspacesAPI) DeleteWorkspaceByWorkspaceId(ctx context.Context, workspaceId int64) error {
-	return a.impl.DeleteWorkspace(ctx, DeleteWorkspaceRequest{
+func (a *WorkspacesAPI) DeleteByWorkspaceId(ctx context.Context, workspaceId int64) error {
+	return a.impl.Delete(ctx, DeleteWorkspaceRequest{
 		WorkspaceId: workspaceId,
 	})
 }
 
-// Get all workspaces
+// Get workspace
 //
-// Gets a list of all workspaces associated with an account, specified by ID.
+// Gets information including status for a Databricks workspace, specified by
+// ID. In the response, the `workspace_status` field indicates the current
+// status. After initial workspace creation (which is asynchronous), make
+// repeated `GET` requests with the workspace ID and check its status. The
+// workspace becomes available when the status changes to `RUNNING`.
+//
+// For information about how to create a new workspace with this API **including
+// error handling**, see [Create a new workspace using the Account
+// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html).
 //
 // This operation is available only if your account is on the E2 version of the
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
-func (a *WorkspacesAPI) GetAllWorkspaces(ctx context.Context) ([]Workspace, error) {
-	return a.impl.GetAllWorkspaces(ctx)
-}
-
-// WorkspaceWorkspaceNameToWorkspaceIdMap calls [WorkspacesAPI.GetAllWorkspaces] and creates a map of results with [Workspace].WorkspaceName as key and [Workspace].WorkspaceId as value.
-//
-// Returns an error if there's more than one [Workspace] with the same .WorkspaceName.
-//
-// Note: All [Workspace] instances are loaded into memory before creating a map.
-//
-// This method is generated by Databricks SDK Code Generator.
-func (a *WorkspacesAPI) WorkspaceWorkspaceNameToWorkspaceIdMap(ctx context.Context) (map[string]int64, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
-	mapping := map[string]int64{}
-	result, err := a.GetAllWorkspaces(ctx)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		key := v.WorkspaceName
-		_, duplicate := mapping[key]
-		if duplicate {
-			return nil, fmt.Errorf("duplicate .WorkspaceName: %s", key)
-		}
-		mapping[key] = v.WorkspaceId
-	}
-	return mapping, nil
-}
-
-// GetWorkspaceByWorkspaceName calls [WorkspacesAPI.WorkspaceWorkspaceNameToWorkspaceIdMap] and returns a single [Workspace].
-//
-// Returns an error if there's more than one [Workspace] with the same .WorkspaceName.
-//
-// Note: All [Workspace] instances are loaded into memory before creating a map.
-//
-// This method is generated by Databricks SDK Code Generator.
-func (a *WorkspacesAPI) GetWorkspaceByWorkspaceName(ctx context.Context, name string) (*Workspace, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
-	result, err := a.GetAllWorkspaces(ctx)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		if v.WorkspaceName != name {
-			continue
-		}
-		return &v, nil
-	}
-	return nil, fmt.Errorf("Workspace named '%s' does not exist", name)
+func (a *WorkspacesAPI) Get(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error) {
+	return a.impl.Get(ctx, request)
 }
 
 // Get workspace
@@ -1210,27 +1196,8 @@ func (a *WorkspacesAPI) GetWorkspaceByWorkspaceName(ctx context.Context, name st
 // This operation is available only if your account is on the E2 version of the
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
-func (a *WorkspacesAPI) GetWorkspace(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error) {
-	return a.impl.GetWorkspace(ctx, request)
-}
-
-// Get workspace
-//
-// Gets information including status for a Databricks workspace, specified by
-// ID. In the response, the `workspace_status` field indicates the current
-// status. After initial workspace creation (which is asynchronous), make
-// repeated `GET` requests with the workspace ID and check its status. The
-// workspace becomes available when the status changes to `RUNNING`.
-//
-// For information about how to create a new workspace with this API **including
-// error handling**, see [Create a new workspace using the Account
-// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html).
-//
-// This operation is available only if your account is on the E2 version of the
-// platform or on a select custom plan that allows multiple workspaces per
-// account.
-func (a *WorkspacesAPI) GetWorkspaceByWorkspaceId(ctx context.Context, workspaceId int64) (*Workspace, error) {
-	return a.impl.GetWorkspace(ctx, GetWorkspaceRequest{
+func (a *WorkspacesAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*Workspace, error) {
+	return a.impl.Get(ctx, GetWorkspaceRequest{
 		WorkspaceId: workspaceId,
 	})
 }
@@ -1275,6 +1242,70 @@ func (a *WorkspacesAPI) GetWorkspaceKeyHistoryByWorkspaceId(ctx context.Context,
 	return a.impl.GetWorkspaceKeyHistory(ctx, GetWorkspaceKeyHistoryRequest{
 		WorkspaceId: workspaceId,
 	})
+}
+
+// Get all workspaces
+//
+// Gets a list of all workspaces associated with an account, specified by ID.
+//
+// This operation is available only if your account is on the E2 version of the
+// platform or on a select custom plan that allows multiple workspaces per
+// account.
+func (a *WorkspacesAPI) List(ctx context.Context) ([]Workspace, error) {
+	return a.impl.List(ctx)
+}
+
+// WorkspaceWorkspaceNameToWorkspaceIdMap calls [WorkspacesAPI.List] and creates a map of results with [Workspace].WorkspaceName as key and [Workspace].WorkspaceId as value.
+//
+// Returns an error if there's more than one [Workspace] with the same .WorkspaceName.
+//
+// Note: All [Workspace] instances are loaded into memory before creating a map.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *WorkspacesAPI) WorkspaceWorkspaceNameToWorkspaceIdMap(ctx context.Context) (map[string]int64, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
+	mapping := map[string]int64{}
+	result, err := a.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		key := v.WorkspaceName
+		_, duplicate := mapping[key]
+		if duplicate {
+			return nil, fmt.Errorf("duplicate .WorkspaceName: %s", key)
+		}
+		mapping[key] = v.WorkspaceId
+	}
+	return mapping, nil
+}
+
+// GetByWorkspaceName calls [WorkspacesAPI.WorkspaceWorkspaceNameToWorkspaceIdMap] and returns a single [Workspace].
+//
+// Returns an error if there's more than one [Workspace] with the same .WorkspaceName.
+//
+// Note: All [Workspace] instances are loaded into memory before returning matching by name.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *WorkspacesAPI) GetByWorkspaceName(ctx context.Context, name string) (*Workspace, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
+	result, err := a.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	tmp := map[string][]Workspace{}
+	for _, v := range result {
+		key := v.WorkspaceName
+		tmp[key] = append(tmp[key], v)
+	}
+	alternatives, ok := tmp[name]
+	if !ok || len(alternatives) == 0 {
+		return nil, fmt.Errorf("Workspace named '%s' does not exist", name)
+	}
+	if len(alternatives) > 1 {
+		return nil, fmt.Errorf("there are %d instances of Workspace named '%s'", len(alternatives), name)
+	}
+	return &alternatives[0], nil
 }
 
 // Update workspace configuration
@@ -1381,6 +1412,48 @@ func (a *WorkspacesAPI) GetWorkspaceKeyHistoryByWorkspaceId(ctx context.Context,
 // This operation is available only if your account is on the E2 version of the
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
-func (a *WorkspacesAPI) UpdateWorkspace(ctx context.Context, request UpdateWorkspaceRequest) error {
-	return a.impl.UpdateWorkspace(ctx, request)
+func (a *WorkspacesAPI) Update(ctx context.Context, request UpdateWorkspaceRequest) error {
+	return a.impl.Update(ctx, request)
+}
+
+// Calls [WorkspacesAPI.Update] and waits to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[Workspace](60*time.Minute) functional option.
+func (a *WorkspacesAPI) UpdateAndWait(ctx context.Context, updateWorkspaceRequest UpdateWorkspaceRequest, options ...retries.Option[Workspace]) (*Workspace, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	err := a.Update(ctx, updateWorkspaceRequest)
+	if err != nil {
+		return nil, err
+	}
+	i := retries.Info[Workspace]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(&i)
+	}
+	return retries.Poll[Workspace](ctx, i.Timeout, func() (*Workspace, *retries.Err) {
+		workspace, err := a.Get(ctx, GetWorkspaceRequest{
+			WorkspaceId: updateWorkspaceRequest.WorkspaceId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		for _, o := range options {
+			o(&retries.Info[Workspace]{
+				Info:    *workspace,
+				Timeout: i.Timeout,
+			})
+		}
+		status := workspace.WorkspaceStatus
+		statusMessage := workspace.WorkspaceStatusMessage
+		switch status {
+		case WorkspaceStatusRunning: // target state
+			return workspace, nil
+		case WorkspaceStatusBanned, WorkspaceStatusFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				WorkspaceStatusRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
 }

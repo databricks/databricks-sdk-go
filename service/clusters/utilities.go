@@ -14,7 +14,7 @@ import (
 var getOrCreateClusterMutex sync.Mutex
 
 func (ci *ClusterInfo) IsRunningOrResizing() bool {
-	return ci.State == ClusterInfoStateRunning || ci.State == ClusterInfoStateResizing
+	return ci.State == StateRunning || ci.State == StateResizing
 }
 
 // GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist
@@ -25,7 +25,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 		err = fmt.Errorf("you can only specify 1 custom cluster conf, not %d", len(custom))
 		return
 	}
-	clusters, err := a.ListAll(ctx, ListRequest{})
+	clusters, err := a.ListAll(ctx, List{})
 	if err != nil {
 		return
 	}
@@ -46,7 +46,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	}
 	nodeTypes, err := a.ListNodeTypes(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("list node types: %w", err) // TODO: GENERATOR: prefix method name
+		return nil, fmt.Errorf("list node types: %w", err)
 	}
 	smallestNodeType, err := nodeTypes.Smallest(NodeTypeRequest{
 		LocalDisk: true,
@@ -57,7 +57,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	logger.Infof("Creating an autoterminating cluster with node type %s", smallestNodeType)
 	versions, err := a.SparkVersions(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("list spark versions: %w", err) // TODO: GENERATOR: prefix method name
+		return nil, fmt.Errorf("list spark versions: %w", err)
 	}
 	version, err := versions.Select(SparkVersionRequest{
 		Latest:          true,

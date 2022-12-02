@@ -10,8 +10,8 @@ import (
 
 var ConfigAttributes = loadAttrs()
 
-// Attributes holds meta-representation of Config configuration options
-type Attributes []ConfigAttribute
+// attributes holds meta-representation of Config configuration options
+type attributes []ConfigAttribute
 
 type environmentVariableLoader struct{}
 
@@ -33,7 +33,7 @@ func (l environmentVariableLoader) Configure(cfg *Config) error {
 	return nil
 }
 
-func (a Attributes) DebugString(cfg *Config) string {
+func (a attributes) DebugString(cfg *Config) string {
 	buf := []string{}
 	attrsUsed := []string{}
 	envsUsed := []string{}
@@ -67,7 +67,7 @@ func (a Attributes) DebugString(cfg *Config) string {
 	return strings.Join(buf, ". ")
 }
 
-func (a Attributes) Validate(cfg *Config) error {
+func (a attributes) Validate(cfg *Config) error {
 	authsUsed := map[string]bool{}
 	for _, attr := range a {
 		if attr.IsZero(cfg) {
@@ -94,7 +94,7 @@ func (a Attributes) Validate(cfg *Config) error {
 		strings.Join(names, " and "))
 }
 
-func (a Attributes) ResolveFromStringMap(cfg *Config, m map[string]string) error {
+func (a attributes) ResolveFromStringMap(cfg *Config, m map[string]string) error {
 	for _, attr := range a {
 		v, ok := m[attr.Name]
 		if !ok || v == "" {
@@ -110,7 +110,7 @@ func (a Attributes) ResolveFromStringMap(cfg *Config, m map[string]string) error
 
 // Merge takes attributes from src and sets them on dst.
 // Attributes that are already set on dst are skipped.
-func (a Attributes) Merge(dst *Config, src *Config) error {
+func (a attributes) Merge(dst *Config, src *Config) error {
 	for _, attr := range a {
 		// Ignore if this attribute isn't set at the source.
 		if attr.IsZero(src) {
@@ -133,7 +133,7 @@ func (a Attributes) Merge(dst *Config, src *Config) error {
 	return nil
 }
 
-func loadAttrs() (attrs Attributes) {
+func loadAttrs() (attrs attributes) {
 	t := reflect.TypeOf(Config{})
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)

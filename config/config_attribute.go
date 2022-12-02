@@ -9,6 +9,8 @@ import (
 
 // ConfigAttribute provides generic way to work with Config configuration
 // attributes and parses `name`, `env`, and `auth` field tags.
+//
+// Internal: this field can become unexported in the future
 type ConfigAttribute struct {
 	Name      string
 	Kind      reflect.Kind

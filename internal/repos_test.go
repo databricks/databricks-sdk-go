@@ -1,11 +1,9 @@
 package internal
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/repos"
 	"github.com/databricks/databricks-sdk-go/service/workspaceconf"
 	"github.com/stretchr/testify/assert"
@@ -13,16 +11,10 @@ import (
 )
 
 func TestAccRepos(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	// Skip this test if "Files in Repos" is not enabled.
-	conf, err := w.WorkspaceConf.GetStatus(ctx, workspaceconf.GetStatusRequest{
+	conf, err := w.WorkspaceConf.GetStatus(ctx, workspaceconf.GetStatus{
 		Keys: "enableWorkspaceFilesystem",
 	})
 	require.NoError(t, err)
@@ -30,11 +22,8 @@ func TestAccRepos(t *testing.T) {
 		t.Skipf("Files in Repos not enabled in this workspace")
 	}
 
-	me, err := w.CurrentUser.Me(ctx)
-	require.NoError(t, err)
-
 	// Synthesize unique path for this checkout in this user's home.
-	root := RandomName(fmt.Sprintf("/Repos/%s/tf-", me.UserName))
+	root := RandomName(fmt.Sprintf("/Repos/%s/tf-", me(t, w).UserName))
 	ri, err := w.Repos.Create(ctx, repos.CreateRepo{
 		Path:     root,
 		Url:      "https://github.com/shreyas-goenka/empty-repo.git",
@@ -43,7 +32,7 @@ func TestAccRepos(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		err = w.Repos.DeleteByRepoId(ctx, ri.Id)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	assert.Equal(t, "main", ri.Branch)
@@ -53,7 +42,20 @@ func TestAccRepos(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	all, err := w.Repos.ListAll(ctx, repos.ListRequest{})
+	byId, err := w.Repos.GetByRepoId(ctx, ri.Id)
+	require.NoError(t, err)
+
+	byName, err := w.Repos.GetByPath(ctx, byId.Path)
+	require.NoError(t, err)
+	assert.Equal(t, byId.Id, byName.Id)
+
+	all, err := w.Repos.ListAll(ctx, repos.List{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
+
+	paths, err := w.Repos.RepoInfoPathToIdMap(ctx, repos.List{
+		PathPrefix: "/",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, len(paths), len(all))
 }

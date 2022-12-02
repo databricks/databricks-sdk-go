@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"context"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go"
@@ -11,16 +10,10 @@ import (
 )
 
 func TestAccTokens(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	token, err := w.Tokens.Create(ctx, tokens.CreateTokenRequest{
-		Comment:         "xyz",
+		Comment:         RandomName("go-sdk-"),
 		LifetimeSeconds: 300,
 	})
 	require.NoError(t, err)
@@ -29,15 +22,21 @@ func TestAccTokens(t *testing.T) {
 		require.NoError(t, err)
 	})
 
+	all, err := w.Tokens.ListAll(ctx)
+	require.NoError(t, err)
+	assert.True(t, len(all) >= 1)
+
+	byName, err := w.Tokens.GetByComment(ctx, token.TokenInfo.Comment)
+	require.NoError(t, err)
+	assert.Equal(t, token.TokenInfo.TokenId, byName.TokenId)
+
 	wscInner := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		Host:     w.Config.Host,
 		Token:    token.TokenValue,
 		AuthType: "pat",
 	}))
 
-	me, err := w.CurrentUser.Me(ctx)
-	require.NoError(t, err)
 	me2, err := wscInner.CurrentUser.Me(ctx)
 	require.NoError(t, err)
-	assert.Equal(t, me2.UserName, me.UserName)
+	assert.Equal(t, me2.UserName, me(t, w).UserName)
 }

@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters.
 package commands
 
 import (
@@ -79,7 +80,10 @@ func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand C
 			})
 		}
 		status := commandStatusResponse.Status
-		statusMessage := commandStatusResponse.Results.Cause
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if commandStatusResponse.Results != nil {
+			statusMessage = commandStatusResponse.Results.Cause
+		}
 		switch status {
 		case CommandStatusCancelled: // target state
 			return commandStatusResponse, nil

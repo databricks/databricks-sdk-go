@@ -10,173 +10,173 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 )
 
-// unexported type that holds implementations of just CredentialConfigurations API methods
-type credentialConfigurationsImpl struct {
+// unexported type that holds implementations of just Credentials API methods
+type credentialsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *credentialConfigurationsImpl) CreateCredentialConfig(ctx context.Context, request CreateCredentialRequest) (*Credential, error) {
+func (a *credentialsImpl) Create(ctx context.Context, request CreateCredentialRequest) (*Credential, error) {
 	var credential Credential
 	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodPost, path, request, &credential)
 	return &credential, err
 }
 
-func (a *credentialConfigurationsImpl) DeleteCredentialConfig(ctx context.Context, request DeleteCredentialConfigRequest) error {
+func (a *credentialsImpl) Delete(ctx context.Context, request DeleteCredentialRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.ConfiguredAccountID(), request.CredentialsId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *credentialConfigurationsImpl) GetCredentialConfig(ctx context.Context, request GetCredentialConfigRequest) (*Credential, error) {
+func (a *credentialsImpl) Get(ctx context.Context, request GetCredentialRequest) (*Credential, error) {
 	var credential Credential
 	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials/%v", a.client.ConfiguredAccountID(), request.CredentialsId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &credential)
 	return &credential, err
 }
 
-func (a *credentialConfigurationsImpl) ListCredentials(ctx context.Context) ([]Credential, error) {
+func (a *credentialsImpl) List(ctx context.Context) ([]Credential, error) {
 	var credentialList []Credential
 	path := fmt.Sprintf("/api/2.0/accounts/%v/credentials", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &credentialList)
 	return credentialList, err
 }
 
-// unexported type that holds implementations of just KeyConfigurations API methods
-type keyConfigurationsImpl struct {
+// unexported type that holds implementations of just EncryptionKeys API methods
+type encryptionKeysImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *keyConfigurationsImpl) CreateKeyConfig(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error) {
+func (a *encryptionKeysImpl) Create(ctx context.Context, request CreateCustomerManagedKeyRequest) (*CustomerManagedKey, error) {
 	var customerManagedKey CustomerManagedKey
 	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodPost, path, request, &customerManagedKey)
 	return &customerManagedKey, err
 }
 
-func (a *keyConfigurationsImpl) DeleteKeyConfig(ctx context.Context, request DeleteKeyConfigRequest) error {
+func (a *encryptionKeysImpl) Delete(ctx context.Context, request DeleteEncryptionKeyRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.ConfiguredAccountID(), request.CustomerManagedKeyId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *keyConfigurationsImpl) GetKeyConfig(ctx context.Context, request GetKeyConfigRequest) (*CustomerManagedKey, error) {
+func (a *encryptionKeysImpl) Get(ctx context.Context, request GetEncryptionKeyRequest) (*CustomerManagedKey, error) {
 	var customerManagedKey CustomerManagedKey
 	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys/%v", a.client.ConfiguredAccountID(), request.CustomerManagedKeyId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &customerManagedKey)
 	return &customerManagedKey, err
 }
 
-func (a *keyConfigurationsImpl) GetKeyWorkspaceHistory(ctx context.Context) (*ListWorkspaceEncryptionKeyRecordsResponse, error) {
+func (a *encryptionKeysImpl) GetKeyWorkspaceHistory(ctx context.Context) (*ListWorkspaceEncryptionKeyRecordsResponse, error) {
 	var listWorkspaceEncryptionKeyRecordsResponse ListWorkspaceEncryptionKeyRecordsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-key-history", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &listWorkspaceEncryptionKeyRecordsResponse)
 	return &listWorkspaceEncryptionKeyRecordsResponse, err
 }
 
-func (a *keyConfigurationsImpl) ListKeyConfigs(ctx context.Context) ([]CustomerManagedKey, error) {
+func (a *encryptionKeysImpl) List(ctx context.Context) ([]CustomerManagedKey, error) {
 	var customerManagedKeyList []CustomerManagedKey
 	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &customerManagedKeyList)
 	return customerManagedKeyList, err
 }
 
-// unexported type that holds implementations of just NetworkConfigurations API methods
-type networkConfigurationsImpl struct {
+// unexported type that holds implementations of just Networks API methods
+type networksImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *networkConfigurationsImpl) CreateNetworkConfig(ctx context.Context, request CreateNetworkRequest) (*Network, error) {
+func (a *networksImpl) Create(ctx context.Context, request CreateNetworkRequest) (*Network, error) {
 	var network Network
 	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodPost, path, request, &network)
 	return &network, err
 }
 
-func (a *networkConfigurationsImpl) DeleteNetworkConfig(ctx context.Context, request DeleteNetworkConfigRequest) error {
+func (a *networksImpl) Delete(ctx context.Context, request DeleteNetworkRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.ConfiguredAccountID(), request.NetworkId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *networkConfigurationsImpl) GetNetworkConfig(ctx context.Context, request GetNetworkConfigRequest) (*Network, error) {
+func (a *networksImpl) Get(ctx context.Context, request GetNetworkRequest) (*Network, error) {
 	var network Network
 	path := fmt.Sprintf("/api/2.0/accounts/%v/networks/%v", a.client.ConfiguredAccountID(), request.NetworkId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &network)
 	return &network, err
 }
 
-func (a *networkConfigurationsImpl) ListNetworkConfigs(ctx context.Context) ([]Network, error) {
+func (a *networksImpl) List(ctx context.Context) ([]Network, error) {
 	var networkList []Network
 	path := fmt.Sprintf("/api/2.0/accounts/%v/networks", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &networkList)
 	return networkList, err
 }
 
-// unexported type that holds implementations of just PrivateAccessSettings API methods
-type privateAccessSettingsImpl struct {
+// unexported type that holds implementations of just PrivateAccess API methods
+type privateAccessImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *privateAccessSettingsImpl) CreatePrivateAccessSettings(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
+func (a *privateAccessImpl) Create(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
 	var privateAccessSettings PrivateAccessSettings
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodPost, path, request, &privateAccessSettings)
 	return &privateAccessSettings, err
 }
 
-func (a *privateAccessSettingsImpl) DeletePrivateAccessSettings(ctx context.Context, request DeletePrivateAccessSettingsRequest) error {
+func (a *privateAccessImpl) Delete(ctx context.Context, request DeletePrivateAccesRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *privateAccessSettingsImpl) GetPrivateAccessSettings(ctx context.Context, request GetPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
+func (a *privateAccessImpl) Get(ctx context.Context, request GetPrivateAccesRequest) (*PrivateAccessSettings, error) {
 	var privateAccessSettings PrivateAccessSettings
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &privateAccessSettings)
 	return &privateAccessSettings, err
 }
 
-func (a *privateAccessSettingsImpl) ListPrivateAccessSettings(ctx context.Context) ([]PrivateAccessSettings, error) {
+func (a *privateAccessImpl) List(ctx context.Context) ([]PrivateAccessSettings, error) {
 	var privateAccessSettingsList []PrivateAccessSettings
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &privateAccessSettingsList)
 	return privateAccessSettingsList, err
 }
 
-func (a *privateAccessSettingsImpl) ReplacePrivateAccessSettings(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
+func (a *privateAccessImpl) Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
 	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
 	return err
 }
 
-// unexported type that holds implementations of just StorageConfigurations API methods
-type storageConfigurationsImpl struct {
+// unexported type that holds implementations of just Storage API methods
+type storageImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *storageConfigurationsImpl) CreateStorageConfig(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error) {
+func (a *storageImpl) Create(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error) {
 	var storageConfiguration StorageConfiguration
 	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodPost, path, request, &storageConfiguration)
 	return &storageConfiguration, err
 }
 
-func (a *storageConfigurationsImpl) DeleteStorageConfig(ctx context.Context, request DeleteStorageConfigRequest) error {
+func (a *storageImpl) Delete(ctx context.Context, request DeleteStorageRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.ConfiguredAccountID(), request.StorageConfigurationId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *storageConfigurationsImpl) GetStorageConfig(ctx context.Context, request GetStorageConfigRequest) (*StorageConfiguration, error) {
+func (a *storageImpl) Get(ctx context.Context, request GetStorageRequest) (*StorageConfiguration, error) {
 	var storageConfiguration StorageConfiguration
 	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations/%v", a.client.ConfiguredAccountID(), request.StorageConfigurationId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &storageConfiguration)
 	return &storageConfiguration, err
 }
 
-func (a *storageConfigurationsImpl) ListStorageConfigs(ctx context.Context) ([]StorageConfiguration, error) {
+func (a *storageImpl) List(ctx context.Context) ([]StorageConfiguration, error) {
 	var storageConfigurationList []StorageConfiguration
 	path := fmt.Sprintf("/api/2.0/accounts/%v/storage-configurations", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &storageConfigurationList)
@@ -188,27 +188,27 @@ type vpcEndpointsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *vpcEndpointsImpl) CreateVpcEndpoint(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error) {
+func (a *vpcEndpointsImpl) Create(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error) {
 	var vpcEndpoint VpcEndpoint
 	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodPost, path, request, &vpcEndpoint)
 	return &vpcEndpoint, err
 }
 
-func (a *vpcEndpointsImpl) DeleteVpcEndpoint(ctx context.Context, request DeleteVpcEndpointRequest) error {
+func (a *vpcEndpointsImpl) Delete(ctx context.Context, request DeleteVpcEndpointRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.ConfiguredAccountID(), request.VpcEndpointId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *vpcEndpointsImpl) GetVpcEndpoint(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
+func (a *vpcEndpointsImpl) Get(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
 	var vpcEndpoint VpcEndpoint
 	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints/%v", a.client.ConfiguredAccountID(), request.VpcEndpointId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &vpcEndpoint)
 	return &vpcEndpoint, err
 }
 
-func (a *vpcEndpointsImpl) ListVpcEndpoints(ctx context.Context) ([]VpcEndpoint, error) {
+func (a *vpcEndpointsImpl) List(ctx context.Context) ([]VpcEndpoint, error) {
 	var vpcEndpointList []VpcEndpoint
 	path := fmt.Sprintf("/api/2.0/accounts/%v/vpc-endpoints", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &vpcEndpointList)
@@ -220,27 +220,20 @@ type workspacesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *workspacesImpl) CreateWorkspace(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {
+func (a *workspacesImpl) Create(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {
 	var workspace Workspace
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodPost, path, request, &workspace)
 	return &workspace, err
 }
 
-func (a *workspacesImpl) DeleteWorkspace(ctx context.Context, request DeleteWorkspaceRequest) error {
+func (a *workspacesImpl) Delete(ctx context.Context, request DeleteWorkspaceRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *workspacesImpl) GetAllWorkspaces(ctx context.Context) ([]Workspace, error) {
-	var workspaceList []Workspace
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", a.client.ConfiguredAccountID())
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &workspaceList)
-	return workspaceList, err
-}
-
-func (a *workspacesImpl) GetWorkspace(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error) {
+func (a *workspacesImpl) Get(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error) {
 	var workspace Workspace
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &workspace)
@@ -254,7 +247,14 @@ func (a *workspacesImpl) GetWorkspaceKeyHistory(ctx context.Context, request Get
 	return &listWorkspaceEncryptionKeyRecordsResponse, err
 }
 
-func (a *workspacesImpl) UpdateWorkspace(ctx context.Context, request UpdateWorkspaceRequest) error {
+func (a *workspacesImpl) List(ctx context.Context) ([]Workspace, error) {
+	var workspaceList []Workspace
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces", a.client.ConfiguredAccountID())
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &workspaceList)
+	return workspaceList, err
+}
+
+func (a *workspacesImpl) Update(ctx context.Context, request UpdateWorkspaceRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err

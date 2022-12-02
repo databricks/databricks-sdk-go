@@ -7,6 +7,7 @@ import (
 	"io"
 	"strings"
 
+	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/service/commands"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -49,9 +50,13 @@ func (a *WorkspaceAPI) RecursiveList(ctx context.Context, path string) ([]Object
 	for len(queue) > 0 {
 		path := queue[0]
 		queue = queue[1:]
-		batch, err := a.ListAll(ctx, ListRequest{
+		batch, err := a.ListAll(ctx, List{
 			Path: path,
 		})
+		if apierr.IsMissing(err) {
+			// skip on path deleted during iteration
+			continue
+		}
 		if err != nil {
 			return nil, fmt.Errorf("list %s: %w", path, err)
 		}

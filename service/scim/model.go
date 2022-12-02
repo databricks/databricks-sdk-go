@@ -16,34 +16,40 @@ type ComplexValue struct {
 	Value string `json:"value,omitempty"`
 }
 
+// Delete a group
 type DeleteGroupRequest struct {
 	// Unique ID for a group in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
+// Delete a service principal
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
+// Delete a user
 type DeleteUserRequest struct {
 	// Unique ID for a user in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
+// Get group details
 type GetGroupRequest struct {
 	// Unique ID for a group in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
+// Get service principal details
 type GetServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
+// Get user details
 type GetUserRequest struct {
 	// Unique ID for a user in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type Group struct {
@@ -56,13 +62,14 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty" path:"id"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 }
 
+// List group details
 type ListGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -80,7 +87,7 @@ type ListGroupsRequest struct {
 	// Attribute to sort the results.
 	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListGroupsSortOrder `json:"-" url:"sortOrder,omitempty"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int `json:"-" url:"startIndex,omitempty"`
 }
@@ -97,12 +104,6 @@ type ListGroupsResponse struct {
 	TotalResults int64 `json:"totalResults,omitempty"`
 }
 
-type ListGroupsSortOrder string
-
-const ListGroupsSortOrderAscending ListGroupsSortOrder = `ascending`
-
-const ListGroupsSortOrderDescending ListGroupsSortOrder = `descending`
-
 type ListServicePrincipalResponse struct {
 	// Total results returned in the response.
 	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
@@ -115,6 +116,7 @@ type ListServicePrincipalResponse struct {
 	TotalResults int64 `json:"totalResults,omitempty"`
 }
 
+// List service principals
 type ListServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -132,17 +134,18 @@ type ListServicePrincipalsRequest struct {
 	// Attribute to sort the results.
 	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListServicePrincipalsSortOrder `json:"-" url:"sortOrder,omitempty"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int `json:"-" url:"startIndex,omitempty"`
 }
 
-type ListServicePrincipalsSortOrder string
+type ListSortOrder string
 
-const ListServicePrincipalsSortOrderAscending ListServicePrincipalsSortOrder = `ascending`
+const ListSortOrderAscending ListSortOrder = `ascending`
 
-const ListServicePrincipalsSortOrderDescending ListServicePrincipalsSortOrder = `descending`
+const ListSortOrderDescending ListSortOrder = `descending`
 
+// List users
 type ListUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -161,7 +164,7 @@ type ListUsersRequest struct {
 	// example, `userName`, `name.givenName`, and `emails`.
 	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListUsersSortOrder `json:"-" url:"sortOrder,omitempty"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int `json:"-" url:"startIndex,omitempty"`
 }
@@ -178,12 +181,6 @@ type ListUsersResponse struct {
 	TotalResults int64 `json:"totalResults,omitempty"`
 }
 
-type ListUsersSortOrder string
-
-const ListUsersSortOrderAscending ListUsersSortOrder = `ascending`
-
-const ListUsersSortOrderDescending ListUsersSortOrder = `descending`
-
 type Name struct {
 	// Family name of the Databricks user.
 	FamilyName string `json:"familyName,omitempty"`
@@ -193,7 +190,7 @@ type Name struct {
 
 type PartialUpdate struct {
 	// Unique ID for a group in the Databricks Account.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 
 	Operations []Patch `json:"operations,omitempty"`
 }
@@ -230,7 +227,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty" path:"id"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 }
@@ -250,7 +247,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty" path:"id"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Name *Name `json:"name,omitempty"`
 

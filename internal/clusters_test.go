@@ -3,25 +3,49 @@ package internal
 import (
 	"context"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/service/scim"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	t.Parallel()
+// use mutex around starting TEST_GOSDK_CLUSTER_ID
+var mu sync.Mutex
 
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
+func sharedRunningCluster(t *testing.T, ctx context.Context,
+	w *databricks.WorkspaceClient) string {
+	mu.Lock()
+	defer mu.Unlock()
+
+	clusterId := GetEnvOrSkipTest(t, "TEST_GOSDK_CLUSTER_ID")
+	info, err := w.Clusters.GetByClusterId(ctx, clusterId)
+	require.NoError(t, err)
+
+	switch info.State {
+	case clusters.StateRunning:
+		// noop
+	case clusters.StateTerminated:
+		_, err = w.Clusters.StartByClusterIdAndWait(ctx, clusterId)
+		require.NoError(t, err)
+	case clusters.StatePending,
+		clusters.StateResizing,
+		clusters.StateRestarting:
+		_, err = w.Clusters.GetByClusterIdAndWait(ctx, clusterId)
+		require.NoError(t, err)
+	default:
+		t.Errorf("Cluster is in %s state", info.State)
 	}
+	return clusterId
+}
+
+func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
+	ctx, w := workspaceTest(t)
 
 	// Fetch list of spark runtime versions
 	sparkVersions, err := w.Clusters.SparkVersions(ctx)
@@ -48,18 +72,38 @@ func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
 		})
 	assert.True(t, strings.HasPrefix(err.Error(), "timed out: "))
 	_, err = w.Clusters.DeleteByClusterIdAndWait(ctx, clusterId)
-	assert.NoError(t, err)
+	require.NoError(t, err)
+}
+
+func TestAccAwsInstanceProfiles(t *testing.T) {
+	ctx, w := workspaceTest(t)
+	if !w.Config.IsAws() {
+		t.Skipf("runs only on AWS")
+	}
+
+	arn := "arn:aws:iam::000000000000:instance-profile/abc"
+	err := w.InstanceProfiles.Add(ctx, clusters.AddInstanceProfile{
+		InstanceProfileArn: arn,
+		SkipValidation:     true,
+		IamRoleArn:         "arn:aws:iam::000000000000:role/bcd",
+	})
+	require.NoError(t, err)
+
+	defer w.InstanceProfiles.RemoveByInstanceProfileArn(ctx, arn)
+
+	err = w.InstanceProfiles.Edit(ctx, clusters.InstanceProfile{
+		InstanceProfileArn: arn,
+		IamRoleArn:         "arn:aws:iam::000000000000:role/bcdf",
+	})
+	require.NoError(t, err)
+
+	all, err := w.InstanceProfiles.ListAll(ctx)
+	require.NoError(t, err)
+	assert.True(t, len(all) >= 1)
 }
 
 func TestAccClustersApiIntegration(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	t.Parallel()
-
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	clusterName := RandomName("sdk-go-cluster-")
 
@@ -92,7 +136,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	byId, err := w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 	assert.Equal(t, clusterName, byId.ClusterName)
-	assert.Equal(t, clusters.ClusterInfoStateRunning, byId.State)
+	assert.Equal(t, clusters.StateRunning, byId.State)
 
 	// Pin the cluster in the list
 	err = w.Clusters.PinByClusterId(ctx, clstr.ClusterId)
@@ -128,7 +172,11 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	// Assert that the cluster we've just deleted has Terminated state
 	byId, err = w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
-	assert.Equal(t, byId.State, clusters.ClusterInfoStateTerminated)
+	assert.Equal(t, byId.State, clusters.StateTerminated)
+
+	byName, err := w.Clusters.GetByClusterName(ctx, byId.ClusterName)
+	require.NoError(t, err)
+	assert.Equal(t, byId.ClusterId, byName.ClusterId)
 
 	// Start cluster and wait until it's running again
 	_, err = w.Clusters.StartByClusterIdAndWait(ctx, clstr.ClusterId)
@@ -155,16 +203,40 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, len(events) > 0)
 
-	// List clusters in workspace
-	clusters, err := w.Clusters.ListAll(ctx, clusters.ListRequest{})
+	all, err := w.Clusters.ListAll(ctx, clusters.List{})
 	require.NoError(t, err)
 
-	var seen int
-	for _, clusterInfo := range clusters {
-		if clusterInfo.ClusterId == clstr.ClusterId {
-			seen++
-		}
+	// List clusters in workspace
+	names, err := w.Clusters.ClusterInfoClusterNameToClusterIdMap(ctx,
+		clusters.List{})
+	require.NoError(t, err)
+	assert.Equal(t, len(all), len(names))
+	assert.Contains(t, names, clusterName)
+
+	otherOwner, err := w.Users.Create(ctx, scim.User{
+		UserName: RandomEmail("sdk-go-"),
+	})
+	require.NoError(t, err)
+	defer w.Users.DeleteById(ctx, otherOwner.Id)
+
+	// terminate the cluster
+	_, err = w.Clusters.DeleteByClusterIdAndWait(ctx, clstr.ClusterId)
+	require.NoError(t, err)
+
+	// cluster must be terminated to change the owner
+	err = w.Clusters.ChangeOwner(ctx, clusters.ChangeClusterOwner{
+		ClusterId:     clstr.ClusterId,
+		OwnerUsername: otherOwner.UserName,
+	})
+	require.NoError(t, err)
+
+	nodes, err := w.Clusters.ListNodeTypes(ctx)
+	require.NoError(t, err)
+	assert.True(t, len(nodes.NodeTypes) > 1)
+
+	if w.Config.IsAws() {
+		zones, err := w.Clusters.ListZones(ctx)
+		require.NoError(t, err)
+		assert.True(t, len(zones.Zones) > 1)
 	}
-	// The test clusters should only occur once in the list clusters response
-	assert.True(t, seen == 1)
 }

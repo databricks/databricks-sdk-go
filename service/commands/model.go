@@ -37,12 +37,13 @@ const CommandStatusQueued CommandStatus = `Queued`
 
 const CommandStatusRunning CommandStatus = `Running`
 
+// Get command info
 type CommandStatusRequest struct {
-	ClusterId string `json:"-" url:"clusterId,omitempty"`
+	ClusterId string `json:"-" url:"clusterId"`
 
-	CommandId string `json:"-" url:"commandId,omitempty"`
+	CommandId string `json:"-" url:"commandId"`
 
-	ContextId string `json:"-" url:"contextId,omitempty"`
+	ContextId string `json:"-" url:"contextId"`
 }
 
 type CommandStatusResponse struct {
@@ -61,10 +62,11 @@ const ContextStatusPending ContextStatus = `Pending`
 
 const ContextStatusRunning ContextStatus = `Running`
 
+// Get status
 type ContextStatusRequest struct {
-	ClusterId string `json:"-" url:"clusterId,omitempty"`
+	ClusterId string `json:"-" url:"clusterId"`
 
-	ContextId string `json:"-" url:"contextId,omitempty"`
+	ContextId string `json:"-" url:"contextId"`
 }
 
 type ContextStatusResponse struct {

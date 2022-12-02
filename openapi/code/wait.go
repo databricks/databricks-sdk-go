@@ -150,3 +150,15 @@ func (w *Wait) MessagePath() (path []*Field) {
 	}
 	return path
 }
+
+func (w *Wait) ComplexMessagePath() bool {
+	return len(w.Method.wait.Message) > 1
+}
+
+func (w *Wait) MessagePathHead() *Field {
+	path := w.MessagePath()
+	if len(path) == 0 {
+		panic("message path is empty for " + w.Method.operation.OperationId)
+	}
+	return path[0]
+}

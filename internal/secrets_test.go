@@ -1,10 +1,8 @@
 package internal
 
 import (
-	"context"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/scim"
 	"github.com/databricks/databricks-sdk-go/service/secrets"
 	"github.com/stretchr/testify/assert"
@@ -12,13 +10,7 @@ import (
 )
 
 func TestAccSecrets(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	scope := secrets.CreateScope{
 		Scope: RandomEmail("sdk-go"),
@@ -52,7 +44,7 @@ func TestAccSecrets(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, len(scrts.Secrets) == 1)
 
-	group, err := w.Groups.CreateGroup(ctx, scim.Group{
+	group, err := w.Groups.Create(ctx, scim.Group{
 		DisplayName: RandomName("sdk-go-secret-managers"),
 	})
 	require.NoError(t, err)

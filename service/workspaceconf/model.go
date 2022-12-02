@@ -4,8 +4,9 @@ package workspaceconf
 
 // all definitions in this file are in alphabetical order
 
-type GetStatusRequest struct {
-	Keys string `json:"-" url:"keys,omitempty"`
+// Check configuration status
+type GetStatus struct {
+	Keys string `json:"-" url:"keys"`
 }
 
 type WorkspaceConf map[string]string

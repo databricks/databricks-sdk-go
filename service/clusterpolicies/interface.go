@@ -53,7 +53,7 @@ type ClusterPoliciesService interface {
 	//
 	// Get a cluster policy entity. Creation and editing is available to admins
 	// only.
-	Get(ctx context.Context, request GetRequest) (*Policy, error)
+	Get(ctx context.Context, request Get) (*Policy, error)
 
 	// Get a cluster policy
 	//

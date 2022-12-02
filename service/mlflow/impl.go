@@ -90,7 +90,7 @@ type mLflowDatabricksImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *mLflowDatabricksImpl) Get(ctx context.Context, request GetRequest) (*GetResponse, error) {
+func (a *mLflowDatabricksImpl) Get(ctx context.Context, request GetMLflowDatabrickRequest) (*GetResponse, error) {
 	var getResponse GetResponse
 	path := "/api/2.0/mlflow/databricks/registered-models/get"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getResponse)
@@ -209,7 +209,7 @@ func (a *modelVersionCommentsImpl) Create(ctx context.Context, request CreateCom
 	return &createResponse, err
 }
 
-func (a *modelVersionCommentsImpl) Delete(ctx context.Context, request DeleteRequest) error {
+func (a *modelVersionCommentsImpl) Delete(ctx context.Context, request DeleteModelVersionCommentRequest) error {
 	path := "/api/2.0/mlflow/comments/delete"
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
@@ -369,13 +369,13 @@ func (a *registryWebhooksImpl) Create(ctx context.Context, request CreateRegistr
 	return &createResponse, err
 }
 
-func (a *registryWebhooksImpl) Delete(ctx context.Context, request DeleteRequest) error {
+func (a *registryWebhooksImpl) Delete(ctx context.Context, request DeleteRegistryWebhookRequest) error {
 	path := "/api/2.0/mlflow/registry-webhooks/delete"
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *registryWebhooksImpl) List(ctx context.Context, request ListRequest) (*ListRegistryWebhooks, error) {
+func (a *registryWebhooksImpl) List(ctx context.Context, request ListRegistryWebhooksRequest) (*ListRegistryWebhooks, error) {
 	var listRegistryWebhooks ListRegistryWebhooks
 	path := "/api/2.0/mlflow/registry-webhooks/list"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listRegistryWebhooks)
@@ -414,13 +414,13 @@ func (a *transitionRequestsImpl) Create(ctx context.Context, request CreateTrans
 	return &createResponse, err
 }
 
-func (a *transitionRequestsImpl) Delete(ctx context.Context, request DeleteRequest) error {
+func (a *transitionRequestsImpl) Delete(ctx context.Context, request DeleteTransitionRequestRequest) error {
 	path := "/api/2.0/mlflow/transition-requests/delete"
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *transitionRequestsImpl) List(ctx context.Context, request ListRequest) (*ListResponse, error) {
+func (a *transitionRequestsImpl) List(ctx context.Context, request ListTransitionRequestsRequest) (*ListResponse, error) {
 	var listResponse ListResponse
 	path := "/api/2.0/mlflow/transition-requests/list"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listResponse)

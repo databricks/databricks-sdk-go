@@ -131,9 +131,10 @@ type CreateWarehouseResponse struct {
 	Id string `json:"id,omitempty"`
 }
 
-type DeleteWarehouseRequest struct {
+// Delete a warehouse
+type DeleteWarehouse struct {
 	// Required. Id of the SQL warehouse.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type EditWarehouseRequest struct {
@@ -175,7 +176,7 @@ type EditWarehouseRequest struct {
 	// Defaults to value in global endpoint settings
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// Required. Id of the warehouse to configure.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
@@ -416,9 +417,10 @@ type EndpointTags struct {
 	CustomTags []EndpointTagPair `json:"custom_tags,omitempty"`
 }
 
-type GetWarehouseRequest struct {
+// Get warehouse info
+type GetWarehouse struct {
 	// Required. Id of the SQL warehouse.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type GetWarehouseResponse struct {
@@ -596,6 +598,7 @@ const GetWorkspaceWarehouseConfigResponseSecurityPolicyNone GetWorkspaceWarehous
 
 const GetWorkspaceWarehouseConfigResponseSecurityPolicyPassthrough GetWorkspaceWarehouseConfigResponseSecurityPolicy = `PASSTHROUGH`
 
+// List
 type ListQueriesRequest struct {
 	// A filter to limit query history results. This field is optional.
 	FilterBy *QueryFilter `json:"-" url:"filter_by,omitempty"`
@@ -616,9 +619,10 @@ type ListQueriesResponse struct {
 	Res []QueryInfo `json:"res,omitempty"`
 }
 
-type ListWarehousesRequest struct {
+// List warehouses
+type ListWarehouses struct {
 	// Service Principal which will be used to fetch the list of endpoints. If
-	// not specified, GW will use the user from the session header.
+	// not specified, the user from the session header is used.
 	RunAsUserId int `json:"-" url:"run_as_user_id,omitempty"`
 }
 
@@ -885,14 +889,16 @@ const SetWorkspaceWarehouseConfigRequestSecurityPolicyNone SetWorkspaceWarehouse
 
 const SetWorkspaceWarehouseConfigRequestSecurityPolicyPassthrough SetWorkspaceWarehouseConfigRequestSecurityPolicy = `PASSTHROUGH`
 
-type StartWarehouseRequest struct {
+// Start a warehouse
+type StartWarehouse struct {
 	// Required. Id of the SQL warehouse.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
-type StopWarehouseRequest struct {
+// Stop a warehouse
+type StopWarehouse struct {
 	// Required. Id of the SQL warehouse.
-	Id string `json:"-" path:"id"`
+	Id string `json:"-" url:"-"`
 }
 
 type TerminationReason struct {

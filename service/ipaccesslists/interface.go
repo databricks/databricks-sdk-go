@@ -48,24 +48,24 @@ type IpAccessListsService interface {
 	// It can take a few minutes for the changes to take effect. **Note**: Your
 	// new IP access list has no effect until you enable the feature. See
 	// [`/workspace-conf`](#operation/set-status).
-	CreateIpAccessList(ctx context.Context, request CreateIpAccessListRequest) (*IpAccessListInfo, error)
+	Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error)
 
 	// Delete access list
 	//
 	// Deletes an IP access list, specified by its list ID.
-	DeleteIpAccessList(ctx context.Context, request DeleteIpAccessListRequest) error
+	Delete(ctx context.Context, request Delete) error
 
 	// Get access list
 	//
 	// Gets an IP access list, specified by its list ID.
-	FetchIpAccessList(ctx context.Context, request FetchIpAccessListRequest) (*IpAccessListInfo, error)
+	Get(ctx context.Context, request Get) (*FetchIpAccessListResponse, error)
 
 	// Get access lists
 	//
 	// Gets all IP access lists for the specified workspace.
 	//
-	// Use ListIpAccessListsAll() to get all IpAccessListInfo instances
-	ListIpAccessLists(ctx context.Context) (*GetIpAccessListResponse, error)
+	// Use ListAll() to get all IpAccessListInfo instances
+	List(ctx context.Context) (*GetIpAccessListResponse, error)
 
 	// Replace access list
 	//
@@ -80,7 +80,7 @@ type IpAccessListsService interface {
 	// value `INVALID_STATE`. It can take a few minutes for the changes to take
 	// effect. Note that your resulting IP access list has no effect until you
 	// enable the feature. See :method:workspaceconf/setStatus.
-	ReplaceIpAccessList(ctx context.Context, request ReplaceIpAccessListRequest) error
+	Replace(ctx context.Context, request ReplaceIpAccessList) error
 
 	// Update access list
 	//
@@ -100,6 +100,6 @@ type IpAccessListsService interface {
 	//
 	// It can take a few minutes for the changes to take effect. Note that your
 	// resulting IP access list has no effect until you enable the feature. See
-	// [`/workspace-conf`](#operation/set-status).
-	UpdateIpAccessList(ctx context.Context, request UpdateIpAccessListRequest) error
+	// :method:workspaceconf/setStatus.
+	Update(ctx context.Context, request UpdateIpAccessList) error
 }

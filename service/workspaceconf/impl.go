@@ -14,7 +14,7 @@ type workspaceConfImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *workspaceConfImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*WorkspaceConf, error) {
+func (a *workspaceConfImpl) GetStatus(ctx context.Context, request GetStatus) (*WorkspaceConf, error) {
 	var workspaceConf WorkspaceConf
 	path := "/api/2.0/workspace-conf"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &workspaceConf)

@@ -1,23 +1,15 @@
 package internal
 
 import (
-	"context"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/gitcredentials"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccGitCredentials(t *testing.T) {
-	env := GetEnvOrSkipTest(t, "CLOUD_ENV")
-	t.Log(env)
-	ctx := context.Background()
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
-		t.SkipNow()
-	}
+	ctx, w := workspaceTest(t)
 
 	list, err := w.GitCredentials.ListAll(ctx)
 	require.NoError(t, err)
@@ -45,8 +37,15 @@ func TestAccGitCredentials(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	load, err := w.GitCredentials.GetByCredentialId(ctx, cr.CredentialId)
+	byId, err := w.GitCredentials.GetByCredentialId(ctx, cr.CredentialId)
 	require.NoError(t, err)
+	assert.NotEqual(t, cr.GitUsername, byId.GitUsername)
 
-	assert.NotEqual(t, cr.GitUsername, load.GitUsername)
+	byName, err := w.GitCredentials.GetByGitProvider(ctx, byId.GitProvider)
+	require.NoError(t, err)
+	assert.Equal(t, byId.GitUsername, byName.GitUsername)
+
+	names, err := w.GitCredentials.CredentialInfoGitProviderToCredentialIdMap(ctx)
+	require.NoError(t, err)
+	assert.Contains(t, names, byId.GitProvider)
 }

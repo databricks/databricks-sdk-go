@@ -26,14 +26,14 @@ type CatalogsService interface {
 	//
 	// Deletes the catalog that matches the supplied name. The caller must be a
 	// Metastore admin or the owner of the catalog.
-	DeleteCatalog(ctx context.Context, request DeleteCatalogRequest) error
+	Delete(ctx context.Context, request DeleteCatalogRequest) error
 
 	// Get a catalog
 	//
 	// Gets an array of all catalogs in the current Metastore for which the user
 	// is an admin or Catalog owner, or has the USAGE privilege set for their
 	// account.
-	GetCatalog(ctx context.Context, request GetCatalogRequest) (*GetCatalogResponse, error)
+	Get(ctx context.Context, request GetCatalogRequest) (*GetCatalogResponse, error)
 
 	// List catalogs
 	//
@@ -41,8 +41,8 @@ type CatalogsService interface {
 	// the Metastore. The caller must be a Metastore admin, is the owner of the
 	// External Location, or has privileges to access the External Location.
 	//
-	// Use ListCatalogsAll() to get all CatalogInfo instances
-	ListCatalogs(ctx context.Context) (*ListCatalogsResponse, error)
+	// Use ListAll() to get all CatalogInfo instances
+	List(ctx context.Context) (*ListCatalogsResponse, error)
 
 	// Update a catalog
 	//
@@ -78,14 +78,14 @@ type ExternalLocationsService interface {
 	//
 	// Deletes the specified external location from the Metastore. The caller
 	// must be the owner of the external location.
-	DeleteExternalLocation(ctx context.Context, request DeleteExternalLocationRequest) error
+	Delete(ctx context.Context, request DeleteExternalLocationRequest) error
 
 	// Get an external location
 	//
 	// Gets an external location from the Metastore. The caller must be either a
 	// Metastore admin, the owner of the external location, or has an
 	// appropriate privilege level on the Metastore.
-	GetExternalLocation(ctx context.Context, request GetExternalLocationRequest) (*GetExternalLocationResponse, error)
+	Get(ctx context.Context, request GetExternalLocationRequest) (*GetExternalLocationResponse, error)
 
 	// List external locations
 	//
@@ -93,8 +93,8 @@ type ExternalLocationsService interface {
 	// the Metastore. The caller must be a Metastore admin, is the owner of the
 	// external location, or has privileges to access the external location.
 	//
-	// Use ListExternalLocationsAll() to get all ExternalLocationInfo instances
-	ListExternalLocations(ctx context.Context) (*ListExternalLocationsResponse, error)
+	// Use ListAll() to get all ExternalLocationInfo instances
+	List(ctx context.Context) (*ListExternalLocationsResponse, error)
 
 	// Update an external location
 	//
@@ -124,12 +124,12 @@ type GrantsService interface {
 	// Get permissions
 	//
 	// Gets the permissions for a Securable type.
-	GetPermissions(ctx context.Context, request GetPermissionsRequest) (*GetPermissionsResponse, error)
+	Get(ctx context.Context, request GetGrantRequest) (*GetPermissionsResponse, error)
 
 	// Update permissions
 	//
 	// Updates the permissions for a Securable type.
-	UpdatePermissions(ctx context.Context, request UpdatePermissions) error
+	Update(ctx context.Context, request UpdatePermissions) error
 }
 
 // A metastore is the top-level container of objects in Unity Catalog. It stores
@@ -148,50 +148,50 @@ type GrantsService interface {
 // Unity Catalog in a catalog named hive_metastore.
 type MetastoresService interface {
 
-	// Create a Metastore
-	//
-	// Creates a new Metastore based on a provided name and storage root path.
-	Create(ctx context.Context, request CreateMetastore) (*CreateMetastoreResponse, error)
-
 	// Create an assignment
 	//
 	// Creates a new Metastore assignment. If an assignment for the same
 	// __workspace_id__ exists, it will be overwritten by the new
 	// __metastore_id__ and __default_catalog_name__. The caller must be an
 	// account admin.
-	CreateMetastoreAssignment(ctx context.Context, request CreateMetastoreAssignment) error
+	Assign(ctx context.Context, request CreateMetastoreAssignment) error
+
+	// Create a Metastore
+	//
+	// Creates a new Metastore based on a provided name and storage root path.
+	Create(ctx context.Context, request CreateMetastore) (*CreateMetastoreResponse, error)
 
 	// Delete a Metastore
 	//
 	// Deletes a Metastore. The caller must be a Metastore admin.
-	DeleteMetastore(ctx context.Context, request DeleteMetastoreRequest) error
-
-	// Delete an assignment
-	//
-	// Deletes a Metastore assignment. The caller must be an account
-	// administrator.
-	DeleteMetastoreAssignment(ctx context.Context, request DeleteMetastoreAssignmentRequest) error
+	Delete(ctx context.Context, request DeleteMetastoreRequest) error
 
 	// Get a Metastore
 	//
 	// Gets a Metastore that matches the supplied ID. The caller must be a
 	// Metastore admin to retrieve this info.
-	GetMetastore(ctx context.Context, request GetMetastoreRequest) (*GetMetastoreResponse, error)
-
-	// Get a summary
-	//
-	// Gets information about a Metastore. This summary includes the storage
-	// credential, the cloud vendor, the cloud region, and the global Metastore
-	// ID.
-	GetMetastoreSummary(ctx context.Context) (*GetMetastoreSummaryResponse, error)
+	Get(ctx context.Context, request GetMetastoreRequest) (*GetMetastoreResponse, error)
 
 	// List Metastores
 	//
 	// Gets an array of the available Metastores (as MetastoreInfo objects). The
 	// caller must be an admin to retrieve this info.
 	//
-	// Use ListMetastoresAll() to get all MetastoreInfo instances
-	ListMetastores(ctx context.Context) (*ListMetastoresResponse, error)
+	// Use ListAll() to get all MetastoreInfo instances
+	List(ctx context.Context) (*ListMetastoresResponse, error)
+
+	// Get a summary
+	//
+	// Gets information about a Metastore. This summary includes the storage
+	// credential, the cloud vendor, the cloud region, and the global Metastore
+	// ID.
+	Summary(ctx context.Context) (*GetMetastoreSummaryResponse, error)
+
+	// Delete an assignment
+	//
+	// Deletes a Metastore assignment. The caller must be an account
+	// administrator.
+	Unassign(ctx context.Context, request UnassignRequest) error
 
 	// Update a Metastore
 	//
@@ -206,7 +206,7 @@ type MetastoresService interface {
 	// if the Workspace is already assigned a Metastore. The caller must be an
 	// account admin to update __metastore_id__; otherwise, the caller can be a
 	// Workspace admin.
-	UpdateMetastoreAssignment(ctx context.Context, request UpdateMetastoreAssignment) error
+	UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error
 }
 
 // Databricks Delta Sharing: Providers REST API
@@ -222,14 +222,14 @@ type ProvidersService interface {
 	//
 	// Deletes an authentication provider, if the caller is a Metastore admin or
 	// is the owner of the provider.
-	DeleteProvider(ctx context.Context, request DeleteProviderRequest) error
+	Delete(ctx context.Context, request DeleteProviderRequest) error
 
 	// Get a provider
 	//
 	// Gets a specific authentication provider. The caller must supply the name
 	// of the provider, and must either be a Metastore admin or the owner of the
 	// provider.
-	GetProvider(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error)
+	Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error)
 
 	// List providers
 	//
@@ -237,8 +237,8 @@ type ProvidersService interface {
 	// either be a Metastore admin or the owner of the providers. Providers not
 	// owned by the caller are not included in the response.
 	//
-	// Use ListProvidersAll() to get all ProviderInfo instances
-	ListProviders(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error)
+	// Use ListAll() to get all ProviderInfo instances
+	List(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error)
 
 	// List shares
 	//
@@ -285,7 +285,7 @@ type RecipientsService interface {
 	//
 	// Deletes the specified recipient from the Metastore. The caller must be
 	// the owner of the recipient.
-	DeleteRecipient(ctx context.Context, request DeleteRecipientRequest) error
+	Delete(ctx context.Context, request DeleteRecipientRequest) error
 
 	// Get a share recipient
 	//
@@ -293,13 +293,7 @@ type RecipientsService interface {
 	//
 	// * the caller is the owner of the share recipient, or: * is a Metastore
 	// admin
-	GetRecipient(ctx context.Context, request GetRecipientRequest) (*GetRecipientResponse, error)
-
-	// Get share permissions
-	//
-	// Gets the share permissions for the specified Recipient. The caller must
-	// be a Metastore admin or the owner of the Recipient.
-	GetRecipientSharePermissions(ctx context.Context, request GetRecipientSharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error)
+	Get(ctx context.Context, request GetRecipientRequest) (*GetRecipientResponse, error)
 
 	// List share recipients
 	//
@@ -307,15 +301,21 @@ type RecipientsService interface {
 	//
 	// * the caller is a Metastore admin, or * the caller is the owner.
 	//
-	// Use ListRecipientsAll() to get all RecipientInfo instances
-	ListRecipients(ctx context.Context, request ListRecipientsRequest) (*ListRecipientsResponse, error)
+	// Use ListAll() to get all RecipientInfo instances
+	List(ctx context.Context, request ListRecipientsRequest) (*ListRecipientsResponse, error)
 
 	// Rotate a token
 	//
 	// Refreshes the specified recipient's delta sharing authentication token
 	// with the provided token info. The caller must be the owner of the
 	// recipient.
-	RotateRecipientToken(ctx context.Context, request RotateRecipientToken) (*RotateRecipientTokenResponse, error)
+	RotateToken(ctx context.Context, request RotateRecipientToken) (*RotateRecipientTokenResponse, error)
+
+	// Get share permissions
+	//
+	// Gets the share permissions for the specified Recipient. The caller must
+	// be a Metastore admin or the owner of the Recipient.
+	SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error)
 
 	// Update a share recipient
 	//
@@ -343,14 +343,14 @@ type SchemasService interface {
 	//
 	// Deletes the specified schema from the parent catalog. The caller must be
 	// the owner of the schema or an owner of the parent catalog.
-	DeleteSchema(ctx context.Context, request DeleteSchemaRequest) error
+	Delete(ctx context.Context, request DeleteSchemaRequest) error
 
 	// Get a schema
 	//
 	// Gets the specified schema for a catalog in the Metastore. The caller must
 	// be a Metastore admin, the owner of the schema, or a user that has the
 	// USAGE privilege on the schema.
-	GetSchema(ctx context.Context, request GetSchemaRequest) (*GetSchemaResponse, error)
+	Get(ctx context.Context, request GetSchemaRequest) (*GetSchemaResponse, error)
 
 	// List schemas
 	//
@@ -360,8 +360,8 @@ type SchemasService interface {
 	// caller (or for which the caller has the USAGE privilege) will be
 	// retrieved.
 	//
-	// Use ListSchemasAll() to get all SchemaInfo instances
-	ListSchemas(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error)
+	// Use ListAll() to get all SchemaInfo instances
+	List(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error)
 
 	// Update a schema
 	//
@@ -387,27 +387,27 @@ type SharesService interface {
 	//
 	// Deletes a data object share from the Metastore. The caller must be an
 	// owner of the share.
-	DeleteShare(ctx context.Context, request DeleteShareRequest) error
+	Delete(ctx context.Context, request DeleteShareRequest) error
 
 	// Get a share
 	//
 	// Gets a data object share from the Metastore. The caller must be a
 	// Metastore admin or the owner of the share.
-	GetShare(ctx context.Context, request GetShareRequest) (*GetShareResponse, error)
-
-	// Get permissions
-	//
-	// Gets the permissions for a data share from the Metastore. The caller must
-	// be a Metastore admin or the owner of the share.
-	GetSharePermissions(ctx context.Context, request GetSharePermissionsRequest) (*GetSharePermissionsResponse, error)
+	Get(ctx context.Context, request GetShareRequest) (*GetShareResponse, error)
 
 	// List shares
 	//
 	// Gets an array of data object shares from the Metastore. The caller must
 	// be a Metastore admin or the owner of the share.
 	//
-	// Use ListSharesAll() to get all ShareInfo instances
-	ListShares(ctx context.Context) (*ListSharesResponse, error)
+	// Use ListAll() to get all ShareInfo instances
+	List(ctx context.Context) (*ListSharesResponse, error)
+
+	// Get permissions
+	//
+	// Gets the permissions for a data share from the Metastore. The caller must
+	// be a Metastore admin or the owner of the share.
+	SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetSharePermissionsResponse, error)
 
 	// Update a share
 	//
@@ -435,7 +435,7 @@ type SharesService interface {
 	//
 	// For new recipient grants, the user must also be the owner of the
 	// recipients. recipient revocations do not require additional privileges.
-	UpdateSharePermissions(ctx context.Context, request UpdateSharePermissions) error
+	UpdatePermissions(ctx context.Context, request UpdateSharePermissions) error
 }
 
 // A storage credential represents an authentication and authorization mechanism
@@ -470,14 +470,14 @@ type StorageCredentialsService interface {
 	//
 	// Deletes a storage credential from the Metastore. The caller must be an
 	// owner of the storage credential.
-	DeleteStorageCredential(ctx context.Context, request DeleteStorageCredentialRequest) error
+	Delete(ctx context.Context, request DeleteStorageCredentialRequest) error
 
 	// Get a credential
 	//
 	// Gets a storage credential from the Metastore. The caller must be a
 	// Metastore admin, the owner of the storage credential, or have a level of
 	// privilege on the storage credential.
-	GetStorageCredentials(ctx context.Context, request GetStorageCredentialsRequest) (*GetStorageCredentialResponse, error)
+	Get(ctx context.Context, request GetStorageCredentialRequest) (*GetStorageCredentialResponse, error)
 
 	// List credentials
 	//
@@ -486,8 +486,8 @@ type StorageCredentialsService interface {
 	// privilege level to access. If the caller is a Metastore admin, all
 	// storage credentials will be retrieved.
 	//
-	// Use ListStorageCredentialsAll() to get all StorageCredentialInfo instances
-	ListStorageCredentials(ctx context.Context) (*ListStorageCredentialsResponse, error)
+	// Use ListAll() to get all StorageCredentialInfo instances
+	List(ctx context.Context) (*ListStorageCredentialsResponse, error)
 
 	// Update a credential
 	//
@@ -535,7 +535,7 @@ type TablesService interface {
 	// parent catalog and be the owner of the parent schema, or be the owner of
 	// the table and have the USAGE privilege on both the parent catalog and
 	// schema.
-	DeleteTable(ctx context.Context, request DeleteTableRequest) error
+	Delete(ctx context.Context, request DeleteTableRequest) error
 
 	// Get a table
 	//
@@ -543,7 +543,18 @@ type TablesService interface {
 	// caller must be a Metastore admin, be the owner of the table and have the
 	// USAGE privilege on both the parent catalog and schema, or be the owner of
 	// the table and have the SELECT privilege on it as well.
-	GetTable(ctx context.Context, request GetTableRequest) (*GetTableResponse, error)
+	Get(ctx context.Context, request GetTableRequest) (*GetTableResponse, error)
+
+	// List tables
+	//
+	// Gets an array of all tables for the current Metastore under the parent
+	// catalog and schema. The caller must be a Metastore admin or an owner of
+	// (or have the SELECT privilege on) the table. For the latter case, the
+	// caller must also be the owner or have the USAGE privilege on the parent
+	// catalog and schema.
+	//
+	// Use ListAll() to get all TableInfo instances
+	List(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error)
 
 	// List table summaries
 	//
@@ -556,18 +567,7 @@ type TablesService interface {
 	// catalog) for which the user has ownership or the SELECT privilege on the
 	// Table and ownership or USAGE privilege on the Schema, provided that the
 	// user also has ownership or the USAGE privilege on the parent Catalog
-	ListTableSummaries(ctx context.Context, request ListTableSummariesRequest) (*ListTableSummariesResponse, error)
-
-	// List tables
-	//
-	// Gets an array of all tables for the current Metastore under the parent
-	// catalog and schema. The caller must be a Metastore admin or an owner of
-	// (or have the SELECT privilege on) the table. For the latter case, the
-	// caller must also be the owner or have the USAGE privilege on the parent
-	// catalog and schema.
-	//
-	// Use ListTablesAll() to get all TableInfo instances
-	ListTables(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error)
+	TableSummaries(ctx context.Context, request TableSummariesRequest) (*ListTableSummariesResponse, error)
 
 	// Update a table
 	//
@@ -575,13 +575,4 @@ type TablesService interface {
 	// the owner of have the USAGE privilege on the parent catalog and schema,
 	// or, if changing the owner, be a Metastore admin as well.
 	Update(ctx context.Context, request UpdateTable) error
-}
-
-// Databricks Unity Catalog: Files REST API
-type UnityFilesService interface {
-
-	// List files
-	//
-	// List the files sound at the supplied URL.
-	ListFiles(ctx context.Context, request ListFilesRequest) (*ListFilesResponse, error)
 }

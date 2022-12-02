@@ -12,7 +12,7 @@ type WorkspaceConfService interface {
 	// Check configuration status
 	//
 	// Gets the configuration status for a workspace.
-	GetStatus(ctx context.Context, request GetStatusRequest) (*WorkspaceConf, error)
+	GetStatus(ctx context.Context, request GetStatus) (*WorkspaceConf, error)
 
 	// Enable/disable features
 	//

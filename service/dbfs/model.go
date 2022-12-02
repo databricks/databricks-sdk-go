@@ -50,16 +50,18 @@ type FileInfo struct {
 	Path string `json:"path,omitempty"`
 }
 
-type GetStatusRequest struct {
+// Get the information of a file or directory
+type GetStatus struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
-	Path string `json:"-" url:"path,omitempty"`
+	Path string `json:"-" url:"path"`
 }
 
-type ListRequest struct {
+// List directory contents or file details
+type List struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
-	Path string `json:"-" url:"path,omitempty"`
+	Path string `json:"-" url:"path"`
 }
 
 type ListStatusResponse struct {
@@ -91,18 +93,19 @@ type Put struct {
 	Path string `json:"path"`
 }
 
-type ReadRequest struct {
+// Get the contents of a file
+type Read struct {
 	// The number of bytes to read starting from the offset. This has a limit of
 	// 1 MB, and a default value of 0.5 MB.
 	Length int `json:"-" url:"length,omitempty"`
 	// The offset to read from in bytes.
 	Offset int `json:"-" url:"offset,omitempty"`
 	// The path of the file to read. The path should be the absolute DBFS path.
-	Path string `json:"-" url:"path,omitempty"`
+	Path string `json:"-" url:"path"`
 }
 
 type ReadResponse struct {
-	// The number of bytes read (could be less than ``length`` if we hit end of
+	// The number of bytes read (could be less than `length` if we hit end of
 	// file). This refers to number of bytes read in unencoded version (response
 	// data is base64-encoded).
 	BytesRead int64 `json:"bytes_read,omitempty"`

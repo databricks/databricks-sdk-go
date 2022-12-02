@@ -1,5 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+// This API allows updating known workspace settings for advanced users.
 package workspaceconf
 
 import (
@@ -38,7 +39,7 @@ func (a *WorkspaceConfAPI) Impl() WorkspaceConfService {
 // Check configuration status
 //
 // Gets the configuration status for a workspace.
-func (a *WorkspaceConfAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*WorkspaceConf, error) {
+func (a *WorkspaceConfAPI) GetStatus(ctx context.Context, request GetStatus) (*WorkspaceConf, error) {
 	return a.impl.GetStatus(ctx, request)
 }
 

@@ -62,8 +62,9 @@ type CronTrigger struct {
 	TimezoneId string `json:"timezone_id,omitempty"`
 }
 
-type DeletePipelineRequest struct {
-	PipelineId string `json:"-" path:"pipeline_id"`
+// Delete a pipeline
+type DeletePipeline struct {
+	PipelineId string `json:"-" url:"-"`
 }
 
 type EditPipeline struct {
@@ -101,7 +102,7 @@ type EditPipeline struct {
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
-	PipelineId string `json:"pipeline_id,omitempty" path:"pipeline_id"`
+	PipelineId string `json:"pipeline_id,omitempty" url:"-"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// Target schema (database) to add tables in this pipeline to.
@@ -117,8 +118,9 @@ type Filters struct {
 	Include []string `json:"include,omitempty"`
 }
 
-type GetPipelineRequest struct {
-	PipelineId string `json:"-" path:"pipeline_id"`
+// Get a pipeline
+type GetPipeline struct {
+	PipelineId string `json:"-" url:"-"`
 }
 
 type GetPipelineResponse struct {
@@ -155,11 +157,12 @@ const GetPipelineResponseHealthHealthy GetPipelineResponseHealth = `HEALTHY`
 
 const GetPipelineResponseHealthUnhealthy GetPipelineResponseHealth = `UNHEALTHY`
 
-type GetUpdateRequest struct {
+// Get a pipeline update
+type GetUpdate struct {
 	// The ID of the pipeline.
-	PipelineId string `json:"-" path:"pipeline_id"`
+	PipelineId string `json:"-" url:"-"`
 	// The ID of the update.
-	UpdateId string `json:"-" path:"update_id"`
+	UpdateId string `json:"-" url:"-"`
 }
 
 type GetUpdateResponse struct {
@@ -167,7 +170,8 @@ type GetUpdateResponse struct {
 	Update *UpdateInfo `json:"update,omitempty"`
 }
 
-type ListPipelinesRequest struct {
+// List pipelines
+type ListPipelines struct {
 	// Select a subset of results based on the specified criteria. The supported
 	// filters are:
 	//
@@ -198,13 +202,14 @@ type ListPipelinesResponse struct {
 	Statuses []PipelineStateInfo `json:"statuses,omitempty"`
 }
 
-type ListUpdatesRequest struct {
+// List pipeline updates
+type ListUpdates struct {
 	// Max number of entries to return in a single page.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Page token returned by previous call
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The pipeline to return updates for.
-	PipelineId string `json:"-" path:"pipeline_id"`
+	PipelineId string `json:"-" url:"-"`
 	// If present, returns updates until and including this update_id.
 	UntilUpdateId string `json:"-" url:"until_update_id,omitempty"`
 }
@@ -242,13 +247,13 @@ type PipelineCluster struct {
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
 	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every ``5 mins``. The
-	// destination of driver logs is ``$destination/$clusterId/driver``, while
-	// the destination of executor logs is ``$destination/$clusterId/executor``.
+	// the logs will be delivered to the destination every `5 mins`. The
+	// destination of driver logs is `$destination/$clusterId/driver`, while the
+	// destination of executor logs is `$destination/$clusterId/executor`.
 	ClusterLogConf *clusters.ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to ``default_tags``. Notes:
+	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	//
@@ -277,14 +282,14 @@ type PipelineCluster struct {
 	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
-	// Spark Driver and ``num_workers`` Executors for a total of ``num_workers``
-	// + 1 Spark nodes.
+	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
+	// Spark nodes.
 	//
 	// Note: When reading the properties of a cluster, this field reflects the
 	// desired number of workers rather than the actual current number of
 	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
 	// field will immediately be updated to reflect the target size of 10
-	// workers, whereas the workers listed in ``spark_info`` will gradually
+	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
@@ -295,43 +300,43 @@ type PipelineCluster struct {
 	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
-	// (X,Y) will be exported as is (i.e., ``export X='Y'``) while launching the
+	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
 	// driver and workers.
 	//
-	// In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we
-	// recommend appending them to ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the
+	// In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
+	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
 	// example below. This ensures that all default databricks managed
 	// environmental variables are included as well.
 	//
-	// Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m",
-	// "SPARK_LOCAL_DIRS": "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS":
-	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}``
+	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
+	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
+	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
 	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
-	// user name ``ubuntu`` on port ``2200``. Up to 10 keys can be specified.
+	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 }
 
 type PipelineLibrary struct {
 	// URI of the jar to be installed. Currently only DBFS and S3 URIs are
-	// supported. For example: ``{ "jar": "dbfs:/mnt/databricks/library.jar" }``
-	// or ``{ "jar": "s3://my-bucket/library.jar" }``. If S3 is used, please
-	// make sure the cluster has read access on the library. You may need to
-	// launch the cluster with an IAM role to access the S3 URI.
-	Jar string `json:"jar,omitempty"`
-	// Specification of a maven library to be installed. For example: ``{
-	// "coordinates": "org.jsoup:jsoup:1.7.2" }``
-	Maven *libraries.MavenLibrary `json:"maven,omitempty"`
-	// The path to a notebook that defines a pipeline and is stored in the
-	// Databricks workspace. For example: ``{ "notebook" : { "path" :
-	// "/my-pipeline-notebook-path" } }``. Currently, only Scala notebooks are
-	// supported, and pipelines must be defined in a package cell.
-	Notebook *NotebookLibrary `json:"notebook,omitempty"`
-	// URI of the wheel to be installed. For example: ``{ "whl": "dbfs:/my/whl"
-	// }`` or ``{ "whl": "s3://my-bucket/whl" }``. If S3 is used, please make
+	// supported. For example: `{ "jar": "dbfs:/mnt/databricks/library.jar" }`
+	// or `{ "jar": "s3://my-bucket/library.jar" }`. If S3 is used, please make
 	// sure the cluster has read access on the library. You may need to launch
 	// the cluster with an IAM role to access the S3 URI.
+	Jar string `json:"jar,omitempty"`
+	// Specification of a maven library to be installed. For example: `{
+	// "coordinates": "org.jsoup:jsoup:1.7.2" }`
+	Maven *libraries.MavenLibrary `json:"maven,omitempty"`
+	// The path to a notebook that defines a pipeline and is stored in the
+	// Databricks workspace. For example: `{ "notebook" : { "path" :
+	// "/my-pipeline-notebook-path" } }`. Currently, only Scala notebooks are
+	// supported, and pipelines must be defined in a package cell.
+	Notebook *NotebookLibrary `json:"notebook,omitempty"`
+	// URI of the wheel to be installed. For example: `{ "whl": "dbfs:/my/whl"
+	// }` or `{ "whl": "s3://my-bucket/whl" }`. If S3 is used, please make sure
+	// the cluster has read access on the library. You may need to launch the
+	// cluster with an IAM role to access the S3 URI.
 	Whl string `json:"whl,omitempty"`
 }
 
@@ -416,8 +421,9 @@ type PipelineTrigger struct {
 	Manual any/* MISSING TYPE */ `json:"manual,omitempty"`
 }
 
-type ResetPipelineRequest struct {
-	PipelineId string `json:"-" path:"pipeline_id"`
+// Reset a pipeline
+type ResetPipeline struct {
+	PipelineId string `json:"-" url:"-"`
 }
 
 type StartUpdate struct {
@@ -430,7 +436,7 @@ type StartUpdate struct {
 	// before the refresh.
 	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
 
-	PipelineId string `json:"-" path:"pipeline_id"`
+	PipelineId string `json:"-" url:"-"`
 	// A list of tables to update without fullRefresh. If both refresh_selection
 	// and full_refresh_selection are empty, this is a full graph update. Full
 	// Refresh on a table means that the states of the table will be reset
@@ -456,8 +462,9 @@ type StartUpdateResponse struct {
 	UpdateId string `json:"update_id,omitempty"`
 }
 
-type StopPipelineRequest struct {
-	PipelineId string `json:"-" path:"pipeline_id"`
+// Stop a pipeline
+type StopPipeline struct {
+	PipelineId string `json:"-" url:"-"`
 }
 
 type UpdateInfo struct {

@@ -17,14 +17,26 @@ type CreateRepo struct {
 	Url string `json:"url"`
 }
 
-type DeleteRequest struct {
+// Delete a repo
+type Delete struct {
 	// The ID for the corresponding repo to access.
-	RepoId int64 `json:"-" path:"repo_id"`
+	RepoId int64 `json:"-" url:"-"`
 }
 
-type GetRequest struct {
+// Get a repo
+type Get struct {
 	// The ID for the corresponding repo to access.
-	RepoId int64 `json:"-" path:"repo_id"`
+	RepoId int64 `json:"-" url:"-"`
+}
+
+// Get repos
+type List struct {
+	// Token used to get the next page of results. If not specified, returns the
+	// first page of results as well as a next page token if there are more
+	// results.
+	NextPageToken string `json:"-" url:"next_page_token,omitempty"`
+	// Filters repos that have paths starting with the given path prefix.
+	PathPrefix string `json:"-" url:"path_prefix,omitempty"`
 }
 
 type ListReposResponse struct {
@@ -33,15 +45,6 @@ type ListReposResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	Repos []RepoInfo `json:"repos,omitempty"`
-}
-
-type ListRequest struct {
-	// Token used to get the next page of results. If not specified, returns the
-	// first page of results as well as a next page token if there are more
-	// results.
-	NextPageToken string `json:"-" url:"next_page_token,omitempty"`
-	// Filters repos that have paths starting with the given path prefix.
-	PathPrefix string `json:"-" url:"path_prefix,omitempty"`
 }
 
 type RepoInfo struct {
@@ -67,7 +70,7 @@ type UpdateRepo struct {
 	// Branch that the local version of the repo is checked out to.
 	Branch string `json:"branch,omitempty"`
 	// The ID for the corresponding repo to access.
-	RepoId int64 `json:"-" path:"repo_id"`
+	RepoId int64 `json:"-" url:"-"`
 	// Tag that the local version of the repo is checked out to. Updating the
 	// repo to a tag puts the repo in a detached HEAD state. Before committing
 	// new changes, you must update the repo to a branch instead of the detached
