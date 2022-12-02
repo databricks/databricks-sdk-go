@@ -214,15 +214,25 @@ func (c *Config) fixHostIfNeeded() error {
 	if c.Host == "" {
 		return nil
 	}
-	parsedHost, err := url.Parse(c.Host)
+	canonical, err := canonicalHost(c.Host)
 	if err != nil {
 		return err
 	}
+	// Store sanitized version of c.Host.
+	c.Host = canonical
+	return nil
+}
+
+func canonicalHost(host string) (string, error) {
+	parsedHost, err := url.Parse(host)
+	if err != nil {
+		return "", err
+	}
 	// If the host is empty, assume the scheme wasn't included.
 	if parsedHost.Host == "" {
-		parsedHost, err = url.Parse("https://" + c.Host)
+		parsedHost, err = url.Parse("https://" + host)
 		if err != nil {
-			return err
+			return "", err
 		}
 	}
 	// Create new instance to ensure other fields are initialized as empty.
@@ -230,7 +240,5 @@ func (c *Config) fixHostIfNeeded() error {
 		Scheme: parsedHost.Scheme,
 		Host:   parsedHost.Host,
 	}
-	// Store sanitized version of c.Host.
-	c.Host = parsedHost.String()
-	return nil
+	return parsedHost.String(), nil
 }

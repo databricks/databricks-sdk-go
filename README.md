@@ -151,6 +151,7 @@ By default, the Databricks SDK for Go initially tries Databricks token authentic
 
 - For Databricks token authentication, you must provide `Host` and `Token`; or their environment variable or `.databrickscfg` file field equivalents.
 - For Databricks basic authentication, you must provide `Host`, `Username`, and `Password` _(for AWS workspace-level operations)_; or `Host`, `AccountID`, `Username`, and `Password` _(for AWS, Azure, or GCP account-level operations)_; or their environment variable or `.databrickscfg` file field equivalents.
+- If you specify `host`, but no other credentials either through direct configuration or through environment variables, Databricks SDK for Go will try picking up profile with the matching host from [~/.databrickscfg](#overriding-databrickscfg). This allows keeping the hostname checked in to version control, but have ability to pick up different credentials either from local development machine or production server.
 
 | `*databricks.Config` argument | Description | Environment variable / `.databrickscfg` file field |
 |-------------------------------|-------------|----------------------------------------------------|
