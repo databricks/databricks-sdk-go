@@ -49,9 +49,10 @@ func askFor(prompt string) string {
 	for {
 		fmt.Fprint(os.Stdout, prompt+" ")
 		s, _ = r.ReadString('\n')
+		s = strings.TrimSpace(s)
 		if s != "" {
 			break
 		}
 	}
-	return strings.TrimSpace(s)
+	return s
 }

@@ -199,6 +199,9 @@ func (c *Config) authenticateIfNeeded(ctx context.Context) error {
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("%s auth: %w", c.Credentials.Name(), err))
 	}
+	if visitor == nil {
+		return c.wrapDebug(fmt.Errorf("%s auth: not configured", c.Credentials.Name()))
+	}
 	c.auth = visitor
 	c.AuthType = c.Credentials.Name()
 	c.fixHostIfNeeded()
