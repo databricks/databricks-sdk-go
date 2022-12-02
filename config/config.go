@@ -142,7 +142,8 @@ func (c *Config) IsAccountsClient() bool {
 	return strings.HasPrefix(c.Host, "https://accounts.")
 }
 
-func createConfigurationFromLoaders(loaders []Loader) (*Config, error) {
+func createConfigurationFromLoaders(src *Config) (*Config, error) {
+	loaders := src.Loaders
 	if len(loaders) == 0 {
 		loaders = []Loader{
 			// Load from environment variables.
@@ -154,16 +155,32 @@ func createConfigurationFromLoaders(loaders []Loader) (*Config, error) {
 		}
 	}
 
-	var config Config
+	// Make a copy of the source configuration because its attributes may influence
+	// the behavior of the loaders (e.g. it may have [ConfigFile] set).
+	config, err := src.dup()
+	if err != nil {
+		return nil, err
+	}
+
+	// Apply loaders iteratively.
 	for _, loader := range loaders {
 		logger.Tracef("Loading config from %s", loader.Name())
-		err := loader.Configure(&config)
+		err := loader.Configure(config)
 		if err != nil {
 			return nil, config.wrapDebug(err)
 		}
 	}
 
-	return &config, nil
+	return config, nil
+}
+
+// Dup returns a copy of the configuration.
+// It cannot be copied-by-value because it contains a mutex
+// and mutexes are not copyable.
+func (c *Config) dup() (*Config, error) {
+	var dst Config
+	err := ConfigAttributes.Merge(&dst, c)
+	return &dst, err
 }
 
 func (c *Config) EnsureResolved() error {
@@ -177,7 +194,7 @@ func (c *Config) EnsureResolved() error {
 	}
 
 	// Create a new configuration using the configured loaders.
-	fresh, err := createConfigurationFromLoaders(c.Loaders)
+	fresh, err := createConfigurationFromLoaders(c)
 	if err != nil {
 		return fmt.Errorf("resolve: %w", err)
 	}
