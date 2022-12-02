@@ -232,7 +232,7 @@ func TestConfig_PatFromDatabricksCfg_NohostProfile(t *testing.T) {
 	}.apply(t)
 }
 
-func TestConfig_Implicit_DatabricksCfg_Profile_ThroughHost(t *testing.T) {
+func TestConfig_DatabricksCfgProfileResolve_ThroughHost(t *testing.T) {
 	configFixture{
 		env: map[string]string{
 			"HOME":                       "testdata",
@@ -244,7 +244,7 @@ func TestConfig_Implicit_DatabricksCfg_Profile_ThroughHost(t *testing.T) {
 	}.apply(t)
 }
 
-func TestConfig_Implicit_DatabricksCfg_Profile_ThroughHost_WithToken(t *testing.T) {
+func TestConfig_DatabricksCfgProfileResolve_ThroughHost_WithToken(t *testing.T) {
 	configFixture{
 		env: map[string]string{
 			"HOME":                       "testdata",
@@ -256,7 +256,7 @@ func TestConfig_Implicit_DatabricksCfg_Profile_ThroughHost_WithToken(t *testing.
 	}.apply(t)
 }
 
-func TestConfig_Implicit_DatabricksCfg_Profile_Conflicts(t *testing.T) {
+func TestConfig_DatabricksCfgProfileResolve_Conflicts(t *testing.T) {
 	configFixture{
 		env: map[string]string{
 			"HOME":                       "testdata",
