@@ -137,14 +137,14 @@ type CronSchedule struct {
 	// Indicate whether this schedule is paused or not.
 	PauseStatus CronSchedulePauseStatus `json:"pause_status,omitempty"`
 	// A Cron expression using Quartz syntax that describes the schedule for a
-	// job. See [Cron
-	// Trigger](http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html)
-	// for details. This field is required."
+	// job. See [Cron Trigger] for details. This field is required."
+	//
+	// [Cron Trigger]: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
 	QuartzCronExpression string `json:"quartz_cron_expression"`
 	// A Java timezone ID. The schedule for a job is resolved with respect to
-	// this timezone. See [Java
-	// TimeZone](https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html)
-	// for details. This field is required.
+	// this timezone. See [Java TimeZone] for details. This field is required.
+	//
+	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
 	TimezoneId string `json:"timezone_id"`
 }
 
@@ -564,16 +564,17 @@ type NotebookTask struct {
 	// parameters maps are merged. If the same key is specified in
 	// `base_parameters` and in `run-now`, the value from `run-now` is used.
 	//
-	// Use [Task parameter
-	// variables](https://docs.databricks.com/jobs.html#parameter-variables) to
-	// set parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
 	//
 	// If the notebook takes a parameter that is not specified in the job’s
 	// `base_parameters` or the `run-now` override parameters, the default value
 	// from the notebook is used.
 	//
-	// Retrieve these parameters in a notebook using
-	// [dbutils.widgets.get](https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-widgets).
+	// Retrieve these parameters in a notebook using [dbutils.widgets.get].
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-widgets
 	BaseParameters map[string]any/* MISSING TYPE */ `json:"base_parameters,omitempty"`
 	// The path of the notebook to be run in the Databricks workspace or remote
 	// repository. For notebooks stored in the Databricks workspace, the path
@@ -669,21 +670,22 @@ type RepairRun struct {
 	// A map from keys to values for jobs with notebook task, for example
 	// `\"notebook_params\": {\"name\": \"john doe\", \"age\": \"35\"}`. The map
 	// is passed to the notebook and is accessible through the
-	// [dbutils.widgets.get](https://docs.databricks.com/dev-tools/databricks-utils.html)
-	// function.
+	// [dbutils.widgets.get] function.
 	//
 	// If not specified upon `run-now`, the triggered run uses the job’s base
 	// parameters.
 	//
 	// notebook_params cannot be specified in conjunction with jar_params.
 	//
-	// Use [Task parameter
-	// variables](https://docs.databricks.com/jobs.html#parameter-variables) to
-	// set parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
 	//
 	// The JSON representation of this field (for example
 	// `{\"notebook_params\":{\"name\":\"john doe\",\"age\":\"35\"}}`) cannot
 	// exceed 10,000 bytes.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -698,15 +700,16 @@ type RepairRun struct {
 	// representation of this field (for example `{\"python_params\":[\"john
 	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter
-	// variables](https://docs.databricks.com/jobs.html#parameter-variables) to
-	// set parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
 	//
 	// Important
 	//
 	// These parameters accept only Latin characters (ASCII character set).
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	PythonParams []string `json:"python_params,omitempty"`
 	// If true, repair all failed tasks. Only one of rerun_tasks or
 	// rerun_all_failed_tasks can be used.
@@ -723,15 +726,16 @@ type RepairRun struct {
 	// The JSON representation of this field (for example
 	// `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter
-	// variables](https://docs.databricks.com/jobs.html#parameter-variables) to
-	// set parameters containing information about job runs
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs
 	//
 	// Important
 	//
 	// These parameters accept only Latin characters (ASCII character set).
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
@@ -880,8 +884,9 @@ type RunNow struct {
 	//
 	// This token must have at most 64 characters.
 	//
-	// For more information, see [How to ensure idempotency for jobs](
-	// https://kb.databricks.com/jobs/jobs-idempotency.html).
+	// For more information, see [How to ensure idempotency for jobs].
+	//
+	// [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
 	IdempotencyToken string `json:"idempotency_token,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `\"jar_params\": [\"john doe\", \"35\"]`. The parameters are used to
@@ -899,21 +904,22 @@ type RunNow struct {
 	// A map from keys to values for jobs with notebook task, for example
 	// `\"notebook_params\": {\"name\": \"john doe\", \"age\": \"35\"}`. The map
 	// is passed to the notebook and is accessible through the
-	// [dbutils.widgets.get](https://docs.databricks.com/dev-tools/databricks-utils.html)
-	// function.
+	// [dbutils.widgets.get] function.
 	//
 	// If not specified upon `run-now`, the triggered run uses the job’s base
 	// parameters.
 	//
 	// notebook_params cannot be specified in conjunction with jar_params.
 	//
-	// Use [Task parameter
-	// variables](https://docs.databricks.com/jobs.html#parameter-variables) to
-	// set parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
 	//
 	// The JSON representation of this field (for example
 	// `{\"notebook_params\":{\"name\":\"john doe\",\"age\":\"35\"}}`) cannot
 	// exceed 10,000 bytes.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -928,15 +934,16 @@ type RunNow struct {
 	// representation of this field (for example `{\"python_params\":[\"john
 	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter
-	// variables](https://docs.databricks.com/jobs.html#parameter-variables) to
-	// set parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
 	//
 	// Important
 	//
 	// These parameters accept only Latin characters (ASCII character set).
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
 	// `\"spark_submit_params\": [\"--class\",
@@ -946,15 +953,16 @@ type RunNow struct {
 	// The JSON representation of this field (for example
 	// `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter
-	// variables](https://docs.databricks.com/jobs.html#parameter-variables) to
-	// set parameters containing information about job runs
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs
 	//
 	// Important
 	//
 	// These parameters accept only Latin characters (ASCII character set).
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
@@ -1024,21 +1032,22 @@ type RunParameters struct {
 	// A map from keys to values for jobs with notebook task, for example
 	// `\"notebook_params\": {\"name\": \"john doe\", \"age\": \"35\"}`. The map
 	// is passed to the notebook and is accessible through the
-	// [dbutils.widgets.get](https://docs.databricks.com/dev-tools/databricks-utils.html)
-	// function.
+	// [dbutils.widgets.get] function.
 	//
 	// If not specified upon `run-now`, the triggered run uses the job’s base
 	// parameters.
 	//
 	// notebook_params cannot be specified in conjunction with jar_params.
 	//
-	// Use [Task parameter
-	// variables](https://docs.databricks.com/jobs.html#parameter-variables) to
-	// set parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
 	//
 	// The JSON representation of this field (for example
 	// `{\"notebook_params\":{\"name\":\"john doe\",\"age\":\"35\"}}`) cannot
 	// exceed 10,000 bytes.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -1053,15 +1062,16 @@ type RunParameters struct {
 	// representation of this field (for example `{\"python_params\":[\"john
 	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter
-	// variables](https://docs.databricks.com/jobs.html#parameter-variables) to
-	// set parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
 	//
 	// Important
 	//
 	// These parameters accept only Latin characters (ASCII character set).
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
 	// `\"spark_submit_params\": [\"--class\",
@@ -1071,15 +1081,16 @@ type RunParameters struct {
 	// The JSON representation of this field (for example
 	// `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter
-	// variables](https://docs.databricks.com/jobs.html#parameter-variables) to
-	// set parameters containing information about job runs
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs
 	//
 	// Important
 	//
 	// These parameters accept only Latin characters (ASCII character set).
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
@@ -1268,18 +1279,20 @@ type SparkJarTask struct {
 	MainClassName string `json:"main_class_name,omitempty"`
 	// Parameters passed to the main method.
 	//
-	// Use [Task parameter
-	// variables](https://docs.databricks.com/jobs.html#parameter-variables) to
-	// set parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	Parameters []string `json:"parameters,omitempty"`
 }
 
 type SparkPythonTask struct {
 	// Command line parameters passed to the Python file.
 	//
-	// Use [Task parameter
-	// variables](https://docs.databricks.com/jobs.html#parameter-variables) to
-	// set parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	Parameters []string `json:"parameters,omitempty"`
 
 	PythonFile string `json:"python_file"`
@@ -1288,9 +1301,10 @@ type SparkPythonTask struct {
 type SparkSubmitTask struct {
 	// Command-line parameters passed to spark submit.
 	//
-	// Use [Task parameter
-	// variables](https://docs.databricks.com/jobs.html#parameter-variables) to
-	// set parameters containing information about job runs.
+	// Use [Task parameter variables] to set parameters containing information
+	// about job runs.
+	//
+	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	Parameters []string `json:"parameters,omitempty"`
 }
 
@@ -1420,8 +1434,9 @@ type SubmitRun struct {
 	//
 	// This token must have at most 64 characters.
 	//
-	// For more information, see [How to ensure idempotency for jobs](
-	// https://kb.databricks.com/jobs/jobs-idempotency.html).
+	// For more information, see [How to ensure idempotency for jobs].
+	//
+	// [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
 	IdempotencyToken string `json:"idempotency_token,omitempty"`
 	// An optional name for the run. The default value is `Untitled`.
 	RunName string `json:"run_name,omitempty"`

@@ -8,9 +8,11 @@ type AddInstanceProfile struct {
 	// The AWS IAM role ARN of the role associated with the instance profile.
 	// This field is required if your role name and instance profile name do not
 	// match and you want to use the instance profile with [Databricks SQL
-	// Serverless](https://docs.databricks.com/sql/admin/serverless.html).
+	// Serverless].
 	//
 	// Otherwise, this field is optional.
+	//
+	// [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
 	IamRoleArn string `json:"iam_role_arn,omitempty"`
 	// The AWS ARN of the instance profile to register with Databricks. This
 	// field is required.
@@ -1063,9 +1065,11 @@ type InstanceProfile struct {
 	// The AWS IAM role ARN of the role associated with the instance profile.
 	// This field is required if your role name and instance profile name do not
 	// match and you want to use the instance profile with [Databricks SQL
-	// Serverless](https://docs.databricks.com/sql/admin/serverless.html).
+	// Serverless].
 	//
 	// Otherwise, this field is optional.
+	//
+	// [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
 	IamRoleArn string `json:"iam_role_arn,omitempty"`
 	// The AWS ARN of the instance profile to register with Databricks. This
 	// field is required.

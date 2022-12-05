@@ -22,8 +22,9 @@ func NewGitCredentials(client *client.DatabricksClient) *GitCredentialsAPI {
 // Registers personal access token for Databricks to do operations on behalf of
 // the user.
 //
-// See [more
-// info](https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html).
+// See [more info].
+//
+// [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 type GitCredentialsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(GitCredentialsService)

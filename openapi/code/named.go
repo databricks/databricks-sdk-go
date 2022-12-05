@@ -1,7 +1,9 @@
 package code
 
 import (
+	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 	"unicode"
 )
@@ -208,6 +210,8 @@ func (n *Named) Summary() string {
 	return ""
 }
 
+var markdownLink = regexp.MustCompile(`(?m)\[([^\]]+)\]\(([^\)]+)\)`)
+
 func (n *Named) DescriptionWithoutSummary() string {
 	sentences := n.sentences()
 	if len(sentences) > 1 {
@@ -222,6 +226,26 @@ func (n *Named) Comment(prefix string, maxLen int) string {
 		return ""
 	}
 	trimmed := strings.TrimSpace(n.Description)
+	// collect links, which later be sorted
+	links := map[string]string{}
+	// safe to iterate and update, as match slice is a
+	for _, m := range markdownLink.FindAllStringSubmatch(trimmed, -1) {
+		label := strings.TrimSpace(m[1])
+		link := strings.TrimSpace(m[2])
+		if !strings.HasPrefix(link, "http") {
+			// this condition is here until OpenAPI spec normalizes all links
+			continue
+		}
+		links[label] = link
+		// replace [test](url) with [text]
+		trimmed = strings.ReplaceAll(trimmed, m[0], fmt.Sprintf("[%s]", label))
+	}
+	linksInBottom := []string{}
+	for k, v := range links {
+		link := fmt.Sprintf("[%s]: %s", k, v)
+		linksInBottom = append(linksInBottom, link)
+	}
+	sort.Strings(linksInBottom)
 	description := strings.ReplaceAll(trimmed, "\n\n", " __BLANK__ ")
 	var lines []string
 	currentLine := strings.Builder{}
@@ -244,6 +268,9 @@ func (n *Named) Comment(prefix string, maxLen int) string {
 	if currentLine.Len() > 0 {
 		lines = append(lines, currentLine.String())
 		currentLine.Reset()
+	}
+	if len(linksInBottom) > 0 {
+		lines = append(append(lines, ""), linksInBottom...)
 	}
 	return strings.TrimLeft(prefix, "\t ") + strings.Join(lines, "\n"+prefix)
 }

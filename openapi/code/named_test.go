@@ -67,6 +67,19 @@ func TestSentencesFromDescription(t *testing.T) {
 	assert.Equal(t, "", (&Named{Description: "Foo"}).DescriptionWithoutSummary())
 }
 
+func TestCommentWithLinks(t *testing.T) {
+	n := Named{Description: `This is an [example](https://example.com) of
+		linking to other web pages. Follows this 
+		[convention](https://tip.golang.org/doc/comment#links).`}
+	assert.Equal(t, strings.TrimLeft(`
+    // This is an [example] of linking to other web pages. Follows this
+    // [convention].
+    // 
+    // [convention]: https://tip.golang.org/doc/comment#links
+    // [example]: https://example.com`,
+		"\n\t "), n.Comment("    // ", 80))
+}
+
 func TestNonConflictingCamelNames(t *testing.T) {
 	n := Named{Name: "Import"}
 	assert.True(t, n.IsNameReserved())

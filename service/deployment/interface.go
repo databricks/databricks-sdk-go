@@ -26,8 +26,9 @@ type CredentialsService interface {
 	// credential configuration object.
 	//
 	// For information about how to create a new workspace with this API, see
-	// [Create a new workspace using the Account
-	// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html)
+	// [Create a new workspace using the Account API]
+	//
+	// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 	Create(ctx context.Context, request CreateCredentialRequest) (*Credential, error)
 
 	// Delete credential configuration.
@@ -156,8 +157,7 @@ type NetworksService interface {
 	// Creates a Databricks network configuration that represents an AWS VPC and
 	// its resources. The VPC will be used for new Databricks clusters. This
 	// requires a pre-existing VPC and subnets. For VPC requirements, see
-	// [Customer-managed
-	// VPC](http://docs.databricks.com/administration-guide/cloud-configurations/aws/customer-managed-vpc.html).
+	// [Customer-managed VPC].
 	//
 	// **Important**: You can share one customer-managed VPC with multiple
 	// workspaces in a single account. Therefore, you can share one VPC across
@@ -168,11 +168,13 @@ type NetworksService interface {
 	// workspaces. If you plan to share one VPC with multiple workspaces, make
 	// sure you size your VPC and subnets accordingly. For information about how
 	// to create a new workspace with this API, see [Create a new workspace
-	// using the Account
-	// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html).
+	// using the Account API].
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform.
+	//
+	// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
+	// [Customer-managed VPC]: http://docs.databricks.com/administration-guide/cloud-configurations/aws/customer-managed-vpc.html
 	Create(ctx context.Context, request CreateNetworkRequest) (*Network, error)
 
 	// Delete network configuration.
@@ -189,11 +191,12 @@ type NetworksService interface {
 	//
 	// Gets a Databricks network configuration, which represents an AWS VPC and
 	// its resources. This requires a pre-existing VPC and subnets. For VPC
-	// requirements, see [Customer-managed
-	// VPC](http://docs.databricks.com/administration-guide/cloud-configurations/aws/customer-managed-vpc.html).
+	// requirements, see [Customer-managed VPC].
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform.
+	//
+	// [Customer-managed VPC]: http://docs.databricks.com/administration-guide/cloud-configurations/aws/customer-managed-vpc.html
 	Get(ctx context.Context, request GetNetworkRequest) (*Network, error)
 
 	// Get all network configurations.
@@ -212,17 +215,17 @@ type NetworksService interface {
 // the ID for a private access settings object is in its workspace configuration
 // object. Your account must be enabled for PrivateLink to use these APIs.
 // Before configuring PrivateLink, it is important to read the [Databricks
-// article about
-// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+// article about PrivateLink].
+//
+// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 type PrivateAccessService interface {
 
 	// Create private access settings.
 	//
 	// Creates a private access settings object, which specifies how your
-	// workspace is accessed over [AWS
-	// PrivateLink](https://aws.amazon.com/privatelink). To use AWS PrivateLink,
-	// a workspace must have a private access settings object referenced by ID
-	// in the workspace's `private_access_settings_id` property.
+	// workspace is accessed over [AWS PrivateLink]. To use AWS PrivateLink, a
+	// workspace must have a private access settings object referenced by ID in
+	// the workspace's `private_access_settings_id` property.
 	//
 	// You can share one private access settings with multiple workspaces in a
 	// single account. However, private access settings are specific to AWS
@@ -230,41 +233,49 @@ type PrivateAccessService interface {
 	// private access settings object.
 	//
 	// Before configuring PrivateLink, read the [Databricks article about
-	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+	// PrivateLink].
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
+	//
+	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
+	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	Create(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error)
 
 	// Delete a private access settings object.
 	//
 	// Deletes a private access settings object, which determines how your
-	// workspace is accessed over [AWS
-	// PrivateLink](https://aws.amazon.com/privatelink).
+	// workspace is accessed over [AWS PrivateLink].
 	//
 	// Before configuring PrivateLink, read the [Databricks article about
-	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+	// PrivateLink].
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
+	//
+	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
+	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	Delete(ctx context.Context, request DeletePrivateAccesRequest) error
 
 	// Get a private access settings object.
 	//
 	// Gets a private access settings object, which specifies how your workspace
-	// is accessed over [AWS PrivateLink](https://aws.amazon.com/privatelink).
+	// is accessed over [AWS PrivateLink].
 	//
 	// Before configuring PrivateLink, read the [Databricks article about
-	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+	// PrivateLink].
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
+	//
+	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
+	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	Get(ctx context.Context, request GetPrivateAccesRequest) (*PrivateAccessSettings, error)
 
 	// Get all private access settings objects.
@@ -281,10 +292,10 @@ type PrivateAccessService interface {
 	// Replace private access settings.
 	//
 	// Updates an existing private access settings object, which specifies how
-	// your workspace is accessed over [AWS
-	// PrivateLink](https://aws.amazon.com/privatelink). To use AWS PrivateLink,
-	// a workspace must have a private access settings object referenced by ID
-	// in the workspace's `private_access_settings_id` property.
+	// your workspace is accessed over [AWS PrivateLink]. To use AWS
+	// PrivateLink, a workspace must have a private access settings object
+	// referenced by ID in the workspace's `private_access_settings_id`
+	// property.
 	//
 	// This operation completely overwrites your existing private access
 	// settings object attached to your workspaces. All workspaces attached to
@@ -298,12 +309,15 @@ type PrivateAccessService interface {
 	// settings object.
 	//
 	// Before configuring PrivateLink, read the [Databricks article about
-	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+	// PrivateLink].
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
+	//
+	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
+	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error
 }
 
@@ -324,8 +338,9 @@ type StorageService interface {
 	// need to configure the required bucket policy.
 	//
 	// For information about how to create a new workspace with this API, see
-	// [Create a new workspace using the Account
-	// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html)
+	// [Create a new workspace using the Account API]
+	//
+	// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 	Create(ctx context.Context, request CreateStorageConfigurationRequest) (*StorageConfiguration, error)
 
 	// Delete storage configuration.
@@ -354,16 +369,16 @@ type StorageService interface {
 // back-end connection to REST APIs) and one for the back-end secure cluster
 // connectivity relay from the data plane. Your account must be enabled for
 // PrivateLink to use these APIs. Before configuring PrivateLink, it is
-// important to read the [Databricks article about
-// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+// important to read the [Databricks article about PrivateLink].
+//
+// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 type VpcEndpointsService interface {
 
 	// Create VPC endpoint configuration.
 	//
-	// Creates a VPC endpoint configuration, which represents a [VPC
-	// endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html)
+	// Creates a VPC endpoint configuration, which represents a [VPC endpoint]
 	// object in AWS used to communicate privately with Databricks over [AWS
-	// PrivateLink](https://aws.amazon.com/privatelink).
+	// PrivateLink].
 	//
 	// **Important**: When you register a VPC endpoint to the Databricks
 	// workspace VPC endpoint service for any workspace, **in this release
@@ -376,51 +391,59 @@ type VpcEndpointsService interface {
 	// Within AWS, your VPC endpoint stays in `pendingAcceptance` state until
 	// you register it in a VPC endpoint configuration through the Account API.
 	// After you register the VPC endpoint configuration, the Databricks
-	// [endpoint
-	// service](https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html)
-	// automatically accepts the VPC endpoint and it eventually transitions to
-	// the `available` state.
+	// [endpoint service] automatically accepts the VPC endpoint and it
+	// eventually transitions to the `available` state.
 	//
 	// Before configuring PrivateLink, read the [Databricks article about
-	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+	// PrivateLink].
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
+	//
+	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
+	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+	// [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html
+	// [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html
 	Create(ctx context.Context, request CreateVpcEndpointRequest) (*VpcEndpoint, error)
 
 	// Delete VPC endpoint configuration.
 	//
 	// Deletes a VPC endpoint configuration, which represents an [AWS VPC
-	// endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html)
-	// that can communicate privately with Databricks over [AWS
-	// PrivateLink](https://aws.amazon.com/privatelink).
+	// endpoint] that can communicate privately with Databricks over [AWS
+	// PrivateLink].
 	//
 	// Upon deleting a VPC endpoint configuration, the VPC endpoint in AWS
 	// changes its state from `accepted` to `rejected`, which means that it is
 	// no longer usable from your VPC.
 	//
 	// Before configuring PrivateLink, read the [Databricks article about
-	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+	// PrivateLink].
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
+	//
+	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
+	// [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
+	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	Delete(ctx context.Context, request DeleteVpcEndpointRequest) error
 
 	// Get a VPC endpoint configuration.
 	//
-	// Gets a VPC endpoint configuration, which represents a [VPC
-	// endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html)
+	// Gets a VPC endpoint configuration, which represents a [VPC endpoint]
 	// object in AWS used to communicate privately with Databricks over [AWS
-	// PrivateLink](https://aws.amazon.com/privatelink).
+	// PrivateLink].
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
+	//
+	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
+	// [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
 	Get(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error)
 
 	// Get all VPC endpoint configurations.
@@ -428,12 +451,14 @@ type VpcEndpointsService interface {
 	// Gets a list of all VPC endpoints for an account, specified by ID.
 	//
 	// Before configuring PrivateLink, read the [Databricks article about
-	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+	// PrivateLink].
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform and your Databricks account is enabled for PrivateLink
 	// (Public Preview). Contact your Databricks representative to enable your
 	// account for PrivateLink.
+	//
+	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	List(ctx context.Context) ([]VpcEndpoint, error)
 }
 
@@ -476,8 +501,7 @@ type WorkspacesService interface {
 	// information, you cannot reuse a Databricks Account API network
 	// configuration across workspaces.\nFor information about how to create a
 	// new workspace with this API **including error handling**, see [Create a
-	// new workspace using the Account
-	// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html).
+	// new workspace using the Account API].
 	//
 	// **Important**: Customer-managed VPCs, PrivateLink, and customer-managed
 	// keys are supported on a limited set of deployment and subscription types.
@@ -485,6 +509,8 @@ type WorkspacesService interface {
 	// representative.\n\nThis operation is available only if your account is on
 	// the E2 version of the platform or on a select custom plan that allows
 	// multiple workspaces per account.
+	//
+	// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 	Create(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error)
 
 	// Delete workspace.
@@ -509,12 +535,13 @@ type WorkspacesService interface {
 	//
 	// For information about how to create a new workspace with this API
 	// **including error handling**, see [Create a new workspace using the
-	// Account
-	// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html).
+	// Account API].
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform or on a select custom plan that allows multiple workspaces
 	// per account.
+	//
+	// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 	Get(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error)
 
 	// Get the history of a workspace's associations with keys.
@@ -572,8 +599,7 @@ type WorkspacesService interface {
 	//
 	// For information about how to create a new workspace with this API
 	// **including error handling**, see [Create a new workspace using the
-	// Account
-	// API](http://docs.databricks.com/administration-guide/account-api/new-workspace.html).
+	// Account API].
 	//
 	// ### Update a running workspace You can update a Databricks workspace
 	// configuration for running workspaces for some fields, but not all fields.
@@ -623,13 +649,11 @@ type WorkspacesService interface {
 	// status becomes `PROVISIONING` temporarily (typically under 20 minutes).
 	// If the workspace update is successful, the workspace status changes to
 	// `RUNNING`. Note that you can also check the workspace status in the
-	// [Account
-	// Console](https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html).
-	// However, you cannot use or create clusters for another 20 minutes after
-	// that status change. This results in a total of up to 40 minutes in which
-	// you cannot create clusters. If you create or use clusters before this
-	// time interval elapses, clusters do not launch successfully, fail, or
-	// could cause other unexpected behavior.
+	// [Account Console]. However, you cannot use or create clusters for another
+	// 20 minutes after that status change. This results in a total of up to 40
+	// minutes in which you cannot create clusters. If you create or use
+	// clusters before this time interval elapses, clusters do not launch
+	// successfully, fail, or could cause other unexpected behavior.
 	//
 	// * For workspaces with a customer-managed VPC, the workspace status stays
 	// at status `RUNNING` and the VPC change happens immediately. A change to
@@ -655,5 +679,8 @@ type WorkspacesService interface {
 	// This operation is available only if your account is on the E2 version of
 	// the platform or on a select custom plan that allows multiple workspaces
 	// per account.
+	//
+	// [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
+	// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 	Update(ctx context.Context, request UpdateWorkspaceRequest) error
 }

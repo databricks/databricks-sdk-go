@@ -9,8 +9,9 @@ import (
 // Registers personal access token for Databricks to do operations on behalf of
 // the user.
 //
-// See [more
-// info](https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html).
+// See [more info].
+//
+// [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 type GitCredentialsService interface {
 
 	// Create a credential entry.

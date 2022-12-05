@@ -80,9 +80,10 @@ type ListGroupsRequest struct {
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
-	// `and` and `or`. The [SCIM
-	// RFC](https://tools.ietf.org/html/rfc7644#section-3.4.2.2) has more
-	// details but we currently only support simple expressions.
+	// `and` and `or`. The [SCIM RFC] has more details but we currently only
+	// support simple expressions.
+	//
+	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
 	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
 	SortBy string `json:"-" url:"sortBy,omitempty"`
@@ -127,9 +128,10 @@ type ListServicePrincipalsRequest struct {
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
-	// `and` and `or`. The [SCIM
-	// RFC](https://tools.ietf.org/html/rfc7644#section-3.4.2.2) has more
-	// details but we currently only support simple expressions.
+	// `and` and `or`. The [SCIM RFC] has more details but we currently only
+	// support simple expressions.
+	//
+	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
 	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
 	SortBy string `json:"-" url:"sortBy,omitempty"`
@@ -156,9 +158,10 @@ type ListUsersRequest struct {
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
-	// `and` and `or`. The [SCIM
-	// RFC](https://tools.ietf.org/html/rfc7644#section-3.4.2.2) has more
-	// details but we currently only support simple expressions.
+	// `and` and `or`. The [SCIM RFC] has more details but we currently only
+	// support simple expressions.
+	//
+	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
 	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.

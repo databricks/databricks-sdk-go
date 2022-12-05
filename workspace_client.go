@@ -170,8 +170,9 @@ type WorkspaceClient struct {
 	// Registers personal access token for Databricks to do operations on behalf
 	// of the user.
 	//
-	// See [more
-	// info](https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html).
+	// See [more info].
+	//
+	// [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 	GitCredentials *gitcredentials.GitCredentialsAPI
 
 	// The Global Init Scripts API enables Workspace administrators to configure
@@ -234,9 +235,10 @@ type WorkspaceClient struct {
 
 	// The Instance Profiles API allows admins to add, list, and remove instance
 	// profiles that users can launch clusters with. Regular users can list the
-	// instance profiles available to them. See [Secure access to S3
-	// buckets](https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html)
+	// instance profiles available to them. See [Secure access to S3 buckets]
 	// using instance profiles for more information.
+	//
+	// [Secure access to S3 buckets]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html
 	InstanceProfiles *clusters.InstanceProfilesAPI
 
 	// The IP Access List API enables Databricks admins to configure IP access
@@ -276,11 +278,11 @@ type WorkspaceClient struct {
 	// applications.
 	//
 	// You should never hard code secrets or store them in plain text. Use the
-	// :service:secrets to manage secrets in the [Databricks
-	// CLI](https://docs.databricks.com/dev-tools/cli/index.html). Use the
-	// [Secrets
-	// utility](https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets)
-	// to reference secrets in notebooks and jobs.
+	// :service:secrets to manage secrets in the [Databricks CLI]. Use the
+	// [Secrets utility] to reference secrets in notebooks and jobs.
+	//
+	// [Databricks CLI]: https://docs.databricks.com/dev-tools/cli/index.html
+	// [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 	Jobs *jobs.JobsAPI
 
 	// The Libraries API allows you to install and uninstall libraries and get
