@@ -44,7 +44,7 @@ func (a *AccountGroupsAPI) Impl() AccountGroupsService {
 	return a.impl
 }
 
-// Create a new group
+// Create a new group.
 //
 // Creates a group in the Databricks Account with a unique name, using the
 // supplied group details.
@@ -52,14 +52,14 @@ func (a *AccountGroupsAPI) Create(ctx context.Context, request Group) (*Group, e
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a group
+// Delete a group.
 //
 // Deletes a group from the Databricks Account.
 func (a *AccountGroupsAPI) Delete(ctx context.Context, request DeleteGroupRequest) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a group
+// Delete a group.
 //
 // Deletes a group from the Databricks Account.
 func (a *AccountGroupsAPI) DeleteById(ctx context.Context, id string) error {
@@ -68,14 +68,14 @@ func (a *AccountGroupsAPI) DeleteById(ctx context.Context, id string) error {
 	})
 }
 
-// Get group details
+// Get group details.
 //
 // Gets the information for a specific group in the Databricks Account.
 func (a *AccountGroupsAPI) Get(ctx context.Context, request GetGroupRequest) (*Group, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get group details
+// Get group details.
 //
 // Gets the information for a specific group in the Databricks Account.
 func (a *AccountGroupsAPI) GetById(ctx context.Context, id string) (*Group, error) {
@@ -84,7 +84,7 @@ func (a *AccountGroupsAPI) GetById(ctx context.Context, id string) (*Group, erro
 	})
 }
 
-// List group details
+// List group details.
 //
 // Gets all details of the groups associated with the Databricks Account.
 //
@@ -150,14 +150,14 @@ func (a *AccountGroupsAPI) GetByDisplayName(ctx context.Context, name string) (*
 	return &alternatives[0], nil
 }
 
-// Update group details
+// Update group details.
 //
 // Partially updates the details of a group.
 func (a *AccountGroupsAPI) Patch(ctx context.Context, request PartialUpdate) error {
 	return a.impl.Patch(ctx, request)
 }
 
-// Replace a group
+// Replace a group.
 //
 // Updates the details of a group by replacing the entire group entity.
 func (a *AccountGroupsAPI) Update(ctx context.Context, request Group) error {
@@ -196,21 +196,21 @@ func (a *AccountServicePrincipalsAPI) Impl() AccountServicePrincipalsService {
 	return a.impl
 }
 
-// Create a service principal
+// Create a service principal.
 //
 // Creates a new service principal in the Databricks Account.
 func (a *AccountServicePrincipalsAPI) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a service principal
+// Delete a service principal.
 //
 // Delete a single service principal in the Databricks Account.
 func (a *AccountServicePrincipalsAPI) Delete(ctx context.Context, request DeleteServicePrincipalRequest) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a service principal
+// Delete a service principal.
 //
 // Delete a single service principal in the Databricks Account.
 func (a *AccountServicePrincipalsAPI) DeleteById(ctx context.Context, id string) error {
@@ -219,7 +219,7 @@ func (a *AccountServicePrincipalsAPI) DeleteById(ctx context.Context, id string)
 	})
 }
 
-// Get service principal details
+// Get service principal details.
 //
 // Gets the details for a single service principal define in the Databricks
 // Account.
@@ -227,7 +227,7 @@ func (a *AccountServicePrincipalsAPI) Get(ctx context.Context, request GetServic
 	return a.impl.Get(ctx, request)
 }
 
-// Get service principal details
+// Get service principal details.
 //
 // Gets the details for a single service principal define in the Databricks
 // Account.
@@ -237,7 +237,7 @@ func (a *AccountServicePrincipalsAPI) GetById(ctx context.Context, id string) (*
 	})
 }
 
-// List service principals
+// List service principals.
 //
 // Gets the set of service principals associated with a Databricks Account.
 //
@@ -303,7 +303,7 @@ func (a *AccountServicePrincipalsAPI) GetByDisplayName(ctx context.Context, name
 	return &alternatives[0], nil
 }
 
-// Update service principal details
+// Update service principal details.
 //
 // Partially updates the details of a single service principal in the Databricks
 // Account.
@@ -311,7 +311,7 @@ func (a *AccountServicePrincipalsAPI) Patch(ctx context.Context, request Partial
 	return a.impl.Patch(ctx, request)
 }
 
-// Replace service principal
+// Replace service principal.
 //
 // Updates the details of a single service principal.
 //
@@ -357,7 +357,7 @@ func (a *AccountUsersAPI) Impl() AccountUsersService {
 	return a.impl
 }
 
-// Create a new user
+// Create a new user.
 //
 // Creates a new user in the Databricks Account. This new user will also be
 // added to the Databricks account.
@@ -365,7 +365,7 @@ func (a *AccountUsersAPI) Create(ctx context.Context, request User) (*User, erro
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a user
+// Delete a user.
 //
 // Deletes a user. Deleting a user from a Databricks Account also removes
 // objects associated with the user.
@@ -373,7 +373,7 @@ func (a *AccountUsersAPI) Delete(ctx context.Context, request DeleteUserRequest)
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a user
+// Delete a user.
 //
 // Deletes a user. Deleting a user from a Databricks Account also removes
 // objects associated with the user.
@@ -383,14 +383,14 @@ func (a *AccountUsersAPI) DeleteById(ctx context.Context, id string) error {
 	})
 }
 
-// Get user details
+// Get user details.
 //
 // Gets information for a specific user in Databricks Account.
 func (a *AccountUsersAPI) Get(ctx context.Context, request GetUserRequest) (*User, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get user details
+// Get user details.
 //
 // Gets information for a specific user in Databricks Account.
 func (a *AccountUsersAPI) GetById(ctx context.Context, id string) (*User, error) {
@@ -399,7 +399,7 @@ func (a *AccountUsersAPI) GetById(ctx context.Context, id string) (*User, error)
 	})
 }
 
-// List users
+// List users.
 //
 // Gets details for all the users associated with a Databricks Account.
 //
@@ -465,7 +465,7 @@ func (a *AccountUsersAPI) GetByUserName(ctx context.Context, name string) (*User
 	return &alternatives[0], nil
 }
 
-// Update user details
+// Update user details.
 //
 // Partially updates a user resource by applying the supplied operations on
 // specific user attributes.
@@ -473,7 +473,7 @@ func (a *AccountUsersAPI) Patch(ctx context.Context, request PartialUpdate) erro
 	return a.impl.Patch(ctx, request)
 }
 
-// Replace a user
+// Replace a user.
 //
 // Replaces a user's information with the data supplied in request.
 func (a *AccountUsersAPI) Update(ctx context.Context, request User) error {
@@ -508,7 +508,7 @@ func (a *CurrentUserAPI) Impl() CurrentUserService {
 	return a.impl
 }
 
-// Get current user info
+// Get current user info.
 //
 // Get details about the current method caller's identity.
 func (a *CurrentUserAPI) Me(ctx context.Context) (*User, error) {
@@ -548,7 +548,7 @@ func (a *GroupsAPI) Impl() GroupsService {
 	return a.impl
 }
 
-// Create a new group
+// Create a new group.
 //
 // Creates a group in the Databricks Workspace with a unique name, using the
 // supplied group details.
@@ -556,14 +556,14 @@ func (a *GroupsAPI) Create(ctx context.Context, request Group) (*Group, error) {
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a group
+// Delete a group.
 //
 // Deletes a group from the Databricks Workspace.
 func (a *GroupsAPI) Delete(ctx context.Context, request DeleteGroupRequest) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a group
+// Delete a group.
 //
 // Deletes a group from the Databricks Workspace.
 func (a *GroupsAPI) DeleteById(ctx context.Context, id string) error {
@@ -572,14 +572,14 @@ func (a *GroupsAPI) DeleteById(ctx context.Context, id string) error {
 	})
 }
 
-// Get group details
+// Get group details.
 //
 // Gets the information for a specific group in the Databricks Workspace.
 func (a *GroupsAPI) Get(ctx context.Context, request GetGroupRequest) (*Group, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get group details
+// Get group details.
 //
 // Gets the information for a specific group in the Databricks Workspace.
 func (a *GroupsAPI) GetById(ctx context.Context, id string) (*Group, error) {
@@ -588,7 +588,7 @@ func (a *GroupsAPI) GetById(ctx context.Context, id string) (*Group, error) {
 	})
 }
 
-// List group details
+// List group details.
 //
 // Gets all details of the groups associated with the Databricks Workspace.
 //
@@ -654,14 +654,14 @@ func (a *GroupsAPI) GetByDisplayName(ctx context.Context, name string) (*Group, 
 	return &alternatives[0], nil
 }
 
-// Update group details
+// Update group details.
 //
 // Partially updates the details of a group.
 func (a *GroupsAPI) Patch(ctx context.Context, request PartialUpdate) error {
 	return a.impl.Patch(ctx, request)
 }
 
-// Replace a group
+// Replace a group.
 //
 // Updates the details of a group by replacing the entire group entity.
 func (a *GroupsAPI) Update(ctx context.Context, request Group) error {
@@ -700,21 +700,21 @@ func (a *ServicePrincipalsAPI) Impl() ServicePrincipalsService {
 	return a.impl
 }
 
-// Create a service principal
+// Create a service principal.
 //
 // Creates a new service principal in the Databricks Workspace.
 func (a *ServicePrincipalsAPI) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a service principal
+// Delete a service principal.
 //
 // Delete a single service principal in the Databricks Workspace.
 func (a *ServicePrincipalsAPI) Delete(ctx context.Context, request DeleteServicePrincipalRequest) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a service principal
+// Delete a service principal.
 //
 // Delete a single service principal in the Databricks Workspace.
 func (a *ServicePrincipalsAPI) DeleteById(ctx context.Context, id string) error {
@@ -723,7 +723,7 @@ func (a *ServicePrincipalsAPI) DeleteById(ctx context.Context, id string) error 
 	})
 }
 
-// Get service principal details
+// Get service principal details.
 //
 // Gets the details for a single service principal define in the Databricks
 // Workspace.
@@ -731,7 +731,7 @@ func (a *ServicePrincipalsAPI) Get(ctx context.Context, request GetServicePrinci
 	return a.impl.Get(ctx, request)
 }
 
-// Get service principal details
+// Get service principal details.
 //
 // Gets the details for a single service principal define in the Databricks
 // Workspace.
@@ -741,7 +741,7 @@ func (a *ServicePrincipalsAPI) GetById(ctx context.Context, id string) (*Service
 	})
 }
 
-// List service principals
+// List service principals.
 //
 // Gets the set of service principals associated with a Databricks Workspace.
 //
@@ -807,7 +807,7 @@ func (a *ServicePrincipalsAPI) GetByDisplayName(ctx context.Context, name string
 	return &alternatives[0], nil
 }
 
-// Update service principal details
+// Update service principal details.
 //
 // Partially updates the details of a single service principal in the Databricks
 // Workspace.
@@ -815,7 +815,7 @@ func (a *ServicePrincipalsAPI) Patch(ctx context.Context, request PartialUpdate)
 	return a.impl.Patch(ctx, request)
 }
 
-// Replace service principal
+// Replace service principal.
 //
 // Updates the details of a single service principal.
 //
@@ -861,7 +861,7 @@ func (a *UsersAPI) Impl() UsersService {
 	return a.impl
 }
 
-// Create a new user
+// Create a new user.
 //
 // Creates a new user in the Databricks Workspace. This new user will also be
 // added to the Databricks account.
@@ -869,7 +869,7 @@ func (a *UsersAPI) Create(ctx context.Context, request User) (*User, error) {
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a user
+// Delete a user.
 //
 // Deletes a user. Deleting a user from a Databricks Workspace also removes
 // objects associated with the user.
@@ -877,7 +877,7 @@ func (a *UsersAPI) Delete(ctx context.Context, request DeleteUserRequest) error 
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a user
+// Delete a user.
 //
 // Deletes a user. Deleting a user from a Databricks Workspace also removes
 // objects associated with the user.
@@ -887,14 +887,14 @@ func (a *UsersAPI) DeleteById(ctx context.Context, id string) error {
 	})
 }
 
-// Get user details
+// Get user details.
 //
 // Gets information for a specific user in Databricks Workspace.
 func (a *UsersAPI) Get(ctx context.Context, request GetUserRequest) (*User, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get user details
+// Get user details.
 //
 // Gets information for a specific user in Databricks Workspace.
 func (a *UsersAPI) GetById(ctx context.Context, id string) (*User, error) {
@@ -903,7 +903,7 @@ func (a *UsersAPI) GetById(ctx context.Context, id string) (*User, error) {
 	})
 }
 
-// List users
+// List users.
 //
 // Gets details for all the users associated with a Databricks Workspace.
 //
@@ -969,7 +969,7 @@ func (a *UsersAPI) GetByUserName(ctx context.Context, name string) (*User, error
 	return &alternatives[0], nil
 }
 
-// Update user details
+// Update user details.
 //
 // Partially updates a user resource by applying the supplied operations on
 // specific user attributes.
@@ -977,7 +977,7 @@ func (a *UsersAPI) Patch(ctx context.Context, request PartialUpdate) error {
 	return a.impl.Patch(ctx, request)
 }
 
-// Replace a user
+// Replace a user.
 //
 // Replaces a user's information with the data supplied in request.
 func (a *UsersAPI) Update(ctx context.Context, request User) error {

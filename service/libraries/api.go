@@ -55,7 +55,7 @@ func (a *LibrariesAPI) Impl() LibrariesService {
 	return a.impl
 }
 
-// Get all statuses
+// Get all statuses.
 //
 // Get the status of all libraries on all clusters. A status will be available
 // for all libraries installed on this cluster via the API or the libraries UI
@@ -65,7 +65,7 @@ func (a *LibrariesAPI) AllClusterStatuses(ctx context.Context) (*ListAllClusterL
 	return a.impl.AllClusterStatuses(ctx)
 }
 
-// Get status
+// Get status.
 //
 // Get the status of libraries on a cluster. A status will be available for all
 // libraries installed on this cluster via the API or the libraries UI as well
@@ -86,7 +86,7 @@ func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatus)
 	return a.impl.ClusterStatus(ctx, request)
 }
 
-// Get status
+// Get status.
 //
 // Get the status of libraries on a cluster. A status will be available for all
 // libraries installed on this cluster via the API or the libraries UI as well
@@ -109,7 +109,7 @@ func (a *LibrariesAPI) ClusterStatusByClusterId(ctx context.Context, clusterId s
 	})
 }
 
-// Add a library
+// Add a library.
 //
 // Add libraries to be installed on a cluster. The installation is asynchronous;
 // it happens in the background after the completion of this request.
@@ -121,7 +121,7 @@ func (a *LibrariesAPI) Install(ctx context.Context, request InstallLibraries) er
 	return a.impl.Install(ctx, request)
 }
 
-// Uninstall libraries
+// Uninstall libraries.
 //
 // Set libraries to be uninstalled on a cluster. The libraries won't be
 // uninstalled until the cluster is restarted. Uninstalling libraries that are

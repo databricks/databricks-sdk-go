@@ -39,7 +39,7 @@ func (a *TokensAPI) Impl() TokensService {
 	return a.impl
 }
 
-// Create a user token
+// Create a user token.
 //
 // Creates and returns a token for a user. If this call is made through token
 // authentication, it creates a token with the same client ID as the
@@ -49,7 +49,7 @@ func (a *TokensAPI) Create(ctx context.Context, request CreateTokenRequest) (*Cr
 	return a.impl.Create(ctx, request)
 }
 
-// Revoke token
+// Revoke token.
 //
 // Revokes an access token.
 //
@@ -59,7 +59,7 @@ func (a *TokensAPI) Delete(ctx context.Context, request RevokeTokenRequest) erro
 	return a.impl.Delete(ctx, request)
 }
 
-// Revoke token
+// Revoke token.
 //
 // Revokes an access token.
 //
@@ -71,7 +71,7 @@ func (a *TokensAPI) DeleteByTokenId(ctx context.Context, tokenId string) error {
 	})
 }
 
-// List tokens
+// List tokens.
 //
 // Lists all the valid tokens for a user-workspace pair.
 //

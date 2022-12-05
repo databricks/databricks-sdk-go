@@ -53,7 +53,7 @@ func NewFromFile(name string, includeTags []string) (*Batch, error) {
 		}
 		// we know that we have just one service
 		for _, svc := range pkg.services {
-			pkg.Description = svc.FirstSentence()
+			pkg.Description = svc.Summary()
 		}
 	}
 	return &batch, nil

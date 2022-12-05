@@ -41,7 +41,7 @@ func (a *CommandExecutionAPI) Impl() CommandExecutionService {
 	return a.impl
 }
 
-// Cancel a command
+// Cancel a command.
 //
 // Cancels a currently running command within an execution context.
 //
@@ -97,7 +97,7 @@ func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand C
 	})
 }
 
-// Get command info
+// Get command info.
 //
 // Gets the status of and, if available, the results from a currently executing
 // command.
@@ -107,14 +107,14 @@ func (a *CommandExecutionAPI) CommandStatus(ctx context.Context, request Command
 	return a.impl.CommandStatus(ctx, request)
 }
 
-// Get status
+// Get status.
 //
 // Gets the status for an execution context.
 func (a *CommandExecutionAPI) ContextStatus(ctx context.Context, request ContextStatusRequest) (*ContextStatusResponse, error) {
 	return a.impl.ContextStatus(ctx, request)
 }
 
-// Create an execution context
+// Create an execution context.
 //
 // Creates an execution context for running cluster commands.
 //
@@ -166,14 +166,14 @@ func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext C
 	})
 }
 
-// Delete an execution context
+// Delete an execution context.
 //
 // Deletes an execution context.
 func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyContext) error {
 	return a.impl.Destroy(ctx, request)
 }
 
-// Run a command
+// Run a command.
 //
 // Runs a cluster command in the given execution context, using the provided
 // language.

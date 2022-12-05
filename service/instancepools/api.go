@@ -55,14 +55,14 @@ func (a *InstancePoolsAPI) Impl() InstancePoolsService {
 	return a.impl
 }
 
-// Create a new instance pool
+// Create a new instance pool.
 //
 // Creates a new instance pool using idle and ready-to-use cloud instances.
 func (a *InstancePoolsAPI) Create(ctx context.Context, request CreateInstancePool) (*CreateInstancePoolResponse, error) {
 	return a.impl.Create(ctx, request)
 }
 
-// Delete an instance pool
+// Delete an instance pool.
 //
 // Deletes the instance pool permanently. The idle instances in the pool are
 // terminated asynchronously.
@@ -70,7 +70,7 @@ func (a *InstancePoolsAPI) Delete(ctx context.Context, request DeleteInstancePoo
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete an instance pool
+// Delete an instance pool.
 //
 // Deletes the instance pool permanently. The idle instances in the pool are
 // terminated asynchronously.
@@ -80,21 +80,21 @@ func (a *InstancePoolsAPI) DeleteByInstancePoolId(ctx context.Context, instanceP
 	})
 }
 
-// Edit an existing instance pool
+// Edit an existing instance pool.
 //
 // Modifies the configuration of an existing instance pool.
 func (a *InstancePoolsAPI) Edit(ctx context.Context, request EditInstancePool) error {
 	return a.impl.Edit(ctx, request)
 }
 
-// Get instance pool information
+// Get instance pool information.
 //
 // Retrieve the information for an instance pool based on its identifier.
 func (a *InstancePoolsAPI) Get(ctx context.Context, request Get) (*GetInstancePool, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get instance pool information
+// Get instance pool information.
 //
 // Retrieve the information for an instance pool based on its identifier.
 func (a *InstancePoolsAPI) GetByInstancePoolId(ctx context.Context, instancePoolId string) (*GetInstancePool, error) {
@@ -103,7 +103,7 @@ func (a *InstancePoolsAPI) GetByInstancePoolId(ctx context.Context, instancePool
 	})
 }
 
-// List instance pool info
+// List instance pool info.
 //
 // Gets a list of instance pools with their statistics.
 //

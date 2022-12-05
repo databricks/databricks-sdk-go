@@ -28,7 +28,7 @@ import (
 // uninstalled library appears as Uninstall pending restart.
 type LibrariesService interface {
 
-	// Get all statuses
+	// Get all statuses.
 	//
 	// Get the status of all libraries on all clusters. A status will be
 	// available for all libraries installed on this cluster via the API or the
@@ -36,7 +36,7 @@ type LibrariesService interface {
 	// the libraries UI.
 	AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error)
 
-	// Get status
+	// Get status.
 	//
 	// Get the status of libraries on a cluster. A status will be available for
 	// all libraries installed on this cluster via the API or the libraries UI
@@ -55,7 +55,7 @@ type LibrariesService interface {
 	// guarantee.
 	ClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error)
 
-	// Add a library
+	// Add a library.
 	//
 	// Add libraries to be installed on a cluster. The installation is
 	// asynchronous; it happens in the background after the completion of this
@@ -66,7 +66,7 @@ type LibrariesService interface {
 	// be installed on all clusters via the libraries UI.
 	Install(ctx context.Context, request InstallLibraries) error
 
-	// Uninstall libraries
+	// Uninstall libraries.
 	//
 	// Set libraries to be uninstalled on a cluster. The libraries won't be
 	// uninstalled until the cluster is restarted. Uninstalling libraries that

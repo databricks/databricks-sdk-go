@@ -59,7 +59,7 @@ func (a *IpAccessListsAPI) Impl() IpAccessListsService {
 	return a.impl
 }
 
-// Create access list
+// Create access list.
 //
 // Creates an IP access list for this workspace. A list can be an allow list or
 // a block list. See the top of this file for a description of how the server
@@ -80,14 +80,14 @@ func (a *IpAccessListsAPI) Create(ctx context.Context, request CreateIpAccessLis
 	return a.impl.Create(ctx, request)
 }
 
-// Delete access list
+// Delete access list.
 //
 // Deletes an IP access list, specified by its list ID.
 func (a *IpAccessListsAPI) Delete(ctx context.Context, request Delete) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete access list
+// Delete access list.
 //
 // Deletes an IP access list, specified by its list ID.
 func (a *IpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) error {
@@ -96,14 +96,14 @@ func (a *IpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessL
 	})
 }
 
-// Get access list
+// Get access list.
 //
 // Gets an IP access list, specified by its list ID.
 func (a *IpAccessListsAPI) Get(ctx context.Context, request Get) (*FetchIpAccessListResponse, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get access list
+// Get access list.
 //
 // Gets an IP access list, specified by its list ID.
 func (a *IpAccessListsAPI) GetByIpAccessListId(ctx context.Context, ipAccessListId string) (*FetchIpAccessListResponse, error) {
@@ -112,7 +112,7 @@ func (a *IpAccessListsAPI) GetByIpAccessListId(ctx context.Context, ipAccessList
 	})
 }
 
-// Get access lists
+// Get access lists.
 //
 // Gets all IP access lists for the specified workspace.
 //
@@ -178,7 +178,7 @@ func (a *IpAccessListsAPI) GetByLabel(ctx context.Context, name string) (*IpAcce
 	return &alternatives[0], nil
 }
 
-// Replace access list
+// Replace access list.
 //
 // Replaces an IP access list, specified by its ID. A list can include allow
 // lists and block lists. See the top of this file for a description of how the
@@ -195,7 +195,7 @@ func (a *IpAccessListsAPI) Replace(ctx context.Context, request ReplaceIpAccessL
 	return a.impl.Replace(ctx, request)
 }
 
-// Update access list
+// Update access list.
 //
 // Updates an existing IP access list, specified by its ID. A list can include
 // allow lists and block lists. See the top of this file for a description of

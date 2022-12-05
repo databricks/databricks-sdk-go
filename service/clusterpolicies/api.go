@@ -61,14 +61,14 @@ func (a *ClusterPoliciesAPI) Impl() ClusterPoliciesService {
 	return a.impl
 }
 
-// Create a new policy
+// Create a new policy.
 //
 // Creates a new policy with prescribed settings.
 func (a *ClusterPoliciesAPI) Create(ctx context.Context, request CreatePolicy) (*CreatePolicyResponse, error) {
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a cluster policy
+// Delete a cluster policy.
 //
 // Delete a policy for a cluster. Clusters governed by this policy can still
 // run, but cannot be edited.
@@ -76,7 +76,7 @@ func (a *ClusterPoliciesAPI) Delete(ctx context.Context, request DeletePolicy) e
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a cluster policy
+// Delete a cluster policy.
 //
 // Delete a policy for a cluster. Clusters governed by this policy can still
 // run, but cannot be edited.
@@ -86,7 +86,7 @@ func (a *ClusterPoliciesAPI) DeleteByPolicyId(ctx context.Context, policyId stri
 	})
 }
 
-// Update a cluster policy
+// Update a cluster policy.
 //
 // Update an existing policy for cluster. This operation may make some clusters
 // governed by the previous policy invalid.
@@ -94,7 +94,7 @@ func (a *ClusterPoliciesAPI) Edit(ctx context.Context, request EditPolicy) error
 	return a.impl.Edit(ctx, request)
 }
 
-// Get entity
+// Get entity.
 //
 // Get a cluster policy entity. Creation and editing is available to admins
 // only.
@@ -102,7 +102,7 @@ func (a *ClusterPoliciesAPI) Get(ctx context.Context, request Get) (*Policy, err
 	return a.impl.Get(ctx, request)
 }
 
-// Get entity
+// Get entity.
 //
 // Get a cluster policy entity. Creation and editing is available to admins
 // only.
@@ -112,7 +112,7 @@ func (a *ClusterPoliciesAPI) GetByPolicyId(ctx context.Context, policyId string)
 	})
 }
 
-// Get a cluster policy
+// Get a cluster policy.
 //
 // Returns a list of policies accessible by the requesting user.
 //

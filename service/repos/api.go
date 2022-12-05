@@ -47,7 +47,7 @@ func (a *ReposAPI) Impl() ReposService {
 	return a.impl
 }
 
-// Create a repo
+// Create a repo.
 //
 // Creates a repo in the workspace and links it to the remote Git repo
 // specified. Note that repos created programmatically must be linked to a
@@ -56,14 +56,14 @@ func (a *ReposAPI) Create(ctx context.Context, request CreateRepo) (*RepoInfo, e
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a repo
+// Delete a repo.
 //
 // Deletes the specified repo.
 func (a *ReposAPI) Delete(ctx context.Context, request Delete) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a repo
+// Delete a repo.
 //
 // Deletes the specified repo.
 func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId int64) error {
@@ -72,14 +72,14 @@ func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId int64) error {
 	})
 }
 
-// Get a repo
+// Get a repo.
 //
 // Returns the repo with the given repo ID.
 func (a *ReposAPI) Get(ctx context.Context, request Get) (*RepoInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get a repo
+// Get a repo.
 //
 // Returns the repo with the given repo ID.
 func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId int64) (*RepoInfo, error) {
@@ -88,7 +88,7 @@ func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId int64) (*RepoInfo, er
 	})
 }
 
-// Get repos
+// Get repos.
 //
 // Returns repos that the calling user has Manage permissions on. Results are
 // paginated with each page containing twenty repos.
@@ -169,7 +169,7 @@ func (a *ReposAPI) GetByPath(ctx context.Context, name string) (*RepoInfo, error
 	return &alternatives[0], nil
 }
 
-// Update a repo
+// Update a repo.
 //
 // Updates the repo to a different branch or tag, or updates the repo to the
 // latest commit on the same branch.

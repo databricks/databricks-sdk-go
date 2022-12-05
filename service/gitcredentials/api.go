@@ -42,7 +42,7 @@ func (a *GitCredentialsAPI) Impl() GitCredentialsService {
 	return a.impl
 }
 
-// Create a credential entry
+// Create a credential entry.
 //
 // Creates a Git credential entry for the user. Only one Git credential per user
 // is supported, so any attempts to create credentials if an entry already
@@ -52,14 +52,14 @@ func (a *GitCredentialsAPI) Create(ctx context.Context, request CreateCredential
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a credential
+// Delete a credential.
 //
 // Deletes the specified Git credential.
 func (a *GitCredentialsAPI) Delete(ctx context.Context, request Delete) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a credential
+// Delete a credential.
 //
 // Deletes the specified Git credential.
 func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credentialId int64) error {
@@ -68,14 +68,14 @@ func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credential
 	})
 }
 
-// Get a credential entry
+// Get a credential entry.
 //
 // Gets the Git credential with the specified credential ID.
 func (a *GitCredentialsAPI) Get(ctx context.Context, request Get) (*CredentialInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get a credential entry
+// Get a credential entry.
 //
 // Gets the Git credential with the specified credential ID.
 func (a *GitCredentialsAPI) GetByCredentialId(ctx context.Context, credentialId int64) (*CredentialInfo, error) {
@@ -84,7 +84,7 @@ func (a *GitCredentialsAPI) GetByCredentialId(ctx context.Context, credentialId 
 	})
 }
 
-// Get Git credentials
+// Get Git credentials.
 //
 // Lists the calling user's Git credentials. One credential per user is
 // supported.
@@ -151,7 +151,7 @@ func (a *GitCredentialsAPI) GetByGitProvider(ctx context.Context, name string) (
 	return &alternatives[0], nil
 }
 
-// Update a credential
+// Update a credential.
 //
 // Updates the specified Git credential.
 func (a *GitCredentialsAPI) Update(ctx context.Context, request UpdateCredentials) error {

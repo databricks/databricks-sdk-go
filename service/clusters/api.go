@@ -66,7 +66,7 @@ func (a *ClustersAPI) Impl() ClustersService {
 	return a.impl
 }
 
-// Change cluster owner
+// Change cluster owner.
 //
 // Change the owner of the cluster. You must be an admin to perform this
 // operation.
@@ -74,7 +74,7 @@ func (a *ClustersAPI) ChangeOwner(ctx context.Context, request ChangeClusterOwne
 	return a.impl.ChangeOwner(ctx, request)
 }
 
-// Create new cluster
+// Create new cluster.
 //
 // Creates a new Spark cluster. This method will acquire new instances from the
 // cloud provider if necessary. This method is asynchronous; the returned
@@ -135,7 +135,7 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 	})
 }
 
-// Terminate cluster
+// Terminate cluster.
 //
 // Terminates the Spark cluster with the specified ID. The cluster is removed
 // asynchronously. Once the termination has completed, the cluster will be in a
@@ -187,7 +187,7 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteClu
 	})
 }
 
-// Terminate cluster
+// Terminate cluster.
 //
 // Terminates the Spark cluster with the specified ID. The cluster is removed
 // asynchronously. Once the termination has completed, the cluster will be in a
@@ -205,7 +205,7 @@ func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId st
 	}, options...)
 }
 
-// Update cluster configuration
+// Update cluster configuration.
 //
 // Updates the configuration of a cluster to match the provided attributes and
 // size. A cluster can be updated if it is in a `RUNNING` or `TERMINATED` state.
@@ -265,7 +265,7 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, 
 	})
 }
 
-// List cluster activity events
+// List cluster activity events.
 //
 // Retrieves a list of events about the activity of a cluster. This API is
 // paginated. If there are more events to read, the response includes all the
@@ -294,7 +294,7 @@ func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]Clust
 	return results, nil
 }
 
-// Get cluster info
+// Get cluster info.
 //
 // "Retrieves the information for a cluster given its identifier. Clusters can
 // be described while they are running, or up to 60 days after they are
@@ -345,7 +345,7 @@ func (a *ClustersAPI) GetAndWait(ctx context.Context, get Get, options ...retrie
 	})
 }
 
-// Get cluster info
+// Get cluster info.
 //
 // "Retrieves the information for a cluster given its identifier. Clusters can
 // be described while they are running, or up to 60 days after they are
@@ -362,7 +362,7 @@ func (a *ClustersAPI) GetByClusterIdAndWait(ctx context.Context, clusterId strin
 	}, options...)
 }
 
-// List all clusters
+// List all clusters.
 //
 // Returns information about all pinned clusters, currently active clusters, up
 // to 70 of the most recently terminated interactive clusters in the past 7
@@ -437,7 +437,7 @@ func (a *ClustersAPI) GetByClusterName(ctx context.Context, name string) (*Clust
 	return &alternatives[0], nil
 }
 
-// List all clusters
+// List all clusters.
 //
 // Returns information about all pinned clusters, currently active clusters, up
 // to 70 of the most recently terminated interactive clusters in the past 7
@@ -455,7 +455,7 @@ func (a *ClustersAPI) ListByCanUseClient(ctx context.Context, canUseClient strin
 	})
 }
 
-// List node types
+// List node types.
 //
 // Returns a list of supported Spark node types. These node types can be used to
 // launch a cluster.
@@ -463,7 +463,7 @@ func (a *ClustersAPI) ListNodeTypes(ctx context.Context) (*ListNodeTypesResponse
 	return a.impl.ListNodeTypes(ctx)
 }
 
-// List availability zones
+// List availability zones.
 //
 // Returns a list of availability zones where clusters can be created in (For
 // example, us-west-2a). These zones can be used to launch a cluster.
@@ -471,7 +471,7 @@ func (a *ClustersAPI) ListZones(ctx context.Context) (*ListAvailableZonesRespons
 	return a.impl.ListZones(ctx)
 }
 
-// Permanently delete cluster
+// Permanently delete cluster.
 //
 // Permanently deletes a Spark cluster. This cluster is terminated and resources
 // are asynchronously removed.
@@ -483,7 +483,7 @@ func (a *ClustersAPI) PermanentDelete(ctx context.Context, request PermanentDele
 	return a.impl.PermanentDelete(ctx, request)
 }
 
-// Permanently delete cluster
+// Permanently delete cluster.
 //
 // Permanently deletes a Spark cluster. This cluster is terminated and resources
 // are asynchronously removed.
@@ -497,7 +497,7 @@ func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId 
 	})
 }
 
-// Pin cluster
+// Pin cluster.
 //
 // Pinning a cluster ensures that the cluster will always be returned by the
 // ListClusters API. Pinning a cluster that is already pinned will have no
@@ -506,7 +506,7 @@ func (a *ClustersAPI) Pin(ctx context.Context, request PinCluster) error {
 	return a.impl.Pin(ctx, request)
 }
 
-// Pin cluster
+// Pin cluster.
 //
 // Pinning a cluster ensures that the cluster will always be returned by the
 // ListClusters API. Pinning a cluster that is already pinned will have no
@@ -517,7 +517,7 @@ func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) erro
 	})
 }
 
-// Resize cluster
+// Resize cluster.
 //
 // Resizes a cluster to have a desired number of workers. This will fail unless
 // the cluster is in a `RUNNING` state.
@@ -567,7 +567,7 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeClu
 	})
 }
 
-// Restart cluster
+// Restart cluster.
 //
 // Restarts a Spark cluster with the supplied ID. If the cluster is not
 // currently in a `RUNNING` state, nothing will happen.
@@ -617,7 +617,7 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster Restart
 	})
 }
 
-// List available Spark versions
+// List available Spark versions.
 //
 // Returns the list of available Spark versions. These versions can be used to
 // launch a cluster.
@@ -625,7 +625,7 @@ func (a *ClustersAPI) SparkVersions(ctx context.Context) (*GetSparkVersionsRespo
 	return a.impl.SparkVersions(ctx)
 }
 
-// Start terminated cluster
+// Start terminated cluster.
 //
 // Starts a terminated Spark cluster with the supplied ID. This works similar to
 // `createCluster` except:
@@ -681,7 +681,7 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 	})
 }
 
-// Start terminated cluster
+// Start terminated cluster.
 //
 // Starts a terminated Spark cluster with the supplied ID. This works similar to
 // `createCluster` except:
@@ -703,7 +703,7 @@ func (a *ClustersAPI) StartByClusterIdAndWait(ctx context.Context, clusterId str
 	}, options...)
 }
 
-// Unpin cluster
+// Unpin cluster.
 //
 // Unpinning a cluster will allow the cluster to eventually be removed from the
 // ListClusters API. Unpinning a cluster that is not pinned will have no effect.
@@ -712,7 +712,7 @@ func (a *ClustersAPI) Unpin(ctx context.Context, request UnpinCluster) error {
 	return a.impl.Unpin(ctx, request)
 }
 
-// Unpin cluster
+// Unpin cluster.
 //
 // Unpinning a cluster will allow the cluster to eventually be removed from the
 // ListClusters API. Unpinning a cluster that is not pinned will have no effect.
@@ -754,7 +754,7 @@ func (a *InstanceProfilesAPI) Impl() InstanceProfilesService {
 	return a.impl
 }
 
-// Register an instance profile
+// Register an instance profile.
 //
 // In the UI, you can select the instance profile when launching clusters. This
 // API is only available to admin users.
@@ -762,7 +762,7 @@ func (a *InstanceProfilesAPI) Add(ctx context.Context, request AddInstanceProfil
 	return a.impl.Add(ctx, request)
 }
 
-// Edit an instance profile
+// Edit an instance profile.
 //
 // The only supported field to change is the optional IAM role ARN associated
 // with the instance profile. It is required to specify the IAM role ARN if both
@@ -782,7 +782,7 @@ func (a *InstanceProfilesAPI) Edit(ctx context.Context, request InstanceProfile)
 	return a.impl.Edit(ctx, request)
 }
 
-// List available instance profiles
+// List available instance profiles.
 //
 // List the instance profiles that the calling user can use to launch a cluster.
 //
@@ -797,7 +797,7 @@ func (a *InstanceProfilesAPI) ListAll(ctx context.Context) ([]InstanceProfile, e
 	return response.InstanceProfiles, nil
 }
 
-// Remove the instance profile
+// Remove the instance profile.
 //
 // Remove the instance profile with the provided ARN. Existing clusters with
 // this instance profile will continue to function.
@@ -807,7 +807,7 @@ func (a *InstanceProfilesAPI) Remove(ctx context.Context, request RemoveInstance
 	return a.impl.Remove(ctx, request)
 }
 
-// Remove the instance profile
+// Remove the instance profile.
 //
 // Remove the instance profile with the provided ARN. Existing clusters with
 // this instance profile will continue to function.

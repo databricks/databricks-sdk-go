@@ -22,54 +22,54 @@ import (
 // those expectations.
 type PipelinesService interface {
 
-	// Create a pipeline
+	// Create a pipeline.
 	//
 	// Creates a new data processing pipeline based on the requested
 	// configuration. If successful, this method returns the ID of the new
 	// pipeline.
 	CreatePipeline(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error)
 
-	// Delete a pipeline
+	// Delete a pipeline.
 	//
 	// Deletes a pipeline.
 	DeletePipeline(ctx context.Context, request DeletePipeline) error
 
-	// Get a pipeline
+	// Get a pipeline.
 	GetPipeline(ctx context.Context, request GetPipeline) (*GetPipelineResponse, error)
 
-	// Get a pipeline update
+	// Get a pipeline update.
 	//
 	// Gets an update from an active pipeline.
 	GetUpdate(ctx context.Context, request GetUpdate) (*GetUpdateResponse, error)
 
-	// List pipelines
+	// List pipelines.
 	//
 	// Lists pipelines defined in the Delta Live Tables system.
 	//
 	// Use ListPipelinesAll() to get all PipelineStateInfo instances, which will iterate over every result page.
 	ListPipelines(ctx context.Context, request ListPipelines) (*ListPipelinesResponse, error)
 
-	// List pipeline updates
+	// List pipeline updates.
 	//
 	// List updates for an active pipeline.
 	ListUpdates(ctx context.Context, request ListUpdates) (*ListUpdatesResponse, error)
 
-	// Reset a pipeline
+	// Reset a pipeline.
 	//
 	// Resets a pipeline.
 	ResetPipeline(ctx context.Context, request ResetPipeline) error
 
-	// Queue a pipeline update
+	// Queue a pipeline update.
 	//
 	// Starts or queues a pipeline update.
 	StartUpdate(ctx context.Context, request StartUpdate) (*StartUpdateResponse, error)
 
-	// Stop a pipeline
+	// Stop a pipeline.
 	//
 	// Stops a pipeline.
 	StopPipeline(ctx context.Context, request StopPipeline) error
 
-	// Edit a pipeline
+	// Edit a pipeline.
 	//
 	// Updates a pipeline with the supplied configuration.
 	UpdatePipeline(ctx context.Context, request EditPipeline) error

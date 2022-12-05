@@ -44,7 +44,7 @@ func (a *CredentialsAPI) Impl() CredentialsService {
 	return a.impl
 }
 
-// Create credential configuration
+// Create credential configuration.
 //
 // Creates a Databricks credential configuration that represents cloud
 // cross-account credentials for a specified account. Databricks uses this to
@@ -63,7 +63,7 @@ func (a *CredentialsAPI) Create(ctx context.Context, request CreateCredentialReq
 	return a.impl.Create(ctx, request)
 }
 
-// Delete credential configuration
+// Delete credential configuration.
 //
 // Deletes a Databricks credential configuration object for an account, both
 // specified by ID. You cannot delete a credential that is associated with any
@@ -72,7 +72,7 @@ func (a *CredentialsAPI) Delete(ctx context.Context, request DeleteCredentialReq
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete credential configuration
+// Delete credential configuration.
 //
 // Deletes a Databricks credential configuration object for an account, both
 // specified by ID. You cannot delete a credential that is associated with any
@@ -83,7 +83,7 @@ func (a *CredentialsAPI) DeleteByCredentialsId(ctx context.Context, credentialsI
 	})
 }
 
-// Get credential configuration
+// Get credential configuration.
 //
 // Gets a Databricks credential configuration object for an account, both
 // specified by ID.
@@ -91,7 +91,7 @@ func (a *CredentialsAPI) Get(ctx context.Context, request GetCredentialRequest) 
 	return a.impl.Get(ctx, request)
 }
 
-// Get credential configuration
+// Get credential configuration.
 //
 // Gets a Databricks credential configuration object for an account, both
 // specified by ID.
@@ -101,7 +101,7 @@ func (a *CredentialsAPI) GetByCredentialsId(ctx context.Context, credentialsId s
 	})
 }
 
-// Get all credential configurations
+// Get all credential configurations.
 //
 // Gets all Databricks credential configurations associated with an account
 // specified by ID.
@@ -204,7 +204,7 @@ func (a *EncryptionKeysAPI) Impl() EncryptionKeysService {
 	return a.impl
 }
 
-// Create encryption key configuration
+// Create encryption key configuration.
 //
 // Creates a customer-managed key configuration object for an account, specified
 // by ID. This operation uploads a reference to a customer-managed key to
@@ -226,7 +226,7 @@ func (a *EncryptionKeysAPI) Create(ctx context.Context, request CreateCustomerMa
 	return a.impl.Create(ctx, request)
 }
 
-// Delete encryption key configuration
+// Delete encryption key configuration.
 //
 // Deletes a customer-managed key configuration object for an account. You
 // cannot delete a configuration that is associated with a running workspace.
@@ -234,7 +234,7 @@ func (a *EncryptionKeysAPI) Delete(ctx context.Context, request DeleteEncryption
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete encryption key configuration
+// Delete encryption key configuration.
 //
 // Deletes a customer-managed key configuration object for an account. You
 // cannot delete a configuration that is associated with a running workspace.
@@ -244,7 +244,7 @@ func (a *EncryptionKeysAPI) DeleteByCustomerManagedKeyId(ctx context.Context, cu
 	})
 }
 
-// Get encryption key configuration
+// Get encryption key configuration.
 //
 // Gets a customer-managed key configuration object for an account, specified by
 // ID. This operation uploads a reference to a customer-managed key to
@@ -265,7 +265,7 @@ func (a *EncryptionKeysAPI) Get(ctx context.Context, request GetEncryptionKeyReq
 	return a.impl.Get(ctx, request)
 }
 
-// Get encryption key configuration
+// Get encryption key configuration.
 //
 // Gets a customer-managed key configuration object for an account, specified by
 // ID. This operation uploads a reference to a customer-managed key to
@@ -288,7 +288,7 @@ func (a *EncryptionKeysAPI) GetByCustomerManagedKeyId(ctx context.Context, custo
 	})
 }
 
-// Get history of a key's associations with workspaces
+// Get history of a key's associations with workspaces.
 //
 // Gets a list of records that show how key configurations are associated with
 // workspaces.
@@ -302,7 +302,7 @@ func (a *EncryptionKeysAPI) GetKeyWorkspaceHistory(ctx context.Context) (*ListWo
 	return a.impl.GetKeyWorkspaceHistory(ctx)
 }
 
-// Get all encryption key configurations
+// Get all encryption key configurations.
 //
 // Gets all customer-managed key configuration objects for an account. If the
 // key is specified as a workspace's managed services customer-managed key,
@@ -351,7 +351,7 @@ func (a *NetworksAPI) Impl() NetworksService {
 	return a.impl
 }
 
-// Create network configuration
+// Create network configuration.
 //
 // Creates a Databricks network configuration that represents an AWS VPC and its
 // resources. The VPC will be used for new Databricks clusters. This requires a
@@ -375,7 +375,7 @@ func (a *NetworksAPI) Create(ctx context.Context, request CreateNetworkRequest) 
 	return a.impl.Create(ctx, request)
 }
 
-// Delete network configuration
+// Delete network configuration.
 //
 // Deletes a Databricks network configuration, which represents an AWS VPC and
 // its resources. You cannot delete a network that is associated with a
@@ -387,7 +387,7 @@ func (a *NetworksAPI) Delete(ctx context.Context, request DeleteNetworkRequest) 
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete network configuration
+// Delete network configuration.
 //
 // Deletes a Databricks network configuration, which represents an AWS VPC and
 // its resources. You cannot delete a network that is associated with a
@@ -401,7 +401,7 @@ func (a *NetworksAPI) DeleteByNetworkId(ctx context.Context, networkId string) e
 	})
 }
 
-// Get a network configuration
+// Get a network configuration.
 //
 // Gets a Databricks network configuration, which represents an AWS VPC and its
 // resources. This requires a pre-existing VPC and subnets. For VPC
@@ -414,7 +414,7 @@ func (a *NetworksAPI) Get(ctx context.Context, request GetNetworkRequest) (*Netw
 	return a.impl.Get(ctx, request)
 }
 
-// Get a network configuration
+// Get a network configuration.
 //
 // Gets a Databricks network configuration, which represents an AWS VPC and its
 // resources. This requires a pre-existing VPC and subnets. For VPC
@@ -429,7 +429,7 @@ func (a *NetworksAPI) GetByNetworkId(ctx context.Context, networkId string) (*Ne
 	})
 }
 
-// Get all network configurations
+// Get all network configurations.
 //
 // Gets a list of all Databricks network configurations for an account,
 // specified by ID.
@@ -527,7 +527,7 @@ func (a *PrivateAccessAPI) Impl() PrivateAccessService {
 	return a.impl
 }
 
-// Create private access settings
+// Create private access settings.
 //
 // Creates a private access settings object, which specifies how your workspace
 // is accessed over [AWS PrivateLink](https://aws.amazon.com/privatelink). To
@@ -550,7 +550,7 @@ func (a *PrivateAccessAPI) Create(ctx context.Context, request UpsertPrivateAcce
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a private access settings object
+// Delete a private access settings object.
 //
 // Deletes a private access settings object, which determines how your workspace
 // is accessed over [AWS PrivateLink](https://aws.amazon.com/privatelink).
@@ -566,7 +566,7 @@ func (a *PrivateAccessAPI) Delete(ctx context.Context, request DeletePrivateAcce
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a private access settings object
+// Delete a private access settings object.
 //
 // Deletes a private access settings object, which determines how your workspace
 // is accessed over [AWS PrivateLink](https://aws.amazon.com/privatelink).
@@ -584,7 +584,7 @@ func (a *PrivateAccessAPI) DeleteByPrivateAccessSettingsId(ctx context.Context, 
 	})
 }
 
-// Get a private access settings object
+// Get a private access settings object.
 //
 // Gets a private access settings object, which specifies how your workspace is
 // accessed over [AWS PrivateLink](https://aws.amazon.com/privatelink).
@@ -600,7 +600,7 @@ func (a *PrivateAccessAPI) Get(ctx context.Context, request GetPrivateAccesReque
 	return a.impl.Get(ctx, request)
 }
 
-// Get a private access settings object
+// Get a private access settings object.
 //
 // Gets a private access settings object, which specifies how your workspace is
 // accessed over [AWS PrivateLink](https://aws.amazon.com/privatelink).
@@ -618,7 +618,7 @@ func (a *PrivateAccessAPI) GetByPrivateAccessSettingsId(ctx context.Context, pri
 	})
 }
 
-// Get all private access settings objects
+// Get all private access settings objects.
 //
 // Gets a list of all private access settings objects for an account, specified
 // by ID.
@@ -684,7 +684,7 @@ func (a *PrivateAccessAPI) GetByPrivateAccessSettingsName(ctx context.Context, n
 	return &alternatives[0], nil
 }
 
-// Replace private access settings
+// Replace private access settings.
 //
 // Updates an existing private access settings object, which specifies how your
 // workspace is accessed over [AWS
@@ -745,7 +745,7 @@ func (a *StorageAPI) Impl() StorageService {
 	return a.impl
 }
 
-// Create new storage configuration
+// Create new storage configuration.
 //
 // Creates new storage configuration for an account, specified by ID. Uploads a
 // storage configuration object that represents the root AWS S3 bucket in your
@@ -760,7 +760,7 @@ func (a *StorageAPI) Create(ctx context.Context, request CreateStorageConfigurat
 	return a.impl.Create(ctx, request)
 }
 
-// Delete storage configuration
+// Delete storage configuration.
 //
 // Deletes a Databricks storage configuration. You cannot delete a storage
 // configuration that is associated with any workspace.
@@ -768,7 +768,7 @@ func (a *StorageAPI) Delete(ctx context.Context, request DeleteStorageRequest) e
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete storage configuration
+// Delete storage configuration.
 //
 // Deletes a Databricks storage configuration. You cannot delete a storage
 // configuration that is associated with any workspace.
@@ -778,14 +778,14 @@ func (a *StorageAPI) DeleteByStorageConfigurationId(ctx context.Context, storage
 	})
 }
 
-// Get storage configuration
+// Get storage configuration.
 //
 // Gets a Databricks storage configuration for an account, both specified by ID.
 func (a *StorageAPI) Get(ctx context.Context, request GetStorageRequest) (*StorageConfiguration, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get storage configuration
+// Get storage configuration.
 //
 // Gets a Databricks storage configuration for an account, both specified by ID.
 func (a *StorageAPI) GetByStorageConfigurationId(ctx context.Context, storageConfigurationId string) (*StorageConfiguration, error) {
@@ -794,7 +794,7 @@ func (a *StorageAPI) GetByStorageConfigurationId(ctx context.Context, storageCon
 	})
 }
 
-// Get all storage configurations
+// Get all storage configurations.
 //
 // Gets a list of all Databricks storage configurations for your account,
 // specified by ID.
@@ -890,7 +890,7 @@ func (a *VpcEndpointsAPI) Impl() VpcEndpointsService {
 	return a.impl
 }
 
-// Create VPC endpoint configuration
+// Create VPC endpoint configuration.
 //
 // Creates a VPC endpoint configuration, which represents a [VPC
 // endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html)
@@ -923,7 +923,7 @@ func (a *VpcEndpointsAPI) Create(ctx context.Context, request CreateVpcEndpointR
 	return a.impl.Create(ctx, request)
 }
 
-// Delete VPC endpoint configuration
+// Delete VPC endpoint configuration.
 //
 // Deletes a VPC endpoint configuration, which represents an [AWS VPC
 // endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html)
@@ -945,7 +945,7 @@ func (a *VpcEndpointsAPI) Delete(ctx context.Context, request DeleteVpcEndpointR
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete VPC endpoint configuration
+// Delete VPC endpoint configuration.
 //
 // Deletes a VPC endpoint configuration, which represents an [AWS VPC
 // endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html)
@@ -969,7 +969,7 @@ func (a *VpcEndpointsAPI) DeleteByVpcEndpointId(ctx context.Context, vpcEndpoint
 	})
 }
 
-// Get a VPC endpoint configuration
+// Get a VPC endpoint configuration.
 //
 // Gets a VPC endpoint configuration, which represents a [VPC
 // endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html)
@@ -984,7 +984,7 @@ func (a *VpcEndpointsAPI) Get(ctx context.Context, request GetVpcEndpointRequest
 	return a.impl.Get(ctx, request)
 }
 
-// Get a VPC endpoint configuration
+// Get a VPC endpoint configuration.
 //
 // Gets a VPC endpoint configuration, which represents a [VPC
 // endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html)
@@ -1001,7 +1001,7 @@ func (a *VpcEndpointsAPI) GetByVpcEndpointId(ctx context.Context, vpcEndpointId 
 	})
 }
 
-// Get all VPC endpoint configurations
+// Get all VPC endpoint configurations.
 //
 // Gets a list of all VPC endpoints for an account, specified by ID.
 //
@@ -1051,7 +1051,7 @@ func (a *WorkspacesAPI) Impl() WorkspacesService {
 	return a.impl
 }
 
-// Create a new workspace
+// Create a new workspace.
 //
 // Creates a new workspace using a credential configuration and a storage
 // configuration, an optional network configuration (if using a customer-managed
@@ -1132,7 +1132,7 @@ func (a *WorkspacesAPI) CreateAndWait(ctx context.Context, createWorkspaceReques
 	})
 }
 
-// Delete workspace
+// Delete workspace.
 //
 // Terminates and deletes a Databricks workspace. From an API perspective,
 // deletion is immediate. However, it might take a few minutes for all
@@ -1146,7 +1146,7 @@ func (a *WorkspacesAPI) Delete(ctx context.Context, request DeleteWorkspaceReque
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete workspace
+// Delete workspace.
 //
 // Terminates and deletes a Databricks workspace. From an API perspective,
 // deletion is immediate. However, it might take a few minutes for all
@@ -1162,7 +1162,7 @@ func (a *WorkspacesAPI) DeleteByWorkspaceId(ctx context.Context, workspaceId int
 	})
 }
 
-// Get workspace
+// Get workspace.
 //
 // Gets information including status for a Databricks workspace, specified by
 // ID. In the response, the `workspace_status` field indicates the current
@@ -1181,7 +1181,7 @@ func (a *WorkspacesAPI) Get(ctx context.Context, request GetWorkspaceRequest) (*
 	return a.impl.Get(ctx, request)
 }
 
-// Get workspace
+// Get workspace.
 //
 // Gets information including status for a Databricks workspace, specified by
 // ID. In the response, the `workspace_status` field indicates the current
@@ -1202,7 +1202,7 @@ func (a *WorkspacesAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64)
 	})
 }
 
-// Get the history of a workspace's associations with keys
+// Get the history of a workspace's associations with keys.
 //
 // Gets a list of all associations with key configuration objects for the
 // specified workspace that encapsulate customer-managed keys that encrypt
@@ -1222,7 +1222,7 @@ func (a *WorkspacesAPI) GetWorkspaceKeyHistory(ctx context.Context, request GetW
 	return a.impl.GetWorkspaceKeyHistory(ctx, request)
 }
 
-// Get the history of a workspace's associations with keys
+// Get the history of a workspace's associations with keys.
 //
 // Gets a list of all associations with key configuration objects for the
 // specified workspace that encapsulate customer-managed keys that encrypt
@@ -1244,7 +1244,7 @@ func (a *WorkspacesAPI) GetWorkspaceKeyHistoryByWorkspaceId(ctx context.Context,
 	})
 }
 
-// Get all workspaces
+// Get all workspaces.
 //
 // Gets a list of all workspaces associated with an account, specified by ID.
 //
@@ -1308,7 +1308,7 @@ func (a *WorkspacesAPI) GetByWorkspaceName(ctx context.Context, name string) (*W
 	return &alternatives[0], nil
 }
 
-// Update workspace configuration
+// Update workspace configuration.
 //
 // Updates a workspace configuration for either a running workspace or a failed
 // workspace. The elements that can be updated varies between these two use

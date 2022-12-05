@@ -36,14 +36,14 @@ func (a *WorkspaceConfAPI) Impl() WorkspaceConfService {
 	return a.impl
 }
 
-// Check configuration status
+// Check configuration status.
 //
 // Gets the configuration status for a workspace.
 func (a *WorkspaceConfAPI) GetStatus(ctx context.Context, request GetStatus) (*WorkspaceConf, error) {
 	return a.impl.GetStatus(ctx, request)
 }
 
-// Enable/disable features
+// Enable/disable features.
 //
 // Sets the configuration status for a workspace, including enabling or
 // disabling it.

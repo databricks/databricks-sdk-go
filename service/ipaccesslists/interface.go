@@ -30,7 +30,7 @@ import (
 // changes to take effect.
 type IpAccessListsService interface {
 
-	// Create access list
+	// Create access list.
 	//
 	// Creates an IP access list for this workspace. A list can be an allow list
 	// or a block list. See the top of this file for a description of how the
@@ -50,24 +50,24 @@ type IpAccessListsService interface {
 	// [`/workspace-conf`](#operation/set-status).
 	Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error)
 
-	// Delete access list
+	// Delete access list.
 	//
 	// Deletes an IP access list, specified by its list ID.
 	Delete(ctx context.Context, request Delete) error
 
-	// Get access list
+	// Get access list.
 	//
 	// Gets an IP access list, specified by its list ID.
 	Get(ctx context.Context, request Get) (*FetchIpAccessListResponse, error)
 
-	// Get access lists
+	// Get access lists.
 	//
 	// Gets all IP access lists for the specified workspace.
 	//
 	// Use ListAll() to get all IpAccessListInfo instances
 	List(ctx context.Context) (*GetIpAccessListResponse, error)
 
-	// Replace access list
+	// Replace access list.
 	//
 	// Replaces an IP access list, specified by its ID. A list can include allow
 	// lists and block lists. See the top of this file for a description of how
@@ -82,7 +82,7 @@ type IpAccessListsService interface {
 	// enable the feature. See :method:workspaceconf/setStatus.
 	Replace(ctx context.Context, request ReplaceIpAccessList) error
 
-	// Update access list
+	// Update access list.
 	//
 	// Updates an existing IP access list, specified by its ID. A list can
 	// include allow lists and block lists. See the top of this file for a

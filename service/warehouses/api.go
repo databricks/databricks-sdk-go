@@ -40,7 +40,7 @@ func (a *QueryHistoryAPI) Impl() QueryHistoryService {
 	return a.impl
 }
 
-// List
+// List.
 //
 // List the history of queries through SQL warehouses.
 //
@@ -98,7 +98,7 @@ func (a *WarehousesAPI) Impl() WarehousesService {
 	return a.impl
 }
 
-// Create a warehouse
+// Create a warehouse.
 //
 // Creates a new SQL warehouse.
 func (a *WarehousesAPI) CreateWarehouse(ctx context.Context, request CreateWarehouseRequest) (*CreateWarehouseResponse, error) {
@@ -150,7 +150,7 @@ func (a *WarehousesAPI) CreateWarehouseAndWait(ctx context.Context, createWareho
 	})
 }
 
-// Delete a warehouse
+// Delete a warehouse.
 //
 // Deletes a SQL warehouse.
 func (a *WarehousesAPI) DeleteWarehouse(ctx context.Context, request DeleteWarehouse) error {
@@ -198,7 +198,7 @@ func (a *WarehousesAPI) DeleteWarehouseAndWait(ctx context.Context, deleteWareho
 	})
 }
 
-// Delete a warehouse
+// Delete a warehouse.
 //
 // Deletes a SQL warehouse.
 func (a *WarehousesAPI) DeleteWarehouseById(ctx context.Context, id string) error {
@@ -213,7 +213,7 @@ func (a *WarehousesAPI) DeleteWarehouseByIdAndWait(ctx context.Context, id strin
 	}, options...)
 }
 
-// Update a warehouse
+// Update a warehouse.
 //
 // Updates the configuration for a SQL warehouse.
 func (a *WarehousesAPI) EditWarehouse(ctx context.Context, request EditWarehouseRequest) error {
@@ -265,7 +265,7 @@ func (a *WarehousesAPI) EditWarehouseAndWait(ctx context.Context, editWarehouseR
 	})
 }
 
-// Get warehouse info
+// Get warehouse info.
 //
 // Gets the information for a single SQL warehouse.
 func (a *WarehousesAPI) GetWarehouse(ctx context.Context, request GetWarehouse) (*GetWarehouseResponse, error) {
@@ -317,7 +317,7 @@ func (a *WarehousesAPI) GetWarehouseAndWait(ctx context.Context, getWarehouse Ge
 	})
 }
 
-// Get warehouse info
+// Get warehouse info.
 //
 // Gets the information for a single SQL warehouse.
 func (a *WarehousesAPI) GetWarehouseById(ctx context.Context, id string) (*GetWarehouseResponse, error) {
@@ -332,7 +332,7 @@ func (a *WarehousesAPI) GetWarehouseByIdAndWait(ctx context.Context, id string, 
 	}, options...)
 }
 
-// Get the workspace configuration
+// Get the workspace configuration.
 //
 // Gets the workspace level configuration that is shared by all SQL warehouses
 // in a workspace.
@@ -340,7 +340,7 @@ func (a *WarehousesAPI) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetWo
 	return a.impl.GetWorkspaceWarehouseConfig(ctx)
 }
 
-// List warehouses
+// List warehouses.
 //
 // Lists all SQL warehouses that a user has manager permissions on.
 //
@@ -406,7 +406,7 @@ func (a *WarehousesAPI) GetByName(ctx context.Context, name string) (*EndpointIn
 	return &alternatives[0], nil
 }
 
-// Set the workspace configuration
+// Set the workspace configuration.
 //
 // Sets the workspace level configuration that is shared by all SQL warehouses
 // in a workspace.
@@ -414,7 +414,7 @@ func (a *WarehousesAPI) SetWorkspaceWarehouseConfig(ctx context.Context, request
 	return a.impl.SetWorkspaceWarehouseConfig(ctx, request)
 }
 
-// Start a warehouse
+// Start a warehouse.
 //
 // Starts a SQL warehouse.
 func (a *WarehousesAPI) StartWarehouse(ctx context.Context, request StartWarehouse) error {
@@ -466,7 +466,7 @@ func (a *WarehousesAPI) StartWarehouseAndWait(ctx context.Context, startWarehous
 	})
 }
 
-// Stop a warehouse
+// Stop a warehouse.
 //
 // Stops a SQL warehouse.
 func (a *WarehousesAPI) StopWarehouse(ctx context.Context, request StopWarehouse) error {
