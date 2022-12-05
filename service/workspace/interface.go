@@ -13,7 +13,7 @@ import (
 // code, visualizations, and explanatory text.
 type WorkspaceService interface {
 
-	// Delete a workspace object
+	// Delete a workspace object.
 	//
 	// Deletes an object or a directory (and optionally recursively deletes all
 	// objects in the directory). * If `path` does not exist, this call returns
@@ -25,7 +25,7 @@ type WorkspaceService interface {
 	// not atomic.
 	Delete(ctx context.Context, request Delete) error
 
-	// Export a notebook
+	// Export a notebook.
 	//
 	// Exports a notebook or the contents of an entire directory.
 	//
@@ -37,13 +37,13 @@ type WorkspaceService interface {
 	// Currently, this API does not support exporting a library.
 	Export(ctx context.Context, request Export) (*ExportResponse, error)
 
-	// Get status
+	// Get status.
 	//
 	// Gets the status of an object or a directory. If `path` does not exist,
 	// this call returns an error `RESOURCE_DOES_NOT_EXIST`.
 	GetStatus(ctx context.Context, request GetStatus) (*ObjectInfo, error)
 
-	// Import a notebook
+	// Import a notebook.
 	//
 	// Imports a notebook or the contents of an entire directory. If `path`
 	// already exists and `overwrite` is set to `false`, this call returns an
@@ -51,7 +51,7 @@ type WorkspaceService interface {
 	// a directory.
 	Import(ctx context.Context, request Import) error
 
-	// List contents
+	// List contents.
 	//
 	// Lists the contents of a directory, or the object if it is not a
 	// directory.If the input path does not exist, this call returns an error
@@ -60,7 +60,7 @@ type WorkspaceService interface {
 	// Use ListAll() to get all ObjectInfo instances
 	List(ctx context.Context, request List) (*ListResponse, error)
 
-	// Create a directory
+	// Create a directory.
 	//
 	// Creates the specified directory (and necessary parent directories if they
 	// do not exist). If there is an object (not a directory) at any prefix of

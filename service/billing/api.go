@@ -39,7 +39,7 @@ func (a *BillableUsageAPI) Impl() BillableUsageService {
 	return a.impl
 }
 
-// Return billable usage logs
+// Return billable usage logs.
 //
 // Returns billable usage logs in CSV format for the specified account and date
 // range. For the data schema, see [CSV file
@@ -77,21 +77,21 @@ func (a *BudgetsAPI) Impl() BudgetsService {
 	return a.impl
 }
 
-// Create a new budget
+// Create a new budget.
 //
 // Creates a new budget in the specified account.
 func (a *BudgetsAPI) Create(ctx context.Context, request WrappedBudget) (*WrappedBudgetWithStatus, error) {
 	return a.impl.Create(ctx, request)
 }
 
-// Delete budget
+// Delete budget.
 //
 // Deletes the budget specified by its UUID.
 func (a *BudgetsAPI) Delete(ctx context.Context, request DeleteBudgetRequest) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete budget
+// Delete budget.
 //
 // Deletes the budget specified by its UUID.
 func (a *BudgetsAPI) DeleteByBudgetId(ctx context.Context, budgetId string) error {
@@ -100,7 +100,7 @@ func (a *BudgetsAPI) DeleteByBudgetId(ctx context.Context, budgetId string) erro
 	})
 }
 
-// Get budget and its status
+// Get budget and its status.
 //
 // Gets the budget specified by its UUID, including noncumulative status for
 // each day that the budget is configured to include.
@@ -108,7 +108,7 @@ func (a *BudgetsAPI) Get(ctx context.Context, request GetBudgetRequest) (*Wrappe
 	return a.impl.Get(ctx, request)
 }
 
-// Get budget and its status
+// Get budget and its status.
 //
 // Gets the budget specified by its UUID, including noncumulative status for
 // each day that the budget is configured to include.
@@ -118,7 +118,7 @@ func (a *BudgetsAPI) GetByBudgetId(ctx context.Context, budgetId string) (*Wrapp
 	})
 }
 
-// Get all budgets
+// Get all budgets.
 //
 // Gets all budgets associated with this account, including noncumulative status
 // for each day that the budget is configured to include.
@@ -185,7 +185,7 @@ func (a *BudgetsAPI) GetByName(ctx context.Context, name string) (*BudgetWithSta
 	return &alternatives[0], nil
 }
 
-// Modify budget
+// Modify budget.
 //
 // Modifies a budget in this account. Budget properties are completely
 // overwritten.
@@ -283,7 +283,7 @@ func (a *LogDeliveryAPI) Impl() LogDeliveryService {
 	return a.impl
 }
 
-// Create a new log delivery configuration
+// Create a new log delivery configuration.
 //
 // Creates a new Databricks log delivery configuration to enable delivery of the
 // specified type of logs to your storage location. This requires that you
@@ -314,7 +314,7 @@ func (a *LogDeliveryAPI) Create(ctx context.Context, request WrappedCreateLogDel
 	return a.impl.Create(ctx, request)
 }
 
-// Get log delivery configuration
+// Get log delivery configuration.
 //
 // Gets a Databricks log delivery configuration object for an account, both
 // specified by ID.
@@ -322,7 +322,7 @@ func (a *LogDeliveryAPI) Get(ctx context.Context, request GetLogDeliveryRequest)
 	return a.impl.Get(ctx, request)
 }
 
-// Get log delivery configuration
+// Get log delivery configuration.
 //
 // Gets a Databricks log delivery configuration object for an account, both
 // specified by ID.
@@ -332,7 +332,7 @@ func (a *LogDeliveryAPI) GetByLogDeliveryConfigurationId(ctx context.Context, lo
 	})
 }
 
-// Get all log delivery configurations
+// Get all log delivery configurations.
 //
 // Gets all Databricks log delivery configurations associated with an account
 // specified by ID.
@@ -399,7 +399,7 @@ func (a *LogDeliveryAPI) GetByConfigName(ctx context.Context, name string) (*Log
 	return &alternatives[0], nil
 }
 
-// Enable or disable log delivery configuration
+// Enable or disable log delivery configuration.
 //
 // Enables or disables a log delivery configuration. Deletion of delivery
 // configurations is not supported, so disable log delivery configurations that

@@ -190,15 +190,28 @@ func (n *Named) HasComment() bool {
 	return n.Description != ""
 }
 
-func (n *Named) FirstSentence() string {
+func (n *Named) sentences() []string {
 	if n.Description == "" {
-		return ""
+		return []string{}
 	}
 	norm := whitespace.ReplaceAllString(n.Description, " ")
 	trimmed := strings.TrimSpace(norm)
-	sentences := strings.Split(trimmed, ". ")
+	return strings.Split(trimmed, ". ")
+}
+
+// Summary gets the first sentence from the description. Always ends in a dot.
+func (n *Named) Summary() string {
+	sentences := n.sentences()
 	if len(sentences) > 0 {
 		return strings.TrimSuffix(sentences[0], ".") + "."
+	}
+	return ""
+}
+
+func (n *Named) DescriptionWithoutSummary() string {
+	sentences := n.sentences()
+	if len(sentences) > 1 {
+		return strings.Join(sentences[1:], ". ")
 	}
 	return ""
 }

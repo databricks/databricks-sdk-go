@@ -43,7 +43,7 @@ func (a *CatalogsAPI) Impl() CatalogsService {
 	return a.impl
 }
 
-// Create a catalog
+// Create a catalog.
 //
 // Creates a new catalog instance in the parent Metastore if the caller is a
 // Metastore admin or has the CREATE CATALOG privilege.
@@ -51,7 +51,7 @@ func (a *CatalogsAPI) Create(ctx context.Context, request CreateCatalog) (*Creat
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a catalog
+// Delete a catalog.
 //
 // Deletes the catalog that matches the supplied name. The caller must be a
 // Metastore admin or the owner of the catalog.
@@ -59,7 +59,7 @@ func (a *CatalogsAPI) Delete(ctx context.Context, request DeleteCatalogRequest) 
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a catalog
+// Delete a catalog.
 //
 // Deletes the catalog that matches the supplied name. The caller must be a
 // Metastore admin or the owner of the catalog.
@@ -69,7 +69,7 @@ func (a *CatalogsAPI) DeleteByName(ctx context.Context, name string) error {
 	})
 }
 
-// Get a catalog
+// Get a catalog.
 //
 // Gets an array of all catalogs in the current Metastore for which the user is
 // an admin or Catalog owner, or has the USAGE privilege set for their account.
@@ -77,7 +77,7 @@ func (a *CatalogsAPI) Get(ctx context.Context, request GetCatalogRequest) (*GetC
 	return a.impl.Get(ctx, request)
 }
 
-// Get a catalog
+// Get a catalog.
 //
 // Gets an array of all catalogs in the current Metastore for which the user is
 // an admin or Catalog owner, or has the USAGE privilege set for their account.
@@ -87,7 +87,7 @@ func (a *CatalogsAPI) GetByName(ctx context.Context, name string) (*GetCatalogRe
 	})
 }
 
-// List catalogs
+// List catalogs.
 //
 // Gets an array of External Locations (ExternalLocationInfo objects) from the
 // Metastore. The caller must be a Metastore admin, is the owner of the External
@@ -102,7 +102,7 @@ func (a *CatalogsAPI) ListAll(ctx context.Context) ([]CatalogInfo, error) {
 	return response.Catalogs, nil
 }
 
-// Update a catalog
+// Update a catalog.
 //
 // Updates the catalog that matches the supplied name. The caller must be either
 // the owner of the catalog, or a Metastore admin (when changing the owner field
@@ -150,7 +150,7 @@ func (a *ExternalLocationsAPI) Impl() ExternalLocationsService {
 	return a.impl
 }
 
-// Create an external location
+// Create an external location.
 //
 // Creates a new External Location entry in the Metastore. The caller must be a
 // Metastore admin or have the CREATE EXTERNAL LOCATION privilege on the
@@ -159,7 +159,7 @@ func (a *ExternalLocationsAPI) Create(ctx context.Context, request CreateExterna
 	return a.impl.Create(ctx, request)
 }
 
-// Delete an external location
+// Delete an external location.
 //
 // Deletes the specified external location from the Metastore. The caller must
 // be the owner of the external location.
@@ -167,7 +167,7 @@ func (a *ExternalLocationsAPI) Delete(ctx context.Context, request DeleteExterna
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete an external location
+// Delete an external location.
 //
 // Deletes the specified external location from the Metastore. The caller must
 // be the owner of the external location.
@@ -177,7 +177,7 @@ func (a *ExternalLocationsAPI) DeleteByName(ctx context.Context, name string) er
 	})
 }
 
-// Get an external location
+// Get an external location.
 //
 // Gets an external location from the Metastore. The caller must be either a
 // Metastore admin, the owner of the external location, or has an appropriate
@@ -186,7 +186,7 @@ func (a *ExternalLocationsAPI) Get(ctx context.Context, request GetExternalLocat
 	return a.impl.Get(ctx, request)
 }
 
-// Get an external location
+// Get an external location.
 //
 // Gets an external location from the Metastore. The caller must be either a
 // Metastore admin, the owner of the external location, or has an appropriate
@@ -197,7 +197,7 @@ func (a *ExternalLocationsAPI) GetByName(ctx context.Context, name string) (*Get
 	})
 }
 
-// List external locations
+// List external locations.
 //
 // Gets an array of External Locations (ExternalLocationInfo objects) from the
 // Metastore. The caller must be a Metastore admin, is the owner of the external
@@ -212,7 +212,7 @@ func (a *ExternalLocationsAPI) ListAll(ctx context.Context) ([]ExternalLocationI
 	return response.ExternalLocations, nil
 }
 
-// Update an external location
+// Update an external location.
 //
 // Updates an external location in the Metastore. The caller must be the owner
 // of the externa location, or be a Metastore admin. In the second case, the
@@ -262,14 +262,14 @@ func (a *GrantsAPI) Impl() GrantsService {
 	return a.impl
 }
 
-// Get permissions
+// Get permissions.
 //
 // Gets the permissions for a Securable type.
 func (a *GrantsAPI) Get(ctx context.Context, request GetGrantRequest) (*GetPermissionsResponse, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get permissions
+// Get permissions.
 //
 // Gets the permissions for a Securable type.
 func (a *GrantsAPI) GetBySecurableTypeAndFullName(ctx context.Context, securableType string, fullName string) (*GetPermissionsResponse, error) {
@@ -279,7 +279,7 @@ func (a *GrantsAPI) GetBySecurableTypeAndFullName(ctx context.Context, securable
 	})
 }
 
-// Update permissions
+// Update permissions.
 //
 // Updates the permissions for a Securable type.
 func (a *GrantsAPI) Update(ctx context.Context, request UpdatePermissions) error {
@@ -326,7 +326,7 @@ func (a *MetastoresAPI) Impl() MetastoresService {
 	return a.impl
 }
 
-// Create an assignment
+// Create an assignment.
 //
 // Creates a new Metastore assignment. If an assignment for the same
 // __workspace_id__ exists, it will be overwritten by the new __metastore_id__
@@ -335,21 +335,21 @@ func (a *MetastoresAPI) Assign(ctx context.Context, request CreateMetastoreAssig
 	return a.impl.Assign(ctx, request)
 }
 
-// Create a Metastore
+// Create a Metastore.
 //
 // Creates a new Metastore based on a provided name and storage root path.
 func (a *MetastoresAPI) Create(ctx context.Context, request CreateMetastore) (*CreateMetastoreResponse, error) {
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a Metastore
+// Delete a Metastore.
 //
 // Deletes a Metastore. The caller must be a Metastore admin.
 func (a *MetastoresAPI) Delete(ctx context.Context, request DeleteMetastoreRequest) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a Metastore
+// Delete a Metastore.
 //
 // Deletes a Metastore. The caller must be a Metastore admin.
 func (a *MetastoresAPI) DeleteById(ctx context.Context, id string) error {
@@ -358,7 +358,7 @@ func (a *MetastoresAPI) DeleteById(ctx context.Context, id string) error {
 	})
 }
 
-// Get a Metastore
+// Get a Metastore.
 //
 // Gets a Metastore that matches the supplied ID. The caller must be a Metastore
 // admin to retrieve this info.
@@ -366,7 +366,7 @@ func (a *MetastoresAPI) Get(ctx context.Context, request GetMetastoreRequest) (*
 	return a.impl.Get(ctx, request)
 }
 
-// Get a Metastore
+// Get a Metastore.
 //
 // Gets a Metastore that matches the supplied ID. The caller must be a Metastore
 // admin to retrieve this info.
@@ -376,7 +376,7 @@ func (a *MetastoresAPI) GetById(ctx context.Context, id string) (*GetMetastoreRe
 	})
 }
 
-// List Metastores
+// List Metastores.
 //
 // Gets an array of the available Metastores (as MetastoreInfo objects). The
 // caller must be an admin to retrieve this info.
@@ -390,7 +390,7 @@ func (a *MetastoresAPI) ListAll(ctx context.Context) ([]MetastoreInfo, error) {
 	return response.Metastores, nil
 }
 
-// Get a summary
+// Get a summary.
 //
 // Gets information about a Metastore. This summary includes the storage
 // credential, the cloud vendor, the cloud region, and the global Metastore ID.
@@ -398,14 +398,14 @@ func (a *MetastoresAPI) Summary(ctx context.Context) (*GetMetastoreSummaryRespon
 	return a.impl.Summary(ctx)
 }
 
-// Delete an assignment
+// Delete an assignment.
 //
 // Deletes a Metastore assignment. The caller must be an account administrator.
 func (a *MetastoresAPI) Unassign(ctx context.Context, request UnassignRequest) error {
 	return a.impl.Unassign(ctx, request)
 }
 
-// Delete an assignment
+// Delete an assignment.
 //
 // Deletes a Metastore assignment. The caller must be an account administrator.
 func (a *MetastoresAPI) UnassignByWorkspaceId(ctx context.Context, workspaceId int) error {
@@ -414,7 +414,7 @@ func (a *MetastoresAPI) UnassignByWorkspaceId(ctx context.Context, workspaceId i
 	})
 }
 
-// Update a Metastore
+// Update a Metastore.
 //
 // Updates information for a specific Metastore. The caller must be a Metastore
 // admin.
@@ -422,7 +422,7 @@ func (a *MetastoresAPI) Update(ctx context.Context, request UpdateMetastore) err
 	return a.impl.Update(ctx, request)
 }
 
-// Update an assignment
+// Update an assignment.
 //
 // Updates a Metastore assignment. This operation can be used to update
 // __metastore_id__ or __default_catalog_name__ for a specified Workspace, if
@@ -460,7 +460,7 @@ func (a *ProvidersAPI) Impl() ProvidersService {
 	return a.impl
 }
 
-// Create an auth provider
+// Create an auth provider.
 //
 // Creates a new authentication provider minimally based on a name and
 // authentication type. The caller must be an admin on the Metastore.
@@ -468,7 +468,7 @@ func (a *ProvidersAPI) Create(ctx context.Context, request CreateProvider) (*Cre
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a provider
+// Delete a provider.
 //
 // Deletes an authentication provider, if the caller is a Metastore admin or is
 // the owner of the provider.
@@ -476,7 +476,7 @@ func (a *ProvidersAPI) Delete(ctx context.Context, request DeleteProviderRequest
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a provider
+// Delete a provider.
 //
 // Deletes an authentication provider, if the caller is a Metastore admin or is
 // the owner of the provider.
@@ -486,7 +486,7 @@ func (a *ProvidersAPI) DeleteByName(ctx context.Context, name string) error {
 	})
 }
 
-// Get a provider
+// Get a provider.
 //
 // Gets a specific authentication provider. The caller must supply the name of
 // the provider, and must either be a Metastore admin or the owner of the
@@ -495,7 +495,7 @@ func (a *ProvidersAPI) Get(ctx context.Context, request GetProviderRequest) (*Ge
 	return a.impl.Get(ctx, request)
 }
 
-// Get a provider
+// Get a provider.
 //
 // Gets a specific authentication provider. The caller must supply the name of
 // the provider, and must either be a Metastore admin or the owner of the
@@ -506,7 +506,7 @@ func (a *ProvidersAPI) GetByName(ctx context.Context, name string) (*GetProvider
 	})
 }
 
-// List providers
+// List providers.
 //
 // Gets an array of available authentication providers. The caller must either
 // be a Metastore admin or the owner of the providers. Providers not owned by
@@ -521,7 +521,7 @@ func (a *ProvidersAPI) ListAll(ctx context.Context, request ListProvidersRequest
 	return response.Providers, nil
 }
 
-// List shares
+// List shares.
 //
 // Gets an array of all shares within the Metastore where:
 //
@@ -530,7 +530,7 @@ func (a *ProvidersAPI) ListShares(ctx context.Context, request ListSharesRequest
 	return a.impl.ListShares(ctx, request)
 }
 
-// List shares
+// List shares.
 //
 // Gets an array of all shares within the Metastore where:
 //
@@ -541,7 +541,7 @@ func (a *ProvidersAPI) ListSharesByName(ctx context.Context, name string) (*List
 	})
 }
 
-// Update a provider
+// Update a provider.
 //
 // Updates the information for an authentication provider, if the caller is a
 // Metastore admin or is the owner of the provider. If the update changes the
@@ -578,14 +578,14 @@ func (a *RecipientActivationAPI) Impl() RecipientActivationService {
 	return a.impl
 }
 
-// Get a share activation URL
+// Get a share activation URL.
 //
 // Gets information about an Activation URL.
 func (a *RecipientActivationAPI) GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) error {
 	return a.impl.GetActivationUrlInfo(ctx, request)
 }
 
-// Get a share activation URL
+// Get a share activation URL.
 //
 // Gets information about an Activation URL.
 func (a *RecipientActivationAPI) GetActivationUrlInfoByActivationUrl(ctx context.Context, activationUrl string) error {
@@ -594,7 +594,7 @@ func (a *RecipientActivationAPI) GetActivationUrlInfoByActivationUrl(ctx context
 	})
 }
 
-// Get an access token
+// Get an access token.
 //
 // RPC to retrieve access token with an activation token. This is a public API
 // without any authentication.
@@ -602,7 +602,7 @@ func (a *RecipientActivationAPI) RetrieveToken(ctx context.Context, request Retr
 	return a.impl.RetrieveToken(ctx, request)
 }
 
-// Get an access token
+// Get an access token.
 //
 // RPC to retrieve access token with an activation token. This is a public API
 // without any authentication.
@@ -639,7 +639,7 @@ func (a *RecipientsAPI) Impl() RecipientsService {
 	return a.impl
 }
 
-// Create a share recipient
+// Create a share recipient.
 //
 // Creates a new recipient with the delta sharing authentication type in the
 // Metastore. The caller must be a Metastore admin or has the CREATE RECIPIENT
@@ -648,7 +648,7 @@ func (a *RecipientsAPI) Create(ctx context.Context, request CreateRecipient) (*C
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a share recipient
+// Delete a share recipient.
 //
 // Deletes the specified recipient from the Metastore. The caller must be the
 // owner of the recipient.
@@ -656,7 +656,7 @@ func (a *RecipientsAPI) Delete(ctx context.Context, request DeleteRecipientReque
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a share recipient
+// Delete a share recipient.
 //
 // Deletes the specified recipient from the Metastore. The caller must be the
 // owner of the recipient.
@@ -666,7 +666,7 @@ func (a *RecipientsAPI) DeleteByName(ctx context.Context, name string) error {
 	})
 }
 
-// Get a share recipient
+// Get a share recipient.
 //
 // Gets a share recipient from the Metastore if:
 //
@@ -675,7 +675,7 @@ func (a *RecipientsAPI) Get(ctx context.Context, request GetRecipientRequest) (*
 	return a.impl.Get(ctx, request)
 }
 
-// Get a share recipient
+// Get a share recipient.
 //
 // Gets a share recipient from the Metastore if:
 //
@@ -686,7 +686,7 @@ func (a *RecipientsAPI) GetByName(ctx context.Context, name string) (*GetRecipie
 	})
 }
 
-// List share recipients
+// List share recipients.
 //
 // Gets an array of all share recipients within the current Metastore where:
 //
@@ -701,7 +701,7 @@ func (a *RecipientsAPI) ListAll(ctx context.Context, request ListRecipientsReque
 	return response.Recipients, nil
 }
 
-// Rotate a token
+// Rotate a token.
 //
 // Refreshes the specified recipient's delta sharing authentication token with
 // the provided token info. The caller must be the owner of the recipient.
@@ -709,7 +709,7 @@ func (a *RecipientsAPI) RotateToken(ctx context.Context, request RotateRecipient
 	return a.impl.RotateToken(ctx, request)
 }
 
-// Get share permissions
+// Get share permissions.
 //
 // Gets the share permissions for the specified Recipient. The caller must be a
 // Metastore admin or the owner of the Recipient.
@@ -717,7 +717,7 @@ func (a *RecipientsAPI) SharePermissions(ctx context.Context, request SharePermi
 	return a.impl.SharePermissions(ctx, request)
 }
 
-// Get share permissions
+// Get share permissions.
 //
 // Gets the share permissions for the specified Recipient. The caller must be a
 // Metastore admin or the owner of the Recipient.
@@ -727,7 +727,7 @@ func (a *RecipientsAPI) SharePermissionsByName(ctx context.Context, name string)
 	})
 }
 
-// Update a share recipient
+// Update a share recipient.
 //
 // Updates an existing recipient in the Metastore. The caller must be a
 // Metastore admin or the owner of the recipient. If the recipient name will be
@@ -768,7 +768,7 @@ func (a *SchemasAPI) Impl() SchemasService {
 	return a.impl
 }
 
-// Create a schema
+// Create a schema.
 //
 // Creates a new schema for catalog in the Metatastore. The caller must be a
 // Metastore admin, or have the CREATE privilege in the parentcatalog.
@@ -776,7 +776,7 @@ func (a *SchemasAPI) Create(ctx context.Context, request CreateSchema) (*CreateS
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a schema
+// Delete a schema.
 //
 // Deletes the specified schema from the parent catalog. The caller must be the
 // owner of the schema or an owner of the parent catalog.
@@ -784,7 +784,7 @@ func (a *SchemasAPI) Delete(ctx context.Context, request DeleteSchemaRequest) er
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a schema
+// Delete a schema.
 //
 // Deletes the specified schema from the parent catalog. The caller must be the
 // owner of the schema or an owner of the parent catalog.
@@ -794,7 +794,7 @@ func (a *SchemasAPI) DeleteByFullName(ctx context.Context, fullName string) erro
 	})
 }
 
-// Get a schema
+// Get a schema.
 //
 // Gets the specified schema for a catalog in the Metastore. The caller must be
 // a Metastore admin, the owner of the schema, or a user that has the USAGE
@@ -803,7 +803,7 @@ func (a *SchemasAPI) Get(ctx context.Context, request GetSchemaRequest) (*GetSch
 	return a.impl.Get(ctx, request)
 }
 
-// Get a schema
+// Get a schema.
 //
 // Gets the specified schema for a catalog in the Metastore. The caller must be
 // a Metastore admin, the owner of the schema, or a user that has the USAGE
@@ -814,7 +814,7 @@ func (a *SchemasAPI) GetByFullName(ctx context.Context, fullName string) (*GetSc
 	})
 }
 
-// List schemas
+// List schemas.
 //
 // Gets an array of schemas for catalog in the Metastore. If the caller is the
 // Metastore admin or the owner of the parent catalog, all schemas for the
@@ -830,7 +830,7 @@ func (a *SchemasAPI) ListAll(ctx context.Context, request ListSchemasRequest) ([
 	return response.Schemas, nil
 }
 
-// Update a schema
+// Update a schema.
 //
 // Updates a schema for a catalog. The caller must be the owner of the schema.
 // If the caller is a Metastore admin, only the __owner__ field can be changed
@@ -867,7 +867,7 @@ func (a *SharesAPI) Impl() SharesService {
 	return a.impl
 }
 
-// Create a share
+// Create a share.
 //
 // Creates a new share for data objects. Data objects can be added at this time
 // or after creation with **update**. The caller must be a Metastore admin or
@@ -876,7 +876,7 @@ func (a *SharesAPI) Create(ctx context.Context, request CreateShare) (*CreateSha
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a share
+// Delete a share.
 //
 // Deletes a data object share from the Metastore. The caller must be an owner
 // of the share.
@@ -884,7 +884,7 @@ func (a *SharesAPI) Delete(ctx context.Context, request DeleteShareRequest) erro
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a share
+// Delete a share.
 //
 // Deletes a data object share from the Metastore. The caller must be an owner
 // of the share.
@@ -894,7 +894,7 @@ func (a *SharesAPI) DeleteByName(ctx context.Context, name string) error {
 	})
 }
 
-// Get a share
+// Get a share.
 //
 // Gets a data object share from the Metastore. The caller must be a Metastore
 // admin or the owner of the share.
@@ -902,7 +902,7 @@ func (a *SharesAPI) Get(ctx context.Context, request GetShareRequest) (*GetShare
 	return a.impl.Get(ctx, request)
 }
 
-// Get a share
+// Get a share.
 //
 // Gets a data object share from the Metastore. The caller must be a Metastore
 // admin or the owner of the share.
@@ -912,7 +912,7 @@ func (a *SharesAPI) GetByName(ctx context.Context, name string) (*GetShareRespon
 	})
 }
 
-// List shares
+// List shares.
 //
 // Gets an array of data object shares from the Metastore. The caller must be a
 // Metastore admin or the owner of the share.
@@ -926,7 +926,7 @@ func (a *SharesAPI) ListAll(ctx context.Context) ([]ShareInfo, error) {
 	return response.Shares, nil
 }
 
-// Get permissions
+// Get permissions.
 //
 // Gets the permissions for a data share from the Metastore. The caller must be
 // a Metastore admin or the owner of the share.
@@ -934,7 +934,7 @@ func (a *SharesAPI) SharePermissions(ctx context.Context, request SharePermissio
 	return a.impl.SharePermissions(ctx, request)
 }
 
-// Get permissions
+// Get permissions.
 //
 // Gets the permissions for a data share from the Metastore. The caller must be
 // a Metastore admin or the owner of the share.
@@ -944,7 +944,7 @@ func (a *SharesAPI) SharePermissionsByName(ctx context.Context, name string) (*G
 	})
 }
 
-// Update a share
+// Update a share.
 //
 // Updates the share with the changes and data objects in the request. The
 // caller must be the owner of the share or a Metastore admin.
@@ -965,7 +965,7 @@ func (a *SharesAPI) Update(ctx context.Context, request UpdateShare) error {
 	return a.impl.Update(ctx, request)
 }
 
-// Update permissions
+// Update permissions.
 //
 // Updates the permissions for a data share in the Metastore. The caller must be
 // a Metastore admin or an owner of the share.
@@ -1016,7 +1016,7 @@ func (a *StorageCredentialsAPI) Impl() StorageCredentialsService {
 	return a.impl
 }
 
-// Create credentials
+// Create credentials.
 //
 // Creates a new storage credential. The request object is specific to the
 // cloud:
@@ -1030,7 +1030,7 @@ func (a *StorageCredentialsAPI) Create(ctx context.Context, request CreateStorag
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a credential
+// Delete a credential.
 //
 // Deletes a storage credential from the Metastore. The caller must be an owner
 // of the storage credential.
@@ -1038,7 +1038,7 @@ func (a *StorageCredentialsAPI) Delete(ctx context.Context, request DeleteStorag
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a credential
+// Delete a credential.
 //
 // Deletes a storage credential from the Metastore. The caller must be an owner
 // of the storage credential.
@@ -1048,7 +1048,7 @@ func (a *StorageCredentialsAPI) DeleteByName(ctx context.Context, name string) e
 	})
 }
 
-// Get a credential
+// Get a credential.
 //
 // Gets a storage credential from the Metastore. The caller must be a Metastore
 // admin, the owner of the storage credential, or have a level of privilege on
@@ -1057,7 +1057,7 @@ func (a *StorageCredentialsAPI) Get(ctx context.Context, request GetStorageCrede
 	return a.impl.Get(ctx, request)
 }
 
-// Get a credential
+// Get a credential.
 //
 // Gets a storage credential from the Metastore. The caller must be a Metastore
 // admin, the owner of the storage credential, or have a level of privilege on
@@ -1068,7 +1068,7 @@ func (a *StorageCredentialsAPI) GetByName(ctx context.Context, name string) (*Ge
 	})
 }
 
-// List credentials
+// List credentials.
 //
 // Gets an array of storage credentials (as StorageCredentialInfo objects). The
 // array is limited to only those storage credentials the caller has the
@@ -1084,7 +1084,7 @@ func (a *StorageCredentialsAPI) ListAll(ctx context.Context) ([]StorageCredentia
 	return response.StorageCredentials, nil
 }
 
-// Update a credential
+// Update a credential.
 //
 // Updates a storage credential on the Metastore. The caller must be the owner
 // of the storage credential. If the caller is a Metastore admin, only the
@@ -1127,7 +1127,7 @@ func (a *TablesAPI) Impl() TablesService {
 	return a.impl
 }
 
-// Create a table
+// Create a table.
 //
 // Creates a new table in the Metastore for a specific catalog and schema.
 // **WARNING**: Do not use this API at this time.
@@ -1143,7 +1143,7 @@ func (a *TablesAPI) Create(ctx context.Context, request CreateTable) (*CreateTab
 	return a.impl.Create(ctx, request)
 }
 
-// Create a staging table
+// Create a staging table.
 //
 // Creates a new staging table for a schema. The caller must have both the USAGE
 // privilege on the parent Catalog and the USAGE and CREATE privileges on the
@@ -1152,7 +1152,7 @@ func (a *TablesAPI) CreateStagingTable(ctx context.Context, request CreateStagin
 	return a.impl.CreateStagingTable(ctx, request)
 }
 
-// Delete a table
+// Delete a table.
 //
 // Deletes a table from the specified parent catalog and schema. The caller must
 // be the owner of the parent catalog, have the USAGE privilege on the parent
@@ -1162,7 +1162,7 @@ func (a *TablesAPI) Delete(ctx context.Context, request DeleteTableRequest) erro
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a table
+// Delete a table.
 //
 // Deletes a table from the specified parent catalog and schema. The caller must
 // be the owner of the parent catalog, have the USAGE privilege on the parent
@@ -1174,7 +1174,7 @@ func (a *TablesAPI) DeleteByFullName(ctx context.Context, fullName string) error
 	})
 }
 
-// Get a table
+// Get a table.
 //
 // Gets a table from the Metastore for a specific catalog and schema. The caller
 // must be a Metastore admin, be the owner of the table and have the USAGE
@@ -1184,7 +1184,7 @@ func (a *TablesAPI) Get(ctx context.Context, request GetTableRequest) (*GetTable
 	return a.impl.Get(ctx, request)
 }
 
-// Get a table
+// Get a table.
 //
 // Gets a table from the Metastore for a specific catalog and schema. The caller
 // must be a Metastore admin, be the owner of the table and have the USAGE
@@ -1196,7 +1196,7 @@ func (a *TablesAPI) GetByFullName(ctx context.Context, fullName string) (*GetTab
 	})
 }
 
-// List tables
+// List tables.
 //
 // Gets an array of all tables for the current Metastore under the parent
 // catalog and schema. The caller must be a Metastore admin or an owner of (or
@@ -1213,7 +1213,7 @@ func (a *TablesAPI) ListAll(ctx context.Context, request ListTablesRequest) ([]T
 	return response.Tables, nil
 }
 
-// List table summaries
+// List table summaries.
 //
 // Gets an array of summaries for tables for a schema and catalog within the
 // Metastore. The table summaries returned are either:
@@ -1228,7 +1228,7 @@ func (a *TablesAPI) TableSummaries(ctx context.Context, request TableSummariesRe
 	return a.impl.TableSummaries(ctx, request)
 }
 
-// Update a table
+// Update a table.
 //
 // Updates a table in the specified catalog and schema. The caller must be the
 // owner of have the USAGE privilege on the parent catalog and schema, or, if

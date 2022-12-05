@@ -11,22 +11,22 @@ import (
 // tokens for a particular user.
 type TokenManagementService interface {
 
-	// Create on-behalf token
+	// Create on-behalf token.
 	//
 	// Creates a token on behalf of a service principal.
 	CreateOboToken(ctx context.Context, request CreateOboTokenRequest) (*CreateOboTokenResponse, error)
 
-	// Delete a token
+	// Delete a token.
 	//
 	// Deletes a token, specified by its ID.
 	DeleteToken(ctx context.Context, request DeleteToken) error
 
-	// Get token info
+	// Get token info.
 	//
 	// Gets information about a token, specified by its ID.
 	GetTokenInfo(ctx context.Context, request GetTokenInfo) (*TokenInfo, error)
 
-	// List all tokens
+	// List all tokens.
 	//
 	// Lists all tokens associated with the specified workspace or user.
 	//

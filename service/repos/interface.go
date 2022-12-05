@@ -18,24 +18,24 @@ import (
 // control, collaboration, and CI/CD.
 type ReposService interface {
 
-	// Create a repo
+	// Create a repo.
 	//
 	// Creates a repo in the workspace and links it to the remote Git repo
 	// specified. Note that repos created programmatically must be linked to a
 	// remote Git repo, unlike repos created in the browser.
 	Create(ctx context.Context, request CreateRepo) (*RepoInfo, error)
 
-	// Delete a repo
+	// Delete a repo.
 	//
 	// Deletes the specified repo.
 	Delete(ctx context.Context, request Delete) error
 
-	// Get a repo
+	// Get a repo.
 	//
 	// Returns the repo with the given repo ID.
 	Get(ctx context.Context, request Get) (*RepoInfo, error)
 
-	// Get repos
+	// Get repos.
 	//
 	// Returns repos that the calling user has Manage permissions on. Results
 	// are paginated with each page containing twenty repos.
@@ -43,7 +43,7 @@ type ReposService interface {
 	// Use ListAll() to get all RepoInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request List) (*ListReposResponse, error)
 
-	// Update a repo
+	// Update a repo.
 	//
 	// Updates the repo to a different branch or tag, or updates the repo to the
 	// latest commit on the same branch.

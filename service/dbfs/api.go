@@ -37,7 +37,7 @@ func (a *DbfsAPI) Impl() DbfsService {
 	return a.impl
 }
 
-// Append data block
+// Append data block.
 //
 // Appends a block of data to the stream specified by the input handle. If the
 // handle does not exist, this call will throw an exception with
@@ -49,7 +49,7 @@ func (a *DbfsAPI) AddBlock(ctx context.Context, request AddBlock) error {
 	return a.impl.AddBlock(ctx, request)
 }
 
-// Close the stream
+// Close the stream.
 //
 // Closes the stream specified by the input handle. If the handle does not
 // exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
@@ -57,7 +57,7 @@ func (a *DbfsAPI) Close(ctx context.Context, request Close) error {
 	return a.impl.Close(ctx, request)
 }
 
-// Close the stream
+// Close the stream.
 //
 // Closes the stream specified by the input handle. If the handle does not
 // exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
@@ -67,7 +67,7 @@ func (a *DbfsAPI) CloseByHandle(ctx context.Context, handle int64) error {
 	})
 }
 
-// Open a stream
+// Open a stream.
 //
 // "Opens a stream to write to a file and returns a handle to this stream. There
 // is a 10 minute idle timeout on this handle. If a file or directory already
@@ -83,7 +83,7 @@ func (a *DbfsAPI) Create(ctx context.Context, request Create) (*CreateResponse, 
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a file/directory
+// Delete a file/directory.
 //
 // Delete the file or directory (optionally recursively delete all files in the
 // directory). This call throws an exception with `IO_ERROR` if the path is a
@@ -107,7 +107,7 @@ func (a *DbfsAPI) Delete(ctx context.Context, request Delete) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Get the information of a file or directory
+// Get the information of a file or directory.
 //
 // Gets the file information for a file or directory. If the file or directory
 // does not exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
@@ -115,7 +115,7 @@ func (a *DbfsAPI) GetStatus(ctx context.Context, request GetStatus) (*FileInfo, 
 	return a.impl.GetStatus(ctx, request)
 }
 
-// Get the information of a file or directory
+// Get the information of a file or directory.
 //
 // Gets the file information for a file or directory. If the file or directory
 // does not exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
@@ -125,7 +125,7 @@ func (a *DbfsAPI) GetStatusByPath(ctx context.Context, path string) (*FileInfo, 
 	})
 }
 
-// List directory contents or file details
+// List directory contents or file details.
 //
 // List the contents of a directory, or details of the file. If the file or
 // directory does not exist, this call throws an exception with
@@ -148,7 +148,7 @@ func (a *DbfsAPI) ListAll(ctx context.Context, request List) ([]FileInfo, error)
 	return response.Files, nil
 }
 
-// List directory contents or file details
+// List directory contents or file details.
 //
 // List the contents of a directory, or details of the file. If the file or
 // directory does not exist, this call throws an exception with
@@ -167,7 +167,7 @@ func (a *DbfsAPI) ListByPath(ctx context.Context, path string) (*ListStatusRespo
 	})
 }
 
-// Create a directory
+// Create a directory.
 //
 // Creates the given directory and necessary parent directories if they do not
 // exist. If a file (not a directory) exists at any prefix of the input path,
@@ -178,7 +178,7 @@ func (a *DbfsAPI) Mkdirs(ctx context.Context, request MkDirs) error {
 	return a.impl.Mkdirs(ctx, request)
 }
 
-// Create a directory
+// Create a directory.
 //
 // Creates the given directory and necessary parent directories if they do not
 // exist. If a file (not a directory) exists at any prefix of the input path,
@@ -191,7 +191,7 @@ func (a *DbfsAPI) MkdirsByPath(ctx context.Context, path string) error {
 	})
 }
 
-// Move a file
+// Move a file.
 //
 // Moves a file from one location to another location within DBFS. If the source
 // file does not exist, this call throws an exception with
@@ -202,7 +202,7 @@ func (a *DbfsAPI) Move(ctx context.Context, request Move) error {
 	return a.impl.Move(ctx, request)
 }
 
-// Upload a file
+// Upload a file.
 //
 // Uploads a file through the use of multipart form post. It is mainly used for
 // streaming uploads, but can also be used as a convenient single call for data
@@ -220,7 +220,7 @@ func (a *DbfsAPI) Put(ctx context.Context, request Put) error {
 	return a.impl.Put(ctx, request)
 }
 
-// Get the contents of a file
+// Get the contents of a file.
 //
 // "Returns the contents of a file. If the file does not exist, this call throws
 // an exception with `RESOURCE_DOES_NOT_EXIST`. If the path is a directory, the

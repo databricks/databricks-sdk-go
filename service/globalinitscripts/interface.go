@@ -18,22 +18,22 @@ import (
 // code.
 type GlobalInitScriptsService interface {
 
-	// Create init script
+	// Create init script.
 	//
 	// Creates a new global init script in this workspace.
 	CreateScript(ctx context.Context, request GlobalInitScriptCreateRequest) (*CreateScriptResponse, error)
 
-	// Delete init script
+	// Delete init script.
 	//
 	// Deletes a global init script.
 	DeleteScript(ctx context.Context, request DeleteScript) error
 
-	// Get an init script
+	// Get an init script.
 	//
 	// Gets all the details of a script, including its Base64-encoded contents.
 	GetScript(ctx context.Context, request GetScript) (*GlobalInitScriptDetailsWithContent, error)
 
-	// Get init scripts
+	// Get init scripts.
 	//
 	// "Get a list of all global init scripts for this workspace. This returns
 	// all properties for each script but **not** the script contents. To
@@ -43,7 +43,7 @@ type GlobalInitScriptsService interface {
 	// Use ListScriptsAll() to get all GlobalInitScriptDetails instances
 	ListScripts(ctx context.Context) (*ListGlobalInitScriptsResponse, error)
 
-	// Update init script
+	// Update init script.
 	//
 	// Updates a global init script, specifying only the fields to change. All
 	// fields are optional. Unspecified fields retain their current value.

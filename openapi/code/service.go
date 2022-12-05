@@ -178,8 +178,16 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		name = filepath.Base(path)
 	}
 	description := op.Description
-	if op.Summary != "" {
-		description = fmt.Sprintf("%s\n\n%s", op.Summary, description)
+	summary := strings.TrimSpace(op.Summary)
+	// merge summary into description
+	if summary != "" {
+		// add a dot to the end of the summary, so that it could be extracted
+		// in templated with [*Named.Summary], separating from the rest of
+		// description.
+		if !strings.HasSuffix(summary, ".") {
+			summary += "."
+		}
+		description = fmt.Sprintf("%s\n\n%s", summary, description)
 	}
 	return &Method{
 		Named:             Named{name, description},

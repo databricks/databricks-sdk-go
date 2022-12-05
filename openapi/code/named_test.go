@@ -47,6 +47,26 @@ func TestCommentFromDescriptionWithSummaryAndBlankLines(t *testing.T) {
 		"\n\t "), n.Comment("    // ", 80))
 }
 
+func TestSentencesFromDescription(t *testing.T) {
+	n := Named{Description: strings.Join([]string{
+		"Databricks Lakehouse.",
+		"",
+		`A data lakehouse unifies the best of data warehouses and data lakes 
+		in one simple platform to handle all your data, analytics and AI use 
+		cases.`,
+	}, "\n")}
+	assert.Equal(t, "Databricks Lakehouse.", n.Summary())
+	assert.Equal(t, "A data lakehouse unifies the best of data "+
+		"warehouses and data lakes in one simple platform to "+
+		"handle all your data, analytics and AI use cases.",
+		n.DescriptionWithoutSummary())
+
+	assert.Equal(t, "", (&Named{}).Summary())
+	assert.Equal(t, "", (&Named{}).DescriptionWithoutSummary())
+	assert.Equal(t, "Foo.", (&Named{Description: "Foo"}).Summary())
+	assert.Equal(t, "", (&Named{Description: "Foo"}).DescriptionWithoutSummary())
+}
+
 func TestNonConflictingCamelNames(t *testing.T) {
 	n := Named{Name: "Import"}
 	assert.True(t, n.IsNameReserved())

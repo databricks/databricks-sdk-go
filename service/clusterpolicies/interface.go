@@ -32,30 +32,30 @@ import (
 // access to all policies.
 type ClusterPoliciesService interface {
 
-	// Create a new policy
+	// Create a new policy.
 	//
 	// Creates a new policy with prescribed settings.
 	Create(ctx context.Context, request CreatePolicy) (*CreatePolicyResponse, error)
 
-	// Delete a cluster policy
+	// Delete a cluster policy.
 	//
 	// Delete a policy for a cluster. Clusters governed by this policy can still
 	// run, but cannot be edited.
 	Delete(ctx context.Context, request DeletePolicy) error
 
-	// Update a cluster policy
+	// Update a cluster policy.
 	//
 	// Update an existing policy for cluster. This operation may make some
 	// clusters governed by the previous policy invalid.
 	Edit(ctx context.Context, request EditPolicy) error
 
-	// Get entity
+	// Get entity.
 	//
 	// Get a cluster policy entity. Creation and editing is available to admins
 	// only.
 	Get(ctx context.Context, request Get) (*Policy, error)
 
-	// Get a cluster policy
+	// Get a cluster policy.
 	//
 	// Returns a list of policies accessible by the requesting user.
 	//

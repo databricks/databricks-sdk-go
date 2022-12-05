@@ -37,7 +37,7 @@ func (a *PermissionsAPI) Impl() PermissionsService {
 	return a.impl
 }
 
-// Get object permissions
+// Get object permissions.
 //
 // Gets the permission of an object. Objects can inherit permissions from their
 // parent objects or root objects.
@@ -45,7 +45,7 @@ func (a *PermissionsAPI) Get(ctx context.Context, request Get) (*ObjectPermissio
 	return a.impl.Get(ctx, request)
 }
 
-// Get object permissions
+// Get object permissions.
 //
 // Gets the permission of an object. Objects can inherit permissions from their
 // parent objects or root objects.
@@ -56,14 +56,14 @@ func (a *PermissionsAPI) GetByRequestObjectTypeAndRequestObjectId(ctx context.Co
 	})
 }
 
-// Get permission levels
+// Get permission levels.
 //
 // Gets the permission levels that a user can have on an object.
 func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPermissionLevels) (*GetPermissionLevelsResponse, error) {
 	return a.impl.GetPermissionLevels(ctx, request)
 }
 
-// Get permission levels
+// Get permission levels.
 //
 // Gets the permission levels that a user can have on an object.
 func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error) {
@@ -73,7 +73,7 @@ func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectI
 	})
 }
 
-// Set permissions
+// Set permissions.
 //
 // Sets permissions on object. Objects can inherit permissions from their parent
 // objects and root objects.
@@ -81,7 +81,7 @@ func (a *PermissionsAPI) Set(ctx context.Context, request PermissionsRequest) er
 	return a.impl.Set(ctx, request)
 }
 
-// Update permission
+// Update permission.
 //
 // Updates the permissions on an object.
 func (a *PermissionsAPI) Update(ctx context.Context, request PermissionsRequest) error {
@@ -115,14 +115,14 @@ func (a *WorkspaceAssignmentAPI) Impl() WorkspaceAssignmentService {
 	return a.impl
 }
 
-// Create permission assignments
+// Create permission assignments.
 //
 // Create new permission assignments for the specified account and workspace.
 func (a *WorkspaceAssignmentAPI) Create(ctx context.Context, request CreateWorkspaceAssignments) (*WorkspaceAssignmentsCreated, error) {
 	return a.impl.Create(ctx, request)
 }
 
-// Delete permissions assignment
+// Delete permissions assignment.
 //
 // Deletes the workspace permissions assignment for a given account and
 // workspace using the specified service principal.
@@ -130,7 +130,7 @@ func (a *WorkspaceAssignmentAPI) Delete(ctx context.Context, request DeleteWorks
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete permissions assignment
+// Delete permissions assignment.
 //
 // Deletes the workspace permissions assignment for a given account and
 // workspace using the specified service principal.
@@ -141,7 +141,7 @@ func (a *WorkspaceAssignmentAPI) DeleteByWorkspaceIdAndPrincipalId(ctx context.C
 	})
 }
 
-// List workspace permissions
+// List workspace permissions.
 //
 // Get an array of workspace permissions for the specified account and
 // workspace.
@@ -149,7 +149,7 @@ func (a *WorkspaceAssignmentAPI) Get(ctx context.Context, request GetWorkspaceAs
 	return a.impl.Get(ctx, request)
 }
 
-// List workspace permissions
+// List workspace permissions.
 //
 // Get an array of workspace permissions for the specified account and
 // workspace.
@@ -159,7 +159,7 @@ func (a *WorkspaceAssignmentAPI) GetByWorkspaceId(ctx context.Context, workspace
 	})
 }
 
-// Get permission assignments
+// Get permission assignments.
 //
 // Get the permission assignments for the specified Databricks Account and
 // Databricks Workspace.
@@ -173,7 +173,7 @@ func (a *WorkspaceAssignmentAPI) ListAll(ctx context.Context, request ListWorksp
 	return response.PermissionAssignments, nil
 }
 
-// Get permission assignments
+// Get permission assignments.
 //
 // Get the permission assignments for the specified Databricks Account and
 // Databricks Workspace.
@@ -183,7 +183,7 @@ func (a *WorkspaceAssignmentAPI) ListByWorkspaceId(ctx context.Context, workspac
 	})
 }
 
-// Update permissions assignment
+// Update permissions assignment.
 //
 // Updates the workspace permissions assignment for a given account and
 // workspace using the specified service principal.

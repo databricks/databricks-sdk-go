@@ -20,14 +20,14 @@ import (
 // users from reading secrets.
 type SecretsService interface {
 
-	// Create a new secret scope
+	// Create a new secret scope.
 	//
 	// The scope name must consist of alphanumeric characters, dashes,
 	// underscores, and periods, and may not exceed 128 characters. The maximum
 	// number of scopes in a workspace is 100.
 	CreateScope(ctx context.Context, request CreateScope) error
 
-	// Delete an ACL
+	// Delete an ACL.
 	//
 	// Deletes the given ACL on the given scope.
 	//
@@ -37,7 +37,7 @@ type SecretsService interface {
 	// to make this API call.
 	DeleteAcl(ctx context.Context, request DeleteAcl) error
 
-	// Delete a secret scope
+	// Delete a secret scope.
 	//
 	// Deletes a secret scope.
 	//
@@ -46,7 +46,7 @@ type SecretsService interface {
 	// call.
 	DeleteScope(ctx context.Context, request DeleteScope) error
 
-	// Delete a secret
+	// Delete a secret.
 	//
 	// Deletes the secret stored in this secret scope. You must have `WRITE` or
 	// `MANAGE` permission on the secret scope.
@@ -56,7 +56,7 @@ type SecretsService interface {
 	// to make this API call.
 	DeleteSecret(ctx context.Context, request DeleteSecret) error
 
-	// Get secret ACL details
+	// Get secret ACL details.
 	//
 	// Gets the details about the given ACL, such as the group and permission.
 	// Users must have the `MANAGE` permission to invoke this API.
@@ -66,7 +66,7 @@ type SecretsService interface {
 	// call.
 	GetAcl(ctx context.Context, request GetAcl) (*AclItem, error)
 
-	// Lists ACLs
+	// Lists ACLs.
 	//
 	// List the ACLs for a given secret scope. Users must have the `MANAGE`
 	// permission to invoke this API.
@@ -78,7 +78,7 @@ type SecretsService interface {
 	// Use ListAclsAll() to get all AclItem instances
 	ListAcls(ctx context.Context, request ListAcls) (*ListAclsResponse, error)
 
-	// List all scopes
+	// List all scopes.
 	//
 	// Lists all secret scopes available in the workspace.
 	//
@@ -88,7 +88,7 @@ type SecretsService interface {
 	// Use ListScopesAll() to get all SecretScope instances
 	ListScopes(ctx context.Context) (*ListScopesResponse, error)
 
-	// List secret keys
+	// List secret keys.
 	//
 	// Lists the secret keys that are stored at this scope. This is a
 	// metadata-only operation; secret data cannot be retrieved using this API.
@@ -102,7 +102,7 @@ type SecretsService interface {
 	// Use ListSecretsAll() to get all SecretMetadata instances
 	ListSecrets(ctx context.Context, request ListSecrets) (*ListSecretsResponse, error)
 
-	// Create/update an ACL
+	// Create/update an ACL.
 	//
 	// Creates or overwrites the Access Control List (ACL) associated with the
 	// given principal (user or group) on the specified scope point.
@@ -133,7 +133,7 @@ type SecretsService interface {
 	// this API call.
 	PutAcl(ctx context.Context, request PutAcl) error
 
-	// Add a secret
+	// Add a secret.
 	//
 	// Inserts a secret under the provided scope with the given name. If a
 	// secret already exists with the same name, this command overwrites the

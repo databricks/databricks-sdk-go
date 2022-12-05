@@ -10,7 +10,7 @@ import (
 // to include a users credentials every time to read a file.
 type DbfsService interface {
 
-	// Append data block
+	// Append data block.
 	//
 	// Appends a block of data to the stream specified by the input handle. If
 	// the handle does not exist, this call will throw an exception with
@@ -20,13 +20,13 @@ type DbfsService interface {
 	// `MAX_BLOCK_SIZE_EXCEEDED`.
 	AddBlock(ctx context.Context, request AddBlock) error
 
-	// Close the stream
+	// Close the stream.
 	//
 	// Closes the stream specified by the input handle. If the handle does not
 	// exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
 	Close(ctx context.Context, request Close) error
 
-	// Open a stream
+	// Open a stream.
 	//
 	// "Opens a stream to write to a file and returns a handle to this stream.
 	// There is a 10 minute idle timeout on this handle. If a file or directory
@@ -40,7 +40,7 @@ type DbfsService interface {
 	// the handle you have.
 	Create(ctx context.Context, request Create) (*CreateResponse, error)
 
-	// Delete a file/directory
+	// Delete a file/directory.
 	//
 	// Delete the file or directory (optionally recursively delete all files in
 	// the directory). This call throws an exception with `IO_ERROR` if the path
@@ -62,14 +62,14 @@ type DbfsService interface {
 	// periodic delete jobs.
 	Delete(ctx context.Context, request Delete) error
 
-	// Get the information of a file or directory
+	// Get the information of a file or directory.
 	//
 	// Gets the file information for a file or directory. If the file or
 	// directory does not exist, this call throws an exception with
 	// `RESOURCE_DOES_NOT_EXIST`.
 	GetStatus(ctx context.Context, request GetStatus) (*FileInfo, error)
 
-	// List directory contents or file details
+	// List directory contents or file details.
 	//
 	// List the contents of a directory, or details of the file. If the file or
 	// directory does not exist, this call throws an exception with
@@ -87,7 +87,7 @@ type DbfsService interface {
 	// Use ListAll() to get all FileInfo instances
 	List(ctx context.Context, request List) (*ListStatusResponse, error)
 
-	// Create a directory
+	// Create a directory.
 	//
 	// Creates the given directory and necessary parent directories if they do
 	// not exist. If a file (not a directory) exists at any prefix of the input
@@ -96,7 +96,7 @@ type DbfsService interface {
 	// some of the necessary parent directories.
 	Mkdirs(ctx context.Context, request MkDirs) error
 
-	// Move a file
+	// Move a file.
 	//
 	// Moves a file from one location to another location within DBFS. If the
 	// source file does not exist, this call throws an exception with
@@ -106,7 +106,7 @@ type DbfsService interface {
 	// all files.",
 	Move(ctx context.Context, request Move) error
 
-	// Upload a file
+	// Upload a file.
 	//
 	// Uploads a file through the use of multipart form post. It is mainly used
 	// for streaming uploads, but can also be used as a convenient single call
@@ -122,7 +122,7 @@ type DbfsService interface {
 	// see :method:create, :method:addBlock, :method:close.
 	Put(ctx context.Context, request Put) error
 
-	// Get the contents of a file
+	// Get the contents of a file.
 	//
 	// "Returns the contents of a file. If the file does not exist, this call
 	// throws an exception with `RESOURCE_DOES_NOT_EXIST`. If the path is a

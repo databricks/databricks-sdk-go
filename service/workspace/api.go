@@ -42,7 +42,7 @@ func (a *WorkspaceAPI) Impl() WorkspaceService {
 	return a.impl
 }
 
-// Delete a workspace object
+// Delete a workspace object.
 //
 // Deletes an object or a directory (and optionally recursively deletes all
 // objects in the directory). * If `path` does not exist, this call returns an
@@ -56,7 +56,7 @@ func (a *WorkspaceAPI) Delete(ctx context.Context, request Delete) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Export a notebook
+// Export a notebook.
 //
 // Exports a notebook or the contents of an entire directory.
 //
@@ -70,7 +70,7 @@ func (a *WorkspaceAPI) Export(ctx context.Context, request Export) (*ExportRespo
 	return a.impl.Export(ctx, request)
 }
 
-// Get status
+// Get status.
 //
 // Gets the status of an object or a directory. If `path` does not exist, this
 // call returns an error `RESOURCE_DOES_NOT_EXIST`.
@@ -78,7 +78,7 @@ func (a *WorkspaceAPI) GetStatus(ctx context.Context, request GetStatus) (*Objec
 	return a.impl.GetStatus(ctx, request)
 }
 
-// Get status
+// Get status.
 //
 // Gets the status of an object or a directory. If `path` does not exist, this
 // call returns an error `RESOURCE_DOES_NOT_EXIST`.
@@ -88,7 +88,7 @@ func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*Objec
 	})
 }
 
-// Import a notebook
+// Import a notebook.
 //
 // Imports a notebook or the contents of an entire directory. If `path` already
 // exists and `overwrite` is set to `false`, this call returns an error
@@ -98,7 +98,7 @@ func (a *WorkspaceAPI) Import(ctx context.Context, request Import) error {
 	return a.impl.Import(ctx, request)
 }
 
-// List contents
+// List contents.
 //
 // Lists the contents of a directory, or the object if it is not a directory.If
 // the input path does not exist, this call returns an error
@@ -166,7 +166,7 @@ func (a *WorkspaceAPI) GetByPath(ctx context.Context, name string) (*ObjectInfo,
 	return &alternatives[0], nil
 }
 
-// Create a directory
+// Create a directory.
 //
 // Creates the specified directory (and necessary parent directories if they do
 // not exist). If there is an object (not a directory) at any prefix of the
@@ -178,7 +178,7 @@ func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request Mkdirs) error {
 	return a.impl.Mkdirs(ctx, request)
 }
 
-// Create a directory
+// Create a directory.
 //
 // Creates the specified directory (and necessary parent directories if they do
 // not exist). If there is an object (not a directory) at any prefix of the

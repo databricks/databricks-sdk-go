@@ -13,7 +13,7 @@ import (
 // info](https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html).
 type GitCredentialsService interface {
 
-	// Create a credential entry
+	// Create a credential entry.
 	//
 	// Creates a Git credential entry for the user. Only one Git credential per
 	// user is supported, so any attempts to create credentials if an entry
@@ -21,17 +21,17 @@ type GitCredentialsService interface {
 	// credentials, or the DELETE endpoint to delete existing credentials.
 	Create(ctx context.Context, request CreateCredentials) (*CreateCredentialsResponse, error)
 
-	// Delete a credential
+	// Delete a credential.
 	//
 	// Deletes the specified Git credential.
 	Delete(ctx context.Context, request Delete) error
 
-	// Get a credential entry
+	// Get a credential entry.
 	//
 	// Gets the Git credential with the specified credential ID.
 	Get(ctx context.Context, request Get) (*CredentialInfo, error)
 
-	// Get Git credentials
+	// Get Git credentials.
 	//
 	// Lists the calling user's Git credentials. One credential per user is
 	// supported.
@@ -39,7 +39,7 @@ type GitCredentialsService interface {
 	// Use ListAll() to get all CredentialInfo instances
 	List(ctx context.Context) (*GetCredentialsResponse, error)
 
-	// Update a credential
+	// Update a credential.
 	//
 	// Updates the specified Git credential.
 	Update(ctx context.Context, request UpdateCredentials) error

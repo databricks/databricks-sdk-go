@@ -53,7 +53,7 @@ func (a *PipelinesAPI) Impl() PipelinesService {
 	return a.impl
 }
 
-// Create a pipeline
+// Create a pipeline.
 //
 // Creates a new data processing pipeline based on the requested configuration.
 // If successful, this method returns the ID of the new pipeline.
@@ -61,14 +61,14 @@ func (a *PipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipelin
 	return a.impl.CreatePipeline(ctx, request)
 }
 
-// Delete a pipeline
+// Delete a pipeline.
 //
 // Deletes a pipeline.
 func (a *PipelinesAPI) DeletePipeline(ctx context.Context, request DeletePipeline) error {
 	return a.impl.DeletePipeline(ctx, request)
 }
 
-// Delete a pipeline
+// Delete a pipeline.
 //
 // Deletes a pipeline.
 func (a *PipelinesAPI) DeletePipelineByPipelineId(ctx context.Context, pipelineId string) error {
@@ -77,7 +77,7 @@ func (a *PipelinesAPI) DeletePipelineByPipelineId(ctx context.Context, pipelineI
 	})
 }
 
-// Get a pipeline
+// Get a pipeline.
 func (a *PipelinesAPI) GetPipeline(ctx context.Context, request GetPipeline) (*GetPipelineResponse, error) {
 	return a.impl.GetPipeline(ctx, request)
 }
@@ -124,7 +124,7 @@ func (a *PipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipeline GetPi
 	})
 }
 
-// Get a pipeline
+// Get a pipeline.
 func (a *PipelinesAPI) GetPipelineByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
 	return a.impl.GetPipeline(ctx, GetPipeline{
 		PipelineId: pipelineId,
@@ -137,14 +137,14 @@ func (a *PipelinesAPI) GetPipelineByPipelineIdAndWait(ctx context.Context, pipel
 	}, options...)
 }
 
-// Get a pipeline update
+// Get a pipeline update.
 //
 // Gets an update from an active pipeline.
 func (a *PipelinesAPI) GetUpdate(ctx context.Context, request GetUpdate) (*GetUpdateResponse, error) {
 	return a.impl.GetUpdate(ctx, request)
 }
 
-// Get a pipeline update
+// Get a pipeline update.
 //
 // Gets an update from an active pipeline.
 func (a *PipelinesAPI) GetUpdateByPipelineIdAndUpdateId(ctx context.Context, pipelineId string, updateId string) (*GetUpdateResponse, error) {
@@ -154,7 +154,7 @@ func (a *PipelinesAPI) GetUpdateByPipelineIdAndUpdateId(ctx context.Context, pip
 	})
 }
 
-// List pipelines
+// List pipelines.
 //
 // Lists pipelines defined in the Delta Live Tables system.
 //
@@ -234,14 +234,14 @@ func (a *PipelinesAPI) GetByName(ctx context.Context, name string) (*PipelineSta
 	return &alternatives[0], nil
 }
 
-// List pipeline updates
+// List pipeline updates.
 //
 // List updates for an active pipeline.
 func (a *PipelinesAPI) ListUpdates(ctx context.Context, request ListUpdates) (*ListUpdatesResponse, error) {
 	return a.impl.ListUpdates(ctx, request)
 }
 
-// List pipeline updates
+// List pipeline updates.
 //
 // List updates for an active pipeline.
 func (a *PipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId string) (*ListUpdatesResponse, error) {
@@ -250,7 +250,7 @@ func (a *PipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId s
 	})
 }
 
-// Reset a pipeline
+// Reset a pipeline.
 //
 // Resets a pipeline.
 func (a *PipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipeline) error {
@@ -299,14 +299,14 @@ func (a *PipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipeline R
 	})
 }
 
-// Queue a pipeline update
+// Queue a pipeline update.
 //
 // Starts or queues a pipeline update.
 func (a *PipelinesAPI) StartUpdate(ctx context.Context, request StartUpdate) (*StartUpdateResponse, error) {
 	return a.impl.StartUpdate(ctx, request)
 }
 
-// Stop a pipeline
+// Stop a pipeline.
 //
 // Stops a pipeline.
 func (a *PipelinesAPI) StopPipeline(ctx context.Context, request StopPipeline) error {
@@ -355,7 +355,7 @@ func (a *PipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipeline Sto
 	})
 }
 
-// Edit a pipeline
+// Edit a pipeline.
 //
 // Updates a pipeline with the supplied configuration.
 func (a *PipelinesAPI) UpdatePipeline(ctx context.Context, request EditPipeline) error {

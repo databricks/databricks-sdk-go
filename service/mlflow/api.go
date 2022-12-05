@@ -36,7 +36,7 @@ func (a *ExperimentsAPI) Impl() ExperimentsService {
 	return a.impl
 }
 
-// Create experiment
+// Create experiment.
 //
 // Creates an experiment with a name. Returns the ID of the newly created
 // experiment. Validates that another experiment with the same name does not
@@ -48,7 +48,7 @@ func (a *ExperimentsAPI) Create(ctx context.Context, request CreateExperiment) (
 	return a.impl.Create(ctx, request)
 }
 
-// Delete an experiment
+// Delete an experiment.
 //
 // Marks an experiment and associated metadata, runs, metrics, params, and tags
 // for deletion. If the experiment uses FileStore, artifacts associated with
@@ -57,7 +57,7 @@ func (a *ExperimentsAPI) Delete(ctx context.Context, request DeleteExperiment) e
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete an experiment
+// Delete an experiment.
 //
 // Marks an experiment and associated metadata, runs, metrics, params, and tags
 // for deletion. If the experiment uses FileStore, artifacts associated with
@@ -68,14 +68,14 @@ func (a *ExperimentsAPI) DeleteByExperimentId(ctx context.Context, experimentId 
 	})
 }
 
-// Get an experiment
+// Get an experiment.
 //
 // Gets metadata for an experiment. This method works on deleted experiments.
 func (a *ExperimentsAPI) Get(ctx context.Context, request GetExperimentRequest) (*Experiment, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get an experiment
+// Get an experiment.
 //
 // Gets metadata for an experiment. This method works on deleted experiments.
 func (a *ExperimentsAPI) GetByExperimentId(ctx context.Context, experimentId string) (*Experiment, error) {
@@ -84,7 +84,7 @@ func (a *ExperimentsAPI) GetByExperimentId(ctx context.Context, experimentId str
 	})
 }
 
-// Get metadata
+// Get metadata.
 //
 // "Gets metadata for an experiment.
 //
@@ -99,7 +99,7 @@ func (a *ExperimentsAPI) GetByName(ctx context.Context, request GetByNameRequest
 	return a.impl.GetByName(ctx, request)
 }
 
-// Get metadata
+// Get metadata.
 //
 // "Gets metadata for an experiment.
 //
@@ -116,7 +116,7 @@ func (a *ExperimentsAPI) GetByNameByExperimentName(ctx context.Context, experime
 	})
 }
 
-// List experiments
+// List experiments.
 //
 // Gets a list of all experiments.
 //
@@ -143,7 +143,7 @@ func (a *ExperimentsAPI) ListAll(ctx context.Context, request ListExperimentsReq
 	return results, nil
 }
 
-// Restores an experiment
+// Restores an experiment.
 //
 // "Restore an experiment marked for deletion. This also restores\nassociated
 // metadata, runs, metrics, params, and tags. If experiment uses FileStore,
@@ -154,7 +154,7 @@ func (a *ExperimentsAPI) Restore(ctx context.Context, request RestoreExperiment)
 	return a.impl.Restore(ctx, request)
 }
 
-// Restores an experiment
+// Restores an experiment.
 //
 // "Restore an experiment marked for deletion. This also restores\nassociated
 // metadata, runs, metrics, params, and tags. If experiment uses FileStore,
@@ -167,7 +167,7 @@ func (a *ExperimentsAPI) RestoreByExperimentId(ctx context.Context, experimentId
 	})
 }
 
-// Search experiments
+// Search experiments.
 //
 // Searches for experiments that satisfy specified search criteria.
 //
@@ -194,7 +194,7 @@ func (a *ExperimentsAPI) SearchAll(ctx context.Context, request SearchExperiment
 	return results, nil
 }
 
-// Set a tag
+// Set a tag.
 //
 // Sets a tag on an experiment. Experiment tags are metadata that can be
 // updated.
@@ -202,7 +202,7 @@ func (a *ExperimentsAPI) SetExperimentTag(ctx context.Context, request SetExperi
 	return a.impl.SetExperimentTag(ctx, request)
 }
 
-// Update an experiment
+// Update an experiment.
 //
 // Updates experiment metadata.
 func (a *ExperimentsAPI) Update(ctx context.Context, request UpdateExperiment) error {
@@ -235,7 +235,7 @@ func (a *MLflowArtifactsAPI) Impl() MLflowArtifactsService {
 	return a.impl
 }
 
-// Get all artifacts
+// Get all artifacts.
 //
 // List artifacts for a run. Takes an optional `artifact_path` prefix. If it is
 // specified, the response contains only artifacts with the specified prefix.",
@@ -291,7 +291,7 @@ func (a *MLflowDatabricksAPI) Impl() MLflowDatabricksService {
 	return a.impl
 }
 
-// Get model
+// Get model.
 //
 // Get the details of a model. This is a Databricks Workspace version of the
 // [MLflow
@@ -302,7 +302,7 @@ func (a *MLflowDatabricksAPI) Get(ctx context.Context, request GetMLflowDatabric
 	return a.impl.Get(ctx, request)
 }
 
-// Get model
+// Get model.
 //
 // Get the details of a model. This is a Databricks Workspace version of the
 // [MLflow
@@ -315,7 +315,7 @@ func (a *MLflowDatabricksAPI) GetByName(ctx context.Context, name string) (*GetR
 	})
 }
 
-// Transition a stage
+// Transition a stage.
 //
 // Transition a model version's stage. This is a Databricks Workspace version of
 // the [MLflow
@@ -351,7 +351,7 @@ func (a *MLflowMetricsAPI) Impl() MLflowMetricsService {
 	return a.impl
 }
 
-// Get all history
+// Get all history.
 //
 // Gets a list of all values for the specified metric for a given run.
 func (a *MLflowMetricsAPI) GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error) {
@@ -384,7 +384,7 @@ func (a *MLflowRunsAPI) Impl() MLflowRunsService {
 	return a.impl
 }
 
-// Create a run
+// Create a run.
 //
 // Creates a new run within an experiment. A run is usually a single execution
 // of a machine learning or data ETL pipeline. MLflow uses runs to track the
@@ -394,14 +394,14 @@ func (a *MLflowRunsAPI) Create(ctx context.Context, request CreateRun) (*CreateR
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a run
+// Delete a run.
 //
 // Marks a run for deletion.
 func (a *MLflowRunsAPI) Delete(ctx context.Context, request DeleteRun) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a run
+// Delete a run.
 //
 // Marks a run for deletion.
 func (a *MLflowRunsAPI) DeleteByRunId(ctx context.Context, runId string) error {
@@ -410,7 +410,7 @@ func (a *MLflowRunsAPI) DeleteByRunId(ctx context.Context, runId string) error {
 	})
 }
 
-// Delete a tag
+// Delete a tag.
 //
 // Deletes a tag on a run. Tags are run metadata that can be updated during a
 // run and after a run completes.
@@ -418,7 +418,7 @@ func (a *MLflowRunsAPI) DeleteTag(ctx context.Context, request DeleteTag) error 
 	return a.impl.DeleteTag(ctx, request)
 }
 
-// Get a run
+// Get a run.
 //
 // "Gets the metadata, metrics, params, and tags for a run. In the case where
 // multiple metrics with the same key are logged for a run, return only the
@@ -430,7 +430,7 @@ func (a *MLflowRunsAPI) Get(ctx context.Context, request GetRunRequest) (*GetRun
 	return a.impl.Get(ctx, request)
 }
 
-// Log a batch
+// Log a batch.
 //
 // Logs a batch of metrics, params, and tags for a run. If any data failed to be
 // persisted, the server will respond with an error (non-200 status code).
@@ -473,7 +473,7 @@ func (a *MLflowRunsAPI) LogBatch(ctx context.Context, request LogBatch) error {
 	return a.impl.LogBatch(ctx, request)
 }
 
-// Log a metric
+// Log a metric.
 //
 // Logs a metric for a run. A metric is a key-value pair (string key, float
 // value) with an associated timestamp. Examples include the various metrics
@@ -482,7 +482,7 @@ func (a *MLflowRunsAPI) LogMetric(ctx context.Context, request LogMetric) error 
 	return a.impl.LogMetric(ctx, request)
 }
 
-// Log a model
+// Log a model.
 //
 // **NOTE:** Experimental: This API may change or be removed in a future release
 // without warning.
@@ -490,7 +490,7 @@ func (a *MLflowRunsAPI) LogModel(ctx context.Context, request LogModel) error {
 	return a.impl.LogModel(ctx, request)
 }
 
-// Log a param
+// Log a param.
 //
 // Logs a param used for a run. A param is a key-value pair (string key, string
 // value). Examples include hyperparameters used for ML model training and
@@ -500,14 +500,14 @@ func (a *MLflowRunsAPI) LogParameter(ctx context.Context, request LogParam) erro
 	return a.impl.LogParameter(ctx, request)
 }
 
-// Restore a run
+// Restore a run.
 //
 // Restores a deleted run.
 func (a *MLflowRunsAPI) Restore(ctx context.Context, request RestoreRun) error {
 	return a.impl.Restore(ctx, request)
 }
 
-// Restore a run
+// Restore a run.
 //
 // Restores a deleted run.
 func (a *MLflowRunsAPI) RestoreByRunId(ctx context.Context, runId string) error {
@@ -516,7 +516,7 @@ func (a *MLflowRunsAPI) RestoreByRunId(ctx context.Context, runId string) error 
 	})
 }
 
-// Search for runs
+// Search for runs.
 //
 // Searches for runs that satisfy expressions.
 //
@@ -545,7 +545,7 @@ func (a *MLflowRunsAPI) SearchAll(ctx context.Context, request SearchRuns) ([]Ru
 	return results, nil
 }
 
-// Set a tag
+// Set a tag.
 //
 // Sets a tag on a run. Tags are run metadata that can be updated during a run
 // and after a run completes.
@@ -553,7 +553,7 @@ func (a *MLflowRunsAPI) SetTag(ctx context.Context, request SetTag) error {
 	return a.impl.SetTag(ctx, request)
 }
 
-// Update a run
+// Update a run.
 //
 // Updates run metadata.
 func (a *MLflowRunsAPI) Update(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error) {
@@ -586,7 +586,7 @@ func (a *ModelVersionCommentsAPI) Impl() ModelVersionCommentsService {
 	return a.impl
 }
 
-// Post a comment
+// Post a comment.
 //
 // Posts a comment on a model version. A comment can be submitted either by a
 // user or programmatically to display relevant information about the model. For
@@ -595,14 +595,14 @@ func (a *ModelVersionCommentsAPI) Create(ctx context.Context, request CreateComm
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a comment
+// Delete a comment.
 //
 // Deletes a comment on a model version.
 func (a *ModelVersionCommentsAPI) Delete(ctx context.Context, request DeleteModelVersionCommentRequest) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a comment
+// Delete a comment.
 //
 // Deletes a comment on a model version.
 func (a *ModelVersionCommentsAPI) DeleteById(ctx context.Context, id string) error {
@@ -611,7 +611,7 @@ func (a *ModelVersionCommentsAPI) DeleteById(ctx context.Context, id string) err
 	})
 }
 
-// Update a comment
+// Update a comment.
 //
 // Post an edit to a comment on a model version.
 func (a *ModelVersionCommentsAPI) Update(ctx context.Context, request UpdateComment) (*UpdateResponse, error) {
@@ -644,7 +644,7 @@ func (a *ModelVersionsAPI) Impl() ModelVersionsService {
 	return a.impl
 }
 
-// Create a model version
+// Create a model version.
 //
 // Creates a model version.
 func (a *ModelVersionsAPI) Create(ctx context.Context, request CreateModelVersionRequest) (*CreateModelVersionResponse, error) {
@@ -658,28 +658,28 @@ func (a *ModelVersionsAPI) Delete(ctx context.Context, request DeleteModelVersio
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a model version tag
+// Delete a model version tag.
 //
 // Deletes a model version tag.
 func (a *ModelVersionsAPI) DeleteTag(ctx context.Context, request DeleteModelVersionTagRequest) error {
 	return a.impl.DeleteTag(ctx, request)
 }
 
-// Get a model version
+// Get a model version.
 //
 // Get a model version.
 func (a *ModelVersionsAPI) Get(ctx context.Context, request GetModelVersionRequest) (*GetModelVersionResponse, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get a model version URI
+// Get a model version URI.
 //
 // Gets a URI to download the model version.
 func (a *ModelVersionsAPI) GetDownloadUri(ctx context.Context, request GetModelVersionDownloadUriRequest) (*GetModelVersionDownloadUriResponse, error) {
 	return a.impl.GetDownloadUri(ctx, request)
 }
 
-// Searches model versions
+// Searches model versions.
 //
 // Searches for specific model versions based on the supplied __filter__.
 //
@@ -706,21 +706,21 @@ func (a *ModelVersionsAPI) SearchAll(ctx context.Context, request SearchModelVer
 	return results, nil
 }
 
-// Set a version tag
+// Set a version tag.
 //
 // Sets a model version tag.
 func (a *ModelVersionsAPI) SetTag(ctx context.Context, request SetModelVersionTagRequest) error {
 	return a.impl.SetTag(ctx, request)
 }
 
-// Transition a stage
+// Transition a stage.
 //
 // Transition to the next model stage.
 func (a *ModelVersionsAPI) TransitionStage(ctx context.Context, request TransitionModelVersionStage) (*TransitionModelVersionStageResponse, error) {
 	return a.impl.TransitionStage(ctx, request)
 }
 
-// Update model version
+// Update model version.
 //
 // Updates the model version.
 func (a *ModelVersionsAPI) Update(ctx context.Context, request UpdateModelVersionRequest) error {
@@ -753,7 +753,7 @@ func (a *RegisteredModelsAPI) Impl() RegisteredModelsService {
 	return a.impl
 }
 
-// Create a model
+// Create a model.
 //
 // Creates a new registered model with the name specified in the request body.
 //
@@ -763,14 +763,14 @@ func (a *RegisteredModelsAPI) Create(ctx context.Context, request CreateRegister
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a model
+// Delete a model.
 //
 // Deletes a registered model.
 func (a *RegisteredModelsAPI) Delete(ctx context.Context, request DeleteRegisteredModelRequest) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a model
+// Delete a model.
 //
 // Deletes a registered model.
 func (a *RegisteredModelsAPI) DeleteByName(ctx context.Context, name string) error {
@@ -779,21 +779,21 @@ func (a *RegisteredModelsAPI) DeleteByName(ctx context.Context, name string) err
 	})
 }
 
-// Delete a model tag
+// Delete a model tag.
 //
 // Deletes the tag for a registered model.
 func (a *RegisteredModelsAPI) DeleteTag(ctx context.Context, request DeleteRegisteredModelTagRequest) error {
 	return a.impl.DeleteTag(ctx, request)
 }
 
-// Get a model
+// Get a model.
 //
 // Gets the registered model that matches the specified ID.
 func (a *RegisteredModelsAPI) Get(ctx context.Context, request GetRegisteredModelRequest) (*GetRegisteredModelResponse, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get a model
+// Get a model.
 //
 // Gets the registered model that matches the specified ID.
 func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*GetRegisteredModelResponse, error) {
@@ -802,7 +802,7 @@ func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*GetR
 	})
 }
 
-// Get the latest version
+// Get the latest version.
 //
 // Gets the latest version of a registered model.
 //
@@ -815,7 +815,7 @@ func (a *RegisteredModelsAPI) GetLatestVersionsAll(ctx context.Context, request 
 	return response.ModelVersions, nil
 }
 
-// List models
+// List models.
 //
 // Lists all available registered models, up to the limit specified in
 // __max_results__.
@@ -843,14 +843,14 @@ func (a *RegisteredModelsAPI) ListAll(ctx context.Context, request ListRegistere
 	return results, nil
 }
 
-// Rename a model
+// Rename a model.
 //
 // Renames a registered model.
 func (a *RegisteredModelsAPI) Rename(ctx context.Context, request RenameRegisteredModelRequest) (*RenameRegisteredModelResponse, error) {
 	return a.impl.Rename(ctx, request)
 }
 
-// Search models
+// Search models.
 //
 // Search for registered models based on the specified __filter__.
 //
@@ -877,14 +877,14 @@ func (a *RegisteredModelsAPI) SearchAll(ctx context.Context, request SearchRegis
 	return results, nil
 }
 
-// Set a tag
+// Set a tag.
 //
 // Sets a tag on a registered model.
 func (a *RegisteredModelsAPI) SetTag(ctx context.Context, request SetRegisteredModelTagRequest) error {
 	return a.impl.SetTag(ctx, request)
 }
 
-// Update model
+// Update model.
 //
 // Updates a registered model.
 func (a *RegisteredModelsAPI) Update(ctx context.Context, request UpdateRegisteredModelRequest) error {
@@ -917,7 +917,7 @@ func (a *RegistryWebhooksAPI) Impl() RegistryWebhooksService {
 	return a.impl
 }
 
-// Create a webhook
+// Create a webhook.
 //
 // **NOTE**: This endpoint is in Public Preview.
 //
@@ -926,7 +926,7 @@ func (a *RegistryWebhooksAPI) Create(ctx context.Context, request CreateRegistry
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a webhook
+// Delete a webhook.
 //
 // **NOTE:** This endpoint is in Public Preview.
 //
@@ -935,7 +935,7 @@ func (a *RegistryWebhooksAPI) Delete(ctx context.Context, request DeleteRegistry
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a webhook
+// Delete a webhook.
 //
 // **NOTE:** This endpoint is in Public Preview.
 //
@@ -946,7 +946,7 @@ func (a *RegistryWebhooksAPI) DeleteById(ctx context.Context, id string) error {
 	})
 }
 
-// List registry webhooks
+// List registry webhooks.
 //
 // **NOTE:** This endpoint is in Public Preview.
 //
@@ -975,7 +975,7 @@ func (a *RegistryWebhooksAPI) ListAll(ctx context.Context, request ListRegistryW
 	return results, nil
 }
 
-// Test a webhook
+// Test a webhook.
 //
 // **NOTE:** This endpoint is in Public Preview.
 //
@@ -984,7 +984,7 @@ func (a *RegistryWebhooksAPI) Test(ctx context.Context, request TestRegistryWebh
 	return a.impl.Test(ctx, request)
 }
 
-// Update a webhook
+// Update a webhook.
 //
 // **NOTE:** This endpoint is in Public Preview.
 //
@@ -1019,28 +1019,28 @@ func (a *TransitionRequestsAPI) Impl() TransitionRequestsService {
 	return a.impl
 }
 
-// Approve transition requests
+// Approve transition requests.
 //
 // Approves a model version stage transition request.
 func (a *TransitionRequestsAPI) Approve(ctx context.Context, request ApproveTransitionRequest) (*ApproveResponse, error) {
 	return a.impl.Approve(ctx, request)
 }
 
-// Make a transition request
+// Make a transition request.
 //
 // Creates a model version stage transition request.
 func (a *TransitionRequestsAPI) Create(ctx context.Context, request CreateTransitionRequest) (*CreateResponse, error) {
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a ransition request
+// Delete a ransition request.
 //
 // Cancels a model version stage transition request.
 func (a *TransitionRequestsAPI) Delete(ctx context.Context, request DeleteTransitionRequestRequest) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// List transition requests
+// List transition requests.
 //
 // Gets a list of all open stage transition requests for the model version.
 //
@@ -1053,7 +1053,7 @@ func (a *TransitionRequestsAPI) ListAll(ctx context.Context, request ListTransit
 	return response.Requests, nil
 }
 
-// Reject a transition request
+// Reject a transition request.
 //
 // Rejects a model version stage transition request.
 func (a *TransitionRequestsAPI) Reject(ctx context.Context, request RejectTransitionRequest) (*RejectResponse, error) {

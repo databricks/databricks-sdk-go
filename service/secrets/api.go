@@ -47,7 +47,7 @@ func (a *SecretsAPI) Impl() SecretsService {
 	return a.impl
 }
 
-// Create a new secret scope
+// Create a new secret scope.
 //
 // The scope name must consist of alphanumeric characters, dashes, underscores,
 // and periods, and may not exceed 128 characters. The maximum number of scopes
@@ -56,7 +56,7 @@ func (a *SecretsAPI) CreateScope(ctx context.Context, request CreateScope) error
 	return a.impl.CreateScope(ctx, request)
 }
 
-// Delete an ACL
+// Delete an ACL.
 //
 // Deletes the given ACL on the given scope.
 //
@@ -68,7 +68,7 @@ func (a *SecretsAPI) DeleteAcl(ctx context.Context, request DeleteAcl) error {
 	return a.impl.DeleteAcl(ctx, request)
 }
 
-// Delete a secret scope
+// Delete a secret scope.
 //
 // Deletes a secret scope.
 //
@@ -79,7 +79,7 @@ func (a *SecretsAPI) DeleteScope(ctx context.Context, request DeleteScope) error
 	return a.impl.DeleteScope(ctx, request)
 }
 
-// Delete a secret scope
+// Delete a secret scope.
 //
 // Deletes a secret scope.
 //
@@ -92,7 +92,7 @@ func (a *SecretsAPI) DeleteScopeByScope(ctx context.Context, scope string) error
 	})
 }
 
-// Delete a secret
+// Delete a secret.
 //
 // Deletes the secret stored in this secret scope. You must have `WRITE` or
 // `MANAGE` permission on the secret scope.
@@ -104,7 +104,7 @@ func (a *SecretsAPI) DeleteSecret(ctx context.Context, request DeleteSecret) err
 	return a.impl.DeleteSecret(ctx, request)
 }
 
-// Get secret ACL details
+// Get secret ACL details.
 //
 // Gets the details about the given ACL, such as the group and permission. Users
 // must have the `MANAGE` permission to invoke this API.
@@ -116,7 +116,7 @@ func (a *SecretsAPI) GetAcl(ctx context.Context, request GetAcl) (*AclItem, erro
 	return a.impl.GetAcl(ctx, request)
 }
 
-// Lists ACLs
+// Lists ACLs.
 //
 // List the ACLs for a given secret scope. Users must have the `MANAGE`
 // permission to invoke this API.
@@ -134,7 +134,7 @@ func (a *SecretsAPI) ListAclsAll(ctx context.Context, request ListAcls) ([]AclIt
 	return response.Items, nil
 }
 
-// Lists ACLs
+// Lists ACLs.
 //
 // List the ACLs for a given secret scope. Users must have the `MANAGE`
 // permission to invoke this API.
@@ -148,7 +148,7 @@ func (a *SecretsAPI) ListAclsByScope(ctx context.Context, scope string) (*ListAc
 	})
 }
 
-// List all scopes
+// List all scopes.
 //
 // Lists all secret scopes available in the workspace.
 //
@@ -164,7 +164,7 @@ func (a *SecretsAPI) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
 	return response.Scopes, nil
 }
 
-// List secret keys
+// List secret keys.
 //
 // Lists the secret keys that are stored at this scope. This is a metadata-only
 // operation; secret data cannot be retrieved using this API. Users need the
@@ -184,7 +184,7 @@ func (a *SecretsAPI) ListSecretsAll(ctx context.Context, request ListSecrets) ([
 	return response.Secrets, nil
 }
 
-// List secret keys
+// List secret keys.
 //
 // Lists the secret keys that are stored at this scope. This is a metadata-only
 // operation; secret data cannot be retrieved using this API. Users need the
@@ -200,7 +200,7 @@ func (a *SecretsAPI) ListSecretsByScope(ctx context.Context, scope string) (*Lis
 	})
 }
 
-// Create/update an ACL
+// Create/update an ACL.
 //
 // Creates or overwrites the Access Control List (ACL) associated with the given
 // principal (user or group) on the specified scope point.
@@ -232,7 +232,7 @@ func (a *SecretsAPI) PutAcl(ctx context.Context, request PutAcl) error {
 	return a.impl.PutAcl(ctx, request)
 }
 
-// Add a secret
+// Add a secret.
 //
 // Inserts a secret under the provided scope with the given name. If a secret
 // already exists with the same name, this command overwrites the existing

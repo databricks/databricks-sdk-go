@@ -10,7 +10,7 @@ import (
 // and date range. This feature works with all account types.
 type BillableUsageService interface {
 
-	// Return billable usage logs
+	// Return billable usage logs.
 	//
 	// Returns billable usage logs in CSV format for the specified account and
 	// date range. For the data schema, see [CSV file
@@ -23,23 +23,23 @@ type BillableUsageService interface {
 // a budget for a period. They can also retrieve the status of each budget.
 type BudgetsService interface {
 
-	// Create a new budget
+	// Create a new budget.
 	//
 	// Creates a new budget in the specified account.
 	Create(ctx context.Context, request WrappedBudget) (*WrappedBudgetWithStatus, error)
 
-	// Delete budget
+	// Delete budget.
 	//
 	// Deletes the budget specified by its UUID.
 	Delete(ctx context.Context, request DeleteBudgetRequest) error
 
-	// Get budget and its status
+	// Get budget and its status.
 	//
 	// Gets the budget specified by its UUID, including noncumulative status for
 	// each day that the budget is configured to include.
 	Get(ctx context.Context, request GetBudgetRequest) (*WrappedBudgetWithStatus, error)
 
-	// Get all budgets
+	// Get all budgets.
 	//
 	// Gets all budgets associated with this account, including noncumulative
 	// status for each day that the budget is configured to include.
@@ -47,7 +47,7 @@ type BudgetsService interface {
 	// Use ListAll() to get all BudgetWithStatus instances
 	List(ctx context.Context) (*BudgetList, error)
 
-	// Modify budget
+	// Modify budget.
 	//
 	// Modifies a budget in this account. Budget properties are completely
 	// overwritten.
@@ -120,7 +120,7 @@ type BudgetsService interface {
 // minutes.
 type LogDeliveryService interface {
 
-	// Create a new log delivery configuration
+	// Create a new log delivery configuration.
 	//
 	// Creates a new Databricks log delivery configuration to enable delivery of
 	// the specified type of logs to your storage location. This requires that
@@ -150,13 +150,13 @@ type LogDeliveryService interface {
 	// configuration](#operation/patch-log-delivery-config-status)).
 	Create(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error)
 
-	// Get log delivery configuration
+	// Get log delivery configuration.
 	//
 	// Gets a Databricks log delivery configuration object for an account, both
 	// specified by ID.
 	Get(ctx context.Context, request GetLogDeliveryRequest) (*WrappedLogDeliveryConfiguration, error)
 
-	// Get all log delivery configurations
+	// Get all log delivery configurations.
 	//
 	// Gets all Databricks log delivery configurations associated with an
 	// account specified by ID.
@@ -164,7 +164,7 @@ type LogDeliveryService interface {
 	// Use ListAll() to get all LogDeliveryConfiguration instances
 	List(ctx context.Context, request ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error)
 
-	// Enable or disable log delivery configuration
+	// Enable or disable log delivery configuration.
 	//
 	// Enables or disables a log delivery configuration. Deletion of delivery
 	// configurations is not supported, so disable log delivery configurations

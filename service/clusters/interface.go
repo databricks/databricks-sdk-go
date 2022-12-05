@@ -35,13 +35,13 @@ import (
 // administrator can pin a cluster to the cluster list.
 type ClustersService interface {
 
-	// Change cluster owner
+	// Change cluster owner.
 	//
 	// Change the owner of the cluster. You must be an admin to perform this
 	// operation.
 	ChangeOwner(ctx context.Context, request ChangeClusterOwner) error
 
-	// Create new cluster
+	// Create new cluster.
 	//
 	// Creates a new Spark cluster. This method will acquire new instances from
 	// the cloud provider if necessary. This method is asynchronous; the
@@ -58,7 +58,7 @@ type ClustersService interface {
 	// an informative error message.
 	Create(ctx context.Context, request CreateCluster) (*CreateClusterResponse, error)
 
-	// Terminate cluster
+	// Terminate cluster.
 	//
 	// Terminates the Spark cluster with the specified ID. The cluster is
 	// removed asynchronously. Once the termination has completed, the cluster
@@ -66,7 +66,7 @@ type ClustersService interface {
 	// `TERMINATING` or `TERMINATED` state, nothing will happen.
 	Delete(ctx context.Context, request DeleteCluster) error
 
-	// Update cluster configuration
+	// Update cluster configuration.
 	//
 	// Updates the configuration of a cluster to match the provided attributes
 	// and size. A cluster can be updated if it is in a `RUNNING` or
@@ -83,7 +83,7 @@ type ClustersService interface {
 	// Clusters created by the Databricks Jobs service cannot be edited.
 	Edit(ctx context.Context, request EditCluster) error
 
-	// List cluster activity events
+	// List cluster activity events.
 	//
 	// Retrieves a list of events about the activity of a cluster. This API is
 	// paginated. If there are more events to read, the response includes all
@@ -92,14 +92,14 @@ type ClustersService interface {
 	// Use EventsAll() to get all ClusterEvent instances, which will iterate over every result page.
 	Events(ctx context.Context, request GetEvents) (*GetEventsResponse, error)
 
-	// Get cluster info
+	// Get cluster info.
 	//
 	// "Retrieves the information for a cluster given its identifier. Clusters
 	// can be described while they are running, or up to 60 days after they are
 	// terminated.
 	Get(ctx context.Context, request Get) (*ClusterInfo, error)
 
-	// List all clusters
+	// List all clusters.
 	//
 	// Returns information about all pinned clusters, currently active clusters,
 	// up to 70 of the most recently terminated interactive clusters in the past
@@ -115,19 +115,19 @@ type ClustersService interface {
 	// Use ListAll() to get all ClusterInfo instances
 	List(ctx context.Context, request List) (*ListClustersResponse, error)
 
-	// List node types
+	// List node types.
 	//
 	// Returns a list of supported Spark node types. These node types can be
 	// used to launch a cluster.
 	ListNodeTypes(ctx context.Context) (*ListNodeTypesResponse, error)
 
-	// List availability zones
+	// List availability zones.
 	//
 	// Returns a list of availability zones where clusters can be created in
 	// (For example, us-west-2a). These zones can be used to launch a cluster.
 	ListZones(ctx context.Context) (*ListAvailableZonesResponse, error)
 
-	// Permanently delete cluster
+	// Permanently delete cluster.
 	//
 	// Permanently deletes a Spark cluster. This cluster is terminated and
 	// resources are asynchronously removed.
@@ -137,32 +137,32 @@ type ClustersService interface {
 	// permanently deleted clusters.
 	PermanentDelete(ctx context.Context, request PermanentDeleteCluster) error
 
-	// Pin cluster
+	// Pin cluster.
 	//
 	// Pinning a cluster ensures that the cluster will always be returned by the
 	// ListClusters API. Pinning a cluster that is already pinned will have no
 	// effect. This API can only be called by workspace admins.
 	Pin(ctx context.Context, request PinCluster) error
 
-	// Resize cluster
+	// Resize cluster.
 	//
 	// Resizes a cluster to have a desired number of workers. This will fail
 	// unless the cluster is in a `RUNNING` state.
 	Resize(ctx context.Context, request ResizeCluster) error
 
-	// Restart cluster
+	// Restart cluster.
 	//
 	// Restarts a Spark cluster with the supplied ID. If the cluster is not
 	// currently in a `RUNNING` state, nothing will happen.
 	Restart(ctx context.Context, request RestartCluster) error
 
-	// List available Spark versions
+	// List available Spark versions.
 	//
 	// Returns the list of available Spark versions. These versions can be used
 	// to launch a cluster.
 	SparkVersions(ctx context.Context) (*GetSparkVersionsResponse, error)
 
-	// Start terminated cluster
+	// Start terminated cluster.
 	//
 	// Starts a terminated Spark cluster with the supplied ID. This works
 	// similar to `createCluster` except:
@@ -175,7 +175,7 @@ type ClustersService interface {
 	// started.
 	Start(ctx context.Context, request StartCluster) error
 
-	// Unpin cluster
+	// Unpin cluster.
 	//
 	// Unpinning a cluster will allow the cluster to eventually be removed from
 	// the ListClusters API. Unpinning a cluster that is not pinned will have no
@@ -190,13 +190,13 @@ type ClustersService interface {
 // using instance profiles for more information.
 type InstanceProfilesService interface {
 
-	// Register an instance profile
+	// Register an instance profile.
 	//
 	// In the UI, you can select the instance profile when launching clusters.
 	// This API is only available to admin users.
 	Add(ctx context.Context, request AddInstanceProfile) error
 
-	// Edit an instance profile
+	// Edit an instance profile.
 	//
 	// The only supported field to change is the optional IAM role ARN
 	// associated with the instance profile. It is required to specify the IAM
@@ -214,7 +214,7 @@ type InstanceProfilesService interface {
 	// This API is only available to admin users.
 	Edit(ctx context.Context, request InstanceProfile) error
 
-	// List available instance profiles
+	// List available instance profiles.
 	//
 	// List the instance profiles that the calling user can use to launch a
 	// cluster.
@@ -224,7 +224,7 @@ type InstanceProfilesService interface {
 	// Use ListAll() to get all InstanceProfile instances
 	List(ctx context.Context) (*ListInstanceProfilesResponse, error)
 
-	// Remove the instance profile
+	// Remove the instance profile.
 	//
 	// Remove the instance profile with the provided ARN. Existing clusters with
 	// this instance profile will continue to function.

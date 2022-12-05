@@ -10,7 +10,7 @@ import (
 // to authenticate and access Databricks REST APIs.
 type TokensService interface {
 
-	// Create a user token
+	// Create a user token.
 	//
 	// Creates and returns a token for a user. If this call is made through
 	// token authentication, it creates a token with the same client ID as the
@@ -18,7 +18,7 @@ type TokensService interface {
 	// returns an error **QUOTA_EXCEEDED**.
 	Create(ctx context.Context, request CreateTokenRequest) (*CreateTokenResponse, error)
 
-	// Revoke token
+	// Revoke token.
 	//
 	// Revokes an access token.
 	//
@@ -26,7 +26,7 @@ type TokensService interface {
 	// **RESOURCE_DOES_NOT_EXIST**.
 	Delete(ctx context.Context, request RevokeTokenRequest) error
 
-	// List tokens
+	// List tokens.
 	//
 	// Lists all the valid tokens for a user-workspace pair.
 	//

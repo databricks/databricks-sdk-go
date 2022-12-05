@@ -41,7 +41,7 @@ func (a *AlertsAPI) Impl() AlertsService {
 	return a.impl
 }
 
-// Create an alert
+// Create an alert.
 //
 // Creates an alert. An alert is a Databricks SQL object that periodically runs
 // a query, evaluates a condition of its result, and notifies users or alert
@@ -50,7 +50,7 @@ func (a *AlertsAPI) CreateAlert(ctx context.Context, request EditAlert) (*Alert,
 	return a.impl.CreateAlert(ctx, request)
 }
 
-// Create a refresh schedule
+// Create a refresh schedule.
 //
 // Creates a new refresh schedule for an alert.
 //
@@ -59,7 +59,7 @@ func (a *AlertsAPI) CreateSchedule(ctx context.Context, request CreateRefreshSch
 	return a.impl.CreateSchedule(ctx, request)
 }
 
-// Delete an alert
+// Delete an alert.
 //
 // Deletes an alert. Deleted alerts are no longer accessible and cannot be
 // restored. **Note:** Unlike queries and dashboards, alerts cannot be moved to
@@ -68,7 +68,7 @@ func (a *AlertsAPI) DeleteAlert(ctx context.Context, request DeleteAlertRequest)
 	return a.impl.DeleteAlert(ctx, request)
 }
 
-// Delete an alert
+// Delete an alert.
 //
 // Deletes an alert. Deleted alerts are no longer accessible and cannot be
 // restored. **Note:** Unlike queries and dashboards, alerts cannot be moved to
@@ -79,7 +79,7 @@ func (a *AlertsAPI) DeleteAlertByAlertId(ctx context.Context, alertId string) er
 	})
 }
 
-// Delete a refresh schedule
+// Delete a refresh schedule.
 //
 // Deletes an alert's refresh schedule. The refresh schedule specifies when to
 // refresh and evaluate the associated query result.
@@ -87,7 +87,7 @@ func (a *AlertsAPI) DeleteSchedule(ctx context.Context, request DeleteScheduleRe
 	return a.impl.DeleteSchedule(ctx, request)
 }
 
-// Delete a refresh schedule
+// Delete a refresh schedule.
 //
 // Deletes an alert's refresh schedule. The refresh schedule specifies when to
 // refresh and evaluate the associated query result.
@@ -98,14 +98,14 @@ func (a *AlertsAPI) DeleteScheduleByAlertIdAndScheduleId(ctx context.Context, al
 	})
 }
 
-// Get an alert
+// Get an alert.
 //
 // Gets an alert.
 func (a *AlertsAPI) GetAlert(ctx context.Context, request GetAlertRequest) (*Alert, error) {
 	return a.impl.GetAlert(ctx, request)
 }
 
-// Get an alert
+// Get an alert.
 //
 // Gets an alert.
 func (a *AlertsAPI) GetAlertByAlertId(ctx context.Context, alertId string) (*Alert, error) {
@@ -114,7 +114,7 @@ func (a *AlertsAPI) GetAlertByAlertId(ctx context.Context, alertId string) (*Ale
 	})
 }
 
-// Get an alert's subscriptions
+// Get an alert's subscriptions.
 //
 // Get the subscriptions for an alert. An alert subscription represents exactly
 // one recipient being notified whenever the alert is triggered. The alert
@@ -124,7 +124,7 @@ func (a *AlertsAPI) GetSubscriptions(ctx context.Context, request GetSubscriptio
 	return a.impl.GetSubscriptions(ctx, request)
 }
 
-// Get an alert's subscriptions
+// Get an alert's subscriptions.
 //
 // Get the subscriptions for an alert. An alert subscription represents exactly
 // one recipient being notified whenever the alert is triggered. The alert
@@ -136,7 +136,7 @@ func (a *AlertsAPI) GetSubscriptionsByAlertId(ctx context.Context, alertId strin
 	})
 }
 
-// Get alerts
+// Get alerts.
 //
 // Gets a list of alerts.
 func (a *AlertsAPI) ListAlerts(ctx context.Context) ([]Alert, error) {
@@ -196,7 +196,7 @@ func (a *AlertsAPI) GetByName(ctx context.Context, name string) (*Alert, error) 
 	return &alternatives[0], nil
 }
 
-// Get refresh schedules
+// Get refresh schedules.
 //
 // Gets the refresh schedules for the specified alert. Alerts can have refresh
 // schedules that specify when to refresh and evaluate the associated query
@@ -209,7 +209,7 @@ func (a *AlertsAPI) ListSchedules(ctx context.Context, request ListSchedulesRequ
 	return a.impl.ListSchedules(ctx, request)
 }
 
-// Get refresh schedules
+// Get refresh schedules.
 //
 // Gets the refresh schedules for the specified alert. Alerts can have refresh
 // schedules that specify when to refresh and evaluate the associated query
@@ -224,19 +224,19 @@ func (a *AlertsAPI) ListSchedulesByAlertId(ctx context.Context, alertId string) 
 	})
 }
 
-// Subscribe to an alert
+// Subscribe to an alert.
 func (a *AlertsAPI) Subscribe(ctx context.Context, request CreateSubscription) (*Subscription, error) {
 	return a.impl.Subscribe(ctx, request)
 }
 
-// Unsubscribe to an alert
+// Unsubscribe to an alert.
 //
 // Unsubscribes a user or a destination to an alert.
 func (a *AlertsAPI) Unsubscribe(ctx context.Context, request UnsubscribeRequest) error {
 	return a.impl.Unsubscribe(ctx, request)
 }
 
-// Unsubscribe to an alert
+// Unsubscribe to an alert.
 //
 // Unsubscribes a user or a destination to an alert.
 func (a *AlertsAPI) UnsubscribeByAlertIdAndSubscriptionId(ctx context.Context, alertId string, subscriptionId string) error {
@@ -246,7 +246,7 @@ func (a *AlertsAPI) UnsubscribeByAlertIdAndSubscriptionId(ctx context.Context, a
 	})
 }
 
-// Update an alert
+// Update an alert.
 //
 // Updates an alert.
 func (a *AlertsAPI) UpdateAlert(ctx context.Context, request EditAlert) error {
@@ -284,12 +284,12 @@ func (a *DashboardsAPI) Impl() DashboardsService {
 	return a.impl
 }
 
-// Create a dashboard object
+// Create a dashboard object.
 func (a *DashboardsAPI) CreateDashboard(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error) {
 	return a.impl.CreateDashboard(ctx, request)
 }
 
-// Remove a dashboard
+// Remove a dashboard.
 //
 // Moves a dashboard to the trash. Trashed dashboards do not appear in list
 // views or searches, and cannot be shared.
@@ -297,7 +297,7 @@ func (a *DashboardsAPI) DeleteDashboard(ctx context.Context, request DeleteDashb
 	return a.impl.DeleteDashboard(ctx, request)
 }
 
-// Remove a dashboard
+// Remove a dashboard.
 //
 // Moves a dashboard to the trash. Trashed dashboards do not appear in list
 // views or searches, and cannot be shared.
@@ -307,7 +307,7 @@ func (a *DashboardsAPI) DeleteDashboardByDashboardId(ctx context.Context, dashbo
 	})
 }
 
-// Retrieve a definition
+// Retrieve a definition.
 //
 // Returns a JSON representation of a dashboard object, including its
 // visualization and query objects.
@@ -315,7 +315,7 @@ func (a *DashboardsAPI) GetDashboard(ctx context.Context, request GetDashboardRe
 	return a.impl.GetDashboard(ctx, request)
 }
 
-// Retrieve a definition
+// Retrieve a definition.
 //
 // Returns a JSON representation of a dashboard object, including its
 // visualization and query objects.
@@ -325,7 +325,7 @@ func (a *DashboardsAPI) GetDashboardByDashboardId(ctx context.Context, dashboard
 	})
 }
 
-// Get dashboard objects
+// Get dashboard objects.
 //
 // Fetch a paginated list of dashboard objects.
 //
@@ -411,7 +411,7 @@ func (a *DashboardsAPI) GetByName(ctx context.Context, name string) (*Dashboard,
 	return &alternatives[0], nil
 }
 
-// Restore a dashboard
+// Restore a dashboard.
 //
 // A restored dashboard appears in list views and searches and can be shared.
 func (a *DashboardsAPI) RestoreDashboard(ctx context.Context, request RestoreDashboardRequest) error {
@@ -454,7 +454,7 @@ func (a *DataSourcesAPI) Impl() DataSourcesService {
 	return a.impl
 }
 
-// Get a list of SQL warehouses
+// Get a list of SQL warehouses.
 //
 // Retrieves a full list of SQL warehouses available in this workspace. All
 // fields that appear in this API response are enumerated for clarity. However,
@@ -555,7 +555,7 @@ func (a *DbsqlPermissionsAPI) Impl() DbsqlPermissionsService {
 	return a.impl
 }
 
-// Get object ACL
+// Get object ACL.
 //
 // Gets a JSON representation of the access control list (ACL) for a specified
 // object.
@@ -563,7 +563,7 @@ func (a *DbsqlPermissionsAPI) GetPermissions(ctx context.Context, request GetPer
 	return a.impl.GetPermissions(ctx, request)
 }
 
-// Get object ACL
+// Get object ACL.
 //
 // Gets a JSON representation of the access control list (ACL) for a specified
 // object.
@@ -574,7 +574,7 @@ func (a *DbsqlPermissionsAPI) GetPermissionsByObjectTypeAndObjectId(ctx context.
 	})
 }
 
-// Set object ACL
+// Set object ACL.
 //
 // Sets the access control list (ACL) for a specified object. This operation
 // will complete rewrite the ACL.
@@ -582,7 +582,7 @@ func (a *DbsqlPermissionsAPI) SetPermissions(ctx context.Context, request SetPer
 	return a.impl.SetPermissions(ctx, request)
 }
 
-// Transfer object ownership
+// Transfer object ownership.
 //
 // Transfers ownership of a dashboard, query, or alert to an active user.
 // Requires an admin API key.
@@ -619,7 +619,7 @@ func (a *QueriesAPI) Impl() QueriesService {
 	return a.impl
 }
 
-// Create a new query definition
+// Create a new query definition.
 //
 // Creates a new query definition. Queries created with this endpoint belong to
 // the authenticated user making the request.
@@ -634,7 +634,7 @@ func (a *QueriesAPI) CreateQuery(ctx context.Context, request QueryPostContent) 
 	return a.impl.CreateQuery(ctx, request)
 }
 
-// Delete a query
+// Delete a query.
 //
 // Moves a query to the trash. Trashed queries immediately disappear from
 // searches and list views, and they cannot be used for alerts. The trash is
@@ -643,7 +643,7 @@ func (a *QueriesAPI) DeleteQuery(ctx context.Context, request DeleteQueryRequest
 	return a.impl.DeleteQuery(ctx, request)
 }
 
-// Delete a query
+// Delete a query.
 //
 // Moves a query to the trash. Trashed queries immediately disappear from
 // searches and list views, and they cannot be used for alerts. The trash is
@@ -672,7 +672,7 @@ func (a *QueriesAPI) GetQueryByQueryId(ctx context.Context, queryId string) (*Qu
 	})
 }
 
-// Get a list of queries
+// Get a list of queries.
 //
 // Gets a list of queries. Optionally, this list can be filtered by a search
 // term.
@@ -759,7 +759,7 @@ func (a *QueriesAPI) GetByName(ctx context.Context, name string) (*Query, error)
 	return &alternatives[0], nil
 }
 
-// Restore a query
+// Restore a query.
 //
 // Restore a query that has been moved to the trash. A restored query appears in
 // list views and searches. You can use restored queries for alerts.
@@ -767,7 +767,7 @@ func (a *QueriesAPI) RestoreQuery(ctx context.Context, request RestoreQueryReque
 	return a.impl.RestoreQuery(ctx, request)
 }
 
-// Change a query definition
+// Change a query definition.
 //
 // Modify this query definition.
 //

@@ -26,28 +26,28 @@ import (
 // Instance provider billing does apply. See pricing.
 type InstancePoolsService interface {
 
-	// Create a new instance pool
+	// Create a new instance pool.
 	//
 	// Creates a new instance pool using idle and ready-to-use cloud instances.
 	Create(ctx context.Context, request CreateInstancePool) (*CreateInstancePoolResponse, error)
 
-	// Delete an instance pool
+	// Delete an instance pool.
 	//
 	// Deletes the instance pool permanently. The idle instances in the pool are
 	// terminated asynchronously.
 	Delete(ctx context.Context, request DeleteInstancePool) error
 
-	// Edit an existing instance pool
+	// Edit an existing instance pool.
 	//
 	// Modifies the configuration of an existing instance pool.
 	Edit(ctx context.Context, request EditInstancePool) error
 
-	// Get instance pool information
+	// Get instance pool information.
 	//
 	// Retrieve the information for an instance pool based on its identifier.
 	Get(ctx context.Context, request Get) (*GetInstancePool, error)
 
-	// List instance pool info
+	// List instance pool info.
 	//
 	// Gets a list of instance pools with their statistics.
 	//

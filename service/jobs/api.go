@@ -55,7 +55,7 @@ func (a *JobsAPI) Impl() JobsService {
 	return a.impl
 }
 
-// Cancel all runs of a job
+// Cancel all runs of a job.
 //
 // Cancels all active runs of a job. The runs are canceled asynchronously, so it
 // doesn't prevent new runs from being started.
@@ -63,7 +63,7 @@ func (a *JobsAPI) CancelAllRuns(ctx context.Context, request CancelAllRuns) erro
 	return a.impl.CancelAllRuns(ctx, request)
 }
 
-// Cancel all runs of a job
+// Cancel all runs of a job.
 //
 // Cancels all active runs of a job. The runs are canceled asynchronously, so it
 // doesn't prevent new runs from being started.
@@ -73,7 +73,7 @@ func (a *JobsAPI) CancelAllRunsByJobId(ctx context.Context, jobId int64) error {
 	})
 }
 
-// Cancel a job run
+// Cancel a job run.
 //
 // Cancels a job run. The run is canceled asynchronously, so it may still be
 // running when this request completes.
@@ -126,7 +126,7 @@ func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, opt
 	})
 }
 
-// Cancel a job run
+// Cancel a job run.
 //
 // Cancels a job run. The run is canceled asynchronously, so it may still be
 // running when this request completes.
@@ -142,21 +142,21 @@ func (a *JobsAPI) CancelRunByRunIdAndWait(ctx context.Context, runId int64, opti
 	}, options...)
 }
 
-// Create a new job
+// Create a new job.
 //
 // Create a new job.
 func (a *JobsAPI) Create(ctx context.Context, request CreateJob) (*CreateResponse, error) {
 	return a.impl.Create(ctx, request)
 }
 
-// Delete a job
+// Delete a job.
 //
 // Deletes a job.
 func (a *JobsAPI) Delete(ctx context.Context, request DeleteJob) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete a job
+// Delete a job.
 //
 // Deletes a job.
 func (a *JobsAPI) DeleteByJobId(ctx context.Context, jobId int64) error {
@@ -165,14 +165,14 @@ func (a *JobsAPI) DeleteByJobId(ctx context.Context, jobId int64) error {
 	})
 }
 
-// Delete a job run
+// Delete a job run.
 //
 // Deletes a non-active run. Returns an error if the run is active.
 func (a *JobsAPI) DeleteRun(ctx context.Context, request DeleteRun) error {
 	return a.impl.DeleteRun(ctx, request)
 }
 
-// Delete a job run
+// Delete a job run.
 //
 // Deletes a non-active run. Returns an error if the run is active.
 func (a *JobsAPI) DeleteRunByRunId(ctx context.Context, runId int64) error {
@@ -181,21 +181,21 @@ func (a *JobsAPI) DeleteRunByRunId(ctx context.Context, runId int64) error {
 	})
 }
 
-// Export and retrieve a job run
+// Export and retrieve a job run.
 //
 // Export and retrieve the job run task.
 func (a *JobsAPI) ExportRun(ctx context.Context, request ExportRun) (*ExportRunOutput, error) {
 	return a.impl.ExportRun(ctx, request)
 }
 
-// Get a single job
+// Get a single job.
 //
 // Retrieves the details for a single job.
 func (a *JobsAPI) Get(ctx context.Context, request Get) (*Job, error) {
 	return a.impl.Get(ctx, request)
 }
 
-// Get a single job
+// Get a single job.
 //
 // Retrieves the details for a single job.
 func (a *JobsAPI) GetByJobId(ctx context.Context, jobId int64) (*Job, error) {
@@ -204,7 +204,7 @@ func (a *JobsAPI) GetByJobId(ctx context.Context, jobId int64) (*Job, error) {
 	})
 }
 
-// Get a single job run
+// Get a single job run.
 //
 // Retrieve the metadata of a run.
 func (a *JobsAPI) GetRun(ctx context.Context, request GetRun) (*Run, error) {
@@ -256,7 +256,7 @@ func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRun GetRun, options ...r
 	})
 }
 
-// Get the output for a single run
+// Get the output for a single run.
 //
 // Retrieve the output and metadata of a single task run. When a notebook task
 // returns a value through the `dbutils.notebook.exit()` call, you can use this
@@ -272,7 +272,7 @@ func (a *JobsAPI) GetRunOutput(ctx context.Context, request GetRunOutput) (*RunO
 	return a.impl.GetRunOutput(ctx, request)
 }
 
-// Get the output for a single run
+// Get the output for a single run.
 //
 // Retrieve the output and metadata of a single task run. When a notebook task
 // returns a value through the `dbutils.notebook.exit()` call, you can use this
@@ -290,7 +290,7 @@ func (a *JobsAPI) GetRunOutputByRunId(ctx context.Context, runId int64) (*RunOut
 	})
 }
 
-// List all jobs
+// List all jobs.
 //
 // Retrieves a list of jobs.
 //
@@ -375,7 +375,7 @@ func (a *JobsAPI) GetBySettingsName(ctx context.Context, name string) (*Job, err
 	return &alternatives[0], nil
 }
 
-// List runs for a job
+// List runs for a job.
 //
 // List runs in descending order by start time.
 //
@@ -407,7 +407,7 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRuns) ([]Run, err
 	return results, nil
 }
 
-// Repair a job run
+// Repair a job run.
 //
 // Re-run one or more tasks. Tasks are re-run as part of the original job run.
 // They use the current job and task settings, and can be viewed in the history
@@ -461,7 +461,7 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, opt
 	})
 }
 
-// Overwrites all settings for a job
+// Overwrites all settings for a job.
 //
 // Overwrites all the settings for a specific job. Use the Update endpoint to
 // update job settings partially.
@@ -469,7 +469,7 @@ func (a *JobsAPI) Reset(ctx context.Context, request ResetJob) error {
 	return a.impl.Reset(ctx, request)
 }
 
-// Trigger a new job run
+// Trigger a new job run.
 //
 // Run a job and return the `run_id` of the triggered run.
 func (a *JobsAPI) RunNow(ctx context.Context, request RunNow) (*RunNowResponse, error) {
@@ -521,7 +521,7 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...r
 	})
 }
 
-// Create and trigger a one-time run
+// Create and trigger a one-time run.
 //
 // Submit a one-time run. This endpoint allows you to submit a workload directly
 // without creating a job. Runs submitted using this endpoint don’t display in
@@ -576,7 +576,7 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, option
 	})
 }
 
-// Partially updates a job
+// Partially updates a job.
 //
 // Add, update, or remove specific settings of an existing job. Use the ResetJob
 // to overwrite all job settings.

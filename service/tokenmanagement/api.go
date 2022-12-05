@@ -40,21 +40,21 @@ func (a *TokenManagementAPI) Impl() TokenManagementService {
 	return a.impl
 }
 
-// Create on-behalf token
+// Create on-behalf token.
 //
 // Creates a token on behalf of a service principal.
 func (a *TokenManagementAPI) CreateOboToken(ctx context.Context, request CreateOboTokenRequest) (*CreateOboTokenResponse, error) {
 	return a.impl.CreateOboToken(ctx, request)
 }
 
-// Delete a token
+// Delete a token.
 //
 // Deletes a token, specified by its ID.
 func (a *TokenManagementAPI) DeleteToken(ctx context.Context, request DeleteToken) error {
 	return a.impl.DeleteToken(ctx, request)
 }
 
-// Delete a token
+// Delete a token.
 //
 // Deletes a token, specified by its ID.
 func (a *TokenManagementAPI) DeleteTokenByTokenId(ctx context.Context, tokenId string) error {
@@ -63,14 +63,14 @@ func (a *TokenManagementAPI) DeleteTokenByTokenId(ctx context.Context, tokenId s
 	})
 }
 
-// Get token info
+// Get token info.
 //
 // Gets information about a token, specified by its ID.
 func (a *TokenManagementAPI) GetTokenInfo(ctx context.Context, request GetTokenInfo) (*TokenInfo, error) {
 	return a.impl.GetTokenInfo(ctx, request)
 }
 
-// Get token info
+// Get token info.
 //
 // Gets information about a token, specified by its ID.
 func (a *TokenManagementAPI) GetTokenInfoByTokenId(ctx context.Context, tokenId string) (*TokenInfo, error) {
@@ -79,7 +79,7 @@ func (a *TokenManagementAPI) GetTokenInfoByTokenId(ctx context.Context, tokenId 
 	})
 }
 
-// List all tokens
+// List all tokens.
 //
 // Lists all tokens associated with the specified workspace or user.
 //

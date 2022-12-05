@@ -13,4 +13,7 @@ var HelperFuncs = template.FuncMap{
 	"trim_prefix": func(left, right string) string {
 		return strings.TrimPrefix(left, right)
 	},
+	"without": func(left, right string) string {
+		return strings.ReplaceAll(right, left, "")
+	},
 }

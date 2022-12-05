@@ -15,35 +15,35 @@ import (
 // members inherit permissions that are assigned to their group.
 type AccountGroupsService interface {
 
-	// Create a new group
+	// Create a new group.
 	//
 	// Creates a group in the Databricks Account with a unique name, using the
 	// supplied group details.
 	Create(ctx context.Context, request Group) (*Group, error)
 
-	// Delete a group
+	// Delete a group.
 	//
 	// Deletes a group from the Databricks Account.
 	Delete(ctx context.Context, request DeleteGroupRequest) error
 
-	// Get group details
+	// Get group details.
 	//
 	// Gets the information for a specific group in the Databricks Account.
 	Get(ctx context.Context, request GetGroupRequest) (*Group, error)
 
-	// List group details
+	// List group details.
 	//
 	// Gets all details of the groups associated with the Databricks Account.
 	//
 	// Use ListAll() to get all Group instances
 	List(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error)
 
-	// Update group details
+	// Update group details.
 	//
 	// Partially updates the details of a group.
 	Patch(ctx context.Context, request PartialUpdate) error
 
-	// Replace a group
+	// Replace a group.
 	//
 	// Updates the details of a group by replacing the entire group entity.
 	Update(ctx context.Context, request Group) error
@@ -57,36 +57,36 @@ type AccountGroupsService interface {
 // risk of a user overwriting production data by accident.
 type AccountServicePrincipalsService interface {
 
-	// Create a service principal
+	// Create a service principal.
 	//
 	// Creates a new service principal in the Databricks Account.
 	Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error)
 
-	// Delete a service principal
+	// Delete a service principal.
 	//
 	// Delete a single service principal in the Databricks Account.
 	Delete(ctx context.Context, request DeleteServicePrincipalRequest) error
 
-	// Get service principal details
+	// Get service principal details.
 	//
 	// Gets the details for a single service principal define in the Databricks
 	// Account.
 	Get(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error)
 
-	// List service principals
+	// List service principals.
 	//
 	// Gets the set of service principals associated with a Databricks Account.
 	//
 	// Use ListAll() to get all ServicePrincipal instances
 	List(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
 
-	// Update service principal details
+	// Update service principal details.
 	//
 	// Partially updates the details of a single service principal in the
 	// Databricks Account.
 	Patch(ctx context.Context, request PartialUpdate) error
 
-	// Replace service principal
+	// Replace service principal.
 	//
 	// Updates the details of a single service principal.
 	//
@@ -107,37 +107,37 @@ type AccountServicePrincipalsService interface {
 // unauthorized users from accessing sensitive data.
 type AccountUsersService interface {
 
-	// Create a new user
+	// Create a new user.
 	//
 	// Creates a new user in the Databricks Account. This new user will also be
 	// added to the Databricks account.
 	Create(ctx context.Context, request User) (*User, error)
 
-	// Delete a user
+	// Delete a user.
 	//
 	// Deletes a user. Deleting a user from a Databricks Account also removes
 	// objects associated with the user.
 	Delete(ctx context.Context, request DeleteUserRequest) error
 
-	// Get user details
+	// Get user details.
 	//
 	// Gets information for a specific user in Databricks Account.
 	Get(ctx context.Context, request GetUserRequest) (*User, error)
 
-	// List users
+	// List users.
 	//
 	// Gets details for all the users associated with a Databricks Account.
 	//
 	// Use ListAll() to get all User instances
 	List(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error)
 
-	// Update user details
+	// Update user details.
 	//
 	// Partially updates a user resource by applying the supplied operations on
 	// specific user attributes.
 	Patch(ctx context.Context, request PartialUpdate) error
 
-	// Replace a user
+	// Replace a user.
 	//
 	// Replaces a user's information with the data supplied in request.
 	Update(ctx context.Context, request User) error
@@ -147,7 +147,7 @@ type AccountUsersService interface {
 // service principal.
 type CurrentUserService interface {
 
-	// Get current user info
+	// Get current user info.
 	//
 	// Get details about the current method caller's identity.
 	Me(ctx context.Context) (*User, error)
@@ -162,35 +162,35 @@ type CurrentUserService interface {
 // members inherit permissions that are assigned to their group.
 type GroupsService interface {
 
-	// Create a new group
+	// Create a new group.
 	//
 	// Creates a group in the Databricks Workspace with a unique name, using the
 	// supplied group details.
 	Create(ctx context.Context, request Group) (*Group, error)
 
-	// Delete a group
+	// Delete a group.
 	//
 	// Deletes a group from the Databricks Workspace.
 	Delete(ctx context.Context, request DeleteGroupRequest) error
 
-	// Get group details
+	// Get group details.
 	//
 	// Gets the information for a specific group in the Databricks Workspace.
 	Get(ctx context.Context, request GetGroupRequest) (*Group, error)
 
-	// List group details
+	// List group details.
 	//
 	// Gets all details of the groups associated with the Databricks Workspace.
 	//
 	// Use ListAll() to get all Group instances
 	List(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error)
 
-	// Update group details
+	// Update group details.
 	//
 	// Partially updates the details of a group.
 	Patch(ctx context.Context, request PartialUpdate) error
 
-	// Replace a group
+	// Replace a group.
 	//
 	// Updates the details of a group by replacing the entire group entity.
 	Update(ctx context.Context, request Group) error
@@ -204,23 +204,23 @@ type GroupsService interface {
 // risk of a user overwriting production data by accident.
 type ServicePrincipalsService interface {
 
-	// Create a service principal
+	// Create a service principal.
 	//
 	// Creates a new service principal in the Databricks Workspace.
 	Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error)
 
-	// Delete a service principal
+	// Delete a service principal.
 	//
 	// Delete a single service principal in the Databricks Workspace.
 	Delete(ctx context.Context, request DeleteServicePrincipalRequest) error
 
-	// Get service principal details
+	// Get service principal details.
 	//
 	// Gets the details for a single service principal define in the Databricks
 	// Workspace.
 	Get(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error)
 
-	// List service principals
+	// List service principals.
 	//
 	// Gets the set of service principals associated with a Databricks
 	// Workspace.
@@ -228,13 +228,13 @@ type ServicePrincipalsService interface {
 	// Use ListAll() to get all ServicePrincipal instances
 	List(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
 
-	// Update service principal details
+	// Update service principal details.
 	//
 	// Partially updates the details of a single service principal in the
 	// Databricks Workspace.
 	Patch(ctx context.Context, request PartialUpdate) error
 
-	// Replace service principal
+	// Replace service principal.
 	//
 	// Updates the details of a single service principal.
 	//
@@ -255,37 +255,37 @@ type ServicePrincipalsService interface {
 // prevents unauthorized users from accessing sensitive data.
 type UsersService interface {
 
-	// Create a new user
+	// Create a new user.
 	//
 	// Creates a new user in the Databricks Workspace. This new user will also
 	// be added to the Databricks account.
 	Create(ctx context.Context, request User) (*User, error)
 
-	// Delete a user
+	// Delete a user.
 	//
 	// Deletes a user. Deleting a user from a Databricks Workspace also removes
 	// objects associated with the user.
 	Delete(ctx context.Context, request DeleteUserRequest) error
 
-	// Get user details
+	// Get user details.
 	//
 	// Gets information for a specific user in Databricks Workspace.
 	Get(ctx context.Context, request GetUserRequest) (*User, error)
 
-	// List users
+	// List users.
 	//
 	// Gets details for all the users associated with a Databricks Workspace.
 	//
 	// Use ListAll() to get all User instances
 	List(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error)
 
-	// Update user details
+	// Update user details.
 	//
 	// Partially updates a user resource by applying the supplied operations on
 	// specific user attributes.
 	Patch(ctx context.Context, request PartialUpdate) error
 
-	// Replace a user
+	// Replace a user.
 	//
 	// Replaces a user's information with the data supplied in request.
 	Update(ctx context.Context, request User) error

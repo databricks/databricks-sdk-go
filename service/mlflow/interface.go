@@ -8,7 +8,7 @@ import (
 
 type ExperimentsService interface {
 
-	// Create experiment
+	// Create experiment.
 	//
 	// Creates an experiment with a name. Returns the ID of the newly created
 	// experiment. Validates that another experiment with the same name does not
@@ -19,20 +19,20 @@ type ExperimentsService interface {
 	// exists.
 	Create(ctx context.Context, request CreateExperiment) (*CreateExperimentResponse, error)
 
-	// Delete an experiment
+	// Delete an experiment.
 	//
 	// Marks an experiment and associated metadata, runs, metrics, params, and
 	// tags for deletion. If the experiment uses FileStore, artifacts associated
 	// with experiment are also deleted.
 	Delete(ctx context.Context, request DeleteExperiment) error
 
-	// Get an experiment
+	// Get an experiment.
 	//
 	// Gets metadata for an experiment. This method works on deleted
 	// experiments.
 	Get(ctx context.Context, request GetExperimentRequest) (*Experiment, error)
 
-	// Get metadata
+	// Get metadata.
 	//
 	// "Gets metadata for an experiment.
 	//
@@ -45,14 +45,14 @@ type ExperimentsService interface {
 	// exists.S
 	GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error)
 
-	// List experiments
+	// List experiments.
 	//
 	// Gets a list of all experiments.
 	//
 	// Use ListAll() to get all Experiment instances, which will iterate over every result page.
 	List(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error)
 
-	// Restores an experiment
+	// Restores an experiment.
 	//
 	// "Restore an experiment marked for deletion. This also
 	// restores\nassociated metadata, runs, metrics, params, and tags. If
@@ -61,20 +61,20 @@ type ExperimentsService interface {
 	// experiment was never created or was permanently deleted.",
 	Restore(ctx context.Context, request RestoreExperiment) error
 
-	// Search experiments
+	// Search experiments.
 	//
 	// Searches for experiments that satisfy specified search criteria.
 	//
 	// Use SearchAll() to get all Experiment instances, which will iterate over every result page.
 	Search(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error)
 
-	// Set a tag
+	// Set a tag.
 	//
 	// Sets a tag on an experiment. Experiment tags are metadata that can be
 	// updated.
 	SetExperimentTag(ctx context.Context, request SetExperimentTag) error
 
-	// Update an experiment
+	// Update an experiment.
 	//
 	// Updates experiment metadata.
 	Update(ctx context.Context, request UpdateExperiment) error
@@ -82,7 +82,7 @@ type ExperimentsService interface {
 
 type MLflowArtifactsService interface {
 
-	// Get all artifacts
+	// Get all artifacts.
 	//
 	// List artifacts for a run. Takes an optional `artifact_path` prefix. If it
 	// is specified, the response contains only artifacts with the specified
@@ -96,7 +96,7 @@ type MLflowArtifactsService interface {
 // additional input parameters or return additional information.
 type MLflowDatabricksService interface {
 
-	// Get model
+	// Get model.
 	//
 	// Get the details of a model. This is a Databricks Workspace version of the
 	// [MLflow
@@ -105,7 +105,7 @@ type MLflowDatabricksService interface {
 	// level of the requesting user on the model.
 	Get(ctx context.Context, request GetMLflowDatabrickRequest) (*GetResponse, error)
 
-	// Transition a stage
+	// Transition a stage.
 	//
 	// Transition a model version's stage. This is a Databricks Workspace
 	// version of the [MLflow
@@ -117,7 +117,7 @@ type MLflowDatabricksService interface {
 
 type MLflowMetricsService interface {
 
-	// Get all history
+	// Get all history.
 	//
 	// Gets a list of all values for the specified metric for a given run.
 	GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error)
@@ -125,7 +125,7 @@ type MLflowMetricsService interface {
 
 type MLflowRunsService interface {
 
-	// Create a run
+	// Create a run.
 	//
 	// Creates a new run within an experiment. A run is usually a single
 	// execution of a machine learning or data ETL pipeline. MLflow uses runs to
@@ -133,18 +133,18 @@ type MLflowRunsService interface {
 	// with a single execution.
 	Create(ctx context.Context, request CreateRun) (*CreateRunResponse, error)
 
-	// Delete a run
+	// Delete a run.
 	//
 	// Marks a run for deletion.
 	Delete(ctx context.Context, request DeleteRun) error
 
-	// Delete a tag
+	// Delete a tag.
 	//
 	// Deletes a tag on a run. Tags are run metadata that can be updated during
 	// a run and after a run completes.
 	DeleteTag(ctx context.Context, request DeleteTag) error
 
-	// Get a run
+	// Get a run.
 	//
 	// "Gets the metadata, metrics, params, and tags for a run. In the case
 	// where multiple metrics with the same key are logged for a run, return
@@ -154,7 +154,7 @@ type MLflowRunsService interface {
 	// maximum of these values.
 	Get(ctx context.Context, request GetRunRequest) (*GetRunResponse, error)
 
-	// Log a batch
+	// Log a batch.
 	//
 	// Logs a batch of metrics, params, and tags for a run. If any data failed
 	// to be persisted, the server will respond with an error (non-200 status
@@ -200,20 +200,20 @@ type MLflowRunsService interface {
 	// length * Parameter and tag values can be up to 250 characters in length
 	LogBatch(ctx context.Context, request LogBatch) error
 
-	// Log a metric
+	// Log a metric.
 	//
 	// Logs a metric for a run. A metric is a key-value pair (string key, float
 	// value) with an associated timestamp. Examples include the various metrics
 	// that represent ML model accuracy. A metric can be logged multiple times.
 	LogMetric(ctx context.Context, request LogMetric) error
 
-	// Log a model
+	// Log a model.
 	//
 	// **NOTE:** Experimental: This API may change or be removed in a future
 	// release without warning.
 	LogModel(ctx context.Context, request LogModel) error
 
-	// Log a param
+	// Log a param.
 	//
 	// Logs a param used for a run. A param is a key-value pair (string key,
 	// string value). Examples include hyperparameters used for ML model
@@ -221,12 +221,12 @@ type MLflowRunsService interface {
 	// can be logged only once for a run.
 	LogParameter(ctx context.Context, request LogParam) error
 
-	// Restore a run
+	// Restore a run.
 	//
 	// Restores a deleted run.
 	Restore(ctx context.Context, request RestoreRun) error
 
-	// Search for runs
+	// Search for runs.
 	//
 	// Searches for runs that satisfy expressions.
 	//
@@ -235,13 +235,13 @@ type MLflowRunsService interface {
 	// Use SearchAll() to get all Run instances, which will iterate over every result page.
 	Search(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error)
 
-	// Set a tag
+	// Set a tag.
 	//
 	// Sets a tag on a run. Tags are run metadata that can be updated during a
 	// run and after a run completes.
 	SetTag(ctx context.Context, request SetTag) error
 
-	// Update a run
+	// Update a run.
 	//
 	// Updates run metadata.
 	Update(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error)
@@ -249,19 +249,19 @@ type MLflowRunsService interface {
 
 type ModelVersionCommentsService interface {
 
-	// Post a comment
+	// Post a comment.
 	//
 	// Posts a comment on a model version. A comment can be submitted either by
 	// a user or programmatically to display relevant information about the
 	// model. For example, test results or deployment errors.
 	Create(ctx context.Context, request CreateComment) (*CreateResponse, error)
 
-	// Delete a comment
+	// Delete a comment.
 	//
 	// Deletes a comment on a model version.
 	Delete(ctx context.Context, request DeleteModelVersionCommentRequest) error
 
-	// Update a comment
+	// Update a comment.
 	//
 	// Post an edit to a comment on a model version.
 	Update(ctx context.Context, request UpdateComment) (*UpdateResponse, error)
@@ -269,7 +269,7 @@ type ModelVersionCommentsService interface {
 
 type ModelVersionsService interface {
 
-	// Create a model version
+	// Create a model version.
 	//
 	// Creates a model version.
 	Create(ctx context.Context, request CreateModelVersionRequest) (*CreateModelVersionResponse, error)
@@ -279,39 +279,39 @@ type ModelVersionsService interface {
 	// Deletes a model version.
 	Delete(ctx context.Context, request DeleteModelVersionRequest) error
 
-	// Delete a model version tag
+	// Delete a model version tag.
 	//
 	// Deletes a model version tag.
 	DeleteTag(ctx context.Context, request DeleteModelVersionTagRequest) error
 
-	// Get a model version
+	// Get a model version.
 	//
 	// Get a model version.
 	Get(ctx context.Context, request GetModelVersionRequest) (*GetModelVersionResponse, error)
 
-	// Get a model version URI
+	// Get a model version URI.
 	//
 	// Gets a URI to download the model version.
 	GetDownloadUri(ctx context.Context, request GetModelVersionDownloadUriRequest) (*GetModelVersionDownloadUriResponse, error)
 
-	// Searches model versions
+	// Searches model versions.
 	//
 	// Searches for specific model versions based on the supplied __filter__.
 	//
 	// Use SearchAll() to get all ModelVersion instances, which will iterate over every result page.
 	Search(ctx context.Context, request SearchModelVersionsRequest) (*SearchModelVersionsResponse, error)
 
-	// Set a version tag
+	// Set a version tag.
 	//
 	// Sets a model version tag.
 	SetTag(ctx context.Context, request SetModelVersionTagRequest) error
 
-	// Transition a stage
+	// Transition a stage.
 	//
 	// Transition to the next model stage.
 	TransitionStage(ctx context.Context, request TransitionModelVersionStage) (*TransitionModelVersionStageResponse, error)
 
-	// Update model version
+	// Update model version.
 	//
 	// Updates the model version.
 	Update(ctx context.Context, request UpdateModelVersionRequest) error
@@ -319,7 +319,7 @@ type ModelVersionsService interface {
 
 type RegisteredModelsService interface {
 
-	// Create a model
+	// Create a model.
 	//
 	// Creates a new registered model with the name specified in the request
 	// body.
@@ -328,29 +328,29 @@ type RegisteredModelsService interface {
 	// name exists.
 	Create(ctx context.Context, request CreateRegisteredModelRequest) (*CreateRegisteredModelResponse, error)
 
-	// Delete a model
+	// Delete a model.
 	//
 	// Deletes a registered model.
 	Delete(ctx context.Context, request DeleteRegisteredModelRequest) error
 
-	// Delete a model tag
+	// Delete a model tag.
 	//
 	// Deletes the tag for a registered model.
 	DeleteTag(ctx context.Context, request DeleteRegisteredModelTagRequest) error
 
-	// Get a model
+	// Get a model.
 	//
 	// Gets the registered model that matches the specified ID.
 	Get(ctx context.Context, request GetRegisteredModelRequest) (*GetRegisteredModelResponse, error)
 
-	// Get the latest version
+	// Get the latest version.
 	//
 	// Gets the latest version of a registered model.
 	//
 	// Use GetLatestVersionsAll() to get all ModelVersion instances
 	GetLatestVersions(ctx context.Context, request GetLatestVersionsRequest) (*GetLatestVersionsResponse, error)
 
-	// List models
+	// List models.
 	//
 	// Lists all available registered models, up to the limit specified in
 	// __max_results__.
@@ -358,24 +358,24 @@ type RegisteredModelsService interface {
 	// Use ListAll() to get all RegisteredModel instances, which will iterate over every result page.
 	List(ctx context.Context, request ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error)
 
-	// Rename a model
+	// Rename a model.
 	//
 	// Renames a registered model.
 	Rename(ctx context.Context, request RenameRegisteredModelRequest) (*RenameRegisteredModelResponse, error)
 
-	// Search models
+	// Search models.
 	//
 	// Search for registered models based on the specified __filter__.
 	//
 	// Use SearchAll() to get all RegisteredModel instances, which will iterate over every result page.
 	Search(ctx context.Context, request SearchRegisteredModelsRequest) (*SearchRegisteredModelsResponse, error)
 
-	// Set a tag
+	// Set a tag.
 	//
 	// Sets a tag on a registered model.
 	SetTag(ctx context.Context, request SetRegisteredModelTagRequest) error
 
-	// Update model
+	// Update model.
 	//
 	// Updates a registered model.
 	Update(ctx context.Context, request UpdateRegisteredModelRequest) error
@@ -383,21 +383,21 @@ type RegisteredModelsService interface {
 
 type RegistryWebhooksService interface {
 
-	// Create a webhook
+	// Create a webhook.
 	//
 	// **NOTE**: This endpoint is in Public Preview.
 	//
 	// Creates a registry webhook.
 	Create(ctx context.Context, request CreateRegistryWebhook) (*CreateResponse, error)
 
-	// Delete a webhook
+	// Delete a webhook.
 	//
 	// **NOTE:** This endpoint is in Public Preview.
 	//
 	// Deletes a registry webhook.
 	Delete(ctx context.Context, request DeleteRegistryWebhookRequest) error
 
-	// List registry webhooks
+	// List registry webhooks.
 	//
 	// **NOTE:** This endpoint is in Public Preview.
 	//
@@ -406,14 +406,14 @@ type RegistryWebhooksService interface {
 	// Use ListAll() to get all RegistryWebhook instances, which will iterate over every result page.
 	List(ctx context.Context, request ListRegistryWebhooksRequest) (*ListRegistryWebhooks, error)
 
-	// Test a webhook
+	// Test a webhook.
 	//
 	// **NOTE:** This endpoint is in Public Preview.
 	//
 	// Tests a registry webhook.
 	Test(ctx context.Context, request TestRegistryWebhookRequest) (*TestRegistryWebhookResponse, error)
 
-	// Update a webhook
+	// Update a webhook.
 	//
 	// **NOTE:** This endpoint is in Public Preview.
 	//
@@ -423,29 +423,29 @@ type RegistryWebhooksService interface {
 
 type TransitionRequestsService interface {
 
-	// Approve transition requests
+	// Approve transition requests.
 	//
 	// Approves a model version stage transition request.
 	Approve(ctx context.Context, request ApproveTransitionRequest) (*ApproveResponse, error)
 
-	// Make a transition request
+	// Make a transition request.
 	//
 	// Creates a model version stage transition request.
 	Create(ctx context.Context, request CreateTransitionRequest) (*CreateResponse, error)
 
-	// Delete a ransition request
+	// Delete a ransition request.
 	//
 	// Cancels a model version stage transition request.
 	Delete(ctx context.Context, request DeleteTransitionRequestRequest) error
 
-	// List transition requests
+	// List transition requests.
 	//
 	// Gets a list of all open stage transition requests for the model version.
 	//
 	// Use ListAll() to get all Activity instances
 	List(ctx context.Context, request ListTransitionRequestsRequest) (*ListResponse, error)
 
-	// Reject a transition request
+	// Reject a transition request.
 	//
 	// Rejects a model version stage transition request.
 	Reject(ctx context.Context, request RejectTransitionRequest) (*RejectResponse, error)
