@@ -137,8 +137,8 @@ func (c *Config) IsAws() bool {
 	return !c.IsAzure() && !c.IsGcp()
 }
 
-// IsAws returns true if client is configured for Accounts API
-func (c *Config) IsAccountsClient() bool {
+// IsAccountClient returns true if client is configured for Accounts API
+func (c *Config) IsAccountClient() bool {
 	return strings.HasPrefix(c.Host, "https://accounts.")
 }
 

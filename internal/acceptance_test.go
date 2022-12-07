@@ -16,7 +16,7 @@ import (
 func TestAccDefaultCredentials(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountsClient() {
+	if w.Config.IsAccountClient() {
 		t.SkipNow()
 	}
 	ctx := context.Background()
@@ -37,7 +37,7 @@ func TestAccExplicitDatabricksCfg(t *testing.T) {
 	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		Profile: GetEnvOrSkipTest(t, "DATABRICKS_CONFIG_PROFILE"),
 	}))
-	if w.Config.IsAccountsClient() {
+	if w.Config.IsAccountClient() {
 		t.SkipNow()
 	}
 	ctx := context.Background()
