@@ -210,7 +210,8 @@ func (n *Named) Summary() string {
 	return ""
 }
 
-var markdownLink = regexp.MustCompile(`(?m)\[([^\]]+)\]\(([^\)]+)\)`)
+// match markdown links, ignoring new lines
+var markdownLink = regexp.MustCompile(`\[([^\]]+)\]\(([^\)]+)\)`)
 
 func (n *Named) DescriptionWithoutSummary() string {
 	sentences := n.sentences()
@@ -228,7 +229,7 @@ func (n *Named) Comment(prefix string, maxLen int) string {
 	trimmed := strings.TrimSpace(n.Description)
 	// collect links, which later be sorted
 	links := map[string]string{}
-	// safe to iterate and update, as match slice is a
+	// safe to iterate and update, as match slice is a snapshot
 	for _, m := range markdownLink.FindAllStringSubmatch(trimmed, -1) {
 		label := strings.TrimSpace(m[1])
 		link := strings.TrimSpace(m[2])
@@ -236,6 +237,10 @@ func (n *Named) Comment(prefix string, maxLen int) string {
 			// this condition is here until OpenAPI spec normalizes all links
 			continue
 		}
+		// simplify logic by overriding links in case of duplicates.
+		// this will also lead us to alphabetically sort links in the bottom,
+		// instead of always following the order they appear in the comment.
+		// luckily, this doesn't happen often.
 		links[label] = link
 		// replace [test](url) with [text]
 		trimmed = strings.ReplaceAll(trimmed, m[0], fmt.Sprintf("[%s]", label))
