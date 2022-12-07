@@ -58,7 +58,7 @@ func accountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 	if err != nil {
 		skipf(t)("error: %s", err)
 	}
-	if !cfg.IsAccountsClient() {
+	if !cfg.IsAccountClient() {
 		skipf(t)("Not in account env: %s/%s", cfg.AccountID, cfg.Host)
 	}
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
