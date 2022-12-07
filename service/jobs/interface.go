@@ -18,10 +18,11 @@ import (
 // Scala, Spark submit, and Java applications.
 //
 // You should never hard code secrets or store them in plain text. Use the
-// :service:secrets to manage secrets in the [Databricks
-// CLI](https://docs.databricks.com/dev-tools/cli/index.html). Use the [Secrets
-// utility](https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets)
-// to reference secrets in notebooks and jobs.
+// :service:secrets to manage secrets in the [Databricks CLI]. Use the [Secrets
+// utility] to reference secrets in notebooks and jobs.
+//
+// [Databricks CLI]: https://docs.databricks.com/dev-tools/cli/index.html
+// [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 type JobsService interface {
 
 	// Cancel all runs of a job.

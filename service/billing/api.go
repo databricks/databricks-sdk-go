@@ -42,9 +42,10 @@ func (a *BillableUsageAPI) Impl() BillableUsageService {
 // Return billable usage logs.
 //
 // Returns billable usage logs in CSV format for the specified account and date
-// range. For the data schema, see [CSV file
-// schema](https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema).
-// Note that this method might take multiple seconds to complete.
+// range. For the data schema, see [CSV file schema]. Note that this method
+// might take multiple seconds to complete.
+//
+// [CSV file schema]: https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema
 func (a *BillableUsageAPI) Download(ctx context.Context, request DownloadRequest) error {
 	return a.impl.Download(ctx, request)
 }
@@ -213,18 +214,16 @@ func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
 // the latest status of log delivery attempts. The high-level flow of billable
 // usage delivery:
 //
-// 1. **Create storage**: In AWS, [create a new AWS S3
-// bucket](https://docs.databricks.com/administration-guide/account-api/aws-storage.html)
-// with a specific bucket policy. Using Databricks APIs, call the Account API to
-// create a [storage configuration object](#operation/create-storage-config)
-// that uses the bucket name. 2. **Create credentials**: In AWS, create the
-// appropriate AWS IAM role. For full details, including the required IAM role
-// policies and trust relationship, see [Billable usage log
-// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
-// Using Databricks APIs, call the Account API to create a [credential
-// configuration object](#operation/create-credential-config) that uses the IAM
-// role's ARN. 3. **Create log delivery configuration**: Using Databricks APIs,
-// call the Account API to [create a log delivery
+// 1. **Create storage**: In AWS, [create a new AWS S3 bucket] with a specific
+// bucket policy. Using Databricks APIs, call the Account API to create a
+// [storage configuration object](#operation/create-storage-config) that uses
+// the bucket name. 2. **Create credentials**: In AWS, create the appropriate
+// AWS IAM role. For full details, including the required IAM role policies and
+// trust relationship, see [Billable usage log delivery]. Using Databricks APIs,
+// call the Account API to create a [credential configuration
+// object](#operation/create-credential-config) that uses the IAM role's ARN. 3.
+// **Create log delivery configuration**: Using Databricks APIs, call the
+// Account API to [create a log delivery
 // configuration](#operation/create-log-delivery-config) that uses the
 // credential and storage configuration objects from previous steps. You can
 // specify if the logs should include all events of that log type in your
@@ -235,13 +234,11 @@ func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
 // You can create multiple types of delivery configurations per account.
 //
 // For billable usage delivery: * For more information about billable usage
-// logs, see [Billable usage log
-// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
-// For the CSV schema, see the [Usage
-// page](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-// * The delivery location is `<bucket-name>/<prefix>/billable-usage/csv/`,
-// where `<prefix>` is the name of the optional delivery path prefix you set up
-// during log delivery configuration. Files are named
+// logs, see [Billable usage log delivery]. For the CSV schema, see the [Usage
+// page]. * The delivery location is
+// `<bucket-name>/<prefix>/billable-usage/csv/`, where `<prefix>` is the name of
+// the optional delivery path prefix you set up during log delivery
+// configuration. Files are named
 // `workspaceId=<workspace-id>-usageMonth=<month>.csv`. * All billable usage
 // logs apply to specific workspaces (_workspace level_ logs). You can aggregate
 // usage for your entire account by creating an _account level_ delivery
@@ -250,10 +247,8 @@ func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
 // file for each workspace.
 //
 // For audit log delivery: * For more information about about audit log
-// delivery, see [Audit log
-// delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html),
-// which includes information about the used JSON schema. * The delivery
-// location is
+// delivery, see [Audit log delivery], which includes information about the used
+// JSON schema. * The delivery location is
 // `<bucket-name>/<delivery-path-prefix>/workspaceId=<workspaceId>/date=<yyyy-mm-dd>/auditlogs_<internal-id>.json`.
 // Files may get overwritten with the same content multiple times to achieve
 // exactly-once delivery. * If the audit log delivery configuration included
@@ -261,10 +256,14 @@ func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
 // workspaces are delivered. If the log delivery configuration applies to the
 // entire account (_account level_ delivery configuration), the audit log
 // delivery includes workspace-level audit logs for all workspaces in the
-// account as well as account-level audit logs. See [Audit log
-// delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html)
-// for details. * Auditable events are typically available in logs within 15
+// account as well as account-level audit logs. See [Audit log delivery] for
+// details. * Auditable events are typically available in logs within 15
 // minutes.
+//
+// [Audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+// [Billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+// [Usage page]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+// [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html
 type LogDeliveryAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(LogDeliveryService)
@@ -293,10 +292,8 @@ func (a *LogDeliveryAPI) Impl() LogDeliveryService {
 // an S3 bucket).
 //
 // For full details, including the required IAM role policies and bucket
-// policies, see [Deliver and access billable usage
-// logs](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html)
-// or [Configure audit
-// logging](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
+// policies, see [Deliver and access billable usage logs] or [Configure audit
+// logging].
 //
 // **Note**: There is a limit on the number of log delivery configurations
 // available per account (each limit applies separately to each log type
@@ -310,6 +307,9 @@ func (a *LogDeliveryAPI) Impl() LogDeliveryService {
 // You cannot delete a log delivery configuration, but you can disable it (see
 // [Enable or disable log delivery
 // configuration](#operation/patch-log-delivery-config-status)).
+//
+// [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+// [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 func (a *LogDeliveryAPI) Create(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error) {
 	return a.impl.Create(ctx, request)
 }

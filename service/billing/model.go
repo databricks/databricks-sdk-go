@@ -106,8 +106,9 @@ type CreateLogDeliveryConfigurationParams struct {
 	// The ID for a method:CredetialConfigurations/createCredentialConfig that
 	// represents the AWS IAM role with policy and trust relationship as
 	// described in the main billable usage documentation page. See [Configure
-	// billable usage
-	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
+	// billable usage delivery].
+	//
+	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	CredentialsId string `json:"credentials_id"`
 	// The optional delivery path prefix within Amazon S3 storage. Defaults to
 	// empty, which means that logs are delivered to the root of the bucket.
@@ -121,26 +122,27 @@ type CreateLogDeliveryConfigurationParams struct {
 	DeliveryStartTime string `json:"delivery_start_time,omitempty"`
 	// Log delivery type. Supported values are:
 	//
-	// * `BILLABLE_USAGE` — Configure [billable usage log
-	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
-	// For the CSV schema, see the [View billable
-	// usage](https://docs.databricks.com/administration-guide/account-settings/usage.html).
+	// * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the
+	// CSV schema, see the [View billable usage].
 	//
-	// * `AUDIT_LOGS` — Configure [audit log
-	// delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
-	// For the JSON schema, see [Configure audit
-	// logging](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html)
+	// * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema,
+	// see [Configure audit logging]
+	//
+	// [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+	// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+	// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	LogType LogType `json:"log_type"`
 	// The file type of log delivery.
 	//
 	// * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the
 	// CSV (comma-separated values) format is supported. For the schema, see the
-	// [View billable
-	// usage](https://docs.databricks.com/administration-guide/account-settings/usage.html)
-	// * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON
-	// (JavaScript Object Notation) format is supported. For the schema, see the
-	// [Configuring audit
-	// logs](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
+	// [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be
+	// `JSON`. Only the JSON (JavaScript Object Notation) format is supported.
+	// For the schema, see the [Configuring audit logs].
+	//
+	// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 	OutputFormat OutputFormat `json:"output_format"`
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
@@ -151,7 +153,9 @@ type CreateLogDeliveryConfigurationParams struct {
 	// "The ID for a method:StorageConfiguration/createCredentialConfig that
 	// represents the S3 bucket with bucket policy as described in the main
 	// billable usage documentation page. See [Configure billable usage
-	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html)."
+	// delivery]."
+	//
+	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	StorageConfigurationId string `json:"storage_configuration_id"`
 	// Optional filter that specifies workspace IDs to deliver logs for. By
 	// default the workspace filter is empty and log delivery applies at the
@@ -257,8 +261,9 @@ type LogDeliveryConfiguration struct {
 	// The ID for a method:CredetialConfigurations/createCredentialConfig that
 	// represents the AWS IAM role with policy and trust relationship as
 	// described in the main billable usage documentation page. See [Configure
-	// billable usage
-	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
+	// billable usage delivery].
+	//
+	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	CredentialsId string `json:"credentials_id,omitempty"`
 	// The optional delivery path prefix within Amazon S3 storage. Defaults to
 	// empty, which means that logs are delivered to the root of the bucket.
@@ -274,26 +279,27 @@ type LogDeliveryConfiguration struct {
 	LogDeliveryStatus *LogDeliveryStatus `json:"log_delivery_status,omitempty"`
 	// Log delivery type. Supported values are:
 	//
-	// * `BILLABLE_USAGE` — Configure [billable usage log
-	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
-	// For the CSV schema, see the [View billable
-	// usage](https://docs.databricks.com/administration-guide/account-settings/usage.html).
+	// * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the
+	// CSV schema, see the [View billable usage].
 	//
-	// * `AUDIT_LOGS` — Configure [audit log
-	// delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
-	// For the JSON schema, see [Configure audit
-	// logging](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html)
+	// * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema,
+	// see [Configure audit logging]
+	//
+	// [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+	// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+	// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	LogType LogType `json:"log_type,omitempty"`
 	// The file type of log delivery.
 	//
 	// * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the
 	// CSV (comma-separated values) format is supported. For the schema, see the
-	// [View billable
-	// usage](https://docs.databricks.com/administration-guide/account-settings/usage.html)
-	// * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON
-	// (JavaScript Object Notation) format is supported. For the schema, see the
-	// [Configuring audit
-	// logs](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
+	// [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be
+	// `JSON`. Only the JSON (JavaScript Object Notation) format is supported.
+	// For the schema, see the [Configuring audit logs].
+	//
+	// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 	OutputFormat OutputFormat `json:"output_format,omitempty"`
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
@@ -304,7 +310,9 @@ type LogDeliveryConfiguration struct {
 	// "The ID for a method:StorageConfiguration/createCredentialConfig that
 	// represents the S3 bucket with bucket policy as described in the main
 	// billable usage documentation page. See [Configure billable usage
-	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html)."
+	// delivery]."
+	//
+	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
 	// Time in epoch milliseconds when the log delivery configuration was
 	// updated.
@@ -341,15 +349,16 @@ type LogDeliveryStatus struct {
 
 // Log delivery type. Supported values are:
 //
-// * `BILLABLE_USAGE` — Configure [billable usage log
-// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
-// For the CSV schema, see the [View billable
-// usage](https://docs.databricks.com/administration-guide/account-settings/usage.html).
+// * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV
+// schema, see the [View billable usage].
 //
-// * `AUDIT_LOGS` — Configure [audit log
-// delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
-// For the JSON schema, see [Configure audit
-// logging](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html)
+// * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see
+// [Configure audit logging]
+//
+// [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 type LogType string
 
 const LogTypeAuditLogs LogType = `AUDIT_LOGS`
@@ -360,12 +369,12 @@ const LogTypeBillableUsage LogType = `BILLABLE_USAGE`
 //
 // * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV
 // (comma-separated values) format is supported. For the schema, see the [View
-// billable
-// usage](https://docs.databricks.com/administration-guide/account-settings/usage.html)
-// * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON
-// (JavaScript Object Notation) format is supported. For the schema, see the
-// [Configuring audit
-// logs](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html).
+// billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`.
+// Only the JSON (JavaScript Object Notation) format is supported. For the
+// schema, see the [Configuring audit logs].
+//
+// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 type OutputFormat string
 
 const OutputFormatCsv OutputFormat = `CSV`

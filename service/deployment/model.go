@@ -79,7 +79,9 @@ type CreateCustomerManagedKeyRequest struct {
 // exhaustion can occur, causing your Databricks jobs to fail. To determine the
 // address range sizes that you need, Databricks provides a calculator as a
 // Microsoft Excel spreadsheet. See [calculate subnet sizes for a new
-// workspace](https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html).
+// workspace].
+//
+// [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
 type CreateGcpNetwork struct {
 	// The common network configuration fields that can be used by both
 	// Databricks-managed VPCs and customer-managed VPCs.
@@ -111,8 +113,9 @@ type CreateNetworkRequest struct {
 	// **cannot** be used in multiple network configurations.
 	SubnetIds []string `json:"subnet_ids,omitempty"`
 	// If specified, contains the VPC endpoints used to allow cluster
-	// communication from this VPC over [AWS
-	// PrivateLink](https://aws.amazon.com/privatelink/).
+	// communication from this VPC over [AWS PrivateLink].
+	//
+	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
 	VpcEndpoints *NetworkVpcEndpoints `json:"vpc_endpoints,omitempty"`
 	// The ID of the VPC associated with this network. VPC IDs can be used in
 	// multiple network configurations.
@@ -212,24 +215,31 @@ type CreateWorkspaceRequest struct {
 	// too small, IP exhaustion can occur, causing your Databricks jobs to fail.
 	// To determine the address range sizes that you need, Databricks provides a
 	// calculator as a Microsoft Excel spreadsheet. See [calculate subnet sizes
-	// for a new
-	// workspace](https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html).
+	// for a new workspace].
+	//
+	// [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
 	Network *CreateGcpNetwork `json:"network,omitempty"`
 	// The ID of the workspace's network configuration object. To use [AWS
-	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html)
-	// (Public Preview), this field is required.
+	// PrivateLink] (Public Preview), this field is required.
+	//
+	// [AWS PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	NetworkId string `json:"network_id,omitempty"`
 	// The pricing tier of the workspace. For pricing tier information, see [AWS
-	// Pricing](https://databricks.com/product/aws-pricing).
+	// Pricing].
+	//
+	// [AWS Pricing]: https://databricks.com/product/aws-pricing
 	PricingTier PricingTier `json:"pricing_tier,omitempty"`
 	// ID of the workspace's private access settings object. Only used for
 	// PrivateLink (Public Preview). This ID must be specified for customers
-	// using [AWS PrivateLink](https://aws.amazon.com/privatelink/) for either
-	// front-end (user-to-workspace connection), back-end (data plane to control
-	// plane connection), or both connection types.
+	// using [AWS PrivateLink] for either front-end (user-to-workspace
+	// connection), back-end (data plane to control plane connection), or both
+	// connection types.
 	//
 	// Before configuring PrivateLink, read the [Databricks article about
-	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+	// PrivateLink].
+	//
+	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
+	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
 	// The ID of the workspace's storage configuration object.
 	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
@@ -313,8 +323,7 @@ type DeleteWorkspaceRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-// This enumeration represents the type of Databricks VPC [endpoint
-// service](https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html)
+// This enumeration represents the type of Databricks VPC [endpoint service]
 // that was used when creating this VPC endpoint.
 //
 // If the VPC endpoint connects to the Databricks control plane for either the
@@ -322,9 +331,10 @@ type DeleteWorkspaceRequest struct {
 // `WORKSPACE_ACCESS`.
 //
 // If the VPC endpoint connects to the Databricks workspace for the back-end
-// [secure cluster
-// connectivity](https://docs.databricks.com/security/secure-cluster-connectivity.html)
-// relay, the value is `DATAPLANE_RELAY_ACCESS`.
+// [secure cluster connectivity] relay, the value is `DATAPLANE_RELAY_ACCESS`.
+//
+// [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
+// [secure cluster connectivity]: https://docs.databricks.com/security/secure-cluster-connectivity.html
 type EndpointUseCase string
 
 const EndpointUseCaseDataplaneRelayAccess EndpointUseCase = `DATAPLANE_RELAY_ACCESS`
@@ -512,8 +522,9 @@ type Network struct {
 
 	SubnetIds []string `json:"subnet_ids,omitempty"`
 	// If specified, contains the VPC endpoints used to allow cluster
-	// communication from this VPC over [AWS
-	// PrivateLink](https://aws.amazon.com/privatelink/).
+	// communication from this VPC over [AWS PrivateLink].
+	//
+	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
 	VpcEndpoints *NetworkVpcEndpoints `json:"vpc_endpoints,omitempty"`
 	// The ID of the VPC associated with this network configuration. VPC IDs can
 	// be used in multiple networks.
@@ -535,11 +546,12 @@ type NetworkHealth struct {
 }
 
 // If specified, contains the VPC endpoints used to allow cluster communication
-// from this VPC over [AWS PrivateLink](https://aws.amazon.com/privatelink/).
+// from this VPC over [AWS PrivateLink].
+//
+// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
 type NetworkVpcEndpoints struct {
 	// The VPC endpoint ID used by this network to access the Databricks secure
-	// cluster connectivity relay. See [Secure Cluster
-	// Connectivity](https://docs.databricks.com/security/secure-cluster-connectivity.html).
+	// cluster connectivity relay. See [Secure Cluster Connectivity].
 	//
 	// This is a list type for future compatibility, but currently only one VPC
 	// endpoint ID should be supplied.
@@ -547,6 +559,8 @@ type NetworkVpcEndpoints struct {
 	// **Note**: This is the Databricks-specific ID of the VPC endpoint object
 	// in the Account API, not the AWS VPC endpoint ID that you see for your
 	// endpoint in the AWS Console.
+	//
+	// [Secure Cluster Connectivity]: https://docs.databricks.com/security/secure-cluster-connectivity.html
 	DataplaneRelay []string `json:"dataplane_relay"`
 	// The VPC endpoint ID used by this network to access the Databricks REST
 	// API. Databricks clusters make calls to our REST API as part of cluster
@@ -571,7 +585,9 @@ type NetworkWarning struct {
 }
 
 // The pricing tier of the workspace. For pricing tier information, see [AWS
-// Pricing](https://databricks.com/product/aws-pricing).
+// Pricing].
+//
+// [AWS Pricing]: https://databricks.com/product/aws-pricing
 type PricingTier string
 
 const PricingTierCommunityEdition PricingTier = `COMMUNITY_EDITION`
@@ -615,8 +631,9 @@ type PrivateAccessSettings struct {
 	// **Note**: If hybrid access to your workspace is enabled by setting
 	// `public_access_enabled` to `true`, this control only works for
 	// PrivateLink connections. To control how your workspace is accessed via
-	// public internet, see [IP access
-	// lists](https://docs.databricks.com/security/network/ip-access-list.html).
+	// public internet, see [IP access lists].
+	//
+	// [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html
 	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
 	// The private access level controls which VPC endpoints can connect to the
 	// UI or API of any workspace that attaches this private access settings
@@ -710,8 +727,9 @@ type UpsertPrivateAccessSettingsRequest struct {
 	// If hybrid access to your workspace is enabled by setting
 	// `public_access_enabled` to `true`, this control only works for
 	// PrivateLink connections. To control how your workspace is accessed via
-	// public internet, see [IP access
-	// lists](https://docs.databricks.com/security/network/ip-access-list.html).
+	// public internet, see [IP access lists].
+	//
+	// [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html
 	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
 	// The private access level controls which VPC endpoints can connect to the
 	// UI or API of any workspace that attaches this private access settings
@@ -733,7 +751,9 @@ type UpsertPrivateAccessSettingsRequest struct {
 	PublicAccessEnabled bool `json:"public_access_enabled,omitempty"`
 	// The AWS region for workspaces associated with this private access
 	// settings object. This must be a [region that Databricks supports for
-	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/regions.html).
+	// PrivateLink].
+	//
+	// [region that Databricks supports for PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/regions.html
 	Region string `json:"region"`
 }
 
@@ -742,11 +762,12 @@ type VpcEndpoint struct {
 	AccountId string `json:"account_id,omitempty"`
 	// The AWS Account in which the VPC endpoint object exists.
 	AwsAccountId string `json:"aws_account_id,omitempty"`
-	// The ID of the Databricks [endpoint
-	// service](https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html)
-	// that this VPC endpoint is connected to. For a list of endpoint service
-	// IDs for each supported AWS region, see the [Databricks PrivateLink
-	// documentation](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+	// The ID of the Databricks [endpoint service] that this VPC endpoint is
+	// connected to. For a list of endpoint service IDs for each supported AWS
+	// region, see the [Databricks PrivateLink documentation].
+	//
+	// [Databricks PrivateLink documentation]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+	// [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
 	AwsEndpointServiceId string `json:"aws_endpoint_service_id,omitempty"`
 	// The ID of the VPC endpoint object in AWS.
 	AwsVpcEndpointId string `json:"aws_vpc_endpoint_id,omitempty"`
@@ -754,11 +775,11 @@ type VpcEndpoint struct {
 	Region string `json:"region,omitempty"`
 	// The current state (such as `available` or `rejected`) of the VPC
 	// endpoint. Derived from AWS. For the full set of values, see [AWS
-	// DescribeVpcEndpoint
-	// documentation](https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-vpc-endpoints.html).
+	// DescribeVpcEndpoint documentation].
+	//
+	// [AWS DescribeVpcEndpoint documentation]: https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-vpc-endpoints.html
 	State string `json:"state,omitempty"`
-	// This enumeration represents the type of Databricks VPC [endpoint
-	// service](https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html)
+	// This enumeration represents the type of Databricks VPC [endpoint service]
 	// that was used when creating this VPC endpoint.
 	//
 	// If the VPC endpoint connects to the Databricks control plane for either
@@ -766,9 +787,11 @@ type VpcEndpoint struct {
 	// is `WORKSPACE_ACCESS`.
 	//
 	// If the VPC endpoint connects to the Databricks workspace for the back-end
-	// [secure cluster
-	// connectivity](https://docs.databricks.com/security/secure-cluster-connectivity.html)
-	// relay, the value is `DATAPLANE_RELAY_ACCESS`.
+	// [secure cluster connectivity] relay, the value is
+	// `DATAPLANE_RELAY_ACCESS`.
+	//
+	// [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
+	// [secure cluster connectivity]: https://docs.databricks.com/security/secure-cluster-connectivity.html
 	UseCase EndpointUseCase `json:"use_case,omitempty"`
 	// Databricks VPC endpoint ID. This is the Databricks-specific name of the
 	// VPC endpoint. Do not confuse this with the `aws_vpc_endpoint_id`, which
@@ -829,16 +852,21 @@ type Workspace struct {
 
 	Network *GcpNetwork `json:"network,omitempty"`
 	// The pricing tier of the workspace. For pricing tier information, see [AWS
-	// Pricing](https://databricks.com/product/aws-pricing).
+	// Pricing].
+	//
+	// [AWS Pricing]: https://databricks.com/product/aws-pricing
 	PricingTier PricingTier `json:"pricing_tier,omitempty"`
 	// ID of the workspace's private access settings object. Only used for
 	// PrivateLink (Public Preview). You must specify this ID if you are using
-	// [AWS PrivateLink](https://aws.amazon.com/privatelink/) for either
-	// front-end (user-to-workspace connection), back-end (data plane to control
-	// plane connection), or both connection types.
+	// [AWS PrivateLink] for either front-end (user-to-workspace connection),
+	// back-end (data plane to control plane connection), or both connection
+	// types.
 	//
 	// Before configuring PrivateLink, read the [Databricks article about
-	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+	// PrivateLink].
+	//
+	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
+	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
 	// ID of the workspace's storage configuration object.
 	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`

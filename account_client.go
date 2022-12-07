@@ -73,15 +73,12 @@ type AccountClient struct {
 	// provided to know the latest status of log delivery attempts. The
 	// high-level flow of billable usage delivery:
 	//
-	// 1. **Create storage**: In AWS, [create a new AWS S3
-	// bucket](https://docs.databricks.com/administration-guide/account-api/aws-storage.html)
-	// with a specific bucket policy. Using Databricks APIs, call the Account
-	// API to create a [storage configuration
-	// object](#operation/create-storage-config) that uses the bucket name. 2.
-	// **Create credentials**: In AWS, create the appropriate AWS IAM role. For
-	// full details, including the required IAM role policies and trust
-	// relationship, see [Billable usage log
-	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
+	// 1. **Create storage**: In AWS, [create a new AWS S3 bucket] with a
+	// specific bucket policy. Using Databricks APIs, call the Account API to
+	// create a [storage configuration object](#operation/create-storage-config)
+	// that uses the bucket name. 2. **Create credentials**: In AWS, create the
+	// appropriate AWS IAM role. For full details, including the required IAM
+	// role policies and trust relationship, see [Billable usage log delivery].
 	// Using Databricks APIs, call the Account API to create a [credential
 	// configuration object](#operation/create-credential-config) that uses the
 	// IAM role's ARN. 3. **Create log delivery configuration**: Using
@@ -97,13 +94,11 @@ type AccountClient struct {
 	// configurations per account.
 	//
 	// For billable usage delivery: * For more information about billable usage
-	// logs, see [Billable usage log
-	// delivery](https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html).
-	// For the CSV schema, see the [Usage
-	// page](https://docs.databricks.com/administration-guide/account-settings/usage.html).
-	// * The delivery location is `<bucket-name>/<prefix>/billable-usage/csv/`,
-	// where `<prefix>` is the name of the optional delivery path prefix you set
-	// up during log delivery configuration. Files are named
+	// logs, see [Billable usage log delivery]. For the CSV schema, see the
+	// [Usage page]. * The delivery location is
+	// `<bucket-name>/<prefix>/billable-usage/csv/`, where `<prefix>` is the
+	// name of the optional delivery path prefix you set up during log delivery
+	// configuration. Files are named
 	// `workspaceId=<workspace-id>-usageMonth=<month>.csv`. * All billable usage
 	// logs apply to specific workspaces (_workspace level_ logs). You can
 	// aggregate usage for your entire account by creating an _account level_
@@ -112,10 +107,8 @@ type AccountClient struct {
 	// overwriting the month's CSV file for each workspace.
 	//
 	// For audit log delivery: * For more information about about audit log
-	// delivery, see [Audit log
-	// delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html),
-	// which includes information about the used JSON schema. * The delivery
-	// location is
+	// delivery, see [Audit log delivery], which includes information about the
+	// used JSON schema. * The delivery location is
 	// `<bucket-name>/<delivery-path-prefix>/workspaceId=<workspaceId>/date=<yyyy-mm-dd>/auditlogs_<internal-id>.json`.
 	// Files may get overwritten with the same content multiple times to achieve
 	// exactly-once delivery. * If the audit log delivery configuration included
@@ -123,10 +116,14 @@ type AccountClient struct {
 	// workspaces are delivered. If the log delivery configuration applies to
 	// the entire account (_account level_ delivery configuration), the audit
 	// log delivery includes workspace-level audit logs for all workspaces in
-	// the account as well as account-level audit logs. See [Audit log
-	// delivery](https://docs.databricks.com/administration-guide/account-settings/audit-logs.html)
+	// the account as well as account-level audit logs. See [Audit log delivery]
 	// for details. * Auditable events are typically available in logs within 15
 	// minutes.
+	//
+	// [Audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+	// [Billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+	// [Usage page]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+	// [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html
 	LogDelivery *billing.LogDeliveryAPI
 
 	// These APIs manage network configurations for customer-managed VPCs
@@ -141,8 +138,9 @@ type AccountClient struct {
 	// include the ID for a private access settings object is in its workspace
 	// configuration object. Your account must be enabled for PrivateLink to use
 	// these APIs. Before configuring PrivateLink, it is important to read the
-	// [Databricks article about
-	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+	// [Databricks article about PrivateLink].
+	//
+	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	PrivateAccess *deployment.PrivateAccessAPI
 
 	// Identities for use with jobs, automated tools, and systems such as
@@ -184,8 +182,9 @@ type AccountClient struct {
 	// back-end secure cluster connectivity relay from the data plane. Your
 	// account must be enabled for PrivateLink to use these APIs. Before
 	// configuring PrivateLink, it is important to read the [Databricks article
-	// about
-	// PrivateLink](https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html).
+	// about PrivateLink].
+	//
+	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	VpcEndpoints *deployment.VpcEndpointsAPI
 
 	// Databricks Workspace Assignment REST API

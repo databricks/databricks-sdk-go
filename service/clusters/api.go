@@ -733,9 +733,10 @@ func NewInstanceProfiles(client *client.DatabricksClient) *InstanceProfilesAPI {
 
 // The Instance Profiles API allows admins to add, list, and remove instance
 // profiles that users can launch clusters with. Regular users can list the
-// instance profiles available to them. See [Secure access to S3
-// buckets](https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html)
-// using instance profiles for more information.
+// instance profiles available to them. See [Secure access to S3 buckets] using
+// instance profiles for more information.
+//
+// [Secure access to S3 buckets]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html
 type InstanceProfilesAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(InstanceProfilesService)
@@ -770,14 +771,15 @@ func (a *InstanceProfilesAPI) Add(ctx context.Context, request AddInstanceProfil
 //
 // * Your role name and instance profile name do not match. The name is the part
 // after the last slash in each ARN. * You want to use the instance profile with
-// [Databricks SQL
-// Serverless](https://docs.databricks.com/sql/admin/serverless.html).
+// [Databricks SQL Serverless].
 //
 // To understand where these fields are in the AWS console, see [Enable
-// serverless SQL
-// warehouses](https://docs.databricks.com/sql/admin/serverless.html).
+// serverless SQL warehouses].
 //
 // This API is only available to admin users.
+//
+// [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
+// [Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html
 func (a *InstanceProfilesAPI) Edit(ctx context.Context, request InstanceProfile) error {
 	return a.impl.Edit(ctx, request)
 }

@@ -43,14 +43,16 @@ type Alert struct {
 type AlertOptions struct {
 	// Name of column in the query result to compare in alert evaluation.
 	Column string `json:"column"`
-	// Custom body of alert notification, if it exists. See
-	// [here](https://docs.databricks.com/sql/user/alerts/index.html) for custom
+	// Custom body of alert notification, if it exists. See [here] for custom
 	// templating instructions.
+	//
+	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	CustomBody string `json:"custom_body,omitempty"`
 	// Custom subject of alert notification, if it exists. This includes email
-	// subject, Slack notification header, etc. See
-	// [here](https://docs.databricks.com/sql/user/alerts/index.html) for custom
-	// templating instructions.
+	// subject, Slack notification header, etc. See [here] for custom templating
+	// instructions.
+	//
+	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	CustomSubject string `json:"custom_subject,omitempty"`
 	// Whether or not the alert is muted. If an alert is muted, it will not
 	// notify users and alert destinations when triggered.
@@ -218,8 +220,9 @@ type DeleteScheduleRequest struct {
 }
 
 // Alert destination subscribed to the alert, if it exists. Alert destinations
-// can be configured by admins through the UI. See
-// [here](https://docs.databricks.com/sql/admin/alert-destinations.html).
+// can be configured by admins through the UI. See [here].
+//
+// [here]: https://docs.databricks.com/sql/admin/alert-destinations.html
 type Destination struct {
 	// ID of the alert destination.
 	Id string `json:"id,omitempty"`
@@ -583,8 +586,9 @@ type Subscription struct {
 	// ID of the alert.
 	AlertId string `json:"alert_id,omitempty"`
 	// Alert destination subscribed to the alert, if it exists. Alert
-	// destinations can be configured by admins through the UI. See
-	// [here](https://docs.databricks.com/sql/admin/alert-destinations.html).
+	// destinations can be configured by admins through the UI. See [here].
+	//
+	// [here]: https://docs.databricks.com/sql/admin/alert-destinations.html
 	Destination *Destination `json:"destination,omitempty"`
 	// ID of the alert subscription.
 	Id string `json:"id,omitempty"`
