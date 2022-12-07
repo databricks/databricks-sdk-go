@@ -85,8 +85,9 @@ func (c *DatabricksClient) ConfiguredAccountID() string {
 }
 
 // Do sends an HTTP request against path.
-func (c *DatabricksClient) Do(ctx context.Context, method string, path string, request interface{}, response interface{}) error {
-	body, err := c.perform(ctx, method, path, request, c.completeUrl)
+func (c *DatabricksClient) Do(ctx context.Context, method, path string,
+	request, response any, visitors ...func(*http.Request) error) error {
+	body, err := c.perform(ctx, method, path, request, visitors...)
 	if err != nil {
 		return err
 	}
@@ -225,6 +226,7 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 		return nil, fmt.Errorf("request marshal: %w", err)
 	}
 	visitors = append([]func(*http.Request) error{
+		c.completeUrl,
 		c.Config.Authenticate,
 		c.addAuthHeaderToUserAgent,
 	}, visitors...)
