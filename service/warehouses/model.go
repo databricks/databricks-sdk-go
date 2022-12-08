@@ -219,10 +219,6 @@ type EditWarehouseRequest struct {
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
 	// - 2X-Large - 3X-Large - 4X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
-	// Needed for backwards compatibility. config.conf is json_inlined. We need
-	// to keep confs here to make sure json calls with 'confs' explicitly
-	// specified continue to work as is.
-	Confs any/* MISSING TYPE */ `json:"confs,omitempty"`
 	// endpoint creator name
 	CreatorName string `json:"creator_name,omitempty"`
 	// Configures whether the endpoint should use Databricks Compute (aka

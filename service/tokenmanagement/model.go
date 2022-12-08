@@ -10,7 +10,7 @@ type CreateOboTokenRequest struct {
 	// Comment that describes the purpose of the token.
 	Comment string `json:"comment"`
 	// The number of seconds before the token expires.
-	LifetimeSeconds any/* MISSING TYPE */ `json:"lifetime_seconds"`
+	LifetimeSeconds int64 `json:"lifetime_seconds"`
 }
 
 type CreateOboTokenResponse struct {
