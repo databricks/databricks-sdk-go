@@ -202,7 +202,7 @@ type Results struct {
 	// The cause of the error
 	Cause string `json:"cause,omitempty"`
 
-	Data any/* MISSING TYPE */ `json:"data,omitempty"`
+	Data any `json:"data,omitempty"`
 	// The image filename
 	FileName string `json:"fileName,omitempty"`
 
@@ -215,7 +215,7 @@ type Results struct {
 
 	ResultType ResultType `json:"resultType,omitempty"`
 	// The table schema
-	Schema [][]any/* MISSING TYPE */ `json:"schema,omitempty"`
+	Schema [][]any `json:"schema,omitempty"`
 	// The summary of the error
 	Summary string `json:"summary,omitempty"`
 	// true if partial results are returned.

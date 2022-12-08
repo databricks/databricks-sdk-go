@@ -462,7 +462,7 @@ type PipelineStateInfo struct {
 type PipelineTrigger struct {
 	Cron *CronTrigger `json:"cron,omitempty"`
 
-	Manual any/* MISSING TYPE */ `json:"manual,omitempty"`
+	Manual any `json:"manual,omitempty"`
 }
 
 // Reset a pipeline

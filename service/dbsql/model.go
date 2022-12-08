@@ -207,7 +207,7 @@ type DataSource struct {
 	// <needs content>
 	PauseReason string `json:"pause_reason,omitempty"`
 	// <needs content>
-	Paused any/* MISSING TYPE */ `json:"paused,omitempty"`
+	Paused int `json:"paused,omitempty"`
 	// <needs content>
 	SupportsAutoLimit bool `json:"supports_auto_limit,omitempty"`
 	// <needs content>
@@ -673,13 +673,13 @@ type Query struct {
 
 type QueryInterval struct {
 	// For weekly runs, the day of the week to start the run.
-	DayOfWeek any/* MISSING TYPE */ `json:"day_of_week,omitempty"`
+	DayOfWeek string `json:"day_of_week,omitempty"`
 	// Integer number of seconds between runs.
 	Interval int `json:"interval,omitempty"`
 	// For daily, weekly, and monthly runs, the time of day to start the run.
-	Time any/* MISSING TYPE */ `json:"time,omitempty"`
+	Time string `json:"time,omitempty"`
 	// A date after which this schedule no longer applies.
-	Until any/* MISSING TYPE */ `json:"until,omitempty"`
+	Until string `json:"until,omitempty"`
 }
 
 type QueryOptions struct {
@@ -702,7 +702,7 @@ type QueryPostContent struct {
 	// Exclusively used for storing a list parameter definitions. A parameter is
 	// an object with `title`, `name`, `type`, and `value` properties. The
 	// `value` field here is the default value. It can be overridden at runtime.
-	Options any/* MISSING TYPE */ `json:"options,omitempty"`
+	Options any `json:"options,omitempty"`
 	// The text of the query.
 	Query string `json:"query,omitempty"`
 
@@ -848,7 +848,7 @@ type Visualization struct {
 	// The options object varies widely from one visualization type to the next
 	// and is unsupported. Databricks does not recommend modifying visualization
 	// settings in JSON.
-	Options any/* MISSING TYPE */ `json:"options,omitempty"`
+	Options any `json:"options,omitempty"`
 	// The type of visualization: chart, table, pivot table, and so on.
 	Type string `json:"type,omitempty"`
 
@@ -881,10 +881,10 @@ type WidgetOptions struct {
 	// How parameters used by the visualization in this widget relate to other
 	// widgets on the dashboard. Databricks does not recommend modifying this
 	// definition in JSON.
-	ParameterMappings any/* MISSING TYPE */ `json:"parameterMappings,omitempty"`
+	ParameterMappings any `json:"parameterMappings,omitempty"`
 	// Coordinates of this widget on a dashboard. This portion of the API
 	// changes frequently and is unsupported.
-	Position any/* MISSING TYPE */ `json:"position,omitempty"`
+	Position any `json:"position,omitempty"`
 	// If this is a textbox widget, the application displays this text. This
 	// field is ignored if the widget contains a visualization in the
 	// `visualization` field.

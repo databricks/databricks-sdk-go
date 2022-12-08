@@ -7,21 +7,10 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/service/libraries"
+	"github.com/databricks/databricks-sdk-go/service/permissions"
 )
 
 // all definitions in this file are in alphabetical order
-
-type AccessControlRequest struct {
-	// Group name. There are two built-in groups: `users` for all users, and
-	// `admins` for administrators.
-	GroupName string `json:"group_name,omitempty"`
-	// This describes an enum
-	PermissionLevel any/* MISSING TYPE */ `json:"permission_level,omitempty"`
-	// Name of an Azure service principal.
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-	// Email address for the user.
-	UserName string `json:"user_name,omitempty"`
-}
 
 type CancelAllRuns struct {
 	// The canonical identifier of the job to cancel all runs of. This field is
@@ -70,7 +59,7 @@ type ClusterSpec struct {
 
 type CreateJob struct {
 	// List of permissions to set on the job.
-	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
+	AccessControlList []permissions.AccessControlRequest `json:"access_control_list,omitempty"`
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted. The default
 	// behavior is to not send any emails.
@@ -119,6 +108,9 @@ type CreateJob struct {
 	// An optional timeout applied to each run of this job. The default behavior
 	// is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// A collection of system notification IDs to notify when the run begins or
+	// completes. The default behavior is to not send any system notifications.
+	WebhookNotifications *JobWebhookNotifications `json:"webhook_notifications,omitempty"`
 }
 
 // Used to tell what is the format of the job. This field is ignored in
@@ -202,7 +194,7 @@ func (csps *CronSchedulePauseStatus) Type() string {
 type DbtOutput struct {
 	// An optional map of headers to send when retrieving the artifact from the
 	// `artifacts_link`.
-	ArtifactsHeaders any/* MISSING TYPE */ `json:"artifacts_headers,omitempty"`
+	ArtifactsHeaders any `json:"artifacts_headers,omitempty"`
 	// A pre-signed URL to download the (compressed) dbt artifacts. This link is
 	// valid for a limited time (30 minutes). This information is only available
 	// after the run has finished.
@@ -455,6 +447,9 @@ type JobSettings struct {
 	// An optional timeout applied to each run of this job. The default behavior
 	// is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// A collection of system notification IDs to notify when the run begins or
+	// completes. The default behavior is to not send any system notifications.
+	WebhookNotifications *JobWebhookNotifications `json:"webhook_notifications,omitempty"`
 }
 
 // Used to tell what is the format of the job. This field is ignored in
@@ -554,6 +549,31 @@ type JobTaskSettings struct {
 	// An optional timeout applied to each run of this job task. The default
 	// behavior is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+}
+
+type JobWebhookNotifications struct {
+	// An optional list of system notification IDs to call when the run fails. A
+	// maximum of 3 destinations can be specified for the `on_failure` property.
+	OnFailure []JobWebhookNotificationsOnFailureItem `json:"on_failure,omitempty"`
+	// An optional list of system notification IDs to call when the run starts.
+	// A maximum of 3 destinations can be specified for the `on_start` property.
+	OnStart []JobWebhookNotificationsOnStartItem `json:"on_start,omitempty"`
+	// An optional list of system notification IDs to call when the run
+	// completes successfully. A maximum of 3 destinations can be specified for
+	// the `on_success` property.
+	OnSuccess []JobWebhookNotificationsOnSuccessItem `json:"on_success,omitempty"`
+}
+
+type JobWebhookNotificationsOnFailureItem struct {
+	Id string `json:"id,omitempty"`
+}
+
+type JobWebhookNotificationsOnStartItem struct {
+	Id string `json:"id,omitempty"`
+}
+
+type JobWebhookNotificationsOnSuccessItem struct {
+	Id string `json:"id,omitempty"`
 }
 
 // List all jobs
@@ -682,7 +702,7 @@ type NotebookTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-widgets
-	BaseParameters map[string]any/* MISSING TYPE */ `json:"base_parameters,omitempty"`
+	BaseParameters map[string]any `json:"base_parameters,omitempty"`
 	// The path of the notebook to be run in the Databricks workspace or remote
 	// repository. For notebooks stored in the Databricks workspace, the path
 	// must be absolute and begin with a slash. For notebooks stored in a remote
@@ -742,7 +762,7 @@ type PythonWheelTask struct {
 	// Command-line parameters passed to Python wheel task in the form of
 	// `["--name=task", "--data=dbfs:/path/to/data.json"]`. Leave it empty if
 	// `parameters` is not null.
-	NamedParameters any/* MISSING TYPE */ `json:"named_parameters,omitempty"`
+	NamedParameters any `json:"named_parameters,omitempty"`
 	// Name of the package to execute
 	PackageName string `json:"package_name,omitempty"`
 	// Command-line parameters passed to Python wheel task. Leave it empty if
@@ -889,7 +909,7 @@ type RepairRun struct {
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
-	SqlParams any/* MISSING TYPE */ `json:"sql_params,omitempty"`
+	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
 type RepairRunResponse struct {
@@ -991,6 +1011,9 @@ type Run struct {
 // This describes an enum
 type RunLifeCycleState string
 
+// The run is blocked on an upstream dependency.
+const RunLifeCycleStateBlocked RunLifeCycleState = `BLOCKED`
+
 // An exceptional state that indicates a failure in the Jobs service, such as
 // network failure over a long period. If a run on a new cluster ends in the
 // `INTERNAL_ERROR` state, the Jobs service terminates the cluster as soon as
@@ -1018,6 +1041,9 @@ const RunLifeCycleStateTerminated RunLifeCycleState = `TERMINATED`
 // being cleaned up.
 const RunLifeCycleStateTerminating RunLifeCycleState = `TERMINATING`
 
+// The run is waiting for a retry.
+const RunLifeCycleStateWaitingForRetry RunLifeCycleState = `WAITING_FOR_RETRY`
+
 // String representation for [fmt.Print]
 func (rlcs *RunLifeCycleState) String() string {
 	return string(*rlcs)
@@ -1026,11 +1052,11 @@ func (rlcs *RunLifeCycleState) String() string {
 // Set raw string value and validate it against allowed values
 func (rlcs *RunLifeCycleState) Set(v string) error {
 	switch v {
-	case `INTERNAL_ERROR`, `PENDING`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`:
+	case `BLOCKED`, `INTERNAL_ERROR`, `PENDING`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`, `WAITING_FOR_RETRY`:
 		*rlcs = RunLifeCycleState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "INTERNAL_ERROR", "PENDING", "RUNNING", "SKIPPED", "TERMINATED", "TERMINATING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "INTERNAL_ERROR", "PENDING", "RUNNING", "SKIPPED", "TERMINATED", "TERMINATING", "WAITING_FOR_RETRY"`, v)
 	}
 }
 
@@ -1137,7 +1163,7 @@ type RunNow struct {
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
-	SqlParams any/* MISSING TYPE */ `json:"sql_params,omitempty"`
+	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
 type RunNowResponse struct {
@@ -1265,7 +1291,7 @@ type RunParameters struct {
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
-	SqlParams any/* MISSING TYPE */ `json:"sql_params,omitempty"`
+	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
 // This describes an enum
@@ -1626,7 +1652,7 @@ type SqlTask struct {
 	Dashboard *SqlTaskDashboard `json:"dashboard,omitempty"`
 	// Parameters to be used for each run of this job. The SQL alert task does
 	// not support custom parameters.
-	Parameters any/* MISSING TYPE */ `json:"parameters,omitempty"`
+	Parameters any `json:"parameters,omitempty"`
 	// If query, indicates that this job must execute a SQL query.
 	Query *SqlTaskQuery `json:"query,omitempty"`
 	// The canonical identifier of the SQL warehouse. Only serverless and pro
@@ -1651,7 +1677,7 @@ type SqlTaskQuery struct {
 
 type SubmitRun struct {
 	// List of permissions to set on the job.
-	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
+	AccessControlList []permissions.AccessControlRequest `json:"access_control_list,omitempty"`
 	// An optional specification for a remote repository containing the
 	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
@@ -1678,6 +1704,9 @@ type SubmitRun struct {
 	// An optional timeout applied to each run of this job. The default behavior
 	// is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// A collection of system notification IDs to notify when the run begins or
+	// completes. The default behavior is to not send any system notifications.
+	WebhookNotifications *JobWebhookNotifications `json:"webhook_notifications,omitempty"`
 }
 
 type SubmitRunResponse struct {
