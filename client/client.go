@@ -104,7 +104,7 @@ func (c *DatabricksClient) unmarshall(path string, body []byte, response interfa
 	return json.Unmarshal(body, &response)
 }
 
-func (c *DatabricksClient) completeUrl(r *http.Request) error {
+func (c *DatabricksClient) addHostToRequestUrl(r *http.Request) error {
 	if r.URL == nil {
 		return fmt.Errorf("no URL found in request")
 	}
@@ -226,8 +226,8 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 		return nil, fmt.Errorf("request marshal: %w", err)
 	}
 	visitors = append([]func(*http.Request) error{
-		c.completeUrl,
 		c.Config.Authenticate,
+		c.addHostToRequestUrl,
 		c.addAuthHeaderToUserAgent,
 	}, visitors...)
 	resp, err := retries.Poll(ctx, c.retryTimeout,
