@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -30,6 +31,9 @@ func (c *DefaultCredentials) Name() string {
 	return c.name
 }
 
+// ErrCannotConfigureAuth (experimental) is returned when no auth is configured
+var ErrCannotConfigureAuth = errors.New("cannot configure default credentials")
+
 func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
 	for _, p := range authProviders {
 		if cfg.AuthType != "" && p.Name() != cfg.AuthType {
@@ -48,5 +52,5 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		c.name = p.Name()
 		return visitor, nil
 	}
-	return nil, fmt.Errorf("cannot configure default credentials")
+	return nil, ErrCannotConfigureAuth
 }
