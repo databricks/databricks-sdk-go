@@ -2,6 +2,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -152,11 +153,22 @@ func (r *Render) Run() error {
 		formatter = strings.ReplaceAll(formatter, "$FILENAMES",
 			strings.Join(filenames, " "))
 		split := strings.Split(formatter, " ")
+
+		// create pipe to forward stdout and stderr to same fd,
+		// so that it's clear why formatter failed.
+		reader, writer := io.Pipe()
+		out := bytes.NewBuffer([]byte{})
+		go io.Copy(out, reader)
+		defer reader.Close()
+		defer writer.Close()
+
 		cmd := exec.Command(split[0], split[1:]...)
 		cmd.Dir = r.ctx.Target
+		cmd.Stdout = writer
+		cmd.Stderr = writer
 		err := cmd.Run()
 		if err != nil {
-			return fmt.Errorf("%s: %w", formatter, err)
+			return fmt.Errorf("%s:\n%s", formatter, out.Bytes())
 		}
 	}
 	return nil
