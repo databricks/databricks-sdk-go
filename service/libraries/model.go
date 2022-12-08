@@ -2,6 +2,8 @@
 
 package libraries
 
+import "fmt"
+
 // all definitions in this file are in alphabetical order
 
 type ClusterLibraryStatuses struct {
@@ -81,6 +83,27 @@ const LibraryFullStatusStatusResolving LibraryFullStatusStatus = `RESOLVING`
 const LibraryFullStatusStatusSkipped LibraryFullStatusStatus = `SKIPPED`
 
 const LibraryFullStatusStatusUninstallOnRestart LibraryFullStatusStatus = `UNINSTALL_ON_RESTART`
+
+// String representation for [fmt.Print]
+func (lfss *LibraryFullStatusStatus) String() string {
+	return string(*lfss)
+}
+
+// Set raw string value and validate it against allowed values
+func (lfss *LibraryFullStatusStatus) Set(v string) error {
+	switch v {
+	case `FAILED`, `INSTALLED`, `INSTALLING`, `PENDING`, `RESOLVING`, `SKIPPED`, `UNINSTALL_ON_RESTART`:
+		*lfss = LibraryFullStatusStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FAILED", "INSTALLED", "INSTALLING", "PENDING", "RESOLVING", "SKIPPED", "UNINSTALL_ON_RESTART"`, v)
+	}
+}
+
+// Type always returns LibraryFullStatusStatus to satisfy [pflag.Value] interface
+func (lfss *LibraryFullStatusStatus) Type() string {
+	return "LibraryFullStatusStatus"
+}
 
 type ListAllClusterLibraryStatusesResponse struct {
 	// A list of cluster statuses.

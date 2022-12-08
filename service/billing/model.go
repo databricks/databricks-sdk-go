@@ -2,6 +2,8 @@
 
 package billing
 
+import "fmt"
+
 // all definitions in this file are in alphabetical order
 
 // Budget configuration to be created.
@@ -200,6 +202,27 @@ const DeliveryStatusSystemFailure DeliveryStatus = `SYSTEM_FAILURE`
 // customer provided permissions on role or storage.
 const DeliveryStatusUserFailure DeliveryStatus = `USER_FAILURE`
 
+// String representation for [fmt.Print]
+func (ds *DeliveryStatus) String() string {
+	return string(*ds)
+}
+
+// Set raw string value and validate it against allowed values
+func (ds *DeliveryStatus) Set(v string) error {
+	switch v {
+	case `CREATED`, `NOT_FOUND`, `SUCCEEDED`, `SYSTEM_FAILURE`, `USER_FAILURE`:
+		*ds = DeliveryStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CREATED", "NOT_FOUND", "SUCCEEDED", "SYSTEM_FAILURE", "USER_FAILURE"`, v)
+	}
+}
+
+// Type always returns DeliveryStatus to satisfy [pflag.Value] interface
+func (ds *DeliveryStatus) Type() string {
+	return "DeliveryStatus"
+}
+
 // Return billable usage logs
 type DownloadRequest struct {
 	// Format: `YYYY-MM`. Last month to return billable usage logs for. This
@@ -246,6 +269,27 @@ type LogDeliveryConfigStatus string
 const LogDeliveryConfigStatusDisabled LogDeliveryConfigStatus = `DISABLED`
 
 const LogDeliveryConfigStatusEnabled LogDeliveryConfigStatus = `ENABLED`
+
+// String representation for [fmt.Print]
+func (ldcs *LogDeliveryConfigStatus) String() string {
+	return string(*ldcs)
+}
+
+// Set raw string value and validate it against allowed values
+func (ldcs *LogDeliveryConfigStatus) Set(v string) error {
+	switch v {
+	case `DISABLED`, `ENABLED`:
+		*ldcs = LogDeliveryConfigStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DISABLED", "ENABLED"`, v)
+	}
+}
+
+// Type always returns LogDeliveryConfigStatus to satisfy [pflag.Value] interface
+func (ldcs *LogDeliveryConfigStatus) Type() string {
+	return "LogDeliveryConfigStatus"
+}
 
 type LogDeliveryConfiguration struct {
 	// The Databricks account ID that hosts the log delivery configuration.
@@ -365,6 +409,27 @@ const LogTypeAuditLogs LogType = `AUDIT_LOGS`
 
 const LogTypeBillableUsage LogType = `BILLABLE_USAGE`
 
+// String representation for [fmt.Print]
+func (lt *LogType) String() string {
+	return string(*lt)
+}
+
+// Set raw string value and validate it against allowed values
+func (lt *LogType) Set(v string) error {
+	switch v {
+	case `AUDIT_LOGS`, `BILLABLE_USAGE`:
+		*lt = LogType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AUDIT_LOGS", "BILLABLE_USAGE"`, v)
+	}
+}
+
+// Type always returns LogType to satisfy [pflag.Value] interface
+func (lt *LogType) Type() string {
+	return "LogType"
+}
+
 // The file type of log delivery.
 //
 // * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV
@@ -380,6 +445,27 @@ type OutputFormat string
 const OutputFormatCsv OutputFormat = `CSV`
 
 const OutputFormatJson OutputFormat = `JSON`
+
+// String representation for [fmt.Print]
+func (of *OutputFormat) String() string {
+	return string(*of)
+}
+
+// Set raw string value and validate it against allowed values
+func (of *OutputFormat) Set(v string) error {
+	switch v {
+	case `CSV`, `JSON`:
+		*of = OutputFormat(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CSV", "JSON"`, v)
+	}
+}
+
+// Type always returns OutputFormat to satisfy [pflag.Value] interface
+func (of *OutputFormat) Type() string {
+	return "OutputFormat"
+}
 
 type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Databricks log delivery configuration ID

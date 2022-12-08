@@ -2,6 +2,8 @@
 
 package workspace
 
+import "fmt"
+
 // all definitions in this file are in alphabetical order
 
 type Delete struct {
@@ -44,6 +46,27 @@ const ExportFormatJupyter ExportFormat = `JUPYTER`
 const ExportFormatRMarkdown ExportFormat = `R_MARKDOWN`
 
 const ExportFormatSource ExportFormat = `SOURCE`
+
+// String representation for [fmt.Print]
+func (ef *ExportFormat) String() string {
+	return string(*ef)
+}
+
+// Set raw string value and validate it against allowed values
+func (ef *ExportFormat) Set(v string) error {
+	switch v {
+	case `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
+		*ef = ExportFormat(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DBC", "HTML", "JUPYTER", "R_MARKDOWN", "SOURCE"`, v)
+	}
+}
+
+// Type always returns ExportFormat to satisfy [pflag.Value] interface
+func (ef *ExportFormat) Type() string {
+	return "ExportFormat"
+}
 
 type ExportResponse struct {
 	// The base64-encoded content. If the limit (10MB) is exceeded, exception
@@ -91,6 +114,27 @@ const LanguageR Language = `R`
 const LanguageScala Language = `SCALA`
 
 const LanguageSql Language = `SQL`
+
+// String representation for [fmt.Print]
+func (l *Language) String() string {
+	return string(*l)
+}
+
+// Set raw string value and validate it against allowed values
+func (l *Language) Set(v string) error {
+	switch v {
+	case `PYTHON`, `R`, `SCALA`, `SQL`:
+		*l = Language(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PYTHON", "R", "SCALA", "SQL"`, v)
+	}
+}
+
+// Type always returns Language to satisfy [pflag.Value] interface
+func (l *Language) Type() string {
+	return "Language"
+}
 
 // List contents
 type List struct {
@@ -142,3 +186,24 @@ const ObjectTypeLibrary ObjectType = `LIBRARY`
 const ObjectTypeNotebook ObjectType = `NOTEBOOK`
 
 const ObjectTypeRepo ObjectType = `REPO`
+
+// String representation for [fmt.Print]
+func (ot *ObjectType) String() string {
+	return string(*ot)
+}
+
+// Set raw string value and validate it against allowed values
+func (ot *ObjectType) Set(v string) error {
+	switch v {
+	case `DIRECTORY`, `FILE`, `LIBRARY`, `NOTEBOOK`, `REPO`:
+		*ot = ObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DIRECTORY", "FILE", "LIBRARY", "NOTEBOOK", "REPO"`, v)
+	}
+}
+
+// Type always returns ObjectType to satisfy [pflag.Value] interface
+func (ot *ObjectType) Type() string {
+	return "ObjectType"
+}

@@ -2,6 +2,8 @@
 
 package deployment
 
+import "fmt"
+
 // all definitions in this file are in alphabetical order
 
 type AwsCredentials struct {
@@ -341,6 +343,27 @@ const EndpointUseCaseDataplaneRelayAccess EndpointUseCase = `DATAPLANE_RELAY_ACC
 
 const EndpointUseCaseWorkspaceAccess EndpointUseCase = `WORKSPACE_ACCESS`
 
+// String representation for [fmt.Print]
+func (euc *EndpointUseCase) String() string {
+	return string(*euc)
+}
+
+// Set raw string value and validate it against allowed values
+func (euc *EndpointUseCase) Set(v string) error {
+	switch v {
+	case `DATAPLANE_RELAY_ACCESS`, `WORKSPACE_ACCESS`:
+		*euc = EndpointUseCase(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DATAPLANE_RELAY_ACCESS", "WORKSPACE_ACCESS"`, v)
+	}
+}
+
+// Type always returns EndpointUseCase to satisfy [pflag.Value] interface
+func (euc *EndpointUseCase) Type() string {
+	return "EndpointUseCase"
+}
+
 // The AWS resource associated with this error: credentials, VPC, subnet,
 // security group, or network ACL.
 type ErrorType string
@@ -354,6 +377,27 @@ const ErrorTypeSecuritygroup ErrorType = `securityGroup`
 const ErrorTypeSubnet ErrorType = `subnet`
 
 const ErrorTypeVpc ErrorType = `vpc`
+
+// String representation for [fmt.Print]
+func (et *ErrorType) String() string {
+	return string(*et)
+}
+
+// Set raw string value and validate it against allowed values
+func (et *ErrorType) Set(v string) error {
+	switch v {
+	case `credentials`, `networkAcl`, `securityGroup`, `subnet`, `vpc`:
+		*et = ErrorType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "credentials", "networkAcl", "securityGroup", "subnet", "vpc"`, v)
+	}
+}
+
+// Type always returns ErrorType to satisfy [pflag.Value] interface
+func (et *ErrorType) Type() string {
+	return "ErrorType"
+}
 
 // The common network configuration fields that can be used by both
 // Databricks-managed VPCs and customer-managed VPCs.
@@ -481,6 +525,27 @@ const GkeConnectivityTypePrivateNodePublicMaster GkeConnectivityType = `PRIVATE_
 
 const GkeConnectivityTypePublicNodePublicMaster GkeConnectivityType = `PUBLIC_NODE_PUBLIC_MASTER`
 
+// String representation for [fmt.Print]
+func (gct *GkeConnectivityType) String() string {
+	return string(*gct)
+}
+
+// Set raw string value and validate it against allowed values
+func (gct *GkeConnectivityType) Set(v string) error {
+	switch v {
+	case `PRIVATE_NODE_PUBLIC_MASTER`, `PUBLIC_NODE_PUBLIC_MASTER`:
+		*gct = GkeConnectivityType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PRIVATE_NODE_PUBLIC_MASTER", "PUBLIC_NODE_PUBLIC_MASTER"`, v)
+	}
+}
+
+// Type always returns GkeConnectivityType to satisfy [pflag.Value] interface
+func (gct *GkeConnectivityType) Type() string {
+	return "GkeConnectivityType"
+}
+
 type KeyStatus string
 
 const KeyStatusAttached KeyStatus = `ATTACHED`
@@ -488,6 +553,27 @@ const KeyStatusAttached KeyStatus = `ATTACHED`
 const KeyStatusDetached KeyStatus = `DETACHED`
 
 const KeyStatusUnknown KeyStatus = `UNKNOWN`
+
+// String representation for [fmt.Print]
+func (ks *KeyStatus) String() string {
+	return string(*ks)
+}
+
+// Set raw string value and validate it against allowed values
+func (ks *KeyStatus) Set(v string) error {
+	switch v {
+	case `ATTACHED`, `DETACHED`, `UNKNOWN`:
+		*ks = KeyStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ATTACHED", "DETACHED", "UNKNOWN"`, v)
+	}
+}
+
+// Type always returns KeyStatus to satisfy [pflag.Value] interface
+func (ks *KeyStatus) Type() string {
+	return "KeyStatus"
+}
 
 // This describes an enum
 type KeyUseCase string
@@ -498,6 +584,27 @@ const KeyUseCaseManagedServices KeyUseCase = `MANAGED_SERVICES`
 // Encrypts the workspace's root S3 bucket (root DBFS and system data) and,
 // optionally, cluster EBS volumes.
 const KeyUseCaseStorage KeyUseCase = `STORAGE`
+
+// String representation for [fmt.Print]
+func (kuc *KeyUseCase) String() string {
+	return string(*kuc)
+}
+
+// Set raw string value and validate it against allowed values
+func (kuc *KeyUseCase) Set(v string) error {
+	switch v {
+	case `MANAGED_SERVICES`, `STORAGE`:
+		*kuc = KeyUseCase(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MANAGED_SERVICES", "STORAGE"`, v)
+	}
+}
+
+// Type always returns KeyUseCase to satisfy [pflag.Value] interface
+func (kuc *KeyUseCase) Type() string {
+	return "KeyUseCase"
+}
 
 type ListWorkspaceEncryptionKeyRecordsResponse struct {
 	WorkspaceEncryptionKeyRecords []WorkspaceEncryptionKeyRecord `json:"workspaceEncryptionKeyRecords,omitempty"`
@@ -602,6 +709,27 @@ const PricingTierStandard PricingTier = `STANDARD`
 
 const PricingTierUnknown PricingTier = `UNKNOWN`
 
+// String representation for [fmt.Print]
+func (pt *PricingTier) String() string {
+	return string(*pt)
+}
+
+// Set raw string value and validate it against allowed values
+func (pt *PricingTier) Set(v string) error {
+	switch v {
+	case `COMMUNITY_EDITION`, `DEDICATED`, `ENTERPRISE`, `PREMIUM`, `STANDARD`, `UNKNOWN`:
+		*pt = PricingTier(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COMMUNITY_EDITION", "DEDICATED", "ENTERPRISE", "PREMIUM", "STANDARD", "UNKNOWN"`, v)
+	}
+}
+
+// Type always returns PricingTier to satisfy [pflag.Value] interface
+func (pt *PricingTier) Type() string {
+	return "PricingTier"
+}
+
 // The private access level controls which VPC endpoints can connect to the UI
 // or API of any workspace that attaches this private access settings object. *
 // `ANY` (deprecated): Any VPC endpoint can connect to your workspace. *
@@ -616,6 +744,27 @@ const PrivateAccessLevelAccount PrivateAccessLevel = `ACCOUNT`
 const PrivateAccessLevelAny PrivateAccessLevel = `ANY`
 
 const PrivateAccessLevelEndpoint PrivateAccessLevel = `ENDPOINT`
+
+// String representation for [fmt.Print]
+func (pal *PrivateAccessLevel) String() string {
+	return string(*pal)
+}
+
+// Set raw string value and validate it against allowed values
+func (pal *PrivateAccessLevel) Set(v string) error {
+	switch v {
+	case `ACCOUNT`, `ANY`, `ENDPOINT`:
+		*pal = PrivateAccessLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACCOUNT", "ANY", "ENDPOINT"`, v)
+	}
+}
+
+// Type always returns PrivateAccessLevel to satisfy [pflag.Value] interface
+func (pal *PrivateAccessLevel) Type() string {
+	return "PrivateAccessLevel"
+}
 
 type PrivateAccessSettings struct {
 	// The Databricks account ID that hosts the credential.
@@ -816,12 +965,54 @@ const VpcStatusValid VpcStatus = `VALID`
 // Warned.
 const VpcStatusWarned VpcStatus = `WARNED`
 
+// String representation for [fmt.Print]
+func (vs *VpcStatus) String() string {
+	return string(*vs)
+}
+
+// Set raw string value and validate it against allowed values
+func (vs *VpcStatus) Set(v string) error {
+	switch v {
+	case `BROKEN`, `UNATTACHED`, `VALID`, `WARNED`:
+		*vs = VpcStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BROKEN", "UNATTACHED", "VALID", "WARNED"`, v)
+	}
+}
+
+// Type always returns VpcStatus to satisfy [pflag.Value] interface
+func (vs *VpcStatus) Type() string {
+	return "VpcStatus"
+}
+
 // The AWS resource associated with this warning: a subnet or a security group.
 type WarningType string
 
 const WarningTypeSecuritygroup WarningType = `securityGroup`
 
 const WarningTypeSubnet WarningType = `subnet`
+
+// String representation for [fmt.Print]
+func (wt *WarningType) String() string {
+	return string(*wt)
+}
+
+// Set raw string value and validate it against allowed values
+func (wt *WarningType) Set(v string) error {
+	switch v {
+	case `securityGroup`, `subnet`:
+		*wt = WarningType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "securityGroup", "subnet"`, v)
+	}
+}
+
+// Type always returns WarningType to satisfy [pflag.Value] interface
+func (wt *WarningType) Type() string {
+	return "WarningType"
+}
 
 type Workspace struct {
 	// Databricks account ID.
@@ -916,3 +1107,24 @@ const WorkspaceStatusNotProvisioned WorkspaceStatus = `NOT_PROVISIONED`
 const WorkspaceStatusProvisioning WorkspaceStatus = `PROVISIONING`
 
 const WorkspaceStatusRunning WorkspaceStatus = `RUNNING`
+
+// String representation for [fmt.Print]
+func (ws *WorkspaceStatus) String() string {
+	return string(*ws)
+}
+
+// Set raw string value and validate it against allowed values
+func (ws *WorkspaceStatus) Set(v string) error {
+	switch v {
+	case `BANNED`, `CANCELLING`, `FAILED`, `NOT_PROVISIONED`, `PROVISIONING`, `RUNNING`:
+		*ws = WorkspaceStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BANNED", "CANCELLING", "FAILED", "NOT_PROVISIONED", "PROVISIONING", "RUNNING"`, v)
+	}
+}
+
+// Type always returns WorkspaceStatus to satisfy [pflag.Value] interface
+func (ws *WorkspaceStatus) Type() string {
+	return "WorkspaceStatus"
+}

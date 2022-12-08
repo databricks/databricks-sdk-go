@@ -2,6 +2,8 @@
 
 package scim
 
+import "fmt"
+
 // all definitions in this file are in alphabetical order
 
 type ComplexValue struct {
@@ -147,6 +149,27 @@ const ListSortOrderAscending ListSortOrder = `ascending`
 
 const ListSortOrderDescending ListSortOrder = `descending`
 
+// String representation for [fmt.Print]
+func (lso *ListSortOrder) String() string {
+	return string(*lso)
+}
+
+// Set raw string value and validate it against allowed values
+func (lso *ListSortOrder) Set(v string) error {
+	switch v {
+	case `ascending`, `descending`:
+		*lso = ListSortOrder(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ascending", "descending"`, v)
+	}
+}
+
+// Type always returns ListSortOrder to satisfy [pflag.Value] interface
+func (lso *ListSortOrder) Type() string {
+	return "ListSortOrder"
+}
+
 // List users
 type ListUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
@@ -215,6 +238,27 @@ const PatchOpAdd PatchOp = `add`
 const PatchOpRemove PatchOp = `remove`
 
 const PatchOpReplace PatchOp = `replace`
+
+// String representation for [fmt.Print]
+func (po *PatchOp) String() string {
+	return string(*po)
+}
+
+// Set raw string value and validate it against allowed values
+func (po *PatchOp) Set(v string) error {
+	switch v {
+	case `add`, `remove`, `replace`:
+		*po = PatchOp(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "add", "remove", "replace"`, v)
+	}
+}
+
+// Type always returns PatchOp to satisfy [pflag.Value] interface
+func (po *PatchOp) Type() string {
+	return "PatchOp"
+}
 
 type ServicePrincipal struct {
 	// If this user is active

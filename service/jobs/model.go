@@ -3,6 +3,8 @@
 package jobs
 
 import (
+	"fmt"
+
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/service/libraries"
 )
@@ -128,6 +130,27 @@ const CreateJobFormatMultiTask CreateJobFormat = `MULTI_TASK`
 
 const CreateJobFormatSingleTask CreateJobFormat = `SINGLE_TASK`
 
+// String representation for [fmt.Print]
+func (cjf *CreateJobFormat) String() string {
+	return string(*cjf)
+}
+
+// Set raw string value and validate it against allowed values
+func (cjf *CreateJobFormat) Set(v string) error {
+	switch v {
+	case `MULTI_TASK`, `SINGLE_TASK`:
+		*cjf = CreateJobFormat(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MULTI_TASK", "SINGLE_TASK"`, v)
+	}
+}
+
+// Type always returns CreateJobFormat to satisfy [pflag.Value] interface
+func (cjf *CreateJobFormat) Type() string {
+	return "CreateJobFormat"
+}
+
 type CreateResponse struct {
 	// The canonical identifier for the newly created job.
 	JobId int64 `json:"job_id,omitempty"`
@@ -154,6 +177,27 @@ type CronSchedulePauseStatus string
 const CronSchedulePauseStatusPaused CronSchedulePauseStatus = `PAUSED`
 
 const CronSchedulePauseStatusUnpaused CronSchedulePauseStatus = `UNPAUSED`
+
+// String representation for [fmt.Print]
+func (csps *CronSchedulePauseStatus) String() string {
+	return string(*csps)
+}
+
+// Set raw string value and validate it against allowed values
+func (csps *CronSchedulePauseStatus) Set(v string) error {
+	switch v {
+	case `PAUSED`, `UNPAUSED`:
+		*csps = CronSchedulePauseStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
+	}
+}
+
+// Type always returns CronSchedulePauseStatus to satisfy [pflag.Value] interface
+func (csps *CronSchedulePauseStatus) Type() string {
+	return "CronSchedulePauseStatus"
+}
 
 type DbtOutput struct {
 	// An optional map of headers to send when retrieving the artifact from the
@@ -290,6 +334,27 @@ const GitSourceGitProviderGitlab GitSourceGitProvider = `gitLab`
 
 const GitSourceGitProviderGitlabenterpriseedition GitSourceGitProvider = `gitLabEnterpriseEdition`
 
+// String representation for [fmt.Print]
+func (gsgp *GitSourceGitProvider) String() string {
+	return string(*gsgp)
+}
+
+// Set raw string value and validate it against allowed values
+func (gsgp *GitSourceGitProvider) Set(v string) error {
+	switch v {
+	case `awsCodeCommit`, `azureDevOpsServices`, `bitbucketCloud`, `bitbucketServer`, `gitHub`, `gitHubEnterprise`, `gitLab`, `gitLabEnterpriseEdition`:
+		*gsgp = GitSourceGitProvider(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "awsCodeCommit", "azureDevOpsServices", "bitbucketCloud", "bitbucketServer", "gitHub", "gitHubEnterprise", "gitLab", "gitLabEnterpriseEdition"`, v)
+	}
+}
+
+// Type always returns GitSourceGitProvider to satisfy [pflag.Value] interface
+func (gsgp *GitSourceGitProvider) Type() string {
+	return "GitSourceGitProvider"
+}
+
 type Job struct {
 	// The time at which this job was created in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC).
@@ -400,6 +465,27 @@ type JobSettingsFormat string
 const JobSettingsFormatMultiTask JobSettingsFormat = `MULTI_TASK`
 
 const JobSettingsFormatSingleTask JobSettingsFormat = `SINGLE_TASK`
+
+// String representation for [fmt.Print]
+func (jsf *JobSettingsFormat) String() string {
+	return string(*jsf)
+}
+
+// Set raw string value and validate it against allowed values
+func (jsf *JobSettingsFormat) Set(v string) error {
+	switch v {
+	case `MULTI_TASK`, `SINGLE_TASK`:
+		*jsf = JobSettingsFormat(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MULTI_TASK", "SINGLE_TASK"`, v)
+	}
+}
+
+// Type always returns JobSettingsFormat to satisfy [pflag.Value] interface
+func (jsf *JobSettingsFormat) Type() string {
+	return "JobSettingsFormat"
+}
 
 type JobTaskSettings struct {
 	// If dbt_task, indicates that this must execute a dbt task. It requires
@@ -546,6 +632,27 @@ const ListRunsRunTypeSubmitRun ListRunsRunType = `SUBMIT_RUN`
 // [dbutils.notebook.run](/dev-tools/databricks-utils.html#dbutils-workflow).
 const ListRunsRunTypeWorkflowRun ListRunsRunType = `WORKFLOW_RUN`
 
+// String representation for [fmt.Print]
+func (lrrt *ListRunsRunType) String() string {
+	return string(*lrrt)
+}
+
+// Set raw string value and validate it against allowed values
+func (lrrt *ListRunsRunType) Set(v string) error {
+	switch v {
+	case `JOB_RUN`, `SUBMIT_RUN`, `WORKFLOW_RUN`:
+		*lrrt = ListRunsRunType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "JOB_RUN", "SUBMIT_RUN", "WORKFLOW_RUN"`, v)
+	}
+}
+
+// Type always returns ListRunsRunType to satisfy [pflag.Value] interface
+func (lrrt *ListRunsRunType) Type() string {
+	return "ListRunsRunType"
+}
+
 type NotebookOutput struct {
 	// The value passed to
 	// [dbutils.notebook.exit()](/notebooks/notebook-workflows.html#notebook-workflows-exit).
@@ -593,6 +700,27 @@ const NotebookTaskSourceGit NotebookTaskSource = `GIT`
 
 // Notebook is located in Databricks workspace.
 const NotebookTaskSourceWorkspace NotebookTaskSource = `WORKSPACE`
+
+// String representation for [fmt.Print]
+func (nts *NotebookTaskSource) String() string {
+	return string(*nts)
+}
+
+// Set raw string value and validate it against allowed values
+func (nts *NotebookTaskSource) Set(v string) error {
+	switch v {
+	case `GIT`, `WORKSPACE`:
+		*nts = NotebookTaskSource(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GIT", "WORKSPACE"`, v)
+	}
+}
+
+// Type always returns NotebookTaskSource to satisfy [pflag.Value] interface
+func (nts *NotebookTaskSource) Type() string {
+	return "NotebookTaskSource"
+}
 
 type PipelineParams struct {
 	// If true, triggers a full refresh on the delta live table.
@@ -647,6 +775,27 @@ type RepairHistoryItemType string
 const RepairHistoryItemTypeOriginal RepairHistoryItemType = `ORIGINAL`
 
 const RepairHistoryItemTypeRepair RepairHistoryItemType = `REPAIR`
+
+// String representation for [fmt.Print]
+func (rhit *RepairHistoryItemType) String() string {
+	return string(*rhit)
+}
+
+// Set raw string value and validate it against allowed values
+func (rhit *RepairHistoryItemType) Set(v string) error {
+	switch v {
+	case `ORIGINAL`, `REPAIR`:
+		*rhit = RepairHistoryItemType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ORIGINAL", "REPAIR"`, v)
+	}
+}
+
+// Type always returns RepairHistoryItemType to satisfy [pflag.Value] interface
+func (rhit *RepairHistoryItemType) Type() string {
+	return "RepairHistoryItemType"
+}
 
 type RepairRun struct {
 	// An array of commands to execute for jobs with the dbt task, for example
@@ -868,6 +1017,27 @@ const RunLifeCycleStateTerminated RunLifeCycleState = `TERMINATED`
 // The task of this run has completed, and the cluster and execution context are
 // being cleaned up.
 const RunLifeCycleStateTerminating RunLifeCycleState = `TERMINATING`
+
+// String representation for [fmt.Print]
+func (rlcs *RunLifeCycleState) String() string {
+	return string(*rlcs)
+}
+
+// Set raw string value and validate it against allowed values
+func (rlcs *RunLifeCycleState) Set(v string) error {
+	switch v {
+	case `INTERNAL_ERROR`, `PENDING`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`:
+		*rlcs = RunLifeCycleState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "INTERNAL_ERROR", "PENDING", "RUNNING", "SKIPPED", "TERMINATED", "TERMINATING"`, v)
+	}
+}
+
+// Type always returns RunLifeCycleState to satisfy [pflag.Value] interface
+func (rlcs *RunLifeCycleState) Type() string {
+	return "RunLifeCycleState"
+}
 
 type RunNow struct {
 	// An array of commands to execute for jobs with the dbt task, for example
@@ -1113,6 +1283,27 @@ const RunResultStateSuccess RunResultState = `SUCCESS`
 // The run was stopped after reaching the timeout.
 const RunResultStateTimedout RunResultState = `TIMEDOUT`
 
+// String representation for [fmt.Print]
+func (rrs *RunResultState) String() string {
+	return string(*rrs)
+}
+
+// Set raw string value and validate it against allowed values
+func (rrs *RunResultState) Set(v string) error {
+	switch v {
+	case `CANCELED`, `FAILED`, `SUCCESS`, `TIMEDOUT`:
+		*rrs = RunResultState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "FAILED", "SUCCESS", "TIMEDOUT"`, v)
+	}
+}
+
+// Type always returns RunResultState to satisfy [pflag.Value] interface
+func (rrs *RunResultState) Type() string {
+	return "RunResultState"
+}
+
 // The result and lifecycle state of the run.
 type RunState struct {
 	// A description of a run’s current location in the run lifecycle. This
@@ -1267,6 +1458,27 @@ const RunTypeSubmitRun RunType = `SUBMIT_RUN`
 // [dbutils.notebook.run](/dev-tools/databricks-utils.html#dbutils-workflow).
 const RunTypeWorkflowRun RunType = `WORKFLOW_RUN`
 
+// String representation for [fmt.Print]
+func (rt *RunType) String() string {
+	return string(*rt)
+}
+
+// Set raw string value and validate it against allowed values
+func (rt *RunType) Set(v string) error {
+	switch v {
+	case `JOB_RUN`, `SUBMIT_RUN`, `WORKFLOW_RUN`:
+		*rt = RunType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "JOB_RUN", "SUBMIT_RUN", "WORKFLOW_RUN"`, v)
+	}
+}
+
+// Type always returns RunType to satisfy [pflag.Value] interface
+func (rt *RunType) Type() string {
+	return "RunType"
+}
+
 type SparkJarTask struct {
 	// Deprecated since 04/2016\\. Provide a `jar` through the `libraries` field
 	// instead. For an example, see :method:create.
@@ -1354,6 +1566,27 @@ const SqlDashboardWidgetOutputStatusPending SqlDashboardWidgetOutputStatus = `PE
 const SqlDashboardWidgetOutputStatusRunning SqlDashboardWidgetOutputStatus = `RUNNING`
 
 const SqlDashboardWidgetOutputStatusSuccess SqlDashboardWidgetOutputStatus = `SUCCESS`
+
+// String representation for [fmt.Print]
+func (sdwos *SqlDashboardWidgetOutputStatus) String() string {
+	return string(*sdwos)
+}
+
+// Set raw string value and validate it against allowed values
+func (sdwos *SqlDashboardWidgetOutputStatus) Set(v string) error {
+	switch v {
+	case `CANCELLED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCESS`:
+		*sdwos = SqlDashboardWidgetOutputStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "PENDING", "RUNNING", "SUCCESS"`, v)
+	}
+}
+
+// Type always returns SqlDashboardWidgetOutputStatus to satisfy [pflag.Value] interface
+func (sdwos *SqlDashboardWidgetOutputStatus) Type() string {
+	return "SqlDashboardWidgetOutputStatus"
+}
 
 type SqlOutput struct {
 	// The output of a SQL alert task, if available.
@@ -1470,6 +1703,27 @@ const TriggerTypePeriodic TriggerType = `PERIODIC`
 // occurs when you request to re-run the job in case of failures.
 const TriggerTypeRetry TriggerType = `RETRY`
 
+// String representation for [fmt.Print]
+func (tt *TriggerType) String() string {
+	return string(*tt)
+}
+
+// Set raw string value and validate it against allowed values
+func (tt *TriggerType) Set(v string) error {
+	switch v {
+	case `ONE_TIME`, `PERIODIC`, `RETRY`:
+		*tt = TriggerType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ONE_TIME", "PERIODIC", "RETRY"`, v)
+	}
+}
+
+// Type always returns TriggerType to satisfy [pflag.Value] interface
+func (tt *TriggerType) Type() string {
+	return "TriggerType"
+}
+
 type UpdateJob struct {
 	// Remove top-level fields in the job settings. Removing nested fields is
 	// not supported. This field is optional.
@@ -1505,6 +1759,27 @@ const ViewTypeDashboard ViewType = `DASHBOARD`
 // Notebook view item.
 const ViewTypeNotebook ViewType = `NOTEBOOK`
 
+// String representation for [fmt.Print]
+func (vt *ViewType) String() string {
+	return string(*vt)
+}
+
+// Set raw string value and validate it against allowed values
+func (vt *ViewType) Set(v string) error {
+	switch v {
+	case `DASHBOARD`, `NOTEBOOK`:
+		*vt = ViewType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DASHBOARD", "NOTEBOOK"`, v)
+	}
+}
+
+// Type always returns ViewType to satisfy [pflag.Value] interface
+func (vt *ViewType) Type() string {
+	return "ViewType"
+}
+
 // This describes an enum
 type ViewsToExport string
 
@@ -1516,3 +1791,24 @@ const ViewsToExportCode ViewsToExport = `CODE`
 
 // All dashboard views of the notebook.
 const ViewsToExportDashboards ViewsToExport = `DASHBOARDS`
+
+// String representation for [fmt.Print]
+func (vte *ViewsToExport) String() string {
+	return string(*vte)
+}
+
+// Set raw string value and validate it against allowed values
+func (vte *ViewsToExport) Set(v string) error {
+	switch v {
+	case `ALL`, `CODE`, `DASHBOARDS`:
+		*vte = ViewsToExport(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALL", "CODE", "DASHBOARDS"`, v)
+	}
+}
+
+// Type always returns ViewsToExport to satisfy [pflag.Value] interface
+func (vte *ViewsToExport) Type() string {
+	return "ViewsToExport"
+}

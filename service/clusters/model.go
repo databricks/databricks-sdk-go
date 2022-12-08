@@ -2,6 +2,8 @@
 
 package clusters
 
+import "fmt"
+
 // all definitions in this file are in alphabetical order
 
 type AddInstanceProfile struct {
@@ -142,6 +144,27 @@ const AwsAvailabilitySpot AwsAvailability = `SPOT`
 
 const AwsAvailabilitySpotWithFallback AwsAvailability = `SPOT_WITH_FALLBACK`
 
+// String representation for [fmt.Print]
+func (aa *AwsAvailability) String() string {
+	return string(*aa)
+}
+
+// Set raw string value and validate it against allowed values
+func (aa *AwsAvailability) Set(v string) error {
+	switch v {
+	case `ON_DEMAND`, `SPOT`, `SPOT_WITH_FALLBACK`:
+		*aa = AwsAvailability(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND", "SPOT", "SPOT_WITH_FALLBACK"`, v)
+	}
+}
+
+// Type always returns AwsAvailability to satisfy [pflag.Value] interface
+func (aa *AwsAvailability) Type() string {
+	return "AwsAvailability"
+}
+
 type AzureAttributes struct {
 	// Availability type used for all subsequent nodes past the
 	// `first_on_demand` ones. Note: If `first_on_demand` is zero (which only
@@ -179,6 +202,27 @@ const AzureAvailabilitySpotAzure AzureAvailability = `SPOT_AZURE`
 
 const AzureAvailabilitySpotWithFallbackAzure AzureAvailability = `SPOT_WITH_FALLBACK_AZURE`
 
+// String representation for [fmt.Print]
+func (aa *AzureAvailability) String() string {
+	return string(*aa)
+}
+
+// Set raw string value and validate it against allowed values
+func (aa *AzureAvailability) Set(v string) error {
+	switch v {
+	case `ON_DEMAND_AZURE`, `SPOT_AZURE`, `SPOT_WITH_FALLBACK_AZURE`:
+		*aa = AzureAvailability(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE", "SPOT_WITH_FALLBACK_AZURE"`, v)
+	}
+}
+
+// Type always returns AzureAvailability to satisfy [pflag.Value] interface
+func (aa *AzureAvailability) Type() string {
+	return "AzureAvailability"
+}
+
 type ChangeClusterOwner struct {
 	// <needs content added>
 	ClusterId string `json:"cluster_id"`
@@ -202,6 +246,27 @@ type CloudProviderNodeStatus string
 const CloudProviderNodeStatusNotavailableinregion CloudProviderNodeStatus = `NotAvailableInRegion`
 
 const CloudProviderNodeStatusNotenabledonsubscription CloudProviderNodeStatus = `NotEnabledOnSubscription`
+
+// String representation for [fmt.Print]
+func (cpns *CloudProviderNodeStatus) String() string {
+	return string(*cpns)
+}
+
+// Set raw string value and validate it against allowed values
+func (cpns *CloudProviderNodeStatus) Set(v string) error {
+	switch v {
+	case `NotAvailableInRegion`, `NotEnabledOnSubscription`:
+		*cpns = CloudProviderNodeStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "NotAvailableInRegion", "NotEnabledOnSubscription"`, v)
+	}
+}
+
+// Type always returns CloudProviderNodeStatus to satisfy [pflag.Value] interface
+func (cpns *CloudProviderNodeStatus) Type() string {
+	return "CloudProviderNodeStatus"
+}
 
 type ClusterAttributes struct {
 	// Automatically terminates the cluster after it is inactive for this time
@@ -553,6 +618,27 @@ const ClusterSourceSql ClusterSource = `SQL`
 
 const ClusterSourceUi ClusterSource = `UI`
 
+// String representation for [fmt.Print]
+func (cs *ClusterSource) String() string {
+	return string(*cs)
+}
+
+// Set raw string value and validate it against allowed values
+func (cs *ClusterSource) Set(v string) error {
+	switch v {
+	case `API`, `JOB`, `MODELS`, `PIPELINE`, `PIPELINE_MAINTENANCE`, `SQL`, `UI`:
+		*cs = ClusterSource(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "API", "JOB", "MODELS", "PIPELINE", "PIPELINE_MAINTENANCE", "SQL", "UI"`, v)
+	}
+}
+
+// Type always returns ClusterSource to satisfy [pflag.Value] interface
+func (cs *ClusterSource) Type() string {
+	return "ClusterSource"
+}
+
 type CreateCluster struct {
 	// Note: This field won't be true for webapp requests. Only API users will
 	// check this field.
@@ -698,6 +784,27 @@ const DataPlaneEventDetailsEventTypeNodeBlacklisted DataPlaneEventDetailsEventTy
 
 const DataPlaneEventDetailsEventTypeNodeExcludedDecommissioned DataPlaneEventDetailsEventType = `NODE_EXCLUDED_DECOMMISSIONED`
 
+// String representation for [fmt.Print]
+func (dpedet *DataPlaneEventDetailsEventType) String() string {
+	return string(*dpedet)
+}
+
+// Set raw string value and validate it against allowed values
+func (dpedet *DataPlaneEventDetailsEventType) Set(v string) error {
+	switch v {
+	case `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`:
+		*dpedet = DataPlaneEventDetailsEventType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "NODE_BLACKLISTED", "NODE_EXCLUDED_DECOMMISSIONED"`, v)
+	}
+}
+
+// Type always returns DataPlaneEventDetailsEventType to satisfy [pflag.Value] interface
+func (dpedet *DataPlaneEventDetailsEventType) Type() string {
+	return "DataPlaneEventDetailsEventType"
+}
+
 // This describes an enum
 type DataSecurityMode string
 
@@ -727,6 +834,27 @@ const DataSecurityModeSingleUser DataSecurityMode = `SINGLE_USER`
 // languages and cluster features might be limited.
 const DataSecurityModeUserIsolation DataSecurityMode = `USER_ISOLATION`
 
+// String representation for [fmt.Print]
+func (dsm *DataSecurityMode) String() string {
+	return string(*dsm)
+}
+
+// Set raw string value and validate it against allowed values
+func (dsm *DataSecurityMode) Set(v string) error {
+	switch v {
+	case `LEGACY_PASSTHROUGH`, `LEGACY_SINGLE_USER`, `LEGACY_TABLE_ACL`, `NONE`, `SINGLE_USER`, `USER_ISOLATION`:
+		*dsm = DataSecurityMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "LEGACY_PASSTHROUGH", "LEGACY_SINGLE_USER", "LEGACY_TABLE_ACL", "NONE", "SINGLE_USER", "USER_ISOLATION"`, v)
+	}
+}
+
+// Type always returns DataSecurityMode to satisfy [pflag.Value] interface
+func (dsm *DataSecurityMode) Type() string {
+	return "DataSecurityMode"
+}
+
 type DbfsStorageInfo struct {
 	// dbfs destination, e.g. `dbfs:/my/path`
 	Destination string `json:"destination,omitempty"`
@@ -743,6 +871,27 @@ type EbsVolumeType string
 const EbsVolumeTypeGeneralPurposeSsd EbsVolumeType = `GENERAL_PURPOSE_SSD`
 
 const EbsVolumeTypeThroughputOptimizedHdd EbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
+
+// String representation for [fmt.Print]
+func (evt *EbsVolumeType) String() string {
+	return string(*evt)
+}
+
+// Set raw string value and validate it against allowed values
+func (evt *EbsVolumeType) Set(v string) error {
+	switch v {
+	case `GENERAL_PURPOSE_SSD`, `THROUGHPUT_OPTIMIZED_HDD`:
+		*evt = EbsVolumeType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GENERAL_PURPOSE_SSD", "THROUGHPUT_OPTIMIZED_HDD"`, v)
+	}
+}
+
+// Type always returns EbsVolumeType to satisfy [pflag.Value] interface
+func (evt *EbsVolumeType) Type() string {
+	return "EbsVolumeType"
+}
 
 type EditCluster struct {
 	// Note: This field won't be true for webapp requests. Only API users will
@@ -932,6 +1081,27 @@ const EventDetailsCauseReplaceBadNodes EventDetailsCause = `REPLACE_BAD_NODES`
 
 const EventDetailsCauseUserRequest EventDetailsCause = `USER_REQUEST`
 
+// String representation for [fmt.Print]
+func (edc *EventDetailsCause) String() string {
+	return string(*edc)
+}
+
+// Set raw string value and validate it against allowed values
+func (edc *EventDetailsCause) Set(v string) error {
+	switch v {
+	case `AUTORECOVERY`, `AUTOSCALE`, `REPLACE_BAD_NODES`, `USER_REQUEST`:
+		*edc = EventDetailsCause(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AUTORECOVERY", "AUTOSCALE", "REPLACE_BAD_NODES", "USER_REQUEST"`, v)
+	}
+}
+
+// Type always returns EventDetailsCause to satisfy [pflag.Value] interface
+func (edc *EventDetailsCause) Type() string {
+	return "EventDetailsCause"
+}
+
 type EventType string
 
 const EventTypeAutoscalingStatsReport EventType = `AUTOSCALING_STATS_REPORT`
@@ -984,6 +1154,27 @@ const EventTypeUnpinned EventType = `UNPINNED`
 
 const EventTypeUpsizeCompleted EventType = `UPSIZE_COMPLETED`
 
+// String representation for [fmt.Print]
+func (et *EventType) String() string {
+	return string(*et)
+}
+
+// Set raw string value and validate it against allowed values
+func (et *EventType) Set(v string) error {
+	switch v {
+	case `AUTOSCALING_STATS_REPORT`, `CREATING`, `DBFS_DOWN`, `DID_NOT_EXPAND_DISK`, `DRIVER_HEALTHY`, `DRIVER_NOT_RESPONDING`, `DRIVER_UNAVAILABLE`, `EDITED`, `EXPANDED_DISK`, `FAILED_TO_EXPAND_DISK`, `INIT_SCRIPTS_FINISHED`, `INIT_SCRIPTS_STARTED`, `METASTORE_DOWN`, `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`, `NODES_LOST`, `PINNED`, `RESIZING`, `RESTARTING`, `RUNNING`, `SPARK_EXCEPTION`, `STARTING`, `TERMINATING`, `UNPINNED`, `UPSIZE_COMPLETED`:
+		*et = EventType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AUTOSCALING_STATS_REPORT", "CREATING", "DBFS_DOWN", "DID_NOT_EXPAND_DISK", "DRIVER_HEALTHY", "DRIVER_NOT_RESPONDING", "DRIVER_UNAVAILABLE", "EDITED", "EXPANDED_DISK", "FAILED_TO_EXPAND_DISK", "INIT_SCRIPTS_FINISHED", "INIT_SCRIPTS_STARTED", "METASTORE_DOWN", "NODE_BLACKLISTED", "NODE_EXCLUDED_DECOMMISSIONED", "NODES_LOST", "PINNED", "RESIZING", "RESTARTING", "RUNNING", "SPARK_EXCEPTION", "STARTING", "TERMINATING", "UNPINNED", "UPSIZE_COMPLETED"`, v)
+	}
+}
+
+// Type always returns EventType to satisfy [pflag.Value] interface
+func (et *EventType) Type() string {
+	return "EventType"
+}
+
 type GcpAttributes struct {
 	// This field determines whether the spark executors will be scheduled to
 	// run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback
@@ -1008,6 +1199,27 @@ const GcpAvailabilityOnDemandGcp GcpAvailability = `ON_DEMAND_GCP`
 const GcpAvailabilityPreemptibleGcp GcpAvailability = `PREEMPTIBLE_GCP`
 
 const GcpAvailabilityPreemptibleWithFallbackGcp GcpAvailability = `PREEMPTIBLE_WITH_FALLBACK_GCP`
+
+// String representation for [fmt.Print]
+func (ga *GcpAvailability) String() string {
+	return string(*ga)
+}
+
+// Set raw string value and validate it against allowed values
+func (ga *GcpAvailability) Set(v string) error {
+	switch v {
+	case `ON_DEMAND_GCP`, `PREEMPTIBLE_GCP`, `PREEMPTIBLE_WITH_FALLBACK_GCP`:
+		*ga = GcpAvailability(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_GCP", "PREEMPTIBLE_GCP", "PREEMPTIBLE_WITH_FALLBACK_GCP"`, v)
+	}
+}
+
+// Type always returns GcpAvailability to satisfy [pflag.Value] interface
+func (ga *GcpAvailability) Type() string {
+	return "GcpAvailability"
+}
 
 // Get cluster info
 type Get struct {
@@ -1044,6 +1256,27 @@ type GetEventsOrder string
 const GetEventsOrderAsc GetEventsOrder = `ASC`
 
 const GetEventsOrderDesc GetEventsOrder = `DESC`
+
+// String representation for [fmt.Print]
+func (geo *GetEventsOrder) String() string {
+	return string(*geo)
+}
+
+// Set raw string value and validate it against allowed values
+func (geo *GetEventsOrder) Set(v string) error {
+	switch v {
+	case `ASC`, `DESC`:
+		*geo = GetEventsOrder(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ASC", "DESC"`, v)
+	}
+}
+
+// Type always returns GetEventsOrder to satisfy [pflag.Value] interface
+func (geo *GetEventsOrder) Type() string {
+	return "GetEventsOrder"
+}
 
 type GetEventsResponse struct {
 	// <content needs to be added>
@@ -1242,6 +1475,27 @@ const RuntimeEnginePhoton RuntimeEngine = `PHOTON`
 
 const RuntimeEngineStandard RuntimeEngine = `STANDARD`
 
+// String representation for [fmt.Print]
+func (re *RuntimeEngine) String() string {
+	return string(*re)
+}
+
+// Set raw string value and validate it against allowed values
+func (re *RuntimeEngine) Set(v string) error {
+	switch v {
+	case `NULL`, `PHOTON`, `STANDARD`:
+		*re = RuntimeEngine(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "NULL", "PHOTON", "STANDARD"`, v)
+	}
+}
+
+// Type always returns RuntimeEngine to satisfy [pflag.Value] interface
+func (re *RuntimeEngine) Type() string {
+	return "RuntimeEngine"
+}
+
 type S3StorageInfo struct {
 	// (Optional) Set canned access control list for the logs, e.g.
 	// `bucket-owner-full-control`. If `canned_cal` is set, please make sure the
@@ -1342,6 +1596,27 @@ const StateTerminated State = `TERMINATED`
 const StateTerminating State = `TERMINATING`
 
 const StateUnknown State = `UNKNOWN`
+
+// String representation for [fmt.Print]
+func (s *State) String() string {
+	return string(*s)
+}
+
+// Set raw string value and validate it against allowed values
+func (s *State) Set(v string) error {
+	switch v {
+	case `ERROR`, `PENDING`, `RESIZING`, `RESTARTING`, `RUNNING`, `TERMINATED`, `TERMINATING`, `UNKNOWN`:
+		*s = State(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ERROR", "PENDING", "RESIZING", "RESTARTING", "RUNNING", "TERMINATED", "TERMINATING", "UNKNOWN"`, v)
+	}
+}
+
+// Type always returns State to satisfy [pflag.Value] interface
+func (s *State) Type() string {
+	return "State"
+}
 
 type TerminationReason struct {
 	// status code indicating why the cluster was terminated
@@ -1514,6 +1789,27 @@ const TerminationReasonCodeWorkspaceCancelledError TerminationReasonCode = `WORK
 
 const TerminationReasonCodeWorkspaceConfigurationError TerminationReasonCode = `WORKSPACE_CONFIGURATION_ERROR`
 
+// String representation for [fmt.Print]
+func (trc *TerminationReasonCode) String() string {
+	return string(*trc)
+}
+
+// Set raw string value and validate it against allowed values
+func (trc *TerminationReasonCode) Set(v string) error {
+	switch v {
+	case `ABUSE_DETECTED`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_SHUTDOWN`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `DATABASE_CONNECTION_FAILURE`, `DBFS_COMPONENT_UNHEALTHY`, `DOCKER_IMAGE_PULL_FAILURE`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `EXECUTION_COMPONENT_UNHEALTHY`, `GCP_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_UNREACHABLE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_SPARK_IMAGE`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `STORAGE_DOWNLOAD_FAILURE`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`:
+		*trc = TerminationReasonCode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ABUSE_DETECTED", "ATTACH_PROJECT_FAILURE", "AWS_AUTHORIZATION_FAILURE", "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE", "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE", "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE", "AWS_REQUEST_LIMIT_EXCEEDED", "AWS_UNSUPPORTED_FAILURE", "AZURE_BYOK_KEY_PERMISSION_FAILURE", "AZURE_EPHEMERAL_DISK_FAILURE", "AZURE_INVALID_DEPLOYMENT_TEMPLATE", "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION", "AZURE_QUOTA_EXCEEDED_EXCEPTION", "AZURE_RESOURCE_MANAGER_THROTTLING", "AZURE_RESOURCE_PROVIDER_THROTTLING", "AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE", "AZURE_VM_EXTENSION_FAILURE", "AZURE_VNET_CONFIGURATION_FAILURE", "BOOTSTRAP_TIMEOUT", "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION", "CLOUD_PROVIDER_DISK_SETUP_FAILURE", "CLOUD_PROVIDER_LAUNCH_FAILURE", "CLOUD_PROVIDER_RESOURCE_STOCKOUT", "CLOUD_PROVIDER_SHUTDOWN", "COMMUNICATION_LOST", "CONTAINER_LAUNCH_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE", "DATABASE_CONNECTION_FAILURE", "DBFS_COMPONENT_UNHEALTHY", "DOCKER_IMAGE_PULL_FAILURE", "DRIVER_UNREACHABLE", "DRIVER_UNRESPONSIVE", "EXECUTION_COMPONENT_UNHEALTHY", "GCP_QUOTA_EXCEEDED", "GCP_SERVICE_ACCOUNT_DELETED", "GLOBAL_INIT_SCRIPT_FAILURE", "HIVE_METASTORE_PROVISIONING_FAILURE", "IMAGE_PULL_PERMISSION_DENIED", "INACTIVITY", "INIT_SCRIPT_FAILURE", "INSTANCE_POOL_CLUSTER_FAILURE", "INSTANCE_UNREACHABLE", "INTERNAL_ERROR", "INVALID_ARGUMENT", "INVALID_SPARK_IMAGE", "IP_EXHAUSTION_FAILURE", "JOB_FINISHED", "K8S_AUTOSCALING_FAILURE", "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT", "METASTORE_COMPONENT_UNHEALTHY", "NEPHOS_RESOURCE_MANAGEMENT", "NETWORK_CONFIGURATION_FAILURE", "NFS_MOUNT_FAILURE", "NPIP_TUNNEL_SETUP_FAILURE", "NPIP_TUNNEL_TOKEN_FAILURE", "REQUEST_REJECTED", "REQUEST_THROTTLED", "SECRET_RESOLUTION_ERROR", "SECURITY_DAEMON_REGISTRATION_EXCEPTION", "SELF_BOOTSTRAP_FAILURE", "SKIPPED_SLOW_NODES", "SLOW_IMAGE_DOWNLOAD", "SPARK_ERROR", "SPARK_IMAGE_DOWNLOAD_FAILURE", "SPARK_STARTUP_FAILURE", "SPOT_INSTANCE_TERMINATION", "STORAGE_DOWNLOAD_FAILURE", "STS_CLIENT_SETUP_FAILURE", "SUBNET_EXHAUSTED_FAILURE", "TEMPORARILY_UNAVAILABLE", "TRIAL_EXPIRED", "UNEXPECTED_LAUNCH_FAILURE", "UNKNOWN", "UNSUPPORTED_INSTANCE_TYPE", "UPDATE_INSTANCE_PROFILE_FAILURE", "USER_REQUEST", "WORKER_SETUP_FAILURE", "WORKSPACE_CANCELLED_ERROR", "WORKSPACE_CONFIGURATION_ERROR"`, v)
+	}
+}
+
+// Type always returns TerminationReasonCode to satisfy [pflag.Value] interface
+func (trc *TerminationReasonCode) Type() string {
+	return "TerminationReasonCode"
+}
+
 // type of the termination
 type TerminationReasonType string
 
@@ -1524,6 +1820,27 @@ const TerminationReasonTypeCloudFailure TerminationReasonType = `CLOUD_FAILURE`
 const TerminationReasonTypeServiceFault TerminationReasonType = `SERVICE_FAULT`
 
 const TerminationReasonTypeSuccess TerminationReasonType = `SUCCESS`
+
+// String representation for [fmt.Print]
+func (trt *TerminationReasonType) String() string {
+	return string(*trt)
+}
+
+// Set raw string value and validate it against allowed values
+func (trt *TerminationReasonType) Set(v string) error {
+	switch v {
+	case `CLIENT_ERROR`, `CLOUD_FAILURE`, `SERVICE_FAULT`, `SUCCESS`:
+		*trt = TerminationReasonType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLIENT_ERROR", "CLOUD_FAILURE", "SERVICE_FAULT", "SUCCESS"`, v)
+	}
+}
+
+// Type always returns TerminationReasonType to satisfy [pflag.Value] interface
+func (trt *TerminationReasonType) Type() string {
+	return "TerminationReasonType"
+}
 
 type UnpinCluster struct {
 	// <needs content added>

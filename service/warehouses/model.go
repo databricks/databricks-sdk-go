@@ -2,6 +2,8 @@
 
 package warehouses
 
+import "fmt"
+
 // all definitions in this file are in alphabetical order
 
 type Channel struct {
@@ -30,6 +32,27 @@ const ChannelNameChannelNamePreview ChannelName = `CHANNEL_NAME_PREVIEW`
 const ChannelNameChannelNamePrevious ChannelName = `CHANNEL_NAME_PREVIOUS`
 
 const ChannelNameChannelNameUnspecified ChannelName = `CHANNEL_NAME_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (cn *ChannelName) String() string {
+	return string(*cn)
+}
+
+// Set raw string value and validate it against allowed values
+func (cn *ChannelName) Set(v string) error {
+	switch v {
+	case `CHANNEL_NAME_CURRENT`, `CHANNEL_NAME_CUSTOM`, `CHANNEL_NAME_PREVIEW`, `CHANNEL_NAME_PREVIOUS`, `CHANNEL_NAME_UNSPECIFIED`:
+		*cn = ChannelName(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CHANNEL_NAME_CURRENT", "CHANNEL_NAME_CUSTOM", "CHANNEL_NAME_PREVIEW", "CHANNEL_NAME_PREVIOUS", "CHANNEL_NAME_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns ChannelName to satisfy [pflag.Value] interface
+func (cn *ChannelName) Type() string {
+	return "ChannelName"
+}
 
 type CreateWarehouseRequest struct {
 	// The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
@@ -117,6 +140,27 @@ const CreateWarehouseRequestSpotInstancePolicyPolicyUnspecified CreateWarehouseR
 
 const CreateWarehouseRequestSpotInstancePolicyReliabilityOptimized CreateWarehouseRequestSpotInstancePolicy = `RELIABILITY_OPTIMIZED`
 
+// String representation for [fmt.Print]
+func (cwrsip *CreateWarehouseRequestSpotInstancePolicy) String() string {
+	return string(*cwrsip)
+}
+
+// Set raw string value and validate it against allowed values
+func (cwrsip *CreateWarehouseRequestSpotInstancePolicy) Set(v string) error {
+	switch v {
+	case `COST_OPTIMIZED`, `POLICY_UNSPECIFIED`, `RELIABILITY_OPTIMIZED`:
+		*cwrsip = CreateWarehouseRequestSpotInstancePolicy(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "POLICY_UNSPECIFIED", "RELIABILITY_OPTIMIZED"`, v)
+	}
+}
+
+// Type always returns CreateWarehouseRequestSpotInstancePolicy to satisfy [pflag.Value] interface
+func (cwrsip *CreateWarehouseRequestSpotInstancePolicy) Type() string {
+	return "CreateWarehouseRequestSpotInstancePolicy"
+}
+
 // Warehouse type (Classic/Pro)
 type CreateWarehouseRequestWarehouseType string
 
@@ -125,6 +169,27 @@ const CreateWarehouseRequestWarehouseTypeClassic CreateWarehouseRequestWarehouse
 const CreateWarehouseRequestWarehouseTypePro CreateWarehouseRequestWarehouseType = `PRO`
 
 const CreateWarehouseRequestWarehouseTypeTypeUnspecified CreateWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (cwrwt *CreateWarehouseRequestWarehouseType) String() string {
+	return string(*cwrwt)
+}
+
+// Set raw string value and validate it against allowed values
+func (cwrwt *CreateWarehouseRequestWarehouseType) Set(v string) error {
+	switch v {
+	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+		*cwrwt = CreateWarehouseRequestWarehouseType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns CreateWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
+func (cwrwt *CreateWarehouseRequestWarehouseType) Type() string {
+	return "CreateWarehouseRequestWarehouseType"
+}
 
 type CreateWarehouseResponse struct {
 	// Id for the SQL warehouse. This value is unique across all SQL warehouses.
@@ -235,6 +300,27 @@ const EditWarehouseRequestSpotInstancePolicyPolicyUnspecified EditWarehouseReque
 
 const EditWarehouseRequestSpotInstancePolicyReliabilityOptimized EditWarehouseRequestSpotInstancePolicy = `RELIABILITY_OPTIMIZED`
 
+// String representation for [fmt.Print]
+func (ewrsip *EditWarehouseRequestSpotInstancePolicy) String() string {
+	return string(*ewrsip)
+}
+
+// Set raw string value and validate it against allowed values
+func (ewrsip *EditWarehouseRequestSpotInstancePolicy) Set(v string) error {
+	switch v {
+	case `COST_OPTIMIZED`, `POLICY_UNSPECIFIED`, `RELIABILITY_OPTIMIZED`:
+		*ewrsip = EditWarehouseRequestSpotInstancePolicy(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "POLICY_UNSPECIFIED", "RELIABILITY_OPTIMIZED"`, v)
+	}
+}
+
+// Type always returns EditWarehouseRequestSpotInstancePolicy to satisfy [pflag.Value] interface
+func (ewrsip *EditWarehouseRequestSpotInstancePolicy) Type() string {
+	return "EditWarehouseRequestSpotInstancePolicy"
+}
+
 // Warehouse type (Classic/Pro)
 type EditWarehouseRequestWarehouseType string
 
@@ -243,6 +329,27 @@ const EditWarehouseRequestWarehouseTypeClassic EditWarehouseRequestWarehouseType
 const EditWarehouseRequestWarehouseTypePro EditWarehouseRequestWarehouseType = `PRO`
 
 const EditWarehouseRequestWarehouseTypeTypeUnspecified EditWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (ewrwt *EditWarehouseRequestWarehouseType) String() string {
+	return string(*ewrwt)
+}
+
+// Set raw string value and validate it against allowed values
+func (ewrwt *EditWarehouseRequestWarehouseType) Set(v string) error {
+	switch v {
+	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+		*ewrwt = EditWarehouseRequestWarehouseType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns EditWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
+func (ewrwt *EditWarehouseRequestWarehouseType) Type() string {
+	return "EditWarehouseRequestWarehouseType"
+}
 
 type EndpointConfPair struct {
 	Key string `json:"key,omitempty"`
@@ -275,6 +382,27 @@ const EndpointHealthStatusFailed EndpointHealthStatus = `FAILED`
 const EndpointHealthStatusHealthy EndpointHealthStatus = `HEALTHY`
 
 const EndpointHealthStatusStatusUnspecified EndpointHealthStatus = `STATUS_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (ehs *EndpointHealthStatus) String() string {
+	return string(*ehs)
+}
+
+// Set raw string value and validate it against allowed values
+func (ehs *EndpointHealthStatus) Set(v string) error {
+	switch v {
+	case `DEGRADED`, `FAILED`, `HEALTHY`, `STATUS_UNSPECIFIED`:
+		*ehs = EndpointHealthStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DEGRADED", "FAILED", "HEALTHY", "STATUS_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns EndpointHealthStatus to satisfy [pflag.Value] interface
+func (ehs *EndpointHealthStatus) Type() string {
+	return "EndpointHealthStatus"
+}
 
 type EndpointInfo struct {
 	// The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
@@ -383,6 +511,27 @@ const EndpointInfoSpotInstancePolicyPolicyUnspecified EndpointInfoSpotInstancePo
 
 const EndpointInfoSpotInstancePolicyReliabilityOptimized EndpointInfoSpotInstancePolicy = `RELIABILITY_OPTIMIZED`
 
+// String representation for [fmt.Print]
+func (eisip *EndpointInfoSpotInstancePolicy) String() string {
+	return string(*eisip)
+}
+
+// Set raw string value and validate it against allowed values
+func (eisip *EndpointInfoSpotInstancePolicy) Set(v string) error {
+	switch v {
+	case `COST_OPTIMIZED`, `POLICY_UNSPECIFIED`, `RELIABILITY_OPTIMIZED`:
+		*eisip = EndpointInfoSpotInstancePolicy(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "POLICY_UNSPECIFIED", "RELIABILITY_OPTIMIZED"`, v)
+	}
+}
+
+// Type always returns EndpointInfoSpotInstancePolicy to satisfy [pflag.Value] interface
+func (eisip *EndpointInfoSpotInstancePolicy) Type() string {
+	return "EndpointInfoSpotInstancePolicy"
+}
+
 // state of the endpoint
 type EndpointInfoState string
 
@@ -398,6 +547,27 @@ const EndpointInfoStateStopped EndpointInfoState = `STOPPED`
 
 const EndpointInfoStateStopping EndpointInfoState = `STOPPING`
 
+// String representation for [fmt.Print]
+func (eis *EndpointInfoState) String() string {
+	return string(*eis)
+}
+
+// Set raw string value and validate it against allowed values
+func (eis *EndpointInfoState) Set(v string) error {
+	switch v {
+	case `DELETED`, `DELETING`, `RUNNING`, `STARTING`, `STOPPED`, `STOPPING`:
+		*eis = EndpointInfoState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DELETED", "DELETING", "RUNNING", "STARTING", "STOPPED", "STOPPING"`, v)
+	}
+}
+
+// Type always returns EndpointInfoState to satisfy [pflag.Value] interface
+func (eis *EndpointInfoState) Type() string {
+	return "EndpointInfoState"
+}
+
 // Warehouse type (Classic/Pro)
 type EndpointInfoWarehouseType string
 
@@ -406,6 +576,27 @@ const EndpointInfoWarehouseTypeClassic EndpointInfoWarehouseType = `CLASSIC`
 const EndpointInfoWarehouseTypePro EndpointInfoWarehouseType = `PRO`
 
 const EndpointInfoWarehouseTypeTypeUnspecified EndpointInfoWarehouseType = `TYPE_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (eiwt *EndpointInfoWarehouseType) String() string {
+	return string(*eiwt)
+}
+
+// Set raw string value and validate it against allowed values
+func (eiwt *EndpointInfoWarehouseType) Set(v string) error {
+	switch v {
+	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+		*eiwt = EndpointInfoWarehouseType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns EndpointInfoWarehouseType to satisfy [pflag.Value] interface
+func (eiwt *EndpointInfoWarehouseType) Type() string {
+	return "EndpointInfoWarehouseType"
+}
 
 type EndpointTagPair struct {
 	Key string `json:"key,omitempty"`
@@ -530,6 +721,27 @@ const GetWarehouseResponseSpotInstancePolicyPolicyUnspecified GetWarehouseRespon
 
 const GetWarehouseResponseSpotInstancePolicyReliabilityOptimized GetWarehouseResponseSpotInstancePolicy = `RELIABILITY_OPTIMIZED`
 
+// String representation for [fmt.Print]
+func (gwrsip *GetWarehouseResponseSpotInstancePolicy) String() string {
+	return string(*gwrsip)
+}
+
+// Set raw string value and validate it against allowed values
+func (gwrsip *GetWarehouseResponseSpotInstancePolicy) Set(v string) error {
+	switch v {
+	case `COST_OPTIMIZED`, `POLICY_UNSPECIFIED`, `RELIABILITY_OPTIMIZED`:
+		*gwrsip = GetWarehouseResponseSpotInstancePolicy(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "POLICY_UNSPECIFIED", "RELIABILITY_OPTIMIZED"`, v)
+	}
+}
+
+// Type always returns GetWarehouseResponseSpotInstancePolicy to satisfy [pflag.Value] interface
+func (gwrsip *GetWarehouseResponseSpotInstancePolicy) Type() string {
+	return "GetWarehouseResponseSpotInstancePolicy"
+}
+
 // state of the endpoint
 type GetWarehouseResponseState string
 
@@ -545,6 +757,27 @@ const GetWarehouseResponseStateStopped GetWarehouseResponseState = `STOPPED`
 
 const GetWarehouseResponseStateStopping GetWarehouseResponseState = `STOPPING`
 
+// String representation for [fmt.Print]
+func (gwrs *GetWarehouseResponseState) String() string {
+	return string(*gwrs)
+}
+
+// Set raw string value and validate it against allowed values
+func (gwrs *GetWarehouseResponseState) Set(v string) error {
+	switch v {
+	case `DELETED`, `DELETING`, `RUNNING`, `STARTING`, `STOPPED`, `STOPPING`:
+		*gwrs = GetWarehouseResponseState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DELETED", "DELETING", "RUNNING", "STARTING", "STOPPED", "STOPPING"`, v)
+	}
+}
+
+// Type always returns GetWarehouseResponseState to satisfy [pflag.Value] interface
+func (gwrs *GetWarehouseResponseState) Type() string {
+	return "GetWarehouseResponseState"
+}
+
 // Warehouse type (Classic/Pro)
 type GetWarehouseResponseWarehouseType string
 
@@ -553,6 +786,27 @@ const GetWarehouseResponseWarehouseTypeClassic GetWarehouseResponseWarehouseType
 const GetWarehouseResponseWarehouseTypePro GetWarehouseResponseWarehouseType = `PRO`
 
 const GetWarehouseResponseWarehouseTypeTypeUnspecified GetWarehouseResponseWarehouseType = `TYPE_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (gwrwt *GetWarehouseResponseWarehouseType) String() string {
+	return string(*gwrwt)
+}
+
+// Set raw string value and validate it against allowed values
+func (gwrwt *GetWarehouseResponseWarehouseType) Set(v string) error {
+	switch v {
+	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+		*gwrwt = GetWarehouseResponseWarehouseType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns GetWarehouseResponseWarehouseType to satisfy [pflag.Value] interface
+func (gwrwt *GetWarehouseResponseWarehouseType) Type() string {
+	return "GetWarehouseResponseWarehouseType"
+}
 
 type GetWorkspaceWarehouseConfigResponse struct {
 	// Optional: Channel selection details
@@ -597,6 +851,27 @@ const GetWorkspaceWarehouseConfigResponseSecurityPolicyDataAccessControl GetWork
 const GetWorkspaceWarehouseConfigResponseSecurityPolicyNone GetWorkspaceWarehouseConfigResponseSecurityPolicy = `NONE`
 
 const GetWorkspaceWarehouseConfigResponseSecurityPolicyPassthrough GetWorkspaceWarehouseConfigResponseSecurityPolicy = `PASSTHROUGH`
+
+// String representation for [fmt.Print]
+func (gwwcrsp *GetWorkspaceWarehouseConfigResponseSecurityPolicy) String() string {
+	return string(*gwwcrsp)
+}
+
+// Set raw string value and validate it against allowed values
+func (gwwcrsp *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Set(v string) error {
+	switch v {
+	case `DATA_ACCESS_CONTROL`, `NONE`, `PASSTHROUGH`:
+		*gwwcrsp = GetWorkspaceWarehouseConfigResponseSecurityPolicy(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DATA_ACCESS_CONTROL", "NONE", "PASSTHROUGH"`, v)
+	}
+}
+
+// Type always returns GetWorkspaceWarehouseConfigResponseSecurityPolicy to satisfy [pflag.Value] interface
+func (gwwcrsp *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Type() string {
+	return "GetWorkspaceWarehouseConfigResponseSecurityPolicy"
+}
 
 // List
 type ListQueriesRequest struct {
@@ -655,6 +930,27 @@ const PlansStateIgnoredSmallDuration PlansState = `IGNORED_SMALL_DURATION`
 const PlansStateIgnoredSparkPlanType PlansState = `IGNORED_SPARK_PLAN_TYPE`
 
 const PlansStateUnknown PlansState = `UNKNOWN`
+
+// String representation for [fmt.Print]
+func (ps *PlansState) String() string {
+	return string(*ps)
+}
+
+// Set raw string value and validate it against allowed values
+func (ps *PlansState) Set(v string) error {
+	switch v {
+	case `EMPTY`, `EXISTS`, `IGNORED_LARGE_PLANS_SIZE`, `IGNORED_SMALL_DURATION`, `IGNORED_SPARK_PLAN_TYPE`, `UNKNOWN`:
+		*ps = PlansState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EMPTY", "EXISTS", "IGNORED_LARGE_PLANS_SIZE", "IGNORED_SMALL_DURATION", "IGNORED_SPARK_PLAN_TYPE", "UNKNOWN"`, v)
+	}
+}
+
+// Type always returns PlansState to satisfy [pflag.Value] interface
+func (ps *PlansState) Type() string {
+	return "PlansState"
+}
 
 // A filter to limit query history results. This field is optional.
 type QueryFilter struct {
@@ -818,6 +1114,27 @@ const QueryStatementTypeUpdate QueryStatementType = `UPDATE`
 
 const QueryStatementTypeUse QueryStatementType = `USE`
 
+// String representation for [fmt.Print]
+func (qst *QueryStatementType) String() string {
+	return string(*qst)
+}
+
+// Set raw string value and validate it against allowed values
+func (qst *QueryStatementType) Set(v string) error {
+	switch v {
+	case `ALTER`, `ANALYZE`, `COPY`, `CREATE`, `DELETE`, `DESCRIBE`, `DROP`, `EXPLAIN`, `GRANT`, `INSERT`, `MERGE`, `OPTIMIZE`, `OTHER`, `REFRESH`, `REPLACE`, `REVOKE`, `SELECT`, `SET`, `SHOW`, `TRUNCATE`, `UPDATE`, `USE`:
+		*qst = QueryStatementType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALTER", "ANALYZE", "COPY", "CREATE", "DELETE", "DESCRIBE", "DROP", "EXPLAIN", "GRANT", "INSERT", "MERGE", "OPTIMIZE", "OTHER", "REFRESH", "REPLACE", "REVOKE", "SELECT", "SET", "SHOW", "TRUNCATE", "UPDATE", "USE"`, v)
+	}
+}
+
+// Type always returns QueryStatementType to satisfy [pflag.Value] interface
+func (qst *QueryStatementType) Type() string {
+	return "QueryStatementType"
+}
+
 // This describes an enum
 type QueryStatus string
 
@@ -835,6 +1152,27 @@ const QueryStatusQueued QueryStatus = `QUEUED`
 
 // Query has started.
 const QueryStatusRunning QueryStatus = `RUNNING`
+
+// String representation for [fmt.Print]
+func (qs *QueryStatus) String() string {
+	return string(*qs)
+}
+
+// Set raw string value and validate it against allowed values
+func (qs *QueryStatus) Set(v string) error {
+	switch v {
+	case `CANCELED`, `FAILED`, `FINISHED`, `QUEUED`, `RUNNING`:
+		*qs = QueryStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "FAILED", "FINISHED", "QUEUED", "RUNNING"`, v)
+	}
+}
+
+// Type always returns QueryStatus to satisfy [pflag.Value] interface
+func (qs *QueryStatus) Type() string {
+	return "QueryStatus"
+}
 
 type RepeatedEndpointConfPairs struct {
 	// Deprecated: Use configuration_pairs
@@ -888,6 +1226,27 @@ const SetWorkspaceWarehouseConfigRequestSecurityPolicyDataAccessControl SetWorks
 const SetWorkspaceWarehouseConfigRequestSecurityPolicyNone SetWorkspaceWarehouseConfigRequestSecurityPolicy = `NONE`
 
 const SetWorkspaceWarehouseConfigRequestSecurityPolicyPassthrough SetWorkspaceWarehouseConfigRequestSecurityPolicy = `PASSTHROUGH`
+
+// String representation for [fmt.Print]
+func (swwcrsp *SetWorkspaceWarehouseConfigRequestSecurityPolicy) String() string {
+	return string(*swwcrsp)
+}
+
+// Set raw string value and validate it against allowed values
+func (swwcrsp *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Set(v string) error {
+	switch v {
+	case `DATA_ACCESS_CONTROL`, `NONE`, `PASSTHROUGH`:
+		*swwcrsp = SetWorkspaceWarehouseConfigRequestSecurityPolicy(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DATA_ACCESS_CONTROL", "NONE", "PASSTHROUGH"`, v)
+	}
+}
+
+// Type always returns SetWorkspaceWarehouseConfigRequestSecurityPolicy to satisfy [pflag.Value] interface
+func (swwcrsp *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
+	return "SetWorkspaceWarehouseConfigRequestSecurityPolicy"
+}
 
 // Start a warehouse
 type StartWarehouse struct {
@@ -1072,6 +1431,27 @@ const TerminationReasonCodeWorkspaceCancelledError TerminationReasonCode = `WORK
 
 const TerminationReasonCodeWorkspaceConfigurationError TerminationReasonCode = `WORKSPACE_CONFIGURATION_ERROR`
 
+// String representation for [fmt.Print]
+func (trc *TerminationReasonCode) String() string {
+	return string(*trc)
+}
+
+// Set raw string value and validate it against allowed values
+func (trc *TerminationReasonCode) Set(v string) error {
+	switch v {
+	case `ABUSE_DETECTED`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_SHUTDOWN`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `DATABASE_CONNECTION_FAILURE`, `DBFS_COMPONENT_UNHEALTHY`, `DOCKER_IMAGE_PULL_FAILURE`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `EXECUTION_COMPONENT_UNHEALTHY`, `GCP_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_UNREACHABLE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_SPARK_IMAGE`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `STORAGE_DOWNLOAD_FAILURE`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`:
+		*trc = TerminationReasonCode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ABUSE_DETECTED", "ATTACH_PROJECT_FAILURE", "AWS_AUTHORIZATION_FAILURE", "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE", "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE", "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE", "AWS_REQUEST_LIMIT_EXCEEDED", "AWS_UNSUPPORTED_FAILURE", "AZURE_BYOK_KEY_PERMISSION_FAILURE", "AZURE_EPHEMERAL_DISK_FAILURE", "AZURE_INVALID_DEPLOYMENT_TEMPLATE", "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION", "AZURE_QUOTA_EXCEEDED_EXCEPTION", "AZURE_RESOURCE_MANAGER_THROTTLING", "AZURE_RESOURCE_PROVIDER_THROTTLING", "AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE", "AZURE_VM_EXTENSION_FAILURE", "AZURE_VNET_CONFIGURATION_FAILURE", "BOOTSTRAP_TIMEOUT", "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION", "CLOUD_PROVIDER_DISK_SETUP_FAILURE", "CLOUD_PROVIDER_LAUNCH_FAILURE", "CLOUD_PROVIDER_RESOURCE_STOCKOUT", "CLOUD_PROVIDER_SHUTDOWN", "COMMUNICATION_LOST", "CONTAINER_LAUNCH_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE", "DATABASE_CONNECTION_FAILURE", "DBFS_COMPONENT_UNHEALTHY", "DOCKER_IMAGE_PULL_FAILURE", "DRIVER_UNREACHABLE", "DRIVER_UNRESPONSIVE", "EXECUTION_COMPONENT_UNHEALTHY", "GCP_QUOTA_EXCEEDED", "GCP_SERVICE_ACCOUNT_DELETED", "GLOBAL_INIT_SCRIPT_FAILURE", "HIVE_METASTORE_PROVISIONING_FAILURE", "IMAGE_PULL_PERMISSION_DENIED", "INACTIVITY", "INIT_SCRIPT_FAILURE", "INSTANCE_POOL_CLUSTER_FAILURE", "INSTANCE_UNREACHABLE", "INTERNAL_ERROR", "INVALID_ARGUMENT", "INVALID_SPARK_IMAGE", "IP_EXHAUSTION_FAILURE", "JOB_FINISHED", "K8S_AUTOSCALING_FAILURE", "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT", "METASTORE_COMPONENT_UNHEALTHY", "NEPHOS_RESOURCE_MANAGEMENT", "NETWORK_CONFIGURATION_FAILURE", "NFS_MOUNT_FAILURE", "NPIP_TUNNEL_SETUP_FAILURE", "NPIP_TUNNEL_TOKEN_FAILURE", "REQUEST_REJECTED", "REQUEST_THROTTLED", "SECRET_RESOLUTION_ERROR", "SECURITY_DAEMON_REGISTRATION_EXCEPTION", "SELF_BOOTSTRAP_FAILURE", "SKIPPED_SLOW_NODES", "SLOW_IMAGE_DOWNLOAD", "SPARK_ERROR", "SPARK_IMAGE_DOWNLOAD_FAILURE", "SPARK_STARTUP_FAILURE", "SPOT_INSTANCE_TERMINATION", "STORAGE_DOWNLOAD_FAILURE", "STS_CLIENT_SETUP_FAILURE", "SUBNET_EXHAUSTED_FAILURE", "TEMPORARILY_UNAVAILABLE", "TRIAL_EXPIRED", "UNEXPECTED_LAUNCH_FAILURE", "UNKNOWN", "UNSUPPORTED_INSTANCE_TYPE", "UPDATE_INSTANCE_PROFILE_FAILURE", "USER_REQUEST", "WORKER_SETUP_FAILURE", "WORKSPACE_CANCELLED_ERROR", "WORKSPACE_CONFIGURATION_ERROR"`, v)
+	}
+}
+
+// Type always returns TerminationReasonCode to satisfy [pflag.Value] interface
+func (trc *TerminationReasonCode) Type() string {
+	return "TerminationReasonCode"
+}
+
 // type of the termination
 type TerminationReasonType string
 
@@ -1082,6 +1462,27 @@ const TerminationReasonTypeCloudFailure TerminationReasonType = `CLOUD_FAILURE`
 const TerminationReasonTypeServiceFault TerminationReasonType = `SERVICE_FAULT`
 
 const TerminationReasonTypeSuccess TerminationReasonType = `SUCCESS`
+
+// String representation for [fmt.Print]
+func (trt *TerminationReasonType) String() string {
+	return string(*trt)
+}
+
+// Set raw string value and validate it against allowed values
+func (trt *TerminationReasonType) Set(v string) error {
+	switch v {
+	case `CLIENT_ERROR`, `CLOUD_FAILURE`, `SERVICE_FAULT`, `SUCCESS`:
+		*trt = TerminationReasonType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLIENT_ERROR", "CLOUD_FAILURE", "SERVICE_FAULT", "SUCCESS"`, v)
+	}
+}
+
+// Type always returns TerminationReasonType to satisfy [pflag.Value] interface
+func (trt *TerminationReasonType) Type() string {
+	return "TerminationReasonType"
+}
 
 type TimeRange struct {
 	// Limit results to queries that started before this time.
@@ -1105,3 +1506,24 @@ const WarehouseTypePairWarehouseTypeClassic WarehouseTypePairWarehouseType = `CL
 const WarehouseTypePairWarehouseTypePro WarehouseTypePairWarehouseType = `PRO`
 
 const WarehouseTypePairWarehouseTypeTypeUnspecified WarehouseTypePairWarehouseType = `TYPE_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (wtpwt *WarehouseTypePairWarehouseType) String() string {
+	return string(*wtpwt)
+}
+
+// Set raw string value and validate it against allowed values
+func (wtpwt *WarehouseTypePairWarehouseType) Set(v string) error {
+	switch v {
+	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+		*wtpwt = WarehouseTypePairWarehouseType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns WarehouseTypePairWarehouseType to satisfy [pflag.Value] interface
+func (wtpwt *WarehouseTypePairWarehouseType) Type() string {
+	return "WarehouseTypePairWarehouseType"
+}
