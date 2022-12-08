@@ -1,22 +1,9 @@
 package config_test
 
 import (
-	"context"
-	"errors"
-	"fmt"
-
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/config"
 )
-
-func ExampleConfig_errorNoAuth() {
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	_, err := w.CurrentUser.Me(context.Background())
-	if errors.Is(err, config.ErrCannotConfigureAuth) {
-		fmt.Println("please configure auth")
-	}
-	// Output: please configure auth
-}
 
 func ExampleConfig_pat() {
 	databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
