@@ -2,6 +2,8 @@
 
 package secrets
 
+import "fmt"
+
 // all definitions in this file are in alphabetical order
 
 type AclItem struct {
@@ -18,6 +20,27 @@ const AclPermissionManage AclPermission = `MANAGE`
 const AclPermissionRead AclPermission = `READ`
 
 const AclPermissionWrite AclPermission = `WRITE`
+
+// String representation for [fmt.Print]
+func (ap *AclPermission) String() string {
+	return string(*ap)
+}
+
+// Set raw string value and validate it against allowed values
+func (ap *AclPermission) Set(v string) error {
+	switch v {
+	case `MANAGE`, `READ`, `WRITE`:
+		*ap = AclPermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MANAGE", "READ", "WRITE"`, v)
+	}
+}
+
+// Type always returns AclPermission to satisfy [pflag.Value] interface
+func (ap *AclPermission) Type() string {
+	return "AclPermission"
+}
 
 type AzureKeyVaultSecretScopeMetadata struct {
 	// The DNS of the KeyVault
@@ -119,6 +142,27 @@ type ScopeBackendType string
 const ScopeBackendTypeAzureKeyvault ScopeBackendType = `AZURE_KEYVAULT`
 
 const ScopeBackendTypeDatabricks ScopeBackendType = `DATABRICKS`
+
+// String representation for [fmt.Print]
+func (sbt *ScopeBackendType) String() string {
+	return string(*sbt)
+}
+
+// Set raw string value and validate it against allowed values
+func (sbt *ScopeBackendType) Set(v string) error {
+	switch v {
+	case `AZURE_KEYVAULT`, `DATABRICKS`:
+		*sbt = ScopeBackendType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AZURE_KEYVAULT", "DATABRICKS"`, v)
+	}
+}
+
+// Type always returns ScopeBackendType to satisfy [pflag.Value] interface
+func (sbt *ScopeBackendType) Type() string {
+	return "ScopeBackendType"
+}
 
 type SecretMetadata struct {
 	// A unique name to identify the secret.

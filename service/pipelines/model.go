@@ -3,6 +3,8 @@
 package pipelines
 
 import (
+	"fmt"
+
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/service/libraries"
 )
@@ -156,6 +158,27 @@ type GetPipelineResponseHealth string
 const GetPipelineResponseHealthHealthy GetPipelineResponseHealth = `HEALTHY`
 
 const GetPipelineResponseHealthUnhealthy GetPipelineResponseHealth = `UNHEALTHY`
+
+// String representation for [fmt.Print]
+func (gprh *GetPipelineResponseHealth) String() string {
+	return string(*gprh)
+}
+
+// Set raw string value and validate it against allowed values
+func (gprh *GetPipelineResponseHealth) Set(v string) error {
+	switch v {
+	case `HEALTHY`, `UNHEALTHY`:
+		*gprh = GetPipelineResponseHealth(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "HEALTHY", "UNHEALTHY"`, v)
+	}
+}
+
+// Type always returns GetPipelineResponseHealth to satisfy [pflag.Value] interface
+func (gprh *GetPipelineResponseHealth) Type() string {
+	return "GetPipelineResponseHealth"
+}
 
 // Get a pipeline update
 type GetUpdate struct {
@@ -396,6 +419,27 @@ const PipelineStateStarting PipelineState = `STARTING`
 
 const PipelineStateStopping PipelineState = `STOPPING`
 
+// String representation for [fmt.Print]
+func (ps *PipelineState) String() string {
+	return string(*ps)
+}
+
+// Set raw string value and validate it against allowed values
+func (ps *PipelineState) Set(v string) error {
+	switch v {
+	case `DELETED`, `DEPLOYING`, `FAILED`, `IDLE`, `RECOVERING`, `RESETTING`, `RUNNING`, `STARTING`, `STOPPING`:
+		*ps = PipelineState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DELETED", "DEPLOYING", "FAILED", "IDLE", "RECOVERING", "RESETTING", "RUNNING", "STARTING", "STOPPING"`, v)
+	}
+}
+
+// Type always returns PipelineState to satisfy [pflag.Value] interface
+func (ps *PipelineState) Type() string {
+	return "PipelineState"
+}
+
 type PipelineStateInfo struct {
 	// The unique identifier of the cluster running the pipeline.
 	ClusterId string `json:"cluster_id,omitempty"`
@@ -458,6 +502,27 @@ const StartUpdateCauseServiceUpgrade StartUpdateCause = `SERVICE_UPGRADE`
 
 const StartUpdateCauseUserAction StartUpdateCause = `USER_ACTION`
 
+// String representation for [fmt.Print]
+func (suc *StartUpdateCause) String() string {
+	return string(*suc)
+}
+
+// Set raw string value and validate it against allowed values
+func (suc *StartUpdateCause) Set(v string) error {
+	switch v {
+	case `API_CALL`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
+		*suc = StartUpdateCause(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "API_CALL", "JOB_TASK", "RETRY_ON_FAILURE", "SCHEMA_CHANGE", "SERVICE_UPGRADE", "USER_ACTION"`, v)
+	}
+}
+
+// Type always returns StartUpdateCause to satisfy [pflag.Value] interface
+func (suc *StartUpdateCause) Type() string {
+	return "StartUpdateCause"
+}
+
 type StartUpdateResponse struct {
 	UpdateId string `json:"update_id,omitempty"`
 }
@@ -512,6 +577,27 @@ const UpdateInfoCauseServiceUpgrade UpdateInfoCause = `SERVICE_UPGRADE`
 
 const UpdateInfoCauseUserAction UpdateInfoCause = `USER_ACTION`
 
+// String representation for [fmt.Print]
+func (uic *UpdateInfoCause) String() string {
+	return string(*uic)
+}
+
+// Set raw string value and validate it against allowed values
+func (uic *UpdateInfoCause) Set(v string) error {
+	switch v {
+	case `API_CALL`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
+		*uic = UpdateInfoCause(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "API_CALL", "JOB_TASK", "RETRY_ON_FAILURE", "SCHEMA_CHANGE", "SERVICE_UPGRADE", "USER_ACTION"`, v)
+	}
+}
+
+// Type always returns UpdateInfoCause to satisfy [pflag.Value] interface
+func (uic *UpdateInfoCause) Type() string {
+	return "UpdateInfoCause"
+}
+
 // The update state.
 type UpdateInfoState string
 
@@ -536,6 +622,27 @@ const UpdateInfoStateSettingUpTables UpdateInfoState = `SETTING_UP_TABLES`
 const UpdateInfoStateStopping UpdateInfoState = `STOPPING`
 
 const UpdateInfoStateWaitingForResources UpdateInfoState = `WAITING_FOR_RESOURCES`
+
+// String representation for [fmt.Print]
+func (uis *UpdateInfoState) String() string {
+	return string(*uis)
+}
+
+// Set raw string value and validate it against allowed values
+func (uis *UpdateInfoState) Set(v string) error {
+	switch v {
+	case `CANCELED`, `COMPLETED`, `CREATED`, `FAILED`, `INITIALIZING`, `QUEUED`, `RESETTING`, `RUNNING`, `SETTING_UP_TABLES`, `STOPPING`, `WAITING_FOR_RESOURCES`:
+		*uis = UpdateInfoState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "COMPLETED", "CREATED", "FAILED", "INITIALIZING", "QUEUED", "RESETTING", "RUNNING", "SETTING_UP_TABLES", "STOPPING", "WAITING_FOR_RESOURCES"`, v)
+	}
+}
+
+// Type always returns UpdateInfoState to satisfy [pflag.Value] interface
+func (uis *UpdateInfoState) Type() string {
+	return "UpdateInfoState"
+}
 
 type UpdateStateInfo struct {
 	CreationTime string `json:"creation_time,omitempty"`
@@ -568,3 +675,24 @@ const UpdateStateInfoStateSettingUpTables UpdateStateInfoState = `SETTING_UP_TAB
 const UpdateStateInfoStateStopping UpdateStateInfoState = `STOPPING`
 
 const UpdateStateInfoStateWaitingForResources UpdateStateInfoState = `WAITING_FOR_RESOURCES`
+
+// String representation for [fmt.Print]
+func (usis *UpdateStateInfoState) String() string {
+	return string(*usis)
+}
+
+// Set raw string value and validate it against allowed values
+func (usis *UpdateStateInfoState) Set(v string) error {
+	switch v {
+	case `CANCELED`, `COMPLETED`, `CREATED`, `FAILED`, `INITIALIZING`, `QUEUED`, `RESETTING`, `RUNNING`, `SETTING_UP_TABLES`, `STOPPING`, `WAITING_FOR_RESOURCES`:
+		*usis = UpdateStateInfoState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "COMPLETED", "CREATED", "FAILED", "INITIALIZING", "QUEUED", "RESETTING", "RUNNING", "SETTING_UP_TABLES", "STOPPING", "WAITING_FOR_RESOURCES"`, v)
+	}
+}
+
+// Type always returns UpdateStateInfoState to satisfy [pflag.Value] interface
+func (usis *UpdateStateInfoState) Type() string {
+	return "UpdateStateInfoState"
+}

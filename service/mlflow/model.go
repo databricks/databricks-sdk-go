@@ -2,6 +2,8 @@
 
 package mlflow
 
+import "fmt"
+
 // all definitions in this file are in alphabetical order
 
 // Activity recorded for the action.
@@ -59,6 +61,27 @@ const ActivityActionCancelTransitionRequest ActivityAction = `CANCEL_TRANSITION_
 // Reject a transition request
 const ActivityActionRejectTransitionRequest ActivityAction = `REJECT_TRANSITION_REQUEST`
 
+// String representation for [fmt.Print]
+func (aa *ActivityAction) String() string {
+	return string(*aa)
+}
+
+// Set raw string value and validate it against allowed values
+func (aa *ActivityAction) Set(v string) error {
+	switch v {
+	case `APPROVE_TRANSITION_REQUEST`, `CANCEL_TRANSITION_REQUEST`, `REJECT_TRANSITION_REQUEST`:
+		*aa = ActivityAction(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "APPROVE_TRANSITION_REQUEST", "CANCEL_TRANSITION_REQUEST", "REJECT_TRANSITION_REQUEST"`, v)
+	}
+}
+
+// Type always returns ActivityAction to satisfy [pflag.Value] interface
+func (aa *ActivityAction) Type() string {
+	return "ActivityAction"
+}
+
 // This describes an enum
 type ActivityType string
 
@@ -82,6 +105,27 @@ const ActivityTypeRequestedTransition ActivityType = `REQUESTED_TRANSITION`
 // For events performed as a side effect, such as archiving existing model
 // versions in a stage.
 const ActivityTypeSystemTransition ActivityType = `SYSTEM_TRANSITION`
+
+// String representation for [fmt.Print]
+func (at *ActivityType) String() string {
+	return string(*at)
+}
+
+// Set raw string value and validate it against allowed values
+func (at *ActivityType) Set(v string) error {
+	switch v {
+	case `APPLIED_TRANSITION`, `APPROVED_REQUEST`, `CANCELLED_REQUEST`, `NEW_COMMENT`, `REJECTED_REQUEST`, `REQUESTED_TRANSITION`, `SYSTEM_TRANSITION`:
+		*at = ActivityType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "APPLIED_TRANSITION", "APPROVED_REQUEST", "CANCELLED_REQUEST", "NEW_COMMENT", "REJECTED_REQUEST", "REQUESTED_TRANSITION", "SYSTEM_TRANSITION"`, v)
+	}
+}
+
+// Type always returns ActivityType to satisfy [pflag.Value] interface
+func (at *ActivityType) Type() string {
+	return "ActivityType"
+}
 
 type ApproveResponse struct {
 	// Activity recorded for the action.
@@ -118,6 +162,27 @@ const CommentActivityActionDeleteComment CommentActivityAction = `DELETE_COMMENT
 
 // Edit the comment
 const CommentActivityActionEditComment CommentActivityAction = `EDIT_COMMENT`
+
+// String representation for [fmt.Print]
+func (caa *CommentActivityAction) String() string {
+	return string(*caa)
+}
+
+// Set raw string value and validate it against allowed values
+func (caa *CommentActivityAction) Set(v string) error {
+	switch v {
+	case `DELETE_COMMENT`, `EDIT_COMMENT`:
+		*caa = CommentActivityAction(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DELETE_COMMENT", "EDIT_COMMENT"`, v)
+	}
+}
+
+// Type always returns CommentActivityAction to satisfy [pflag.Value] interface
+func (caa *CommentActivityAction) Type() string {
+	return "CommentActivityAction"
+}
 
 // Comment details.
 type CommentObject struct {
@@ -798,6 +863,27 @@ const ModelVersionStatusPendingRegistration ModelVersionStatus = `PENDING_REGIST
 
 const ModelVersionStatusReady ModelVersionStatus = `READY`
 
+// String representation for [fmt.Print]
+func (mvs *ModelVersionStatus) String() string {
+	return string(*mvs)
+}
+
+// Set raw string value and validate it against allowed values
+func (mvs *ModelVersionStatus) Set(v string) error {
+	switch v {
+	case `FAILED_REGISTRATION`, `PENDING_REGISTRATION`, `READY`:
+		*mvs = ModelVersionStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FAILED_REGISTRATION", "PENDING_REGISTRATION", "READY"`, v)
+	}
+}
+
+// Type always returns ModelVersionStatus to satisfy [pflag.Value] interface
+func (mvs *ModelVersionStatus) Type() string {
+	return "ModelVersionStatus"
+}
+
 type ModelVersionTag struct {
 	// The tag key.
 	Key string `json:"key,omitempty"`
@@ -825,6 +911,27 @@ const PermissionLevelCanManageProductionVersions PermissionLevel = `CAN_MANAGE_P
 const PermissionLevelCanManageStagingVersions PermissionLevel = `CAN_MANAGE_STAGING_VERSIONS`
 
 const PermissionLevelCanRead PermissionLevel = `CAN_READ`
+
+// String representation for [fmt.Print]
+func (pl *PermissionLevel) String() string {
+	return string(*pl)
+}
+
+// Set raw string value and validate it against allowed values
+func (pl *PermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`:
+		*pl = PermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_STAGING_VERSIONS", "CAN_READ"`, v)
+	}
+}
+
+// Type always returns PermissionLevel to satisfy [pflag.Value] interface
+func (pl *PermissionLevel) Type() string {
+	return "PermissionLevel"
+}
 
 type RegisteredModel struct {
 	// Timestamp recorded when this `registered_model` was created.
@@ -953,6 +1060,27 @@ const RegistryWebhookEventTransitionRequestToProductionCreated RegistryWebhookEv
 
 const RegistryWebhookEventTransitionRequestToStagingCreated RegistryWebhookEvent = `TRANSITION_REQUEST_TO_STAGING_CREATED`
 
+// String representation for [fmt.Print]
+func (rwe *RegistryWebhookEvent) String() string {
+	return string(*rwe)
+}
+
+// Set raw string value and validate it against allowed values
+func (rwe *RegistryWebhookEvent) Set(v string) error {
+	switch v {
+	case `COMMENT_CREATED`, `MODEL_VERSION_CREATED`, `MODEL_VERSION_TAG_SET`, `MODEL_VERSION_TRANSITIONED_STAGE`, `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`, `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`, `MODEL_VERSION_TRANSITIONED_TO_STAGING`, `REGISTERED_MODEL_CREATED`, `TRANSITION_REQUEST_CREATED`, `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`, `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`, `TRANSITION_REQUEST_TO_STAGING_CREATED`:
+		*rwe = RegistryWebhookEvent(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COMMENT_CREATED", "MODEL_VERSION_CREATED", "MODEL_VERSION_TAG_SET", "MODEL_VERSION_TRANSITIONED_STAGE", "MODEL_VERSION_TRANSITIONED_TO_ARCHIVED", "MODEL_VERSION_TRANSITIONED_TO_PRODUCTION", "MODEL_VERSION_TRANSITIONED_TO_STAGING", "REGISTERED_MODEL_CREATED", "TRANSITION_REQUEST_CREATED", "TRANSITION_REQUEST_TO_ARCHIVED_CREATED", "TRANSITION_REQUEST_TO_PRODUCTION_CREATED", "TRANSITION_REQUEST_TO_STAGING_CREATED"`, v)
+	}
+}
+
+// Type always returns RegistryWebhookEvent to satisfy [pflag.Value] interface
+func (rwe *RegistryWebhookEvent) Type() string {
+	return "RegistryWebhookEvent"
+}
+
 // This describes an enum
 type RegistryWebhookStatus string
 
@@ -965,6 +1093,27 @@ const RegistryWebhookStatusDisabled RegistryWebhookStatus = `DISABLED`
 // Webhook can be triggered through the test endpoint, but is not triggered on a
 // real event.
 const RegistryWebhookStatusTestMode RegistryWebhookStatus = `TEST_MODE`
+
+// String representation for [fmt.Print]
+func (rws *RegistryWebhookStatus) String() string {
+	return string(*rws)
+}
+
+// Set raw string value and validate it against allowed values
+func (rws *RegistryWebhookStatus) Set(v string) error {
+	switch v {
+	case `ACTIVE`, `DISABLED`, `TEST_MODE`:
+		*rws = RegistryWebhookStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DISABLED", "TEST_MODE"`, v)
+	}
+}
+
+// Type always returns RegistryWebhookStatus to satisfy [pflag.Value] interface
+func (rws *RegistryWebhookStatus) Type() string {
+	return "RegistryWebhookStatus"
+}
 
 type RejectResponse struct {
 	// Activity recorded for the action.
@@ -1067,6 +1216,27 @@ const RunInfoStatusRunning RunInfoStatus = `RUNNING`
 
 const RunInfoStatusScheduled RunInfoStatus = `SCHEDULED`
 
+// String representation for [fmt.Print]
+func (ris *RunInfoStatus) String() string {
+	return string(*ris)
+}
+
+// Set raw string value and validate it against allowed values
+func (ris *RunInfoStatus) Set(v string) error {
+	switch v {
+	case `FAILED`, `FINISHED`, `KILLED`, `RUNNING`, `SCHEDULED`:
+		*ris = RunInfoStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FAILED", "FINISHED", "KILLED", "RUNNING", "SCHEDULED"`, v)
+	}
+}
+
+// Type always returns RunInfoStatus to satisfy [pflag.Value] interface
+func (ris *RunInfoStatus) Type() string {
+	return "RunInfoStatus"
+}
+
 type RunTag struct {
 	// The tag key.
 	Key string `json:"key,omitempty"`
@@ -1109,6 +1279,27 @@ const SearchExperimentsViewTypeActiveOnly SearchExperimentsViewType = `ACTIVE_ON
 const SearchExperimentsViewTypeAll SearchExperimentsViewType = `ALL`
 
 const SearchExperimentsViewTypeDeletedOnly SearchExperimentsViewType = `DELETED_ONLY`
+
+// String representation for [fmt.Print]
+func (sevt *SearchExperimentsViewType) String() string {
+	return string(*sevt)
+}
+
+// Set raw string value and validate it against allowed values
+func (sevt *SearchExperimentsViewType) Set(v string) error {
+	switch v {
+	case `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
+		*sevt = SearchExperimentsViewType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE_ONLY", "ALL", "DELETED_ONLY"`, v)
+	}
+}
+
+// Type always returns SearchExperimentsViewType to satisfy [pflag.Value] interface
+func (sevt *SearchExperimentsViewType) Type() string {
+	return "SearchExperimentsViewType"
+}
 
 // Searches model versions
 type SearchModelVersionsRequest struct {
@@ -1206,6 +1397,27 @@ const SearchRunsRunViewTypeAll SearchRunsRunViewType = `ALL`
 
 const SearchRunsRunViewTypeDeletedOnly SearchRunsRunViewType = `DELETED_ONLY`
 
+// String representation for [fmt.Print]
+func (srrvt *SearchRunsRunViewType) String() string {
+	return string(*srrvt)
+}
+
+// Set raw string value and validate it against allowed values
+func (srrvt *SearchRunsRunViewType) Set(v string) error {
+	switch v {
+	case `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
+		*srrvt = SearchRunsRunViewType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE_ONLY", "ALL", "DELETED_ONLY"`, v)
+	}
+}
+
+// Type always returns SearchRunsRunViewType to satisfy [pflag.Value] interface
+func (srrvt *SearchRunsRunViewType) Type() string {
+	return "SearchRunsRunViewType"
+}
+
 type SetExperimentTag struct {
 	// ID of the experiment under which to log the tag. Must be provided.
 	ExperimentId string `json:"experiment_id"`
@@ -1278,6 +1490,27 @@ const StageProduction Stage = `Production`
 // Staging or pre-production stage.
 const StageStaging Stage = `Staging`
 
+// String representation for [fmt.Print]
+func (s *Stage) String() string {
+	return string(*s)
+}
+
+// Set raw string value and validate it against allowed values
+func (s *Stage) Set(v string) error {
+	switch v {
+	case `Archived`, `None`, `Production`, `Staging`:
+		*s = Stage(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "Archived", "None", "Production", "Staging"`, v)
+	}
+}
+
+// Type always returns Stage to satisfy [pflag.Value] interface
+func (s *Stage) Type() string {
+	return "Stage"
+}
+
 // This describes an enum
 type Status string
 
@@ -1290,6 +1523,27 @@ const StatusPendingRegistration Status = `PENDING_REGISTRATION`
 
 // Model version is ready for use.
 const StatusReady Status = `READY`
+
+// String representation for [fmt.Print]
+func (s *Status) String() string {
+	return string(*s)
+}
+
+// Set raw string value and validate it against allowed values
+func (s *Status) Set(v string) error {
+	switch v {
+	case `FAILED_REGISTRATION`, `PENDING_REGISTRATION`, `READY`:
+		*s = Status(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FAILED_REGISTRATION", "PENDING_REGISTRATION", "READY"`, v)
+	}
+}
+
+// Type always returns Status to satisfy [pflag.Value] interface
+func (s *Status) Type() string {
+	return "Status"
+}
 
 // Test webhook response object.
 type TestRegistryWebhook struct {
@@ -1494,3 +1748,24 @@ const UpdateRunStatusKilled UpdateRunStatus = `KILLED`
 const UpdateRunStatusRunning UpdateRunStatus = `RUNNING`
 
 const UpdateRunStatusScheduled UpdateRunStatus = `SCHEDULED`
+
+// String representation for [fmt.Print]
+func (urs *UpdateRunStatus) String() string {
+	return string(*urs)
+}
+
+// Set raw string value and validate it against allowed values
+func (urs *UpdateRunStatus) Set(v string) error {
+	switch v {
+	case `FAILED`, `FINISHED`, `KILLED`, `RUNNING`, `SCHEDULED`:
+		*urs = UpdateRunStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FAILED", "FINISHED", "KILLED", "RUNNING", "SCHEDULED"`, v)
+	}
+}
+
+// Type always returns UpdateRunStatus to satisfy [pflag.Value] interface
+func (urs *UpdateRunStatus) Type() string {
+	return "UpdateRunStatus"
+}

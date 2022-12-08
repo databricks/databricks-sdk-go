@@ -188,6 +188,15 @@ func (n *Named) KebabName() string {
 	return strings.Join(n.splitASCII(), "-")
 }
 
+// AbbrName creates `nlt` from `namesLikeThis`
+func (n *Named) AbbrName() string {
+	var abbr []byte
+	for _, v := range n.splitASCII() {
+		abbr = append(abbr, v[0])
+	}
+	return string(abbr)
+}
+
 func (n *Named) HasComment() bool {
 	return n.Description != ""
 }

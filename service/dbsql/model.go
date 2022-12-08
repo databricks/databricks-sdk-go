@@ -2,6 +2,8 @@
 
 package dbsql
 
+import "fmt"
+
 // all definitions in this file are in alphabetical order
 
 type AccessControl struct {
@@ -77,6 +79,27 @@ const AlertStateOk AlertState = `ok`
 const AlertStateTriggered AlertState = `triggered`
 
 const AlertStateUnknown AlertState = `unknown`
+
+// String representation for [fmt.Print]
+func (as *AlertState) String() string {
+	return string(*as)
+}
+
+// Set raw string value and validate it against allowed values
+func (as *AlertState) Set(v string) error {
+	switch v {
+	case `ok`, `triggered`, `unknown`:
+		*as = AlertState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ok", "triggered", "unknown"`, v)
+	}
+}
+
+// Type always returns AlertState to satisfy [pflag.Value] interface
+func (as *AlertState) Type() string {
+	return "AlertState"
+}
 
 // Create a dashboard object
 type CreateDashboardRequest struct {
@@ -249,6 +272,27 @@ const DestinationTypeSlack DestinationType = `slack`
 
 const DestinationTypeWebhook DestinationType = `webhook`
 
+// String representation for [fmt.Print]
+func (dt *DestinationType) String() string {
+	return string(*dt)
+}
+
+// Set raw string value and validate it against allowed values
+func (dt *DestinationType) Set(v string) error {
+	switch v {
+	case `email`, `hangouts_chat`, `mattermost`, `microsoft_teams`, `pagerduty`, `slack`, `webhook`:
+		*dt = DestinationType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "email", "hangouts_chat", "mattermost", "microsoft_teams", "pagerduty", "slack", "webhook"`, v)
+	}
+}
+
+// Type always returns DestinationType to satisfy [pflag.Value] interface
+func (dt *DestinationType) Type() string {
+	return "DestinationType"
+}
+
 type EditAlert struct {
 	AlertId string `json:"-" url:"-"`
 	// Name of the alert.
@@ -304,6 +348,27 @@ type ListDashboardsOrder string
 const ListDashboardsOrderCreatedAt ListDashboardsOrder = `created_at`
 
 const ListDashboardsOrderName ListDashboardsOrder = `name`
+
+// String representation for [fmt.Print]
+func (ldo *ListDashboardsOrder) String() string {
+	return string(*ldo)
+}
+
+// Set raw string value and validate it against allowed values
+func (ldo *ListDashboardsOrder) Set(v string) error {
+	switch v {
+	case `created_at`, `name`:
+		*ldo = ListDashboardsOrder(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "created_at", "name"`, v)
+	}
+}
+
+// Type always returns ListDashboardsOrder to satisfy [pflag.Value] interface
+func (ldo *ListDashboardsOrder) Type() string {
+	return "ListDashboardsOrder"
+}
 
 // Get dashboard objects
 type ListDashboardsRequest struct {
@@ -384,6 +449,27 @@ const ObjectTypeDataSource ObjectType = `data_source`
 
 const ObjectTypeQuery ObjectType = `query`
 
+// String representation for [fmt.Print]
+func (ot *ObjectType) String() string {
+	return string(*ot)
+}
+
+// Set raw string value and validate it against allowed values
+func (ot *ObjectType) Set(v string) error {
+	switch v {
+	case `alert`, `dashboard`, `data_source`, `query`:
+		*ot = ObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "alert", "dashboard", "data_source", "query"`, v)
+	}
+}
+
+// Type always returns ObjectType to satisfy [pflag.Value] interface
+func (ot *ObjectType) Type() string {
+	return "ObjectType"
+}
+
 // Always a plural of the object type.
 type ObjectTypePlural string
 
@@ -395,6 +481,27 @@ const ObjectTypePluralDataSources ObjectTypePlural = `data_sources`
 
 const ObjectTypePluralQueries ObjectTypePlural = `queries`
 
+// String representation for [fmt.Print]
+func (otp *ObjectTypePlural) String() string {
+	return string(*otp)
+}
+
+// Set raw string value and validate it against allowed values
+func (otp *ObjectTypePlural) Set(v string) error {
+	switch v {
+	case `alerts`, `dashboards`, `data_sources`, `queries`:
+		*otp = ObjectTypePlural(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "alerts", "dashboards", "data_sources", "queries"`, v)
+	}
+}
+
+// Type always returns ObjectTypePlural to satisfy [pflag.Value] interface
+func (otp *ObjectTypePlural) Type() string {
+	return "ObjectTypePlural"
+}
+
 // The singular form of the type of object which can be owned.
 type OwnableObjectType string
 
@@ -403,6 +510,27 @@ const OwnableObjectTypeAlert OwnableObjectType = `alert`
 const OwnableObjectTypeDashboard OwnableObjectType = `dashboard`
 
 const OwnableObjectTypeQuery OwnableObjectType = `query`
+
+// String representation for [fmt.Print]
+func (oot *OwnableObjectType) String() string {
+	return string(*oot)
+}
+
+// Set raw string value and validate it against allowed values
+func (oot *OwnableObjectType) Set(v string) error {
+	switch v {
+	case `alert`, `dashboard`, `query`:
+		*oot = OwnableObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "alert", "dashboard", "query"`, v)
+	}
+}
+
+// Type always returns OwnableObjectType to satisfy [pflag.Value] interface
+func (oot *OwnableObjectType) Type() string {
+	return "OwnableObjectType"
+}
 
 type Parameter struct {
 	// The literal parameter marker that appears between double curly braces in
@@ -425,6 +553,27 @@ const ParameterTypeNumber ParameterType = `number`
 
 const ParameterTypeText ParameterType = `text`
 
+// String representation for [fmt.Print]
+func (pt *ParameterType) String() string {
+	return string(*pt)
+}
+
+// Set raw string value and validate it against allowed values
+func (pt *ParameterType) Set(v string) error {
+	switch v {
+	case `datetime`, `number`, `text`:
+		*pt = ParameterType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "datetime", "number", "text"`, v)
+	}
+}
+
+// Type always returns ParameterType to satisfy [pflag.Value] interface
+func (pt *ParameterType) Type() string {
+	return "ParameterType"
+}
+
 // This describes an enum
 type PermissionLevel string
 
@@ -436,6 +585,27 @@ const PermissionLevelCanRun PermissionLevel = `CAN_RUN`
 
 // Can view the query
 const PermissionLevelCanView PermissionLevel = `CAN_VIEW`
+
+// String representation for [fmt.Print]
+func (pl *PermissionLevel) String() string {
+	return string(*pl)
+}
+
+// Set raw string value and validate it against allowed values
+func (pl *PermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_RUN`, `CAN_VIEW`:
+		*pl = PermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_RUN", "CAN_VIEW"`, v)
+	}
+}
+
+// Type always returns PermissionLevel to satisfy [pflag.Value] interface
+func (pl *PermissionLevel) Type() string {
+	return "PermissionLevel"
+}
 
 type Query struct {
 	// Describes whether the authenticated user is allowed to edit the
@@ -603,6 +773,27 @@ type Success struct {
 type SuccessMessage string
 
 const SuccessMessageSuccess SuccessMessage = `Success`
+
+// String representation for [fmt.Print]
+func (sm *SuccessMessage) String() string {
+	return string(*sm)
+}
+
+// Set raw string value and validate it against allowed values
+func (sm *SuccessMessage) Set(v string) error {
+	switch v {
+	case `Success`:
+		*sm = SuccessMessage(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "Success"`, v)
+	}
+}
+
+// Type always returns SuccessMessage to satisfy [pflag.Value] interface
+func (sm *SuccessMessage) Type() string {
+	return "SuccessMessage"
+}
 
 type TransferOwnershipObjectId struct {
 	// Email address for the new owner, who must exist in the workspace.

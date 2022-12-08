@@ -2,6 +2,8 @@
 
 package instancepools
 
+import "fmt"
+
 // all definitions in this file are in alphabetical order
 
 type CreateInstancePool struct {
@@ -117,11 +119,53 @@ const DiskTypeAzureDiskVolumeTypePremiumLrs DiskTypeAzureDiskVolumeType = `PREMI
 
 const DiskTypeAzureDiskVolumeTypeStandardLrs DiskTypeAzureDiskVolumeType = `STANDARD_LRS`
 
+// String representation for [fmt.Print]
+func (dtadvt *DiskTypeAzureDiskVolumeType) String() string {
+	return string(*dtadvt)
+}
+
+// Set raw string value and validate it against allowed values
+func (dtadvt *DiskTypeAzureDiskVolumeType) Set(v string) error {
+	switch v {
+	case `PREMIUM_LRS`, `STANDARD_LRS`:
+		*dtadvt = DiskTypeAzureDiskVolumeType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PREMIUM_LRS", "STANDARD_LRS"`, v)
+	}
+}
+
+// Type always returns DiskTypeAzureDiskVolumeType to satisfy [pflag.Value] interface
+func (dtadvt *DiskTypeAzureDiskVolumeType) Type() string {
+	return "DiskTypeAzureDiskVolumeType"
+}
+
 type DiskTypeEbsVolumeType string
 
 const DiskTypeEbsVolumeTypeGeneralPurposeSsd DiskTypeEbsVolumeType = `GENERAL_PURPOSE_SSD`
 
 const DiskTypeEbsVolumeTypeThroughputOptimizedHdd DiskTypeEbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
+
+// String representation for [fmt.Print]
+func (dtevt *DiskTypeEbsVolumeType) String() string {
+	return string(*dtevt)
+}
+
+// Set raw string value and validate it against allowed values
+func (dtevt *DiskTypeEbsVolumeType) Set(v string) error {
+	switch v {
+	case `GENERAL_PURPOSE_SSD`, `THROUGHPUT_OPTIMIZED_HDD`:
+		*dtevt = DiskTypeEbsVolumeType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GENERAL_PURPOSE_SSD", "THROUGHPUT_OPTIMIZED_HDD"`, v)
+	}
+}
+
+// Type always returns DiskTypeEbsVolumeType to satisfy [pflag.Value] interface
+func (dtevt *DiskTypeEbsVolumeType) Type() string {
+	return "DiskTypeEbsVolumeType"
+}
 
 type DockerBasicAuth struct {
 	Password string `json:"password,omitempty"`
@@ -238,6 +282,27 @@ const FleetOnDemandOptionAllocationStrategyLowestPrice FleetOnDemandOptionAlloca
 
 const FleetOnDemandOptionAllocationStrategyPrioritized FleetOnDemandOptionAllocationStrategy = `PRIORITIZED`
 
+// String representation for [fmt.Print]
+func (fodoas *FleetOnDemandOptionAllocationStrategy) String() string {
+	return string(*fodoas)
+}
+
+// Set raw string value and validate it against allowed values
+func (fodoas *FleetOnDemandOptionAllocationStrategy) Set(v string) error {
+	switch v {
+	case `CAPACITY_OPTIMIZED`, `DIVERSIFIED`, `LOWEST_PRICE`, `PRIORITIZED`:
+		*fodoas = FleetOnDemandOptionAllocationStrategy(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAPACITY_OPTIMIZED", "DIVERSIFIED", "LOWEST_PRICE", "PRIORITIZED"`, v)
+	}
+}
+
+// Type always returns FleetOnDemandOptionAllocationStrategy to satisfy [pflag.Value] interface
+func (fodoas *FleetOnDemandOptionAllocationStrategy) Type() string {
+	return "FleetOnDemandOptionAllocationStrategy"
+}
+
 type FleetSpotOption struct {
 	// lowest-price | diversified | capacity-optimized
 	AllocationStrategy FleetSpotOptionAllocationStrategy `json:"allocation_strategy,omitempty"`
@@ -262,6 +327,27 @@ const FleetSpotOptionAllocationStrategyDiversified FleetSpotOptionAllocationStra
 const FleetSpotOptionAllocationStrategyLowestPrice FleetSpotOptionAllocationStrategy = `LOWEST_PRICE`
 
 const FleetSpotOptionAllocationStrategyPrioritized FleetSpotOptionAllocationStrategy = `PRIORITIZED`
+
+// String representation for [fmt.Print]
+func (fsoas *FleetSpotOptionAllocationStrategy) String() string {
+	return string(*fsoas)
+}
+
+// Set raw string value and validate it against allowed values
+func (fsoas *FleetSpotOptionAllocationStrategy) Set(v string) error {
+	switch v {
+	case `CAPACITY_OPTIMIZED`, `DIVERSIFIED`, `LOWEST_PRICE`, `PRIORITIZED`:
+		*fsoas = FleetSpotOptionAllocationStrategy(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAPACITY_OPTIMIZED", "DIVERSIFIED", "LOWEST_PRICE", "PRIORITIZED"`, v)
+	}
+}
+
+// Type always returns FleetSpotOptionAllocationStrategy to satisfy [pflag.Value] interface
+func (fsoas *FleetSpotOptionAllocationStrategy) Type() string {
+	return "FleetSpotOptionAllocationStrategy"
+}
 
 // Get instance pool information
 type Get struct {
@@ -351,6 +437,27 @@ const GetInstancePoolStateDeleted GetInstancePoolState = `DELETED`
 
 const GetInstancePoolStateStopped GetInstancePoolState = `STOPPED`
 
+// String representation for [fmt.Print]
+func (gips *GetInstancePoolState) String() string {
+	return string(*gips)
+}
+
+// Set raw string value and validate it against allowed values
+func (gips *GetInstancePoolState) Set(v string) error {
+	switch v {
+	case `ACTIVE`, `DELETED`, `STOPPED`:
+		*gips = GetInstancePoolState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETED", "STOPPED"`, v)
+	}
+}
+
+// Type always returns GetInstancePoolState to satisfy [pflag.Value] interface
+func (gips *GetInstancePoolState) Type() string {
+	return "GetInstancePoolState"
+}
+
 type InstancePoolAndStats struct {
 	// Attributes related to pool running on Amazon Web Services. If not
 	// specified at pool creation, a set of default values will be used.
@@ -433,6 +540,27 @@ const InstancePoolAndStatsStateDeleted InstancePoolAndStatsState = `DELETED`
 
 const InstancePoolAndStatsStateStopped InstancePoolAndStatsState = `STOPPED`
 
+// String representation for [fmt.Print]
+func (ipass *InstancePoolAndStatsState) String() string {
+	return string(*ipass)
+}
+
+// Set raw string value and validate it against allowed values
+func (ipass *InstancePoolAndStatsState) Set(v string) error {
+	switch v {
+	case `ACTIVE`, `DELETED`, `STOPPED`:
+		*ipass = InstancePoolAndStatsState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETED", "STOPPED"`, v)
+	}
+}
+
+// Type always returns InstancePoolAndStatsState to satisfy [pflag.Value] interface
+func (ipass *InstancePoolAndStatsState) Type() string {
+	return "InstancePoolAndStatsState"
+}
+
 type InstancePoolAwsAttributes struct {
 	// Availability type used for the spot nodes.
 	//
@@ -477,6 +605,27 @@ const InstancePoolAwsAttributesAvailabilitySpot InstancePoolAwsAttributesAvailab
 
 const InstancePoolAwsAttributesAvailabilitySpotWithFallback InstancePoolAwsAttributesAvailability = `SPOT_WITH_FALLBACK`
 
+// String representation for [fmt.Print]
+func (ipaaa *InstancePoolAwsAttributesAvailability) String() string {
+	return string(*ipaaa)
+}
+
+// Set raw string value and validate it against allowed values
+func (ipaaa *InstancePoolAwsAttributesAvailability) Set(v string) error {
+	switch v {
+	case `ON_DEMAND`, `SPOT`, `SPOT_WITH_FALLBACK`:
+		*ipaaa = InstancePoolAwsAttributesAvailability(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND", "SPOT", "SPOT_WITH_FALLBACK"`, v)
+	}
+}
+
+// Type always returns InstancePoolAwsAttributesAvailability to satisfy [pflag.Value] interface
+func (ipaaa *InstancePoolAwsAttributesAvailability) Type() string {
+	return "InstancePoolAwsAttributesAvailability"
+}
+
 type InstancePoolAzureAttributes struct {
 	// Shows the Availability type used for the spot nodes.
 	//
@@ -499,6 +648,27 @@ const InstancePoolAzureAttributesAvailabilityOnDemandAzure InstancePoolAzureAttr
 const InstancePoolAzureAttributesAvailabilitySpotAzure InstancePoolAzureAttributesAvailability = `SPOT_AZURE`
 
 const InstancePoolAzureAttributesAvailabilitySpotWithFallbackAzure InstancePoolAzureAttributesAvailability = `SPOT_WITH_FALLBACK_AZURE`
+
+// String representation for [fmt.Print]
+func (ipaaa *InstancePoolAzureAttributesAvailability) String() string {
+	return string(*ipaaa)
+}
+
+// Set raw string value and validate it against allowed values
+func (ipaaa *InstancePoolAzureAttributesAvailability) Set(v string) error {
+	switch v {
+	case `ON_DEMAND_AZURE`, `SPOT_AZURE`, `SPOT_WITH_FALLBACK_AZURE`:
+		*ipaaa = InstancePoolAzureAttributesAvailability(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE", "SPOT_WITH_FALLBACK_AZURE"`, v)
+	}
+}
+
+// Type always returns InstancePoolAzureAttributesAvailability to satisfy [pflag.Value] interface
+func (ipaaa *InstancePoolAzureAttributesAvailability) Type() string {
+	return "InstancePoolAzureAttributesAvailability"
+}
 
 type InstancePoolFleetAttributes struct {
 	FleetOnDemandOption *FleetOnDemandOption `json:"fleet_on_demand_option,omitempty"`

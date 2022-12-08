@@ -2,6 +2,8 @@
 
 package ipaccesslists
 
+import "fmt"
+
 // all definitions in this file are in alphabetical order
 
 type CreateIpAccessList struct {
@@ -69,6 +71,27 @@ const ListTypeAllow ListType = `ALLOW`
 // A block list. Exclude this IP or range. IP addresses in the block list are
 // excluded even if they are included in an allow list.",
 const ListTypeBlock ListType = `BLOCK`
+
+// String representation for [fmt.Print]
+func (lt *ListType) String() string {
+	return string(*lt)
+}
+
+// Set raw string value and validate it against allowed values
+func (lt *ListType) Set(v string) error {
+	switch v {
+	case `ALLOW`, `BLOCK`:
+		*lt = ListType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALLOW", "BLOCK"`, v)
+	}
+}
+
+// Type always returns ListType to satisfy [pflag.Value] interface
+func (lt *ListType) Type() string {
+	return "ListType"
+}
 
 type ReplaceIpAccessList struct {
 	// Specifies whether this IP access list is enabled.

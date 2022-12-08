@@ -2,6 +2,8 @@
 
 package permissions
 
+import "fmt"
+
 // all definitions in this file are in alphabetical order
 
 type AccessControlRequest struct {
@@ -147,6 +149,27 @@ const PermissionLevelCanViewMetadata PermissionLevel = `CAN_VIEW_METADATA`
 
 const PermissionLevelIsOwner PermissionLevel = `IS_OWNER`
 
+// String representation for [fmt.Print]
+func (pl *PermissionLevel) String() string {
+	return string(*pl)
+}
+
+// Set raw string value and validate it against allowed values
+func (pl *PermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_ATTACH_TO`, `CAN_BIND`, `CAN_EDIT`, `CAN_EDIT_METADATA`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_RUN`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`, `CAN_RESTART`, `CAN_RUN`, `CAN_USE`, `CAN_VIEW`, `CAN_VIEW_METADATA`, `IS_OWNER`:
+		*pl = PermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_ATTACH_TO", "CAN_BIND", "CAN_EDIT", "CAN_EDIT_METADATA", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_RUN", "CAN_MANAGE_STAGING_VERSIONS", "CAN_READ", "CAN_RESTART", "CAN_RUN", "CAN_USE", "CAN_VIEW", "CAN_VIEW_METADATA", "IS_OWNER"`, v)
+	}
+}
+
+// Type always returns PermissionLevel to satisfy [pflag.Value] interface
+func (pl *PermissionLevel) Type() string {
+	return "PermissionLevel"
+}
+
 type PermissionOutput struct {
 	// The results of a permissions query.
 	Description string `json:"description,omitempty"`
@@ -202,6 +225,27 @@ const WorkspacePermissionAdmin WorkspacePermission = `ADMIN`
 const WorkspacePermissionUnknown WorkspacePermission = `UNKNOWN`
 
 const WorkspacePermissionUser WorkspacePermission = `USER`
+
+// String representation for [fmt.Print]
+func (wp *WorkspacePermission) String() string {
+	return string(*wp)
+}
+
+// Set raw string value and validate it against allowed values
+func (wp *WorkspacePermission) Set(v string) error {
+	switch v {
+	case `ADMIN`, `UNKNOWN`, `USER`:
+		*wp = WorkspacePermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ADMIN", "UNKNOWN", "USER"`, v)
+	}
+}
+
+// Type always returns WorkspacePermission to satisfy [pflag.Value] interface
+func (wp *WorkspacePermission) Type() string {
+	return "WorkspacePermission"
+}
 
 type WorkspacePermissions struct {
 	// Array of permissions defined for a workspace.
