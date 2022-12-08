@@ -490,6 +490,10 @@ remote, _ := w.Dbfs.Open(ctx, "/path/to/remote")
 _ = io.Copy(download, remote)
 ```
 
+## `pflag.Value` for enums
+
+Databricks SDK for Go loosely integrates with [spf13/pflag](https://github.com/spf13/pflag) by implementing [pflag.Value](https://pkg.go.dev/github.com/spf13/pflag#Value) for all enum types.
+
 ## Logging
 
 By default, Databricks SDK for Go uses [logger.SimpleLogger](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/logger#Logger), which is a levelled proxy to `log.Printf`, printing to `os.Stderr`. You can disable logging completely by adding `log.SetOutput(io.Discard)` to your `init()` function. You are encouraged to override `logging.DefaultLogger` with your own implementation that follows the [logger.Logger](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/logger#Logger) interface. 
