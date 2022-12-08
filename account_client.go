@@ -3,7 +3,7 @@
 package databricks
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/config"
@@ -202,6 +202,8 @@ type AccountClient struct {
 	Workspaces *deployment.WorkspacesAPI
 }
 
+var ErrNotAccountClient = errors.New("invalid Databricks Account configuration")
+
 // NewAccountClient creates new Databricks SDK client for Accounts or returns
 // error in case configuration is wrong
 func NewAccountClient(c ...*Config) (*AccountClient, error) {
@@ -217,8 +219,8 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	if err != nil {
 		panic(err)
 	}
-	if cfg.AccountID == "" {
-		return nil, fmt.Errorf("AccountID is not specified on config")
+	if cfg.AccountID == "" || !cfg.IsAccountClient() {
+		return nil, ErrNotAccountClient
 	}
 	apiClient, err := client.New(cfg)
 	if err != nil {
