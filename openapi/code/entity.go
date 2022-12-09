@@ -98,11 +98,6 @@ func (e *Entity) Field(name string) *Field {
 	return &field
 }
 
-// IsNumber returns true if field is numeric
-func (e *Entity) IsNumber() bool {
-	return e.IsInt64 || e.IsInt
-}
-
 // IsObject returns true if entity is not a Mpa and has more than zero fields
 func (e *Entity) IsObject() bool {
 	return e.MapValue == nil && len(e.fields) > 0
@@ -160,4 +155,22 @@ func (e *Entity) Enum() (enum []EnumEntry) {
 		return a.Name < b.Name
 	})
 	return enum
+}
+
+func (e *Entity) IsPrimitive() bool {
+	return e.IsNumber() || e.IsBool || e.IsString
+}
+
+// IsNumber returns true if field is numeric
+func (e *Entity) IsNumber() bool {
+	return e.IsInt64 || e.IsInt || e.IsFloat64
+}
+
+func (e *Entity) IsOnlyPrimitiveFields() bool {
+	for _, v := range e.fields {
+		if !v.Entity.IsPrimitive() {
+			return false
+		}
+	}
+	return true
 }
