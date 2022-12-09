@@ -65,7 +65,7 @@ type CronTrigger struct {
 }
 
 // Delete a pipeline
-type DeletePipeline struct {
+type Delete struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
@@ -121,7 +121,7 @@ type Filters struct {
 }
 
 // Get a pipeline
-type GetPipeline struct {
+type Get struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
@@ -466,7 +466,7 @@ type PipelineTrigger struct {
 }
 
 // Reset a pipeline
-type ResetPipeline struct {
+type Reset struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
@@ -528,7 +528,7 @@ type StartUpdateResponse struct {
 }
 
 // Stop a pipeline
-type StopPipeline struct {
+type Stop struct {
 	PipelineId string `json:"-" url:"-"`
 }
 

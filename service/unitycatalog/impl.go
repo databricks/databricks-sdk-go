@@ -15,11 +15,11 @@ type catalogsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *catalogsImpl) Create(ctx context.Context, request CreateCatalog) (*CreateCatalogResponse, error) {
-	var createCatalogResponse CreateCatalogResponse
+func (a *catalogsImpl) Create(ctx context.Context, request CreateCatalog) (*CatalogInfo, error) {
+	var catalogInfo CatalogInfo
 	path := "/api/2.1/unity-catalog/catalogs"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &createCatalogResponse)
-	return &createCatalogResponse, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, &catalogInfo)
+	return &catalogInfo, err
 }
 
 func (a *catalogsImpl) Delete(ctx context.Context, request DeleteCatalogRequest) error {
@@ -28,11 +28,11 @@ func (a *catalogsImpl) Delete(ctx context.Context, request DeleteCatalogRequest)
 	return err
 }
 
-func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*GetCatalogResponse, error) {
-	var getCatalogResponse GetCatalogResponse
+func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*CatalogInfo, error) {
+	var catalogInfo CatalogInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getCatalogResponse)
-	return &getCatalogResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &catalogInfo)
+	return &catalogInfo, err
 }
 
 func (a *catalogsImpl) List(ctx context.Context) (*ListCatalogsResponse, error) {
@@ -53,11 +53,11 @@ type externalLocationsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExternalLocation) (*CreateExternalLocationResponse, error) {
-	var createExternalLocationResponse CreateExternalLocationResponse
+func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExternalLocation) (*ExternalLocationInfo, error) {
+	var externalLocationInfo ExternalLocationInfo
 	path := "/api/2.1/unity-catalog/external-locations"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &createExternalLocationResponse)
-	return &createExternalLocationResponse, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, &externalLocationInfo)
+	return &externalLocationInfo, err
 }
 
 func (a *externalLocationsImpl) Delete(ctx context.Context, request DeleteExternalLocationRequest) error {
@@ -66,11 +66,11 @@ func (a *externalLocationsImpl) Delete(ctx context.Context, request DeleteExtern
 	return err
 }
 
-func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLocationRequest) (*GetExternalLocationResponse, error) {
-	var getExternalLocationResponse GetExternalLocationResponse
+func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLocationRequest) (*ExternalLocationInfo, error) {
+	var externalLocationInfo ExternalLocationInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getExternalLocationResponse)
-	return &getExternalLocationResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &externalLocationInfo)
+	return &externalLocationInfo, err
 }
 
 func (a *externalLocationsImpl) List(ctx context.Context) (*ListExternalLocationsResponse, error) {
@@ -115,11 +115,11 @@ func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssi
 	return err
 }
 
-func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*CreateMetastoreResponse, error) {
-	var createMetastoreResponse CreateMetastoreResponse
+func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error) {
+	var metastoreInfo MetastoreInfo
 	path := "/api/2.1/unity-catalog/metastores"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &createMetastoreResponse)
-	return &createMetastoreResponse, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, &metastoreInfo)
+	return &metastoreInfo, err
 }
 
 func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequest) error {
@@ -128,11 +128,11 @@ func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequ
 	return err
 }
 
-func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (*GetMetastoreResponse, error) {
-	var getMetastoreResponse GetMetastoreResponse
+func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (*MetastoreInfo, error) {
+	var metastoreInfo MetastoreInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getMetastoreResponse)
-	return &getMetastoreResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &metastoreInfo)
+	return &metastoreInfo, err
 }
 
 func (a *metastoresImpl) List(ctx context.Context) (*ListMetastoresResponse, error) {
@@ -172,11 +172,11 @@ type providersImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*CreateProviderResponse, error) {
-	var createProviderResponse CreateProviderResponse
+func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*ProviderInfo, error) {
+	var providerInfo ProviderInfo
 	path := "/api/2.1/unity-catalog/providers"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &createProviderResponse)
-	return &createProviderResponse, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, &providerInfo)
+	return &providerInfo, err
 }
 
 func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
@@ -185,11 +185,11 @@ func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderReques
 	return err
 }
 
-func (a *providersImpl) Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
-	var getProviderResponse GetProviderResponse
+func (a *providersImpl) Get(ctx context.Context, request GetProviderRequest) (*ProviderInfo, error) {
+	var providerInfo ProviderInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getProviderResponse)
-	return &getProviderResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &providerInfo)
+	return &providerInfo, err
 }
 
 func (a *providersImpl) List(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error) {
@@ -235,11 +235,11 @@ type recipientsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*CreateRecipientResponse, error) {
-	var createRecipientResponse CreateRecipientResponse
+func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*RecipientInfo, error) {
+	var recipientInfo RecipientInfo
 	path := "/api/2.1/unity-catalog/recipients"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &createRecipientResponse)
-	return &createRecipientResponse, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, &recipientInfo)
+	return &recipientInfo, err
 }
 
 func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequest) error {
@@ -248,11 +248,11 @@ func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequ
 	return err
 }
 
-func (a *recipientsImpl) Get(ctx context.Context, request GetRecipientRequest) (*GetRecipientResponse, error) {
-	var getRecipientResponse GetRecipientResponse
+func (a *recipientsImpl) Get(ctx context.Context, request GetRecipientRequest) (*RecipientInfo, error) {
+	var recipientInfo RecipientInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getRecipientResponse)
-	return &getRecipientResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &recipientInfo)
+	return &recipientInfo, err
 }
 
 func (a *recipientsImpl) List(ctx context.Context, request ListRecipientsRequest) (*ListRecipientsResponse, error) {
@@ -262,11 +262,11 @@ func (a *recipientsImpl) List(ctx context.Context, request ListRecipientsRequest
 	return &listRecipientsResponse, err
 }
 
-func (a *recipientsImpl) RotateToken(ctx context.Context, request RotateRecipientToken) (*RotateRecipientTokenResponse, error) {
-	var rotateRecipientTokenResponse RotateRecipientTokenResponse
+func (a *recipientsImpl) RotateToken(ctx context.Context, request RotateRecipientToken) (*RecipientInfo, error) {
+	var recipientInfo RecipientInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/rotate-token", request.Name)
-	err := a.client.Do(ctx, http.MethodPost, path, request, &rotateRecipientTokenResponse)
-	return &rotateRecipientTokenResponse, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, &recipientInfo)
+	return &recipientInfo, err
 }
 
 func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error) {
@@ -287,11 +287,11 @@ type schemasImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *schemasImpl) Create(ctx context.Context, request CreateSchema) (*CreateSchemaResponse, error) {
-	var createSchemaResponse CreateSchemaResponse
+func (a *schemasImpl) Create(ctx context.Context, request CreateSchema) (*SchemaInfo, error) {
+	var schemaInfo SchemaInfo
 	path := "/api/2.1/unity-catalog/schemas"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &createSchemaResponse)
-	return &createSchemaResponse, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, &schemaInfo)
+	return &schemaInfo, err
 }
 
 func (a *schemasImpl) Delete(ctx context.Context, request DeleteSchemaRequest) error {
@@ -300,11 +300,11 @@ func (a *schemasImpl) Delete(ctx context.Context, request DeleteSchemaRequest) e
 	return err
 }
 
-func (a *schemasImpl) Get(ctx context.Context, request GetSchemaRequest) (*GetSchemaResponse, error) {
-	var getSchemaResponse GetSchemaResponse
+func (a *schemasImpl) Get(ctx context.Context, request GetSchemaRequest) (*SchemaInfo, error) {
+	var schemaInfo SchemaInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullName)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getSchemaResponse)
-	return &getSchemaResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &schemaInfo)
+	return &schemaInfo, err
 }
 
 func (a *schemasImpl) List(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error) {
@@ -325,11 +325,11 @@ type sharesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*CreateShareResponse, error) {
-	var createShareResponse CreateShareResponse
+func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*ShareInfo, error) {
+	var shareInfo ShareInfo
 	path := "/api/2.1/unity-catalog/shares"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &createShareResponse)
-	return &createShareResponse, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, &shareInfo)
+	return &shareInfo, err
 }
 
 func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) error {
@@ -338,11 +338,11 @@ func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) err
 	return err
 }
 
-func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*GetShareResponse, error) {
-	var getShareResponse GetShareResponse
+func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*ShareInfo, error) {
+	var shareInfo ShareInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getShareResponse)
-	return &getShareResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &shareInfo)
+	return &shareInfo, err
 }
 
 func (a *sharesImpl) List(ctx context.Context) (*ListSharesResponse, error) {
@@ -376,11 +376,11 @@ type storageCredentialsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *storageCredentialsImpl) Create(ctx context.Context, request CreateStorageCredential) (*CreateStorageCredentialResponse, error) {
-	var createStorageCredentialResponse CreateStorageCredentialResponse
+func (a *storageCredentialsImpl) Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error) {
+	var storageCredentialInfo StorageCredentialInfo
 	path := "/api/2.1/unity-catalog/storage-credentials"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &createStorageCredentialResponse)
-	return &createStorageCredentialResponse, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, &storageCredentialInfo)
+	return &storageCredentialInfo, err
 }
 
 func (a *storageCredentialsImpl) Delete(ctx context.Context, request DeleteStorageCredentialRequest) error {
@@ -389,11 +389,11 @@ func (a *storageCredentialsImpl) Delete(ctx context.Context, request DeleteStora
 	return err
 }
 
-func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCredentialRequest) (*GetStorageCredentialResponse, error) {
-	var getStorageCredentialResponse GetStorageCredentialResponse
+func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCredentialRequest) (*StorageCredentialInfo, error) {
+	var storageCredentialInfo StorageCredentialInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getStorageCredentialResponse)
-	return &getStorageCredentialResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &storageCredentialInfo)
+	return &storageCredentialInfo, err
 }
 
 func (a *storageCredentialsImpl) List(ctx context.Context) (*ListStorageCredentialsResponse, error) {
@@ -414,31 +414,17 @@ type tablesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *tablesImpl) Create(ctx context.Context, request CreateTable) (*CreateTableResponse, error) {
-	var createTableResponse CreateTableResponse
-	path := "/api/2.1/unity-catalog/tables"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &createTableResponse)
-	return &createTableResponse, err
-}
-
-func (a *tablesImpl) CreateStagingTable(ctx context.Context, request CreateStagingTable) (*CreateStagingTableResponse, error) {
-	var createStagingTableResponse CreateStagingTableResponse
-	path := "/api/2.1/unity-catalog/staging-tables"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &createStagingTableResponse)
-	return &createStagingTableResponse, err
-}
-
 func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*GetTableResponse, error) {
-	var getTableResponse GetTableResponse
+func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableInfo, error) {
+	var tableInfo TableInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getTableResponse)
-	return &getTableResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &tableInfo)
+	return &tableInfo, err
 }
 
 func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error) {
@@ -453,10 +439,4 @@ func (a *tablesImpl) TableSummaries(ctx context.Context, request TableSummariesR
 	path := "/api/2.1/unity-catalog/table-summaries"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listTableSummariesResponse)
 	return &listTableSummariesResponse, err
-}
-
-func (a *tablesImpl) Update(ctx context.Context, request UpdateTable) error {
-	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
-	return err
 }

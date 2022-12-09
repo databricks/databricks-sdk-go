@@ -77,6 +77,7 @@ var crudNames = map[string]bool{
 	"replace": true,
 	"delete":  true,
 	"list":    true,
+	"restore": true,
 }
 
 func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation) *Entity {

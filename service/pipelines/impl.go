@@ -15,20 +15,20 @@ type pipelinesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *pipelinesImpl) CreatePipeline(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error) {
+func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error) {
 	var createPipelineResponse CreatePipelineResponse
 	path := "/api/2.0/pipelines"
 	err := a.client.Do(ctx, http.MethodPost, path, request, &createPipelineResponse)
 	return &createPipelineResponse, err
 }
 
-func (a *pipelinesImpl) DeletePipeline(ctx context.Context, request DeletePipeline) error {
+func (a *pipelinesImpl) Delete(ctx context.Context, request Delete) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
 
-func (a *pipelinesImpl) GetPipeline(ctx context.Context, request GetPipeline) (*GetPipelineResponse, error) {
+func (a *pipelinesImpl) Get(ctx context.Context, request Get) (*GetPipelineResponse, error) {
 	var getPipelineResponse GetPipelineResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getPipelineResponse)
@@ -56,7 +56,7 @@ func (a *pipelinesImpl) ListUpdates(ctx context.Context, request ListUpdates) (*
 	return &listUpdatesResponse, err
 }
 
-func (a *pipelinesImpl) ResetPipeline(ctx context.Context, request ResetPipeline) error {
+func (a *pipelinesImpl) Reset(ctx context.Context, request Reset) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/reset", request.PipelineId)
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
 	return err
@@ -69,13 +69,13 @@ func (a *pipelinesImpl) StartUpdate(ctx context.Context, request StartUpdate) (*
 	return &startUpdateResponse, err
 }
 
-func (a *pipelinesImpl) StopPipeline(ctx context.Context, request StopPipeline) error {
+func (a *pipelinesImpl) Stop(ctx context.Context, request Stop) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", request.PipelineId)
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
 	return err
 }
 
-func (a *pipelinesImpl) UpdatePipeline(ctx context.Context, request EditPipeline) error {
+func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
 	return err

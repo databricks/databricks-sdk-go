@@ -104,7 +104,7 @@ type CreateJob struct {
 	// job.
 	Tags map[string]string `json:"tags,omitempty"`
 	// A list of task specifications to be executed by this job.
-	Tasks []JobTaskSettings `json:"tasks,omitempty"`
+	Tasks []JobTaskSettings `json:"tasks"`
 	// An optional timeout applied to each run of this job. The default behavior
 	// is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
@@ -231,7 +231,7 @@ type DeleteJob struct {
 
 type DeleteRun struct {
 	// The canonical identifier of the run for which to retrieve the metadata.
-	RunId int64 `json:"run_id,omitempty"`
+	RunId int64 `json:"run_id"`
 }
 
 // Export and retrieve a job run
@@ -886,7 +886,7 @@ type RepairRun struct {
 	// The task keys of the task runs to repair.
 	RerunTasks []string `json:"rerun_tasks,omitempty"`
 	// The job run ID of the run to repair. The run must not be in progress.
-	RunId int64 `json:"run_id,omitempty"`
+	RunId int64 `json:"run_id"`
 	// A list of parameters for jobs with spark submit task, for example
 	// `\"spark_submit_params\": [\"--class\",
 	// \"org.apache.spark.examples.SparkPi\"]`. The parameters are passed to
@@ -925,7 +925,7 @@ type ResetJob struct {
 	//
 	// Changes to the field `JobSettings.timeout_seconds` are applied to active
 	// runs. Changes to other fields are applied to future runs only.
-	NewSettings *JobSettings `json:"new_settings,omitempty"`
+	NewSettings JobSettings `json:"new_settings"`
 }
 
 type Run struct {
@@ -1096,7 +1096,7 @@ type RunNow struct {
 	// parameters containing information about job runs.
 	JarParams []string `json:"jar_params,omitempty"`
 	// The ID of the job to be executed
-	JobId int64 `json:"job_id,omitempty"`
+	JobId int64 `json:"job_id"`
 	// A map from keys to values for jobs with notebook task, for example
 	// `\"notebook_params\": {\"name\": \"john doe\", \"age\": \"35\"}`. The map
 	// is passed to the notebook and is accessible through the
@@ -1700,7 +1700,7 @@ type SubmitRun struct {
 	// An optional name for the run. The default value is `Untitled`.
 	RunName string `json:"run_name,omitempty"`
 
-	Tasks []RunSubmitTaskSettings `json:"tasks,omitempty"`
+	Tasks []RunSubmitTaskSettings `json:"tasks"`
 	// An optional timeout applied to each run of this job. The default behavior
 	// is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`

@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package dbsql
+package sql
 
 import (
 	"context"
@@ -17,7 +17,7 @@ type AlertsService interface {
 	// Creates an alert. An alert is a Databricks SQL object that periodically
 	// runs a query, evaluates a condition of its result, and notifies users or
 	// alert destinations if the condition was met.
-	CreateAlert(ctx context.Context, request EditAlert) (*Alert, error)
+	Create(ctx context.Context, request EditAlert) (*Alert, error)
 
 	// Create a refresh schedule.
 	//
@@ -31,7 +31,7 @@ type AlertsService interface {
 	// Deletes an alert. Deleted alerts are no longer accessible and cannot be
 	// restored. **Note:** Unlike queries and dashboards, alerts cannot be moved
 	// to the trash.
-	DeleteAlert(ctx context.Context, request DeleteAlertRequest) error
+	Delete(ctx context.Context, request DeleteAlertRequest) error
 
 	// Delete a refresh schedule.
 	//
@@ -42,7 +42,7 @@ type AlertsService interface {
 	// Get an alert.
 	//
 	// Gets an alert.
-	GetAlert(ctx context.Context, request GetAlertRequest) (*Alert, error)
+	Get(ctx context.Context, request GetAlertRequest) (*Alert, error)
 
 	// Get an alert's subscriptions.
 	//
@@ -56,7 +56,7 @@ type AlertsService interface {
 	// Get alerts.
 	//
 	// Gets a list of alerts.
-	ListAlerts(ctx context.Context) ([]Alert, error)
+	List(ctx context.Context) ([]Alert, error)
 
 	// Get refresh schedules.
 	//
@@ -80,7 +80,7 @@ type AlertsService interface {
 	// Update an alert.
 	//
 	// Updates an alert.
-	UpdateAlert(ctx context.Context, request EditAlert) error
+	Update(ctx context.Context, request EditAlert) error
 }
 
 // In general, there is little need to modify dashboards using the API. However,
@@ -91,32 +91,32 @@ type AlertsService interface {
 type DashboardsService interface {
 
 	// Create a dashboard object.
-	CreateDashboard(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error)
+	Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error)
 
 	// Remove a dashboard.
 	//
 	// Moves a dashboard to the trash. Trashed dashboards do not appear in list
 	// views or searches, and cannot be shared.
-	DeleteDashboard(ctx context.Context, request DeleteDashboardRequest) error
+	Delete(ctx context.Context, request DeleteDashboardRequest) error
 
 	// Retrieve a definition.
 	//
 	// Returns a JSON representation of a dashboard object, including its
 	// visualization and query objects.
-	GetDashboard(ctx context.Context, request GetDashboardRequest) (*Dashboard, error)
+	Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error)
 
 	// Get dashboard objects.
 	//
 	// Fetch a paginated list of dashboard objects.
 	//
-	// Use ListDashboardsAll() to get all Dashboard instances, which will iterate over every result page.
-	ListDashboards(ctx context.Context, request ListDashboardsRequest) (*ListDashboardsResponse, error)
+	// Use ListAll() to get all Dashboard instances, which will iterate over every result page.
+	List(ctx context.Context, request ListDashboardsRequest) (*ListResponse, error)
 
 	// Restore a dashboard.
 	//
 	// A restored dashboard appears in list views and searches and can be
 	// shared.
-	RestoreDashboard(ctx context.Context, request RestoreDashboardRequest) error
+	Restore(ctx context.Context, request RestoreDashboardRequest) error
 }
 
 // This API is provided to assist you in making new query objects. When creating
@@ -137,7 +137,7 @@ type DataSourcesService interface {
 	// fields that appear in this API response are enumerated for clarity.
 	// However, you need only a SQL warehouse's `id` to create new queries
 	// against it.
-	ListDataSources(ctx context.Context) ([]DataSource, error)
+	List(ctx context.Context) ([]DataSource, error)
 }
 
 // The SQL Permissions API is similar to the endpoints of the
@@ -159,13 +159,13 @@ type DbsqlPermissionsService interface {
 	//
 	// Gets a JSON representation of the access control list (ACL) for a
 	// specified object.
-	GetPermissions(ctx context.Context, request GetPermissionsRequest) (*GetPermissionsResponse, error)
+	Get(ctx context.Context, request GetDbsqlPermissionRequest) (*GetResponse, error)
 
 	// Set object ACL.
 	//
 	// Sets the access control list (ACL) for a specified object. This operation
 	// will complete rewrite the ACL.
-	SetPermissions(ctx context.Context, request SetPermissionsRequest) (*SetPermissionsResponse, error)
+	Set(ctx context.Context, request SetRequest) (*SetResponse, error)
 
 	// Transfer object ownership.
 	//
@@ -190,40 +190,108 @@ type QueriesService interface {
 	// from an existing query.
 	//
 	// **Note**: You cannot add a visualization until you create the query.
-	CreateQuery(ctx context.Context, request QueryPostContent) (*Query, error)
+	Create(ctx context.Context, request QueryPostContent) (*Query, error)
 
 	// Delete a query.
 	//
 	// Moves a query to the trash. Trashed queries immediately disappear from
 	// searches and list views, and they cannot be used for alerts. The trash is
 	// deleted after 30 days.
-	DeleteQuery(ctx context.Context, request DeleteQueryRequest) error
+	Delete(ctx context.Context, request DeleteQueryRequest) error
 
 	// Get a query definition.
 	//
 	// Retrieve a query object definition along with contextual permissions
 	// information about the currently authenticated user.
-	GetQuery(ctx context.Context, request GetQueryRequest) (*Query, error)
+	Get(ctx context.Context, request GetQueryRequest) (*Query, error)
 
 	// Get a list of queries.
 	//
 	// Gets a list of queries. Optionally, this list can be filtered by a search
 	// term.
 	//
-	// Use ListQueriesAll() to get all Query instances, which will iterate over every result page.
-	ListQueries(ctx context.Context, request ListQueriesRequest) (*ListQueriesResponse, error)
+	// Use ListAll() to get all Query instances, which will iterate over every result page.
+	List(ctx context.Context, request ListQueriesRequest) (*QueryList, error)
 
 	// Restore a query.
 	//
 	// Restore a query that has been moved to the trash. A restored query
 	// appears in list views and searches. You can use restored queries for
 	// alerts.
-	RestoreQuery(ctx context.Context, request RestoreQueryRequest) error
+	Restore(ctx context.Context, request RestoreQueryRequest) error
 
 	// Change a query definition.
 	//
 	// Modify this query definition.
 	//
 	// **Note**: You cannot undo this operation.
-	UpdateQuery(ctx context.Context, request QueryPostContent) (*Query, error)
+	Update(ctx context.Context, request QueryPostContent) (*Query, error)
+}
+
+// Access the history of queries through SQL warehouses.
+type QueryHistoryService interface {
+
+	// List Queries.
+	//
+	// List the history of queries through SQL warehouses.
+	//
+	// You can filter by user ID, warehouse ID, status, and time range.
+	//
+	// Use ListAll() to get all QueryInfo instances, which will iterate over every result page.
+	List(ctx context.Context, request ListQueryHistoryRequest) (*ListQueriesResponse, error)
+}
+
+// A SQL warehouse is a compute resource that lets you run SQL commands on data
+// objects within Databricks SQL. Compute resources are infrastructure resources
+// that provide processing capabilities in the cloud.
+type WarehousesService interface {
+
+	// Create a warehouse.
+	//
+	// Creates a new SQL warehouse.
+	Create(ctx context.Context, request CreateWarehouseRequest) (*CreateWarehouseResponse, error)
+
+	// Delete a warehouse.
+	//
+	// Deletes a SQL warehouse.
+	Delete(ctx context.Context, request DeleteWarehouseRequest) error
+
+	// Update a warehouse.
+	//
+	// Updates the configuration for a SQL warehouse.
+	Edit(ctx context.Context, request EditWarehouseRequest) error
+
+	// Get warehouse info.
+	//
+	// Gets the information for a single SQL warehouse.
+	Get(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error)
+
+	// Get the workspace configuration.
+	//
+	// Gets the workspace level configuration that is shared by all SQL
+	// warehouses in a workspace.
+	GetWorkspaceWarehouseConfig(ctx context.Context) (*GetWorkspaceWarehouseConfigResponse, error)
+
+	// List warehouses.
+	//
+	// Lists all SQL warehouses that a user has manager permissions on.
+	//
+	// Use ListAll() to get all EndpointInfo instances
+	List(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error)
+
+	// Set the workspace configuration.
+	//
+	// Sets the workspace level configuration that is shared by all SQL
+	// warehouses in a workspace.
+	SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) error
+
+	// Start a warehouse.
+	//
+	// Starts a SQL warehouse.
+	Start(ctx context.Context, request StartRequest) error
+
+	// Stop a warehouse.
+	//
+	// Stops a SQL warehouse.
+	Stop(ctx context.Context, request StopRequest) error
 }

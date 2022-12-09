@@ -23,7 +23,7 @@ type InstallLibraries struct {
 	// Unique identifier for the cluster on which to install these libraries.
 	ClusterId string `json:"cluster_id"`
 	// The libraries to install.
-	Libraries []Library `json:"libraries,omitempty"`
+	Libraries []Library `json:"libraries"`
 }
 
 type Library struct {
@@ -146,5 +146,5 @@ type UninstallLibraries struct {
 	// Unique identifier for the cluster on which to uninstall these libraries.
 	ClusterId string `json:"cluster_id"`
 	// The libraries to uninstall.
-	Libraries []Library `json:"libraries,omitempty"`
+	Libraries []Library `json:"libraries"`
 }

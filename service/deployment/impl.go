@@ -67,13 +67,6 @@ func (a *encryptionKeysImpl) Get(ctx context.Context, request GetEncryptionKeyRe
 	return &customerManagedKey, err
 }
 
-func (a *encryptionKeysImpl) GetKeyWorkspaceHistory(ctx context.Context) (*ListWorkspaceEncryptionKeyRecordsResponse, error) {
-	var listWorkspaceEncryptionKeyRecordsResponse ListWorkspaceEncryptionKeyRecordsResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-key-history", a.client.ConfiguredAccountID())
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &listWorkspaceEncryptionKeyRecordsResponse)
-	return &listWorkspaceEncryptionKeyRecordsResponse, err
-}
-
 func (a *encryptionKeysImpl) List(ctx context.Context) ([]CustomerManagedKey, error) {
 	var customerManagedKeyList []CustomerManagedKey
 	path := fmt.Sprintf("/api/2.0/accounts/%v/customer-managed-keys", a.client.ConfiguredAccountID())
@@ -238,13 +231,6 @@ func (a *workspacesImpl) Get(ctx context.Context, request GetWorkspaceRequest) (
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &workspace)
 	return &workspace, err
-}
-
-func (a *workspacesImpl) GetWorkspaceKeyHistory(ctx context.Context, request GetWorkspaceKeyHistoryRequest) (*ListWorkspaceEncryptionKeyRecordsResponse, error) {
-	var listWorkspaceEncryptionKeyRecordsResponse ListWorkspaceEncryptionKeyRecordsResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/customer-managed-key-history", a.client.ConfiguredAccountID(), request.WorkspaceId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listWorkspaceEncryptionKeyRecordsResponse)
-	return &listWorkspaceEncryptionKeyRecordsResponse, err
 }
 
 func (a *workspacesImpl) List(ctx context.Context) ([]Workspace, error) {

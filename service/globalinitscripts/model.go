@@ -4,19 +4,19 @@ package globalinitscripts
 
 // all definitions in this file are in alphabetical order
 
-type CreateScriptResponse struct {
+type CreateResponse struct {
 	// The global init script ID.
 	ScriptId string `json:"script_id,omitempty"`
 }
 
 // Delete init script
-type DeleteScript struct {
+type Delete struct {
 	// The ID of the global init script.
 	ScriptId string `json:"-" url:"-"`
 }
 
 // Get an init script
-type GetScript struct {
+type Get struct {
 	// The ID of the global init script.
 	ScriptId string `json:"-" url:"-"`
 }
@@ -92,7 +92,7 @@ type GlobalInitScriptUpdateRequest struct {
 	// Specifies whether the script is enabled. The script runs only if enabled.
 	Enabled bool `json:"enabled,omitempty"`
 	// The name of the script
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The position of a script, where 0 represents the first script to run, 1
 	// is the second script to run, in ascending order. To move the script to
 	// run first, set its position to 0.
@@ -107,7 +107,7 @@ type GlobalInitScriptUpdateRequest struct {
 	// scripts have their positions incremented by 1.
 	Position int `json:"position,omitempty"`
 	// The Base64-encoded content of the script.
-	Script string `json:"script,omitempty"`
+	Script string `json:"script"`
 	// The ID of the global init script.
 	ScriptId string `json:"-" url:"-"`
 }

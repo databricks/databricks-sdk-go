@@ -110,15 +110,15 @@ type ReplaceIpAccessList struct {
 
 type UpdateIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
-	Enabled bool `json:"enabled,omitempty"`
+	Enabled bool `json:"enabled"`
 	// The ID for the corresponding IP access list to modify.
 	IpAccessListId string `json:"-" url:"-"`
 	// Array of IP addresses or CIDR values to be added to the IP access list.
-	IpAddresses []string `json:"ip_addresses,omitempty"`
+	IpAddresses []string `json:"ip_addresses"`
 	// Label for the IP access list. This **cannot** be empty.
-	Label string `json:"label,omitempty"`
+	Label string `json:"label"`
 	// Universally unique identifier(UUID) of the IP access list.
 	ListId string `json:"list_id,omitempty"`
 	// This describes an enum
-	ListType ListType `json:"list_type,omitempty"`
+	ListType ListType `json:"list_type"`
 }

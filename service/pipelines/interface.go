@@ -27,15 +27,15 @@ type PipelinesService interface {
 	// Creates a new data processing pipeline based on the requested
 	// configuration. If successful, this method returns the ID of the new
 	// pipeline.
-	CreatePipeline(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error)
+	Create(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error)
 
 	// Delete a pipeline.
 	//
 	// Deletes a pipeline.
-	DeletePipeline(ctx context.Context, request DeletePipeline) error
+	Delete(ctx context.Context, request Delete) error
 
 	// Get a pipeline.
-	GetPipeline(ctx context.Context, request GetPipeline) (*GetPipelineResponse, error)
+	Get(ctx context.Context, request Get) (*GetPipelineResponse, error)
 
 	// Get a pipeline update.
 	//
@@ -57,7 +57,7 @@ type PipelinesService interface {
 	// Reset a pipeline.
 	//
 	// Resets a pipeline.
-	ResetPipeline(ctx context.Context, request ResetPipeline) error
+	Reset(ctx context.Context, request Reset) error
 
 	// Queue a pipeline update.
 	//
@@ -67,10 +67,10 @@ type PipelinesService interface {
 	// Stop a pipeline.
 	//
 	// Stops a pipeline.
-	StopPipeline(ctx context.Context, request StopPipeline) error
+	Stop(ctx context.Context, request Stop) error
 
 	// Edit a pipeline.
 	//
 	// Updates a pipeline with the supplied configuration.
-	UpdatePipeline(ctx context.Context, request EditPipeline) error
+	Update(ctx context.Context, request EditPipeline) error
 }

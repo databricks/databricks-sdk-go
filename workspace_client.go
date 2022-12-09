@@ -10,7 +10,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/service/commands"
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
-	"github.com/databricks/databricks-sdk-go/service/dbsql"
 	"github.com/databricks/databricks-sdk-go/service/gitcredentials"
 	"github.com/databricks/databricks-sdk-go/service/globalinitscripts"
 	"github.com/databricks/databricks-sdk-go/service/instancepools"
@@ -23,10 +22,10 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/repos"
 	"github.com/databricks/databricks-sdk-go/service/scim"
 	"github.com/databricks/databricks-sdk-go/service/secrets"
+	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/databricks/databricks-sdk-go/service/tokenmanagement"
 	"github.com/databricks/databricks-sdk-go/service/tokens"
 	"github.com/databricks/databricks-sdk-go/service/unitycatalog"
-	"github.com/databricks/databricks-sdk-go/service/warehouses"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/databricks/databricks-sdk-go/service/workspaceconf"
 )
@@ -38,7 +37,7 @@ type WorkspaceClient struct {
 	// is a Databricks SQL object that periodically runs a query, evaluates a
 	// condition of its result, and notifies one or more users and/or alert
 	// destinations if the condition was met.
-	Alerts *dbsql.AlertsAPI
+	Alerts *sql.AlertsAPI
 
 	// A catalog is the first layer of Unity Catalog’s three-level namespace.
 	// It’s used to organize your data assets. Users can see all catalogs on
@@ -117,7 +116,7 @@ type WorkspaceClient struct {
 	// collection of related query IDs. The API can also be used to duplicate
 	// multiple dashboards at once since you can get a dashboard definition with
 	// a GET request and then POST it to create a new one.
-	Dashboards *dbsql.DashboardsAPI
+	Dashboards *sql.DashboardsAPI
 
 	// This API is provided to assist you in making new query objects. When
 	// creating a query object, you may optionally specify a `data_source_id`
@@ -129,7 +128,7 @@ type WorkspaceClient struct {
 	// warehouses in your workspace. We advise you to use any text editor, REST
 	// client, or `grep` to search the response from this API for the name of
 	// your SQL warehouse as it appears in Databricks SQL.
-	DataSources *dbsql.DataSourcesAPI
+	DataSources *sql.DataSourcesAPI
 
 	// DBFS API makes it simple to interact with various data sources without
 	// having to include a users credentials every time to read a file.
@@ -148,7 +147,7 @@ type WorkspaceClient struct {
 	//
 	// - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify
 	// permissions (superset of `CAN_RUN`)
-	DbsqlPermissions *dbsql.DbsqlPermissionsAPI
+	DbsqlPermissions *sql.DbsqlPermissionsAPI
 
 	Experiments *mlflow.ExperimentsAPI
 
@@ -365,10 +364,10 @@ type WorkspaceClient struct {
 	// These endpoints are used for CRUD operations on query definitions. Query
 	// definitions include the target SQL warehouse, query text, name,
 	// description, tags, execution schedule, parameters, and visualizations.
-	Queries *dbsql.QueriesAPI
+	Queries *sql.QueriesAPI
 
 	// Access the history of queries through SQL warehouses.
-	QueryHistory *warehouses.QueryHistoryAPI
+	QueryHistory *sql.QueryHistoryAPI
 
 	// Databricks Delta Sharing: Recipient Activation REST API
 	RecipientActivation *unitycatalog.RecipientActivationAPI
@@ -480,7 +479,7 @@ type WorkspaceClient struct {
 	// A SQL warehouse is a compute resource that lets you run SQL commands on
 	// data objects within Databricks SQL. Compute resources are infrastructure
 	// resources that provide processing capabilities in the cloud.
-	Warehouses *warehouses.WarehousesAPI
+	Warehouses *sql.WarehousesAPI
 
 	// The Workspace API allows you to list, import, export, and delete
 	// notebooks and folders.
@@ -510,16 +509,16 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	}
 	return &WorkspaceClient{
 		Config:               cfg,
-		Alerts:               dbsql.NewAlerts(apiClient),
+		Alerts:               sql.NewAlerts(apiClient),
 		Catalogs:             unitycatalog.NewCatalogs(apiClient),
 		ClusterPolicies:      clusterpolicies.NewClusterPolicies(apiClient),
 		Clusters:             clusters.NewClusters(apiClient),
 		CommandExecutor:      commands.NewCommandExecutor(apiClient),
 		CurrentUser:          scim.NewCurrentUser(apiClient),
-		Dashboards:           dbsql.NewDashboards(apiClient),
-		DataSources:          dbsql.NewDataSources(apiClient),
+		Dashboards:           sql.NewDashboards(apiClient),
+		DataSources:          sql.NewDataSources(apiClient),
 		Dbfs:                 dbfs.NewDbfs(apiClient),
-		DbsqlPermissions:     dbsql.NewDbsqlPermissions(apiClient),
+		DbsqlPermissions:     sql.NewDbsqlPermissions(apiClient),
 		Experiments:          mlflow.NewExperiments(apiClient),
 		ExternalLocations:    unitycatalog.NewExternalLocations(apiClient),
 		GitCredentials:       gitcredentials.NewGitCredentials(apiClient),
@@ -541,8 +540,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Permissions:          permissions.NewPermissions(apiClient),
 		Pipelines:            pipelines.NewPipelines(apiClient),
 		Providers:            unitycatalog.NewProviders(apiClient),
-		Queries:              dbsql.NewQueries(apiClient),
-		QueryHistory:         warehouses.NewQueryHistory(apiClient),
+		Queries:              sql.NewQueries(apiClient),
+		QueryHistory:         sql.NewQueryHistory(apiClient),
 		RecipientActivation:  unitycatalog.NewRecipientActivation(apiClient),
 		Recipients:           unitycatalog.NewRecipients(apiClient),
 		RegisteredModels:     mlflow.NewRegisteredModels(apiClient),
@@ -558,7 +557,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Tokens:               tokens.NewTokens(apiClient),
 		TransitionRequests:   mlflow.NewTransitionRequests(apiClient),
 		Users:                scim.NewUsers(apiClient),
-		Warehouses:           warehouses.NewWarehouses(apiClient),
+		Warehouses:           sql.NewWarehouses(apiClient),
 		Workspace:            workspace.NewWorkspace(apiClient),
 		WorkspaceConf:        workspaceconf.NewWorkspaceConf(apiClient),
 	}, nil

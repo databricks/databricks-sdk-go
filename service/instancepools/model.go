@@ -40,7 +40,7 @@ type CreateInstancePool struct {
 	InstancePoolFleetAttributes *InstancePoolFleetAttributes `json:"instance_pool_fleet_attributes,omitempty"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
-	InstancePoolName string `json:"instance_pool_name,omitempty"`
+	InstancePoolName string `json:"instance_pool_name"`
 	// Maximum number of outstanding instances to keep in the pool, including
 	// both instances used by clusters and idle instances. Clusters that require
 	// further instance provisioning will fail during upsize requests.
@@ -52,7 +52,7 @@ type CreateInstancePool struct {
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
-	NodeTypeId string `json:"node_type_id,omitempty"`
+	NodeTypeId string `json:"node_type_id"`
 	// Custom Docker Image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
 	// A list of preloaded Spark image versions for the pool. Pool-backed
@@ -69,7 +69,7 @@ type CreateInstancePoolResponse struct {
 
 type DeleteInstancePool struct {
 	// The instance pool to be terminated.
-	InstancePoolId string `json:"instance_pool_id,omitempty"`
+	InstancePoolId string `json:"instance_pool_id"`
 }
 
 type DiskSpec struct {
@@ -190,9 +190,9 @@ type EditInstancePool struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
-	// - Currently, Databricks allows up to 45 custom tags
+	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Defines the specification of the disks that will be attached to all Spark
+	// Defines the specification of the disks that will be attached to all spark
 	// containers.
 	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
 	// Autoscaling Local Storage: when enabled, this instances in this pool will
@@ -209,13 +209,15 @@ type EditInstancePool struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
-
+	// The fleet related setting to power the instance pool.
+	InstancePoolFleetAttributes *InstancePoolFleetAttributes `json:"instance_pool_fleet_attributes,omitempty"`
+	// Instance pool ID
 	InstancePoolId string `json:"instance_pool_id"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
-	InstancePoolName string `json:"instance_pool_name,omitempty"`
+	InstancePoolName string `json:"instance_pool_name"`
 	// Maximum number of outstanding instances to keep in the pool, including
-	// both instances used by clusters and idle ones. Clusters that require
+	// both instances used by clusters and idle instances. Clusters that require
 	// further instance provisioning will fail during upsize requests.
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
@@ -225,8 +227,8 @@ type EditInstancePool struct {
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
-	NodeTypeId string `json:"node_type_id,omitempty"`
-	// Custom Docker image BYOC
+	NodeTypeId string `json:"node_type_id"`
+	// Custom Docker Image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
 	// A list of preloaded Spark image versions for the pool. Pool-backed
 	// clusters started with the preloaded Spark version will start faster. A
@@ -379,10 +381,10 @@ type GetInstancePool struct {
 	//
 	// - InstancePoolId: <id_of_pool>
 	DefaultTags map[string]string `json:"default_tags,omitempty"`
-	// Defines the specification of the disks that will be attached to all Spark
+	// Defines the specification of the disks that will be attached to all spark
 	// containers.
 	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
-	// Autoscaling Local Storage: When enabled, the instances in this pool will
+	// Autoscaling Local Storage: when enabled, this instances in this pool will
 	// dynamically acquire additional disk space when its Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
 	// permissions to function correctly - refer to the User Guide for more
@@ -396,14 +398,16 @@ type GetInstancePool struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
+	// The fleet related setting to power the instance pool.
+	InstancePoolFleetAttributes *InstancePoolFleetAttributes `json:"instance_pool_fleet_attributes,omitempty"`
 	// Canonical unique identifier for the pool.
-	InstancePoolId string `json:"instance_pool_id,omitempty"`
-	// Pool name requested by the user. Name must be unique. Length must be
+	InstancePoolId string `json:"instance_pool_id"`
+	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
 	InstancePoolName string `json:"instance_pool_name,omitempty"`
 	// Maximum number of outstanding instances to keep in the pool, including
-	// both instances used by clusters and idle ones. Clusters that require
-	// further instance provision would fail during upsize requests.
+	// both instances used by clusters and idle instances. Clusters that require
+	// further instance provisioning will fail during upsize requests.
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
@@ -413,7 +417,7 @@ type GetInstancePool struct {
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
-	// Custom Docker image BYOC
+	// Custom Docker Image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
 	// A list of preloaded Spark image versions for the pool. Pool-backed
 	// clusters started with the preloaded Spark version will start faster. A
@@ -421,41 +425,11 @@ type GetInstancePool struct {
 	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 	// Current state of the instance pool.
-	State GetInstancePoolState `json:"state,omitempty"`
+	State InstancePoolState `json:"state,omitempty"`
 	// Usage statistics about the instance pool.
 	Stats *InstancePoolStats `json:"stats,omitempty"`
 	// Status of failed pending instances in the pool.
 	Status *InstancePoolStatus `json:"status,omitempty"`
-}
-
-// Current state of the instance pool.
-type GetInstancePoolState string
-
-const GetInstancePoolStateActive GetInstancePoolState = `ACTIVE`
-
-const GetInstancePoolStateDeleted GetInstancePoolState = `DELETED`
-
-const GetInstancePoolStateStopped GetInstancePoolState = `STOPPED`
-
-// String representation for [fmt.Print]
-func (gips *GetInstancePoolState) String() string {
-	return string(*gips)
-}
-
-// Set raw string value and validate it against allowed values
-func (gips *GetInstancePoolState) Set(v string) error {
-	switch v {
-	case `ACTIVE`, `DELETED`, `STOPPED`:
-		*gips = GetInstancePoolState(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETED", "STOPPED"`, v)
-	}
-}
-
-// Type always returns GetInstancePoolState to satisfy [pflag.Value] interface
-func (gips *GetInstancePoolState) Type() string {
-	return "GetInstancePoolState"
 }
 
 type InstancePoolAndStats struct {
@@ -469,7 +443,7 @@ type InstancePoolAndStats struct {
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
-	// - Currently, Databricks allows up to 45 custom tags
+	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
@@ -485,7 +459,7 @@ type InstancePoolAndStats struct {
 	// Defines the specification of the disks that will be attached to all spark
 	// containers.
 	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
-	// Autoscaling Local Storage: When enabled, the instances in this pool will
+	// Autoscaling Local Storage: when enabled, this instances in this pool will
 	// dynamically acquire additional disk space when its Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
 	// permissions to function correctly - refer to the User Guide for more
@@ -499,13 +473,15 @@ type InstancePoolAndStats struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
+	// The fleet related setting to power the instance pool.
+	InstancePoolFleetAttributes *InstancePoolFleetAttributes `json:"instance_pool_fleet_attributes,omitempty"`
 	// Canonical unique identifier for the pool.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
 	InstancePoolName string `json:"instance_pool_name,omitempty"`
 	// Maximum number of outstanding instances to keep in the pool, including
-	// both instances used by clusters and idle ones. Clusters that require
+	// both instances used by clusters and idle instances. Clusters that require
 	// further instance provisioning will fail during upsize requests.
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
@@ -516,7 +492,7 @@ type InstancePoolAndStats struct {
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id,omitempty"`
-	// Custom Docker image BYOC
+	// Custom Docker Image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
 	// A list of preloaded Spark image versions for the pool. Pool-backed
 	// clusters started with the preloaded Spark version will start faster. A
@@ -524,41 +500,11 @@ type InstancePoolAndStats struct {
 	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 	// Current state of the instance pool.
-	State InstancePoolAndStatsState `json:"state,omitempty"`
+	State InstancePoolState `json:"state,omitempty"`
 	// Usage statistics about the instance pool.
 	Stats *InstancePoolStats `json:"stats,omitempty"`
 	// Status of failed pending instances in the pool.
 	Status *InstancePoolStatus `json:"status,omitempty"`
-}
-
-// Current state of the instance pool.
-type InstancePoolAndStatsState string
-
-const InstancePoolAndStatsStateActive InstancePoolAndStatsState = `ACTIVE`
-
-const InstancePoolAndStatsStateDeleted InstancePoolAndStatsState = `DELETED`
-
-const InstancePoolAndStatsStateStopped InstancePoolAndStatsState = `STOPPED`
-
-// String representation for [fmt.Print]
-func (ipass *InstancePoolAndStatsState) String() string {
-	return string(*ipass)
-}
-
-// Set raw string value and validate it against allowed values
-func (ipass *InstancePoolAndStatsState) Set(v string) error {
-	switch v {
-	case `ACTIVE`, `DELETED`, `STOPPED`:
-		*ipass = InstancePoolAndStatsState(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETED", "STOPPED"`, v)
-	}
-}
-
-// Type always returns InstancePoolAndStatsState to satisfy [pflag.Value] interface
-func (ipass *InstancePoolAndStatsState) Type() string {
-	return "InstancePoolAndStatsState"
 }
 
 type InstancePoolAwsAttributes struct {
@@ -676,6 +622,36 @@ type InstancePoolFleetAttributes struct {
 	FleetSpotOption *FleetSpotOption `json:"fleet_spot_option,omitempty"`
 
 	LaunchTemplateOverrides []FleetLaunchTemplateOverride `json:"launch_template_overrides,omitempty"`
+}
+
+// Current state of the instance pool.
+type InstancePoolState string
+
+const InstancePoolStateActive InstancePoolState = `ACTIVE`
+
+const InstancePoolStateDeleted InstancePoolState = `DELETED`
+
+const InstancePoolStateStopped InstancePoolState = `STOPPED`
+
+// String representation for [fmt.Print]
+func (ips *InstancePoolState) String() string {
+	return string(*ips)
+}
+
+// Set raw string value and validate it against allowed values
+func (ips *InstancePoolState) Set(v string) error {
+	switch v {
+	case `ACTIVE`, `DELETED`, `STOPPED`:
+		*ips = InstancePoolState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETED", "STOPPED"`, v)
+	}
+}
+
+// Type always returns InstancePoolState to satisfy [pflag.Value] interface
+func (ips *InstancePoolState) Type() string {
+	return "InstancePoolState"
 }
 
 type InstancePoolStats struct {

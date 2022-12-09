@@ -115,18 +115,6 @@ type EncryptionKeysService interface {
 	// the platform.
 	Get(ctx context.Context, request GetEncryptionKeyRequest) (*CustomerManagedKey, error)
 
-	// Get history of a key's associations with workspaces.
-	//
-	// Gets a list of records that show how key configurations are associated
-	// with workspaces.
-	//
-	// **Important**: Customer-managed keys are supported only for some
-	// deployment types, subscription types, and AWS regions.
-	//
-	// This operation is available only if your account is on the E2 version of
-	// the platform.
-	GetKeyWorkspaceHistory(ctx context.Context) (*ListWorkspaceEncryptionKeyRecordsResponse, error)
-
 	// Get all encryption key configurations.
 	//
 	// Gets all customer-managed key configuration objects for an account. If
@@ -543,24 +531,6 @@ type WorkspacesService interface {
 	//
 	// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 	Get(ctx context.Context, request GetWorkspaceRequest) (*Workspace, error)
-
-	// Get the history of a workspace's associations with keys.
-	//
-	// Gets a list of all associations with key configuration objects for the
-	// specified workspace that encapsulate customer-managed keys that encrypt
-	// managed services, workspace storage, or in some cases both.
-	//
-	// **Important**: In the current implementation, keys cannot be rotated or
-	// removed from a workspace. It is possible for a workspace to show a
-	// storage customer-managed key having been attached and then detached if
-	// the workspace was updated to use the key and the update operation failed.
-	//
-	// **Important**: Customer-managed keys are supported only for some
-	// deployment types and subscription types.
-	//
-	// This operation is available only if your account is on the E2 version of
-	// the platform.
-	GetWorkspaceKeyHistory(ctx context.Context, request GetWorkspaceKeyHistoryRequest) (*ListWorkspaceEncryptionKeyRecordsResponse, error)
 
 	// Get all workspaces.
 	//

@@ -57,38 +57,38 @@ func (a *PipelinesAPI) Impl() PipelinesService {
 //
 // Creates a new data processing pipeline based on the requested configuration.
 // If successful, this method returns the ID of the new pipeline.
-func (a *PipelinesAPI) CreatePipeline(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error) {
-	return a.impl.CreatePipeline(ctx, request)
+func (a *PipelinesAPI) Create(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error) {
+	return a.impl.Create(ctx, request)
 }
 
 // Delete a pipeline.
 //
 // Deletes a pipeline.
-func (a *PipelinesAPI) DeletePipeline(ctx context.Context, request DeletePipeline) error {
-	return a.impl.DeletePipeline(ctx, request)
+func (a *PipelinesAPI) Delete(ctx context.Context, request Delete) error {
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a pipeline.
 //
 // Deletes a pipeline.
-func (a *PipelinesAPI) DeletePipelineByPipelineId(ctx context.Context, pipelineId string) error {
-	return a.impl.DeletePipeline(ctx, DeletePipeline{
+func (a *PipelinesAPI) DeleteByPipelineId(ctx context.Context, pipelineId string) error {
+	return a.impl.Delete(ctx, Delete{
 		PipelineId: pipelineId,
 	})
 }
 
 // Get a pipeline.
-func (a *PipelinesAPI) GetPipeline(ctx context.Context, request GetPipeline) (*GetPipelineResponse, error) {
-	return a.impl.GetPipeline(ctx, request)
+func (a *PipelinesAPI) Get(ctx context.Context, request Get) (*GetPipelineResponse, error) {
+	return a.impl.Get(ctx, request)
 }
 
-// Calls [PipelinesAPI.GetPipeline] and waits to reach RUNNING state
+// Calls [PipelinesAPI.Get] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
-func (a *PipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipeline GetPipeline, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+func (a *PipelinesAPI) GetAndWait(ctx context.Context, get Get, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	getPipelineResponse, err := a.GetPipeline(ctx, getPipeline)
+	getPipelineResponse, err := a.Get(ctx, get)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +97,7 @@ func (a *PipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipeline GetPi
 		o(&i)
 	}
 	return retries.Poll[GetPipelineResponse](ctx, i.Timeout, func() (*GetPipelineResponse, *retries.Err) {
-		getPipelineResponse, err := a.GetPipeline(ctx, GetPipeline{
+		getPipelineResponse, err := a.Get(ctx, Get{
 			PipelineId: getPipelineResponse.PipelineId,
 		})
 		if err != nil {
@@ -125,14 +125,14 @@ func (a *PipelinesAPI) GetPipelineAndWait(ctx context.Context, getPipeline GetPi
 }
 
 // Get a pipeline.
-func (a *PipelinesAPI) GetPipelineByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
-	return a.impl.GetPipeline(ctx, GetPipeline{
+func (a *PipelinesAPI) GetByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
+	return a.impl.Get(ctx, Get{
 		PipelineId: pipelineId,
 	})
 }
 
-func (a *PipelinesAPI) GetPipelineByPipelineIdAndWait(ctx context.Context, pipelineId string, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
-	return a.GetPipelineAndWait(ctx, GetPipeline{
+func (a *PipelinesAPI) GetByPipelineIdAndWait(ctx context.Context, pipelineId string, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+	return a.GetAndWait(ctx, Get{
 		PipelineId: pipelineId,
 	}, options...)
 }
@@ -253,17 +253,17 @@ func (a *PipelinesAPI) ListUpdatesByPipelineId(ctx context.Context, pipelineId s
 // Reset a pipeline.
 //
 // Resets a pipeline.
-func (a *PipelinesAPI) ResetPipeline(ctx context.Context, request ResetPipeline) error {
-	return a.impl.ResetPipeline(ctx, request)
+func (a *PipelinesAPI) Reset(ctx context.Context, request Reset) error {
+	return a.impl.Reset(ctx, request)
 }
 
-// Calls [PipelinesAPI.ResetPipeline] and waits to reach RUNNING state
+// Calls [PipelinesAPI.Reset] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
-func (a *PipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipeline ResetPipeline, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+func (a *PipelinesAPI) ResetAndWait(ctx context.Context, reset Reset, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	err := a.ResetPipeline(ctx, resetPipeline)
+	err := a.Reset(ctx, reset)
 	if err != nil {
 		return nil, err
 	}
@@ -272,8 +272,8 @@ func (a *PipelinesAPI) ResetPipelineAndWait(ctx context.Context, resetPipeline R
 		o(&i)
 	}
 	return retries.Poll[GetPipelineResponse](ctx, i.Timeout, func() (*GetPipelineResponse, *retries.Err) {
-		getPipelineResponse, err := a.GetPipeline(ctx, GetPipeline{
-			PipelineId: resetPipeline.PipelineId,
+		getPipelineResponse, err := a.Get(ctx, Get{
+			PipelineId: reset.PipelineId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -309,17 +309,17 @@ func (a *PipelinesAPI) StartUpdate(ctx context.Context, request StartUpdate) (*S
 // Stop a pipeline.
 //
 // Stops a pipeline.
-func (a *PipelinesAPI) StopPipeline(ctx context.Context, request StopPipeline) error {
-	return a.impl.StopPipeline(ctx, request)
+func (a *PipelinesAPI) Stop(ctx context.Context, request Stop) error {
+	return a.impl.Stop(ctx, request)
 }
 
-// Calls [PipelinesAPI.StopPipeline] and waits to reach IDLE state
+// Calls [PipelinesAPI.Stop] and waits to reach IDLE state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
-func (a *PipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipeline StopPipeline, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+func (a *PipelinesAPI) StopAndWait(ctx context.Context, stop Stop, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	err := a.StopPipeline(ctx, stopPipeline)
+	err := a.Stop(ctx, stop)
 	if err != nil {
 		return nil, err
 	}
@@ -328,8 +328,8 @@ func (a *PipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipeline Sto
 		o(&i)
 	}
 	return retries.Poll[GetPipelineResponse](ctx, i.Timeout, func() (*GetPipelineResponse, *retries.Err) {
-		getPipelineResponse, err := a.GetPipeline(ctx, GetPipeline{
-			PipelineId: stopPipeline.PipelineId,
+		getPipelineResponse, err := a.Get(ctx, Get{
+			PipelineId: stop.PipelineId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -358,6 +358,6 @@ func (a *PipelinesAPI) StopPipelineAndWait(ctx context.Context, stopPipeline Sto
 // Edit a pipeline.
 //
 // Updates a pipeline with the supplied configuration.
-func (a *PipelinesAPI) UpdatePipeline(ctx context.Context, request EditPipeline) error {
-	return a.impl.UpdatePipeline(ctx, request)
+func (a *PipelinesAPI) Update(ctx context.Context, request EditPipeline) error {
+	return a.impl.Update(ctx, request)
 }
