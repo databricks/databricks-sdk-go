@@ -150,6 +150,8 @@ func (r *Render) Run() error {
 	}
 	for _, formatter := range strings.Split(r.Formatter, "&&") {
 		formatter = strings.TrimSpace(formatter)
+		fmt.Printf("Formatting: %s\n", formatter)
+
 		formatter = strings.ReplaceAll(formatter, "$FILENAMES",
 			strings.Join(filenames, " "))
 		split := strings.Split(formatter, " ")
@@ -182,11 +184,18 @@ func newPass[T named](items []T, fileset map[string]string) *Pass[T] {
 		tmpls = append(tmpls, filename)
 		newFileset[filepath.Base(filename)] = v
 	}
+	t := template.New("codegen").Funcs(code.HelperFuncs)
+	t = t.Funcs(template.FuncMap{
+		"load": func(tmpl string) (string, error) {
+			_, err := t.ParseFiles(tmpl)
+			return "", err
+		},
+	})
 	return &Pass[T]{
 		Items:   items,
 		ctx:     &ctx,
 		fileset: newFileset,
-		tmpl:    template.Must(template.New("codegen").Funcs(code.HelperFuncs).ParseFiles(tmpls...)),
+		tmpl:    template.Must(t.ParseFiles(tmpls...)),
 	}
 }
 
@@ -220,16 +229,21 @@ func (p *Pass[T]) File(item T, contentTRef, nameT string) error {
 	if err != nil {
 		return fmt.Errorf("parse %s: %w", nameT, err)
 	}
-	var childFilename, contents strings.Builder
+	var contents strings.Builder
+	err = p.tmpl.ExecuteTemplate(&contents, contentTRef, &item)
+	if errors.Is(err, code.ErrSkipThisFile) {
+		// special case for CLI generation with `{{skipThisFile}}`
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("exec %s: %w", contentTRef, err)
+	}
+	var childFilename strings.Builder
 	err = nt.Execute(&childFilename, item)
 	if err != nil {
 		return fmt.Errorf("exec %s: %w", nameT, err)
 	}
 	p.filenames = append(p.filenames, childFilename.String())
-	err = p.tmpl.ExecuteTemplate(&contents, contentTRef, &item)
-	if err != nil {
-		return fmt.Errorf("exec %s: %w", contentTRef, err)
-	}
 	if p.ctx.DryRun {
 		fmt.Printf("\n---\nDRY RUN: %s\n---\n%s", &childFilename, &contents)
 		return nil

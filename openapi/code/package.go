@@ -39,6 +39,17 @@ func (pkg *Package) Services() (types []*Service) {
 	return types
 }
 
+// MainService returns a Service that matches Package name
+func (pkg *Package) MainService() *Service {
+	for _, svc := range pkg.services {
+		if !svc.MatchesPackageName() {
+			continue
+		}
+		return svc
+	}
+	return nil
+}
+
 // Types returns sorted slice of types
 func (pkg *Package) Types() (types []*Entity) {
 	for _, v := range pkg.types {
