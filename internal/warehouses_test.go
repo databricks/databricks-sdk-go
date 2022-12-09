@@ -3,7 +3,7 @@ package internal
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/warehouses"
+	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -11,18 +11,17 @@ import (
 func TestAccSqlWarehouses(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	// TODO: OpenAPI: CRUD operationId
-	created, err := w.Warehouses.CreateWarehouseAndWait(ctx, warehouses.CreateWarehouseRequest{
+	created, err := w.Warehouses.CreateAndWait(ctx, sql.CreateWarehouseRequest{
 		Name:           RandomName("go-sdk-"),
-		ClusterSize:    "2X-Small", // TODO: OpenAPI: add enum
+		ClusterSize:    "2X-Small",
 		MaxNumClusters: 1,
 		AutoStopMins:   10,
 	})
 	require.NoError(t, err)
 
-	defer w.Warehouses.DeleteWarehouseByIdAndWait(ctx, created.Id)
+	defer w.Warehouses.DeleteByIdAndWait(ctx, created.Id)
 
-	err = w.Warehouses.EditWarehouse(ctx, warehouses.EditWarehouseRequest{
+	err = w.Warehouses.Edit(ctx, sql.EditWarehouseRequest{
 		Id:             created.Id,
 		Name:           RandomName("go-sdk-updated-"),
 		ClusterSize:    "2X-Small",
@@ -31,13 +30,13 @@ func TestAccSqlWarehouses(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	wh, err := w.Warehouses.GetWarehouseById(ctx, created.Id)
+	wh, err := w.Warehouses.GetById(ctx, created.Id)
 	require.NoError(t, err)
 
-	all, err := w.Warehouses.ListWarehousesAll(ctx, warehouses.ListWarehouses{})
+	all, err := w.Warehouses.ListAll(ctx, sql.ListWarehousesRequest{})
 	require.NoError(t, err)
 
-	names, err := w.Warehouses.EndpointInfoNameToIdMap(ctx, warehouses.ListWarehouses{})
+	names, err := w.Warehouses.EndpointInfoNameToIdMap(ctx, sql.ListWarehousesRequest{})
 	require.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
 	assert.Equal(t, wh.Id, names[wh.Name])

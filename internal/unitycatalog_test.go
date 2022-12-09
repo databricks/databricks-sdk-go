@@ -107,7 +107,6 @@ func TestUcAccMetastores(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	// TODO: OpenAPI: fix create mapping: remove assignments from cruds
 	err = w.Metastores.Update(ctx, unitycatalog.UpdateMetastore{
 		Id:   created.MetastoreId,
 		Name: RandomName("go-sdk-updated"),
@@ -133,7 +132,6 @@ func TestUcAccMetastores(t *testing.T) {
 	_, err = w.Metastores.Summary(ctx)
 	require.NoError(t, err)
 
-	// TODO: OpenAPI: x-databricks-id & x-databricks-name
 	all, err := w.Metastores.ListAll(ctx)
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
@@ -279,7 +277,6 @@ func TestUcAccShares(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	// TODO: OpenAPI: fix x-databricks-crud: read
 	_, err = w.Shares.GetByName(ctx, created.Name)
 	require.NoError(t, err)
 

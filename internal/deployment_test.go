@@ -111,7 +111,7 @@ func TestMwsAccEncryptionKeys(t *testing.T) {
 			KeyArn:   GetEnvOrSkipTest(t, "TEST_MANAGED_KMS_KEY_ARN"),
 			KeyAlias: GetEnvOrSkipTest(t, "TEST_STORAGE_KMS_KEY_ALIAS"),
 		},
-		UseCases: []string{"MANAGED_SERVICES"}, // TODO: OpenAPI: add enum
+		UseCases: []deployment.KeyUseCase{deployment.KeyUseCaseManagedServices},
 	})
 	require.NoError(t, err)
 
@@ -120,10 +120,9 @@ func TestMwsAccEncryptionKeys(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	// TODO: OpenAPI: x-databricks-name & x-databricks-id
 	byId, err := a.EncryptionKeys.GetByCustomerManagedKeyId(ctx, created.CustomerManagedKeyId)
 	require.NoError(t, err)
-	assert.Equal(t, "MANAGED_SERVICES", byId.UseCases[0])
+	assert.Equal(t, deployment.KeyUseCaseManagedServices, byId.UseCases[0])
 
 	all, err := a.EncryptionKeys.List(ctx)
 	require.NoError(t, err)
@@ -136,7 +135,6 @@ func TestMwsAccPrivateAccess(t *testing.T) {
 		t.SkipNow()
 	}
 
-	// TODO: OpenAPI: rename entities
 	created, err := a.PrivateAccess.Create(ctx, deployment.UpsertPrivateAccessSettingsRequest{
 		PrivateAccessSettingsName: RandomName("go-sdk-"),
 		Region:                    GetEnvOrSkipTest(t, "AWS_REGION"),
@@ -188,7 +186,6 @@ func TestMwsAccVpcEndpoints(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	// TODO: OpenAPI: x-databricks-name/x-databricks-id
 	byId, err := a.VpcEndpoints.GetByVpcEndpointId(ctx, created.VpcEndpointId)
 	require.NoError(t, err)
 	assert.Equal(t, deployment.EndpointUseCaseDataplaneRelayAccess, byId.UseCase)

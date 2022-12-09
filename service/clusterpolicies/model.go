@@ -7,10 +7,10 @@ package clusterpolicies
 type CreatePolicy struct {
 	// Policy definition document expressed in Databricks Cluster Policy
 	// Definition Language.
-	Definition string `json:"definition,omitempty"`
+	Definition string `json:"definition"`
 	// Cluster Policy name requested by the user. This has to be unique. Length
 	// must be between 1 and 100 characters.
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 }
 
 type CreatePolicyResponse struct {
@@ -26,10 +26,10 @@ type DeletePolicy struct {
 type EditPolicy struct {
 	// Policy definition document expressed in Databricks Cluster Policy
 	// Definition Language.
-	Definition string `json:"definition,omitempty"`
+	Definition string `json:"definition"`
 	// Cluster Policy name requested by the user. This has to be unique. Length
 	// must be between 1 and 100 characters.
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The ID of the policy to update.
 	PolicyId string `json:"policy_id"`
 }

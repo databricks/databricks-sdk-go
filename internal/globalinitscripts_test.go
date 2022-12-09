@@ -12,8 +12,7 @@ import (
 func TestAccGlobalInitScripts(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	// TODO: OpenAPI: CRUD names for operationId
-	created, err := w.GlobalInitScripts.CreateScript(ctx, globalinitscripts.GlobalInitScriptCreateRequest{
+	created, err := w.GlobalInitScripts.Create(ctx, globalinitscripts.GlobalInitScriptCreateRequest{
 		Name:     RandomName("go-sdk-"),
 		Script:   base64.StdEncoding.EncodeToString([]byte("echo 1")),
 		Enabled:  true,
@@ -21,19 +20,19 @@ func TestAccGlobalInitScripts(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	defer w.GlobalInitScripts.DeleteScriptByScriptId(ctx, created.ScriptId)
+	defer w.GlobalInitScripts.DeleteByScriptId(ctx, created.ScriptId)
 
-	err = w.GlobalInitScripts.UpdateScript(ctx, globalinitscripts.GlobalInitScriptUpdateRequest{
+	err = w.GlobalInitScripts.Update(ctx, globalinitscripts.GlobalInitScriptUpdateRequest{
 		ScriptId: created.ScriptId,
 		Name:     RandomName("go-sdk-updated-"),
 		Script:   base64.StdEncoding.EncodeToString([]byte("echo 2")),
 	})
 	require.NoError(t, err)
 
-	byId, err := w.GlobalInitScripts.GetScriptByScriptId(ctx, created.ScriptId)
+	byId, err := w.GlobalInitScripts.GetByScriptId(ctx, created.ScriptId)
 	require.NoError(t, err)
 
-	all, err := w.GlobalInitScripts.ListScriptsAll(ctx)
+	all, err := w.GlobalInitScripts.ListAll(ctx)
 	require.NoError(t, err)
 
 	names, err := w.GlobalInitScripts.GlobalInitScriptDetailsNameToScriptIdMap(ctx)

@@ -41,11 +41,11 @@ type AutoScale struct {
 	// The maximum number of workers to which the cluster can scale up when
 	// overloaded. Note that `max_workers` must be strictly greater than
 	// `min_workers`.
-	MaxWorkers int `json:"max_workers,omitempty"`
+	MaxWorkers int `json:"max_workers"`
 	// The minimum number of workers to which the cluster can scale down when
 	// underutilized. It is also the initial number of workers the cluster will
 	// have after creation.
-	MinWorkers int `json:"min_workers,omitempty"`
+	MinWorkers int `json:"min_workers"`
 }
 
 type AwsAttributes struct {
@@ -227,7 +227,7 @@ type ChangeClusterOwner struct {
 	// <needs content added>
 	ClusterId string `json:"cluster_id"`
 	// New owner of the cluster_id after this RPC.
-	OwnerUsername string `json:"owner_username,omitempty"`
+	OwnerUsername string `json:"owner_username"`
 }
 
 type ClientsTypes struct {
@@ -312,12 +312,6 @@ type ClusterAttributes struct {
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
-	// The key of the spark version running in the dataplane. This is possibly
-	// different from the spark_version (index 2). The spark_version is the raw
-	// string provided by the user through API or UI, which could map to a
-	// different effective_spark_version running in the dataplane, depending on
-	// the cluster's instance type or the runtimeEngine parameter.
-	EffectiveSparkVersion string `json:"effective_spark_version,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
@@ -364,7 +358,7 @@ type ClusterAttributes struct {
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:sparkVersions API call.
-	SparkVersion string `json:"spark_version,omitempty"`
+	SparkVersion string `json:"spark_version"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
@@ -469,12 +463,6 @@ type ClusterInfo struct {
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
-	// The key of the spark version running in the dataplane. This is possibly
-	// different from the spark_version (index 2). The spark_version is the raw
-	// string provided by the user through API or UI, which could map to a
-	// different effective_spark_version running in the dataplane, depending on
-	// the cluster's instance type or the runtimeEngine parameter.
-	EffectiveSparkVersion string `json:"effective_spark_version,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
@@ -526,10 +514,6 @@ type ClusterInfo struct {
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
-	//
-	// Example Spark confs: `{"spark.speculation": true,
-	// "spark.streaming.ui.retainedBatches": 5}` or
-	// `{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}`
 	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// A canonical SparkContext identifier. This value *does* change when the
 	// Spark driver restarts. The pair `(cluster_id, spark_context_id)` is a
@@ -538,10 +522,16 @@ type ClusterInfo struct {
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
 	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
-	// driver and workers. In order to specify an additional set of
-	// `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
-	// `$SPARK_DAEMON_JAVA_OPTS` as shown in the example. This ensures that all
-	// default databricks managed environmental variables are included as well.
+	// driver and workers.
+	//
+	// In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
+	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
+	// example below. This ensures that all default databricks managed
+	// environmental variables are included as well.
+	//
+	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
+	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
+	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
 	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
@@ -690,12 +680,6 @@ type CreateCluster struct {
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
-	// The key of the spark version running in the dataplane. This is possibly
-	// different from the spark_version (index 2). The spark_version is the raw
-	// string provided by the user through API or UI, which could map to a
-	// different effective_spark_version running in the dataplane, depending on
-	// the cluster's instance type or the runtimeEngine parameter.
-	EffectiveSparkVersion string `json:"effective_spark_version,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
@@ -753,7 +737,7 @@ type CreateCluster struct {
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:sparkVersions API call.
-	SparkVersion string `json:"spark_version,omitempty"`
+	SparkVersion string `json:"spark_version"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
@@ -913,7 +897,7 @@ type EditCluster struct {
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-	// <needs content added>
+	// ID of the cluser
 	ClusterId string `json:"cluster_id"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
@@ -946,12 +930,6 @@ type EditCluster struct {
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
-	// The key of the spark version running in the dataplane. This is possibly
-	// different from the spark_version (index 2). The spark_version is the raw
-	// string provided by the user through API or UI, which could map to a
-	// different effective_spark_version running in the dataplane, depending on
-	// the cluster's instance type or the runtimeEngine parameter.
-	EffectiveSparkVersion string `json:"effective_spark_version,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
@@ -991,10 +969,6 @@ type EditCluster struct {
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
-	//
-	// Example Spark confs: `{"spark.speculation": true,
-	// "spark.streaming.ui.retainedBatches": 5}` or
-	// `{"spark.driver.extraJavaOptions": "-verbose:gc -XX:+PrintGCDetails"}`
 	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
@@ -1013,12 +987,12 @@ type EditCluster struct {
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:sparkVersions API call.
-	SparkVersion string `json:"spark_version,omitempty"`
+	SparkVersion string `json:"spark_version"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-	// <needs content added>
+
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 }
 

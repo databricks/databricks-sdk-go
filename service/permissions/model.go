@@ -30,7 +30,7 @@ type AccessControlResponse struct {
 
 type CreateWorkspaceAssignments struct {
 	// Array of permissions assignments to apply to a workspace.
-	PermissionAssignments []PermissionAssignmentInput `json:"permission_assignments,omitempty"`
+	PermissionAssignments []PermissionAssignmentInput `json:"permission_assignments"`
 	// The workspace ID for the account.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
@@ -104,7 +104,7 @@ type PermissionAssignmentInput struct {
 	// The group name for the service principal.
 	GroupName string `json:"group_name,omitempty"`
 	// Array of permissions to apply to the workspace for the service principal.
-	Permissions []WorkspacePermission `json:"permissions,omitempty"`
+	Permissions []WorkspacePermission `json:"permissions"`
 	// The name of the service principal.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// The username of the owner of the service principal.
@@ -206,7 +206,7 @@ type PrincipalOutput struct {
 
 type UpdateWorkspaceAssignments struct {
 	// Array of permissions assignments to update on the workspace.
-	Permissions []WorkspacePermission `json:"permissions,omitempty"`
+	Permissions []WorkspacePermission `json:"permissions"`
 	// The ID of the service principal.
 	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID.

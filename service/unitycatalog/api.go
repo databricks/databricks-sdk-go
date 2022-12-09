@@ -5,8 +5,10 @@ package unitycatalog
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 func NewCatalogs(client *client.DatabricksClient) *CatalogsAPI {
@@ -47,7 +49,7 @@ func (a *CatalogsAPI) Impl() CatalogsService {
 //
 // Creates a new catalog instance in the parent Metastore if the caller is a
 // Metastore admin or has the CREATE CATALOG privilege.
-func (a *CatalogsAPI) Create(ctx context.Context, request CreateCatalog) (*CreateCatalogResponse, error) {
+func (a *CatalogsAPI) Create(ctx context.Context, request CreateCatalog) (*CatalogInfo, error) {
 	return a.impl.Create(ctx, request)
 }
 
@@ -73,7 +75,7 @@ func (a *CatalogsAPI) DeleteByName(ctx context.Context, name string) error {
 //
 // Gets an array of all catalogs in the current Metastore for which the user is
 // an admin or Catalog owner, or has the USAGE privilege set for their account.
-func (a *CatalogsAPI) Get(ctx context.Context, request GetCatalogRequest) (*GetCatalogResponse, error) {
+func (a *CatalogsAPI) Get(ctx context.Context, request GetCatalogRequest) (*CatalogInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -81,7 +83,7 @@ func (a *CatalogsAPI) Get(ctx context.Context, request GetCatalogRequest) (*GetC
 //
 // Gets an array of all catalogs in the current Metastore for which the user is
 // an admin or Catalog owner, or has the USAGE privilege set for their account.
-func (a *CatalogsAPI) GetByName(ctx context.Context, name string) (*GetCatalogResponse, error) {
+func (a *CatalogsAPI) GetByName(ctx context.Context, name string) (*CatalogInfo, error) {
 	return a.impl.Get(ctx, GetCatalogRequest{
 		Name: name,
 	})
@@ -155,7 +157,7 @@ func (a *ExternalLocationsAPI) Impl() ExternalLocationsService {
 // Creates a new External Location entry in the Metastore. The caller must be a
 // Metastore admin or have the CREATE EXTERNAL LOCATION privilege on the
 // Metastore.
-func (a *ExternalLocationsAPI) Create(ctx context.Context, request CreateExternalLocation) (*CreateExternalLocationResponse, error) {
+func (a *ExternalLocationsAPI) Create(ctx context.Context, request CreateExternalLocation) (*ExternalLocationInfo, error) {
 	return a.impl.Create(ctx, request)
 }
 
@@ -182,7 +184,7 @@ func (a *ExternalLocationsAPI) DeleteByName(ctx context.Context, name string) er
 // Gets an external location from the Metastore. The caller must be either a
 // Metastore admin, the owner of the external location, or has an appropriate
 // privilege level on the Metastore.
-func (a *ExternalLocationsAPI) Get(ctx context.Context, request GetExternalLocationRequest) (*GetExternalLocationResponse, error) {
+func (a *ExternalLocationsAPI) Get(ctx context.Context, request GetExternalLocationRequest) (*ExternalLocationInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -191,7 +193,7 @@ func (a *ExternalLocationsAPI) Get(ctx context.Context, request GetExternalLocat
 // Gets an external location from the Metastore. The caller must be either a
 // Metastore admin, the owner of the external location, or has an appropriate
 // privilege level on the Metastore.
-func (a *ExternalLocationsAPI) GetByName(ctx context.Context, name string) (*GetExternalLocationResponse, error) {
+func (a *ExternalLocationsAPI) GetByName(ctx context.Context, name string) (*ExternalLocationInfo, error) {
 	return a.impl.Get(ctx, GetExternalLocationRequest{
 		Name: name,
 	})
@@ -338,7 +340,7 @@ func (a *MetastoresAPI) Assign(ctx context.Context, request CreateMetastoreAssig
 // Create a Metastore.
 //
 // Creates a new Metastore based on a provided name and storage root path.
-func (a *MetastoresAPI) Create(ctx context.Context, request CreateMetastore) (*CreateMetastoreResponse, error) {
+func (a *MetastoresAPI) Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error) {
 	return a.impl.Create(ctx, request)
 }
 
@@ -362,7 +364,7 @@ func (a *MetastoresAPI) DeleteById(ctx context.Context, id string) error {
 //
 // Gets a Metastore that matches the supplied ID. The caller must be a Metastore
 // admin to retrieve this info.
-func (a *MetastoresAPI) Get(ctx context.Context, request GetMetastoreRequest) (*GetMetastoreResponse, error) {
+func (a *MetastoresAPI) Get(ctx context.Context, request GetMetastoreRequest) (*MetastoreInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -370,7 +372,7 @@ func (a *MetastoresAPI) Get(ctx context.Context, request GetMetastoreRequest) (*
 //
 // Gets a Metastore that matches the supplied ID. The caller must be a Metastore
 // admin to retrieve this info.
-func (a *MetastoresAPI) GetById(ctx context.Context, id string) (*GetMetastoreResponse, error) {
+func (a *MetastoresAPI) GetById(ctx context.Context, id string) (*MetastoreInfo, error) {
 	return a.impl.Get(ctx, GetMetastoreRequest{
 		Id: id,
 	})
@@ -388,6 +390,59 @@ func (a *MetastoresAPI) ListAll(ctx context.Context) ([]MetastoreInfo, error) {
 		return nil, err
 	}
 	return response.Metastores, nil
+}
+
+// MetastoreInfoNameToMetastoreIdMap calls [MetastoresAPI.ListAll] and creates a map of results with [MetastoreInfo].Name as key and [MetastoreInfo].MetastoreId as value.
+//
+// Returns an error if there's more than one [MetastoreInfo] with the same .Name.
+//
+// Note: All [MetastoreInfo] instances are loaded into memory before creating a map.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *MetastoresAPI) MetastoreInfoNameToMetastoreIdMap(ctx context.Context) (map[string]string, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
+	mapping := map[string]string{}
+	result, err := a.ListAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		key := v.Name
+		_, duplicate := mapping[key]
+		if duplicate {
+			return nil, fmt.Errorf("duplicate .Name: %s", key)
+		}
+		mapping[key] = v.MetastoreId
+	}
+	return mapping, nil
+}
+
+// GetByName calls [MetastoresAPI.MetastoreInfoNameToMetastoreIdMap] and returns a single [MetastoreInfo].
+//
+// Returns an error if there's more than one [MetastoreInfo] with the same .Name.
+//
+// Note: All [MetastoreInfo] instances are loaded into memory before returning matching by name.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *MetastoresAPI) GetByName(ctx context.Context, name string) (*MetastoreInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
+	result, err := a.ListAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+	tmp := map[string][]MetastoreInfo{}
+	for _, v := range result {
+		key := v.Name
+		tmp[key] = append(tmp[key], v)
+	}
+	alternatives, ok := tmp[name]
+	if !ok || len(alternatives) == 0 {
+		return nil, fmt.Errorf("MetastoreInfo named '%s' does not exist", name)
+	}
+	if len(alternatives) > 1 {
+		return nil, fmt.Errorf("there are %d instances of MetastoreInfo named '%s'", len(alternatives), name)
+	}
+	return &alternatives[0], nil
 }
 
 // Get a summary.
@@ -464,7 +519,7 @@ func (a *ProvidersAPI) Impl() ProvidersService {
 //
 // Creates a new authentication provider minimally based on a name and
 // authentication type. The caller must be an admin on the Metastore.
-func (a *ProvidersAPI) Create(ctx context.Context, request CreateProvider) (*CreateProviderResponse, error) {
+func (a *ProvidersAPI) Create(ctx context.Context, request CreateProvider) (*ProviderInfo, error) {
 	return a.impl.Create(ctx, request)
 }
 
@@ -491,7 +546,7 @@ func (a *ProvidersAPI) DeleteByName(ctx context.Context, name string) error {
 // Gets a specific authentication provider. The caller must supply the name of
 // the provider, and must either be a Metastore admin or the owner of the
 // provider.
-func (a *ProvidersAPI) Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
+func (a *ProvidersAPI) Get(ctx context.Context, request GetProviderRequest) (*ProviderInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -500,7 +555,7 @@ func (a *ProvidersAPI) Get(ctx context.Context, request GetProviderRequest) (*Ge
 // Gets a specific authentication provider. The caller must supply the name of
 // the provider, and must either be a Metastore admin or the owner of the
 // provider.
-func (a *ProvidersAPI) GetByName(ctx context.Context, name string) (*GetProviderResponse, error) {
+func (a *ProvidersAPI) GetByName(ctx context.Context, name string) (*ProviderInfo, error) {
 	return a.impl.Get(ctx, GetProviderRequest{
 		Name: name,
 	})
@@ -644,7 +699,7 @@ func (a *RecipientsAPI) Impl() RecipientsService {
 // Creates a new recipient with the delta sharing authentication type in the
 // Metastore. The caller must be a Metastore admin or has the CREATE RECIPIENT
 // privilege on the Metastore.
-func (a *RecipientsAPI) Create(ctx context.Context, request CreateRecipient) (*CreateRecipientResponse, error) {
+func (a *RecipientsAPI) Create(ctx context.Context, request CreateRecipient) (*RecipientInfo, error) {
 	return a.impl.Create(ctx, request)
 }
 
@@ -671,7 +726,7 @@ func (a *RecipientsAPI) DeleteByName(ctx context.Context, name string) error {
 // Gets a share recipient from the Metastore if:
 //
 // * the caller is the owner of the share recipient, or: * is a Metastore admin
-func (a *RecipientsAPI) Get(ctx context.Context, request GetRecipientRequest) (*GetRecipientResponse, error) {
+func (a *RecipientsAPI) Get(ctx context.Context, request GetRecipientRequest) (*RecipientInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -680,7 +735,7 @@ func (a *RecipientsAPI) Get(ctx context.Context, request GetRecipientRequest) (*
 // Gets a share recipient from the Metastore if:
 //
 // * the caller is the owner of the share recipient, or: * is a Metastore admin
-func (a *RecipientsAPI) GetByName(ctx context.Context, name string) (*GetRecipientResponse, error) {
+func (a *RecipientsAPI) GetByName(ctx context.Context, name string) (*RecipientInfo, error) {
 	return a.impl.Get(ctx, GetRecipientRequest{
 		Name: name,
 	})
@@ -705,7 +760,7 @@ func (a *RecipientsAPI) ListAll(ctx context.Context, request ListRecipientsReque
 //
 // Refreshes the specified recipient's delta sharing authentication token with
 // the provided token info. The caller must be the owner of the recipient.
-func (a *RecipientsAPI) RotateToken(ctx context.Context, request RotateRecipientToken) (*RotateRecipientTokenResponse, error) {
+func (a *RecipientsAPI) RotateToken(ctx context.Context, request RotateRecipientToken) (*RecipientInfo, error) {
 	return a.impl.RotateToken(ctx, request)
 }
 
@@ -772,7 +827,7 @@ func (a *SchemasAPI) Impl() SchemasService {
 //
 // Creates a new schema for catalog in the Metatastore. The caller must be a
 // Metastore admin, or have the CREATE privilege in the parentcatalog.
-func (a *SchemasAPI) Create(ctx context.Context, request CreateSchema) (*CreateSchemaResponse, error) {
+func (a *SchemasAPI) Create(ctx context.Context, request CreateSchema) (*SchemaInfo, error) {
 	return a.impl.Create(ctx, request)
 }
 
@@ -799,7 +854,7 @@ func (a *SchemasAPI) DeleteByFullName(ctx context.Context, fullName string) erro
 // Gets the specified schema for a catalog in the Metastore. The caller must be
 // a Metastore admin, the owner of the schema, or a user that has the USAGE
 // privilege on the schema.
-func (a *SchemasAPI) Get(ctx context.Context, request GetSchemaRequest) (*GetSchemaResponse, error) {
+func (a *SchemasAPI) Get(ctx context.Context, request GetSchemaRequest) (*SchemaInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -808,7 +863,7 @@ func (a *SchemasAPI) Get(ctx context.Context, request GetSchemaRequest) (*GetSch
 // Gets the specified schema for a catalog in the Metastore. The caller must be
 // a Metastore admin, the owner of the schema, or a user that has the USAGE
 // privilege on the schema.
-func (a *SchemasAPI) GetByFullName(ctx context.Context, fullName string) (*GetSchemaResponse, error) {
+func (a *SchemasAPI) GetByFullName(ctx context.Context, fullName string) (*SchemaInfo, error) {
 	return a.impl.Get(ctx, GetSchemaRequest{
 		FullName: fullName,
 	})
@@ -872,7 +927,7 @@ func (a *SharesAPI) Impl() SharesService {
 // Creates a new share for data objects. Data objects can be added at this time
 // or after creation with **update**. The caller must be a Metastore admin or
 // have the CREATE SHARE privilege on the Metastore.
-func (a *SharesAPI) Create(ctx context.Context, request CreateShare) (*CreateShareResponse, error) {
+func (a *SharesAPI) Create(ctx context.Context, request CreateShare) (*ShareInfo, error) {
 	return a.impl.Create(ctx, request)
 }
 
@@ -898,7 +953,7 @@ func (a *SharesAPI) DeleteByName(ctx context.Context, name string) error {
 //
 // Gets a data object share from the Metastore. The caller must be a Metastore
 // admin or the owner of the share.
-func (a *SharesAPI) Get(ctx context.Context, request GetShareRequest) (*GetShareResponse, error) {
+func (a *SharesAPI) Get(ctx context.Context, request GetShareRequest) (*ShareInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -906,7 +961,7 @@ func (a *SharesAPI) Get(ctx context.Context, request GetShareRequest) (*GetShare
 //
 // Gets a data object share from the Metastore. The caller must be a Metastore
 // admin or the owner of the share.
-func (a *SharesAPI) GetByName(ctx context.Context, name string) (*GetShareResponse, error) {
+func (a *SharesAPI) GetByName(ctx context.Context, name string) (*ShareInfo, error) {
 	return a.impl.Get(ctx, GetShareRequest{
 		Name: name,
 	})
@@ -1026,7 +1081,7 @@ func (a *StorageCredentialsAPI) Impl() StorageCredentialsService {
 //
 // The caller must be a Metastore admin and have the CREATE STORAGE CREDENTIAL
 // privilege on the Metastore.
-func (a *StorageCredentialsAPI) Create(ctx context.Context, request CreateStorageCredential) (*CreateStorageCredentialResponse, error) {
+func (a *StorageCredentialsAPI) Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error) {
 	return a.impl.Create(ctx, request)
 }
 
@@ -1053,7 +1108,7 @@ func (a *StorageCredentialsAPI) DeleteByName(ctx context.Context, name string) e
 // Gets a storage credential from the Metastore. The caller must be a Metastore
 // admin, the owner of the storage credential, or have a level of privilege on
 // the storage credential.
-func (a *StorageCredentialsAPI) Get(ctx context.Context, request GetStorageCredentialRequest) (*GetStorageCredentialResponse, error) {
+func (a *StorageCredentialsAPI) Get(ctx context.Context, request GetStorageCredentialRequest) (*StorageCredentialInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -1062,7 +1117,7 @@ func (a *StorageCredentialsAPI) Get(ctx context.Context, request GetStorageCrede
 // Gets a storage credential from the Metastore. The caller must be a Metastore
 // admin, the owner of the storage credential, or have a level of privilege on
 // the storage credential.
-func (a *StorageCredentialsAPI) GetByName(ctx context.Context, name string) (*GetStorageCredentialResponse, error) {
+func (a *StorageCredentialsAPI) GetByName(ctx context.Context, name string) (*StorageCredentialInfo, error) {
 	return a.impl.Get(ctx, GetStorageCredentialRequest{
 		Name: name,
 	})
@@ -1127,31 +1182,6 @@ func (a *TablesAPI) Impl() TablesService {
 	return a.impl
 }
 
-// Create a table.
-//
-// Creates a new table in the Metastore for a specific catalog and schema.
-// **WARNING**: Do not use this API at this time.
-//
-// The caller must be the owner of or have the USAGE privilege for both the
-// parent catalog and schema, or be the owner of the parent schema (or have the
-// CREATE privilege on it).
-//
-// If the new table has a __table_type__ of EXTERNAL specified, the user must be
-// a Metastore admin or meet the permissions requirements of the storage
-// credential or the external location.
-func (a *TablesAPI) Create(ctx context.Context, request CreateTable) (*CreateTableResponse, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Create a staging table.
-//
-// Creates a new staging table for a schema. The caller must have both the USAGE
-// privilege on the parent Catalog and the USAGE and CREATE privileges on the
-// parent schema.
-func (a *TablesAPI) CreateStagingTable(ctx context.Context, request CreateStagingTable) (*CreateStagingTableResponse, error) {
-	return a.impl.CreateStagingTable(ctx, request)
-}
-
 // Delete a table.
 //
 // Deletes a table from the specified parent catalog and schema. The caller must
@@ -1180,7 +1210,7 @@ func (a *TablesAPI) DeleteByFullName(ctx context.Context, fullName string) error
 // must be a Metastore admin, be the owner of the table and have the USAGE
 // privilege on both the parent catalog and schema, or be the owner of the table
 // and have the SELECT privilege on it as well.
-func (a *TablesAPI) Get(ctx context.Context, request GetTableRequest) (*GetTableResponse, error) {
+func (a *TablesAPI) Get(ctx context.Context, request GetTableRequest) (*TableInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -1190,7 +1220,7 @@ func (a *TablesAPI) Get(ctx context.Context, request GetTableRequest) (*GetTable
 // must be a Metastore admin, be the owner of the table and have the USAGE
 // privilege on both the parent catalog and schema, or be the owner of the table
 // and have the SELECT privilege on it as well.
-func (a *TablesAPI) GetByFullName(ctx context.Context, fullName string) (*GetTableResponse, error) {
+func (a *TablesAPI) GetByFullName(ctx context.Context, fullName string) (*TableInfo, error) {
 	return a.impl.Get(ctx, GetTableRequest{
 		FullName: fullName,
 	})
@@ -1226,13 +1256,4 @@ func (a *TablesAPI) ListAll(ctx context.Context, request ListTablesRequest) ([]T
 // ownership or the USAGE privilege on the parent Catalog
 func (a *TablesAPI) TableSummaries(ctx context.Context, request TableSummariesRequest) (*ListTableSummariesResponse, error) {
 	return a.impl.TableSummaries(ctx, request)
-}
-
-// Update a table.
-//
-// Updates a table in the specified catalog and schema. The caller must be the
-// owner of have the USAGE privilege on the parent catalog and schema, or, if
-// changing the owner, be a Metastore admin as well.
-func (a *TablesAPI) Update(ctx context.Context, request UpdateTable) error {
-	return a.impl.Update(ctx, request)
 }

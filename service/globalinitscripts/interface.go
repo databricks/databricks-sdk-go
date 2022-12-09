@@ -21,17 +21,17 @@ type GlobalInitScriptsService interface {
 	// Create init script.
 	//
 	// Creates a new global init script in this workspace.
-	CreateScript(ctx context.Context, request GlobalInitScriptCreateRequest) (*CreateScriptResponse, error)
+	Create(ctx context.Context, request GlobalInitScriptCreateRequest) (*CreateResponse, error)
 
 	// Delete init script.
 	//
 	// Deletes a global init script.
-	DeleteScript(ctx context.Context, request DeleteScript) error
+	Delete(ctx context.Context, request Delete) error
 
 	// Get an init script.
 	//
 	// Gets all the details of a script, including its Base64-encoded contents.
-	GetScript(ctx context.Context, request GetScript) (*GlobalInitScriptDetailsWithContent, error)
+	Get(ctx context.Context, request Get) (*GlobalInitScriptDetailsWithContent, error)
 
 	// Get init scripts.
 	//
@@ -40,12 +40,12 @@ type GlobalInitScriptsService interface {
 	// retrieve the contents of a script, use the [get a global init
 	// script](#operation/get-script) operation.
 	//
-	// Use ListScriptsAll() to get all GlobalInitScriptDetails instances
-	ListScripts(ctx context.Context) (*ListGlobalInitScriptsResponse, error)
+	// Use ListAll() to get all GlobalInitScriptDetails instances
+	List(ctx context.Context) (*ListGlobalInitScriptsResponse, error)
 
 	// Update init script.
 	//
 	// Updates a global init script, specifying only the fields to change. All
 	// fields are optional. Unspecified fields retain their current value.
-	UpdateScript(ctx context.Context, request GlobalInitScriptUpdateRequest) error
+	Update(ctx context.Context, request GlobalInitScriptUpdateRequest) error
 }

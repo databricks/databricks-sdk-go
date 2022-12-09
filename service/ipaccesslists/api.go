@@ -75,7 +75,7 @@ func (a *IpAccessListsAPI) Impl() IpAccessListsService {
 //
 // It can take a few minutes for the changes to take effect. **Note**: Your new
 // IP access list has no effect until you enable the feature. See
-// [`/workspace-conf`](#operation/set-status).
+// :method:workspaceconf/setStatus
 func (a *IpAccessListsAPI) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
 	return a.impl.Create(ctx, request)
 }

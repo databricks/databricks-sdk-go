@@ -42,8 +42,7 @@ func TestAccPipelines(t *testing.T) {
 		},
 	}
 
-	// TODO: OpenAPI: normalize CRUD for operationIds
-	created, err := w.Pipelines.CreatePipeline(ctx, pipelines.CreatePipeline{
+	created, err := w.Pipelines.Create(ctx, pipelines.CreatePipeline{
 		Continuous: false,
 		Name:       RandomName("go-sdk-"),
 		Libraries:  libs,
@@ -51,9 +50,9 @@ func TestAccPipelines(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	defer w.Pipelines.DeletePipelineByPipelineId(ctx, created.PipelineId)
+	defer w.Pipelines.DeleteByPipelineId(ctx, created.PipelineId)
 
-	err = w.Pipelines.UpdatePipeline(ctx, pipelines.EditPipeline{
+	err = w.Pipelines.Update(ctx, pipelines.EditPipeline{
 		PipelineId: created.PipelineId,
 		Name:       RandomName("go-sdk-updated-"),
 		Libraries:  libs,
@@ -61,7 +60,7 @@ func TestAccPipelines(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	byId, err := w.Pipelines.GetPipelineByPipelineId(ctx, created.PipelineId)
+	byId, err := w.Pipelines.GetByPipelineId(ctx, created.PipelineId)
 	require.NoError(t, err)
 
 	all, err := w.Pipelines.ListPipelinesAll(ctx, pipelines.ListPipelines{})

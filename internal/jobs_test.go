@@ -112,7 +112,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	newName = RandomName("updated-for-reset")
 	err = w.Jobs.Reset(ctx, jobs.ResetJob{
 		JobId: createdJob.JobId,
-		NewSettings: &jobs.JobSettings{
+		NewSettings: jobs.JobSettings{
 			Name:  newName,
 			Tasks: byId.Settings.Tasks,
 		},

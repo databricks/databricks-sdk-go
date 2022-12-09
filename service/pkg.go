@@ -1,6 +1,6 @@
 // Databricks SDK for Go APIs
 //
-// - [dbsql.AlertsAPI]: The alerts API can be used to perform CRUD operations on alerts.
+// - [sql.AlertsAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
 // - [billing.BillableUsageAPI]: This API allows you to download billable usage logs for the specified account and date range.
 //
@@ -18,13 +18,13 @@
 //
 // - [scim.CurrentUserAPI]: This API allows retrieving information about currently authenticated user or service principal.
 //
-// - [dbsql.DashboardsAPI]: In general, there is little need to modify dashboards using the API.
+// - [sql.DashboardsAPI]: In general, there is little need to modify dashboards using the API.
 //
-// - [dbsql.DataSourcesAPI]: This API is provided to assist you in making new query objects.
+// - [sql.DataSourcesAPI]: This API is provided to assist you in making new query objects.
 //
 // - [dbfs.DbfsAPI]: DBFS API makes it simple to interact with various data sources without having to include a users credentials every time to read a file.
 //
-// - [dbsql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/setobjectpermissions.
+// - [sql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/setobjectpermissions.
 //
 // - [deployment.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
@@ -66,9 +66,9 @@
 //
 // - [unitycatalog.ProvidersAPI]: Databricks Delta Sharing: Providers REST API.
 //
-// - [dbsql.QueriesAPI]: These endpoints are used for CRUD operations on query definitions.
+// - [sql.QueriesAPI]: These endpoints are used for CRUD operations on query definitions.
 //
-// - [warehouses.QueryHistoryAPI]: Access the history of queries through SQL warehouses.
+// - [sql.QueryHistoryAPI]: Access the history of queries through SQL warehouses.
 //
 // - [unitycatalog.RecipientActivationAPI]: Databricks Delta Sharing: Recipient Activation REST API.
 //
@@ -102,7 +102,7 @@
 //
 // - [deployment.VpcEndpointsAPI]: These APIs manage VPC endpoint configurations for this account.
 //
-// - [warehouses.WarehousesAPI]: A SQL warehouse is a compute resource that lets you run SQL commands on data objects within Databricks SQL.
+// - [sql.WarehousesAPI]: A SQL warehouse is a compute resource that lets you run SQL commands on data objects within Databricks SQL.
 //
 // - [workspace.WorkspaceAPI]: The Workspace API allows you to list, import, export, and delete notebooks and folders.
 //
@@ -119,7 +119,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/service/commands"
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
-	"github.com/databricks/databricks-sdk-go/service/dbsql"
 	"github.com/databricks/databricks-sdk-go/service/deployment"
 	"github.com/databricks/databricks-sdk-go/service/gitcredentials"
 	"github.com/databricks/databricks-sdk-go/service/globalinitscripts"
@@ -133,10 +132,10 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/repos"
 	"github.com/databricks/databricks-sdk-go/service/scim"
 	"github.com/databricks/databricks-sdk-go/service/secrets"
+	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/databricks/databricks-sdk-go/service/tokenmanagement"
 	"github.com/databricks/databricks-sdk-go/service/tokens"
 	"github.com/databricks/databricks-sdk-go/service/unitycatalog"
-	"github.com/databricks/databricks-sdk-go/service/warehouses"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/databricks/databricks-sdk-go/service/workspaceconf"
 )
@@ -146,7 +145,7 @@ import (
 // https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service
 // See: https://pkg.go.dev/golang.org/x/tools/internal/imports#ImportPathToAssumedName
 var (
-	_ *dbsql.AlertsAPI                        = nil
+	_ *sql.AlertsAPI                          = nil
 	_ *billing.BillableUsageAPI               = nil
 	_ *billing.BudgetsAPI                     = nil
 	_ *unitycatalog.CatalogsAPI               = nil
@@ -155,10 +154,10 @@ var (
 	_ *commands.CommandExecutionAPI           = nil
 	_ *deployment.CredentialsAPI              = nil
 	_ *scim.CurrentUserAPI                    = nil
-	_ *dbsql.DashboardsAPI                    = nil
-	_ *dbsql.DataSourcesAPI                   = nil
+	_ *sql.DashboardsAPI                      = nil
+	_ *sql.DataSourcesAPI                     = nil
 	_ *dbfs.DbfsAPI                           = nil
-	_ *dbsql.DbsqlPermissionsAPI              = nil
+	_ *sql.DbsqlPermissionsAPI                = nil
 	_ *deployment.EncryptionKeysAPI           = nil
 	_ *mlflow.ExperimentsAPI                  = nil
 	_ *unitycatalog.ExternalLocationsAPI      = nil
@@ -185,8 +184,8 @@ var (
 	_ *pipelines.PipelinesAPI                 = nil
 	_ *deployment.PrivateAccessAPI            = nil
 	_ *unitycatalog.ProvidersAPI              = nil
-	_ *dbsql.QueriesAPI                       = nil
-	_ *warehouses.QueryHistoryAPI             = nil
+	_ *sql.QueriesAPI                         = nil
+	_ *sql.QueryHistoryAPI                    = nil
 	_ *unitycatalog.RecipientActivationAPI    = nil
 	_ *unitycatalog.RecipientsAPI             = nil
 	_ *mlflow.RegisteredModelsAPI             = nil
@@ -206,7 +205,7 @@ var (
 	_ *scim.UsersAPI                          = nil
 	_ *scim.AccountUsersAPI                   = nil
 	_ *deployment.VpcEndpointsAPI             = nil
-	_ *warehouses.WarehousesAPI               = nil
+	_ *sql.WarehousesAPI                      = nil
 	_ *workspace.WorkspaceAPI                 = nil
 	_ *permissions.WorkspaceAssignmentAPI     = nil
 	_ *workspaceconf.WorkspaceConfAPI         = nil
