@@ -903,11 +903,11 @@ func (a *WarehousesAPI) CreateAndWait(ctx context.Context, createWarehouseReques
 			statusMessage = getWarehouseResponse.Health.Summary
 		}
 		switch status {
-		case GetWarehouseResponseStateRunning: // target state
+		case StateRunning: // target state
 			return getWarehouseResponse, nil
-		case GetWarehouseResponseStateStopped, GetWarehouseResponseStateDeleted:
+		case StateStopped, StateDeleted:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				GetWarehouseResponseStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -955,7 +955,7 @@ func (a *WarehousesAPI) DeleteAndWait(ctx context.Context, deleteWarehouseReques
 			statusMessage = getWarehouseResponse.Health.Summary
 		}
 		switch status {
-		case GetWarehouseResponseStateDeleted: // target state
+		case StateDeleted: // target state
 			return getWarehouseResponse, nil
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -1018,11 +1018,11 @@ func (a *WarehousesAPI) EditAndWait(ctx context.Context, editWarehouseRequest Ed
 			statusMessage = getWarehouseResponse.Health.Summary
 		}
 		switch status {
-		case GetWarehouseResponseStateRunning: // target state
+		case StateRunning: // target state
 			return getWarehouseResponse, nil
-		case GetWarehouseResponseStateStopped, GetWarehouseResponseStateDeleted:
+		case StateStopped, StateDeleted:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				GetWarehouseResponseStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -1070,11 +1070,11 @@ func (a *WarehousesAPI) GetAndWait(ctx context.Context, getWarehouseRequest GetW
 			statusMessage = getWarehouseResponse.Health.Summary
 		}
 		switch status {
-		case GetWarehouseResponseStateRunning: // target state
+		case StateRunning: // target state
 			return getWarehouseResponse, nil
-		case GetWarehouseResponseStateStopped, GetWarehouseResponseStateDeleted:
+		case StateStopped, StateDeleted:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				GetWarehouseResponseStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -1219,11 +1219,11 @@ func (a *WarehousesAPI) StartAndWait(ctx context.Context, startRequest StartRequ
 			statusMessage = getWarehouseResponse.Health.Summary
 		}
 		switch status {
-		case GetWarehouseResponseStateRunning: // target state
+		case StateRunning: // target state
 			return getWarehouseResponse, nil
-		case GetWarehouseResponseStateStopped, GetWarehouseResponseStateDeleted:
+		case StateStopped, StateDeleted:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				GetWarehouseResponseStateRunning, status, statusMessage)
+				StateRunning, status, statusMessage)
 			return nil, retries.Halt(err)
 		default:
 			return nil, retries.Continues(statusMessage)
@@ -1271,7 +1271,7 @@ func (a *WarehousesAPI) StopAndWait(ctx context.Context, stopRequest StopRequest
 			statusMessage = getWarehouseResponse.Health.Summary
 		}
 		switch status {
-		case GetWarehouseResponseStateStopped: // target state
+		case StateStopped: // target state
 			return getWarehouseResponse, nil
 		default:
 			return nil, retries.Continues(statusMessage)
