@@ -836,8 +836,9 @@ type ModelVersionDatabricks struct {
 	// Unique identifier for the MLflow tracking run associated with the source
 	// model artifacts.
 	RunId string `json:"run_id,omitempty"`
-	// URL of the run associated with the model artifacts, potentially in
-	// another workspace.
+	// URL of the run associated with the model artifacts. This field is set at
+	// model version creation time only for model versions whose source run is
+	// from a tracking server that is different from the registry server.
 	RunLink string `json:"run_link,omitempty"`
 	// URI that indicates the location of the source model artifacts. This is
 	// used when creating the model version.

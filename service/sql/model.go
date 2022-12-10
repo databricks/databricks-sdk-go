@@ -243,89 +243,15 @@ type CreateWarehouseRequest struct {
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	Name string `json:"name,omitempty"`
-	// Configurations whether the endpoint should use spot instances.
-	//
-	// Supported values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED"
-	//
-	// Defaults to COST_OPTIMIZED.
-	//
-	// Please refer to documentation for EndpointSpotInstancePolicy for more
-	// details.
-	SpotInstancePolicy CreateWarehouseRequestSpotInstancePolicy `json:"spot_instance_policy,omitempty"`
+	// Configurations whether the warehouse should use spot instances.
+	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL Endpoints.
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-	// Warehouse type (Classic/Pro)
-	WarehouseType CreateWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
-}
 
-// Configurations whether the endpoint should use spot instances.
-//
-// Supported values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED"
-//
-// Defaults to COST_OPTIMIZED.
-//
-// Please refer to documentation for EndpointSpotInstancePolicy for more
-// details.
-type CreateWarehouseRequestSpotInstancePolicy string
-
-const CreateWarehouseRequestSpotInstancePolicyCostOptimized CreateWarehouseRequestSpotInstancePolicy = `COST_OPTIMIZED`
-
-const CreateWarehouseRequestSpotInstancePolicyPolicyUnspecified CreateWarehouseRequestSpotInstancePolicy = `POLICY_UNSPECIFIED`
-
-const CreateWarehouseRequestSpotInstancePolicyReliabilityOptimized CreateWarehouseRequestSpotInstancePolicy = `RELIABILITY_OPTIMIZED`
-
-// String representation for [fmt.Print]
-func (cwrsip *CreateWarehouseRequestSpotInstancePolicy) String() string {
-	return string(*cwrsip)
-}
-
-// Set raw string value and validate it against allowed values
-func (cwrsip *CreateWarehouseRequestSpotInstancePolicy) Set(v string) error {
-	switch v {
-	case `COST_OPTIMIZED`, `POLICY_UNSPECIFIED`, `RELIABILITY_OPTIMIZED`:
-		*cwrsip = CreateWarehouseRequestSpotInstancePolicy(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "POLICY_UNSPECIFIED", "RELIABILITY_OPTIMIZED"`, v)
-	}
-}
-
-// Type always returns CreateWarehouseRequestSpotInstancePolicy to satisfy [pflag.Value] interface
-func (cwrsip *CreateWarehouseRequestSpotInstancePolicy) Type() string {
-	return "CreateWarehouseRequestSpotInstancePolicy"
-}
-
-// Warehouse type (Classic/Pro)
-type CreateWarehouseRequestWarehouseType string
-
-const CreateWarehouseRequestWarehouseTypeClassic CreateWarehouseRequestWarehouseType = `CLASSIC`
-
-const CreateWarehouseRequestWarehouseTypePro CreateWarehouseRequestWarehouseType = `PRO`
-
-const CreateWarehouseRequestWarehouseTypeTypeUnspecified CreateWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
-
-// String representation for [fmt.Print]
-func (cwrwt *CreateWarehouseRequestWarehouseType) String() string {
-	return string(*cwrwt)
-}
-
-// Set raw string value and validate it against allowed values
-func (cwrwt *CreateWarehouseRequestWarehouseType) Set(v string) error {
-	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
-		*cwrwt = CreateWarehouseRequestWarehouseType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
-	}
-}
-
-// Type always returns CreateWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
-func (cwrwt *CreateWarehouseRequestWarehouseType) Type() string {
-	return "CreateWarehouseRequestWarehouseType"
+	WarehouseType WarehouseType `json:"warehouse_type,omitempty"`
 }
 
 type CreateWarehouseResponse struct {
@@ -563,89 +489,15 @@ type EditWarehouseRequest struct {
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	Name string `json:"name,omitempty"`
-	// Configurations whether the endpoint should use spot instances.
-	//
-	// Supported values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED"
-	//
-	// Defaults to COST_OPTIMIZED.
-	//
-	// Please refer to documentation for EndpointSpotInstancePolicy for more
-	// details.
-	SpotInstancePolicy EditWarehouseRequestSpotInstancePolicy `json:"spot_instance_policy,omitempty"`
+	// Configurations whether the warehouse should use spot instances.
+	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL Endpoints.
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-	// Warehouse type (Classic/Pro)
-	WarehouseType EditWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
-}
 
-// Configurations whether the endpoint should use spot instances.
-//
-// Supported values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED"
-//
-// Defaults to COST_OPTIMIZED.
-//
-// Please refer to documentation for EndpointSpotInstancePolicy for more
-// details.
-type EditWarehouseRequestSpotInstancePolicy string
-
-const EditWarehouseRequestSpotInstancePolicyCostOptimized EditWarehouseRequestSpotInstancePolicy = `COST_OPTIMIZED`
-
-const EditWarehouseRequestSpotInstancePolicyPolicyUnspecified EditWarehouseRequestSpotInstancePolicy = `POLICY_UNSPECIFIED`
-
-const EditWarehouseRequestSpotInstancePolicyReliabilityOptimized EditWarehouseRequestSpotInstancePolicy = `RELIABILITY_OPTIMIZED`
-
-// String representation for [fmt.Print]
-func (ewrsip *EditWarehouseRequestSpotInstancePolicy) String() string {
-	return string(*ewrsip)
-}
-
-// Set raw string value and validate it against allowed values
-func (ewrsip *EditWarehouseRequestSpotInstancePolicy) Set(v string) error {
-	switch v {
-	case `COST_OPTIMIZED`, `POLICY_UNSPECIFIED`, `RELIABILITY_OPTIMIZED`:
-		*ewrsip = EditWarehouseRequestSpotInstancePolicy(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "POLICY_UNSPECIFIED", "RELIABILITY_OPTIMIZED"`, v)
-	}
-}
-
-// Type always returns EditWarehouseRequestSpotInstancePolicy to satisfy [pflag.Value] interface
-func (ewrsip *EditWarehouseRequestSpotInstancePolicy) Type() string {
-	return "EditWarehouseRequestSpotInstancePolicy"
-}
-
-// Warehouse type (Classic/Pro)
-type EditWarehouseRequestWarehouseType string
-
-const EditWarehouseRequestWarehouseTypeClassic EditWarehouseRequestWarehouseType = `CLASSIC`
-
-const EditWarehouseRequestWarehouseTypePro EditWarehouseRequestWarehouseType = `PRO`
-
-const EditWarehouseRequestWarehouseTypeTypeUnspecified EditWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
-
-// String representation for [fmt.Print]
-func (ewrwt *EditWarehouseRequestWarehouseType) String() string {
-	return string(*ewrwt)
-}
-
-// Set raw string value and validate it against allowed values
-func (ewrwt *EditWarehouseRequestWarehouseType) Set(v string) error {
-	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
-		*ewrwt = EditWarehouseRequestWarehouseType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
-	}
-}
-
-// Type always returns EditWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
-func (ewrwt *EditWarehouseRequestWarehouseType) Type() string {
-	return "EditWarehouseRequestWarehouseType"
+	WarehouseType WarehouseType `json:"warehouse_type,omitempty"`
 }
 
 type EndpointConfPair struct {
@@ -663,42 +515,10 @@ type EndpointHealth struct {
 	// Deprecated. split into summary and details for security
 	Message string `json:"message,omitempty"`
 	// Health status of the endpoint.
-	Status EndpointHealthStatus `json:"status,omitempty"`
+	Status Status `json:"status,omitempty"`
 	// A short summary of the health status in case of degraded/failed
 	// endpoints.
 	Summary string `json:"summary,omitempty"`
-}
-
-// Health status of the endpoint.
-type EndpointHealthStatus string
-
-const EndpointHealthStatusDegraded EndpointHealthStatus = `DEGRADED`
-
-const EndpointHealthStatusFailed EndpointHealthStatus = `FAILED`
-
-const EndpointHealthStatusHealthy EndpointHealthStatus = `HEALTHY`
-
-const EndpointHealthStatusStatusUnspecified EndpointHealthStatus = `STATUS_UNSPECIFIED`
-
-// String representation for [fmt.Print]
-func (ehs *EndpointHealthStatus) String() string {
-	return string(*ehs)
-}
-
-// Set raw string value and validate it against allowed values
-func (ehs *EndpointHealthStatus) Set(v string) error {
-	switch v {
-	case `DEGRADED`, `FAILED`, `HEALTHY`, `STATUS_UNSPECIFIED`:
-		*ehs = EndpointHealthStatus(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "DEGRADED", "FAILED", "HEALTHY", "STATUS_UNSPECIFIED"`, v)
-	}
-}
-
-// Type always returns EndpointHealthStatus to satisfy [pflag.Value] interface
-func (ehs *EndpointHealthStatus) Type() string {
-	return "EndpointHealthStatus"
 }
 
 type EndpointInfo struct {
@@ -772,127 +592,17 @@ type EndpointInfo struct {
 	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the sql endpoint
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
-	// Configurations whether the endpoint should use spot instances.
-	//
-	// Supported values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED"
-	//
-	// Defaults to COST_OPTIMIZED.
-	//
-	// Please refer to documentation for EndpointSpotInstancePolicy for more
-	// details.
-	SpotInstancePolicy EndpointInfoSpotInstancePolicy `json:"spot_instance_policy,omitempty"`
-	// state of the endpoint
-	State EndpointInfoState `json:"state,omitempty"`
+	// Configurations whether the warehouse should use spot instances.
+	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
+	// State of the warehouse
+	State State `json:"state,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL Endpoints.
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-	// Warehouse type (Classic/Pro)
-	WarehouseType EndpointInfoWarehouseType `json:"warehouse_type,omitempty"`
-}
 
-// Configurations whether the endpoint should use spot instances.
-//
-// Supported values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED"
-//
-// Defaults to COST_OPTIMIZED.
-//
-// Please refer to documentation for EndpointSpotInstancePolicy for more
-// details.
-type EndpointInfoSpotInstancePolicy string
-
-const EndpointInfoSpotInstancePolicyCostOptimized EndpointInfoSpotInstancePolicy = `COST_OPTIMIZED`
-
-const EndpointInfoSpotInstancePolicyPolicyUnspecified EndpointInfoSpotInstancePolicy = `POLICY_UNSPECIFIED`
-
-const EndpointInfoSpotInstancePolicyReliabilityOptimized EndpointInfoSpotInstancePolicy = `RELIABILITY_OPTIMIZED`
-
-// String representation for [fmt.Print]
-func (eisip *EndpointInfoSpotInstancePolicy) String() string {
-	return string(*eisip)
-}
-
-// Set raw string value and validate it against allowed values
-func (eisip *EndpointInfoSpotInstancePolicy) Set(v string) error {
-	switch v {
-	case `COST_OPTIMIZED`, `POLICY_UNSPECIFIED`, `RELIABILITY_OPTIMIZED`:
-		*eisip = EndpointInfoSpotInstancePolicy(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "POLICY_UNSPECIFIED", "RELIABILITY_OPTIMIZED"`, v)
-	}
-}
-
-// Type always returns EndpointInfoSpotInstancePolicy to satisfy [pflag.Value] interface
-func (eisip *EndpointInfoSpotInstancePolicy) Type() string {
-	return "EndpointInfoSpotInstancePolicy"
-}
-
-// state of the endpoint
-type EndpointInfoState string
-
-const EndpointInfoStateDeleted EndpointInfoState = `DELETED`
-
-const EndpointInfoStateDeleting EndpointInfoState = `DELETING`
-
-const EndpointInfoStateRunning EndpointInfoState = `RUNNING`
-
-const EndpointInfoStateStarting EndpointInfoState = `STARTING`
-
-const EndpointInfoStateStopped EndpointInfoState = `STOPPED`
-
-const EndpointInfoStateStopping EndpointInfoState = `STOPPING`
-
-// String representation for [fmt.Print]
-func (eis *EndpointInfoState) String() string {
-	return string(*eis)
-}
-
-// Set raw string value and validate it against allowed values
-func (eis *EndpointInfoState) Set(v string) error {
-	switch v {
-	case `DELETED`, `DELETING`, `RUNNING`, `STARTING`, `STOPPED`, `STOPPING`:
-		*eis = EndpointInfoState(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "DELETED", "DELETING", "RUNNING", "STARTING", "STOPPED", "STOPPING"`, v)
-	}
-}
-
-// Type always returns EndpointInfoState to satisfy [pflag.Value] interface
-func (eis *EndpointInfoState) Type() string {
-	return "EndpointInfoState"
-}
-
-// Warehouse type (Classic/Pro)
-type EndpointInfoWarehouseType string
-
-const EndpointInfoWarehouseTypeClassic EndpointInfoWarehouseType = `CLASSIC`
-
-const EndpointInfoWarehouseTypePro EndpointInfoWarehouseType = `PRO`
-
-const EndpointInfoWarehouseTypeTypeUnspecified EndpointInfoWarehouseType = `TYPE_UNSPECIFIED`
-
-// String representation for [fmt.Print]
-func (eiwt *EndpointInfoWarehouseType) String() string {
-	return string(*eiwt)
-}
-
-// Set raw string value and validate it against allowed values
-func (eiwt *EndpointInfoWarehouseType) Set(v string) error {
-	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
-		*eiwt = EndpointInfoWarehouseType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
-	}
-}
-
-// Type always returns EndpointInfoWarehouseType to satisfy [pflag.Value] interface
-func (eiwt *EndpointInfoWarehouseType) Type() string {
-	return "EndpointInfoWarehouseType"
+	WarehouseType WarehouseType `json:"warehouse_type,omitempty"`
 }
 
 type EndpointTagPair struct {
@@ -1018,127 +728,17 @@ type GetWarehouseResponse struct {
 	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the sql endpoint
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
-	// Configurations whether the endpoint should use spot instances.
-	//
-	// Supported values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED"
-	//
-	// Defaults to COST_OPTIMIZED.
-	//
-	// Please refer to documentation for EndpointSpotInstancePolicy for more
-	// details.
-	SpotInstancePolicy GetWarehouseResponseSpotInstancePolicy `json:"spot_instance_policy,omitempty"`
-	// state of the endpoint
-	State GetWarehouseResponseState `json:"state,omitempty"`
+	// Configurations whether the warehouse should use spot instances.
+	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
+	// State of the warehouse
+	State State `json:"state,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL Endpoints.
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-	// Warehouse type (Classic/Pro)
-	WarehouseType GetWarehouseResponseWarehouseType `json:"warehouse_type,omitempty"`
-}
 
-// Configurations whether the endpoint should use spot instances.
-//
-// Supported values: "COST_OPTIMIZED", "RELIABILITY_OPTIMIZED"
-//
-// Defaults to COST_OPTIMIZED.
-//
-// Please refer to documentation for EndpointSpotInstancePolicy for more
-// details.
-type GetWarehouseResponseSpotInstancePolicy string
-
-const GetWarehouseResponseSpotInstancePolicyCostOptimized GetWarehouseResponseSpotInstancePolicy = `COST_OPTIMIZED`
-
-const GetWarehouseResponseSpotInstancePolicyPolicyUnspecified GetWarehouseResponseSpotInstancePolicy = `POLICY_UNSPECIFIED`
-
-const GetWarehouseResponseSpotInstancePolicyReliabilityOptimized GetWarehouseResponseSpotInstancePolicy = `RELIABILITY_OPTIMIZED`
-
-// String representation for [fmt.Print]
-func (gwrsip *GetWarehouseResponseSpotInstancePolicy) String() string {
-	return string(*gwrsip)
-}
-
-// Set raw string value and validate it against allowed values
-func (gwrsip *GetWarehouseResponseSpotInstancePolicy) Set(v string) error {
-	switch v {
-	case `COST_OPTIMIZED`, `POLICY_UNSPECIFIED`, `RELIABILITY_OPTIMIZED`:
-		*gwrsip = GetWarehouseResponseSpotInstancePolicy(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "POLICY_UNSPECIFIED", "RELIABILITY_OPTIMIZED"`, v)
-	}
-}
-
-// Type always returns GetWarehouseResponseSpotInstancePolicy to satisfy [pflag.Value] interface
-func (gwrsip *GetWarehouseResponseSpotInstancePolicy) Type() string {
-	return "GetWarehouseResponseSpotInstancePolicy"
-}
-
-// state of the endpoint
-type GetWarehouseResponseState string
-
-const GetWarehouseResponseStateDeleted GetWarehouseResponseState = `DELETED`
-
-const GetWarehouseResponseStateDeleting GetWarehouseResponseState = `DELETING`
-
-const GetWarehouseResponseStateRunning GetWarehouseResponseState = `RUNNING`
-
-const GetWarehouseResponseStateStarting GetWarehouseResponseState = `STARTING`
-
-const GetWarehouseResponseStateStopped GetWarehouseResponseState = `STOPPED`
-
-const GetWarehouseResponseStateStopping GetWarehouseResponseState = `STOPPING`
-
-// String representation for [fmt.Print]
-func (gwrs *GetWarehouseResponseState) String() string {
-	return string(*gwrs)
-}
-
-// Set raw string value and validate it against allowed values
-func (gwrs *GetWarehouseResponseState) Set(v string) error {
-	switch v {
-	case `DELETED`, `DELETING`, `RUNNING`, `STARTING`, `STOPPED`, `STOPPING`:
-		*gwrs = GetWarehouseResponseState(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "DELETED", "DELETING", "RUNNING", "STARTING", "STOPPED", "STOPPING"`, v)
-	}
-}
-
-// Type always returns GetWarehouseResponseState to satisfy [pflag.Value] interface
-func (gwrs *GetWarehouseResponseState) Type() string {
-	return "GetWarehouseResponseState"
-}
-
-// Warehouse type (Classic/Pro)
-type GetWarehouseResponseWarehouseType string
-
-const GetWarehouseResponseWarehouseTypeClassic GetWarehouseResponseWarehouseType = `CLASSIC`
-
-const GetWarehouseResponseWarehouseTypePro GetWarehouseResponseWarehouseType = `PRO`
-
-const GetWarehouseResponseWarehouseTypeTypeUnspecified GetWarehouseResponseWarehouseType = `TYPE_UNSPECIFIED`
-
-// String representation for [fmt.Print]
-func (gwrwt *GetWarehouseResponseWarehouseType) String() string {
-	return string(*gwrwt)
-}
-
-// Set raw string value and validate it against allowed values
-func (gwrwt *GetWarehouseResponseWarehouseType) Set(v string) error {
-	switch v {
-	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
-		*gwrwt = GetWarehouseResponseWarehouseType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
-	}
-}
-
-// Type always returns GetWarehouseResponseWarehouseType to satisfy [pflag.Value] interface
-func (gwrwt *GetWarehouseResponseWarehouseType) Type() string {
-	return "GetWarehouseResponseWarehouseType"
+	WarehouseType WarehouseType `json:"warehouse_type,omitempty"`
 }
 
 type GetWorkspaceWarehouseConfigResponse struct {
@@ -1436,7 +1036,7 @@ type Parameter struct {
 	// Parameters can have several different types.
 	Type ParameterType `json:"type,omitempty"`
 	// The default value for this parameter.
-	Value string `json:"value,omitempty"`
+	Value any `json:"value,omitempty"`
 }
 
 // Parameters can have several different types.
@@ -1990,10 +1590,108 @@ func (swwcrsp *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
 	return "SetWorkspaceWarehouseConfigRequestSecurityPolicy"
 }
 
+// Configurations whether the warehouse should use spot instances.
+type SpotInstancePolicy string
+
+const SpotInstancePolicyCostOptimized SpotInstancePolicy = `COST_OPTIMIZED`
+
+const SpotInstancePolicyPolicyUnspecified SpotInstancePolicy = `POLICY_UNSPECIFIED`
+
+const SpotInstancePolicyReliabilityOptimized SpotInstancePolicy = `RELIABILITY_OPTIMIZED`
+
+// String representation for [fmt.Print]
+func (sip *SpotInstancePolicy) String() string {
+	return string(*sip)
+}
+
+// Set raw string value and validate it against allowed values
+func (sip *SpotInstancePolicy) Set(v string) error {
+	switch v {
+	case `COST_OPTIMIZED`, `POLICY_UNSPECIFIED`, `RELIABILITY_OPTIMIZED`:
+		*sip = SpotInstancePolicy(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "POLICY_UNSPECIFIED", "RELIABILITY_OPTIMIZED"`, v)
+	}
+}
+
+// Type always returns SpotInstancePolicy to satisfy [pflag.Value] interface
+func (sip *SpotInstancePolicy) Type() string {
+	return "SpotInstancePolicy"
+}
+
 // Start a warehouse
 type StartRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+}
+
+// State of the warehouse
+type State string
+
+const StateDeleted State = `DELETED`
+
+const StateDeleting State = `DELETING`
+
+const StateRunning State = `RUNNING`
+
+const StateStarting State = `STARTING`
+
+const StateStopped State = `STOPPED`
+
+const StateStopping State = `STOPPING`
+
+// String representation for [fmt.Print]
+func (s *State) String() string {
+	return string(*s)
+}
+
+// Set raw string value and validate it against allowed values
+func (s *State) Set(v string) error {
+	switch v {
+	case `DELETED`, `DELETING`, `RUNNING`, `STARTING`, `STOPPED`, `STOPPING`:
+		*s = State(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DELETED", "DELETING", "RUNNING", "STARTING", "STOPPED", "STOPPING"`, v)
+	}
+}
+
+// Type always returns State to satisfy [pflag.Value] interface
+func (s *State) Type() string {
+	return "State"
+}
+
+// Health status of the endpoint.
+type Status string
+
+const StatusDegraded Status = `DEGRADED`
+
+const StatusFailed Status = `FAILED`
+
+const StatusHealthy Status = `HEALTHY`
+
+const StatusStatusUnspecified Status = `STATUS_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (s *Status) String() string {
+	return string(*s)
+}
+
+// Set raw string value and validate it against allowed values
+func (s *Status) Set(v string) error {
+	switch v {
+	case `DEGRADED`, `FAILED`, `HEALTHY`, `STATUS_UNSPECIFIED`:
+		*s = Status(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DEGRADED", "FAILED", "HEALTHY", "STATUS_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns Status to satisfy [pflag.Value] interface
+func (s *Status) Type() string {
+	return "Status"
 }
 
 // Stop a warehouse
@@ -2336,41 +2034,41 @@ type Visualization struct {
 	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
-type WarehouseTypePair struct {
-	// If set to false the specific warehouse type will not be be allowed as a
-	// value for warehouse_type in CreateWarehouse and EditWarehouse
-	Enabled bool `json:"enabled,omitempty"`
+type WarehouseType string
 
-	WarehouseType WarehouseTypePairWarehouseType `json:"warehouse_type,omitempty"`
-}
+const WarehouseTypeClassic WarehouseType = `CLASSIC`
 
-type WarehouseTypePairWarehouseType string
+const WarehouseTypePro WarehouseType = `PRO`
 
-const WarehouseTypePairWarehouseTypeClassic WarehouseTypePairWarehouseType = `CLASSIC`
-
-const WarehouseTypePairWarehouseTypePro WarehouseTypePairWarehouseType = `PRO`
-
-const WarehouseTypePairWarehouseTypeTypeUnspecified WarehouseTypePairWarehouseType = `TYPE_UNSPECIFIED`
+const WarehouseTypeTypeUnspecified WarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
-func (wtpwt *WarehouseTypePairWarehouseType) String() string {
-	return string(*wtpwt)
+func (wt *WarehouseType) String() string {
+	return string(*wt)
 }
 
 // Set raw string value and validate it against allowed values
-func (wtpwt *WarehouseTypePairWarehouseType) Set(v string) error {
+func (wt *WarehouseType) Set(v string) error {
 	switch v {
 	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
-		*wtpwt = WarehouseTypePairWarehouseType(v)
+		*wt = WarehouseType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
 	}
 }
 
-// Type always returns WarehouseTypePairWarehouseType to satisfy [pflag.Value] interface
-func (wtpwt *WarehouseTypePairWarehouseType) Type() string {
-	return "WarehouseTypePairWarehouseType"
+// Type always returns WarehouseType to satisfy [pflag.Value] interface
+func (wt *WarehouseType) Type() string {
+	return "WarehouseType"
+}
+
+type WarehouseTypePair struct {
+	// If set to false the specific warehouse type will not be be allowed as a
+	// value for warehouse_type in CreateWarehouse and EditWarehouse
+	Enabled bool `json:"enabled,omitempty"`
+
+	WarehouseType WarehouseType `json:"warehouse_type,omitempty"`
 }
 
 type Widget struct {

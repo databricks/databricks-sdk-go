@@ -948,6 +948,8 @@ type ShareInfo struct {
 	Name string `json:"name,omitempty"`
 	// A list of shared data objects within the Share.
 	Objects []SharedDataObject `json:"objects,omitempty"`
+	// Username of current owner of credential.
+	Owner string `json:"owner,omitempty"`
 }
 
 // Get share permissions
