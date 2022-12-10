@@ -13,6 +13,7 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 	"text/template"
 
@@ -173,7 +174,15 @@ func (r *Render) Run() error {
 			return fmt.Errorf("%s:\n%s", formatter, out.Bytes())
 		}
 	}
-	return nil
+	sort.Strings(filenames)
+	sb := bytes.NewBuffer([]byte{})
+	for _, v := range filenames {
+		// service/*/api.go linguist-generated=true
+		sb.WriteString(v)
+		sb.WriteString(" linguist-generated=true\n")
+	}
+	genMetaFile := fmt.Sprintf("%s/.gitattributes", r.ctx.Target)
+	return os.WriteFile(genMetaFile, sb.Bytes(), 0o755)
 }
 
 func newPass[T named](items []T, fileset map[string]string) *Pass[T] {
