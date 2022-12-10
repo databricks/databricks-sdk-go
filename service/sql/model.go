@@ -1436,7 +1436,7 @@ type Parameter struct {
 	// Parameters can have several different types.
 	Type ParameterType `json:"type,omitempty"`
 	// The default value for this parameter.
-	Value string `json:"value,omitempty"`
+	Value any `json:"value,omitempty"`
 }
 
 // Parameters can have several different types.
