@@ -109,6 +109,34 @@ func (e *Entity) IsExternal() bool {
 	return e.Package != nil && len(e.Package.types) == 0
 }
 
+func (e *Entity) RequiredFields() (fields []Field) {
+	for _, r := range e.RequiredOrder {
+		v := e.fields[r]
+		v.Of = e
+		fields = append(fields, v)
+	}
+	return
+}
+
+func (e *Entity) NonRequiredFields() (fields []Field) {
+	required := map[string]bool{}
+	for _, r := range e.RequiredOrder {
+		required[r] = true
+	}
+	for k, v := range e.fields {
+		if required[k] {
+			// handled in [Entity.RequiredFields]
+			continue
+		}
+		v.Of = e
+		fields = append(fields, v)
+	}
+	slices.SortFunc(fields, func(a, b Field) bool {
+		return a.CamelName() < b.CamelName()
+	})
+	return
+}
+
 // Fields returns sorted slice of field representations
 func (e *Entity) Fields() (fields []Field) {
 	for _, v := range e.fields {

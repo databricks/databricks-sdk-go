@@ -106,6 +106,10 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 		field.IsPath = param.IsPath
 		field.IsQuery = param.IsQuery
 		request.fields[param.Name] = field
+		if param.Required {
+			// TODO: figure out what to do with entity+param requests
+			request.RequiredOrder = append(request.RequiredOrder, param.Name)
+		}
 	}
 	if request.Name == "" {
 		// when there was a merge of params with a request or new entity was made

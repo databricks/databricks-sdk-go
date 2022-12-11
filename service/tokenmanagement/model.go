@@ -8,7 +8,7 @@ type CreateOboTokenRequest struct {
 	// Application ID of the service principal.
 	ApplicationId string `json:"application_id"`
 	// Comment that describes the purpose of the token.
-	Comment string `json:"comment"`
+	Comment string `json:"comment,omitempty"`
 	// The number of seconds before the token expires.
 	LifetimeSeconds int64 `json:"lifetime_seconds"`
 }
