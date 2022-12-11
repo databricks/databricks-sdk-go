@@ -354,7 +354,7 @@ func (fsoas *FleetSpotOptionAllocationStrategy) Type() string {
 // Get instance pool information
 type Get struct {
 	// The canonical unique identifier for the instance pool.
-	InstancePoolId string `json:"-" url:"instance_pool_id,omitempty"`
+	InstancePoolId string `json:"-" url:"instance_pool_id"`
 }
 
 type GetInstancePool struct {
