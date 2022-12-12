@@ -37,7 +37,7 @@ type EditPolicy struct {
 // Get entity
 type Get struct {
 	// Canonical unique identifier for the cluster policy.
-	PolicyId string `json:"-" url:"policy_id,omitempty"`
+	PolicyId string `json:"-" url:"policy_id"`
 }
 
 type ListPoliciesResponse struct {

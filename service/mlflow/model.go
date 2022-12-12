@@ -565,7 +565,7 @@ type GetResponse struct {
 // Get a run
 type GetRunRequest struct {
 	// ID of the run to fetch. Must be provided.
-	RunId string `json:"-" url:"run_id,omitempty"`
+	RunId string `json:"-" url:"run_id"`
 	// [Deprecated, use run_id instead] ID of the run to fetch. This field will
 	// be removed in a future MLflow version.
 	RunUuid string `json:"-" url:"run_uuid,omitempty"`

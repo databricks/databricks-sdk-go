@@ -13,8 +13,12 @@ var HelperFuncs = template.FuncMap{
 	"notLast": func(idx int, a interface{}) bool {
 		return idx+1 != reflect.ValueOf(a).Len()
 	},
-	"trim_prefix": func(left, right string) string {
+	"lower": strings.ToLower,
+	"trimPrefix": func(right, left string) string {
 		return strings.TrimPrefix(left, right)
+	},
+	"trimSuffix": func(right, left string) string {
+		return strings.TrimSuffix(left, right)
 	},
 	"without": func(left, right string) string {
 		return strings.ReplaceAll(right, left, "")
