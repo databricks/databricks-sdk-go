@@ -41,6 +41,56 @@ func (svc *Service) Methods() (methods []*Method) {
 	return methods
 }
 
+// List returns a method annotated with x-databricks-crud:list
+func (svc *Service) List() *Method {
+	for _, v := range svc.methods {
+		if v.operation.Crud == "list" {
+			return v
+		}
+	}
+	return nil
+}
+
+// List returns a method annotated with x-databricks-crud:create
+func (svc *Service) Create() *Method {
+	for _, v := range svc.methods {
+		if v.operation.Crud == "create" {
+			return v
+		}
+	}
+	return nil
+}
+
+// List returns a method annotated with x-databricks-crud:read
+func (svc *Service) Read() *Method {
+	for _, v := range svc.methods {
+		if v.operation.Crud == "read" {
+			return v
+		}
+	}
+	return nil
+}
+
+// List returns a method annotated with x-databricks-crud:update
+func (svc *Service) Update() *Method {
+	for _, v := range svc.methods {
+		if v.operation.Crud == "update" {
+			return v
+		}
+	}
+	return nil
+}
+
+// List returns a method annotated with x-databricks-crud:delete
+func (svc *Service) Delete() *Method {
+	for _, v := range svc.methods {
+		if v.operation.Crud == "delete" {
+			return v
+		}
+	}
+	return nil
+}
+
 // HasPagination returns true if any method has result iteration
 func (svc *Service) HasPagination() bool {
 	for _, v := range svc.methods {

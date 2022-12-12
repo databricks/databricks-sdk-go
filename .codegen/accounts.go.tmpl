@@ -15,7 +15,7 @@ type AccountClient struct {
 	{{range .Services}}{{if .IsAccounts}}
 	{{.Comment "    // " 80}}
 	{{if eq .Package.Name "scim" -}}
-		{{trim_prefix .Name "Account"}} 
+		{{.Name | trimPrefix "Account"}} 
 	{{- else}}{{.Name}}{{end}} *{{.Package.Name}}.{{.Name}}API
     {{end}}{{end}}
 }
@@ -48,7 +48,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		Config: cfg,
 		{{range .Services}}{{if .IsAccounts}}
 		{{if eq .Package.Name "scim" -}}
-			{{trim_prefix .Name "Account"}} 
+			{{.Name | trimPrefix "Account"}} 
 		{{- else}}{{.Name}}{{end}}: {{.Package.Name}}.New{{.Name}}(apiClient),{{end}}{{end}}
 	}, nil
 }

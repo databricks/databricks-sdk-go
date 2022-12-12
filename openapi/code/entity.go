@@ -186,7 +186,7 @@ func (e *Entity) Enum() (enum []EnumEntry) {
 }
 
 func (e *Entity) IsPrimitive() bool {
-	return e.IsNumber() || e.IsBool || e.IsString
+	return e.IsNumber() || e.IsBool || e.IsString || len(e.enum) > 0
 }
 
 // IsNumber returns true if field is numeric
