@@ -371,3 +371,17 @@ func TestConfig_CorruptConfig(t *testing.T) {
 		assertError: "resolve: testdata/corrupt/.databrickscfg has no DEFAULT profile configured. Config: profile=DEFAULT. Env: DATABRICKS_CONFIG_PROFILE",
 	}.apply(t)
 }
+
+func TestConfig_AuthTypeFromEnv(t *testing.T) {
+	configFixture{
+		host: "x",
+		env: map[string]string{
+			"DATABRICKS_TOKEN":     "token",
+			"DATABRICKS_USERNAME":  "user",
+			"DATABRICKS_PASSWORD":  "password",
+			"DATABRICKS_AUTH_TYPE": "basic",
+		},
+		assertAuth: "basic",
+		assertHost: "https://x",
+	}.apply(t)
+}

@@ -72,7 +72,7 @@ type Config struct {
 
 	// When multiple auth attributes are available in the environment, use the auth type
 	// specified by this argument. This argument also holds currently selected auth.
-	AuthType string `name:"auth_type" auth:"-"`
+	AuthType string `name:"auth_type" env:"DATABRICKS_AUTH_TYPE" auth:"-"`
 
 	// Skip SSL certificate verification for HTTP calls.
 	// Use at your own risk or for unit testing purposes.
