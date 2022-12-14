@@ -6,7 +6,6 @@ import (
 	"hash/fnv"
 	"io"
 	"math/rand"
-	"os"
 	"path"
 	"path/filepath"
 	"testing"
@@ -38,20 +37,36 @@ func TestAccDbfsUtilities(t *testing.T) {
 		Path: path,
 	})
 
-	r, err := w.Dbfs.Open(ctx, path)
-	require.NoError(t, err)
+	// Download directly [io.Reader] and let [io.ReadAll] determine buffer size.
+	{
+		dbfsReader, err := w.Dbfs.Open(ctx, path)
+		require.NoError(t, err)
 
-	download, _ := os.Create("/path/to/local")
-	io.Copy(download, r)
+		// Note: [io.ReadAll] always calls into the [io.Reader] interface.
+		out, err := io.ReadAll(dbfsReader)
+		require.NoError(t, err)
 
-	out, err := io.ReadAll(r)
-	require.NoError(t, err)
+		// Verify contents hash.
+		h := fnv.New32a()
+		h.Write(out)
+		require.Equal(t, inHash, h.Sum32())
+	}
 
-	h = fnv.New32a()
-	h.Write(out)
-	outHash := h.Sum32()
+	// Download through [io.WriterTo] with maximum buffer size.
+	{
+		dbfsReader, err := w.Dbfs.Open(ctx, path)
+		require.NoError(t, err)
 
-	require.Equal(t, outHash, inHash)
+		// Note: [io.Copy] leverages the [io.WriterTo] interface if available.
+		var buf bytes.Buffer
+		_, err = io.Copy(&buf, dbfsReader)
+		require.NoError(t, err)
+
+		// Verify contents hash.
+		h := fnv.New32a()
+		h.Write(buf.Bytes())
+		require.Equal(t, inHash, h.Sum32())
+	}
 }
 
 func TestAccListDbfsIntegration(t *testing.T) {

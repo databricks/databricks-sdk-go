@@ -1,6 +1,7 @@
 package dbfs
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"fmt"
@@ -60,6 +61,9 @@ func (r *FileReader) Read(p []byte) (n int, err error) {
 	if r.api == nil {
 		panic("invalid call")
 	}
+	if r.offset >= r.Size {
+		return 0, io.EOF
+	}
 	resp, err := r.api.Read(r.ctx, Read{
 		Path:   r.path,
 		Length: len(p),
@@ -68,15 +72,41 @@ func (r *FileReader) Read(p []byte) (n int, err error) {
 	if err != nil {
 		return 0, fmt.Errorf("dbfs read: %w", err)
 	}
+	// The guard against offset >= size happens above, so this can only happen
+	// if the file is modified or truncated while reading. If this happens,
+	// the read contents will likely be corrupted, so we return an error.
 	if resp.BytesRead == 0 {
-		return 0, io.EOF
+		return 0, fmt.Errorf("dbfs read: unexpected EOF at offset %d (size %d)", r.offset, r.Size)
 	}
 	r.offset += resp.BytesRead
-	chunk, err := b64.DecodeString(resp.Data)
-	if err != nil {
-		return 0, fmt.Errorf("base64 decode: %w", err)
+	return b64.Decode(p, []byte(resp.Data))
+}
+
+// Maximum read length for the DBFS read API (see [DbfsApi.Read]).
+const maxDbfsReadSize = 1024 * 1024
+
+// WriteTo makes [FileReader] implement the [io.WriterTo] interface.
+// This can be used with [io.Copy] to maximize throughput, as
+// it uses the maximum buffer size allowed by the DBFS API.
+func (r *FileReader) WriteTo(w io.Writer) (n int64, err error) {
+	buf := make([]byte, maxDbfsReadSize)
+	nwritten := int64(0)
+	for {
+		n, err := r.Read(buf)
+		if err != nil {
+			// EOF on read means we're done.
+			// For writers being done means returning a nil error.
+			if err == io.EOF {
+				err = nil
+			}
+			return nwritten, err
+		}
+		n64, err := io.Copy(w, bytes.NewReader(buf[:n]))
+		nwritten += n64
+		if err != nil {
+			return nwritten, err
+		}
 	}
-	return copy(p, chunk), nil
 }
 
 func (a *DbfsAPI) Open(ctx context.Context, path string) (*FileReader, error) {
