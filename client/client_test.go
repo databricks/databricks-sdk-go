@@ -309,6 +309,26 @@ func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
 	assert.EqualError(t, err, "response body: test error")
 }
 
+func TestSimpleRequestRawResponse(t *testing.T) {
+	c := &DatabricksClient{
+		Config: config.NewMockConfig(func(r *http.Request) error {
+			return nil
+		}),
+		httpClient: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader("Hello, world!")),
+				Request:    r,
+			}, nil
+		}),
+		rateLimiter: rate.NewLimiter(rate.Inf, 1),
+	}
+	var raw []byte
+	err := c.Do(context.Background(), "GET", "/a", nil, &raw)
+	assert.NoError(t, err)
+	assert.Equal(t, "Hello, world!", string(raw))
+}
+
 type BufferLogger struct {
 	strings.Builder
 }

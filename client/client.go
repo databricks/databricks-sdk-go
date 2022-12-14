@@ -91,14 +91,19 @@ func (c *DatabricksClient) Do(ctx context.Context, method, path string,
 	if err != nil {
 		return err
 	}
-	return c.unmarshall(path, body, &response)
+	return c.unmarshal(body, response)
 }
 
-func (c *DatabricksClient) unmarshall(path string, body []byte, response interface{}) error {
+func (c *DatabricksClient) unmarshal(body []byte, response any) error {
 	if response == nil {
 		return nil
 	}
 	if len(body) == 0 {
+		return nil
+	}
+	// If the destination is a byte slice, pass the body verbatim.
+	if raw, ok := response.(*[]byte); ok {
+		*raw = body
 		return nil
 	}
 	return json.Unmarshal(body, &response)
