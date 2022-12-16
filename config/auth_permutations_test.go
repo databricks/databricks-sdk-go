@@ -23,6 +23,7 @@ type configFixture struct {
 	azureResourceID   string
 	authType          string
 	env               map[string]string
+	loaders           []Loader
 	assertError       string
 	assertAuth        string
 	assertHost        string
@@ -62,6 +63,7 @@ func (cf configFixture) configureProviderAndReturnConfig(t *testing.T) (*Config,
 		AzureTenantID:     cf.azureTenantID,
 		AzureResourceID:   cf.azureResourceID,
 		AuthType:          cf.authType,
+		Loaders:           cf.loaders,
 	}
 	err := client.Authenticate(&http.Request{Header: http.Header{}})
 	if err != nil {
@@ -234,10 +236,14 @@ func TestConfig_PatFromDatabricksCfg_NohostProfile(t *testing.T) {
 
 func TestConfig_DatabricksCfgProfileResolve_ThroughHost(t *testing.T) {
 	configFixture{
+		loaders: []Loader{
+			ConfigAttributes,
+			KnownConfigLoader{},
+			ImplicitProfileLoader{},
+		},
 		env: map[string]string{
-			"HOME":                       "testdata",
-			"DATABRICKS_PROFILE_RESOLVE": "true",
-			"DATABRICKS_HOST":            "https://dbc-XXXXXXXX-ABCD.cloud.databricks.com",
+			"HOME":            "testdata",
+			"DATABRICKS_HOST": "https://dbc-XXXXXXXX-ABCD.cloud.databricks.com",
 		},
 		assertHost: "https://dbc-XXXXXXXX-ABCD.cloud.databricks.com",
 		assertAuth: "basic",
@@ -246,24 +252,32 @@ func TestConfig_DatabricksCfgProfileResolve_ThroughHost(t *testing.T) {
 
 func TestConfig_DatabricksCfgProfileResolve_ThroughHost_WithToken(t *testing.T) {
 	configFixture{
-		env: map[string]string{
-			"HOME":                       "testdata",
-			"DATABRICKS_PROFILE_RESOLVE": "true",
-			"DATABRICKS_HOST":            "https://dbc-XXXXXXXX-ABCD.cloud.databricks.com",
-			"DATABRICKS_TOKEN":           "abcd",
+		loaders: []Loader{
+			ConfigAttributes,
+			KnownConfigLoader{},
+			ImplicitProfileLoader{},
 		},
-		assertError: "validate: more than one authorization method configured: basic and pat. Config: host=https://dbc-XXXXXXXX-ABCD.cloud.databricks.com, token=***, username=abc, password=***, resolve_profile=true. Env: DATABRICKS_HOST, DATABRICKS_TOKEN, DATABRICKS_PROFILE_RESOLVE",
+		env: map[string]string{
+			"HOME":             "testdata",
+			"DATABRICKS_HOST":  "https://dbc-XXXXXXXX-ABCD.cloud.databricks.com",
+			"DATABRICKS_TOKEN": "abcd",
+		},
+		assertError: "validate: more than one authorization method configured: basic and pat. Config: host=https://dbc-XXXXXXXX-ABCD.cloud.databricks.com, token=***, username=abc, password=***. Env: DATABRICKS_HOST, DATABRICKS_TOKEN",
 	}.apply(t)
 }
 
 func TestConfig_DatabricksCfgProfileResolve_Conflicts(t *testing.T) {
 	configFixture{
-		env: map[string]string{
-			"HOME":                       "testdata",
-			"DATABRICKS_PROFILE_RESOLVE": "true",
-			"DATABRICKS_HOST":            "https://adb-123.4.azuredatabricks.net",
+		loaders: []Loader{
+			ConfigAttributes,
+			KnownConfigLoader{},
+			ImplicitProfileLoader{},
 		},
-		assertError: "resolve: azure-justhost and azure-pat and azure-spn match https://adb-123.4.azuredatabricks.net in testdata/.databrickscfg. Config: host=https://adb-123.4.azuredatabricks.net, resolve_profile=true. Env: DATABRICKS_HOST, DATABRICKS_PROFILE_RESOLVE",
+		env: map[string]string{
+			"HOME":            "testdata",
+			"DATABRICKS_HOST": "https://adb-123.4.azuredatabricks.net",
+		},
+		assertError: "resolve: azure-justhost and azure-pat and azure-spn match https://adb-123.4.azuredatabricks.net in . Config: host=https://adb-123.4.azuredatabricks.net, token=***. Env: DATABRICKS_HOST",
 	}.apply(t)
 }
 

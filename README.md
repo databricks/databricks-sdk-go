@@ -275,8 +275,6 @@ For [Databricks native authentication](#databricks-native-authentication), you c
 |-------------------------------|-------------|----------------------|
 | `Profile` | _(String)_ A connection profile specified within `.databrickscfg` to use instead of `DEFAULT`. | `DATABRICKS_CONFIG_PROFILE` |
 | `ConfigFile` | _(String)_ A non-default location of the Databricks CLI credentials file. | `DATABRICKS_CONFIG_FILE` |
-| `ResolveProfile` | _(Boolean)_ - If you specify `host`, but no other credentials either through direct configuration or through environment variables, Databricks SDK for Go will try picking up profile with the matching host from ~/.databrickscfg. This allows keeping the hostname checked in to version control, but have ability to pick up different credentials either from local development machine or production server. | `DATABRICKS_PROFILE_RESOLVE` |
-
 
 For example, to use a profile named `MYPROFILE` instead of `DEFAULT`:
 
