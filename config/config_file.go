@@ -70,7 +70,7 @@ func (l KnownConfigLoader) resolveConfigFile(cfg *Config) (string, error) {
 	return configFile, nil
 }
 
-// ImplicitProfileLoader is an alternative config loader, which triggers if you 
+// ImplicitProfileLoader is an alternative config loader, which triggers if you
 // specify  `host`, but no other credentials either through direct configuration
 // or through environment variables, Databricks SDK for Go will try picking up
 // profile with the matching host from ~/.databrickscfg. This allows keeping
