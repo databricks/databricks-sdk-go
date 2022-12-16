@@ -136,7 +136,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 	}
 	request := &Entity{fields: map[string]Field{}}
 	if op.RequestBody != nil {
-		request = svc.Package.schemaToEntity(op.RequestBody.Schema(), []string{op.Name()}, true)
+		request = svc.Package.schemaToEntity(op.RequestBody.Schema(), []string{op.Name()}, !svc.Package.Batch.WithoutRequestTypes)
 	}
 	if request == nil {
 		panic(fmt.Errorf("%s request body is nil", op.OperationId))
@@ -161,7 +161,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 			request.RequiredOrder = append(request.RequiredOrder, param.Name)
 		}
 	}
-	if request.Name == "" {
+	if request.Name == "" && !svc.Package.Batch.WithoutRequestTypes {
 		// when there was a merge of params with a request or new entity was made
 		signularServiceName := svc.Singular().PascalName()
 		notExplicit := !strings.Contains(op.Name(), signularServiceName)

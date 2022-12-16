@@ -92,12 +92,18 @@ func (c *Context) Generate() error {
 	if err != nil {
 		return fmt.Errorf(".codegen.json: %w", err)
 	}
-	render.ctx = c
-	batch, err := code.NewFromFile(c.Spec, render.IncludeTags)
+	// TODO: gradually change configuration file format,
+	// so that it's easier to add config features
+	render.batch = &code.Batch{}
+	err = json.Unmarshal(raw, render.batch)
+	if err != nil {
+		return fmt.Errorf(".codegen.json config: %w", err)
+	}
+	err = render.batch.Load(c.Spec)
 	if err != nil {
 		return err
 	}
-	render.batch = batch
+	render.ctx = c
 	return render.Run()
 }
 
@@ -108,11 +114,13 @@ type Render struct {
 
 	// We can generate SDKs in three modes: Packages, Types, Services
 	// E.g. Go is Package-focused and Java is Types+Services
-	Packages    map[string]string `json:"packages,omitempty"`
-	Types       map[string]string `json:"types,omitempty"`
-	Services    map[string]string `json:"services,omitempty"`
-	Batch       map[string]string `json:"batch,omitempty"`
-	IncludeTags []string          `json:"includeTags,omitempty"`
+	Packages map[string]string `json:"packages,omitempty"`
+	Types    map[string]string `json:"types,omitempty"`
+	Services map[string]string `json:"services,omitempty"`
+	Batch    map[string]string `json:"batch,omitempty"`
+
+	IncludeTags         []string `json:"includeTags,omitempty"`
+	WithoutRequestTypes bool     `json:"withoutRequestTypes,omitempty"`
 }
 
 func (r *Render) Run() error {
