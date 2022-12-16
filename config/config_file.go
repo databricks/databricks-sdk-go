@@ -70,9 +70,9 @@ func (l KnownConfigLoader) resolveConfigFile(cfg *Config) (string, error) {
 	return configFile, nil
 }
 
-// ImplicitProfileLoader is an opt-in loader, which triggers if you specify
-// `host`, but no other credentials either through direct configuration or
-// through environment variables, Databricks SDK for Go will try picking up
+// ImplicitProfileLoader is an alternative config loader, which triggers if you 
+// specify  `host`, but no other credentials either through direct configuration
+// or through environment variables, Databricks SDK for Go will try picking up
 // profile with the matching host from ~/.databrickscfg. This allows keeping
 // the hostname checked in to version control, but have ability to pick up
 // different credentials either from local development machine or production
@@ -104,6 +104,12 @@ func (l ImplicitProfileLoader) resolveSection(
 			continue
 		}
 		candidates = append(candidates, section)
+	}
+	if len(candidates) == 0 && iniFile.HasSection("DEFAULT") {
+		return iniFile.Section("DEFAULT"), nil
+	}
+	if len(candidates) == 0 {
+		return nil, ErrCannotConfigureAuth
 	}
 	// in the real situations, we don't expect this to happen often
 	// (if not at all), hence we don't trim the list
@@ -144,11 +150,15 @@ func (l ImplicitProfileLoader) Configure(cfg *Config) error {
 	if err != nil {
 		return err
 	}
-	profile := section.Name()
-	logger.Debugf("Loading %s profile from %s", profile, configFile)
+	if section != nil {
+		cfg.Profile = section.Name()
+	} else {
+		cfg.Profile = "DEFAULT"
+	}
+	logger.Debugf("Loading %s profile from %s", cfg.Profile, configFile)
 	err = ConfigAttributes.ResolveFromStringMap(cfg, section.KeysHash())
 	if err != nil {
-		return fmt.Errorf("%s %s profile: %w", configFile, profile, err)
+		return fmt.Errorf("%s %s profile: %w", configFile, cfg.Profile, err)
 	}
 	return nil
 }
