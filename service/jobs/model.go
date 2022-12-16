@@ -104,7 +104,7 @@ type CreateJob struct {
 	// job.
 	Tags map[string]string `json:"tags,omitempty"`
 	// A list of task specifications to be executed by this job.
-	Tasks []JobTaskSettings `json:"tasks"`
+	Tasks []JobTaskSettings `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. The default behavior
 	// is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
@@ -938,8 +938,10 @@ type Run struct {
 	// same as the `max_retries` value for the job.
 	AttemptNumber int `json:"attempt_number,omitempty"`
 	// The time in milliseconds it took to terminate the cluster and clean up
-	// any associated artifacts. The total duration of the run is the sum of the
-	// setup_duration, the execution_duration, and the cleanup_duration.
+	// any associated artifacts. The duration of a task run is the sum of the
+	// `setup_duration`, `execution_duration`, and the `cleanup_duration`. The
+	// `cleanup_duration` field is set to 0 for multitask job runs. The total
+	// duration of a multitask job run is the value of the `run_duration` field.
 	CleanupDuration int64 `json:"cleanup_duration,omitempty"`
 	// The cluster used for this run. If the run is specified to use a new
 	// cluster, this field is set once the Jobs service has requested a cluster
@@ -956,7 +958,11 @@ type Run struct {
 	EndTime int64 `json:"end_time,omitempty"`
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
-	// encountered an unexpected error.
+	// encountered an unexpected error. The duration of a task run is the sum of
+	// the `setup_duration`, `execution_duration`, and the `cleanup_duration`.
+	// The `execution_duration` field is set to 0 for multitask job runs. The
+	// total duration of a multitask job run is the value of the `run_duration`
+	// field.
 	ExecutionDuration int64 `json:"execution_duration,omitempty"`
 	// An optional specification for a remote repository containing the
 	// notebooks used by this job's notebook tasks.
@@ -977,6 +983,9 @@ type Run struct {
 	OverridingParameters *RunParameters `json:"overriding_parameters,omitempty"`
 	// The repair history of the run.
 	RepairHistory []RepairHistoryItem `json:"repair_history,omitempty"`
+	// The time in milliseconds it took the job run and all of its repairs to
+	// finish.
+	RunDuration int `json:"run_duration,omitempty"`
 	// The canonical identifier of the run. This ID is unique across all runs of
 	// all jobs.
 	RunId int64 `json:"run_id,omitempty"`
@@ -990,9 +999,13 @@ type Run struct {
 	// The cron schedule that triggered this run if it was triggered by the
 	// periodic scheduler.
 	Schedule *CronSchedule `json:"schedule,omitempty"`
-	// The time it took to set up the cluster in milliseconds. For runs that run
+	// The time in milliseconds it took to set up the cluster. For runs that run
 	// on new clusters this is the cluster creation time, for runs that run on
-	// existing clusters this time should be very short.
+	// existing clusters this time should be very short. The duration of a task
+	// run is the sum of the `setup_duration`, `execution_duration`, and the
+	// `cleanup_duration`. The `setup_duration` field is set to 0 for multitask
+	// job runs. The total duration of a multitask job run is the value of the
+	// `run_duration` field.
 	SetupDuration int64 `json:"setup_duration,omitempty"`
 	// The time at which this run was started in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC). This may not be the time when the job
@@ -1396,8 +1409,10 @@ type RunTask struct {
 	// same as the `max_retries` value for the job.
 	AttemptNumber int `json:"attempt_number,omitempty"`
 	// The time in milliseconds it took to terminate the cluster and clean up
-	// any associated artifacts. The total duration of the run is the sum of the
-	// setup_duration, the execution_duration, and the cleanup_duration.
+	// any associated artifacts. The duration of a task run is the sum of the
+	// `setup_duration`, `execution_duration`, and the `cleanup_duration`. The
+	// `cleanup_duration` field is set to 0 for multitask job runs. The total
+	// duration of a multitask job run is the value of the `run_duration` field.
 	CleanupDuration int64 `json:"cleanup_duration,omitempty"`
 	// The cluster used for this run. If the run is specified to use a new
 	// cluster, this field is set once the Jobs service has requested a cluster
@@ -1420,7 +1435,11 @@ type RunTask struct {
 	EndTime int64 `json:"end_time,omitempty"`
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
-	// encountered an unexpected error.
+	// encountered an unexpected error. The duration of a task run is the sum of
+	// the `setup_duration`, `execution_duration`, and the `cleanup_duration`.
+	// The `execution_duration` field is set to 0 for multitask job runs. The
+	// total duration of a multitask job run is the value of the `run_duration`
+	// field.
 	ExecutionDuration int64 `json:"execution_duration,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs of this job. When running jobs on an existing cluster, you may
@@ -1444,9 +1463,13 @@ type RunTask struct {
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
 	// The ID of the task run.
 	RunId int64 `json:"run_id,omitempty"`
-	// The time it took to set up the cluster in milliseconds. For runs that run
+	// The time in milliseconds it took to set up the cluster. For runs that run
 	// on new clusters this is the cluster creation time, for runs that run on
-	// existing clusters this time should be very short.
+	// existing clusters this time should be very short. The duration of a task
+	// run is the sum of the `setup_duration`, `execution_duration`, and the
+	// `cleanup_duration`. The `setup_duration` field is set to 0 for multitask
+	// job runs. The total duration of a multitask job run is the value of the
+	// `run_duration` field.
 	SetupDuration int64 `json:"setup_duration,omitempty"`
 	// If spark_jar_task, indicates that this job must run a JAR.
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
@@ -1700,7 +1723,7 @@ type SubmitRun struct {
 	// An optional name for the run. The default value is `Untitled`.
 	RunName string `json:"run_name,omitempty"`
 
-	Tasks []RunSubmitTaskSettings `json:"tasks"`
+	Tasks []RunSubmitTaskSettings `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. The default behavior
 	// is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`

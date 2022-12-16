@@ -41,7 +41,7 @@ type WorkspaceClient struct {
 
 	// A catalog is the first layer of Unity Catalog’s three-level namespace.
 	// It’s used to organize your data assets. Users can see all catalogs on
-	// which they have been assigned the USAGE data permission.
+	// which they have been assigned the USE_CATALOG data permission.
 	//
 	// In Unity Catalog, admins and data stewards manage users and their access
 	// to data centrally across all of the workspaces in a Databricks account.
@@ -153,17 +153,17 @@ type WorkspaceClient struct {
 
 	// An external location is an object that combines a cloud storage path with
 	// a storage credential that authorizes access to the cloud storage path.
-	// Each storage location is subject to Unity Catalog access-control policies
-	// that control which users and groups can access the credential. If a user
-	// does not have access to a storage location in Unity Catalog, the request
-	// fails and Unity Catalog does not attempt to authenticate to your cloud
-	// tenant on the user’s behalf.
+	// Each external location is subject to Unity Catalog access-control
+	// policies that control which users and groups can access the credential.
+	// If a user does not have access to an external location in Unity Catalog,
+	// the request fails and Unity Catalog does not attempt to authenticate to
+	// your cloud tenant on the user’s behalf.
 	//
 	// Databricks recommends using external locations rather than using storage
 	// credentials directly.
 	//
 	// To create external locations, you must be a metastore admin or a user
-	// with the CREATE EXTERNAL LOCATION privilege.
+	// with the CREATE_EXTERNAL_LOCATION privilege.
 	ExternalLocations *unitycatalog.ExternalLocationsAPI
 
 	// Registers personal access token for Databricks to do operations on behalf
@@ -395,8 +395,8 @@ type WorkspaceClient struct {
 	// A schema (also called a database) is the second layer of Unity
 	// Catalog’s three-level namespace. A schema organizes tables and views.
 	// To access (or list) a table or view in a schema, users must have the
-	// USAGE data permission on the schema and its parent catalog, and they must
-	// have the SELECT permission on the table or view.
+	// USE_SCHEMA data permission on the schema and its parent catalog, and they
+	// must have the SELECT permission on the table or view.
 	Schemas *unitycatalog.SchemasAPI
 
 	// The Secrets API allows you to manage secrets, secret scopes, and access
@@ -443,10 +443,11 @@ type WorkspaceClient struct {
 
 	// A table resides in the third layer of Unity Catalog’s three-level
 	// namespace. It contains rows of data. To create a table, users must have
-	// CREATE and USAGE permissions on the schema, and they must have the USAGE
-	// permission on its parent catalog. To query a table, users must have the
-	// SELECT permission on the table, and they must have the USAGE permission
-	// on its parent schema and catalog.
+	// CREATE_TABLE and USE_SCHEMA permissions on the schema, and they must have
+	// the USE_CATALOG permission on its parent catalog. To query a table, users
+	// must have the SELECT permission on the table, and they must have the
+	// USE_CATALOG permission on its parent catalog and the USE_SCHEMA
+	// permission on its parent schema.
 	//
 	// A table can be managed or external.
 	Tables *unitycatalog.TablesAPI

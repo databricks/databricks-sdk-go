@@ -29,7 +29,7 @@ func TestUcAccStorageCredentials(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	err = w.StorageCredentials.Update(ctx, unitycatalog.UpdateStorageCredential{
+	_, err = w.StorageCredentials.Update(ctx, unitycatalog.UpdateStorageCredential{
 		Name:    created.Name,
 		Comment: RandomName("comment "),
 		AwsIamRole: &unitycatalog.AwsIamRole{
@@ -76,7 +76,7 @@ func TestUcAccExternalLocations(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	err = w.ExternalLocations.Update(ctx, unitycatalog.UpdateExternalLocation{
+	_, err = w.ExternalLocations.Update(ctx, unitycatalog.UpdateExternalLocation{
 		Name:           created.Name,
 		CredentialName: credential.Name,
 		Url:            fmt.Sprintf("s3://%s/%s", GetEnvOrSkipTest(t, "TEST_BUCKET"), RandomName("l-")),
@@ -107,7 +107,7 @@ func TestUcAccMetastores(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	err = w.Metastores.Update(ctx, unitycatalog.UpdateMetastore{
+	_, err = w.Metastores.Update(ctx, unitycatalog.UpdateMetastore{
 		Id:   created.MetastoreId,
 		Name: RandomName("go-sdk-updated"),
 	})
@@ -118,14 +118,14 @@ func TestUcAccMetastores(t *testing.T) {
 
 	err = w.Metastores.Assign(ctx, unitycatalog.CreateMetastoreAssignment{
 		MetastoreId: created.MetastoreId,
-		WorkspaceId: int(GetEnvInt64OrSkipTest(t, "TEST_WORKSPACE_ID")),
+		WorkspaceId: GetEnvInt64OrSkipTest(t, "TEST_WORKSPACE_ID"),
 	})
 	require.NoError(t, err)
 
-	// TODO: metastore_id in query?...
+	// TODO: Fix once APP-1331 is implemented
 	err = w.Metastores.Unassign(ctx, unitycatalog.UnassignRequest{
 		MetastoreId: created.MetastoreId,
-		WorkspaceId: int(GetEnvInt64OrSkipTest(t, "TEST_WORKSPACE_ID")),
+		WorkspaceId: GetEnvInt64OrSkipTest(t, "TEST_WORKSPACE_ID"),
 	})
 	require.NoError(t, err)
 
@@ -150,7 +150,7 @@ func TestUcAccCatalogs(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	err = w.Catalogs.Update(ctx, unitycatalog.UpdateCatalog{})
+	_, err = w.Catalogs.Update(ctx, unitycatalog.UpdateCatalog{})
 	require.NoError(t, err)
 
 	_, err = w.Catalogs.GetByName(ctx, created.Name)
@@ -185,7 +185,7 @@ func TestUcAccSchemas(t *testing.T) {
 		err := w.Schemas.DeleteByFullName(ctx, created.FullName)
 		require.NoError(t, err)
 	})
-	err = w.Schemas.Update(ctx, unitycatalog.UpdateSchema{
+	_, err = w.Schemas.Update(ctx, unitycatalog.UpdateSchema{
 		FullName: created.FullName,
 		Comment:  RandomName("comment "),
 	})
@@ -214,7 +214,7 @@ func TestUcAccProviders(t *testing.T) {
 		err := w.Providers.DeleteByName(ctx, created.Name)
 		require.NoError(t, err)
 	})
-	err = w.Providers.Update(ctx, unitycatalog.UpdateProvider{})
+	_, err = w.Providers.Update(ctx, unitycatalog.UpdateProvider{})
 	require.NoError(t, err)
 
 	_, err = w.Providers.GetByName(ctx, created.Name)
@@ -264,7 +264,7 @@ func TestUcAccShares(t *testing.T) {
 		err := w.Shares.DeleteByName(ctx, created.Name)
 		require.NoError(t, err)
 	})
-	err = w.Shares.Update(ctx, unitycatalog.UpdateShare{
+	_, err = w.Shares.Update(ctx, unitycatalog.UpdateShare{
 		Name: RandomName("go-sdk-"),
 		Updates: []unitycatalog.SharedDataObjectUpdate{
 			{
