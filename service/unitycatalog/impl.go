@@ -42,10 +42,11 @@ func (a *catalogsImpl) List(ctx context.Context) (*ListCatalogsResponse, error) 
 	return &listCatalogsResponse, err
 }
 
-func (a *catalogsImpl) Update(ctx context.Context, request UpdateCatalog) error {
+func (a *catalogsImpl) Update(ctx context.Context, request UpdateCatalog) (*CatalogInfo, error) {
+	var catalogInfo CatalogInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &catalogInfo)
+	return &catalogInfo, err
 }
 
 // unexported type that holds implementations of just ExternalLocations API methods
@@ -80,10 +81,11 @@ func (a *externalLocationsImpl) List(ctx context.Context) (*ListExternalLocation
 	return &listExternalLocationsResponse, err
 }
 
-func (a *externalLocationsImpl) Update(ctx context.Context, request UpdateExternalLocation) error {
+func (a *externalLocationsImpl) Update(ctx context.Context, request UpdateExternalLocation) (*ExternalLocationInfo, error) {
+	var externalLocationInfo ExternalLocationInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &externalLocationInfo)
+	return &externalLocationInfo, err
 }
 
 // unexported type that holds implementations of just Grants API methods
@@ -155,10 +157,11 @@ func (a *metastoresImpl) Unassign(ctx context.Context, request UnassignRequest) 
 	return err
 }
 
-func (a *metastoresImpl) Update(ctx context.Context, request UpdateMetastore) error {
+func (a *metastoresImpl) Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error) {
+	var metastoreInfo MetastoreInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &metastoreInfo)
+	return &metastoreInfo, err
 }
 
 func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error {
@@ -206,10 +209,11 @@ func (a *providersImpl) ListShares(ctx context.Context, request ListSharesReques
 	return &listProviderSharesResponse, err
 }
 
-func (a *providersImpl) Update(ctx context.Context, request UpdateProvider) error {
+func (a *providersImpl) Update(ctx context.Context, request UpdateProvider) (*ProviderInfo, error) {
+	var providerInfo ProviderInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &providerInfo)
+	return &providerInfo, err
 }
 
 // unexported type that holds implementations of just RecipientActivation API methods
@@ -314,10 +318,11 @@ func (a *schemasImpl) List(ctx context.Context, request ListSchemasRequest) (*Li
 	return &listSchemasResponse, err
 }
 
-func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) error {
+func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*SchemaInfo, error) {
+	var schemaInfo SchemaInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullName)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &schemaInfo)
+	return &schemaInfo, err
 }
 
 // unexported type that holds implementations of just Shares API methods
@@ -359,10 +364,11 @@ func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissi
 	return &getSharePermissionsResponse, err
 }
 
-func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) error {
+func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInfo, error) {
+	var shareInfo ShareInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &shareInfo)
+	return &shareInfo, err
 }
 
 func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateSharePermissions) error {
@@ -403,10 +409,11 @@ func (a *storageCredentialsImpl) List(ctx context.Context) (*ListStorageCredenti
 	return &listStorageCredentialsResponse, err
 }
 
-func (a *storageCredentialsImpl) Update(ctx context.Context, request UpdateStorageCredential) error {
+func (a *storageCredentialsImpl) Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error) {
+	var storageCredentialInfo StorageCredentialInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &storageCredentialInfo)
+	return &storageCredentialInfo, err
 }
 
 // unexported type that holds implementations of just Tables API methods

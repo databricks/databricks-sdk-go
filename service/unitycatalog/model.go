@@ -73,8 +73,6 @@ type CatalogInfo struct {
 	Name string `json:"name,omitempty"`
 	// Username of current owner of Catalog.
 	Owner string `json:"owner,omitempty"`
-	// Privileges the user has on the Catalog.
-	Privileges []Privilege `json:"privileges,omitempty"`
 
 	Properties map[string]string `json:"properties,omitempty"`
 	// The name of delta sharing provider.
@@ -84,6 +82,10 @@ type CatalogInfo struct {
 	ProviderName string `json:"provider_name,omitempty"`
 	// The name of the share under the share provider.
 	ShareName string `json:"share_name,omitempty"`
+	// Storage Location URL (full path) for managed tables within Catalog.
+	StorageLocation string `json:"storage_location,omitempty"`
+	// Storage root URL for managed tables within Catalog.
+	StorageRoot string `json:"storage_root,omitempty"`
 	// Time at which this Catalog was last modified, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified Catalog.
@@ -99,8 +101,6 @@ const CatalogTypeManagedCatalog CatalogType = `MANAGED_CATALOG`
 
 const CatalogTypeSystemCatalog CatalogType = `SYSTEM_CATALOG`
 
-const CatalogTypeUnknownCatalogType CatalogType = `UNKNOWN_CATALOG_TYPE`
-
 // String representation for [fmt.Print]
 func (ct *CatalogType) String() string {
 	return string(*ct)
@@ -109,11 +109,11 @@ func (ct *CatalogType) String() string {
 // Set raw string value and validate it against allowed values
 func (ct *CatalogType) Set(v string) error {
 	switch v {
-	case `DELTASHARING_CATALOG`, `MANAGED_CATALOG`, `SYSTEM_CATALOG`, `UNKNOWN_CATALOG_TYPE`:
+	case `DELTASHARING_CATALOG`, `MANAGED_CATALOG`, `SYSTEM_CATALOG`:
 		*ct = CatalogType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DELTASHARING_CATALOG", "MANAGED_CATALOG", "SYSTEM_CATALOG", "UNKNOWN_CATALOG_TYPE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DELTASHARING_CATALOG", "MANAGED_CATALOG", "SYSTEM_CATALOG"`, v)
 	}
 }
 
@@ -189,7 +189,7 @@ const ColumnInfoTypeNameStruct ColumnInfoTypeName = `STRUCT`
 
 const ColumnInfoTypeNameTimestamp ColumnInfoTypeName = `TIMESTAMP`
 
-const ColumnInfoTypeNameUnknownColumnTypeName ColumnInfoTypeName = `UNKNOWN_COLUMN_TYPE_NAME`
+const ColumnInfoTypeNameUserDefinedType ColumnInfoTypeName = `USER_DEFINED_TYPE`
 
 // String representation for [fmt.Print]
 func (citn *ColumnInfoTypeName) String() string {
@@ -199,11 +199,11 @@ func (citn *ColumnInfoTypeName) String() string {
 // Set raw string value and validate it against allowed values
 func (citn *ColumnInfoTypeName) Set(v string) error {
 	switch v {
-	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TIMESTAMP`, `UNKNOWN_COLUMN_TYPE_NAME`:
+	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TIMESTAMP`, `USER_DEFINED_TYPE`:
 		*citn = ColumnInfoTypeName(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TIMESTAMP", "UNKNOWN_COLUMN_TYPE_NAME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TIMESTAMP", "USER_DEFINED_TYPE"`, v)
 	}
 }
 
@@ -226,6 +226,8 @@ type CreateCatalog struct {
 	ProviderName string `json:"provider_name,omitempty"`
 	// The name of the share under the share provider.
 	ShareName string `json:"share_name,omitempty"`
+	// Storage root URL for managed tables within Catalog.
+	StorageRoot string `json:"storage_root,omitempty"`
 }
 
 type CreateExternalLocation struct {
@@ -235,6 +237,11 @@ type CreateExternalLocation struct {
 	CredentialName string `json:"credential_name"`
 	// Name of the External Location.
 	Name string `json:"name"`
+	// Indicates whether the external location is read-only.
+	ReadOnly bool `json:"read_only,omitempty"`
+	// Skips validation of the storage credential associated with the external
+	// location.
+	SkipValidation bool `json:"skip_validation,omitempty"`
 	// Path URL of the External Location.
 	Url string `json:"url"`
 }
@@ -247,12 +254,12 @@ type CreateMetastore struct {
 }
 
 type CreateMetastoreAssignment struct {
-	// THe name of the default catalog in the Metastore.
+	// The name of the default catalog in the Metastore.
 	DefaultCatalogName string `json:"default_catalog_name"`
 	// The ID of the Metastore.
 	MetastoreId string `json:"metastore_id"`
 	// A workspace ID.
-	WorkspaceId int `json:"-" url:"-"`
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 type CreateProvider struct {
@@ -264,9 +271,8 @@ type CreateProvider struct {
 	Name string `json:"name"`
 	// Username of Provider owner.
 	Owner string `json:"owner,omitempty"`
-	// This field is only present when the authentication type is TOKEN.
-	RecipientProfile *RecipientProfile `json:"recipient_profile,omitempty"`
-	// This field is only present when the authentication type is TOKEN.
+	// This field is required when the authentication_type is `TOKEN` or not
+	// provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 }
 
@@ -275,6 +281,11 @@ type CreateRecipient struct {
 	AuthenticationType AuthenticationType `json:"authentication_type"`
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
+	// The global Unity Catalog metastore id provided by the data recipient.\n
+	// This field is only present when the authentication type is
+	// `DATABRICKS`.\n The identifier is of format
+	// <cloud>:<region>:<metastore-uuid>.
+	DataRecipientGlobalMetastoreId any `json:"data_recipient_global_metastore_id,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// Name of Recipient.
@@ -296,7 +307,7 @@ type CreateSchema struct {
 }
 
 type CreateShare struct {
-	// comment when creating the share
+	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// Name of the Share.
 	Name string `json:"name"`
@@ -339,8 +350,6 @@ const DataSourceFormatText DataSourceFormat = `TEXT`
 
 const DataSourceFormatUnityCatalog DataSourceFormat = `UNITY_CATALOG`
 
-const DataSourceFormatUnknownDataSourceFormat DataSourceFormat = `UNKNOWN_DATA_SOURCE_FORMAT`
-
 // String representation for [fmt.Print]
 func (dsf *DataSourceFormat) String() string {
 	return string(*dsf)
@@ -349,11 +358,11 @@ func (dsf *DataSourceFormat) String() string {
 // Set raw string value and validate it against allowed values
 func (dsf *DataSourceFormat) Set(v string) error {
 	switch v {
-	case `AVRO`, `CSV`, `DELTA`, `DELTASHARING`, `JSON`, `ORC`, `PARQUET`, `TEXT`, `UNITY_CATALOG`, `UNKNOWN_DATA_SOURCE_FORMAT`:
+	case `AVRO`, `CSV`, `DELTA`, `DELTASHARING`, `JSON`, `ORC`, `PARQUET`, `TEXT`, `UNITY_CATALOG`:
 		*dsf = DataSourceFormat(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AVRO", "CSV", "DELTA", "DELTASHARING", "JSON", "ORC", "PARQUET", "TEXT", "UNITY_CATALOG", "UNKNOWN_DATA_SOURCE_FORMAT"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AVRO", "CSV", "DELTA", "DELTASHARING", "JSON", "ORC", "PARQUET", "TEXT", "UNITY_CATALOG"`, v)
 	}
 }
 
@@ -364,6 +373,8 @@ func (dsf *DataSourceFormat) Type() string {
 
 // Delete a catalog
 type DeleteCatalogRequest struct {
+	// Force deletion even if the catalog is notempty.
+	Force bool `json:"-" url:"force,omitempty"`
 	// Required. The name of the catalog.
 	Name string `json:"-" url:"-"`
 }
@@ -440,7 +451,10 @@ type ExternalLocationInfo struct {
 	Name string `json:"name,omitempty"`
 	// The owner of the External Location.
 	Owner string `json:"owner,omitempty"`
-	// Time at which this was last modified, in epoch milliseconds.
+	// Indicates whether the external location is read-only.
+	ReadOnly bool `json:"read_only,omitempty"`
+	// Time at which External Location this was last modified, in epoch
+	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the External Location.
 	UpdatedBy string `json:"updated_by,omitempty"`
@@ -492,14 +506,73 @@ type GetMetastoreRequest struct {
 }
 
 type GetMetastoreSummaryResponse struct {
-	// Unique identifier of the Metastore's (Default) Data Access Configuration
+	// Cloud vendor of the Metastore home shard (e.g., `aws`, `azure`, `gcp`).
+	Cloud string `json:"cloud,omitempty"`
+	// Time at which this Metastore was created, in epoch milliseconds.
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// Username of Metastore creator.
+	CreatedBy string `json:"created_by,omitempty"`
+	// Unique identifier of the Metastore's (Default) Data Access Configuration.
 	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
-	// The unique ID (UUID) of the Metastore
+	// The organization name of a Delta Sharing entity, to be used in
+	// Databricks-to-Databricks Delta Sharing as the official name.
+	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
+	// The lifetime of delta sharing recipient token in seconds.
+	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
+	// The scope of Delta Sharing enabled for the Metastore
+	DeltaSharingScope GetMetastoreSummaryResponseDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	// Globally unique metastore ID across clouds and regions, of the form
+	// `cloud:region:metastore_id`.
+	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
+	// The unique ID (UUID) of the Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
-	// The user-specified name of the Metastore
+	// The user-specified name of the Metastore.
 	Name string `json:"name,omitempty"`
-	// UUID of storage credential to access the metastore storage_root
+	// The owner of the metastore.
+	Owner string `json:"owner,omitempty"`
+	// Privilege model version of the metastore, of the form `major.minor`
+	// (e.g., `1.0`)
+	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
+	// Cloud region of the Metastore home shard (e.g., `us-west-2`, `westus`).
+	Region string `json:"region,omitempty"`
+	// The storage root URL for the Metastore.
+	StorageRoot string `json:"storage_root,omitempty"`
+	// UUID of storage credential to access the metastore storage_root.
 	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
+	// Name of the storage credential to access the metastore storage_root.
+	StorageRootCredentialName string `json:"storage_root_credential_name,omitempty"`
+	// Time at which this Metastore was last modified, in epoch milliseconds.
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Username of user who last modified the External Location.
+	UpdatedBy string `json:"updated_by,omitempty"`
+}
+
+// The scope of Delta Sharing enabled for the Metastore
+type GetMetastoreSummaryResponseDeltaSharingScope string
+
+const GetMetastoreSummaryResponseDeltaSharingScopeInternal GetMetastoreSummaryResponseDeltaSharingScope = `INTERNAL`
+
+const GetMetastoreSummaryResponseDeltaSharingScopeInternalAndExternal GetMetastoreSummaryResponseDeltaSharingScope = `INTERNAL_AND_EXTERNAL`
+
+// String representation for [fmt.Print]
+func (gmsrdss *GetMetastoreSummaryResponseDeltaSharingScope) String() string {
+	return string(*gmsrdss)
+}
+
+// Set raw string value and validate it against allowed values
+func (gmsrdss *GetMetastoreSummaryResponseDeltaSharingScope) Set(v string) error {
+	switch v {
+	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
+		*gmsrdss = GetMetastoreSummaryResponseDeltaSharingScope(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "INTERNAL", "INTERNAL_AND_EXTERNAL"`, v)
+	}
+}
+
+// Type always returns GetMetastoreSummaryResponseDeltaSharingScope to satisfy [pflag.Value] interface
+func (gmsrdss *GetMetastoreSummaryResponseDeltaSharingScope) Type() string {
+	return "GetMetastoreSummaryResponseDeltaSharingScope"
 }
 
 type GetPermissionsResponse struct {
@@ -561,12 +634,12 @@ type IpAccessList struct {
 }
 
 type ListCatalogsResponse struct {
-	// AN array of catalog information objects.
+	// An array of catalog information objects.
 	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
 }
 
 type ListExternalLocationsResponse struct {
-	// AN array of external locations.
+	// An array of external locations.
 	ExternalLocations []ExternalLocationInfo `json:"external_locations,omitempty"`
 }
 
@@ -662,15 +735,13 @@ type MetastoreInfo struct {
 	// Whether Delta Sharing is enabled on this metastore.
 	DeltaSharingEnabled bool `json:"delta_sharing_enabled,omitempty"`
 	// The lifetime of delta sharing recipient token in seconds
-	DeltaSharingRecipientTokenLifetimeInSeconds int `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
+	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// Unique identifier of Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of Metastore.
 	Name string `json:"name,omitempty"`
 	// The owner of the metastore.
 	Owner string `json:"owner,omitempty"`
-	// Privileges the user has on the Metastore.
-	Privileges []Privilege `json:"privileges,omitempty"`
 	// The region this metastore has an afinity to. This is used by
 	// accounts-manager. Ignored by Unity Catalog.
 	Region string `json:"region,omitempty"`
@@ -695,7 +766,7 @@ type PartitionValue struct {
 	// The operator to apply for the value.
 	Op PartitionValueOp `json:"op,omitempty"`
 	// The key of a Delta Sharing recipient's property. For example
-	// "databricks-account-id". When this field is set, field `value` can not be
+	// `databricks-account-id`. When this field is set, field `value` can not be
 	// set.
 	RecipientPropertyKey string `json:"recipient_property_key,omitempty"`
 	// The value of the partition column. When this value is not set, it means
@@ -743,23 +814,65 @@ type PermissionsChange struct {
 
 type Privilege string
 
+const PrivilegeAllPrivileges Privilege = `ALL_PRIVILEGES`
+
 const PrivilegeCreate Privilege = `CREATE`
 
-const PrivilegeCreateMount Privilege = `CREATE_MOUNT`
+const PrivilegeCreateCatalog Privilege = `CREATE_CATALOG`
+
+const PrivilegeCreateExternalLocation Privilege = `CREATE_EXTERNAL_LOCATION`
+
+const PrivilegeCreateExternalTable Privilege = `CREATE_EXTERNAL_TABLE`
+
+const PrivilegeCreateFunction Privilege = `CREATE_FUNCTION`
+
+const PrivilegeCreateManagedStorage Privilege = `CREATE_MANAGED_STORAGE`
+
+const PrivilegeCreateMaterializedView Privilege = `CREATE_MATERIALIZED_VIEW`
+
+const PrivilegeCreateProvider Privilege = `CREATE_PROVIDER`
+
+const PrivilegeCreateRecipient Privilege = `CREATE_RECIPIENT`
+
+const PrivilegeCreateSchema Privilege = `CREATE_SCHEMA`
+
+const PrivilegeCreateShare Privilege = `CREATE_SHARE`
+
+const PrivilegeCreateStorageCredential Privilege = `CREATE_STORAGE_CREDENTIAL`
 
 const PrivilegeCreateTable Privilege = `CREATE_TABLE`
+
+const PrivilegeCreateView Privilege = `CREATE_VIEW`
+
+const PrivilegeExecute Privilege = `EXECUTE`
 
 const PrivilegeModify Privilege = `MODIFY`
 
 const PrivilegeReadFiles Privilege = `READ_FILES`
 
+const PrivilegeReadPrivateFiles Privilege = `READ_PRIVATE_FILES`
+
+const PrivilegeRefresh Privilege = `REFRESH`
+
 const PrivilegeSelect Privilege = `SELECT`
 
-const PrivilegeUnknownPrivilege Privilege = `UNKNOWN_PRIVILEGE`
+const PrivilegeSetSharePermission Privilege = `SET_SHARE_PERMISSION`
 
 const PrivilegeUsage Privilege = `USAGE`
 
+const PrivilegeUseCatalog Privilege = `USE_CATALOG`
+
+const PrivilegeUseProvider Privilege = `USE_PROVIDER`
+
+const PrivilegeUseRecipient Privilege = `USE_RECIPIENT`
+
+const PrivilegeUseSchema Privilege = `USE_SCHEMA`
+
+const PrivilegeUseShare Privilege = `USE_SHARE`
+
 const PrivilegeWriteFiles Privilege = `WRITE_FILES`
+
+const PrivilegeWritePrivateFiles Privilege = `WRITE_PRIVATE_FILES`
 
 // String representation for [fmt.Print]
 func (p *Privilege) String() string {
@@ -769,11 +882,11 @@ func (p *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (p *Privilege) Set(v string) error {
 	switch v {
-	case `CREATE`, `CREATE_MOUNT`, `CREATE_TABLE`, `MODIFY`, `READ_FILES`, `SELECT`, `UNKNOWN_PRIVILEGE`, `USAGE`, `WRITE_FILES`:
+	case `ALL_PRIVILEGES`, `CREATE`, `CREATE_CATALOG`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
 		*p = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CREATE", "CREATE_MOUNT", "CREATE_TABLE", "MODIFY", "READ_FILES", "SELECT", "UNKNOWN_PRIVILEGE", "USAGE", "WRITE_FILES"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "CREATE", "CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
 	}
 }
 
@@ -793,7 +906,7 @@ type ProviderInfo struct {
 	// The delta sharing authentication type.
 	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
 	// Cloud vendor of the provider's UC Metastore. This field is only present
-	// when the authentication type is `DATABRICKS`.
+	// when the authentication_type is `DATABRICKS`.
 	Cloud string `json:"cloud,omitempty"`
 	// Description about the provider.
 	Comment string `json:"comment,omitempty"`
@@ -812,9 +925,11 @@ type ProviderInfo struct {
 	Name string `json:"name,omitempty"`
 	// Username of Provider owner.
 	Owner string `json:"owner,omitempty"`
-	// This field is only present when the authentication type is TOKEN.
+	// The recipient profile. This field is only present when the
+	// authentication_type is `TOKEN`.
 	RecipientProfile *RecipientProfile `json:"recipient_profile,omitempty"`
-	// This field is only present when the authentication type is TOKEN.
+	// This field is required when the authentication_type is `TOKEN` or not
+	// provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 	// Cloud region of the provider's UC Metastore. This field is only present
 	// when the authentication type is `DATABRICKS`.
@@ -839,16 +954,33 @@ type RecipientInfo struct {
 	ActivationUrl string `json:"activation_url,omitempty"`
 	// The delta sharing authentication type.
 	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
+	// Cloud vendor of the recipient's Unity Catalog Metstore. This field is
+	// only present when the authentication type is `DATABRICKS`.
+	Cloud string `json:"cloud,omitempty"`
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
 	// Time at which this recipient was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of recipient creator.
 	CreatedBy string `json:"created_by,omitempty"`
+	// The global Unity Catalog metastore id provided by the data recipient.\n
+	// This field is only present when the authentication type is
+	// `DATABRICKS`.\n The identifier is of format
+	// <cloud>:<region>:<metastore-uuid>.
+	DataRecipientGlobalMetastoreId any `json:"data_recipient_global_metastore_id,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
+	// Unique identifier of recipient's Unity Catalog Metastore. This field is
+	// only present when the authentication type is `DATABRICKS`
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of Recipient.
 	Name string `json:"name,omitempty"`
+	// Cloud region of the recipient's Unity Catalog Metstore. This field is
+	// only present when the authentication type is `DATABRICKS`.
+	Region string `json:"region,omitempty"`
+	// The one-time sharing code provided by the data recipient. This field is
+	// only present when the authentication type is `DATABRICKS`.
+	SharingCode string `json:"sharing_code,omitempty"`
 	// This field is only present when the authentication type is `TOKEN`.
 	Tokens []RecipientTokenInfo `json:"tokens,omitempty"`
 	// Time at which the recipient was updated, in epoch milliseconds.
@@ -927,10 +1059,12 @@ type SchemaInfo struct {
 	Name string `json:"name,omitempty"`
 	// Username of current owner of Schema.
 	Owner string `json:"owner,omitempty"`
-	// Privileges the user has on the Schema.
-	Privileges []Privilege `json:"privileges,omitempty"`
 
 	Properties map[string]string `json:"properties,omitempty"`
+	// Storage location for managed tables within schema.
+	StorageLocation string `json:"storage_location,omitempty"`
+	// Storage root URL for managed tables within schema.
+	StorageRoot string `json:"storage_root,omitempty"`
 	// Time at which this Schema was created, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified Schema.
@@ -938,7 +1072,7 @@ type SchemaInfo struct {
 }
 
 type ShareInfo struct {
-	// comment when creating the share
+	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// Time at which this Share was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
@@ -948,8 +1082,10 @@ type ShareInfo struct {
 	Name string `json:"name,omitempty"`
 	// A list of shared data objects within the Share.
 	Objects []SharedDataObject `json:"objects,omitempty"`
-	// Username of current owner of credential.
+	// Username of current owner of Share.
 	Owner string `json:"owner,omitempty"`
+	// Array of shared data object updates.
+	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
 }
 
 // Get share permissions
@@ -996,8 +1132,7 @@ type SharedDataObject struct {
 	// start_version. If not specified, clients can only query starting from the
 	// version of the object at the time it was added to the share.
 	//
-	// NOTE: The start_version should be <= the \"current\" version of the
-	// object.
+	// NOTE: The start_version should be <= the `current` version of the object.
 	StartVersion int64 `json:"start_version,omitempty"`
 	// One of: **ACTIVE**, **PERMISSION_DENIED**.
 	Status SharedDataObjectStatus `json:"status,omitempty"`
@@ -1121,8 +1256,6 @@ type TableInfo struct {
 	Name string `json:"name,omitempty"`
 	// Username of current owner of Table.
 	Owner string `json:"owner,omitempty"`
-	// Privileges the user has on the Table.
-	Privileges []Privilege `json:"privileges,omitempty"`
 
 	Properties map[string]string `json:"properties,omitempty"`
 	// Name of parent Schema relative to its parent Catalog.
@@ -1175,7 +1308,9 @@ const TableTypeExternal TableType = `EXTERNAL`
 
 const TableTypeManaged TableType = `MANAGED`
 
-const TableTypeUnknownTableType TableType = `UNKNOWN_TABLE_TYPE`
+const TableTypeMaterializedView TableType = `MATERIALIZED_VIEW`
+
+const TableTypeStreamingTable TableType = `STREAMING_TABLE`
 
 const TableTypeView TableType = `VIEW`
 
@@ -1187,11 +1322,11 @@ func (tt *TableType) String() string {
 // Set raw string value and validate it against allowed values
 func (tt *TableType) Set(v string) error {
 	switch v {
-	case `EXTERNAL`, `MANAGED`, `UNKNOWN_TABLE_TYPE`, `VIEW`:
+	case `EXTERNAL`, `MANAGED`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
 		*tt = TableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "MANAGED", "UNKNOWN_TABLE_TYPE", "VIEW"`, v)
+		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "MANAGED", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
 	}
 }
 
@@ -1205,7 +1340,7 @@ type UnassignRequest struct {
 	// Query for the ID of the Metastore to delete.
 	MetastoreId string `json:"-" url:"metastore_id"`
 	// A workspace ID.
-	WorkspaceId int `json:"-" url:"-"`
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 type UpdateCatalog struct {
@@ -1231,6 +1366,11 @@ type UpdateExternalLocation struct {
 	Name string `json:"name,omitempty" url:"-"`
 	// The owner of the External Location.
 	Owner string `json:"owner,omitempty"`
+	// Indicates whether the external location is read-only.
+	ReadOnly bool `json:"read_only,omitempty"`
+	// Skips validation of the storage credential associated with the external
+	// location.
+	SkipValidation bool `json:"skip_validation,omitempty"`
 	// Path URL of the External Location.
 	Url string `json:"url,omitempty"`
 }
@@ -1241,7 +1381,7 @@ type UpdateMetastore struct {
 	// Whether Delta Sharing is enabled on this metastore.
 	DeltaSharingEnabled bool `json:"delta_sharing_enabled,omitempty"`
 	// The lifetime of delta sharing recipient token in seconds
-	DeltaSharingRecipientTokenLifetimeInSeconds int `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
+	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// Required. Unique ID of the Metastore (from URL).
 	Id string `json:"-" url:"-"`
 	// Name of Metastore.
@@ -1258,7 +1398,7 @@ type UpdateMetastoreAssignment struct {
 	// The unique ID of the Metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// A workspace ID.
-	WorkspaceId int `json:"-" url:"-"`
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 type UpdatePermissions struct {
@@ -1273,23 +1413,18 @@ type UpdatePermissions struct {
 }
 
 type UpdateProvider struct {
-	// The delta sharing authentication type.
-	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
 	// Description about the provider.
 	Comment string `json:"comment,omitempty"`
 	// The name of the Provider.
-	Name string `json:"name" url:"-"`
+	Name string `json:"name,omitempty" url:"-"`
 	// Username of Provider owner.
 	Owner string `json:"owner,omitempty"`
-	// This field is only present when the authentication type is TOKEN.
-	RecipientProfile *RecipientProfile `json:"recipient_profile,omitempty"`
-	// This field is only present when the authentication type is TOKEN.
+	// This field is required when the authentication_type is `TOKEN` or not
+	// provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 }
 
 type UpdateRecipient struct {
-	// The delta sharing authentication type.
-	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
 	// IP Access List
@@ -1311,13 +1446,19 @@ type UpdateSchema struct {
 	Owner string `json:"owner,omitempty"`
 
 	Properties map[string]string `json:"properties,omitempty"`
+	// Storage root URL for managed tables within schema.
+	StorageRoot string `json:"storage_root,omitempty"`
 }
 
 type UpdateShare struct {
-	// The name of the share.
-	Name string `json:"-" url:"-"`
+	// User-provided free-form text description.
+	Comment string `json:"comment,omitempty"`
+	// Name of the Share.
+	Name string `json:"name,omitempty" url:"-"`
+	// Username of current owner of Share.
+	Owner string `json:"owner,omitempty"`
 	// Array of shared data object updates.
-	Updates []SharedDataObjectUpdate `json:"updates"`
+	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
 }
 
 type UpdateSharePermissions struct {

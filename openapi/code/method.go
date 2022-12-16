@@ -270,6 +270,20 @@ func (m *Method) GetByName() *Entity {
 	if n == nil {
 		return nil
 	}
+	potentialName := "GetBy"
+	for _, v := range n.NamePath {
+		potentialName += v.PascalName()
+	}
+	for _, other := range m.Service.methods {
+		shortcut := other.Shortcut()
+		if shortcut == nil {
+			continue
+		}
+		if shortcut.PascalName() == potentialName {
+			// we already have the shortcut
+			return nil
+		}
+	}
 	return n.Entity
 }
 
