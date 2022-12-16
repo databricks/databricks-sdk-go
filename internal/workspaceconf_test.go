@@ -17,7 +17,7 @@ func TestAccWorkspaceConf(t *testing.T) {
 	assert.Equal(t, 3, len(*conf))
 
 	err = w.WorkspaceConf.SetStatus(ctx, workspaceconf.WorkspaceConf{
-		"maxTokenLifetimeDays": "30",
+		"enableWebTerminal": "true",
 	})
 	require.NoError(t, err)
 }
