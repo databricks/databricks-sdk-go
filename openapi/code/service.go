@@ -157,8 +157,17 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 		field.IsQuery = param.IsQuery
 		request.fields[param.Name] = field
 		if param.Required {
-			// TODO: figure out what to do with entity+param requests
-			request.RequiredOrder = append(request.RequiredOrder, param.Name)
+			var alreadyRequired bool
+			for _, v := range request.RequiredOrder {
+				if v == param.Name {
+					alreadyRequired = true
+					break
+				}
+			}
+			if !alreadyRequired {
+				// TODO: figure out what to do with entity+param requests
+				request.RequiredOrder = append(request.RequiredOrder, param.Name)
+			}
 		}
 	}
 	if request.Name == "" {

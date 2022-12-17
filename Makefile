@@ -33,7 +33,7 @@ doc:
 	@go run golang.org/x/tools/cmd/godoc@latest -http=localhost:6060
 
 install-codegen: vendor
-	@go build -o ~/go/bin/openapi-codegen openapi/gen/main.go
+	@go build -o ~/go/bin/oac openapi/gen/main.go
 
 gen:
 	@go run openapi/gen/main.go

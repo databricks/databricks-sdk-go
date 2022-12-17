@@ -149,6 +149,26 @@ func (e *Entity) Fields() (fields []Field) {
 	return fields
 }
 
+// HasQueryField returns true if any of the fields is from query
+func (e *Entity) HasQueryField() bool {
+	for _, v := range e.fields {
+		if v.IsQuery {
+			return true
+		}
+	}
+	return false
+}
+
+// HasJsonField returns true if any of the fields is in the body
+func (e *Entity) HasJsonField() bool {
+	for _, v := range e.fields {
+		if v.IsJson {
+			return true
+		}
+	}
+	return false
+}
+
 // Does this type have x-databricks-id field?
 func (e *Entity) HasIdentifierField() bool {
 	return e.IdentifierField() != nil
