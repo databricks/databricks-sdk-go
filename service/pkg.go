@@ -62,6 +62,8 @@
 //
 // - [pipelines.PipelinesAPI]: The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
 //
+// - [clusterpolicies.PolicyFamiliesAPI]: View available policy families.
+//
 // - [deployment.PrivateAccessAPI]: These APIs manage private access settings for this account.
 //
 // - [unitycatalog.ProvidersAPI]: Databricks Delta Sharing: Providers REST API.
@@ -182,6 +184,7 @@ var (
 	_ *deployment.NetworksAPI                 = nil
 	_ *permissions.PermissionsAPI             = nil
 	_ *pipelines.PipelinesAPI                 = nil
+	_ *clusterpolicies.PolicyFamiliesAPI      = nil
 	_ *deployment.PrivateAccessAPI            = nil
 	_ *unitycatalog.ProvidersAPI              = nil
 	_ *sql.QueriesAPI                         = nil

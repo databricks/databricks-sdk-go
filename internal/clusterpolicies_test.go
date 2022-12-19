@@ -30,10 +30,10 @@ func TestAccClusterPolicies(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, policy.PolicyId, byName.PolicyId)
 
-	all, err := w.ClusterPolicies.ListAll(ctx)
+	all, err := w.ClusterPolicies.ListAll(ctx, clusterpolicies.List{})
 	require.NoError(t, err)
 
-	names, err := w.ClusterPolicies.PolicyNameToPolicyIdMap(ctx)
+	names, err := w.ClusterPolicies.PolicyNameToPolicyIdMap(ctx, clusterpolicies.List{})
 	require.NoError(t, err)
 	assert.Equal(t, len(names), len(all))
 	assert.Equal(t, policy.PolicyId, names[policy.Name])

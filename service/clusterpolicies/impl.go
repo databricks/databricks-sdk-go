@@ -4,6 +4,7 @@ package clusterpolicies
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -40,9 +41,28 @@ func (a *clusterPoliciesImpl) Get(ctx context.Context, request Get) (*Policy, er
 	return &policy, err
 }
 
-func (a *clusterPoliciesImpl) List(ctx context.Context) (*ListPoliciesResponse, error) {
+func (a *clusterPoliciesImpl) List(ctx context.Context, request List) (*ListPoliciesResponse, error) {
 	var listPoliciesResponse ListPoliciesResponse
 	path := "/api/2.0/policies/clusters/list"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &listPoliciesResponse)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &listPoliciesResponse)
 	return &listPoliciesResponse, err
+}
+
+// unexported type that holds implementations of just PolicyFamilies API methods
+type policyFamiliesImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *policyFamiliesImpl) Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error) {
+	var policyFamily PolicyFamily
+	path := fmt.Sprintf("/api/2.0/policy-families/%v", request.PolicyFamilyId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &policyFamily)
+	return &policyFamily, err
+}
+
+func (a *policyFamiliesImpl) List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error) {
+	var listPolicyFamiliesResponse ListPolicyFamiliesResponse
+	path := "/api/2.0/policy-families"
+	err := a.client.Do(ctx, http.MethodGet, path, request, &listPolicyFamiliesResponse)
+	return &listPolicyFamiliesResponse, err
 }

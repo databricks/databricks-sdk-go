@@ -358,6 +358,18 @@ type WorkspaceClient struct {
 	// records that fail those expectations.
 	Pipelines *pipelines.PipelinesAPI
 
+	// View available policy families. A policy family contains a policy
+	// definition providing best practices for configuring clusters for a
+	// particular use case.
+	//
+	// Databricks manages and provides policy families for several common
+	// cluster use cases. You cannot create, edit, or delete policy families.
+	//
+	// Policy families cannot be used directly to create clusters. Instead, you
+	// create cluster policies using a policy family. Cluster policies created
+	// using a policy family inherit the policy family's policy definition.
+	PolicyFamilies *clusterpolicies.PolicyFamiliesAPI
+
 	// Databricks Delta Sharing: Providers REST API
 	Providers *unitycatalog.ProvidersAPI
 
@@ -540,6 +552,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ModelVersions:        mlflow.NewModelVersions(apiClient),
 		Permissions:          permissions.NewPermissions(apiClient),
 		Pipelines:            pipelines.NewPipelines(apiClient),
+		PolicyFamilies:       clusterpolicies.NewPolicyFamilies(apiClient),
 		Providers:            unitycatalog.NewProviders(apiClient),
 		Queries:              sql.NewQueries(apiClient),
 		QueryHistory:         sql.NewQueryHistory(apiClient),

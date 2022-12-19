@@ -60,5 +60,22 @@ type ClusterPoliciesService interface {
 	// Returns a list of policies accessible by the requesting user.
 	//
 	// Use ListAll() to get all Policy instances
-	List(ctx context.Context) (*ListPoliciesResponse, error)
+	List(ctx context.Context, request List) (*ListPoliciesResponse, error)
+}
+
+// View available policy families. A policy family contains a policy definition
+// providing best practices for configuring clusters for a particular use case.
+//
+// Databricks manages and provides policy families for several common cluster
+// use cases. You cannot create, edit, or delete policy families.
+//
+// Policy families cannot be used directly to create clusters. Instead, you
+// create cluster policies using a policy family. Cluster policies created using
+// a policy family inherit the policy family's policy definition.
+type PolicyFamiliesService interface {
+	Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error)
+
+	//
+	// Use ListAll() to get all PolicyFamily instances, which will iterate over every result page.
+	List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error)
 }
