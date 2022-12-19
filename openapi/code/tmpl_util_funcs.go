@@ -41,4 +41,7 @@ var HelperFuncs = template.FuncMap{
 		}
 		return out
 	},
+	"list": func(l ...any) []any {
+		return l
+	},
 }
