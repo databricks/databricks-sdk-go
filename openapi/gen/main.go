@@ -34,7 +34,7 @@ func main() {
 	flag.BoolVar(&ctx.DryRun, "dry-run", false, "print to stdout instead of real files")
 	flag.Parse()
 	if ctx.Spec == "" {
-		println("USAGE: go run databricks/openapi/gen/main.go -spec /path/to/spec.json")
+		println("USAGE: go run openapi/gen/main.go -spec /path/to/spec.json")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
