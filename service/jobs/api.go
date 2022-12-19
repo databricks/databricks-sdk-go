@@ -105,8 +105,9 @@ func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, opt
 		}
 		for _, o := range options {
 			o(&retries.Info[Run]{
-				Info:    *run,
+				Info:    run,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := run.State.LifeCycleState
@@ -235,8 +236,9 @@ func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRun GetRun, options ...r
 		}
 		for _, o := range options {
 			o(&retries.Info[Run]{
-				Info:    *run,
+				Info:    run,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := run.State.LifeCycleState
@@ -440,8 +442,9 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, opt
 		}
 		for _, o := range options {
 			o(&retries.Info[Run]{
-				Info:    *run,
+				Info:    run,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := run.State.LifeCycleState
@@ -500,8 +503,9 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...r
 		}
 		for _, o := range options {
 			o(&retries.Info[Run]{
-				Info:    *run,
+				Info:    run,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := run.State.LifeCycleState
@@ -555,8 +559,9 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, option
 		}
 		for _, o := range options {
 			o(&retries.Info[Run]{
-				Info:    *run,
+				Info:    run,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := run.State.LifeCycleState

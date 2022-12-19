@@ -105,8 +105,9 @@ func (a *PipelinesAPI) GetAndWait(ctx context.Context, get Get, options ...retri
 		}
 		for _, o := range options {
 			o(&retries.Info[GetPipelineResponse]{
-				Info:    *getPipelineResponse,
+				Info:    getPipelineResponse,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := getPipelineResponse.State
@@ -280,8 +281,9 @@ func (a *PipelinesAPI) ResetAndWait(ctx context.Context, reset Reset, options ..
 		}
 		for _, o := range options {
 			o(&retries.Info[GetPipelineResponse]{
-				Info:    *getPipelineResponse,
+				Info:    getPipelineResponse,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := getPipelineResponse.State
@@ -336,8 +338,9 @@ func (a *PipelinesAPI) StopAndWait(ctx context.Context, stop Stop, options ...re
 		}
 		for _, o := range options {
 			o(&retries.Info[GetPipelineResponse]{
-				Info:    *getPipelineResponse,
+				Info:    getPipelineResponse,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := getPipelineResponse.State

@@ -187,7 +187,8 @@ func (a *LibrariesAPI) Wait(ctx context.Context, wait Wait,
 		for _, o := range options {
 			o(&retries.Info[ClusterLibraryStatuses]{
 				Timeout: i.Timeout,
-				Info:    *status,
+				Info:    status,
+				Polling: true,
 			})
 		}
 		if err != nil {

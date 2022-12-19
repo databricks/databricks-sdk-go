@@ -116,8 +116,9 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
-				Info:    *clusterInfo,
+				Info:    clusterInfo,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := clusterInfo.State
@@ -168,8 +169,9 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteClu
 		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
-				Info:    *clusterInfo,
+				Info:    clusterInfo,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := clusterInfo.State
@@ -246,8 +248,9 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, 
 		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
-				Info:    *clusterInfo,
+				Info:    clusterInfo,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := clusterInfo.State
@@ -326,8 +329,9 @@ func (a *ClustersAPI) GetAndWait(ctx context.Context, get Get, options ...retrie
 		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
-				Info:    *clusterInfo,
+				Info:    clusterInfo,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := clusterInfo.State
@@ -548,8 +552,9 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeClu
 		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
-				Info:    *clusterInfo,
+				Info:    clusterInfo,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := clusterInfo.State
@@ -598,8 +603,9 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster Restart
 		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
-				Info:    *clusterInfo,
+				Info:    clusterInfo,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := clusterInfo.State
@@ -662,8 +668,9 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 		}
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
-				Info:    *clusterInfo,
+				Info:    clusterInfo,
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := clusterInfo.State

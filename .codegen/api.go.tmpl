@@ -69,8 +69,9 @@ func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .R
 		}
 		for _, o := range options {
 			o(&retries.Info[{{.Wait.Poll.Response.PascalName}}]{
-				Info: *{{.Wait.Poll.Response.CamelName}},
+				Info: {{.Wait.Poll.Response.CamelName}},
 				Timeout: i.Timeout,
+				Polling: true,
 			})
 		}
 		status := {{.Wait.Poll.Response.CamelName}}{{range .Wait.StatusPath}}.{{.PascalName}}{{end}}

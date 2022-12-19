@@ -11,7 +11,8 @@ import (
 )
 
 type Info[T any] struct {
-	Info    T
+	Info    *T
+	Polling bool
 	Timeout time.Duration
 }
 
@@ -20,6 +21,15 @@ type Option[T any] func(*Info[T])
 func Timeout[T any](dur time.Duration) Option[T] {
 	return func(i *Info[T]) {
 		i.Timeout = dur
+	}
+}
+
+func OnPoll[T any](cb func (*T)) Option[T] {
+	return func(i *Info[T]) {
+		if i.Info == nil {
+			return
+		}
+		cb(i.Info)
 	}
 }
 
