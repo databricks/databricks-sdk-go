@@ -194,7 +194,7 @@ func (csps *CronSchedulePauseStatus) Type() string {
 type DbtOutput struct {
 	// An optional map of headers to send when retrieving the artifact from the
 	// `artifacts_link`.
-	ArtifactsHeaders any `json:"artifacts_headers,omitempty"`
+	ArtifactsHeaders map[string]string `json:"artifacts_headers,omitempty"`
 	// A pre-signed URL to download the (compressed) dbt artifacts. This link is
 	// valid for a limited time (30 minutes). This information is only available
 	// after the run has finished.
@@ -702,7 +702,7 @@ type NotebookTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-widgets
-	BaseParameters map[string]any `json:"base_parameters,omitempty"`
+	BaseParameters map[string]string `json:"base_parameters,omitempty"`
 	// The path of the notebook to be run in the Databricks workspace or remote
 	// repository. For notebooks stored in the Databricks workspace, the path
 	// must be absolute and begin with a slash. For notebooks stored in a remote
@@ -762,7 +762,7 @@ type PythonWheelTask struct {
 	// Command-line parameters passed to Python wheel task in the form of
 	// `["--name=task", "--data=dbfs:/path/to/data.json"]`. Leave it empty if
 	// `parameters` is not null.
-	NamedParameters any `json:"named_parameters,omitempty"`
+	NamedParameters map[string]string `json:"named_parameters,omitempty"`
 	// Name of the package to execute
 	PackageName string `json:"package_name,omitempty"`
 	// Command-line parameters passed to Python wheel task. Leave it empty if
@@ -1675,7 +1675,7 @@ type SqlTask struct {
 	Dashboard *SqlTaskDashboard `json:"dashboard,omitempty"`
 	// Parameters to be used for each run of this job. The SQL alert task does
 	// not support custom parameters.
-	Parameters any `json:"parameters,omitempty"`
+	Parameters map[string]string `json:"parameters,omitempty"`
 	// If query, indicates that this job must execute a SQL query.
 	Query *SqlTaskQuery `json:"query,omitempty"`
 	// The canonical identifier of the SQL warehouse. Only serverless and pro
