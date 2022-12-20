@@ -16,7 +16,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAccDbfsUtilities(t *testing.T) {
+type hashable []byte
+
+func (buf hashable) Hash() uint32 {
+	h := fnv.New32a()
+	h.Write(buf)
+	return h.Sum32()
+}
+
+func TestAccDbfsHandleWrite(t *testing.T) {
 	ctx, w := workspaceTest(t)
 	if w.Config.IsGcp() {
 		t.Skip("dbfs not available on gcp")
@@ -26,46 +34,82 @@ func TestAccDbfsUtilities(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
 	in := make([]byte, 1.44*1e6)
 	_, _ = rand.Read(in)
-	h := fnv.New32a()
-	h.Write(in)
-	inHash := h.Sum32()
-
-	err := w.Dbfs.Overwrite(ctx, path, bytes.NewReader(in))
-	require.NoError(t, err)
 
 	defer w.Dbfs.Delete(ctx, dbfs.Delete{
 		Path: path,
 	})
 
-	// Download directly [io.Reader] and let [io.ReadAll] determine buffer size.
+	// Upload through [io.Writer].
 	{
-		dbfsReader, err := w.Dbfs.Open(ctx, path)
+		handle, err := w.Dbfs.Open(ctx, path, dbfs.FileModeWrite)
+		require.NoError(t, err)
+		n, err := handle.Write(in)
+		require.NoError(t, err)
+		assert.Equal(t, len(in), int(n))
+		require.NoError(t, handle.Close())
+
+		// Verify contents hash.
+		out, err := w.Dbfs.ReadFile(ctx, path)
+		require.NoError(t, err)
+		assert.Equal(t, hashable(in).Hash(), hashable(out).Hash())
+	}
+
+	// Upload through [io.Writer] should fail because the file exists.
+	{
+		_, err := w.Dbfs.Open(ctx, path, dbfs.FileModeWrite)
+		require.ErrorContains(t, err, "dbfs: open: A file or directory already exists at the input path")
+	}
+
+	// Upload through [io.ReadFrom] with overwrite bit set.
+	{
+		handle, err := w.Dbfs.Open(ctx, path, dbfs.FileModeWrite|dbfs.FileModeOverwrite)
+		require.NoError(t, err)
+		n, err := handle.ReadFrom(bytes.NewReader(in))
+		require.NoError(t, err)
+		assert.Equal(t, len(in), int(n))
+		require.NoError(t, handle.Close())
+
+		// Verify contents hash.
+		out, err := w.Dbfs.ReadFile(ctx, path)
+		require.NoError(t, err)
+		assert.Equal(t, hashable(in).Hash(), hashable(out).Hash())
+	}
+
+	// Upload through [dbfs.DbfsAPI.WriteFile].
+	{
+		err := w.Dbfs.WriteFile(ctx, path, in)
+		require.NoError(t, err)
+
+		// Verify contents hash.
+		out, err := w.Dbfs.ReadFile(ctx, path)
+		require.NoError(t, err)
+		assert.Equal(t, hashable(in).Hash(), hashable(out).Hash())
+	}
+
+	// Download through [io.Reader] and let [io.ReadAll] determine buffer size.
+	{
+		handle, err := w.Dbfs.Open(ctx, path, dbfs.FileModeRead)
 		require.NoError(t, err)
 
 		// Note: [io.ReadAll] always calls into the [io.Reader] interface.
-		out, err := io.ReadAll(dbfsReader)
+		out, err := io.ReadAll(handle)
 		require.NoError(t, err)
 
 		// Verify contents hash.
-		h := fnv.New32a()
-		h.Write(out)
-		require.Equal(t, inHash, h.Sum32())
+		assert.Equal(t, hashable(in).Hash(), hashable(out).Hash())
 	}
 
-	// Download through [io.WriterTo] with maximum buffer size.
+	// Download through [io.WriterTo].
 	{
-		dbfsReader, err := w.Dbfs.Open(ctx, path)
+		handle, err := w.Dbfs.Open(ctx, path, dbfs.FileModeRead)
 		require.NoError(t, err)
 
-		// Note: [io.Copy] leverages the [io.WriterTo] interface if available.
 		var buf bytes.Buffer
-		_, err = io.Copy(&buf, dbfsReader)
+		_, err = handle.WriteTo(&buf)
 		require.NoError(t, err)
 
 		// Verify contents hash.
-		h := fnv.New32a()
-		h.Write(buf.Bytes())
-		require.Equal(t, inHash, h.Sum32())
+		assert.Equal(t, hashable(in).Hash(), hashable(buf.Bytes()).Hash())
 	}
 }
 
