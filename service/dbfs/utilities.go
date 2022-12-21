@@ -249,7 +249,7 @@ func (a *DbfsAPI) Open(ctx context.Context, path string, mode FileMode) (Handle,
 	isRead := (mode & FileModeRead) != 0
 	isWrite := (mode & FileModeWrite) != 0
 	if (isRead && isWrite) || (!isRead && !isWrite) {
-		return nil, fmt.Errorf("dbfs: must specify dbfs.FileModeRead or dbfs.FileModeWrite")
+		return nil, fmt.Errorf("dbfs open: must specify dbfs.FileModeRead or dbfs.FileModeWrite")
 	}
 
 	var err error
@@ -260,7 +260,7 @@ func (a *DbfsAPI) Open(ctx context.Context, path string, mode FileMode) (Handle,
 		err = h.openForWrite(mode)
 	}
 	if err != nil {
-		return nil, fmt.Errorf("dbfs: %w", err)
+		return nil, fmt.Errorf("dbfs open: %w", err)
 	}
 
 	return h, nil
