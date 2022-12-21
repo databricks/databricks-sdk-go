@@ -57,7 +57,7 @@ func TestAccDbfsHandleWrite(t *testing.T) {
 	// Upload through [io.Writer] should fail because the file exists.
 	{
 		_, err := w.Dbfs.Open(ctx, path, dbfs.FileModeWrite)
-		require.ErrorContains(t, err, "dbfs: open: A file or directory already exists at the input path")
+		require.ErrorContains(t, err, "dbfs open: A file or directory already exists at the input path")
 	}
 
 	// Upload through [io.ReadFrom] with overwrite bit set.
