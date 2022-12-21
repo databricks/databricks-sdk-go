@@ -25,24 +25,60 @@ const (
 const maxDbfsBlockSize = 1024 * 1024
 
 // Internal only state for a read handle.
-type dbfsHandleReader struct {
+type fileHandleReader struct {
 	size   int64
 	offset int64
 }
 
+func (f *fileHandleReader) errorf(format string, a ...any) error {
+	return fmt.Errorf("dbfs read: "+format, a...)
+}
+
+func (f *fileHandleReader) error(err error) error {
+	if err == nil {
+		return nil
+	}
+	return f.errorf("%w", err)
+}
+
 // Internal only state for a write handle.
-type dbfsHandleWriter struct {
+type fileHandleWriter struct {
 	handle int64
 }
 
+func (f *fileHandleWriter) errorf(format string, a ...any) error {
+	return fmt.Errorf("dbfs write: "+format, a...)
+}
+
+func (f *fileHandleWriter) error(err error) error {
+	if err == nil {
+		return nil
+	}
+	return f.errorf("%w", err)
+}
+
 // Internal only state for a DBFS file handle.
-type dbfsHandle struct {
+type fileHandle struct {
 	ctx  context.Context
-	api  DbfsAPI
+	api  *DbfsAPI
 	path string
 
-	reader *dbfsHandleReader
-	writer *dbfsHandleWriter
+	reader *fileHandleReader
+	writer *fileHandleWriter
+}
+
+func (h *fileHandle) checkRead() (*fileHandleReader, error) {
+	if h.reader != nil {
+		return h.reader, nil
+	}
+	return nil, fmt.Errorf("dbfs: file not open for reading")
+}
+
+func (h *fileHandle) checkWrite() (*fileHandleWriter, error) {
+	if h.writer != nil {
+		return h.writer, nil
+	}
+	return nil, fmt.Errorf("dbfs: file not open for writing")
 }
 
 // Handle defines the interface of the object returned by [DbfsAPI.Open].
@@ -53,10 +89,10 @@ type Handle interface {
 }
 
 // Implement the [io.Reader] interface.
-func (h *dbfsHandle) Read(p []byte) (int, error) {
-	r := h.reader
-	if r == nil {
-		return 0, fmt.Errorf("dbfs: file not open for reading")
+func (h *fileHandle) Read(p []byte) (int, error) {
+	r, err := h.checkRead()
+	if err != nil {
+		return 0, err
 	}
 
 	var ntotal int
@@ -76,19 +112,19 @@ func (h *dbfsHandle) Read(p []byte) (int, error) {
 			Offset: int(r.offset), // TODO: make int32/in64 work properly
 		})
 		if err != nil {
-			return ntotal, fmt.Errorf("dbfs: read: %w", err)
+			return ntotal, r.error(err)
 		}
 
 		// The guard against offset >= size happens above, so this can only happen
 		// if the file is modified or truncated while reading. If this happens,
 		// the read contents will likely be corrupted, so we return an error.
 		if res.BytesRead == 0 {
-			return ntotal, fmt.Errorf("dbfs: read: unexpected EOF at offset %d (size %d)", r.offset, r.size)
+			return ntotal, r.errorf("unexpected EOF at offset %d (size %d)", r.offset, r.size)
 		}
 
 		nread, err := base64.StdEncoding.Decode(chunk, []byte(res.Data))
 		if err != nil {
-			return ntotal, err
+			return ntotal, r.error(err)
 		}
 
 		ntotal += nread
@@ -99,10 +135,10 @@ func (h *dbfsHandle) Read(p []byte) (int, error) {
 }
 
 // Implement the [io.Writer] interface.
-func (h *dbfsHandle) Write(p []byte) (int, error) {
-	w := h.writer
-	if w == nil {
-		return 0, fmt.Errorf("dbfs: file not open for writing")
+func (h *fileHandle) Write(p []byte) (int, error) {
+	w, err := h.checkWrite()
+	if err != nil {
+		return 0, err
 	}
 
 	var ntotal int
@@ -117,7 +153,7 @@ func (h *dbfsHandle) Write(p []byte) (int, error) {
 			Handle: w.handle,
 		})
 		if err != nil {
-			return ntotal, fmt.Errorf("dbfs: add block: %w", err)
+			return ntotal, w.error(err)
 		}
 
 		ntotal += len(chunk)
@@ -127,24 +163,20 @@ func (h *dbfsHandle) Write(p []byte) (int, error) {
 }
 
 // Implement the [io.Closer] interface.
-func (h *dbfsHandle) Close() error {
-	w := h.writer
-	if w == nil {
-		return fmt.Errorf("dbfs: file not open for writing")
-	}
-
-	err := h.api.CloseByHandle(h.ctx, w.handle)
+func (h *fileHandle) Close() error {
+	w, err := h.checkWrite()
 	if err != nil {
-		return fmt.Errorf("dbfs: close: %w", err)
+		return err
 	}
 
-	return nil
+	return w.error(h.api.CloseByHandle(h.ctx, w.handle))
 }
 
 // Implement the [io.WriterTo] interface.
-func (h *dbfsHandle) WriteTo(w io.Writer) (int64, error) {
-	if h.reader == nil {
-		return 0, fmt.Errorf("dbfs: file not open for reading")
+func (h *fileHandle) WriteTo(w io.Writer) (int64, error) {
+	_, err := h.checkRead()
+	if err != nil {
+		return 0, err
 	}
 
 	// Limit types to io.Reader and io.Writer to avoid recursion
@@ -155,9 +187,10 @@ func (h *dbfsHandle) WriteTo(w io.Writer) (int64, error) {
 }
 
 // Implement the [io.ReaderFrom] interface.
-func (h *dbfsHandle) ReadFrom(r io.Reader) (int64, error) {
-	if h.writer == nil {
-		return 0, fmt.Errorf("dbfs: file not open for writing")
+func (h *fileHandle) ReadFrom(r io.Reader) (int64, error) {
+	_, err := h.checkWrite()
+	if err != nil {
+		return 0, err
 	}
 
 	// Limit types to io.Reader and io.Writer to avoid recursion
@@ -172,18 +205,18 @@ func (h *dbfsHandle) ReadFrom(r io.Reader) (int64, error) {
 	return n, bw.Flush()
 }
 
-func (h *dbfsHandle) openForRead(mode FileMode) error {
+func (h *fileHandle) openForRead(mode FileMode) error {
 	res, err := h.api.GetStatusByPath(h.ctx, h.path)
 	if err != nil {
 		return err
 	}
-	h.reader = &dbfsHandleReader{
+	h.reader = &fileHandleReader{
 		size: res.FileSize,
 	}
 	return nil
 }
 
-func (h *dbfsHandle) openForWrite(mode FileMode) error {
+func (h *fileHandle) openForWrite(mode FileMode) error {
 	res, err := h.api.Create(h.ctx, Create{
 		Path:      h.path,
 		Overwrite: (mode & FileModeOverwrite) != 0,
@@ -191,7 +224,7 @@ func (h *dbfsHandle) openForWrite(mode FileMode) error {
 	if err != nil {
 		return err
 	}
-	h.writer = &dbfsHandleWriter{
+	h.writer = &fileHandleWriter{
 		handle: res.Handle,
 	}
 	return nil
@@ -206,8 +239,8 @@ func (h *dbfsHandle) openForWrite(mode FileMode) error {
 // Similarly, the [io.ReaderFrom] interface is provided for bulk writing.
 //
 // A file opened for writing must always be closed.
-func (a DbfsAPI) Open(ctx context.Context, path string, mode FileMode) (Handle, error) {
-	h := &dbfsHandle{
+func (a *DbfsAPI) Open(ctx context.Context, path string, mode FileMode) (Handle, error) {
+	h := &fileHandle{
 		ctx:  useragent.InContext(ctx, "sdk-feature", "dbfs-handle"),
 		api:  a,
 		path: path,
@@ -215,36 +248,32 @@ func (a DbfsAPI) Open(ctx context.Context, path string, mode FileMode) (Handle, 
 
 	isRead := (mode & FileModeRead) != 0
 	isWrite := (mode & FileModeWrite) != 0
-	if isRead && isWrite {
-		return nil, fmt.Errorf("dbfs: cannot open file for reading and writing at the same time")
-	}
-
-	var err error
-	switch {
-	case isRead:
-		err = h.openForRead(mode)
-	case isWrite:
-		err = h.openForWrite(mode)
-	default:
-		// No mode specifed. The caller should be explicit so we return an error.
+	if (isRead && isWrite) || (!isRead && !isWrite) {
 		return nil, fmt.Errorf("dbfs: must specify dbfs.FileModeRead or dbfs.FileModeWrite")
 	}
 
+	var err error
+	if isRead {
+		err = h.openForRead(mode)
+	}
+	if isWrite {
+		err = h.openForWrite(mode)
+	}
 	if err != nil {
-		return nil, fmt.Errorf("dbfs: open: %w", err)
+		return nil, fmt.Errorf("dbfs: %w", err)
 	}
 
 	return h, nil
 }
 
 // ReadFile is identical to [os.ReadFile] but for DBFS.
-func (a DbfsAPI) ReadFile(ctx context.Context, name string) ([]byte, error) {
+func (a *DbfsAPI) ReadFile(ctx context.Context, name string) ([]byte, error) {
 	h, err := a.Open(ctx, name, FileModeRead)
 	if err != nil {
 		return nil, err
 	}
 
-	h_ := h.(*dbfsHandle)
+	h_ := h.(*fileHandle)
 	buf := make([]byte, h_.reader.size)
 	_, err = h.Read(buf)
 	if err != nil && err != io.EOF {
@@ -254,7 +283,7 @@ func (a DbfsAPI) ReadFile(ctx context.Context, name string) ([]byte, error) {
 }
 
 // WriteFile is identical to [os.WriteFile] but for DBFS.
-func (a DbfsAPI) WriteFile(ctx context.Context, name string, data []byte) error {
+func (a *DbfsAPI) WriteFile(ctx context.Context, name string, data []byte) error {
 	h, err := a.Open(ctx, name, FileModeWrite|FileModeOverwrite)
 	if err != nil {
 		return err
