@@ -1,33 +1,49 @@
-// Databricks FileSystem (DBFS) API
+// Databricks File System (DBFS) API
 //
-// We strongly recommend using clients created via
-// [github.com/databricks/databricks-sdk-go/workspaces.New] to simplify
-// configuration experience.
+// We recommend using a client created via [databricks.NewWorkspaceClient]
+// to simplify the configuration experience.
 //
-// Please use the high-level [DbfsAPI.Open] and [DbfsAPI.Overwrite] methods
-// to work with remote files through Go's [io] interfaces. The return value
-// of [DbfsAPI.Open] implements the [io.Reader] and [io.WriterTo] interfaces.
-// The [io.WriterTo] interface is used by [io.Copy] and maximizes throughput by
-// reading data with the DBFS maximum read chunk size of 1MB.
+// # Reading and writing files
 //
-// Internally, these methods wrap the low level [DbfsAPI.Create],
-// [DbfsAPI.Close], [DbfsAPI.Read], and [DbfsAPI.AddBlock] methods:
+// You can open a file on DBFS for reading or writing with [DbfsAPI.Open].
+// This function returns a [Handle] that is compatible with a subset of [io]
+// interfaces for reading, writing, and closing.
+//
+// Uploading a file from an [io.Reader]:
 //
 //	upload, _ := os.Open("/path/to/local/file.ext")
-//	_ = w.Dbfs.Overwrite(ctx, "/path/to/remote/file", upload)
+//	remote, _ := w.Dbfs.Open(ctx, "/path/to/remote/file", dbfs.FileModeWrite|dbfs.FileModeOverwrite)
+//	io.Copy(remote, upload)
+//	remote.Close()
+//
+// Downloading a file to an [io.Writer]:
 //
 //	download, _ := os.Create("/path/to/local")
-//	remote, _ := w.Dbfs.Open(ctx, "/path/to/remote")
+//	remote, _ := w.Dbfs.Open(ctx, "/path/to/remote/file", dbfs.FileModeRead)
 //	_ = io.Copy(download, remote)
 //
-// Moving files:
+// # Reading and writing files from buffers
+//
+// You can read from or write to a DBFS file directly from a byte slice through
+// the convenience functions [DbfsAPI.ReadFile] and [DbfsAPI.WriteFile].
+//
+// Uploading a file from a byte slice:
+//
+//	buf := []byte("Hello world!")
+//	_ = w.Dbfs.WriteFile(ctx, "/path/to/remote/file", buf)
+//
+// Downloading a file into a byte slice:
+//
+//	buf, err := w.Dbfs.ReadFile(ctx, "/path/to/remote/file")
+//
+// # Moving files
 //
 //	err := w.Dbfs.Move(ctx, dbfs.Move{
 //		SourcePath:      "/remote/src/path",
 //		DestinationPath: "/remote/dst/path",
 //	})
 //
-// Creating directories:
+// # Creating directories
 //
 //	w.Dbfs.MkdirsByPath(ctx, "/remote/dir/path")
 package dbfs

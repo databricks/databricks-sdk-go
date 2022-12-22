@@ -13,7 +13,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 - [Paginated responses](#paginated-responses)
 - [GetByName utility methods](#getbyname-utility-methods)
 - [Node type and Databricks Runtime selectors](#node-type-and-databricks-runtime-selectors)
-- [io.Reader integration for DBFS](#ioreader-integration-for-dbfs)
+- [Integration with `io` interfaces for DBFS](#integration-with-io-interfaces-for-dbfs)
 - [Logging](#logging)
 - [Interface stability](#interface-stability)
 
@@ -477,17 +477,44 @@ runningCluster, err := w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 })
 ```
 
-## `io.Reader` integration for DBFS
+## Integration with `io` interfaces for DBFS
 
-Use the higher-level `w.Dbfs.Open` and `w.Dbfs.Overwrite` methods to work with remote files through the `io.Reader` interface. Internally, these methods wrap the low-level intricacies of working with Databricks REST APIs, providing a convenient interface to you as a developer.
+You can open a file on DBFS for reading or writing with `w.Dbfs.Open`.
+This function returns a `dbfs.Handle` that is compatible with a subset of `io`
+interfaces for reading, writing, and closing.
+
+Uploading a file from an `io.Reader`:
 
 ```go
 upload, _ := os.Open("/path/to/local/file.ext")
-_ = w.Dbfs.Overwrite(ctx, "/path/to/remote/file", upload)
+remote, _ := w.Dbfs.Open(ctx, "/path/to/remote/file", dbfs.FileModeWrite|dbfs.FileModeOverwrite)
+_, _ = io.Copy(remote, upload)
+_ = remote.Close()
+```
 
+Downloading a file to an `io.Writer`:
+
+```go
 download, _ := os.Create("/path/to/local")
-remote, _ := w.Dbfs.Open(ctx, "/path/to/remote")
-_ = io.Copy(download, remote)
+remote, _ := w.Dbfs.Open(ctx, "/path/to/remote/file", dbfs.FileModeRead)
+_, _ = io.Copy(download, remote)
+```
+
+### Reading into and writing from buffers
+
+You can read from or write to a DBFS file directly from a byte slice through
+the convenience functions `w.Dbfs.ReadFile` and `w.Dbfs.WriteFile`.
+
+Uploading a file from a byte slice:
+
+```go
+err := w.Dbfs.WriteFile(ctx, "/path/to/remote/file", []byte("Hello world!"))
+```
+
+Downloading a file into a byte slice:
+
+```go
+buf, err := w.Dbfs.ReadFile(ctx, "/path/to/remote/file")
 ```
 
 ## `pflag.Value` for enums
