@@ -24,7 +24,7 @@ func (buf hashable) Hash() uint32 {
 	return h.Sum32()
 }
 
-func TestAccDbfsHandleWrite(t *testing.T) {
+func TestAccDbfsOpen(t *testing.T) {
 	ctx, w := workspaceTest(t)
 	if w.Config.IsGcp() {
 		t.Skip("dbfs not available on gcp")
@@ -75,17 +75,6 @@ func TestAccDbfsHandleWrite(t *testing.T) {
 		assert.Equal(t, hashable(in).Hash(), hashable(out).Hash())
 	}
 
-	// Upload through [dbfs.DbfsAPI.WriteFile].
-	{
-		err := w.Dbfs.WriteFile(ctx, path, in)
-		require.NoError(t, err)
-
-		// Verify contents hash.
-		out, err := w.Dbfs.ReadFile(ctx, path)
-		require.NoError(t, err)
-		assert.Equal(t, hashable(in).Hash(), hashable(out).Hash())
-	}
-
 	// Download through [io.Reader] and let [io.ReadAll] determine buffer size.
 	{
 		handle, err := w.Dbfs.Open(ctx, path, dbfs.FileModeRead)
@@ -111,6 +100,42 @@ func TestAccDbfsHandleWrite(t *testing.T) {
 		// Verify contents hash.
 		assert.Equal(t, hashable(in).Hash(), hashable(buf.Bytes()).Hash())
 	}
+}
+
+func TestAccDbfsReadFileWriteFile(t *testing.T) {
+	ctx, w := workspaceTest(t)
+	if w.Config.IsGcp() {
+		t.Skip("dbfs not available on gcp")
+	}
+
+	path := RandomName("/tmp/.sdk/fake")
+	rand.Seed(time.Now().UnixNano())
+	in := make([]byte, 1.44*1e6)
+	_, _ = rand.Read(in)
+
+	defer w.Dbfs.Delete(ctx, dbfs.Delete{
+		Path: path,
+	})
+
+	// Write file to DBFS.
+	err := w.Dbfs.WriteFile(ctx, path, in)
+	require.NoError(t, err)
+
+	// Verify contents hash.
+	out, err := w.Dbfs.ReadFile(ctx, path)
+	require.NoError(t, err)
+	assert.Equal(t, hashable(in).Hash(), hashable(out).Hash())
+
+	hello := []byte("Hello world!")
+
+	// Writing to the same path should truncate the existing file.
+	err = w.Dbfs.WriteFile(ctx, path, hello)
+	require.NoError(t, err)
+
+	// Verify contents hash.
+	out, err = w.Dbfs.ReadFile(ctx, path)
+	require.NoError(t, err)
+	assert.Equal(t, hashable(hello).Hash(), hashable(out).Hash())
 }
 
 func TestAccListDbfsIntegration(t *testing.T) {
