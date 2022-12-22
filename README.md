@@ -488,7 +488,7 @@ Uploading a file from an [io.Reader]:
 ```go
 upload, _ := os.Open("/path/to/local/file.ext")
 remote, _ := w.Dbfs.Open(ctx, "/path/to/remote/file", dbfs.FileModeWrite)
-io.Copy(remote, upload)
+_, _ = io.Copy(remote, upload)
 remote.Close()
 ```
 
