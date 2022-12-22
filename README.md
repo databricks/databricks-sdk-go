@@ -13,7 +13,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 - [Paginated responses](#paginated-responses)
 - [GetByName utility methods](#getbyname-utility-methods)
 - [Node type and Databricks Runtime selectors](#node-type-and-databricks-runtime-selectors)
-- [io.Reader integration for DBFS](#ioreader-integration-for-dbfs)
+- [Integration with `io` interfaces for DBFS](#integration-with-io-interfaces-for-dbfs)
 - [Logging](#logging)
 - [Interface stability](#interface-stability)
 
@@ -483,7 +483,7 @@ You can open a file on DBFS for reading or writing with `w.Dbfs.Open`.
 This function returns a `dbfs.Handle` that is compatible with a subset of `io`
 interfaces for reading, writing, and closing.
 
-Uploading a file from an [io.Reader]:
+Uploading a file from an `io.Reader`:
 
 ```go
 upload, _ := os.Open("/path/to/local/file.ext")
@@ -492,12 +492,12 @@ _, _ = io.Copy(remote, upload)
 _ = remote.Close()
 ```
 
-Downloading a file to an [io.Writer]:
+Downloading a file to an `io.Writer`:
 
 ```go
 download, _ := os.Create("/path/to/local")
 remote, _ := w.Dbfs.Open(ctx, "/path/to/remote/file", dbfs.FileModeRead)
-_ = io.Copy(download, remote)
+_, _ = io.Copy(download, remote)
 ```
 
 ### Reading into and writing from buffers
