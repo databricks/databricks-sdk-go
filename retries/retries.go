@@ -23,12 +23,12 @@ func Timeout[T any](dur time.Duration) Option[T] {
 	}
 }
 
-func OnPoll[T any](cb func(*T)) Option[T] {
+func OnPoll[T any](callback func(*T)) Option[T] {
 	return func(i *Info[T]) {
 		if i.Info == nil {
 			return
 		}
-		cb(i.Info)
+		callback(i.Info)
 	}
 }
 
