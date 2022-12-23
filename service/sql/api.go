@@ -893,7 +893,7 @@ func (a *WarehousesAPI) CreateAndWait(ctx context.Context, createWarehouseReques
 		}
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
-				Info:    *getWarehouseResponse,
+				Info:    getWarehouseResponse,
 				Timeout: i.Timeout,
 			})
 		}
@@ -945,7 +945,7 @@ func (a *WarehousesAPI) DeleteAndWait(ctx context.Context, deleteWarehouseReques
 		}
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
-				Info:    *getWarehouseResponse,
+				Info:    getWarehouseResponse,
 				Timeout: i.Timeout,
 			})
 		}
@@ -1008,7 +1008,7 @@ func (a *WarehousesAPI) EditAndWait(ctx context.Context, editWarehouseRequest Ed
 		}
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
-				Info:    *getWarehouseResponse,
+				Info:    getWarehouseResponse,
 				Timeout: i.Timeout,
 			})
 		}
@@ -1060,7 +1060,7 @@ func (a *WarehousesAPI) GetAndWait(ctx context.Context, getWarehouseRequest GetW
 		}
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
-				Info:    *getWarehouseResponse,
+				Info:    getWarehouseResponse,
 				Timeout: i.Timeout,
 			})
 		}
@@ -1209,7 +1209,7 @@ func (a *WarehousesAPI) StartAndWait(ctx context.Context, startRequest StartRequ
 		}
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
-				Info:    *getWarehouseResponse,
+				Info:    getWarehouseResponse,
 				Timeout: i.Timeout,
 			})
 		}
@@ -1261,7 +1261,7 @@ func (a *WarehousesAPI) StopAndWait(ctx context.Context, stopRequest StopRequest
 		}
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
-				Info:    *getWarehouseResponse,
+				Info:    getWarehouseResponse,
 				Timeout: i.Timeout,
 			})
 		}

@@ -124,7 +124,10 @@ func TestAccClustersApiIntegration(t *testing.T) {
 		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 15,
 		NumWorkers:             1,
-	}, retries.Timeout[clusters.ClusterInfo](20*time.Minute))
+	}, retries.Timeout[clusters.ClusterInfo](20*time.Minute),
+		retries.OnPoll(func(i *clusters.ClusterInfo) {
+			t.Logf("cluster is %s", i.State)
+		}))
 	require.NoError(t, err)
 
 	t.Cleanup(func() {

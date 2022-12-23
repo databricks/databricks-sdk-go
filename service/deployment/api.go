@@ -1242,7 +1242,7 @@ func (a *WorkspacesAPI) CreateAndWait(ctx context.Context, createWorkspaceReques
 		}
 		for _, o := range options {
 			o(&retries.Info[Workspace]{
-				Info:    *workspace,
+				Info:    workspace,
 				Timeout: i.Timeout,
 			})
 		}
@@ -1529,7 +1529,7 @@ func (a *WorkspacesAPI) UpdateAndWait(ctx context.Context, updateWorkspaceReques
 		}
 		for _, o := range options {
 			o(&retries.Info[Workspace]{
-				Info:    *workspace,
+				Info:    workspace,
 				Timeout: i.Timeout,
 			})
 		}
