@@ -77,7 +77,6 @@ func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand C
 			o(&retries.Info[CommandStatusResponse]{
 				Info:    commandStatusResponse,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := commandStatusResponse.Status
@@ -150,7 +149,6 @@ func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext C
 			o(&retries.Info[ContextStatusResponse]{
 				Info:    contextStatusResponse,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := contextStatusResponse.Status
@@ -213,7 +211,6 @@ func (a *CommandExecutionAPI) ExecuteAndWait(ctx context.Context, command Comman
 			o(&retries.Info[CommandStatusResponse]{
 				Info:    commandStatusResponse,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := commandStatusResponse.Status

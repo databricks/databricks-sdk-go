@@ -12,7 +12,6 @@ import (
 
 type Info[T any] struct {
 	Info    *T
-	Polling bool
 	Timeout time.Duration
 }
 

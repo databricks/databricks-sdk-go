@@ -107,7 +107,6 @@ func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, opt
 			o(&retries.Info[Run]{
 				Info:    run,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := run.State.LifeCycleState
@@ -238,7 +237,6 @@ func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRun GetRun, options ...r
 			o(&retries.Info[Run]{
 				Info:    run,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := run.State.LifeCycleState
@@ -444,7 +442,6 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, opt
 			o(&retries.Info[Run]{
 				Info:    run,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := run.State.LifeCycleState
@@ -505,7 +502,6 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...r
 			o(&retries.Info[Run]{
 				Info:    run,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := run.State.LifeCycleState
@@ -561,7 +557,6 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, option
 			o(&retries.Info[Run]{
 				Info:    run,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := run.State.LifeCycleState

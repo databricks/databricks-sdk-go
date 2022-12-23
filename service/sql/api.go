@@ -895,7 +895,6 @@ func (a *WarehousesAPI) CreateAndWait(ctx context.Context, createWarehouseReques
 			o(&retries.Info[GetWarehouseResponse]{
 				Info:    getWarehouseResponse,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := getWarehouseResponse.State
@@ -948,7 +947,6 @@ func (a *WarehousesAPI) DeleteAndWait(ctx context.Context, deleteWarehouseReques
 			o(&retries.Info[GetWarehouseResponse]{
 				Info:    getWarehouseResponse,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := getWarehouseResponse.State
@@ -1012,7 +1010,6 @@ func (a *WarehousesAPI) EditAndWait(ctx context.Context, editWarehouseRequest Ed
 			o(&retries.Info[GetWarehouseResponse]{
 				Info:    getWarehouseResponse,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := getWarehouseResponse.State
@@ -1065,7 +1062,6 @@ func (a *WarehousesAPI) GetAndWait(ctx context.Context, getWarehouseRequest GetW
 			o(&retries.Info[GetWarehouseResponse]{
 				Info:    getWarehouseResponse,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := getWarehouseResponse.State
@@ -1215,7 +1211,6 @@ func (a *WarehousesAPI) StartAndWait(ctx context.Context, startRequest StartRequ
 			o(&retries.Info[GetWarehouseResponse]{
 				Info:    getWarehouseResponse,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := getWarehouseResponse.State
@@ -1268,7 +1263,6 @@ func (a *WarehousesAPI) StopAndWait(ctx context.Context, stopRequest StopRequest
 			o(&retries.Info[GetWarehouseResponse]{
 				Info:    getWarehouseResponse,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := getWarehouseResponse.State

@@ -118,7 +118,6 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 			o(&retries.Info[ClusterInfo]{
 				Info:    clusterInfo,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := clusterInfo.State
@@ -171,7 +170,6 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteClu
 			o(&retries.Info[ClusterInfo]{
 				Info:    clusterInfo,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := clusterInfo.State
@@ -250,7 +248,6 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, 
 			o(&retries.Info[ClusterInfo]{
 				Info:    clusterInfo,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := clusterInfo.State
@@ -331,7 +328,6 @@ func (a *ClustersAPI) GetAndWait(ctx context.Context, get Get, options ...retrie
 			o(&retries.Info[ClusterInfo]{
 				Info:    clusterInfo,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := clusterInfo.State
@@ -554,7 +550,6 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeClu
 			o(&retries.Info[ClusterInfo]{
 				Info:    clusterInfo,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := clusterInfo.State
@@ -605,7 +600,6 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster Restart
 			o(&retries.Info[ClusterInfo]{
 				Info:    clusterInfo,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := clusterInfo.State
@@ -670,7 +664,6 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 			o(&retries.Info[ClusterInfo]{
 				Info:    clusterInfo,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := clusterInfo.State

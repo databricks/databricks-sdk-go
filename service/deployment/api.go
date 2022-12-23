@@ -1244,7 +1244,6 @@ func (a *WorkspacesAPI) CreateAndWait(ctx context.Context, createWorkspaceReques
 			o(&retries.Info[Workspace]{
 				Info:    workspace,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := workspace.WorkspaceStatus
@@ -1532,7 +1531,6 @@ func (a *WorkspacesAPI) UpdateAndWait(ctx context.Context, updateWorkspaceReques
 			o(&retries.Info[Workspace]{
 				Info:    workspace,
 				Timeout: i.Timeout,
-				Polling: true,
 			})
 		}
 		status := workspace.WorkspaceStatus
