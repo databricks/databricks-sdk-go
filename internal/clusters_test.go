@@ -68,6 +68,9 @@ func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
 		NumWorkers:             1,
 	}, retries.Timeout[clusters.ClusterInfo](15*time.Second),
 		func(i *retries.Info[clusters.ClusterInfo]) {
+			if i.Info == nil {
+				return
+			}
 			clusterId = i.Info.ClusterId
 		})
 	assert.True(t, strings.HasPrefix(err.Error(), "timed out: "))
