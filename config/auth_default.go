@@ -13,6 +13,7 @@ var (
 	authProviders = []CredentialsProvider{
 		PatCredentials{},
 		BasicCredentials{},
+		BricksCliCredentials{},
 		AzureClientSecretCredentials{},
 		AzureCliCredentials{},
 		GoogleDefaultCredentials{},
