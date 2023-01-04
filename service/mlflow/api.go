@@ -352,7 +352,7 @@ func (a *MLflowMetricsAPI) Impl() MLflowMetricsService {
 	return a.impl
 }
 
-// Get all history.
+// Get history of a given metric within a run.
 //
 // Gets a list of all values for the specified metric for a given run.
 func (a *MLflowMetricsAPI) GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error) {

@@ -371,7 +371,7 @@ type JobCluster struct {
 	// unique within the job. `JobTaskSettings` may refer to this field to
 	// determine which cluster to launch for the task execution.
 	JobClusterKey string `json:"job_cluster_key"`
-
+	// If new_cluster, a description of a cluster that is created for each task.
 	NewCluster *clusters.CreateCluster `json:"new_cluster,omitempty"`
 }
 
@@ -520,7 +520,8 @@ type JobTaskSettings struct {
 	// failed run and the subsequent retry run. The default behavior is that
 	// unsuccessful runs are immediately retried.
 	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
-	// If new_cluster, a description of a cluster that is created for each run.
+	// If new_cluster, a description of a cluster that is created for only for
+	// this task.
 	NewCluster *clusters.CreateCluster `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
@@ -537,7 +538,7 @@ type JobTaskSettings struct {
 	// If spark_python_task, indicates that this task must run a Python file.
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
 	// If spark_submit_task, indicates that this task must be launched by the
-	// spark submit script.
+	// spark submit script. This task can run only on new clusters.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// If sql_task, indicates that this job must execute a SQL task.
 	SqlTask *SqlTask `json:"sql_task,omitempty"`
@@ -1387,7 +1388,7 @@ type RunSubmitTaskSettings struct {
 	// If spark_python_task, indicates that this task must run a Python file.
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
 	// If spark_submit_task, indicates that this task must be launched by the
-	// spark submit script.
+	// spark submit script. This task can run only on new clusters.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
@@ -1452,7 +1453,8 @@ type RunTask struct {
 	// An optional list of libraries to be installed on the cluster that
 	// executes the job. The default value is an empty list.
 	Libraries []libraries.Library `json:"libraries,omitempty"`
-	// If new_cluster, a description of a cluster that is created for each run.
+	// If new_cluster, a description of a new cluster that is created only for
+	// this task.
 	NewCluster *clusters.CreateCluster `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this job must run a notebook. This field
 	// may not be specified in conjunction with spark_jar_task.
@@ -1475,8 +1477,8 @@ type RunTask struct {
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
 	// If spark_python_task, indicates that this job must run a Python file.
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-	// If spark_submit_task, indicates that this job must be launched by the
-	// spark submit script.
+	// If spark_submit_task, indicates that this task must be launched by the
+	// spark submit script. This task can run only on new clusters
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// If sql_task, indicates that this job must execute a SQL.
 	SqlTask *SqlTask `json:"sql_task,omitempty"`

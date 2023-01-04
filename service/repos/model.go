@@ -13,6 +13,9 @@ type CreateRepo struct {
 	// gitHubEnterprise, bitbucketServer, gitLabEnterpriseEdition and
 	// awsCodeCommit.
 	Provider string `json:"provider"`
+	// If specified, the repo will be created with sparse checkout enabled. You
+	// cannot enable/disable sparse checkout after the repo is created.
+	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
 	// URL of the Git repository to be linked.
 	Url string `json:"url"`
 }
@@ -62,8 +65,20 @@ type RepoInfo struct {
 	// gitHubEnterprise, bitbucketServer, gitLabEnterpriseEdition and
 	// awsCodeCommit.
 	Provider string `json:"provider,omitempty"`
+
+	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
 	// URL of the Git repository to be linked.
 	Url string `json:"url,omitempty"`
+}
+
+type SparseCheckout struct {
+	// List of patterns to include for sparse checkout.
+	Patterns []string `json:"patterns,omitempty"`
+}
+
+type SparseCheckoutUpdate struct {
+	// List of patterns to include for sparse checkout.
+	Patterns []string `json:"patterns,omitempty"`
 }
 
 type UpdateRepo struct {
@@ -71,6 +86,9 @@ type UpdateRepo struct {
 	Branch string `json:"branch,omitempty"`
 	// The ID for the corresponding repo to access.
 	RepoId int64 `json:"-" url:"-"`
+	// If specified, update the sparse checkout settings. The update will fail
+	// if sparse checkout is not enabled for the repo.
+	SparseCheckout *SparseCheckoutUpdate `json:"sparse_checkout,omitempty"`
 	// Tag that the local version of the repo is checked out to. Updating the
 	// repo to a tag puts the repo in a detached HEAD state. Before committing
 	// new changes, you must update the repo to a branch instead of the detached
