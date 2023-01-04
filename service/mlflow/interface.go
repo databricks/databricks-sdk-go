@@ -117,7 +117,7 @@ type MLflowDatabricksService interface {
 
 type MLflowMetricsService interface {
 
-	// Get all history.
+	// Get history of a given metric within a run.
 	//
 	// Gets a list of all values for the specified metric for a given run.
 	GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error)

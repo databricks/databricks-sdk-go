@@ -320,19 +320,21 @@ type DataSource struct {
 	// The string name of this data source / SQL warehouse as it appears in the
 	// Databricks SQL web application.
 	Name string `json:"name,omitempty"`
-	// <needs content>
+	// Reserved for internal use.
 	PauseReason string `json:"pause_reason,omitempty"`
-	// <needs content>
+	// Reserved for internal use.
 	Paused int `json:"paused,omitempty"`
-	// <needs content>
+	// Reserved for internal use.
 	SupportsAutoLimit bool `json:"supports_auto_limit,omitempty"`
-	// <needs content>
+	// Reserved for internal use.
 	Syntax string `json:"syntax,omitempty"`
-	// <needs content>
+	// The type of data source. For SQL warehouses, this will be
+	// `databricks_internal`.
 	Type string `json:"type,omitempty"`
-	// <needs content>
+	// Reserved for internal use.
 	ViewOnly bool `json:"view_only,omitempty"`
-	// <needs content>
+	// The ID of the associated SQL warehouse, if this data source is backed by
+	// a SQL warehouse.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 }
 

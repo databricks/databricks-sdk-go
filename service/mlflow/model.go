@@ -487,10 +487,16 @@ type GetExperimentRequest struct {
 	ExperimentId string `json:"-" url:"experiment_id"`
 }
 
-// Get all history
+// Get history of a given metric within a run
 type GetHistoryRequest struct {
+	// Maximum number of Metric records to return per paginated request. Default
+	// is set to 25,000. If set higher than 25,000, a request Exception will be
+	// raised.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Name of the metric.
 	MetricKey string `json:"-" url:"metric_key"`
+	// Token indicating the page of metric histories to fetch.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 	// ID of the run from which to fetch metric values. Must be provided.
 	RunId string `json:"-" url:"run_id,omitempty"`
 	// [Deprecated, use run_id instead] ID of the run from which to fetch metric
@@ -521,6 +527,9 @@ type GetMLflowDatabrickRequest struct {
 type GetMetricHistoryResponse struct {
 	// All logged values for this metric.
 	Metrics []Metric `json:"metrics,omitempty"`
+	// Token that can be used to retrieve the next page of metric history
+	// results
+	NextPageToken string `json:"next_page_token,omitempty"`
 }
 
 // Get a model version URI
