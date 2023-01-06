@@ -215,7 +215,7 @@ type Results struct {
 
 	ResultType ResultType `json:"resultType,omitempty"`
 	// The table schema
-	Schema [][]any `json:"schema,omitempty"`
+	Schema []map[string]any `json:"schema,omitempty"`
 	// The summary of the error
 	Summary string `json:"summary,omitempty"`
 	// true if partial results are returned.
