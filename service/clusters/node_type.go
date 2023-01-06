@@ -12,6 +12,7 @@ type NodeTypeRequest struct {
 	MinCores              int32  `json:"min_cores,omitempty"`
 	MinGPUs               int32  `json:"min_gpus,omitempty"`
 	LocalDisk             bool   `json:"local_disk,omitempty"`
+	LocalDiskMinSize      int32  `json:"local_disk_min_size,omitempty"`
 	Category              string `json:"category,omitempty"`
 	PhotonWorkerCapable   bool   `json:"photon_worker_capable,omitempty"`
 	PhotonDriverCapable   bool   `json:"photon_driver_capable,omitempty"`
@@ -24,21 +25,38 @@ type NodeTypeRequest struct {
 // sort NodeTypes within this struct
 func (ntl *ListNodeTypesResponse) sort() {
 	sortByChain(ntl.NodeTypes, func(i int) sortCmp {
-		var localDisks, localDiskSizeGB int32
-		// if ntl.NodeTypes[i].InstanceTypeId != nil {
-		// 	localDisks = ntl.NodeTypes[i].NodeInstanceType.LocalDisks
-		// 	localDiskSizeGB = ntl.NodeTypes[i].NodeInstanceType.LocalDiskSizeGB
-		// }
+		var localDisks, localDiskSizeGB, localNVMeDisk, localNVMeDiskSizeGB int32
+		if ntl.NodeTypes[i].NodeInstanceType != nil {
+			localDisks = int32(ntl.NodeTypes[i].NodeInstanceType.LocalDisks)
+			localNVMeDisk = int32(ntl.NodeTypes[i].NodeInstanceType.LocalNvmeDisks)
+			localDiskSizeGB = int32(ntl.NodeTypes[i].NodeInstanceType.LocalDiskSizeGb)
+			localNVMeDiskSizeGB = int32(ntl.NodeTypes[i].NodeInstanceType.LocalNvmeDiskSizeGb)
+		}
 		return sortChain{
 			boolAsc(ntl.NodeTypes[i].IsDeprecated),
+			intAsc(ntl.NodeTypes[i].NumCores),
+			intAsc(ntl.NodeTypes[i].MemoryMb),
 			intAsc(localDisks),
 			intAsc(localDiskSizeGB),
-			intAsc(ntl.NodeTypes[i].MemoryMb),
-			intAsc(ntl.NodeTypes[i].NumCores),
-			//intAsc(ntl.NodeTypes[i].NumGPUs),
+			intAsc(localNVMeDisk),
+			intAsc(localNVMeDiskSizeGB),
+			intAsc(ntl.NodeTypes[i].NumGpus),
 			strAsc(ntl.NodeTypes[i].InstanceTypeId),
 		}
 	})
+}
+
+func (nt NodeType) shouldBeSkipped() bool {
+	if nt.NodeInfo == nil {
+		return false
+	}
+	for _, st := range nt.NodeInfo.Status {
+		switch st {
+		case CloudProviderNodeStatusNotavailableinregion, CloudProviderNodeStatusNotenabledonsubscription:
+			return true
+		}
+	}
+	return false
 }
 
 func (ntl *ListNodeTypesResponse) Smallest(r NodeTypeRequest) (string, error) {
@@ -52,6 +70,9 @@ func (ntl *ListNodeTypesResponse) Smallest(r NodeTypeRequest) (string, error) {
 	}
 	ntl.sort()
 	for _, nt := range ntl.NodeTypes {
+		if nt.shouldBeSkipped() {
+			continue
+		}
 		gbs := int32(nt.MemoryMb / 1024)
 		if r.VCPU && !strings.HasPrefix(nt.NodeTypeId, "vcpu") {
 			continue
@@ -71,9 +92,13 @@ func (ntl *ListNodeTypesResponse) Smallest(r NodeTypeRequest) (string, error) {
 		if r.MinGPUs > 0 && int32(nt.NumGpus) < r.MinGPUs {
 			continue
 		}
-		if r.LocalDisk && nt.NodeInstanceType != nil &&
+		if (r.LocalDisk || r.LocalDiskMinSize > 0) && nt.NodeInstanceType != nil &&
 			(nt.NodeInstanceType.LocalDisks < 1 &&
 				nt.NodeInstanceType.LocalNvmeDisks < 1) {
+			continue
+		}
+		if r.LocalDiskMinSize > 0 && nt.NodeInstanceType != nil &&
+			(int32(nt.NodeInstanceType.LocalDiskSizeGb)+int32(nt.NodeInstanceType.LocalNvmeDiskSizeGb)) < r.LocalDiskMinSize {
 			continue
 		}
 		if r.Category != "" && !strings.EqualFold(nt.Category, r.Category) {
