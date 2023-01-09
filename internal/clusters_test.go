@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// use mutex around starting TEST_GOSDK_CLUSTER_ID
+// use mutex around starting TEST_GO_SDK_CLUSTER_ID
 var mu sync.Mutex
 
 func sharedRunningCluster(t *testing.T, ctx context.Context,
@@ -23,7 +23,7 @@ func sharedRunningCluster(t *testing.T, ctx context.Context,
 	mu.Lock()
 	defer mu.Unlock()
 
-	clusterId := GetEnvOrSkipTest(t, "TEST_GOSDK_CLUSTER_ID")
+	clusterId := GetEnvOrSkipTest(t, "TEST_GO_SDK_CLUSTER_ID")
 	info, err := w.Clusters.GetByClusterId(ctx, clusterId)
 	require.NoError(t, err)
 
