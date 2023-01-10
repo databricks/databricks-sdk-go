@@ -62,12 +62,17 @@ func TestAccAlerts(t *testing.T) {
 		Name:         RandomName("go-sdk/test/"),
 		DataSourceId: srcs[0].Id,
 		Description:  "test query from Go SDK",
-		Query:        "SHOW TABLES",
+		Query:        "SELECT 1",
 	})
 	require.NoError(t, err)
 	defer w.Queries.DeleteByQueryId(ctx, query.Id)
 
 	alert, err := w.Alerts.Create(ctx, sql.EditAlert{
+		Options: sql.AlertOptions{
+			Column: "1",
+			Op:     "==",
+			Value:  "1",
+		},
 		Name:    RandomName("go-sdk-"),
 		QueryId: query.Id,
 	})
@@ -75,6 +80,11 @@ func TestAccAlerts(t *testing.T) {
 	defer w.Alerts.DeleteByAlertId(ctx, alert.Id)
 
 	err = w.Alerts.Update(ctx, sql.EditAlert{
+		Options: sql.AlertOptions{
+			Column: "1",
+			Op:     "==",
+			Value:  "1",
+		},
 		AlertId: alert.Id,
 		Name:    RandomName("go-sdk-updated-"),
 		QueryId: query.Id,
