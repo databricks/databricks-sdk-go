@@ -36,7 +36,7 @@ func (c BricksCliCredentials) Configure(ctx context.Context, cfg *Config) (func(
 		}
 		return nil, err
 	}
-	logger.Infof("Using Bricks CLI authentication with Databricks OAuth tokens")
+	logger.Debugf("Using Bricks CLI authentication with Databricks OAuth tokens")
 	return refreshableVisitor(&ts), nil
 }
 
@@ -45,11 +45,11 @@ type bricksCliTokenSource struct {
 }
 
 func (ts *bricksCliTokenSource) Token() (*oauth2.Token, error) {
-	what := ts.cfg.Host
+	what := []string{"auth", "token", "--host", ts.cfg.Host}
 	if ts.cfg.IsAccountClient() {
-		what = fmt.Sprintf("%s/oidc/accounts/%s", ts.cfg.Host, ts.cfg.AccountID)
+		what = append(what, "--account-id", ts.cfg.AccountID)
 	}
-	out, err := exec.Command("bricks", "auth", "token", what).Output()
+	out, err := exec.Command("bricks", what...).Output()
 	if ee, ok := err.(*exec.ExitError); ok {
 		return nil, fmt.Errorf("cannot get access token: %s", string(ee.Stderr))
 	}
@@ -61,7 +61,6 @@ func (ts *bricksCliTokenSource) Token() (*oauth2.Token, error) {
 	if err != nil {
 		return nil, fmt.Errorf("cannot unmarshal Bricks CLI result: %w", err)
 	}
-	logger.Infof("Refreshed OAuth token for %s from Bricks CLI, expires on %s",
-		what, t.Expiry)
+	logger.Infof("Refreshed OAuth token from Bricks CLI, expires on %s", t.Expiry)
 	return &t, nil
 }
