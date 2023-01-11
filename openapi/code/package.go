@@ -16,6 +16,7 @@ import (
 // that are relevant to a single service
 type Package struct {
 	Named
+	Batch      *Batch
 	Components *openapi.Components
 	services   map[string]*Service
 	types      map[string]*Entity

@@ -10,44 +10,50 @@ import (
 )
 
 type Batch struct {
-	packages map[string]*Package
+	IncludeTags         []string `json:"includeTags,omitempty"`
+	WithoutRequestTypes bool     `json:"withoutRequestTypes,omitempty"`
+	packages            map[string]*Package
 }
 
 // NewFromFile loads OpenAPI specification from file
 func NewFromFile(name string, includeTags []string) (*Batch, error) {
+	b := &Batch{IncludeTags: includeTags}
+	return b, b.Load(name)
+}
+
+func (b *Batch) Load(name string) error {
 	f, err := os.Open(name)
 	if err != nil {
-		return nil, fmt.Errorf("no %s file: %w", name, err)
+		return fmt.Errorf("no %s file: %w", name, err)
 	}
 	defer f.Close()
 	spec, err := openapi.NewFromReader(f)
 	if err != nil {
-		return nil, fmt.Errorf("spec from %s: %w", name, err)
+		return fmt.Errorf("spec from %s: %w", name, err)
 	}
-	batch := Batch{
-		packages: map[string]*Package{},
-	}
+	b.packages = map[string]*Package{}
 	for _, tag := range spec.Tags {
-		if len(includeTags) != 0 && !slices.Contains(includeTags, tag.Name) {
+		if len(b.IncludeTags) != 0 && !slices.Contains(b.IncludeTags, tag.Name) {
 			continue
 		}
-		pkg, ok := batch.packages[tag.Package]
+		pkg, ok := b.packages[tag.Package]
 		if !ok {
 			pkg = &Package{
+				Batch:      b,
 				Named:      Named{tag.Package, ""},
 				Components: spec.Components,
 				services:   map[string]*Service{},
 				types:      map[string]*Entity{},
 			}
-			batch.packages[tag.Package] = pkg
+			b.packages[tag.Package] = pkg
 		}
 		err := pkg.Load(spec, &tag)
 		if err != nil {
-			return nil, fmt.Errorf("fail to load %s: %w", tag.Name, err)
+			return fmt.Errorf("fail to load %s: %w", tag.Name, err)
 		}
 	}
 	// add some packages at least some description
-	for _, pkg := range batch.packages {
+	for _, pkg := range b.packages {
 		if len(pkg.services) > 1 {
 			continue
 		}
@@ -56,7 +62,7 @@ func NewFromFile(name string, includeTags []string) (*Batch, error) {
 			pkg.Description = svc.Summary()
 		}
 	}
-	return &batch, nil
+	return nil
 }
 
 func (b *Batch) FullName() string {
