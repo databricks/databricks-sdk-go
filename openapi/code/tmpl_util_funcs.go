@@ -17,6 +17,9 @@ var HelperFuncs = template.FuncMap{
 		return idx+1 != reflect.ValueOf(a).Len()
 	},
 	"lower": strings.ToLower,
+	"lowerFirst": func(s string) string {
+		return strings.ToLower(s[0:1]) + s[1:]
+	},
 	"trimPrefix": func(right, left string) string {
 		return strings.TrimPrefix(left, right)
 	},
