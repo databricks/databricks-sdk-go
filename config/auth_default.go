@@ -15,6 +15,7 @@ var (
 		BasicCredentials{},
 		M2mCredentials{},
 		BricksCliCredentials{},
+		AzureMsiCredentials{},
 		AzureClientSecretCredentials{},
 		AzureCliCredentials{},
 		GoogleDefaultCredentials{},

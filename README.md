@@ -222,7 +222,7 @@ To authenticate as an Azure Active Directory (Azure AD) service principal, you m
 | `*databricks.Config` argument | Description | Environment variable / `.databrickscfg` file field |
 |-------------------------------|-------------|----------------------------------------------------|
 | `AzureResourceID` | _(String)_ The Azure Resource Manager ID for the Azure Databricks workspace, which is exchanged for a Databricks host URL. |  `DATABRICKS_AZURE_RESOURCE_ID` / `azure_workspace_resource_id` |
-| `AzureUseMSI` | _(Boolean)_ `true` to use Azure Managed Service Identity passwordless authentication flow for service principals. _This feature is not yet implemented in the Databricks SDK for Go._ | `ARM_USE_MSI` / `azure_use_msi` |
+| `AzureUseMSI` | _(Boolean)_ `true` to use Azure Managed Service Identity passwordless authentication flow for service principals. Requires `AzureResourceID` to be set. | `ARM_USE_MSI` / `azure_use_msi` |
 | `AzureClientSecret` | _(String)_ The Azure AD service principal's client secret. | `ARM_CLIENT_SECRET` / `azure_client_secret` |
 | `AzureClientID` | _(String)_ The Azure AD service principal's application ID. | `ARM_CLIENT_ID` / `azure_client_id` |
 | `AzureTenantID` | _(String)_ The Azure AD service principal's tenant ID. | `ARM_TENANT_ID` / `azure_tenant_id` |
