@@ -12,7 +12,7 @@ import (
 )
 
 func TestBasic(t *testing.T) {
-	batch, err := NewFromFile("../testdata/spec.json", []string{})
+	batch, err := NewFromFile("../testdata/spec.json")
 	require.NoError(t, err)
 
 	require.Len(t, batch.Packages(), 1)
