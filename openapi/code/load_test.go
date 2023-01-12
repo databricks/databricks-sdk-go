@@ -12,7 +12,7 @@ import (
 )
 
 func TestBasic(t *testing.T) {
-	batch, err := NewFromFile("../testdata/spec.json", []string{})
+	batch, err := NewFromFile("../testdata/spec.json")
 	require.NoError(t, err)
 
 	require.Len(t, batch.Packages(), 1)
@@ -70,7 +70,7 @@ func TestMethodsReport(t *testing.T) {
 	t.SkipNow()
 	home, _ := os.UserHomeDir()
 	batch, err := NewFromFile(filepath.Join(home,
-		"universe/bazel-bin/openapi/all-internal.json"), []string{})
+		"universe/bazel-bin/openapi/all-internal.json"))
 	assert.NoError(t, err)
 
 	for _, pkg := range batch.Packages() {
