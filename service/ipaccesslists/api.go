@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// The IP Access List API enables Databricks admins to configure IP access lists for a workspace.
+// IP Access List enables admins to configure IP access lists.
 package ipaccesslists
 
 import (
@@ -19,8 +19,7 @@ func NewIpAccessLists(client *client.DatabricksClient) *IpAccessListsAPI {
 	}
 }
 
-// The IP Access List API enables Databricks admins to configure IP access lists
-// for a workspace.
+// IP Access List enables admins to configure IP access lists.
 //
 // IP access lists affect web application access and REST API access to this
 // workspace only. If the feature is disabled for a workspace, all access is
@@ -61,9 +60,10 @@ func (a *IpAccessListsAPI) Impl() IpAccessListsService {
 
 // Create access list.
 //
-// Creates an IP access list for this workspace. A list can be an allow list or
-// a block list. See the top of this file for a description of how the server
-// treats allow lists and block lists at runtime.
+// Creates an IP access list for this workspace.
+//
+// A list can be an allow list or a block list. See the top of this file for a
+// description of how the server treats allow lists and block lists at runtime.
 //
 // When creating or updating an IP access list:
 //
@@ -180,26 +180,29 @@ func (a *IpAccessListsAPI) GetByLabel(ctx context.Context, name string) (*IpAcce
 
 // Replace access list.
 //
-// Replaces an IP access list, specified by its ID. A list can include allow
-// lists and block lists. See the top of this file for a description of how the
-// server treats allow lists and block lists at run time. When replacing an IP
-// access list: * For all allow lists and block lists combined, the API supports
-// a maximum of 1000 IP/CIDR values, where one CIDR counts as a single value.
-// Attempts to exceed that number return error 400 with `error_code` value
-// `QUOTA_EXCEEDED`. * If the resulting list would block the calling user's
-// current IP, error 400 is returned with `error_code` value `INVALID_STATE`. It
-// can take a few minutes for the changes to take effect. Note that your
-// resulting IP access list has no effect until you enable the feature. See
-// :method:workspaceconf/setStatus.
+// Replaces an IP access list, specified by its ID.
+//
+// A list can include allow lists and block lists. See the top of this file for
+// a description of how the server treats allow lists and block lists at run
+// time. When replacing an IP access list: * For all allow lists and block lists
+// combined, the API supports a maximum of 1000 IP/CIDR values, where one CIDR
+// counts as a single value. Attempts to exceed that number return error 400
+// with `error_code` value `QUOTA_EXCEEDED`. * If the resulting list would block
+// the calling user's current IP, error 400 is returned with `error_code` value
+// `INVALID_STATE`. It can take a few minutes for the changes to take effect.
+// Note that your resulting IP access list has no effect until you enable the
+// feature. See :method:workspaceconf/setStatus.
 func (a *IpAccessListsAPI) Replace(ctx context.Context, request ReplaceIpAccessList) error {
 	return a.impl.Replace(ctx, request)
 }
 
 // Update access list.
 //
-// Updates an existing IP access list, specified by its ID. A list can include
-// allow lists and block lists. See the top of this file for a description of
-// how the server treats allow lists and block lists at run time.
+// Updates an existing IP access list, specified by its ID.
+//
+// A list can include allow lists and block lists. See the top of this file for
+// a description of how the server treats allow lists and block lists at run
+// time.
 //
 // When updating an IP access list:
 //

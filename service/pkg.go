@@ -44,7 +44,7 @@
 //
 // - [clusters.InstanceProfilesAPI]: The Instance Profiles API allows admins to add, list, and remove instance profiles that users can launch clusters with.
 //
-// - [ipaccesslists.IpAccessListsAPI]: The IP Access List API enables Databricks admins to configure IP access lists for a workspace.
+// - [ipaccesslists.IpAccessListsAPI]: IP Access List enables admins to configure IP access lists.
 //
 // - [jobs.JobsAPI]: The Jobs API allows you to create, edit, and delete jobs.
 //

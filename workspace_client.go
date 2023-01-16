@@ -240,8 +240,7 @@ type WorkspaceClient struct {
 	// [Secure access to S3 buckets]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html
 	InstanceProfiles *clusters.InstanceProfilesAPI
 
-	// The IP Access List API enables Databricks admins to configure IP access
-	// lists for a workspace.
+	// IP Access List enables admins to configure IP access lists.
 	//
 	// IP access lists affect web application access and REST API access to this
 	// workspace only. If the feature is disabled for a workspace, all access is
