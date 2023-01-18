@@ -243,19 +243,19 @@ w, err := databricks.NewWorkspaceClient(&databricks.Config{
 
 ### Google Cloud Platform native authentication
 
-By default, the Databricks SDK for Go first tries Google Cloud Platform (GCP) ID authentication (`AuthType: "google-id"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries GCP credentials authentication (`AuthType: "google-credentials"` in `*databricks.Config`).
+By default, the Databricks SDK for Go first tries GCP credentials authentication (`AuthType: "google-credentials"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries Google Cloud Platform (GCP) ID authentication (`AuthType: "google-id"` in `*databricks.Config`).
 
 The Databricks SDK for Go picks up an OAuth token in the scope of the Google Default Application Credentials (DAC) flow. This means that if you have run `gcloud auth application-default login` on your development machine, or launch the application on the compute, that is allowed to impersonate the Google Cloud service account specified in `GoogleServiceAccount`. Authentication should then work out of the box. See [Creating and managing service accounts](https://cloud.google.com/iam/docs/creating-managing-service-accounts).
 
 To authenticate as a Google Cloud service account, you must provide one of the following:
 
-- `Host` and `GoogleServiceAccount`; or their environment variable or `.databrickscfg` file field equivalents.
 - `Host` and `GoogleCredentials`; or their environment variable or `.databrickscfg` file field equivalents.
+- `Host` and `GoogleServiceAccount`; or their environment variable or `.databrickscfg` file field equivalents.
 
 | `*databricks.Config` argument | Description | Environment variable / `.databrickscfg` file field |
 |-------------------------------|-------------|----------------------------------------------------|
-| `GoogleServiceAccount`| _(String)_ The Google Cloud Platform (GCP) service account e-mail used for impersonation in the Default Application Credentials Flow that does not require a password. | `DATABRICKS_GOOGLE_SERVICE_ACCOUNT` / `google_service_account` |
 | `GoogleCredentials`| _(String)_ GCP Service Account Credentials JSON or the location of these credentials on the local filesystem. | `GOOGLE_CREDENTIALS` / `google_credentials` |
+| `GoogleServiceAccount`| _(String)_ The Google Cloud Platform (GCP) service account e-mail used for impersonation in the Default Application Credentials Flow that does not require a password. | `DATABRICKS_GOOGLE_SERVICE_ACCOUNT` / `google_service_account` |
 
 For example, to use Google ID authentication:
 

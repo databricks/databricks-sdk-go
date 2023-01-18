@@ -15,11 +15,15 @@ var (
 		BasicCredentials{},
 		M2mCredentials{},
 		BricksCliCredentials{},
+
+		// Attempt to configure auth from most specific to most generic (the Azure CLI).
 		AzureMsiCredentials{},
 		AzureClientSecretCredentials{},
 		AzureCliCredentials{},
-		GoogleDefaultCredentials{},
+
+		// Attempt to configure auth from most specific to most generic (Google Application Default Credentials).
 		GoogleCredentials{},
+		GoogleDefaultCredentials{},
 	}
 )
 
