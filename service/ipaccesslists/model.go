@@ -69,7 +69,7 @@ type ListType string
 const ListTypeAllow ListType = `ALLOW`
 
 // A block list. Exclude this IP or range. IP addresses in the block list are
-// excluded even if they are included in an allow list.",
+// excluded even if they are included in an allow list.
 const ListTypeBlock ListType = `BLOCK`
 
 // String representation for [fmt.Print]
