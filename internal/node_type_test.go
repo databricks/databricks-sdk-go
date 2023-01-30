@@ -11,9 +11,10 @@ func TestNodeType(t *testing.T) {
 	lst := clusters.ListNodeTypesResponse{
 		NodeTypes: []clusters.NodeType{
 			{
-				NodeTypeId: "vcpu-worker",
-				MemoryMb:   0,
-				NumCores:   0,
+				NodeTypeId:     "m-fleet.xlarge",
+				InstanceTypeId: "m-fleet.xlarge",
+				MemoryMb:       16384,
+				NumCores:       4,
 			},
 			{
 				NodeTypeId: "Random_05",
@@ -128,32 +129,6 @@ func TestNodeTypeCategory(t *testing.T) {
 	assert.Equal(t, "Random_02", nt)
 }
 
-func TestNodeTypeVCPU(t *testing.T) {
-	lst := clusters.ListNodeTypesResponse{
-		NodeTypes: []clusters.NodeType{
-			{
-				NodeTypeId:     "Random_05",
-				InstanceTypeId: "Random_05",
-				MemoryMb:       1024,
-				NumCores:       32,
-				NodeInstanceType: &clusters.NodeInstanceType{
-					LocalDisks:      3,
-					LocalDiskSizeGb: 100,
-				},
-			},
-			{
-				NodeTypeId:     "vcpu-worker",
-				InstanceTypeId: "vcpu-worker",
-				MemoryMb:       0,
-				NumCores:       0,
-			},
-		},
-	}
-	nt, err := lst.Smallest(clusters.NodeTypeRequest{VCPU: true})
-	assert.NoError(t, err)
-	assert.Equal(t, "vcpu-worker", nt)
-}
-
 func TestNodeTypeCategoryNotAvailable(t *testing.T) {
 	lst := clusters.ListNodeTypesResponse{
 		NodeTypes: []clusters.NodeType{
@@ -195,4 +170,40 @@ func TestNodeTypeCategoryNotAvailable(t *testing.T) {
 	nt, err := lst.Smallest(clusters.NodeTypeRequest{Category: "Storage optimized"})
 	assert.NoError(t, err)
 	assert.Equal(t, "Random_02", nt)
+}
+
+func TestNodeTypeFleet(t *testing.T) {
+	lst := clusters.ListNodeTypesResponse{
+		NodeTypes: []clusters.NodeType{
+			{
+				NodeTypeId:     "Random_05",
+				InstanceTypeId: "Random_05",
+				MemoryMb:       1024,
+				NumCores:       4,
+			},
+			{
+				NodeTypeId:     "m-fleet.xlarge",
+				InstanceTypeId: "m-fleet.xlarge",
+				MemoryMb:       16384,
+				NumCores:       4,
+			},
+			{
+				NodeTypeId:     "m-fleet.2xlarge",
+				InstanceTypeId: "m-fleet.2xlarge",
+				MemoryMb:       32768,
+				NumCores:       8,
+			},
+		},
+	}
+	nt, err := lst.Smallest(clusters.NodeTypeRequest{Fleet: true, MinCores: 8})
+	assert.NoError(t, err)
+	assert.Equal(t, "m-fleet.2xlarge", nt)
+}
+
+func TestNodeTypeEmptyList(t *testing.T) {
+	lst := clusters.ListNodeTypesResponse{
+		NodeTypes: []clusters.NodeType{},
+	}
+	_, err := lst.Smallest(clusters.NodeTypeRequest{Fleet: true})
+	assert.ErrorContains(t, err, "cannot determine smallest node type with empty response")
 }
