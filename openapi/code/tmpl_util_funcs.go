@@ -26,6 +26,9 @@ var HelperFuncs = template.FuncMap{
 	"trimSuffix": func(right, left string) string {
 		return strings.TrimSuffix(left, right)
 	},
+	"replaceAll": func(from, to, str string) string {
+		return strings.ReplaceAll(str, from, to)
+	},
 	"without": func(left, right string) string {
 		return strings.ReplaceAll(right, left, "")
 	},
