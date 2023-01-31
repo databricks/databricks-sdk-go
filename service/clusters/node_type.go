@@ -19,7 +19,7 @@ type NodeTypeRequest struct {
 	Graviton              bool   `json:"graviton,omitempty"`
 	IsIOCacheEnabled      bool   `json:"is_io_cache_enabled,omitempty"`
 	SupportPortForwarding bool   `json:"support_port_forwarding,omitempty"`
-	VCPU                  bool   `json:"vcpu,omitempty"`
+	Fleet                 bool   `json:"fleet,omitempty"`
 }
 
 // sort NodeTypes within this struct
@@ -63,9 +63,6 @@ func (ntl *ListNodeTypesResponse) Smallest(r NodeTypeRequest) (string, error) {
 	// error is explicitly ingored here, because Azure returns
 	// apparently too big of a JSON for Go to parse
 	if len(ntl.NodeTypes) == 0 {
-		if r.VCPU {
-			return "vcpu-worker", nil
-		}
 		return "", fmt.Errorf("cannot determine smallest node type with empty response")
 	}
 	ntl.sort()
@@ -74,10 +71,7 @@ func (ntl *ListNodeTypesResponse) Smallest(r NodeTypeRequest) (string, error) {
 			continue
 		}
 		gbs := int32(nt.MemoryMb / 1024)
-		if r.VCPU && !strings.HasPrefix(nt.NodeTypeId, "vcpu") {
-			continue
-		}
-		if !r.VCPU && strings.HasPrefix(nt.NodeTypeId, "vcpu") {
+		if r.Fleet != strings.Contains(nt.NodeTypeId, "-fleet.") {
 			continue
 		}
 		if r.MinMemoryGB > 0 && gbs < r.MinMemoryGB {
