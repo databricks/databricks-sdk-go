@@ -233,8 +233,10 @@ func (c *DatabricksClient) recordRequestLog(
 	sb.WriteString("< ")
 	if response != nil {
 		sb.WriteString(fmt.Sprintf("%s %s", response.Proto, response.Status))
-		if err != nil {
-			sb.WriteString(fmt.Sprintf(" (%s)", err))
+		// Only display error on this line if the response body is empty.
+		// Otherwise the response body will include details about the error.
+		if len(responseBody) == 0 && err != nil {
+			sb.WriteString(fmt.Sprintf(" (Error: %s)", err))
 		}
 	} else {
 		sb.WriteString(fmt.Sprintf("Error: %s", err))
