@@ -232,11 +232,11 @@ func (c *DatabricksClient) recordRequestLog(
 	sb.WriteString("< ")
 	if response != nil {
 		sb.WriteString(fmt.Sprintf("%s %s", response.Proto, response.Status))
+		if err != nil {
+			sb.WriteString(fmt.Sprintf(" (%s)", err))
+		}
 	} else {
-		sb.WriteString("Error")
-	}
-	if err != nil {
-		sb.WriteString(fmt.Sprintf(" (%s)", err))
+		sb.WriteString(fmt.Sprintf("Error: %s", err))
 	}
 	sb.WriteString("\n")
 	if len(responseBody) > 0 {
