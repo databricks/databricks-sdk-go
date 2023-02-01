@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -94,8 +93,8 @@ func NotFound(message string) APIError {
 }
 
 // CheckForRetry inspects HTTP errors from the Databricks API for known transient errors on Workspace creation
-func CheckForRetry(ctx context.Context, resp *http.Response, err error) (bool, error) {
-	if ue, ok := err.(*url.Error); ok {
+func CheckForRetry(ctx context.Context, resp *http.Response, respErr error, body []byte, bodyErr error) (bool, error) {
+	if ue, ok := respErr.(*url.Error); ok {
 		apiError := APIError{
 			ErrorCode:  "IO_ERROR",
 			StatusCode: 523,
@@ -106,7 +105,7 @@ func CheckForRetry(ctx context.Context, resp *http.Response, err error) (bool, e
 	if resp == nil {
 		// If response is nil we can't make retry choices.
 		// In this case don't retry and return the original error from httpclient
-		return false, err
+		return false, respErr
 	}
 	if resp.StatusCode == 429 {
 		return true, APIError{
@@ -116,14 +115,13 @@ func CheckForRetry(ctx context.Context, resp *http.Response, err error) (bool, e
 		}
 	}
 	if resp.StatusCode >= 400 {
-		apiError := parseErrorFromResponse(resp)
+		apiError := parseErrorFromResponse(resp, body, bodyErr)
 		return apiError.IsRetriable(), apiError
 	}
-	return false, nil
+	return false, respErr
 }
 
-func parseErrorFromResponse(resp *http.Response) APIError {
-	body, err := io.ReadAll(resp.Body)
+func parseErrorFromResponse(resp *http.Response, body []byte, err error) APIError {
 	if err != nil {
 		return APIError{
 			Message:    err.Error(),

@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
@@ -129,27 +128,14 @@ func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string)
 	}.redactedDump(prefix, body)
 }
 
-// Fully read and close HTTP response body to release HTTP connections.
-//
-// HTTP client's Transport may not reuse HTTP/1.x "keep-alive" TCP connections
-// if the Body is not read to completion and closed.
-//
-// See: https://groups.google.com/g/golang-nuts/c/IoSvPz-rpfc
-func (c *DatabricksClient) drainToEnsureConnectionRelease(r *http.Response) {
-	if r == nil || r.Body == nil {
-		return
-	}
-	defer r.Body.Close()
-	_, err := io.Copy(ioutil.Discard, r.Body)
-	if err != nil {
-		logger.Errorf("failed to drain body: %s", err)
-	}
-}
-
-func (c *DatabricksClient) attempt(ctx context.Context,
-	method, requestURL string, requestBody []byte,
-	visitors ...func(*http.Request) error) func() (*http.Response, *retries.Err) {
-	return func() (*http.Response, *retries.Err) {
+func (c *DatabricksClient) attempt(
+	ctx context.Context,
+	method string,
+	requestURL string,
+	requestBody []byte,
+	visitors ...func(*http.Request) error,
+) func() (*bytes.Buffer, *retries.Err) {
+	return func() (*bytes.Buffer, *retries.Err) {
 		err := c.rateLimiter.Wait(ctx)
 		if err != nil {
 			return nil, retries.Halt(err)
@@ -169,25 +155,58 @@ func (c *DatabricksClient) attempt(ctx context.Context,
 		request.Header.Set("User-Agent", useragent.FromContext(request.Context()))
 
 		// attempt the actual request
-		resp, err := c.httpClient.Do(request)
-		retry, err := apierr.CheckForRetry(ctx, resp, err)
-		if err == nil {
-			return resp, nil
+		response, err := c.httpClient.Do(request)
+
+		// Read responseBody immediately because we need it regardless of success or failure.
+		//
+		// Fully read and close HTTP response responseBody to release HTTP connections.
+		//
+		// HTTP client's Transport may not reuse HTTP/1.x "keep-alive" TCP connections
+		// if the Body is not read to completion and closed.
+		//
+		// See: https://groups.google.com/g/golang-nuts/c/IoSvPz-rpfc
+		var responseBody bytes.Buffer
+		var responseBodyErr error
+		if response != nil {
+			_, responseBodyErr = responseBody.ReadFrom(response.Body)
+			response.Body.Close()
 		}
-		c.drainToEnsureConnectionRelease(resp)
+
+		retry, err := apierr.CheckForRetry(ctx, response, err, responseBody.Bytes(), responseBodyErr)
+		if err != nil && !errors.As(err, &apierr.APIError{}) {
+			err = fmt.Errorf("failed request: %w", err)
+		}
+		if err == nil && response == nil {
+			err = fmt.Errorf("no response: %s %s", method, requestURL)
+		}
+		if err == nil && responseBodyErr != nil {
+			err = fmt.Errorf("response body: %w", responseBodyErr)
+		}
+
+		defer c.recordRequestLog(request, response, err, requestBody, responseBody.Bytes())
+
+		if err == nil {
+			return &responseBody, nil
+		}
+
 		// proactively release the connections in HTTP connection pool
 		c.httpClient.CloseIdleConnections()
 		if retry {
 			return nil, retries.Continue(err)
 		}
+
 		return nil, retries.Halt(err)
 	}
 }
 
-func (c *DatabricksClient) recordRequestLog(response *http.Response,
-	requestBody, responseBody []byte) {
+func (c *DatabricksClient) recordRequestLog(
+	request *http.Request,
+	response *http.Response,
+	err error,
+	requestBody []byte,
+	responseBody []byte,
+) {
 	sb := strings.Builder{}
-	request := response.Request
 	sb.WriteString(fmt.Sprintf("%s %s", request.Method,
 		escapeNewLines(request.URL.Path)))
 	if request.URL.RawQuery != "" {
@@ -211,7 +230,18 @@ func (c *DatabricksClient) recordRequestLog(response *http.Response,
 		sb.WriteString(c.redactedDump("> ", requestBody))
 		sb.WriteString("\n")
 	}
-	sb.WriteString(fmt.Sprintf("< %s %s\n", response.Proto, response.Status))
+	sb.WriteString("< ")
+	if response != nil {
+		sb.WriteString(fmt.Sprintf("%s %s", response.Proto, response.Status))
+		// Only display error on this line if the response body is empty.
+		// Otherwise the response body will include details about the error.
+		if len(responseBody) == 0 && err != nil {
+			sb.WriteString(fmt.Sprintf(" (Error: %s)", err))
+		}
+	} else {
+		sb.WriteString(fmt.Sprintf("Error: %s", err))
+	}
+	sb.WriteString("\n")
 	if len(responseBody) > 0 {
 		sb.WriteString(c.redactedDump("< ", responseBody))
 	}
@@ -224,8 +254,13 @@ func (c *DatabricksClient) addAuthHeaderToUserAgent(r *http.Request) error {
 	return nil
 }
 
-func (c *DatabricksClient) perform(ctx context.Context, method, requestURL string, data interface{},
-	visitors ...func(*http.Request) error) (responseBody []byte, err error) {
+func (c *DatabricksClient) perform(
+	ctx context.Context,
+	method,
+	requestURL string,
+	data interface{},
+	visitors ...func(*http.Request) error,
+) ([]byte, error) {
 	requestBody, err := makeRequestBody(method, &requestURL, data)
 	if err != nil {
 		return nil, fmt.Errorf("request marshal: %w", err)
@@ -237,26 +272,11 @@ func (c *DatabricksClient) perform(ctx context.Context, method, requestURL strin
 	}, visitors...)
 	resp, err := retries.Poll(ctx, c.retryTimeout,
 		c.attempt(ctx, method, requestURL, requestBody, visitors...))
-	var ae apierr.APIError
-	if errors.As(err, &ae) {
-		// don't re-wrap, as upper layers may depend on handling common.APIError
-		return nil, ae
-	}
 	if err != nil {
-		// i don't even know which errors in the real world would end up here.
-		// `retryablehttp` package nicely wraps _everything_ to `url.Error`.
-		return nil, fmt.Errorf("failed request: %w", err)
+		// Don't re-wrap, as upper layers may depend on handling apierr.APIError.
+		return nil, err
 	}
-	if resp == nil {
-		return nil, fmt.Errorf("no response: %s %s", method, requestURL)
-	}
-	responseBody, err = io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("response body: %w", err)
-	}
-	c.recordRequestLog(resp, requestBody, responseBody)
-	c.drainToEnsureConnectionRelease(resp)
-	return responseBody, nil
+	return resp.Bytes(), nil
 }
 
 func makeQueryString(data interface{}) (string, error) {
