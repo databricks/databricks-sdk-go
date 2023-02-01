@@ -182,8 +182,10 @@ func (c *DatabricksClient) attempt(
 		if err == nil && responseBodyErr != nil {
 			err = fmt.Errorf("response body: %w", responseBodyErr)
 		}
+
+		defer c.recordRequestLog(request, response, err, requestBody, responseBody.Bytes())
+
 		if err == nil {
-			c.recordRequestLog(request, response, nil, requestBody, responseBody.Bytes())
 			return &responseBody, nil
 		}
 
@@ -193,7 +195,6 @@ func (c *DatabricksClient) attempt(
 			return nil, retries.Continue(err)
 		}
 
-		c.recordRequestLog(request, response, err, requestBody, responseBody.Bytes())
 		return nil, retries.Halt(err)
 	}
 }
