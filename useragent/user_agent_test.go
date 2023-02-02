@@ -42,3 +42,7 @@ func TestFromContext_Custom(t *testing.T) {
 	expected := fmt.Sprintf(expectedFormat, version.Version, goVersion(), runtime.GOOS)
 	assert.Equal(t, expected, userAgent)
 }
+
+func TestDefaultsAreValid(t *testing.T) {
+	WithProduct(productName, productVersion)
+}
