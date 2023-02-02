@@ -23,6 +23,9 @@ func (c BricksCliCredentials) Configure(ctx context.Context, cfg *Config) (func(
 	if !cfg.IsAws() {
 		return nil, nil
 	}
+	if cfg.Host == "" {
+		return nil, nil
+	}
 	ts := bricksCliTokenSource{cfg}
 	_, err := ts.Token()
 	if err != nil {
