@@ -10,21 +10,24 @@ import (
 	"golang.org/x/mod/semver"
 )
 
-const SdkName = "databricks-sdk-go"
-
-// WithProduct is expected to be set by developers to differentiate
-// their app from others. usage of `databricks.WithProduc` is preferred.
+// WithProduct sets the product name and product version globally.
+// It should be called by developers to differentiate their application from others.
 func WithProduct(name, version string) {
-	// TODO: validate fields
-	product = name
+	if err := matchAlphanum(name); err != nil {
+		panic(err)
+	}
+	if err := matchSemVer(version); err != nil {
+		panic(err)
+	}
+	productName = name
 	productVersion = version
 }
 
-// product holds product name
-var product = "unknown"
-
-// productVersion holds different release version
+var productName = "unknown"
 var productVersion = "0.0.0"
+
+const sdkName = "databricks-sdk-go"
+const sdkVersion = version.Version
 
 // extra holds per-process static extra information
 // bits, that are agreed upfront with Databricks.
@@ -39,25 +42,35 @@ const ctxAgent key = 5
 // WithUserAgentExtra sets per-process extra user agent data,
 // which integration developers have agreed with Databricks.
 func WithUserAgentExtra(key, value string) {
-	// TODO: validate fields
+	if err := matchAlphanum(key); err != nil {
+		panic(err)
+	}
+	if err := matchAlphanumOrSemVer(value); err != nil {
+		panic(err)
+	}
 	extra = append(extra, info{key, value})
 }
 
 // InContext populates context with user agent dimension,
 // usually to differentiate subsets of functionality and
 // agreed with Databricks.
-func InContext(ctx context.Context, k, v string) context.Context {
+func InContext(ctx context.Context, key, value string) context.Context {
+	if err := matchAlphanum(key); err != nil {
+		panic(err)
+	}
+	if err := matchAlphanumOrSemVer(value); err != nil {
+		panic(err)
+	}
 	uac, _ := ctx.Value(ctxAgent).(data)
-	// TODO: validate fields
-	uac = append(uac, info{k, v})
+	uac = append(uac, info{key, value})
 	return context.WithValue(ctx, ctxAgent, uac)
 }
 
 // FromContext gets compliant user-agent string in a given context
 func FromContext(ctx context.Context) string {
 	base := data{
-		{product, productVersion},
-		{SdkName, version.Version},
+		{productName, productVersion},
+		{sdkName, sdkVersion},
 		{"go", goVersion()},
 		{"os", runtime.GOOS},
 	}
