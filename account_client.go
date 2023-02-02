@@ -127,9 +127,8 @@ type AccountClient struct {
 	LogDelivery *billing.LogDeliveryAPI
 
 	// These APIs manage network configurations for customer-managed VPCs
-	// (optional). A network configuration encapsulates the IDs for AWS VPCs,
-	// subnets, and security groups. Its ID is used when creating a new
-	// workspace if you use customer-managed VPCs.
+	// (optional). Its ID is used when creating a new workspace if you use
+	// customer-managed VPCs.
 	Networks *deployment.NetworksAPI
 
 	// These APIs manage private access settings for this account. A private

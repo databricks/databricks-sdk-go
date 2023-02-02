@@ -37,6 +37,10 @@ type WorkspaceClient struct {
 	// is a Databricks SQL object that periodically runs a query, evaluates a
 	// condition of its result, and notifies one or more users and/or alert
 	// destinations if the condition was met.
+	//
+	// **Note**: Programmatic operations on refresh schedules via the Databricks
+	// SQL API are deprecated. Alert refresh schedules can be created, updated,
+	// fetched and deleted using Jobs API, e.g. :method:jobs/create.
 	Alerts *sql.AlertsAPI
 
 	// A catalog is the first layer of Unity Catalog’s three-level namespace.
@@ -116,6 +120,10 @@ type WorkspaceClient struct {
 	// collection of related query IDs. The API can also be used to duplicate
 	// multiple dashboards at once since you can get a dashboard definition with
 	// a GET request and then POST it to create a new one.
+	//
+	// **Note**: Programmatic operations on refresh schedules via the Databricks
+	// SQL API are deprecated. Dashboard refresh schedules can be created,
+	// updated, fetched and deleted using Jobs API, e.g. :method:jobs/create.
 	Dashboards *sql.DashboardsAPI
 
 	// This API is provided to assist you in making new query objects. When
@@ -135,9 +143,9 @@ type WorkspaceClient struct {
 	Dbfs *dbfs.DbfsAPI
 
 	// The SQL Permissions API is similar to the endpoints of the
-	// :method:permissions/setobjectpermissions. However, this exposes only one
-	// endpoint, which gets the Access Control List for a given object. You
-	// cannot modify any permissions using this API.
+	// :method:permissions/set. However, this exposes only one endpoint, which
+	// gets the Access Control List for a given object. You cannot modify any
+	// permissions using this API.
 	//
 	// There are three levels of permission:
 	//
@@ -163,8 +171,17 @@ type WorkspaceClient struct {
 	// credentials directly.
 	//
 	// To create external locations, you must be a metastore admin or a user
-	// with the CREATE_EXTERNAL_LOCATION privilege.
+	// with the **CREATE_EXTERNAL_LOCATION** privilege.
 	ExternalLocations *unitycatalog.ExternalLocationsAPI
+
+	// Functions implement User-Defined Functions (UDFs) in Unity Catalog.
+	//
+	// The function implementation can be any SQL expression or Query, and it
+	// can be invoked wherever a table reference is allowed in a query. In Unity
+	// Catalog, a function resides at the same level as a table, so it can be
+	// referenced with the form
+	// __catalog_name__.__schema_name__.__function_name__.
+	Functions *unitycatalog.FunctionsAPI
 
 	// Registers personal access token for Databricks to do operations on behalf
 	// of the user.
@@ -375,6 +392,10 @@ type WorkspaceClient struct {
 	// These endpoints are used for CRUD operations on query definitions. Query
 	// definitions include the target SQL warehouse, query text, name,
 	// description, tags, execution schedule, parameters, and visualizations.
+	//
+	// **Note**: Programmatic operations on refresh schedules via the Databricks
+	// SQL API are deprecated. Query refresh schedules can be created, updated,
+	// fetched and deleted using Jobs API, e.g. :method:jobs/create.
 	Queries *sql.QueriesAPI
 
 	// Access the history of queries through SQL warehouses.
@@ -451,6 +472,21 @@ type WorkspaceClient struct {
 	// The account admin who creates the storage credential can delegate
 	// ownership to another user or group to manage permissions on it.
 	StorageCredentials *unitycatalog.StorageCredentialsAPI
+
+	// Primary key and foreign key constraints encode relationships between
+	// fields in tables.
+	//
+	// Primary and foreign keys are informational only and are not enforced.
+	// Foreign keys must reference a primary key in another table. This primary
+	// key is the parent constraint of the foreign key and the table this
+	// primary key is on is the parent table of the foreign key. Similarly, the
+	// foreign key is the child constraint of its referenced primary key; the
+	// table of the foreign key is the child table of the primary key.
+	//
+	// You can declare primary keys and foreign keys as part of the table
+	// specification during table creation. You can also add or drop constraints
+	// on existing tables.
+	TableConstraints *unitycatalog.TableConstraintsAPI
 
 	// A table resides in the third layer of Unity Catalog’s three-level
 	// namespace. It contains rows of data. To create a table, users must have
@@ -533,6 +569,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		DbsqlPermissions:     sql.NewDbsqlPermissions(apiClient),
 		Experiments:          mlflow.NewExperiments(apiClient),
 		ExternalLocations:    unitycatalog.NewExternalLocations(apiClient),
+		Functions:            unitycatalog.NewFunctions(apiClient),
 		GitCredentials:       gitcredentials.NewGitCredentials(apiClient),
 		GlobalInitScripts:    globalinitscripts.NewGlobalInitScripts(apiClient),
 		Grants:               unitycatalog.NewGrants(apiClient),
@@ -565,6 +602,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ServicePrincipals:    scim.NewServicePrincipals(apiClient),
 		Shares:               unitycatalog.NewShares(apiClient),
 		StorageCredentials:   unitycatalog.NewStorageCredentials(apiClient),
+		TableConstraints:     unitycatalog.NewTableConstraints(apiClient),
 		Tables:               unitycatalog.NewTables(apiClient),
 		TokenManagement:      tokenmanagement.NewTokenManagement(apiClient),
 		Tokens:               tokens.NewTokens(apiClient),

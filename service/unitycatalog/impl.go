@@ -88,22 +88,69 @@ func (a *externalLocationsImpl) Update(ctx context.Context, request UpdateExtern
 	return &externalLocationInfo, err
 }
 
+// unexported type that holds implementations of just Functions API methods
+type functionsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *functionsImpl) Create(ctx context.Context, request CreateFunction) (*FunctionInfo, error) {
+	var functionInfo FunctionInfo
+	path := "/api/2.1/unity-catalog/functions"
+	err := a.client.Do(ctx, http.MethodPost, path, request, &functionInfo)
+	return &functionInfo, err
+}
+
+func (a *functionsImpl) Delete(ctx context.Context, request DeleteFunctionRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", request.Name)
+	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	return err
+}
+
+func (a *functionsImpl) Get(ctx context.Context, request GetFunctionRequest) (*FunctionInfo, error) {
+	var functionInfo FunctionInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", request.Name)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &functionInfo)
+	return &functionInfo, err
+}
+
+func (a *functionsImpl) List(ctx context.Context, request ListFunctionsRequest) (*ListFunctionsResponse, error) {
+	var listFunctionsResponse ListFunctionsResponse
+	path := "/api/2.1/unity-catalog/functions"
+	err := a.client.Do(ctx, http.MethodGet, path, request, &listFunctionsResponse)
+	return &listFunctionsResponse, err
+}
+
+func (a *functionsImpl) Update(ctx context.Context, request UpdateFunction) (*FunctionInfo, error) {
+	var functionInfo FunctionInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", request.Name)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &functionInfo)
+	return &functionInfo, err
+}
+
 // unexported type that holds implementations of just Grants API methods
 type grantsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *grantsImpl) Get(ctx context.Context, request GetGrantRequest) (*GetPermissionsResponse, error) {
-	var getPermissionsResponse GetPermissionsResponse
+func (a *grantsImpl) Get(ctx context.Context, request GetGrantRequest) (*PermissionsList, error) {
+	var permissionsList PermissionsList
 	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.FullName)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getPermissionsResponse)
-	return &getPermissionsResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &permissionsList)
+	return &permissionsList, err
 }
 
-func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) error {
+func (a *grantsImpl) GetEffective(ctx context.Context, request GetEffectiveRequest) (*EffectivePermissionsList, error) {
+	var effectivePermissionsList EffectivePermissionsList
+	path := fmt.Sprintf("/api/2.1/unity-catalog/effective-permissions/%v/%v", request.SecurableType, request.FullName)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &effectivePermissionsList)
+	return &effectivePermissionsList, err
+}
+
+func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) (*PermissionsList, error) {
+	var permissionsList PermissionsList
 	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.FullName)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &permissionsList)
+	return &permissionsList, err
 }
 
 // unexported type that holds implementations of just Metastores API methods
@@ -122,6 +169,13 @@ func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*
 	path := "/api/2.1/unity-catalog/metastores"
 	err := a.client.Do(ctx, http.MethodPost, path, request, &metastoreInfo)
 	return &metastoreInfo, err
+}
+
+func (a *metastoresImpl) Current(ctx context.Context) (*MetastoreAssignment, error) {
+	var metastoreAssignment MetastoreAssignment
+	path := "/api/2.1/unity-catalog/current-metastore-assignment"
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &metastoreAssignment)
+	return &metastoreAssignment, err
 }
 
 func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequest) error {
@@ -357,11 +411,11 @@ func (a *sharesImpl) List(ctx context.Context) (*ListSharesResponse, error) {
 	return &listSharesResponse, err
 }
 
-func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetSharePermissionsResponse, error) {
-	var getSharePermissionsResponse GetSharePermissionsResponse
+func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*PermissionsList, error) {
+	var permissionsList PermissionsList
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getSharePermissionsResponse)
-	return &getSharePermissionsResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &permissionsList)
+	return &permissionsList, err
 }
 
 func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInfo, error) {
@@ -416,6 +470,31 @@ func (a *storageCredentialsImpl) Update(ctx context.Context, request UpdateStora
 	return &storageCredentialInfo, err
 }
 
+func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateStorageCredential) (*ValidateStorageCredentialResponse, error) {
+	var validateStorageCredentialResponse ValidateStorageCredentialResponse
+	path := "/api/2.1/unity-catalog/validate-storage-credentials"
+	err := a.client.Do(ctx, http.MethodPost, path, request, &validateStorageCredentialResponse)
+	return &validateStorageCredentialResponse, err
+}
+
+// unexported type that holds implementations of just TableConstraints API methods
+type tableConstraintsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *tableConstraintsImpl) Create(ctx context.Context, request CreateTableConstraint) (*TableConstraint, error) {
+	var tableConstraint TableConstraint
+	path := "/api/2.1/unity-catalog/constraints"
+	err := a.client.Do(ctx, http.MethodPost, path, request, &tableConstraint)
+	return &tableConstraint, err
+}
+
+func (a *tableConstraintsImpl) Delete(ctx context.Context, request DeleteTableConstraintRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/constraints/%v", request.FullName)
+	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	return err
+}
+
 // unexported type that holds implementations of just Tables API methods
 type tablesImpl struct {
 	client *client.DatabricksClient
@@ -441,7 +520,7 @@ func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) (*List
 	return &listTablesResponse, err
 }
 
-func (a *tablesImpl) TableSummaries(ctx context.Context, request TableSummariesRequest) (*ListTableSummariesResponse, error) {
+func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error) {
 	var listTableSummariesResponse ListTableSummariesResponse
 	path := "/api/2.1/unity-catalog/table-summaries"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listTableSummariesResponse)

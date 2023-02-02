@@ -25,9 +25,9 @@ type AwsKeyInfo struct {
 }
 
 // The general workspace configurations that are specific to cloud providers.
-type CloudResourceBucket struct {
+type CloudResourceContainer struct {
 	// The general workspace configurations that are specific to Google Cloud.
-	Gcp *GcpProjectContainer `json:"gcp,omitempty"`
+	Gcp *CustomerFacingGcpCloudResourceContainer `json:"gcp,omitempty"`
 }
 
 type CreateAwsKeyInfo struct {
@@ -53,50 +53,6 @@ type CreateCustomerManagedKeyRequest struct {
 	AwsKeyInfo CreateAwsKeyInfo `json:"aws_key_info"`
 	// The cases that the key can be used for.
 	UseCases []KeyUseCase `json:"use_cases"`
-}
-
-// The network configurations for the workspace. If you provide a network
-// configuration ID for a new workspace, Databricks deploys the new workspace
-// into that associated customer-managed VPC. If omitted, by default Databricks
-// creates a new Databricks-managed VPC for the workspace in your Google account
-// and manages its lifecycle.
-//
-// All the IP range configurations must be mutually exclusive. An attempt to
-// create a workspace fails if Databricks detects an IP range overlap.
-//
-// Specify custom IP ranges in CIDR format. The IP ranges for these fields must
-// not overlap, and all IP addresses must be entirely within the following
-// ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`, `192.168.0.0/16`, and
-// `240.0.0.0/4`.
-//
-// The sizes of these IP ranges affect the maximum number of nodes for the
-// workspace.
-//
-// **Important**: Confirm the IP ranges used by your Databricks workspace before
-// creating the workspace. You cannot change them after your workspace is
-// deployed. If the IP address ranges for your Databricks are too small, IP
-// exhaustion can occur, causing your Databricks jobs to fail. To determine the
-// address range sizes that you need, Databricks provides a calculator as a
-// Microsoft Excel spreadsheet. See [calculate subnet sizes for a new
-// workspace].
-//
-// [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
-type CreateGcpNetwork struct {
-	// The common network configuration fields that can be used by both
-	// Databricks-managed VPCs and customer-managed VPCs.
-	GcpCommonNetworkConfig *GcpCommonNetworkConfig `json:"gcp_common_network_config,omitempty"`
-	// The network settings for the workspace. The configurations are only for
-	// Databricks-managed VPCs. It is ignored if you specify a customer-managed
-	// VPC in the `network_id` field.
-	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
-	// The network configuration ID that is attached to the workspace. If you
-	// provide a network configuration ID for a new workspace, Databricks
-	// validates the network resources and deploys the new workspace into your
-	// associated customer-managed VPC that is specified in this network
-	// configuration. If omitted, by default Databricks creates a new
-	// Databricks-managed VPC for the workspace in your Google account and
-	// manages its lifecycle.
-	NetworkId string `json:"network_id,omitempty"`
 }
 
 type CreateNetworkRequest struct {
@@ -145,7 +101,7 @@ type CreateWorkspaceRequest struct {
 	Cloud string `json:"cloud,omitempty"`
 	// The general workspace configurations that are specific to cloud
 	// providers.
-	CloudResourceBucket *CloudResourceBucket `json:"cloud_resource_bucket,omitempty"`
+	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
 	// ID of the workspace's credential configuration object.
 	CredentialsId string `json:"credentials_id,omitempty"`
 	// The deployment name defines part of the subdomain for the workspace. The
@@ -191,37 +147,7 @@ type CreateWorkspaceRequest struct {
 	// history. The provided key configuration object property `use_cases` must
 	// contain `MANAGED_SERVICES`.
 	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
-	// The network configurations for the workspace. If you provide a network
-	// configuration ID for a new workspace, Databricks deploys the new
-	// workspace into that associated customer-managed VPC. If omitted, by
-	// default Databricks creates a new Databricks-managed VPC for the workspace
-	// in your Google account and manages its lifecycle.
-	//
-	// All the IP range configurations must be mutually exclusive. An attempt to
-	// create a workspace fails if Databricks detects an IP range overlap.
-	//
-	// Specify custom IP ranges in CIDR format. The IP ranges for these fields
-	// must not overlap, and all IP addresses must be entirely within the
-	// following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`,
-	// `192.168.0.0/16`, and `240.0.0.0/4`.
-	//
-	// The sizes of these IP ranges affect the maximum number of nodes for the
-	// workspace.
-	//
-	// **Important**: Confirm the IP ranges used by your Databricks workspace
-	// before creating the workspace. You cannot change them after your
-	// workspace is deployed. If the IP address ranges for your Databricks are
-	// too small, IP exhaustion can occur, causing your Databricks jobs to fail.
-	// To determine the address range sizes that you need, Databricks provides a
-	// calculator as a Microsoft Excel spreadsheet. See [calculate subnet sizes
-	// for a new workspace].
-	//
-	// [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
-	Network *CreateGcpNetwork `json:"network,omitempty"`
-	// The ID of the workspace's network configuration object. To use [AWS
-	// PrivateLink] (Public Preview), this field is required.
-	//
-	// [AWS PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+
 	NetworkId string `json:"network_id,omitempty"`
 	// The pricing tier of the workspace. For pricing tier information, see [AWS
 	// Pricing].
@@ -264,6 +190,13 @@ type Credential struct {
 	CredentialsName string `json:"credentials_name,omitempty"`
 }
 
+// The general workspace configurations that are specific to Google Cloud.
+type CustomerFacingGcpCloudResourceContainer struct {
+	// The Google Cloud project ID, which the workspace uses to instantiate
+	// cloud resources for your workspace.
+	ProjectId string `json:"project_id,omitempty"`
+}
+
 type CustomerManagedKey struct {
 	// The Databricks account ID that holds the customer-managed key.
 	AccountId string `json:"account_id,omitempty"`
@@ -289,7 +222,7 @@ type DeleteEncryptionKeyRequest struct {
 	CustomerManagedKeyId string `json:"-" url:"-"`
 }
 
-// Delete network configuration
+// Delete a network configuration
 type DeleteNetworkRequest struct {
 	// Databricks Account API network configuration ID.
 	NetworkId string `json:"-" url:"-"`
@@ -313,7 +246,7 @@ type DeleteVpcEndpointRequest struct {
 	VpcEndpointId string `json:"-" url:"-"`
 }
 
-// Delete workspace
+// Delete a workspace
 type DeleteWorkspaceRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -393,25 +326,29 @@ func (et *ErrorType) Type() string {
 	return "ErrorType"
 }
 
-// The common network configuration fields that can be used by both
-// Databricks-managed VPCs and customer-managed VPCs.
-type GcpCommonNetworkConfig struct {
-	// The IP range from which to allocate GKE cluster master resources. This
-	// field will be ignored if GKE private cluster is not enabled.
-	//
-	// It must be exactly as big as `/28`.
-	GkeClusterMasterIpRange string `json:"gke_cluster_master_ip_range,omitempty"`
-	// Specifies the network connectivity types for the GKE nodes and the GKE
-	// master network. Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE
-	// cluster for the workspace. The GKE nodes will not have public IPs. Set to
-	// `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a
-	// public GKE cluster have public IP addresses.
-	GkeConnectivityType GkeConnectivityType `json:"gke_connectivity_type,omitempty"`
-}
-
 // The network settings for the workspace. The configurations are only for
 // Databricks-managed VPCs. It is ignored if you specify a customer-managed VPC
-// in the `network_id` field.
+// in the `network_id` field.", All the IP range configurations must be mutually
+// exclusive. An attempt to create a workspace fails if Databricks detects an IP
+// range overlap.
+//
+// Specify custom IP ranges in CIDR format. The IP ranges for these fields must
+// not overlap, and all IP addresses must be entirely within the following
+// ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`, `192.168.0.0/16`, and
+// `240.0.0.0/4`.
+//
+// The sizes of these IP ranges affect the maximum number of nodes for the
+// workspace.
+//
+// **Important**: Confirm the IP ranges used by your Databricks workspace before
+// creating the workspace. You cannot change them after your workspace is
+// deployed. If the IP address ranges for your Databricks are too small, IP
+// exhaustion can occur, causing your Databricks jobs to fail. To determine the
+// address range sizes that you need, Databricks provides a calculator as a
+// Microsoft Excel spreadsheet. See [calculate subnet sizes for a new
+// workspace].
+//
+// [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
 type GcpManagedNetworkConfig struct {
 	// The IP range from which to allocate GKE cluster pods. No bigger than `/9`
 	// and no smaller than `/21`.
@@ -422,12 +359,6 @@ type GcpManagedNetworkConfig struct {
 	// The IP range from which to allocate GKE cluster nodes. No bigger than
 	// `/9` and no smaller than `/29`.
 	SubnetCidr string `json:"subnet_cidr,omitempty"`
-}
-
-type GcpNetwork struct {
-	// The network configuration ID that is attached to the workspace. This
-	// field is available only if the network is a customer-managed network.
-	NetworkId string `json:"network_id,omitempty"`
 }
 
 // The Google Cloud specific information for this network (for example, the VPC
@@ -451,13 +382,6 @@ type GcpNetworkInfo struct {
 	// The ID of the VPC associated with this network. VPC IDs can be used in
 	// multiple network configurations.
 	VpcId string `json:"vpc_id"`
-}
-
-// The general workspace configurations that are specific to Google Cloud.
-type GcpProjectContainer struct {
-	// The Google Cloud project ID, which the workspace uses to instantiate
-	// cloud resources for your workspace.
-	ProjectId string `json:"project_id,omitempty"`
 }
 
 // Get credential configuration
@@ -496,42 +420,63 @@ type GetVpcEndpointRequest struct {
 	VpcEndpointId string `json:"-" url:"-"`
 }
 
-// Get workspace
+// Get a workspace
 type GetWorkspaceRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+// The configurations for the GKE cluster of a Databricks workspace.
+type GkeConfig struct {
+	// Specifies the network connectivity types for the GKE nodes and the GKE
+	// master network. \n
+	//
+	// Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the
+	// workspace. The GKE nodes will not have public IPs.\n
+	//
+	// Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of
+	// a public GKE cluster have public IP addresses.
+	ConnectivityType GkeConfigConnectivityType `json:"connectivity_type,omitempty"`
+	// The IP range from which to allocate GKE cluster master resources. This
+	// field will be ignored if GKE private cluster is not enabled.
+	//
+	// It must be exactly as big as `/28`.
+	MasterIpRange string `json:"master_ip_range,omitempty"`
+}
+
 // Specifies the network connectivity types for the GKE nodes and the GKE master
-// network. Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for
-// the workspace. The GKE nodes will not have public IPs. Set to
-// `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a public
-// GKE cluster have public IP addresses.
-type GkeConnectivityType string
+// network. \n
+//
+// Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the
+// workspace. The GKE nodes will not have public IPs.\n
+//
+// Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a
+// public GKE cluster have public IP addresses.
+type GkeConfigConnectivityType string
 
-const GkeConnectivityTypePrivateNodePublicMaster GkeConnectivityType = `PRIVATE_NODE_PUBLIC_MASTER`
+const GkeConfigConnectivityTypePrivateNodePublicMaster GkeConfigConnectivityType = `PRIVATE_NODE_PUBLIC_MASTER`
 
-const GkeConnectivityTypePublicNodePublicMaster GkeConnectivityType = `PUBLIC_NODE_PUBLIC_MASTER`
+const GkeConfigConnectivityTypePublicNodePublicMaster GkeConfigConnectivityType = `PUBLIC_NODE_PUBLIC_MASTER`
 
 // String representation for [fmt.Print]
-func (gct *GkeConnectivityType) String() string {
-	return string(*gct)
+func (gcct *GkeConfigConnectivityType) String() string {
+	return string(*gcct)
 }
 
 // Set raw string value and validate it against allowed values
-func (gct *GkeConnectivityType) Set(v string) error {
+func (gcct *GkeConfigConnectivityType) Set(v string) error {
 	switch v {
 	case `PRIVATE_NODE_PUBLIC_MASTER`, `PUBLIC_NODE_PUBLIC_MASTER`:
-		*gct = GkeConnectivityType(v)
+		*gcct = GkeConfigConnectivityType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PRIVATE_NODE_PUBLIC_MASTER", "PUBLIC_NODE_PUBLIC_MASTER"`, v)
 	}
 }
 
-// Type always returns GkeConnectivityType to satisfy [pflag.Value] interface
-func (gct *GkeConnectivityType) Type() string {
-	return "GkeConnectivityType"
+// Type always returns GkeConfigConnectivityType to satisfy [pflag.Value] interface
+func (gcct *GkeConfigConnectivityType) Type() string {
+	return "GkeConfigConnectivityType"
 }
 
 // This describes an enum
@@ -978,7 +923,7 @@ type Workspace struct {
 	Cloud string `json:"cloud,omitempty"`
 	// The general workspace configurations that are specific to cloud
 	// providers.
-	CloudResourceBucket *CloudResourceBucket `json:"cloud_resource_bucket,omitempty"`
+	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
 	// Time in epoch milliseconds when the workspace was created.
 	CreationTime int64 `json:"creation_time,omitempty"`
 	// ID of the workspace's credential configuration object.
@@ -990,13 +935,40 @@ type Workspace struct {
 	// This value must be unique across all non-deleted deployments across all
 	// AWS regions.
 	DeploymentName string `json:"deployment_name,omitempty"`
+	// The network settings for the workspace. The configurations are only for
+	// Databricks-managed VPCs. It is ignored if you specify a customer-managed
+	// VPC in the `network_id` field.", All the IP range configurations must be
+	// mutually exclusive. An attempt to create a workspace fails if Databricks
+	// detects an IP range overlap.
+	//
+	// Specify custom IP ranges in CIDR format. The IP ranges for these fields
+	// must not overlap, and all IP addresses must be entirely within the
+	// following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`,
+	// `192.168.0.0/16`, and `240.0.0.0/4`.
+	//
+	// The sizes of these IP ranges affect the maximum number of nodes for the
+	// workspace.
+	//
+	// **Important**: Confirm the IP ranges used by your Databricks workspace
+	// before creating the workspace. You cannot change them after your
+	// workspace is deployed. If the IP address ranges for your Databricks are
+	// too small, IP exhaustion can occur, causing your Databricks jobs to fail.
+	// To determine the address range sizes that you need, Databricks provides a
+	// calculator as a Microsoft Excel spreadsheet. See [calculate subnet sizes
+	// for a new workspace].
+	//
+	// [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
+	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
+	// The configurations for the GKE cluster of a Databricks workspace.
+	GkeConfig *GkeConfig `json:"gke_config,omitempty"`
 	// The Google Cloud region of the workspace data plane in your Google
 	// account (for example, `us-east4`).
 	Location string `json:"location,omitempty"`
 	// ID of the key configuration for encrypting managed services.
 	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
-
-	Network *GcpNetwork `json:"network,omitempty"`
+	// The network configuration ID that is attached to the workspace. This
+	// field is available only if the network is a customer-managed network.
+	NetworkId string `json:"network_id,omitempty"`
 	// The pricing tier of the workspace. For pricing tier information, see [AWS
 	// Pricing].
 	//
@@ -1018,7 +990,7 @@ type Workspace struct {
 	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
 	// ID of the key configuration for encrypting workspace storage.
 	StorageCustomerManagedKeyId string `json:"storage_customer_managed_key_id,omitempty"`
-	// Workspace ID.
+	// A unique integer ID for the workspace
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 	// The human-readable name of the workspace.
 	WorkspaceName string `json:"workspace_name,omitempty"`

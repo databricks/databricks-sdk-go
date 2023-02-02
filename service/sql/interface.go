@@ -10,6 +10,10 @@ import (
 // a Databricks SQL object that periodically runs a query, evaluates a condition
 // of its result, and notifies one or more users and/or alert destinations if
 // the condition was met.
+//
+// **Note**: Programmatic operations on refresh schedules via the Databricks SQL
+// API are deprecated. Alert refresh schedules can be created, updated, fetched
+// and deleted using Jobs API, e.g. :method:jobs/create.
 type AlertsService interface {
 
 	// Create an alert.
@@ -17,13 +21,16 @@ type AlertsService interface {
 	// Creates an alert. An alert is a Databricks SQL object that periodically
 	// runs a query, evaluates a condition of its result, and notifies users or
 	// alert destinations if the condition was met.
-	Create(ctx context.Context, request EditAlert) (*Alert, error)
+	Create(ctx context.Context, request CreateAlert) (*Alert, error)
 
-	// Create a refresh schedule.
+	// [DEPRECATED] Create a refresh schedule.
 	//
 	// Creates a new refresh schedule for an alert.
 	//
 	// **Note:** The structure of refresh schedules is subject to change.
+	//
+	// **Note:** This API is deprecated: Use :method:jobs/create to create a job
+	// with the alert.
 	CreateSchedule(ctx context.Context, request CreateRefreshSchedule) (*RefreshSchedule, error)
 
 	// Delete an alert.
@@ -33,10 +40,13 @@ type AlertsService interface {
 	// to the trash.
 	Delete(ctx context.Context, request DeleteAlertRequest) error
 
-	// Delete a refresh schedule.
+	// [DEPRECATED] Delete a refresh schedule.
 	//
 	// Deletes an alert's refresh schedule. The refresh schedule specifies when
 	// to refresh and evaluate the associated query result.
+	//
+	// **Note:** This API is deprecated: Use :method:jobs/delete to delete a job
+	// for the alert.
 	DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error
 
 	// Get an alert.
@@ -44,13 +54,16 @@ type AlertsService interface {
 	// Gets an alert.
 	Get(ctx context.Context, request GetAlertRequest) (*Alert, error)
 
-	// Get an alert's subscriptions.
+	// [DEPRECATED] Get an alert's subscriptions.
 	//
 	// Get the subscriptions for an alert. An alert subscription represents
 	// exactly one recipient being notified whenever the alert is triggered. The
 	// alert recipient is specified by either the `user` field or the
 	// `destination` field. The `user` field is ignored if `destination` is
 	// non-`null`.
+	//
+	// **Note:** This API is deprecated: Use :method:jobs/get to get the
+	// subscriptions associated with a job for an alert.
 	GetSubscriptions(ctx context.Context, request GetSubscriptionsRequest) ([]Subscription, error)
 
 	// Get alerts.
@@ -58,7 +71,7 @@ type AlertsService interface {
 	// Gets a list of alerts.
 	List(ctx context.Context) ([]Alert, error)
 
-	// Get refresh schedules.
+	// [DEPRECATED] Get refresh schedules.
 	//
 	// Gets the refresh schedules for the specified alert. Alerts can have
 	// refresh schedules that specify when to refresh and evaluate the
@@ -67,14 +80,23 @@ type AlertsService interface {
 	// **Note:** Although refresh schedules are returned in a list, only one
 	// refresh schedule per alert is currently supported. The structure of
 	// refresh schedules is subject to change.
+	//
+	// **Note:** This API is deprecated: Use :method:jobs/list to list jobs and
+	// filter by the alert.
 	ListSchedules(ctx context.Context, request ListSchedulesRequest) ([]RefreshSchedule, error)
 
-	// Subscribe to an alert.
+	// [DEPRECATED] Subscribe to an alert.
+	//
+	// **Note:** This API is deprecated: Use :method:jobs/update to subscribe to
+	// a job for an alert.
 	Subscribe(ctx context.Context, request CreateSubscription) (*Subscription, error)
 
-	// Unsubscribe to an alert.
+	// [DEPRECATED] Unsubscribe to an alert.
 	//
 	// Unsubscribes a user or a destination to an alert.
+	//
+	// **Note:** This API is deprecated: Use :method:jobs/update to unsubscribe
+	// to a job for an alert.
 	Unsubscribe(ctx context.Context, request UnsubscribeRequest) error
 
 	// Update an alert.
@@ -88,6 +110,10 @@ type AlertsService interface {
 // query IDs. The API can also be used to duplicate multiple dashboards at once
 // since you can get a dashboard definition with a GET request and then POST it
 // to create a new one.
+//
+// **Note**: Programmatic operations on refresh schedules via the Databricks SQL
+// API are deprecated. Dashboard refresh schedules can be created, updated,
+// fetched and deleted using Jobs API, e.g. :method:jobs/create.
 type DashboardsService interface {
 
 	// Create a dashboard object.
@@ -141,9 +167,9 @@ type DataSourcesService interface {
 }
 
 // The SQL Permissions API is similar to the endpoints of the
-// :method:permissions/setobjectpermissions. However, this exposes only one
-// endpoint, which gets the Access Control List for a given object. You cannot
-// modify any permissions using this API.
+// :method:permissions/set. However, this exposes only one endpoint, which gets
+// the Access Control List for a given object. You cannot modify any permissions
+// using this API.
 //
 // There are three levels of permission:
 //
@@ -177,6 +203,10 @@ type DbsqlPermissionsService interface {
 // These endpoints are used for CRUD operations on query definitions. Query
 // definitions include the target SQL warehouse, query text, name, description,
 // tags, execution schedule, parameters, and visualizations.
+//
+// **Note**: Programmatic operations on refresh schedules via the Databricks SQL
+// API are deprecated. Query refresh schedules can be created, updated, fetched
+// and deleted using Jobs API, e.g. :method:jobs/create.
 type QueriesService interface {
 
 	// Create a new query definition.
@@ -225,7 +255,7 @@ type QueriesService interface {
 	// Modify this query definition.
 	//
 	// **Note**: You cannot undo this operation.
-	Update(ctx context.Context, request QueryPostContent) (*Query, error)
+	Update(ctx context.Context, request QueryEditContent) (*Query, error)
 }
 
 // Access the history of queries through SQL warehouses.

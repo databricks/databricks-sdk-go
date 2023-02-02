@@ -12,6 +12,111 @@ import (
 
 // all definitions in this file are in alphabetical order
 
+type BaseJob struct {
+	// The time at which this job was created in epoch milliseconds
+	// (milliseconds since 1/1/1970 UTC).
+	CreatedTime int64 `json:"created_time,omitempty"`
+	// The creator user name. This field won’t be included in the response if
+	// the user has already been deleted.
+	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// The canonical identifier for this job.
+	JobId int64 `json:"job_id,omitempty"`
+	// Settings for this job and all of its runs. These settings can be updated
+	// using the `resetJob` method.
+	Settings *JobSettings `json:"settings,omitempty"`
+}
+
+type BaseRun struct {
+	// The sequence number of this run attempt for a triggered job run. The
+	// initial attempt of a run has an attempt_number of 0\. If the initial run
+	// attempt fails, and the job has a retry policy (`max_retries` \> 0),
+	// subsequent runs are created with an `original_attempt_run_id` of the
+	// original attempt’s ID and an incrementing `attempt_number`. Runs are
+	// retried only until they succeed, and the maximum `attempt_number` is the
+	// same as the `max_retries` value for the job.
+	AttemptNumber int `json:"attempt_number,omitempty"`
+	// The time in milliseconds it took to terminate the cluster and clean up
+	// any associated artifacts. The duration of a task run is the sum of the
+	// `setup_duration`, `execution_duration`, and the `cleanup_duration`. The
+	// `cleanup_duration` field is set to 0 for multitask job runs. The total
+	// duration of a multitask job run is the value of the `run_duration` field.
+	CleanupDuration int64 `json:"cleanup_duration,omitempty"`
+	// The cluster used for this run. If the run is specified to use a new
+	// cluster, this field is set once the Jobs service has requested a cluster
+	// for the run.
+	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
+	// A snapshot of the job’s cluster specification when this run was
+	// created.
+	ClusterSpec *ClusterSpec `json:"cluster_spec,omitempty"`
+	// The creator user name. This field won’t be included in the response if
+	// the user has already been deleted.
+	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// The time at which this run ended in epoch milliseconds (milliseconds
+	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
+	EndTime int64 `json:"end_time,omitempty"`
+	// The time in milliseconds it took to execute the commands in the JAR or
+	// notebook until they completed, failed, timed out, were cancelled, or
+	// encountered an unexpected error. The duration of a task run is the sum of
+	// the `setup_duration`, `execution_duration`, and the `cleanup_duration`.
+	// The `execution_duration` field is set to 0 for multitask job runs. The
+	// total duration of a multitask job run is the value of the `run_duration`
+	// field.
+	ExecutionDuration int64 `json:"execution_duration,omitempty"`
+	// An optional specification for a remote repository containing the
+	// notebooks used by this job's notebook tasks.
+	GitSource *GitSource `json:"git_source,omitempty"`
+	// A list of job cluster specifications that can be shared and reused by
+	// tasks of this job. Libraries cannot be declared in a shared job cluster.
+	// You must declare dependent libraries in task settings.
+	JobClusters []JobCluster `json:"job_clusters,omitempty"`
+	// The canonical identifier of the job that contains this run.
+	JobId int64 `json:"job_id,omitempty"`
+	// A unique identifier for this job run. This is set to the same value as
+	// `run_id`.
+	NumberInJob int64 `json:"number_in_job,omitempty"`
+	// If this run is a retry of a prior run attempt, this field contains the
+	// run_id of the original attempt; otherwise, it is the same as the run_id.
+	OriginalAttemptRunId int64 `json:"original_attempt_run_id,omitempty"`
+	// The parameters used for this run.
+	OverridingParameters *RunParameters `json:"overriding_parameters,omitempty"`
+	// The time in milliseconds it took the job run and all of its repairs to
+	// finish.
+	RunDuration int `json:"run_duration,omitempty"`
+	// The canonical identifier of the run. This ID is unique across all runs of
+	// all jobs.
+	RunId int64 `json:"run_id,omitempty"`
+	// An optional name for the run. The maximum allowed length is 4096 bytes in
+	// UTF-8 encoding.
+	RunName string `json:"run_name,omitempty"`
+	// The URL to the detail page of the run.
+	RunPageUrl string `json:"run_page_url,omitempty"`
+	// This describes an enum
+	RunType RunType `json:"run_type,omitempty"`
+	// The cron schedule that triggered this run if it was triggered by the
+	// periodic scheduler.
+	Schedule *CronSchedule `json:"schedule,omitempty"`
+	// The time in milliseconds it took to set up the cluster. For runs that run
+	// on new clusters this is the cluster creation time, for runs that run on
+	// existing clusters this time should be very short. The duration of a task
+	// run is the sum of the `setup_duration`, `execution_duration`, and the
+	// `cleanup_duration`. The `setup_duration` field is set to 0 for multitask
+	// job runs. The total duration of a multitask job run is the value of the
+	// `run_duration` field.
+	SetupDuration int64 `json:"setup_duration,omitempty"`
+	// The time at which this run was started in epoch milliseconds
+	// (milliseconds since 1/1/1970 UTC). This may not be the time when the job
+	// task starts executing, for example, if the job is scheduled to run on a
+	// new cluster, this is the time the cluster creation call is issued.
+	StartTime int64 `json:"start_time,omitempty"`
+	// The result and lifecycle states of the run.
+	State *RunState `json:"state,omitempty"`
+	// The list of tasks performed by the run. Each task has its own `run_id`
+	// which you can use to call `JobsGetOutput` to retrieve the run resutls.
+	Tasks []RunTask `json:"tasks,omitempty"`
+	// This describes an enum
+	Trigger TriggerType `json:"trigger,omitempty"`
+}
+
 type CancelAllRuns struct {
 	// The canonical identifier of the job to cancel all runs of. This field is
 	// required.
@@ -54,7 +159,7 @@ type ClusterSpec struct {
 	// executes the job. The default value is an empty list.
 	Libraries []libraries.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster *clusters.CreateCluster `json:"new_cluster,omitempty"`
+	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
 }
 
 type CreateJob struct {
@@ -202,6 +307,11 @@ type DbtOutput struct {
 }
 
 type DbtTask struct {
+	// Optional name of the catalog to use. The value is the top level in the
+	// 3-level namespace of Unity Catalog (catalog / schema / relation). The
+	// catalog value can only be specified if a warehouse_id is specified.
+	// Requires dbt-databricks >= 1.1.1.
+	Catalog string `json:"catalog,omitempty"`
 	// A list of dbt commands to execute. All commands must start with `dbt`.
 	// This parameter must not be empty. A maximum of up to 10 commands can be
 	// provided.
@@ -372,7 +482,7 @@ type JobCluster struct {
 	// determine which cluster to launch for the task execution.
 	JobClusterKey string `json:"job_cluster_key"`
 	// If new_cluster, a description of a cluster that is created for each task.
-	NewCluster *clusters.CreateCluster `json:"new_cluster,omitempty"`
+	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
 }
 
 type JobEmailNotifications struct {
@@ -522,7 +632,7 @@ type JobTaskSettings struct {
 	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
 	// If new_cluster, a description of a cluster that is created for only for
 	// this task.
-	NewCluster *clusters.CreateCluster `json:"new_cluster,omitempty"`
+	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -594,7 +704,7 @@ type List struct {
 type ListJobsResponse struct {
 	HasMore bool `json:"has_more,omitempty"`
 	// The list of jobs.
-	Jobs []Job `json:"jobs,omitempty"`
+	Jobs []BaseJob `json:"jobs,omitempty"`
 }
 
 // List runs for a job
@@ -620,7 +730,7 @@ type ListRuns struct {
 	// The offset of the first run to return, relative to the most recent run.
 	Offset int `json:"-" url:"offset,omitempty"`
 	// The type of runs to return. For a description of run types, see
-	// :method:getRun.
+	// :method:jobs/getRun.
 	RunType ListRunsRunType `json:"-" url:"run_type,omitempty"`
 	// Show runs that started _at or after_ this value. The value must be a UTC
 	// timestamp in milliseconds. Can be combined with _start_time_to_ to filter
@@ -637,16 +747,16 @@ type ListRunsResponse struct {
 	// listing.
 	HasMore bool `json:"has_more,omitempty"`
 	// A list of runs, from most recently started to least.
-	Runs []Run `json:"runs,omitempty"`
+	Runs []BaseRun `json:"runs,omitempty"`
 }
 
 // This describes an enum
 type ListRunsRunType string
 
-// Normal job run. A run created with :method:runNow.
+// Normal job run. A run created with :method:jobs/runNow.
 const ListRunsRunTypeJobRun ListRunsRunType = `JOB_RUN`
 
-// Submit run. A run created with :method:submit.
+// Submit run. A run created with :method:jobs/submit.
 const ListRunsRunTypeSubmitRun ListRunsRunType = `SUBMIT_RUN`
 
 // Workflow run. A run created with
@@ -688,8 +798,8 @@ type NotebookOutput struct {
 
 type NotebookTask struct {
 	// Base parameters to be used for each run of this job. If the run is
-	// initiated by a call to :method:runNow with parameters specified, the two
-	// parameters maps are merged. If the same key is specified in
+	// initiated by a call to :method:jobs/runNow with parameters specified, the
+	// two parameters maps are merged. If the same key is specified in
 	// `base_parameters` and in `run-now`, the value from `run-now` is used.
 	//
 	// Use [Task parameter variables] to set parameters containing information
@@ -1018,7 +1128,7 @@ type Run struct {
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run resutls.
 	Tasks []RunTask `json:"tasks,omitempty"`
-	// The type of trigger that fired this run.
+	// This describes an enum
 	Trigger TriggerType `json:"trigger,omitempty"`
 }
 
@@ -1375,7 +1485,7 @@ type RunSubmitTaskSettings struct {
 	// executes the task. The default value is an empty list.
 	Libraries []libraries.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster *clusters.CreateCluster `json:"new_cluster,omitempty"`
+	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -1455,7 +1565,7 @@ type RunTask struct {
 	Libraries []libraries.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a new cluster that is created only for
 	// this task.
-	NewCluster *clusters.CreateCluster `json:"new_cluster,omitempty"`
+	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this job must run a notebook. This field
 	// may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -1499,10 +1609,10 @@ type RunTask struct {
 // This describes an enum
 type RunType string
 
-// Normal job run. A run created with :method:runNow.
+// Normal job run. A run created with :method:jobs/runNow.
 const RunTypeJobRun RunType = `JOB_RUN`
 
-// Submit run. A run created with :method:submit.
+// Submit run. A run created with :method:jobs/submit.
 const RunTypeSubmitRun RunType = `SUBMIT_RUN`
 
 // Workflow run. A run created with
@@ -1532,7 +1642,7 @@ func (rt *RunType) Type() string {
 
 type SparkJarTask struct {
 	// Deprecated since 04/2016\\. Provide a `jar` through the `libraries` field
-	// instead. For an example, see :method:create.
+	// instead. For an example, see :method:jobs/create.
 	JarUri string `json:"jar_uri,omitempty"`
 	// The full name of the class containing the main method to be executed.
 	// This class must be contained in a JAR provided as a library.

@@ -15,7 +15,7 @@ type alertsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *alertsImpl) Create(ctx context.Context, request EditAlert) (*Alert, error) {
+func (a *alertsImpl) Create(ctx context.Context, request CreateAlert) (*Alert, error) {
 	var alert Alert
 	path := "/api/2.0/preview/sql/alerts"
 	err := a.client.Do(ctx, http.MethodPost, path, request, &alert)
@@ -202,7 +202,7 @@ func (a *queriesImpl) Restore(ctx context.Context, request RestoreQueryRequest) 
 	return err
 }
 
-func (a *queriesImpl) Update(ctx context.Context, request QueryPostContent) (*Query, error) {
+func (a *queriesImpl) Update(ctx context.Context, request QueryEditContent) (*Query, error) {
 	var query Query
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	err := a.client.Do(ctx, http.MethodPost, path, request, &query)

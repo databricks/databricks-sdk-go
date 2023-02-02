@@ -38,7 +38,7 @@ func TestAccQueries(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, byId.Id, byName.Id)
 
-	updated, err := w.Queries.Update(ctx, sql.QueryPostContent{
+	updated, err := w.Queries.Update(ctx, sql.QueryEditContent{
 		QueryId:      query.Id,
 		Name:         RandomName("go-sdk-updated"),
 		DataSourceId: srcs[0].Id,
@@ -67,7 +67,7 @@ func TestAccAlerts(t *testing.T) {
 	require.NoError(t, err)
 	defer w.Queries.DeleteByQueryId(ctx, query.Id)
 
-	alert, err := w.Alerts.Create(ctx, sql.EditAlert{
+	alert, err := w.Alerts.Create(ctx, sql.CreateAlert{
 		Options: sql.AlertOptions{
 			Column: "1",
 			Op:     "==",

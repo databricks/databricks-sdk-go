@@ -24,11 +24,13 @@
 //
 // - [dbfs.DbfsAPI]: DBFS API makes it simple to interact with various data sources without having to include a users credentials every time to read a file.
 //
-// - [sql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/setobjectpermissions.
+// - [sql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/set.
 //
 // - [deployment.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
 // - [unitycatalog.ExternalLocationsAPI]: An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path.
+//
+// - [unitycatalog.FunctionsAPI]: Functions implement User-Defined Functions (UDFs) in Unity Catalog.
 //
 // - [gitcredentials.GitCredentialsAPI]: Registers personal access token for Databricks to do operations on behalf of the user.
 //
@@ -91,6 +93,8 @@
 // - [deployment.StorageAPI]: These APIs manage storage configurations for this workspace.
 //
 // - [unitycatalog.StorageCredentialsAPI]: A storage credential represents an authentication and authorization mechanism for accessing data stored on your cloud tenant, using an IAM role.
+//
+// - [unitycatalog.TableConstraintsAPI]: Primary key and foreign key constraints encode relationships between fields in tables.
 //
 // - [unitycatalog.TablesAPI]: A table resides in the third layer of Unity Catalog’s three-level namespace.
 //
@@ -163,6 +167,7 @@ var (
 	_ *deployment.EncryptionKeysAPI           = nil
 	_ *mlflow.ExperimentsAPI                  = nil
 	_ *unitycatalog.ExternalLocationsAPI      = nil
+	_ *unitycatalog.FunctionsAPI              = nil
 	_ *gitcredentials.GitCredentialsAPI       = nil
 	_ *globalinitscripts.GlobalInitScriptsAPI = nil
 	_ *unitycatalog.GrantsAPI                 = nil
@@ -201,6 +206,7 @@ var (
 	_ *unitycatalog.SharesAPI                 = nil
 	_ *deployment.StorageAPI                  = nil
 	_ *unitycatalog.StorageCredentialsAPI     = nil
+	_ *unitycatalog.TableConstraintsAPI       = nil
 	_ *unitycatalog.TablesAPI                 = nil
 	_ *tokenmanagement.TokenManagementAPI     = nil
 	_ *tokens.TokensAPI                       = nil

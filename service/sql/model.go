@@ -25,6 +25,9 @@ type Alert struct {
 	Name string `json:"name,omitempty"`
 	// Alert configuration options.
 	Options *AlertOptions `json:"options,omitempty"`
+	// The identifier of the parent folder containing the alert. Available for
+	// alerts in workspace.
+	Parent string `json:"parent,omitempty"`
 
 	Query *Query `json:"query,omitempty"`
 	// Number of seconds after being triggered before the alert rearms itself
@@ -149,6 +152,22 @@ func (cn *ChannelName) Type() string {
 	return "ChannelName"
 }
 
+type CreateAlert struct {
+	// Name of the alert.
+	Name string `json:"name"`
+	// Alert configuration options.
+	Options AlertOptions `json:"options"`
+	// The identifier of the workspace folder containing the alert. The default
+	// is ther user's home folder.
+	Parent string `json:"parent,omitempty"`
+	// ID of the query evaluated by the alert.
+	QueryId string `json:"query_id"`
+	// Number of seconds after being triggered before the alert rearms itself
+	// and can be triggered again. If `null`, alert will never be triggered
+	// again.
+	Rearm int `json:"rearm,omitempty"`
+}
+
 // Create a dashboard object
 type CreateDashboardRequest struct {
 	// In the web application, query filters that share a name are coupled to a
@@ -162,6 +181,9 @@ type CreateDashboardRequest struct {
 	// The title of this dashboard that appears in list views and at the top of
 	// the dashboard page.
 	Name string `json:"name,omitempty"`
+	// The identifier of the workspace folder containing the dashboard. The
+	// default is the user's home folder.
+	Parent string `json:"parent,omitempty"`
 
 	Tags []string `json:"tags,omitempty"`
 	// An array of widget objects. A complete description of widget objects can
@@ -288,6 +310,9 @@ type Dashboard struct {
 	Name string `json:"name,omitempty"`
 
 	Options *DashboardOptions `json:"options,omitempty"`
+	// The identifier of the parent folder containing the dashboard. Available
+	// for dashboards in workspace.
+	Parent string `json:"parent,omitempty"`
 	// This describes an enum
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// URL slug. Usually mirrors the query name with dashes (`-`) instead of
@@ -353,7 +378,7 @@ type DeleteQueryRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
-// Delete a refresh schedule
+// [DEPRECATED] Delete a refresh schedule
 type DeleteScheduleRequest struct {
 	AlertId string `json:"-" url:"-"`
 
@@ -453,8 +478,7 @@ type EditWarehouseRequest struct {
 	// Configures whether the endpoint should use Databricks Compute (aka
 	// Nephos)
 	//
-	// Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the
-	// field once clients are updated
+	// Deprecated: Use enable_serverless_compute
 	EnableDatabricksCompute bool `json:"enable_databricks_compute,omitempty"`
 	// Configures whether the endpoint should use Photon optimized clusters.
 	//
@@ -545,8 +569,7 @@ type EndpointInfo struct {
 	// Configures whether the endpoint should use Databricks Compute (aka
 	// Nephos)
 	//
-	// Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the
-	// field once clients are updated
+	// Deprecated: Use enable_serverless_compute
 	EnableDatabricksCompute bool `json:"enable_databricks_compute,omitempty"`
 	// Configures whether the endpoint should use Photon optimized clusters.
 	//
@@ -648,7 +671,7 @@ type GetResponse struct {
 	ObjectType string `json:"object_type,omitempty"`
 }
 
-// Get an alert's subscriptions
+// [DEPRECATED] Get an alert's subscriptions
 type GetSubscriptionsRequest struct {
 	AlertId string `json:"-" url:"-"`
 }
@@ -681,8 +704,7 @@ type GetWarehouseResponse struct {
 	// Configures whether the endpoint should use Databricks Compute (aka
 	// Nephos)
 	//
-	// Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the
-	// field once clients are updated
+	// Deprecated: Use enable_serverless_compute
 	EnableDatabricksCompute bool `json:"enable_databricks_compute,omitempty"`
 	// Configures whether the endpoint should use Photon optimized clusters.
 	//
@@ -753,8 +775,7 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
 	// Enable Serverless compute for SQL Endpoints
 	//
-	// Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the
-	// field once clients are updated
+	// Deprecated: Use enable_serverless_compute
 	EnableDatabricksCompute bool `json:"enable_databricks_compute,omitempty"`
 	// Enable Serverless compute for SQL Endpoints
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
@@ -856,9 +877,8 @@ type ListQueriesRequest struct {
 	//
 	// - `created_at`: The timestamp the query was created.
 	//
-	// - `schedule`: The refresh interval for each query. For example: "Every 5
-	// Hours" or "Every 5 Minutes". "Never" is treated as the highest value for
-	// sorting.
+	// - `schedule`: [DEPRECATED] Sorting results by refresh schedule is
+	// deprecated. Use :method:jobs/list to list jobs and filter for a query.
 	//
 	// - `runtime`: The time it took to run this query. This is blank for
 	// parameterized queries. A blank value is treated as the highest value for
@@ -908,7 +928,7 @@ type ListResponse struct {
 	Results []Dashboard `json:"results,omitempty"`
 }
 
-// Get refresh schedules
+// [DEPRECATED] Get refresh schedules
 type ListSchedulesRequest struct {
 	AlertId string `json:"-" url:"-"`
 }
@@ -1184,6 +1204,9 @@ type Query struct {
 	Name string `json:"name,omitempty"`
 
 	Options *QueryOptions `json:"options,omitempty"`
+	// The identifier of the parent folder containing the query. Available for
+	// queries in workspace.
+	Parent string `json:"parent,omitempty"`
 	// This describes an enum
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// The text of the query to be run.
@@ -1202,6 +1225,29 @@ type Query struct {
 	UserId int `json:"user_id,omitempty"`
 
 	Visualizations []Visualization `json:"visualizations,omitempty"`
+}
+
+type QueryEditContent struct {
+	// The ID of the data source / SQL warehouse where this query will run.
+	DataSourceId string `json:"data_source_id,omitempty"`
+	// General description that can convey additional information about this
+	// query such as usage notes.
+	Description string `json:"description,omitempty"`
+	// The name or title of this query to display in list views.
+	Name string `json:"name,omitempty"`
+	// Exclusively used for storing a list parameter definitions. A parameter is
+	// an object with `title`, `name`, `type`, and `value` properties. The
+	// `value` field here is the default value. It can be overridden at runtime.
+	Options any `json:"options,omitempty"`
+	// The text of the query.
+	Query string `json:"query,omitempty"`
+
+	QueryId string `json:"-" url:"-"`
+	// JSON object that describes the scheduled execution frequency. A schedule
+	// object includes `interval`, `time`, `day_of_week`, and `until` fields. If
+	// a scheduled is supplied, then only `interval` is required. All other
+	// field can be `null`.
+	Schedule *QueryInterval `json:"schedule,omitempty"`
 }
 
 // A filter to limit query history results. This field is optional.
@@ -1362,10 +1408,11 @@ type QueryPostContent struct {
 	// an object with `title`, `name`, `type`, and `value` properties. The
 	// `value` field here is the default value. It can be overridden at runtime.
 	Options any `json:"options,omitempty"`
+	// The identifier of the workspace folder containing the query. The default
+	// is the user's home folder.
+	Parent string `json:"parent,omitempty"`
 	// The text of the query.
 	Query string `json:"query,omitempty"`
-
-	QueryId string `json:"-" url:"-"`
 	// JSON object that describes the scheduled execution frequency. A schedule
 	// object includes `interval`, `time`, `day_of_week`, and `until` fields. If
 	// a scheduled is supplied, then only `interval` is required. All other
@@ -1535,8 +1582,7 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
 	// Enable Serverless compute for SQL Endpoints
 	//
-	// Deprecated: Use enable_serverless_compute TODO(SC-79930): Remove the
-	// field once clients are updated
+	// Deprecated: Use enable_serverless_compute
 	EnableDatabricksCompute bool `json:"enable_databricks_compute,omitempty"`
 	// Enable Serverless compute for SQL Endpoints
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
@@ -1991,7 +2037,7 @@ type TransferOwnershipRequest struct {
 	ObjectType OwnableObjectType `json:"-" url:"-"`
 }
 
-// Unsubscribe to an alert
+// [DEPRECATED] Unsubscribe to an alert
 type UnsubscribeRequest struct {
 	AlertId string `json:"-" url:"-"`
 
