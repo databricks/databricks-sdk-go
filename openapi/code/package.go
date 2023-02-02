@@ -326,6 +326,13 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 			accountServices[tag.Service] = true
 		}
 	}
+	for k, v := range spec.Components.Schemas {
+		split := strings.Split(k, ".")
+		if split[0] != pkg.Name {
+			continue
+		}
+		pkg.definedEntity(split[1], *v)
+	}
 	for prefix, path := range spec.Paths {
 		for verb, op := range path.Verbs() {
 			if !op.HasTag(tag.Name) {
@@ -349,6 +356,9 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 			seenParams := map[string]bool{}
 			for _, list := range [][]openapi.Parameter{path.Parameters, op.Parameters} {
 				for _, v := range list {
+					if v.In == "header" {
+						continue
+					}
 					param := *pkg.Components.Parameters.Resolve(&v)
 					if param == nil {
 						return nil

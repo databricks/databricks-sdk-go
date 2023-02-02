@@ -25,6 +25,10 @@ func NewAlerts(client *client.DatabricksClient) *AlertsAPI {
 // a Databricks SQL object that periodically runs a query, evaluates a condition
 // of its result, and notifies one or more users and/or alert destinations if
 // the condition was met.
+//
+// **Note**: Programmatic operations on refresh schedules via the Databricks SQL
+// API are deprecated. Alert refresh schedules can be created, updated, fetched
+// and deleted using Jobs API, e.g. :method:jobs/create.
 type AlertsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(AlertsService)
@@ -48,15 +52,18 @@ func (a *AlertsAPI) Impl() AlertsService {
 // Creates an alert. An alert is a Databricks SQL object that periodically runs
 // a query, evaluates a condition of its result, and notifies users or alert
 // destinations if the condition was met.
-func (a *AlertsAPI) Create(ctx context.Context, request EditAlert) (*Alert, error) {
+func (a *AlertsAPI) Create(ctx context.Context, request CreateAlert) (*Alert, error) {
 	return a.impl.Create(ctx, request)
 }
 
-// Create a refresh schedule.
+// [DEPRECATED] Create a refresh schedule.
 //
 // Creates a new refresh schedule for an alert.
 //
 // **Note:** The structure of refresh schedules is subject to change.
+//
+// **Note:** This API is deprecated: Use :method:jobs/create to create a job
+// with the alert.
 func (a *AlertsAPI) CreateSchedule(ctx context.Context, request CreateRefreshSchedule) (*RefreshSchedule, error) {
 	return a.impl.CreateSchedule(ctx, request)
 }
@@ -81,18 +88,24 @@ func (a *AlertsAPI) DeleteByAlertId(ctx context.Context, alertId string) error {
 	})
 }
 
-// Delete a refresh schedule.
+// [DEPRECATED] Delete a refresh schedule.
 //
 // Deletes an alert's refresh schedule. The refresh schedule specifies when to
 // refresh and evaluate the associated query result.
+//
+// **Note:** This API is deprecated: Use :method:jobs/delete to delete a job for
+// the alert.
 func (a *AlertsAPI) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error {
 	return a.impl.DeleteSchedule(ctx, request)
 }
 
-// Delete a refresh schedule.
+// [DEPRECATED] Delete a refresh schedule.
 //
 // Deletes an alert's refresh schedule. The refresh schedule specifies when to
 // refresh and evaluate the associated query result.
+//
+// **Note:** This API is deprecated: Use :method:jobs/delete to delete a job for
+// the alert.
 func (a *AlertsAPI) DeleteScheduleByAlertIdAndScheduleId(ctx context.Context, alertId string, scheduleId string) error {
 	return a.impl.DeleteSchedule(ctx, DeleteScheduleRequest{
 		AlertId:    alertId,
@@ -116,22 +129,28 @@ func (a *AlertsAPI) GetByAlertId(ctx context.Context, alertId string) (*Alert, e
 	})
 }
 
-// Get an alert's subscriptions.
+// [DEPRECATED] Get an alert's subscriptions.
 //
 // Get the subscriptions for an alert. An alert subscription represents exactly
 // one recipient being notified whenever the alert is triggered. The alert
 // recipient is specified by either the `user` field or the `destination` field.
 // The `user` field is ignored if `destination` is non-`null`.
+//
+// **Note:** This API is deprecated: Use :method:jobs/get to get the
+// subscriptions associated with a job for an alert.
 func (a *AlertsAPI) GetSubscriptions(ctx context.Context, request GetSubscriptionsRequest) ([]Subscription, error) {
 	return a.impl.GetSubscriptions(ctx, request)
 }
 
-// Get an alert's subscriptions.
+// [DEPRECATED] Get an alert's subscriptions.
 //
 // Get the subscriptions for an alert. An alert subscription represents exactly
 // one recipient being notified whenever the alert is triggered. The alert
 // recipient is specified by either the `user` field or the `destination` field.
 // The `user` field is ignored if `destination` is non-`null`.
+//
+// **Note:** This API is deprecated: Use :method:jobs/get to get the
+// subscriptions associated with a job for an alert.
 func (a *AlertsAPI) GetSubscriptionsByAlertId(ctx context.Context, alertId string) ([]Subscription, error) {
 	return a.impl.GetSubscriptions(ctx, GetSubscriptionsRequest{
 		AlertId: alertId,
@@ -198,7 +217,7 @@ func (a *AlertsAPI) GetByName(ctx context.Context, name string) (*Alert, error) 
 	return &alternatives[0], nil
 }
 
-// Get refresh schedules.
+// [DEPRECATED] Get refresh schedules.
 //
 // Gets the refresh schedules for the specified alert. Alerts can have refresh
 // schedules that specify when to refresh and evaluate the associated query
@@ -207,11 +226,14 @@ func (a *AlertsAPI) GetByName(ctx context.Context, name string) (*Alert, error) 
 // **Note:** Although refresh schedules are returned in a list, only one refresh
 // schedule per alert is currently supported. The structure of refresh schedules
 // is subject to change.
+//
+// **Note:** This API is deprecated: Use :method:jobs/list to list jobs and
+// filter by the alert.
 func (a *AlertsAPI) ListSchedules(ctx context.Context, request ListSchedulesRequest) ([]RefreshSchedule, error) {
 	return a.impl.ListSchedules(ctx, request)
 }
 
-// Get refresh schedules.
+// [DEPRECATED] Get refresh schedules.
 //
 // Gets the refresh schedules for the specified alert. Alerts can have refresh
 // schedules that specify when to refresh and evaluate the associated query
@@ -220,27 +242,39 @@ func (a *AlertsAPI) ListSchedules(ctx context.Context, request ListSchedulesRequ
 // **Note:** Although refresh schedules are returned in a list, only one refresh
 // schedule per alert is currently supported. The structure of refresh schedules
 // is subject to change.
+//
+// **Note:** This API is deprecated: Use :method:jobs/list to list jobs and
+// filter by the alert.
 func (a *AlertsAPI) ListSchedulesByAlertId(ctx context.Context, alertId string) ([]RefreshSchedule, error) {
 	return a.impl.ListSchedules(ctx, ListSchedulesRequest{
 		AlertId: alertId,
 	})
 }
 
-// Subscribe to an alert.
+// [DEPRECATED] Subscribe to an alert.
+//
+// **Note:** This API is deprecated: Use :method:jobs/update to subscribe to a
+// job for an alert.
 func (a *AlertsAPI) Subscribe(ctx context.Context, request CreateSubscription) (*Subscription, error) {
 	return a.impl.Subscribe(ctx, request)
 }
 
-// Unsubscribe to an alert.
+// [DEPRECATED] Unsubscribe to an alert.
 //
 // Unsubscribes a user or a destination to an alert.
+//
+// **Note:** This API is deprecated: Use :method:jobs/update to unsubscribe to a
+// job for an alert.
 func (a *AlertsAPI) Unsubscribe(ctx context.Context, request UnsubscribeRequest) error {
 	return a.impl.Unsubscribe(ctx, request)
 }
 
-// Unsubscribe to an alert.
+// [DEPRECATED] Unsubscribe to an alert.
 //
 // Unsubscribes a user or a destination to an alert.
+//
+// **Note:** This API is deprecated: Use :method:jobs/update to unsubscribe to a
+// job for an alert.
 func (a *AlertsAPI) UnsubscribeByAlertIdAndSubscriptionId(ctx context.Context, alertId string, subscriptionId string) error {
 	return a.impl.Unsubscribe(ctx, UnsubscribeRequest{
 		AlertId:        alertId,
@@ -268,6 +302,10 @@ func NewDashboards(client *client.DatabricksClient) *DashboardsAPI {
 // query IDs. The API can also be used to duplicate multiple dashboards at once
 // since you can get a dashboard definition with a GET request and then POST it
 // to create a new one.
+//
+// **Note**: Programmatic operations on refresh schedules via the Databricks SQL
+// API are deprecated. Dashboard refresh schedules can be created, updated,
+// fetched and deleted using Jobs API, e.g. :method:jobs/create.
 type DashboardsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(DashboardsService)
@@ -527,9 +565,9 @@ func NewDbsqlPermissions(client *client.DatabricksClient) *DbsqlPermissionsAPI {
 }
 
 // The SQL Permissions API is similar to the endpoints of the
-// :method:permissions/setobjectpermissions. However, this exposes only one
-// endpoint, which gets the Access Control List for a given object. You cannot
-// modify any permissions using this API.
+// :method:permissions/set. However, this exposes only one endpoint, which gets
+// the Access Control List for a given object. You cannot modify any permissions
+// using this API.
 //
 // There are three levels of permission:
 //
@@ -603,6 +641,10 @@ func NewQueries(client *client.DatabricksClient) *QueriesAPI {
 // These endpoints are used for CRUD operations on query definitions. Query
 // definitions include the target SQL warehouse, query text, name, description,
 // tags, execution schedule, parameters, and visualizations.
+//
+// **Note**: Programmatic operations on refresh schedules via the Databricks SQL
+// API are deprecated. Query refresh schedules can be created, updated, fetched
+// and deleted using Jobs API, e.g. :method:jobs/create.
 type QueriesAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(QueriesService)
@@ -774,7 +816,7 @@ func (a *QueriesAPI) Restore(ctx context.Context, request RestoreQueryRequest) e
 // Modify this query definition.
 //
 // **Note**: You cannot undo this operation.
-func (a *QueriesAPI) Update(ctx context.Context, request QueryPostContent) (*Query, error) {
+func (a *QueriesAPI) Update(ctx context.Context, request QueryEditContent) (*Query, error) {
 	return a.impl.Update(ctx, request)
 }
 

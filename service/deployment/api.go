@@ -370,9 +370,8 @@ func NewNetworks(client *client.DatabricksClient) *NetworksAPI {
 }
 
 // These APIs manage network configurations for customer-managed VPCs
-// (optional). A network configuration encapsulates the IDs for AWS VPCs,
-// subnets, and security groups. Its ID is used when creating a new workspace if
-// you use customer-managed VPCs.
+// (optional). Its ID is used when creating a new workspace if you use
+// customer-managed VPCs.
 type NetworksAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(NetworksService)
@@ -393,33 +392,16 @@ func (a *NetworksAPI) Impl() NetworksService {
 
 // Create network configuration.
 //
-// Creates a Databricks network configuration that represents an AWS VPC and its
+// Creates a Databricks network configuration that represents an VPC and its
 // resources. The VPC will be used for new Databricks clusters. This requires a
-// pre-existing VPC and subnets. For VPC requirements, see [Customer-managed
-// VPC].
-//
-// **Important**: You can share one customer-managed VPC with multiple
-// workspaces in a single account. Therefore, you can share one VPC across
-// multiple Account API network configurations. However, you **cannot** reuse
-// subnets or Security Groups between workspaces. Because a Databricks Account
-// API network configuration encapsulates this information, you cannot reuse a
-// Databricks Account API network configuration across workspaces. If you plan
-// to share one VPC with multiple workspaces, make sure you size your VPC and
-// subnets accordingly. For information about how to create a new workspace with
-// this API, see [Create a new workspace using the Account API].
-//
-// This operation is available only if your account is on the E2 version of the
-// platform.
-//
-// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-// [Customer-managed VPC]: http://docs.databricks.com/administration-guide/cloud-configurations/aws/customer-managed-vpc.html
+// pre-existing VPC and subnets.
 func (a *NetworksAPI) Create(ctx context.Context, request CreateNetworkRequest) (*Network, error) {
 	return a.impl.Create(ctx, request)
 }
 
-// Delete network configuration.
+// Delete a network configuration.
 //
-// Deletes a Databricks network configuration, which represents an AWS VPC and
+// Deletes a Databricks network configuration, which represents a cloud VPC and
 // its resources. You cannot delete a network that is associated with a
 // workspace.
 //
@@ -429,9 +411,9 @@ func (a *NetworksAPI) Delete(ctx context.Context, request DeleteNetworkRequest) 
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete network configuration.
+// Delete a network configuration.
 //
-// Deletes a Databricks network configuration, which represents an AWS VPC and
+// Deletes a Databricks network configuration, which represents a cloud VPC and
 // its resources. You cannot delete a network that is associated with a
 // workspace.
 //
@@ -445,28 +427,16 @@ func (a *NetworksAPI) DeleteByNetworkId(ctx context.Context, networkId string) e
 
 // Get a network configuration.
 //
-// Gets a Databricks network configuration, which represents an AWS VPC and its
-// resources. This requires a pre-existing VPC and subnets. For VPC
-// requirements, see [Customer-managed VPC].
-//
-// This operation is available only if your account is on the E2 version of the
-// platform.
-//
-// [Customer-managed VPC]: http://docs.databricks.com/administration-guide/cloud-configurations/aws/customer-managed-vpc.html
+// Gets a Databricks network configuration, which represents a cloud VPC and its
+// resources.
 func (a *NetworksAPI) Get(ctx context.Context, request GetNetworkRequest) (*Network, error) {
 	return a.impl.Get(ctx, request)
 }
 
 // Get a network configuration.
 //
-// Gets a Databricks network configuration, which represents an AWS VPC and its
-// resources. This requires a pre-existing VPC and subnets. For VPC
-// requirements, see [Customer-managed VPC].
-//
-// This operation is available only if your account is on the E2 version of the
-// platform.
-//
-// [Customer-managed VPC]: http://docs.databricks.com/administration-guide/cloud-configurations/aws/customer-managed-vpc.html
+// Gets a Databricks network configuration, which represents a cloud VPC and its
+// resources.
 func (a *NetworksAPI) GetByNetworkId(ctx context.Context, networkId string) (*Network, error) {
 	return a.impl.Get(ctx, GetNetworkRequest{
 		NetworkId: networkId,
@@ -1181,13 +1151,7 @@ func (a *WorkspacesAPI) Impl() WorkspacesService {
 
 // Create a new workspace.
 //
-// Creates a new workspace using a credential configuration and a storage
-// configuration, an optional network configuration (if using a customer-managed
-// VPC), an optional managed services key configuration (if using
-// customer-managed keys for managed services), and an optional storage key
-// configuration (if using customer-managed keys for storage). The key
-// configurations used for managed services and storage encryption can be the
-// same or different.
+// Creates a new workspace.
 //
 // **Important**: This operation is asynchronous. A response with HTTP status
 // code 200 means the request has been accepted and is in progress, but does not
@@ -1196,25 +1160,6 @@ func (a *WorkspacesAPI) Impl() WorkspacesService {
 // (`workspace_id`) field in the response to identify the new workspace and make
 // repeated `GET` requests with the workspace ID and check its status. The
 // workspace becomes available when the status changes to `RUNNING`.
-//
-// You can share one customer-managed VPC with multiple workspaces in a single
-// account. It is not required to create a new VPC for each workspace. However,
-// you **cannot** reuse subnets or Security Groups between workspaces. If you
-// plan to share one VPC with multiple workspaces, make sure you size your VPC
-// and subnets accordingly. Because a Databricks Account API network
-// configuration encapsulates this information, you cannot reuse a Databricks
-// Account API network configuration across workspaces.\nFor information about
-// how to create a new workspace with this API **including error handling**, see
-// [Create a new workspace using the Account API].
-//
-// **Important**: Customer-managed VPCs, PrivateLink, and customer-managed keys
-// are supported on a limited set of deployment and subscription types. If you
-// have questions about availability, contact your Databricks
-// representative.\n\nThis operation is available only if your account is on the
-// E2 version of the platform or on a select custom plan that allows multiple
-// workspaces per account.
-//
-// [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 func (a *WorkspacesAPI) Create(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {
 	return a.impl.Create(ctx, request)
 }
@@ -1261,7 +1206,7 @@ func (a *WorkspacesAPI) CreateAndWait(ctx context.Context, createWorkspaceReques
 	})
 }
 
-// Delete workspace.
+// Delete a workspace.
 //
 // Terminates and deletes a Databricks workspace. From an API perspective,
 // deletion is immediate. However, it might take a few minutes for all
@@ -1275,7 +1220,7 @@ func (a *WorkspacesAPI) Delete(ctx context.Context, request DeleteWorkspaceReque
 	return a.impl.Delete(ctx, request)
 }
 
-// Delete workspace.
+// Delete a workspace.
 //
 // Terminates and deletes a Databricks workspace. From an API perspective,
 // deletion is immediate. However, it might take a few minutes for all
@@ -1291,7 +1236,7 @@ func (a *WorkspacesAPI) DeleteByWorkspaceId(ctx context.Context, workspaceId int
 	})
 }
 
-// Get workspace.
+// Get a workspace.
 //
 // Gets information including status for a Databricks workspace, specified by
 // ID. In the response, the `workspace_status` field indicates the current
@@ -1311,7 +1256,7 @@ func (a *WorkspacesAPI) Get(ctx context.Context, request GetWorkspaceRequest) (*
 	return a.impl.Get(ctx, request)
 }
 
-// Get workspace.
+// Get a workspace.
 //
 // Gets information including status for a Databricks workspace, specified by
 // ID. In the response, the `workspace_status` field indicates the current

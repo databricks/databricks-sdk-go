@@ -13,8 +13,6 @@ const AuthenticationTypeDatabricks AuthenticationType = `DATABRICKS`
 
 const AuthenticationTypeToken AuthenticationType = `TOKEN`
 
-const AuthenticationTypeUnknown AuthenticationType = `UNKNOWN`
-
 // String representation for [fmt.Print]
 func (at *AuthenticationType) String() string {
 	return string(*at)
@@ -23,11 +21,11 @@ func (at *AuthenticationType) String() string {
 // Set raw string value and validate it against allowed values
 func (at *AuthenticationType) Set(v string) error {
 	switch v {
-	case `DATABRICKS`, `TOKEN`, `UNKNOWN`:
+	case `DATABRICKS`, `TOKEN`:
 		*at = AuthenticationType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DATABRICKS", "TOKEN", "UNKNOWN"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DATABRICKS", "TOKEN"`, v)
 	}
 }
 
@@ -63,32 +61,32 @@ type CatalogInfo struct {
 	CatalogType CatalogType `json:"catalog_type,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Time at which this Catalog was created, in epoch milliseconds.
+	// Time at which this catalog was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// Username of Catalog creator.
+	// Username of catalog creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Unique identifier of parent Metastore.
+	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
-	// Name of Catalog.
+	// Name of catalog.
 	Name string `json:"name,omitempty"`
-	// Username of current owner of Catalog.
+	// Username of current owner of catalog.
 	Owner string `json:"owner,omitempty"`
-
+	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
 	// The name of delta sharing provider.
 	//
-	// A Delta Sharing Catalog is a catalog that is based on a Delta share on a
+	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
 	// remote sharing server.
 	ProviderName string `json:"provider_name,omitempty"`
 	// The name of the share under the share provider.
 	ShareName string `json:"share_name,omitempty"`
-	// Storage Location URL (full path) for managed tables within Catalog.
+	// Storage Location URL (full path) for managed tables within catalog.
 	StorageLocation string `json:"storage_location,omitempty"`
-	// Storage root URL for managed tables within Catalog.
+	// Storage root URL for managed tables within catalog.
 	StorageRoot string `json:"storage_root,omitempty"`
-	// Time at which this Catalog was last modified, in epoch milliseconds.
+	// Time at which this catalog was last modified, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// Username of user who last modified Catalog.
+	// Username of user who last modified catalog.
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
@@ -123,140 +121,318 @@ func (ct *CatalogType) Type() string {
 }
 
 type ColumnInfo struct {
-	// [Create,Update:OPT] User-provided free-form text description.
+	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// [Create:REQ Update:OPT] Name of Column.
+
+	Mask *ColumnMask `json:"mask,omitempty"`
+	// Name of Column.
 	Name string `json:"name,omitempty"`
-	// [Create,Update:OPT] Whether field may be Null (default: True).
+	// Whether field may be Null (default: true).
 	Nullable bool `json:"nullable,omitempty"`
-	// [Create,Update:OPT] Partition index for column.
+	// Partition index for column.
 	PartitionIndex int `json:"partition_index,omitempty"`
-	// [Create:REQ Update:OPT] Ordinal position of column (starting at position
-	// 0).
+	// Ordinal position of column (starting at position 0).
 	Position int `json:"position,omitempty"`
-	// [Create: OPT, Update: OPT] Format of IntervalType.
+	// Format of IntervalType.
 	TypeIntervalType string `json:"type_interval_type,omitempty"`
-	// [Create:OPT Update:OPT] Full data type spec, JSON-serialized.
+	// Full data type specification, JSON-serialized.
 	TypeJson string `json:"type_json,omitempty"`
-	// [Create: REQ Update: OPT] Name of type (INT, STRUCT, MAP, etc.)
-	TypeName ColumnInfoTypeName `json:"type_name,omitempty"`
-	// [Create: OPT, Update: OPT] Digits of precision; required on Create for
-	// DecimalTypes.
+	// Name of type (INT, STRUCT, MAP, etc.).
+	TypeName ColumnTypeName `json:"type_name,omitempty"`
+	// Digits of precision; required for DecimalTypes.
 	TypePrecision int `json:"type_precision,omitempty"`
-	// [Create: OPT, Update: OPT] Digits to right of decimal; Required on Create
-	// for DecimalTypes.
+	// Digits to right of decimal; Required for DecimalTypes.
 	TypeScale int `json:"type_scale,omitempty"`
-	// [Create:REQ Update:OPT] Full data type spec, SQL/catalogString text.
+	// Full data type specification as SQL/catalogString text.
 	TypeText string `json:"type_text,omitempty"`
 }
 
-// [Create: REQ Update: OPT] Name of type (INT, STRUCT, MAP, etc.)
-type ColumnInfoTypeName string
+type ColumnMask struct {
+	// The full name of the column maks SQL UDF.
+	FunctionName string `json:"function_name,omitempty"`
+	// The list of additional table columns to be passed as input to the column
+	// mask function. The first arg of the mask function should be of the type
+	// of the column being masked and the types of the rest of the args should
+	// match the types of columns in 'using_column_names'.
+	UsingColumnNames []string `json:"using_column_names,omitempty"`
+}
 
-const ColumnInfoTypeNameArray ColumnInfoTypeName = `ARRAY`
+// Name of type (INT, STRUCT, MAP, etc.).
+type ColumnTypeName string
 
-const ColumnInfoTypeNameBinary ColumnInfoTypeName = `BINARY`
+const ColumnTypeNameArray ColumnTypeName = `ARRAY`
 
-const ColumnInfoTypeNameBoolean ColumnInfoTypeName = `BOOLEAN`
+const ColumnTypeNameBinary ColumnTypeName = `BINARY`
 
-const ColumnInfoTypeNameByte ColumnInfoTypeName = `BYTE`
+const ColumnTypeNameBoolean ColumnTypeName = `BOOLEAN`
 
-const ColumnInfoTypeNameChar ColumnInfoTypeName = `CHAR`
+const ColumnTypeNameByte ColumnTypeName = `BYTE`
 
-const ColumnInfoTypeNameDate ColumnInfoTypeName = `DATE`
+const ColumnTypeNameChar ColumnTypeName = `CHAR`
 
-const ColumnInfoTypeNameDecimal ColumnInfoTypeName = `DECIMAL`
+const ColumnTypeNameDate ColumnTypeName = `DATE`
 
-const ColumnInfoTypeNameDouble ColumnInfoTypeName = `DOUBLE`
+const ColumnTypeNameDecimal ColumnTypeName = `DECIMAL`
 
-const ColumnInfoTypeNameFloat ColumnInfoTypeName = `FLOAT`
+const ColumnTypeNameDouble ColumnTypeName = `DOUBLE`
 
-const ColumnInfoTypeNameInt ColumnInfoTypeName = `INT`
+const ColumnTypeNameFloat ColumnTypeName = `FLOAT`
 
-const ColumnInfoTypeNameInterval ColumnInfoTypeName = `INTERVAL`
+const ColumnTypeNameInt ColumnTypeName = `INT`
 
-const ColumnInfoTypeNameLong ColumnInfoTypeName = `LONG`
+const ColumnTypeNameInterval ColumnTypeName = `INTERVAL`
 
-const ColumnInfoTypeNameMap ColumnInfoTypeName = `MAP`
+const ColumnTypeNameLong ColumnTypeName = `LONG`
 
-const ColumnInfoTypeNameNull ColumnInfoTypeName = `NULL`
+const ColumnTypeNameMap ColumnTypeName = `MAP`
 
-const ColumnInfoTypeNameShort ColumnInfoTypeName = `SHORT`
+const ColumnTypeNameNull ColumnTypeName = `NULL`
 
-const ColumnInfoTypeNameString ColumnInfoTypeName = `STRING`
+const ColumnTypeNameShort ColumnTypeName = `SHORT`
 
-const ColumnInfoTypeNameStruct ColumnInfoTypeName = `STRUCT`
+const ColumnTypeNameString ColumnTypeName = `STRING`
 
-const ColumnInfoTypeNameTimestamp ColumnInfoTypeName = `TIMESTAMP`
+const ColumnTypeNameStruct ColumnTypeName = `STRUCT`
 
-const ColumnInfoTypeNameUserDefinedType ColumnInfoTypeName = `USER_DEFINED_TYPE`
+const ColumnTypeNameTableType ColumnTypeName = `TABLE_TYPE`
+
+const ColumnTypeNameTimestamp ColumnTypeName = `TIMESTAMP`
+
+const ColumnTypeNameUserDefinedType ColumnTypeName = `USER_DEFINED_TYPE`
 
 // String representation for [fmt.Print]
-func (citn *ColumnInfoTypeName) String() string {
-	return string(*citn)
+func (ctn *ColumnTypeName) String() string {
+	return string(*ctn)
 }
 
 // Set raw string value and validate it against allowed values
-func (citn *ColumnInfoTypeName) Set(v string) error {
+func (ctn *ColumnTypeName) Set(v string) error {
 	switch v {
-	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TIMESTAMP`, `USER_DEFINED_TYPE`:
-		*citn = ColumnInfoTypeName(v)
+	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `USER_DEFINED_TYPE`:
+		*ctn = ColumnTypeName(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TIMESTAMP", "USER_DEFINED_TYPE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TABLE_TYPE", "TIMESTAMP", "USER_DEFINED_TYPE"`, v)
 	}
 }
 
-// Type always returns ColumnInfoTypeName to satisfy [pflag.Value] interface
-func (citn *ColumnInfoTypeName) Type() string {
-	return "ColumnInfoTypeName"
+// Type always returns ColumnTypeName to satisfy [pflag.Value] interface
+func (ctn *ColumnTypeName) Type() string {
+	return "ColumnTypeName"
 }
 
 type CreateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Name of Catalog.
+	// Name of catalog.
 	Name string `json:"name"`
-
+	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
 	// The name of delta sharing provider.
 	//
-	// A Delta Sharing Catalog is a catalog that is based on a Delta share on a
+	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
 	// remote sharing server.
 	ProviderName string `json:"provider_name,omitempty"`
 	// The name of the share under the share provider.
 	ShareName string `json:"share_name,omitempty"`
-	// Storage root URL for managed tables within Catalog.
+	// Storage root URL for managed tables within catalog.
 	StorageRoot string `json:"storage_root,omitempty"`
 }
 
 type CreateExternalLocation struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Current name of the Storage Credential this location uses.
+	// Current name of the storage credential this location uses.
 	CredentialName string `json:"credential_name"`
-	// Name of the External Location.
+	// Name of the external location.
 	Name string `json:"name"`
 	// Indicates whether the external location is read-only.
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Skips validation of the storage credential associated with the external
 	// location.
 	SkipValidation bool `json:"skip_validation,omitempty"`
-	// Path URL of the External Location.
+	// Path URL of the external location.
 	Url string `json:"url"`
 }
 
-type CreateMetastore struct {
-	// Name of Metastore.
+type CreateFunction struct {
+	// Name of parent catalog.
+	CatalogName string `json:"catalog_name"`
+	// User-provided free-form text description.
+	Comment string `json:"comment,omitempty"`
+	// Scalar function return data type.
+	DataType ColumnTypeName `json:"data_type"`
+	// External function language.
+	ExternalLanguage string `json:"external_language,omitempty"`
+	// External function name.
+	ExternalName string `json:"external_name,omitempty"`
+	// Pretty printed function data type.
+	FullDataType string `json:"full_data_type"`
+	// The array of __FunctionParameterInfo__ definitions of the function's
+	// parameters.
+	InputParams []FunctionParameterInfo `json:"input_params"`
+	// Whether the function is deterministic.
+	IsDeterministic bool `json:"is_deterministic"`
+	// Function null call.
+	IsNullCall bool `json:"is_null_call"`
+	// Name of function, relative to parent schema.
 	Name string `json:"name"`
-	// Storage root URL for Metastore
+	// Function parameter style. **S** is the value for SQL.
+	ParameterStyle CreateFunctionParameterStyle `json:"parameter_style"`
+	// A map of key-value properties attached to the securable.
+	Properties map[string]string `json:"properties,omitempty"`
+	// Table function return parameters.
+	ReturnParams []FunctionParameterInfo `json:"return_params"`
+	// Function language. When **EXTERNAL** is used, the language of the routine
+	// function should be specified in the __external_language__ field, and the
+	// __return_params__ of the function cannot be used (as **TABLE** return
+	// type is not supported), and the __sql_data_access__ field must be
+	// **NO_SQL**.
+	RoutineBody CreateFunctionRoutineBody `json:"routine_body"`
+	// Function body.
+	RoutineDefinition string `json:"routine_definition"`
+	// Function dependencies.
+	RoutineDependencies []Dependency `json:"routine_dependencies"`
+	// Name of parent schema relative to its parent catalog.
+	SchemaName string `json:"schema_name"`
+	// Function security type.
+	SecurityType CreateFunctionSecurityType `json:"security_type"`
+	// Specific name of the function; Reserved for future use.
+	SpecificName string `json:"specific_name"`
+	// Function SQL data access.
+	SqlDataAccess CreateFunctionSqlDataAccess `json:"sql_data_access"`
+	// List of schemes whose objects can be referenced without qualification.
+	SqlPath string `json:"sql_path,omitempty"`
+}
+
+// Function parameter style. **S** is the value for SQL.
+type CreateFunctionParameterStyle string
+
+const CreateFunctionParameterStyleS CreateFunctionParameterStyle = `S`
+
+// String representation for [fmt.Print]
+func (cfps *CreateFunctionParameterStyle) String() string {
+	return string(*cfps)
+}
+
+// Set raw string value and validate it against allowed values
+func (cfps *CreateFunctionParameterStyle) Set(v string) error {
+	switch v {
+	case `S`:
+		*cfps = CreateFunctionParameterStyle(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "S"`, v)
+	}
+}
+
+// Type always returns CreateFunctionParameterStyle to satisfy [pflag.Value] interface
+func (cfps *CreateFunctionParameterStyle) Type() string {
+	return "CreateFunctionParameterStyle"
+}
+
+// Function language. When **EXTERNAL** is used, the language of the routine
+// function should be specified in the __external_language__ field, and the
+// __return_params__ of the function cannot be used (as **TABLE** return type is
+// not supported), and the __sql_data_access__ field must be **NO_SQL**.
+type CreateFunctionRoutineBody string
+
+const CreateFunctionRoutineBodyExternal CreateFunctionRoutineBody = `EXTERNAL`
+
+const CreateFunctionRoutineBodySql CreateFunctionRoutineBody = `SQL`
+
+// String representation for [fmt.Print]
+func (cfrb *CreateFunctionRoutineBody) String() string {
+	return string(*cfrb)
+}
+
+// Set raw string value and validate it against allowed values
+func (cfrb *CreateFunctionRoutineBody) Set(v string) error {
+	switch v {
+	case `EXTERNAL`, `SQL`:
+		*cfrb = CreateFunctionRoutineBody(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "SQL"`, v)
+	}
+}
+
+// Type always returns CreateFunctionRoutineBody to satisfy [pflag.Value] interface
+func (cfrb *CreateFunctionRoutineBody) Type() string {
+	return "CreateFunctionRoutineBody"
+}
+
+// Function security type.
+type CreateFunctionSecurityType string
+
+const CreateFunctionSecurityTypeDefiner CreateFunctionSecurityType = `DEFINER`
+
+// String representation for [fmt.Print]
+func (cfst *CreateFunctionSecurityType) String() string {
+	return string(*cfst)
+}
+
+// Set raw string value and validate it against allowed values
+func (cfst *CreateFunctionSecurityType) Set(v string) error {
+	switch v {
+	case `DEFINER`:
+		*cfst = CreateFunctionSecurityType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DEFINER"`, v)
+	}
+}
+
+// Type always returns CreateFunctionSecurityType to satisfy [pflag.Value] interface
+func (cfst *CreateFunctionSecurityType) Type() string {
+	return "CreateFunctionSecurityType"
+}
+
+// Function SQL data access.
+type CreateFunctionSqlDataAccess string
+
+const CreateFunctionSqlDataAccessContainsSql CreateFunctionSqlDataAccess = `CONTAINS_SQL`
+
+const CreateFunctionSqlDataAccessNoSql CreateFunctionSqlDataAccess = `NO_SQL`
+
+const CreateFunctionSqlDataAccessReadsSqlData CreateFunctionSqlDataAccess = `READS_SQL_DATA`
+
+// String representation for [fmt.Print]
+func (cfsda *CreateFunctionSqlDataAccess) String() string {
+	return string(*cfsda)
+}
+
+// Set raw string value and validate it against allowed values
+func (cfsda *CreateFunctionSqlDataAccess) Set(v string) error {
+	switch v {
+	case `CONTAINS_SQL`, `NO_SQL`, `READS_SQL_DATA`:
+		*cfsda = CreateFunctionSqlDataAccess(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CONTAINS_SQL", "NO_SQL", "READS_SQL_DATA"`, v)
+	}
+}
+
+// Type always returns CreateFunctionSqlDataAccess to satisfy [pflag.Value] interface
+func (cfsda *CreateFunctionSqlDataAccess) Type() string {
+	return "CreateFunctionSqlDataAccess"
+}
+
+type CreateMetastore struct {
+	// The user-specified name of the metastore.
+	Name string `json:"name"`
+	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). If
+	// this field is omitted, the region of the workspace receiving the request
+	// will be used.
+	Region string `json:"region,omitempty"`
+	// The storage root URL for metastore
 	StorageRoot string `json:"storage_root"`
 }
 
 type CreateMetastoreAssignment struct {
-	// The name of the default catalog in the Metastore.
+	// The name of the default catalog in the metastore.
 	DefaultCatalogName string `json:"default_catalog_name"`
-	// The ID of the Metastore.
+	// The unique ID of the metastore.
 	MetastoreId string `json:"metastore_id"`
 	// A workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -269,10 +445,8 @@ type CreateProvider struct {
 	Comment string `json:"comment,omitempty"`
 	// The name of the Provider.
 	Name string `json:"name"`
-	// Username of Provider owner.
-	Owner string `json:"owner,omitempty"`
-	// This field is required when the authentication_type is `TOKEN` or not
-	// provided.
+	// This field is required when the __authentication_type__ is **TOKEN** or
+	// not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 }
 
@@ -282,34 +456,40 @@ type CreateRecipient struct {
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
 	// The global Unity Catalog metastore id provided by the data recipient.\n
-	// This field is only present when the authentication type is
-	// `DATABRICKS`.\n The identifier is of format
-	// <cloud>:<region>:<metastore-uuid>.
+	// This field is required when the __authentication_type__ is
+	// **DATABRICKS**.\n The identifier is of format
+	// __cloud__:__region__:__metastore-uuid__.
 	DataRecipientGlobalMetastoreId any `json:"data_recipient_global_metastore_id,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// Name of Recipient.
 	Name string `json:"name"`
+	// Username of the recipient owner.
+	Owner string `json:"owner,omitempty"`
+	// Recipient properties as map of string key-value pairs.\n
+	PropertiesKvpairs any `json:"properties_kvpairs,omitempty"`
 	// The one-time sharing code provided by the data recipient. This field is
-	// only present when the authentication type is `DATABRICKS`.
+	// required when the __authentication_type__ is **DATABRICKS**.
 	SharingCode string `json:"sharing_code,omitempty"`
 }
 
 type CreateSchema struct {
-	// Name of parent Catalog.
+	// Name of parent catalog.
 	CatalogName string `json:"catalog_name"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Name of Schema, relative to parent Catalog.
+	// Name of schema, relative to parent catalog.
 	Name string `json:"name"`
-
+	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
+	// Storage root URL for managed tables within schema.
+	StorageRoot string `json:"storage_root,omitempty"`
 }
 
 type CreateShare struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Name of the Share.
+	// Name of the share.
 	Name string `json:"name"`
 }
 
@@ -322,11 +502,22 @@ type CreateStorageCredential struct {
 	Comment string `json:"comment,omitempty"`
 	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
-	// The credential name. The name MUST be unique within the Metastore.
+	// The credential name. The name MUST be unique within the metastore.
 	Name string `json:"name"`
-	// Optional. Supplying true to this argument skips validation of the created
-	// set of credentials.
+	// Whether the storage credential is only usable for read operations.
+	ReadOnly bool `json:"read_only,omitempty"`
+	// Supplying true to this argument skips validation of the created
+	// credential.
 	SkipValidation bool `json:"skip_validation,omitempty"`
+}
+
+type CreateTableConstraint struct {
+	// A table constraint, as defined by *one* of the following fields being
+	// set: __primary_key_constraint__, __foreign_key_constraint__,
+	// __named_table_constraint__.
+	Constraint *TableConstraint `json:"constraint,omitempty"`
+	// The full name of the table referenced by the constraint.
+	FullNameArg string `json:"full_name_arg,omitempty"`
 }
 
 // Data source format
@@ -375,7 +566,7 @@ func (dsf *DataSourceFormat) Type() string {
 type DeleteCatalogRequest struct {
 	// Force deletion even if the catalog is notempty.
 	Force bool `json:"-" url:"force,omitempty"`
-	// Required. The name of the catalog.
+	// The name of the catalog.
 	Name string `json:"-" url:"-"`
 }
 
@@ -383,33 +574,42 @@ type DeleteCatalogRequest struct {
 type DeleteExternalLocationRequest struct {
 	// Force deletion even if there are dependent external tables or mounts.
 	Force bool `json:"-" url:"force,omitempty"`
-	// Required. Name of the storage credential.
+	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
 }
 
-// Delete a Metastore
+// Delete a function
+type DeleteFunctionRequest struct {
+	// Force deletion even if the function is notempty.
+	Force bool `json:"-" url:"force,omitempty"`
+	// The fully-qualified name of the function (of the form
+	// __catalog_name__.__schema_name__.__function__name).
+	Name string `json:"-" url:"-"`
+}
+
+// Delete a metastore
 type DeleteMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
 	Force bool `json:"-" url:"force,omitempty"`
-	// Required. Unique ID of the Metastore (from URL).
+	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
 }
 
 // Delete a provider
 type DeleteProviderRequest struct {
-	// Required. Name of the provider.
+	// Name of the provider.
 	Name string `json:"-" url:"-"`
 }
 
 // Delete a share recipient
 type DeleteRecipientRequest struct {
-	// Required. Name of the recipient.
+	// Name of the recipient.
 	Name string `json:"-" url:"-"`
 }
 
 // Delete a schema
 type DeleteSchemaRequest struct {
-	// Required. Full name of the schema (from URL).
+	// Full name of the schema.
 	FullName string `json:"-" url:"-"`
 }
 
@@ -424,42 +624,369 @@ type DeleteStorageCredentialRequest struct {
 	// Force deletion even if there are dependent external locations or external
 	// tables.
 	Force bool `json:"-" url:"force,omitempty"`
-	// Required. Name of the storage credential.
+	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
+}
+
+// Delete a table constraint
+type DeleteTableConstraintRequest struct {
+	// If true, try deleting all child constraints of the current constraint.\n
+	// If false, reject this operation if the current constraint has any child
+	// constraints.
+	Cascade bool `json:"-" url:"cascade"`
+	// The name of the constraint to delete.
+	ConstraintName string `json:"-" url:"constraint_name"`
+	// Full name of the table referenced by the constraint.
+	FullName string `json:"-" url:"-"`
 }
 
 // Delete a table
 type DeleteTableRequest struct {
-	// Required. Full name of the Table (from URL).
+	// Full name of the table.
 	FullName string `json:"-" url:"-"`
+}
+
+// A dependency of a SQL object. Either the __table__ field or the __function__
+// field must be defined.
+type Dependency struct {
+	// A function that is dependent on a SQL object.
+	Function *FunctionDependency `json:"function,omitempty"`
+	// A table that is dependent on a SQL object.
+	Table *TableDependency `json:"table,omitempty"`
+}
+
+type EffectivePermissionsList struct {
+	// The privileges conveyed to each principal (either directly or via
+	// inheritance)
+	PrivilegeAssignments []EffectivePrivilegeAssignment `json:"privilege_assignments,omitempty"`
+}
+
+type EffectivePrivilege struct {
+	// The full name of the object that conveys this privilege via
+	// inheritance.\n This field is omitted when privilege is not inherited
+	// (it's assigned to the securable itself).
+	InheritedFromName string `json:"inherited_from_name,omitempty"`
+	// The type of the object that conveys this privilege via inheritance.\n
+	// This field is omitted when privilege is not inherited (it's assigned to
+	// the securable itself).
+	InheritedFromType SecurableType `json:"inherited_from_type,omitempty"`
+	// The privilege assigned to the principal.
+	Privilege Privilege `json:"privilege,omitempty"`
+}
+
+type EffectivePrivilegeAssignment struct {
+	// The principal (user email address or group name).
+	Principal string `json:"principal,omitempty"`
+	// The privileges conveyed to the principal (either directly or via
+	// inheritance).
+	Privileges []EffectivePrivilege `json:"privileges,omitempty"`
 }
 
 type ExternalLocationInfo struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Time at which this External Location was created, in epoch milliseconds.
+	// Time at which this external location was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// Username of External Location creator.
+	// Username of external location creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Unique ID of the location's Storage Credential.
+	// Unique ID of the location's storage credential.
 	CredentialId string `json:"credential_id,omitempty"`
-	// Current name of the Storage Credential this location uses.
+	// Current name of the storage credential this location uses.
 	CredentialName string `json:"credential_name,omitempty"`
-	// Unique identifier of Metastore hosting the External Location.
+	// Unique identifier of metastore hosting the external location.
 	MetastoreId string `json:"metastore_id,omitempty"`
-	// Name of the External Location.
+	// Name of the external location.
 	Name string `json:"name,omitempty"`
-	// The owner of the External Location.
+	// The owner of the external location.
 	Owner string `json:"owner,omitempty"`
 	// Indicates whether the external location is read-only.
 	ReadOnly bool `json:"read_only,omitempty"`
-	// Time at which External Location this was last modified, in epoch
+	// Time at which external location this was last modified, in epoch
 	// milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// Username of user who last modified the External Location.
+	// Username of user who last modified the external location.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// Path URL of the External Location.
+	// Path URL of the external location.
 	Url string `json:"url,omitempty"`
+}
+
+type ForeignKeyConstraint struct {
+	// Column names for this constraint.
+	ChildColumns []string `json:"child_columns"`
+	// The name of the constraint.
+	Name string `json:"name"`
+	// Column names for this constraint.
+	ParentColumns []string `json:"parent_columns"`
+	// The full name of the parent constraint.
+	ParentTable string `json:"parent_table"`
+}
+
+// A function that is dependent on a SQL object.
+type FunctionDependency struct {
+	// Full name of the dependent function, in the form of
+	// __catalog_name__.__schema_name__.__function_name__.
+	FunctionFullName string `json:"function_full_name"`
+}
+
+type FunctionInfo struct {
+	// Name of parent catalog.
+	CatalogName string `json:"catalog_name,omitempty"`
+	// User-provided free-form text description.
+	Comment string `json:"comment,omitempty"`
+	// Time at which this function was created, in epoch milliseconds.
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// Username of function creator.
+	CreatedBy string `json:"created_by,omitempty"`
+	// Scalar function return data type.
+	DataType ColumnTypeName `json:"data_type,omitempty"`
+	// External function language.
+	ExternalLanguage string `json:"external_language,omitempty"`
+	// External function name.
+	ExternalName string `json:"external_name,omitempty"`
+	// Pretty printed function data type.
+	FullDataType string `json:"full_data_type,omitempty"`
+	// Full name of function, in form of
+	// __catalog_name__.__schema_name__.__function__name
+	FullName string `json:"full_name,omitempty"`
+	// Id of Function, relative to parent schema.
+	FunctionId string `json:"function_id,omitempty"`
+	// The array of __FunctionParameterInfo__ definitions of the function's
+	// parameters.
+	InputParams []FunctionParameterInfo `json:"input_params,omitempty"`
+	// Whether the function is deterministic.
+	IsDeterministic bool `json:"is_deterministic,omitempty"`
+	// Function null call.
+	IsNullCall bool `json:"is_null_call,omitempty"`
+	// Unique identifier of parent metastore.
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// Name of function, relative to parent schema.
+	Name string `json:"name,omitempty"`
+	// Username of current owner of function.
+	Owner string `json:"owner,omitempty"`
+	// Function parameter style. **S** is the value for SQL.
+	ParameterStyle FunctionInfoParameterStyle `json:"parameter_style,omitempty"`
+	// A map of key-value properties attached to the securable.
+	Properties map[string]string `json:"properties,omitempty"`
+	// Table function return parameters.
+	ReturnParams []FunctionParameterInfo `json:"return_params,omitempty"`
+	// Function language. When **EXTERNAL** is used, the language of the routine
+	// function should be specified in the __external_language__ field, and the
+	// __return_params__ of the function cannot be used (as **TABLE** return
+	// type is not supported), and the __sql_data_access__ field must be
+	// **NO_SQL**.
+	RoutineBody FunctionInfoRoutineBody `json:"routine_body,omitempty"`
+	// Function body.
+	RoutineDefinition string `json:"routine_definition,omitempty"`
+	// Function dependencies.
+	RoutineDependencies []Dependency `json:"routine_dependencies,omitempty"`
+	// Name of parent schema relative to its parent catalog.
+	SchemaName string `json:"schema_name,omitempty"`
+	// Function security type.
+	SecurityType FunctionInfoSecurityType `json:"security_type,omitempty"`
+	// Specific name of the function; Reserved for future use.
+	SpecificName string `json:"specific_name,omitempty"`
+	// Function SQL data access.
+	SqlDataAccess FunctionInfoSqlDataAccess `json:"sql_data_access,omitempty"`
+	// List of schemes whose objects can be referenced without qualification.
+	SqlPath string `json:"sql_path,omitempty"`
+	// Time at which this function was created, in epoch milliseconds.
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Username of user who last modified function.
+	UpdatedBy string `json:"updated_by,omitempty"`
+}
+
+// Function parameter style. **S** is the value for SQL.
+type FunctionInfoParameterStyle string
+
+const FunctionInfoParameterStyleS FunctionInfoParameterStyle = `S`
+
+// String representation for [fmt.Print]
+func (fips *FunctionInfoParameterStyle) String() string {
+	return string(*fips)
+}
+
+// Set raw string value and validate it against allowed values
+func (fips *FunctionInfoParameterStyle) Set(v string) error {
+	switch v {
+	case `S`:
+		*fips = FunctionInfoParameterStyle(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "S"`, v)
+	}
+}
+
+// Type always returns FunctionInfoParameterStyle to satisfy [pflag.Value] interface
+func (fips *FunctionInfoParameterStyle) Type() string {
+	return "FunctionInfoParameterStyle"
+}
+
+// Function language. When **EXTERNAL** is used, the language of the routine
+// function should be specified in the __external_language__ field, and the
+// __return_params__ of the function cannot be used (as **TABLE** return type is
+// not supported), and the __sql_data_access__ field must be **NO_SQL**.
+type FunctionInfoRoutineBody string
+
+const FunctionInfoRoutineBodyExternal FunctionInfoRoutineBody = `EXTERNAL`
+
+const FunctionInfoRoutineBodySql FunctionInfoRoutineBody = `SQL`
+
+// String representation for [fmt.Print]
+func (firb *FunctionInfoRoutineBody) String() string {
+	return string(*firb)
+}
+
+// Set raw string value and validate it against allowed values
+func (firb *FunctionInfoRoutineBody) Set(v string) error {
+	switch v {
+	case `EXTERNAL`, `SQL`:
+		*firb = FunctionInfoRoutineBody(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "SQL"`, v)
+	}
+}
+
+// Type always returns FunctionInfoRoutineBody to satisfy [pflag.Value] interface
+func (firb *FunctionInfoRoutineBody) Type() string {
+	return "FunctionInfoRoutineBody"
+}
+
+// Function security type.
+type FunctionInfoSecurityType string
+
+const FunctionInfoSecurityTypeDefiner FunctionInfoSecurityType = `DEFINER`
+
+// String representation for [fmt.Print]
+func (fist *FunctionInfoSecurityType) String() string {
+	return string(*fist)
+}
+
+// Set raw string value and validate it against allowed values
+func (fist *FunctionInfoSecurityType) Set(v string) error {
+	switch v {
+	case `DEFINER`:
+		*fist = FunctionInfoSecurityType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DEFINER"`, v)
+	}
+}
+
+// Type always returns FunctionInfoSecurityType to satisfy [pflag.Value] interface
+func (fist *FunctionInfoSecurityType) Type() string {
+	return "FunctionInfoSecurityType"
+}
+
+// Function SQL data access.
+type FunctionInfoSqlDataAccess string
+
+const FunctionInfoSqlDataAccessContainsSql FunctionInfoSqlDataAccess = `CONTAINS_SQL`
+
+const FunctionInfoSqlDataAccessNoSql FunctionInfoSqlDataAccess = `NO_SQL`
+
+const FunctionInfoSqlDataAccessReadsSqlData FunctionInfoSqlDataAccess = `READS_SQL_DATA`
+
+// String representation for [fmt.Print]
+func (fisda *FunctionInfoSqlDataAccess) String() string {
+	return string(*fisda)
+}
+
+// Set raw string value and validate it against allowed values
+func (fisda *FunctionInfoSqlDataAccess) Set(v string) error {
+	switch v {
+	case `CONTAINS_SQL`, `NO_SQL`, `READS_SQL_DATA`:
+		*fisda = FunctionInfoSqlDataAccess(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CONTAINS_SQL", "NO_SQL", "READS_SQL_DATA"`, v)
+	}
+}
+
+// Type always returns FunctionInfoSqlDataAccess to satisfy [pflag.Value] interface
+func (fisda *FunctionInfoSqlDataAccess) Type() string {
+	return "FunctionInfoSqlDataAccess"
+}
+
+type FunctionParameterInfo struct {
+	// User-provided free-form text description.
+	Comment string `json:"comment,omitempty"`
+	// Name of parameter.
+	Name string `json:"name"`
+	// Default value of the parameter.
+	ParameterDefault string `json:"parameter_default,omitempty"`
+	// The mode of the function parameter.
+	ParameterMode FunctionParameterMode `json:"parameter_mode,omitempty"`
+	// The type of function parameter.
+	ParameterType FunctionParameterType `json:"parameter_type,omitempty"`
+	// Ordinal position of column (starting at position 0).
+	Position int `json:"position"`
+	// Format of IntervalType.
+	TypeIntervalType string `json:"type_interval_type,omitempty"`
+	// Full data type spec, JSON-serialized.
+	TypeJson string `json:"type_json,omitempty"`
+	// Name of type (INT, STRUCT, MAP, etc.).
+	TypeName ColumnTypeName `json:"type_name"`
+	// Digits of precision; required on Create for DecimalTypes.
+	TypePrecision int `json:"type_precision,omitempty"`
+	// Digits to right of decimal; Required on Create for DecimalTypes.
+	TypeScale int `json:"type_scale,omitempty"`
+	// Full data type spec, SQL/catalogString text.
+	TypeText string `json:"type_text"`
+}
+
+// The mode of the function parameter.
+type FunctionParameterMode string
+
+const FunctionParameterModeIn FunctionParameterMode = `IN`
+
+// String representation for [fmt.Print]
+func (fpm *FunctionParameterMode) String() string {
+	return string(*fpm)
+}
+
+// Set raw string value and validate it against allowed values
+func (fpm *FunctionParameterMode) Set(v string) error {
+	switch v {
+	case `IN`:
+		*fpm = FunctionParameterMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "IN"`, v)
+	}
+}
+
+// Type always returns FunctionParameterMode to satisfy [pflag.Value] interface
+func (fpm *FunctionParameterMode) Type() string {
+	return "FunctionParameterMode"
+}
+
+// The type of function parameter.
+type FunctionParameterType string
+
+const FunctionParameterTypeColumn FunctionParameterType = `COLUMN`
+
+const FunctionParameterTypeParam FunctionParameterType = `PARAM`
+
+// String representation for [fmt.Print]
+func (fpt *FunctionParameterType) String() string {
+	return string(*fpt)
+}
+
+// Set raw string value and validate it against allowed values
+func (fpt *FunctionParameterType) Set(v string) error {
+	switch v {
+	case `COLUMN`, `PARAM`:
+		*fpt = FunctionParameterType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COLUMN", "PARAM"`, v)
+	}
+}
+
+// Type always returns FunctionParameterType to satisfy [pflag.Value] interface
+func (fpt *FunctionParameterType) Type() string {
+	return "FunctionParameterType"
 }
 
 type GcpServiceAccountKey struct {
@@ -473,81 +1000,100 @@ type GcpServiceAccountKey struct {
 
 // Get a share activation URL
 type GetActivationUrlInfoRequest struct {
-	// Required. The one time activation url. It also accepts activation token.
+	// The one time activation url. It also accepts activation token.
 	ActivationUrl string `json:"-" url:"-"`
 }
 
 // Get a catalog
 type GetCatalogRequest struct {
-	// Required. The name of the catalog.
+	// The name of the catalog.
 	Name string `json:"-" url:"-"`
+}
+
+// Get effective permissions
+type GetEffectiveRequest struct {
+	// Full name of securable.
+	FullName string `json:"-" url:"-"`
+	// If provided, only the effective permissions for the specified principal
+	// (user or group) are returned.
+	Principal string `json:"-" url:"principal,omitempty"`
+	// Type of securable.
+	SecurableType SecurableType `json:"-" url:"-"`
 }
 
 // Get an external location
 type GetExternalLocationRequest struct {
-	// Required. Name of the storage credential.
+	// Name of the storage credential.
+	Name string `json:"-" url:"-"`
+}
+
+// Get a function
+type GetFunctionRequest struct {
+	// The fully-qualified name of the function (of the form
+	// __catalog_name__.__schema_name__.__function__name).
 	Name string `json:"-" url:"-"`
 }
 
 // Get permissions
 type GetGrantRequest struct {
-	// Required. Unique identifier (full name) of Securable (from URL).
+	// Full name of securable.
 	FullName string `json:"-" url:"-"`
-	// Optional. List permissions granted to this principal.
+	// If provided, only the permissions for the specified principal (user or
+	// group) are returned.
 	Principal string `json:"-" url:"principal,omitempty"`
-	// Required. Type of Securable (from URL).
-	SecurableType string `json:"-" url:"-"`
+	// Type of securable.
+	SecurableType SecurableType `json:"-" url:"-"`
 }
 
-// Get a Metastore
+// Get a metastore
 type GetMetastoreRequest struct {
-	// Required. Unique ID of the Metastore (from URL).
+	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
 }
 
 type GetMetastoreSummaryResponse struct {
-	// Cloud vendor of the Metastore home shard (e.g., `aws`, `azure`, `gcp`).
+	// Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`).
 	Cloud string `json:"cloud,omitempty"`
-	// Time at which this Metastore was created, in epoch milliseconds.
+	// Time at which this metastore was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// Username of Metastore creator.
+	// Username of metastore creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Unique identifier of the Metastore's (Default) Data Access Configuration.
+	// Unique identifier of the metastore's (Default) Data Access Configuration.
 	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
 	// The organization name of a Delta Sharing entity, to be used in
 	// Databricks-to-Databricks Delta Sharing as the official name.
 	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
 	// The lifetime of delta sharing recipient token in seconds.
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
-	// The scope of Delta Sharing enabled for the Metastore
+	// The scope of Delta Sharing enabled for the metastore.
 	DeltaSharingScope GetMetastoreSummaryResponseDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
 	// Globally unique metastore ID across clouds and regions, of the form
 	// `cloud:region:metastore_id`.
 	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
-	// The unique ID (UUID) of the Metastore.
+	// Unique identifier of metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
-	// The user-specified name of the Metastore.
+	// The user-specified name of the metastore.
 	Name string `json:"name,omitempty"`
 	// The owner of the metastore.
 	Owner string `json:"owner,omitempty"`
 	// Privilege model version of the metastore, of the form `major.minor`
-	// (e.g., `1.0`)
+	// (e.g., `1.0`).
 	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
-	// Cloud region of the Metastore home shard (e.g., `us-west-2`, `westus`).
+	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
 	Region string `json:"region,omitempty"`
-	// The storage root URL for the Metastore.
+	// The storage root URL for metastore
 	StorageRoot string `json:"storage_root,omitempty"`
 	// UUID of storage credential to access the metastore storage_root.
 	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
 	// Name of the storage credential to access the metastore storage_root.
 	StorageRootCredentialName string `json:"storage_root_credential_name,omitempty"`
-	// Time at which this Metastore was last modified, in epoch milliseconds.
+	// Time at which the metastore was last modified, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// Username of user who last modified the External Location.
+	// Username of user who last modified the metastore.
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
-// The scope of Delta Sharing enabled for the Metastore
+// The scope of Delta Sharing enabled for the metastore.
 type GetMetastoreSummaryResponseDeltaSharingScope string
 
 const GetMetastoreSummaryResponseDeltaSharingScopeInternal GetMetastoreSummaryResponseDeltaSharingScope = `INTERNAL`
@@ -575,19 +1121,15 @@ func (gmsrdss *GetMetastoreSummaryResponseDeltaSharingScope) Type() string {
 	return "GetMetastoreSummaryResponseDeltaSharingScope"
 }
 
-type GetPermissionsResponse struct {
-	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
-}
-
 // Get a provider
 type GetProviderRequest struct {
-	// Required. Name of the provider.
+	// Name of the provider.
 	Name string `json:"-" url:"-"`
 }
 
 // Get a share recipient
 type GetRecipientRequest struct {
-	// Required. Name of the recipient.
+	// Name of the recipient.
 	Name string `json:"-" url:"-"`
 }
 
@@ -598,14 +1140,8 @@ type GetRecipientSharePermissionsResponse struct {
 
 // Get a schema
 type GetSchemaRequest struct {
-	// Required. Full name of the schema (from URL).
+	// Full name of the schema.
 	FullName string `json:"-" url:"-"`
-}
-
-type GetSharePermissionsResponse struct {
-	// Note to self (acain): Unfortunately, neither json_inline nor json_map
-	// work here.
-	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
 }
 
 // Get a share
@@ -618,14 +1154,16 @@ type GetShareRequest struct {
 
 // Get a credential
 type GetStorageCredentialRequest struct {
-	// Required. Name of the storage credential.
+	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
 }
 
 // Get a table
 type GetTableRequest struct {
-	// Required. Full name of the Table (from URL).
+	// Full name of the table.
 	FullName string `json:"-" url:"-"`
+	// Whether delta metadata should be included in the response.
+	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
 }
 
 type IpAccessList struct {
@@ -643,8 +1181,21 @@ type ListExternalLocationsResponse struct {
 	ExternalLocations []ExternalLocationInfo `json:"external_locations,omitempty"`
 }
 
+// List functions
+type ListFunctionsRequest struct {
+	// Name of parent catalog for functions of interest.
+	CatalogName string `json:"-" url:"catalog_name"`
+	// Parent schema of functions.
+	SchemaName string `json:"-" url:"schema_name"`
+}
+
+type ListFunctionsResponse struct {
+	// An array of function information objects.
+	Schemas []FunctionInfo `json:"schemas,omitempty"`
+}
+
 type ListMetastoresResponse struct {
-	// An array of Metastore information objects.
+	// An array of metastore information objects.
 	Metastores []MetastoreInfo `json:"metastores,omitempty"`
 }
 
@@ -679,8 +1230,8 @@ type ListRecipientsResponse struct {
 
 // List schemas
 type ListSchemasRequest struct {
-	// Optional. Parent catalog for schemas of interest.
-	CatalogName string `json:"-" url:"catalog_name,omitempty"`
+	// Parent catalog for schemas of interest.
+	CatalogName string `json:"-" url:"catalog_name"`
 }
 
 type ListSchemasResponse struct {
@@ -688,9 +1239,9 @@ type ListSchemasResponse struct {
 	Schemas []SchemaInfo `json:"schemas,omitempty"`
 }
 
-// List shares
+// List shares by Provider
 type ListSharesRequest struct {
-	// Required. Name of the provider in which to list shares.
+	// Name of the provider in which to list shares.
 	Name string `json:"-" url:"-"`
 }
 
@@ -703,21 +1254,37 @@ type ListStorageCredentialsResponse struct {
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
 }
 
+// List table summaries
+type ListSummariesRequest struct {
+	// Name of parent catalog for tables of interest.
+	CatalogName string `json:"-" url:"catalog_name"`
+	// Maximum number of tables to return (page length). Defaults to 10000.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque token to send for the next page of results (pagination).
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// A sql LIKE pattern (% and _) for schema names. All schemas will be
+	// returned if not set or empty.
+	SchemaNamePattern string `json:"-" url:"schema_name_pattern,omitempty"`
+	// A sql LIKE pattern (% and _) for table names. All tables will be returned
+	// if not set or empty.
+	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
+}
+
 type ListTableSummariesResponse struct {
-	// Optional. Opaque token for pagination. Empty if there's no more page.
+	// Opaque token for pagination. Omitted if there are no more results.
 	NextPageToken string `json:"next_page_token,omitempty"`
-	// Only name, catalog_name, schema_name, full_name and table_type will be
-	// set.
+	// List of table summaries.
 	Tables []TableSummary `json:"tables,omitempty"`
 }
 
 // List tables
 type ListTablesRequest struct {
-	// Required. Name of parent catalog for tables of interest.
-	CatalogName string `json:"-" url:"catalog_name,omitempty"`
-	// Required (for now -- may be optional for wildcard search in future).
+	// Name of parent catalog for tables of interest.
+	CatalogName string `json:"-" url:"catalog_name"`
+	// Whether delta metadata should be included in the response.
+	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
 	// Parent schema of tables.
-	SchemaName string `json:"-" url:"schema_name,omitempty"`
+	SchemaName string `json:"-" url:"schema_name"`
 }
 
 type ListTablesResponse struct {
@@ -725,34 +1292,88 @@ type ListTablesResponse struct {
 	Tables []TableInfo `json:"tables,omitempty"`
 }
 
+type MetastoreAssignment struct {
+	// The name of the default catalog in the metastore.
+	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
+	// The unique ID of the metastore.
+	MetastoreId string `json:"metastore_id"`
+	// The unique ID of the Databricks workspace.
+	WorkspaceId string `json:"workspace_id"`
+}
+
 type MetastoreInfo struct {
-	// Time at which this Metastore was created, in epoch milliseconds.
+	// Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`).
+	Cloud string `json:"cloud,omitempty"`
+	// Time at which this metastore was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// Username of Metastore creator.
+	// Username of metastore creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Unique identifier of (Default) Data Access Configuration
+	// Unique identifier of the metastore's (Default) Data Access Configuration.
 	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
-	// Whether Delta Sharing is enabled on this metastore.
-	DeltaSharingEnabled bool `json:"delta_sharing_enabled,omitempty"`
-	// The lifetime of delta sharing recipient token in seconds
+	// The organization name of a Delta Sharing entity, to be used in
+	// Databricks-to-Databricks Delta Sharing as the official name.
+	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
+	// The lifetime of delta sharing recipient token in seconds.
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
-	// Unique identifier of Metastore.
+	// The scope of Delta Sharing enabled for the metastore.
+	DeltaSharingScope MetastoreInfoDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	// Globally unique metastore ID across clouds and regions, of the form
+	// `cloud:region:metastore_id`.
+	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
+	// Unique identifier of metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
-	// Name of Metastore.
+	// The user-specified name of the metastore.
 	Name string `json:"name,omitempty"`
 	// The owner of the metastore.
 	Owner string `json:"owner,omitempty"`
-	// The region this metastore has an afinity to. This is used by
-	// accounts-manager. Ignored by Unity Catalog.
+	// Privilege model version of the metastore, of the form `major.minor`
+	// (e.g., `1.0`).
+	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
+	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
 	Region string `json:"region,omitempty"`
-	// Storage root URL for Metastore
+	// The storage root URL for metastore
 	StorageRoot string `json:"storage_root,omitempty"`
-	// UUID of storage credential to access storage_root
+	// UUID of storage credential to access the metastore storage_root.
 	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
-	// Time at which the Metastore was last modified, in epoch milliseconds.
+	// Name of the storage credential to access the metastore storage_root.
+	StorageRootCredentialName string `json:"storage_root_credential_name,omitempty"`
+	// Time at which the metastore was last modified, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// Username of user who last modified the Metastore.
+	// Username of user who last modified the metastore.
 	UpdatedBy string `json:"updated_by,omitempty"`
+}
+
+// The scope of Delta Sharing enabled for the metastore.
+type MetastoreInfoDeltaSharingScope string
+
+const MetastoreInfoDeltaSharingScopeInternal MetastoreInfoDeltaSharingScope = `INTERNAL`
+
+const MetastoreInfoDeltaSharingScopeInternalAndExternal MetastoreInfoDeltaSharingScope = `INTERNAL_AND_EXTERNAL`
+
+// String representation for [fmt.Print]
+func (midss *MetastoreInfoDeltaSharingScope) String() string {
+	return string(*midss)
+}
+
+// Set raw string value and validate it against allowed values
+func (midss *MetastoreInfoDeltaSharingScope) Set(v string) error {
+	switch v {
+	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
+		*midss = MetastoreInfoDeltaSharingScope(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "INTERNAL", "INTERNAL_AND_EXTERNAL"`, v)
+	}
+}
+
+// Type always returns MetastoreInfoDeltaSharingScope to satisfy [pflag.Value] interface
+func (midss *MetastoreInfoDeltaSharingScope) Type() string {
+	return "MetastoreInfoDeltaSharingScope"
+}
+
+type NamedTableConstraint struct {
+	// The name of the constraint.
+	Name string `json:"name"`
 }
 
 type Partition struct {
@@ -810,6 +1431,18 @@ type PermissionsChange struct {
 	Principal string `json:"principal,omitempty"`
 	// The set of privileges to remove.
 	Remove []Privilege `json:"remove,omitempty"`
+}
+
+type PermissionsList struct {
+	// The privileges assigned to each principal
+	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
+}
+
+type PrimaryKeyConstraint struct {
+	// Column names for this constraint.
+	ChildColumns []string `json:"child_columns"`
+	// The name of the constraint.
+	Name string `json:"name"`
 }
 
 type Privilege string
@@ -905,8 +1538,8 @@ type PrivilegeAssignment struct {
 type ProviderInfo struct {
 	// The delta sharing authentication type.
 	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
-	// Cloud vendor of the provider's UC Metastore. This field is only present
-	// when the authentication_type is `DATABRICKS`.
+	// Cloud vendor of the provider's UC metastore. This field is only present
+	// when the __authentication_type__ is **DATABRICKS**.
 	Cloud string `json:"cloud,omitempty"`
 	// Description about the provider.
 	Comment string `json:"comment,omitempty"`
@@ -915,11 +1548,11 @@ type ProviderInfo struct {
 	// Username of Provider creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// The global UC metastore id of the data provider. This field is only
-	// present when the authentication type is `DATABRICKS`. The identifier is
-	// of format <cloud>:<region>:<metastore-uuid>.
+	// present when the __authentication_type__ is **DATABRICKS**. The
+	// identifier is of format <cloud>:<region>:<metastore-uuid>.
 	DataProviderGlobalMetastoreId string `json:"data_provider_global_metastore_id,omitempty"`
-	// UUID of the provider's UC Metastore. This field is only present when the
-	// authentication type is `DATABRICKS`.
+	// UUID of the provider's UC metastore. This field is only present when the
+	// __authentication_type__ is **DATABRICKS**.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// The name of the Provider.
 	Name string `json:"name,omitempty"`
@@ -928,11 +1561,11 @@ type ProviderInfo struct {
 	// The recipient profile. This field is only present when the
 	// authentication_type is `TOKEN`.
 	RecipientProfile *RecipientProfile `json:"recipient_profile,omitempty"`
-	// This field is required when the authentication_type is `TOKEN` or not
+	// This field is only present when the authentication_type is `TOKEN` or not
 	// provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
-	// Cloud region of the provider's UC Metastore. This field is only present
-	// when the authentication type is `DATABRICKS`.
+	// Cloud region of the provider's UC metastore. This field is only present
+	// when the __authentication_type__ is **DATABRICKS**.
 	Region string `json:"region,omitempty"`
 	// Time at which this Provider was created, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
@@ -955,7 +1588,7 @@ type RecipientInfo struct {
 	// The delta sharing authentication type.
 	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
 	// Cloud vendor of the recipient's Unity Catalog Metstore. This field is
-	// only present when the authentication type is `DATABRICKS`.
+	// only present when the __authentication_type__ is **DATABRICKS**`.
 	Cloud string `json:"cloud,omitempty"`
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
@@ -964,24 +1597,28 @@ type RecipientInfo struct {
 	// Username of recipient creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// The global Unity Catalog metastore id provided by the data recipient.\n
-	// This field is only present when the authentication type is
-	// `DATABRICKS`.\n The identifier is of format
-	// <cloud>:<region>:<metastore-uuid>.
+	// This field is only present when the __authentication_type__ is
+	// **DATABRICKS**.\n The identifier is of format
+	// __cloud__:__region__:__metastore-uuid__.
 	DataRecipientGlobalMetastoreId any `json:"data_recipient_global_metastore_id,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
-	// Unique identifier of recipient's Unity Catalog Metastore. This field is
-	// only present when the authentication type is `DATABRICKS`
+	// Unique identifier of recipient's Unity Catalog metastore. This field is
+	// only present when the __authentication_type__ is **DATABRICKS**
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of Recipient.
 	Name string `json:"name,omitempty"`
+	// Username of the recipient owner.
+	Owner string `json:"owner,omitempty"`
+	// Recipient properties as map of string key-value pairs.\n
+	PropertiesKvpairs any `json:"properties_kvpairs,omitempty"`
 	// Cloud region of the recipient's Unity Catalog Metstore. This field is
-	// only present when the authentication type is `DATABRICKS`.
+	// only present when the __authentication_type__ is **DATABRICKS**.
 	Region string `json:"region,omitempty"`
 	// The one-time sharing code provided by the data recipient. This field is
-	// only present when the authentication type is `DATABRICKS`.
+	// only present when the __authentication_type__ is **DATABRICKS**.
 	SharingCode string `json:"sharing_code,omitempty"`
-	// This field is only present when the authentication type is `TOKEN`.
+	// This field is only present when the __authentication_type__ is **TOKEN**.
 	Tokens []RecipientTokenInfo `json:"tokens,omitempty"`
 	// Time at which the recipient was updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
@@ -1018,7 +1655,7 @@ type RecipientTokenInfo struct {
 
 // Get an access token
 type RetrieveTokenRequest struct {
-	// Required. The one time activation url. It also accepts activation token.
+	// The one time activation url. It also accepts activation token.
 	ActivationUrl string `json:"-" url:"-"`
 }
 
@@ -1034,63 +1671,115 @@ type RetrieveTokenResponse struct {
 }
 
 type RotateRecipientToken struct {
-	// Required. This will set the expiration_time of existing token only to a
-	// smaller timestamp, it cannot extend the expiration_time. Use 0 to expire
-	// the existing token immediately, negative number will return an error.
-	ExistingTokenExpireInSeconds int64 `json:"existing_token_expire_in_seconds,omitempty"`
-	// Required. The name of the recipient.
+	// The expiration time of the bearer token in ISO 8601 format. This will set
+	// the expiration_time of existing token only to a smaller timestamp, it
+	// cannot extend the expiration_time. Use 0 to expire the existing token
+	// immediately, negative number will return an error.
+	ExistingTokenExpireInSeconds int64 `json:"existing_token_expire_in_seconds"`
+	// The name of the recipient.
 	Name string `json:"-" url:"-"`
 }
 
 type SchemaInfo struct {
-	// Name of parent Catalog.
+	// Name of parent catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
+	// The type of the parent catalog.
+	CatalogType string `json:"catalog_type,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Time at which this Schema was created, in epoch milliseconds.
+	// Time at which this schema was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// Username of Schema creator.
+	// Username of schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Full name of Schema, in form of <catalog_name>.<schema_name>.
+	// Full name of schema, in form of __catalog_name__.__schema_name__.
 	FullName string `json:"full_name,omitempty"`
-	// Unique identifier of parent Metastore.
+	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
-	// Name of Schema, relative to parent Catalog.
+	// Name of schema, relative to parent catalog.
 	Name string `json:"name,omitempty"`
-	// Username of current owner of Schema.
+	// Username of current owner of schema.
 	Owner string `json:"owner,omitempty"`
-
+	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
 	// Storage location for managed tables within schema.
 	StorageLocation string `json:"storage_location,omitempty"`
 	// Storage root URL for managed tables within schema.
 	StorageRoot string `json:"storage_root,omitempty"`
-	// Time at which this Schema was created, in epoch milliseconds.
+	// Time at which this schema was created, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// Username of user who last modified Schema.
+	// Username of user who last modified schema.
 	UpdatedBy string `json:"updated_by,omitempty"`
+}
+
+// A map of key-value properties attached to the securable.
+type SecurablePropertiesMap map[string]string
+
+// The type of Unity Catalog securable
+type SecurableType string
+
+const SecurableTypeCatalog SecurableType = `CATALOG`
+
+const SecurableTypeExternalLocation SecurableType = `EXTERNAL_LOCATION`
+
+const SecurableTypeFunction SecurableType = `FUNCTION`
+
+const SecurableTypeMetastore SecurableType = `METASTORE`
+
+const SecurableTypeProvider SecurableType = `PROVIDER`
+
+const SecurableTypeRecipient SecurableType = `RECIPIENT`
+
+const SecurableTypeSchema SecurableType = `SCHEMA`
+
+const SecurableTypeShare SecurableType = `SHARE`
+
+const SecurableTypeStorageCredential SecurableType = `STORAGE_CREDENTIAL`
+
+const SecurableTypeTable SecurableType = `TABLE`
+
+// String representation for [fmt.Print]
+func (st *SecurableType) String() string {
+	return string(*st)
+}
+
+// Set raw string value and validate it against allowed values
+func (st *SecurableType) Set(v string) error {
+	switch v {
+	case `CATALOG`, `EXTERNAL_LOCATION`, `FUNCTION`, `METASTORE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `STORAGE_CREDENTIAL`, `TABLE`:
+		*st = SecurableType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CATALOG", "EXTERNAL_LOCATION", "FUNCTION", "METASTORE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "STORAGE_CREDENTIAL", "TABLE"`, v)
+	}
+}
+
+// Type always returns SecurableType to satisfy [pflag.Value] interface
+func (st *SecurableType) Type() string {
+	return "SecurableType"
 }
 
 type ShareInfo struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Time at which this Share was created, in epoch milliseconds.
+	// Time at which this share was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// Username of Share creator.
+	// Username of share creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Name of the Share.
+	// Name of the share.
 	Name string `json:"name,omitempty"`
-	// A list of shared data objects within the Share.
+	// A list of shared data objects within the share.
 	Objects []SharedDataObject `json:"objects,omitempty"`
-	// Username of current owner of Share.
+	// Username of current owner of share.
 	Owner string `json:"owner,omitempty"`
-	// Array of shared data object updates.
-	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
+	// Time at which this share was updated, in epoch milliseconds.
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Username of share updater.
+	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
-// Get share permissions
+// Get recipient share permissions
 type SharePermissionsRequest struct {
-	// Required. The name of the Recipient.
+	// The name of the Recipient.
 	Name string `json:"-" url:"-"`
 }
 
@@ -1102,7 +1791,7 @@ type ShareToPrivilegeAssignment struct {
 }
 
 type SharedDataObject struct {
-	// The time when this data object is added to the Share, in epoch
+	// The time when this data object is added to the share, in epoch
 	// milliseconds.
 	AddedAt int64 `json:"added_at,omitempty"`
 	// Username of the sharer.
@@ -1122,9 +1811,9 @@ type SharedDataObject struct {
 	// Array of partitions for the shared data.
 	Partitions []Partition `json:"partitions,omitempty"`
 	// A user-provided new name for the data object within the share. If this
-	// new name is not not provided, the object's original name will be used as
-	// the `shared_as` name. The `shared_as` name must be unique within a Share.
-	// For tables, the new name must follow the format of `<schema>.<table>`.
+	// new name is not provided, the object's original name will be used as the
+	// `shared_as` name. The `shared_as` name must be unique within a share. For
+	// tables, the new name must follow the format of `<schema>.<table>`.
 	SharedAs string `json:"shared_as,omitempty"`
 	// The start version associated with the object. This allows data providers
 	// to control the lowest object version that is accessible by clients. If
@@ -1218,81 +1907,116 @@ type StorageCredentialInfo struct {
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
-	// Unique identifier of parent Metastore.
+	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
-	// The credential name. The name MUST be unique within the Metastore.
+	// The credential name. The name MUST be unique within the metastore.
 	Name string `json:"name,omitempty"`
-	// Optional. Supplying true to this argument skips validation of the created
-	// set of credentials.
-	SkipValidation bool `json:"skip_validation,omitempty"`
+	// Username of current owner of credential.
+	Owner string `json:"owner,omitempty"`
+	// Whether the storage credential is only usable for read operations.
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Time at which this credential was last modified, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the credential.
 	UpdatedBy string `json:"updated_by,omitempty"`
+	// Whether this credential is the current metastore's root storage
+	// credential.
+	UsedForManagedStorage bool `json:"used_for_managed_storage,omitempty"`
+}
+
+// A table constraint, as defined by *one* of the following fields being set:
+// __primary_key_constraint__, __foreign_key_constraint__,
+// __named_table_constraint__.
+type TableConstraint struct {
+	ForeignKeyConstraint *ForeignKeyConstraint `json:"foreign_key_constraint,omitempty"`
+
+	NamedTableConstraint *NamedTableConstraint `json:"named_table_constraint,omitempty"`
+
+	PrimaryKeyConstraint *PrimaryKeyConstraint `json:"primary_key_constraint,omitempty"`
+}
+
+type TableConstraintList struct {
+	// List of table constraints.
+	TableConstraints []TableConstraint `json:"table_constraints,omitempty"`
+}
+
+// A table that is dependent on a SQL object.
+type TableDependency struct {
+	// Full name of the dependent table, in the form of
+	// __catalog_name__.__schema_name__.__table_name__.
+	TableFullName string `json:"table_full_name"`
 }
 
 type TableInfo struct {
-	// Name of parent Catalog.
+	// Name of parent catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
-	// This name ('columns') is what the client actually sees as the field name
-	// in messages that include PropertiesKVPairs using 'json_inline' (e.g.,
-	// TableInfo).
+	// The array of __ColumnInfo__ definitions of the table's columns.
 	Columns []ColumnInfo `json:"columns,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Time at which this Table was created, in epoch milliseconds.
+	// Time at which this table was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
-	// Username of Table creator.
+	// Username of table creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// Unique ID of the data_access_configuration to use.
+	// Unique ID of the Data Access Configuration to use with the table data.
 	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
 	// Data source format
 	DataSourceFormat DataSourceFormat `json:"data_source_format,omitempty"`
-	// Full name of Table, in form of <catalog_name>.<schema_name>.<table_name>
+	// Time at which this table was deleted, in epoch milliseconds. Field is
+	// omitted if table is not deleted.
+	DeletedAt int64 `json:"deleted_at,omitempty"`
+	// Information pertaining to current state of the delta table.
+	DeltaRuntimePropertiesKvpairs any `json:"delta_runtime_properties_kvpairs,omitempty"`
+	// Full name of table, in form of
+	// __catalog_name__.__schema_name__.__table_name__
 	FullName string `json:"full_name,omitempty"`
-	// Unique identifier of parent Metastore.
+	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
-	// Name of Table, relative to parent Schema.
+	// Name of table, relative to parent schema.
 	Name string `json:"name,omitempty"`
-	// Username of current owner of Table.
+	// Username of current owner of table.
 	Owner string `json:"owner,omitempty"`
-
+	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
-	// Name of parent Schema relative to its parent Catalog.
+
+	RowFilter *TableRowFilter `json:"row_filter,omitempty"`
+	// Name of parent schema relative to its parent catalog.
 	SchemaName string `json:"schema_name,omitempty"`
 	// List of schemes whose objects can be referenced without qualification.
 	SqlPath string `json:"sql_path,omitempty"`
-	// Name of the storage credential this table used
+	// Name of the storage credential, when a storage credential is configured
+	// for use with this table.
 	StorageCredentialName string `json:"storage_credential_name,omitempty"`
-	// Storage root URL for table (for MANAGED, EXTERNAL tables)
+	// Storage root URL for table (for **MANAGED**, **EXTERNAL** tables)
 	StorageLocation string `json:"storage_location,omitempty"`
-	// Name of Table, relative to parent Schema.
+
+	TableConstraints *TableConstraintList `json:"table_constraints,omitempty"`
+	// Name of table, relative to parent schema.
 	TableId string `json:"table_id,omitempty"`
 
 	TableType TableType `json:"table_type,omitempty"`
-	// Time at which this Table was last modified, in epoch milliseconds.
+	// Time at which this table was last modified, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// Username of user who last modified the Table.
+	// Username of user who last modified the table.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// View definition SQL (when table_type == "VIEW")
+	// View definition SQL (when __table_type__ is **VIEW**,
+	// **MATERIALIZED_VIEW**, or **STREAMING_TABLE**)
 	ViewDefinition string `json:"view_definition,omitempty"`
+	// View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**,
+	// **STREAMING_TABLE**) - when DependencyList is None, the dependency is not
+	// provided; - when DependencyList is an empty list, the dependency is
+	// provided but is empty; - when DependencyList is not an empty list,
+	// dependencies are provided and recorded.
+	ViewDependencies []Dependency `json:"view_dependencies,omitempty"`
 }
 
-// List table summaries
-type TableSummariesRequest struct {
-	// Required. Name of parent catalog for tables of interest.
-	CatalogName string `json:"-" url:"catalog_name,omitempty"`
-	// Optional. Maximum number of tables to return (page length). Defaults to
-	// 10000.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-	// Optional. Opaque token to send for the next page of results (pagination).
-	PageToken string `json:"-" url:"page_token,omitempty"`
-	// Optional. A sql LIKE pattern (% and _) for schema names. All schemas will
-	// be returned if not set or empty.
-	SchemaNamePattern string `json:"-" url:"schema_name_pattern,omitempty"`
-	// Optional. A sql LIKE pattern (% and _) for table names. All tables will
-	// be returned if not set or empty.
-	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
+type TableRowFilter struct {
+	// The list of table columns to be passed as input to the row filter
+	// function. The column types should match the types of the filter function
+	// arguments.
+	InputColumnNames []string `json:"input_column_names"`
+	// The full name of the row filter SQL UDF.
+	Name string `json:"name,omitempty"`
 }
 
 type TableSummary struct {
@@ -1337,7 +2061,7 @@ func (tt *TableType) Type() string {
 
 // Delete an assignment
 type UnassignRequest struct {
-	// Query for the ID of the Metastore to delete.
+	// Query for the ID of the metastore to delete.
 	MetastoreId string `json:"-" url:"metastore_id"`
 	// A workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -1346,70 +2070,105 @@ type UnassignRequest struct {
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Name of Catalog.
+	// Name of catalog.
 	Name string `json:"name,omitempty" url:"-"`
-	// Username of current owner of Catalog.
+	// Username of current owner of catalog.
 	Owner string `json:"owner,omitempty"`
-
+	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
 }
 
 type UpdateExternalLocation struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Current name of the Storage Credential this location uses.
+	// Current name of the storage credential this location uses.
 	CredentialName string `json:"credential_name,omitempty"`
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
 	Force bool `json:"force,omitempty"`
-	// Name of the External Location.
+	// Name of the external location.
 	Name string `json:"name,omitempty" url:"-"`
-	// The owner of the External Location.
+	// The owner of the external location.
 	Owner string `json:"owner,omitempty"`
 	// Indicates whether the external location is read-only.
 	ReadOnly bool `json:"read_only,omitempty"`
-	// Skips validation of the storage credential associated with the external
-	// location.
-	SkipValidation bool `json:"skip_validation,omitempty"`
-	// Path URL of the External Location.
+	// Path URL of the external location.
 	Url string `json:"url,omitempty"`
 }
 
+type UpdateFunction struct {
+	// The fully-qualified name of the function (of the form
+	// __catalog_name__.__schema_name__.__function__name).
+	Name string `json:"-" url:"-"`
+	// Username of current owner of function.
+	Owner string `json:"owner,omitempty"`
+}
+
 type UpdateMetastore struct {
-	// Unique identifier of (Default) Data Access Configuration
-	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
-	// Whether Delta Sharing is enabled on this metastore.
-	DeltaSharingEnabled bool `json:"delta_sharing_enabled,omitempty"`
-	// The lifetime of delta sharing recipient token in seconds
+	// The organization name of a Delta Sharing entity, to be used in
+	// Databricks-to-Databricks Delta Sharing as the official name.
+	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
+	// The lifetime of delta sharing recipient token in seconds.
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
-	// Required. Unique ID of the Metastore (from URL).
+	// The scope of Delta Sharing enabled for the metastore.
+	DeltaSharingScope UpdateMetastoreDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
-	// Name of Metastore.
+	// The user-specified name of the metastore.
 	Name string `json:"name,omitempty"`
 	// The owner of the metastore.
 	Owner string `json:"owner,omitempty"`
-	// UUID of storage credential to access storage_root
+	// Privilege model version of the metastore, of the form `major.minor`
+	// (e.g., `1.0`).
+	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
+	// UUID of storage credential to access the metastore storage_root.
 	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
 }
 
 type UpdateMetastoreAssignment struct {
-	// The name of the default catalog for the Metastore.
+	// The name of the default catalog for the metastore.
 	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
-	// The unique ID of the Metastore.
+	// The unique ID of the metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// A workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+// The scope of Delta Sharing enabled for the metastore.
+type UpdateMetastoreDeltaSharingScope string
+
+const UpdateMetastoreDeltaSharingScopeInternal UpdateMetastoreDeltaSharingScope = `INTERNAL`
+
+const UpdateMetastoreDeltaSharingScopeInternalAndExternal UpdateMetastoreDeltaSharingScope = `INTERNAL_AND_EXTERNAL`
+
+// String representation for [fmt.Print]
+func (umdss *UpdateMetastoreDeltaSharingScope) String() string {
+	return string(*umdss)
+}
+
+// Set raw string value and validate it against allowed values
+func (umdss *UpdateMetastoreDeltaSharingScope) Set(v string) error {
+	switch v {
+	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
+		*umdss = UpdateMetastoreDeltaSharingScope(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "INTERNAL", "INTERNAL_AND_EXTERNAL"`, v)
+	}
+}
+
+// Type always returns UpdateMetastoreDeltaSharingScope to satisfy [pflag.Value] interface
+func (umdss *UpdateMetastoreDeltaSharingScope) Type() string {
+	return "UpdateMetastoreDeltaSharingScope"
+}
+
 type UpdatePermissions struct {
 	// Array of permissions change objects.
 	Changes []PermissionsChange `json:"changes,omitempty"`
-	// Required. Unique identifier (full name) of Securable (from URL).
+	// Full name of securable.
 	FullName string `json:"-" url:"-"`
-	// Optional. List permissions granted to this principal.
-	Principal string `json:"-" url:"principal,omitempty"`
-	// Required. Type of Securable (from URL).
-	SecurableType string `json:"-" url:"-"`
+	// Type of securable.
+	SecurableType SecurableType `json:"-" url:"-"`
 }
 
 type UpdateProvider struct {
@@ -1419,8 +2178,8 @@ type UpdateProvider struct {
 	Name string `json:"name,omitempty" url:"-"`
 	// Username of Provider owner.
 	Owner string `json:"owner,omitempty"`
-	// This field is required when the authentication_type is `TOKEN` or not
-	// provided.
+	// This field is required when the __authentication_type__ is **TOKEN** or
+	// not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 }
 
@@ -1431,31 +2190,34 @@ type UpdateRecipient struct {
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// Name of Recipient.
 	Name string `json:"name,omitempty" url:"-"`
+	// Username of the recipient owner.
+	Owner string `json:"owner,omitempty"`
+	// Recipient properties as map of string key-value pairs.\n When provided in
+	// update request, the specified properties will override the existing
+	// properties. To add and remove properties, one would need to perform a
+	// read-modify-write.
+	PropertiesKvpairs any `json:"properties_kvpairs,omitempty"`
 }
 
 type UpdateSchema struct {
-	// Name of parent Catalog.
-	CatalogName string `json:"catalog_name,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Required. Full name of the schema (from URL).
+	// Full name of the schema.
 	FullName string `json:"-" url:"-"`
-	// Name of Schema, relative to parent Catalog.
+	// Name of schema, relative to parent catalog.
 	Name string `json:"name,omitempty"`
-	// Username of current owner of Schema.
+	// Username of current owner of schema.
 	Owner string `json:"owner,omitempty"`
-
+	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
-	// Storage root URL for managed tables within schema.
-	StorageRoot string `json:"storage_root,omitempty"`
 }
 
 type UpdateShare struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Name of the Share.
+	// Name of the share.
 	Name string `json:"name,omitempty" url:"-"`
-	// Username of current owner of Share.
+	// Username of current owner of share.
 	Owner string `json:"owner,omitempty"`
 	// Array of shared data object updates.
 	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
@@ -1464,7 +2226,7 @@ type UpdateShare struct {
 type UpdateSharePermissions struct {
 	// Array of permission changes.
 	Changes []PermissionsChange `json:"changes,omitempty"`
-	// Required. The name of the share.
+	// The name of the share.
 	Name string `json:"-" url:"-"`
 }
 
@@ -1475,10 +2237,113 @@ type UpdateStorageCredential struct {
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
+	// Force update even if there are dependent external locations or external
+	// tables.
+	Force bool `json:"force,omitempty"`
 	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
-	// The credential name. The name MUST be unique within the Metastore.
+	// The credential name. The name MUST be unique within the metastore.
 	Name string `json:"name,omitempty" url:"-"`
 	// Username of current owner of credential.
 	Owner string `json:"owner,omitempty"`
+	// Whether the storage credential is only usable for read operations.
+	ReadOnly bool `json:"read_only,omitempty"`
+	// Supplying true to this argument skips validation of the updated
+	// credential.
+	SkipValidation bool `json:"skip_validation,omitempty"`
+}
+
+type ValidateStorageCredential struct {
+	// The AWS IAM role configuration.
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	// The Azure service principal configuration.
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// The name of an existing external location to validate.
+	ExternalLocationName string `json:"external_location_name,omitempty"`
+	// The GCP service account key configuration.
+	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
+	// Whether the storage credential is only usable for read operations.
+	ReadOnly bool `json:"read_only,omitempty"`
+	// The name of the storage credential to validate.
+	StorageCredentialName any `json:"storage_credential_name,omitempty"`
+	// The external location url to validate.
+	Url string `json:"url,omitempty"`
+}
+
+type ValidateStorageCredentialResponse struct {
+	// Whether the tested location is a directory in cloud storage.
+	IsDir bool `json:"isDir,omitempty"`
+	// The results of the validation check.
+	Results []ValidationResult `json:"results,omitempty"`
+}
+
+type ValidationResult struct {
+	// Error message would exist when the result does not equal to **PASS**.
+	Message string `json:"message,omitempty"`
+	// The operation tested.
+	Operation ValidationResultOperation `json:"operation,omitempty"`
+	// The results of the tested operation.
+	Result ValidationResultResult `json:"result,omitempty"`
+}
+
+// The operation tested.
+type ValidationResultOperation string
+
+const ValidationResultOperationDelete ValidationResultOperation = `DELETE`
+
+const ValidationResultOperationList ValidationResultOperation = `LIST`
+
+const ValidationResultOperationRead ValidationResultOperation = `READ`
+
+const ValidationResultOperationWrite ValidationResultOperation = `WRITE`
+
+// String representation for [fmt.Print]
+func (vro *ValidationResultOperation) String() string {
+	return string(*vro)
+}
+
+// Set raw string value and validate it against allowed values
+func (vro *ValidationResultOperation) Set(v string) error {
+	switch v {
+	case `DELETE`, `LIST`, `READ`, `WRITE`:
+		*vro = ValidationResultOperation(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DELETE", "LIST", "READ", "WRITE"`, v)
+	}
+}
+
+// Type always returns ValidationResultOperation to satisfy [pflag.Value] interface
+func (vro *ValidationResultOperation) Type() string {
+	return "ValidationResultOperation"
+}
+
+// The results of the tested operation.
+type ValidationResultResult string
+
+const ValidationResultResultFail ValidationResultResult = `FAIL`
+
+const ValidationResultResultPass ValidationResultResult = `PASS`
+
+const ValidationResultResultSkip ValidationResultResult = `SKIP`
+
+// String representation for [fmt.Print]
+func (vrr *ValidationResultResult) String() string {
+	return string(*vrr)
+}
+
+// Set raw string value and validate it against allowed values
+func (vrr *ValidationResultResult) Set(v string) error {
+	switch v {
+	case `FAIL`, `PASS`, `SKIP`:
+		*vrr = ValidationResultResult(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FAIL", "PASS", "SKIP"`, v)
+	}
+}
+
+// Type always returns ValidationResultResult to satisfy [pflag.Value] interface
+func (vrr *ValidationResultResult) Type() string {
+	return "ValidationResultResult"
 }
