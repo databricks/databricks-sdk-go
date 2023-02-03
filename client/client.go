@@ -173,7 +173,8 @@ func (c *DatabricksClient) attempt(
 		}
 
 		retry, err := apierr.CheckForRetry(ctx, response, err, responseBody.Bytes(), responseBodyErr)
-		if err != nil && !errors.As(err, &apierr.APIError{}) {
+		var apiErr *apierr.APIError
+		if err != nil && !errors.As(err, &apiErr) {
 			err = fmt.Errorf("failed request: %w", err)
 		}
 		if err == nil && response == nil {

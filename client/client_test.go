@@ -254,9 +254,10 @@ func TestSimpleRequestAPIError(t *testing.T) {
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
 	err := c.Do(context.Background(), "PATCH", "/a", map[string]any{}, nil)
-	aerr, ok := err.(apierr.APIError)
-	assert.Equal(t, true, ok)
-	assert.Equal(t, "NOT_FOUND", aerr.ErrorCode)
+	var aerr *apierr.APIError
+	if assert.ErrorAs(t, err, &aerr) {
+		assert.Equal(t, "NOT_FOUND", aerr.ErrorCode)
+	}
 }
 
 func TestSimpleRequestNilResponseNoError(t *testing.T) {
