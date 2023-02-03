@@ -1,5 +1,30 @@
 # Version changelog
 
+## 0.3.0
+
+ * Added support for GCP deployment APIs in Public Preview.
+ * Added new node type selector ([#287](https://github.com/databricks/databricks-sdk-go/pull/287)).
+ * Added Azure MSI auth ([#279](https://github.com/databricks/databricks-sdk-go/pull/279)).
+ * Added validation of strings in user agent package ([#291](https://github.com/databricks/databricks-sdk-go/pull/291)).
+ * Added logging for error responses ([#289](https://github.com/databricks/databricks-sdk-go/pull/289)).
+ * Update implementation of smallest node selection to match terraform's ([#273](https://github.com/databricks/databricks-sdk-go/pull/273)).
+ * Added experimental OAuth support ([#276](https://github.com/databricks/databricks-sdk-go/pull/276), [#266](https://github.com/databricks/databricks-sdk-go/pull/266), [#292](https://github.com/databricks/databricks-sdk-go/pull/292)).
+ * Fixed `google-credentials` to take precedence over `google-id` ([#283](https://github.com/databricks/databricks-sdk-go/pull/283)).
+ * Test with Go 1.20 ([#295](https://github.com/databricks/databricks-sdk-go/pull/295)).
+ * Regenerate from OpenAPI ([#293](https://github.com/databricks/databricks-sdk-go/pull/293), [#294](https://github.com/databricks/databricks-sdk-go/pull/294), [#296](https://github.com/databricks/databricks-sdk-go/pull/296), [#282](https://github.com/databricks/databricks-sdk-go/pull/282), [#269](https://github.com/databricks/databricks-sdk-go/pull/269), [#272](https://github.com/databricks/databricks-sdk-go/pull/272)).
+ * Added `replaceAll` and `lowerFirst` template functions ([#288](https://github.com/databricks/databricks-sdk-go/pull/288), [#277](https://github.com/databricks/databricks-sdk-go/pull/277)).
+
+Dependency updates:
+
+ * Bump google.golang.org/api from 0.105.0 to 0.109.0 ([#271](https://github.com/databricks/databricks-sdk-go/pull/271), [#280](https://github.com/databricks/databricks-sdk-go/pull/280), [#284](https://github.com/databricks/databricks-sdk-go/pull/284), [#290](https://github.com/databricks/databricks-sdk-go/pull/290)).
+
+API changes:
+
+ * Renamed `clusters.CreateCluster` to `clusters.BaseClusterInfo`.
+ * Renamed `jobs.Job` to `jobs.BaseJob`.
+ * Renamed `jobs.Run` to `jobs.BaseRun`.
+ * Fixed `commands.Results` `Schema` type from `[][]any` to `[]map[string]any`.
+
 ## 0.2.0
 
  * Added `DATABRICKS_AUTH_TYPE` environment variable ([#248](https://github.com/databricks/databricks-sdk-go/pull/248)).
