@@ -1309,11 +1309,10 @@ type RunOutput struct {
 	// available stack traces.
 	ErrorTrace string `json:"error_trace,omitempty"`
 	// The output from tasks that write to standard streams (stdout/stderr) such
-	// as :schema:sparkjartask, :schema:sparkpythontask,
-	// :schema:pythonwheeltask.
+	// as spark_jar_task, spark_python_task, python_wheel_task.
 	//
-	// It's not supported for the :schema:notebooktask, :schema:pipelinetask or
-	// :schema:sparksubmittask.
+	// It's not supported for the notebook_task, pipeline_task or
+	// spark_submit_task.
 	//
 	// Databricks restricts this API to return the last 5 MB of these logs.
 	Logs string `json:"logs,omitempty"`

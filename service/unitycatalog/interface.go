@@ -40,7 +40,8 @@ type CatalogsService interface {
 	// Gets an array of catalogs in the metastore. If the caller is the
 	// metastore admin, all catalogs will be retrieved. Otherwise, only catalogs
 	// owned by the caller (or for which the caller has the **USE_CATALOG**
-	// privilege) will be retrieved.
+	// privilege) will be retrieved. There is no guarantee of a specific
+	// ordering of the elements in the array.
 	//
 	// Use ListAll() to get all CatalogInfo instances
 	List(ctx context.Context) (*ListCatalogsResponse, error)
@@ -92,7 +93,8 @@ type ExternalLocationsService interface {
 	//
 	// Gets an array of external locations (ExternalLocationInfo objects) from
 	// the metastore. The caller must be a metastore admin, is the owner of the
-	// external location, or has some privilege on the external location.
+	// external location, or has some privilege on the external location. There
+	// is no guarantee of a specific ordering of the elements in the array.
 	//
 	// Use ListAll() to get all ExternalLocationInfo instances
 	List(ctx context.Context) (*ListExternalLocationsResponse, error)
@@ -151,7 +153,8 @@ type FunctionsService interface {
 	// Otherwise, the user must have the **USE_CATALOG** privilege on the
 	// catalog and the **USE_SCHEMA** privilege on the schema, and the output
 	// list contains only functions for which either the user has the
-	// **EXECUTE** privilege or the user is the owner.
+	// **EXECUTE** privilege or the user is the owner. There is no guarantee of
+	// a specific ordering of the elements in the array.
 	List(ctx context.Context, request ListFunctionsRequest) (*ListFunctionsResponse, error)
 
 	// Update a function.
@@ -248,7 +251,8 @@ type MetastoresService interface {
 	// List metastores.
 	//
 	// Gets an array of the available metastores (as MetastoreInfo objects). The
-	// caller must be an admin to retrieve this info.
+	// caller must be an admin to retrieve this info. There is no guarantee of a
+	// specific ordering of the elements in the array.
 	//
 	// Use ListAll() to get all MetastoreInfo instances
 	List(ctx context.Context) (*ListMetastoresResponse, error)
@@ -308,7 +312,8 @@ type ProvidersService interface {
 	//
 	// Gets an array of available authentication providers. The caller must
 	// either be a metastore admin or the owner of the providers. Providers not
-	// owned by the caller are not included in the response.
+	// owned by the caller are not included in the response. There is no
+	// guarantee of a specific ordering of the elements in the array.
 	//
 	// Use ListAll() to get all ProviderInfo instances
 	List(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error)
@@ -373,7 +378,8 @@ type RecipientsService interface {
 	//
 	// Gets an array of all share recipients within the current metastore where:
 	//
-	// * the caller is a metastore admin, or * the caller is the owner.
+	// * the caller is a metastore admin, or * the caller is the owner. There is
+	// no guarantee of a specific ordering of the elements in the array.
 	//
 	// Use ListAll() to get all RecipientInfo instances
 	List(ctx context.Context, request ListRecipientsRequest) (*ListRecipientsResponse, error)
@@ -404,7 +410,8 @@ type RecipientsService interface {
 // three-level namespace. A schema organizes tables and views. To access (or
 // list) a table or view in a schema, users must have the USE_SCHEMA data
 // permission on the schema and its parent catalog, and they must have the
-// SELECT permission on the table or view.
+// SELECT permission on the table or view. There is no guarantee of a specific
+// ordering of the elements in the array.
 type SchemasService interface {
 
 	// Create a schema.
@@ -473,7 +480,8 @@ type SharesService interface {
 	// List shares.
 	//
 	// Gets an array of data object shares from the metastore. The caller must
-	// be a metastore admin or the owner of the share.
+	// be a metastore admin or the owner of the share. There is no guarantee of
+	// a specific ordering of the elements in the array.
 	//
 	// Use ListAll() to get all ShareInfo instances
 	List(ctx context.Context) (*ListSharesResponse, error)
@@ -559,7 +567,8 @@ type StorageCredentialsService interface {
 	// Gets an array of storage credentials (as StorageCredentialInfo objects).
 	// The array is limited to only those storage credentials the caller has the
 	// privilege level to access. If the caller is a metastore admin, all
-	// storage credentials will be retrieved.
+	// storage credentials will be retrieved. There is no guarantee of a
+	// specific ordering of the elements in the array.
 	//
 	// Use ListAll() to get all StorageCredentialInfo instances
 	List(ctx context.Context) (*ListStorageCredentialsResponse, error)
@@ -669,6 +678,8 @@ type TablesService interface {
 	// (or have the **SELECT** privilege on) the table. For the latter case, the
 	// caller must also be the owner or have the **USE_CATALOG** privilege on
 	// the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+	// There is no guarantee of a specific ordering of the elements in the
+	// array.
 	//
 	// Use ListAll() to get all TableInfo instances
 	List(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error)
@@ -684,6 +695,7 @@ type TablesService interface {
 	// catalog) for which the user has ownership or the **SELECT** privilege on
 	// the table and ownership or **USE_SCHEMA** privilege on the schema,
 	// provided that the user also has ownership or the **USE_CATALOG**
-	// privilege on the parent catalog
+	// privilege on the parent catalog There is no guarantee of a specific
+	// ordering of the elements in the array.
 	ListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error)
 }
