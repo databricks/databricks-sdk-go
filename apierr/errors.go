@@ -3,6 +3,7 @@ package apierr
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -47,31 +48,31 @@ type APIError struct {
 }
 
 // Error returns error message string instead of
-func (apiError APIError) Error() string {
+func (apiError *APIError) Error() string {
 	return apiError.Message
 }
 
 // IsMissing tells if error is about missing resource
 func IsMissing(err error) bool {
-	if err == nil {
-		return false
+	var apiError *APIError
+	if errors.As(err, &apiError) {
+		return apiError.IsMissing()
 	}
-	e, ok := err.(APIError)
-	return ok && e.IsMissing()
+	return false
 }
 
 // IsMissing tells if it is missing resource
-func (apiError APIError) IsMissing() bool {
+func (apiError *APIError) IsMissing() bool {
 	return apiError.StatusCode == http.StatusNotFound
 }
 
 // IsTooManyRequests shows rate exceeded limits
-func (apiError APIError) IsTooManyRequests() bool {
+func (apiError *APIError) IsTooManyRequests() bool {
 	return apiError.StatusCode == http.StatusTooManyRequests
 }
 
 // IsRetriable returns true if error is retriable
-func (apiError APIError) IsRetriable() bool {
+func (apiError *APIError) IsRetriable() bool {
 	// Handle transient errors for retries
 	for _, substring := range transientErrorStringMatches {
 		if strings.Contains(apiError.Message, substring) {
@@ -100,7 +101,7 @@ func CheckForRetry(ctx context.Context, resp *http.Response, respErr error, body
 			StatusCode: 523,
 			Message:    ue.Error(),
 		}
-		return apiError.IsRetriable(), apiError
+		return apiError.IsRetriable(), &apiError
 	}
 	if resp == nil {
 		// If response is nil we can't make retry choices.
@@ -108,7 +109,7 @@ func CheckForRetry(ctx context.Context, resp *http.Response, respErr error, body
 		return false, respErr
 	}
 	if resp.StatusCode == 429 {
-		return true, APIError{
+		return true, &APIError{
 			ErrorCode:  "TOO_MANY_REQUESTS",
 			Message:    "Current request has to be retried",
 			StatusCode: 429,
@@ -116,7 +117,7 @@ func CheckForRetry(ctx context.Context, resp *http.Response, respErr error, body
 	}
 	if resp.StatusCode >= 400 {
 		apiError := parseErrorFromResponse(resp, body, bodyErr)
-		return apiError.IsRetriable(), apiError
+		return apiError.IsRetriable(), &apiError
 	}
 	return false, respErr
 }
