@@ -88,7 +88,11 @@
 //
 // - [scim.AccountServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
 //
+// - [endpoints.ServingEndpointsAPI]: The Serverless Real-Time Inference Serving Endpoints API allows you to create, update, and delete model serving endpoints.
+//
 // - [unitycatalog.SharesAPI]: Databricks Delta Sharing: Shares REST API.
+//
+// - [sql.StatementExecutionAPI]: The SQL Statement Execution API manages the execution of arbitrary SQL statements and the fetching of result data.
 //
 // - [deployment.StorageAPI]: These APIs manage storage configurations for this workspace.
 //
@@ -126,6 +130,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/commands"
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
 	"github.com/databricks/databricks-sdk-go/service/deployment"
+	"github.com/databricks/databricks-sdk-go/service/endpoints"
 	"github.com/databricks/databricks-sdk-go/service/gitcredentials"
 	"github.com/databricks/databricks-sdk-go/service/globalinitscripts"
 	"github.com/databricks/databricks-sdk-go/service/instancepools"
@@ -203,7 +208,9 @@ var (
 	_ *secrets.SecretsAPI                     = nil
 	_ *scim.ServicePrincipalsAPI              = nil
 	_ *scim.AccountServicePrincipalsAPI       = nil
+	_ *endpoints.ServingEndpointsAPI          = nil
 	_ *unitycatalog.SharesAPI                 = nil
+	_ *sql.StatementExecutionAPI              = nil
 	_ *deployment.StorageAPI                  = nil
 	_ *unitycatalog.StorageCredentialsAPI     = nil
 	_ *unitycatalog.TableConstraintsAPI       = nil

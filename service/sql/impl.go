@@ -221,6 +221,38 @@ func (a *queryHistoryImpl) List(ctx context.Context, request ListQueryHistoryReq
 	return &listQueriesResponse, err
 }
 
+// unexported type that holds implementations of just StatementExecution API methods
+type statementExecutionImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request CancelExecutionRequest) error {
+	path := fmt.Sprintf("/api/2.0/sql/statements/%v/cancel", request.StatementId)
+	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	return err
+}
+
+func (a *statementExecutionImpl) ExecuteStatement(ctx context.Context, request ExecuteStatementRequest) (*ExecuteStatementResponse, error) {
+	var executeStatementResponse ExecuteStatementResponse
+	path := "/api/2.0/sql/statements/"
+	err := a.client.Do(ctx, http.MethodPost, path, request, &executeStatementResponse)
+	return &executeStatementResponse, err
+}
+
+func (a *statementExecutionImpl) GetStatement(ctx context.Context, request GetStatementRequest) (*GetStatementResponse, error) {
+	var getStatementResponse GetStatementResponse
+	path := fmt.Sprintf("/api/2.0/sql/statements/%v", request.StatementId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getStatementResponse)
+	return &getStatementResponse, err
+}
+
+func (a *statementExecutionImpl) GetStatementResultChunkN(ctx context.Context, request GetStatementResultChunkNRequest) (*ResultData, error) {
+	var resultData ResultData
+	path := fmt.Sprintf("/api/2.0/sql/statements/%v/result/chunks/%v", request.StatementId, request.ChunkIndex)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &resultData)
+	return &resultData, err
+}
+
 // unexported type that holds implementations of just Warehouses API methods
 type warehousesImpl struct {
 	client *client.DatabricksClient

@@ -1,6 +1,8 @@
 package code
 
 import (
+	"fmt"
+
 	"golang.org/x/exp/slices"
 )
 
@@ -63,8 +65,12 @@ func (w *Wait) Binding() (binding []Binding) {
 			entity = w.Method.Request
 			responseBind = false
 		}
+		pollField := poll.Request.Field(bind)
+		if pollField == nil {
+			panic(fmt.Errorf("cannot bind response field: %s", bind))
+		}
 		binding = append(binding, Binding{
-			PollField:      poll.Request.Field(bind),
+			PollField:      pollField,
 			Bind:           entity.Field(bind),
 			IsResponseBind: responseBind,
 		})

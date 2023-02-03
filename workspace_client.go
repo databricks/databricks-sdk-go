@@ -10,6 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/clusters"
 	"github.com/databricks/databricks-sdk-go/service/commands"
 	"github.com/databricks/databricks-sdk-go/service/dbfs"
+	"github.com/databricks/databricks-sdk-go/service/endpoints"
 	"github.com/databricks/databricks-sdk-go/service/gitcredentials"
 	"github.com/databricks/databricks-sdk-go/service/globalinitscripts"
 	"github.com/databricks/databricks-sdk-go/service/instancepools"
@@ -428,7 +429,8 @@ type WorkspaceClient struct {
 	// Catalog’s three-level namespace. A schema organizes tables and views.
 	// To access (or list) a table or view in a schema, users must have the
 	// USE_SCHEMA data permission on the schema and its parent catalog, and they
-	// must have the SELECT permission on the table or view.
+	// must have the SELECT permission on the table or view. There is no
+	// guarantee of a specific ordering of the elements in the array.
 	Schemas *unitycatalog.SchemasAPI
 
 	// The Secrets API allows you to manage secrets, secret scopes, and access
@@ -454,8 +456,101 @@ type WorkspaceClient struct {
 	// data by accident.
 	ServicePrincipals *scim.ServicePrincipalsAPI
 
+	// The Serverless Real-Time Inference Serving Endpoints API allows you to
+	// create, update, and delete model serving endpoints.
+	//
+	// You can use a serving endpoint to serve models from the Databricks Model
+	// Registry. Endpoints expose the underlying models as scalable REST API
+	// endpoints using serverless compute. This means the endpoints and
+	// associated compute resources are fully managed by Databricks and will not
+	// appear in your cloud account. A serving endpoint can consist of one or
+	// more MLflow models from the Databricks Model Registry, called served
+	// models. A serving endpoint can have at most ten served models. You can
+	// configure traffic settings to define how requests should be routed to
+	// your served models behind an endpoint. Additionally, you can configure
+	// the scale of resources that should be applied to each served model.
+	ServingEndpoints *endpoints.ServingEndpointsAPI
+
 	// Databricks Delta Sharing: Shares REST API
 	Shares *unitycatalog.SharesAPI
+
+	// The SQL Statement Execution API manages the execution of arbitrary SQL
+	// statements and the fetching of result data.
+	//
+	// # Release Status
+	//
+	// This feature is in [Private Preview]. To try it, reach out to your
+	// Databricks contact.
+	//
+	// # Getting started
+	//
+	// We suggest beginning with the [SQL Statement Execution API tutorial].
+	//
+	// # Overview of statement execution and result fetching
+	//
+	// Statement execution begins by calling
+	// :method:StatementExecution/executeStatement with a valid SQL statement
+	// and warehouse ID, along with optional parameters such as the data catalog
+	// and output format.
+	//
+	// When submitting the statement, the call can behave synchronously or
+	// asynchronously, based on the `wait_timeout` setting. When set between
+	// 5-50 seconds (default: 10) the call behaves synchronously; when set to
+	// `0s`, the call is asynchronous and responds immediately if accepted.
+	//
+	// ----
+	//
+	// ### **Warning: drop authorization header when fetching data through
+	// external links**
+	//
+	// External link URLs do not require an Authorization header or token, and
+	// thus all calls to fetch external links must remove the Authorization
+	// header.
+	//
+	// ----
+	//
+	// Similar to INLINE mode, callers can iterate through the result set, by
+	// using the field `next_chunk_internal_link`. Each internal link response
+	// will contain an external link to the raw chunk data, and additionally
+	// contain the next_chunk_internal_link if there are more chunks.
+	//
+	// Unlike INLINE mode, when using EXTERNAL_LINKS, chunks may be fetched out
+	// of order, and in parallel to achieve higher throughput.
+	//
+	// # Limits and limitations
+	//
+	// - All byte limits are calculated based on internal storage metrics, and
+	// will not match byte counts of actual payloads. - INLINE mode statements
+	// limited to 16 MiB, and will abort when this limit is exceeded. -
+	// Cancelation may silently fail: A successful response from a cancel
+	// request indicates that the cancel request was successfully received and
+	// sent to the processing engine. However, for example, an outstanding
+	// statement may complete execution during signal delivery, with cancel
+	// signal arriving too late to be meaningful. Polling for status until a
+	// terminal state is reached a reliable way to see final state. - Wait
+	// timeouts are approximate, occur server-side, and cannot account for
+	// caller delays, network latency from caller to service, and similarly. -
+	// After a statement has been submitted and a statement_id produced, that
+	// statement's status and result will automatically close after either of 2
+	// conditions: - The last result chunk is fetched (or resolved to an
+	// external link). - Ten (10) minutes pass with no calls to get status or
+	// fetch result data. Best practice: in asynchronous clients, poll for
+	// status regularly (and with backoff) to keep the statement open and alive.
+	//
+	// # Private Preview limitations
+	//
+	// - `EXTERNAL_LINKS` mode will fail for result sets < 5MB. - After any
+	// cancel or close operation, the statement will no longer be visible from
+	// the API, specifically - After fetching last result chunk (including
+	// `chunk_index=0`), the statement is closed; a short time after closure,
+	// the statement will no longer be visible to the API, and further calls may
+	// return 404. Thus calling GET .../{statement_id} will return a 404 NOT
+	// FOUND error. - In practice, this means that a CANCEL and subsequent poll
+	// will often return a NOT FOUND. This will be addressed in a future update.
+	//
+	// [Private Preview]: https://docs.databricks.com/release-notes/release-types.html
+	// [SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
+	StatementExecution *sql.StatementExecutionAPI
 
 	// A storage credential represents an authentication and authorization
 	// mechanism for accessing data stored on your cloud tenant, using an IAM
@@ -600,7 +695,9 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Schemas:              unitycatalog.NewSchemas(apiClient),
 		Secrets:              secrets.NewSecrets(apiClient),
 		ServicePrincipals:    scim.NewServicePrincipals(apiClient),
+		ServingEndpoints:     endpoints.NewServingEndpoints(apiClient),
 		Shares:               unitycatalog.NewShares(apiClient),
+		StatementExecution:   sql.NewStatementExecution(apiClient),
 		StorageCredentials:   unitycatalog.NewStorageCredentials(apiClient),
 		TableConstraints:     unitycatalog.NewTableConstraints(apiClient),
 		Tables:               unitycatalog.NewTables(apiClient),
