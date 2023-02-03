@@ -635,7 +635,6 @@ type WorkspaceClient struct {
 	WorkspaceConf *workspaceconf.WorkspaceConfAPI
 }
 
-
 // NewWorkspaceClient creates new Databricks SDK client for Workspaces or
 // returns error in case configuration is wrong
 func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
