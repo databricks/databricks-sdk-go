@@ -105,10 +105,9 @@ type CreateLogDeliveryConfigurationParams struct {
 	// The optional human-readable name of the log delivery configuration.
 	// Defaults to empty.
 	ConfigName string `json:"config_name,omitempty"`
-	// The ID for a method:CredetialConfigurations/createCredentialConfig that
-	// represents the AWS IAM role with policy and trust relationship as
-	// described in the main billable usage documentation page. See [Configure
-	// billable usage delivery].
+	// The ID for a method:credentials/create that represents the AWS IAM role
+	// with policy and trust relationship as described in the main billable
+	// usage documentation page. See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	CredentialsId string `json:"credentials_id"`
@@ -152,10 +151,9 @@ type CreateLogDeliveryConfigurationParams struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status,omitempty"`
-	// "The ID for a method:StorageConfiguration/createCredentialConfig that
-	// represents the S3 bucket with bucket policy as described in the main
-	// billable usage documentation page. See [Configure billable usage
-	// delivery]."
+	// "The ID for a method:storage/create that represents the S3 bucket with
+	// bucket policy as described in the main billable usage documentation page.
+	// See [Configure billable usage delivery]."
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	StorageConfigurationId string `json:"storage_configuration_id"`
@@ -302,10 +300,9 @@ type LogDeliveryConfiguration struct {
 	// Time in epoch milliseconds when the log delivery configuration was
 	// created.
 	CreationTime int64 `json:"creation_time,omitempty"`
-	// The ID for a method:CredetialConfigurations/createCredentialConfig that
-	// represents the AWS IAM role with policy and trust relationship as
-	// described in the main billable usage documentation page. See [Configure
-	// billable usage delivery].
+	// The ID for a method:credentials/create that represents the AWS IAM role
+	// with policy and trust relationship as described in the main billable
+	// usage documentation page. See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	CredentialsId string `json:"credentials_id,omitempty"`
@@ -351,10 +348,9 @@ type LogDeliveryConfiguration struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status,omitempty"`
-	// "The ID for a method:StorageConfiguration/createCredentialConfig that
-	// represents the S3 bucket with bucket policy as described in the main
-	// billable usage documentation page. See [Configure billable usage
-	// delivery]."
+	// "The ID for a method:storage/create that represents the S3 bucket with
+	// bucket policy as described in the main billable usage documentation page.
+	// See [Configure billable usage delivery]."
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
