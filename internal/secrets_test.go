@@ -13,7 +13,7 @@ func TestAccSecrets(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	scope := secrets.CreateScope{
-		Scope: RandomEmail("sdk-go"),
+		Scope: RandomEmail(),
 	}
 	err := w.Secrets.CreateScope(ctx, scope)
 	require.NoError(t, err)
