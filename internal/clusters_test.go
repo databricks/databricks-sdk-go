@@ -220,7 +220,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	assert.Contains(t, names, clusterName)
 
 	otherOwner, err := w.Users.Create(ctx, scim.User{
-		UserName: RandomEmail("sdk-go-"),
+		UserName: RandomEmail(),
 	})
 	require.NoError(t, err)
 	defer w.Users.DeleteById(ctx, otherOwner.Id)
