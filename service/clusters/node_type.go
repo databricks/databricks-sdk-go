@@ -83,7 +83,7 @@ func (ntl *ListNodeTypesResponse) Smallest(r NodeTypeRequest) (string, error) {
 		if r.MinCores > 0 && int32(nt.NumCores) < r.MinCores {
 			continue
 		}
-		if r.MinGPUs > 0 && int32(nt.NumGpus) < r.MinGPUs {
+		if (r.MinGPUs > 0 && int32(nt.NumGpus) < r.MinGPUs) || (r.MinGPUs == 0 && nt.NumGpus > 0) {
 			continue
 		}
 		if (r.LocalDisk || r.LocalDiskMinSize > 0) && nt.NodeInstanceType != nil &&
@@ -98,19 +98,19 @@ func (ntl *ListNodeTypesResponse) Smallest(r NodeTypeRequest) (string, error) {
 		if r.Category != "" && !strings.EqualFold(nt.Category, r.Category) {
 			continue
 		}
-		if r.IsIOCacheEnabled && nt.IsIoCacheEnabled != r.IsIOCacheEnabled {
+		if r.IsIOCacheEnabled && !nt.IsIoCacheEnabled {
 			continue
 		}
-		if r.SupportPortForwarding && nt.SupportPortForwarding != r.SupportPortForwarding {
+		if r.SupportPortForwarding && !nt.SupportPortForwarding {
 			continue
 		}
-		if r.PhotonDriverCapable && nt.PhotonDriverCapable != r.PhotonDriverCapable {
+		if r.PhotonDriverCapable && !nt.PhotonDriverCapable {
 			continue
 		}
-		if r.PhotonWorkerCapable && nt.PhotonWorkerCapable != r.PhotonWorkerCapable {
+		if r.PhotonWorkerCapable && !nt.PhotonWorkerCapable {
 			continue
 		}
-		if r.Graviton && nt.IsGraviton != r.Graviton {
+		if nt.IsGraviton != r.Graviton {
 			continue
 		}
 		return nt.NodeTypeId, nil
