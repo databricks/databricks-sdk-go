@@ -30,9 +30,9 @@ type CatalogsService interface {
 
 	// Get a catalog.
 	//
-	// Gets an array of all catalogs in the current metastore for which the user
-	// is an admin or catalog owner, or has the **USE_CATALOG** privilege set
-	// for their account.
+	// Gets the specified catalog in a metastore. The caller must be a metastore
+	// admin, the owner of the catalog, or a user that has the **USE_CATALOG**
+	// privilege set for their account.
 	Get(ctx context.Context, request GetCatalogRequest) (*CatalogInfo, error)
 
 	// List catalogs.
@@ -85,16 +85,17 @@ type ExternalLocationsService interface {
 	// Get an external location.
 	//
 	// Gets an external location from the metastore. The caller must be either a
-	// metastore admin, the owner of the external location, or has some
-	// privilege on the external location.
+	// metastore admin, the owner of the external location, or a user that has
+	// some privilege on the external location.
 	Get(ctx context.Context, request GetExternalLocationRequest) (*ExternalLocationInfo, error)
 
 	// List external locations.
 	//
-	// Gets an array of external locations (ExternalLocationInfo objects) from
-	// the metastore. The caller must be a metastore admin, is the owner of the
-	// external location, or has some privilege on the external location. There
-	// is no guarantee of a specific ordering of the elements in the array.
+	// Gets an array of external locations (__ExternalLocationInfo__ objects)
+	// from the metastore. The caller must be a metastore admin, the owner of
+	// the external location, or a user that has some privilege on the external
+	// location. There is no guarantee of a specific ordering of the elements in
+	// the array.
 	//
 	// Use ListAll() to get all ExternalLocationInfo instances
 	List(ctx context.Context) (*ListExternalLocationsResponse, error)
@@ -176,10 +177,6 @@ type FunctionsService interface {
 // the object. Securable objects in Unity Catalog are hierarchical and
 // privileges are inherited downward.
 //
-// Initially, users have no access to data in a metastore. Access can be granted
-// by either a metastore admin, the owner of an object, or the owner of the
-// catalog or schema that contains the object.
-//
 // Securable objects in Unity Catalog are hierarchical and privileges are
 // inherited downward. This means that granting a privilege on the catalog
 // automatically grants the privilege to all current and future objects within
@@ -216,7 +213,7 @@ type GrantsService interface {
 // NOTE: This metastore is distinct from the metastore included in Databricks
 // workspaces created before Unity Catalog was released. If your workspace
 // includes a legacy Hive metastore, the data in that metastore is available in
-// Unity Catalog in a catalog named hive_metastore.
+// a catalog named hive_metastore.
 type MetastoresService interface {
 
 	// Create an assignment.
@@ -250,9 +247,9 @@ type MetastoresService interface {
 
 	// List metastores.
 	//
-	// Gets an array of the available metastores (as MetastoreInfo objects). The
-	// caller must be an admin to retrieve this info. There is no guarantee of a
-	// specific ordering of the elements in the array.
+	// Gets an array of the available metastores (as __MetastoreInfo__ objects).
+	// The caller must be an admin to retrieve this info. There is no guarantee
+	// of a specific ordering of the elements in the array.
 	//
 	// Use ListAll() to get all MetastoreInfo instances
 	List(ctx context.Context) (*ListMetastoresResponse, error)
@@ -407,11 +404,10 @@ type RecipientsService interface {
 }
 
 // A schema (also called a database) is the second layer of Unity Catalog’s
-// three-level namespace. A schema organizes tables and views. To access (or
-// list) a table or view in a schema, users must have the USE_SCHEMA data
-// permission on the schema and its parent catalog, and they must have the
-// SELECT permission on the table or view. There is no guarantee of a specific
-// ordering of the elements in the array.
+// three-level namespace. A schema organizes tables, views and functions. To
+// access (or list) a table or view in a schema, users must have the USE_SCHEMA
+// data permission on the schema and its parent catalog, and they must have the
+// SELECT permission on the table or view.
 type SchemasService interface {
 
 	// Create a schema.
@@ -429,8 +425,8 @@ type SchemasService interface {
 
 	// Get a schema.
 	//
-	// Gets the specified schema for a catalog in the metastore. The caller must
-	// be a metastore admin, the owner of the schema, or a user that has the
+	// Gets the specified schema within the metastore. The caller must be a
+	// metastore admin, the owner of the schema, or a user that has the
 	// **USE_SCHEMA** privilege on the schema.
 	Get(ctx context.Context, request GetSchemaRequest) (*SchemaInfo, error)
 
@@ -440,7 +436,8 @@ type SchemasService interface {
 	// the metastore admin or the owner of the parent catalog, all schemas for
 	// the catalog will be retrieved. Otherwise, only schemas owned by the
 	// caller (or for which the caller has the **USE_SCHEMA** privilege) will be
-	// retrieved.
+	// retrieved. There is no guarantee of a specific ordering of the elements
+	// in the array.
 	//
 	// Use ListAll() to get all SchemaInfo instances
 	List(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error)
@@ -448,10 +445,10 @@ type SchemasService interface {
 	// Update a schema.
 	//
 	// Updates a schema for a catalog. The caller must be the owner of the
-	// schema. If the caller is a metastore admin, only the __owner__ field can
-	// be changed in the update. If the __name__ field must be updated, the
-	// caller must be a metastore admin or have the **CREATE_SCHEMA** privilege
-	// on the parent catalog.
+	// schema or a metastore admin. If the caller is a metastore admin, only the
+	// __owner__ field can be changed in the update. If the __name__ field must
+	// be updated, the caller must be a metastore admin or have the
+	// **CREATE_SCHEMA** privilege on the parent catalog.
 	Update(ctx context.Context, request UpdateSchema) (*SchemaInfo, error)
 }
 
@@ -522,12 +519,11 @@ type SharesService interface {
 }
 
 // A storage credential represents an authentication and authorization mechanism
-// for accessing data stored on your cloud tenant, using an IAM role. Each
-// storage credential is subject to Unity Catalog access-control policies that
-// control which users and groups can access the credential. If a user does not
-// have access to a storage credential in Unity Catalog, the request fails and
-// Unity Catalog does not attempt to authenticate to your cloud tenant on the
-// user’s behalf.
+// for accessing data stored on your cloud tenant. Each storage credential is
+// subject to Unity Catalog access-control policies that control which users and
+// groups can access the credential. If a user does not have access to a storage
+// credential in Unity Catalog, the request fails and Unity Catalog does not
+// attempt to authenticate to your cloud tenant on the user’s behalf.
 //
 // Databricks recommends using external locations rather than using storage
 // credentials directly.
@@ -558,15 +554,15 @@ type StorageCredentialsService interface {
 	// Get a credential.
 	//
 	// Gets a storage credential from the metastore. The caller must be a
-	// metastore admin, the owner of the storage credential, or have a level of
-	// privilege on the storage credential.
+	// metastore admin, the owner of the storage credential, or have some
+	// permission on the storage credential.
 	Get(ctx context.Context, request GetStorageCredentialRequest) (*StorageCredentialInfo, error)
 
 	// List credentials.
 	//
-	// Gets an array of storage credentials (as StorageCredentialInfo objects).
-	// The array is limited to only those storage credentials the caller has the
-	// privilege level to access. If the caller is a metastore admin, all
+	// Gets an array of storage credentials (as __StorageCredentialInfo__
+	// objects). The array is limited to only those storage credentials the
+	// caller has permission to access. If the caller is a metastore admin, all
 	// storage credentials will be retrieved. There is no guarantee of a
 	// specific ordering of the elements in the array.
 	//
@@ -576,8 +572,8 @@ type StorageCredentialsService interface {
 	// Update a credential.
 	//
 	// Updates a storage credential on the metastore. The caller must be the
-	// owner of the storage credential. If the caller is a metastore admin, only
-	// the __owner__ credential can be changed.
+	// owner of the storage credential or a metastore admin. If the caller is a
+	// metastore admin, only the __owner__ credential can be changed.
 	Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error)
 
 	// Validate a storage credential.
@@ -650,7 +646,8 @@ type TableConstraintsService interface {
 // permission on its parent catalog and the USE_SCHEMA permission on its parent
 // schema.
 //
-// A table can be managed or external.
+// A table can be managed or external. From an API perspective, a __VIEW__ is a
+// particular kind of table (rather than a managed or external table).
 type TablesService interface {
 
 	// Delete a table.
@@ -695,7 +692,9 @@ type TablesService interface {
 	// catalog) for which the user has ownership or the **SELECT** privilege on
 	// the table and ownership or **USE_SCHEMA** privilege on the schema,
 	// provided that the user also has ownership or the **USE_CATALOG**
-	// privilege on the parent catalog There is no guarantee of a specific
-	// ordering of the elements in the array.
+	// privilege on the parent catalog.
+	//
+	// There is no guarantee of a specific ordering of the elements in the
+	// array.
 	ListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error)
 }

@@ -242,7 +242,7 @@ type CreateCatalog struct {
 type CreateExternalLocation struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Current name of the storage credential this location uses.
+	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name"`
 	// Name of the external location.
 	Name string `json:"name"`
@@ -502,7 +502,7 @@ type CreateStorageCredential struct {
 	Comment string `json:"comment,omitempty"`
 	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
-	// The credential name. The name MUST be unique within the metastore.
+	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name"`
 	// Whether the storage credential is only usable for read operations.
 	ReadOnly bool `json:"read_only,omitempty"`
@@ -564,7 +564,7 @@ func (dsf *DataSourceFormat) Type() string {
 
 // Delete a catalog
 type DeleteCatalogRequest struct {
-	// Force deletion even if the catalog is notempty.
+	// Force deletion even if the catalog is not empty.
 	Force bool `json:"-" url:"force,omitempty"`
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
@@ -574,7 +574,7 @@ type DeleteCatalogRequest struct {
 type DeleteExternalLocationRequest struct {
 	// Force deletion even if there are dependent external tables or mounts.
 	Force bool `json:"-" url:"force,omitempty"`
-	// Name of the storage credential.
+	// Name of the external location.
 	Name string `json:"-" url:"-"`
 }
 
@@ -583,7 +583,7 @@ type DeleteFunctionRequest struct {
 	// Force deletion even if the function is notempty.
 	Force bool `json:"-" url:"force,omitempty"`
 	// The fully-qualified name of the function (of the form
-	// __catalog_name__.__schema_name__.__function__name).
+	// __catalog_name__.__schema_name__.__function__name__).
 	Name string `json:"-" url:"-"`
 }
 
@@ -691,7 +691,7 @@ type ExternalLocationInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// Unique ID of the location's storage credential.
 	CredentialId string `json:"credential_id,omitempty"`
-	// Current name of the storage credential this location uses.
+	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name,omitempty"`
 	// Unique identifier of metastore hosting the external location.
 	MetastoreId string `json:"metastore_id,omitempty"`
@@ -746,7 +746,7 @@ type FunctionInfo struct {
 	// Pretty printed function data type.
 	FullDataType string `json:"full_data_type,omitempty"`
 	// Full name of function, in form of
-	// __catalog_name__.__schema_name__.__function__name
+	// __catalog_name__.__schema_name__.__function__name__
 	FullName string `json:"full_name,omitempty"`
 	// Id of Function, relative to parent schema.
 	FunctionId string `json:"function_id,omitempty"`
@@ -1023,14 +1023,14 @@ type GetEffectiveRequest struct {
 
 // Get an external location
 type GetExternalLocationRequest struct {
-	// Name of the storage credential.
+	// Name of the external location.
 	Name string `json:"-" url:"-"`
 }
 
 // Get a function
 type GetFunctionRequest struct {
 	// The fully-qualified name of the function (of the form
-	// __catalog_name__.__schema_name__.__function__name).
+	// __catalog_name__.__schema_name__.__function__name__).
 	Name string `json:"-" url:"-"`
 }
 
@@ -1909,7 +1909,7 @@ type StorageCredentialInfo struct {
 	Id string `json:"id,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
-	// The credential name. The name MUST be unique within the metastore.
+	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name,omitempty"`
 	// Username of current owner of credential.
 	Owner string `json:"owner,omitempty"`
@@ -2081,7 +2081,7 @@ type UpdateCatalog struct {
 type UpdateExternalLocation struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Current name of the storage credential this location uses.
+	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name,omitempty"`
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
@@ -2098,7 +2098,7 @@ type UpdateExternalLocation struct {
 
 type UpdateFunction struct {
 	// The fully-qualified name of the function (of the form
-	// __catalog_name__.__schema_name__.__function__name).
+	// __catalog_name__.__schema_name__.__function__name__).
 	Name string `json:"-" url:"-"`
 	// Username of current owner of function.
 	Owner string `json:"owner,omitempty"`
@@ -2242,7 +2242,7 @@ type UpdateStorageCredential struct {
 	Force bool `json:"force,omitempty"`
 	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
-	// The credential name. The name MUST be unique within the metastore.
+	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name,omitempty" url:"-"`
 	// Username of current owner of credential.
 	Owner string `json:"owner,omitempty"`

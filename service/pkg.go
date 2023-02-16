@@ -96,7 +96,7 @@
 //
 // - [deployment.StorageAPI]: These APIs manage storage configurations for this workspace.
 //
-// - [unitycatalog.StorageCredentialsAPI]: A storage credential represents an authentication and authorization mechanism for accessing data stored on your cloud tenant, using an IAM role.
+// - [unitycatalog.StorageCredentialsAPI]: A storage credential represents an authentication and authorization mechanism for accessing data stored on your cloud tenant.
 //
 // - [unitycatalog.TableConstraintsAPI]: Primary key and foreign key constraints encode relationships between fields in tables.
 //
