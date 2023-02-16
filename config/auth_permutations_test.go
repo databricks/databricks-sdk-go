@@ -251,7 +251,7 @@ func TestConfig_ConfigProfileAndPassword(t *testing.T) {
 			"DATABRICKS_CONFIG_PROFILE": "nohost",
 			"HOME":                      "testdata",
 		},
-		assertError: "validate: more than one authorization method configured: basic and pat. Config: token=***, username=x, profile=nohost. Env: DATABRICKS_USERNAME, DATABRICKS_CONFIG_PROFILE",
+		assertError: "default auth: cannot configure default credentials. Config: username=x, profile=nohost. Env: DATABRICKS_USERNAME, DATABRICKS_CONFIG_PROFILE",
 	}.apply(t)
 }
 
@@ -325,7 +325,7 @@ func TestConfig_AzureCliHostAndResourceID(t *testing.T) {
 		host:            "x",
 		env: map[string]string{
 			"PATH": testdataPath(),
-			"HOME": "testdata/azure",
+			"HOME": "testdata", // .databrickscfg has DEFAULT profile
 		},
 		assertAzure: true,
 		assertHost:  "https://x",
