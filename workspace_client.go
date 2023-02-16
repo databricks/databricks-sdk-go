@@ -210,10 +210,6 @@ type WorkspaceClient struct {
 	// schema that contains the object. Securable objects in Unity Catalog are
 	// hierarchical and privileges are inherited downward.
 	//
-	// Initially, users have no access to data in a metastore. Access can be
-	// granted by either a metastore admin, the owner of an object, or the owner
-	// of the catalog or schema that contains the object.
-	//
 	// Securable objects in Unity Catalog are hierarchical and privileges are
 	// inherited downward. This means that granting a privilege on the catalog
 	// automatically grants the privilege to all current and future objects
@@ -348,7 +344,7 @@ type WorkspaceClient struct {
 	// NOTE: This metastore is distinct from the metastore included in
 	// Databricks workspaces created before Unity Catalog was released. If your
 	// workspace includes a legacy Hive metastore, the data in that metastore is
-	// available in Unity Catalog in a catalog named hive_metastore.
+	// available in a catalog named hive_metastore.
 	Metastores *unitycatalog.MetastoresAPI
 
 	ModelVersionComments *mlflow.ModelVersionCommentsAPI
@@ -426,11 +422,10 @@ type WorkspaceClient struct {
 	Repos *repos.ReposAPI
 
 	// A schema (also called a database) is the second layer of Unity
-	// Catalog’s three-level namespace. A schema organizes tables and views.
-	// To access (or list) a table or view in a schema, users must have the
-	// USE_SCHEMA data permission on the schema and its parent catalog, and they
-	// must have the SELECT permission on the table or view. There is no
-	// guarantee of a specific ordering of the elements in the array.
+	// Catalog’s three-level namespace. A schema organizes tables, views and
+	// functions. To access (or list) a table or view in a schema, users must
+	// have the USE_SCHEMA data permission on the schema and its parent catalog,
+	// and they must have the SELECT permission on the table or view.
 	Schemas *unitycatalog.SchemasAPI
 
 	// The Secrets API allows you to manage secrets, secret scopes, and access
@@ -666,12 +661,12 @@ type WorkspaceClient struct {
 	StatementExecution *sql.StatementExecutionAPI
 
 	// A storage credential represents an authentication and authorization
-	// mechanism for accessing data stored on your cloud tenant, using an IAM
-	// role. Each storage credential is subject to Unity Catalog access-control
-	// policies that control which users and groups can access the credential.
-	// If a user does not have access to a storage credential in Unity Catalog,
-	// the request fails and Unity Catalog does not attempt to authenticate to
-	// your cloud tenant on the user’s behalf.
+	// mechanism for accessing data stored on your cloud tenant. Each storage
+	// credential is subject to Unity Catalog access-control policies that
+	// control which users and groups can access the credential. If a user does
+	// not have access to a storage credential in Unity Catalog, the request
+	// fails and Unity Catalog does not attempt to authenticate to your cloud
+	// tenant on the user’s behalf.
 	//
 	// Databricks recommends using external locations rather than using storage
 	// credentials directly.
@@ -704,7 +699,8 @@ type WorkspaceClient struct {
 	// USE_CATALOG permission on its parent catalog and the USE_SCHEMA
 	// permission on its parent schema.
 	//
-	// A table can be managed or external.
+	// A table can be managed or external. From an API perspective, a __VIEW__
+	// is a particular kind of table (rather than a managed or external table).
 	Tables *unitycatalog.TablesAPI
 
 	// Enables administrators to get all tokens and delete tokens for other

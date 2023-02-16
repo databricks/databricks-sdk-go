@@ -1681,18 +1681,60 @@ type SparkSubmitTask struct {
 }
 
 type SqlAlertOutput struct {
+	// The state of the SQL alert.
+	//
+	// * UNKNOWN: alert yet to be evaluated * OK: alert evaluated and did not
+	// fulfill trigger conditions * TRIGGERED: alert evaluated and fulfilled
+	// trigger conditions
+	AlertState SqlAlertState `json:"alert_state,omitempty"`
 	// The link to find the output results.
 	OutputLink string `json:"output_link,omitempty"`
 	// The text of the SQL query. Can Run permission of the SQL query associated
 	// with the SQL alert is required to view this field.
 	QueryText string `json:"query_text,omitempty"`
 	// Information about SQL statements executed in the run.
-	SqlStatements *SqlStatementOutput `json:"sql_statements,omitempty"`
+	SqlStatements []SqlStatementOutput `json:"sql_statements,omitempty"`
 	// The canonical identifier of the SQL warehouse.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 }
 
+// The state of the SQL alert.
+//
+// * UNKNOWN: alert yet to be evaluated * OK: alert evaluated and did not
+// fulfill trigger conditions * TRIGGERED: alert evaluated and fulfilled trigger
+// conditions
+type SqlAlertState string
+
+const SqlAlertStateOk SqlAlertState = `OK`
+
+const SqlAlertStateTriggered SqlAlertState = `TRIGGERED`
+
+const SqlAlertStateUnknown SqlAlertState = `UNKNOWN`
+
+// String representation for [fmt.Print]
+func (sas *SqlAlertState) String() string {
+	return string(*sas)
+}
+
+// Set raw string value and validate it against allowed values
+func (sas *SqlAlertState) Set(v string) error {
+	switch v {
+	case `OK`, `TRIGGERED`, `UNKNOWN`:
+		*sas = SqlAlertState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "OK", "TRIGGERED", "UNKNOWN"`, v)
+	}
+}
+
+// Type always returns SqlAlertState to satisfy [pflag.Value] interface
+func (sas *SqlAlertState) Type() string {
+	return "SqlAlertState"
+}
+
 type SqlDashboardOutput struct {
+	// The canonical identifier of the SQL warehouse.
+	WarehouseId string `json:"warehouse_id,omitempty"`
 	// Widgets executed in the run. Only SQL query based widgets are listed.
 	Widgets *SqlDashboardWidgetOutput `json:"widgets,omitempty"`
 }
@@ -1769,7 +1811,7 @@ type SqlQueryOutput struct {
 	// required to view this field.
 	QueryText string `json:"query_text,omitempty"`
 	// Information about SQL statements executed in the run.
-	SqlStatements *SqlStatementOutput `json:"sql_statements,omitempty"`
+	SqlStatements []SqlStatementOutput `json:"sql_statements,omitempty"`
 	// The canonical identifier of the SQL warehouse.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 }
@@ -1797,16 +1839,35 @@ type SqlTask struct {
 type SqlTaskAlert struct {
 	// The canonical identifier of the SQL alert.
 	AlertId string `json:"alert_id"`
+	// If true, the alert notifications are not sent to subscribers.
+	PauseSubscriptions bool `json:"pause_subscriptions,omitempty"`
+	// If specified, alert notifications are sent to subscribers.
+	Subscriptions []SqlTaskSubscription `json:"subscriptions,omitempty"`
 }
 
 type SqlTaskDashboard struct {
+	// Subject of the email sent to subscribers of this task.
+	CustomSubject string `json:"custom_subject,omitempty"`
 	// The canonical identifier of the SQL dashboard.
 	DashboardId string `json:"dashboard_id"`
+	// If true, the dashboard snapshot is not taken, and emails are not sent to
+	// subscribers.
+	PauseSubscriptions bool `json:"pause_subscriptions,omitempty"`
+	// If specified, dashboard snapshots are sent to subscriptions.
+	Subscriptions []SqlTaskSubscription `json:"subscriptions,omitempty"`
 }
 
 type SqlTaskQuery struct {
 	// The canonical identifier of the SQL query.
 	QueryId string `json:"query_id"`
+}
+
+type SqlTaskSubscription struct {
+	// The canonical identifier of the destination to receive email
+	// notification.
+	DestinationId string `json:"destination_id,omitempty"`
+	// The user name to receive the subscription email.
+	UserName string `json:"user_name,omitempty"`
 }
 
 type SubmitRun struct {
