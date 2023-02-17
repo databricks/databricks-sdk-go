@@ -36,15 +36,25 @@ func TestFromContext_Custom(t *testing.T) {
 	WithUserAgentExtra("terraform", "1.3.4")
 	WithUserAgentExtra("terraform", "1.3.5")
 	WithUserAgentExtra("terraform", "1.3.6")
+	
 	ctx := InContext(context.Background(), "a", "b")
 	ctx = InContext(ctx, "a", "d")
 	ctx = InContext(ctx, "a", "e")
+
+	ctx2 := InContext(ctx, "a", "f")
+	ctx2 = InContext(ctx2, "foo", "bar")
+
 	userAgent := FromContext(ctx)
+	userAgent2 := FromContext(ctx2)
 
 	// tests may be developed and run on different versions of different things
 	expectedFormat := "unit-tests/0.0.1 databricks-sdk-go/%s go/%s os/%s pulumi/3.8.4 terraform/1.3.6 a/e"
 	expected := fmt.Sprintf(expectedFormat, version.Version, goVersion(), runtime.GOOS)
 	assert.Equal(t, expected, userAgent)
+
+	expectedFormat2 := "unit-tests/0.0.1 databricks-sdk-go/%s go/%s os/%s pulumi/3.8.4 terraform/1.3.6 a/f foo/bar"
+	expected2 := fmt.Sprintf(expectedFormat2, version.Version, goVersion(), runtime.GOOS)
+	assert.Equal(t, expected2, userAgent2)
 }
 
 func TestDefaultsAreValid(t *testing.T) {
