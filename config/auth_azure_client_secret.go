@@ -36,7 +36,7 @@ func (c AzureClientSecretCredentials) tokenSourceFor(
 // If we are authenticated as SP and wish to create one we want to fail early.
 // Also see https://github.com/databricks/terraform-provider-databricks/issues/1490.
 func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
-	if cfg.AzureClientID == "" || cfg.AzureClientSecret == "" || cfg.AzureTenantID == "" || cfg.AzureResourceID == "" {
+	if cfg.AzureClientID == "" || cfg.AzureClientSecret == "" || cfg.AzureTenantID == "" {
 		return nil, nil
 	}
 	if !cfg.IsAzure() {
@@ -55,7 +55,9 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	inner := c.tokenSourceFor(refreshCtx, cfg, env, cfg.getAzureLoginAppID())
 	platform := c.tokenSourceFor(refreshCtx, cfg, env, env.ServiceManagementEndpoint)
 	return func(r *http.Request) error {
-		r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
+		if cfg.AzureResourceID != "" {
+			r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
+		}
 		return serviceToServiceVisitor(inner, platform,
 			"X-Databricks-Azure-SP-Management-Token")(r)
 	}, nil
