@@ -85,8 +85,8 @@ func (apiError *APIError) IsRetriable() bool {
 }
 
 // NotFound returns properly formatted Not Found error
-func NotFound(message string) APIError {
-	return APIError{
+func NotFound(message string) *APIError {
+	return &APIError{
 		ErrorCode:  "NOT_FOUND",
 		StatusCode: 404,
 		Message:    message,
@@ -96,12 +96,12 @@ func NotFound(message string) APIError {
 // CheckForRetry inspects HTTP errors from the Databricks API for known transient errors on Workspace creation
 func CheckForRetry(ctx context.Context, resp *http.Response, respErr error, body []byte, bodyErr error) (bool, error) {
 	if ue, ok := respErr.(*url.Error); ok {
-		apiError := APIError{
+		apiError := &APIError{
 			ErrorCode:  "IO_ERROR",
 			StatusCode: 523,
 			Message:    ue.Error(),
 		}
-		return apiError.IsRetriable(), &apiError
+		return apiError.IsRetriable(), apiError
 	}
 	if resp == nil {
 		// If response is nil we can't make retry choices.
@@ -117,14 +117,14 @@ func CheckForRetry(ctx context.Context, resp *http.Response, respErr error, body
 	}
 	if resp.StatusCode >= 400 {
 		apiError := parseErrorFromResponse(resp, body, bodyErr)
-		return apiError.IsRetriable(), &apiError
+		return apiError.IsRetriable(), apiError
 	}
 	return false, respErr
 }
 
-func parseErrorFromResponse(resp *http.Response, body []byte, err error) APIError {
+func parseErrorFromResponse(resp *http.Response, body []byte, err error) *APIError {
 	if err != nil {
-		return APIError{
+		return &APIError{
 			Message:    err.Error(),
 			ErrorCode:  "IO_READ",
 			StatusCode: resp.StatusCode,
@@ -157,7 +157,7 @@ func parseErrorFromResponse(resp *http.Response, body []byte, err error) APIErro
 	// 		strings.Trim(errorBody.Message, "."), c.AuthType,
 	// 		c.configDebugString())
 	// }
-	return APIError{
+	return &APIError{
 		Message:    errorBody.Message,
 		ErrorCode:  errorBody.ErrorCode,
 		StatusCode: resp.StatusCode,
