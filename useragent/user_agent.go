@@ -94,13 +94,19 @@ func (d data) With(key, value string) data {
 	if err := matchAlphanumOrSemVer(value); err != nil {
 		panic(err)
 	}
-	for i := range d {
-		if d[i].Key == key {
-			d[i].Value = value
-			return d
+	var c data
+	var found bool
+	for _, i := range d {
+		if i.Key == key {
+			i.Value = value
+			found = true
 		}
+		c = append(c, i)
 	}
-	return append(d, info{key, value})
+	if !found {
+		c = append(c, info{key, value})
+	}
+	return c
 }
 
 func (d data) String() string {
