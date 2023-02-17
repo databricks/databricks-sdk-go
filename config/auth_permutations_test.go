@@ -325,7 +325,7 @@ func TestConfig_AzureCliHostAndResourceID(t *testing.T) {
 		host:            "x",
 		env: map[string]string{
 			"PATH": testdataPath(),
-			"HOME": "testdata/azure",
+			"HOME": "testdata", // .databrickscfg has DEFAULT profile
 		},
 		assertAzure: true,
 		assertHost:  "https://x",

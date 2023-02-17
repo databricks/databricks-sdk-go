@@ -16,6 +16,12 @@ func (l KnownConfigLoader) Name() string {
 }
 
 func (l KnownConfigLoader) Configure(cfg *Config) error {
+	// Skip loading config file if some authentication is already explicitly
+	// configured directly in the config by a user.
+	// See: https://github.com/databricks/databricks-sdk-go/issues/304
+	if cfg.Profile == "" && l.isAnyAuthConfigured(cfg) {
+		return nil
+	}
 	configFile := cfg.ConfigFile
 	if configFile == "" {
 		configFile = "~/.databrickscfg"
@@ -57,4 +63,16 @@ func (l KnownConfigLoader) Configure(cfg *Config) error {
 		return fmt.Errorf("%s %s profile: %w", configFile, profile, err)
 	}
 	return nil
+}
+
+func (l KnownConfigLoader) isAnyAuthConfigured(cfg *Config) bool {
+	for _, a := range ConfigAttributes {
+		if a.Auth == "" {
+			continue
+		}
+		if !a.IsZero(cfg) {
+			return true
+		}
+	}
+	return false
 }
