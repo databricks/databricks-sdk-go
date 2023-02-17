@@ -251,7 +251,7 @@ func TestConfig_ConfigProfileAndPassword(t *testing.T) {
 			"DATABRICKS_CONFIG_PROFILE": "nohost",
 			"HOME":                      "testdata",
 		},
-		assertError: "default auth: cannot configure default credentials. Config: username=x, profile=nohost. Env: DATABRICKS_USERNAME, DATABRICKS_CONFIG_PROFILE",
+		assertError: "validate: more than one authorization method configured: basic and pat. Config: token=***, username=x, profile=nohost. Env: DATABRICKS_USERNAME, DATABRICKS_CONFIG_PROFILE",
 	}.apply(t)
 }
 
