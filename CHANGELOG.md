@@ -1,5 +1,9 @@
 # Version changelog
 
+## 0.3.2
+
+ * Always use the latest value for user agent key ([#309](https://github.com/databricks/databricks-sdk-go/pull/309)).
+
 ## 0.3.1
 
  * Change APIError to use pointer receiver ([#298](https://github.com/databricks/databricks-sdk-go/pull/298)).
