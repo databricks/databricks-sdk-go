@@ -42,27 +42,15 @@ const ctxAgent key = 5
 // WithUserAgentExtra sets per-process extra user agent data,
 // which integration developers have agreed with Databricks.
 func WithUserAgentExtra(key, value string) {
-	if err := matchAlphanum(key); err != nil {
-		panic(err)
-	}
-	if err := matchAlphanumOrSemVer(value); err != nil {
-		panic(err)
-	}
-	extra = append(extra, info{key, value})
+	extra = extra.With(key, value)
 }
 
 // InContext populates context with user agent dimension,
 // usually to differentiate subsets of functionality and
 // agreed with Databricks.
 func InContext(ctx context.Context, key, value string) context.Context {
-	if err := matchAlphanum(key); err != nil {
-		panic(err)
-	}
-	if err := matchAlphanumOrSemVer(value); err != nil {
-		panic(err)
-	}
 	uac, _ := ctx.Value(ctxAgent).(data)
-	uac = append(uac, info{key, value})
+	uac = uac.With(key, value)
 	return context.WithValue(ctx, ctxAgent, uac)
 }
 
@@ -96,6 +84,30 @@ func (u info) String() string {
 }
 
 type data []info
+
+// With always uses the latest value for a given alphanumeric key.
+// Panics if key or value don't satisfy alphanumeric or semver format.
+func (d data) With(key, value string) data {
+	if err := matchAlphanum(key); err != nil {
+		panic(err)
+	}
+	if err := matchAlphanumOrSemVer(value); err != nil {
+		panic(err)
+	}
+	var c data
+	var found bool
+	for _, i := range d {
+		if i.Key == key {
+			i.Value = value
+			found = true
+		}
+		c = append(c, i)
+	}
+	if !found {
+		c = append(c, info{key, value})
+	}
+	return c
+}
 
 func (d data) String() string {
 	pairs := []string{}
