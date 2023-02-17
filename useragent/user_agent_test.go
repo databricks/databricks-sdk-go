@@ -36,7 +36,7 @@ func TestFromContext_Custom(t *testing.T) {
 	WithUserAgentExtra("terraform", "1.3.4")
 	WithUserAgentExtra("terraform", "1.3.5")
 	WithUserAgentExtra("terraform", "1.3.6")
-	
+
 	ctx := InContext(context.Background(), "a", "b")
 	ctx = InContext(ctx, "a", "d")
 	ctx = InContext(ctx, "a", "e")
