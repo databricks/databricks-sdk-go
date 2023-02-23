@@ -220,6 +220,18 @@ func TestConfig_PatFromDatabricksCfg(t *testing.T) {
 	}.apply(t)
 }
 
+func TestConfig_PatFromDatabricksCfg_DotProfile(t *testing.T) {
+	configFixture{
+		// loading with nohost profile in databrickscfs
+		env: map[string]string{
+			"HOME":                      "testdata",
+			"DATABRICKS_CONFIG_PROFILE": "pat.with.dot",
+		},
+		assertAuth: "pat",
+		assertHost: "https://dbc-XXXXXXXX-YYYY.cloud.databricks.com",
+	}.apply(t)
+}
+
 func TestConfig_PatFromDatabricksCfg_NohostProfile(t *testing.T) {
 	configFixture{
 		// loading with nohost profile in databrickscfs
