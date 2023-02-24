@@ -1,5 +1,15 @@
 # Version changelog
 
+## 0.3.3
+
+ * Allow AAD SPN authentication on Databricks Account level ([#311](https://github.com/databricks/databricks-sdk-go/pull/311)).
+ * Port auth tests from the JS SDK ([#313](https://github.com/databricks/databricks-sdk-go/pull/313)).
+ * Skip loading `~/.databrickscfg` when not required ([#314](https://github.com/databricks/databricks-sdk-go/pull/314)).
+
+Dependency updates:
+
+ * Bump golang.org/x/net from 0.6.0 to 0.7.0 ([#312](https://github.com/databricks/databricks-sdk-go/pull/312)).
+
 ## 0.3.2
 
  * Always use the latest value for user agent key ([#309](https://github.com/databricks/databricks-sdk-go/pull/309)).
