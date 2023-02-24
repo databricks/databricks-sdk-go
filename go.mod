@@ -6,7 +6,7 @@ require (
 	github.com/google/go-querystring v1.1.0
 	github.com/stretchr/testify v1.8.1
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e
-	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4
+	golang.org/x/mod v0.8.0
 	golang.org/x/oauth2 v0.5.0
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
 	google.golang.org/api v0.110.0
