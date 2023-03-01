@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Catalogs, External Locations, Functions, Grants, Metastores, Providers, Recipient Activation, Recipients, Schemas, Shares, Storage Credentials, Table Constraints, Tables, etc.
+// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Catalogs, External Locations, Functions, Grants, Metastores, Providers, Recipient Activation, Recipients, Schemas, Shares, Storage Credentials, Table Constraints, Tables, etc.
 package unitycatalog
 
 import (
@@ -10,6 +10,272 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
+
+func NewAccountMetastoreAssignments(client *client.DatabricksClient) *AccountMetastoreAssignmentsAPI {
+	return &AccountMetastoreAssignmentsAPI{
+		impl: &accountMetastoreAssignmentsImpl{
+			client: client,
+		},
+	}
+}
+
+// These APIs manage metastore assignments to a workspace.
+type AccountMetastoreAssignmentsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(AccountMetastoreAssignmentsService)
+	impl AccountMetastoreAssignmentsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *AccountMetastoreAssignmentsAPI) WithImpl(impl AccountMetastoreAssignmentsService) *AccountMetastoreAssignmentsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level AccountMetastoreAssignments API implementation
+func (a *AccountMetastoreAssignmentsAPI) Impl() AccountMetastoreAssignmentsService {
+	return a.impl
+}
+
+// Assigns a workspace to a metastore.
+//
+// Creates an assignment to a metastore for a workspace
+func (a *AccountMetastoreAssignmentsAPI) Create(ctx context.Context, request CreateMetastoreAssignment) (*MetastoreAssignment, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Delete a metastore assignment.
+//
+// Deletes a metastore assignment to a workspace, leaving the workspace with no
+// metastore.
+func (a *AccountMetastoreAssignmentsAPI) Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error {
+	return a.impl.Delete(ctx, request)
+}
+
+// Delete a metastore assignment.
+//
+// Deletes a metastore assignment to a workspace, leaving the workspace with no
+// metastore.
+func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) error {
+	return a.impl.Delete(ctx, DeleteAccountMetastoreAssignmentRequest{
+		WorkspaceId: workspaceId,
+		MetastoreId: metastoreId,
+	})
+}
+
+// Gets the metastore assignment for a workspace.
+//
+// Gets the metastore assignment, if any, for the workspace specified by ID. If
+// the workspace is assigned a metastore, the mappig will be returned. If no
+// metastore is assigned to the workspace, the assignment will not be found and
+// a 404 returned.
+func (a *AccountMetastoreAssignmentsAPI) Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*MetastoreAssignment, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Gets the metastore assignment for a workspace.
+//
+// Gets the metastore assignment, if any, for the workspace specified by ID. If
+// the workspace is assigned a metastore, the mappig will be returned. If no
+// metastore is assigned to the workspace, the assignment will not be found and
+// a 404 returned.
+func (a *AccountMetastoreAssignmentsAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*MetastoreAssignment, error) {
+	return a.impl.Get(ctx, GetAccountMetastoreAssignmentRequest{
+		WorkspaceId: workspaceId,
+	})
+}
+
+// Get all workspaces assigned to a metastore.
+//
+// Gets a list of all Databricks workspace IDs that have been assigned to given
+// metastore.
+func (a *AccountMetastoreAssignmentsAPI) List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]MetastoreAssignment, error) {
+	return a.impl.List(ctx, request)
+}
+
+// Get all workspaces assigned to a metastore.
+//
+// Gets a list of all Databricks workspace IDs that have been assigned to given
+// metastore.
+func (a *AccountMetastoreAssignmentsAPI) ListByMetastoreId(ctx context.Context, metastoreId string) ([]MetastoreAssignment, error) {
+	return a.impl.List(ctx, ListAccountMetastoreAssignmentsRequest{
+		MetastoreId: metastoreId,
+	})
+}
+
+// Updates a metastore assignment to a workspaces.
+//
+// Updates an assignment to a metastore for a workspace. Currently, only the
+// default catalog may be updated
+func (a *AccountMetastoreAssignmentsAPI) Update(ctx context.Context, request UpdateMetastoreAssignment) (*MetastoreAssignment, error) {
+	return a.impl.Update(ctx, request)
+}
+
+func NewAccountMetastores(client *client.DatabricksClient) *AccountMetastoresAPI {
+	return &AccountMetastoresAPI{
+		impl: &accountMetastoresImpl{
+			client: client,
+		},
+	}
+}
+
+// These APIs manage Unity Catalog metastores for an account. A metastore
+// contains catalogs that can be associated with workspaces
+type AccountMetastoresAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(AccountMetastoresService)
+	impl AccountMetastoresService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *AccountMetastoresAPI) WithImpl(impl AccountMetastoresService) *AccountMetastoresAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level AccountMetastores API implementation
+func (a *AccountMetastoresAPI) Impl() AccountMetastoresService {
+	return a.impl
+}
+
+// Create metastore.
+//
+// Creates a Unity Catalog metastore.
+func (a *AccountMetastoresAPI) Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Delete a metastore.
+//
+// Deletes a Databricks Unity Catalog metastore for an account, both specified
+// by ID.
+func (a *AccountMetastoresAPI) Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error {
+	return a.impl.Delete(ctx, request)
+}
+
+// Delete a metastore.
+//
+// Deletes a Databricks Unity Catalog metastore for an account, both specified
+// by ID.
+func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastoreId string) error {
+	return a.impl.Delete(ctx, DeleteAccountMetastoreRequest{
+		MetastoreId: metastoreId,
+	})
+}
+
+// Get a metastore.
+//
+// Gets a Databricks Unity Catalog metastore from an account, both specified by
+// ID.
+func (a *AccountMetastoresAPI) Get(ctx context.Context, request GetAccountMetastoreRequest) (*MetastoreInfo, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Get a metastore.
+//
+// Gets a Databricks Unity Catalog metastore from an account, both specified by
+// ID.
+func (a *AccountMetastoresAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*MetastoreInfo, error) {
+	return a.impl.Get(ctx, GetAccountMetastoreRequest{
+		MetastoreId: metastoreId,
+	})
+}
+
+// Get all metastores associated with an account.
+//
+// Gets all Unity Catalog metastores associated with an account specified by ID.
+func (a *AccountMetastoresAPI) List(ctx context.Context) (*ListMetastoresResponse, error) {
+	return a.impl.List(ctx)
+}
+
+// Update a metastore.
+//
+// Updates an existing Unity Catalog metastore.
+func (a *AccountMetastoresAPI) Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error) {
+	return a.impl.Update(ctx, request)
+}
+
+func NewAccountStorageCredentials(client *client.DatabricksClient) *AccountStorageCredentialsAPI {
+	return &AccountStorageCredentialsAPI{
+		impl: &accountStorageCredentialsImpl{
+			client: client,
+		},
+	}
+}
+
+// These APIs manage storage credentials for a particular metastore.
+type AccountStorageCredentialsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(AccountStorageCredentialsService)
+	impl AccountStorageCredentialsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *AccountStorageCredentialsAPI) WithImpl(impl AccountStorageCredentialsService) *AccountStorageCredentialsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level AccountStorageCredentials API implementation
+func (a *AccountStorageCredentialsAPI) Impl() AccountStorageCredentialsService {
+	return a.impl
+}
+
+// Create a storage credential.
+//
+// Creates a new storage credential. The request object is specific to the
+// cloud:
+//
+// * **AwsIamRole** for AWS credentials * **AzureServicePrincipal** for Azure
+// credentials * **GcpServiceAcountKey** for GCP credentials.
+//
+// The caller must be a metastore admin and have the
+// **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
+func (a *AccountStorageCredentialsAPI) Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Gets the named storage credential.
+//
+// Gets a storage credential from the metastore. The caller must be a metastore
+// admin, the owner of the storage credential, or have a level of privilege on
+// the storage credential.
+func (a *AccountStorageCredentialsAPI) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*StorageCredentialInfo, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Gets the named storage credential.
+//
+// Gets a storage credential from the metastore. The caller must be a metastore
+// admin, the owner of the storage credential, or have a level of privilege on
+// the storage credential.
+func (a *AccountStorageCredentialsAPI) GetByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*StorageCredentialInfo, error) {
+	return a.impl.Get(ctx, GetAccountStorageCredentialRequest{
+		MetastoreId:           metastoreId,
+		StorageCredentialName: storageCredentialName,
+	})
+}
+
+// Get all storage credentials assigned to a metastore.
+//
+// Gets a list of all storage credentials that have been assigned to given
+// metastore.
+func (a *AccountStorageCredentialsAPI) List(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error) {
+	return a.impl.List(ctx, request)
+}
+
+// Get all storage credentials assigned to a metastore.
+//
+// Gets a list of all storage credentials that have been assigned to given
+// metastore.
+func (a *AccountStorageCredentialsAPI) ListByMetastoreId(ctx context.Context, metastoreId string) ([]StorageCredentialInfo, error) {
+	return a.impl.List(ctx, ListAccountStorageCredentialsRequest{
+		MetastoreId: metastoreId,
+	})
+}
 
 func NewCatalogs(client *client.DatabricksClient) *CatalogsAPI {
 	return &CatalogsAPI{
@@ -1391,17 +1657,11 @@ func (a *StorageCredentialsAPI) GetByName(ctx context.Context, name string) (*St
 // permission to access. If the caller is a metastore admin, all storage
 // credentials will be retrieved. There is no guarantee of a specific ordering
 // of the elements in the array.
-//
-// This method is generated by Databricks SDK Code Generator.
-func (a *StorageCredentialsAPI) ListAll(ctx context.Context) ([]StorageCredentialInfo, error) {
-	response, err := a.impl.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return response.StorageCredentials, nil
+func (a *StorageCredentialsAPI) List(ctx context.Context) ([]StorageCredentialInfo, error) {
+	return a.impl.List(ctx)
 }
 
-// StorageCredentialInfoNameToIdMap calls [StorageCredentialsAPI.ListAll] and creates a map of results with [StorageCredentialInfo].Name as key and [StorageCredentialInfo].Id as value.
+// StorageCredentialInfoNameToIdMap calls [StorageCredentialsAPI.List] and creates a map of results with [StorageCredentialInfo].Name as key and [StorageCredentialInfo].Id as value.
 //
 // Returns an error if there's more than one [StorageCredentialInfo] with the same .Name.
 //
@@ -1411,7 +1671,7 @@ func (a *StorageCredentialsAPI) ListAll(ctx context.Context) ([]StorageCredentia
 func (a *StorageCredentialsAPI) StorageCredentialInfoNameToIdMap(ctx context.Context) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
-	result, err := a.ListAll(ctx)
+	result, err := a.List(ctx)
 	if err != nil {
 		return nil, err
 	}

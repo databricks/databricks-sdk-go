@@ -48,6 +48,8 @@ type BaseRun struct {
 	// A snapshot of the job’s cluster specification when this run was
 	// created.
 	ClusterSpec *ClusterSpec `json:"cluster_spec,omitempty"`
+	// The continuous trigger that triggered this run.
+	Continuous *Continuous `json:"continuous,omitempty"`
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
@@ -162,9 +164,48 @@ type ClusterSpec struct {
 	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
 }
 
+type Continuous struct {
+	// Indicate whether the continuous execution of the job is paused or not.
+	// Defaults to UNPAUSED.
+	PauseStatus ContinuousPauseStatus `json:"pause_status,omitempty"`
+}
+
+// Indicate whether the continuous execution of the job is paused or not.
+// Defaults to UNPAUSED.
+type ContinuousPauseStatus string
+
+const ContinuousPauseStatusPaused ContinuousPauseStatus = `PAUSED`
+
+const ContinuousPauseStatusUnpaused ContinuousPauseStatus = `UNPAUSED`
+
+// String representation for [fmt.Print]
+func (cps *ContinuousPauseStatus) String() string {
+	return string(*cps)
+}
+
+// Set raw string value and validate it against allowed values
+func (cps *ContinuousPauseStatus) Set(v string) error {
+	switch v {
+	case `PAUSED`, `UNPAUSED`:
+		*cps = ContinuousPauseStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
+	}
+}
+
+// Type always returns ContinuousPauseStatus to satisfy [pflag.Value] interface
+func (cps *ContinuousPauseStatus) Type() string {
+	return "ContinuousPauseStatus"
+}
+
 type CreateJob struct {
 	// List of permissions to set on the job.
 	AccessControlList []permissions.AccessControlRequest `json:"access_control_list,omitempty"`
+	// An optional continuous property for this job. The continuous property
+	// will ensure that there is always one run executing. Only one of
+	// `schedule` and `continuous` can be used.
+	Continuous *Continuous `json:"continuous,omitempty"`
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted. The default
 	// behavior is to not send any emails.
@@ -509,6 +550,10 @@ type JobEmailNotifications struct {
 }
 
 type JobSettings struct {
+	// An optional continuous property for this job. The continuous property
+	// will ensure that there is always one run executing. Only one of
+	// `schedule` and `continuous` can be used.
+	Continuous *Continuous `json:"continuous,omitempty"`
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted. The default
 	// behavior is to not send any emails.
@@ -1061,6 +1106,8 @@ type Run struct {
 	// A snapshot of the job’s cluster specification when this run was
 	// created.
 	ClusterSpec *ClusterSpec `json:"cluster_spec,omitempty"`
+	// The continuous trigger that triggered this run.
+	Continuous *Continuous `json:"continuous,omitempty"`
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`

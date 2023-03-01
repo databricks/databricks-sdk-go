@@ -3,6 +3,7 @@
 package code
 
 import (
+	"fmt"
 	"regexp"
 	"sort"
 	"strings"
@@ -359,7 +360,10 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 					if v.In == "header" {
 						continue
 					}
-					param := *pkg.Components.Parameters.Resolve(&v)
+					param, err := pkg.resolveParam(&v)
+					if err != nil {
+						return fmt.Errorf("no components found: %s %s", verb, prefix)
+					}
 					if param == nil {
 						return nil
 					}
@@ -379,4 +383,15 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 		}
 	}
 	return nil
+}
+
+func (pkg *Package) resolveParam(v *openapi.Parameter) (param *openapi.Parameter, err error) {
+	defer func() {
+		r := recover()
+		if r != nil {
+			err = fmt.Errorf("panic: %v", r)
+		}
+	}()
+	param = *pkg.Components.Parameters.Resolve(v)
+	return
 }

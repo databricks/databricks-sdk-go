@@ -56,7 +56,11 @@
 //
 // - [mlflow.MLflowDatabricksAPI]: These endpoints are modified versions of the MLflow API that accept additional input parameters or return additional information.
 //
+// - [unitycatalog.AccountMetastoreAssignmentsAPI]: These APIs manage metastore assignments to a workspace.
+//
 // - [unitycatalog.MetastoresAPI]: A metastore is the top-level container of objects in Unity Catalog.
+//
+// - [unitycatalog.AccountMetastoresAPI]: These APIs manage Unity Catalog metastores for an account.
 //
 // - [deployment.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
 //
@@ -97,6 +101,8 @@
 // - [deployment.StorageAPI]: These APIs manage storage configurations for this workspace.
 //
 // - [unitycatalog.StorageCredentialsAPI]: A storage credential represents an authentication and authorization mechanism for accessing data stored on your cloud tenant.
+//
+// - [unitycatalog.AccountStorageCredentialsAPI]: These APIs manage storage credentials for a particular metastore.
 //
 // - [unitycatalog.TableConstraintsAPI]: Primary key and foreign key constraints encode relationships between fields in tables.
 //
@@ -156,74 +162,77 @@ import (
 // https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service
 // See: https://pkg.go.dev/golang.org/x/tools/internal/imports#ImportPathToAssumedName
 var (
-	_ *sql.AlertsAPI                          = nil
-	_ *billing.BillableUsageAPI               = nil
-	_ *billing.BudgetsAPI                     = nil
-	_ *unitycatalog.CatalogsAPI               = nil
-	_ *clusterpolicies.ClusterPoliciesAPI     = nil
-	_ *clusters.ClustersAPI                   = nil
-	_ *commands.CommandExecutionAPI           = nil
-	_ *deployment.CredentialsAPI              = nil
-	_ *scim.CurrentUserAPI                    = nil
-	_ *sql.DashboardsAPI                      = nil
-	_ *sql.DataSourcesAPI                     = nil
-	_ *dbfs.DbfsAPI                           = nil
-	_ *sql.DbsqlPermissionsAPI                = nil
-	_ *deployment.EncryptionKeysAPI           = nil
-	_ *mlflow.ExperimentsAPI                  = nil
-	_ *unitycatalog.ExternalLocationsAPI      = nil
-	_ *unitycatalog.FunctionsAPI              = nil
-	_ *gitcredentials.GitCredentialsAPI       = nil
-	_ *globalinitscripts.GlobalInitScriptsAPI = nil
-	_ *unitycatalog.GrantsAPI                 = nil
-	_ *scim.GroupsAPI                         = nil
-	_ *scim.AccountGroupsAPI                  = nil
-	_ *instancepools.InstancePoolsAPI         = nil
-	_ *clusters.InstanceProfilesAPI           = nil
-	_ *ipaccesslists.IpAccessListsAPI         = nil
-	_ *jobs.JobsAPI                           = nil
-	_ *libraries.LibrariesAPI                 = nil
-	_ *billing.LogDeliveryAPI                 = nil
-	_ *mlflow.MLflowArtifactsAPI              = nil
-	_ *mlflow.MLflowDatabricksAPI             = nil
-	_ *mlflow.MLflowMetricsAPI                = nil
-	_ *mlflow.MLflowRunsAPI                   = nil
-	_ *unitycatalog.MetastoresAPI             = nil
-	_ *mlflow.ModelVersionCommentsAPI         = nil
-	_ *mlflow.ModelVersionsAPI                = nil
-	_ *deployment.NetworksAPI                 = nil
-	_ *permissions.PermissionsAPI             = nil
-	_ *pipelines.PipelinesAPI                 = nil
-	_ *clusterpolicies.PolicyFamiliesAPI      = nil
-	_ *deployment.PrivateAccessAPI            = nil
-	_ *unitycatalog.ProvidersAPI              = nil
-	_ *sql.QueriesAPI                         = nil
-	_ *sql.QueryHistoryAPI                    = nil
-	_ *unitycatalog.RecipientActivationAPI    = nil
-	_ *unitycatalog.RecipientsAPI             = nil
-	_ *mlflow.RegisteredModelsAPI             = nil
-	_ *mlflow.RegistryWebhooksAPI             = nil
-	_ *repos.ReposAPI                         = nil
-	_ *unitycatalog.SchemasAPI                = nil
-	_ *secrets.SecretsAPI                     = nil
-	_ *scim.ServicePrincipalsAPI              = nil
-	_ *scim.AccountServicePrincipalsAPI       = nil
-	_ *endpoints.ServingEndpointsAPI          = nil
-	_ *unitycatalog.SharesAPI                 = nil
-	_ *sql.StatementExecutionAPI              = nil
-	_ *deployment.StorageAPI                  = nil
-	_ *unitycatalog.StorageCredentialsAPI     = nil
-	_ *unitycatalog.TableConstraintsAPI       = nil
-	_ *unitycatalog.TablesAPI                 = nil
-	_ *tokenmanagement.TokenManagementAPI     = nil
-	_ *tokens.TokensAPI                       = nil
-	_ *mlflow.TransitionRequestsAPI           = nil
-	_ *scim.UsersAPI                          = nil
-	_ *scim.AccountUsersAPI                   = nil
-	_ *deployment.VpcEndpointsAPI             = nil
-	_ *sql.WarehousesAPI                      = nil
-	_ *workspace.WorkspaceAPI                 = nil
-	_ *permissions.WorkspaceAssignmentAPI     = nil
-	_ *workspaceconf.WorkspaceConfAPI         = nil
-	_ *deployment.WorkspacesAPI               = nil
+	_ *sql.AlertsAPI                               = nil
+	_ *billing.BillableUsageAPI                    = nil
+	_ *billing.BudgetsAPI                          = nil
+	_ *unitycatalog.CatalogsAPI                    = nil
+	_ *clusterpolicies.ClusterPoliciesAPI          = nil
+	_ *clusters.ClustersAPI                        = nil
+	_ *commands.CommandExecutionAPI                = nil
+	_ *deployment.CredentialsAPI                   = nil
+	_ *scim.CurrentUserAPI                         = nil
+	_ *sql.DashboardsAPI                           = nil
+	_ *sql.DataSourcesAPI                          = nil
+	_ *dbfs.DbfsAPI                                = nil
+	_ *sql.DbsqlPermissionsAPI                     = nil
+	_ *deployment.EncryptionKeysAPI                = nil
+	_ *mlflow.ExperimentsAPI                       = nil
+	_ *unitycatalog.ExternalLocationsAPI           = nil
+	_ *unitycatalog.FunctionsAPI                   = nil
+	_ *gitcredentials.GitCredentialsAPI            = nil
+	_ *globalinitscripts.GlobalInitScriptsAPI      = nil
+	_ *unitycatalog.GrantsAPI                      = nil
+	_ *scim.GroupsAPI                              = nil
+	_ *scim.AccountGroupsAPI                       = nil
+	_ *instancepools.InstancePoolsAPI              = nil
+	_ *clusters.InstanceProfilesAPI                = nil
+	_ *ipaccesslists.IpAccessListsAPI              = nil
+	_ *jobs.JobsAPI                                = nil
+	_ *libraries.LibrariesAPI                      = nil
+	_ *billing.LogDeliveryAPI                      = nil
+	_ *mlflow.MLflowArtifactsAPI                   = nil
+	_ *mlflow.MLflowDatabricksAPI                  = nil
+	_ *mlflow.MLflowMetricsAPI                     = nil
+	_ *mlflow.MLflowRunsAPI                        = nil
+	_ *unitycatalog.AccountMetastoreAssignmentsAPI = nil
+	_ *unitycatalog.MetastoresAPI                  = nil
+	_ *unitycatalog.AccountMetastoresAPI           = nil
+	_ *mlflow.ModelVersionCommentsAPI              = nil
+	_ *mlflow.ModelVersionsAPI                     = nil
+	_ *deployment.NetworksAPI                      = nil
+	_ *permissions.PermissionsAPI                  = nil
+	_ *pipelines.PipelinesAPI                      = nil
+	_ *clusterpolicies.PolicyFamiliesAPI           = nil
+	_ *deployment.PrivateAccessAPI                 = nil
+	_ *unitycatalog.ProvidersAPI                   = nil
+	_ *sql.QueriesAPI                              = nil
+	_ *sql.QueryHistoryAPI                         = nil
+	_ *unitycatalog.RecipientActivationAPI         = nil
+	_ *unitycatalog.RecipientsAPI                  = nil
+	_ *mlflow.RegisteredModelsAPI                  = nil
+	_ *mlflow.RegistryWebhooksAPI                  = nil
+	_ *repos.ReposAPI                              = nil
+	_ *unitycatalog.SchemasAPI                     = nil
+	_ *secrets.SecretsAPI                          = nil
+	_ *scim.ServicePrincipalsAPI                   = nil
+	_ *scim.AccountServicePrincipalsAPI            = nil
+	_ *endpoints.ServingEndpointsAPI               = nil
+	_ *unitycatalog.SharesAPI                      = nil
+	_ *sql.StatementExecutionAPI                   = nil
+	_ *deployment.StorageAPI                       = nil
+	_ *unitycatalog.StorageCredentialsAPI          = nil
+	_ *unitycatalog.AccountStorageCredentialsAPI   = nil
+	_ *unitycatalog.TableConstraintsAPI            = nil
+	_ *unitycatalog.TablesAPI                      = nil
+	_ *tokenmanagement.TokenManagementAPI          = nil
+	_ *tokens.TokensAPI                            = nil
+	_ *mlflow.TransitionRequestsAPI                = nil
+	_ *scim.UsersAPI                               = nil
+	_ *scim.AccountUsersAPI                        = nil
+	_ *deployment.VpcEndpointsAPI                  = nil
+	_ *sql.WarehousesAPI                           = nil
+	_ *workspace.WorkspaceAPI                      = nil
+	_ *permissions.WorkspaceAssignmentAPI          = nil
+	_ *workspaceconf.WorkspaceConfAPI              = nil
+	_ *deployment.WorkspacesAPI                    = nil
 )

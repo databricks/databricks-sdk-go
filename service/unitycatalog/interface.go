@@ -6,6 +6,103 @@ import (
 	"context"
 )
 
+// These APIs manage metastore assignments to a workspace.
+type AccountMetastoreAssignmentsService interface {
+
+	// Assigns a workspace to a metastore.
+	//
+	// Creates an assignment to a metastore for a workspace
+	Create(ctx context.Context, request CreateMetastoreAssignment) (*MetastoreAssignment, error)
+
+	// Delete a metastore assignment.
+	//
+	// Deletes a metastore assignment to a workspace, leaving the workspace with
+	// no metastore.
+	Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error
+
+	// Gets the metastore assignment for a workspace.
+	//
+	// Gets the metastore assignment, if any, for the workspace specified by ID.
+	// If the workspace is assigned a metastore, the mappig will be returned. If
+	// no metastore is assigned to the workspace, the assignment will not be
+	// found and a 404 returned.
+	Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*MetastoreAssignment, error)
+
+	// Get all workspaces assigned to a metastore.
+	//
+	// Gets a list of all Databricks workspace IDs that have been assigned to
+	// given metastore.
+	List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]MetastoreAssignment, error)
+
+	// Updates a metastore assignment to a workspaces.
+	//
+	// Updates an assignment to a metastore for a workspace. Currently, only the
+	// default catalog may be updated
+	Update(ctx context.Context, request UpdateMetastoreAssignment) (*MetastoreAssignment, error)
+}
+
+// These APIs manage Unity Catalog metastores for an account. A metastore
+// contains catalogs that can be associated with workspaces
+type AccountMetastoresService interface {
+
+	// Create metastore.
+	//
+	// Creates a Unity Catalog metastore.
+	Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error)
+
+	// Delete a metastore.
+	//
+	// Deletes a Databricks Unity Catalog metastore for an account, both
+	// specified by ID.
+	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error
+
+	// Get a metastore.
+	//
+	// Gets a Databricks Unity Catalog metastore from an account, both specified
+	// by ID.
+	Get(ctx context.Context, request GetAccountMetastoreRequest) (*MetastoreInfo, error)
+
+	// Get all metastores associated with an account.
+	//
+	// Gets all Unity Catalog metastores associated with an account specified by
+	// ID.
+	List(ctx context.Context) (*ListMetastoresResponse, error)
+
+	// Update a metastore.
+	//
+	// Updates an existing Unity Catalog metastore.
+	Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error)
+}
+
+// These APIs manage storage credentials for a particular metastore.
+type AccountStorageCredentialsService interface {
+
+	// Create a storage credential.
+	//
+	// Creates a new storage credential. The request object is specific to the
+	// cloud:
+	//
+	// * **AwsIamRole** for AWS credentials * **AzureServicePrincipal** for
+	// Azure credentials * **GcpServiceAcountKey** for GCP credentials.
+	//
+	// The caller must be a metastore admin and have the
+	// **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
+	Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error)
+
+	// Gets the named storage credential.
+	//
+	// Gets a storage credential from the metastore. The caller must be a
+	// metastore admin, the owner of the storage credential, or have a level of
+	// privilege on the storage credential.
+	Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*StorageCredentialInfo, error)
+
+	// Get all storage credentials assigned to a metastore.
+	//
+	// Gets a list of all storage credentials that have been assigned to given
+	// metastore.
+	List(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error)
+}
+
 // A catalog is the first layer of Unity Catalog’s three-level namespace.
 // It’s used to organize your data assets. Users can see all catalogs on which
 // they have been assigned the USE_CATALOG data permission.
@@ -565,9 +662,7 @@ type StorageCredentialsService interface {
 	// caller has permission to access. If the caller is a metastore admin, all
 	// storage credentials will be retrieved. There is no guarantee of a
 	// specific ordering of the elements in the array.
-	//
-	// Use ListAll() to get all StorageCredentialInfo instances
-	List(ctx context.Context) (*ListStorageCredentialsResponse, error)
+	List(ctx context.Context) ([]StorageCredentialInfo, error)
 
 	// Update a credential.
 	//

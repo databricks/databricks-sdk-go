@@ -12,6 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/deployment"
 	"github.com/databricks/databricks-sdk-go/service/permissions"
 	"github.com/databricks/databricks-sdk-go/service/scim"
+	"github.com/databricks/databricks-sdk-go/service/unitycatalog"
 )
 
 type AccountClient struct {
@@ -126,6 +127,13 @@ type AccountClient struct {
 	// [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html
 	LogDelivery *billing.LogDeliveryAPI
 
+	// These APIs manage metastore assignments to a workspace.
+	AccountMetastoreAssignments *unitycatalog.AccountMetastoreAssignmentsAPI
+
+	// These APIs manage Unity Catalog metastores for an account. A metastore
+	// contains catalogs that can be associated with workspaces
+	AccountMetastores *unitycatalog.AccountMetastoresAPI
+
 	// These APIs manage network configurations for customer-managed VPCs
 	// (optional). Its ID is used when creating a new workspace if you use
 	// customer-managed VPCs.
@@ -158,6 +166,9 @@ type AccountClient struct {
 	// configuration encapsulates this bucket information, and its ID is used
 	// when creating a new workspace.
 	Storage *deployment.StorageAPI
+
+	// These APIs manage storage credentials for a particular metastore.
+	AccountStorageCredentials *unitycatalog.AccountStorageCredentialsAPI
 
 	// User identities recognized by Databricks and represented by email
 	// addresses.
@@ -228,19 +239,22 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	return &AccountClient{
 		Config: cfg,
 
-		BillableUsage:       billing.NewBillableUsage(apiClient),
-		Budgets:             billing.NewBudgets(apiClient),
-		Credentials:         deployment.NewCredentials(apiClient),
-		EncryptionKeys:      deployment.NewEncryptionKeys(apiClient),
-		Groups:              scim.NewAccountGroups(apiClient),
-		LogDelivery:         billing.NewLogDelivery(apiClient),
-		Networks:            deployment.NewNetworks(apiClient),
-		PrivateAccess:       deployment.NewPrivateAccess(apiClient),
-		ServicePrincipals:   scim.NewAccountServicePrincipals(apiClient),
-		Storage:             deployment.NewStorage(apiClient),
-		Users:               scim.NewAccountUsers(apiClient),
-		VpcEndpoints:        deployment.NewVpcEndpoints(apiClient),
-		WorkspaceAssignment: permissions.NewWorkspaceAssignment(apiClient),
-		Workspaces:          deployment.NewWorkspaces(apiClient),
+		BillableUsage:               billing.NewBillableUsage(apiClient),
+		Budgets:                     billing.NewBudgets(apiClient),
+		Credentials:                 deployment.NewCredentials(apiClient),
+		EncryptionKeys:              deployment.NewEncryptionKeys(apiClient),
+		Groups:                      scim.NewAccountGroups(apiClient),
+		LogDelivery:                 billing.NewLogDelivery(apiClient),
+		AccountMetastoreAssignments: unitycatalog.NewAccountMetastoreAssignments(apiClient),
+		AccountMetastores:           unitycatalog.NewAccountMetastores(apiClient),
+		Networks:                    deployment.NewNetworks(apiClient),
+		PrivateAccess:               deployment.NewPrivateAccess(apiClient),
+		ServicePrincipals:           scim.NewAccountServicePrincipals(apiClient),
+		Storage:                     deployment.NewStorage(apiClient),
+		AccountStorageCredentials:   unitycatalog.NewAccountStorageCredentials(apiClient),
+		Users:                       scim.NewAccountUsers(apiClient),
+		VpcEndpoints:                deployment.NewVpcEndpoints(apiClient),
+		WorkspaceAssignment:         permissions.NewWorkspaceAssignment(apiClient),
+		Workspaces:                  deployment.NewWorkspaces(apiClient),
 	}, nil
 }
