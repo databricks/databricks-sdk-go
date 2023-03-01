@@ -67,7 +67,7 @@ func TestBasic(t *testing.T) {
 
 // This test is used for debugging purposes
 func TestMethodsReport(t *testing.T) {
-	// t.SkipNow()
+	t.SkipNow()
 	home, _ := os.UserHomeDir()
 	batch, err := NewFromFile(filepath.Join(home,
 		"universe/bazel-bin/openapi/all-internal.json"))
