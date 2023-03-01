@@ -545,28 +545,26 @@ func (dt *DestinationType) Type() string {
 	return "DestinationType"
 }
 
-// The fetch disposition provides for two modes of fetching results: INLINE, and
-// EXTERNAL_LINKS.
+// The fetch disposition provides for two modes of fetching results: `INLINE`,
+// and `EXTERNAL_LINKS`.
 //
-// Statements executed with INLINE disposition will return result data inline,
-// in JSON_ARRAY format, in a series of chunks. INLINE disposition result sets
-// are constrained to 4 MiB (megabytes) of total data, and will typically be
-// split into chunks of <= 4 MiB per chunk. If a given statement produces a
-// result set with a size larger than 16 MiB, that statement execution is
+// Statements executed with `INLINE` disposition will return result data inline,
+// in `JSON_ARRAY` format, in a series of chunks. If a given statement produces
+// a result set with a size larger than 16 MiB, that statement execution is
 // aborted, and no result set will be available.
 //
 // **NOTE** Byte limits are computed based upon internal representations of the
 // result set data, and may not match the sizes visible in JSON responses.
 //
-// Statements executed with EXTERNAL_LINKS disposition will return result data
-// as external links: URLs that point to cloud storage within the workspace's
-// configured DBFS. Using EXTERNAL_LINKS disposition allows statements to
-// generate arbitrarily sized result sets for fetching. The resulting links have
-// two important properties:
+// Statements executed with `EXTERNAL_LINKS` disposition will return result data
+// as external links: URLs that point to cloud storage internal to the
+// workspace. Using `EXTERNAL_LINKS` disposition allows statements to generate
+// arbitrarily sized result sets for fetching up to 100 GiB. The resulting links
+// have two important properties:
 //
 // 1. They point to resources _external_ to the Databricks compute; therefore
-// any associated authentication information (typically a PAT token, OAuth
-// token, or similar) _must be removed_ when fetching from these links.
+// any associated authentication information (typically a personal access token,
+// OAuth token, or similar) _must be removed_ when fetching from these links.
 //
 // 2. These are presigned URLs with a specific expiration, indicated in the
 // response. The behavior when attempting to use an expired link is cloud
@@ -797,18 +795,20 @@ type EndpointTags struct {
 }
 
 type ExecuteStatementRequest struct {
+	// Applies given byte limit to execution and result size; byte counts based
+	// upon internal representations, and may not match measureable sizes in
+	// requested `format`.
+	ByteLimit int64 `json:"byte_limit,omitempty"`
 	// Sets default catalog for statement execution, similar to [`USE CATALOG`]
 	// in SQL.
 	//
 	// [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
 	Catalog string `json:"catalog,omitempty"`
-	// The fetch disposition provides for two modes of fetching results: INLINE,
-	// and EXTERNAL_LINKS.
+	// The fetch disposition provides for two modes of fetching results:
+	// `INLINE`, and `EXTERNAL_LINKS`.
 	//
-	// Statements executed with INLINE disposition will return result data
-	// inline, in JSON_ARRAY format, in a series of chunks. INLINE disposition
-	// result sets are constrained to 4 MiB (megabytes) of total data, and will
-	// typically be split into chunks of <= 4 MiB per chunk. If a given
+	// Statements executed with `INLINE` disposition will return result data
+	// inline, in `JSON_ARRAY` format, in a series of chunks. If a given
 	// statement produces a result set with a size larger than 16 MiB, that
 	// statement execution is aborted, and no result set will be available.
 	//
@@ -816,16 +816,16 @@ type ExecuteStatementRequest struct {
 	// the result set data, and may not match the sizes visible in JSON
 	// responses.
 	//
-	// Statements executed with EXTERNAL_LINKS disposition will return result
-	// data as external links: URLs that point to cloud storage within the
-	// workspace's configured DBFS. Using EXTERNAL_LINKS disposition allows
-	// statements to generate arbitrarily sized result sets for fetching. The
+	// Statements executed with `EXTERNAL_LINKS` disposition will return result
+	// data as external links: URLs that point to cloud storage internal to the
+	// workspace. Using `EXTERNAL_LINKS` disposition allows statements to
+	// generate arbitrarily sized result sets for fetching up to 100 GiB. The
 	// resulting links have two important properties:
 	//
 	// 1. They point to resources _external_ to the Databricks compute;
-	// therefore any associated authentication information (typically a PAT
-	// token, OAuth token, or similar) _must be removed_ when fetching from
-	// these links.
+	// therefore any associated authentication information (typically a personal
+	// access token, OAuth token, or similar) _must be removed_ when fetching
+	// from these links.
 	//
 	// 2. These are presigned URLs with a specific expiration, indicated in the
 	// response. The behavior when attempting to use an expired link is cloud
@@ -840,31 +840,34 @@ type ExecuteStatementRequest struct {
 	// `disposition=INLINE`, and `ARROW_STREAM` is only available for requests
 	// with `disposition=EXTERNAL_LINKS`.
 	//
-	// When specifying `format=JSON_ARRAY`, result data will be formatted as
-	// arrays of arrays of values, where each value is either the *string
+	// When specifying `format=JSON_ARRAY`, result data will be formatted as an
+	// array of arrays of values, where each value is either the *string
 	// representation* of a value, or `null`. For example, the output of `SELECT
 	// concat('id-', id) AS strId, id AS intId FROM range(3)` would look like
 	// this:
 	//
 	// ``` [ [ "id-1", "1" ], [ "id-2", "2" ], [ "id-3", "3" ], ] ```
 	//
-	// INLINE JSON_ARRAY data can be found within
+	// `INLINE` `JSON_ARRAY` data can be found within
 	// `StatementResponse.result.chunk.data_array` or
 	// `ResultData.chunk.data_array`.
 	//
 	// When specifying `format=ARROW_STREAM`, results fetched through
-	// `ResultData.external_links` will be chunks of result data, formatted as
-	// Apache Arrow Stream. See
+	// `external_links` will be chunks of result data, formatted as Apache Arrow
+	// Stream. See
 	// [https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format]
 	// for more details.
 	Format Format `json:"format,omitempty"`
 	// When called in synchronous mode (`wait_timeout > 0s`), determines action
 	// when timeout reached:
 	//
-	// `CONTINUE` → statement execution continues asynchronously; call returns
-	// immediately. `CANCEL` → statement execution canceled; call returns
-	// immediately with `CANCELED` state.
+	// `CONTINUE` → statement execution continues asynchronously; the call
+	// returns a statement ID immediately. `CANCEL` → statement execution
+	// canceled; call returns immediately with `CANCELED` state.
 	OnWaitTimeout TimeoutAction `json:"on_wait_timeout,omitempty"`
+	// Applies given row limit to execution and result set, identical in
+	// semantics to SQL term `LIMIT $N`.
+	RowLimit int64 `json:"row_limit,omitempty"`
 	// Sets default schema for statement execution, similar to [`USE SCHEMA`] in
 	// SQL.
 	//
@@ -872,8 +875,9 @@ type ExecuteStatementRequest struct {
 	Schema string `json:"schema,omitempty"`
 	// SQL statement to execute
 	Statement string `json:"statement,omitempty"`
-	// Time that API service will wait statement result, in format '{N}s'. N may
-	// be '0s' for asynchronous, or may wait between 5-50 seconds."
+	// Time that the API service will wait for the statement result, in format
+	// '{N}s'. N may be '0s' for asynchronous, or may wait between 5-50
+	// seconds."
 	WaitTimeout string `json:"wait_timeout,omitempty"`
 	// Warehouse upon which to execute a statement. See also [What are SQL
 	// warehouses?](/sql/admin/warehouse-type.html)
@@ -884,10 +888,10 @@ type ExecuteStatementResponse struct {
 	// The result manifest provides schema and metadata for the result set.
 	Manifest *ResultManifest `json:"manifest,omitempty"`
 	// Result data chunks are delivered in either the `chunk` field when using
-	// INLINE disposition, or in the `external_link` field when using
-	// EXTERNAL_LINKS disposition. Exactly one of these will be set.
+	// `INLINE` disposition, or in the `external_link` field when using
+	// `EXTERNAL_LINKS` disposition. Exactly one of these will be set.
 	Result *ResultData `json:"result,omitempty"`
-	// Statement ID is returned upon successful submission of a SQL statement,
+	// Statement ID is returned upon successfully submitting a SQL statement,
 	// and is a required reference for all subsequent calls.
 	StatementId string `json:"statement_id,omitempty"`
 	// Status response includes execution state and if relevant, error
@@ -901,7 +905,7 @@ type ExternalLink struct {
 	// Position within the sequence of result set chunks.
 	ChunkIndex int `json:"chunk_index,omitempty"`
 	// Indicates date-time that the given external link will expire and become
-	// invalid, after which point a new external_link must be requested.
+	// invalid, after which point a new `external_link` must be requested.
 	Expiration string `json:"expiration,omitempty"`
 	// Pre-signed URL pointing to a chunk of result data, hosted by an external
 	// service, with a short expiration time (< 1 hour).
@@ -927,19 +931,19 @@ type ExternalLink struct {
 // `disposition=INLINE`, and `ARROW_STREAM` is only available for requests with
 // `disposition=EXTERNAL_LINKS`.
 //
-// When specifying `format=JSON_ARRAY`, result data will be formatted as arrays
-// of arrays of values, where each value is either the *string representation*
-// of a value, or `null`. For example, the output of `SELECT concat('id-', id)
-// AS strId, id AS intId FROM range(3)` would look like this:
+// When specifying `format=JSON_ARRAY`, result data will be formatted as an
+// array of arrays of values, where each value is either the *string
+// representation* of a value, or `null`. For example, the output of `SELECT
+// concat('id-', id) AS strId, id AS intId FROM range(3)` would look like this:
 //
 // ``` [ [ "id-1", "1" ], [ "id-2", "2" ], [ "id-3", "3" ], ] ```
 //
-// INLINE JSON_ARRAY data can be found within
+// `INLINE` `JSON_ARRAY` data can be found within
 // `StatementResponse.result.chunk.data_array` or `ResultData.chunk.data_array`.
 //
 // When specifying `format=ARROW_STREAM`, results fetched through
-// `ResultData.external_links` will be chunks of result data, formatted as
-// Apache Arrow Stream. See
+// `external_links` will be chunks of result data, formatted as Apache Arrow
+// Stream. See
 // [https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format] for
 // more details.
 type Format string
@@ -1009,10 +1013,10 @@ type GetStatementResponse struct {
 	// The result manifest provides schema and metadata for the result set.
 	Manifest *ResultManifest `json:"manifest,omitempty"`
 	// Result data chunks are delivered in either the `chunk` field when using
-	// INLINE disposition, or in the `external_link` field when using
-	// EXTERNAL_LINKS disposition. Exactly one of these will be set.
+	// `INLINE` disposition, or in the `external_link` field when using
+	// `EXTERNAL_LINKS` disposition. Exactly one of these will be set.
 	Result *ResultData `json:"result,omitempty"`
-	// Statement ID is returned upon successful submission of a SQL statement,
+	// Statement ID is returned upon successfully submitting a SQL statement,
 	// and is a required reference for all subsequent calls.
 	StatementId string `json:"statement_id,omitempty"`
 	// Status response includes execution state and if relevant, error
@@ -1023,8 +1027,6 @@ type GetStatementResponse struct {
 // Get result chunk by index
 type GetStatementResultChunkNRequest struct {
 	ChunkIndex int `json:"-" url:"-"`
-
-	RowOffset int64 `json:"-" url:"row_offset"`
 
 	StatementId string `json:"-" url:"-"`
 }
@@ -1696,7 +1698,8 @@ type QueryMetrics struct {
 	CompilationTimeMs int `json:"compilation_time_ms,omitempty"`
 	// Time spent executing the query, in milliseconds.
 	ExecutionTimeMs int `json:"execution_time_ms,omitempty"`
-	// Total amount of data sent over the network, in bytes.
+	// Total amount of data sent over the network between executor nodes during
+	// shuffle, in bytes.
 	NetworkSentBytes int `json:"network_sent_bytes,omitempty"`
 	// Total execution time for all individual Photon query engine tasks in the
 	// query, in milliseconds.
@@ -1913,14 +1916,14 @@ type RestoreQueryRequest struct {
 }
 
 // Result data chunks are delivered in either the `chunk` field when using
-// INLINE disposition, or in the `external_link` field when using EXTERNAL_LINKS
-// disposition. Exactly one of these will be set.
+// `INLINE` disposition, or in the `external_link` field when using
+// `EXTERNAL_LINKS` disposition. Exactly one of these will be set.
 type ResultData struct {
 	// Number of bytes in the result chunk.
 	ByteCount int64 `json:"byte_count,omitempty"`
 	// Position within the sequence of result set chunks.
 	ChunkIndex int `json:"chunk_index,omitempty"`
-	// JSON_ARRAY format is an array of arrays of values, where each non-null
+	// `JSON_ARRAY` format is an array of arrays of values, where each non-null
 	// value is formatted as a string. Null values are encoded as JSON `null`.
 	DataArray [][]string `json:"data_array,omitempty"`
 
@@ -1950,21 +1953,21 @@ type ResultManifest struct {
 	// `disposition=INLINE`, and `ARROW_STREAM` is only available for requests
 	// with `disposition=EXTERNAL_LINKS`.
 	//
-	// When specifying `format=JSON_ARRAY`, result data will be formatted as
-	// arrays of arrays of values, where each value is either the *string
+	// When specifying `format=JSON_ARRAY`, result data will be formatted as an
+	// array of arrays of values, where each value is either the *string
 	// representation* of a value, or `null`. For example, the output of `SELECT
 	// concat('id-', id) AS strId, id AS intId FROM range(3)` would look like
 	// this:
 	//
 	// ``` [ [ "id-1", "1" ], [ "id-2", "2" ], [ "id-3", "3" ], ] ```
 	//
-	// INLINE JSON_ARRAY data can be found within
+	// `INLINE` `JSON_ARRAY` data can be found within
 	// `StatementResponse.result.chunk.data_array` or
 	// `ResultData.chunk.data_array`.
 	//
 	// When specifying `format=ARROW_STREAM`, results fetched through
-	// `ResultData.external_links` will be chunks of result data, formatted as
-	// Apache Arrow Stream. See
+	// `external_links` will be chunks of result data, formatted as Apache Arrow
+	// Stream. See
 	// [https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format]
 	// for more details.
 	Format Format `json:"format,omitempty"`
@@ -2567,9 +2570,9 @@ type TimeRange struct {
 // When called in synchronous mode (`wait_timeout > 0s`), determines action when
 // timeout reached:
 //
-// `CONTINUE` → statement execution continues asynchronously; call returns
-// immediately. `CANCEL` → statement execution canceled; call returns
-// immediately with `CANCELED` state.
+// `CONTINUE` → statement execution continues asynchronously; the call returns
+// a statement ID immediately. `CANCEL` → statement execution canceled; call
+// returns immediately with `CANCELED` state.
 type TimeoutAction string
 
 const TimeoutActionCancel TimeoutAction = `CANCEL`

@@ -375,7 +375,7 @@ type GcpNetworkInfo struct {
 	// be used by only one workspace.
 	ServiceIpRangeName string `json:"service_ip_range_name"`
 	// The ID of the subnet associated with this network.
-	SubnetId string `json:"subnet_id,omitempty"`
+	SubnetId string `json:"subnet_id"`
 	// The Google Cloud region of the workspace data plane (for example,
 	// `us-east4`).
 	SubnetRegion string `json:"subnet_region"`

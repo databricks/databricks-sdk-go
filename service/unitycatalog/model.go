@@ -433,8 +433,8 @@ type CreateMetastoreAssignment struct {
 	// The name of the default catalog in the metastore.
 	DefaultCatalogName string `json:"default_catalog_name"`
 	// The unique ID of the metastore.
-	MetastoreId string `json:"metastore_id"`
-	// A workspace ID.
+	MetastoreId string `json:"metastore_id" url:"-"`
+	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
@@ -502,6 +502,8 @@ type CreateStorageCredential struct {
 	Comment string `json:"comment,omitempty"`
 	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
+	// Databricks Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
 	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name"`
 	// Whether the storage credential is only usable for read operations.
@@ -515,9 +517,9 @@ type CreateTableConstraint struct {
 	// A table constraint, as defined by *one* of the following fields being
 	// set: __primary_key_constraint__, __foreign_key_constraint__,
 	// __named_table_constraint__.
-	Constraint *TableConstraint `json:"constraint,omitempty"`
+	Constraint TableConstraint `json:"constraint"`
 	// The full name of the table referenced by the constraint.
-	FullNameArg string `json:"full_name_arg,omitempty"`
+	FullNameArg string `json:"full_name_arg"`
 }
 
 // Data source format
@@ -560,6 +562,20 @@ func (dsf *DataSourceFormat) Set(v string) error {
 // Type always returns DataSourceFormat to satisfy [pflag.Value] interface
 func (dsf *DataSourceFormat) Type() string {
 	return "DataSourceFormat"
+}
+
+// Delete a metastore assignment
+type DeleteAccountMetastoreAssignmentRequest struct {
+	// Databricks Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
+	// Workspace ID.
+	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+// Delete a metastore
+type DeleteAccountMetastoreRequest struct {
+	// Databricks Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
 }
 
 // Delete a catalog
@@ -998,6 +1014,28 @@ type GcpServiceAccountKey struct {
 	PrivateKeyId string `json:"private_key_id"`
 }
 
+// Gets the metastore assignment for a workspace
+type GetAccountMetastoreAssignmentRequest struct {
+	// Workspace ID.
+	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+// Get a metastore
+type GetAccountMetastoreRequest struct {
+	// Databricks Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
+}
+
+// Gets the named storage credential
+type GetAccountStorageCredentialRequest struct {
+	// Databricks Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
+	// Name of the storage credential.
+	Name string `json:"-" url:"-"`
+
+	StorageCredentialName string `json:"-" url:"-"`
+}
+
 // Get a share activation URL
 type GetActivationUrlInfoRequest struct {
 	// The one time activation url. It also accepts activation token.
@@ -1171,6 +1209,18 @@ type IpAccessList struct {
 	AllowedIpAddresses []string `json:"allowed_ip_addresses,omitempty"`
 }
 
+// Get all workspaces assigned to a metastore
+type ListAccountMetastoreAssignmentsRequest struct {
+	// Databricks Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
+}
+
+// Get all storage credentials assigned to a metastore
+type ListAccountStorageCredentialsRequest struct {
+	// Databricks Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
+}
+
 type ListCatalogsResponse struct {
 	// An array of catalog information objects.
 	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
@@ -1248,10 +1298,6 @@ type ListSharesRequest struct {
 type ListSharesResponse struct {
 	// An array of data share information objects.
 	Shares []ShareInfo `json:"shares,omitempty"`
-}
-
-type ListStorageCredentialsResponse struct {
-	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
 }
 
 // List table summaries
@@ -2016,7 +2062,7 @@ type TableRowFilter struct {
 	// arguments.
 	InputColumnNames []string `json:"input_column_names"`
 	// The full name of the row filter SQL UDF.
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 }
 
 type TableSummary struct {
@@ -2114,6 +2160,8 @@ type UpdateMetastore struct {
 	DeltaSharingScope UpdateMetastoreDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
+	// Databricks Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
 	// The user-specified name of the metastore.
 	Name string `json:"name,omitempty"`
 	// The owner of the metastore.
@@ -2129,8 +2177,8 @@ type UpdateMetastoreAssignment struct {
 	// The name of the default catalog for the metastore.
 	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
 	// The unique ID of the metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
-	// A workspace ID.
+	MetastoreId string `json:"metastore_id,omitempty" url:"-"`
+	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 

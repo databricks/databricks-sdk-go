@@ -10,6 +10,110 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 )
 
+// unexported type that holds implementations of just AccountMetastoreAssignments API methods
+type accountMetastoreAssignmentsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request CreateMetastoreAssignment) (*MetastoreAssignment, error) {
+	var metastoreAssignment MetastoreAssignment
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
+	err := a.client.Do(ctx, http.MethodPost, path, request, &metastoreAssignment)
+	return &metastoreAssignment, err
+}
+
+func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error {
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
+	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	return err
+}
+
+func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*MetastoreAssignment, error) {
+	var metastoreAssignment MetastoreAssignment
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastore", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &metastoreAssignment)
+	return &metastoreAssignment, err
+}
+
+func (a *accountMetastoreAssignmentsImpl) List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]MetastoreAssignment, error) {
+	var metastoreAssignmentList []MetastoreAssignment
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/workspaces", a.client.ConfiguredAccountID(), request.MetastoreId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &metastoreAssignmentList)
+	return metastoreAssignmentList, err
+}
+
+func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request UpdateMetastoreAssignment) (*MetastoreAssignment, error) {
+	var metastoreAssignment MetastoreAssignment
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
+	err := a.client.Do(ctx, http.MethodPut, path, request, &metastoreAssignment)
+	return &metastoreAssignment, err
+}
+
+// unexported type that holds implementations of just AccountMetastores API methods
+type accountMetastoresImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *accountMetastoresImpl) Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error) {
+	var metastoreInfo MetastoreInfo
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
+	err := a.client.Do(ctx, http.MethodPost, path, request, &metastoreInfo)
+	return &metastoreInfo, err
+}
+
+func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error {
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
+	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	return err
+}
+
+func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetastoreRequest) (*MetastoreInfo, error) {
+	var metastoreInfo MetastoreInfo
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &metastoreInfo)
+	return &metastoreInfo, err
+}
+
+func (a *accountMetastoresImpl) List(ctx context.Context) (*ListMetastoresResponse, error) {
+	var listMetastoresResponse ListMetastoresResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &listMetastoresResponse)
+	return &listMetastoresResponse, err
+}
+
+func (a *accountMetastoresImpl) Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error) {
+	var metastoreInfo MetastoreInfo
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
+	err := a.client.Do(ctx, http.MethodPut, path, request, &metastoreInfo)
+	return &metastoreInfo, err
+}
+
+// unexported type that holds implementations of just AccountStorageCredentials API methods
+type accountStorageCredentialsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error) {
+	var storageCredentialInfo StorageCredentialInfo
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
+	err := a.client.Do(ctx, http.MethodPost, path, request, &storageCredentialInfo)
+	return &storageCredentialInfo, err
+}
+
+func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*StorageCredentialInfo, error) {
+	var storageCredentialInfo StorageCredentialInfo
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &storageCredentialInfo)
+	return &storageCredentialInfo, err
+}
+
+func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error) {
+	var storageCredentialInfoList []StorageCredentialInfo
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &storageCredentialInfoList)
+	return storageCredentialInfoList, err
+}
+
 // unexported type that holds implementations of just Catalogs API methods
 type catalogsImpl struct {
 	client *client.DatabricksClient
@@ -456,11 +560,11 @@ func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCred
 	return &storageCredentialInfo, err
 }
 
-func (a *storageCredentialsImpl) List(ctx context.Context) (*ListStorageCredentialsResponse, error) {
-	var listStorageCredentialsResponse ListStorageCredentialsResponse
+func (a *storageCredentialsImpl) List(ctx context.Context) ([]StorageCredentialInfo, error) {
+	var storageCredentialInfoList []StorageCredentialInfo
 	path := "/api/2.1/unity-catalog/storage-credentials"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &listStorageCredentialsResponse)
-	return &listStorageCredentialsResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &storageCredentialInfoList)
+	return storageCredentialInfoList, err
 }
 
 func (a *storageCredentialsImpl) Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error) {
