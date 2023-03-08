@@ -49,10 +49,17 @@ type bricksCliTokenSource struct {
 
 func (ts *bricksCliTokenSource) Token() (*oauth2.Token, error) {
 	what := []string{"auth", "token", "--host", ts.cfg.Host}
+
 	if ts.cfg.IsAccountClient() {
 		what = append(what, "--account-id", ts.cfg.AccountID)
 	}
-	out, err := exec.Command("bricks", what...).Output()
+
+	bricksCli := ts.cfg.BricksCliPath
+	if bricksCli == "" {
+		bricksCli = "bricks"
+	}
+
+	out, err := exec.Command(bricksCli, what...).Output()
 	if ee, ok := err.(*exec.ExitError); ok {
 		return nil, fmt.Errorf("cannot get access token: %s", string(ee.Stderr))
 	}
