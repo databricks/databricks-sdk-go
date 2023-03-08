@@ -7,6 +7,7 @@ import (
 
 // NodeTypeRequest is a wrapper for local filtering of node types
 type NodeTypeRequest struct {
+	Id                    string `json:"id,omitempty"`
 	MinMemoryGB           int32  `json:"min_memory_gb,omitempty"`
 	GBPerCore             int32  `json:"gb_per_core,omitempty"`
 	MinCores              int32  `json:"min_cores,omitempty"`
