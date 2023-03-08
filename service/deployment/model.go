@@ -43,10 +43,19 @@ type CreateAwsKeyInfo struct {
 	ReuseKeyForClusterVolumes bool `json:"reuse_key_for_cluster_volumes,omitempty"`
 }
 
+type CreateCredentialAwsCredentials struct {
+	StsRole *CreateCredentialStsRole `json:"sts_role,omitempty"`
+}
+
 type CreateCredentialRequest struct {
-	AwsCredentials AwsCredentials `json:"aws_credentials"`
+	AwsCredentials CreateCredentialAwsCredentials `json:"aws_credentials"`
 	// The human-readable name of the credential configuration object.
 	CredentialsName string `json:"credentials_name"`
+}
+
+type CreateCredentialStsRole struct {
+	// The Amazon Resource Name (ARN) of the cross account role.
+	RoleArn string `json:"role_arn,omitempty"`
 }
 
 type CreateCustomerManagedKeyRequest struct {
@@ -155,10 +164,10 @@ type CreateWorkspaceRequest struct {
 	// [AWS Pricing]: https://databricks.com/product/aws-pricing
 	PricingTier PricingTier `json:"pricing_tier,omitempty"`
 	// ID of the workspace's private access settings object. Only used for
-	// PrivateLink (Public Preview). This ID must be specified for customers
-	// using [AWS PrivateLink] for either front-end (user-to-workspace
-	// connection), back-end (data plane to control plane connection), or both
-	// connection types.
+	// PrivateLink. This ID must be specified for customers using [AWS
+	// PrivateLink] for either front-end (user-to-workspace connection),
+	// back-end (data plane to control plane connection), or both connection
+	// types.
 	//
 	// Before configuring PrivateLink, read the [Databricks article about
 	// PrivateLink].
@@ -429,10 +438,10 @@ type GetWorkspaceRequest struct {
 // The configurations for the GKE cluster of a Databricks workspace.
 type GkeConfig struct {
 	// Specifies the network connectivity types for the GKE nodes and the GKE
-	// master network. \n
+	// master network.
 	//
 	// Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the
-	// workspace. The GKE nodes will not have public IPs.\n
+	// workspace. The GKE nodes will not have public IPs.
 	//
 	// Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of
 	// a public GKE cluster have public IP addresses.
@@ -445,10 +454,10 @@ type GkeConfig struct {
 }
 
 // Specifies the network connectivity types for the GKE nodes and the GKE master
-// network. \n
+// network.
 //
 // Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the
-// workspace. The GKE nodes will not have public IPs.\n
+// workspace. The GKE nodes will not have public IPs.
 //
 // Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a
 // public GKE cluster have public IP addresses.
@@ -632,7 +641,6 @@ func (pt *PricingTier) Type() string {
 
 // The private access level controls which VPC endpoints can connect to the UI
 // or API of any workspace that attaches this private access settings object. *
-// `ANY` (deprecated): Any VPC endpoint can connect to your workspace. *
 // `ACCOUNT` level access (the default) allows only VPC endpoints that are
 // registered in your Databricks account connect to your workspace. * `ENDPOINT`
 // level access allows only specified VPC endpoints connect to your workspace.
@@ -640,8 +648,6 @@ func (pt *PricingTier) Type() string {
 type PrivateAccessLevel string
 
 const PrivateAccessLevelAccount PrivateAccessLevel = `ACCOUNT`
-
-const PrivateAccessLevelAny PrivateAccessLevel = `ANY`
 
 const PrivateAccessLevelEndpoint PrivateAccessLevel = `ENDPOINT`
 
@@ -653,11 +659,11 @@ func (pal *PrivateAccessLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (pal *PrivateAccessLevel) Set(v string) error {
 	switch v {
-	case `ACCOUNT`, `ANY`, `ENDPOINT`:
+	case `ACCOUNT`, `ENDPOINT`:
 		*pal = PrivateAccessLevel(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ACCOUNT", "ANY", "ENDPOINT"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ACCOUNT", "ENDPOINT"`, v)
 	}
 }
 
@@ -686,11 +692,10 @@ type PrivateAccessSettings struct {
 	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
 	// The private access level controls which VPC endpoints can connect to the
 	// UI or API of any workspace that attaches this private access settings
-	// object. * `ANY` (deprecated): Any VPC endpoint can connect to your
-	// workspace. * `ACCOUNT` level access (the default) allows only VPC
-	// endpoints that are registered in your Databricks account connect to your
-	// workspace. * `ENDPOINT` level access allows only specified VPC endpoints
-	// connect to your workspace. For details, see `allowed_vpc_endpoint_ids`.
+	// object. * `ACCOUNT` level access (the default) allows only VPC endpoints
+	// that are registered in your Databricks account connect to your workspace.
+	// * `ENDPOINT` level access allows only specified VPC endpoints connect to
+	// your workspace. For details, see `allowed_vpc_endpoint_ids`.
 	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
 	// Databricks private access settings ID.
 	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
@@ -745,14 +750,9 @@ type UpdateWorkspaceRequest struct {
 	// object. This parameter is available only for updating failed workspaces.
 	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
 	// The ID of the workspace's network configuration object. Used only if you
-	// already use a customer-managed VPC. This change is supported only if you
-	// specified a network configuration ID when the workspace was created. In
-	// other words, you cannot switch from a Databricks-managed VPC to a
-	// customer-managed VPC. This parameter is available for updating both
-	// failed and running workspaces. **Note**: You cannot use a network
-	// configuration update in this API to add support for PrivateLink (Public
-	// Preview). To add PrivateLink to an existing workspace, contact your
-	// Databricks representative.
+	// already use a customer-managed VPC. For failed workspaces only, you can
+	// switch from a Databricks-managed VPC to a customer-managed VPC by
+	// updating the workspace to add a network configuration ID.
 	NetworkId string `json:"network_id,omitempty"`
 	// The ID of the workspace's storage configuration object. This parameter is
 	// available only for updating failed workspaces.
@@ -782,11 +782,10 @@ type UpsertPrivateAccessSettingsRequest struct {
 	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
 	// The private access level controls which VPC endpoints can connect to the
 	// UI or API of any workspace that attaches this private access settings
-	// object. * `ANY` (deprecated): Any VPC endpoint can connect to your
-	// workspace. * `ACCOUNT` level access (the default) allows only VPC
-	// endpoints that are registered in your Databricks account connect to your
-	// workspace. * `ENDPOINT` level access allows only specified VPC endpoints
-	// connect to your workspace. For details, see `allowed_vpc_endpoint_ids`.
+	// object. * `ACCOUNT` level access (the default) allows only VPC endpoints
+	// that are registered in your Databricks account connect to your workspace.
+	// * `ENDPOINT` level access allows only specified VPC endpoints connect to
+	// your workspace. For details, see `allowed_vpc_endpoint_ids`.
 	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" url:"-"`
@@ -975,10 +974,9 @@ type Workspace struct {
 	// [AWS Pricing]: https://databricks.com/product/aws-pricing
 	PricingTier PricingTier `json:"pricing_tier,omitempty"`
 	// ID of the workspace's private access settings object. Only used for
-	// PrivateLink (Public Preview). You must specify this ID if you are using
-	// [AWS PrivateLink] for either front-end (user-to-workspace connection),
-	// back-end (data plane to control plane connection), or both connection
-	// types.
+	// PrivateLink. You must specify this ID if you are using [AWS PrivateLink]
+	// for either front-end (user-to-workspace connection), back-end (data plane
+	// to control plane connection), or both connection types.
 	//
 	// Before configuring PrivateLink, read the [Databricks article about
 	// PrivateLink].

@@ -242,6 +242,14 @@ type ServedModelOutput struct {
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
 	// Information corresponding to the state of the Served Model.
 	State *ServedModelState `json:"state,omitempty"`
+	// The workload size of the served model. The workload size corresponds to a
+	// range of provisioned concurrency that the compute will autoscale between.
+	// A single unit of provisioned concurrency can process one request at a
+	// time. Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
+	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
+	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
+	// the provisioned concurrency for each workload size will be 0.
+	WorkloadSize string `json:"workload_size,omitempty"`
 }
 
 type ServedModelSpec struct {

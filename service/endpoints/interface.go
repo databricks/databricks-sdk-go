@@ -6,8 +6,8 @@ import (
 	"context"
 )
 
-// The Serverless Real-Time Inference Serving Endpoints API allows you to
-// create, update, and delete model serving endpoints.
+// The Serving Endpoints API allows you to create, update, and delete model
+// serving endpoints.
 //
 // You can use a serving endpoint to serve models from the Databricks Model
 // Registry. Endpoints expose the underlying models as scalable REST API
@@ -25,7 +25,6 @@ type ServingEndpointsService interface {
 	// given serving endpoint's served model.
 	//
 	// Retrieves the build logs associated with the provided served model.
-	// Please note that this API is in preview and may change in the future.
 	BuildLogs(ctx context.Context, request BuildLogsRequest) (*BuildLogsResponse, error)
 
 	// Create a new serving endpoint.
@@ -38,8 +37,7 @@ type ServingEndpointsService interface {
 	// time in Prometheus or OpenMetrics exposition format.
 	//
 	// Retrieves the metrics associated with the provided serving endpoint in
-	// either Prometheus or OpenMetrics exposition format. Please note that this
-	// API is in preview and may change in the future.
+	// either Prometheus or OpenMetrics exposition format.
 	ExportMetrics(ctx context.Context, request ExportMetricsRequest) error
 
 	// Get a single serving endpoint.
@@ -54,7 +52,6 @@ type ServingEndpointsService interface {
 	// endpoint's served model.
 	//
 	// Retrieves the service logs associated with the provided served model.
-	// Please note that this API is in preview and may change in the future.
 	Logs(ctx context.Context, request LogsRequest) (*ServerLogsResponse, error)
 
 	// Query a serving endpoint with provided model input.

@@ -38,8 +38,8 @@ type ExperimentsService interface {
 	//
 	// This endpoint will return deleted experiments, but prefers the active
 	// experiment if an active and deleted experiment share the same name. If
-	// multiple deleted\nexperiments share the same name, the API will return
-	// one of them.
+	// multiple deleted experiments share the same name, the API will return one
+	// of them.
 	//
 	// Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name
 	// exists.S
@@ -54,11 +54,12 @@ type ExperimentsService interface {
 
 	// Restores an experiment.
 	//
-	// "Restore an experiment marked for deletion. This also
-	// restores\nassociated metadata, runs, metrics, params, and tags. If
-	// experiment uses FileStore, underlying\nartifacts associated with
-	// experiment are also restored.\n\nThrows `RESOURCE_DOES_NOT_EXIST` if
-	// experiment was never created or was permanently deleted.",
+	// "Restore an experiment marked for deletion. This also restores associated
+	// metadata, runs, metrics, params, and tags. If experiment uses FileStore,
+	// underlying artifacts associated with experiment are also restored.
+	//
+	// Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was
+	// permanently deleted.",
 	Restore(ctx context.Context, request RestoreExperiment) error
 
 	// Search experiments.
@@ -188,7 +189,7 @@ type MLflowRunsService interface {
 	// API request may be up to 1 MB in size and contain:
 	//
 	// * No more than 1000 metrics, params, and tags in total * Up to 1000
-	// metrics\n- Up to 100 params * Up to 100 tags
+	// metrics - Up to 100 params * Up to 100 tags
 	//
 	// For example, a valid request might contain 900 metrics, 50 params, and 50
 	// tags, but logging 900 metrics, 50 params, and 51 tags is invalid.

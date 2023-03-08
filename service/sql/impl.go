@@ -22,21 +22,8 @@ func (a *alertsImpl) Create(ctx context.Context, request CreateAlert) (*Alert, e
 	return &alert, err
 }
 
-func (a *alertsImpl) CreateSchedule(ctx context.Context, request CreateRefreshSchedule) (*RefreshSchedule, error) {
-	var refreshSchedule RefreshSchedule
-	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v/refresh-schedules", request.AlertId)
-	err := a.client.Do(ctx, http.MethodPost, path, request, &refreshSchedule)
-	return &refreshSchedule, err
-}
-
 func (a *alertsImpl) Delete(ctx context.Context, request DeleteAlertRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
-	return err
-}
-
-func (a *alertsImpl) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v/refresh-schedules/%v", request.AlertId, request.ScheduleId)
 	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
 	return err
 }
@@ -48,38 +35,11 @@ func (a *alertsImpl) Get(ctx context.Context, request GetAlertRequest) (*Alert, 
 	return &alert, err
 }
 
-func (a *alertsImpl) GetSubscriptions(ctx context.Context, request GetSubscriptionsRequest) ([]Subscription, error) {
-	var subscriptionList []Subscription
-	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v/subscriptions", request.AlertId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &subscriptionList)
-	return subscriptionList, err
-}
-
 func (a *alertsImpl) List(ctx context.Context) ([]Alert, error) {
 	var alertList []Alert
 	path := "/api/2.0/preview/sql/alerts"
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &alertList)
 	return alertList, err
-}
-
-func (a *alertsImpl) ListSchedules(ctx context.Context, request ListSchedulesRequest) ([]RefreshSchedule, error) {
-	var refreshScheduleList []RefreshSchedule
-	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v/refresh-schedules", request.AlertId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &refreshScheduleList)
-	return refreshScheduleList, err
-}
-
-func (a *alertsImpl) Subscribe(ctx context.Context, request CreateSubscription) (*Subscription, error) {
-	var subscription Subscription
-	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v/subscriptions", request.AlertId)
-	err := a.client.Do(ctx, http.MethodPost, path, request, &subscription)
-	return &subscription, err
-}
-
-func (a *alertsImpl) Unsubscribe(ctx context.Context, request UnsubscribeRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v/subscriptions/%v", request.AlertId, request.SubscriptionId)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
-	return err
 }
 
 func (a *alertsImpl) Update(ctx context.Context, request EditAlert) error {

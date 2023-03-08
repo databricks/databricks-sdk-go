@@ -25,10 +25,6 @@ func NewAlerts(client *client.DatabricksClient) *AlertsAPI {
 // a Databricks SQL object that periodically runs a query, evaluates a condition
 // of its result, and notifies one or more users and/or alert destinations if
 // the condition was met.
-//
-// **Note**: Programmatic operations on refresh schedules via the Databricks SQL
-// API are deprecated. Alert refresh schedules can be created, updated, fetched
-// and deleted using Jobs API, e.g. :method:jobs/create.
 type AlertsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(AlertsService)
@@ -56,18 +52,6 @@ func (a *AlertsAPI) Create(ctx context.Context, request CreateAlert) (*Alert, er
 	return a.impl.Create(ctx, request)
 }
 
-// [DEPRECATED] Create a refresh schedule.
-//
-// Creates a new refresh schedule for an alert.
-//
-// **Note:** The structure of refresh schedules is subject to change.
-//
-// **Note:** This API is deprecated: Use :method:jobs/create to create a job
-// with the alert.
-func (a *AlertsAPI) CreateSchedule(ctx context.Context, request CreateRefreshSchedule) (*RefreshSchedule, error) {
-	return a.impl.CreateSchedule(ctx, request)
-}
-
 // Delete an alert.
 //
 // Deletes an alert. Deleted alerts are no longer accessible and cannot be
@@ -88,31 +72,6 @@ func (a *AlertsAPI) DeleteByAlertId(ctx context.Context, alertId string) error {
 	})
 }
 
-// [DEPRECATED] Delete a refresh schedule.
-//
-// Deletes an alert's refresh schedule. The refresh schedule specifies when to
-// refresh and evaluate the associated query result.
-//
-// **Note:** This API is deprecated: Use :method:jobs/delete to delete a job for
-// the alert.
-func (a *AlertsAPI) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error {
-	return a.impl.DeleteSchedule(ctx, request)
-}
-
-// [DEPRECATED] Delete a refresh schedule.
-//
-// Deletes an alert's refresh schedule. The refresh schedule specifies when to
-// refresh and evaluate the associated query result.
-//
-// **Note:** This API is deprecated: Use :method:jobs/delete to delete a job for
-// the alert.
-func (a *AlertsAPI) DeleteScheduleByAlertIdAndScheduleId(ctx context.Context, alertId string, scheduleId string) error {
-	return a.impl.DeleteSchedule(ctx, DeleteScheduleRequest{
-		AlertId:    alertId,
-		ScheduleId: scheduleId,
-	})
-}
-
 // Get an alert.
 //
 // Gets an alert.
@@ -125,34 +84,6 @@ func (a *AlertsAPI) Get(ctx context.Context, request GetAlertRequest) (*Alert, e
 // Gets an alert.
 func (a *AlertsAPI) GetByAlertId(ctx context.Context, alertId string) (*Alert, error) {
 	return a.impl.Get(ctx, GetAlertRequest{
-		AlertId: alertId,
-	})
-}
-
-// [DEPRECATED] Get an alert's subscriptions.
-//
-// Get the subscriptions for an alert. An alert subscription represents exactly
-// one recipient being notified whenever the alert is triggered. The alert
-// recipient is specified by either the `user` field or the `destination` field.
-// The `user` field is ignored if `destination` is non-`null`.
-//
-// **Note:** This API is deprecated: Use :method:jobs/get to get the
-// subscriptions associated with a job for an alert.
-func (a *AlertsAPI) GetSubscriptions(ctx context.Context, request GetSubscriptionsRequest) ([]Subscription, error) {
-	return a.impl.GetSubscriptions(ctx, request)
-}
-
-// [DEPRECATED] Get an alert's subscriptions.
-//
-// Get the subscriptions for an alert. An alert subscription represents exactly
-// one recipient being notified whenever the alert is triggered. The alert
-// recipient is specified by either the `user` field or the `destination` field.
-// The `user` field is ignored if `destination` is non-`null`.
-//
-// **Note:** This API is deprecated: Use :method:jobs/get to get the
-// subscriptions associated with a job for an alert.
-func (a *AlertsAPI) GetSubscriptionsByAlertId(ctx context.Context, alertId string) ([]Subscription, error) {
-	return a.impl.GetSubscriptions(ctx, GetSubscriptionsRequest{
 		AlertId: alertId,
 	})
 }
@@ -217,71 +148,6 @@ func (a *AlertsAPI) GetByName(ctx context.Context, name string) (*Alert, error) 
 	return &alternatives[0], nil
 }
 
-// [DEPRECATED] Get refresh schedules.
-//
-// Gets the refresh schedules for the specified alert. Alerts can have refresh
-// schedules that specify when to refresh and evaluate the associated query
-// result.
-//
-// **Note:** Although refresh schedules are returned in a list, only one refresh
-// schedule per alert is currently supported. The structure of refresh schedules
-// is subject to change.
-//
-// **Note:** This API is deprecated: Use :method:jobs/list to list jobs and
-// filter by the alert.
-func (a *AlertsAPI) ListSchedules(ctx context.Context, request ListSchedulesRequest) ([]RefreshSchedule, error) {
-	return a.impl.ListSchedules(ctx, request)
-}
-
-// [DEPRECATED] Get refresh schedules.
-//
-// Gets the refresh schedules for the specified alert. Alerts can have refresh
-// schedules that specify when to refresh and evaluate the associated query
-// result.
-//
-// **Note:** Although refresh schedules are returned in a list, only one refresh
-// schedule per alert is currently supported. The structure of refresh schedules
-// is subject to change.
-//
-// **Note:** This API is deprecated: Use :method:jobs/list to list jobs and
-// filter by the alert.
-func (a *AlertsAPI) ListSchedulesByAlertId(ctx context.Context, alertId string) ([]RefreshSchedule, error) {
-	return a.impl.ListSchedules(ctx, ListSchedulesRequest{
-		AlertId: alertId,
-	})
-}
-
-// [DEPRECATED] Subscribe to an alert.
-//
-// **Note:** This API is deprecated: Use :method:jobs/update to subscribe to a
-// job for an alert.
-func (a *AlertsAPI) Subscribe(ctx context.Context, request CreateSubscription) (*Subscription, error) {
-	return a.impl.Subscribe(ctx, request)
-}
-
-// [DEPRECATED] Unsubscribe to an alert.
-//
-// Unsubscribes a user or a destination to an alert.
-//
-// **Note:** This API is deprecated: Use :method:jobs/update to unsubscribe to a
-// job for an alert.
-func (a *AlertsAPI) Unsubscribe(ctx context.Context, request UnsubscribeRequest) error {
-	return a.impl.Unsubscribe(ctx, request)
-}
-
-// [DEPRECATED] Unsubscribe to an alert.
-//
-// Unsubscribes a user or a destination to an alert.
-//
-// **Note:** This API is deprecated: Use :method:jobs/update to unsubscribe to a
-// job for an alert.
-func (a *AlertsAPI) UnsubscribeByAlertIdAndSubscriptionId(ctx context.Context, alertId string, subscriptionId string) error {
-	return a.impl.Unsubscribe(ctx, UnsubscribeRequest{
-		AlertId:        alertId,
-		SubscriptionId: subscriptionId,
-	})
-}
-
 // Update an alert.
 //
 // Updates an alert.
@@ -302,10 +168,6 @@ func NewDashboards(client *client.DatabricksClient) *DashboardsAPI {
 // query IDs. The API can also be used to duplicate multiple dashboards at once
 // since you can get a dashboard definition with a GET request and then POST it
 // to create a new one.
-//
-// **Note**: Programmatic operations on refresh schedules via the Databricks SQL
-// API are deprecated. Dashboard refresh schedules can be created, updated,
-// fetched and deleted using Jobs API, e.g. :method:jobs/create.
 type DashboardsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(DashboardsService)
@@ -640,11 +502,7 @@ func NewQueries(client *client.DatabricksClient) *QueriesAPI {
 
 // These endpoints are used for CRUD operations on query definitions. Query
 // definitions include the target SQL warehouse, query text, name, description,
-// tags, execution schedule, parameters, and visualizations.
-//
-// **Note**: Programmatic operations on refresh schedules via the Databricks SQL
-// API are deprecated. Query refresh schedules can be created, updated, fetched
-// and deleted using Jobs API, e.g. :method:jobs/create.
+// tags, parameters, and visualizations.
 type QueriesAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(QueriesService)
@@ -906,8 +764,8 @@ func NewStatementExecution(client *client.DatabricksClient) *StatementExecutionA
 // asynchronously, based on the `wait_timeout` setting. When set between 5-50
 // seconds (default: 10) the call behaves synchronously and waits for results up
 // to the specified timeout; when set to `0s`, the call is asynchronous and
-// responds immediately with a statement ID that can be used to fetch the
-// results in a separate call.
+// responds immediately with a statement ID that can be used to poll for status
+// or fetch the results in a separate call.
 //
 // **Call mode: synchronous**
 //
@@ -993,8 +851,8 @@ func NewStatementExecution(client *client.DatabricksClient) *StatementExecutionA
 // :method:statementexecution/getStatementResultChunkN request.
 //
 // When using this mode, each chunk may be fetched once, and in order. A chunk
-// without a field `next_chunk_internal_link` indicates we reached the last
-// chunk and all chunks have been fetched from the result set.
+// without a field `next_chunk_internal_link` indicates the last chunk was
+// reached and all chunks have been fetched from the result set.
 //
 // **Use case: large result sets with EXTERNAL_LINKS + ARROW_STREAM**
 //
@@ -1087,9 +945,9 @@ func (a *StatementExecutionAPI) CancelExecution(ctx context.Context, request Can
 	return a.impl.CancelExecution(ctx, request)
 }
 
-// Execute an SQL statement.
+// Execute a SQL statement.
 //
-// Execute an SQL statement, and if flagged as such, await its result for a
+// Execute a SQL statement, and if flagged as such, await its result for a
 // specified time.
 func (a *StatementExecutionAPI) ExecuteStatement(ctx context.Context, request ExecuteStatementRequest) (*ExecuteStatementResponse, error) {
 	return a.impl.ExecuteStatement(ctx, request)
@@ -1097,8 +955,8 @@ func (a *StatementExecutionAPI) ExecuteStatement(ctx context.Context, request Ex
 
 // Get status, manifest, and result first chunk.
 //
-// Polls for statement status; when status.state=SUCCEEDED will also return the
-// result manifest, and the first chunk of result data.
+// Polls for the statement's status; when `status.state=SUCCEEDED` it will also
+// return the result manifest and the first chunk of the result data.
 //
 // **NOTE** This call currently may take up to 5 seconds to get the latest
 // status and result.
@@ -1108,8 +966,8 @@ func (a *StatementExecutionAPI) GetStatement(ctx context.Context, request GetSta
 
 // Get status, manifest, and result first chunk.
 //
-// Polls for statement status; when status.state=SUCCEEDED will also return the
-// result manifest, and the first chunk of result data.
+// Polls for the statement's status; when `status.state=SUCCEEDED` it will also
+// return the result manifest and the first chunk of the result data.
 //
 // **NOTE** This call currently may take up to 5 seconds to get the latest
 // status and result.

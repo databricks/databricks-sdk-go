@@ -50,7 +50,7 @@ type AccountClient struct {
 	// workspace storage encryption requires that the workspace is on the E2
 	// version of the platform. If you have an older workspace, it might not be
 	// on the E2 version of the platform. If you are not sure, contact your
-	// Databricks reprsentative.
+	// Databricks representative.
 	EncryptionKeys *deployment.EncryptionKeysAPI
 
 	// Groups simplify identity management, making it easier to assign access to

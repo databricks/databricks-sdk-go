@@ -10,10 +10,6 @@ import (
 // a Databricks SQL object that periodically runs a query, evaluates a condition
 // of its result, and notifies one or more users and/or alert destinations if
 // the condition was met.
-//
-// **Note**: Programmatic operations on refresh schedules via the Databricks SQL
-// API are deprecated. Alert refresh schedules can be created, updated, fetched
-// and deleted using Jobs API, e.g. :method:jobs/create.
 type AlertsService interface {
 
 	// Create an alert.
@@ -23,16 +19,6 @@ type AlertsService interface {
 	// alert destinations if the condition was met.
 	Create(ctx context.Context, request CreateAlert) (*Alert, error)
 
-	// [DEPRECATED] Create a refresh schedule.
-	//
-	// Creates a new refresh schedule for an alert.
-	//
-	// **Note:** The structure of refresh schedules is subject to change.
-	//
-	// **Note:** This API is deprecated: Use :method:jobs/create to create a job
-	// with the alert.
-	CreateSchedule(ctx context.Context, request CreateRefreshSchedule) (*RefreshSchedule, error)
-
 	// Delete an alert.
 	//
 	// Deletes an alert. Deleted alerts are no longer accessible and cannot be
@@ -40,64 +26,15 @@ type AlertsService interface {
 	// to the trash.
 	Delete(ctx context.Context, request DeleteAlertRequest) error
 
-	// [DEPRECATED] Delete a refresh schedule.
-	//
-	// Deletes an alert's refresh schedule. The refresh schedule specifies when
-	// to refresh and evaluate the associated query result.
-	//
-	// **Note:** This API is deprecated: Use :method:jobs/delete to delete a job
-	// for the alert.
-	DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error
-
 	// Get an alert.
 	//
 	// Gets an alert.
 	Get(ctx context.Context, request GetAlertRequest) (*Alert, error)
 
-	// [DEPRECATED] Get an alert's subscriptions.
-	//
-	// Get the subscriptions for an alert. An alert subscription represents
-	// exactly one recipient being notified whenever the alert is triggered. The
-	// alert recipient is specified by either the `user` field or the
-	// `destination` field. The `user` field is ignored if `destination` is
-	// non-`null`.
-	//
-	// **Note:** This API is deprecated: Use :method:jobs/get to get the
-	// subscriptions associated with a job for an alert.
-	GetSubscriptions(ctx context.Context, request GetSubscriptionsRequest) ([]Subscription, error)
-
 	// Get alerts.
 	//
 	// Gets a list of alerts.
 	List(ctx context.Context) ([]Alert, error)
-
-	// [DEPRECATED] Get refresh schedules.
-	//
-	// Gets the refresh schedules for the specified alert. Alerts can have
-	// refresh schedules that specify when to refresh and evaluate the
-	// associated query result.
-	//
-	// **Note:** Although refresh schedules are returned in a list, only one
-	// refresh schedule per alert is currently supported. The structure of
-	// refresh schedules is subject to change.
-	//
-	// **Note:** This API is deprecated: Use :method:jobs/list to list jobs and
-	// filter by the alert.
-	ListSchedules(ctx context.Context, request ListSchedulesRequest) ([]RefreshSchedule, error)
-
-	// [DEPRECATED] Subscribe to an alert.
-	//
-	// **Note:** This API is deprecated: Use :method:jobs/update to subscribe to
-	// a job for an alert.
-	Subscribe(ctx context.Context, request CreateSubscription) (*Subscription, error)
-
-	// [DEPRECATED] Unsubscribe to an alert.
-	//
-	// Unsubscribes a user or a destination to an alert.
-	//
-	// **Note:** This API is deprecated: Use :method:jobs/update to unsubscribe
-	// to a job for an alert.
-	Unsubscribe(ctx context.Context, request UnsubscribeRequest) error
 
 	// Update an alert.
 	//
@@ -110,10 +47,6 @@ type AlertsService interface {
 // query IDs. The API can also be used to duplicate multiple dashboards at once
 // since you can get a dashboard definition with a GET request and then POST it
 // to create a new one.
-//
-// **Note**: Programmatic operations on refresh schedules via the Databricks SQL
-// API are deprecated. Dashboard refresh schedules can be created, updated,
-// fetched and deleted using Jobs API, e.g. :method:jobs/create.
 type DashboardsService interface {
 
 	// Create a dashboard object.
@@ -202,11 +135,7 @@ type DbsqlPermissionsService interface {
 
 // These endpoints are used for CRUD operations on query definitions. Query
 // definitions include the target SQL warehouse, query text, name, description,
-// tags, execution schedule, parameters, and visualizations.
-//
-// **Note**: Programmatic operations on refresh schedules via the Databricks SQL
-// API are deprecated. Query refresh schedules can be created, updated, fetched
-// and deleted using Jobs API, e.g. :method:jobs/create.
+// tags, parameters, and visualizations.
 type QueriesService interface {
 
 	// Create a new query definition.
@@ -293,8 +222,8 @@ type QueryHistoryService interface {
 // asynchronously, based on the `wait_timeout` setting. When set between 5-50
 // seconds (default: 10) the call behaves synchronously and waits for results up
 // to the specified timeout; when set to `0s`, the call is asynchronous and
-// responds immediately with a statement ID that can be used to fetch the
-// results in a separate call.
+// responds immediately with a statement ID that can be used to poll for status
+// or fetch the results in a separate call.
 //
 // **Call mode: synchronous**
 //
@@ -380,8 +309,8 @@ type QueryHistoryService interface {
 // :method:statementexecution/getStatementResultChunkN request.
 //
 // When using this mode, each chunk may be fetched once, and in order. A chunk
-// without a field `next_chunk_internal_link` indicates we reached the last
-// chunk and all chunks have been fetched from the result set.
+// without a field `next_chunk_internal_link` indicates the last chunk was
+// reached and all chunks have been fetched from the result set.
 //
 // **Use case: large result sets with EXTERNAL_LINKS + ARROW_STREAM**
 //
@@ -456,16 +385,16 @@ type StatementExecutionService interface {
 	// status to see the terminal state.
 	CancelExecution(ctx context.Context, request CancelExecutionRequest) error
 
-	// Execute an SQL statement.
+	// Execute a SQL statement.
 	//
-	// Execute an SQL statement, and if flagged as such, await its result for a
+	// Execute a SQL statement, and if flagged as such, await its result for a
 	// specified time.
 	ExecuteStatement(ctx context.Context, request ExecuteStatementRequest) (*ExecuteStatementResponse, error)
 
 	// Get status, manifest, and result first chunk.
 	//
-	// Polls for statement status; when status.state=SUCCEEDED will also return
-	// the result manifest, and the first chunk of result data.
+	// Polls for the statement's status; when `status.state=SUCCEEDED` it will
+	// also return the result manifest and the first chunk of the result data.
 	//
 	// **NOTE** This call currently may take up to 5 seconds to get the latest
 	// status and result.
