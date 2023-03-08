@@ -65,6 +65,11 @@ type CatalogInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of catalog creator.
 	CreatedBy string `json:"created_by,omitempty"`
+
+	EffectiveAutoMaintenanceFlag *EffectiveAutoMaintenanceFlag `json:"effective_auto_maintenance_flag,omitempty"`
+	// Whether auto maintenance should be enabled for this object and objects
+	// under it.
+	EnableAutoMaintenance EnableAutoMaintenance `json:"enable_auto_maintenance,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of catalog.
@@ -455,10 +460,12 @@ type CreateRecipient struct {
 	AuthenticationType AuthenticationType `json:"authentication_type"`
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
-	// The global Unity Catalog metastore id provided by the data recipient.\n
+	// The global Unity Catalog metastore id provided by the data recipient.
+	//
 	// This field is required when the __authentication_type__ is
-	// **DATABRICKS**.\n The identifier is of format
-	// __cloud__:__region__:__metastore-uuid__.
+	// **DATABRICKS**.
+	//
+	// The identifier is of format __cloud__:__region__:__metastore-uuid__.
 	DataRecipientGlobalMetastoreId any `json:"data_recipient_global_metastore_id,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
@@ -466,7 +473,7 @@ type CreateRecipient struct {
 	Name string `json:"name"`
 	// Username of the recipient owner.
 	Owner string `json:"owner,omitempty"`
-	// Recipient properties as map of string key-value pairs.\n
+	// Recipient properties as map of string key-value pairs.
 	PropertiesKvpairs any `json:"properties_kvpairs,omitempty"`
 	// The one-time sharing code provided by the data recipient. This field is
 	// required when the __authentication_type__ is **DATABRICKS**.
@@ -646,7 +653,8 @@ type DeleteStorageCredentialRequest struct {
 
 // Delete a table constraint
 type DeleteTableConstraintRequest struct {
-	// If true, try deleting all child constraints of the current constraint.\n
+	// If true, try deleting all child constraints of the current constraint.
+	//
 	// If false, reject this operation if the current constraint has any child
 	// constraints.
 	Cascade bool `json:"-" url:"cascade"`
@@ -671,6 +679,47 @@ type Dependency struct {
 	Table *TableDependency `json:"table,omitempty"`
 }
 
+type EffectiveAutoMaintenanceFlag struct {
+	// The name of the object from which the flag was inherited. If there was no
+	// inheritance, this field is left blank.
+	InheritedFromName string `json:"inherited_from_name,omitempty"`
+	// The type of the object from which the flag was inherited. If there was no
+	// inheritance, this field is left blank.
+	InheritedFromType EffectiveAutoMaintenanceFlagInheritedFromType `json:"inherited_from_type,omitempty"`
+	// Whether auto maintenance should be enabled for this object and objects
+	// under it.
+	Value EnableAutoMaintenance `json:"value"`
+}
+
+// The type of the object from which the flag was inherited. If there was no
+// inheritance, this field is left blank.
+type EffectiveAutoMaintenanceFlagInheritedFromType string
+
+const EffectiveAutoMaintenanceFlagInheritedFromTypeCatalog EffectiveAutoMaintenanceFlagInheritedFromType = `CATALOG`
+
+const EffectiveAutoMaintenanceFlagInheritedFromTypeSchema EffectiveAutoMaintenanceFlagInheritedFromType = `SCHEMA`
+
+// String representation for [fmt.Print]
+func (eamfift *EffectiveAutoMaintenanceFlagInheritedFromType) String() string {
+	return string(*eamfift)
+}
+
+// Set raw string value and validate it against allowed values
+func (eamfift *EffectiveAutoMaintenanceFlagInheritedFromType) Set(v string) error {
+	switch v {
+	case `CATALOG`, `SCHEMA`:
+		*eamfift = EffectiveAutoMaintenanceFlagInheritedFromType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CATALOG", "SCHEMA"`, v)
+	}
+}
+
+// Type always returns EffectiveAutoMaintenanceFlagInheritedFromType to satisfy [pflag.Value] interface
+func (eamfift *EffectiveAutoMaintenanceFlagInheritedFromType) Type() string {
+	return "EffectiveAutoMaintenanceFlagInheritedFromType"
+}
+
 type EffectivePermissionsList struct {
 	// The privileges conveyed to each principal (either directly or via
 	// inheritance)
@@ -678,11 +727,13 @@ type EffectivePermissionsList struct {
 }
 
 type EffectivePrivilege struct {
-	// The full name of the object that conveys this privilege via
-	// inheritance.\n This field is omitted when privilege is not inherited
-	// (it's assigned to the securable itself).
+	// The full name of the object that conveys this privilege via inheritance.
+	//
+	// This field is omitted when privilege is not inherited (it's assigned to
+	// the securable itself).
 	InheritedFromName string `json:"inherited_from_name,omitempty"`
-	// The type of the object that conveys this privilege via inheritance.\n
+	// The type of the object that conveys this privilege via inheritance.
+	//
 	// This field is omitted when privilege is not inherited (it's assigned to
 	// the securable itself).
 	InheritedFromType SecurableType `json:"inherited_from_type,omitempty"`
@@ -696,6 +747,37 @@ type EffectivePrivilegeAssignment struct {
 	// The privileges conveyed to the principal (either directly or via
 	// inheritance).
 	Privileges []EffectivePrivilege `json:"privileges,omitempty"`
+}
+
+// Whether auto maintenance should be enabled for this object and objects under
+// it.
+type EnableAutoMaintenance string
+
+const EnableAutoMaintenanceDisable EnableAutoMaintenance = `DISABLE`
+
+const EnableAutoMaintenanceEnable EnableAutoMaintenance = `ENABLE`
+
+const EnableAutoMaintenanceInherit EnableAutoMaintenance = `INHERIT`
+
+// String representation for [fmt.Print]
+func (eam *EnableAutoMaintenance) String() string {
+	return string(*eam)
+}
+
+// Set raw string value and validate it against allowed values
+func (eam *EnableAutoMaintenance) Set(v string) error {
+	switch v {
+	case `DISABLE`, `ENABLE`, `INHERIT`:
+		*eam = EnableAutoMaintenance(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DISABLE", "ENABLE", "INHERIT"`, v)
+	}
+}
+
+// Type always returns EnableAutoMaintenance to satisfy [pflag.Value] interface
+func (eam *EnableAutoMaintenance) Type() string {
+	return "EnableAutoMaintenance"
 }
 
 type ExternalLocationInfo struct {
@@ -1642,10 +1724,12 @@ type RecipientInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of recipient creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// The global Unity Catalog metastore id provided by the data recipient.\n
+	// The global Unity Catalog metastore id provided by the data recipient.
+	//
 	// This field is only present when the __authentication_type__ is
-	// **DATABRICKS**.\n The identifier is of format
-	// __cloud__:__region__:__metastore-uuid__.
+	// **DATABRICKS**.
+	//
+	// The identifier is of format __cloud__:__region__:__metastore-uuid__.
 	DataRecipientGlobalMetastoreId any `json:"data_recipient_global_metastore_id,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
@@ -1656,7 +1740,7 @@ type RecipientInfo struct {
 	Name string `json:"name,omitempty"`
 	// Username of the recipient owner.
 	Owner string `json:"owner,omitempty"`
-	// Recipient properties as map of string key-value pairs.\n
+	// Recipient properties as map of string key-value pairs.
 	PropertiesKvpairs any `json:"properties_kvpairs,omitempty"`
 	// Cloud region of the recipient's Unity Catalog Metstore. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
@@ -1737,6 +1821,11 @@ type SchemaInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
+
+	EffectiveAutoMaintenanceFlag *EffectiveAutoMaintenanceFlag `json:"effective_auto_maintenance_flag,omitempty"`
+	// Whether auto maintenance should be enabled for this object and objects
+	// under it.
+	EnableAutoMaintenance EnableAutoMaintenance `json:"enable_auto_maintenance,omitempty"`
 	// Full name of schema, in form of __catalog_name__.__schema_name__.
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
@@ -2013,6 +2102,11 @@ type TableInfo struct {
 	DeletedAt int64 `json:"deleted_at,omitempty"`
 	// Information pertaining to current state of the delta table.
 	DeltaRuntimePropertiesKvpairs any `json:"delta_runtime_properties_kvpairs,omitempty"`
+
+	EffectiveAutoMaintenanceFlag *EffectiveAutoMaintenanceFlag `json:"effective_auto_maintenance_flag,omitempty"`
+	// Whether auto maintenance should be enabled for this object and objects
+	// under it.
+	EnableAutoMaintenance EnableAutoMaintenance `json:"enable_auto_maintenance,omitempty"`
 	// Full name of table, in form of
 	// __catalog_name__.__schema_name__.__table_name__
 	FullName string `json:"full_name,omitempty"`
@@ -2240,10 +2334,11 @@ type UpdateRecipient struct {
 	Name string `json:"name,omitempty" url:"-"`
 	// Username of the recipient owner.
 	Owner string `json:"owner,omitempty"`
-	// Recipient properties as map of string key-value pairs.\n When provided in
-	// update request, the specified properties will override the existing
-	// properties. To add and remove properties, one would need to perform a
-	// read-modify-write.
+	// Recipient properties as map of string key-value pairs.
+	//
+	// When provided in update request, the specified properties will override
+	// the existing properties. To add and remove properties, one would need to
+	// perform a read-modify-write.
 	PropertiesKvpairs any `json:"properties_kvpairs,omitempty"`
 }
 

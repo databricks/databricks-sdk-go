@@ -29,8 +29,8 @@ func TestMwsAccLogDelivery(t *testing.T) {
 	}
 	creds, err := a.Credentials.Create(ctx, deployment.CreateCredentialRequest{
 		CredentialsName: RandomName("sdk-"),
-		AwsCredentials: deployment.AwsCredentials{
-			StsRole: &deployment.StsRole{
+		AwsCredentials: deployment.CreateCredentialAwsCredentials{
+			StsRole: &deployment.CreateCredentialStsRole{
 				RoleArn: GetEnvOrSkipTest(t, "TEST_LOGDELIVERY_ARN"),
 			},
 		},

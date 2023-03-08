@@ -38,10 +38,6 @@ type WorkspaceClient struct {
 	// is a Databricks SQL object that periodically runs a query, evaluates a
 	// condition of its result, and notifies one or more users and/or alert
 	// destinations if the condition was met.
-	//
-	// **Note**: Programmatic operations on refresh schedules via the Databricks
-	// SQL API are deprecated. Alert refresh schedules can be created, updated,
-	// fetched and deleted using Jobs API, e.g. :method:jobs/create.
 	Alerts *sql.AlertsAPI
 
 	// A catalog is the first layer of Unity Catalog’s three-level namespace.
@@ -121,10 +117,6 @@ type WorkspaceClient struct {
 	// collection of related query IDs. The API can also be used to duplicate
 	// multiple dashboards at once since you can get a dashboard definition with
 	// a GET request and then POST it to create a new one.
-	//
-	// **Note**: Programmatic operations on refresh schedules via the Databricks
-	// SQL API are deprecated. Dashboard refresh schedules can be created,
-	// updated, fetched and deleted using Jobs API, e.g. :method:jobs/create.
 	Dashboards *sql.DashboardsAPI
 
 	// This API is provided to assist you in making new query objects. When
@@ -388,11 +380,7 @@ type WorkspaceClient struct {
 
 	// These endpoints are used for CRUD operations on query definitions. Query
 	// definitions include the target SQL warehouse, query text, name,
-	// description, tags, execution schedule, parameters, and visualizations.
-	//
-	// **Note**: Programmatic operations on refresh schedules via the Databricks
-	// SQL API are deprecated. Query refresh schedules can be created, updated,
-	// fetched and deleted using Jobs API, e.g. :method:jobs/create.
+	// description, tags, parameters, and visualizations.
 	Queries *sql.QueriesAPI
 
 	// Access the history of queries through SQL warehouses.
@@ -451,8 +439,8 @@ type WorkspaceClient struct {
 	// data by accident.
 	ServicePrincipals *scim.ServicePrincipalsAPI
 
-	// The Serverless Real-Time Inference Serving Endpoints API allows you to
-	// create, update, and delete model serving endpoints.
+	// The Serving Endpoints API allows you to create, update, and delete model
+	// serving endpoints.
 	//
 	// You can use a serving endpoint to serve models from the Databricks Model
 	// Registry. Endpoints expose the underlying models as scalable REST API
@@ -492,7 +480,7 @@ type WorkspaceClient struct {
 	// 5-50 seconds (default: 10) the call behaves synchronously and waits for
 	// results up to the specified timeout; when set to `0s`, the call is
 	// asynchronous and responds immediately with a statement ID that can be
-	// used to fetch the results in a separate call.
+	// used to poll for status or fetch the results in a separate call.
 	//
 	// **Call mode: synchronous**
 	//
@@ -581,8 +569,8 @@ type WorkspaceClient struct {
 	// :method:statementexecution/getStatementResultChunkN request.
 	//
 	// When using this mode, each chunk may be fetched once, and in order. A
-	// chunk without a field `next_chunk_internal_link` indicates we reached the
-	// last chunk and all chunks have been fetched from the result set.
+	// chunk without a field `next_chunk_internal_link` indicates the last chunk
+	// was reached and all chunks have been fetched from the result set.
 	//
 	// **Use case: large result sets with EXTERNAL_LINKS + ARROW_STREAM**
 	//

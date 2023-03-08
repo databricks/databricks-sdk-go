@@ -92,7 +92,7 @@
 //
 // - [scim.AccountServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
 //
-// - [endpoints.ServingEndpointsAPI]: The Serverless Real-Time Inference Serving Endpoints API allows you to create, update, and delete model serving endpoints.
+// - [endpoints.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 //
 // - [unitycatalog.SharesAPI]: Databricks Delta Sharing: Shares REST API.
 //

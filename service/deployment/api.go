@@ -186,7 +186,7 @@ func NewEncryptionKeys(client *client.DatabricksClient) *EncryptionKeysAPI {
 // version of the platform. Updating a running workspace with workspace storage
 // encryption requires that the workspace is on the E2 version of the platform.
 // If you have an older workspace, it might not be on the E2 version of the
-// platform. If you are not sure, contact your Databricks reprsentative.
+// platform. If you are not sure, contact your Databricks representative.
 type EncryptionKeysAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(EncryptionKeysService)
@@ -557,11 +557,6 @@ func (a *PrivateAccessAPI) Impl() PrivateAccessService {
 // Before configuring PrivateLink, read the [Databricks article about
 // PrivateLink].
 //
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
-//
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 func (a *PrivateAccessAPI) Create(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
@@ -576,11 +571,6 @@ func (a *PrivateAccessAPI) Create(ctx context.Context, request UpsertPrivateAcce
 // Before configuring PrivateLink, read the [Databricks article about
 // PrivateLink].
 //
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
-//
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 func (a *PrivateAccessAPI) Delete(ctx context.Context, request DeletePrivateAccesRequest) error {
@@ -594,11 +584,6 @@ func (a *PrivateAccessAPI) Delete(ctx context.Context, request DeletePrivateAcce
 //
 // Before configuring PrivateLink, read the [Databricks article about
 // PrivateLink].
-//
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
 //
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
@@ -616,11 +601,6 @@ func (a *PrivateAccessAPI) DeleteByPrivateAccessSettingsId(ctx context.Context, 
 // Before configuring PrivateLink, read the [Databricks article about
 // PrivateLink].
 //
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
-//
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 func (a *PrivateAccessAPI) Get(ctx context.Context, request GetPrivateAccesRequest) (*PrivateAccessSettings, error) {
@@ -635,11 +615,6 @@ func (a *PrivateAccessAPI) Get(ctx context.Context, request GetPrivateAccesReque
 // Before configuring PrivateLink, read the [Databricks article about
 // PrivateLink].
 //
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
-//
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 func (a *PrivateAccessAPI) GetByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) (*PrivateAccessSettings, error) {
@@ -652,11 +627,6 @@ func (a *PrivateAccessAPI) GetByPrivateAccessSettingsId(ctx context.Context, pri
 //
 // Gets a list of all private access settings objects for an account, specified
 // by ID.
-//
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for AWS PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
 func (a *PrivateAccessAPI) List(ctx context.Context) ([]PrivateAccessSettings, error) {
 	return a.impl.List(ctx)
 }
@@ -726,6 +696,7 @@ func (a *PrivateAccessAPI) GetByPrivateAccessSettingsName(ctx context.Context, n
 // access settings are affected by any change. If `public_access_enabled`,
 // `private_access_level`, or `allowed_vpc_endpoint_ids` are updated, effects of
 // these changes might take several minutes to propagate to the workspace API.
+//
 // You can share one private access settings object with multiple workspaces in
 // a single account. However, private access settings are specific to AWS
 // regions, so only workspaces in the same AWS region can use a given private
@@ -733,11 +704,6 @@ func (a *PrivateAccessAPI) GetByPrivateAccessSettingsName(ctx context.Context, n
 //
 // Before configuring PrivateLink, read the [Databricks article about
 // PrivateLink].
-//
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
 //
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
@@ -930,27 +896,11 @@ func (a *VpcEndpointsAPI) Impl() VpcEndpointsService {
 // object in AWS used to communicate privately with Databricks over [AWS
 // PrivateLink].
 //
-// **Important**: When you register a VPC endpoint to the Databricks workspace
-// VPC endpoint service for any workspace, **in this release Databricks enables
-// front-end (web application and REST API) access from the source network of
-// the VPC endpoint to all workspaces in that AWS region in your Databricks
-// account if the workspaces have any PrivateLink connections in their workspace
-// configuration**. If you have questions about this behavior, contact your
-// Databricks representative.
-//
-// Within AWS, your VPC endpoint stays in `pendingAcceptance` state until you
-// register it in a VPC endpoint configuration through the Account API. After
-// you register the VPC endpoint configuration, the Databricks [endpoint
-// service] automatically accepts the VPC endpoint and it eventually transitions
-// to the `available` state.
+// After you create the VPC endpoint configuration, the Databricks [endpoint
+// service] automatically accepts the VPC endpoint.
 //
 // Before configuring PrivateLink, read the [Databricks article about
 // PrivateLink].
-//
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
 //
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
@@ -972,11 +922,6 @@ func (a *VpcEndpointsAPI) Create(ctx context.Context, request CreateVpcEndpointR
 // Before configuring PrivateLink, read the [Databricks article about
 // PrivateLink].
 //
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
-//
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
@@ -996,11 +941,6 @@ func (a *VpcEndpointsAPI) Delete(ctx context.Context, request DeleteVpcEndpointR
 // Before configuring PrivateLink, read the [Databricks article about
 // PrivateLink].
 //
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
-//
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
@@ -1015,11 +955,6 @@ func (a *VpcEndpointsAPI) DeleteByVpcEndpointId(ctx context.Context, vpcEndpoint
 // Gets a VPC endpoint configuration, which represents a [VPC endpoint] object
 // in AWS used to communicate privately with Databricks over [AWS PrivateLink].
 //
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
-//
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
 func (a *VpcEndpointsAPI) Get(ctx context.Context, request GetVpcEndpointRequest) (*VpcEndpoint, error) {
@@ -1030,11 +965,6 @@ func (a *VpcEndpointsAPI) Get(ctx context.Context, request GetVpcEndpointRequest
 //
 // Gets a VPC endpoint configuration, which represents a [VPC endpoint] object
 // in AWS used to communicate privately with Databricks over [AWS PrivateLink].
-//
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
 //
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink
 // [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
@@ -1050,11 +980,6 @@ func (a *VpcEndpointsAPI) GetByVpcEndpointId(ctx context.Context, vpcEndpointId 
 //
 // Before configuring PrivateLink, read the [Databricks article about
 // PrivateLink].
-//
-// This operation is available only if your account is on the E2 version of the
-// platform and your Databricks account is enabled for PrivateLink (Public
-// Preview). Contact your Databricks representative to enable your account for
-// PrivateLink.
 //
 // [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 func (a *VpcEndpointsAPI) List(ctx context.Context) ([]VpcEndpoint, error) {
@@ -1352,15 +1277,25 @@ func (a *WorkspacesAPI) GetByWorkspaceName(ctx context.Context, name string) (*W
 // configuration for failed workspace deployment for some fields, but not all
 // fields. For a failed workspace, this request supports updates to the
 // following fields only: - Credential configuration ID - Storage configuration
-// ID - Network configuration ID. Used only if you use customer-managed VPC. -
-// Key configuration ID for managed services (control plane storage, such as
+// ID - Network configuration ID. Used only to add or change a network
+// configuration for a customer-managed VPC. For a failed workspace only, you
+// can convert a workspace with Databricks-managed VPC to use a customer-managed
+// VPC by adding this ID. You cannot downgrade a workspace with a
+// customer-managed VPC to be a Databricks-managed VPC. You can update the
+// network configuration for a failed or running workspace to add PrivateLink
+// support, though you must also add a private access settings object. - Key
+// configuration ID for managed services (control plane storage, such as
 // notebook source and Databricks SQL queries). Used only if you use
 // customer-managed keys for managed services. - Key configuration ID for
 // workspace storage (root S3 bucket and, optionally, EBS volumes). Used only if
 // you use customer-managed keys for workspace storage. **Important**: If the
 // workspace was ever in the running state, even if briefly before becoming a
 // failed workspace, you cannot add a new key configuration ID for workspace
-// storage.
+// storage. - Private access settings ID to add PrivateLink support. You can add
+// or update the private access settings ID to upgrade a workspace to add
+// support for front-end, back-end, or both types of connectivity. You cannot
+// remove (downgrade) any existing front-end or back-end PrivateLink support on
+// a workspace.
 //
 // After calling the `PATCH` operation to update the workspace configuration,
 // make repeated `GET` requests with the workspace ID and check the workspace
@@ -1374,13 +1309,11 @@ func (a *WorkspacesAPI) GetByWorkspaceName(ctx context.Context, name string) (*W
 // a running workspace, this request supports updating the following fields
 // only: - Credential configuration ID
 //
-// - Network configuration ID. Used only if you already use use customer-managed
-// VPC. This change is supported only if you specified a network configuration
-// ID in your original workspace creation. In other words, you cannot switch
-// from a Databricks-managed VPC to a customer-managed VPC. **Note**: You cannot
-// use a network configuration update in this API to add support for PrivateLink
-// (in Public Preview). To add PrivateLink to an existing workspace, contact
-// your Databricks representative.
+// - Network configuration ID. Used only if you already use a customer-managed
+// VPC. You cannot convert a running workspace from a Databricks-managed VPC to
+// a customer-managed VPC. You can use a network configuration update in this
+// API for a failed or running workspace to add support for PrivateLink,
+// although you also need to add a private access settings object.
 //
 // - Key configuration ID for managed services (control plane storage, such as
 // notebook source and Databricks SQL queries). Databricks does not directly
@@ -1396,17 +1329,18 @@ func (a *WorkspacesAPI) GetByWorkspaceName(ctx context.Context, name string) (*W
 // re-encrypted with the DMK and the new CMK. - Key configuration ID for
 // workspace storage (root S3 bucket and, optionally, EBS volumes). You can set
 // this only if the workspace does not already have a customer-managed key
-// configuration for workspace storage.
-//
-// **Important**: For updating running workspaces, this API is unavailable on
-// Mondays, Tuesdays, and Thursdays from 4:30pm-7:30pm PST due to routine
-// maintenance. Plan your workspace updates accordingly. For questions about
-// this schedule, contact your Databricks representative.
+// configuration for workspace storage. - Private access settings ID to add
+// PrivateLink support. You can add or update the private access settings ID to
+// upgrade a workspace to add support for front-end, back-end, or both types of
+// connectivity. You cannot remove (downgrade) any existing front-end or
+// back-end PrivateLink support on a workspace.
 //
 // **Important**: To update a running workspace, your workspace must have no
-// running cluster instances, which includes all-purpose clusters, job clusters,
-// and pools that might have running clusters. Terminate all cluster instances
-// in the workspace before calling this API.
+// running compute resources that run in your workspace's VPC in the Classic
+// data plane. For example, stop all all-purpose clusters, job clusters, pools
+// with running clusters, and Classic SQL warehouses. If you do not terminate
+// all cluster instances in the workspace before calling this API, the request
+// will fail.
 //
 // ### Wait until changes take effect. After calling the `PATCH` operation to
 // update the workspace configuration, make repeated `GET` requests with the

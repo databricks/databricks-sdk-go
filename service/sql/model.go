@@ -65,9 +65,6 @@ type AlertOptions struct {
 	// Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`,
 	// `!=`
 	Op string `json:"op"`
-	// Number of failures encountered during alert refresh. This counter is used
-	// for sending aggregated alert failure email notifications.
-	ScheduleFailures int `json:"schedule_failures,omitempty"`
 	// Value used to compare in alert evaluation.
 	Value string `json:"value"`
 }
@@ -296,26 +293,6 @@ type CreateDashboardRequest struct {
 	Widgets []Widget `json:"widgets,omitempty"`
 }
 
-type CreateRefreshSchedule struct {
-	AlertId string `json:"-" url:"-"`
-	// Cron string representing the refresh schedule.
-	Cron string `json:"cron"`
-	// ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse
-	// will be used to refresh.
-	DataSourceId string `json:"data_source_id,omitempty"`
-}
-
-type CreateSubscription struct {
-	// ID of the alert.
-	AlertId string `json:"alert_id" url:"-"`
-	// ID of the alert subscriber (if subscribing an alert destination). Alert
-	// destinations can be configured by admins through the UI. See
-	// [here](/sql/admin/alert-destinations.html).
-	DestinationId string `json:"destination_id,omitempty"`
-	// ID of the alert subscriber (if subscribing a user).
-	UserId int64 `json:"user_id,omitempty"`
-}
-
 type CreateWarehouseRequest struct {
 	// The amount of time in minutes that a SQL Endpoint must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped.
@@ -481,72 +458,14 @@ type DeleteQueryRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
-// [DEPRECATED] Delete a refresh schedule
-type DeleteScheduleRequest struct {
-	AlertId string `json:"-" url:"-"`
-
-	ScheduleId string `json:"-" url:"-"`
-}
-
 // Delete a warehouse
 type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
 }
 
-// Alert destination subscribed to the alert, if it exists. Alert destinations
-// can be configured by admins through the UI. See [here].
-//
-// [here]: https://docs.databricks.com/sql/admin/alert-destinations.html
-type Destination struct {
-	// ID of the alert destination.
-	Id string `json:"id,omitempty"`
-	// Name of the alert destination.
-	Name string `json:"name,omitempty"`
-	// Type of the alert destination.
-	Type DestinationType `json:"type,omitempty"`
-}
-
-// Type of the alert destination.
-type DestinationType string
-
-const DestinationTypeEmail DestinationType = `email`
-
-const DestinationTypeHangoutsChat DestinationType = `hangouts_chat`
-
-const DestinationTypeMattermost DestinationType = `mattermost`
-
-const DestinationTypeMicrosoftTeams DestinationType = `microsoft_teams`
-
-const DestinationTypePagerduty DestinationType = `pagerduty`
-
-const DestinationTypeSlack DestinationType = `slack`
-
-const DestinationTypeWebhook DestinationType = `webhook`
-
-// String representation for [fmt.Print]
-func (dt *DestinationType) String() string {
-	return string(*dt)
-}
-
-// Set raw string value and validate it against allowed values
-func (dt *DestinationType) Set(v string) error {
-	switch v {
-	case `email`, `hangouts_chat`, `mattermost`, `microsoft_teams`, `pagerduty`, `slack`, `webhook`:
-		*dt = DestinationType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "email", "hangouts_chat", "mattermost", "microsoft_teams", "pagerduty", "slack", "webhook"`, v)
-	}
-}
-
-// Type always returns DestinationType to satisfy [pflag.Value] interface
-func (dt *DestinationType) Type() string {
-	return "DestinationType"
-}
-
-// The fetch disposition provides for two modes of fetching results: `INLINE`,
-// and `EXTERNAL_LINKS`.
+// The fetch disposition provides two modes of fetching results: `INLINE` and
+// `EXTERNAL_LINKS`.
 //
 // Statements executed with `INLINE` disposition will return result data inline,
 // in `JSON_ARRAY` format, in a series of chunks. If a given statement produces
@@ -795,17 +714,17 @@ type EndpointTags struct {
 }
 
 type ExecuteStatementRequest struct {
-	// Applies given byte limit to execution and result size; byte counts based
-	// upon internal representations, and may not match measureable sizes in
-	// requested `format`.
+	// Applies the given byte limit to the statement's result size. Byte counts
+	// are based on internal representations and may not match measurable sizes
+	// in the requested `format`.
 	ByteLimit int64 `json:"byte_limit,omitempty"`
 	// Sets default catalog for statement execution, similar to [`USE CATALOG`]
 	// in SQL.
 	//
 	// [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
 	Catalog string `json:"catalog,omitempty"`
-	// The fetch disposition provides for two modes of fetching results:
-	// `INLINE`, and `EXTERNAL_LINKS`.
+	// The fetch disposition provides two modes of fetching results: `INLINE`
+	// and `EXTERNAL_LINKS`.
 	//
 	// Statements executed with `INLINE` disposition will return result data
 	// inline, in `JSON_ARRAY` format, in a series of chunks. If a given
@@ -854,20 +773,19 @@ type ExecuteStatementRequest struct {
 	//
 	// When specifying `format=ARROW_STREAM`, results fetched through
 	// `external_links` will be chunks of result data, formatted as Apache Arrow
-	// Stream. See
-	// [https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format]
-	// for more details.
-	Format Format `json:"format,omitempty"`
-	// When called in synchronous mode (`wait_timeout > 0s`), determines action
-	// when timeout reached:
+	// Stream. See [Apache Arrow Streaming Format] for more details.
 	//
-	// `CONTINUE` → statement execution continues asynchronously; the call
-	// returns a statement ID immediately. `CANCEL` → statement execution
-	// canceled; call returns immediately with `CANCELED` state.
+	// [Apache Arrow Streaming Format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
+	Format Format `json:"format,omitempty"`
+	// When in synchronous mode with `wait_timeout > 0s` it determines the
+	// action taken when the timeout is reached:
+	//
+	// `CONTINUE` → the statement execution continues asynchronously and the
+	// call returns a statement ID immediately.
+	//
+	// `CANCEL` → the statement execution is canceled and the call returns
+	// immediately with a `CANCELED` state.
 	OnWaitTimeout TimeoutAction `json:"on_wait_timeout,omitempty"`
-	// Applies given row limit to execution and result set, identical in
-	// semantics to SQL term `LIMIT $N`.
-	RowLimit int64 `json:"row_limit,omitempty"`
 	// Sets default schema for statement execution, similar to [`USE SCHEMA`] in
 	// SQL.
 	//
@@ -875,9 +793,9 @@ type ExecuteStatementRequest struct {
 	Schema string `json:"schema,omitempty"`
 	// SQL statement to execute
 	Statement string `json:"statement,omitempty"`
-	// Time that the API service will wait for the statement result, in format
-	// '{N}s'. N may be '0s' for asynchronous, or may wait between 5-50
-	// seconds."
+	// The time in seconds the API service will wait for the statement's result
+	// set as `Ns`, where `N` can be set to 0 or to a value between 5 and 50.
+	// When set to '0s' the statement will execute in asynchronous mode."
 	WaitTimeout string `json:"wait_timeout,omitempty"`
 	// Warehouse upon which to execute a statement. See also [What are SQL
 	// warehouses?](/sql/admin/warehouse-type.html)
@@ -943,9 +861,9 @@ type ExternalLink struct {
 //
 // When specifying `format=ARROW_STREAM`, results fetched through
 // `external_links` will be chunks of result data, formatted as Apache Arrow
-// Stream. See
-// [https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format] for
-// more details.
+// Stream. See [Apache Arrow Streaming Format] for more details.
+//
+// [Apache Arrow Streaming Format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
 type Format string
 
 const FormatArrowStream Format = `ARROW_STREAM`
@@ -1029,11 +947,6 @@ type GetStatementResultChunkNRequest struct {
 	ChunkIndex int `json:"-" url:"-"`
 
 	StatementId string `json:"-" url:"-"`
-}
-
-// [DEPRECATED] Get an alert's subscriptions
-type GetSubscriptionsRequest struct {
-	AlertId string `json:"-" url:"-"`
 }
 
 // Get warehouse info
@@ -1237,9 +1150,6 @@ type ListQueriesRequest struct {
 	//
 	// - `created_at`: The timestamp the query was created.
 	//
-	// - `schedule`: [DEPRECATED] Sorting results by refresh schedule is
-	// deprecated. Use :method:jobs/list to list jobs and filter for a query.
-	//
 	// - `runtime`: The time it took to run this query. This is blank for
 	// parameterized queries. A blank value is treated as the highest value for
 	// sorting.
@@ -1286,11 +1196,6 @@ type ListResponse struct {
 	PageSize int `json:"page_size,omitempty"`
 	// List of dashboards returned.
 	Results []Dashboard `json:"results,omitempty"`
-}
-
-// [DEPRECATED] Get refresh schedules
-type ListSchedulesRequest struct {
-	AlertId string `json:"-" url:"-"`
 }
 
 // List warehouses
@@ -1574,8 +1479,6 @@ type Query struct {
 	// A SHA-256 hash of the query text along with the authenticated user ID.
 	QueryHash string `json:"query_hash,omitempty"`
 
-	Schedule *QueryInterval `json:"schedule,omitempty"`
-
 	Tags []string `json:"tags,omitempty"`
 	// The timestamp at which this query was last updated.
 	UpdatedAt string `json:"updated_at,omitempty"`
@@ -1603,11 +1506,6 @@ type QueryEditContent struct {
 	Query string `json:"query,omitempty"`
 
 	QueryId string `json:"-" url:"-"`
-	// JSON object that describes the scheduled execution frequency. A schedule
-	// object includes `interval`, `time`, `day_of_week`, and `until` fields. If
-	// a scheduled is supplied, then only `interval` is required. All other
-	// field can be `null`.
-	Schedule *QueryInterval `json:"schedule,omitempty"`
 }
 
 // A filter to limit query history results. This field is optional.
@@ -1668,17 +1566,6 @@ type QueryInfo struct {
 	UserName string `json:"user_name,omitempty"`
 	// Warehouse ID.
 	WarehouseId string `json:"warehouse_id,omitempty"`
-}
-
-type QueryInterval struct {
-	// For weekly runs, the day of the week to start the run.
-	DayOfWeek string `json:"day_of_week,omitempty"`
-	// Integer number of seconds between runs.
-	Interval int `json:"interval,omitempty"`
-	// For daily, weekly, and monthly runs, the time of day to start the run.
-	Time string `json:"time,omitempty"`
-	// A date after which this schedule no longer applies.
-	Until string `json:"until,omitempty"`
 }
 
 type QueryList struct {
@@ -1774,11 +1661,6 @@ type QueryPostContent struct {
 	Parent string `json:"parent,omitempty"`
 	// The text of the query.
 	Query string `json:"query,omitempty"`
-	// JSON object that describes the scheduled execution frequency. A schedule
-	// object includes `interval`, `time`, `day_of_week`, and `until` fields. If
-	// a scheduled is supplied, then only `interval` is required. All other
-	// field can be `null`.
-	Schedule *QueryInterval `json:"schedule,omitempty"`
 }
 
 // Type of statement for this query
@@ -1888,16 +1770,6 @@ func (qs *QueryStatus) Type() string {
 	return "QueryStatus"
 }
 
-type RefreshSchedule struct {
-	// Cron string representing the refresh schedule.
-	Cron string `json:"cron,omitempty"`
-	// ID of the SQL warehouse to refresh with. If `null`, query's SQL warehouse
-	// will be used to refresh.
-	DataSourceId string `json:"data_source_id,omitempty"`
-	// ID of the refresh schedule.
-	Id string `json:"id,omitempty"`
-}
-
 type RepeatedEndpointConfPairs struct {
 	// Deprecated: Use configuration_pairs
 	ConfigPair []EndpointConfPair `json:"config_pair,omitempty"`
@@ -1967,9 +1839,9 @@ type ResultManifest struct {
 	//
 	// When specifying `format=ARROW_STREAM`, results fetched through
 	// `external_links` will be chunks of result data, formatted as Apache Arrow
-	// Stream. See
-	// [https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format]
-	// for more details.
+	// Stream. See [Apache Arrow Streaming Format] for more details.
+	//
+	// [Apache Arrow Streaming Format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
 	Format Format `json:"format,omitempty"`
 	// Schema is an ordered list of column descriptions.
 	Schema *ResultSchema `json:"schema,omitempty"`
@@ -2293,20 +2165,6 @@ type StopRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-type Subscription struct {
-	// ID of the alert.
-	AlertId string `json:"alert_id,omitempty"`
-	// Alert destination subscribed to the alert, if it exists. Alert
-	// destinations can be configured by admins through the UI. See [here].
-	//
-	// [here]: https://docs.databricks.com/sql/admin/alert-destinations.html
-	Destination *Destination `json:"destination,omitempty"`
-	// ID of the alert subscription.
-	Id string `json:"id,omitempty"`
-
-	User *User `json:"user,omitempty"`
-}
-
 type Success struct {
 	Message SuccessMessage `json:"message,omitempty"`
 }
@@ -2567,12 +2425,14 @@ type TimeRange struct {
 	StartTimeMs int `json:"start_time_ms,omitempty"`
 }
 
-// When called in synchronous mode (`wait_timeout > 0s`), determines action when
-// timeout reached:
+// When in synchronous mode with `wait_timeout > 0s` it determines the action
+// taken when the timeout is reached:
 //
-// `CONTINUE` → statement execution continues asynchronously; the call returns
-// a statement ID immediately. `CANCEL` → statement execution canceled; call
-// returns immediately with `CANCELED` state.
+// `CONTINUE` → the statement execution continues asynchronously and the call
+// returns a statement ID immediately.
+//
+// `CANCEL` → the statement execution is canceled and the call returns
+// immediately with a `CANCELED` state.
 type TimeoutAction string
 
 const TimeoutActionCancel TimeoutAction = `CANCEL`
@@ -2613,13 +2473,6 @@ type TransferOwnershipRequest struct {
 	ObjectId TransferOwnershipObjectId `json:"-" url:"-"`
 	// The type of object on which to change ownership.
 	ObjectType OwnableObjectType `json:"-" url:"-"`
-}
-
-// [DEPRECATED] Unsubscribe to an alert
-type UnsubscribeRequest struct {
-	AlertId string `json:"-" url:"-"`
-
-	SubscriptionId string `json:"-" url:"-"`
 }
 
 type User struct {

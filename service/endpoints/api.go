@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// The Serverless Real-Time Inference Serving Endpoints API allows you to create, update, and delete model serving endpoints.
+// The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 package endpoints
 
 import (
@@ -21,8 +21,8 @@ func NewServingEndpoints(client *client.DatabricksClient) *ServingEndpointsAPI {
 	}
 }
 
-// The Serverless Real-Time Inference Serving Endpoints API allows you to
-// create, update, and delete model serving endpoints.
+// The Serving Endpoints API allows you to create, update, and delete model
+// serving endpoints.
 //
 // You can use a serving endpoint to serve models from the Databricks Model
 // Registry. Endpoints expose the underlying models as scalable REST API
@@ -55,8 +55,7 @@ func (a *ServingEndpointsAPI) Impl() ServingEndpointsService {
 // Retrieve the logs associated with building the model's environment for a
 // given serving endpoint's served model.
 //
-// Retrieves the build logs associated with the provided served model. Please
-// note that this API is in preview and may change in the future.
+// Retrieves the build logs associated with the provided served model.
 func (a *ServingEndpointsAPI) BuildLogs(ctx context.Context, request BuildLogsRequest) (*BuildLogsResponse, error) {
 	return a.impl.BuildLogs(ctx, request)
 }
@@ -64,8 +63,7 @@ func (a *ServingEndpointsAPI) BuildLogs(ctx context.Context, request BuildLogsRe
 // Retrieve the logs associated with building the model's environment for a
 // given serving endpoint's served model.
 //
-// Retrieves the build logs associated with the provided served model. Please
-// note that this API is in preview and may change in the future.
+// Retrieves the build logs associated with the provided served model.
 func (a *ServingEndpointsAPI) BuildLogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*BuildLogsResponse, error) {
 	return a.impl.BuildLogs(ctx, BuildLogsRequest{
 		Name:            name,
@@ -136,8 +134,7 @@ func (a *ServingEndpointsAPI) DeleteByName(ctx context.Context, name string) err
 // in Prometheus or OpenMetrics exposition format.
 //
 // Retrieves the metrics associated with the provided serving endpoint in either
-// Prometheus or OpenMetrics exposition format. Please note that this API is in
-// preview and may change in the future.
+// Prometheus or OpenMetrics exposition format.
 func (a *ServingEndpointsAPI) ExportMetrics(ctx context.Context, request ExportMetricsRequest) error {
 	return a.impl.ExportMetrics(ctx, request)
 }
@@ -146,8 +143,7 @@ func (a *ServingEndpointsAPI) ExportMetrics(ctx context.Context, request ExportM
 // in Prometheus or OpenMetrics exposition format.
 //
 // Retrieves the metrics associated with the provided serving endpoint in either
-// Prometheus or OpenMetrics exposition format. Please note that this API is in
-// preview and may change in the future.
+// Prometheus or OpenMetrics exposition format.
 func (a *ServingEndpointsAPI) ExportMetricsByName(ctx context.Context, name string) error {
 	return a.impl.ExportMetrics(ctx, ExportMetricsRequest{
 		Name: name,
@@ -178,8 +174,7 @@ func (a *ServingEndpointsAPI) List(ctx context.Context) (*ListEndpointsResponse,
 // Retrieve the most recent log lines associated with a given serving endpoint's
 // served model.
 //
-// Retrieves the service logs associated with the provided served model. Please
-// note that this API is in preview and may change in the future.
+// Retrieves the service logs associated with the provided served model.
 func (a *ServingEndpointsAPI) Logs(ctx context.Context, request LogsRequest) (*ServerLogsResponse, error) {
 	return a.impl.Logs(ctx, request)
 }
@@ -187,8 +182,7 @@ func (a *ServingEndpointsAPI) Logs(ctx context.Context, request LogsRequest) (*S
 // Retrieve the most recent log lines associated with a given serving endpoint's
 // served model.
 //
-// Retrieves the service logs associated with the provided served model. Please
-// note that this API is in preview and may change in the future.
+// Retrieves the service logs associated with the provided served model.
 func (a *ServingEndpointsAPI) LogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*ServerLogsResponse, error) {
 	return a.impl.Logs(ctx, LogsRequest{
 		Name:            name,

@@ -173,7 +173,7 @@ func (a *WorkspaceAPI) GetByPath(ctx context.Context, name string) (*ObjectInfo,
 // input path, this call returns an error `RESOURCE_ALREADY_EXISTS`.
 //
 // Note that if this operation fails it may have succeeded in creating some of
-// the necessary\nparrent directories.
+// the necessary parrent directories.
 func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request Mkdirs) error {
 	return a.impl.Mkdirs(ctx, request)
 }
@@ -185,7 +185,7 @@ func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request Mkdirs) error {
 // input path, this call returns an error `RESOURCE_ALREADY_EXISTS`.
 //
 // Note that if this operation fails it may have succeeded in creating some of
-// the necessary\nparrent directories.
+// the necessary parrent directories.
 func (a *WorkspaceAPI) MkdirsByPath(ctx context.Context, path string) error {
 	return a.impl.Mkdirs(ctx, Mkdirs{
 		Path: path,

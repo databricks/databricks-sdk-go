@@ -75,8 +75,8 @@ func TestMwsAccCredentials(t *testing.T) {
 	}
 	role, err := a.Credentials.Create(ctx, deployment.CreateCredentialRequest{
 		CredentialsName: RandomName("sdk-"),
-		AwsCredentials: deployment.AwsCredentials{
-			StsRole: &deployment.StsRole{
+		AwsCredentials: deployment.CreateCredentialAwsCredentials{
+			StsRole: &deployment.CreateCredentialStsRole{
 				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
 			},
 		},
@@ -217,8 +217,8 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	// See https://github.com/databricks/terraform-provider-databricks/issues/1424
 	role, err := a.Credentials.Create(ctx, deployment.CreateCredentialRequest{
 		CredentialsName: RandomName("go-sdk-"),
-		AwsCredentials: deployment.AwsCredentials{
-			StsRole: &deployment.StsRole{
+		AwsCredentials: deployment.CreateCredentialAwsCredentials{
+			StsRole: &deployment.CreateCredentialStsRole{
 				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
 			},
 		},
@@ -244,8 +244,8 @@ func TestMwsAccWorkspaces(t *testing.T) {
 
 	updateRole, err := a.Credentials.Create(ctx, deployment.CreateCredentialRequest{
 		CredentialsName: RandomName("go-sdk-"),
-		AwsCredentials: deployment.AwsCredentials{
-			StsRole: &deployment.StsRole{
+		AwsCredentials: deployment.CreateCredentialAwsCredentials{
+			StsRole: &deployment.CreateCredentialStsRole{
 				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
 			},
 		},

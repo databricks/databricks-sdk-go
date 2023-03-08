@@ -254,6 +254,11 @@ type CreateJob struct {
 	// An optional timeout applied to each run of this job. The default behavior
 	// is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// Trigger settings for the job. Can be used to trigger a run when new files
+	// arrive in an external location. The default behavior is that the job runs
+	// only when triggered by clicking “Run Now” in the Jobs UI or sending
+	// an API request to `runNow`.
+	Trigger *TriggerSettings `json:"trigger,omitempty"`
 	// A collection of system notification IDs to notify when the run begins or
 	// completes. The default behavior is to not send any system notifications.
 	WebhookNotifications *JobWebhookNotifications `json:"webhook_notifications,omitempty"`
@@ -398,6 +403,21 @@ type ExportRunOutput struct {
 	Views []ViewItem `json:"views,omitempty"`
 }
 
+type FileArrivalTriggerSettings struct {
+	// If set, the trigger starts a run only after the specified amount of time
+	// passed since the last time the trigger fired. The minimum allowed value
+	// is 60 seconds
+	MinTimeBetweenTriggerSeconds int `json:"min_time_between_trigger_seconds,omitempty"`
+	// URL to be monitored for file arrivals. The path must point to the root or
+	// a subpath of the external location.
+	Url string `json:"url,omitempty"`
+	// If set, the trigger starts a run only after no file activity has occurred
+	// for the specified amount of time. This makes it possible to wait for a
+	// batch of incoming files to arrive before triggering a run. The minimum
+	// allowed value is 60 seconds.
+	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
+}
+
 // Get a single job
 type Get struct {
 	// The canonical identifier of the job to retrieve information about. This
@@ -515,6 +535,8 @@ type Job struct {
 	// Settings for this job and all of its runs. These settings can be updated
 	// using the `resetJob` method.
 	Settings *JobSettings `json:"settings,omitempty"`
+	// History of the file arrival trigger associated with the job.
+	TriggerHistory *TriggerHistory `json:"trigger_history,omitempty"`
 }
 
 type JobCluster struct {
@@ -602,6 +624,11 @@ type JobSettings struct {
 	// An optional timeout applied to each run of this job. The default behavior
 	// is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// Trigger settings for the job. Can be used to trigger a run when new files
+	// arrive in an external location. The default behavior is that the job runs
+	// only when triggered by clicking “Run Now” in the Jobs UI or sending
+	// an API request to `runNow`.
+	Trigger *TriggerSettings `json:"trigger,omitempty"`
 	// A collection of system notification IDs to notify when the run begins or
 	// completes. The default behavior is to not send any system notifications.
 	WebhookNotifications *JobWebhookNotifications `json:"webhook_notifications,omitempty"`
@@ -1960,8 +1987,66 @@ type TaskDependenciesItem struct {
 	TaskKey string `json:"task_key,omitempty"`
 }
 
+type TriggerEvaluation struct {
+	// Human-readable description of the the trigger evaluation result. Explains
+	// why the trigger evaluation triggered or did not trigger a run, or failed.
+	Description string `json:"description,omitempty"`
+	// The ID of the run that was triggered by the trigger evaluation. Only
+	// returned if a run was triggered.
+	RunId int64 `json:"run_id,omitempty"`
+	// Timestamp at which the trigger was evaluated.
+	Timestamp int64 `json:"timestamp,omitempty"`
+}
+
+type TriggerHistory struct {
+	// The last time the trigger failed to evaluate.
+	LastFailed *TriggerEvaluation `json:"last_failed,omitempty"`
+	// The last time the trigger was evaluated but did not trigger a run.
+	LastNotTriggered *TriggerEvaluation `json:"last_not_triggered,omitempty"`
+	// The last time the run was triggered due to a file arrival.
+	LastTriggered *TriggerEvaluation `json:"last_triggered,omitempty"`
+}
+
+type TriggerSettings struct {
+	// File arrival trigger settings.
+	FileArrival *FileArrivalTriggerSettings `json:"file_arrival,omitempty"`
+	// Whether this trigger is paused or not.
+	PauseStatus TriggerSettingsPauseStatus `json:"pause_status,omitempty"`
+}
+
+// Whether this trigger is paused or not.
+type TriggerSettingsPauseStatus string
+
+const TriggerSettingsPauseStatusPaused TriggerSettingsPauseStatus = `PAUSED`
+
+const TriggerSettingsPauseStatusUnpaused TriggerSettingsPauseStatus = `UNPAUSED`
+
+// String representation for [fmt.Print]
+func (tsps *TriggerSettingsPauseStatus) String() string {
+	return string(*tsps)
+}
+
+// Set raw string value and validate it against allowed values
+func (tsps *TriggerSettingsPauseStatus) Set(v string) error {
+	switch v {
+	case `PAUSED`, `UNPAUSED`:
+		*tsps = TriggerSettingsPauseStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
+	}
+}
+
+// Type always returns TriggerSettingsPauseStatus to satisfy [pflag.Value] interface
+func (tsps *TriggerSettingsPauseStatus) Type() string {
+	return "TriggerSettingsPauseStatus"
+}
+
 // This describes an enum
 type TriggerType string
+
+// Indicates a run that is triggered by a file arrival.
+const TriggerTypeFileArrival TriggerType = `FILE_ARRIVAL`
 
 // One time triggers that fire a single run. This occurs you triggered a single
 // run on demand through the UI or the API.
@@ -1982,11 +2067,11 @@ func (tt *TriggerType) String() string {
 // Set raw string value and validate it against allowed values
 func (tt *TriggerType) Set(v string) error {
 	switch v {
-	case `ONE_TIME`, `PERIODIC`, `RETRY`:
+	case `FILE_ARRIVAL`, `ONE_TIME`, `PERIODIC`, `RETRY`:
 		*tt = TriggerType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ONE_TIME", "PERIODIC", "RETRY"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FILE_ARRIVAL", "ONE_TIME", "PERIODIC", "RETRY"`, v)
 	}
 }
 

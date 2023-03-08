@@ -226,7 +226,7 @@ func (a *DbfsAPI) Put(ctx context.Context, request Put) error {
 // an exception with `RESOURCE_DOES_NOT_EXIST`. If the path is a directory, the
 // read length is negative, or if the offset is negative, this call throws an
 // exception with `INVALID_PARAMETER_VALUE`. If the read length exceeds 1 MB,
-// this call throws an\nexception with `MAX_READ_SIZE_EXCEEDED`.
+// this call throws an exception with `MAX_READ_SIZE_EXCEEDED`.
 //
 // If `offset + length` exceeds the number of bytes in a file, it reads the
 // contents until the end of file.",
