@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"strconv"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/sql"
@@ -105,37 +104,6 @@ func TestAccAlerts(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
 	assert.Equal(t, alert.Id, names[byId.Name])
-
-	schedule, err := w.Alerts.CreateSchedule(ctx, sql.CreateRefreshSchedule{
-		AlertId:      alert.Id,
-		Cron:         "5 4 * * *",
-		DataSourceId: srcs[0].Id,
-	})
-	require.NoError(t, err)
-	defer w.Alerts.DeleteScheduleByAlertIdAndScheduleId(ctx, alert.Id, schedule.Id)
-
-	schedules, err := w.Alerts.ListSchedulesByAlertId(ctx, alert.Id)
-	require.NoError(t, err)
-	assert.True(t, len(schedules) >= 1)
-
-	me, err := w.CurrentUser.Me(ctx)
-	require.NoError(t, err)
-
-	userId, err := strconv.ParseInt(me.Id, 10, 64)
-	require.NoError(t, err)
-
-	sub, err := w.Alerts.Subscribe(ctx, sql.CreateSubscription{
-		AlertId: alert.Id,
-		UserId:  userId,
-	})
-	require.NoError(t, err)
-
-	allSubs, err := w.Alerts.GetSubscriptionsByAlertId(ctx, alert.Id)
-	require.NoError(t, err)
-	assert.True(t, len(allSubs) >= 1)
-
-	err = w.Alerts.UnsubscribeByAlertIdAndSubscriptionId(ctx, alert.Id, sub.Id)
-	require.NoError(t, err)
 }
 
 func TestAccDashboards(t *testing.T) {
