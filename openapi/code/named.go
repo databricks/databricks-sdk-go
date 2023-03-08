@@ -260,6 +260,8 @@ func (n *Named) Comment(prefix string, maxLen int) string {
 		linksInBottom = append(linksInBottom, link)
 	}
 	sort.Strings(linksInBottom)
+	// fix new-line characters
+	trimmed = strings.ReplaceAll(trimmed, "\\n", "\n")
 	description := strings.ReplaceAll(trimmed, "\n\n", " __BLANK__ ")
 	var lines []string
 	currentLine := strings.Builder{}
