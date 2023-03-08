@@ -73,6 +73,9 @@ type Config struct {
 	ClientID     string `name:"client_id" env:"DATABRICKS_CLIENT_ID" auth:"oauth"`
 	ClientSecret string `name:"client_secret" env:"DATABRICKS_CLIENT_SECRET" auth:"oauth,sensitive"`
 
+	// Path to the 'bricks' CLI
+	BricksCliPath string `name:"bricks_cli_path" env:"BRICKS_CLI_PATH"`
+
 	// When multiple auth attributes are available in the environment, use the auth type
 	// specified by this argument. This argument also holds currently selected auth.
 	AuthType string `name:"auth_type" env:"DATABRICKS_AUTH_TYPE" auth:"-"`
