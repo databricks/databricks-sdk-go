@@ -33,13 +33,13 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 		if cl.ClusterName != name {
 			continue
 		}
-		logger.Infof("Found reusable cluster '%s'", name)
+		logger.Infof(ctx, "Found reusable cluster '%s'", name)
 		if cl.IsRunningOrResizing() {
 			return &cl, nil
 		}
 		started, err := a.StartByClusterIdAndWait(ctx, cl.ClusterId)
 		if err != nil {
-			logger.Infof("Cluster %s cannot be started, creating an autoterminating cluster: %s", name, err)
+			logger.Infof(ctx, "Cluster %s cannot be started, creating an autoterminating cluster: %s", name, err)
 			break
 		}
 		return started, nil
@@ -54,7 +54,7 @@ func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string
 	if err != nil {
 		return nil, err
 	}
-	logger.Infof("Creating an autoterminating cluster with node type %s", smallestNodeType)
+	logger.Infof(ctx, "Creating an autoterminating cluster with node type %s", smallestNodeType)
 	versions, err := a.SparkVersions(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("list spark versions: %w", err)

@@ -89,7 +89,7 @@ func Wait(pctx context.Context, timeout time.Duration, fn WaitFn) error {
 		lastErr = res.Err
 		wait := Backoff(attempt)
 		timer := time.NewTimer(wait)
-		logger.Tracef("%s. Sleeping %s",
+		logger.Tracef(ctx, "%s. Sleeping %s",
 			strings.TrimSuffix(res.Err.Error(), "."),
 			wait.Round(time.Millisecond))
 		select {
@@ -119,7 +119,7 @@ func Poll[T any](pctx context.Context, timeout time.Duration, fn func() (*T, *Er
 		lastErr = err.Err
 		wait := Backoff(attempt)
 		timer := time.NewTimer(wait)
-		logger.Tracef("%s. Sleeping %s",
+		logger.Tracef(ctx, "%s. Sleeping %s",
 			strings.TrimSuffix(err.Err.Error(), "."),
 			wait.Round(time.Millisecond))
 		select {

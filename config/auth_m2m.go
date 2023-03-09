@@ -31,7 +31,7 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.
 	if err != nil {
 		return nil, fmt.Errorf("oidc: %w", err)
 	}
-	logger.Debugf("Generating Databricks OAuth token for Service Principal (%s)", cfg.ClientID)
+	logger.Debugf(ctx, "Generating Databricks OAuth token for Service Principal (%s)", cfg.ClientID)
 	ts := (&clientcredentials.Config{
 		ClientID:     cfg.ClientID,
 		ClientSecret: cfg.ClientSecret,

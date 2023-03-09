@@ -41,7 +41,7 @@ func (c GoogleCredentials) Configure(ctx context.Context, cfg *Config) (func(*ht
 	if err != nil {
 		return nil, fmt.Errorf("could not obtain OAuth2 token from JSON: %w", err)
 	}
-	logger.Infof("Using Google Credentials")
+	logger.Infof(ctx, "Using Google Credentials")
 	return serviceToServiceVisitor(inner, creds.TokenSource, "X-Databricks-GCP-SA-Access-Token"), nil
 }
 

@@ -29,7 +29,7 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (f
 		return nil, err
 	}
 	if !cfg.IsAccountClient() {
-		logger.Infof("Using Google Default Application Credentials for Workspace")
+		logger.Infof(ctx, "Using Google Default Application Credentials for Workspace")
 		return refreshableVisitor(inner), nil
 	}
 	// source for generateAccessToken
@@ -43,7 +43,7 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (f
 	if err != nil {
 		return nil, err
 	}
-	logger.Infof("Using Google Default Application Credentials for Accounts API")
+	logger.Infof(ctx, "Using Google Default Application Credentials for Accounts API")
 	return serviceToServiceVisitor(inner, platform, "X-Databricks-GCP-SA-Access-Token"), nil
 }
 

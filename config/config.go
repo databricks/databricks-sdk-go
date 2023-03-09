@@ -164,7 +164,7 @@ func (c *Config) EnsureResolved() error {
 		}
 	}
 	for _, loader := range c.Loaders {
-		logger.Tracef("Loading config via %s", loader.Name())
+		logger.Tracef(context.Background(), "Loading config via %s", loader.Name())
 		err := loader.Configure(c)
 		if err != nil {
 

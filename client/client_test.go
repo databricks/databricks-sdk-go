@@ -334,6 +334,10 @@ type BufferLogger struct {
 	strings.Builder
 }
 
+func (l *BufferLogger) Enabled(level logger.Level) bool {
+	return true
+}
+
 func (l *BufferLogger) Tracef(format string, v ...interface{}) {
 	l.WriteString(fmt.Sprintf("[TRACE] "+format, v...))
 }

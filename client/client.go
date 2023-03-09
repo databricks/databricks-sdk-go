@@ -184,7 +184,7 @@ func (c *DatabricksClient) attempt(
 			err = fmt.Errorf("response body: %w", responseBodyErr)
 		}
 
-		defer c.recordRequestLog(request, response, err, requestBody, responseBody.Bytes())
+		defer c.recordRequestLog(ctx, request, response, err, requestBody, responseBody.Bytes())
 
 		if err == nil {
 			return &responseBody, nil
@@ -201,12 +201,17 @@ func (c *DatabricksClient) attempt(
 }
 
 func (c *DatabricksClient) recordRequestLog(
+	ctx context.Context,
 	request *http.Request,
 	response *http.Response,
 	err error,
 	requestBody []byte,
 	responseBody []byte,
 ) {
+	// Don't compute expensive debug message if debug logging is not enabled.
+	if !logger.Get(ctx).Enabled(logger.LevelDebug) {
+		return
+	}
 	sb := strings.Builder{}
 	sb.WriteString(fmt.Sprintf("%s %s", request.Method,
 		escapeNewLines(request.URL.Path)))
@@ -246,7 +251,7 @@ func (c *DatabricksClient) recordRequestLog(
 	if len(responseBody) > 0 {
 		sb.WriteString(c.redactedDump("< ", responseBody))
 	}
-	logger.Debugf(sb.String()) // lgtm [go/log-injection] lgtm [go/clear-text-logging]
+	logger.Debugf(ctx, sb.String()) // lgtm [go/log-injection] lgtm [go/clear-text-logging]
 }
 
 func (c *DatabricksClient) addAuthHeaderToUserAgent(r *http.Request) error {
