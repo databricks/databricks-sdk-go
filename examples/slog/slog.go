@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/logger"
@@ -12,39 +13,39 @@ type slogAdapter struct {
 	*slog.Logger
 }
 
-func (s *slogAdapter) Enabled(level logger.Level) bool {
+func (s *slogAdapter) Enabled(ctx context.Context, level logger.Level) bool {
 	switch level {
 	case logger.LevelTrace:
-		return s.Logger.Enabled(nil, slog.LevelDebug)
+		return s.Logger.Enabled(ctx, slog.LevelDebug)
 	case logger.LevelDebug:
-		return s.Logger.Enabled(nil, slog.LevelDebug)
+		return s.Logger.Enabled(ctx, slog.LevelDebug)
 	case logger.LevelInfo:
-		return s.Logger.Enabled(nil, slog.LevelInfo)
+		return s.Logger.Enabled(ctx, slog.LevelInfo)
 	case logger.LevelWarn:
-		return s.Logger.Enabled(nil, slog.LevelWarn)
+		return s.Logger.Enabled(ctx, slog.LevelWarn)
 	case logger.LevelError:
-		return s.Logger.Enabled(nil, slog.LevelError)
+		return s.Logger.Enabled(ctx, slog.LevelError)
 	default:
 		return true
 	}
 }
 
-func (s *slogAdapter) Tracef(format string, v ...any) {
-	s.Debug(fmt.Sprintf(format, v...))
+func (s *slogAdapter) Tracef(ctx context.Context, format string, v ...any) {
+	s.DebugCtx(ctx, fmt.Sprintf(format, v...))
 }
 
-func (s *slogAdapter) Debugf(format string, v ...any) {
-	s.Debug(fmt.Sprintf(format, v...))
+func (s *slogAdapter) Debugf(ctx context.Context, format string, v ...any) {
+	s.DebugCtx(ctx, fmt.Sprintf(format, v...))
 }
 
-func (s *slogAdapter) Infof(format string, v ...any) {
-	s.Info(fmt.Sprintf(format, v...))
+func (s *slogAdapter) Infof(ctx context.Context, format string, v ...any) {
+	s.InfoCtx(ctx, fmt.Sprintf(format, v...))
 }
 
-func (s *slogAdapter) Warnf(format string, v ...any) {
-	s.Warn(fmt.Sprintf(format, v...))
+func (s *slogAdapter) Warnf(ctx context.Context, format string, v ...any) {
+	s.WarnCtx(ctx, fmt.Sprintf(format, v...))
 }
 
-func (s *slogAdapter) Errorf(format string, v ...any) {
-	s.Error(fmt.Sprintf(format, v...), nil)
+func (s *slogAdapter) Errorf(ctx context.Context, format string, v ...any) {
+	s.ErrorCtx(ctx, fmt.Sprintf(format, v...), nil)
 }

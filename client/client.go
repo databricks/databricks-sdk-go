@@ -209,7 +209,7 @@ func (c *DatabricksClient) recordRequestLog(
 	responseBody []byte,
 ) {
 	// Don't compute expensive debug message if debug logging is not enabled.
-	if !logger.Get(ctx).Enabled(logger.LevelDebug) {
+	if !logger.Get(ctx).Enabled(ctx, logger.LevelDebug) {
 		return
 	}
 	sb := strings.Builder{}
