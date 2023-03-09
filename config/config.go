@@ -130,7 +130,11 @@ func (c *Config) Authenticate(r *http.Request) error {
 
 // IsAzure returns true if client is configured for Azure Databricks
 func (c *Config) IsAzure() bool {
-	return strings.Contains(c.Host, ".azuredatabricks.net") || c.AzureResourceID != ""
+	isAzureHost := strings.Contains(c.Host, ".azuredatabricks.net") ||
+		strings.Contains(c.Host, "databricks.azure.cn") ||
+		strings.Contains(c.Host, ".databricks.azure.us")
+
+	return isAzureHost || c.AzureResourceID != ""
 }
 
 // IsGcp returns true if client is configured for GCP
