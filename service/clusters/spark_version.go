@@ -11,6 +11,7 @@ import (
 
 // SparkVersionRequest - filtering request
 type SparkVersionRequest struct {
+	Id              string `json:"id,omitempty"`
 	LongTermSupport bool   `json:"long_term_support,omitempty" tf:"optional,default:false"`
 	Beta            bool   `json:"beta,omitempty" tf:"optional,default:false,conflicts:long_term_support"`
 	Latest          bool   `json:"latest,omitempty" tf:"optional,default:true"`
