@@ -194,7 +194,7 @@ func (a *LibrariesAPI) Wait(ctx context.Context, wait Wait,
 			return nil, retries.Halt(err)
 		}
 		if !wait.IsRunning {
-			logger.Infof("Cluster %s is currently not running, so just returning list of %d libraries",
+			logger.Infof(ctx, "Cluster %s is currently not running, so just returning list of %d libraries",
 				wait.ClusterID, len(status.LibraryStatuses))
 			return status, nil
 		}
@@ -219,7 +219,7 @@ func (a *LibrariesAPI) Wait(ctx context.Context, wait Wait,
 		// cleanup libraries that failed to install
 		for _, v := range result.LibraryStatuses {
 			if v.Status == "FAILED" {
-				logger.Warnf("Removing failed library %s from %s",
+				logger.Warnf(ctx, "Removing failed library %s from %s",
 					v.Library, wait.ClusterID)
 				cleanup.Libraries = append(cleanup.Libraries, *v.Library)
 				continue

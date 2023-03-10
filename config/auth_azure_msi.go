@@ -38,7 +38,7 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if err != nil {
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
-	logger.Debugf("Generating AAD token via Azure MSI")
+	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
 	inner := azureMsiTokenSource(cfg.getAzureLoginAppID())
 	platform := azureMsiTokenSource(env.ServiceManagementEndpoint)
 	return func(r *http.Request) error {

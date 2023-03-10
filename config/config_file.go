@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -36,7 +37,7 @@ func (l KnownConfigLoader) Configure(cfg *Config) error {
 	_, err := os.Stat(configFile)
 	if os.IsNotExist(err) {
 		// early return for non-configured machines
-		logger.Debugf("%s not found on current host", configFile)
+		logger.Debugf(context.Background(), "%s not found on current host", configFile)
 		return nil
 	}
 	iniFile, err := ini.Load(configFile)
@@ -52,12 +53,12 @@ func (l KnownConfigLoader) Configure(cfg *Config) error {
 	profileValues := iniFile.Section(profile)
 	if len(profileValues.Keys()) == 0 {
 		if !hasExplicitProfile {
-			logger.Debugf("%s has no %s profile configured", configFile, profile)
+			logger.Debugf(context.Background(), "%s has no %s profile configured", configFile, profile)
 			return nil
 		}
 		return fmt.Errorf("%s has no %s profile configured", configFile, profile)
 	}
-	logger.Debugf("Loading %s profile from %s", profile, configFile)
+	logger.Debugf(context.Background(), "Loading %s profile from %s", profile, configFile)
 	err = ConfigAttributes.ResolveFromStringMap(cfg, profileValues.KeysHash())
 	if err != nil {
 		return fmt.Errorf("%s %s profile: %w", configFile, profile, err)

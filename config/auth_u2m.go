@@ -34,12 +34,12 @@ func (c BricksCliCredentials) Configure(ctx context.Context, cfg *Config) (func(
 			return nil, nil
 		}
 		if strings.Contains(err.Error(), "executable file not found") {
-			logger.Debugf("Most likely Bricks CLI is not installed")
+			logger.Debugf(ctx, "Most likely Bricks CLI is not installed")
 			return nil, nil
 		}
 		return nil, err
 	}
-	logger.Debugf("Using Bricks CLI authentication with Databricks OAuth tokens")
+	logger.Debugf(ctx, "Using Bricks CLI authentication with Databricks OAuth tokens")
 	return refreshableVisitor(&ts), nil
 }
 
@@ -71,6 +71,6 @@ func (ts *bricksCliTokenSource) Token() (*oauth2.Token, error) {
 	if err != nil {
 		return nil, fmt.Errorf("cannot unmarshal Bricks CLI result: %w", err)
 	}
-	logger.Infof("Refreshed OAuth token from Bricks CLI, expires on %s", t.Expiry)
+	logger.Infof(context.Background(), "Refreshed OAuth token from Bricks CLI, expires on %s", t.Expiry)
 	return &t, nil
 }

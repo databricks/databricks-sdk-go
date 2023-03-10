@@ -334,23 +334,27 @@ type BufferLogger struct {
 	strings.Builder
 }
 
-func (l *BufferLogger) Tracef(format string, v ...interface{}) {
+func (l *BufferLogger) Enabled(_ context.Context, level logger.Level) bool {
+	return true
+}
+
+func (l *BufferLogger) Tracef(_ context.Context, format string, v ...interface{}) {
 	l.WriteString(fmt.Sprintf("[TRACE] "+format, v...))
 }
 
-func (l *BufferLogger) Debugf(format string, v ...interface{}) {
+func (l *BufferLogger) Debugf(_ context.Context, format string, v ...interface{}) {
 	l.WriteString(fmt.Sprintf("[DEBUG] "+format, v...))
 }
 
-func (l *BufferLogger) Infof(format string, v ...interface{}) {
+func (l *BufferLogger) Infof(_ context.Context, format string, v ...interface{}) {
 	l.WriteString(fmt.Sprintf("[INFO] "+format, v...))
 }
 
-func (l *BufferLogger) Warnf(format string, v ...interface{}) {
+func (l *BufferLogger) Warnf(_ context.Context, format string, v ...interface{}) {
 	l.WriteString(fmt.Sprintf("[WARN] "+format, v...))
 }
 
-func (l *BufferLogger) Errorf(format string, v ...interface{}) {
+func (l *BufferLogger) Errorf(_ context.Context, format string, v ...interface{}) {
 	l.WriteString(fmt.Sprintf("[ERROR] "+format, v...))
 }
 

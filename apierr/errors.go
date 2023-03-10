@@ -73,10 +73,15 @@ func (apiError *APIError) IsTooManyRequests() bool {
 
 // IsRetriable returns true if error is retriable
 func (apiError *APIError) IsRetriable() bool {
+	return apiError.isRetriable(context.Background())
+}
+
+// isRetriable returns true if error is retriable
+func (apiError *APIError) isRetriable(ctx context.Context) bool {
 	// Handle transient errors for retries
 	for _, substring := range transientErrorStringMatches {
 		if strings.Contains(apiError.Message, substring) {
-			logger.Debugf("Attempting retry because of %#v", substring)
+			logger.Debugf(ctx, "Attempting retry because of %#v", substring)
 			return true
 		}
 	}
@@ -101,7 +106,7 @@ func CheckForRetry(ctx context.Context, resp *http.Response, respErr error, body
 			StatusCode: 523,
 			Message:    ue.Error(),
 		}
-		return apiError.IsRetriable(), apiError
+		return apiError.isRetriable(ctx), apiError
 	}
 	if resp == nil {
 		// If response is nil we can't make retry choices.
@@ -117,7 +122,7 @@ func CheckForRetry(ctx context.Context, resp *http.Response, respErr error, body
 	}
 	if resp.StatusCode >= 400 {
 		apiError := parseErrorFromResponse(resp, body, bodyErr)
-		return apiError.IsRetriable(), apiError
+		return apiError.isRetriable(ctx), apiError
 	}
 	return false, respErr
 }

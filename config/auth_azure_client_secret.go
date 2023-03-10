@@ -50,7 +50,7 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	if err != nil {
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
-	logger.Infof("Generating AAD token for Service Principal (%s)", cfg.AzureClientID)
+	logger.Infof(ctx, "Generating AAD token for Service Principal (%s)", cfg.AzureClientID)
 	refreshCtx := context.Background()
 	inner := c.tokenSourceFor(refreshCtx, cfg, env, cfg.getAzureLoginAppID())
 	platform := c.tokenSourceFor(refreshCtx, cfg, env, env.ServiceManagementEndpoint)

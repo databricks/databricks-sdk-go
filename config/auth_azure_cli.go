@@ -39,7 +39,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 			return nil, nil
 		}
 		if strings.Contains(err.Error(), "executable file not found") {
-			logger.Debugf("Most likely Azure CLI is not installed. " +
+			logger.Debugf(ctx, "Most likely Azure CLI is not installed. "+
 				"See https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest for details")
 			return nil, nil
 		}
@@ -49,7 +49,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if err != nil {
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
-	logger.Infof("Using Azure CLI authentication with AAD tokens")
+	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
 	return refreshableVisitor(&ts), nil
 }
 
@@ -82,7 +82,7 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 	if err != nil {
 		return nil, fmt.Errorf("cannot parse expiry: %w", err)
 	}
-	logger.Infof("Refreshed OAuth token for %s from Azure CLI, which expires on %s",
+	logger.Infof(context.Background(), "Refreshed OAuth token for %s from Azure CLI, which expires on %s",
 		ts.resource, it.ExpiresOn)
 
 	var extra map[string]interface{}
