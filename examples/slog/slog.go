@@ -16,6 +16,9 @@ type slogAdapter struct {
 func (s *slogAdapter) Enabled(ctx context.Context, level logger.Level) bool {
 	switch level {
 	case logger.LevelTrace:
+		// Note: slog doesn't have a default trace level.
+		// An application can define their own fine grained levels
+		// and use those here, if needed.
 		return s.Logger.Enabled(ctx, slog.LevelDebug)
 	case logger.LevelDebug:
 		return s.Logger.Enabled(ctx, slog.LevelDebug)

@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	sdk "github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/exp/slog"
 )
 
@@ -33,12 +33,12 @@ func main() {
 	// Define global logger for the SDK.
 	// This instance is used when no context is present (e.g. upon construction),
 	// or when a context is present but doesn't hold a logger to use.
-	logger.DefaultLogger = &slogAdapter{
+	sdk.DefaultLogger = &slogAdapter{
 		slog.New(handler).With("global", true),
 	}
 
 	// Define logger on context for the SDK to use.
-	ctx := logger.NewContext(context.Background(), &slogAdapter{
+	ctx := sdk.NewContext(context.Background(), &slogAdapter{
 		slog.New(handler).With("global", false),
 	})
 
