@@ -18,13 +18,13 @@ type configFixture struct {
 	Token             string            `json:"token,omitempty"`
 	Username          string            `json:"username,omitempty"`
 	Password          string            `json:"password,omitempty"`
-	ConfigFile        string            `json:"configFile,omitempty"`
+	ConfigFile        string            `json:"config_file,omitempty"`
 	Profile           string            `json:"profile,omitempty"`
-	AzureClientID     string            `json:"azureClientID,omitempty"`
-	AzureClientSecret string            `json:"azureClientSecret,omitempty"`
-	AzureTenantID     string            `json:"azureTenantID,omitempty"`
-	AzureResourceID   string            `json:"azureResourceID,omitempty"`
-	AuthType          string            `json:"authType,omitempty"`
+	AzureClientID     string            `json:"azure_client_id,omitempty"`
+	AzureClientSecret string            `json:"azure_client_secret,omitempty"`
+	AzureTenantID     string            `json:"azure_tenant_id,omitempty"`
+	AzureResourceID   string            `json:"azure_workspace_resource_id,omitempty"`
+	AuthType          string            `json:"auth_type,omitempty"`
 	Env               map[string]string `json:"env,omitempty"`
 	AssertError       string            `json:"assertError,omitempty"`
 	AssertAuth        string            `json:"assertAuth,omitempty"`
