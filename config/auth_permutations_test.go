@@ -32,6 +32,13 @@ type configFixture struct {
 	AssertAzure       bool              `json:"assertAzure,omitempty"`
 }
 
+func init() {
+	dumpTo = os.Getenv("DATABRICKS_AUTH_FIXTURES_DUMP")
+	if dumpTo != "" {
+		os.Remove(dumpTo)
+	}
+}
+
 // set to a file, where auth test fixtures are going to be dumped
 var dumpTo string = ""
 var dumpToMu sync.Mutex
