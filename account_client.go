@@ -10,6 +10,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/deployment"
+	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/permissions"
 	"github.com/databricks/databricks-sdk-go/service/scim"
 	"github.com/databricks/databricks-sdk-go/service/unitycatalog"
@@ -33,6 +34,15 @@ type AccountClient struct {
 	// the new workspace. A credential configuration encapsulates this role
 	// information, and its ID is used when creating a new workspace.
 	Credentials *deployment.CredentialsAPI
+
+	// These APIs enable administrators to manage custom oauth app integrations,
+	// which is required for adding/using Custom OAuth App Integration like
+	// Tableau Cloud for Databricks in AWS cloud.
+	//
+	// **Note:** You can only add/use the OAuth custom application integrations
+	// when OAuth enrollment status is enabled. For more details see
+	// :method:OAuthEnrollment/create
+	CustomAppIntegration *oauth2.CustomAppIntegrationAPI
 
 	// These APIs manage encryption key configurations for this workspace
 	// (optional). A key configuration encapsulates the AWS KMS key information
@@ -150,6 +160,15 @@ type AccountClient struct {
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	PrivateAccess *deployment.PrivateAccessAPI
 
+	// These APIs enable administrators to manage published oauth app
+	// integrations, which is required for adding/using Published OAuth App
+	// Integration like Tableau Cloud for Databricks in AWS cloud.
+	//
+	// **Note:** You can only add/use the OAuth published application
+	// integrations when OAuth enrollment status is enabled. For more details
+	// see :method:OAuthEnrollment/create
+	PublishedAppIntegration *oauth2.PublishedAppIntegrationAPI
+
 	// Identities for use with jobs, automated tools, and systems such as
 	// scripts, apps, and CI/CD platforms. Databricks recommends creating
 	// service principals to run production jobs or modify production data. If
@@ -242,6 +261,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		BillableUsage:               billing.NewBillableUsage(apiClient),
 		Budgets:                     billing.NewBudgets(apiClient),
 		Credentials:                 deployment.NewCredentials(apiClient),
+		CustomAppIntegration:        oauth2.NewCustomAppIntegration(apiClient),
 		EncryptionKeys:              deployment.NewEncryptionKeys(apiClient),
 		Groups:                      scim.NewAccountGroups(apiClient),
 		LogDelivery:                 billing.NewLogDelivery(apiClient),
@@ -249,6 +269,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		AccountMetastores:           unitycatalog.NewAccountMetastores(apiClient),
 		Networks:                    deployment.NewNetworks(apiClient),
 		PrivateAccess:               deployment.NewPrivateAccess(apiClient),
+		PublishedAppIntegration:     oauth2.NewPublishedAppIntegration(apiClient),
 		ServicePrincipals:           scim.NewAccountServicePrincipals(apiClient),
 		Storage:                     deployment.NewStorage(apiClient),
 		AccountStorageCredentials:   unitycatalog.NewAccountStorageCredentials(apiClient),
