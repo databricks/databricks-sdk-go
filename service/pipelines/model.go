@@ -64,6 +64,13 @@ type CronTrigger struct {
 	TimezoneId string `json:"timezone_id,omitempty"`
 }
 
+type DataPlaneId struct {
+	// The instance name of the data plane emitting an event.
+	Instance string `json:"instance,omitempty"`
+	// A sequence number, unique and increasing within the data plane instance.
+	SeqNo any `json:"seq_no,omitempty"`
+}
+
 // Delete a pipeline
 type Delete struct {
 	PipelineId string `json:"-" url:"-"`
@@ -111,6 +118,45 @@ type EditPipeline struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+}
+
+type ErrorDetail struct {
+	// The exception thrown for this error, with its chain of cause.
+	Exceptions []SerializedException `json:"exceptions,omitempty"`
+	// Whether this error is considered fatal, that is, unrecoverable.
+	Fatal bool `json:"fatal,omitempty"`
+}
+
+// The severity level of the event.
+type EventLevel string
+
+const EventLevelError EventLevel = `ERROR`
+
+const EventLevelInfo EventLevel = `INFO`
+
+const EventLevelMetrics EventLevel = `METRICS`
+
+const EventLevelWarn EventLevel = `WARN`
+
+// String representation for [fmt.Print]
+func (el *EventLevel) String() string {
+	return string(*el)
+}
+
+// Set raw string value and validate it against allowed values
+func (el *EventLevel) Set(v string) error {
+	switch v {
+	case `ERROR`, `INFO`, `METRICS`, `WARN`:
+		*el = EventLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ERROR", "INFO", "METRICS", "WARN"`, v)
+	}
+}
+
+// Type always returns EventLevel to satisfy [pflag.Value] interface
+func (el *EventLevel) Type() string {
+	return "EventLevel"
 }
 
 type Filters struct {
@@ -193,6 +239,48 @@ type GetUpdateResponse struct {
 	Update *UpdateInfo `json:"update,omitempty"`
 }
 
+// List pipeline events
+type ListPipelineEvents struct {
+	// Criteria to select a subset of results, expressed using a SQL-like
+	// syntax. The supported filters are:
+	//
+	// 1. level='INFO' (or WARN or ERROR)
+	//
+	// 2. level in ('INFO', 'WARN')
+	//
+	// 3. id='[event-id]'
+	//
+	// 4. timestamp > 'TIMESTAMP' (or >=,<,<=,=)
+	//
+	// Composite expressions are supported, for example: level in ('ERROR',
+	// 'WARN') AND timestamp> '2021-07-22T06:37:33.083Z'
+	Filter string `json:"-" url:"filter,omitempty"`
+	// Max number of entries to return in a single page. The system may return
+	// fewer than max_results events in a response, even if there are more
+	// events available.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// A string indicating a sort order by timestamp for the results, for
+	// example, ["timestamp asc"]. The sort order can be ascending or
+	// descending. By default, events are returned in descending order by
+	// timestamp.
+	OrderBy []string `json:"-" url:"order_by,omitempty"`
+	// Page token returned by previous call. This field is mutually exclusive
+	// with all fields in this request except max_results. An error is returned
+	// if any fields other than max_results are set when this field is set.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	PipelineId string `json:"-" url:"-"`
+}
+
+type ListPipelineEventsResponse struct {
+	// The list of events matching the request criteria.
+	Events []PipelineEvent `json:"events,omitempty"`
+	// If present, a token to fetch the next page of events.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// If present, a token to fetch the previous page of events.
+	PrevPageToken string `json:"prev_page_token,omitempty"`
+}
+
 // List pipelines
 type ListPipelines struct {
 	// Select a subset of results based on the specified criteria. The supported
@@ -248,9 +336,77 @@ type ListUpdatesResponse struct {
 	Updates []UpdateInfo `json:"updates,omitempty"`
 }
 
+// Maturity level for EventDetails.
+type MaturityLevel string
+
+const MaturityLevelDeprecated MaturityLevel = `DEPRECATED`
+
+const MaturityLevelEvolving MaturityLevel = `EVOLVING`
+
+const MaturityLevelStable MaturityLevel = `STABLE`
+
+// String representation for [fmt.Print]
+func (ml *MaturityLevel) String() string {
+	return string(*ml)
+}
+
+// Set raw string value and validate it against allowed values
+func (ml *MaturityLevel) Set(v string) error {
+	switch v {
+	case `DEPRECATED`, `EVOLVING`, `STABLE`:
+		*ml = MaturityLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DEPRECATED", "EVOLVING", "STABLE"`, v)
+	}
+}
+
+// Type always returns MaturityLevel to satisfy [pflag.Value] interface
+func (ml *MaturityLevel) Type() string {
+	return "MaturityLevel"
+}
+
 type NotebookLibrary struct {
 	// The absolute path of the notebook.
 	Path string `json:"path,omitempty"`
+}
+
+type Origin struct {
+	// The id of a batch. Unique within a flow.
+	BatchId int `json:"batch_id,omitempty"`
+	// The cloud provider, e.g., AWS or Azure.
+	Cloud string `json:"cloud,omitempty"`
+	// The id of the cluster where an execution happens. Unique within a region.
+	ClusterId string `json:"cluster_id,omitempty"`
+	// The name of a dataset. Unique within a pipeline.
+	DatasetName string `json:"dataset_name,omitempty"`
+	// The id of the flow. Globally unique. Incremental queries will generally
+	// reuse the same id while complete queries will have a new id per update.
+	FlowId string `json:"flow_id,omitempty"`
+	// The name of the flow. Not unique.
+	FlowName string `json:"flow_name,omitempty"`
+	// The optional host name where the event was triggered
+	Host string `json:"host,omitempty"`
+	// The id of a maintenance run. Globally unique.
+	MaintenanceId string `json:"maintenance_id,omitempty"`
+	// Materialization name.
+	MaterializationName string `json:"materialization_name,omitempty"`
+	// The org id of the user. Unique within a cloud.
+	OrgId int `json:"org_id,omitempty"`
+	// The id of the pipeline. Globally unique.
+	PipelineId string `json:"pipeline_id,omitempty"`
+	// The name of the pipeline. Not unique.
+	PipelineName string `json:"pipeline_name,omitempty"`
+	// The cloud region.
+	Region string `json:"region,omitempty"`
+	// The id of the request that caused an update.
+	RequestId string `json:"request_id,omitempty"`
+	// The id of a (delta) table. Globally unique.
+	TableId string `json:"table_id,omitempty"`
+	// The Unity Catalog id of the MV or ST being updated.
+	UcResourceId string `json:"uc_resource_id,omitempty"`
+	// The id of an execution. Globally unique.
+	UpdateId string `json:"update_id,omitempty"`
 }
 
 type PipelineCluster struct {
@@ -339,6 +495,27 @@ type PipelineCluster struct {
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
+}
+
+type PipelineEvent struct {
+	// Information about an error captured by the event.
+	Error *ErrorDetail `json:"error,omitempty"`
+	// The event type. Should always correspond to the details
+	EventType string `json:"event_type,omitempty"`
+	// A time-based, globally unique id.
+	Id string `json:"id,omitempty"`
+	// The severity level of the event.
+	Level EventLevel `json:"level,omitempty"`
+	// Maturity level for event_type.
+	MaturityLevel MaturityLevel `json:"maturity_level,omitempty"`
+	// The display message associated with the event.
+	Message string `json:"message,omitempty"`
+	// Describes where the event originates from.
+	Origin *Origin `json:"origin,omitempty"`
+	// A sequencing object to identify and order events.
+	Sequence *Sequencing `json:"sequence,omitempty"`
+	// The time of the event.
+	Timestamp string `json:"timestamp,omitempty"`
 }
 
 type PipelineLibrary struct {
@@ -468,6 +645,33 @@ type PipelineTrigger struct {
 // Reset a pipeline
 type Reset struct {
 	PipelineId string `json:"-" url:"-"`
+}
+
+type Sequencing struct {
+	// A sequence number, unique and increasing within the control plane.
+	ControlPlaneSeqNo int `json:"control_plane_seq_no,omitempty"`
+	// the ID assigned by the data plane.
+	DataPlaneId *DataPlaneId `json:"data_plane_id,omitempty"`
+}
+
+type SerializedException struct {
+	// Runtime class of the exception
+	ClassName string `json:"class_name,omitempty"`
+	// Exception message
+	Message string `json:"message,omitempty"`
+	// Stack trace consisting of a list of stack frames
+	Stack []StackFrame `json:"stack,omitempty"`
+}
+
+type StackFrame struct {
+	// Class from which the method call originated
+	DeclaringClass string `json:"declaring_class,omitempty"`
+	// File where the method is defined
+	FileName string `json:"file_name,omitempty"`
+	// Line from which the method was called
+	LineNumber int `json:"line_number,omitempty"`
+	// Name of the method which was called
+	MethodName string `json:"method_name,omitempty"`
 }
 
 type StartUpdate struct {
