@@ -18,6 +18,8 @@
 //
 // - [scim.CurrentUserAPI]: This API allows retrieving information about currently authenticated user or service principal.
 //
+// - [oauth2.CustomAppIntegrationAPI]: These APIs enable administrators to manage custom oauth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
+//
 // - [sql.DashboardsAPI]: In general, there is little need to modify dashboards using the API.
 //
 // - [sql.DataSourcesAPI]: This API is provided to assist you in making new query objects.
@@ -73,6 +75,8 @@
 // - [deployment.PrivateAccessAPI]: These APIs manage private access settings for this account.
 //
 // - [unitycatalog.ProvidersAPI]: Databricks Delta Sharing: Providers REST API.
+//
+// - [oauth2.PublishedAppIntegrationAPI]: These APIs enable administrators to manage published oauth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
 //
 // - [sql.QueriesAPI]: These endpoints are used for CRUD operations on query definitions.
 //
@@ -144,6 +148,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/libraries"
 	"github.com/databricks/databricks-sdk-go/service/mlflow"
+	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/permissions"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/service/repos"
@@ -171,6 +176,7 @@ var (
 	_ *commands.CommandExecutionAPI                = nil
 	_ *deployment.CredentialsAPI                   = nil
 	_ *scim.CurrentUserAPI                         = nil
+	_ *oauth2.CustomAppIntegrationAPI              = nil
 	_ *sql.DashboardsAPI                           = nil
 	_ *sql.DataSourcesAPI                          = nil
 	_ *dbfs.DbfsAPI                                = nil
@@ -205,6 +211,7 @@ var (
 	_ *clusterpolicies.PolicyFamiliesAPI           = nil
 	_ *deployment.PrivateAccessAPI                 = nil
 	_ *unitycatalog.ProvidersAPI                   = nil
+	_ *oauth2.PublishedAppIntegrationAPI           = nil
 	_ *sql.QueriesAPI                              = nil
 	_ *sql.QueryHistoryAPI                         = nil
 	_ *unitycatalog.RecipientActivationAPI         = nil
