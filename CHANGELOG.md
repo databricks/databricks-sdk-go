@@ -1,5 +1,14 @@
 # Version changelog
 
+## 0.4.2
+
+* Added pipeline events API to the SDK ([#339](https://github.com/databricks/databricks-sdk-go/pull/339)
+* Added oauth2 CRUD methods and refreshed from latest openapi spec ([#338](https://github.com/databricks/databricks-sdk-go/pull/338)
+* Added capturing for auth fixtures ([#336](https://github.com/databricks/databricks-sdk-go/pull/336), [#337](https://github.com/databricks/databricks-sdk-go/pull/337)).
+* Bump google.golang.org/api from 0.111.0 to 0.112.0 ([#334](https://github.com/databricks/databricks-sdk-go/pull/334)).
+* Added id field to the SparkVersionRequest for easier integration with Terraform's `databricks_spark_version` data source ([#335](https://github.com/databricks/databricks-sdk-go/pull/335))
+* Make logger context aware ([#333](https://github.com/databricks/databricks-sdk-go/pull/333)).
+
 ## 0.4.1
 
  * Added an option to configure the location of the bricks CLI ([#330](https://github.com/databricks/databricks-sdk-go/pull/330)).
