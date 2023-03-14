@@ -50,6 +50,13 @@ func TestAccPipelines(t *testing.T) {
 	})
 	require.NoError(t, err)
 
+	events, err := w.Pipelines.ListPipelineEventsAll(ctx, pipelines.ListPipelineEvents{
+		PipelineId: created.PipelineId,
+	})
+	require.NoError(t, err)
+	// atleast created event should have been emitted
+	assert.Greater(t, len(events), 0)
+
 	defer w.Pipelines.DeleteByPipelineId(ctx, created.PipelineId)
 
 	err = w.Pipelines.Update(ctx, pipelines.EditPipeline{
