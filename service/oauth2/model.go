@@ -27,6 +27,11 @@ type CreateCustomAppIntegrationOutput struct {
 	IntegrationId string `json:"integration_id,omitempty"`
 }
 
+type CreateOAuthEnrollment struct {
+	// If true, enable OAuth for all the published applications in the account.
+	EnableAllPublishedApps bool `json:"enable_all_published_apps,omitempty"`
+}
+
 type CreatePublishedAppIntegration struct {
 	// app_id of the oauth published app integration. For example power-bi,
 	// tableau-deskop
@@ -88,6 +93,11 @@ type GetPublishedAppIntegrationOutput struct {
 type GetPublishedAppIntegrationRequest struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
+}
+
+type OAuthEnrollmentStatus struct {
+	// Is OAuth enrolled for the account.
+	IsEnabled bool `json:"is_enabled,omitempty"`
 }
 
 type TokenAccessPolicy struct {

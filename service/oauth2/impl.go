@@ -41,6 +41,24 @@ func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCus
 	return err
 }
 
+// unexported type that holds implementations of just OAuthEnrollment API methods
+type oAuthEnrollmentImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *oAuthEnrollmentImpl) Create(ctx context.Context, request CreateOAuthEnrollment) error {
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/enrollment", a.client.ConfiguredAccountID())
+	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	return err
+}
+
+func (a *oAuthEnrollmentImpl) Get(ctx context.Context) (*OAuthEnrollmentStatus, error) {
+	var oAuthEnrollmentStatus OAuthEnrollmentStatus
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/enrollment", a.client.ConfiguredAccountID())
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &oAuthEnrollmentStatus)
+	return &oAuthEnrollmentStatus, err
+}
+
 // unexported type that holds implementations of just PublishedAppIntegration API methods
 type publishedAppIntegrationImpl struct {
 	client *client.DatabricksClient
