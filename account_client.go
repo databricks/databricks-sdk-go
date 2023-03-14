@@ -149,6 +149,14 @@ type AccountClient struct {
 	// customer-managed VPCs.
 	Networks *deployment.NetworksAPI
 
+	// These APIs enable administrators to enroll OAuth for their accounts,
+	// which is required for adding/using any OAuth published/custom application
+	// integration.
+	//
+	// **Note:** Your account must be on the E2 version to use these APIs, this
+	// is because OAuth is only supported on the E2 version.
+	OAuthEnrollment *oauth2.OAuthEnrollmentAPI
+
 	// These APIs manage private access settings for this account. A private
 	// access settings object specifies how your workspace is accessed using AWS
 	// PrivateLink. Each workspace that has any PrivateLink connections must
@@ -268,6 +276,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		AccountMetastoreAssignments: unitycatalog.NewAccountMetastoreAssignments(apiClient),
 		AccountMetastores:           unitycatalog.NewAccountMetastores(apiClient),
 		Networks:                    deployment.NewNetworks(apiClient),
+		OAuthEnrollment:             oauth2.NewOAuthEnrollment(apiClient),
 		PrivateAccess:               deployment.NewPrivateAccess(apiClient),
 		PublishedAppIntegration:     oauth2.NewPublishedAppIntegration(apiClient),
 		ServicePrincipals:           scim.NewAccountServicePrincipals(apiClient),

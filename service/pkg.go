@@ -66,6 +66,8 @@
 //
 // - [deployment.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
 //
+// - [oauth2.OAuthEnrollmentAPI]: These APIs enable administrators to enroll OAuth for their accounts, which is required for adding/using any OAuth published/custom application integration.
+//
 // - [permissions.PermissionsAPI]: Permissions API are used to create read, write, edit, update and manage access for various users on different objects and endpoints.
 //
 // - [pipelines.PipelinesAPI]: The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
@@ -206,6 +208,7 @@ var (
 	_ *mlflow.ModelVersionCommentsAPI              = nil
 	_ *mlflow.ModelVersionsAPI                     = nil
 	_ *deployment.NetworksAPI                      = nil
+	_ *oauth2.OAuthEnrollmentAPI                   = nil
 	_ *permissions.PermissionsAPI                  = nil
 	_ *pipelines.PipelinesAPI                      = nil
 	_ *clusterpolicies.PolicyFamiliesAPI           = nil

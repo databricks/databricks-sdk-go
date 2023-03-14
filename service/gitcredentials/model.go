@@ -6,7 +6,9 @@ package gitcredentials
 
 type CreateCredentials struct {
 	// Git provider. This field is case-insensitive. The available Git providers
-	// are awsCodeCommit, azureDevOpsServices,
+	// are gitHub, bitbucketCloud, gitLab, azureDevOpsServices,
+	// gitHubEnterprise, bitbucketServer, gitLabEnterpriseEdition and
+	// awsCodeCommit.
 	GitProvider string `json:"git_provider"`
 	// Git username.
 	GitUsername string `json:"git_username,omitempty"`
@@ -19,7 +21,9 @@ type CreateCredentialsResponse struct {
 	// ID of the credential object in the workspace.
 	CredentialId int64 `json:"credential_id,omitempty"`
 	// Git provider. This field is case-insensitive. The available Git providers
-	// are awsCodeCommit, azureDevOpsServices,
+	// are gitHub, bitbucketCloud, gitLab, azureDevOpsServices,
+	// gitHubEnterprise, bitbucketServer, gitLabEnterpriseEdition and
+	// awsCodeCommit.
 	GitProvider string `json:"git_provider,omitempty"`
 	// Git username.
 	GitUsername string `json:"git_username,omitempty"`
@@ -29,7 +33,9 @@ type CredentialInfo struct {
 	// ID of the credential object in the workspace.
 	CredentialId int64 `json:"credential_id,omitempty"`
 	// Git provider. This field is case-insensitive. The available Git providers
-	// are awsCodeCommit, azureDevOpsServices,
+	// are gitHub, bitbucketCloud, gitLab, azureDevOpsServices,
+	// gitHubEnterprise, bitbucketServer, gitLabEnterpriseEdition and
+	// awsCodeCommit.
 	GitProvider string `json:"git_provider,omitempty"`
 	// Git username.
 	GitUsername string `json:"git_username,omitempty"`
@@ -55,7 +61,9 @@ type UpdateCredentials struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
 	// Git provider. This field is case-insensitive. The available Git providers
-	// are awsCodeCommit, azureDevOpsServices,
+	// are gitHub, bitbucketCloud, gitLab, azureDevOpsServices,
+	// gitHubEnterprise, bitbucketServer, gitLabEnterpriseEdition and
+	// awsCodeCommit.
 	GitProvider string `json:"git_provider,omitempty"`
 	// Git username.
 	GitUsername string `json:"git_username,omitempty"`
