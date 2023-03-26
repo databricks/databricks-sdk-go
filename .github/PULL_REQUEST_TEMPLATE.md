@@ -3,8 +3,7 @@
 
 ## Tests
 <!-- 
-How is this tested? Please see the checklist below and also describe any other relevant 
-tests 
+How is this tested? Please see the checklist below and also describe any other relevant tests 
 -->
 
 - [ ] `make test` passing
