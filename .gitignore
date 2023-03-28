@@ -23,3 +23,4 @@ coverage
 raw-specs/**
 out/**
 *.log
+.databricks/

@@ -16,25 +16,6 @@ import (
 // timeout to wait for local auth server to respond
 const authServerTimeout = 10 * time.Second
 
-type serverResponse struct {
-	// Optional URL of the Databricks host to connect to.
-	Host string `json:"host"`
-
-	// The requested access token. When you call a secured REST API,
-	// the token is embedded in the Authorization request header field as
-	// a "bearer" token, allowing the API to authenticate the caller.
-	AccessToken string `json:"access_token"`
-
-	// The type of token, which is a "Bearer" access token, which means the
-	// resource can give access to the bearer of this token.
-	TokenType string `json:"token_type"`
-
-	// The timespan when the access token expires.
-	// The date is represented as the number of seconds from "1970-01-01T0:0:0Z UTC"
-	// If zero the token is valid forever.
-	ExpiresOn json.Number `json:"expires_on"`
-}
-
 // Credentials provider that fetches a token from a locally running HTTP server.
 // The credentials provider will perform a GET request to the configured URL.
 //
@@ -43,17 +24,17 @@ type serverResponse struct {
 //
 // The server is expected to return a JSON response with the following fields:
 //
-//	host: Optional URL of the Databricks host to connect to.
+//	host: URL of the Databricks host to connect to.
 //	access_token: The requested access token.
 //	token_type: The type of token, which is a "Bearer" access token.
 //	expires_on: The timespan when the access token expires.
-type ServerCredentials struct{}
+type LocalMetadataServiceCredentials struct{}
 
-func (c ServerCredentials) Name() string {
-	return "auth-server"
+func (c LocalMetadataServiceCredentials) Name() string {
+	return "local-metadata-service"
 }
 
-func (c ServerCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
+func (c LocalMetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
 	if cfg.AuthServerUrl == "" {
 		return nil, nil
 	}
@@ -68,7 +49,7 @@ func (c ServerCredentials) Configure(ctx context.Context, cfg *Config) (func(*ht
 		return nil, fmt.Errorf("invalid auth server URL: %s", cfg.AuthServerUrl)
 	}
 
-	resp, err := makeRequest(cfg.AuthServerUrl)
+	resp, err := makeRequest(parsedAuthServerUrl)
 	if err != nil {
 		return nil, nil
 	}
@@ -87,16 +68,19 @@ func (c ServerCredentials) Configure(ctx context.Context, cfg *Config) (func(*ht
 
 	cfg.Host = resp.Host
 
-	ts := authServerTokenSource(cfg.AuthServerUrl)
+	ts := metadataServiceTokenSource{
+		authServerURL:  parsedAuthServerUrl,
+		databricksHost: cfg.Host,
+	}
 	return refreshableVisitor(&ts), nil
 }
 
 // makes a request to the server and returns the token
-func makeRequest(serverUrl string) (*serverResponse, error) {
+func makeRequest(serverUrl *url.URL) (*serverResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), authServerTimeout)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, serverUrl, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, serverUrl.String(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("token request: %w", err)
 	}
@@ -134,13 +118,20 @@ func makeRequest(serverUrl string) (*serverResponse, error) {
 	return &response, nil
 }
 
-type authServerTokenSource string
+type metadataServiceTokenSource struct {
+	authServerURL  *url.URL
+	databricksHost string
+}
 
-func (t authServerTokenSource) Token() (*oauth2.Token, error) {
-	token, err := makeRequest(string(t))
+func (t metadataServiceTokenSource) Token() (*oauth2.Token, error) {
+	token, err := makeRequest(t.authServerURL)
 
 	if err != nil {
 		return nil, err
+	}
+
+	if token.Host != t.databricksHost {
+		return nil, fmt.Errorf("host in token (%s) doesn't match configured host (%s)", token.Host, t.databricksHost)
 	}
 
 	epoch, err := token.ExpiresOn.Int64()
@@ -151,11 +142,30 @@ func (t authServerTokenSource) Token() (*oauth2.Token, error) {
 	expiry := time.Unix(epoch, 0)
 
 	logger.Infof(context.Background(), "Refreshed access token for %s from local credentials server, which expires on %s",
-		string(t), expiry)
+		&t.authServerURL, expiry)
 
 	return &oauth2.Token{
 		AccessToken: token.AccessToken,
 		TokenType:   token.TokenType,
 		Expiry:      expiry,
 	}, nil
+}
+
+type serverResponse struct {
+	// URL of the Databricks host to connect to.
+	Host string `json:"host"`
+
+	// The requested access token. When you call a secured REST API,
+	// the token is embedded in the Authorization request header field as
+	// a "bearer" token, allowing the API to authenticate the caller.
+	AccessToken string `json:"access_token"`
+
+	// The type of token, which is a "Bearer" access token, which means the
+	// resource can give access to the bearer of this token.
+	TokenType string `json:"token_type"`
+
+	// The timespan when the access token expires.
+	// The date is represented as the number of seconds from "1970-01-01T0:0:0Z UTC"
+	// If zero the token is valid forever.
+	ExpiresOn json.Number `json:"expires_on"`
 }

@@ -36,7 +36,7 @@ func TestAuthServerSetHost(t *testing.T) {
 	ts := getTestServer(host, token)
 	defer ts.Close()
 
-	sc := ServerCredentials{}
+	sc := LocalMetadataServiceCredentials{}
 	config := &Config{
 		AuthServerUrl: ts.URL,
 	}
@@ -54,7 +54,7 @@ func TestAuthServerAuthorize(t *testing.T) {
 	ts := getTestServer(host, token)
 	defer ts.Close()
 
-	sc := ServerCredentials{}
+	sc := LocalMetadataServiceCredentials{}
 	authProvider, err := sc.Configure(context.Background(), &Config{
 		AuthServerUrl: ts.URL,
 		Host:          host,
