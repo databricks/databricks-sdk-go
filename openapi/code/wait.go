@@ -8,6 +8,7 @@ import (
 
 // Wait represents a long-running operation, that requires multiple RPC calls
 type Wait struct {
+	Named
 	// represents a method that triggers the start of the long-running operation
 	Method *Method
 }

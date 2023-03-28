@@ -271,3 +271,31 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		shortcut:          op.Shortcut,
 	}
 }
+
+func (svc *Service) HasWaits() bool {
+	for _, v := range svc.methods {
+		if v.wait != nil {
+			return true
+		}
+	}
+	return false
+}
+
+func (svc *Service) Waits() (waits []*Wait) {
+	seen := map[string]bool{}
+	for _, m := range svc.methods {
+		if m.wait == nil {
+			continue
+		}
+		wait := m.Wait()
+		if seen[wait.Name] {
+			continue
+		}
+		waits = append(waits, wait)
+		seen[wait.Name] = true
+	}
+	slices.SortFunc(waits, func(a, b *Wait) bool {
+		return a.Name < b.Name
+	})
+	return waits
+}

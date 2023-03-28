@@ -155,7 +155,20 @@ func (m *Method) Wait() *Wait {
 	if m.wait == nil {
 		return nil
 	}
+	// here it's easier to follow the snake_case, as success states are already
+	// in the CONSTANT_CASE and it's easier to convert from constant to snake,
+	// than from constant to camel or pascal.
+	name := m.Service.Singular().SnakeName()
+	success := strings.ToLower(strings.Join(m.wait.Success, "_or_"))
+	getStatus, ok := m.Service.methods[m.wait.Poll]
+	if !ok {
+		panic(fmt.Errorf("cannot find %s.%s", m.Service.Name, m.wait.Poll))
+	}
+	name = fmt.Sprintf("wait_%s_%s_%s", getStatus.SnakeName(), name, success)
 	return &Wait{
+		Named: Named{
+			Name: name,
+		},
 		Method: m,
 	}
 }
