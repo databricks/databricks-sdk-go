@@ -63,10 +63,13 @@ func (l configFileLoader) Configure(cfg *Config) error {
 		return nil
 	}
 	configFile, err := LoadFile(cfg.ConfigFile)
-	if os.IsNotExist(err) {
-		// early return for non-configured machines
-		logger.Debugf(context.Background(), "%s not found on current host", configFile)
-		return nil
+	if err != nil {
+		if os.IsNotExist(err) {
+			// early return for non-configured machines
+			logger.Debugf(context.Background(), "%s not found on current host", configFile)
+			return nil
+		}
+		return fmt.Errorf("cannot parse config file: %w", err)
 	}
 	// don't modify the config, so that debug appears clearly
 	profile := cfg.Profile
