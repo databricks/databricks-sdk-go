@@ -14,9 +14,10 @@ import (
 )
 
 // timeout to wait for local auth server to respond
-const authServerTimeout = 10 * time.Second
+const metadataServiceTimeout = 10 * time.Second
 
-// Credentials provider that fetches a token from a locally running HTTP server.
+// Credentials provider that fetches a token from a locally running HTTP server
+//
 // The credentials provider will perform a GET request to the configured URL.
 //
 // The header "Metadata: true" will be added to the request, which must be
@@ -35,21 +36,21 @@ func (c LocalMetadataServiceCredentials) Name() string {
 }
 
 func (c LocalMetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
-	if cfg.AuthServerUrl == "" {
+	if cfg.LocalMetadataServiceUrl == "" {
 		return nil, nil
 	}
 
-	parsedAuthServerUrl, err := url.Parse(cfg.AuthServerUrl)
+	parsedMetadataServiceUrl, err := url.Parse(cfg.LocalMetadataServiceUrl)
 	if err != nil {
 		return nil, fmt.Errorf("invalid auth server URL: %w", err)
 	}
 
 	// only allow localhost URLs
-	if parsedAuthServerUrl.Hostname() != "localhost" && parsedAuthServerUrl.Hostname() != "127.0.0.1" {
-		return nil, fmt.Errorf("invalid auth server URL: %s", cfg.AuthServerUrl)
+	if parsedMetadataServiceUrl.Hostname() != "localhost" && parsedMetadataServiceUrl.Hostname() != "127.0.0.1" {
+		return nil, fmt.Errorf("invalid auth server URL: %s", cfg.LocalMetadataServiceUrl)
 	}
 
-	resp, err := makeRequest(parsedAuthServerUrl)
+	resp, err := makeRequest(parsedMetadataServiceUrl)
 	if err != nil {
 		return nil, nil
 	}
@@ -69,15 +70,15 @@ func (c LocalMetadataServiceCredentials) Configure(ctx context.Context, cfg *Con
 	cfg.Host = resp.Host
 
 	ts := metadataServiceTokenSource{
-		authServerURL:  parsedAuthServerUrl,
-		databricksHost: cfg.Host,
+		metadataServiceURL: parsedMetadataServiceUrl,
+		databricksHost:     cfg.Host,
 	}
 	return refreshableVisitor(&ts), nil
 }
 
 // makes a request to the server and returns the token
 func makeRequest(serverUrl *url.URL) (*serverResponse, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), authServerTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), metadataServiceTimeout)
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, serverUrl.String(), nil)
@@ -119,12 +120,12 @@ func makeRequest(serverUrl *url.URL) (*serverResponse, error) {
 }
 
 type metadataServiceTokenSource struct {
-	authServerURL  *url.URL
-	databricksHost string
+	metadataServiceURL *url.URL
+	databricksHost     string
 }
 
 func (t metadataServiceTokenSource) Token() (*oauth2.Token, error) {
-	token, err := makeRequest(t.authServerURL)
+	token, err := makeRequest(t.metadataServiceURL)
 
 	if err != nil {
 		return nil, err
@@ -142,7 +143,7 @@ func (t metadataServiceTokenSource) Token() (*oauth2.Token, error) {
 	expiry := time.Unix(epoch, 0)
 
 	logger.Infof(context.Background(), "Refreshed access token for %s from local credentials server, which expires on %s",
-		&t.authServerURL, expiry)
+		t.metadataServiceURL.String(), expiry)
 
 	return &oauth2.Token{
 		AccessToken: token.AccessToken,

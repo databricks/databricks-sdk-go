@@ -38,7 +38,8 @@ type Config struct {
 	// Databricks host (either of workspace endpoint or Accounts API endpoint)
 	Host string `name:"host" env:"DATABRICKS_HOST"`
 
-	AuthServerUrl string `name:"auth_server_url" env:"DATABRICKS_AUTH_SERVER_URL" auth:"server"`
+	// URL of the local metadata service that provides authentication credentials.
+	LocalMetadataServiceUrl string `name:"local_metadata_service_url" env:"DATABRICKS_LOCAL_METADATA_SERVICE_URL" auth:"local-metadata-service"`
 
 	// Databricks Account ID for Accounts API. This field is used in dependencies.
 	AccountID string `name:"account_id" env:"DATABRICKS_ACCOUNT_ID"`

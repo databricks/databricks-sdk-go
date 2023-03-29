@@ -38,7 +38,7 @@ func TestAuthServerSetHost(t *testing.T) {
 
 	sc := LocalMetadataServiceCredentials{}
 	config := &Config{
-		AuthServerUrl: ts.URL,
+		LocalMetadataServiceUrl: ts.URL,
 	}
 	authProvider, err := sc.Configure(context.Background(), config)
 	require.NoError(t, err)
@@ -56,8 +56,8 @@ func TestAuthServerAuthorize(t *testing.T) {
 
 	sc := LocalMetadataServiceCredentials{}
 	authProvider, err := sc.Configure(context.Background(), &Config{
-		AuthServerUrl: ts.URL,
-		Host:          host,
+		LocalMetadataServiceUrl: ts.URL,
+		Host:                    host,
 	})
 	require.NoError(t, err)
 	require.NotEmpty(t, authProvider)
