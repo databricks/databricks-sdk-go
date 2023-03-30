@@ -11,7 +11,7 @@ import (
 
 var (
 	authProviders = []CredentialsProvider{
-		LocalMetadataServiceCredentials{},
+		MetadataServiceCredentials{},
 		PatCredentials{},
 		BasicCredentials{},
 		M2mCredentials{},

@@ -13,7 +13,7 @@ import (
 
 func getTestServer(host string, token string) *httptest.Server {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Header.Get("Metadata") != "true" {
+		if r.Header.Get("X-Databricks-Metadata-Version") == "" {
 			w.WriteHeader(http.StatusBadRequest)
 		}
 
@@ -21,10 +21,12 @@ func getTestServer(host string, token string) *httptest.Server {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(fmt.Sprintf(`{
 			"host": "%s",
-			"access_token": "%s",
-			"expires_on": %d,
-			"token_type": "Bearer"	
-		}`, host, token, time.Now().Add(30*time.Second).Unix())))
+			"token": {
+				"access_token": "%s",
+				"expiry": "%s",
+				"token_type": "Bearer"	
+			}	
+		}`, host, token, time.Now().Add(30*time.Second).Format(time.RFC3339))))
 	}))
 	return ts
 }
@@ -36,9 +38,9 @@ func TestAuthServerSetHost(t *testing.T) {
 	ts := getTestServer(host, token)
 	defer ts.Close()
 
-	sc := LocalMetadataServiceCredentials{}
+	sc := MetadataServiceCredentials{}
 	config := &Config{
-		LocalMetadataServiceUrl: ts.URL,
+		MetadataServiceURL: ts.URL,
 	}
 	authProvider, err := sc.Configure(context.Background(), config)
 	require.NoError(t, err)
@@ -54,10 +56,10 @@ func TestAuthServerAuthorize(t *testing.T) {
 	ts := getTestServer(host, token)
 	defer ts.Close()
 
-	sc := LocalMetadataServiceCredentials{}
+	sc := MetadataServiceCredentials{}
 	authProvider, err := sc.Configure(context.Background(), &Config{
-		LocalMetadataServiceUrl: ts.URL,
-		Host:                    host,
+		MetadataServiceURL: ts.URL,
+		Host:               host,
 	})
 	require.NoError(t, err)
 	require.NotEmpty(t, authProvider)
