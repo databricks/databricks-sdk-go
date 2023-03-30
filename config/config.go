@@ -39,7 +39,7 @@ type Config struct {
 	Host string `name:"host" env:"DATABRICKS_HOST"`
 
 	// URL of the local metadata service that provides authentication credentials.
-	LocalMetadataServiceUrl string `name:"local_metadata_service_url" env:"DATABRICKS_LOCAL_METADATA_SERVICE_URL" auth:"local-metadata-service"`
+	LocalMetadataServiceUrl string `name:"local_metadata_service_url" env:"DATABRICKS_LOCAL_METADATA_SERVICE_URL" auth:"local-metadata-service,sensitive"`
 
 	// Databricks Account ID for Accounts API. This field is used in dependencies.
 	AccountID string `name:"account_id" env:"DATABRICKS_ACCOUNT_ID"`

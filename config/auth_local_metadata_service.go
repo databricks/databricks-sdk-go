@@ -142,8 +142,7 @@ func (t metadataServiceTokenSource) Token() (*oauth2.Token, error) {
 
 	expiry := time.Unix(epoch, 0)
 
-	logger.Infof(context.Background(), "Refreshed access token for %s from local credentials server, which expires on %s",
-		t.metadataServiceURL.String(), expiry)
+	logger.Infof(context.Background(), "Refreshed access token from local credentials server, which expires on %s", expiry)
 
 	return &oauth2.Token{
 		AccessToken: token.AccessToken,
