@@ -133,7 +133,7 @@ func (s metadataService) Get() (*serverResponse, error) {
 		return nil, fmt.Errorf("token parse: %w", err)
 	}
 
-	if !response.Token.Valid() || response.Host == "" {
+	if response.Token.AccessToken == "" || response.Host == "" {
 		return nil, fmt.Errorf("token parse: invalid token")
 	}
 
