@@ -13,7 +13,7 @@ import (
 
 func getTestServer(host string, token string) *httptest.Server {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Header.Get("X-Databricks-Metadata-Version") == "" {
+		if r.Header.Get("X-Databricks-Metadata-Version") != MetadataServiceVersion {
 			w.WriteHeader(http.StatusBadRequest)
 		}
 

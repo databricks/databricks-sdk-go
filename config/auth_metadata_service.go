@@ -13,12 +13,15 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// timeout to wait for local auth server to respond
+// timeout to wait for metadata service to respond
 const metadataServiceTimeout = 10 * time.Second
 
+const MetadataServiceVersion = "1"
+
 // response expected from the metadata service
+// other fields such as `cluster_id` might be added later
 type serverResponse struct {
-	// URL of the metadata service to connect to.
+	// URL of the Databricks workspace to connect to
 	Host string `json:"host"`
 
 	// The requested access token.
@@ -38,16 +41,16 @@ type serverResponse struct {
 //
 // The server is expected to return a JSON response with the following fields:
 //
-//	host: URL of the Databricks host to connect to.
-//	token: object with the following fields
-//    access_token: The requested access token.
-//	  token_type: The type of token, which is a "Bearer" access token.
-//	  expires_on: The timespan when the access token expires.
+// host: URL of the Databricks host to connect to.
+// token: object with the following fields
+//   access_token: The requested access token.
+//	 token_type: The type of token, which is a "Bearer" access token.
+//	 expires_on: The timespan when the access token expires.
 
 type MetadataServiceCredentials struct{}
 
 func (c MetadataServiceCredentials) Name() string {
-	return "local-metadata-service"
+	return "metadata-service"
 }
 
 func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
@@ -67,20 +70,24 @@ func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) 
 
 	ms := metadataService{parsedMetadataServiceURL}
 
-	resp, err := ms.Get()
+	response, err := ms.Get()
 	if err != nil {
+		logger.Debugf(ctx, "failed to get token from metadata service: %s", err)
 		return nil, nil
 	}
 
-	if resp == nil {
+	if response == nil {
 		return nil, nil
 	}
 
-	if cfg.Host != "" && cfg.Host != resp.Host {
+	// ignore this credential provider if it returns tokens for a different host
+	// if no host is configured yet then take the host from the metadata service
+	if cfg.Host != "" && cfg.Host != response.Host {
+		logger.Debugf(ctx, "ignoring metadata service because it returned a token for a different host: %s", response.Host)
 		return nil, nil
 	}
 
-	cfg.Host = resp.Host
+	cfg.Host = response.Host
 
 	ts := metadataServiceTokenSource{
 		metadataService: &ms,
@@ -103,7 +110,7 @@ func (s metadataService) Get() (*serverResponse, error) {
 		return nil, fmt.Errorf("token request: %w", err)
 	}
 
-	req.Header.Add("X-Databricks-Metadata-Version", "1")
+	req.Header.Add("X-Databricks-Metadata-Version", MetadataServiceVersion)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -147,13 +154,13 @@ type metadataServiceTokenSource struct {
 }
 
 func (t metadataServiceTokenSource) Token() (*oauth2.Token, error) {
-	token, err := t.metadataService.Get()
+	response, err := t.metadataService.Get()
 
 	if err != nil {
 		return nil, err
 	}
 
-	logger.Infof(context.Background(), "Refreshed access token from local credentials server, which expires on %s", token.Token.Expiry)
+	logger.Infof(context.Background(), "Refreshed access token from credentials service, which expires on %s", response.Token.Expiry)
 
-	return &token.Token, nil
+	return &response.Token, nil
 }
