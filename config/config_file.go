@@ -10,38 +10,65 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-type KnownConfigLoader struct{}
+// File represents the contents of a databrickscfg file.
+type File struct {
+	*ini.File
 
-func (l KnownConfigLoader) Name() string {
+	path string
+}
+
+// Path returns the path of the loaded databrickscfg file.
+func (f *File) Path() string {
+	return f.path
+}
+
+// LoadFile loads the databrickscfg file at the specified path.
+// The function loads ~/.databrickscfg if the specified path is an empty string.
+// The function expands ~ to the user's home directory.
+func LoadFile(path string) (*File, error) {
+	if path == "" {
+		path = "~/.databrickscfg"
+	}
+
+	// Expand ~ to home directory.
+	if strings.HasPrefix(path, "~") {
+		homedir, err := os.UserHomeDir()
+		if err != nil {
+			return nil, fmt.Errorf("cannot find homedir: %w", err)
+		}
+		path = fmt.Sprintf("%s%s", homedir, path[1:])
+	}
+
+	iniFile, err := ini.Load(path)
+	if err != nil {
+		return nil, err
+	}
+
+	return &File{iniFile, path}, err
+}
+
+var ConfigFile = configFileLoader{}
+
+type configFileLoader struct{}
+
+func (l configFileLoader) Name() string {
 	return "config-file"
 }
 
-func (l KnownConfigLoader) Configure(cfg *Config) error {
+func (l configFileLoader) Configure(cfg *Config) error {
 	// Skip loading config file if some authentication is already explicitly
 	// configured directly in the config by a user.
 	// See: https://github.com/databricks/databricks-sdk-go/issues/304
 	if cfg.Profile == "" && (l.isAnyAuthConfigured(cfg) || cfg.IsAzure()) {
 		return nil
 	}
-	configFile := cfg.ConfigFile
-	if configFile == "" {
-		configFile = "~/.databrickscfg"
-	}
-	if strings.HasPrefix(configFile, "~") {
-		homedir, err := os.UserHomeDir()
-		if err != nil {
-			return fmt.Errorf("cannot find homedir: %w", err)
-		}
-		configFile = fmt.Sprintf("%s%s", homedir, configFile[1:])
-	}
-	_, err := os.Stat(configFile)
-	if os.IsNotExist(err) {
-		// early return for non-configured machines
-		logger.Debugf(context.Background(), "%s not found on current host", configFile)
-		return nil
-	}
-	iniFile, err := ini.Load(configFile)
+	configFile, err := LoadFile(cfg.ConfigFile)
 	if err != nil {
+		if os.IsNotExist(err) {
+			// early return for non-configured machines
+			logger.Debugf(context.Background(), "%s not found on current host", configFile)
+			return nil
+		}
 		return fmt.Errorf("cannot parse config file: %w", err)
 	}
 	// don't modify the config, so that debug appears clearly
@@ -50,23 +77,23 @@ func (l KnownConfigLoader) Configure(cfg *Config) error {
 	if !hasExplicitProfile {
 		profile = "DEFAULT"
 	}
-	profileValues := iniFile.Section(profile)
+	profileValues := configFile.Section(profile)
 	if len(profileValues.Keys()) == 0 {
 		if !hasExplicitProfile {
 			logger.Debugf(context.Background(), "%s has no %s profile configured", configFile, profile)
 			return nil
 		}
-		return fmt.Errorf("%s has no %s profile configured", configFile, profile)
+		return fmt.Errorf("%s has no %s profile configured", configFile.Path(), profile)
 	}
 	logger.Debugf(context.Background(), "Loading %s profile from %s", profile, configFile)
 	err = ConfigAttributes.ResolveFromStringMap(cfg, profileValues.KeysHash())
 	if err != nil {
-		return fmt.Errorf("%s %s profile: %w", configFile, profile, err)
+		return fmt.Errorf("%s %s profile: %w", configFile.Path(), profile, err)
 	}
 	return nil
 }
 
-func (l KnownConfigLoader) isAnyAuthConfigured(cfg *Config) bool {
+func (l configFileLoader) isAnyAuthConfigured(cfg *Config) bool {
 	for _, a := range ConfigAttributes {
 		if a.Auth == "" {
 			continue

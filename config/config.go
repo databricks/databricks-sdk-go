@@ -164,7 +164,7 @@ func (c *Config) EnsureResolved() error {
 	if len(c.Loaders) == 0 {
 		c.Loaders = []Loader{
 			ConfigAttributes,
-			KnownConfigLoader{},
+			ConfigFile,
 		}
 	}
 	for _, loader := range c.Loaders {
