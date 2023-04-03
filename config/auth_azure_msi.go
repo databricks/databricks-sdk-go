@@ -130,7 +130,9 @@ func (s azureMsiTokenSource) Token() (*oauth2.Token, error) {
 	if s.msiResourceId != "" {
 		query.Add("msi_res_id", s.msiResourceId)
 	}
+	fmt.Printf("%+v\n", s)
 	req.URL.RawQuery = query.Encode()
+	fmt.Printf("URL: %+v\n", req.URL.RawQuery)
 	req.Header.Add("Metadata", "true")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
