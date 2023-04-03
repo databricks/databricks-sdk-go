@@ -40,10 +40,16 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	}
 	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
 	inner := azureMsiTokenSource{
-		resource: cfg.getAzureLoginAppID(),
+		resource:      cfg.getAzureLoginAppID(),
+		clientId:      cfg.ClientID,
+		objectId:      cfg.AzureMSIObjectId,
+		msiResourceId: cfg.AzureMSIResourceId,
 	}
 	platform := azureMsiTokenSource{
-		resource: env.ServiceManagementEndpoint,
+		resource:      env.ServiceManagementEndpoint,
+		clientId:      cfg.ClientID,
+		objectId:      cfg.AzureMSIObjectId,
+		msiResourceId: cfg.AzureMSIResourceId,
 	}
 	return func(r *http.Request) error {
 		r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
