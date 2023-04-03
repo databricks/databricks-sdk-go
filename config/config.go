@@ -59,10 +59,12 @@ type Config struct {
 	// Azure Resource Manager ID for Azure Databricks workspace, which is exhanged for a Host
 	AzureResourceID string `name:"azure_workspace_resource_id" env:"DATABRICKS_AZURE_RESOURCE_ID" auth:"azure"`
 
-	AzureUseMSI       bool   `name:"azure_use_msi" env:"ARM_USE_MSI" auth:"azure"`
-	AzureClientSecret string `name:"azure_client_secret" env:"ARM_CLIENT_SECRET" auth:"azure,sensitive"`
-	AzureClientID     string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure"`
-	AzureTenantID     string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure"`
+	AzureUseMSI        bool   `name:"azure_use_msi" env:"ARM_USE_MSI" auth:"azure"`
+	AzureClientSecret  string `name:"azure_client_secret" env:"ARM_CLIENT_SECRET" auth:"azure,sensitive"`
+	AzureClientID      string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure"`
+	AzureMSIObjectId   string `name:"azure_msi_object_id" env:"ARM_MSI_OBJECT_ID" auth:"azure"`
+	AzureMSIResourceId string `name:"azure_msi_resource_id" env:"ARM_MSI_RESOURCE_ID" auth:"azure"`
+	AzureTenantID      string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure"`
 
 	// AzureEnvironment (Public, UsGov, China, Germany) has specific set of API endpoints.
 	AzureEnvironment string `name:"azure_environment" env:"ARM_ENVIRONMENT"`

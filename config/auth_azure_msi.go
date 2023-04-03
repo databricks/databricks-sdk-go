@@ -94,16 +94,20 @@ func (c AzureMsiCredentials) getInstanceEnvironment(ctx context.Context) (*azure
 // implementing azureHostResolver for ensureWorkspaceUrl to work
 func (c AzureMsiCredentials) tokenSourceFor(_ context.Context, cfg *Config, _ azureEnvironment, resource string) oauth2.TokenSource {
 	return azureMsiTokenSource{
-		resource: resource,
-		clientId: cfg.ClientID,
+		resource:      resource,
+		clientId:      cfg.ClientID,
+		objectId:      cfg.AzureMSIObjectId,
+		msiResourceId: cfg.AzureMSIResourceId,
 	}
 }
 
 //type azureMsiTokenSource string
 
 type azureMsiTokenSource struct {
-	resource string
-	clientId string
+	resource      string
+	clientId      string
+	objectId      string
+	msiResourceId string
 }
 
 func (s azureMsiTokenSource) Token() (*oauth2.Token, error) {
