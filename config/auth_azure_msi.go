@@ -39,8 +39,12 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
 	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
-	inner := azureMsiTokenSource(cfg.getAzureLoginAppID())
-	platform := azureMsiTokenSource(env.ServiceManagementEndpoint)
+	inner := azureMsiTokenSource{
+		resource: cfg.getAzureLoginAppID(),
+	}
+	platform := azureMsiTokenSource{
+		resource: env.ServiceManagementEndpoint,
+	}
 	return func(r *http.Request) error {
 		r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
 		return serviceToServiceVisitor(inner, platform,
@@ -88,13 +92,19 @@ func (c AzureMsiCredentials) getInstanceEnvironment(ctx context.Context) (*azure
 }
 
 // implementing azureHostResolver for ensureWorkspaceUrl to work
-func (c AzureMsiCredentials) tokenSourceFor(_ context.Context, _ *Config, _ azureEnvironment, resource string) oauth2.TokenSource {
-	return azureMsiTokenSource(resource)
+func (c AzureMsiCredentials) tokenSourceFor(_ context.Context, cfg *Config, _ azureEnvironment, resource string) oauth2.TokenSource {
+	return azureMsiTokenSource{
+		resource: resource,
+		clientId: cfg.ClientID,
+	}
 }
 
-type azureMsiTokenSource string
+//type azureMsiTokenSource string
 
-//type azureMsiTokenSource struct with additional information like client id.
+type azureMsiTokenSource struct {
+	resource string
+	clientId string
+}
 
 func (s azureMsiTokenSource) Token() (*oauth2.Token, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), azureMsiTimeout)
@@ -106,7 +116,10 @@ func (s azureMsiTokenSource) Token() (*oauth2.Token, error) {
 	}
 	query := req.URL.Query()
 	query.Add("api-version", "2018-02-01")
-	query.Add("resource", string(s))
+	query.Add("resource", s.resource)
+	if s.clientId != "" {
+		query.Add("client_id", s.clientId)
+	}
 	req.URL.RawQuery = query.Encode()
 	req.Header.Add("Metadata", "true")
 	res, err := http.DefaultClient.Do(req)
