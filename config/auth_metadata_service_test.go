@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -9,25 +10,26 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
+	"golang.org/x/oauth2"
 )
 
 func getTestServer(host string, token string) *httptest.Server {
 	counter := 0
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Header.Get("X-Databricks-Metadata-Version") != MetadataServiceVersion {
+		if r.Header.Get(MetadataServiceVersionHeader) != MetadataServiceVersion {
 			w.WriteHeader(http.StatusBadRequest)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(fmt.Sprintf(`{
-			"host": "%s",
-			"token": {
-				"access_token": "%s-%d",
-				"expiry": "%s",
-				"token_type": "Bearer"	
-			}	
-		}`, host, token, counter, time.Now().Add(1*time.Second).Format(time.RFC3339))))
+		json.NewEncoder(w).Encode(serverResponse{
+			Host: host,
+			Token: oauth2.Token{
+				AccessToken: fmt.Sprintf("%s-%d", token, counter),
+				Expiry:      time.Now().Add(1 * time.Second),
+				TokenType:   "Bearer",
+			},
+		})
 
 		counter++
 	}))
