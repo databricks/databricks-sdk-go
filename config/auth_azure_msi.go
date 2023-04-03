@@ -94,6 +94,8 @@ func (c AzureMsiCredentials) tokenSourceFor(_ context.Context, _ *Config, _ azur
 
 type azureMsiTokenSource string
 
+//type azureMsiTokenSource struct with additional information like client id.
+
 func (s azureMsiTokenSource) Token() (*oauth2.Token, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), azureMsiTimeout)
 	defer cancel()
