@@ -46,7 +46,7 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	}
 	platform := azureMsiTokenSource{
 		resource: env.ServiceManagementEndpoint,
-		clientId: cfg.ClientID,
+		clientId: cfg.AzureClientID,
 	}
 	return func(r *http.Request) error {
 		r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
