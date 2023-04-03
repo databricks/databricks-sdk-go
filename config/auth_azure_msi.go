@@ -40,16 +40,13 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	}
 	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
 	inner := azureMsiTokenSource{
-		resource:      cfg.getAzureLoginAppID(),
-		clientId:      cfg.ClientID,
-		objectId:      cfg.AzureMSIObjectId,
-		msiResourceId: cfg.AzureMSIResourceId,
+		// for inner aad token generation
+		resource: cfg.getAzureLoginAppID(),
+		clientId: cfg.AzureClientID,
 	}
 	platform := azureMsiTokenSource{
-		resource:      env.ServiceManagementEndpoint,
-		clientId:      cfg.ClientID,
-		objectId:      cfg.AzureMSIObjectId,
-		msiResourceId: cfg.AzureMSIResourceId,
+		resource: env.ServiceManagementEndpoint,
+		clientId: cfg.ClientID,
 	}
 	return func(r *http.Request) error {
 		r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
@@ -100,10 +97,8 @@ func (c AzureMsiCredentials) getInstanceEnvironment(ctx context.Context) (*azure
 // implementing azureHostResolver for ensureWorkspaceUrl to work
 func (c AzureMsiCredentials) tokenSourceFor(_ context.Context, cfg *Config, _ azureEnvironment, resource string) oauth2.TokenSource {
 	return azureMsiTokenSource{
-		resource:      resource,
-		clientId:      cfg.ClientID,
-		objectId:      cfg.AzureMSIObjectId,
-		msiResourceId: cfg.AzureMSIResourceId,
+		resource: resource,
+		clientId: cfg.AzureClientID,
 	}
 }
 
