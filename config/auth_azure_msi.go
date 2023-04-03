@@ -102,13 +102,9 @@ func (c AzureMsiCredentials) tokenSourceFor(_ context.Context, cfg *Config, _ az
 	}
 }
 
-//type azureMsiTokenSource string
-
 type azureMsiTokenSource struct {
-	resource      string
-	clientId      string
-	objectId      string
-	msiResourceId string
+	resource string
+	clientId string
 }
 
 func (s azureMsiTokenSource) Token() (*oauth2.Token, error) {
@@ -125,15 +121,7 @@ func (s azureMsiTokenSource) Token() (*oauth2.Token, error) {
 	if s.clientId != "" {
 		query.Add("client_id", s.clientId)
 	}
-	if s.objectId != "" {
-		query.Add("object_id", s.objectId)
-	}
-	if s.msiResourceId != "" {
-		query.Add("msi_res_id", s.msiResourceId)
-	}
-	fmt.Printf("%+v\n", s)
 	req.URL.RawQuery = query.Encode()
-	fmt.Printf("URL: %+v\n", req.URL.RawQuery)
 	req.Header.Add("Metadata", "true")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
