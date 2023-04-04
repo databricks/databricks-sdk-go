@@ -18,15 +18,15 @@ const metadataServiceTimeout = 10 * time.Second
 
 const MetadataServiceVersion = "1"
 const MetadataServiceVersionHeader = "X-Databricks-Metadata-Version"
+const MetadataServiceHostHeader = "X-Databricks-Host"
 
 // response expected from the metadata service
-// other fields such as `cluster_id` might be added later
 type serverResponse struct {
-	// URL of the Databricks workspace to connect to
-	Host string `json:"host"`
+	AccessToken string `json:"access_token"`
+	TokenType   string `json:"token_type"`
 
-	// The requested access token.
-	Token oauth2.Token `json:"token"`
+	// epoch in seconds since 1970-01-01T00:00:00Z
+	ExpiresOn json.Number `json:"expires_on"`
 }
 
 // Credentials provider that fetches a token from a locally running HTTP server
@@ -40,14 +40,14 @@ type serverResponse struct {
 // server returns a token for a Host on a given URL path, it MUST continue to return
 // tokens for the same Host.
 //
+// The server MUST return a 4xx response if the Host passed in the "X-Databricks-Host"
+// header doesn't match the token.
+//
 // The server is expected to return a JSON response with the following fields:
 //
-// host: URL of the Databricks host to connect to.
-// token: object with the following fields
-//   access_token: The requested access token.
-//   token_type: The type of token, which is a "Bearer" access token.
-//   expires_on: The timespan when the access token expires.
-
+// - access_token: The requested access token.
+// - token_type: The type of token, which is a "Bearer" access token.
+// - expires_on: Unix timestamp when the access token expires.
 type MetadataServiceCredentials struct{}
 
 func (c MetadataServiceCredentials) Name() string {
@@ -55,7 +55,7 @@ func (c MetadataServiceCredentials) Name() string {
 }
 
 func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
-	if cfg.MetadataServiceURL == "" {
+	if cfg.MetadataServiceURL == "" || cfg.Host == "" {
 		return nil, nil
 	}
 
@@ -69,7 +69,10 @@ func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) 
 		return nil, fmt.Errorf("invalid auth server URL: %s", cfg.MetadataServiceURL)
 	}
 
-	ms := metadataService{parsedMetadataServiceURL}
+	ms := metadataService{
+		metadataServiceURL: parsedMetadataServiceURL,
+		config:             cfg,
+	}
 
 	response, err := ms.Get()
 	if err != nil {
@@ -80,15 +83,6 @@ func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) 
 		return nil, nil
 	}
 
-	// ignore this credential provider if it returns tokens for a different host
-	// if no host is configured yet then take the host from the metadata service
-	if cfg.Host != "" && cfg.Host != response.Host {
-		logger.Debugf(ctx, "ignoring metadata service because it returned a token for a different host: %s", response.Host)
-		return nil, nil
-	}
-
-	cfg.Host = response.Host
-
 	ts := metadataServiceTokenSource{
 		metadataService: &ms,
 		databricksHost:  cfg.Host,
@@ -97,7 +91,8 @@ func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) 
 }
 
 type metadataService struct {
-	*url.URL
+	metadataServiceURL *url.URL
+	config             *Config
 }
 
 // performs a request to the metadata service and returns the token
@@ -105,12 +100,13 @@ func (s metadataService) Get() (*serverResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), metadataServiceTimeout)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, s.String(), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, s.metadataServiceURL.String(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("token request: %w", err)
 	}
 
 	req.Header.Add(MetadataServiceVersionHeader, MetadataServiceVersion)
+	req.Header.Add(MetadataServiceHostHeader, s.config.Host)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -133,16 +129,9 @@ func (s metadataService) Get() (*serverResponse, error) {
 		return nil, fmt.Errorf("token parse: %w", err)
 	}
 
-	if response.Token.AccessToken == "" || response.Host == "" {
+	if response.AccessToken == "" {
 		return nil, fmt.Errorf("token parse: invalid token")
 	}
-
-	// parse and normalize url
-	parsedHost, err := url.Parse(response.Host)
-	if err != nil {
-		return nil, fmt.Errorf("token parse: Invalid URL %s", response.Host)
-	}
-	response.Host = parsedHost.String()
 
 	return &response, nil
 }
@@ -153,16 +142,27 @@ type metadataServiceTokenSource struct {
 }
 
 func (t metadataServiceTokenSource) Token() (*oauth2.Token, error) {
-	response, err := t.metadataService.Get()
+	token, err := t.metadataService.Get()
 
 	if err != nil {
 		return nil, err
 	}
-	if response == nil {
+	if token == nil {
 		return nil, fmt.Errorf("no token returned from metadata service")
 	}
 
-	logger.Infof(context.Background(), "Refreshed access token from credentials service, which expires on %s", response.Token.Expiry)
+	epoch, err := token.ExpiresOn.Int64()
+	if err != nil {
+		return nil, fmt.Errorf("token expires on: %w", err)
+	}
 
-	return &response.Token, nil
+	expiry := time.Unix(epoch, 0)
+
+	logger.Infof(context.Background(), "Refreshed access token from local metadata service, which expires on %s", expiry.Format(time.RFC3339))
+
+	return &oauth2.Token{
+		TokenType:   token.TokenType,
+		AccessToken: token.AccessToken,
+		Expiry:      expiry,
+	}, nil
 }

@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"golang.org/x/oauth2"
 )
 
 func getTestServer(host string, token string) *httptest.Server {
@@ -19,16 +18,16 @@ func getTestServer(host string, token string) *httptest.Server {
 		if r.Header.Get(MetadataServiceVersionHeader) != MetadataServiceVersion {
 			w.WriteHeader(http.StatusBadRequest)
 		}
+		if r.Header.Get(MetadataServiceHostHeader) != host {
+			w.WriteHeader(http.StatusNotFound)
+		}
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(serverResponse{
-			Host: host,
-			Token: oauth2.Token{
-				AccessToken: fmt.Sprintf("%s-%d", token, counter),
-				Expiry:      time.Now().Add(1 * time.Second),
-				TokenType:   "Bearer",
-			},
+			AccessToken: fmt.Sprintf("%s-%d", token, counter),
+			ExpiresOn:   json.Number(fmt.Sprintf("%d", time.Now().Add(1*time.Second).Unix())),
+			TokenType:   "Bearer",
 		})
 
 		counter++
@@ -36,7 +35,7 @@ func getTestServer(host string, token string) *httptest.Server {
 	return ts
 }
 
-func TestAuthServerSetHost(t *testing.T) {
+func TestAuthServerCheckHost(t *testing.T) {
 	host := "ZZZ"
 	token := "XXX"
 
@@ -45,13 +44,11 @@ func TestAuthServerSetHost(t *testing.T) {
 
 	sc := MetadataServiceCredentials{}
 	config := &Config{
+		Host:               "YYY",
 		MetadataServiceURL: ts.URL,
 	}
-	authProvider, err := sc.Configure(context.Background(), config)
-	require.NoError(t, err)
-	require.NotEmpty(t, authProvider)
-
-	require.Equal(t, config.Host, host)
+	_, err := sc.Configure(context.Background(), config)
+	require.Empty(t, err)
 }
 
 func TestAuthServerAuthorize(t *testing.T) {
