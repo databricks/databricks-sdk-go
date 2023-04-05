@@ -122,16 +122,23 @@ func (s azureMsiTokenSource) Token() (*oauth2.Token, error) {
 	}
 	req.URL.RawQuery = query.Encode()
 	req.Header.Add("Metadata", "true")
+	return makeMsiRequest(req)
+}
+
+func makeMsiRequest(req *http.Request) (*oauth2.Token, error) {
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("token response: %w", err)
 	}
 	defer res.Body.Close()
+	if res.StatusCode == http.StatusNotFound {
+		return nil, nil
+	}
 	raw, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, fmt.Errorf("token read: %w", err)
 	}
-	if res.StatusCode != 200 {
+	if res.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("token error: %s", raw)
 	}
 	var token azureMsiToken
@@ -139,10 +146,16 @@ func (s azureMsiTokenSource) Token() (*oauth2.Token, error) {
 	if err != nil {
 		return nil, fmt.Errorf("token parse: %w", err)
 	}
+
+	if token.AccessToken == "" {
+		return nil, fmt.Errorf("token parse: invalid token")
+	}
+
 	epoch, err := token.ExpiresOn.Int64()
 	if err != nil {
 		return nil, fmt.Errorf("token expires on: %w", err)
 	}
+
 	return &oauth2.Token{
 		TokenType:   token.TokenType,
 		AccessToken: token.AccessToken,
