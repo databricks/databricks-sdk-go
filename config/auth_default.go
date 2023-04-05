@@ -11,11 +11,11 @@ import (
 
 var (
 	authProviders = []CredentialsProvider{
-		MetadataServiceCredentials{},
 		PatCredentials{},
 		BasicCredentials{},
 		M2mCredentials{},
 		BricksCliCredentials{},
+		MetadataServiceCredentials{},
 
 		// Attempt to configure auth from most specific to most generic (the Azure CLI).
 		AzureMsiCredentials{},
