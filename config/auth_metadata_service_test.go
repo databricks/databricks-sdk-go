@@ -24,7 +24,7 @@ func getTestServer(host string, token string) *httptest.Server {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(serverResponse{
+		json.NewEncoder(w).Encode(azureMsiToken{
 			AccessToken: fmt.Sprintf("%s-%d", token, counter),
 			ExpiresOn:   json.Number(fmt.Sprintf("%d", time.Now().Add(1*time.Second).Unix())),
 			TokenType:   "Bearer",
