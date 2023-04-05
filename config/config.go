@@ -104,6 +104,9 @@ type Config struct {
 	// marker for configuration resolving
 	resolved bool
 
+	// marker for testing fixture
+	isTesting bool
+
 	// Mutex used by Authenticate method to guard `auth`, which
 	// has to be lazily created on the first request to Databricks API.
 	// It is done because databricks host and token may often be available
@@ -149,7 +152,7 @@ func (c *Config) IsAws() bool {
 
 // IsAccountClient returns true if client is configured for Accounts API
 func (c *Config) IsAccountClient() bool {
-	return strings.HasPrefix(c.Host, "https://accounts.")
+	return (c.AccountID != "" && c.isTesting) || strings.HasPrefix(c.Host, "https://accounts.")
 }
 
 func (c *Config) EnsureResolved() error {
@@ -181,6 +184,11 @@ func (c *Config) EnsureResolved() error {
 	}
 	c.resolved = true
 	return nil
+}
+
+func (c *Config) WithTesting() *Config {
+	c.isTesting = true
+	return c
 }
 
 func (c *Config) wrapDebug(err error) error {
