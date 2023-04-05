@@ -72,15 +72,11 @@ func TestMwsAccWorkspaceAssignment(t *testing.T) {
 	require.NoError(t, err)
 
 	workspaceId := GetEnvInt64OrSkipTest(t, "TEST_WORKSPACE_ID")
-	_, err = a.WorkspaceAssignment.Create(ctx, permissions.CreateWorkspaceAssignments{
+	err = a.WorkspaceAssignment.Update(ctx, permissions.UpdateWorkspaceAssignments{
 		WorkspaceId: workspaceId,
-		PermissionAssignments: []permissions.PermissionAssignmentInput{
-			{
-				ServicePrincipalName: spn.ApplicationId,
-				Permissions: []permissions.WorkspacePermission{
-					permissions.WorkspacePermissionUser,
-				},
-			},
+		PrincipalId: spnId,
+		Permissions: []permissions.WorkspacePermission{
+			permissions.WorkspacePermissionUser,
 		},
 	})
 	require.NoError(t, err)
