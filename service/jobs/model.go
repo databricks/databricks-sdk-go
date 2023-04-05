@@ -1096,7 +1096,8 @@ type RepairRun struct {
 }
 
 type RepairRunResponse struct {
-	// The ID of the repair.
+	// The ID of the repair. Must be provided in subsequent repairs using the
+	// `latest_repair_id` field to ensure sequential repairs.
 	RepairId int64 `json:"repair_id,omitempty"`
 }
 

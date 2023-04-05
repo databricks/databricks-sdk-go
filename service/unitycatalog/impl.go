@@ -102,7 +102,7 @@ func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request Crea
 
 func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*StorageCredentialInfo, error) {
 	var storageCredentialInfo StorageCredentialInfo
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/", a.client.ConfiguredAccountID(), request.MetastoreId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &storageCredentialInfo)
 	return &storageCredentialInfo, err
 }
@@ -300,6 +300,13 @@ func (a *metastoresImpl) List(ctx context.Context) (*ListMetastoresResponse, err
 	path := "/api/2.1/unity-catalog/metastores"
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &listMetastoresResponse)
 	return &listMetastoresResponse, err
+}
+
+func (a *metastoresImpl) Maintenance(ctx context.Context, request UpdateAutoMaintenance) (*UpdateAutoMaintenanceResponse, error) {
+	var updateAutoMaintenanceResponse UpdateAutoMaintenanceResponse
+	path := "/api/2.0/auto-maintenance/service"
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &updateAutoMaintenanceResponse)
+	return &updateAutoMaintenanceResponse, err
 }
 
 func (a *metastoresImpl) Summary(ctx context.Context) (*GetMetastoreSummaryResponse, error) {
@@ -629,4 +636,43 @@ func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesReq
 	path := "/api/2.1/unity-catalog/table-summaries"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listTableSummariesResponse)
 	return &listTableSummariesResponse, err
+}
+
+// unexported type that holds implementations of just Volumes API methods
+type volumesImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *volumesImpl) Create(ctx context.Context, request CreateVolumeRequestContent) (*VolumeInfo, error) {
+	var volumeInfo VolumeInfo
+	path := "/api/2.1/unity-catalog/volumes"
+	err := a.client.Do(ctx, http.MethodPost, path, request, &volumeInfo)
+	return &volumeInfo, err
+}
+
+func (a *volumesImpl) Delete(ctx context.Context, request DeleteVolumeRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.FullNameArg)
+	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	return err
+}
+
+func (a *volumesImpl) List(ctx context.Context, request ListVolumesRequest) (*ListVolumesResponseContent, error) {
+	var listVolumesResponseContent ListVolumesResponseContent
+	path := "/api/2.1/unity-catalog/volumes"
+	err := a.client.Do(ctx, http.MethodGet, path, request, &listVolumesResponseContent)
+	return &listVolumesResponseContent, err
+}
+
+func (a *volumesImpl) Read(ctx context.Context, request ReadVolumeRequest) (*VolumeInfo, error) {
+	var volumeInfo VolumeInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.FullNameArg)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &volumeInfo)
+	return &volumeInfo, err
+}
+
+func (a *volumesImpl) Update(ctx context.Context, request UpdateVolumeRequestContent) (*VolumeInfo, error) {
+	var volumeInfo VolumeInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.FullNameArg)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &volumeInfo)
+	return &volumeInfo, err
 }

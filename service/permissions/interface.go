@@ -33,19 +33,14 @@ type PermissionsService interface {
 	Update(ctx context.Context, request PermissionsRequest) error
 }
 
-// Databricks Workspace Assignment REST API
+// The Workspace Permission Assignment API allows you to manage workspace
+// permissions for principals in your account.
 type WorkspaceAssignmentService interface {
-
-	// Create permission assignments.
-	//
-	// Create new permission assignments for the specified account and
-	// workspace.
-	Create(ctx context.Context, request CreateWorkspaceAssignments) (*WorkspaceAssignmentsCreated, error)
 
 	// Delete permissions assignment.
 	//
-	// Deletes the workspace permissions assignment for a given account and
-	// workspace using the specified service principal.
+	// Deletes the workspace permissions assignment in a given account and
+	// workspace for the specified principal.
 	Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error
 
 	// List workspace permissions.
@@ -62,9 +57,9 @@ type WorkspaceAssignmentService interface {
 	// Use ListAll() to get all PermissionAssignment instances
 	List(ctx context.Context, request ListWorkspaceAssignmentRequest) (*PermissionAssignments, error)
 
-	// Update permissions assignment.
+	// Create or update permissions assignment.
 	//
-	// Updates the workspace permissions assignment for a given account and
-	// workspace using the specified service principal.
+	// Creates or updates the workspace permissions assignment in a given
+	// account and workspace for the specified principal.
 	Update(ctx context.Context, request UpdateWorkspaceAssignments) error
 }

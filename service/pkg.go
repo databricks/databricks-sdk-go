@@ -122,13 +122,15 @@
 //
 // - [scim.AccountUsersAPI]: User identities recognized by Databricks and represented by email addresses.
 //
+// - [unitycatalog.VolumesAPI]: Volumes are a Unity Catalog (UC) capability for accessing, storing, governing, organizing and processing files.
+//
 // - [deployment.VpcEndpointsAPI]: These APIs manage VPC endpoint configurations for this account.
 //
 // - [sql.WarehousesAPI]: A SQL warehouse is a compute resource that lets you run SQL commands on data objects within Databricks SQL.
 //
 // - [workspace.WorkspaceAPI]: The Workspace API allows you to list, import, export, and delete notebooks and folders.
 //
-// - [permissions.WorkspaceAssignmentAPI]: Databricks Workspace Assignment REST API.
+// - [permissions.WorkspaceAssignmentAPI]: The Workspace Permission Assignment API allows you to manage workspace permissions for principals in your account.
 //
 // - [workspaceconf.WorkspaceConfAPI]: This API allows updating known workspace settings for advanced users.
 //
@@ -239,6 +241,7 @@ var (
 	_ *mlflow.TransitionRequestsAPI                = nil
 	_ *scim.UsersAPI                               = nil
 	_ *scim.AccountUsersAPI                        = nil
+	_ *unitycatalog.VolumesAPI                     = nil
 	_ *deployment.VpcEndpointsAPI                  = nil
 	_ *sql.WarehousesAPI                           = nil
 	_ *workspace.WorkspaceAPI                      = nil

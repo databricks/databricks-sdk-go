@@ -157,15 +157,7 @@ type AccountClient struct {
 	// is because OAuth is only supported on the E2 version.
 	OAuthEnrollment *oauth2.OAuthEnrollmentAPI
 
-	// These APIs manage private access settings for this account. A private
-	// access settings object specifies how your workspace is accessed using AWS
-	// PrivateLink. Each workspace that has any PrivateLink connections must
-	// include the ID for a private access settings object is in its workspace
-	// configuration object. Your account must be enabled for PrivateLink to use
-	// these APIs. Before configuring PrivateLink, it is important to read the
-	// [Databricks article about PrivateLink].
-	//
-	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+	// These APIs manage private access settings for this account.
 	PrivateAccess *deployment.PrivateAccessAPI
 
 	// These APIs enable administrators to manage published oauth app
@@ -211,20 +203,11 @@ type AccountClient struct {
 	// and prevents unauthorized users from accessing sensitive data.
 	Users *scim.AccountUsersAPI
 
-	// These APIs manage VPC endpoint configurations for this account. This
-	// object registers an AWS VPC endpoint in your Databricks account so your
-	// workspace can use it with AWS PrivateLink. Your VPC endpoint connects to
-	// one of two VPC endpoint services -- one for workspace (both for front-end
-	// connection and for back-end connection to REST APIs) and one for the
-	// back-end secure cluster connectivity relay from the data plane. Your
-	// account must be enabled for PrivateLink to use these APIs. Before
-	// configuring PrivateLink, it is important to read the [Databricks article
-	// about PrivateLink].
-	//
-	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+	// These APIs manage VPC endpoint configurations for this account.
 	VpcEndpoints *deployment.VpcEndpointsAPI
 
-	// Databricks Workspace Assignment REST API
+	// The Workspace Permission Assignment API allows you to manage workspace
+	// permissions for principals in your account.
 	WorkspaceAssignment *permissions.WorkspaceAssignmentAPI
 
 	// These APIs manage workspaces for this account. A Databricks workspace is

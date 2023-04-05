@@ -36,8 +36,8 @@ type WorkspaceClient struct {
 
 	// The alerts API can be used to perform CRUD operations on alerts. An alert
 	// is a Databricks SQL object that periodically runs a query, evaluates a
-	// condition of its result, and notifies one or more users and/or alert
-	// destinations if the condition was met.
+	// condition of its result, and notifies one or more users and/or
+	// notification destinations if the condition was met.
 	Alerts *sql.AlertsAPI
 
 	// A catalog is the first layer of Unity Catalog’s three-level namespace.
@@ -629,17 +629,11 @@ type WorkspaceClient struct {
 	// caller to service, and similarly. - After a statement has been submitted
 	// and a statement_id is returned, that statement's status and result will
 	// automatically close after either of 2 conditions: - The last result chunk
-	// is fetched (or resolved to an external link). - Ten (10) minutes pass
-	// with no calls to get status or fetch result data. Best practice: in
+	// is fetched (or resolved to an external link). - One hour passes with no
+	// calls to get the status or fetch the result. Best practice: in
 	// asynchronous clients, poll for status regularly (and with backoff) to
-	// keep the statement open and alive. - After a `CANCEL` or `CLOSE`
-	// operation, the statement will no longer be visible from the API which
-	// means that a subsequent poll request may return an HTTP 404 NOT FOUND
-	// error. - After fetching the last result chunk (including chunk_index=0),
-	// the statement is closed; shortly after closure the statement will no
-	// longer be visible to the API and so, further calls such as
-	// :method:statementexecution/getStatement may return an HTTP 404 NOT FOUND
-	// error.
+	// keep the statement open and alive. - After fetching the last result chunk
+	// (including chunk_index=0) the statement is automatically closed.
 	//
 	// [Apache Arrow Columnar]: https://arrow.apache.org/overview/
 	// [Public Preview]: https://docs.databricks.com/release-notes/release-types.html
@@ -713,6 +707,17 @@ type WorkspaceClient struct {
 	// removed from Databricks Workspace. This ensures a consistent offboarding
 	// process and prevents unauthorized users from accessing sensitive data.
 	Users *scim.UsersAPI
+
+	// Volumes are a Unity Catalog (UC) capability for accessing, storing,
+	// governing, organizing and processing files. Use cases include running
+	// machine learning on unstructured data such as image, audio, video, or PDF
+	// files, organizing data sets during the data exploration stages in data
+	// science, working with libraries that require access to the local file
+	// system on cluster machines, storing library and config files of arbitrary
+	// formats such as .whl or .txt centrally and providing secure access across
+	// workspaces to it, or transforming and querying non-tabular data files in
+	// ETL.
+	Volumes *unitycatalog.VolumesAPI
 
 	// A SQL warehouse is a compute resource that lets you run SQL commands on
 	// data objects within Databricks SQL. Compute resources are infrastructure
@@ -800,6 +805,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Tokens:               tokens.NewTokens(apiClient),
 		TransitionRequests:   mlflow.NewTransitionRequests(apiClient),
 		Users:                scim.NewUsers(apiClient),
+		Volumes:              unitycatalog.NewVolumes(apiClient),
 		Warehouses:           sql.NewWarehouses(apiClient),
 		Workspace:            workspace.NewWorkspace(apiClient),
 		WorkspaceConf:        workspaceconf.NewWorkspaceConf(apiClient),

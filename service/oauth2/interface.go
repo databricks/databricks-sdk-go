@@ -33,6 +33,14 @@ type CustomAppIntegrationService interface {
 	// Gets the Custom OAuth App Integration for the given integration id.
 	Get(ctx context.Context, request GetCustomAppIntegrationRequest) (*GetCustomAppIntegrationOutput, error)
 
+	// Get custom oauth app integrations.
+	//
+	// Get the list of custom oauth app integrations for the specified
+	// Databricks Account
+	//
+	// Use ListAll() to get all GetCustomAppIntegrationOutput instances
+	List(ctx context.Context) (*GetCustomAppIntegrationsOutput, error)
+
 	// Updates Custom OAuth App Integration.
 	//
 	// Updates an existing custom OAuth App Integration. You can retrieve the
@@ -96,6 +104,14 @@ type PublishedAppIntegrationService interface {
 	//
 	// Gets the Published OAuth App Integration for the given integration id.
 	Get(ctx context.Context, request GetPublishedAppIntegrationRequest) (*GetPublishedAppIntegrationOutput, error)
+
+	// Get published oauth app integrations.
+	//
+	// Get the list of published oauth app integrations for the specified
+	// Databricks Account
+	//
+	// Use ListAll() to get all GetPublishedAppIntegrationOutput instances
+	List(ctx context.Context) (*GetPublishedAppIntegrationsOutput, error)
 
 	// Updates Published OAuth App Integration.
 	//
