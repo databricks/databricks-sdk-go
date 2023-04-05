@@ -515,15 +515,7 @@ func NewPrivateAccess(client *client.DatabricksClient) *PrivateAccessAPI {
 	}
 }
 
-// These APIs manage private access settings for this account. A private access
-// settings object specifies how your workspace is accessed using AWS
-// PrivateLink. Each workspace that has any PrivateLink connections must include
-// the ID for a private access settings object is in its workspace configuration
-// object. Your account must be enabled for PrivateLink to use these APIs.
-// Before configuring PrivateLink, it is important to read the [Databricks
-// article about PrivateLink].
-//
-// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+// These APIs manage private access settings for this account.
 type PrivateAccessAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(PrivateAccessService)
@@ -862,16 +854,7 @@ func NewVpcEndpoints(client *client.DatabricksClient) *VpcEndpointsAPI {
 	}
 }
 
-// These APIs manage VPC endpoint configurations for this account. This object
-// registers an AWS VPC endpoint in your Databricks account so your workspace
-// can use it with AWS PrivateLink. Your VPC endpoint connects to one of two VPC
-// endpoint services -- one for workspace (both for front-end connection and for
-// back-end connection to REST APIs) and one for the back-end secure cluster
-// connectivity relay from the data plane. Your account must be enabled for
-// PrivateLink to use these APIs. Before configuring PrivateLink, it is
-// important to read the [Databricks article about PrivateLink].
-//
-// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+// These APIs manage VPC endpoint configurations for this account.
 type VpcEndpointsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(VpcEndpointsService)
@@ -915,10 +898,6 @@ func (a *VpcEndpointsAPI) Create(ctx context.Context, request CreateVpcEndpointR
 // Deletes a VPC endpoint configuration, which represents an [AWS VPC endpoint]
 // that can communicate privately with Databricks over [AWS PrivateLink].
 //
-// Upon deleting a VPC endpoint configuration, the VPC endpoint in AWS changes
-// its state from `accepted` to `rejected`, which means that it is no longer
-// usable from your VPC.
-//
 // Before configuring PrivateLink, read the [Databricks article about
 // PrivateLink].
 //
@@ -933,10 +912,6 @@ func (a *VpcEndpointsAPI) Delete(ctx context.Context, request DeleteVpcEndpointR
 //
 // Deletes a VPC endpoint configuration, which represents an [AWS VPC endpoint]
 // that can communicate privately with Databricks over [AWS PrivateLink].
-//
-// Upon deleting a VPC endpoint configuration, the VPC endpoint in AWS changes
-// its state from `accepted` to `rejected`, which means that it is no longer
-// usable from your VPC.
 //
 // Before configuring PrivateLink, read the [Databricks article about
 // PrivateLink].

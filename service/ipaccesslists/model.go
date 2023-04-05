@@ -52,7 +52,7 @@ type IpAccessListInfo struct {
 	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
 	Label string `json:"label,omitempty"`
-	// Universally unique identifier(UUID) of the IP access list.
+	// Universally unique identifier (UUID) of the IP access list.
 	ListId string `json:"list_id,omitempty"`
 	// This describes an enum
 	ListType ListType `json:"list_type,omitempty"`
@@ -102,7 +102,7 @@ type ReplaceIpAccessList struct {
 	IpAddresses []string `json:"ip_addresses"`
 	// Label for the IP access list. This **cannot** be empty.
 	Label string `json:"label"`
-	// Universally unique identifier(UUID) of the IP access list.
+	// Universally unique identifier (UUID) of the IP access list.
 	ListId string `json:"list_id,omitempty"`
 	// This describes an enum
 	ListType ListType `json:"list_type"`
@@ -117,7 +117,7 @@ type UpdateIpAccessList struct {
 	IpAddresses []string `json:"ip_addresses"`
 	// Label for the IP access list. This **cannot** be empty.
 	Label string `json:"label"`
-	// Universally unique identifier(UUID) of the IP access list.
+	// Universally unique identifier (UUID) of the IP access list.
 	ListId string `json:"list_id,omitempty"`
 	// This describes an enum
 	ListType ListType `json:"list_type"`

@@ -7,12 +7,10 @@ package oauth2
 type CreateCustomAppIntegration struct {
 	// indicates if an oauth client-secret should be generated
 	Confidential bool `json:"confidential,omitempty"`
-	// The oauth app integration ID.
-	IntegrationId string `json:"-" url:"-"`
 	// name of the custom oauth app
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// List of oauth redirect urls
-	RedirectUrls []string `json:"redirect_urls,omitempty"`
+	RedirectUrls []string `json:"redirect_urls"`
 	// Token access policy
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 }
@@ -36,8 +34,6 @@ type CreatePublishedAppIntegration struct {
 	// app_id of the oauth published app integration. For example power-bi,
 	// tableau-deskop
 	AppId string `json:"app_id,omitempty"`
-	// The oauth app integration ID.
-	IntegrationId string `json:"-" url:"-"`
 	// Token access policy
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 }
@@ -64,6 +60,8 @@ type GetCustomAppIntegrationOutput struct {
 	ClientId string `json:"client_id,omitempty"`
 	// indicates if an oauth client-secret should be generated
 	Confidential bool `json:"confidential,omitempty"`
+	// ID of this custom app
+	IntegrationId string `json:"integration_id,omitempty"`
 	// name of the custom oauth app
 	Name string `json:"name,omitempty"`
 	// List of oauth redirect urls
@@ -76,6 +74,11 @@ type GetCustomAppIntegrationOutput struct {
 type GetCustomAppIntegrationRequest struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
+}
+
+type GetCustomAppIntegrationsOutput struct {
+	// Array of Custom OAuth App Integrations defined for the account.
+	Apps []GetCustomAppIntegrationOutput `json:"apps,omitempty"`
 }
 
 type GetPublishedAppIntegrationOutput struct {
@@ -93,6 +96,11 @@ type GetPublishedAppIntegrationOutput struct {
 type GetPublishedAppIntegrationRequest struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
+}
+
+type GetPublishedAppIntegrationsOutput struct {
+	// Array of Published OAuth App Integrations defined for the account.
+	Apps []GetPublishedAppIntegrationOutput `json:"apps,omitempty"`
 }
 
 type OAuthEnrollmentStatus struct {

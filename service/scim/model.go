@@ -75,7 +75,7 @@ type Group struct {
 type ListGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
-	// Desired number of results per page.
+	// Desired number of results per page. Default is 10000.
 	Count int `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
 	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
@@ -123,7 +123,7 @@ type ListServicePrincipalResponse struct {
 type ListServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
-	// Desired number of results per page.
+	// Desired number of results per page. Default is 10000.
 	Count int `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
 	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
@@ -174,7 +174,7 @@ func (lso *ListSortOrder) Type() string {
 type ListUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
-	// Desired number of results per page.
+	// Desired number of results per page. Default is 10000.
 	Count int `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
 	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`

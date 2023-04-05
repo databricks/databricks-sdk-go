@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Catalogs, External Locations, Functions, Grants, Metastores, Providers, Recipient Activation, Recipients, Schemas, Shares, Storage Credentials, Table Constraints, Tables, etc.
+// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Catalogs, External Locations, Functions, Grants, Metastores, Providers, Recipient Activation, Recipients, Schemas, Shares, Storage Credentials, Table Constraints, Tables, Volumes, etc.
 package unitycatalog
 
 import (
@@ -252,10 +252,9 @@ func (a *AccountStorageCredentialsAPI) Get(ctx context.Context, request GetAccou
 // Gets a storage credential from the metastore. The caller must be a metastore
 // admin, the owner of the storage credential, or have a level of privilege on
 // the storage credential.
-func (a *AccountStorageCredentialsAPI) GetByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*StorageCredentialInfo, error) {
+func (a *AccountStorageCredentialsAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*StorageCredentialInfo, error) {
 	return a.impl.Get(ctx, GetAccountStorageCredentialRequest{
-		MetastoreId:           metastoreId,
-		StorageCredentialName: storageCredentialName,
+		MetastoreId: metastoreId,
 	})
 }
 
@@ -864,6 +863,13 @@ func (a *MetastoresAPI) GetByName(ctx context.Context, name string) (*MetastoreI
 	return &alternatives[0], nil
 }
 
+// Enables or disables auto maintenance on the metastore.
+//
+// Enables or disables auto maintenance on the metastore.
+func (a *MetastoresAPI) Maintenance(ctx context.Context, request UpdateAutoMaintenance) (*UpdateAutoMaintenanceResponse, error) {
+	return a.impl.Maintenance(ctx, request)
+}
+
 // Get a metastore summary.
 //
 // Gets information about a metastore. This summary includes the storage
@@ -1451,9 +1457,9 @@ func (a *SharesAPI) Impl() SharesService {
 
 // Create a share.
 //
-// Creates a new share for data objects. Data objects can be added at this time
-// or after creation with **update**. The caller must be a metastore admin or
-// have the **CREATE_SHARE** privilege on the metastore.
+// Creates a new share for data objects. Data objects can be added after
+// creation with **update**. The caller must be a metastore admin or have the
+// **CREATE_SHARE** privilege on the metastore.
 func (a *SharesAPI) Create(ctx context.Context, request CreateShare) (*ShareInfo, error) {
 	return a.impl.Create(ctx, request)
 }
@@ -1970,4 +1976,205 @@ func (a *TablesAPI) GetByName(ctx context.Context, name string) (*TableInfo, err
 // There is no guarantee of a specific ordering of the elements in the array.
 func (a *TablesAPI) ListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error) {
 	return a.impl.ListSummaries(ctx, request)
+}
+
+func NewVolumes(client *client.DatabricksClient) *VolumesAPI {
+	return &VolumesAPI{
+		impl: &volumesImpl{
+			client: client,
+		},
+	}
+}
+
+// Volumes are a Unity Catalog (UC) capability for accessing, storing,
+// governing, organizing and processing files. Use cases include running machine
+// learning on unstructured data such as image, audio, video, or PDF files,
+// organizing data sets during the data exploration stages in data science,
+// working with libraries that require access to the local file system on
+// cluster machines, storing library and config files of arbitrary formats such
+// as .whl or .txt centrally and providing secure access across workspaces to
+// it, or transforming and querying non-tabular data files in ETL.
+type VolumesAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(VolumesService)
+	impl VolumesService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *VolumesAPI) WithImpl(impl VolumesService) *VolumesAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Volumes API implementation
+func (a *VolumesAPI) Impl() VolumesService {
+	return a.impl
+}
+
+// Create a Volume.
+//
+// Creates a new volume.
+//
+// The user could create either an external volume or a managed volume. An
+// external volume will be created in the specified external location, while a
+// managed volume will be located in the default location which is specified by
+// the parent schema, or the parent catalog, or the Metastore.
+//
+// For the volume creation to succeed, the user must satisfy following
+// conditions: - The caller must be a metastore admin, or be the owner of the
+// parent catalog and schema, or have the **USE_CATALOG** privilege on the
+// parent catalog and the **USE_SCHEMA** privilege on the parent schema. - The
+// caller must have **CREATE VOLUME** privilege on the parent schema.
+//
+// For an external volume, following conditions also need to satisfy - The
+// caller must have **CREATE EXTERNAL VOLUME** privilege on the external
+// location. - There are no other tables, nor volumes existing in the specified
+// storage location. - The specified storage location is not under the location
+// of other tables, nor volumes, or catalogs or schemas.
+func (a *VolumesAPI) Create(ctx context.Context, request CreateVolumeRequestContent) (*VolumeInfo, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Delete a Volume.
+//
+// Deletes a volume from the specified parent catalog and schema.
+//
+// The caller must be a metastore admin or an owner of the volume. For the
+// latter case, the caller must also be the owner or have the **USE_CATALOG**
+// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+// parent schema.
+func (a *VolumesAPI) Delete(ctx context.Context, request DeleteVolumeRequest) error {
+	return a.impl.Delete(ctx, request)
+}
+
+// Delete a Volume.
+//
+// Deletes a volume from the specified parent catalog and schema.
+//
+// The caller must be a metastore admin or an owner of the volume. For the
+// latter case, the caller must also be the owner or have the **USE_CATALOG**
+// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+// parent schema.
+func (a *VolumesAPI) DeleteByFullNameArg(ctx context.Context, fullNameArg string) error {
+	return a.impl.Delete(ctx, DeleteVolumeRequest{
+		FullNameArg: fullNameArg,
+	})
+}
+
+// List Volumes.
+//
+// Gets an array of all volumes for the current metastore under the parent
+// catalog and schema.
+//
+// The returned volumes are filtered based on the privileges of the calling
+// user. For example, the metastore admin is able to list all the volumes. A
+// regular user needs to be the owner or have the **READ VOLUME** privilege on
+// the volume to recieve the volumes in the response. For the latter case, the
+// caller must also be the owner or have the **USE_CATALOG** privilege on the
+// parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+//
+// There is no guarantee of a specific ordering of the elements in the array.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *VolumesAPI) ListAll(ctx context.Context, request ListVolumesRequest) ([]VolumeInfo, error) {
+	response, err := a.impl.List(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.Volumes, nil
+}
+
+// VolumeInfoNameToVolumeIdMap calls [VolumesAPI.ListAll] and creates a map of results with [VolumeInfo].Name as key and [VolumeInfo].VolumeId as value.
+//
+// Returns an error if there's more than one [VolumeInfo] with the same .Name.
+//
+// Note: All [VolumeInfo] instances are loaded into memory before creating a map.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *VolumesAPI) VolumeInfoNameToVolumeIdMap(ctx context.Context, request ListVolumesRequest) (map[string]string, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
+	mapping := map[string]string{}
+	result, err := a.ListAll(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		key := v.Name
+		_, duplicate := mapping[key]
+		if duplicate {
+			return nil, fmt.Errorf("duplicate .Name: %s", key)
+		}
+		mapping[key] = v.VolumeId
+	}
+	return mapping, nil
+}
+
+// GetByName calls [VolumesAPI.VolumeInfoNameToVolumeIdMap] and returns a single [VolumeInfo].
+//
+// Returns an error if there's more than one [VolumeInfo] with the same .Name.
+//
+// Note: All [VolumeInfo] instances are loaded into memory before returning matching by name.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *VolumesAPI) GetByName(ctx context.Context, name string) (*VolumeInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
+	result, err := a.ListAll(ctx, ListVolumesRequest{})
+	if err != nil {
+		return nil, err
+	}
+	tmp := map[string][]VolumeInfo{}
+	for _, v := range result {
+		key := v.Name
+		tmp[key] = append(tmp[key], v)
+	}
+	alternatives, ok := tmp[name]
+	if !ok || len(alternatives) == 0 {
+		return nil, fmt.Errorf("VolumeInfo named '%s' does not exist", name)
+	}
+	if len(alternatives) > 1 {
+		return nil, fmt.Errorf("there are %d instances of VolumeInfo named '%s'", len(alternatives), name)
+	}
+	return &alternatives[0], nil
+}
+
+// Get a Volume.
+//
+// Gets a volume from the metastore for a specific catalog and schema.
+//
+// The caller must be a metastore admin or an owner of (or have the **READ
+// VOLUME** privilege on) the volume. For the latter case, the caller must also
+// be the owner or have the **USE_CATALOG** privilege on the parent catalog and
+// the **USE_SCHEMA** privilege on the parent schema.
+func (a *VolumesAPI) Read(ctx context.Context, request ReadVolumeRequest) (*VolumeInfo, error) {
+	return a.impl.Read(ctx, request)
+}
+
+// Get a Volume.
+//
+// Gets a volume from the metastore for a specific catalog and schema.
+//
+// The caller must be a metastore admin or an owner of (or have the **READ
+// VOLUME** privilege on) the volume. For the latter case, the caller must also
+// be the owner or have the **USE_CATALOG** privilege on the parent catalog and
+// the **USE_SCHEMA** privilege on the parent schema.
+func (a *VolumesAPI) ReadByFullNameArg(ctx context.Context, fullNameArg string) (*VolumeInfo, error) {
+	return a.impl.Read(ctx, ReadVolumeRequest{
+		FullNameArg: fullNameArg,
+	})
+}
+
+// Update a Volume.
+//
+// Updates the specified volume under the specified parent catalog and schema.
+//
+// The caller must be a metastore admin or an owner of the volume. For the
+// latter case, the caller must also be the owner or have the **USE_CATALOG**
+// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+// parent schema.
+//
+// Currently only the name, the owner or the comment of the volume could be
+// updated.
+func (a *VolumesAPI) Update(ctx context.Context, request UpdateVolumeRequestContent) (*VolumeInfo, error) {
+	return a.impl.Update(ctx, request)
 }

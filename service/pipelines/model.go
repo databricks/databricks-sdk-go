@@ -15,9 +15,11 @@ type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
-	// Catalog in UC to add tables to. If target is specified, tables in this
-	// pipeline will be published to a "target" schema inside catalog (i.e.
-	// <catalog>.<target>.<table>).
+	// A catalog in Unity Catalog to publish data from this pipeline to. If
+	// `target` is specified, tables in this pipeline are published to a
+	// `target` schema inside `catalog` (for example,
+	// `catalog`.`target`.`table`). If `target` is not specified, no data is
+	// published to Unity Catalog.
 	Catalog string `json:"catalog,omitempty"`
 	// DLT Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
@@ -45,16 +47,19 @@ type CreatePipeline struct {
 	Photon bool `json:"photon,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
-	// Target schema (database) to add tables in this pipeline to.
+	// Target schema (database) to add tables in this pipeline to. If not
+	// specified, no data is published to the Hive metastore or Unity Catalog.
+	// To publish to Unity Catalog, also specify `catalog`.
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
 }
 
 type CreatePipelineResponse struct {
-	// Only returned when dry_run is true
+	// Only returned when dry_run is true.
 	EffectiveSettings *PipelineSpec `json:"effective_settings,omitempty"`
-	// Only returned when dry_run is false
+	// The unique identifier for the newly created pipeline. Only returned when
+	// dry_run is false.
 	PipelineId string `json:"pipeline_id,omitempty"`
 }
 
@@ -80,9 +85,11 @@ type EditPipeline struct {
 	// If false, deployment will fail if name has changed and conflicts the name
 	// of another pipeline.
 	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
-	// Catalog in UC to add tables to. If target is specified, tables in this
-	// pipeline will be published to a "target" schema inside catalog (i.e.
-	// <catalog>.<target>.<table>).
+	// A catalog in Unity Catalog to publish data from this pipeline to. If
+	// `target` is specified, tables in this pipeline are published to a
+	// `target` schema inside `catalog` (for example,
+	// `catalog`.`target`.`table`). If `target` is not specified, no data is
+	// published to Unity Catalog.
 	Catalog string `json:"catalog,omitempty"`
 	// DLT Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
@@ -114,7 +121,9 @@ type EditPipeline struct {
 	PipelineId string `json:"pipeline_id,omitempty" url:"-"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
-	// Target schema (database) to add tables in this pipeline to.
+	// Target schema (database) to add tables in this pipeline to. If not
+	// specified, no data is published to the Hive metastore or Unity Catalog.
+	// To publish to Unity Catalog, also specify `catalog`.
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
@@ -157,6 +166,11 @@ func (el *EventLevel) Set(v string) error {
 // Type always returns EventLevel to satisfy [pflag.Value] interface
 func (el *EventLevel) Type() string {
 	return "EventLevel"
+}
+
+type FileLibrary struct {
+	// The absolute path of the file.
+	Path string `json:"path,omitempty"`
 }
 
 type Filters struct {
@@ -420,15 +434,15 @@ type PipelineCluster struct {
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
 	AwsAttributes *clusters.AwsAttributes `json:"aws_attributes,omitempty"`
-	// Attributes related to clusters running on Amazon Web Services. If not
+	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	AzureAttributes *clusters.AzureAttributes `json:"azure_attributes,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
-	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
-	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every `5 mins`. The
-	// destination of driver logs is `$destination/$clusterId/driver`, while the
-	// destination of executor logs is `$destination/$clusterId/executor`.
+	// destination. Only dbfs destinations are supported. Only one destination
+	// can be specified for one cluster. If the conf is given, the logs will be
+	// delivered to the destination every `5 mins`. The destination of driver
+	// logs is `$destination/$clusterId/driver`, while the destination of
+	// executor logs is `$destination/$clusterId/executor`.
 	ClusterLogConf *clusters.ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
@@ -452,7 +466,9 @@ type PipelineCluster struct {
 	GcpAttributes *clusters.GcpAttributes `json:"gcp_attributes,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
-	// Cluster label
+	// A label for the cluster specification, either `default` to configure the
+	// default cluster, or `maintenance` to configure the maintenance cluster.
+	// This field is optional. The default value is `default`.
 	Label string `json:"label,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -519,31 +535,26 @@ type PipelineEvent struct {
 }
 
 type PipelineLibrary struct {
-	// URI of the jar to be installed. Currently only DBFS and S3 URIs are
-	// supported. For example: `{ "jar": "dbfs:/mnt/databricks/library.jar" }`
-	// or `{ "jar": "s3://my-bucket/library.jar" }`. If S3 is used, please make
-	// sure the cluster has read access on the library. You may need to launch
-	// the cluster with an IAM role to access the S3 URI.
+	// The path to a file that defines a pipeline and is stored in the
+	// Databricks Repos.
+	File *FileLibrary `json:"file,omitempty"`
+	// URI of the jar to be installed. Currently only DBFS is supported.
 	Jar string `json:"jar,omitempty"`
-	// Specification of a maven library to be installed. For example: `{
-	// "coordinates": "org.jsoup:jsoup:1.7.2" }`
+	// Specification of a maven library to be installed.
 	Maven *libraries.MavenLibrary `json:"maven,omitempty"`
 	// The path to a notebook that defines a pipeline and is stored in the
-	// Databricks workspace. For example: `{ "notebook" : { "path" :
-	// "/my-pipeline-notebook-path" } }`. Currently, only Scala notebooks are
-	// supported, and pipelines must be defined in a package cell.
+	// Databricks workspace.
 	Notebook *NotebookLibrary `json:"notebook,omitempty"`
-	// URI of the wheel to be installed. For example: `{ "whl": "dbfs:/my/whl"
-	// }` or `{ "whl": "s3://my-bucket/whl" }`. If S3 is used, please make sure
-	// the cluster has read access on the library. You may need to launch the
-	// cluster with an IAM role to access the S3 URI.
+	// URI of the wheel to be installed.
 	Whl string `json:"whl,omitempty"`
 }
 
 type PipelineSpec struct {
-	// Catalog in UC to add tables to. If target is specified, tables in this
-	// pipeline will be published to a "target" schema inside catalog (i.e.
-	// <catalog>.<target>.<table>).
+	// A catalog in Unity Catalog to publish data from this pipeline to. If
+	// `target` is specified, tables in this pipeline are published to a
+	// `target` schema inside `catalog` (for example,
+	// `catalog`.`target`.`table`). If `target` is not specified, no data is
+	// published to Unity Catalog.
 	Catalog string `json:"catalog,omitempty"`
 	// DLT Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
@@ -569,7 +580,9 @@ type PipelineSpec struct {
 	Photon bool `json:"photon,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
-	// Target schema (database) to add tables in this pipeline to.
+	// Target schema (database) to add tables in this pipeline to. If not
+	// specified, no data is published to the Hive metastore or Unity Catalog.
+	// To publish to Unity Catalog, also specify `catalog`.
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`

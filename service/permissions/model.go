@@ -28,16 +28,9 @@ type AccessControlResponse struct {
 	UserName string `json:"user_name,omitempty"`
 }
 
-type CreateWorkspaceAssignments struct {
-	// Array of permissions assignments to apply to a workspace.
-	PermissionAssignments []PermissionAssignmentInput `json:"permission_assignments"`
-	// The workspace ID for the account.
-	WorkspaceId int64 `json:"-" url:"-"`
-}
-
 // Delete permissions assignment
 type DeleteWorkspaceAssignmentRequest struct {
-	// The ID of the service principal.
+	// The ID of the user, service principal, or group.
 	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -94,21 +87,10 @@ type Permission struct {
 type PermissionAssignment struct {
 	// Error response associated with a workspace permission assignment, if any.
 	Error string `json:"error,omitempty"`
-	// The permissions level of the service principal.
+	// The permissions level of the principal.
 	Permissions []WorkspacePermission `json:"permissions,omitempty"`
-	// Information about the service principal assigned for the workspace.
+	// Information about the principal assigned to the workspace.
 	Principal *PrincipalOutput `json:"principal,omitempty"`
-}
-
-type PermissionAssignmentInput struct {
-	// The group name for the service principal.
-	GroupName string `json:"group_name,omitempty"`
-	// Array of permissions to apply to the workspace for the service principal.
-	Permissions []WorkspacePermission `json:"permissions"`
-	// The name of the service principal.
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-	// The username of the owner of the service principal.
-	UserName string `json:"user_name,omitempty"`
 }
 
 type PermissionAssignments struct {
@@ -192,30 +174,26 @@ type PermissionsRequest struct {
 }
 
 type PrincipalOutput struct {
-	// The display name of the service principal.
+	// The display name of the principal.
 	DisplayName string `json:"display_name,omitempty"`
-	// The group name for the service principal.
+	// The group name of the groupl. Present only if the principal is a group.
 	GroupName string `json:"group_name,omitempty"`
 	// The unique, opaque id of the principal.
 	PrincipalId int64 `json:"principal_id,omitempty"`
-	// The name of the service principal.
+	// The name of the service principal. Present only if the principal is a
+	// service principal.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-	// The username of the owner of the service principal.
+	// The username of the user. Present only if the principal is a user.
 	UserName string `json:"user_name,omitempty"`
 }
 
 type UpdateWorkspaceAssignments struct {
 	// Array of permissions assignments to update on the workspace.
 	Permissions []WorkspacePermission `json:"permissions"`
-	// The ID of the service principal.
+	// The ID of the user, service principal, or group.
 	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
-}
-
-type WorkspaceAssignmentsCreated struct {
-	// Array of permissions assignments applied to a workspace.
-	PermissionAssignments []PermissionAssignment `json:"permission_assignments,omitempty"`
 }
 
 type WorkspacePermission string

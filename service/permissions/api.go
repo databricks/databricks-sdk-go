@@ -96,7 +96,8 @@ func NewWorkspaceAssignment(client *client.DatabricksClient) *WorkspaceAssignmen
 	}
 }
 
-// Databricks Workspace Assignment REST API
+// The Workspace Permission Assignment API allows you to manage workspace
+// permissions for principals in your account.
 type WorkspaceAssignmentAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(WorkspaceAssignmentService)
@@ -115,25 +116,18 @@ func (a *WorkspaceAssignmentAPI) Impl() WorkspaceAssignmentService {
 	return a.impl
 }
 
-// Create permission assignments.
-//
-// Create new permission assignments for the specified account and workspace.
-func (a *WorkspaceAssignmentAPI) Create(ctx context.Context, request CreateWorkspaceAssignments) (*WorkspaceAssignmentsCreated, error) {
-	return a.impl.Create(ctx, request)
-}
-
 // Delete permissions assignment.
 //
-// Deletes the workspace permissions assignment for a given account and
-// workspace using the specified service principal.
+// Deletes the workspace permissions assignment in a given account and workspace
+// for the specified principal.
 func (a *WorkspaceAssignmentAPI) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
 	return a.impl.Delete(ctx, request)
 }
 
 // Delete permissions assignment.
 //
-// Deletes the workspace permissions assignment for a given account and
-// workspace using the specified service principal.
+// Deletes the workspace permissions assignment in a given account and workspace
+// for the specified principal.
 func (a *WorkspaceAssignmentAPI) DeleteByWorkspaceIdAndPrincipalId(ctx context.Context, workspaceId int64, principalId int64) error {
 	return a.impl.Delete(ctx, DeleteWorkspaceAssignmentRequest{
 		WorkspaceId: workspaceId,
@@ -183,10 +177,10 @@ func (a *WorkspaceAssignmentAPI) ListByWorkspaceId(ctx context.Context, workspac
 	})
 }
 
-// Update permissions assignment.
+// Create or update permissions assignment.
 //
-// Updates the workspace permissions assignment for a given account and
-// workspace using the specified service principal.
+// Creates or updates the workspace permissions assignment in a given account
+// and workspace for the specified principal.
 func (a *WorkspaceAssignmentAPI) Update(ctx context.Context, request UpdateWorkspaceAssignments) error {
 	return a.impl.Update(ctx, request)
 }

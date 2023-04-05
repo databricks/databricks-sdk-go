@@ -95,9 +95,12 @@ type CreateStorageConfigurationRequest struct {
 
 type CreateVpcEndpointRequest struct {
 	// The ID of the VPC endpoint object in AWS.
-	AwsVpcEndpointId string `json:"aws_vpc_endpoint_id"`
+	AwsVpcEndpointId string `json:"aws_vpc_endpoint_id,omitempty"`
+	// The Google Cloud specific information for this Private Service Connect
+	// endpoint.
+	GcpVpcEndpointInfo *GcpVpcEndpointInfo `json:"gcp_vpc_endpoint_info,omitempty"`
 	// The AWS region in which this VPC endpoint object exists.
-	Region string `json:"region"`
+	Region string `json:"region,omitempty"`
 	// The human-readable name of the storage configuration.
 	VpcEndpointName string `json:"vpc_endpoint_name"`
 }
@@ -264,15 +267,7 @@ type DeleteWorkspaceRequest struct {
 // This enumeration represents the type of Databricks VPC [endpoint service]
 // that was used when creating this VPC endpoint.
 //
-// If the VPC endpoint connects to the Databricks control plane for either the
-// front-end connection or the back-end REST API connection, the value is
-// `WORKSPACE_ACCESS`.
-//
-// If the VPC endpoint connects to the Databricks workspace for the back-end
-// [secure cluster connectivity] relay, the value is `DATAPLANE_RELAY_ACCESS`.
-//
 // [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
-// [secure cluster connectivity]: https://docs.databricks.com/security/secure-cluster-connectivity.html
 type EndpointUseCase string
 
 const EndpointUseCaseDataplaneRelayAccess EndpointUseCase = `DATAPLANE_RELAY_ACCESS`
@@ -391,6 +386,22 @@ type GcpNetworkInfo struct {
 	// The ID of the VPC associated with this network. VPC IDs can be used in
 	// multiple network configurations.
 	VpcId string `json:"vpc_id"`
+}
+
+// The Google Cloud specific information for this Private Service Connect
+// endpoint.
+type GcpVpcEndpointInfo struct {
+	// Region of the PSC endpoint.
+	EndpointRegion string `json:"endpoint_region"`
+	// The Google Cloud project ID of the VPC network where the PSC connection
+	// resides.
+	ProjectId string `json:"project_id"`
+	// The unique ID of this PSC connection.
+	PscConnectionId string `json:"psc_connection_id,omitempty"`
+	// The name of the PSC endpoint in the Google Cloud project.
+	PscEndpointName string `json:"psc_endpoint_name"`
+	// The service attachment this PSC connection connects to.
+	ServiceAttachmentId string `json:"service_attachment_id,omitempty"`
 }
 
 // Get credential configuration
@@ -567,28 +578,10 @@ type NetworkHealth struct {
 // [AWS PrivateLink]: https://aws.amazon.com/privatelink/
 type NetworkVpcEndpoints struct {
 	// The VPC endpoint ID used by this network to access the Databricks secure
-	// cluster connectivity relay. See [Secure Cluster Connectivity].
-	//
-	// This is a list type for future compatibility, but currently only one VPC
-	// endpoint ID should be supplied.
-	//
-	// **Note**: This is the Databricks-specific ID of the VPC endpoint object
-	// in the Account API, not the AWS VPC endpoint ID that you see for your
-	// endpoint in the AWS Console.
-	//
-	// [Secure Cluster Connectivity]: https://docs.databricks.com/security/secure-cluster-connectivity.html
+	// cluster connectivity relay.
 	DataplaneRelay []string `json:"dataplane_relay"`
 	// The VPC endpoint ID used by this network to access the Databricks REST
-	// API. Databricks clusters make calls to our REST API as part of cluster
-	// creation, mlflow tracking, and many other features. Thus, this is
-	// required even if your workspace allows public access to the REST API.
-	//
-	// This is a list type for future compatibility, but currently only one VPC
-	// endpoint ID should be supplied.
-	//
-	// **Note**: This is the Databricks-specific ID of the VPC endpoint object
-	// in the Account API, not the AWS VPC endpoint ID that you see for your
-	// endpoint in the AWS Console.
+	// API.
 	RestApi []string `json:"rest_api"`
 }
 
@@ -675,20 +668,7 @@ func (pal *PrivateAccessLevel) Type() string {
 type PrivateAccessSettings struct {
 	// The Databricks account ID that hosts the credential.
 	AccountId string `json:"account_id,omitempty"`
-	// An array of Databricks VPC endpoint IDs. This is the Databricks ID
-	// returned when registering the VPC endpoint configuration in your
-	// Databricks account. This is _not_ the ID of the VPC endpoint in AWS.
-	//
-	// Only used when `private_access_level` is set to `ENDPOINT`. This is an
-	// allow list of VPC endpoints registered in your Databricks account that
-	// can connect to your workspace over AWS PrivateLink.
-	//
-	// **Note**: If hybrid access to your workspace is enabled by setting
-	// `public_access_enabled` to `true`, this control only works for
-	// PrivateLink connections. To control how your workspace is accessed via
-	// public internet, see [IP access lists].
-	//
-	// [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html
+	// An array of Databricks VPC endpoint IDs.
 	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
 	// The private access level controls which VPC endpoints can connect to the
 	// UI or API of any workspace that attaches this private access settings
@@ -707,7 +687,7 @@ type PrivateAccessSettings struct {
 	// connections. Otherwise, specify `true`, which means that public access is
 	// enabled.
 	PublicAccessEnabled bool `json:"public_access_enabled,omitempty"`
-	// The AWS region for workspaces attached to this private access settings
+	// The cloud region for workspaces attached to this private access settings
 	// object.
 	Region string `json:"region,omitempty"`
 }
@@ -797,11 +777,8 @@ type UpsertPrivateAccessSettingsRequest struct {
 	// connections. Otherwise, specify `true`, which means that public access is
 	// enabled.
 	PublicAccessEnabled bool `json:"public_access_enabled,omitempty"`
-	// The AWS region for workspaces associated with this private access
-	// settings object. This must be a [region that Databricks supports for
-	// PrivateLink].
-	//
-	// [region that Databricks supports for PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/regions.html
+	// The cloud region for workspaces associated with this private access
+	// settings object.
 	Region string `json:"region"`
 }
 
@@ -819,6 +796,9 @@ type VpcEndpoint struct {
 	AwsEndpointServiceId string `json:"aws_endpoint_service_id,omitempty"`
 	// The ID of the VPC endpoint object in AWS.
 	AwsVpcEndpointId string `json:"aws_vpc_endpoint_id,omitempty"`
+	// The Google Cloud specific information for this Private Service Connect
+	// endpoint.
+	GcpVpcEndpointInfo *GcpVpcEndpointInfo `json:"gcp_vpc_endpoint_info,omitempty"`
 	// The AWS region in which this VPC endpoint object exists.
 	Region string `json:"region,omitempty"`
 	// The current state (such as `available` or `rejected`) of the VPC
@@ -830,16 +810,7 @@ type VpcEndpoint struct {
 	// This enumeration represents the type of Databricks VPC [endpoint service]
 	// that was used when creating this VPC endpoint.
 	//
-	// If the VPC endpoint connects to the Databricks control plane for either
-	// the front-end connection or the back-end REST API connection, the value
-	// is `WORKSPACE_ACCESS`.
-	//
-	// If the VPC endpoint connects to the Databricks workspace for the back-end
-	// [secure cluster connectivity] relay, the value is
-	// `DATAPLANE_RELAY_ACCESS`.
-	//
 	// [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
-	// [secure cluster connectivity]: https://docs.databricks.com/security/secure-cluster-connectivity.html
 	UseCase EndpointUseCase `json:"use_case,omitempty"`
 	// Databricks VPC endpoint ID. This is the Databricks-specific name of the
 	// VPC endpoint. Do not confuse this with the `aws_vpc_endpoint_id`, which

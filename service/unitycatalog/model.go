@@ -203,6 +203,8 @@ const ColumnTypeNameTableType ColumnTypeName = `TABLE_TYPE`
 
 const ColumnTypeNameTimestamp ColumnTypeName = `TIMESTAMP`
 
+const ColumnTypeNameTimestampNtz ColumnTypeName = `TIMESTAMP_NTZ`
+
 const ColumnTypeNameUserDefinedType ColumnTypeName = `USER_DEFINED_TYPE`
 
 // String representation for [fmt.Print]
@@ -213,11 +215,11 @@ func (ctn *ColumnTypeName) String() string {
 // Set raw string value and validate it against allowed values
 func (ctn *ColumnTypeName) Set(v string) error {
 	switch v {
-	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `USER_DEFINED_TYPE`:
+	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `TIMESTAMP_NTZ`, `USER_DEFINED_TYPE`:
 		*ctn = ColumnTypeName(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TABLE_TYPE", "TIMESTAMP", "USER_DEFINED_TYPE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TABLE_TYPE", "TIMESTAMP", "TIMESTAMP_NTZ", "USER_DEFINED_TYPE"`, v)
 	}
 }
 
@@ -529,6 +531,21 @@ type CreateTableConstraint struct {
 	FullNameArg string `json:"full_name_arg"`
 }
 
+type CreateVolumeRequestContent struct {
+	// The name of the catalog where the schema and the volume are
+	CatalogName string `json:"catalog_name"`
+	// The comment attached to the volume
+	Comment string `json:"comment,omitempty"`
+	// The name of the volume
+	Name string `json:"name"`
+	// The name of the schema where the volume is
+	SchemaName string `json:"schema_name"`
+	// The storage location on the cloud
+	StorageLocation string `json:"storage_location,omitempty"`
+
+	VolumeType VolumeType `json:"volume_type"`
+}
+
 // Data source format
 type DataSourceFormat string
 
@@ -668,6 +685,12 @@ type DeleteTableConstraintRequest struct {
 type DeleteTableRequest struct {
 	// Full name of the table.
 	FullName string `json:"-" url:"-"`
+}
+
+// Delete a Volume
+type DeleteVolumeRequest struct {
+	// The three-level (fully qualified) name of the volume
+	FullNameArg string `json:"-" url:"-"`
 }
 
 // A dependency of a SQL object. Either the __table__ field or the __function__
@@ -1114,8 +1137,6 @@ type GetAccountStorageCredentialRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
-
-	StorageCredentialName string `json:"-" url:"-"`
 }
 
 // Get a share activation URL
@@ -1420,6 +1441,18 @@ type ListTablesResponse struct {
 	Tables []TableInfo `json:"tables,omitempty"`
 }
 
+// List Volumes
+type ListVolumesRequest struct {
+	// The identifier of the catalog
+	CatalogName string `json:"-" url:"catalog_name"`
+	// The identifier of the schema
+	SchemaName string `json:"-" url:"schema_name"`
+}
+
+type ListVolumesResponseContent struct {
+	Volumes []VolumeInfo `json:"volumes,omitempty"`
+}
+
 type MetastoreAssignment struct {
 	// The name of the default catalog in the metastore.
 	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
@@ -1704,6 +1737,12 @@ type ProviderInfo struct {
 type ProviderShare struct {
 	// The name of the Provider Share.
 	Name string `json:"name,omitempty"`
+}
+
+// Get a Volume
+type ReadVolumeRequest struct {
+	// The three-level (fully qualified) name of the volume
+	FullNameArg string `json:"-" url:"-"`
 }
 
 type RecipientInfo struct {
@@ -2207,6 +2246,23 @@ type UnassignRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+type UpdateAutoMaintenance struct {
+	// Whether to enable auto maintenance on the metastore.
+	Enable bool `json:"enable"`
+	// Unique identifier of metastore.
+	MetastoreId string `json:"metastore_id"`
+}
+
+type UpdateAutoMaintenanceResponse struct {
+	// Whether auto maintenance is enabled on the metastore.
+	State bool `json:"state,omitempty"`
+	// Id of the auto maintenance service principal. This will be the user used
+	// to run maintenance tasks.
+	UserId int64 `json:"user_id,omitempty"`
+	// Name of the auto maintenance service principal.
+	Username string `json:"username,omitempty"`
+}
+
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -2396,6 +2452,17 @@ type UpdateStorageCredential struct {
 	SkipValidation bool `json:"skip_validation,omitempty"`
 }
 
+type UpdateVolumeRequestContent struct {
+	// The comment attached to the volume
+	Comment string `json:"comment,omitempty"`
+	// The three-level (fully qualified) name of the volume
+	FullNameArg string `json:"-" url:"-"`
+	// The name of the volume
+	Name string `json:"name,omitempty"`
+	// The identifier of the user who owns the volume
+	Owner string `json:"owner,omitempty"`
+}
+
 type ValidateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
@@ -2489,4 +2556,62 @@ func (vrr *ValidationResultResult) Set(v string) error {
 // Type always returns ValidationResultResult to satisfy [pflag.Value] interface
 func (vrr *ValidationResultResult) Type() string {
 	return "ValidationResultResult"
+}
+
+type VolumeInfo struct {
+	// The name of the catalog where the schema and the volume are
+	CatalogName string `json:"catalog_name,omitempty"`
+	// The comment attached to the volume
+	Comment string `json:"comment,omitempty"`
+
+	CreatedAt any/* MISSING TYPE */ `json:"created_at,omitempty"`
+	// The identifier of the user who created the volume
+	CreatedBy string `json:"created_by,omitempty"`
+	// The three-level (fully qualified) name of the volume
+	FullName string `json:"full_name,omitempty"`
+	// The unique identifier of the metastore
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// The name of the volume
+	Name string `json:"name,omitempty"`
+	// The identifier of the user who owns the volume
+	Owner string `json:"owner,omitempty"`
+	// The name of the schema where the volume is
+	SchemaName string `json:"schema_name,omitempty"`
+	// The storage location on the cloud
+	StorageLocation string `json:"storage_location,omitempty"`
+
+	UpdatedAt any/* MISSING TYPE */ `json:"updated_at,omitempty"`
+	// The identifier of the user who updated the volume last time
+	UpdatedBy string `json:"updated_by,omitempty"`
+	// The unique identifier of the volume
+	VolumeId string `json:"volume_id,omitempty"`
+
+	VolumeType VolumeType `json:"volume_type,omitempty"`
+}
+
+type VolumeType string
+
+const VolumeTypeExternal VolumeType = `EXTERNAL`
+
+const VolumeTypeManaged VolumeType = `MANAGED`
+
+// String representation for [fmt.Print]
+func (vt *VolumeType) String() string {
+	return string(*vt)
+}
+
+// Set raw string value and validate it against allowed values
+func (vt *VolumeType) Set(v string) error {
+	switch v {
+	case `EXTERNAL`, `MANAGED`:
+		*vt = VolumeType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "MANAGED"`, v)
+	}
+}
+
+// Type always returns VolumeType to satisfy [pflag.Value] interface
+func (vt *VolumeType) Type() string {
+	return "VolumeType"
 }
