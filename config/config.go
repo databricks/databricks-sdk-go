@@ -84,6 +84,9 @@ type Config struct {
 	// Use at your own risk or for unit testing purposes.
 	InsecureSkipVerify bool `name:"skip_verify" auth:"-"`
 
+	// marker for testing fixture
+	IsTesting bool
+
 	// Number of seconds for HTTP timeout
 	HTTPTimeoutSeconds int `name:"http_timeout_seconds" auth:"-"`
 
@@ -149,7 +152,7 @@ func (c *Config) IsAws() bool {
 
 // IsAccountClient returns true if client is configured for Accounts API
 func (c *Config) IsAccountClient() bool {
-	return strings.HasPrefix(c.Host, "https://accounts.")
+	return (c.AccountID != "" && c.IsTesting) || strings.HasPrefix(c.Host, "https://accounts.")
 }
 
 func (c *Config) EnsureResolved() error {
