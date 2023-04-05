@@ -9,7 +9,7 @@ require (
 	golang.org/x/mod v0.10.0
 	golang.org/x/oauth2 v0.6.0
 	golang.org/x/time v0.3.0
-	google.golang.org/api v0.115.0
+	google.golang.org/api v0.116.0
 	gopkg.in/ini.v1 v1.67.0
 )
 
