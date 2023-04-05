@@ -84,9 +84,6 @@ type Config struct {
 	// Use at your own risk or for unit testing purposes.
 	InsecureSkipVerify bool `name:"skip_verify" auth:"-"`
 
-	// marker for testing fixture
-	IsTesting bool
-
 	// Number of seconds for HTTP timeout
 	HTTPTimeoutSeconds int `name:"http_timeout_seconds" auth:"-"`
 
@@ -106,6 +103,9 @@ type Config struct {
 
 	// marker for configuration resolving
 	resolved bool
+
+	// marker for testing fixture
+	isTesting bool
 
 	// Mutex used by Authenticate method to guard `auth`, which
 	// has to be lazily created on the first request to Databricks API.
@@ -152,7 +152,7 @@ func (c *Config) IsAws() bool {
 
 // IsAccountClient returns true if client is configured for Accounts API
 func (c *Config) IsAccountClient() bool {
-	return (c.AccountID != "" && c.IsTesting) || strings.HasPrefix(c.Host, "https://accounts.")
+	return (c.AccountID != "" && c.isTesting) || strings.HasPrefix(c.Host, "https://accounts.")
 }
 
 func (c *Config) EnsureResolved() error {
@@ -184,6 +184,11 @@ func (c *Config) EnsureResolved() error {
 	}
 	c.resolved = true
 	return nil
+}
+
+func (c *Config) WithTesting() *Config {
+	c.isTesting = true
+	return c
 }
 
 func (c *Config) wrapDebug(err error) error {
