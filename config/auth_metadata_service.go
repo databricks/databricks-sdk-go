@@ -47,31 +47,25 @@ func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) 
 	if cfg.MetadataServiceURL == "" || cfg.Host == "" {
 		return nil, nil
 	}
-
 	parsedMetadataServiceURL, err := url.Parse(cfg.MetadataServiceURL)
 	if err != nil {
 		return nil, fmt.Errorf("invalid auth server URL: %w", err)
 	}
-
 	// only allow localhost URLs
 	if parsedMetadataServiceURL.Hostname() != "localhost" && parsedMetadataServiceURL.Hostname() != "127.0.0.1" {
 		return nil, fmt.Errorf("invalid auth server URL: %s", cfg.MetadataServiceURL)
 	}
-
 	ms := metadataService{
 		metadataServiceURL: parsedMetadataServiceURL,
 		config:             cfg,
 	}
-
 	response, err := ms.Get()
 	if err != nil {
 		return nil, err
 	}
-
 	if response == nil {
 		return nil, nil
 	}
-
 	return refreshableVisitor(&ms), nil
 }
 
@@ -84,29 +78,25 @@ type metadataService struct {
 func (s metadataService) Get() (*oauth2.Token, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), metadataServiceTimeout)
 	defer cancel()
-
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, s.metadataServiceURL.String(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("token request: %w", err)
 	}
-
 	req.Header.Add(MetadataServiceVersionHeader, MetadataServiceVersion)
 	req.Header.Add(MetadataServiceHostHeader, s.config.Host)
-
 	return makeMsiRequest(req)
 }
 
 func (t metadataService) Token() (*oauth2.Token, error) {
 	token, err := t.Get()
-
 	if err != nil {
 		return nil, err
 	}
 	if token == nil {
 		return nil, fmt.Errorf("no token returned from metadata service")
 	}
-
-	logger.Infof(context.Background(), "Refreshed access token from local metadata service, which expires on %s", token.Expiry.Format(time.RFC3339))
-
+	logger.Debugf(context.Background(),
+		"Refreshed access token from local metadata service, which expires on %s",
+		token.Expiry.Format(time.RFC3339))
 	return token, nil
 }

@@ -1,5 +1,16 @@
 # Version changelog
 
+## 0.7.0
+
+ * Update from OpenAPI ([#359](https://github.com/databricks/databricks-sdk-go/pull/359)).
+ * Experimental credentials provider via local server ([#340](https://github.com/databricks/databricks-sdk-go/pull/340)).
+ * Added `isTesting` marker to support `ResourceFixture` in Terraform ([#358](https://github.com/databricks/databricks-sdk-go/pull/358)).
+
+Dependency updates:
+ 
+ * Bump golang.org/x/mod from 0.9.0 to 0.10.0 ([#356](https://github.com/databricks/databricks-sdk-go/pull/356)).
+ * Bump google.golang.org/api from 0.114.0 to 0.115.0 ([#357](https://github.com/databricks/databricks-sdk-go/pull/357)).
+
 ## 0.6.0
 
  * Added type to represent a loaded configuration file ([#349](https://github.com/databricks/databricks-sdk-go/pull/349)).

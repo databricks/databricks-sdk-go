@@ -91,8 +91,9 @@ func TestAccGroups(t *testing.T) {
 
 	// list all groups that start with `go-sdk-`
 	namesToIds, err := w.Groups.GroupDisplayNameToIdMap(ctx, scim.ListGroupsRequest{
-		SortOrder: scim.ListSortOrderDescending,
-		Filter:    "displayName sw 'go-sdk-'",
+		SortOrder:          scim.ListSortOrderDescending,
+		ExcludedAttributes: "roles",
+		Filter:             "displayName sw 'go-sdk-'",
 	})
 	require.NoError(t, err)
 	assert.Equal(t, group.Id, namesToIds[group.DisplayName])

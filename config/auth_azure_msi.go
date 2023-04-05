@@ -146,16 +146,13 @@ func makeMsiRequest(req *http.Request) (*oauth2.Token, error) {
 	if err != nil {
 		return nil, fmt.Errorf("token parse: %w", err)
 	}
-
 	if token.AccessToken == "" {
 		return nil, fmt.Errorf("token parse: invalid token")
 	}
-
 	epoch, err := token.ExpiresOn.Int64()
 	if err != nil {
 		return nil, fmt.Errorf("token expires on: %w", err)
 	}
-
 	return &oauth2.Token{
 		TokenType:   token.TokenType,
 		AccessToken: token.AccessToken,
