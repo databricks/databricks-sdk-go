@@ -254,6 +254,17 @@ func TestConfig_ConfigFile(t *testing.T) {
 	}.apply(t)
 }
 
+func TestConfig_ConfigFileSkipDefaultProfileIfHostSpecified(t *testing.T) {
+	configFixture{
+		Host: "https://dbc-XXXXXXXX-YYYY.cloud.databricks.com",
+		Env: map[string]string{
+			// This directory has a DEFAULT profile in databrickscfg
+			"HOME": "testdata",
+		},
+		AssertError: "default auth: cannot configure default credentials. Config: host=https://dbc-XXXXXXXX-YYYY.cloud.databricks.com",
+	}.apply(t)
+}
+
 func TestConfig_PatFromDatabricksCfg(t *testing.T) {
 	configFixture{
 		// loading with DEFAULT profile in databrickscfs

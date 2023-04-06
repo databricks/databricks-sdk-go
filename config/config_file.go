@@ -65,7 +65,7 @@ func (l configFileLoader) Configure(cfg *Config) error {
 	// Skip loading config file if some authentication is already explicitly
 	// configured directly in the config by a user.
 	// See: https://github.com/databricks/databricks-sdk-go/issues/304
-	if cfg.Profile == "" && (l.isAnyAuthConfigured(cfg) || cfg.IsAzure()) {
+	if cfg.Profile == "" && (l.isAnyAuthConfigured(cfg) || cfg.IsAws() || cfg.IsAzure() || cfg.IsGcp()) {
 		return nil
 	}
 

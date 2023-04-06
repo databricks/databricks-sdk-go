@@ -134,7 +134,7 @@ func (c *Config) Authenticate(r *http.Request) error {
 	return c.auth(r)
 }
 
-// IsAzure returns true if client is configured for Azure Databricks
+// IsAzure returns if the client is configured for Azure Databricks.
 func (c *Config) IsAzure() bool {
 	isAzureHost := strings.Contains(c.Host, ".azuredatabricks.net") ||
 		strings.Contains(c.Host, "databricks.azure.cn") ||
@@ -143,14 +143,14 @@ func (c *Config) IsAzure() bool {
 	return isAzureHost || c.AzureResourceID != ""
 }
 
-// IsGcp returns true if client is configured for GCP
+// IsGcp returns if the client is configured for Databricks on Google Cloud.
 func (c *Config) IsGcp() bool {
 	return strings.Contains(c.Host, ".gcp.databricks.com")
 }
 
-// IsAws returns true if client is configured for AWS
+// IsAws returns if the client is configured for Databricks on AWS.
 func (c *Config) IsAws() bool {
-	return !c.IsAzure() && !c.IsGcp()
+	return strings.Contains(c.Host, ".databricks.com") && !c.IsAzure() && !c.IsGcp()
 }
 
 // IsAccountClient returns true if client is configured for Accounts API
