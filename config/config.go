@@ -150,7 +150,7 @@ func (c *Config) IsGcp() bool {
 
 // IsAws returns if the client is configured for Databricks on AWS.
 func (c *Config) IsAws() bool {
-	return strings.Contains(c.Host, ".databricks.com") && !c.IsAzure() && !c.IsGcp()
+	return c.Host != "" && !c.IsAzure() && !c.IsGcp()
 }
 
 // IsAccountClient returns true if client is configured for Accounts API
