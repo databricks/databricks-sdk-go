@@ -22,13 +22,19 @@ func (f *File) Path() string {
 	return f.path
 }
 
+func defaultConfigFilePath(path string) string {
+	if path == "" {
+		path = "~/.databrickscfg"
+	}
+
+	return path
+}
+
 // LoadFile loads the databrickscfg file at the specified path.
 // The function loads ~/.databrickscfg if the specified path is an empty string.
 // The function expands ~ to the user's home directory.
 func LoadFile(path string) (*File, error) {
-	if path == "" {
-		path = "~/.databrickscfg"
-	}
+	path = defaultConfigFilePath(path)
 
 	// Expand ~ to home directory.
 	if strings.HasPrefix(path, "~") {
@@ -62,11 +68,13 @@ func (l configFileLoader) Configure(cfg *Config) error {
 	if cfg.Profile == "" && (l.isAnyAuthConfigured(cfg) || cfg.IsAzure()) {
 		return nil
 	}
-	configFile, err := LoadFile(cfg.ConfigFile)
+
+	configFilePath := defaultConfigFilePath(cfg.ConfigFile)
+	configFile, err := LoadFile(configFilePath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			// early return for non-configured machines
-			logger.Debugf(context.Background(), "%s not found on current host", configFile)
+			logger.Debugf(context.Background(), "%s not found on current host", configFilePath)
 			return nil
 		}
 		return fmt.Errorf("cannot parse config file: %w", err)
@@ -80,12 +88,12 @@ func (l configFileLoader) Configure(cfg *Config) error {
 	profileValues := configFile.Section(profile)
 	if len(profileValues.Keys()) == 0 {
 		if !hasExplicitProfile {
-			logger.Debugf(context.Background(), "%s has no %s profile configured", configFile, profile)
+			logger.Debugf(context.Background(), "%s has no %s profile configured", configFile.Path(), profile)
 			return nil
 		}
 		return fmt.Errorf("%s has no %s profile configured", configFile.Path(), profile)
 	}
-	logger.Debugf(context.Background(), "Loading %s profile from %s", profile, configFile)
+	logger.Debugf(context.Background(), "Loading %s profile from %s", profile, configFile.Path())
 	err = ConfigAttributes.ResolveFromStringMap(cfg, profileValues.KeysHash())
 	if err != nil {
 		return fmt.Errorf("%s %s profile: %w", configFile.Path(), profile, err)
