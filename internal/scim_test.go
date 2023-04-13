@@ -81,7 +81,7 @@ func TestAccGroups(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		err := w.Groups.DeleteById(ctx, group.Id)
-		require.NoError(t, err)
+		require.True(t, err == nil || apierr.IsMissing(err))
 	})
 
 	// fetch the group we've just created
