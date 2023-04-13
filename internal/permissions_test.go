@@ -34,6 +34,10 @@ func TestAccGenericPermissions(t *testing.T) {
 		DisplayName: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := w.Groups.DeleteById(ctx, group.Id)
+		require.NoError(t, err)
+	})
 
 	err = w.Permissions.Set(ctx, permissions.PermissionsRequest{
 		RequestObjectType: "notebooks",

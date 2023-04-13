@@ -79,6 +79,10 @@ func TestAccGroups(t *testing.T) {
 		DisplayName: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := w.Groups.DeleteById(ctx, group.Id)
+		require.NoError(t, err)
+	})
 
 	// fetch the group we've just created
 	fetch, err := w.Groups.GetById(ctx, group.Id)
