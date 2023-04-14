@@ -45,9 +45,13 @@ func TestAccSecrets(t *testing.T) {
 	assert.True(t, len(scrts.Secrets) == 1)
 
 	group, err := w.Groups.Create(ctx, scim.Group{
-		DisplayName: RandomName("sdk-go-secret-managers"),
+		DisplayName: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
+	t.Cleanup(func() {
+		err = w.Groups.DeleteById(ctx, group.Id)
+		require.NoError(t, err)
+	})
 
 	err = w.Secrets.PutAcl(ctx, secrets.PutAcl{
 		Scope:      scope.Scope,
