@@ -107,7 +107,8 @@ func (b bodyLogger) redactedDump(prefix string, body []byte) string {
 	err := json.Unmarshal(body, &tmp)
 	if err != nil {
 		// Unable to unmarshal means the body isn't JSON.
-		return fmt.Sprintf("[non-JSON document of %d bytes]", len(body))
+		return fmt.Sprintf("[non-JSON document of %d bytes]. %s", len(body),
+			onlyNBytes(string(body), b.debugTruncateBytes))
 	}
 
 	maxBytes := b.maxBytes

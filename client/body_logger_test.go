@@ -63,3 +63,8 @@ func TestBodyLoggerEmpty(t *testing.T) {
 	dump := bodyLogger{}.redactedDump("", []byte(""))
 	assert.Empty(t, dump)
 }
+
+func TestBodyLoggerNotJson(t *testing.T) {
+	dump := bodyLogger{debugTruncateBytes: 10}.redactedDump("", []byte("<html>"))
+	assert.Equal(t, dump, "[non-JSON document of 6 bytes]. <html>")
+}
