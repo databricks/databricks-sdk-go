@@ -2,6 +2,7 @@ package code
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"regexp"
 	"strings"
@@ -49,5 +50,28 @@ var HelperFuncs = template.FuncMap{
 	},
 	"list": func(l ...any) []any {
 		return l
+	},
+	"dict": func(args ...any) map[string]any {
+		if len(args)%2 != 0 {
+			panic("number of arguments to dict is not even")
+		}
+		result := map[string]any{}
+		for i := 0; i < len(args); i += 2 {
+			k := fmt.Sprint(args[i])
+			v := args[i+1]
+			result[k] = v
+		}
+		return result
+	},
+	"getOrDefault": func(dict map[string]any, key string, def any) any {
+		v, ok := dict[key]
+		if ok {
+			return v
+		}
+		return def
+	},
+	"fmt": fmt.Sprintf,
+	"concat": func(v ...string) string {
+		return strings.Join(v, "")
 	},
 }
