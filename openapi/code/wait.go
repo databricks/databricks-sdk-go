@@ -55,6 +55,7 @@ func (w *Wait) Binding() (binding []Binding) {
 			})
 		}
 		// ensure generated code is deterministic
+		// Java SDK relies on bind parameter order.
 		slices.SortFunc(binding, func(a, b Binding) bool {
 			return a.PollField.Name < b.PollField.Name
 		})
@@ -156,6 +157,15 @@ func (w *Wait) MessagePath() (path []*Field) {
 		current = field.Entity
 	}
 	return path
+}
+
+func (w *Wait) Status() *Field {
+	path := w.StatusPath()
+	if path == nil {
+		// unreachable
+		return nil
+	}
+	return path[len(path)-1]
 }
 
 func (w *Wait) ComplexMessagePath() bool {

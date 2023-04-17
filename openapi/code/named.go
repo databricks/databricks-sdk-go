@@ -197,6 +197,18 @@ func (n *Named) AbbrName() string {
 	return string(abbr)
 }
 
+// TrimPrefix returns *Named, but with a prefix trimmed from CamelName()
+//
+// Example:
+//
+//	(&Named{Name: "AccountMetastoreAssigment"}).TrimPrefix("account").CamelName() == "metastoreAssignment"
+func (n *Named) TrimPrefix(prefix string) *Named {
+	return &Named{
+		Name:        strings.TrimPrefix(n.CamelName(), prefix),
+		Description: n.Description,
+	}
+}
+
 func (n *Named) HasComment() bool {
 	return n.Description != ""
 }
