@@ -5,8 +5,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/permissions"
-	"github.com/databricks/databricks-sdk-go/service/scim"
+	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -23,14 +22,14 @@ func TestAccGenericPermissions(t *testing.T) {
 	obj, err := w.Workspace.GetStatusByPath(ctx, notebookPath)
 	require.NoError(t, err)
 
-	levels, err := w.Permissions.GetPermissionLevels(ctx, permissions.GetPermissionLevels{
+	levels, err := w.Permissions.GetPermissionLevels(ctx, iam.GetPermissionLevelsRequest{
 		RequestObjectType: "notebooks",
 		RequestObjectId:   fmt.Sprintf("%d", obj.ObjectId),
 	})
 	require.NoError(t, err)
 	assert.True(t, len(levels.PermissionLevels) > 1)
 
-	group, err := w.Groups.Create(ctx, scim.Group{
+	group, err := w.Groups.Create(ctx, iam.Group{
 		DisplayName: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
@@ -39,19 +38,19 @@ func TestAccGenericPermissions(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	err = w.Permissions.Set(ctx, permissions.PermissionsRequest{
+	err = w.Permissions.Set(ctx, iam.PermissionsRequest{
 		RequestObjectType: "notebooks",
 		RequestObjectId:   fmt.Sprintf("%d", obj.ObjectId),
-		AccessControlList: []permissions.AccessControlRequest{
+		AccessControlList: []iam.AccessControlRequest{
 			{
 				GroupName:       group.DisplayName,
-				PermissionLevel: permissions.PermissionLevelCanRun,
+				PermissionLevel: iam.PermissionLevelCanRun,
 			},
 		},
 	})
 	require.NoError(t, err)
 
-	_, err = w.Permissions.Get(ctx, permissions.Get{
+	_, err = w.Permissions.Get(ctx, iam.GetPermissionRequest{
 		RequestObjectType: "notebooks",
 		RequestObjectId:   fmt.Sprintf("%d", obj.ObjectId),
 	})
@@ -63,12 +62,12 @@ func TestMwsAccWorkspaceAssignment(t *testing.T) {
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
-	spn, err := a.ServicePrincipals.Create(ctx, scim.ServicePrincipal{
+	spn, err := a.AccountServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		DisplayName: RandomName("sdk-go-"),
 	})
 	require.NoError(t, err)
 	defer func() {
-		err = a.ServicePrincipals.DeleteById(ctx, spn.Id)
+		err = a.AccountServicePrincipals.DeleteById(ctx, spn.Id)
 		require.NoError(t, err)
 	}()
 
@@ -76,11 +75,11 @@ func TestMwsAccWorkspaceAssignment(t *testing.T) {
 	require.NoError(t, err)
 
 	workspaceId := GetEnvInt64OrSkipTest(t, "TEST_WORKSPACE_ID")
-	err = a.WorkspaceAssignment.Update(ctx, permissions.UpdateWorkspaceAssignments{
+	err = a.WorkspaceAssignment.Update(ctx, iam.UpdateWorkspaceAssignments{
 		WorkspaceId: workspaceId,
 		PrincipalId: spnId,
-		Permissions: []permissions.WorkspacePermission{
-			permissions.WorkspacePermissionUser,
+		Permissions: []iam.WorkspacePermission{
+			iam.WorkspacePermissionUser,
 		},
 	})
 	require.NoError(t, err)

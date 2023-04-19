@@ -3,7 +3,7 @@ package internal
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/clusterpolicies"
+	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -11,7 +11,7 @@ import (
 func TestAccClusterPolicies(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	created, err := w.ClusterPolicies.Create(ctx, clusterpolicies.CreatePolicy{
+	created, err := w.ClusterPolicies.Create(ctx, compute.CreatePolicy{
 		Name: RandomName("go-sdk-"),
 		Definition: `{
 			"spark_conf.spark.databricks.delta.preview.enabled": {
@@ -30,15 +30,15 @@ func TestAccClusterPolicies(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, policy.PolicyId, byName.PolicyId)
 
-	all, err := w.ClusterPolicies.ListAll(ctx, clusterpolicies.List{})
+	all, err := w.ClusterPolicies.ListAll(ctx, compute.ListClusterPoliciesRequest{})
 	require.NoError(t, err)
 
-	names, err := w.ClusterPolicies.PolicyNameToPolicyIdMap(ctx, clusterpolicies.List{})
+	names, err := w.ClusterPolicies.PolicyNameToPolicyIdMap(ctx, compute.ListClusterPoliciesRequest{})
 	require.NoError(t, err)
 	assert.Equal(t, len(names), len(all))
 	assert.Equal(t, policy.PolicyId, names[policy.Name])
 
-	err = w.ClusterPolicies.Edit(ctx, clusterpolicies.EditPolicy{
+	err = w.ClusterPolicies.Edit(ctx, compute.EditPolicy{
 		PolicyId: policy.PolicyId,
 		Name:     policy.Name,
 		Definition: `{

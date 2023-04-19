@@ -9,7 +9,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/config"
-	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
 func main() {
@@ -21,7 +21,7 @@ func main() {
 		AzureClientSecret: askFor("AAD Client Secret:"),
 		Credentials:       config.AzureClientSecretCredentials{},
 	}))
-	all, err := w.Clusters.ListAll(context.Background(), clusters.List{})
+	all, err := w.Clusters.ListAll(context.Background(), compute.ListClustersRequest{})
 	if err != nil {
 		panic(err)
 	}

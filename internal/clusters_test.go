@@ -9,8 +9,8 @@ import (
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/retries"
-	"github.com/databricks/databricks-sdk-go/service/clusters"
-	"github.com/databricks/databricks-sdk-go/service/scim"
+	"github.com/databricks/databricks-sdk-go/service/compute"
+	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -28,14 +28,14 @@ func sharedRunningCluster(t *testing.T, ctx context.Context,
 	require.NoError(t, err)
 
 	switch info.State {
-	case clusters.StateRunning:
+	case compute.StateRunning:
 		// noop
-	case clusters.StateTerminated:
+	case compute.StateTerminated:
 		_, err = w.Clusters.StartByClusterIdAndWait(ctx, clusterId)
 		require.NoError(t, err)
-	case clusters.StatePending,
-		clusters.StateResizing,
-		clusters.StateRestarting:
+	case compute.StatePending,
+		compute.StateResizing,
+		compute.StateRestarting:
 		_, err = w.Clusters.GetByClusterIdAndWait(ctx, clusterId)
 		require.NoError(t, err)
 	default:
@@ -52,7 +52,7 @@ func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
 	require.NoError(t, err)
 
 	// Select the latest LTS version
-	latest, err := sparkVersions.Select(clusters.SparkVersionRequest{
+	latest, err := sparkVersions.Select(compute.SparkVersionRequest{
 		Latest: true,
 	})
 	require.NoError(t, err)
@@ -60,14 +60,14 @@ func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
 	var clusterId string
 
 	// Create a cluster with unreasonably low timeout
-	_, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
+	_, err = w.Clusters.CreateAndWait(ctx, compute.CreateCluster{
 		ClusterName:            RandomName(t.Name()),
 		SparkVersion:           latest,
 		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 10,
 		NumWorkers:             1,
-	}, retries.Timeout[clusters.ClusterInfo](15*time.Second),
-		func(i *retries.Info[clusters.ClusterInfo]) {
+	}, retries.Timeout[compute.ClusterInfo](15*time.Second),
+		func(i *retries.Info[compute.ClusterInfo]) {
 			if i.Info == nil {
 				return
 			}
@@ -85,7 +85,7 @@ func TestAccAwsInstanceProfiles(t *testing.T) {
 	}
 
 	arn := "arn:aws:iam::000000000000:instance-profile/abc"
-	err := w.InstanceProfiles.Add(ctx, clusters.AddInstanceProfile{
+	err := w.InstanceProfiles.Add(ctx, compute.AddInstanceProfile{
 		InstanceProfileArn: arn,
 		SkipValidation:     true,
 		IamRoleArn:         "arn:aws:iam::000000000000:role/bcd",
@@ -94,7 +94,7 @@ func TestAccAwsInstanceProfiles(t *testing.T) {
 
 	defer w.InstanceProfiles.RemoveByInstanceProfileArn(ctx, arn)
 
-	err = w.InstanceProfiles.Edit(ctx, clusters.InstanceProfile{
+	err = w.InstanceProfiles.Edit(ctx, compute.InstanceProfile{
 		InstanceProfileArn: arn,
 		IamRoleArn:         "arn:aws:iam::000000000000:role/bcdf",
 	})
@@ -115,20 +115,20 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Select the latest LTS version
-	latest, err := sparkVersions.Select(clusters.SparkVersionRequest{
+	latest, err := sparkVersions.Select(compute.SparkVersionRequest{
 		Latest: true,
 	})
 	require.NoError(t, err)
 
 	// Create cluster and wait for it to start properly
-	clstr, err := w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
+	clstr, err := w.Clusters.CreateAndWait(ctx, compute.CreateCluster{
 		ClusterName:            clusterName,
 		SparkVersion:           latest,
 		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 15,
 		NumWorkers:             1,
-	}, retries.Timeout[clusters.ClusterInfo](20*time.Minute),
-		retries.OnPoll(func(i *clusters.ClusterInfo) {
+	}, retries.Timeout[compute.ClusterInfo](20*time.Minute),
+		retries.OnPoll(func(i *compute.ClusterInfo) {
 			t.Logf("cluster is %s", i.State)
 		}))
 	require.NoError(t, err)
@@ -142,7 +142,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	byId, err := w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
 	assert.Equal(t, clusterName, byId.ClusterName)
-	assert.Equal(t, clusters.StateRunning, byId.State)
+	assert.Equal(t, compute.StateRunning, byId.State)
 
 	// Pin the cluster in the list
 	err = w.Clusters.PinByClusterId(ctx, clstr.ClusterId)
@@ -153,7 +153,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Edit the cluster: change auto-termination and number of workers
-	err = w.Clusters.Edit(ctx, clusters.EditCluster{
+	err = w.Clusters.Edit(ctx, compute.EditCluster{
 		ClusterId:      clstr.ClusterId,
 		SparkVersion:   latest,
 		ClusterName:    clusterName,
@@ -178,7 +178,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	// Assert that the cluster we've just deleted has Terminated state
 	byId, err = w.Clusters.GetByClusterId(ctx, clstr.ClusterId)
 	require.NoError(t, err)
-	assert.Equal(t, byId.State, clusters.StateTerminated)
+	assert.Equal(t, byId.State, compute.StateTerminated)
 
 	byName, err := w.Clusters.GetByClusterName(ctx, byId.ClusterName)
 	require.NoError(t, err)
@@ -189,7 +189,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Resize the cluster back to 1 worker and wait till completion
-	byId, err = w.Clusters.ResizeAndWait(ctx, clusters.ResizeCluster{
+	byId, err = w.Clusters.ResizeAndWait(ctx, compute.ResizeCluster{
 		ClusterId:  clstr.ClusterId,
 		NumWorkers: 1,
 	})
@@ -197,29 +197,29 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	assert.Equal(t, 1, byId.NumWorkers)
 
 	// Restart the cluster and wait for it to run again
-	err = w.Clusters.Restart(ctx, clusters.RestartCluster{
+	err = w.Clusters.Restart(ctx, compute.RestartCluster{
 		ClusterId: clstr.ClusterId,
 	})
 	require.NoError(t, err)
 
 	// Get events for the cluster and assert its non empty
-	events, err := w.Clusters.EventsAll(ctx, clusters.GetEvents{
+	events, err := w.Clusters.EventsAll(ctx, compute.GetEvents{
 		ClusterId: clstr.ClusterId,
 	})
 	require.NoError(t, err)
 	assert.True(t, len(events) > 0)
 
-	all, err := w.Clusters.ListAll(ctx, clusters.List{})
+	all, err := w.Clusters.ListAll(ctx, compute.ListClustersRequest{})
 	require.NoError(t, err)
 
-	// List clusters in workspace
+	// List compute in workspace
 	names, err := w.Clusters.ClusterInfoClusterNameToClusterIdMap(ctx,
-		clusters.List{})
+		compute.ListClustersRequest{})
 	require.NoError(t, err)
 	assert.Equal(t, len(all), len(names))
 	assert.Contains(t, names, clusterName)
 
-	otherOwner, err := w.Users.Create(ctx, scim.User{
+	otherOwner, err := w.Users.Create(ctx, iam.User{
 		UserName: RandomEmail(),
 	})
 	require.NoError(t, err)
@@ -230,7 +230,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// cluster must be terminated to change the owner
-	err = w.Clusters.ChangeOwner(ctx, clusters.ChangeClusterOwner{
+	err = w.Clusters.ChangeOwner(ctx, compute.ChangeClusterOwner{
 		ClusterId:     clstr.ClusterId,
 		OwnerUsername: otherOwner.UserName,
 	})

@@ -5,9 +5,8 @@ package jobs
 import (
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/service/clusters"
-	"github.com/databricks/databricks-sdk-go/service/libraries"
-	"github.com/databricks/databricks-sdk-go/service/permissions"
+	"github.com/databricks/databricks-sdk-go/service/compute"
+	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
 // all definitions in this file are in alphabetical order
@@ -159,9 +158,9 @@ type ClusterSpec struct {
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the job. The default value is an empty list.
-	Libraries []libraries.Library `json:"libraries,omitempty"`
+	Libraries []compute.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
+	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
 }
 
 type Continuous struct {
@@ -201,7 +200,7 @@ func (cps *ContinuousPauseStatus) Type() string {
 
 type CreateJob struct {
 	// List of permissions to set on the job.
-	AccessControlList []permissions.AccessControlRequest `json:"access_control_list,omitempty"`
+	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
@@ -545,7 +544,7 @@ type JobCluster struct {
 	// determine which cluster to launch for the task execution.
 	JobClusterKey string `json:"job_cluster_key"`
 	// If new_cluster, a description of a cluster that is created for each task.
-	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
+	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
 }
 
 type JobEmailNotifications struct {
@@ -691,7 +690,7 @@ type JobTaskSettings struct {
 	JobClusterKey string `json:"job_cluster_key,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the task. The default value is an empty list.
-	Libraries []libraries.Library `json:"libraries,omitempty"`
+	Libraries []compute.Library `json:"libraries,omitempty"`
 	// An optional maximum number of times to retry an unsuccessful run. A run
 	// is considered to be unsuccessful if it completes with the `FAILED`
 	// result_state or `INTERNAL_ERROR` `life_cycle_state`. The value -1 means
@@ -704,7 +703,7 @@ type JobTaskSettings struct {
 	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
 	// If new_cluster, a description of a cluster that is created for only for
 	// this task.
-	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
+	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -1557,9 +1556,9 @@ type RunSubmitTaskSettings struct {
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the task. The default value is an empty list.
-	Libraries []libraries.Library `json:"libraries,omitempty"`
+	Libraries []compute.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
+	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -1636,10 +1635,10 @@ type RunTask struct {
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the job. The default value is an empty list.
-	Libraries []libraries.Library `json:"libraries,omitempty"`
+	Libraries []compute.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a new cluster that is created only for
 	// this task.
-	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
+	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this job must run a notebook. This field
 	// may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -1947,7 +1946,7 @@ type SqlTaskSubscription struct {
 
 type SubmitRun struct {
 	// List of permissions to set on the job.
-	AccessControlList []permissions.AccessControlRequest `json:"access_control_list,omitempty"`
+	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
 	// An optional specification for a remote repository containing the
 	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`

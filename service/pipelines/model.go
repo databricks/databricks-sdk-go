@@ -5,8 +5,7 @@ package pipelines
 import (
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/service/clusters"
-	"github.com/databricks/databricks-sdk-go/service/libraries"
+	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
 // all definitions in this file are in alphabetical order
@@ -430,20 +429,20 @@ type PipelineCluster struct {
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
-	Autoscale *clusters.AutoScale `json:"autoscale,omitempty"`
+	Autoscale *compute.AutoScale `json:"autoscale,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
-	AwsAttributes *clusters.AwsAttributes `json:"aws_attributes,omitempty"`
+	AwsAttributes *compute.AwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
-	AzureAttributes *clusters.AzureAttributes `json:"azure_attributes,omitempty"`
+	AzureAttributes *compute.AzureAttributes `json:"azure_attributes,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Only dbfs destinations are supported. Only one destination
 	// can be specified for one cluster. If the conf is given, the logs will be
 	// delivered to the destination every `5 mins`. The destination of driver
 	// logs is `$destination/$clusterId/driver`, while the destination of
 	// executor logs is `$destination/$clusterId/executor`.
-	ClusterLogConf *clusters.ClusterLogConf `json:"cluster_log_conf,omitempty"`
+	ClusterLogConf *compute.ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -463,7 +462,7 @@ type PipelineCluster struct {
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
-	GcpAttributes *clusters.GcpAttributes `json:"gcp_attributes,omitempty"`
+	GcpAttributes *compute.GcpAttributes `json:"gcp_attributes,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// A label for the cluster specification, either `default` to configure the
@@ -541,7 +540,7 @@ type PipelineLibrary struct {
 	// URI of the jar to be installed. Currently only DBFS is supported.
 	Jar string `json:"jar,omitempty"`
 	// Specification of a maven library to be installed.
-	Maven *libraries.MavenLibrary `json:"maven,omitempty"`
+	Maven *compute.MavenLibrary `json:"maven,omitempty"`
 	// The path to a notebook that defines a pipeline and is stored in the
 	// Databricks workspace.
 	Notebook *NotebookLibrary `json:"notebook,omitempty"`

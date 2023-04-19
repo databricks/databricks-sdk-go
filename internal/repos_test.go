@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/repos"
-	"github.com/databricks/databricks-sdk-go/service/workspaceconf"
+	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -14,7 +14,7 @@ func TestAccRepos(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	// Skip this test if "Files in Repos" is not enabled.
-	conf, err := w.WorkspaceConf.GetStatus(ctx, workspaceconf.GetStatus{
+	conf, err := w.WorkspaceConf.GetStatus(ctx, settings.GetStatusRequest{
 		Keys: "enableWorkspaceFilesystem",
 	})
 	require.NoError(t, err)
@@ -24,7 +24,7 @@ func TestAccRepos(t *testing.T) {
 
 	// Synthesize unique path for this checkout in this user's home.
 	root := RandomName(fmt.Sprintf("/Repos/%s/tf-", me(t, w).UserName))
-	ri, err := w.Repos.Create(ctx, repos.CreateRepo{
+	ri, err := w.Repos.Create(ctx, workspace.CreateRepo{
 		Path:     root,
 		Url:      "https://github.com/shreyas-goenka/empty-repo.git",
 		Provider: "github",
@@ -36,7 +36,7 @@ func TestAccRepos(t *testing.T) {
 	})
 
 	assert.Equal(t, "main", ri.Branch)
-	err = w.Repos.Update(ctx, repos.UpdateRepo{
+	err = w.Repos.Update(ctx, workspace.UpdateRepo{
 		RepoId: ri.Id,
 		Branch: "foo",
 	})
@@ -49,11 +49,11 @@ func TestAccRepos(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, byId.Id, byName.Id)
 
-	all, err := w.Repos.ListAll(ctx, repos.List{})
+	all, err := w.Repos.ListAll(ctx, workspace.ListReposRequest{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 
-	paths, err := w.Repos.RepoInfoPathToIdMap(ctx, repos.List{
+	paths, err := w.Repos.RepoInfoPathToIdMap(ctx, workspace.ListReposRequest{
 		PathPrefix: "/",
 	})
 	require.NoError(t, err)

@@ -3,8 +3,8 @@ package internal
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/scim"
-	"github.com/databricks/databricks-sdk-go/service/tokenmanagement"
+	"github.com/databricks/databricks-sdk-go/service/iam"
+	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -14,12 +14,12 @@ func TestCreateOboToken(t *testing.T) {
 	if !w.Config.IsAws() {
 		t.Skip("works only on aws")
 	}
-	groups, err := w.Groups.GroupDisplayNameToIdMap(ctx, scim.ListGroupsRequest{})
+	groups, err := w.Groups.GroupDisplayNameToIdMap(ctx, iam.ListGroupsRequest{})
 	require.NoError(t, err)
 
-	spn, err := w.ServicePrincipals.Create(ctx, scim.ServicePrincipal{
+	spn, err := w.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		DisplayName: RandomName(t.Name()),
-		Groups: []scim.ComplexValue{
+		Groups: []iam.ComplexValue{
 			{
 				Value: groups["admins"],
 			},
@@ -31,7 +31,7 @@ func TestCreateOboToken(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	obo, err := w.TokenManagement.CreateOboToken(ctx, tokenmanagement.CreateOboTokenRequest{
+	obo, err := w.TokenManagement.CreateOboToken(ctx, settings.CreateOboTokenRequest{
 		ApplicationId:   spn.ApplicationId,
 		LifetimeSeconds: 60,
 	})
@@ -45,7 +45,7 @@ func TestCreateOboToken(t *testing.T) {
 	require.NoError(t, err)
 	t.Log(byId)
 
-	all, err := w.TokenManagement.ListAll(ctx, tokenmanagement.List{})
+	all, err := w.TokenManagement.ListAll(ctx, settings.ListTokenManagementRequest{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 }

@@ -14,7 +14,7 @@ type WorkspaceClient struct {
 	{{range .Services}}{{if not .IsAccounts}}
 	{{- if eq .Name "CommandExecution" -}}
 	// This API allows executing commands on running clusters.
-	CommandExecutor commands.CommandExecutor
+	CommandExecutor compute.CommandExecutor
 
 	{{else}}{{.Comment "    // " 80}}
 	{{.Name}} *{{.Package.Name}}.{{.Name}}API
@@ -41,7 +41,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Config: cfg,
 		{{range .Services}}{{if not .IsAccounts}}
 		{{- if eq .Name "CommandExecution" -}}
-		CommandExecutor: commands.NewCommandExecutor(apiClient),
+		CommandExecutor: compute.NewCommandExecutor(apiClient),
 		{{else -}}
 		{{.Name}}: {{.Package.Name}}.New{{.Name}}(apiClient),
 		{{end -}}{{end}}{{end}}

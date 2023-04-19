@@ -3,8 +3,7 @@ package internal
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/clusters"
-	"github.com/databricks/databricks-sdk-go/service/instancepools"
+	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -15,12 +14,12 @@ func TestAccInstancePools(t *testing.T) {
 	vms, err := w.Clusters.ListNodeTypes(ctx)
 	require.NoError(t, err)
 
-	smallest, err := vms.Smallest(clusters.NodeTypeRequest{
+	smallest, err := vms.Smallest(compute.NodeTypeRequest{
 		LocalDisk: true,
 	})
 	require.NoError(t, err)
 
-	created, err := w.InstancePools.Create(ctx, instancepools.CreateInstancePool{
+	created, err := w.InstancePools.Create(ctx, compute.CreateInstancePool{
 		InstancePoolName: RandomName("go-sdk-"),
 		NodeTypeId:       smallest,
 	})
@@ -28,7 +27,7 @@ func TestAccInstancePools(t *testing.T) {
 
 	defer w.InstancePools.DeleteByInstancePoolId(ctx, created.InstancePoolId)
 
-	err = w.InstancePools.Edit(ctx, instancepools.EditInstancePool{
+	err = w.InstancePools.Edit(ctx, compute.EditInstancePool{
 		InstancePoolId:   created.InstancePoolId,
 		InstancePoolName: RandomName("go-sdk-updated"),
 		NodeTypeId:       smallest,

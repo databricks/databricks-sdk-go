@@ -3,7 +3,7 @@ package internal
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/ipaccesslists"
+	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -11,20 +11,20 @@ import (
 func TestAccIpAccessLists(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	created, err := w.IpAccessLists.Create(ctx, ipaccesslists.CreateIpAccessList{
+	created, err := w.IpAccessLists.Create(ctx, settings.CreateIpAccessList{
 		Label:       RandomName("go-sdk-"),
 		IpAddresses: []string{"1.0.0.0/16"},
-		ListType:    ipaccesslists.ListTypeBlock,
+		ListType:    settings.ListTypeBlock,
 	})
 	require.NoError(t, err)
 
 	defer w.IpAccessLists.DeleteByIpAccessListId(ctx, created.IpAccessList.ListId)
 
-	err = w.IpAccessLists.Replace(ctx, ipaccesslists.ReplaceIpAccessList{
+	err = w.IpAccessLists.Replace(ctx, settings.ReplaceIpAccessList{
 		IpAccessListId: created.IpAccessList.ListId,
 		Label:          RandomName("go-sdk-updated-"),
 		IpAddresses:    []string{"1.0.0.0/24"},
-		ListType:       ipaccesslists.ListTypeBlock,
+		ListType:       settings.ListTypeBlock,
 		Enabled:        false,
 	})
 	require.NoError(t, err)

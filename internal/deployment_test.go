@@ -3,7 +3,7 @@ package internal
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/deployment"
+	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -14,9 +14,9 @@ func TestMwsAccStorage(t *testing.T) {
 		t.SkipNow()
 	}
 
-	storage, err := a.Storage.Create(ctx, deployment.CreateStorageConfigurationRequest{
+	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: RandomName("sdk-"),
-		RootBucketInfo: deployment.RootBucketInfo{
+		RootBucketInfo: provisioning.RootBucketInfo{
 			BucketName: RandomName("sdk-bucket-"),
 		},
 	})
@@ -44,7 +44,7 @@ func TestMwsAccNetworks(t *testing.T) {
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
-	netw, err := a.Networks.Create(ctx, deployment.CreateNetworkRequest{
+	netw, err := a.Networks.Create(ctx, provisioning.CreateNetworkRequest{
 		NetworkName:      RandomName("sdk-"),
 		VpcId:            RandomHex("vpc-", 17),
 		SubnetIds:        []string{RandomHex("subnet-", 17), RandomHex("subnet-", 17)},
@@ -73,10 +73,10 @@ func TestMwsAccCredentials(t *testing.T) {
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
-	role, err := a.Credentials.Create(ctx, deployment.CreateCredentialRequest{
+	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: RandomName("sdk-"),
-		AwsCredentials: deployment.CreateCredentialAwsCredentials{
-			StsRole: &deployment.CreateCredentialStsRole{
+		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
 			},
 		},
@@ -106,12 +106,12 @@ func TestMwsAccEncryptionKeys(t *testing.T) {
 		t.SkipNow()
 	}
 
-	created, err := a.EncryptionKeys.Create(ctx, deployment.CreateCustomerManagedKeyRequest{
-		AwsKeyInfo: deployment.CreateAwsKeyInfo{
+	created, err := a.EncryptionKeys.Create(ctx, provisioning.CreateCustomerManagedKeyRequest{
+		AwsKeyInfo: provisioning.CreateAwsKeyInfo{
 			KeyArn:   GetEnvOrSkipTest(t, "TEST_MANAGED_KMS_KEY_ARN"),
 			KeyAlias: GetEnvOrSkipTest(t, "TEST_STORAGE_KMS_KEY_ALIAS"),
 		},
-		UseCases: []deployment.KeyUseCase{deployment.KeyUseCaseManagedServices},
+		UseCases: []provisioning.KeyUseCase{provisioning.KeyUseCaseManagedServices},
 	})
 	require.NoError(t, err)
 
@@ -122,7 +122,7 @@ func TestMwsAccEncryptionKeys(t *testing.T) {
 
 	byId, err := a.EncryptionKeys.GetByCustomerManagedKeyId(ctx, created.CustomerManagedKeyId)
 	require.NoError(t, err)
-	assert.Equal(t, deployment.KeyUseCaseManagedServices, byId.UseCases[0])
+	assert.Equal(t, provisioning.KeyUseCaseManagedServices, byId.UseCases[0])
 
 	all, err := a.EncryptionKeys.List(ctx)
 	require.NoError(t, err)
@@ -135,7 +135,7 @@ func TestMwsAccPrivateAccess(t *testing.T) {
 		t.SkipNow()
 	}
 
-	created, err := a.PrivateAccess.Create(ctx, deployment.UpsertPrivateAccessSettingsRequest{
+	created, err := a.PrivateAccess.Create(ctx, provisioning.UpsertPrivateAccessSettingsRequest{
 		PrivateAccessSettingsName: RandomName("go-sdk-"),
 		Region:                    GetEnvOrSkipTest(t, "AWS_REGION"),
 	})
@@ -145,7 +145,7 @@ func TestMwsAccPrivateAccess(t *testing.T) {
 		err := a.PrivateAccess.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
 		require.NoError(t, err)
 	})
-	err = a.PrivateAccess.Replace(ctx, deployment.UpsertPrivateAccessSettingsRequest{
+	err = a.PrivateAccess.Replace(ctx, provisioning.UpsertPrivateAccessSettingsRequest{
 		PrivateAccessSettingsId:   created.PrivateAccessSettingsId,
 		PrivateAccessSettingsName: RandomName("go-sdk-"),
 		Region:                    GetEnvOrSkipTest(t, "AWS_REGION"),
@@ -174,7 +174,7 @@ func TestMwsAccVpcEndpoints(t *testing.T) {
 		t.SkipNow()
 	}
 
-	created, err := a.VpcEndpoints.Create(ctx, deployment.CreateVpcEndpointRequest{
+	created, err := a.VpcEndpoints.Create(ctx, provisioning.CreateVpcEndpointRequest{
 		AwsVpcEndpointId: GetEnvOrSkipTest(t, "TEST_RELAY_VPC_ENDPOINT"),
 		Region:           GetEnvOrSkipTest(t, "AWS_REGION"),
 		VpcEndpointName:  RandomName("go-sdk-"),
@@ -188,7 +188,7 @@ func TestMwsAccVpcEndpoints(t *testing.T) {
 
 	byId, err := a.VpcEndpoints.GetByVpcEndpointId(ctx, created.VpcEndpointId)
 	require.NoError(t, err)
-	assert.Equal(t, deployment.EndpointUseCaseDataplaneRelayAccess, byId.UseCase)
+	assert.Equal(t, provisioning.EndpointUseCaseDataplaneRelayAccess, byId.UseCase)
 
 	all, err := a.VpcEndpoints.List(ctx)
 	require.NoError(t, err)
@@ -201,9 +201,9 @@ func TestMwsAccWorkspaces(t *testing.T) {
 		t.SkipNow()
 	}
 
-	storage, err := a.Storage.Create(ctx, deployment.CreateStorageConfigurationRequest{
+	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: RandomName("go-sdk-"),
-		RootBucketInfo: deployment.RootBucketInfo{
+		RootBucketInfo: provisioning.RootBucketInfo{
 			BucketName: GetEnvOrSkipTest(t, "TEST_ROOT_BUCKET"),
 		},
 	})
@@ -215,10 +215,10 @@ func TestMwsAccWorkspaces(t *testing.T) {
 
 	// TODO: OpenAPI: Document retry protocol on AWS IAM registration errors
 	// See https://github.com/databricks/terraform-provider-databricks/issues/1424
-	role, err := a.Credentials.Create(ctx, deployment.CreateCredentialRequest{
+	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: RandomName("go-sdk-"),
-		AwsCredentials: deployment.CreateCredentialAwsCredentials{
-			StsRole: &deployment.CreateCredentialStsRole{
+		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
 			},
 		},
@@ -230,7 +230,7 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	})
 
 	// TODO: Add DNS reachability utility
-	created, err := a.Workspaces.CreateAndWait(ctx, deployment.CreateWorkspaceRequest{
+	created, err := a.Workspaces.CreateAndWait(ctx, provisioning.CreateWorkspaceRequest{
 		WorkspaceName:          RandomName("go-sdk-"),
 		AwsRegion:              GetEnvOrSkipTest(t, "AWS_REGION"),
 		CredentialsId:          role.CredentialsId,
@@ -242,10 +242,10 @@ func TestMwsAccWorkspaces(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	updateRole, err := a.Credentials.Create(ctx, deployment.CreateCredentialRequest{
+	updateRole, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: RandomName("go-sdk-"),
-		AwsCredentials: deployment.CreateCredentialAwsCredentials{
-			StsRole: &deployment.CreateCredentialStsRole{
+		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
 			},
 		},
@@ -260,7 +260,7 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	// })
 
 	// this also takes a while
-	_, err = a.Workspaces.UpdateAndWait(ctx, deployment.UpdateWorkspaceRequest{
+	_, err = a.Workspaces.UpdateAndWait(ctx, provisioning.UpdateWorkspaceRequest{
 		WorkspaceId:   created.WorkspaceId,
 		CredentialsId: updateRole.CredentialsId,
 	})
