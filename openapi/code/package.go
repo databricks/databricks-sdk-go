@@ -113,6 +113,10 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 			if pkg.extImports == nil {
 				pkg.extImports = map[string]*Entity{}
 			}
+			known, ok := pkg.extImports[s.Component()]
+			if ok {
+				return known
+			}
 			// referred entity is declared in another package
 			pkg.extImports[s.Component()] = &Entity{
 				Named: Named{
