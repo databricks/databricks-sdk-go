@@ -62,12 +62,12 @@ func TestMwsAccWorkspaceAssignment(t *testing.T) {
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
-	spn, err := a.AccountServicePrincipals.Create(ctx, iam.ServicePrincipal{
+	spn, err := a.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		DisplayName: RandomName("sdk-go-"),
 	})
 	require.NoError(t, err)
 	defer func() {
-		err = a.AccountServicePrincipals.DeleteById(ctx, spn.Id)
+		err = a.ServicePrincipals.DeleteById(ctx, spn.Id)
 		require.NoError(t, err)
 	}()
 
