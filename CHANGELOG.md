@@ -5,6 +5,7 @@
  * Added more code generation utilities ([#369](https://github.com/databricks/databricks-sdk-go/pull/369)).
  * Body logger for non-JSON payload as well ([#365](https://github.com/databricks/databricks-sdk-go/pull/365)).
  * Cleanup ephemeral groups in integration tests ([#368](https://github.com/databricks/databricks-sdk-go/pull/368)).
+ * Fixed external entity generation ([#372](https://github.com/databricks/databricks-sdk-go/pull/372)).
  * Skip loading default profile if host is already configured ([#363](https://github.com/databricks/databricks-sdk-go/pull/363)).
  * Update debug messages in config loader to display correct path ([#362](https://github.com/databricks/databricks-sdk-go/pull/362)).
 
