@@ -53,6 +53,9 @@ func SendDetailedWebhook(jobMetadata jobs.Run) {
 	payload := new(bytes.Buffer)
 	json.NewEncoder(payload).Encode(jobMetadata)
 	req, err := http.NewRequest("POST", destinationURL, payload)
+	if err != nil {
+		panic(err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
