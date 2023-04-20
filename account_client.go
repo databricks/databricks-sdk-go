@@ -70,7 +70,7 @@ type AccountClient struct {
 	// policies in Unity Catalog to groups, instead of to users individually.
 	// All Databricks Account identities can be assigned as members of groups,
 	// and members inherit permissions that are assigned to their group.
-	AccountGroups *iam.AccountGroupsAPI
+	Groups *iam.AccountGroupsAPI
 
 	// The Accounts IP Access List API enables account admins to configure IP
 	// access lists for access to the account console.
@@ -94,7 +94,7 @@ type AccountClient struct {
 	//
 	// After changes to the account-level IP access lists, it can take a few
 	// minutes for changes to take effect.
-	AccountIpAccessLists *settings.AccountIpAccessListsAPI
+	IpAccessLists *settings.AccountIpAccessListsAPI
 
 	// These APIs manage log delivery configurations for this account. The two
 	// supported log types for this API are _billable usage logs_ and _audit
@@ -162,11 +162,11 @@ type AccountClient struct {
 	LogDelivery *billing.LogDeliveryAPI
 
 	// These APIs manage metastore assignments to a workspace.
-	AccountMetastoreAssignments *catalog.AccountMetastoreAssignmentsAPI
+	MetastoreAssignments *catalog.AccountMetastoreAssignmentsAPI
 
 	// These APIs manage Unity Catalog metastores for an account. A metastore
 	// contains catalogs that can be associated with workspaces
-	AccountMetastores *catalog.AccountMetastoresAPI
+	Metastores *catalog.AccountMetastoresAPI
 
 	// These APIs manage network configurations for customer-managed VPCs
 	// (optional). Its ID is used when creating a new workspace if you use
@@ -200,7 +200,7 @@ type AccountClient struct {
 	// interactive users do not need any write, delete, or modify privileges in
 	// production. This eliminates the risk of a user overwriting production
 	// data by accident.
-	AccountServicePrincipals *iam.AccountServicePrincipalsAPI
+	ServicePrincipals *iam.AccountServicePrincipalsAPI
 
 	// These APIs manage storage configurations for this workspace. A root
 	// storage S3 bucket in your account is required to store objects like
@@ -211,7 +211,7 @@ type AccountClient struct {
 	Storage *provisioning.StorageAPI
 
 	// These APIs manage storage credentials for a particular metastore.
-	AccountStorageCredentials *catalog.AccountStorageCredentialsAPI
+	StorageCredentials *catalog.AccountStorageCredentialsAPI
 
 	// User identities recognized by Databricks and represented by email
 	// addresses.
@@ -225,7 +225,7 @@ type AccountClient struct {
 	// in your identity provider and that user’s account will also be removed
 	// from Databricks Account. This ensures a consistent offboarding process
 	// and prevents unauthorized users from accessing sensitive data.
-	AccountUsers *iam.AccountUsersAPI
+	Users *iam.AccountUsersAPI
 
 	// These APIs manage VPC endpoint configurations for this account.
 	VpcEndpoints *provisioning.VpcEndpointsAPI
@@ -273,26 +273,26 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	return &AccountClient{
 		Config: cfg,
 
-		BillableUsage:               billing.NewBillableUsage(apiClient),
-		Budgets:                     billing.NewBudgets(apiClient),
-		Credentials:                 provisioning.NewCredentials(apiClient),
-		CustomAppIntegration:        oauth2.NewCustomAppIntegration(apiClient),
-		EncryptionKeys:              provisioning.NewEncryptionKeys(apiClient),
-		AccountGroups:               iam.NewAccountGroups(apiClient),
-		AccountIpAccessLists:        settings.NewAccountIpAccessLists(apiClient),
-		LogDelivery:                 billing.NewLogDelivery(apiClient),
-		AccountMetastoreAssignments: catalog.NewAccountMetastoreAssignments(apiClient),
-		AccountMetastores:           catalog.NewAccountMetastores(apiClient),
-		Networks:                    provisioning.NewNetworks(apiClient),
-		OAuthEnrollment:             oauth2.NewOAuthEnrollment(apiClient),
-		PrivateAccess:               provisioning.NewPrivateAccess(apiClient),
-		PublishedAppIntegration:     oauth2.NewPublishedAppIntegration(apiClient),
-		AccountServicePrincipals:    iam.NewAccountServicePrincipals(apiClient),
-		Storage:                     provisioning.NewStorage(apiClient),
-		AccountStorageCredentials:   catalog.NewAccountStorageCredentials(apiClient),
-		AccountUsers:                iam.NewAccountUsers(apiClient),
-		VpcEndpoints:                provisioning.NewVpcEndpoints(apiClient),
-		WorkspaceAssignment:         iam.NewWorkspaceAssignment(apiClient),
-		Workspaces:                  provisioning.NewWorkspaces(apiClient),
+		BillableUsage:           billing.NewBillableUsage(apiClient),
+		Budgets:                 billing.NewBudgets(apiClient),
+		Credentials:             provisioning.NewCredentials(apiClient),
+		CustomAppIntegration:    oauth2.NewCustomAppIntegration(apiClient),
+		EncryptionKeys:          provisioning.NewEncryptionKeys(apiClient),
+		Groups:                  iam.NewAccountGroups(apiClient),
+		IpAccessLists:           settings.NewAccountIpAccessLists(apiClient),
+		LogDelivery:             billing.NewLogDelivery(apiClient),
+		MetastoreAssignments:    catalog.NewAccountMetastoreAssignments(apiClient),
+		Metastores:              catalog.NewAccountMetastores(apiClient),
+		Networks:                provisioning.NewNetworks(apiClient),
+		OAuthEnrollment:         oauth2.NewOAuthEnrollment(apiClient),
+		PrivateAccess:           provisioning.NewPrivateAccess(apiClient),
+		PublishedAppIntegration: oauth2.NewPublishedAppIntegration(apiClient),
+		ServicePrincipals:       iam.NewAccountServicePrincipals(apiClient),
+		Storage:                 provisioning.NewStorage(apiClient),
+		StorageCredentials:      catalog.NewAccountStorageCredentials(apiClient),
+		Users:                   iam.NewAccountUsers(apiClient),
+		VpcEndpoints:            provisioning.NewVpcEndpoints(apiClient),
+		WorkspaceAssignment:     iam.NewWorkspaceAssignment(apiClient),
+		Workspaces:              provisioning.NewWorkspaces(apiClient),
 	}, nil
 }

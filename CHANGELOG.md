@@ -30,11 +30,11 @@ API changes:
  * Moved `gitcredentials` APIs to `workspace` package.
  * Moved `repos` APIs to `workspace` package.
  * Moved `secrets` APIs to `workspace` package.
+ * Split `unitcatalog` package to `catalog` and `sharing`.
  * Renamed `mlflow` package to `ml`.
  * Renamed `dbfs` package to `files`.
  * Renamed `deployment` package to `provisioning`.
  * Renamed `endpoints` package to `serving`.
- * Split `unitcatalog` package to `catalog` and `sharing`.
  * Renamed `clusters.List` type to `compute.ListClustersRequest`.
  * Renamed `jobs.ListRuns` type to `jobs.ListRunsRequest`.
  * Renamed `jobs.ExportRun` type to `jobs.ExportRunRequest`.
