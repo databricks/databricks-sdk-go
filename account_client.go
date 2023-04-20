@@ -9,11 +9,11 @@ import (
 	"github.com/databricks/databricks-sdk-go/config"
 
 	"github.com/databricks/databricks-sdk-go/service/billing"
-	"github.com/databricks/databricks-sdk-go/service/deployment"
+	"github.com/databricks/databricks-sdk-go/service/catalog"
+	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
-	"github.com/databricks/databricks-sdk-go/service/permissions"
-	"github.com/databricks/databricks-sdk-go/service/scim"
-	"github.com/databricks/databricks-sdk-go/service/unitycatalog"
+	"github.com/databricks/databricks-sdk-go/service/provisioning"
+	"github.com/databricks/databricks-sdk-go/service/settings"
 )
 
 type AccountClient struct {
@@ -33,7 +33,7 @@ type AccountClient struct {
 	// account so that Databricks can deploy clusters in the appropriate VPC for
 	// the new workspace. A credential configuration encapsulates this role
 	// information, and its ID is used when creating a new workspace.
-	Credentials *deployment.CredentialsAPI
+	Credentials *provisioning.CredentialsAPI
 
 	// These APIs enable administrators to manage custom oauth app integrations,
 	// which is required for adding/using Custom OAuth App Integration like
@@ -61,7 +61,7 @@ type AccountClient struct {
 	// version of the platform. If you have an older workspace, it might not be
 	// on the E2 version of the platform. If you are not sure, contact your
 	// Databricks representative.
-	EncryptionKeys *deployment.EncryptionKeysAPI
+	EncryptionKeys *provisioning.EncryptionKeysAPI
 
 	// Groups simplify identity management, making it easier to assign access to
 	// Databricks Account, data, and other securable objects.
@@ -70,7 +70,31 @@ type AccountClient struct {
 	// policies in Unity Catalog to groups, instead of to users individually.
 	// All Databricks Account identities can be assigned as members of groups,
 	// and members inherit permissions that are assigned to their group.
-	Groups *scim.AccountGroupsAPI
+	Groups *iam.AccountGroupsAPI
+
+	// The Accounts IP Access List API enables account admins to configure IP
+	// access lists for access to the account console.
+	//
+	// Account IP Access Lists affect web application access and REST API access
+	// to the account console and account APIs. If the feature is disabled for
+	// the account, all access is allowed for this account. There is support for
+	// allow lists (inclusion) and block lists (exclusion).
+	//
+	// When a connection is attempted: 1. **First, all block lists are
+	// checked.** If the connection IP address matches any block list, the
+	// connection is rejected. 2. **If the connection was not rejected by block
+	// lists**, the IP address is compared with the allow lists.
+	//
+	// If there is at least one allow list for the account, the connection is
+	// allowed only if the IP address matches an allow list. If there are no
+	// allow lists for the account, all IP addresses are allowed.
+	//
+	// For all allow lists and block lists combined, the account supports a
+	// maximum of 1000 IP/CIDR values, where one CIDR counts as a single value.
+	//
+	// After changes to the account-level IP access lists, it can take a few
+	// minutes for changes to take effect.
+	IpAccessLists *settings.AccountIpAccessListsAPI
 
 	// These APIs manage log delivery configurations for this account. The two
 	// supported log types for this API are _billable usage logs_ and _audit
@@ -138,16 +162,16 @@ type AccountClient struct {
 	LogDelivery *billing.LogDeliveryAPI
 
 	// These APIs manage metastore assignments to a workspace.
-	AccountMetastoreAssignments *unitycatalog.AccountMetastoreAssignmentsAPI
+	MetastoreAssignments *catalog.AccountMetastoreAssignmentsAPI
 
 	// These APIs manage Unity Catalog metastores for an account. A metastore
 	// contains catalogs that can be associated with workspaces
-	AccountMetastores *unitycatalog.AccountMetastoresAPI
+	Metastores *catalog.AccountMetastoresAPI
 
 	// These APIs manage network configurations for customer-managed VPCs
 	// (optional). Its ID is used when creating a new workspace if you use
 	// customer-managed VPCs.
-	Networks *deployment.NetworksAPI
+	Networks *provisioning.NetworksAPI
 
 	// These APIs enable administrators to enroll OAuth for their accounts,
 	// which is required for adding/using any OAuth published/custom application
@@ -158,7 +182,7 @@ type AccountClient struct {
 	OAuthEnrollment *oauth2.OAuthEnrollmentAPI
 
 	// These APIs manage private access settings for this account.
-	PrivateAccess *deployment.PrivateAccessAPI
+	PrivateAccess *provisioning.PrivateAccessAPI
 
 	// These APIs enable administrators to manage published oauth app
 	// integrations, which is required for adding/using Published OAuth App
@@ -176,7 +200,7 @@ type AccountClient struct {
 	// interactive users do not need any write, delete, or modify privileges in
 	// production. This eliminates the risk of a user overwriting production
 	// data by accident.
-	ServicePrincipals *scim.AccountServicePrincipalsAPI
+	ServicePrincipals *iam.AccountServicePrincipalsAPI
 
 	// These APIs manage storage configurations for this workspace. A root
 	// storage S3 bucket in your account is required to store objects like
@@ -184,10 +208,10 @@ type AccountClient struct {
 	// root storage S3 bucket for storage of non-production DBFS data. A storage
 	// configuration encapsulates this bucket information, and its ID is used
 	// when creating a new workspace.
-	Storage *deployment.StorageAPI
+	Storage *provisioning.StorageAPI
 
 	// These APIs manage storage credentials for a particular metastore.
-	AccountStorageCredentials *unitycatalog.AccountStorageCredentialsAPI
+	StorageCredentials *catalog.AccountStorageCredentialsAPI
 
 	// User identities recognized by Databricks and represented by email
 	// addresses.
@@ -201,14 +225,14 @@ type AccountClient struct {
 	// in your identity provider and that user’s account will also be removed
 	// from Databricks Account. This ensures a consistent offboarding process
 	// and prevents unauthorized users from accessing sensitive data.
-	Users *scim.AccountUsersAPI
+	Users *iam.AccountUsersAPI
 
 	// These APIs manage VPC endpoint configurations for this account.
-	VpcEndpoints *deployment.VpcEndpointsAPI
+	VpcEndpoints *provisioning.VpcEndpointsAPI
 
 	// The Workspace Permission Assignment API allows you to manage workspace
 	// permissions for principals in your account.
-	WorkspaceAssignment *permissions.WorkspaceAssignmentAPI
+	WorkspaceAssignment *iam.WorkspaceAssignmentAPI
 
 	// These APIs manage workspaces for this account. A Databricks workspace is
 	// an environment for accessing all of your Databricks assets. The workspace
@@ -219,7 +243,7 @@ type AccountClient struct {
 	// These endpoints are available if your account is on the E2 version of the
 	// platform or on a select custom plan that allows multiple workspaces per
 	// account.
-	Workspaces *deployment.WorkspacesAPI
+	Workspaces *provisioning.WorkspacesAPI
 }
 
 var ErrNotAccountClient = errors.New("invalid Databricks Account configuration")
@@ -249,25 +273,26 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	return &AccountClient{
 		Config: cfg,
 
-		BillableUsage:               billing.NewBillableUsage(apiClient),
-		Budgets:                     billing.NewBudgets(apiClient),
-		Credentials:                 deployment.NewCredentials(apiClient),
-		CustomAppIntegration:        oauth2.NewCustomAppIntegration(apiClient),
-		EncryptionKeys:              deployment.NewEncryptionKeys(apiClient),
-		Groups:                      scim.NewAccountGroups(apiClient),
-		LogDelivery:                 billing.NewLogDelivery(apiClient),
-		AccountMetastoreAssignments: unitycatalog.NewAccountMetastoreAssignments(apiClient),
-		AccountMetastores:           unitycatalog.NewAccountMetastores(apiClient),
-		Networks:                    deployment.NewNetworks(apiClient),
-		OAuthEnrollment:             oauth2.NewOAuthEnrollment(apiClient),
-		PrivateAccess:               deployment.NewPrivateAccess(apiClient),
-		PublishedAppIntegration:     oauth2.NewPublishedAppIntegration(apiClient),
-		ServicePrincipals:           scim.NewAccountServicePrincipals(apiClient),
-		Storage:                     deployment.NewStorage(apiClient),
-		AccountStorageCredentials:   unitycatalog.NewAccountStorageCredentials(apiClient),
-		Users:                       scim.NewAccountUsers(apiClient),
-		VpcEndpoints:                deployment.NewVpcEndpoints(apiClient),
-		WorkspaceAssignment:         permissions.NewWorkspaceAssignment(apiClient),
-		Workspaces:                  deployment.NewWorkspaces(apiClient),
+		BillableUsage:           billing.NewBillableUsage(apiClient),
+		Budgets:                 billing.NewBudgets(apiClient),
+		Credentials:             provisioning.NewCredentials(apiClient),
+		CustomAppIntegration:    oauth2.NewCustomAppIntegration(apiClient),
+		EncryptionKeys:          provisioning.NewEncryptionKeys(apiClient),
+		Groups:                  iam.NewAccountGroups(apiClient),
+		IpAccessLists:           settings.NewAccountIpAccessLists(apiClient),
+		LogDelivery:             billing.NewLogDelivery(apiClient),
+		MetastoreAssignments:    catalog.NewAccountMetastoreAssignments(apiClient),
+		Metastores:              catalog.NewAccountMetastores(apiClient),
+		Networks:                provisioning.NewNetworks(apiClient),
+		OAuthEnrollment:         oauth2.NewOAuthEnrollment(apiClient),
+		PrivateAccess:           provisioning.NewPrivateAccess(apiClient),
+		PublishedAppIntegration: oauth2.NewPublishedAppIntegration(apiClient),
+		ServicePrincipals:       iam.NewAccountServicePrincipals(apiClient),
+		Storage:                 provisioning.NewStorage(apiClient),
+		StorageCredentials:      catalog.NewAccountStorageCredentials(apiClient),
+		Users:                   iam.NewAccountUsers(apiClient),
+		VpcEndpoints:            provisioning.NewVpcEndpoints(apiClient),
+		WorkspaceAssignment:     iam.NewWorkspaceAssignment(apiClient),
+		Workspaces:              provisioning.NewWorkspaces(apiClient),
 	}, nil
 }

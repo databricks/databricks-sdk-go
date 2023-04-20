@@ -1,9 +1,14 @@
 package internal
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"net/http"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/mlflow"
+	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -11,25 +16,29 @@ import (
 func TestAccExperiments(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	created, err := w.Experiments.Create(ctx, mlflow.CreateExperiment{
+	experiment, err := w.Experiments.CreateExperiment(ctx, ml.CreateExperiment{
 		Name: RandomName("/tmp/go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := w.Experiments.DeleteByExperimentId(ctx, created.ExperimentId)
+		err := w.Experiments.DeleteExperiment(ctx, ml.DeleteExperiment{
+			ExperimentId: experiment.ExperimentId,
+		})
 		require.NoError(t, err)
 	})
 
-	err = w.Experiments.Update(ctx, mlflow.UpdateExperiment{
+	err = w.Experiments.UpdateExperiment(ctx, ml.UpdateExperiment{
 		NewName:      RandomName("/tmp/go-sdk-"),
-		ExperimentId: created.ExperimentId,
+		ExperimentId: experiment.ExperimentId,
 	})
 	require.NoError(t, err)
 
-	_, err = w.Experiments.GetByExperimentId(ctx, created.ExperimentId)
+	_, err = w.Experiments.GetExperiment(ctx, ml.GetExperimentRequest{
+		ExperimentId: experiment.ExperimentId,
+	})
 	require.NoError(t, err)
 
-	all, err := w.Experiments.ListAll(ctx, mlflow.ListExperimentsRequest{})
+	all, err := w.Experiments.ListExperimentsAll(ctx, ml.ListExperimentsRequest{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 }
@@ -37,18 +46,20 @@ func TestAccExperiments(t *testing.T) {
 func TestAccMLflowRuns(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	experiment, err := w.Experiments.Create(ctx, mlflow.CreateExperiment{
+	experiment, err := w.Experiments.CreateExperiment(ctx, ml.CreateExperiment{
 		Name: RandomName("/tmp/go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := w.Experiments.DeleteByExperimentId(ctx, experiment.ExperimentId)
+		err := w.Experiments.DeleteExperiment(ctx, ml.DeleteExperiment{
+			ExperimentId: experiment.ExperimentId,
+		})
 		require.NoError(t, err)
 	})
 
-	created, err := w.MLflowRuns.Create(ctx, mlflow.CreateRun{
+	created, err := w.Experiments.CreateRun(ctx, ml.CreateRun{
 		ExperimentId: experiment.ExperimentId,
-		Tags: []mlflow.RunTag{
+		Tags: []ml.RunTag{
 			{
 				Key:   "foo",
 				Value: "bar",
@@ -58,103 +69,130 @@ func TestAccMLflowRuns(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		// TODO: OpenAPI: fix mapping
-		err := w.MLflowRuns.DeleteByRunId(ctx, created.Run.Info.RunId)
+		err := w.Experiments.DeleteRun(ctx, ml.DeleteRun{
+			RunId: created.Run.Info.RunId,
+		})
 		require.NoError(t, err)
 	})
 
-	_, err = w.MLflowRuns.Update(ctx, mlflow.UpdateRun{
+	_, err = w.Experiments.UpdateRun(ctx, ml.UpdateRun{
 		RunId:  created.Run.Info.RunId,
-		Status: mlflow.UpdateRunStatusKilled,
+		Status: ml.UpdateRunStatusKilled,
 	})
 	require.NoError(t, err)
 }
 
-func TestAccRegisteredModels(t *testing.T) {
-	t.Skip("fixme")
-	t.Skip("Missing required field: name?...")
+func deleteWorkaround(t *testing.T, w *databricks.WorkspaceClient, path, key, value string) {
+	body, err := json.Marshal(map[string]string{key: value})
+	require.NoError(t, err)
+	req, err := http.NewRequest("DELETE", w.Config.Host+path, bytes.NewBuffer(body))
+	require.NoError(t, err)
+	err = w.Config.Authenticate(req)
+	require.NoError(t, err)
+	res, err := http.DefaultClient.Do(req)
+	require.NoError(t, err)
+	require.Equal(t, 200, res.StatusCode)
+}
+
+// disable once platform is fixed on mlflow side
+var deleteWorkaroundEnabled = true
+
+func TestAccModels(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	created, err := w.RegisteredModels.Create(ctx, mlflow.CreateRegisteredModelRequest{
+	created, err := w.ModelRegistry.CreateModel(ctx, ml.CreateModelRequest{
 		Name: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		// TODO: OpenAPI: x-databricks-sdk-inline
-		// FIXME: Missing required field: name?..
-		err := w.RegisteredModels.DeleteByName(ctx, created.RegisteredModel.Name)
-		require.NoError(t, err)
+		deleteModel(t, w, ctx, created)
 	})
 
-	err = w.RegisteredModels.Update(ctx, mlflow.UpdateRegisteredModelRequest{
+	err = w.ModelRegistry.UpdateModel(ctx, ml.UpdateModelRequest{
 		Name:        created.RegisteredModel.Name,
 		Description: RandomName("comment "),
 	})
 	require.NoError(t, err)
 
-	_, err = w.RegisteredModels.GetByName(ctx, created.RegisteredModel.Name)
-	require.NoError(t, err)
-
-	all, err := w.RegisteredModels.ListAll(ctx, mlflow.ListRegisteredModelsRequest{})
+	all, err := w.ModelRegistry.ListModelsAll(ctx, ml.ListModelsRequest{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 }
 
+func deleteModel(t *testing.T, w *databricks.WorkspaceClient, ctx context.Context, created *ml.CreateModelResponse) {
+	if deleteWorkaroundEnabled {
+		deleteWorkaround(t, w, "/api/2.0/mlflow/registered-models/delete", "name", created.RegisteredModel.Name)
+	} else {
+		err := w.ModelRegistry.DeleteModel(ctx, ml.DeleteModelRequest{
+			Name: created.RegisteredModel.Name,
+		})
+		require.NoError(t, err)
+	}
+}
+
 func TestAccRegistryWebhooks(t *testing.T) {
-	t.Skip("incorrect OpenAPI spec")
 	ctx, w := workspaceTest(t)
 
-	// TODO: incomplete ID?...
-	created, err := w.RegistryWebhooks.Create(ctx, mlflow.CreateRegistryWebhook{
+	created, err := w.ModelRegistry.CreateWebhook(ctx, ml.CreateRegistryWebhook{
 		Description: RandomName("comment "),
-		Events:      []mlflow.RegistryWebhookEvent{mlflow.RegistryWebhookEventModelVersionCreated},
+		Events:      []ml.RegistryWebhookEvent{ml.RegistryWebhookEventModelVersionCreated},
+		HttpUrlSpec: &ml.HttpUrlSpec{
+			Url: w.Config.Host,
+		},
 	})
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := w.RegistryWebhooks.DeleteById(ctx, created.Comment.Comment)
+		if deleteWorkaroundEnabled {
+			deleteWorkaround(t, w, "/api/2.0/mlflow/registry-webhooks/delete", "id", created.Webhook.Id)
+			return
+		}
+		err := w.ModelRegistry.DeleteWebhook(ctx, ml.DeleteWebhookRequest{
+			Id: created.Webhook.Id,
+		})
 		require.NoError(t, err)
 	})
-	err = w.RegistryWebhooks.Update(ctx, mlflow.UpdateRegistryWebhook{
-		Id: RandomName("go-sdk-"),
+	err = w.ModelRegistry.UpdateWebhook(ctx, ml.UpdateRegistryWebhook{
+		Id:          created.Webhook.Id,
+		Description: RandomName("updated "),
 	})
 	require.NoError(t, err)
 
-	all, err := w.RegistryWebhooks.ListAll(ctx, mlflow.ListRegistryWebhooksRequest{})
+	all, err := w.ModelRegistry.ListWebhooksAll(ctx, ml.ListWebhooksRequest{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 }
 
 func TestAccModelVersions(t *testing.T) {
-	t.Skip("fixme")
 	ctx, w := workspaceTest(t)
 
-	model, err := w.RegisteredModels.Create(ctx, mlflow.CreateRegisteredModelRequest{
+	model, err := w.ModelRegistry.CreateModel(ctx, ml.CreateModelRequest{
 		Name: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		// TODO: OpenAPI: x-databricks-sdk-inline
-		// FIXME: Missing required field: name?..
-		err := w.RegisteredModels.DeleteByName(ctx, model.RegisteredModel.Name)
-		require.NoError(t, err)
+		deleteModel(t, w, ctx, model)
 	})
 
-	created, err := w.ModelVersions.Create(ctx, mlflow.CreateModelVersionRequest{
+	created, err := w.ModelRegistry.CreateModelVersion(ctx, ml.CreateModelVersionRequest{
 		Name:   model.RegisteredModel.Name,
 		Source: "dbfs:/tmp",
 	})
 	require.NoError(t, err)
 
-	t.Cleanup(func() {
-		err := w.ModelVersions.Delete(ctx, mlflow.DeleteModelVersionRequest{
-			// TODO: OpenAPI: x-databricks-sdk-inline
-			Name:    created.ModelVersion.Name,
-			Version: created.ModelVersion.Version,
+	if !deleteWorkaroundEnabled {
+		// we cleanup in  the deleteModel for now.
+		t.Cleanup(func() {
+			err := w.ModelRegistry.DeleteModelVersion(ctx, ml.DeleteModelVersionRequest{
+				// TODO: OpenAPI: x-databricks-sdk-inline
+				Name:    created.ModelVersion.Name,
+				Version: created.ModelVersion.Version,
+			})
+			require.NoError(t, err)
 		})
-		require.NoError(t, err)
-	})
+	}
 
-	err = w.ModelVersions.Update(ctx, mlflow.UpdateModelVersionRequest{
+	err = w.ModelRegistry.UpdateModelVersion(ctx, ml.UpdateModelVersionRequest{
 		Description: RandomName("description "),
 		Name:        created.ModelVersion.Name,
 		Version:     created.ModelVersion.Version,
@@ -163,28 +201,27 @@ func TestAccModelVersions(t *testing.T) {
 }
 
 func TestAccModelVersionComments(t *testing.T) {
-	t.Skip("fixme")
 	ctx, w := workspaceTest(t)
 
-	model, err := w.RegisteredModels.Create(ctx, mlflow.CreateRegisteredModelRequest{
+	model, err := w.ModelRegistry.CreateModel(ctx, ml.CreateModelRequest{
 		Name: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		// TODO: OpenAPI: x-databricks-sdk-inline
-		// FIXME: Missing required field: name?..
-		err := w.RegisteredModels.DeleteByName(ctx, model.RegisteredModel.Name)
-		require.NoError(t, err)
+		deleteModel(t, w, ctx, model)
 	})
 
-	mv, err := w.ModelVersions.Create(ctx, mlflow.CreateModelVersionRequest{
+	mv, err := w.ModelRegistry.CreateModelVersion(ctx, ml.CreateModelVersionRequest{
 		Name:   model.RegisteredModel.Name,
 		Source: "dbfs:/tmp",
 	})
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := w.ModelVersions.Delete(ctx, mlflow.DeleteModelVersionRequest{
+		if deleteWorkaroundEnabled {
+			return
+		}
+		err := w.ModelRegistry.DeleteModelVersion(ctx, ml.DeleteModelVersionRequest{
 			// TODO: OpenAPI: x-databricks-sdk-inline
 			Name:    mv.ModelVersion.Name,
 			Version: mv.ModelVersion.Version,
@@ -192,7 +229,7 @@ func TestAccModelVersionComments(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	created, err := w.ModelVersionComments.Create(ctx, mlflow.CreateComment{
+	created, err := w.ModelRegistry.CreateComment(ctx, ml.CreateComment{
 		Comment: RandomName("comment "),
 		Name:    model.RegisteredModel.Name,
 		Version: mv.ModelVersion.Version,
@@ -201,50 +238,18 @@ func TestAccModelVersionComments(t *testing.T) {
 
 	t.Cleanup(func() {
 		// TODO: OpenAPI: x-databricks-sdk-inline
-		// FIXME: missing ID?..
-		err := w.ModelVersionComments.DeleteById(ctx, created.Comment.UserId)
-		require.NoError(t, err)
-	})
-	_, err = w.ModelVersionComments.Update(ctx, mlflow.UpdateComment{
-		Comment: RandomName("updated "),
-		Id:      created.Comment.UserId,
-	})
-	require.NoError(t, err)
-}
-
-func TestAccTransitionRequests(t *testing.T) {
-	t.Skip("fixme")
-	ctx, w := workspaceTest(t)
-
-	model, err := w.RegisteredModels.Create(ctx, mlflow.CreateRegisteredModelRequest{
-		Name: RandomName("go-sdk-"),
-	})
-	require.NoError(t, err)
-	t.Cleanup(func() {
-		// TODO: OpenAPI: x-databricks-sdk-inline
-		// FIXME: Missing required field: name?..
-		err := w.RegisteredModels.DeleteByName(ctx, model.RegisteredModel.Name)
-		require.NoError(t, err)
-	})
-
-	version := model.RegisteredModel.LatestVersions[0].Version
-	_, err = w.TransitionRequests.Create(ctx, mlflow.CreateTransitionRequest{
-		Name:    model.RegisteredModel.Name,
-		Stage:   mlflow.StageProduction,
-		Version: version,
-	})
-	require.NoError(t, err)
-
-	t.Cleanup(func() {
-		err := w.TransitionRequests.Delete(ctx, mlflow.DeleteTransitionRequestRequest{
-			Name:    model.RegisteredModel.Name,
-			Version: version,
-			Stage:   string(mlflow.StageProduction), // TODO: OpenAPI: make enum
+		if deleteWorkaroundEnabled {
+			deleteWorkaround(t, w, "/api/2.0/mlflow/comments/delete", "id", created.Comment.Id)
+			return
+		}
+		err := w.ModelRegistry.DeleteComment(ctx, ml.DeleteCommentRequest{
+			Id: created.Comment.Id,
 		})
 		require.NoError(t, err)
 	})
-
-	all, err := w.TransitionRequests.ListAll(ctx, mlflow.ListTransitionRequestsRequest{})
+	_, err = w.ModelRegistry.UpdateComment(ctx, ml.UpdateComment{
+		Comment: RandomName("updated "),
+		Id:      created.Comment.Id,
+	})
 	require.NoError(t, err)
-	assert.True(t, len(all) >= 1)
 }

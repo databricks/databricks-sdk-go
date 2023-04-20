@@ -10,7 +10,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/config"
-	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
 type CustomCredentials struct{}
@@ -34,7 +34,7 @@ func main() {
 		Host:        askFor("Host:"),
 		Credentials: &CustomCredentials{},
 	}))
-	all, err := w.Clusters.ListAll(context.Background(), clusters.List{})
+	all, err := w.Clusters.ListAll(context.Background(), compute.ListClustersRequest{})
 	if err != nil {
 		panic(err)
 	}

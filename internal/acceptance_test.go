@@ -8,7 +8,7 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/internal/env"
-	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -23,7 +23,7 @@ func TestAccDefaultCredentials(t *testing.T) {
 	versions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
-	v, err := versions.Select(clusters.SparkVersionRequest{
+	v, err := versions.Select(compute.SparkVersionRequest{
 		LongTermSupport: true,
 		Latest:          true,
 	})
@@ -44,7 +44,7 @@ func TestAccExplicitDatabricksCfg(t *testing.T) {
 	versions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
-	v, err := versions.Select(clusters.SparkVersionRequest{
+	v, err := versions.Select(compute.SparkVersionRequest{
 		LongTermSupport: true,
 		Latest:          true,
 	})
@@ -79,7 +79,7 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 	versions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
-	v, err := versions.Select(clusters.SparkVersionRequest{
+	v, err := versions.Select(compute.SparkVersionRequest{
 		LongTermSupport: true,
 		Latest:          true,
 	})
@@ -99,7 +99,7 @@ func TestAccExplicitAzureSpnAuth(t *testing.T) {
 	versions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
 
-	v, err := versions.Select(clusters.SparkVersionRequest{
+	v, err := versions.Select(compute.SparkVersionRequest{
 		LongTermSupport: true,
 		Latest:          true,
 	})

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/billing"
-	"github.com/databricks/databricks-sdk-go/service/deployment"
+	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -27,10 +27,10 @@ func TestMwsAccLogDelivery(t *testing.T) {
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
-	creds, err := a.Credentials.Create(ctx, deployment.CreateCredentialRequest{
+	creds, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: RandomName("sdk-"),
-		AwsCredentials: deployment.CreateCredentialAwsCredentials{
-			StsRole: &deployment.CreateCredentialStsRole{
+		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: GetEnvOrSkipTest(t, "TEST_LOGDELIVERY_ARN"),
 			},
 		},
@@ -38,9 +38,9 @@ func TestMwsAccLogDelivery(t *testing.T) {
 	require.NoError(t, err)
 	defer a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
 
-	bucket, err := a.Storage.Create(ctx, deployment.CreateStorageConfigurationRequest{
+	bucket, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: RandomName("sdk-"),
-		RootBucketInfo: deployment.RootBucketInfo{
+		RootBucketInfo: provisioning.RootBucketInfo{
 			BucketName: RandomName("sdk-bucket-"),
 		},
 	})

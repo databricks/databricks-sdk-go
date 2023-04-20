@@ -6,29 +6,18 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/config"
 
-	"github.com/databricks/databricks-sdk-go/service/clusterpolicies"
-	"github.com/databricks/databricks-sdk-go/service/clusters"
-	"github.com/databricks/databricks-sdk-go/service/commands"
-	"github.com/databricks/databricks-sdk-go/service/dbfs"
-	"github.com/databricks/databricks-sdk-go/service/endpoints"
-	"github.com/databricks/databricks-sdk-go/service/gitcredentials"
-	"github.com/databricks/databricks-sdk-go/service/globalinitscripts"
-	"github.com/databricks/databricks-sdk-go/service/instancepools"
-	"github.com/databricks/databricks-sdk-go/service/ipaccesslists"
+	"github.com/databricks/databricks-sdk-go/service/catalog"
+	"github.com/databricks/databricks-sdk-go/service/compute"
+	"github.com/databricks/databricks-sdk-go/service/files"
+	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
-	"github.com/databricks/databricks-sdk-go/service/libraries"
-	"github.com/databricks/databricks-sdk-go/service/mlflow"
-	"github.com/databricks/databricks-sdk-go/service/permissions"
+	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
-	"github.com/databricks/databricks-sdk-go/service/repos"
-	"github.com/databricks/databricks-sdk-go/service/scim"
-	"github.com/databricks/databricks-sdk-go/service/secrets"
+	"github.com/databricks/databricks-sdk-go/service/serving"
+	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
-	"github.com/databricks/databricks-sdk-go/service/tokenmanagement"
-	"github.com/databricks/databricks-sdk-go/service/tokens"
-	"github.com/databricks/databricks-sdk-go/service/unitycatalog"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
-	"github.com/databricks/databricks-sdk-go/service/workspaceconf"
 )
 
 type WorkspaceClient struct {
@@ -48,7 +37,7 @@ type WorkspaceClient struct {
 	// to data centrally across all of the workspaces in a Databricks account.
 	// Users in different workspaces can share access to the same data,
 	// depending on privileges granted centrally in Unity Catalog.
-	Catalogs *unitycatalog.CatalogsAPI
+	Catalogs *catalog.CatalogsAPI
 
 	// Cluster policy limits the ability to configure clusters based on a set of
 	// rules. The policy rules limit the attributes or attribute values
@@ -74,7 +63,7 @@ type WorkspaceClient struct {
 	//
 	// Only admin users can create, edit, and delete policies. Admin users also
 	// have access to all policies.
-	ClusterPolicies *clusterpolicies.ClusterPoliciesAPI
+	ClusterPolicies *compute.ClusterPoliciesAPI
 
 	// The Clusters API allows you to create, start, edit, list, terminate, and
 	// delete clusters.
@@ -103,14 +92,14 @@ type WorkspaceClient struct {
 	// clusters recently terminated by the job scheduler. To keep an all-purpose
 	// cluster configuration even after it has been terminated for more than 30
 	// days, an administrator can pin a cluster to the cluster list.
-	Clusters *clusters.ClustersAPI
+	Clusters *compute.ClustersAPI
 
 	// This API allows executing commands on running clusters.
-	CommandExecutor commands.CommandExecutor
+	CommandExecutor compute.CommandExecutor
 
 	// This API allows retrieving information about currently authenticated user
 	// or service principal.
-	CurrentUser *scim.CurrentUserAPI
+	CurrentUser *iam.CurrentUserAPI
 
 	// In general, there is little need to modify dashboards using the API.
 	// However, it can be useful to use dashboard objects to look-up a
@@ -133,7 +122,7 @@ type WorkspaceClient struct {
 
 	// DBFS API makes it simple to interact with various data sources without
 	// having to include a users credentials every time to read a file.
-	Dbfs *dbfs.DbfsAPI
+	Dbfs *files.DbfsAPI
 
 	// The SQL Permissions API is similar to the endpoints of the
 	// :method:permissions/set. However, this exposes only one endpoint, which
@@ -150,7 +139,7 @@ type WorkspaceClient struct {
 	// permissions (superset of `CAN_RUN`)
 	DbsqlPermissions *sql.DbsqlPermissionsAPI
 
-	Experiments *mlflow.ExperimentsAPI
+	Experiments *ml.ExperimentsAPI
 
 	// An external location is an object that combines a cloud storage path with
 	// a storage credential that authorizes access to the cloud storage path.
@@ -165,7 +154,7 @@ type WorkspaceClient struct {
 	//
 	// To create external locations, you must be a metastore admin or a user
 	// with the **CREATE_EXTERNAL_LOCATION** privilege.
-	ExternalLocations *unitycatalog.ExternalLocationsAPI
+	ExternalLocations *catalog.ExternalLocationsAPI
 
 	// Functions implement User-Defined Functions (UDFs) in Unity Catalog.
 	//
@@ -174,7 +163,7 @@ type WorkspaceClient struct {
 	// Catalog, a function resides at the same level as a table, so it can be
 	// referenced with the form
 	// __catalog_name__.__schema_name__.__function_name__.
-	Functions *unitycatalog.FunctionsAPI
+	Functions *catalog.FunctionsAPI
 
 	// Registers personal access token for Databricks to do operations on behalf
 	// of the user.
@@ -182,7 +171,7 @@ type WorkspaceClient struct {
 	// See [more info].
 	//
 	// [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
-	GitCredentials *gitcredentials.GitCredentialsAPI
+	GitCredentials *workspace.GitCredentialsAPI
 
 	// The Global Init Scripts API enables Workspace administrators to configure
 	// global initialization scripts for their workspace. These scripts run on
@@ -194,7 +183,7 @@ type WorkspaceClient struct {
 	// fails to launch and init scripts with later position are skipped. If
 	// enough containers fail, the entire cluster fails with a
 	// `GLOBAL_INIT_SCRIPT_FAILURE` error code.
-	GlobalInitScripts *globalinitscripts.GlobalInitScriptsAPI
+	GlobalInitScripts *compute.GlobalInitScriptsAPI
 
 	// In Unity Catalog, data is secure by default. Initially, users have no
 	// access to data in a metastore. Access can be granted by either a
@@ -207,7 +196,7 @@ type WorkspaceClient struct {
 	// automatically grants the privilege to all current and future objects
 	// within the catalog. Similarly, privileges granted on a schema are
 	// inherited by all current and future objects within that schema.
-	Grants *unitycatalog.GrantsAPI
+	Grants *catalog.GrantsAPI
 
 	// Groups simplify identity management, making it easier to assign access to
 	// Databricks Workspace, data, and other securable objects.
@@ -216,7 +205,7 @@ type WorkspaceClient struct {
 	// policies in Unity Catalog to groups, instead of to users individually.
 	// All Databricks Workspace identities can be assigned as members of groups,
 	// and members inherit permissions that are assigned to their group.
-	Groups *scim.GroupsAPI
+	Groups *iam.GroupsAPI
 
 	// Instance Pools API are used to create, edit, delete and list instance
 	// pools by using ready-to-use cloud instances which reduces a cluster start
@@ -236,7 +225,7 @@ type WorkspaceClient struct {
 	//
 	// Databricks does not charge DBUs while instances are idle in the pool.
 	// Instance provider billing does apply. See pricing.
-	InstancePools *instancepools.InstancePoolsAPI
+	InstancePools *compute.InstancePoolsAPI
 
 	// The Instance Profiles API allows admins to add, list, and remove instance
 	// profiles that users can launch clusters with. Regular users can list the
@@ -244,7 +233,7 @@ type WorkspaceClient struct {
 	// using instance profiles for more information.
 	//
 	// [Secure access to S3 buckets]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html
-	InstanceProfiles *clusters.InstanceProfilesAPI
+	InstanceProfiles *compute.InstanceProfilesAPI
 
 	// IP Access List enables admins to configure IP access lists.
 	//
@@ -267,7 +256,7 @@ type WorkspaceClient struct {
 	//
 	// After changes to the IP access list feature, it can take a few minutes
 	// for changes to take effect.
-	IpAccessLists *ipaccesslists.IpAccessListsAPI
+	IpAccessLists *settings.IpAccessListsAPI
 
 	// The Jobs API allows you to create, edit, and delete jobs.
 	//
@@ -310,17 +299,7 @@ type WorkspaceClient struct {
 	// When you uninstall a library from a cluster, the library is removed only
 	// when you restart the cluster. Until you restart the cluster, the status
 	// of the uninstalled library appears as Uninstall pending restart.
-	Libraries *libraries.LibrariesAPI
-
-	MLflowArtifacts *mlflow.MLflowArtifactsAPI
-
-	// These endpoints are modified versions of the MLflow API that accept
-	// additional input parameters or return additional information.
-	MLflowDatabricks *mlflow.MLflowDatabricksAPI
-
-	MLflowMetrics *mlflow.MLflowMetricsAPI
-
-	MLflowRuns *mlflow.MLflowRunsAPI
+	Libraries *compute.LibrariesAPI
 
 	// A metastore is the top-level container of objects in Unity Catalog. It
 	// stores data assets (tables and views) and the permissions that govern
@@ -337,15 +316,13 @@ type WorkspaceClient struct {
 	// Databricks workspaces created before Unity Catalog was released. If your
 	// workspace includes a legacy Hive metastore, the data in that metastore is
 	// available in a catalog named hive_metastore.
-	Metastores *unitycatalog.MetastoresAPI
+	Metastores *catalog.MetastoresAPI
 
-	ModelVersionComments *mlflow.ModelVersionCommentsAPI
-
-	ModelVersions *mlflow.ModelVersionsAPI
+	ModelRegistry *ml.ModelRegistryAPI
 
 	// Permissions API are used to create read, write, edit, update and manage
 	// access for various users on different objects and endpoints.
-	Permissions *permissions.PermissionsAPI
+	Permissions *iam.PermissionsAPI
 
 	// The Delta Live Tables API allows you to create, edit, delete, start, and
 	// view details about pipelines.
@@ -373,10 +350,10 @@ type WorkspaceClient struct {
 	// Policy families cannot be used directly to create clusters. Instead, you
 	// create cluster policies using a policy family. Cluster policies created
 	// using a policy family inherit the policy family's policy definition.
-	PolicyFamilies *clusterpolicies.PolicyFamiliesAPI
+	PolicyFamilies *compute.PolicyFamiliesAPI
 
-	// Databricks Delta Sharing: Providers REST API
-	Providers *unitycatalog.ProvidersAPI
+	// Databricks Providers REST API
+	Providers *sharing.ProvidersAPI
 
 	// These endpoints are used for CRUD operations on query definitions. Query
 	// definitions include the target SQL warehouse, query text, name,
@@ -386,15 +363,11 @@ type WorkspaceClient struct {
 	// Access the history of queries through SQL warehouses.
 	QueryHistory *sql.QueryHistoryAPI
 
-	// Databricks Delta Sharing: Recipient Activation REST API
-	RecipientActivation *unitycatalog.RecipientActivationAPI
+	// Databricks Recipient Activation REST API
+	RecipientActivation *sharing.RecipientActivationAPI
 
-	// Databricks Delta Sharing: Recipients REST API
-	Recipients *unitycatalog.RecipientsAPI
-
-	RegisteredModels *mlflow.RegisteredModelsAPI
-
-	RegistryWebhooks *mlflow.RegistryWebhooksAPI
+	// Databricks Recipients REST API
+	Recipients *sharing.RecipientsAPI
 
 	// The Repos API allows users to manage their git repos. Users can use the
 	// API to access all repos that they have manage permissions on.
@@ -407,14 +380,14 @@ type WorkspaceClient struct {
 	// Within Repos you can develop code in notebooks or other files and follow
 	// data science and engineering code development best practices using Git
 	// for version control, collaboration, and CI/CD.
-	Repos *repos.ReposAPI
+	Repos *workspace.ReposAPI
 
 	// A schema (also called a database) is the second layer of Unity
 	// Catalog’s three-level namespace. A schema organizes tables, views and
 	// functions. To access (or list) a table or view in a schema, users must
 	// have the USE_SCHEMA data permission on the schema and its parent catalog,
 	// and they must have the SELECT permission on the table or view.
-	Schemas *unitycatalog.SchemasAPI
+	Schemas *catalog.SchemasAPI
 
 	// The Secrets API allows you to manage secrets, secret scopes, and access
 	// permissions.
@@ -428,7 +401,7 @@ type WorkspaceClient struct {
 	// Databricks secrets. While Databricks makes an effort to redact secret
 	// values that might be displayed in notebooks, it is not possible to
 	// prevent such users from reading secrets.
-	Secrets *secrets.SecretsAPI
+	Secrets *workspace.SecretsAPI
 
 	// Identities for use with jobs, automated tools, and systems such as
 	// scripts, apps, and CI/CD platforms. Databricks recommends creating
@@ -437,7 +410,7 @@ type WorkspaceClient struct {
 	// interactive users do not need any write, delete, or modify privileges in
 	// production. This eliminates the risk of a user overwriting production
 	// data by accident.
-	ServicePrincipals *scim.ServicePrincipalsAPI
+	ServicePrincipals *iam.ServicePrincipalsAPI
 
 	// The Serving Endpoints API allows you to create, update, and delete model
 	// serving endpoints.
@@ -452,10 +425,10 @@ type WorkspaceClient struct {
 	// configure traffic settings to define how requests should be routed to
 	// your served models behind an endpoint. Additionally, you can configure
 	// the scale of resources that should be applied to each served model.
-	ServingEndpoints *endpoints.ServingEndpointsAPI
+	ServingEndpoints *serving.ServingEndpointsAPI
 
-	// Databricks Delta Sharing: Shares REST API
-	Shares *unitycatalog.SharesAPI
+	// Databricks Shares REST API
+	Shares *sharing.SharesAPI
 
 	// The SQL Statement Execution API manages the execution of arbitrary SQL
 	// statements and the fetching of result data.
@@ -654,7 +627,7 @@ type WorkspaceClient struct {
 	// To create storage credentials, you must be a Databricks account admin.
 	// The account admin who creates the storage credential can delegate
 	// ownership to another user or group to manage permissions on it.
-	StorageCredentials *unitycatalog.StorageCredentialsAPI
+	StorageCredentials *catalog.StorageCredentialsAPI
 
 	// Primary key and foreign key constraints encode relationships between
 	// fields in tables.
@@ -669,7 +642,7 @@ type WorkspaceClient struct {
 	// You can declare primary keys and foreign keys as part of the table
 	// specification during table creation. You can also add or drop constraints
 	// on existing tables.
-	TableConstraints *unitycatalog.TableConstraintsAPI
+	TableConstraints *catalog.TableConstraintsAPI
 
 	// A table resides in the third layer of Unity Catalog’s three-level
 	// namespace. It contains rows of data. To create a table, users must have
@@ -681,18 +654,16 @@ type WorkspaceClient struct {
 	//
 	// A table can be managed or external. From an API perspective, a __VIEW__
 	// is a particular kind of table (rather than a managed or external table).
-	Tables *unitycatalog.TablesAPI
+	Tables *catalog.TablesAPI
 
 	// Enables administrators to get all tokens and delete tokens for other
 	// users. Admins can either get every token, get a specific token by ID, or
 	// get all tokens for a particular user.
-	TokenManagement *tokenmanagement.TokenManagementAPI
+	TokenManagement *settings.TokenManagementAPI
 
 	// The Token API allows you to create, list, and revoke tokens that can be
 	// used to authenticate and access Databricks REST APIs.
-	Tokens *tokens.TokensAPI
-
-	TransitionRequests *mlflow.TransitionRequestsAPI
+	Tokens *settings.TokensAPI
 
 	// User identities recognized by Databricks and represented by email
 	// addresses.
@@ -706,7 +677,7 @@ type WorkspaceClient struct {
 	// user in your identity provider and that user’s account will also be
 	// removed from Databricks Workspace. This ensures a consistent offboarding
 	// process and prevents unauthorized users from accessing sensitive data.
-	Users *scim.UsersAPI
+	Users *iam.UsersAPI
 
 	// Volumes are a Unity Catalog (UC) capability for accessing, storing,
 	// governing, organizing and processing files. Use cases include running
@@ -717,7 +688,7 @@ type WorkspaceClient struct {
 	// formats such as .whl or .txt centrally and providing secure access across
 	// workspaces to it, or transforming and querying non-tabular data files in
 	// ETL.
-	Volumes *unitycatalog.VolumesAPI
+	Volumes *catalog.VolumesAPI
 
 	// A SQL warehouse is a compute resource that lets you run SQL commands on
 	// data objects within Databricks SQL. Compute resources are infrastructure
@@ -732,7 +703,7 @@ type WorkspaceClient struct {
 	Workspace *workspace.WorkspaceAPI
 
 	// This API allows updating known workspace settings for advanced users.
-	WorkspaceConf *workspaceconf.WorkspaceConfAPI
+	WorkspaceConf *settings.WorkspaceConfAPI
 }
 
 // NewWorkspaceClient creates new Databricks SDK client for Workspaces or
@@ -751,63 +722,55 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		return nil, err
 	}
 	return &WorkspaceClient{
-		Config:               cfg,
-		Alerts:               sql.NewAlerts(apiClient),
-		Catalogs:             unitycatalog.NewCatalogs(apiClient),
-		ClusterPolicies:      clusterpolicies.NewClusterPolicies(apiClient),
-		Clusters:             clusters.NewClusters(apiClient),
-		CommandExecutor:      commands.NewCommandExecutor(apiClient),
-		CurrentUser:          scim.NewCurrentUser(apiClient),
-		Dashboards:           sql.NewDashboards(apiClient),
-		DataSources:          sql.NewDataSources(apiClient),
-		Dbfs:                 dbfs.NewDbfs(apiClient),
-		DbsqlPermissions:     sql.NewDbsqlPermissions(apiClient),
-		Experiments:          mlflow.NewExperiments(apiClient),
-		ExternalLocations:    unitycatalog.NewExternalLocations(apiClient),
-		Functions:            unitycatalog.NewFunctions(apiClient),
-		GitCredentials:       gitcredentials.NewGitCredentials(apiClient),
-		GlobalInitScripts:    globalinitscripts.NewGlobalInitScripts(apiClient),
-		Grants:               unitycatalog.NewGrants(apiClient),
-		Groups:               scim.NewGroups(apiClient),
-		InstancePools:        instancepools.NewInstancePools(apiClient),
-		InstanceProfiles:     clusters.NewInstanceProfiles(apiClient),
-		IpAccessLists:        ipaccesslists.NewIpAccessLists(apiClient),
-		Jobs:                 jobs.NewJobs(apiClient),
-		Libraries:            libraries.NewLibraries(apiClient),
-		MLflowArtifacts:      mlflow.NewMLflowArtifacts(apiClient),
-		MLflowDatabricks:     mlflow.NewMLflowDatabricks(apiClient),
-		MLflowMetrics:        mlflow.NewMLflowMetrics(apiClient),
-		MLflowRuns:           mlflow.NewMLflowRuns(apiClient),
-		Metastores:           unitycatalog.NewMetastores(apiClient),
-		ModelVersionComments: mlflow.NewModelVersionComments(apiClient),
-		ModelVersions:        mlflow.NewModelVersions(apiClient),
-		Permissions:          permissions.NewPermissions(apiClient),
-		Pipelines:            pipelines.NewPipelines(apiClient),
-		PolicyFamilies:       clusterpolicies.NewPolicyFamilies(apiClient),
-		Providers:            unitycatalog.NewProviders(apiClient),
-		Queries:              sql.NewQueries(apiClient),
-		QueryHistory:         sql.NewQueryHistory(apiClient),
-		RecipientActivation:  unitycatalog.NewRecipientActivation(apiClient),
-		Recipients:           unitycatalog.NewRecipients(apiClient),
-		RegisteredModels:     mlflow.NewRegisteredModels(apiClient),
-		RegistryWebhooks:     mlflow.NewRegistryWebhooks(apiClient),
-		Repos:                repos.NewRepos(apiClient),
-		Schemas:              unitycatalog.NewSchemas(apiClient),
-		Secrets:              secrets.NewSecrets(apiClient),
-		ServicePrincipals:    scim.NewServicePrincipals(apiClient),
-		ServingEndpoints:     endpoints.NewServingEndpoints(apiClient),
-		Shares:               unitycatalog.NewShares(apiClient),
-		StatementExecution:   sql.NewStatementExecution(apiClient),
-		StorageCredentials:   unitycatalog.NewStorageCredentials(apiClient),
-		TableConstraints:     unitycatalog.NewTableConstraints(apiClient),
-		Tables:               unitycatalog.NewTables(apiClient),
-		TokenManagement:      tokenmanagement.NewTokenManagement(apiClient),
-		Tokens:               tokens.NewTokens(apiClient),
-		TransitionRequests:   mlflow.NewTransitionRequests(apiClient),
-		Users:                scim.NewUsers(apiClient),
-		Volumes:              unitycatalog.NewVolumes(apiClient),
-		Warehouses:           sql.NewWarehouses(apiClient),
-		Workspace:            workspace.NewWorkspace(apiClient),
-		WorkspaceConf:        workspaceconf.NewWorkspaceConf(apiClient),
+		Config:              cfg,
+		Alerts:              sql.NewAlerts(apiClient),
+		Catalogs:            catalog.NewCatalogs(apiClient),
+		ClusterPolicies:     compute.NewClusterPolicies(apiClient),
+		Clusters:            compute.NewClusters(apiClient),
+		CommandExecutor:     compute.NewCommandExecutor(apiClient),
+		CurrentUser:         iam.NewCurrentUser(apiClient),
+		Dashboards:          sql.NewDashboards(apiClient),
+		DataSources:         sql.NewDataSources(apiClient),
+		Dbfs:                files.NewDbfs(apiClient),
+		DbsqlPermissions:    sql.NewDbsqlPermissions(apiClient),
+		Experiments:         ml.NewExperiments(apiClient),
+		ExternalLocations:   catalog.NewExternalLocations(apiClient),
+		Functions:           catalog.NewFunctions(apiClient),
+		GitCredentials:      workspace.NewGitCredentials(apiClient),
+		GlobalInitScripts:   compute.NewGlobalInitScripts(apiClient),
+		Grants:              catalog.NewGrants(apiClient),
+		Groups:              iam.NewGroups(apiClient),
+		InstancePools:       compute.NewInstancePools(apiClient),
+		InstanceProfiles:    compute.NewInstanceProfiles(apiClient),
+		IpAccessLists:       settings.NewIpAccessLists(apiClient),
+		Jobs:                jobs.NewJobs(apiClient),
+		Libraries:           compute.NewLibraries(apiClient),
+		Metastores:          catalog.NewMetastores(apiClient),
+		ModelRegistry:       ml.NewModelRegistry(apiClient),
+		Permissions:         iam.NewPermissions(apiClient),
+		Pipelines:           pipelines.NewPipelines(apiClient),
+		PolicyFamilies:      compute.NewPolicyFamilies(apiClient),
+		Providers:           sharing.NewProviders(apiClient),
+		Queries:             sql.NewQueries(apiClient),
+		QueryHistory:        sql.NewQueryHistory(apiClient),
+		RecipientActivation: sharing.NewRecipientActivation(apiClient),
+		Recipients:          sharing.NewRecipients(apiClient),
+		Repos:               workspace.NewRepos(apiClient),
+		Schemas:             catalog.NewSchemas(apiClient),
+		Secrets:             workspace.NewSecrets(apiClient),
+		ServicePrincipals:   iam.NewServicePrincipals(apiClient),
+		ServingEndpoints:    serving.NewServingEndpoints(apiClient),
+		Shares:              sharing.NewShares(apiClient),
+		StatementExecution:  sql.NewStatementExecution(apiClient),
+		StorageCredentials:  catalog.NewStorageCredentials(apiClient),
+		TableConstraints:    catalog.NewTableConstraints(apiClient),
+		Tables:              catalog.NewTables(apiClient),
+		TokenManagement:     settings.NewTokenManagement(apiClient),
+		Tokens:              settings.NewTokens(apiClient),
+		Users:               iam.NewUsers(apiClient),
+		Volumes:             catalog.NewVolumes(apiClient),
+		Warehouses:          sql.NewWarehouses(apiClient),
+		Workspace:           workspace.NewWorkspace(apiClient),
+		WorkspaceConf:       settings.NewWorkspaceConf(apiClient),
 	}, nil
 }

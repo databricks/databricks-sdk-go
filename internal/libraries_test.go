@@ -3,7 +3,7 @@ package internal
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/libraries"
+	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/require"
 )
 
@@ -11,11 +11,11 @@ func TestAccLibraries(t *testing.T) {
 	ctx, w := workspaceTest(t)
 	clusterId := sharedRunningCluster(t, ctx, w)
 
-	err := w.Libraries.UpdateAndWait(ctx, libraries.Update{
+	err := w.Libraries.UpdateAndWait(ctx, compute.Update{
 		ClusterId: clusterId,
-		Install: []libraries.Library{
+		Install: []compute.Library{
 			{
-				Pypi: &libraries.PythonPyPiLibrary{
+				Pypi: &compute.PythonPyPiLibrary{
 					Package: "dbl-tempo",
 				},
 			},
@@ -23,11 +23,11 @@ func TestAccLibraries(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	err = w.Libraries.UpdateAndWait(ctx, libraries.Update{
+	err = w.Libraries.UpdateAndWait(ctx, compute.Update{
 		ClusterId: clusterId,
-		Uninstall: []libraries.Library{
+		Uninstall: []compute.Library{
 			{
-				Pypi: &libraries.PythonPyPiLibrary{
+				Pypi: &compute.PythonPyPiLibrary{
 					Package: "dbl-tempo",
 				},
 			},

@@ -5,9 +5,8 @@ package jobs
 import (
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/service/clusters"
-	"github.com/databricks/databricks-sdk-go/service/libraries"
-	"github.com/databricks/databricks-sdk-go/service/permissions"
+	"github.com/databricks/databricks-sdk-go/service/compute"
+	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
 // all definitions in this file are in alphabetical order
@@ -159,9 +158,9 @@ type ClusterSpec struct {
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the job. The default value is an empty list.
-	Libraries []libraries.Library `json:"libraries,omitempty"`
+	Libraries []compute.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
+	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
 }
 
 type Continuous struct {
@@ -201,7 +200,7 @@ func (cps *ContinuousPauseStatus) Type() string {
 
 type CreateJob struct {
 	// List of permissions to set on the job.
-	AccessControlList []permissions.AccessControlRequest `json:"access_control_list,omitempty"`
+	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
@@ -390,17 +389,17 @@ type DeleteRun struct {
 	RunId int64 `json:"run_id"`
 }
 
+type ExportRunOutput struct {
+	// The exported content in HTML format (one for every view item).
+	Views []ViewItem `json:"views,omitempty"`
+}
+
 // Export and retrieve a job run
-type ExportRun struct {
+type ExportRunRequest struct {
 	// The canonical identifier for the run. This field is required.
 	RunId int64 `json:"-" url:"run_id"`
 	// Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
 	ViewsToExport ViewsToExport `json:"-" url:"views_to_export,omitempty"`
-}
-
-type ExportRunOutput struct {
-	// The exported content in HTML format (one for every view item).
-	Views []ViewItem `json:"views,omitempty"`
 }
 
 type FileArrivalTriggerSettings struct {
@@ -419,24 +418,24 @@ type FileArrivalTriggerSettings struct {
 }
 
 // Get a single job
-type Get struct {
+type GetJobRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
 	JobId int64 `json:"-" url:"job_id"`
 }
 
+// Get the output for a single run
+type GetRunOutputRequest struct {
+	// The canonical identifier for the run. This field is required.
+	RunId int64 `json:"-" url:"run_id"`
+}
+
 // Get a single job run
-type GetRun struct {
+type GetRunRequest struct {
 	// Whether to include the repair history in the response.
 	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
-	RunId int64 `json:"-" url:"run_id"`
-}
-
-// Get the output for a single run
-type GetRunOutput struct {
-	// The canonical identifier for the run. This field is required.
 	RunId int64 `json:"-" url:"run_id"`
 }
 
@@ -545,7 +544,7 @@ type JobCluster struct {
 	// determine which cluster to launch for the task execution.
 	JobClusterKey string `json:"job_cluster_key"`
 	// If new_cluster, a description of a cluster that is created for each task.
-	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
+	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
 }
 
 type JobEmailNotifications struct {
@@ -691,7 +690,7 @@ type JobTaskSettings struct {
 	JobClusterKey string `json:"job_cluster_key,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the task. The default value is an empty list.
-	Libraries []libraries.Library `json:"libraries,omitempty"`
+	Libraries []compute.Library `json:"libraries,omitempty"`
 	// An optional maximum number of times to retry an unsuccessful run. A run
 	// is considered to be unsuccessful if it completes with the `FAILED`
 	// result_state or `INTERNAL_ERROR` `life_cycle_state`. The value -1 means
@@ -704,7 +703,7 @@ type JobTaskSettings struct {
 	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
 	// If new_cluster, a description of a cluster that is created for only for
 	// this task.
-	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
+	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -760,7 +759,7 @@ type JobWebhookNotificationsOnSuccessItem struct {
 }
 
 // List all jobs
-type List struct {
+type ListJobsRequest struct {
 	// Whether to include task and cluster details in the response.
 	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
 	// The number of jobs to return. This value must be greater than 0 and less
@@ -780,7 +779,7 @@ type ListJobsResponse struct {
 }
 
 // List runs for a job
-type ListRuns struct {
+type ListRunsRequest struct {
 	// If active_only is `true`, only active runs are included in the results;
 	// otherwise, lists both active and completed runs. An active run is a run
 	// in the `PENDING`, `RUNNING`, or `TERMINATING`. This field cannot be
@@ -1557,9 +1556,9 @@ type RunSubmitTaskSettings struct {
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the task. The default value is an empty list.
-	Libraries []libraries.Library `json:"libraries,omitempty"`
+	Libraries []compute.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
+	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -1636,10 +1635,10 @@ type RunTask struct {
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the job. The default value is an empty list.
-	Libraries []libraries.Library `json:"libraries,omitempty"`
+	Libraries []compute.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a new cluster that is created only for
 	// this task.
-	NewCluster *clusters.BaseClusterInfo `json:"new_cluster,omitempty"`
+	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this job must run a notebook. This field
 	// may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -1741,8 +1740,45 @@ type SparkPythonTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	Parameters []string `json:"parameters,omitempty"`
-
+	// The Python file to be executed. Cloud file URIs (such as dbfs:/, s3:/,
+	// adls:/, gcs:/) and workspace paths are supported. For python files stored
+	// in the Databricks workspace, the path must be absolute and begin with
+	// `/`. For files stored in a remote repository, the path must be relative.
+	// This field is required.
 	PythonFile string `json:"python_file"`
+	// This describes an enum
+	Source SparkPythonTaskSource `json:"source,omitempty"`
+}
+
+// This describes an enum
+type SparkPythonTaskSource string
+
+// The Python file is located in a remote Git repository.
+const SparkPythonTaskSourceGit SparkPythonTaskSource = `GIT`
+
+// The Python file is located in a Databricks workspace or at a cloud filesystem
+// URI.
+const SparkPythonTaskSourceWorkspace SparkPythonTaskSource = `WORKSPACE`
+
+// String representation for [fmt.Print]
+func (spts *SparkPythonTaskSource) String() string {
+	return string(*spts)
+}
+
+// Set raw string value and validate it against allowed values
+func (spts *SparkPythonTaskSource) Set(v string) error {
+	switch v {
+	case `GIT`, `WORKSPACE`:
+		*spts = SparkPythonTaskSource(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GIT", "WORKSPACE"`, v)
+	}
+}
+
+// Type always returns SparkPythonTaskSource to satisfy [pflag.Value] interface
+func (spts *SparkPythonTaskSource) Type() string {
+	return "SparkPythonTaskSource"
 }
 
 type SparkSubmitTask struct {
@@ -1947,7 +1983,7 @@ type SqlTaskSubscription struct {
 
 type SubmitRun struct {
 	// List of permissions to set on the job.
-	AccessControlList []permissions.AccessControlRequest `json:"access_control_list,omitempty"`
+	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
 	// An optional specification for a remote repository containing the
 	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`

@@ -3,7 +3,7 @@ package internal
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
@@ -59,7 +59,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotEmpty(t, run.Tasks)
 
-	exportedView, err := w.Jobs.ExportRun(ctx, jobs.ExportRun{
+	exportedView, err := w.Jobs.ExportRun(ctx, jobs.ExportRunRequest{
 		RunId:         run.Tasks[0].RunId,
 		ViewsToExport: "CODE",
 	})
@@ -127,7 +127,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, byId.JobId, byName.JobId)
 
-	jobList, err := w.Jobs.ListAll(ctx, jobs.List{
+	jobList, err := w.Jobs.ListAll(ctx, jobs.ListJobsRequest{
 		ExpandTasks: false,
 	})
 	require.NoError(t, err)
@@ -142,7 +142,7 @@ func TestAccJobsListAllNoDuplicates(t *testing.T) {
 	require.NoError(t, err)
 
 	// Select the latest LTS version
-	latestLTS, err := sparkVersions.Select(clusters.SparkVersionRequest{
+	latestLTS, err := sparkVersions.Select(compute.SparkVersionRequest{
 		Latest: true,
 	})
 	require.NoError(t, err)
@@ -152,7 +152,7 @@ func TestAccJobsListAllNoDuplicates(t *testing.T) {
 	require.NoError(t, err)
 
 	// Select the smallest node type id
-	smallestWithDisk, err := nodeTypes.Smallest(clusters.NodeTypeRequest{
+	smallestWithDisk, err := nodeTypes.Smallest(compute.NodeTypeRequest{
 		LocalDisk: true,
 	})
 	require.NoError(t, err)
@@ -162,7 +162,7 @@ func TestAccJobsListAllNoDuplicates(t *testing.T) {
 			Name: RandomName(t.Name()),
 			Tasks: []jobs.JobTaskSettings{{
 				Description: "test",
-				NewCluster: &clusters.BaseClusterInfo{
+				NewCluster: &compute.BaseClusterInfo{
 					SparkVersion: latestLTS,
 					NodeTypeId:   smallestWithDisk,
 					NumWorkers:   1,
@@ -180,7 +180,7 @@ func TestAccJobsListAllNoDuplicates(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
-	all, err := w.Jobs.ListAll(ctx, jobs.List{})
+	all, err := w.Jobs.ListAll(ctx, jobs.ListJobsRequest{})
 	require.NoError(t, err)
 	ids := map[int64]bool{}
 	for _, v := range all {

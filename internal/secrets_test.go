@@ -3,8 +3,8 @@ package internal
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/scim"
-	"github.com/databricks/databricks-sdk-go/service/secrets"
+	"github.com/databricks/databricks-sdk-go/service/iam"
+	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -12,7 +12,7 @@ import (
 func TestAccSecrets(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	scope := secrets.CreateScope{
+	scope := workspace.CreateScope{
 		Scope: RandomEmail(),
 	}
 	err := w.Secrets.CreateScope(ctx, scope)
@@ -25,7 +25,7 @@ func TestAccSecrets(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, len(scopes) >= 1)
 
-	put := secrets.PutSecret{
+	put := workspace.PutSecret{
 		Scope:       scope.Scope,
 		Key:         RandomName("sdk-go"),
 		StringValue: RandomName("dummy"),
@@ -33,7 +33,7 @@ func TestAccSecrets(t *testing.T) {
 	err = w.Secrets.PutSecret(ctx, put)
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = w.Secrets.DeleteSecret(ctx, secrets.DeleteSecret{
+		err = w.Secrets.DeleteSecret(ctx, workspace.DeleteSecret{
 			Scope: scope.Scope,
 			Key:   put.Key,
 		})
@@ -44,7 +44,7 @@ func TestAccSecrets(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, len(scrts.Secrets) == 1)
 
-	group, err := w.Groups.Create(ctx, scim.Group{
+	group, err := w.Groups.Create(ctx, iam.Group{
 		DisplayName: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
@@ -53,14 +53,14 @@ func TestAccSecrets(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	err = w.Secrets.PutAcl(ctx, secrets.PutAcl{
+	err = w.Secrets.PutAcl(ctx, workspace.PutAcl{
 		Scope:      scope.Scope,
-		Permission: secrets.AclPermissionManage,
+		Permission: workspace.AclPermissionManage,
 		Principal:  group.DisplayName,
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		w.Secrets.DeleteAcl(ctx, secrets.DeleteAcl{
+		w.Secrets.DeleteAcl(ctx, workspace.DeleteAcl{
 			Scope:     scope.Scope,
 			Principal: group.DisplayName,
 		})

@@ -55,17 +55,17 @@ type JobsService interface {
 	// Export and retrieve a job run.
 	//
 	// Export and retrieve the job run task.
-	ExportRun(ctx context.Context, request ExportRun) (*ExportRunOutput, error)
+	ExportRun(ctx context.Context, request ExportRunRequest) (*ExportRunOutput, error)
 
 	// Get a single job.
 	//
 	// Retrieves the details for a single job.
-	Get(ctx context.Context, request Get) (*Job, error)
+	Get(ctx context.Context, request GetJobRequest) (*Job, error)
 
 	// Get a single job run.
 	//
 	// Retrieve the metadata of a run.
-	GetRun(ctx context.Context, request GetRun) (*Run, error)
+	GetRun(ctx context.Context, request GetRunRequest) (*Run, error)
 
 	// Get the output for a single run.
 	//
@@ -79,21 +79,21 @@ type JobsService interface {
 	// returns an HTTP status code 400 if the __run_id__ parameter is invalid.
 	// Runs are automatically removed after 60 days. If you to want to reference
 	// them beyond 60 days, you must save old run results before they expire.
-	GetRunOutput(ctx context.Context, request GetRunOutput) (*RunOutput, error)
+	GetRunOutput(ctx context.Context, request GetRunOutputRequest) (*RunOutput, error)
 
 	// List all jobs.
 	//
 	// Retrieves a list of jobs.
 	//
 	// Use ListAll() to get all BaseJob instances, which will iterate over every result page.
-	List(ctx context.Context, request List) (*ListJobsResponse, error)
+	List(ctx context.Context, request ListJobsRequest) (*ListJobsResponse, error)
 
 	// List runs for a job.
 	//
 	// List runs in descending order by start time.
 	//
 	// Use ListRunsAll() to get all BaseRun instances, which will iterate over every result page.
-	ListRuns(ctx context.Context, request ListRuns) (*ListRunsResponse, error)
+	ListRuns(ctx context.Context, request ListRunsRequest) (*ListRunsResponse, error)
 
 	// Repair a job run.
 	//

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/service/tokens"
+	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -12,7 +12,7 @@ import (
 func TestAccTokens(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	token, err := w.Tokens.Create(ctx, tokens.CreateTokenRequest{
+	token, err := w.Tokens.Create(ctx, settings.CreateTokenRequest{
 		Comment:         RandomName("go-sdk-"),
 		LifetimeSeconds: 300,
 	})

@@ -6,12 +6,12 @@ import (
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/apierr"
-	"github.com/databricks/databricks-sdk-go/service/scim"
+	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func me(t *testing.T, w *databricks.WorkspaceClient) *scim.User {
+func me(t *testing.T, w *databricks.WorkspaceClient) *iam.User {
 	ctx := context.Background()
 	me, err := w.CurrentUser.Me(ctx)
 	require.NoError(t, err)
@@ -31,7 +31,7 @@ func TestAccUsers(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	// create new user
-	user, err := w.Users.Create(ctx, scim.User{
+	user, err := w.Users.Create(ctx, iam.User{
 		DisplayName: RandomName("Me "),
 		UserName:    RandomEmail(),
 	})
@@ -47,15 +47,15 @@ func TestAccUsers(t *testing.T) {
 	assert.Equal(t, fetch.Id, byName.Id)
 
 	// list all users
-	allUsers, err := w.Users.ListAll(ctx, scim.ListUsersRequest{
+	allUsers, err := w.Users.ListAll(ctx, iam.ListUsersRequest{
 		Attributes: "id,userName",
 		SortBy:     "userName",
-		SortOrder:  scim.ListSortOrderDescending,
+		SortOrder:  iam.ListSortOrderDescending,
 	})
 	require.NoError(t, err)
 
 	// verify that the user we've creates is in the list
-	namesToIds, err := w.Users.UserUserNameToIdMap(ctx, scim.ListUsersRequest{
+	namesToIds, err := w.Users.UserUserNameToIdMap(ctx, iam.ListUsersRequest{
 		Attributes: "id,userName",
 	})
 	require.NoError(t, err)
@@ -75,7 +75,7 @@ func TestAccGroups(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	// create new group
-	group, err := w.Groups.Create(ctx, scim.Group{
+	group, err := w.Groups.Create(ctx, iam.Group{
 		DisplayName: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
@@ -94,8 +94,8 @@ func TestAccGroups(t *testing.T) {
 	assert.Equal(t, fetch.Id, byName.Id)
 
 	// list all groups that start with `go-sdk-`
-	namesToIds, err := w.Groups.GroupDisplayNameToIdMap(ctx, scim.ListGroupsRequest{
-		SortOrder:          scim.ListSortOrderDescending,
+	namesToIds, err := w.Groups.GroupDisplayNameToIdMap(ctx, iam.ListGroupsRequest{
+		SortOrder:          iam.ListSortOrderDescending,
 		ExcludedAttributes: "roles",
 		Filter:             "displayName sw 'go-sdk-'",
 	})
@@ -117,7 +117,7 @@ func TestAccServicePrincipalsOnAWS(t *testing.T) {
 		t.Skip("test only for aws")
 	}
 
-	created, err := w.ServicePrincipals.Create(ctx, scim.ServicePrincipal{
+	created, err := w.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		DisplayName: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
@@ -126,10 +126,10 @@ func TestAccServicePrincipalsOnAWS(t *testing.T) {
 		err := w.ServicePrincipals.DeleteById(ctx, created.Id)
 		require.NoError(t, err)
 	})
-	err = w.ServicePrincipals.Update(ctx, scim.ServicePrincipal{
+	err = w.ServicePrincipals.Update(ctx, iam.ServicePrincipal{
 		Id:          created.Id,
 		DisplayName: RandomName("go-sdk-updated-"),
-		Roles: []scim.ComplexValue{
+		Roles: []iam.ComplexValue{
 			{
 				Value: "xyz",
 			},
@@ -144,10 +144,10 @@ func TestAccServicePrincipalsOnAWS(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, byId.Id, byName.Id)
 
-	all, err := w.ServicePrincipals.ListAll(ctx, scim.ListServicePrincipalsRequest{})
+	all, err := w.ServicePrincipals.ListAll(ctx, iam.ListServicePrincipalsRequest{})
 	require.NoError(t, err)
 
-	names, err := w.ServicePrincipals.ServicePrincipalDisplayNameToIdMap(ctx, scim.ListServicePrincipalsRequest{})
+	names, err := w.ServicePrincipals.ServicePrincipalDisplayNameToIdMap(ctx, iam.ListServicePrincipalsRequest{})
 	require.NoError(t, err)
 	assert.Equal(t, len(names), len(all))
 	assert.Equal(t, byId.Id, names[byId.DisplayName])

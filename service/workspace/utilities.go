@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
-	"github.com/databricks/databricks-sdk-go/service/commands"
+	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
@@ -17,7 +17,7 @@ var b64 = base64.StdEncoding
 // PythonNotebookOverwrite crafts Python import notebook request
 // also by trimming the code specified in the second argument
 func PythonNotebookOverwrite(path, content string) Import {
-	content = commands.TrimLeadingWhitespace(content)
+	content = compute.TrimLeadingWhitespace(content)
 	request, _ := PythonNotebookOverwriteReader(path,
 		strings.NewReader(content))
 	return request
@@ -50,7 +50,7 @@ func (a *WorkspaceAPI) RecursiveList(ctx context.Context, path string) ([]Object
 	for len(queue) > 0 {
 		path := queue[0]
 		queue = queue[1:]
-		batch, err := a.ListAll(ctx, List{
+		batch, err := a.ListAll(ctx, ListWorkspaceRequest{
 			Path: path,
 		})
 		if apierr.IsMissing(err) {

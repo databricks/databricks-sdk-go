@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/globalinitscripts"
+	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -12,7 +12,7 @@ import (
 func TestAccGlobalInitScripts(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	created, err := w.GlobalInitScripts.Create(ctx, globalinitscripts.GlobalInitScriptCreateRequest{
+	created, err := w.GlobalInitScripts.Create(ctx, compute.GlobalInitScriptCreateRequest{
 		Name:     RandomName("go-sdk-"),
 		Script:   base64.StdEncoding.EncodeToString([]byte("echo 1")),
 		Enabled:  true,
@@ -22,7 +22,7 @@ func TestAccGlobalInitScripts(t *testing.T) {
 
 	defer w.GlobalInitScripts.DeleteByScriptId(ctx, created.ScriptId)
 
-	err = w.GlobalInitScripts.Update(ctx, globalinitscripts.GlobalInitScriptUpdateRequest{
+	err = w.GlobalInitScripts.Update(ctx, compute.GlobalInitScriptUpdateRequest{
 		ScriptId: created.ScriptId,
 		Name:     RandomName("go-sdk-updated-"),
 		Script:   base64.StdEncoding.EncodeToString([]byte("echo 2")),

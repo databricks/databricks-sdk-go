@@ -3,7 +3,7 @@ package internal
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/gitcredentials"
+	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -18,7 +18,7 @@ func TestAccGitCredentials(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	cr, err := w.GitCredentials.Create(ctx, gitcredentials.CreateCredentials{
+	cr, err := w.GitCredentials.Create(ctx, workspace.CreateCredentials{
 		GitProvider:         "gitHub",
 		GitUsername:         "test",
 		PersonalAccessToken: "test",
@@ -29,7 +29,7 @@ func TestAccGitCredentials(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	err = w.GitCredentials.Update(ctx, gitcredentials.UpdateCredentials{
+	err = w.GitCredentials.Update(ctx, workspace.UpdateCredentials{
 		CredentialId:        cr.CredentialId,
 		GitProvider:         "gitHub",
 		GitUsername:         RandomEmail(),

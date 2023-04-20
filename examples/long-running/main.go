@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/service/clusters"
+	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 )
 
@@ -20,7 +20,7 @@ func main() {
 	}
 
 	// Select the latest LTS version
-	latestLTS, err := sparkVersions.Select(clusters.SparkVersionRequest{
+	latestLTS, err := sparkVersions.Select(compute.SparkVersionRequest{
 		Latest:          true,
 		LongTermSupport: true,
 	})
@@ -35,14 +35,14 @@ func main() {
 	}
 
 	// Select the smallest node type id
-	smallestWithDisk, err := nodeTypes.Smallest(clusters.NodeTypeRequest{
+	smallestWithDisk, err := nodeTypes.Smallest(compute.NodeTypeRequest{
 		LocalDisk: true,
 	})
 	if err != nil {
 		panic(err)
 	}
 
-	allRuns, err := w.Jobs.ListRunsAll(ctx, jobs.ListRuns{})
+	allRuns, err := w.Jobs.ListRunsAll(ctx, jobs.ListRunsRequest{})
 	if err != nil {
 		panic(err)
 	}
@@ -50,7 +50,7 @@ func main() {
 		println(run.RunId)
 	}
 
-	runningCluster, err := w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
+	runningCluster, err := w.Clusters.CreateAndWait(ctx, compute.CreateCluster{
 		ClusterName:            "Test cluster from SDK",
 		SparkVersion:           latestLTS,
 		NodeTypeId:             smallestWithDisk,

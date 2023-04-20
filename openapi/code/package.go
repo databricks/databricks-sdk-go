@@ -283,7 +283,9 @@ func (pkg *Package) define(entity *Entity) *Entity {
 		//panic(fmt.Sprintf("%s is already defined", entity.Name))
 		return entity
 	}
-	entity.Package = pkg
+	if entity.Package == nil {
+		entity.Package = pkg
+	}
 	pkg.types[entity.Name] = entity
 	return entity
 }
