@@ -1,5 +1,4 @@
 {
-  "formatter_": "echo 1",
   "formatter": "go fmt ./... && go run golang.org/x/tools/cmd/goimports@latest -w $FILENAMES",
   "packages": {
     ".codegen/api.go.tmpl": "service/{{.Name}}/api.go",

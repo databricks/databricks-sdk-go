@@ -1,5 +1,54 @@
 # Version changelog
 
+## 0.8.0
+
+ * Added more code generation utilities ([#369](https://github.com/databricks/databricks-sdk-go/pull/369)).
+ * Body logger for non-JSON payload as well ([#365](https://github.com/databricks/databricks-sdk-go/pull/365)).
+ * Cleanup ephemeral groups in integration tests ([#368](https://github.com/databricks/databricks-sdk-go/pull/368)).
+ * Skip loading default profile if host is already configured ([#363](https://github.com/databricks/databricks-sdk-go/pull/363)).
+ * Update debug messages in config loader to display correct path ([#362](https://github.com/databricks/databricks-sdk-go/pull/362)).
+
+Dependency updates:
+
+ * Bump golang.org/x/oauth2 from 0.6.0 to 0.7.0 ([#364](https://github.com/databricks/databricks-sdk-go/pull/364)).
+ * Bump google.golang.org/api from 0.115.0 to 0.116.0 ([#361](https://github.com/databricks/databricks-sdk-go/pull/361)).
+ * Bump google.golang.org/api from 0.116.0 to 0.118.0 ([#367](https://github.com/databricks/databricks-sdk-go/pull/367)).
+ 
+API changes:
+
+ * Moved `clusterpolicies` APIs to `compute` package.
+ * Moved `clusters` APIs to `compute` package.
+ * Moved `commands` APIs to `compute` package.
+ * Moved `globalinitscripts` APIs to `compute` package.
+ * Moved `instancepools` APIs to `compute` package.
+ * Moved `scim` APIs to `iam` package.
+ * Moved `permissions` APIs to `iam` package.
+ * Moved `ipaccesslists` APIs to `settings` package.
+ * Moved `tokenmanagement` APIs to `settings` package.
+ * Moved `tokens` APIs to `settings` package.
+ * Moved `workspaceconf` APIs to `settings` package.
+ * Moved `gitcredentials` APIs to `workspace` package.
+ * Moved `repos` APIs to `workspace` package.
+ * Moved `secrets` APIs to `workspace` package.
+ * Renamed `mlflow` package to `ml`.
+ * Renamed `dbfs` package to `files`.
+ * Renamed `deployment` package to `provisioning`.
+ * Renamed `endpoints` package to `serving`.
+ * Split `unitcatalog` package to `catalog` and `sharing`.
+ * Renamed `clusters.List` type to `compute.ListClustersRequest`.
+ * Renamed `jobs.ListRuns` type to `jobs.ListRunsRequest`.
+ * Renamed `jobs.ExportRun` type to `jobs.ExportRunRequest`.
+ * Renamed `clusterpolicies.List` type to `compute.ListClusterPoliciesRequest`.
+ * Renamed `jobs.List` type to `jobs.ListJobsRequest`.
+ * Renamed `permissions.GetPermissionLevels` type to `iam.GetPermissionLevelsRequest`.
+ * Renamed `pipelines.ListPipelineEvents` type to `pipelines.ListPipelineEventsRequest`.
+ * Renamed `pipelines.ListPipelines` type to `pipelines.ListPipelinesRequest`.
+ * Renamed `workspaceconf.GetStatus` type to `settings.GetStatusRequest`.
+ * Renamed `repos.List` type to `workspace.ListReposRequest`.
+ * Renamed `tokenmanagement.List` type to `settings.ListTokenManagementRequest`.
+ * Renamed `workspace.Export` type to `workspace.ExportRequest`.
+ * Renamed `workspace.List` type to `workspace.ListWorkspaceRequest`.
+
 ## 0.7.0
 
  * Update from OpenAPI ([#359](https://github.com/databricks/databricks-sdk-go/pull/359)).
