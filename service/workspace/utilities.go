@@ -50,7 +50,7 @@ func (a *WorkspaceAPI) RecursiveList(ctx context.Context, path string) ([]Object
 	for len(queue) > 0 {
 		path := queue[0]
 		queue = queue[1:]
-		batch, err := a.ListAll(ctx, List{
+		batch, err := a.ListAll(ctx, ListWorkspaceRequest{
 			Path: path,
 		})
 		if apierr.IsMissing(err) {

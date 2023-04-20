@@ -32,39 +32,39 @@ type PipelinesService interface {
 	// Delete a pipeline.
 	//
 	// Deletes a pipeline.
-	Delete(ctx context.Context, request Delete) error
+	Delete(ctx context.Context, request DeletePipelineRequest) error
 
 	// Get a pipeline.
-	Get(ctx context.Context, request Get) (*GetPipelineResponse, error)
+	Get(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error)
 
 	// Get a pipeline update.
 	//
 	// Gets an update from an active pipeline.
-	GetUpdate(ctx context.Context, request GetUpdate) (*GetUpdateResponse, error)
+	GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error)
 
 	// List pipeline events.
 	//
 	// Retrieves events for a pipeline.
 	//
 	// Use ListPipelineEventsAll() to get all PipelineEvent instances, which will iterate over every result page.
-	ListPipelineEvents(ctx context.Context, request ListPipelineEvents) (*ListPipelineEventsResponse, error)
+	ListPipelineEvents(ctx context.Context, request ListPipelineEventsRequest) (*ListPipelineEventsResponse, error)
 
 	// List pipelines.
 	//
 	// Lists pipelines defined in the Delta Live Tables system.
 	//
 	// Use ListPipelinesAll() to get all PipelineStateInfo instances, which will iterate over every result page.
-	ListPipelines(ctx context.Context, request ListPipelines) (*ListPipelinesResponse, error)
+	ListPipelines(ctx context.Context, request ListPipelinesRequest) (*ListPipelinesResponse, error)
 
 	// List pipeline updates.
 	//
 	// List updates for an active pipeline.
-	ListUpdates(ctx context.Context, request ListUpdates) (*ListUpdatesResponse, error)
+	ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error)
 
 	// Reset a pipeline.
 	//
 	// Resets a pipeline.
-	Reset(ctx context.Context, request Reset) error
+	Reset(ctx context.Context, request ResetRequest) error
 
 	// Queue a pipeline update.
 	//
@@ -74,7 +74,7 @@ type PipelinesService interface {
 	// Stop a pipeline.
 	//
 	// Stops a pipeline.
-	Stop(ctx context.Context, request Stop) error
+	Stop(ctx context.Context, request StopRequest) error
 
 	// Edit a pipeline.
 	//

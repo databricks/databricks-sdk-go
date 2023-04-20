@@ -76,7 +76,7 @@ type DataPlaneId struct {
 }
 
 // Delete a pipeline
-type Delete struct {
+type DeletePipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
@@ -180,7 +180,7 @@ type Filters struct {
 }
 
 // Get a pipeline
-type Get struct {
+type GetPipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
@@ -240,7 +240,7 @@ func (gprh *GetPipelineResponseHealth) Type() string {
 }
 
 // Get a pipeline update
-type GetUpdate struct {
+type GetUpdateRequest struct {
 	// The ID of the pipeline.
 	PipelineId string `json:"-" url:"-"`
 	// The ID of the update.
@@ -253,7 +253,7 @@ type GetUpdateResponse struct {
 }
 
 // List pipeline events
-type ListPipelineEvents struct {
+type ListPipelineEventsRequest struct {
 	// Criteria to select a subset of results, expressed using a SQL-like
 	// syntax. The supported filters are:
 	//
@@ -295,7 +295,7 @@ type ListPipelineEventsResponse struct {
 }
 
 // List pipelines
-type ListPipelines struct {
+type ListPipelinesRequest struct {
 	// Select a subset of results based on the specified criteria. The supported
 	// filters are:
 	//
@@ -327,7 +327,7 @@ type ListPipelinesResponse struct {
 }
 
 // List pipeline updates
-type ListUpdates struct {
+type ListUpdatesRequest struct {
 	// Max number of entries to return in a single page.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Page token returned by previous call
@@ -655,7 +655,7 @@ type PipelineTrigger struct {
 }
 
 // Reset a pipeline
-type Reset struct {
+type ResetRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
@@ -744,7 +744,7 @@ type StartUpdateResponse struct {
 }
 
 // Stop a pipeline
-type Stop struct {
+type StopRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
 

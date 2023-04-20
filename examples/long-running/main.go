@@ -42,7 +42,7 @@ func main() {
 		panic(err)
 	}
 
-	allRuns, err := w.Jobs.ListRunsAll(ctx, jobs.ListRuns{})
+	allRuns, err := w.Jobs.ListRunsAll(ctx, jobs.ListRunsRequest{})
 	if err != nil {
 		panic(err)
 	}

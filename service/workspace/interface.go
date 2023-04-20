@@ -271,13 +271,13 @@ type WorkspaceService interface {
 	// One can only export a directory in `DBC` format. If the exported data
 	// would exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`.
 	// Currently, this API does not support exporting a library.
-	Export(ctx context.Context, request Export) (*ExportResponse, error)
+	Export(ctx context.Context, request ExportRequest) (*ExportResponse, error)
 
 	// Get status.
 	//
 	// Gets the status of an object or a directory. If `path` does not exist,
 	// this call returns an error `RESOURCE_DOES_NOT_EXIST`.
-	GetStatus(ctx context.Context, request GetStatus) (*ObjectInfo, error)
+	GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error)
 
 	// Import a notebook.
 	//
@@ -294,7 +294,7 @@ type WorkspaceService interface {
 	// `RESOURCE_DOES_NOT_EXIST`.
 	//
 	// Use ListAll() to get all ObjectInfo instances
-	List(ctx context.Context, request List) (*ListResponse, error)
+	List(ctx context.Context, request ListWorkspaceRequest) (*ListResponse, error)
 
 	// Create a directory.
 	//

@@ -45,42 +45,42 @@ func (a *jobsImpl) DeleteRun(ctx context.Context, request DeleteRun) error {
 	return err
 }
 
-func (a *jobsImpl) ExportRun(ctx context.Context, request ExportRun) (*ExportRunOutput, error) {
+func (a *jobsImpl) ExportRun(ctx context.Context, request ExportRunRequest) (*ExportRunOutput, error) {
 	var exportRunOutput ExportRunOutput
 	path := "/api/2.1/jobs/runs/export"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &exportRunOutput)
 	return &exportRunOutput, err
 }
 
-func (a *jobsImpl) Get(ctx context.Context, request Get) (*Job, error) {
+func (a *jobsImpl) Get(ctx context.Context, request GetJobRequest) (*Job, error) {
 	var job Job
 	path := "/api/2.1/jobs/get"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &job)
 	return &job, err
 }
 
-func (a *jobsImpl) GetRun(ctx context.Context, request GetRun) (*Run, error) {
+func (a *jobsImpl) GetRun(ctx context.Context, request GetRunRequest) (*Run, error) {
 	var run Run
 	path := "/api/2.1/jobs/runs/get"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &run)
 	return &run, err
 }
 
-func (a *jobsImpl) GetRunOutput(ctx context.Context, request GetRunOutput) (*RunOutput, error) {
+func (a *jobsImpl) GetRunOutput(ctx context.Context, request GetRunOutputRequest) (*RunOutput, error) {
 	var runOutput RunOutput
 	path := "/api/2.1/jobs/runs/get-output"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &runOutput)
 	return &runOutput, err
 }
 
-func (a *jobsImpl) List(ctx context.Context, request List) (*ListJobsResponse, error) {
+func (a *jobsImpl) List(ctx context.Context, request ListJobsRequest) (*ListJobsResponse, error) {
 	var listJobsResponse ListJobsResponse
 	path := "/api/2.1/jobs/list"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listJobsResponse)
 	return &listJobsResponse, err
 }
 
-func (a *jobsImpl) ListRuns(ctx context.Context, request ListRuns) (*ListRunsResponse, error) {
+func (a *jobsImpl) ListRuns(ctx context.Context, request ListRunsRequest) (*ListRunsResponse, error) {
 	var listRunsResponse ListRunsResponse
 	path := "/api/2.1/jobs/runs/list"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listRunsResponse)

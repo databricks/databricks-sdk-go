@@ -389,17 +389,17 @@ type DeleteRun struct {
 	RunId int64 `json:"run_id"`
 }
 
+type ExportRunOutput struct {
+	// The exported content in HTML format (one for every view item).
+	Views []ViewItem `json:"views,omitempty"`
+}
+
 // Export and retrieve a job run
-type ExportRun struct {
+type ExportRunRequest struct {
 	// The canonical identifier for the run. This field is required.
 	RunId int64 `json:"-" url:"run_id"`
 	// Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
 	ViewsToExport ViewsToExport `json:"-" url:"views_to_export,omitempty"`
-}
-
-type ExportRunOutput struct {
-	// The exported content in HTML format (one for every view item).
-	Views []ViewItem `json:"views,omitempty"`
 }
 
 type FileArrivalTriggerSettings struct {
@@ -418,24 +418,24 @@ type FileArrivalTriggerSettings struct {
 }
 
 // Get a single job
-type Get struct {
+type GetJobRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
 	JobId int64 `json:"-" url:"job_id"`
 }
 
+// Get the output for a single run
+type GetRunOutputRequest struct {
+	// The canonical identifier for the run. This field is required.
+	RunId int64 `json:"-" url:"run_id"`
+}
+
 // Get a single job run
-type GetRun struct {
+type GetRunRequest struct {
 	// Whether to include the repair history in the response.
 	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
-	RunId int64 `json:"-" url:"run_id"`
-}
-
-// Get the output for a single run
-type GetRunOutput struct {
-	// The canonical identifier for the run. This field is required.
 	RunId int64 `json:"-" url:"run_id"`
 }
 
@@ -759,7 +759,7 @@ type JobWebhookNotificationsOnSuccessItem struct {
 }
 
 // List all jobs
-type List struct {
+type ListJobsRequest struct {
 	// Whether to include task and cluster details in the response.
 	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
 	// The number of jobs to return. This value must be greater than 0 and less
@@ -779,7 +779,7 @@ type ListJobsResponse struct {
 }
 
 // List runs for a job
-type ListRuns struct {
+type ListRunsRequest struct {
 	// If active_only is `true`, only active runs are included in the results;
 	// otherwise, lists both active and completed runs. An active run is a run
 	// in the `PENDING`, `RUNNING`, or `TERMINATING`. This field cannot be

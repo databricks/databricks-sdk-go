@@ -157,22 +157,6 @@ type DeleteSecret struct {
 	Scope string `json:"scope"`
 }
 
-// Export a notebook
-type Export struct {
-	// Flag to enable direct download. If it is `true`, the response will be the
-	// exported file itself. Otherwise, the response contains content as base64
-	// encoded string.
-	DirectDownload bool `json:"-" url:"direct_download,omitempty"`
-	// This specifies the format of the exported file. By default, this is
-	// `SOURCE`. However it may be one of: `SOURCE`, `HTML`, `JUPYTER`, `DBC`.
-	//
-	// The value is case sensitive.
-	Format ExportFormat `json:"-" url:"format,omitempty"`
-	// The absolute path of the notebook or directory. Exporting directory is
-	// only support for `DBC` format.
-	Path string `json:"-" url:"path"`
-}
-
 // This specifies the format of the file to be imported. By default, this is
 // `SOURCE`. However it may be one of: `SOURCE`, `HTML`, `JUPYTER`, `DBC`. The
 // value is case sensitive.
@@ -209,6 +193,22 @@ func (ef *ExportFormat) Type() string {
 	return "ExportFormat"
 }
 
+// Export a notebook
+type ExportRequest struct {
+	// Flag to enable direct download. If it is `true`, the response will be the
+	// exported file itself. Otherwise, the response contains content as base64
+	// encoded string.
+	DirectDownload bool `json:"-" url:"direct_download,omitempty"`
+	// This specifies the format of the exported file. By default, this is
+	// `SOURCE`. However it may be one of: `SOURCE`, `HTML`, `JUPYTER`, `DBC`.
+	//
+	// The value is case sensitive.
+	Format ExportFormat `json:"-" url:"format,omitempty"`
+	// The absolute path of the notebook or directory. Exporting directory is
+	// only support for `DBC` format.
+	Path string `json:"-" url:"path"`
+}
+
 type ExportResponse struct {
 	// The base64-encoded content. If the limit (10MB) is exceeded, exception
 	// with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** will be thrown.
@@ -240,7 +240,7 @@ type GetRepoRequest struct {
 }
 
 // Get status
-type GetStatus struct {
+type GetStatusRequest struct {
 	// The absolute path of the notebook or directory.
 	Path string `json:"-" url:"path"`
 }
@@ -301,14 +301,6 @@ func (l *Language) Type() string {
 	return "Language"
 }
 
-// List contents
-type List struct {
-	// <content needed>
-	NotebooksModifiedAfter int `json:"-" url:"notebooks_modified_after,omitempty"`
-	// The absolute path of the notebook or directory.
-	Path string `json:"-" url:"path"`
-}
-
 // Lists ACLs
 type ListAclsRequest struct {
 	// The name of the scope to fetch ACL information from.
@@ -357,6 +349,14 @@ type ListSecretsRequest struct {
 type ListSecretsResponse struct {
 	// Metadata information of all secrets contained within the given scope.
 	Secrets []SecretMetadata `json:"secrets,omitempty"`
+}
+
+// List contents
+type ListWorkspaceRequest struct {
+	// <content needed>
+	NotebooksModifiedAfter int `json:"-" url:"notebooks_modified_after,omitempty"`
+	// The absolute path of the notebook or directory.
+	Path string `json:"-" url:"path"`
 }
 
 type Mkdirs struct {

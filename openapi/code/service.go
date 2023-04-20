@@ -177,9 +177,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 		// when there was a merge of params with a request or new entity was made
 		signularServiceName := svc.Singular().PascalName()
 		notExplicit := !strings.Contains(op.Name(), signularServiceName)
-		if svc.MatchesPackageName() {
-			request.Name = op.Name()
-		} else if op.Name() == "list" && notExplicit {
+		if op.Name() == "list" && notExplicit {
 			request.Name = op.Name() + svc.Name + "Request"
 		} else if crudNames[strings.ToLower(op.Name())] {
 			request.Name = op.Name() + signularServiceName + "Request"
