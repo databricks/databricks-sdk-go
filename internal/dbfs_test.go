@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/service/dbfs"
+	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -35,13 +35,13 @@ func TestAccDbfsOpen(t *testing.T) {
 	in := make([]byte, 1.44*1e6)
 	_, _ = rand.Read(in)
 
-	defer w.Dbfs.Delete(ctx, dbfs.Delete{
+	defer w.Dbfs.Delete(ctx, files.Delete{
 		Path: path,
 	})
 
 	// Upload through [io.Writer].
 	{
-		handle, err := w.Dbfs.Open(ctx, path, dbfs.FileModeWrite)
+		handle, err := w.Dbfs.Open(ctx, path, files.FileModeWrite)
 		require.NoError(t, err)
 		n, err := handle.Write(in)
 		require.NoError(t, err)
@@ -56,13 +56,13 @@ func TestAccDbfsOpen(t *testing.T) {
 
 	// Upload through [io.Writer] should fail because the file exists.
 	{
-		_, err := w.Dbfs.Open(ctx, path, dbfs.FileModeWrite)
+		_, err := w.Dbfs.Open(ctx, path, files.FileModeWrite)
 		require.ErrorContains(t, err, "dbfs open: A file or directory already exists at the input path")
 	}
 
 	// Upload through [io.ReadFrom] with overwrite bit set.
 	{
-		handle, err := w.Dbfs.Open(ctx, path, dbfs.FileModeWrite|dbfs.FileModeOverwrite)
+		handle, err := w.Dbfs.Open(ctx, path, files.FileModeWrite|files.FileModeOverwrite)
 		require.NoError(t, err)
 		n, err := handle.ReadFrom(bytes.NewReader(in))
 		require.NoError(t, err)
@@ -77,7 +77,7 @@ func TestAccDbfsOpen(t *testing.T) {
 
 	// Download through [io.Reader] and let [io.ReadAll] determine buffer size.
 	{
-		handle, err := w.Dbfs.Open(ctx, path, dbfs.FileModeRead)
+		handle, err := w.Dbfs.Open(ctx, path, files.FileModeRead)
 		require.NoError(t, err)
 
 		// Note: [io.ReadAll] always calls into the [io.Reader] interface.
@@ -90,7 +90,7 @@ func TestAccDbfsOpen(t *testing.T) {
 
 	// Download through [io.WriterTo].
 	{
-		handle, err := w.Dbfs.Open(ctx, path, dbfs.FileModeRead)
+		handle, err := w.Dbfs.Open(ctx, path, files.FileModeRead)
 		require.NoError(t, err)
 
 		var buf bytes.Buffer
@@ -113,7 +113,7 @@ func TestAccDbfsReadFileWriteFile(t *testing.T) {
 	in := make([]byte, 1.44*1e6)
 	_, _ = rand.Read(in)
 
-	defer w.Dbfs.Delete(ctx, dbfs.Delete{
+	defer w.Dbfs.Delete(ctx, files.Delete{
 		Path: path,
 	})
 
@@ -151,13 +151,13 @@ func TestAccListDbfsIntegration(t *testing.T) {
 
 	t.Cleanup(func() {
 		// recursively delete the test dir1 and any test files inside it
-		err := w.Dbfs.Delete(ctx, dbfs.Delete{
+		err := w.Dbfs.Delete(ctx, files.Delete{
 			Path:      testPath1,
 			Recursive: true,
 		})
 		require.NoError(t, err)
 		// recursively delete the test dir2 and any test files inside it
-		err = w.Dbfs.Delete(ctx, dbfs.Delete{
+		err = w.Dbfs.Delete(ctx, files.Delete{
 			Path:      testPath2,
 			Recursive: true,
 		})
@@ -169,14 +169,14 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// create testFile1 in test dir2
-	createdFile, err := w.Dbfs.Create(ctx, dbfs.Create{
+	createdFile, err := w.Dbfs.Create(ctx, files.Create{
 		Path:      filepath.Join(testPath2, testFile1),
 		Overwrite: true,
 	})
 	require.NoError(t, err)
 
 	// write 'Hello, World!' to testFile1
-	err = w.Dbfs.AddBlock(ctx, dbfs.AddBlock{
+	err = w.Dbfs.AddBlock(ctx, files.AddBlock{
 		Data:   base64.StdEncoding.EncodeToString([]byte("Hello, World!")),
 		Handle: createdFile.Handle,
 	})
@@ -208,14 +208,14 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// move testFile1 to test dir1
-	err = w.Dbfs.Move(ctx, dbfs.Move{
+	err = w.Dbfs.Move(ctx, files.Move{
 		SourcePath:      filepath.Join(testPath2, testFile1),
 		DestinationPath: filepath.Join(testPath1, testFile1),
 	})
 	require.NoError(t, err)
 
 	// put a new file testFile2 in test dir1
-	err = w.Dbfs.Put(ctx, dbfs.Put{
+	err = w.Dbfs.Put(ctx, files.Put{
 		Path:      filepath.Join(testPath1, testFile2),
 		Contents:  base64.StdEncoding.EncodeToString([]byte("Bye Bye, World!")),
 		Overwrite: true,
@@ -223,14 +223,14 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// assert on contents of testFile1
-	contentsTestFile, err := w.Dbfs.Read(ctx, dbfs.Read{
+	contentsTestFile, err := w.Dbfs.Read(ctx, files.ReadDbfsRequest{
 		Path: filepath.Join(testPath1, testFile1),
 	})
 	require.NoError(t, err)
 	assert.True(t, contentsTestFile.Data == base64.StdEncoding.EncodeToString([]byte("Hello, World!")))
 
 	// assert on contents of testFile2
-	contentsByeByeWorldFile, err := w.Dbfs.Read(ctx, dbfs.Read{
+	contentsByeByeWorldFile, err := w.Dbfs.Read(ctx, files.ReadDbfsRequest{
 		Path: filepath.Join(testPath1, testFile2),
 	})
 	require.NoError(t, err)

@@ -110,9 +110,9 @@ type OAuthEnrollmentStatus struct {
 
 type TokenAccessPolicy struct {
 	// access token time to live in minutes
-	AccessTokenTtlInMinutes any `json:"access_token_ttl_in_minutes,omitempty"`
+	AccessTokenTtlInMinutes int `json:"access_token_ttl_in_minutes,omitempty"`
 	// refresh token time to live in minutes
-	RefreshTokenTtlInMinutes any `json:"refresh_token_ttl_in_minutes,omitempty"`
+	RefreshTokenTtlInMinutes int `json:"refresh_token_ttl_in_minutes,omitempty"`
 }
 
 type UpdateCustomAppIntegration struct {

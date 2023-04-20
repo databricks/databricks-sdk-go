@@ -12,14 +12,14 @@
 // Uploading a file from an [io.Reader]:
 //
 //	upload, _ := os.Open("/path/to/local/file.ext")
-//	remote, _ := w.Dbfs.Open(ctx, "/path/to/remote/file", dbfs.FileModeWrite|dbfs.FileModeOverwrite)
+//	remote, _ := w.Dbfs.Open(ctx, "/path/to/remote/file", files.FileModeWrite|files.FileModeOverwrite)
 //	io.Copy(remote, upload)
 //	remote.Close()
 //
 // Downloading a file to an [io.Writer]:
 //
 //	download, _ := os.Create("/path/to/local")
-//	remote, _ := w.Dbfs.Open(ctx, "/path/to/remote/file", dbfs.FileModeRead)
+//	remote, _ := w.Dbfs.Open(ctx, "/path/to/remote/file", files.FileModeRead)
 //	_ = io.Copy(download, remote)
 //
 // # Reading and writing files from buffers
@@ -38,7 +38,7 @@
 //
 // # Moving files
 //
-//	err := w.Dbfs.Move(ctx, dbfs.Move{
+//	err := w.Dbfs.Move(ctx, files.Move{
 //		SourcePath:      "/remote/src/path",
 //		DestinationPath: "/remote/dst/path",
 //	})
@@ -46,4 +46,4 @@
 // # Creating directories
 //
 //	w.Dbfs.MkdirsByPath(ctx, "/remote/dir/path")
-package dbfs
+package files

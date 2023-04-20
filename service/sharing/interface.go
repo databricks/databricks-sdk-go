@@ -8,7 +8,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-// Databricks Delta Sharing: Providers REST API
+// Databricks Providers REST API
 type ProvidersService interface {
 
 	// Create an auth provider.
@@ -57,7 +57,7 @@ type ProvidersService interface {
 	Update(ctx context.Context, request UpdateProvider) (*ProviderInfo, error)
 }
 
-// Databricks Delta Sharing: Recipient Activation REST API
+// Databricks Recipient Activation REST API
 type RecipientActivationService interface {
 
 	// Get a share activation URL.
@@ -72,7 +72,7 @@ type RecipientActivationService interface {
 	RetrieveToken(ctx context.Context, request RetrieveTokenRequest) (*RetrieveTokenResponse, error)
 }
 
-// Databricks Delta Sharing: Recipients REST API
+// Databricks Recipients REST API
 type RecipientsService interface {
 
 	// Create a share recipient.
@@ -128,7 +128,7 @@ type RecipientsService interface {
 	Update(ctx context.Context, request UpdateRecipient) error
 }
 
-// Databricks Delta Sharing: Shares REST API
+// Databricks Shares REST API
 type SharesService interface {
 
 	// Create a share.

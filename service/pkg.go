@@ -24,7 +24,7 @@
 //
 // - [sql.DataSourcesAPI]: This API is provided to assist you in making new query objects.
 //
-// - [dbfs.DbfsAPI]: DBFS API makes it simple to interact with various data sources without having to include a users credentials every time to read a file.
+// - [files.DbfsAPI]: DBFS API makes it simple to interact with various data sources without having to include a users credentials every time to read a file.
 //
 // - [sql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/set.
 //
@@ -76,7 +76,7 @@
 //
 // - [provisioning.PrivateAccessAPI]: These APIs manage private access settings for this account.
 //
-// - [sharing.ProvidersAPI]: Databricks Delta Sharing: Providers REST API.
+// - [sharing.ProvidersAPI]: Databricks Providers REST API.
 //
 // - [oauth2.PublishedAppIntegrationAPI]: These APIs enable administrators to manage published oauth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
 //
@@ -84,9 +84,9 @@
 //
 // - [sql.QueryHistoryAPI]: Access the history of queries through SQL warehouses.
 //
-// - [sharing.RecipientActivationAPI]: Databricks Delta Sharing: Recipient Activation REST API.
+// - [sharing.RecipientActivationAPI]: Databricks Recipient Activation REST API.
 //
-// - [sharing.RecipientsAPI]: Databricks Delta Sharing: Recipients REST API.
+// - [sharing.RecipientsAPI]: Databricks Recipients REST API.
 //
 // - [workspace.ReposAPI]: The Repos API allows users to manage their git repos.
 //
@@ -100,7 +100,7 @@
 //
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 //
-// - [sharing.SharesAPI]: Databricks Delta Sharing: Shares REST API.
+// - [sharing.SharesAPI]: Databricks Shares REST API.
 //
 // - [sql.StatementExecutionAPI]: The SQL Statement Execution API manages the execution of arbitrary SQL statements and the fetching of result data.
 //
@@ -141,7 +141,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/compute"
-	"github.com/databricks/databricks-sdk-go/service/dbfs"
+	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/ml"
@@ -172,7 +172,7 @@ var (
 	_ *oauth2.CustomAppIntegrationAPI         = nil
 	_ *sql.DashboardsAPI                      = nil
 	_ *sql.DataSourcesAPI                     = nil
-	_ *dbfs.DbfsAPI                           = nil
+	_ *files.DbfsAPI                          = nil
 	_ *sql.DbsqlPermissionsAPI                = nil
 	_ *provisioning.EncryptionKeysAPI         = nil
 	_ *ml.ExperimentsAPI                      = nil

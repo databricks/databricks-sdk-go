@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package dbfs
+package files
 
 import (
 	"context"
@@ -67,7 +67,7 @@ type DbfsService interface {
 	// Gets the file information for a file or directory. If the file or
 	// directory does not exist, this call throws an exception with
 	// `RESOURCE_DOES_NOT_EXIST`.
-	GetStatus(ctx context.Context, request GetStatus) (*FileInfo, error)
+	GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error)
 
 	// List directory contents or file details.
 	//
@@ -85,7 +85,7 @@ type DbfsService interface {
 	// provides the same functionality without timing out.
 	//
 	// Use ListAll() to get all FileInfo instances
-	List(ctx context.Context, request List) (*ListStatusResponse, error)
+	List(ctx context.Context, request ListDbfsRequest) (*ListStatusResponse, error)
 
 	// Create a directory.
 	//
@@ -133,5 +133,5 @@ type DbfsService interface {
 	//
 	// If `offset + length` exceeds the number of bytes in a file, it reads the
 	// contents until the end of file.",
-	Read(ctx context.Context, request Read) (*ReadResponse, error)
+	Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error)
 }

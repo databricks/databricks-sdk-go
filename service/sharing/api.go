@@ -20,7 +20,7 @@ func NewProviders(client *client.DatabricksClient) *ProvidersAPI {
 	}
 }
 
-// Databricks Delta Sharing: Providers REST API
+// Databricks Providers REST API
 type ProvidersAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ProvidersService)
@@ -164,7 +164,7 @@ func NewRecipientActivation(client *client.DatabricksClient) *RecipientActivatio
 	}
 }
 
-// Databricks Delta Sharing: Recipient Activation REST API
+// Databricks Recipient Activation REST API
 type RecipientActivationAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(RecipientActivationService)
@@ -225,7 +225,7 @@ func NewRecipients(client *client.DatabricksClient) *RecipientsAPI {
 	}
 }
 
-// Databricks Delta Sharing: Recipients REST API
+// Databricks Recipients REST API
 type RecipientsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(RecipientsService)
@@ -376,7 +376,7 @@ func NewShares(client *client.DatabricksClient) *SharesAPI {
 	}
 }
 
-// Databricks Delta Sharing: Shares REST API
+// Databricks Shares REST API
 type SharesAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(SharesService)

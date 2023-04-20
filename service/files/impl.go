@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package dbfs
+package files
 
 import (
 	"context"
@@ -39,14 +39,14 @@ func (a *dbfsImpl) Delete(ctx context.Context, request Delete) error {
 	return err
 }
 
-func (a *dbfsImpl) GetStatus(ctx context.Context, request GetStatus) (*FileInfo, error) {
+func (a *dbfsImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error) {
 	var fileInfo FileInfo
 	path := "/api/2.0/dbfs/get-status"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &fileInfo)
 	return &fileInfo, err
 }
 
-func (a *dbfsImpl) List(ctx context.Context, request List) (*ListStatusResponse, error) {
+func (a *dbfsImpl) List(ctx context.Context, request ListDbfsRequest) (*ListStatusResponse, error) {
 	var listStatusResponse ListStatusResponse
 	path := "/api/2.0/dbfs/list"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listStatusResponse)
@@ -71,7 +71,7 @@ func (a *dbfsImpl) Put(ctx context.Context, request Put) error {
 	return err
 }
 
-func (a *dbfsImpl) Read(ctx context.Context, request Read) (*ReadResponse, error) {
+func (a *dbfsImpl) Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error) {
 	var readResponse ReadResponse
 	path := "/api/2.0/dbfs/read"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &readResponse)

@@ -1,4 +1,4 @@
-package dbfs
+package files
 
 import (
 	"bufio"
@@ -106,7 +106,7 @@ func (h *fileHandle) Read(p []byte) (int, error) {
 			chunk = chunk[:maxDbfsBlockSize]
 		}
 
-		res, err := h.api.Read(h.ctx, Read{
+		res, err := h.api.Read(h.ctx, ReadDbfsRequest{
 			Path:   h.path,
 			Length: len(chunk),
 			Offset: int(r.offset), // TODO: make int32/in64 work properly
@@ -249,7 +249,7 @@ func (a *DbfsAPI) Open(ctx context.Context, path string, mode FileMode) (Handle,
 	isRead := (mode & FileModeRead) != 0
 	isWrite := (mode & FileModeWrite) != 0
 	if (isRead && isWrite) || (!isRead && !isWrite) {
-		return nil, fmt.Errorf("dbfs open: must specify dbfs.FileModeRead or dbfs.FileModeWrite")
+		return nil, fmt.Errorf("dbfs open: must specify files.FileModeRead or files.FileModeWrite")
 	}
 
 	var err error
@@ -306,7 +306,7 @@ func (a DbfsAPI) RecursiveList(ctx context.Context, path string) ([]FileInfo, er
 	for len(queue) > 0 {
 		path := queue[0]
 		queue = queue[1:]
-		batch, err := a.ListAll(ctx, List{
+		batch, err := a.ListAll(ctx, ListDbfsRequest{
 			Path: path,
 		})
 		if apierr.IsMissing(err) {

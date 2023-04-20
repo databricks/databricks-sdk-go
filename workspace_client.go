@@ -8,7 +8,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/compute"
-	"github.com/databricks/databricks-sdk-go/service/dbfs"
+	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/ml"
@@ -122,7 +122,7 @@ type WorkspaceClient struct {
 
 	// DBFS API makes it simple to interact with various data sources without
 	// having to include a users credentials every time to read a file.
-	Dbfs *dbfs.DbfsAPI
+	Dbfs *files.DbfsAPI
 
 	// The SQL Permissions API is similar to the endpoints of the
 	// :method:permissions/set. However, this exposes only one endpoint, which
@@ -352,7 +352,7 @@ type WorkspaceClient struct {
 	// using a policy family inherit the policy family's policy definition.
 	PolicyFamilies *compute.PolicyFamiliesAPI
 
-	// Databricks Delta Sharing: Providers REST API
+	// Databricks Providers REST API
 	Providers *sharing.ProvidersAPI
 
 	// These endpoints are used for CRUD operations on query definitions. Query
@@ -363,10 +363,10 @@ type WorkspaceClient struct {
 	// Access the history of queries through SQL warehouses.
 	QueryHistory *sql.QueryHistoryAPI
 
-	// Databricks Delta Sharing: Recipient Activation REST API
+	// Databricks Recipient Activation REST API
 	RecipientActivation *sharing.RecipientActivationAPI
 
-	// Databricks Delta Sharing: Recipients REST API
+	// Databricks Recipients REST API
 	Recipients *sharing.RecipientsAPI
 
 	// The Repos API allows users to manage their git repos. Users can use the
@@ -427,7 +427,7 @@ type WorkspaceClient struct {
 	// the scale of resources that should be applied to each served model.
 	ServingEndpoints *serving.ServingEndpointsAPI
 
-	// Databricks Delta Sharing: Shares REST API
+	// Databricks Shares REST API
 	Shares *sharing.SharesAPI
 
 	// The SQL Statement Execution API manages the execution of arbitrary SQL
@@ -731,7 +731,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		CurrentUser:         iam.NewCurrentUser(apiClient),
 		Dashboards:          sql.NewDashboards(apiClient),
 		DataSources:         sql.NewDataSources(apiClient),
-		Dbfs:                dbfs.NewDbfs(apiClient),
+		Dbfs:                files.NewDbfs(apiClient),
 		DbsqlPermissions:    sql.NewDbsqlPermissions(apiClient),
 		Experiments:         ml.NewExperiments(apiClient),
 		ExternalLocations:   catalog.NewExternalLocations(apiClient),
