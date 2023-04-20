@@ -618,9 +618,9 @@ func (a *WorkspaceAPI) Delete(ctx context.Context, request Delete) error {
 	return a.impl.Delete(ctx, request)
 }
 
-// Export a notebook.
+// Export a workspace object.
 //
-// Exports a notebook or the contents of an entire directory.
+// Exports an object or the contents of an entire directory.
 //
 // If `path` does not exist, this call returns an error
 // `RESOURCE_DOES_NOT_EXIST`.
@@ -650,12 +650,12 @@ func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*Objec
 	})
 }
 
-// Import a notebook.
+// Import a workspace object.
 //
-// Imports a notebook or the contents of an entire directory. If `path` already
-// exists and `overwrite` is set to `false`, this call returns an error
-// `RESOURCE_ALREADY_EXISTS`. One can only use `DBC` format to import a
-// directory.
+// Imports a workspace object (for example, a notebook or file) or the contents
+// of an entire directory. If `path` already exists and `overwrite` is set to
+// `false`, this call returns an error `RESOURCE_ALREADY_EXISTS`. One can only
+// use `DBC` format to import a directory.
 func (a *WorkspaceAPI) Import(ctx context.Context, request Import) error {
 	return a.impl.Import(ctx, request)
 }

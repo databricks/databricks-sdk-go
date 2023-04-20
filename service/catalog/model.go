@@ -2034,7 +2034,7 @@ type VolumeInfo struct {
 	// The comment attached to the volume
 	Comment string `json:"comment,omitempty"`
 
-	CreatedAt any/* MISSING TYPE */ `json:"created_at,omitempty"`
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// The identifier of the user who created the volume
 	CreatedBy string `json:"created_by,omitempty"`
 	// The three-level (fully qualified) name of the volume
@@ -2050,7 +2050,7 @@ type VolumeInfo struct {
 	// The storage location on the cloud
 	StorageLocation string `json:"storage_location,omitempty"`
 
-	UpdatedAt any/* MISSING TYPE */ `json:"updated_at,omitempty"`
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// The identifier of the user who updated the volume last time
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// The unique identifier of the volume

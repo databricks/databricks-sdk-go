@@ -158,9 +158,16 @@ type DeleteSecret struct {
 }
 
 // This specifies the format of the file to be imported. By default, this is
-// `SOURCE`. However it may be one of: `SOURCE`, `HTML`, `JUPYTER`, `DBC`. The
-// value is case sensitive.
+// `SOURCE`.
+//
+// If using `AUTO` the item is imported or exported as either a workspace file
+// or a notebook,depending on an analysis of the item’s extension and the
+// header content provided in the request. The value is case sensitive. In
+// addition, if the item is imported as a notebook, then the item’s extension
+// is automatically removed.
 type ExportFormat string
+
+const ExportFormatAuto ExportFormat = `AUTO`
 
 const ExportFormatDbc ExportFormat = `DBC`
 
@@ -180,11 +187,11 @@ func (ef *ExportFormat) String() string {
 // Set raw string value and validate it against allowed values
 func (ef *ExportFormat) Set(v string) error {
 	switch v {
-	case `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
+	case `AUTO`, `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
 		*ef = ExportFormat(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DBC", "HTML", "JUPYTER", "R_MARKDOWN", "SOURCE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AUTO", "DBC", "HTML", "JUPYTER", "R_MARKDOWN", "SOURCE"`, v)
 	}
 }
 
@@ -193,7 +200,7 @@ func (ef *ExportFormat) Type() string {
 	return "ExportFormat"
 }
 
-// Export a notebook
+// Export a workspace object
 type ExportRequest struct {
 	// Flag to enable direct download. If it is `true`, the response will be the
 	// exported file itself. Otherwise, the response contains content as base64
@@ -204,8 +211,8 @@ type ExportRequest struct {
 	//
 	// The value is case sensitive.
 	Format ExportFormat `json:"-" url:"format,omitempty"`
-	// The absolute path of the notebook or directory. Exporting directory is
-	// only support for `DBC` format.
+	// The absolute path of the object or directory. Exporting a directory is
+	// only supported for the `DBC` format.
 	Path string `json:"-" url:"path"`
 }
 
@@ -253,8 +260,13 @@ type Import struct {
 	// absent, and instead a posted file will be used.
 	Content string `json:"content,omitempty"`
 	// This specifies the format of the file to be imported. By default, this is
-	// `SOURCE`. However it may be one of: `SOURCE`, `HTML`, `JUPYTER`, `DBC`.
-	// The value is case sensitive.
+	// `SOURCE`.
+	//
+	// If using `AUTO` the item is imported or exported as either a workspace
+	// file or a notebook,depending on an analysis of the item’s extension and
+	// the header content provided in the request. The value is case sensitive.
+	// In addition, if the item is imported as a notebook, then the item’s
+	// extension is automatically removed.
 	Format ExportFormat `json:"format,omitempty"`
 	// The language of the object. This value is set only if the object type is
 	// `NOTEBOOK`.
@@ -263,8 +275,8 @@ type Import struct {
 	// `false` by default. For `DBC` format, `overwrite` is not supported since
 	// it may contain a directory.
 	Overwrite bool `json:"overwrite,omitempty"`
-	// The absolute path of the notebook or directory. Importing directory is
-	// only support for `DBC` format.
+	// The absolute path of the object or directory. Importing a directory is
+	// only supported for the `DBC` format.
 	Path string `json:"path"`
 }
 

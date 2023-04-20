@@ -1740,8 +1740,45 @@ type SparkPythonTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	Parameters []string `json:"parameters,omitempty"`
-
+	// The Python file to be executed. Cloud file URIs (such as dbfs:/, s3:/,
+	// adls:/, gcs:/) and workspace paths are supported. For python files stored
+	// in the Databricks workspace, the path must be absolute and begin with
+	// `/`. For files stored in a remote repository, the path must be relative.
+	// This field is required.
 	PythonFile string `json:"python_file"`
+	// This describes an enum
+	Source SparkPythonTaskSource `json:"source,omitempty"`
+}
+
+// This describes an enum
+type SparkPythonTaskSource string
+
+// The Python file is located in a remote Git repository.
+const SparkPythonTaskSourceGit SparkPythonTaskSource = `GIT`
+
+// The Python file is located in a Databricks workspace or at a cloud filesystem
+// URI.
+const SparkPythonTaskSourceWorkspace SparkPythonTaskSource = `WORKSPACE`
+
+// String representation for [fmt.Print]
+func (spts *SparkPythonTaskSource) String() string {
+	return string(*spts)
+}
+
+// Set raw string value and validate it against allowed values
+func (spts *SparkPythonTaskSource) Set(v string) error {
+	switch v {
+	case `GIT`, `WORKSPACE`:
+		*spts = SparkPythonTaskSource(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GIT", "WORKSPACE"`, v)
+	}
+}
+
+// Type always returns SparkPythonTaskSource to satisfy [pflag.Value] interface
+func (spts *SparkPythonTaskSource) Type() string {
+	return "SparkPythonTaskSource"
 }
 
 type SparkSubmitTask struct {

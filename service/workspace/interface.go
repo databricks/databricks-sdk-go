@@ -261,9 +261,9 @@ type WorkspaceService interface {
 	// not atomic.
 	Delete(ctx context.Context, request Delete) error
 
-	// Export a notebook.
+	// Export a workspace object.
 	//
-	// Exports a notebook or the contents of an entire directory.
+	// Exports an object or the contents of an entire directory.
 	//
 	// If `path` does not exist, this call returns an error
 	// `RESOURCE_DOES_NOT_EXIST`.
@@ -279,12 +279,12 @@ type WorkspaceService interface {
 	// this call returns an error `RESOURCE_DOES_NOT_EXIST`.
 	GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error)
 
-	// Import a notebook.
+	// Import a workspace object.
 	//
-	// Imports a notebook or the contents of an entire directory. If `path`
-	// already exists and `overwrite` is set to `false`, this call returns an
-	// error `RESOURCE_ALREADY_EXISTS`. One can only use `DBC` format to import
-	// a directory.
+	// Imports a workspace object (for example, a notebook or file) or the
+	// contents of an entire directory. If `path` already exists and `overwrite`
+	// is set to `false`, this call returns an error `RESOURCE_ALREADY_EXISTS`.
+	// One can only use `DBC` format to import a directory.
 	Import(ctx context.Context, request Import) error
 
 	// List contents.
