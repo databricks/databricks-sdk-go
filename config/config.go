@@ -215,7 +215,7 @@ func (c *Config) authenticateIfNeeded(ctx context.Context) error {
 	if c.Credentials == nil {
 		c.Credentials = &DefaultCredentials{}
 	}
-	c.fixHostIfNeeded()
+	c.FixHostIfNeeded()
 	visitor, err := c.Credentials.Configure(ctx, c)
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("%s auth: %w", c.Credentials.Name(), err))
@@ -225,12 +225,12 @@ func (c *Config) authenticateIfNeeded(ctx context.Context) error {
 	}
 	c.auth = visitor
 	c.AuthType = c.Credentials.Name()
-	c.fixHostIfNeeded()
+	c.FixHostIfNeeded()
 	// TODO: error customization
 	return nil
 }
 
-func (c *Config) fixHostIfNeeded() error {
+func (c *Config) FixHostIfNeeded() error {
 	// Nothing to fix if the host isn't set.
 	if c.Host == "" {
 		return nil
