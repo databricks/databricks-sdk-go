@@ -132,12 +132,11 @@ func deleteModel(t *testing.T, w *databricks.WorkspaceClient, ctx context.Contex
 
 func TestAccRegistryWebhooks(t *testing.T) {
 	ctx, w := workspaceTest(t)
-
 	created, err := w.ModelRegistry.CreateWebhook(ctx, ml.CreateRegistryWebhook{
 		Description: RandomName("comment "),
 		Events:      []ml.RegistryWebhookEvent{ml.RegistryWebhookEventModelVersionCreated},
 		HttpUrlSpec: &ml.HttpUrlSpec{
-			Url: w.Config.Host,
+			Url: w.Config.CanonicalHostName(),
 		},
 	})
 	require.NoError(t, err)

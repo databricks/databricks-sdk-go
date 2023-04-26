@@ -194,6 +194,11 @@ func (c *Config) WithTesting() *Config {
 	return c
 }
 
+func (c *Config) CanonicalHostName() string {
+	c.fixHostIfNeeded()
+	return c.Host
+}
+
 func (c *Config) wrapDebug(err error) error {
 	debug := ConfigAttributes.DebugString(c)
 	if debug == "" {
