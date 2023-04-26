@@ -194,6 +194,11 @@ func (c *Config) WithTesting() *Config {
 	return c
 }
 
+func (c *Config) CanonicalHostName() string {
+	c.fixHostIfNeeded()
+	return c.Host
+}
+
 func (c *Config) wrapDebug(err error) error {
 	debug := ConfigAttributes.DebugString(c)
 	if debug == "" {
@@ -215,7 +220,7 @@ func (c *Config) authenticateIfNeeded(ctx context.Context) error {
 	if c.Credentials == nil {
 		c.Credentials = &DefaultCredentials{}
 	}
-	c.FixHostIfNeeded()
+	c.fixHostIfNeeded()
 	visitor, err := c.Credentials.Configure(ctx, c)
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("%s auth: %w", c.Credentials.Name(), err))
@@ -225,12 +230,12 @@ func (c *Config) authenticateIfNeeded(ctx context.Context) error {
 	}
 	c.auth = visitor
 	c.AuthType = c.Credentials.Name()
-	c.FixHostIfNeeded()
+	c.fixHostIfNeeded()
 	// TODO: error customization
 	return nil
 }
 
-func (c *Config) FixHostIfNeeded() error {
+func (c *Config) fixHostIfNeeded() error {
 	// Nothing to fix if the host isn't set.
 	if c.Host == "" {
 		return nil
