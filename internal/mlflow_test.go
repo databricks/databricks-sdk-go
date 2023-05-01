@@ -95,7 +95,7 @@ func deleteWorkaround(t *testing.T, w *databricks.WorkspaceClient, path, key, va
 }
 
 // disable once platform is fixed on mlflow side
-var deleteWorkaroundEnabled = true
+var deleteWorkaroundEnabled = false
 
 func TestAccModels(t *testing.T) {
 	ctx, w := workspaceTest(t)
