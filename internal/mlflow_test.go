@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/ml"
@@ -181,6 +182,7 @@ func TestAccModelVersions(t *testing.T) {
 
 	if !deleteWorkaroundEnabled {
 		// we cleanup in  the deleteModel for now.
+		time.Sleep(10 * time.Second)
 		t.Cleanup(func() {
 			err := w.ModelRegistry.DeleteModelVersion(ctx, ml.DeleteModelVersionRequest{
 				// TODO: OpenAPI: x-databricks-sdk-inline
