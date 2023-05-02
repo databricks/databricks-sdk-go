@@ -1,11 +1,9 @@
 package internal
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"net/http"
 	"testing"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/ml"
@@ -82,21 +80,6 @@ func TestAccMLflowRuns(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func deleteWorkaround(t *testing.T, w *databricks.WorkspaceClient, path, key, value string) {
-	body, err := json.Marshal(map[string]string{key: value})
-	require.NoError(t, err)
-	req, err := http.NewRequest("DELETE", w.Config.Host+path, bytes.NewBuffer(body))
-	require.NoError(t, err)
-	err = w.Config.Authenticate(req)
-	require.NoError(t, err)
-	res, err := http.DefaultClient.Do(req)
-	require.NoError(t, err)
-	require.Equal(t, 200, res.StatusCode)
-}
-
-// disable once platform is fixed on mlflow side
-var deleteWorkaroundEnabled = true
-
 func TestAccModels(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
@@ -120,14 +103,10 @@ func TestAccModels(t *testing.T) {
 }
 
 func deleteModel(t *testing.T, w *databricks.WorkspaceClient, ctx context.Context, created *ml.CreateModelResponse) {
-	if deleteWorkaroundEnabled {
-		deleteWorkaround(t, w, "/api/2.0/mlflow/registered-models/delete", "name", created.RegisteredModel.Name)
-	} else {
-		err := w.ModelRegistry.DeleteModel(ctx, ml.DeleteModelRequest{
-			Name: created.RegisteredModel.Name,
-		})
-		require.NoError(t, err)
-	}
+	err := w.ModelRegistry.DeleteModel(ctx, ml.DeleteModelRequest{
+		Name: created.RegisteredModel.Name,
+	})
+	require.NoError(t, err)
 }
 
 func TestAccRegistryWebhooks(t *testing.T) {
@@ -142,10 +121,6 @@ func TestAccRegistryWebhooks(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		if deleteWorkaroundEnabled {
-			deleteWorkaround(t, w, "/api/2.0/mlflow/registry-webhooks/delete", "id", created.Webhook.Id)
-			return
-		}
 		err := w.ModelRegistry.DeleteWebhook(ctx, ml.DeleteWebhookRequest{
 			Id: created.Webhook.Id,
 		})
@@ -160,6 +135,35 @@ func TestAccRegistryWebhooks(t *testing.T) {
 	all, err := w.ModelRegistry.ListWebhooksAll(ctx, ml.ListWebhooksRequest{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
+}
+
+func deleteModelVersion(t *testing.T, w *databricks.WorkspaceClient, ctx context.Context, created *ml.CreateModelVersionResponse) {
+	// Only delete if model version doesn't have "PENDING_REGISTRATION" status else it could lead to test failure due to race condition
+	startTime := time.Now()
+	for {
+		currentModelVersion, err := w.ModelRegistry.GetModelVersion(ctx, ml.GetModelVersionRequest{
+			Name:    created.ModelVersion.Name,
+			Version: created.ModelVersion.Version,
+		})
+		require.NoError(t, err)
+
+		if currentModelVersion.ModelVersion.Status != ml.ModelVersionStatusPendingRegistration {
+			break
+		}
+		currentTime := time.Now()
+		elapsedTime := currentTime.Sub(startTime).Seconds()
+		if elapsedTime > 10 {
+			t.Fatalf("Timeout: Model version still has PENDING_REGISTERATION status after 10 seconds")
+		}
+		time.Sleep(2 * time.Second)
+	}
+
+	err := w.ModelRegistry.DeleteModelVersion(ctx, ml.DeleteModelVersionRequest{
+		// TODO: OpenAPI: x-databricks-sdk-inline
+		Name:    created.ModelVersion.Name,
+		Version: created.ModelVersion.Version,
+	})
+	require.NoError(t, err)
 }
 
 func TestAccModelVersions(t *testing.T) {
@@ -179,17 +183,9 @@ func TestAccModelVersions(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	if !deleteWorkaroundEnabled {
-		// we cleanup in  the deleteModel for now.
-		t.Cleanup(func() {
-			err := w.ModelRegistry.DeleteModelVersion(ctx, ml.DeleteModelVersionRequest{
-				// TODO: OpenAPI: x-databricks-sdk-inline
-				Name:    created.ModelVersion.Name,
-				Version: created.ModelVersion.Version,
-			})
-			require.NoError(t, err)
-		})
-	}
+	t.Cleanup(func() {
+		deleteModelVersion(t, w, ctx, created)
+	})
 
 	err = w.ModelRegistry.UpdateModelVersion(ctx, ml.UpdateModelVersionRequest{
 		Description: RandomName("description "),
@@ -217,15 +213,7 @@ func TestAccModelVersionComments(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		if deleteWorkaroundEnabled {
-			return
-		}
-		err := w.ModelRegistry.DeleteModelVersion(ctx, ml.DeleteModelVersionRequest{
-			// TODO: OpenAPI: x-databricks-sdk-inline
-			Name:    mv.ModelVersion.Name,
-			Version: mv.ModelVersion.Version,
-		})
-		require.NoError(t, err)
+		deleteModelVersion(t, w, ctx, mv)
 	})
 
 	created, err := w.ModelRegistry.CreateComment(ctx, ml.CreateComment{
@@ -237,10 +225,6 @@ func TestAccModelVersionComments(t *testing.T) {
 
 	t.Cleanup(func() {
 		// TODO: OpenAPI: x-databricks-sdk-inline
-		if deleteWorkaroundEnabled {
-			deleteWorkaround(t, w, "/api/2.0/mlflow/comments/delete", "id", created.Comment.Id)
-			return
-		}
 		err := w.ModelRegistry.DeleteComment(ctx, ml.DeleteCommentRequest{
 			Id: created.Comment.Id,
 		})
