@@ -209,15 +209,21 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, len(events) > 0)
 
+	// List clusters in workspace
 	all, err := w.Clusters.ListAll(ctx, compute.ListClustersRequest{})
 	require.NoError(t, err)
+	foundCluster := false
+	for _, info := range all {
+		if info.ClusterName == clusterName {
+			foundCluster = true
+		}
+	}
+	assert.True(t, foundCluster)
 
-	// List compute in workspace
-	names, err := w.Clusters.ClusterInfoClusterNameToClusterIdMap(ctx,
-		compute.ListClustersRequest{})
+	// Get cluster by name and assert it still exists
+	clusterInfo, err := w.Clusters.GetByClusterName(ctx, clusterName)
 	require.NoError(t, err)
-	assert.Equal(t, len(all), len(names))
-	assert.Contains(t, names, clusterName)
+	assert.Equal(t, clusterInfo.ClusterName, clusterName)
 
 	otherOwner, err := w.Users.Create(ctx, iam.User{
 		UserName: RandomEmail(),
