@@ -157,11 +157,6 @@ func parseErrorFromResponse(resp *http.Response, body []byte, err error) *APIErr
 		errorBody.Message = strings.Trim(errorBody.Message, " ")
 		errorBody.ErrorCode = fmt.Sprintf("SCIM_%s", errorBody.ScimStatus)
 	}
-	// if resp.StatusCode == 403 {
-	// 	errorBody.Message = fmt.Sprintf("%s. Using %s auth: %s",
-	// 		strings.Trim(errorBody.Message, "."), c.AuthType,
-	// 		c.configDebugString())
-	// }
 	return &APIError{
 		Message:    errorBody.Message,
 		ErrorCode:  errorBody.ErrorCode,
