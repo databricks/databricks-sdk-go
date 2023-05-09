@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"regexp"
 	"runtime"
 	"sort"
 	"strings"
@@ -316,12 +317,84 @@ func makeQueryString(data interface{}) (string, error) {
 	return "", fmt.Errorf("unsupported query string data: %#v", data)
 }
 
+// Remove all custom request serializer logic once APP-1331 is rolled out.
+type serializer func(interface{}) ([]byte, error)
+
+func serializeUnityCatalogDeleteRequest(data interface{}) ([]byte, error) {
+	m := make(map[string]interface{})
+	// Reflectively look up the Force field of data, and if it is true, set the
+	// "force" field of m to true.
+	setField := func(v reflect.Value, i int, structName, bodyName string) {
+		if v.Type().Field(i).Name == structName {
+			// check all available kinds and set m[bodyName] to the value of the field
+			switch v.Field(i).Kind() {
+			case reflect.Bool:
+				m[bodyName] = v.Field(i).Bool()
+			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+				m[bodyName] = v.Field(i).Int()
+			case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+				m[bodyName] = v.Field(i).Uint()
+			case reflect.Float32, reflect.Float64:
+				m[bodyName] = v.Field(i).Float()
+			case reflect.String:
+				m[bodyName] = v.Field(i).String()
+			}
+		}
+	}
+	v := reflect.ValueOf(data)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+	if v.Kind() == reflect.Struct {
+		for i := 0; i < v.NumField(); i++ {
+			setField(v, i, "Force", "force")
+			setField(v, i, "MetastoreId", "metastore_id")
+		}
+	}
+
+	return json.MarshalIndent(m, "", "  ")
+}
+
+var metastorePath = regexp.MustCompile("/api/2.1/unity-catalog/metastores/[^/]+")
+var metastoreWorkspacePath = regexp.MustCompile("/api/2.1/unity-catalog/workspaces/[^/]+/metastore")
+var catalogPath = regexp.MustCompile("/api/2.1/unity-catalog/catalogs/[^/]+")
+var catalogWorkspacePath = regexp.MustCompile("/api/2.1/unity-catalog/workspaces/[^/]+/catalog")
+
+// List of exact request prefixes for which the request data should be serialized
+// into the request body instead of the query string.
+var deleteRequestInBodyOverrides = []struct {
+	requestMethod     string
+	requestRegexp     *regexp.Regexp
+	requestSerializer serializer
+}{
+	{"DELETE", metastorePath, serializeUnityCatalogDeleteRequest},
+	{"DELETE", catalogPath, serializeUnityCatalogDeleteRequest},
+	{"DELETE", metastoreWorkspacePath, serializeUnityCatalogDeleteRequest},
+	{"DELETE", catalogWorkspacePath, serializeUnityCatalogDeleteRequest},
+}
+
+func getRequestCustomSerializer(method string, requestURL *string) serializer {
+	for _, override := range deleteRequestInBodyOverrides {
+		// Return true if the request URL has the prefix and no trailing segments
+		// which would indicate other APIs.
+		matchRequestMethod := method == override.requestMethod
+		matchRequestURL := override.requestRegexp.MatchString(*requestURL)
+		if matchRequestMethod && matchRequestURL {
+			return override.requestSerializer
+		}
+	}
+	return nil
+}
+
 func makeRequestBody(method string, requestURL *string, data interface{}) ([]byte, error) {
 	var requestBody []byte
 	if data == nil && (method == "DELETE" || method == "GET") {
 		return requestBody, nil
 	}
-	if method == "GET" {
+	if customSerializer := getRequestCustomSerializer(method, requestURL); customSerializer != nil {
+		return customSerializer(data)
+	}
+	if method == "GET" || method == "DELETE" {
 		qs, err := makeQueryString(data)
 		if err != nil {
 			return nil, err
