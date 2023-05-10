@@ -51,6 +51,14 @@ var HelperFuncs = template.FuncMap{
 	"list": func(l ...any) []any {
 		return l
 	},
+	"in": func(haystack []any, needle string) bool {
+		for _, v := range haystack {
+			if needle == fmt.Sprint(v) {
+				return true
+			}
+		}
+		return false
+	},
 	"dict": func(args ...any) map[string]any {
 		if len(args)%2 != 0 {
 			panic("number of arguments to dict is not even")
