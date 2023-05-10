@@ -324,6 +324,10 @@ func serializeQueryParamsToRequestBody(data any) ([]byte, error) {
 	m := make(map[string]any)
 	rv := reflect.ValueOf(data)
 	rt := reflect.TypeOf(data)
+	// If data is a map, just serialize it to JSON.
+	if rv.Kind() == reflect.Map {
+		return json.MarshalIndent(data, "", "  ")
+	}
 	for i := 0; i < rv.NumField(); i++ {
 		field := rv.Field(i)
 		tag := rt.Field(i).Tag.Get("url")
@@ -348,8 +352,8 @@ var requestInBodyOverrides = []struct {
 	urlRegexp  *regexp.Regexp
 	serializer serializer
 }{
-	{"DELETE", regexp.MustCompile("/api/2.1/unity-catalog/(metastores|catalogs)/[^/]+"), serializeQueryParamsToRequestBody},
-	{"DELETE", regexp.MustCompile("/api/2.1/unity-catalog/workspaces/[^/]+/(metastore|catalog)"), serializeQueryParamsToRequestBody},
+	{"DELETE", regexp.MustCompile("(/api/2.1)?/unity-catalog/(metastores|catalogs)/[^/]+"), serializeQueryParamsToRequestBody},
+	{"DELETE", regexp.MustCompile("(/api/2.1)?/unity-catalog/workspaces/[^/]+/(metastore|catalog)"), serializeQueryParamsToRequestBody},
 }
 
 func getRequestCustomSerializer(method string, requestURL *string) serializer {
