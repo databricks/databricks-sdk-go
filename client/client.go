@@ -318,10 +318,10 @@ func makeQueryString(data interface{}) (string, error) {
 }
 
 // Remove all custom request serializer logic once APP-1331 is rolled out.
-type serializer func(interface{}) ([]byte, error)
+type serializer func(any) ([]byte, error)
 
-func serializeUnityCatalogDeleteRequest(data interface{}) ([]byte, error) {
-	m := make(map[string]interface{})
+func serializeUnityCatalogDeleteRequest(data any) ([]byte, error) {
+	m := make(map[string]any)
 	// Reflectively look up the Force field of data, and if it is true, set the
 	// "force" field of m to true.
 	setField := func(v reflect.Value, i int, structName, bodyName string) {
@@ -355,32 +355,25 @@ func serializeUnityCatalogDeleteRequest(data interface{}) ([]byte, error) {
 	return json.MarshalIndent(m, "", "  ")
 }
 
-var metastorePath = regexp.MustCompile("/api/2.1/unity-catalog/metastores/[^/]+")
-var metastoreWorkspacePath = regexp.MustCompile("/api/2.1/unity-catalog/workspaces/[^/]+/metastore")
-var catalogPath = regexp.MustCompile("/api/2.1/unity-catalog/catalogs/[^/]+")
-var catalogWorkspacePath = regexp.MustCompile("/api/2.1/unity-catalog/workspaces/[^/]+/catalog")
-
-// List of exact request prefixes for which the request data should be serialized
-// into the request body instead of the query string.
-var deleteRequestInBodyOverrides = []struct {
-	requestMethod     string
-	requestRegexp     *regexp.Regexp
-	requestSerializer serializer
+// List of (method, URL) pairs whose request bodies need to be serialized in a
+// custom way. These can be removed after APP-1331 is rolled out.
+var requestInBodyOverrides = []struct {
+	method     string
+	urlRegexp  *regexp.Regexp
+	serializer serializer
 }{
-	{"DELETE", metastorePath, serializeUnityCatalogDeleteRequest},
-	{"DELETE", catalogPath, serializeUnityCatalogDeleteRequest},
-	{"DELETE", metastoreWorkspacePath, serializeUnityCatalogDeleteRequest},
-	{"DELETE", catalogWorkspacePath, serializeUnityCatalogDeleteRequest},
+	{"DELETE", regexp.MustCompile("/api/2.1/unity-catalog/(metastores|catalogs)/[^/]+"), serializeUnityCatalogDeleteRequest},
+	{"DELETE", regexp.MustCompile("/api/2.1/unity-catalog/workspaces/[^/]+/(metastore|catalog)"), serializeUnityCatalogDeleteRequest},
 }
 
 func getRequestCustomSerializer(method string, requestURL *string) serializer {
-	for _, override := range deleteRequestInBodyOverrides {
+	for _, override := range requestInBodyOverrides {
 		// Return true if the request URL has the prefix and no trailing segments
 		// which would indicate other APIs.
-		matchRequestMethod := method == override.requestMethod
-		matchRequestURL := override.requestRegexp.MatchString(*requestURL)
+		matchRequestMethod := method == override.method
+		matchRequestURL := override.urlRegexp.MatchString(*requestURL)
 		if matchRequestMethod && matchRequestURL {
-			return override.requestSerializer
+			return override.serializer
 		}
 	}
 	return nil

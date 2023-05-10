@@ -143,11 +143,10 @@ func TestUcAccCatalogs(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		deleteCatalogRequest := catalog.DeleteCatalogRequest{
+		err := w.Catalogs.Delete(ctx, catalog.DeleteCatalogRequest{
 			Name:  created.Name,
 			Force: true,
-		}
-		err := w.Catalogs.Delete(ctx, deleteCatalogRequest)
+		})
 		require.NoError(t, err)
 	})
 
@@ -173,11 +172,10 @@ func TestUcAccSchemas(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		deleteCatalogRequest := catalog.DeleteCatalogRequest{
+		err := w.Catalogs.Delete(ctx, catalog.DeleteCatalogRequest{
 			Name:  newCatalog.Name,
 			Force: true,
-		}
-		err := w.Catalogs.Delete(ctx, deleteCatalogRequest)
+		})
 		require.NoError(t, err)
 	})
 
