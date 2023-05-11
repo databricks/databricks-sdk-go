@@ -321,7 +321,7 @@ func makeQueryString(data interface{}) (string, error) {
 type serializer func(any) ([]byte, error)
 
 func serializeQueryParamsToRequestBody(data any) ([]byte, error) {
-	m := make(map[string]any)
+	m := map[string]any{}
 	rv := reflect.ValueOf(data)
 	rt := reflect.TypeOf(data)
 	// If data is a map, just serialize it to JSON.
@@ -335,7 +335,7 @@ func serializeQueryParamsToRequestBody(data any) ([]byte, error) {
 			continue
 		}
 		value := field.Interface()
-		if reflect.DeepEqual(value, reflect.Zero(field.Type()).Interface()) {
+		if field.IsZero() {
 			continue
 		}
 		key := strings.Split(tag, ",")[0]
