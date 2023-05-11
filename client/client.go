@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"regexp"
 	"runtime"
 	"sort"
 	"strings"
@@ -316,10 +317,65 @@ func makeQueryString(data interface{}) (string, error) {
 	return "", fmt.Errorf("unsupported query string data: %#v", data)
 }
 
+// Remove all custom request serializer logic once APP-1331 is rolled out.
+type serializer func(any) ([]byte, error)
+
+func serializeQueryParamsToRequestBody(data any) ([]byte, error) {
+	m := map[string]any{}
+	rv := reflect.ValueOf(data)
+	rt := reflect.TypeOf(data)
+	// If data is a map, just serialize it to JSON.
+	if rv.Kind() == reflect.Map {
+		return json.MarshalIndent(data, "", "  ")
+	}
+	for i := 0; i < rv.NumField(); i++ {
+		field := rv.Field(i)
+		tag := rt.Field(i).Tag.Get("url")
+		if tag == "" {
+			continue
+		}
+		value := field.Interface()
+		if field.IsZero() {
+			continue
+		}
+		key := strings.Split(tag, ",")[0]
+		m[key] = value
+	}
+
+	return json.MarshalIndent(m, "", "  ")
+}
+
+// List of (method, URL) pairs whose request bodies need to be serialized in a
+// custom way. These can be removed after APP-1331 is rolled out.
+var requestInBodyOverrides = []struct {
+	method     string
+	urlRegexp  *regexp.Regexp
+	serializer serializer
+}{
+	{"DELETE", regexp.MustCompile("(/api/2.1)?/unity-catalog/(metastores|catalogs)/[^/]+"), serializeQueryParamsToRequestBody},
+	{"DELETE", regexp.MustCompile("(/api/2.1)?/unity-catalog/workspaces/[^/]+/(metastore|catalog)"), serializeQueryParamsToRequestBody},
+}
+
+func getRequestCustomSerializer(method string, requestURL *string) serializer {
+	for _, override := range requestInBodyOverrides {
+		// Return true if the request URL has the prefix and no trailing segments
+		// which would indicate other APIs.
+		matchRequestMethod := method == override.method
+		matchRequestURL := override.urlRegexp.MatchString(*requestURL)
+		if matchRequestMethod && matchRequestURL {
+			return override.serializer
+		}
+	}
+	return nil
+}
+
 func makeRequestBody(method string, requestURL *string, data interface{}) ([]byte, error) {
 	var requestBody []byte
 	if data == nil && (method == "DELETE" || method == "GET") {
 		return requestBody, nil
+	}
+	if customSerializer := getRequestCustomSerializer(method, requestURL); customSerializer != nil {
+		return customSerializer(data)
 	}
 	if method == "GET" || method == "DELETE" {
 		qs, err := makeQueryString(data)

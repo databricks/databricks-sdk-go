@@ -92,7 +92,6 @@ func TestUcAccExternalLocations(t *testing.T) {
 }
 
 func TestUcAccMetastores(t *testing.T) {
-	t.Skip("metastore force delete doesn't work yet")
 	ctx, w := ucwsTest(t)
 	created, err := w.Metastores.Create(ctx, catalog.CreateMetastore{
 		Name:        RandomName("go-sdk-"),
@@ -122,7 +121,6 @@ func TestUcAccMetastores(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	// TODO: Fix once APP-1331 is implemented
 	err = w.Metastores.Unassign(ctx, catalog.UnassignRequest{
 		MetastoreId: created.MetastoreId,
 		WorkspaceId: GetEnvInt64OrSkipTest(t, "TEST_WORKSPACE_ID"),
@@ -138,7 +136,6 @@ func TestUcAccMetastores(t *testing.T) {
 }
 
 func TestUcAccCatalogs(t *testing.T) {
-	t.Skip("needs force delete")
 	ctx, w := ucwsTest(t)
 
 	created, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
@@ -146,11 +143,17 @@ func TestUcAccCatalogs(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := w.Catalogs.DeleteByName(ctx, created.Name)
+		err := w.Catalogs.Delete(ctx, catalog.DeleteCatalogRequest{
+			Name:  created.Name,
+			Force: true,
+		})
 		require.NoError(t, err)
 	})
 
-	_, err = w.Catalogs.Update(ctx, catalog.UpdateCatalog{})
+	_, err = w.Catalogs.Update(ctx, catalog.UpdateCatalog{
+		Name:    created.Name,
+		Comment: "updated",
+	})
 	require.NoError(t, err)
 
 	_, err = w.Catalogs.GetByName(ctx, created.Name)
@@ -162,7 +165,6 @@ func TestUcAccCatalogs(t *testing.T) {
 }
 
 func TestUcAccSchemas(t *testing.T) {
-	t.Skip("needs force delete")
 	ctx, w := ucwsTest(t)
 
 	newCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
@@ -170,8 +172,10 @@ func TestUcAccSchemas(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		// TODO: force delete
-		err := w.Catalogs.DeleteByName(ctx, newCatalog.Name)
+		err := w.Catalogs.Delete(ctx, catalog.DeleteCatalogRequest{
+			Name:  newCatalog.Name,
+			Force: true,
+		})
 		require.NoError(t, err)
 	})
 
