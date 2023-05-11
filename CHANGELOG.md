@@ -1,5 +1,19 @@
 # Version changelog
 
+## 0.8.1
+
+ * Added `in` codegen function ([#387](https://github.com/databricks/databricks-sdk-go/pull/387)).
+ * Fixed mlflow acceptance tests ([#378](https://github.com/databricks/databricks-sdk-go/pull/378)).
+ * Fixed MLflow integration test and removed workaround for `DELETE` query parameter ([#380](https://github.com/databricks/databricks-sdk-go/pull/380)).
+ * Make clusters acceptance tests robust to duplicate cluster names ([#381](https://github.com/databricks/databricks-sdk-go/pull/381)).
+ * Remove dead code from apierr/errors.go ([#376](https://github.com/databricks/databricks-sdk-go/pull/376)).
+ * Serialize params to request body on delete ([#383](https://github.com/databricks/databricks-sdk-go/pull/383)).
+
+Dependency updates:
+
+ * Bump golang.org/x/oauth2 from 0.7.0 to 0.8.0 ([#385](https://github.com/databricks/databricks-sdk-go/pull/385)).
+ * Bump google.golang.org/api from 0.118.0 to 0.122.0 ([#382](https://github.com/databricks/databricks-sdk-go/pull/382), [#386](https://github.com/databricks/databricks-sdk-go/pull/386)).
+
 ## 0.8.0
 
  * Added more code generation utilities ([#369](https://github.com/databricks/databricks-sdk-go/pull/369)).
