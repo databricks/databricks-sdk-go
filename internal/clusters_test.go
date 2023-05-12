@@ -110,12 +110,8 @@ func TestAccClustersApiIntegration(t *testing.T) {
 
 	clusterName := RandomName("sdk-go-cluster-")
 
-	// Fetch list of spark runtime versions
-	sparkVersions, err := w.Clusters.SparkVersions(ctx)
-	require.NoError(t, err)
-
 	// Select the latest LTS version
-	latest, err := sparkVersions.Select(compute.SparkVersionRequest{
+	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
 		Latest: true,
 	})
 	require.NoError(t, err)

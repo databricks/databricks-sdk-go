@@ -188,7 +188,7 @@ type example struct {
 	Calls     []*call
 	Cleanup   []*call
 	Asserts   []*binaryExpr
-	scope     map[string]*call
+	scope     map[string]expression
 }
 
 func (ex *example) findCall(svcCamelName, methodCamelName string) *call {

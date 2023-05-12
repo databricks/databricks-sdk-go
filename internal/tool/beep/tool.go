@@ -41,28 +41,41 @@ func (s *suite) Sample(svc, mth string) (out []*example) {
 		if c == nil {
 			continue
 		}
-		sample := &example{}
+		sample := &example{
+			scope: map[string]expression{},
+		}
 		out = append(out, sample)
 		variablesUsed := []string{}
-		queue := []*call{c}
+		queue := []expression{c}
 		for len(queue) > 0 {
 			current := queue[0]
 			queue = queue[1:]
-			sample.Calls = append(sample.Calls, current)
-			if current.Assign != nil {
-				variablesUsed = append(variablesUsed, current.Assign.CamelName())
+			switch x := current.(type) {
+			case *call:
+				sample.Calls = append(sample.Calls, x)
+				if x.Assign != nil {
+					variablesUsed = append(variablesUsed, x.Assign.CamelName())
+				}
+				x.Traverse(func(e expression) {
+					v, ok := e.(*variable)
+					if !ok {
+						return
+					}
+					found, ok := ex.scope[v.CamelName()]
+					if !ok {
+						return
+					}
+					if lit, ok := found.(*literal); ok {
+						// add variable to the scope
+						sample.scope[v.CamelName()] = lit
+					} else {
+						// resolve variables through calls
+						queue = append(queue, found)
+					}
+				})
+			default:
+				panic("unsupported")
 			}
-			current.Traverse(func(e expression) {
-				v, ok := e.(*variable)
-				if !ok {
-					return
-				}
-				found, ok := ex.scope[v.CamelName()]
-				if !ok {
-					return
-				}
-				queue = append(queue, found)
-			})
 		}
 		for i, j := 0, len(sample.Calls)-1; i < j; i, j = i+1, j-1 {
 			sample.Calls[i], sample.Calls[j] = sample.Calls[j], sample.Calls[i]
@@ -142,7 +155,7 @@ func (s *suite) expectFn(fn *ast.FuncDecl) *example {
 		Named: code.Named{
 			Name: fn.Name.Name,
 		},
-		scope: map[string]*call{},
+		scope: map[string]expression{},
 	}
 	for _, v := range fn.Body.List {
 		switch stmt := v.(type) {
@@ -235,14 +248,19 @@ func (s *suite) expectAssign(ex *example, stmt *ast.AssignStmt) {
 		ex.IsAccount = names[1] == "a"
 		return
 	}
-	c := s.expectAssignCall(stmt)
-	if c == nil {
-		return
+	switch stmt.Rhs[0].(type) {
+	case *ast.CallExpr:
+		c := s.expectAssignCall(stmt)
+		if c == nil {
+			return
+		}
+		if c.Assign != nil {
+			ex.scope[c.Assign.CamelName()] = c
+		}
+		ex.Calls = append(ex.Calls, c)
+	case *ast.BasicLit:
+		ex.scope[names[0]] = s.expectExpr(stmt.Rhs[0])
 	}
-	if c.Assign != nil {
-		ex.scope[c.Assign.CamelName()] = c
-	}
-	ex.Calls = append(ex.Calls, c)
 }
 
 func (s *suite) expectAssignCall(stmt *ast.AssignStmt) *call {
@@ -403,28 +421,38 @@ func (s *suite) expectSimpleCall(ce *ast.CallExpr) *call {
 }
 
 func (s *suite) expectCall(e ast.Expr) *call {
+	ce, ok := e.(*ast.CallExpr)
+	if !ok {
+		s.explainAndPanic("call expr", e)
+		return nil
+	}
 	c := &call{}
-	find(e, func(ce *ast.CallExpr) {
-		// parse path to function to service/method name
-		visit(ce.Fun, func(se *ast.SelectorExpr) ast.Visitor {
-			c.Name = se.Sel.Name
-			return visit(se.X, func(se *ast.SelectorExpr) ast.Visitor {
-				c.Service = &code.Named{
-					Name: se.Sel.Name,
-				}
-				// we don't parse X: *ast.Ident as we know the w/a context,
-				// though we may add it later
-				return nil
-			})
-		})
-		for _, v := range ce.Args {
-			arg := s.expectExpr(v)
-			if x, ok := arg.(*variable); ok && (x.Name == "ctx" || x.Name == "t") {
-				// context.Context is irrelevant in other languages than Go
-				continue
+	switch t := ce.Fun.(type) {
+	case *ast.Ident:
+		c.Name = t.Name
+	case *ast.SelectorExpr:
+		c.Name = t.Sel.Name
+		switch se := t.X.(type) {
+		case *ast.SelectorExpr:
+			c.Service = &code.Named{
+				Name: se.Sel.Name,
 			}
-			c.Args = append(c.Args, arg)
+		case *ast.Ident:
+			c.Service = &code.Named{
+				Name: se.Name,
+			}
+		default:
+			s.explainAndPanic("selector expr", se)
+			return nil
 		}
-	})
+	}
+	for _, v := range ce.Args {
+		arg := s.expectExpr(v)
+		if x, ok := arg.(*variable); ok && (x.Name == "ctx" || x.Name == "t") {
+			// context.Context is irrelevant in other languages than Go
+			continue
+		}
+		c.Args = append(c.Args, arg)
+	}
 	return c
 }
