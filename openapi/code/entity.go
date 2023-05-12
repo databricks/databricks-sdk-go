@@ -194,6 +194,17 @@ func (e *Entity) HasNameField() bool {
 	return false
 }
 
+// Does this type have a single x-databricks-name field?
+func (e *Entity) HasSingleNameField() bool {
+	count := 0
+	for _, v := range e.fields {
+		if v.Entity.IsName {
+			count++
+		}
+	}
+	return (count == 1)
+}
+
 // Enum returns all entries for enum entities
 func (e *Entity) Enum() (enum []EnumEntry) {
 	for _, v := range e.enum {

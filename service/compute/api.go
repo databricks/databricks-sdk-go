@@ -463,9 +463,8 @@ func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]Clust
 
 // Get cluster info.
 //
-// "Retrieves the information for a cluster given its identifier. Clusters can
-// be described while they are running, or up to 60 days after they are
-// terminated.
+// Retrieves the information for a cluster given its identifier. Clusters can be
+// described while they are running, or up to 60 days after they are terminated.
 func (a *ClustersAPI) Get(ctx context.Context, request GetClusterRequest) (*ClusterInfo, error) {
 	return a.impl.Get(ctx, request)
 }
@@ -514,9 +513,8 @@ func (a *ClustersAPI) GetAndWait(ctx context.Context, getClusterRequest GetClust
 
 // Get cluster info.
 //
-// "Retrieves the information for a cluster given its identifier. Clusters can
-// be described while they are running, or up to 60 days after they are
-// terminated.
+// Retrieves the information for a cluster given its identifier. Clusters can be
+// described while they are running, or up to 60 days after they are terminated.
 func (a *ClustersAPI) GetByClusterId(ctx context.Context, clusterId string) (*ClusterInfo, error) {
 	return a.impl.Get(ctx, GetClusterRequest{
 		ClusterId: clusterId,
@@ -1180,7 +1178,7 @@ func (a *GlobalInitScriptsAPI) GetByScriptId(ctx context.Context, scriptId strin
 
 // Get init scripts.
 //
-// "Get a list of all global init scripts for this workspace. This returns all
+// Get a list of all global init scripts for this workspace. This returns all
 // properties for each script but **not** the script contents. To retrieve the
 // contents of a script, use the [get a global init
 // script](#operation/get-script) operation.

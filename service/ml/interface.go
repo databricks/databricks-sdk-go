@@ -47,7 +47,7 @@ type ExperimentsService interface {
 
 	// Get metadata.
 	//
-	// "Gets metadata for an experiment.
+	// Gets metadata for an experiment.
 	//
 	// This endpoint will return deleted experiments, but prefers the active
 	// experiment if an active and deleted experiment share the same name. If
@@ -55,7 +55,7 @@ type ExperimentsService interface {
 	// of them.
 	//
 	// Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name
-	// exists.S
+	// exists.
 	GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error)
 
 	// Get an experiment.
@@ -71,9 +71,9 @@ type ExperimentsService interface {
 
 	// Get a run.
 	//
-	// "Gets the metadata, metrics, params, and tags for a run. In the case
-	// where multiple metrics with the same key are logged for a run, return
-	// only the value with the latest timestamp.
+	// Gets the metadata, metrics, params, and tags for a run. In the case where
+	// multiple metrics with the same key are logged for a run, return only the
+	// value with the latest timestamp.
 	//
 	// If there are multiple values with the latest timestamp, return the
 	// maximum of these values.
@@ -141,6 +141,12 @@ type ExperimentsService interface {
 	// length * Parameter and tag values can be up to 250 characters in length
 	LogBatch(ctx context.Context, request LogBatch) error
 
+	// Log inputs to a run.
+	//
+	// **NOTE:** Experimental: This API may change or be removed in a future
+	// release without warning.
+	LogInputs(ctx context.Context, request LogInputs) error
+
 	// Log a metric.
 	//
 	// Logs a metric for a run. A metric is a key-value pair (string key, float
@@ -164,12 +170,12 @@ type ExperimentsService interface {
 
 	// Restores an experiment.
 	//
-	// "Restore an experiment marked for deletion. This also restores associated
+	// Restore an experiment marked for deletion. This also restores associated
 	// metadata, runs, metrics, params, and tags. If experiment uses FileStore,
 	// underlying artifacts associated with experiment are also restored.
 	//
 	// Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was
-	// permanently deleted.",
+	// permanently deleted.
 	RestoreExperiment(ctx context.Context, request RestoreExperiment) error
 
 	// Restore a run.

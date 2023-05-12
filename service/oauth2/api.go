@@ -46,7 +46,8 @@ func (a *CustomAppIntegrationAPI) Impl() CustomAppIntegrationService {
 //
 // Create Custom OAuth App Integration.
 //
-// You can retrieve the custom oauth app integration via :method:get.
+// You can retrieve the custom oauth app integration via
+// :method:CustomAppIntegration/get.
 func (a *CustomAppIntegrationAPI) Create(ctx context.Context, request CreateCustomAppIntegration) (*CreateCustomAppIntegrationOutput, error) {
 	return a.impl.Create(ctx, request)
 }
@@ -54,7 +55,7 @@ func (a *CustomAppIntegrationAPI) Create(ctx context.Context, request CreateCust
 // Delete Custom OAuth App Integration.
 //
 // Delete an existing Custom OAuth App Integration. You can retrieve the custom
-// oauth app integration via :method:get.
+// oauth app integration via :method:CustomAppIntegration/get.
 func (a *CustomAppIntegrationAPI) Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error {
 	return a.impl.Delete(ctx, request)
 }
@@ -62,7 +63,7 @@ func (a *CustomAppIntegrationAPI) Delete(ctx context.Context, request DeleteCust
 // Delete Custom OAuth App Integration.
 //
 // Delete an existing Custom OAuth App Integration. You can retrieve the custom
-// oauth app integration via :method:get.
+// oauth app integration via :method:CustomAppIntegration/get.
 func (a *CustomAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
 	return a.impl.Delete(ctx, DeleteCustomAppIntegrationRequest{
 		IntegrationId: integrationId,
@@ -102,7 +103,7 @@ func (a *CustomAppIntegrationAPI) ListAll(ctx context.Context) ([]GetCustomAppIn
 // Updates Custom OAuth App Integration.
 //
 // Updates an existing custom OAuth App Integration. You can retrieve the custom
-// oauth app integration via :method:get.
+// oauth app integration via :method:CustomAppIntegration/get.
 func (a *CustomAppIntegrationAPI) Update(ctx context.Context, request UpdateCustomAppIntegration) error {
 	return a.impl.Update(ctx, request)
 }
@@ -148,7 +149,7 @@ func (a *OAuthEnrollmentAPI) Impl() OAuthEnrollmentService {
 //
 // The enrollment is executed asynchronously, so the API will return 204
 // immediately. The actual enrollment take a few minutes, you can check the
-// status via API :method:get.
+// status via API :method:OAuthEnrollment/get.
 func (a *OAuthEnrollmentAPI) Create(ctx context.Context, request CreateOAuthEnrollment) error {
 	return a.impl.Create(ctx, request)
 }
@@ -200,7 +201,8 @@ func (a *PublishedAppIntegrationAPI) Impl() PublishedAppIntegrationService {
 //
 // Create Published OAuth App Integration.
 //
-// You can retrieve the published oauth app integration via :method:get.
+// You can retrieve the published oauth app integration via
+// :method:PublishedAppIntegration/get.
 func (a *PublishedAppIntegrationAPI) Create(ctx context.Context, request CreatePublishedAppIntegration) (*CreatePublishedAppIntegrationOutput, error) {
 	return a.impl.Create(ctx, request)
 }
@@ -208,7 +210,7 @@ func (a *PublishedAppIntegrationAPI) Create(ctx context.Context, request CreateP
 // Delete Published OAuth App Integration.
 //
 // Delete an existing Published OAuth App Integration. You can retrieve the
-// published oauth app integration via :method:get.
+// published oauth app integration via :method:PublishedAppIntegration/get.
 func (a *PublishedAppIntegrationAPI) Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error {
 	return a.impl.Delete(ctx, request)
 }
@@ -216,7 +218,7 @@ func (a *PublishedAppIntegrationAPI) Delete(ctx context.Context, request DeleteP
 // Delete Published OAuth App Integration.
 //
 // Delete an existing Published OAuth App Integration. You can retrieve the
-// published oauth app integration via :method:get.
+// published oauth app integration via :method:PublishedAppIntegration/get.
 func (a *PublishedAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
 	return a.impl.Delete(ctx, DeletePublishedAppIntegrationRequest{
 		IntegrationId: integrationId,
@@ -256,7 +258,7 @@ func (a *PublishedAppIntegrationAPI) ListAll(ctx context.Context) ([]GetPublishe
 // Updates Published OAuth App Integration.
 //
 // Updates an existing published OAuth App Integration. You can retrieve the
-// published oauth app integration via :method:get.
+// published oauth app integration via :method:PublishedAppIntegration/get.
 func (a *PublishedAppIntegrationAPI) Update(ctx context.Context, request UpdatePublishedAppIntegration) error {
 	return a.impl.Update(ctx, request)
 }
