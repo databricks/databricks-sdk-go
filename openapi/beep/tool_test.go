@@ -16,7 +16,7 @@ func TestLoadsBilling(t *testing.T) {
 }
 
 func TestLoadsClusters(t *testing.T) {
-	s, err := NewSuite("../../clusters_test.go")
+	s, err := NewSuite("../../internal/clusters_test.go")
 	require.NoError(t, err)
 
 	samples := s.Sample("clusters", "pin")
