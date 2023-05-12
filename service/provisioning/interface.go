@@ -82,7 +82,8 @@ type EncryptionKeysService interface {
 	// root DBFS and system data) and, optionally, cluster EBS volume data.
 	//
 	// **Important**: Customer-managed keys are supported only for some
-	// deployment types, subscription types, and AWS regions.
+	// deployment types, subscription types, and AWS regions that currently
+	// support creation of Databricks workspaces.
 	//
 	// This operation is available only if your account is on the E2 version of
 	// the platform or on a select custom plan that allows multiple workspaces
@@ -112,7 +113,7 @@ type EncryptionKeysService interface {
 	// deployment types, subscription types, and AWS regions.
 	//
 	// This operation is available only if your account is on the E2 version of
-	// the platform.
+	// the platform.",
 	Get(ctx context.Context, request GetEncryptionKeyRequest) (*CustomerManagedKey, error)
 
 	// Get all encryption key configurations.

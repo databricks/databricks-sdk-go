@@ -110,9 +110,7 @@ func TestAccDashboards(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	created, err := w.Dashboards.Create(ctx, sql.CreateDashboardRequest{
-		Name:                    RandomName("go-sdk-"),
-		DashboardFiltersEnabled: false,
-		IsDraft:                 true,
+		Name: RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 

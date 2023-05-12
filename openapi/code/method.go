@@ -230,6 +230,9 @@ func (m *Method) NamedIdMap() *NamedIdMap {
 	if !entity.HasIdentifierField() {
 		return nil
 	}
+	if !entity.HasSingleNameField() {
+		return nil
+	}
 	var id *Field
 	var namePath []*Field
 	for _, f := range entity.fields {

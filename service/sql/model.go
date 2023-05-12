@@ -270,14 +270,10 @@ type CreateAlert struct {
 
 // Create a dashboard object
 type CreateDashboardRequest struct {
-	// In the web application, query filters that share a name are coupled to a
-	// single selection box if this value is true.
-	DashboardFiltersEnabled bool `json:"dashboard_filters_enabled,omitempty"`
-	// Draft dashboards only appear in list views for their owners.
-	IsDraft bool `json:"is_draft,omitempty"`
-	// Indicates whether the dashboard is trashed. Trashed dashboards don't
-	// appear in list views.
-	IsTrashed bool `json:"is_trashed,omitempty"`
+	// Indicates whether this query object should appear in the current user's
+	// favorites list. The application uses this flag to determine whether or
+	// not the "favorite star " should selected.
+	IsFavorite bool `json:"is_favorite,omitempty"`
 	// The title of this dashboard that appears in list views and at the top of
 	// the dashboard page.
 	Name string `json:"name,omitempty"`
@@ -286,11 +282,6 @@ type CreateDashboardRequest struct {
 	Parent string `json:"parent,omitempty"`
 
 	Tags []string `json:"tags,omitempty"`
-	// An array of widget objects. A complete description of widget objects can
-	// be found in the response to [Retrieve A Dashboard
-	// Definition](#operation/sql-analytics-fetch-dashboard). Databricks does
-	// not recommend creating new widgets via this API.
-	Widgets []Widget `json:"widgets,omitempty"`
 }
 
 type CreateWarehouseRequest struct {
@@ -903,10 +894,10 @@ type GetQueryRequest struct {
 
 type GetResponse struct {
 	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
-	// A singular noun object type.
-	ObjectId ObjectType `json:"object_id,omitempty"`
 	// An object's type and UUID, separated by a forward slash (/) character.
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId string `json:"object_id,omitempty"`
+	// A singular noun object type.
+	ObjectType ObjectType `json:"object_type,omitempty"`
 }
 
 // Get status, manifest, and result first chunk
@@ -1904,10 +1895,10 @@ type SetRequest struct {
 
 type SetResponse struct {
 	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
-	// A singular noun object type.
-	ObjectId ObjectType `json:"object_id,omitempty"`
 	// An object's type and UUID, separated by a forward slash (/) character.
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId string `json:"object_id,omitempty"`
+	// A singular noun object type.
+	ObjectType ObjectType `json:"object_type,omitempty"`
 }
 
 type SetWorkspaceWarehouseConfigRequest struct {

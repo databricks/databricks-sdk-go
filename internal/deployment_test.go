@@ -107,7 +107,7 @@ func TestMwsAccEncryptionKeys(t *testing.T) {
 	}
 
 	created, err := a.EncryptionKeys.Create(ctx, provisioning.CreateCustomerManagedKeyRequest{
-		AwsKeyInfo: provisioning.CreateAwsKeyInfo{
+		AwsKeyInfo: &provisioning.CreateAwsKeyInfo{
 			KeyArn:   GetEnvOrSkipTest(t, "TEST_MANAGED_KMS_KEY_ARN"),
 			KeyAlias: GetEnvOrSkipTest(t, "TEST_STORAGE_KMS_KEY_ALIAS"),
 		},
