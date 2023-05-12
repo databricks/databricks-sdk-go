@@ -9,7 +9,7 @@ import (
 
 func TestAccLibraries(t *testing.T) {
 	ctx, w := workspaceTest(t)
-	clusterId := sharedRunningCluster(t, ctx, w)
+	clusterId := sharedRunningClusterNoTranspile(t, ctx, w)
 
 	err := w.Libraries.UpdateAndWait(ctx, compute.Update{
 		ClusterId: clusterId,

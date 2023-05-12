@@ -18,7 +18,7 @@ import (
 // use mutex around starting TEST_GO_SDK_CLUSTER_ID
 var mu sync.Mutex
 
-func sharedRunningCluster(t *testing.T, ctx context.Context,
+func sharedRunningClusterNoTranspile(t *testing.T, ctx context.Context,
 	w *databricks.WorkspaceClient) string {
 	mu.Lock()
 	defer mu.Unlock()

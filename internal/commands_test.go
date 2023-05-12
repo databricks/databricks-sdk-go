@@ -9,7 +9,7 @@ import (
 
 func TestAccCommands(t *testing.T) {
 	ctx, w := workspaceTest(t)
-	clusterId := sharedRunningCluster(t, ctx, w)
+	clusterId := sharedRunningClusterNoTranspile(t, ctx, w)
 
 	res := w.CommandExecutor.Execute(ctx, clusterId, "python", "print(1)")
 	require.NoError(t, res.Err())

@@ -12,7 +12,7 @@ import (
 
 func TestAccJobsApiFullIntegration(t *testing.T) {
 	ctx, w := workspaceTest(t)
-	clusterId := sharedRunningCluster(t, ctx, w)
+	clusterId := sharedRunningClusterNoTranspile(t, ctx, w)
 	notebookPath := myNotebookPath(t, w)
 
 	err := w.Workspace.Import(ctx, workspace.PythonNotebookOverwrite(notebookPath, `
@@ -134,7 +134,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	assert.True(t, len(jobList) >= 1)
 }
 
-func TestAccJobsListAllNoDuplicates(t *testing.T) {
+func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	// Fetch list of spark runtime versions
