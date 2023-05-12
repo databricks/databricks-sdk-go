@@ -44,7 +44,7 @@ func sharedRunningCluster(t *testing.T, ctx context.Context,
 	return clusterId
 }
 
-func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
+func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	// Fetch list of spark runtime versions
@@ -127,10 +127,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 15,
 		NumWorkers:             1,
-	}, retries.Timeout[compute.ClusterInfo](20*time.Minute),
-		retries.OnPoll(func(i *compute.ClusterInfo) {
-			t.Logf("cluster is %s", i.State)
-		}))
+	})
 	require.NoError(t, err)
 
 	t.Cleanup(func() {

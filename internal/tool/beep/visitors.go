@@ -1,6 +1,8 @@
 package beep
 
-import "go/ast"
+import (
+	"go/ast"
+)
 
 type walker func(ast.Node) ast.Visitor
 

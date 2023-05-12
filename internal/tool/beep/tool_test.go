@@ -7,10 +7,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestLoads(t *testing.T) {
+func TestLoadsBilling(t *testing.T) {
 	s, err := NewSuite("../../billing_test.go")
 	require.NoError(t, err)
 
 	svcs := s.ImprotedServices()
 	assert.True(t, len(svcs) > 0)
+}
+
+func TestLoadsClusters(t *testing.T) {
+	s, err := NewSuite("../../clusters_test.go")
+	require.NoError(t, err)
+	assert.Greater(t, len(s.examples), 2)
 }

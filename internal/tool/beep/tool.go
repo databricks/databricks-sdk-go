@@ -1,7 +1,6 @@
 package beep
 
 import (
-	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -67,75 +66,145 @@ func (s *suite) expectString(l *ast.BasicLit) string {
 	return strings.Trim(l.Value, `"`)
 }
 
+func (s *suite) expectExamples() {
+	for _, v := range s.file.Decls {
+		fn, ok := v.(*ast.FuncDecl)
+		if !ok {
+			continue
+		}
+		if strings.HasSuffix(fn.Name.Name, "NoTranspile") {
+			// Tests with NoTranspile suffix are too expensive to automatically
+			// translate, we just ignore them.
+			continue
+		}
+		s.examples = append(s.examples, s.expectFn(fn))
+	}
+}
+
+func (s *suite) expectFn(fn *ast.FuncDecl) *example {
+	ex := &example{
+		Named: code.Named{
+			Name: fn.Name.Name,
+		},
+	}
+	for _, v := range fn.Body.List {
+		switch stmt := v.(type) {
+		case *ast.AssignStmt:
+			s.expectAssign(ex, stmt)
+		case *ast.DeferStmt:
+			ex.Cleanup = append(ex.Cleanup, s.expectCall(stmt.Call))
+		case *ast.ExprStmt:
+			s.expectExprStmt(ex, stmt)
+		}
+		// we ignore test skips for different clouds
+	}
+	return ex
+}
+
 var ignoreFns = map[string]bool{
 	"SkipNow": true,
 	"NoError": true,
+	"Lock":    true,
+	"Errorf":  true,
+	"Skipf":   true,
 }
 
-func (s *suite) expectExamples() {
-	find(s.file, func(fn *ast.FuncDecl) {
-		ex := &example{
-			Named: code.Named{
-				Name: fn.Name.Name,
-			},
+func (s *suite) expectCleanup(ex *example, ce *ast.CallExpr) bool {
+	se, ok := ce.Fun.(*ast.SelectorExpr)
+	if !ok || se.Sel.Name != "Cleanup" {
+		return false
+	}
+	if len(ce.Args) == 0 {
+		return false
+	}
+	inlineFn, ok := ce.Args[0].(*ast.FuncLit)
+	if !ok {
+		return false
+	}
+	for _, v := range inlineFn.Body.List {
+		assign, ok := v.(*ast.AssignStmt)
+		if !ok {
+			continue
 		}
-		s.examples = append(s.examples, ex)
-		find(fn, func(as *ast.AssignStmt) {
-			names := s.assignedNames(as)
-			if len(names) == 2 && names[0] == "ctx" {
-				// w - workspace, a - account
-				ex.IsAccount = names[1] == "a"
-			}
-			if len(names) == 1 && names[0] == "err" {
-				ex.Calls = append(ex.Calls, s.expectCall(as.Rhs[0]))
-			}
-			if len(names) == 2 && names[1] == "err" {
-				c := s.expectCall(as.Rhs[0])
-				c.Assign = &code.Named{
-					Name: names[0],
-				}
-				ex.Calls = append(ex.Calls, c)
-			}
+		c := s.expectAssignCall(assign)
+		if c == nil {
+			continue
+		}
+		ex.Cleanup = append(ex.Cleanup, c)
+	}
+	return true
+}
+
+func (s *suite) expectExprStmt(ex *example, stmt *ast.ExprStmt) {
+	ce, ok := stmt.X.(*ast.CallExpr)
+	if !ok {
+		return
+	}
+	if s.expectCleanup(ex, ce) {
+		return
+	}
+	c := s.expectCall(stmt.X)
+	if ignoreFns[c.Name] {
+		return
+	}
+	switch c.Name {
+	case "Equal":
+		ex.Asserts = append(ex.Asserts, &binaryExpr{
+			Left:  c.Args[0],
+			Op:    "==",
+			Right: c.Args[1],
 		})
-		find(fn, func(dfr *ast.DeferStmt) {
-			ex.Cleanup = append(ex.Cleanup, s.expectCall(dfr.Call))
+	case "NotEqual":
+		ex.Asserts = append(ex.Asserts, &binaryExpr{
+			Left:  c.Args[0],
+			Op:    "!=",
+			Right: c.Args[1],
 		})
-		find(fn, func(es *ast.ExprStmt) {
-			c := s.expectCall(es.X)
-			if ignoreFns[c.Name] {
-				return
-			}
-			switch c.Name {
-			case "Equal":
-				ex.Asserts = append(ex.Asserts, &binaryExpr{
-					Left:  c.Args[0],
-					Op:    "==",
-					Right: c.Args[1],
-				})
-			case "NotEqual":
-				ex.Asserts = append(ex.Asserts, &binaryExpr{
-					Left:  c.Args[0],
-					Op:    "!=",
-					Right: c.Args[1],
-				})
-			case "True":
-				ex.Asserts = append(ex.Asserts, &binaryExpr{
-					Left:  c.Args[0],
-					Op:    "==",
-					Right: &boolean{true},
-				})
-			default:
-				print(c)
-			}
+	case "True":
+		ex.Asserts = append(ex.Asserts, &binaryExpr{
+			Left:  c.Args[0],
+			Op:    "==",
+			Right: &boolean{true},
 		})
-		// we ignore test skips for different clouds
-	})
+	default:
+		print(c)
+	}
+}
+
+func (s *suite) expectAssign(ex *example, stmt *ast.AssignStmt) {
+	names := s.assignedNames(stmt)
+	if len(names) == 2 && names[0] == "ctx" {
+		// w - workspace, a - account
+		ex.IsAccount = names[1] == "a"
+		return
+	}
+	c := s.expectAssignCall(stmt)
+	if c == nil {
+		return
+	}
+	ex.Calls = append(ex.Calls, c)
+}
+
+func (s *suite) expectAssignCall(stmt *ast.AssignStmt) *call {
+	names := s.assignedNames(stmt)
+	if len(names) == 1 && names[0] == "err" {
+		return s.expectCall(stmt.Rhs[0])
+	}
+	if len(names) == 2 && names[1] == "err" {
+		c := s.expectCall(stmt.Rhs[0])
+		c.Assign = &code.Named{
+			Name: names[0],
+		}
+		return c
+	}
+	return nil
 }
 
 func (s *suite) expectIdent(e ast.Expr) string {
 	ident, ok := e.(*ast.Ident)
 	if !ok {
-		panic(fmt.Sprintf("%v is not an ident", e))
+		s.explainAndPanic("ident", e)
+		return ""
 	}
 	return ident.Name
 }
@@ -159,7 +228,8 @@ func (s *suite) expectFieldValues(exprs []ast.Expr) (fvs []*fieldValue) {
 				Value: s.expectExpr(kv.Value),
 			})
 		default:
-			panic(fmt.Sprintf("unknown field value expr: %v", v))
+			s.explainAndPanic("field value", v)
+			return
 		}
 	}
 	return fvs
@@ -174,7 +244,8 @@ func (s *suite) expectArray(t *ast.ArrayType, cl *ast.CompositeLit) *array {
 	case *ast.Ident:
 		arr.Name = s.expectIdent(elt)
 	default:
-		panic(fmt.Sprintf("unknown array element type: %v", elt))
+		s.explainAndPanic("array element", elt)
+		return nil
 	}
 	for _, v := range cl.Elts {
 		switch item := v.(type) {
@@ -205,7 +276,8 @@ func (s *suite) expectExpr(e ast.Expr) expression {
 		case *ast.ArrayType:
 			return s.expectArray(t, x)
 		default:
-			panic(fmt.Sprintf("unknown composite lit type: %v", t))
+			s.explainAndPanic("composite lit type", t)
+			return nil
 		}
 	case *ast.UnaryExpr:
 		if x.Op != token.AND {
@@ -234,8 +306,14 @@ func (s *suite) expectExpr(e ast.Expr) expression {
 			Right: s.expectExpr(x.Index),
 		}
 	default:
-		panic(fmt.Sprintf("unknown expr: %v", e))
+		s.explainAndPanic("expr", e)
+		return nil
 	}
+}
+
+func (s *suite) explainAndPanic(expected string, x any) any {
+	ast.Print(s.fset, x)
+	panic("expected " + expected)
 }
 
 func (s *suite) expectLookup(se *ast.SelectorExpr) *lookup {
@@ -248,7 +326,8 @@ func (s *suite) expectLookup(se *ast.SelectorExpr) *lookup {
 func (s *suite) expectSimpleCall(ce *ast.CallExpr) *call {
 	ident, ok := ce.Fun.(*ast.Ident)
 	if !ok {
-		panic(fmt.Sprintf("expected simple call to have *ast.Ident for name, got %v", ce.Fun))
+		s.explainAndPanic("ident", ce.Fun)
+		return nil
 	}
 	c := &call{
 		Named: code.Named{
