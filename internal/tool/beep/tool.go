@@ -29,6 +29,62 @@ type suite struct {
 	examples []*example
 }
 
+func (s *suite) Sample(svc, mth string) (out []*example) {
+	svcCamelName := (&code.Named{
+		Name: svc,
+	}).CamelName()
+	methodCamelName := (&code.Named{
+		Name: mth,
+	}).CamelName()
+	for _, ex := range s.examples {
+		c := ex.findCall(svcCamelName, methodCamelName)
+		if c == nil {
+			continue
+		}
+		sample := &example{}
+		out = append(out, sample)
+		variablesUsed := []string{}
+		queue := []*call{c}
+		for len(queue) > 0 {
+			current := queue[0]
+			queue = queue[1:]
+			sample.Calls = append(sample.Calls, current)
+			if current.Assign != nil {
+				variablesUsed = append(variablesUsed, current.Assign.CamelName())
+			}
+			current.Traverse(func(e expression) {
+				v, ok := e.(*variable)
+				if !ok {
+					return
+				}
+				found, ok := ex.scope[v.CamelName()]
+				if !ok {
+					return
+				}
+				queue = append(queue, found)
+			})
+		}
+		for i, j := 0, len(sample.Calls)-1; i < j; i, j = i+1, j-1 {
+			sample.Calls[i], sample.Calls[j] = sample.Calls[j], sample.Calls[i]
+		}
+		for _, v := range variablesUsed {
+			// for _, c := range ex.Asserts {
+			// 	if !c.HasVariable(v) {
+			// 		continue
+			// 	}
+			// 	sample.Cleanup = append(sample.Cleanup, c)
+			// }
+			for _, c := range ex.Cleanup {
+				if !c.HasVariable(v) {
+					continue
+				}
+				sample.Cleanup = append(sample.Cleanup, c)
+			}
+		}
+	}
+	return out
+}
+
 func (s *suite) ImprotedServices() (svcs []string) {
 	ast.Inspect(s.file, func(raw ast.Node) bool {
 		switch n := raw.(type) {
@@ -86,6 +142,7 @@ func (s *suite) expectFn(fn *ast.FuncDecl) *example {
 		Named: code.Named{
 			Name: fn.Name.Name,
 		},
+		scope: map[string]*call{},
 	}
 	for _, v := range fn.Body.List {
 		switch stmt := v.(type) {
@@ -182,22 +239,26 @@ func (s *suite) expectAssign(ex *example, stmt *ast.AssignStmt) {
 	if c == nil {
 		return
 	}
+	if c.Assign != nil {
+		ex.scope[c.Assign.CamelName()] = c
+	}
 	ex.Calls = append(ex.Calls, c)
 }
 
 func (s *suite) expectAssignCall(stmt *ast.AssignStmt) *call {
 	names := s.assignedNames(stmt)
-	if len(names) == 1 && names[0] == "err" {
-		return s.expectCall(stmt.Rhs[0])
-	}
-	if len(names) == 2 && names[1] == "err" {
-		c := s.expectCall(stmt.Rhs[0])
+	c := s.expectCall(stmt.Rhs[0])
+	if len(names) == 1 && names[0] != "err" {
 		c.Assign = &code.Named{
 			Name: names[0],
 		}
-		return c
 	}
-	return nil
+	if len(names) == 2 && names[1] == "err" && names[0] != "_" {
+		c.Assign = &code.Named{
+			Name: names[0],
+		}
+	}
+	return c
 }
 
 func (s *suite) expectIdent(e ast.Expr) string {

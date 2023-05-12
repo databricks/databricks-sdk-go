@@ -18,5 +18,7 @@ func TestLoadsBilling(t *testing.T) {
 func TestLoadsClusters(t *testing.T) {
 	s, err := NewSuite("../../clusters_test.go")
 	require.NoError(t, err)
-	assert.Greater(t, len(s.examples), 2)
+
+	samples := s.Sample("clusters", "pin")
+	assert.True(t, len(samples) == 1)
 }

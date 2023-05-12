@@ -1,14 +1,33 @@
 package beep
 
-import "github.com/databricks/databricks-sdk-go/openapi/code"
+import (
+	"strings"
+
+	"github.com/databricks/databricks-sdk-go/openapi/code"
+)
 
 type expression interface {
 	Type() string
 }
 
+type traversable interface {
+	Traverse(func(expression))
+}
+
 type binaryExpr struct {
 	Left, Right expression
 	Op          string
+}
+
+func (b *binaryExpr) Traverse(cb func(expression)) {
+	cb(b.Left)
+	if t, ok := b.Left.(traversable); ok {
+		t.Traverse(cb)
+	}
+	cb(b.Right)
+	if t, ok := b.Right.(traversable); ok {
+		t.Traverse(cb)
+	}
 }
 
 func (b *binaryExpr) Type() string {
@@ -17,6 +36,17 @@ func (b *binaryExpr) Type() string {
 
 type indexExpr struct {
 	Left, Right expression
+}
+
+func (i *indexExpr) Traverse(cb func(expression)) {
+	cb(i.Left)
+	if t, ok := i.Left.(traversable); ok {
+		t.Traverse(cb)
+	}
+	cb(i.Right)
+	if t, ok := i.Right.(traversable); ok {
+		t.Traverse(cb)
+	}
 }
 
 func (i *indexExpr) Type() string {
@@ -44,6 +74,16 @@ type lookup struct {
 	Field expression
 }
 
+func (l *lookup) Traverse(cb func(expression)) {
+	cb(l.X)
+	if t, ok := l.X.(traversable); ok {
+		t.Traverse(cb)
+	}
+	if t, ok := l.Field.(traversable); ok {
+		t.Traverse(cb)
+	}
+}
+
 func (l *lookup) Type() string {
 	return "lookup"
 }
@@ -62,6 +102,15 @@ type entity struct {
 	FieldValues []*fieldValue
 }
 
+func (e *entity) Traverse(cb func(expression)) {
+	for _, v := range e.FieldValues {
+		cb(v.Value)
+		if t, ok := v.Value.(traversable); ok {
+			t.Traverse(cb)
+		}
+	}
+}
+
 func (e *entity) Type() string {
 	return "entity"
 }
@@ -70,6 +119,15 @@ type array struct {
 	code.Named
 	Package string
 	Values  []expression
+}
+
+func (a *array) Traverse(cb func(expression)) {
+	for _, v := range a.Values {
+		cb(v)
+		if t, ok := v.(traversable); ok {
+			t.Traverse(cb)
+		}
+	}
 }
 
 func (a *array) Type() string {
@@ -81,15 +139,6 @@ type fieldValue struct {
 	Value expression
 }
 
-type example struct {
-	code.Named
-	IsAccount bool
-	Calls     []*call
-	Cleanup   []*call
-	Asserts   []*binaryExpr
-	scope     map[string]expression
-}
-
 type call struct {
 	code.Named
 	Service *code.Named
@@ -97,6 +146,75 @@ type call struct {
 	Args    []expression
 }
 
+func (c *call) OriginalName() string {
+	camel := c.CamelName()
+	camel = strings.Split(camel, "By")[0]
+	camel = strings.TrimSuffix(camel, "AndWait")
+	camel = strings.TrimSuffix(camel, "All")
+	return camel
+}
+
+func (c *call) HasVariable(camelName string) bool {
+	// this assumes that v is already camelCased
+	tmp := []int{0}
+	c.Traverse(func(e expression) {
+		v, ok := e.(*variable)
+		if !ok {
+			return
+		}
+		if v.CamelName() == camelName {
+			tmp[0]++
+		}
+	})
+	return tmp[0] > 0
+}
+
+func (c *call) Traverse(cb func(expression)) {
+	for _, v := range c.Args {
+		cb(v)
+		if t, ok := v.(traversable); ok {
+			t.Traverse(cb)
+		}
+	}
+}
+
 func (c *call) Type() string {
 	return "call"
+}
+
+type example struct {
+	code.Named
+	IsAccount bool
+	Calls     []*call
+	Cleanup   []*call
+	Asserts   []*binaryExpr
+	scope     map[string]*call
+}
+
+func (ex *example) findCall(svcCamelName, methodCamelName string) *call {
+	for _, v := range ex.Calls {
+		if v.Service == nil {
+			continue
+		}
+		if v.Service.CamelName() != svcCamelName {
+			continue
+		}
+		if v.OriginalName() != methodCamelName {
+			continue
+		}
+		return v
+	}
+	for _, v := range ex.Cleanup {
+		if v.Service == nil {
+			continue
+		}
+		if v.Service.CamelName() != svcCamelName {
+			continue
+		}
+		if v.OriginalName() != methodCamelName {
+			continue
+		}
+		return v
+	}
+	return nil
 }
