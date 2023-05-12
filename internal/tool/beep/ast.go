@@ -1,5 +1,7 @@
 package beep
 
+import "github.com/databricks/databricks-sdk-go/openapi/code"
+
 type expression interface {
 	Type() string
 }
@@ -47,7 +49,7 @@ func (l *lookup) Type() string {
 }
 
 type variable struct {
-	name string
+	code.Named
 }
 
 func (v *variable) Type() string {
@@ -55,9 +57,9 @@ func (v *variable) Type() string {
 }
 
 type entity struct {
-	pkg         string
-	name        string
-	fieldValues []*fieldValue
+	code.Named
+	Package     string
+	FieldValues []*fieldValue
 }
 
 func (e *entity) Type() string {
@@ -65,9 +67,9 @@ func (e *entity) Type() string {
 }
 
 type array struct {
-	pkg    string
-	name   string
-	Values []expression
+	code.Named
+	Package string
+	Values  []expression
 }
 
 func (a *array) Type() string {
@@ -75,24 +77,24 @@ func (a *array) Type() string {
 }
 
 type fieldValue struct {
-	name  string
-	value expression
+	code.Named
+	Value expression
 }
 
 type example struct {
-	name      string
-	isAccount bool
-	calls     []*call
-	cleanup   []*call
-	asserts   []*binaryExpr
+	code.Named
+	IsAccount bool
+	Calls     []*call
+	Cleanup   []*call
+	Asserts   []*binaryExpr
 	scope     map[string]expression
 }
 
 type call struct {
-	svc    string
-	method string
-	assign string
-	args   []expression
+	code.Named
+	Service *code.Named
+	Assign  *code.Named
+	Args    []expression
 }
 
 func (c *call) Type() string {

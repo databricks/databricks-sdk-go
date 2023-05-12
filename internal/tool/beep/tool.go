@@ -6,6 +6,8 @@ import (
 	"go/parser"
 	"go/token"
 	"strings"
+
+	"github.com/databricks/databricks-sdk-go/openapi/code"
 )
 
 func NewSuite(filename string) (*suite, error) {
@@ -72,47 +74,53 @@ var ignoreFns = map[string]bool{
 
 func (s *suite) expectExamples() {
 	find(s.file, func(fn *ast.FuncDecl) {
-		ex := &example{name: fn.Name.Name}
+		ex := &example{
+			Named: code.Named{
+				Name: fn.Name.Name,
+			},
+		}
 		s.examples = append(s.examples, ex)
 		find(fn, func(as *ast.AssignStmt) {
 			names := s.assignedNames(as)
 			if len(names) == 2 && names[0] == "ctx" {
 				// w - workspace, a - account
-				ex.isAccount = names[1] == "a"
+				ex.IsAccount = names[1] == "a"
 			}
 			if len(names) == 1 && names[0] == "err" {
-				ex.calls = append(ex.calls, s.expectCall(as.Rhs[0]))
+				ex.Calls = append(ex.Calls, s.expectCall(as.Rhs[0]))
 			}
 			if len(names) == 2 && names[1] == "err" {
 				c := s.expectCall(as.Rhs[0])
-				c.assign = names[0]
-				ex.calls = append(ex.calls, c)
+				c.Assign = &code.Named{
+					Name: names[0],
+				}
+				ex.Calls = append(ex.Calls, c)
 			}
 		})
 		find(fn, func(dfr *ast.DeferStmt) {
-			ex.cleanup = append(ex.cleanup, s.expectCall(dfr.Call))
+			ex.Cleanup = append(ex.Cleanup, s.expectCall(dfr.Call))
 		})
 		find(fn, func(es *ast.ExprStmt) {
 			c := s.expectCall(es.X)
-			if ignoreFns[c.method] {
+			if ignoreFns[c.Name] {
 				return
 			}
-			switch c.method {
+			switch c.Name {
 			case "Equal":
-				ex.asserts = append(ex.asserts, &binaryExpr{
-					Left:  c.args[0],
+				ex.Asserts = append(ex.Asserts, &binaryExpr{
+					Left:  c.Args[0],
 					Op:    "==",
-					Right: c.args[1],
+					Right: c.Args[1],
 				})
 			case "NotEqual":
-				ex.asserts = append(ex.asserts, &binaryExpr{
-					Left:  c.args[0],
+				ex.Asserts = append(ex.Asserts, &binaryExpr{
+					Left:  c.Args[0],
 					Op:    "!=",
-					Right: c.args[1],
+					Right: c.Args[1],
 				})
 			case "True":
-				ex.asserts = append(ex.asserts, &binaryExpr{
-					Left:  c.args[0],
+				ex.Asserts = append(ex.Asserts, &binaryExpr{
+					Left:  c.Args[0],
 					Op:    "==",
 					Right: &boolean{true},
 				})
@@ -134,9 +142,9 @@ func (s *suite) expectIdent(e ast.Expr) string {
 
 func (s *suite) expectEntity(t *ast.SelectorExpr, cl *ast.CompositeLit) *entity {
 	ent := &entity{}
-	ent.name = t.Sel.Name
-	ent.pkg = s.expectIdent(t.X)
-	ent.fieldValues = s.expectFieldValues(cl.Elts)
+	ent.Name = t.Sel.Name
+	ent.Package = s.expectIdent(t.X)
+	ent.FieldValues = s.expectFieldValues(cl.Elts)
 	return ent
 }
 
@@ -145,8 +153,10 @@ func (s *suite) expectFieldValues(exprs []ast.Expr) (fvs []*fieldValue) {
 		switch kv := v.(type) {
 		case *ast.KeyValueExpr:
 			fvs = append(fvs, &fieldValue{
-				name:  s.expectIdent(kv.Key),
-				value: s.expectExpr(kv.Value),
+				Named: code.Named{
+					Name: s.expectIdent(kv.Key),
+				},
+				Value: s.expectExpr(kv.Value),
 			})
 		default:
 			panic(fmt.Sprintf("unknown field value expr: %v", v))
@@ -159,10 +169,10 @@ func (s *suite) expectArray(t *ast.ArrayType, cl *ast.CompositeLit) *array {
 	arr := &array{}
 	switch elt := t.Elt.(type) {
 	case *ast.SelectorExpr:
-		arr.pkg = s.expectIdent(elt.X)
-		arr.name = s.expectIdent(elt.Sel)
+		arr.Package = s.expectIdent(elt.X)
+		arr.Name = s.expectIdent(elt.Sel)
 	case *ast.Ident:
-		arr.name = s.expectIdent(elt)
+		arr.Name = s.expectIdent(elt)
 	default:
 		panic(fmt.Sprintf("unknown array element type: %v", elt))
 	}
@@ -170,9 +180,11 @@ func (s *suite) expectArray(t *ast.ArrayType, cl *ast.CompositeLit) *array {
 		switch item := v.(type) {
 		case *ast.CompositeLit:
 			arr.Values = append(arr.Values, &entity{
-				pkg:         arr.pkg,
-				name:        arr.name,
-				fieldValues: s.expectFieldValues(item.Elts),
+				Named: code.Named{
+					Name: arr.Name,
+				},
+				Package:     arr.Package,
+				FieldValues: s.expectFieldValues(item.Elts),
 			})
 		default:
 			arr.Values = append(arr.Values, s.expectExpr(v))
@@ -204,7 +216,9 @@ func (s *suite) expectExpr(e ast.Expr) expression {
 		return s.expectLookup(x)
 	case *ast.Ident:
 		return &variable{
-			name: x.Name,
+			Named: code.Named{
+				Name: x.Name,
+			},
 		}
 	case *ast.CallExpr:
 		return s.expectSimpleCall(x)
@@ -216,7 +230,7 @@ func (s *suite) expectExpr(e ast.Expr) expression {
 		}
 	case *ast.IndexExpr:
 		return &indexExpr{
-			Left: s.expectExpr(x.X),
+			Left:  s.expectExpr(x.X),
 			Right: s.expectExpr(x.Index),
 		}
 	default:
@@ -237,11 +251,13 @@ func (s *suite) expectSimpleCall(ce *ast.CallExpr) *call {
 		panic(fmt.Sprintf("expected simple call to have *ast.Ident for name, got %v", ce.Fun))
 	}
 	c := &call{
-		method: ident.Name,
+		Named: code.Named{
+			Name: ident.Name,
+		},
 	}
 	for _, v := range ce.Args {
 		arg := s.expectExpr(v)
-		c.args = append(c.args, arg)
+		c.Args = append(c.Args, arg)
 	}
 	return c
 }
@@ -251,9 +267,11 @@ func (s *suite) expectCall(e ast.Expr) *call {
 	find(e, func(ce *ast.CallExpr) {
 		// parse path to function to service/method name
 		visit(ce.Fun, func(se *ast.SelectorExpr) ast.Visitor {
-			c.method = se.Sel.Name
+			c.Name = se.Sel.Name
 			return visit(se.X, func(se *ast.SelectorExpr) ast.Visitor {
-				c.svc = se.Sel.Name
+				c.Service = &code.Named{
+					Name: se.Sel.Name,
+				}
 				// we don't parse X: *ast.Ident as we know the w/a context,
 				// though we may add it later
 				return nil
@@ -261,11 +279,11 @@ func (s *suite) expectCall(e ast.Expr) *call {
 		})
 		for _, v := range ce.Args {
 			arg := s.expectExpr(v)
-			if x, ok := arg.(*variable); ok && (x.name == "ctx" || x.name == "t") {
+			if x, ok := arg.(*variable); ok && (x.Name == "ctx" || x.Name == "t") {
 				// context.Context is irrelevant in other languages than Go
 				continue
 			}
-			c.args = append(c.args, arg)
+			c.Args = append(c.Args, arg)
 		}
 	})
 	return c
