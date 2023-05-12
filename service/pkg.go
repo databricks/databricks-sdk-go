@@ -132,8 +132,6 @@
 //
 // - [iam.WorkspaceAssignmentAPI]: The Workspace Permission Assignment API allows you to manage workspace permissions for principals in your account.
 //
-// - [catalog.WorkspaceBindingsAPI]: A catalog in Databricks can be configured as __OPEN__ or __ISOLATED__.
-//
 // - [settings.WorkspaceConfAPI]: This API allows updating known workspace settings for advanced users.
 //
 // - [provisioning.WorkspacesAPI]: These APIs manage workspaces for this account.
@@ -230,7 +228,6 @@ var (
 	_ *sql.WarehousesAPI                      = nil
 	_ *workspace.WorkspaceAPI                 = nil
 	_ *iam.WorkspaceAssignmentAPI             = nil
-	_ *catalog.WorkspaceBindingsAPI           = nil
 	_ *settings.WorkspaceConfAPI              = nil
 	_ *provisioning.WorkspacesAPI             = nil
 )

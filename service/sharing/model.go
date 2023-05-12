@@ -69,7 +69,7 @@ type CreateRecipient struct {
 	// Username of the recipient owner.
 	Owner string `json:"owner,omitempty"`
 	// Recipient properties as map of string key-value pairs.
-	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
+	PropertiesKvpairs any `json:"properties_kvpairs,omitempty"`
 	// The one-time sharing code provided by the data recipient. This field is
 	// required when the __authentication_type__ is **DATABRICKS**.
 	SharingCode string `json:"sharing_code,omitempty"`
@@ -392,7 +392,7 @@ type RecipientInfo struct {
 	// Username of the recipient owner.
 	Owner string `json:"owner,omitempty"`
 	// Recipient properties as map of string key-value pairs.
-	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
+	PropertiesKvpairs any `json:"properties_kvpairs,omitempty"`
 	// Cloud region of the recipient's Unity Catalog Metstore. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
 	Region string `json:"region,omitempty"`
@@ -460,16 +460,6 @@ type RotateRecipientToken struct {
 	// The name of the recipient.
 	Name string `json:"-" url:"-"`
 }
-
-// An object with __properties__ containing map of key-value properties attached
-// to the securable.
-type SecurablePropertiesKvPairs struct {
-	// A map of key-value properties attached to the securable.
-	Properties map[string]string `json:"properties"`
-}
-
-// A map of key-value properties attached to the securable.
-type SecurablePropertiesMap map[string]string
 
 type ShareInfo struct {
 	// User-provided free-form text description.
@@ -631,7 +621,7 @@ type UpdateRecipient struct {
 	// When provided in update request, the specified properties will override
 	// the existing properties. To add and remove properties, one would need to
 	// perform a read-modify-write.
-	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
+	PropertiesKvpairs any `json:"properties_kvpairs,omitempty"`
 }
 
 type UpdateShare struct {

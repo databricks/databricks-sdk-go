@@ -19,14 +19,13 @@ type CustomAppIntegrationService interface {
 	//
 	// Create Custom OAuth App Integration.
 	//
-	// You can retrieve the custom oauth app integration via
-	// :method:CustomAppIntegration/get.
+	// You can retrieve the custom oauth app integration via :method:get.
 	Create(ctx context.Context, request CreateCustomAppIntegration) (*CreateCustomAppIntegrationOutput, error)
 
 	// Delete Custom OAuth App Integration.
 	//
 	// Delete an existing Custom OAuth App Integration. You can retrieve the
-	// custom oauth app integration via :method:CustomAppIntegration/get.
+	// custom oauth app integration via :method:get.
 	Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error
 
 	// Get OAuth Custom App Integration.
@@ -45,7 +44,7 @@ type CustomAppIntegrationService interface {
 	// Updates Custom OAuth App Integration.
 	//
 	// Updates an existing custom OAuth App Integration. You can retrieve the
-	// custom oauth app integration via :method:CustomAppIntegration/get.
+	// custom oauth app integration via :method:get.
 	Update(ctx context.Context, request UpdateCustomAppIntegration) error
 }
 
@@ -67,7 +66,7 @@ type OAuthEnrollmentService interface {
 	//
 	// The enrollment is executed asynchronously, so the API will return 204
 	// immediately. The actual enrollment take a few minutes, you can check the
-	// status via API :method:OAuthEnrollment/get.
+	// status via API :method:get.
 	Create(ctx context.Context, request CreateOAuthEnrollment) error
 
 	// Get OAuth enrollment status.
@@ -92,14 +91,13 @@ type PublishedAppIntegrationService interface {
 	//
 	// Create Published OAuth App Integration.
 	//
-	// You can retrieve the published oauth app integration via
-	// :method:PublishedAppIntegration/get.
+	// You can retrieve the published oauth app integration via :method:get.
 	Create(ctx context.Context, request CreatePublishedAppIntegration) (*CreatePublishedAppIntegrationOutput, error)
 
 	// Delete Published OAuth App Integration.
 	//
 	// Delete an existing Published OAuth App Integration. You can retrieve the
-	// published oauth app integration via :method:PublishedAppIntegration/get.
+	// published oauth app integration via :method:get.
 	Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error
 
 	// Get OAuth Published App Integration.
@@ -118,6 +116,6 @@ type PublishedAppIntegrationService interface {
 	// Updates Published OAuth App Integration.
 	//
 	// Updates an existing published OAuth App Integration. You can retrieve the
-	// published oauth app integration via :method:PublishedAppIntegration/get.
+	// published oauth app integration via :method:get.
 	Update(ctx context.Context, request UpdatePublishedAppIntegration) error
 }

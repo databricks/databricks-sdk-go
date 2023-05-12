@@ -239,10 +239,6 @@ type CreateJob struct {
 	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
 	// An optional name for the job.
 	Name string `json:"name,omitempty"`
-	// Optional notification settings that are used when sending notifications
-	// to each of the `email_notifications` and `webhook_notifications` for this
-	// job.
-	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
 	// or sending an API request to `runNow`.
@@ -574,15 +570,6 @@ type JobEmailNotifications struct {
 	OnSuccess []string `json:"on_success,omitempty"`
 }
 
-type JobNotificationSettings struct {
-	// If true, do not send notifications to recipients specified in
-	// `on_failure` if the run is canceled.
-	NoAlertForCanceledRuns bool `json:"no_alert_for_canceled_runs,omitempty"`
-	// If true, do not send notifications to recipients specified in
-	// `on_failure` if the run is skipped.
-	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
-}
-
 type JobSettings struct {
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
@@ -622,10 +609,6 @@ type JobSettings struct {
 	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
 	// An optional name for the job.
 	Name string `json:"name,omitempty"`
-	// Optional notification settings that are used when sending notifications
-	// to each of the `email_notifications` and `webhook_notifications` for this
-	// job.
-	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
 	// or sending an API request to `runNow`.
@@ -696,7 +679,7 @@ type JobTaskSettings struct {
 	// An optional set of email addresses that is notified when runs of this
 	// task begin or complete as well as when this task is deleted. The default
 	// behavior is to not send any emails.
-	EmailNotifications *TaskEmailNotifications `json:"email_notifications,omitempty"`
+	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs of this task. When running tasks on an existing cluster, you may
 	// need to manually restart the cluster if it stops responding. We suggest
@@ -724,9 +707,6 @@ type JobTaskSettings struct {
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
-	// Optional notification settings that are used when sending notifications
-	// to each of the `email_notifications` for this task.
-	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
 	// If pipeline_task, indicates that this task must execute a Pipeline.
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
 	// If python_wheel_task, indicates that this job must execute a PythonWheel.
@@ -1593,8 +1573,6 @@ type RunSubmitTaskSettings struct {
 	// If spark_submit_task, indicates that this task must be launched by the
 	// spark submit script. This task can run only on new clusters.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
-	// If sql_task, indicates that this job must execute a SQL.
-	SqlTask *SqlTask `json:"sql_task,omitempty"`
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
 	// job. On Update or Reset, this field is used to reference the tasks to be
@@ -1959,9 +1937,6 @@ type SqlTask struct {
 	Alert *SqlTaskAlert `json:"alert,omitempty"`
 	// If dashboard, indicates that this job must refresh a SQL dashboard.
 	Dashboard *SqlTaskDashboard `json:"dashboard,omitempty"`
-	// If file, indicates that this job runs a SQL file in a remote Git
-	// repository.
-	File *SqlTaskFile `json:"file,omitempty"`
 	// Parameters to be used for each run of this job. The SQL alert task does
 	// not support custom parameters.
 	Parameters map[string]string `json:"parameters,omitempty"`
@@ -1991,11 +1966,6 @@ type SqlTaskDashboard struct {
 	PauseSubscriptions bool `json:"pause_subscriptions,omitempty"`
 	// If specified, dashboard snapshots are sent to subscriptions.
 	Subscriptions []SqlTaskSubscription `json:"subscriptions,omitempty"`
-}
-
-type SqlTaskFile struct {
-	// Relative path of the SQL file in the remote Git repository.
-	Path string `json:"path"`
 }
 
 type SqlTaskQuery struct {
@@ -2033,9 +2003,6 @@ type SubmitRun struct {
 	//
 	// [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
 	IdempotencyToken string `json:"idempotency_token,omitempty"`
-	// Optional notification settings that are used when sending notifications
-	// to each of the `webhook_notifications` for this run.
-	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// An optional name for the run. The default value is `Untitled`.
 	RunName string `json:"run_name,omitempty"`
 
@@ -2055,39 +2022,6 @@ type SubmitRunResponse struct {
 
 type TaskDependenciesItem struct {
 	TaskKey string `json:"task_key,omitempty"`
-}
-
-type TaskEmailNotifications struct {
-	// A list of email addresses to be notified when a run unsuccessfully
-	// completes. A run is considered to have completed unsuccessfully if it
-	// ends with an `INTERNAL_ERROR` `life_cycle_state` or a `SKIPPED`,
-	// `FAILED`, or `TIMED_OUT` result_state. If this is not specified on job
-	// creation, reset, or update the list is empty, and notifications are not
-	// sent.
-	OnFailure []string `json:"on_failure,omitempty"`
-	// A list of email addresses to be notified when a run begins. If not
-	// specified on job creation, reset, or update, the list is empty, and
-	// notifications are not sent.
-	OnStart []string `json:"on_start,omitempty"`
-	// A list of email addresses to be notified when a run successfully
-	// completes. A run is considered to have completed successfully if it ends
-	// with a `TERMINATED` `life_cycle_state` and a `SUCCESSFUL` result_state.
-	// If not specified on job creation, reset, or update, the list is empty,
-	// and notifications are not sent.
-	OnSuccess []string `json:"on_success,omitempty"`
-}
-
-type TaskNotificationSettings struct {
-	// If true, do not send notifications to recipients specified in `on_start`
-	// for the retried runs and do not send notifications to recipients
-	// specified in `on_failure` until the last retry of the run.
-	AlertOnLastAttempt bool `json:"alert_on_last_attempt,omitempty"`
-	// If true, do not send notifications to recipients specified in
-	// `on_failure` if the run is canceled.
-	NoAlertForCanceledRuns bool `json:"no_alert_for_canceled_runs,omitempty"`
-	// If true, do not send notifications to recipients specified in
-	// `on_failure` if the run is skipped.
-	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
 }
 
 type TriggerEvaluation struct {

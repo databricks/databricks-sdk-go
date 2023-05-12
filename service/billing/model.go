@@ -151,9 +151,9 @@ type CreateLogDeliveryConfigurationParams struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status,omitempty"`
-	// The ID for a method:storage/create that represents the S3 bucket with
+	// "The ID for a method:storage/create that represents the S3 bucket with
 	// bucket policy as described in the main billable usage documentation page.
-	// See [Configure billable usage delivery].
+	// See [Configure billable usage delivery]."
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	StorageConfigurationId string `json:"storage_configuration_id"`
@@ -348,9 +348,9 @@ type LogDeliveryConfiguration struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status,omitempty"`
-	// The ID for a method:storage/create that represents the S3 bucket with
+	// "The ID for a method:storage/create that represents the S3 bucket with
 	// bucket policy as described in the main billable usage documentation page.
-	// See [Configure billable usage delivery].
+	// See [Configure billable usage delivery]."
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`

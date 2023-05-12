@@ -361,37 +361,6 @@ type CreateWebhookResponse struct {
 	Webhook *RegistryWebhook `json:"webhook,omitempty"`
 }
 
-type Dataset struct {
-	// Dataset digest, e.g. an md5 hash of the dataset that uniquely identifies
-	// it within datasets of the same name.
-	Digest string `json:"digest,omitempty"`
-	// The name of the dataset. E.g. “my.uc.table@2” “nyc-taxi-dataset”,
-	// “fantastic-elk-3”
-	Name string `json:"name,omitempty"`
-	// The profile of the dataset. Summary statistics for the dataset, such as
-	// the number of rows in a table, the mean / std / mode of each column in a
-	// table, or the number of elements in an array.
-	Profile string `json:"profile,omitempty"`
-	// The schema of the dataset. E.g., MLflow ColSpec JSON for a dataframe,
-	// MLflow TensorSpec JSON for an ndarray, or another schema format.
-	Schema string `json:"schema,omitempty"`
-	// The type of the dataset source, e.g. ‘databricks-uc-table’,
-	// ‘DBFS’, ‘S3’, ...
-	Source string `json:"source,omitempty"`
-	// Source information for the dataset. Note that the source may not exactly
-	// reproduce the dataset if it was transformed / modified before use with
-	// MLflow.
-	SourceType string `json:"source_type,omitempty"`
-}
-
-type DatasetInput struct {
-	// The dataset being used as a Run input.
-	Dataset *Dataset `json:"dataset,omitempty"`
-	// A list of tags for the dataset input, e.g. a “context” tag with value
-	// “training”
-	Tags []InputTag `json:"tags,omitempty"`
-}
-
 // Delete a comment
 type DeleteCommentRequest struct {
 	Id string `json:"-" url:"id"`
@@ -467,40 +436,9 @@ type DeleteTransitionRequestRequest struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
-	Stage DeleteTransitionRequestStage `json:"-" url:"stage"`
+	Stage string `json:"-" url:"stage"`
 	// Version of the model.
 	Version string `json:"-" url:"version"`
-}
-
-type DeleteTransitionRequestStage string
-
-const DeleteTransitionRequestStageArchived DeleteTransitionRequestStage = `Archived`
-
-const DeleteTransitionRequestStageNone DeleteTransitionRequestStage = `None`
-
-const DeleteTransitionRequestStageProduction DeleteTransitionRequestStage = `Production`
-
-const DeleteTransitionRequestStageStaging DeleteTransitionRequestStage = `Staging`
-
-// String representation for [fmt.Print]
-func (dtrs *DeleteTransitionRequestStage) String() string {
-	return string(*dtrs)
-}
-
-// Set raw string value and validate it against allowed values
-func (dtrs *DeleteTransitionRequestStage) Set(v string) error {
-	switch v {
-	case `Archived`, `None`, `Production`, `Staging`:
-		*dtrs = DeleteTransitionRequestStage(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "Archived", "None", "Production", "Staging"`, v)
-	}
-}
-
-// Type always returns DeleteTransitionRequestStage to satisfy [pflag.Value] interface
-func (dtrs *DeleteTransitionRequestStage) Type() string {
-	return "DeleteTransitionRequestStage"
 }
 
 // Delete a webhook
@@ -684,13 +622,6 @@ type HttpUrlSpecWithoutSecret struct {
 	Url string `json:"url,omitempty"`
 }
 
-type InputTag struct {
-	// The tag key.
-	Key string `json:"key,omitempty"`
-	// The tag value.
-	Value string `json:"value,omitempty"`
-}
-
 type JobSpec struct {
 	// The personal access token used to authorize webhook's job runs.
 	AccessToken string `json:"access_token"`
@@ -818,13 +749,6 @@ type LogBatch struct {
 	// Tags to log. A single request can contain up to 100 tags, and up to 1000
 	// metrics, params, and tags in total.
 	Tags []RunTag `json:"tags,omitempty"`
-}
-
-type LogInputs struct {
-	// Dataset inputs
-	Datasets []DatasetInput `json:"datasets,omitempty"`
-	// ID of the run to log under
-	RunId string `json:"run_id,omitempty"`
 }
 
 type LogMetric struct {
@@ -1252,8 +1176,6 @@ type Run struct {
 	Data *RunData `json:"data,omitempty"`
 	// Run metadata.
 	Info *RunInfo `json:"info,omitempty"`
-	// Run inputs.
-	Inputs *RunInputs `json:"inputs,omitempty"`
 }
 
 type RunData struct {
@@ -1324,11 +1246,6 @@ func (ris *RunInfoStatus) Set(v string) error {
 // Type always returns RunInfoStatus to satisfy [pflag.Value] interface
 func (ris *RunInfoStatus) Type() string {
 	return "RunInfoStatus"
-}
-
-type RunInputs struct {
-	// Run metrics.
-	DatasetInputs []DatasetInput `json:"dataset_inputs,omitempty"`
 }
 
 type RunTag struct {

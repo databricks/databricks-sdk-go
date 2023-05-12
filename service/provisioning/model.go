@@ -59,16 +59,9 @@ type CreateCredentialStsRole struct {
 }
 
 type CreateCustomerManagedKeyRequest struct {
-	AwsKeyInfo *CreateAwsKeyInfo `json:"aws_key_info,omitempty"`
-
-	GcpKeyInfo *CreateGcpKeyInfo `json:"gcp_key_info,omitempty"`
+	AwsKeyInfo CreateAwsKeyInfo `json:"aws_key_info"`
 	// The cases that the key can be used for.
 	UseCases []KeyUseCase `json:"use_cases"`
-}
-
-type CreateGcpKeyInfo struct {
-	// The GCP KMS key's resource name
-	KmsKeyId string `json:"kms_key_id"`
 }
 
 type CreateNetworkRequest struct {
@@ -225,8 +218,6 @@ type CustomerManagedKey struct {
 	CreationTime int64 `json:"creation_time,omitempty"`
 	// ID of the encryption key configuration object.
 	CustomerManagedKeyId string `json:"customer_managed_key_id,omitempty"`
-
-	GcpKeyInfo *GcpKeyInfo `json:"gcp_key_info,omitempty"`
 	// The cases that the key can be used for.
 	UseCases []KeyUseCase `json:"use_cases,omitempty"`
 }
@@ -337,11 +328,6 @@ func (et *ErrorType) Set(v string) error {
 // Type always returns ErrorType to satisfy [pflag.Value] interface
 func (et *ErrorType) Type() string {
 	return "ErrorType"
-}
-
-type GcpKeyInfo struct {
-	// The GCP KMS key's resource name
-	KmsKeyId string `json:"kms_key_id"`
 }
 
 // The network settings for the workspace. The configurations are only for

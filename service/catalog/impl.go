@@ -100,12 +100,6 @@ func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request Crea
 	return &storageCredentialInfo, err
 }
 
-func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
-	return err
-}
-
 func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*StorageCredentialInfo, error) {
 	var storageCredentialInfo StorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/", a.client.ConfiguredAccountID(), request.MetastoreId)
@@ -118,13 +112,6 @@ func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAc
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &storageCredentialInfoList)
 	return storageCredentialInfoList, err
-}
-
-func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error) {
-	var storageCredentialInfo StorageCredentialInfo
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodPut, path, request, &storageCredentialInfo)
-	return &storageCredentialInfo, err
 }
 
 // unexported type that holds implementations of just Catalogs API methods
@@ -520,23 +507,4 @@ func (a *volumesImpl) Update(ctx context.Context, request UpdateVolumeRequestCon
 	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.FullNameArg)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, &volumeInfo)
 	return &volumeInfo, err
-}
-
-// unexported type that holds implementations of just WorkspaceBindings API methods
-type workspaceBindingsImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBindingRequest) (*WorkspaceIds, error) {
-	var workspaceIds WorkspaceIds
-	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &workspaceIds)
-	return &workspaceIds, err
-}
-
-func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorkspaceBindings) (*WorkspaceIds, error) {
-	var workspaceIds WorkspaceIds
-	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &workspaceIds)
-	return &workspaceIds, err
 }

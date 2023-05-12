@@ -94,12 +94,6 @@ func (a *experimentsImpl) LogBatch(ctx context.Context, request LogBatch) error 
 	return err
 }
 
-func (a *experimentsImpl) LogInputs(ctx context.Context, request LogInputs) error {
-	path := "/api/2.0/mlflow/runs/log-inputs"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
-	return err
-}
-
 func (a *experimentsImpl) LogMetric(ctx context.Context, request LogMetric) error {
 	path := "/api/2.0/mlflow/runs/log-metric"
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)

@@ -281,11 +281,6 @@ type BaseClusterInfo struct {
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-	// The configuration for storing init scripts. Any number of destinations
-	// can be specified. The scripts are executed sequentially in the order
-	// provided. If `cluster_log_conf` is specified, init script logs are sent
-	// to `<destination>/<cluster-ID>/init_scripts`.
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field encodes, through a single value, the resources available to
@@ -449,11 +444,6 @@ type ClusterAttributes struct {
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-	// The configuration for storing init scripts. Any number of destinations
-	// can be specified. The scripts are executed sequentially in the order
-	// provided. If `cluster_log_conf` is specified, init script logs are sent
-	// to `<destination>/<cluster-ID>/init_scripts`.
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field encodes, through a single value, the resources available to
@@ -607,11 +597,6 @@ type ClusterInfo struct {
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-	// The configuration for storing init scripts. Any number of destinations
-	// can be specified. The scripts are executed sequentially in the order
-	// provided. If `cluster_log_conf` is specified, init script logs are sent
-	// to `<destination>/<cluster-ID>/init_scripts`.
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// Port on which Spark JDBC server is listening, in the driver nod. No
@@ -707,7 +692,7 @@ type ClusterLogConf struct {
 	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
 	// "dbfs:/home/cluster_log" } }`
 	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
-	// destination and either the region or endpoint need to be provided. e.g.
+	// destination and either region or endpoint should also be provided. e.g.
 	// `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
 	// "us-west-2" } }` Cluster iam role is used to access s3, please make sure
 	// the cluster iam role in `instance_profile_arn` has permission to write
@@ -945,11 +930,6 @@ type CreateCluster struct {
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-	// The configuration for storing init scripts. Any number of destinations
-	// can be specified. The scripts are executed sequentially in the order
-	// provided. If `cluster_log_conf` is specified, init script logs are sent
-	// to `<destination>/<cluster-ID>/init_scripts`.
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field encodes, through a single value, the resources available to
@@ -1440,11 +1420,6 @@ type EditCluster struct {
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-	// The configuration for storing init scripts. Any number of destinations
-	// can be specified. The scripts are executed sequentially in the order
-	// provided. If `cluster_log_conf` is specified, init script logs are sent
-	// to `<destination>/<cluster-ID>/init_scripts`.
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field encodes, through a single value, the resources available to
@@ -2162,21 +2137,6 @@ type GlobalInitScriptUpdateRequest struct {
 	Script string `json:"script"`
 	// The ID of the global init script.
 	ScriptId string `json:"-" url:"-"`
-}
-
-type InitScriptInfo struct {
-	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
-	// "dbfs:/home/cluster_log" } }`
-	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
-	// destination and either the region or endpoint need to be provided. e.g.
-	// `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
-	// "us-west-2" } }` Cluster iam role is used to access s3, please make sure
-	// the cluster iam role in `instance_profile_arn` has permission to write
-	// data to the s3 destination.
-	S3 *S3StorageInfo `json:"s3,omitempty"`
-	// destination needs to be provided. e.g. `{ "workspace" : { "destination" :
-	// "/Users/user1@databricks.com/my-init.sh" } }`
-	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
 }
 
 type InstallLibraries struct {
@@ -3339,10 +3299,4 @@ type UnpinCluster struct {
 type WorkloadType struct {
 	// defined what type of clients can use the cluster. E.g. Notebooks, Jobs
 	Clients *ClientsTypes `json:"clients,omitempty"`
-}
-
-type WorkspaceStorageInfo struct {
-	// workspace files destination, e.g.
-	// `/Users/user1@databricks.com/my-init.sh`
-	Destination string `json:"destination,omitempty"`
 }

@@ -26,9 +26,7 @@ type WorkspaceClient struct {
 	// The alerts API can be used to perform CRUD operations on alerts. An alert
 	// is a Databricks SQL object that periodically runs a query, evaluates a
 	// condition of its result, and notifies one or more users and/or
-	// notification destinations if the condition was met. Alerts can be
-	// scheduled using the `sql_task` type of the Jobs API, e.g.
-	// :method:jobs/create.
+	// notification destinations if the condition was met.
 	Alerts *sql.AlertsAPI
 
 	// A catalog is the first layer of Unity Catalog’s three-level namespace.
@@ -107,9 +105,7 @@ type WorkspaceClient struct {
 	// However, it can be useful to use dashboard objects to look-up a
 	// collection of related query IDs. The API can also be used to duplicate
 	// multiple dashboards at once since you can get a dashboard definition with
-	// a GET request and then POST it to create a new one. Dashboards can be
-	// scheduled using the `sql_task` type of the Jobs API, e.g.
-	// :method:jobs/create.
+	// a GET request and then POST it to create a new one.
 	Dashboards *sql.DashboardsAPI
 
 	// This API is provided to assist you in making new query objects. When
@@ -275,11 +271,10 @@ type WorkspaceClient struct {
 	// applications.
 	//
 	// You should never hard code secrets or store them in plain text. Use the
-	// [Secrets CLI] to manage secrets in the [Databricks CLI]. Use the [Secrets
-	// utility] to reference secrets in notebooks and jobs.
+	// :service:secrets to manage secrets in the [Databricks CLI]. Use the
+	// [Secrets utility] to reference secrets in notebooks and jobs.
 	//
 	// [Databricks CLI]: https://docs.databricks.com/dev-tools/cli/index.html
-	// [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
 	// [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 	Jobs *jobs.JobsAPI
 
@@ -362,9 +357,7 @@ type WorkspaceClient struct {
 
 	// These endpoints are used for CRUD operations on query definitions. Query
 	// definitions include the target SQL warehouse, query text, name,
-	// description, tags, parameters, and visualizations. Queries can be
-	// scheduled using the `sql_task` type of the Jobs API, e.g.
-	// :method:jobs/create.
+	// description, tags, parameters, and visualizations.
 	Queries *sql.QueriesAPI
 
 	// Access the history of queries through SQL warehouses.
@@ -709,15 +702,6 @@ type WorkspaceClient struct {
 	// code, visualizations, and explanatory text.
 	Workspace *workspace.WorkspaceAPI
 
-	// A catalog in Databricks can be configured as __OPEN__ or __ISOLATED__. An
-	// __OPEN__ catalog can be accessed from any workspace, while an
-	// __ISOLATED__ catalog can only be access from a configured list of
-	// workspaces.
-	//
-	// A catalog's workspace bindings can be configured by a metastore admin or
-	// the owner of the catalog.
-	WorkspaceBindings *catalog.WorkspaceBindingsAPI
-
 	// This API allows updating known workspace settings for advanced users.
 	WorkspaceConf *settings.WorkspaceConfAPI
 }
@@ -787,7 +771,6 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Volumes:             catalog.NewVolumes(apiClient),
 		Warehouses:          sql.NewWarehouses(apiClient),
 		Workspace:           workspace.NewWorkspace(apiClient),
-		WorkspaceBindings:   catalog.NewWorkspaceBindings(apiClient),
 		WorkspaceConf:       settings.NewWorkspaceConf(apiClient),
 	}, nil
 }

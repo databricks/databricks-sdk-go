@@ -24,8 +24,7 @@ func NewAlerts(client *client.DatabricksClient) *AlertsAPI {
 // The alerts API can be used to perform CRUD operations on alerts. An alert is
 // a Databricks SQL object that periodically runs a query, evaluates a condition
 // of its result, and notifies one or more users and/or notification
-// destinations if the condition was met. Alerts can be scheduled using the
-// `sql_task` type of the Jobs API, e.g. :method:jobs/create.
+// destinations if the condition was met.
 type AlertsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(AlertsService)
@@ -168,8 +167,7 @@ func NewDashboards(client *client.DatabricksClient) *DashboardsAPI {
 // it can be useful to use dashboard objects to look-up a collection of related
 // query IDs. The API can also be used to duplicate multiple dashboards at once
 // since you can get a dashboard definition with a GET request and then POST it
-// to create a new one. Dashboards can be scheduled using the `sql_task` type of
-// the Jobs API, e.g. :method:jobs/create.
+// to create a new one.
 type DashboardsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(DashboardsService)
@@ -504,8 +502,7 @@ func NewQueries(client *client.DatabricksClient) *QueriesAPI {
 
 // These endpoints are used for CRUD operations on query definitions. Query
 // definitions include the target SQL warehouse, query text, name, description,
-// tags, parameters, and visualizations. Queries can be scheduled using the
-// `sql_task` type of the Jobs API, e.g. :method:jobs/create.
+// tags, parameters, and visualizations.
 type QueriesAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(QueriesService)
