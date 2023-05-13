@@ -1,12 +1,14 @@
 package beep
 
 import (
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/openapi/code"
+	"golang.org/x/exp/slices"
 )
 
 func NewSuite(filename string) (*suite, error) {
@@ -29,31 +31,84 @@ type suite struct {
 	examples []*example
 }
 
-func (s *suite) Sample(svc, mth string) (out []*example) {
-	svcCamelName := (&code.Named{
-		Name: svc,
-	}).CamelName()
-	methodCamelName := (&code.Named{
-		Name: mth,
-	}).CamelName()
+func (s *suite) FullName() string {
+	return "xxx"
+}
+
+type methodRef struct {
+	service, method string
+}
+
+func (s *suite) methods() []methodRef {
+	found := map[methodRef]bool{}
 	for _, ex := range s.examples {
-		c := ex.findCall(svcCamelName, methodCamelName)
+		for _, v := range ex.Calls {
+			if v.Service == nil {
+				continue
+			}
+			found[methodRef{
+				service: v.Service.CamelName(),
+				method:  v.OriginalName(),
+			}] = true
+		}
+	}
+	methods := []methodRef{}
+	for k := range found {
+		methods = append(methods, k)
+	}
+	slices.SortFunc(methods, func(a, b methodRef) bool {
+		return a.service < b.service && a.method < b.method
+	})
+	return methods
+}
+
+func (s *suite) Samples() (out []*sample) {
+	for _, v := range s.methods() {
+		out = append(out, s.usageSamples(v.service, v.method)...)
+	}
+	return out
+}
+
+type sample struct {
+	example
+	Service *code.Named
+	Method  *code.Named
+}
+
+func (sa *sample) FullName() string {
+	return fmt.Sprintf("%s.%s", sa.Service.PascalName(), sa.Method.CamelName())
+}
+
+func (s *suite) usageSamples(svc, mth string) (out []*sample) {
+	svcName := &code.Named{
+		Name: svc,
+	}
+	methodName := &code.Named{
+		Name: mth,
+	}
+	for _, ex := range s.examples {
+		c := ex.findCall(svcName.CamelName(), methodName.CamelName())
 		if c == nil {
 			continue
 		}
-		sample := &example{
-			scope: map[string]expression{},
+		sa := &sample{
+			example: example{
+				Named: ex.Named,
+			},
+			Service: svcName,
+			Method:  methodName,
 		}
-		out = append(out, sample)
+		out = append(out, sa)
 		variablesUsed := []string{}
 		queue := []expression{c}
+		added := map[string]bool{}
 		for len(queue) > 0 {
 			current := queue[0]
 			queue = queue[1:]
 			switch x := current.(type) {
 			case *call:
-				sample.Calls = append(sample.Calls, x)
-				if x.Assign != nil {
+				sa.Calls = append(sa.Calls, x)
+				if x.Assign != nil && x.Assign.Name != "_" {
 					variablesUsed = append(variablesUsed, x.Assign.CamelName())
 				}
 				x.Traverse(func(e expression) {
@@ -61,24 +116,30 @@ func (s *suite) Sample(svc, mth string) (out []*example) {
 					if !ok {
 						return
 					}
-					found, ok := ex.scope[v.CamelName()]
-					if !ok {
+					if added[v.CamelName()] {
+						// don't add the same variable twice
 						return
 					}
-					if lit, ok := found.(*literal); ok {
-						// add variable to the scope
-						sample.scope[v.CamelName()] = lit
-					} else {
-						// resolve variables through calls
+					found, ok := ex.scope[v.CamelName()]
+					if ok {
 						queue = append(queue, found)
+						added[v.CamelName()] = true
+						return
+					}
+					for _, iv := range ex.Init {
+						if iv.CamelName() != v.CamelName() {
+							continue
+						}
+						sa.Init = append(sa.Init, iv)
+						return
 					}
 				})
 			default:
 				panic("unsupported")
 			}
 		}
-		for i, j := 0, len(sample.Calls)-1; i < j; i, j = i+1, j-1 {
-			sample.Calls[i], sample.Calls[j] = sample.Calls[j], sample.Calls[i]
+		for i, j := 0, len(sa.Calls)-1; i < j; i, j = i+1, j-1 {
+			sa.Calls[i], sa.Calls[j] = sa.Calls[j], sa.Calls[i]
 		}
 		for _, v := range variablesUsed {
 			// for _, c := range ex.Asserts {
@@ -91,14 +152,14 @@ func (s *suite) Sample(svc, mth string) (out []*example) {
 				if !c.HasVariable(v) {
 					continue
 				}
-				sample.Cleanup = append(sample.Cleanup, c)
+				sa.Cleanup = append(sa.Cleanup, c)
 			}
 		}
 	}
 	return out
 }
 
-func (s *suite) ImprotedServices() (svcs []string) {
+func (s *suite) ImprotedPackages() (svcs []string) {
 	ast.Inspect(s.file, func(raw ast.Node) bool {
 		switch n := raw.(type) {
 		case *ast.ImportSpec:
@@ -151,9 +212,11 @@ func (s *suite) expectExamples() {
 }
 
 func (s *suite) expectFn(fn *ast.FuncDecl) *example {
+	testName := fn.Name.Name
+	testName = strings.TrimPrefix(testName, "TestAcc")
 	ex := &example{
 		Named: code.Named{
-			Name: fn.Name.Name,
+			Name: testName,
 		},
 		scope: map[string]expression{},
 	}
@@ -248,18 +311,24 @@ func (s *suite) expectAssign(ex *example, stmt *ast.AssignStmt) {
 		ex.IsAccount = names[1] == "a"
 		return
 	}
-	switch stmt.Rhs[0].(type) {
+	switch x := stmt.Rhs[0].(type) {
 	case *ast.CallExpr:
 		c := s.expectAssignCall(stmt)
 		if c == nil {
 			return
 		}
-		if c.Assign != nil {
+		if c.Assign != nil && c.Assign.Name != "_" {
 			ex.scope[c.Assign.CamelName()] = c
 		}
 		ex.Calls = append(ex.Calls, c)
 	case *ast.BasicLit:
-		ex.scope[names[0]] = s.expectExpr(stmt.Rhs[0])
+		lit := s.expectPrimitive(x)
+		ex.Init = append(ex.Init, &initVar{
+			Named: code.Named{
+				Name: names[0],
+			},
+			Value: lit,
+		})
 	}
 }
 
@@ -271,7 +340,7 @@ func (s *suite) expectAssignCall(stmt *ast.AssignStmt) *call {
 			Name: names[0],
 		}
 	}
-	if len(names) == 2 && names[1] == "err" && names[0] != "_" {
+	if len(names) == 2 && names[1] == "err" {
 		c.Assign = &code.Named{
 			Name: names[0],
 		}
@@ -343,11 +412,15 @@ func (s *suite) expectArray(t *ast.ArrayType, cl *ast.CompositeLit) *array {
 	return arr
 }
 
+func (s *suite) expectPrimitive(x *ast.BasicLit) *literal {
+	// we directly translate literal values
+	return &literal{x.Value}
+}
+
 func (s *suite) expectExpr(e ast.Expr) expression {
 	switch x := e.(type) {
 	case *ast.BasicLit:
-		// we directly translate literal values
-		return &literal{x.Value}
+		return s.expectPrimitive(x)
 	case *ast.CompositeLit:
 		switch t := x.Type.(type) {
 		case *ast.SelectorExpr:
@@ -372,7 +445,7 @@ func (s *suite) expectExpr(e ast.Expr) expression {
 			},
 		}
 	case *ast.CallExpr:
-		return s.expectSimpleCall(x)
+		return s.expectCall(x)
 	case *ast.BinaryExpr:
 		return &binaryExpr{
 			Left:  s.expectExpr(x.X),
@@ -397,27 +470,11 @@ func (s *suite) explainAndPanic(expected string, x any) any {
 
 func (s *suite) expectLookup(se *ast.SelectorExpr) *lookup {
 	return &lookup{
-		X:     s.expectExpr(se.X),
-		Field: s.expectExpr(se.Sel),
-	}
-}
-
-func (s *suite) expectSimpleCall(ce *ast.CallExpr) *call {
-	ident, ok := ce.Fun.(*ast.Ident)
-	if !ok {
-		s.explainAndPanic("ident", ce.Fun)
-		return nil
-	}
-	c := &call{
-		Named: code.Named{
-			Name: ident.Name,
+		X: s.expectExpr(se.X),
+		Field: &code.Named{
+			Name: s.expectIdent(se.Sel),
 		},
 	}
-	for _, v := range ce.Args {
-		arg := s.expectExpr(v)
-		c.Args = append(c.Args, arg)
-	}
-	return c
 }
 
 func (s *suite) expectCall(e ast.Expr) *call {

@@ -146,7 +146,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Edit the cluster: change auto-termination and number of workers
-	err = w.Clusters.Edit(ctx, compute.EditCluster{
+	_, err = w.Clusters.EditAndWait(ctx, compute.EditCluster{
 		ClusterId:      clstr.ClusterId,
 		SparkVersion:   latest,
 		ClusterName:    clusterName,
@@ -190,7 +190,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	assert.Equal(t, 1, byId.NumWorkers)
 
 	// Restart the cluster and wait for it to run again
-	err = w.Clusters.Restart(ctx, compute.RestartCluster{
+	_, err = w.Clusters.RestartAndWait(ctx, compute.RestartCluster{
 		ClusterId: clstr.ClusterId,
 	})
 	require.NoError(t, err)

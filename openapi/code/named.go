@@ -169,6 +169,9 @@ func (n *Named) TitleName() string {
 
 // CamelName creates namesLikesThis
 func (n *Named) CamelName() string {
+	if n.Name == "_" {
+		return "_"
+	}
 	cc := n.PascalName()
 	return strings.ToLower(cc[0:1]) + cc[1:]
 }

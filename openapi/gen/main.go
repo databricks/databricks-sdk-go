@@ -4,28 +4,21 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"flag"
 	"fmt"
 	"io"
-	"io/fs"
 	"os"
-	"os/exec"
-	"path"
-	"path/filepath"
 	"sort"
-	"strings"
-	"text/template"
 
 	"github.com/databricks/databricks-sdk-go/openapi/code"
+	"github.com/databricks/databricks-sdk-go/openapi/render"
 )
 
 var ctx Context
 
 func main() {
-	cfg, err := getConfig()
+	cfg, err := render.Config()
 	if err != nil {
-		cfg = &Config{}
 		fmt.Printf("WARN: %s\n\n", err)
 	}
 	workDir, _ := os.Getwd()
@@ -43,32 +36,6 @@ func main() {
 		fmt.Printf("ERROR: %s\n\n", err)
 		os.Exit(1)
 	}
-}
-
-type Config struct {
-	Spec string `json:"spec"`
-}
-
-func getConfig() (*Config, error) {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return nil, fmt.Errorf("home: %w", err)
-	}
-	loc := filepath.Join(home, ".openapi-codegen.json")
-	f, err := os.Open(loc)
-	if err != nil {
-		return nil, fmt.Errorf("open %s: %w", loc, err)
-	}
-	raw, err := io.ReadAll(f)
-	if err != nil {
-		return nil, fmt.Errorf("read all: %w", err)
-	}
-	var config Config
-	err = json.Unmarshal(raw, &config)
-	if err != nil {
-		return nil, fmt.Errorf("parse %s: %w", loc, err)
-	}
-	return &config, nil
 }
 
 type Context struct {
@@ -117,62 +84,38 @@ type Render struct {
 func (r *Render) Run() error {
 	var filenames []string
 	if r.Batch != nil {
-		pass := newPass([]named{r.batch}, r.Batch)
+		pass := render.NewPass(ctx.Target, []render.Named{r.batch}, r.Batch)
 		err := pass.Run()
 		if err != nil {
 			return fmt.Errorf("batch: %w", err)
 		}
-		filenames = append(filenames, pass.filenames...)
+		filenames = append(filenames, pass.Filenames...)
 	}
 	if r.Packages != nil {
-		pass := newPass(r.batch.Packages(), r.Packages)
+		pass := render.NewPass(ctx.Target, r.batch.Packages(), r.Packages)
 		err := pass.Run()
 		if err != nil {
 			return fmt.Errorf("packages: %w", err)
 		}
-		filenames = append(filenames, pass.filenames...)
+		filenames = append(filenames, pass.Filenames...)
 	}
 	if r.Services != nil {
-		pass := newPass(r.batch.Services(), r.Services)
+		pass := render.NewPass(ctx.Target, r.batch.Services(), r.Services)
 		err := pass.Run()
 		if err != nil {
 			return fmt.Errorf("services: %w", err)
 		}
-		filenames = append(filenames, pass.filenames...)
+		filenames = append(filenames, pass.Filenames...)
 	}
 	if r.Types != nil {
-		pass := newPass(r.batch.Types(), r.Types)
+		pass := render.NewPass(ctx.Target, r.batch.Types(), r.Types)
 		err := pass.Run()
 		if err != nil {
 			return fmt.Errorf("types: %w", err)
 		}
-		filenames = append(filenames, pass.filenames...)
+		filenames = append(filenames, pass.Filenames...)
 	}
-	for _, formatter := range strings.Split(r.Formatter, "&&") {
-		formatter = strings.TrimSpace(formatter)
-		fmt.Printf("Formatting: %s\n", formatter)
-
-		formatter = strings.ReplaceAll(formatter, "$FILENAMES",
-			strings.Join(filenames, " "))
-		split := strings.Split(formatter, " ")
-
-		// create pipe to forward stdout and stderr to same fd,
-		// so that it's clear why formatter failed.
-		reader, writer := io.Pipe()
-		out := bytes.NewBuffer([]byte{})
-		go io.Copy(out, reader)
-		defer reader.Close()
-		defer writer.Close()
-
-		cmd := exec.Command(split[0], split[1:]...)
-		cmd.Dir = r.ctx.Target
-		cmd.Stdout = writer
-		cmd.Stderr = writer
-		err := cmd.Run()
-		if err != nil {
-			return fmt.Errorf("%s:\n%s", formatter, out.Bytes())
-		}
-	}
+	render.Fomratter(ctx.Target, filenames, r.Formatter)
 	sort.Strings(filenames)
 	sb := bytes.NewBuffer([]byte{})
 	for _, v := range filenames {
@@ -182,100 +125,4 @@ func (r *Render) Run() error {
 	}
 	genMetaFile := fmt.Sprintf("%s/.gitattributes", r.ctx.Target)
 	return os.WriteFile(genMetaFile, sb.Bytes(), 0o755)
-}
-
-func newPass[T named](items []T, fileset map[string]string) *Pass[T] {
-	var tmpls []string
-	newFileset := map[string]string{}
-	for filename, v := range fileset {
-		filename = filepath.Join(ctx.Target, filename)
-		tmpls = append(tmpls, filename)
-		newFileset[filepath.Base(filename)] = v
-	}
-	t := template.New("codegen").Funcs(code.HelperFuncs)
-	t = t.Funcs(template.FuncMap{
-		"load": func(tmpl string) (string, error) {
-			_, err := t.ParseFiles(tmpl)
-			return "", err
-		},
-	})
-	return &Pass[T]{
-		Items:   items,
-		ctx:     &ctx,
-		fileset: newFileset,
-		tmpl:    template.Must(t.ParseFiles(tmpls...)),
-	}
-}
-
-type named interface {
-	FullName() string
-}
-
-type Pass[T named] struct {
-	Items     []T
-	ctx       *Context
-	tmpl      *template.Template
-	fileset   map[string]string
-	filenames []string
-}
-
-func (p *Pass[T]) Run() error {
-	for _, item := range p.Items {
-		fmt.Printf("Processing: %s\n", item.FullName())
-		for k, v := range p.fileset {
-			err := p.File(item, k, v)
-			if err != nil {
-				return fmt.Errorf("%s: %w", item.FullName(), err)
-			}
-		}
-	}
-	return nil
-}
-
-func (p *Pass[T]) File(item T, contentTRef, nameT string) error {
-	nt, err := template.New("filename").Parse(nameT)
-	if err != nil {
-		return fmt.Errorf("parse %s: %w", nameT, err)
-	}
-	var contents strings.Builder
-	err = p.tmpl.ExecuteTemplate(&contents, contentTRef, &item)
-	if errors.Is(err, code.ErrSkipThisFile) {
-		// special case for CLI generation with `{{skipThisFile}}`
-		return nil
-	}
-	if err != nil {
-		return fmt.Errorf("exec %s: %w", contentTRef, err)
-	}
-	var childFilename strings.Builder
-	err = nt.Execute(&childFilename, item)
-	if err != nil {
-		return fmt.Errorf("exec %s: %w", nameT, err)
-	}
-	p.filenames = append(p.filenames, childFilename.String())
-	if p.ctx.DryRun {
-		fmt.Printf("\n---\nDRY RUN: %s\n---\n%s", &childFilename, &contents)
-		return nil
-	}
-	if nameT == "stdout" {
-		// print something, usually instructions for any manual work
-		println(contents.String())
-		return nil
-	}
-	targetFilename := filepath.Join(p.ctx.Target, childFilename.String())
-	_, err = os.Stat(targetFilename)
-	if errors.Is(err, fs.ErrNotExist) {
-		err = os.MkdirAll(path.Dir(targetFilename), 0o755)
-		if err != nil {
-			return fmt.Errorf("cannot create parent folders: %w", err)
-		}
-	}
-	file, err := os.OpenFile(targetFilename, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0755)
-	if err != nil {
-		return fmt.Errorf("open %s: %w", targetFilename, err)
-	}
-	_, err = file.WriteString(contents.String())
-	if err != nil {
-		return fmt.Errorf("write %s: %w", targetFilename, err)
-	}
-	return file.Close()
 }

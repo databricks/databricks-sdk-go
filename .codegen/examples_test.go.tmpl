@@ -1,0 +1,104 @@
+package examples // TODO: change
+
+import (
+	"context"
+	"fmt"
+	"math/rand"
+	"strings"
+	"time"
+    "os"
+
+	"github.com/databricks/databricks-sdk-go"
+    "github.com/databricks/databricks-sdk-go/logger"
+
+    {{range .ImprotedPackages}}
+	"github.com/databricks/databricks-sdk-go/service/{{.}}"{{end}}
+)
+
+const fullCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+// RandomName gives random name with optional prefix. e.g. RandomName("tf-")
+func RandomName(prefix ...string) string {
+	rand.Seed(time.Now().UnixNano())
+	randLen := 12
+	b := make([]byte, randLen)
+	for i := range b {
+		b[i] = fullCharset[rand.Intn(randLen)]
+	}
+	if len(prefix) > 0 {
+		return fmt.Sprintf("%s%s", strings.Join(prefix, ""), b)
+	}
+	return string(b)
+}
+
+{{range .Samples}}{{- $example := . -}}
+func Example{{.Service.PascalName}}API_{{.Method.PascalName}}_{{.CamelName}}() {
+    ctx := context.Background()
+	{{if .IsAccount}}a{{else}}w{{end}}, err := databricks.New{{if .IsAccount}}Account{{else}}Workspace{{end}}Client()
+	if err != nil {
+		panic(err)
+	}
+
+    {{range .Init}}
+    {{.CamelName}} := {{template "expr" .Value}}
+    {{end}}
+
+    {{range .Calls}}
+        {{if .Service -}}
+        {{with .Assign}}{{.CamelName}}, err {{if not (eq .Name "_")}}:{{end}}= {{else}}err = {{end}}{{if $example.IsAccount}}a{{else}}w{{end}}.{{.Service.PascalName}}.{{.PascalName}}(ctx{{range .Args}}, {{template "expr" .}}{{end}})
+        if err != nil {
+            panic(err)
+        }
+        {{with .Assign}}{{if not (eq .Name "_")}}logger.Infof(ctx, "found %v", {{.CamelName}}){{end}}{{end -}}
+        {{- else -}}
+        {{with .Assign}}{{.CamelName}} := {{end}}{{template "expr" .}}
+        {{- end}}
+    {{end}}
+
+    {{with .Cleanup}}
+    // cleanup
+    {{range .}}
+    err = {{if $example.IsAccount}}a{{else}}w{{end}}.{{.Service.PascalName}}.{{.PascalName}}(ctx{{range .Args}}, {{template "expr" .}}{{end}})
+    if err != nil {
+        panic(err)
+    }{{end}}
+    {{end}}
+}
+
+{{end}}
+
+{{define "expr" -}}
+{{- if eq .Type "binary" -}}
+    {{template "expr" .Left}} {{.Op}} {{template "expr" .Right}}
+{{- else if eq .Type "index" -}}
+    {{template "expr" .Left}}[{{template "expr" .Right}}]
+{{- else if eq .Type "boolean" -}}
+    {{if .Value}}true{{else}}false{{end}}
+{{- else if eq .Type "literal" -}}
+    {{.Value}}
+{{- else if eq .Type "lookup" -}}
+    {{template "expr" .X}}.{{.Field.PascalName}}
+{{- else if eq .Type "variable" -}}
+    {{.CamelName}}
+{{- else if eq .Type "entity" -}}
+    {{.Package}}.{{.PascalName}}{ {{range .FieldValues}}
+        {{.PascalName}}: {{template "expr" .Value}},{{end}}
+    }
+{{- else if eq .Type "call" -}}
+    {{template "call" .}}
+{{- else if eq .Type "array" -}}
+    /* TODO: array */
+{{- else -}}
+    /* UNKNOWN: {{.Type}} */
+{{- end -}}
+{{- end}}
+
+{{define "call" -}}
+{{- if eq .PascalName "GetEnvOrSkipTest" -}}
+os.Getenv({{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}})
+{{- else if eq .PascalName "RandomEmail" -}}
+fmt.Sprintf("sdk-%s@example.com", RandomName())
+{{- else -}}
+{{.PascalName}}({{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}})
+{{- end -}}
+{{- end}}

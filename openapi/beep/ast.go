@@ -71,15 +71,12 @@ func (l *literal) Type() string {
 
 type lookup struct {
 	X     expression
-	Field expression
+	Field *code.Named
 }
 
 func (l *lookup) Traverse(cb func(expression)) {
 	cb(l.X)
 	if t, ok := l.X.(traversable); ok {
-		t.Traverse(cb)
-	}
-	if t, ok := l.Field.(traversable); ok {
 		t.Traverse(cb)
 	}
 }
@@ -182,13 +179,24 @@ func (c *call) Type() string {
 	return "call"
 }
 
+type initVar struct {
+	code.Named
+	Value *literal
+}
+
 type example struct {
 	code.Named
+	// TODO: add Method and Service
 	IsAccount bool
 	Calls     []*call
 	Cleanup   []*call
 	Asserts   []*binaryExpr
+	Init      []*initVar
 	scope     map[string]expression
+}
+
+func (ex *example) FullName() string {
+	return ex.Name
 }
 
 func (ex *example) findCall(svcCamelName, methodCamelName string) *call {
