@@ -5,41 +5,107 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/openapi/code"
 	"golang.org/x/exp/slices"
 )
 
-func NewSuite(filename string) (*suite, error) {
+func NewSuite(dirname string) (*suite, error) {
 	fset := token.NewFileSet()
-	file, err := parser.ParseFile(fset, filename, nil, 0)
+	s := &suite{
+		fset:             fset,
+		ServiceToPackage: map[string]string{},
+	}
+	err := filepath.WalkDir(dirname, func(path string, info os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+		if strings.HasSuffix(path, "acceptance_test.go") {
+			// not transpilable
+			return nil
+		}
+		if strings.HasSuffix(path, "dbfs_test.go") {
+			// not transpilable
+			return nil
+		}
+		if strings.HasSuffix(path, "workspaceconf_test.go") {
+			// not transpilable
+			return nil
+		}
+		file, err := parser.ParseFile(fset, path, nil, 0)
+		if err != nil {
+			return err
+		}
+		s.expectExamples(file)
+		return nil
+	})
 	if err != nil {
 		return nil, err
 	}
-	s := &suite{
-		fset: fset,
-		file: file,
+	err = s.parsePackages(dirname+"/../workspace_client.go", "WorkspaceClient")
+	if err != nil {
+		return nil, err
 	}
-	s.expectExamples()
+	err = s.parsePackages(dirname+"/../account_client.go", "AccountClient")
+	if err != nil {
+		return nil, err
+	}
 	return s, nil
 }
 
 type suite struct {
-	fset     *token.FileSet
-	file     *ast.File
-	examples []*example
+	fset             *token.FileSet
+	ServiceToPackage map[string]string
+	examples         []*example
+}
+
+func (s *suite) parsePackages(filename, client string) error {
+	file, err := parser.ParseFile(s.fset, filename, nil, 0)
+	if err != nil {
+		return err
+	}
+	spec, ok := file.Scope.Objects[client].Decl.(*ast.TypeSpec)
+	if !ok {
+		s.explainAndPanic("type spec", file.Scope.Objects[client].Decl)
+	}
+	structType, ok := spec.Type.(*ast.StructType)
+	if !ok {
+		s.explainAndPanic("struct type", spec.Type)
+	}
+	for _, f := range structType.Fields.List {
+		fieldName := f.Names[0].Name
+		starExpr, ok := f.Type.(*ast.StarExpr)
+		if !ok {
+			continue
+		}
+		selectorExpr, ok := starExpr.X.(*ast.SelectorExpr)
+		if !ok {
+			continue
+		}
+		apiName := selectorExpr.Sel.Name
+		if !strings.HasSuffix(apiName, "API") {
+			continue
+		}
+		s.ServiceToPackage[fieldName] = s.expectIdent(selectorExpr.X)
+	}
+	return nil
 }
 
 func (s *suite) FullName() string {
-	return "xxx"
+	return "suite"
 }
 
 type methodRef struct {
 	service, method string
 }
 
-func (s *suite) methods() []methodRef {
+func (s *suite) Methods() []methodRef {
 	found := map[methodRef]bool{}
 	for _, ex := range s.examples {
 		for _, v := range ex.Calls {
@@ -63,7 +129,7 @@ func (s *suite) methods() []methodRef {
 }
 
 func (s *suite) Samples() (out []*sample) {
-	for _, v := range s.methods() {
+	for _, v := range s.Methods() {
 		out = append(out, s.usageSamples(v.service, v.method)...)
 	}
 	return out
@@ -73,6 +139,7 @@ type sample struct {
 	example
 	Service *code.Named
 	Method  *code.Named
+	Package string
 }
 
 func (sa *sample) FullName() string {
@@ -97,6 +164,7 @@ func (s *suite) usageSamples(svc, mth string) (out []*sample) {
 			},
 			Service: svcName,
 			Method:  methodName,
+			Package: s.ServiceToPackage[svcName.PascalName()],
 		}
 		out = append(out, sa)
 		variablesUsed := []string{}
@@ -159,25 +227,6 @@ func (s *suite) usageSamples(svc, mth string) (out []*sample) {
 	return out
 }
 
-func (s *suite) ImprotedPackages() (svcs []string) {
-	ast.Inspect(s.file, func(raw ast.Node) bool {
-		switch n := raw.(type) {
-		case *ast.ImportSpec:
-			name := s.expectString(n.Path)
-			prefix := "github.com/databricks/databricks-sdk-go/service/"
-			if !strings.HasPrefix(name, prefix) {
-				return true
-			}
-			svcs = append(svcs, strings.TrimPrefix(name, prefix))
-		case *ast.FuncDecl:
-			// save cycles
-			return false
-		}
-		return true
-	})
-	return svcs
-}
-
 func (s *suite) assignedNames(a *ast.AssignStmt) (names []string) {
 	for _, v := range a.Lhs {
 		ident, ok := v.(*ast.Ident)
@@ -196,10 +245,28 @@ func (s *suite) expectString(l *ast.BasicLit) string {
 	return strings.Trim(l.Value, `"`)
 }
 
-func (s *suite) expectExamples() {
-	for _, v := range s.file.Decls {
+func (s *suite) expectExamples(file *ast.File) {
+	ast.Inspect(file, func(raw ast.Node) bool {
+		switch n := raw.(type) {
+		case *ast.ImportSpec:
+			name := s.expectString(n.Path)
+			prefix := "github.com/databricks/databricks-sdk-go/service/"
+			if !strings.HasPrefix(name, prefix) {
+				return true
+			}
+			// svcs = append(svcs, strings.TrimPrefix(name, prefix))
+		case *ast.FuncDecl:
+			// save cycles
+			return false
+		}
+		return true
+	})
+	for _, v := range file.Decls {
 		fn, ok := v.(*ast.FuncDecl)
 		if !ok {
+			continue
+		}
+		if !strings.HasPrefix(fn.Name.Name, "TestAcc") {
 			continue
 		}
 		if strings.HasSuffix(fn.Name.Name, "NoTranspile") {
@@ -280,27 +347,32 @@ func (s *suite) expectExprStmt(ex *example, stmt *ast.ExprStmt) {
 	if ignoreFns[c.Name] {
 		return
 	}
-	switch c.Name {
-	case "Equal":
+	assertions := map[string]string{
+		"EqualError":     "equalError",
+		"Contains":       "contains",
+		"GreaterOrEqual": ">=",
+		"Greater":        ">",
+		"Equal":          "==",
+		"NotEqual":       "!=",
+	}
+	op, ok := assertions[c.Name]
+	if ok {
 		ex.Asserts = append(ex.Asserts, &binaryExpr{
 			Left:  c.Args[0],
-			Op:    "==",
+			Op:    op,
 			Right: c.Args[1],
 		})
-	case "NotEqual":
+	} else if c.Name == "NotEmpty" {
+		// TODO: replace code occurences with assert.True
 		ex.Asserts = append(ex.Asserts, &binaryExpr{
 			Left:  c.Args[0],
-			Op:    "!=",
-			Right: c.Args[1],
+			Op:    "notEmpty",
+			Right: nil,
 		})
-	case "True":
-		ex.Asserts = append(ex.Asserts, &binaryExpr{
-			Left:  c.Args[0],
-			Op:    "==",
-			Right: &boolean{true},
-		})
-	default:
-		print(c)
+	} else if c.Name == "True" {
+		ex.Asserts = append(ex.Asserts, c.Args[0])
+	} else {
+		s.explainAndPanic("known assertion", c)
 	}
 }
 

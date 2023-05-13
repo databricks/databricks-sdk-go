@@ -190,7 +190,7 @@ type example struct {
 	IsAccount bool
 	Calls     []*call
 	Cleanup   []*call
-	Asserts   []*binaryExpr
+	Asserts   []expression
 	Init      []*initVar
 	scope     map[string]expression
 }

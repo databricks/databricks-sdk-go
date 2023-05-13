@@ -8,19 +8,22 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestLoadsBilling(t *testing.T) {
-	s, err := NewSuite("../../billing_test.go")
+func TestLoadsFolder(t *testing.T) {
+	s, err := NewSuite("../../internal")
 	require.NoError(t, err)
 
-	svcs := s.ImprotedPackages()
-	assert.True(t, len(svcs) > 0)
+	methods := s.Methods()
+	assert.True(t, len(methods) == 1)
+
+	samples := s.Samples()
+	assert.True(t, len(samples) == 1)
 }
 
 func TestLoadsClusters(t *testing.T) {
 	s, err := NewSuite("../../internal/clusters_test.go")
 	require.NoError(t, err)
 
-	methods := s.methods()
+	methods := s.Methods()
 	assert.True(t, len(methods) == 1)
 
 	samples := s.Samples()
