@@ -97,6 +97,7 @@ type entity struct {
 	code.Named
 	Package     string
 	FieldValues []*fieldValue
+	IsPointer   bool
 }
 
 func (e *entity) Traverse(cb func(expression)) {

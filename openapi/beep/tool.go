@@ -102,7 +102,7 @@ func (s *suite) FullName() string {
 }
 
 type methodRef struct {
-	service, method string
+	Pacakge, Service, Method string
 }
 
 func (s *suite) Methods() []methodRef {
@@ -113,8 +113,9 @@ func (s *suite) Methods() []methodRef {
 				continue
 			}
 			found[methodRef{
-				service: v.Service.CamelName(),
-				method:  v.OriginalName(),
+				Pacakge: s.ServiceToPackage[v.Service.PascalName()],
+				Service: v.Service.CamelName(),
+				Method:  v.OriginalName(),
 			}] = true
 		}
 	}
@@ -123,23 +124,55 @@ func (s *suite) Methods() []methodRef {
 		methods = append(methods, k)
 	}
 	slices.SortFunc(methods, func(a, b methodRef) bool {
-		return a.service < b.service && a.method < b.method
+		return a.Service < b.Service && a.Method < b.Method
 	})
 	return methods
 }
 
 func (s *suite) Samples() (out []*sample) {
 	for _, v := range s.Methods() {
-		out = append(out, s.usageSamples(v.service, v.method)...)
+		out = append(out, s.usageSamples(v.Service, v.Method)...)
+	}
+	return out
+}
+
+type serviceExample struct {
+	code.Named
+	Suite   *suite
+	Package string
+	Samples []*sample
+}
+
+func (s *serviceExample) FullName() string {
+	return fmt.Sprintf("%s.%s", s.Package, s.PascalName())
+}
+
+func (s *suite) ServicesExamples() (out []*serviceExample) {
+	samples := s.Samples()
+	for svc, pkg := range s.ServiceToPackage {
+		se := &serviceExample{
+			Named: code.Named{
+				Name: svc,
+			},
+			Package: pkg,
+			Suite:   s,
+		}
+		for _, v := range samples {
+			if v.Service.PascalName() != se.PascalName() {
+				continue
+			}
+			se.Samples = append(se.Samples, v)
+		}
+		out = append(out, se)
 	}
 	return out
 }
 
 type sample struct {
 	example
+	Package string
 	Service *code.Named
 	Method  *code.Named
-	Package string
 }
 
 func (sa *sample) FullName() string {
@@ -489,25 +522,38 @@ func (s *suite) expectPrimitive(x *ast.BasicLit) *literal {
 	return &literal{x.Value}
 }
 
+func (s *suite) expectCompositeLiteral(x *ast.CompositeLit) expression {
+	switch t := x.Type.(type) {
+	case *ast.SelectorExpr:
+		return s.expectEntity(t, x)
+	case *ast.ArrayType:
+		return s.expectArray(t, x)
+	default:
+		s.explainAndPanic("composite lit type", t)
+		return nil
+	}
+}
+
 func (s *suite) expectExpr(e ast.Expr) expression {
 	switch x := e.(type) {
 	case *ast.BasicLit:
 		return s.expectPrimitive(x)
 	case *ast.CompositeLit:
-		switch t := x.Type.(type) {
-		case *ast.SelectorExpr:
-			return s.expectEntity(t, x)
-		case *ast.ArrayType:
-			return s.expectArray(t, x)
-		default:
-			s.explainAndPanic("composite lit type", t)
-			return nil
-		}
+		return s.expectCompositeLiteral(x)
 	case *ast.UnaryExpr:
 		if x.Op != token.AND {
-			panic("only references to composite literals are supported")
+			s.explainAndPanic("only references to composite literals are supported", x)
 		}
-		return s.expectExpr(x.X)
+		y, ok := x.X.(*ast.CompositeLit)
+		if !ok {
+			s.explainAndPanic("composite lit", x.X)
+		}
+		e, ok := s.expectCompositeLiteral(y).(*entity)
+		if !ok {
+			s.explainAndPanic("entity", x)
+		}
+		e.IsPointer = true
+		return e
 	case *ast.SelectorExpr:
 		return s.expectLookup(x)
 	case *ast.Ident:

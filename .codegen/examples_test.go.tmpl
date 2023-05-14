@@ -1,4 +1,4 @@
-package examples // TODO: change
+package {{.Package}}_test
 
 import (
 	"context"
@@ -11,25 +11,9 @@ import (
 	"github.com/databricks/databricks-sdk-go"
     "github.com/databricks/databricks-sdk-go/logger"
 
-    {{range .ImprotedPackages}}
+    {{range .Suite.ServiceToPackage}}
 	"github.com/databricks/databricks-sdk-go/service/{{.}}"{{end}}
 )
-
-const fullCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-
-// RandomName gives random name with optional prefix. e.g. RandomName("tf-")
-func RandomName(prefix ...string) string {
-	rand.Seed(time.Now().UnixNano())
-	randLen := 12
-	b := make([]byte, randLen)
-	for i := range b {
-		b[i] = fullCharset[rand.Intn(randLen)]
-	}
-	if len(prefix) > 0 {
-		return fmt.Sprintf("%s%s", strings.Join(prefix, ""), b)
-	}
-	return string(b)
-}
 
 {{range .Samples}}{{- $example := . -}}
 func Example{{.Service.PascalName}}API_{{.Method.PascalName}}_{{.CamelName}}() {
@@ -81,13 +65,13 @@ func Example{{.Service.PascalName}}API_{{.Method.PascalName}}_{{.CamelName}}() {
 {{- else if eq .Type "variable" -}}
     {{.CamelName}}
 {{- else if eq .Type "entity" -}}
-    {{.Package}}.{{.PascalName}}{ {{range .FieldValues}}
+    {{if .IsPointer}}&{{end}}{{.Package}}.{{.PascalName}}{ {{range .FieldValues}}
         {{.PascalName}}: {{template "expr" .Value}},{{end}}
     }
 {{- else if eq .Type "call" -}}
     {{template "call" .}}
 {{- else if eq .Type "array" -}}
-    /* TODO: array */
+    []{{with .Package}}{{.}}.{{end}}{{.PascalName}}{ {{range $i, $x := .Values}}{{if $i}}, {{end}}{{template "expr" .}}{{end}} }
 {{- else -}}
     /* UNKNOWN: {{.Type}} */
 {{- end -}}
@@ -97,7 +81,26 @@ func Example{{.Service.PascalName}}API_{{.Method.PascalName}}_{{.CamelName}}() {
 {{- if eq .PascalName "GetEnvOrSkipTest" -}}
 os.Getenv({{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}})
 {{- else if eq .PascalName "RandomEmail" -}}
-fmt.Sprintf("sdk-%s@example.com", RandomName())
+fmt.Sprintf("sdk-%x@example.com", time.Now().UnixNano())
+{{- else if eq .PascalName "RandomName" -}}
+fmt.Sprintf("sdk-%x", time.Now().UnixNano())
+{{- else if eq .PascalName "SharedRunningCluster" -}}
+func() string {
+    clusterId := os.Getenv("DATABRICKS_CLUSTER_ID")
+	err := w.Clusters.EnsureClusterIsRunning(ctx, clusterId)
+	if err != nil {
+        panic(err)
+    }
+	return clusterId
+}()
+{{- else if eq .PascalName "MyNotebookPath" -}}
+func() string {
+    me, err := w.CurrentUser.Me(ctx)
+    if err != nil {
+        panic(err)
+    }
+    return filepath.Join("/Users", me.UserName, fmt.Sprintf("sdk-%x", time.Now().UnixNano()))
+}()
 {{- else -}}
 {{.PascalName}}({{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}})
 {{- end -}}

@@ -3,7 +3,6 @@ package internal
 import (
 	"context"
 	"strings"
-	"sync"
 	"testing"
 	"time"
 
@@ -15,32 +14,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// use mutex around starting TEST_GO_SDK_CLUSTER_ID
-var mu sync.Mutex
-
-func sharedRunningClusterNoTranspile(t *testing.T, ctx context.Context,
+func sharedRunningCluster(t *testing.T, ctx context.Context,
 	w *databricks.WorkspaceClient) string {
-	mu.Lock()
-	defer mu.Unlock()
-
 	clusterId := GetEnvOrSkipTest(t, "TEST_GO_SDK_CLUSTER_ID")
-	info, err := w.Clusters.GetByClusterId(ctx, clusterId)
+	err := w.Clusters.EnsureClusterIsRunning(ctx, clusterId)
 	require.NoError(t, err)
-
-	switch info.State {
-	case compute.StateRunning:
-		// noop
-	case compute.StateTerminated:
-		_, err = w.Clusters.StartByClusterIdAndWait(ctx, clusterId)
-		require.NoError(t, err)
-	case compute.StatePending,
-		compute.StateResizing,
-		compute.StateRestarting:
-		_, err = w.Clusters.GetByClusterIdAndWait(ctx, clusterId)
-		require.NoError(t, err)
-	default:
-		t.Errorf("Cluster is in %s state", info.State)
-	}
 	return clusterId
 }
 

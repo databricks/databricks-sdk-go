@@ -12,7 +12,7 @@ import (
 
 func TestAccJobsApiFullIntegration(t *testing.T) {
 	ctx, w := workspaceTest(t)
-	clusterId := sharedRunningClusterNoTranspile(t, ctx, w)
+	clusterId := sharedRunningCluster(t, ctx, w)
 	notebookPath := myNotebookPath(t, w)
 
 	err := w.Workspace.Import(ctx, workspace.PythonNotebookOverwrite(notebookPath, `

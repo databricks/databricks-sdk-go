@@ -13,25 +13,18 @@ func TestLoadsFolder(t *testing.T) {
 	require.NoError(t, err)
 
 	methods := s.Methods()
-	assert.True(t, len(methods) == 1)
+	assert.True(t, len(methods) > 1)
 
 	samples := s.Samples()
-	assert.True(t, len(samples) == 1)
-}
+	assert.True(t, len(samples) > 1)
 
-func TestLoadsClusters(t *testing.T) {
-	s, err := NewSuite("../../internal/clusters_test.go")
-	require.NoError(t, err)
-
-	methods := s.Methods()
-	assert.True(t, len(methods) == 1)
-
-	samples := s.Samples()
-	assert.True(t, len(samples) == 1)
-
-	pass := render.NewPass("/Users/serge.smertin/git/databricks/databricks-sdk-go", []*suite{s}, map[string]string{
-		".codegen/examples_test.go.tmpl": "examples/examples_xxx.go",
+	target := "/Users/serge.smertin/git/databricks/databricks-sdk-go"
+	pass := render.NewPass(target, s.ServicesExamples(), map[string]string{
+		".codegen/examples_test.go.tmpl": "service/{{.Package}}/{{.SnakeName}}_usage_test.go",
 	})
 	err = pass.Run()
+	assert.NoError(t, err)
+
+	err = render.Fomratter(target, pass.Filenames, "go fmt ./... && go run golang.org/x/tools/cmd/goimports@latest -w $FILENAMES")
 	assert.NoError(t, err)
 }
