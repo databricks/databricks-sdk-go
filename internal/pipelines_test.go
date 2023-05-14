@@ -23,30 +23,26 @@ func TestAccPipelines(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	libs := []pipelines.PipelineLibrary{
-		{
-			Notebook: &pipelines.NotebookLibrary{
-				Path: notebookPath,
-			},
-		},
-	}
-
-	clstrs := []pipelines.PipelineCluster{
-		{
-			InstancePoolId: GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
-			Label:          "default",
-			NumWorkers:     1,
-			CustomTags: map[string]string{
-				"cluster_type": "default",
-			},
-		},
-	}
-
 	created, err := w.Pipelines.Create(ctx, pipelines.CreatePipeline{
 		Continuous: false,
 		Name:       RandomName("go-sdk-"),
-		Libraries:  libs,
-		Clusters:   clstrs,
+		Libraries: []pipelines.PipelineLibrary{
+			{
+				Notebook: &pipelines.NotebookLibrary{
+					Path: notebookPath,
+				},
+			},
+		},
+		Clusters: []pipelines.PipelineCluster{
+			{
+				InstancePoolId: GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
+				Label:          "default",
+				NumWorkers:     1,
+				CustomTags: map[string]string{
+					"cluster_type": "default",
+				},
+			},
+		},
 	})
 	require.NoError(t, err)
 
@@ -62,8 +58,23 @@ func TestAccPipelines(t *testing.T) {
 	err = w.Pipelines.Update(ctx, pipelines.EditPipeline{
 		PipelineId: created.PipelineId,
 		Name:       RandomName("go-sdk-updated-"),
-		Libraries:  libs,
-		Clusters:   clstrs,
+		Libraries: []pipelines.PipelineLibrary{
+			{
+				Notebook: &pipelines.NotebookLibrary{
+					Path: notebookPath,
+				},
+			},
+		},
+		Clusters: []pipelines.PipelineCluster{
+			{
+				InstancePoolId: GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
+				Label:          "default",
+				NumWorkers:     1,
+				CustomTags: map[string]string{
+					"cluster_type": "default",
+				},
+			},
+		},
 	})
 	require.NoError(t, err)
 

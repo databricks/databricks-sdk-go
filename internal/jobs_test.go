@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"encoding/base64"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/compute"
@@ -15,10 +16,16 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	clusterId := sharedRunningCluster(t, ctx, w)
 	notebookPath := myNotebookPath(t, w)
 
-	err := w.Workspace.Import(ctx, workspace.PythonNotebookOverwrite(notebookPath, `
-		import time
-		time.sleep(10)
-		dbutils.notebook.exit('hello')`))
+	err := w.Workspace.Import(ctx, workspace.Import{
+		Path:      notebookPath,
+		Overwrite: true,
+		Format:    workspace.ExportFormatSource,
+		Language:  workspace.LanguagePython,
+		Content: base64.StdEncoding.EncodeToString([]byte(`
+			import time
+			time.sleep(10)
+			dbutils.notebook.exit('hello')`)),
+	})
 	require.NoError(t, err)
 
 	run, err := w.Jobs.SubmitAndWait(ctx, jobs.SubmitRun{
@@ -53,14 +60,14 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	require.NoError(t, err)
 	defer w.Jobs.DeleteByJobId(ctx, createdJob.JobId)
 
-	run, err = w.Jobs.RunNowAndWait(ctx, jobs.RunNow{
+	runById, err := w.Jobs.RunNowAndWait(ctx, jobs.RunNow{
 		JobId: createdJob.JobId,
 	})
 	require.NoError(t, err)
-	assert.NotEmpty(t, run.Tasks)
+	assert.NotEmpty(t, runById.Tasks)
 
 	exportedView, err := w.Jobs.ExportRun(ctx, jobs.ExportRunRequest{
-		RunId:         run.Tasks[0].RunId,
+		RunId:         runById.Tasks[0].RunId,
 		ViewsToExport: "CODE",
 	})
 	require.NoError(t, err)
@@ -81,17 +88,17 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	run, err = w.Jobs.CancelRunAndWait(ctx, jobs.CancelRun{
+	cancelledRun, err := w.Jobs.CancelRunAndWait(ctx, jobs.CancelRun{
 		RunId: runNowResponse.RunId,
 	})
 	require.NoError(t, err)
 
-	run, err = w.Jobs.RepairRunAndWait(ctx, jobs.RepairRun{
-		RerunTasks: []string{run.Tasks[0].TaskKey},
+	repairedRun, err := w.Jobs.RepairRunAndWait(ctx, jobs.RepairRun{
+		RerunTasks: []string{cancelledRun.Tasks[0].TaskKey},
 		RunId:      runNowResponse.RunId,
 	})
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(run.Tasks), 1)
+	assert.GreaterOrEqual(t, len(repairedRun.Tasks), 1)
 
 	newName := RandomName("updated")
 	err = w.Jobs.Update(ctx, jobs.UpdateJob{
@@ -147,12 +154,8 @@ func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	// Fetch list of available node types
-	nodeTypes, err := w.Clusters.ListNodeTypes(ctx)
-	require.NoError(t, err)
-
 	// Select the smallest node type id
-	smallestWithDisk, err := nodeTypes.Smallest(compute.NodeTypeRequest{
+	smallestWithDisk, err := w.Clusters.SelectNodeType(ctx, compute.NodeTypeRequest{
 		LocalDisk: true,
 	})
 	require.NoError(t, err)

@@ -517,6 +517,24 @@ func (s *suite) expectArray(t *ast.ArrayType, cl *ast.CompositeLit) *array {
 	return arr
 }
 
+func (s *suite) expectMap(t *ast.MapType, cl *ast.CompositeLit) *mapLiteral {
+	m := &mapLiteral{
+		KeyType:   s.expectIdent(t.Key),
+		ValueType: s.expectIdent(t.Value),
+	}
+	for _, v := range cl.Elts {
+		kv, ok := v.(*ast.KeyValueExpr)
+		if !ok {
+			s.explainAndPanic("key value expr", v)
+		}
+		m.Pairs = append(m.Pairs, mapKV{
+			Key:   s.expectExpr(kv.Key),
+			Value: s.expectExpr(kv.Value),
+		})
+	}
+	return m
+}
+
 func (s *suite) expectPrimitive(x *ast.BasicLit) *literal {
 	// we directly translate literal values
 	return &literal{x.Value}
@@ -528,6 +546,8 @@ func (s *suite) expectCompositeLiteral(x *ast.CompositeLit) expression {
 		return s.expectEntity(t, x)
 	case *ast.ArrayType:
 		return s.expectArray(t, x)
+	case *ast.MapType:
+		return s.expectMap(t, x)
 	default:
 		s.explainAndPanic("composite lit type", t)
 		return nil

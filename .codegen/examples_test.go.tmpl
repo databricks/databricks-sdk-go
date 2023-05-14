@@ -16,7 +16,7 @@ import (
 )
 
 {{range .Samples}}{{- $example := . -}}
-func Example{{.Service.PascalName}}API_{{.Method.PascalName}}_{{.CamelName}}() {
+func Example{{.Service.PascalName}}API_{{.Method.PascalName}}{{if eq .Method.PascalName "List"}}All{{end}}_{{.CamelName}}() {
     ctx := context.Background()
 	{{if .IsAccount}}a{{else}}w{{end}}, err := databricks.New{{if .IsAccount}}Account{{else}}Workspace{{end}}Client()
 	if err != nil {
@@ -70,8 +70,10 @@ func Example{{.Service.PascalName}}API_{{.Method.PascalName}}_{{.CamelName}}() {
     }
 {{- else if eq .Type "call" -}}
     {{template "call" .}}
+{{- else if eq .Type "map" -}}
+    map[{{.KeyType}}]{{.ValueType}}{ {{range .Pairs}}{{template "expr" .Key}}: {{template "expr" .Value}},{{end}} }
 {{- else if eq .Type "array" -}}
-    []{{with .Package}}{{.}}.{{end}}{{.PascalName}}{ {{range $i, $x := .Values}}{{if $i}}, {{end}}{{template "expr" .}}{{end}} }
+    []{{if .Package}}{{.Package}}.{{.PascalName}}{{else}}{{.Name}}{{end}}{ {{range $i, $x := .Values}}{{if $i}}, {{end}}{{template "expr" .}}{{end}} }
 {{- else -}}
     /* UNKNOWN: {{.Type}} */
 {{- end -}}
@@ -80,10 +82,18 @@ func Example{{.Service.PascalName}}API_{{.Method.PascalName}}_{{.CamelName}}() {
 {{define "call" -}}
 {{- if eq .PascalName "GetEnvOrSkipTest" -}}
 os.Getenv({{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}})
+{{- else if eq .PascalName "Dir" -}}
+filepath.Dir({{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}})
+{{- else if eq .PascalName "Sprintf" -}}
+fmt.Sprintf({{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}})
 {{- else if eq .PascalName "RandomEmail" -}}
 fmt.Sprintf("sdk-%x@example.com", time.Now().UnixNano())
 {{- else if eq .PascalName "RandomName" -}}
 fmt.Sprintf("sdk-%x", time.Now().UnixNano())
+{{- else if eq .PascalName "EncodeToString" -}}
+base64.StdEncoding.EncodeToString([]byte({{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}}))
+{{- else if eq .PascalName "CanonicalHostName" -}}
+w.Config.CanonicalHostName()
 {{- else if eq .PascalName "SharedRunningCluster" -}}
 func() string {
     clusterId := os.Getenv("DATABRICKS_CLUSTER_ID")

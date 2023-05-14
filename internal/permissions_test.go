@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"encoding/base64"
 	"fmt"
 	"strconv"
 	"testing"
@@ -15,8 +16,13 @@ func TestAccGenericPermissions(t *testing.T) {
 	ctx, w := workspaceTest(t)
 	notebookPath := myNotebookPath(t, w)
 
-	err := w.Workspace.Import(ctx, workspace.PythonNotebookOverwrite(
-		notebookPath, `print(1)`))
+	err := w.Workspace.Import(ctx, workspace.Import{
+		Path:      notebookPath,
+		Overwrite: true,
+		Format:    workspace.ExportFormatSource,
+		Language:  workspace.LanguagePython,
+		Content:   base64.StdEncoding.EncodeToString([]byte(`print(1)`)),
+	})
 	require.NoError(t, err)
 
 	obj, err := w.Workspace.GetStatusByPath(ctx, notebookPath)

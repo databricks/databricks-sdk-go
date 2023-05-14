@@ -113,6 +113,32 @@ func (e *entity) Type() string {
 	return "entity"
 }
 
+type mapKV struct {
+	Key   expression
+	Value expression
+}
+
+type mapLiteral struct {
+	KeyType   string
+	ValueType string
+	Pairs     []mapKV
+}
+
+func (e *mapLiteral) Type() string {
+	return "map"
+}
+
+func (e *mapLiteral) Traverse(cb func(expression)) {
+	for _, v := range e.Pairs {
+		if t, ok := v.Key.(traversable); ok {
+			t.Traverse(cb)
+		}
+		if t, ok := v.Value.(traversable); ok {
+			t.Traverse(cb)
+		}
+	}
+}
+
 type array struct {
 	code.Named
 	Package string

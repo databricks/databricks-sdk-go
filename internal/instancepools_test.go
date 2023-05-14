@@ -11,10 +11,7 @@ import (
 func TestAccInstancePools(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	vms, err := w.Clusters.ListNodeTypes(ctx)
-	require.NoError(t, err)
-
-	smallest, err := vms.Smallest(compute.NodeTypeRequest{
+	smallest, err := w.Clusters.SelectNodeType(ctx, compute.NodeTypeRequest{
 		LocalDisk: true,
 	})
 	require.NoError(t, err)
