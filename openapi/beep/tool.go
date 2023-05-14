@@ -26,6 +26,9 @@ func NewSuite(dirname string) (*suite, error) {
 		if info.IsDir() {
 			return nil
 		}
+		// if !strings.HasSuffix(path, "secrets_test.go") {
+		// 	return nil // FIXME: remove
+		// }
 		if strings.HasSuffix(path, "acceptance_test.go") {
 			// not transpilable
 			return nil
@@ -38,7 +41,7 @@ func NewSuite(dirname string) (*suite, error) {
 			// not transpilable
 			return nil
 		}
-		file, err := parser.ParseFile(fset, path, nil, 0)
+		file, err := parser.ParseFile(fset, path, nil, parser.ParseComments)
 		if err != nil {
 			return err
 		}
@@ -63,6 +66,7 @@ type suite struct {
 	fset             *token.FileSet
 	ServiceToPackage map[string]string
 	examples         []*example
+	counter          int
 }
 
 func (s *suite) parsePackages(filename, client string) error {
@@ -163,6 +167,9 @@ func (s *suite) ServicesExamples() (out []*serviceExample) {
 			}
 			se.Samples = append(se.Samples, v)
 		}
+		slices.SortFunc(se.Samples, func(a, b *sample) bool {
+			return a.FullName() < b.FullName()
+		})
 		out = append(out, se)
 	}
 	return out
@@ -203,15 +210,33 @@ func (s *suite) usageSamples(svc, mth string) (out []*sample) {
 		variablesUsed := []string{}
 		queue := []expression{c}
 		added := map[string]bool{}
+		callIds := map[int]bool{}
 		for len(queue) > 0 {
 			current := queue[0]
 			queue = queue[1:]
 			switch x := current.(type) {
 			case *call:
-				sa.Calls = append(sa.Calls, x)
+				if callIds[x.id] {
+					continue
+				}
 				if x.Assign != nil && x.Assign.Name != "_" {
 					variablesUsed = append(variablesUsed, x.Assign.CamelName())
+					// call methods that may actually create an entity.
+					// executed before we append to sa.Calls, as we reverse
+					// the slice in the end
+					for _, v := range ex.Calls {
+						if v.creates != x.Assign.CamelName() {
+							continue
+						}
+						if callIds[v.id] {
+							continue
+						}
+						sa.Calls = append(sa.Calls, v)
+						callIds[v.id] = true
+					}
 				}
+				sa.Calls = append(sa.Calls, x)
+				callIds[x.id] = true
 				x.Traverse(func(e expression) {
 					v, ok := e.(*variable)
 					if !ok {
@@ -239,25 +264,55 @@ func (s *suite) usageSamples(svc, mth string) (out []*sample) {
 				panic("unsupported")
 			}
 		}
-		for i, j := 0, len(sa.Calls)-1; i < j; i, j = i+1, j-1 {
-			sa.Calls[i], sa.Calls[j] = sa.Calls[j], sa.Calls[i]
-		}
 		for _, v := range variablesUsed {
-			// for _, c := range ex.Asserts {
-			// 	if !c.HasVariable(v) {
-			// 		continue
-			// 	}
-			// 	sample.Cleanup = append(sample.Cleanup, c)
-			// }
+			// TODO: also include ex.Asserts
 			for _, c := range ex.Cleanup {
 				if !c.HasVariable(v) {
 					continue
 				}
+				if callIds[c.id] {
+					continue
+				}
+				c.Traverse(func(e expression) {
+					v, ok := e.(*variable)
+					if !ok {
+						return
+					}
+					if added[v.CamelName()] {
+						// don't add the same variable twice
+						return
+					}
+					found, ok := ex.scope[v.CamelName()]
+					if !ok {
+						return
+					}
+					assignCall, ok := found.(*call)
+					if !ok {
+						// ideally, we could do multiple optimization passes
+						// to discover used variables also in cleanups, but
+						// we're not doing it for now.
+						return
+					}
+					if callIds[assignCall.id] {
+						return
+					}
+					sa.Calls = append(sa.Calls, assignCall)
+					callIds[assignCall.id] = true
+				})
 				sa.Cleanup = append(sa.Cleanup, c)
+				callIds[c.id] = true
 			}
 		}
+		reverse(sa.Calls)
+		reverse(sa.Cleanup)
 	}
 	return out
+}
+
+func reverse[T any](s []T) {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
 }
 
 func (s *suite) assignedNames(a *ast.AssignStmt) (names []string) {
@@ -299,7 +354,7 @@ func (s *suite) expectExamples(file *ast.File) {
 		if !ok {
 			continue
 		}
-		if !strings.HasPrefix(fn.Name.Name, "TestAcc") {
+		if !strings.HasPrefix(fn.Name.Name, "TestAcc") || !strings.HasPrefix(fn.Name.Name, "TestUcAcc") {
 			continue
 		}
 		if strings.HasSuffix(fn.Name.Name, "NoTranspile") {
@@ -307,11 +362,11 @@ func (s *suite) expectExamples(file *ast.File) {
 			// translate, we just ignore them.
 			continue
 		}
-		s.examples = append(s.examples, s.expectFn(fn))
+		s.examples = append(s.examples, s.expectFn(fn, file))
 	}
 }
 
-func (s *suite) expectFn(fn *ast.FuncDecl) *example {
+func (s *suite) expectFn(fn *ast.FuncDecl, file *ast.File) *example {
 	testName := fn.Name.Name
 	testName = strings.TrimPrefix(testName, "TestAcc")
 	ex := &example{
@@ -320,16 +375,32 @@ func (s *suite) expectFn(fn *ast.FuncDecl) *example {
 		},
 		scope: map[string]expression{},
 	}
+	lastPos := fn.Pos()
+	hint := ""
 	for _, v := range fn.Body.List {
+		for _, cmt := range file.Comments {
+			if cmt.End() < lastPos {
+				continue
+			}
+			if cmt.Pos() > v.Pos() {
+				continue
+			}
+			// figure out comment hint exactly above the given statement
+			hint = strings.TrimSpace(cmt.Text())
+			break
+		}
 		switch stmt := v.(type) {
 		case *ast.AssignStmt:
-			s.expectAssign(ex, stmt)
+			s.expectAssign(ex, stmt, hint)
 		case *ast.DeferStmt:
 			ex.Cleanup = append(ex.Cleanup, s.expectCall(stmt.Call))
 		case *ast.ExprStmt:
 			s.expectExprStmt(ex, stmt)
 		}
-		// we ignore test skips for different clouds
+		// store the end of the last statement to figure out the next
+		// statement comment.
+		lastPos = v.End()
+		hint = ""
 	}
 	return ex
 }
@@ -409,7 +480,7 @@ func (s *suite) expectExprStmt(ex *example, stmt *ast.ExprStmt) {
 	}
 }
 
-func (s *suite) expectAssign(ex *example, stmt *ast.AssignStmt) {
+func (s *suite) expectAssign(ex *example, stmt *ast.AssignStmt, hint string) {
 	names := s.assignedNames(stmt)
 	if len(names) == 2 && names[0] == "ctx" {
 		// w - workspace, a - account
@@ -424,6 +495,9 @@ func (s *suite) expectAssign(ex *example, stmt *ast.AssignStmt) {
 		}
 		if c.Assign != nil && c.Assign.Name != "_" {
 			ex.scope[c.Assign.CamelName()] = c
+		}
+		if strings.HasPrefix(hint, "creates ") {
+			c.creates = strings.TrimPrefix(hint, "creates ")
 		}
 		ex.Calls = append(ex.Calls, c)
 	case *ast.BasicLit:
@@ -621,7 +695,10 @@ func (s *suite) expectCall(e ast.Expr) *call {
 		s.explainAndPanic("call expr", e)
 		return nil
 	}
-	c := &call{}
+	s.counter++
+	c := &call{
+		id: s.counter,
+	}
 	switch t := ce.Fun.(type) {
 	case *ast.Ident:
 		c.Name = t.Name

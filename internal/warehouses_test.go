@@ -19,7 +19,10 @@ func TestAccSqlWarehouses(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	defer w.Warehouses.DeleteByIdAndWait(ctx, created.Id)
+	t.Cleanup(func() {
+		_, err = w.Warehouses.DeleteByIdAndWait(ctx, created.Id)
+		require.NoError(t, err)
+	})
 
 	err = w.Warehouses.Edit(ctx, sql.EditWarehouseRequest{
 		Id:             created.Id,

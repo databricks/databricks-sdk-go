@@ -42,7 +42,7 @@ func Example{{.Service.PascalName}}API_{{.Method.PascalName}}{{if eq .Method.Pas
     {{with .Cleanup}}
     // cleanup
     {{range .}}
-    err = {{if $example.IsAccount}}a{{else}}w{{end}}.{{.Service.PascalName}}.{{.PascalName}}(ctx{{range .Args}}, {{template "expr" .}}{{end}})
+    {{with .Assign}}{{.CamelName}}, {{end}}err = {{if $example.IsAccount}}a{{else}}w{{end}}.{{.Service.PascalName}}.{{.PascalName}}(ctx{{range .Args}}, {{template "expr" .}}{{end}})
     if err != nil {
         panic(err)
     }{{end}}

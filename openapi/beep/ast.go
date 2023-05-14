@@ -168,6 +168,13 @@ type call struct {
 	Service *code.Named
 	Assign  *code.Named
 	Args    []expression
+
+	// ID to avoid duplicates. alternative could be hashing,
+	// but implementation would grow more complex than needed.
+	id int
+
+	// hint about the call creating an entity behind the variable
+	creates string
 }
 
 func (c *call) OriginalName() string {
