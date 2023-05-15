@@ -26,9 +26,6 @@ func NewSuite(dirname string) (*suite, error) {
 		if info.IsDir() {
 			return nil
 		}
-		// if !strings.HasSuffix(path, "secrets_test.go") {
-		// 	return nil // FIXME: remove
-		// }
 		if strings.HasSuffix(path, "acceptance_test.go") {
 			// not transpilable
 			return nil
@@ -326,35 +323,13 @@ func (s *suite) assignedNames(a *ast.AssignStmt) (names []string) {
 	return
 }
 
-func (s *suite) expectString(l *ast.BasicLit) string {
-	if l.Kind != token.STRING {
-		return ""
-	}
-	return strings.Trim(l.Value, `"`)
-}
-
 func (s *suite) expectExamples(file *ast.File) {
-	ast.Inspect(file, func(raw ast.Node) bool {
-		switch n := raw.(type) {
-		case *ast.ImportSpec:
-			name := s.expectString(n.Path)
-			prefix := "github.com/databricks/databricks-sdk-go/service/"
-			if !strings.HasPrefix(name, prefix) {
-				return true
-			}
-			// svcs = append(svcs, strings.TrimPrefix(name, prefix))
-		case *ast.FuncDecl:
-			// save cycles
-			return false
-		}
-		return true
-	})
 	for _, v := range file.Decls {
 		fn, ok := v.(*ast.FuncDecl)
 		if !ok {
 			continue
 		}
-		if !strings.HasPrefix(fn.Name.Name, "TestAcc") || !strings.HasPrefix(fn.Name.Name, "TestUcAcc") {
+		if !strings.HasPrefix(fn.Name.Name, "TestAcc") {
 			continue
 		}
 		if strings.HasSuffix(fn.Name.Name, "NoTranspile") {

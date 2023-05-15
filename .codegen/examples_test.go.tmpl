@@ -15,6 +15,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/{{.}}"{{end}}
 )
 
+{{if eq (len .Samples) 0}}{{skipThisFile}}{{end}}
+
 {{range .Samples}}{{- $example := . -}}
 func Example{{.Service.PascalName}}API_{{.Method.PascalName}}{{if eq .Method.PascalName "List"}}All{{end}}_{{.CamelName}}() {
     ctx := context.Background()

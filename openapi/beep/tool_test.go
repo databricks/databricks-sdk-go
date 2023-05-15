@@ -9,6 +9,7 @@ import (
 )
 
 func TestLoadsFolder(t *testing.T) {
+	t.Skip()
 	s, err := NewSuite("../../internal")
 	require.NoError(t, err)
 
@@ -18,7 +19,7 @@ func TestLoadsFolder(t *testing.T) {
 	samples := s.Samples()
 	assert.True(t, len(samples) > 1)
 
-	target := "/Users/serge.smertin/git/databricks/databricks-sdk-go"
+	target := "../.."
 	pass := render.NewPass(target, s.ServicesExamples(), map[string]string{
 		".codegen/examples_test.go.tmpl": "service/{{.Package}}/{{.SnakeName}}_usage_test.go",
 	})

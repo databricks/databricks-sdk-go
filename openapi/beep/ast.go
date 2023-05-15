@@ -53,13 +53,13 @@ func (i *indexExpr) Type() string {
 	return "index"
 }
 
-type boolean struct {
-	Value bool
-}
+// type boolean struct {
+// 	Value bool
+// }
 
-func (b *boolean) Type() string {
-	return "boolean"
-}
+// func (b *boolean) Type() string {
+// 	return "boolean"
+// }
 
 type literal struct {
 	Value string
