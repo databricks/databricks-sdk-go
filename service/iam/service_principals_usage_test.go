@@ -11,6 +11,23 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
+func ExampleServicePrincipalsAPI_Create_testMwsAccWorkspaceAssignment() {
+	ctx := context.Background()
+	a, err := databricks.NewAccountClient()
+	if err != nil {
+		panic(err)
+	}
+
+	spn, err := a.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", spn)
+
+}
+
 func ExampleServicePrincipalsAPI_Create_servicePrincipalsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()

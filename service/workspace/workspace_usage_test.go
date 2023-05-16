@@ -161,7 +161,7 @@ func ExampleWorkspaceAPI_Import_pipelines() {
 	}()
 
 	err = w.Workspace.Import(ctx, workspace.Import{
-		Content:   base64.StdEncoding.EncodeToString([]byte("# Notebook source")),
+		Content:   base64.StdEncoding.EncodeToString([]byte(("CREATE LIVE TABLE dlt_sample AS SELECT 1"))),
 		Format:    workspace.ExportFormatSource,
 		Language:  workspace.LanguageSql,
 		Overwrite: true,

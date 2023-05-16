@@ -477,8 +477,6 @@ func ExampleJobsAPI_Reset_jobsApiFullIntegration() {
 		return clusterId
 	}()
 
-	newName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
-
 	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		Tasks: []jobs.JobTaskSettings{jobs.JobTaskSettings{
@@ -496,6 +494,8 @@ func ExampleJobsAPI_Reset_jobsApiFullIntegration() {
 	}
 	logger.Infof(ctx, "found %v", createdJob)
 
+	newName := fmt.Sprintf("sdk-%x", time.Now().UnixNano())
+
 	byId, err := w.Jobs.GetByJobId(ctx, createdJob.JobId)
 	if err != nil {
 		panic(err)
@@ -503,7 +503,7 @@ func ExampleJobsAPI_Reset_jobsApiFullIntegration() {
 	logger.Infof(ctx, "found %v", byId)
 
 	err = w.Jobs.Reset(ctx, jobs.ResetJob{
-		JobId: createdJob.JobId,
+		JobId: byId.JobId,
 		NewSettings: jobs.JobSettings{
 			Name:  newName,
 			Tasks: byId.Settings.Tasks,

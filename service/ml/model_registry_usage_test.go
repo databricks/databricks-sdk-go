@@ -37,7 +37,7 @@ func ExampleModelRegistryAPI_CreateComment_modelVersionComments() {
 
 	created, err := w.ModelRegistry.CreateComment(ctx, ml.CreateComment{
 		Comment: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Name:    model.RegisteredModel.Name,
+		Name:    mv.ModelVersion.Name,
 		Version: mv.ModelVersion.Version,
 	})
 	if err != nil {
@@ -53,6 +53,23 @@ func ExampleModelRegistryAPI_CreateComment_modelVersionComments() {
 	if err != nil {
 		panic(err)
 	}
+
+}
+
+func ExampleModelRegistryAPI_CreateModel_modelVersionComments() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	model, err := w.ModelRegistry.CreateModel(ctx, ml.CreateModelRequest{
+		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", model)
 
 }
 
@@ -74,23 +91,6 @@ func ExampleModelRegistryAPI_CreateModel_models() {
 }
 
 func ExampleModelRegistryAPI_CreateModel_modelVersions() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	model, err := w.ModelRegistry.CreateModel(ctx, ml.CreateModelRequest{
-		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-	})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", model)
-
-}
-
-func ExampleModelRegistryAPI_CreateModel_modelVersionComments() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -245,7 +245,7 @@ func ExampleModelRegistryAPI_UpdateComment_modelVersionComments() {
 
 	created, err := w.ModelRegistry.CreateComment(ctx, ml.CreateComment{
 		Comment: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Name:    model.RegisteredModel.Name,
+		Name:    mv.ModelVersion.Name,
 		Version: mv.ModelVersion.Version,
 	})
 	if err != nil {
