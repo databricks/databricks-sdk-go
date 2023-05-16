@@ -3,7 +3,6 @@ package internal
 import (
 	"encoding/base64"
 	"fmt"
-	"strconv"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/iam"
@@ -68,6 +67,8 @@ func TestMwsAccWorkspaceAssignment(t *testing.T) {
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
+	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
+
 	spn, err := a.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		DisplayName: RandomName("sdk-go-"),
 	})
@@ -77,10 +78,8 @@ func TestMwsAccWorkspaceAssignment(t *testing.T) {
 		require.NoError(t, err)
 	}()
 
-	spnId, err := strconv.ParseInt(spn.Id, 10, 64)
-	require.NoError(t, err)
+	spnId := MustParseInt64(spn.Id)
 
-	workspaceId := GetEnvInt64OrSkipTest(t, "TEST_WORKSPACE_ID")
 	err = a.WorkspaceAssignment.Update(ctx, iam.UpdateWorkspaceAssignments{
 		WorkspaceId: workspaceId,
 		PrincipalId: spnId,

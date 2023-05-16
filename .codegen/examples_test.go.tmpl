@@ -81,19 +81,33 @@ func Example{{.Service.PascalName}}API_{{.Method.PascalName}}{{if eq .Method.Pas
 {{- end -}}
 {{- end}}
 
+{{define "bypass-args" -}}
+{{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}}
+{{- end}}
+
 {{define "call" -}}
 {{- if eq .PascalName "GetEnvOrSkipTest" -}}
-os.Getenv({{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}})
+os.Getenv({{template "bypass-args" .}})
 {{- else if eq .PascalName "Dir" -}}
-filepath.Dir({{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}})
+filepath.Dir({{template "bypass-args" .}})
 {{- else if eq .PascalName "Sprintf" -}}
-fmt.Sprintf({{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}})
+fmt.Sprintf({{template "bypass-args" .}})
+{{- else if eq .PascalName "MustParseInt64" -}}
+func(v string) int64 {
+    i, err := strconv.ParseInt(v, 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("`%s` is not int64: %s", v, err))
+	}
+	return i
+}({{template "bypass-args" .}})
 {{- else if eq .PascalName "RandomEmail" -}}
 fmt.Sprintf("sdk-%x@example.com", time.Now().UnixNano())
 {{- else if eq .PascalName "RandomName" -}}
 fmt.Sprintf("sdk-%x", time.Now().UnixNano())
+{{- else if eq .PascalName "RandomHex" -}}
+fmt.Sprintf( "%x", time.Now().UnixNano())
 {{- else if eq .PascalName "EncodeToString" -}}
-base64.StdEncoding.EncodeToString([]byte({{range $i, $x := .Args}}{{if $i}}, {{end}}{{template "expr" .}}{{end}}))
+base64.StdEncoding.EncodeToString([]byte({{template "bypass-args" .}}))
 {{- else if eq .PascalName "CanonicalHostName" -}}
 w.Config.CanonicalHostName()
 {{- else if eq .PascalName "SharedRunningCluster" -}}
@@ -105,6 +119,8 @@ func() string {
     }
 	return clusterId
 }()
+{{- else if eq .PascalName "DltNotebook" -}}
+"CREATE LIVE TABLE dlt_sample AS SELECT 1"
 {{- else if eq .PascalName "MyNotebookPath" -}}
 func() string {
     me, err := w.CurrentUser.Me(ctx)

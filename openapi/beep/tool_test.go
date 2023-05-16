@@ -9,7 +9,7 @@ import (
 )
 
 func TestLoadsFolder(t *testing.T) {
-	t.Skip()
+	// t.Skip()
 	s, err := NewSuite("../../internal")
 	require.NoError(t, err)
 

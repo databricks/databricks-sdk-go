@@ -77,11 +77,10 @@ func GetEnvOrSkipTest(t *testing.T, name string) string {
 	return value
 }
 
-func GetEnvInt64OrSkipTest(t *testing.T, name string) int64 {
-	v := GetEnvOrSkipTest(t, name)
+func MustParseInt64(v string) int64 {
 	i, err := strconv.ParseInt(v, 10, 64)
 	if err != nil {
-		skipf(t)("`%s` is not int64: %s", v, err)
+		panic(fmt.Sprintf("`%s` is not int64: %s", v, err))
 	}
 	return i
 }

@@ -197,7 +197,8 @@ func (s *suite) usageSamples(svc, mth string) (out []*sample) {
 		}
 		sa := &sample{
 			example: example{
-				Named: ex.Named,
+				Named:     ex.Named,
+				IsAccount: ex.IsAccount,
 			},
 			Service: svcName,
 			Method:  methodName,
@@ -329,10 +330,11 @@ func (s *suite) expectExamples(file *ast.File) {
 		if !ok {
 			continue
 		}
-		if !strings.HasPrefix(fn.Name.Name, "TestAcc") {
+		fnName := fn.Name.Name
+		if !strings.HasPrefix(fnName, "TestAcc") && !strings.HasPrefix(fnName, "TestMws") {
 			continue
 		}
-		if strings.HasSuffix(fn.Name.Name, "NoTranspile") {
+		if strings.HasSuffix(fnName, "NoTranspile") {
 			// Tests with NoTranspile suffix are too expensive to automatically
 			// translate, we just ignore them.
 			continue
