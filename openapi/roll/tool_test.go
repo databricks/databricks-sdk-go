@@ -34,3 +34,19 @@ func TestRegenerateExamples(t *testing.T) {
 	err = render.Fomratter(target, pass.Filenames, "go fmt ./... && go run golang.org/x/tools/cmd/goimports@latest -w $FILENAMES")
 	assert.NoError(t, err)
 }
+
+func TestRegeneratePythonExamples(t *testing.T) {
+	t.Skip()
+	s, err := NewSuite("../../internal")
+	require.NoError(t, err)
+
+	target := "../../../databricks-sdk-py"
+	pass := render.NewPass(target, s.Samples(), map[string]string{
+		".codegen/example.py.tmpl": "examples/{{.Service.SnakeName}}/{{.Method.SnakeName}}_{{.SnakeName}}.py",
+	})
+	err = pass.Run()
+	assert.NoError(t, err)
+
+	err = render.Fomratter(target, pass.Filenames, "yapf -pri $FILENAMES && autoflake -i $FILENAMES && isort $FILENAMES")
+	assert.NoError(t, err)
+}
