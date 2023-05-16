@@ -1,4 +1,4 @@
-package beep
+package roll
 
 import (
 	"testing"
@@ -9,7 +9,6 @@ import (
 )
 
 func TestLoadsFolder(t *testing.T) {
-	// t.Skip()
 	s, err := NewSuite("../../internal")
 	require.NoError(t, err)
 
@@ -18,6 +17,12 @@ func TestLoadsFolder(t *testing.T) {
 
 	samples := s.Samples()
 	assert.True(t, len(samples) > 1)
+}
+
+func TestRegenerateExamples(t *testing.T) {
+	t.Skip()
+	s, err := NewSuite("../../internal")
+	require.NoError(t, err)
 
 	target := "../.."
 	pass := render.NewPass(target, s.ServicesExamples(), map[string]string{

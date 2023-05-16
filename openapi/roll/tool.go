@@ -1,4 +1,4 @@
-package beep
+package roll
 
 import (
 	"fmt"
@@ -331,7 +331,9 @@ func (s *suite) expectExamples(file *ast.File) {
 			continue
 		}
 		fnName := fn.Name.Name
-		if !strings.HasPrefix(fnName, "TestAcc") && !strings.HasPrefix(fnName, "TestMws") {
+		if !strings.HasPrefix(fnName, "TestAcc") &&
+			!strings.HasPrefix(fnName, "TestMws") &&
+			!strings.HasPrefix(fnName, "TestUc") {
 			continue
 		}
 		if strings.HasSuffix(fnName, "NoTranspile") {

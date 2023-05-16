@@ -1,4 +1,4 @@
-package beep
+package roll
 
 import (
 	"strings"
