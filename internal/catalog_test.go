@@ -42,7 +42,7 @@ func TestUcAccStorageCredentials(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotEqual(t, "", byName.Id)
 
-	all, err := w.StorageCredentials.List(ctx)
+	all, err := w.StorageCredentials.ListAll(ctx)
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 }
