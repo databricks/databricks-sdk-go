@@ -52,14 +52,12 @@ type AccountMetastoresService interface {
 
 	// Delete a metastore.
 	//
-	// Deletes a Databricks Unity Catalog metastore for an account, both
-	// specified by ID.
+	// Deletes a Unity Catalog metastore for an account, both specified by ID.
 	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error
 
 	// Get a metastore.
 	//
-	// Gets a Databricks Unity Catalog metastore from an account, both specified
-	// by ID.
+	// Gets a Unity Catalog metastore from an account, both specified by ID.
 	Get(ctx context.Context, request GetAccountMetastoreRequest) (*MetastoreInfo, error)
 
 	// Get all metastores associated with an account.
@@ -106,7 +104,7 @@ type AccountStorageCredentialsService interface {
 	//
 	// Gets a list of all storage credentials that have been assigned to given
 	// metastore.
-	List(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error)
+	List(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListStorageCredentialsResponse, error)
 
 	// Updates a storage credential.
 	//
@@ -494,7 +492,9 @@ type StorageCredentialsService interface {
 	// caller has permission to access. If the caller is a metastore admin, all
 	// storage credentials will be retrieved. There is no guarantee of a
 	// specific ordering of the elements in the array.
-	List(ctx context.Context) ([]StorageCredentialInfo, error)
+	//
+	// Use ListAll() to get all StorageCredentialInfo instances
+	List(ctx context.Context) (*ListStorageCredentialsResponse, error)
 
 	// Update a credential.
 	//

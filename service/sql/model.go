@@ -120,7 +120,6 @@ type ChannelInfo struct {
 	Name ChannelName `json:"name,omitempty"`
 }
 
-// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -344,7 +343,39 @@ type CreateWarehouseRequest struct {
 	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
-	WarehouseType WarehouseType `json:"warehouse_type,omitempty"`
+	WarehouseType CreateWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
+}
+
+// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
+// you must set to `PRO` and also set the field `enable_serverless_compute` to
+// `true`.
+type CreateWarehouseRequestWarehouseType string
+
+const CreateWarehouseRequestWarehouseTypeClassic CreateWarehouseRequestWarehouseType = `CLASSIC`
+
+const CreateWarehouseRequestWarehouseTypePro CreateWarehouseRequestWarehouseType = `PRO`
+
+const CreateWarehouseRequestWarehouseTypeTypeUnspecified CreateWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (cwrwt *CreateWarehouseRequestWarehouseType) String() string {
+	return string(*cwrwt)
+}
+
+// Set raw string value and validate it against allowed values
+func (cwrwt *CreateWarehouseRequestWarehouseType) Set(v string) error {
+	switch v {
+	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+		*cwrwt = CreateWarehouseRequestWarehouseType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns CreateWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
+func (cwrwt *CreateWarehouseRequestWarehouseType) Type() string {
+	return "CreateWarehouseRequestWarehouseType"
 }
 
 type CreateWarehouseResponse struct {
@@ -543,7 +574,7 @@ type EditWarehouseRequest struct {
 	//
 	// Defaults to false.
 	EnablePhoton bool `json:"enable_photon,omitempty"`
-	// Configures whether the warehouse should use serverless compute
+	// Configures whether the warehouse should use serverless compute.
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// Required. Id of the warehouse to configure.
 	Id string `json:"-" url:"-"`
@@ -581,7 +612,39 @@ type EditWarehouseRequest struct {
 	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
-	WarehouseType WarehouseType `json:"warehouse_type,omitempty"`
+	WarehouseType EditWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
+}
+
+// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
+// you must set to `PRO` and also set the field `enable_serverless_compute` to
+// `true`.
+type EditWarehouseRequestWarehouseType string
+
+const EditWarehouseRequestWarehouseTypeClassic EditWarehouseRequestWarehouseType = `CLASSIC`
+
+const EditWarehouseRequestWarehouseTypePro EditWarehouseRequestWarehouseType = `PRO`
+
+const EditWarehouseRequestWarehouseTypeTypeUnspecified EditWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (ewrwt *EditWarehouseRequestWarehouseType) String() string {
+	return string(*ewrwt)
+}
+
+// Set raw string value and validate it against allowed values
+func (ewrwt *EditWarehouseRequestWarehouseType) Set(v string) error {
+	switch v {
+	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+		*ewrwt = EditWarehouseRequestWarehouseType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns EditWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
+func (ewrwt *EditWarehouseRequestWarehouseType) Type() string {
+	return "EditWarehouseRequestWarehouseType"
 }
 
 type EndpointConfPair struct {
@@ -679,7 +742,39 @@ type EndpointInfo struct {
 	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
-	WarehouseType WarehouseType `json:"warehouse_type,omitempty"`
+	WarehouseType EndpointInfoWarehouseType `json:"warehouse_type,omitempty"`
+}
+
+// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
+// you must set to `PRO` and also set the field `enable_serverless_compute` to
+// `true`.
+type EndpointInfoWarehouseType string
+
+const EndpointInfoWarehouseTypeClassic EndpointInfoWarehouseType = `CLASSIC`
+
+const EndpointInfoWarehouseTypePro EndpointInfoWarehouseType = `PRO`
+
+const EndpointInfoWarehouseTypeTypeUnspecified EndpointInfoWarehouseType = `TYPE_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (eiwt *EndpointInfoWarehouseType) String() string {
+	return string(*eiwt)
+}
+
+// Set raw string value and validate it against allowed values
+func (eiwt *EndpointInfoWarehouseType) Set(v string) error {
+	switch v {
+	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+		*eiwt = EndpointInfoWarehouseType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns EndpointInfoWarehouseType to satisfy [pflag.Value] interface
+func (eiwt *EndpointInfoWarehouseType) Type() string {
+	return "EndpointInfoWarehouseType"
 }
 
 type EndpointTagPair struct {
@@ -732,12 +827,6 @@ type ExecuteStatementRequest struct {
 	// Statement execution supports two result formats: `JSON_ARRAY` (default),
 	// and `ARROW_STREAM`.
 	//
-	// **NOTE**
-	//
-	// Currently `JSON_ARRAY` is only available for requests with
-	// `disposition=INLINE`, and `ARROW_STREAM` is only available for requests
-	// with `disposition=EXTERNAL_LINKS`.
-	//
 	// When specifying `format=JSON_ARRAY`, result data will be formatted as an
 	// array of arrays of values, where each value is either the *string
 	// representation* of a value, or `null`. For example, the output of `SELECT
@@ -746,15 +835,24 @@ type ExecuteStatementRequest struct {
 	//
 	// ``` [ [ "id-1", "1" ], [ "id-2", "2" ], [ "id-3", "3" ], ] ```
 	//
-	// `INLINE` `JSON_ARRAY` data can be found within
-	// `StatementResponse.result.chunk.data_array` or
-	// `ResultData.chunk.data_array`.
+	// `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS`
+	// dispositions.
 	//
-	// When specifying `format=ARROW_STREAM`, results fetched through
-	// `external_links` will be chunks of result data, formatted as Apache Arrow
-	// Stream. See [Apache Arrow Streaming Format] for more details.
+	// `INLINE` `JSON_ARRAY` data can be found at the path
+	// `StatementResponse.result.data_array`.
 	//
-	// [Apache Arrow Streaming Format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
+	// For `EXTERNAL_LINKS` `JSON_ARRAY` results, each URL points to a file in
+	// cloud storage that contains compact JSON with no indentation or extra
+	// whitespace.
+	//
+	// When specifying `format=ARROW_STREAM`, each chunk in the result will be
+	// formatted as Apache Arrow Stream. See the [Apache Arrow streaming
+	// format].
+	//
+	// IMPORTANT: The format `ARROW_STREAM` is supported only with
+	// `EXTERNAL_LINKS` disposition.
+	//
+	// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
 	Format Format `json:"format,omitempty"`
 	// When in synchronous mode with `wait_timeout > 0s` it determines the
 	// action taken when the timeout is reached:
@@ -822,12 +920,6 @@ type ExternalLink struct {
 // Statement execution supports two result formats: `JSON_ARRAY` (default), and
 // `ARROW_STREAM`.
 //
-// **NOTE**
-//
-// Currently `JSON_ARRAY` is only available for requests with
-// `disposition=INLINE`, and `ARROW_STREAM` is only available for requests with
-// `disposition=EXTERNAL_LINKS`.
-//
 // When specifying `format=JSON_ARRAY`, result data will be formatted as an
 // array of arrays of values, where each value is either the *string
 // representation* of a value, or `null`. For example, the output of `SELECT
@@ -835,14 +927,21 @@ type ExternalLink struct {
 //
 // ``` [ [ "id-1", "1" ], [ "id-2", "2" ], [ "id-3", "3" ], ] ```
 //
-// `INLINE` `JSON_ARRAY` data can be found within
-// `StatementResponse.result.chunk.data_array` or `ResultData.chunk.data_array`.
+// `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS` dispositions.
 //
-// When specifying `format=ARROW_STREAM`, results fetched through
-// `external_links` will be chunks of result data, formatted as Apache Arrow
-// Stream. See [Apache Arrow Streaming Format] for more details.
+// `INLINE` `JSON_ARRAY` data can be found at the path
+// `StatementResponse.result.data_array`.
 //
-// [Apache Arrow Streaming Format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
+// For `EXTERNAL_LINKS` `JSON_ARRAY` results, each URL points to a file in cloud
+// storage that contains compact JSON with no indentation or extra whitespace.
+//
+// When specifying `format=ARROW_STREAM`, each chunk in the result will be
+// formatted as Apache Arrow Stream. See the [Apache Arrow streaming format].
+//
+// IMPORTANT: The format `ARROW_STREAM` is supported only with `EXTERNAL_LINKS`
+// disposition.
+//
+// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
 type Format string
 
 const FormatArrowStream Format = `ARROW_STREAM`
@@ -1008,7 +1107,39 @@ type GetWarehouseResponse struct {
 	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
-	WarehouseType WarehouseType `json:"warehouse_type,omitempty"`
+	WarehouseType GetWarehouseResponseWarehouseType `json:"warehouse_type,omitempty"`
+}
+
+// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
+// you must set to `PRO` and also set the field `enable_serverless_compute` to
+// `true`.
+type GetWarehouseResponseWarehouseType string
+
+const GetWarehouseResponseWarehouseTypeClassic GetWarehouseResponseWarehouseType = `CLASSIC`
+
+const GetWarehouseResponseWarehouseTypePro GetWarehouseResponseWarehouseType = `PRO`
+
+const GetWarehouseResponseWarehouseTypeTypeUnspecified GetWarehouseResponseWarehouseType = `TYPE_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (gwrwt *GetWarehouseResponseWarehouseType) String() string {
+	return string(*gwrwt)
+}
+
+// Set raw string value and validate it against allowed values
+func (gwrwt *GetWarehouseResponseWarehouseType) Set(v string) error {
+	switch v {
+	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
+		*gwrwt = GetWarehouseResponseWarehouseType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns GetWarehouseResponseWarehouseType to satisfy [pflag.Value] interface
+func (gwrwt *GetWarehouseResponseWarehouseType) Type() string {
+	return "GetWarehouseResponseWarehouseType"
 }
 
 type GetWorkspaceWarehouseConfigResponse struct {
@@ -1786,12 +1917,6 @@ type ResultManifest struct {
 	// Statement execution supports two result formats: `JSON_ARRAY` (default),
 	// and `ARROW_STREAM`.
 	//
-	// **NOTE**
-	//
-	// Currently `JSON_ARRAY` is only available for requests with
-	// `disposition=INLINE`, and `ARROW_STREAM` is only available for requests
-	// with `disposition=EXTERNAL_LINKS`.
-	//
 	// When specifying `format=JSON_ARRAY`, result data will be formatted as an
 	// array of arrays of values, where each value is either the *string
 	// representation* of a value, or `null`. For example, the output of `SELECT
@@ -1800,15 +1925,24 @@ type ResultManifest struct {
 	//
 	// ``` [ [ "id-1", "1" ], [ "id-2", "2" ], [ "id-3", "3" ], ] ```
 	//
-	// `INLINE` `JSON_ARRAY` data can be found within
-	// `StatementResponse.result.chunk.data_array` or
-	// `ResultData.chunk.data_array`.
+	// `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS`
+	// dispositions.
 	//
-	// When specifying `format=ARROW_STREAM`, results fetched through
-	// `external_links` will be chunks of result data, formatted as Apache Arrow
-	// Stream. See [Apache Arrow Streaming Format] for more details.
+	// `INLINE` `JSON_ARRAY` data can be found at the path
+	// `StatementResponse.result.data_array`.
 	//
-	// [Apache Arrow Streaming Format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
+	// For `EXTERNAL_LINKS` `JSON_ARRAY` results, each URL points to a file in
+	// cloud storage that contains compact JSON with no indentation or extra
+	// whitespace.
+	//
+	// When specifying `format=ARROW_STREAM`, each chunk in the result will be
+	// formatted as Apache Arrow Stream. See the [Apache Arrow streaming
+	// format].
+	//
+	// IMPORTANT: The format `ARROW_STREAM` is supported only with
+	// `EXTERNAL_LINKS` disposition.
+	//
+	// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
 	Format Format `json:"format,omitempty"`
 	// Schema is an ordered list of column descriptions.
 	Schema *ResultSchema `json:"schema,omitempty"`
@@ -1926,8 +2060,6 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Security policy for warehouses
 	SecurityPolicy SetWorkspaceWarehouseConfigRequestSecurityPolicy `json:"security_policy,omitempty"`
-	// Internal. Used by frontend to save serverless compute agreement value.
-	ServerlessAgreement bool `json:"serverless_agreement,omitempty"`
 	// SQL configuration parameters
 	SqlConfigurationParameters *RepeatedEndpointConfPairs `json:"sql_configuration_parameters,omitempty"`
 }
@@ -2474,46 +2606,42 @@ type Visualization struct {
 	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
-// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
-// you must set to `PRO` and also set the field `enable_serverless_compute` to
-// `true`.
-type WarehouseType string
+type WarehouseTypePair struct {
+	// If set to false the specific warehouse type will not be be allowed as a
+	// value for warehouse_type in CreateWarehouse and EditWarehouse
+	Enabled bool `json:"enabled,omitempty"`
+	// Warehouse type: `PRO` or `CLASSIC`.
+	WarehouseType WarehouseTypePairWarehouseType `json:"warehouse_type,omitempty"`
+}
 
-const WarehouseTypeClassic WarehouseType = `CLASSIC`
+// Warehouse type: `PRO` or `CLASSIC`.
+type WarehouseTypePairWarehouseType string
 
-const WarehouseTypePro WarehouseType = `PRO`
+const WarehouseTypePairWarehouseTypeClassic WarehouseTypePairWarehouseType = `CLASSIC`
 
-const WarehouseTypeTypeUnspecified WarehouseType = `TYPE_UNSPECIFIED`
+const WarehouseTypePairWarehouseTypePro WarehouseTypePairWarehouseType = `PRO`
+
+const WarehouseTypePairWarehouseTypeTypeUnspecified WarehouseTypePairWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
-func (wt *WarehouseType) String() string {
-	return string(*wt)
+func (wtpwt *WarehouseTypePairWarehouseType) String() string {
+	return string(*wtpwt)
 }
 
 // Set raw string value and validate it against allowed values
-func (wt *WarehouseType) Set(v string) error {
+func (wtpwt *WarehouseTypePairWarehouseType) Set(v string) error {
 	switch v {
 	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
-		*wt = WarehouseType(v)
+		*wtpwt = WarehouseTypePairWarehouseType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
 	}
 }
 
-// Type always returns WarehouseType to satisfy [pflag.Value] interface
-func (wt *WarehouseType) Type() string {
-	return "WarehouseType"
-}
-
-type WarehouseTypePair struct {
-	// If set to false the specific warehouse type will not be be allowed as a
-	// value for warehouse_type in CreateWarehouse and EditWarehouse
-	Enabled bool `json:"enabled,omitempty"`
-	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
-	// compute, you must set to `PRO` and also set the field
-	// `enable_serverless_compute` to `true`.
-	WarehouseType WarehouseType `json:"warehouse_type,omitempty"`
+// Type always returns WarehouseTypePairWarehouseType to satisfy [pflag.Value] interface
+func (wtpwt *WarehouseTypePairWarehouseType) Type() string {
+	return "WarehouseTypePairWarehouseType"
 }
 
 type Widget struct {

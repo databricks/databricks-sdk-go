@@ -578,7 +578,7 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, option
 	})
 }
 
-// Partially updates a job.
+// Partially update a job.
 //
 // Add, update, or remove specific settings of an existing job. Use the ResetJob
 // to overwrite all job settings.

@@ -122,7 +122,7 @@ type JobsService interface {
 	// state after the job is submitted.
 	Submit(ctx context.Context, request SubmitRun) (*SubmitRunResponse, error)
 
-	// Partially updates a job.
+	// Partially update a job.
 	//
 	// Add, update, or remove specific settings of an existing job. Use the
 	// ResetJob to overwrite all job settings.

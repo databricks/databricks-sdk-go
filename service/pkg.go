@@ -40,9 +40,9 @@
 //
 // - [catalog.GrantsAPI]: In Unity Catalog, data is secure by default.
 //
-// - [iam.GroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks Workspace, data, and other securable objects.
+// - [iam.GroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks workspace, data, and other securable objects.
 //
-// - [iam.AccountGroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks Account, data, and other securable objects.
+// - [iam.AccountGroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks account, data, and other securable objects.
 //
 // - [compute.InstancePoolsAPI]: Instance Pools API are used to create, edit, delete and list instance pools by using ready-to-use cloud instances which reduces a cluster start and auto-scaling times.
 //
@@ -93,6 +93,8 @@
 // - [catalog.SchemasAPI]: A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace.
 //
 // - [workspace.SecretsAPI]: The Secrets API allows you to manage secrets, secret scopes, and access permissions.
+//
+// - [oauth2.ServicePrincipalSecretsAPI]: These APIs enable administrators to manage service principal secrets.
 //
 // - [iam.ServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
 //
@@ -211,6 +213,7 @@ var (
 	_ *workspace.ReposAPI                     = nil
 	_ *catalog.SchemasAPI                     = nil
 	_ *workspace.SecretsAPI                   = nil
+	_ *oauth2.ServicePrincipalSecretsAPI      = nil
 	_ *iam.ServicePrincipalsAPI               = nil
 	_ *iam.AccountServicePrincipalsAPI        = nil
 	_ *serving.ServingEndpointsAPI            = nil

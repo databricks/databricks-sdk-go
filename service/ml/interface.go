@@ -308,8 +308,8 @@ type ModelRegistryService interface {
 
 	// Get model.
 	//
-	// Get the details of a model. This is a Databricks Workspace version of the
-	// [MLflow endpoint] that also returns the model's Databricks Workspace ID
+	// Get the details of a model. This is a Databricks workspace version of the
+	// [MLflow endpoint] that also returns the model's Databricks workspace ID
 	// and the permission level of the requesting user on the model.
 	//
 	// [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel
@@ -392,7 +392,7 @@ type ModelRegistryService interface {
 
 	// Transition a stage.
 	//
-	// Transition a model version's stage. This is a Databricks Workspace
+	// Transition a model version's stage. This is a Databricks workspace
 	// version of the [MLflow endpoint] that also accepts a comment associated
 	// with the transition to be recorded.",
 	//

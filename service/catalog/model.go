@@ -442,7 +442,7 @@ type CreateStorageCredential struct {
 	Comment string `json:"comment,omitempty"`
 	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name"`
@@ -521,7 +521,7 @@ func (dsf *DataSourceFormat) Type() string {
 
 // Delete a metastore assignment
 type DeleteAccountMetastoreAssignmentRequest struct {
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -529,13 +529,13 @@ type DeleteAccountMetastoreAssignmentRequest struct {
 
 // Delete a metastore
 type DeleteAccountMetastoreRequest struct {
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 }
 
 // Delete a storage credential
 type DeleteAccountStorageCredentialRequest struct {
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
@@ -1058,13 +1058,13 @@ type GetAccountMetastoreAssignmentRequest struct {
 
 // Get a metastore
 type GetAccountMetastoreRequest struct {
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 }
 
 // Gets the named storage credential
 type GetAccountStorageCredentialRequest struct {
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
@@ -1244,13 +1244,13 @@ func (im *IsolationMode) Type() string {
 
 // Get all workspaces assigned to a metastore
 type ListAccountMetastoreAssignmentsRequest struct {
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 }
 
 // Get all storage credentials assigned to a metastore
 type ListAccountStorageCredentialsRequest struct {
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 }
 
@@ -1291,6 +1291,10 @@ type ListSchemasRequest struct {
 type ListSchemasResponse struct {
 	// An array of schema information objects.
 	Schemas []SchemaInfo `json:"schemas,omitempty"`
+}
+
+type ListStorageCredentialsResponse struct {
+	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
 }
 
 // List table summaries
@@ -1886,7 +1890,7 @@ type UpdateMetastore struct {
 	DeltaSharingScope UpdateMetastoreDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// The user-specified name of the metastore.
 	Name string `json:"name,omitempty"`
@@ -1970,7 +1974,7 @@ type UpdateStorageCredential struct {
 	Force bool `json:"force,omitempty"`
 	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name,omitempty" url:"-"`
@@ -2158,6 +2162,5 @@ func (vt *VolumeType) Type() string {
 
 // A list of workspace IDs.
 type WorkspaceIds struct {
-	// Workspace IDs
 	Workspaces []int `json:"workspaces,omitempty"`
 }

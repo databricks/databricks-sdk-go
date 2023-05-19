@@ -43,6 +43,27 @@ type CreatePublishedAppIntegrationOutput struct {
 	IntegrationId string `json:"integration_id,omitempty"`
 }
 
+// Create service principal secret
+type CreateServicePrincipalSecretRequest struct {
+	// The service principal ID.
+	ServicePrincipalId int64 `json:"-" url:"-"`
+}
+
+type CreateServicePrincipalSecretResponse struct {
+	// UTC time when the secret was created
+	CreateTime string `json:"create_time,omitempty"`
+	// ID of the secret
+	Id string `json:"id,omitempty"`
+	// Secret Value
+	Secret string `json:"secret,omitempty"`
+	// Secret Hash
+	SecretHash string `json:"secret_hash,omitempty"`
+	// Status of the secret
+	Status string `json:"status,omitempty"`
+	// UTC time when the secret was updated
+	UpdateTime string `json:"update_time,omitempty"`
+}
+
 // Delete Custom OAuth App Integration
 type DeleteCustomAppIntegrationRequest struct {
 	// The oauth app integration ID.
@@ -53,6 +74,14 @@ type DeleteCustomAppIntegrationRequest struct {
 type DeletePublishedAppIntegrationRequest struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
+}
+
+// Delete service principal secret
+type DeleteServicePrincipalSecretRequest struct {
+	// The secret ID.
+	SecretId string `json:"-" url:"-"`
+	// The service principal ID.
+	ServicePrincipalId int64 `json:"-" url:"-"`
 }
 
 type GetCustomAppIntegrationOutput struct {
@@ -103,9 +132,33 @@ type GetPublishedAppIntegrationsOutput struct {
 	Apps []GetPublishedAppIntegrationOutput `json:"apps,omitempty"`
 }
 
+// List service principal secrets
+type ListServicePrincipalSecretsRequest struct {
+	// The service principal ID.
+	ServicePrincipalId int64 `json:"-" url:"-"`
+}
+
+type ListServicePrincipalSecretsResponse struct {
+	// List of the secrets
+	Secrets []SecretInfo `json:"secrets,omitempty"`
+}
+
 type OAuthEnrollmentStatus struct {
 	// Is OAuth enrolled for the account.
 	IsEnabled bool `json:"is_enabled,omitempty"`
+}
+
+type SecretInfo struct {
+	// UTC time when the secret was created
+	CreateTime string `json:"create_time,omitempty"`
+	// ID of the secret
+	Id string `json:"id,omitempty"`
+	// Secret Hash
+	SecretHash string `json:"secret_hash,omitempty"`
+	// Status of the secret
+	Status string `json:"status,omitempty"`
+	// UTC time when the secret was updated
+	UpdateTime string `json:"update_time,omitempty"`
 }
 
 type TokenAccessPolicy struct {

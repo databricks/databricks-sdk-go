@@ -192,7 +192,7 @@ const DeliveryStatusNotFound DeliveryStatus = `NOT_FOUND`
 // The latest attempt of log delivery has succeeded completely.
 const DeliveryStatusSucceeded DeliveryStatus = `SUCCEEDED`
 
-// The latest attempt of log delivery failed because of an Databricks internal
+// The latest attempt of log delivery failed because of an <Databricks> internal
 // error. Contact support if it doesn't go away soon.
 const DeliveryStatusSystemFailure DeliveryStatus = `SYSTEM_FAILURE`
 

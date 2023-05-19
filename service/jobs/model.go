@@ -920,7 +920,7 @@ type NotebookTaskSource string
 // Notebook is located in cloud Git provider.
 const NotebookTaskSourceGit NotebookTaskSource = `GIT`
 
-// Notebook is located in Databricks workspace.
+// Notebook is located in <Databricks> workspace.
 const NotebookTaskSourceWorkspace NotebookTaskSource = `WORKSPACE`
 
 // String representation for [fmt.Print]
@@ -1778,8 +1778,8 @@ type SparkPythonTaskSource string
 // The Python file is located in a remote Git repository.
 const SparkPythonTaskSourceGit SparkPythonTaskSource = `GIT`
 
-// The Python file is located in a Databricks workspace or at a cloud filesystem
-// URI.
+// The Python file is located in a <Databricks> workspace or at a cloud
+// filesystem URI.
 const SparkPythonTaskSourceWorkspace SparkPythonTaskSource = `WORKSPACE`
 
 // String representation for [fmt.Print]

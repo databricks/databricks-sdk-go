@@ -113,11 +113,11 @@ func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAcco
 	return &storageCredentialInfo, err
 }
 
-func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error) {
-	var storageCredentialInfoList []StorageCredentialInfo
+func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListStorageCredentialsResponse, error) {
+	var listStorageCredentialsResponse ListStorageCredentialsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &storageCredentialInfoList)
-	return storageCredentialInfoList, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &listStorageCredentialsResponse)
+	return &listStorageCredentialsResponse, err
 }
 
 func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error) {
@@ -412,11 +412,11 @@ func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCred
 	return &storageCredentialInfo, err
 }
 
-func (a *storageCredentialsImpl) List(ctx context.Context) ([]StorageCredentialInfo, error) {
-	var storageCredentialInfoList []StorageCredentialInfo
+func (a *storageCredentialsImpl) List(ctx context.Context) (*ListStorageCredentialsResponse, error) {
+	var listStorageCredentialsResponse ListStorageCredentialsResponse
 	path := "/api/2.1/unity-catalog/storage-credentials"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &storageCredentialInfoList)
-	return storageCredentialInfoList, err
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &listStorageCredentialsResponse)
+	return &listStorageCredentialsResponse, err
 }
 
 func (a *storageCredentialsImpl) Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error) {

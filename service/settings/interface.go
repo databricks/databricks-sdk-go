@@ -229,7 +229,7 @@ type TokenManagementService interface {
 	//
 	// Lists all tokens associated with the specified workspace or user.
 	//
-	// Use ListAll() to get all PublicTokenInfo instances
+	// Use ListAll() to get all TokenInfo instances
 	List(ctx context.Context, request ListTokenManagementRequest) (*ListTokensResponse, error)
 }
 
@@ -257,7 +257,7 @@ type TokensService interface {
 	//
 	// Lists all the valid tokens for a user-workspace pair.
 	//
-	// Use ListAll() to get all PublicTokenInfo instances
+	// Use ListAll() to get all TokenInfo instances
 	List(ctx context.Context) (*ListTokensResponse, error)
 }
 

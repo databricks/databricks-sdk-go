@@ -37,7 +37,7 @@ type CustomAppIntegrationService interface {
 	// Get custom oauth app integrations.
 	//
 	// Get the list of custom oauth app integrations for the specified
-	// Databricks Account
+	// Databricks account
 	//
 	// Use ListAll() to get all GetCustomAppIntegrationOutput instances
 	List(ctx context.Context) (*GetCustomAppIntegrationsOutput, error)
@@ -110,7 +110,7 @@ type PublishedAppIntegrationService interface {
 	// Get published oauth app integrations.
 	//
 	// Get the list of published oauth app integrations for the specified
-	// Databricks Account
+	// Databricks account
 	//
 	// Use ListAll() to get all GetPublishedAppIntegrationOutput instances
 	List(ctx context.Context) (*GetPublishedAppIntegrationsOutput, error)
@@ -120,4 +120,39 @@ type PublishedAppIntegrationService interface {
 	// Updates an existing published OAuth App Integration. You can retrieve the
 	// published oauth app integration via :method:PublishedAppIntegration/get.
 	Update(ctx context.Context, request UpdatePublishedAppIntegration) error
+}
+
+// These APIs enable administrators to manage service principal secrets.
+//
+// You can use the generated secrets to obtain OAuth access tokens for a service
+// principal, which can then be used to access Databricks Accounts and Workspace
+// APIs. For more information, see [Authentication using OAuth tokens for
+// service principals],
+//
+// In addition, the generated secrets can be used to configure the Databricks
+// Terraform Provider to authenticate with the service principal. For more
+// information, see [Databricks Terraform Provider].
+//
+// [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
+// [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
+type ServicePrincipalSecretsService interface {
+
+	// Create service principal secret.
+	//
+	// Create a secret for the given service principal.
+	Create(ctx context.Context, request CreateServicePrincipalSecretRequest) (*CreateServicePrincipalSecretResponse, error)
+
+	// Delete service principal secret.
+	//
+	// Delete a secret from the given service principal.
+	Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error
+
+	// List service principal secrets.
+	//
+	// List all secrets associated with the given service principal. This
+	// operation only returns information about the secrets themselves and does
+	// not include the secret values.
+	//
+	// Use ListAll() to get all SecretInfo instances
+	List(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error)
 }

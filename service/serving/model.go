@@ -26,7 +26,7 @@ type CreateServingEndpoint struct {
 	// The core config of the serving endpoint.
 	Config EndpointCoreConfigInput `json:"config"`
 	// The name of the serving endpoint. This field is required and must be
-	// unique across a Databricks Workspace. An endpoint name can consist of
+	// unique across a Databricks workspace. An endpoint name can consist of
 	// alphanumeric characters, dashes, and underscores.
 	Name string `json:"name"`
 }
