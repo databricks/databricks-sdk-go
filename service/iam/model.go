@@ -42,37 +42,37 @@ type ComplexValue struct {
 
 // Delete a group
 type DeleteAccountGroupRequest struct {
-	// Unique ID for a group in the Databricks Account.
+	// Unique ID for a group in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
 // Delete a service principal
 type DeleteAccountServicePrincipalRequest struct {
-	// Unique ID for a service principal in the Databricks Account.
+	// Unique ID for a service principal in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
 // Delete a user
 type DeleteAccountUserRequest struct {
-	// Unique ID for a user in the Databricks Account.
+	// Unique ID for a user in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
 // Delete a group
 type DeleteGroupRequest struct {
-	// Unique ID for a group in the Databricks Workspace.
+	// Unique ID for a group in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 }
 
 // Delete a service principal
 type DeleteServicePrincipalRequest struct {
-	// Unique ID for a service principal in the Databricks Workspace.
+	// Unique ID for a service principal in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 }
 
 // Delete a user
 type DeleteUserRequest struct {
-	// Unique ID for a user in the Databricks Workspace.
+	// Unique ID for a user in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 }
 
@@ -86,25 +86,25 @@ type DeleteWorkspaceAssignmentRequest struct {
 
 // Get group details
 type GetAccountGroupRequest struct {
-	// Unique ID for a group in the Databricks Account.
+	// Unique ID for a group in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
 // Get service principal details
 type GetAccountServicePrincipalRequest struct {
-	// Unique ID for a service principal in the Databricks Account.
+	// Unique ID for a service principal in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
 // Get user details
 type GetAccountUserRequest struct {
-	// Unique ID for a user in the Databricks Account.
+	// Unique ID for a user in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
 // Get group details
 type GetGroupRequest struct {
-	// Unique ID for a group in the Databricks Workspace.
+	// Unique ID for a group in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 }
 
@@ -130,13 +130,13 @@ type GetPermissionRequest struct {
 
 // Get service principal details
 type GetServicePrincipalRequest struct {
-	// Unique ID for a service principal in the Databricks Workspace.
+	// Unique ID for a service principal in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 }
 
 // Get user details
 type GetUserRequest struct {
-	// Unique ID for a user in the Databricks Workspace.
+	// Unique ID for a user in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 }
 
@@ -394,7 +394,7 @@ type ObjectPermissions struct {
 }
 
 type PartialUpdate struct {
-	// Unique ID for a group in the Databricks Account.
+	// Unique ID for a group in the Databricks account.
 	Id string `json:"-" url:"-"`
 
 	Operations []Patch `json:"operations,omitempty"`

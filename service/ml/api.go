@@ -84,7 +84,7 @@ func (a *ExperimentsAPI) DeleteTag(ctx context.Context, request DeleteTag) error
 
 // Get metadata.
 //
-// "Gets metadata for an experiment.
+// Gets metadata for an experiment.
 //
 // This endpoint will return deleted experiments, but prefers the active
 // experiment if an active and deleted experiment share the same name. If
@@ -92,7 +92,7 @@ func (a *ExperimentsAPI) DeleteTag(ctx context.Context, request DeleteTag) error
 // them.
 //
 // Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name
-// exists.S
+// exists.
 func (a *ExperimentsAPI) GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error) {
 	return a.impl.GetByName(ctx, request)
 }
@@ -113,7 +113,7 @@ func (a *ExperimentsAPI) GetHistory(ctx context.Context, request GetHistoryReque
 
 // Get a run.
 //
-// "Gets the metadata, metrics, params, and tags for a run. In the case where
+// Gets the metadata, metrics, params, and tags for a run. In the case where
 // multiple metrics with the same key are logged for a run, return only the
 // value with the latest timestamp.
 //
@@ -221,6 +221,14 @@ func (a *ExperimentsAPI) LogBatch(ctx context.Context, request LogBatch) error {
 	return a.impl.LogBatch(ctx, request)
 }
 
+// Log inputs to a run.
+//
+// **NOTE:** Experimental: This API may change or be removed in a future release
+// without warning.
+func (a *ExperimentsAPI) LogInputs(ctx context.Context, request LogInputs) error {
+	return a.impl.LogInputs(ctx, request)
+}
+
 // Log a metric.
 //
 // Logs a metric for a run. A metric is a key-value pair (string key, float
@@ -250,12 +258,12 @@ func (a *ExperimentsAPI) LogParam(ctx context.Context, request LogParam) error {
 
 // Restores an experiment.
 //
-// "Restore an experiment marked for deletion. This also restores associated
+// Restore an experiment marked for deletion. This also restores associated
 // metadata, runs, metrics, params, and tags. If experiment uses FileStore,
 // underlying artifacts associated with experiment are also restored.
 //
 // Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was
-// permanently deleted.",
+// permanently deleted.
 func (a *ExperimentsAPI) RestoreExperiment(ctx context.Context, request RestoreExperiment) error {
 	return a.impl.RestoreExperiment(ctx, request)
 }
@@ -494,8 +502,8 @@ func (a *ModelRegistryAPI) GetLatestVersionsAll(ctx context.Context, request Get
 
 // Get model.
 //
-// Get the details of a model. This is a Databricks Workspace version of the
-// [MLflow endpoint] that also returns the model's Databricks Workspace ID and
+// Get the details of a model. This is a Databricks workspace version of the
+// [MLflow endpoint] that also returns the model's Databricks workspace ID and
 // the permission level of the requesting user on the model.
 //
 // [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel
@@ -680,7 +688,7 @@ func (a *ModelRegistryAPI) TestRegistryWebhook(ctx context.Context, request Test
 
 // Transition a stage.
 //
-// Transition a model version's stage. This is a Databricks Workspace version of
+// Transition a model version's stage. This is a Databricks workspace version of
 // the [MLflow endpoint] that also accepts a comment associated with the
 // transition to be recorded.",
 //

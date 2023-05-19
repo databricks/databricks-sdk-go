@@ -151,7 +151,7 @@ type ClustersService interface {
 
 	// Get cluster info.
 	//
-	// "Retrieves the information for a cluster given its identifier. Clusters
+	// Retrieves the information for a cluster given its identifier. Clusters
 	// can be described while they are running, or up to 60 days after they are
 	// terminated.
 	Get(ctx context.Context, request GetClusterRequest) (*ClusterInfo, error)
@@ -315,7 +315,7 @@ type GlobalInitScriptsService interface {
 
 	// Get init scripts.
 	//
-	// "Get a list of all global init scripts for this workspace. This returns
+	// Get a list of all global init scripts for this workspace. This returns
 	// all properties for each script but **not** the script contents. To
 	// retrieve the contents of a script, use the [get a global init
 	// script](#operation/get-script) operation.

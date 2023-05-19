@@ -42,6 +42,9 @@ type CatalogInfo struct {
 	// Whether auto maintenance should be enabled for this object and objects
 	// under it.
 	EnableAutoMaintenance EnableAutoMaintenance `json:"enable_auto_maintenance,omitempty"`
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces.
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of catalog.
@@ -439,7 +442,7 @@ type CreateStorageCredential struct {
 	Comment string `json:"comment,omitempty"`
 	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name"`
@@ -518,7 +521,7 @@ func (dsf *DataSourceFormat) Type() string {
 
 // Delete a metastore assignment
 type DeleteAccountMetastoreAssignmentRequest struct {
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -526,8 +529,16 @@ type DeleteAccountMetastoreAssignmentRequest struct {
 
 // Delete a metastore
 type DeleteAccountMetastoreRequest struct {
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
+}
+
+// Delete a storage credential
+type DeleteAccountStorageCredentialRequest struct {
+	// Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
+	// Name of the storage credential.
+	Name string `json:"-" url:"-"`
 }
 
 // Delete a catalog
@@ -601,6 +612,16 @@ type DeleteTableRequest struct {
 type DeleteVolumeRequest struct {
 	// The three-level (fully qualified) name of the volume
 	FullNameArg string `json:"-" url:"-"`
+}
+
+// Properties pertaining to the current state of the delta table as given by the
+// commit server.
+//
+// This does not contain **delta.*** (input) properties in
+// __TableInfo.properties__.
+type DeltaRuntimePropertiesKvPairs struct {
+	// A map of key-value properties attached to the securable.
+	DeltaRuntimeProperties map[string]string `json:"delta_runtime_properties"`
 }
 
 // A dependency of a SQL object. Either the __table__ field or the __function__
@@ -1037,13 +1058,13 @@ type GetAccountMetastoreAssignmentRequest struct {
 
 // Get a metastore
 type GetAccountMetastoreRequest struct {
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 }
 
 // Gets the named storage credential
 type GetAccountStorageCredentialRequest struct {
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
@@ -1186,15 +1207,50 @@ type GetTableRequest struct {
 	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
 }
 
+// Get catalog workspace bindings
+type GetWorkspaceBindingRequest struct {
+	// The name of the catalog.
+	Name string `json:"-" url:"-"`
+}
+
+// Whether the current securable is accessible from all workspaces or a specific
+// set of workspaces.
+type IsolationMode string
+
+const IsolationModeIsolated IsolationMode = `ISOLATED`
+
+const IsolationModeOpen IsolationMode = `OPEN`
+
+// String representation for [fmt.Print]
+func (im *IsolationMode) String() string {
+	return string(*im)
+}
+
+// Set raw string value and validate it against allowed values
+func (im *IsolationMode) Set(v string) error {
+	switch v {
+	case `ISOLATED`, `OPEN`:
+		*im = IsolationMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ISOLATED", "OPEN"`, v)
+	}
+}
+
+// Type always returns IsolationMode to satisfy [pflag.Value] interface
+func (im *IsolationMode) Type() string {
+	return "IsolationMode"
+}
+
 // Get all workspaces assigned to a metastore
 type ListAccountMetastoreAssignmentsRequest struct {
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 }
 
 // Get all storage credentials assigned to a metastore
 type ListAccountStorageCredentialsRequest struct {
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 }
 
@@ -1235,6 +1291,10 @@ type ListSchemasRequest struct {
 type ListSchemasResponse struct {
 	// An array of schema information objects.
 	Schemas []SchemaInfo `json:"schemas,omitempty"`
+}
+
+type ListStorageCredentialsResponse struct {
+	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
 }
 
 // List table summaries
@@ -1657,7 +1717,7 @@ type TableInfo struct {
 	// omitted if table is not deleted.
 	DeletedAt int64 `json:"deleted_at,omitempty"`
 	// Information pertaining to current state of the delta table.
-	DeltaRuntimePropertiesKvpairs any `json:"delta_runtime_properties_kvpairs,omitempty"`
+	DeltaRuntimePropertiesKvpairs *DeltaRuntimePropertiesKvPairs `json:"delta_runtime_properties_kvpairs,omitempty"`
 
 	EffectiveAutoMaintenanceFlag *EffectiveAutoMaintenanceFlag `json:"effective_auto_maintenance_flag,omitempty"`
 	// Whether auto maintenance should be enabled for this object and objects
@@ -1783,6 +1843,9 @@ type UpdateAutoMaintenanceResponse struct {
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces.
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of catalog.
 	Name string `json:"name,omitempty" url:"-"`
 	// Username of current owner of catalog.
@@ -1827,7 +1890,7 @@ type UpdateMetastore struct {
 	DeltaSharingScope UpdateMetastoreDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
-	// Databricks Unity Catalog metastore ID
+	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// The user-specified name of the metastore.
 	Name string `json:"name,omitempty"`
@@ -1911,6 +1974,8 @@ type UpdateStorageCredential struct {
 	Force bool `json:"force,omitempty"`
 	// The GCP service account key configuration.
 	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
+	// Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
 	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name,omitempty" url:"-"`
 	// Username of current owner of credential.
@@ -1931,6 +1996,15 @@ type UpdateVolumeRequestContent struct {
 	Name string `json:"name,omitempty"`
 	// The identifier of the user who owns the volume
 	Owner string `json:"owner,omitempty"`
+}
+
+type UpdateWorkspaceBindings struct {
+	// A list of workspace IDs.
+	AssignWorkspaces *WorkspaceIds `json:"assign_workspaces,omitempty"`
+	// The name of the catalog.
+	Name string `json:"-" url:"-"`
+	// A list of workspace IDs.
+	UnassignWorkspaces *WorkspaceIds `json:"unassign_workspaces,omitempty"`
 }
 
 type ValidateStorageCredential struct {
@@ -2084,4 +2158,9 @@ func (vt *VolumeType) Set(v string) error {
 // Type always returns VolumeType to satisfy [pflag.Value] interface
 func (vt *VolumeType) Type() string {
 	return "VolumeType"
+}
+
+// A list of workspace IDs.
+type WorkspaceIds struct {
+	Workspaces []int `json:"workspaces,omitempty"`
 }

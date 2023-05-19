@@ -44,6 +44,8 @@ type CreatePipeline struct {
 	Name string `json:"name,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
+	// Whether serverless compute is enabled for this pipeline.
+	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// Target schema (database) to add tables in this pipeline to. If not
@@ -118,6 +120,8 @@ type EditPipeline struct {
 	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
 	PipelineId string `json:"pipeline_id,omitempty" url:"-"`
+	// Whether serverless compute is enabled for this pipeline.
+	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// Target schema (database) to add tables in this pipeline to. If not
@@ -542,7 +546,7 @@ type PipelineLibrary struct {
 	// Specification of a maven library to be installed.
 	Maven *compute.MavenLibrary `json:"maven,omitempty"`
 	// The path to a notebook that defines a pipeline and is stored in the
-	// Databricks workspace.
+	// <Databricks> workspace.
 	Notebook *NotebookLibrary `json:"notebook,omitempty"`
 	// URI of the wheel to be installed.
 	Whl string `json:"whl,omitempty"`
@@ -577,6 +581,8 @@ type PipelineSpec struct {
 	Name string `json:"name,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
+	// Whether serverless compute is enabled for this pipeline.
+	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
 	// Target schema (database) to add tables in this pipeline to. If not

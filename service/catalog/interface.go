@@ -52,14 +52,12 @@ type AccountMetastoresService interface {
 
 	// Delete a metastore.
 	//
-	// Deletes a Databricks Unity Catalog metastore for an account, both
-	// specified by ID.
+	// Deletes a Unity Catalog metastore for an account, both specified by ID.
 	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error
 
 	// Get a metastore.
 	//
-	// Gets a Databricks Unity Catalog metastore from an account, both specified
-	// by ID.
+	// Gets a Unity Catalog metastore from an account, both specified by ID.
 	Get(ctx context.Context, request GetAccountMetastoreRequest) (*MetastoreInfo, error)
 
 	// Get all metastores associated with an account.
@@ -89,6 +87,12 @@ type AccountStorageCredentialsService interface {
 	// **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
 	Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error)
 
+	// Delete a storage credential.
+	//
+	// Deletes a storage credential from the metastore. The caller must be an
+	// owner of the storage credential.
+	Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error
+
 	// Gets the named storage credential.
 	//
 	// Gets a storage credential from the metastore. The caller must be a
@@ -100,7 +104,14 @@ type AccountStorageCredentialsService interface {
 	//
 	// Gets a list of all storage credentials that have been assigned to given
 	// metastore.
-	List(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error)
+	List(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListStorageCredentialsResponse, error)
+
+	// Updates a storage credential.
+	//
+	// Updates a storage credential on the metastore. The caller must be the
+	// owner of the storage credential. If the caller is a metastore admin, only
+	// the __owner__ credential can be changed.
+	Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error)
 }
 
 // A catalog is the first layer of Unity Catalog’s three-level namespace.
@@ -481,7 +492,9 @@ type StorageCredentialsService interface {
 	// caller has permission to access. If the caller is a metastore admin, all
 	// storage credentials will be retrieved. There is no guarantee of a
 	// specific ordering of the elements in the array.
-	List(ctx context.Context) ([]StorageCredentialInfo, error)
+	//
+	// Use ListAll() to get all StorageCredentialInfo instances
+	List(ctx context.Context) (*ListStorageCredentialsResponse, error)
 
 	// Update a credential.
 	//
@@ -697,4 +710,25 @@ type VolumesService interface {
 	// Currently only the name, the owner or the comment of the volume could be
 	// updated.
 	Update(ctx context.Context, request UpdateVolumeRequestContent) (*VolumeInfo, error)
+}
+
+// A catalog in Databricks can be configured as __OPEN__ or __ISOLATED__. An
+// __OPEN__ catalog can be accessed from any workspace, while an __ISOLATED__
+// catalog can only be access from a configured list of workspaces.
+//
+// A catalog's workspace bindings can be configured by a metastore admin or the
+// owner of the catalog.
+type WorkspaceBindingsService interface {
+
+	// Get catalog workspace bindings.
+	//
+	// Gets workspace bindings of the catalog. The caller must be a metastore
+	// admin or an owner of the catalog.
+	Get(ctx context.Context, request GetWorkspaceBindingRequest) (*WorkspaceIds, error)
+
+	// Update catalog workspace bindings.
+	//
+	// Updates workspace bindings of the catalog. The caller must be a metastore
+	// admin or an owner of the catalog.
+	Update(ctx context.Context, request UpdateWorkspaceBindings) (*WorkspaceIds, error)
 }

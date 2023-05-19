@@ -40,9 +40,9 @@
 //
 // - [catalog.GrantsAPI]: In Unity Catalog, data is secure by default.
 //
-// - [iam.GroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks Workspace, data, and other securable objects.
+// - [iam.GroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks workspace, data, and other securable objects.
 //
-// - [iam.AccountGroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks Account, data, and other securable objects.
+// - [iam.AccountGroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks account, data, and other securable objects.
 //
 // - [compute.InstancePoolsAPI]: Instance Pools API are used to create, edit, delete and list instance pools by using ready-to-use cloud instances which reduces a cluster start and auto-scaling times.
 //
@@ -94,6 +94,8 @@
 //
 // - [workspace.SecretsAPI]: The Secrets API allows you to manage secrets, secret scopes, and access permissions.
 //
+// - [oauth2.ServicePrincipalSecretsAPI]: These APIs enable administrators to manage service principal secrets.
+//
 // - [iam.ServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
 //
 // - [iam.AccountServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
@@ -131,6 +133,8 @@
 // - [workspace.WorkspaceAPI]: The Workspace API allows you to list, import, export, and delete notebooks and folders.
 //
 // - [iam.WorkspaceAssignmentAPI]: The Workspace Permission Assignment API allows you to manage workspace permissions for principals in your account.
+//
+// - [catalog.WorkspaceBindingsAPI]: A catalog in Databricks can be configured as __OPEN__ or __ISOLATED__.
 //
 // - [settings.WorkspaceConfAPI]: This API allows updating known workspace settings for advanced users.
 //
@@ -209,6 +213,7 @@ var (
 	_ *workspace.ReposAPI                     = nil
 	_ *catalog.SchemasAPI                     = nil
 	_ *workspace.SecretsAPI                   = nil
+	_ *oauth2.ServicePrincipalSecretsAPI      = nil
 	_ *iam.ServicePrincipalsAPI               = nil
 	_ *iam.AccountServicePrincipalsAPI        = nil
 	_ *serving.ServingEndpointsAPI            = nil
@@ -228,6 +233,7 @@ var (
 	_ *sql.WarehousesAPI                      = nil
 	_ *workspace.WorkspaceAPI                 = nil
 	_ *iam.WorkspaceAssignmentAPI             = nil
+	_ *catalog.WorkspaceBindingsAPI           = nil
 	_ *settings.WorkspaceConfAPI              = nil
 	_ *provisioning.WorkspacesAPI             = nil
 )

@@ -135,8 +135,7 @@ type ListTokenManagementRequest struct {
 }
 
 type ListTokensResponse struct {
-	// The information for each token.
-	TokenInfos []PublicTokenInfo `json:"token_infos,omitempty"`
+	TokenInfos []TokenInfo `json:"token_infos,omitempty"`
 }
 
 // This describes an enum

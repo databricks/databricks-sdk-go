@@ -24,7 +24,8 @@ func NewAlerts(client *client.DatabricksClient) *AlertsAPI {
 // The alerts API can be used to perform CRUD operations on alerts. An alert is
 // a Databricks SQL object that periodically runs a query, evaluates a condition
 // of its result, and notifies one or more users and/or notification
-// destinations if the condition was met.
+// destinations if the condition was met. Alerts can be scheduled using the
+// `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 type AlertsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(AlertsService)
@@ -167,7 +168,8 @@ func NewDashboards(client *client.DatabricksClient) *DashboardsAPI {
 // it can be useful to use dashboard objects to look-up a collection of related
 // query IDs. The API can also be used to duplicate multiple dashboards at once
 // since you can get a dashboard definition with a GET request and then POST it
-// to create a new one.
+// to create a new one. Dashboards can be scheduled using the `sql_task` type of
+// the Jobs API, e.g. :method:jobs/create.
 type DashboardsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(DashboardsService)
@@ -502,7 +504,8 @@ func NewQueries(client *client.DatabricksClient) *QueriesAPI {
 
 // These endpoints are used for CRUD operations on query definitions. Query
 // definitions include the target SQL warehouse, query text, name, description,
-// tags, parameters, and visualizations.
+// tags, parameters, and visualizations. Queries can be scheduled using the
+// `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 type QueriesAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(QueriesService)
@@ -812,16 +815,23 @@ func NewStatementExecution(client *client.DatabricksClient) *StatementExecutionA
 //
 // **Fetching result data: format and disposition**
 //
-// Result data from statement execution is available in two formats: JSON, and
-// [Apache Arrow Columnar]. Statements producing a result set smaller than 16
-// MiB can be fetched as `format=JSON_ARRAY`, using the `disposition=INLINE`.
-// When a statement executed in `INLINE` disposition exceeds this limit, the
-// execution is aborted, and no result can be fetched. Using
-// `format=ARROW_STREAM` and `disposition=EXTERNAL_LINKS` allows large result
-// sets, and with higher throughput.
+// To specify the result data format, set the `format` field to `JSON_ARRAY`
+// (JSON) or `ARROW_STREAM` ([Apache Arrow Columnar]).
 //
-// The API uses defaults of `format=JSON_ARRAY` and `disposition=INLINE`. `We
-// advise explicitly setting format and disposition in all production use cases.
+// You can also configure how to fetch the result data in two different modes by
+// setting the `disposition` field to `INLINE` or `EXTERNAL_LINKS`.
+//
+// The `INLINE` disposition can only be used with the `JSON_ARRAY` format and
+// allows results up to 16 MiB. When a statement executed with `INLINE`
+// disposition exceeds this limit, the execution is aborted, and no result can
+// be fetched.
+//
+// The `EXTERNAL_LINKS` disposition allows fetching large result sets in both
+// `JSON_ARRAY` and `ARROW_STREAM` formats, and with higher throughput.
+//
+// The API uses defaults of `format=JSON_ARRAY` and `disposition=INLINE`.
+// Databricks recommends that you explicit setting the format and the
+// disposition for all production use cases.
 //
 // **Statement response: statement_id, status, manifest, and result**
 //

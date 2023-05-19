@@ -26,7 +26,9 @@ type WorkspaceClient struct {
 	// The alerts API can be used to perform CRUD operations on alerts. An alert
 	// is a Databricks SQL object that periodically runs a query, evaluates a
 	// condition of its result, and notifies one or more users and/or
-	// notification destinations if the condition was met.
+	// notification destinations if the condition was met. Alerts can be
+	// scheduled using the `sql_task` type of the Jobs API, e.g.
+	// :method:jobs/create.
 	Alerts *sql.AlertsAPI
 
 	// A catalog is the first layer of Unity Catalog’s three-level namespace.
@@ -105,7 +107,9 @@ type WorkspaceClient struct {
 	// However, it can be useful to use dashboard objects to look-up a
 	// collection of related query IDs. The API can also be used to duplicate
 	// multiple dashboards at once since you can get a dashboard definition with
-	// a GET request and then POST it to create a new one.
+	// a GET request and then POST it to create a new one. Dashboards can be
+	// scheduled using the `sql_task` type of the Jobs API, e.g.
+	// :method:jobs/create.
 	Dashboards *sql.DashboardsAPI
 
 	// This API is provided to assist you in making new query objects. When
@@ -199,11 +203,11 @@ type WorkspaceClient struct {
 	Grants *catalog.GrantsAPI
 
 	// Groups simplify identity management, making it easier to assign access to
-	// Databricks Workspace, data, and other securable objects.
+	// Databricks workspace, data, and other securable objects.
 	//
 	// It is best practice to assign access to workspaces and access-control
 	// policies in Unity Catalog to groups, instead of to users individually.
-	// All Databricks Workspace identities can be assigned as members of groups,
+	// All Databricks workspace identities can be assigned as members of groups,
 	// and members inherit permissions that are assigned to their group.
 	Groups *iam.GroupsAPI
 
@@ -271,10 +275,11 @@ type WorkspaceClient struct {
 	// applications.
 	//
 	// You should never hard code secrets or store them in plain text. Use the
-	// :service:secrets to manage secrets in the [Databricks CLI]. Use the
-	// [Secrets utility] to reference secrets in notebooks and jobs.
+	// [Secrets CLI] to manage secrets in the [Databricks CLI]. Use the [Secrets
+	// utility] to reference secrets in notebooks and jobs.
 	//
 	// [Databricks CLI]: https://docs.databricks.com/dev-tools/cli/index.html
+	// [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
 	// [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 	Jobs *jobs.JobsAPI
 
@@ -357,7 +362,9 @@ type WorkspaceClient struct {
 
 	// These endpoints are used for CRUD operations on query definitions. Query
 	// definitions include the target SQL warehouse, query text, name,
-	// description, tags, parameters, and visualizations.
+	// description, tags, parameters, and visualizations. Queries can be
+	// scheduled using the `sql_task` type of the Jobs API, e.g.
+	// :method:jobs/create.
 	Queries *sql.QueriesAPI
 
 	// Access the history of queries through SQL warehouses.
@@ -502,17 +509,23 @@ type WorkspaceClient struct {
 	//
 	// **Fetching result data: format and disposition**
 	//
-	// Result data from statement execution is available in two formats: JSON,
-	// and [Apache Arrow Columnar]. Statements producing a result set smaller
-	// than 16 MiB can be fetched as `format=JSON_ARRAY`, using the
-	// `disposition=INLINE`. When a statement executed in `INLINE` disposition
-	// exceeds this limit, the execution is aborted, and no result can be
-	// fetched. Using `format=ARROW_STREAM` and `disposition=EXTERNAL_LINKS`
-	// allows large result sets, and with higher throughput.
+	// To specify the result data format, set the `format` field to `JSON_ARRAY`
+	// (JSON) or `ARROW_STREAM` ([Apache Arrow Columnar]).
+	//
+	// You can also configure how to fetch the result data in two different
+	// modes by setting the `disposition` field to `INLINE` or `EXTERNAL_LINKS`.
+	//
+	// The `INLINE` disposition can only be used with the `JSON_ARRAY` format
+	// and allows results up to 16 MiB. When a statement executed with `INLINE`
+	// disposition exceeds this limit, the execution is aborted, and no result
+	// can be fetched.
+	//
+	// The `EXTERNAL_LINKS` disposition allows fetching large result sets in
+	// both `JSON_ARRAY` and `ARROW_STREAM` formats, and with higher throughput.
 	//
 	// The API uses defaults of `format=JSON_ARRAY` and `disposition=INLINE`.
-	// `We advise explicitly setting format and disposition in all production
-	// use cases.
+	// Databricks recommends that you explicit setting the format and the
+	// disposition for all production use cases.
 	//
 	// **Statement response: statement_id, status, manifest, and result**
 	//
@@ -669,13 +682,13 @@ type WorkspaceClient struct {
 	// addresses.
 	//
 	// Databricks recommends using SCIM provisioning to sync users and groups
-	// automatically from your identity provider to your Databricks Workspace.
+	// automatically from your identity provider to your Databricks workspace.
 	// SCIM streamlines onboarding a new employee or team by using your identity
-	// provider to create users and groups in Databricks Workspace and give them
+	// provider to create users and groups in Databricks workspace and give them
 	// the proper level of access. When a user leaves your organization or no
-	// longer needs access to Databricks Workspace, admins can terminate the
+	// longer needs access to Databricks workspace, admins can terminate the
 	// user in your identity provider and that user’s account will also be
-	// removed from Databricks Workspace. This ensures a consistent offboarding
+	// removed from Databricks workspace. This ensures a consistent offboarding
 	// process and prevents unauthorized users from accessing sensitive data.
 	Users *iam.UsersAPI
 
@@ -701,6 +714,15 @@ type WorkspaceClient struct {
 	// A notebook is a web-based interface to a document that contains runnable
 	// code, visualizations, and explanatory text.
 	Workspace *workspace.WorkspaceAPI
+
+	// A catalog in Databricks can be configured as __OPEN__ or __ISOLATED__. An
+	// __OPEN__ catalog can be accessed from any workspace, while an
+	// __ISOLATED__ catalog can only be access from a configured list of
+	// workspaces.
+	//
+	// A catalog's workspace bindings can be configured by a metastore admin or
+	// the owner of the catalog.
+	WorkspaceBindings *catalog.WorkspaceBindingsAPI
 
 	// This API allows updating known workspace settings for advanced users.
 	WorkspaceConf *settings.WorkspaceConfAPI
@@ -771,6 +793,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Volumes:             catalog.NewVolumes(apiClient),
 		Warehouses:          sql.NewWarehouses(apiClient),
 		Workspace:           workspace.NewWorkspace(apiClient),
+		WorkspaceBindings:   catalog.NewWorkspaceBindings(apiClient),
 		WorkspaceConf:       settings.NewWorkspaceConf(apiClient),
 	}, nil
 }

@@ -103,3 +103,28 @@ func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request Update
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
 }
+
+// unexported type that holds implementations of just ServicePrincipalSecrets API methods
+type servicePrincipalSecretsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request CreateServicePrincipalSecretRequest) (*CreateServicePrincipalSecretResponse, error) {
+	var createServicePrincipalSecretResponse CreateServicePrincipalSecretResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
+	err := a.client.Do(ctx, http.MethodPost, path, request, &createServicePrincipalSecretResponse)
+	return &createServicePrincipalSecretResponse, err
+}
+
+func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error {
+	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets/%v,", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.SecretId)
+	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	return err
+}
+
+func (a *servicePrincipalSecretsImpl) List(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
+	var listServicePrincipalSecretsResponse ListServicePrincipalSecretsResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &listServicePrincipalSecretsResponse)
+	return &listServicePrincipalSecretsResponse, err
+}
