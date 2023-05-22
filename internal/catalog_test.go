@@ -115,15 +115,17 @@ func TestUcAccMetastores(t *testing.T) {
 	_, err = w.Metastores.GetById(ctx, created.MetastoreId)
 	require.NoError(t, err)
 
+	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
+
 	err = w.Metastores.Assign(ctx, catalog.CreateMetastoreAssignment{
 		MetastoreId: created.MetastoreId,
-		WorkspaceId: GetEnvInt64OrSkipTest(t, "TEST_WORKSPACE_ID"),
+		WorkspaceId: workspaceId,
 	})
 	require.NoError(t, err)
 
 	err = w.Metastores.Unassign(ctx, catalog.UnassignRequest{
 		MetastoreId: created.MetastoreId,
-		WorkspaceId: GetEnvInt64OrSkipTest(t, "TEST_WORKSPACE_ID"),
+		WorkspaceId: workspaceId,
 	})
 	require.NoError(t, err)
 

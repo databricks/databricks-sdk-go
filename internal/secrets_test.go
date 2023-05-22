@@ -12,35 +12,39 @@ import (
 func TestAccSecrets(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	scope := workspace.CreateScope{
-		Scope: RandomEmail(),
-	}
-	err := w.Secrets.CreateScope(ctx, scope)
+	scopeName := RandomName("scope-")
+	keyName := RandomName("key-")
+
+	// creates scopeName
+	err := w.Secrets.CreateScope(ctx, workspace.CreateScope{
+		Scope: scopeName,
+	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = w.Secrets.DeleteScopeByScope(ctx, scope.Scope)
+		err = w.Secrets.DeleteScopeByScope(ctx, scopeName)
 		require.NoError(t, err)
 	})
+
 	scopes, err := w.Secrets.ListScopesAll(ctx)
 	require.NoError(t, err)
 	assert.True(t, len(scopes) >= 1)
 
-	put := workspace.PutSecret{
-		Scope:       scope.Scope,
-		Key:         RandomName("sdk-go"),
+	// creates keyName
+	err = w.Secrets.PutSecret(ctx, workspace.PutSecret{
+		Scope:       scopeName,
+		Key:         keyName,
 		StringValue: RandomName("dummy"),
-	}
-	err = w.Secrets.PutSecret(ctx, put)
+	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		err = w.Secrets.DeleteSecret(ctx, workspace.DeleteSecret{
-			Scope: scope.Scope,
-			Key:   put.Key,
+			Scope: scopeName,
+			Key:   keyName,
 		})
 		require.NoError(t, err)
 	})
 
-	scrts, err := w.Secrets.ListSecretsByScope(ctx, scope.Scope)
+	scrts, err := w.Secrets.ListSecretsByScope(ctx, scopeName)
 	require.NoError(t, err)
 	assert.True(t, len(scrts.Secrets) == 1)
 
@@ -54,19 +58,19 @@ func TestAccSecrets(t *testing.T) {
 	})
 
 	err = w.Secrets.PutAcl(ctx, workspace.PutAcl{
-		Scope:      scope.Scope,
+		Scope:      scopeName,
 		Permission: workspace.AclPermissionManage,
 		Principal:  group.DisplayName,
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		w.Secrets.DeleteAcl(ctx, workspace.DeleteAcl{
-			Scope:     scope.Scope,
+			Scope:     scopeName,
 			Principal: group.DisplayName,
 		})
 	})
 
-	acls, err := w.Secrets.ListAclsByScope(ctx, scope.Scope)
+	acls, err := w.Secrets.ListAclsByScope(ctx, scopeName)
 	require.NoError(t, err)
 
 	assert.Equal(t, 2, len(acls.Items))

@@ -17,6 +17,31 @@ func (ci *ClusterInfo) IsRunningOrResizing() bool {
 	return ci.State == StateRunning || ci.State == StateResizing
 }
 
+// use mutex around starting a cluster by ID
+var mu sync.Mutex
+
+func (a *ClustersAPI) EnsureClusterIsRunning(ctx context.Context, clusterId string) error {
+	mu.Lock()
+	defer mu.Unlock()
+	info, err := a.GetByClusterId(ctx, clusterId)
+	if err != nil {
+		return fmt.Errorf("get cluster info: %w", err)
+	}
+	switch info.State {
+	case StateRunning:
+		return nil
+	case StateTerminated:
+		// TODO: add StateTerminating: self.wait_get_cluster_terminated(cluster_id) & self.start(cluster_id).result()
+		_, err = a.StartByClusterIdAndWait(ctx, clusterId)
+		return fmt.Errorf("start: %w", err)
+	case StatePending, StateResizing, StateRestarting:
+		_, err = a.GetByClusterIdAndWait(ctx, clusterId)
+		return fmt.Errorf("wait: %w", err)
+	default:
+		return fmt.Errorf("cluster %s is in %s state: %s", info.ClusterName, info.State, info.StateMessage)
+	}
+}
+
 // GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist
 func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateCluster) (c *ClusterInfo, err error) {
 	getOrCreateClusterMutex.Lock()

@@ -1,8 +1,8 @@
 package internal
 
 import (
+	"encoding/base64"
 	"fmt"
-	"strconv"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/iam"
@@ -15,8 +15,13 @@ func TestAccGenericPermissions(t *testing.T) {
 	ctx, w := workspaceTest(t)
 	notebookPath := myNotebookPath(t, w)
 
-	err := w.Workspace.Import(ctx, workspace.PythonNotebookOverwrite(
-		notebookPath, `print(1)`))
+	err := w.Workspace.Import(ctx, workspace.Import{
+		Path:      notebookPath,
+		Overwrite: true,
+		Format:    workspace.ExportFormatSource,
+		Language:  workspace.LanguagePython,
+		Content:   base64.StdEncoding.EncodeToString([]byte(`print(1)`)),
+	})
 	require.NoError(t, err)
 
 	obj, err := w.Workspace.GetStatusByPath(ctx, notebookPath)
@@ -62,6 +67,8 @@ func TestMwsAccWorkspaceAssignment(t *testing.T) {
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
+	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
+
 	spn, err := a.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		DisplayName: RandomName("sdk-go-"),
 	})
@@ -71,10 +78,8 @@ func TestMwsAccWorkspaceAssignment(t *testing.T) {
 		require.NoError(t, err)
 	}()
 
-	spnId, err := strconv.ParseInt(spn.Id, 10, 64)
-	require.NoError(t, err)
+	spnId := MustParseInt64(spn.Id)
 
-	workspaceId := GetEnvInt64OrSkipTest(t, "TEST_WORKSPACE_ID")
 	err = a.WorkspaceAssignment.Update(ctx, iam.UpdateWorkspaceAssignments{
 		WorkspaceId: workspaceId,
 		PrincipalId: spnId,

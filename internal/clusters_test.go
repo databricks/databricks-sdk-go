@@ -3,7 +3,6 @@ package internal
 import (
 	"context"
 	"strings"
-	"sync"
 	"testing"
 	"time"
 
@@ -15,36 +14,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// use mutex around starting TEST_GO_SDK_CLUSTER_ID
-var mu sync.Mutex
-
 func sharedRunningCluster(t *testing.T, ctx context.Context,
 	w *databricks.WorkspaceClient) string {
-	mu.Lock()
-	defer mu.Unlock()
-
 	clusterId := GetEnvOrSkipTest(t, "TEST_GO_SDK_CLUSTER_ID")
-	info, err := w.Clusters.GetByClusterId(ctx, clusterId)
+	err := w.Clusters.EnsureClusterIsRunning(ctx, clusterId)
 	require.NoError(t, err)
-
-	switch info.State {
-	case compute.StateRunning:
-		// noop
-	case compute.StateTerminated:
-		_, err = w.Clusters.StartByClusterIdAndWait(ctx, clusterId)
-		require.NoError(t, err)
-	case compute.StatePending,
-		compute.StateResizing,
-		compute.StateRestarting:
-		_, err = w.Clusters.GetByClusterIdAndWait(ctx, clusterId)
-		require.NoError(t, err)
-	default:
-		t.Errorf("Cluster is in %s state", info.State)
-	}
 	return clusterId
 }
 
-func TestAccClustersCreateFailsWithTimeout(t *testing.T) {
+func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	// Fetch list of spark runtime versions
@@ -110,12 +88,8 @@ func TestAccClustersApiIntegration(t *testing.T) {
 
 	clusterName := RandomName("sdk-go-cluster-")
 
-	// Fetch list of spark runtime versions
-	sparkVersions, err := w.Clusters.SparkVersions(ctx)
-	require.NoError(t, err)
-
 	// Select the latest LTS version
-	latest, err := sparkVersions.Select(compute.SparkVersionRequest{
+	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
 		Latest: true,
 	})
 	require.NoError(t, err)
@@ -127,10 +101,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 15,
 		NumWorkers:             1,
-	}, retries.Timeout[compute.ClusterInfo](20*time.Minute),
-		retries.OnPoll(func(i *compute.ClusterInfo) {
-			t.Logf("cluster is %s", i.State)
-		}))
+	})
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
@@ -153,7 +124,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Edit the cluster: change auto-termination and number of workers
-	err = w.Clusters.Edit(ctx, compute.EditCluster{
+	_, err = w.Clusters.EditAndWait(ctx, compute.EditCluster{
 		ClusterId:      clstr.ClusterId,
 		SparkVersion:   latest,
 		ClusterName:    clusterName,
@@ -197,7 +168,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	assert.Equal(t, 1, byId.NumWorkers)
 
 	// Restart the cluster and wait for it to run again
-	err = w.Clusters.Restart(ctx, compute.RestartCluster{
+	_, err = w.Clusters.RestartAndWait(ctx, compute.RestartCluster{
 		ClusterId: clstr.ClusterId,
 	})
 	require.NoError(t, err)

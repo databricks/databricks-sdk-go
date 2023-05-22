@@ -1,6 +1,7 @@
 package compute
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"sort"
@@ -80,4 +81,12 @@ func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, erro
 		}
 	}
 	return versions[0], nil
+}
+
+func (a *ClustersAPI) SelectSparkVersion(ctx context.Context, r SparkVersionRequest) (string, error) {
+	sv, err := a.impl.SparkVersions(ctx)
+	if err != nil {
+		return "", err
+	}
+	return sv.Select(r)
 }

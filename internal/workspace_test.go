@@ -72,7 +72,10 @@ func TestAccWorkspaceIntegration(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, len(objects), len(paths))
 	assert.Contains(t, paths, notebook)
+}
 
+func TestAccWorkspaceRecursiveListNoTranspile(t *testing.T) {
+	ctx, w := workspaceTest(t)
 	allMyNotebooks, err := w.Workspace.RecursiveList(ctx, filepath.Join("/Users", me(t, w).UserName))
 	require.NoError(t, err)
 	assert.True(t, len(allMyNotebooks) >= 1)

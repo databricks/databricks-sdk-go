@@ -1,6 +1,7 @@
 package compute
 
 import (
+	"context"
 	"fmt"
 	"strings"
 )
@@ -117,4 +118,12 @@ func (ntl *ListNodeTypesResponse) Smallest(r NodeTypeRequest) (string, error) {
 		return nt.NodeTypeId, nil
 	}
 	return "", fmt.Errorf("cannot determine smallest node type")
+}
+
+func (a *ClustersAPI) SelectNodeType(ctx context.Context, r NodeTypeRequest) (string, error) {
+	nodeTypes, err := a.ListNodeTypes(ctx)
+	if err != nil {
+		return "", err
+	}
+	return nodeTypes.Smallest(r)
 }

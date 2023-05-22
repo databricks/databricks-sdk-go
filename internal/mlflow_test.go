@@ -218,7 +218,7 @@ func TestAccModelVersionComments(t *testing.T) {
 
 	created, err := w.ModelRegistry.CreateComment(ctx, ml.CreateComment{
 		Comment: RandomName("comment "),
-		Name:    model.RegisteredModel.Name,
+		Name:    mv.ModelVersion.Name,
 		Version: mv.ModelVersion.Version,
 	})
 	require.NoError(t, err)

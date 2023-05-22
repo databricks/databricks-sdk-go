@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestUcAccProviders(t *testing.T) {
+func TestUcAccProvidersNoTranspile(t *testing.T) {
 	t.Skip("fixme")
 	ctx, w := ucwsTest(t)
 
@@ -58,7 +58,7 @@ func TestUcAccRecipients(t *testing.T) {
 	assert.True(t, len(all) >= 1)
 }
 
-func TestUcAccShares(t *testing.T) {
+func TestUcAccSharesNoTranspile(t *testing.T) {
 	t.Skip("expand with catalogs")
 	ctx, w := ucwsTest(t)
 
