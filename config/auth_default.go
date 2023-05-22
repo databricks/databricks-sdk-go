@@ -14,7 +14,7 @@ var (
 		PatCredentials{},
 		BasicCredentials{},
 		M2mCredentials{},
-		BricksCliCredentials{},
+		DatabricksCliCredentials{},
 		MetadataServiceCredentials{},
 
 		// Attempt to configure auth from most specific to most generic (the Azure CLI).
