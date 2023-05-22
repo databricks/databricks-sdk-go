@@ -64,36 +64,30 @@ func TestDatabricksCliCredentials_SkipGcp(t *testing.T) {
 }
 
 func TestDatabricksCliCredentials_NotInstalled(t *testing.T) {
-	env.CleanupEnvironment(t)
-	os.Setenv("PATH", "whatever")
+	t.Setenv("PATH", "whatever")
 	aa := DatabricksCliCredentials{}
 	_, err := aa.Configure(context.Background(), cliDummy)
 	require.NoError(t, err)
 }
 
 func TestDatabricksCliCredentials_InstalledLegacy(t *testing.T) {
-	env.CleanupEnvironment(t)
-
 	// Create a dummy databricks executable.
 	tmp := t.TempDir()
 	writeSmallDummyExecutable(t, tmp)
-	os.Setenv("PATH", tmp)
+	t.Setenv("PATH", tmp)
 
-	os.Setenv("PATH", tmp)
 	aa := DatabricksCliCredentials{}
 	_, err := aa.Configure(context.Background(), cliDummy)
 	require.NoError(t, err)
 }
 
 func TestDatabricksCliCredentials_InstalledLegacyWithSymlink(t *testing.T) {
-	env.CleanupEnvironment(t)
-
 	// Create a dummy databricks executable.
 	tmp1 := t.TempDir()
 	tmp2 := t.TempDir()
 	writeSmallDummyExecutable(t, tmp1)
 	os.Symlink(filepath.Join(tmp1, "databricks"), filepath.Join(tmp2, "databricks"))
-	os.Setenv("PATH", tmp2)
+	t.Setenv("PATH", tmp2+string(os.PathListSeparator)+os.Getenv("PATH"))
 
 	aa := DatabricksCliCredentials{}
 	_, err := aa.Configure(context.Background(), cliDummy)
@@ -106,7 +100,7 @@ func TestDatabricksCliCredentials_InstalledNew(t *testing.T) {
 	// Create a dummy databricks executable.
 	tmp := t.TempDir()
 	writeLargeDummyExecutable(t, tmp)
-	os.Setenv("PATH", tmp)
+	t.Setenv("PATH", tmp+string(os.PathListSeparator)+os.Getenv("PATH"))
 
 	aa := DatabricksCliCredentials{}
 	_, err := aa.Configure(context.Background(), cliDummy)
