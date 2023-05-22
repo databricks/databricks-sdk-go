@@ -40,6 +40,33 @@ func ExampleCatalogsAPI_Create_catalogs() {
 
 }
 
+func ExampleCatalogsAPI_Create_catalogWorkspaceBindings() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	created, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
+		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", created)
+
+	// cleanup
+
+	err = w.Catalogs.Delete(ctx, catalog.DeleteCatalogRequest{
+		Name:  created.Name,
+		Force: true,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 func ExampleCatalogsAPI_Create_schemas() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
@@ -132,6 +159,41 @@ func ExampleCatalogsAPI_Update_catalogs() {
 	_, err = w.Catalogs.Update(ctx, catalog.UpdateCatalog{
 		Name:    created.Name,
 		Comment: "updated",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	// cleanup
+
+	err = w.Catalogs.Delete(ctx, catalog.DeleteCatalogRequest{
+		Name:  created.Name,
+		Force: true,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func ExampleCatalogsAPI_Update_catalogWorkspaceBindings() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	created, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
+		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", created)
+
+	_, err = w.Catalogs.Update(ctx, catalog.UpdateCatalog{
+		Name:          created.Name,
+		IsolationMode: catalog.IsolationModeIsolated,
 	})
 	if err != nil {
 		panic(err)

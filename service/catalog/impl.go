@@ -527,16 +527,16 @@ type workspaceBindingsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBindingRequest) (*WorkspaceIds, error) {
-	var workspaceIds WorkspaceIds
+func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBindingRequest) (*CurrentWorkspaceBindings, error) {
+	var currentWorkspaceBindings CurrentWorkspaceBindings
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &workspaceIds)
-	return &workspaceIds, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &currentWorkspaceBindings)
+	return &currentWorkspaceBindings, err
 }
 
-func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorkspaceBindings) (*WorkspaceIds, error) {
-	var workspaceIds WorkspaceIds
+func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorkspaceBindings) (*CurrentWorkspaceBindings, error) {
+	var currentWorkspaceBindings CurrentWorkspaceBindings
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &workspaceIds)
-	return &workspaceIds, err
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &currentWorkspaceBindings)
+	return &currentWorkspaceBindings, err
 }

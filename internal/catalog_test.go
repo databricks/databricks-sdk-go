@@ -166,6 +166,40 @@ func TestUcAccCatalogs(t *testing.T) {
 	assert.True(t, len(all) >= 1)
 }
 
+func TestUcAccCatalogWorkspaceBindings(t *testing.T) {
+	ctx, w := ucwsTest(t)
+
+	created, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
+		Name: RandomName("go-sdk-"),
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := w.Catalogs.Delete(ctx, catalog.DeleteCatalogRequest{
+			Name:  created.Name,
+			Force: true,
+		})
+		require.NoError(t, err)
+	})
+
+	_, err = w.Catalogs.Update(ctx, catalog.UpdateCatalog{
+		Name:          created.Name,
+		IsolationMode: catalog.IsolationModeIsolated,
+	})
+	require.NoError(t, err)
+
+	thisWorkspaceID := MustParseInt64(GetEnvOrSkipTest(t, "THIS_WORKSPACE_ID"))
+	_, err = w.WorkspaceBindings.Update(ctx, catalog.UpdateWorkspaceBindings{
+		Name:             created.Name,
+		AssignWorkspaces: []int64{thisWorkspaceID},
+	})
+	require.NoError(t, err)
+
+	bindings, err := w.WorkspaceBindings.GetByName(ctx, created.Name)
+	require.NoError(t, err)
+
+	assert.Equal(t, thisWorkspaceID, bindings.Workspaces[0])
+}
+
 func TestUcAccSchemas(t *testing.T) {
 	ctx, w := ucwsTest(t)
 

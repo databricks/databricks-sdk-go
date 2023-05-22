@@ -477,6 +477,12 @@ type CreateVolumeRequestContent struct {
 	VolumeType VolumeType `json:"volume_type"`
 }
 
+// Currently assigned workspaces
+type CurrentWorkspaceBindings struct {
+	// A list of workspace IDs.
+	Workspaces []int64 `json:"workspaces,omitempty"`
+}
+
 // Data source format
 type DataSourceFormat string
 
@@ -2000,11 +2006,11 @@ type UpdateVolumeRequestContent struct {
 
 type UpdateWorkspaceBindings struct {
 	// A list of workspace IDs.
-	AssignWorkspaces *WorkspaceIds `json:"assign_workspaces,omitempty"`
+	AssignWorkspaces []int64 `json:"assign_workspaces,omitempty"`
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
 	// A list of workspace IDs.
-	UnassignWorkspaces *WorkspaceIds `json:"unassign_workspaces,omitempty"`
+	UnassignWorkspaces []int64 `json:"unassign_workspaces,omitempty"`
 }
 
 type ValidateStorageCredential struct {
@@ -2158,9 +2164,4 @@ func (vt *VolumeType) Set(v string) error {
 // Type always returns VolumeType to satisfy [pflag.Value] interface
 func (vt *VolumeType) Type() string {
 	return "VolumeType"
-}
-
-// A list of workspace IDs.
-type WorkspaceIds struct {
-	Workspaces []int `json:"workspaces,omitempty"`
 }

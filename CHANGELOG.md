@@ -1,5 +1,16 @@
 # Version changelog
 
+## 0.9.0
+
+ * Added more usage examples for `go doc` and Go Packages ([#389](https://github.com/databricks/databricks-sdk-go/pull/389)).
+ * Make u2m authentication work with new CLI ([#394](https://github.com/databricks/databricks-sdk-go/pull/394)).
+ * Update from OpenAPI spec (19 may) ([#390](https://github.com/databricks/databricks-sdk-go/pull/390)).
+
+Dependency updates:
+
+ * Bump github.com/stretchr/testify from 1.8.2 to 1.8.3 ([#393](https://github.com/databricks/databricks-sdk-go/pull/393)).
+ * Bump google.golang.org/api from 0.122.0 to 0.123.0 ([#392](https://github.com/databricks/databricks-sdk-go/pull/392)).
+
 ## 0.8.1
 
  * Added `in` codegen function ([#387](https://github.com/databricks/databricks-sdk-go/pull/387)).

@@ -189,14 +189,22 @@ func (m *Method) Pagination() *Pagination {
 			Bind:      m.Response.Field(m.pagination.Token.Response),
 		}
 	}
+	offset := m.Request.Field(m.pagination.Offset)
+	limit := m.Request.Field(m.pagination.Limit)
 	results := m.Response.Field(m.pagination.Results)
+	if results == nil {
+		panic(fmt.Errorf("invalid results field '%v': %s",
+			m.pagination.Results, m.operation.OperationId))
+	}
+	entity := results.Entity.ArrayValue
+	increment := m.pagination.Increment
 	return &Pagination{
 		Results:   results,
 		Token:     token,
-		Entity:    results.Entity.ArrayValue,
-		Offset:    m.Request.Field(m.pagination.Offset),
-		Limit:     m.Request.Field(m.pagination.Limit),
-		Increment: m.pagination.Increment,
+		Entity:    entity,
+		Offset:    offset,
+		Limit:     limit,
+		Increment: increment,
 	}
 }
 

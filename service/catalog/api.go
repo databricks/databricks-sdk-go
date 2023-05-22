@@ -1765,7 +1765,7 @@ func (a *WorkspaceBindingsAPI) Impl() WorkspaceBindingsService {
 //
 // Gets workspace bindings of the catalog. The caller must be a metastore admin
 // or an owner of the catalog.
-func (a *WorkspaceBindingsAPI) Get(ctx context.Context, request GetWorkspaceBindingRequest) (*WorkspaceIds, error) {
+func (a *WorkspaceBindingsAPI) Get(ctx context.Context, request GetWorkspaceBindingRequest) (*CurrentWorkspaceBindings, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -1773,7 +1773,7 @@ func (a *WorkspaceBindingsAPI) Get(ctx context.Context, request GetWorkspaceBind
 //
 // Gets workspace bindings of the catalog. The caller must be a metastore admin
 // or an owner of the catalog.
-func (a *WorkspaceBindingsAPI) GetByName(ctx context.Context, name string) (*WorkspaceIds, error) {
+func (a *WorkspaceBindingsAPI) GetByName(ctx context.Context, name string) (*CurrentWorkspaceBindings, error) {
 	return a.impl.Get(ctx, GetWorkspaceBindingRequest{
 		Name: name,
 	})
@@ -1783,6 +1783,6 @@ func (a *WorkspaceBindingsAPI) GetByName(ctx context.Context, name string) (*Wor
 //
 // Updates workspace bindings of the catalog. The caller must be a metastore
 // admin or an owner of the catalog.
-func (a *WorkspaceBindingsAPI) Update(ctx context.Context, request UpdateWorkspaceBindings) (*WorkspaceIds, error) {
+func (a *WorkspaceBindingsAPI) Update(ctx context.Context, request UpdateWorkspaceBindings) (*CurrentWorkspaceBindings, error) {
 	return a.impl.Update(ctx, request)
 }
