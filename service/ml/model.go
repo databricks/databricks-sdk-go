@@ -448,7 +448,7 @@ type DeleteTag struct {
 	RunId string `json:"run_id"`
 }
 
-// Delete a ransition request
+// Delete a transition request
 type DeleteTransitionRequestRequest struct {
 	// User-provided comment on the action.
 	Comment string `json:"-" url:"comment,omitempty"`

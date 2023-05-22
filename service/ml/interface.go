@@ -287,7 +287,7 @@ type ModelRegistryService interface {
 	// Deletes a model version tag.
 	DeleteModelVersionTag(ctx context.Context, request DeleteModelVersionTagRequest) error
 
-	// Delete a ransition request.
+	// Delete a transition request.
 	//
 	// Cancels a model version stage transition request.
 	DeleteTransitionRequest(ctx context.Context, request DeleteTransitionRequestRequest) error
