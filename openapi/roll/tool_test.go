@@ -9,14 +9,27 @@ import (
 )
 
 func TestLoadsFolder(t *testing.T) {
+	// ../../internal is the folder with integration tests
 	s, err := NewSuite("../../internal")
 	require.NoError(t, err)
 
 	methods := s.Methods()
 	assert.True(t, len(methods) > 1)
 
-	samples := s.Samples()
-	assert.True(t, len(samples) > 1)
+	examples := s.ServicesExamples()
+	assert.True(t, len(examples) > 1)
+
+	for _, v := range examples {
+		for _, sa := range v.Samples {
+			for _, ca := range sa.Calls {
+				// verify no panic
+				_ = ca.Original()
+
+				// verify no panic
+				_ = ca.Request()
+			}
+		}
+	}
 }
 
 func TestRegenerateExamples(t *testing.T) {
