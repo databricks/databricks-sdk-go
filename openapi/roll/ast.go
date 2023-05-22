@@ -69,6 +69,14 @@ func (l *literal) Type() string {
 	return "literal"
 }
 
+type heredoc struct {
+	Value string
+}
+
+func (l *heredoc) Type() string {
+	return "heredoc"
+}
+
 type lookup struct {
 	X     expression
 	Field *code.Named
@@ -165,9 +173,10 @@ type fieldValue struct {
 
 type call struct {
 	code.Named
-	Service *code.Named
-	Assign  *code.Named
-	Args    []expression
+	IsAccount bool
+	Service   *code.Named
+	Assign    *code.Named
+	Args      []expression
 
 	// ID to avoid duplicates. alternative could be hashing,
 	// but implementation would grow more complex than needed.
@@ -175,6 +184,43 @@ type call struct {
 
 	// hint about the call creating an entity behind the variable
 	creates string
+}
+
+func (c *call) IsWait() bool {
+	return strings.HasSuffix(c.Name, "AndWait")
+}
+
+func (c *call) Request() (fv []*fieldValue) {
+	if strings.Contains(c.Name, "By") {
+		fields := strings.Split(strings.Split(c.Name, "By")[0], "And")
+		for i, name := range fields {
+			fv = append(fv, &fieldValue{
+				Named: code.Named{
+					Name: name,
+				},
+				Value: c.Args[i],
+			})
+		}
+		return fv
+	}
+	if len(c.Args) == 0 {
+		return fv
+	}
+	e, ok := c.Args[0].(*entity)
+	if !ok {
+		return fv
+	}
+	return e.FieldValues
+}
+
+func (c *call) Original() *code.Named {
+	name := c.CamelName()
+	name = strings.Split(name, "By")[0]
+	name = strings.TrimSuffix(name, "AndWait")
+	name = strings.TrimSuffix(name, "All")
+	return &code.Named{
+		Name: name,
+	}
 }
 
 func (c *call) OriginalName() string {
@@ -215,7 +261,7 @@ func (c *call) Type() string {
 
 type initVar struct {
 	code.Named
-	Value *literal
+	Value expression
 }
 
 type example struct {

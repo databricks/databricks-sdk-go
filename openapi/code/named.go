@@ -178,6 +178,9 @@ func (n *Named) CamelName() string {
 
 // SnakeName creates names_like_this
 func (n *Named) SnakeName() string {
+	if n.Name == "_" {
+		return "_"
+	}
 	return strings.Join(n.splitASCII(), "_")
 }
 

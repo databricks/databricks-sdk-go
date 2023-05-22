@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/openapi/code"
+	"github.com/databricks/databricks-sdk-go/service/compute"
 	"golang.org/x/exp/slices"
 )
 
@@ -113,6 +114,9 @@ func (s *suite) Methods() []methodRef {
 			if v.Service == nil {
 				continue
 			}
+			if strings.HasSuffix(v.PascalName(), "IdMap") {
+				continue
+			}
 			found[methodRef{
 				Pacakge: s.ServiceToPackage[v.Service.PascalName()],
 				Service: v.Service.CamelName(),
@@ -177,6 +181,7 @@ type sample struct {
 	Package string
 	Service *code.Named
 	Method  *code.Named
+	Suite   *suite
 }
 
 func (sa *sample) FullName() string {
@@ -203,6 +208,7 @@ func (s *suite) usageSamples(svc, mth string) (out []*sample) {
 			Service: svcName,
 			Method:  methodName,
 			Package: s.ServiceToPackage[svcName.PascalName()],
+			Suite:   s,
 		}
 		out = append(out, sa)
 		variablesUsed := []string{}
@@ -233,6 +239,7 @@ func (s *suite) usageSamples(svc, mth string) (out []*sample) {
 						callIds[v.id] = true
 					}
 				}
+				x.IsAccount = ex.IsAccount
 				sa.Calls = append(sa.Calls, x)
 				callIds[x.id] = true
 				x.Traverse(func(e expression) {
@@ -297,6 +304,7 @@ func (s *suite) usageSamples(svc, mth string) (out []*sample) {
 					sa.Calls = append(sa.Calls, assignCall)
 					callIds[assignCall.id] = true
 				})
+				c.IsAccount = ex.IsAccount
 				sa.Cleanup = append(sa.Cleanup, c)
 				callIds[c.id] = true
 			}
@@ -348,6 +356,8 @@ func (s *suite) expectExamples(file *ast.File) {
 func (s *suite) expectFn(fn *ast.FuncDecl, file *ast.File) *example {
 	testName := fn.Name.Name
 	testName = strings.TrimPrefix(testName, "TestAcc")
+	testName = strings.TrimPrefix(testName, "TestUcAcc")
+	testName = strings.TrimPrefix(testName, "TestMwsAcc")
 	ex := &example{
 		Named: code.Named{
 			Name: testName,
@@ -588,8 +598,14 @@ func (s *suite) expectMap(t *ast.MapType, cl *ast.CompositeLit) *mapLiteral {
 	return m
 }
 
-func (s *suite) expectPrimitive(x *ast.BasicLit) *literal {
+func (s *suite) expectPrimitive(x *ast.BasicLit) expression {
 	// we directly translate literal values
+	if x.Value[0] == '`' {
+		txt := x.Value[1 : len(x.Value)-1]
+		return &heredoc{
+			Value: compute.TrimLeadingWhitespace(txt),
+		}
+	}
 	return &literal{x.Value}
 }
 
