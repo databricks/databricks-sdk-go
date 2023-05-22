@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package billing_test
 
 import (
@@ -13,7 +15,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 )
 
-func ExampleLogDeliveryAPI_Create_testMwsAccLogDelivery() {
+func ExampleLogDeliveryAPI_Create_logDelivery() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -78,7 +80,7 @@ func ExampleLogDeliveryAPI_Create_testMwsAccLogDelivery() {
 
 }
 
-func ExampleLogDeliveryAPI_Get_testMwsAccLogDelivery() {
+func ExampleLogDeliveryAPI_Get_logDelivery() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -149,7 +151,7 @@ func ExampleLogDeliveryAPI_Get_testMwsAccLogDelivery() {
 
 }
 
-func ExampleLogDeliveryAPI_ListAll_testMwsAccLogDelivery() {
+func ExampleLogDeliveryAPI_ListAll_logDelivery() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

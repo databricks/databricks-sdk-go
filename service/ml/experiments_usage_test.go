@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package ml_test
 
 import (

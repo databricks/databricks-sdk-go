@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package iam_test
 
 import (
@@ -138,22 +140,5 @@ func ExampleUsersAPI_ListAll_users() {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", allUsers)
-
-}
-
-func ExampleUsersAPI_UserUserNameToIdMap_users() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	namesToIds, err := w.Users.UserUserNameToIdMap(ctx, iam.ListUsersRequest{
-		Attributes: "id,userName",
-	})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", namesToIds)
 
 }

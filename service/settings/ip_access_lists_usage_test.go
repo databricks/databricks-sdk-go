@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package settings_test
 
 import (
@@ -66,21 +68,6 @@ func ExampleIpAccessListsAPI_Get_ipAccessLists() {
 	if err != nil {
 		panic(err)
 	}
-
-}
-
-func ExampleIpAccessListsAPI_IpAccessListInfoLabelToListIdMap_ipAccessLists() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	names, err := w.IpAccessLists.IpAccessListInfoLabelToListIdMap(ctx)
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", names)
 
 }
 

@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package provisioning_test
 
 import (
@@ -10,7 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 )
 
-func ExampleEncryptionKeysAPI_Create_testMwsAccEncryptionKeys() {
+func ExampleEncryptionKeysAPI_Create_encryptionKeys() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -38,7 +40,7 @@ func ExampleEncryptionKeysAPI_Create_testMwsAccEncryptionKeys() {
 
 }
 
-func ExampleEncryptionKeysAPI_Get_testMwsAccEncryptionKeys() {
+func ExampleEncryptionKeysAPI_Get_encryptionKeys() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -72,7 +74,7 @@ func ExampleEncryptionKeysAPI_Get_testMwsAccEncryptionKeys() {
 
 }
 
-func ExampleEncryptionKeysAPI_ListAll_testMwsAccEncryptionKeys() {
+func ExampleEncryptionKeysAPI_ListAll_encryptionKeys() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

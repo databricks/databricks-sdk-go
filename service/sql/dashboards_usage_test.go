@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package sql_test
 
 import (
@@ -34,21 +36,6 @@ func ExampleDashboardsAPI_Create_dashboards() {
 	if err != nil {
 		panic(err)
 	}
-
-}
-
-func ExampleDashboardsAPI_DashboardNameToIdMap_dashboards() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	names, err := w.Dashboards.DashboardNameToIdMap(ctx, sql.ListDashboardsRequest{})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", names)
 
 }
 

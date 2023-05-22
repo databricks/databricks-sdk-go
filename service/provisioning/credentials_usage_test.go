@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package provisioning_test
 
 import (
@@ -12,7 +14,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 )
 
-func ExampleCredentialsAPI_Create_testMwsAccLogDelivery() {
+func ExampleCredentialsAPI_Create_logDelivery() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -41,7 +43,7 @@ func ExampleCredentialsAPI_Create_testMwsAccLogDelivery() {
 
 }
 
-func ExampleCredentialsAPI_Create_testMwsAccCredentials() {
+func ExampleCredentialsAPI_Create_credentials() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -70,7 +72,7 @@ func ExampleCredentialsAPI_Create_testMwsAccCredentials() {
 
 }
 
-func ExampleCredentialsAPI_Create_testMwsAccWorkspaces() {
+func ExampleCredentialsAPI_Create_workspaces() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -99,7 +101,7 @@ func ExampleCredentialsAPI_Create_testMwsAccWorkspaces() {
 
 }
 
-func ExampleCredentialsAPI_Get_testMwsAccCredentials() {
+func ExampleCredentialsAPI_Get_credentials() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -134,7 +136,7 @@ func ExampleCredentialsAPI_Get_testMwsAccCredentials() {
 
 }
 
-func ExampleCredentialsAPI_ListAll_testMwsAccCredentials() {
+func ExampleCredentialsAPI_ListAll_credentials() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

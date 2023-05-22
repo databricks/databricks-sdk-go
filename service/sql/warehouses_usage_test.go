@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package sql_test
 
 import (
@@ -73,21 +75,6 @@ func ExampleWarehousesAPI_Edit_sqlWarehouses() {
 	if err != nil {
 		panic(err)
 	}
-
-}
-
-func ExampleWarehousesAPI_EndpointInfoNameToIdMap_sqlWarehouses() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	names, err := w.Warehouses.EndpointInfoNameToIdMap(ctx, sql.ListWarehousesRequest{})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", names)
 
 }
 

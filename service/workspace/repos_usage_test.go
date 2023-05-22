@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package workspace_test
 
 import (
@@ -85,23 +87,6 @@ func ExampleReposAPI_ListAll_repos() {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", all)
-
-}
-
-func ExampleReposAPI_RepoInfoPathToIdMap_repos() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	paths, err := w.Repos.RepoInfoPathToIdMap(ctx, workspace.ListReposRequest{
-		PathPrefix: "/",
-	})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", paths)
 
 }
 

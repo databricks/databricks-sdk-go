@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package catalog_test
 
 import (
@@ -11,7 +13,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-func ExampleCatalogsAPI_Create_testUcAccCatalogs() {
+func ExampleCatalogsAPI_Create_catalogs() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -38,7 +40,7 @@ func ExampleCatalogsAPI_Create_testUcAccCatalogs() {
 
 }
 
-func ExampleCatalogsAPI_Create_testUcAccSchemas() {
+func ExampleCatalogsAPI_Create_schemas() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -65,7 +67,7 @@ func ExampleCatalogsAPI_Create_testUcAccSchemas() {
 
 }
 
-func ExampleCatalogsAPI_Get_testUcAccCatalogs() {
+func ExampleCatalogsAPI_Get_catalogs() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -97,7 +99,7 @@ func ExampleCatalogsAPI_Get_testUcAccCatalogs() {
 
 }
 
-func ExampleCatalogsAPI_ListAll_testUcAccCatalogs() {
+func ExampleCatalogsAPI_ListAll_catalogs() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -112,7 +114,7 @@ func ExampleCatalogsAPI_ListAll_testUcAccCatalogs() {
 
 }
 
-func ExampleCatalogsAPI_Update_testUcAccCatalogs() {
+func ExampleCatalogsAPI_Update_catalogs() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

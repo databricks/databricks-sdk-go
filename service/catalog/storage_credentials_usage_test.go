@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package catalog_test
 
 import (
@@ -12,7 +14,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-func ExampleStorageCredentialsAPI_Create_testUcAccStorageCredentials() {
+func ExampleStorageCredentialsAPI_Create_storageCredentials() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -39,7 +41,7 @@ func ExampleStorageCredentialsAPI_Create_testUcAccStorageCredentials() {
 
 }
 
-func ExampleStorageCredentialsAPI_Create_testUcAccExternalLocations() {
+func ExampleStorageCredentialsAPI_Create_externalLocations() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -66,7 +68,7 @@ func ExampleStorageCredentialsAPI_Create_testUcAccExternalLocations() {
 
 }
 
-func ExampleStorageCredentialsAPI_Get_testUcAccStorageCredentials() {
+func ExampleStorageCredentialsAPI_Get_storageCredentials() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -99,7 +101,7 @@ func ExampleStorageCredentialsAPI_Get_testUcAccStorageCredentials() {
 
 }
 
-func ExampleStorageCredentialsAPI_ListAll_testUcAccStorageCredentials() {
+func ExampleStorageCredentialsAPI_ListAll_storageCredentials() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -114,7 +116,7 @@ func ExampleStorageCredentialsAPI_ListAll_testUcAccStorageCredentials() {
 
 }
 
-func ExampleStorageCredentialsAPI_Update_testUcAccStorageCredentials() {
+func ExampleStorageCredentialsAPI_Update_storageCredentials() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

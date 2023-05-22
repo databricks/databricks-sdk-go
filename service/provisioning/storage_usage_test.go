@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package provisioning_test
 
 import (
@@ -12,7 +14,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 )
 
-func ExampleStorageAPI_Create_testMwsAccLogDelivery() {
+func ExampleStorageAPI_Create_logDelivery() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -39,7 +41,7 @@ func ExampleStorageAPI_Create_testMwsAccLogDelivery() {
 
 }
 
-func ExampleStorageAPI_Create_testMwsAccStorage() {
+func ExampleStorageAPI_Create_storage() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -59,7 +61,7 @@ func ExampleStorageAPI_Create_testMwsAccStorage() {
 
 }
 
-func ExampleStorageAPI_Create_testMwsAccWorkspaces() {
+func ExampleStorageAPI_Create_workspaces() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -86,7 +88,7 @@ func ExampleStorageAPI_Create_testMwsAccWorkspaces() {
 
 }
 
-func ExampleStorageAPI_Get_testMwsAccStorage() {
+func ExampleStorageAPI_Get_storage() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -112,7 +114,7 @@ func ExampleStorageAPI_Get_testMwsAccStorage() {
 
 }
 
-func ExampleStorageAPI_ListAll_testMwsAccStorage() {
+func ExampleStorageAPI_ListAll_storage() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

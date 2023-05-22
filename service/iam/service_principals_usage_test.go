@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package iam_test
 
 import (
@@ -11,7 +13,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
-func ExampleServicePrincipalsAPI_Create_testMwsAccWorkspaceAssignment() {
+func ExampleServicePrincipalsAPI_Create_workspaceAssignment() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -94,21 +96,6 @@ func ExampleServicePrincipalsAPI_ListAll_servicePrincipalsOnAws() {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", all)
-
-}
-
-func ExampleServicePrincipalsAPI_ServicePrincipalDisplayNameToIdMap_servicePrincipalsOnAws() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	names, err := w.ServicePrincipals.ServicePrincipalDisplayNameToIdMap(ctx, iam.ListServicePrincipalsRequest{})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", names)
 
 }
 

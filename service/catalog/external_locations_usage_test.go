@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package catalog_test
 
 import (
@@ -12,7 +14,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-func ExampleExternalLocationsAPI_Create_testUcAccExternalLocations() {
+func ExampleExternalLocationsAPI_Create_externalLocations() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -53,7 +55,7 @@ func ExampleExternalLocationsAPI_Create_testUcAccExternalLocations() {
 
 }
 
-func ExampleExternalLocationsAPI_Get_testUcAccExternalLocations() {
+func ExampleExternalLocationsAPI_Get_externalLocations() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -99,7 +101,7 @@ func ExampleExternalLocationsAPI_Get_testUcAccExternalLocations() {
 
 }
 
-func ExampleExternalLocationsAPI_ListAll_testUcAccExternalLocations() {
+func ExampleExternalLocationsAPI_ListAll_externalLocations() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -114,7 +116,7 @@ func ExampleExternalLocationsAPI_ListAll_testUcAccExternalLocations() {
 
 }
 
-func ExampleExternalLocationsAPI_Update_testUcAccExternalLocations() {
+func ExampleExternalLocationsAPI_Update_externalLocations() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package compute_test
 
 import (
@@ -21,11 +23,12 @@ func ExampleClusterPoliciesAPI_Create_clusterPolicies() {
 	created, err := w.ClusterPolicies.Create(ctx, compute.CreatePolicy{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		Definition: `{
-			"spark_conf.spark.databricks.delta.preview.enabled": {
-				"type": "fixed",
-				"value": true
-			}
-		}`,
+            "spark_conf.spark.databricks.delta.preview.enabled": {
+                "type": "fixed",
+                "value": true
+            }
+        }
+`,
 	})
 	if err != nil {
 		panic(err)
@@ -51,11 +54,12 @@ func ExampleClusterPoliciesAPI_Edit_clusterPolicies() {
 	created, err := w.ClusterPolicies.Create(ctx, compute.CreatePolicy{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		Definition: `{
-			"spark_conf.spark.databricks.delta.preview.enabled": {
-				"type": "fixed",
-				"value": true
-			}
-		}`,
+            "spark_conf.spark.databricks.delta.preview.enabled": {
+                "type": "fixed",
+                "value": true
+            }
+        }
+`,
 	})
 	if err != nil {
 		panic(err)
@@ -72,11 +76,12 @@ func ExampleClusterPoliciesAPI_Edit_clusterPolicies() {
 		PolicyId: policy.PolicyId,
 		Name:     policy.Name,
 		Definition: `{
-			"spark_conf.spark.databricks.delta.preview.enabled": {
-				"type": "fixed",
-				"value": false
-			}
-		}`,
+            "spark_conf.spark.databricks.delta.preview.enabled": {
+                "type": "fixed",
+                "value": false
+            }
+        }
+`,
 	})
 	if err != nil {
 		panic(err)
@@ -101,11 +106,12 @@ func ExampleClusterPoliciesAPI_Get_clusterPolicies() {
 	created, err := w.ClusterPolicies.Create(ctx, compute.CreatePolicy{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		Definition: `{
-			"spark_conf.spark.databricks.delta.preview.enabled": {
-				"type": "fixed",
-				"value": true
-			}
-		}`,
+            "spark_conf.spark.databricks.delta.preview.enabled": {
+                "type": "fixed",
+                "value": true
+            }
+        }
+`,
 	})
 	if err != nil {
 		panic(err)
@@ -139,20 +145,5 @@ func ExampleClusterPoliciesAPI_ListAll_clusterPolicies() {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", all)
-
-}
-
-func ExampleClusterPoliciesAPI_PolicyNameToPolicyIdMap_clusterPolicies() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	names, err := w.ClusterPolicies.PolicyNameToPolicyIdMap(ctx, compute.ListClusterPoliciesRequest{})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", names)
 
 }

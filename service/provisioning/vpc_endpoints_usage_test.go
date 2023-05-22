@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package provisioning_test
 
 import (
@@ -12,7 +14,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 )
 
-func ExampleVpcEndpointsAPI_Create_testMwsAccVpcEndpoints() {
+func ExampleVpcEndpointsAPI_Create_vpcEndpoints() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -38,7 +40,7 @@ func ExampleVpcEndpointsAPI_Create_testMwsAccVpcEndpoints() {
 
 }
 
-func ExampleVpcEndpointsAPI_Get_testMwsAccVpcEndpoints() {
+func ExampleVpcEndpointsAPI_Get_vpcEndpoints() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -70,7 +72,7 @@ func ExampleVpcEndpointsAPI_Get_testMwsAccVpcEndpoints() {
 
 }
 
-func ExampleVpcEndpointsAPI_ListAll_testMwsAccVpcEndpoints() {
+func ExampleVpcEndpointsAPI_ListAll_vpcEndpoints() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

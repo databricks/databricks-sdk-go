@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package billing_test
 
 import (
@@ -8,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/billing"
 )
 
-func ExampleBillableUsageAPI_Download_testMwsAccUsageDownload() {
+func ExampleBillableUsageAPI_Download_usageDownload() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

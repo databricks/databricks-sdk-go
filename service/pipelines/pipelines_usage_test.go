@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package pipelines_test
 
 import (
@@ -171,21 +173,6 @@ func ExamplePipelinesAPI_ListPipelines_pipelines() {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", all)
-
-}
-
-func ExamplePipelinesAPI_PipelineStateInfoNameToPipelineIdMap_pipelines() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	names, err := w.Pipelines.PipelineStateInfoNameToPipelineIdMap(ctx, pipelines.ListPipelinesRequest{})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", names)
 
 }
 

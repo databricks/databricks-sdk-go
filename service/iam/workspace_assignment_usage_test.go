@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package iam_test
 
 import (
@@ -13,7 +15,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
-func ExampleWorkspaceAssignmentAPI_ListAll_testMwsAccWorkspaceAssignment() {
+func ExampleWorkspaceAssignmentAPI_ListAll_workspaceAssignment() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -36,7 +38,7 @@ func ExampleWorkspaceAssignmentAPI_ListAll_testMwsAccWorkspaceAssignment() {
 
 }
 
-func ExampleWorkspaceAssignmentAPI_Update_testMwsAccWorkspaceAssignment() {
+func ExampleWorkspaceAssignmentAPI_Update_workspaceAssignment() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

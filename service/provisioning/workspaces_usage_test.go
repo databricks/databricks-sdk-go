@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package provisioning_test
 
 import (
@@ -12,7 +14,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 )
 
-func ExampleWorkspacesAPI_Create_testMwsAccWorkspaces() {
+func ExampleWorkspacesAPI_Create_workspaces() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -71,7 +73,7 @@ func ExampleWorkspacesAPI_Create_testMwsAccWorkspaces() {
 
 }
 
-func ExampleWorkspacesAPI_Get_testMwsAccWorkspaces() {
+func ExampleWorkspacesAPI_Get_workspaces() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -136,7 +138,7 @@ func ExampleWorkspacesAPI_Get_testMwsAccWorkspaces() {
 
 }
 
-func ExampleWorkspacesAPI_ListAll_testMwsAccWorkspaces() {
+func ExampleWorkspacesAPI_ListAll_workspaces() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -151,7 +153,7 @@ func ExampleWorkspacesAPI_ListAll_testMwsAccWorkspaces() {
 
 }
 
-func ExampleWorkspacesAPI_Update_testMwsAccWorkspaces() {
+func ExampleWorkspacesAPI_Update_workspaces() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -232,20 +234,5 @@ func ExampleWorkspacesAPI_Update_testMwsAccWorkspaces() {
 	if err != nil {
 		panic(err)
 	}
-
-}
-
-func ExampleWorkspacesAPI_WorkspaceWorkspaceNameToWorkspaceIdMap_testMwsAccWorkspaces() {
-	ctx := context.Background()
-	a, err := databricks.NewAccountClient()
-	if err != nil {
-		panic(err)
-	}
-
-	names, err := a.Workspaces.WorkspaceWorkspaceNameToWorkspaceIdMap(ctx)
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", names)
 
 }

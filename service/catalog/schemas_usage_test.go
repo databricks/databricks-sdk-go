@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package catalog_test
 
 import (
@@ -11,7 +13,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-func ExampleSchemasAPI_Create_testUcAccSchemas() {
+func ExampleSchemasAPI_Create_schemas() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -51,7 +53,7 @@ func ExampleSchemasAPI_Create_testUcAccSchemas() {
 
 }
 
-func ExampleSchemasAPI_Get_testUcAccSchemas() {
+func ExampleSchemasAPI_Get_schemas() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -96,7 +98,7 @@ func ExampleSchemasAPI_Get_testUcAccSchemas() {
 
 }
 
-func ExampleSchemasAPI_ListAll_testUcAccSchemas() {
+func ExampleSchemasAPI_ListAll_schemas() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -131,7 +133,7 @@ func ExampleSchemasAPI_ListAll_testUcAccSchemas() {
 
 }
 
-func ExampleSchemasAPI_Update_testUcAccSchemas() {
+func ExampleSchemasAPI_Update_schemas() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package billing_test
 
 import (
@@ -11,22 +13,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/billing"
 )
 
-func ExampleBudgetsAPI_BudgetWithStatusNameToBudgetIdMap_testMwsAccBudgets() {
-	ctx := context.Background()
-	a, err := databricks.NewAccountClient()
-	if err != nil {
-		panic(err)
-	}
-
-	names, err := a.Budgets.BudgetWithStatusNameToBudgetIdMap(ctx)
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", names)
-
-}
-
-func ExampleBudgetsAPI_Create_testMwsAccBudgets() {
+func ExampleBudgetsAPI_Create_budgets() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -60,7 +47,7 @@ func ExampleBudgetsAPI_Create_testMwsAccBudgets() {
 
 }
 
-func ExampleBudgetsAPI_Get_testMwsAccBudgets() {
+func ExampleBudgetsAPI_Get_budgets() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -100,7 +87,7 @@ func ExampleBudgetsAPI_Get_testMwsAccBudgets() {
 
 }
 
-func ExampleBudgetsAPI_ListAll_testMwsAccBudgets() {
+func ExampleBudgetsAPI_ListAll_budgets() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -115,7 +102,7 @@ func ExampleBudgetsAPI_ListAll_testMwsAccBudgets() {
 
 }
 
-func ExampleBudgetsAPI_Update_testMwsAccBudgets() {
+func ExampleBudgetsAPI_Update_budgets() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

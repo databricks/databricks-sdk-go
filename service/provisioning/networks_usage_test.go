@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package provisioning_test
 
 import (
@@ -11,7 +13,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 )
 
-func ExampleNetworksAPI_Create_testMwsAccNetworks() {
+func ExampleNetworksAPI_Create_networks() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -31,7 +33,7 @@ func ExampleNetworksAPI_Create_testMwsAccNetworks() {
 
 }
 
-func ExampleNetworksAPI_Get_testMwsAccNetworks() {
+func ExampleNetworksAPI_Get_networks() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -57,7 +59,7 @@ func ExampleNetworksAPI_Get_testMwsAccNetworks() {
 
 }
 
-func ExampleNetworksAPI_ListAll_testMwsAccNetworks() {
+func ExampleNetworksAPI_ListAll_networks() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

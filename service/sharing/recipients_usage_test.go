@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package sharing_test
 
 import (
@@ -11,7 +13,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 )
 
-func ExampleRecipientsAPI_Create_testUcAccRecipients() {
+func ExampleRecipientsAPI_Create_recipients() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -35,7 +37,7 @@ func ExampleRecipientsAPI_Create_testUcAccRecipients() {
 
 }
 
-func ExampleRecipientsAPI_Get_testUcAccRecipients() {
+func ExampleRecipientsAPI_Get_recipients() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -64,7 +66,7 @@ func ExampleRecipientsAPI_Get_testUcAccRecipients() {
 
 }
 
-func ExampleRecipientsAPI_ListAll_testUcAccRecipients() {
+func ExampleRecipientsAPI_ListAll_recipients() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -79,7 +81,7 @@ func ExampleRecipientsAPI_ListAll_testUcAccRecipients() {
 
 }
 
-func ExampleRecipientsAPI_Update_testUcAccRecipients() {
+func ExampleRecipientsAPI_Update_recipients() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

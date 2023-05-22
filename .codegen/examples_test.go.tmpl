@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package {{.Package}}_test
 
 import (
@@ -60,6 +62,8 @@ func Example{{.Service.PascalName}}API_{{.Method.PascalName}}{{if eq .Method.Pas
     {{template "expr" .Left}}[{{template "expr" .Right}}]
 {{- else if eq .Type "boolean" -}}
     {{if .Value}}true{{else}}false{{end}}
+{{- else if eq .Type "heredoc" -}}
+    `{{.Value}}`
 {{- else if eq .Type "literal" -}}
     {{.Value}}
 {{- else if eq .Type "lookup" -}}

@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package workspace_test
 
 import (
@@ -106,10 +108,10 @@ func ExampleWorkspaceAPI_Import_jobsApiFullIntegration() {
 		Overwrite: true,
 		Format:    workspace.ExportFormatSource,
 		Language:  workspace.LanguagePython,
-		Content: base64.StdEncoding.EncodeToString([]byte((`
-			import time
-			time.sleep(10)
-			dbutils.notebook.exit('hello')`))),
+		Content: base64.StdEncoding.EncodeToString([]byte((`import time
+time.sleep(10)
+dbutils.notebook.exit('hello')
+`))),
 	})
 	if err != nil {
 		panic(err)
@@ -137,7 +139,8 @@ func ExampleWorkspaceAPI_Import_genericPermissions() {
 		Overwrite: true,
 		Format:    workspace.ExportFormatSource,
 		Language:  workspace.LanguagePython,
-		Content:   base64.StdEncoding.EncodeToString([]byte((`print(1)`))),
+		Content: base64.StdEncoding.EncodeToString([]byte((`print(1)
+`))),
 	})
 	if err != nil {
 		panic(err)
@@ -223,30 +226,5 @@ func ExampleWorkspaceAPI_ListAll_workspaceIntegration() {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", objects)
-
-}
-
-func ExampleWorkspaceAPI_ObjectInfoPathToObjectIdMap_workspaceIntegration() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	notebook := func() string {
-		me, err := w.CurrentUser.Me(ctx)
-		if err != nil {
-			panic(err)
-		}
-		return filepath.Join("/Users", me.UserName, fmt.Sprintf("sdk-%x", time.Now().UnixNano()))
-	}()
-
-	paths, err := w.Workspace.ObjectInfoPathToObjectIdMap(ctx, workspace.ListWorkspaceRequest{
-		Path: filepath.Dir(notebook),
-	})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", paths)
 
 }

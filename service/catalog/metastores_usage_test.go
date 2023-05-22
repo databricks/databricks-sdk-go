@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package catalog_test
 
 import (
@@ -13,7 +15,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-func ExampleMetastoresAPI_Assign_testUcAccMetastores() {
+func ExampleMetastoresAPI_Assign_metastores() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -57,7 +59,7 @@ func ExampleMetastoresAPI_Assign_testUcAccMetastores() {
 
 }
 
-func ExampleMetastoresAPI_Create_testUcAccMetastores() {
+func ExampleMetastoresAPI_Create_metastores() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -85,7 +87,7 @@ func ExampleMetastoresAPI_Create_testUcAccMetastores() {
 
 }
 
-func ExampleMetastoresAPI_Get_testUcAccMetastores() {
+func ExampleMetastoresAPI_Get_metastores() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -118,7 +120,7 @@ func ExampleMetastoresAPI_Get_testUcAccMetastores() {
 
 }
 
-func ExampleMetastoresAPI_ListAll_testUcAccMetastores() {
+func ExampleMetastoresAPI_ListAll_metastores() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -133,7 +135,7 @@ func ExampleMetastoresAPI_ListAll_testUcAccMetastores() {
 
 }
 
-func ExampleMetastoresAPI_Summary_testUcAccMetastores() {
+func ExampleMetastoresAPI_Summary_metastores() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -147,7 +149,7 @@ func ExampleMetastoresAPI_Summary_testUcAccMetastores() {
 
 }
 
-func ExampleMetastoresAPI_Unassign_testUcAccMetastores() {
+func ExampleMetastoresAPI_Unassign_metastores() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -191,7 +193,7 @@ func ExampleMetastoresAPI_Unassign_testUcAccMetastores() {
 
 }
 
-func ExampleMetastoresAPI_Update_testUcAccMetastores() {
+func ExampleMetastoresAPI_Update_metastores() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

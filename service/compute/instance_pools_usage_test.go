@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package compute_test
 
 import (
@@ -122,21 +124,6 @@ func ExampleInstancePoolsAPI_Get_instancePools() {
 	if err != nil {
 		panic(err)
 	}
-
-}
-
-func ExampleInstancePoolsAPI_InstancePoolAndStatsInstancePoolNameToInstancePoolIdMap_instancePools() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	names, err := w.InstancePools.InstancePoolAndStatsInstancePoolNameToInstancePoolIdMap(ctx)
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", names)
 
 }
 

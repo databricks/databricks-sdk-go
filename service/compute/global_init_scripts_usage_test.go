@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package compute_test
 
 import (
@@ -69,21 +71,6 @@ func ExampleGlobalInitScriptsAPI_Get_globalInitScripts() {
 	if err != nil {
 		panic(err)
 	}
-
-}
-
-func ExampleGlobalInitScriptsAPI_GlobalInitScriptDetailsNameToScriptIdMap_globalInitScripts() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	names, err := w.GlobalInitScripts.GlobalInitScriptDetailsNameToScriptIdMap(ctx)
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", names)
 
 }
 

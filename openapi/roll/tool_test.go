@@ -20,7 +20,7 @@ func TestLoadsFolder(t *testing.T) {
 }
 
 func TestRegenerateExamples(t *testing.T) {
-	t.Skip()
+	t.Skip() // temporary measure
 	s, err := NewSuite("../../internal")
 	require.NoError(t, err)
 

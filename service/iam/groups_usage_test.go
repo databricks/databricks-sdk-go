@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package iam_test
 
 import (
@@ -183,24 +185,5 @@ func ExampleGroupsAPI_Get_groups() {
 	if err != nil {
 		panic(err)
 	}
-
-}
-
-func ExampleGroupsAPI_GroupDisplayNameToIdMap_groups() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	namesToIds, err := w.Groups.GroupDisplayNameToIdMap(ctx, iam.ListGroupsRequest{
-		SortOrder:          iam.ListSortOrderDescending,
-		ExcludedAttributes: "roles",
-		Filter:             "displayName sw 'go-sdk-'",
-	})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", namesToIds)
 
 }

@@ -1,3 +1,5 @@
+// Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
+
 package provisioning_test
 
 import (
@@ -12,7 +14,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 )
 
-func ExamplePrivateAccessAPI_Create_testMwsAccPrivateAccess() {
+func ExamplePrivateAccessAPI_Create_privateAccess() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -37,7 +39,7 @@ func ExamplePrivateAccessAPI_Create_testMwsAccPrivateAccess() {
 
 }
 
-func ExamplePrivateAccessAPI_Get_testMwsAccPrivateAccess() {
+func ExamplePrivateAccessAPI_Get_privateAccess() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -68,7 +70,7 @@ func ExamplePrivateAccessAPI_Get_testMwsAccPrivateAccess() {
 
 }
 
-func ExamplePrivateAccessAPI_ListAll_testMwsAccPrivateAccess() {
+func ExamplePrivateAccessAPI_ListAll_privateAccess() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -83,22 +85,7 @@ func ExamplePrivateAccessAPI_ListAll_testMwsAccPrivateAccess() {
 
 }
 
-func ExamplePrivateAccessAPI_PrivateAccessSettingsPrivateAccessSettingsNameToPrivateAccessSettingsIdMap_testMwsAccPrivateAccess() {
-	ctx := context.Background()
-	a, err := databricks.NewAccountClient()
-	if err != nil {
-		panic(err)
-	}
-
-	names, err := a.PrivateAccess.PrivateAccessSettingsPrivateAccessSettingsNameToPrivateAccessSettingsIdMap(ctx)
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", names)
-
-}
-
-func ExamplePrivateAccessAPI_Replace_testMwsAccPrivateAccess() {
+func ExamplePrivateAccessAPI_Replace_privateAccess() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
