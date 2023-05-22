@@ -20,7 +20,7 @@ func ExampleEncryptionKeysAPI_Create_encryptionKeys() {
 	}
 
 	created, err := a.EncryptionKeys.Create(ctx, provisioning.CreateCustomerManagedKeyRequest{
-		AwsKeyInfo: provisioning.CreateAwsKeyInfo{
+		AwsKeyInfo: &provisioning.CreateAwsKeyInfo{
 			KeyArn:   os.Getenv("TEST_MANAGED_KMS_KEY_ARN"),
 			KeyAlias: os.Getenv("TEST_STORAGE_KMS_KEY_ALIAS"),
 		},
@@ -48,7 +48,7 @@ func ExampleEncryptionKeysAPI_Get_encryptionKeys() {
 	}
 
 	created, err := a.EncryptionKeys.Create(ctx, provisioning.CreateCustomerManagedKeyRequest{
-		AwsKeyInfo: provisioning.CreateAwsKeyInfo{
+		AwsKeyInfo: &provisioning.CreateAwsKeyInfo{
 			KeyArn:   os.Getenv("TEST_MANAGED_KMS_KEY_ARN"),
 			KeyAlias: os.Getenv("TEST_STORAGE_KMS_KEY_ALIAS"),
 		},

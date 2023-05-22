@@ -108,7 +108,7 @@ func ExampleStorageCredentialsAPI_ListAll_storageCredentials() {
 		panic(err)
 	}
 
-	all, err := w.StorageCredentials.List(ctx)
+	all, err := w.StorageCredentials.ListAll(ctx)
 	if err != nil {
 		panic(err)
 	}
