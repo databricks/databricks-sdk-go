@@ -724,11 +724,11 @@ type WorkspaceBindingsService interface {
 	//
 	// Gets workspace bindings of the catalog. The caller must be a metastore
 	// admin or an owner of the catalog.
-	Get(ctx context.Context, request GetWorkspaceBindingRequest) (*WorkspaceIds, error)
+	Get(ctx context.Context, request GetWorkspaceBindingRequest) (*CurrentWorkspaceBindings, error)
 
 	// Update catalog workspace bindings.
 	//
 	// Updates workspace bindings of the catalog. The caller must be a metastore
 	// admin or an owner of the catalog.
-	Update(ctx context.Context, request UpdateWorkspaceBindings) (*WorkspaceIds, error)
+	Update(ctx context.Context, request UpdateWorkspaceBindings) (*CurrentWorkspaceBindings, error)
 }

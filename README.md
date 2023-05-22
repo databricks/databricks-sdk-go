@@ -1,6 +1,10 @@
 # Databricks SDK for Go
 
 **Stability**: [Experimental](https://docs.databricks.com/release-notes/release-types.html)
+| See documentation at [Go Packages](https://pkg.go.dev/github.com/databricks/databricks-sdk-go)
+| See also the [Terraform Provider](https://github.com/databricks/terraform-provider-databricks)
+| See also the [SDK for Python](https://github.com/databricks/databricks-sdk-py) 
+| See also the [SDK for Java](https://github.com/databricks/databricks-sdk-java) 
 
 The Databricks SDK for Go includes functionality to accelerate development with [Go](https://go.dev) for the Databricks Lakehouse. It covers all public [Databricks REST API](https://docs.databricks.com/dev-tools/api/index.html) operations. The SDK's internal HTTP client is robust and handles failures on different levels by performing intelligent retries.
 
@@ -38,7 +42,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 
     go 1.18
 
-    require github.com/databricks/databricks-sdk-go v0.7.0
+    require github.com/databricks/databricks-sdk-go v0.9.0
 
     // Indirect dependencies will go here.
     ```
