@@ -20,7 +20,7 @@ func TestAccSqlWarehouses(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		_, err = w.Warehouses.DeleteByIdAndWait(ctx, created.Id)
+		err = w.Warehouses.DeleteById(ctx, created.Id)
 		require.NoError(t, err)
 	})
 
