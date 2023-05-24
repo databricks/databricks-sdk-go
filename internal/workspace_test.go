@@ -76,6 +76,18 @@ func TestAccWorkspaceIntegration(t *testing.T) {
 
 func TestAccWorkspaceRecursiveListNoTranspile(t *testing.T) {
 	ctx, w := workspaceTest(t)
+	notebook := myNotebookPath(t, w)
+
+	// Import the test notebook
+	err := w.Workspace.Import(ctx, workspace.Import{
+		Path:      notebook,
+		Format:    "SOURCE",
+		Language:  "PYTHON",
+		Content:   base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")),
+		Overwrite: true,
+	})
+	require.NoError(t, err)
+
 	allMyNotebooks, err := w.Workspace.RecursiveList(ctx, filepath.Join("/Users", me(t, w).UserName))
 	require.NoError(t, err)
 	assert.True(t, len(allMyNotebooks) >= 1)
