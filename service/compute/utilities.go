@@ -33,10 +33,16 @@ func (a *ClustersAPI) EnsureClusterIsRunning(ctx context.Context, clusterId stri
 	case StateTerminated:
 		// TODO: add StateTerminating: self.wait_get_cluster_terminated(cluster_id) & self.start(cluster_id).result()
 		_, err = a.StartByClusterIdAndWait(ctx, clusterId)
-		return fmt.Errorf("start: %w", err)
+		if err != nil {
+			return fmt.Errorf("start: %w", err)
+		}
+		return nil
 	case StatePending, StateResizing, StateRestarting:
 		_, err = a.GetByClusterIdAndWait(ctx, clusterId)
-		return fmt.Errorf("wait: %w", err)
+		if err != nil {
+			return fmt.Errorf("wait: %w", err)
+		}
+		return nil
 	default:
 		return fmt.Errorf("cluster %s is in %s state: %s", info.ClusterName, info.State, info.StateMessage)
 	}
