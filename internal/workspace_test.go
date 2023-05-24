@@ -37,8 +37,8 @@ func TestAccWorkspaceIntegration(t *testing.T) {
 	// Import the test notebook
 	err := w.Workspace.Import(ctx, workspace.Import{
 		Path:      notebook,
-		Format:    "SOURCE",
-		Language:  "PYTHON",
+		Format:    workspace.ExportFormatSource,
+		Language:  workspace.LanguagePython,
 		Content:   base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")),
 		Overwrite: true,
 	})
@@ -47,14 +47,14 @@ func TestAccWorkspaceIntegration(t *testing.T) {
 	// Get test notebook status
 	getStatusResponse, err := w.Workspace.GetStatusByPath(ctx, notebook)
 	require.NoError(t, err)
-	assert.True(t, getStatusResponse.Language == "PYTHON")
+	assert.True(t, getStatusResponse.Language == workspace.LanguagePython)
 	assert.True(t, getStatusResponse.Path == notebook)
-	assert.True(t, string(getStatusResponse.ObjectType) == "NOTEBOOK")
+	assert.True(t, getStatusResponse.ObjectType == workspace.ObjectTypeNotebook)
 
 	// Export the notebook and assert the contents
 	exportResponse, err := w.Workspace.Export(ctx, workspace.ExportRequest{
 		DirectDownload: false,
-		Format:         "SOURCE",
+		Format:         workspace.ExportFormatSource,
 		Path:           notebook,
 	})
 	require.NoError(t, err)
@@ -81,8 +81,8 @@ func TestAccWorkspaceRecursiveListNoTranspile(t *testing.T) {
 	// Import the test notebook
 	err := w.Workspace.Import(ctx, workspace.Import{
 		Path:      notebook,
-		Format:    "SOURCE",
-		Language:  "PYTHON",
+		Format:    workspace.ExportFormatSource,
+		Language:  workspace.LanguagePython,
 		Content:   base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")),
 		Overwrite: true,
 	})
