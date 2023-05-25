@@ -253,11 +253,6 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 		return pkg.define(entity)
 	}
 
-	component := pkg.localComponent(&s.Node)
-	if s.IsRef() && pkg.types[component] != nil {
-		// entity is defined, return from cache
-		return pkg.types[component]
-	}
 	e := pkg.schemaToEntity(s, []string{name}, true)
 	if e == nil {
 		// gets here when responses are objects with no properties
@@ -269,8 +264,7 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 	if e.Name == "" {
 		e.Named = Named{name, s.Description}
 	}
-	pkg.define(e)
-	return pkg.types[e.Name]
+	return pkg.define(e)
 }
 
 func (pkg *Package) define(entity *Entity) *Entity {
