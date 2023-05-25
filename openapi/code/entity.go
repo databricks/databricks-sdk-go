@@ -233,3 +233,12 @@ func (e *Entity) IsOnlyPrimitiveFields() bool {
 	}
 	return true
 }
+
+func (e *Entity) IsAllRequiredFieldsPrimitive() bool {
+	for _, v := range e.RequiredFields() {
+		if !v.Entity.IsPrimitive() {
+			return false
+		}
+	}
+	return true
+}

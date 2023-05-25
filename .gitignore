@@ -19,6 +19,7 @@ coverage
 
 .vscode/*.lograw-specs/**
 .vscode/*.log
+.vscode/launch.json
 
 raw-specs/**
 out/**
