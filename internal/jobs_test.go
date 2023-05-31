@@ -192,7 +192,7 @@ func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
 	assert.Equal(t, len(all), len(ids), "Listing produced duplicate results")
 }
 
-func TestAccJobsListWithLimit(t *testing.T) {
+func TestAccJobsListWithLimitNoTranspile(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	sparkVersions, err := w.Clusters.SparkVersions(ctx)
