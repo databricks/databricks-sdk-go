@@ -18,6 +18,15 @@ func NewExperiments(client *client.DatabricksClient) *ExperimentsAPI {
 	}
 }
 
+// Experiments are the primary unit of organization in MLflow; all MLflow runs
+// belong to an experiment. Each experiment lets you visualize, search, and
+// compare runs, as well as download run artifacts or metadata for analysis in
+// other tools. Experiments are maintained in a Databricks hosted MLflow
+// tracking server.
+//
+// Experiments are located in the workspace file tree. You manage experiments
+// using the same tools you use to manage other workspace objects such as
+// folders, notebooks, and libraries.
 type ExperimentsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ExperimentsService)
@@ -207,7 +216,7 @@ func (a *ExperimentsAPI) ListExperimentsAll(ctx context.Context, request ListExp
 // Request Limits ------------------------------- A single JSON-serialized API
 // request may be up to 1 MB in size and contain:
 //
-// * No more than 1000 metrics, params, and tags in total * Up to 1000 metrics -
+// * No more than 1000 metrics, params, and tags in total * Up to 1000 metrics *
 // Up to 100 params * Up to 100 tags
 //
 // For example, a valid request might contain 900 metrics, 50 params, and 50
@@ -369,6 +378,8 @@ func NewModelRegistry(client *client.DatabricksClient) *ModelRegistryAPI {
 	}
 }
 
+// MLflow Model Registry is a centralized model repository and a UI and set of
+// APIs that enable you to manage the full lifecycle of MLflow Models.
 type ModelRegistryAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ModelRegistryService)
@@ -471,7 +482,7 @@ func (a *ModelRegistryAPI) DeleteModelVersionTag(ctx context.Context, request De
 	return a.impl.DeleteModelVersionTag(ctx, request)
 }
 
-// Delete a ransition request.
+// Delete a transition request.
 //
 // Cancels a model version stage transition request.
 func (a *ModelRegistryAPI) DeleteTransitionRequest(ctx context.Context, request DeleteTransitionRequestRequest) error {
