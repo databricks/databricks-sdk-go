@@ -1,11 +1,9 @@
 package internal
 
 import (
-	"context"
 	"encoding/base64"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
@@ -143,7 +141,9 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	assert.True(t, len(jobList) >= 1)
 }
 
-func createJobs(t *testing.T, ctx context.Context, w *databricks.WorkspaceClient, amount int) {
+func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
+	ctx, w := workspaceTest(t)
+
 	// Fetch list of spark runtime versions
 	sparkVersions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
@@ -160,7 +160,7 @@ func createJobs(t *testing.T, ctx context.Context, w *databricks.WorkspaceClient
 	})
 	require.NoError(t, err)
 
-	for i := 0; i < amount; i++ {
+	for i := 0; i < 34; i++ {
 		createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 			Name: RandomName(t.Name()),
 			Tasks: []jobs.JobTaskSettings{{
@@ -183,13 +183,6 @@ func createJobs(t *testing.T, ctx context.Context, w *databricks.WorkspaceClient
 			require.NoError(t, err)
 		})
 	}
-}
-
-func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
-	ctx, w := workspaceTest(t)
-
-	createJobs(t, ctx, w, 34)
-
 	all, err := w.Jobs.ListAll(ctx, jobs.ListJobsRequest{})
 	require.NoError(t, err)
 	ids := map[int64]bool{}
@@ -202,7 +195,44 @@ func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
 func TestAccJobsListWithLimit(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	createJobs(t, ctx, w, 11)
+	sparkVersions, err := w.Clusters.SparkVersions(ctx)
+	require.NoError(t, err)
+
+	// Select the latest LTS version
+	latestLTS, err := sparkVersions.Select(compute.SparkVersionRequest{
+		Latest: true,
+	})
+	require.NoError(t, err)
+
+	// Select the smallest node type id
+	smallestWithDisk, err := w.Clusters.SelectNodeType(ctx, compute.NodeTypeRequest{
+		LocalDisk: true,
+	})
+	require.NoError(t, err)
+
+	for i := 0; i < 11; i++ {
+		createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
+			Name: RandomName(t.Name()),
+			Tasks: []jobs.JobTaskSettings{{
+				Description: "test",
+				NewCluster: &compute.BaseClusterInfo{
+					SparkVersion: latestLTS,
+					NodeTypeId:   smallestWithDisk,
+					NumWorkers:   1,
+				},
+				TaskKey:        "test",
+				TimeoutSeconds: 0,
+				NotebookTask: &jobs.NotebookTask{
+					NotebookPath: "/foo/bar",
+				},
+			}},
+		})
+		require.NoError(t, err)
+		t.Cleanup(func() {
+			err := w.Jobs.DeleteByJobId(ctx, createdJob.JobId)
+			require.NoError(t, err)
+		})
+	}
 
 	jobList, err := w.Jobs.ListAll(ctx, jobs.ListJobsRequest{
 		Limit: 5,
