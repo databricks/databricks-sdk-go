@@ -1,9 +1,11 @@
 package internal
 
 import (
+	"context"
 	"encoding/base64"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
@@ -141,9 +143,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	assert.True(t, len(jobList) >= 1)
 }
 
-func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
-	ctx, w := workspaceTest(t)
-
+func createJobs(t *testing.T, ctx context.Context, w *databricks.WorkspaceClient, amount int) {
 	// Fetch list of spark runtime versions
 	sparkVersions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
@@ -160,7 +160,7 @@ func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	for i := 0; i < 34; i++ {
+	for i := 0; i < amount; i++ {
 		createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 			Name: RandomName(t.Name()),
 			Tasks: []jobs.JobTaskSettings{{
@@ -183,6 +183,13 @@ func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+}
+
+func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
+	ctx, w := workspaceTest(t)
+
+	createJobs(t, ctx, w, 34)
+
 	all, err := w.Jobs.ListAll(ctx, jobs.ListJobsRequest{})
 	require.NoError(t, err)
 	ids := map[int64]bool{}
@@ -190,4 +197,24 @@ func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
 		ids[v.JobId] = true
 	}
 	assert.Equal(t, len(all), len(ids), "Listing produced duplicate results")
+}
+
+func TestAccJobsListWithLimit(t *testing.T) {
+	ctx, w := workspaceTest(t)
+
+	createJobs(t, ctx, w, 11)
+
+	jobList, err := w.Jobs.ListAll(ctx, jobs.ListJobsRequest{
+		Limit: 5,
+	})
+
+	require.NoError(t, err)
+	assert.Equal(t, 5, len(jobList), "List returned correct amount of jobs (5)")
+
+	jobList, err = w.Jobs.ListAll(ctx, jobs.ListJobsRequest{
+		Limit: 10,
+	})
+
+	require.NoError(t, err)
+	assert.Equal(t, 10, len(jobList), "List returned correct amount of jobs (10)")
 }
