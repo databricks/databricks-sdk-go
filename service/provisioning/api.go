@@ -997,47 +997,19 @@ func (a *WorkspacesAPI) Impl() WorkspacesService {
 	return a.impl
 }
 
-// Create a new workspace.
-//
-// Creates a new workspace.
-//
-// **Important**: This operation is asynchronous. A response with HTTP status
-// code 200 means the request has been accepted and is in progress, but does not
-// mean that the workspace deployed successfully and is running. The initial
-// workspace status is typically `PROVISIONING`. Use the workspace ID
-// (`workspace_id`) field in the response to identify the new workspace and make
-// repeated `GET` requests with the workspace ID and check its status. The
-// workspace becomes available when the status changes to `RUNNING`.
-func (a *WorkspacesAPI) Create(ctx context.Context, request CreateWorkspaceRequest) (*Workspace, error) {
-	return a.impl.Create(ctx, request)
-}
-
-// Calls [WorkspacesAPI.Create] and waits to reach RUNNING state
-//
-// You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[Workspace](60*time.Minute) functional option.
-func (a *WorkspacesAPI) CreateAndWait(ctx context.Context, createWorkspaceRequest CreateWorkspaceRequest, options ...retries.Option[Workspace]) (*Workspace, error) {
+// WaitGetWorkspaceRunning calls [WorkspacesAPI.Update] and waits to reach RUNNING state
+func (a *WorkspacesAPI) WaitGetWorkspaceRunning(ctx context.Context, workspaceId int64,
+	timeout time.Duration, callback func(*Workspace)) (*Workspace, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	workspace, err := a.Create(ctx, createWorkspaceRequest)
-	if err != nil {
-		return nil, err
-	}
-	i := retries.Info[Workspace]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[Workspace](ctx, i.Timeout, func() (*Workspace, *retries.Err) {
+	return retries.Poll[Workspace](ctx, timeout, func() (*Workspace, *retries.Err) {
 		workspace, err := a.Get(ctx, GetWorkspaceRequest{
-			WorkspaceId: workspace.WorkspaceId,
+			WorkspaceId: workspaceId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
-		for _, o := range options {
-			o(&retries.Info[Workspace]{
-				Info:    workspace,
-				Timeout: i.Timeout,
-			})
+		if callback != nil {
+			callback(workspace)
 		}
 		status := workspace.WorkspaceStatus
 		statusMessage := workspace.WorkspaceStatusMessage
@@ -1052,6 +1024,80 @@ func (a *WorkspacesAPI) CreateAndWait(ctx context.Context, createWorkspaceReques
 			return nil, retries.Continues(statusMessage)
 		}
 	})
+}
+
+// WaitGetWorkspaceRunning is a wrapper that calls [WorkspacesAPI.WaitGetWorkspaceRunning] and waits to reach RUNNING state.
+type WaitGetWorkspaceRunning[R any] struct {
+	Response *R
+
+	poll     func(time.Duration, func(*Workspace)) (*Workspace, error)
+	callback func(*Workspace)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetWorkspaceRunning[R]) OnProgress(callback func(*Workspace)) *WaitGetWorkspaceRunning[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the Workspace with the default timeout of 20 minutes.
+func (w *WaitGetWorkspaceRunning[R]) Get() (*Workspace, error) {
+	return w.poll(w.timeout, w.callback)
+}
+
+// Get the Workspace with custom timeout.
+func (w *WaitGetWorkspaceRunning[R]) GetWithTimeout(timeout time.Duration) (*Workspace, error) {
+	return w.poll(timeout, w.callback)
+}
+
+// Create a new workspace.
+//
+// Creates a new workspace.
+//
+// **Important**: This operation is asynchronous. A response with HTTP status
+// code 200 means the request has been accepted and is in progress, but does not
+// mean that the workspace deployed successfully and is running. The initial
+// workspace status is typically `PROVISIONING`. Use the workspace ID
+// (`workspace_id`) field in the response to identify the new workspace and make
+// repeated `GET` requests with the workspace ID and check its status. The
+// workspace becomes available when the status changes to `RUNNING`.
+func (a *WorkspacesAPI) Create(ctx context.Context, createWorkspaceRequest CreateWorkspaceRequest) (*WaitGetWorkspaceRunning[Workspace], error) {
+	workspace, err := a.impl.Create(ctx, createWorkspaceRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetWorkspaceRunning[Workspace]{
+		Response: workspace,
+		poll: func(timeout time.Duration, callback func(*Workspace)) (*Workspace, error) {
+			return a.WaitGetWorkspaceRunning(ctx, workspace.WorkspaceId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [WorkspacesAPI.Create] and waits to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[Workspace](60*time.Minute) functional option.
+//
+// Deprecated: use [WorkspacesAPI.Create].Get() or [WorkspacesAPI.WaitGetWorkspaceRunning]
+func (a *WorkspacesAPI) CreateAndWait(ctx context.Context, createWorkspaceRequest CreateWorkspaceRequest, options ...retries.Option[Workspace]) (*Workspace, error) {
+	wait, err := a.Create(ctx, createWorkspaceRequest)
+	if err != nil {
+		return nil, err
+	}
+	wait.timeout = 20 * time.Minute
+	wait.callback = func(info *Workspace) {
+		for _, o := range options {
+			o(&retries.Info[Workspace]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
 }
 
 // Delete a workspace.
@@ -1304,48 +1350,40 @@ func (a *WorkspacesAPI) GetByWorkspaceName(ctx context.Context, name string) (*W
 //
 // [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
 // [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-func (a *WorkspacesAPI) Update(ctx context.Context, request UpdateWorkspaceRequest) error {
-	return a.impl.Update(ctx, request)
+func (a *WorkspacesAPI) Update(ctx context.Context, updateWorkspaceRequest UpdateWorkspaceRequest) (*WaitGetWorkspaceRunning[any], error) {
+	err := a.impl.Update(ctx, updateWorkspaceRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetWorkspaceRunning[any]{
+
+		poll: func(timeout time.Duration, callback func(*Workspace)) (*Workspace, error) {
+			return a.WaitGetWorkspaceRunning(ctx, updateWorkspaceRequest.WorkspaceId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [WorkspacesAPI.Update] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[Workspace](60*time.Minute) functional option.
+//
+// Deprecated: use [WorkspacesAPI.Update].Get() or [WorkspacesAPI.WaitGetWorkspaceRunning]
 func (a *WorkspacesAPI) UpdateAndWait(ctx context.Context, updateWorkspaceRequest UpdateWorkspaceRequest, options ...retries.Option[Workspace]) (*Workspace, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	err := a.Update(ctx, updateWorkspaceRequest)
+	wait, err := a.Update(ctx, updateWorkspaceRequest)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[Workspace]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[Workspace](ctx, i.Timeout, func() (*Workspace, *retries.Err) {
-		workspace, err := a.Get(ctx, GetWorkspaceRequest{
-			WorkspaceId: updateWorkspaceRequest.WorkspaceId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = 20 * time.Minute
+	wait.callback = func(info *Workspace) {
 		for _, o := range options {
 			o(&retries.Info[Workspace]{
-				Info:    workspace,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := workspace.WorkspaceStatus
-		statusMessage := workspace.WorkspaceStatusMessage
-		switch status {
-		case WorkspaceStatusRunning: // target state
-			return workspace, nil
-		case WorkspaceStatusBanned, WorkspaceStatusFailed:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				WorkspaceStatusRunning, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }

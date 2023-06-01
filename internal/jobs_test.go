@@ -89,13 +89,13 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	cancelledRun, err := w.Jobs.CancelRunAndWait(ctx, jobs.CancelRun{
-		RunId: runNowResponse.RunId,
+		RunId: runNowResponse.Response.RunId,
 	})
 	require.NoError(t, err)
 
 	repairedRun, err := w.Jobs.RepairRunAndWait(ctx, jobs.RepairRun{
 		RerunTasks: []string{cancelledRun.Tasks[0].TaskKey},
-		RunId:      runNowResponse.RunId,
+		RunId:      runNowResponse.Response.RunId,
 	})
 	require.NoError(t, err)
 	assert.GreaterOrEqual(t, len(repairedRun.Tasks), 1)

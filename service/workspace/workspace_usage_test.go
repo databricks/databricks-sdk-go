@@ -32,7 +32,7 @@ func ExampleWorkspaceAPI_Export_workspaceIntegration() {
 
 	exportResponse, err := w.Workspace.Export(ctx, workspace.ExportRequest{
 		DirectDownload: false,
-		Format:         "SOURCE",
+		Format:         workspace.ExportFormatSource,
 		Path:           notebook,
 	})
 	if err != nil {
@@ -193,8 +193,8 @@ func ExampleWorkspaceAPI_Import_workspaceIntegration() {
 
 	err = w.Workspace.Import(ctx, workspace.Import{
 		Path:      notebook,
-		Format:    "SOURCE",
-		Language:  "PYTHON",
+		Format:    workspace.ExportFormatSource,
+		Language:  workspace.LanguagePython,
 		Content:   base64.StdEncoding.EncodeToString([]byte(("# Databricks notebook source\nprint('hello from job')"))),
 		Overwrite: true,
 	})

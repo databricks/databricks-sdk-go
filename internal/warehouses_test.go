@@ -24,7 +24,7 @@ func TestAccSqlWarehouses(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	err = w.Warehouses.Edit(ctx, sql.EditWarehouseRequest{
+	_, err = w.Warehouses.Edit(ctx, sql.EditWarehouseRequest{
 		Id:             created.Id,
 		Name:           RandomName("go-sdk-updated-"),
 		ClusterSize:    "2X-Small",

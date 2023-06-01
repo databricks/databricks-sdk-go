@@ -233,6 +233,114 @@ func (a *ClustersAPI) Impl() ClustersService {
 	return a.impl
 }
 
+// WaitGetClusterRunning calls [ClustersAPI.Edit] and waits to reach RUNNING state
+func (a *ClustersAPI) WaitGetClusterRunning(ctx context.Context, clusterId string,
+	timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[ClusterInfo](ctx, timeout, func() (*ClusterInfo, *retries.Err) {
+		clusterInfo, err := a.Get(ctx, GetClusterRequest{
+			ClusterId: clusterId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(clusterInfo)
+		}
+		status := clusterInfo.State
+		statusMessage := clusterInfo.StateMessage
+		switch status {
+		case StateRunning: // target state
+			return clusterInfo, nil
+		case StateError, StateTerminated:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				StateRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitGetClusterRunning is a wrapper that calls [ClustersAPI.WaitGetClusterRunning] and waits to reach RUNNING state.
+type WaitGetClusterRunning[R any] struct {
+	Response *R
+
+	poll     func(time.Duration, func(*ClusterInfo)) (*ClusterInfo, error)
+	callback func(*ClusterInfo)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetClusterRunning[R]) OnProgress(callback func(*ClusterInfo)) *WaitGetClusterRunning[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the ClusterInfo with the default timeout of 20 minutes.
+func (w *WaitGetClusterRunning[R]) Get() (*ClusterInfo, error) {
+	return w.poll(w.timeout, w.callback)
+}
+
+// Get the ClusterInfo with custom timeout.
+func (w *WaitGetClusterRunning[R]) GetWithTimeout(timeout time.Duration) (*ClusterInfo, error) {
+	return w.poll(timeout, w.callback)
+}
+
+// WaitGetClusterTerminated calls [ClustersAPI.Delete] and waits to reach TERMINATED state
+func (a *ClustersAPI) WaitGetClusterTerminated(ctx context.Context, clusterId string,
+	timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[ClusterInfo](ctx, timeout, func() (*ClusterInfo, *retries.Err) {
+		clusterInfo, err := a.Get(ctx, GetClusterRequest{
+			ClusterId: clusterId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(clusterInfo)
+		}
+		status := clusterInfo.State
+		statusMessage := clusterInfo.StateMessage
+		switch status {
+		case StateTerminated: // target state
+			return clusterInfo, nil
+		case StateError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				StateTerminated, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitGetClusterTerminated is a wrapper that calls [ClustersAPI.WaitGetClusterTerminated] and waits to reach TERMINATED state.
+type WaitGetClusterTerminated[R any] struct {
+	Response *R
+
+	poll     func(time.Duration, func(*ClusterInfo)) (*ClusterInfo, error)
+	callback func(*ClusterInfo)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetClusterTerminated[R]) OnProgress(callback func(*ClusterInfo)) *WaitGetClusterTerminated[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the ClusterInfo with the default timeout of 20 minutes.
+func (w *WaitGetClusterTerminated[R]) Get() (*ClusterInfo, error) {
+	return w.poll(w.timeout, w.callback)
+}
+
+// Get the ClusterInfo with custom timeout.
+func (w *WaitGetClusterTerminated[R]) GetWithTimeout(timeout time.Duration) (*ClusterInfo, error) {
+	return w.poll(timeout, w.callback)
+}
+
 // Change cluster owner.
 //
 // Change the owner of the cluster. You must be an admin to perform this
@@ -256,50 +364,42 @@ func (a *ClustersAPI) ChangeOwner(ctx context.Context, request ChangeClusterOwne
 // If Databricks acquires at least 85% of the requested on-demand nodes, cluster
 // creation will succeed. Otherwise the cluster will terminate with an
 // informative error message.
-func (a *ClustersAPI) Create(ctx context.Context, request CreateCluster) (*CreateClusterResponse, error) {
-	return a.impl.Create(ctx, request)
+func (a *ClustersAPI) Create(ctx context.Context, createCluster CreateCluster) (*WaitGetClusterRunning[CreateClusterResponse], error) {
+	createClusterResponse, err := a.impl.Create(ctx, createCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetClusterRunning[CreateClusterResponse]{
+		Response: createClusterResponse,
+		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+			return a.WaitGetClusterRunning(ctx, createClusterResponse.ClusterId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [ClustersAPI.Create] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
+//
+// Deprecated: use [ClustersAPI.Create].Get() or [ClustersAPI.WaitGetClusterRunning]
 func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	createClusterResponse, err := a.Create(ctx, createCluster)
+	wait, err := a.Create(ctx, createCluster)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetClusterRequest{
-			ClusterId: createClusterResponse.ClusterId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = 20 * time.Minute
+	wait.callback = func(info *ClusterInfo) {
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
-				Info:    clusterInfo,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := clusterInfo.State
-		statusMessage := clusterInfo.StateMessage
-		switch status {
-		case StateRunning: // target state
-			return clusterInfo, nil
-		case StateError, StateTerminated:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				StateRunning, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
 
 // Terminate cluster.
@@ -308,50 +408,42 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 // asynchronously. Once the termination has completed, the cluster will be in a
 // `TERMINATED` state. If the cluster is already in a `TERMINATING` or
 // `TERMINATED` state, nothing will happen.
-func (a *ClustersAPI) Delete(ctx context.Context, request DeleteCluster) error {
-	return a.impl.Delete(ctx, request)
+func (a *ClustersAPI) Delete(ctx context.Context, deleteCluster DeleteCluster) (*WaitGetClusterTerminated[any], error) {
+	err := a.impl.Delete(ctx, deleteCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetClusterTerminated[any]{
+
+		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+			return a.WaitGetClusterTerminated(ctx, deleteCluster.ClusterId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [ClustersAPI.Delete] and waits to reach TERMINATED state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
+//
+// Deprecated: use [ClustersAPI.Delete].Get() or [ClustersAPI.WaitGetClusterTerminated]
 func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	err := a.Delete(ctx, deleteCluster)
+	wait, err := a.Delete(ctx, deleteCluster)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetClusterRequest{
-			ClusterId: deleteCluster.ClusterId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = 20 * time.Minute
+	wait.callback = func(info *ClusterInfo) {
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
-				Info:    clusterInfo,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := clusterInfo.State
-		statusMessage := clusterInfo.StateMessage
-		switch status {
-		case StateTerminated: // target state
-			return clusterInfo, nil
-		case StateError:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				StateTerminated, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
 
 // Terminate cluster.
@@ -386,50 +478,42 @@ func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId st
 // state will be rejected with an `INVALID_STATE` error code.
 //
 // Clusters created by the Databricks Jobs service cannot be edited.
-func (a *ClustersAPI) Edit(ctx context.Context, request EditCluster) error {
-	return a.impl.Edit(ctx, request)
+func (a *ClustersAPI) Edit(ctx context.Context, editCluster EditCluster) (*WaitGetClusterRunning[any], error) {
+	err := a.impl.Edit(ctx, editCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetClusterRunning[any]{
+
+		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+			return a.WaitGetClusterRunning(ctx, editCluster.ClusterId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [ClustersAPI.Edit] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
+//
+// Deprecated: use [ClustersAPI.Edit].Get() or [ClustersAPI.WaitGetClusterRunning]
 func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	err := a.Edit(ctx, editCluster)
+	wait, err := a.Edit(ctx, editCluster)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetClusterRequest{
-			ClusterId: editCluster.ClusterId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = 20 * time.Minute
+	wait.callback = func(info *ClusterInfo) {
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
-				Info:    clusterInfo,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := clusterInfo.State
-		statusMessage := clusterInfo.StateMessage
-		switch status {
-		case StateRunning: // target state
-			return clusterInfo, nil
-		case StateError, StateTerminated:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				StateRunning, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
 
 // List cluster activity events.
@@ -476,48 +560,6 @@ func (a *ClustersAPI) Get(ctx context.Context, request GetClusterRequest) (*Clus
 	return a.impl.Get(ctx, request)
 }
 
-// Calls [ClustersAPI.Get] and waits to reach RUNNING state
-//
-// You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
-func (a *ClustersAPI) GetAndWait(ctx context.Context, getClusterRequest GetClusterRequest, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	clusterInfo, err := a.Get(ctx, getClusterRequest)
-	if err != nil {
-		return nil, err
-	}
-	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetClusterRequest{
-			ClusterId: clusterInfo.ClusterId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
-		for _, o := range options {
-			o(&retries.Info[ClusterInfo]{
-				Info:    clusterInfo,
-				Timeout: i.Timeout,
-			})
-		}
-		status := clusterInfo.State
-		statusMessage := clusterInfo.StateMessage
-		switch status {
-		case StateRunning: // target state
-			return clusterInfo, nil
-		case StateError, StateTerminated:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				StateRunning, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
-}
-
 // Get cluster info.
 //
 // Retrieves the information for a cluster given its identifier. Clusters can be
@@ -526,12 +568,6 @@ func (a *ClustersAPI) GetByClusterId(ctx context.Context, clusterId string) (*Cl
 	return a.impl.Get(ctx, GetClusterRequest{
 		ClusterId: clusterId,
 	})
-}
-
-func (a *ClustersAPI) GetByClusterIdAndWait(ctx context.Context, clusterId string, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
-	return a.GetAndWait(ctx, GetClusterRequest{
-		ClusterId: clusterId,
-	}, options...)
 }
 
 // List all clusters.
@@ -691,100 +727,84 @@ func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) erro
 //
 // Resizes a cluster to have a desired number of workers. This will fail unless
 // the cluster is in a `RUNNING` state.
-func (a *ClustersAPI) Resize(ctx context.Context, request ResizeCluster) error {
-	return a.impl.Resize(ctx, request)
+func (a *ClustersAPI) Resize(ctx context.Context, resizeCluster ResizeCluster) (*WaitGetClusterRunning[any], error) {
+	err := a.impl.Resize(ctx, resizeCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetClusterRunning[any]{
+
+		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+			return a.WaitGetClusterRunning(ctx, resizeCluster.ClusterId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [ClustersAPI.Resize] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
+//
+// Deprecated: use [ClustersAPI.Resize].Get() or [ClustersAPI.WaitGetClusterRunning]
 func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	err := a.Resize(ctx, resizeCluster)
+	wait, err := a.Resize(ctx, resizeCluster)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetClusterRequest{
-			ClusterId: resizeCluster.ClusterId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = 20 * time.Minute
+	wait.callback = func(info *ClusterInfo) {
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
-				Info:    clusterInfo,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := clusterInfo.State
-		statusMessage := clusterInfo.StateMessage
-		switch status {
-		case StateRunning: // target state
-			return clusterInfo, nil
-		case StateError, StateTerminated:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				StateRunning, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
 
 // Restart cluster.
 //
 // Restarts a Spark cluster with the supplied ID. If the cluster is not
 // currently in a `RUNNING` state, nothing will happen.
-func (a *ClustersAPI) Restart(ctx context.Context, request RestartCluster) error {
-	return a.impl.Restart(ctx, request)
+func (a *ClustersAPI) Restart(ctx context.Context, restartCluster RestartCluster) (*WaitGetClusterRunning[any], error) {
+	err := a.impl.Restart(ctx, restartCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetClusterRunning[any]{
+
+		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+			return a.WaitGetClusterRunning(ctx, restartCluster.ClusterId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [ClustersAPI.Restart] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
+//
+// Deprecated: use [ClustersAPI.Restart].Get() or [ClustersAPI.WaitGetClusterRunning]
 func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster RestartCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	err := a.Restart(ctx, restartCluster)
+	wait, err := a.Restart(ctx, restartCluster)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetClusterRequest{
-			ClusterId: restartCluster.ClusterId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = 20 * time.Minute
+	wait.callback = func(info *ClusterInfo) {
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
-				Info:    clusterInfo,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := clusterInfo.State
-		statusMessage := clusterInfo.StateMessage
-		switch status {
-		case StateRunning: // target state
-			return clusterInfo, nil
-		case StateError, StateTerminated:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				StateRunning, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
 
 // List available Spark versions.
@@ -805,50 +825,42 @@ func (a *ClustersAPI) SparkVersions(ctx context.Context) (*GetSparkVersionsRespo
 // autoscaling cluster, the current cluster starts with the minimum number of
 // nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
 // will happen. * Clusters launched to run a job cannot be started.
-func (a *ClustersAPI) Start(ctx context.Context, request StartCluster) error {
-	return a.impl.Start(ctx, request)
+func (a *ClustersAPI) Start(ctx context.Context, startCluster StartCluster) (*WaitGetClusterRunning[any], error) {
+	err := a.impl.Start(ctx, startCluster)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetClusterRunning[any]{
+
+		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+			return a.WaitGetClusterRunning(ctx, startCluster.ClusterId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [ClustersAPI.Start] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ClusterInfo](60*time.Minute) functional option.
+//
+// Deprecated: use [ClustersAPI.Start].Get() or [ClustersAPI.WaitGetClusterRunning]
 func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	err := a.Start(ctx, startCluster)
+	wait, err := a.Start(ctx, startCluster)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[ClusterInfo](ctx, i.Timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetClusterRequest{
-			ClusterId: startCluster.ClusterId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = 20 * time.Minute
+	wait.callback = func(info *ClusterInfo) {
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
-				Info:    clusterInfo,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := clusterInfo.State
-		statusMessage := clusterInfo.StateMessage
-		switch status {
-		case StateRunning: // target state
-			return clusterInfo, nil
-		case StateError, StateTerminated:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				StateRunning, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
 
 // Start terminated cluster.
@@ -921,43 +933,21 @@ func (a *CommandExecutionAPI) Impl() CommandExecutionService {
 	return a.impl
 }
 
-// Cancel a command.
-//
-// Cancels a currently running command within an execution context.
-//
-// The command ID is obtained from a prior successful call to __execute__.
-func (a *CommandExecutionAPI) Cancel(ctx context.Context, request CancelCommand) error {
-	return a.impl.Cancel(ctx, request)
-}
-
-// Calls [CommandExecutionAPI.Cancel] and waits to reach Cancelled state
-//
-// You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[CommandStatusResponse](60*time.Minute) functional option.
-func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand CancelCommand, options ...retries.Option[CommandStatusResponse]) (*CommandStatusResponse, error) {
+// WaitCommandStatusCommandExecutionCancelled calls [CommandExecutionAPI.Cancel] and waits to reach Cancelled state
+func (a *CommandExecutionAPI) WaitCommandStatusCommandExecutionCancelled(ctx context.Context, clusterId string, commandId string, contextId string,
+	timeout time.Duration, callback func(*CommandStatusResponse)) (*CommandStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	err := a.Cancel(ctx, cancelCommand)
-	if err != nil {
-		return nil, err
-	}
-	i := retries.Info[CommandStatusResponse]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[CommandStatusResponse](ctx, i.Timeout, func() (*CommandStatusResponse, *retries.Err) {
+	return retries.Poll[CommandStatusResponse](ctx, timeout, func() (*CommandStatusResponse, *retries.Err) {
 		commandStatusResponse, err := a.CommandStatus(ctx, CommandStatusRequest{
-			ClusterId: cancelCommand.ClusterId,
-			CommandId: cancelCommand.CommandId,
-			ContextId: cancelCommand.ContextId,
+			ClusterId: clusterId,
+			CommandId: commandId,
+			ContextId: contextId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
-		for _, o := range options {
-			o(&retries.Info[CommandStatusResponse]{
-				Info:    commandStatusResponse,
-				Timeout: i.Timeout,
-			})
+		if callback != nil {
+			callback(commandStatusResponse)
 		}
 		status := commandStatusResponse.Status
 		statusMessage := fmt.Sprintf("current status: %s", status)
@@ -975,6 +965,185 @@ func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand C
 			return nil, retries.Continues(statusMessage)
 		}
 	})
+}
+
+// WaitCommandStatusCommandExecutionCancelled is a wrapper that calls [CommandExecutionAPI.WaitCommandStatusCommandExecutionCancelled] and waits to reach Cancelled state.
+type WaitCommandStatusCommandExecutionCancelled[R any] struct {
+	Response *R
+
+	poll     func(time.Duration, func(*CommandStatusResponse)) (*CommandStatusResponse, error)
+	callback func(*CommandStatusResponse)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitCommandStatusCommandExecutionCancelled[R]) OnProgress(callback func(*CommandStatusResponse)) *WaitCommandStatusCommandExecutionCancelled[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the CommandStatusResponse with the default timeout of 20 minutes.
+func (w *WaitCommandStatusCommandExecutionCancelled[R]) Get() (*CommandStatusResponse, error) {
+	return w.poll(w.timeout, w.callback)
+}
+
+// Get the CommandStatusResponse with custom timeout.
+func (w *WaitCommandStatusCommandExecutionCancelled[R]) GetWithTimeout(timeout time.Duration) (*CommandStatusResponse, error) {
+	return w.poll(timeout, w.callback)
+}
+
+// WaitCommandStatusCommandExecutionFinishedOrError calls [CommandExecutionAPI.Execute] and waits to reach Finished or Error state
+func (a *CommandExecutionAPI) WaitCommandStatusCommandExecutionFinishedOrError(ctx context.Context, clusterId string, commandId string, contextId string,
+	timeout time.Duration, callback func(*CommandStatusResponse)) (*CommandStatusResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[CommandStatusResponse](ctx, timeout, func() (*CommandStatusResponse, *retries.Err) {
+		commandStatusResponse, err := a.CommandStatus(ctx, CommandStatusRequest{
+			ClusterId: clusterId,
+			CommandId: commandId,
+			ContextId: contextId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(commandStatusResponse)
+		}
+		status := commandStatusResponse.Status
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case CommandStatusFinished, CommandStatusError: // target state
+			return commandStatusResponse, nil
+		case CommandStatusCancelled, CommandStatusCancelling:
+			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
+				CommandStatusFinished, CommandStatusError, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitCommandStatusCommandExecutionFinishedOrError is a wrapper that calls [CommandExecutionAPI.WaitCommandStatusCommandExecutionFinishedOrError] and waits to reach Finished or Error state.
+type WaitCommandStatusCommandExecutionFinishedOrError[R any] struct {
+	Response *R
+
+	poll     func(time.Duration, func(*CommandStatusResponse)) (*CommandStatusResponse, error)
+	callback func(*CommandStatusResponse)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitCommandStatusCommandExecutionFinishedOrError[R]) OnProgress(callback func(*CommandStatusResponse)) *WaitCommandStatusCommandExecutionFinishedOrError[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the CommandStatusResponse with the default timeout of 20 minutes.
+func (w *WaitCommandStatusCommandExecutionFinishedOrError[R]) Get() (*CommandStatusResponse, error) {
+	return w.poll(w.timeout, w.callback)
+}
+
+// Get the CommandStatusResponse with custom timeout.
+func (w *WaitCommandStatusCommandExecutionFinishedOrError[R]) GetWithTimeout(timeout time.Duration) (*CommandStatusResponse, error) {
+	return w.poll(timeout, w.callback)
+}
+
+// WaitContextStatusCommandExecutionRunning calls [CommandExecutionAPI.Create] and waits to reach Running state
+func (a *CommandExecutionAPI) WaitContextStatusCommandExecutionRunning(ctx context.Context, clusterId string, contextId string,
+	timeout time.Duration, callback func(*ContextStatusResponse)) (*ContextStatusResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[ContextStatusResponse](ctx, timeout, func() (*ContextStatusResponse, *retries.Err) {
+		contextStatusResponse, err := a.ContextStatus(ctx, ContextStatusRequest{
+			ClusterId: clusterId,
+			ContextId: contextId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(contextStatusResponse)
+		}
+		status := contextStatusResponse.Status
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case ContextStatusRunning: // target state
+			return contextStatusResponse, nil
+		case ContextStatusError:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ContextStatusRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitContextStatusCommandExecutionRunning is a wrapper that calls [CommandExecutionAPI.WaitContextStatusCommandExecutionRunning] and waits to reach Running state.
+type WaitContextStatusCommandExecutionRunning[R any] struct {
+	Response *R
+
+	poll     func(time.Duration, func(*ContextStatusResponse)) (*ContextStatusResponse, error)
+	callback func(*ContextStatusResponse)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitContextStatusCommandExecutionRunning[R]) OnProgress(callback func(*ContextStatusResponse)) *WaitContextStatusCommandExecutionRunning[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the ContextStatusResponse with the default timeout of 20 minutes.
+func (w *WaitContextStatusCommandExecutionRunning[R]) Get() (*ContextStatusResponse, error) {
+	return w.poll(w.timeout, w.callback)
+}
+
+// Get the ContextStatusResponse with custom timeout.
+func (w *WaitContextStatusCommandExecutionRunning[R]) GetWithTimeout(timeout time.Duration) (*ContextStatusResponse, error) {
+	return w.poll(timeout, w.callback)
+}
+
+// Cancel a command.
+//
+// Cancels a currently running command within an execution context.
+//
+// The command ID is obtained from a prior successful call to __execute__.
+func (a *CommandExecutionAPI) Cancel(ctx context.Context, cancelCommand CancelCommand) (*WaitCommandStatusCommandExecutionCancelled[any], error) {
+	err := a.impl.Cancel(ctx, cancelCommand)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitCommandStatusCommandExecutionCancelled[any]{
+
+		poll: func(timeout time.Duration, callback func(*CommandStatusResponse)) (*CommandStatusResponse, error) {
+			return a.WaitCommandStatusCommandExecutionCancelled(ctx, cancelCommand.ClusterId, cancelCommand.CommandId, cancelCommand.ContextId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [CommandExecutionAPI.Cancel] and waits to reach Cancelled state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[CommandStatusResponse](60*time.Minute) functional option.
+//
+// Deprecated: use [CommandExecutionAPI.Cancel].Get() or [CommandExecutionAPI.WaitCommandStatusCommandExecutionCancelled]
+func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand CancelCommand, options ...retries.Option[CommandStatusResponse]) (*CommandStatusResponse, error) {
+	wait, err := a.Cancel(ctx, cancelCommand)
+	if err != nil {
+		return nil, err
+	}
+	wait.timeout = 20 * time.Minute
+	wait.callback = func(info *CommandStatusResponse) {
+		for _, o := range options {
+			o(&retries.Info[CommandStatusResponse]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
 }
 
 // Get command info.
@@ -999,51 +1168,42 @@ func (a *CommandExecutionAPI) ContextStatus(ctx context.Context, request Context
 // Creates an execution context for running cluster commands.
 //
 // If successful, this method returns the ID of the new execution context.
-func (a *CommandExecutionAPI) Create(ctx context.Context, request CreateContext) (*Created, error) {
-	return a.impl.Create(ctx, request)
+func (a *CommandExecutionAPI) Create(ctx context.Context, createContext CreateContext) (*WaitContextStatusCommandExecutionRunning[Created], error) {
+	created, err := a.impl.Create(ctx, createContext)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitContextStatusCommandExecutionRunning[Created]{
+		Response: created,
+		poll: func(timeout time.Duration, callback func(*ContextStatusResponse)) (*ContextStatusResponse, error) {
+			return a.WaitContextStatusCommandExecutionRunning(ctx, createContext.ClusterId, created.Id, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [CommandExecutionAPI.Create] and waits to reach Running state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ContextStatusResponse](60*time.Minute) functional option.
+//
+// Deprecated: use [CommandExecutionAPI.Create].Get() or [CommandExecutionAPI.WaitContextStatusCommandExecutionRunning]
 func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext CreateContext, options ...retries.Option[ContextStatusResponse]) (*ContextStatusResponse, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	created, err := a.Create(ctx, createContext)
+	wait, err := a.Create(ctx, createContext)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[ContextStatusResponse]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[ContextStatusResponse](ctx, i.Timeout, func() (*ContextStatusResponse, *retries.Err) {
-		contextStatusResponse, err := a.ContextStatus(ctx, ContextStatusRequest{
-			ClusterId: createContext.ClusterId,
-			ContextId: created.Id,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = 20 * time.Minute
+	wait.callback = func(info *ContextStatusResponse) {
 		for _, o := range options {
 			o(&retries.Info[ContextStatusResponse]{
-				Info:    contextStatusResponse,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := contextStatusResponse.Status
-		statusMessage := fmt.Sprintf("current status: %s", status)
-		switch status {
-		case ContextStatusRunning: // target state
-			return contextStatusResponse, nil
-		case ContextStatusError:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				ContextStatusRunning, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
 
 // Delete an execution context.
@@ -1060,52 +1220,42 @@ func (a *CommandExecutionAPI) Destroy(ctx context.Context, request DestroyContex
 //
 // If successful, it returns an ID for tracking the status of the command's
 // execution.
-func (a *CommandExecutionAPI) Execute(ctx context.Context, request Command) (*Created, error) {
-	return a.impl.Execute(ctx, request)
+func (a *CommandExecutionAPI) Execute(ctx context.Context, command Command) (*WaitCommandStatusCommandExecutionFinishedOrError[Created], error) {
+	created, err := a.impl.Execute(ctx, command)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitCommandStatusCommandExecutionFinishedOrError[Created]{
+		Response: created,
+		poll: func(timeout time.Duration, callback func(*CommandStatusResponse)) (*CommandStatusResponse, error) {
+			return a.WaitCommandStatusCommandExecutionFinishedOrError(ctx, command.ClusterId, created.Id, command.ContextId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [CommandExecutionAPI.Execute] and waits to reach Finished or Error state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[CommandStatusResponse](60*time.Minute) functional option.
+//
+// Deprecated: use [CommandExecutionAPI.Execute].Get() or [CommandExecutionAPI.WaitCommandStatusCommandExecutionFinishedOrError]
 func (a *CommandExecutionAPI) ExecuteAndWait(ctx context.Context, command Command, options ...retries.Option[CommandStatusResponse]) (*CommandStatusResponse, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	created, err := a.Execute(ctx, command)
+	wait, err := a.Execute(ctx, command)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[CommandStatusResponse]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[CommandStatusResponse](ctx, i.Timeout, func() (*CommandStatusResponse, *retries.Err) {
-		commandStatusResponse, err := a.CommandStatus(ctx, CommandStatusRequest{
-			ClusterId: command.ClusterId,
-			CommandId: created.Id,
-			ContextId: command.ContextId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = 20 * time.Minute
+	wait.callback = func(info *CommandStatusResponse) {
 		for _, o := range options {
 			o(&retries.Info[CommandStatusResponse]{
-				Info:    commandStatusResponse,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := commandStatusResponse.Status
-		statusMessage := fmt.Sprintf("current status: %s", status)
-		switch status {
-		case CommandStatusFinished, CommandStatusError: // target state
-			return commandStatusResponse, nil
-		case CommandStatusCancelled, CommandStatusCancelling:
-			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
-				CommandStatusFinished, CommandStatusError, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
 
 func NewGlobalInitScripts(client *client.DatabricksClient) *GlobalInitScriptsAPI {

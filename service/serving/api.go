@@ -52,6 +52,60 @@ func (a *ServingEndpointsAPI) Impl() ServingEndpointsService {
 	return a.impl
 }
 
+// WaitGetServingEndpointNotUpdating calls [ServingEndpointsAPI.Create] and waits to reach NOT_UPDATING state
+func (a *ServingEndpointsAPI) WaitGetServingEndpointNotUpdating(ctx context.Context, name string,
+	timeout time.Duration, callback func(*ServingEndpointDetailed)) (*ServingEndpointDetailed, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[ServingEndpointDetailed](ctx, timeout, func() (*ServingEndpointDetailed, *retries.Err) {
+		servingEndpointDetailed, err := a.Get(ctx, GetServingEndpointRequest{
+			Name: name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(servingEndpointDetailed)
+		}
+		status := servingEndpointDetailed.State.ConfigUpdate
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case EndpointStateConfigUpdateNotUpdating: // target state
+			return servingEndpointDetailed, nil
+		case EndpointStateConfigUpdateUpdateFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				EndpointStateConfigUpdateNotUpdating, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitGetServingEndpointNotUpdating is a wrapper that calls [ServingEndpointsAPI.WaitGetServingEndpointNotUpdating] and waits to reach NOT_UPDATING state.
+type WaitGetServingEndpointNotUpdating[R any] struct {
+	Response *R
+
+	poll     func(time.Duration, func(*ServingEndpointDetailed)) (*ServingEndpointDetailed, error)
+	callback func(*ServingEndpointDetailed)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetServingEndpointNotUpdating[R]) OnProgress(callback func(*ServingEndpointDetailed)) *WaitGetServingEndpointNotUpdating[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the ServingEndpointDetailed with the default timeout of 20 minutes.
+func (w *WaitGetServingEndpointNotUpdating[R]) Get() (*ServingEndpointDetailed, error) {
+	return w.poll(w.timeout, w.callback)
+}
+
+// Get the ServingEndpointDetailed with custom timeout.
+func (w *WaitGetServingEndpointNotUpdating[R]) GetWithTimeout(timeout time.Duration) (*ServingEndpointDetailed, error) {
+	return w.poll(timeout, w.callback)
+}
+
 // Retrieve the logs associated with building the model's environment for a
 // given serving endpoint's served model.
 //
@@ -72,50 +126,42 @@ func (a *ServingEndpointsAPI) BuildLogsByNameAndServedModelName(ctx context.Cont
 }
 
 // Create a new serving endpoint.
-func (a *ServingEndpointsAPI) Create(ctx context.Context, request CreateServingEndpoint) (*ServingEndpointDetailed, error) {
-	return a.impl.Create(ctx, request)
+func (a *ServingEndpointsAPI) Create(ctx context.Context, createServingEndpoint CreateServingEndpoint) (*WaitGetServingEndpointNotUpdating[ServingEndpointDetailed], error) {
+	servingEndpointDetailed, err := a.impl.Create(ctx, createServingEndpoint)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetServingEndpointNotUpdating[ServingEndpointDetailed]{
+		Response: servingEndpointDetailed,
+		poll: func(timeout time.Duration, callback func(*ServingEndpointDetailed)) (*ServingEndpointDetailed, error) {
+			return a.WaitGetServingEndpointNotUpdating(ctx, servingEndpointDetailed.Name, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [ServingEndpointsAPI.Create] and waits to reach NOT_UPDATING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ServingEndpointDetailed](60*time.Minute) functional option.
+//
+// Deprecated: use [ServingEndpointsAPI.Create].Get() or [ServingEndpointsAPI.WaitGetServingEndpointNotUpdating]
 func (a *ServingEndpointsAPI) CreateAndWait(ctx context.Context, createServingEndpoint CreateServingEndpoint, options ...retries.Option[ServingEndpointDetailed]) (*ServingEndpointDetailed, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	servingEndpointDetailed, err := a.Create(ctx, createServingEndpoint)
+	wait, err := a.Create(ctx, createServingEndpoint)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[ServingEndpointDetailed]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[ServingEndpointDetailed](ctx, i.Timeout, func() (*ServingEndpointDetailed, *retries.Err) {
-		servingEndpointDetailed, err := a.Get(ctx, GetServingEndpointRequest{
-			Name: servingEndpointDetailed.Name,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = 20 * time.Minute
+	wait.callback = func(info *ServingEndpointDetailed) {
 		for _, o := range options {
 			o(&retries.Info[ServingEndpointDetailed]{
-				Info:    servingEndpointDetailed,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := servingEndpointDetailed.State.ConfigUpdate
-		statusMessage := fmt.Sprintf("current status: %s", status)
-		switch status {
-		case EndpointStateConfigUpdateNotUpdating: // target state
-			return servingEndpointDetailed, nil
-		case EndpointStateConfigUpdateUpdateFailed:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				EndpointStateConfigUpdateNotUpdating, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
 
 // Delete a serving endpoint.
@@ -201,48 +247,40 @@ func (a *ServingEndpointsAPI) Query(ctx context.Context, request QueryRequest) (
 // configuration of those served models, and the endpoint's traffic config. An
 // endpoint that already has an update in progress can not be updated until the
 // current update completes or fails.
-func (a *ServingEndpointsAPI) UpdateConfig(ctx context.Context, request EndpointCoreConfigInput) (*ServingEndpointDetailed, error) {
-	return a.impl.UpdateConfig(ctx, request)
+func (a *ServingEndpointsAPI) UpdateConfig(ctx context.Context, endpointCoreConfigInput EndpointCoreConfigInput) (*WaitGetServingEndpointNotUpdating[ServingEndpointDetailed], error) {
+	servingEndpointDetailed, err := a.impl.UpdateConfig(ctx, endpointCoreConfigInput)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetServingEndpointNotUpdating[ServingEndpointDetailed]{
+		Response: servingEndpointDetailed,
+		poll: func(timeout time.Duration, callback func(*ServingEndpointDetailed)) (*ServingEndpointDetailed, error) {
+			return a.WaitGetServingEndpointNotUpdating(ctx, servingEndpointDetailed.Name, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [ServingEndpointsAPI.UpdateConfig] and waits to reach NOT_UPDATING state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[ServingEndpointDetailed](60*time.Minute) functional option.
+//
+// Deprecated: use [ServingEndpointsAPI.UpdateConfig].Get() or [ServingEndpointsAPI.WaitGetServingEndpointNotUpdating]
 func (a *ServingEndpointsAPI) UpdateConfigAndWait(ctx context.Context, endpointCoreConfigInput EndpointCoreConfigInput, options ...retries.Option[ServingEndpointDetailed]) (*ServingEndpointDetailed, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	servingEndpointDetailed, err := a.UpdateConfig(ctx, endpointCoreConfigInput)
+	wait, err := a.UpdateConfig(ctx, endpointCoreConfigInput)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[ServingEndpointDetailed]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[ServingEndpointDetailed](ctx, i.Timeout, func() (*ServingEndpointDetailed, *retries.Err) {
-		servingEndpointDetailed, err := a.Get(ctx, GetServingEndpointRequest{
-			Name: servingEndpointDetailed.Name,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = 20 * time.Minute
+	wait.callback = func(info *ServingEndpointDetailed) {
 		for _, o := range options {
 			o(&retries.Info[ServingEndpointDetailed]{
-				Info:    servingEndpointDetailed,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := servingEndpointDetailed.State.ConfigUpdate
-		statusMessage := fmt.Sprintf("current status: %s", status)
-		switch status {
-		case EndpointStateConfigUpdateNotUpdating: // target state
-			return servingEndpointDetailed, nil
-		case EndpointStateConfigUpdateUpdateFailed:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				EndpointStateConfigUpdateNotUpdating, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
