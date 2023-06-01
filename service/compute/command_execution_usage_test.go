@@ -59,8 +59,6 @@ func ExampleCommandExecutionAPI_Execute_commandsDirectUsage() {
 	}
 	logger.Infof(ctx, "found %v", context)
 
-	
-
 	textResults, err := w.CommandExecution.ExecuteAndWait(ctx, compute.Command{
 		ClusterId: clusterId,
 		ContextId: context.Id,
