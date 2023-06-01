@@ -96,8 +96,9 @@ type WorkspaceClient struct {
 	// days, an administrator can pin a cluster to the cluster list.
 	Clusters *compute.ClustersAPI
 
-	// This API allows executing commands on running clusters.
-	CommandExecutor compute.CommandExecutor
+	// This API allows execution of Python, Scala, SQL, or R commands on running
+	// Databricks Clusters.
+	CommandExecution *compute.CommandExecutionAPI
 
 	// Connections allow for creating a connection to an external data source.
 	//
@@ -156,6 +157,15 @@ type WorkspaceClient struct {
 	// permissions (superset of `CAN_RUN`)
 	DbsqlPermissions *sql.DbsqlPermissionsAPI
 
+	// Experiments are the primary unit of organization in MLflow; all MLflow
+	// runs belong to an experiment. Each experiment lets you visualize, search,
+	// and compare runs, as well as download run artifacts or metadata for
+	// analysis in other tools. Experiments are maintained in a Databricks
+	// hosted MLflow tracking server.
+	//
+	// Experiments are located in the workspace file tree. You manage
+	// experiments using the same tools you use to manage other workspace
+	// objects such as folders, notebooks, and libraries.
 	// Experiments are the primary unit of organization in MLflow; all MLflow
 	// runs belong to an experiment. Each experiment lets you visualize, search,
 	// and compare runs, as well as download run artifacts or metadata for
@@ -345,6 +355,8 @@ type WorkspaceClient struct {
 	// available in a catalog named hive_metastore.
 	Metastores *catalog.MetastoresAPI
 
+	// MLflow Model Registry is a centralized model repository and a UI and set
+	// of APIs that enable you to manage the full lifecycle of MLflow Models.
 	// MLflow Model Registry is a centralized model repository and a UI and set
 	// of APIs that enable you to manage the full lifecycle of MLflow Models.
 	ModelRegistry *ml.ModelRegistryAPI
@@ -774,12 +786,13 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		return nil, err
 	}
 	return &WorkspaceClient{
-		Config:              cfg,
+		Config: cfg,
+
 		Alerts:              sql.NewAlerts(apiClient),
 		Catalogs:            catalog.NewCatalogs(apiClient),
 		ClusterPolicies:     compute.NewClusterPolicies(apiClient),
 		Clusters:            compute.NewClusters(apiClient),
-		CommandExecutor:     compute.NewCommandExecutor(apiClient),
+		CommandExecution:    compute.NewCommandExecution(apiClient),
 		Connections:         catalog.NewConnections(apiClient),
 		CurrentUser:         iam.NewCurrentUser(apiClient),
 		Dashboards:          sql.NewDashboards(apiClient),
