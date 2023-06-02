@@ -1097,7 +1097,7 @@ func (a *WarehousesAPI) WaitGetWarehouseDeleted(ctx context.Context, id string,
 // WaitGetWarehouseDeleted is a wrapper that calls [WarehousesAPI.WaitGetWarehouseDeleted] and waits to reach DELETED state.
 type WaitGetWarehouseDeleted[R any] struct {
 	Response *R
-
+	Id       string `json:"id"`
 	poll     func(time.Duration, func(*GetWarehouseResponse)) (*GetWarehouseResponse, error)
 	callback func(*GetWarehouseResponse)
 	timeout  time.Duration
@@ -1154,7 +1154,7 @@ func (a *WarehousesAPI) WaitGetWarehouseRunning(ctx context.Context, id string,
 // WaitGetWarehouseRunning is a wrapper that calls [WarehousesAPI.WaitGetWarehouseRunning] and waits to reach RUNNING state.
 type WaitGetWarehouseRunning[R any] struct {
 	Response *R
-
+	Id       string `json:"id"`
 	poll     func(time.Duration, func(*GetWarehouseResponse)) (*GetWarehouseResponse, error)
 	callback func(*GetWarehouseResponse)
 	timeout  time.Duration
@@ -1207,7 +1207,7 @@ func (a *WarehousesAPI) WaitGetWarehouseStopped(ctx context.Context, id string,
 // WaitGetWarehouseStopped is a wrapper that calls [WarehousesAPI.WaitGetWarehouseStopped] and waits to reach STOPPED state.
 type WaitGetWarehouseStopped[R any] struct {
 	Response *R
-
+	Id       string `json:"id"`
 	poll     func(time.Duration, func(*GetWarehouseResponse)) (*GetWarehouseResponse, error)
 	callback func(*GetWarehouseResponse)
 	timeout  time.Duration
@@ -1239,6 +1239,7 @@ func (a *WarehousesAPI) Create(ctx context.Context, createWarehouseRequest Creat
 	}
 	return &WaitGetWarehouseRunning[CreateWarehouseResponse]{
 		Response: createWarehouseResponse,
+		Id:       createWarehouseResponse.Id,
 		poll: func(timeout time.Duration, callback func(*GetWarehouseResponse)) (*GetWarehouseResponse, error) {
 			return a.WaitGetWarehouseRunning(ctx, createWarehouseResponse.Id, timeout, callback)
 		},
@@ -1280,6 +1281,7 @@ func (a *WarehousesAPI) Delete(ctx context.Context, deleteWarehouseRequest Delet
 	}
 	return &WaitGetWarehouseDeleted[any]{
 
+		Id: deleteWarehouseRequest.Id,
 		poll: func(timeout time.Duration, callback func(*GetWarehouseResponse)) (*GetWarehouseResponse, error) {
 			return a.WaitGetWarehouseDeleted(ctx, deleteWarehouseRequest.Id, timeout, callback)
 		},
@@ -1336,6 +1338,7 @@ func (a *WarehousesAPI) Edit(ctx context.Context, editWarehouseRequest EditWareh
 	}
 	return &WaitGetWarehouseRunning[any]{
 
+		Id: editWarehouseRequest.Id,
 		poll: func(timeout time.Duration, callback func(*GetWarehouseResponse)) (*GetWarehouseResponse, error) {
 			return a.WaitGetWarehouseRunning(ctx, editWarehouseRequest.Id, timeout, callback)
 		},
@@ -1475,6 +1478,7 @@ func (a *WarehousesAPI) Start(ctx context.Context, startRequest StartRequest) (*
 	}
 	return &WaitGetWarehouseRunning[any]{
 
+		Id: startRequest.Id,
 		poll: func(timeout time.Duration, callback func(*GetWarehouseResponse)) (*GetWarehouseResponse, error) {
 			return a.WaitGetWarehouseRunning(ctx, startRequest.Id, timeout, callback)
 		},
@@ -1516,6 +1520,7 @@ func (a *WarehousesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*Wai
 	}
 	return &WaitGetWarehouseStopped[any]{
 
+		Id: stopRequest.Id,
 		poll: func(timeout time.Duration, callback func(*GetWarehouseResponse)) (*GetWarehouseResponse, error) {
 			return a.WaitGetWarehouseStopped(ctx, stopRequest.Id, timeout, callback)
 		},

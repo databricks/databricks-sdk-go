@@ -84,11 +84,11 @@ func (a *PipelinesAPI) WaitGetPipelineIdle(ctx context.Context, pipelineId strin
 
 // WaitGetPipelineIdle is a wrapper that calls [PipelinesAPI.WaitGetPipelineIdle] and waits to reach IDLE state.
 type WaitGetPipelineIdle[R any] struct {
-	Response *R
-
-	poll     func(time.Duration, func(*GetPipelineResponse)) (*GetPipelineResponse, error)
-	callback func(*GetPipelineResponse)
-	timeout  time.Duration
+	Response   *R
+	PipelineId string `json:"pipeline_id"`
+	poll       func(time.Duration, func(*GetPipelineResponse)) (*GetPipelineResponse, error)
+	callback   func(*GetPipelineResponse)
+	timeout    time.Duration
 }
 
 // OnProgress invokes a callback every time it polls for the status update.
@@ -138,11 +138,11 @@ func (a *PipelinesAPI) WaitGetPipelineRunning(ctx context.Context, pipelineId st
 
 // WaitGetPipelineRunning is a wrapper that calls [PipelinesAPI.WaitGetPipelineRunning] and waits to reach RUNNING state.
 type WaitGetPipelineRunning[R any] struct {
-	Response *R
-
-	poll     func(time.Duration, func(*GetPipelineResponse)) (*GetPipelineResponse, error)
-	callback func(*GetPipelineResponse)
-	timeout  time.Duration
+	Response   *R
+	PipelineId string `json:"pipeline_id"`
+	poll       func(time.Duration, func(*GetPipelineResponse)) (*GetPipelineResponse, error)
+	callback   func(*GetPipelineResponse)
+	timeout    time.Duration
 }
 
 // OnProgress invokes a callback every time it polls for the status update.
@@ -356,6 +356,7 @@ func (a *PipelinesAPI) Reset(ctx context.Context, resetRequest ResetRequest) (*W
 	}
 	return &WaitGetPipelineRunning[any]{
 
+		PipelineId: resetRequest.PipelineId,
 		poll: func(timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error) {
 			return a.WaitGetPipelineRunning(ctx, resetRequest.PipelineId, timeout, callback)
 		},
@@ -404,6 +405,7 @@ func (a *PipelinesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*Wait
 	}
 	return &WaitGetPipelineIdle[any]{
 
+		PipelineId: stopRequest.PipelineId,
 		poll: func(timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error) {
 			return a.WaitGetPipelineIdle(ctx, stopRequest.PipelineId, timeout, callback)
 		},

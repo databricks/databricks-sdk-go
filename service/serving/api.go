@@ -84,7 +84,7 @@ func (a *ServingEndpointsAPI) WaitGetServingEndpointNotUpdating(ctx context.Cont
 // WaitGetServingEndpointNotUpdating is a wrapper that calls [ServingEndpointsAPI.WaitGetServingEndpointNotUpdating] and waits to reach NOT_UPDATING state.
 type WaitGetServingEndpointNotUpdating[R any] struct {
 	Response *R
-
+	Name     string `json:"name"`
 	poll     func(time.Duration, func(*ServingEndpointDetailed)) (*ServingEndpointDetailed, error)
 	callback func(*ServingEndpointDetailed)
 	timeout  time.Duration
@@ -133,6 +133,7 @@ func (a *ServingEndpointsAPI) Create(ctx context.Context, createServingEndpoint 
 	}
 	return &WaitGetServingEndpointNotUpdating[ServingEndpointDetailed]{
 		Response: servingEndpointDetailed,
+		Name:     servingEndpointDetailed.Name,
 		poll: func(timeout time.Duration, callback func(*ServingEndpointDetailed)) (*ServingEndpointDetailed, error) {
 			return a.WaitGetServingEndpointNotUpdating(ctx, servingEndpointDetailed.Name, timeout, callback)
 		},
@@ -254,6 +255,7 @@ func (a *ServingEndpointsAPI) UpdateConfig(ctx context.Context, endpointCoreConf
 	}
 	return &WaitGetServingEndpointNotUpdating[ServingEndpointDetailed]{
 		Response: servingEndpointDetailed,
+		Name:     servingEndpointDetailed.Name,
 		poll: func(timeout time.Duration, callback func(*ServingEndpointDetailed)) (*ServingEndpointDetailed, error) {
 			return a.WaitGetServingEndpointNotUpdating(ctx, servingEndpointDetailed.Name, timeout, callback)
 		},

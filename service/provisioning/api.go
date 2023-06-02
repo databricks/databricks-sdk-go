@@ -1028,11 +1028,11 @@ func (a *WorkspacesAPI) WaitGetWorkspaceRunning(ctx context.Context, workspaceId
 
 // WaitGetWorkspaceRunning is a wrapper that calls [WorkspacesAPI.WaitGetWorkspaceRunning] and waits to reach RUNNING state.
 type WaitGetWorkspaceRunning[R any] struct {
-	Response *R
-
-	poll     func(time.Duration, func(*Workspace)) (*Workspace, error)
-	callback func(*Workspace)
-	timeout  time.Duration
+	Response    *R
+	WorkspaceId int64 `json:"workspace_id"`
+	poll        func(time.Duration, func(*Workspace)) (*Workspace, error)
+	callback    func(*Workspace)
+	timeout     time.Duration
 }
 
 // OnProgress invokes a callback every time it polls for the status update.
@@ -1068,7 +1068,8 @@ func (a *WorkspacesAPI) Create(ctx context.Context, createWorkspaceRequest Creat
 		return nil, err
 	}
 	return &WaitGetWorkspaceRunning[Workspace]{
-		Response: workspace,
+		Response:    workspace,
+		WorkspaceId: workspace.WorkspaceId,
 		poll: func(timeout time.Duration, callback func(*Workspace)) (*Workspace, error) {
 			return a.WaitGetWorkspaceRunning(ctx, workspace.WorkspaceId, timeout, callback)
 		},
@@ -1357,6 +1358,7 @@ func (a *WorkspacesAPI) Update(ctx context.Context, updateWorkspaceRequest Updat
 	}
 	return &WaitGetWorkspaceRunning[any]{
 
+		WorkspaceId: updateWorkspaceRequest.WorkspaceId,
 		poll: func(timeout time.Duration, callback func(*Workspace)) (*Workspace, error) {
 			return a.WaitGetWorkspaceRunning(ctx, updateWorkspaceRequest.WorkspaceId, timeout, callback)
 		},

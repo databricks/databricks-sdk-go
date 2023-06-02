@@ -82,8 +82,8 @@ func (a *{{.Method.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{
 
 // {{.PascalName}} is a wrapper that calls [{{.Method.Service.Name}}API.{{.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state.
 type {{.PascalName}}[R any] struct {
-	Response *R
-
+	Response *R{{range .Binding}}
+	{{.PollField.PascalName}} {{template "type" .PollField.Entity}} `json:"{{.PollField.Name}}"`{{end}}
 	poll     func(time.Duration, func(*{{.Poll.Response.PascalName}})) (*{{.Poll.Response.PascalName}}, error)
 	callback func(*{{.Poll.Response.PascalName}})
 	timeout  time.Duration
@@ -117,7 +117,8 @@ func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Re
 	}
 	return &{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[any]{{end}}{
 		{{with .Response}}Response: {{.CamelName}},
-		{{- end}}
+		{{- end}}{{range .Wait.Binding}}
+		{{.PollField.PascalName}}: {{.Bind.Of.CamelName}}.{{.Bind.PascalName}},{{end}}
 		poll: func(timeout time.Duration, callback func(*{{.Wait.Poll.Response.PascalName}})) (*{{.Wait.Poll.Response.PascalName}}, error) {
 			return a.{{.Wait.PascalName}}(ctx{{range .Wait.Binding}}, {{.Bind.Of.CamelName}}.{{.Bind.PascalName}}{{end}}, timeout, callback)
 		},

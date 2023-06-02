@@ -264,11 +264,11 @@ func (a *ClustersAPI) WaitGetClusterRunning(ctx context.Context, clusterId strin
 
 // WaitGetClusterRunning is a wrapper that calls [ClustersAPI.WaitGetClusterRunning] and waits to reach RUNNING state.
 type WaitGetClusterRunning[R any] struct {
-	Response *R
-
-	poll     func(time.Duration, func(*ClusterInfo)) (*ClusterInfo, error)
-	callback func(*ClusterInfo)
-	timeout  time.Duration
+	Response  *R
+	ClusterId string `json:"cluster_id"`
+	poll      func(time.Duration, func(*ClusterInfo)) (*ClusterInfo, error)
+	callback  func(*ClusterInfo)
+	timeout   time.Duration
 }
 
 // OnProgress invokes a callback every time it polls for the status update.
@@ -318,11 +318,11 @@ func (a *ClustersAPI) WaitGetClusterTerminated(ctx context.Context, clusterId st
 
 // WaitGetClusterTerminated is a wrapper that calls [ClustersAPI.WaitGetClusterTerminated] and waits to reach TERMINATED state.
 type WaitGetClusterTerminated[R any] struct {
-	Response *R
-
-	poll     func(time.Duration, func(*ClusterInfo)) (*ClusterInfo, error)
-	callback func(*ClusterInfo)
-	timeout  time.Duration
+	Response  *R
+	ClusterId string `json:"cluster_id"`
+	poll      func(time.Duration, func(*ClusterInfo)) (*ClusterInfo, error)
+	callback  func(*ClusterInfo)
+	timeout   time.Duration
 }
 
 // OnProgress invokes a callback every time it polls for the status update.
@@ -370,7 +370,8 @@ func (a *ClustersAPI) Create(ctx context.Context, createCluster CreateCluster) (
 		return nil, err
 	}
 	return &WaitGetClusterRunning[CreateClusterResponse]{
-		Response: createClusterResponse,
+		Response:  createClusterResponse,
+		ClusterId: createClusterResponse.ClusterId,
 		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
 			return a.WaitGetClusterRunning(ctx, createClusterResponse.ClusterId, timeout, callback)
 		},
@@ -415,6 +416,7 @@ func (a *ClustersAPI) Delete(ctx context.Context, deleteCluster DeleteCluster) (
 	}
 	return &WaitGetClusterTerminated[any]{
 
+		ClusterId: deleteCluster.ClusterId,
 		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
 			return a.WaitGetClusterTerminated(ctx, deleteCluster.ClusterId, timeout, callback)
 		},
@@ -485,6 +487,7 @@ func (a *ClustersAPI) Edit(ctx context.Context, editCluster EditCluster) (*WaitG
 	}
 	return &WaitGetClusterRunning[any]{
 
+		ClusterId: editCluster.ClusterId,
 		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
 			return a.WaitGetClusterRunning(ctx, editCluster.ClusterId, timeout, callback)
 		},
@@ -734,6 +737,7 @@ func (a *ClustersAPI) Resize(ctx context.Context, resizeCluster ResizeCluster) (
 	}
 	return &WaitGetClusterRunning[any]{
 
+		ClusterId: resizeCluster.ClusterId,
 		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
 			return a.WaitGetClusterRunning(ctx, resizeCluster.ClusterId, timeout, callback)
 		},
@@ -776,6 +780,7 @@ func (a *ClustersAPI) Restart(ctx context.Context, restartCluster RestartCluster
 	}
 	return &WaitGetClusterRunning[any]{
 
+		ClusterId: restartCluster.ClusterId,
 		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
 			return a.WaitGetClusterRunning(ctx, restartCluster.ClusterId, timeout, callback)
 		},
@@ -832,6 +837,7 @@ func (a *ClustersAPI) Start(ctx context.Context, startCluster StartCluster) (*Wa
 	}
 	return &WaitGetClusterRunning[any]{
 
+		ClusterId: startCluster.ClusterId,
 		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
 			return a.WaitGetClusterRunning(ctx, startCluster.ClusterId, timeout, callback)
 		},
@@ -969,11 +975,13 @@ func (a *CommandExecutionAPI) WaitCommandStatusCommandExecutionCancelled(ctx con
 
 // WaitCommandStatusCommandExecutionCancelled is a wrapper that calls [CommandExecutionAPI.WaitCommandStatusCommandExecutionCancelled] and waits to reach Cancelled state.
 type WaitCommandStatusCommandExecutionCancelled[R any] struct {
-	Response *R
-
-	poll     func(time.Duration, func(*CommandStatusResponse)) (*CommandStatusResponse, error)
-	callback func(*CommandStatusResponse)
-	timeout  time.Duration
+	Response  *R
+	ClusterId string `json:"clusterId"`
+	CommandId string `json:"commandId"`
+	ContextId string `json:"contextId"`
+	poll      func(time.Duration, func(*CommandStatusResponse)) (*CommandStatusResponse, error)
+	callback  func(*CommandStatusResponse)
+	timeout   time.Duration
 }
 
 // OnProgress invokes a callback every time it polls for the status update.
@@ -1025,11 +1033,13 @@ func (a *CommandExecutionAPI) WaitCommandStatusCommandExecutionFinishedOrError(c
 
 // WaitCommandStatusCommandExecutionFinishedOrError is a wrapper that calls [CommandExecutionAPI.WaitCommandStatusCommandExecutionFinishedOrError] and waits to reach Finished or Error state.
 type WaitCommandStatusCommandExecutionFinishedOrError[R any] struct {
-	Response *R
-
-	poll     func(time.Duration, func(*CommandStatusResponse)) (*CommandStatusResponse, error)
-	callback func(*CommandStatusResponse)
-	timeout  time.Duration
+	Response  *R
+	ClusterId string `json:"clusterId"`
+	CommandId string `json:"commandId"`
+	ContextId string `json:"contextId"`
+	poll      func(time.Duration, func(*CommandStatusResponse)) (*CommandStatusResponse, error)
+	callback  func(*CommandStatusResponse)
+	timeout   time.Duration
 }
 
 // OnProgress invokes a callback every time it polls for the status update.
@@ -1080,11 +1090,12 @@ func (a *CommandExecutionAPI) WaitContextStatusCommandExecutionRunning(ctx conte
 
 // WaitContextStatusCommandExecutionRunning is a wrapper that calls [CommandExecutionAPI.WaitContextStatusCommandExecutionRunning] and waits to reach Running state.
 type WaitContextStatusCommandExecutionRunning[R any] struct {
-	Response *R
-
-	poll     func(time.Duration, func(*ContextStatusResponse)) (*ContextStatusResponse, error)
-	callback func(*ContextStatusResponse)
-	timeout  time.Duration
+	Response  *R
+	ClusterId string `json:"clusterId"`
+	ContextId string `json:"contextId"`
+	poll      func(time.Duration, func(*ContextStatusResponse)) (*ContextStatusResponse, error)
+	callback  func(*ContextStatusResponse)
+	timeout   time.Duration
 }
 
 // OnProgress invokes a callback every time it polls for the status update.
@@ -1115,6 +1126,9 @@ func (a *CommandExecutionAPI) Cancel(ctx context.Context, cancelCommand CancelCo
 	}
 	return &WaitCommandStatusCommandExecutionCancelled[any]{
 
+		ClusterId: cancelCommand.ClusterId,
+		CommandId: cancelCommand.CommandId,
+		ContextId: cancelCommand.ContextId,
 		poll: func(timeout time.Duration, callback func(*CommandStatusResponse)) (*CommandStatusResponse, error) {
 			return a.WaitCommandStatusCommandExecutionCancelled(ctx, cancelCommand.ClusterId, cancelCommand.CommandId, cancelCommand.ContextId, timeout, callback)
 		},
@@ -1174,7 +1188,9 @@ func (a *CommandExecutionAPI) Create(ctx context.Context, createContext CreateCo
 		return nil, err
 	}
 	return &WaitContextStatusCommandExecutionRunning[Created]{
-		Response: created,
+		Response:  created,
+		ClusterId: createContext.ClusterId,
+		ContextId: created.Id,
 		poll: func(timeout time.Duration, callback func(*ContextStatusResponse)) (*ContextStatusResponse, error) {
 			return a.WaitContextStatusCommandExecutionRunning(ctx, createContext.ClusterId, created.Id, timeout, callback)
 		},
@@ -1226,7 +1242,10 @@ func (a *CommandExecutionAPI) Execute(ctx context.Context, command Command) (*Wa
 		return nil, err
 	}
 	return &WaitCommandStatusCommandExecutionFinishedOrError[Created]{
-		Response: created,
+		Response:  created,
+		ClusterId: command.ClusterId,
+		CommandId: created.Id,
+		ContextId: command.ContextId,
 		poll: func(timeout time.Duration, callback func(*CommandStatusResponse)) (*CommandStatusResponse, error) {
 			return a.WaitCommandStatusCommandExecutionFinishedOrError(ctx, command.ClusterId, created.Id, command.ContextId, timeout, callback)
 		},

@@ -92,7 +92,7 @@ func (a *JobsAPI) WaitGetRunJobTerminatedOrSkipped(ctx context.Context, runId in
 // WaitGetRunJobTerminatedOrSkipped is a wrapper that calls [JobsAPI.WaitGetRunJobTerminatedOrSkipped] and waits to reach TERMINATED or SKIPPED state.
 type WaitGetRunJobTerminatedOrSkipped[R any] struct {
 	Response *R
-
+	RunId    int64 `json:"run_id"`
 	poll     func(time.Duration, func(*Run)) (*Run, error)
 	callback func(*Run)
 	timeout  time.Duration
@@ -143,6 +143,7 @@ func (a *JobsAPI) CancelRun(ctx context.Context, cancelRun CancelRun) (*WaitGetR
 	}
 	return &WaitGetRunJobTerminatedOrSkipped[any]{
 
+		RunId: cancelRun.RunId,
 		poll: func(timeout time.Duration, callback func(*Run)) (*Run, error) {
 			return a.WaitGetRunJobTerminatedOrSkipped(ctx, cancelRun.RunId, timeout, callback)
 		},
@@ -436,6 +437,7 @@ func (a *JobsAPI) RepairRun(ctx context.Context, repairRun RepairRun) (*WaitGetR
 	}
 	return &WaitGetRunJobTerminatedOrSkipped[RepairRunResponse]{
 		Response: repairRunResponse,
+		RunId:    repairRun.RunId,
 		poll: func(timeout time.Duration, callback func(*Run)) (*Run, error) {
 			return a.WaitGetRunJobTerminatedOrSkipped(ctx, repairRun.RunId, timeout, callback)
 		},
@@ -485,6 +487,7 @@ func (a *JobsAPI) RunNow(ctx context.Context, runNow RunNow) (*WaitGetRunJobTerm
 	}
 	return &WaitGetRunJobTerminatedOrSkipped[RunNowResponse]{
 		Response: runNowResponse,
+		RunId:    runNowResponse.RunId,
 		poll: func(timeout time.Duration, callback func(*Run)) (*Run, error) {
 			return a.WaitGetRunJobTerminatedOrSkipped(ctx, runNowResponse.RunId, timeout, callback)
 		},
@@ -529,6 +532,7 @@ func (a *JobsAPI) Submit(ctx context.Context, submitRun SubmitRun) (*WaitGetRunJ
 	}
 	return &WaitGetRunJobTerminatedOrSkipped[SubmitRunResponse]{
 		Response: submitRunResponse,
+		RunId:    submitRunResponse.RunId,
 		poll: func(timeout time.Duration, callback func(*Run)) (*Run, error) {
 			return a.WaitGetRunJobTerminatedOrSkipped(ctx, submitRunResponse.RunId, timeout, callback)
 		},
