@@ -57,7 +57,7 @@ func (a *JobsAPI) Impl() JobsService {
 	return a.impl
 }
 
-// WaitGetRunJobTerminatedOrSkipped calls [JobsAPI.Submit] and waits to reach TERMINATED or SKIPPED state
+// WaitGetRunJobTerminatedOrSkipped repeatedly calls [JobsAPI.GetRun] and waits to reach TERMINATED or SKIPPED state
 func (a *JobsAPI) WaitGetRunJobTerminatedOrSkipped(ctx context.Context, runId int64,
 	timeout time.Duration, callback func(*Run)) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")

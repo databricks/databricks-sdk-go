@@ -1066,7 +1066,7 @@ func (a *WarehousesAPI) Impl() WarehousesService {
 	return a.impl
 }
 
-// WaitGetWarehouseDeleted calls [WarehousesAPI.Delete] and waits to reach DELETED state
+// WaitGetWarehouseDeleted repeatedly calls [WarehousesAPI.Get] and waits to reach DELETED state
 func (a *WarehousesAPI) WaitGetWarehouseDeleted(ctx context.Context, id string,
 	timeout time.Duration, callback func(*GetWarehouseResponse)) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
@@ -1119,7 +1119,7 @@ func (w *WaitGetWarehouseDeleted[R]) GetWithTimeout(timeout time.Duration) (*Get
 	return w.poll(timeout, w.callback)
 }
 
-// WaitGetWarehouseRunning calls [WarehousesAPI.Get] and waits to reach RUNNING state
+// WaitGetWarehouseRunning repeatedly calls [WarehousesAPI.Get] and waits to reach RUNNING state
 func (a *WarehousesAPI) WaitGetWarehouseRunning(ctx context.Context, id string,
 	timeout time.Duration, callback func(*GetWarehouseResponse)) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
@@ -1176,7 +1176,7 @@ func (w *WaitGetWarehouseRunning[R]) GetWithTimeout(timeout time.Duration) (*Get
 	return w.poll(timeout, w.callback)
 }
 
-// WaitGetWarehouseStopped calls [WarehousesAPI.Stop] and waits to reach STOPPED state
+// WaitGetWarehouseStopped repeatedly calls [WarehousesAPI.Get] and waits to reach STOPPED state
 func (a *WarehousesAPI) WaitGetWarehouseStopped(ctx context.Context, id string,
 	timeout time.Duration, callback func(*GetWarehouseResponse)) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")

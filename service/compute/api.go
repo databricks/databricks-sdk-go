@@ -233,7 +233,7 @@ func (a *ClustersAPI) Impl() ClustersService {
 	return a.impl
 }
 
-// WaitGetClusterRunning calls [ClustersAPI.Edit] and waits to reach RUNNING state
+// WaitGetClusterRunning repeatedly calls [ClustersAPI.Get] and waits to reach RUNNING state
 func (a *ClustersAPI) WaitGetClusterRunning(ctx context.Context, clusterId string,
 	timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
@@ -287,7 +287,7 @@ func (w *WaitGetClusterRunning[R]) GetWithTimeout(timeout time.Duration) (*Clust
 	return w.poll(timeout, w.callback)
 }
 
-// WaitGetClusterTerminated calls [ClustersAPI.Delete] and waits to reach TERMINATED state
+// WaitGetClusterTerminated repeatedly calls [ClustersAPI.Get] and waits to reach TERMINATED state
 func (a *ClustersAPI) WaitGetClusterTerminated(ctx context.Context, clusterId string,
 	timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
@@ -933,7 +933,7 @@ func (a *CommandExecutionAPI) Impl() CommandExecutionService {
 	return a.impl
 }
 
-// WaitCommandStatusCommandExecutionCancelled calls [CommandExecutionAPI.Cancel] and waits to reach Cancelled state
+// WaitCommandStatusCommandExecutionCancelled repeatedly calls [CommandExecutionAPI.CommandStatus] and waits to reach Cancelled state
 func (a *CommandExecutionAPI) WaitCommandStatusCommandExecutionCancelled(ctx context.Context, clusterId string, commandId string, contextId string,
 	timeout time.Duration, callback func(*CommandStatusResponse)) (*CommandStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
@@ -992,7 +992,7 @@ func (w *WaitCommandStatusCommandExecutionCancelled[R]) GetWithTimeout(timeout t
 	return w.poll(timeout, w.callback)
 }
 
-// WaitCommandStatusCommandExecutionFinishedOrError calls [CommandExecutionAPI.Execute] and waits to reach Finished or Error state
+// WaitCommandStatusCommandExecutionFinishedOrError repeatedly calls [CommandExecutionAPI.CommandStatus] and waits to reach Finished or Error state
 func (a *CommandExecutionAPI) WaitCommandStatusCommandExecutionFinishedOrError(ctx context.Context, clusterId string, commandId string, contextId string,
 	timeout time.Duration, callback func(*CommandStatusResponse)) (*CommandStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
@@ -1048,7 +1048,7 @@ func (w *WaitCommandStatusCommandExecutionFinishedOrError[R]) GetWithTimeout(tim
 	return w.poll(timeout, w.callback)
 }
 
-// WaitContextStatusCommandExecutionRunning calls [CommandExecutionAPI.Create] and waits to reach Running state
+// WaitContextStatusCommandExecutionRunning repeatedly calls [CommandExecutionAPI.ContextStatus] and waits to reach Running state
 func (a *CommandExecutionAPI) WaitContextStatusCommandExecutionRunning(ctx context.Context, clusterId string, contextId string,
 	timeout time.Duration, callback func(*ContextStatusResponse)) (*ContextStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")

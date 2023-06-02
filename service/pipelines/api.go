@@ -53,7 +53,7 @@ func (a *PipelinesAPI) Impl() PipelinesService {
 	return a.impl
 }
 
-// WaitGetPipelineIdle calls [PipelinesAPI.Stop] and waits to reach IDLE state
+// WaitGetPipelineIdle repeatedly calls [PipelinesAPI.Get] and waits to reach IDLE state
 func (a *PipelinesAPI) WaitGetPipelineIdle(ctx context.Context, pipelineId string,
 	timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
@@ -107,7 +107,7 @@ func (w *WaitGetPipelineIdle[R]) GetWithTimeout(timeout time.Duration) (*GetPipe
 	return w.poll(timeout, w.callback)
 }
 
-// WaitGetPipelineRunning calls [PipelinesAPI.Reset] and waits to reach RUNNING state
+// WaitGetPipelineRunning repeatedly calls [PipelinesAPI.Get] and waits to reach RUNNING state
 func (a *PipelinesAPI) WaitGetPipelineRunning(ctx context.Context, pipelineId string,
 	timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")

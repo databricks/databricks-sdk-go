@@ -52,7 +52,7 @@ func (a *ServingEndpointsAPI) Impl() ServingEndpointsService {
 	return a.impl
 }
 
-// WaitGetServingEndpointNotUpdating calls [ServingEndpointsAPI.Create] and waits to reach NOT_UPDATING state
+// WaitGetServingEndpointNotUpdating repeatedly calls [ServingEndpointsAPI.Get] and waits to reach NOT_UPDATING state
 func (a *ServingEndpointsAPI) WaitGetServingEndpointNotUpdating(ctx context.Context, name string,
 	timeout time.Duration, callback func(*ServingEndpointDetailed)) (*ServingEndpointDetailed, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")

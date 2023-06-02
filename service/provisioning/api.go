@@ -997,7 +997,7 @@ func (a *WorkspacesAPI) Impl() WorkspacesService {
 	return a.impl
 }
 
-// WaitGetWorkspaceRunning calls [WorkspacesAPI.Update] and waits to reach RUNNING state
+// WaitGetWorkspaceRunning repeatedly calls [WorkspacesAPI.Get] and waits to reach RUNNING state
 func (a *WorkspacesAPI) WaitGetWorkspaceRunning(ctx context.Context, workspaceId int64,
 	timeout time.Duration, callback func(*Workspace)) (*Workspace, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")

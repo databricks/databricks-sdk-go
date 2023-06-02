@@ -40,7 +40,7 @@ func (a *{{.PascalName}}API) Impl() {{.PascalName}}Service {
 }
 
 {{range .Waits}}
-// {{.PascalName}} calls [{{.Method.Service.Name}}API.{{.Method.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
+// {{.PascalName}} repeatedly calls [{{.Method.Service.Name}}API.{{.Poll.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
 func (a *{{.Method.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{range .Binding}}, {{.PollField.CamelName}} {{template "type" .PollField.Entity}}{{end}},
 	timeout time.Duration, callback func(*{{.Poll.Response.PascalName}})) (*{{.Poll.Response.PascalName}}, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
