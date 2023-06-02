@@ -17,6 +17,22 @@ type AwsIamRole struct {
 	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
 }
 
+type AzureManagedIdentity struct {
+	// The Azure resource ID of the Azure Databricks Access Connector. Use the
+	// format
+	// /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}.
+	AccessConnectorId string `json:"access_connector_id"`
+	// The Databricks internal ID that represents this managed identity.
+	CredentialId string `json:"credential_id,omitempty"`
+	// The Azure resource ID of the managed identity. Use the format
+	// /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}.
+	// This is only available for user-assgined identities. For system-assigned
+	// identities, the access_connector_id is used to identify the identity. If
+	// this field is not provided, then we assume the AzureManagedIdentity is
+	// for a system-assigned identity.
+	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
+}
+
 type AzureServicePrincipal struct {
 	// The application ID of the application registration within the referenced
 	// AAD tenant.
@@ -436,12 +452,14 @@ type CreateSchema struct {
 type CreateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	// The Azure managed identity configuration.
+	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
-	// The GCP service account key configuration.
-	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
+	// The <Databricks> managed GCP service account configuration.
+	DatabricksGcpServiceAccount any `json:"databricks_gcp_service_account,omitempty"`
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// The credential name. The name must be unique within the metastore.
@@ -523,6 +541,14 @@ func (dsf *DataSourceFormat) Set(v string) error {
 // Type always returns DataSourceFormat to satisfy [pflag.Value] interface
 func (dsf *DataSourceFormat) Type() string {
 	return "DataSourceFormat"
+}
+
+type DatabricksGcpServiceAccountResponse struct {
+	// The Databricks internal ID that represents this service account. This is
+	// an output-only field.
+	CredentialId string `json:"credential_id,omitempty"`
+	// The email of the service account. This is an output-only field.
+	Email string `json:"email,omitempty"`
 }
 
 // Delete a metastore assignment
@@ -1042,15 +1068,6 @@ func (fpt *FunctionParameterType) Type() string {
 	return "FunctionParameterType"
 }
 
-type GcpServiceAccountKey struct {
-	// The email of the service account.
-	Email string `json:"email"`
-	// The service account's RSA private key.
-	PrivateKey string `json:"private_key"`
-	// The ID of the service account's private key.
-	PrivateKeyId string `json:"private_key_id"`
-}
-
 // Gets the metastore assignment for a workspace
 type GetAccountMetastoreAssignmentRequest struct {
 	// Workspace ID.
@@ -1275,7 +1292,7 @@ type ListFunctionsRequest struct {
 
 type ListFunctionsResponse struct {
 	// An array of function information objects.
-	Schemas []FunctionInfo `json:"schemas,omitempty"`
+	Functions []FunctionInfo `json:"functions,omitempty"`
 }
 
 type ListMetastoresResponse struct {
@@ -1647,6 +1664,8 @@ func (st *SecurableType) Type() string {
 type StorageCredentialInfo struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	// The Azure managed identity configuration.
+	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
@@ -1655,8 +1674,8 @@ type StorageCredentialInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of credential creator.
 	CreatedBy string `json:"created_by,omitempty"`
-	// The GCP service account key configuration.
-	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
+	// The <Databricks> managed GCP service account configuration.
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountResponse `json:"databricks_gcp_service_account,omitempty"`
 	// The unique identifier of the credential.
 	Id string `json:"id,omitempty"`
 	// Unique identifier of parent metastore.
@@ -1966,15 +1985,17 @@ type UpdateSchema struct {
 type UpdateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	// The Azure managed identity configuration.
+	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
 	Comment string `json:"comment,omitempty"`
+	// The <Databricks> managed GCP service account configuration.
+	DatabricksGcpServiceAccount any `json:"databricks_gcp_service_account,omitempty"`
 	// Force update even if there are dependent external locations or external
 	// tables.
 	Force bool `json:"force,omitempty"`
-	// The GCP service account key configuration.
-	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// The credential name. The name must be unique within the metastore.
@@ -2011,12 +2032,14 @@ type UpdateWorkspaceBindings struct {
 type ValidateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	// The Azure managed identity configuration.
+	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// The Databricks created GCP service account configuration.
+	DatabricksGcpServiceAccount any `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate.
 	ExternalLocationName string `json:"external_location_name,omitempty"`
-	// The GCP service account key configuration.
-	GcpServiceAccountKey *GcpServiceAccountKey `json:"gcp_service_account_key,omitempty"`
 	// Whether the storage credential is only usable for read operations.
 	ReadOnly bool `json:"read_only,omitempty"`
 	// The name of the storage credential to validate.

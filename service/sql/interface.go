@@ -274,7 +274,7 @@ type QueryHistoryService interface {
 // **Fetching result data: format and disposition**
 //
 // To specify the result data format, set the `format` field to `JSON_ARRAY`
-// (JSON) or `ARROW_STREAM` ([Apache Arrow Columnar]).
+// (JSON), `ARROW_STREAM` ([Apache Arrow Columnar]), or `CSV`.
 //
 // You can also configure how to fetch the result data in two different modes by
 // setting the `disposition` field to `INLINE` or `EXTERNAL_LINKS`.
@@ -284,8 +284,8 @@ type QueryHistoryService interface {
 // disposition exceeds this limit, the execution is aborted, and no result can
 // be fetched.
 //
-// The `EXTERNAL_LINKS` disposition allows fetching large result sets in both
-// `JSON_ARRAY` and `ARROW_STREAM` formats, and with higher throughput.
+// The `EXTERNAL_LINKS` disposition allows fetching large result sets in
+// `JSON_ARRAY`, `ARROW_STREAM` and `CSV` formats, and with higher throughput.
 //
 // The API uses defaults of `format=JSON_ARRAY` and `disposition=INLINE`.
 // Databricks recommends that you explicit setting the format and the

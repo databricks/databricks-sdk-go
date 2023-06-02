@@ -19,6 +19,12 @@ import (
 type AccountClient struct {
 	Config *config.Config
 
+	// These APIs manage access rules on resources in an account. Currently,
+	// only grant rules are supported. A grant rule specifies a role assigned to
+	// a set of principals. A list of rules attached to a resource is called a
+	// rule set.
+	AccessControl *iam.AccountAccessControlAPI
+
 	// This API allows you to download billable usage logs for the specified
 	// account and date range. This feature works with all account types.
 	BillableUsage *billing.BillableUsageAPI
@@ -217,6 +223,9 @@ type AccountClient struct {
 	// data by accident.
 	ServicePrincipals *iam.AccountServicePrincipalsAPI
 
+	// TBD
+	Settings *settings.AccountSettingsAPI
+
 	// These APIs manage storage configurations for this workspace. A root
 	// storage S3 bucket in your account is required to store objects like
 	// cluster logs, notebook revisions, and job results. You can also use the
@@ -288,6 +297,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	return &AccountClient{
 		Config: cfg,
 
+		AccessControl:           iam.NewAccountAccessControl(apiClient),
 		BillableUsage:           billing.NewBillableUsage(apiClient),
 		Budgets:                 billing.NewBudgets(apiClient),
 		Credentials:             provisioning.NewCredentials(apiClient),
@@ -304,6 +314,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		PublishedAppIntegration: oauth2.NewPublishedAppIntegration(apiClient),
 		ServicePrincipalSecrets: oauth2.NewServicePrincipalSecrets(apiClient),
 		ServicePrincipals:       iam.NewAccountServicePrincipals(apiClient),
+		Settings:                settings.NewAccountSettings(apiClient),
 		Storage:                 provisioning.NewStorage(apiClient),
 		StorageCredentials:      catalog.NewAccountStorageCredentials(apiClient),
 		Users:                   iam.NewAccountUsers(apiClient),

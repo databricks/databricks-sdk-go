@@ -448,7 +448,7 @@ type DeleteTag struct {
 	RunId string `json:"run_id"`
 }
 
-// Delete a ransition request
+// Delete a transition request
 type DeleteTransitionRequestRequest struct {
 	// User-provided comment on the action.
 	Comment string `json:"-" url:"comment,omitempty"`
@@ -606,7 +606,7 @@ type GetModelRequest struct {
 }
 
 type GetModelResponse struct {
-	RegisteredModel *ModelDatabricks `json:"registered_model,omitempty"`
+	RegisteredModelDatabricks *ModelDatabricks `json:"registered_model_databricks,omitempty"`
 }
 
 // Get a model version URI

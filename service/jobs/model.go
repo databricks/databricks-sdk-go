@@ -243,6 +243,13 @@ type CreateJob struct {
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// job.
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
+	// Write-only setting, available only in Create/Update/Reset and Submit
+	// calls. Specifies the user or service principal that the job runs as. If
+	// not specified, the job runs as the user who created the job.
+	//
+	// Only `user_name` or `service_principal_name` can be specified. If both
+	// are specified, an error is thrown.
+	RunAs *JobRunAs `json:"run_as,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
 	// or sending an API request to `runNow`.
@@ -530,10 +537,13 @@ type Job struct {
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// The canonical identifier for this job.
 	JobId int64 `json:"job_id,omitempty"`
-	// The user name that the job runs as. `run_as_user_name` is based on the
-	// current job settings, and is set to the creator of the job if job access
-	// control is disabled, or the `is_owner` permission if job access control
-	// is enabled.
+	// The email of an active workspace user or the application ID of a service
+	// principal that the job runs as. This value can be changed by setting the
+	// `run_as` field when creating or updating a job.
+	//
+	// By default, `run_as_user_name` is based on the current job settings and
+	// is set to the creator of the job if job access control is disabled or to
+	// the user with the `is_owner` permission if job access control is enabled.
 	RunAsUserName string `json:"run_as_user_name,omitempty"`
 	// Settings for this job and all of its runs. These settings can be updated
 	// using the `resetJob` method.
@@ -583,6 +593,21 @@ type JobNotificationSettings struct {
 	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
 }
 
+// Write-only setting, available only in Create/Update/Reset and Submit calls.
+// Specifies the user or service principal that the job runs as. If not
+// specified, the job runs as the user who created the job.
+//
+// Only `user_name` or `service_principal_name` can be specified. If both are
+// specified, an error is thrown.
+type JobRunAs struct {
+	// Application ID of an active service principal. Setting this field
+	// requires the `servicePrincipal/user` role.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// The email of an active workspace user. Non-admin users can only set this
+	// field to their own email.
+	UserName string `json:"user_name,omitempty"`
+}
+
 type JobSettings struct {
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
@@ -626,6 +651,13 @@ type JobSettings struct {
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// job.
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
+	// Write-only setting, available only in Create/Update/Reset and Submit
+	// calls. Specifies the user or service principal that the job runs as. If
+	// not specified, the job runs as the user who created the job.
+	//
+	// Only `user_name` or `service_principal_name` can be specified. If both
+	// are specified, an error is thrown.
+	RunAs *JobRunAs `json:"run_as,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
 	// or sending an API request to `runNow`.
@@ -1126,8 +1158,8 @@ type ResetJob struct {
 	// The new settings of the job. These settings completely replace the old
 	// settings.
 	//
-	// Changes to the field `JobSettings.timeout_seconds` are applied to active
-	// runs. Changes to other fields are applied to future runs only.
+	// Changes to the field `JobBaseSettings.timeout_seconds` are applied to
+	// active runs. Changes to other fields are applied to future runs only.
 	NewSettings JobSettings `json:"new_settings"`
 }
 
