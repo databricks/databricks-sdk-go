@@ -368,10 +368,10 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 			seenParams := map[string]bool{}
 			for _, list := range [][]openapi.Parameter{path.Parameters, op.Parameters} {
 				for _, v := range list {
-					if v.In == "header" {
+					param, err := pkg.resolveParam(&v)
+					if param.In == "header" {
 						continue
 					}
-					param, err := pkg.resolveParam(&v)
 					if err != nil {
 						return fmt.Errorf("no components found: %s %s", verb, prefix)
 					}

@@ -1,5 +1,7 @@
 // Databricks SDK for Go APIs
 //
+// - [iam.AccountAccessControlAPI]: These APIs manage access rules on resources in an account.
+//
 // - [sql.AlertsAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
 // - [billing.BillableUsageAPI]: This API allows you to download billable usage logs for the specified account and date range.
@@ -106,6 +108,8 @@
 //
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 //
+// - [settings.AccountSettingsAPI]: TBD.
+//
 // - [sharing.SharesAPI]: Databricks Shares REST API.
 //
 // - [sql.StatementExecutionAPI]: The SQL Statement Execution API manages the execution of arbitrary SQL statements and the fetching of result data.
@@ -168,6 +172,7 @@ import (
 // https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service
 // See: https://pkg.go.dev/golang.org/x/tools/internal/imports#ImportPathToAssumedName
 var (
+	_ *iam.AccountAccessControlAPI            = nil
 	_ *sql.AlertsAPI                          = nil
 	_ *billing.BillableUsageAPI               = nil
 	_ *billing.BudgetsAPI                     = nil
@@ -221,6 +226,7 @@ var (
 	_ *iam.ServicePrincipalsAPI               = nil
 	_ *iam.AccountServicePrincipalsAPI        = nil
 	_ *serving.ServingEndpointsAPI            = nil
+	_ *settings.AccountSettingsAPI            = nil
 	_ *sharing.SharesAPI                      = nil
 	_ *sql.StatementExecutionAPI              = nil
 	_ *provisioning.StorageAPI                = nil

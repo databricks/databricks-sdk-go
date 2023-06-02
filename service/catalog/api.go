@@ -1139,8 +1139,9 @@ func (a *StorageCredentialsAPI) Impl() StorageCredentialsService {
 // Creates a new storage credential. The request object is specific to the
 // cloud:
 //
-// * **AwsIamRole** for AWS credentials * **AzureServicePrincipal** for Azure
-// credentials * **GcpServiceAcountKey** for GCP credentials.
+// * **AwsIamRole** for AWS credentials. * **AzureServicePrincipal** for Azure
+// credentials. * **AzureManagedIdentity** for Azure managed credentials. *
+// **DatabricksGcpServiceAccount** for GCP managed credentials.
 //
 // The caller must be a metastore admin and have the
 // **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
