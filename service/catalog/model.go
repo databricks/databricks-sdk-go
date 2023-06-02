@@ -415,8 +415,8 @@ type CreateMetastoreAssignment struct {
 	// The name of the default catalog in the metastore.
 	DefaultCatalogName string `json:"default_catalog_name"`
 	// The unique ID of the metastore.
-	MetastoreId string `json:"metastore_id" url:"-"`
-	// Workspace ID.
+	MetastoreId string `json:"metastore_id"`
+	// A workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
@@ -597,9 +597,8 @@ type DeleteStorageCredentialRequest struct {
 
 // Delete a table constraint
 type DeleteTableConstraintRequest struct {
-	// If true, try deleting all child constraints of the current constraint.
-	//
-	// If false, reject this operation if the current constraint has any child
+	// If true, try deleting all child constraints of the current constraint. If
+	// false, reject this operation if the current constraint has any child
 	// constraints.
 	Cascade bool `json:"-" url:"cascade"`
 	// The name of the constraint to delete.
@@ -621,9 +620,7 @@ type DeleteVolumeRequest struct {
 }
 
 // Properties pertaining to the current state of the delta table as given by the
-// commit server.
-//
-// This does not contain **delta.*** (input) properties in
+// commit server. This does not contain **delta.*** (input) properties in
 // __TableInfo.properties__.
 type DeltaRuntimePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
@@ -688,14 +685,12 @@ type EffectivePermissionsList struct {
 
 type EffectivePrivilege struct {
 	// The full name of the object that conveys this privilege via inheritance.
-	//
 	// This field is omitted when privilege is not inherited (it's assigned to
 	// the securable itself).
 	InheritedFromName string `json:"inherited_from_name,omitempty"`
-	// The type of the object that conveys this privilege via inheritance.
-	//
-	// This field is omitted when privilege is not inherited (it's assigned to
-	// the securable itself).
+	// The type of the object that conveys this privilege via inheritance. This
+	// field is omitted when privilege is not inherited (it's assigned to the
+	// securable itself).
 	InheritedFromType SecurableType `json:"inherited_from_type,omitempty"`
 	// The privilege assigned to the principal.
 	Privilege Privilege `json:"privilege,omitempty"`
@@ -1913,8 +1908,8 @@ type UpdateMetastoreAssignment struct {
 	// The name of the default catalog for the metastore.
 	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
 	// The unique ID of the metastore.
-	MetastoreId string `json:"metastore_id,omitempty" url:"-"`
-	// Workspace ID.
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// A workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 

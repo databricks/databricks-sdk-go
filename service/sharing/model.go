@@ -56,11 +56,9 @@ type CreateRecipient struct {
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
 	// The global Unity Catalog metastore id provided by the data recipient.
-	//
 	// This field is required when the __authentication_type__ is
-	// **DATABRICKS**.
-	//
-	// The identifier is of format __cloud__:__region__:__metastore-uuid__.
+	// **DATABRICKS**. The identifier is of format
+	// __cloud__:__region__:__metastore-uuid__.
 	DataRecipientGlobalMetastoreId any `json:"data_recipient_global_metastore_id,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
@@ -376,11 +374,9 @@ type RecipientInfo struct {
 	// Username of recipient creator.
 	CreatedBy string `json:"created_by,omitempty"`
 	// The global Unity Catalog metastore id provided by the data recipient.
-	//
 	// This field is only present when the __authentication_type__ is
-	// **DATABRICKS**.
-	//
-	// The identifier is of format __cloud__:__region__:__metastore-uuid__.
+	// **DATABRICKS**. The identifier is of format
+	// __cloud__:__region__:__metastore-uuid__.
 	DataRecipientGlobalMetastoreId any `json:"data_recipient_global_metastore_id,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
@@ -626,11 +622,10 @@ type UpdateRecipient struct {
 	Name string `json:"name,omitempty" url:"-"`
 	// Username of the recipient owner.
 	Owner string `json:"owner,omitempty"`
-	// Recipient properties as map of string key-value pairs.
-	//
-	// When provided in update request, the specified properties will override
-	// the existing properties. To add and remove properties, one would need to
-	// perform a read-modify-write.
+	// Recipient properties as map of string key-value pairs. When provided in
+	// update request, the specified properties will override the existing
+	// properties. To add and remove properties, one would need to perform a
+	// read-modify-write.
 	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
 }
 
