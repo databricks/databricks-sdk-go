@@ -205,6 +205,7 @@ func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Ent
 			IsJson:   true,
 		}
 	}
+	pkg.updateType(e)
 	return e
 }
 
@@ -253,11 +254,6 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 		return pkg.define(entity)
 	}
 
-	component := pkg.localComponent(&s.Node)
-	if s.IsRef() && pkg.types[component] != nil {
-		// entity is defined, return from cache
-		return pkg.types[component]
-	}
 	e := pkg.schemaToEntity(s, []string{name}, true)
 	if e == nil {
 		// gets here when responses are objects with no properties
@@ -269,8 +265,7 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 	if e.Name == "" {
 		e.Named = Named{name, s.Description}
 	}
-	pkg.define(e)
-	return pkg.types[e.Name]
+	return pkg.define(e)
 }
 
 func (pkg *Package) define(entity *Entity) *Entity {
@@ -292,6 +287,16 @@ func (pkg *Package) define(entity *Entity) *Entity {
 	}
 	pkg.types[entity.Name] = entity
 	return entity
+}
+
+func (pkg *Package) updateType(entity *Entity) {
+	e, defined := pkg.types[entity.Name]
+	if !defined {
+		return
+	}
+	for k, v := range entity.fields {
+		e.fields[k] = v
+	}
 }
 
 // HasPathParams returns true if any service has methods that rely on path params
