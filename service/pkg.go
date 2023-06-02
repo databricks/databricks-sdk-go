@@ -30,6 +30,8 @@
 //
 // - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
+// - [ml.ExperimentsAPI]: Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment.
+//
 // - [catalog.ExternalLocationsAPI]: An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path.
 //
 // - [catalog.FunctionsAPI]: Functions implement User-Defined Functions (UDFs) in Unity Catalog.
@@ -63,6 +65,8 @@
 // - [catalog.MetastoresAPI]: A metastore is the top-level container of objects in Unity Catalog.
 //
 // - [catalog.AccountMetastoresAPI]: These APIs manage Unity Catalog metastores for an account.
+//
+// - [ml.ModelRegistryAPI]: MLflow Model Registry is a centralized model repository and a UI and set of APIs that enable you to manage the full lifecycle of MLflow Models.
 //
 // - [provisioning.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
 //

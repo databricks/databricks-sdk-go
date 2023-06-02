@@ -184,7 +184,7 @@ type PublicTokenInfo struct {
 type ReplaceIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled"`
-	// The ID for the corresponding IP access list.
+	// The ID for the corresponding IP access list to modify.
 	IpAccessListId string `json:"-" url:"-"`
 	// Array of IP addresses or CIDR values to be added to the IP access list.
 	IpAddresses []string `json:"ip_addresses"`
@@ -222,7 +222,7 @@ type TokenInfo struct {
 type UpdateIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled"`
-	// The ID for the corresponding IP access list.
+	// The ID for the corresponding IP access list to modify.
 	IpAccessListId string `json:"-" url:"-"`
 	// Array of IP addresses or CIDR values to be added to the IP access list.
 	IpAddresses []string `json:"ip_addresses"`

@@ -482,7 +482,7 @@ func (a *ModelRegistryAPI) DeleteModelVersionTag(ctx context.Context, request De
 	return a.impl.DeleteModelVersionTag(ctx, request)
 }
 
-// Delete a transition request.
+// Delete a ransition request.
 //
 // Cancels a model version stage transition request.
 func (a *ModelRegistryAPI) DeleteTransitionRequest(ctx context.Context, request DeleteTransitionRequestRequest) error {

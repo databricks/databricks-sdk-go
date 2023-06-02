@@ -259,15 +259,9 @@ type GetUpdateResponse struct {
 // List pipeline events
 type ListPipelineEventsRequest struct {
 	// Criteria to select a subset of results, expressed using a SQL-like
-	// syntax. The supported filters are:
-	//
-	// 1. level='INFO' (or WARN or ERROR)
-	//
-	// 2. level in ('INFO', 'WARN')
-	//
-	// 3. id='[event-id]'
-	//
-	// 4. timestamp > 'TIMESTAMP' (or >=,<,<=,=)
+	// syntax. The supported filters are: 1. level='INFO' (or WARN or ERROR) 2.
+	// level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp > 'TIMESTAMP'
+	// (or >=,<,<=,=)
 	//
 	// Composite expressions are supported, for example: level in ('ERROR',
 	// 'WARN') AND timestamp> '2021-07-22T06:37:33.083Z'
