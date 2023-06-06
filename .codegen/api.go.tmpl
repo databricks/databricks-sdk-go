@@ -105,7 +105,7 @@ func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .R
 func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) ([]{{.Pagination.Entity.PascalName}}, error) {
 	{{if .Pagination.MultiRequest}}var results []{{.Pagination.Entity.PascalName}}
 	{{ if .Pagination.Limit -}}
-	var totalCount {{template "type" .Pagination.Offset.Entity}} = 0
+	var totalCount {{template "type" .Pagination.Limit.Entity}} = 0
 	{{ end -}}
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 	{{if .Pagination.NeedsOffsetDedupe -}}
@@ -132,7 +132,10 @@ func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Reque
 			{{- end}}
 			results = append(results, v)
 		}
-		{{ if .Pagination.Offset -}}
+		{{ if and .Pagination.Token .Pagination.Limit -}}
+      count := {{template "type" .Pagination.Limit.Entity}}(len(response.{{.Pagination.Results.PascalName}}))
+      totalCount += count
+    {{ else if .Pagination.Offset -}}
 			count := {{template "type" .Pagination.Offset.Entity}}(len(response.{{.Pagination.Results.PascalName}}))
 			totalCount += count
 		{{ end -}}
