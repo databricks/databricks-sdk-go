@@ -6,6 +6,15 @@ import (
 	"context"
 )
 
+// Experiments are the primary unit of organization in MLflow; all MLflow runs
+// belong to an experiment. Each experiment lets you visualize, search, and
+// compare runs, as well as download run artifacts or metadata for analysis in
+// other tools. Experiments are maintained in a Databricks hosted MLflow
+// tracking server.
+//
+// Experiments are located in the workspace file tree. You manage experiments
+// using the same tools you use to manage other workspace objects such as
+// folders, notebooks, and libraries.
 type ExperimentsService interface {
 
 	// Create experiment.
@@ -129,7 +138,7 @@ type ExperimentsService interface {
 	// API request may be up to 1 MB in size and contain:
 	//
 	// * No more than 1000 metrics, params, and tags in total * Up to 1000
-	// metrics - Up to 100 params * Up to 100 tags
+	// metrics * Up to 100 params * Up to 100 tags
 	//
 	// For example, a valid request might contain 900 metrics, 50 params, and 50
 	// tags, but logging 900 metrics, 50 params, and 51 tags is invalid.
@@ -222,6 +231,8 @@ type ExperimentsService interface {
 	UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error)
 }
 
+// MLflow Model Registry is a centralized model repository and a UI and set of
+// APIs that enable you to manage the full lifecycle of MLflow Models.
 type ModelRegistryService interface {
 
 	// Approve transition request.
@@ -287,7 +298,7 @@ type ModelRegistryService interface {
 	// Deletes a model version tag.
 	DeleteModelVersionTag(ctx context.Context, request DeleteModelVersionTagRequest) error
 
-	// Delete a ransition request.
+	// Delete a transition request.
 	//
 	// Cancels a model version stage transition request.
 	DeleteTransitionRequest(ctx context.Context, request DeleteTransitionRequestRequest) error

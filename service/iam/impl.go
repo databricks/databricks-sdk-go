@@ -10,6 +10,32 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 )
 
+// unexported type that holds implementations of just AccountAccessControl API methods
+type accountAccessControlImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *accountAccessControlImpl) Get(ctx context.Context, request GetAccountAccessControlRequest) (*RuleSetResponse, error) {
+	var ruleSetResponse RuleSetResponse
+	path := fmt.Sprintf("/preview/accounts/%v/access-control/rule-sets", a.client.ConfiguredAccountID())
+	err := a.client.Do(ctx, http.MethodGet, path, request, &ruleSetResponse)
+	return &ruleSetResponse, err
+}
+
+func (a *accountAccessControlImpl) List(ctx context.Context, request ListAccountAccessControlRequest) (*GetAssignableRolesForResourceResponse, error) {
+	var getAssignableRolesForResourceResponse GetAssignableRolesForResourceResponse
+	path := fmt.Sprintf("/preview/accounts/%v/access-control/assignable-roles", a.client.ConfiguredAccountID())
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getAssignableRolesForResourceResponse)
+	return &getAssignableRolesForResourceResponse, err
+}
+
+func (a *accountAccessControlImpl) Update(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error) {
+	var ruleSetResponse RuleSetResponse
+	path := fmt.Sprintf("/preview/accounts/%v/access-control/rule-sets", a.client.ConfiguredAccountID())
+	err := a.client.Do(ctx, http.MethodPut, path, request, &ruleSetResponse)
+	return &ruleSetResponse, err
+}
+
 // unexported type that holds implementations of just AccountGroups API methods
 type accountGroupsImpl struct {
 	client *client.DatabricksClient

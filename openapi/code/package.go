@@ -205,6 +205,7 @@ func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Ent
 			IsJson:   true,
 		}
 	}
+	pkg.updateType(e)
 	return e
 }
 
@@ -288,6 +289,16 @@ func (pkg *Package) define(entity *Entity) *Entity {
 	return entity
 }
 
+func (pkg *Package) updateType(entity *Entity) {
+	e, defined := pkg.types[entity.Name]
+	if !defined {
+		return
+	}
+	for k, v := range entity.fields {
+		e.fields[k] = v
+	}
+}
+
 // HasPathParams returns true if any service has methods that rely on path params
 func (pkg *Package) HasPathParams() bool {
 	for _, s := range pkg.services {
@@ -357,10 +368,10 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 			seenParams := map[string]bool{}
 			for _, list := range [][]openapi.Parameter{path.Parameters, op.Parameters} {
 				for _, v := range list {
-					if v.In == "header" {
+					param, err := pkg.resolveParam(&v)
+					if param.In == "header" {
 						continue
 					}
-					param, err := pkg.resolveParam(&v)
 					if err != nil {
 						return fmt.Errorf("no components found: %s %s", verb, prefix)
 					}

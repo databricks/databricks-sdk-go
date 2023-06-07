@@ -103,6 +103,15 @@ type AccountIpAccessListsService interface {
 	Update(ctx context.Context, request UpdateIpAccessList) error
 }
 
+// TBD
+type AccountSettingsService interface {
+
+	// Get Personal Compute setting.
+	//
+	// TBD
+	ReadPersonalComputeSetting(ctx context.Context, request ReadPersonalComputeSettingRequest) (*ReadPersonalComputeSettingResponse, error)
+}
+
 // IP Access List enables admins to configure IP access lists.
 //
 // IP access lists affect web application access and REST API access to this

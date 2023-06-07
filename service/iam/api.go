@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Groups, Account Service Principals, Account Users, Current User, Groups, Permissions, Service Principals, Users, Workspace Assignment, etc.
+// These APIs allow you to manage Account Access Control, Account Groups, Account Service Principals, Account Users, Current User, Groups, Permissions, Service Principals, Users, Workspace Assignment, etc.
 package iam
 
 import (
@@ -10,6 +10,62 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
+
+func NewAccountAccessControl(client *client.DatabricksClient) *AccountAccessControlAPI {
+	return &AccountAccessControlAPI{
+		impl: &accountAccessControlImpl{
+			client: client,
+		},
+	}
+}
+
+// These APIs manage access rules on resources in an account. Currently, only
+// grant rules are supported. A grant rule specifies a role assigned to a set of
+// principals. A list of rules attached to a resource is called a rule set.
+type AccountAccessControlAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(AccountAccessControlService)
+	impl AccountAccessControlService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *AccountAccessControlAPI) WithImpl(impl AccountAccessControlService) *AccountAccessControlAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level AccountAccessControl API implementation
+func (a *AccountAccessControlAPI) Impl() AccountAccessControlService {
+	return a.impl
+}
+
+// Get a rule set.
+//
+// Get a rule set by its name. A rule set is always attached to a resource and
+// contains a list of access rules on the said resource. Currently only a
+// default rule set for each resource is supported.
+func (a *AccountAccessControlAPI) Get(ctx context.Context, request GetAccountAccessControlRequest) (*RuleSetResponse, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// List assignable roles on a resource.
+//
+// Gets all the roles that can be granted on an account level resource. A role
+// is grantable if the rule set on the resource can contain an access rule of
+// the role.
+func (a *AccountAccessControlAPI) List(ctx context.Context, request ListAccountAccessControlRequest) (*GetAssignableRolesForResourceResponse, error) {
+	return a.impl.List(ctx, request)
+}
+
+// Update a rule set.
+//
+// Replace the rules of a rule set. First, use get to read the current version
+// of the rule set before modifying it. This pattern helps prevent conflicts
+// between concurrent updates.
+func (a *AccountAccessControlAPI) Update(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error) {
+	return a.impl.Update(ctx, request)
+}
 
 func NewAccountGroups(client *client.DatabricksClient) *AccountGroupsAPI {
 	return &AccountGroupsAPI{

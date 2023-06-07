@@ -173,6 +173,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 			}
 		}
 	}
+	svc.Package.updateType(request)
 	if request.Name == "" {
 		// when there was a merge of params with a request or new entity was made
 		signularServiceName := svc.Singular().PascalName()

@@ -169,6 +169,39 @@ func (lt *ListType) Type() string {
 	return "ListType"
 }
 
+type PersonalComputeMessage struct {
+	// TBD
+	Value PersonalComputeMessageEnum `json:"value"`
+}
+
+// TBD
+type PersonalComputeMessageEnum string
+
+const PersonalComputeMessageEnumDelegate PersonalComputeMessageEnum = `DELEGATE`
+
+const PersonalComputeMessageEnumOn PersonalComputeMessageEnum = `ON`
+
+// String representation for [fmt.Print]
+func (pcme *PersonalComputeMessageEnum) String() string {
+	return string(*pcme)
+}
+
+// Set raw string value and validate it against allowed values
+func (pcme *PersonalComputeMessageEnum) Set(v string) error {
+	switch v {
+	case `DELEGATE`, `ON`:
+		*pcme = PersonalComputeMessageEnum(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DELEGATE", "ON"`, v)
+	}
+}
+
+// Type always returns PersonalComputeMessageEnum to satisfy [pflag.Value] interface
+func (pcme *PersonalComputeMessageEnum) Type() string {
+	return "PersonalComputeMessageEnum"
+}
+
 type PublicTokenInfo struct {
 	// Comment the token was created with, if applicable.
 	Comment string `json:"comment,omitempty"`
@@ -181,10 +214,26 @@ type PublicTokenInfo struct {
 	TokenId string `json:"token_id,omitempty"`
 }
 
+// Get Personal Compute setting
+type ReadPersonalComputeSettingRequest struct {
+	// TBD
+	Etag string `json:"-" url:"etag,omitempty"`
+}
+
+type ReadPersonalComputeSettingResponse struct {
+	// TBD
+	Etag string `json:"etag"`
+
+	PersonalCompute PersonalComputeMessage `json:"personal_compute"`
+	// Name of the corresponding setting. Needs to be 'default' if the setting
+	// is a singleton.
+	SettingName string `json:"setting_name"`
+}
+
 type ReplaceIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled"`
-	// The ID for the corresponding IP access list.
+	// The ID for the corresponding IP access list to modify.
 	IpAccessListId string `json:"-" url:"-"`
 	// Array of IP addresses or CIDR values to be added to the IP access list.
 	IpAddresses []string `json:"ip_addresses"`
@@ -222,7 +271,7 @@ type TokenInfo struct {
 type UpdateIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	Enabled bool `json:"enabled"`
-	// The ID for the corresponding IP access list.
+	// The ID for the corresponding IP access list to modify.
 	IpAccessListId string `json:"-" url:"-"`
 	// Array of IP addresses or CIDR values to be added to the IP access list.
 	IpAddresses []string `json:"ip_addresses"`

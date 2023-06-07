@@ -1,5 +1,7 @@
 // Databricks SDK for Go APIs
 //
+// - [iam.AccountAccessControlAPI]: These APIs manage access rules on resources in an account.
+//
 // - [sql.AlertsAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
 // - [billing.BillableUsageAPI]: This API allows you to download billable usage logs for the specified account and date range.
@@ -29,6 +31,8 @@
 // - [sql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/set.
 //
 // - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
+//
+// - [ml.ExperimentsAPI]: Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment.
 //
 // - [catalog.ExternalLocationsAPI]: An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path.
 //
@@ -63,6 +67,8 @@
 // - [catalog.MetastoresAPI]: A metastore is the top-level container of objects in Unity Catalog.
 //
 // - [catalog.AccountMetastoresAPI]: These APIs manage Unity Catalog metastores for an account.
+//
+// - [ml.ModelRegistryAPI]: MLflow Model Registry is a centralized model repository and a UI and set of APIs that enable you to manage the full lifecycle of MLflow Models.
 //
 // - [provisioning.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
 //
@@ -101,6 +107,8 @@
 // - [iam.AccountServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
 //
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
+//
+// - [settings.AccountSettingsAPI]: TBD.
 //
 // - [sharing.SharesAPI]: Databricks Shares REST API.
 //
@@ -164,6 +172,7 @@ import (
 // https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service
 // See: https://pkg.go.dev/golang.org/x/tools/internal/imports#ImportPathToAssumedName
 var (
+	_ *iam.AccountAccessControlAPI            = nil
 	_ *sql.AlertsAPI                          = nil
 	_ *billing.BillableUsageAPI               = nil
 	_ *billing.BudgetsAPI                     = nil
@@ -217,6 +226,7 @@ var (
 	_ *iam.ServicePrincipalsAPI               = nil
 	_ *iam.AccountServicePrincipalsAPI        = nil
 	_ *serving.ServingEndpointsAPI            = nil
+	_ *settings.AccountSettingsAPI            = nil
 	_ *sharing.SharesAPI                      = nil
 	_ *sql.StatementExecutionAPI              = nil
 	_ *provisioning.StorageAPI                = nil

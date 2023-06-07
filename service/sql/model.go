@@ -824,16 +824,17 @@ type ExecuteStatementRequest struct {
 	// response. The behavior when attempting to use an expired link is cloud
 	// specific.
 	Disposition Disposition `json:"disposition,omitempty"`
-	// Statement execution supports two result formats: `JSON_ARRAY` (default),
-	// and `ARROW_STREAM`.
+	// Statement execution supports three result formats: `JSON_ARRAY`
+	// (default), `ARROW_STREAM`, and `CSV`.
 	//
 	// When specifying `format=JSON_ARRAY`, result data will be formatted as an
 	// array of arrays of values, where each value is either the *string
 	// representation* of a value, or `null`. For example, the output of `SELECT
-	// concat('id-', id) AS strId, id AS intId FROM range(3)` would look like
-	// this:
+	// concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)`
+	// would look like this:
 	//
-	// ``` [ [ "id-1", "1" ], [ "id-2", "2" ], [ "id-3", "3" ], ] ```
+	// ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null
+	// ], ] ```
 	//
 	// `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS`
 	// dispositions.
@@ -852,7 +853,21 @@ type ExecuteStatementRequest struct {
 	// IMPORTANT: The format `ARROW_STREAM` is supported only with
 	// `EXTERNAL_LINKS` disposition.
 	//
+	// When specifying `format=CSV`, each chunk in the result will be a CSV
+	// according to [RFC 4180] standard. All the columns values will have
+	// *string representation* similar to the `JSON_ARRAY` format, and `null`
+	// values will be encoded as “null”. Only the first chunk in the result
+	// would contain a header row with column names. For example, the output of
+	// `SELECT concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM
+	// range(3)` would look like this:
+	//
+	// ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
+	//
+	// IMPORTANT: The format `CSV` is supported only with `EXTERNAL_LINKS`
+	// disposition.
+	//
 	// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
+	// [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
 	Format Format `json:"format,omitempty"`
 	// When in synchronous mode with `wait_timeout > 0s` it determines the
 	// action taken when the timeout is reached:
@@ -917,15 +932,17 @@ type ExternalLink struct {
 	RowOffset int64 `json:"row_offset,omitempty"`
 }
 
-// Statement execution supports two result formats: `JSON_ARRAY` (default), and
-// `ARROW_STREAM`.
+// Statement execution supports three result formats: `JSON_ARRAY` (default),
+// `ARROW_STREAM`, and `CSV`.
 //
 // When specifying `format=JSON_ARRAY`, result data will be formatted as an
 // array of arrays of values, where each value is either the *string
 // representation* of a value, or `null`. For example, the output of `SELECT
-// concat('id-', id) AS strId, id AS intId FROM range(3)` would look like this:
+// concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)`
+// would look like this:
 //
-// ``` [ [ "id-1", "1" ], [ "id-2", "2" ], [ "id-3", "3" ], ] ```
+// ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null ], ]
+// ```
 //
 // `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS` dispositions.
 //
@@ -941,10 +958,26 @@ type ExternalLink struct {
 // IMPORTANT: The format `ARROW_STREAM` is supported only with `EXTERNAL_LINKS`
 // disposition.
 //
+// When specifying `format=CSV`, each chunk in the result will be a CSV
+// according to [RFC 4180] standard. All the columns values will have *string
+// representation* similar to the `JSON_ARRAY` format, and `null` values will be
+// encoded as “null”. Only the first chunk in the result would contain a
+// header row with column names. For example, the output of `SELECT
+// concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM range(3)`
+// would look like this:
+//
+// ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
+//
+// IMPORTANT: The format `CSV` is supported only with `EXTERNAL_LINKS`
+// disposition.
+//
 // [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
+// [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
 type Format string
 
 const FormatArrowStream Format = `ARROW_STREAM`
+
+const FormatCsv Format = `CSV`
 
 const FormatJsonArray Format = `JSON_ARRAY`
 
@@ -956,11 +989,11 @@ func (f *Format) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Format) Set(v string) error {
 	switch v {
-	case `ARROW_STREAM`, `JSON_ARRAY`:
+	case `ARROW_STREAM`, `CSV`, `JSON_ARRAY`:
 		*f = Format(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ARROW_STREAM", "JSON_ARRAY"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ARROW_STREAM", "CSV", "JSON_ARRAY"`, v)
 	}
 }
 
@@ -1914,16 +1947,17 @@ type ResultData struct {
 type ResultManifest struct {
 	// Array of result set chunk metadata.
 	Chunks []ChunkInfo `json:"chunks,omitempty"`
-	// Statement execution supports two result formats: `JSON_ARRAY` (default),
-	// and `ARROW_STREAM`.
+	// Statement execution supports three result formats: `JSON_ARRAY`
+	// (default), `ARROW_STREAM`, and `CSV`.
 	//
 	// When specifying `format=JSON_ARRAY`, result data will be formatted as an
 	// array of arrays of values, where each value is either the *string
 	// representation* of a value, or `null`. For example, the output of `SELECT
-	// concat('id-', id) AS strId, id AS intId FROM range(3)` would look like
-	// this:
+	// concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)`
+	// would look like this:
 	//
-	// ``` [ [ "id-1", "1" ], [ "id-2", "2" ], [ "id-3", "3" ], ] ```
+	// ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null
+	// ], ] ```
 	//
 	// `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS`
 	// dispositions.
@@ -1942,7 +1976,21 @@ type ResultManifest struct {
 	// IMPORTANT: The format `ARROW_STREAM` is supported only with
 	// `EXTERNAL_LINKS` disposition.
 	//
+	// When specifying `format=CSV`, each chunk in the result will be a CSV
+	// according to [RFC 4180] standard. All the columns values will have
+	// *string representation* similar to the `JSON_ARRAY` format, and `null`
+	// values will be encoded as “null”. Only the first chunk in the result
+	// would contain a header row with column names. For example, the output of
+	// `SELECT concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM
+	// range(3)` would look like this:
+	//
+	// ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
+	//
+	// IMPORTANT: The format `CSV` is supported only with `EXTERNAL_LINKS`
+	// disposition.
+	//
 	// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
+	// [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
 	Format Format `json:"format,omitempty"`
 	// Schema is an ordered list of column descriptions.
 	Schema *ResultSchema `json:"schema,omitempty"`

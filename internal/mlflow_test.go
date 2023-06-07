@@ -91,8 +91,13 @@ func TestAccModels(t *testing.T) {
 		deleteModel(t, w, ctx, created)
 	})
 
+	model, err := w.ModelRegistry.GetModel(ctx, ml.GetModelRequest{
+		Name: created.RegisteredModel.Name,
+	})
+	require.NoError(t, err)
+
 	err = w.ModelRegistry.UpdateModel(ctx, ml.UpdateModelRequest{
-		Name:        created.RegisteredModel.Name,
+		Name:        model.RegisteredModelDatabricks.Name,
 		Description: RandomName("comment "),
 	})
 	require.NoError(t, err)
@@ -147,6 +152,7 @@ func deleteModelVersion(t *testing.T, w *databricks.WorkspaceClient, ctx context
 		})
 		require.NoError(t, err)
 
+		// TODO: x-databricks-wait to be added to all relevant MLflow APIs
 		if currentModelVersion.ModelVersion.Status != ml.ModelVersionStatusPendingRegistration {
 			break
 		}

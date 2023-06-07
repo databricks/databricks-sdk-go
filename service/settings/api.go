@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Ip Access Lists, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Ip Access Lists, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -212,6 +212,40 @@ func (a *AccountIpAccessListsAPI) Replace(ctx context.Context, request ReplaceIp
 // It can take a few minutes for the changes to take effect.
 func (a *AccountIpAccessListsAPI) Update(ctx context.Context, request UpdateIpAccessList) error {
 	return a.impl.Update(ctx, request)
+}
+
+func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
+	return &AccountSettingsAPI{
+		impl: &accountSettingsImpl{
+			client: client,
+		},
+	}
+}
+
+// TBD
+type AccountSettingsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(AccountSettingsService)
+	impl AccountSettingsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *AccountSettingsAPI) WithImpl(impl AccountSettingsService) *AccountSettingsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level AccountSettings API implementation
+func (a *AccountSettingsAPI) Impl() AccountSettingsService {
+	return a.impl
+}
+
+// Get Personal Compute setting.
+//
+// TBD
+func (a *AccountSettingsAPI) ReadPersonalComputeSetting(ctx context.Context, request ReadPersonalComputeSettingRequest) (*ReadPersonalComputeSettingResponse, error) {
+	return a.impl.ReadPersonalComputeSetting(ctx, request)
 }
 
 func NewIpAccessLists(client *client.DatabricksClient) *IpAccessListsAPI {

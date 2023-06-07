@@ -143,6 +143,15 @@ type WorkspaceClient struct {
 	// permissions (superset of `CAN_RUN`)
 	DbsqlPermissions *sql.DbsqlPermissionsAPI
 
+	// Experiments are the primary unit of organization in MLflow; all MLflow
+	// runs belong to an experiment. Each experiment lets you visualize, search,
+	// and compare runs, as well as download run artifacts or metadata for
+	// analysis in other tools. Experiments are maintained in a Databricks
+	// hosted MLflow tracking server.
+	//
+	// Experiments are located in the workspace file tree. You manage
+	// experiments using the same tools you use to manage other workspace
+	// objects such as folders, notebooks, and libraries.
 	Experiments *ml.ExperimentsAPI
 
 	// An external location is an object that combines a cloud storage path with
@@ -323,6 +332,8 @@ type WorkspaceClient struct {
 	// available in a catalog named hive_metastore.
 	Metastores *catalog.MetastoresAPI
 
+	// MLflow Model Registry is a centralized model repository and a UI and set
+	// of APIs that enable you to manage the full lifecycle of MLflow Models.
 	ModelRegistry *ml.ModelRegistryAPI
 
 	// Permissions API are used to create read, write, edit, update and manage
@@ -510,7 +521,7 @@ type WorkspaceClient struct {
 	// **Fetching result data: format and disposition**
 	//
 	// To specify the result data format, set the `format` field to `JSON_ARRAY`
-	// (JSON) or `ARROW_STREAM` ([Apache Arrow Columnar]).
+	// (JSON), `ARROW_STREAM` ([Apache Arrow Columnar]), or `CSV`.
 	//
 	// You can also configure how to fetch the result data in two different
 	// modes by setting the `disposition` field to `INLINE` or `EXTERNAL_LINKS`.
@@ -521,7 +532,8 @@ type WorkspaceClient struct {
 	// can be fetched.
 	//
 	// The `EXTERNAL_LINKS` disposition allows fetching large result sets in
-	// both `JSON_ARRAY` and `ARROW_STREAM` formats, and with higher throughput.
+	// `JSON_ARRAY`, `ARROW_STREAM` and `CSV` formats, and with higher
+	// throughput.
 	//
 	// The API uses defaults of `format=JSON_ARRAY` and `disposition=INLINE`.
 	// Databricks recommends that you explicit setting the format and the

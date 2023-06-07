@@ -84,6 +84,21 @@ type DeleteWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+// Get a rule set
+type GetAccountAccessControlRequest struct {
+	// Etag used for versioning. The response is at least as fresh as the eTag
+	// provided. Etag is used for optimistic concurrency control as a way to
+	// help prevent simultaneous updates of a rule set from overwriting each
+	// other. It is strongly suggested that systems make use of the etag in the
+	// read -> modify -> write pattern to perform rule set updates in order to
+	// avoid race conditions that is get an etag from a GET rule set request,
+	// and pass it with the PUT update request to identify the rule set version
+	// you are updating.
+	Etag string `json:"-" url:"etag"`
+	// The resource name of the rule set to get or update.
+	Name string `json:"-" url:"name"`
+}
+
 // Get group details
 type GetAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
@@ -100,6 +115,10 @@ type GetAccountServicePrincipalRequest struct {
 type GetAccountUserRequest struct {
 	// Unique ID for a user in the Databricks account.
 	Id string `json:"-" url:"-"`
+}
+
+type GetAssignableRolesForResourceResponse struct {
+	Roles []string `json:"roles,omitempty"`
 }
 
 // Get group details
@@ -146,6 +165,13 @@ type GetWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+type GrantRule struct {
+	// Principals this grant rule applies to.
+	Principals []string `json:"principals,omitempty"`
+	// Role that is assigned to the list of principals.
+	Role string `json:"role"`
+}
+
 type Group struct {
 	// String that represents a human-readable group name
 	DisplayName string `json:"displayName,omitempty"`
@@ -156,11 +182,17 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
+}
+
+// List assignable roles on a resource
+type ListAccountAccessControlRequest struct {
+	// The resource name of the rule set to get or update.
+	Name string `json:"-" url:"name"`
 }
 
 // List group details
@@ -394,7 +426,7 @@ type ObjectPermissions struct {
 }
 
 type PartialUpdate struct {
-	// Unique ID for a group in the Databricks account.
+	// Unique ID for a user in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 
 	Operations []Patch `json:"operations,omitempty"`
@@ -550,6 +582,26 @@ type PrincipalOutput struct {
 	UserName string `json:"user_name,omitempty"`
 }
 
+type RuleSetResponse struct {
+	// Identifies the version of the rule set returned.
+	Etag string `json:"etag,omitempty"`
+
+	GrantRules []GrantRule `json:"grant_rules,omitempty"`
+	// Name of the rule set.
+	Name string `json:"name,omitempty"`
+}
+
+type RuleSetUpdateRequest struct {
+	// The expected etag of the rule set to update. The update will fail if the
+	// value does not match the value that is stored in account access control
+	// service.
+	Etag string `json:"etag"`
+
+	GrantRules []GrantRule `json:"grant_rules,omitempty"`
+	// Name of the rule set.
+	Name string `json:"name"`
+}
+
 type ServicePrincipal struct {
 	// If this user is active
 	Active bool `json:"active,omitempty"`
@@ -564,9 +616,25 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
+}
+
+type UpdateRuleSetRequest struct {
+	// Etag used for versioning. The response is at least as fresh as the eTag
+	// provided. Etag is used for optimistic concurrency control as a way to
+	// help prevent simultaneous updates of a rule set from overwriting each
+	// other. It is strongly suggested that systems make use of the etag in the
+	// read -> modify -> write pattern to perform rule set updates in order to
+	// avoid race conditions that is get an etag from a GET rule set request,
+	// and pass it with the PUT update request to identify the rule set version
+	// you are updating.
+	Etag string `json:"-" url:"etag"`
+	// Name of the rule set.
+	Name string `json:"name" url:"name"`
+
+	RuleSet RuleSetUpdateRequest `json:"rule_set"`
 }
 
 type UpdateWorkspaceAssignments struct {
@@ -593,7 +661,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Name *Name `json:"name,omitempty"`
 

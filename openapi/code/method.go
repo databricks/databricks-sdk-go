@@ -150,6 +150,10 @@ func (m *Method) IsCrudRead() bool {
 	return m.operation.Crud == "read"
 }
 
+func (m *Method) IsCrudCreate() bool {
+	return m.operation.Crud == "create"
+}
+
 // Wait returns definition for long-running operation
 func (m *Method) Wait() *Wait {
 	if m.wait == nil {
