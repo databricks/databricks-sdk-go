@@ -606,7 +606,7 @@ type GetModelRequest struct {
 }
 
 type GetModelResponse struct {
-	RegisteredModelDatabricks *ModelDatabricks `json:"registered_model_databricks,omitempty"`
+	RegisteredModel *ModelDatabricks `json:"registered_model,omitempty"`
 }
 
 // Get a model version URI

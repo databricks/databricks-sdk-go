@@ -336,9 +336,309 @@ type WorkspaceClient struct {
 	// of APIs that enable you to manage the full lifecycle of MLflow Models.
 	ModelRegistry *ml.ModelRegistryAPI
 
-	// Permissions API are used to create read, write, edit, update and manage
-	// access for various users on different objects and endpoints.
-	Permissions *iam.PermissionsAPI
+	// This endpoint enables workspace admins to configure permissions on
+	// cluster policies and check which permission levels can be set.
+	//
+	// There are two permission levels for a cluster policy:
+	//
+	// * No Permissions
+	//
+	// * Can Use (`CAN_USE`).
+	PermissionsClusterPolicies *iam.PermissionsClusterPoliciesAPI
+
+	// This endpoint enables users to configure permissions on clusters and
+	// check which permission levels can be set.
+	//
+	// There are four permission levels for a cluster:
+	//
+	// * No Permissions
+	//
+	// * Can Attach To (`CAN_ATTACH_TO`)
+	//
+	// * Can Restart (`CAN_RESTART`)
+	//
+	// * Can Manage (`CAN_MANAGE`)
+	//
+	// For the mapping of the required permissions for specific actions or
+	// abilities, see [Cluster access control].
+	//
+	// If the cluster is created from a job, the cluster inherits permissions
+	// from the job.
+	//
+	// [Cluster access control]: https://docs.databricks.com/security/access-control/cluster-acl.html
+	PermissionsClusters *iam.PermissionsClustersAPI
+
+	// This endpoint enables users to configure permissions on Delta Live
+	// Tables](https://docs.databricks.com/data-engineering/delta-live-tables/index.html)
+	// pipelines and check which permission levels can be set.
+	//
+	// There are five permission levels for pipelines:
+	//
+	// * No Permissions
+	//
+	// * Can View (`CAN_VIEW`) — User can view this pipeline.
+	//
+	// * Can Run (`CAN_RUN`) — User can run this pipeline.
+	//
+	// * Can Manage (`CAN_MANAGE`) — User can manage this pipeline. Workspace
+	// admins are granted the Can Manage permission by default.
+	//
+	// * Is Owner (`IS_OWNER`) — User is the owner of this pipeline. Only
+	// workspace admins can change this permission. Only one user or one service
+	// principal can be granted `IS_OWNER` permission on a pipeline at a given
+	// time, and this permission cannot be granted to groups. The API enforces
+	// these rules.
+	//
+	// For the mapping of the required permissions for specific actions or
+	// abilities, see [Delta Live Tables access control].
+	//
+	// [Delta Live Tables access control]: https://docs.databricks.com/security/access-control/dlt-acl.html
+	PermissionsDeltaLiveTables *iam.PermissionsDeltaLiveTablesAPI
+
+	// This endpoint enables users to configure permissions on directories and
+	// check which permission levels can be set. Note that in the web
+	// application user interface and in some other documentation, directories
+	// are referred to as _folders_.
+	//
+	// There are five permission levels for directories:
+	//
+	// * No Permissions
+	//
+	// * Can Read (`CAN_READ`) — User can read items this directory
+	//
+	// * Can Run (`CAN_RUN`) — Can run items in this directory.
+	//
+	// * Can Edit (`CAN_EDIT`) — Can edit items in this directory.
+	//
+	// * Can Manage (`CAN_MANAGE`) — Can manage this directory.
+	//
+	// **IMPORTANT:** Notebooks and experiments in a folder inherit all
+	// permissions settings of that folder. For example, a user that has Run
+	// permission on a folder has Run permission on the notebooks in that
+	// folder.
+	//
+	// For the mapping of the required permissions for specific actions or
+	// abilities, see [Folder permissions].
+	//
+	// Permissions on directories are inherited from its parent directories. You
+	// can set permissions directly on the root directory, which has no parent,
+	// so the root directory never inherits permissions.
+	//
+	// [Folder permissions]: https://docs.databricks.com/security/access-control/workspace-acl.html#folder-permissions
+	PermissionsDirectories *iam.PermissionsDirectoriesAPI
+
+	// This endpoint enables users to configure permissions on jobs and check
+	// which permission levels can be set.
+	//
+	// There are five permission levels for jobs:
+	//
+	// * No Permissions
+	//
+	// * Can View (`CAN_VIEW`) — User can view this job
+	//
+	// * Can Manage Run (`CAN_MANAGE_RUN`) — User can manage or run this job.
+	//
+	// * Is Owner (`IS_OWNER`) — User is the owner of this job.
+	//
+	// * Can Manage (`CAN_MANAGE`) — User can manage this job. Workspace
+	// admins are granted the Can Manage permission by default and can assign
+	// that permission to non-admin users.
+	//
+	// For the mapping of the required permissions for specific actions or
+	// abilities, see [Jobs access control].
+	//
+	// [Jobs access control]: https://docs.databricks.com/security/access-control/jobs-acl.html
+	PermissionsJobs *iam.PermissionsJobsAPI
+
+	// This endpoint enables users to configure permissions on MLflow models and
+	// check which permission levels can be set.
+	//
+	// You can assign six permission levels to registered models:
+	//
+	// * No Permissions
+	//
+	// * Can Read (`CAN_READ`)
+	//
+	// * Can Edit (`CAN_EDIT`)
+	//
+	// * Can Manage Staging Versions (`CAN_MANAGE_STAGING_VERSIONS`)
+	//
+	// * Can Manage Production Versions (`CAN_MANAGE_PRODUCTION_VERSIONS`)
+	//
+	// * Can Manage (`CAN_MANAGE`).
+	//
+	// For the mapping of the required permissions for specific actions or
+	// abilities, see [MLflow model permissions].
+	//
+	// MLflow registered models inherit permissions from their root object.
+	//
+	// [MLflow model permissions]: https://docs.databricks.com/security/access-control/workspace-acl.html#mlflow-model-permissions
+	PermissionsMLFlowRegisteredModels *iam.PermissionsMLFlowRegisteredModelsAPI
+
+	// This endpoint enables users to configure permissions on MLflow
+	// experiments and check which permission levels can be set.
+	//
+	// You can assign four permission levels to experiments:
+	//
+	// * No Permissions
+	//
+	// * Can Read (`CAN_READ`)
+	//
+	// * Can Edit (`CAN_EDIT`)
+	//
+	// * Can Manage (`CAN_MANAGE`)
+	//
+	// For the mapping of the required permissions for specific actions or
+	// abilities, see [MLflow experiment permissions].
+	//
+	// For auto-generated experiments (for example, when a user runs a notebook
+	// without calling `mlflow.set_experiment()` explicitly), permissions can
+	// only be changed by using notebook permissions.
+	//
+	// For more information, see [notebook experiments].
+	//
+	// [MLflow experiment permissions]: https://docs.databricks.com/security/access-control/workspace-acl.html#mlflow-experiment-permissions-1
+	// [notebook experiments]: https://docs.databricks.com/applications/mlflow/tracking.html#notebook-experiments
+	PermissionsMLflowExperiments *iam.PermissionsMLflowExperimentsAPI
+
+	// This endpoint enables users to configure permissions on notebooks and
+	// check which permission levels can be set.
+	//
+	// There are five permission levels for notebooks:
+	//
+	// * No Permissions
+	//
+	// * Can Read (`CAN_READ`) — User can read this notebook. The user can
+	// also run the notebook via %run or notebook workflows.
+	//
+	// * Can Run (`CAN_RUN`) — User can run this notebook. The user can not
+	// only use %run and notebook workflows, but also run commands and can
+	// attach or detach notebooks.
+	//
+	// * Can Edit (`CAN_EDIT`) — User can edit this notebook.
+	//
+	// * Can Manage (`CAN_MANAGE`) — User can manage this job. Workspace
+	// admins are granted the Can Manage permission by default and can assign
+	// that permission to non-admin users.
+	//
+	// For the mapping of the required permissions for specific actions or
+	// abilities, see [Notebook access control].
+	//
+	// Notebooks inherit permissions from their root object. Additionally,
+	// notebooks inherit permissions from parent directories, similar to how
+	// directories inherit permissions from their parent directories. For
+	// example, a notebook with path `/Users/jsmith@example.com/myNotebook` can
+	// inherit permissions from **all** of the following objects: `/` (root
+	// directory), `/Users`, and `/Users/jsmith@example.com`.
+	//
+	// [Notebook access control]: https://docs.databricks.com/security/access-control/workspace-acl.html#notebook-permissions
+	PermissionsNotebooks *iam.PermissionsNotebooksAPI
+
+	// This endpoint enables admins to configure permissions on passwords and
+	// check which permission levels can be set. Password permissions control
+	// which users can use native authentication with username/password when
+	// single sign-on (SSO) is enabled for the workspace and Unified Login is
+	// disabled. The only supported permission to add is `CAN_USE`, which
+	// specifies login is permitted even if SSO is enabled.
+	//
+	// **IMPORTANT:** If SSO is not enabled, these permissions have no effect.
+	// All users with locally-stored (native authentication) passwords can sign
+	// in with the web application and authenticate with the REST API.
+	//
+	// By default, the built-in group for all users (`users`) has this
+	// permission. Workspace admins can replace all permissions for the
+	// workspace to remove that group permission and enable the permission for
+	// the `admins` group or only for specific admin users.
+	//
+	// It is important to understand the following authentication differences:
+	//
+	// * **From the web application user interface**, if SSO is enabled, there
+	// are two tabs for login. The non-SSO login is for admin users only. You
+	// can login with a native authentication password only if all of the
+	// following are true: (a) You are in the `admins` group. (b) You have the
+	// password permission `CAN_USE`. (c) You have a locally-stored (native
+	// authentication) password, independent of whether your user was originally
+	// created using SSO/SCIM. Although uncommon, users created using SSO/SCIM
+	// can create a native authentication password using the password recovery
+	// user interface.
+	//
+	// * **From the REST API**, if SSO is enabled, you can login only if you
+	// have the password permission `CAN_USE`. You do not need to be in the
+	// `admins` group.
+	PermissionsPasswords *iam.PermissionsPasswordsAPI
+
+	// This endpoint enables users to configure permissions on pools and check
+	// which permission levels can be set.
+	//
+	// There are three permission levels for a pool:
+	//
+	// * No Permissions
+	//
+	// * Can Attach To (`CAN_ATTACH_TO`)
+	//
+	// * Can Manage (`CAN_MANAGE`)
+	//
+	// For the mapping of the required permissions for specific actions or
+	// abilities, see [Pool access control].
+	//
+	// [Pool access control]: https://docs.databricks.com/security/access-control/pool-acl.html
+	PermissionsPools *iam.PermissionsPoolsAPI
+
+	// This endpoint enables users to configure permissions on repos and check
+	// which permission levels can be set.
+	//
+	// There are five permission levels for repos:
+	//
+	// * No Permissions
+	//
+	// * Can Read (`CAN_READ`) — Can read items in this repo.
+	//
+	// * Can Run (`CAN_RUN`) — Can run items in this repo.
+	//
+	// * Can Edit (`CAN_EDIT`) — Can edit items in this repo.
+	//
+	// * Can Manage (`CAN_MANAGE`) — Can manage this repo.
+	PermissionsRepos *iam.PermissionsReposAPI
+
+	// This endpoint enables users to configure permissions on SQL warehouses
+	// and check which permission levels can be set.
+	//
+	// You can assign four permission levels to SQL warehouses:
+	//
+	// * No Permissions
+	//
+	// * Can Use (`CAN_USE`)
+	//
+	// * Can Manage (`CAN_MANAGE`)
+	//
+	// * Is Owner (`IS_OWNER`)
+	//
+	// For the mapping of the required permissions for specific actions or
+	// abilities, see [SQL warehouse permissions].
+	//
+	// [SQL warehouse permissions]: https://docs.databricks.com/sql/user/security/access-control/sql-endpoint-acl.html#sql-warehouse-permissions
+	PermissionsSQLWarehouses *iam.PermissionsSQLWarehousesAPI
+
+	// This endpoint enables admins to configure permissions on tokens and check
+	// which permission levels can be set.
+	//
+	// There are several levels of token permissions that a user can have:
+	//
+	// * No Permissions
+	//
+	// * Can Use (`CAN_USE`) — The default is for no users to have the Can Use
+	// permission. Admins must explicitly grant those permissions, whether to
+	// the entire `users` group or on a user-by-user or group-by-group basis.
+	//
+	// * Can Manage (`CAN_MANAGE`) — Workspace admins only. The `admins` group
+	// gets this permission and it cannot be changed. No other groups or users
+	// can be granted this permission. The API enforces these rules.
+	//
+	// **WARNING:** If you revoke the Can Use permission from a group and a user
+	// does not have the Can Use permission directly or indirectly through
+	// another group, that user’s tokens are immediately deleted. Deleted
+	// tokens cannot be retrieved.
+	PermissionsTokens *iam.PermissionsTokensAPI
 
 	// The Delta Live Tables API allows you to create, edit, delete, start, and
 	// view details about pipelines.
@@ -756,56 +1056,68 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		return nil, err
 	}
 	return &WorkspaceClient{
-		Config:              cfg,
-		Alerts:              sql.NewAlerts(apiClient),
-		Catalogs:            catalog.NewCatalogs(apiClient),
-		ClusterPolicies:     compute.NewClusterPolicies(apiClient),
-		Clusters:            compute.NewClusters(apiClient),
-		CommandExecutor:     compute.NewCommandExecutor(apiClient),
-		CurrentUser:         iam.NewCurrentUser(apiClient),
-		Dashboards:          sql.NewDashboards(apiClient),
-		DataSources:         sql.NewDataSources(apiClient),
-		Dbfs:                files.NewDbfs(apiClient),
-		DbsqlPermissions:    sql.NewDbsqlPermissions(apiClient),
-		Experiments:         ml.NewExperiments(apiClient),
-		ExternalLocations:   catalog.NewExternalLocations(apiClient),
-		Functions:           catalog.NewFunctions(apiClient),
-		GitCredentials:      workspace.NewGitCredentials(apiClient),
-		GlobalInitScripts:   compute.NewGlobalInitScripts(apiClient),
-		Grants:              catalog.NewGrants(apiClient),
-		Groups:              iam.NewGroups(apiClient),
-		InstancePools:       compute.NewInstancePools(apiClient),
-		InstanceProfiles:    compute.NewInstanceProfiles(apiClient),
-		IpAccessLists:       settings.NewIpAccessLists(apiClient),
-		Jobs:                jobs.NewJobs(apiClient),
-		Libraries:           compute.NewLibraries(apiClient),
-		Metastores:          catalog.NewMetastores(apiClient),
-		ModelRegistry:       ml.NewModelRegistry(apiClient),
-		Permissions:         iam.NewPermissions(apiClient),
-		Pipelines:           pipelines.NewPipelines(apiClient),
-		PolicyFamilies:      compute.NewPolicyFamilies(apiClient),
-		Providers:           sharing.NewProviders(apiClient),
-		Queries:             sql.NewQueries(apiClient),
-		QueryHistory:        sql.NewQueryHistory(apiClient),
-		RecipientActivation: sharing.NewRecipientActivation(apiClient),
-		Recipients:          sharing.NewRecipients(apiClient),
-		Repos:               workspace.NewRepos(apiClient),
-		Schemas:             catalog.NewSchemas(apiClient),
-		Secrets:             workspace.NewSecrets(apiClient),
-		ServicePrincipals:   iam.NewServicePrincipals(apiClient),
-		ServingEndpoints:    serving.NewServingEndpoints(apiClient),
-		Shares:              sharing.NewShares(apiClient),
-		StatementExecution:  sql.NewStatementExecution(apiClient),
-		StorageCredentials:  catalog.NewStorageCredentials(apiClient),
-		TableConstraints:    catalog.NewTableConstraints(apiClient),
-		Tables:              catalog.NewTables(apiClient),
-		TokenManagement:     settings.NewTokenManagement(apiClient),
-		Tokens:              settings.NewTokens(apiClient),
-		Users:               iam.NewUsers(apiClient),
-		Volumes:             catalog.NewVolumes(apiClient),
-		Warehouses:          sql.NewWarehouses(apiClient),
-		Workspace:           workspace.NewWorkspace(apiClient),
-		WorkspaceBindings:   catalog.NewWorkspaceBindings(apiClient),
-		WorkspaceConf:       settings.NewWorkspaceConf(apiClient),
+		Config:                            cfg,
+		Alerts:                            sql.NewAlerts(apiClient),
+		Catalogs:                          catalog.NewCatalogs(apiClient),
+		ClusterPolicies:                   compute.NewClusterPolicies(apiClient),
+		Clusters:                          compute.NewClusters(apiClient),
+		CommandExecutor:                   compute.NewCommandExecutor(apiClient),
+		CurrentUser:                       iam.NewCurrentUser(apiClient),
+		Dashboards:                        sql.NewDashboards(apiClient),
+		DataSources:                       sql.NewDataSources(apiClient),
+		Dbfs:                              files.NewDbfs(apiClient),
+		DbsqlPermissions:                  sql.NewDbsqlPermissions(apiClient),
+		Experiments:                       ml.NewExperiments(apiClient),
+		ExternalLocations:                 catalog.NewExternalLocations(apiClient),
+		Functions:                         catalog.NewFunctions(apiClient),
+		GitCredentials:                    workspace.NewGitCredentials(apiClient),
+		GlobalInitScripts:                 compute.NewGlobalInitScripts(apiClient),
+		Grants:                            catalog.NewGrants(apiClient),
+		Groups:                            iam.NewGroups(apiClient),
+		InstancePools:                     compute.NewInstancePools(apiClient),
+		InstanceProfiles:                  compute.NewInstanceProfiles(apiClient),
+		IpAccessLists:                     settings.NewIpAccessLists(apiClient),
+		Jobs:                              jobs.NewJobs(apiClient),
+		Libraries:                         compute.NewLibraries(apiClient),
+		Metastores:                        catalog.NewMetastores(apiClient),
+		ModelRegistry:                     ml.NewModelRegistry(apiClient),
+		PermissionsClusterPolicies:        iam.NewPermissionsClusterPolicies(apiClient),
+		PermissionsClusters:               iam.NewPermissionsClusters(apiClient),
+		PermissionsDeltaLiveTables:        iam.NewPermissionsDeltaLiveTables(apiClient),
+		PermissionsDirectories:            iam.NewPermissionsDirectories(apiClient),
+		PermissionsJobs:                   iam.NewPermissionsJobs(apiClient),
+		PermissionsMLFlowRegisteredModels: iam.NewPermissionsMLFlowRegisteredModels(apiClient),
+		PermissionsMLflowExperiments:      iam.NewPermissionsMLflowExperiments(apiClient),
+		PermissionsNotebooks:              iam.NewPermissionsNotebooks(apiClient),
+		PermissionsPasswords:              iam.NewPermissionsPasswords(apiClient),
+		PermissionsPools:                  iam.NewPermissionsPools(apiClient),
+		PermissionsRepos:                  iam.NewPermissionsRepos(apiClient),
+		PermissionsSQLWarehouses:          iam.NewPermissionsSQLWarehouses(apiClient),
+		PermissionsTokens:                 iam.NewPermissionsTokens(apiClient),
+		Pipelines:                         pipelines.NewPipelines(apiClient),
+		PolicyFamilies:                    compute.NewPolicyFamilies(apiClient),
+		Providers:                         sharing.NewProviders(apiClient),
+		Queries:                           sql.NewQueries(apiClient),
+		QueryHistory:                      sql.NewQueryHistory(apiClient),
+		RecipientActivation:               sharing.NewRecipientActivation(apiClient),
+		Recipients:                        sharing.NewRecipients(apiClient),
+		Repos:                             workspace.NewRepos(apiClient),
+		Schemas:                           catalog.NewSchemas(apiClient),
+		Secrets:                           workspace.NewSecrets(apiClient),
+		ServicePrincipals:                 iam.NewServicePrincipals(apiClient),
+		ServingEndpoints:                  serving.NewServingEndpoints(apiClient),
+		Shares:                            sharing.NewShares(apiClient),
+		StatementExecution:                sql.NewStatementExecution(apiClient),
+		StorageCredentials:                catalog.NewStorageCredentials(apiClient),
+		TableConstraints:                  catalog.NewTableConstraints(apiClient),
+		Tables:                            catalog.NewTables(apiClient),
+		TokenManagement:                   settings.NewTokenManagement(apiClient),
+		Tokens:                            settings.NewTokens(apiClient),
+		Users:                             iam.NewUsers(apiClient),
+		Volumes:                           catalog.NewVolumes(apiClient),
+		Warehouses:                        sql.NewWarehouses(apiClient),
+		Workspace:                         workspace.NewWorkspace(apiClient),
+		WorkspaceBindings:                 catalog.NewWorkspaceBindings(apiClient),
+		WorkspaceConf:                     settings.NewWorkspaceConf(apiClient),
 	}, nil
 }

@@ -17,15 +17,232 @@ type AccessControlRequest struct {
 	UserName string `json:"user_name,omitempty"`
 }
 
-type AccessControlResponse struct {
-	// All permissions.
-	AllPermissions []Permission `json:"all_permissions,omitempty"`
-	// name of the group
+type ClusterAccessControlRequest struct {
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
 	GroupName string `json:"group_name,omitempty"`
-	// name of the service principal
+
+	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
+	// Value that uniquely identifies a service principal.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-	// name of the user
+	// Email address for a user.
 	UserName string `json:"user_name,omitempty"`
+}
+
+type ClusterAccessControlResponse struct {
+	AllPermissions []ClusterPermission `json:"all_permissions,omitempty"`
+	// A customizable name for the user or service principal. This is not
+	// defined for groups.
+	DisplayName string `json:"display_name,omitempty"`
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type ClusterGetPermissionLevelsResponse struct {
+	PermissionLevels []ClusterPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type ClusterObjectPermissions struct {
+	AccessControlList []ClusterAccessControlResponse `json:"access_control_list,omitempty"`
+	// The ID of the cluster.
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType ClusterObjectPermissionsObjectType `json:"object_type,omitempty"`
+}
+
+type ClusterObjectPermissionsObjectType string
+
+const ClusterObjectPermissionsObjectTypeCluster ClusterObjectPermissionsObjectType = `cluster`
+
+// String representation for [fmt.Print]
+func (copot *ClusterObjectPermissionsObjectType) String() string {
+	return string(*copot)
+}
+
+// Set raw string value and validate it against allowed values
+func (copot *ClusterObjectPermissionsObjectType) Set(v string) error {
+	switch v {
+	case `cluster`:
+		*copot = ClusterObjectPermissionsObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "cluster"`, v)
+	}
+}
+
+// Type always returns ClusterObjectPermissionsObjectType to satisfy [pflag.Value] interface
+func (copot *ClusterObjectPermissionsObjectType) Type() string {
+	return "ClusterObjectPermissionsObjectType"
+}
+
+type ClusterPermission struct {
+	// Specifies whether the permission is inherited from a parent ACL rather
+	// than set explicitly. See related property `inherited_from_object`.
+	Inherited bool `json:"inherited,omitempty"`
+	// The list of parent ACL object IDs that contribute to inherited permission
+	// on an ACL object. This is only defined if related property `inherited` is
+	// set to `true`.
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type ClusterPermissionLevel string
+
+const ClusterPermissionLevelCanAttachTo ClusterPermissionLevel = `CAN_ATTACH_TO`
+
+const ClusterPermissionLevelCanRestart ClusterPermissionLevel = `CAN_RESTART`
+
+const ClusterPermissionLevelCanUse ClusterPermissionLevel = `CAN_USE`
+
+// String representation for [fmt.Print]
+func (cpl *ClusterPermissionLevel) String() string {
+	return string(*cpl)
+}
+
+// Set raw string value and validate it against allowed values
+func (cpl *ClusterPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_ATTACH_TO`, `CAN_RESTART`, `CAN_USE`:
+		*cpl = ClusterPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_ATTACH_TO", "CAN_RESTART", "CAN_USE"`, v)
+	}
+}
+
+// Type always returns ClusterPermissionLevel to satisfy [pflag.Value] interface
+func (cpl *ClusterPermissionLevel) Type() string {
+	return "ClusterPermissionLevel"
+}
+
+type ClusterPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type ClusterPermissionsRequest struct {
+	AccessControlList []ClusterAccessControlRequest `json:"access_control_list,omitempty"`
+	// The ID of a cluster
+	ClusterId string `json:"-" url:"-"`
+}
+
+type ClusterPolicyAccessControlRequest struct {
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type ClusterPolicyAccessControlResponse struct {
+	AllPermissions []ClusterPolicyPermission `json:"all_permissions,omitempty"`
+	// A customizable name for the user or service principal. This is not
+	// defined for groups.
+	DisplayName string `json:"display_name,omitempty"`
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type ClusterPolicyGetPermissionLevelsResponse struct {
+	PermissionLevels []ClusterPolicyPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type ClusterPolicyObjectPermissions struct {
+	AccessControlList []ClusterPolicyAccessControlResponse `json:"access_control_list,omitempty"`
+	// The ID of the cluster policy.
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType ClusterPolicyObjectPermissionsObjectType `json:"object_type,omitempty"`
+}
+
+type ClusterPolicyObjectPermissionsObjectType string
+
+const ClusterPolicyObjectPermissionsObjectTypeClusterPolicy ClusterPolicyObjectPermissionsObjectType = `cluster-policy`
+
+// String representation for [fmt.Print]
+func (cpopot *ClusterPolicyObjectPermissionsObjectType) String() string {
+	return string(*cpopot)
+}
+
+// Set raw string value and validate it against allowed values
+func (cpopot *ClusterPolicyObjectPermissionsObjectType) Set(v string) error {
+	switch v {
+	case `cluster-policy`:
+		*cpopot = ClusterPolicyObjectPermissionsObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "cluster-policy"`, v)
+	}
+}
+
+// Type always returns ClusterPolicyObjectPermissionsObjectType to satisfy [pflag.Value] interface
+func (cpopot *ClusterPolicyObjectPermissionsObjectType) Type() string {
+	return "ClusterPolicyObjectPermissionsObjectType"
+}
+
+type ClusterPolicyPermission struct {
+	// Specifies whether the permission is inherited from a parent ACL rather
+	// than set explicitly. See related property `inherited_from_object`.
+	Inherited bool `json:"inherited,omitempty"`
+	// The list of parent ACL object IDs that contribute to inherited permission
+	// on an ACL object. This is only defined if related property `inherited` is
+	// set to `true`.
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type ClusterPolicyPermissionLevel string
+
+const ClusterPolicyPermissionLevelCanUse ClusterPolicyPermissionLevel = `CAN_USE`
+
+// String representation for [fmt.Print]
+func (cppl *ClusterPolicyPermissionLevel) String() string {
+	return string(*cppl)
+}
+
+// Set raw string value and validate it against allowed values
+func (cppl *ClusterPolicyPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_USE`:
+		*cppl = ClusterPolicyPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_USE"`, v)
+	}
+}
+
+// Type always returns ClusterPolicyPermissionLevel to satisfy [pflag.Value] interface
+func (cppl *ClusterPolicyPermissionLevel) Type() string {
+	return "ClusterPolicyPermissionLevel"
+}
+
+type ClusterPolicyPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type ClusterPolicyPermissionsRequest struct {
+	AccessControlList []ClusterPolicyAccessControlRequest `json:"access_control_list,omitempty"`
+	// The ID of the cluster policy.
+	ClusterPolicyId string `json:"-" url:"-"`
 }
 
 type ComplexValue struct {
@@ -84,19 +301,240 @@ type DeleteWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-// Get a rule set
-type GetAccountAccessControlRequest struct {
-	// Etag used for versioning. The response is at least as fresh as the eTag
-	// provided. Etag is used for optimistic concurrency control as a way to
-	// help prevent simultaneous updates of a rule set from overwriting each
-	// other. It is strongly suggested that systems make use of the etag in the
-	// read -> modify -> write pattern to perform rule set updates in order to
-	// avoid race conditions that is get an etag from a GET rule set request,
-	// and pass it with the PUT update request to identify the rule set version
-	// you are updating.
-	Etag string `json:"-" url:"etag"`
-	// The resource name of the rule set to get or update.
-	Name string `json:"-" url:"name"`
+type DeltaLiveTableAccessControlRequest struct {
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel DeltaLiveTablePermissionLevel `json:"permission_level,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type DeltaLiveTableAccessControlResponse struct {
+	AllPermissions []DeltaLiveTablePermission `json:"all_permissions,omitempty"`
+	// A customizable name for the user or service principal. This is not
+	// defined for groups.
+	DisplayName string `json:"display_name,omitempty"`
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type DeltaLiveTableGetPermissionLevelsResponse struct {
+	PermissionLevels []DeltaLiveTablePermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type DeltaLiveTableObjectPermissions struct {
+	AccessControlList []DeltaLiveTableAccessControlResponse `json:"access_control_list,omitempty"`
+	// The ID of the pipeline.
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType DeltaLiveTableObjectPermissionsObjectType `json:"object_type,omitempty"`
+}
+
+type DeltaLiveTableObjectPermissionsObjectType string
+
+const DeltaLiveTableObjectPermissionsObjectTypePipeline DeltaLiveTableObjectPermissionsObjectType = `pipeline`
+
+// String representation for [fmt.Print]
+func (dltopot *DeltaLiveTableObjectPermissionsObjectType) String() string {
+	return string(*dltopot)
+}
+
+// Set raw string value and validate it against allowed values
+func (dltopot *DeltaLiveTableObjectPermissionsObjectType) Set(v string) error {
+	switch v {
+	case `pipeline`:
+		*dltopot = DeltaLiveTableObjectPermissionsObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "pipeline"`, v)
+	}
+}
+
+// Type always returns DeltaLiveTableObjectPermissionsObjectType to satisfy [pflag.Value] interface
+func (dltopot *DeltaLiveTableObjectPermissionsObjectType) Type() string {
+	return "DeltaLiveTableObjectPermissionsObjectType"
+}
+
+type DeltaLiveTablePermission struct {
+	// Specifies whether the permission is inherited from a parent ACL rather
+	// than set explicitly. See related property `inherited_from_object`.
+	Inherited bool `json:"inherited,omitempty"`
+	// The list of parent ACL object IDs that contribute to inherited permission
+	// on an ACL object. This is only defined if related property `inherited` is
+	// set to `true`.
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel DeltaLiveTablePermissionLevel `json:"permission_level,omitempty"`
+}
+
+type DeltaLiveTablePermissionLevel string
+
+const DeltaLiveTablePermissionLevelCanManage DeltaLiveTablePermissionLevel = `CAN_MANAGE`
+
+const DeltaLiveTablePermissionLevelCanRun DeltaLiveTablePermissionLevel = `CAN_RUN`
+
+const DeltaLiveTablePermissionLevelCanView DeltaLiveTablePermissionLevel = `CAN_VIEW`
+
+const DeltaLiveTablePermissionLevelIsOwner DeltaLiveTablePermissionLevel = `IS_OWNER`
+
+// String representation for [fmt.Print]
+func (dltpl *DeltaLiveTablePermissionLevel) String() string {
+	return string(*dltpl)
+}
+
+// Set raw string value and validate it against allowed values
+func (dltpl *DeltaLiveTablePermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_RUN`, `CAN_VIEW`, `IS_OWNER`:
+		*dltpl = DeltaLiveTablePermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_RUN", "CAN_VIEW", "IS_OWNER"`, v)
+	}
+}
+
+// Type always returns DeltaLiveTablePermissionLevel to satisfy [pflag.Value] interface
+func (dltpl *DeltaLiveTablePermissionLevel) Type() string {
+	return "DeltaLiveTablePermissionLevel"
+}
+
+type DeltaLiveTablePermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel DeltaLiveTablePermissionLevel `json:"permission_level,omitempty"`
+}
+
+type DeltaLiveTablePermissionsRequest struct {
+	AccessControlList []DeltaLiveTableAccessControlRequest `json:"access_control_list,omitempty"`
+	// The ID of a pipeline.
+	PipelineId string `json:"-" url:"-"`
+}
+
+type DirectoryAccessControlRequest struct {
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel DirectoryPermissionLevel `json:"permission_level,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type DirectoryAccessControlResponse struct {
+	AllPermissions []DirectoryPermission `json:"all_permissions,omitempty"`
+	// A customizable name for the user or service principal. This is not
+	// defined for groups.
+	DisplayName string `json:"display_name,omitempty"`
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type DirectoryGetPermissionLevelsResponse struct {
+	PermissionLevels []DirectoryPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type DirectoryObjectPermissions struct {
+	AccessControlList []DirectoryAccessControlResponse `json:"access_control_list,omitempty"`
+	// The ID of the directory.
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType DirectoryObjectPermissionsObjectType `json:"object_type,omitempty"`
+}
+
+type DirectoryObjectPermissionsObjectType string
+
+const DirectoryObjectPermissionsObjectTypeDirectory DirectoryObjectPermissionsObjectType = `directory`
+
+// String representation for [fmt.Print]
+func (dopot *DirectoryObjectPermissionsObjectType) String() string {
+	return string(*dopot)
+}
+
+// Set raw string value and validate it against allowed values
+func (dopot *DirectoryObjectPermissionsObjectType) Set(v string) error {
+	switch v {
+	case `directory`:
+		*dopot = DirectoryObjectPermissionsObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "directory"`, v)
+	}
+}
+
+// Type always returns DirectoryObjectPermissionsObjectType to satisfy [pflag.Value] interface
+func (dopot *DirectoryObjectPermissionsObjectType) Type() string {
+	return "DirectoryObjectPermissionsObjectType"
+}
+
+type DirectoryPermission struct {
+	// Specifies whether the permission is inherited from a parent ACL rather
+	// than set explicitly. See related property `inherited_from_object`.
+	Inherited bool `json:"inherited,omitempty"`
+	// The list of parent ACL object IDs that contribute to inherited permission
+	// on an ACL object. This is only defined if related property `inherited` is
+	// set to `true`.
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel DirectoryPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type DirectoryPermissionLevel string
+
+const DirectoryPermissionLevelCanEdit DirectoryPermissionLevel = `CAN_EDIT`
+
+const DirectoryPermissionLevelCanManage DirectoryPermissionLevel = `CAN_MANAGE`
+
+const DirectoryPermissionLevelCanRead DirectoryPermissionLevel = `CAN_READ`
+
+const DirectoryPermissionLevelCanRun DirectoryPermissionLevel = `CAN_RUN`
+
+// String representation for [fmt.Print]
+func (dpl *DirectoryPermissionLevel) String() string {
+	return string(*dpl)
+}
+
+// Set raw string value and validate it against allowed values
+func (dpl *DirectoryPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`, `CAN_RUN`:
+		*dpl = DirectoryPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_READ", "CAN_RUN"`, v)
+	}
+}
+
+// Type always returns DirectoryPermissionLevel to satisfy [pflag.Value] interface
+func (dpl *DirectoryPermissionLevel) Type() string {
+	return "DirectoryPermissionLevel"
+}
+
+type DirectoryPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel DirectoryPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type DirectoryPermissionsRequest struct {
+	AccessControlList []DirectoryAccessControlRequest `json:"access_control_list,omitempty"`
+	// The ID of a directory.
+	JobId string `json:"-" url:"-"`
 }
 
 // Get group details
@@ -117,6 +555,12 @@ type GetAccountUserRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+// List assignable roles for a resource
+type GetAssignableRolesForResourceRequest struct {
+	// The resource name of the rule set to get or update.
+	Name string `json:"-" url:"name"`
+}
+
 type GetAssignableRolesForResourceResponse struct {
 	Roles []string `json:"roles,omitempty"`
 }
@@ -129,22 +573,91 @@ type GetGroupRequest struct {
 
 // Get permission levels
 type GetPermissionLevelsRequest struct {
-	// <needs content>
-	RequestObjectId string `json:"-" url:"-"`
-	// <needs content>
-	RequestObjectType string `json:"-" url:"-"`
+	// The ID of a cluster policy
+	ClusterPolicyId string `json:"-" url:"-"`
 }
 
-type GetPermissionLevelsResponse struct {
-	// Specific permission levels
-	PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
+// Get cluster policy permissions.
+type GetPermissionsClusterPolicyRequest struct {
+	// The ID of the cluster policy.
+	ClusterPolicyId string `json:"-" url:"-"`
 }
 
-// Get object permissions
-type GetPermissionRequest struct {
-	RequestObjectId string `json:"-" url:"-"`
-	// <needs content>
-	RequestObjectType string `json:"-" url:"-"`
+// Get cluster permissions
+type GetPermissionsClusterRequest struct {
+	// The ID of a cluster
+	ClusterId string `json:"-" url:"-"`
+}
+
+// Get pipeline permissions
+type GetPermissionsDeltaLiveTableRequest struct {
+	// The ID of a pipeline.
+	PipelineId string `json:"-" url:"-"`
+}
+
+// Get directory permissions
+type GetPermissionsDirectoryRequest struct {
+	DirectoryId string `json:"-" url:"-"`
+	// The ID of a directory.
+	JobId string `json:"-" url:"-"`
+}
+
+// Get job permissions
+type GetPermissionsJobRequest struct {
+	// The ID of a job.
+	JobId string `json:"-" url:"-"`
+}
+
+// Get experiment permissions
+type GetPermissionsMLflowExperimentRequest struct {
+	// The ID of an experiment.
+	ExperimentId string `json:"-" url:"-"`
+}
+
+// Get registered model permissions
+type GetPermissionsMlFlowRegisteredModelRequest struct {
+	// The ID of a registered model.
+	RegisteredModelId string `json:"-" url:"-"`
+}
+
+// Get notebook permissions
+type GetPermissionsNotebookRequest struct {
+	// The ID of a notebook.
+	NotebookId string `json:"-" url:"-"`
+}
+
+// Get instance pool permissions
+type GetPermissionsPoolRequest struct {
+	InstancePoolId string `json:"-" url:"-"`
+	// The ID of an instance pool.
+	RegisteredModelId string `json:"-" url:"-"`
+}
+
+// Get repo permissions
+type GetPermissionsRepoRequest struct {
+	// The ID of a repo.
+	RepoId string `json:"-" url:"-"`
+}
+
+// Get SQL warehouse permissions
+type GetPermissionsSqlWarehousRequest struct {
+	// The ID of a warehouse.
+	WarehouseId string `json:"-" url:"-"`
+}
+
+// Get a rule set
+type GetRuleSetRequest struct {
+	// Etag used for versioning. The response is at least as fresh as the eTag
+	// provided. Etag is used for optimistic concurrency control as a way to
+	// help prevent simultaneous updates of a rule set from overwriting each
+	// other. It is strongly suggested that systems make use of the etag in the
+	// read -> modify -> write pattern to perform rule set updates in order to
+	// avoid race conditions that is get an etag from a GET rule set request,
+	// and pass it with the PUT update request to identify the rule set version
+	// you are updating.
+	Etag string `json:"-" url:"etag"`
+	// The ruleset name associated with the request.
+	Name string `json:"-" url:"name"`
 }
 
 // Get service principal details
@@ -182,17 +695,131 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 }
 
-// List assignable roles on a resource
-type ListAccountAccessControlRequest struct {
-	// The resource name of the rule set to get or update.
-	Name string `json:"-" url:"name"`
+type JobAccessControlRequest struct {
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type JobAccessControlResponse struct {
+	AllPermissions []JobPermission `json:"all_permissions,omitempty"`
+	// A customizable name for the user or service principal. This is not
+	// defined for groups.
+	DisplayName string `json:"display_name,omitempty"`
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type JobGetPermissionLevelsResponse struct {
+	PermissionLevels []JobPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type JobObjectPermissions struct {
+	AccessControlList []JobAccessControlResponse `json:"access_control_list,omitempty"`
+	// The ID of the job.
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType JobObjectPermissionsObjectType `json:"object_type,omitempty"`
+}
+
+type JobObjectPermissionsObjectType string
+
+const JobObjectPermissionsObjectTypeJob JobObjectPermissionsObjectType = `job`
+
+// String representation for [fmt.Print]
+func (jopot *JobObjectPermissionsObjectType) String() string {
+	return string(*jopot)
+}
+
+// Set raw string value and validate it against allowed values
+func (jopot *JobObjectPermissionsObjectType) Set(v string) error {
+	switch v {
+	case `job`:
+		*jopot = JobObjectPermissionsObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "job"`, v)
+	}
+}
+
+// Type always returns JobObjectPermissionsObjectType to satisfy [pflag.Value] interface
+func (jopot *JobObjectPermissionsObjectType) Type() string {
+	return "JobObjectPermissionsObjectType"
+}
+
+type JobPermission struct {
+	// Specifies whether the permission is inherited from a parent ACL rather
+	// than set explicitly. See related property `inherited_from_object`.
+	Inherited bool `json:"inherited,omitempty"`
+	// The list of parent ACL object IDs that contribute to inherited permission
+	// on an ACL object. This is only defined if related property `inherited` is
+	// set to `true`.
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type JobPermissionLevel string
+
+const JobPermissionLevelCanManage JobPermissionLevel = `CAN_MANAGE`
+
+const JobPermissionLevelCanManageRun JobPermissionLevel = `CAN_MANAGE_RUN`
+
+const JobPermissionLevelCanView JobPermissionLevel = `CAN_VIEW`
+
+const JobPermissionLevelIsOwner JobPermissionLevel = `IS_OWNER`
+
+// String representation for [fmt.Print]
+func (jpl *JobPermissionLevel) String() string {
+	return string(*jpl)
+}
+
+// Set raw string value and validate it against allowed values
+func (jpl *JobPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_MANAGE_RUN`, `CAN_VIEW`, `IS_OWNER`:
+		*jpl = JobPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_MANAGE_RUN", "CAN_VIEW", "IS_OWNER"`, v)
+	}
+}
+
+// Type always returns JobPermissionLevel to satisfy [pflag.Value] interface
+func (jpl *JobPermissionLevel) Type() string {
+	return "JobPermissionLevel"
+}
+
+type JobPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type JobPermissionsRequest struct {
+	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
+	// The ID of a job.
+	JobId string `json:"-" url:"-"`
+	// The ID of a notebook.
+	NotebookId string `json:"-" url:"-"`
 }
 
 // List group details
@@ -410,6 +1037,242 @@ type ListWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+type MLflowExperimentAccessControlRequest struct {
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel MLflowExperimentPermissionLevel `json:"permission_level,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type MLflowExperimentAccessControlResponse struct {
+	AllPermissions []MLflowExperimentPermission `json:"all_permissions,omitempty"`
+	// A customizable name for the user or service principal. This is not
+	// defined for groups.
+	DisplayName string `json:"display_name,omitempty"`
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type MLflowExperimentGetPermissionLevelsResponse struct {
+	PermissionLevels []MLflowExperimentPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type MLflowExperimentObjectPermissions struct {
+	AccessControlList []MLflowExperimentAccessControlResponse `json:"access_control_list,omitempty"`
+	// The ID of the experiment.
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType MLflowExperimentObjectPermissionsObjectType `json:"object_type,omitempty"`
+}
+
+type MLflowExperimentObjectPermissionsObjectType string
+
+const MLflowExperimentObjectPermissionsObjectTypeExperiment MLflowExperimentObjectPermissionsObjectType = `experiment`
+
+// String representation for [fmt.Print]
+func (mleopot *MLflowExperimentObjectPermissionsObjectType) String() string {
+	return string(*mleopot)
+}
+
+// Set raw string value and validate it against allowed values
+func (mleopot *MLflowExperimentObjectPermissionsObjectType) Set(v string) error {
+	switch v {
+	case `experiment`:
+		*mleopot = MLflowExperimentObjectPermissionsObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "experiment"`, v)
+	}
+}
+
+// Type always returns MLflowExperimentObjectPermissionsObjectType to satisfy [pflag.Value] interface
+func (mleopot *MLflowExperimentObjectPermissionsObjectType) Type() string {
+	return "MLflowExperimentObjectPermissionsObjectType"
+}
+
+type MLflowExperimentPermission struct {
+	// Specifies whether the permission is inherited from a parent ACL rather
+	// than set explicitly. See related property `inherited_from_object`.
+	Inherited bool `json:"inherited,omitempty"`
+	// The list of parent ACL object IDs that contribute to inherited permission
+	// on an ACL object. This is only defined if related property `inherited` is
+	// set to `true`.
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel MLflowExperimentPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type MLflowExperimentPermissionLevel string
+
+const MLflowExperimentPermissionLevelCanEdit MLflowExperimentPermissionLevel = `CAN_EDIT`
+
+const MLflowExperimentPermissionLevelCanManage MLflowExperimentPermissionLevel = `CAN_MANAGE`
+
+const MLflowExperimentPermissionLevelCanRead MLflowExperimentPermissionLevel = `CAN_READ`
+
+// String representation for [fmt.Print]
+func (mlepl *MLflowExperimentPermissionLevel) String() string {
+	return string(*mlepl)
+}
+
+// Set raw string value and validate it against allowed values
+func (mlepl *MLflowExperimentPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`:
+		*mlepl = MLflowExperimentPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_READ"`, v)
+	}
+}
+
+// Type always returns MLflowExperimentPermissionLevel to satisfy [pflag.Value] interface
+func (mlepl *MLflowExperimentPermissionLevel) Type() string {
+	return "MLflowExperimentPermissionLevel"
+}
+
+type MLflowExperimentPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel MLflowExperimentPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type MLflowExperimentPermissionsRequest struct {
+	AccessControlList []MLflowExperimentAccessControlRequest `json:"access_control_list,omitempty"`
+	// The ID of an experiment.
+	ExperimentId string `json:"-" url:"-"`
+}
+
+type MLflowRegisteredModelAccessControlRequest struct {
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel MLflowRegisteredModelPermissionLevel `json:"permission_level,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type MLflowRegisteredModelAccessControlResponse struct {
+	AllPermissions []MLflowRegisteredModelPermission `json:"all_permissions,omitempty"`
+	// A customizable name for the user or service principal. This is not
+	// defined for groups.
+	DisplayName string `json:"display_name,omitempty"`
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type MLflowRegisteredModelGetPermissionLevelsResponse struct {
+	PermissionLevels []MLflowRegisteredModelPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type MLflowRegisteredModelObjectPermissions struct {
+	AccessControlList []MLflowRegisteredModelAccessControlResponse `json:"access_control_list,omitempty"`
+	// The ID of the registered model.
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType MLflowRegisteredModelObjectPermissionsObjectType `json:"object_type,omitempty"`
+}
+
+type MLflowRegisteredModelObjectPermissionsObjectType string
+
+const MLflowRegisteredModelObjectPermissionsObjectTypeRegisteredModel MLflowRegisteredModelObjectPermissionsObjectType = `registered-model`
+
+// String representation for [fmt.Print]
+func (mlrmopot *MLflowRegisteredModelObjectPermissionsObjectType) String() string {
+	return string(*mlrmopot)
+}
+
+// Set raw string value and validate it against allowed values
+func (mlrmopot *MLflowRegisteredModelObjectPermissionsObjectType) Set(v string) error {
+	switch v {
+	case `registered-model`:
+		*mlrmopot = MLflowRegisteredModelObjectPermissionsObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "registered-model"`, v)
+	}
+}
+
+// Type always returns MLflowRegisteredModelObjectPermissionsObjectType to satisfy [pflag.Value] interface
+func (mlrmopot *MLflowRegisteredModelObjectPermissionsObjectType) Type() string {
+	return "MLflowRegisteredModelObjectPermissionsObjectType"
+}
+
+type MLflowRegisteredModelPermission struct {
+	// Specifies whether the permission is inherited from a parent ACL rather
+	// than set explicitly. See related property `inherited_from_object`.
+	Inherited bool `json:"inherited,omitempty"`
+	// The list of parent ACL object IDs that contribute to inherited permission
+	// on an ACL object. This is only defined if related property `inherited` is
+	// set to `true`.
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel MLflowRegisteredModelPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type MLflowRegisteredModelPermissionLevel string
+
+const MLflowRegisteredModelPermissionLevelCanEdit MLflowRegisteredModelPermissionLevel = `CAN_EDIT`
+
+const MLflowRegisteredModelPermissionLevelCanManage MLflowRegisteredModelPermissionLevel = `CAN_MANAGE`
+
+const MLflowRegisteredModelPermissionLevelCanManageProductionVersions MLflowRegisteredModelPermissionLevel = `CAN_MANAGE_PRODUCTION_VERSIONS`
+
+const MLflowRegisteredModelPermissionLevelCanManageStagingVersions MLflowRegisteredModelPermissionLevel = `CAN_MANAGE_STAGING_VERSIONS`
+
+const MLflowRegisteredModelPermissionLevelCanRead MLflowRegisteredModelPermissionLevel = `CAN_READ`
+
+// String representation for [fmt.Print]
+func (mlrmpl *MLflowRegisteredModelPermissionLevel) String() string {
+	return string(*mlrmpl)
+}
+
+// Set raw string value and validate it against allowed values
+func (mlrmpl *MLflowRegisteredModelPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`:
+		*mlrmpl = MLflowRegisteredModelPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_STAGING_VERSIONS", "CAN_READ"`, v)
+	}
+}
+
+// Type always returns MLflowRegisteredModelPermissionLevel to satisfy [pflag.Value] interface
+func (mlrmpl *MLflowRegisteredModelPermissionLevel) Type() string {
+	return "MLflowRegisteredModelPermissionLevel"
+}
+
+type MLflowRegisteredModelPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel MLflowRegisteredModelPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type MLflowRegisteredModelPermissionsRequest struct {
+	AccessControlList []MLflowRegisteredModelAccessControlRequest `json:"access_control_list,omitempty"`
+	// The ID of a registered model.
+	RegisteredModelId string `json:"-" url:"-"`
+}
+
 type Name struct {
 	// Family name of the Databricks user.
 	FamilyName string `json:"familyName,omitempty"`
@@ -417,19 +1280,123 @@ type Name struct {
 	GivenName string `json:"givenName,omitempty"`
 }
 
-type ObjectPermissions struct {
-	AccessControlList []AccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
-}
-
 type PartialUpdate struct {
 	// Unique ID for a user in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 
 	Operations []Patch `json:"operations,omitempty"`
+}
+
+type PasswordAccessControlRequest struct {
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type PasswordAccessControlResponse struct {
+	AllPermissions []PasswordPermission `json:"all_permissions,omitempty"`
+	// A customizable name for the user or service principal. This is not
+	// defined for groups.
+	DisplayName string `json:"display_name,omitempty"`
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type PasswordGetPermissionLevelsResponse struct {
+	PermissionLevels []PasswordPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type PasswordObjectPermissions struct {
+	AccessControlList []PasswordAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType PasswordObjectPermissionsObjectType `json:"object_type,omitempty"`
+}
+
+type PasswordObjectPermissionsObjectType string
+
+const PasswordObjectPermissionsObjectTypePassword PasswordObjectPermissionsObjectType = `password`
+
+// String representation for [fmt.Print]
+func (popot *PasswordObjectPermissionsObjectType) String() string {
+	return string(*popot)
+}
+
+// Set raw string value and validate it against allowed values
+func (popot *PasswordObjectPermissionsObjectType) Set(v string) error {
+	switch v {
+	case `password`:
+		*popot = PasswordObjectPermissionsObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "password"`, v)
+	}
+}
+
+// Type always returns PasswordObjectPermissionsObjectType to satisfy [pflag.Value] interface
+func (popot *PasswordObjectPermissionsObjectType) Type() string {
+	return "PasswordObjectPermissionsObjectType"
+}
+
+type PasswordPermission struct {
+	// Specifies whether the permission is inherited from a parent ACL rather
+	// than set explicitly. See related property `inherited_from_object`.
+	Inherited bool `json:"inherited,omitempty"`
+	// The list of parent ACL object IDs that contribute to inherited permission
+	// on an ACL object. This is only defined if related property `inherited` is
+	// set to `true`.
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type PasswordPermissionLevel string
+
+const PasswordPermissionLevelCanManage PasswordPermissionLevel = `CAN_MANAGE`
+
+const PasswordPermissionLevelCanUse PasswordPermissionLevel = `CAN_USE`
+
+// String representation for [fmt.Print]
+func (ppl *PasswordPermissionLevel) String() string {
+	return string(*ppl)
+}
+
+// Set raw string value and validate it against allowed values
+func (ppl *PasswordPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_USE`:
+		*ppl = PasswordPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_USE"`, v)
+	}
+}
+
+// Type always returns PasswordPermissionLevel to satisfy [pflag.Value] interface
+func (ppl *PasswordPermissionLevel) Type() string {
+	return "PasswordPermissionLevel"
+}
+
+type PasswordPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type PasswordPermissionsRequest struct {
+	AccessControlList []PasswordAccessControlRequest `json:"access_control_list,omitempty"`
 }
 
 type Patch struct {
@@ -469,14 +1436,6 @@ func (po *PatchOp) Set(v string) error {
 // Type always returns PatchOp to satisfy [pflag.Value] interface
 func (po *PatchOp) Type() string {
 	return "PatchOp"
-}
-
-type Permission struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-	// Permission level
-	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 }
 
 type PermissionAssignment struct {
@@ -554,18 +1513,118 @@ type PermissionOutput struct {
 	PermissionLevel WorkspacePermission `json:"permission_level,omitempty"`
 }
 
-type PermissionsDescription struct {
-	Description string `json:"description,omitempty"`
-	// Permission level
-	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
+type PoolAccessControlRequest struct {
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel PoolPermissionLevel `json:"permission_level,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
 }
 
-type PermissionsRequest struct {
-	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
+type PoolAccessControlResponse struct {
+	AllPermissions []PoolPermission `json:"all_permissions,omitempty"`
+	// A customizable name for the user or service principal. This is not
+	// defined for groups.
+	DisplayName string `json:"display_name,omitempty"`
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
 
-	RequestObjectId string `json:"-" url:"-"`
-	// <needs content>
-	RequestObjectType string `json:"-" url:"-"`
+type PoolGetPermissionLevelsResponse struct {
+	PermissionLevels []PoolPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type PoolObjectPermissions struct {
+	AccessControlList []PoolAccessControlResponse `json:"access_control_list,omitempty"`
+	// The ID of the instance pool.
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType PoolObjectPermissionsObjectType `json:"object_type,omitempty"`
+}
+
+type PoolObjectPermissionsObjectType string
+
+const PoolObjectPermissionsObjectTypeInstancePool PoolObjectPermissionsObjectType = `instance-pool`
+
+// String representation for [fmt.Print]
+func (popot *PoolObjectPermissionsObjectType) String() string {
+	return string(*popot)
+}
+
+// Set raw string value and validate it against allowed values
+func (popot *PoolObjectPermissionsObjectType) Set(v string) error {
+	switch v {
+	case `instance-pool`:
+		*popot = PoolObjectPermissionsObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "instance-pool"`, v)
+	}
+}
+
+// Type always returns PoolObjectPermissionsObjectType to satisfy [pflag.Value] interface
+func (popot *PoolObjectPermissionsObjectType) Type() string {
+	return "PoolObjectPermissionsObjectType"
+}
+
+type PoolPermission struct {
+	// Specifies whether the permission is inherited from a parent ACL rather
+	// than set explicitly. See related property `inherited_from_object`.
+	Inherited bool `json:"inherited,omitempty"`
+	// The list of parent ACL object IDs that contribute to inherited permission
+	// on an ACL object. This is only defined if related property `inherited` is
+	// set to `true`.
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel PoolPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type PoolPermissionLevel string
+
+const PoolPermissionLevelCanAttachTo PoolPermissionLevel = `CAN_ATTACH_TO`
+
+const PoolPermissionLevelCanManage PoolPermissionLevel = `CAN_MANAGE`
+
+// String representation for [fmt.Print]
+func (ppl *PoolPermissionLevel) String() string {
+	return string(*ppl)
+}
+
+// Set raw string value and validate it against allowed values
+func (ppl *PoolPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_ATTACH_TO`, `CAN_MANAGE`:
+		*ppl = PoolPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_ATTACH_TO", "CAN_MANAGE"`, v)
+	}
+}
+
+// Type always returns PoolPermissionLevel to satisfy [pflag.Value] interface
+func (ppl *PoolPermissionLevel) Type() string {
+	return "PoolPermissionLevel"
+}
+
+type PoolPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel PoolPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type PoolPermissionsRequest struct {
+	AccessControlList []PoolAccessControlRequest `json:"access_control_list,omitempty"`
+	// The ID of an instance pool.
+	RegisteredModelId string `json:"-" url:"-"`
 }
 
 type PrincipalOutput struct {
@@ -580,6 +1639,124 @@ type PrincipalOutput struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// The username of the user. Present only if the principal is a user.
 	UserName string `json:"user_name,omitempty"`
+}
+
+type RepoAccessControlRequest struct {
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type RepoAccessControlResponse struct {
+	AllPermissions []RepoPermission `json:"all_permissions,omitempty"`
+	// A customizable name for the user or service principal. This is not
+	// defined for groups.
+	DisplayName string `json:"display_name,omitempty"`
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type RepoGetPermissionLevelsResponse struct {
+	PermissionLevels []RepoPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type RepoObjectPermissions struct {
+	AccessControlList []RepoAccessControlResponse `json:"access_control_list,omitempty"`
+	// The ID of the repo.
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType RepoObjectPermissionsObjectType `json:"object_type,omitempty"`
+}
+
+type RepoObjectPermissionsObjectType string
+
+const RepoObjectPermissionsObjectTypeRepo RepoObjectPermissionsObjectType = `repo`
+
+// String representation for [fmt.Print]
+func (ropot *RepoObjectPermissionsObjectType) String() string {
+	return string(*ropot)
+}
+
+// Set raw string value and validate it against allowed values
+func (ropot *RepoObjectPermissionsObjectType) Set(v string) error {
+	switch v {
+	case `repo`:
+		*ropot = RepoObjectPermissionsObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "repo"`, v)
+	}
+}
+
+// Type always returns RepoObjectPermissionsObjectType to satisfy [pflag.Value] interface
+func (ropot *RepoObjectPermissionsObjectType) Type() string {
+	return "RepoObjectPermissionsObjectType"
+}
+
+type RepoPermission struct {
+	// Specifies whether the permission is inherited from a parent ACL rather
+	// than set explicitly. See related property `inherited_from_object`.
+	Inherited bool `json:"inherited,omitempty"`
+	// The list of parent ACL object IDs that contribute to inherited permission
+	// on an ACL object. This is only defined if related property `inherited` is
+	// set to `true`.
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type RepoPermissionLevel string
+
+const RepoPermissionLevelCanEdit RepoPermissionLevel = `CAN_EDIT`
+
+const RepoPermissionLevelCanManage RepoPermissionLevel = `CAN_MANAGE`
+
+const RepoPermissionLevelCanRead RepoPermissionLevel = `CAN_READ`
+
+const RepoPermissionLevelCanRun RepoPermissionLevel = `CAN_RUN`
+
+// String representation for [fmt.Print]
+func (rpl *RepoPermissionLevel) String() string {
+	return string(*rpl)
+}
+
+// Set raw string value and validate it against allowed values
+func (rpl *RepoPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`, `CAN_RUN`:
+		*rpl = RepoPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_READ", "CAN_RUN"`, v)
+	}
+}
+
+// Type always returns RepoPermissionLevel to satisfy [pflag.Value] interface
+func (rpl *RepoPermissionLevel) Type() string {
+	return "RepoPermissionLevel"
+}
+
+type RepoPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type RepoPermissionsRequest struct {
+	AccessControlList []RepoAccessControlRequest `json:"access_control_list,omitempty"`
+	// The ID of a repo.
+	RepoId string `json:"-" url:"-"`
 }
 
 type RuleSetResponse struct {
@@ -616,23 +1793,242 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 }
 
+type SqlWarehouseAccessControlRequest struct {
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel SqlWarehousePermissionLevel `json:"permission_level,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type SqlWarehouseAccessControlResponse struct {
+	AllPermissions []SqlWarehousePermission `json:"all_permissions,omitempty"`
+	// A customizable name for the user or service principal. This is not
+	// defined for groups.
+	DisplayName string `json:"display_name,omitempty"`
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type SqlWarehouseGetPermissionLevelsResponse struct {
+	PermissionLevels []SqlWarehousePermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type SqlWarehouseObjectPermissions struct {
+	AccessControlList []SqlWarehouseAccessControlResponse `json:"access_control_list,omitempty"`
+	// The ID of the SQL warehouse.
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType SqlWarehouseObjectPermissionsObjectType `json:"object_type,omitempty"`
+}
+
+type SqlWarehouseObjectPermissionsObjectType string
+
+const SqlWarehouseObjectPermissionsObjectTypeWarehouse SqlWarehouseObjectPermissionsObjectType = `warehouse`
+
+// String representation for [fmt.Print]
+func (swopot *SqlWarehouseObjectPermissionsObjectType) String() string {
+	return string(*swopot)
+}
+
+// Set raw string value and validate it against allowed values
+func (swopot *SqlWarehouseObjectPermissionsObjectType) Set(v string) error {
+	switch v {
+	case `warehouse`:
+		*swopot = SqlWarehouseObjectPermissionsObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "warehouse"`, v)
+	}
+}
+
+// Type always returns SqlWarehouseObjectPermissionsObjectType to satisfy [pflag.Value] interface
+func (swopot *SqlWarehouseObjectPermissionsObjectType) Type() string {
+	return "SqlWarehouseObjectPermissionsObjectType"
+}
+
+type SqlWarehousePermission struct {
+	// Specifies whether the permission is inherited from a parent ACL rather
+	// than set explicitly. See related property `inherited_from_object`.
+	Inherited bool `json:"inherited,omitempty"`
+	// The list of parent ACL object IDs that contribute to inherited permission
+	// on an ACL object. This is only defined if related property `inherited` is
+	// set to `true`.
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel SqlWarehousePermissionLevel `json:"permission_level,omitempty"`
+}
+
+type SqlWarehousePermissionLevel string
+
+const SqlWarehousePermissionLevelCanManage SqlWarehousePermissionLevel = `CAN_MANAGE`
+
+const SqlWarehousePermissionLevelCanUse SqlWarehousePermissionLevel = `CAN_USE`
+
+const SqlWarehousePermissionLevelIsOwner SqlWarehousePermissionLevel = `IS_OWNER`
+
+// String representation for [fmt.Print]
+func (swpl *SqlWarehousePermissionLevel) String() string {
+	return string(*swpl)
+}
+
+// Set raw string value and validate it against allowed values
+func (swpl *SqlWarehousePermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_USE`, `IS_OWNER`:
+		*swpl = SqlWarehousePermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_USE", "IS_OWNER"`, v)
+	}
+}
+
+// Type always returns SqlWarehousePermissionLevel to satisfy [pflag.Value] interface
+func (swpl *SqlWarehousePermissionLevel) Type() string {
+	return "SqlWarehousePermissionLevel"
+}
+
+type SqlWarehousePermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel SqlWarehousePermissionLevel `json:"permission_level,omitempty"`
+}
+
+type SqlWarehousePermissionsRequest struct {
+	AccessControlList []SqlWarehouseAccessControlRequest `json:"access_control_list,omitempty"`
+	// The ID of a warehouse.
+	WarehouseId string `json:"-" url:"-"`
+}
+
+type TokenAccessControlRequest struct {
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+
+	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type TokenAccessControlResponse struct {
+	AllPermissions []TokenPermission `json:"all_permissions,omitempty"`
+	// A customizable name for the user or service principal. This is not
+	// defined for groups.
+	DisplayName string `json:"display_name,omitempty"`
+	// Group name. There are two built-in groups: `users` for all users, and
+	// `admins` for administrators.
+	GroupName string `json:"group_name,omitempty"`
+	// Value that uniquely identifies a service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Email address for a user.
+	UserName string `json:"user_name,omitempty"`
+}
+
+type TokenGetPermissionLevelsResponse struct {
+	PermissionLevels []TokenPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type TokenObjectPermissions struct {
+	AccessControlList []TokenAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType TokenObjectPermissionsObjectType `json:"object_type,omitempty"`
+}
+
+type TokenObjectPermissionsObjectType string
+
+const TokenObjectPermissionsObjectTypeToken TokenObjectPermissionsObjectType = `token`
+
+// String representation for [fmt.Print]
+func (topot *TokenObjectPermissionsObjectType) String() string {
+	return string(*topot)
+}
+
+// Set raw string value and validate it against allowed values
+func (topot *TokenObjectPermissionsObjectType) Set(v string) error {
+	switch v {
+	case `token`:
+		*topot = TokenObjectPermissionsObjectType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "token"`, v)
+	}
+}
+
+// Type always returns TokenObjectPermissionsObjectType to satisfy [pflag.Value] interface
+func (topot *TokenObjectPermissionsObjectType) Type() string {
+	return "TokenObjectPermissionsObjectType"
+}
+
+type TokenPermission struct {
+	// Specifies whether the permission is inherited from a parent ACL rather
+	// than set explicitly. See related property `inherited_from_object`.
+	Inherited bool `json:"inherited,omitempty"`
+	// The list of parent ACL object IDs that contribute to inherited permission
+	// on an ACL object. This is only defined if related property `inherited` is
+	// set to `true`.
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+
+	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type TokenPermissionLevel string
+
+const TokenPermissionLevelCanManage TokenPermissionLevel = `CAN_MANAGE`
+
+const TokenPermissionLevelCanUse TokenPermissionLevel = `CAN_USE`
+
+// String representation for [fmt.Print]
+func (tpl *TokenPermissionLevel) String() string {
+	return string(*tpl)
+}
+
+// Set raw string value and validate it against allowed values
+func (tpl *TokenPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_USE`:
+		*tpl = TokenPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_USE"`, v)
+	}
+}
+
+// Type always returns TokenPermissionLevel to satisfy [pflag.Value] interface
+func (tpl *TokenPermissionLevel) Type() string {
+	return "TokenPermissionLevel"
+}
+
+type TokenPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+
+	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type TokenPermissionsRequest struct {
+	AccessControlList []TokenAccessControlRequest `json:"access_control_list,omitempty"`
+}
+
 type UpdateRuleSetRequest struct {
-	// Etag used for versioning. The response is at least as fresh as the eTag
-	// provided. Etag is used for optimistic concurrency control as a way to
-	// help prevent simultaneous updates of a rule set from overwriting each
-	// other. It is strongly suggested that systems make use of the etag in the
-	// read -> modify -> write pattern to perform rule set updates in order to
-	// avoid race conditions that is get an etag from a GET rule set request,
-	// and pass it with the PUT update request to identify the rule set version
-	// you are updating.
-	Etag string `json:"-" url:"etag"`
 	// Name of the rule set.
-	Name string `json:"name" url:"name"`
+	Name string `json:"name"`
 
 	RuleSet RuleSetUpdateRequest `json:"rule_set"`
 }
@@ -661,7 +2057,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Name *Name `json:"name,omitempty"`
 

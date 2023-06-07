@@ -2,6 +2,8 @@
 //
 // - [iam.AccountAccessControlAPI]: These APIs manage access rules on resources in an account.
 //
+// - [iam.AccountAccessControlShardProxyAPI]: These APIs manage access rules on resources in an account.
+//
 // - [sql.AlertsAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
 // - [billing.BillableUsageAPI]: This API allows you to download billable usage logs for the specified account and date range.
@@ -74,7 +76,31 @@
 //
 // - [oauth2.OAuthEnrollmentAPI]: These APIs enable administrators to enroll OAuth for their accounts, which is required for adding/using any OAuth published/custom application integration.
 //
-// - [iam.PermissionsAPI]: Permissions API are used to create read, write, edit, update and manage access for various users on different objects and endpoints.
+// - [iam.PermissionsClusterPoliciesAPI]: This endpoint enables workspace admins to configure permissions on cluster policies and check which permission levels can be set.
+//
+// - [iam.PermissionsClustersAPI]: This endpoint enables users to configure permissions on clusters and check which permission levels can be set.
+//
+// - [iam.PermissionsDeltaLiveTablesAPI]: This endpoint enables users to configure permissions on Delta Live Tables](https://docs.databricks.com/data-engineering/delta-live-tables/index.html) pipelines and check which permission levels can be set.
+//
+// - [iam.PermissionsDirectoriesAPI]: This endpoint enables users to configure permissions on directories and check which permission levels can be set.
+//
+// - [iam.PermissionsJobsAPI]: This endpoint enables users to configure permissions on jobs and check which permission levels can be set.
+//
+// - [iam.PermissionsMlFlowRegisteredModelsAPI]: This endpoint enables users to configure permissions on MLflow models and check which permission levels can be set.
+//
+// - [iam.PermissionsMLflowExperimentsAPI]: This endpoint enables users to configure permissions on MLflow experiments and check which permission levels can be set.
+//
+// - [iam.PermissionsNotebooksAPI]: This endpoint enables users to configure permissions on notebooks and check which permission levels can be set.
+//
+// - [iam.PermissionsPasswordsAPI]: This endpoint enables admins to configure permissions on passwords and check which permission levels can be set.
+//
+// - [iam.PermissionsPoolsAPI]: This endpoint enables users to configure permissions on pools and check which permission levels can be set.
+//
+// - [iam.PermissionsReposAPI]: This endpoint enables users to configure permissions on repos and check which permission levels can be set.
+//
+// - [iam.PermissionsSqlWarehousesAPI]: This endpoint enables users to configure permissions on SQL warehouses and check which permission levels can be set.
+//
+// - [iam.PermissionsTokensAPI]: This endpoint enables admins to configure permissions on tokens and check which permission levels can be set.
 //
 // - [pipelines.PipelinesAPI]: The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
 //
@@ -172,78 +198,91 @@ import (
 // https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service
 // See: https://pkg.go.dev/golang.org/x/tools/internal/imports#ImportPathToAssumedName
 var (
-	_ *iam.AccountAccessControlAPI            = nil
-	_ *sql.AlertsAPI                          = nil
-	_ *billing.BillableUsageAPI               = nil
-	_ *billing.BudgetsAPI                     = nil
-	_ *catalog.CatalogsAPI                    = nil
-	_ *compute.ClusterPoliciesAPI             = nil
-	_ *compute.ClustersAPI                    = nil
-	_ *compute.CommandExecutionAPI            = nil
-	_ *provisioning.CredentialsAPI            = nil
-	_ *iam.CurrentUserAPI                     = nil
-	_ *oauth2.CustomAppIntegrationAPI         = nil
-	_ *sql.DashboardsAPI                      = nil
-	_ *sql.DataSourcesAPI                     = nil
-	_ *files.DbfsAPI                          = nil
-	_ *sql.DbsqlPermissionsAPI                = nil
-	_ *provisioning.EncryptionKeysAPI         = nil
-	_ *ml.ExperimentsAPI                      = nil
-	_ *catalog.ExternalLocationsAPI           = nil
-	_ *catalog.FunctionsAPI                   = nil
-	_ *workspace.GitCredentialsAPI            = nil
-	_ *compute.GlobalInitScriptsAPI           = nil
-	_ *catalog.GrantsAPI                      = nil
-	_ *iam.GroupsAPI                          = nil
-	_ *iam.AccountGroupsAPI                   = nil
-	_ *compute.InstancePoolsAPI               = nil
-	_ *compute.InstanceProfilesAPI            = nil
-	_ *settings.IpAccessListsAPI              = nil
-	_ *settings.AccountIpAccessListsAPI       = nil
-	_ *jobs.JobsAPI                           = nil
-	_ *compute.LibrariesAPI                   = nil
-	_ *billing.LogDeliveryAPI                 = nil
-	_ *catalog.AccountMetastoreAssignmentsAPI = nil
-	_ *catalog.MetastoresAPI                  = nil
-	_ *catalog.AccountMetastoresAPI           = nil
-	_ *ml.ModelRegistryAPI                    = nil
-	_ *provisioning.NetworksAPI               = nil
-	_ *oauth2.OAuthEnrollmentAPI              = nil
-	_ *iam.PermissionsAPI                     = nil
-	_ *pipelines.PipelinesAPI                 = nil
-	_ *compute.PolicyFamiliesAPI              = nil
-	_ *provisioning.PrivateAccessAPI          = nil
-	_ *sharing.ProvidersAPI                   = nil
-	_ *oauth2.PublishedAppIntegrationAPI      = nil
-	_ *sql.QueriesAPI                         = nil
-	_ *sql.QueryHistoryAPI                    = nil
-	_ *sharing.RecipientActivationAPI         = nil
-	_ *sharing.RecipientsAPI                  = nil
-	_ *workspace.ReposAPI                     = nil
-	_ *catalog.SchemasAPI                     = nil
-	_ *workspace.SecretsAPI                   = nil
-	_ *oauth2.ServicePrincipalSecretsAPI      = nil
-	_ *iam.ServicePrincipalsAPI               = nil
-	_ *iam.AccountServicePrincipalsAPI        = nil
-	_ *serving.ServingEndpointsAPI            = nil
-	_ *settings.AccountSettingsAPI            = nil
-	_ *sharing.SharesAPI                      = nil
-	_ *sql.StatementExecutionAPI              = nil
-	_ *provisioning.StorageAPI                = nil
-	_ *catalog.StorageCredentialsAPI          = nil
-	_ *catalog.AccountStorageCredentialsAPI   = nil
-	_ *catalog.TableConstraintsAPI            = nil
-	_ *catalog.TablesAPI                      = nil
-	_ *settings.TokenManagementAPI            = nil
-	_ *settings.TokensAPI                     = nil
-	_ *iam.UsersAPI                           = nil
-	_ *iam.AccountUsersAPI                    = nil
-	_ *catalog.VolumesAPI                     = nil
-	_ *provisioning.VpcEndpointsAPI           = nil
-	_ *sql.WarehousesAPI                      = nil
-	_ *workspace.WorkspaceAPI                 = nil
-	_ *iam.WorkspaceAssignmentAPI             = nil
-	_ *catalog.WorkspaceBindingsAPI           = nil
-	_ *settings.WorkspaceConfAPI              = nil
-	_ *provisioning.WorkspacesAPI             = nil
+	_ *iam.AccountAccessControlAPI              = nil
+	_ *iam.AccountAccessControlShardProxyAPI    = nil
+	_ *sql.AlertsAPI                            = nil
+	_ *billing.BillableUsageAPI                 = nil
+	_ *billing.BudgetsAPI                       = nil
+	_ *catalog.CatalogsAPI                      = nil
+	_ *compute.ClusterPoliciesAPI               = nil
+	_ *compute.ClustersAPI                      = nil
+	_ *compute.CommandExecutionAPI              = nil
+	_ *provisioning.CredentialsAPI              = nil
+	_ *iam.CurrentUserAPI                       = nil
+	_ *oauth2.CustomAppIntegrationAPI           = nil
+	_ *sql.DashboardsAPI                        = nil
+	_ *sql.DataSourcesAPI                       = nil
+	_ *files.DbfsAPI                            = nil
+	_ *sql.DbsqlPermissionsAPI                  = nil
+	_ *provisioning.EncryptionKeysAPI           = nil
+	_ *ml.ExperimentsAPI                        = nil
+	_ *catalog.ExternalLocationsAPI             = nil
+	_ *catalog.FunctionsAPI                     = nil
+	_ *workspace.GitCredentialsAPI              = nil
+	_ *compute.GlobalInitScriptsAPI             = nil
+	_ *catalog.GrantsAPI                        = nil
+	_ *iam.GroupsAPI                            = nil
+	_ *iam.AccountGroupsAPI                     = nil
+	_ *compute.InstancePoolsAPI                 = nil
+	_ *compute.InstanceProfilesAPI              = nil
+	_ *settings.IpAccessListsAPI                = nil
+	_ *settings.AccountIpAccessListsAPI         = nil
+	_ *jobs.JobsAPI                             = nil
+	_ *compute.LibrariesAPI                     = nil
+	_ *billing.LogDeliveryAPI                   = nil
+	_ *catalog.AccountMetastoreAssignmentsAPI   = nil
+	_ *catalog.MetastoresAPI                    = nil
+	_ *catalog.AccountMetastoresAPI             = nil
+	_ *ml.ModelRegistryAPI                      = nil
+	_ *provisioning.NetworksAPI                 = nil
+	_ *oauth2.OAuthEnrollmentAPI                = nil
+	_ *iam.PermissionsClusterPoliciesAPI        = nil
+	_ *iam.PermissionsClustersAPI               = nil
+	_ *iam.PermissionsDeltaLiveTablesAPI        = nil
+	_ *iam.PermissionsDirectoriesAPI            = nil
+	_ *iam.PermissionsJobsAPI                   = nil
+	_ *iam.PermissionsMlFlowRegisteredModelsAPI = nil
+	_ *iam.PermissionsMLflowExperimentsAPI      = nil
+	_ *iam.PermissionsNotebooksAPI              = nil
+	_ *iam.PermissionsPasswordsAPI              = nil
+	_ *iam.PermissionsPoolsAPI                  = nil
+	_ *iam.PermissionsReposAPI                  = nil
+	_ *iam.PermissionsSqlWarehousesAPI          = nil
+	_ *iam.PermissionsTokensAPI                 = nil
+	_ *pipelines.PipelinesAPI                   = nil
+	_ *compute.PolicyFamiliesAPI                = nil
+	_ *provisioning.PrivateAccessAPI            = nil
+	_ *sharing.ProvidersAPI                     = nil
+	_ *oauth2.PublishedAppIntegrationAPI        = nil
+	_ *sql.QueriesAPI                           = nil
+	_ *sql.QueryHistoryAPI                      = nil
+	_ *sharing.RecipientActivationAPI           = nil
+	_ *sharing.RecipientsAPI                    = nil
+	_ *workspace.ReposAPI                       = nil
+	_ *catalog.SchemasAPI                       = nil
+	_ *workspace.SecretsAPI                     = nil
+	_ *oauth2.ServicePrincipalSecretsAPI        = nil
+	_ *iam.ServicePrincipalsAPI                 = nil
+	_ *iam.AccountServicePrincipalsAPI          = nil
+	_ *serving.ServingEndpointsAPI              = nil
+	_ *settings.AccountSettingsAPI              = nil
+	_ *sharing.SharesAPI                        = nil
+	_ *sql.StatementExecutionAPI                = nil
+	_ *provisioning.StorageAPI                  = nil
+	_ *catalog.StorageCredentialsAPI            = nil
+	_ *catalog.AccountStorageCredentialsAPI     = nil
+	_ *catalog.TableConstraintsAPI              = nil
+	_ *catalog.TablesAPI                        = nil
+	_ *settings.TokenManagementAPI              = nil
+	_ *settings.TokensAPI                       = nil
+	_ *iam.UsersAPI                             = nil
+	_ *iam.AccountUsersAPI                      = nil
+	_ *catalog.VolumesAPI                       = nil
+	_ *provisioning.VpcEndpointsAPI             = nil
+	_ *sql.WarehousesAPI                        = nil
+	_ *workspace.WorkspaceAPI                   = nil
+	_ *iam.WorkspaceAssignmentAPI               = nil
+	_ *catalog.WorkspaceBindingsAPI             = nil
+	_ *settings.WorkspaceConfAPI                = nil
+	_ *provisioning.WorkspacesAPI               = nil
 )
