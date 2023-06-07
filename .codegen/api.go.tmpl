@@ -133,9 +133,9 @@ func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Reque
 			results = append(results, v)
 		}
 		{{ if and .Pagination.Token .Pagination.Limit -}}
-      count := {{template "type" .Pagination.Limit.Entity}}(len(response.{{.Pagination.Results.PascalName}}))
-      totalCount += count
-    {{ else if .Pagination.Offset -}}
+			count := {{template "type" .Pagination.Limit.Entity}}(len(response.{{.Pagination.Results.PascalName}}))
+			totalCount += count
+		{{ else if .Pagination.Offset -}}
 			count := {{template "type" .Pagination.Offset.Entity}}(len(response.{{.Pagination.Results.PascalName}}))
 			totalCount += count
 		{{ end -}}
