@@ -102,6 +102,35 @@ func TestAccDbfsOpen(t *testing.T) {
 	}
 }
 
+func TestAccDbfsOpenDirectory(t *testing.T) {
+	ctx, w := workspaceTest(t)
+	if w.Config.IsGcp() {
+		t.Skip("dbfs not available on gcp")
+	}
+
+	path := RandomName("/tmp/.sdk/fake")
+
+	defer w.Dbfs.Delete(ctx, files.Delete{
+		Path: path,
+	})
+
+	// Create directory.
+	err := w.Dbfs.MkdirsByPath(ctx, path)
+	require.NoError(t, err)
+
+	// Try to open the directory for reading.
+	_, err = w.Dbfs.Open(ctx, path, files.FileModeRead)
+	assert.ErrorContains(t, err, "dbfs open: cannot open directory for reading")
+
+	// Try to open the directory for writing.
+	_, err = w.Dbfs.Open(ctx, path, files.FileModeWrite)
+	assert.ErrorContains(t, err, "dbfs open: A file or directory already exists")
+
+	// Try to open the directory for writing with overwrite flag set.
+	_, err = w.Dbfs.Open(ctx, path, files.FileModeWrite|files.FileModeOverwrite)
+	assert.ErrorContains(t, err, "dbfs open: A file or directory already exists")
+}
+
 func TestAccDbfsReadFileWriteFile(t *testing.T) {
 	ctx, w := workspaceTest(t)
 	if w.Config.IsGcp() {
