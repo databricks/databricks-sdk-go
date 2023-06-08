@@ -11,13 +11,15 @@ type AccountMetastoreAssignmentsService interface {
 
 	// Assigns a workspace to a metastore.
 	//
-	// Creates an assignment to a metastore for a workspace
-	Create(ctx context.Context, request CreateMetastoreAssignment) (*MetastoreAssignment, error)
+	// Creates an assignment to a metastore for a workspace Please add a header
+	// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+	Create(ctx context.Context, request AccountsCreateMetastoreAssignment) (*MetastoreAssignment, error)
 
 	// Delete a metastore assignment.
 	//
 	// Deletes a metastore assignment to a workspace, leaving the workspace with
-	// no metastore.
+	// no metastore. Please add a header
+	// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
 	Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error
 
 	// Gets the metastore assignment for a workspace.
@@ -25,20 +27,23 @@ type AccountMetastoreAssignmentsService interface {
 	// Gets the metastore assignment, if any, for the workspace specified by ID.
 	// If the workspace is assigned a metastore, the mappig will be returned. If
 	// no metastore is assigned to the workspace, the assignment will not be
-	// found and a 404 returned.
+	// found and a 404 returned. Please add a header
+	// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
 	Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*MetastoreAssignment, error)
 
 	// Get all workspaces assigned to a metastore.
 	//
 	// Gets a list of all Databricks workspace IDs that have been assigned to
-	// given metastore.
+	// given metastore. Please add a header
+	// X-Databricks-Account-Console-API-Version: 2.0 to access this API
 	List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]MetastoreAssignment, error)
 
 	// Updates a metastore assignment to a workspaces.
 	//
 	// Updates an assignment to a metastore for a workspace. Currently, only the
-	// default catalog may be updated
-	Update(ctx context.Context, request UpdateMetastoreAssignment) (*MetastoreAssignment, error)
+	// default catalog may be updated. Please add a header
+	// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) (*MetastoreAssignment, error)
 }
 
 // These APIs manage Unity Catalog metastores for an account. A metastore
@@ -47,29 +52,36 @@ type AccountMetastoresService interface {
 
 	// Create metastore.
 	//
-	// Creates a Unity Catalog metastore.
-	Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error)
+	// Creates a Unity Catalog metastore. Please add a header
+	// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+	Create(ctx context.Context, request AccountsCreateMetastore) (*MetastoreInfo, error)
 
 	// Delete a metastore.
 	//
 	// Deletes a Unity Catalog metastore for an account, both specified by ID.
+	// Please add a header X-Databricks-Account-Console-API-Version: 2.0 to
+	// access this API.
 	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error
 
 	// Get a metastore.
 	//
 	// Gets a Unity Catalog metastore from an account, both specified by ID.
+	// Please add a header X-Databricks-Account-Console-API-Version: 2.0 to
+	// access this API.
 	Get(ctx context.Context, request GetAccountMetastoreRequest) (*MetastoreInfo, error)
 
 	// Get all metastores associated with an account.
 	//
 	// Gets all Unity Catalog metastores associated with an account specified by
-	// ID.
+	// ID. Please add a header X-Databricks-Account-Console-API-Version: 2.0 to
+	// access this API.
 	List(ctx context.Context) (*ListMetastoresResponse, error)
 
 	// Update a metastore.
 	//
-	// Updates an existing Unity Catalog metastore.
-	Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error)
+	// Updates an existing Unity Catalog metastore. Please add a header
+	// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+	Update(ctx context.Context, request AccountsUpdateMetastore) (*MetastoreInfo, error)
 }
 
 // These APIs manage storage credentials for a particular metastore.
@@ -85,7 +97,7 @@ type AccountStorageCredentialsService interface {
 	//
 	// The caller must be a metastore admin and have the
 	// **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
-	Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error)
+	Create(ctx context.Context, request AccountsCreateStorageCredential) (*StorageCredentialInfo, error)
 
 	// Delete a storage credential.
 	//
@@ -111,7 +123,7 @@ type AccountStorageCredentialsService interface {
 	// Updates a storage credential on the metastore. The caller must be the
 	// owner of the storage credential. If the caller is a metastore admin, only
 	// the __owner__ credential can be changed.
-	Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error)
+	Update(ctx context.Context, request AccountsUpdateStorageCredential) (*StorageCredentialInfo, error)
 }
 
 // A catalog is the first layer of Unity Catalog’s three-level namespace.
@@ -160,6 +172,51 @@ type CatalogsService interface {
 	// either the owner of the catalog, or a metastore admin (when changing the
 	// owner field of the catalog).
 	Update(ctx context.Context, request UpdateCatalog) (*CatalogInfo, error)
+}
+
+// Connections allow for creating a connection to an external data source.
+//
+// A connection is an abstraction of an external data source that can be
+// connected from Databricks Compute. Creating a connection object is the first
+// step to managing external data sources within Unity Catalog, with the second
+// step being creating a data object (catalog, schema, or table) using the
+// connection. Data objects derived from a connection can be written to or read
+// from similar to other Unity Catalog data objects based on cloud storage.
+// Users may create different types of connections with each connection having a
+// unique set of configuration options to support credential management and
+// other settings.
+type ConnectionsService interface {
+
+	// Create a connection.
+	//
+	// Creates a new connection
+	//
+	// Creates a new connection to an external data source. It allows users to
+	// specify connection details and configurations for interaction with the
+	// external server.
+	Create(ctx context.Context, request CreateConnection) (*ConnectionInfo, error)
+
+	// Delete a connection.
+	//
+	// Deletes the connection that matches the supplied name.
+	Delete(ctx context.Context, request DeleteConnectionRequest) error
+
+	// Get a connection.
+	//
+	// Gets a connection from it's name.
+	Get(ctx context.Context, request GetConnectionRequest) (*ConnectionInfo, error)
+
+	// List connections.
+	//
+	// List all connections.
+	//
+	// Use ListAll() to get all ConnectionInfo instances
+	List(ctx context.Context) (*ListConnectionsResponse, error)
+
+	// Update a connection.
+	//
+	// Updates the connection that matches the supplied name.
+	Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error)
 }
 
 // An external location is an object that combines a cloud storage path with a
@@ -264,6 +321,8 @@ type FunctionsService interface {
 	// list contains only functions for which either the user has the
 	// **EXECUTE** privilege or the user is the owner. There is no guarantee of
 	// a specific ordering of the elements in the array.
+	//
+	// Use ListAll() to get all FunctionInfo instances
 	List(ctx context.Context, request ListFunctionsRequest) (*ListFunctionsResponse, error)
 
 	// Update a function.

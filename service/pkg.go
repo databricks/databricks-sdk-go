@@ -16,6 +16,8 @@
 //
 // - [compute.CommandExecutionAPI]: This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters.
 //
+// - [catalog.ConnectionsAPI]: Connections allow for creating a connection to an external data source.
+//
 // - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
 // - [iam.CurrentUserAPI]: This API allows retrieving information about currently authenticated user or service principal.
@@ -180,6 +182,7 @@ var (
 	_ *compute.ClusterPoliciesAPI             = nil
 	_ *compute.ClustersAPI                    = nil
 	_ *compute.CommandExecutionAPI            = nil
+	_ *catalog.ConnectionsAPI                 = nil
 	_ *provisioning.CredentialsAPI            = nil
 	_ *iam.CurrentUserAPI                     = nil
 	_ *oauth2.CustomAppIntegrationAPI         = nil

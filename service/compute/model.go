@@ -1352,8 +1352,9 @@ func (dtevt *DiskTypeEbsVolumeType) Type() string {
 }
 
 type DockerBasicAuth struct {
+	// Password of the user
 	Password string `json:"password,omitempty"`
-
+	// Name of the user
 	Username string `json:"username,omitempty"`
 }
 

@@ -821,13 +821,25 @@ type ListJobsRequest struct {
 	Name string `json:"-" url:"name,omitempty"`
 	// The offset of the first job to return, relative to the most recently
 	// created job.
+	//
+	// Deprecated since June 2023. Use `page_token` to iterate through the pages
+	// instead.
 	Offset int `json:"-" url:"offset,omitempty"`
+	// Use `next_page_token` or `prev_page_token` returned from the previous
+	// request to list the next or previous page of jobs respectively.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 }
 
 type ListJobsResponse struct {
+	// If true, additional jobs matching the provided filter are available for
+	// listing.
 	HasMore bool `json:"has_more,omitempty"`
 	// The list of jobs.
 	Jobs []BaseJob `json:"jobs,omitempty"`
+	// A token that can be used to list the next page of jobs.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// A token that can be used to list the previous page of jobs.
+	PrevPageToken string `json:"prev_page_token,omitempty"`
 }
 
 // List runs for a job
@@ -851,7 +863,13 @@ type ListRunsRequest struct {
 	// the service instead uses the maximum limit.
 	Limit int `json:"-" url:"limit,omitempty"`
 	// The offset of the first run to return, relative to the most recent run.
+	//
+	// Deprecated since June 2023. Use `page_token` to iterate through the pages
+	// instead.
 	Offset int `json:"-" url:"offset,omitempty"`
+	// Use `next_page_token` or `prev_page_token` returned from the previous
+	// request to list the next or previous page of runs respectively.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The type of runs to return. For a description of run types, see
 	// :method:jobs/getRun.
 	RunType ListRunsRunType `json:"-" url:"run_type,omitempty"`
@@ -869,6 +887,10 @@ type ListRunsResponse struct {
 	// If true, additional runs matching the provided filter are available for
 	// listing.
 	HasMore bool `json:"has_more,omitempty"`
+	// A token that can be used to list the next page of runs.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// A token that can be used to list the previous page of runs.
+	PrevPageToken string `json:"prev_page_token,omitempty"`
 	// A list of runs, from most recently started to least.
 	Runs []BaseRun `json:"runs,omitempty"`
 }

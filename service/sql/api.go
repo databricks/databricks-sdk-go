@@ -1066,59 +1066,6 @@ func (a *WarehousesAPI) Impl() WarehousesService {
 	return a.impl
 }
 
-// WaitGetWarehouseDeleted repeatedly calls [WarehousesAPI.Get] and waits to reach DELETED state
-func (a *WarehousesAPI) WaitGetWarehouseDeleted(ctx context.Context, id string,
-	timeout time.Duration, callback func(*GetWarehouseResponse)) (*GetWarehouseResponse, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	return retries.Poll[GetWarehouseResponse](ctx, timeout, func() (*GetWarehouseResponse, *retries.Err) {
-		getWarehouseResponse, err := a.Get(ctx, GetWarehouseRequest{
-			Id: id,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
-		if callback != nil {
-			callback(getWarehouseResponse)
-		}
-		status := getWarehouseResponse.State
-		statusMessage := fmt.Sprintf("current status: %s", status)
-		if getWarehouseResponse.Health != nil {
-			statusMessage = getWarehouseResponse.Health.Summary
-		}
-		switch status {
-		case StateDeleted: // target state
-			return getWarehouseResponse, nil
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
-}
-
-// WaitGetWarehouseDeleted is a wrapper that calls [WarehousesAPI.WaitGetWarehouseDeleted] and waits to reach DELETED state.
-type WaitGetWarehouseDeleted[R any] struct {
-	Response *R
-	Id       string `json:"id"`
-	poll     func(time.Duration, func(*GetWarehouseResponse)) (*GetWarehouseResponse, error)
-	callback func(*GetWarehouseResponse)
-	timeout  time.Duration
-}
-
-// OnProgress invokes a callback every time it polls for the status update.
-func (w *WaitGetWarehouseDeleted[R]) OnProgress(callback func(*GetWarehouseResponse)) *WaitGetWarehouseDeleted[R] {
-	w.callback = callback
-	return w
-}
-
-// Get the GetWarehouseResponse with the default timeout of 20 minutes.
-func (w *WaitGetWarehouseDeleted[R]) Get() (*GetWarehouseResponse, error) {
-	return w.poll(w.timeout, w.callback)
-}
-
-// Get the GetWarehouseResponse with custom timeout.
-func (w *WaitGetWarehouseDeleted[R]) GetWithTimeout(timeout time.Duration) (*GetWarehouseResponse, error) {
-	return w.poll(timeout, w.callback)
-}
-
 // WaitGetWarehouseRunning repeatedly calls [WarehousesAPI.Get] and waits to reach RUNNING state
 func (a *WarehousesAPI) WaitGetWarehouseRunning(ctx context.Context, id string,
 	timeout time.Duration, callback func(*GetWarehouseResponse)) (*GetWarehouseResponse, error) {
@@ -1274,43 +1221,8 @@ func (a *WarehousesAPI) CreateAndWait(ctx context.Context, createWarehouseReques
 // Delete a warehouse.
 //
 // Deletes a SQL warehouse.
-func (a *WarehousesAPI) Delete(ctx context.Context, deleteWarehouseRequest DeleteWarehouseRequest) (*WaitGetWarehouseDeleted[any], error) {
-	err := a.impl.Delete(ctx, deleteWarehouseRequest)
-	if err != nil {
-		return nil, err
-	}
-	return &WaitGetWarehouseDeleted[any]{
-
-		Id: deleteWarehouseRequest.Id,
-		poll: func(timeout time.Duration, callback func(*GetWarehouseResponse)) (*GetWarehouseResponse, error) {
-			return a.WaitGetWarehouseDeleted(ctx, deleteWarehouseRequest.Id, timeout, callback)
-		},
-		timeout:  20 * time.Minute,
-		callback: nil,
-	}, nil
-}
-
-// Calls [WarehousesAPI.Delete] and waits to reach DELETED state
-//
-// You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[GetWarehouseResponse](60*time.Minute) functional option.
-//
-// Deprecated: use [WarehousesAPI.Delete].Get() or [WarehousesAPI.WaitGetWarehouseDeleted]
-func (a *WarehousesAPI) DeleteAndWait(ctx context.Context, deleteWarehouseRequest DeleteWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
-	wait, err := a.Delete(ctx, deleteWarehouseRequest)
-	if err != nil {
-		return nil, err
-	}
-	wait.timeout = 20 * time.Minute
-	wait.callback = func(info *GetWarehouseResponse) {
-		for _, o := range options {
-			o(&retries.Info[GetWarehouseResponse]{
-				Info:    info,
-				Timeout: wait.timeout,
-			})
-		}
-	}
-	return wait.Get()
+func (a *WarehousesAPI) Delete(ctx context.Context, request DeleteWarehouseRequest) error {
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a warehouse.
@@ -1320,12 +1232,6 @@ func (a *WarehousesAPI) DeleteById(ctx context.Context, id string) error {
 	return a.impl.Delete(ctx, DeleteWarehouseRequest{
 		Id: id,
 	})
-}
-
-func (a *WarehousesAPI) DeleteByIdAndWait(ctx context.Context, id string, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
-	return a.DeleteAndWait(ctx, DeleteWarehouseRequest{
-		Id: id,
-	}, options...)
 }
 
 // Update a warehouse.

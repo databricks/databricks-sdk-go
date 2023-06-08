@@ -46,6 +46,8 @@ type ServingEndpointsService interface {
 	Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error)
 
 	// Retrieve all serving endpoints.
+	//
+	// Use ListAll() to get all ServingEndpoint instances
 	List(ctx context.Context) (*ListEndpointsResponse, error)
 
 	// Retrieve the most recent log lines associated with a given serving
