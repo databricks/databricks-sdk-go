@@ -325,19 +325,6 @@ func (pkg *Package) HasWaits() bool {
 
 // Load takes OpenAPI specification and loads a service model
 func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
-	accountServices := map[string]bool{}
-	var accountsRE = regexp.MustCompile(`/accounts/`)
-	for prefix, path := range spec.Paths {
-		for _, op := range path.Verbs() {
-			if !op.HasTag(tag.Name) {
-				continue
-			}
-			if !accountsRE.MatchString(prefix) {
-				continue
-			}
-			accountServices[tag.Service] = true
-		}
-	}
 	for k, v := range spec.Components.Schemas {
 		split := strings.Split(k, ".")
 		if split[0] != pkg.Name {
@@ -354,7 +341,7 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 			if !ok {
 				svc = &Service{
 					Package:    pkg,
-					IsAccounts: accountServices[tag.Service],
+					IsAccounts: tag.IsAccountService,
 					IsRpcStyle: tag.PathStyle == "rpc",
 					methods:    map[string]*Method{},
 					Named: Named{
