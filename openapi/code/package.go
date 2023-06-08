@@ -341,7 +341,7 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 			if !ok {
 				svc = &Service{
 					Package:    pkg,
-					IsAccounts: tag.IsAccountService,
+					IsAccounts: tag.IsAccounts,
 					IsRpcStyle: tag.PathStyle == "rpc",
 					methods:    map[string]*Method{},
 					Named: Named{
