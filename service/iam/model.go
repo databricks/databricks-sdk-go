@@ -182,7 +182,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 
@@ -661,7 +661,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Name *Name `json:"name,omitempty"`
 

@@ -33,7 +33,7 @@ func ExampleWarehousesAPI_Create_sqlWarehouses() {
 
 	// cleanup
 
-	_, err = w.Warehouses.DeleteByIdAndWait(ctx, created.Id)
+	err = w.Warehouses.DeleteById(ctx, created.Id)
 	if err != nil {
 		panic(err)
 	}
@@ -58,7 +58,7 @@ func ExampleWarehousesAPI_Edit_sqlWarehouses() {
 	}
 	logger.Infof(ctx, "found %v", created)
 
-	err = w.Warehouses.Edit(ctx, sql.EditWarehouseRequest{
+	_, err = w.Warehouses.Edit(ctx, sql.EditWarehouseRequest{
 		Id:             created.Id,
 		Name:           fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		ClusterSize:    "2X-Small",
@@ -71,7 +71,7 @@ func ExampleWarehousesAPI_Edit_sqlWarehouses() {
 
 	// cleanup
 
-	_, err = w.Warehouses.DeleteByIdAndWait(ctx, created.Id)
+	err = w.Warehouses.DeleteById(ctx, created.Id)
 	if err != nil {
 		panic(err)
 	}
@@ -104,7 +104,7 @@ func ExampleWarehousesAPI_Get_sqlWarehouses() {
 
 	// cleanup
 
-	_, err = w.Warehouses.DeleteByIdAndWait(ctx, created.Id)
+	err = w.Warehouses.DeleteById(ctx, created.Id)
 	if err != nil {
 		panic(err)
 	}

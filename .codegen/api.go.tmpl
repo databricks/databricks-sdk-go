@@ -39,64 +39,120 @@ func (a *{{.PascalName}}API) Impl() {{.PascalName}}Service {
 	return a.impl
 }
 
-{{range .Methods}}{{if not .Pagination}}{{.Comment "// " 80}}
-func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{template "type" .Response}}{{end}}, error){{else}}error{{end}} {
-	return a.impl.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
-}
-{{end}}
-
-{{if .Wait}}
-// Calls [{{.Service.Name}}API.{{.PascalName}}] and waits to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
-// 
-// You can override the default timeout of {{.Wait.Timeout}} minutes by calling adding 
-// retries.Timeout[{{.Wait.Poll.Response.PascalName}}](60*time.Minute) functional option.
-func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error) {
+{{range .Waits}}
+// {{.PascalName}} repeatedly calls [{{.Method.Service.Name}}API.{{.Poll.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
+func (a *{{.Method.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{range .Binding}}, {{.PollField.CamelName}} {{template "type" .PollField.Entity}}{{end}},
+	timeout time.Duration, callback func(*{{.Poll.Response.PascalName}})) (*{{.Poll.Response.PascalName}}, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	{{if .Wait.ForceBindRequest}}_, {{else if .Response}}{{.Response.CamelName}}, {{end}}err := a.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
-	if err != nil {
-		return nil, err
-	}
-	i := retries.Info[{{.Wait.Poll.Response.PascalName}}]{Timeout: {{.Wait.Timeout}}*time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[{{.Wait.Poll.Response.PascalName}}](ctx, i.Timeout, func() (*{{.Wait.Poll.Response.PascalName}}, *retries.Err) {
-		{{.Wait.Poll.Response.CamelName}}, err := a.{{.Wait.Poll.PascalName}}(ctx, {{.Wait.Poll.Request.PascalName}}{ {{range .Wait.Binding}}
-			{{.PollField.PascalName}}: {{.Bind.Of.CamelName}}.{{.Bind.PascalName}},{{end}}
+	return retries.Poll[{{.Poll.Response.PascalName}}](ctx, timeout, func() (*{{.Poll.Response.PascalName}}, *retries.Err) {
+		{{.Poll.Response.CamelName}}, err := a.{{.Poll.PascalName}}(ctx, {{.Poll.Request.PascalName}}{ {{range .Binding}}
+			{{.PollField.PascalName}}: {{.PollField.CamelName}},{{end}}
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
-		for _, o := range options {
-			o(&retries.Info[{{.Wait.Poll.Response.PascalName}}]{
-				Info: {{.Wait.Poll.Response.CamelName}},
-				Timeout: i.Timeout,
-			})
+		if callback != nil {
+			callback({{.Poll.Response.CamelName}})
 		}
-		status := {{.Wait.Poll.Response.CamelName}}{{range .Wait.StatusPath}}.{{.PascalName}}{{end}}
-		{{if .Wait.MessagePath -}}
-		{{if .Wait.ComplexMessagePath -}}
+		status := {{.Poll.Response.CamelName}}{{range .StatusPath}}.{{.PascalName}}{{end}}
+		{{if .MessagePath -}}
+		{{if .ComplexMessagePath -}}
 		statusMessage := fmt.Sprintf("current status: %s", status)
-		if ({{.Wait.Poll.Response.CamelName}}.{{.Wait.MessagePathHead.PascalName}} != nil) {
-			statusMessage = {{.Wait.Poll.Response.CamelName}}{{range .Wait.MessagePath}}.{{.PascalName}}{{end}}
+		if ({{.Poll.Response.CamelName}}.{{.MessagePathHead.PascalName}} != nil) {
+			statusMessage = {{.Poll.Response.CamelName}}{{range .MessagePath}}.{{.PascalName}}{{end}}
 		}
 		{{- else -}}
-		statusMessage := {{.Wait.Poll.Response.CamelName}}{{range .Wait.MessagePath}}.{{.PascalName}}{{end}}
+		statusMessage := {{.Poll.Response.CamelName}}{{range .MessagePath}}.{{.PascalName}}{{end}}
 		{{- end}}
 		{{- else -}}
 		statusMessage := fmt.Sprintf("current status: %s", status)
 		{{- end}}
 		switch status {
-		case {{range $i, $e := .Wait.Success}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}: // target state
-			return {{.Wait.Poll.Response.CamelName}}, nil
-		{{if .Wait.Failure}}case {{range $i, $e := .Wait.Failure}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}:
-			err := fmt.Errorf("failed to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}%s{{end}}, got %s: %s",
-				{{range $i, $e := .Wait.Success}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}, status, statusMessage)
+		case {{range $i, $e := .Success}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}: // target state
+			return {{.Poll.Response.CamelName}}, nil
+		{{if .Failure}}case {{range $i, $e := .Failure}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}:
+			err := fmt.Errorf("failed to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}%s{{end}}, got %s: %s",
+				{{range $i, $e := .Success}}{{if $i}}, {{end}}{{$e.Entity.PascalName}}{{$e.PascalName}}{{end}}, status, statusMessage)
 			return nil, retries.Halt(err)
 		{{end}}default:
 			return nil, retries.Continues(statusMessage)
 		}
 	})
+}
+
+// {{.PascalName}} is a wrapper that calls [{{.Method.Service.Name}}API.{{.PascalName}}] and waits to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state.
+type {{.PascalName}}[R any] struct {
+	Response *R{{range .Binding}}
+	{{.PollField.PascalName}} {{template "type" .PollField.Entity}} `json:"{{.PollField.Name}}"`{{end}}
+	poll     func(time.Duration, func(*{{.Poll.Response.PascalName}})) (*{{.Poll.Response.PascalName}}, error)
+	callback func(*{{.Poll.Response.PascalName}})
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *{{.PascalName}}[R]) OnProgress(callback func(*{{.Poll.Response.PascalName}})) *{{.PascalName}}[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the {{.Poll.Response.PascalName}} with the default timeout of {{.Timeout}} minutes.
+func (w *{{.PascalName}}[R]) Get() (*{{.Poll.Response.PascalName}}, error) {
+	return w.poll(w.timeout, w.callback)
+}
+
+// Get the {{.Poll.Response.PascalName}} with custom timeout.
+func (w *{{.PascalName}}[R]) GetWithTimeout(timeout time.Duration) (*{{.Poll.Response.PascalName}}, error) {
+	return w.poll(timeout, w.callback)
+}
+{{end}}
+
+{{range .Methods}}
+{{- $hasWaiter := and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}
+{{if not .Pagination}}{{.Comment "// " 80}}
+func (a *{{.Service.PascalName}}API) {{.PascalName}}(ctx context.Context{{if .Request}}, {{if $hasWaiter}}{{.Request.CamelName}}{{else}}request{{end}} {{.Request.PascalName}}{{end}}) {{if $hasWaiter}}(*{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[any]{{end}}, error){{else}}{{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{template "type" .Response}}{{end}}, error){{else}}error{{end}}{{end}} {
+	{{if $hasWaiter -}}
+	{{if .Response}}{{.Response.CamelName}}, {{end}}err := a.impl.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
+	if err != nil {
+		return nil, err
+	}
+	return &{{.Wait.PascalName}}{{with .Response}}[{{.PascalName}}]{{else}}[any]{{end}}{
+		{{with .Response}}Response: {{.CamelName}},
+		{{- end}}{{range .Wait.Binding}}
+		{{.PollField.PascalName}}: {{.Bind.Of.CamelName}}.{{.Bind.PascalName}},{{end}}
+		poll: func(timeout time.Duration, callback func(*{{.Wait.Poll.Response.PascalName}})) (*{{.Wait.Poll.Response.PascalName}}, error) {
+			return a.{{.Wait.PascalName}}(ctx{{range .Wait.Binding}}, {{.Bind.Of.CamelName}}.{{.Bind.PascalName}}{{end}}, timeout, callback)
+		},
+		timeout: {{.Wait.Timeout}}*time.Minute,
+		callback: nil,
+	}, nil
+	{{- else -}}
+	return a.impl.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
+	{{- end}}
+}
+{{end}}
+
+{{if $hasWaiter}}
+// Calls [{{.Service.Name}}API.{{.PascalName}}] and waits to reach {{range $i, $e := .Wait.Success}}{{if $i}} or {{end}}{{.Content}}{{end}} state
+// 
+// You can override the default timeout of {{.Wait.Timeout}} minutes by calling adding 
+// retries.Timeout[{{.Wait.Poll.Response.PascalName}}](60*time.Minute) functional option.
+//
+// Deprecated: use [{{.Service.Name}}API.{{.PascalName}}].Get() or [{{.Service.Name}}API.{{.Wait.PascalName}}]
+func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .Request}}, {{.Request.CamelName}} {{.Request.PascalName}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error) {
+	wait, err := a.{{.PascalName}}(ctx{{if .Request}}, {{.Request.CamelName}}{{end}})
+	if err != nil {
+		return nil, err
+	}
+	wait.timeout = {{.Wait.Timeout}}*time.Minute
+	wait.callback = func(info *{{.Wait.Poll.Response.PascalName}}) {
+		for _, o := range options {
+			o(&retries.Info[{{.Wait.Poll.Response.PascalName}}]{
+				Info: info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
 }
 {{end}}{{if .Pagination}}
 {{.Comment "// " 80}}
@@ -228,7 +284,7 @@ func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}(ctx context.Context{{ran
 		{{.PascalName}}: {{.CamelName}},{{end}}
 	})
 }
-{{end}}{{if and .Shortcut .Wait}}
+{{end}}{{if and .Shortcut $hasWaiter}}
 func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Context{{range .Shortcut.Params}}, {{.CamelName}} {{template "type" .Entity}}{{end}}, options ...retries.Option[{{.Wait.Poll.Response.PascalName}}]) (*{{.Wait.Poll.Response.PascalName}}, error) {
 	return a.{{.PascalName}}AndWait(ctx, {{.Request.PascalName}}{
 		{{- range .Shortcut.Params}}
