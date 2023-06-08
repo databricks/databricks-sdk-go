@@ -99,6 +99,19 @@ type WorkspaceClient struct {
 	// This API allows executing commands on running clusters.
 	CommandExecutor compute.CommandExecutor
 
+	// Connections allow for creating a connection to an external data source.
+	//
+	// A connection is an abstraction of an external data source that can be
+	// connected from Databricks Compute. Creating a connection object is the
+	// first step to managing external data sources within Unity Catalog, with
+	// the second step being creating a data object (catalog, schema, or table)
+	// using the connection. Data objects derived from a connection can be
+	// written to or read from similar to other Unity Catalog data objects based
+	// on cloud storage. Users may create different types of connections with
+	// each connection having a unique set of configuration options to support
+	// credential management and other settings.
+	Connections *catalog.ConnectionsAPI
+
 	// This API allows retrieving information about currently authenticated user
 	// or service principal.
 	CurrentUser *iam.CurrentUserAPI
@@ -762,6 +775,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ClusterPolicies:     compute.NewClusterPolicies(apiClient),
 		Clusters:            compute.NewClusters(apiClient),
 		CommandExecutor:     compute.NewCommandExecutor(apiClient),
+		Connections:         catalog.NewConnections(apiClient),
 		CurrentUser:         iam.NewCurrentUser(apiClient),
 		Dashboards:          sql.NewDashboards(apiClient),
 		DataSources:         sql.NewDataSources(apiClient),

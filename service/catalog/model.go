@@ -6,6 +6,47 @@ import "fmt"
 
 // all definitions in this file are in alphabetical order
 
+type AccountsCreateMetastore struct {
+	MetastoreInfo *CreateMetastore `json:"metastore_info,omitempty"`
+}
+
+type AccountsCreateMetastoreAssignment struct {
+	MetastoreAssignment *CreateMetastoreAssignment `json:"metastore_assignment,omitempty"`
+	// Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
+	// Workspace ID.
+	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type AccountsCreateStorageCredential struct {
+	CredentialInfo *CreateStorageCredential `json:"credential_info,omitempty"`
+	// Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
+}
+
+type AccountsUpdateMetastore struct {
+	// Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
+
+	MetastoreInfo *UpdateMetastore `json:"metastore_info,omitempty"`
+}
+
+type AccountsUpdateMetastoreAssignment struct {
+	MetastoreAssignment *UpdateMetastoreAssignment `json:"metastore_assignment,omitempty"`
+	// Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
+	// Workspace ID.
+	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type AccountsUpdateStorageCredential struct {
+	CredentialInfo *UpdateStorageCredential `json:"credential_info,omitempty"`
+	// Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
+	// Name of the storage credential.
+	Name string `json:"-" url:"-"`
+}
+
 type AwsIamRole struct {
 	// The external ID used in role assumption to prevent confused deputy
 	// problem..
@@ -219,6 +260,80 @@ func (ctn *ColumnTypeName) Type() string {
 	return "ColumnTypeName"
 }
 
+type ConnectionInfo struct {
+	// User-provided free-form text description.
+	Comment string `json:"comment,omitempty"`
+	// Unique identifier of the Connection.
+	ConnectionId string `json:"connection_id,omitempty"`
+	// The type of connection.
+	ConnectionType ConnectionType `json:"connection_type,omitempty"`
+	// Time at which this connection was created, in epoch milliseconds.
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// Username of connection creator.
+	CreatedBy string `json:"created_by,omitempty"`
+	// The type of credential.
+	CredentialType CredentialType `json:"credential_type,omitempty"`
+	// Full name of connection.
+	FullName string `json:"full_name,omitempty"`
+	// Unique identifier of parent metastore.
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// Name of the connection.
+	Name string `json:"name,omitempty"`
+	// Object properties as map of string key-value pairs.
+	OptionsKvpairs *OptionsKvPairs `json:"options_kvpairs,omitempty"`
+	// Username of current owner of the connection.
+	Owner string `json:"owner,omitempty"`
+	// An object containing map of key-value properties attached to the
+	// connection.
+	PropertiesKvpairs map[string]string `json:"properties_kvpairs,omitempty"`
+	// If the connection is read only.
+	ReadOnly bool `json:"read_only,omitempty"`
+	// Time at which this connection was updated, in epoch milliseconds.
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Username of user who last modified connection.
+	UpdatedBy string `json:"updated_by,omitempty"`
+	// URL of the remote data source, extracted from options_kvpairs.
+	Url string `json:"url,omitempty"`
+}
+
+// The type of connection.
+type ConnectionType string
+
+const ConnectionTypeDatabricks ConnectionType = `DATABRICKS`
+
+const ConnectionTypeMysql ConnectionType = `MYSQL`
+
+const ConnectionTypePostgresql ConnectionType = `POSTGRESQL`
+
+const ConnectionTypeRedshift ConnectionType = `REDSHIFT`
+
+const ConnectionTypeSnowflake ConnectionType = `SNOWFLAKE`
+
+const ConnectionTypeSqldw ConnectionType = `SQLDW`
+
+const ConnectionTypeSqlserver ConnectionType = `SQLSERVER`
+
+// String representation for [fmt.Print]
+func (ct *ConnectionType) String() string {
+	return string(*ct)
+}
+
+// Set raw string value and validate it against allowed values
+func (ct *ConnectionType) Set(v string) error {
+	switch v {
+	case `DATABRICKS`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
+		*ct = ConnectionType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DATABRICKS", "MYSQL", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER"`, v)
+	}
+}
+
+// Type always returns ConnectionType to satisfy [pflag.Value] interface
+func (ct *ConnectionType) Type() string {
+	return "ConnectionType"
+}
+
 type CreateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -235,6 +350,24 @@ type CreateCatalog struct {
 	ShareName string `json:"share_name,omitempty"`
 	// Storage root URL for managed tables within catalog.
 	StorageRoot string `json:"storage_root,omitempty"`
+}
+
+type CreateConnection struct {
+	// User-provided free-form text description.
+	Comment string `json:"comment,omitempty"`
+	// The type of connection.
+	ConnectionType ConnectionType `json:"connection_type"`
+	// Name of the connection.
+	Name string `json:"name"`
+	// Object properties as map of string key-value pairs.
+	OptionsKvpairs OptionsKvPairs `json:"options_kvpairs"`
+	// Username of current owner of the connection.
+	Owner string `json:"owner,omitempty"`
+	// An object containing map of key-value properties attached to the
+	// connection.
+	PropertiesKvpairs map[string]string `json:"properties_kvpairs,omitempty"`
+	// If the connection is read only.
+	ReadOnly bool `json:"read_only,omitempty"`
 }
 
 type CreateExternalLocation struct {
@@ -460,8 +593,6 @@ type CreateStorageCredential struct {
 	Comment string `json:"comment,omitempty"`
 	// The <Databricks> managed GCP service account configuration.
 	DatabricksGcpServiceAccount any `json:"databricks_gcp_service_account,omitempty"`
-	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
 	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name"`
 	// Whether the storage credential is only usable for read operations.
@@ -493,6 +624,32 @@ type CreateVolumeRequestContent struct {
 	StorageLocation string `json:"storage_location,omitempty"`
 
 	VolumeType VolumeType `json:"volume_type"`
+}
+
+// The type of credential.
+type CredentialType string
+
+const CredentialTypeUsernamePassword CredentialType = `USERNAME_PASSWORD`
+
+// String representation for [fmt.Print]
+func (ct *CredentialType) String() string {
+	return string(*ct)
+}
+
+// Set raw string value and validate it against allowed values
+func (ct *CredentialType) Set(v string) error {
+	switch v {
+	case `USERNAME_PASSWORD`:
+		*ct = CredentialType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "USERNAME_PASSWORD"`, v)
+	}
+}
+
+// Type always returns CredentialType to satisfy [pflag.Value] interface
+func (ct *CredentialType) Type() string {
+	return "CredentialType"
 }
 
 // Currently assigned workspaces
@@ -579,6 +736,12 @@ type DeleteCatalogRequest struct {
 	Force bool `json:"-" url:"force,omitempty"`
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
+}
+
+// Delete a connection
+type DeleteConnectionRequest struct {
+	// The name of the connection to be deleted.
+	NameArg string `json:"-" url:"-"`
 }
 
 // Delete an external location
@@ -1094,6 +1257,12 @@ type GetCatalogRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+// Get a connection
+type GetConnectionRequest struct {
+	// Name of the connection.
+	NameArg string `json:"-" url:"-"`
+}
+
 // Get effective permissions
 type GetEffectiveRequest struct {
 	// Full name of securable.
@@ -1275,6 +1444,11 @@ type ListAccountStorageCredentialsRequest struct {
 type ListCatalogsResponse struct {
 	// An array of catalog information objects.
 	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
+}
+
+type ListConnectionsResponse struct {
+	// An array of connection information objects.
+	Connections []ConnectionInfo `json:"connections,omitempty"`
 }
 
 type ListExternalLocationsResponse struct {
@@ -1461,6 +1635,11 @@ type NamedTableConstraint struct {
 	Name string `json:"name"`
 }
 
+// Object properties as map of string key-value pairs.
+type OptionsKvPairs struct {
+	Host string `json:"host"`
+}
+
 type PermissionsChange struct {
 	// The set of privileges to add.
 	Add []Privilege `json:"add,omitempty"`
@@ -1571,6 +1750,9 @@ type PrivilegeAssignment struct {
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
 }
+
+// An object containing map of key-value properties attached to the connection.
+type PropertiesKvPairs map[string]string
 
 // Get a Volume
 type ReadVolumeRequest struct {
@@ -1874,6 +2056,15 @@ type UpdateCatalog struct {
 	Properties map[string]string `json:"properties,omitempty"`
 }
 
+type UpdateConnection struct {
+	// Name of the connection.
+	Name string `json:"name"`
+	// Name of the connection.
+	NameArg string `json:"-" url:"-"`
+	// Object properties as map of string key-value pairs.
+	OptionsKvpairs OptionsKvPairs `json:"options_kvpairs"`
+}
+
 type UpdateExternalLocation struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -1910,8 +2101,6 @@ type UpdateMetastore struct {
 	DeltaSharingScope UpdateMetastoreDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
-	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
 	// The user-specified name of the metastore.
 	Name string `json:"name,omitempty"`
 	// The owner of the metastore.
@@ -1996,8 +2185,6 @@ type UpdateStorageCredential struct {
 	// Force update even if there are dependent external locations or external
 	// tables.
 	Force bool `json:"force,omitempty"`
-	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
 	// The credential name. The name must be unique within the metastore.
 	Name string `json:"name,omitempty" url:"-"`
 	// Username of current owner of credential.

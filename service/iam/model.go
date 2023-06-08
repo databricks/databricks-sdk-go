@@ -182,9 +182,11 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Members []ComplexValue `json:"members,omitempty"`
+
+	Meta *ResourceMetadata `json:"meta,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 }
@@ -580,6 +582,10 @@ type PrincipalOutput struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// The username of the user. Present only if the principal is a user.
 	UserName string `json:"user_name,omitempty"`
+}
+
+type ResourceMetadata struct {
+	ResourceType string `json:"resourceType,omitempty"`
 }
 
 type RuleSetResponse struct {

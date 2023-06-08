@@ -303,8 +303,6 @@ func (a *JobsAPI) ListAll(ctx context.Context, request ListJobsRequest) ([]BaseJ
 	var results []BaseJob
 	var totalCount int = 0
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-	// deduplicate items that may have been added during iteration
-	seen := map[int64]bool{}
 	for {
 		response, err := a.impl.List(ctx, request)
 		if err != nil {
@@ -314,17 +312,14 @@ func (a *JobsAPI) ListAll(ctx context.Context, request ListJobsRequest) ([]BaseJ
 			break
 		}
 		for _, v := range response.Jobs {
-			id := v.JobId
-			if seen[id] {
-				// item was added during iteration
-				continue
-			}
-			seen[id] = true
 			results = append(results, v)
 		}
 		count := int(len(response.Jobs))
 		totalCount += count
-		request.Offset += int(len(response.Jobs))
+		request.PageToken = response.NextPageToken
+		if response.NextPageToken == "" {
+			break
+		}
 		limit := request.Limit
 		if limit > 0 && totalCount >= limit {
 			break
@@ -395,8 +390,6 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]B
 	var results []BaseRun
 	var totalCount int = 0
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-	// deduplicate items that may have been added during iteration
-	seen := map[int64]bool{}
 	for {
 		response, err := a.impl.ListRuns(ctx, request)
 		if err != nil {
@@ -406,17 +399,14 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]B
 			break
 		}
 		for _, v := range response.Runs {
-			id := v.RunId
-			if seen[id] {
-				// item was added during iteration
-				continue
-			}
-			seen[id] = true
 			results = append(results, v)
 		}
 		count := int(len(response.Runs))
 		totalCount += count
-		request.Offset += int(len(response.Runs))
+		request.PageToken = response.NextPageToken
+		if response.NextPageToken == "" {
+			break
+		}
 		limit := request.Limit
 		if limit > 0 && totalCount >= limit {
 			break
