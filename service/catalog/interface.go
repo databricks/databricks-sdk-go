@@ -582,6 +582,32 @@ type StorageCredentialsService interface {
 	Validate(ctx context.Context, request ValidateStorageCredential) (*ValidateStorageCredentialResponse, error)
 }
 
+// A system schema is a schema that lives within the system catalog. A system
+// schema may contain information about customer usage of Unity Catalog such as
+// audit-logs, billing-logs, lineage information, etc.
+type SystemSchemasService interface {
+
+	// Disable a system schema.
+	//
+	// Disables the system schema and removes it from the system catalog. The
+	// caller must be an account admin or a metastore admin.
+	Disable(ctx context.Context, request DisableRequest) error
+
+	// Enable a system schema.
+	//
+	// Enables the system schema and adds it to the system catalog. The caller
+	// must be an account admin or a metastore admin.
+	Enable(ctx context.Context) error
+
+	// List system schemas.
+	//
+	// Gets an array of system schemas for a metastore. The caller must be an
+	// account admin or a metastore admin.
+	//
+	// Use ListAll() to get all SystemSchemaInfo instances
+	List(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error)
+}
+
 // Primary key and foreign key constraints encode relationships between fields
 // in tables.
 //

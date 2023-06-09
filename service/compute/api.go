@@ -391,7 +391,11 @@ func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateClu
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *ClusterInfo) {
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
@@ -436,7 +440,11 @@ func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteClu
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *ClusterInfo) {
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
@@ -507,7 +515,11 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, 
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *ClusterInfo) {
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
@@ -757,7 +769,11 @@ func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeClu
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *ClusterInfo) {
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
@@ -800,7 +816,11 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster Restart
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *ClusterInfo) {
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
@@ -857,7 +877,11 @@ func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluste
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *ClusterInfo) {
 		for _, o := range options {
 			o(&retries.Info[ClusterInfo]{
@@ -1148,7 +1172,11 @@ func (a *CommandExecutionAPI) CancelAndWait(ctx context.Context, cancelCommand C
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[CommandStatusResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *CommandStatusResponse) {
 		for _, o := range options {
 			o(&retries.Info[CommandStatusResponse]{
@@ -1210,7 +1238,11 @@ func (a *CommandExecutionAPI) CreateAndWait(ctx context.Context, createContext C
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[ContextStatusResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *ContextStatusResponse) {
 		for _, o := range options {
 			o(&retries.Info[ContextStatusResponse]{
@@ -1265,7 +1297,11 @@ func (a *CommandExecutionAPI) ExecuteAndWait(ctx context.Context, command Comman
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[CommandStatusResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *CommandStatusResponse) {
 		for _, o := range options {
 			o(&retries.Info[CommandStatusResponse]{

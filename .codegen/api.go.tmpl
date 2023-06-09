@@ -143,7 +143,11 @@ func (a *{{.Service.Name}}API) {{.PascalName}}AndWait(ctx context.Context{{if .R
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = {{.Wait.Timeout}}*time.Minute
+	tmp := &retries.Info[{{.Wait.Poll.Response.PascalName}}]{Timeout: {{.Wait.Timeout}}*time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *{{.Wait.Poll.Response.PascalName}}) {
 		for _, o := range options {
 			o(&retries.Info[{{.Wait.Poll.Response.PascalName}}]{

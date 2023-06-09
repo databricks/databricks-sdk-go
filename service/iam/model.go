@@ -186,8 +186,6 @@ type Group struct {
 
 	Members []ComplexValue `json:"members,omitempty"`
 
-	Meta *ResourceMetadata `json:"meta,omitempty"`
-
 	Roles []ComplexValue `json:"roles,omitempty"`
 }
 
@@ -584,10 +582,6 @@ type PrincipalOutput struct {
 	UserName string `json:"user_name,omitempty"`
 }
 
-type ResourceMetadata struct {
-	ResourceType string `json:"resourceType,omitempty"`
-}
-
 type RuleSetResponse struct {
 	// Identifies the version of the rule set returned.
 	Etag string `json:"etag,omitempty"`
@@ -622,7 +616,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 }
@@ -667,7 +661,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Name *Name `json:"name,omitempty"`
 

@@ -376,7 +376,11 @@ func (a *PipelinesAPI) ResetAndWait(ctx context.Context, resetRequest ResetReque
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[GetPipelineResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *GetPipelineResponse) {
 		for _, o := range options {
 			o(&retries.Info[GetPipelineResponse]{
@@ -425,7 +429,11 @@ func (a *PipelinesAPI) StopAndWait(ctx context.Context, stopRequest StopRequest,
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[GetPipelineResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *GetPipelineResponse) {
 		for _, o := range options {
 			o(&retries.Info[GetPipelineResponse]{

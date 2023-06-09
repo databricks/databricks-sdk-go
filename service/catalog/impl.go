@@ -472,6 +472,30 @@ func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateS
 	return &validateStorageCredentialResponse, err
 }
 
+// unexported type that holds implementations of just SystemSchemas API methods
+type systemSchemasImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *systemSchemasImpl) Disable(ctx context.Context, request DisableRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas/%v", request.MetastoreId, request.SchemaName)
+	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	return err
+}
+
+func (a *systemSchemasImpl) Enable(ctx context.Context) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores//systemschemas/")
+	err := a.client.Do(ctx, http.MethodPost, path, nil, nil)
+	return err
+}
+
+func (a *systemSchemasImpl) List(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error) {
+	var listSystemSchemasResponse ListSystemSchemasResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas", request.MetastoreId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &listSystemSchemasResponse)
+	return &listSystemSchemasResponse, err
+}
+
 // unexported type that holds implementations of just TableConstraints API methods
 type tableConstraintsImpl struct {
 	client *client.DatabricksClient

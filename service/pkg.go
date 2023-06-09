@@ -122,6 +122,8 @@
 //
 // - [catalog.AccountStorageCredentialsAPI]: These APIs manage storage credentials for a particular metastore.
 //
+// - [catalog.SystemSchemasAPI]: A system schema is a schema that lives within the system catalog.
+//
 // - [catalog.TableConstraintsAPI]: Primary key and foreign key constraints encode relationships between fields in tables.
 //
 // - [catalog.TablesAPI]: A table resides in the third layer of Unity Catalog’s three-level namespace.
@@ -235,6 +237,7 @@ var (
 	_ *provisioning.StorageAPI                = nil
 	_ *catalog.StorageCredentialsAPI          = nil
 	_ *catalog.AccountStorageCredentialsAPI   = nil
+	_ *catalog.SystemSchemasAPI               = nil
 	_ *catalog.TableConstraintsAPI            = nil
 	_ *catalog.TablesAPI                      = nil
 	_ *settings.TokenManagementAPI            = nil
