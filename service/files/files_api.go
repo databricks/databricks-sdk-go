@@ -49,7 +49,7 @@ func (a *FilesAPI) WriteFile(ctx context.Context, name string, data []byte) erro
 	return a.Upload(ctx, name, bytes.NewBuffer(data))
 }
 
-func (a *FilesAPI) Download(ctx context.Context, path string) (*bytes.Buffer, error) {
+func (a *FilesAPI) Download(ctx context.Context, path string) (io.ReadCloser, error) {
 	impl, ok := a.impl.(*filesImpl)
 	if !ok {
 		return nil, fmt.Errorf("wrong impl: %v", a.impl)
@@ -59,7 +59,8 @@ func (a *FilesAPI) Download(ctx context.Context, path string) (*bytes.Buffer, er
 	if err != nil {
 		return nil, err
 	}
-	return &buf, nil
+	// TODO: direclty call lower-level APIs to return raw HTTP response stream
+	return io.NopCloser(&buf), nil
 }
 
 // ReadFile is identical to [os.ReadFile] but for Files API.
@@ -68,7 +69,7 @@ func (a *FilesAPI) ReadFile(ctx context.Context, name string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return b.Bytes(), nil
+	return io.ReadAll(b)
 }
 
 func (a *FilesAPI) Delete(ctx context.Context, path string) error {

@@ -36,9 +36,9 @@ func TestAccFilesAPI(t *testing.T) {
 		err = w.Files.Delete(ctx, filePath)
 		assert.NoError(t, err)
 	})
-	content, err := w.Files.Download(ctx, filePath)
+	raw, err := w.Files.ReadFile(ctx, filePath)
 	require.NoError(t, err)
-	assert.Equal(t, "abcd", content.String())
+	assert.Equal(t, "abcd", string(raw))
 }
 
 func TestAccDbfsOpen(t *testing.T) {
