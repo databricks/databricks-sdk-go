@@ -101,6 +101,11 @@ func (c *DatabricksClient) unmarshal(body []byte, response any) error {
 	if len(body) == 0 {
 		return nil
 	}
+	// If the destination is bytes.Buffer, write the body over there
+	if raw, ok := response.(*bytes.Buffer); ok {
+		_, err := raw.Write(body)
+		return err
+	}
 	// If the destination is a byte slice, pass the body verbatim.
 	if raw, ok := response.(*[]byte); ok {
 		*raw = body
@@ -113,13 +118,17 @@ func (c *DatabricksClient) addHostToRequestUrl(r *http.Request) error {
 	if r.URL == nil {
 		return fmt.Errorf("no URL found in request")
 	}
-	r.Header.Set("Content-Type", "application/json")
 	url, err := url.Parse(c.Config.Host)
 	if err != nil {
 		return err
 	}
 	r.URL.Host = url.Host
 	r.URL.Scheme = url.Scheme
+	return nil
+}
+
+func (c *DatabricksClient) addApplicationJsonContentType(r *http.Request) error {
+	r.Header.Set("Content-Type", "application/json")
 	return nil
 }
 
@@ -275,6 +284,7 @@ func (c *DatabricksClient) perform(
 	visitors = append([]func(*http.Request) error{
 		c.Config.Authenticate,
 		c.addHostToRequestUrl,
+		c.addApplicationJsonContentType,
 		c.addAuthHeaderToUserAgent,
 	}, visitors...)
 	resp, err := retries.Poll(ctx, c.retryTimeout,

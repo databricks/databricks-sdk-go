@@ -1,10 +1,13 @@
 package workspace
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"fmt"
 	"io"
+	"mime/multipart"
+	"net/http"
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
@@ -69,4 +72,155 @@ func (a *WorkspaceAPI) RecursiveList(ctx context.Context, path string) ([]Object
 		}
 	}
 	return results, nil
+}
+
+type UploadOption = func(*Import)
+
+func UploadOverwrite() UploadOption {
+	return func(i *Import) {
+		i.Overwrite = true
+	}
+}
+
+func UploadLanguage(l Language) UploadOption {
+	return func(i *Import) {
+		i.Language = l
+	}
+}
+
+func UploadFormat(f ExportFormat) UploadOption {
+	return func(i *Import) {
+		i.Format = f
+	}
+}
+
+// Upload a workspace object (for example, a notebook or file) or the contents
+// of an entire directory (`DBC` format).
+//
+// Errors:
+//
+//   - RESOURCE_ALREADY_EXISTS: if `path` already exists no `overwrite=True`.
+//   - INVALID_PARAMETER_VALUE: if `format` and `content` values are not compatible.
+//
+// By default, workspace.UploadFormat(workspace.ExportFormatSource). If using
+// workspace.UploadFormat(workspace.ExportFormatAuto) the `path` is imported or
+// exported as either a workspace file or a notebook, depending on an analysis
+// of the `path`’s extension and the header content provided in the request.
+// In addition, if the `path` is imported as a notebook, then the `item`’s
+// extension is automatically removed.
+//
+// workspace.UploadLanguage(...) is only required if source format.
+func (a *WorkspaceAPI) Upload(ctx context.Context, path string, r io.Reader, opts ...UploadOption) error {
+	buf := &bytes.Buffer{}
+	w := multipart.NewWriter(buf)
+	err := w.WriteField("path", path)
+	if err != nil {
+		return fmt.Errorf("write path: %w", err)
+	}
+	content, err := w.CreateFormFile("content", "content")
+	if err != nil {
+		return fmt.Errorf("write content: %w", err)
+	}
+	_, err = io.Copy(content, r)
+	if err != nil {
+		return fmt.Errorf("copy io: %w", err)
+	}
+	i := &Import{}
+	for _, v := range opts {
+		v(i)
+	}
+	if i.Format == "" || i.Format == ExportFormatSource {
+		for sfx, lang := range map[string]Language{
+			".py":    LanguagePython,
+			".sql":   LanguageSql,
+			".scala": LanguageScala,
+			".R":     LanguageR,
+		} {
+			if !strings.HasSuffix(path, sfx) {
+				continue
+			}
+			i.Language = lang
+		}
+	}
+	if i.Format != "" {
+		err = w.WriteField("format", i.Format.String())
+		if err != nil {
+			return fmt.Errorf("write format: %w", err)
+		}
+	}
+	if i.Language != "" {
+		err = w.WriteField("language", i.Language.String())
+		if err != nil {
+			return fmt.Errorf("write language: %w", err)
+		}
+	}
+	if i.Overwrite {
+		err = w.WriteField("overwrite", "true")
+		if err != nil {
+			return fmt.Errorf("write overwrite: %w", err)
+		}
+	}
+	err = w.Close()
+	if err != nil {
+		return fmt.Errorf("write close: %w", err)
+	}
+	impl, ok := a.impl.(*workspaceImpl)
+	if !ok {
+		return fmt.Errorf("wrong impl: %v", a.impl)
+	}
+	return impl.client.Do(ctx, "POST", "/api/2.0/workspace/import", buf.Bytes(), nil,
+		func(r *http.Request) error {
+			r.Header.Set("Content-Type", w.FormDataContentType())
+			return nil
+		})
+}
+
+// WriteFile is identical to [os.WriteFile] but for Workspace File.
+// Keep in mind: It doesn't upload the notebook, but the file and does
+// always overwrite it.
+func (a *WorkspaceAPI) WriteFile(ctx context.Context, name string, data []byte) error {
+	return a.Upload(ctx, name, bytes.NewBuffer(data),
+		UploadFormat(ExportFormatAuto),
+		UploadOverwrite())
+}
+
+type DownloadOption = func(q map[string]any)
+
+func DownloadFormat(f ExportFormat) func(q map[string]any) {
+	return func(q map[string]any) {
+		q["format"] = f.String()
+	}
+}
+
+// Download a notebook or file from the workspace by path.
+//
+// By default, it acts as if workspace.DownloadFormat(workspace.ExportFormatSource) option is supplied. When using
+// workspace.ExportFormatAuto, the `path` is imported or exported as either a workspace file or a notebook, depending
+// on an analysis of the `item`’s extension and the header content provided in the request.
+//
+// Returns [bytes.Buffer] of the path contents.
+func (a *WorkspaceAPI) Download(ctx context.Context, path string, opts ...DownloadOption) (*bytes.Buffer, error) {
+	impl, ok := a.impl.(*workspaceImpl)
+	if !ok {
+		return nil, fmt.Errorf("wrong impl: %v", a.impl)
+	}
+	var buf bytes.Buffer
+	query := map[string]any{"path": path, "direct_download": true}
+	for _, v := range opts {
+		v(query)
+	}
+	err := impl.client.Do(ctx, "GET", "/api/2.0/workspace/export", query, &buf)
+	if err != nil {
+		return nil, err
+	}
+	return &buf, nil
+}
+
+// ReadFile is identical to [os.ReadFile] but for workspace files.
+func (a *WorkspaceAPI) ReadFile(ctx context.Context, name string) ([]byte, error) {
+	b, err := a.Download(ctx, name, DownloadFormat(ExportFormatAuto))
+	if err != nil {
+		return nil, err
+	}
+	return b.Bytes(), nil
 }
