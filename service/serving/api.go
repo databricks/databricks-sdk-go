@@ -153,7 +153,11 @@ func (a *ServingEndpointsAPI) CreateAndWait(ctx context.Context, createServingEn
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[ServingEndpointDetailed]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *ServingEndpointDetailed) {
 		for _, o := range options {
 			o(&retries.Info[ServingEndpointDetailed]{
@@ -281,7 +285,11 @@ func (a *ServingEndpointsAPI) UpdateConfigAndWait(ctx context.Context, endpointC
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[ServingEndpointDetailed]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *ServingEndpointDetailed) {
 		for _, o := range options {
 			o(&retries.Info[ServingEndpointDetailed]{

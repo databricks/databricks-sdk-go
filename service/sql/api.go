@@ -1206,7 +1206,11 @@ func (a *WarehousesAPI) CreateAndWait(ctx context.Context, createWarehouseReques
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[GetWarehouseResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *GetWarehouseResponse) {
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
@@ -1264,7 +1268,11 @@ func (a *WarehousesAPI) EditAndWait(ctx context.Context, editWarehouseRequest Ed
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[GetWarehouseResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *GetWarehouseResponse) {
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
@@ -1404,7 +1412,11 @@ func (a *WarehousesAPI) StartAndWait(ctx context.Context, startRequest StartRequ
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[GetWarehouseResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *GetWarehouseResponse) {
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{
@@ -1446,7 +1458,11 @@ func (a *WarehousesAPI) StopAndWait(ctx context.Context, stopRequest StopRequest
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[GetWarehouseResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *GetWarehouseResponse) {
 		for _, o := range options {
 			o(&retries.Info[GetWarehouseResponse]{

@@ -825,6 +825,14 @@ type Dependency struct {
 	Table *TableDependency `json:"table,omitempty"`
 }
 
+// Disable a system schema
+type DisableRequest struct {
+	// The metastore ID under which the system schema lives.
+	MetastoreId string `json:"-" url:"-"`
+	// Full name of the system schema.
+	SchemaName string `json:"-" url:"-"`
+}
+
 type EffectiveAutoMaintenanceFlag struct {
 	// The name of the object from which the flag was inherited. If there was no
 	// inheritance, this field is left blank.
@@ -1505,6 +1513,17 @@ type ListSummariesRequest struct {
 	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
 }
 
+// List system schemas
+type ListSystemSchemasRequest struct {
+	// The ID for the metastore in which the system schema resides.
+	MetastoreId string `json:"-" url:"-"`
+}
+
+type ListSystemSchemasResponse struct {
+	// An array of system schema information objects.
+	Schemas []SystemSchemaInfo `json:"schemas,omitempty"`
+}
+
 type ListTableSummariesResponse struct {
 	// Opaque token for pagination. Omitted if there are no more results.
 	NextPageToken string `json:"next_page_token,omitempty"`
@@ -1875,6 +1894,47 @@ type StorageCredentialInfo struct {
 	// Whether this credential is the current metastore's root storage
 	// credential.
 	UsedForManagedStorage bool `json:"used_for_managed_storage,omitempty"`
+}
+
+type SystemSchemaInfo struct {
+	// Name of the system schema.
+	Schema string `json:"schema,omitempty"`
+	// The current state of enablement for the system schema. An empty string
+	// means the system schema is available and ready for opt-in.
+	State SystemSchemaInfoState `json:"state,omitempty"`
+}
+
+// The current state of enablement for the system schema. An empty string means
+// the system schema is available and ready for opt-in.
+type SystemSchemaInfoState string
+
+const SystemSchemaInfoStateDisableinitialized SystemSchemaInfoState = `DisableInitialized`
+
+const SystemSchemaInfoStateEnablecompleted SystemSchemaInfoState = `EnableCompleted`
+
+const SystemSchemaInfoStateEnableinitialized SystemSchemaInfoState = `EnableInitialized`
+
+const SystemSchemaInfoStateUnavailable SystemSchemaInfoState = `Unavailable`
+
+// String representation for [fmt.Print]
+func (ssis *SystemSchemaInfoState) String() string {
+	return string(*ssis)
+}
+
+// Set raw string value and validate it against allowed values
+func (ssis *SystemSchemaInfoState) Set(v string) error {
+	switch v {
+	case `DisableInitialized`, `EnableCompleted`, `EnableInitialized`, `Unavailable`:
+		*ssis = SystemSchemaInfoState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DisableInitialized", "EnableCompleted", "EnableInitialized", "Unavailable"`, v)
+	}
+}
+
+// Type always returns SystemSchemaInfoState to satisfy [pflag.Value] interface
+func (ssis *SystemSchemaInfoState) Type() string {
+	return "SystemSchemaInfoState"
 }
 
 // A table constraint, as defined by *one* of the following fields being set:

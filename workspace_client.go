@@ -667,6 +667,11 @@ type WorkspaceClient struct {
 	// ownership to another user or group to manage permissions on it.
 	StorageCredentials *catalog.StorageCredentialsAPI
 
+	// A system schema is a schema that lives within the system catalog. A
+	// system schema may contain information about customer usage of Unity
+	// Catalog such as audit-logs, billing-logs, lineage information, etc.
+	SystemSchemas *catalog.SystemSchemasAPI
+
 	// Primary key and foreign key constraints encode relationships between
 	// fields in tables.
 	//
@@ -811,6 +816,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Shares:              sharing.NewShares(apiClient),
 		StatementExecution:  sql.NewStatementExecution(apiClient),
 		StorageCredentials:  catalog.NewStorageCredentials(apiClient),
+		SystemSchemas:       catalog.NewSystemSchemas(apiClient),
 		TableConstraints:    catalog.NewTableConstraints(apiClient),
 		Tables:              catalog.NewTables(apiClient),
 		TokenManagement:     settings.NewTokenManagement(apiClient),

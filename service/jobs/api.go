@@ -163,7 +163,11 @@ func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, opt
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[Run]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *Run) {
 		for _, o := range options {
 			o(&retries.Info[Run]{
@@ -447,7 +451,11 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, opt
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[Run]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *Run) {
 		for _, o := range options {
 			o(&retries.Info[Run]{
@@ -497,7 +505,11 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...r
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[Run]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *Run) {
 		for _, o := range options {
 			o(&retries.Info[Run]{
@@ -542,7 +554,11 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, option
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[Run]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *Run) {
 		for _, o := range options {
 			o(&retries.Info[Run]{

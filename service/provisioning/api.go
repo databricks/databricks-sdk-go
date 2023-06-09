@@ -1089,7 +1089,11 @@ func (a *WorkspacesAPI) CreateAndWait(ctx context.Context, createWorkspaceReques
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[Workspace]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *Workspace) {
 		for _, o := range options {
 			o(&retries.Info[Workspace]{
@@ -1378,7 +1382,11 @@ func (a *WorkspacesAPI) UpdateAndWait(ctx context.Context, updateWorkspaceReques
 	if err != nil {
 		return nil, err
 	}
-	wait.timeout = 20 * time.Minute
+	tmp := &retries.Info[Workspace]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
 	wait.callback = func(info *Workspace) {
 		for _, o := range options {
 			o(&retries.Info[Workspace]{

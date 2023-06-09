@@ -142,7 +142,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 		panic(fmt.Errorf("%s request body is nil", op.OperationId))
 	}
 	if request.fields == nil && request.MapValue == nil {
-		panic(fmt.Errorf("%s request schema has no fields", op.OperationId))
+		return nil
 	}
 	for _, v := range params {
 		if v.In == "header" {
