@@ -196,7 +196,7 @@ func DownloadFormat(f ExportFormat) func(q map[string]any) {
 //
 // By default, it acts as if workspace.DownloadFormat(workspace.ExportFormatSource) option is supplied. When using
 // workspace.ExportFormatAuto, the `path` is imported or exported as either a workspace file or a notebook, depending
-// on an analysis of the `item`’s extension and the header content provided in the request.
+// on an analysis of the `item`’s extension and the file content header provided in the request.
 //
 // Returns [bytes.Buffer] of the path contents.
 func (a *WorkspaceAPI) Download(ctx context.Context, path string, opts ...DownloadOption) (*bytes.Buffer, error) {
