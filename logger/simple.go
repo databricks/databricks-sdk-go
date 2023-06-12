@@ -5,10 +5,12 @@ import (
 	"log"
 )
 
-type SimpleLogger struct{}
+type SimpleLogger struct {
+	Level Level
+}
 
 func (l *SimpleLogger) Enabled(_ context.Context, level Level) bool {
-	return true
+	return level >= l.Level
 }
 
 func (l *SimpleLogger) Tracef(_ context.Context, format string, v ...any) {
