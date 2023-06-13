@@ -324,7 +324,7 @@ func (pkg *Package) HasWaits() bool {
 }
 
 // Load takes OpenAPI specification and loads a service model
-func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
+func (pkg *Package) Load(spec *openapi.Specification, tag openapi.Tag) error {
 	accountServices := map[string]bool{}
 	var accountsRE = regexp.MustCompile(`/accounts/`)
 	for prefix, path := range spec.Paths {
@@ -361,6 +361,7 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 						Name:        tag.Service,
 						Description: tag.Description,
 					},
+					tag: &tag,
 				}
 				pkg.services[tag.Service] = svc
 			}

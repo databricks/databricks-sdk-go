@@ -38,7 +38,7 @@ func NewFromFile(name string) (*Batch, error) {
 			}
 			batch.packages[tag.Package] = pkg
 		}
-		err := pkg.Load(spec, &tag)
+		err := pkg.Load(spec, tag)
 		if err != nil {
 			return nil, fmt.Errorf("fail to load %s: %w", tag.Name, err)
 		}

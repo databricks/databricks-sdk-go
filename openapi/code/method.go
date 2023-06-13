@@ -326,3 +326,13 @@ func (m *Method) CanHaveResponseBody() bool {
 func (m *Method) TitleVerb() string {
 	return strings.Title(strings.ToLower(m.Verb))
 }
+
+// IsPrivatePreview flags object being in private preview.
+func (m *Method) IsPrivatePreview() bool {
+	return strings.ToLower(m.operation.Preview) == "private"
+}
+
+// IsPublicPreview flags object being in public preview.
+func (m *Method) IsPublicPreview() bool {
+	return strings.ToLower(m.operation.Preview) == "public"
+}
