@@ -56,12 +56,12 @@ The Databricks SDK for Go includes functionality to accelerate development with 
       "context"
 
       "github.com/databricks/databricks-sdk-go"
-      "github.com/databricks/databricks-sdk-go/service/clusters"
+      "github.com/databricks/databricks-sdk-go/service/compute"
     )
 
     func main() {
       w := databricks.Must(databricks.NewWorkspaceClient())
-      all, err := w.Clusters.ListAll(context.Background(), clusters.List{})
+      all, err := w.Clusters.ListAll(context.Background(), compute.ListClustersRequest{})
       if err != nil {
         panic(err)
       }
