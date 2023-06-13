@@ -31,7 +31,7 @@ func NewSuite(dirname string) (*suite, error) {
 			// not transpilable
 			return nil
 		}
-		if strings.HasSuffix(path, "dbfs_test.go") {
+		if strings.HasSuffix(path, "files_test.go") {
 			// not transpilable
 			return nil
 		}

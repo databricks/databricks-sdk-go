@@ -23,6 +23,8 @@ import (
 type WorkspaceClient struct {
 	Config *config.Config
 
+	Files *files.FilesAPI
+
 	// The alerts API can be used to perform CRUD operations on alerts. An alert
 	// is a Databricks SQL object that periodically runs a query, evaluates a
 	// condition of its result, and notifies one or more users and/or
@@ -776,6 +778,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	}
 	return &WorkspaceClient{
 		Config: cfg,
+		Files:  files.NewFiles(apiClient),
 
 		Alerts:              sql.NewAlerts(apiClient),
 		Catalogs:            catalog.NewCatalogs(apiClient),

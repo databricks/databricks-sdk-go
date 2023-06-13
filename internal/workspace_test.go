@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go"
@@ -53,9 +54,8 @@ func TestAccWorkspaceIntegration(t *testing.T) {
 
 	// Export the notebook and assert the contents
 	exportResponse, err := w.Workspace.Export(ctx, workspace.ExportRequest{
-		DirectDownload: false,
-		Format:         workspace.ExportFormatSource,
-		Path:           notebook,
+		Format: workspace.ExportFormatSource,
+		Path:   notebook,
 	})
 	require.NoError(t, err)
 	assert.True(t, exportResponse.Content == base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")))
@@ -74,18 +74,92 @@ func TestAccWorkspaceIntegration(t *testing.T) {
 	assert.Contains(t, paths, notebook)
 }
 
+func TestAccWorkspaceUploadNotebookWithFileExtensionNoTranspile(t *testing.T) {
+	// TODO: remove NoTranspile suffix once other languages get Upload/Donwload features
+	ctx, w := workspaceTest(t)
+
+	notebookPath := filepath.Join("/Users", me(t, w).UserName, RandomName("notebook-")+".py")
+
+	err := w.Workspace.Upload(ctx, notebookPath, strings.NewReader("print(1)"))
+	assert.NoError(t, err)
+	t.Cleanup(func() {
+		err = w.Workspace.Delete(ctx, workspace.Delete{
+			Path: notebookPath,
+		})
+		require.NoError(t, err)
+	})
+
+	info, err := w.Workspace.GetStatusByPath(ctx, notebookPath)
+	assert.NoError(t, err)
+	assert.Equal(t, workspace.LanguagePython, info.Language)
+	assert.Equal(t, workspace.ObjectTypeNotebook, info.ObjectType)
+
+	contents, err := w.Workspace.ReadFile(ctx, notebookPath)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "# Databricks notebook source\nprint(1)", string(contents))
+}
+
+func TestAccWorkspaceUploadNotebookWithFileNoExtensionNoTranspile(t *testing.T) {
+	// TODO: remove NoTranspile suffix once other languages get Upload/Donwload features
+	ctx, w := workspaceTest(t)
+
+	notebookPath := filepath.Join("/Users", me(t, w).UserName, RandomName("notebook-"))
+
+	err := w.Workspace.Upload(ctx, notebookPath, strings.NewReader("print(1)"),
+		workspace.UploadLanguage(workspace.LanguagePython))
+	assert.NoError(t, err)
+	t.Cleanup(func() {
+		err = w.Workspace.Delete(ctx, workspace.Delete{
+			Path: notebookPath,
+		})
+		require.NoError(t, err)
+	})
+
+	info, err := w.Workspace.GetStatusByPath(ctx, notebookPath)
+	assert.NoError(t, err)
+	assert.Equal(t, workspace.LanguagePython, info.Language)
+	assert.Equal(t, workspace.ObjectTypeNotebook, info.ObjectType)
+
+	contents, err := w.Workspace.ReadFile(ctx, notebookPath)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "# Databricks notebook source\nprint(1)", string(contents))
+}
+
+func TestAccWorkspaceUploadFileNoTranspile(t *testing.T) {
+	// TODO: remove NoTranspile suffix once other languages get Upload/Donwload features
+	ctx, w := workspaceTest(t)
+
+	txtPath := filepath.Join("/Users", me(t, w).UserName, RandomName("txt-"))
+
+	err := w.Workspace.Upload(ctx, txtPath, strings.NewReader("print(1)"),
+		workspace.UploadFormat(workspace.ExportFormatAuto))
+	assert.NoError(t, err)
+	t.Cleanup(func() {
+		err = w.Workspace.Delete(ctx, workspace.Delete{
+			Path: txtPath,
+		})
+		require.NoError(t, err)
+	})
+
+	info, err := w.Workspace.GetStatusByPath(ctx, txtPath)
+	assert.NoError(t, err)
+	assert.Equal(t, workspace.ObjectTypeFile, info.ObjectType)
+
+	contents, err := w.Workspace.ReadFile(ctx, txtPath)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "print(1)", string(contents))
+}
+
 func TestAccWorkspaceRecursiveListNoTranspile(t *testing.T) {
 	ctx, w := workspaceTest(t)
 	notebook := myNotebookPath(t, w)
 
 	// Import the test notebook
-	err := w.Workspace.Import(ctx, workspace.Import{
-		Path:      notebook,
-		Format:    workspace.ExportFormatSource,
-		Language:  workspace.LanguagePython,
-		Content:   base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")),
-		Overwrite: true,
-	})
+	err := w.Workspace.Upload(ctx, notebook, strings.NewReader("print(1)"),
+		workspace.UploadOverwrite())
 	require.NoError(t, err)
 
 	allMyNotebooks, err := w.Workspace.RecursiveList(ctx, filepath.Join("/Users", me(t, w).UserName))
