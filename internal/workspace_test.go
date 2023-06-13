@@ -94,10 +94,10 @@ func TestAccWorkspaceUploadNotebookWithFileExtensionNoTranspile(t *testing.T) {
 	assert.Equal(t, workspace.LanguagePython, info.Language)
 	assert.Equal(t, workspace.ObjectTypeNotebook, info.ObjectType)
 
-	contents, err := w.Workspace.Download(ctx, notebookPath)
+	contents, err := w.Workspace.ReadFile(ctx, notebookPath)
 	assert.NoError(t, err)
 
-	assert.Equal(t, "# Databricks notebook source\nprint(1)", contents.String())
+	assert.Equal(t, "# Databricks notebook source\nprint(1)", string(contents))
 }
 
 func TestAccWorkspaceUploadNotebookWithFileNoExtensionNoTranspile(t *testing.T) {
@@ -121,10 +121,10 @@ func TestAccWorkspaceUploadNotebookWithFileNoExtensionNoTranspile(t *testing.T) 
 	assert.Equal(t, workspace.LanguagePython, info.Language)
 	assert.Equal(t, workspace.ObjectTypeNotebook, info.ObjectType)
 
-	contents, err := w.Workspace.Download(ctx, notebookPath)
+	contents, err := w.Workspace.ReadFile(ctx, notebookPath)
 	assert.NoError(t, err)
 
-	assert.Equal(t, "# Databricks notebook source\nprint(1)", contents.String())
+	assert.Equal(t, "# Databricks notebook source\nprint(1)", string(contents))
 }
 
 func TestAccWorkspaceUploadFileNoTranspile(t *testing.T) {
@@ -147,10 +147,10 @@ func TestAccWorkspaceUploadFileNoTranspile(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, workspace.ObjectTypeFile, info.ObjectType)
 
-	contents, err := w.Workspace.Download(ctx, txtPath)
+	contents, err := w.Workspace.ReadFile(ctx, txtPath)
 	assert.NoError(t, err)
 
-	assert.Equal(t, "print(1)", contents.String())
+	assert.Equal(t, "print(1)", string(contents))
 }
 
 func TestAccWorkspaceRecursiveListNoTranspile(t *testing.T) {
