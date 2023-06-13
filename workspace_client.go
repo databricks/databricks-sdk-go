@@ -166,15 +166,6 @@ type WorkspaceClient struct {
 	// Experiments are located in the workspace file tree. You manage
 	// experiments using the same tools you use to manage other workspace
 	// objects such as folders, notebooks, and libraries.
-	// Experiments are the primary unit of organization in MLflow; all MLflow
-	// runs belong to an experiment. Each experiment lets you visualize, search,
-	// and compare runs, as well as download run artifacts or metadata for
-	// analysis in other tools. Experiments are maintained in a Databricks
-	// hosted MLflow tracking server.
-	//
-	// Experiments are located in the workspace file tree. You manage
-	// experiments using the same tools you use to manage other workspace
-	// objects such as folders, notebooks, and libraries.
 	Experiments *ml.ExperimentsAPI
 
 	// An external location is an object that combines a cloud storage path with
@@ -355,8 +346,6 @@ type WorkspaceClient struct {
 	// available in a catalog named hive_metastore.
 	Metastores *catalog.MetastoresAPI
 
-	// MLflow Model Registry is a centralized model repository and a UI and set
-	// of APIs that enable you to manage the full lifecycle of MLflow Models.
 	// MLflow Model Registry is a centralized model repository and a UI and set
 	// of APIs that enable you to manage the full lifecycle of MLflow Models.
 	ModelRegistry *ml.ModelRegistryAPI
