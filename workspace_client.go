@@ -778,7 +778,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	}
 	return &WorkspaceClient{
 		Config: cfg,
-		Files:               files.NewFiles(apiClient),
+		Files:  files.NewFiles(apiClient),
 
 		Alerts:              sql.NewAlerts(apiClient),
 		Catalogs:            catalog.NewCatalogs(apiClient),
