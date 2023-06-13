@@ -265,6 +265,26 @@ func TestConfig_ConfigFileSkipDefaultProfileIfHostSpecified(t *testing.T) {
 	}.apply(t)
 }
 
+func TestConfig_ConfigFileWithEmptyDefaultProfileSelectDefault(t *testing.T) {
+	configFixture{
+		Env: map[string]string{
+			"HOME": "testdata/empty_default",
+		},
+		AssertError: "default auth: cannot configure default credentials",
+	}.apply(t)
+}
+
+func TestConfig_ConfigFileWithEmptyDefaultProfileSelectAbc(t *testing.T) {
+	configFixture{
+		Env: map[string]string{
+			"HOME":                      "testdata/empty_default",
+			"DATABRICKS_CONFIG_PROFILE": "abc",
+		},
+		AssertAuth: "pat",
+		AssertHost: "https://foo",
+	}.apply(t)
+}
+
 func TestConfig_PatFromDatabricksCfg(t *testing.T) {
 	configFixture{
 		// loading with DEFAULT profile in databrickscfs
