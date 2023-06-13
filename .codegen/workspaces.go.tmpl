@@ -12,14 +12,9 @@ type WorkspaceClient struct {
 	Config *config.Config
 
 	{{range .Services}}{{if not .IsAccounts}}
-	{{- if eq .Name "CommandExecution" -}}
-	// This API allows executing commands on running clusters.
-	CommandExecutor compute.CommandExecutor
-
-	{{else}}{{.Comment "    // " 80}}
+	{{.Comment "    // " 80}}
 	{{.Name}} *{{.Package.Name}}.{{.Name}}API
-
-	{{end}}{{end}}{{end}}
+	{{end}}{{end}}
 }
 
 // NewWorkspaceClient creates new Databricks SDK client for Workspaces or 
@@ -40,10 +35,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	return &WorkspaceClient{
 		Config: cfg,
 		{{range .Services}}{{if not .IsAccounts}}
-		{{- if eq .Name "CommandExecution" -}}
-		CommandExecutor: compute.NewCommandExecutor(apiClient),
-		{{else -}}
 		{{.Name}}: {{.Package.Name}}.New{{.Name}}(apiClient),
-		{{end -}}{{end}}{{end}}
+		{{- end}}{{end}}
 	}, nil
 }
