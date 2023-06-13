@@ -21,18 +21,22 @@ type CommandExecutorV2 struct {
 func (a *CommandExecutionAPI) Start(ctx context.Context, clusterID string, language Language) (*CommandExecutorV2, error) {
 	executionImpl, ok := a.impl.(*commandExecutionImpl)
 	if !ok {
-		return nil, fmt.Errorf("unknown command executionimplementation: %v", a.impl)
+		return nil, fmt.Errorf("unknown command execution implementation: %v", a.impl)
 	}
-	// re-initializing clusters API here, so that we have less IF's in the generator
+	// re-initializing clusters API here, so that we have less IF's in the generator for WorkspaceClient
 	clustersAPI := NewClusters(executionImpl.client)
 	err := clustersAPI.EnsureClusterIsRunning(ctx, clusterID)
 	if err != nil {
 		return nil, err
 	}
-	commandContext, err := a.CreateAndWait(ctx, CreateContext{
+	wait, err := a.Create(ctx, CreateContext{
 		ClusterId: clusterID,
 		Language:  language,
 	})
+	if err != nil {
+		return nil, err
+	}
+	commandContext, err := wait.Get()
 	if err != nil {
 		return nil, err
 	}
@@ -54,12 +58,16 @@ func (c *CommandExecutorV2) Destroy(ctx context.Context) error {
 
 // Execute runs given command in the running cluster and context and waits for the results
 func (c *CommandExecutorV2) Execute(ctx context.Context, command string) (*Results, error) {
-	status, err := c.executionAPI.ExecuteAndWait(ctx, Command{
+	wait, err := c.executionAPI.Execute(ctx, Command{
 		Command:   TrimLeadingWhitespace(command),
 		ClusterId: c.clusterID,
 		ContextId: c.contextID,
 		Language:  c.language,
 	})
+	if err != nil {
+		return nil, err
+	}
+	status, err := wait.Get()
 	if err != nil {
 		return nil, err
 	}
@@ -93,6 +101,8 @@ type CommandsHighLevelAPI struct {
 
 // Execute creates a spark context and executes a command and then closes context
 // Any leading whitespace is trimmed
+//
+// Deprecated: please switch to CommandExecutorV2
 func (a *CommandsHighLevelAPI) Execute(ctx context.Context, clusterID, language, commandStr string) Results {
 	ctx = useragent.InContext(ctx, "sdk-feature", "command-execution")
 	cluster, err := a.clusters.Get(ctx, GetClusterRequest{
