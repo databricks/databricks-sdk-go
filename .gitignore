@@ -25,3 +25,4 @@ raw-specs/**
 out/**
 *.log
 .databricks/
+.DS_Store

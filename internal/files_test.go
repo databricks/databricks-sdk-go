@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"path"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -22,6 +23,22 @@ func (buf hashable) Hash() uint32 {
 	h := fnv.New32a()
 	h.Write(buf)
 	return h.Sum32()
+}
+
+func TestAccFilesAPI(t *testing.T) {
+	t.SkipNow() // until available on prod
+	ctx, w := workspaceTest(t)
+
+	filePath := RandomName("/Volumes/bogdanghita/default/v3_shared/sdk-testing/txt-")
+	err := w.Files.Upload(ctx, filePath, strings.NewReader("abcd"))
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err = w.Files.Delete(ctx, filePath)
+		assert.NoError(t, err)
+	})
+	raw, err := w.Files.ReadFile(ctx, filePath)
+	require.NoError(t, err)
+	assert.Equal(t, "abcd", string(raw))
 }
 
 func TestAccDbfsOpen(t *testing.T) {

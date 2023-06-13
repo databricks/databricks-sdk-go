@@ -31,9 +31,8 @@ func ExampleWorkspaceAPI_Export_workspaceIntegration() {
 	}()
 
 	exportResponse, err := w.Workspace.Export(ctx, workspace.ExportRequest{
-		DirectDownload: false,
-		Format:         workspace.ExportFormatSource,
-		Path:           notebook,
+		Format: workspace.ExportFormatSource,
+		Path:   notebook,
 	})
 	if err != nil {
 		panic(err)
