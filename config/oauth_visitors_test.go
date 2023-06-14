@@ -18,7 +18,7 @@ func (m mockTokenSource) Token() (*oauth2.Token, error) {
 }
 
 func TestOAuthWithRetry(t *testing.T) {
-	triedOnce := true
+	triedOnce := false
 	mockSource := mockTokenSource{
 		mockedTokenFunc: func() (*oauth2.Token, error) {
 			if triedOnce == true {
