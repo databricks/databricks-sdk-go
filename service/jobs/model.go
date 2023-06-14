@@ -188,6 +188,10 @@ func (cps *ContinuousPauseStatus) Set(v string) error {
 	case `PAUSED`, `UNPAUSED`:
 		*cps = ContinuousPauseStatus(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*cps = ContinuousPauseStatus(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
 	}
@@ -294,6 +298,10 @@ func (cjf *CreateJobFormat) Set(v string) error {
 	case `MULTI_TASK`, `SINGLE_TASK`:
 		*cjf = CreateJobFormat(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*cjf = CreateJobFormat(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "MULTI_TASK", "SINGLE_TASK"`, v)
 	}
@@ -341,6 +349,10 @@ func (csps *CronSchedulePauseStatus) Set(v string) error {
 	switch v {
 	case `PAUSED`, `UNPAUSED`:
 		*csps = CronSchedulePauseStatus(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*csps = CronSchedulePauseStatus(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
@@ -517,6 +529,10 @@ func (gsgp *GitSourceGitProvider) Set(v string) error {
 	switch v {
 	case `awsCodeCommit`, `azureDevOpsServices`, `bitbucketCloud`, `bitbucketServer`, `gitHub`, `gitHubEnterprise`, `gitLab`, `gitLabEnterpriseEdition`:
 		*gsgp = GitSourceGitProvider(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*gsgp = GitSourceGitProvider(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "awsCodeCommit", "azureDevOpsServices", "bitbucketCloud", "bitbucketServer", "gitHub", "gitHubEnterprise", "gitLab", "gitLabEnterpriseEdition"`, v)
@@ -701,6 +717,10 @@ func (jsf *JobSettingsFormat) Set(v string) error {
 	switch v {
 	case `MULTI_TASK`, `SINGLE_TASK`:
 		*jsf = JobSettingsFormat(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*jsf = JobSettingsFormat(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "MULTI_TASK", "SINGLE_TASK"`, v)
@@ -919,6 +939,10 @@ func (lrrt *ListRunsRunType) Set(v string) error {
 	case `JOB_RUN`, `SUBMIT_RUN`, `WORKFLOW_RUN`:
 		*lrrt = ListRunsRunType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*lrrt = ListRunsRunType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "JOB_RUN", "SUBMIT_RUN", "WORKFLOW_RUN"`, v)
 	}
@@ -987,6 +1011,10 @@ func (nts *NotebookTaskSource) Set(v string) error {
 	switch v {
 	case `GIT`, `WORKSPACE`:
 		*nts = NotebookTaskSource(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*nts = NotebookTaskSource(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "GIT", "WORKSPACE"`, v)
@@ -1062,6 +1090,10 @@ func (rhit *RepairHistoryItemType) Set(v string) error {
 	switch v {
 	case `ORIGINAL`, `REPAIR`:
 		*rhit = RepairHistoryItemType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*rhit = RepairHistoryItemType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ORIGINAL", "REPAIR"`, v)
@@ -1327,6 +1359,10 @@ func (rlcs *RunLifeCycleState) Set(v string) error {
 	case `BLOCKED`, `INTERNAL_ERROR`, `PENDING`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`, `WAITING_FOR_RETRY`:
 		*rlcs = RunLifeCycleState(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*rlcs = RunLifeCycleState(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "INTERNAL_ERROR", "PENDING", "RUNNING", "SKIPPED", "TERMINATED", "TERMINATING", "WAITING_FOR_RETRY"`, v)
 	}
@@ -1591,6 +1627,10 @@ func (rrs *RunResultState) Set(v string) error {
 	case `CANCELED`, `FAILED`, `SUCCESS`, `TIMEDOUT`:
 		*rrs = RunResultState(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*rrs = RunResultState(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELED", "FAILED", "SUCCESS", "TIMEDOUT"`, v)
 	}
@@ -1779,6 +1819,10 @@ func (rt *RunType) Set(v string) error {
 	case `JOB_RUN`, `SUBMIT_RUN`, `WORKFLOW_RUN`:
 		*rt = RunType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*rt = RunType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "JOB_RUN", "SUBMIT_RUN", "WORKFLOW_RUN"`, v)
 	}
@@ -1847,6 +1891,10 @@ func (spts *SparkPythonTaskSource) Set(v string) error {
 	case `GIT`, `WORKSPACE`:
 		*spts = SparkPythonTaskSource(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*spts = SparkPythonTaskSource(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "GIT", "WORKSPACE"`, v)
 	}
@@ -1909,6 +1957,10 @@ func (sas *SqlAlertState) Set(v string) error {
 	case `OK`, `TRIGGERED`, `UNKNOWN`:
 		*sas = SqlAlertState(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*sas = SqlAlertState(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "OK", "TRIGGERED", "UNKNOWN"`, v)
 	}
@@ -1966,6 +2018,10 @@ func (sdwos *SqlDashboardWidgetOutputStatus) Set(v string) error {
 	switch v {
 	case `CANCELLED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCESS`:
 		*sdwos = SqlDashboardWidgetOutputStatus(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*sdwos = SqlDashboardWidgetOutputStatus(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "PENDING", "RUNNING", "SUCCESS"`, v)
@@ -2189,6 +2245,10 @@ func (tsps *TriggerSettingsPauseStatus) Set(v string) error {
 	case `PAUSED`, `UNPAUSED`:
 		*tsps = TriggerSettingsPauseStatus(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*tsps = TriggerSettingsPauseStatus(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
 	}
@@ -2226,6 +2286,10 @@ func (tt *TriggerType) Set(v string) error {
 	switch v {
 	case `FILE_ARRIVAL`, `ONE_TIME`, `PERIODIC`, `RETRY`:
 		*tt = TriggerType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*tt = TriggerType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FILE_ARRIVAL", "ONE_TIME", "PERIODIC", "RETRY"`, v)
@@ -2283,6 +2347,10 @@ func (vt *ViewType) Set(v string) error {
 	case `DASHBOARD`, `NOTEBOOK`:
 		*vt = ViewType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*vt = ViewType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DASHBOARD", "NOTEBOOK"`, v)
 	}
@@ -2315,6 +2383,10 @@ func (vte *ViewsToExport) Set(v string) error {
 	switch v {
 	case `ALL`, `CODE`, `DASHBOARDS`:
 		*vte = ViewsToExport(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*vte = ViewsToExport(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ALL", "CODE", "DASHBOARDS"`, v)

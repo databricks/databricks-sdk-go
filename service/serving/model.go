@@ -113,6 +113,10 @@ func (escu *EndpointStateConfigUpdate) Set(v string) error {
 	case `IN_PROGRESS`, `NOT_UPDATING`, `UPDATE_FAILED`:
 		*escu = EndpointStateConfigUpdate(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*escu = EndpointStateConfigUpdate(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "IN_PROGRESS", "NOT_UPDATING", "UPDATE_FAILED"`, v)
 	}
@@ -143,6 +147,10 @@ func (esr *EndpointStateReady) Set(v string) error {
 	switch v {
 	case `NOT_READY`, `READY`:
 		*esr = EndpointStateReady(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*esr = EndpointStateReady(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "NOT_READY", "READY"`, v)
@@ -313,6 +321,10 @@ func (smsd *ServedModelStateDeployment) Set(v string) error {
 	case `DEPLOYMENT_ABORTED`, `DEPLOYMENT_CREATING`, `DEPLOYMENT_FAILED`, `DEPLOYMENT_READY`, `DEPLOYMENT_RECOVERING`:
 		*smsd = ServedModelStateDeployment(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*smsd = ServedModelStateDeployment(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DEPLOYMENT_ABORTED", "DEPLOYMENT_CREATING", "DEPLOYMENT_FAILED", "DEPLOYMENT_READY", "DEPLOYMENT_RECOVERING"`, v)
 	}
@@ -388,6 +400,10 @@ func (sedpl *ServingEndpointDetailedPermissionLevel) Set(v string) error {
 	switch v {
 	case `CAN_MANAGE`, `CAN_QUERY`, `CAN_VIEW`:
 		*sedpl = ServingEndpointDetailedPermissionLevel(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*sedpl = ServingEndpointDetailedPermissionLevel(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW"`, v)

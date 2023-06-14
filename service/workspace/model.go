@@ -32,6 +32,10 @@ func (ap *AclPermission) Set(v string) error {
 	case `MANAGE`, `READ`, `WRITE`:
 		*ap = AclPermission(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ap = AclPermission(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "MANAGE", "READ", "WRITE"`, v)
 	}
@@ -190,6 +194,10 @@ func (ef *ExportFormat) Set(v string) error {
 	case `AUTO`, `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
 		*ef = ExportFormat(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ef = ExportFormat(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AUTO", "DBC", "HTML", "JUPYTER", "R_MARKDOWN", "SOURCE"`, v)
 	}
@@ -298,6 +306,10 @@ func (l *Language) Set(v string) error {
 	switch v {
 	case `PYTHON`, `R`, `SCALA`, `SQL`:
 		*l = Language(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*l = Language(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PYTHON", "R", "SCALA", "SQL"`, v)
@@ -416,6 +428,10 @@ func (ot *ObjectType) Set(v string) error {
 	case `DIRECTORY`, `FILE`, `LIBRARY`, `NOTEBOOK`, `REPO`:
 		*ot = ObjectType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ot = ObjectType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DIRECTORY", "FILE", "LIBRARY", "NOTEBOOK", "REPO"`, v)
 	}
@@ -483,6 +499,10 @@ func (sbt *ScopeBackendType) Set(v string) error {
 	switch v {
 	case `AZURE_KEYVAULT`, `DATABRICKS`:
 		*sbt = ScopeBackendType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*sbt = ScopeBackendType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AZURE_KEYVAULT", "DATABRICKS"`, v)

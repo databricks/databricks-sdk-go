@@ -211,6 +211,10 @@ func (ds *DeliveryStatus) Set(v string) error {
 	case `CREATED`, `NOT_FOUND`, `SUCCEEDED`, `SYSTEM_FAILURE`, `USER_FAILURE`:
 		*ds = DeliveryStatus(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ds = DeliveryStatus(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CREATED", "NOT_FOUND", "SUCCEEDED", "SYSTEM_FAILURE", "USER_FAILURE"`, v)
 	}
@@ -278,6 +282,10 @@ func (ldcs *LogDeliveryConfigStatus) Set(v string) error {
 	switch v {
 	case `DISABLED`, `ENABLED`:
 		*ldcs = LogDeliveryConfigStatus(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ldcs = LogDeliveryConfigStatus(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DISABLED", "ENABLED"`, v)
@@ -416,6 +424,10 @@ func (lt *LogType) Set(v string) error {
 	case `AUDIT_LOGS`, `BILLABLE_USAGE`:
 		*lt = LogType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*lt = LogType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AUDIT_LOGS", "BILLABLE_USAGE"`, v)
 	}
@@ -452,6 +464,10 @@ func (of *OutputFormat) Set(v string) error {
 	switch v {
 	case `CSV`, `JSON`:
 		*of = OutputFormat(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*of = OutputFormat(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CSV", "JSON"`, v)

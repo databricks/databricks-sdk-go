@@ -357,6 +357,10 @@ func (lso *ListSortOrder) Set(v string) error {
 	case `ascending`, `descending`:
 		*lso = ListSortOrder(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*lso = ListSortOrder(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ascending", "descending"`, v)
 	}
@@ -461,6 +465,10 @@ func (po *PatchOp) Set(v string) error {
 	case `add`, `remove`, `replace`:
 		*po = PatchOp(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*po = PatchOp(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "add", "remove", "replace"`, v)
 	}
@@ -536,6 +544,10 @@ func (pl *PermissionLevel) Set(v string) error {
 	switch v {
 	case `CAN_ATTACH_TO`, `CAN_BIND`, `CAN_EDIT`, `CAN_EDIT_METADATA`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_RUN`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`, `CAN_RESTART`, `CAN_RUN`, `CAN_USE`, `CAN_VIEW`, `CAN_VIEW_METADATA`, `IS_OWNER`:
 		*pl = PermissionLevel(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*pl = PermissionLevel(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_ATTACH_TO", "CAN_BIND", "CAN_EDIT", "CAN_EDIT_METADATA", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_RUN", "CAN_MANAGE_STAGING_VERSIONS", "CAN_READ", "CAN_RESTART", "CAN_RUN", "CAN_USE", "CAN_VIEW", "CAN_VIEW_METADATA", "IS_OWNER"`, v)
@@ -688,6 +700,10 @@ func (wp *WorkspacePermission) Set(v string) error {
 	switch v {
 	case `ADMIN`, `UNKNOWN`, `USER`:
 		*wp = WorkspacePermission(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*wp = WorkspacePermission(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ADMIN", "UNKNOWN", "USER"`, v)

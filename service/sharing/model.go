@@ -28,6 +28,10 @@ func (at *AuthenticationType) Set(v string) error {
 	case `DATABRICKS`, `TOKEN`:
 		*at = AuthenticationType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*at = AuthenticationType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DATABRICKS", "TOKEN"`, v)
 	}
@@ -212,6 +216,10 @@ func (pvo *PartitionValueOp) Set(v string) error {
 	case `EQUAL`, `LIKE`:
 		*pvo = PartitionValueOp(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*pvo = PartitionValueOp(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EQUAL", "LIKE"`, v)
 	}
@@ -294,6 +302,10 @@ func (p *Privilege) Set(v string) error {
 	switch v {
 	case `ALL_PRIVILEGES`, `CREATE`, `CREATE_CATALOG`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
 		*p = Privilege(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*p = Privilege(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "CREATE", "CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
@@ -554,6 +566,10 @@ func (sdos *SharedDataObjectStatus) Set(v string) error {
 	case `ACTIVE`, `PERMISSION_DENIED`:
 		*sdos = SharedDataObjectStatus(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*sdos = SharedDataObjectStatus(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "PERMISSION_DENIED"`, v)
 	}
@@ -590,6 +606,10 @@ func (sdoua *SharedDataObjectUpdateAction) Set(v string) error {
 	switch v {
 	case `ADD`, `REMOVE`, `UPDATE`:
 		*sdoua = SharedDataObjectUpdateAction(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*sdoua = SharedDataObjectUpdateAction(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ADD", "REMOVE", "UPDATE"`, v)

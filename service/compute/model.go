@@ -155,6 +155,10 @@ func (aa *AwsAvailability) Set(v string) error {
 	case `ON_DEMAND`, `SPOT`, `SPOT_WITH_FALLBACK`:
 		*aa = AwsAvailability(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*aa = AwsAvailability(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND", "SPOT", "SPOT_WITH_FALLBACK"`, v)
 	}
@@ -212,6 +216,10 @@ func (aa *AzureAvailability) Set(v string) error {
 	switch v {
 	case `ON_DEMAND_AZURE`, `SPOT_AZURE`, `SPOT_WITH_FALLBACK_AZURE`:
 		*aa = AzureAvailability(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*aa = AzureAvailability(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE", "SPOT_WITH_FALLBACK_AZURE"`, v)
@@ -390,6 +398,10 @@ func (cpns *CloudProviderNodeStatus) Set(v string) error {
 	switch v {
 	case `NotAvailableInRegion`, `NotEnabledOnSubscription`:
 		*cpns = CloudProviderNodeStatus(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*cpns = CloudProviderNodeStatus(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "NotAvailableInRegion", "NotEnabledOnSubscription"`, v)
@@ -777,6 +789,10 @@ func (cs *ClusterSource) Set(v string) error {
 	case `API`, `JOB`, `MODELS`, `PIPELINE`, `PIPELINE_MAINTENANCE`, `SQL`, `UI`:
 		*cs = ClusterSource(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*cs = ClusterSource(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "API", "JOB", "MODELS", "PIPELINE", "PIPELINE_MAINTENANCE", "SQL", "UI"`, v)
 	}
@@ -829,6 +845,10 @@ func (cs *CommandStatus) Set(v string) error {
 	case `Cancelled`, `Cancelling`, `Error`, `Finished`, `Queued`, `Running`:
 		*cs = CommandStatus(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*cs = CommandStatus(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "Cancelled", "Cancelling", "Error", "Finished", "Queued", "Running"`, v)
 	}
@@ -874,6 +894,10 @@ func (cs *ContextStatus) Set(v string) error {
 	switch v {
 	case `Error`, `Pending`, `Running`:
 		*cs = ContextStatus(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*cs = ContextStatus(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "Error", "Pending", "Running"`, v)
@@ -1164,6 +1188,10 @@ func (dpedet *DataPlaneEventDetailsEventType) Set(v string) error {
 	case `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`:
 		*dpedet = DataPlaneEventDetailsEventType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*dpedet = DataPlaneEventDetailsEventType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "NODE_BLACKLISTED", "NODE_EXCLUDED_DECOMMISSIONED"`, v)
 	}
@@ -1213,6 +1241,10 @@ func (dsm *DataSecurityMode) Set(v string) error {
 	switch v {
 	case `LEGACY_PASSTHROUGH`, `LEGACY_SINGLE_USER`, `LEGACY_TABLE_ACL`, `NONE`, `SINGLE_USER`, `USER_ISOLATION`:
 		*dsm = DataSecurityMode(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*dsm = DataSecurityMode(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "LEGACY_PASSTHROUGH", "LEGACY_SINGLE_USER", "LEGACY_TABLE_ACL", "NONE", "SINGLE_USER", "USER_ISOLATION"`, v)
@@ -1314,6 +1346,10 @@ func (dtadvt *DiskTypeAzureDiskVolumeType) Set(v string) error {
 	case `PREMIUM_LRS`, `STANDARD_LRS`:
 		*dtadvt = DiskTypeAzureDiskVolumeType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*dtadvt = DiskTypeAzureDiskVolumeType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PREMIUM_LRS", "STANDARD_LRS"`, v)
 	}
@@ -1340,6 +1376,10 @@ func (dtevt *DiskTypeEbsVolumeType) Set(v string) error {
 	switch v {
 	case `GENERAL_PURPOSE_SSD`, `THROUGHPUT_OPTIMIZED_HDD`:
 		*dtevt = DiskTypeEbsVolumeType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*dtevt = DiskTypeEbsVolumeType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "GENERAL_PURPOSE_SSD", "THROUGHPUT_OPTIMIZED_HDD"`, v)
@@ -1381,6 +1421,10 @@ func (evt *EbsVolumeType) Set(v string) error {
 	switch v {
 	case `GENERAL_PURPOSE_SSD`, `THROUGHPUT_OPTIMIZED_HDD`:
 		*evt = EbsVolumeType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*evt = EbsVolumeType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "GENERAL_PURPOSE_SSD", "THROUGHPUT_OPTIMIZED_HDD"`, v)
@@ -1681,6 +1725,10 @@ func (edc *EventDetailsCause) Set(v string) error {
 	case `AUTORECOVERY`, `AUTOSCALE`, `REPLACE_BAD_NODES`, `USER_REQUEST`:
 		*edc = EventDetailsCause(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*edc = EventDetailsCause(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AUTORECOVERY", "AUTOSCALE", "REPLACE_BAD_NODES", "USER_REQUEST"`, v)
 	}
@@ -1754,6 +1802,10 @@ func (et *EventType) Set(v string) error {
 	case `AUTOSCALING_STATS_REPORT`, `CREATING`, `DBFS_DOWN`, `DID_NOT_EXPAND_DISK`, `DRIVER_HEALTHY`, `DRIVER_NOT_RESPONDING`, `DRIVER_UNAVAILABLE`, `EDITED`, `EXPANDED_DISK`, `FAILED_TO_EXPAND_DISK`, `INIT_SCRIPTS_FINISHED`, `INIT_SCRIPTS_STARTED`, `METASTORE_DOWN`, `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`, `NODES_LOST`, `PINNED`, `RESIZING`, `RESTARTING`, `RUNNING`, `SPARK_EXCEPTION`, `STARTING`, `TERMINATING`, `UNPINNED`, `UPSIZE_COMPLETED`:
 		*et = EventType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*et = EventType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AUTOSCALING_STATS_REPORT", "CREATING", "DBFS_DOWN", "DID_NOT_EXPAND_DISK", "DRIVER_HEALTHY", "DRIVER_NOT_RESPONDING", "DRIVER_UNAVAILABLE", "EDITED", "EXPANDED_DISK", "FAILED_TO_EXPAND_DISK", "INIT_SCRIPTS_FINISHED", "INIT_SCRIPTS_STARTED", "METASTORE_DOWN", "NODE_BLACKLISTED", "NODE_EXCLUDED_DECOMMISSIONED", "NODES_LOST", "PINNED", "RESIZING", "RESTARTING", "RUNNING", "SPARK_EXCEPTION", "STARTING", "TERMINATING", "UNPINNED", "UPSIZE_COMPLETED"`, v)
 	}
@@ -1822,6 +1874,10 @@ func (fodoas *FleetOnDemandOptionAllocationStrategy) Set(v string) error {
 	case `CAPACITY_OPTIMIZED`, `DIVERSIFIED`, `LOWEST_PRICE`, `PRIORITIZED`:
 		*fodoas = FleetOnDemandOptionAllocationStrategy(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*fodoas = FleetOnDemandOptionAllocationStrategy(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAPACITY_OPTIMIZED", "DIVERSIFIED", "LOWEST_PRICE", "PRIORITIZED"`, v)
 	}
@@ -1868,6 +1924,10 @@ func (fsoas *FleetSpotOptionAllocationStrategy) Set(v string) error {
 	case `CAPACITY_OPTIMIZED`, `DIVERSIFIED`, `LOWEST_PRICE`, `PRIORITIZED`:
 		*fsoas = FleetSpotOptionAllocationStrategy(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*fsoas = FleetSpotOptionAllocationStrategy(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAPACITY_OPTIMIZED", "DIVERSIFIED", "LOWEST_PRICE", "PRIORITIZED"`, v)
 	}
@@ -1913,6 +1973,10 @@ func (ga *GcpAvailability) Set(v string) error {
 	switch v {
 	case `ON_DEMAND_GCP`, `PREEMPTIBLE_GCP`, `PREEMPTIBLE_WITH_FALLBACK_GCP`:
 		*ga = GcpAvailability(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ga = GcpAvailability(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_GCP", "PREEMPTIBLE_GCP", "PREEMPTIBLE_WITH_FALLBACK_GCP"`, v)
@@ -1976,6 +2040,10 @@ func (geo *GetEventsOrder) Set(v string) error {
 	switch v {
 	case `ASC`, `DESC`:
 		*geo = GetEventsOrder(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*geo = GetEventsOrder(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ASC", "DESC"`, v)
@@ -2337,6 +2405,10 @@ func (ipaaa *InstancePoolAwsAttributesAvailability) Set(v string) error {
 	case `ON_DEMAND`, `SPOT`, `SPOT_WITH_FALLBACK`:
 		*ipaaa = InstancePoolAwsAttributesAvailability(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ipaaa = InstancePoolAwsAttributesAvailability(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND", "SPOT", "SPOT_WITH_FALLBACK"`, v)
 	}
@@ -2381,6 +2453,10 @@ func (ipaaa *InstancePoolAzureAttributesAvailability) Set(v string) error {
 	case `ON_DEMAND_AZURE`, `SPOT_AZURE`, `SPOT_WITH_FALLBACK_AZURE`:
 		*ipaaa = InstancePoolAzureAttributesAvailability(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ipaaa = InstancePoolAzureAttributesAvailability(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE", "SPOT_WITH_FALLBACK_AZURE"`, v)
 	}
@@ -2418,6 +2494,10 @@ func (ips *InstancePoolState) Set(v string) error {
 	switch v {
 	case `ACTIVE`, `DELETED`, `STOPPED`:
 		*ips = InstancePoolState(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ips = InstancePoolState(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETED", "STOPPED"`, v)
@@ -2489,6 +2569,10 @@ func (l *Language) Set(v string) error {
 	switch v {
 	case `python`, `scala`, `sql`:
 		*l = Language(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*l = Language(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "python", "scala", "sql"`, v)
@@ -2568,6 +2652,10 @@ func (lfss *LibraryFullStatusStatus) Set(v string) error {
 	switch v {
 	case `FAILED`, `INSTALLED`, `INSTALLING`, `PENDING`, `RESOLVING`, `SKIPPED`, `UNINSTALL_ON_RESTART`:
 		*lfss = LibraryFullStatusStatus(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*lfss = LibraryFullStatusStatus(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FAILED", "INSTALLED", "INSTALLING", "PENDING", "RESOLVING", "SKIPPED", "UNINSTALL_ON_RESTART"`, v)
@@ -2671,6 +2759,10 @@ func (lsc *ListSortColumn) Set(v string) error {
 	case `POLICY_CREATION_TIME`, `POLICY_NAME`:
 		*lsc = ListSortColumn(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*lsc = ListSortColumn(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "POLICY_CREATION_TIME", "POLICY_NAME"`, v)
 	}
@@ -2697,6 +2789,10 @@ func (lso *ListSortOrder) Set(v string) error {
 	switch v {
 	case `ASC`, `DESC`:
 		*lso = ListSortOrder(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*lso = ListSortOrder(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ASC", "DESC"`, v)
@@ -2934,6 +3030,10 @@ func (rt *ResultType) Set(v string) error {
 	case `error`, `image`, `images`, `table`, `text`:
 		*rt = ResultType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*rt = ResultType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "error", "image", "images", "table", "text"`, v)
 	}
@@ -2988,6 +3088,10 @@ func (re *RuntimeEngine) Set(v string) error {
 	switch v {
 	case `NULL`, `PHOTON`, `STANDARD`:
 		*re = RuntimeEngine(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*re = RuntimeEngine(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "NULL", "PHOTON", "STANDARD"`, v)
@@ -3110,6 +3214,10 @@ func (s *State) Set(v string) error {
 	switch v {
 	case `ERROR`, `PENDING`, `RESIZING`, `RESTARTING`, `RUNNING`, `TERMINATED`, `TERMINATING`, `UNKNOWN`:
 		*s = State(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*s = State(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ERROR", "PENDING", "RESIZING", "RESTARTING", "RUNNING", "TERMINATED", "TERMINATING", "UNKNOWN"`, v)
@@ -3303,6 +3411,10 @@ func (trc *TerminationReasonCode) Set(v string) error {
 	case `ABUSE_DETECTED`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_SHUTDOWN`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `DATABASE_CONNECTION_FAILURE`, `DBFS_COMPONENT_UNHEALTHY`, `DOCKER_IMAGE_PULL_FAILURE`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `EXECUTION_COMPONENT_UNHEALTHY`, `GCP_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_UNREACHABLE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_SPARK_IMAGE`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `STORAGE_DOWNLOAD_FAILURE`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`:
 		*trc = TerminationReasonCode(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*trc = TerminationReasonCode(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ABUSE_DETECTED", "ATTACH_PROJECT_FAILURE", "AWS_AUTHORIZATION_FAILURE", "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE", "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE", "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE", "AWS_REQUEST_LIMIT_EXCEEDED", "AWS_UNSUPPORTED_FAILURE", "AZURE_BYOK_KEY_PERMISSION_FAILURE", "AZURE_EPHEMERAL_DISK_FAILURE", "AZURE_INVALID_DEPLOYMENT_TEMPLATE", "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION", "AZURE_QUOTA_EXCEEDED_EXCEPTION", "AZURE_RESOURCE_MANAGER_THROTTLING", "AZURE_RESOURCE_PROVIDER_THROTTLING", "AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE", "AZURE_VM_EXTENSION_FAILURE", "AZURE_VNET_CONFIGURATION_FAILURE", "BOOTSTRAP_TIMEOUT", "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION", "CLOUD_PROVIDER_DISK_SETUP_FAILURE", "CLOUD_PROVIDER_LAUNCH_FAILURE", "CLOUD_PROVIDER_RESOURCE_STOCKOUT", "CLOUD_PROVIDER_SHUTDOWN", "COMMUNICATION_LOST", "CONTAINER_LAUNCH_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE", "DATABASE_CONNECTION_FAILURE", "DBFS_COMPONENT_UNHEALTHY", "DOCKER_IMAGE_PULL_FAILURE", "DRIVER_UNREACHABLE", "DRIVER_UNRESPONSIVE", "EXECUTION_COMPONENT_UNHEALTHY", "GCP_QUOTA_EXCEEDED", "GCP_SERVICE_ACCOUNT_DELETED", "GLOBAL_INIT_SCRIPT_FAILURE", "HIVE_METASTORE_PROVISIONING_FAILURE", "IMAGE_PULL_PERMISSION_DENIED", "INACTIVITY", "INIT_SCRIPT_FAILURE", "INSTANCE_POOL_CLUSTER_FAILURE", "INSTANCE_UNREACHABLE", "INTERNAL_ERROR", "INVALID_ARGUMENT", "INVALID_SPARK_IMAGE", "IP_EXHAUSTION_FAILURE", "JOB_FINISHED", "K8S_AUTOSCALING_FAILURE", "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT", "METASTORE_COMPONENT_UNHEALTHY", "NEPHOS_RESOURCE_MANAGEMENT", "NETWORK_CONFIGURATION_FAILURE", "NFS_MOUNT_FAILURE", "NPIP_TUNNEL_SETUP_FAILURE", "NPIP_TUNNEL_TOKEN_FAILURE", "REQUEST_REJECTED", "REQUEST_THROTTLED", "SECRET_RESOLUTION_ERROR", "SECURITY_DAEMON_REGISTRATION_EXCEPTION", "SELF_BOOTSTRAP_FAILURE", "SKIPPED_SLOW_NODES", "SLOW_IMAGE_DOWNLOAD", "SPARK_ERROR", "SPARK_IMAGE_DOWNLOAD_FAILURE", "SPARK_STARTUP_FAILURE", "SPOT_INSTANCE_TERMINATION", "STORAGE_DOWNLOAD_FAILURE", "STS_CLIENT_SETUP_FAILURE", "SUBNET_EXHAUSTED_FAILURE", "TEMPORARILY_UNAVAILABLE", "TRIAL_EXPIRED", "UNEXPECTED_LAUNCH_FAILURE", "UNKNOWN", "UNSUPPORTED_INSTANCE_TYPE", "UPDATE_INSTANCE_PROFILE_FAILURE", "USER_REQUEST", "WORKER_SETUP_FAILURE", "WORKSPACE_CANCELLED_ERROR", "WORKSPACE_CONFIGURATION_ERROR"`, v)
 	}
@@ -3334,6 +3446,10 @@ func (trt *TerminationReasonType) Set(v string) error {
 	switch v {
 	case `CLIENT_ERROR`, `CLOUD_FAILURE`, `SERVICE_FAULT`, `SUCCESS`:
 		*trt = TerminationReasonType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*trt = TerminationReasonType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLIENT_ERROR", "CLOUD_FAILURE", "SERVICE_FAULT", "SUCCESS"`, v)

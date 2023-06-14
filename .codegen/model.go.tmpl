@@ -34,6 +34,10 @@ func ({{.AbbrName}} *{{.PascalName}}) Set(v string) error {
     case {{range $i, $e := .Enum }}{{if $i}}, {{end}}`{{.Content}}`{{end}}:
         *{{.AbbrName}} = {{.PascalName}}(v)
         return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*{{.AbbrName}} = {{.PascalName}}(``)
+		return nil
     default:
         return fmt.Errorf(`value "%s" is not one of {{range $i, $e := .Enum }}{{if $i}}, {{end}}"{{.Content}}"{{end}}`, v)
     }

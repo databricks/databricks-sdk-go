@@ -294,6 +294,10 @@ func (euc *EndpointUseCase) Set(v string) error {
 	case `DATAPLANE_RELAY_ACCESS`, `WORKSPACE_ACCESS`:
 		*euc = EndpointUseCase(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*euc = EndpointUseCase(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DATAPLANE_RELAY_ACCESS", "WORKSPACE_ACCESS"`, v)
 	}
@@ -328,6 +332,10 @@ func (et *ErrorType) Set(v string) error {
 	switch v {
 	case `credentials`, `networkAcl`, `securityGroup`, `subnet`, `vpc`:
 		*et = ErrorType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*et = ErrorType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "credentials", "networkAcl", "securityGroup", "subnet", "vpc"`, v)
@@ -503,6 +511,10 @@ func (gcct *GkeConfigConnectivityType) Set(v string) error {
 	case `PRIVATE_NODE_PUBLIC_MASTER`, `PUBLIC_NODE_PUBLIC_MASTER`:
 		*gcct = GkeConfigConnectivityType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*gcct = GkeConfigConnectivityType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PRIVATE_NODE_PUBLIC_MASTER", "PUBLIC_NODE_PUBLIC_MASTER"`, v)
 	}
@@ -533,6 +545,10 @@ func (kuc *KeyUseCase) Set(v string) error {
 	switch v {
 	case `MANAGED_SERVICES`, `STORAGE`:
 		*kuc = KeyUseCase(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*kuc = KeyUseCase(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "MANAGED_SERVICES", "STORAGE"`, v)
@@ -636,6 +652,10 @@ func (pt *PricingTier) Set(v string) error {
 	case `COMMUNITY_EDITION`, `DEDICATED`, `ENTERPRISE`, `PREMIUM`, `STANDARD`, `UNKNOWN`:
 		*pt = PricingTier(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*pt = PricingTier(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "COMMUNITY_EDITION", "DEDICATED", "ENTERPRISE", "PREMIUM", "STANDARD", "UNKNOWN"`, v)
 	}
@@ -668,6 +688,10 @@ func (pal *PrivateAccessLevel) Set(v string) error {
 	switch v {
 	case `ACCOUNT`, `ENDPOINT`:
 		*pal = PrivateAccessLevel(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*pal = PrivateAccessLevel(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACCOUNT", "ENDPOINT"`, v)
@@ -860,6 +884,10 @@ func (vs *VpcStatus) Set(v string) error {
 	case `BROKEN`, `UNATTACHED`, `VALID`, `WARNED`:
 		*vs = VpcStatus(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*vs = VpcStatus(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "BROKEN", "UNATTACHED", "VALID", "WARNED"`, v)
 	}
@@ -887,6 +915,10 @@ func (wt *WarningType) Set(v string) error {
 	switch v {
 	case `securityGroup`, `subnet`:
 		*wt = WarningType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*wt = WarningType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "securityGroup", "subnet"`, v)
@@ -1012,6 +1044,10 @@ func (ws *WorkspaceStatus) Set(v string) error {
 	switch v {
 	case `BANNED`, `CANCELLING`, `FAILED`, `NOT_PROVISIONED`, `PROVISIONING`, `RUNNING`:
 		*ws = WorkspaceStatus(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ws = WorkspaceStatus(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "BANNED", "CANCELLING", "FAILED", "NOT_PROVISIONED", "PROVISIONING", "RUNNING"`, v)

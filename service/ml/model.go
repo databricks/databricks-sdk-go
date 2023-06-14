@@ -72,6 +72,10 @@ func (aa *ActivityAction) Set(v string) error {
 	case `APPROVE_TRANSITION_REQUEST`, `CANCEL_TRANSITION_REQUEST`, `REJECT_TRANSITION_REQUEST`:
 		*aa = ActivityAction(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*aa = ActivityAction(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "APPROVE_TRANSITION_REQUEST", "CANCEL_TRANSITION_REQUEST", "REJECT_TRANSITION_REQUEST"`, v)
 	}
@@ -116,6 +120,10 @@ func (at *ActivityType) Set(v string) error {
 	switch v {
 	case `APPLIED_TRANSITION`, `APPROVED_REQUEST`, `CANCELLED_REQUEST`, `NEW_COMMENT`, `REJECTED_REQUEST`, `REQUESTED_TRANSITION`, `SYSTEM_TRANSITION`:
 		*at = ActivityType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*at = ActivityType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "APPLIED_TRANSITION", "APPROVED_REQUEST", "CANCELLED_REQUEST", "NEW_COMMENT", "REJECTED_REQUEST", "REQUESTED_TRANSITION", "SYSTEM_TRANSITION"`, v)
@@ -173,6 +181,10 @@ func (caa *CommentActivityAction) Set(v string) error {
 	switch v {
 	case `DELETE_COMMENT`, `EDIT_COMMENT`:
 		*caa = CommentActivityAction(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*caa = CommentActivityAction(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELETE_COMMENT", "EDIT_COMMENT"`, v)
@@ -492,6 +504,10 @@ func (dtrs *DeleteTransitionRequestStage) Set(v string) error {
 	switch v {
 	case `Archived`, `None`, `Production`, `Staging`:
 		*dtrs = DeleteTransitionRequestStage(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*dtrs = DeleteTransitionRequestStage(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "Archived", "None", "Production", "Staging"`, v)
@@ -1009,6 +1025,10 @@ func (mvs *ModelVersionStatus) Set(v string) error {
 	case `FAILED_REGISTRATION`, `PENDING_REGISTRATION`, `READY`:
 		*mvs = ModelVersionStatus(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*mvs = ModelVersionStatus(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FAILED_REGISTRATION", "PENDING_REGISTRATION", "READY"`, v)
 	}
@@ -1057,6 +1077,10 @@ func (pl *PermissionLevel) Set(v string) error {
 	switch v {
 	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`:
 		*pl = PermissionLevel(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*pl = PermissionLevel(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_STAGING_VERSIONS", "CAN_READ"`, v)
@@ -1158,6 +1182,10 @@ func (rwe *RegistryWebhookEvent) Set(v string) error {
 	case `COMMENT_CREATED`, `MODEL_VERSION_CREATED`, `MODEL_VERSION_TAG_SET`, `MODEL_VERSION_TRANSITIONED_STAGE`, `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`, `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`, `MODEL_VERSION_TRANSITIONED_TO_STAGING`, `REGISTERED_MODEL_CREATED`, `TRANSITION_REQUEST_CREATED`, `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`, `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`, `TRANSITION_REQUEST_TO_STAGING_CREATED`:
 		*rwe = RegistryWebhookEvent(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*rwe = RegistryWebhookEvent(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "COMMENT_CREATED", "MODEL_VERSION_CREATED", "MODEL_VERSION_TAG_SET", "MODEL_VERSION_TRANSITIONED_STAGE", "MODEL_VERSION_TRANSITIONED_TO_ARCHIVED", "MODEL_VERSION_TRANSITIONED_TO_PRODUCTION", "MODEL_VERSION_TRANSITIONED_TO_STAGING", "REGISTERED_MODEL_CREATED", "TRANSITION_REQUEST_CREATED", "TRANSITION_REQUEST_TO_ARCHIVED_CREATED", "TRANSITION_REQUEST_TO_PRODUCTION_CREATED", "TRANSITION_REQUEST_TO_STAGING_CREATED"`, v)
 	}
@@ -1191,6 +1219,10 @@ func (rws *RegistryWebhookStatus) Set(v string) error {
 	switch v {
 	case `ACTIVE`, `DISABLED`, `TEST_MODE`:
 		*rws = RegistryWebhookStatus(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*rws = RegistryWebhookStatus(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DISABLED", "TEST_MODE"`, v)
@@ -1316,6 +1348,10 @@ func (ris *RunInfoStatus) Set(v string) error {
 	case `FAILED`, `FINISHED`, `KILLED`, `RUNNING`, `SCHEDULED`:
 		*ris = RunInfoStatus(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ris = RunInfoStatus(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FAILED", "FINISHED", "KILLED", "RUNNING", "SCHEDULED"`, v)
 	}
@@ -1384,6 +1420,10 @@ func (sevt *SearchExperimentsViewType) Set(v string) error {
 	switch v {
 	case `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
 		*sevt = SearchExperimentsViewType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*sevt = SearchExperimentsViewType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE_ONLY", "ALL", "DELETED_ONLY"`, v)
@@ -1502,6 +1542,10 @@ func (srrvt *SearchRunsRunViewType) Set(v string) error {
 	case `ACTIVE_ONLY`, `ALL`, `DELETED_ONLY`:
 		*srrvt = SearchRunsRunViewType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*srrvt = SearchRunsRunViewType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE_ONLY", "ALL", "DELETED_ONLY"`, v)
 	}
@@ -1595,6 +1639,10 @@ func (s *Stage) Set(v string) error {
 	case `Archived`, `None`, `Production`, `Staging`:
 		*s = Stage(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*s = Stage(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "Archived", "None", "Production", "Staging"`, v)
 	}
@@ -1628,6 +1676,10 @@ func (s *Status) Set(v string) error {
 	switch v {
 	case `FAILED_REGISTRATION`, `PENDING_REGISTRATION`, `READY`:
 		*s = Status(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*s = Status(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FAILED_REGISTRATION", "PENDING_REGISTRATION", "READY"`, v)
@@ -1833,6 +1885,10 @@ func (urs *UpdateRunStatus) Set(v string) error {
 	switch v {
 	case `FAILED`, `FINISHED`, `KILLED`, `RUNNING`, `SCHEDULED`:
 		*urs = UpdateRunStatus(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*urs = UpdateRunStatus(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FAILED", "FINISHED", "KILLED", "RUNNING", "SCHEDULED"`, v)

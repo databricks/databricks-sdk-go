@@ -159,6 +159,10 @@ func (lt *ListType) Set(v string) error {
 	case `ALLOW`, `BLOCK`:
 		*lt = ListType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*lt = ListType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ALLOW", "BLOCK"`, v)
 	}
@@ -191,6 +195,10 @@ func (pcme *PersonalComputeMessageEnum) Set(v string) error {
 	switch v {
 	case `DELEGATE`, `ON`:
 		*pcme = PersonalComputeMessageEnum(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*pcme = PersonalComputeMessageEnum(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELEGATE", "ON"`, v)

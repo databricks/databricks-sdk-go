@@ -161,6 +161,10 @@ func (el *EventLevel) Set(v string) error {
 	case `ERROR`, `INFO`, `METRICS`, `WARN`:
 		*el = EventLevel(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*el = EventLevel(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ERROR", "INFO", "METRICS", "WARN"`, v)
 	}
@@ -232,6 +236,10 @@ func (gprh *GetPipelineResponseHealth) Set(v string) error {
 	switch v {
 	case `HEALTHY`, `UNHEALTHY`:
 		*gprh = GetPipelineResponseHealth(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*gprh = GetPipelineResponseHealth(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "HEALTHY", "UNHEALTHY"`, v)
@@ -366,6 +374,10 @@ func (ml *MaturityLevel) Set(v string) error {
 	switch v {
 	case `DEPRECATED`, `EVOLVING`, `STABLE`:
 		*ml = MaturityLevel(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ml = MaturityLevel(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DEPRECATED", "EVOLVING", "STABLE"`, v)
@@ -619,6 +631,10 @@ func (ps *PipelineState) Set(v string) error {
 	case `DELETED`, `DEPLOYING`, `FAILED`, `IDLE`, `RECOVERING`, `RESETTING`, `RUNNING`, `STARTING`, `STOPPING`:
 		*ps = PipelineState(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ps = PipelineState(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELETED", "DEPLOYING", "FAILED", "IDLE", "RECOVERING", "RESETTING", "RUNNING", "STARTING", "STOPPING"`, v)
 	}
@@ -729,6 +745,10 @@ func (suc *StartUpdateCause) Set(v string) error {
 	case `API_CALL`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
 		*suc = StartUpdateCause(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*suc = StartUpdateCause(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "API_CALL", "JOB_TASK", "RETRY_ON_FAILURE", "SCHEMA_CHANGE", "SERVICE_UPGRADE", "USER_ACTION"`, v)
 	}
@@ -804,6 +824,10 @@ func (uic *UpdateInfoCause) Set(v string) error {
 	case `API_CALL`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
 		*uic = UpdateInfoCause(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*uic = UpdateInfoCause(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "API_CALL", "JOB_TASK", "RETRY_ON_FAILURE", "SCHEMA_CHANGE", "SERVICE_UPGRADE", "USER_ACTION"`, v)
 	}
@@ -849,6 +873,10 @@ func (uis *UpdateInfoState) Set(v string) error {
 	switch v {
 	case `CANCELED`, `COMPLETED`, `CREATED`, `FAILED`, `INITIALIZING`, `QUEUED`, `RESETTING`, `RUNNING`, `SETTING_UP_TABLES`, `STOPPING`, `WAITING_FOR_RESOURCES`:
 		*uis = UpdateInfoState(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*uis = UpdateInfoState(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELED", "COMPLETED", "CREATED", "FAILED", "INITIALIZING", "QUEUED", "RESETTING", "RUNNING", "SETTING_UP_TABLES", "STOPPING", "WAITING_FOR_RESOURCES"`, v)
@@ -902,6 +930,10 @@ func (usis *UpdateStateInfoState) Set(v string) error {
 	switch v {
 	case `CANCELED`, `COMPLETED`, `CREATED`, `FAILED`, `INITIALIZING`, `QUEUED`, `RESETTING`, `RUNNING`, `SETTING_UP_TABLES`, `STOPPING`, `WAITING_FOR_RESOURCES`:
 		*usis = UpdateStateInfoState(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*usis = UpdateStateInfoState(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELED", "COMPLETED", "CREATED", "FAILED", "INITIALIZING", "QUEUED", "RESETTING", "RUNNING", "SETTING_UP_TABLES", "STOPPING", "WAITING_FOR_RESOURCES"`, v)

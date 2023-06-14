@@ -147,6 +147,10 @@ func (ct *CatalogType) Set(v string) error {
 	case `DELTASHARING_CATALOG`, `MANAGED_CATALOG`, `SYSTEM_CATALOG`:
 		*ct = CatalogType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ct = CatalogType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELTASHARING_CATALOG", "MANAGED_CATALOG", "SYSTEM_CATALOG"`, v)
 	}
@@ -250,6 +254,10 @@ func (ctn *ColumnTypeName) Set(v string) error {
 	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `TIMESTAMP_NTZ`, `USER_DEFINED_TYPE`:
 		*ctn = ColumnTypeName(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ctn = ColumnTypeName(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TABLE_TYPE", "TIMESTAMP", "TIMESTAMP_NTZ", "USER_DEFINED_TYPE"`, v)
 	}
@@ -323,6 +331,10 @@ func (ct *ConnectionType) Set(v string) error {
 	switch v {
 	case `DATABRICKS`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
 		*ct = ConnectionType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ct = ConnectionType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DATABRICKS", "MYSQL", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER"`, v)
@@ -452,6 +464,10 @@ func (cfps *CreateFunctionParameterStyle) Set(v string) error {
 	case `S`:
 		*cfps = CreateFunctionParameterStyle(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*cfps = CreateFunctionParameterStyle(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "S"`, v)
 	}
@@ -483,6 +499,10 @@ func (cfrb *CreateFunctionRoutineBody) Set(v string) error {
 	case `EXTERNAL`, `SQL`:
 		*cfrb = CreateFunctionRoutineBody(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*cfrb = CreateFunctionRoutineBody(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "SQL"`, v)
 	}
@@ -508,6 +528,10 @@ func (cfst *CreateFunctionSecurityType) Set(v string) error {
 	switch v {
 	case `DEFINER`:
 		*cfst = CreateFunctionSecurityType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*cfst = CreateFunctionSecurityType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DEFINER"`, v)
@@ -538,6 +562,10 @@ func (cfsda *CreateFunctionSqlDataAccess) Set(v string) error {
 	switch v {
 	case `CONTAINS_SQL`, `NO_SQL`, `READS_SQL_DATA`:
 		*cfsda = CreateFunctionSqlDataAccess(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*cfsda = CreateFunctionSqlDataAccess(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CONTAINS_SQL", "NO_SQL", "READS_SQL_DATA"`, v)
@@ -642,6 +670,10 @@ func (ct *CredentialType) Set(v string) error {
 	case `USERNAME_PASSWORD`:
 		*ct = CredentialType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ct = CredentialType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "USERNAME_PASSWORD"`, v)
 	}
@@ -689,6 +721,10 @@ func (dsf *DataSourceFormat) Set(v string) error {
 	switch v {
 	case `AVRO`, `CSV`, `DELTA`, `DELTASHARING`, `JSON`, `ORC`, `PARQUET`, `TEXT`, `UNITY_CATALOG`:
 		*dsf = DataSourceFormat(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*dsf = DataSourceFormat(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AVRO", "CSV", "DELTA", "DELTASHARING", "JSON", "ORC", "PARQUET", "TEXT", "UNITY_CATALOG"`, v)
@@ -864,6 +900,10 @@ func (eamfift *EffectiveAutoMaintenanceFlagInheritedFromType) Set(v string) erro
 	case `CATALOG`, `SCHEMA`:
 		*eamfift = EffectiveAutoMaintenanceFlagInheritedFromType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*eamfift = EffectiveAutoMaintenanceFlagInheritedFromType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CATALOG", "SCHEMA"`, v)
 	}
@@ -921,6 +961,10 @@ func (eam *EnableAutoMaintenance) Set(v string) error {
 	switch v {
 	case `DISABLE`, `ENABLE`, `INHERIT`:
 		*eam = EnableAutoMaintenance(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*eam = EnableAutoMaintenance(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DISABLE", "ENABLE", "INHERIT"`, v)
@@ -1061,6 +1105,10 @@ func (fips *FunctionInfoParameterStyle) Set(v string) error {
 	case `S`:
 		*fips = FunctionInfoParameterStyle(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*fips = FunctionInfoParameterStyle(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "S"`, v)
 	}
@@ -1092,6 +1140,10 @@ func (firb *FunctionInfoRoutineBody) Set(v string) error {
 	case `EXTERNAL`, `SQL`:
 		*firb = FunctionInfoRoutineBody(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*firb = FunctionInfoRoutineBody(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "SQL"`, v)
 	}
@@ -1117,6 +1169,10 @@ func (fist *FunctionInfoSecurityType) Set(v string) error {
 	switch v {
 	case `DEFINER`:
 		*fist = FunctionInfoSecurityType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*fist = FunctionInfoSecurityType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DEFINER"`, v)
@@ -1147,6 +1203,10 @@ func (fisda *FunctionInfoSqlDataAccess) Set(v string) error {
 	switch v {
 	case `CONTAINS_SQL`, `NO_SQL`, `READS_SQL_DATA`:
 		*fisda = FunctionInfoSqlDataAccess(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*fisda = FunctionInfoSqlDataAccess(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CONTAINS_SQL", "NO_SQL", "READS_SQL_DATA"`, v)
@@ -1201,6 +1261,10 @@ func (fpm *FunctionParameterMode) Set(v string) error {
 	case `IN`:
 		*fpm = FunctionParameterMode(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*fpm = FunctionParameterMode(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "IN"`, v)
 	}
@@ -1228,6 +1292,10 @@ func (fpt *FunctionParameterType) Set(v string) error {
 	switch v {
 	case `COLUMN`, `PARAM`:
 		*fpt = FunctionParameterType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*fpt = FunctionParameterType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "COLUMN", "PARAM"`, v)
@@ -1372,6 +1440,10 @@ func (gmsrdss *GetMetastoreSummaryResponseDeltaSharingScope) Set(v string) error
 	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
 		*gmsrdss = GetMetastoreSummaryResponseDeltaSharingScope(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*gmsrdss = GetMetastoreSummaryResponseDeltaSharingScope(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "INTERNAL", "INTERNAL_AND_EXTERNAL"`, v)
 	}
@@ -1426,6 +1498,10 @@ func (im *IsolationMode) Set(v string) error {
 	switch v {
 	case `ISOLATED`, `OPEN`:
 		*im = IsolationMode(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*im = IsolationMode(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ISOLATED", "OPEN"`, v)
@@ -1639,6 +1715,10 @@ func (midss *MetastoreInfoDeltaSharingScope) Set(v string) error {
 	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
 		*midss = MetastoreInfoDeltaSharingScope(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*midss = MetastoreInfoDeltaSharingScope(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "INTERNAL", "INTERNAL_AND_EXTERNAL"`, v)
 	}
@@ -1753,6 +1833,10 @@ func (p *Privilege) Set(v string) error {
 	case `ALL_PRIVILEGES`, `CREATE`, `CREATE_CATALOG`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
 		*p = Privilege(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*p = Privilege(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "CREATE", "CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
 	}
@@ -1852,6 +1936,10 @@ func (st *SecurableType) Set(v string) error {
 	case `CATALOG`, `EXTERNAL_LOCATION`, `FUNCTION`, `METASTORE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `STORAGE_CREDENTIAL`, `TABLE`:
 		*st = SecurableType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*st = SecurableType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CATALOG", "EXTERNAL_LOCATION", "FUNCTION", "METASTORE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "STORAGE_CREDENTIAL", "TABLE"`, v)
 	}
@@ -1926,6 +2014,10 @@ func (ssis *SystemSchemaInfoState) Set(v string) error {
 	switch v {
 	case `DisableInitialized`, `EnableCompleted`, `EnableInitialized`, `Unavailable`:
 		*ssis = SystemSchemaInfoState(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*ssis = SystemSchemaInfoState(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DisableInitialized", "EnableCompleted", "EnableInitialized", "Unavailable"`, v)
@@ -2067,6 +2159,10 @@ func (tt *TableType) Set(v string) error {
 	case `EXTERNAL`, `MANAGED`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
 		*tt = TableType(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*tt = TableType(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "MANAGED", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
 	}
@@ -2198,6 +2294,10 @@ func (umdss *UpdateMetastoreDeltaSharingScope) Set(v string) error {
 	switch v {
 	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
 		*umdss = UpdateMetastoreDeltaSharingScope(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*umdss = UpdateMetastoreDeltaSharingScope(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "INTERNAL", "INTERNAL_AND_EXTERNAL"`, v)
@@ -2333,6 +2433,10 @@ func (vro *ValidationResultOperation) Set(v string) error {
 	case `DELETE`, `LIST`, `READ`, `WRITE`:
 		*vro = ValidationResultOperation(v)
 		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*vro = ValidationResultOperation(``)
+		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELETE", "LIST", "READ", "WRITE"`, v)
 	}
@@ -2362,6 +2466,10 @@ func (vrr *ValidationResultResult) Set(v string) error {
 	switch v {
 	case `FAIL`, `PASS`, `SKIP`:
 		*vrr = ValidationResultResult(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*vrr = ValidationResultResult(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FAIL", "PASS", "SKIP"`, v)
@@ -2420,6 +2528,10 @@ func (vt *VolumeType) Set(v string) error {
 	switch v {
 	case `EXTERNAL`, `MANAGED`:
 		*vt = VolumeType(v)
+		return nil
+	case ``:
+		// Enum type may be set to empty string to indicate unset value.
+		*vt = VolumeType(``)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "MANAGED"`, v)
