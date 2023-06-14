@@ -119,6 +119,9 @@ type Config struct {
 
 	// HTTP request interceptor, that assigns Authorization header
 	auth func(r *http.Request) error
+
+	// HTTP client used for authentication, exposed for testing.
+	Client *http.Client
 }
 
 // Authenticate adds special headers to HTTP request to authorize it to work with Databricks REST API
@@ -259,4 +262,11 @@ func (c *Config) fixHostIfNeeded() error {
 	// Store sanitized version of c.Host.
 	c.Host = parsedHost.String()
 	return nil
+}
+
+func (c *Config) GetClient() *http.Client {
+	if c.Client == nil {
+		return http.DefaultClient
+	}
+	return c.Client
 }

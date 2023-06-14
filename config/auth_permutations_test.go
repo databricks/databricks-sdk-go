@@ -1,35 +1,44 @@
-package config
+package config_test
 
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
 	"os"
+	"strconv"
+	"strings"
 	"sync"
 	"testing"
+	"time"
 
+	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/internal/env"
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 type configFixture struct {
-	Name              string            `json:"name"`
-	Host              string            `json:"host,omitempty"`
-	Token             string            `json:"token,omitempty"`
-	Username          string            `json:"username,omitempty"`
-	Password          string            `json:"password,omitempty"`
-	ConfigFile        string            `json:"config_file,omitempty"`
-	Profile           string            `json:"profile,omitempty"`
-	AzureClientID     string            `json:"azure_client_id,omitempty"`
-	AzureClientSecret string            `json:"azure_client_secret,omitempty"`
-	AzureTenantID     string            `json:"azure_tenant_id,omitempty"`
-	AzureResourceID   string            `json:"azure_workspace_resource_id,omitempty"`
-	AuthType          string            `json:"auth_type,omitempty"`
-	Env               map[string]string `json:"env,omitempty"`
-	AssertError       string            `json:"assertError,omitempty"`
-	AssertAuth        string            `json:"assertAuth,omitempty"`
-	AssertHost        string            `json:"assertHost,omitempty"`
-	AssertAzure       bool              `json:"assertAzure,omitempty"`
+	Name               string            `json:"name"`
+	Host               string            `json:"host,omitempty"`
+	Token              string            `json:"token,omitempty"`
+	Username           string            `json:"username,omitempty"`
+	Password           string            `json:"password,omitempty"`
+	ConfigFile         string            `json:"config_file,omitempty"`
+	Profile            string            `json:"profile,omitempty"`
+	AzureClientID      string            `json:"azure_client_id,omitempty"`
+	AzureClientSecret  string            `json:"azure_client_secret,omitempty"`
+	AzureTenantID      string            `json:"azure_tenant_id,omitempty"`
+	AzureResourceID    string            `json:"azure_workspace_resource_id,omitempty"`
+	AuthType           string            `json:"auth_type,omitempty"`
+	Env                map[string]string `json:"env,omitempty"`
+	AssertError        string            `json:"assertError,omitempty"`
+	AssertAuth         string            `json:"assertAuth,omitempty"`
+	AssertHost         string            `json:"assertHost,omitempty"`
+	AssertAzure        bool              `json:"assertAzure,omitempty"`
+	AssertHeaders      http.Header       `json:"assertHeaders,omitempty"`
+	HTTPFixtures       qa.HTTPFixtures   `json:"http_fixtures,omitempty"`
+	MetadataServiceURL string            `json:"metadata_service_url,omitempty"`
 }
 
 func init() {
@@ -76,7 +85,7 @@ func (cf configFixture) apply(t *testing.T) {
 		return
 	}
 	env.CleanupEnvironment(t)
-	c, err := cf.configureProviderAndReturnConfig(t)
+	c, r, err := cf.configureProviderAndReturnConfig(t)
 	if cf.AssertError != "" {
 		require.NotNilf(t, err, "Expected to have %s error", cf.AssertError)
 		require.Equal(t, cf.AssertError, err.Error())
@@ -89,30 +98,45 @@ func (cf configFixture) apply(t *testing.T) {
 	assert.Equal(t, cf.AssertAzure, c.IsAzure(), "Auth is not for Azure")
 	assert.Equal(t, cf.AssertAuth, c.AuthType)
 	assert.Equal(t, cf.AssertHost, c.Host)
+	assert.NoError(t, qa.CheckHeadersContain(r.Header, cf.AssertHeaders))
 }
 
-func (cf configFixture) configureProviderAndReturnConfig(t *testing.T) (*Config, error) {
+func (cf configFixture) configureProviderAndReturnConfig(t *testing.T) (*config.Config, *http.Request, error) {
 	for k, v := range cf.Env {
 		os.Setenv(k, v)
 	}
-	client := &Config{
-		Host:              cf.Host,
-		Token:             cf.Token,
-		Username:          cf.Username,
-		Password:          cf.Password,
-		Profile:           cf.Profile,
-		ConfigFile:        cf.ConfigFile,
-		AzureClientID:     cf.AzureClientID,
-		AzureClientSecret: cf.AzureClientSecret,
-		AzureTenantID:     cf.AzureTenantID,
-		AzureResourceID:   cf.AzureResourceID,
-		AuthType:          cf.AuthType,
+	client := &config.Config{
+		Host:               cf.Host,
+		Token:              cf.Token,
+		Username:           cf.Username,
+		Password:           cf.Password,
+		Profile:            cf.Profile,
+		ConfigFile:         cf.ConfigFile,
+		AzureClientID:      cf.AzureClientID,
+		AzureClientSecret:  cf.AzureClientSecret,
+		AzureTenantID:      cf.AzureTenantID,
+		AzureResourceID:    cf.AzureResourceID,
+		AuthType:           cf.AuthType,
+		MetadataServiceURL: cf.MetadataServiceURL,
 	}
-	err := client.Authenticate(&http.Request{Header: http.Header{}})
+	if cf.HTTPFixtures != nil {
+		server := cf.HTTPFixtures.NewServer(t)
+		defer server.Close()
+		client.Client = server.Client()
+		// Rewrite MetadataServiceURL to point to the server
+		parsed, err := url.Parse(cf.MetadataServiceURL)
+		if err != nil {
+			return nil, nil, err
+		}
+		parsed.Host = strings.TrimPrefix(server.URL, "http://")
+		client.MetadataServiceURL = parsed.String()
+	}
+	r := &http.Request{Header: http.Header{}}
+	err := client.Authenticate(r)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return client, nil
+	return client, r, nil
 }
 
 func TestConfig_NoParams(t *testing.T) {
@@ -451,5 +475,64 @@ func TestConfig_AuthTypeFromEnv(t *testing.T) {
 		},
 		AssertAuth: "basic",
 		AssertHost: "https://x",
+	}.apply(t)
+}
+
+func TestConfig_MetadataServerInvalidAuthServerUrl(t *testing.T) {
+	configFixture{
+		AuthType:           "metadata-service",
+		MetadataServiceURL: "not-valid-hostname",
+		Host:               "x",
+		AssertError:        `default auth: cannot configure default credentials. Config: metadata_service_url=***`,
+	}.apply(t)
+}
+
+func TestConfig_MetadataServerInvalidAuthServerUrl2(t *testing.T) {
+	configFixture{
+		AuthType:           "metadata-service",
+		MetadataServiceURL: "https://google.com",
+		Host:               "x",
+		AssertError:        `default auth: cannot configure default credentials. Config: metadata_service_url=***`,
+	}.apply(t)
+}
+
+func TestConfig_MetadataServerConfigure(t *testing.T) {
+	configFixture{
+		AuthType:           "metadata-service",
+		MetadataServiceURL: "http://localhost/token",
+		Host:               "x",
+		AssertHost:         "https://x",
+		AssertAuth:         "metadata-service",
+		AssertHeaders: map[string][]string{
+			"Authorization": {"Bearer XXX-2"}, // XXX-1 is returned during Configure()
+		},
+		HTTPFixtures: []qa.HTTPFixture{
+			{
+				Method:   "GET",
+				Resource: "/token",
+				ExpectedHeaders: map[string][]string{
+					"X-Databricks-Metadata-Version": {"1"},
+					"X-Databricks-Host":             {"https://x"},
+				},
+				Response: config.AzureMsiToken{
+					AccessToken: "XXX-1",
+					ExpiresOn:   json.Number(strconv.FormatInt(time.Now().Add(1*time.Second).Unix(), 10)),
+					TokenType:   "Bearer",
+				},
+			},
+			{
+				Method:   "GET",
+				Resource: "/token",
+				ExpectedHeaders: map[string][]string{
+					"X-Databricks-Metadata-Version": {"1"},
+					"X-Databricks-Host":             {"https://x"},
+				},
+				Response: config.AzureMsiToken{
+					AccessToken: "XXX-2",
+					ExpiresOn:   json.Number(strconv.FormatInt(time.Now().Add(1*time.Second).Unix(), 10)),
+					TokenType:   "Bearer",
+				},
+			},
+		},
 	}.apply(t)
 }

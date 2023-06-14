@@ -1,4 +1,4 @@
-package config
+package config_test
 
 import (
 	"context"
@@ -9,11 +9,12 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/internal/env"
+	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-var azDummy = &Config{Host: "https://adb-xyz.c.azuredatabricks.net/"}
+var azDummy = &config.Config{Host: "https://adb-xyz.c.azuredatabricks.net/"}
 
 // testdataPath returns the PATH to use for the duration of a test.
 // It must only return absolute directories because Go refuses to run
@@ -32,8 +33,8 @@ func testdataPath() string {
 }
 
 func TestAzureCliCredentials_SkipAws(t *testing.T) {
-	aa := AzureCliCredentials{}
-	x, err := aa.Configure(context.Background(), &Config{Host: "https://xyz.cloud.databricks.com/"})
+	aa := config.AzureCliCredentials{}
+	x, err := aa.Configure(context.Background(), &config.Config{Host: "https://xyz.cloud.databricks.com/"})
 	assert.Nil(t, x)
 	assert.NoError(t, err)
 }
@@ -41,7 +42,7 @@ func TestAzureCliCredentials_SkipAws(t *testing.T) {
 func TestAzureCliCredentials_NotInstalled(t *testing.T) {
 	env.CleanupEnvironment(t)
 	os.Setenv("PATH", "whatever")
-	aa := AzureCliCredentials{}
+	aa := config.AzureCliCredentials{}
 	_, err := aa.Configure(context.Background(), azDummy)
 	require.NoError(t, err)
 }
@@ -50,7 +51,7 @@ func TestAzureCliCredentials_NotLoggedIn(t *testing.T) {
 	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
 	os.Setenv("FAIL", "logout")
-	aa := AzureCliCredentials{}
+	aa := config.AzureCliCredentials{}
 	_, err := aa.Configure(context.Background(), azDummy)
 	assert.NoError(t, err)
 }
@@ -58,7 +59,7 @@ func TestAzureCliCredentials_NotLoggedIn(t *testing.T) {
 func TestAzureCliCredentials_Valid(t *testing.T) {
 	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
-	aa := AzureCliCredentials{}
+	aa := config.AzureCliCredentials{}
 	visitor, err := aa.Configure(context.Background(), azDummy)
 	assert.NoError(t, err)
 
@@ -73,7 +74,7 @@ func TestAzureCliCredentials_AlwaysExpired(t *testing.T) {
 	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
 	os.Setenv("EXPIRE", "10S")
-	aa := AzureCliCredentials{}
+	aa := config.AzureCliCredentials{}
 	visitor, err := aa.Configure(context.Background(), azDummy)
 	assert.NoError(t, err)
 
@@ -87,7 +88,7 @@ func TestAzureCliCredentials_ExitError(t *testing.T) {
 	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
 	os.Setenv("FAIL", "yes")
-	aa := AzureCliCredentials{}
+	aa := config.AzureCliCredentials{}
 	_, err := aa.Configure(context.Background(), azDummy)
 	assert.EqualError(t, err, "cannot get access token: This is just a failing script.\n")
 }
@@ -96,7 +97,7 @@ func TestAzureCliCredentials_Corrupt(t *testing.T) {
 	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
 	os.Setenv("FAIL", "corrupt")
-	aa := AzureCliCredentials{}
+	aa := config.AzureCliCredentials{}
 	_, err := aa.Configure(context.Background(), azDummy)
 	assert.EqualError(t, err, "cannot unmarshal CLI result: invalid character 'a' looking for beginning of object key string")
 }
@@ -105,7 +106,7 @@ func TestAzureCliCredentials_CorruptExpire(t *testing.T) {
 	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
 	os.Setenv("EXPIRE", "corrupt")
-	aa := AzureCliCredentials{}
+	aa := config.AzureCliCredentials{}
 	_, err := aa.Configure(context.Background(), azDummy)
 	assert.EqualError(t, err, "cannot parse expiry: parsing time \"\" as \"2006-01-02 15:04:05.999999\": cannot parse \"\" as \"2006\"")
 }

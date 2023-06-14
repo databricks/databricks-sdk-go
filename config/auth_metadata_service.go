@@ -84,7 +84,7 @@ func (s metadataService) Get() (*oauth2.Token, error) {
 	}
 	req.Header.Add(MetadataServiceVersionHeader, MetadataServiceVersion)
 	req.Header.Add(MetadataServiceHostHeader, s.config.Host)
-	return makeMsiRequest(req)
+	return makeMsiRequest(req, s.config.GetClient())
 }
 
 func (t metadataService) Token() (*oauth2.Token, error) {

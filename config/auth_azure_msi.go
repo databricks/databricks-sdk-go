@@ -20,6 +20,7 @@ var instanceMetadataPrefix = "http://169.254.169.254/metadata"
 const azureMsiTimeout = 10 * time.Second
 
 type AzureMsiCredentials struct {
+	config *Config
 }
 
 func (c AzureMsiCredentials) Name() string {
@@ -42,10 +43,12 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	inner := azureMsiTokenSource{
 		resource: cfg.getAzureLoginAppID(),
 		clientId: cfg.AzureClientID,
+		config:   cfg,
 	}
 	platform := azureMsiTokenSource{
 		resource: env.ServiceManagementEndpoint,
 		clientId: cfg.AzureClientID,
+		config:   cfg,
 	}
 	return func(r *http.Request) error {
 		r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
@@ -64,7 +67,7 @@ func (c AzureMsiCredentials) getInstanceEnvironment(ctx context.Context) (*azure
 	query.Add("api-version", "2021-12-13")
 	req.URL.RawQuery = query.Encode()
 	req.Header.Add("Metadata", "true")
-	res, err := http.DefaultClient.Do(req)
+	res, err := c.config.GetClient().Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("metadata response: %w", err)
 	}
@@ -98,12 +101,14 @@ func (c AzureMsiCredentials) tokenSourceFor(_ context.Context, cfg *Config, _ az
 	return azureMsiTokenSource{
 		resource: resource,
 		clientId: cfg.AzureClientID,
+		config:   cfg,
 	}
 }
 
 type azureMsiTokenSource struct {
 	resource string
 	clientId string
+	config   *Config
 }
 
 func (s azureMsiTokenSource) Token() (*oauth2.Token, error) {
@@ -122,11 +127,11 @@ func (s azureMsiTokenSource) Token() (*oauth2.Token, error) {
 	}
 	req.URL.RawQuery = query.Encode()
 	req.Header.Add("Metadata", "true")
-	return makeMsiRequest(req)
+	return makeMsiRequest(req, s.config.GetClient())
 }
 
-func makeMsiRequest(req *http.Request) (*oauth2.Token, error) {
-	res, err := http.DefaultClient.Do(req)
+func makeMsiRequest(req *http.Request, client *http.Client) (*oauth2.Token, error) {
+	res, err := client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("token response: %w", err)
 	}
@@ -141,7 +146,7 @@ func makeMsiRequest(req *http.Request) (*oauth2.Token, error) {
 	if res.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("token error: %s", raw)
 	}
-	var token azureMsiToken
+	var token AzureMsiToken
 	err = json.Unmarshal(raw, &token)
 	if err != nil {
 		return nil, fmt.Errorf("token parse: %w", err)
@@ -160,7 +165,7 @@ func makeMsiRequest(req *http.Request) (*oauth2.Token, error) {
 	}, nil
 }
 
-type azureMsiToken struct {
+type AzureMsiToken struct {
 	AccessToken string      `json:"access_token"`
 	TokenType   string      `json:"token_type"`
 	ExpiresOn   json.Number `json:"expires_on"`

@@ -1,4 +1,4 @@
-package config
+package config_test
 
 import (
 	"context"
@@ -7,11 +7,12 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/internal/env"
+	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-var cliDummy = &Config{Host: "https://abc.cloud.databricks.com/"}
+var cliDummy = &config.Config{Host: "https://abc.cloud.databricks.com/"}
 
 func writeSmallDummyExecutable(t *testing.T, path string) {
 	f, err := os.Create(filepath.Join(path, "databricks"))
@@ -50,22 +51,22 @@ EOF
 }
 
 func TestDatabricksCliCredentials_SkipAzure(t *testing.T) {
-	aa := DatabricksCliCredentials{}
-	x, err := aa.Configure(context.Background(), &Config{Host: "https://adb-xyz.c.azuredatabricks.net/"})
+	aa := config.DatabricksCliCredentials{}
+	x, err := aa.Configure(context.Background(), &config.Config{Host: "https://adb-xyz.c.azuredatabricks.net/"})
 	assert.Nil(t, x)
 	assert.NoError(t, err)
 }
 
 func TestDatabricksCliCredentials_SkipGcp(t *testing.T) {
-	aa := DatabricksCliCredentials{}
-	x, err := aa.Configure(context.Background(), &Config{Host: "https://123.4.gcp.databricks.com/"})
+	aa := config.DatabricksCliCredentials{}
+	x, err := aa.Configure(context.Background(), &config.Config{Host: "https://123.4.gcp.databricks.com/"})
 	assert.Nil(t, x)
 	assert.NoError(t, err)
 }
 
 func TestDatabricksCliCredentials_NotInstalled(t *testing.T) {
 	t.Setenv("PATH", "whatever")
-	aa := DatabricksCliCredentials{}
+	aa := config.DatabricksCliCredentials{}
 	_, err := aa.Configure(context.Background(), cliDummy)
 	require.NoError(t, err)
 }
@@ -76,7 +77,7 @@ func TestDatabricksCliCredentials_InstalledLegacy(t *testing.T) {
 	writeSmallDummyExecutable(t, tmp)
 	t.Setenv("PATH", tmp)
 
-	aa := DatabricksCliCredentials{}
+	aa := config.DatabricksCliCredentials{}
 	_, err := aa.Configure(context.Background(), cliDummy)
 	require.NoError(t, err)
 }
@@ -89,7 +90,7 @@ func TestDatabricksCliCredentials_InstalledLegacyWithSymlink(t *testing.T) {
 	os.Symlink(filepath.Join(tmp1, "databricks"), filepath.Join(tmp2, "databricks"))
 	t.Setenv("PATH", tmp2+string(os.PathListSeparator)+os.Getenv("PATH"))
 
-	aa := DatabricksCliCredentials{}
+	aa := config.DatabricksCliCredentials{}
 	_, err := aa.Configure(context.Background(), cliDummy)
 	require.NoError(t, err)
 }
@@ -102,7 +103,7 @@ func TestDatabricksCliCredentials_InstalledNew(t *testing.T) {
 	writeLargeDummyExecutable(t, tmp)
 	t.Setenv("PATH", tmp+string(os.PathListSeparator)+os.Getenv("PATH"))
 
-	aa := DatabricksCliCredentials{}
+	aa := config.DatabricksCliCredentials{}
 	_, err := aa.Configure(context.Background(), cliDummy)
 	require.NoError(t, err)
 }

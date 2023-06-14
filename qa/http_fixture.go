@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
+	"sort"
 	"strings"
 	"testing"
 
@@ -18,13 +20,15 @@ import (
 
 // HTTPFixture defines request structure for test
 type HTTPFixture struct {
-	Method          string
-	Resource        string
-	Response        interface{}
-	Status          int
-	ExpectedRequest interface{}
-	ReuseRequest    bool
-	MatchAny        bool
+	Method          string      `json:"method"`
+	Resource        string      `json:"resource"`
+	Response        interface{} `json:"response,omitempty"`
+	ResponseHeaders http.Header `json:"response_headers,omitempty"`
+	Status          int         `json:"status"`
+	ExpectedHeaders http.Header `json:"expected_headers,omitempty"`
+	ExpectedRequest interface{} `json:"expected_request,omitempty"`
+	ReuseRequest    bool        `json:"reuse_request,omitempty"`
+	MatchAny        bool        `json:"match_any,omitempty"`
 }
 
 var HTTPFailures = []HTTPFixture{
@@ -42,17 +46,31 @@ var HTTPFailures = []HTTPFixture{
 
 type HTTPFixtures []HTTPFixture
 
-// Client creates DatabricksClient for emulated HTTP server
-func (fixtures HTTPFixtures) Config(t *testing.T) (*config.Config, *httptest.Server) {
-	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+func CheckHeadersContain(actual, expected http.Header) error {
+	for k, v := range expected {
+		actual, ok := actual[k]
+		if !ok {
+			return fmt.Errorf("header %s not present in request", k)
+		}
+		sort.Slice(v, func(i, j int) bool {
+			return v[i] < v[j]
+		})
+		sort.Slice(actual, func(i, j int) bool {
+			return actual[i] < actual[j]
+		})
+
+		if !reflect.DeepEqual(v, actual) {
+			return fmt.Errorf("header %s does not match, expected %v, got %v", k, v, actual)
+		}
+	}
+	return nil
+}
+
+func (fixtures HTTPFixtures) NewServer(t *testing.T) *httptest.Server {
+	return httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		found := false
 		for i, fixture := range fixtures {
 			if (req.Method == fixture.Method && req.RequestURI == fixture.Resource) || fixture.MatchAny {
-				if fixture.Status == 0 {
-					rw.WriteHeader(200)
-				} else {
-					rw.WriteHeader(fixture.Status)
-				}
 				if fixture.ExpectedRequest != nil {
 					buf := new(bytes.Buffer)
 					_, err := buf.ReadFrom(req.Body)
@@ -61,6 +79,23 @@ func (fixtures HTTPFixtures) Config(t *testing.T) (*config.Config, *httptest.Ser
 					assert.NoError(t, err, err)
 					assert.JSONEq(t, string(jsonStr), buf.String(), "json strings do not match")
 				}
+				// Check headers
+				err := CheckHeadersContain(req.Header, fixture.ExpectedHeaders)
+				if err != nil {
+					t.Fatal(err)
+				}
+				// Set response headers
+				for k, v := range fixture.ResponseHeaders {
+					for i := range v {
+						rw.Header().Add(k, v[i])
+					}
+				}
+				if fixture.Status == 0 {
+					rw.WriteHeader(200)
+				} else {
+					rw.WriteHeader(fixture.Status)
+				}
+				// Send response body
 				if fixture.Response != nil {
 					if alreadyJSON, ok := fixture.Response.(string); ok {
 						_, err := rw.Write([]byte(alreadyJSON))
@@ -124,6 +159,11 @@ func (fixtures HTTPFixtures) Config(t *testing.T) (*config.Config, *httptest.Ser
 			t.FailNow()
 		}
 	}))
+}
+
+// Client creates DatabricksClient for emulated HTTP server
+func (fixtures HTTPFixtures) Config(t *testing.T) (*config.Config, *httptest.Server) {
+	server := fixtures.NewServer(t)
 	return &config.Config{
 		Credentials:      config.PatCredentials{},
 		Host:             server.URL,
