@@ -142,7 +142,8 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		Named: Named{
 			Description: s.Description,
 		},
-		enum: map[string]EnumEntry{},
+		Schema: s,
+		enum:   map[string]EnumEntry{},
 	}
 	// pull embedded types up, if they can be defined at package level
 	if s.IsDefinable() && !hasName {
@@ -324,20 +325,7 @@ func (pkg *Package) HasWaits() bool {
 }
 
 // Load takes OpenAPI specification and loads a service model
-func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
-	accountServices := map[string]bool{}
-	var accountsRE = regexp.MustCompile(`/accounts/`)
-	for prefix, path := range spec.Paths {
-		for _, op := range path.Verbs() {
-			if !op.HasTag(tag.Name) {
-				continue
-			}
-			if !accountsRE.MatchString(prefix) {
-				continue
-			}
-			accountServices[tag.Service] = true
-		}
-	}
+func (pkg *Package) Load(spec *openapi.Specification, tag openapi.Tag) error {
 	for k, v := range spec.Components.Schemas {
 		split := strings.Split(k, ".")
 		if split[0] != pkg.Name {
@@ -354,13 +342,14 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 			if !ok {
 				svc = &Service{
 					Package:    pkg,
-					IsAccounts: accountServices[tag.Service],
+					IsAccounts: tag.IsAccounts,
 					IsRpcStyle: tag.PathStyle == "rpc",
 					methods:    map[string]*Method{},
 					Named: Named{
 						Name:        tag.Service,
 						Description: tag.Description,
 					},
+					tag: &tag,
 				}
 				pkg.services[tag.Service] = svc
 			}
@@ -383,6 +372,11 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 						continue
 					}
 					if seenParams[param.Name] {
+						continue
+					}
+					if prefix == "/api/2.0/workspace/export" && param.Name == "direct_download" {
+						// prevent changing the response content type via request parameter
+						// https://github.com/databricks/databricks-sdk-py/issues/104
 						continue
 					}
 					params = append(params, *param)

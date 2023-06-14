@@ -23,6 +23,8 @@ import (
 type WorkspaceClient struct {
 	Config *config.Config
 
+	Files *files.FilesAPI
+
 	// The alerts API can be used to perform CRUD operations on alerts. An alert
 	// is a Databricks SQL object that periodically runs a query, evaluates a
 	// condition of its result, and notifies one or more users and/or
@@ -96,8 +98,9 @@ type WorkspaceClient struct {
 	// days, an administrator can pin a cluster to the cluster list.
 	Clusters *compute.ClustersAPI
 
-	// This API allows executing commands on running clusters.
-	CommandExecutor compute.CommandExecutor
+	// This API allows execution of Python, Scala, SQL, or R commands on running
+	// Databricks Clusters.
+	CommandExecution *compute.CommandExecutionAPI
 
 	// Connections allow for creating a connection to an external data source.
 	//
@@ -774,12 +777,14 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		return nil, err
 	}
 	return &WorkspaceClient{
-		Config:              cfg,
+		Config: cfg,
+		Files:  files.NewFiles(apiClient),
+
 		Alerts:              sql.NewAlerts(apiClient),
 		Catalogs:            catalog.NewCatalogs(apiClient),
 		ClusterPolicies:     compute.NewClusterPolicies(apiClient),
 		Clusters:            compute.NewClusters(apiClient),
-		CommandExecutor:     compute.NewCommandExecutor(apiClient),
+		CommandExecution:    compute.NewCommandExecution(apiClient),
 		Connections:         catalog.NewConnections(apiClient),
 		CurrentUser:         iam.NewCurrentUser(apiClient),
 		Dashboards:          sql.NewDashboards(apiClient),

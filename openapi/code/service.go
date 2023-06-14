@@ -17,6 +17,7 @@ type Service struct {
 	Package             *Package
 	methods             map[string]*Method
 	ByPathParamsMethods []*Shortcut
+	tag                 *openapi.Tag
 }
 
 // FullName holds package name and service name
@@ -297,4 +298,14 @@ func (svc *Service) Waits() (waits []*Wait) {
 		return a.Name < b.Name
 	})
 	return waits
+}
+
+// IsPrivatePreview flags object being in private preview.
+func (svc *Service) IsPrivatePreview() bool {
+	return isPrivatePreview(&svc.tag.Node)
+}
+
+// IsPublicPreview flags object being in public preview.
+func (svc *Service) IsPublicPreview() bool {
+	return isPublicPreview(&svc.tag.Node)
 }
