@@ -149,15 +149,15 @@ const ListTypeAllow ListType = `ALLOW`
 const ListTypeBlock ListType = `BLOCK`
 
 // String representation for [fmt.Print]
-func (lt *ListType) String() string {
-	return string(*lt)
+func (f *ListType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (lt *ListType) Set(v string) error {
+func (f *ListType) Set(v string) error {
 	switch v {
 	case `ALLOW`, `BLOCK`:
-		*lt = ListType(v)
+		*f = ListType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ALLOW", "BLOCK"`, v)
@@ -165,7 +165,7 @@ func (lt *ListType) Set(v string) error {
 }
 
 // Type always returns ListType to satisfy [pflag.Value] interface
-func (lt *ListType) Type() string {
+func (f *ListType) Type() string {
 	return "ListType"
 }
 
@@ -182,15 +182,15 @@ const PersonalComputeMessageEnumDelegate PersonalComputeMessageEnum = `DELEGATE`
 const PersonalComputeMessageEnumOn PersonalComputeMessageEnum = `ON`
 
 // String representation for [fmt.Print]
-func (pcme *PersonalComputeMessageEnum) String() string {
-	return string(*pcme)
+func (f *PersonalComputeMessageEnum) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (pcme *PersonalComputeMessageEnum) Set(v string) error {
+func (f *PersonalComputeMessageEnum) Set(v string) error {
 	switch v {
 	case `DELEGATE`, `ON`:
-		*pcme = PersonalComputeMessageEnum(v)
+		*f = PersonalComputeMessageEnum(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELEGATE", "ON"`, v)
@@ -198,7 +198,7 @@ func (pcme *PersonalComputeMessageEnum) Set(v string) error {
 }
 
 // Type always returns PersonalComputeMessageEnum to satisfy [pflag.Value] interface
-func (pcme *PersonalComputeMessageEnum) Type() string {
+func (f *PersonalComputeMessageEnum) Type() string {
 	return "PersonalComputeMessageEnum"
 }
 

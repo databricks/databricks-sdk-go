@@ -8,6 +8,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestAccClusterPolicyFamilies(t *testing.T) {
+	ctx, w := workspaceTest(t)
+
+	all, err := w.PolicyFamilies.ListAll(ctx, compute.ListPolicyFamiliesRequest{})
+	require.NoError(t, err)
+
+	firstFamily, err := w.PolicyFamilies.Get(ctx, compute.GetPolicyFamilyRequest{
+		PolicyFamilyId: all[0].PolicyFamilyId,
+	})
+	require.NoError(t, err)
+	assert.NotEqual(t, "", firstFamily.Name)
+}
+
 func TestAccClusterPolicies(t *testing.T) {
 	ctx, w := workspaceTest(t)
 

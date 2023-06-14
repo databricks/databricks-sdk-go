@@ -81,6 +81,69 @@ func ExampleRecipientsAPI_ListAll_recipients() {
 
 }
 
+func ExampleRecipientsAPI_RotateToken_recipients() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	created, err := w.Recipients.Create(ctx, sharing.CreateRecipient{
+		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", created)
+
+	recipientInfo, err := w.Recipients.RotateToken(ctx, sharing.RotateRecipientToken{
+		Name:                         created.Name,
+		ExistingTokenExpireInSeconds: 0,
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", recipientInfo)
+
+	// cleanup
+
+	err = w.Recipients.DeleteByName(ctx, created.Name)
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func ExampleRecipientsAPI_SharePermissions_recipients() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	created, err := w.Recipients.Create(ctx, sharing.CreateRecipient{
+		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", created)
+
+	sharePermissions, err := w.Recipients.SharePermissionsByName(ctx, created.Name)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", sharePermissions)
+
+	// cleanup
+
+	err = w.Recipients.DeleteByName(ctx, created.Name)
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 func ExampleRecipientsAPI_Update_recipients() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()

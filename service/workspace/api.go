@@ -625,9 +625,9 @@ func (a *WorkspaceAPI) Delete(ctx context.Context, request Delete) error {
 // If `path` does not exist, this call returns an error
 // `RESOURCE_DOES_NOT_EXIST`.
 //
-// One can only export a directory in `DBC` format. If the exported data would
-// exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`. Currently,
-// this API does not support exporting a library.
+// If the exported data would exceed size limit, this call returns
+// `MAX_NOTEBOOK_SIZE_EXCEEDED`. Currently, this API does not support exporting
+// a library.
 func (a *WorkspaceAPI) Export(ctx context.Context, request ExportRequest) (*ExportResponse, error) {
 	return a.impl.Export(ctx, request)
 }
@@ -662,7 +662,7 @@ func (a *WorkspaceAPI) Import(ctx context.Context, request Import) error {
 
 // List contents.
 //
-// Lists the contents of a directory, or the object if it is not a directory.If
+// Lists the contents of a directory, or the object if it is not a directory. If
 // the input path does not exist, this call returns an error
 // `RESOURCE_DOES_NOT_EXIST`.
 //
@@ -735,7 +735,7 @@ func (a *WorkspaceAPI) GetByPath(ctx context.Context, name string) (*ObjectInfo,
 // input path, this call returns an error `RESOURCE_ALREADY_EXISTS`.
 //
 // Note that if this operation fails it may have succeeded in creating some of
-// the necessary parrent directories.
+// the necessary parent directories.
 func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request Mkdirs) error {
 	return a.impl.Mkdirs(ctx, request)
 }
@@ -747,7 +747,7 @@ func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request Mkdirs) error {
 // input path, this call returns an error `RESOURCE_ALREADY_EXISTS`.
 //
 // Note that if this operation fails it may have succeeded in creating some of
-// the necessary parrent directories.
+// the necessary parent directories.
 func (a *WorkspaceAPI) MkdirsByPath(ctx context.Context, path string) error {
 	return a.impl.Mkdirs(ctx, Mkdirs{
 		Path: path,

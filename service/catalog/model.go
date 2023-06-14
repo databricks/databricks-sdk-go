@@ -137,15 +137,15 @@ const CatalogTypeManagedCatalog CatalogType = `MANAGED_CATALOG`
 const CatalogTypeSystemCatalog CatalogType = `SYSTEM_CATALOG`
 
 // String representation for [fmt.Print]
-func (ct *CatalogType) String() string {
-	return string(*ct)
+func (f *CatalogType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ct *CatalogType) Set(v string) error {
+func (f *CatalogType) Set(v string) error {
 	switch v {
 	case `DELTASHARING_CATALOG`, `MANAGED_CATALOG`, `SYSTEM_CATALOG`:
-		*ct = CatalogType(v)
+		*f = CatalogType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELTASHARING_CATALOG", "MANAGED_CATALOG", "SYSTEM_CATALOG"`, v)
@@ -153,7 +153,7 @@ func (ct *CatalogType) Set(v string) error {
 }
 
 // Type always returns CatalogType to satisfy [pflag.Value] interface
-func (ct *CatalogType) Type() string {
+func (f *CatalogType) Type() string {
 	return "CatalogType"
 }
 
@@ -240,15 +240,15 @@ const ColumnTypeNameTimestampNtz ColumnTypeName = `TIMESTAMP_NTZ`
 const ColumnTypeNameUserDefinedType ColumnTypeName = `USER_DEFINED_TYPE`
 
 // String representation for [fmt.Print]
-func (ctn *ColumnTypeName) String() string {
-	return string(*ctn)
+func (f *ColumnTypeName) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ctn *ColumnTypeName) Set(v string) error {
+func (f *ColumnTypeName) Set(v string) error {
 	switch v {
 	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `TIMESTAMP_NTZ`, `USER_DEFINED_TYPE`:
-		*ctn = ColumnTypeName(v)
+		*f = ColumnTypeName(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TABLE_TYPE", "TIMESTAMP", "TIMESTAMP_NTZ", "USER_DEFINED_TYPE"`, v)
@@ -256,7 +256,7 @@ func (ctn *ColumnTypeName) Set(v string) error {
 }
 
 // Type always returns ColumnTypeName to satisfy [pflag.Value] interface
-func (ctn *ColumnTypeName) Type() string {
+func (f *ColumnTypeName) Type() string {
 	return "ColumnTypeName"
 }
 
@@ -314,15 +314,15 @@ const ConnectionTypeSqldw ConnectionType = `SQLDW`
 const ConnectionTypeSqlserver ConnectionType = `SQLSERVER`
 
 // String representation for [fmt.Print]
-func (ct *ConnectionType) String() string {
-	return string(*ct)
+func (f *ConnectionType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ct *ConnectionType) Set(v string) error {
+func (f *ConnectionType) Set(v string) error {
 	switch v {
 	case `DATABRICKS`, `MYSQL`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`:
-		*ct = ConnectionType(v)
+		*f = ConnectionType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DATABRICKS", "MYSQL", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER"`, v)
@@ -330,7 +330,7 @@ func (ct *ConnectionType) Set(v string) error {
 }
 
 // Type always returns ConnectionType to satisfy [pflag.Value] interface
-func (ct *ConnectionType) Type() string {
+func (f *ConnectionType) Type() string {
 	return "ConnectionType"
 }
 
@@ -442,15 +442,15 @@ type CreateFunctionParameterStyle string
 const CreateFunctionParameterStyleS CreateFunctionParameterStyle = `S`
 
 // String representation for [fmt.Print]
-func (cfps *CreateFunctionParameterStyle) String() string {
-	return string(*cfps)
+func (f *CreateFunctionParameterStyle) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (cfps *CreateFunctionParameterStyle) Set(v string) error {
+func (f *CreateFunctionParameterStyle) Set(v string) error {
 	switch v {
 	case `S`:
-		*cfps = CreateFunctionParameterStyle(v)
+		*f = CreateFunctionParameterStyle(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "S"`, v)
@@ -458,7 +458,7 @@ func (cfps *CreateFunctionParameterStyle) Set(v string) error {
 }
 
 // Type always returns CreateFunctionParameterStyle to satisfy [pflag.Value] interface
-func (cfps *CreateFunctionParameterStyle) Type() string {
+func (f *CreateFunctionParameterStyle) Type() string {
 	return "CreateFunctionParameterStyle"
 }
 
@@ -473,15 +473,15 @@ const CreateFunctionRoutineBodyExternal CreateFunctionRoutineBody = `EXTERNAL`
 const CreateFunctionRoutineBodySql CreateFunctionRoutineBody = `SQL`
 
 // String representation for [fmt.Print]
-func (cfrb *CreateFunctionRoutineBody) String() string {
-	return string(*cfrb)
+func (f *CreateFunctionRoutineBody) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (cfrb *CreateFunctionRoutineBody) Set(v string) error {
+func (f *CreateFunctionRoutineBody) Set(v string) error {
 	switch v {
 	case `EXTERNAL`, `SQL`:
-		*cfrb = CreateFunctionRoutineBody(v)
+		*f = CreateFunctionRoutineBody(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "SQL"`, v)
@@ -489,7 +489,7 @@ func (cfrb *CreateFunctionRoutineBody) Set(v string) error {
 }
 
 // Type always returns CreateFunctionRoutineBody to satisfy [pflag.Value] interface
-func (cfrb *CreateFunctionRoutineBody) Type() string {
+func (f *CreateFunctionRoutineBody) Type() string {
 	return "CreateFunctionRoutineBody"
 }
 
@@ -499,15 +499,15 @@ type CreateFunctionSecurityType string
 const CreateFunctionSecurityTypeDefiner CreateFunctionSecurityType = `DEFINER`
 
 // String representation for [fmt.Print]
-func (cfst *CreateFunctionSecurityType) String() string {
-	return string(*cfst)
+func (f *CreateFunctionSecurityType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (cfst *CreateFunctionSecurityType) Set(v string) error {
+func (f *CreateFunctionSecurityType) Set(v string) error {
 	switch v {
 	case `DEFINER`:
-		*cfst = CreateFunctionSecurityType(v)
+		*f = CreateFunctionSecurityType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DEFINER"`, v)
@@ -515,7 +515,7 @@ func (cfst *CreateFunctionSecurityType) Set(v string) error {
 }
 
 // Type always returns CreateFunctionSecurityType to satisfy [pflag.Value] interface
-func (cfst *CreateFunctionSecurityType) Type() string {
+func (f *CreateFunctionSecurityType) Type() string {
 	return "CreateFunctionSecurityType"
 }
 
@@ -529,15 +529,15 @@ const CreateFunctionSqlDataAccessNoSql CreateFunctionSqlDataAccess = `NO_SQL`
 const CreateFunctionSqlDataAccessReadsSqlData CreateFunctionSqlDataAccess = `READS_SQL_DATA`
 
 // String representation for [fmt.Print]
-func (cfsda *CreateFunctionSqlDataAccess) String() string {
-	return string(*cfsda)
+func (f *CreateFunctionSqlDataAccess) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (cfsda *CreateFunctionSqlDataAccess) Set(v string) error {
+func (f *CreateFunctionSqlDataAccess) Set(v string) error {
 	switch v {
 	case `CONTAINS_SQL`, `NO_SQL`, `READS_SQL_DATA`:
-		*cfsda = CreateFunctionSqlDataAccess(v)
+		*f = CreateFunctionSqlDataAccess(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CONTAINS_SQL", "NO_SQL", "READS_SQL_DATA"`, v)
@@ -545,7 +545,7 @@ func (cfsda *CreateFunctionSqlDataAccess) Set(v string) error {
 }
 
 // Type always returns CreateFunctionSqlDataAccess to satisfy [pflag.Value] interface
-func (cfsda *CreateFunctionSqlDataAccess) Type() string {
+func (f *CreateFunctionSqlDataAccess) Type() string {
 	return "CreateFunctionSqlDataAccess"
 }
 
@@ -632,15 +632,15 @@ type CredentialType string
 const CredentialTypeUsernamePassword CredentialType = `USERNAME_PASSWORD`
 
 // String representation for [fmt.Print]
-func (ct *CredentialType) String() string {
-	return string(*ct)
+func (f *CredentialType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ct *CredentialType) Set(v string) error {
+func (f *CredentialType) Set(v string) error {
 	switch v {
 	case `USERNAME_PASSWORD`:
-		*ct = CredentialType(v)
+		*f = CredentialType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "USERNAME_PASSWORD"`, v)
@@ -648,7 +648,7 @@ func (ct *CredentialType) Set(v string) error {
 }
 
 // Type always returns CredentialType to satisfy [pflag.Value] interface
-func (ct *CredentialType) Type() string {
+func (f *CredentialType) Type() string {
 	return "CredentialType"
 }
 
@@ -680,15 +680,15 @@ const DataSourceFormatText DataSourceFormat = `TEXT`
 const DataSourceFormatUnityCatalog DataSourceFormat = `UNITY_CATALOG`
 
 // String representation for [fmt.Print]
-func (dsf *DataSourceFormat) String() string {
-	return string(*dsf)
+func (f *DataSourceFormat) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (dsf *DataSourceFormat) Set(v string) error {
+func (f *DataSourceFormat) Set(v string) error {
 	switch v {
 	case `AVRO`, `CSV`, `DELTA`, `DELTASHARING`, `JSON`, `ORC`, `PARQUET`, `TEXT`, `UNITY_CATALOG`:
-		*dsf = DataSourceFormat(v)
+		*f = DataSourceFormat(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AVRO", "CSV", "DELTA", "DELTASHARING", "JSON", "ORC", "PARQUET", "TEXT", "UNITY_CATALOG"`, v)
@@ -696,7 +696,7 @@ func (dsf *DataSourceFormat) Set(v string) error {
 }
 
 // Type always returns DataSourceFormat to satisfy [pflag.Value] interface
-func (dsf *DataSourceFormat) Type() string {
+func (f *DataSourceFormat) Type() string {
 	return "DataSourceFormat"
 }
 
@@ -854,15 +854,15 @@ const EffectiveAutoMaintenanceFlagInheritedFromTypeCatalog EffectiveAutoMaintena
 const EffectiveAutoMaintenanceFlagInheritedFromTypeSchema EffectiveAutoMaintenanceFlagInheritedFromType = `SCHEMA`
 
 // String representation for [fmt.Print]
-func (eamfift *EffectiveAutoMaintenanceFlagInheritedFromType) String() string {
-	return string(*eamfift)
+func (f *EffectiveAutoMaintenanceFlagInheritedFromType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (eamfift *EffectiveAutoMaintenanceFlagInheritedFromType) Set(v string) error {
+func (f *EffectiveAutoMaintenanceFlagInheritedFromType) Set(v string) error {
 	switch v {
 	case `CATALOG`, `SCHEMA`:
-		*eamfift = EffectiveAutoMaintenanceFlagInheritedFromType(v)
+		*f = EffectiveAutoMaintenanceFlagInheritedFromType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CATALOG", "SCHEMA"`, v)
@@ -870,7 +870,7 @@ func (eamfift *EffectiveAutoMaintenanceFlagInheritedFromType) Set(v string) erro
 }
 
 // Type always returns EffectiveAutoMaintenanceFlagInheritedFromType to satisfy [pflag.Value] interface
-func (eamfift *EffectiveAutoMaintenanceFlagInheritedFromType) Type() string {
+func (f *EffectiveAutoMaintenanceFlagInheritedFromType) Type() string {
 	return "EffectiveAutoMaintenanceFlagInheritedFromType"
 }
 
@@ -912,15 +912,15 @@ const EnableAutoMaintenanceEnable EnableAutoMaintenance = `ENABLE`
 const EnableAutoMaintenanceInherit EnableAutoMaintenance = `INHERIT`
 
 // String representation for [fmt.Print]
-func (eam *EnableAutoMaintenance) String() string {
-	return string(*eam)
+func (f *EnableAutoMaintenance) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (eam *EnableAutoMaintenance) Set(v string) error {
+func (f *EnableAutoMaintenance) Set(v string) error {
 	switch v {
 	case `DISABLE`, `ENABLE`, `INHERIT`:
-		*eam = EnableAutoMaintenance(v)
+		*f = EnableAutoMaintenance(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DISABLE", "ENABLE", "INHERIT"`, v)
@@ -928,7 +928,7 @@ func (eam *EnableAutoMaintenance) Set(v string) error {
 }
 
 // Type always returns EnableAutoMaintenance to satisfy [pflag.Value] interface
-func (eam *EnableAutoMaintenance) Type() string {
+func (f *EnableAutoMaintenance) Type() string {
 	return "EnableAutoMaintenance"
 }
 
@@ -1051,15 +1051,15 @@ type FunctionInfoParameterStyle string
 const FunctionInfoParameterStyleS FunctionInfoParameterStyle = `S`
 
 // String representation for [fmt.Print]
-func (fips *FunctionInfoParameterStyle) String() string {
-	return string(*fips)
+func (f *FunctionInfoParameterStyle) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (fips *FunctionInfoParameterStyle) Set(v string) error {
+func (f *FunctionInfoParameterStyle) Set(v string) error {
 	switch v {
 	case `S`:
-		*fips = FunctionInfoParameterStyle(v)
+		*f = FunctionInfoParameterStyle(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "S"`, v)
@@ -1067,7 +1067,7 @@ func (fips *FunctionInfoParameterStyle) Set(v string) error {
 }
 
 // Type always returns FunctionInfoParameterStyle to satisfy [pflag.Value] interface
-func (fips *FunctionInfoParameterStyle) Type() string {
+func (f *FunctionInfoParameterStyle) Type() string {
 	return "FunctionInfoParameterStyle"
 }
 
@@ -1082,15 +1082,15 @@ const FunctionInfoRoutineBodyExternal FunctionInfoRoutineBody = `EXTERNAL`
 const FunctionInfoRoutineBodySql FunctionInfoRoutineBody = `SQL`
 
 // String representation for [fmt.Print]
-func (firb *FunctionInfoRoutineBody) String() string {
-	return string(*firb)
+func (f *FunctionInfoRoutineBody) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (firb *FunctionInfoRoutineBody) Set(v string) error {
+func (f *FunctionInfoRoutineBody) Set(v string) error {
 	switch v {
 	case `EXTERNAL`, `SQL`:
-		*firb = FunctionInfoRoutineBody(v)
+		*f = FunctionInfoRoutineBody(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "SQL"`, v)
@@ -1098,7 +1098,7 @@ func (firb *FunctionInfoRoutineBody) Set(v string) error {
 }
 
 // Type always returns FunctionInfoRoutineBody to satisfy [pflag.Value] interface
-func (firb *FunctionInfoRoutineBody) Type() string {
+func (f *FunctionInfoRoutineBody) Type() string {
 	return "FunctionInfoRoutineBody"
 }
 
@@ -1108,15 +1108,15 @@ type FunctionInfoSecurityType string
 const FunctionInfoSecurityTypeDefiner FunctionInfoSecurityType = `DEFINER`
 
 // String representation for [fmt.Print]
-func (fist *FunctionInfoSecurityType) String() string {
-	return string(*fist)
+func (f *FunctionInfoSecurityType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (fist *FunctionInfoSecurityType) Set(v string) error {
+func (f *FunctionInfoSecurityType) Set(v string) error {
 	switch v {
 	case `DEFINER`:
-		*fist = FunctionInfoSecurityType(v)
+		*f = FunctionInfoSecurityType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DEFINER"`, v)
@@ -1124,7 +1124,7 @@ func (fist *FunctionInfoSecurityType) Set(v string) error {
 }
 
 // Type always returns FunctionInfoSecurityType to satisfy [pflag.Value] interface
-func (fist *FunctionInfoSecurityType) Type() string {
+func (f *FunctionInfoSecurityType) Type() string {
 	return "FunctionInfoSecurityType"
 }
 
@@ -1138,15 +1138,15 @@ const FunctionInfoSqlDataAccessNoSql FunctionInfoSqlDataAccess = `NO_SQL`
 const FunctionInfoSqlDataAccessReadsSqlData FunctionInfoSqlDataAccess = `READS_SQL_DATA`
 
 // String representation for [fmt.Print]
-func (fisda *FunctionInfoSqlDataAccess) String() string {
-	return string(*fisda)
+func (f *FunctionInfoSqlDataAccess) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (fisda *FunctionInfoSqlDataAccess) Set(v string) error {
+func (f *FunctionInfoSqlDataAccess) Set(v string) error {
 	switch v {
 	case `CONTAINS_SQL`, `NO_SQL`, `READS_SQL_DATA`:
-		*fisda = FunctionInfoSqlDataAccess(v)
+		*f = FunctionInfoSqlDataAccess(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CONTAINS_SQL", "NO_SQL", "READS_SQL_DATA"`, v)
@@ -1154,7 +1154,7 @@ func (fisda *FunctionInfoSqlDataAccess) Set(v string) error {
 }
 
 // Type always returns FunctionInfoSqlDataAccess to satisfy [pflag.Value] interface
-func (fisda *FunctionInfoSqlDataAccess) Type() string {
+func (f *FunctionInfoSqlDataAccess) Type() string {
 	return "FunctionInfoSqlDataAccess"
 }
 
@@ -1191,15 +1191,15 @@ type FunctionParameterMode string
 const FunctionParameterModeIn FunctionParameterMode = `IN`
 
 // String representation for [fmt.Print]
-func (fpm *FunctionParameterMode) String() string {
-	return string(*fpm)
+func (f *FunctionParameterMode) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (fpm *FunctionParameterMode) Set(v string) error {
+func (f *FunctionParameterMode) Set(v string) error {
 	switch v {
 	case `IN`:
-		*fpm = FunctionParameterMode(v)
+		*f = FunctionParameterMode(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "IN"`, v)
@@ -1207,7 +1207,7 @@ func (fpm *FunctionParameterMode) Set(v string) error {
 }
 
 // Type always returns FunctionParameterMode to satisfy [pflag.Value] interface
-func (fpm *FunctionParameterMode) Type() string {
+func (f *FunctionParameterMode) Type() string {
 	return "FunctionParameterMode"
 }
 
@@ -1219,15 +1219,15 @@ const FunctionParameterTypeColumn FunctionParameterType = `COLUMN`
 const FunctionParameterTypeParam FunctionParameterType = `PARAM`
 
 // String representation for [fmt.Print]
-func (fpt *FunctionParameterType) String() string {
-	return string(*fpt)
+func (f *FunctionParameterType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (fpt *FunctionParameterType) Set(v string) error {
+func (f *FunctionParameterType) Set(v string) error {
 	switch v {
 	case `COLUMN`, `PARAM`:
-		*fpt = FunctionParameterType(v)
+		*f = FunctionParameterType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "COLUMN", "PARAM"`, v)
@@ -1235,7 +1235,7 @@ func (fpt *FunctionParameterType) Set(v string) error {
 }
 
 // Type always returns FunctionParameterType to satisfy [pflag.Value] interface
-func (fpt *FunctionParameterType) Type() string {
+func (f *FunctionParameterType) Type() string {
 	return "FunctionParameterType"
 }
 
@@ -1362,15 +1362,15 @@ const GetMetastoreSummaryResponseDeltaSharingScopeInternal GetMetastoreSummaryRe
 const GetMetastoreSummaryResponseDeltaSharingScopeInternalAndExternal GetMetastoreSummaryResponseDeltaSharingScope = `INTERNAL_AND_EXTERNAL`
 
 // String representation for [fmt.Print]
-func (gmsrdss *GetMetastoreSummaryResponseDeltaSharingScope) String() string {
-	return string(*gmsrdss)
+func (f *GetMetastoreSummaryResponseDeltaSharingScope) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (gmsrdss *GetMetastoreSummaryResponseDeltaSharingScope) Set(v string) error {
+func (f *GetMetastoreSummaryResponseDeltaSharingScope) Set(v string) error {
 	switch v {
 	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
-		*gmsrdss = GetMetastoreSummaryResponseDeltaSharingScope(v)
+		*f = GetMetastoreSummaryResponseDeltaSharingScope(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "INTERNAL", "INTERNAL_AND_EXTERNAL"`, v)
@@ -1378,7 +1378,7 @@ func (gmsrdss *GetMetastoreSummaryResponseDeltaSharingScope) Set(v string) error
 }
 
 // Type always returns GetMetastoreSummaryResponseDeltaSharingScope to satisfy [pflag.Value] interface
-func (gmsrdss *GetMetastoreSummaryResponseDeltaSharingScope) Type() string {
+func (f *GetMetastoreSummaryResponseDeltaSharingScope) Type() string {
 	return "GetMetastoreSummaryResponseDeltaSharingScope"
 }
 
@@ -1417,15 +1417,15 @@ const IsolationModeIsolated IsolationMode = `ISOLATED`
 const IsolationModeOpen IsolationMode = `OPEN`
 
 // String representation for [fmt.Print]
-func (im *IsolationMode) String() string {
-	return string(*im)
+func (f *IsolationMode) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (im *IsolationMode) Set(v string) error {
+func (f *IsolationMode) Set(v string) error {
 	switch v {
 	case `ISOLATED`, `OPEN`:
-		*im = IsolationMode(v)
+		*f = IsolationMode(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ISOLATED", "OPEN"`, v)
@@ -1433,7 +1433,7 @@ func (im *IsolationMode) Set(v string) error {
 }
 
 // Type always returns IsolationMode to satisfy [pflag.Value] interface
-func (im *IsolationMode) Type() string {
+func (f *IsolationMode) Type() string {
 	return "IsolationMode"
 }
 
@@ -1576,7 +1576,7 @@ type MetastoreAssignment struct {
 	// The unique ID of the metastore.
 	MetastoreId string `json:"metastore_id"`
 	// The unique ID of the Databricks workspace.
-	WorkspaceId string `json:"workspace_id"`
+	WorkspaceId int64 `json:"workspace_id"`
 }
 
 type MetastoreInfo struct {
@@ -1629,15 +1629,15 @@ const MetastoreInfoDeltaSharingScopeInternal MetastoreInfoDeltaSharingScope = `I
 const MetastoreInfoDeltaSharingScopeInternalAndExternal MetastoreInfoDeltaSharingScope = `INTERNAL_AND_EXTERNAL`
 
 // String representation for [fmt.Print]
-func (midss *MetastoreInfoDeltaSharingScope) String() string {
-	return string(*midss)
+func (f *MetastoreInfoDeltaSharingScope) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (midss *MetastoreInfoDeltaSharingScope) Set(v string) error {
+func (f *MetastoreInfoDeltaSharingScope) Set(v string) error {
 	switch v {
 	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
-		*midss = MetastoreInfoDeltaSharingScope(v)
+		*f = MetastoreInfoDeltaSharingScope(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "INTERNAL", "INTERNAL_AND_EXTERNAL"`, v)
@@ -1645,7 +1645,7 @@ func (midss *MetastoreInfoDeltaSharingScope) Set(v string) error {
 }
 
 // Type always returns MetastoreInfoDeltaSharingScope to satisfy [pflag.Value] interface
-func (midss *MetastoreInfoDeltaSharingScope) Type() string {
+func (f *MetastoreInfoDeltaSharingScope) Type() string {
 	return "MetastoreInfoDeltaSharingScope"
 }
 
@@ -1743,15 +1743,15 @@ const PrivilegeWriteFiles Privilege = `WRITE_FILES`
 const PrivilegeWritePrivateFiles Privilege = `WRITE_PRIVATE_FILES`
 
 // String representation for [fmt.Print]
-func (p *Privilege) String() string {
-	return string(*p)
+func (f *Privilege) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (p *Privilege) Set(v string) error {
+func (f *Privilege) Set(v string) error {
 	switch v {
 	case `ALL_PRIVILEGES`, `CREATE`, `CREATE_CATALOG`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
-		*p = Privilege(v)
+		*f = Privilege(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "CREATE", "CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
@@ -1759,7 +1759,7 @@ func (p *Privilege) Set(v string) error {
 }
 
 // Type always returns Privilege to satisfy [pflag.Value] interface
-func (p *Privilege) Type() string {
+func (f *Privilege) Type() string {
 	return "Privilege"
 }
 
@@ -1842,15 +1842,15 @@ const SecurableTypeStorageCredential SecurableType = `STORAGE_CREDENTIAL`
 const SecurableTypeTable SecurableType = `TABLE`
 
 // String representation for [fmt.Print]
-func (st *SecurableType) String() string {
-	return string(*st)
+func (f *SecurableType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (st *SecurableType) Set(v string) error {
+func (f *SecurableType) Set(v string) error {
 	switch v {
 	case `CATALOG`, `EXTERNAL_LOCATION`, `FUNCTION`, `METASTORE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `STORAGE_CREDENTIAL`, `TABLE`:
-		*st = SecurableType(v)
+		*f = SecurableType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CATALOG", "EXTERNAL_LOCATION", "FUNCTION", "METASTORE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "STORAGE_CREDENTIAL", "TABLE"`, v)
@@ -1858,7 +1858,7 @@ func (st *SecurableType) Set(v string) error {
 }
 
 // Type always returns SecurableType to satisfy [pflag.Value] interface
-func (st *SecurableType) Type() string {
+func (f *SecurableType) Type() string {
 	return "SecurableType"
 }
 
@@ -1917,15 +1917,15 @@ const SystemSchemaInfoStateEnableinitialized SystemSchemaInfoState = `EnableInit
 const SystemSchemaInfoStateUnavailable SystemSchemaInfoState = `Unavailable`
 
 // String representation for [fmt.Print]
-func (ssis *SystemSchemaInfoState) String() string {
-	return string(*ssis)
+func (f *SystemSchemaInfoState) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ssis *SystemSchemaInfoState) Set(v string) error {
+func (f *SystemSchemaInfoState) Set(v string) error {
 	switch v {
 	case `DisableInitialized`, `EnableCompleted`, `EnableInitialized`, `Unavailable`:
-		*ssis = SystemSchemaInfoState(v)
+		*f = SystemSchemaInfoState(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DisableInitialized", "EnableCompleted", "EnableInitialized", "Unavailable"`, v)
@@ -1933,7 +1933,7 @@ func (ssis *SystemSchemaInfoState) Set(v string) error {
 }
 
 // Type always returns SystemSchemaInfoState to satisfy [pflag.Value] interface
-func (ssis *SystemSchemaInfoState) Type() string {
+func (f *SystemSchemaInfoState) Type() string {
 	return "SystemSchemaInfoState"
 }
 
@@ -2057,15 +2057,15 @@ const TableTypeStreamingTable TableType = `STREAMING_TABLE`
 const TableTypeView TableType = `VIEW`
 
 // String representation for [fmt.Print]
-func (tt *TableType) String() string {
-	return string(*tt)
+func (f *TableType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (tt *TableType) Set(v string) error {
+func (f *TableType) Set(v string) error {
 	switch v {
 	case `EXTERNAL`, `MANAGED`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
-		*tt = TableType(v)
+		*f = TableType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "MANAGED", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
@@ -2073,7 +2073,7 @@ func (tt *TableType) Set(v string) error {
 }
 
 // Type always returns TableType to satisfy [pflag.Value] interface
-func (tt *TableType) Type() string {
+func (f *TableType) Type() string {
 	return "TableType"
 }
 
@@ -2189,15 +2189,15 @@ const UpdateMetastoreDeltaSharingScopeInternal UpdateMetastoreDeltaSharingScope 
 const UpdateMetastoreDeltaSharingScopeInternalAndExternal UpdateMetastoreDeltaSharingScope = `INTERNAL_AND_EXTERNAL`
 
 // String representation for [fmt.Print]
-func (umdss *UpdateMetastoreDeltaSharingScope) String() string {
-	return string(*umdss)
+func (f *UpdateMetastoreDeltaSharingScope) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (umdss *UpdateMetastoreDeltaSharingScope) Set(v string) error {
+func (f *UpdateMetastoreDeltaSharingScope) Set(v string) error {
 	switch v {
 	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
-		*umdss = UpdateMetastoreDeltaSharingScope(v)
+		*f = UpdateMetastoreDeltaSharingScope(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "INTERNAL", "INTERNAL_AND_EXTERNAL"`, v)
@@ -2205,7 +2205,7 @@ func (umdss *UpdateMetastoreDeltaSharingScope) Set(v string) error {
 }
 
 // Type always returns UpdateMetastoreDeltaSharingScope to satisfy [pflag.Value] interface
-func (umdss *UpdateMetastoreDeltaSharingScope) Type() string {
+func (f *UpdateMetastoreDeltaSharingScope) Type() string {
 	return "UpdateMetastoreDeltaSharingScope"
 }
 
@@ -2323,15 +2323,15 @@ const ValidationResultOperationRead ValidationResultOperation = `READ`
 const ValidationResultOperationWrite ValidationResultOperation = `WRITE`
 
 // String representation for [fmt.Print]
-func (vro *ValidationResultOperation) String() string {
-	return string(*vro)
+func (f *ValidationResultOperation) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (vro *ValidationResultOperation) Set(v string) error {
+func (f *ValidationResultOperation) Set(v string) error {
 	switch v {
 	case `DELETE`, `LIST`, `READ`, `WRITE`:
-		*vro = ValidationResultOperation(v)
+		*f = ValidationResultOperation(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELETE", "LIST", "READ", "WRITE"`, v)
@@ -2339,7 +2339,7 @@ func (vro *ValidationResultOperation) Set(v string) error {
 }
 
 // Type always returns ValidationResultOperation to satisfy [pflag.Value] interface
-func (vro *ValidationResultOperation) Type() string {
+func (f *ValidationResultOperation) Type() string {
 	return "ValidationResultOperation"
 }
 
@@ -2353,15 +2353,15 @@ const ValidationResultResultPass ValidationResultResult = `PASS`
 const ValidationResultResultSkip ValidationResultResult = `SKIP`
 
 // String representation for [fmt.Print]
-func (vrr *ValidationResultResult) String() string {
-	return string(*vrr)
+func (f *ValidationResultResult) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (vrr *ValidationResultResult) Set(v string) error {
+func (f *ValidationResultResult) Set(v string) error {
 	switch v {
 	case `FAIL`, `PASS`, `SKIP`:
-		*vrr = ValidationResultResult(v)
+		*f = ValidationResultResult(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FAIL", "PASS", "SKIP"`, v)
@@ -2369,7 +2369,7 @@ func (vrr *ValidationResultResult) Set(v string) error {
 }
 
 // Type always returns ValidationResultResult to satisfy [pflag.Value] interface
-func (vrr *ValidationResultResult) Type() string {
+func (f *ValidationResultResult) Type() string {
 	return "ValidationResultResult"
 }
 
@@ -2411,15 +2411,15 @@ const VolumeTypeExternal VolumeType = `EXTERNAL`
 const VolumeTypeManaged VolumeType = `MANAGED`
 
 // String representation for [fmt.Print]
-func (vt *VolumeType) String() string {
-	return string(*vt)
+func (f *VolumeType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (vt *VolumeType) Set(v string) error {
+func (f *VolumeType) Set(v string) error {
 	switch v {
 	case `EXTERNAL`, `MANAGED`:
-		*vt = VolumeType(v)
+		*f = VolumeType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "MANAGED"`, v)
@@ -2427,6 +2427,6 @@ func (vt *VolumeType) Set(v string) error {
 }
 
 // Type always returns VolumeType to satisfy [pflag.Value] interface
-func (vt *VolumeType) Type() string {
+func (f *VolumeType) Type() string {
 	return "VolumeType"
 }

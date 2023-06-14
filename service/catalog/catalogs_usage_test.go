@@ -13,6 +13,60 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
+func ExampleCatalogsAPI_Create_volumes() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
+		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", createdCatalog)
+
+	// cleanup
+
+	err = w.Catalogs.Delete(ctx, catalog.DeleteCatalogRequest{
+		Name:  createdCatalog.Name,
+		Force: true,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func ExampleCatalogsAPI_Create_tables() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
+		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", createdCatalog)
+
+	// cleanup
+
+	err = w.Catalogs.Delete(ctx, catalog.DeleteCatalogRequest{
+		Name:  createdCatalog.Name,
+		Force: true,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 func ExampleCatalogsAPI_Create_catalogs() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
@@ -86,6 +140,33 @@ func ExampleCatalogsAPI_Create_schemas() {
 
 	err = w.Catalogs.Delete(ctx, catalog.DeleteCatalogRequest{
 		Name:  newCatalog.Name,
+		Force: true,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func ExampleCatalogsAPI_Create_shares() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
+		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", createdCatalog)
+
+	// cleanup
+
+	err = w.Catalogs.Delete(ctx, catalog.DeleteCatalogRequest{
+		Name:  createdCatalog.Name,
 		Force: true,
 	})
 	if err != nil {

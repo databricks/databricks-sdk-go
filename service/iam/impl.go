@@ -15,23 +15,49 @@ type accountAccessControlImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountAccessControlImpl) Get(ctx context.Context, request GetAccountAccessControlRequest) (*RuleSetResponse, error) {
-	var ruleSetResponse RuleSetResponse
-	path := fmt.Sprintf("/preview/accounts/%v/access-control/rule-sets", a.client.ConfiguredAccountID())
-	err := a.client.Do(ctx, http.MethodGet, path, request, &ruleSetResponse)
-	return &ruleSetResponse, err
-}
-
-func (a *accountAccessControlImpl) List(ctx context.Context, request ListAccountAccessControlRequest) (*GetAssignableRolesForResourceResponse, error) {
+func (a *accountAccessControlImpl) GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error) {
 	var getAssignableRolesForResourceResponse GetAssignableRolesForResourceResponse
-	path := fmt.Sprintf("/preview/accounts/%v/access-control/assignable-roles", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/access-control/assignable-roles", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getAssignableRolesForResourceResponse)
 	return &getAssignableRolesForResourceResponse, err
 }
 
-func (a *accountAccessControlImpl) Update(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error) {
+func (a *accountAccessControlImpl) GetRuleSet(ctx context.Context, request GetRuleSetRequest) (*RuleSetResponse, error) {
 	var ruleSetResponse RuleSetResponse
-	path := fmt.Sprintf("/preview/accounts/%v/access-control/rule-sets", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/access-control/rule-sets", a.client.ConfiguredAccountID())
+	err := a.client.Do(ctx, http.MethodGet, path, request, &ruleSetResponse)
+	return &ruleSetResponse, err
+}
+
+func (a *accountAccessControlImpl) UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error) {
+	var ruleSetResponse RuleSetResponse
+	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/access-control/rule-sets", a.client.ConfiguredAccountID())
+	err := a.client.Do(ctx, http.MethodPut, path, request, &ruleSetResponse)
+	return &ruleSetResponse, err
+}
+
+// unexported type that holds implementations of just AccountAccessControlProxy API methods
+type accountAccessControlProxyImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *accountAccessControlProxyImpl) GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error) {
+	var getAssignableRolesForResourceResponse GetAssignableRolesForResourceResponse
+	path := fmt.Sprintf("/api/2.0/preview/accounts/access-control/assignable-roles")
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getAssignableRolesForResourceResponse)
+	return &getAssignableRolesForResourceResponse, err
+}
+
+func (a *accountAccessControlProxyImpl) GetRuleSet(ctx context.Context, request GetRuleSetRequest) (*RuleSetResponse, error) {
+	var ruleSetResponse RuleSetResponse
+	path := fmt.Sprintf("/api/2.0/preview/accounts/access-control/rule-sets")
+	err := a.client.Do(ctx, http.MethodGet, path, request, &ruleSetResponse)
+	return &ruleSetResponse, err
+}
+
+func (a *accountAccessControlProxyImpl) UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error) {
+	var ruleSetResponse RuleSetResponse
+	path := fmt.Sprintf("/api/2.0/preview/accounts/access-control/rule-sets")
 	err := a.client.Do(ctx, http.MethodPut, path, request, &ruleSetResponse)
 	return &ruleSetResponse, err
 }

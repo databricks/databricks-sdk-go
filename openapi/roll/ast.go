@@ -186,6 +186,24 @@ type call struct {
 	creates string
 }
 
+func (c *call) IsDependentOn(other *call) bool {
+	if other.Assign == nil {
+		return false
+	}
+	result := []bool{false}
+	c.Traverse(func(e expression) {
+		v, ok := e.(*variable)
+		if !ok {
+			return
+		}
+		if other.Assign.CamelName() == v.CamelName() {
+			result[0] = true
+			return
+		}
+	})
+	return result[0]
+}
+
 func (c *call) IsWait() bool {
 	return strings.HasSuffix(c.Name, "AndWait")
 }

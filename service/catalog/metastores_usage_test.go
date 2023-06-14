@@ -87,6 +87,21 @@ func ExampleMetastoresAPI_Create_metastores() {
 
 }
 
+func ExampleMetastoresAPI_Current_metastores() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	currentMetastore, err := w.Metastores.Current(ctx)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", currentMetastore)
+
+}
+
 func ExampleMetastoresAPI_Get_metastores() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
@@ -135,6 +150,43 @@ func ExampleMetastoresAPI_ListAll_metastores() {
 
 }
 
+func ExampleMetastoresAPI_Maintenance_metastores() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	created, err := w.Metastores.Create(ctx, catalog.CreateMetastore{
+		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+		StorageRoot: fmt.Sprintf("s3://%s/%s", os.Getenv("TEST_BUCKET"), fmt.Sprintf("sdk-%x", time.Now().UnixNano())),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", created)
+
+	autoMaintenance, err := w.Metastores.Maintenance(ctx, catalog.UpdateAutoMaintenance{
+		Enable:      true,
+		MetastoreId: created.MetastoreId,
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", autoMaintenance)
+
+	// cleanup
+
+	err = w.Metastores.Delete(ctx, catalog.DeleteMetastoreRequest{
+		Id:    created.MetastoreId,
+		Force: true,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 func ExampleMetastoresAPI_Summary_metastores() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
@@ -142,10 +194,11 @@ func ExampleMetastoresAPI_Summary_metastores() {
 		panic(err)
 	}
 
-	_, err = w.Metastores.Summary(ctx)
+	summary, err := w.Metastores.Summary(ctx)
 	if err != nil {
 		panic(err)
 	}
+	logger.Infof(ctx, "found %v", summary)
 
 }
 

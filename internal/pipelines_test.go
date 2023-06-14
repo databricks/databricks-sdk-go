@@ -16,7 +16,7 @@ func TestAccPipelines(t *testing.T) {
 
 	err := w.Workspace.Import(ctx, workspace.Import{
 		Content:   base64.StdEncoding.EncodeToString([]byte(dltNotebook())),
-		Format:    workspace.ExportFormatSource,
+		Format:    workspace.ImportFormatSource,
 		Language:  workspace.LanguageSql,
 		Overwrite: true,
 		Path:      notebookPath,

@@ -13,7 +13,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
-func ExampleServicePrincipalsAPI_Create_workspaceAssignment() {
+func ExampleServicePrincipalsAPI_Create_workspaceAssignmentOnAws() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -48,6 +48,39 @@ func ExampleServicePrincipalsAPI_Create_servicePrincipalsOnAws() {
 	// cleanup
 
 	err = w.ServicePrincipals.DeleteById(ctx, created.Id)
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func ExampleServicePrincipalsAPI_Create_createOboTokenOnAws() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	groups, err := w.Groups.GroupDisplayNameToIdMap(ctx, iam.ListGroupsRequest{})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", groups)
+
+	spn, err := w.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+		Groups: []iam.ComplexValue{iam.ComplexValue{
+			Value: groups["admins"],
+		}},
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", spn)
+
+	// cleanup
+
+	err = w.ServicePrincipals.DeleteById(ctx, spn.Id)
 	if err != nil {
 		panic(err)
 	}
