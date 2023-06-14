@@ -204,6 +204,41 @@ func ExampleClustersAPI_Edit_clustersApiIntegration() {
 
 }
 
+func ExampleClustersAPI_EnsureClusterIsRunning_commandsDirectUsage() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	clusterId := os.Getenv("TEST_DEFAULT_CLUSTER_ID")
+
+	context, err := w.CommandExecution.CreateAndWait(ctx, compute.CreateContext{
+		ClusterId: clusterId,
+		Language:  compute.LanguagePython,
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", context)
+
+	err = w.Clusters.EnsureClusterIsRunning(ctx, clusterId)
+	if err != nil {
+		panic(err)
+	}
+
+	// cleanup
+
+	err = w.CommandExecution.Destroy(ctx, compute.DestroyContext{
+		ClusterId: clusterId,
+		ContextId: context.Id,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 func ExampleClustersAPI_Events_clustersApiIntegration() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()

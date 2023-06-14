@@ -68,6 +68,26 @@ func accountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 		(*databricks.Config)(cfg)))
 }
 
+// prelude for all UC account-level tests
+func ucacctTest(t *testing.T) (context.Context, *databricks.AccountClient) {
+	loadDebugEnvIfRunsFromIDE(t, "ucacct")
+	cfg := &config.Config{
+		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
+	}
+	err := cfg.EnsureResolved()
+	if err != nil {
+		skipf(t)("error: %s", err)
+	}
+	if !cfg.IsAccountClient() {
+		skipf(t)("Not in account env: %s/%s", cfg.AccountID, cfg.Host)
+	}
+	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+	t.Parallel()
+	ctx := context.Background()
+	return ctx, databricks.Must(databricks.NewAccountClient(
+		(*databricks.Config)(cfg)))
+}
+
 // GetEnvOrSkipTest proceeds with test only with that env variable
 func GetEnvOrSkipTest(t *testing.T, name string) string {
 	value := os.Getenv(name)

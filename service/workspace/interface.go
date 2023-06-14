@@ -268,9 +268,9 @@ type WorkspaceService interface {
 	// If `path` does not exist, this call returns an error
 	// `RESOURCE_DOES_NOT_EXIST`.
 	//
-	// One can only export a directory in `DBC` format. If the exported data
-	// would exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`.
-	// Currently, this API does not support exporting a library.
+	// If the exported data would exceed size limit, this call returns
+	// `MAX_NOTEBOOK_SIZE_EXCEEDED`. Currently, this API does not support
+	// exporting a library.
 	Export(ctx context.Context, request ExportRequest) (*ExportResponse, error)
 
 	// Get status.
@@ -290,7 +290,7 @@ type WorkspaceService interface {
 	// List contents.
 	//
 	// Lists the contents of a directory, or the object if it is not a
-	// directory.If the input path does not exist, this call returns an error
+	// directory. If the input path does not exist, this call returns an error
 	// `RESOURCE_DOES_NOT_EXIST`.
 	//
 	// Use ListAll() to get all ObjectInfo instances
@@ -303,6 +303,6 @@ type WorkspaceService interface {
 	// the input path, this call returns an error `RESOURCE_ALREADY_EXISTS`.
 	//
 	// Note that if this operation fails it may have succeeded in creating some
-	// of the necessary parrent directories.
+	// of the necessary parent directories.
 	Mkdirs(ctx context.Context, request Mkdirs) error
 }

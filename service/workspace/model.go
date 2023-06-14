@@ -22,15 +22,15 @@ const AclPermissionRead AclPermission = `READ`
 const AclPermissionWrite AclPermission = `WRITE`
 
 // String representation for [fmt.Print]
-func (ap *AclPermission) String() string {
-	return string(*ap)
+func (f *AclPermission) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ap *AclPermission) Set(v string) error {
+func (f *AclPermission) Set(v string) error {
 	switch v {
 	case `MANAGE`, `READ`, `WRITE`:
-		*ap = AclPermission(v)
+		*f = AclPermission(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "MANAGE", "READ", "WRITE"`, v)
@@ -38,7 +38,7 @@ func (ap *AclPermission) Set(v string) error {
 }
 
 // Type always returns AclPermission to satisfy [pflag.Value] interface
-func (ap *AclPermission) Type() string {
+func (f *AclPermission) Type() string {
 	return "AclPermission"
 }
 
@@ -157,17 +157,7 @@ type DeleteSecret struct {
 	Scope string `json:"scope"`
 }
 
-// This specifies the format of the file to be imported. By default, this is
-// `SOURCE`.
-//
-// If using `AUTO` the item is imported or exported as either a workspace file
-// or a notebook,depending on an analysis of the item’s extension and the
-// header content provided in the request. The value is case sensitive. In
-// addition, if the item is imported as a notebook, then the item’s extension
-// is automatically removed.
 type ExportFormat string
-
-const ExportFormatAuto ExportFormat = `AUTO`
 
 const ExportFormatDbc ExportFormat = `DBC`
 
@@ -180,41 +170,47 @@ const ExportFormatRMarkdown ExportFormat = `R_MARKDOWN`
 const ExportFormatSource ExportFormat = `SOURCE`
 
 // String representation for [fmt.Print]
-func (ef *ExportFormat) String() string {
-	return string(*ef)
+func (f *ExportFormat) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ef *ExportFormat) Set(v string) error {
+func (f *ExportFormat) Set(v string) error {
 	switch v {
-	case `AUTO`, `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
-		*ef = ExportFormat(v)
+	case `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
+		*f = ExportFormat(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AUTO", "DBC", "HTML", "JUPYTER", "R_MARKDOWN", "SOURCE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DBC", "HTML", "JUPYTER", "R_MARKDOWN", "SOURCE"`, v)
 	}
 }
 
 // Type always returns ExportFormat to satisfy [pflag.Value] interface
-func (ef *ExportFormat) Type() string {
+func (f *ExportFormat) Type() string {
 	return "ExportFormat"
 }
 
 // Export a workspace object
 type ExportRequest struct {
 	// This specifies the format of the exported file. By default, this is
-	// `SOURCE`. However it may be one of: `SOURCE`, `HTML`, `JUPYTER`, `DBC`.
+	// `SOURCE`.
 	//
 	// The value is case sensitive.
+	//
+	// - `SOURCE`: The notebook is exported as source code. - `HTML`: The
+	// notebook is exported as an HTML file. - `JUPYTER`: The notebook is
+	// exported as a Jupyter/IPython Notebook file. - `DBC`: The notebook is
+	// exported in Databricks archive format. - `R_MARKDOWN`: The notebook is
+	// exported to R Markdown format.
 	Format ExportFormat `json:"-" url:"format,omitempty"`
 	// The absolute path of the object or directory. Exporting a directory is
-	// only supported for the `DBC` format.
+	// only supported for the `DBC` and `SOURCE` format.
 	Path string `json:"-" url:"path"`
 }
 
 type ExportResponse struct {
 	// The base64-encoded content. If the limit (10MB) is exceeded, exception
-	// with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** will be thrown.
+	// with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.
 	Content string `json:"content,omitempty"`
 }
 
@@ -252,18 +248,22 @@ type Import struct {
 	// The base64-encoded content. This has a limit of 10 MB.
 	//
 	// If the limit (10MB) is exceeded, exception with error code
-	// **MAX_NOTEBOOK_SIZE_EXCEEDED** will be thrown. This parameter might be
-	// absent, and instead a posted file will be used.
+	// **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown. This parameter might be absent,
+	// and instead a posted file is used.
 	Content string `json:"content,omitempty"`
-	// This specifies the format of the file to be imported. By default, this is
-	// `SOURCE`.
+	// This specifies the format of the file to be imported.
 	//
-	// If using `AUTO` the item is imported or exported as either a workspace
-	// file or a notebook,depending on an analysis of the item’s extension and
-	// the header content provided in the request. The value is case sensitive.
-	// In addition, if the item is imported as a notebook, then the item’s
-	// extension is automatically removed.
-	Format ExportFormat `json:"format,omitempty"`
+	// The value is case sensitive.
+	//
+	// - `AUTO`: The item is imported depending on an analysis of the item's
+	// extension and the header content provided in the request. If the item is
+	// imported as a notebook, then the item's extension is automatically
+	// removed. - `SOURCE`: The notebook is imported as source code. - `HTML`:
+	// The notebook is imported as an HTML file. - `JUPYTER`: The notebook is
+	// imported as a Jupyter/IPython Notebook file. - `DBC`: The notebook is
+	// imported in Databricks archive format. Required for directories. -
+	// `R_MARKDOWN`: The notebook is imported from R Markdown format.
+	Format ImportFormat `json:"format,omitempty"`
 	// The language of the object. This value is set only if the object type is
 	// `NOTEBOOK`.
 	Language Language `json:"language,omitempty"`
@@ -274,6 +274,53 @@ type Import struct {
 	// The absolute path of the object or directory. Importing a directory is
 	// only supported for the `DBC` format.
 	Path string `json:"path"`
+}
+
+// This specifies the format of the file to be imported.
+//
+// The value is case sensitive.
+//
+// - `AUTO`: The item is imported depending on an analysis of the item's
+// extension and the header content provided in the request. If the item is
+// imported as a notebook, then the item's extension is automatically removed. -
+// `SOURCE`: The notebook is imported as source code. - `HTML`: The notebook is
+// imported as an HTML file. - `JUPYTER`: The notebook is imported as a
+// Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in
+// Databricks archive format. Required for directories. - `R_MARKDOWN`: The
+// notebook is imported from R Markdown format.
+type ImportFormat string
+
+const ImportFormatAuto ImportFormat = `AUTO`
+
+const ImportFormatDbc ImportFormat = `DBC`
+
+const ImportFormatHtml ImportFormat = `HTML`
+
+const ImportFormatJupyter ImportFormat = `JUPYTER`
+
+const ImportFormatRMarkdown ImportFormat = `R_MARKDOWN`
+
+const ImportFormatSource ImportFormat = `SOURCE`
+
+// String representation for [fmt.Print]
+func (f *ImportFormat) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ImportFormat) Set(v string) error {
+	switch v {
+	case `AUTO`, `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
+		*f = ImportFormat(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AUTO", "DBC", "HTML", "JUPYTER", "R_MARKDOWN", "SOURCE"`, v)
+	}
+}
+
+// Type always returns ImportFormat to satisfy [pflag.Value] interface
+func (f *ImportFormat) Type() string {
+	return "ImportFormat"
 }
 
 // The language of the object. This value is set only if the object type is
@@ -289,15 +336,15 @@ const LanguageScala Language = `SCALA`
 const LanguageSql Language = `SQL`
 
 // String representation for [fmt.Print]
-func (l *Language) String() string {
-	return string(*l)
+func (f *Language) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (l *Language) Set(v string) error {
+func (f *Language) Set(v string) error {
 	switch v {
 	case `PYTHON`, `R`, `SCALA`, `SQL`:
-		*l = Language(v)
+		*f = Language(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PYTHON", "R", "SCALA", "SQL"`, v)
@@ -305,7 +352,7 @@ func (l *Language) Set(v string) error {
 }
 
 // Type always returns Language to satisfy [pflag.Value] interface
-func (l *Language) Type() string {
+func (f *Language) Type() string {
 	return "Language"
 }
 
@@ -361,7 +408,7 @@ type ListSecretsResponse struct {
 
 // List contents
 type ListWorkspaceRequest struct {
-	// <content needed>
+	// UTC timestamp in milliseconds
 	NotebooksModifiedAfter int `json:"-" url:"notebooks_modified_after,omitempty"`
 	// The absolute path of the notebook or directory.
 	Path string `json:"-" url:"path"`
@@ -375,24 +422,32 @@ type Mkdirs struct {
 }
 
 type ObjectInfo struct {
-	// <content needed>
+	// Only applicable to files. The creation UTC timestamp.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The language of the object. This value is set only if the object type is
 	// `NOTEBOOK`.
 	Language Language `json:"language,omitempty"`
-	// <content needed>
+	// Only applicable to files, the last modified UTC timestamp.
 	ModifiedAt int64 `json:"modified_at,omitempty"`
-	// <content needed>
+	// Unique identifier for the object.
 	ObjectId int64 `json:"object_id,omitempty"`
 	// The type of the object in workspace.
+	//
+	// - `NOTEBOOK`: document that contains runnable code, visualizations, and
+	// explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`:
+	// file - `REPO`: repository
 	ObjectType ObjectType `json:"object_type,omitempty"`
 	// The absolute path of the object.
 	Path string `json:"path,omitempty"`
-	// <content needed>
+	// Only applicable to files. The file size in bytes can be returned.
 	Size int64 `json:"size,omitempty"`
 }
 
 // The type of the object in workspace.
+//
+// - `NOTEBOOK`: document that contains runnable code, visualizations, and
+// explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`:
+// file - `REPO`: repository
 type ObjectType string
 
 const ObjectTypeDirectory ObjectType = `DIRECTORY`
@@ -406,15 +461,15 @@ const ObjectTypeNotebook ObjectType = `NOTEBOOK`
 const ObjectTypeRepo ObjectType = `REPO`
 
 // String representation for [fmt.Print]
-func (ot *ObjectType) String() string {
-	return string(*ot)
+func (f *ObjectType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ot *ObjectType) Set(v string) error {
+func (f *ObjectType) Set(v string) error {
 	switch v {
 	case `DIRECTORY`, `FILE`, `LIBRARY`, `NOTEBOOK`, `REPO`:
-		*ot = ObjectType(v)
+		*f = ObjectType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DIRECTORY", "FILE", "LIBRARY", "NOTEBOOK", "REPO"`, v)
@@ -422,7 +477,7 @@ func (ot *ObjectType) Set(v string) error {
 }
 
 // Type always returns ObjectType to satisfy [pflag.Value] interface
-func (ot *ObjectType) Type() string {
+func (f *ObjectType) Type() string {
 	return "ObjectType"
 }
 
@@ -474,15 +529,15 @@ const ScopeBackendTypeAzureKeyvault ScopeBackendType = `AZURE_KEYVAULT`
 const ScopeBackendTypeDatabricks ScopeBackendType = `DATABRICKS`
 
 // String representation for [fmt.Print]
-func (sbt *ScopeBackendType) String() string {
-	return string(*sbt)
+func (f *ScopeBackendType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (sbt *ScopeBackendType) Set(v string) error {
+func (f *ScopeBackendType) Set(v string) error {
 	switch v {
 	case `AZURE_KEYVAULT`, `DATABRICKS`:
-		*sbt = ScopeBackendType(v)
+		*f = ScopeBackendType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AZURE_KEYVAULT", "DATABRICKS"`, v)
@@ -490,7 +545,7 @@ func (sbt *ScopeBackendType) Set(v string) error {
 }
 
 // Type always returns ScopeBackendType to satisfy [pflag.Value] interface
-func (sbt *ScopeBackendType) Type() string {
+func (f *ScopeBackendType) Type() string {
 	return "ScopeBackendType"
 }
 

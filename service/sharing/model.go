@@ -18,15 +18,15 @@ const AuthenticationTypeDatabricks AuthenticationType = `DATABRICKS`
 const AuthenticationTypeToken AuthenticationType = `TOKEN`
 
 // String representation for [fmt.Print]
-func (at *AuthenticationType) String() string {
-	return string(*at)
+func (f *AuthenticationType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (at *AuthenticationType) Set(v string) error {
+func (f *AuthenticationType) Set(v string) error {
 	switch v {
 	case `DATABRICKS`, `TOKEN`:
-		*at = AuthenticationType(v)
+		*f = AuthenticationType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DATABRICKS", "TOKEN"`, v)
@@ -34,7 +34,7 @@ func (at *AuthenticationType) Set(v string) error {
 }
 
 // Type always returns AuthenticationType to satisfy [pflag.Value] interface
-func (at *AuthenticationType) Type() string {
+func (f *AuthenticationType) Type() string {
 	return "AuthenticationType"
 }
 
@@ -202,15 +202,15 @@ const PartitionValueOpEqual PartitionValueOp = `EQUAL`
 const PartitionValueOpLike PartitionValueOp = `LIKE`
 
 // String representation for [fmt.Print]
-func (pvo *PartitionValueOp) String() string {
-	return string(*pvo)
+func (f *PartitionValueOp) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (pvo *PartitionValueOp) Set(v string) error {
+func (f *PartitionValueOp) Set(v string) error {
 	switch v {
 	case `EQUAL`, `LIKE`:
-		*pvo = PartitionValueOp(v)
+		*f = PartitionValueOp(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EQUAL", "LIKE"`, v)
@@ -218,7 +218,7 @@ func (pvo *PartitionValueOp) Set(v string) error {
 }
 
 // Type always returns PartitionValueOp to satisfy [pflag.Value] interface
-func (pvo *PartitionValueOp) Type() string {
+func (f *PartitionValueOp) Type() string {
 	return "PartitionValueOp"
 }
 
@@ -285,15 +285,15 @@ const PrivilegeWriteFiles Privilege = `WRITE_FILES`
 const PrivilegeWritePrivateFiles Privilege = `WRITE_PRIVATE_FILES`
 
 // String representation for [fmt.Print]
-func (p *Privilege) String() string {
-	return string(*p)
+func (f *Privilege) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (p *Privilege) Set(v string) error {
+func (f *Privilege) Set(v string) error {
 	switch v {
 	case `ALL_PRIVILEGES`, `CREATE`, `CREATE_CATALOG`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
-		*p = Privilege(v)
+		*f = Privilege(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "CREATE", "CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
@@ -301,7 +301,7 @@ func (p *Privilege) Set(v string) error {
 }
 
 // Type always returns Privilege to satisfy [pflag.Value] interface
-func (p *Privilege) Type() string {
+func (f *Privilege) Type() string {
 	return "Privilege"
 }
 
@@ -544,15 +544,15 @@ const SharedDataObjectStatusActive SharedDataObjectStatus = `ACTIVE`
 const SharedDataObjectStatusPermissionDenied SharedDataObjectStatus = `PERMISSION_DENIED`
 
 // String representation for [fmt.Print]
-func (sdos *SharedDataObjectStatus) String() string {
-	return string(*sdos)
+func (f *SharedDataObjectStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (sdos *SharedDataObjectStatus) Set(v string) error {
+func (f *SharedDataObjectStatus) Set(v string) error {
 	switch v {
 	case `ACTIVE`, `PERMISSION_DENIED`:
-		*sdos = SharedDataObjectStatus(v)
+		*f = SharedDataObjectStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "PERMISSION_DENIED"`, v)
@@ -560,7 +560,7 @@ func (sdos *SharedDataObjectStatus) Set(v string) error {
 }
 
 // Type always returns SharedDataObjectStatus to satisfy [pflag.Value] interface
-func (sdos *SharedDataObjectStatus) Type() string {
+func (f *SharedDataObjectStatus) Type() string {
 	return "SharedDataObjectStatus"
 }
 
@@ -581,15 +581,15 @@ const SharedDataObjectUpdateActionRemove SharedDataObjectUpdateAction = `REMOVE`
 const SharedDataObjectUpdateActionUpdate SharedDataObjectUpdateAction = `UPDATE`
 
 // String representation for [fmt.Print]
-func (sdoua *SharedDataObjectUpdateAction) String() string {
-	return string(*sdoua)
+func (f *SharedDataObjectUpdateAction) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (sdoua *SharedDataObjectUpdateAction) Set(v string) error {
+func (f *SharedDataObjectUpdateAction) Set(v string) error {
 	switch v {
 	case `ADD`, `REMOVE`, `UPDATE`:
-		*sdoua = SharedDataObjectUpdateAction(v)
+		*f = SharedDataObjectUpdateAction(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ADD", "REMOVE", "UPDATE"`, v)
@@ -597,7 +597,7 @@ func (sdoua *SharedDataObjectUpdateAction) Set(v string) error {
 }
 
 // Type always returns SharedDataObjectUpdateAction to satisfy [pflag.Value] interface
-func (sdoua *SharedDataObjectUpdateAction) Type() string {
+func (f *SharedDataObjectUpdateAction) Type() string {
 	return "SharedDataObjectUpdateAction"
 }
 

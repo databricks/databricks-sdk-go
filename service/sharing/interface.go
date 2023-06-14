@@ -46,6 +46,8 @@ type ProvidersService interface {
 	// where:
 	//
 	// * the caller is a metastore admin, or * the caller is the owner.
+	//
+	// Use ListSharesAll() to get all ProviderShare instances
 	ListShares(ctx context.Context, request ListSharesRequest) (*ListProviderSharesResponse, error)
 
 	// Update a provider.

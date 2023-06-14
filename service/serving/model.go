@@ -103,15 +103,15 @@ const EndpointStateConfigUpdateNotUpdating EndpointStateConfigUpdate = `NOT_UPDA
 const EndpointStateConfigUpdateUpdateFailed EndpointStateConfigUpdate = `UPDATE_FAILED`
 
 // String representation for [fmt.Print]
-func (escu *EndpointStateConfigUpdate) String() string {
-	return string(*escu)
+func (f *EndpointStateConfigUpdate) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (escu *EndpointStateConfigUpdate) Set(v string) error {
+func (f *EndpointStateConfigUpdate) Set(v string) error {
 	switch v {
 	case `IN_PROGRESS`, `NOT_UPDATING`, `UPDATE_FAILED`:
-		*escu = EndpointStateConfigUpdate(v)
+		*f = EndpointStateConfigUpdate(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "IN_PROGRESS", "NOT_UPDATING", "UPDATE_FAILED"`, v)
@@ -119,7 +119,7 @@ func (escu *EndpointStateConfigUpdate) Set(v string) error {
 }
 
 // Type always returns EndpointStateConfigUpdate to satisfy [pflag.Value] interface
-func (escu *EndpointStateConfigUpdate) Type() string {
+func (f *EndpointStateConfigUpdate) Type() string {
 	return "EndpointStateConfigUpdate"
 }
 
@@ -134,15 +134,15 @@ const EndpointStateReadyNotReady EndpointStateReady = `NOT_READY`
 const EndpointStateReadyReady EndpointStateReady = `READY`
 
 // String representation for [fmt.Print]
-func (esr *EndpointStateReady) String() string {
-	return string(*esr)
+func (f *EndpointStateReady) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (esr *EndpointStateReady) Set(v string) error {
+func (f *EndpointStateReady) Set(v string) error {
 	switch v {
 	case `NOT_READY`, `READY`:
-		*esr = EndpointStateReady(v)
+		*f = EndpointStateReady(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "NOT_READY", "READY"`, v)
@@ -150,7 +150,7 @@ func (esr *EndpointStateReady) Set(v string) error {
 }
 
 // Type always returns EndpointStateReady to satisfy [pflag.Value] interface
-func (esr *EndpointStateReady) Type() string {
+func (f *EndpointStateReady) Type() string {
 	return "EndpointStateReady"
 }
 
@@ -303,15 +303,15 @@ const ServedModelStateDeploymentDeploymentReady ServedModelStateDeployment = `DE
 const ServedModelStateDeploymentDeploymentRecovering ServedModelStateDeployment = `DEPLOYMENT_RECOVERING`
 
 // String representation for [fmt.Print]
-func (smsd *ServedModelStateDeployment) String() string {
-	return string(*smsd)
+func (f *ServedModelStateDeployment) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (smsd *ServedModelStateDeployment) Set(v string) error {
+func (f *ServedModelStateDeployment) Set(v string) error {
 	switch v {
 	case `DEPLOYMENT_ABORTED`, `DEPLOYMENT_CREATING`, `DEPLOYMENT_FAILED`, `DEPLOYMENT_READY`, `DEPLOYMENT_RECOVERING`:
-		*smsd = ServedModelStateDeployment(v)
+		*f = ServedModelStateDeployment(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DEPLOYMENT_ABORTED", "DEPLOYMENT_CREATING", "DEPLOYMENT_FAILED", "DEPLOYMENT_READY", "DEPLOYMENT_RECOVERING"`, v)
@@ -319,7 +319,7 @@ func (smsd *ServedModelStateDeployment) Set(v string) error {
 }
 
 // Type always returns ServedModelStateDeployment to satisfy [pflag.Value] interface
-func (smsd *ServedModelStateDeployment) Type() string {
+func (f *ServedModelStateDeployment) Type() string {
 	return "ServedModelStateDeployment"
 }
 
@@ -379,15 +379,15 @@ const ServingEndpointDetailedPermissionLevelCanQuery ServingEndpointDetailedPerm
 const ServingEndpointDetailedPermissionLevelCanView ServingEndpointDetailedPermissionLevel = `CAN_VIEW`
 
 // String representation for [fmt.Print]
-func (sedpl *ServingEndpointDetailedPermissionLevel) String() string {
-	return string(*sedpl)
+func (f *ServingEndpointDetailedPermissionLevel) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (sedpl *ServingEndpointDetailedPermissionLevel) Set(v string) error {
+func (f *ServingEndpointDetailedPermissionLevel) Set(v string) error {
 	switch v {
 	case `CAN_MANAGE`, `CAN_QUERY`, `CAN_VIEW`:
-		*sedpl = ServingEndpointDetailedPermissionLevel(v)
+		*f = ServingEndpointDetailedPermissionLevel(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW"`, v)
@@ -395,7 +395,7 @@ func (sedpl *ServingEndpointDetailedPermissionLevel) Set(v string) error {
 }
 
 // Type always returns ServingEndpointDetailedPermissionLevel to satisfy [pflag.Value] interface
-func (sedpl *ServingEndpointDetailedPermissionLevel) Type() string {
+func (f *ServingEndpointDetailedPermissionLevel) Type() string {
 	return "ServingEndpointDetailedPermissionLevel"
 }
 

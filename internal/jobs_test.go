@@ -19,7 +19,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	err := w.Workspace.Import(ctx, workspace.Import{
 		Path:      notebookPath,
 		Overwrite: true,
-		Format:    workspace.ExportFormatSource,
+		Format:    workspace.ImportFormatSource,
 		Language:  workspace.LanguagePython,
 		Content: base64.StdEncoding.EncodeToString([]byte(`
 			import time
