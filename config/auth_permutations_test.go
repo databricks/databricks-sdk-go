@@ -483,7 +483,7 @@ func TestConfig_MetadataServerInvalidAuthServerUrl(t *testing.T) {
 		AuthType:           "metadata-service",
 		MetadataServiceURL: "not-valid-hostname",
 		Host:               "x",
-		AssertError:        `default auth: cannot configure default credentials. Config: metadata_service_url=***`,
+		AssertError:        `default auth: metadata-service: invalid auth server URL: not-valid-hostname. Config: host=https://x, metadata_service_url=***`,
 	}.apply(t)
 }
 
@@ -492,7 +492,7 @@ func TestConfig_MetadataServerInvalidAuthServerUrl2(t *testing.T) {
 		AuthType:           "metadata-service",
 		MetadataServiceURL: "https://google.com",
 		Host:               "x",
-		AssertError:        `default auth: cannot configure default credentials. Config: metadata_service_url=***`,
+		AssertError:        `default auth: metadata-service: invalid auth server URL: https://google.com. Config: host=https://x, metadata_service_url=***`,
 	}.apply(t)
 }
 
