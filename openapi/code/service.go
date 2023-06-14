@@ -302,10 +302,10 @@ func (svc *Service) Waits() (waits []*Wait) {
 
 // IsPrivatePreview flags object being in private preview.
 func (svc *Service) IsPrivatePreview() bool {
-	return strings.ToLower(svc.tag.Preview) == "private"
+	return isPrivatePreview(&svc.tag.Node)
 }
 
 // IsPublicPreview flags object being in public preview.
 func (svc *Service) IsPublicPreview() bool {
-	return strings.ToLower(svc.tag.Preview) == "public"
+	return isPublicPreview(&svc.tag.Node)
 }

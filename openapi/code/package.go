@@ -142,7 +142,8 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		Named: Named{
 			Description: s.Description,
 		},
-		enum: map[string]EnumEntry{},
+		Schema: s,
+		enum:   map[string]EnumEntry{},
 	}
 	// pull embedded types up, if they can be defined at package level
 	if s.IsDefinable() && !hasName {
