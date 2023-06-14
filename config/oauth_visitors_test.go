@@ -18,14 +18,19 @@ func (m mockTokenSource) Token() (*oauth2.Token, error) {
 }
 
 func TestOAuthWithRetry(t *testing.T) {
+	triedOnce := true
 	mockSource := mockTokenSource{
 		mockedTokenFunc: func() (*oauth2.Token, error) {
-			return nil, errors.New("throttled") // this goes to retry but we need to mock poll or keep call count else test would timeout
+			if triedOnce == true {
+				return nil, errors.New("retried")
+			}
+			triedOnce = true
+			return nil, errors.New("throttled")
 		},
 	}
 	token, err := retriableTokenSource(context.Background(), mockSource)
 	assert.Nil(t, token)
-	assert.Contains(t, err.Error(), "throttled")
+	assert.Contains(t, err.Error(), "retried")
 }
 
 func TestOAuthWithoutRetry(t *testing.T) {
