@@ -32,7 +32,7 @@ func serviceToServiceVisitor(inner, cloud oauth2.TokenSource, header string) fun
 			return fmt.Errorf("inner token: %w", err)
 		}
 		inner.SetAuthHeader(r)
-		cloud, err := refreshableCloud.Token()
+		cloud, err := retriableTokenSource(context.Background(), refreshableCloud)
 		if err != nil {
 			return fmt.Errorf("cloud token: %w", err)
 		}
