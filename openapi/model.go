@@ -47,10 +47,11 @@ type Specification struct {
 
 type Tag struct {
 	Node
-	Package   string `json:"x-databricks-package"`
-	PathStyle string `json:"x-databricks-path-style"`
-	Service   string `json:"x-databricks-service"`
-	Name      string `json:"name"`
+	Package    string `json:"x-databricks-package"`
+	PathStyle  string `json:"x-databricks-path-style"`
+	Service    string `json:"x-databricks-service"`
+	IsAccounts bool   `json:"x-databricks-is-accounts"`
+	Name       string `json:"name"`
 }
 
 type Path struct {
