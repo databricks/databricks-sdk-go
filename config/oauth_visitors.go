@@ -15,7 +15,7 @@ func retriableTokenSource(ctx context.Context, ts oauth2.TokenSource) (*oauth2.T
 	return retries.Poll[oauth2.Token](ctx, 1*time.Minute, func() (*oauth2.Token, *retries.Err) {
 		token, err := ts.Token()
 
-		if strings.Contains(err.Error(), "throttled ...") {
+		if strings.Contains(err.Error(), "throttled") {
 			return nil, retries.Continue(err)
 		}
 
@@ -27,7 +27,7 @@ func serviceToServiceVisitor(inner, cloud oauth2.TokenSource, header string) fun
 	refreshableInner := oauth2.ReuseTokenSource(nil, inner)
 	refreshableCloud := oauth2.ReuseTokenSource(nil, cloud)
 	return func(r *http.Request) error {
-		inner, err := refreshableInner.Token()
+		inner, err := retriableTokenSource(context.Background(), refreshableInner)
 		if err != nil {
 			return fmt.Errorf("inner token: %w", err)
 		}
@@ -44,7 +44,7 @@ func serviceToServiceVisitor(inner, cloud oauth2.TokenSource, header string) fun
 func refreshableVisitor(inner oauth2.TokenSource) func(r *http.Request) error {
 	refreshableInner := oauth2.ReuseTokenSource(nil, inner)
 	return func(r *http.Request) error {
-		inner, err := refreshableInner.Token()
+		inner, err := retriableTokenSource(context.Background(), refreshableInner)
 		if err != nil {
 			return fmt.Errorf("inner token: %w", err)
 		}
