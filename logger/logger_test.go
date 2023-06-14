@@ -23,3 +23,29 @@ func TestGetLogger(t *testing.T) {
 	logger = Get(ctx)
 	assert.Equal(t, logger, t2)
 }
+
+func TestWhenInfoLevelThenDebugDisabled(t *testing.T) {
+	t.Cleanup(func() {
+		DefaultLogger = &SimpleLogger{}
+	})
+
+	infoLevelLogger := &SimpleLogger{
+		Level: LevelInfo,
+	}
+	debugEnabled := infoLevelLogger.Enabled(context.Background(), LevelDebug)
+	assert.False(t, debugEnabled)
+}
+
+func TestWhenInfoLevelThenErrorEnabled(t *testing.T) {
+	infoLevelLogger := &SimpleLogger{
+		Level: LevelInfo,
+	}
+
+	errorEnabled := infoLevelLogger.Enabled(context.Background(), LevelError)
+	assert.True(t, errorEnabled)
+}
+
+func TestDefaultLevelInfo(t *testing.T) {
+	logger := &SimpleLogger{}
+	assert.EqualValues(t, LevelInfo, logger.Level)
+}
