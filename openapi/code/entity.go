@@ -23,6 +23,16 @@ func (f *Field) IsOptionalObject() bool {
 	return f.Entity != nil && !f.Required && (f.Entity.IsObject() || f.Entity.IsExternal())
 }
 
+// IsPrivatePreview flags object being in private preview.
+func (f *Field) IsPrivatePreview() bool {
+	return f.Schema != nil && isPrivatePreview(&f.Schema.Node)
+}
+
+// IsPublicPreview flags object being in public preview.
+func (f *Field) IsPublicPreview() bool {
+	return f.Schema != nil && isPublicPreview(&f.Schema.Node)
+}
+
 type EnumEntry struct {
 	Named
 	Entity *Entity
@@ -59,6 +69,9 @@ type Entity struct {
 	// if entity has required fields, this is the order of them
 	RequiredOrder []string
 	fields        map[string]Field
+
+	// Schema references the OpenAPI schema this entity was created from.
+	Schema *openapi.Schema
 }
 
 // FullName includes package name and untransformed name of the entity
@@ -241,4 +254,14 @@ func (e *Entity) IsAllRequiredFieldsPrimitive() bool {
 		}
 	}
 	return true
+}
+
+// IsPrivatePreview flags object being in private preview.
+func (e *Entity) IsPrivatePreview() bool {
+	return e.Schema != nil && isPrivatePreview(&e.Schema.Node)
+}
+
+// IsPublicPreview flags object being in public preview.
+func (e *Entity) IsPublicPreview() bool {
+	return e.Schema != nil && isPublicPreview(&e.Schema.Node)
 }

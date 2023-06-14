@@ -142,7 +142,8 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		Named: Named{
 			Description: s.Description,
 		},
-		enum: map[string]EnumEntry{},
+		Schema: s,
+		enum:   map[string]EnumEntry{},
 	}
 	// pull embedded types up, if they can be defined at package level
 	if s.IsDefinable() && !hasName {
@@ -324,7 +325,7 @@ func (pkg *Package) HasWaits() bool {
 }
 
 // Load takes OpenAPI specification and loads a service model
-func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
+func (pkg *Package) Load(spec *openapi.Specification, tag openapi.Tag) error {
 	for k, v := range spec.Components.Schemas {
 		split := strings.Split(k, ".")
 		if split[0] != pkg.Name {
@@ -348,6 +349,7 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 						Name:        tag.Service,
 						Description: tag.Description,
 					},
+					tag: &tag,
 				}
 				pkg.services[tag.Service] = svc
 			}

@@ -9,9 +9,9 @@ import (
 )
 
 type Node struct {
-	Description  string `json:"description,omitempty"`
-	Availability string `json:"x-databricks-availability,omitempty"`
-	Ref          string `json:"$ref,omitempty"`
+	Description string `json:"description,omitempty"`
+	Preview     string `json:"x-databricks-preview,omitempty"`
+	Ref         string `json:"$ref,omitempty"`
 }
 
 // IsRef flags object being a reference to a component
