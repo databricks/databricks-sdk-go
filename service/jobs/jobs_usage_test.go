@@ -120,7 +120,7 @@ func ExampleJobsAPI_CancelRun_jobsApiFullIntegration() {
 	logger.Infof(ctx, "found %v", runNowResponse)
 
 	cancelledRun, err := w.Jobs.CancelRunAndWait(ctx, jobs.CancelRun{
-		RunId: runNowResponse.RunId,
+		RunId: runNowResponse.Response.RunId,
 	})
 	if err != nil {
 		panic(err)
@@ -430,7 +430,7 @@ func ExampleJobsAPI_RepairRun_jobsApiFullIntegration() {
 	logger.Infof(ctx, "found %v", runNowResponse)
 
 	cancelledRun, err := w.Jobs.CancelRunAndWait(ctx, jobs.CancelRun{
-		RunId: runNowResponse.RunId,
+		RunId: runNowResponse.Response.RunId,
 	})
 	if err != nil {
 		panic(err)
@@ -439,7 +439,7 @@ func ExampleJobsAPI_RepairRun_jobsApiFullIntegration() {
 
 	repairedRun, err := w.Jobs.RepairRunAndWait(ctx, jobs.RepairRun{
 		RerunTasks: []string{cancelledRun.Tasks[0].TaskKey},
-		RunId:      runNowResponse.RunId,
+		RunId:      runNowResponse.Response.RunId,
 	})
 	if err != nil {
 		panic(err)

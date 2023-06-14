@@ -16,6 +16,8 @@
 //
 // - [compute.CommandExecutionAPI]: This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters.
 //
+// - [catalog.ConnectionsAPI]: Connections allow for creating a connection to an external data source.
+//
 // - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
 // - [iam.CurrentUserAPI]: This API allows retrieving information about currently authenticated user or service principal.
@@ -120,6 +122,8 @@
 //
 // - [catalog.AccountStorageCredentialsAPI]: These APIs manage storage credentials for a particular metastore.
 //
+// - [catalog.SystemSchemasAPI]: A system schema is a schema that lives within the system catalog.
+//
 // - [catalog.TableConstraintsAPI]: Primary key and foreign key constraints encode relationships between fields in tables.
 //
 // - [catalog.TablesAPI]: A table resides in the third layer of Unity Catalog’s three-level namespace.
@@ -180,6 +184,7 @@ var (
 	_ *compute.ClusterPoliciesAPI             = nil
 	_ *compute.ClustersAPI                    = nil
 	_ *compute.CommandExecutionAPI            = nil
+	_ *catalog.ConnectionsAPI                 = nil
 	_ *provisioning.CredentialsAPI            = nil
 	_ *iam.CurrentUserAPI                     = nil
 	_ *oauth2.CustomAppIntegrationAPI         = nil
@@ -232,6 +237,7 @@ var (
 	_ *provisioning.StorageAPI                = nil
 	_ *catalog.StorageCredentialsAPI          = nil
 	_ *catalog.AccountStorageCredentialsAPI   = nil
+	_ *catalog.SystemSchemasAPI               = nil
 	_ *catalog.TableConstraintsAPI            = nil
 	_ *catalog.TablesAPI                      = nil
 	_ *settings.TokenManagementAPI            = nil

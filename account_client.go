@@ -285,7 +285,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	}
 	err := cfg.EnsureResolved()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, ErrNotAccountClient

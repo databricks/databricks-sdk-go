@@ -15,7 +15,7 @@ type accountMetastoreAssignmentsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request CreateMetastoreAssignment) (*MetastoreAssignment, error) {
+func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) (*MetastoreAssignment, error) {
 	var metastoreAssignment MetastoreAssignment
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
 	err := a.client.Do(ctx, http.MethodPost, path, request, &metastoreAssignment)
@@ -42,7 +42,7 @@ func (a *accountMetastoreAssignmentsImpl) List(ctx context.Context, request List
 	return metastoreAssignmentList, err
 }
 
-func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request UpdateMetastoreAssignment) (*MetastoreAssignment, error) {
+func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) (*MetastoreAssignment, error) {
 	var metastoreAssignment MetastoreAssignment
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
 	err := a.client.Do(ctx, http.MethodPut, path, request, &metastoreAssignment)
@@ -54,7 +54,7 @@ type accountMetastoresImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountMetastoresImpl) Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error) {
+func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCreateMetastore) (*MetastoreInfo, error) {
 	var metastoreInfo MetastoreInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
 	err := a.client.Do(ctx, http.MethodPost, path, request, &metastoreInfo)
@@ -81,7 +81,7 @@ func (a *accountMetastoresImpl) List(ctx context.Context) (*ListMetastoresRespon
 	return &listMetastoresResponse, err
 }
 
-func (a *accountMetastoresImpl) Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error) {
+func (a *accountMetastoresImpl) Update(ctx context.Context, request AccountsUpdateMetastore) (*MetastoreInfo, error) {
 	var metastoreInfo MetastoreInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
 	err := a.client.Do(ctx, http.MethodPut, path, request, &metastoreInfo)
@@ -93,7 +93,7 @@ type accountStorageCredentialsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error) {
+func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request AccountsCreateStorageCredential) (*StorageCredentialInfo, error) {
 	var storageCredentialInfo StorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
 	err := a.client.Do(ctx, http.MethodPost, path, request, &storageCredentialInfo)
@@ -120,7 +120,7 @@ func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAc
 	return &listStorageCredentialsResponse, err
 }
 
-func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error) {
+func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*StorageCredentialInfo, error) {
 	var storageCredentialInfo StorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/", a.client.ConfiguredAccountID(), request.MetastoreId)
 	err := a.client.Do(ctx, http.MethodPut, path, request, &storageCredentialInfo)
@@ -164,6 +164,45 @@ func (a *catalogsImpl) Update(ctx context.Context, request UpdateCatalog) (*Cata
 	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.Name)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, &catalogInfo)
 	return &catalogInfo, err
+}
+
+// unexported type that holds implementations of just Connections API methods
+type connectionsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *connectionsImpl) Create(ctx context.Context, request CreateConnection) (*ConnectionInfo, error) {
+	var connectionInfo ConnectionInfo
+	path := "/api/2.1/unity-catalog/connections"
+	err := a.client.Do(ctx, http.MethodPost, path, request, &connectionInfo)
+	return &connectionInfo, err
+}
+
+func (a *connectionsImpl) Delete(ctx context.Context, request DeleteConnectionRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.NameArg)
+	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	return err
+}
+
+func (a *connectionsImpl) Get(ctx context.Context, request GetConnectionRequest) (*ConnectionInfo, error) {
+	var connectionInfo ConnectionInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.NameArg)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &connectionInfo)
+	return &connectionInfo, err
+}
+
+func (a *connectionsImpl) List(ctx context.Context) (*ListConnectionsResponse, error) {
+	var listConnectionsResponse ListConnectionsResponse
+	path := "/api/2.1/unity-catalog/connections"
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &listConnectionsResponse)
+	return &listConnectionsResponse, err
+}
+
+func (a *connectionsImpl) Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error) {
+	var connectionInfo ConnectionInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.NameArg)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &connectionInfo)
+	return &connectionInfo, err
 }
 
 // unexported type that holds implementations of just ExternalLocations API methods
@@ -431,6 +470,30 @@ func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateS
 	path := "/api/2.1/unity-catalog/validate-storage-credentials"
 	err := a.client.Do(ctx, http.MethodPost, path, request, &validateStorageCredentialResponse)
 	return &validateStorageCredentialResponse, err
+}
+
+// unexported type that holds implementations of just SystemSchemas API methods
+type systemSchemasImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *systemSchemasImpl) Disable(ctx context.Context, request DisableRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas/%v", request.MetastoreId, request.SchemaName)
+	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	return err
+}
+
+func (a *systemSchemasImpl) Enable(ctx context.Context) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores//systemschemas/")
+	err := a.client.Do(ctx, http.MethodPost, path, nil, nil)
+	return err
+}
+
+func (a *systemSchemasImpl) List(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error) {
+	var listSystemSchemasResponse ListSystemSchemasResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas", request.MetastoreId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &listSystemSchemasResponse)
+	return &listSystemSchemasResponse, err
 }
 
 // unexported type that holds implementations of just TableConstraints API methods

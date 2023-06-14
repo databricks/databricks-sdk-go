@@ -23,6 +23,8 @@ import (
 type WorkspaceClient struct {
 	Config *config.Config
 
+	Files *files.FilesAPI
+
 	// The alerts API can be used to perform CRUD operations on alerts. An alert
 	// is a Databricks SQL object that periodically runs a query, evaluates a
 	// condition of its result, and notifies one or more users and/or
@@ -96,8 +98,22 @@ type WorkspaceClient struct {
 	// days, an administrator can pin a cluster to the cluster list.
 	Clusters *compute.ClustersAPI
 
-	// This API allows executing commands on running clusters.
-	CommandExecutor compute.CommandExecutor
+	// This API allows execution of Python, Scala, SQL, or R commands on running
+	// Databricks Clusters.
+	CommandExecution *compute.CommandExecutionAPI
+
+	// Connections allow for creating a connection to an external data source.
+	//
+	// A connection is an abstraction of an external data source that can be
+	// connected from Databricks Compute. Creating a connection object is the
+	// first step to managing external data sources within Unity Catalog, with
+	// the second step being creating a data object (catalog, schema, or table)
+	// using the connection. Data objects derived from a connection can be
+	// written to or read from similar to other Unity Catalog data objects based
+	// on cloud storage. Users may create different types of connections with
+	// each connection having a unique set of configuration options to support
+	// credential management and other settings.
+	Connections *catalog.ConnectionsAPI
 
 	// This API allows retrieving information about currently authenticated user
 	// or service principal.
@@ -654,6 +670,11 @@ type WorkspaceClient struct {
 	// ownership to another user or group to manage permissions on it.
 	StorageCredentials *catalog.StorageCredentialsAPI
 
+	// A system schema is a schema that lives within the system catalog. A
+	// system schema may contain information about customer usage of Unity
+	// Catalog such as audit-logs, billing-logs, lineage information, etc.
+	SystemSchemas *catalog.SystemSchemasAPI
+
 	// Primary key and foreign key constraints encode relationships between
 	// fields in tables.
 	//
@@ -756,12 +777,15 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		return nil, err
 	}
 	return &WorkspaceClient{
-		Config:              cfg,
+		Config: cfg,
+		Files:  files.NewFiles(apiClient),
+
 		Alerts:              sql.NewAlerts(apiClient),
 		Catalogs:            catalog.NewCatalogs(apiClient),
 		ClusterPolicies:     compute.NewClusterPolicies(apiClient),
 		Clusters:            compute.NewClusters(apiClient),
-		CommandExecutor:     compute.NewCommandExecutor(apiClient),
+		CommandExecution:    compute.NewCommandExecution(apiClient),
+		Connections:         catalog.NewConnections(apiClient),
 		CurrentUser:         iam.NewCurrentUser(apiClient),
 		Dashboards:          sql.NewDashboards(apiClient),
 		DataSources:         sql.NewDataSources(apiClient),
@@ -797,6 +821,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Shares:              sharing.NewShares(apiClient),
 		StatementExecution:  sql.NewStatementExecution(apiClient),
 		StorageCredentials:  catalog.NewStorageCredentials(apiClient),
+		SystemSchemas:       catalog.NewSystemSchemas(apiClient),
 		TableConstraints:    catalog.NewTableConstraints(apiClient),
 		Tables:              catalog.NewTables(apiClient),
 		TokenManagement:     settings.NewTokenManagement(apiClient),

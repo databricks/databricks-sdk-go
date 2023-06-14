@@ -372,6 +372,11 @@ func (pkg *Package) Load(spec *openapi.Specification, tag *openapi.Tag) error {
 					if seenParams[param.Name] {
 						continue
 					}
+					if prefix == "/api/2.0/workspace/export" && param.Name == "direct_download" {
+						// prevent changing the response content type via request parameter
+						// https://github.com/databricks/databricks-sdk-py/issues/104
+						continue
+					}
 					params = append(params, *param)
 					seenParams[param.Name] = true
 				}

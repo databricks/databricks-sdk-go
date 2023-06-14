@@ -210,6 +210,9 @@ func (h *fileHandle) openForRead(mode FileMode) error {
 	if err != nil {
 		return err
 	}
+	if res.IsDir {
+		return fmt.Errorf("cannot open directory for reading")
+	}
 	h.reader = &fileHandleReader{
 		size: res.FileSize,
 	}

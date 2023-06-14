@@ -3,9 +3,12 @@ package compute
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/retries"
 )
 
 // getOrCreateClusterMutex guards "mounting" cluster creation to prevent multiple
@@ -20,9 +23,15 @@ func (ci *ClusterInfo) IsRunningOrResizing() bool {
 // use mutex around starting a cluster by ID
 var mu sync.Mutex
 
-func (a *ClustersAPI) EnsureClusterIsRunning(ctx context.Context, clusterId string) error {
-	mu.Lock()
-	defer mu.Unlock()
+func (a *ClustersAPI) isErrFailedToReach(err error) bool {
+	if err == nil {
+		return false
+	}
+	// TODO: get a bit better handling of these
+	return strings.HasPrefix(err.Error(), "failed to reach")
+}
+
+func (a *ClustersAPI) startClusterIfNeeded(ctx context.Context, clusterId string, timeout time.Duration) error {
 	info, err := a.GetByClusterId(ctx, clusterId)
 	if err != nil {
 		return fmt.Errorf("get cluster info: %w", err)
@@ -30,15 +39,24 @@ func (a *ClustersAPI) EnsureClusterIsRunning(ctx context.Context, clusterId stri
 	switch info.State {
 	case StateRunning:
 		return nil
-	case StateTerminated:
-		// TODO: add StateTerminating: self.wait_get_cluster_terminated(cluster_id) & self.start(cluster_id).result()
+	case StateTerminating:
+		_, err = a.WaitGetClusterTerminated(ctx, clusterId, timeout, nil)
+		if err != nil {
+			return fmt.Errorf("terminating -> terminated: %w", err)
+		}
 		_, err = a.StartByClusterIdAndWait(ctx, clusterId)
 		if err != nil {
-			return fmt.Errorf("start: %w", err)
+			return fmt.Errorf("terminated -> terminating -> start: %w", err)
+		}
+		return nil
+	case StateTerminated:
+		_, err = a.StartByClusterIdAndWait(ctx, clusterId)
+		if err != nil {
+			return fmt.Errorf("terminated -> start: %w", err)
 		}
 		return nil
 	case StatePending, StateResizing, StateRestarting:
-		_, err = a.GetByClusterIdAndWait(ctx, clusterId)
+		_, err = a.WaitGetClusterRunning(ctx, clusterId, timeout, nil)
 		if err != nil {
 			return fmt.Errorf("wait: %w", err)
 		}
@@ -46,6 +64,22 @@ func (a *ClustersAPI) EnsureClusterIsRunning(ctx context.Context, clusterId stri
 	default:
 		return fmt.Errorf("cluster %s is in %s state: %s", info.ClusterName, info.State, info.StateMessage)
 	}
+}
+
+func (a *ClustersAPI) EnsureClusterIsRunning(ctx context.Context, clusterId string) error {
+	mu.Lock()
+	defer mu.Unlock()
+	timeout := 20 * time.Minute
+	return retries.Wait(ctx, timeout, func() *retries.Err {
+		err := a.startClusterIfNeeded(ctx, clusterId, timeout)
+		if a.isErrFailedToReach(err) {
+			return retries.Continue(err)
+		}
+		if err != nil {
+			return retries.Halt(err)
+		}
+		return nil
+	})
 }
 
 // GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist

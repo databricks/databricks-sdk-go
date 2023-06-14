@@ -202,10 +202,6 @@ func (ef *ExportFormat) Type() string {
 
 // Export a workspace object
 type ExportRequest struct {
-	// Flag to enable direct download. If it is `true`, the response will be the
-	// exported file itself. Otherwise, the response contains content as base64
-	// encoded string.
-	DirectDownload bool `json:"-" url:"direct_download,omitempty"`
 	// This specifies the format of the exported file. By default, this is
 	// `SOURCE`. However it may be one of: `SOURCE`, `HTML`, `JUPYTER`, `DBC`.
 	//

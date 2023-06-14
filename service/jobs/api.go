@@ -57,6 +57,63 @@ func (a *JobsAPI) Impl() JobsService {
 	return a.impl
 }
 
+// WaitGetRunJobTerminatedOrSkipped repeatedly calls [JobsAPI.GetRun] and waits to reach TERMINATED or SKIPPED state
+func (a *JobsAPI) WaitGetRunJobTerminatedOrSkipped(ctx context.Context, runId int64,
+	timeout time.Duration, callback func(*Run)) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[Run](ctx, timeout, func() (*Run, *retries.Err) {
+		run, err := a.GetRun(ctx, GetRunRequest{
+			RunId: runId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(run)
+		}
+		status := run.State.LifeCycleState
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
+		switch status {
+		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
+			return run, nil
+		case RunLifeCycleStateInternalError:
+			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
+				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitGetRunJobTerminatedOrSkipped is a wrapper that calls [JobsAPI.WaitGetRunJobTerminatedOrSkipped] and waits to reach TERMINATED or SKIPPED state.
+type WaitGetRunJobTerminatedOrSkipped[R any] struct {
+	Response *R
+	RunId    int64 `json:"run_id"`
+	poll     func(time.Duration, func(*Run)) (*Run, error)
+	callback func(*Run)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetRunJobTerminatedOrSkipped[R]) OnProgress(callback func(*Run)) *WaitGetRunJobTerminatedOrSkipped[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the Run with the default timeout of 20 minutes.
+func (w *WaitGetRunJobTerminatedOrSkipped[R]) Get() (*Run, error) {
+	return w.poll(w.timeout, w.callback)
+}
+
+// Get the Run with custom timeout.
+func (w *WaitGetRunJobTerminatedOrSkipped[R]) GetWithTimeout(timeout time.Duration) (*Run, error) {
+	return w.poll(timeout, w.callback)
+}
+
 // Cancel all runs of a job.
 //
 // Cancels all active runs of a job. The runs are canceled asynchronously, so it
@@ -79,53 +136,47 @@ func (a *JobsAPI) CancelAllRunsByJobId(ctx context.Context, jobId int64) error {
 //
 // Cancels a job run. The run is canceled asynchronously, so it may still be
 // running when this request completes.
-func (a *JobsAPI) CancelRun(ctx context.Context, request CancelRun) error {
-	return a.impl.CancelRun(ctx, request)
+func (a *JobsAPI) CancelRun(ctx context.Context, cancelRun CancelRun) (*WaitGetRunJobTerminatedOrSkipped[any], error) {
+	err := a.impl.CancelRun(ctx, cancelRun)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetRunJobTerminatedOrSkipped[any]{
+
+		RunId: cancelRun.RunId,
+		poll: func(timeout time.Duration, callback func(*Run)) (*Run, error) {
+			return a.WaitGetRunJobTerminatedOrSkipped(ctx, cancelRun.RunId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [JobsAPI.CancelRun] and waits to reach TERMINATED or SKIPPED state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[Run](60*time.Minute) functional option.
+//
+// Deprecated: use [JobsAPI.CancelRun].Get() or [JobsAPI.WaitGetRunJobTerminatedOrSkipped]
 func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, options ...retries.Option[Run]) (*Run, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	err := a.CancelRun(ctx, cancelRun)
+	wait, err := a.CancelRun(ctx, cancelRun)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[Run]{Timeout: 20 * time.Minute}
+	tmp := &retries.Info[Run]{Timeout: 20 * time.Minute}
 	for _, o := range options {
-		o(&i)
+		o(tmp)
 	}
-	return retries.Poll[Run](ctx, i.Timeout, func() (*Run, *retries.Err) {
-		run, err := a.GetRun(ctx, GetRunRequest{
-			RunId: cancelRun.RunId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *Run) {
 		for _, o := range options {
 			o(&retries.Info[Run]{
-				Info:    run,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := run.State.LifeCycleState
-		statusMessage := fmt.Sprintf("current status: %s", status)
-		if run.State != nil {
-			statusMessage = run.State.StateMessage
-		}
-		switch status {
-		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
-			return run, nil
-		case RunLifeCycleStateInternalError:
-			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
-				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
 
 // Cancel a job run.
@@ -213,51 +264,6 @@ func (a *JobsAPI) GetRun(ctx context.Context, request GetRunRequest) (*Run, erro
 	return a.impl.GetRun(ctx, request)
 }
 
-// Calls [JobsAPI.GetRun] and waits to reach TERMINATED or SKIPPED state
-//
-// You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[Run](60*time.Minute) functional option.
-func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRunRequest GetRunRequest, options ...retries.Option[Run]) (*Run, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	run, err := a.GetRun(ctx, getRunRequest)
-	if err != nil {
-		return nil, err
-	}
-	i := retries.Info[Run]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(&i)
-	}
-	return retries.Poll[Run](ctx, i.Timeout, func() (*Run, *retries.Err) {
-		run, err := a.GetRun(ctx, GetRunRequest{
-			RunId: run.RunId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
-		for _, o := range options {
-			o(&retries.Info[Run]{
-				Info:    run,
-				Timeout: i.Timeout,
-			})
-		}
-		status := run.State.LifeCycleState
-		statusMessage := fmt.Sprintf("current status: %s", status)
-		if run.State != nil {
-			statusMessage = run.State.StateMessage
-		}
-		switch status {
-		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
-			return run, nil
-		case RunLifeCycleStateInternalError:
-			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
-				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
-}
-
 // Get the output for a single run.
 //
 // Retrieve the output and metadata of a single task run. When a notebook task
@@ -301,8 +307,6 @@ func (a *JobsAPI) ListAll(ctx context.Context, request ListJobsRequest) ([]BaseJ
 	var results []BaseJob
 	var totalCount int = 0
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-	// deduplicate items that may have been added during iteration
-	seen := map[int64]bool{}
 	for {
 		response, err := a.impl.List(ctx, request)
 		if err != nil {
@@ -312,17 +316,14 @@ func (a *JobsAPI) ListAll(ctx context.Context, request ListJobsRequest) ([]BaseJ
 			break
 		}
 		for _, v := range response.Jobs {
-			id := v.JobId
-			if seen[id] {
-				// item was added during iteration
-				continue
-			}
-			seen[id] = true
 			results = append(results, v)
 		}
 		count := int(len(response.Jobs))
 		totalCount += count
-		request.Offset += int(len(response.Jobs))
+		request.PageToken = response.NextPageToken
+		if response.NextPageToken == "" {
+			break
+		}
 		limit := request.Limit
 		if limit > 0 && totalCount >= limit {
 			break
@@ -393,8 +394,6 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]B
 	var results []BaseRun
 	var totalCount int = 0
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-	// deduplicate items that may have been added during iteration
-	seen := map[int64]bool{}
 	for {
 		response, err := a.impl.ListRuns(ctx, request)
 		if err != nil {
@@ -404,17 +403,14 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]B
 			break
 		}
 		for _, v := range response.Runs {
-			id := v.RunId
-			if seen[id] {
-				// item was added during iteration
-				continue
-			}
-			seen[id] = true
 			results = append(results, v)
 		}
 		count := int(len(response.Runs))
 		totalCount += count
-		request.Offset += int(len(response.Runs))
+		request.PageToken = response.NextPageToken
+		if response.NextPageToken == "" {
+			break
+		}
 		limit := request.Limit
 		if limit > 0 && totalCount >= limit {
 			break
@@ -428,53 +424,47 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]B
 // Re-run one or more tasks. Tasks are re-run as part of the original job run.
 // They use the current job and task settings, and can be viewed in the history
 // for the original job run.
-func (a *JobsAPI) RepairRun(ctx context.Context, request RepairRun) (*RepairRunResponse, error) {
-	return a.impl.RepairRun(ctx, request)
+func (a *JobsAPI) RepairRun(ctx context.Context, repairRun RepairRun) (*WaitGetRunJobTerminatedOrSkipped[RepairRunResponse], error) {
+	repairRunResponse, err := a.impl.RepairRun(ctx, repairRun)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetRunJobTerminatedOrSkipped[RepairRunResponse]{
+		Response: repairRunResponse,
+		RunId:    repairRun.RunId,
+		poll: func(timeout time.Duration, callback func(*Run)) (*Run, error) {
+			return a.WaitGetRunJobTerminatedOrSkipped(ctx, repairRun.RunId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [JobsAPI.RepairRun] and waits to reach TERMINATED or SKIPPED state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[Run](60*time.Minute) functional option.
+//
+// Deprecated: use [JobsAPI.RepairRun].Get() or [JobsAPI.WaitGetRunJobTerminatedOrSkipped]
 func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, options ...retries.Option[Run]) (*Run, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	_, err := a.RepairRun(ctx, repairRun)
+	wait, err := a.RepairRun(ctx, repairRun)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[Run]{Timeout: 20 * time.Minute}
+	tmp := &retries.Info[Run]{Timeout: 20 * time.Minute}
 	for _, o := range options {
-		o(&i)
+		o(tmp)
 	}
-	return retries.Poll[Run](ctx, i.Timeout, func() (*Run, *retries.Err) {
-		run, err := a.GetRun(ctx, GetRunRequest{
-			RunId: repairRun.RunId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *Run) {
 		for _, o := range options {
 			o(&retries.Info[Run]{
-				Info:    run,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := run.State.LifeCycleState
-		statusMessage := fmt.Sprintf("current status: %s", status)
-		if run.State != nil {
-			statusMessage = run.State.StateMessage
-		}
-		switch status {
-		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
-			return run, nil
-		case RunLifeCycleStateInternalError:
-			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
-				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
 
 // Overwrites all settings for a job.
@@ -488,53 +478,47 @@ func (a *JobsAPI) Reset(ctx context.Context, request ResetJob) error {
 // Trigger a new job run.
 //
 // Run a job and return the `run_id` of the triggered run.
-func (a *JobsAPI) RunNow(ctx context.Context, request RunNow) (*RunNowResponse, error) {
-	return a.impl.RunNow(ctx, request)
+func (a *JobsAPI) RunNow(ctx context.Context, runNow RunNow) (*WaitGetRunJobTerminatedOrSkipped[RunNowResponse], error) {
+	runNowResponse, err := a.impl.RunNow(ctx, runNow)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetRunJobTerminatedOrSkipped[RunNowResponse]{
+		Response: runNowResponse,
+		RunId:    runNowResponse.RunId,
+		poll: func(timeout time.Duration, callback func(*Run)) (*Run, error) {
+			return a.WaitGetRunJobTerminatedOrSkipped(ctx, runNowResponse.RunId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [JobsAPI.RunNow] and waits to reach TERMINATED or SKIPPED state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[Run](60*time.Minute) functional option.
+//
+// Deprecated: use [JobsAPI.RunNow].Get() or [JobsAPI.WaitGetRunJobTerminatedOrSkipped]
 func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...retries.Option[Run]) (*Run, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	runNowResponse, err := a.RunNow(ctx, runNow)
+	wait, err := a.RunNow(ctx, runNow)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[Run]{Timeout: 20 * time.Minute}
+	tmp := &retries.Info[Run]{Timeout: 20 * time.Minute}
 	for _, o := range options {
-		o(&i)
+		o(tmp)
 	}
-	return retries.Poll[Run](ctx, i.Timeout, func() (*Run, *retries.Err) {
-		run, err := a.GetRun(ctx, GetRunRequest{
-			RunId: runNowResponse.RunId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *Run) {
 		for _, o := range options {
 			o(&retries.Info[Run]{
-				Info:    run,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := run.State.LifeCycleState
-		statusMessage := fmt.Sprintf("current status: %s", status)
-		if run.State != nil {
-			statusMessage = run.State.StateMessage
-		}
-		switch status {
-		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
-			return run, nil
-		case RunLifeCycleStateInternalError:
-			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
-				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
 
 // Create and trigger a one-time run.
@@ -543,53 +527,47 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...r
 // without creating a job. Runs submitted using this endpoint don’t display in
 // the UI. Use the `jobs/runs/get` API to check the run state after the job is
 // submitted.
-func (a *JobsAPI) Submit(ctx context.Context, request SubmitRun) (*SubmitRunResponse, error) {
-	return a.impl.Submit(ctx, request)
+func (a *JobsAPI) Submit(ctx context.Context, submitRun SubmitRun) (*WaitGetRunJobTerminatedOrSkipped[SubmitRunResponse], error) {
+	submitRunResponse, err := a.impl.Submit(ctx, submitRun)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetRunJobTerminatedOrSkipped[SubmitRunResponse]{
+		Response: submitRunResponse,
+		RunId:    submitRunResponse.RunId,
+		poll: func(timeout time.Duration, callback func(*Run)) (*Run, error) {
+			return a.WaitGetRunJobTerminatedOrSkipped(ctx, submitRunResponse.RunId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
 }
 
 // Calls [JobsAPI.Submit] and waits to reach TERMINATED or SKIPPED state
 //
 // You can override the default timeout of 20 minutes by calling adding
 // retries.Timeout[Run](60*time.Minute) functional option.
+//
+// Deprecated: use [JobsAPI.Submit].Get() or [JobsAPI.WaitGetRunJobTerminatedOrSkipped]
 func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, options ...retries.Option[Run]) (*Run, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	submitRunResponse, err := a.Submit(ctx, submitRun)
+	wait, err := a.Submit(ctx, submitRun)
 	if err != nil {
 		return nil, err
 	}
-	i := retries.Info[Run]{Timeout: 20 * time.Minute}
+	tmp := &retries.Info[Run]{Timeout: 20 * time.Minute}
 	for _, o := range options {
-		o(&i)
+		o(tmp)
 	}
-	return retries.Poll[Run](ctx, i.Timeout, func() (*Run, *retries.Err) {
-		run, err := a.GetRun(ctx, GetRunRequest{
-			RunId: submitRunResponse.RunId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *Run) {
 		for _, o := range options {
 			o(&retries.Info[Run]{
-				Info:    run,
-				Timeout: i.Timeout,
+				Info:    info,
+				Timeout: wait.timeout,
 			})
 		}
-		status := run.State.LifeCycleState
-		statusMessage := fmt.Sprintf("current status: %s", status)
-		if run.State != nil {
-			statusMessage = run.State.StateMessage
-		}
-		switch status {
-		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
-			return run, nil
-		case RunLifeCycleStateInternalError:
-			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
-				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
+	}
+	return wait.Get()
 }
 
 // Partially update a job.

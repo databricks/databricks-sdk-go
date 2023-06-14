@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"path"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -22,6 +23,22 @@ func (buf hashable) Hash() uint32 {
 	h := fnv.New32a()
 	h.Write(buf)
 	return h.Sum32()
+}
+
+func TestAccFilesAPI(t *testing.T) {
+	t.SkipNow() // until available on prod
+	ctx, w := workspaceTest(t)
+
+	filePath := RandomName("/Volumes/bogdanghita/default/v3_shared/sdk-testing/txt-")
+	err := w.Files.Upload(ctx, filePath, strings.NewReader("abcd"))
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err = w.Files.Delete(ctx, filePath)
+		assert.NoError(t, err)
+	})
+	raw, err := w.Files.ReadFile(ctx, filePath)
+	require.NoError(t, err)
+	assert.Equal(t, "abcd", string(raw))
 }
 
 func TestAccDbfsOpen(t *testing.T) {
@@ -100,6 +117,35 @@ func TestAccDbfsOpen(t *testing.T) {
 		// Verify contents hash.
 		assert.Equal(t, hashable(in).Hash(), hashable(buf.Bytes()).Hash())
 	}
+}
+
+func TestAccDbfsOpenDirectory(t *testing.T) {
+	ctx, w := workspaceTest(t)
+	if w.Config.IsGcp() {
+		t.Skip("dbfs not available on gcp")
+	}
+
+	path := RandomName("/tmp/.sdk/fake")
+
+	defer w.Dbfs.Delete(ctx, files.Delete{
+		Path: path,
+	})
+
+	// Create directory.
+	err := w.Dbfs.MkdirsByPath(ctx, path)
+	require.NoError(t, err)
+
+	// Try to open the directory for reading.
+	_, err = w.Dbfs.Open(ctx, path, files.FileModeRead)
+	assert.ErrorContains(t, err, "dbfs open: cannot open directory for reading")
+
+	// Try to open the directory for writing.
+	_, err = w.Dbfs.Open(ctx, path, files.FileModeWrite)
+	assert.ErrorContains(t, err, "dbfs open: A file or directory already exists")
+
+	// Try to open the directory for writing with overwrite flag set.
+	_, err = w.Dbfs.Open(ctx, path, files.FileModeWrite|files.FileModeOverwrite)
+	assert.ErrorContains(t, err, "dbfs open: A file or directory already exists")
 }
 
 func TestAccDbfsReadFileWriteFile(t *testing.T) {

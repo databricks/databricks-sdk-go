@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Catalogs, External Locations, Functions, Grants, Metastores, Schemas, Storage Credentials, Table Constraints, Tables, Volumes, Workspace Bindings, etc.
+// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Catalogs, Connections, External Locations, Functions, Grants, Metastores, Schemas, Storage Credentials, System Schemas, Table Constraints, Tables, Volumes, Workspace Bindings, etc.
 package catalog
 
 import (
@@ -40,15 +40,17 @@ func (a *AccountMetastoreAssignmentsAPI) Impl() AccountMetastoreAssignmentsServi
 
 // Assigns a workspace to a metastore.
 //
-// Creates an assignment to a metastore for a workspace
-func (a *AccountMetastoreAssignmentsAPI) Create(ctx context.Context, request CreateMetastoreAssignment) (*MetastoreAssignment, error) {
+// Creates an assignment to a metastore for a workspace Please add a header
+// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+func (a *AccountMetastoreAssignmentsAPI) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) (*MetastoreAssignment, error) {
 	return a.impl.Create(ctx, request)
 }
 
 // Delete a metastore assignment.
 //
 // Deletes a metastore assignment to a workspace, leaving the workspace with no
-// metastore.
+// metastore. Please add a header X-Databricks-Account-Console-API-Version: 2.0
+// to access this API.
 func (a *AccountMetastoreAssignmentsAPI) Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error {
 	return a.impl.Delete(ctx, request)
 }
@@ -56,7 +58,8 @@ func (a *AccountMetastoreAssignmentsAPI) Delete(ctx context.Context, request Del
 // Delete a metastore assignment.
 //
 // Deletes a metastore assignment to a workspace, leaving the workspace with no
-// metastore.
+// metastore. Please add a header X-Databricks-Account-Console-API-Version: 2.0
+// to access this API.
 func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) error {
 	return a.impl.Delete(ctx, DeleteAccountMetastoreAssignmentRequest{
 		WorkspaceId: workspaceId,
@@ -69,7 +72,8 @@ func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx c
 // Gets the metastore assignment, if any, for the workspace specified by ID. If
 // the workspace is assigned a metastore, the mappig will be returned. If no
 // metastore is assigned to the workspace, the assignment will not be found and
-// a 404 returned.
+// a 404 returned. Please add a header X-Databricks-Account-Console-API-Version:
+// 2.0 to access this API.
 func (a *AccountMetastoreAssignmentsAPI) Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*MetastoreAssignment, error) {
 	return a.impl.Get(ctx, request)
 }
@@ -79,7 +83,8 @@ func (a *AccountMetastoreAssignmentsAPI) Get(ctx context.Context, request GetAcc
 // Gets the metastore assignment, if any, for the workspace specified by ID. If
 // the workspace is assigned a metastore, the mappig will be returned. If no
 // metastore is assigned to the workspace, the assignment will not be found and
-// a 404 returned.
+// a 404 returned. Please add a header X-Databricks-Account-Console-API-Version:
+// 2.0 to access this API.
 func (a *AccountMetastoreAssignmentsAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*MetastoreAssignment, error) {
 	return a.impl.Get(ctx, GetAccountMetastoreAssignmentRequest{
 		WorkspaceId: workspaceId,
@@ -89,7 +94,8 @@ func (a *AccountMetastoreAssignmentsAPI) GetByWorkspaceId(ctx context.Context, w
 // Get all workspaces assigned to a metastore.
 //
 // Gets a list of all Databricks workspace IDs that have been assigned to given
-// metastore.
+// metastore. Please add a header X-Databricks-Account-Console-API-Version: 2.0
+// to access this API
 func (a *AccountMetastoreAssignmentsAPI) List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]MetastoreAssignment, error) {
 	return a.impl.List(ctx, request)
 }
@@ -97,7 +103,8 @@ func (a *AccountMetastoreAssignmentsAPI) List(ctx context.Context, request ListA
 // Get all workspaces assigned to a metastore.
 //
 // Gets a list of all Databricks workspace IDs that have been assigned to given
-// metastore.
+// metastore. Please add a header X-Databricks-Account-Console-API-Version: 2.0
+// to access this API
 func (a *AccountMetastoreAssignmentsAPI) ListByMetastoreId(ctx context.Context, metastoreId string) ([]MetastoreAssignment, error) {
 	return a.impl.List(ctx, ListAccountMetastoreAssignmentsRequest{
 		MetastoreId: metastoreId,
@@ -107,8 +114,9 @@ func (a *AccountMetastoreAssignmentsAPI) ListByMetastoreId(ctx context.Context, 
 // Updates a metastore assignment to a workspaces.
 //
 // Updates an assignment to a metastore for a workspace. Currently, only the
-// default catalog may be updated
-func (a *AccountMetastoreAssignmentsAPI) Update(ctx context.Context, request UpdateMetastoreAssignment) (*MetastoreAssignment, error) {
+// default catalog may be updated. Please add a header
+// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+func (a *AccountMetastoreAssignmentsAPI) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) (*MetastoreAssignment, error) {
 	return a.impl.Update(ctx, request)
 }
 
@@ -142,14 +150,17 @@ func (a *AccountMetastoresAPI) Impl() AccountMetastoresService {
 
 // Create metastore.
 //
-// Creates a Unity Catalog metastore.
-func (a *AccountMetastoresAPI) Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error) {
+// Creates a Unity Catalog metastore. Please add a header
+// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+func (a *AccountMetastoresAPI) Create(ctx context.Context, request AccountsCreateMetastore) (*MetastoreInfo, error) {
 	return a.impl.Create(ctx, request)
 }
 
 // Delete a metastore.
 //
 // Deletes a Unity Catalog metastore for an account, both specified by ID.
+// Please add a header X-Databricks-Account-Console-API-Version: 2.0 to access
+// this API.
 func (a *AccountMetastoresAPI) Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error {
 	return a.impl.Delete(ctx, request)
 }
@@ -157,6 +168,8 @@ func (a *AccountMetastoresAPI) Delete(ctx context.Context, request DeleteAccount
 // Delete a metastore.
 //
 // Deletes a Unity Catalog metastore for an account, both specified by ID.
+// Please add a header X-Databricks-Account-Console-API-Version: 2.0 to access
+// this API.
 func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastoreId string) error {
 	return a.impl.Delete(ctx, DeleteAccountMetastoreRequest{
 		MetastoreId: metastoreId,
@@ -165,14 +178,18 @@ func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastor
 
 // Get a metastore.
 //
-// Gets a Unity Catalog metastore from an account, both specified by ID.
+// Gets a Unity Catalog metastore from an account, both specified by ID. Please
+// add a header X-Databricks-Account-Console-API-Version: 2.0 to access this
+// API.
 func (a *AccountMetastoresAPI) Get(ctx context.Context, request GetAccountMetastoreRequest) (*MetastoreInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
 // Get a metastore.
 //
-// Gets a Unity Catalog metastore from an account, both specified by ID.
+// Gets a Unity Catalog metastore from an account, both specified by ID. Please
+// add a header X-Databricks-Account-Console-API-Version: 2.0 to access this
+// API.
 func (a *AccountMetastoresAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*MetastoreInfo, error) {
 	return a.impl.Get(ctx, GetAccountMetastoreRequest{
 		MetastoreId: metastoreId,
@@ -182,14 +199,17 @@ func (a *AccountMetastoresAPI) GetByMetastoreId(ctx context.Context, metastoreId
 // Get all metastores associated with an account.
 //
 // Gets all Unity Catalog metastores associated with an account specified by ID.
+// Please add a header X-Databricks-Account-Console-API-Version: 2.0 to access
+// this API.
 func (a *AccountMetastoresAPI) List(ctx context.Context) (*ListMetastoresResponse, error) {
 	return a.impl.List(ctx)
 }
 
 // Update a metastore.
 //
-// Updates an existing Unity Catalog metastore.
-func (a *AccountMetastoresAPI) Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error) {
+// Updates an existing Unity Catalog metastore. Please add a header
+// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+func (a *AccountMetastoresAPI) Update(ctx context.Context, request AccountsUpdateMetastore) (*MetastoreInfo, error) {
 	return a.impl.Update(ctx, request)
 }
 
@@ -230,7 +250,7 @@ func (a *AccountStorageCredentialsAPI) Impl() AccountStorageCredentialsService {
 //
 // The caller must be a metastore admin and have the
 // **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
-func (a *AccountStorageCredentialsAPI) Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error) {
+func (a *AccountStorageCredentialsAPI) Create(ctx context.Context, request AccountsCreateStorageCredential) (*StorageCredentialInfo, error) {
 	return a.impl.Create(ctx, request)
 }
 
@@ -295,7 +315,7 @@ func (a *AccountStorageCredentialsAPI) ListByMetastoreId(ctx context.Context, me
 // Updates a storage credential on the metastore. The caller must be the owner
 // of the storage credential. If the caller is a metastore admin, only the
 // __owner__ credential can be changed.
-func (a *AccountStorageCredentialsAPI) Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error) {
+func (a *AccountStorageCredentialsAPI) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*StorageCredentialInfo, error) {
 	return a.impl.Update(ctx, request)
 }
 
@@ -402,6 +422,159 @@ func (a *CatalogsAPI) ListAll(ctx context.Context) ([]CatalogInfo, error) {
 // the owner of the catalog, or a metastore admin (when changing the owner field
 // of the catalog).
 func (a *CatalogsAPI) Update(ctx context.Context, request UpdateCatalog) (*CatalogInfo, error) {
+	return a.impl.Update(ctx, request)
+}
+
+func NewConnections(client *client.DatabricksClient) *ConnectionsAPI {
+	return &ConnectionsAPI{
+		impl: &connectionsImpl{
+			client: client,
+		},
+	}
+}
+
+// Connections allow for creating a connection to an external data source.
+//
+// A connection is an abstraction of an external data source that can be
+// connected from Databricks Compute. Creating a connection object is the first
+// step to managing external data sources within Unity Catalog, with the second
+// step being creating a data object (catalog, schema, or table) using the
+// connection. Data objects derived from a connection can be written to or read
+// from similar to other Unity Catalog data objects based on cloud storage.
+// Users may create different types of connections with each connection having a
+// unique set of configuration options to support credential management and
+// other settings.
+type ConnectionsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(ConnectionsService)
+	impl ConnectionsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *ConnectionsAPI) WithImpl(impl ConnectionsService) *ConnectionsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Connections API implementation
+func (a *ConnectionsAPI) Impl() ConnectionsService {
+	return a.impl
+}
+
+// Create a connection.
+//
+// # Creates a new connection
+//
+// Creates a new connection to an external data source. It allows users to
+// specify connection details and configurations for interaction with the
+// external server.
+func (a *ConnectionsAPI) Create(ctx context.Context, request CreateConnection) (*ConnectionInfo, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Delete a connection.
+//
+// Deletes the connection that matches the supplied name.
+func (a *ConnectionsAPI) Delete(ctx context.Context, request DeleteConnectionRequest) error {
+	return a.impl.Delete(ctx, request)
+}
+
+// Delete a connection.
+//
+// Deletes the connection that matches the supplied name.
+func (a *ConnectionsAPI) DeleteByNameArg(ctx context.Context, nameArg string) error {
+	return a.impl.Delete(ctx, DeleteConnectionRequest{
+		NameArg: nameArg,
+	})
+}
+
+// Get a connection.
+//
+// Gets a connection from it's name.
+func (a *ConnectionsAPI) Get(ctx context.Context, request GetConnectionRequest) (*ConnectionInfo, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Get a connection.
+//
+// Gets a connection from it's name.
+func (a *ConnectionsAPI) GetByNameArg(ctx context.Context, nameArg string) (*ConnectionInfo, error) {
+	return a.impl.Get(ctx, GetConnectionRequest{
+		NameArg: nameArg,
+	})
+}
+
+// List connections.
+//
+// List all connections.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *ConnectionsAPI) ListAll(ctx context.Context) ([]ConnectionInfo, error) {
+	response, err := a.impl.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return response.Connections, nil
+}
+
+// ConnectionInfoNameToFullNameMap calls [ConnectionsAPI.ListAll] and creates a map of results with [ConnectionInfo].Name as key and [ConnectionInfo].FullName as value.
+//
+// Returns an error if there's more than one [ConnectionInfo] with the same .Name.
+//
+// Note: All [ConnectionInfo] instances are loaded into memory before creating a map.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *ConnectionsAPI) ConnectionInfoNameToFullNameMap(ctx context.Context) (map[string]string, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
+	mapping := map[string]string{}
+	result, err := a.ListAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		key := v.Name
+		_, duplicate := mapping[key]
+		if duplicate {
+			return nil, fmt.Errorf("duplicate .Name: %s", key)
+		}
+		mapping[key] = v.FullName
+	}
+	return mapping, nil
+}
+
+// GetByName calls [ConnectionsAPI.ConnectionInfoNameToFullNameMap] and returns a single [ConnectionInfo].
+//
+// Returns an error if there's more than one [ConnectionInfo] with the same .Name.
+//
+// Note: All [ConnectionInfo] instances are loaded into memory before returning matching by name.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *ConnectionsAPI) GetByName(ctx context.Context, name string) (*ConnectionInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
+	result, err := a.ListAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+	tmp := map[string][]ConnectionInfo{}
+	for _, v := range result {
+		key := v.Name
+		tmp[key] = append(tmp[key], v)
+	}
+	alternatives, ok := tmp[name]
+	if !ok || len(alternatives) == 0 {
+		return nil, fmt.Errorf("ConnectionInfo named '%s' does not exist", name)
+	}
+	if len(alternatives) > 1 {
+		return nil, fmt.Errorf("there are %d instances of ConnectionInfo named '%s'", len(alternatives), name)
+	}
+	return &alternatives[0], nil
+}
+
+// Update a connection.
+//
+// Updates the connection that matches the supplied name.
+func (a *ConnectionsAPI) Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error) {
 	return a.impl.Update(ctx, request)
 }
 
@@ -625,8 +798,39 @@ func (a *FunctionsAPI) GetByName(ctx context.Context, name string) (*FunctionInf
 // functions for which either the user has the **EXECUTE** privilege or the user
 // is the owner. There is no guarantee of a specific ordering of the elements in
 // the array.
-func (a *FunctionsAPI) List(ctx context.Context, request ListFunctionsRequest) (*ListFunctionsResponse, error) {
-	return a.impl.List(ctx, request)
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *FunctionsAPI) ListAll(ctx context.Context, request ListFunctionsRequest) ([]FunctionInfo, error) {
+	response, err := a.impl.List(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.Functions, nil
+}
+
+// FunctionInfoNameToFullNameMap calls [FunctionsAPI.ListAll] and creates a map of results with [FunctionInfo].Name as key and [FunctionInfo].FullName as value.
+//
+// Returns an error if there's more than one [FunctionInfo] with the same .Name.
+//
+// Note: All [FunctionInfo] instances are loaded into memory before creating a map.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *FunctionsAPI) FunctionInfoNameToFullNameMap(ctx context.Context, request ListFunctionsRequest) (map[string]string, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
+	mapping := map[string]string{}
+	result, err := a.ListAll(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		key := v.Name
+		_, duplicate := mapping[key]
+		if duplicate {
+			return nil, fmt.Errorf("duplicate .Name: %s", key)
+		}
+		mapping[key] = v.FullName
+	}
+	return mapping, nil
 }
 
 // Update a function.
@@ -1254,6 +1458,86 @@ func (a *StorageCredentialsAPI) Update(ctx context.Context, request UpdateStorag
 // credential.
 func (a *StorageCredentialsAPI) Validate(ctx context.Context, request ValidateStorageCredential) (*ValidateStorageCredentialResponse, error) {
 	return a.impl.Validate(ctx, request)
+}
+
+func NewSystemSchemas(client *client.DatabricksClient) *SystemSchemasAPI {
+	return &SystemSchemasAPI{
+		impl: &systemSchemasImpl{
+			client: client,
+		},
+	}
+}
+
+// A system schema is a schema that lives within the system catalog. A system
+// schema may contain information about customer usage of Unity Catalog such as
+// audit-logs, billing-logs, lineage information, etc.
+type SystemSchemasAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(SystemSchemasService)
+	impl SystemSchemasService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *SystemSchemasAPI) WithImpl(impl SystemSchemasService) *SystemSchemasAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level SystemSchemas API implementation
+func (a *SystemSchemasAPI) Impl() SystemSchemasService {
+	return a.impl
+}
+
+// Disable a system schema.
+//
+// Disables the system schema and removes it from the system catalog. The caller
+// must be an account admin or a metastore admin.
+func (a *SystemSchemasAPI) Disable(ctx context.Context, request DisableRequest) error {
+	return a.impl.Disable(ctx, request)
+}
+
+// Disable a system schema.
+//
+// Disables the system schema and removes it from the system catalog. The caller
+// must be an account admin or a metastore admin.
+func (a *SystemSchemasAPI) DisableByMetastoreIdAndSchemaName(ctx context.Context, metastoreId string, schemaName string) error {
+	return a.impl.Disable(ctx, DisableRequest{
+		MetastoreId: metastoreId,
+		SchemaName:  schemaName,
+	})
+}
+
+// Enable a system schema.
+//
+// Enables the system schema and adds it to the system catalog. The caller must
+// be an account admin or a metastore admin.
+func (a *SystemSchemasAPI) Enable(ctx context.Context) error {
+	return a.impl.Enable(ctx)
+}
+
+// List system schemas.
+//
+// Gets an array of system schemas for a metastore. The caller must be an
+// account admin or a metastore admin.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *SystemSchemasAPI) ListAll(ctx context.Context, request ListSystemSchemasRequest) ([]SystemSchemaInfo, error) {
+	response, err := a.impl.List(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return response.Schemas, nil
+}
+
+// List system schemas.
+//
+// Gets an array of system schemas for a metastore. The caller must be an
+// account admin or a metastore admin.
+func (a *SystemSchemasAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListSystemSchemasResponse, error) {
+	return a.impl.List(ctx, ListSystemSchemasRequest{
+		MetastoreId: metastoreId,
+	})
 }
 
 func NewTableConstraints(client *client.DatabricksClient) *TableConstraintsAPI {
