@@ -15,7 +15,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
-func ExampleWorkspaceAssignmentAPI_ListAll_workspaceAssignment() {
+func ExampleWorkspaceAssignmentAPI_ListAll_workspaceAssignmentOnAws() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -38,7 +38,7 @@ func ExampleWorkspaceAssignmentAPI_ListAll_workspaceAssignment() {
 
 }
 
-func ExampleWorkspaceAssignmentAPI_Update_workspaceAssignment() {
+func ExampleWorkspaceAssignmentAPI_Update_workspaceAssignmentOnAws() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

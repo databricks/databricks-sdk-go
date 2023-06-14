@@ -81,15 +81,15 @@ const AlertStateTriggered AlertState = `triggered`
 const AlertStateUnknown AlertState = `unknown`
 
 // String representation for [fmt.Print]
-func (as *AlertState) String() string {
-	return string(*as)
+func (f *AlertState) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (as *AlertState) Set(v string) error {
+func (f *AlertState) Set(v string) error {
 	switch v {
 	case `ok`, `triggered`, `unknown`:
-		*as = AlertState(v)
+		*f = AlertState(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ok", "triggered", "unknown"`, v)
@@ -97,7 +97,7 @@ func (as *AlertState) Set(v string) error {
 }
 
 // Type always returns AlertState to satisfy [pflag.Value] interface
-func (as *AlertState) Type() string {
+func (f *AlertState) Type() string {
 	return "AlertState"
 }
 
@@ -120,6 +120,7 @@ type ChannelInfo struct {
 	Name ChannelName `json:"name,omitempty"`
 }
 
+// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -133,15 +134,15 @@ const ChannelNameChannelNamePrevious ChannelName = `CHANNEL_NAME_PREVIOUS`
 const ChannelNameChannelNameUnspecified ChannelName = `CHANNEL_NAME_UNSPECIFIED`
 
 // String representation for [fmt.Print]
-func (cn *ChannelName) String() string {
-	return string(*cn)
+func (f *ChannelName) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (cn *ChannelName) Set(v string) error {
+func (f *ChannelName) Set(v string) error {
 	switch v {
 	case `CHANNEL_NAME_CURRENT`, `CHANNEL_NAME_CUSTOM`, `CHANNEL_NAME_PREVIEW`, `CHANNEL_NAME_PREVIOUS`, `CHANNEL_NAME_UNSPECIFIED`:
-		*cn = ChannelName(v)
+		*f = ChannelName(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CHANNEL_NAME_CURRENT", "CHANNEL_NAME_CUSTOM", "CHANNEL_NAME_PREVIEW", "CHANNEL_NAME_PREVIOUS", "CHANNEL_NAME_UNSPECIFIED"`, v)
@@ -149,7 +150,7 @@ func (cn *ChannelName) Set(v string) error {
 }
 
 // Type always returns ChannelName to satisfy [pflag.Value] interface
-func (cn *ChannelName) Type() string {
+func (f *ChannelName) Type() string {
 	return "ChannelName"
 }
 
@@ -232,15 +233,15 @@ const ColumnInfoTypeNameTimestamp ColumnInfoTypeName = `TIMESTAMP`
 const ColumnInfoTypeNameUserDefinedType ColumnInfoTypeName = `USER_DEFINED_TYPE`
 
 // String representation for [fmt.Print]
-func (citn *ColumnInfoTypeName) String() string {
-	return string(*citn)
+func (f *ColumnInfoTypeName) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (citn *ColumnInfoTypeName) Set(v string) error {
+func (f *ColumnInfoTypeName) Set(v string) error {
 	switch v {
 	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TIMESTAMP`, `USER_DEFINED_TYPE`:
-		*citn = ColumnInfoTypeName(v)
+		*f = ColumnInfoTypeName(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TIMESTAMP", "USER_DEFINED_TYPE"`, v)
@@ -248,7 +249,7 @@ func (citn *ColumnInfoTypeName) Set(v string) error {
 }
 
 // Type always returns ColumnInfoTypeName to satisfy [pflag.Value] interface
-func (citn *ColumnInfoTypeName) Type() string {
+func (f *ColumnInfoTypeName) Type() string {
 	return "ColumnInfoTypeName"
 }
 
@@ -358,15 +359,15 @@ const CreateWarehouseRequestWarehouseTypePro CreateWarehouseRequestWarehouseType
 const CreateWarehouseRequestWarehouseTypeTypeUnspecified CreateWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
-func (cwrwt *CreateWarehouseRequestWarehouseType) String() string {
-	return string(*cwrwt)
+func (f *CreateWarehouseRequestWarehouseType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (cwrwt *CreateWarehouseRequestWarehouseType) Set(v string) error {
+func (f *CreateWarehouseRequestWarehouseType) Set(v string) error {
 	switch v {
 	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
-		*cwrwt = CreateWarehouseRequestWarehouseType(v)
+		*f = CreateWarehouseRequestWarehouseType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
@@ -374,7 +375,7 @@ func (cwrwt *CreateWarehouseRequestWarehouseType) Set(v string) error {
 }
 
 // Type always returns CreateWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
-func (cwrwt *CreateWarehouseRequestWarehouseType) Type() string {
+func (f *CreateWarehouseRequestWarehouseType) Type() string {
 	return "CreateWarehouseRequestWarehouseType"
 }
 
@@ -517,15 +518,15 @@ const DispositionExternalLinks Disposition = `EXTERNAL_LINKS`
 const DispositionInline Disposition = `INLINE`
 
 // String representation for [fmt.Print]
-func (d *Disposition) String() string {
-	return string(*d)
+func (f *Disposition) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (d *Disposition) Set(v string) error {
+func (f *Disposition) Set(v string) error {
 	switch v {
 	case `EXTERNAL_LINKS`, `INLINE`:
-		*d = Disposition(v)
+		*f = Disposition(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EXTERNAL_LINKS", "INLINE"`, v)
@@ -533,7 +534,7 @@ func (d *Disposition) Set(v string) error {
 }
 
 // Type always returns Disposition to satisfy [pflag.Value] interface
-func (d *Disposition) Type() string {
+func (f *Disposition) Type() string {
 	return "Disposition"
 }
 
@@ -627,15 +628,15 @@ const EditWarehouseRequestWarehouseTypePro EditWarehouseRequestWarehouseType = `
 const EditWarehouseRequestWarehouseTypeTypeUnspecified EditWarehouseRequestWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
-func (ewrwt *EditWarehouseRequestWarehouseType) String() string {
-	return string(*ewrwt)
+func (f *EditWarehouseRequestWarehouseType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ewrwt *EditWarehouseRequestWarehouseType) Set(v string) error {
+func (f *EditWarehouseRequestWarehouseType) Set(v string) error {
 	switch v {
 	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
-		*ewrwt = EditWarehouseRequestWarehouseType(v)
+		*f = EditWarehouseRequestWarehouseType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
@@ -643,7 +644,7 @@ func (ewrwt *EditWarehouseRequestWarehouseType) Set(v string) error {
 }
 
 // Type always returns EditWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
-func (ewrwt *EditWarehouseRequestWarehouseType) Type() string {
+func (f *EditWarehouseRequestWarehouseType) Type() string {
 	return "EditWarehouseRequestWarehouseType"
 }
 
@@ -757,15 +758,15 @@ const EndpointInfoWarehouseTypePro EndpointInfoWarehouseType = `PRO`
 const EndpointInfoWarehouseTypeTypeUnspecified EndpointInfoWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
-func (eiwt *EndpointInfoWarehouseType) String() string {
-	return string(*eiwt)
+func (f *EndpointInfoWarehouseType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (eiwt *EndpointInfoWarehouseType) Set(v string) error {
+func (f *EndpointInfoWarehouseType) Set(v string) error {
 	switch v {
 	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
-		*eiwt = EndpointInfoWarehouseType(v)
+		*f = EndpointInfoWarehouseType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
@@ -773,7 +774,7 @@ func (eiwt *EndpointInfoWarehouseType) Set(v string) error {
 }
 
 // Type always returns EndpointInfoWarehouseType to satisfy [pflag.Value] interface
-func (eiwt *EndpointInfoWarehouseType) Type() string {
+func (f *EndpointInfoWarehouseType) Type() string {
 	return "EndpointInfoWarehouseType"
 }
 
@@ -1155,15 +1156,15 @@ const GetWarehouseResponseWarehouseTypePro GetWarehouseResponseWarehouseType = `
 const GetWarehouseResponseWarehouseTypeTypeUnspecified GetWarehouseResponseWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
-func (gwrwt *GetWarehouseResponseWarehouseType) String() string {
-	return string(*gwrwt)
+func (f *GetWarehouseResponseWarehouseType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (gwrwt *GetWarehouseResponseWarehouseType) Set(v string) error {
+func (f *GetWarehouseResponseWarehouseType) Set(v string) error {
 	switch v {
 	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
-		*gwrwt = GetWarehouseResponseWarehouseType(v)
+		*f = GetWarehouseResponseWarehouseType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
@@ -1171,7 +1172,7 @@ func (gwrwt *GetWarehouseResponseWarehouseType) Set(v string) error {
 }
 
 // Type always returns GetWarehouseResponseWarehouseType to satisfy [pflag.Value] interface
-func (gwrwt *GetWarehouseResponseWarehouseType) Type() string {
+func (f *GetWarehouseResponseWarehouseType) Type() string {
 	return "GetWarehouseResponseWarehouseType"
 }
 
@@ -1213,15 +1214,15 @@ const GetWorkspaceWarehouseConfigResponseSecurityPolicyNone GetWorkspaceWarehous
 const GetWorkspaceWarehouseConfigResponseSecurityPolicyPassthrough GetWorkspaceWarehouseConfigResponseSecurityPolicy = `PASSTHROUGH`
 
 // String representation for [fmt.Print]
-func (gwwcrsp *GetWorkspaceWarehouseConfigResponseSecurityPolicy) String() string {
-	return string(*gwwcrsp)
+func (f *GetWorkspaceWarehouseConfigResponseSecurityPolicy) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (gwwcrsp *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Set(v string) error {
+func (f *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Set(v string) error {
 	switch v {
 	case `DATA_ACCESS_CONTROL`, `NONE`, `PASSTHROUGH`:
-		*gwwcrsp = GetWorkspaceWarehouseConfigResponseSecurityPolicy(v)
+		*f = GetWorkspaceWarehouseConfigResponseSecurityPolicy(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DATA_ACCESS_CONTROL", "NONE", "PASSTHROUGH"`, v)
@@ -1229,7 +1230,7 @@ func (gwwcrsp *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Set(v string) 
 }
 
 // Type always returns GetWorkspaceWarehouseConfigResponseSecurityPolicy to satisfy [pflag.Value] interface
-func (gwwcrsp *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Type() string {
+func (f *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Type() string {
 	return "GetWorkspaceWarehouseConfigResponseSecurityPolicy"
 }
 
@@ -1252,15 +1253,15 @@ const ListOrderCreatedAt ListOrder = `created_at`
 const ListOrderName ListOrder = `name`
 
 // String representation for [fmt.Print]
-func (lo *ListOrder) String() string {
-	return string(*lo)
+func (f *ListOrder) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (lo *ListOrder) Set(v string) error {
+func (f *ListOrder) Set(v string) error {
 	switch v {
 	case `created_at`, `name`:
-		*lo = ListOrder(v)
+		*f = ListOrder(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "created_at", "name"`, v)
@@ -1268,7 +1269,7 @@ func (lo *ListOrder) Set(v string) error {
 }
 
 // Type always returns ListOrder to satisfy [pflag.Value] interface
-func (lo *ListOrder) Type() string {
+func (f *ListOrder) Type() string {
 	return "ListOrder"
 }
 
@@ -1353,15 +1354,15 @@ const ObjectTypeDataSource ObjectType = `data_source`
 const ObjectTypeQuery ObjectType = `query`
 
 // String representation for [fmt.Print]
-func (ot *ObjectType) String() string {
-	return string(*ot)
+func (f *ObjectType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ot *ObjectType) Set(v string) error {
+func (f *ObjectType) Set(v string) error {
 	switch v {
 	case `alert`, `dashboard`, `data_source`, `query`:
-		*ot = ObjectType(v)
+		*f = ObjectType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "alert", "dashboard", "data_source", "query"`, v)
@@ -1369,7 +1370,7 @@ func (ot *ObjectType) Set(v string) error {
 }
 
 // Type always returns ObjectType to satisfy [pflag.Value] interface
-func (ot *ObjectType) Type() string {
+func (f *ObjectType) Type() string {
 	return "ObjectType"
 }
 
@@ -1385,15 +1386,15 @@ const ObjectTypePluralDataSources ObjectTypePlural = `data_sources`
 const ObjectTypePluralQueries ObjectTypePlural = `queries`
 
 // String representation for [fmt.Print]
-func (otp *ObjectTypePlural) String() string {
-	return string(*otp)
+func (f *ObjectTypePlural) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (otp *ObjectTypePlural) Set(v string) error {
+func (f *ObjectTypePlural) Set(v string) error {
 	switch v {
 	case `alerts`, `dashboards`, `data_sources`, `queries`:
-		*otp = ObjectTypePlural(v)
+		*f = ObjectTypePlural(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "alerts", "dashboards", "data_sources", "queries"`, v)
@@ -1401,7 +1402,7 @@ func (otp *ObjectTypePlural) Set(v string) error {
 }
 
 // Type always returns ObjectTypePlural to satisfy [pflag.Value] interface
-func (otp *ObjectTypePlural) Type() string {
+func (f *ObjectTypePlural) Type() string {
 	return "ObjectTypePlural"
 }
 
@@ -1425,15 +1426,15 @@ const OwnableObjectTypeDashboard OwnableObjectType = `dashboard`
 const OwnableObjectTypeQuery OwnableObjectType = `query`
 
 // String representation for [fmt.Print]
-func (oot *OwnableObjectType) String() string {
-	return string(*oot)
+func (f *OwnableObjectType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (oot *OwnableObjectType) Set(v string) error {
+func (f *OwnableObjectType) Set(v string) error {
 	switch v {
 	case `alert`, `dashboard`, `query`:
-		*oot = OwnableObjectType(v)
+		*f = OwnableObjectType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "alert", "dashboard", "query"`, v)
@@ -1441,7 +1442,7 @@ func (oot *OwnableObjectType) Set(v string) error {
 }
 
 // Type always returns OwnableObjectType to satisfy [pflag.Value] interface
-func (oot *OwnableObjectType) Type() string {
+func (f *OwnableObjectType) Type() string {
 	return "OwnableObjectType"
 }
 
@@ -1467,15 +1468,15 @@ const ParameterTypeNumber ParameterType = `number`
 const ParameterTypeText ParameterType = `text`
 
 // String representation for [fmt.Print]
-func (pt *ParameterType) String() string {
-	return string(*pt)
+func (f *ParameterType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (pt *ParameterType) Set(v string) error {
+func (f *ParameterType) Set(v string) error {
 	switch v {
 	case `datetime`, `number`, `text`:
-		*pt = ParameterType(v)
+		*f = ParameterType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "datetime", "number", "text"`, v)
@@ -1483,7 +1484,7 @@ func (pt *ParameterType) Set(v string) error {
 }
 
 // Type always returns ParameterType to satisfy [pflag.Value] interface
-func (pt *ParameterType) Type() string {
+func (f *ParameterType) Type() string {
 	return "ParameterType"
 }
 
@@ -1500,15 +1501,15 @@ const PermissionLevelCanRun PermissionLevel = `CAN_RUN`
 const PermissionLevelCanView PermissionLevel = `CAN_VIEW`
 
 // String representation for [fmt.Print]
-func (pl *PermissionLevel) String() string {
-	return string(*pl)
+func (f *PermissionLevel) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (pl *PermissionLevel) Set(v string) error {
+func (f *PermissionLevel) Set(v string) error {
 	switch v {
 	case `CAN_MANAGE`, `CAN_RUN`, `CAN_VIEW`:
-		*pl = PermissionLevel(v)
+		*f = PermissionLevel(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_RUN", "CAN_VIEW"`, v)
@@ -1516,7 +1517,7 @@ func (pl *PermissionLevel) Set(v string) error {
 }
 
 // Type always returns PermissionLevel to satisfy [pflag.Value] interface
-func (pl *PermissionLevel) Type() string {
+func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
 }
 
@@ -1536,15 +1537,15 @@ const PlansStateIgnoredSparkPlanType PlansState = `IGNORED_SPARK_PLAN_TYPE`
 const PlansStateUnknown PlansState = `UNKNOWN`
 
 // String representation for [fmt.Print]
-func (ps *PlansState) String() string {
-	return string(*ps)
+func (f *PlansState) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ps *PlansState) Set(v string) error {
+func (f *PlansState) Set(v string) error {
 	switch v {
 	case `EMPTY`, `EXISTS`, `IGNORED_LARGE_PLANS_SIZE`, `IGNORED_SMALL_DURATION`, `IGNORED_SPARK_PLAN_TYPE`, `UNKNOWN`:
-		*ps = PlansState(v)
+		*f = PlansState(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EMPTY", "EXISTS", "IGNORED_LARGE_PLANS_SIZE", "IGNORED_SMALL_DURATION", "IGNORED_SPARK_PLAN_TYPE", "UNKNOWN"`, v)
@@ -1552,7 +1553,7 @@ func (ps *PlansState) Set(v string) error {
 }
 
 // Type always returns PlansState to satisfy [pflag.Value] interface
-func (ps *PlansState) Type() string {
+func (f *PlansState) Type() string {
 	return "PlansState"
 }
 
@@ -1842,15 +1843,15 @@ const QueryStatementTypeUpdate QueryStatementType = `UPDATE`
 const QueryStatementTypeUse QueryStatementType = `USE`
 
 // String representation for [fmt.Print]
-func (qst *QueryStatementType) String() string {
-	return string(*qst)
+func (f *QueryStatementType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (qst *QueryStatementType) Set(v string) error {
+func (f *QueryStatementType) Set(v string) error {
 	switch v {
 	case `ALTER`, `ANALYZE`, `COPY`, `CREATE`, `DELETE`, `DESCRIBE`, `DROP`, `EXPLAIN`, `GRANT`, `INSERT`, `MERGE`, `OPTIMIZE`, `OTHER`, `REFRESH`, `REPLACE`, `REVOKE`, `SELECT`, `SET`, `SHOW`, `TRUNCATE`, `UPDATE`, `USE`:
-		*qst = QueryStatementType(v)
+		*f = QueryStatementType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ALTER", "ANALYZE", "COPY", "CREATE", "DELETE", "DESCRIBE", "DROP", "EXPLAIN", "GRANT", "INSERT", "MERGE", "OPTIMIZE", "OTHER", "REFRESH", "REPLACE", "REVOKE", "SELECT", "SET", "SHOW", "TRUNCATE", "UPDATE", "USE"`, v)
@@ -1858,7 +1859,7 @@ func (qst *QueryStatementType) Set(v string) error {
 }
 
 // Type always returns QueryStatementType to satisfy [pflag.Value] interface
-func (qst *QueryStatementType) Type() string {
+func (f *QueryStatementType) Type() string {
 	return "QueryStatementType"
 }
 
@@ -1881,15 +1882,15 @@ const QueryStatusQueued QueryStatus = `QUEUED`
 const QueryStatusRunning QueryStatus = `RUNNING`
 
 // String representation for [fmt.Print]
-func (qs *QueryStatus) String() string {
-	return string(*qs)
+func (f *QueryStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (qs *QueryStatus) Set(v string) error {
+func (f *QueryStatus) Set(v string) error {
 	switch v {
 	case `CANCELED`, `FAILED`, `FINISHED`, `QUEUED`, `RUNNING`:
-		*qs = QueryStatus(v)
+		*f = QueryStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELED", "FAILED", "FINISHED", "QUEUED", "RUNNING"`, v)
@@ -1897,7 +1898,7 @@ func (qs *QueryStatus) Set(v string) error {
 }
 
 // Type always returns QueryStatus to satisfy [pflag.Value] interface
-func (qs *QueryStatus) Type() string {
+func (f *QueryStatus) Type() string {
 	return "QueryStatus"
 }
 
@@ -2046,15 +2047,15 @@ const ServiceErrorCodeUnknown ServiceErrorCode = `UNKNOWN`
 const ServiceErrorCodeWorkspaceTemporarilyUnavailable ServiceErrorCode = `WORKSPACE_TEMPORARILY_UNAVAILABLE`
 
 // String representation for [fmt.Print]
-func (sec *ServiceErrorCode) String() string {
-	return string(*sec)
+func (f *ServiceErrorCode) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (sec *ServiceErrorCode) Set(v string) error {
+func (f *ServiceErrorCode) Set(v string) error {
 	switch v {
 	case `ABORTED`, `ALREADY_EXISTS`, `BAD_REQUEST`, `CANCELLED`, `DEADLINE_EXCEEDED`, `INTERNAL_ERROR`, `IO_ERROR`, `NOT_FOUND`, `RESOURCE_EXHAUSTED`, `SERVICE_UNDER_MAINTENANCE`, `TEMPORARILY_UNAVAILABLE`, `UNAUTHENTICATED`, `UNKNOWN`, `WORKSPACE_TEMPORARILY_UNAVAILABLE`:
-		*sec = ServiceErrorCode(v)
+		*f = ServiceErrorCode(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ABORTED", "ALREADY_EXISTS", "BAD_REQUEST", "CANCELLED", "DEADLINE_EXCEEDED", "INTERNAL_ERROR", "IO_ERROR", "NOT_FOUND", "RESOURCE_EXHAUSTED", "SERVICE_UNDER_MAINTENANCE", "TEMPORARILY_UNAVAILABLE", "UNAUTHENTICATED", "UNKNOWN", "WORKSPACE_TEMPORARILY_UNAVAILABLE"`, v)
@@ -2062,7 +2063,7 @@ func (sec *ServiceErrorCode) Set(v string) error {
 }
 
 // Type always returns ServiceErrorCode to satisfy [pflag.Value] interface
-func (sec *ServiceErrorCode) Type() string {
+func (f *ServiceErrorCode) Type() string {
 	return "ServiceErrorCode"
 }
 
@@ -2122,15 +2123,15 @@ const SetWorkspaceWarehouseConfigRequestSecurityPolicyNone SetWorkspaceWarehouse
 const SetWorkspaceWarehouseConfigRequestSecurityPolicyPassthrough SetWorkspaceWarehouseConfigRequestSecurityPolicy = `PASSTHROUGH`
 
 // String representation for [fmt.Print]
-func (swwcrsp *SetWorkspaceWarehouseConfigRequestSecurityPolicy) String() string {
-	return string(*swwcrsp)
+func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (swwcrsp *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Set(v string) error {
+func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Set(v string) error {
 	switch v {
 	case `DATA_ACCESS_CONTROL`, `NONE`, `PASSTHROUGH`:
-		*swwcrsp = SetWorkspaceWarehouseConfigRequestSecurityPolicy(v)
+		*f = SetWorkspaceWarehouseConfigRequestSecurityPolicy(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DATA_ACCESS_CONTROL", "NONE", "PASSTHROUGH"`, v)
@@ -2138,7 +2139,7 @@ func (swwcrsp *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Set(v string) e
 }
 
 // Type always returns SetWorkspaceWarehouseConfigRequestSecurityPolicy to satisfy [pflag.Value] interface
-func (swwcrsp *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
+func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
 	return "SetWorkspaceWarehouseConfigRequestSecurityPolicy"
 }
 
@@ -2152,15 +2153,15 @@ const SpotInstancePolicyPolicyUnspecified SpotInstancePolicy = `POLICY_UNSPECIFI
 const SpotInstancePolicyReliabilityOptimized SpotInstancePolicy = `RELIABILITY_OPTIMIZED`
 
 // String representation for [fmt.Print]
-func (sip *SpotInstancePolicy) String() string {
-	return string(*sip)
+func (f *SpotInstancePolicy) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (sip *SpotInstancePolicy) Set(v string) error {
+func (f *SpotInstancePolicy) Set(v string) error {
 	switch v {
 	case `COST_OPTIMIZED`, `POLICY_UNSPECIFIED`, `RELIABILITY_OPTIMIZED`:
-		*sip = SpotInstancePolicy(v)
+		*f = SpotInstancePolicy(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "POLICY_UNSPECIFIED", "RELIABILITY_OPTIMIZED"`, v)
@@ -2168,7 +2169,7 @@ func (sip *SpotInstancePolicy) Set(v string) error {
 }
 
 // Type always returns SpotInstancePolicy to satisfy [pflag.Value] interface
-func (sip *SpotInstancePolicy) Type() string {
+func (f *SpotInstancePolicy) Type() string {
 	return "SpotInstancePolicy"
 }
 
@@ -2194,15 +2195,15 @@ const StateStopped State = `STOPPED`
 const StateStopping State = `STOPPING`
 
 // String representation for [fmt.Print]
-func (s *State) String() string {
-	return string(*s)
+func (f *State) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (s *State) Set(v string) error {
+func (f *State) Set(v string) error {
 	switch v {
 	case `DELETED`, `DELETING`, `RUNNING`, `STARTING`, `STOPPED`, `STOPPING`:
-		*s = State(v)
+		*f = State(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELETED", "DELETING", "RUNNING", "STARTING", "STOPPED", "STOPPING"`, v)
@@ -2210,7 +2211,7 @@ func (s *State) Set(v string) error {
 }
 
 // Type always returns State to satisfy [pflag.Value] interface
-func (s *State) Type() string {
+func (f *State) Type() string {
 	return "State"
 }
 
@@ -2235,15 +2236,15 @@ const StatementStateRunning StatementState = `RUNNING`
 const StatementStateSucceeded StatementState = `SUCCEEDED`
 
 // String representation for [fmt.Print]
-func (ss *StatementState) String() string {
-	return string(*ss)
+func (f *StatementState) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ss *StatementState) Set(v string) error {
+func (f *StatementState) Set(v string) error {
 	switch v {
 	case `CANCELED`, `CLOSED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCEEDED`:
-		*ss = StatementState(v)
+		*f = StatementState(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELED", "CLOSED", "FAILED", "PENDING", "RUNNING", "SUCCEEDED"`, v)
@@ -2251,7 +2252,7 @@ func (ss *StatementState) Set(v string) error {
 }
 
 // Type always returns StatementState to satisfy [pflag.Value] interface
-func (ss *StatementState) Type() string {
+func (f *StatementState) Type() string {
 	return "StatementState"
 }
 
@@ -2280,15 +2281,15 @@ const StatusHealthy Status = `HEALTHY`
 const StatusStatusUnspecified Status = `STATUS_UNSPECIFIED`
 
 // String representation for [fmt.Print]
-func (s *Status) String() string {
-	return string(*s)
+func (f *Status) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (s *Status) Set(v string) error {
+func (f *Status) Set(v string) error {
 	switch v {
 	case `DEGRADED`, `FAILED`, `HEALTHY`, `STATUS_UNSPECIFIED`:
-		*s = Status(v)
+		*f = Status(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DEGRADED", "FAILED", "HEALTHY", "STATUS_UNSPECIFIED"`, v)
@@ -2296,7 +2297,7 @@ func (s *Status) Set(v string) error {
 }
 
 // Type always returns Status to satisfy [pflag.Value] interface
-func (s *Status) Type() string {
+func (f *Status) Type() string {
 	return "Status"
 }
 
@@ -2315,15 +2316,15 @@ type SuccessMessage string
 const SuccessMessageSuccess SuccessMessage = `Success`
 
 // String representation for [fmt.Print]
-func (sm *SuccessMessage) String() string {
-	return string(*sm)
+func (f *SuccessMessage) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (sm *SuccessMessage) Set(v string) error {
+func (f *SuccessMessage) Set(v string) error {
 	switch v {
 	case `Success`:
-		*sm = SuccessMessage(v)
+		*f = SuccessMessage(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "Success"`, v)
@@ -2331,7 +2332,7 @@ func (sm *SuccessMessage) Set(v string) error {
 }
 
 // Type always returns SuccessMessage to satisfy [pflag.Value] interface
-func (sm *SuccessMessage) Type() string {
+func (f *SuccessMessage) Type() string {
 	return "SuccessMessage"
 }
 
@@ -2507,15 +2508,15 @@ const TerminationReasonCodeWorkspaceCancelledError TerminationReasonCode = `WORK
 const TerminationReasonCodeWorkspaceConfigurationError TerminationReasonCode = `WORKSPACE_CONFIGURATION_ERROR`
 
 // String representation for [fmt.Print]
-func (trc *TerminationReasonCode) String() string {
-	return string(*trc)
+func (f *TerminationReasonCode) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (trc *TerminationReasonCode) Set(v string) error {
+func (f *TerminationReasonCode) Set(v string) error {
 	switch v {
 	case `ABUSE_DETECTED`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_SHUTDOWN`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `DATABASE_CONNECTION_FAILURE`, `DBFS_COMPONENT_UNHEALTHY`, `DOCKER_IMAGE_PULL_FAILURE`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `EXECUTION_COMPONENT_UNHEALTHY`, `GCP_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_UNREACHABLE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_SPARK_IMAGE`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `STORAGE_DOWNLOAD_FAILURE`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`:
-		*trc = TerminationReasonCode(v)
+		*f = TerminationReasonCode(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ABUSE_DETECTED", "ATTACH_PROJECT_FAILURE", "AWS_AUTHORIZATION_FAILURE", "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE", "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE", "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE", "AWS_REQUEST_LIMIT_EXCEEDED", "AWS_UNSUPPORTED_FAILURE", "AZURE_BYOK_KEY_PERMISSION_FAILURE", "AZURE_EPHEMERAL_DISK_FAILURE", "AZURE_INVALID_DEPLOYMENT_TEMPLATE", "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION", "AZURE_QUOTA_EXCEEDED_EXCEPTION", "AZURE_RESOURCE_MANAGER_THROTTLING", "AZURE_RESOURCE_PROVIDER_THROTTLING", "AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE", "AZURE_VM_EXTENSION_FAILURE", "AZURE_VNET_CONFIGURATION_FAILURE", "BOOTSTRAP_TIMEOUT", "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION", "CLOUD_PROVIDER_DISK_SETUP_FAILURE", "CLOUD_PROVIDER_LAUNCH_FAILURE", "CLOUD_PROVIDER_RESOURCE_STOCKOUT", "CLOUD_PROVIDER_SHUTDOWN", "COMMUNICATION_LOST", "CONTAINER_LAUNCH_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE", "DATABASE_CONNECTION_FAILURE", "DBFS_COMPONENT_UNHEALTHY", "DOCKER_IMAGE_PULL_FAILURE", "DRIVER_UNREACHABLE", "DRIVER_UNRESPONSIVE", "EXECUTION_COMPONENT_UNHEALTHY", "GCP_QUOTA_EXCEEDED", "GCP_SERVICE_ACCOUNT_DELETED", "GLOBAL_INIT_SCRIPT_FAILURE", "HIVE_METASTORE_PROVISIONING_FAILURE", "IMAGE_PULL_PERMISSION_DENIED", "INACTIVITY", "INIT_SCRIPT_FAILURE", "INSTANCE_POOL_CLUSTER_FAILURE", "INSTANCE_UNREACHABLE", "INTERNAL_ERROR", "INVALID_ARGUMENT", "INVALID_SPARK_IMAGE", "IP_EXHAUSTION_FAILURE", "JOB_FINISHED", "K8S_AUTOSCALING_FAILURE", "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT", "METASTORE_COMPONENT_UNHEALTHY", "NEPHOS_RESOURCE_MANAGEMENT", "NETWORK_CONFIGURATION_FAILURE", "NFS_MOUNT_FAILURE", "NPIP_TUNNEL_SETUP_FAILURE", "NPIP_TUNNEL_TOKEN_FAILURE", "REQUEST_REJECTED", "REQUEST_THROTTLED", "SECRET_RESOLUTION_ERROR", "SECURITY_DAEMON_REGISTRATION_EXCEPTION", "SELF_BOOTSTRAP_FAILURE", "SKIPPED_SLOW_NODES", "SLOW_IMAGE_DOWNLOAD", "SPARK_ERROR", "SPARK_IMAGE_DOWNLOAD_FAILURE", "SPARK_STARTUP_FAILURE", "SPOT_INSTANCE_TERMINATION", "STORAGE_DOWNLOAD_FAILURE", "STS_CLIENT_SETUP_FAILURE", "SUBNET_EXHAUSTED_FAILURE", "TEMPORARILY_UNAVAILABLE", "TRIAL_EXPIRED", "UNEXPECTED_LAUNCH_FAILURE", "UNKNOWN", "UNSUPPORTED_INSTANCE_TYPE", "UPDATE_INSTANCE_PROFILE_FAILURE", "USER_REQUEST", "WORKER_SETUP_FAILURE", "WORKSPACE_CANCELLED_ERROR", "WORKSPACE_CONFIGURATION_ERROR"`, v)
@@ -2523,7 +2524,7 @@ func (trc *TerminationReasonCode) Set(v string) error {
 }
 
 // Type always returns TerminationReasonCode to satisfy [pflag.Value] interface
-func (trc *TerminationReasonCode) Type() string {
+func (f *TerminationReasonCode) Type() string {
 	return "TerminationReasonCode"
 }
 
@@ -2539,15 +2540,15 @@ const TerminationReasonTypeServiceFault TerminationReasonType = `SERVICE_FAULT`
 const TerminationReasonTypeSuccess TerminationReasonType = `SUCCESS`
 
 // String representation for [fmt.Print]
-func (trt *TerminationReasonType) String() string {
-	return string(*trt)
+func (f *TerminationReasonType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (trt *TerminationReasonType) Set(v string) error {
+func (f *TerminationReasonType) Set(v string) error {
 	switch v {
 	case `CLIENT_ERROR`, `CLOUD_FAILURE`, `SERVICE_FAULT`, `SUCCESS`:
-		*trt = TerminationReasonType(v)
+		*f = TerminationReasonType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLIENT_ERROR", "CLOUD_FAILURE", "SERVICE_FAULT", "SUCCESS"`, v)
@@ -2555,7 +2556,7 @@ func (trt *TerminationReasonType) Set(v string) error {
 }
 
 // Type always returns TerminationReasonType to satisfy [pflag.Value] interface
-func (trt *TerminationReasonType) Type() string {
+func (f *TerminationReasonType) Type() string {
 	return "TerminationReasonType"
 }
 
@@ -2581,15 +2582,15 @@ const TimeoutActionCancel TimeoutAction = `CANCEL`
 const TimeoutActionContinue TimeoutAction = `CONTINUE`
 
 // String representation for [fmt.Print]
-func (ta *TimeoutAction) String() string {
-	return string(*ta)
+func (f *TimeoutAction) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ta *TimeoutAction) Set(v string) error {
+func (f *TimeoutAction) Set(v string) error {
 	switch v {
 	case `CANCEL`, `CONTINUE`:
-		*ta = TimeoutAction(v)
+		*f = TimeoutAction(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCEL", "CONTINUE"`, v)
@@ -2597,7 +2598,7 @@ func (ta *TimeoutAction) Set(v string) error {
 }
 
 // Type always returns TimeoutAction to satisfy [pflag.Value] interface
-func (ta *TimeoutAction) Type() string {
+func (f *TimeoutAction) Type() string {
 	return "TimeoutAction"
 }
 
@@ -2672,15 +2673,15 @@ const WarehouseTypePairWarehouseTypePro WarehouseTypePairWarehouseType = `PRO`
 const WarehouseTypePairWarehouseTypeTypeUnspecified WarehouseTypePairWarehouseType = `TYPE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
-func (wtpwt *WarehouseTypePairWarehouseType) String() string {
-	return string(*wtpwt)
+func (f *WarehouseTypePairWarehouseType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (wtpwt *WarehouseTypePairWarehouseType) Set(v string) error {
+func (f *WarehouseTypePairWarehouseType) Set(v string) error {
 	switch v {
 	case `CLASSIC`, `PRO`, `TYPE_UNSPECIFIED`:
-		*wtpwt = WarehouseTypePairWarehouseType(v)
+		*f = WarehouseTypePairWarehouseType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
@@ -2688,7 +2689,7 @@ func (wtpwt *WarehouseTypePairWarehouseType) Set(v string) error {
 }
 
 // Type always returns WarehouseTypePairWarehouseType to satisfy [pflag.Value] interface
-func (wtpwt *WarehouseTypePairWarehouseType) Type() string {
+func (f *WarehouseTypePairWarehouseType) Type() string {
 	return "WarehouseTypePairWarehouseType"
 }
 

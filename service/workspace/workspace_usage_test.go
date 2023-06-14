@@ -105,7 +105,7 @@ func ExampleWorkspaceAPI_Import_jobsApiFullIntegration() {
 	err = w.Workspace.Import(ctx, workspace.Import{
 		Path:      notebookPath,
 		Overwrite: true,
-		Format:    workspace.ExportFormatSource,
+		Format:    workspace.ImportFormatSource,
 		Language:  workspace.LanguagePython,
 		Content: base64.StdEncoding.EncodeToString([]byte((`import time
 time.sleep(10)
@@ -136,7 +136,7 @@ func ExampleWorkspaceAPI_Import_genericPermissions() {
 	err = w.Workspace.Import(ctx, workspace.Import{
 		Path:      notebookPath,
 		Overwrite: true,
-		Format:    workspace.ExportFormatSource,
+		Format:    workspace.ImportFormatSource,
 		Language:  workspace.LanguagePython,
 		Content: base64.StdEncoding.EncodeToString([]byte((`print(1)
 `))),
@@ -164,7 +164,7 @@ func ExampleWorkspaceAPI_Import_pipelines() {
 
 	err = w.Workspace.Import(ctx, workspace.Import{
 		Content:   base64.StdEncoding.EncodeToString([]byte(("CREATE LIVE TABLE dlt_sample AS SELECT 1"))),
-		Format:    workspace.ExportFormatSource,
+		Format:    workspace.ImportFormatSource,
 		Language:  workspace.LanguageSql,
 		Overwrite: true,
 		Path:      notebookPath,
@@ -192,7 +192,7 @@ func ExampleWorkspaceAPI_Import_workspaceIntegration() {
 
 	err = w.Workspace.Import(ctx, workspace.Import{
 		Path:      notebook,
-		Format:    workspace.ExportFormatSource,
+		Format:    workspace.ImportFormatSource,
 		Language:  workspace.LanguagePython,
 		Content:   base64.StdEncoding.EncodeToString([]byte(("# Databricks notebook source\nprint('hello from job')"))),
 		Overwrite: true,

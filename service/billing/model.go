@@ -201,15 +201,15 @@ const DeliveryStatusSystemFailure DeliveryStatus = `SYSTEM_FAILURE`
 const DeliveryStatusUserFailure DeliveryStatus = `USER_FAILURE`
 
 // String representation for [fmt.Print]
-func (ds *DeliveryStatus) String() string {
-	return string(*ds)
+func (f *DeliveryStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ds *DeliveryStatus) Set(v string) error {
+func (f *DeliveryStatus) Set(v string) error {
 	switch v {
 	case `CREATED`, `NOT_FOUND`, `SUCCEEDED`, `SYSTEM_FAILURE`, `USER_FAILURE`:
-		*ds = DeliveryStatus(v)
+		*f = DeliveryStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CREATED", "NOT_FOUND", "SUCCEEDED", "SYSTEM_FAILURE", "USER_FAILURE"`, v)
@@ -217,7 +217,7 @@ func (ds *DeliveryStatus) Set(v string) error {
 }
 
 // Type always returns DeliveryStatus to satisfy [pflag.Value] interface
-func (ds *DeliveryStatus) Type() string {
+func (f *DeliveryStatus) Type() string {
 	return "DeliveryStatus"
 }
 
@@ -269,15 +269,15 @@ const LogDeliveryConfigStatusDisabled LogDeliveryConfigStatus = `DISABLED`
 const LogDeliveryConfigStatusEnabled LogDeliveryConfigStatus = `ENABLED`
 
 // String representation for [fmt.Print]
-func (ldcs *LogDeliveryConfigStatus) String() string {
-	return string(*ldcs)
+func (f *LogDeliveryConfigStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ldcs *LogDeliveryConfigStatus) Set(v string) error {
+func (f *LogDeliveryConfigStatus) Set(v string) error {
 	switch v {
 	case `DISABLED`, `ENABLED`:
-		*ldcs = LogDeliveryConfigStatus(v)
+		*f = LogDeliveryConfigStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DISABLED", "ENABLED"`, v)
@@ -285,7 +285,7 @@ func (ldcs *LogDeliveryConfigStatus) Set(v string) error {
 }
 
 // Type always returns LogDeliveryConfigStatus to satisfy [pflag.Value] interface
-func (ldcs *LogDeliveryConfigStatus) Type() string {
+func (f *LogDeliveryConfigStatus) Type() string {
 	return "LogDeliveryConfigStatus"
 }
 
@@ -406,15 +406,15 @@ const LogTypeAuditLogs LogType = `AUDIT_LOGS`
 const LogTypeBillableUsage LogType = `BILLABLE_USAGE`
 
 // String representation for [fmt.Print]
-func (lt *LogType) String() string {
-	return string(*lt)
+func (f *LogType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (lt *LogType) Set(v string) error {
+func (f *LogType) Set(v string) error {
 	switch v {
 	case `AUDIT_LOGS`, `BILLABLE_USAGE`:
-		*lt = LogType(v)
+		*f = LogType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AUDIT_LOGS", "BILLABLE_USAGE"`, v)
@@ -422,7 +422,7 @@ func (lt *LogType) Set(v string) error {
 }
 
 // Type always returns LogType to satisfy [pflag.Value] interface
-func (lt *LogType) Type() string {
+func (f *LogType) Type() string {
 	return "LogType"
 }
 
@@ -443,15 +443,15 @@ const OutputFormatCsv OutputFormat = `CSV`
 const OutputFormatJson OutputFormat = `JSON`
 
 // String representation for [fmt.Print]
-func (of *OutputFormat) String() string {
-	return string(*of)
+func (f *OutputFormat) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (of *OutputFormat) Set(v string) error {
+func (f *OutputFormat) Set(v string) error {
 	switch v {
 	case `CSV`, `JSON`:
-		*of = OutputFormat(v)
+		*f = OutputFormat(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CSV", "JSON"`, v)
@@ -459,7 +459,7 @@ func (of *OutputFormat) Set(v string) error {
 }
 
 // Type always returns OutputFormat to satisfy [pflag.Value] interface
-func (of *OutputFormat) Type() string {
+func (f *OutputFormat) Type() string {
 	return "OutputFormat"
 }
 

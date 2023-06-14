@@ -284,15 +284,15 @@ const EndpointUseCaseDataplaneRelayAccess EndpointUseCase = `DATAPLANE_RELAY_ACC
 const EndpointUseCaseWorkspaceAccess EndpointUseCase = `WORKSPACE_ACCESS`
 
 // String representation for [fmt.Print]
-func (euc *EndpointUseCase) String() string {
-	return string(*euc)
+func (f *EndpointUseCase) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (euc *EndpointUseCase) Set(v string) error {
+func (f *EndpointUseCase) Set(v string) error {
 	switch v {
 	case `DATAPLANE_RELAY_ACCESS`, `WORKSPACE_ACCESS`:
-		*euc = EndpointUseCase(v)
+		*f = EndpointUseCase(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DATAPLANE_RELAY_ACCESS", "WORKSPACE_ACCESS"`, v)
@@ -300,7 +300,7 @@ func (euc *EndpointUseCase) Set(v string) error {
 }
 
 // Type always returns EndpointUseCase to satisfy [pflag.Value] interface
-func (euc *EndpointUseCase) Type() string {
+func (f *EndpointUseCase) Type() string {
 	return "EndpointUseCase"
 }
 
@@ -319,15 +319,15 @@ const ErrorTypeSubnet ErrorType = `subnet`
 const ErrorTypeVpc ErrorType = `vpc`
 
 // String representation for [fmt.Print]
-func (et *ErrorType) String() string {
-	return string(*et)
+func (f *ErrorType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (et *ErrorType) Set(v string) error {
+func (f *ErrorType) Set(v string) error {
 	switch v {
 	case `credentials`, `networkAcl`, `securityGroup`, `subnet`, `vpc`:
-		*et = ErrorType(v)
+		*f = ErrorType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "credentials", "networkAcl", "securityGroup", "subnet", "vpc"`, v)
@@ -335,7 +335,7 @@ func (et *ErrorType) Set(v string) error {
 }
 
 // Type always returns ErrorType to satisfy [pflag.Value] interface
-func (et *ErrorType) Type() string {
+func (f *ErrorType) Type() string {
 	return "ErrorType"
 }
 
@@ -493,15 +493,15 @@ const GkeConfigConnectivityTypePrivateNodePublicMaster GkeConfigConnectivityType
 const GkeConfigConnectivityTypePublicNodePublicMaster GkeConfigConnectivityType = `PUBLIC_NODE_PUBLIC_MASTER`
 
 // String representation for [fmt.Print]
-func (gcct *GkeConfigConnectivityType) String() string {
-	return string(*gcct)
+func (f *GkeConfigConnectivityType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (gcct *GkeConfigConnectivityType) Set(v string) error {
+func (f *GkeConfigConnectivityType) Set(v string) error {
 	switch v {
 	case `PRIVATE_NODE_PUBLIC_MASTER`, `PUBLIC_NODE_PUBLIC_MASTER`:
-		*gcct = GkeConfigConnectivityType(v)
+		*f = GkeConfigConnectivityType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PRIVATE_NODE_PUBLIC_MASTER", "PUBLIC_NODE_PUBLIC_MASTER"`, v)
@@ -509,7 +509,7 @@ func (gcct *GkeConfigConnectivityType) Set(v string) error {
 }
 
 // Type always returns GkeConfigConnectivityType to satisfy [pflag.Value] interface
-func (gcct *GkeConfigConnectivityType) Type() string {
+func (f *GkeConfigConnectivityType) Type() string {
 	return "GkeConfigConnectivityType"
 }
 
@@ -524,15 +524,15 @@ const KeyUseCaseManagedServices KeyUseCase = `MANAGED_SERVICES`
 const KeyUseCaseStorage KeyUseCase = `STORAGE`
 
 // String representation for [fmt.Print]
-func (kuc *KeyUseCase) String() string {
-	return string(*kuc)
+func (f *KeyUseCase) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (kuc *KeyUseCase) Set(v string) error {
+func (f *KeyUseCase) Set(v string) error {
 	switch v {
 	case `MANAGED_SERVICES`, `STORAGE`:
-		*kuc = KeyUseCase(v)
+		*f = KeyUseCase(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "MANAGED_SERVICES", "STORAGE"`, v)
@@ -540,7 +540,7 @@ func (kuc *KeyUseCase) Set(v string) error {
 }
 
 // Type always returns KeyUseCase to satisfy [pflag.Value] interface
-func (kuc *KeyUseCase) Type() string {
+func (f *KeyUseCase) Type() string {
 	return "KeyUseCase"
 }
 
@@ -626,15 +626,15 @@ const PricingTierStandard PricingTier = `STANDARD`
 const PricingTierUnknown PricingTier = `UNKNOWN`
 
 // String representation for [fmt.Print]
-func (pt *PricingTier) String() string {
-	return string(*pt)
+func (f *PricingTier) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (pt *PricingTier) Set(v string) error {
+func (f *PricingTier) Set(v string) error {
 	switch v {
 	case `COMMUNITY_EDITION`, `DEDICATED`, `ENTERPRISE`, `PREMIUM`, `STANDARD`, `UNKNOWN`:
-		*pt = PricingTier(v)
+		*f = PricingTier(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "COMMUNITY_EDITION", "DEDICATED", "ENTERPRISE", "PREMIUM", "STANDARD", "UNKNOWN"`, v)
@@ -642,7 +642,7 @@ func (pt *PricingTier) Set(v string) error {
 }
 
 // Type always returns PricingTier to satisfy [pflag.Value] interface
-func (pt *PricingTier) Type() string {
+func (f *PricingTier) Type() string {
 	return "PricingTier"
 }
 
@@ -659,15 +659,15 @@ const PrivateAccessLevelAccount PrivateAccessLevel = `ACCOUNT`
 const PrivateAccessLevelEndpoint PrivateAccessLevel = `ENDPOINT`
 
 // String representation for [fmt.Print]
-func (pal *PrivateAccessLevel) String() string {
-	return string(*pal)
+func (f *PrivateAccessLevel) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (pal *PrivateAccessLevel) Set(v string) error {
+func (f *PrivateAccessLevel) Set(v string) error {
 	switch v {
 	case `ACCOUNT`, `ENDPOINT`:
-		*pal = PrivateAccessLevel(v)
+		*f = PrivateAccessLevel(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACCOUNT", "ENDPOINT"`, v)
@@ -675,7 +675,7 @@ func (pal *PrivateAccessLevel) Set(v string) error {
 }
 
 // Type always returns PrivateAccessLevel to satisfy [pflag.Value] interface
-func (pal *PrivateAccessLevel) Type() string {
+func (f *PrivateAccessLevel) Type() string {
 	return "PrivateAccessLevel"
 }
 
@@ -850,15 +850,15 @@ const VpcStatusValid VpcStatus = `VALID`
 const VpcStatusWarned VpcStatus = `WARNED`
 
 // String representation for [fmt.Print]
-func (vs *VpcStatus) String() string {
-	return string(*vs)
+func (f *VpcStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (vs *VpcStatus) Set(v string) error {
+func (f *VpcStatus) Set(v string) error {
 	switch v {
 	case `BROKEN`, `UNATTACHED`, `VALID`, `WARNED`:
-		*vs = VpcStatus(v)
+		*f = VpcStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "BROKEN", "UNATTACHED", "VALID", "WARNED"`, v)
@@ -866,7 +866,7 @@ func (vs *VpcStatus) Set(v string) error {
 }
 
 // Type always returns VpcStatus to satisfy [pflag.Value] interface
-func (vs *VpcStatus) Type() string {
+func (f *VpcStatus) Type() string {
 	return "VpcStatus"
 }
 
@@ -878,15 +878,15 @@ const WarningTypeSecuritygroup WarningType = `securityGroup`
 const WarningTypeSubnet WarningType = `subnet`
 
 // String representation for [fmt.Print]
-func (wt *WarningType) String() string {
-	return string(*wt)
+func (f *WarningType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (wt *WarningType) Set(v string) error {
+func (f *WarningType) Set(v string) error {
 	switch v {
 	case `securityGroup`, `subnet`:
-		*wt = WarningType(v)
+		*f = WarningType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "securityGroup", "subnet"`, v)
@@ -894,7 +894,7 @@ func (wt *WarningType) Set(v string) error {
 }
 
 // Type always returns WarningType to satisfy [pflag.Value] interface
-func (wt *WarningType) Type() string {
+func (f *WarningType) Type() string {
 	return "WarningType"
 }
 
@@ -1003,15 +1003,15 @@ const WorkspaceStatusProvisioning WorkspaceStatus = `PROVISIONING`
 const WorkspaceStatusRunning WorkspaceStatus = `RUNNING`
 
 // String representation for [fmt.Print]
-func (ws *WorkspaceStatus) String() string {
-	return string(*ws)
+func (f *WorkspaceStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ws *WorkspaceStatus) Set(v string) error {
+func (f *WorkspaceStatus) Set(v string) error {
 	switch v {
 	case `BANNED`, `CANCELLING`, `FAILED`, `NOT_PROVISIONED`, `PROVISIONING`, `RUNNING`:
-		*ws = WorkspaceStatus(v)
+		*f = WorkspaceStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "BANNED", "CANCELLING", "FAILED", "NOT_PROVISIONED", "PROVISIONING", "RUNNING"`, v)
@@ -1019,6 +1019,6 @@ func (ws *WorkspaceStatus) Set(v string) error {
 }
 
 // Type always returns WorkspaceStatus to satisfy [pflag.Value] interface
-func (ws *WorkspaceStatus) Type() string {
+func (f *WorkspaceStatus) Type() string {
 	return "WorkspaceStatus"
 }

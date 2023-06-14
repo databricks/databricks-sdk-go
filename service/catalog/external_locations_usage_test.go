@@ -14,7 +14,39 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-func ExampleExternalLocationsAPI_Create_externalLocations() {
+func ExampleExternalLocationsAPI_Create_volumes() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	storageCredential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
+		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+		AwsIamRole: &catalog.AwsIamRole{
+			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
+		},
+		Comment: "created via SDK",
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", storageCredential)
+
+	externalLocation, err := w.ExternalLocations.Create(ctx, catalog.CreateExternalLocation{
+		Name:           fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+		CredentialName: storageCredential.Name,
+		Comment:        "created via SDK",
+		Url:            "s3://" + os.Getenv("TEST_BUCKET") + "/" + fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", externalLocation)
+
+}
+
+func ExampleExternalLocationsAPI_Create_externalLocationsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -55,7 +87,7 @@ func ExampleExternalLocationsAPI_Create_externalLocations() {
 
 }
 
-func ExampleExternalLocationsAPI_Get_externalLocations() {
+func ExampleExternalLocationsAPI_Get_externalLocationsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -101,7 +133,7 @@ func ExampleExternalLocationsAPI_Get_externalLocations() {
 
 }
 
-func ExampleExternalLocationsAPI_ListAll_externalLocations() {
+func ExampleExternalLocationsAPI_ListAll_externalLocationsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -116,7 +148,7 @@ func ExampleExternalLocationsAPI_ListAll_externalLocations() {
 
 }
 
-func ExampleExternalLocationsAPI_Update_externalLocations() {
+func ExampleExternalLocationsAPI_Update_externalLocationsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

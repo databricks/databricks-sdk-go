@@ -5,11 +5,167 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
+	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestUcAccStorageCredentials(t *testing.T) {
+func TestUcAccVolumes(t *testing.T) {
+	ctx, w := ucwsTest(t)
+
+	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
+		Name: RandomName("catalog_"),
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := w.Catalogs.Delete(ctx, catalog.DeleteCatalogRequest{
+			Name:  createdCatalog.Name,
+			Force: true,
+		})
+		require.NoError(t, err)
+	})
+
+	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
+		Name:        RandomName("schema_"),
+		CatalogName: createdCatalog.Name,
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := w.Schemas.DeleteByFullName(ctx, createdSchema.FullName)
+		require.NoError(t, err)
+	})
+
+	storageCredential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
+		Name: RandomName("creds-"),
+		AwsIamRole: &catalog.AwsIamRole{
+			RoleArn: GetEnvOrSkipTest(t, "TEST_METASTORE_DATA_ACCESS_ARN"),
+		},
+		Comment: "created via SDK",
+	})
+	require.NoError(t, err)
+
+	externalLocation, err := w.ExternalLocations.Create(ctx, catalog.CreateExternalLocation{
+		Name:           RandomName("location-"),
+		CredentialName: storageCredential.Name,
+		Comment:        "created via SDK",
+		Url:            "s3://" + GetEnvOrSkipTest(t, "TEST_BUCKET") + "/" + RandomName("somepath-"),
+	})
+	require.NoError(t, err)
+
+	createdVolume, err := w.Volumes.Create(ctx, catalog.CreateVolumeRequestContent{
+		CatalogName:     createdCatalog.Name,
+		SchemaName:      createdSchema.Name,
+		Name:            RandomName("volume_"),
+		StorageLocation: externalLocation.Url,
+		VolumeType:      catalog.VolumeTypeExternal,
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err = w.Volumes.DeleteByFullNameArg(ctx, createdVolume.FullName)
+		require.NoError(t, err)
+	})
+
+	loadedVolume, err := w.Volumes.ReadByFullNameArg(ctx, createdVolume.FullName)
+	require.NoError(t, err)
+	assert.Equal(t, createdVolume.Name, loadedVolume.Name)
+
+	_, err = w.Volumes.Update(ctx, catalog.UpdateVolumeRequestContent{
+		FullNameArg: loadedVolume.FullName,
+		Comment:     "Updated volume comment",
+	})
+	require.NoError(t, err)
+
+	allVolumes, err := w.Volumes.ListAll(ctx, catalog.ListVolumesRequest{
+		CatalogName: createdCatalog.Name,
+		SchemaName:  createdSchema.Name,
+	})
+	require.NoError(t, err)
+
+	assert.Equal(t, 1, len(allVolumes))
+}
+
+func TestUcAccTables(t *testing.T) {
+	ctx, w := ucwsTest(t)
+
+	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
+		Name: RandomName("catalog_"),
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := w.Catalogs.Delete(ctx, catalog.DeleteCatalogRequest{
+			Name:  createdCatalog.Name,
+			Force: true,
+		})
+		require.NoError(t, err)
+	})
+
+	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
+		Name:        RandomName("schema_"),
+		CatalogName: createdCatalog.Name,
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := w.Schemas.DeleteByFullName(ctx, createdSchema.FullName)
+		require.NoError(t, err)
+	})
+
+	tableName := RandomName("foo_")
+	tableFullName := fmt.Sprintf("%s.%s.%s", createdCatalog.Name, createdSchema.Name, tableName)
+
+	// creates tableFullName
+	_, err = w.StatementExecution.ExecuteAndWait(ctx, sql.ExecuteStatementRequest{
+		WarehouseId: GetEnvOrSkipTest(t, "TEST_DEFAULT_WAREHOUSE_ID"),
+		Catalog:     createdCatalog.Name,
+		Schema:      createdSchema.Name,
+		Statement:   fmt.Sprintf("CREATE TABLE %s AS SELECT 2+2 as four", tableName),
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err = w.Tables.DeleteByFullName(ctx, tableFullName)
+		require.NoError(t, err)
+	})
+
+	allTables, err := w.Tables.ListAll(ctx, catalog.ListTablesRequest{
+		CatalogName: createdCatalog.Name,
+		SchemaName:  createdSchema.Name,
+	})
+	require.NoError(t, err)
+	assert.Equal(t, 1, len(allTables))
+
+	createdTable, err := w.Tables.GetByFullName(ctx, tableFullName)
+	require.NoError(t, err)
+	assert.Equal(t, createdCatalog.Name, createdTable.CatalogName)
+
+	accountLevelGroupName := GetEnvOrSkipTest(t, "TEST_DATA_ENG_GROUP")
+	x, err := w.Grants.Update(ctx, catalog.UpdatePermissions{
+		FullName:      createdTable.FullName,
+		SecurableType: catalog.SecurableTypeTable,
+		Changes: []catalog.PermissionsChange{
+			{
+				Add: []catalog.Privilege{
+					catalog.PrivilegeModify,
+					catalog.PrivilegeSelect,
+				},
+				Principal: accountLevelGroupName,
+			},
+		},
+	})
+	require.NoError(t, err)
+	assert.True(t, len(x.PrivilegeAssignments) > 0)
+
+	grants, err := w.Grants.GetEffectiveBySecurableTypeAndFullName(ctx, catalog.SecurableTypeTable, createdTable.FullName)
+	require.NoError(t, err)
+	assert.True(t, len(grants.PrivilegeAssignments) > 0)
+
+	summaries, err := w.Tables.ListSummariesAll(ctx, catalog.ListSummariesRequest{
+		CatalogName:       createdCatalog.Name,
+		SchemaNamePattern: createdSchema.Name,
+	})
+	require.NoError(t, err)
+	assert.Equal(t, len(allTables), len(summaries))
+}
+
+func TestUcAccStorageCredentialsOnAws(t *testing.T) {
 	ctx, w := ucwsTest(t)
 	if !w.Config.IsAws() {
 		skipf(t)("not not aws")
@@ -47,7 +203,7 @@ func TestUcAccStorageCredentials(t *testing.T) {
 	assert.True(t, len(all) >= 1)
 }
 
-func TestUcAccExternalLocations(t *testing.T) {
+func TestUcAccExternalLocationsOnAws(t *testing.T) {
 	ctx, w := ucwsTest(t)
 	if !w.Config.IsAws() {
 		skipf(t)("not not aws")
@@ -106,6 +262,17 @@ func TestUcAccMetastores(t *testing.T) {
 		require.NoError(t, err)
 	})
 
+	currentMetastore, err := w.Metastores.Current(ctx)
+	assert.NoError(t, err)
+	assert.NotEqual(t, created.MetastoreId, currentMetastore.MetastoreId)
+
+	autoMaintenance, err := w.Metastores.Maintenance(ctx, catalog.UpdateAutoMaintenance{
+		Enable:      true,
+		MetastoreId: created.MetastoreId,
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, true, autoMaintenance.State)
+
 	_, err = w.Metastores.Update(ctx, catalog.UpdateMetastore{
 		Id:   created.MetastoreId,
 		Name: RandomName("go-sdk-updated"),
@@ -123,14 +290,17 @@ func TestUcAccMetastores(t *testing.T) {
 	})
 	require.NoError(t, err)
 
+	// w.Metastores.UpdateAssignment can only be done for the current WS
+
 	err = w.Metastores.Unassign(ctx, catalog.UnassignRequest{
 		MetastoreId: created.MetastoreId,
 		WorkspaceId: workspaceId,
 	})
 	require.NoError(t, err)
 
-	_, err = w.Metastores.Summary(ctx)
+	summary, err := w.Metastores.Summary(ctx)
 	require.NoError(t, err)
+	assert.Equal(t, currentMetastore.MetastoreId, summary.MetastoreId)
 
 	all, err := w.Metastores.ListAll(ctx)
 	require.NoError(t, err)

@@ -710,6 +710,8 @@ type TablesService interface {
 	//
 	// There is no guarantee of a specific ordering of the elements in the
 	// array.
+	//
+	// Use ListSummariesAll() to get all TableSummary instances, which will iterate over every result page.
 	ListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error)
 }
 

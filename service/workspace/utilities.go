@@ -34,7 +34,7 @@ func PythonNotebookOverwriteReader(path string, r io.Reader) (Import, error) {
 	return Import{
 		Path:      path,
 		Overwrite: true,
-		Format:    ExportFormatSource,
+		Format:    ImportFormatSource,
 		Language:  LanguagePython,
 		Content:   b64.EncodeToString(raw),
 	}, nil
@@ -88,7 +88,7 @@ func UploadLanguage(l Language) UploadOption {
 	}
 }
 
-func UploadFormat(f ExportFormat) UploadOption {
+func UploadFormat(f ImportFormat) UploadOption {
 	return func(i *Import) {
 		i.Format = f
 	}
@@ -102,8 +102,8 @@ func UploadFormat(f ExportFormat) UploadOption {
 //   - RESOURCE_ALREADY_EXISTS: if `path` already exists no `overwrite=True`.
 //   - INVALID_PARAMETER_VALUE: if `format` and `content` values are not compatible.
 //
-// By default, workspace.UploadFormat(workspace.ExportFormatSource). If using
-// workspace.UploadFormat(workspace.ExportFormatAuto) the `path` is imported or
+// By default, workspace.UploadFormat(workspace.ImportFormatSource). If using
+// workspace.UploadFormat(workspace.ImportFormatAuto) the `path` is imported or
 // exported as either a workspace file or a notebook, depending on an analysis
 // of the `path`’s extension and the header content provided in the request.
 // In addition, if the `path` is imported as a notebook, then the `item`’s
@@ -129,7 +129,7 @@ func (a *WorkspaceAPI) Upload(ctx context.Context, path string, r io.Reader, opt
 	for _, v := range opts {
 		v(i)
 	}
-	if i.Format == "" || i.Format == ExportFormatSource {
+	if i.Format == "" || i.Format == ImportFormatSource {
 		for sfx, lang := range map[string]Language{
 			".py":    LanguagePython,
 			".sql":   LanguageSql,
@@ -180,7 +180,7 @@ func (a *WorkspaceAPI) Upload(ctx context.Context, path string, r io.Reader, opt
 // always overwrite it.
 func (a *WorkspaceAPI) WriteFile(ctx context.Context, name string, data []byte) error {
 	return a.Upload(ctx, name, bytes.NewBuffer(data),
-		UploadFormat(ExportFormatAuto),
+		UploadFormat(ImportFormatAuto),
 		UploadOverwrite())
 }
 
@@ -218,7 +218,7 @@ func (a *WorkspaceAPI) Download(ctx context.Context, path string, opts ...Downlo
 
 // ReadFile is identical to [os.ReadFile] but for workspace files.
 func (a *WorkspaceAPI) ReadFile(ctx context.Context, name string) ([]byte, error) {
-	b, err := a.Download(ctx, name, DownloadFormat(ExportFormatAuto))
+	b, err := a.Download(ctx, name)
 	if err != nil {
 		return nil, err
 	}

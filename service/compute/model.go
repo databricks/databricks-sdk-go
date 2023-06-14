@@ -145,15 +145,15 @@ const AwsAvailabilitySpot AwsAvailability = `SPOT`
 const AwsAvailabilitySpotWithFallback AwsAvailability = `SPOT_WITH_FALLBACK`
 
 // String representation for [fmt.Print]
-func (aa *AwsAvailability) String() string {
-	return string(*aa)
+func (f *AwsAvailability) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (aa *AwsAvailability) Set(v string) error {
+func (f *AwsAvailability) Set(v string) error {
 	switch v {
 	case `ON_DEMAND`, `SPOT`, `SPOT_WITH_FALLBACK`:
-		*aa = AwsAvailability(v)
+		*f = AwsAvailability(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND", "SPOT", "SPOT_WITH_FALLBACK"`, v)
@@ -161,7 +161,7 @@ func (aa *AwsAvailability) Set(v string) error {
 }
 
 // Type always returns AwsAvailability to satisfy [pflag.Value] interface
-func (aa *AwsAvailability) Type() string {
+func (f *AwsAvailability) Type() string {
 	return "AwsAvailability"
 }
 
@@ -203,15 +203,15 @@ const AzureAvailabilitySpotAzure AzureAvailability = `SPOT_AZURE`
 const AzureAvailabilitySpotWithFallbackAzure AzureAvailability = `SPOT_WITH_FALLBACK_AZURE`
 
 // String representation for [fmt.Print]
-func (aa *AzureAvailability) String() string {
-	return string(*aa)
+func (f *AzureAvailability) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (aa *AzureAvailability) Set(v string) error {
+func (f *AzureAvailability) Set(v string) error {
 	switch v {
 	case `ON_DEMAND_AZURE`, `SPOT_AZURE`, `SPOT_WITH_FALLBACK_AZURE`:
-		*aa = AzureAvailability(v)
+		*f = AzureAvailability(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE", "SPOT_WITH_FALLBACK_AZURE"`, v)
@@ -219,7 +219,7 @@ func (aa *AzureAvailability) Set(v string) error {
 }
 
 // Type always returns AzureAvailability to satisfy [pflag.Value] interface
-func (aa *AzureAvailability) Type() string {
+func (f *AzureAvailability) Type() string {
 	return "AzureAvailability"
 }
 
@@ -381,15 +381,15 @@ const CloudProviderNodeStatusNotavailableinregion CloudProviderNodeStatus = `Not
 const CloudProviderNodeStatusNotenabledonsubscription CloudProviderNodeStatus = `NotEnabledOnSubscription`
 
 // String representation for [fmt.Print]
-func (cpns *CloudProviderNodeStatus) String() string {
-	return string(*cpns)
+func (f *CloudProviderNodeStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (cpns *CloudProviderNodeStatus) Set(v string) error {
+func (f *CloudProviderNodeStatus) Set(v string) error {
 	switch v {
 	case `NotAvailableInRegion`, `NotEnabledOnSubscription`:
-		*cpns = CloudProviderNodeStatus(v)
+		*f = CloudProviderNodeStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "NotAvailableInRegion", "NotEnabledOnSubscription"`, v)
@@ -397,7 +397,7 @@ func (cpns *CloudProviderNodeStatus) Set(v string) error {
 }
 
 // Type always returns CloudProviderNodeStatus to satisfy [pflag.Value] interface
-func (cpns *CloudProviderNodeStatus) Type() string {
+func (f *CloudProviderNodeStatus) Type() string {
 	return "CloudProviderNodeStatus"
 }
 
@@ -767,15 +767,15 @@ const ClusterSourceSql ClusterSource = `SQL`
 const ClusterSourceUi ClusterSource = `UI`
 
 // String representation for [fmt.Print]
-func (cs *ClusterSource) String() string {
-	return string(*cs)
+func (f *ClusterSource) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (cs *ClusterSource) Set(v string) error {
+func (f *ClusterSource) Set(v string) error {
 	switch v {
 	case `API`, `JOB`, `MODELS`, `PIPELINE`, `PIPELINE_MAINTENANCE`, `SQL`, `UI`:
-		*cs = ClusterSource(v)
+		*f = ClusterSource(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "API", "JOB", "MODELS", "PIPELINE", "PIPELINE_MAINTENANCE", "SQL", "UI"`, v)
@@ -783,7 +783,7 @@ func (cs *ClusterSource) Set(v string) error {
 }
 
 // Type always returns ClusterSource to satisfy [pflag.Value] interface
-func (cs *ClusterSource) Type() string {
+func (f *ClusterSource) Type() string {
 	return "ClusterSource"
 }
 
@@ -819,15 +819,15 @@ const CommandStatusQueued CommandStatus = `Queued`
 const CommandStatusRunning CommandStatus = `Running`
 
 // String representation for [fmt.Print]
-func (cs *CommandStatus) String() string {
-	return string(*cs)
+func (f *CommandStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (cs *CommandStatus) Set(v string) error {
+func (f *CommandStatus) Set(v string) error {
 	switch v {
 	case `Cancelled`, `Cancelling`, `Error`, `Finished`, `Queued`, `Running`:
-		*cs = CommandStatus(v)
+		*f = CommandStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "Cancelled", "Cancelling", "Error", "Finished", "Queued", "Running"`, v)
@@ -835,7 +835,7 @@ func (cs *CommandStatus) Set(v string) error {
 }
 
 // Type always returns CommandStatus to satisfy [pflag.Value] interface
-func (cs *CommandStatus) Type() string {
+func (f *CommandStatus) Type() string {
 	return "CommandStatus"
 }
 
@@ -865,15 +865,15 @@ const ContextStatusPending ContextStatus = `Pending`
 const ContextStatusRunning ContextStatus = `Running`
 
 // String representation for [fmt.Print]
-func (cs *ContextStatus) String() string {
-	return string(*cs)
+func (f *ContextStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (cs *ContextStatus) Set(v string) error {
+func (f *ContextStatus) Set(v string) error {
 	switch v {
 	case `Error`, `Pending`, `Running`:
-		*cs = ContextStatus(v)
+		*f = ContextStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "Error", "Pending", "Running"`, v)
@@ -881,7 +881,7 @@ func (cs *ContextStatus) Set(v string) error {
 }
 
 // Type always returns ContextStatus to satisfy [pflag.Value] interface
-func (cs *ContextStatus) Type() string {
+func (f *ContextStatus) Type() string {
 	return "ContextStatus"
 }
 
@@ -1154,15 +1154,15 @@ const DataPlaneEventDetailsEventTypeNodeBlacklisted DataPlaneEventDetailsEventTy
 const DataPlaneEventDetailsEventTypeNodeExcludedDecommissioned DataPlaneEventDetailsEventType = `NODE_EXCLUDED_DECOMMISSIONED`
 
 // String representation for [fmt.Print]
-func (dpedet *DataPlaneEventDetailsEventType) String() string {
-	return string(*dpedet)
+func (f *DataPlaneEventDetailsEventType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (dpedet *DataPlaneEventDetailsEventType) Set(v string) error {
+func (f *DataPlaneEventDetailsEventType) Set(v string) error {
 	switch v {
 	case `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`:
-		*dpedet = DataPlaneEventDetailsEventType(v)
+		*f = DataPlaneEventDetailsEventType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "NODE_BLACKLISTED", "NODE_EXCLUDED_DECOMMISSIONED"`, v)
@@ -1170,7 +1170,7 @@ func (dpedet *DataPlaneEventDetailsEventType) Set(v string) error {
 }
 
 // Type always returns DataPlaneEventDetailsEventType to satisfy [pflag.Value] interface
-func (dpedet *DataPlaneEventDetailsEventType) Type() string {
+func (f *DataPlaneEventDetailsEventType) Type() string {
 	return "DataPlaneEventDetailsEventType"
 }
 
@@ -1204,15 +1204,15 @@ const DataSecurityModeSingleUser DataSecurityMode = `SINGLE_USER`
 const DataSecurityModeUserIsolation DataSecurityMode = `USER_ISOLATION`
 
 // String representation for [fmt.Print]
-func (dsm *DataSecurityMode) String() string {
-	return string(*dsm)
+func (f *DataSecurityMode) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (dsm *DataSecurityMode) Set(v string) error {
+func (f *DataSecurityMode) Set(v string) error {
 	switch v {
 	case `LEGACY_PASSTHROUGH`, `LEGACY_SINGLE_USER`, `LEGACY_TABLE_ACL`, `NONE`, `SINGLE_USER`, `USER_ISOLATION`:
-		*dsm = DataSecurityMode(v)
+		*f = DataSecurityMode(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "LEGACY_PASSTHROUGH", "LEGACY_SINGLE_USER", "LEGACY_TABLE_ACL", "NONE", "SINGLE_USER", "USER_ISOLATION"`, v)
@@ -1220,7 +1220,7 @@ func (dsm *DataSecurityMode) Set(v string) error {
 }
 
 // Type always returns DataSecurityMode to satisfy [pflag.Value] interface
-func (dsm *DataSecurityMode) Type() string {
+func (f *DataSecurityMode) Type() string {
 	return "DataSecurityMode"
 }
 
@@ -1304,15 +1304,15 @@ const DiskTypeAzureDiskVolumeTypePremiumLrs DiskTypeAzureDiskVolumeType = `PREMI
 const DiskTypeAzureDiskVolumeTypeStandardLrs DiskTypeAzureDiskVolumeType = `STANDARD_LRS`
 
 // String representation for [fmt.Print]
-func (dtadvt *DiskTypeAzureDiskVolumeType) String() string {
-	return string(*dtadvt)
+func (f *DiskTypeAzureDiskVolumeType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (dtadvt *DiskTypeAzureDiskVolumeType) Set(v string) error {
+func (f *DiskTypeAzureDiskVolumeType) Set(v string) error {
 	switch v {
 	case `PREMIUM_LRS`, `STANDARD_LRS`:
-		*dtadvt = DiskTypeAzureDiskVolumeType(v)
+		*f = DiskTypeAzureDiskVolumeType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PREMIUM_LRS", "STANDARD_LRS"`, v)
@@ -1320,7 +1320,7 @@ func (dtadvt *DiskTypeAzureDiskVolumeType) Set(v string) error {
 }
 
 // Type always returns DiskTypeAzureDiskVolumeType to satisfy [pflag.Value] interface
-func (dtadvt *DiskTypeAzureDiskVolumeType) Type() string {
+func (f *DiskTypeAzureDiskVolumeType) Type() string {
 	return "DiskTypeAzureDiskVolumeType"
 }
 
@@ -1331,15 +1331,15 @@ const DiskTypeEbsVolumeTypeGeneralPurposeSsd DiskTypeEbsVolumeType = `GENERAL_PU
 const DiskTypeEbsVolumeTypeThroughputOptimizedHdd DiskTypeEbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
 
 // String representation for [fmt.Print]
-func (dtevt *DiskTypeEbsVolumeType) String() string {
-	return string(*dtevt)
+func (f *DiskTypeEbsVolumeType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (dtevt *DiskTypeEbsVolumeType) Set(v string) error {
+func (f *DiskTypeEbsVolumeType) Set(v string) error {
 	switch v {
 	case `GENERAL_PURPOSE_SSD`, `THROUGHPUT_OPTIMIZED_HDD`:
-		*dtevt = DiskTypeEbsVolumeType(v)
+		*f = DiskTypeEbsVolumeType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "GENERAL_PURPOSE_SSD", "THROUGHPUT_OPTIMIZED_HDD"`, v)
@@ -1347,7 +1347,7 @@ func (dtevt *DiskTypeEbsVolumeType) Set(v string) error {
 }
 
 // Type always returns DiskTypeEbsVolumeType to satisfy [pflag.Value] interface
-func (dtevt *DiskTypeEbsVolumeType) Type() string {
+func (f *DiskTypeEbsVolumeType) Type() string {
 	return "DiskTypeEbsVolumeType"
 }
 
@@ -1372,15 +1372,15 @@ const EbsVolumeTypeGeneralPurposeSsd EbsVolumeType = `GENERAL_PURPOSE_SSD`
 const EbsVolumeTypeThroughputOptimizedHdd EbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
 
 // String representation for [fmt.Print]
-func (evt *EbsVolumeType) String() string {
-	return string(*evt)
+func (f *EbsVolumeType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (evt *EbsVolumeType) Set(v string) error {
+func (f *EbsVolumeType) Set(v string) error {
 	switch v {
 	case `GENERAL_PURPOSE_SSD`, `THROUGHPUT_OPTIMIZED_HDD`:
-		*evt = EbsVolumeType(v)
+		*f = EbsVolumeType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "GENERAL_PURPOSE_SSD", "THROUGHPUT_OPTIMIZED_HDD"`, v)
@@ -1388,7 +1388,7 @@ func (evt *EbsVolumeType) Set(v string) error {
 }
 
 // Type always returns EbsVolumeType to satisfy [pflag.Value] interface
-func (evt *EbsVolumeType) Type() string {
+func (f *EbsVolumeType) Type() string {
 	return "EbsVolumeType"
 }
 
@@ -1671,15 +1671,15 @@ const EventDetailsCauseReplaceBadNodes EventDetailsCause = `REPLACE_BAD_NODES`
 const EventDetailsCauseUserRequest EventDetailsCause = `USER_REQUEST`
 
 // String representation for [fmt.Print]
-func (edc *EventDetailsCause) String() string {
-	return string(*edc)
+func (f *EventDetailsCause) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (edc *EventDetailsCause) Set(v string) error {
+func (f *EventDetailsCause) Set(v string) error {
 	switch v {
 	case `AUTORECOVERY`, `AUTOSCALE`, `REPLACE_BAD_NODES`, `USER_REQUEST`:
-		*edc = EventDetailsCause(v)
+		*f = EventDetailsCause(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AUTORECOVERY", "AUTOSCALE", "REPLACE_BAD_NODES", "USER_REQUEST"`, v)
@@ -1687,7 +1687,7 @@ func (edc *EventDetailsCause) Set(v string) error {
 }
 
 // Type always returns EventDetailsCause to satisfy [pflag.Value] interface
-func (edc *EventDetailsCause) Type() string {
+func (f *EventDetailsCause) Type() string {
 	return "EventDetailsCause"
 }
 
@@ -1744,15 +1744,15 @@ const EventTypeUnpinned EventType = `UNPINNED`
 const EventTypeUpsizeCompleted EventType = `UPSIZE_COMPLETED`
 
 // String representation for [fmt.Print]
-func (et *EventType) String() string {
-	return string(*et)
+func (f *EventType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (et *EventType) Set(v string) error {
+func (f *EventType) Set(v string) error {
 	switch v {
 	case `AUTOSCALING_STATS_REPORT`, `CREATING`, `DBFS_DOWN`, `DID_NOT_EXPAND_DISK`, `DRIVER_HEALTHY`, `DRIVER_NOT_RESPONDING`, `DRIVER_UNAVAILABLE`, `EDITED`, `EXPANDED_DISK`, `FAILED_TO_EXPAND_DISK`, `INIT_SCRIPTS_FINISHED`, `INIT_SCRIPTS_STARTED`, `METASTORE_DOWN`, `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`, `NODES_LOST`, `PINNED`, `RESIZING`, `RESTARTING`, `RUNNING`, `SPARK_EXCEPTION`, `STARTING`, `TERMINATING`, `UNPINNED`, `UPSIZE_COMPLETED`:
-		*et = EventType(v)
+		*f = EventType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AUTOSCALING_STATS_REPORT", "CREATING", "DBFS_DOWN", "DID_NOT_EXPAND_DISK", "DRIVER_HEALTHY", "DRIVER_NOT_RESPONDING", "DRIVER_UNAVAILABLE", "EDITED", "EXPANDED_DISK", "FAILED_TO_EXPAND_DISK", "INIT_SCRIPTS_FINISHED", "INIT_SCRIPTS_STARTED", "METASTORE_DOWN", "NODE_BLACKLISTED", "NODE_EXCLUDED_DECOMMISSIONED", "NODES_LOST", "PINNED", "RESIZING", "RESTARTING", "RUNNING", "SPARK_EXCEPTION", "STARTING", "TERMINATING", "UNPINNED", "UPSIZE_COMPLETED"`, v)
@@ -1760,7 +1760,7 @@ func (et *EventType) Set(v string) error {
 }
 
 // Type always returns EventType to satisfy [pflag.Value] interface
-func (et *EventType) Type() string {
+func (f *EventType) Type() string {
 	return "EventType"
 }
 
@@ -1812,15 +1812,15 @@ const FleetOnDemandOptionAllocationStrategyLowestPrice FleetOnDemandOptionAlloca
 const FleetOnDemandOptionAllocationStrategyPrioritized FleetOnDemandOptionAllocationStrategy = `PRIORITIZED`
 
 // String representation for [fmt.Print]
-func (fodoas *FleetOnDemandOptionAllocationStrategy) String() string {
-	return string(*fodoas)
+func (f *FleetOnDemandOptionAllocationStrategy) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (fodoas *FleetOnDemandOptionAllocationStrategy) Set(v string) error {
+func (f *FleetOnDemandOptionAllocationStrategy) Set(v string) error {
 	switch v {
 	case `CAPACITY_OPTIMIZED`, `DIVERSIFIED`, `LOWEST_PRICE`, `PRIORITIZED`:
-		*fodoas = FleetOnDemandOptionAllocationStrategy(v)
+		*f = FleetOnDemandOptionAllocationStrategy(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAPACITY_OPTIMIZED", "DIVERSIFIED", "LOWEST_PRICE", "PRIORITIZED"`, v)
@@ -1828,7 +1828,7 @@ func (fodoas *FleetOnDemandOptionAllocationStrategy) Set(v string) error {
 }
 
 // Type always returns FleetOnDemandOptionAllocationStrategy to satisfy [pflag.Value] interface
-func (fodoas *FleetOnDemandOptionAllocationStrategy) Type() string {
+func (f *FleetOnDemandOptionAllocationStrategy) Type() string {
 	return "FleetOnDemandOptionAllocationStrategy"
 }
 
@@ -1858,15 +1858,15 @@ const FleetSpotOptionAllocationStrategyLowestPrice FleetSpotOptionAllocationStra
 const FleetSpotOptionAllocationStrategyPrioritized FleetSpotOptionAllocationStrategy = `PRIORITIZED`
 
 // String representation for [fmt.Print]
-func (fsoas *FleetSpotOptionAllocationStrategy) String() string {
-	return string(*fsoas)
+func (f *FleetSpotOptionAllocationStrategy) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (fsoas *FleetSpotOptionAllocationStrategy) Set(v string) error {
+func (f *FleetSpotOptionAllocationStrategy) Set(v string) error {
 	switch v {
 	case `CAPACITY_OPTIMIZED`, `DIVERSIFIED`, `LOWEST_PRICE`, `PRIORITIZED`:
-		*fsoas = FleetSpotOptionAllocationStrategy(v)
+		*f = FleetSpotOptionAllocationStrategy(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAPACITY_OPTIMIZED", "DIVERSIFIED", "LOWEST_PRICE", "PRIORITIZED"`, v)
@@ -1874,7 +1874,7 @@ func (fsoas *FleetSpotOptionAllocationStrategy) Set(v string) error {
 }
 
 // Type always returns FleetSpotOptionAllocationStrategy to satisfy [pflag.Value] interface
-func (fsoas *FleetSpotOptionAllocationStrategy) Type() string {
+func (f *FleetSpotOptionAllocationStrategy) Type() string {
 	return "FleetSpotOptionAllocationStrategy"
 }
 
@@ -1904,15 +1904,15 @@ const GcpAvailabilityPreemptibleGcp GcpAvailability = `PREEMPTIBLE_GCP`
 const GcpAvailabilityPreemptibleWithFallbackGcp GcpAvailability = `PREEMPTIBLE_WITH_FALLBACK_GCP`
 
 // String representation for [fmt.Print]
-func (ga *GcpAvailability) String() string {
-	return string(*ga)
+func (f *GcpAvailability) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ga *GcpAvailability) Set(v string) error {
+func (f *GcpAvailability) Set(v string) error {
 	switch v {
 	case `ON_DEMAND_GCP`, `PREEMPTIBLE_GCP`, `PREEMPTIBLE_WITH_FALLBACK_GCP`:
-		*ga = GcpAvailability(v)
+		*f = GcpAvailability(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_GCP", "PREEMPTIBLE_GCP", "PREEMPTIBLE_WITH_FALLBACK_GCP"`, v)
@@ -1920,7 +1920,7 @@ func (ga *GcpAvailability) Set(v string) error {
 }
 
 // Type always returns GcpAvailability to satisfy [pflag.Value] interface
-func (ga *GcpAvailability) Type() string {
+func (f *GcpAvailability) Type() string {
 	return "GcpAvailability"
 }
 
@@ -1967,15 +1967,15 @@ const GetEventsOrderAsc GetEventsOrder = `ASC`
 const GetEventsOrderDesc GetEventsOrder = `DESC`
 
 // String representation for [fmt.Print]
-func (geo *GetEventsOrder) String() string {
-	return string(*geo)
+func (f *GetEventsOrder) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (geo *GetEventsOrder) Set(v string) error {
+func (f *GetEventsOrder) Set(v string) error {
 	switch v {
 	case `ASC`, `DESC`:
-		*geo = GetEventsOrder(v)
+		*f = GetEventsOrder(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ASC", "DESC"`, v)
@@ -1983,7 +1983,7 @@ func (geo *GetEventsOrder) Set(v string) error {
 }
 
 // Type always returns GetEventsOrder to satisfy [pflag.Value] interface
-func (geo *GetEventsOrder) Type() string {
+func (f *GetEventsOrder) Type() string {
 	return "GetEventsOrder"
 }
 
@@ -2327,15 +2327,15 @@ const InstancePoolAwsAttributesAvailabilitySpot InstancePoolAwsAttributesAvailab
 const InstancePoolAwsAttributesAvailabilitySpotWithFallback InstancePoolAwsAttributesAvailability = `SPOT_WITH_FALLBACK`
 
 // String representation for [fmt.Print]
-func (ipaaa *InstancePoolAwsAttributesAvailability) String() string {
-	return string(*ipaaa)
+func (f *InstancePoolAwsAttributesAvailability) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ipaaa *InstancePoolAwsAttributesAvailability) Set(v string) error {
+func (f *InstancePoolAwsAttributesAvailability) Set(v string) error {
 	switch v {
 	case `ON_DEMAND`, `SPOT`, `SPOT_WITH_FALLBACK`:
-		*ipaaa = InstancePoolAwsAttributesAvailability(v)
+		*f = InstancePoolAwsAttributesAvailability(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND", "SPOT", "SPOT_WITH_FALLBACK"`, v)
@@ -2343,7 +2343,7 @@ func (ipaaa *InstancePoolAwsAttributesAvailability) Set(v string) error {
 }
 
 // Type always returns InstancePoolAwsAttributesAvailability to satisfy [pflag.Value] interface
-func (ipaaa *InstancePoolAwsAttributesAvailability) Type() string {
+func (f *InstancePoolAwsAttributesAvailability) Type() string {
 	return "InstancePoolAwsAttributesAvailability"
 }
 
@@ -2371,15 +2371,15 @@ const InstancePoolAzureAttributesAvailabilitySpotAzure InstancePoolAzureAttribut
 const InstancePoolAzureAttributesAvailabilitySpotWithFallbackAzure InstancePoolAzureAttributesAvailability = `SPOT_WITH_FALLBACK_AZURE`
 
 // String representation for [fmt.Print]
-func (ipaaa *InstancePoolAzureAttributesAvailability) String() string {
-	return string(*ipaaa)
+func (f *InstancePoolAzureAttributesAvailability) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ipaaa *InstancePoolAzureAttributesAvailability) Set(v string) error {
+func (f *InstancePoolAzureAttributesAvailability) Set(v string) error {
 	switch v {
 	case `ON_DEMAND_AZURE`, `SPOT_AZURE`, `SPOT_WITH_FALLBACK_AZURE`:
-		*ipaaa = InstancePoolAzureAttributesAvailability(v)
+		*f = InstancePoolAzureAttributesAvailability(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE", "SPOT_WITH_FALLBACK_AZURE"`, v)
@@ -2387,7 +2387,7 @@ func (ipaaa *InstancePoolAzureAttributesAvailability) Set(v string) error {
 }
 
 // Type always returns InstancePoolAzureAttributesAvailability to satisfy [pflag.Value] interface
-func (ipaaa *InstancePoolAzureAttributesAvailability) Type() string {
+func (f *InstancePoolAzureAttributesAvailability) Type() string {
 	return "InstancePoolAzureAttributesAvailability"
 }
 
@@ -2409,15 +2409,15 @@ const InstancePoolStateDeleted InstancePoolState = `DELETED`
 const InstancePoolStateStopped InstancePoolState = `STOPPED`
 
 // String representation for [fmt.Print]
-func (ips *InstancePoolState) String() string {
-	return string(*ips)
+func (f *InstancePoolState) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (ips *InstancePoolState) Set(v string) error {
+func (f *InstancePoolState) Set(v string) error {
 	switch v {
 	case `ACTIVE`, `DELETED`, `STOPPED`:
-		*ips = InstancePoolState(v)
+		*f = InstancePoolState(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETED", "STOPPED"`, v)
@@ -2425,7 +2425,7 @@ func (ips *InstancePoolState) Set(v string) error {
 }
 
 // Type always returns InstancePoolState to satisfy [pflag.Value] interface
-func (ips *InstancePoolState) Type() string {
+func (f *InstancePoolState) Type() string {
 	return "InstancePoolState"
 }
 
@@ -2480,15 +2480,15 @@ const LanguageScala Language = `scala`
 const LanguageSql Language = `sql`
 
 // String representation for [fmt.Print]
-func (l *Language) String() string {
-	return string(*l)
+func (f *Language) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (l *Language) Set(v string) error {
+func (f *Language) Set(v string) error {
 	switch v {
 	case `python`, `scala`, `sql`:
-		*l = Language(v)
+		*f = Language(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "python", "scala", "sql"`, v)
@@ -2496,7 +2496,7 @@ func (l *Language) Set(v string) error {
 }
 
 // Type always returns Language to satisfy [pflag.Value] interface
-func (l *Language) Type() string {
+func (f *Language) Type() string {
 	return "Language"
 }
 
@@ -2559,15 +2559,15 @@ const LibraryFullStatusStatusSkipped LibraryFullStatusStatus = `SKIPPED`
 const LibraryFullStatusStatusUninstallOnRestart LibraryFullStatusStatus = `UNINSTALL_ON_RESTART`
 
 // String representation for [fmt.Print]
-func (lfss *LibraryFullStatusStatus) String() string {
-	return string(*lfss)
+func (f *LibraryFullStatusStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (lfss *LibraryFullStatusStatus) Set(v string) error {
+func (f *LibraryFullStatusStatus) Set(v string) error {
 	switch v {
 	case `FAILED`, `INSTALLED`, `INSTALLING`, `PENDING`, `RESOLVING`, `SKIPPED`, `UNINSTALL_ON_RESTART`:
-		*lfss = LibraryFullStatusStatus(v)
+		*f = LibraryFullStatusStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FAILED", "INSTALLED", "INSTALLING", "PENDING", "RESOLVING", "SKIPPED", "UNINSTALL_ON_RESTART"`, v)
@@ -2575,7 +2575,7 @@ func (lfss *LibraryFullStatusStatus) Set(v string) error {
 }
 
 // Type always returns LibraryFullStatusStatus to satisfy [pflag.Value] interface
-func (lfss *LibraryFullStatusStatus) Type() string {
+func (f *LibraryFullStatusStatus) Type() string {
 	return "LibraryFullStatusStatus"
 }
 
@@ -2661,15 +2661,15 @@ const ListSortColumnPolicyCreationTime ListSortColumn = `POLICY_CREATION_TIME`
 const ListSortColumnPolicyName ListSortColumn = `POLICY_NAME`
 
 // String representation for [fmt.Print]
-func (lsc *ListSortColumn) String() string {
-	return string(*lsc)
+func (f *ListSortColumn) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (lsc *ListSortColumn) Set(v string) error {
+func (f *ListSortColumn) Set(v string) error {
 	switch v {
 	case `POLICY_CREATION_TIME`, `POLICY_NAME`:
-		*lsc = ListSortColumn(v)
+		*f = ListSortColumn(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "POLICY_CREATION_TIME", "POLICY_NAME"`, v)
@@ -2677,7 +2677,7 @@ func (lsc *ListSortColumn) Set(v string) error {
 }
 
 // Type always returns ListSortColumn to satisfy [pflag.Value] interface
-func (lsc *ListSortColumn) Type() string {
+func (f *ListSortColumn) Type() string {
 	return "ListSortColumn"
 }
 
@@ -2688,15 +2688,15 @@ const ListSortOrderAsc ListSortOrder = `ASC`
 const ListSortOrderDesc ListSortOrder = `DESC`
 
 // String representation for [fmt.Print]
-func (lso *ListSortOrder) String() string {
-	return string(*lso)
+func (f *ListSortOrder) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (lso *ListSortOrder) Set(v string) error {
+func (f *ListSortOrder) Set(v string) error {
 	switch v {
 	case `ASC`, `DESC`:
-		*lso = ListSortOrder(v)
+		*f = ListSortOrder(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ASC", "DESC"`, v)
@@ -2704,7 +2704,7 @@ func (lso *ListSortOrder) Set(v string) error {
 }
 
 // Type always returns ListSortOrder to satisfy [pflag.Value] interface
-func (lso *ListSortOrder) Type() string {
+func (f *ListSortOrder) Type() string {
 	return "ListSortOrder"
 }
 
@@ -2924,15 +2924,15 @@ const ResultTypeTable ResultType = `table`
 const ResultTypeText ResultType = `text`
 
 // String representation for [fmt.Print]
-func (rt *ResultType) String() string {
-	return string(*rt)
+func (f *ResultType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (rt *ResultType) Set(v string) error {
+func (f *ResultType) Set(v string) error {
 	switch v {
 	case `error`, `image`, `images`, `table`, `text`:
-		*rt = ResultType(v)
+		*f = ResultType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "error", "image", "images", "table", "text"`, v)
@@ -2940,7 +2940,7 @@ func (rt *ResultType) Set(v string) error {
 }
 
 // Type always returns ResultType to satisfy [pflag.Value] interface
-func (rt *ResultType) Type() string {
+func (f *ResultType) Type() string {
 	return "ResultType"
 }
 
@@ -2979,15 +2979,15 @@ const RuntimeEnginePhoton RuntimeEngine = `PHOTON`
 const RuntimeEngineStandard RuntimeEngine = `STANDARD`
 
 // String representation for [fmt.Print]
-func (re *RuntimeEngine) String() string {
-	return string(*re)
+func (f *RuntimeEngine) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (re *RuntimeEngine) Set(v string) error {
+func (f *RuntimeEngine) Set(v string) error {
 	switch v {
 	case `NULL`, `PHOTON`, `STANDARD`:
-		*re = RuntimeEngine(v)
+		*f = RuntimeEngine(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "NULL", "PHOTON", "STANDARD"`, v)
@@ -2995,7 +2995,7 @@ func (re *RuntimeEngine) Set(v string) error {
 }
 
 // Type always returns RuntimeEngine to satisfy [pflag.Value] interface
-func (re *RuntimeEngine) Type() string {
+func (f *RuntimeEngine) Type() string {
 	return "RuntimeEngine"
 }
 
@@ -3101,15 +3101,15 @@ const StateTerminating State = `TERMINATING`
 const StateUnknown State = `UNKNOWN`
 
 // String representation for [fmt.Print]
-func (s *State) String() string {
-	return string(*s)
+func (f *State) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (s *State) Set(v string) error {
+func (f *State) Set(v string) error {
 	switch v {
 	case `ERROR`, `PENDING`, `RESIZING`, `RESTARTING`, `RUNNING`, `TERMINATED`, `TERMINATING`, `UNKNOWN`:
-		*s = State(v)
+		*f = State(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ERROR", "PENDING", "RESIZING", "RESTARTING", "RUNNING", "TERMINATED", "TERMINATING", "UNKNOWN"`, v)
@@ -3117,7 +3117,7 @@ func (s *State) Set(v string) error {
 }
 
 // Type always returns State to satisfy [pflag.Value] interface
-func (s *State) Type() string {
+func (f *State) Type() string {
 	return "State"
 }
 
@@ -3293,15 +3293,15 @@ const TerminationReasonCodeWorkspaceCancelledError TerminationReasonCode = `WORK
 const TerminationReasonCodeWorkspaceConfigurationError TerminationReasonCode = `WORKSPACE_CONFIGURATION_ERROR`
 
 // String representation for [fmt.Print]
-func (trc *TerminationReasonCode) String() string {
-	return string(*trc)
+func (f *TerminationReasonCode) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (trc *TerminationReasonCode) Set(v string) error {
+func (f *TerminationReasonCode) Set(v string) error {
 	switch v {
 	case `ABUSE_DETECTED`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_SHUTDOWN`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `DATABASE_CONNECTION_FAILURE`, `DBFS_COMPONENT_UNHEALTHY`, `DOCKER_IMAGE_PULL_FAILURE`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `EXECUTION_COMPONENT_UNHEALTHY`, `GCP_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_UNREACHABLE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_SPARK_IMAGE`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `STORAGE_DOWNLOAD_FAILURE`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`:
-		*trc = TerminationReasonCode(v)
+		*f = TerminationReasonCode(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ABUSE_DETECTED", "ATTACH_PROJECT_FAILURE", "AWS_AUTHORIZATION_FAILURE", "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE", "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE", "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE", "AWS_REQUEST_LIMIT_EXCEEDED", "AWS_UNSUPPORTED_FAILURE", "AZURE_BYOK_KEY_PERMISSION_FAILURE", "AZURE_EPHEMERAL_DISK_FAILURE", "AZURE_INVALID_DEPLOYMENT_TEMPLATE", "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION", "AZURE_QUOTA_EXCEEDED_EXCEPTION", "AZURE_RESOURCE_MANAGER_THROTTLING", "AZURE_RESOURCE_PROVIDER_THROTTLING", "AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE", "AZURE_VM_EXTENSION_FAILURE", "AZURE_VNET_CONFIGURATION_FAILURE", "BOOTSTRAP_TIMEOUT", "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION", "CLOUD_PROVIDER_DISK_SETUP_FAILURE", "CLOUD_PROVIDER_LAUNCH_FAILURE", "CLOUD_PROVIDER_RESOURCE_STOCKOUT", "CLOUD_PROVIDER_SHUTDOWN", "COMMUNICATION_LOST", "CONTAINER_LAUNCH_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE", "DATABASE_CONNECTION_FAILURE", "DBFS_COMPONENT_UNHEALTHY", "DOCKER_IMAGE_PULL_FAILURE", "DRIVER_UNREACHABLE", "DRIVER_UNRESPONSIVE", "EXECUTION_COMPONENT_UNHEALTHY", "GCP_QUOTA_EXCEEDED", "GCP_SERVICE_ACCOUNT_DELETED", "GLOBAL_INIT_SCRIPT_FAILURE", "HIVE_METASTORE_PROVISIONING_FAILURE", "IMAGE_PULL_PERMISSION_DENIED", "INACTIVITY", "INIT_SCRIPT_FAILURE", "INSTANCE_POOL_CLUSTER_FAILURE", "INSTANCE_UNREACHABLE", "INTERNAL_ERROR", "INVALID_ARGUMENT", "INVALID_SPARK_IMAGE", "IP_EXHAUSTION_FAILURE", "JOB_FINISHED", "K8S_AUTOSCALING_FAILURE", "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT", "METASTORE_COMPONENT_UNHEALTHY", "NEPHOS_RESOURCE_MANAGEMENT", "NETWORK_CONFIGURATION_FAILURE", "NFS_MOUNT_FAILURE", "NPIP_TUNNEL_SETUP_FAILURE", "NPIP_TUNNEL_TOKEN_FAILURE", "REQUEST_REJECTED", "REQUEST_THROTTLED", "SECRET_RESOLUTION_ERROR", "SECURITY_DAEMON_REGISTRATION_EXCEPTION", "SELF_BOOTSTRAP_FAILURE", "SKIPPED_SLOW_NODES", "SLOW_IMAGE_DOWNLOAD", "SPARK_ERROR", "SPARK_IMAGE_DOWNLOAD_FAILURE", "SPARK_STARTUP_FAILURE", "SPOT_INSTANCE_TERMINATION", "STORAGE_DOWNLOAD_FAILURE", "STS_CLIENT_SETUP_FAILURE", "SUBNET_EXHAUSTED_FAILURE", "TEMPORARILY_UNAVAILABLE", "TRIAL_EXPIRED", "UNEXPECTED_LAUNCH_FAILURE", "UNKNOWN", "UNSUPPORTED_INSTANCE_TYPE", "UPDATE_INSTANCE_PROFILE_FAILURE", "USER_REQUEST", "WORKER_SETUP_FAILURE", "WORKSPACE_CANCELLED_ERROR", "WORKSPACE_CONFIGURATION_ERROR"`, v)
@@ -3309,7 +3309,7 @@ func (trc *TerminationReasonCode) Set(v string) error {
 }
 
 // Type always returns TerminationReasonCode to satisfy [pflag.Value] interface
-func (trc *TerminationReasonCode) Type() string {
+func (f *TerminationReasonCode) Type() string {
 	return "TerminationReasonCode"
 }
 
@@ -3325,15 +3325,15 @@ const TerminationReasonTypeServiceFault TerminationReasonType = `SERVICE_FAULT`
 const TerminationReasonTypeSuccess TerminationReasonType = `SUCCESS`
 
 // String representation for [fmt.Print]
-func (trt *TerminationReasonType) String() string {
-	return string(*trt)
+func (f *TerminationReasonType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (trt *TerminationReasonType) Set(v string) error {
+func (f *TerminationReasonType) Set(v string) error {
 	switch v {
 	case `CLIENT_ERROR`, `CLOUD_FAILURE`, `SERVICE_FAULT`, `SUCCESS`:
-		*trt = TerminationReasonType(v)
+		*f = TerminationReasonType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLIENT_ERROR", "CLOUD_FAILURE", "SERVICE_FAULT", "SUCCESS"`, v)
@@ -3341,7 +3341,7 @@ func (trt *TerminationReasonType) Set(v string) error {
 }
 
 // Type always returns TerminationReasonType to satisfy [pflag.Value] interface
-func (trt *TerminationReasonType) Type() string {
+func (f *TerminationReasonType) Type() string {
 	return "TerminationReasonType"
 }
 

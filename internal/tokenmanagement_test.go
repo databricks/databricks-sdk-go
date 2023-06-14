@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCreateOboToken(t *testing.T) {
+func TestAccCreateOboTokenOnAws(t *testing.T) {
 	ctx, w := workspaceTest(t)
 	if !w.Config.IsAws() {
 		t.Skip("works only on aws")

@@ -235,8 +235,8 @@ func (s *suite) usageSamples(svc, mth string) (out []*sample) {
 						if callIds[v.id] {
 							continue
 						}
-						sa.Calls = append(sa.Calls, v)
-						callIds[v.id] = true
+						// put at the front of the queue
+						queue = append([]expression{v}, queue...)
 					}
 				}
 				x.IsAccount = ex.IsAccount
@@ -309,6 +309,10 @@ func (s *suite) usageSamples(svc, mth string) (out []*sample) {
 				callIds[c.id] = true
 			}
 		}
+		slices.SortFunc[*call](sa.Calls, func(a, b *call) bool {
+			x := a.IsDependentOn(b)
+			return x
+		})
 		reverse(sa.Calls)
 		reverse(sa.Cleanup)
 	}
@@ -400,6 +404,7 @@ var ignoreFns = map[string]bool{
 	"Lock":    true,
 	"Errorf":  true,
 	"Skipf":   true,
+	"Log":     true,
 }
 
 func (s *suite) expectCleanup(ex *example, ce *ast.CallExpr) bool {
@@ -712,6 +717,10 @@ func (s *suite) expectCall(e ast.Expr) *call {
 			s.explainAndPanic("selector expr", se)
 			return nil
 		}
+	}
+	if c.Service != nil && c.Service.Name == "fmt" {
+		// fmt.Sprintf is not a service
+		c.Service = nil
 	}
 	for _, v := range ce.Args {
 		arg := s.expectExpr(v)

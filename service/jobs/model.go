@@ -178,15 +178,15 @@ const ContinuousPauseStatusPaused ContinuousPauseStatus = `PAUSED`
 const ContinuousPauseStatusUnpaused ContinuousPauseStatus = `UNPAUSED`
 
 // String representation for [fmt.Print]
-func (cps *ContinuousPauseStatus) String() string {
-	return string(*cps)
+func (f *ContinuousPauseStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (cps *ContinuousPauseStatus) Set(v string) error {
+func (f *ContinuousPauseStatus) Set(v string) error {
 	switch v {
 	case `PAUSED`, `UNPAUSED`:
-		*cps = ContinuousPauseStatus(v)
+		*f = ContinuousPauseStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
@@ -194,7 +194,7 @@ func (cps *ContinuousPauseStatus) Set(v string) error {
 }
 
 // Type always returns ContinuousPauseStatus to satisfy [pflag.Value] interface
-func (cps *ContinuousPauseStatus) Type() string {
+func (f *ContinuousPauseStatus) Type() string {
 	return "ContinuousPauseStatus"
 }
 
@@ -284,15 +284,15 @@ const CreateJobFormatMultiTask CreateJobFormat = `MULTI_TASK`
 const CreateJobFormatSingleTask CreateJobFormat = `SINGLE_TASK`
 
 // String representation for [fmt.Print]
-func (cjf *CreateJobFormat) String() string {
-	return string(*cjf)
+func (f *CreateJobFormat) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (cjf *CreateJobFormat) Set(v string) error {
+func (f *CreateJobFormat) Set(v string) error {
 	switch v {
 	case `MULTI_TASK`, `SINGLE_TASK`:
-		*cjf = CreateJobFormat(v)
+		*f = CreateJobFormat(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "MULTI_TASK", "SINGLE_TASK"`, v)
@@ -300,7 +300,7 @@ func (cjf *CreateJobFormat) Set(v string) error {
 }
 
 // Type always returns CreateJobFormat to satisfy [pflag.Value] interface
-func (cjf *CreateJobFormat) Type() string {
+func (f *CreateJobFormat) Type() string {
 	return "CreateJobFormat"
 }
 
@@ -332,15 +332,15 @@ const CronSchedulePauseStatusPaused CronSchedulePauseStatus = `PAUSED`
 const CronSchedulePauseStatusUnpaused CronSchedulePauseStatus = `UNPAUSED`
 
 // String representation for [fmt.Print]
-func (csps *CronSchedulePauseStatus) String() string {
-	return string(*csps)
+func (f *CronSchedulePauseStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (csps *CronSchedulePauseStatus) Set(v string) error {
+func (f *CronSchedulePauseStatus) Set(v string) error {
 	switch v {
 	case `PAUSED`, `UNPAUSED`:
-		*csps = CronSchedulePauseStatus(v)
+		*f = CronSchedulePauseStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
@@ -348,7 +348,7 @@ func (csps *CronSchedulePauseStatus) Set(v string) error {
 }
 
 // Type always returns CronSchedulePauseStatus to satisfy [pflag.Value] interface
-func (csps *CronSchedulePauseStatus) Type() string {
+func (f *CronSchedulePauseStatus) Type() string {
 	return "CronSchedulePauseStatus"
 }
 
@@ -508,15 +508,15 @@ const GitSourceGitProviderGitlab GitSourceGitProvider = `gitLab`
 const GitSourceGitProviderGitlabenterpriseedition GitSourceGitProvider = `gitLabEnterpriseEdition`
 
 // String representation for [fmt.Print]
-func (gsgp *GitSourceGitProvider) String() string {
-	return string(*gsgp)
+func (f *GitSourceGitProvider) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (gsgp *GitSourceGitProvider) Set(v string) error {
+func (f *GitSourceGitProvider) Set(v string) error {
 	switch v {
 	case `awsCodeCommit`, `azureDevOpsServices`, `bitbucketCloud`, `bitbucketServer`, `gitHub`, `gitHubEnterprise`, `gitLab`, `gitLabEnterpriseEdition`:
-		*gsgp = GitSourceGitProvider(v)
+		*f = GitSourceGitProvider(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "awsCodeCommit", "azureDevOpsServices", "bitbucketCloud", "bitbucketServer", "gitHub", "gitHubEnterprise", "gitLab", "gitLabEnterpriseEdition"`, v)
@@ -524,7 +524,7 @@ func (gsgp *GitSourceGitProvider) Set(v string) error {
 }
 
 // Type always returns GitSourceGitProvider to satisfy [pflag.Value] interface
-func (gsgp *GitSourceGitProvider) Type() string {
+func (f *GitSourceGitProvider) Type() string {
 	return "GitSourceGitProvider"
 }
 
@@ -692,15 +692,15 @@ const JobSettingsFormatMultiTask JobSettingsFormat = `MULTI_TASK`
 const JobSettingsFormatSingleTask JobSettingsFormat = `SINGLE_TASK`
 
 // String representation for [fmt.Print]
-func (jsf *JobSettingsFormat) String() string {
-	return string(*jsf)
+func (f *JobSettingsFormat) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (jsf *JobSettingsFormat) Set(v string) error {
+func (f *JobSettingsFormat) Set(v string) error {
 	switch v {
 	case `MULTI_TASK`, `SINGLE_TASK`:
-		*jsf = JobSettingsFormat(v)
+		*f = JobSettingsFormat(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "MULTI_TASK", "SINGLE_TASK"`, v)
@@ -708,7 +708,7 @@ func (jsf *JobSettingsFormat) Set(v string) error {
 }
 
 // Type always returns JobSettingsFormat to satisfy [pflag.Value] interface
-func (jsf *JobSettingsFormat) Type() string {
+func (f *JobSettingsFormat) Type() string {
 	return "JobSettingsFormat"
 }
 
@@ -909,15 +909,15 @@ const ListRunsRunTypeSubmitRun ListRunsRunType = `SUBMIT_RUN`
 const ListRunsRunTypeWorkflowRun ListRunsRunType = `WORKFLOW_RUN`
 
 // String representation for [fmt.Print]
-func (lrrt *ListRunsRunType) String() string {
-	return string(*lrrt)
+func (f *ListRunsRunType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (lrrt *ListRunsRunType) Set(v string) error {
+func (f *ListRunsRunType) Set(v string) error {
 	switch v {
 	case `JOB_RUN`, `SUBMIT_RUN`, `WORKFLOW_RUN`:
-		*lrrt = ListRunsRunType(v)
+		*f = ListRunsRunType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "JOB_RUN", "SUBMIT_RUN", "WORKFLOW_RUN"`, v)
@@ -925,7 +925,7 @@ func (lrrt *ListRunsRunType) Set(v string) error {
 }
 
 // Type always returns ListRunsRunType to satisfy [pflag.Value] interface
-func (lrrt *ListRunsRunType) Type() string {
+func (f *ListRunsRunType) Type() string {
 	return "ListRunsRunType"
 }
 
@@ -978,15 +978,15 @@ const NotebookTaskSourceGit NotebookTaskSource = `GIT`
 const NotebookTaskSourceWorkspace NotebookTaskSource = `WORKSPACE`
 
 // String representation for [fmt.Print]
-func (nts *NotebookTaskSource) String() string {
-	return string(*nts)
+func (f *NotebookTaskSource) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (nts *NotebookTaskSource) Set(v string) error {
+func (f *NotebookTaskSource) Set(v string) error {
 	switch v {
 	case `GIT`, `WORKSPACE`:
-		*nts = NotebookTaskSource(v)
+		*f = NotebookTaskSource(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "GIT", "WORKSPACE"`, v)
@@ -994,7 +994,7 @@ func (nts *NotebookTaskSource) Set(v string) error {
 }
 
 // Type always returns NotebookTaskSource to satisfy [pflag.Value] interface
-func (nts *NotebookTaskSource) Type() string {
+func (f *NotebookTaskSource) Type() string {
 	return "NotebookTaskSource"
 }
 
@@ -1053,15 +1053,15 @@ const RepairHistoryItemTypeOriginal RepairHistoryItemType = `ORIGINAL`
 const RepairHistoryItemTypeRepair RepairHistoryItemType = `REPAIR`
 
 // String representation for [fmt.Print]
-func (rhit *RepairHistoryItemType) String() string {
-	return string(*rhit)
+func (f *RepairHistoryItemType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (rhit *RepairHistoryItemType) Set(v string) error {
+func (f *RepairHistoryItemType) Set(v string) error {
 	switch v {
 	case `ORIGINAL`, `REPAIR`:
-		*rhit = RepairHistoryItemType(v)
+		*f = RepairHistoryItemType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ORIGINAL", "REPAIR"`, v)
@@ -1069,7 +1069,7 @@ func (rhit *RepairHistoryItemType) Set(v string) error {
 }
 
 // Type always returns RepairHistoryItemType to satisfy [pflag.Value] interface
-func (rhit *RepairHistoryItemType) Type() string {
+func (f *RepairHistoryItemType) Type() string {
 	return "RepairHistoryItemType"
 }
 
@@ -1317,15 +1317,15 @@ const RunLifeCycleStateTerminating RunLifeCycleState = `TERMINATING`
 const RunLifeCycleStateWaitingForRetry RunLifeCycleState = `WAITING_FOR_RETRY`
 
 // String representation for [fmt.Print]
-func (rlcs *RunLifeCycleState) String() string {
-	return string(*rlcs)
+func (f *RunLifeCycleState) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (rlcs *RunLifeCycleState) Set(v string) error {
+func (f *RunLifeCycleState) Set(v string) error {
 	switch v {
 	case `BLOCKED`, `INTERNAL_ERROR`, `PENDING`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`, `WAITING_FOR_RETRY`:
-		*rlcs = RunLifeCycleState(v)
+		*f = RunLifeCycleState(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "INTERNAL_ERROR", "PENDING", "RUNNING", "SKIPPED", "TERMINATED", "TERMINATING", "WAITING_FOR_RETRY"`, v)
@@ -1333,7 +1333,7 @@ func (rlcs *RunLifeCycleState) Set(v string) error {
 }
 
 // Type always returns RunLifeCycleState to satisfy [pflag.Value] interface
-func (rlcs *RunLifeCycleState) Type() string {
+func (f *RunLifeCycleState) Type() string {
 	return "RunLifeCycleState"
 }
 
@@ -1581,15 +1581,15 @@ const RunResultStateSuccess RunResultState = `SUCCESS`
 const RunResultStateTimedout RunResultState = `TIMEDOUT`
 
 // String representation for [fmt.Print]
-func (rrs *RunResultState) String() string {
-	return string(*rrs)
+func (f *RunResultState) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (rrs *RunResultState) Set(v string) error {
+func (f *RunResultState) Set(v string) error {
 	switch v {
 	case `CANCELED`, `FAILED`, `SUCCESS`, `TIMEDOUT`:
-		*rrs = RunResultState(v)
+		*f = RunResultState(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELED", "FAILED", "SUCCESS", "TIMEDOUT"`, v)
@@ -1597,7 +1597,7 @@ func (rrs *RunResultState) Set(v string) error {
 }
 
 // Type always returns RunResultState to satisfy [pflag.Value] interface
-func (rrs *RunResultState) Type() string {
+func (f *RunResultState) Type() string {
 	return "RunResultState"
 }
 
@@ -1769,15 +1769,15 @@ const RunTypeSubmitRun RunType = `SUBMIT_RUN`
 const RunTypeWorkflowRun RunType = `WORKFLOW_RUN`
 
 // String representation for [fmt.Print]
-func (rt *RunType) String() string {
-	return string(*rt)
+func (f *RunType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (rt *RunType) Set(v string) error {
+func (f *RunType) Set(v string) error {
 	switch v {
 	case `JOB_RUN`, `SUBMIT_RUN`, `WORKFLOW_RUN`:
-		*rt = RunType(v)
+		*f = RunType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "JOB_RUN", "SUBMIT_RUN", "WORKFLOW_RUN"`, v)
@@ -1785,7 +1785,7 @@ func (rt *RunType) Set(v string) error {
 }
 
 // Type always returns RunType to satisfy [pflag.Value] interface
-func (rt *RunType) Type() string {
+func (f *RunType) Type() string {
 	return "RunType"
 }
 
@@ -1837,15 +1837,15 @@ const SparkPythonTaskSourceGit SparkPythonTaskSource = `GIT`
 const SparkPythonTaskSourceWorkspace SparkPythonTaskSource = `WORKSPACE`
 
 // String representation for [fmt.Print]
-func (spts *SparkPythonTaskSource) String() string {
-	return string(*spts)
+func (f *SparkPythonTaskSource) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (spts *SparkPythonTaskSource) Set(v string) error {
+func (f *SparkPythonTaskSource) Set(v string) error {
 	switch v {
 	case `GIT`, `WORKSPACE`:
-		*spts = SparkPythonTaskSource(v)
+		*f = SparkPythonTaskSource(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "GIT", "WORKSPACE"`, v)
@@ -1853,7 +1853,7 @@ func (spts *SparkPythonTaskSource) Set(v string) error {
 }
 
 // Type always returns SparkPythonTaskSource to satisfy [pflag.Value] interface
-func (spts *SparkPythonTaskSource) Type() string {
+func (f *SparkPythonTaskSource) Type() string {
 	return "SparkPythonTaskSource"
 }
 
@@ -1899,15 +1899,15 @@ const SqlAlertStateTriggered SqlAlertState = `TRIGGERED`
 const SqlAlertStateUnknown SqlAlertState = `UNKNOWN`
 
 // String representation for [fmt.Print]
-func (sas *SqlAlertState) String() string {
-	return string(*sas)
+func (f *SqlAlertState) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (sas *SqlAlertState) Set(v string) error {
+func (f *SqlAlertState) Set(v string) error {
 	switch v {
 	case `OK`, `TRIGGERED`, `UNKNOWN`:
-		*sas = SqlAlertState(v)
+		*f = SqlAlertState(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "OK", "TRIGGERED", "UNKNOWN"`, v)
@@ -1915,7 +1915,7 @@ func (sas *SqlAlertState) Set(v string) error {
 }
 
 // Type always returns SqlAlertState to satisfy [pflag.Value] interface
-func (sas *SqlAlertState) Type() string {
+func (f *SqlAlertState) Type() string {
 	return "SqlAlertState"
 }
 
@@ -1957,15 +1957,15 @@ const SqlDashboardWidgetOutputStatusRunning SqlDashboardWidgetOutputStatus = `RU
 const SqlDashboardWidgetOutputStatusSuccess SqlDashboardWidgetOutputStatus = `SUCCESS`
 
 // String representation for [fmt.Print]
-func (sdwos *SqlDashboardWidgetOutputStatus) String() string {
-	return string(*sdwos)
+func (f *SqlDashboardWidgetOutputStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (sdwos *SqlDashboardWidgetOutputStatus) Set(v string) error {
+func (f *SqlDashboardWidgetOutputStatus) Set(v string) error {
 	switch v {
 	case `CANCELLED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCESS`:
-		*sdwos = SqlDashboardWidgetOutputStatus(v)
+		*f = SqlDashboardWidgetOutputStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "PENDING", "RUNNING", "SUCCESS"`, v)
@@ -1973,7 +1973,7 @@ func (sdwos *SqlDashboardWidgetOutputStatus) Set(v string) error {
 }
 
 // Type always returns SqlDashboardWidgetOutputStatus to satisfy [pflag.Value] interface
-func (sdwos *SqlDashboardWidgetOutputStatus) Type() string {
+func (f *SqlDashboardWidgetOutputStatus) Type() string {
 	return "SqlDashboardWidgetOutputStatus"
 }
 
@@ -2179,15 +2179,15 @@ const TriggerSettingsPauseStatusPaused TriggerSettingsPauseStatus = `PAUSED`
 const TriggerSettingsPauseStatusUnpaused TriggerSettingsPauseStatus = `UNPAUSED`
 
 // String representation for [fmt.Print]
-func (tsps *TriggerSettingsPauseStatus) String() string {
-	return string(*tsps)
+func (f *TriggerSettingsPauseStatus) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (tsps *TriggerSettingsPauseStatus) Set(v string) error {
+func (f *TriggerSettingsPauseStatus) Set(v string) error {
 	switch v {
 	case `PAUSED`, `UNPAUSED`:
-		*tsps = TriggerSettingsPauseStatus(v)
+		*f = TriggerSettingsPauseStatus(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
@@ -2195,7 +2195,7 @@ func (tsps *TriggerSettingsPauseStatus) Set(v string) error {
 }
 
 // Type always returns TriggerSettingsPauseStatus to satisfy [pflag.Value] interface
-func (tsps *TriggerSettingsPauseStatus) Type() string {
+func (f *TriggerSettingsPauseStatus) Type() string {
 	return "TriggerSettingsPauseStatus"
 }
 
@@ -2217,15 +2217,15 @@ const TriggerTypePeriodic TriggerType = `PERIODIC`
 const TriggerTypeRetry TriggerType = `RETRY`
 
 // String representation for [fmt.Print]
-func (tt *TriggerType) String() string {
-	return string(*tt)
+func (f *TriggerType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (tt *TriggerType) Set(v string) error {
+func (f *TriggerType) Set(v string) error {
 	switch v {
 	case `FILE_ARRIVAL`, `ONE_TIME`, `PERIODIC`, `RETRY`:
-		*tt = TriggerType(v)
+		*f = TriggerType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FILE_ARRIVAL", "ONE_TIME", "PERIODIC", "RETRY"`, v)
@@ -2233,7 +2233,7 @@ func (tt *TriggerType) Set(v string) error {
 }
 
 // Type always returns TriggerType to satisfy [pflag.Value] interface
-func (tt *TriggerType) Type() string {
+func (f *TriggerType) Type() string {
 	return "TriggerType"
 }
 
@@ -2273,15 +2273,15 @@ const ViewTypeDashboard ViewType = `DASHBOARD`
 const ViewTypeNotebook ViewType = `NOTEBOOK`
 
 // String representation for [fmt.Print]
-func (vt *ViewType) String() string {
-	return string(*vt)
+func (f *ViewType) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (vt *ViewType) Set(v string) error {
+func (f *ViewType) Set(v string) error {
 	switch v {
 	case `DASHBOARD`, `NOTEBOOK`:
-		*vt = ViewType(v)
+		*f = ViewType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DASHBOARD", "NOTEBOOK"`, v)
@@ -2289,7 +2289,7 @@ func (vt *ViewType) Set(v string) error {
 }
 
 // Type always returns ViewType to satisfy [pflag.Value] interface
-func (vt *ViewType) Type() string {
+func (f *ViewType) Type() string {
 	return "ViewType"
 }
 
@@ -2306,15 +2306,15 @@ const ViewsToExportCode ViewsToExport = `CODE`
 const ViewsToExportDashboards ViewsToExport = `DASHBOARDS`
 
 // String representation for [fmt.Print]
-func (vte *ViewsToExport) String() string {
-	return string(*vte)
+func (f *ViewsToExport) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (vte *ViewsToExport) Set(v string) error {
+func (f *ViewsToExport) Set(v string) error {
 	switch v {
 	case `ALL`, `CODE`, `DASHBOARDS`:
-		*vte = ViewsToExport(v)
+		*f = ViewsToExport(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ALL", "CODE", "DASHBOARDS"`, v)
@@ -2322,6 +2322,6 @@ func (vte *ViewsToExport) Set(v string) error {
 }
 
 // Type always returns ViewsToExport to satisfy [pflag.Value] interface
-func (vte *ViewsToExport) Type() string {
+func (f *ViewsToExport) Type() string {
 	return "ViewsToExport"
 }

@@ -24,15 +24,15 @@ type {{.PascalName}} string
 const {{.Entity.PascalName}}{{.PascalName}} {{.Entity.PascalName}} = `{{.Content}}`{{end}}
 
 // String representation for [fmt.Print]
-func ({{.AbbrName}} *{{.PascalName}}) String() string {
-    return string(*{{.AbbrName}})
+func (f *{{.PascalName}}) String() string {
+    return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func ({{.AbbrName}} *{{.PascalName}}) Set(v string) error {
+func (f *{{.PascalName}}) Set(v string) error {
     switch v {
     case {{range $i, $e := .Enum }}{{if $i}}, {{end}}`{{.Content}}`{{end}}:
-        *{{.AbbrName}} = {{.PascalName}}(v)
+        *f = {{.PascalName}}(v)
         return nil
     default:
         return fmt.Errorf(`value "%s" is not one of {{range $i, $e := .Enum }}{{if $i}}, {{end}}"{{.Content}}"{{end}}`, v)
@@ -40,7 +40,7 @@ func ({{.AbbrName}} *{{.PascalName}}) Set(v string) error {
 }
 
 // Type always returns {{.PascalName}} to satisfy [pflag.Value] interface
-func ({{.AbbrName}} *{{.PascalName}}) Type() string {
+func (f *{{.PascalName}}) Type() string {
     return "{{.PascalName}}"
 }{{end}}
 {{end}}

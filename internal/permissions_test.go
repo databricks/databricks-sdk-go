@@ -18,7 +18,7 @@ func TestAccGenericPermissions(t *testing.T) {
 	err := w.Workspace.Import(ctx, workspace.Import{
 		Path:      notebookPath,
 		Overwrite: true,
-		Format:    workspace.ExportFormatSource,
+		Format:    workspace.ImportFormatSource,
 		Language:  workspace.LanguagePython,
 		Content:   base64.StdEncoding.EncodeToString([]byte(`print(1)`)),
 	})
@@ -62,8 +62,8 @@ func TestAccGenericPermissions(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestMwsAccWorkspaceAssignment(t *testing.T) {
-	ctx, a := accountTest(t)
+func TestUcAccWorkspaceAssignmentOnAws(t *testing.T) {
+	ctx, a := ucacctTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}

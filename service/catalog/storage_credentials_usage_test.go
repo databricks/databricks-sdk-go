@@ -14,7 +14,28 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-func ExampleStorageCredentialsAPI_Create_storageCredentials() {
+func ExampleStorageCredentialsAPI_Create_volumes() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	storageCredential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
+		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+		AwsIamRole: &catalog.AwsIamRole{
+			RoleArn: os.Getenv("TEST_METASTORE_DATA_ACCESS_ARN"),
+		},
+		Comment: "created via SDK",
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", storageCredential)
+
+}
+
+func ExampleStorageCredentialsAPI_Create_storageCredentialsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -41,7 +62,7 @@ func ExampleStorageCredentialsAPI_Create_storageCredentials() {
 
 }
 
-func ExampleStorageCredentialsAPI_Create_externalLocations() {
+func ExampleStorageCredentialsAPI_Create_externalLocationsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -68,7 +89,7 @@ func ExampleStorageCredentialsAPI_Create_externalLocations() {
 
 }
 
-func ExampleStorageCredentialsAPI_Get_storageCredentials() {
+func ExampleStorageCredentialsAPI_Get_storageCredentialsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -101,7 +122,7 @@ func ExampleStorageCredentialsAPI_Get_storageCredentials() {
 
 }
 
-func ExampleStorageCredentialsAPI_ListAll_storageCredentials() {
+func ExampleStorageCredentialsAPI_ListAll_storageCredentialsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -116,7 +137,7 @@ func ExampleStorageCredentialsAPI_ListAll_storageCredentials() {
 
 }
 
-func ExampleStorageCredentialsAPI_Update_storageCredentials() {
+func ExampleStorageCredentialsAPI_Update_storageCredentialsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

@@ -50,6 +50,7 @@ func ExampleCommandExecutionAPI_Execute_commandsDirectUsage() {
 	}
 
 	clusterId := os.Getenv("TEST_DEFAULT_CLUSTER_ID")
+
 	context, err := w.CommandExecution.CreateAndWait(ctx, compute.CreateContext{
 		ClusterId: clusterId,
 		Language:  compute.LanguagePython,

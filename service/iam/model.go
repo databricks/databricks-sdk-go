@@ -84,21 +84,6 @@ type DeleteWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-// Get a rule set
-type GetAccountAccessControlRequest struct {
-	// Etag used for versioning. The response is at least as fresh as the eTag
-	// provided. Etag is used for optimistic concurrency control as a way to
-	// help prevent simultaneous updates of a rule set from overwriting each
-	// other. It is strongly suggested that systems make use of the etag in the
-	// read -> modify -> write pattern to perform rule set updates in order to
-	// avoid race conditions that is get an etag from a GET rule set request,
-	// and pass it with the PUT update request to identify the rule set version
-	// you are updating.
-	Etag string `json:"-" url:"etag"`
-	// The resource name of the rule set to get or update.
-	Name string `json:"-" url:"name"`
-}
-
 // Get group details
 type GetAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
@@ -115,6 +100,12 @@ type GetAccountServicePrincipalRequest struct {
 type GetAccountUserRequest struct {
 	// Unique ID for a user in the Databricks account.
 	Id string `json:"-" url:"-"`
+}
+
+// Get assignable roles for a resource
+type GetAssignableRolesForResourceRequest struct {
+	// The resource name for which assignable roles will be listed.
+	Resource string `json:"-" url:"resource"`
 }
 
 type GetAssignableRolesForResourceResponse struct {
@@ -145,6 +136,21 @@ type GetPermissionRequest struct {
 	RequestObjectId string `json:"-" url:"-"`
 	// <needs content>
 	RequestObjectType string `json:"-" url:"-"`
+}
+
+// Get a rule set
+type GetRuleSetRequest struct {
+	// Etag used for versioning. The response is at least as fresh as the eTag
+	// provided. Etag is used for optimistic concurrency control as a way to
+	// help prevent simultaneous updates of a rule set from overwriting each
+	// other. It is strongly suggested that systems make use of the etag in the
+	// read -> modify -> write pattern to perform rule set updates in order to
+	// avoid race conditions that is get an etag from a GET rule set request,
+	// and pass it with the PUT update request to identify the rule set version
+	// you are updating.
+	Etag string `json:"-" url:"etag"`
+	// The ruleset name associated with the request.
+	Name string `json:"-" url:"name"`
 }
 
 // Get service principal details
@@ -182,17 +188,11 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
-}
-
-// List assignable roles on a resource
-type ListAccountAccessControlRequest struct {
-	// The resource name of the rule set to get or update.
-	Name string `json:"-" url:"name"`
 }
 
 // List group details
@@ -347,15 +347,15 @@ const ListSortOrderAscending ListSortOrder = `ascending`
 const ListSortOrderDescending ListSortOrder = `descending`
 
 // String representation for [fmt.Print]
-func (lso *ListSortOrder) String() string {
-	return string(*lso)
+func (f *ListSortOrder) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (lso *ListSortOrder) Set(v string) error {
+func (f *ListSortOrder) Set(v string) error {
 	switch v {
 	case `ascending`, `descending`:
-		*lso = ListSortOrder(v)
+		*f = ListSortOrder(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ascending", "descending"`, v)
@@ -363,7 +363,7 @@ func (lso *ListSortOrder) Set(v string) error {
 }
 
 // Type always returns ListSortOrder to satisfy [pflag.Value] interface
-func (lso *ListSortOrder) Type() string {
+func (f *ListSortOrder) Type() string {
 	return "ListSortOrder"
 }
 
@@ -451,15 +451,15 @@ const PatchOpRemove PatchOp = `remove`
 const PatchOpReplace PatchOp = `replace`
 
 // String representation for [fmt.Print]
-func (po *PatchOp) String() string {
-	return string(*po)
+func (f *PatchOp) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (po *PatchOp) Set(v string) error {
+func (f *PatchOp) Set(v string) error {
 	switch v {
 	case `add`, `remove`, `replace`:
-		*po = PatchOp(v)
+		*f = PatchOp(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "add", "remove", "replace"`, v)
@@ -467,7 +467,7 @@ func (po *PatchOp) Set(v string) error {
 }
 
 // Type always returns PatchOp to satisfy [pflag.Value] interface
-func (po *PatchOp) Type() string {
+func (f *PatchOp) Type() string {
 	return "PatchOp"
 }
 
@@ -527,15 +527,15 @@ const PermissionLevelCanViewMetadata PermissionLevel = `CAN_VIEW_METADATA`
 const PermissionLevelIsOwner PermissionLevel = `IS_OWNER`
 
 // String representation for [fmt.Print]
-func (pl *PermissionLevel) String() string {
-	return string(*pl)
+func (f *PermissionLevel) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (pl *PermissionLevel) Set(v string) error {
+func (f *PermissionLevel) Set(v string) error {
 	switch v {
 	case `CAN_ATTACH_TO`, `CAN_BIND`, `CAN_EDIT`, `CAN_EDIT_METADATA`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_RUN`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`, `CAN_RESTART`, `CAN_RUN`, `CAN_USE`, `CAN_VIEW`, `CAN_VIEW_METADATA`, `IS_OWNER`:
-		*pl = PermissionLevel(v)
+		*f = PermissionLevel(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_ATTACH_TO", "CAN_BIND", "CAN_EDIT", "CAN_EDIT_METADATA", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_RUN", "CAN_MANAGE_STAGING_VERSIONS", "CAN_READ", "CAN_RESTART", "CAN_RUN", "CAN_USE", "CAN_VIEW", "CAN_VIEW_METADATA", "IS_OWNER"`, v)
@@ -543,7 +543,7 @@ func (pl *PermissionLevel) Set(v string) error {
 }
 
 // Type always returns PermissionLevel to satisfy [pflag.Value] interface
-func (pl *PermissionLevel) Type() string {
+func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
 }
 
@@ -616,23 +616,14 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 }
 
 type UpdateRuleSetRequest struct {
-	// Etag used for versioning. The response is at least as fresh as the eTag
-	// provided. Etag is used for optimistic concurrency control as a way to
-	// help prevent simultaneous updates of a rule set from overwriting each
-	// other. It is strongly suggested that systems make use of the etag in the
-	// read -> modify -> write pattern to perform rule set updates in order to
-	// avoid race conditions that is get an etag from a GET rule set request,
-	// and pass it with the PUT update request to identify the rule set version
-	// you are updating.
-	Etag string `json:"-" url:"etag"`
 	// Name of the rule set.
-	Name string `json:"name" url:"name"`
+	Name string `json:"name"`
 
 	RuleSet RuleSetUpdateRequest `json:"rule_set"`
 }
@@ -661,7 +652,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Name *Name `json:"name,omitempty"`
 
@@ -679,15 +670,15 @@ const WorkspacePermissionUnknown WorkspacePermission = `UNKNOWN`
 const WorkspacePermissionUser WorkspacePermission = `USER`
 
 // String representation for [fmt.Print]
-func (wp *WorkspacePermission) String() string {
-	return string(*wp)
+func (f *WorkspacePermission) String() string {
+	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (wp *WorkspacePermission) Set(v string) error {
+func (f *WorkspacePermission) Set(v string) error {
 	switch v {
 	case `ADMIN`, `UNKNOWN`, `USER`:
-		*wp = WorkspacePermission(v)
+		*f = WorkspacePermission(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ADMIN", "UNKNOWN", "USER"`, v)
@@ -695,7 +686,7 @@ func (wp *WorkspacePermission) Set(v string) error {
 }
 
 // Type always returns WorkspacePermission to satisfy [pflag.Value] interface
-func (wp *WorkspacePermission) Type() string {
+func (f *WorkspacePermission) Type() string {
 	return "WorkspacePermission"
 }
 

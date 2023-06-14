@@ -2,6 +2,8 @@
 //
 // - [iam.AccountAccessControlAPI]: These APIs manage access rules on resources in an account.
 //
+// - [iam.AccountAccessControlProxyAPI]: These APIs manage access rules on resources in an account.
+//
 // - [sql.AlertsAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
 // - [billing.BillableUsageAPI]: This API allows you to download billable usage logs for the specified account and date range.
@@ -177,6 +179,7 @@ import (
 // See: https://pkg.go.dev/golang.org/x/tools/internal/imports#ImportPathToAssumedName
 var (
 	_ *iam.AccountAccessControlAPI            = nil
+	_ *iam.AccountAccessControlProxyAPI       = nil
 	_ *sql.AlertsAPI                          = nil
 	_ *billing.BillableUsageAPI               = nil
 	_ *billing.BudgetsAPI                     = nil

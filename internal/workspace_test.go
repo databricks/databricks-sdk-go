@@ -38,7 +38,7 @@ func TestAccWorkspaceIntegration(t *testing.T) {
 	// Import the test notebook
 	err := w.Workspace.Import(ctx, workspace.Import{
 		Path:      notebook,
-		Format:    workspace.ExportFormatSource,
+		Format:    workspace.ImportFormatSource,
 		Language:  workspace.LanguagePython,
 		Content:   base64.StdEncoding.EncodeToString([]byte("# Databricks notebook source\nprint('hello from job')")),
 		Overwrite: true,
@@ -134,7 +134,7 @@ func TestAccWorkspaceUploadFileNoTranspile(t *testing.T) {
 	txtPath := filepath.Join("/Users", me(t, w).UserName, RandomName("txt-"))
 
 	err := w.Workspace.Upload(ctx, txtPath, strings.NewReader("print(1)"),
-		workspace.UploadFormat(workspace.ExportFormatAuto))
+		workspace.UploadFormat(workspace.ImportFormatAuto))
 	assert.NoError(t, err)
 	t.Cleanup(func() {
 		err = w.Workspace.Delete(ctx, workspace.Delete{
