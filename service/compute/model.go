@@ -1032,11 +1032,11 @@ type CreateContext struct {
 }
 
 type CreateInstancePool struct {
-	// Attributes related to pool running on Amazon Web Services. If not
-	// specified at pool creation, a set of default values will be used.
+	// Attributes related to instance pools running on Amazon Web Services. If
+	// not specified at pool creation, a set of default values will be used.
 	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
-	// Attributes related to pool running on Azure. If not specified at pool
-	// creation, a set of default values will be used.
+	// Attributes related to instance pools running on Azure. If not specified
+	// at pool creation, a set of default values will be used.
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
@@ -1053,6 +1053,9 @@ type CreateInstancePool struct {
 	// permissions to function correctly - refer to the User Guide for more
 	// details.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
+	// Attributes related to instance pools running on Google Cloud Platform. If
+	// not specified at pool creation, a set of default values will be used.
+	GcpAttributes *InstancePoolGcpAttributes `json:"gcp_attributes,omitempty"`
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
 	// is already met. If not set, the extra pool instances will be
@@ -1523,11 +1526,11 @@ type EditCluster struct {
 }
 
 type EditInstancePool struct {
-	// Attributes related to pool running on Amazon Web Services. If not
-	// specified at pool creation, a set of default values will be used.
+	// Attributes related to instance pools running on Amazon Web Services. If
+	// not specified at pool creation, a set of default values will be used.
 	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
-	// Attributes related to pool running on Azure. If not specified at pool
-	// creation, a set of default values will be used.
+	// Attributes related to instance pools running on Azure. If not specified
+	// at pool creation, a set of default values will be used.
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
@@ -1544,6 +1547,9 @@ type EditInstancePool struct {
 	// permissions to function correctly - refer to the User Guide for more
 	// details.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
+	// Attributes related to instance pools running on Google Cloud Platform. If
+	// not specified at pool creation, a set of default values will be used.
+	GcpAttributes *InstancePoolGcpAttributes `json:"gcp_attributes,omitempty"`
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
 	// is already met. If not set, the extra pool instances will be
@@ -1879,9 +1885,9 @@ func (f *FleetSpotOptionAllocationStrategy) Type() string {
 }
 
 type GcpAttributes struct {
-	// This field determines whether the spark executors will be scheduled to
-	// run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback
-	// to on-demand VMs if the former is unavailable.
+	// This field determines whether the instance pool will contain preemptible
+	// VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs
+	// if the former is unavailable.
 	Availability GcpAvailability `json:"availability,omitempty"`
 	// boot disk size in GB
 	BootDiskSize int `json:"boot_disk_size,omitempty"`
@@ -1890,11 +1896,18 @@ type GcpAttributes struct {
 	// have previously been added to the Databricks environment by an account
 	// administrator.
 	GoogleServiceAccount string `json:"google_service_account,omitempty"`
+	// If provided, each node (workers and driver) in the cluster will have this
+	// number of local SSDs attached. Each local SSD is 375GB in size. Refer to
+	// [GCP documentation] for the supported number of local SSDs for each
+	// instance type.
+	//
+	// [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
+	LocalSsdCount int `json:"local_ssd_count,omitempty"`
 }
 
-// This field determines whether the spark executors will be scheduled to run on
-// preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to
-// on-demand VMs if the former is unavailable.
+// This field determines whether the instance pool will contain preemptible VMs,
+// on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the
+// former is unavailable.
 type GcpAvailability string
 
 const GcpAvailabilityOnDemandGcp GcpAvailability = `ON_DEMAND_GCP`
@@ -2005,11 +2018,11 @@ type GetGlobalInitScriptRequest struct {
 }
 
 type GetInstancePool struct {
-	// Attributes related to pool running on Amazon Web Services. If not
-	// specified at pool creation, a set of default values will be used.
+	// Attributes related to instance pools running on Amazon Web Services. If
+	// not specified at pool creation, a set of default values will be used.
 	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
-	// Attributes related to pool running on Azure. If not specified at pool
-	// creation, a set of default values will be used.
+	// Attributes related to instance pools running on Azure. If not specified
+	// at pool creation, a set of default values will be used.
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
@@ -2037,6 +2050,9 @@ type GetInstancePool struct {
 	// permissions to function correctly - refer to the User Guide for more
 	// details.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
+	// Attributes related to instance pools running on Google Cloud Platform. If
+	// not specified at pool creation, a set of default values will be used.
+	GcpAttributes *InstancePoolGcpAttributes `json:"gcp_attributes,omitempty"`
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
 	// is already met. If not set, the extra pool instances will be
@@ -2208,11 +2224,11 @@ type InstallLibraries struct {
 }
 
 type InstancePoolAndStats struct {
-	// Attributes related to pool running on Amazon Web Services. If not
-	// specified at pool creation, a set of default values will be used.
+	// Attributes related to instance pools running on Amazon Web Services. If
+	// not specified at pool creation, a set of default values will be used.
 	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
-	// Attributes related to pool running on Azure. If not specified at pool
-	// creation, a set of default values will be used.
+	// Attributes related to instance pools running on Azure. If not specified
+	// at pool creation, a set of default values will be used.
 	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
@@ -2240,6 +2256,9 @@ type InstancePoolAndStats struct {
 	// permissions to function correctly - refer to the User Guide for more
 	// details.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
+	// Attributes related to instance pools running on Google Cloud Platform. If
+	// not specified at pool creation, a set of default values will be used.
+	GcpAttributes *InstancePoolGcpAttributes `json:"gcp_attributes,omitempty"`
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
 	// is already met. If not set, the extra pool instances will be
@@ -2397,6 +2416,20 @@ type InstancePoolFleetAttributes struct {
 	FleetSpotOption *FleetSpotOption `json:"fleet_spot_option,omitempty"`
 
 	LaunchTemplateOverrides []FleetLaunchTemplateOverride `json:"launch_template_overrides,omitempty"`
+}
+
+type InstancePoolGcpAttributes struct {
+	// This field determines whether the instance pool will contain preemptible
+	// VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs
+	// if the former is unavailable.
+	GcpAvailability GcpAvailability `json:"gcp_availability,omitempty"`
+	// If provided, each node in the instance pool will have this number of
+	// local SSDs attached. Each local SSD is 375GB in size. Refer to [GCP
+	// documentation] for the supported number of local SSDs for each instance
+	// type.
+	//
+	// [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
+	LocalSsdCount int `json:"local_ssd_count,omitempty"`
 }
 
 // Current state of the instance pool.
