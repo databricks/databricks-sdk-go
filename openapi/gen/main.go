@@ -58,7 +58,8 @@ type Context struct {
 
 	// special case for usage example templates, that are generated
 	// from Go SDK integration tests
-	Examples map[string]string `json:"examples"`
+	Examples map[string]string `json:"examples,omitempty"`
+	Samples  map[string]string `json:"samples,omitempty"`
 
 	batch *code.Batch
 	suite *roll.Suite
@@ -86,6 +87,10 @@ func (c *Context) Generate() error {
 		c.suite, err = roll.NewSuite(path.Join(c.GoSDK, "internal"))
 		if err != nil {
 			return fmt.Errorf("examples: %w", err)
+		}
+		err = c.suite.OptimizeWithApiSpec(c.batch)
+		if err != nil {
+			return fmt.Errorf("optimize examples: %w", err)
 		}
 	}
 	return c.Run()
@@ -127,6 +132,14 @@ func (c *Context) Run() error {
 	}
 	if c.Examples != nil && c.suite != nil {
 		pass := render.NewPass(ctx.Target, c.suite.ServicesExamples(), c.Examples)
+		err := pass.Run()
+		if err != nil {
+			return fmt.Errorf("examples: %w", err)
+		}
+		filenames = append(filenames, pass.Filenames...)
+	}
+	if c.Samples != nil && c.suite != nil {
+		pass := render.NewPass(ctx.Target, c.suite.Samples(), c.Samples)
 		err := pass.Run()
 		if err != nil {
 			return fmt.Errorf("examples: %w", err)

@@ -66,6 +66,8 @@ func Example{{.Service.PascalName}}API_{{.Method.PascalName}}{{if eq .Method.Pas
     `{{.Value}}`
 {{- else if eq .Type "literal" -}}
     {{.Value}}
+{{- else if eq .Type "enum" -}}
+    {{.Package}}.{{.Entity.PascalName}}{{.PascalName}}
 {{- else if eq .Type "lookup" -}}
     {{template "expr" .X}}.{{.Field.PascalName}}
 {{- else if eq .Type "variable" -}}

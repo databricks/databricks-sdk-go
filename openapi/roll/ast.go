@@ -82,6 +82,15 @@ type lookup struct {
 	Field *code.Named
 }
 
+func (l *lookup) Variable() string {
+	switch x := l.X.(type) {
+	case *variable:
+		return x.Name
+	default:
+		return ""
+	}
+}
+
 func (l *lookup) Traverse(cb func(expression)) {
 	cb(l.X)
 	if t, ok := l.X.(traversable); ok {
