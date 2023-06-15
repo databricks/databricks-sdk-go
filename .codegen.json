@@ -12,6 +12,6 @@
     ".codegen/service-pkg.go.tmpl": "service/pkg.go"
   },
   "examples": {
-    ".codegen/examples_test.go.tmpl": "service/{{.Name}}_examples_test.go"
+    ".codegen/examples_test.go.tmpl": "service/{{.Package}}/{{.SnakeName}}_usage_test.go"
   }
 }

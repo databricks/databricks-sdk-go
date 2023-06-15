@@ -18,7 +18,8 @@ import (
 )
 
 type toolConfig struct {
-	Spec string `json:"spec"`
+	Spec  string `json:"spec"`
+	GoSDK string `json:"gosdk,omitempty"`
 }
 
 func Config() (toolConfig, error) {
