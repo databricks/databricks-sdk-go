@@ -5,11 +5,9 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strconv"
 	"strings"
 	"sync"
 	"testing"
-	"time"
 
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/internal/env"
@@ -536,8 +534,11 @@ func TestConfig_MetadataServerConfigure(t *testing.T) {
 				},
 				Response: config.AzureMsiToken{
 					AccessToken: "XXX-1",
-					ExpiresOn:   json.Number(strconv.FormatInt(time.Now().Add(1*time.Second).Unix(), 10)),
-					TokenType:   "Bearer",
+					// This token is technically not valid, but oauth
+					// implementations assume the returned token is valid, so we
+					// pick some static value here for hermeticity.
+					ExpiresOn: json.Number("0"),
+					TokenType: "Bearer",
 				},
 			},
 			{
@@ -549,7 +550,7 @@ func TestConfig_MetadataServerConfigure(t *testing.T) {
 				},
 				Response: config.AzureMsiToken{
 					AccessToken: "XXX-2",
-					ExpiresOn:   json.Number(strconv.FormatInt(time.Now().Add(1*time.Second).Unix(), 10)),
+					ExpiresOn:   json.Number("0"),
 					TokenType:   "Bearer",
 				},
 			},
