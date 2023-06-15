@@ -25,12 +25,6 @@ type AccountClient struct {
 	// rule set.
 	AccessControl *iam.AccountAccessControlAPI
 
-	// These APIs manage access rules on resources in an account. Currently,
-	// only grant rules are supported. A grant rule specifies a role assigned to
-	// a set of principals. A list of rules attached to a resource is called a
-	// rule set. A workspace must belong to an account for these APIs to work.
-	AccessControlProxy *iam.AccountAccessControlProxyAPI
-
 	// This API allows you to download billable usage logs for the specified
 	// account and date range. This feature works with all account types.
 	BillableUsage *billing.BillableUsageAPI
@@ -304,7 +298,6 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		Config: cfg,
 
 		AccessControl:           iam.NewAccountAccessControl(apiClient),
-		AccessControlProxy:      iam.NewAccountAccessControlProxy(apiClient),
 		BillableUsage:           billing.NewBillableUsage(apiClient),
 		Budgets:                 billing.NewBudgets(apiClient),
 		Credentials:             provisioning.NewCredentials(apiClient),

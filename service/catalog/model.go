@@ -24,6 +24,14 @@ type AccountsCreateStorageCredential struct {
 	MetastoreId string `json:"-" url:"-"`
 }
 
+type AccountsMetastoreAssignment struct {
+	MetastoreAssignment *MetastoreAssignment `json:"metastore_assignment,omitempty"`
+}
+
+type AccountsMetastoreInfo struct {
+	MetastoreInfo *MetastoreInfo `json:"metastore_info,omitempty"`
+}
+
 type AccountsUpdateMetastore struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
@@ -567,6 +575,15 @@ type CreateMetastoreAssignment struct {
 	MetastoreId string `json:"metastore_id"`
 	// A workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type CreateMetastoreAssignmentsResponseItem struct {
+	// A human-readable message describing the outcome of the creation
+	Message string `json:"message,omitempty"`
+
+	MetastoreAssignment *MetastoreAssignment `json:"metastore_assignment,omitempty"`
+	// The returned HTTP status code for an individual creation in the batch
+	StatusCode int `json:"status_code,omitempty"`
 }
 
 type CreateSchema struct {

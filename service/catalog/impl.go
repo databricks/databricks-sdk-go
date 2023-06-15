@@ -15,11 +15,11 @@ type accountMetastoreAssignmentsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) (*MetastoreAssignment, error) {
-	var metastoreAssignment MetastoreAssignment
+func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) ([]CreateMetastoreAssignmentsResponseItem, error) {
+	var createMetastoreAssignmentsResponseItemList []CreateMetastoreAssignmentsResponseItem
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodPost, path, request, &metastoreAssignment)
-	return &metastoreAssignment, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, &createMetastoreAssignmentsResponseItemList)
+	return createMetastoreAssignmentsResponseItemList, err
 }
 
 func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error {
@@ -28,11 +28,11 @@ func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request De
 	return err
 }
 
-func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*MetastoreAssignment, error) {
-	var metastoreAssignment MetastoreAssignment
+func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*AccountsMetastoreAssignment, error) {
+	var accountsMetastoreAssignment AccountsMetastoreAssignment
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastore", a.client.ConfiguredAccountID(), request.WorkspaceId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &metastoreAssignment)
-	return &metastoreAssignment, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &accountsMetastoreAssignment)
+	return &accountsMetastoreAssignment, err
 }
 
 func (a *accountMetastoreAssignmentsImpl) List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]MetastoreAssignment, error) {
@@ -42,11 +42,10 @@ func (a *accountMetastoreAssignmentsImpl) List(ctx context.Context, request List
 	return metastoreAssignmentList, err
 }
 
-func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) (*MetastoreAssignment, error) {
-	var metastoreAssignment MetastoreAssignment
+func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodPut, path, request, &metastoreAssignment)
-	return &metastoreAssignment, err
+	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
+	return err
 }
 
 // unexported type that holds implementations of just AccountMetastores API methods
@@ -54,11 +53,11 @@ type accountMetastoresImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCreateMetastore) (*MetastoreInfo, error) {
-	var metastoreInfo MetastoreInfo
+func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsMetastoreInfo, error) {
+	var accountsMetastoreInfo AccountsMetastoreInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
-	err := a.client.Do(ctx, http.MethodPost, path, request, &metastoreInfo)
-	return &metastoreInfo, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, &accountsMetastoreInfo)
+	return &accountsMetastoreInfo, err
 }
 
 func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error {
@@ -67,11 +66,11 @@ func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccoun
 	return err
 }
 
-func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetastoreRequest) (*MetastoreInfo, error) {
-	var metastoreInfo MetastoreInfo
+func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsMetastoreInfo, error) {
+	var accountsMetastoreInfo AccountsMetastoreInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &metastoreInfo)
-	return &metastoreInfo, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &accountsMetastoreInfo)
+	return &accountsMetastoreInfo, err
 }
 
 func (a *accountMetastoresImpl) List(ctx context.Context) (*ListMetastoresResponse, error) {
@@ -81,11 +80,11 @@ func (a *accountMetastoresImpl) List(ctx context.Context) (*ListMetastoresRespon
 	return &listMetastoresResponse, err
 }
 
-func (a *accountMetastoresImpl) Update(ctx context.Context, request AccountsUpdateMetastore) (*MetastoreInfo, error) {
-	var metastoreInfo MetastoreInfo
+func (a *accountMetastoresImpl) Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsMetastoreInfo, error) {
+	var accountsMetastoreInfo AccountsMetastoreInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodPut, path, request, &metastoreInfo)
-	return &metastoreInfo, err
+	err := a.client.Do(ctx, http.MethodPut, path, request, &accountsMetastoreInfo)
+	return &accountsMetastoreInfo, err
 }
 
 // unexported type that holds implementations of just AccountStorageCredentials API methods

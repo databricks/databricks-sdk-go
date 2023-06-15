@@ -43,21 +43,21 @@ type accountAccessControlProxyImpl struct {
 
 func (a *accountAccessControlProxyImpl) GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error) {
 	var getAssignableRolesForResourceResponse GetAssignableRolesForResourceResponse
-	path := fmt.Sprintf("/api/2.0/preview/accounts/access-control/assignable-roles")
+	path := "/api/2.0/preview/accounts/access-control/assignable-roles"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &getAssignableRolesForResourceResponse)
 	return &getAssignableRolesForResourceResponse, err
 }
 
 func (a *accountAccessControlProxyImpl) GetRuleSet(ctx context.Context, request GetRuleSetRequest) (*RuleSetResponse, error) {
 	var ruleSetResponse RuleSetResponse
-	path := fmt.Sprintf("/api/2.0/preview/accounts/access-control/rule-sets")
+	path := "/api/2.0/preview/accounts/access-control/rule-sets"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &ruleSetResponse)
 	return &ruleSetResponse, err
 }
 
 func (a *accountAccessControlProxyImpl) UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error) {
 	var ruleSetResponse RuleSetResponse
-	path := fmt.Sprintf("/api/2.0/preview/accounts/access-control/rule-sets")
+	path := "/api/2.0/preview/accounts/access-control/rule-sets"
 	err := a.client.Do(ctx, http.MethodPut, path, request, &ruleSetResponse)
 	return &ruleSetResponse, err
 }

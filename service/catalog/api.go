@@ -42,7 +42,7 @@ func (a *AccountMetastoreAssignmentsAPI) Impl() AccountMetastoreAssignmentsServi
 //
 // Creates an assignment to a metastore for a workspace Please add a header
 // X-Databricks-Account-Console-API-Version: 2.0 to access this API.
-func (a *AccountMetastoreAssignmentsAPI) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) (*MetastoreAssignment, error) {
+func (a *AccountMetastoreAssignmentsAPI) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) ([]CreateMetastoreAssignmentsResponseItem, error) {
 	return a.impl.Create(ctx, request)
 }
 
@@ -74,7 +74,7 @@ func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx c
 // metastore is assigned to the workspace, the assignment will not be found and
 // a 404 returned. Please add a header X-Databricks-Account-Console-API-Version:
 // 2.0 to access this API.
-func (a *AccountMetastoreAssignmentsAPI) Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*MetastoreAssignment, error) {
+func (a *AccountMetastoreAssignmentsAPI) Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*AccountsMetastoreAssignment, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -85,7 +85,7 @@ func (a *AccountMetastoreAssignmentsAPI) Get(ctx context.Context, request GetAcc
 // metastore is assigned to the workspace, the assignment will not be found and
 // a 404 returned. Please add a header X-Databricks-Account-Console-API-Version:
 // 2.0 to access this API.
-func (a *AccountMetastoreAssignmentsAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*MetastoreAssignment, error) {
+func (a *AccountMetastoreAssignmentsAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*AccountsMetastoreAssignment, error) {
 	return a.impl.Get(ctx, GetAccountMetastoreAssignmentRequest{
 		WorkspaceId: workspaceId,
 	})
@@ -116,7 +116,7 @@ func (a *AccountMetastoreAssignmentsAPI) ListByMetastoreId(ctx context.Context, 
 // Updates an assignment to a metastore for a workspace. Currently, only the
 // default catalog may be updated. Please add a header
 // X-Databricks-Account-Console-API-Version: 2.0 to access this API.
-func (a *AccountMetastoreAssignmentsAPI) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) (*MetastoreAssignment, error) {
+func (a *AccountMetastoreAssignmentsAPI) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error {
 	return a.impl.Update(ctx, request)
 }
 
@@ -152,7 +152,7 @@ func (a *AccountMetastoresAPI) Impl() AccountMetastoresService {
 //
 // Creates a Unity Catalog metastore. Please add a header
 // X-Databricks-Account-Console-API-Version: 2.0 to access this API.
-func (a *AccountMetastoresAPI) Create(ctx context.Context, request AccountsCreateMetastore) (*MetastoreInfo, error) {
+func (a *AccountMetastoresAPI) Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsMetastoreInfo, error) {
 	return a.impl.Create(ctx, request)
 }
 
@@ -181,7 +181,7 @@ func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastor
 // Gets a Unity Catalog metastore from an account, both specified by ID. Please
 // add a header X-Databricks-Account-Console-API-Version: 2.0 to access this
 // API.
-func (a *AccountMetastoresAPI) Get(ctx context.Context, request GetAccountMetastoreRequest) (*MetastoreInfo, error) {
+func (a *AccountMetastoresAPI) Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsMetastoreInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -190,7 +190,7 @@ func (a *AccountMetastoresAPI) Get(ctx context.Context, request GetAccountMetast
 // Gets a Unity Catalog metastore from an account, both specified by ID. Please
 // add a header X-Databricks-Account-Console-API-Version: 2.0 to access this
 // API.
-func (a *AccountMetastoresAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*MetastoreInfo, error) {
+func (a *AccountMetastoresAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*AccountsMetastoreInfo, error) {
 	return a.impl.Get(ctx, GetAccountMetastoreRequest{
 		MetastoreId: metastoreId,
 	})
@@ -209,7 +209,7 @@ func (a *AccountMetastoresAPI) List(ctx context.Context) (*ListMetastoresRespons
 //
 // Updates an existing Unity Catalog metastore. Please add a header
 // X-Databricks-Account-Console-API-Version: 2.0 to access this API.
-func (a *AccountMetastoresAPI) Update(ctx context.Context, request AccountsUpdateMetastore) (*MetastoreInfo, error) {
+func (a *AccountMetastoresAPI) Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsMetastoreInfo, error) {
 	return a.impl.Update(ctx, request)
 }
 
