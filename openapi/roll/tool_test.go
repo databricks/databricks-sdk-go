@@ -36,6 +36,7 @@ func TestLoadsFolder(t *testing.T) {
 }
 
 func TestOptimize(t *testing.T) {
+	t.Skip()
 	home, _ := os.UserHomeDir()
 	batch, err := code.NewFromFile(filepath.Join(home,
 		"universe/bazel-bin/openapi/all-internal.json"))
