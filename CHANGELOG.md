@@ -1,5 +1,292 @@
 # Version changelog
 
+## 0.10.0
+
+ * Added log level support to SimpleLogger. Default logger now prints only `INFO` level messages. To replicate more verbose behavior from the previous versions, set the `DEBUG` level in `SimpleLogger` explicitly ([#426](https://github.com/databricks/databricks-sdk-go/pull/426)).
+ * Added `Upload` and `Download` methods where applicable ([#423](https://github.com/databricks/databricks-sdk-go/pull/423)).
+ * Added auth tests for a databrickscfg file with an empty DEFAULT profile ([#496](https://github.com/databricks/databricks-sdk-go/pull/496)).
+ * Added more integration tests and examples ([#503](https://github.com/databricks/databricks-sdk-go/pull/503)).
+ * Added preview level functions for services and methods to OpenAPI code ([#497](https://github.com/databricks/databricks-sdk-go/pull/497)).
+ * Added IsAllRequiredFieldsPrimitive helper function ([#404](https://github.com/databricks/databricks-sdk-go/pull/404)).
+ * Added isCrudCreate method ([#416](https://github.com/databricks/databricks-sdk-go/pull/416)).
+ * Added retries for getting refreshable token ([#500](https://github.com/databricks/databricks-sdk-go/pull/500)).
+ * Added type update when entity fields are updated ([#411](https://github.com/databricks/databricks-sdk-go/pull/411)).
+ * Don't panic but return error from NewAccountClient ([#422](https://github.com/databricks/databricks-sdk-go/pull/422)).
+ * Error when opening a DBFS directory for reading ([#415](https://github.com/databricks/databricks-sdk-go/pull/415)).
+ * Fixed cleanup logic in SQL warehouse integration test ([#400](https://github.com/databricks/databricks-sdk-go/pull/400)).
+ * Fixed error handling in cluster utility function ([#399](https://github.com/databricks/databricks-sdk-go/pull/399)).
+ * Fixed example in README.md ([#494](https://github.com/databricks/databricks-sdk-go/pull/494)).
+ * Fixed nondeterminism in workspace filesystem integration test ([#401](https://github.com/databricks/databricks-sdk-go/pull/401)).
+ * Improve command execution interface ([#410](https://github.com/databricks/databricks-sdk-go/pull/410)).
+ * Introduce waiters as top-level methods ([#408](https://github.com/databricks/databricks-sdk-go/pull/408)).
+ * Regenerate examples if configured ([#518](https://github.com/databricks/databricks-sdk-go/pull/518)).
+ * Respect limit field passed in ListRequests ([#407](https://github.com/databricks/databricks-sdk-go/pull/407)).
+ * Updated from OpenAPI spec ([#412](https://github.com/databricks/databricks-sdk-go/pull/412), [#413](https://github.com/databricks/databricks-sdk-go/pull/413), [#421](https://github.com/databricks/databricks-sdk-go/pull/421), [#519](https://github.com/databricks/databricks-sdk-go/pull/519), [#424](https://github.com/databricks/databricks-sdk-go/pull/424)).
+ * Updated API test template with page tokens ([#417](https://github.com/databricks/databricks-sdk-go/pull/417)).
+ * Use constants instead of hardcoding strings ([#402](https://github.com/databricks/databricks-sdk-go/pull/402)).
+ * Use `x-databricks-is-accounts` flag to determine whether a service is an account level service ([#420](https://github.com/databricks/databricks-sdk-go/pull/420)).
+
+API Changes:
+
+github.com/databricks/databricks-sdk-go/service/serving
+  - (*ServingEndpointsAPI).Create: changed from func(context.Context, CreateServingEndpoint) (*ServingEndpointDetailed, error) to func(context.Context, CreateServingEndpoint) (*WaitGetServingEndpointNotUpdating[ServingEndpointDetailed], error)
+  - (*ServingEndpointsAPI).List: removed
+  - (*ServingEndpointsAPI).UpdateConfig: changed from func(context.Context, EndpointCoreConfigInput) (*ServingEndpointDetailed, error) to func(context.Context, EndpointCoreConfigInput) (*WaitGetServingEndpointNotUpdating[ServingEndpointDetailed], error)
+  Compatible changes:
+  - (*ServingEndpointsAPI).ListAll: added
+  - (*ServingEndpointsAPI).WaitGetServingEndpointNotUpdating: added
+  - WaitGetServingEndpointNotUpdating: added
+
+github.com/databricks/databricks-sdk-go
+  - WorkspaceClient.CommandExecutor: removed
+  - WorkspaceClient.CommandExecution: added
+  - WorkspaceClient.Connections: added
+  - WorkspaceClient.Files: added
+  - WorkspaceClient.SystemSchemas: added
+
+github.com/databricks/databricks-sdk-go/service/sql
+  - (*WarehousesAPI).Create: changed from func(context.Context, CreateWarehouseRequest) (*CreateWarehouseResponse, error) to func(context.Context, CreateWarehouseRequest) (*WaitGetWarehouseRunning[CreateWarehouseResponse], error)
+  - (*WarehousesAPI).DeleteAndWait: removed
+  - (*WarehousesAPI).DeleteByIdAndWait: removed
+  - (*WarehousesAPI).Edit: changed from func(context.Context, EditWarehouseRequest) error to func(context.Context, EditWarehouseRequest) (*WaitGetWarehouseRunning[any], error)
+  - (*WarehousesAPI).GetAndWait: removed
+  - (*WarehousesAPI).GetByIdAndWait: removed
+  - (*WarehousesAPI).Start: changed from func(context.Context, StartRequest) error to func(context.Context, StartRequest) (*WaitGetWarehouseRunning[any], error)
+  - (*WarehousesAPI).Stop: changed from func(context.Context, StopRequest) error to func(context.Context, StopRequest) (*WaitGetWarehouseStopped[any], error)
+  - (*StatementExecutionAPI).ExecuteAndWait: added
+  - (*WarehousesAPI).WaitGetWarehouseRunning: added
+  - (*WarehousesAPI).WaitGetWarehouseStopped: added
+  - FormatCsv: added
+  - WaitGetWarehouseRunning: added
+  - WaitGetWarehouseStopped: added
+
+github.com/databricks/databricks-sdk-go/service/jobs
+  - (*JobsAPI).CancelRun: changed from func(context.Context, CancelRun) error to func(context.Context, CancelRun) (*WaitGetRunJobTerminatedOrSkipped[any], error)
+  - (*JobsAPI).GetRunAndWait: removed
+  - (*JobsAPI).RepairRun: changed from func(context.Context, RepairRun) (*RepairRunResponse, error) to func(context.Context, RepairRun) (*WaitGetRunJobTerminatedOrSkipped[RepairRunResponse], error)
+  - (*JobsAPI).RunNow: changed from func(context.Context, RunNow) (*RunNowResponse, error) to func(context.Context, RunNow) (*WaitGetRunJobTerminatedOrSkipped[RunNowResponse], error)
+  - (*JobsAPI).Submit: changed from func(context.Context, SubmitRun) (*SubmitRunResponse, error) to func(context.Context, SubmitRun) (*WaitGetRunJobTerminatedOrSkipped[SubmitRunResponse], error)
+  - (*JobsAPI).WaitGetRunJobTerminatedOrSkipped: added
+  - CreateJob.RunAs: added
+  - JobRunAs: added
+  - JobSettings.RunAs: added
+  - WaitGetRunJobTerminatedOrSkipped: added
+
+github.com/databricks/databricks-sdk-go/service/compute
+  - (*ClustersAPI).Create: changed from func(context.Context, CreateCluster) (*CreateClusterResponse, error) to func(context.Context, CreateCluster) (*WaitGetClusterRunning[CreateClusterResponse], error)
+  - (*ClustersAPI).Delete: changed from func(context.Context, DeleteCluster) error to func(context.Context, DeleteCluster) (*WaitGetClusterTerminated[any], error)
+  - (*ClustersAPI).Edit: changed from func(context.Context, EditCluster) error to func(context.Context, EditCluster) (*WaitGetClusterRunning[any], error)
+  - (*ClustersAPI).GetAndWait: removed
+  - (*ClustersAPI).GetByClusterIdAndWait: removed
+  - (*ClustersAPI).Resize: changed from func(context.Context, ResizeCluster) error to func(context.Context, ResizeCluster) (*WaitGetClusterRunning[any], error)
+  - (*ClustersAPI).Restart: changed from func(context.Context, RestartCluster) error to func(context.Context, RestartCluster) (*WaitGetClusterRunning[any], error)
+  - (*ClustersAPI).Start: changed from func(context.Context, StartCluster) error to func(context.Context, StartCluster) (*WaitGetClusterRunning[any], error)
+  - (*CommandExecutionAPI).Cancel: changed from func(context.Context, CancelCommand) error to func(context.Context, CancelCommand) (*WaitCommandStatusCommandExecutionCancelled[any], error)
+  - (*CommandExecutionAPI).Create: changed from func(context.Context, CreateContext) (*Created, error) to func(context.Context, CreateContext) (*WaitContextStatusCommandExecutionRunning[Created], error)
+  - (*CommandExecutionAPI).Execute: changed from func(context.Context, Command) (*Created, error) to func(context.Context, Command) (*WaitCommandStatusCommandExecutionFinishedOrError[Created], error)
+  - (*ClustersAPI).WaitGetClusterRunning: added
+  - (*ClustersAPI).WaitGetClusterTerminated: added
+  - (*CommandExecutionAPI).Start: added
+  - (*CommandExecutionAPI).WaitCommandStatusCommandExecutionCancelled: added
+  - (*CommandExecutionAPI).WaitCommandStatusCommandExecutionFinishedOrError: added
+  - (*CommandExecutionAPI).WaitContextStatusCommandExecutionRunning: added
+  - BaseClusterInfo.DataSecurityMode: added
+  - BaseClusterInfo.DockerImage: added
+  - BaseClusterInfo.SingleUserName: added
+  - ClusterAttributes.DataSecurityMode: added
+  - ClusterAttributes.DockerImage: added
+  - ClusterAttributes.SingleUserName: added
+  - ClusterInfo.DockerImage: added
+  - CommandExecutorV2: added
+  - EditCluster.DataSecurityMode: added
+  - EditCluster.DockerImage: added
+  - EditCluster.SingleUserName: added
+  - WaitCommandStatusCommandExecutionCancelled: added
+  - WaitCommandStatusCommandExecutionFinishedOrError: added
+  - WaitContextStatusCommandExecutionRunning: added
+  - WaitGetClusterRunning: added
+  - WaitGetClusterTerminated: added
+
+github.com/databricks/databricks-sdk-go/service/pipelines
+  - (*PipelinesAPI).GetAndWait: removed
+  - (*PipelinesAPI).GetByPipelineIdAndWait: removed
+  - (*PipelinesAPI).Reset: changed from func(context.Context, ResetRequest) error to func(context.Context, ResetRequest) (*WaitGetPipelineRunning[any], error)
+  - (*PipelinesAPI).Stop: changed from func(context.Context, StopRequest) error to func(context.Context, StopRequest) (*WaitGetPipelineIdle[any], error)
+  - (*PipelinesAPI).WaitGetPipelineIdle: added
+  - (*PipelinesAPI).WaitGetPipelineRunning: added
+  - WaitGetPipelineIdle: added
+  - WaitGetPipelineRunning: added
+
+github.com/databricks/databricks-sdk-go/service/sharing
+  - (*ProvidersAPI).ListShares: removed
+  - (*ProvidersAPI).ListSharesAll: added
+
+github.com/databricks/databricks-sdk-go/service/workspace
+  - ExportFormatAuto: removed
+  - ExportRequest.DirectDownload: removed
+  - Import.Format: changed from ExportFormat to ImportFormat
+  - (*WorkspaceAPI).Download: added
+  - (*WorkspaceAPI).ReadFile: added
+  - (*WorkspaceAPI).Upload: added
+  - (*WorkspaceAPI).WriteFile: added
+  - DownloadFormat: added
+  - DownloadOption: added
+  - ImportFormat: added
+  - ImportFormatAuto: added
+  - ImportFormatDbc: added
+  - ImportFormatHtml: added
+  - ImportFormatJupyter: added
+  - ImportFormatRMarkdown: added
+  - ImportFormatSource: added
+  - UploadFormat: added
+  - UploadLanguage: added
+  - UploadOption: added
+  - UploadOverwrite: added
+
+github.com/databricks/databricks-sdk-go/service/catalog
+  - (*FunctionsAPI).List: removed
+  - (*MetastoresAPI).Assign: changed from func(context.Context, CreateMetastoreAssignment) error to func(context.Context, CreateMetastoreAssignment) error
+  - (*MetastoresAPI).Create: changed from func(context.Context, CreateMetastore) (*MetastoreInfo, error) to func(context.Context, CreateMetastore) (*MetastoreInfo, error)
+  - (*MetastoresAPI).Update: changed from func(context.Context, UpdateMetastore) (*MetastoreInfo, error) to func(context.Context, UpdateMetastore) (*MetastoreInfo, error)
+  - (*MetastoresAPI).UpdateAssignment: changed from func(context.Context, UpdateMetastoreAssignment) error to func(context.Context, UpdateMetastoreAssignment) error
+  - (*StorageCredentialsAPI).Create: changed from func(context.Context, CreateStorageCredential) (*StorageCredentialInfo, error) to func(context.Context, CreateStorageCredential) (*StorageCredentialInfo, error)
+  - (*StorageCredentialsAPI).Update: changed from func(context.Context, UpdateStorageCredential) (*StorageCredentialInfo, error) to func(context.Context, UpdateStorageCredential) (*StorageCredentialInfo, error)
+  - (*TablesAPI).ListSummaries: removed
+  - CreateMetastore.Name: removed
+  - CreateMetastore.Region: removed
+  - CreateMetastore.StorageRoot: removed
+  - CreateMetastore: changed from CreateMetastore to CreateMetastore
+  - CreateMetastoreAssignment.DefaultCatalogName: removed
+  - CreateMetastoreAssignment: changed from CreateMetastoreAssignment to CreateMetastoreAssignment
+  - CreateStorageCredential.AwsIamRole: removed
+  - CreateStorageCredential.AzureServicePrincipal: removed
+  - CreateStorageCredential.Comment: removed
+  - CreateStorageCredential.GcpServiceAccountKey: removed
+  - CreateStorageCredential.Name: removed
+  - CreateStorageCredential.ReadOnly: removed
+  - CreateStorageCredential.SkipValidation: removed
+  - CreateStorageCredential: changed from CreateStorageCredential to CreateStorageCredential
+  - GcpServiceAccountKey: removed
+  - ListFunctionsResponse.Schemas: removed
+  - MetastoreAssignment.WorkspaceId: changed from string to int64
+  - StorageCredentialInfo.GcpServiceAccountKey: removed
+  - UpdateMetastore.DeltaSharingOrganizationName: removed
+  - UpdateMetastore.DeltaSharingRecipientTokenLifetimeInSeconds: removed
+  - UpdateMetastore.DeltaSharingScope: removed
+  - UpdateMetastore.Id: removed
+  - UpdateMetastore.Name: removed
+  - UpdateMetastore.Owner: removed
+  - UpdateMetastore.PrivilegeModelVersion: removed
+  - UpdateMetastore.StorageRootCredentialId: removed
+  - UpdateMetastore: changed from UpdateMetastore to UpdateMetastore
+  - UpdateMetastoreAssignment.DefaultCatalogName: removed
+  - UpdateMetastoreAssignment: changed from UpdateMetastoreAssignment to UpdateMetastoreAssignment
+  - UpdateStorageCredential.AwsIamRole: removed
+  - UpdateStorageCredential.AzureServicePrincipal: removed
+  - UpdateStorageCredential.Comment: removed
+  - UpdateStorageCredential.Force: removed
+  - UpdateStorageCredential.GcpServiceAccountKey: removed
+  - UpdateStorageCredential.Owner: removed
+  - UpdateStorageCredential.ReadOnly: removed
+  - UpdateStorageCredential.SkipValidation: removed
+  - UpdateStorageCredential: changed from UpdateStorageCredential to UpdateStorageCredential
+  - ValidateStorageCredential.GcpServiceAccountKey: removed
+  - (*FunctionsAPI).FunctionInfoNameToFullNameMap: added
+  - (*FunctionsAPI).ListAll: added
+  - (*TablesAPI).ListSummariesAll: added
+  - AccountsCreateMetastore: added
+  - AccountsCreateMetastoreAssignment: added
+  - AccountsCreateStorageCredential: added
+  - AccountsUpdateMetastore: added
+  - AccountsUpdateMetastoreAssignment: added
+  - AccountsUpdateStorageCredential: added
+  - AzureManagedIdentity: added
+  - ConnectionInfo: added
+  - ConnectionType: added
+  - ConnectionTypeDatabricks: added
+  - ConnectionTypeMysql: added
+  - ConnectionTypePostgresql: added
+  - ConnectionTypeRedshift: added
+  - ConnectionTypeSnowflake: added
+  - ConnectionTypeSqldw: added
+  - ConnectionTypeSqlserver: added
+  - ConnectionsAPI: added
+  - ConnectionsService: added
+  - CreateConnection: added
+  - CreateMetastore.MetastoreInfo: added
+  - CreateMetastoreAssignment.MetastoreAssignment: added
+  - CreateStorageCredential.CredentialInfo: added
+  - CredentialType: added
+  - CredentialTypeUsernamePassword: added
+  - DatabricksGcpServiceAccountResponse: added
+  - DeleteConnectionRequest: added
+  - DisableRequest: added
+  - GetConnectionRequest: added
+  - ListConnectionsResponse: added
+  - ListFunctionsResponse.Functions: added
+  - ListSystemSchemasRequest: added
+  - ListSystemSchemasResponse: added
+  - NewConnections: added
+  - NewSystemSchemas: added
+  - OptionsKvPairs: added
+  - PropertiesKvPairs: added
+  - StorageCredentialInfo.AzureManagedIdentity: added
+  - StorageCredentialInfo.DatabricksGcpServiceAccount: added
+  - SystemSchemaInfo: added
+  - SystemSchemaInfoState: added
+  - SystemSchemaInfoStateDisableinitialized: added
+  - SystemSchemaInfoStateEnablecompleted: added
+  - SystemSchemaInfoStateEnableinitialized: added
+  - SystemSchemaInfoStateUnavailable: added
+  - SystemSchemasAPI: added
+  - SystemSchemasService: added
+  - UpdateConnection: added
+  - UpdateMetastore.MetastoreInfo: added
+  - UpdateMetastoreAssignment.MetastoreAssignment: added
+  - UpdateStorageCredential.CredentialInfo: added
+  - ValidateStorageCredential.AzureManagedIdentity: added
+  - ValidateStorageCredential.DatabricksGcpServiceAccount: added
+
+github.com/databricks/databricks-sdk-go/service/ml
+  - GetModelResponse.RegisteredModel: removed
+  - GetModelResponse.RegisteredModelDatabricks: added
+
+github.com/databricks/databricks-sdk-go/service/files
+  - FilesAPI: added
+  - FilesService: added
+  - NewFiles: added
+
+github.com/databricks/databricks-sdk-go/logger
+  - SimpleLogger.Level: added
+
+github.com/databricks/databricks-sdk-go/service/provisioning
+  - (*WorkspacesAPI).Create: changed from func(context.Context, CreateWorkspaceRequest) (*Workspace, error) to func(context.Context, CreateWorkspaceRequest) (*WaitGetWorkspaceRunning[Workspace], error)
+  - (*WorkspacesAPI).Update: changed from func(context.Context, UpdateWorkspaceRequest) error to func(context.Context, UpdateWorkspaceRequest) (*WaitGetWorkspaceRunning[any], error)
+  - (*WorkspacesAPI).WaitGetWorkspaceRunning: added
+  - WaitGetWorkspaceRunning: added
+
+github.com/databricks/databricks-sdk-go/service/iam
+  - AccountAccessControlAPI: added
+  - AccountAccessControlProxyAPI: added
+  - AccountAccessControlProxyService: added
+  - AccountAccessControlService: added
+  - GetAssignableRolesForResourceRequest: added
+  - GetAssignableRolesForResourceResponse: added
+  - GetRuleSetRequest: added
+  - GrantRule: added
+  - NewAccountAccessControl: added
+  - NewAccountAccessControlProxy: added
+  - RuleSetResponse: added
+  - RuleSetUpdateRequest: added
+  - UpdateRuleSetRequest: added
+
+Dependency updates:
+
+ * Bump github.com/stretchr/testify from 1.8.3 to 1.8.4 ([#406](https://github.com/databricks/databricks-sdk-go/pull/406)).
+ * Bump golang.org/x/mod from 0.10.0 to 0.11.0 ([#515](https://github.com/databricks/databricks-sdk-go/pull/515)).
+ * Bump golang.org/x/oauth2 from 0.8.0 to 0.9.0 ([#498](https://github.com/databricks/databricks-sdk-go/pull/498)).
+ * Bump google.golang.org/api from 0.123.0 to 0.127.0 ([#405](https://github.com/databricks/databricks-sdk-go/pull/405), [#425](https://github.com/databricks/databricks-sdk-go/pull/425), [#429](https://github.com/databricks/databricks-sdk-go/pull/429)).
+
 ## 0.9.0
 
  * Added more usage examples for `go doc` and Go Packages ([#389](https://github.com/databricks/databricks-sdk-go/pull/389)).

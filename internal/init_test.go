@@ -15,6 +15,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/databricks/databricks-sdk-go/logger"
 )
 
 const fullCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -22,6 +23,9 @@ const hexCharset = "0123456789abcdef"
 
 func init() {
 	databricks.WithProduct("integration-tests", databricks.Version())
+	logger.DefaultLogger = &logger.SimpleLogger{
+		Level: logger.LevelDebug,
+	}
 }
 
 // prelude for all workspace-level tests

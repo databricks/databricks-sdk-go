@@ -527,7 +527,19 @@ Databricks SDK for Go loosely integrates with [spf13/pflag](https://github.com/s
 
 ## Logging
 
-By default, Databricks SDK for Go uses [logger.SimpleLogger](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/logger#Logger), which is a levelled proxy to `log.Printf`, printing to `os.Stderr`. You can disable logging completely by adding `log.SetOutput(io.Discard)` to your `init()` function. You are encouraged to override `logging.DefaultLogger` with your own implementation that follows the [logger.Logger](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/logger#Logger) interface. 
+By default, Databricks SDK for Go uses [logger.SimpleLogger](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/logger#Logger), which is a levelled proxy to `log.Printf`, printing to `os.Stderr`. You can disable logging completely by adding `log.SetOutput(io.Discard)` to your `init()` function. You are encouraged to override `logging.DefaultLogger` with your own implementation that follows the [logger.Logger](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/logger#Logger) interface.
+
+Since v0.10.0, default logger prints only `INFO` level messages. To replicate more verbose behavior from the previous versions, set the `DEBUG` level in `SimpleLogger`:
+
+```go
+import "github.com/databricks/databricks-sdk-go/logger"
+
+func init() {
+	logger.DefaultLogger = &logger.SimpleLogger{
+		Level: logger.LevelDebug,
+	}
+}
+```
 
 Current Logger interface will evolve in the future versions of Databricks SDK for Go.
 

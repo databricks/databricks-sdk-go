@@ -158,7 +158,7 @@ func TestAccWorkspaceRecursiveListNoTranspile(t *testing.T) {
 	notebook := myNotebookPath(t, w)
 
 	// Import the test notebook
-	err := w.Workspace.Upload(ctx, notebook, strings.NewReader("print(1)"),
+	err := w.Workspace.Upload(ctx, notebook+".py", strings.NewReader("print(1)"),
 		workspace.UploadOverwrite())
 	require.NoError(t, err)
 
