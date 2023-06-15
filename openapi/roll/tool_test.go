@@ -1,8 +1,11 @@
 package roll
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/openapi/code"
 	"github.com/databricks/databricks-sdk-go/openapi/render"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -30,6 +33,20 @@ func TestLoadsFolder(t *testing.T) {
 			}
 		}
 	}
+}
+
+func TestOptimize(t *testing.T) {
+	t.Skip()
+	home, _ := os.UserHomeDir()
+	batch, err := code.NewFromFile(filepath.Join(home,
+		"universe/bazel-bin/openapi/all-internal.json"))
+	require.NoError(t, err)
+
+	s, err := NewSuite("../../internal")
+	require.NoError(t, err)
+
+	err = s.OptimizeWithApiSpec(batch)
+	require.NoError(t, err)
 }
 
 func TestRegenerateExamples(t *testing.T) {
