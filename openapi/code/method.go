@@ -154,8 +154,8 @@ func (m *Method) IsCrudCreate() bool {
 	return m.operation.Crud == "create"
 }
 
-func (m *Method) OnlyPayload() bool {
-	return m.operation.OnlyPayload
+func (m *Method) JsonOnly() bool {
+	return m.operation.JsonOnly
 }
 
 // Wait returns definition for long-running operation
