@@ -92,6 +92,7 @@ type Operation struct {
 	Pagination  *Pagination      `json:"x-databricks-pagination,omitempty"`
 	Shortcut    bool             `json:"x-databricks-shortcut,omitempty"`
 	Crud        string           `json:"x-databricks-crud,omitempty"`
+	OnlyPayload bool             `json:"x-databricks-only-payload,omitempty"`
 	Summary     string           `json:"summary,omitempty"`
 	OperationId string           `json:"operationId"`
 	Tags        []string         `json:"tags"`

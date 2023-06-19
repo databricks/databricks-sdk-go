@@ -154,6 +154,10 @@ func (m *Method) IsCrudCreate() bool {
 	return m.operation.Crud == "create"
 }
 
+func (m *Method) OnlyPayload() bool {
+	return m.operation.OnlyPayload
+}
+
 // Wait returns definition for long-running operation
 func (m *Method) Wait() *Wait {
 	if m.wait == nil {
