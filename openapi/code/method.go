@@ -154,7 +154,7 @@ func (m *Method) IsCrudCreate() bool {
 	return m.operation.Crud == "create"
 }
 
-func (m *Method) JsonOnly() bool {
+func (m *Method) IsJsonOnly() bool {
 	return m.operation.JsonOnly
 }
 
