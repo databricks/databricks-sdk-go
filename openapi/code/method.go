@@ -154,6 +154,10 @@ func (m *Method) IsCrudCreate() bool {
 	return m.operation.Crud == "create"
 }
 
+func (m *Method) JsonOnly() bool {
+	return m.operation.JsonOnly
+}
+
 // Wait returns definition for long-running operation
 func (m *Method) Wait() *Wait {
 	if m.wait == nil {
