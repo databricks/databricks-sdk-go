@@ -1,5 +1,15 @@
 # Version changelog
 
+## 0.10.1
+
+ * Added ClusterID field for Config ([#524](https://github.com/databricks/databricks-sdk-go/pull/524)).
+ * Added OnlyPayload property for method ([#522](https://github.com/databricks/databricks-sdk-go/pull/522)).
+ * Renamed IsJsonOnly method ([#523](https://github.com/databricks/databricks-sdk-go/pull/523)).
+
+Dependency updates:
+
+* Bump google.golang.org/api from 0.127.0 to 0.128.0 ([#521](https://github.com/databricks/databricks-sdk-go/pull/521)).
+
 ## 0.10.0
 
  * Added log level support to SimpleLogger. Default logger now prints only `INFO` level messages. To replicate more verbose behavior from the previous versions, set the `DEBUG` level in `SimpleLogger` explicitly ([#426](https://github.com/databricks/databricks-sdk-go/pull/426)).
