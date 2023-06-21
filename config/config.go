@@ -38,6 +38,9 @@ type Config struct {
 	// Databricks host (either of workspace endpoint or Accounts API endpoint)
 	Host string `name:"host" env:"DATABRICKS_HOST"`
 
+	ClusterID   string `name:"cluster_id" env:"DATABRICKS_CLUSTER_ID"`
+	WarehouseID string `name:"warehouse_id" env:"DATABRICKS_WAREHOUSE_ID"`
+
 	// URL of the metadata service that provides authentication credentials.
 	MetadataServiceURL string `name:"metadata_service_url" env:"DATABRICKS_METADATA_SERVICE_URL" auth:"metadata-service,sensitive"`
 
