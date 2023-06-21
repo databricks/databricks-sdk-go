@@ -2,11 +2,13 @@
 
 ## 0.10.1
 
-* Added ClusterID field for Config (#524)
+ * Added ClusterID field for Config ([#524](https://github.com/databricks/databricks-sdk-go/pull/524)).
+ * Added OnlyPayload property for method ([#522](https://github.com/databricks/databricks-sdk-go/pull/522)).
+ * Renamed IsJsonOnly method ([#523](https://github.com/databricks/databricks-sdk-go/pull/523)).
 
 Dependency updates:
 
-* Bump google.golang.org/api from 0.127.0 to 0.128.0 (#521) 
+* Bump google.golang.org/api from 0.127.0 to 0.128.0 ([#521](https://github.com/databricks/databricks-sdk-go/pull/521)).
 
 ## 0.10.0
 
