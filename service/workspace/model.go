@@ -92,11 +92,11 @@ type CreateRepo struct {
 }
 
 type CreateScope struct {
+	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
+	BackendAzureKeyvault *AzureKeyVaultSecretScopeMetadata `json:"backend_azure_keyvault,omitempty"`
 	// The principal that is initially granted `MANAGE` permission to the
 	// created scope.
 	InitialManagePrincipal string `json:"initial_manage_principal,omitempty"`
-	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
-	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata `json:"keyvault_metadata,omitempty"`
 	// Scope name requested by the user. Scope names are unique.
 	Scope string `json:"scope"`
 	// The backend type the scope will be created with. If not specified, will

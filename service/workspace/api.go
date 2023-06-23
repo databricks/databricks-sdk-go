@@ -541,9 +541,9 @@ func (a *SecretsAPI) ListSecretsByScope(ctx context.Context, scope string) (*Lis
 //
 // Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
 // `RESOURCE_ALREADY_EXISTS` if a permission for the principal already exists.
-// Throws `INVALID_PARAMETER_VALUE` if the permission is invalid. Throws
-// `PERMISSION_DENIED` if the user does not have permission to make this API
-// call.
+// Throws `INVALID_PARAMETER_VALUE` if the permission or principal is invalid.
+// Throws `PERMISSION_DENIED` if the user does not have permission to make this
+// API call.
 func (a *SecretsAPI) PutAcl(ctx context.Context, request PutAcl) error {
 	return a.impl.PutAcl(ctx, request)
 }

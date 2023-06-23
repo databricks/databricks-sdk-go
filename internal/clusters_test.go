@@ -44,8 +44,8 @@ func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {
 		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 10,
 		NumWorkers:             1,
-	}, retries.Timeout[compute.ClusterInfo](15*time.Second),
-		func(i *retries.Info[compute.ClusterInfo]) {
+	}, retries.Timeout[compute.ClusterDetails](15*time.Second),
+		func(i *retries.Info[compute.ClusterDetails]) {
 			if i.Info == nil {
 				return
 			}
@@ -192,9 +192,9 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	assert.True(t, foundCluster)
 
 	// Get cluster by name and assert it still exists
-	clusterInfo, err := w.Clusters.GetByClusterName(ctx, clusterName)
+	ClusterDetails, err := w.Clusters.GetByClusterName(ctx, clusterName)
 	require.NoError(t, err)
-	assert.Equal(t, clusterInfo.ClusterName, clusterName)
+	assert.Equal(t, ClusterDetails.ClusterName, clusterName)
 
 	otherOwner, err := w.Users.Create(ctx, iam.User{
 		UserName: RandomEmail(),

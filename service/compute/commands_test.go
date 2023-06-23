@@ -17,7 +17,7 @@ func commonFixtureWithStatusResponse(response CommandStatusResponse) qa.HTTPFixt
 			Method:       "GET",
 			ReuseRequest: true,
 			Resource:     "/api/2.0/clusters/get?cluster_id=abc",
-			Response: ClusterInfo{
+			Response: ClusterDetails{
 				ClusterId:              "abc",
 				NumWorkers:             100,
 				ClusterName:            "Shared Autoscaling",
@@ -202,7 +202,7 @@ func TestCommandsAPIExecute_StoppedCluster(t *testing.T) {
 		{
 			Method:   "GET",
 			Resource: "/api/2.0/clusters/get?cluster_id=abc",
-			Response: ClusterInfo{
+			Response: ClusterDetails{
 				State: "TERMINATED",
 			},
 		},
@@ -218,7 +218,7 @@ func TestCommandsAPIExecute_FailToCreateContext(t *testing.T) {
 		{
 			Method:   "GET",
 			Resource: "/api/2.0/clusters/get?cluster_id=abc",
-			Response: ClusterInfo{
+			Response: ClusterDetails{
 				State: "RUNNING",
 			},
 		},
@@ -242,7 +242,7 @@ func TestCommandsAPIExecute_FailToWaitForContext(t *testing.T) {
 		{
 			Method:   "GET",
 			Resource: "/api/2.0/clusters/get?cluster_id=abc",
-			Response: ClusterInfo{
+			Response: ClusterDetails{
 				State: "RUNNING",
 			},
 		},
@@ -273,7 +273,7 @@ func TestCommandsAPIExecute_FailToCreateCommand(t *testing.T) {
 		{
 			Method:   "GET",
 			Resource: "/api/2.0/clusters/get?cluster_id=abc",
-			Response: ClusterInfo{
+			Response: ClusterDetails{
 				State: "RUNNING",
 			},
 		},
@@ -320,7 +320,7 @@ func TestCommandsAPIExecute_FailToWaitForCommand(t *testing.T) {
 		{
 			Method:   "GET",
 			Resource: "/api/2.0/clusters/get?cluster_id=abc",
-			Response: ClusterInfo{
+			Response: ClusterDetails{
 				State: "RUNNING",
 			},
 		},
@@ -374,7 +374,7 @@ func TestCommandsAPIExecute_FailToGetCommand(t *testing.T) {
 		{
 			Method:   "GET",
 			Resource: "/api/2.0/clusters/get?cluster_id=abc",
-			Response: ClusterInfo{
+			Response: ClusterDetails{
 				State: "RUNNING",
 			},
 		},
@@ -428,7 +428,7 @@ func TestCommandsAPIExecute_NoResults(t *testing.T) {
 		{
 			Method:   "GET",
 			Resource: "/api/2.0/clusters/get?cluster_id=abc",
-			Response: ClusterInfo{
+			Response: ClusterDetails{
 				State: "RUNNING",
 			},
 		},

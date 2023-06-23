@@ -85,11 +85,11 @@ func (a *clustersImpl) Events(ctx context.Context, request GetEvents) (*GetEvent
 	return &getEventsResponse, err
 }
 
-func (a *clustersImpl) Get(ctx context.Context, request GetClusterRequest) (*ClusterInfo, error) {
-	var clusterInfo ClusterInfo
+func (a *clustersImpl) Get(ctx context.Context, request GetClusterRequest) (*ClusterDetails, error) {
+	var clusterDetails ClusterDetails
 	path := "/api/2.0/clusters/get"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &clusterInfo)
-	return &clusterInfo, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &clusterDetails)
+	return &clusterDetails, err
 }
 
 func (a *clustersImpl) List(ctx context.Context, request ListClustersRequest) (*ListClustersResponse, error) {

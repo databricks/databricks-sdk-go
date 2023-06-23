@@ -16,8 +16,8 @@ import (
 // https://github.com/databricks/terraform-provider-databricks/issues/445
 var getOrCreateClusterMutex sync.Mutex
 
-func (ci *ClusterInfo) IsRunningOrResizing() bool {
-	return ci.State == StateRunning || ci.State == StateResizing
+func (c *ClusterDetails) IsRunningOrResizing() bool {
+	return c.State == StateRunning || c.State == StateResizing
 }
 
 // use mutex around starting a cluster by ID
@@ -83,7 +83,7 @@ func (a *ClustersAPI) EnsureClusterIsRunning(ctx context.Context, clusterId stri
 }
 
 // GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist
-func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateCluster) (c *ClusterInfo, err error) {
+func (a *ClustersAPI) GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateCluster) (c *ClusterDetails, err error) {
 	getOrCreateClusterMutex.Lock()
 	defer getOrCreateClusterMutex.Unlock()
 	if len(custom) > 1 {
