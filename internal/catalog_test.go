@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/stretchr/testify/assert"
@@ -11,10 +12,10 @@ import (
 )
 
 func TestUcAccVolumes(t *testing.T) {
-	ctx, w := ucwsTest(t)
+	ctx, w := qa.UcwsTest(t)
 
 	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
-		Name: RandomName("catalog_"),
+		Name: qa.RandomName("catalog_"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -26,7 +27,7 @@ func TestUcAccVolumes(t *testing.T) {
 	})
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
-		Name:        RandomName("schema_"),
+		Name:        qa.RandomName("schema_"),
 		CatalogName: createdCatalog.Name,
 	})
 	require.NoError(t, err)
@@ -36,26 +37,26 @@ func TestUcAccVolumes(t *testing.T) {
 	})
 
 	storageCredential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
-		Name: RandomName("creds-"),
+		Name: qa.RandomName("creds-"),
 		AwsIamRole: &catalog.AwsIamRole{
-			RoleArn: GetEnvOrSkipTest(t, "TEST_METASTORE_DATA_ACCESS_ARN"),
+			RoleArn: qa.GetEnvOrSkipTest(t, "TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 		Comment: "created via SDK",
 	})
 	require.NoError(t, err)
 
 	externalLocation, err := w.ExternalLocations.Create(ctx, catalog.CreateExternalLocation{
-		Name:           RandomName("location-"),
+		Name:           qa.RandomName("location-"),
 		CredentialName: storageCredential.Name,
 		Comment:        "created via SDK",
-		Url:            "s3://" + GetEnvOrSkipTest(t, "TEST_BUCKET") + "/" + RandomName("somepath-"),
+		Url:            "s3://" + qa.GetEnvOrSkipTest(t, "TEST_BUCKET") + "/" + qa.RandomName("somepath-"),
 	})
 	require.NoError(t, err)
 
 	createdVolume, err := w.Volumes.Create(ctx, catalog.CreateVolumeRequestContent{
 		CatalogName:     createdCatalog.Name,
 		SchemaName:      createdSchema.Name,
-		Name:            RandomName("volume_"),
+		Name:            qa.RandomName("volume_"),
 		StorageLocation: externalLocation.Url,
 		VolumeType:      catalog.VolumeTypeExternal,
 	})
@@ -85,10 +86,10 @@ func TestUcAccVolumes(t *testing.T) {
 }
 
 func TestUcAccTables(t *testing.T) {
-	ctx, w := ucwsTest(t)
+	ctx, w := qa.UcwsTest(t)
 
 	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
-		Name: RandomName("catalog_"),
+		Name: qa.RandomName("catalog_"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -100,7 +101,7 @@ func TestUcAccTables(t *testing.T) {
 	})
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
-		Name:        RandomName("schema_"),
+		Name:        qa.RandomName("schema_"),
 		CatalogName: createdCatalog.Name,
 	})
 	require.NoError(t, err)
@@ -109,12 +110,12 @@ func TestUcAccTables(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	tableName := RandomName("foo_")
+	tableName := qa.RandomName("foo_")
 	tableFullName := fmt.Sprintf("%s.%s.%s", createdCatalog.Name, createdSchema.Name, tableName)
 
 	// creates tableFullName
 	_, err = w.StatementExecution.ExecuteAndWait(ctx, sql.ExecuteStatementRequest{
-		WarehouseId: GetEnvOrSkipTest(t, "TEST_DEFAULT_WAREHOUSE_ID"),
+		WarehouseId: qa.GetEnvOrSkipTest(t, "TEST_DEFAULT_WAREHOUSE_ID"),
 		Catalog:     createdCatalog.Name,
 		Schema:      createdSchema.Name,
 		Statement:   fmt.Sprintf("CREATE TABLE %s AS SELECT 2+2 as four", tableName),
@@ -136,7 +137,7 @@ func TestUcAccTables(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, createdCatalog.Name, createdTable.CatalogName)
 
-	accountLevelGroupName := GetEnvOrSkipTest(t, "TEST_DATA_ENG_GROUP")
+	accountLevelGroupName := qa.GetEnvOrSkipTest(t, "TEST_DATA_ENG_GROUP")
 	x, err := w.Grants.Update(ctx, catalog.UpdatePermissions{
 		FullName:      createdTable.FullName,
 		SecurableType: catalog.SecurableTypeTable,
@@ -166,17 +167,17 @@ func TestUcAccTables(t *testing.T) {
 }
 
 func TestUcAccStorageCredentialsOnAws(t *testing.T) {
-	ctx, w := ucwsTest(t)
+	ctx, w := qa.UcwsTest(t)
 	if !w.Config.IsAws() {
-		skipf(t)("not not aws")
+		t.Skip("not on aws")
 	}
 
 	// TODO: OpenAPI: retry protocol on late validation for storage
 	// See https://github.com/databricks/terraform-provider-databricks/issues/1424
 	created, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
-		Name: RandomName("go-sdk-"),
+		Name: qa.RandomName("go-sdk-"),
 		AwsIamRole: &catalog.AwsIamRole{
-			RoleArn: GetEnvOrSkipTest(t, "TEST_METASTORE_DATA_ACCESS_ARN"),
+			RoleArn: qa.GetEnvOrSkipTest(t, "TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})
 	require.NoError(t, err)
@@ -187,9 +188,9 @@ func TestUcAccStorageCredentialsOnAws(t *testing.T) {
 
 	_, err = w.StorageCredentials.Update(ctx, catalog.UpdateStorageCredential{
 		Name:    created.Name,
-		Comment: RandomName("comment "),
+		Comment: qa.RandomName("comment "),
 		AwsIamRole: &catalog.AwsIamRole{
-			RoleArn: GetEnvOrSkipTest(t, "TEST_METASTORE_DATA_ACCESS_ARN"),
+			RoleArn: qa.GetEnvOrSkipTest(t, "TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})
 	require.NoError(t, err)
@@ -204,15 +205,15 @@ func TestUcAccStorageCredentialsOnAws(t *testing.T) {
 }
 
 func TestUcAccExternalLocationsOnAws(t *testing.T) {
-	ctx, w := ucwsTest(t)
+	ctx, w := qa.UcwsTest(t)
 	if !w.Config.IsAws() {
-		skipf(t)("not not aws")
+		t.Skip("not not aws")
 	}
 
 	credential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
-		Name: RandomName("go-sdk-"),
+		Name: qa.RandomName("go-sdk-"),
 		AwsIamRole: &catalog.AwsIamRole{
-			RoleArn: GetEnvOrSkipTest(t, "TEST_METASTORE_DATA_ACCESS_ARN"),
+			RoleArn: qa.GetEnvOrSkipTest(t, "TEST_METASTORE_DATA_ACCESS_ARN"),
 		},
 	})
 	require.NoError(t, err)
@@ -222,9 +223,9 @@ func TestUcAccExternalLocationsOnAws(t *testing.T) {
 	})
 
 	created, err := w.ExternalLocations.Create(ctx, catalog.CreateExternalLocation{
-		Name:           RandomName("go-sdk-"),
+		Name:           qa.RandomName("go-sdk-"),
 		CredentialName: credential.Name,
-		Url:            fmt.Sprintf("s3://%s/%s", GetEnvOrSkipTest(t, "TEST_BUCKET"), RandomName("l-")),
+		Url:            fmt.Sprintf("s3://%s/%s", qa.GetEnvOrSkipTest(t, "TEST_BUCKET"), qa.RandomName("l-")),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -235,7 +236,7 @@ func TestUcAccExternalLocationsOnAws(t *testing.T) {
 	_, err = w.ExternalLocations.Update(ctx, catalog.UpdateExternalLocation{
 		Name:           created.Name,
 		CredentialName: credential.Name,
-		Url:            fmt.Sprintf("s3://%s/%s", GetEnvOrSkipTest(t, "TEST_BUCKET"), RandomName("l-")),
+		Url:            fmt.Sprintf("s3://%s/%s", qa.GetEnvOrSkipTest(t, "TEST_BUCKET"), qa.RandomName("l-")),
 	})
 	require.NoError(t, err)
 
@@ -248,10 +249,10 @@ func TestUcAccExternalLocationsOnAws(t *testing.T) {
 }
 
 func TestUcAccMetastores(t *testing.T) {
-	ctx, w := ucwsTest(t)
+	ctx, w := qa.UcwsTest(t)
 	created, err := w.Metastores.Create(ctx, catalog.CreateMetastore{
-		Name:        RandomName("go-sdk-"),
-		StorageRoot: fmt.Sprintf("s3://%s/%s", GetEnvOrSkipTest(t, "TEST_BUCKET"), RandomName("t=")),
+		Name:        qa.RandomName("go-sdk-"),
+		StorageRoot: fmt.Sprintf("s3://%s/%s", qa.GetEnvOrSkipTest(t, "TEST_BUCKET"), qa.RandomName("t=")),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -275,14 +276,14 @@ func TestUcAccMetastores(t *testing.T) {
 
 	_, err = w.Metastores.Update(ctx, catalog.UpdateMetastore{
 		Id:   created.MetastoreId,
-		Name: RandomName("go-sdk-updated"),
+		Name: qa.RandomName("go-sdk-updated"),
 	})
 	require.NoError(t, err)
 
 	_, err = w.Metastores.GetById(ctx, created.MetastoreId)
 	require.NoError(t, err)
 
-	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
+	workspaceId := qa.MustParseInt64(qa.GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
 
 	err = w.Metastores.Assign(ctx, catalog.CreateMetastoreAssignment{
 		MetastoreId: created.MetastoreId,
@@ -308,10 +309,10 @@ func TestUcAccMetastores(t *testing.T) {
 }
 
 func TestUcAccCatalogs(t *testing.T) {
-	ctx, w := ucwsTest(t)
+	ctx, w := qa.UcwsTest(t)
 
 	created, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
-		Name: RandomName("go-sdk-"),
+		Name: qa.RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -337,10 +338,10 @@ func TestUcAccCatalogs(t *testing.T) {
 }
 
 func TestUcAccCatalogWorkspaceBindings(t *testing.T) {
-	ctx, w := ucwsTest(t)
+	ctx, w := qa.UcwsTest(t)
 
 	created, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
-		Name: RandomName("go-sdk-"),
+		Name: qa.RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -357,7 +358,7 @@ func TestUcAccCatalogWorkspaceBindings(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	thisWorkspaceID := MustParseInt64(GetEnvOrSkipTest(t, "THIS_WORKSPACE_ID"))
+	thisWorkspaceID := qa.MustParseInt64(qa.GetEnvOrSkipTest(t, "THIS_WORKSPACE_ID"))
 	_, err = w.WorkspaceBindings.Update(ctx, catalog.UpdateWorkspaceBindings{
 		Name:             created.Name,
 		AssignWorkspaces: []int64{thisWorkspaceID},
@@ -371,10 +372,10 @@ func TestUcAccCatalogWorkspaceBindings(t *testing.T) {
 }
 
 func TestUcAccSchemas(t *testing.T) {
-	ctx, w := ucwsTest(t)
+	ctx, w := qa.UcwsTest(t)
 
 	newCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
-		Name: RandomName("go-sdk-"),
+		Name: qa.RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -386,7 +387,7 @@ func TestUcAccSchemas(t *testing.T) {
 	})
 
 	created, err := w.Schemas.Create(ctx, catalog.CreateSchema{
-		Name:        RandomName("go-sdk-"),
+		Name:        qa.RandomName("go-sdk-"),
 		CatalogName: newCatalog.Name,
 	})
 	require.NoError(t, err)
@@ -397,7 +398,7 @@ func TestUcAccSchemas(t *testing.T) {
 	})
 	_, err = w.Schemas.Update(ctx, catalog.UpdateSchema{
 		FullName: created.FullName,
-		Comment:  RandomName("comment "),
+		Comment:  qa.RandomName("comment "),
 	})
 	require.NoError(t, err)
 

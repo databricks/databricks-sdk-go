@@ -6,6 +6,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -19,7 +20,7 @@ func me(t *testing.T, w *databricks.WorkspaceClient) *iam.User {
 }
 
 func TestAccCurrentUser(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	me, err := w.CurrentUser.Me(ctx)
 	require.NoError(t, err)
@@ -28,12 +29,12 @@ func TestAccCurrentUser(t *testing.T) {
 }
 
 func TestAccUsers(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	// create new user
 	user, err := w.Users.Create(ctx, iam.User{
-		DisplayName: RandomName("Me "),
-		UserName:    RandomEmail(),
+		DisplayName: qa.RandomName("Me "),
+		UserName:    qa.RandomEmail(),
 	})
 	require.NoError(t, err)
 
@@ -72,11 +73,11 @@ func TestAccUsers(t *testing.T) {
 }
 
 func TestAccGroups(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	// create new group
 	group, err := w.Groups.Create(ctx, iam.Group{
-		DisplayName: RandomName("go-sdk-"),
+		DisplayName: qa.RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -112,13 +113,13 @@ func TestAccGroups(t *testing.T) {
 }
 
 func TestAccServicePrincipalsOnAWS(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	if !w.Config.IsAws() {
 		t.Skip("test only for aws")
 	}
 
 	created, err := w.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
-		DisplayName: RandomName("go-sdk-"),
+		DisplayName: qa.RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 
@@ -128,7 +129,7 @@ func TestAccServicePrincipalsOnAWS(t *testing.T) {
 	})
 	err = w.ServicePrincipals.Update(ctx, iam.ServicePrincipal{
 		Id:          created.Id,
-		DisplayName: RandomName("go-sdk-updated-"),
+		DisplayName: qa.RandomName("go-sdk-updated-"),
 		Roles: []iam.ComplexValue{
 			{
 				Value: "xyz",

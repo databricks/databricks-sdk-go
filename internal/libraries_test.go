@@ -3,12 +3,13 @@ package internal
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccLibraries(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	clusterId := sharedRunningCluster(t, ctx, w)
 
 	err := w.Libraries.UpdateAndWait(ctx, compute.Update{

@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -27,9 +28,9 @@ func (buf hashable) Hash() uint32 {
 
 func TestAccFilesAPI(t *testing.T) {
 	t.SkipNow() // until available on prod
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
-	filePath := RandomName("/Volumes/bogdanghita/default/v3_shared/sdk-testing/txt-")
+	filePath := qa.RandomName("/Volumes/bogdanghita/default/v3_shared/sdk-testing/txt-")
 	err := w.Files.Upload(ctx, filePath, strings.NewReader("abcd"))
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -42,12 +43,12 @@ func TestAccFilesAPI(t *testing.T) {
 }
 
 func TestAccDbfsOpen(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	if w.Config.IsGcp() {
 		t.Skip("dbfs not available on gcp")
 	}
 
-	path := RandomName("/tmp/.sdk/fake")
+	path := qa.RandomName("/tmp/.sdk/fake")
 	rand.Seed(time.Now().UnixNano())
 	in := make([]byte, 1.44*1e6)
 	_, _ = rand.Read(in)
@@ -120,12 +121,12 @@ func TestAccDbfsOpen(t *testing.T) {
 }
 
 func TestAccDbfsOpenDirectory(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	if w.Config.IsGcp() {
 		t.Skip("dbfs not available on gcp")
 	}
 
-	path := RandomName("/tmp/.sdk/fake")
+	path := qa.RandomName("/tmp/.sdk/fake")
 
 	defer w.Dbfs.Delete(ctx, files.Delete{
 		Path: path,
@@ -149,12 +150,12 @@ func TestAccDbfsOpenDirectory(t *testing.T) {
 }
 
 func TestAccDbfsReadFileWriteFile(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	if w.Config.IsGcp() {
 		t.Skip("dbfs not available on gcp")
 	}
 
-	path := RandomName("/tmp/.sdk/fake")
+	path := qa.RandomName("/tmp/.sdk/fake")
 	rand.Seed(time.Now().UnixNano())
 	in := make([]byte, 1.44*1e6)
 	_, _ = rand.Read(in)
@@ -185,15 +186,15 @@ func TestAccDbfsReadFileWriteFile(t *testing.T) {
 }
 
 func TestAccListDbfsIntegration(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	if w.Config.IsGcp() {
 		t.Skip("dbfs not available on gcp")
 	}
 
-	testFile1 := RandomName("f001-")
-	testFile2 := RandomName("f002-")
-	testPath1 := RandomName("/tmp/.sdk/001-")
-	testPath2 := RandomName("/tmp/.sdk/002-")
+	testFile1 := qa.RandomName("f001-")
+	testFile2 := qa.RandomName("f002-")
+	testPath1 := qa.RandomName("/tmp/.sdk/001-")
+	testPath2 := qa.RandomName("/tmp/.sdk/002-")
 
 	t.Cleanup(func() {
 		// recursively delete the test dir1 and any test files inside it

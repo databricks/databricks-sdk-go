@@ -3,15 +3,16 @@ package internal
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccCommands(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
-	clusterId := GetEnvOrSkipTest(t, "TEST_DEFAULT_CLUSTER_ID")
+	clusterId := qa.GetEnvOrSkipTest(t, "TEST_DEFAULT_CLUSTER_ID")
 	commandContext, err := w.CommandExecution.Start(ctx, clusterId, compute.LanguagePython)
 	require.NoError(t, err)
 
@@ -32,9 +33,9 @@ func TestAccCommands(t *testing.T) {
 }
 
 func TestAccCommandsDirectUsage(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
-	clusterId := GetEnvOrSkipTest(t, "TEST_DEFAULT_CLUSTER_ID")
+	clusterId := qa.GetEnvOrSkipTest(t, "TEST_DEFAULT_CLUSTER_ID")
 	err := w.Clusters.EnsureClusterIsRunning(ctx, clusterId)
 	require.NoError(t, err)
 

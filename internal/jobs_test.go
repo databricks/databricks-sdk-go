@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
@@ -12,7 +13,7 @@ import (
 )
 
 func TestAccJobsApiFullIntegration(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	clusterId := sharedRunningCluster(t, ctx, w)
 	notebookPath := myNotebookPath(t, w)
 
@@ -29,13 +30,13 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	run, err := w.Jobs.SubmitAndWait(ctx, jobs.SubmitRun{
-		RunName: RandomName("go-sdk-SubmitAndWait-"),
+		RunName: qa.RandomName("go-sdk-SubmitAndWait-"),
 		Tasks: []jobs.RunSubmitTaskSettings{{
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
 				NotebookPath: notebookPath,
 			},
-			TaskKey: RandomName(),
+			TaskKey: qa.RandomName(),
 		}},
 	})
 	require.NoError(t, err)
@@ -46,7 +47,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	assert.Equal(t, output.NotebookOutput.Result, "hello")
 
 	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
-		Name: RandomName("go-sdk-Create-"),
+		Name: qa.RandomName("go-sdk-Create-"),
 		Tasks: []jobs.JobTaskSettings{{
 			Description:       "test",
 			ExistingClusterId: clusterId,
@@ -100,7 +101,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	require.NoError(t, err)
 	assert.GreaterOrEqual(t, len(repairedRun.Tasks), 1)
 
-	newName := RandomName("updated")
+	newName := qa.RandomName("updated")
 	err = w.Jobs.Update(ctx, jobs.UpdateJob{
 		JobId: createdJob.JobId,
 		NewSettings: &jobs.JobSettings{
@@ -116,7 +117,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	assert.Equal(t, byId.Settings.Name, newName)
 	assert.Equal(t, byId.Settings.MaxConcurrentRuns, 5)
 
-	newName = RandomName("updated-for-reset")
+	newName = qa.RandomName("updated-for-reset")
 	err = w.Jobs.Reset(ctx, jobs.ResetJob{
 		JobId: byId.JobId,
 		NewSettings: jobs.JobSettings{
@@ -142,7 +143,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 }
 
 func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	// Fetch list of spark runtime versions
 	sparkVersions, err := w.Clusters.SparkVersions(ctx)
@@ -162,7 +163,7 @@ func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
 
 	for i := 0; i < 34; i++ {
 		createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
-			Name: RandomName(t.Name()),
+			Name: qa.RandomName(t.Name()),
 			Tasks: []jobs.JobTaskSettings{{
 				Description: "test",
 				NewCluster: &compute.BaseClusterInfo{
@@ -193,7 +194,7 @@ func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
 }
 
 func TestAccJobsListWithLimitNoTranspile(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	sparkVersions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
@@ -212,7 +213,7 @@ func TestAccJobsListWithLimitNoTranspile(t *testing.T) {
 
 	for i := 0; i < 11; i++ {
 		createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
-			Name: RandomName(t.Name()),
+			Name: qa.RandomName(t.Name()),
 			Tasks: []jobs.JobTaskSettings{{
 				Description: "test",
 				NewCluster: &compute.BaseClusterInfo{

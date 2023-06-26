@@ -3,21 +3,22 @@ package internal
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMwsAccStorage(t *testing.T) {
-	ctx, a := accountTest(t)
+	ctx, a := qa.AccountTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
 
 	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
-		StorageConfigurationName: RandomName("sdk-"),
+		StorageConfigurationName: qa.RandomName("sdk-"),
 		RootBucketInfo: provisioning.RootBucketInfo{
-			BucketName: RandomName("sdk-bucket-"),
+			BucketName: qa.RandomName("sdk-bucket-"),
 		},
 	})
 	require.NoError(t, err)
@@ -40,15 +41,15 @@ func TestMwsAccStorage(t *testing.T) {
 }
 
 func TestMwsAccNetworks(t *testing.T) {
-	ctx, a := accountTest(t)
+	ctx, a := qa.AccountTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
 	netw, err := a.Networks.Create(ctx, provisioning.CreateNetworkRequest{
-		NetworkName:      RandomName("sdk-"),
-		VpcId:            RandomHex("vpc-", 17),
-		SubnetIds:        []string{RandomHex("subnet-", 17), RandomHex("subnet-", 17)},
-		SecurityGroupIds: []string{RandomHex("sg-", 17)},
+		NetworkName:      qa.RandomName("sdk-"),
+		VpcId:            qa.RandomHex("vpc-", 17),
+		SubnetIds:        []string{qa.RandomHex("subnet-", 17), qa.RandomHex("subnet-", 17)},
+		SecurityGroupIds: []string{qa.RandomHex("sg-", 17)},
 	})
 	require.NoError(t, err)
 	defer func() {
@@ -69,15 +70,15 @@ func TestMwsAccNetworks(t *testing.T) {
 }
 
 func TestMwsAccCredentials(t *testing.T) {
-	ctx, a := accountTest(t)
+	ctx, a := qa.AccountTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
-		CredentialsName: RandomName("sdk-"),
+		CredentialsName: qa.RandomName("sdk-"),
 		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
-				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
+				RoleArn: qa.GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
 			},
 		},
 	})
@@ -101,15 +102,15 @@ func TestMwsAccCredentials(t *testing.T) {
 }
 
 func TestMwsAccEncryptionKeys(t *testing.T) {
-	ctx, a := accountTest(t)
+	ctx, a := qa.AccountTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
 
 	created, err := a.EncryptionKeys.Create(ctx, provisioning.CreateCustomerManagedKeyRequest{
 		AwsKeyInfo: &provisioning.CreateAwsKeyInfo{
-			KeyArn:   GetEnvOrSkipTest(t, "TEST_MANAGED_KMS_KEY_ARN"),
-			KeyAlias: GetEnvOrSkipTest(t, "TEST_STORAGE_KMS_KEY_ALIAS"),
+			KeyArn:   qa.GetEnvOrSkipTest(t, "TEST_MANAGED_KMS_KEY_ARN"),
+			KeyAlias: qa.GetEnvOrSkipTest(t, "TEST_STORAGE_KMS_KEY_ALIAS"),
 		},
 		UseCases: []provisioning.KeyUseCase{provisioning.KeyUseCaseManagedServices},
 	})
@@ -130,14 +131,14 @@ func TestMwsAccEncryptionKeys(t *testing.T) {
 }
 
 func TestMwsAccPrivateAccess(t *testing.T) {
-	ctx, a := accountTest(t)
+	ctx, a := qa.AccountTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
 
 	created, err := a.PrivateAccess.Create(ctx, provisioning.UpsertPrivateAccessSettingsRequest{
-		PrivateAccessSettingsName: RandomName("go-sdk-"),
-		Region:                    GetEnvOrSkipTest(t, "AWS_REGION"),
+		PrivateAccessSettingsName: qa.RandomName("go-sdk-"),
+		Region:                    qa.GetEnvOrSkipTest(t, "AWS_REGION"),
 	})
 	require.NoError(t, err)
 
@@ -147,8 +148,8 @@ func TestMwsAccPrivateAccess(t *testing.T) {
 	})
 	err = a.PrivateAccess.Replace(ctx, provisioning.UpsertPrivateAccessSettingsRequest{
 		PrivateAccessSettingsId:   created.PrivateAccessSettingsId,
-		PrivateAccessSettingsName: RandomName("go-sdk-"),
-		Region:                    GetEnvOrSkipTest(t, "AWS_REGION"),
+		PrivateAccessSettingsName: qa.RandomName("go-sdk-"),
+		Region:                    qa.GetEnvOrSkipTest(t, "AWS_REGION"),
 	})
 	require.NoError(t, err)
 
@@ -169,15 +170,15 @@ func TestMwsAccPrivateAccess(t *testing.T) {
 }
 
 func TestMwsAccVpcEndpoints(t *testing.T) {
-	ctx, a := accountTest(t)
+	ctx, a := qa.AccountTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
 
 	created, err := a.VpcEndpoints.Create(ctx, provisioning.CreateVpcEndpointRequest{
-		AwsVpcEndpointId: GetEnvOrSkipTest(t, "TEST_RELAY_VPC_ENDPOINT"),
-		Region:           GetEnvOrSkipTest(t, "AWS_REGION"),
-		VpcEndpointName:  RandomName("go-sdk-"),
+		AwsVpcEndpointId: qa.GetEnvOrSkipTest(t, "TEST_RELAY_VPC_ENDPOINT"),
+		Region:           qa.GetEnvOrSkipTest(t, "AWS_REGION"),
+		VpcEndpointName:  qa.RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 
@@ -196,15 +197,15 @@ func TestMwsAccVpcEndpoints(t *testing.T) {
 }
 
 func TestMwsAccWorkspaces(t *testing.T) {
-	ctx, a := accountTest(t)
+	ctx, a := qa.AccountTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
 
 	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
-		StorageConfigurationName: RandomName("go-sdk-"),
+		StorageConfigurationName: qa.RandomName("go-sdk-"),
 		RootBucketInfo: provisioning.RootBucketInfo{
-			BucketName: GetEnvOrSkipTest(t, "TEST_ROOT_BUCKET"),
+			BucketName: qa.GetEnvOrSkipTest(t, "TEST_ROOT_BUCKET"),
 		},
 	})
 	require.NoError(t, err)
@@ -216,10 +217,10 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	// TODO: OpenAPI: Document retry protocol on AWS IAM registration errors
 	// See https://github.com/databricks/terraform-provider-databricks/issues/1424
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
-		CredentialsName: RandomName("go-sdk-"),
+		CredentialsName: qa.RandomName("go-sdk-"),
 		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
-				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
+				RoleArn: qa.GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
 			},
 		},
 	})
@@ -231,8 +232,8 @@ func TestMwsAccWorkspaces(t *testing.T) {
 
 	// TODO: Add DNS reachability utility
 	created, err := a.Workspaces.CreateAndWait(ctx, provisioning.CreateWorkspaceRequest{
-		WorkspaceName:          RandomName("go-sdk-"),
-		AwsRegion:              GetEnvOrSkipTest(t, "AWS_REGION"),
+		WorkspaceName:          qa.RandomName("go-sdk-"),
+		AwsRegion:              qa.GetEnvOrSkipTest(t, "AWS_REGION"),
 		CredentialsId:          role.CredentialsId,
 		StorageConfigurationId: storage.StorageConfigurationId,
 	})
@@ -243,10 +244,10 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	})
 
 	updateRole, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
-		CredentialsName: RandomName("go-sdk-"),
+		CredentialsName: qa.RandomName("go-sdk-"),
 		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
-				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
+				RoleArn: qa.GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
 			},
 		},
 	})

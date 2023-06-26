@@ -3,13 +3,14 @@ package internal
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccClusterPolicyFamilies(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	all, err := w.PolicyFamilies.ListAll(ctx, compute.ListPolicyFamiliesRequest{})
 	require.NoError(t, err)
@@ -22,10 +23,10 @@ func TestAccClusterPolicyFamilies(t *testing.T) {
 }
 
 func TestAccClusterPolicies(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	created, err := w.ClusterPolicies.Create(ctx, compute.CreatePolicy{
-		Name: RandomName("go-sdk-"),
+		Name: qa.RandomName("go-sdk-"),
 		Definition: `{
 			"spark_conf.spark.databricks.delta.preview.enabled": {
 				"type": "fixed",

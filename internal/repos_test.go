@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
@@ -11,7 +12,7 @@ import (
 )
 
 func TestAccRepos(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	// Skip this test if "Files in Repos" is not enabled.
 	conf, err := w.WorkspaceConf.GetStatus(ctx, settings.GetStatusRequest{
@@ -23,7 +24,7 @@ func TestAccRepos(t *testing.T) {
 	}
 
 	// Synthesize unique path for this checkout in this user's home.
-	root := RandomName(fmt.Sprintf("/Repos/%s/tf-", me(t, w).UserName))
+	root := qa.RandomName(fmt.Sprintf("/Repos/%s/tf-", me(t, w).UserName))
 	ri, err := w.Repos.Create(ctx, workspace.CreateRepo{
 		Path:     root,
 		Url:      "https://github.com/shreyas-goenka/empty-repo.git",

@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
@@ -14,7 +15,7 @@ import (
 )
 
 func TestUcAccProviders(t *testing.T) {
-	ctx, w := ucwsTest(t)
+	ctx, w := qa.UcwsTest(t)
 
 	// this is a publicly available test token
 	publicShareRecipient := `{
@@ -23,7 +24,7 @@ func TestUcAccProviders(t *testing.T) {
 		"endpoint":"https://sharing.delta.io/delta-sharing/"
 	}`
 	created, err := w.Providers.Create(ctx, sharing.CreateProvider{
-		Name:                RandomName("go-sdk-"),
+		Name:                qa.RandomName("go-sdk-"),
 		RecipientProfileStr: publicShareRecipient,
 	})
 	require.NoError(t, err)
@@ -54,10 +55,10 @@ func TestUcAccProviders(t *testing.T) {
 
 // TODO: remove NoTranspile
 func TestUcAccRecipientActivationNoTranspile(t *testing.T) {
-	ctx, w := ucwsTest(t)
+	ctx, w := qa.UcwsTest(t)
 
 	created, err := w.Recipients.Create(ctx, sharing.CreateRecipient{
-		Name:               RandomName("go-sdk-"),
+		Name:               qa.RandomName("go-sdk-"),
 		AuthenticationType: sharing.AuthenticationTypeToken,
 	})
 	require.NoError(t, err)
@@ -74,7 +75,7 @@ func TestUcAccRecipientActivationNoTranspile(t *testing.T) {
 	require.NoError(t, err)
 
 	newProvider, err := w.Providers.Create(ctx, sharing.CreateProvider{
-		Name:                RandomName("go-sdk-"),
+		Name:                qa.RandomName("go-sdk-"),
 		RecipientProfileStr: string(recipientProfileStr),
 	})
 	require.NoError(t, err)
@@ -90,10 +91,10 @@ func TestUcAccRecipientActivationNoTranspile(t *testing.T) {
 }
 
 func TestUcAccRecipients(t *testing.T) {
-	ctx, w := ucwsTest(t)
+	ctx, w := qa.UcwsTest(t)
 
 	created, err := w.Recipients.Create(ctx, sharing.CreateRecipient{
-		Name: RandomName("go-sdk-"),
+		Name: qa.RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 
@@ -103,7 +104,7 @@ func TestUcAccRecipients(t *testing.T) {
 	})
 	err = w.Recipients.Update(ctx, sharing.UpdateRecipient{
 		Name:    created.Name,
-		Comment: RandomName("comment "),
+		Comment: qa.RandomName("comment "),
 	})
 	require.NoError(t, err)
 
@@ -127,10 +128,10 @@ func TestUcAccRecipients(t *testing.T) {
 }
 
 func TestUcAccShares(t *testing.T) {
-	ctx, w := ucwsTest(t)
+	ctx, w := qa.UcwsTest(t)
 
 	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
-		Name: RandomName("catalog_"),
+		Name: qa.RandomName("catalog_"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -142,7 +143,7 @@ func TestUcAccShares(t *testing.T) {
 	})
 
 	createdSchema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
-		Name:        RandomName("schema_"),
+		Name:        qa.RandomName("schema_"),
 		CatalogName: createdCatalog.Name,
 	})
 	require.NoError(t, err)
@@ -151,12 +152,12 @@ func TestUcAccShares(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	tableName := RandomName("foo_")
+	tableName := qa.RandomName("foo_")
 	tableFullName := fmt.Sprintf("%s.%s.%s", createdCatalog.Name, createdSchema.Name, tableName)
 
 	// creates tableName
 	_, err = w.StatementExecution.ExecuteAndWait(ctx, sql.ExecuteStatementRequest{
-		WarehouseId: GetEnvOrSkipTest(t, "TEST_DEFAULT_WAREHOUSE_ID"),
+		WarehouseId: qa.GetEnvOrSkipTest(t, "TEST_DEFAULT_WAREHOUSE_ID"),
 		Catalog:     createdCatalog.Name,
 		Schema:      createdSchema.Name,
 		Statement:   fmt.Sprintf("CREATE TABLE %s AS SELECT 2+2 as four", tableName),
@@ -168,7 +169,7 @@ func TestUcAccShares(t *testing.T) {
 	})
 
 	createdShare, err := w.Shares.Create(ctx, sharing.CreateShare{
-		Name: RandomName("sdk-"),
+		Name: qa.RandomName("sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {

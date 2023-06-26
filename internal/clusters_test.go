@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/iam"
@@ -16,14 +17,14 @@ import (
 
 func sharedRunningCluster(t *testing.T, ctx context.Context,
 	w *databricks.WorkspaceClient) string {
-	clusterId := GetEnvOrSkipTest(t, "TEST_GO_SDK_CLUSTER_ID")
+	clusterId := qa.GetEnvOrSkipTest(t, "TEST_GO_SDK_CLUSTER_ID")
 	err := w.Clusters.EnsureClusterIsRunning(ctx, clusterId)
 	require.NoError(t, err)
 	return clusterId
 }
 
 func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	// Fetch list of spark runtime versions
 	sparkVersions, err := w.Clusters.SparkVersions(ctx)
@@ -39,9 +40,9 @@ func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {
 
 	// Create a cluster with unreasonably low timeout
 	_, err = w.Clusters.CreateAndWait(ctx, compute.CreateCluster{
-		ClusterName:            RandomName(t.Name()),
+		ClusterName:            qa.RandomName(t.Name()),
 		SparkVersion:           latest,
-		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
+		InstancePoolId:         qa.GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 10,
 		NumWorkers:             1,
 	}, retries.Timeout[compute.ClusterInfo](15*time.Second),
@@ -57,7 +58,7 @@ func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {
 }
 
 func TestAccAwsInstanceProfiles(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	if !w.Config.IsAws() {
 		t.Skipf("runs only on AWS")
 	}
@@ -84,9 +85,9 @@ func TestAccAwsInstanceProfiles(t *testing.T) {
 }
 
 func TestAccClustersApiIntegration(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
-	clusterName := RandomName("sdk-go-cluster-")
+	clusterName := qa.RandomName("sdk-go-cluster-")
 
 	// Select the latest LTS version
 	latest, err := w.Clusters.SelectSparkVersion(ctx, compute.SparkVersionRequest{
@@ -98,7 +99,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	clstr, err := w.Clusters.CreateAndWait(ctx, compute.CreateCluster{
 		ClusterName:            clusterName,
 		SparkVersion:           latest,
-		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
+		InstancePoolId:         qa.GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 		AutoterminationMinutes: 15,
 		NumWorkers:             1,
 	})
@@ -128,7 +129,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 		ClusterId:      clstr.ClusterId,
 		SparkVersion:   latest,
 		ClusterName:    clusterName,
-		InstancePoolId: GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
+		InstancePoolId: qa.GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 
 		// change auto-termination and number of workers
 		AutoterminationMinutes: 10,
@@ -197,7 +198,7 @@ func TestAccClustersApiIntegration(t *testing.T) {
 	assert.Equal(t, clusterInfo.ClusterName, clusterName)
 
 	otherOwner, err := w.Users.Create(ctx, iam.User{
-		UserName: RandomEmail(),
+		UserName: qa.RandomEmail(),
 	})
 	require.NoError(t, err)
 	defer w.Users.DeleteById(ctx, otherOwner.Id)
