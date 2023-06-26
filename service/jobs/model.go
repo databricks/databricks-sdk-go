@@ -700,7 +700,7 @@ type JobSettings struct {
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 }
 
-// List all jobs
+// List jobs
 type ListJobsRequest struct {
 	// Whether to include task and cluster details in the response.
 	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
@@ -732,7 +732,7 @@ type ListJobsResponse struct {
 	PrevPageToken string `json:"prev_page_token,omitempty"`
 }
 
-// List runs for a job
+// List job runs
 type ListRunsRequest struct {
 	// If active_only is `true`, only active runs are included in the results;
 	// otherwise, lists both active and completed runs. An active run is a run
@@ -1181,7 +1181,7 @@ type RunConditionTask struct {
 	Op RunConditionTaskOp `json:"op"`
 	// The condition expression evaluation result. Filled in if the task was
 	// successfully completed. Can be `"true"` or `"false"`
-	Outcome RunConditionTaskOutcome `json:"outcome,omitempty"`
+	Outcome string `json:"outcome,omitempty"`
 	// The right operand of the condition task.
 	Right string `json:"right"`
 }
@@ -1220,35 +1220,6 @@ func (f *RunConditionTaskOp) Set(v string) error {
 // Type always returns RunConditionTaskOp to satisfy [pflag.Value] interface
 func (f *RunConditionTaskOp) Type() string {
 	return "RunConditionTaskOp"
-}
-
-// The condition expression evaluation result. Filled in if the task was
-// successfully completed. Can be `"true"` or `"false"`
-type RunConditionTaskOutcome string
-
-const RunConditionTaskOutcomeFalse RunConditionTaskOutcome = `false`
-
-const RunConditionTaskOutcomeTrue RunConditionTaskOutcome = `true`
-
-// String representation for [fmt.Print]
-func (f *RunConditionTaskOutcome) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *RunConditionTaskOutcome) Set(v string) error {
-	switch v {
-	case `false`, `true`:
-		*f = RunConditionTaskOutcome(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "false", "true"`, v)
-	}
-}
-
-// Type always returns RunConditionTaskOutcome to satisfy [pflag.Value] interface
-func (f *RunConditionTaskOutcome) Type() string {
-	return "RunConditionTaskOutcome"
 }
 
 // This describes an enum
@@ -2173,38 +2144,9 @@ type Task struct {
 type TaskDependency struct {
 	// Can only be specified on condition task dependencies. The outcome of the
 	// dependent task that must be met for this task to run.
-	Outcome TaskDependencyOutcome `json:"outcome,omitempty"`
+	Outcome string `json:"outcome,omitempty"`
 	// The name of task that this task depends on.
 	TaskKey string `json:"task_key"`
-}
-
-// Can only be specified on condition task dependencies. The outcome of the
-// dependent task that must be met for this task to run.
-type TaskDependencyOutcome string
-
-const TaskDependencyOutcomeFalse TaskDependencyOutcome = `false`
-
-const TaskDependencyOutcomeTrue TaskDependencyOutcome = `true`
-
-// String representation for [fmt.Print]
-func (f *TaskDependencyOutcome) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *TaskDependencyOutcome) Set(v string) error {
-	switch v {
-	case `false`, `true`:
-		*f = TaskDependencyOutcome(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "false", "true"`, v)
-	}
-}
-
-// Type always returns TaskDependencyOutcome to satisfy [pflag.Value] interface
-func (f *TaskDependencyOutcome) Type() string {
-	return "TaskDependencyOutcome"
 }
 
 type TaskEmailNotifications struct {
