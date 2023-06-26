@@ -3,6 +3,7 @@ package internal
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
@@ -10,10 +11,10 @@ import (
 )
 
 func TestAccSecrets(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
-	scopeName := RandomName("scope-")
-	keyName := RandomName("key-")
+	scopeName := qa.RandomName("scope-")
+	keyName := qa.RandomName("key-")
 
 	// creates scopeName
 	err := w.Secrets.CreateScope(ctx, workspace.CreateScope{
@@ -33,7 +34,7 @@ func TestAccSecrets(t *testing.T) {
 	err = w.Secrets.PutSecret(ctx, workspace.PutSecret{
 		Scope:       scopeName,
 		Key:         keyName,
-		StringValue: RandomName("dummy"),
+		StringValue: qa.RandomName("dummy"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -49,7 +50,7 @@ func TestAccSecrets(t *testing.T) {
 	assert.True(t, len(scrts.Secrets) == 1)
 
 	group, err := w.Groups.Create(ctx, iam.Group{
-		DisplayName: RandomName("go-sdk-"),
+		DisplayName: qa.RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {

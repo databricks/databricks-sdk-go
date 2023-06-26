@@ -3,6 +3,7 @@ package internal
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/stretchr/testify/assert"
@@ -10,7 +11,7 @@ import (
 )
 
 func TestAccCreateOboTokenOnAws(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	if !w.Config.IsAws() {
 		t.Skip("works only on aws")
 	}
@@ -18,7 +19,7 @@ func TestAccCreateOboTokenOnAws(t *testing.T) {
 	require.NoError(t, err)
 
 	spn, err := w.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
-		DisplayName: RandomName(t.Name()),
+		DisplayName: qa.RandomName(t.Name()),
 		Groups: []iam.ComplexValue{
 			{
 				Value: groups["admins"],

@@ -3,13 +3,14 @@ package internal
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccInstancePools(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	smallest, err := w.Clusters.SelectNodeType(ctx, compute.NodeTypeRequest{
 		LocalDisk: true,
@@ -17,7 +18,7 @@ func TestAccInstancePools(t *testing.T) {
 	require.NoError(t, err)
 
 	created, err := w.InstancePools.Create(ctx, compute.CreateInstancePool{
-		InstancePoolName: RandomName("go-sdk-"),
+		InstancePoolName: qa.RandomName("go-sdk-"),
 		NodeTypeId:       smallest,
 	})
 	require.NoError(t, err)
@@ -26,7 +27,7 @@ func TestAccInstancePools(t *testing.T) {
 
 	err = w.InstancePools.Edit(ctx, compute.EditInstancePool{
 		InstancePoolId:   created.InstancePoolId,
-		InstancePoolName: RandomName("go-sdk-updated"),
+		InstancePoolName: qa.RandomName("go-sdk-updated"),
 		NodeTypeId:       smallest,
 	})
 	require.NoError(t, err)

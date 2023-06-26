@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -15,8 +16,8 @@ import (
 
 func myNotebookPath(t *testing.T, w *databricks.WorkspaceClient) string {
 	ctx := context.Background()
-	testDir := filepath.Join("/Users", me(t, w).UserName, ".sdk", RandomName("t-"))
-	notebook := filepath.Join(testDir, RandomName("n-"))
+	testDir := filepath.Join("/Users", me(t, w).UserName, ".sdk", qa.RandomName("t-"))
+	notebook := filepath.Join(testDir, qa.RandomName("n-"))
 
 	err := w.Workspace.MkdirsByPath(ctx, testDir)
 	require.NoError(t, err)
@@ -32,7 +33,7 @@ func myNotebookPath(t *testing.T, w *databricks.WorkspaceClient) string {
 }
 
 func TestAccWorkspaceIntegration(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	notebook := myNotebookPath(t, w)
 
 	// Import the test notebook
@@ -76,9 +77,9 @@ func TestAccWorkspaceIntegration(t *testing.T) {
 
 func TestAccWorkspaceUploadNotebookWithFileExtensionNoTranspile(t *testing.T) {
 	// TODO: remove NoTranspile suffix once other languages get Upload/Donwload features
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
-	notebookPath := filepath.Join("/Users", me(t, w).UserName, RandomName("notebook-")+".py")
+	notebookPath := filepath.Join("/Users", me(t, w).UserName, qa.RandomName("notebook-")+".py")
 
 	err := w.Workspace.Upload(ctx, notebookPath, strings.NewReader("print(1)"))
 	assert.NoError(t, err)
@@ -102,9 +103,9 @@ func TestAccWorkspaceUploadNotebookWithFileExtensionNoTranspile(t *testing.T) {
 
 func TestAccWorkspaceUploadNotebookWithFileNoExtensionNoTranspile(t *testing.T) {
 	// TODO: remove NoTranspile suffix once other languages get Upload/Donwload features
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
-	notebookPath := filepath.Join("/Users", me(t, w).UserName, RandomName("notebook-"))
+	notebookPath := filepath.Join("/Users", me(t, w).UserName, qa.RandomName("notebook-"))
 
 	err := w.Workspace.Upload(ctx, notebookPath, strings.NewReader("print(1)"),
 		workspace.UploadLanguage(workspace.LanguagePython))
@@ -129,9 +130,9 @@ func TestAccWorkspaceUploadNotebookWithFileNoExtensionNoTranspile(t *testing.T) 
 
 func TestAccWorkspaceUploadFileNoTranspile(t *testing.T) {
 	// TODO: remove NoTranspile suffix once other languages get Upload/Donwload features
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
-	txtPath := filepath.Join("/Users", me(t, w).UserName, RandomName("txt-"))
+	txtPath := filepath.Join("/Users", me(t, w).UserName, qa.RandomName("txt-"))
 
 	err := w.Workspace.Upload(ctx, txtPath, strings.NewReader("print(1)"),
 		workspace.UploadFormat(workspace.ImportFormatAuto))
@@ -154,7 +155,7 @@ func TestAccWorkspaceUploadFileNoTranspile(t *testing.T) {
 }
 
 func TestAccWorkspaceRecursiveListNoTranspile(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	notebook := myNotebookPath(t, w)
 
 	// Import the test notebook

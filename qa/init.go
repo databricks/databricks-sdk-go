@@ -1,4 +1,4 @@
-package internal
+package qa
 
 import (
 	"context"
@@ -28,8 +28,8 @@ func init() {
 	}
 }
 
-// prelude for all workspace-level tests
-func workspaceTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) {
+// WorkspaceTest is the prelude for all workspace-level tests
+func WorkspaceTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) {
 	loadDebugEnvIfRunsFromIDE(t, "workspace")
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	if os.Getenv("DATABRICKS_ACCOUNT_ID") != "" {
@@ -40,8 +40,8 @@ func workspaceTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) 
 	return ctx, databricks.Must(databricks.NewWorkspaceClient())
 }
 
-// prelude for all workspace-level UC tests
-func ucwsTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) {
+// UcwsTest is the prelude for all workspace-level UC tests
+func UcwsTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) {
 	loadDebugEnvIfRunsFromIDE(t, "ucws")
 	if os.Getenv("DATABRICKS_ACCOUNT_ID") != "" {
 		skipf(t)("Skipping workspace test on account level")
@@ -52,8 +52,8 @@ func ucwsTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) {
 	return ctx, databricks.Must(databricks.NewWorkspaceClient())
 }
 
-// prelude for all account-level tests
-func accountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
+// AccountTest is the prelude for all account-level tests
+func AccountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 	loadDebugEnvIfRunsFromIDE(t, "account")
 	cfg := &config.Config{
 		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
@@ -72,8 +72,8 @@ func accountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 		(*databricks.Config)(cfg)))
 }
 
-// prelude for all UC account-level tests
-func ucacctTest(t *testing.T) (context.Context, *databricks.AccountClient) {
+// UcacctTest is the prelude for all UC account-level tests
+func UcacctTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 	loadDebugEnvIfRunsFromIDE(t, "ucacct")
 	cfg := &config.Config{
 		AccountID: GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),

@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
@@ -11,7 +12,7 @@ import (
 )
 
 func TestAccPipelines(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	notebookPath := myNotebookPath(t, w)
 
 	err := w.Workspace.Import(ctx, workspace.Import{
@@ -25,7 +26,7 @@ func TestAccPipelines(t *testing.T) {
 
 	created, err := w.Pipelines.Create(ctx, pipelines.CreatePipeline{
 		Continuous: false,
-		Name:       RandomName("go-sdk-"),
+		Name:       qa.RandomName("go-sdk-"),
 		Libraries: []pipelines.PipelineLibrary{
 			{
 				Notebook: &pipelines.NotebookLibrary{
@@ -35,7 +36,7 @@ func TestAccPipelines(t *testing.T) {
 		},
 		Clusters: []pipelines.PipelineCluster{
 			{
-				InstancePoolId: GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
+				InstancePoolId: qa.GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 				Label:          "default",
 				NumWorkers:     1,
 				CustomTags: map[string]string{
@@ -57,7 +58,7 @@ func TestAccPipelines(t *testing.T) {
 
 	err = w.Pipelines.Update(ctx, pipelines.EditPipeline{
 		PipelineId: created.PipelineId,
-		Name:       RandomName("go-sdk-updated-"),
+		Name:       qa.RandomName("go-sdk-updated-"),
 		Libraries: []pipelines.PipelineLibrary{
 			{
 				Notebook: &pipelines.NotebookLibrary{
@@ -67,7 +68,7 @@ func TestAccPipelines(t *testing.T) {
 		},
 		Clusters: []pipelines.PipelineCluster{
 			{
-				InstancePoolId: GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
+				InstancePoolId: qa.GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
 				Label:          "default",
 				NumWorkers:     1,
 				CustomTags: map[string]string{

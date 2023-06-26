@@ -3,13 +3,14 @@ package internal
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccWorkspaceConf(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	conf, err := w.WorkspaceConf.GetStatus(ctx, settings.GetStatusRequest{
 		Keys: "maxTokenLifetimeDays,enableIpAccessLists,enableWorkspaceFilesystem",
 	})

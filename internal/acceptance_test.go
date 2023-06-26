@@ -8,13 +8,14 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/internal/env"
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccDefaultCredentials(t *testing.T) {
-	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+	t.Log(qa.GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	w := databricks.Must(databricks.NewWorkspaceClient())
 	if w.Config.IsAccountClient() {
 		t.SkipNow()
@@ -35,7 +36,7 @@ func TestAccDefaultCredentials(t *testing.T) {
 
 func TestAccExplicitDatabricksCfg(t *testing.T) {
 	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-		Profile: GetEnvOrSkipTest(t, "DATABRICKS_CONFIG_PROFILE"),
+		Profile: qa.GetEnvOrSkipTest(t, "DATABRICKS_CONFIG_PROFILE"),
 	}))
 	if w.Config.IsAccountClient() {
 		t.SkipNow()
@@ -62,9 +63,9 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 		"az",
 		"login",
 		"--service-principal",
-		"--user", GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
-		"--password", GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET"),
-		"--tenant", GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
+		"--user", qa.GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
+		"--password", qa.GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET"),
+		"--tenant", qa.GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
 	)
 	out, err := cmd.Output()
 	if err != nil {
@@ -72,7 +73,7 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 	}
 
 	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-		AzureResourceID: GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
+		AzureResourceID: qa.GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
 		Credentials:     config.AzureCliCredentials{},
 	}))
 	ctx := context.Background()
@@ -89,10 +90,10 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 
 func TestAccExplicitAzureSpnAuth(t *testing.T) {
 	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-		AzureTenantID:     GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
-		AzureClientID:     GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
-		AzureClientSecret: GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET"),
-		AzureResourceID:   GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
+		AzureTenantID:     qa.GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
+		AzureClientID:     qa.GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
+		AzureClientSecret: qa.GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET"),
+		AzureResourceID:   qa.GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
 		Credentials:       config.AzureClientSecretCredentials{},
 	}))
 	ctx := context.Background()

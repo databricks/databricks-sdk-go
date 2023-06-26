@@ -4,16 +4,17 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccTokens(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	token, err := w.Tokens.Create(ctx, settings.CreateTokenRequest{
-		Comment:         RandomName("go-sdk-"),
+		Comment:         qa.RandomName("go-sdk-"),
 		LifetimeSeconds: 300,
 	})
 	require.NoError(t, err)

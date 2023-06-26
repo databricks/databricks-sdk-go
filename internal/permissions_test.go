@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
@@ -12,7 +13,7 @@ import (
 )
 
 func TestAccGenericPermissions(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	notebookPath := myNotebookPath(t, w)
 
 	err := w.Workspace.Import(ctx, workspace.Import{
@@ -35,7 +36,7 @@ func TestAccGenericPermissions(t *testing.T) {
 	assert.True(t, len(levels.PermissionLevels) > 1)
 
 	group, err := w.Groups.Create(ctx, iam.Group{
-		DisplayName: RandomName("go-sdk-"),
+		DisplayName: qa.RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -63,14 +64,14 @@ func TestAccGenericPermissions(t *testing.T) {
 }
 
 func TestUcAccWorkspaceAssignmentOnAws(t *testing.T) {
-	ctx, a := ucacctTest(t)
+	ctx, a := qa.UcacctTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
-	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
+	workspaceId := qa.MustParseInt64(qa.GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
 
 	spn, err := a.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
-		DisplayName: RandomName("sdk-go-"),
+		DisplayName: qa.RandomName("sdk-go-"),
 	})
 	require.NoError(t, err)
 	defer func() {
@@ -78,7 +79,7 @@ func TestUcAccWorkspaceAssignmentOnAws(t *testing.T) {
 		require.NoError(t, err)
 	}()
 
-	spnId := MustParseInt64(spn.Id)
+	spnId := qa.MustParseInt64(spn.Id)
 
 	err = a.WorkspaceAssignment.Update(ctx, iam.UpdateWorkspaceAssignments{
 		WorkspaceId: workspaceId,

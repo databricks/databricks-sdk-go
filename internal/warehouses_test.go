@@ -3,16 +3,17 @@ package internal
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccSqlWarehouses(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	created, err := w.Warehouses.CreateAndWait(ctx, sql.CreateWarehouseRequest{
-		Name:           RandomName("go-sdk-"),
+		Name:           qa.RandomName("go-sdk-"),
 		ClusterSize:    "2X-Small",
 		MaxNumClusters: 1,
 		AutoStopMins:   10,
@@ -26,7 +27,7 @@ func TestAccSqlWarehouses(t *testing.T) {
 
 	_, err = w.Warehouses.Edit(ctx, sql.EditWarehouseRequest{
 		Id:             created.Id,
-		Name:           RandomName("go-sdk-updated-"),
+		Name:           qa.RandomName("go-sdk-updated-"),
 		ClusterSize:    "2X-Small",
 		MaxNumClusters: 1,
 		AutoStopMins:   10,

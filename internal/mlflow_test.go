@@ -6,16 +6,17 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccExperiments(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	experiment, err := w.Experiments.CreateExperiment(ctx, ml.CreateExperiment{
-		Name: RandomName("/tmp/go-sdk-"),
+		Name: qa.RandomName("/tmp/go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -26,7 +27,7 @@ func TestAccExperiments(t *testing.T) {
 	})
 
 	err = w.Experiments.UpdateExperiment(ctx, ml.UpdateExperiment{
-		NewName:      RandomName("/tmp/go-sdk-"),
+		NewName:      qa.RandomName("/tmp/go-sdk-"),
 		ExperimentId: experiment.ExperimentId,
 	})
 	require.NoError(t, err)
@@ -42,10 +43,10 @@ func TestAccExperiments(t *testing.T) {
 }
 
 func TestAccMLflowRuns(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	experiment, err := w.Experiments.CreateExperiment(ctx, ml.CreateExperiment{
-		Name: RandomName("/tmp/go-sdk-"),
+		Name: qa.RandomName("/tmp/go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -81,10 +82,10 @@ func TestAccMLflowRuns(t *testing.T) {
 }
 
 func TestAccModels(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	created, err := w.ModelRegistry.CreateModel(ctx, ml.CreateModelRequest{
-		Name: RandomName("go-sdk-"),
+		Name: qa.RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -98,7 +99,7 @@ func TestAccModels(t *testing.T) {
 
 	err = w.ModelRegistry.UpdateModel(ctx, ml.UpdateModelRequest{
 		Name:        model.RegisteredModelDatabricks.Name,
-		Description: RandomName("comment "),
+		Description: qa.RandomName("comment "),
 	})
 	require.NoError(t, err)
 
@@ -115,9 +116,9 @@ func deleteModel(t *testing.T, w *databricks.WorkspaceClient, ctx context.Contex
 }
 
 func TestAccRegistryWebhooks(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 	created, err := w.ModelRegistry.CreateWebhook(ctx, ml.CreateRegistryWebhook{
-		Description: RandomName("comment "),
+		Description: qa.RandomName("comment "),
 		Events:      []ml.RegistryWebhookEvent{ml.RegistryWebhookEventModelVersionCreated},
 		HttpUrlSpec: &ml.HttpUrlSpec{
 			Url: w.Config.CanonicalHostName(),
@@ -133,7 +134,7 @@ func TestAccRegistryWebhooks(t *testing.T) {
 	})
 	err = w.ModelRegistry.UpdateWebhook(ctx, ml.UpdateRegistryWebhook{
 		Id:          created.Webhook.Id,
-		Description: RandomName("updated "),
+		Description: qa.RandomName("updated "),
 	})
 	require.NoError(t, err)
 
@@ -173,10 +174,10 @@ func deleteModelVersion(t *testing.T, w *databricks.WorkspaceClient, ctx context
 }
 
 func TestAccModelVersions(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	model, err := w.ModelRegistry.CreateModel(ctx, ml.CreateModelRequest{
-		Name: RandomName("go-sdk-"),
+		Name: qa.RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -194,7 +195,7 @@ func TestAccModelVersions(t *testing.T) {
 	})
 
 	err = w.ModelRegistry.UpdateModelVersion(ctx, ml.UpdateModelVersionRequest{
-		Description: RandomName("description "),
+		Description: qa.RandomName("description "),
 		Name:        created.ModelVersion.Name,
 		Version:     created.ModelVersion.Version,
 	})
@@ -202,10 +203,10 @@ func TestAccModelVersions(t *testing.T) {
 }
 
 func TestAccModelVersionComments(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	model, err := w.ModelRegistry.CreateModel(ctx, ml.CreateModelRequest{
-		Name: RandomName("go-sdk-"),
+		Name: qa.RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -223,7 +224,7 @@ func TestAccModelVersionComments(t *testing.T) {
 	})
 
 	created, err := w.ModelRegistry.CreateComment(ctx, ml.CreateComment{
-		Comment: RandomName("comment "),
+		Comment: qa.RandomName("comment "),
 		Name:    mv.ModelVersion.Name,
 		Version: mv.ModelVersion.Version,
 	})
@@ -237,7 +238,7 @@ func TestAccModelVersionComments(t *testing.T) {
 		require.NoError(t, err)
 	})
 	_, err = w.ModelRegistry.UpdateComment(ctx, ml.UpdateComment{
-		Comment: RandomName("updated "),
+		Comment: qa.RandomName("updated "),
 		Id:      created.Comment.Id,
 	})
 	require.NoError(t, err)

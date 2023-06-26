@@ -3,13 +3,14 @@ package internal
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccQueries(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	srcs, err := w.DataSources.List(ctx)
 	require.NoError(t, err)
@@ -18,7 +19,7 @@ func TestAccQueries(t *testing.T) {
 	}
 
 	query, err := w.Queries.Create(ctx, sql.QueryPostContent{
-		Name:         RandomName("go-sdk/test/"),
+		Name:         qa.RandomName("go-sdk/test/"),
 		DataSourceId: srcs[0].Id,
 		Description:  "test query from Go SDK",
 		Query:        "SHOW TABLES",
@@ -39,7 +40,7 @@ func TestAccQueries(t *testing.T) {
 
 	updated, err := w.Queries.Update(ctx, sql.QueryEditContent{
 		QueryId:      query.Id,
-		Name:         RandomName("go-sdk-updated"),
+		Name:         qa.RandomName("go-sdk-updated"),
 		DataSourceId: srcs[0].Id,
 		Description:  "UPDATED: test query from Go SDK",
 		Query:        "SELECT 2+2",
@@ -49,7 +50,7 @@ func TestAccQueries(t *testing.T) {
 }
 
 func TestAccAlerts(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	srcs, err := w.DataSources.List(ctx)
 	require.NoError(t, err)
@@ -58,7 +59,7 @@ func TestAccAlerts(t *testing.T) {
 	}
 
 	query, err := w.Queries.Create(ctx, sql.QueryPostContent{
-		Name:         RandomName("go-sdk/test/"),
+		Name:         qa.RandomName("go-sdk/test/"),
 		DataSourceId: srcs[0].Id,
 		Description:  "test query from Go SDK",
 		Query:        "SELECT 1",
@@ -72,7 +73,7 @@ func TestAccAlerts(t *testing.T) {
 			Op:     "==",
 			Value:  "1",
 		},
-		Name:    RandomName("go-sdk-"),
+		Name:    qa.RandomName("go-sdk-"),
 		QueryId: query.Id,
 	})
 	require.NoError(t, err)
@@ -85,7 +86,7 @@ func TestAccAlerts(t *testing.T) {
 			Value:  "1",
 		},
 		AlertId: alert.Id,
-		Name:    RandomName("go-sdk-updated-"),
+		Name:    qa.RandomName("go-sdk-updated-"),
 		QueryId: query.Id,
 	})
 	require.NoError(t, err)
@@ -107,10 +108,10 @@ func TestAccAlerts(t *testing.T) {
 }
 
 func TestAccDashboards(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := qa.WorkspaceTest(t)
 
 	created, err := w.Dashboards.Create(ctx, sql.CreateDashboardRequest{
-		Name: RandomName("go-sdk-"),
+		Name: qa.RandomName("go-sdk-"),
 	})
 	require.NoError(t, err)
 

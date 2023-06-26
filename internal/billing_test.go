@@ -3,6 +3,7 @@ package internal
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/stretchr/testify/assert"
@@ -10,7 +11,7 @@ import (
 )
 
 func TestMwsAccUsageDownload(t *testing.T) {
-	ctx, a := accountTest(t)
+	ctx, a := qa.AccountTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
@@ -23,15 +24,15 @@ func TestMwsAccUsageDownload(t *testing.T) {
 }
 
 func TestMwsAccLogDelivery(t *testing.T) {
-	ctx, a := accountTest(t)
+	ctx, a := qa.AccountTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
 	creds, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
-		CredentialsName: RandomName("sdk-"),
+		CredentialsName: qa.RandomName("sdk-"),
 		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
-				RoleArn: GetEnvOrSkipTest(t, "TEST_LOGDELIVERY_ARN"),
+				RoleArn: qa.GetEnvOrSkipTest(t, "TEST_LOGDELIVERY_ARN"),
 			},
 		},
 	})
@@ -39,9 +40,9 @@ func TestMwsAccLogDelivery(t *testing.T) {
 	defer a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
 
 	bucket, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
-		StorageConfigurationName: RandomName("sdk-"),
+		StorageConfigurationName: qa.RandomName("sdk-"),
 		RootBucketInfo: provisioning.RootBucketInfo{
-			BucketName: RandomName("sdk-bucket-"),
+			BucketName: qa.RandomName("sdk-bucket-"),
 		},
 	})
 	require.NoError(t, err)
@@ -50,7 +51,7 @@ func TestMwsAccLogDelivery(t *testing.T) {
 	// TODO: OpenAPI: x-databricks-sdk-inline on schema
 	created, err := a.LogDelivery.Create(ctx, billing.WrappedCreateLogDeliveryConfiguration{
 		LogDeliveryConfiguration: &billing.CreateLogDeliveryConfigurationParams{
-			ConfigName:             RandomName("sdk-go-"),
+			ConfigName:             qa.RandomName("sdk-go-"),
 			CredentialsId:          creds.CredentialsId,
 			StorageConfigurationId: bucket.StorageConfigurationId,
 			LogType:                billing.LogTypeAuditLogs,
@@ -78,7 +79,7 @@ func TestMwsAccLogDelivery(t *testing.T) {
 }
 
 func TestMwsAccBudgets(t *testing.T) {
-	ctx, a := accountTest(t)
+	ctx, a := qa.AccountTest(t)
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
@@ -86,7 +87,7 @@ func TestMwsAccBudgets(t *testing.T) {
 	// TODO: OpenAPI: x-databricks-sdk-inline on schema
 	created, err := a.Budgets.Create(ctx, billing.WrappedBudget{
 		Budget: billing.Budget{
-			Name:         RandomName("go-sdk-"),
+			Name:         qa.RandomName("go-sdk-"),
 			Filter:       "tag.tagName = 'all'",
 			Period:       "1 month",
 			StartDate:    "2022-01-01",
@@ -105,7 +106,7 @@ func TestMwsAccBudgets(t *testing.T) {
 	err = a.Budgets.Update(ctx, billing.WrappedBudget{
 		BudgetId: created.Budget.BudgetId,
 		Budget: billing.Budget{
-			Name:         RandomName("go-sdk-updated-"),
+			Name:         qa.RandomName("go-sdk-updated-"),
 			Filter:       "tag.tagName = 'all'",
 			Period:       "1 month",
 			StartDate:    "2022-01-01",
