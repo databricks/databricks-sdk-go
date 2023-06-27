@@ -158,6 +158,10 @@ func (c *Config) IsAws() bool {
 
 // IsAccountClient returns true if client is configured for Accounts API
 func (c *Config) IsAccountClient() bool {
+	if c.AccountID != "" && c.isTesting {
+		return true
+	}
+
 	accountsPrefixes := []string{
 		"https://accounts.",
 		"https://accounts-dod.",
@@ -167,7 +171,7 @@ func (c *Config) IsAccountClient() bool {
 			return true
 		}
 	}
-	return c.AccountID != "" && c.isTesting
+	return false
 }
 
 func (c *Config) EnsureResolved() error {
