@@ -1,5 +1,65 @@
 # Version changelog
 
+## 0.11.0
+
+ * Regenerated from OpenAPI spec ([#527](https://github.com/databricks/databricks-sdk-go/pull/527)). Includes bugfixes for:
+   * System Tables
+
+ * Support accounts-dod as account endpoint ([#530](https://github.com/databricks/databricks-sdk-go/pull/530)).
+
+Breaking API Changes:
+
+ - Renamed compute.ClusterInfo to compute.ClusterDetails
+ - Renamed compue.BaseClusterInfo to compute.ClusterSpec
+ - Renamed jobs.RunSubmitTaskSettings to jobs.SubmitTask
+ - Renamed jobs.JobTaskSettings to jobs.Task
+ - Renamed jobs.CreateJobFormat to jobs.Format
+ - Renamed jobs.JobsWebhookNotifications to jobs.WebhookNotifications
+ - Renamed jobs.CronSchedulePauseStatus to jobs.PauseStatus
+ - Renamed jobs.FileArrivalTriggerSettings to jobs.FileArrivalTriggerConfiguration
+ - Renamed jobs.GitSourceGitProvider to jobs.GitProvider
+ - Consolidated jobs.NotebookTaskSource, jobs.SparkPythonTaskSource to jobs.Source
+ - Consolidated jobs.JobWebhookNotificationsOnFailureItem, jobs.JobWebhookNotificationsOnStartItem, jobs.JobWebhookNotificationsOnSuccessItem to jobs.Webhook
+ - Renamed jobs.TaskDependenciesItem to job.TaskDependency
+ - jobs.SparkSubmitTask.Widgets changed from *SqlDashboardWidgetOutput to []SqlDashboardWidgetOutput
+ - (a *SystemSchemasAPI) DisableByMetastoreIdAndSchemaName changed from func(context.Context, string, string) error to func(context.Context, string, DisableSchemaName) error
+ - (a *SystemSchemasAPI) Enable changed from func(context.Context) error to func(context.Context, EnableRequest) error
+ - catalog.CatalogInfo.OptionsKvpairs changed from *OptionsKvPairs to map[string]string
+ - catalog.CreateConnection.OptionsKvpairs changed from *OptionsKvPairs to map[string]string
+ - catalog.UpdateConnection.OptionsKvpairs changed from OptionsKvPairs to map[string]string
+ - catalog.DisableRequest.SchemaName changed from string to DisableSchemaName
+ - catalog.OptionsKvPairs removed
+ - catalog.SystemSchemaInfoStateDisableinitialized renamed to catalog.SystemSchemaInfoStateDisabledInitialized
+ - catalog.SystemSchemaInfoStateEnabledcompleted renamed to catalog.SystemSchemaInfoStateEnabledCompleted
+ - catalog.SystemSchemaInfoStateEnabledinitialized renamed to catalog.SystemSchemaInfoStateEnabledInitialized
+ - settings.ReadPersonalComputeSettingsResponse renamed to settings.PersonalComputeSetting
+ - workpace.CreateScope.KeyvaultMetadata removed
+
+Other API Changes:
+
+ - catalog.CatalogInfo.ConnectionName added
+ - catalog.CatalogInfo.Options added
+ - catalog.DisableSchemaName added
+ - catalog.EnableRequest added
+ - catalog.PrivilegeUseMarketplaceAssets added
+ - compute.ClusterEvent added
+ - compute.ComputeSpec added
+ - compute.ComputeSpecKind added
+ - jobs.ConditionTask added
+ - jobs.ConditionTaskOp added
+ - jobs.CreateJob.Compute added
+ - jobs.JobCompute added
+ - jobs.JobSettings.Compute added
+ - jobs.RunConditionTask added
+ - jobs.RunOutput.ConditionTask added
+ - jobs.RunTask.ConditionTask added
+ - serving.ServedModelInput.EnvironmentVars added
+ - serving.ServedModelOutput.EnvironmentVars added
+ - settings.DeletePersonalComputeSetting added
+ - settings.UpdatePersonalComputeSetting added
+ - sharing.PrivilegeUseMarketplaceAssets added
+ - workspace.CreateScope.BackendAzureKeyVault added
+
 ## 0.10.1
 
  * Added ClusterID field for Config ([#524](https://github.com/databricks/databricks-sdk-go/pull/524)).
