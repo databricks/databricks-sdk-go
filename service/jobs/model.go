@@ -160,47 +160,86 @@ type ClusterSpec struct {
 	// executes the job. The default value is an empty list.
 	Libraries []compute.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
+	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
+}
+
+type ConditionTask struct {
+	// The left operand of the condition task. Can be either a string value or a
+	// job state or parameter reference.
+	Left string `json:"left,omitempty"`
+	// * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
+	// operands. This means that `“12.0” == “12”` will evaluate to
+	// `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`,
+	// `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their
+	// operands. `“12.0” >= “12”` will evaluate to `true`, `“10.0”
+	// >= “12”` will evaluate to `false`.
+	//
+	// The boolean comparison to task values can be implemented with operators
+	// `EQUAL_TO`, `NOT_EQUAL`. If a task value was set to a boolean value, it
+	// will be serialized to `“true”` or `“false”` for the comparison.
+	Op ConditionTaskOp `json:"op,omitempty"`
+	// The right operand of the condition task. Can be either a string value or
+	// a job state or parameter reference.
+	Right string `json:"right,omitempty"`
+}
+
+// * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
+// operands. This means that `“12.0” == “12”` will evaluate to `false`.
+// * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`, `LESS_THAN_OR_EQUAL`
+// operators perform numeric comparison of their operands. `“12.0” >=
+// “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to
+// `false`.
+//
+// The boolean comparison to task values can be implemented with operators
+// `EQUAL_TO`, `NOT_EQUAL`. If a task value was set to a boolean value, it will
+// be serialized to `“true”` or `“false”` for the comparison.
+type ConditionTaskOp string
+
+const ConditionTaskOpEqualTo ConditionTaskOp = `EQUAL_TO`
+
+const ConditionTaskOpGreaterThan ConditionTaskOp = `GREATER_THAN`
+
+const ConditionTaskOpGreaterThanOrEqual ConditionTaskOp = `GREATER_THAN_OR_EQUAL`
+
+const ConditionTaskOpLessThan ConditionTaskOp = `LESS_THAN`
+
+const ConditionTaskOpLessThanOrEqual ConditionTaskOp = `LESS_THAN_OR_EQUAL`
+
+const ConditionTaskOpNotEqual ConditionTaskOp = `NOT_EQUAL`
+
+// String representation for [fmt.Print]
+func (f *ConditionTaskOp) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ConditionTaskOp) Set(v string) error {
+	switch v {
+	case `EQUAL_TO`, `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`, `LESS_THAN_OR_EQUAL`, `NOT_EQUAL`:
+		*f = ConditionTaskOp(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EQUAL_TO", "GREATER_THAN", "GREATER_THAN_OR_EQUAL", "LESS_THAN", "LESS_THAN_OR_EQUAL", "NOT_EQUAL"`, v)
+	}
+}
+
+// Type always returns ConditionTaskOp to satisfy [pflag.Value] interface
+func (f *ConditionTaskOp) Type() string {
+	return "ConditionTaskOp"
 }
 
 type Continuous struct {
 	// Indicate whether the continuous execution of the job is paused or not.
 	// Defaults to UNPAUSED.
-	PauseStatus ContinuousPauseStatus `json:"pause_status,omitempty"`
-}
-
-// Indicate whether the continuous execution of the job is paused or not.
-// Defaults to UNPAUSED.
-type ContinuousPauseStatus string
-
-const ContinuousPauseStatusPaused ContinuousPauseStatus = `PAUSED`
-
-const ContinuousPauseStatusUnpaused ContinuousPauseStatus = `UNPAUSED`
-
-// String representation for [fmt.Print]
-func (f *ContinuousPauseStatus) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ContinuousPauseStatus) Set(v string) error {
-	switch v {
-	case `PAUSED`, `UNPAUSED`:
-		*f = ContinuousPauseStatus(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
-	}
-}
-
-// Type always returns ContinuousPauseStatus to satisfy [pflag.Value] interface
-func (f *ContinuousPauseStatus) Type() string {
-	return "ContinuousPauseStatus"
+	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 }
 
 type CreateJob struct {
 	// List of permissions to set on the job.
 	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
+	// A list of compute requirements that can be referenced by tasks of this
+	// job.
+	Compute []JobCompute `json:"compute,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
@@ -212,7 +251,7 @@ type CreateJob struct {
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
 	// always set to `"MULTI_TASK"`.
-	Format CreateJobFormat `json:"format,omitempty"`
+	Format Format `json:"format,omitempty"`
 	// An optional specification for a remote repository containing the
 	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
@@ -260,7 +299,7 @@ type CreateJob struct {
 	// job.
 	Tags map[string]string `json:"tags,omitempty"`
 	// A list of task specifications to be executed by this job.
-	Tasks []JobTaskSettings `json:"tasks,omitempty"`
+	Tasks []Task `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. The default behavior
 	// is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
@@ -271,37 +310,7 @@ type CreateJob struct {
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
 	// A collection of system notification IDs to notify when the run begins or
 	// completes. The default behavior is to not send any system notifications.
-	WebhookNotifications *JobWebhookNotifications `json:"webhook_notifications,omitempty"`
-}
-
-// Used to tell what is the format of the job. This field is ignored in
-// Create/Update/Reset calls. When using the Jobs API 2.1 this value is always
-// set to `"MULTI_TASK"`.
-type CreateJobFormat string
-
-const CreateJobFormatMultiTask CreateJobFormat = `MULTI_TASK`
-
-const CreateJobFormatSingleTask CreateJobFormat = `SINGLE_TASK`
-
-// String representation for [fmt.Print]
-func (f *CreateJobFormat) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *CreateJobFormat) Set(v string) error {
-	switch v {
-	case `MULTI_TASK`, `SINGLE_TASK`:
-		*f = CreateJobFormat(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "MULTI_TASK", "SINGLE_TASK"`, v)
-	}
-}
-
-// Type always returns CreateJobFormat to satisfy [pflag.Value] interface
-func (f *CreateJobFormat) Type() string {
-	return "CreateJobFormat"
+	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 }
 
 type CreateResponse struct {
@@ -311,7 +320,7 @@ type CreateResponse struct {
 
 type CronSchedule struct {
 	// Indicate whether this schedule is paused or not.
-	PauseStatus CronSchedulePauseStatus `json:"pause_status,omitempty"`
+	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 	// A Cron expression using Quartz syntax that describes the schedule for a
 	// job. See [Cron Trigger] for details. This field is required."
 	//
@@ -322,34 +331,6 @@ type CronSchedule struct {
 	//
 	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
 	TimezoneId string `json:"timezone_id"`
-}
-
-// Indicate whether this schedule is paused or not.
-type CronSchedulePauseStatus string
-
-const CronSchedulePauseStatusPaused CronSchedulePauseStatus = `PAUSED`
-
-const CronSchedulePauseStatusUnpaused CronSchedulePauseStatus = `UNPAUSED`
-
-// String representation for [fmt.Print]
-func (f *CronSchedulePauseStatus) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *CronSchedulePauseStatus) Set(v string) error {
-	switch v {
-	case `PAUSED`, `UNPAUSED`:
-		*f = CronSchedulePauseStatus(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
-	}
-}
-
-// Type always returns CronSchedulePauseStatus to satisfy [pflag.Value] interface
-func (f *CronSchedulePauseStatus) Type() string {
-	return "CronSchedulePauseStatus"
 }
 
 type DbtOutput struct {
@@ -413,7 +394,7 @@ type ExportRunRequest struct {
 	ViewsToExport ViewsToExport `json:"-" url:"views_to_export,omitempty"`
 }
 
-type FileArrivalTriggerSettings struct {
+type FileArrivalTriggerConfiguration struct {
 	// If set, the trigger starts a run only after the specified amount of time
 	// passed since the last time the trigger fired. The minimum allowed value
 	// is 60 seconds
@@ -426,6 +407,33 @@ type FileArrivalTriggerSettings struct {
 	// batch of incoming files to arrive before triggering a run. The minimum
 	// allowed value is 60 seconds.
 	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
+}
+
+type Format string
+
+const FormatMultiTask Format = `MULTI_TASK`
+
+const FormatSingleTask Format = `SINGLE_TASK`
+
+// String representation for [fmt.Print]
+func (f *Format) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *Format) Set(v string) error {
+	switch v {
+	case `MULTI_TASK`, `SINGLE_TASK`:
+		*f = Format(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MULTI_TASK", "SINGLE_TASK"`, v)
+	}
+}
+
+// Type always returns Format to satisfy [pflag.Value] interface
+func (f *Format) Type() string {
+	return "Format"
 }
 
 // Get a single job
@@ -448,6 +456,45 @@ type GetRunRequest struct {
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
 	RunId int64 `json:"-" url:"run_id"`
+}
+
+type GitProvider string
+
+const GitProviderAwscodecommit GitProvider = `awsCodeCommit`
+
+const GitProviderAzuredevopsservices GitProvider = `azureDevOpsServices`
+
+const GitProviderBitbucketcloud GitProvider = `bitbucketCloud`
+
+const GitProviderBitbucketserver GitProvider = `bitbucketServer`
+
+const GitProviderGithub GitProvider = `gitHub`
+
+const GitProviderGithubenterprise GitProvider = `gitHubEnterprise`
+
+const GitProviderGitlab GitProvider = `gitLab`
+
+const GitProviderGitlabenterpriseedition GitProvider = `gitLabEnterpriseEdition`
+
+// String representation for [fmt.Print]
+func (f *GitProvider) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *GitProvider) Set(v string) error {
+	switch v {
+	case `awsCodeCommit`, `azureDevOpsServices`, `bitbucketCloud`, `bitbucketServer`, `gitHub`, `gitHubEnterprise`, `gitLab`, `gitLabEnterpriseEdition`:
+		*f = GitProvider(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "awsCodeCommit", "azureDevOpsServices", "bitbucketCloud", "bitbucketServer", "gitHub", "gitHubEnterprise", "gitLab", "gitLabEnterpriseEdition"`, v)
+	}
+}
+
+// Type always returns GitProvider to satisfy [pflag.Value] interface
+func (f *GitProvider) Type() string {
+	return "GitProvider"
 }
 
 // Read-only state of the remote repository at the time the job was run. This
@@ -473,7 +520,7 @@ type GitSource struct {
 	GitCommit string `json:"git_commit,omitempty"`
 	// Unique identifier of the service used to host the Git repository. The
 	// value is case insensitive.
-	GitProvider GitSourceGitProvider `json:"git_provider"`
+	GitProvider GitProvider `json:"git_provider"`
 	// Read-only state of the remote repository at the time the job was run.
 	// This field is only included on job runs.
 	GitSnapshot *GitSnapshot `json:"git_snapshot,omitempty"`
@@ -485,47 +532,6 @@ type GitSource struct {
 	// URL of the repository to be cloned by this job. The maximum length is 300
 	// characters.
 	GitUrl string `json:"git_url"`
-}
-
-// Unique identifier of the service used to host the Git repository. The value
-// is case insensitive.
-type GitSourceGitProvider string
-
-const GitSourceGitProviderAwscodecommit GitSourceGitProvider = `awsCodeCommit`
-
-const GitSourceGitProviderAzuredevopsservices GitSourceGitProvider = `azureDevOpsServices`
-
-const GitSourceGitProviderBitbucketcloud GitSourceGitProvider = `bitbucketCloud`
-
-const GitSourceGitProviderBitbucketserver GitSourceGitProvider = `bitbucketServer`
-
-const GitSourceGitProviderGithub GitSourceGitProvider = `gitHub`
-
-const GitSourceGitProviderGithubenterprise GitSourceGitProvider = `gitHubEnterprise`
-
-const GitSourceGitProviderGitlab GitSourceGitProvider = `gitLab`
-
-const GitSourceGitProviderGitlabenterpriseedition GitSourceGitProvider = `gitLabEnterpriseEdition`
-
-// String representation for [fmt.Print]
-func (f *GitSourceGitProvider) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *GitSourceGitProvider) Set(v string) error {
-	switch v {
-	case `awsCodeCommit`, `azureDevOpsServices`, `bitbucketCloud`, `bitbucketServer`, `gitHub`, `gitHubEnterprise`, `gitLab`, `gitLabEnterpriseEdition`:
-		*f = GitSourceGitProvider(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "awsCodeCommit", "azureDevOpsServices", "bitbucketCloud", "bitbucketServer", "gitHub", "gitHubEnterprise", "gitLab", "gitLabEnterpriseEdition"`, v)
-	}
-}
-
-// Type always returns GitSourceGitProvider to satisfy [pflag.Value] interface
-func (f *GitSourceGitProvider) Type() string {
-	return "GitSourceGitProvider"
 }
 
 type Job struct {
@@ -558,7 +564,16 @@ type JobCluster struct {
 	// determine which cluster to launch for the task execution.
 	JobClusterKey string `json:"job_cluster_key"`
 	// If new_cluster, a description of a cluster that is created for each task.
-	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
+	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
+}
+
+type JobCompute struct {
+	// A unique name for the compute requirement. This field is required and
+	// must be unique within the job. `JobTaskSettings` may refer to this field
+	// to determine the compute requirements for the task execution.
+	ComputeKey string `json:"compute_key"`
+
+	Spec compute.ComputeSpec `json:"spec"`
 }
 
 type JobEmailNotifications struct {
@@ -609,6 +624,9 @@ type JobRunAs struct {
 }
 
 type JobSettings struct {
+	// A list of compute requirements that can be referenced by tasks of this
+	// job.
+	Compute []JobCompute `json:"compute,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
@@ -620,7 +638,7 @@ type JobSettings struct {
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
 	// always set to `"MULTI_TASK"`.
-	Format JobSettingsFormat `json:"format,omitempty"`
+	Format Format `json:"format,omitempty"`
 	// An optional specification for a remote repository containing the
 	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
@@ -668,7 +686,7 @@ type JobSettings struct {
 	// job.
 	Tags map[string]string `json:"tags,omitempty"`
 	// A list of task specifications to be executed by this job.
-	Tasks []JobTaskSettings `json:"tasks,omitempty"`
+	Tasks []Task `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. The default behavior
 	// is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
@@ -679,138 +697,10 @@ type JobSettings struct {
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
 	// A collection of system notification IDs to notify when the run begins or
 	// completes. The default behavior is to not send any system notifications.
-	WebhookNotifications *JobWebhookNotifications `json:"webhook_notifications,omitempty"`
+	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 }
 
-// Used to tell what is the format of the job. This field is ignored in
-// Create/Update/Reset calls. When using the Jobs API 2.1 this value is always
-// set to `"MULTI_TASK"`.
-type JobSettingsFormat string
-
-const JobSettingsFormatMultiTask JobSettingsFormat = `MULTI_TASK`
-
-const JobSettingsFormatSingleTask JobSettingsFormat = `SINGLE_TASK`
-
-// String representation for [fmt.Print]
-func (f *JobSettingsFormat) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *JobSettingsFormat) Set(v string) error {
-	switch v {
-	case `MULTI_TASK`, `SINGLE_TASK`:
-		*f = JobSettingsFormat(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "MULTI_TASK", "SINGLE_TASK"`, v)
-	}
-}
-
-// Type always returns JobSettingsFormat to satisfy [pflag.Value] interface
-func (f *JobSettingsFormat) Type() string {
-	return "JobSettingsFormat"
-}
-
-type JobTaskSettings struct {
-	// If dbt_task, indicates that this must execute a dbt task. It requires
-	// both Databricks SQL and the ability to use a serverless or a pro SQL
-	// warehouse.
-	DbtTask *DbtTask `json:"dbt_task,omitempty"`
-	// An optional array of objects specifying the dependency graph of the task.
-	// All tasks specified in this field must complete successfully before
-	// executing this task. The key is `task_key`, and the value is the name
-	// assigned to the dependent task. This field is required when a job
-	// consists of more than one task.
-	DependsOn []TaskDependenciesItem `json:"depends_on,omitempty"`
-	// An optional description for this task. The maximum length is 4096 bytes.
-	Description string `json:"description,omitempty"`
-	// An optional set of email addresses that is notified when runs of this
-	// task begin or complete as well as when this task is deleted. The default
-	// behavior is to not send any emails.
-	EmailNotifications *TaskEmailNotifications `json:"email_notifications,omitempty"`
-	// If existing_cluster_id, the ID of an existing cluster that is used for
-	// all runs of this task. When running tasks on an existing cluster, you may
-	// need to manually restart the cluster if it stops responding. We suggest
-	// running jobs on new clusters for greater reliability.
-	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
-	// If job_cluster_key, this task is executed reusing the cluster specified
-	// in `job.settings.job_clusters`.
-	JobClusterKey string `json:"job_cluster_key,omitempty"`
-	// An optional list of libraries to be installed on the cluster that
-	// executes the task. The default value is an empty list.
-	Libraries []compute.Library `json:"libraries,omitempty"`
-	// An optional maximum number of times to retry an unsuccessful run. A run
-	// is considered to be unsuccessful if it completes with the `FAILED`
-	// result_state or `INTERNAL_ERROR` `life_cycle_state`. The value -1 means
-	// to retry indefinitely and the value 0 means to never retry. The default
-	// behavior is to never retry.
-	MaxRetries int `json:"max_retries,omitempty"`
-	// An optional minimal interval in milliseconds between the start of the
-	// failed run and the subsequent retry run. The default behavior is that
-	// unsuccessful runs are immediately retried.
-	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
-	// If new_cluster, a description of a cluster that is created for only for
-	// this task.
-	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
-	// If notebook_task, indicates that this task must run a notebook. This
-	// field may not be specified in conjunction with spark_jar_task.
-	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
-	// Optional notification settings that are used when sending notifications
-	// to each of the `email_notifications` for this task.
-	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
-	// If pipeline_task, indicates that this task must execute a Pipeline.
-	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
-	// If python_wheel_task, indicates that this job must execute a PythonWheel.
-	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
-	// An optional policy to specify whether to retry a task when it times out.
-	// The default behavior is to not retry on timeout.
-	RetryOnTimeout bool `json:"retry_on_timeout,omitempty"`
-	// If spark_jar_task, indicates that this task must run a JAR.
-	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
-	// If spark_python_task, indicates that this task must run a Python file.
-	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-	// If spark_submit_task, indicates that this task must be launched by the
-	// spark submit script. This task can run only on new clusters.
-	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
-	// If sql_task, indicates that this job must execute a SQL task.
-	SqlTask *SqlTask `json:"sql_task,omitempty"`
-	// A unique name for the task. This field is used to refer to this task from
-	// other tasks. This field is required and must be unique within its parent
-	// job. On Update or Reset, this field is used to reference the tasks to be
-	// updated or reset. The maximum length is 100 characters.
-	TaskKey string `json:"task_key"`
-	// An optional timeout applied to each run of this job task. The default
-	// behavior is to have no timeout.
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
-}
-
-type JobWebhookNotifications struct {
-	// An optional list of system notification IDs to call when the run fails. A
-	// maximum of 3 destinations can be specified for the `on_failure` property.
-	OnFailure []JobWebhookNotificationsOnFailureItem `json:"on_failure,omitempty"`
-	// An optional list of system notification IDs to call when the run starts.
-	// A maximum of 3 destinations can be specified for the `on_start` property.
-	OnStart []JobWebhookNotificationsOnStartItem `json:"on_start,omitempty"`
-	// An optional list of system notification IDs to call when the run
-	// completes successfully. A maximum of 3 destinations can be specified for
-	// the `on_success` property.
-	OnSuccess []JobWebhookNotificationsOnSuccessItem `json:"on_success,omitempty"`
-}
-
-type JobWebhookNotificationsOnFailureItem struct {
-	Id string `json:"id,omitempty"`
-}
-
-type JobWebhookNotificationsOnStartItem struct {
-	Id string `json:"id,omitempty"`
-}
-
-type JobWebhookNotificationsOnSuccessItem struct {
-	Id string `json:"id,omitempty"`
-}
-
-// List all jobs
+// List jobs
 type ListJobsRequest struct {
 	// Whether to include task and cluster details in the response.
 	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
@@ -842,7 +732,7 @@ type ListJobsResponse struct {
 	PrevPageToken string `json:"prev_page_token,omitempty"`
 }
 
-// List runs for a job
+// List job runs
 type ListRunsRequest struct {
 	// If active_only is `true`, only active runs are included in the results;
 	// otherwise, lists both active and completed runs. An active run is a run
@@ -964,38 +854,42 @@ type NotebookTask struct {
 	// must be absolute and begin with a slash. For notebooks stored in a remote
 	// repository, the path must be relative. This field is required.
 	NotebookPath string `json:"notebook_path"`
-	// This describes an enum
-	Source NotebookTaskSource `json:"source,omitempty"`
+	// Optional location type of the notebook. When set to `WORKSPACE`, the
+	// notebook will be retrieved from the local <Databricks> workspace. When
+	// set to `GIT`, the notebook will be retrieved from a Git repository
+	// defined in `git_source`. If the value is empty, the task will use `GIT`
+	// if `git_source` is defined and `WORKSPACE` otherwise.
+	//
+	// * `WORKSPACE`: Notebook is located in <Databricks> workspace. * `GIT`:
+	// Notebook is located in cloud Git provider.
+	Source Source `json:"source,omitempty"`
 }
 
-// This describes an enum
-type NotebookTaskSource string
+type PauseStatus string
 
-// Notebook is located in cloud Git provider.
-const NotebookTaskSourceGit NotebookTaskSource = `GIT`
+const PauseStatusPaused PauseStatus = `PAUSED`
 
-// Notebook is located in <Databricks> workspace.
-const NotebookTaskSourceWorkspace NotebookTaskSource = `WORKSPACE`
+const PauseStatusUnpaused PauseStatus = `UNPAUSED`
 
 // String representation for [fmt.Print]
-func (f *NotebookTaskSource) String() string {
+func (f *PauseStatus) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *NotebookTaskSource) Set(v string) error {
+func (f *PauseStatus) Set(v string) error {
 	switch v {
-	case `GIT`, `WORKSPACE`:
-		*f = NotebookTaskSource(v)
+	case `PAUSED`, `UNPAUSED`:
+		*f = PauseStatus(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "GIT", "WORKSPACE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
 	}
 }
 
-// Type always returns NotebookTaskSource to satisfy [pflag.Value] interface
-func (f *NotebookTaskSource) Type() string {
-	return "NotebookTaskSource"
+// Type always returns PauseStatus to satisfy [pflag.Value] interface
+func (f *PauseStatus) Type() string {
+	return "PauseStatus"
 }
 
 type PipelineParams struct {
@@ -1280,6 +1174,54 @@ type Run struct {
 	Trigger TriggerType `json:"trigger,omitempty"`
 }
 
+type RunConditionTask struct {
+	// The left operand of the condition task.
+	Left string `json:"left"`
+	// The condtion task operator.
+	Op RunConditionTaskOp `json:"op"`
+	// The condition expression evaluation result. Filled in if the task was
+	// successfully completed. Can be `"true"` or `"false"`
+	Outcome string `json:"outcome,omitempty"`
+	// The right operand of the condition task.
+	Right string `json:"right"`
+}
+
+// The condtion task operator.
+type RunConditionTaskOp string
+
+const RunConditionTaskOpEqualTo RunConditionTaskOp = `EQUAL_TO`
+
+const RunConditionTaskOpGreaterThan RunConditionTaskOp = `GREATER_THAN`
+
+const RunConditionTaskOpGreaterThanOrEqual RunConditionTaskOp = `GREATER_THAN_OR_EQUAL`
+
+const RunConditionTaskOpLessThan RunConditionTaskOp = `LESS_THAN`
+
+const RunConditionTaskOpLessThanOrEqual RunConditionTaskOp = `LESS_THAN_OR_EQUAL`
+
+const RunConditionTaskOpNotEqual RunConditionTaskOp = `NOT_EQUAL`
+
+// String representation for [fmt.Print]
+func (f *RunConditionTaskOp) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RunConditionTaskOp) Set(v string) error {
+	switch v {
+	case `EQUAL_TO`, `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`, `LESS_THAN_OR_EQUAL`, `NOT_EQUAL`:
+		*f = RunConditionTaskOp(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EQUAL_TO", "GREATER_THAN", "GREATER_THAN_OR_EQUAL", "LESS_THAN", "LESS_THAN_OR_EQUAL", "NOT_EQUAL"`, v)
+	}
+}
+
+// Type always returns RunConditionTaskOp to satisfy [pflag.Value] interface
+func (f *RunConditionTaskOp) Type() string {
+	return "RunConditionTaskOp"
+}
+
 // This describes an enum
 type RunLifeCycleState string
 
@@ -1447,6 +1389,8 @@ type RunNowResponse struct {
 }
 
 type RunOutput struct {
+	// The output of a condition task, if available.
+	ConditionTask any `json:"condition_task,omitempty"`
 	// The output of a dbt task, if available.
 	DbtOutput *DbtOutput `json:"dbt_output,omitempty"`
 	// An error message indicating why a task failed or why output is not
@@ -1616,49 +1560,6 @@ type RunState struct {
 	UserCancelledOrTimedout bool `json:"user_cancelled_or_timedout,omitempty"`
 }
 
-type RunSubmitTaskSettings struct {
-	// An optional array of objects specifying the dependency graph of the task.
-	// All tasks specified in this field must complete successfully before
-	// executing this task. The key is `task_key`, and the value is the name
-	// assigned to the dependent task. This field is required when a job
-	// consists of more than one task.
-	DependsOn []TaskDependenciesItem `json:"depends_on,omitempty"`
-	// If existing_cluster_id, the ID of an existing cluster that is used for
-	// all runs of this task. When running tasks on an existing cluster, you may
-	// need to manually restart the cluster if it stops responding. We suggest
-	// running jobs on new clusters for greater reliability.
-	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
-	// An optional list of libraries to be installed on the cluster that
-	// executes the task. The default value is an empty list.
-	Libraries []compute.Library `json:"libraries,omitempty"`
-	// If new_cluster, a description of a cluster that is created for each run.
-	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
-	// If notebook_task, indicates that this task must run a notebook. This
-	// field may not be specified in conjunction with spark_jar_task.
-	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
-	// If pipeline_task, indicates that this task must execute a Pipeline.
-	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
-	// If python_wheel_task, indicates that this job must execute a PythonWheel.
-	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
-	// If spark_jar_task, indicates that this task must run a JAR.
-	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
-	// If spark_python_task, indicates that this task must run a Python file.
-	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-	// If spark_submit_task, indicates that this task must be launched by the
-	// spark submit script. This task can run only on new clusters.
-	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
-	// If sql_task, indicates that this job must execute a SQL.
-	SqlTask *SqlTask `json:"sql_task,omitempty"`
-	// A unique name for the task. This field is used to refer to this task from
-	// other tasks. This field is required and must be unique within its parent
-	// job. On Update or Reset, this field is used to reference the tasks to be
-	// updated or reset. The maximum length is 100 characters.
-	TaskKey string `json:"task_key"`
-	// An optional timeout applied to each run of this job task. The default
-	// behavior is to have no timeout.
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
-}
-
 type RunTask struct {
 	// The sequence number of this run attempt for a triggered job run. The
 	// initial attempt of a run has an attempt_number of 0\. If the initial run
@@ -1678,6 +1579,10 @@ type RunTask struct {
 	// cluster, this field is set once the Jobs service has requested a cluster
 	// for the run.
 	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
+	// If condition_task, specifies a condition with an outcome that can be used
+	// to control the execution of other tasks. Does not require a cluster to
+	// execute and does not support retries or notifications.
+	ConditionTask *RunConditionTask `json:"condition_task,omitempty"`
 	// If dbt_task, indicates that this must execute a dbt task. It requires
 	// both Databricks SQL and the ability to use a serverless or a pro SQL
 	// warehouse.
@@ -1685,9 +1590,8 @@ type RunTask struct {
 	// An optional array of objects specifying the dependency graph of the task.
 	// All tasks specified in this field must complete successfully before
 	// executing this task. The key is `task_key`, and the value is the name
-	// assigned to the dependent task. This field is required when a job
-	// consists of more than one task.
-	DependsOn []TaskDependenciesItem `json:"depends_on,omitempty"`
+	// assigned to the dependent task.
+	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task. The maximum length is 4096 bytes.
 	Description string `json:"description,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
@@ -1714,7 +1618,7 @@ type RunTask struct {
 	Libraries []compute.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a new cluster that is created only for
 	// this task.
-	NewCluster *compute.BaseClusterInfo `json:"new_cluster,omitempty"`
+	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
 	// If notebook_task, indicates that this job must run a notebook. This field
 	// may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
@@ -1789,6 +1693,33 @@ func (f *RunType) Type() string {
 	return "RunType"
 }
 
+type Source string
+
+const SourceGit Source = `GIT`
+
+const SourceWorkspace Source = `WORKSPACE`
+
+// String representation for [fmt.Print]
+func (f *Source) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *Source) Set(v string) error {
+	switch v {
+	case `GIT`, `WORKSPACE`:
+		*f = Source(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GIT", "WORKSPACE"`, v)
+	}
+}
+
+// Type always returns Source to satisfy [pflag.Value] interface
+func (f *Source) Type() string {
+	return "Source"
+}
+
 type SparkJarTask struct {
 	// Deprecated since 04/2016\\. Provide a `jar` through the `libraries` field
 	// instead. For an example, see :method:jobs/create.
@@ -1822,39 +1753,16 @@ type SparkPythonTask struct {
 	// `/`. For files stored in a remote repository, the path must be relative.
 	// This field is required.
 	PythonFile string `json:"python_file"`
-	// This describes an enum
-	Source SparkPythonTaskSource `json:"source,omitempty"`
-}
-
-// This describes an enum
-type SparkPythonTaskSource string
-
-// The Python file is located in a remote Git repository.
-const SparkPythonTaskSourceGit SparkPythonTaskSource = `GIT`
-
-// The Python file is located in a <Databricks> workspace or at a cloud
-// filesystem URI.
-const SparkPythonTaskSourceWorkspace SparkPythonTaskSource = `WORKSPACE`
-
-// String representation for [fmt.Print]
-func (f *SparkPythonTaskSource) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *SparkPythonTaskSource) Set(v string) error {
-	switch v {
-	case `GIT`, `WORKSPACE`:
-		*f = SparkPythonTaskSource(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "GIT", "WORKSPACE"`, v)
-	}
-}
-
-// Type always returns SparkPythonTaskSource to satisfy [pflag.Value] interface
-func (f *SparkPythonTaskSource) Type() string {
-	return "SparkPythonTaskSource"
+	// Optional location type of the Python file. When set to `WORKSPACE` or not
+	// specified, the file will be retrieved from the local <Databricks>
+	// workspace or cloud location (if the `python_file` has a URI format). When
+	// set to `GIT`, the Python file will be retrieved from a Git repository
+	// defined in `git_source`.
+	//
+	// * `WORKSPACE`: The Python file is located in a <Databricks> workspace or
+	// at a cloud filesystem URI. * `GIT`: The Python file is located in a
+	// remote Git repository.
+	Source Source `json:"source,omitempty"`
 }
 
 type SparkSubmitTask struct {
@@ -1923,7 +1831,7 @@ type SqlDashboardOutput struct {
 	// The canonical identifier of the SQL warehouse.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 	// Widgets executed in the run. Only SQL query based widgets are listed.
-	Widgets *SqlDashboardWidgetOutput `json:"widgets,omitempty"`
+	Widgets []SqlDashboardWidgetOutput `json:"widgets,omitempty"`
 }
 
 type SqlDashboardWidgetOutput struct {
@@ -2014,7 +1922,8 @@ type SqlTask struct {
 	// If dashboard, indicates that this job must refresh a SQL dashboard.
 	Dashboard *SqlTaskDashboard `json:"dashboard,omitempty"`
 	// If file, indicates that this job runs a SQL file in a remote Git
-	// repository.
+	// repository. Only one SQL statement is supported in a file. Multiple SQL
+	// statements separated by semicolons (;) are not permitted.
 	File *SqlTaskFile `json:"file,omitempty"`
 	// Parameters to be used for each run of this job. The SQL alert task does
 	// not support custom parameters.
@@ -2093,13 +2002,13 @@ type SubmitRun struct {
 	// An optional name for the run. The default value is `Untitled`.
 	RunName string `json:"run_name,omitempty"`
 
-	Tasks []RunSubmitTaskSettings `json:"tasks,omitempty"`
+	Tasks []SubmitTask `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. The default behavior
 	// is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 	// A collection of system notification IDs to notify when the run begins or
 	// completes. The default behavior is to not send any system notifications.
-	WebhookNotifications *JobWebhookNotifications `json:"webhook_notifications,omitempty"`
+	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 }
 
 type SubmitRunResponse struct {
@@ -2107,8 +2016,137 @@ type SubmitRunResponse struct {
 	RunId int64 `json:"run_id,omitempty"`
 }
 
-type TaskDependenciesItem struct {
-	TaskKey string `json:"task_key,omitempty"`
+type SubmitTask struct {
+	// If condition_task, specifies a condition with an outcome that can be used
+	// to control the execution of other tasks. Does not require a cluster to
+	// execute and does not support retries or notifications.
+	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
+	// An optional array of objects specifying the dependency graph of the task.
+	// All tasks specified in this field must complete successfully before
+	// executing this task. The key is `task_key`, and the value is the name
+	// assigned to the dependent task.
+	DependsOn []TaskDependency `json:"depends_on,omitempty"`
+	// If existing_cluster_id, the ID of an existing cluster that is used for
+	// all runs of this task. When running tasks on an existing cluster, you may
+	// need to manually restart the cluster if it stops responding. We suggest
+	// running jobs on new clusters for greater reliability.
+	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
+	// An optional list of libraries to be installed on the cluster that
+	// executes the task. The default value is an empty list.
+	Libraries []compute.Library `json:"libraries,omitempty"`
+	// If new_cluster, a description of a cluster that is created for each run.
+	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
+	// If notebook_task, indicates that this task must run a notebook. This
+	// field may not be specified in conjunction with spark_jar_task.
+	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
+	// If pipeline_task, indicates that this task must execute a Pipeline.
+	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
+	// If python_wheel_task, indicates that this job must execute a PythonWheel.
+	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
+	// If spark_jar_task, indicates that this task must run a JAR.
+	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
+	// If spark_python_task, indicates that this task must run a Python file.
+	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
+	// If spark_submit_task, indicates that this task must be launched by the
+	// spark submit script. This task can run only on new clusters.
+	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
+	// If sql_task, indicates that this job must execute a SQL.
+	SqlTask *SqlTask `json:"sql_task,omitempty"`
+	// A unique name for the task. This field is used to refer to this task from
+	// other tasks. This field is required and must be unique within its parent
+	// job. On Update or Reset, this field is used to reference the tasks to be
+	// updated or reset. The maximum length is 100 characters.
+	TaskKey string `json:"task_key"`
+	// An optional timeout applied to each run of this job task. The default
+	// behavior is to have no timeout.
+	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+}
+
+type Task struct {
+	// The key of the compute requirement, specified in `job.settings.compute`,
+	// to use for execution of this task.
+	ComputeKey string `json:"compute_key,omitempty"`
+	// If condition_task, specifies a condition with an outcome that can be used
+	// to control the execution of other tasks. Does not require a cluster to
+	// execute and does not support retries or notifications.
+	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
+	// If dbt_task, indicates that this must execute a dbt task. It requires
+	// both Databricks SQL and the ability to use a serverless or a pro SQL
+	// warehouse.
+	DbtTask *DbtTask `json:"dbt_task,omitempty"`
+	// An optional array of objects specifying the dependency graph of the task.
+	// All tasks specified in this field must complete successfully before
+	// executing this task. The key is `task_key`, and the value is the name
+	// assigned to the dependent task.
+	DependsOn []TaskDependency `json:"depends_on,omitempty"`
+	// An optional description for this task. The maximum length is 4096 bytes.
+	Description string `json:"description,omitempty"`
+	// An optional set of email addresses that is notified when runs of this
+	// task begin or complete as well as when this task is deleted. The default
+	// behavior is to not send any emails.
+	EmailNotifications *TaskEmailNotifications `json:"email_notifications,omitempty"`
+	// If existing_cluster_id, the ID of an existing cluster that is used for
+	// all runs of this task. When running tasks on an existing cluster, you may
+	// need to manually restart the cluster if it stops responding. We suggest
+	// running jobs on new clusters for greater reliability.
+	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
+	// If job_cluster_key, this task is executed reusing the cluster specified
+	// in `job.settings.job_clusters`.
+	JobClusterKey string `json:"job_cluster_key,omitempty"`
+	// An optional list of libraries to be installed on the cluster that
+	// executes the task. The default value is an empty list.
+	Libraries []compute.Library `json:"libraries,omitempty"`
+	// An optional maximum number of times to retry an unsuccessful run. A run
+	// is considered to be unsuccessful if it completes with the `FAILED`
+	// result_state or `INTERNAL_ERROR` `life_cycle_state`. The value -1 means
+	// to retry indefinitely and the value 0 means to never retry. The default
+	// behavior is to never retry.
+	MaxRetries int `json:"max_retries,omitempty"`
+	// An optional minimal interval in milliseconds between the start of the
+	// failed run and the subsequent retry run. The default behavior is that
+	// unsuccessful runs are immediately retried.
+	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
+	// If new_cluster, a description of a cluster that is created for only for
+	// this task.
+	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
+	// If notebook_task, indicates that this task must run a notebook. This
+	// field may not be specified in conjunction with spark_jar_task.
+	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
+	// Optional notification settings that are used when sending notifications
+	// to each of the `email_notifications` for this task.
+	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
+	// If pipeline_task, indicates that this task must execute a Pipeline.
+	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
+	// If python_wheel_task, indicates that this job must execute a PythonWheel.
+	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
+	// An optional policy to specify whether to retry a task when it times out.
+	// The default behavior is to not retry on timeout.
+	RetryOnTimeout bool `json:"retry_on_timeout,omitempty"`
+	// If spark_jar_task, indicates that this task must run a JAR.
+	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
+	// If spark_python_task, indicates that this task must run a Python file.
+	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
+	// If spark_submit_task, indicates that this task must be launched by the
+	// spark submit script. This task can run only on new clusters.
+	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
+	// If sql_task, indicates that this job must execute a SQL task.
+	SqlTask *SqlTask `json:"sql_task,omitempty"`
+	// A unique name for the task. This field is used to refer to this task from
+	// other tasks. This field is required and must be unique within its parent
+	// job. On Update or Reset, this field is used to reference the tasks to be
+	// updated or reset. The maximum length is 100 characters.
+	TaskKey string `json:"task_key"`
+	// An optional timeout applied to each run of this job task. The default
+	// behavior is to have no timeout.
+	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+}
+
+type TaskDependency struct {
+	// Can only be specified on condition task dependencies. The outcome of the
+	// dependent task that must be met for this task to run.
+	Outcome string `json:"outcome,omitempty"`
+	// The name of task that this task depends on.
+	TaskKey string `json:"task_key"`
 }
 
 type TaskEmailNotifications struct {
@@ -2166,37 +2204,9 @@ type TriggerHistory struct {
 
 type TriggerSettings struct {
 	// File arrival trigger settings.
-	FileArrival *FileArrivalTriggerSettings `json:"file_arrival,omitempty"`
+	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
 	// Whether this trigger is paused or not.
-	PauseStatus TriggerSettingsPauseStatus `json:"pause_status,omitempty"`
-}
-
-// Whether this trigger is paused or not.
-type TriggerSettingsPauseStatus string
-
-const TriggerSettingsPauseStatusPaused TriggerSettingsPauseStatus = `PAUSED`
-
-const TriggerSettingsPauseStatusUnpaused TriggerSettingsPauseStatus = `UNPAUSED`
-
-// String representation for [fmt.Print]
-func (f *TriggerSettingsPauseStatus) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *TriggerSettingsPauseStatus) Set(v string) error {
-	switch v {
-	case `PAUSED`, `UNPAUSED`:
-		*f = TriggerSettingsPauseStatus(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
-	}
-}
-
-// Type always returns TriggerSettingsPauseStatus to satisfy [pflag.Value] interface
-func (f *TriggerSettingsPauseStatus) Type() string {
-	return "TriggerSettingsPauseStatus"
+	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 }
 
 // This describes an enum
@@ -2239,13 +2249,19 @@ func (f *TriggerType) Type() string {
 
 type UpdateJob struct {
 	// Remove top-level fields in the job settings. Removing nested fields is
-	// not supported. This field is optional.
+	// not supported, except for tasks and job clusters (`tasks/task_1`). This
+	// field is optional.
 	FieldsToRemove []string `json:"fields_to_remove,omitempty"`
 	// The canonical identifier of the job to update. This field is required.
 	JobId int64 `json:"job_id"`
-	// The new settings for the job. Any top-level fields specified in
-	// `new_settings` are completely replaced. Partially updating nested fields
-	// is not supported.
+	// The new settings for the job.
+	//
+	// Top-level fields specified in `new_settings` are completely replaced,
+	// except for arrays which are merged. That is, new and existing entries are
+	// completely replaced based on the respective key fields, i.e. `task_key`
+	// or `job_cluster_key`, while previous entries are kept.
+	//
+	// Partially updating nested fields is not supported.
 	//
 	// Changes to the field `JobSettings.timeout_seconds` are applied to active
 	// runs. Changes to other fields are applied to future runs only.
@@ -2324,4 +2340,21 @@ func (f *ViewsToExport) Set(v string) error {
 // Type always returns ViewsToExport to satisfy [pflag.Value] interface
 func (f *ViewsToExport) Type() string {
 	return "ViewsToExport"
+}
+
+type Webhook struct {
+	Id string `json:"id,omitempty"`
+}
+
+type WebhookNotifications struct {
+	// An optional list of system notification IDs to call when the run fails. A
+	// maximum of 3 destinations can be specified for the `on_failure` property.
+	OnFailure []Webhook `json:"on_failure,omitempty"`
+	// An optional list of system notification IDs to call when the run starts.
+	// A maximum of 3 destinations can be specified for the `on_start` property.
+	OnStart []Webhook `json:"on_start,omitempty"`
+	// An optional list of system notification IDs to call when the run
+	// completes successfully. A maximum of 3 destinations can be specified for
+	// the `on_success` property.
+	OnSuccess []Webhook `json:"on_success,omitempty"`
 }

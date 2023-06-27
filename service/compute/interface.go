@@ -101,14 +101,9 @@ type ClustersService interface {
 	// Create new cluster.
 	//
 	// Creates a new Spark cluster. This method will acquire new instances from
-	// the cloud provider if necessary. This method is asynchronous; the
-	// returned `cluster_id` can be used to poll the cluster status. When this
-	// method returns, the cluster will be in a `PENDING` state. The cluster
-	// will be usable once it enters a `RUNNING` state.
-	//
-	// Note: Databricks may not be able to acquire some of the requested nodes,
-	// due to cloud provider limitations (account limits, spot price, etc.) or
-	// transient network issues.
+	// the cloud provider if necessary. Note: Databricks may not be able to
+	// acquire some of the requested nodes, due to cloud provider limitations
+	// (account limits, spot price, etc.) or transient network issues.
 	//
 	// If Databricks acquires at least 85% of the requested on-demand nodes,
 	// cluster creation will succeed. Otherwise the cluster will terminate with
@@ -154,7 +149,7 @@ type ClustersService interface {
 	// Retrieves the information for a cluster given its identifier. Clusters
 	// can be described while they are running, or up to 60 days after they are
 	// terminated.
-	Get(ctx context.Context, request GetClusterRequest) (*ClusterInfo, error)
+	Get(ctx context.Context, request GetClusterRequest) (*ClusterDetails, error)
 
 	// List all clusters.
 	//
@@ -169,7 +164,7 @@ type ClustersService interface {
 	// cluster, 4 active clusters, all 45 terminated all-purpose clusters, and
 	// the 30 most recently terminated job clusters.
 	//
-	// Use ListAll() to get all ClusterInfo instances
+	// Use ListAll() to get all ClusterDetails instances
 	List(ctx context.Context, request ListClustersRequest) (*ListClustersResponse, error)
 
 	// List node types.

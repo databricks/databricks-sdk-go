@@ -298,7 +298,7 @@ func (a *JobsAPI) GetRunOutputByRunId(ctx context.Context, runId int64) (*RunOut
 	})
 }
 
-// List all jobs.
+// List jobs.
 //
 // Retrieves a list of jobs.
 //
@@ -385,7 +385,7 @@ func (a *JobsAPI) GetBySettingsName(ctx context.Context, name string) (*BaseJob,
 	return &alternatives[0], nil
 }
 
-// List runs for a job.
+// List job runs.
 //
 // List runs in descending order by start time.
 //

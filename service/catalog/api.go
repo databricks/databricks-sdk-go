@@ -1501,7 +1501,7 @@ func (a *SystemSchemasAPI) Disable(ctx context.Context, request DisableRequest) 
 //
 // Disables the system schema and removes it from the system catalog. The caller
 // must be an account admin or a metastore admin.
-func (a *SystemSchemasAPI) DisableByMetastoreIdAndSchemaName(ctx context.Context, metastoreId string, schemaName string) error {
+func (a *SystemSchemasAPI) DisableByMetastoreIdAndSchemaName(ctx context.Context, metastoreId string, schemaName DisableSchemaName) error {
 	return a.impl.Disable(ctx, DisableRequest{
 		MetastoreId: metastoreId,
 		SchemaName:  schemaName,
@@ -1512,8 +1512,8 @@ func (a *SystemSchemasAPI) DisableByMetastoreIdAndSchemaName(ctx context.Context
 //
 // Enables the system schema and adds it to the system catalog. The caller must
 // be an account admin or a metastore admin.
-func (a *SystemSchemasAPI) Enable(ctx context.Context) error {
-	return a.impl.Enable(ctx)
+func (a *SystemSchemasAPI) Enable(ctx context.Context, request EnableRequest) error {
+	return a.impl.Enable(ctx, request)
 }
 
 // List system schemas.

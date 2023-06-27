@@ -62,6 +62,17 @@ type DeleteIpAccessListRequest struct {
 	IpAccessListId string `json:"-" url:"-"`
 }
 
+// Delete Personal Compute setting
+type DeletePersonalComputeSettingRequest struct {
+	// TBD
+	Etag string `json:"-" url:"etag,omitempty"`
+}
+
+type DeletePersonalComputeSettingResponse struct {
+	// TBD
+	Etag string `json:"etag"`
+}
+
 // Delete a token
 type DeleteTokenManagementRequest struct {
 	// The ID of the token to get.
@@ -202,6 +213,16 @@ func (f *PersonalComputeMessageEnum) Type() string {
 	return "PersonalComputeMessageEnum"
 }
 
+type PersonalComputeSetting struct {
+	// TBD
+	Etag string `json:"etag,omitempty"`
+
+	PersonalCompute PersonalComputeMessage `json:"personal_compute"`
+	// Name of the corresponding setting. Needs to be 'default' if the setting
+	// is a singleton.
+	SettingName string `json:"setting_name,omitempty"`
+}
+
 type PublicTokenInfo struct {
 	// Comment the token was created with, if applicable.
 	Comment string `json:"comment,omitempty"`
@@ -218,16 +239,6 @@ type PublicTokenInfo struct {
 type ReadPersonalComputeSettingRequest struct {
 	// TBD
 	Etag string `json:"-" url:"etag,omitempty"`
-}
-
-type ReadPersonalComputeSettingResponse struct {
-	// TBD
-	Etag string `json:"etag"`
-
-	PersonalCompute PersonalComputeMessage `json:"personal_compute"`
-	// Name of the corresponding setting. Needs to be 'default' if the setting
-	// is a singleton.
-	SettingName string `json:"setting_name"`
 }
 
 type ReplaceIpAccessList struct {
@@ -281,6 +292,14 @@ type UpdateIpAccessList struct {
 	ListId string `json:"list_id,omitempty"`
 	// This describes an enum
 	ListType ListType `json:"list_type"`
+}
+
+// Update Personal Compute setting
+type UpdatePersonalComputeSettingRequest struct {
+	// TBD
+	AllowMissing bool `json:"allow_missing,omitempty"`
+
+	Setting *PersonalComputeSetting `json:"setting,omitempty"`
 }
 
 type WorkspaceConf map[string]string

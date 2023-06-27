@@ -597,7 +597,7 @@ type SystemSchemasService interface {
 	//
 	// Enables the system schema and adds it to the system catalog. The caller
 	// must be an account admin or a metastore admin.
-	Enable(ctx context.Context) error
+	Enable(ctx context.Context, request EnableRequest) error
 
 	// List system schemas.
 	//

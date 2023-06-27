@@ -241,11 +241,25 @@ func (a *AccountSettingsAPI) Impl() AccountSettingsService {
 	return a.impl
 }
 
+// Delete Personal Compute setting.
+//
+// TBD
+func (a *AccountSettingsAPI) DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
+	return a.impl.DeletePersonalComputeSetting(ctx, request)
+}
+
 // Get Personal Compute setting.
 //
 // TBD
-func (a *AccountSettingsAPI) ReadPersonalComputeSetting(ctx context.Context, request ReadPersonalComputeSettingRequest) (*ReadPersonalComputeSettingResponse, error) {
+func (a *AccountSettingsAPI) ReadPersonalComputeSetting(ctx context.Context, request ReadPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	return a.impl.ReadPersonalComputeSetting(ctx, request)
+}
+
+// Update Personal Compute setting.
+//
+// TBD
+func (a *AccountSettingsAPI) UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
+	return a.impl.UpdatePersonalComputeSetting(ctx, request)
 }
 
 func NewIpAccessLists(client *client.DatabricksClient) *IpAccessListsAPI {

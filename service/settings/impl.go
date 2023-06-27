@@ -59,11 +59,25 @@ type accountSettingsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountSettingsImpl) ReadPersonalComputeSetting(ctx context.Context, request ReadPersonalComputeSettingRequest) (*ReadPersonalComputeSettingResponse, error) {
-	var readPersonalComputeSettingResponse ReadPersonalComputeSettingResponse
+func (a *accountSettingsImpl) DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
+	var deletePersonalComputeSettingResponse DeletePersonalComputeSettingResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
-	err := a.client.Do(ctx, http.MethodGet, path, request, &readPersonalComputeSettingResponse)
-	return &readPersonalComputeSettingResponse, err
+	err := a.client.Do(ctx, http.MethodDelete, path, request, &deletePersonalComputeSettingResponse)
+	return &deletePersonalComputeSettingResponse, err
+}
+
+func (a *accountSettingsImpl) ReadPersonalComputeSetting(ctx context.Context, request ReadPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
+	var personalComputeSetting PersonalComputeSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
+	err := a.client.Do(ctx, http.MethodGet, path, request, &personalComputeSetting)
+	return &personalComputeSetting, err
+}
+
+func (a *accountSettingsImpl) UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
+	var personalComputeSetting PersonalComputeSetting
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &personalComputeSetting)
+	return &personalComputeSetting, err
 }
 
 // unexported type that holds implementations of just IpAccessLists API methods

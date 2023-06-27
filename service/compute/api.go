@@ -235,23 +235,23 @@ func (a *ClustersAPI) Impl() ClustersService {
 
 // WaitGetClusterRunning repeatedly calls [ClustersAPI.Get] and waits to reach RUNNING state
 func (a *ClustersAPI) WaitGetClusterRunning(ctx context.Context, clusterId string,
-	timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+	timeout time.Duration, callback func(*ClusterDetails)) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	return retries.Poll[ClusterInfo](ctx, timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetClusterRequest{
+	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+		clusterDetails, err := a.Get(ctx, GetClusterRequest{
 			ClusterId: clusterId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
 		if callback != nil {
-			callback(clusterInfo)
+			callback(clusterDetails)
 		}
-		status := clusterInfo.State
-		statusMessage := clusterInfo.StateMessage
+		status := clusterDetails.State
+		statusMessage := clusterDetails.StateMessage
 		switch status {
 		case StateRunning: // target state
-			return clusterInfo, nil
+			return clusterDetails, nil
 		case StateError, StateTerminated:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				StateRunning, status, statusMessage)
@@ -266,46 +266,46 @@ func (a *ClustersAPI) WaitGetClusterRunning(ctx context.Context, clusterId strin
 type WaitGetClusterRunning[R any] struct {
 	Response  *R
 	ClusterId string `json:"cluster_id"`
-	poll      func(time.Duration, func(*ClusterInfo)) (*ClusterInfo, error)
-	callback  func(*ClusterInfo)
+	poll      func(time.Duration, func(*ClusterDetails)) (*ClusterDetails, error)
+	callback  func(*ClusterDetails)
 	timeout   time.Duration
 }
 
 // OnProgress invokes a callback every time it polls for the status update.
-func (w *WaitGetClusterRunning[R]) OnProgress(callback func(*ClusterInfo)) *WaitGetClusterRunning[R] {
+func (w *WaitGetClusterRunning[R]) OnProgress(callback func(*ClusterDetails)) *WaitGetClusterRunning[R] {
 	w.callback = callback
 	return w
 }
 
-// Get the ClusterInfo with the default timeout of 20 minutes.
-func (w *WaitGetClusterRunning[R]) Get() (*ClusterInfo, error) {
+// Get the ClusterDetails with the default timeout of 20 minutes.
+func (w *WaitGetClusterRunning[R]) Get() (*ClusterDetails, error) {
 	return w.poll(w.timeout, w.callback)
 }
 
-// Get the ClusterInfo with custom timeout.
-func (w *WaitGetClusterRunning[R]) GetWithTimeout(timeout time.Duration) (*ClusterInfo, error) {
+// Get the ClusterDetails with custom timeout.
+func (w *WaitGetClusterRunning[R]) GetWithTimeout(timeout time.Duration) (*ClusterDetails, error) {
 	return w.poll(timeout, w.callback)
 }
 
 // WaitGetClusterTerminated repeatedly calls [ClustersAPI.Get] and waits to reach TERMINATED state
 func (a *ClustersAPI) WaitGetClusterTerminated(ctx context.Context, clusterId string,
-	timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+	timeout time.Duration, callback func(*ClusterDetails)) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	return retries.Poll[ClusterInfo](ctx, timeout, func() (*ClusterInfo, *retries.Err) {
-		clusterInfo, err := a.Get(ctx, GetClusterRequest{
+	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+		clusterDetails, err := a.Get(ctx, GetClusterRequest{
 			ClusterId: clusterId,
 		})
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
 		if callback != nil {
-			callback(clusterInfo)
+			callback(clusterDetails)
 		}
-		status := clusterInfo.State
-		statusMessage := clusterInfo.StateMessage
+		status := clusterDetails.State
+		statusMessage := clusterDetails.StateMessage
 		switch status {
 		case StateTerminated: // target state
-			return clusterInfo, nil
+			return clusterDetails, nil
 		case StateError:
 			err := fmt.Errorf("failed to reach %s, got %s: %s",
 				StateTerminated, status, statusMessage)
@@ -320,24 +320,24 @@ func (a *ClustersAPI) WaitGetClusterTerminated(ctx context.Context, clusterId st
 type WaitGetClusterTerminated[R any] struct {
 	Response  *R
 	ClusterId string `json:"cluster_id"`
-	poll      func(time.Duration, func(*ClusterInfo)) (*ClusterInfo, error)
-	callback  func(*ClusterInfo)
+	poll      func(time.Duration, func(*ClusterDetails)) (*ClusterDetails, error)
+	callback  func(*ClusterDetails)
 	timeout   time.Duration
 }
 
 // OnProgress invokes a callback every time it polls for the status update.
-func (w *WaitGetClusterTerminated[R]) OnProgress(callback func(*ClusterInfo)) *WaitGetClusterTerminated[R] {
+func (w *WaitGetClusterTerminated[R]) OnProgress(callback func(*ClusterDetails)) *WaitGetClusterTerminated[R] {
 	w.callback = callback
 	return w
 }
 
-// Get the ClusterInfo with the default timeout of 20 minutes.
-func (w *WaitGetClusterTerminated[R]) Get() (*ClusterInfo, error) {
+// Get the ClusterDetails with the default timeout of 20 minutes.
+func (w *WaitGetClusterTerminated[R]) Get() (*ClusterDetails, error) {
 	return w.poll(w.timeout, w.callback)
 }
 
-// Get the ClusterInfo with custom timeout.
-func (w *WaitGetClusterTerminated[R]) GetWithTimeout(timeout time.Duration) (*ClusterInfo, error) {
+// Get the ClusterDetails with custom timeout.
+func (w *WaitGetClusterTerminated[R]) GetWithTimeout(timeout time.Duration) (*ClusterDetails, error) {
 	return w.poll(timeout, w.callback)
 }
 
@@ -352,14 +352,9 @@ func (a *ClustersAPI) ChangeOwner(ctx context.Context, request ChangeClusterOwne
 // Create new cluster.
 //
 // Creates a new Spark cluster. This method will acquire new instances from the
-// cloud provider if necessary. This method is asynchronous; the returned
-// `cluster_id` can be used to poll the cluster status. When this method
-// returns, the cluster will be in a `PENDING` state. The cluster will be usable
-// once it enters a `RUNNING` state.
-//
-// Note: Databricks may not be able to acquire some of the requested nodes, due
-// to cloud provider limitations (account limits, spot price, etc.) or transient
-// network issues.
+// cloud provider if necessary. Note: Databricks may not be able to acquire some
+// of the requested nodes, due to cloud provider limitations (account limits,
+// spot price, etc.) or transient network issues.
 //
 // If Databricks acquires at least 85% of the requested on-demand nodes, cluster
 // creation will succeed. Otherwise the cluster will terminate with an
@@ -372,7 +367,7 @@ func (a *ClustersAPI) Create(ctx context.Context, createCluster CreateCluster) (
 	return &WaitGetClusterRunning[CreateClusterResponse]{
 		Response:  createClusterResponse,
 		ClusterId: createClusterResponse.ClusterId,
-		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+		poll: func(timeout time.Duration, callback func(*ClusterDetails)) (*ClusterDetails, error) {
 			return a.WaitGetClusterRunning(ctx, createClusterResponse.ClusterId, timeout, callback)
 		},
 		timeout:  20 * time.Minute,
@@ -383,22 +378,22 @@ func (a *ClustersAPI) Create(ctx context.Context, createCluster CreateCluster) (
 // Calls [ClustersAPI.Create] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
+// retries.Timeout[ClusterDetails](60*time.Minute) functional option.
 //
 // Deprecated: use [ClustersAPI.Create].Get() or [ClustersAPI.WaitGetClusterRunning]
-func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+func (a *ClustersAPI) CreateAndWait(ctx context.Context, createCluster CreateCluster, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error) {
 	wait, err := a.Create(ctx, createCluster)
 	if err != nil {
 		return nil, err
 	}
-	tmp := &retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	tmp := &retries.Info[ClusterDetails]{Timeout: 20 * time.Minute}
 	for _, o := range options {
 		o(tmp)
 	}
 	wait.timeout = tmp.Timeout
-	wait.callback = func(info *ClusterInfo) {
+	wait.callback = func(info *ClusterDetails) {
 		for _, o := range options {
-			o(&retries.Info[ClusterInfo]{
+			o(&retries.Info[ClusterDetails]{
 				Info:    info,
 				Timeout: wait.timeout,
 			})
@@ -421,7 +416,7 @@ func (a *ClustersAPI) Delete(ctx context.Context, deleteCluster DeleteCluster) (
 	return &WaitGetClusterTerminated[any]{
 
 		ClusterId: deleteCluster.ClusterId,
-		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+		poll: func(timeout time.Duration, callback func(*ClusterDetails)) (*ClusterDetails, error) {
 			return a.WaitGetClusterTerminated(ctx, deleteCluster.ClusterId, timeout, callback)
 		},
 		timeout:  20 * time.Minute,
@@ -432,22 +427,22 @@ func (a *ClustersAPI) Delete(ctx context.Context, deleteCluster DeleteCluster) (
 // Calls [ClustersAPI.Delete] and waits to reach TERMINATED state
 //
 // You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
+// retries.Timeout[ClusterDetails](60*time.Minute) functional option.
 //
 // Deprecated: use [ClustersAPI.Delete].Get() or [ClustersAPI.WaitGetClusterTerminated]
-func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+func (a *ClustersAPI) DeleteAndWait(ctx context.Context, deleteCluster DeleteCluster, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error) {
 	wait, err := a.Delete(ctx, deleteCluster)
 	if err != nil {
 		return nil, err
 	}
-	tmp := &retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	tmp := &retries.Info[ClusterDetails]{Timeout: 20 * time.Minute}
 	for _, o := range options {
 		o(tmp)
 	}
 	wait.timeout = tmp.Timeout
-	wait.callback = func(info *ClusterInfo) {
+	wait.callback = func(info *ClusterDetails) {
 		for _, o := range options {
-			o(&retries.Info[ClusterInfo]{
+			o(&retries.Info[ClusterDetails]{
 				Info:    info,
 				Timeout: wait.timeout,
 			})
@@ -468,7 +463,7 @@ func (a *ClustersAPI) DeleteByClusterId(ctx context.Context, clusterId string) e
 	})
 }
 
-func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId string, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+func (a *ClustersAPI) DeleteByClusterIdAndWait(ctx context.Context, clusterId string, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error) {
 	return a.DeleteAndWait(ctx, DeleteCluster{
 		ClusterId: clusterId,
 	}, options...)
@@ -496,7 +491,7 @@ func (a *ClustersAPI) Edit(ctx context.Context, editCluster EditCluster) (*WaitG
 	return &WaitGetClusterRunning[any]{
 
 		ClusterId: editCluster.ClusterId,
-		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+		poll: func(timeout time.Duration, callback func(*ClusterDetails)) (*ClusterDetails, error) {
 			return a.WaitGetClusterRunning(ctx, editCluster.ClusterId, timeout, callback)
 		},
 		timeout:  20 * time.Minute,
@@ -507,22 +502,22 @@ func (a *ClustersAPI) Edit(ctx context.Context, editCluster EditCluster) (*WaitG
 // Calls [ClustersAPI.Edit] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
+// retries.Timeout[ClusterDetails](60*time.Minute) functional option.
 //
 // Deprecated: use [ClustersAPI.Edit].Get() or [ClustersAPI.WaitGetClusterRunning]
-func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error) {
 	wait, err := a.Edit(ctx, editCluster)
 	if err != nil {
 		return nil, err
 	}
-	tmp := &retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	tmp := &retries.Info[ClusterDetails]{Timeout: 20 * time.Minute}
 	for _, o := range options {
 		o(tmp)
 	}
 	wait.timeout = tmp.Timeout
-	wait.callback = func(info *ClusterInfo) {
+	wait.callback = func(info *ClusterDetails) {
 		for _, o := range options {
-			o(&retries.Info[ClusterInfo]{
+			o(&retries.Info[ClusterDetails]{
 				Info:    info,
 				Timeout: wait.timeout,
 			})
@@ -571,7 +566,7 @@ func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]Clust
 //
 // Retrieves the information for a cluster given its identifier. Clusters can be
 // described while they are running, or up to 60 days after they are terminated.
-func (a *ClustersAPI) Get(ctx context.Context, request GetClusterRequest) (*ClusterInfo, error) {
+func (a *ClustersAPI) Get(ctx context.Context, request GetClusterRequest) (*ClusterDetails, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -579,7 +574,7 @@ func (a *ClustersAPI) Get(ctx context.Context, request GetClusterRequest) (*Clus
 //
 // Retrieves the information for a cluster given its identifier. Clusters can be
 // described while they are running, or up to 60 days after they are terminated.
-func (a *ClustersAPI) GetByClusterId(ctx context.Context, clusterId string) (*ClusterInfo, error) {
+func (a *ClustersAPI) GetByClusterId(ctx context.Context, clusterId string) (*ClusterDetails, error) {
 	return a.impl.Get(ctx, GetClusterRequest{
 		ClusterId: clusterId,
 	})
@@ -598,7 +593,7 @@ func (a *ClustersAPI) GetByClusterId(ctx context.Context, clusterId string) (*Cl
 // terminated job clusters.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ClustersAPI) ListAll(ctx context.Context, request ListClustersRequest) ([]ClusterInfo, error) {
+func (a *ClustersAPI) ListAll(ctx context.Context, request ListClustersRequest) ([]ClusterDetails, error) {
 	response, err := a.impl.List(ctx, request)
 	if err != nil {
 		return nil, err
@@ -606,14 +601,14 @@ func (a *ClustersAPI) ListAll(ctx context.Context, request ListClustersRequest) 
 	return response.Clusters, nil
 }
 
-// ClusterInfoClusterNameToClusterIdMap calls [ClustersAPI.ListAll] and creates a map of results with [ClusterInfo].ClusterName as key and [ClusterInfo].ClusterId as value.
+// ClusterDetailsClusterNameToClusterIdMap calls [ClustersAPI.ListAll] and creates a map of results with [ClusterDetails].ClusterName as key and [ClusterDetails].ClusterId as value.
 //
-// Returns an error if there's more than one [ClusterInfo] with the same .ClusterName.
+// Returns an error if there's more than one [ClusterDetails] with the same .ClusterName.
 //
-// Note: All [ClusterInfo] instances are loaded into memory before creating a map.
+// Note: All [ClusterDetails] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ClustersAPI) ClusterInfoClusterNameToClusterIdMap(ctx context.Context, request ListClustersRequest) (map[string]string, error) {
+func (a *ClustersAPI) ClusterDetailsClusterNameToClusterIdMap(ctx context.Context, request ListClustersRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -631,30 +626,30 @@ func (a *ClustersAPI) ClusterInfoClusterNameToClusterIdMap(ctx context.Context, 
 	return mapping, nil
 }
 
-// GetByClusterName calls [ClustersAPI.ClusterInfoClusterNameToClusterIdMap] and returns a single [ClusterInfo].
+// GetByClusterName calls [ClustersAPI.ClusterDetailsClusterNameToClusterIdMap] and returns a single [ClusterDetails].
 //
-// Returns an error if there's more than one [ClusterInfo] with the same .ClusterName.
+// Returns an error if there's more than one [ClusterDetails] with the same .ClusterName.
 //
-// Note: All [ClusterInfo] instances are loaded into memory before returning matching by name.
+// Note: All [ClusterDetails] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ClustersAPI) GetByClusterName(ctx context.Context, name string) (*ClusterInfo, error) {
+func (a *ClustersAPI) GetByClusterName(ctx context.Context, name string) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListClustersRequest{})
 	if err != nil {
 		return nil, err
 	}
-	tmp := map[string][]ClusterInfo{}
+	tmp := map[string][]ClusterDetails{}
 	for _, v := range result {
 		key := v.ClusterName
 		tmp[key] = append(tmp[key], v)
 	}
 	alternatives, ok := tmp[name]
 	if !ok || len(alternatives) == 0 {
-		return nil, fmt.Errorf("ClusterInfo named '%s' does not exist", name)
+		return nil, fmt.Errorf("ClusterDetails named '%s' does not exist", name)
 	}
 	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d instances of ClusterInfo named '%s'", len(alternatives), name)
+		return nil, fmt.Errorf("there are %d instances of ClusterDetails named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
 }
@@ -750,7 +745,7 @@ func (a *ClustersAPI) Resize(ctx context.Context, resizeCluster ResizeCluster) (
 	return &WaitGetClusterRunning[any]{
 
 		ClusterId: resizeCluster.ClusterId,
-		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+		poll: func(timeout time.Duration, callback func(*ClusterDetails)) (*ClusterDetails, error) {
 			return a.WaitGetClusterRunning(ctx, resizeCluster.ClusterId, timeout, callback)
 		},
 		timeout:  20 * time.Minute,
@@ -761,22 +756,22 @@ func (a *ClustersAPI) Resize(ctx context.Context, resizeCluster ResizeCluster) (
 // Calls [ClustersAPI.Resize] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
+// retries.Timeout[ClusterDetails](60*time.Minute) functional option.
 //
 // Deprecated: use [ClustersAPI.Resize].Get() or [ClustersAPI.WaitGetClusterRunning]
-func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+func (a *ClustersAPI) ResizeAndWait(ctx context.Context, resizeCluster ResizeCluster, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error) {
 	wait, err := a.Resize(ctx, resizeCluster)
 	if err != nil {
 		return nil, err
 	}
-	tmp := &retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	tmp := &retries.Info[ClusterDetails]{Timeout: 20 * time.Minute}
 	for _, o := range options {
 		o(tmp)
 	}
 	wait.timeout = tmp.Timeout
-	wait.callback = func(info *ClusterInfo) {
+	wait.callback = func(info *ClusterDetails) {
 		for _, o := range options {
-			o(&retries.Info[ClusterInfo]{
+			o(&retries.Info[ClusterDetails]{
 				Info:    info,
 				Timeout: wait.timeout,
 			})
@@ -797,7 +792,7 @@ func (a *ClustersAPI) Restart(ctx context.Context, restartCluster RestartCluster
 	return &WaitGetClusterRunning[any]{
 
 		ClusterId: restartCluster.ClusterId,
-		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+		poll: func(timeout time.Duration, callback func(*ClusterDetails)) (*ClusterDetails, error) {
 			return a.WaitGetClusterRunning(ctx, restartCluster.ClusterId, timeout, callback)
 		},
 		timeout:  20 * time.Minute,
@@ -808,22 +803,22 @@ func (a *ClustersAPI) Restart(ctx context.Context, restartCluster RestartCluster
 // Calls [ClustersAPI.Restart] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
+// retries.Timeout[ClusterDetails](60*time.Minute) functional option.
 //
 // Deprecated: use [ClustersAPI.Restart].Get() or [ClustersAPI.WaitGetClusterRunning]
-func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster RestartCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster RestartCluster, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error) {
 	wait, err := a.Restart(ctx, restartCluster)
 	if err != nil {
 		return nil, err
 	}
-	tmp := &retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	tmp := &retries.Info[ClusterDetails]{Timeout: 20 * time.Minute}
 	for _, o := range options {
 		o(tmp)
 	}
 	wait.timeout = tmp.Timeout
-	wait.callback = func(info *ClusterInfo) {
+	wait.callback = func(info *ClusterDetails) {
 		for _, o := range options {
-			o(&retries.Info[ClusterInfo]{
+			o(&retries.Info[ClusterDetails]{
 				Info:    info,
 				Timeout: wait.timeout,
 			})
@@ -858,7 +853,7 @@ func (a *ClustersAPI) Start(ctx context.Context, startCluster StartCluster) (*Wa
 	return &WaitGetClusterRunning[any]{
 
 		ClusterId: startCluster.ClusterId,
-		poll: func(timeout time.Duration, callback func(*ClusterInfo)) (*ClusterInfo, error) {
+		poll: func(timeout time.Duration, callback func(*ClusterDetails)) (*ClusterDetails, error) {
 			return a.WaitGetClusterRunning(ctx, startCluster.ClusterId, timeout, callback)
 		},
 		timeout:  20 * time.Minute,
@@ -869,22 +864,22 @@ func (a *ClustersAPI) Start(ctx context.Context, startCluster StartCluster) (*Wa
 // Calls [ClustersAPI.Start] and waits to reach RUNNING state
 //
 // You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[ClusterInfo](60*time.Minute) functional option.
+// retries.Timeout[ClusterDetails](60*time.Minute) functional option.
 //
 // Deprecated: use [ClustersAPI.Start].Get() or [ClustersAPI.WaitGetClusterRunning]
-func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluster, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+func (a *ClustersAPI) StartAndWait(ctx context.Context, startCluster StartCluster, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error) {
 	wait, err := a.Start(ctx, startCluster)
 	if err != nil {
 		return nil, err
 	}
-	tmp := &retries.Info[ClusterInfo]{Timeout: 20 * time.Minute}
+	tmp := &retries.Info[ClusterDetails]{Timeout: 20 * time.Minute}
 	for _, o := range options {
 		o(tmp)
 	}
 	wait.timeout = tmp.Timeout
-	wait.callback = func(info *ClusterInfo) {
+	wait.callback = func(info *ClusterDetails) {
 		for _, o := range options {
-			o(&retries.Info[ClusterInfo]{
+			o(&retries.Info[ClusterDetails]{
 				Info:    info,
 				Timeout: wait.timeout,
 			})
@@ -909,7 +904,7 @@ func (a *ClustersAPI) StartByClusterId(ctx context.Context, clusterId string) er
 	})
 }
 
-func (a *ClustersAPI) StartByClusterIdAndWait(ctx context.Context, clusterId string, options ...retries.Option[ClusterInfo]) (*ClusterInfo, error) {
+func (a *ClustersAPI) StartByClusterIdAndWait(ctx context.Context, clusterId string, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error) {
 	return a.StartAndWait(ctx, StartCluster{
 		ClusterId: clusterId,
 	}, options...)

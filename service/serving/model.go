@@ -154,8 +154,7 @@ func (f *EndpointStateReady) Type() string {
 	return "EndpointStateReady"
 }
 
-// Retrieve the metrics corresponding to a serving endpoint for the current time
-// in Prometheus or OpenMetrics exposition format
+// Retrieve the metrics associated with a serving endpoint
 type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
 	// required.
@@ -204,6 +203,13 @@ type Route struct {
 }
 
 type ServedModelInput struct {
+	// An object containing a set of optional, user-specified environment
+	// variable key-value pairs used for serving this model. Note: this is an
+	// experimental feature and subject to change. Example model environment
+	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
+	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
+	// "{{secrets/my_scope2/my_key2}}"}`
+	EnvironmentVars any `json:"environment_vars,omitempty"`
 	// The name of the model in Databricks Model Registry to be served.
 	ModelName string `json:"model_name"`
 	// The version of the model in Databricks Model Registry to be served.
@@ -231,6 +237,13 @@ type ServedModelOutput struct {
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// The email of the user who created the served model.
 	Creator string `json:"creator,omitempty"`
+	// An object containing a set of optional, user-specified environment
+	// variable key-value pairs used for serving this model. Note: this is an
+	// experimental feature and subject to change. Example model environment
+	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
+	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
+	// "{{secrets/my_scope2/my_key2}}"}`
+	EnvironmentVars any `json:"environment_vars,omitempty"`
 	// The name of the model in Databricks Model Registry.
 	ModelName string `json:"model_name,omitempty"`
 	// The version of the model in Databricks Model Registry.

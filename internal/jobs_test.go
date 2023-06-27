@@ -30,7 +30,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 
 	run, err := w.Jobs.SubmitAndWait(ctx, jobs.SubmitRun{
 		RunName: RandomName("go-sdk-SubmitAndWait-"),
-		Tasks: []jobs.RunSubmitTaskSettings{{
+		Tasks: []jobs.SubmitTask{{
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
 				NotebookPath: notebookPath,
@@ -47,7 +47,7 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 
 	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 		Name: RandomName("go-sdk-Create-"),
-		Tasks: []jobs.JobTaskSettings{{
+		Tasks: []jobs.Task{{
 			Description:       "test",
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
@@ -163,9 +163,9 @@ func TestAccJobsListAllNoDuplicatesNoTranspile(t *testing.T) {
 	for i := 0; i < 34; i++ {
 		createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 			Name: RandomName(t.Name()),
-			Tasks: []jobs.JobTaskSettings{{
+			Tasks: []jobs.Task{{
 				Description: "test",
-				NewCluster: &compute.BaseClusterInfo{
+				NewCluster: &compute.ClusterSpec{
 					SparkVersion: latestLTS,
 					NodeTypeId:   smallestWithDisk,
 					NumWorkers:   1,
@@ -213,9 +213,9 @@ func TestAccJobsListWithLimitNoTranspile(t *testing.T) {
 	for i := 0; i < 11; i++ {
 		createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 			Name: RandomName(t.Name()),
-			Tasks: []jobs.JobTaskSettings{{
+			Tasks: []jobs.Task{{
 				Description: "test",
-				NewCluster: &compute.BaseClusterInfo{
+				NewCluster: &compute.ClusterSpec{
 					SparkVersion: latestLTS,
 					NodeTypeId:   smallestWithDisk,
 					NumWorkers:   1,

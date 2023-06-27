@@ -98,6 +98,8 @@ type CatalogInfo struct {
 	CatalogType CatalogType `json:"catalog_type,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// The name of the connection to an external data source.
+	ConnectionName string `json:"connection_name,omitempty"`
 	// Time at which this catalog was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of catalog creator.
@@ -114,6 +116,8 @@ type CatalogInfo struct {
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of catalog.
 	Name string `json:"name,omitempty"`
+	// A map of key-value properties attached to the securable.
+	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of catalog.
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
@@ -287,8 +291,8 @@ type ConnectionInfo struct {
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of the connection.
 	Name string `json:"name,omitempty"`
-	// Object properties as map of string key-value pairs.
-	OptionsKvpairs *OptionsKvPairs `json:"options_kvpairs,omitempty"`
+	// A map of key-value properties attached to the securable.
+	OptionsKvpairs map[string]string `json:"options_kvpairs,omitempty"`
 	// Username of current owner of the connection.
 	Owner string `json:"owner,omitempty"`
 	// An object containing map of key-value properties attached to the
@@ -367,8 +371,8 @@ type CreateConnection struct {
 	ConnectionType ConnectionType `json:"connection_type"`
 	// Name of the connection.
 	Name string `json:"name"`
-	// Object properties as map of string key-value pairs.
-	OptionsKvpairs OptionsKvPairs `json:"options_kvpairs"`
+	// A map of key-value properties attached to the securable.
+	OptionsKvpairs map[string]string `json:"options_kvpairs"`
 	// Username of current owner of the connection.
 	Owner string `json:"owner,omitempty"`
 	// An object containing map of key-value properties attached to the
@@ -847,7 +851,38 @@ type DisableRequest struct {
 	// The metastore ID under which the system schema lives.
 	MetastoreId string `json:"-" url:"-"`
 	// Full name of the system schema.
-	SchemaName string `json:"-" url:"-"`
+	SchemaName DisableSchemaName `json:"-" url:"-"`
+}
+
+type DisableSchemaName string
+
+const DisableSchemaNameAccess DisableSchemaName = `access`
+
+const DisableSchemaNameBilling DisableSchemaName = `billing`
+
+const DisableSchemaNameLineage DisableSchemaName = `lineage`
+
+const DisableSchemaNameOperationalData DisableSchemaName = `operational_data`
+
+// String representation for [fmt.Print]
+func (f *DisableSchemaName) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DisableSchemaName) Set(v string) error {
+	switch v {
+	case `access`, `billing`, `lineage`, `operational_data`:
+		*f = DisableSchemaName(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "access", "billing", "lineage", "operational_data"`, v)
+	}
+}
+
+// Type always returns DisableSchemaName to satisfy [pflag.Value] interface
+func (f *DisableSchemaName) Type() string {
+	return "DisableSchemaName"
 }
 
 type EffectiveAutoMaintenanceFlag struct {
@@ -947,6 +982,45 @@ func (f *EnableAutoMaintenance) Set(v string) error {
 // Type always returns EnableAutoMaintenance to satisfy [pflag.Value] interface
 func (f *EnableAutoMaintenance) Type() string {
 	return "EnableAutoMaintenance"
+}
+
+// Enable a system schema
+type EnableRequest struct {
+	// The metastore ID under which the system schema lives.
+	MetastoreId string `json:"-" url:"-"`
+	// Full name of the system schema.
+	SchemaName EnableSchemaName `json:"-" url:"-"`
+}
+
+type EnableSchemaName string
+
+const EnableSchemaNameAccess EnableSchemaName = `access`
+
+const EnableSchemaNameBilling EnableSchemaName = `billing`
+
+const EnableSchemaNameLineage EnableSchemaName = `lineage`
+
+const EnableSchemaNameOperationalData EnableSchemaName = `operational_data`
+
+// String representation for [fmt.Print]
+func (f *EnableSchemaName) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EnableSchemaName) Set(v string) error {
+	switch v {
+	case `access`, `billing`, `lineage`, `operational_data`:
+		*f = EnableSchemaName(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "access", "billing", "lineage", "operational_data"`, v)
+	}
+}
+
+// Type always returns EnableSchemaName to satisfy [pflag.Value] interface
+func (f *EnableSchemaName) Type() string {
+	return "EnableSchemaName"
 }
 
 type ExternalLocationInfo struct {
@@ -1671,11 +1745,6 @@ type NamedTableConstraint struct {
 	Name string `json:"name"`
 }
 
-// Object properties as map of string key-value pairs.
-type OptionsKvPairs struct {
-	Host string `json:"host"`
-}
-
 type PermissionsChange struct {
 	// The set of privileges to add.
 	Add []Privilege `json:"add,omitempty"`
@@ -1747,6 +1816,8 @@ const PrivilegeUsage Privilege = `USAGE`
 
 const PrivilegeUseCatalog Privilege = `USE_CATALOG`
 
+const PrivilegeUseMarketplaceAssets Privilege = `USE_MARKETPLACE_ASSETS`
+
 const PrivilegeUseProvider Privilege = `USE_PROVIDER`
 
 const PrivilegeUseRecipient Privilege = `USE_RECIPIENT`
@@ -1767,11 +1838,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ALL_PRIVILEGES`, `CREATE`, `CREATE_CATALOG`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
+	case `ALL_PRIVILEGES`, `CREATE`, `CREATE_CATALOG`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "CREATE", "CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "CREATE", "CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
 	}
 }
 
@@ -1831,6 +1902,9 @@ type SchemaInfo struct {
 	// Username of user who last modified schema.
 	UpdatedBy string `json:"updated_by,omitempty"`
 }
+
+// A map of key-value properties attached to the securable.
+type SecurableOptionsMap map[string]string
 
 // A map of key-value properties attached to the securable.
 type SecurablePropertiesMap map[string]string
@@ -1925,13 +1999,15 @@ type SystemSchemaInfo struct {
 // the system schema is available and ready for opt-in.
 type SystemSchemaInfoState string
 
-const SystemSchemaInfoStateDisableinitialized SystemSchemaInfoState = `DisableInitialized`
+const SystemSchemaInfoStateAvailable SystemSchemaInfoState = `AVAILABLE`
 
-const SystemSchemaInfoStateEnablecompleted SystemSchemaInfoState = `EnableCompleted`
+const SystemSchemaInfoStateDisableInitialized SystemSchemaInfoState = `DISABLE_INITIALIZED`
 
-const SystemSchemaInfoStateEnableinitialized SystemSchemaInfoState = `EnableInitialized`
+const SystemSchemaInfoStateEnableCompleted SystemSchemaInfoState = `ENABLE_COMPLETED`
 
-const SystemSchemaInfoStateUnavailable SystemSchemaInfoState = `Unavailable`
+const SystemSchemaInfoStateEnableInitialized SystemSchemaInfoState = `ENABLE_INITIALIZED`
+
+const SystemSchemaInfoStateUnavailable SystemSchemaInfoState = `UNAVAILABLE`
 
 // String representation for [fmt.Print]
 func (f *SystemSchemaInfoState) String() string {
@@ -1941,11 +2017,11 @@ func (f *SystemSchemaInfoState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SystemSchemaInfoState) Set(v string) error {
 	switch v {
-	case `DisableInitialized`, `EnableCompleted`, `EnableInitialized`, `Unavailable`:
+	case `AVAILABLE`, `DISABLE_INITIALIZED`, `ENABLE_COMPLETED`, `ENABLE_INITIALIZED`, `UNAVAILABLE`:
 		*f = SystemSchemaInfoState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DisableInitialized", "EnableCompleted", "EnableInitialized", "Unavailable"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AVAILABLE", "DISABLE_INITIALIZED", "ENABLE_COMPLETED", "ENABLE_INITIALIZED", "UNAVAILABLE"`, v)
 	}
 }
 
@@ -2138,8 +2214,8 @@ type UpdateConnection struct {
 	Name string `json:"name"`
 	// Name of the connection.
 	NameArg string `json:"-" url:"-"`
-	// Object properties as map of string key-value pairs.
-	OptionsKvpairs OptionsKvPairs `json:"options_kvpairs"`
+	// A map of key-value properties attached to the securable.
+	OptionsKvpairs map[string]string `json:"options_kvpairs"`
 }
 
 type UpdateExternalLocation struct {

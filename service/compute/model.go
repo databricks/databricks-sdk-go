@@ -223,131 +223,6 @@ func (f *AzureAvailability) Type() string {
 	return "AzureAvailability"
 }
 
-type BaseClusterInfo struct {
-	// Parameters needed in order to automatically scale clusters up and down
-	// based on load. Note: autoscaling works best with DB runtime versions 3.0
-	// or later.
-	Autoscale *AutoScale `json:"autoscale,omitempty"`
-	// Automatically terminates the cluster after it is inactive for this time
-	// in minutes. If not set, this cluster will not be automatically
-	// terminated. If specified, the threshold must be between 10 and 10000
-	// minutes. Users can also set this value to 0 to explicitly disable
-	// automatic termination.
-	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
-	// Attributes related to clusters running on Amazon Web Services. If not
-	// specified at cluster creation, a set of default values will be used.
-	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
-	// Attributes related to clusters running on Microsoft Azure. If not
-	// specified at cluster creation, a set of default values will be used.
-	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-	// The configuration for delivering spark logs to a long-term storage
-	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
-	// one destination can be specified for one cluster. If the conf is given,
-	// the logs will be delivered to the destination every `5 mins`. The
-	// destination of driver logs is `$destination/$clusterId/driver`, while the
-	// destination of executor logs is `$destination/$clusterId/executor`.
-	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
-	// Cluster name requested by the user. This doesn't have to be unique. If
-	// not specified at creation, the cluster name will be an empty string.
-	ClusterName string `json:"cluster_name,omitempty"`
-	// Determines whether the cluster was created by a user through the UI,
-	// created by the Databricks Jobs Scheduler, or through an API request. This
-	// is the same as cluster_creator, but read only.
-	ClusterSource ClusterSource `json:"cluster_source,omitempty"`
-	// Additional tags for cluster resources. Databricks will tag all cluster
-	// resources (e.g., AWS instances and EBS volumes) with these tags in
-	// addition to `default_tags`. Notes:
-	//
-	// - Currently, Databricks allows at most 45 custom tags
-	//
-	// - Clusters can only reuse cloud resources if the resources' tags are a
-	// subset of the cluster tags
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// This describes an enum
-	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
-	DockerImage *DockerImage `json:"docker_image,omitempty"`
-	// The optional ID of the instance pool for the driver of the cluster
-	// belongs. The pool cluster uses the instance pool with id
-	// (instance_pool_id) if the driver pool is not assigned.
-	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
-	// The node type of the Spark driver. Note that this field is optional; if
-	// unset, the driver node type will be set as the same value as
-	// `node_type_id` defined above.
-	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
-	// Autoscaling Local Storage: when enabled, this cluster will dynamically
-	// acquire additional disk space when its Spark workers are running low on
-	// disk space. This feature requires specific AWS permissions to function
-	// correctly - refer to the User Guide for more details.
-	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-	// Whether to enable LUKS on cluster VMs' local disks
-	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
-	// Attributes related to clusters running on Google Cloud Platform. If not
-	// specified at cluster creation, a set of default values will be used.
-	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-	// The configuration for storing init scripts. Any number of destinations
-	// can be specified. The scripts are executed sequentially in the order
-	// provided. If `cluster_log_conf` is specified, init script logs are sent
-	// to `<destination>/<cluster-ID>/init_scripts`.
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
-	// The optional ID of the instance pool to which the cluster belongs.
-	InstancePoolId string `json:"instance_pool_id,omitempty"`
-	// This field encodes, through a single value, the resources available to
-	// each of the Spark nodes in this cluster. For example, the Spark nodes can
-	// be provisioned and optimized for memory or compute intensive workloads. A
-	// list of available node types can be retrieved by using the
-	// :method:clusters/listNodeTypes API call.
-	NodeTypeId string `json:"node_type_id,omitempty"`
-	// Number of worker nodes that this cluster should have. A cluster has one
-	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
-	// Spark nodes.
-	//
-	// Note: When reading the properties of a cluster, this field reflects the
-	// desired number of workers rather than the actual current number of
-	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
-	// field will immediately be updated to reflect the target size of 10
-	// workers, whereas the workers listed in `spark_info` will gradually
-	// increase from 5 to 10 as the new nodes are provisioned.
-	NumWorkers int `json:"num_workers,omitempty"`
-	// The ID of the cluster policy used to create the cluster if applicable.
-	PolicyId string `json:"policy_id,omitempty"`
-	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
-	// unspecified, the runtime engine is inferred from spark_version.
-	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
-	// Single user name if data_security_mode is `SINGLE_USER`
-	SingleUserName string `json:"single_user_name,omitempty"`
-	// An object containing a set of optional, user-specified Spark
-	// configuration key-value pairs. Users can also pass in a string of extra
-	// JVM options to the driver and the executors via
-	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
-	// respectively.
-	SparkConf map[string]string `json:"spark_conf,omitempty"`
-	// An object containing a set of optional, user-specified environment
-	// variable key-value pairs. Please note that key-value pair of the form
-	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
-	// driver and workers.
-	//
-	// In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
-	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
-	// example below. This ensures that all default databricks managed
-	// environmental variables are included as well.
-	//
-	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
-	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
-	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
-	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
-	// available Spark versions can be retrieved by using the
-	// :method:clusters/sparkVersions API call.
-	SparkVersion string `json:"spark_version,omitempty"`
-	// SSH public key contents that will be added to each Spark node in this
-	// cluster. The corresponding private keys can be used to login with the
-	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
-	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-
-	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
-}
-
 type CancelCommand struct {
 	ClusterId string `json:"clusterId,omitempty"`
 
@@ -511,22 +386,7 @@ type ClusterAttributes struct {
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 }
 
-type ClusterEvent struct {
-	// <needs content added>
-	ClusterId string `json:"cluster_id"`
-	// <needs content added>
-	DataPlaneEventDetails *DataPlaneEventDetails `json:"data_plane_event_details,omitempty"`
-	// <needs content added>
-	Details *EventDetails `json:"details,omitempty"`
-	// The timestamp when the event occurred, stored as the number of
-	// milliseconds since the Unix epoch. If not provided, this will be assigned
-	// by the Timeline service.
-	Timestamp int64 `json:"timestamp,omitempty"`
-
-	Type EventType `json:"type,omitempty"`
-}
-
-type ClusterInfo struct {
+type ClusterDetails struct {
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
@@ -710,6 +570,21 @@ type ClusterInfo struct {
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 }
 
+type ClusterEvent struct {
+	// <needs content added>
+	ClusterId string `json:"cluster_id"`
+	// <needs content added>
+	DataPlaneEventDetails *DataPlaneEventDetails `json:"data_plane_event_details,omitempty"`
+	// <needs content added>
+	Details *EventDetails `json:"details,omitempty"`
+	// The timestamp when the event occurred, stored as the number of
+	// milliseconds since the Unix epoch. If not provided, this will be assigned
+	// by the Timeline service.
+	Timestamp int64 `json:"timestamp,omitempty"`
+
+	Type EventType `json:"type,omitempty"`
+}
+
 type ClusterLibraryStatuses struct {
 	// Unique identifier for the cluster.
 	ClusterId string `json:"cluster_id,omitempty"`
@@ -787,6 +662,131 @@ func (f *ClusterSource) Type() string {
 	return "ClusterSource"
 }
 
+type ClusterSpec struct {
+	// Parameters needed in order to automatically scale clusters up and down
+	// based on load. Note: autoscaling works best with DB runtime versions 3.0
+	// or later.
+	Autoscale *AutoScale `json:"autoscale,omitempty"`
+	// Automatically terminates the cluster after it is inactive for this time
+	// in minutes. If not set, this cluster will not be automatically
+	// terminated. If specified, the threshold must be between 10 and 10000
+	// minutes. Users can also set this value to 0 to explicitly disable
+	// automatic termination.
+	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
+	// Attributes related to clusters running on Amazon Web Services. If not
+	// specified at cluster creation, a set of default values will be used.
+	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
+	// Attributes related to clusters running on Microsoft Azure. If not
+	// specified at cluster creation, a set of default values will be used.
+	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
+	// The configuration for delivering spark logs to a long-term storage
+	// destination. Two kinds of destinations (dbfs and s3) are supported. Only
+	// one destination can be specified for one cluster. If the conf is given,
+	// the logs will be delivered to the destination every `5 mins`. The
+	// destination of driver logs is `$destination/$clusterId/driver`, while the
+	// destination of executor logs is `$destination/$clusterId/executor`.
+	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
+	// Cluster name requested by the user. This doesn't have to be unique. If
+	// not specified at creation, the cluster name will be an empty string.
+	ClusterName string `json:"cluster_name,omitempty"`
+	// Determines whether the cluster was created by a user through the UI,
+	// created by the Databricks Jobs Scheduler, or through an API request. This
+	// is the same as cluster_creator, but read only.
+	ClusterSource ClusterSource `json:"cluster_source,omitempty"`
+	// Additional tags for cluster resources. Databricks will tag all cluster
+	// resources (e.g., AWS instances and EBS volumes) with these tags in
+	// addition to `default_tags`. Notes:
+	//
+	// - Currently, Databricks allows at most 45 custom tags
+	//
+	// - Clusters can only reuse cloud resources if the resources' tags are a
+	// subset of the cluster tags
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
+	// This describes an enum
+	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
+
+	DockerImage *DockerImage `json:"docker_image,omitempty"`
+	// The optional ID of the instance pool for the driver of the cluster
+	// belongs. The pool cluster uses the instance pool with id
+	// (instance_pool_id) if the driver pool is not assigned.
+	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
+	// The node type of the Spark driver. Note that this field is optional; if
+	// unset, the driver node type will be set as the same value as
+	// `node_type_id` defined above.
+	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
+	// Autoscaling Local Storage: when enabled, this cluster will dynamically
+	// acquire additional disk space when its Spark workers are running low on
+	// disk space. This feature requires specific AWS permissions to function
+	// correctly - refer to the User Guide for more details.
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
+	// Whether to enable LUKS on cluster VMs' local disks
+	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
+	// Attributes related to clusters running on Google Cloud Platform. If not
+	// specified at cluster creation, a set of default values will be used.
+	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
+	// The configuration for storing init scripts. Any number of destinations
+	// can be specified. The scripts are executed sequentially in the order
+	// provided. If `cluster_log_conf` is specified, init script logs are sent
+	// to `<destination>/<cluster-ID>/init_scripts`.
+	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
+	// The optional ID of the instance pool to which the cluster belongs.
+	InstancePoolId string `json:"instance_pool_id,omitempty"`
+	// This field encodes, through a single value, the resources available to
+	// each of the Spark nodes in this cluster. For example, the Spark nodes can
+	// be provisioned and optimized for memory or compute intensive workloads. A
+	// list of available node types can be retrieved by using the
+	// :method:clusters/listNodeTypes API call.
+	NodeTypeId string `json:"node_type_id,omitempty"`
+	// Number of worker nodes that this cluster should have. A cluster has one
+	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
+	// Spark nodes.
+	//
+	// Note: When reading the properties of a cluster, this field reflects the
+	// desired number of workers rather than the actual current number of
+	// workers. For instance, if a cluster is resized from 5 to 10 workers, this
+	// field will immediately be updated to reflect the target size of 10
+	// workers, whereas the workers listed in `spark_info` will gradually
+	// increase from 5 to 10 as the new nodes are provisioned.
+	NumWorkers int `json:"num_workers,omitempty"`
+	// The ID of the cluster policy used to create the cluster if applicable.
+	PolicyId string `json:"policy_id,omitempty"`
+	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
+	// unspecified, the runtime engine is inferred from spark_version.
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
+	// Single user name if data_security_mode is `SINGLE_USER`
+	SingleUserName string `json:"single_user_name,omitempty"`
+	// An object containing a set of optional, user-specified Spark
+	// configuration key-value pairs. Users can also pass in a string of extra
+	// JVM options to the driver and the executors via
+	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
+	// respectively.
+	SparkConf map[string]string `json:"spark_conf,omitempty"`
+	// An object containing a set of optional, user-specified environment
+	// variable key-value pairs. Please note that key-value pair of the form
+	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
+	// driver and workers.
+	//
+	// In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we
+	// recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the
+	// example below. This ensures that all default databricks managed
+	// environmental variables are included as well.
+	//
+	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
+	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
+	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
+	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
+	// available Spark versions can be retrieved by using the
+	// :method:clusters/sparkVersions API call.
+	SparkVersion string `json:"spark_version,omitempty"`
+	// SSH public key contents that will be added to each Spark node in this
+	// cluster. The corresponding private keys can be used to login with the
+	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
+
+	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+}
+
 // Get status
 type ClusterStatusRequest struct {
 	// Unique identifier of the cluster whose status should be retrieved.
@@ -854,6 +854,37 @@ type CommandStatusResponse struct {
 	Results *Results `json:"results,omitempty"`
 
 	Status CommandStatus `json:"status,omitempty"`
+}
+
+type ComputeSpec struct {
+	// The kind of compute described by this compute specification.
+	Kind ComputeSpecKind `json:"kind,omitempty"`
+}
+
+// The kind of compute described by this compute specification.
+type ComputeSpecKind string
+
+const ComputeSpecKindServerlessPreview ComputeSpecKind = `SERVERLESS_PREVIEW`
+
+// String representation for [fmt.Print]
+func (f *ComputeSpecKind) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ComputeSpecKind) Set(v string) error {
+	switch v {
+	case `SERVERLESS_PREVIEW`:
+		*f = ComputeSpecKind(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "SERVERLESS_PREVIEW"`, v)
+	}
+}
+
+// Type always returns ComputeSpecKind to satisfy [pflag.Value] interface
+func (f *ComputeSpecKind) Type() string {
+	return "ComputeSpecKind"
 }
 
 type ContextStatus string
@@ -2646,7 +2677,7 @@ type ListClustersRequest struct {
 
 type ListClustersResponse struct {
 	// <needs content added>
-	Clusters []ClusterInfo `json:"clusters,omitempty"`
+	Clusters []ClusterDetails `json:"clusters,omitempty"`
 }
 
 type ListGlobalInitScriptsResponse struct {

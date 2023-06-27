@@ -41,7 +41,7 @@ func ExampleJobsAPI_CancelAllRuns_jobsApiFullIntegration() {
 
 	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Tasks: []jobs.JobTaskSettings{jobs.JobTaskSettings{
+		Tasks: []jobs.Task{jobs.Task{
 			Description:       "test",
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
@@ -96,7 +96,7 @@ func ExampleJobsAPI_CancelRun_jobsApiFullIntegration() {
 
 	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Tasks: []jobs.JobTaskSettings{jobs.JobTaskSettings{
+		Tasks: []jobs.Task{jobs.Task{
 			Description:       "test",
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
@@ -162,7 +162,7 @@ func ExampleJobsAPI_Create_jobsApiFullIntegration() {
 
 	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Tasks: []jobs.JobTaskSettings{jobs.JobTaskSettings{
+		Tasks: []jobs.Task{jobs.Task{
 			Description:       "test",
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
@@ -212,7 +212,7 @@ func ExampleJobsAPI_ExportRun_jobsApiFullIntegration() {
 
 	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Tasks: []jobs.JobTaskSettings{jobs.JobTaskSettings{
+		Tasks: []jobs.Task{jobs.Task{
 			Description:       "test",
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
@@ -279,7 +279,7 @@ func ExampleJobsAPI_Get_jobsApiFullIntegration() {
 
 	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Tasks: []jobs.JobTaskSettings{jobs.JobTaskSettings{
+		Tasks: []jobs.Task{jobs.Task{
 			Description:       "test",
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
@@ -335,7 +335,7 @@ func ExampleJobsAPI_GetRunOutput_jobsApiFullIntegration() {
 
 	run, err := w.Jobs.SubmitAndWait(ctx, jobs.SubmitRun{
 		RunName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Tasks: []jobs.RunSubmitTaskSettings{jobs.RunSubmitTaskSettings{
+		Tasks: []jobs.SubmitTask{jobs.SubmitTask{
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
 				NotebookPath: notebookPath,
@@ -406,7 +406,7 @@ func ExampleJobsAPI_RepairRun_jobsApiFullIntegration() {
 
 	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Tasks: []jobs.JobTaskSettings{jobs.JobTaskSettings{
+		Tasks: []jobs.Task{jobs.Task{
 			Description:       "test",
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
@@ -481,7 +481,7 @@ func ExampleJobsAPI_Reset_jobsApiFullIntegration() {
 
 	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Tasks: []jobs.JobTaskSettings{jobs.JobTaskSettings{
+		Tasks: []jobs.Task{jobs.Task{
 			Description:       "test",
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
@@ -550,7 +550,7 @@ func ExampleJobsAPI_RunNow_jobsApiFullIntegration() {
 
 	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Tasks: []jobs.JobTaskSettings{jobs.JobTaskSettings{
+		Tasks: []jobs.Task{jobs.Task{
 			Description:       "test",
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
@@ -608,7 +608,7 @@ func ExampleJobsAPI_Submit_jobsApiFullIntegration() {
 
 	run, err := w.Jobs.SubmitAndWait(ctx, jobs.SubmitRun{
 		RunName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Tasks: []jobs.RunSubmitTaskSettings{jobs.RunSubmitTaskSettings{
+		Tasks: []jobs.SubmitTask{jobs.SubmitTask{
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{
 				NotebookPath: notebookPath,
@@ -658,7 +658,7 @@ func ExampleJobsAPI_Update_jobsApiFullIntegration() {
 
 	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
 		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Tasks: []jobs.JobTaskSettings{jobs.JobTaskSettings{
+		Tasks: []jobs.Task{jobs.Task{
 			Description:       "test",
 			ExistingClusterId: clusterId,
 			NotebookTask: &jobs.NotebookTask{

@@ -106,10 +106,20 @@ type AccountIpAccessListsService interface {
 // TBD
 type AccountSettingsService interface {
 
+	// Delete Personal Compute setting.
+	//
+	// TBD
+	DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error)
+
 	// Get Personal Compute setting.
 	//
 	// TBD
-	ReadPersonalComputeSetting(ctx context.Context, request ReadPersonalComputeSettingRequest) (*ReadPersonalComputeSettingResponse, error)
+	ReadPersonalComputeSetting(ctx context.Context, request ReadPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
+
+	// Update Personal Compute setting.
+	//
+	// TBD
+	UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
 }
 
 // IP Access List enables admins to configure IP access lists.

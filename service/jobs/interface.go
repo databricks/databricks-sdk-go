@@ -82,14 +82,14 @@ type JobsService interface {
 	// them beyond 60 days, you must save old run results before they expire.
 	GetRunOutput(ctx context.Context, request GetRunOutputRequest) (*RunOutput, error)
 
-	// List all jobs.
+	// List jobs.
 	//
 	// Retrieves a list of jobs.
 	//
 	// Use ListAll() to get all BaseJob instances, which will iterate over every result page.
 	List(ctx context.Context, request ListJobsRequest) (*ListJobsResponse, error)
 
-	// List runs for a job.
+	// List job runs.
 	//
 	// List runs in descending order by start time.
 	//
