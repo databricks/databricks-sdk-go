@@ -2,9 +2,7 @@
 
 ## 0.11.0
 
- * Regenerated from OpenAPI spec ([#527](https://github.com/databricks/databricks-sdk-go/pull/527)). Includes bugfixes for:
-   * System Tables
-
+ * Regenerated from OpenAPI spec ([#527](https://github.com/databricks/databricks-sdk-go/pull/527)). Includes bugfixes for System Tables.
  * Support accounts-dod as account endpoint ([#530](https://github.com/databricks/databricks-sdk-go/pull/530)).
 
 Breaking API Changes:
