@@ -1912,25 +1912,27 @@ type SecurablePropertiesMap map[string]string
 // The type of Unity Catalog securable
 type SecurableType string
 
-const SecurableTypeCatalog SecurableType = `CATALOG`
+const SecurableTypeCatalog SecurableType = `catalog`
 
-const SecurableTypeExternalLocation SecurableType = `EXTERNAL_LOCATION`
+const SecurableTypeExternalLocation SecurableType = `external_location`
 
-const SecurableTypeFunction SecurableType = `FUNCTION`
+const SecurableTypeFunction SecurableType = `function`
 
-const SecurableTypeMetastore SecurableType = `METASTORE`
+const SecurableTypeMetastore SecurableType = `metastore`
 
-const SecurableTypeProvider SecurableType = `PROVIDER`
+const SecurableTypePipeline SecurableType = `pipeline`
 
-const SecurableTypeRecipient SecurableType = `RECIPIENT`
+const SecurableTypeProvider SecurableType = `provider`
 
-const SecurableTypeSchema SecurableType = `SCHEMA`
+const SecurableTypeRecipient SecurableType = `recipient`
 
-const SecurableTypeShare SecurableType = `SHARE`
+const SecurableTypeSchema SecurableType = `schema`
 
-const SecurableTypeStorageCredential SecurableType = `STORAGE_CREDENTIAL`
+const SecurableTypeShare SecurableType = `share`
 
-const SecurableTypeTable SecurableType = `TABLE`
+const SecurableTypeStorageCredential SecurableType = `storage_credential`
+
+const SecurableTypeTable SecurableType = `table`
 
 // String representation for [fmt.Print]
 func (f *SecurableType) String() string {
@@ -1940,11 +1942,11 @@ func (f *SecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableType) Set(v string) error {
 	switch v {
-	case `CATALOG`, `EXTERNAL_LOCATION`, `FUNCTION`, `METASTORE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `STORAGE_CREDENTIAL`, `TABLE`:
+	case `catalog`, `external_location`, `function`, `metastore`, `pipeline`, `provider`, `recipient`, `schema`, `share`, `storage_credential`, `table`:
 		*f = SecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CATALOG", "EXTERNAL_LOCATION", "FUNCTION", "METASTORE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "STORAGE_CREDENTIAL", "TABLE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "catalog", "external_location", "function", "metastore", "pipeline", "provider", "recipient", "schema", "share", "storage_credential", "table"`, v)
 	}
 }
 

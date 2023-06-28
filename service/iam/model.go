@@ -191,6 +191,8 @@ type Group struct {
 	Id string `json:"id,omitempty" url:"-"`
 
 	Members []ComplexValue `json:"members,omitempty"`
+	// Container for the group identifier. Workspace local versus account.
+	Meta *ResourceMeta `json:"meta,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 }
@@ -582,6 +584,12 @@ type PrincipalOutput struct {
 	UserName string `json:"user_name,omitempty"`
 }
 
+type ResourceMeta struct {
+	// Identifier for group type. Can be local workspace group
+	// (`WorkspaceGroup`) or account group (`Group`).
+	ResourceType string `json:"resourceType,omitempty"`
+}
+
 type RuleSetResponse struct {
 	// Identifies the version of the rule set returned.
 	Etag string `json:"etag,omitempty"`
@@ -652,7 +660,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Name *Name `json:"name,omitempty"`
 

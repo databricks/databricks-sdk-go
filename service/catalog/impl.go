@@ -484,7 +484,7 @@ func (a *systemSchemasImpl) Disable(ctx context.Context, request DisableRequest)
 
 func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas/%v", request.MetastoreId, request.SchemaName)
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
 	return err
 }
 

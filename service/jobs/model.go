@@ -72,6 +72,8 @@ type BaseRun struct {
 	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// The canonical identifier of the job that contains this run.
 	JobId int64 `json:"job_id,omitempty"`
+	// Job-level parameters used in the run
+	JobParameters []JobParameter `json:"job_parameters,omitempty"`
 	// A unique identifier for this job run. This is set to the same value as
 	// `run_id`.
 	NumberInJob int64 `json:"number_in_job,omitempty"`
@@ -109,7 +111,7 @@ type BaseRun struct {
 	// task starts executing, for example, if the job is scheduled to run on a
 	// new cluster, this is the time the cluster creation call is issued.
 	StartTime int64 `json:"start_time,omitempty"`
-	// The result and lifecycle states of the run.
+	// The current state of the run.
 	State *RunState `json:"state,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run resutls.
@@ -282,6 +284,8 @@ type CreateJob struct {
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// job.
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
+	// Job-level parameter definitions
+	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
 	// Write-only setting, available only in Create/Update/Reset and Submit
 	// calls. Specifies the user or service principal that the job runs as. If
 	// not specified, the job runs as the user who created the job.
@@ -398,7 +402,7 @@ type FileArrivalTriggerConfiguration struct {
 	// If set, the trigger starts a run only after the specified amount of time
 	// passed since the last time the trigger fired. The minimum allowed value
 	// is 60 seconds
-	MinTimeBetweenTriggerSeconds int `json:"min_time_between_trigger_seconds,omitempty"`
+	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
 	// URL to be monitored for file arrivals. The path must point to the root or
 	// a subpath of the external location.
 	Url string `json:"url,omitempty"`
@@ -582,10 +586,9 @@ type JobEmailNotifications struct {
 	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
 	// A list of email addresses to be notified when a run unsuccessfully
 	// completes. A run is considered to have completed unsuccessfully if it
-	// ends with an `INTERNAL_ERROR` `life_cycle_state` or a `SKIPPED`,
-	// `FAILED`, or `TIMED_OUT` result_state. If this is not specified on job
-	// creation, reset, or update the list is empty, and notifications are not
-	// sent.
+	// ends with an `INTERNAL_ERROR` `life_cycle_state` or a `FAILED`, or
+	// `TIMED_OUT` result_state. If this is not specified on job creation,
+	// reset, or update the list is empty, and notifications are not sent.
 	OnFailure []string `json:"on_failure,omitempty"`
 	// A list of email addresses to be notified when a run begins. If not
 	// specified on job creation, reset, or update, the list is empty, and
@@ -593,9 +596,9 @@ type JobEmailNotifications struct {
 	OnStart []string `json:"on_start,omitempty"`
 	// A list of email addresses to be notified when a run successfully
 	// completes. A run is considered to have completed successfully if it ends
-	// with a `TERMINATED` `life_cycle_state` and a `SUCCESSFUL` result_state.
-	// If not specified on job creation, reset, or update, the list is empty,
-	// and notifications are not sent.
+	// with a `TERMINATED` `life_cycle_state` and a `SUCCESS` result_state. If
+	// not specified on job creation, reset, or update, the list is empty, and
+	// notifications are not sent.
 	OnSuccess []string `json:"on_success,omitempty"`
 }
 
@@ -606,6 +609,23 @@ type JobNotificationSettings struct {
 	// If true, do not send notifications to recipients specified in
 	// `on_failure` if the run is skipped.
 	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
+}
+
+type JobParameter struct {
+	// The optional default value of the parameter
+	Default string `json:"default,omitempty"`
+	// The name of the parameter
+	Name string `json:"name,omitempty"`
+	// The value used in the run
+	Value string `json:"value,omitempty"`
+}
+
+type JobParameterDefinition struct {
+	// Default value of the parameter.
+	Default string `json:"default"`
+	// The name of the defined parameter. May only contain alphanumeric
+	// characters, `_`, `-`, and `.`
+	Name string `json:"name"`
 }
 
 // Write-only setting, available only in Create/Update/Reset and Submit calls.
@@ -669,6 +689,8 @@ type JobSettings struct {
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// job.
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
+	// Job-level parameter definitions
+	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
 	// Write-only setting, available only in Create/Update/Reset and Submit
 	// calls. Specifies the user or service principal that the job runs as. If
 	// not specified, the job runs as the user who created the job.
@@ -705,7 +727,7 @@ type ListJobsRequest struct {
 	// Whether to include task and cluster details in the response.
 	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
 	// The number of jobs to return. This value must be greater than 0 and less
-	// or equal to 25. The default value is 20.
+	// or equal to 100. The default value is 20.
 	Limit int `json:"-" url:"limit,omitempty"`
 	// A filter on the list based on the exact (case insensitive) job name.
 	Name string `json:"-" url:"name,omitempty"`
@@ -865,6 +887,8 @@ type NotebookTask struct {
 	Source Source `json:"source,omitempty"`
 }
 
+type ParamPairs map[string]string
+
 type PauseStatus string
 
 const PauseStatusPaused PauseStatus = `PAUSED`
@@ -928,7 +952,7 @@ type RepairHistoryItem struct {
 	Id int64 `json:"id,omitempty"`
 	// The start time of the (repaired) run.
 	StartTime int64 `json:"start_time,omitempty"`
-	// The result and lifecycle state of the run.
+	// The current state of the run.
 	State *RunState `json:"state,omitempty"`
 	// The run IDs of the task runs that ran as part of this repair history
 	// item.
@@ -1030,9 +1054,13 @@ type RepairRun struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	PythonParams []string `json:"python_params,omitempty"`
-	// If true, repair all failed tasks. Only one of rerun_tasks or
-	// rerun_all_failed_tasks can be used.
+	// If true, repair all failed tasks. Only one of `rerun_tasks` or
+	// `rerun_all_failed_tasks` can be used.
 	RerunAllFailedTasks bool `json:"rerun_all_failed_tasks,omitempty"`
+	// If true, repair all tasks that depend on the tasks in `rerun_tasks`, even
+	// if they were previously successful. Can be also used in combination with
+	// `rerun_all_failed_tasks`.
+	RerunDependentTasks bool `json:"rerun_dependent_tasks,omitempty"`
 	// The task keys of the task runs to repair.
 	RerunTasks []string `json:"rerun_tasks,omitempty"`
 	// The job run ID of the run to repair. The run must not be in progress.
@@ -1077,6 +1105,62 @@ type ResetJob struct {
 	// Changes to the field `JobBaseSettings.timeout_seconds` are applied to
 	// active runs. Changes to other fields are applied to future runs only.
 	NewSettings JobSettings `json:"new_settings"`
+}
+
+type ResolvedConditionTaskValues struct {
+	Left string `json:"left,omitempty"`
+
+	Right string `json:"right,omitempty"`
+}
+
+type ResolvedDbtTaskValues struct {
+	Commands []string `json:"commands,omitempty"`
+}
+
+type ResolvedNotebookTaskValues struct {
+	BaseParameters map[string]string `json:"base_parameters,omitempty"`
+}
+
+type ResolvedParamPairValues struct {
+	Parameters map[string]string `json:"parameters,omitempty"`
+}
+
+type ResolvedPythonWheelTaskValues struct {
+	NamedParameters map[string]string `json:"named_parameters,omitempty"`
+
+	Parameters []string `json:"parameters,omitempty"`
+}
+
+type ResolvedRunJobTaskValues struct {
+	NamedParameters map[string]string `json:"named_parameters,omitempty"`
+
+	Parameters map[string]string `json:"parameters,omitempty"`
+}
+
+type ResolvedStringParamsValues struct {
+	Parameters []string `json:"parameters,omitempty"`
+}
+
+type ResolvedValues struct {
+	ConditionTask *ResolvedConditionTaskValues `json:"condition_task,omitempty"`
+
+	DbtTask *ResolvedDbtTaskValues `json:"dbt_task,omitempty"`
+
+	NotebookTask *ResolvedNotebookTaskValues `json:"notebook_task,omitempty"`
+
+	PythonWheelTask *ResolvedPythonWheelTaskValues `json:"python_wheel_task,omitempty"`
+
+	RunJobTask *ResolvedRunJobTaskValues `json:"run_job_task,omitempty"`
+
+	SimulationTask *ResolvedParamPairValues `json:"simulation_task,omitempty"`
+
+	SparkJarTask *ResolvedStringParamsValues `json:"spark_jar_task,omitempty"`
+
+	SparkPythonTask *ResolvedStringParamsValues `json:"spark_python_task,omitempty"`
+
+	SparkSubmitTask *ResolvedStringParamsValues `json:"spark_submit_task,omitempty"`
+
+	SqlTask *ResolvedParamPairValues `json:"sql_task,omitempty"`
 }
 
 type Run struct {
@@ -1126,6 +1210,8 @@ type Run struct {
 	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// The canonical identifier of the job that contains this run.
 	JobId int64 `json:"job_id,omitempty"`
+	// Job-level parameters used in the run
+	JobParameters []JobParameter `json:"job_parameters,omitempty"`
 	// A unique identifier for this job run. This is set to the same value as
 	// `run_id`.
 	NumberInJob int64 `json:"number_in_job,omitempty"`
@@ -1165,7 +1251,7 @@ type Run struct {
 	// task starts executing, for example, if the job is scheduled to run on a
 	// new cluster, this is the time the cluster creation call is issued.
 	StartTime int64 `json:"start_time,omitempty"`
-	// The result and lifecycle states of the run.
+	// The current state of the run.
 	State *RunState `json:"state,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run resutls.
@@ -1223,6 +1309,48 @@ func (f *RunConditionTaskOp) Type() string {
 }
 
 // This describes an enum
+type RunIf string
+
+// All dependencies completed and at least one was executed
+const RunIfAllDone RunIf = `ALL_DONE`
+
+// ALl dependencies have failed
+const RunIfAllFailed RunIf = `ALL_FAILED`
+
+// All dependencies have executed and succeeded
+const RunIfAllSuccess RunIf = `ALL_SUCCESS`
+
+// At least one dependency failed
+const RunIfAtLeastOneFailed RunIf = `AT_LEAST_ONE_FAILED`
+
+// At least one dependency has succeeded
+const RunIfAtLeastOneSuccess RunIf = `AT_LEAST_ONE_SUCCESS`
+
+// None of the dependencies have failed and at least one was executed
+const RunIfNoneFailed RunIf = `NONE_FAILED`
+
+// String representation for [fmt.Print]
+func (f *RunIf) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RunIf) Set(v string) error {
+	switch v {
+	case `ALL_DONE`, `ALL_FAILED`, `ALL_SUCCESS`, `AT_LEAST_ONE_FAILED`, `AT_LEAST_ONE_SUCCESS`, `NONE_FAILED`:
+		*f = RunIf(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALL_DONE", "ALL_FAILED", "ALL_SUCCESS", "AT_LEAST_ONE_FAILED", "AT_LEAST_ONE_SUCCESS", "NONE_FAILED"`, v)
+	}
+}
+
+// Type always returns RunIf to satisfy [pflag.Value] interface
+func (f *RunIf) Type() string {
+	return "RunIf"
+}
+
+// This describes an enum
 type RunLifeCycleState string
 
 // The run is blocked on an upstream dependency.
@@ -1234,10 +1362,10 @@ const RunLifeCycleStateBlocked RunLifeCycleState = `BLOCKED`
 // possible. This state is terminal.
 const RunLifeCycleStateInternalError RunLifeCycleState = `INTERNAL_ERROR`
 
-// The run has been triggered. If there is not already an active run of the same
-// job, the cluster and execution context are being prepared. If there is
-// already an active run of the same job, the run immediately transitions into
-// the `SKIPPED` state without preparing any resources.
+// The run has been triggered. If there is not an active run of the same job,
+// the cluster and execution context are being prepared. If there is already an
+// active run of the same job, the run immediately transitions into the
+// `SKIPPED` state without preparing any resources.
 const RunLifeCycleStatePending RunLifeCycleState = `PENDING`
 
 // The task of this run is being executed.
@@ -1311,6 +1439,8 @@ type RunNow struct {
 	JarParams []string `json:"jar_params,omitempty"`
 	// The ID of the job to be executed
 	JobId int64 `json:"job_id"`
+	// Job-level parameters used in the run
+	JobParameters []map[string]string `json:"job_parameters,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
 	// `\"notebook_params\": {\"name\": \"john doe\", \"age\": \"35\"}`. The map
 	// is passed to the notebook and is accessible through the
@@ -1515,14 +1645,30 @@ type RunResultState string
 // The run was canceled at user request.
 const RunResultStateCanceled RunResultState = `CANCELED`
 
+// The run was skipped because the necessary conditions were not met.
+const RunResultStateExcluded RunResultState = `EXCLUDED`
+
 // The task completed with an error.
 const RunResultStateFailed RunResultState = `FAILED`
+
+// The run was skipped because the maximum concurrent runs were reached.
+const RunResultStateMaximumConcurrentRunsReached RunResultState = `MAXIMUM_CONCURRENT_RUNS_REACHED`
 
 // The task completed successfully.
 const RunResultStateSuccess RunResultState = `SUCCESS`
 
+// The job run completed successfully with some failures; leaf tasks were
+// successful.
+const RunResultStateSuccessWithFailures RunResultState = `SUCCESS_WITH_FAILURES`
+
 // The run was stopped after reaching the timeout.
 const RunResultStateTimedout RunResultState = `TIMEDOUT`
+
+// The run was skipped because an upstream task was canceled.
+const RunResultStateUpstreamCanceled RunResultState = `UPSTREAM_CANCELED`
+
+// The run was skipped because of an upstream failure.
+const RunResultStateUpstreamFailed RunResultState = `UPSTREAM_FAILED`
 
 // String representation for [fmt.Print]
 func (f *RunResultState) String() string {
@@ -1532,11 +1678,11 @@ func (f *RunResultState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RunResultState) Set(v string) error {
 	switch v {
-	case `CANCELED`, `FAILED`, `SUCCESS`, `TIMEDOUT`:
+	case `CANCELED`, `EXCLUDED`, `FAILED`, `MAXIMUM_CONCURRENT_RUNS_REACHED`, `SUCCESS`, `SUCCESS_WITH_FAILURES`, `TIMEDOUT`, `UPSTREAM_CANCELED`, `UPSTREAM_FAILED`:
 		*f = RunResultState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCELED", "FAILED", "SUCCESS", "TIMEDOUT"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "EXCLUDED", "FAILED", "MAXIMUM_CONCURRENT_RUNS_REACHED", "SUCCESS", "SUCCESS_WITH_FAILURES", "TIMEDOUT", "UPSTREAM_CANCELED", "UPSTREAM_FAILED"`, v)
 	}
 }
 
@@ -1545,18 +1691,19 @@ func (f *RunResultState) Type() string {
 	return "RunResultState"
 }
 
-// The result and lifecycle state of the run.
+// The current state of the run.
 type RunState struct {
-	// A description of a run’s current location in the run lifecycle. This
-	// field is always available in the response.
+	// A value indicating the run's current lifecycle state. This field is
+	// always available in the response.
 	LifeCycleState RunLifeCycleState `json:"life_cycle_state,omitempty"`
-	// This describes an enum
+	// A value indicating the run's result. This field is only available for
+	// terminal lifecycle states.
 	ResultState RunResultState `json:"result_state,omitempty"`
 	// A descriptive message for the current state. This field is unstructured,
 	// and its exact format is subject to change.
 	StateMessage string `json:"state_message,omitempty"`
-	// Whether a run was canceled manually by a user or by the scheduler because
-	// the run timed out.
+	// A value indicating whether a run was canceled manually by a user or by
+	// the scheduler because the run timed out.
 	UserCancelledOrTimedout bool `json:"user_cancelled_or_timedout,omitempty"`
 }
 
@@ -1626,8 +1773,15 @@ type RunTask struct {
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
 	// If python_wheel_task, indicates that this job must execute a PythonWheel.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
+	// Parameter values including resolved references
+	ResolvedValues *ResolvedValues `json:"resolved_values,omitempty"`
 	// The ID of the task run.
 	RunId int64 `json:"run_id,omitempty"`
+	// An optional value indicating the condition that determines whether the
+	// task should be run once its dependencies have been completed. When
+	// omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of
+	// possible values.
+	RunIf RunIf `json:"run_if,omitempty"`
 	// The time in milliseconds it took to set up the cluster. For runs that run
 	// on new clusters this is the cluster creation time, for runs that run on
 	// existing clusters this time should be very short. The duration of a task
@@ -1650,7 +1804,7 @@ type RunTask struct {
 	// task starts executing, for example, if the job is scheduled to run on a
 	// new cluster, this is the time the cluster creation call is issued.
 	StartTime int64 `json:"start_time,omitempty"`
-	// The result and lifecycle states of the run.
+	// The current state of the run.
 	State *RunState `json:"state,omitempty"`
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
@@ -1721,7 +1875,7 @@ func (f *Source) Type() string {
 }
 
 type SparkJarTask struct {
-	// Deprecated since 04/2016\\. Provide a `jar` through the `libraries` field
+	// Deprecated since 04/2016. Provide a `jar` through the `libraries` field
 	// instead. For an example, see :method:jobs/create.
 	JarUri string `json:"jar_uri,omitempty"`
 	// The full name of the class containing the main method to be executed.
@@ -2122,6 +2276,17 @@ type Task struct {
 	// An optional policy to specify whether to retry a task when it times out.
 	// The default behavior is to not retry on timeout.
 	RetryOnTimeout bool `json:"retry_on_timeout,omitempty"`
+	// An optional value specifying the condition determining whether the task
+	// is run once its dependencies have been completed. When omitted, defaults
+	// to `ALL_SUCCESS`.
+	//
+	// * `ALL_SUCCESS`: All dependencies have executed and succeeded *
+	// `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded *
+	// `NONE_FAILED`: None of the dependencies have failed and at least one was
+	// executed * `ALL_DONE`: All dependencies completed and at least one was
+	// executed * `AT_LEAST_ONE_FAILED`: At least one dependency failed *
+	// `ALL_FAILED`: ALl dependencies have failed
+	RunIf RunIf `json:"run_if,omitempty"`
 	// If spark_jar_task, indicates that this task must run a JAR.
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
 	// If spark_python_task, indicates that this task must run a Python file.
@@ -2145,17 +2310,16 @@ type TaskDependency struct {
 	// Can only be specified on condition task dependencies. The outcome of the
 	// dependent task that must be met for this task to run.
 	Outcome string `json:"outcome,omitempty"`
-	// The name of task that this task depends on.
+	// The name of the task this task depends on.
 	TaskKey string `json:"task_key"`
 }
 
 type TaskEmailNotifications struct {
 	// A list of email addresses to be notified when a run unsuccessfully
 	// completes. A run is considered to have completed unsuccessfully if it
-	// ends with an `INTERNAL_ERROR` `life_cycle_state` or a `SKIPPED`,
-	// `FAILED`, or `TIMED_OUT` result_state. If this is not specified on job
-	// creation, reset, or update the list is empty, and notifications are not
-	// sent.
+	// ends with an `INTERNAL_ERROR` `life_cycle_state` or a `FAILED`, or
+	// `TIMED_OUT` result_state. If this is not specified on job creation,
+	// reset, or update the list is empty, and notifications are not sent.
 	OnFailure []string `json:"on_failure,omitempty"`
 	// A list of email addresses to be notified when a run begins. If not
 	// specified on job creation, reset, or update, the list is empty, and
@@ -2163,9 +2327,9 @@ type TaskEmailNotifications struct {
 	OnStart []string `json:"on_start,omitempty"`
 	// A list of email addresses to be notified when a run successfully
 	// completes. A run is considered to have completed successfully if it ends
-	// with a `TERMINATED` `life_cycle_state` and a `SUCCESSFUL` result_state.
-	// If not specified on job creation, reset, or update, the list is empty,
-	// and notifications are not sent.
+	// with a `TERMINATED` `life_cycle_state` and a `SUCCESS` result_state. If
+	// not specified on job creation, reset, or update, the list is empty, and
+	// notifications are not sent.
 	OnSuccess []string `json:"on_success,omitempty"`
 }
 
