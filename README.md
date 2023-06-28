@@ -1,6 +1,8 @@
 # Databricks SDK for Go
 
-**Stability**: [Experimental](https://docs.databricks.com/release-notes/release-types.html)
+[Beta](https://docs.databricks.com/release-notes/release-types.html): This SDK is supported for production use cases, 
+but we do expect future releases to have some interface changes; see [Interface stability](#interface-stability). 
+We are keen to hear feedback from you on these SDKs. Please [file issues](https://github.com/databricks/databricks-sdk-go/issues), and we will address them 
 | See documentation at [Go Packages](https://pkg.go.dev/github.com/databricks/databricks-sdk-go)
 | See also the [Terraform Provider](https://github.com/databricks/terraform-provider-databricks)
 | See also the [SDK for Python](https://github.com/databricks/databricks-sdk-py) 
@@ -545,4 +547,4 @@ Current Logger interface will evolve in the future versions of Databricks SDK fo
 
 ## Interface stability
 
-During the [Experimental](https://docs.databricks.com/release-notes/release-types.html) period, Databricks is actively working on stabilizing the Databricks SDK for Go's interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to pin the exact version in the `go.mod` file and read the [changelog](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md) where Databricks documents the changes. Some types of interfaces are more stable than others. For those interfaces that are not yet [nightly tested](https://github.com/databricks/databricks-sdk-go/tree/main/internal), Databricks may have minor [documented](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md) backward-incompatible changes, such as fixing mapping correctness from `int` to `int64` or renaming the methods or some type names to bring more consistency. 
+During the [Beta](https://docs.databricks.com/release-notes/release-types.html) period, Databricks is actively working on stabilizing the Databricks SDK for Go's interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to pin the exact version in the `go.mod` file and read the [changelog](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md) where Databricks documents the changes. Some types of interfaces are more stable than others. For those interfaces that are not yet [nightly tested](https://github.com/databricks/databricks-sdk-go/tree/main/internal), Databricks may have minor [documented](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md) backward-incompatible changes, such as fixing mapping correctness from `int` to `int64` or renaming some type names to bring more consistency. 

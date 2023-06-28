@@ -1,5 +1,11 @@
 # Version changelog
 
+## 0.12.0
+
+ * Change release type
+ * Regenerate SDK according to OpenAPI spec ([#534](https://github.com/databricks/databricks-sdk-go/pull/534)).
+ * Bump google.golang.org/api from 0.128.0 to 0.129.0 ([#533](https://github.com/databricks/databricks-sdk-go/pull/533)).
+
 ## 0.11.0
 
  * Regenerated from OpenAPI spec ([#527](https://github.com/databricks/databricks-sdk-go/pull/527)). Includes bugfixes for System Tables.
