@@ -514,6 +514,9 @@ type SharedDataObject struct {
 	Comment string `json:"comment,omitempty"`
 	// The type of the data object.
 	DataObjectType string `json:"data_object_type,omitempty"`
+	// Whether to enable or disable sharing of data history. If not specified,
+	// the default is **DISABLED**.
+	HistoryDataSharingStatus SharedDataObjectHistoryDataSharingStatus `json:"history_data_sharing_status,omitempty"`
 	// A fully qualified name that uniquely identifies a data object.
 	//
 	// For example, a table's fully qualified name is in the format of
@@ -536,6 +539,35 @@ type SharedDataObject struct {
 	StartVersion int64 `json:"start_version,omitempty"`
 	// One of: **ACTIVE**, **PERMISSION_DENIED**.
 	Status SharedDataObjectStatus `json:"status,omitempty"`
+}
+
+// Whether to enable or disable sharing of data history. If not specified, the
+// default is **DISABLED**.
+type SharedDataObjectHistoryDataSharingStatus string
+
+const SharedDataObjectHistoryDataSharingStatusDisabled SharedDataObjectHistoryDataSharingStatus = `DISABLED`
+
+const SharedDataObjectHistoryDataSharingStatusEnabled SharedDataObjectHistoryDataSharingStatus = `ENABLED`
+
+// String representation for [fmt.Print]
+func (f *SharedDataObjectHistoryDataSharingStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SharedDataObjectHistoryDataSharingStatus) Set(v string) error {
+	switch v {
+	case `DISABLED`, `ENABLED`:
+		*f = SharedDataObjectHistoryDataSharingStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DISABLED", "ENABLED"`, v)
+	}
+}
+
+// Type always returns SharedDataObjectHistoryDataSharingStatus to satisfy [pflag.Value] interface
+func (f *SharedDataObjectHistoryDataSharingStatus) Type() string {
+	return "SharedDataObjectHistoryDataSharingStatus"
 }
 
 // One of: **ACTIVE**, **PERMISSION_DENIED**.

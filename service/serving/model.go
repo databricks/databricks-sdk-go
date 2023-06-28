@@ -209,10 +209,13 @@ type ServedModelInput struct {
 	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
 	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
 	// "{{secrets/my_scope2/my_key2}}"}`
-	EnvironmentVars any `json:"environment_vars,omitempty"`
-	// The name of the model in Databricks Model Registry to be served.
+	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
+	// The name of the model in Databricks Model Registry to be served or if the
+	// model resides in Unity Catalog, the full name of model, in the form of
+	// __catalog_name__.__schema_name__.__model_name__.
 	ModelName string `json:"model_name"`
-	// The version of the model in Databricks Model Registry to be served.
+	// The version of the model in Databricks Model Registry or Unity Catalog to
+	// be served.
 	ModelVersion string `json:"model_version"`
 	// The name of a served model. It must be unique across an endpoint. If not
 	// specified, this field will default to <model-name>-<model-version>. A
@@ -243,10 +246,12 @@ type ServedModelOutput struct {
 	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
 	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
 	// "{{secrets/my_scope2/my_key2}}"}`
-	EnvironmentVars any `json:"environment_vars,omitempty"`
-	// The name of the model in Databricks Model Registry.
+	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
+	// The name of the model in Databricks Model Registry or the full name of
+	// the model in Unity Catalog.
 	ModelName string `json:"model_name,omitempty"`
-	// The version of the model in Databricks Model Registry.
+	// The version of the model in Databricks Model Registry or Unity Catalog to
+	// be served.
 	ModelVersion string `json:"model_version,omitempty"`
 	// The name of the served model.
 	Name string `json:"name,omitempty"`
@@ -266,9 +271,11 @@ type ServedModelOutput struct {
 }
 
 type ServedModelSpec struct {
-	// The name of the model in Databricks Model Registry.
+	// The name of the model in Databricks Model Registry or the full name of
+	// the model in Unity Catalog.
 	ModelName string `json:"model_name,omitempty"`
-	// The version of the model in Databricks Model Registry.
+	// The version of the model in Databricks Model Registry or Unity Catalog to
+	// be served.
 	ModelVersion string `json:"model_version,omitempty"`
 	// The name of the served model.
 	Name string `json:"name,omitempty"`
