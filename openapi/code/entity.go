@@ -256,6 +256,15 @@ func (e *Entity) IsAllRequiredFieldsPrimitive() bool {
 	return true
 }
 
+func (e *Entity) IsAllRequiredFieldsJsonUnserialisable() bool {
+	for _, v := range e.RequiredFields() {
+		if !v.IsJson {
+			return false
+		}
+	}
+	return true
+}
+
 // IsPrivatePreview flags object being in private preview.
 func (e *Entity) IsPrivatePreview() bool {
 	return e.Schema != nil && isPrivatePreview(&e.Schema.Node)
