@@ -3,7 +3,6 @@ name: build
 on:
   pull_request:
     types: [opened, synchronize]
-    paths-ignore: ['**.md']
   push:
     branches: [main]
 
@@ -31,7 +30,7 @@ jobs:
         run: |
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-      
+
       - name: Pull external libraries
         run: make vendor
 
