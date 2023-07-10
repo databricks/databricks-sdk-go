@@ -27,16 +27,18 @@ func (c AzureMsiCredentials) Name() string {
 }
 
 func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
-	if !cfg.IsAzure() || !cfg.AzureUseMSI || cfg.AzureResourceID == "" {
+	if !cfg.IsAzure() || !cfg.AzureUseMSI || (cfg.AzureResourceID == "" && !cfg.IsAccountClient()) {
 		return nil, nil
 	}
 	env, err := c.getInstanceEnvironment(ctx)
 	if err != nil {
 		return nil, err
 	}
-	err = cfg.azureEnsureWorkspaceUrl(ctx, c)
-	if err != nil {
-		return nil, fmt.Errorf("resolve host: %w", err)
+	if !cfg.IsAccountClient() {
+		err = cfg.azureEnsureWorkspaceUrl(ctx, c)
+		if err != nil {
+			return nil, fmt.Errorf("resolve host: %w", err)
+		}
 	}
 	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
 	inner := azureMsiTokenSource{
@@ -48,7 +50,9 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		clientId: cfg.AzureClientID,
 	}
 	return func(r *http.Request) error {
-		r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
+		if !cfg.IsAccountClient() {
+			r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
+		}
 		return serviceToServiceVisitor(inner, platform,
 			"X-Databricks-Azure-SP-Management-Token")(r)
 	}, nil
