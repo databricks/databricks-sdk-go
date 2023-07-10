@@ -12,6 +12,8 @@
 //
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
+// - [sharing.CleanRoomsAPI]: A clean room is a secure, privacy-protecting environment where two or more parties can share sensitive enterprise data, including customer data, for measurements, insights, activation and other use cases.
+//
 // - [compute.ClusterPoliciesAPI]: Cluster policy limits the ability to configure clusters based on a set of rules.
 //
 // - [compute.ClustersAPI]: The Clusters API allows you to create, start, edit, list, terminate, and delete clusters.
@@ -112,7 +114,7 @@
 //
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 //
-// - [settings.AccountSettingsAPI]: TBD.
+// - [settings.AccountSettingsAPI]: The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources.
 //
 // - [sharing.SharesAPI]: Databricks Shares REST API.
 //
@@ -184,6 +186,7 @@ var (
 	_ *billing.BillableUsageAPI               = nil
 	_ *billing.BudgetsAPI                     = nil
 	_ *catalog.CatalogsAPI                    = nil
+	_ *sharing.CleanRoomsAPI                  = nil
 	_ *compute.ClusterPoliciesAPI             = nil
 	_ *compute.ClustersAPI                    = nil
 	_ *compute.CommandExecutionAPI            = nil

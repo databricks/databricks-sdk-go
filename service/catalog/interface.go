@@ -713,6 +713,15 @@ type TablesService interface {
 	//
 	// Use ListSummariesAll() to get all TableSummary instances, which will iterate over every result page.
 	ListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error)
+
+	// Update a table owner.
+	//
+	// Change the owner of the table. The caller must be the owner of the parent
+	// catalog, have the **USE_CATALOG** privilege on the parent catalog and be
+	// the owner of the parent schema, or be the owner of the table and have the
+	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+	// privilege on the parent schema.
+	Update(ctx context.Context, request UpdateTableRequest) error
 }
 
 // Volumes are a Unity Catalog (UC) capability for accessing, storing,

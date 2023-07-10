@@ -103,22 +103,30 @@ type AccountIpAccessListsService interface {
 	Update(ctx context.Context, request UpdateIpAccessList) error
 }
 
-// TBD
+// The Personal Compute enablement setting lets you control which users can use
+// the Personal Compute default policy to create compute resources. By default
+// all users in all workspaces have access (ON), but you can change the setting
+// to instead let individual workspaces configure access control (DELEGATE).
+//
+// There is only one instance of this setting per account. Since this setting
+// has a default value, this setting is present on all accounts even though it's
+// never set on a given account. Deletion reverts the value of the setting back
+// to the default value.
 type AccountSettingsService interface {
 
 	// Delete Personal Compute setting.
 	//
-	// TBD
+	// Reverts back the Personal Compute setting value to default (ON)
 	DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error)
 
 	// Get Personal Compute setting.
 	//
-	// TBD
+	// Gets the value of the Personal Compute setting.
 	ReadPersonalComputeSetting(ctx context.Context, request ReadPersonalComputeSettingRequest) (*PersonalComputeSetting, error)
 
 	// Update Personal Compute setting.
 	//
-	// TBD
+	// Updates the value of the Personal Compute setting.
 	UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
 }
 

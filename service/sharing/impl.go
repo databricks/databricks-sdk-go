@@ -12,6 +12,45 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
+// unexported type that holds implementations of just CleanRooms API methods
+type cleanRoomsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoom) (*CleanRoomInfo, error) {
+	var cleanRoomInfo CleanRoomInfo
+	path := "/api/2.1/unity-catalog/clean-rooms"
+	err := a.client.Do(ctx, http.MethodPost, path, request, &cleanRoomInfo)
+	return &cleanRoomInfo, err
+}
+
+func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.NameArg)
+	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	return err
+}
+
+func (a *cleanRoomsImpl) Get(ctx context.Context, request GetCleanRoomRequest) (*CleanRoomInfo, error) {
+	var cleanRoomInfo CleanRoomInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.NameArg)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &cleanRoomInfo)
+	return &cleanRoomInfo, err
+}
+
+func (a *cleanRoomsImpl) List(ctx context.Context) (*ListCleanRoomsResponse, error) {
+	var listCleanRoomsResponse ListCleanRoomsResponse
+	path := "/api/2.1/unity-catalog/clean-rooms"
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &listCleanRoomsResponse)
+	return &listCleanRoomsResponse, err
+}
+
+func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoom) (*CleanRoomInfo, error) {
+	var cleanRoomInfo CleanRoomInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/clean-rooms/%v", request.NameArg)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &cleanRoomInfo)
+	return &cleanRoomInfo, err
+}
+
 // unexported type that holds implementations of just Providers API methods
 type providersImpl struct {
 	client *client.DatabricksClient

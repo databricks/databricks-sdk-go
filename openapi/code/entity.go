@@ -57,12 +57,6 @@ type Entity struct {
 	// this field does not have a concrete type
 	IsAny bool
 
-	// this field holds the identifier of the entity
-	IsIdentifier bool
-
-	// this field holds a name of the entity
-	IsName bool
-
 	// this field is computed on the platform side
 	IsComputed bool
 
@@ -109,6 +103,25 @@ func (e *Entity) Field(name string) *Field {
 	}
 	field.Of = e
 	return &field
+}
+
+// Finds the field by path. Path must not be empty.
+func (e *Entity) FindField(path []string) ([]*Field, error) {
+	if len(path) == 0 {
+		return nil, fmt.Errorf("empty path is not allowed (entity: %s)", e.FullName())
+	}
+	if len(path) == 1 {
+		return []*Field{e.Field(path[0])}, nil
+	}
+	field := e.Field(path[0])
+	if field == nil {
+		return nil, fmt.Errorf("field %s not found in entity %s", path[0], e.FullName())
+	}
+	rest, err := field.Entity.FindField(path[1:])
+	if err != nil {
+		return nil, err
+	}
+	return append([]*Field{field}, rest...), nil
 }
 
 // IsObject returns true if entity is not a Mpa and has more than zero fields
@@ -180,42 +193,6 @@ func (e *Entity) HasJsonField() bool {
 		}
 	}
 	return false
-}
-
-// Does this type have x-databricks-id field?
-func (e *Entity) HasIdentifierField() bool {
-	return e.IdentifierField() != nil
-}
-
-// Return field with x-databricks-id
-func (e *Entity) IdentifierField() *Field {
-	for _, v := range e.fields {
-		if v.Entity.IsIdentifier {
-			return &v
-		}
-	}
-	return nil
-}
-
-// Does this type have x-databricks-name field?
-func (e *Entity) HasNameField() bool {
-	for _, v := range e.fields {
-		if v.Entity.IsName {
-			return true
-		}
-	}
-	return false
-}
-
-// Does this type have a single x-databricks-name field?
-func (e *Entity) HasSingleNameField() bool {
-	count := 0
-	for _, v := range e.fields {
-		if v.Entity.IsName {
-			count++
-		}
-	}
-	return (count == 1)
 }
 
 // Enum returns all entries for enum entities

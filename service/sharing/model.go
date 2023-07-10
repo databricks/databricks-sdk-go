@@ -38,6 +38,214 @@ func (f *AuthenticationType) Type() string {
 	return "AuthenticationType"
 }
 
+type CentralCleanRoomInfo struct {
+	// All assets from all collaborators that are available in the clean room.
+	// Only one of table_info or notebook_info will be filled in.
+	CleanRoomAssets []CleanRoomAssetInfo `json:"clean_room_assets,omitempty"`
+	// All collaborators who are in the clean room.
+	Collaborators []CleanRoomCollaboratorInfo `json:"collaborators,omitempty"`
+	// The collaborator who created the clean room.
+	Creator *CleanRoomCollaboratorInfo `json:"creator,omitempty"`
+	// The cloud where clean room tasks will be run.
+	StationCloud string `json:"station_cloud,omitempty"`
+	// The region where clean room tasks will be run.
+	StationRegion string `json:"station_region,omitempty"`
+}
+
+type CleanRoomAssetInfo struct {
+	// Time at which this asset was added, in epoch milliseconds.
+	AddedAt int64 `json:"added_at,omitempty"`
+	// Details about the notebook asset.
+	NotebookInfo *CleanRoomNotebookInfo `json:"notebook_info,omitempty"`
+	// The collaborator who owns the asset.
+	Owner *CleanRoomCollaboratorInfo `json:"owner,omitempty"`
+	// Details about the table asset.
+	TableInfo *CleanRoomTableInfo `json:"table_info,omitempty"`
+	// Time at which this asset was updated, in epoch milliseconds.
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+}
+
+type CleanRoomCatalog struct {
+	// Name of the catalog in the clean room station. Empty for notebooks.
+	CatalogName string `json:"catalog_name,omitempty"`
+	// The details of the shared notebook files.
+	NotebookFiles []SharedDataObject `json:"notebook_files,omitempty"`
+	// The details of the shared tables.
+	Tables []SharedDataObject `json:"tables,omitempty"`
+}
+
+type CleanRoomCatalogUpdate struct {
+	// The name of the catalog to update assets.
+	CatalogName string `json:"catalog_name,omitempty"`
+	// The updates to the assets in the catalog.
+	Updates *SharedDataObjectUpdate `json:"updates,omitempty"`
+}
+
+type CleanRoomCollaboratorInfo struct {
+	// The global Unity Catalog metastore id of the collaborator. Also known as
+	// the sharing identifier. The identifier is of format
+	// __cloud__:__region__:__metastore-uuid__.
+	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
+	// The organization name of the collaborator. This is configured in the
+	// metastore for Delta Sharing and is used to identify the organization to
+	// other collaborators.
+	OrganizationName string `json:"organization_name,omitempty"`
+}
+
+type CleanRoomInfo struct {
+	// User-provided free-form text description.
+	Comment string `json:"comment,omitempty"`
+	// Time at which this clean room was created, in epoch milliseconds.
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// Username of clean room creator.
+	CreatedBy string `json:"created_by,omitempty"`
+	// Catalog aliases shared by the current collaborator with asset details.
+	LocalCatalogs []CleanRoomCatalog `json:"local_catalogs,omitempty"`
+	// Name of the clean room.
+	Name string `json:"name,omitempty"`
+	// Username of current owner of clean room.
+	Owner string `json:"owner,omitempty"`
+	// Central clean room details.
+	RemoteDetailedInfo *CentralCleanRoomInfo `json:"remote_detailed_info,omitempty"`
+	// Time at which this clean room was updated, in epoch milliseconds.
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Username of clean room updater.
+	UpdatedBy string `json:"updated_by,omitempty"`
+}
+
+type CleanRoomNotebookInfo struct {
+	// The base64 representation of the notebook content in HTML.
+	NotebookContent string `json:"notebook_content,omitempty"`
+	// The name of the notebook.
+	NotebookName string `json:"notebook_name,omitempty"`
+}
+
+type CleanRoomTableInfo struct {
+	// Name of parent catalog.
+	CatalogName string `json:"catalog_name,omitempty"`
+	// The array of __ColumnInfo__ definitions of the table's columns.
+	Columns []ColumnInfo `json:"columns,omitempty"`
+	// Full name of table, in form of
+	// __catalog_name__.__schema_name__.__table_name__
+	FullName string `json:"full_name,omitempty"`
+	// Name of table, relative to parent schema.
+	Name string `json:"name,omitempty"`
+	// Name of parent schema relative to its parent catalog.
+	SchemaName string `json:"schema_name,omitempty"`
+}
+
+type ColumnInfo struct {
+	// User-provided free-form text description.
+	Comment string `json:"comment,omitempty"`
+
+	Mask *ColumnMask `json:"mask,omitempty"`
+	// Name of Column.
+	Name string `json:"name,omitempty"`
+	// Whether field may be Null (default: true).
+	Nullable bool `json:"nullable,omitempty"`
+	// Partition index for column.
+	PartitionIndex int `json:"partition_index,omitempty"`
+	// Ordinal position of column (starting at position 0).
+	Position int `json:"position,omitempty"`
+	// Format of IntervalType.
+	TypeIntervalType string `json:"type_interval_type,omitempty"`
+	// Full data type specification, JSON-serialized.
+	TypeJson string `json:"type_json,omitempty"`
+	// Name of type (INT, STRUCT, MAP, etc.).
+	TypeName ColumnTypeName `json:"type_name,omitempty"`
+	// Digits of precision; required for DecimalTypes.
+	TypePrecision int `json:"type_precision,omitempty"`
+	// Digits to right of decimal; Required for DecimalTypes.
+	TypeScale int `json:"type_scale,omitempty"`
+	// Full data type specification as SQL/catalogString text.
+	TypeText string `json:"type_text,omitempty"`
+}
+
+type ColumnMask struct {
+	// The full name of the column mask SQL UDF.
+	FunctionName string `json:"function_name,omitempty"`
+	// The list of additional table columns to be passed as input to the column
+	// mask function. The first arg of the mask function should be of the type
+	// of the column being masked and the types of the rest of the args should
+	// match the types of columns in 'using_column_names'.
+	UsingColumnNames []string `json:"using_column_names,omitempty"`
+}
+
+// Name of type (INT, STRUCT, MAP, etc.).
+type ColumnTypeName string
+
+const ColumnTypeNameArray ColumnTypeName = `ARRAY`
+
+const ColumnTypeNameBinary ColumnTypeName = `BINARY`
+
+const ColumnTypeNameBoolean ColumnTypeName = `BOOLEAN`
+
+const ColumnTypeNameByte ColumnTypeName = `BYTE`
+
+const ColumnTypeNameChar ColumnTypeName = `CHAR`
+
+const ColumnTypeNameDate ColumnTypeName = `DATE`
+
+const ColumnTypeNameDecimal ColumnTypeName = `DECIMAL`
+
+const ColumnTypeNameDouble ColumnTypeName = `DOUBLE`
+
+const ColumnTypeNameFloat ColumnTypeName = `FLOAT`
+
+const ColumnTypeNameInt ColumnTypeName = `INT`
+
+const ColumnTypeNameInterval ColumnTypeName = `INTERVAL`
+
+const ColumnTypeNameLong ColumnTypeName = `LONG`
+
+const ColumnTypeNameMap ColumnTypeName = `MAP`
+
+const ColumnTypeNameNull ColumnTypeName = `NULL`
+
+const ColumnTypeNameShort ColumnTypeName = `SHORT`
+
+const ColumnTypeNameString ColumnTypeName = `STRING`
+
+const ColumnTypeNameStruct ColumnTypeName = `STRUCT`
+
+const ColumnTypeNameTableType ColumnTypeName = `TABLE_TYPE`
+
+const ColumnTypeNameTimestamp ColumnTypeName = `TIMESTAMP`
+
+const ColumnTypeNameTimestampNtz ColumnTypeName = `TIMESTAMP_NTZ`
+
+const ColumnTypeNameUserDefinedType ColumnTypeName = `USER_DEFINED_TYPE`
+
+// String representation for [fmt.Print]
+func (f *ColumnTypeName) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ColumnTypeName) Set(v string) error {
+	switch v {
+	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `TIMESTAMP_NTZ`, `USER_DEFINED_TYPE`:
+		*f = ColumnTypeName(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TABLE_TYPE", "TIMESTAMP", "TIMESTAMP_NTZ", "USER_DEFINED_TYPE"`, v)
+	}
+}
+
+// Type always returns ColumnTypeName to satisfy [pflag.Value] interface
+func (f *ColumnTypeName) Type() string {
+	return "ColumnTypeName"
+}
+
+type CreateCleanRoom struct {
+	// User-provided free-form text description.
+	Comment string `json:"comment,omitempty"`
+	// Name of the clean room.
+	Name string `json:"name"`
+	// Central clean room details.
+	RemoteDetailedInfo CentralCleanRoomInfo `json:"remote_detailed_info"`
+}
+
 type CreateProvider struct {
 	// The delta sharing authentication type.
 	AuthenticationType AuthenticationType `json:"authentication_type"`
@@ -80,6 +288,12 @@ type CreateShare struct {
 	Name string `json:"name"`
 }
 
+// Delete a clean room
+type DeleteCleanRoomRequest struct {
+	// The name of the clean room.
+	NameArg string `json:"-" url:"-"`
+}
+
 // Delete a provider
 type DeleteProviderRequest struct {
 	// Name of the provider.
@@ -102,6 +316,14 @@ type DeleteShareRequest struct {
 type GetActivationUrlInfoRequest struct {
 	// The one time activation url. It also accepts activation token.
 	ActivationUrl string `json:"-" url:"-"`
+}
+
+// Get a clean room
+type GetCleanRoomRequest struct {
+	// Whether to include remote details (central) on the clean room.
+	IncludeRemoteDetails bool `json:"-" url:"include_remote_details,omitempty"`
+	// The name of the clean room.
+	NameArg string `json:"-" url:"-"`
 }
 
 // Get a provider
@@ -132,6 +354,11 @@ type GetShareRequest struct {
 type IpAccessList struct {
 	// Allowed IP Addresses in CIDR notation. Limit of 100.
 	AllowedIpAddresses []string `json:"allowed_ip_addresses,omitempty"`
+}
+
+type ListCleanRoomsResponse struct {
+	// An array of clean rooms. Remote details (central) are not included.
+	CleanRooms []CleanRoomInfo `json:"clean_rooms,omitempty"`
 }
 
 type ListProviderSharesResponse struct {
@@ -633,6 +860,19 @@ func (f *SharedDataObjectUpdateAction) Set(v string) error {
 // Type always returns SharedDataObjectUpdateAction to satisfy [pflag.Value] interface
 func (f *SharedDataObjectUpdateAction) Type() string {
 	return "SharedDataObjectUpdateAction"
+}
+
+type UpdateCleanRoom struct {
+	// Array of shared data object updates.
+	CatalogUpdates []CleanRoomCatalogUpdate `json:"catalog_updates,omitempty"`
+	// User-provided free-form text description.
+	Comment string `json:"comment,omitempty"`
+	// Name of the clean room.
+	Name string `json:"name,omitempty"`
+	// The name of the clean room.
+	NameArg string `json:"-" url:"-"`
+	// Username of current owner of clean room.
+	Owner string `json:"owner,omitempty"`
 }
 
 type UpdateProvider struct {

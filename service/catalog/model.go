@@ -197,7 +197,7 @@ type ColumnInfo struct {
 }
 
 type ColumnMask struct {
-	// The full name of the column maks SQL UDF.
+	// The full name of the column mask SQL UDF.
 	FunctionName string `json:"function_name,omitempty"`
 	// The list of additional table columns to be passed as input to the column
 	// mask function. The first arg of the mask function should be of the type
@@ -2349,6 +2349,14 @@ type UpdateStorageCredential struct {
 	// Supplying true to this argument skips validation of the updated
 	// credential.
 	SkipValidation bool `json:"skip_validation,omitempty"`
+}
+
+// Update a table owner.
+type UpdateTableRequest struct {
+	// Full name of the table.
+	FullName string `json:"-" url:"-"`
+
+	Owner string `json:"owner,omitempty"`
 }
 
 type UpdateVolumeRequestContent struct {

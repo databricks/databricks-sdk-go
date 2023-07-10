@@ -256,7 +256,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		}
 		description = fmt.Sprintf("%s\n\n%s", summary, description)
 	}
-	return &Method{
+	m := &Method{
 		Named:             Named{name, description},
 		Service:           svc,
 		Verb:              strings.ToUpper(verb),
@@ -270,6 +270,24 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		pagination:        op.Pagination,
 		shortcut:          op.Shortcut,
 	}
+
+	if op.HasNameField() {
+		respEntity := m.paginationItem()
+		nameField, err := respEntity.FindField(op.NameField)
+		if err != nil {
+			panic(fmt.Errorf("[%s] could not find name field %q: %w", op.OperationId, op.NameField, err))
+		}
+		m.NameFieldPath = nameField
+	}
+	if op.HasIdentifierField() {
+		respEntity := m.paginationItem()
+		idField, err := respEntity.FindField(op.IdField)
+		if err != nil {
+			panic(fmt.Errorf("[%s] could not find id field %q: %w", op.OperationId, op.IdField, err))
+		}
+		m.IdFieldPath = idField
+	}
+	return m
 }
 
 func (svc *Service) HasWaits() bool {

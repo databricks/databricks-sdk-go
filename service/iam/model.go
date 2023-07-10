@@ -188,7 +188,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -431,7 +431,10 @@ type PartialUpdate struct {
 	// Unique ID for a user in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 
-	Operations []Patch `json:"operations,omitempty"`
+	Operations []Patch `json:"Operations,omitempty"`
+	// The schema of the patch request. Must be
+	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+	Schema []PatchSchema `json:"schema,omitempty"`
 }
 
 type Patch struct {
@@ -440,7 +443,7 @@ type Patch struct {
 	// Selection of patch operation
 	Path string `json:"path,omitempty"`
 	// Value to modify
-	Value string `json:"value,omitempty"`
+	Value any `json:"value,omitempty"`
 }
 
 // Type of patch operation.
@@ -471,6 +474,31 @@ func (f *PatchOp) Set(v string) error {
 // Type always returns PatchOp to satisfy [pflag.Value] interface
 func (f *PatchOp) Type() string {
 	return "PatchOp"
+}
+
+type PatchSchema string
+
+const PatchSchemaUrnIetfParamsScimApiMessagesPatchop PatchSchema = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
+
+// String representation for [fmt.Print]
+func (f *PatchSchema) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PatchSchema) Set(v string) error {
+	switch v {
+	case `urn:ietf:params:scim:api:messages:2.0:PatchOp`:
+		*f = PatchSchema(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "urn:ietf:params:scim:api:messages:2.0:PatchOp"`, v)
+	}
+}
+
+// Type always returns PatchSchema to satisfy [pflag.Value] interface
+func (f *PatchSchema) Type() string {
+	return "PatchSchema"
 }
 
 type Permission struct {
