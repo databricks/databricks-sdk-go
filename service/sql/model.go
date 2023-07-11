@@ -158,7 +158,6 @@ type ChannelInfo struct {
 	Name ChannelName `json:"name,omitempty"`
 }
 
-// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
