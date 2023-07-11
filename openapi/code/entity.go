@@ -105,8 +105,9 @@ func (e *Entity) Field(name string) *Field {
 	return &field
 }
 
-// Finds the field by path. Path must not be empty.
-func (e *Entity) FindField(path []string) ([]*Field, error) {
+// Given a list of field names, return the list of *Field objects which result
+// from following the path of fields in the entity.
+func (e *Entity) GetUnderlyingFields(path []string) ([]*Field, error) {
 	if len(path) == 0 {
 		return nil, fmt.Errorf("empty path is not allowed (entity: %s)", e.FullName())
 	}
@@ -117,7 +118,7 @@ func (e *Entity) FindField(path []string) ([]*Field, error) {
 	if field == nil {
 		return nil, fmt.Errorf("field %s not found in entity %s", path[0], e.FullName())
 	}
-	rest, err := field.Entity.FindField(path[1:])
+	rest, err := field.Entity.GetUnderlyingFields(path[1:])
 	if err != nil {
 		return nil, err
 	}

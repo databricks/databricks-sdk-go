@@ -100,11 +100,11 @@ type Operation struct {
 	Crud       string      `json:"x-databricks-crud,omitempty"`
 	JsonOnly   bool        `json:"x-databricks-cli-json-only,omitempty"`
 
-	// For list APIs, the path of the field in the response entity that contains
+	// For list APIs, the path to the field in the response entity that contains
 	// the resource ID.
 	IdField fieldPath `json:"x-databricks-id,omitempty"`
 
-	// For list APIs, the path of the field in the response entity that contains
+	// For list APIs, the path to the field in the response entity that contains
 	// the user-friendly name of the resource.
 	NameField fieldPath `json:"x-databricks-name,omitempty"`
 
