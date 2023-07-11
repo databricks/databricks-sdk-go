@@ -207,7 +207,11 @@ func (m *Method) Wait() *Wait {
 
 // Pagination returns definition for possibly multi-request result iterator
 func (m *Method) Pagination() *Pagination {
-	if !m.pagination.SupportsPagination() {
+	if m.pagination == nil {
+		return nil
+	}
+	if m.Response.ArrayValue != nil {
+		// we assume that method already returns body-as-array
 		return nil
 	}
 	var token *Binding
