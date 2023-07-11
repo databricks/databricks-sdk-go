@@ -94,6 +94,10 @@ func (l configFileLoader) Configure(cfg *Config) error {
 		return fmt.Errorf("%s has no %s profile configured", configFile.Path(), profile)
 	}
 	logger.Debugf(context.Background(), "Loading %s profile from %s", profile, configFile.Path())
+	hostFromProfile := profileValues.Key("host").Value()
+	if hostFromProfile != "" && cfg.Host != "" && cfg.Host != hostFromProfile {
+		return fmt.Errorf("config host mismatch: profile has %s host but CLI config has %s host", hostFromProfile, cfg.Host)
+	}
 	err = ConfigAttributes.ResolveFromStringMap(cfg, profileValues.KeysHash())
 	if err != nil {
 		return fmt.Errorf("%s %s profile: %w", configFile.Path(), profile, err)
