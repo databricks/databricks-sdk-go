@@ -75,8 +75,6 @@ type AccountMetastoresService interface {
 	// Gets all Unity Catalog metastores associated with an account specified by
 	// ID. Please add a header X-Databricks-Account-Console-API-Version: 2.0 to
 	// access this API.
-	//
-	// Use ListAll() to get all MetastoreInfo instances
 	List(ctx context.Context) (*ListMetastoresResponse, error)
 
 	// Update a metastore.
