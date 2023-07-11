@@ -8,16 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/openapi"
 )
 
-type fieldPath []*Field
-
-func (fp fieldPath) Name() *Named {
-	var parts []string
-	for _, f := range fp {
-		parts = append(parts, f.CamelName())
-	}
-	return &Named{Name: strings.Join(parts, "")}
-}
-
 // Method represents service RPC
 type Method struct {
 	Named
@@ -36,11 +26,11 @@ type Method struct {
 
 	// For list APIs, the path of fields in the response entity to follow to get
 	// the resource ID.
-	IdFieldPath fieldPath
+	IdFieldPath []*Field
 
 	// For list APIs, the path of fields in the response entity to follow to get
 	// the user-friendly name of the resource.
-	NameFieldPath fieldPath
+	NameFieldPath []*Field
 
 	wait       *openapi.Wait
 	pagination *openapi.Pagination
@@ -77,8 +67,8 @@ type Pagination struct {
 // drop-downs or any other selectors.
 type NamedIdMap struct {
 	Named
-	IdPath   fieldPath
-	NamePath fieldPath
+	IdPath   []*Field
+	NamePath []*Field
 	Entity   *Entity
 
 	// if List method returns []Item directly
@@ -188,13 +178,6 @@ func (m *Method) IdentifierField() *Field {
 	return m.IdFieldPath[len(m.IdFieldPath)-1]
 }
 
-func (m *Method) IdentifierName() string {
-	if !m.HasIdentifierField() {
-		return ""
-	}
-	return m.IdFieldPath[len(m.IdFieldPath)-1].PascalName()
-}
-
 func (m *Method) HasNameField() bool {
 	return len(m.NameFieldPath) > 0
 }
@@ -224,11 +207,7 @@ func (m *Method) Wait() *Wait {
 
 // Pagination returns definition for possibly multi-request result iterator
 func (m *Method) Pagination() *Pagination {
-	if m.pagination == nil {
-		return nil
-	}
-	if m.Response.ArrayValue != nil {
-		// we assume that method already returns body-as-array
+	if !m.pagination.SupportsPagination() {
 		return nil
 	}
 	var token *Binding
@@ -271,7 +250,7 @@ func (m *Method) paginationItem() *Entity {
 
 func (m *Method) NeedsOffsetDedupe() bool {
 	p := m.Pagination()
-	return p.Offset != nil && len(m.IdFieldPath) != 0
+	return p.Offset != nil && m.HasIdentifierField()
 }
 
 func (p *Pagination) MultiRequest() bool {
@@ -286,15 +265,12 @@ func (m *Method) NamedIdMap() *NamedIdMap {
 		return nil
 	}
 	namePath := m.NameFieldPath
-	if len(namePath) == 0 {
-		return nil
-	}
 	nameParts := []string{entity.PascalName()}
 	for _, v := range namePath {
 		nameParts = append(nameParts, v.PascalName())
 	}
 	nameParts = append(nameParts, "To")
-	nameParts = append(nameParts, m.IdentifierName())
+	nameParts = append(nameParts, m.IdentifierField().PascalName())
 	nameParts = append(nameParts, "Map")
 	return &NamedIdMap{
 		Named: Named{

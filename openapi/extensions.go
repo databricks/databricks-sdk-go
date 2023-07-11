@@ -11,6 +11,10 @@ type Pagination struct {
 	Token     *Binding `json:"token,omitempty"`
 }
 
+func (p *Pagination) SupportsPagination() bool {
+	return p != nil && (p.Results != "")
+}
+
 // Wait is the Databricks OpenAPI Extension for long-running result polling
 type Wait struct {
 	Poll         string             `json:"poll"`
