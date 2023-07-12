@@ -95,14 +95,10 @@ func (n *Named) Singular() *Named {
 	return n
 }
 
-func (n *Named) splitASCII() (w []string) {
-	return SplitASCII(n.Name)
-}
-
 // Return the value of cond evaluated at the nearest letter to index i in name.
 // dir determines the direction of search: if true, search forwards, if false,
 // search backwards.
-func search(name string, cond func(rune) bool, dir bool, i int) bool {
+func (n *Named) search(name string, cond func(rune) bool, dir bool, i int) bool {
 	nameLen := len(name)
 	incr := 1
 	if !dir {
@@ -119,20 +115,22 @@ func search(name string, cond func(rune) bool, dir bool, i int) bool {
 // Return the value of cond evaluated on the rune at index i in name. If that
 // rune is not a letter, search in both directions for the nearest letter and
 // return the result of cond on those letters.
-func checkCondAtNearestLetters(name string, cond func(rune) bool, i int) bool {
+func (n *Named) checkCondAtNearestLetters(name string, cond func(rune) bool, i int) bool {
 	r := rune(name[i])
 
 	if unicode.IsLetter(r) {
 		return cond(r)
 	}
-	return search(name, cond, true, i) && search(name, cond, false, i)
+	return n.search(name, cond, true, i) && n.search(name, cond, false, i)
 }
 
 // emulate positive lookaheads from JVM regex:
 // (?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|([-_\s])
 // and convert all words to lower case
-func SplitASCII(name string) (w []string) {
+
+func (n *Named) splitASCII() (w []string) {
 	var current []rune
+	var name = n.Name
 	nameLen := len(name)
 	var isPrevUpper, isCurrentUpper, isNextLower, isNextUpper, isNotLastChar bool
 	// we do assume here that all named entities are strictly ASCII
@@ -144,14 +142,14 @@ func SplitASCII(name string) (w []string) {
 		}
 		// if the current rune is a digit, check the neighboring runes to
 		// determine whether to treat this one as upper-case.
-		isCurrentUpper = checkCondAtNearestLetters(name, unicode.IsUpper, i)
+		isCurrentUpper = n.checkCondAtNearestLetters(name, unicode.IsUpper, i)
 		r = unicode.ToLower(r)
 		isNextLower = false
 		isNextUpper = false
 		isNotLastChar = i+1 < nameLen
 		if isNotLastChar {
-			isNextLower = checkCondAtNearestLetters(name, unicode.IsLower, i+1)
-			isNextUpper = checkCondAtNearestLetters(name, unicode.IsUpper, i+1)
+			isNextLower = n.checkCondAtNearestLetters(name, unicode.IsLower, i+1)
+			isNextUpper = n.checkCondAtNearestLetters(name, unicode.IsUpper, i+1)
 		}
 		split, before, after := false, false, true
 		// At the end of a string of capital letters (e.g. HTML[P]arser).
