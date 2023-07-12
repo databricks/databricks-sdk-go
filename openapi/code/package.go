@@ -217,7 +217,9 @@ func (pkg *Package) makeEnum(e *Entity, s *openapi.Schema, path []string) *Entit
 		name = nonAlphanum.ReplaceAllString(name, " ")
 		var splits []string
 		for _, v := range whitespace.Split(name, -1) {
-			splits = append(splits, strings.Title(strings.ToLower(v)))
+			for _, v2 := range SplitASCII(v) {
+				splits = append(splits, strings.Title(strings.ToLower(v2)))
+			}
 		}
 		name = strings.Join(splits, "")
 		if len(s.AliasEnum) == len(s.Enum) {

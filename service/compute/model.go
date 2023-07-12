@@ -249,9 +249,9 @@ type CloudProviderNodeInfo struct {
 
 type CloudProviderNodeStatus string
 
-const CloudProviderNodeStatusNotavailableinregion CloudProviderNodeStatus = `NotAvailableInRegion`
+const CloudProviderNodeStatusNotAvailableInRegion CloudProviderNodeStatus = `NotAvailableInRegion`
 
-const CloudProviderNodeStatusNotenabledonsubscription CloudProviderNodeStatus = `NotEnabledOnSubscription`
+const CloudProviderNodeStatusNotEnabledOnSubscription CloudProviderNodeStatus = `NotEnabledOnSubscription`
 
 // String representation for [fmt.Print]
 func (f *CloudProviderNodeStatus) String() string {

@@ -95,16 +95,20 @@ func (n *Named) Singular() *Named {
 	return n
 }
 
+func (n *Named) splitASCII() (w []string) {
+	return SplitASCII(n.Name)
+}
+
 // emulate positive lookaheads from JVM regex:
 // (?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|([-_\s])
 // and convert all words to lower case
-func (n *Named) splitASCII() (w []string) {
+func SplitASCII(name string) (w []string) {
 	var current []rune
-	nameLen := len(n.Name)
+	nameLen := len(name)
 	var last, this, next, lookahead bool
 	// we do assume here that all named entities are strictly ASCII
 	for i := 0; i < nameLen; i++ {
-		r := rune(n.Name[i])
+		r := rune(name[i])
 		if r == '$' {
 			// we're naming language literals, $ is usually not allowed
 			continue
@@ -114,7 +118,7 @@ func (n *Named) splitASCII() (w []string) {
 		next = false
 		lookahead = i+1 < nameLen
 		if lookahead {
-			next = unicode.IsUpper(rune(n.Name[i+1]))
+			next = unicode.IsUpper(rune(name[i+1]))
 		}
 		split, before, after := false, false, true
 		if last && this && !next && lookahead {

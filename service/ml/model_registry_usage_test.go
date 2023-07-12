@@ -58,7 +58,7 @@ func ExampleModelRegistryAPI_CreateComment_modelVersionComments() {
 
 }
 
-func ExampleModelRegistryAPI_CreateModel_modelVersions() {
+func ExampleModelRegistryAPI_CreateModel_modelVersionComments() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -92,7 +92,7 @@ func ExampleModelRegistryAPI_CreateModel_models() {
 
 }
 
-func ExampleModelRegistryAPI_CreateModel_modelVersionComments() {
+func ExampleModelRegistryAPI_CreateModel_modelVersions() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

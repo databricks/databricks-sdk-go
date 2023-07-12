@@ -478,7 +478,7 @@ func (f *PatchOp) Type() string {
 
 type PatchSchema string
 
-const PatchSchemaUrnIetfParamsScimApiMessagesPatchop PatchSchema = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
+const PatchSchemaUrnIetfParamsScimApiMessagesPatchOp PatchSchema = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
 
 // String representation for [fmt.Print]
 func (f *PatchSchema) String() string {
@@ -652,7 +652,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 }

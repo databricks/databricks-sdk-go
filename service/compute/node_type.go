@@ -54,7 +54,7 @@ func (nt NodeType) shouldBeSkipped() bool {
 	}
 	for _, st := range nt.NodeInfo.Status {
 		switch st {
-		case CloudProviderNodeStatusNotavailableinregion, CloudProviderNodeStatusNotenabledonsubscription:
+		case CloudProviderNodeStatusNotAvailableInRegion, CloudProviderNodeStatusNotEnabledOnSubscription:
 			return true
 		}
 	}
