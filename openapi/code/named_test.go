@@ -102,8 +102,12 @@ func TestNamedDecamel(t *testing.T) {
 		"HTMLParser":    {"html", "parser"},
 		"BigO":          {"big", "o"},
 		"OCaml":         {"o", "caml"},
+		"K8S_FAILURE":   {"k8s", "failure"},
+		"k8sFailure":    {"k8s", "failure"},
+		"i18nFailure":   {"i18n", "failure"},
+		"Patch:Request": {"patch", "request"},
 	} {
-		assert.Equal(t, out, (&Named{Name: in}).splitASCII())
+		assert.Equal(t, out, (&Named{Name: in}).splitASCII(), in)
 	}
 }
 
