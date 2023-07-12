@@ -2198,6 +2198,9 @@ type SqlTaskSubscription struct {
 type SubmitRun struct {
 	// List of permissions to set on the job.
 	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
+	// An optional set of email addresses notified when the run begins or
+	// completes. The default behavior is to not send any emails.
+	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// An optional specification for a remote repository containing the
 	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
@@ -2247,6 +2250,9 @@ type SubmitTask struct {
 	// executing this task. The key is `task_key`, and the value is the name
 	// assigned to the dependent task.
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
+	// An optional set of email addresses notified when the task run begins or
+	// completes. The default behavior is to not send any emails.
+	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs of this task. When running tasks on an existing cluster, you may
 	// need to manually restart the cluster if it stops responding. We suggest
@@ -2260,6 +2266,9 @@ type SubmitTask struct {
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
+	// Optional notification settings that are used when sending email
+	// notifications for this task run.
+	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
 	// If pipeline_task, indicates that this task must execute a Pipeline.
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
 	// If python_wheel_task, indicates that this job must execute a PythonWheel.
