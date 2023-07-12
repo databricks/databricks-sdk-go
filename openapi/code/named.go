@@ -150,8 +150,8 @@ func SplitASCII(name string) (w []string) {
 		isNextUpper = false
 		isNotLastChar = i+1 < nameLen
 		if isNotLastChar {
-			isNextLower = checkCondAtNearestLetters(name, unicode.IsLower, i)
-			isNextUpper = checkCondAtNearestLetters(name, unicode.IsUpper, i)
+			isNextLower = checkCondAtNearestLetters(name, unicode.IsLower, i+1)
+			isNextUpper = checkCondAtNearestLetters(name, unicode.IsUpper, i+1)
 		}
 		split, before, after := false, false, true
 		// At the end of a string of capital letters (e.g. HTML[P]arser).
