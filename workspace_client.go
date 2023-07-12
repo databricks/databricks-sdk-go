@@ -49,6 +49,14 @@ type WorkspaceClient struct {
 	// depending on privileges granted centrally in Unity Catalog.
 	Catalogs *catalog.CatalogsAPI
 
+	// A clean room is a secure, privacy-protecting environment where two or
+	// more parties can share sensitive enterprise data, including customer
+	// data, for measurements, insights, activation and other use cases.
+	//
+	// To create clean rooms, you must be a metastore admin or a user with the
+	// **CREATE_CLEAN_ROOM** privilege.
+	CleanRooms *sharing.CleanRoomsAPI
+
 	// Cluster policy limits the ability to configure clusters based on a set of
 	// rules. The policy rules limit the attributes or attribute values
 	// available for cluster creation. Cluster policies have ACLs that limit
@@ -790,6 +798,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		AccountAccessControlProxy: iam.NewAccountAccessControlProxy(apiClient),
 		Alerts:                    sql.NewAlerts(apiClient),
 		Catalogs:                  catalog.NewCatalogs(apiClient),
+		CleanRooms:                sharing.NewCleanRooms(apiClient),
 		ClusterPolicies:           compute.NewClusterPolicies(apiClient),
 		Clusters:                  compute.NewClusters(apiClient),
 		CommandExecution:          compute.NewCommandExecution(apiClient),

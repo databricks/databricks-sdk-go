@@ -153,8 +153,6 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 	}
 	e.IsEmpty = s.IsEmpty()
 	e.IsAny = s.IsAny || s.Type == "object" && s.IsEmpty()
-	e.IsIdentifier = s.IsIdentifier
-	e.IsName = s.IsName
 	e.IsComputed = s.IsComputed
 	e.RequiredOrder = s.Required
 	// enum

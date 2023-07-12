@@ -222,7 +222,15 @@ func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
 	}
 }
 
-// TBD
+// The Personal Compute enablement setting lets you control which users can use
+// the Personal Compute default policy to create compute resources. By default
+// all users in all workspaces have access (ON), but you can change the setting
+// to instead let individual workspaces configure access control (DELEGATE).
+//
+// There is only one instance of this setting per account. Since this setting
+// has a default value, this setting is present on all accounts even though it's
+// never set on a given account. Deletion reverts the value of the setting back
+// to the default value.
 type AccountSettingsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(AccountSettingsService)
@@ -243,21 +251,21 @@ func (a *AccountSettingsAPI) Impl() AccountSettingsService {
 
 // Delete Personal Compute setting.
 //
-// TBD
+// Reverts back the Personal Compute setting value to default (ON)
 func (a *AccountSettingsAPI) DeletePersonalComputeSetting(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
 	return a.impl.DeletePersonalComputeSetting(ctx, request)
 }
 
 // Get Personal Compute setting.
 //
-// TBD
+// Gets the value of the Personal Compute setting.
 func (a *AccountSettingsAPI) ReadPersonalComputeSetting(ctx context.Context, request ReadPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	return a.impl.ReadPersonalComputeSetting(ctx, request)
 }
 
 // Update Personal Compute setting.
 //
-// TBD
+// Updates the value of the Personal Compute setting.
 func (a *AccountSettingsAPI) UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	return a.impl.UpdatePersonalComputeSetting(ctx, request)
 }

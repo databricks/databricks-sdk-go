@@ -17,7 +17,7 @@ type AccessControl struct {
 type Alert struct {
 	// Timestamp when the alert was created.
 	CreatedAt string `json:"created_at,omitempty"`
-	// ID of the alert.
+	// Alert ID.
 	Id string `json:"id,omitempty"`
 	// Timestamp when the alert was last triggered.
 	LastTriggeredAt string `json:"last_triggered_at,omitempty"`
@@ -25,11 +25,10 @@ type Alert struct {
 	Name string `json:"name,omitempty"`
 	// Alert configuration options.
 	Options *AlertOptions `json:"options,omitempty"`
-	// The identifier of the parent folder containing the alert. Available for
-	// alerts in workspace.
+	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
 
-	Query *Query `json:"query,omitempty"`
+	Query *AlertQuery `json:"query,omitempty"`
 	// Number of seconds after being triggered before the alert rearms itself
 	// and can be triggered again. If `null`, alert will never be triggered
 	// again.
@@ -66,7 +65,46 @@ type AlertOptions struct {
 	// `!=`
 	Op string `json:"op"`
 	// Value used to compare in alert evaluation.
-	Value string `json:"value"`
+	Value any `json:"value"`
+}
+
+type AlertQuery struct {
+	// The timestamp when this query was created.
+	CreatedAt string `json:"created_at,omitempty"`
+	// Data source ID.
+	DataSourceId string `json:"data_source_id,omitempty"`
+	// General description that conveys additional information about this query
+	// such as usage notes.
+	Description string `json:"description,omitempty"`
+	// Query ID.
+	Id string `json:"id,omitempty"`
+	// Indicates whether the query is trashed. Trashed queries can't be used in
+	// dashboards, or appear in search results. If this boolean is `true`, the
+	// `options` property for this query includes a `moved_to_trash_at`
+	// timestamp. Trashed queries are permanently deleted after 30 days.
+	IsArchived bool `json:"is_archived,omitempty"`
+	// Whether the query is a draft. Draft queries only appear in list views for
+	// their owners. Visualizations from draft queries cannot appear on
+	// dashboards.
+	IsDraft bool `json:"is_draft,omitempty"`
+	// Text parameter types are not safe from SQL injection for all types of
+	// data source. Set this Boolean parameter to `true` if a query either does
+	// not use any text type parameters or uses a data source type where text
+	// type parameters are handled safely.
+	IsSafe bool `json:"is_safe,omitempty"`
+	// The title of this query that appears in list views, widget headings, and
+	// on the query page.
+	Name string `json:"name,omitempty"`
+
+	Options *QueryOptions `json:"options,omitempty"`
+	// The text of the query to be run.
+	Query string `json:"query,omitempty"`
+
+	Tags []string `json:"tags,omitempty"`
+	// The timestamp at which this query was last updated.
+	UpdatedAt string `json:"updated_at,omitempty"`
+	// The ID of the user who created this query.
+	UserId int `json:"user_id,omitempty"`
 }
 
 // State of the alert. Possible values are: `unknown` (yet to be evaluated),
@@ -257,10 +295,9 @@ type CreateAlert struct {
 	Name string `json:"name"`
 	// Alert configuration options.
 	Options AlertOptions `json:"options"`
-	// The identifier of the workspace folder containing the alert. The default
-	// is ther user's home folder.
+	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
-	// ID of the query evaluated by the alert.
+	// Query ID.
 	QueryId string `json:"query_id"`
 	// Number of seconds after being triggered before the alert rearms itself
 	// and can be triggered again. If `null`, alert will never be triggered
@@ -277,8 +314,7 @@ type CreateDashboardRequest struct {
 	// The title of this dashboard that appears in list views and at the top of
 	// the dashboard page.
 	Name string `json:"name,omitempty"`
-	// The identifier of the workspace folder containing the dashboard. The
-	// default is the user's home folder.
+	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
 
 	Tags []string `json:"tags,omitempty"`
@@ -412,8 +448,7 @@ type Dashboard struct {
 	Name string `json:"name,omitempty"`
 
 	Options *DashboardOptions `json:"options,omitempty"`
-	// The identifier of the parent folder containing the dashboard. Available
-	// for dashboards in workspace.
+	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
 	// This describes an enum
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
@@ -441,8 +476,7 @@ type DashboardOptions struct {
 
 // A JSON object representing a DBSQL data source / SQL warehouse.
 type DataSource struct {
-	// The unique identifier for this data source / SQL warehouse. Can be used
-	// when creating / modifying queries and dashboards.
+	// Data source ID.
 	Id string `json:"id,omitempty"`
 	// The string name of this data source / SQL warehouse as it appears in the
 	// Databricks SQL web application.
@@ -543,7 +577,7 @@ type EditAlert struct {
 	Name string `json:"name"`
 	// Alert configuration options.
 	Options AlertOptions `json:"options"`
-	// ID of the query evaluated by the alert.
+	// Query ID.
 	QueryId string `json:"query_id"`
 	// Number of seconds after being triggered before the alert rearms itself
 	// and can be triggered again. If `null`, alert will never be triggered
@@ -1562,13 +1596,12 @@ type Query struct {
 	CanEdit bool `json:"can_edit,omitempty"`
 	// The timestamp when this query was created.
 	CreatedAt string `json:"created_at,omitempty"`
-	// Data Source ID. The UUID that uniquely identifies this data source / SQL
-	// warehouse across the API.
+	// Data source ID.
 	DataSourceId string `json:"data_source_id,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
 	Description string `json:"description,omitempty"`
-
+	// Query ID.
 	Id string `json:"id,omitempty"`
 	// Indicates whether the query is trashed. Trashed queries can't be used in
 	// dashboards, or appear in search results. If this boolean is `true`, the
@@ -1600,8 +1633,7 @@ type Query struct {
 	Name string `json:"name,omitempty"`
 
 	Options *QueryOptions `json:"options,omitempty"`
-	// The identifier of the parent folder containing the query. Available for
-	// queries in workspace.
+	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
 	// This describes an enum
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
@@ -1622,18 +1654,19 @@ type Query struct {
 }
 
 type QueryEditContent struct {
-	// The ID of the data source / SQL warehouse where this query will run.
+	// Data source ID.
 	DataSourceId string `json:"data_source_id,omitempty"`
-	// General description that can convey additional information about this
-	// query such as usage notes.
+	// General description that conveys additional information about this query
+	// such as usage notes.
 	Description string `json:"description,omitempty"`
-	// The name or title of this query to display in list views.
+	// The title of this query that appears in list views, widget headings, and
+	// on the query page.
 	Name string `json:"name,omitempty"`
 	// Exclusively used for storing a list parameter definitions. A parameter is
 	// an object with `title`, `name`, `type`, and `value` properties. The
 	// `value` field here is the default value. It can be overridden at runtime.
 	Options any `json:"options,omitempty"`
-	// The text of the query.
+	// The text of the query to be run.
 	Query string `json:"query,omitempty"`
 
 	QueryId string `json:"-" url:"-"`
@@ -1776,21 +1809,21 @@ type QueryOptions struct {
 }
 
 type QueryPostContent struct {
-	// The ID of the data source / SQL warehouse where this query will run.
+	// Data source ID.
 	DataSourceId string `json:"data_source_id,omitempty"`
-	// General description that can convey additional information about this
-	// query such as usage notes.
+	// General description that conveys additional information about this query
+	// such as usage notes.
 	Description string `json:"description,omitempty"`
-	// The name or title of this query to display in list views.
+	// The title of this query that appears in list views, widget headings, and
+	// on the query page.
 	Name string `json:"name,omitempty"`
 	// Exclusively used for storing a list parameter definitions. A parameter is
 	// an object with `title`, `name`, `type`, and `value` properties. The
 	// `value` field here is the default value. It can be overridden at runtime.
 	Options any `json:"options,omitempty"`
-	// The identifier of the workspace folder containing the query. The default
-	// is the user's home folder.
+	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
-	// The text of the query.
+	// The text of the query to be run.
 	Query string `json:"query,omitempty"`
 }
 
@@ -2620,13 +2653,8 @@ type User struct {
 	Email string `json:"email,omitempty"`
 
 	Id int `json:"id,omitempty"`
-	// Whether this user is an admin in the Databricks workspace.
-	IsDbAdmin bool `json:"is_db_admin,omitempty"`
 
 	Name string `json:"name,omitempty"`
-	// The URL for the gravatar profile picture tied to this user's email
-	// address.
-	ProfileImageUrl string `json:"profile_image_url,omitempty"`
 }
 
 // The visualization description API changes frequently and is unsupported. You
