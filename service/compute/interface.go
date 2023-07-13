@@ -504,8 +504,15 @@ type LibrariesService interface {
 // create cluster policies using a policy family. Cluster policies created using
 // a policy family inherit the policy family's policy definition.
 type PolicyFamiliesService interface {
+
+	// Get policy family information.
+	//
+	// Retrieve the information for an policy family based on its identifier.
 	Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error)
 
+	// List policy families.
+	//
+	// Retrieve a list of policy families. This API is paginated.
 	//
 	// Use ListAll() to get all PolicyFamily instances, which will iterate over every result page.
 	List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error)

@@ -23,10 +23,19 @@ type Method struct {
 	// Response type representation
 	Response          *Entity
 	EmptyResponseName Named
-	wait              *openapi.Wait
-	pagination        *openapi.Pagination
-	operation         *openapi.Operation
-	shortcut          bool
+
+	// For list APIs, the path of fields in the response entity to follow to get
+	// the resource ID.
+	IdFieldPath []*Field
+
+	// For list APIs, the path of fields in the response entity to follow to get
+	// the user-friendly name of the resource.
+	NameFieldPath []*Field
+
+	wait       *openapi.Wait
+	pagination *openapi.Pagination
+	operation  *openapi.Operation
+	shortcut   bool
 }
 
 // Shortcut holds definition of "shortcut" methods, that are generated for
@@ -58,7 +67,7 @@ type Pagination struct {
 // drop-downs or any other selectors.
 type NamedIdMap struct {
 	Named
-	Id       *Field
+	IdPath   []*Field
 	NamePath []*Field
 	Entity   *Entity
 
@@ -158,6 +167,21 @@ func (m *Method) IsJsonOnly() bool {
 	return m.operation.JsonOnly
 }
 
+func (m *Method) HasIdentifierField() bool {
+	return len(m.IdFieldPath) > 0
+}
+
+func (m *Method) IdentifierField() *Field {
+	if !m.HasIdentifierField() {
+		return nil
+	}
+	return m.IdFieldPath[len(m.IdFieldPath)-1]
+}
+
+func (m *Method) HasNameField() bool {
+	return len(m.NameFieldPath) > 0
+}
+
 // Wait returns definition for long-running operation
 func (m *Method) Wait() *Wait {
 	if m.wait == nil {
@@ -228,8 +252,9 @@ func (m *Method) paginationItem() *Entity {
 	return p.Entity
 }
 
-func (p *Pagination) NeedsOffsetDedupe() bool {
-	return p.Offset != nil && p.Entity.HasIdentifierField()
+func (m *Method) NeedsOffsetDedupe() bool {
+	p := m.Pagination()
+	return p.Offset != nil && m.HasIdentifierField()
 }
 
 func (p *Pagination) MultiRequest() bool {
@@ -240,64 +265,30 @@ func (p *Pagination) MultiRequest() bool {
 // entities of a type
 func (m *Method) NamedIdMap() *NamedIdMap {
 	entity := m.paginationItem()
-	if entity == nil {
+	if entity == nil || !m.HasIdentifierField() || !m.HasNameField() {
 		return nil
 	}
-	if !entity.HasIdentifierField() {
-		return nil
-	}
-	if !entity.HasSingleNameField() {
-		return nil
-	}
-	var id *Field
-	var namePath []*Field
-	for _, f := range entity.fields {
-		if f.Schema == nil {
-			continue
-		}
-		local := f
-		if f.Schema.IsIdentifier {
-			id = &local
-		}
-		if f.Entity.IsName {
-			namePath = append(namePath, &local)
-			if !f.Entity.IsObject() {
-				continue
-			}
-			if !f.Entity.HasNameField() {
-				continue
-			}
-			// job list: {"id": 1234, "settings": {"name": "..."}}
-			for _, innerField := range f.Entity.fields {
-				if innerField.Schema == nil {
-					continue
-				}
-				if innerField.Schema.IsName {
-					local2 := innerField
-					namePath = append(namePath, &local2)
-				}
-			}
-		}
-	}
-	if len(namePath) == 0 {
-		return nil
-	}
+	namePath := m.NameFieldPath
 	nameParts := []string{entity.PascalName()}
 	for _, v := range namePath {
 		nameParts = append(nameParts, v.PascalName())
 	}
 	nameParts = append(nameParts, "To")
-	nameParts = append(nameParts, id.PascalName())
+	nameParts = append(nameParts, m.IdentifierField().PascalName())
 	nameParts = append(nameParts, "Map")
 	return &NamedIdMap{
 		Named: Named{
 			Name: strings.Join(nameParts, ""),
 		},
-		Id:       id,
+		IdPath:   m.IdFieldPath,
 		NamePath: namePath,
 		Entity:   entity,
 		Direct:   m.Response.ArrayValue != nil,
 	}
+}
+
+func (n *NamedIdMap) Id() *Field {
+	return n.IdPath[len(n.IdPath)-1]
 }
 
 // GetByName returns entity from the same service with x-databricks-crud:read

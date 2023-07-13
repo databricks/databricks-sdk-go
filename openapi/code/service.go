@@ -256,6 +256,23 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		}
 		description = fmt.Sprintf("%s\n\n%s", summary, description)
 	}
+
+	var nameFieldPath, idFieldPath []*Field
+	respEntity := getPaginationEntity(response, op.Pagination)
+	if op.HasNameField() && respEntity != nil {
+		nameField, err := respEntity.GetUnderlyingFields(op.NameField)
+		if err != nil {
+			panic(fmt.Errorf("[%s] could not find name field %q: %w", op.OperationId, op.NameField, err))
+		}
+		nameFieldPath = nameField
+	}
+	if op.HasIdentifierField() && respEntity != nil {
+		idField, err := respEntity.GetUnderlyingFields(op.IdField)
+		if err != nil {
+			panic(fmt.Errorf("[%s] could not find id field %q: %w", op.OperationId, op.IdField, err))
+		}
+		idFieldPath = idField
+	}
 	return &Method{
 		Named:             Named{name, description},
 		Service:           svc,
@@ -265,6 +282,8 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		PathParts:         svc.paramPath(path, request, params),
 		Response:          response,
 		EmptyResponseName: emptyResponse,
+		NameFieldPath:     nameFieldPath,
+		IdFieldPath:       idFieldPath,
 		wait:              op.Wait,
 		operation:         op,
 		pagination:        op.Pagination,
@@ -308,4 +327,14 @@ func (svc *Service) IsPrivatePreview() bool {
 // IsPublicPreview flags object being in public preview.
 func (svc *Service) IsPublicPreview() bool {
 	return isPublicPreview(&svc.tag.Node)
+}
+
+func getPaginationEntity(entity *Entity, pagination *openapi.Pagination) *Entity {
+	if pagination == nil {
+		return nil
+	}
+	if pagination.Inline {
+		return entity.ArrayValue
+	}
+	return entity.Field(pagination.Results).Entity.ArrayValue
 }

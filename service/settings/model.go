@@ -64,12 +64,24 @@ type DeleteIpAccessListRequest struct {
 
 // Delete Personal Compute setting
 type DeletePersonalComputeSettingRequest struct {
-	// TBD
-	Etag string `json:"-" url:"etag,omitempty"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag"`
 }
 
 type DeletePersonalComputeSettingResponse struct {
-	// TBD
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
 	Etag string `json:"etag"`
 }
 
@@ -181,11 +193,22 @@ func (f *ListType) Type() string {
 }
 
 type PersonalComputeMessage struct {
-	// TBD
+	// ON: Grants all users in all workspaces access to the Personal Compute
+	// default policy, allowing all users to create single-machine compute
+	// resources. DELEGATE: Moves access control for the Personal Compute
+	// default policy to individual workspaces and requires a workspace’s
+	// users or groups to be added to the ACLs of that workspace’s Personal
+	// Compute default policy before they will be able to create compute
+	// resources through that policy.
 	Value PersonalComputeMessageEnum `json:"value"`
 }
 
-// TBD
+// ON: Grants all users in all workspaces access to the Personal Compute default
+// policy, allowing all users to create single-machine compute resources.
+// DELEGATE: Moves access control for the Personal Compute default policy to
+// individual workspaces and requires a workspace’s users or groups to be
+// added to the ACLs of that workspace’s Personal Compute default policy
+// before they will be able to create compute resources through that policy.
 type PersonalComputeMessageEnum string
 
 const PersonalComputeMessageEnumDelegate PersonalComputeMessageEnum = `DELEGATE`
@@ -214,12 +237,18 @@ func (f *PersonalComputeMessageEnum) Type() string {
 }
 
 type PersonalComputeSetting struct {
-	// TBD
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
 	Etag string `json:"etag,omitempty"`
 
 	PersonalCompute PersonalComputeMessage `json:"personal_compute"`
-	// Name of the corresponding setting. Needs to be 'default' if the setting
-	// is a singleton.
+	// Name of the corresponding setting. Needs to be 'default' if there is only
+	// one setting instance per account.
 	SettingName string `json:"setting_name,omitempty"`
 }
 
@@ -237,8 +266,14 @@ type PublicTokenInfo struct {
 
 // Get Personal Compute setting
 type ReadPersonalComputeSettingRequest struct {
-	// TBD
-	Etag string `json:"-" url:"etag,omitempty"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag"`
 }
 
 type ReplaceIpAccessList struct {
@@ -296,7 +331,8 @@ type UpdateIpAccessList struct {
 
 // Update Personal Compute setting
 type UpdatePersonalComputeSettingRequest struct {
-	// TBD
+	// This should always be set to true for Settings RPCs. Added for AIP
+	// compliance.
 	AllowMissing bool `json:"allow_missing,omitempty"`
 
 	Setting *PersonalComputeSetting `json:"setting,omitempty"`

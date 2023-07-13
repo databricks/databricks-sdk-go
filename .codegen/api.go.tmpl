@@ -168,9 +168,9 @@ func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Reque
 	var totalCount {{template "type" .Pagination.Limit.Entity}} = 0
 	{{ end -}}
 	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-	{{if .Pagination.NeedsOffsetDedupe -}}
+	{{if .NeedsOffsetDedupe -}}
 	// deduplicate items that may have been added during iteration
-	seen := map[{{template "type" .Pagination.Entity.IdentifierField.Entity}}]bool{}
+	seen := map[{{template "type" .IdentifierField.Entity}}]bool{}
 	{{end}}{{if eq .Pagination.Increment 1 -}}
 	request.{{.Pagination.Offset.PascalName}} = 1 // start iterating from the first page
 	{{end}}for {
@@ -182,8 +182,8 @@ func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Reque
 			break
 		}
 		for _, v := range response.{{.Pagination.Results.PascalName}} {
-			{{- if .Pagination.NeedsOffsetDedupe -}}
-			id := v.{{.Pagination.Entity.IdentifierField.PascalName}}
+			{{- if .NeedsOffsetDedupe -}}
+			id := v{{ template "field-path" .IdFieldPath }}
 			if seen[id] {
 				// item was added during iteration
 				continue
@@ -228,9 +228,9 @@ func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Reque
 	return response.{{.Pagination.Results.PascalName}}, nil{{else}}return a.impl.{{.PascalName}}(ctx, request){{end}}
 }
 {{end}}{{if .NamedIdMap}}
-// {{.NamedIdMap.PascalName}} calls [{{.Service.Name}}API.{{.PascalName}}{{if not .NamedIdMap.Direct}}All{{end -}}] and creates a map of results with [{{.NamedIdMap.Entity.PascalName}}]{{range .NamedIdMap.NamePath}}.{{.PascalName}}{{end}} as key and [{{.NamedIdMap.Entity.PascalName}}].{{.NamedIdMap.Id.PascalName}} as value.
+// {{.NamedIdMap.PascalName}} calls [{{.Service.Name}}API.{{.PascalName}}{{if not .NamedIdMap.Direct}}All{{end -}}] and creates a map of results with [{{.NamedIdMap.Entity.PascalName}}]{{ template "field-path" .NamedIdMap.NamePath }} as key and [{{.NamedIdMap.Entity.PascalName}}]{{ template "field-path" .NamedIdMap.IdPath}} as value.
 //
-// Returns an error if there's more than one [{{.NamedIdMap.Entity.PascalName}}] with the same {{range .NamedIdMap.NamePath}}.{{.PascalName}}{{end}}.
+// Returns an error if there's more than one [{{.NamedIdMap.Entity.PascalName}}] with the same {{ template "field-path" .NamedIdMap.NamePath }}.
 //
 // Note: All [{{.NamedIdMap.Entity.PascalName}}] instances are loaded into memory before creating a map.
 // 
@@ -243,19 +243,19 @@ func (a *{{.Service.Name}}API) {{.NamedIdMap.PascalName}}(ctx context.Context{{i
 		return nil, err
 	}
 	for _, v := range result {
-		key := v{{range .NamedIdMap.NamePath}}.{{.PascalName}}{{end}}
+		key := v{{ template "field-path" .NamedIdMap.NamePath }}
 		_, duplicate := mapping[key]
 		if duplicate {
-			return nil, fmt.Errorf("duplicate {{range .NamedIdMap.NamePath}}.{{.PascalName}}{{end}}: %s", key)
+			return nil, fmt.Errorf("duplicate {{ template "field-path" .NamedIdMap.NamePath }}: %s", key)
 		}
-		mapping[key] = v.{{.NamedIdMap.Id.PascalName}}
+		mapping[key] = v{{ template "field-path" .NamedIdMap.IdPath }}
 	}
 	return mapping, nil
 }
 {{end}}{{if .GetByName}}
 // GetBy{{range .NamedIdMap.NamePath}}{{.PascalName}}{{end}} calls [{{.Service.Name}}API.{{.NamedIdMap.Entity.PascalName}}{{range .NamedIdMap.NamePath}}{{.PascalName}}{{end}}To{{.NamedIdMap.Id.PascalName}}Map] and returns a single [{{.GetByName.PascalName}}].
 //
-// Returns an error if there's more than one [{{.NamedIdMap.Entity.PascalName}}] with the same {{range .NamedIdMap.NamePath}}.{{.PascalName}}{{end}}.
+// Returns an error if there's more than one [{{.NamedIdMap.Entity.PascalName}}] with the same {{ template "field-path" .NamedIdMap.NamePath }}.
 //
 // Note: All [{{.NamedIdMap.Entity.PascalName}}] instances are loaded into memory before returning matching by name.
 // 
@@ -268,7 +268,7 @@ func (a *{{.Service.Name}}API) GetBy{{range .NamedIdMap.NamePath}}{{.PascalName}
 	}
 	tmp := map[string][]{{.GetByName.PascalName}}{}
 	for _, v := range result {
-		key := v{{range .NamedIdMap.NamePath}}.{{.PascalName}}{{end}}
+		key := v{{ template "field-path" .NamedIdMap.NamePath }}
 		tmp[key] = append(tmp[key], v)
 	}
 	alternatives, ok := tmp[name]
@@ -299,3 +299,6 @@ func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Conte
 {{end -}}
 
 {{- end}}
+{{- define "field-path" -}}
+	{{- range .}}.{{.PascalName}}{{end}}
+{{- end -}}

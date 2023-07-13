@@ -85,14 +85,29 @@ func (path *Path) Verbs() map[string]*Operation {
 	return m
 }
 
+type fieldPath []string
+
+func (fp fieldPath) String() string {
+	return strings.Join(fp, ".")
+}
+
 // Operation is the equivalent of method
 type Operation struct {
 	Node
-	Wait        *Wait            `json:"x-databricks-wait,omitempty"`
-	Pagination  *Pagination      `json:"x-databricks-pagination,omitempty"`
-	Shortcut    bool             `json:"x-databricks-shortcut,omitempty"`
-	Crud        string           `json:"x-databricks-crud,omitempty"`
-	JsonOnly    bool             `json:"x-databricks-cli-json-only,omitempty"`
+	Wait       *Wait       `json:"x-databricks-wait,omitempty"`
+	Pagination *Pagination `json:"x-databricks-pagination,omitempty"`
+	Shortcut   bool        `json:"x-databricks-shortcut,omitempty"`
+	Crud       string      `json:"x-databricks-crud,omitempty"`
+	JsonOnly   bool        `json:"x-databricks-cli-json-only,omitempty"`
+
+	// For list APIs, the path to the field in the response entity that contains
+	// the resource ID.
+	IdField fieldPath `json:"x-databricks-id,omitempty"`
+
+	// For list APIs, the path to the field in the response entity that contains
+	// the user-friendly name of the resource.
+	NameField fieldPath `json:"x-databricks-name,omitempty"`
+
 	Summary     string           `json:"summary,omitempty"`
 	OperationId string           `json:"operationId"`
 	Tags        []string         `json:"tags"`
@@ -132,6 +147,14 @@ func (o *Operation) SuccessResponseSchema(c *Components) *Schema {
 	return nil
 }
 
+func (o *Operation) HasNameField() bool {
+	return len(o.NameField) > 0
+}
+
+func (o *Operation) HasIdentifierField() bool {
+	return len(o.IdField) > 0
+}
+
 type node interface {
 	IsRef() bool
 	Component() string
@@ -158,8 +181,6 @@ type Components struct {
 
 type Schema struct {
 	Node
-	IsIdentifier     bool               `json:"x-databricks-id,omitempty"`
-	IsName           bool               `json:"x-databricks-name,omitempty"`
 	IsComputed       bool               `json:"x-databricks-computed,omitempty"`
 	IsAny            bool               `json:"x-databricks-any,omitempty"`
 	Type             string             `json:"type,omitempty"`

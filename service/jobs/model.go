@@ -118,6 +118,8 @@ type BaseRun struct {
 	Tasks []RunTask `json:"tasks,omitempty"`
 	// This describes an enum
 	Trigger TriggerType `json:"trigger,omitempty"`
+
+	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
 }
 
 type CancelAllRuns struct {
@@ -536,6 +538,9 @@ type GitSource struct {
 	// URL of the repository to be cloned by this job. The maximum length is 300
 	// characters.
 	GitUrl string `json:"git_url"`
+	// The source of the job specification in the remote repository when the job
+	// is source controlled.
+	JobSource *JobSource `json:"job_source,omitempty"`
 }
 
 type Job struct {
@@ -720,6 +725,50 @@ type JobSettings struct {
 	// A collection of system notification IDs to notify when the run begins or
 	// completes. The default behavior is to not send any system notifications.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+}
+
+// The source of the job specification in the remote repository when the job is
+// source controlled.
+type JobSource struct {
+	// This describes an enum
+	DirtyState JobSourceDirtyState `json:"dirty_state,omitempty"`
+	// Name of the branch which the job is imported from.
+	ImportFromGitBranch string `json:"import_from_git_branch"`
+	// Path of the job YAML file that contains the job specification.
+	JobConfigPath string `json:"job_config_path"`
+}
+
+// This describes an enum
+type JobSourceDirtyState string
+
+// The job is temporary disconnected from the remote job specification and is
+// allowed for live edit. Import the remote job specification again from UI to
+// make the job fully synced.
+const JobSourceDirtyStateDisconnected JobSourceDirtyState = `DISCONNECTED`
+
+// The job is not yet synced with the remote job specification. Import the
+// remote job specification from UI to make the job fully synced.
+const JobSourceDirtyStateNotSynced JobSourceDirtyState = `NOT_SYNCED`
+
+// String representation for [fmt.Print]
+func (f *JobSourceDirtyState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *JobSourceDirtyState) Set(v string) error {
+	switch v {
+	case `DISCONNECTED`, `NOT_SYNCED`:
+		*f = JobSourceDirtyState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DISCONNECTED", "NOT_SYNCED"`, v)
+	}
+}
+
+// Type always returns JobSourceDirtyState to satisfy [pflag.Value] interface
+func (f *JobSourceDirtyState) Type() string {
+	return "JobSourceDirtyState"
 }
 
 // List jobs
@@ -1258,6 +1307,8 @@ type Run struct {
 	Tasks []RunTask `json:"tasks,omitempty"`
 	// This describes an enum
 	Trigger TriggerType `json:"trigger,omitempty"`
+
+	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
 }
 
 type RunConditionTask struct {
@@ -1348,6 +1399,18 @@ func (f *RunIf) Set(v string) error {
 // Type always returns RunIf to satisfy [pflag.Value] interface
 func (f *RunIf) Type() string {
 	return "RunIf"
+}
+
+type RunJobOutput struct {
+	// The run id of the triggered job run
+	RunId int `json:"run_id,omitempty"`
+}
+
+type RunJobTask struct {
+	// ID of the job to trigger.
+	JobId int `json:"job_id"`
+	// Job-level parameters used to trigger the job.
+	JobParameters any `json:"job_parameters,omitempty"`
 }
 
 // This describes an enum
@@ -1551,6 +1614,8 @@ type RunOutput struct {
 	// [ClusterLogConf](/dev-tools/api/latest/clusters.html#clusterlogconf)
 	// field to configure log storage for the job cluster.
 	NotebookOutput *NotebookOutput `json:"notebook_output,omitempty"`
+	// The output of a run job task, if available
+	RunJobOutput *RunJobOutput `json:"run_job_output,omitempty"`
 	// The output of a SQL task, if available.
 	SqlOutput *SqlOutput `json:"sql_output,omitempty"`
 }
@@ -1782,6 +1847,8 @@ type RunTask struct {
 	// omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of
 	// possible values.
 	RunIf RunIf `json:"run_if,omitempty"`
+	// If run_job_task, indicates that this task must execute another job.
+	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
 	// The time in milliseconds it took to set up the cluster. For runs that run
 	// on new clusters this is the cluster creation time, for runs that run on
 	// existing clusters this time should be very short. The duration of a task
@@ -2131,6 +2198,9 @@ type SqlTaskSubscription struct {
 type SubmitRun struct {
 	// List of permissions to set on the job.
 	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
+	// An optional set of email addresses notified when the run begins or
+	// completes. The default behavior is to not send any emails.
+	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// An optional specification for a remote repository containing the
 	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
@@ -2180,6 +2250,9 @@ type SubmitTask struct {
 	// executing this task. The key is `task_key`, and the value is the name
 	// assigned to the dependent task.
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
+	// An optional set of email addresses notified when the task run begins or
+	// completes. The default behavior is to not send any emails.
+	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs of this task. When running tasks on an existing cluster, you may
 	// need to manually restart the cluster if it stops responding. We suggest
@@ -2193,6 +2266,9 @@ type SubmitTask struct {
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
+	// Optional notification settings that are used when sending email
+	// notifications for this task run.
+	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
 	// If pipeline_task, indicates that this task must execute a Pipeline.
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
 	// If python_wheel_task, indicates that this job must execute a PythonWheel.
@@ -2287,6 +2363,8 @@ type Task struct {
 	// executed * `AT_LEAST_ONE_FAILED`: At least one dependency failed *
 	// `ALL_FAILED`: ALl dependencies have failed
 	RunIf RunIf `json:"run_if,omitempty"`
+	// If run_job_task, indicates that this task must execute another job.
+	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
 	// If spark_jar_task, indicates that this task must run a JAR.
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
 	// If spark_python_task, indicates that this task must run a Python file.
@@ -2366,6 +2444,11 @@ type TriggerHistory struct {
 	LastTriggered *TriggerEvaluation `json:"last_triggered,omitempty"`
 }
 
+type TriggerInfo struct {
+	// The run id of the Run Job task run
+	RunId int `json:"run_id,omitempty"`
+}
+
 type TriggerSettings struct {
 	// File arrival trigger settings.
 	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
@@ -2390,6 +2473,9 @@ const TriggerTypePeriodic TriggerType = `PERIODIC`
 // occurs when you request to re-run the job in case of failures.
 const TriggerTypeRetry TriggerType = `RETRY`
 
+// Indicates a run that is triggered using a Run Job task.
+const TriggerTypeRunJobTask TriggerType = `RUN_JOB_TASK`
+
 // String representation for [fmt.Print]
 func (f *TriggerType) String() string {
 	return string(*f)
@@ -2398,11 +2484,11 @@ func (f *TriggerType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TriggerType) Set(v string) error {
 	switch v {
-	case `FILE_ARRIVAL`, `ONE_TIME`, `PERIODIC`, `RETRY`:
+	case `FILE_ARRIVAL`, `ONE_TIME`, `PERIODIC`, `RETRY`, `RUN_JOB_TASK`:
 		*f = TriggerType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FILE_ARRIVAL", "ONE_TIME", "PERIODIC", "RETRY"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FILE_ARRIVAL", "ONE_TIME", "PERIODIC", "RETRY", "RUN_JOB_TASK"`, v)
 	}
 }
 

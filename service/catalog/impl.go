@@ -545,6 +545,12 @@ func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesReq
 	return &listTableSummariesResponse, err
 }
 
+func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
+	return err
+}
+
 // unexported type that holds implementations of just Volumes API methods
 type volumesImpl struct {
 	client *client.DatabricksClient
