@@ -152,3 +152,37 @@ func TestAccServicePrincipalsOnAWS(t *testing.T) {
 	assert.Equal(t, len(names), len(all))
 	assert.Equal(t, byId.Id, names[byId.DisplayName])
 }
+
+func TestAccUserPatch(t *testing.T) {
+	ctx, w := accountTest(t)
+
+	user, err := w.Users.Create(ctx, iam.User{
+		DisplayName: RandomName("Me "),
+		UserName:    RandomEmail(),
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := w.Users.DeleteById(ctx, user.Id)
+		require.True(t, err == nil || apierr.IsMissing(err))
+	})
+
+	assert.Equal(t, 0, len(user.Roles))
+
+	err = w.Users.Patch(ctx, iam.PartialUpdate{
+		Id:     user.Id,
+		Schema: []iam.PatchSchema{iam.PatchSchemaUrnIetfParamsScimApiMessagesPatchop},
+		Operations: []iam.Patch{
+			{Op: "add", Value: iam.User{
+				Roles: []iam.ComplexValue{
+					{Value: "account_admin"},
+				},
+			}},
+		},
+	})
+	require.NoError(t, err)
+
+	byId, err := w.Users.GetById(ctx, user.Id)
+	require.NoError(t, err)
+	assert.Equal(t, user.Id, byId.Id)
+	assert.Equal(t, 1, len(byId.Roles))
+}
