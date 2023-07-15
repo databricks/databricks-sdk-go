@@ -125,26 +125,6 @@ func (e *Entity) GetUnderlyingFields(path []string) ([]*Field, error) {
 	return append([]*Field{field}, rest...), nil
 }
 
-// Given a list of field names, return the list of *Field objects which result
-// from following the path of fields in the entity.
-func (e *Entity) GetUnderlyingFields(path []string) ([]*Field, error) {
-	if len(path) == 0 {
-		return nil, fmt.Errorf("empty path is not allowed (entity: %s)", e.FullName())
-	}
-	if len(path) == 1 {
-		return []*Field{e.Field(path[0])}, nil
-	}
-	field := e.Field(path[0])
-	if field == nil {
-		return nil, fmt.Errorf("field %s not found in entity %s", path[0], e.FullName())
-	}
-	rest, err := field.Entity.GetUnderlyingFields(path[1:])
-	if err != nil {
-		return nil, err
-	}
-	return append([]*Field{field}, rest...), nil
-}
-
 // IsObject returns true if entity is not a Mpa and has more than zero fields
 func (e *Entity) IsObject() bool {
 	return e.MapValue == nil && len(e.fields) > 0
