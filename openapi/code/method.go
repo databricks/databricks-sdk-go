@@ -122,7 +122,7 @@ func (m *Method) rpcSingleFields() (params []Field) {
 		// TODO: explicitly annotate with x-databricks-shortcut
 		return nil
 	}
-	return []Field{m.Request.Fields()[0]}
+	return []Field{*m.Request.Fields()[0]}
 }
 
 func (m *Method) requestShortcutFields() []Field {

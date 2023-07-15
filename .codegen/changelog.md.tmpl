@@ -1,0 +1,55 @@
+# Version changelog
+
+## {{.Version}}
+
+{{range .Changes -}}
+ * {{.}}.
+{{end}}{{- if .ApiChanges}}
+API Changes:
+{{range .ApiChanges}}
+ * {{.Action}} {{template "what" .}}{{if .Extra}} {{.Extra}}{{with .Other}} {{template "what" .}}{{end}}{{end}}.
+{{- end}}
+
+OpenAPI SHA: {{.Sha}}, Date: {{.Changed}}
+{{- end}}{{if .DependencyUpdates}}
+Dependency updates:
+{{range .DependencyUpdates}}
+ * {{.}}.
+{{- end -}}
+{{end}}
+
+## {{.PrevVersion}}
+
+{{- define "what" -}}
+    {{if eq .X "package" -}}
+        [{{.Package.Name}}](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/{{.Package.Name}}) package
+    {{- else if eq .X "service" -}}
+        {{template "service" .Service}}
+    {{- else if eq .X "method" -}}
+        `{{.Method.PascalName}}` method for {{template "service" .Method.Service}}
+    {{- else if eq .X "entity" -}}
+        {{template "entity" .Entity}}
+    {{- else if eq .X "field" -}}
+        `{{.Field.PascalName}}` field for {{template "entity" .Field.Of}}
+    {{- end}}
+{{- end -}}
+
+{{- define "service" -}}
+    [{{if .IsAccounts}}a{{else}}w{{end}}.{{.PascalName}}](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/{{.Package.Name}}#{{.PascalName}}API) {{if .IsAccounts}}account{{else}}workspace{{end}}-level service
+{{- end -}}
+
+{{- define "entity" -}}
+    {{- if not . }}any /* ERROR */
+	{{- else if .IsEmpty}}`any`
+	{{- else if .PascalName}}[{{.Package.Name}}.{{.PascalName}}](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/{{.Package.Name}}#{{.PascalName}})
+	{{- else if .IsAny}}`any`
+	{{- else if .IsString}}`string`
+	{{- else if .IsBool}}`bool`
+	{{- else if .IsInt64}}`int64`
+	{{- else if .IsFloat64}}`float64`
+	{{- else if .IsInt}}`int`
+	{{- else if .ArrayValue }}[]{{template "entity" .ArrayValue}}
+	{{- else if .MapValue }}map[string]{{template "entity" .MapValue}}
+	{{- else}}[{{.Package.Name}}.{{.PascalName}}](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/{{.Package.Name}}#{{.PascalName}})
+	{{- end -}}
+{{- end -}}

@@ -62,7 +62,7 @@ type Entity struct {
 
 	// if entity has required fields, this is the order of them
 	RequiredOrder []string
-	fields        map[string]Field
+	fields        map[string]*Field
 
 	// Schema references the OpenAPI schema this entity was created from.
 	Schema *openapi.Schema
@@ -102,7 +102,27 @@ func (e *Entity) Field(name string) *Field {
 		return nil
 	}
 	field.Of = e
-	return &field
+	return field
+}
+
+// Given a list of field names, return the list of *Field objects which result
+// from following the path of fields in the entity.
+func (e *Entity) GetUnderlyingFields(path []string) ([]*Field, error) {
+	if len(path) == 0 {
+		return nil, fmt.Errorf("empty path is not allowed (entity: %s)", e.FullName())
+	}
+	if len(path) == 1 {
+		return []*Field{e.Field(path[0])}, nil
+	}
+	field := e.Field(path[0])
+	if field == nil {
+		return nil, fmt.Errorf("field %s not found in entity %s", path[0], e.FullName())
+	}
+	rest, err := field.Entity.GetUnderlyingFields(path[1:])
+	if err != nil {
+		return nil, err
+	}
+	return append([]*Field{field}, rest...), nil
 }
 
 // Given a list of field names, return the list of *Field objects which result
@@ -136,7 +156,7 @@ func (e *Entity) IsExternal() bool {
 	return e.Package != nil && len(e.Package.types) == 0
 }
 
-func (e *Entity) RequiredFields() (fields []Field) {
+func (e *Entity) RequiredFields() (fields []*Field) {
 	for _, r := range e.RequiredOrder {
 		v := e.fields[r]
 		v.Of = e
@@ -145,7 +165,7 @@ func (e *Entity) RequiredFields() (fields []Field) {
 	return
 }
 
-func (e *Entity) NonRequiredFields() (fields []Field) {
+func (e *Entity) NonRequiredFields() (fields []*Field) {
 	required := map[string]bool{}
 	for _, r := range e.RequiredOrder {
 		required[r] = true
@@ -158,19 +178,19 @@ func (e *Entity) NonRequiredFields() (fields []Field) {
 		v.Of = e
 		fields = append(fields, v)
 	}
-	slices.SortFunc(fields, func(a, b Field) bool {
+	slices.SortFunc(fields, func(a, b *Field) bool {
 		return a.CamelName() < b.CamelName()
 	})
 	return
 }
 
 // Fields returns sorted slice of field representations
-func (e *Entity) Fields() (fields []Field) {
+func (e *Entity) Fields() (fields []*Field) {
 	for _, v := range e.fields {
 		v.Of = e
 		fields = append(fields, v)
 	}
-	slices.SortFunc(fields, func(a, b Field) bool {
+	slices.SortFunc(fields, func(a, b *Field) bool {
 		return a.CamelName() < b.CamelName()
 	})
 	return fields
@@ -251,4 +271,37 @@ func (e *Entity) IsPrivatePreview() bool {
 // IsPublicPreview flags object being in public preview.
 func (e *Entity) IsPublicPreview() bool {
 	return e.Schema != nil && isPublicPreview(&e.Schema.Node)
+}
+
+func (e *Entity) IsRequest() bool {
+	for _, svc := range e.Package.services {
+		for _, m := range svc.methods {
+			if m.Request == e {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (e *Entity) IsResponse() bool {
+	for _, svc := range e.Package.services {
+		for _, m := range svc.methods {
+			if m.Response == e {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (e *Entity) IsReferred() bool {
+	for _, t := range e.Package.types {
+		for _, f := range t.fields {
+			if f.Entity == e {
+				return true
+			}
+		}
+	}
+	return false
 }

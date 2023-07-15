@@ -39,7 +39,7 @@ var HelperFuncs = template.FuncMap{
 		// via errors.Is(err, code.ErrSkipThisFile)
 		panic(ErrSkipThisFile)
 	},
-	"alphanumOnly": func(in []Field) (out []Field) {
+	"alphanumOnly": func(in []*Field) (out []*Field) {
 		for _, v := range in {
 			if !alphanumRE.MatchString(v.Name) {
 				continue

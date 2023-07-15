@@ -142,8 +142,9 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		Named: Named{
 			Description: s.Description,
 		},
-		Schema: s,
-		enum:   map[string]EnumEntry{},
+		Schema:  s,
+		Package: pkg,
+		enum:    map[string]EnumEntry{},
 	}
 	// pull embedded types up, if they can be defined at package level
 	if s.IsDefinable() && !hasName {
@@ -183,7 +184,7 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 
 // makeObject converts OpenAPI Schema into type representation
 func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Entity {
-	e.fields = map[string]Field{}
+	e.fields = map[string]*Field{}
 	required := map[string]bool{}
 	for _, v := range s.Required {
 		required[v] = true
@@ -196,7 +197,7 @@ func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Ent
 			}
 		}
 		named := Named{k, v.Description}
-		e.fields[k] = Field{
+		e.fields[k] = &Field{
 			Named:    named,
 			Entity:   pkg.schemaToEntity(v, append(path, named.PascalName()), false),
 			Required: required[k],
