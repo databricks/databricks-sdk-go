@@ -15,7 +15,12 @@
     ".codegen/examples_test.go.tmpl": "service/{{.Package}}/{{.SnakeName}}_usage_test.go"
   },
   "version": {
-    "version/version.go": "const Version = \"%s\""
+    "version/version.go": "const Version = \"$VERSION\""
   },
-  "changelog": ".codegen/changelog.md.tmpl"
+  "toolchain": {
+    "required": ["go"],
+    "post_generate": [
+      "go test -short ./..."
+    ]
+  }
 }
