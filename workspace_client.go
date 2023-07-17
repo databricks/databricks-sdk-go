@@ -3,6 +3,8 @@
 package databricks
 
 import (
+	"errors"
+
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/config"
 
@@ -776,6 +778,8 @@ type WorkspaceClient struct {
 	WorkspaceConf *settings.WorkspaceConfAPI
 }
 
+var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration")
+
 // NewWorkspaceClient creates new Databricks SDK client for Workspaces or
 // returns error in case configuration is wrong
 func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
@@ -791,6 +795,11 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	if cfg.AccountID == "" || cfg.IsAccountClient() {
+		return nil, ErrNotWorkspaceClient
+	}
+	
 	return &WorkspaceClient{
 		Config: cfg,
 		Files:  files.NewFiles(apiClient),
