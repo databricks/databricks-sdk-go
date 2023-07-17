@@ -71,7 +71,6 @@ func (c *Generator) Apply(batch *code.Batch, suite *roll.Suite) error {
 			return fmt.Errorf("optimize examples: %w", err)
 		}
 	}
-	// this function is copied from Go SDK, though it might be made into a reusable API
 	var filenames []string
 	if c.Batch != nil {
 		pass := render.NewPass(c.dir, []render.Named{batch}, c.Batch)
