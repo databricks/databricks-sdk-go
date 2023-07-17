@@ -208,18 +208,11 @@ func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Ent
 	return e
 }
 
-var nonAlphanum = regexp.MustCompile(`[^a-zA-Z]`)
 var whitespace = regexp.MustCompile(`\s+`)
 
 func (pkg *Package) makeEnum(e *Entity, s *openapi.Schema, path []string) *Entity {
 	for idx, content := range s.Enum {
 		name := content
-		name = nonAlphanum.ReplaceAllString(name, " ")
-		var splits []string
-		for _, v := range whitespace.Split(name, -1) {
-			splits = append(splits, strings.Title(strings.ToLower(v)))
-		}
-		name = strings.Join(splits, "")
 		if len(s.AliasEnum) == len(s.Enum) {
 			name = s.AliasEnum[idx]
 		}

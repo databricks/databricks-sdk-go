@@ -466,21 +466,21 @@ type GetRunRequest struct {
 
 type GitProvider string
 
-const GitProviderAwscodecommit GitProvider = `awsCodeCommit`
+const GitProviderAwsCodeCommit GitProvider = `awsCodeCommit`
 
-const GitProviderAzuredevopsservices GitProvider = `azureDevOpsServices`
+const GitProviderAzureDevOpsServices GitProvider = `azureDevOpsServices`
 
-const GitProviderBitbucketcloud GitProvider = `bitbucketCloud`
+const GitProviderBitbucketCloud GitProvider = `bitbucketCloud`
 
-const GitProviderBitbucketserver GitProvider = `bitbucketServer`
+const GitProviderBitbucketServer GitProvider = `bitbucketServer`
 
-const GitProviderGithub GitProvider = `gitHub`
+const GitProviderGitHub GitProvider = `gitHub`
 
-const GitProviderGithubenterprise GitProvider = `gitHubEnterprise`
+const GitProviderGitHubEnterprise GitProvider = `gitHubEnterprise`
 
-const GitProviderGitlab GitProvider = `gitLab`
+const GitProviderGitLab GitProvider = `gitLab`
 
-const GitProviderGitlabenterpriseedition GitProvider = `gitLabEnterpriseEdition`
+const GitProviderGitLabEnterpriseEdition GitProvider = `gitLabEnterpriseEdition`
 
 // String representation for [fmt.Print]
 func (f *GitProvider) String() string {

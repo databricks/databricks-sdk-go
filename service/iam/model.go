@@ -478,7 +478,7 @@ func (f *PatchOp) Type() string {
 
 type PatchSchema string
 
-const PatchSchemaUrnIetfParamsScimApiMessagesPatchop PatchSchema = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
+const PatchSchemaUrnIetfParamsScimApiMessages20PatchOp PatchSchema = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
 
 // String representation for [fmt.Print]
 func (f *PatchSchema) String() string {
