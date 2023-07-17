@@ -106,6 +106,7 @@ func TestNamedDecamel(t *testing.T) {
 		"k8sFailure":    {"k8s", "failure"},
 		"i18nFailure":   {"i18n", "failure"},
 		"Patch:Request": {"patch", "request"},
+		"urn:ietf:params:scim:api:messages:2.0:PatchOp": {"urn", "ietf", "params", "scim", "api", "messages", "2", "0", "patch", "op"},
 	} {
 		assert.Equal(t, out, (&Named{Name: in}).splitASCII(), in)
 	}
