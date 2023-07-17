@@ -57,9 +57,9 @@ func (c *Context) Run() error {
 			return fmt.Errorf("examples: %w", err)
 		}
 	}
-	gen, err := generator.NewGenerator(c.Target, spec, suite)
+	gen, err := generator.NewGenerator(c.Target)
 	if err != nil {
 		return fmt.Errorf("config: %w", err)
 	}
-	return gen.Run()
+	return gen.Apply(spec, suite)
 }
