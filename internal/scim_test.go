@@ -27,7 +27,7 @@ func TestAccCurrentUser(t *testing.T) {
 	assert.NotEmpty(t, me.UserName)
 }
 
-func TestAccUsers(t *testing.T) {
+func TestAccWorkspaceUsers(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	// create new user
@@ -69,6 +69,39 @@ func TestAccUsers(t *testing.T) {
 	// and verify that user is missing
 	_, err = w.Users.GetById(ctx, user.Id)
 	assert.True(t, apierr.IsMissing(err))
+}
+
+func TestAccAccountUsers(t *testing.T) {
+	ctx, a := accountTest(t)
+
+	user, err := a.Users.Create(ctx, iam.User{
+		DisplayName: RandomName("Me "),
+		UserName:    RandomEmail(),
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := a.Users.DeleteById(ctx, user.Id)
+		require.True(t, err == nil || apierr.IsMissing(err))
+	})
+
+	assert.Equal(t, 0, len(user.Roles))
+	err = a.Users.Patch(ctx, iam.PartialUpdate{
+		Id:     user.Id,
+		Schema: []iam.PatchSchema{iam.PatchSchemaUrnIetfParamsScimApiMessages20PatchOp},
+		Operations: []iam.Patch{
+			{Op: iam.PatchOpAdd, Value: iam.User{
+				Roles: []iam.ComplexValue{
+					{Value: "account_admin"},
+				},
+			}},
+		},
+	})
+	require.NoError(t, err)
+
+	byId, err := a.Users.GetById(ctx, user.Id)
+	require.NoError(t, err)
+	assert.Equal(t, user.Id, byId.Id)
+	assert.Equal(t, 1, len(byId.Roles))
 }
 
 func TestAccGroups(t *testing.T) {

@@ -84,7 +84,7 @@ func (s *suiteOptimizer) enumConstant(l *lookup) expression {
 						Name: prefix,
 					},
 					Named: code.Named{
-						Name: value,
+						Name: e.Content,
 					},
 					Content: e.Content,
 				}
