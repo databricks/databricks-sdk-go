@@ -1,5 +1,93 @@
 # Version changelog
 
+## 0.13.0
+
+* Add issue templates ([#539](https://github.com/databricks/databricks-sdk-go/pull/539)).
+* Added HasRequiredNonBodyField method ([#536](https://github.com/databricks/databricks-sdk-go/pull/536)).
+* Make Azure MSI auth account compatible ([#544](https://github.com/databricks/databricks-sdk-go/pull/544)).
+* Refactor Handling of Name<->ID Mapping in OpenAPI Generator ([#547](https://github.com/databricks/databricks-sdk-go/pull/547)).
+* Regenerate Go SDK from current OpenAPI Specification ([#549](https://github.com/databricks/databricks-sdk-go/pull/549)).
+* Parse Camel Case and Pascal Case Enum Values ([#550](https://github.com/databricks/databricks-sdk-go/pull/550)).
+* Prepare for auto-releaser infra ([#554](https://github.com/databricks/databricks-sdk-go/pull/554)).
+* Added SCIM Patch Acceptance Tests ([#540](https://github.com/databricks/databricks-sdk-go/pull/540)).
+
+API Changes:
+
+ * Removed `Maintenance` method for [w.Metastores](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MetastoresAPI) workspace-level service.
+ * Added `EnableOptimization` method for [w.Metastores](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MetastoresAPI) workspace-level service.
+ * Added `Update` method for [w.Tables](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TablesAPI) workspace-level service.
+ * Added `Force` field for [catalog.DeleteAccountMetastoreRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteAccountMetastoreRequest).
+ * Added `Force` field for [catalog.DeleteAccountStorageCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteAccountStorageCredentialRequest).
+ * Removed [catalog.UpdateAutoMaintenance](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateAutoMaintenance).
+ * Removed [catalog.UpdateAutoMaintenanceResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateAutoMaintenanceResponse).
+ * Added [catalog.UpdatePredictiveOptimization](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdatePredictiveOptimization).
+ * Added [catalog.UpdatePredictiveOptimizationResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdatePredictiveOptimizationResponse).
+ * Added [catalog.UpdateTableRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateTableRequest).
+ * Added `Schema` field for [iam.PartialUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PartialUpdate).
+ * Added [iam.PatchSchema](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PatchSchema).
+ * Added `TriggerInfo` field for [jobs.BaseRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseRun).
+ * Added `Health` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob).
+ * Added `JobSource` field for [jobs.GitSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#GitSource).
+ * Added `OnDurationWarningThresholdExceeded` field for [jobs.JobEmailNotifications](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobEmailNotifications).
+ * Added `Health` field for [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
+ * Added `TriggerInfo` field for [jobs.Run](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Run).
+ * Added `RunJobOutput` field for [jobs.RunOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunOutput).
+ * Added `RunJobTask` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+ * Added `EmailNotifications` field for [jobs.SubmitRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitRun).
+ * Added `Health` field for [jobs.SubmitRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitRun).
+ * Added `EmailNotifications` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+ * Added `Health` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+ * Added `NotificationSettings` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+ * Added `Health` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+ * Added `RunJobTask` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+ * Added `OnDurationWarningThresholdExceeded` field for [jobs.TaskEmailNotifications](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TaskEmailNotifications).
+ * Added `OnDurationWarningThresholdExceeded` field for [jobs.WebhookNotifications](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#WebhookNotifications).
+ * Added [jobs.JobSource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSource).
+ * Added [jobs.JobSourceDirtyState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSourceDirtyState).
+ * Added [jobs.JobsHealthMetric](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobsHealthMetric).
+ * Added [jobs.JobsHealthOperator](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobsHealthOperator).
+ * Added [jobs.JobsHealthRule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobsHealthRule).
+ * Added [jobs.JobsHealthRules](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobsHealthRules).
+ * Added [jobs.RunJobOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunJobOutput).
+ * Added [jobs.RunJobTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunJobTask).
+ * Added [jobs.TriggerInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TriggerInfo).
+ * Added [jobs.WebhookNotificationsOnDurationWarningThresholdExceededItem](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#WebhookNotificationsOnDurationWarningThresholdExceededItem).
+ * Removed `Whl` field for [pipelines.PipelineLibrary](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineLibrary).
+ * Changed `DeletePersonalComputeSetting` method for [a.AccountSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountSettingsAPI) account-level service with new required argument order.
+ * Changed `ReadPersonalComputeSetting` method for [a.AccountSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountSettingsAPI) account-level service with new required argument order.
+ * Changed `Etag` field for [settings.DeletePersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeletePersonalComputeSettingRequest) to be required.
+ * Changed `Etag` field for [settings.ReadPersonalComputeSettingRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ReadPersonalComputeSettingRequest) to be required.
+ * Added [w.CleanRooms](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CleanRoomsAPI) workspace-level service.
+ * Added [sharing.CentralCleanRoomInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CentralCleanRoomInfo).
+ * Added [sharing.CleanRoomAssetInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CleanRoomAssetInfo).
+ * Added [sharing.CleanRoomCatalog](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CleanRoomCatalog).
+ * Added [sharing.CleanRoomCatalogUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CleanRoomCatalogUpdate).
+ * Added [sharing.CleanRoomCollaboratorInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CleanRoomCollaboratorInfo).
+ * Added [sharing.CleanRoomInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CleanRoomInfo).
+ * Added [sharing.CleanRoomNotebookInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CleanRoomNotebookInfo).
+ * Added [sharing.CleanRoomTableInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CleanRoomTableInfo).
+ * Added [sharing.ColumnInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#ColumnInfo).
+ * Added [sharing.ColumnMask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#ColumnMask).
+ * Added [sharing.ColumnTypeName](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#ColumnTypeName).
+ * Added [sharing.CreateCleanRoom](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#CreateCleanRoom).
+ * Added [sharing.DeleteCleanRoomRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#DeleteCleanRoomRequest).
+ * Added [sharing.GetCleanRoomRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#GetCleanRoomRequest).
+ * Added [sharing.ListCleanRoomsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#ListCleanRoomsResponse).
+ * Added [sharing.UpdateCleanRoom](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#UpdateCleanRoom).
+ * Changed `Query` field for [sql.Alert](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#Alert) to [sql.AlertQuery](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertQuery).
+ * Changed `Value` field for [sql.AlertOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertOptions) to `any`.
+ * Removed `IsDbAdmin` field for [sql.User](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#User).
+ * Removed `ProfileImageUrl` field for [sql.User](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#User).
+ * Added [sql.AlertQuery](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertQuery).
+
+OpenAPI SHA: 0a1949ba96f71680dad30e06973eaae85b1307bb, Date: 2023-07-18
+Dependency updates:
+
+ * Bump golang.org/x/oauth2 from 0.9.0 to 0.10.0 ([#545](https://github.com/databricks/databricks-sdk-go/pull/545)).
+ * Bump golang.org/x/mod from 0.11.0 to 0.12.0 ([#541](https://github.com/databricks/databricks-sdk-go/pull/541)).
+ * Bump google.golang.org/api from 0.129.0 to 0.130.0 ([#542](https://github.com/databricks/databricks-sdk-go/pull/542)).
+ * Bump google.golang.org/api from 0.130.0 to 0.131.0 ([#551](https://github.com/databricks/databricks-sdk-go/pull/551)).
+
 ## 0.12.0
 
  * Change release type

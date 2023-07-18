@@ -406,6 +406,11 @@ type MetastoresService interface {
 	// Deletes a metastore. The caller must be a metastore admin.
 	Delete(ctx context.Context, request DeleteMetastoreRequest) error
 
+	// Toggle predictive optimization on the metastore.
+	//
+	// Enables or disables predictive optimization on the metastore.
+	EnableOptimization(ctx context.Context, request UpdatePredictiveOptimization) (*UpdatePredictiveOptimizationResponse, error)
+
 	// Get a metastore.
 	//
 	// Gets a metastore that matches the supplied ID. The caller must be a
@@ -420,11 +425,6 @@ type MetastoresService interface {
 	//
 	// Use ListAll() to get all MetastoreInfo instances
 	List(ctx context.Context) (*ListMetastoresResponse, error)
-
-	// Enables or disables auto maintenance on the metastore.
-	//
-	// Enables or disables auto maintenance on the metastore.
-	Maintenance(ctx context.Context, request UpdateAutoMaintenance) (*UpdateAutoMaintenanceResponse, error)
 
 	// Get a metastore summary.
 	//
