@@ -791,15 +791,18 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		// default config
 		cfg = &config.Config{}
 	}
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	if cfg.AccountID == "" || cfg.IsAccountClient() {
+		return nil, ErrNotWorkspaceClient
+	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
-
-	if cfg.AccountID == "" || cfg.IsAccountClient() {
-		return nil, ErrNotWorkspaceClient
-	}
-	
 	return &WorkspaceClient{
 		Config: cfg,
 		Files:  files.NewFiles(apiClient),
