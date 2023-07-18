@@ -37,7 +37,7 @@ func ExampleUsersAPI_Create_clustersApiIntegration() {
 
 }
 
-func ExampleUsersAPI_Create_users() {
+func ExampleUsersAPI_Create_workspaceUsers() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -52,6 +52,31 @@ func ExampleUsersAPI_Create_users() {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", user)
+
+}
+
+func ExampleUsersAPI_Create_accountUsers() {
+	ctx := context.Background()
+	a, err := databricks.NewAccountClient()
+	if err != nil {
+		panic(err)
+	}
+
+	user, err := a.Users.Create(ctx, iam.User{
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+		UserName:    fmt.Sprintf("sdk-%x@example.com", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", user)
+
+	// cleanup
+
+	err = a.Users.DeleteById(ctx, user.Id)
+	if err != nil {
+		panic(err)
+	}
 
 }
 
@@ -77,7 +102,7 @@ func ExampleUsersAPI_Delete_clustersApiIntegration() {
 
 }
 
-func ExampleUsersAPI_Delete_users() {
+func ExampleUsersAPI_Delete_workspaceUsers() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -100,7 +125,30 @@ func ExampleUsersAPI_Delete_users() {
 
 }
 
-func ExampleUsersAPI_Get_users() {
+func ExampleUsersAPI_Delete_accountUsers() {
+	ctx := context.Background()
+	a, err := databricks.NewAccountClient()
+	if err != nil {
+		panic(err)
+	}
+
+	user, err := a.Users.Create(ctx, iam.User{
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+		UserName:    fmt.Sprintf("sdk-%x@example.com", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", user)
+
+	err = a.Users.DeleteById(ctx, user.Id)
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func ExampleUsersAPI_Get_workspaceUsers() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -124,7 +172,38 @@ func ExampleUsersAPI_Get_users() {
 
 }
 
-func ExampleUsersAPI_ListAll_users() {
+func ExampleUsersAPI_Get_accountUsers() {
+	ctx := context.Background()
+	a, err := databricks.NewAccountClient()
+	if err != nil {
+		panic(err)
+	}
+
+	user, err := a.Users.Create(ctx, iam.User{
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+		UserName:    fmt.Sprintf("sdk-%x@example.com", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", user)
+
+	byId, err := a.Users.GetById(ctx, user.Id)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", byId)
+
+	// cleanup
+
+	err = a.Users.DeleteById(ctx, user.Id)
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func ExampleUsersAPI_ListAll_workspaceUsers() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -140,5 +219,46 @@ func ExampleUsersAPI_ListAll_users() {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", allUsers)
+
+}
+
+func ExampleUsersAPI_Patch_accountUsers() {
+	ctx := context.Background()
+	a, err := databricks.NewAccountClient()
+	if err != nil {
+		panic(err)
+	}
+
+	user, err := a.Users.Create(ctx, iam.User{
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+		UserName:    fmt.Sprintf("sdk-%x@example.com", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", user)
+
+	err = a.Users.Patch(ctx, iam.PartialUpdate{
+		Id:     user.Id,
+		Schema: []iam.PatchSchema{iam.PatchSchemaUrnIetfParamsScimApiMessages20PatchOp},
+		Operations: []iam.Patch{iam.Patch{
+			Op: iam.PatchOpAdd,
+			Value: iam.User{
+				Roles: []iam.ComplexValue{iam.ComplexValue{
+					Value: "account_admin",
+				}},
+			},
+		}},
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	// cleanup
+
+	err = a.Users.DeleteById(ctx, user.Id)
+	if err != nil {
+		panic(err)
+	}
 
 }
