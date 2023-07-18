@@ -310,9 +310,9 @@ type ErrorType string
 
 const ErrorTypeCredentials ErrorType = `credentials`
 
-const ErrorTypeNetworkacl ErrorType = `networkAcl`
+const ErrorTypeNetworkAcl ErrorType = `networkAcl`
 
-const ErrorTypeSecuritygroup ErrorType = `securityGroup`
+const ErrorTypeSecurityGroup ErrorType = `securityGroup`
 
 const ErrorTypeSubnet ErrorType = `subnet`
 
@@ -873,7 +873,7 @@ func (f *VpcStatus) Type() string {
 // The AWS resource associated with this warning: a subnet or a security group.
 type WarningType string
 
-const WarningTypeSecuritygroup WarningType = `securityGroup`
+const WarningTypeSecurityGroup WarningType = `securityGroup`
 
 const WarningTypeSubnet WarningType = `subnet`
 

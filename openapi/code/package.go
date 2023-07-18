@@ -142,8 +142,9 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 		Named: Named{
 			Description: s.Description,
 		},
-		Schema: s,
-		enum:   map[string]EnumEntry{},
+		Schema:  s,
+		Package: pkg,
+		enum:    map[string]EnumEntry{},
 	}
 	// pull embedded types up, if they can be defined at package level
 	if s.IsDefinable() && !hasName {
@@ -183,7 +184,7 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 
 // makeObject converts OpenAPI Schema into type representation
 func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Entity {
-	e.fields = map[string]Field{}
+	e.fields = map[string]*Field{}
 	required := map[string]bool{}
 	for _, v := range s.Required {
 		required[v] = true
@@ -196,7 +197,7 @@ func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Ent
 			}
 		}
 		named := Named{k, v.Description}
-		e.fields[k] = Field{
+		e.fields[k] = &Field{
 			Named:    named,
 			Entity:   pkg.schemaToEntity(v, append(path, named.PascalName()), false),
 			Required: required[k],
@@ -208,18 +209,11 @@ func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Ent
 	return e
 }
 
-var nonAlphanum = regexp.MustCompile(`[^a-zA-Z]`)
 var whitespace = regexp.MustCompile(`\s+`)
 
 func (pkg *Package) makeEnum(e *Entity, s *openapi.Schema, path []string) *Entity {
 	for idx, content := range s.Enum {
 		name := content
-		name = nonAlphanum.ReplaceAllString(name, " ")
-		var splits []string
-		for _, v := range whitespace.Split(name, -1) {
-			splits = append(splits, strings.Title(strings.ToLower(v)))
-		}
-		name = strings.Join(splits, "")
 		if len(s.AliasEnum) == len(s.Enum) {
 			name = s.AliasEnum[idx]
 		}

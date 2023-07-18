@@ -135,7 +135,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 	if op.RequestBody == nil && len(params) == 0 {
 		return nil
 	}
-	request := &Entity{fields: map[string]Field{}}
+	request := &Entity{fields: map[string]*Field{}}
 	if op.RequestBody != nil {
 		request = svc.Package.schemaToEntity(op.RequestBody.Schema(), []string{op.Name()}, true)
 	}
@@ -155,7 +155,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 		}
 		field, exists := request.fields[param.Name]
 		if !exists {
-			field = *param
+			field = param
 		}
 		field.IsPath = param.IsPath
 		field.IsQuery = param.IsQuery
@@ -226,7 +226,7 @@ func (svc *Service) paramPath(path string, request *Entity, params []openapi.Par
 			parts = append(parts, PathPart{prefix, nil, false})
 			continue
 		}
-		parts = append(parts, PathPart{prefix, &field, false})
+		parts = append(parts, PathPart{prefix, field, false})
 	}
 	return
 }

@@ -24,6 +24,11 @@ func NewFromFile(name string) (*Batch, error) {
 	if err != nil {
 		return nil, fmt.Errorf("spec from %s: %w", name, err)
 	}
+	return NewFromSpec(spec)
+}
+
+// NewFromSpec converts OpenAPI spec to intermediate representation
+func NewFromSpec(spec *openapi.Specification) (*Batch, error) {
 	batch := Batch{
 		packages: map[string]*Package{},
 	}
