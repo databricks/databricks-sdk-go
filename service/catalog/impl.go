@@ -339,6 +339,13 @@ func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequ
 	return err
 }
 
+func (a *metastoresImpl) EnableOptimization(ctx context.Context, request UpdatePredictiveOptimization) (*UpdatePredictiveOptimizationResponse, error) {
+	var updatePredictiveOptimizationResponse UpdatePredictiveOptimizationResponse
+	path := "/api/2.0/predictive-optimization/service"
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &updatePredictiveOptimizationResponse)
+	return &updatePredictiveOptimizationResponse, err
+}
+
 func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (*MetastoreInfo, error) {
 	var metastoreInfo MetastoreInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
@@ -351,13 +358,6 @@ func (a *metastoresImpl) List(ctx context.Context) (*ListMetastoresResponse, err
 	path := "/api/2.1/unity-catalog/metastores"
 	err := a.client.Do(ctx, http.MethodGet, path, nil, &listMetastoresResponse)
 	return &listMetastoresResponse, err
-}
-
-func (a *metastoresImpl) Maintenance(ctx context.Context, request UpdateAutoMaintenance) (*UpdateAutoMaintenanceResponse, error) {
-	var updateAutoMaintenanceResponse UpdateAutoMaintenanceResponse
-	path := "/api/2.0/auto-maintenance/service"
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &updateAutoMaintenanceResponse)
-	return &updateAutoMaintenanceResponse, err
 }
 
 func (a *metastoresImpl) Summary(ctx context.Context) (*GetMetastoreSummaryResponse, error) {

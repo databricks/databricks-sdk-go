@@ -224,8 +224,8 @@ func (a *ExperimentsAPI) ListExperimentsAll(ctx context.Context, request ListExp
 //
 // The following limits also apply to metric, param, and tag keys and values:
 //
-// * Metric keyes, param keys, and tag keys can be up to 250 characters in
-// length * Parameter and tag values can be up to 250 characters in length
+// * Metric keys, param keys, and tag keys can be up to 250 characters in length
+// * Parameter and tag values can be up to 250 characters in length
 func (a *ExperimentsAPI) LogBatch(ctx context.Context, request LogBatch) error {
 	return a.impl.LogBatch(ctx, request)
 }

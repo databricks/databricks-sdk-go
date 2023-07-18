@@ -266,7 +266,7 @@ func TestUcAccMetastores(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotEqual(t, created.MetastoreId, currentMetastore.MetastoreId)
 
-	autoMaintenance, err := w.Metastores.Maintenance(ctx, catalog.UpdateAutoMaintenance{
+	autoMaintenance, err := w.Metastores.EnableOptimization(ctx, catalog.UpdatePredictiveOptimization{
 		Enable:      true,
 		MetastoreId: created.MetastoreId,
 	})
