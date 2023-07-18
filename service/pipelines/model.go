@@ -542,8 +542,6 @@ type PipelineLibrary struct {
 	// The path to a notebook that defines a pipeline and is stored in the
 	// <Databricks> workspace.
 	Notebook *NotebookLibrary `json:"notebook,omitempty"`
-	// URI of the wheel to be installed.
-	Whl string `json:"whl,omitempty"`
 }
 
 type PipelineSpec struct {

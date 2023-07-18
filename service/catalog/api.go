@@ -1004,6 +1004,13 @@ func (a *MetastoresAPI) DeleteById(ctx context.Context, id string) error {
 	})
 }
 
+// Toggle predictive optimization on the metastore.
+//
+// Enables or disables predictive optimization on the metastore.
+func (a *MetastoresAPI) EnableOptimization(ctx context.Context, request UpdatePredictiveOptimization) (*UpdatePredictiveOptimizationResponse, error) {
+	return a.impl.EnableOptimization(ctx, request)
+}
+
 // Get a metastore.
 //
 // Gets a metastore that matches the supplied ID. The caller must be a metastore
@@ -1088,13 +1095,6 @@ func (a *MetastoresAPI) GetByName(ctx context.Context, name string) (*MetastoreI
 		return nil, fmt.Errorf("there are %d instances of MetastoreInfo named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
-}
-
-// Enables or disables auto maintenance on the metastore.
-//
-// Enables or disables auto maintenance on the metastore.
-func (a *MetastoresAPI) Maintenance(ctx context.Context, request UpdateAutoMaintenance) (*UpdateAutoMaintenanceResponse, error) {
-	return a.impl.Maintenance(ctx, request)
 }
 
 // Get a metastore summary.

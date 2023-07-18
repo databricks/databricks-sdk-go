@@ -88,8 +88,8 @@ type BaseRun struct {
 	// The canonical identifier of the run. This ID is unique across all runs of
 	// all jobs.
 	RunId int64 `json:"run_id,omitempty"`
-	// An optional name for the run. The maximum allowed length is 4096 bytes in
-	// UTF-8 encoding.
+	// An optional name for the run. The maximum length is 4096 bytes in UTF-8
+	// encoding.
 	RunName string `json:"run_name,omitempty"`
 	// The URL to the detail page of the run.
 	RunPageUrl string `json:"run_page_url,omitempty"`
@@ -259,6 +259,8 @@ type CreateJob struct {
 	// An optional specification for a remote repository containing the
 	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
+	// An optional set of health rules that can be defined for this job.
+	Health *JobsHealthRules `json:"health,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
 	// You must declare dependent libraries in task settings.
@@ -280,7 +282,8 @@ type CreateJob struct {
 	// runs to be skipped. The default behavior is to allow only 1 concurrent
 	// run.
 	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
-	// An optional name for the job.
+	// An optional name for the job. The maximum length is 4096 bytes in UTF-8
+	// encoding.
 	Name string `json:"name,omitempty"`
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
@@ -517,12 +520,9 @@ type GitSnapshot struct {
 type GitSource struct {
 	// Name of the branch to be checked out and used by this job. This field
 	// cannot be specified in conjunction with git_tag or git_commit.
-	//
-	// The maximum length is 255 characters.
 	GitBranch string `json:"git_branch,omitempty"`
 	// Commit to be checked out and used by this job. This field cannot be
-	// specified in conjunction with git_branch or git_tag. The maximum length
-	// is 64 characters.
+	// specified in conjunction with git_branch or git_tag.
 	GitCommit string `json:"git_commit,omitempty"`
 	// Unique identifier of the service used to host the Git repository. The
 	// value is case insensitive.
@@ -532,11 +532,8 @@ type GitSource struct {
 	GitSnapshot *GitSnapshot `json:"git_snapshot,omitempty"`
 	// Name of the tag to be checked out and used by this job. This field cannot
 	// be specified in conjunction with git_branch or git_commit.
-	//
-	// The maximum length is 255 characters.
 	GitTag string `json:"git_tag,omitempty"`
-	// URL of the repository to be cloned by this job. The maximum length is 300
-	// characters.
+	// URL of the repository to be cloned by this job.
 	GitUrl string `json:"git_url"`
 	// The source of the job specification in the remote repository when the job
 	// is source controlled.
@@ -589,6 +586,11 @@ type JobEmailNotifications struct {
 	// If true, do not send email to recipients specified in `on_failure` if the
 	// run is skipped.
 	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
+	// A list of email addresses to be notified when the duration of a run
+	// exceeds the threshold specified for the `RUN_DURATION_SECONDS` metric in
+	// the `health` field. If no rule for the `RUN_DURATION_SECONDS` metric is
+	// specified in the `health` field for the job, notifications are not sent.
+	OnDurationWarningThresholdExceeded []string `json:"on_duration_warning_threshold_exceeded,omitempty"`
 	// A list of email addresses to be notified when a run unsuccessfully
 	// completes. A run is considered to have completed unsuccessfully if it
 	// ends with an `INTERNAL_ERROR` `life_cycle_state` or a `FAILED`, or
@@ -667,6 +669,8 @@ type JobSettings struct {
 	// An optional specification for a remote repository containing the
 	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
+	// An optional set of health rules that can be defined for this job.
+	Health *JobsHealthRules `json:"health,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
 	// You must declare dependent libraries in task settings.
@@ -688,7 +692,8 @@ type JobSettings struct {
 	// runs to be skipped. The default behavior is to allow only 1 concurrent
 	// run.
 	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
-	// An optional name for the job.
+	// An optional name for the job. The maximum length is 4096 bytes in UTF-8
+	// encoding.
 	Name string `json:"name,omitempty"`
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
@@ -769,6 +774,77 @@ func (f *JobSourceDirtyState) Set(v string) error {
 // Type always returns JobSourceDirtyState to satisfy [pflag.Value] interface
 func (f *JobSourceDirtyState) Type() string {
 	return "JobSourceDirtyState"
+}
+
+// Specifies the health metric that is being evaluated for a particular health
+// rule.
+type JobsHealthMetric string
+
+const JobsHealthMetricRunDurationSeconds JobsHealthMetric = `RUN_DURATION_SECONDS`
+
+// String representation for [fmt.Print]
+func (f *JobsHealthMetric) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *JobsHealthMetric) Set(v string) error {
+	switch v {
+	case `RUN_DURATION_SECONDS`:
+		*f = JobsHealthMetric(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "RUN_DURATION_SECONDS"`, v)
+	}
+}
+
+// Type always returns JobsHealthMetric to satisfy [pflag.Value] interface
+func (f *JobsHealthMetric) Type() string {
+	return "JobsHealthMetric"
+}
+
+// Specifies the operator used to compare the health metric value with the
+// specified threshold.
+type JobsHealthOperator string
+
+const JobsHealthOperatorGreaterThan JobsHealthOperator = `GREATER_THAN`
+
+// String representation for [fmt.Print]
+func (f *JobsHealthOperator) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *JobsHealthOperator) Set(v string) error {
+	switch v {
+	case `GREATER_THAN`:
+		*f = JobsHealthOperator(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GREATER_THAN"`, v)
+	}
+}
+
+// Type always returns JobsHealthOperator to satisfy [pflag.Value] interface
+func (f *JobsHealthOperator) Type() string {
+	return "JobsHealthOperator"
+}
+
+type JobsHealthRule struct {
+	// Specifies the health metric that is being evaluated for a particular
+	// health rule.
+	Metric JobsHealthMetric `json:"metric,omitempty"`
+	// Specifies the operator used to compare the health metric value with the
+	// specified threshold.
+	Op JobsHealthOperator `json:"op,omitempty"`
+	// Specifies the threshold value that the health metric should obey to
+	// satisfy the health rule.
+	Value int `json:"value,omitempty"`
+}
+
+// An optional set of health rules that can be defined for this job.
+type JobsHealthRules struct {
+	Rules []JobsHealthRule `json:"rules,omitempty"`
 }
 
 // List jobs
@@ -1277,8 +1353,8 @@ type Run struct {
 	// The canonical identifier of the run. This ID is unique across all runs of
 	// all jobs.
 	RunId int64 `json:"run_id,omitempty"`
-	// An optional name for the run. The maximum allowed length is 4096 bytes in
-	// UTF-8 encoding.
+	// An optional name for the run. The maximum length is 4096 bytes in UTF-8
+	// encoding.
 	RunName string `json:"run_name,omitempty"`
 	// The URL to the detail page of the run.
 	RunPageUrl string `json:"run_page_url,omitempty"`
@@ -1362,7 +1438,7 @@ func (f *RunConditionTaskOp) Type() string {
 // This describes an enum
 type RunIf string
 
-// All dependencies completed and at least one was executed
+// All dependencies have been completed
 const RunIfAllDone RunIf = `ALL_DONE`
 
 // ALl dependencies have failed
@@ -1804,7 +1880,7 @@ type RunTask struct {
 	// executing this task. The key is `task_key`, and the value is the name
 	// assigned to the dependent task.
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
-	// An optional description for this task. The maximum length is 4096 bytes.
+	// An optional description for this task.
 	Description string `json:"description,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
@@ -1876,7 +1952,7 @@ type RunTask struct {
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
 	// job. On Update or Reset, this field is used to reference the tasks to be
-	// updated or reset. The maximum length is 100 characters.
+	// updated or reset.
 	TaskKey string `json:"task_key,omitempty"`
 }
 
@@ -2204,6 +2280,8 @@ type SubmitRun struct {
 	// An optional specification for a remote repository containing the
 	// notebooks used by this job's notebook tasks.
 	GitSource *GitSource `json:"git_source,omitempty"`
+	// An optional set of health rules that can be defined for this job.
+	Health *JobsHealthRules `json:"health,omitempty"`
 	// An optional token that can be used to guarantee the idempotency of job
 	// run requests. If a run with the provided token already exists, the
 	// request does not create a new run but returns the ID of the existing run
@@ -2258,6 +2336,8 @@ type SubmitTask struct {
 	// need to manually restart the cluster if it stops responding. We suggest
 	// running jobs on new clusters for greater reliability.
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
+	// An optional set of health rules that can be defined for this job.
+	Health *JobsHealthRules `json:"health,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the task. The default value is an empty list.
 	Libraries []compute.Library `json:"libraries,omitempty"`
@@ -2285,7 +2365,7 @@ type SubmitTask struct {
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
 	// job. On Update or Reset, this field is used to reference the tasks to be
-	// updated or reset. The maximum length is 100 characters.
+	// updated or reset.
 	TaskKey string `json:"task_key"`
 	// An optional timeout applied to each run of this job task. The default
 	// behavior is to have no timeout.
@@ -2309,7 +2389,7 @@ type Task struct {
 	// executing this task. The key is `task_key`, and the value is the name
 	// assigned to the dependent task.
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
-	// An optional description for this task. The maximum length is 4096 bytes.
+	// An optional description for this task.
 	Description string `json:"description,omitempty"`
 	// An optional set of email addresses that is notified when runs of this
 	// task begin or complete as well as when this task is deleted. The default
@@ -2320,6 +2400,8 @@ type Task struct {
 	// need to manually restart the cluster if it stops responding. We suggest
 	// running jobs on new clusters for greater reliability.
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
+	// An optional set of health rules that can be defined for this job.
+	Health *JobsHealthRules `json:"health,omitempty"`
 	// If job_cluster_key, this task is executed reusing the cluster specified
 	// in `job.settings.job_clusters`.
 	JobClusterKey string `json:"job_cluster_key,omitempty"`
@@ -2359,9 +2441,9 @@ type Task struct {
 	// * `ALL_SUCCESS`: All dependencies have executed and succeeded *
 	// `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded *
 	// `NONE_FAILED`: None of the dependencies have failed and at least one was
-	// executed * `ALL_DONE`: All dependencies completed and at least one was
-	// executed * `AT_LEAST_ONE_FAILED`: At least one dependency failed *
-	// `ALL_FAILED`: ALl dependencies have failed
+	// executed * `ALL_DONE`: All dependencies have been completed *
+	// `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl
+	// dependencies have failed
 	RunIf RunIf `json:"run_if,omitempty"`
 	// If run_job_task, indicates that this task must execute another job.
 	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
@@ -2377,7 +2459,7 @@ type Task struct {
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
 	// job. On Update or Reset, this field is used to reference the tasks to be
-	// updated or reset. The maximum length is 100 characters.
+	// updated or reset.
 	TaskKey string `json:"task_key"`
 	// An optional timeout applied to each run of this job task. The default
 	// behavior is to have no timeout.
@@ -2393,6 +2475,11 @@ type TaskDependency struct {
 }
 
 type TaskEmailNotifications struct {
+	// A list of email addresses to be notified when the duration of a run
+	// exceeds the threshold specified for the `RUN_DURATION_SECONDS` metric in
+	// the `health` field. If no rule for the `RUN_DURATION_SECONDS` metric is
+	// specified in the `health` field for the job, notifications are not sent.
+	OnDurationWarningThresholdExceeded []string `json:"on_duration_warning_threshold_exceeded,omitempty"`
 	// A list of email addresses to be notified when a run unsuccessfully
 	// completes. A run is considered to have completed unsuccessfully if it
 	// ends with an `INTERNAL_ERROR` `life_cycle_state` or a `FAILED`, or
@@ -2597,6 +2684,11 @@ type Webhook struct {
 }
 
 type WebhookNotifications struct {
+	// An optional list of system notification IDs to call when the duration of
+	// a run exceeds the threshold specified for the `RUN_DURATION_SECONDS`
+	// metric in the `health` field. A maximum of 3 destinations can be
+	// specified for the `on_duration_warning_threshold_exceeded` property.
+	OnDurationWarningThresholdExceeded []WebhookNotificationsOnDurationWarningThresholdExceededItem `json:"on_duration_warning_threshold_exceeded,omitempty"`
 	// An optional list of system notification IDs to call when the run fails. A
 	// maximum of 3 destinations can be specified for the `on_failure` property.
 	OnFailure []Webhook `json:"on_failure,omitempty"`
@@ -2607,4 +2699,8 @@ type WebhookNotifications struct {
 	// completes successfully. A maximum of 3 destinations can be specified for
 	// the `on_success` property.
 	OnSuccess []Webhook `json:"on_success,omitempty"`
+}
+
+type WebhookNotificationsOnDurationWarningThresholdExceededItem struct {
+	Id string `json:"id,omitempty"`
 }

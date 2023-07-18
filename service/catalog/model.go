@@ -739,12 +739,17 @@ type DeleteAccountMetastoreAssignmentRequest struct {
 
 // Delete a metastore
 type DeleteAccountMetastoreRequest struct {
+	// Force deletion even if the metastore is not empty. Default is false.
+	Force bool `json:"-" url:"force,omitempty"`
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 }
 
 // Delete a storage credential
 type DeleteAccountStorageCredentialRequest struct {
+	// Force deletion even if the Storage Credential is not empty. Default is
+	// false.
+	Force bool `json:"-" url:"force,omitempty"`
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// Name of the storage credential.
@@ -2180,23 +2185,6 @@ type UnassignRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-type UpdateAutoMaintenance struct {
-	// Whether to enable auto maintenance on the metastore.
-	Enable bool `json:"enable"`
-	// Unique identifier of metastore.
-	MetastoreId string `json:"metastore_id"`
-}
-
-type UpdateAutoMaintenanceResponse struct {
-	// Whether auto maintenance is enabled on the metastore.
-	State bool `json:"state,omitempty"`
-	// Id of the auto maintenance service principal. This will be the user used
-	// to run maintenance tasks.
-	UserId int64 `json:"user_id,omitempty"`
-	// Name of the auto maintenance service principal.
-	Username string `json:"username,omitempty"`
-}
-
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -2311,6 +2299,23 @@ type UpdatePermissions struct {
 	FullName string `json:"-" url:"-"`
 	// Type of securable.
 	SecurableType SecurableType `json:"-" url:"-"`
+}
+
+type UpdatePredictiveOptimization struct {
+	// Whether to enable predictive optimization on the metastore.
+	Enable bool `json:"enable"`
+	// Unique identifier of metastore.
+	MetastoreId string `json:"metastore_id"`
+}
+
+type UpdatePredictiveOptimizationResponse struct {
+	// Whether predictive optimization is enabled on the metastore.
+	State bool `json:"state,omitempty"`
+	// Id of the predictive optimization service principal. This will be the
+	// user used to run optimization tasks.
+	UserId int64 `json:"user_id,omitempty"`
+	// Name of the predictive optimization service principal.
+	Username string `json:"username,omitempty"`
 }
 
 type UpdateSchema struct {
