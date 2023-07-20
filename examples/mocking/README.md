@@ -7,13 +7,13 @@ Please read through [`dbfs_test.go`](dbfs_test.go) test example.
 ## Declaring which mocks to generate
 
 ```go
-//go:generate go run github.com/golang/mock/mockgen@latest -package=mocks -destination=mocks/dbfs.go github.com/databricks/databricks-sdk-go/service/dbfs DbfsService
+//go:generate go run github.com/golang/mock/mockgen@latest -package=mocks -destination=mocks/dbfs.go github.com/xuxiaoshuo/databricks-sdk-go/service/dbfs DbfsService
 ```
 
 * `go run github.com/golang/mock/mockgen@latest` downloads and executes the latest version of `mockgen` command
 * `-package=mocks` instructs to generate mocks in the `mocks` package
 * `-destination=mocks/dbfs.go` instructs to create `dbfs.go` file with mock stubs.
-* `github.com/databricks/databricks-sdk-go/service/dbfs` tells which Databricks package to look services in.
+* `github.com/xuxiaoshuo/databricks-sdk-go/service/dbfs` tells which Databricks package to look services in.
 * `DbfsService` tells which services to generate mocks for.
 
 ## Initializing `gomock`

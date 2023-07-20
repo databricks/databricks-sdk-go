@@ -2,11 +2,11 @@
 
 [Beta](https://docs.databricks.com/release-notes/release-types.html): This SDK is supported for production use cases, 
 but we do expect future releases to have some interface changes; see [Interface stability](#interface-stability). 
-We are keen to hear feedback from you on these SDKs. Please [file issues](https://github.com/databricks/databricks-sdk-go/issues), and we will address them 
-| See documentation at [Go Packages](https://pkg.go.dev/github.com/databricks/databricks-sdk-go)
-| See also the [Terraform Provider](https://github.com/databricks/terraform-provider-databricks)
-| See also the [SDK for Python](https://github.com/databricks/databricks-sdk-py) 
-| See also the [SDK for Java](https://github.com/databricks/databricks-sdk-java) 
+We are keen to hear feedback from you on these SDKs. Please [file issues](https://github.com/xuxiaoshuo/databricks-sdk-go/issues), and we will address them 
+| See documentation at [Go Packages](https://pkg.go.dev/github.com/xuxiaoshuo/databricks-sdk-go)
+| See also the [Terraform Provider](https://github.com/xuxiaoshuo/terraform-provider-databricks)
+| See also the [SDK for Python](https://github.com/xuxiaoshuo/databricks-sdk-py) 
+| See also the [SDK for Java](https://github.com/xuxiaoshuo/databricks-sdk-java) 
 
 The Databricks SDK for Go includes functionality to accelerate development with [Go](https://go.dev) for the Databricks Lakehouse. It covers all public [Databricks REST API](https://docs.databricks.com/dev-tools/api/index.html) operations. The SDK's internal HTTP client is robust and handles failures on different levels by performing intelligent retries.
 
@@ -34,7 +34,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 2. Take a dependency on the Databricks SDK for Go package by running the `go mod edit -require` command:
 
     ```bash
-    go mod edit -require github.com/databricks/databricks-sdk-go@latest
+    go mod edit -require github.com/xuxiaoshuo/databricks-sdk-go@latest
     ```
    
    Your `go.mod` file should now look like this:
@@ -44,7 +44,7 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 
     go 1.18
 
-    require github.com/databricks/databricks-sdk-go v0.9.0
+    require github.com/xuxiaoshuo/databricks-sdk-go v0.9.0
 
     // Indirect dependencies will go here.
     ```
@@ -57,8 +57,8 @@ The Databricks SDK for Go includes functionality to accelerate development with 
     import (
       "context"
 
-      "github.com/databricks/databricks-sdk-go"
-      "github.com/databricks/databricks-sdk-go/service/compute"
+      "github.com/xuxiaoshuo/databricks-sdk-go"
+      "github.com/xuxiaoshuo/databricks-sdk-go/service/compute"
     )
 
     func main() {
@@ -178,8 +178,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
+	"github.com/xuxiaoshuo/databricks-sdk-go/config"
 )
 
 func main() {
@@ -370,7 +370,7 @@ clusterInfo, err = w.Clusters.CreateAndWait(ctx, clusters.CreateCluster{
 
 ### Command execution on clusters
 
-You can run Python, Scala, R, or SQL code on running interactive Databricks clusters and get the results back. All supplied code gets leading whitespace removed, so that you could easily embed Python code into Go applications. This high-level wrapper comes from the Databricks Terraform provider, where it was tested for over 2 years for use cases such as [DBFS mounts](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/mount) and [SQL permissions](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/sql_permissions). This interface hides the intricate complexity of all internal APIs involved to simplify the unit-testing experience for command execution. Databricks does not recommending that you use lower-level interfaces for command execution. The execution timeout is 20 minutes and cannot be overriden for the sake of interface simplicity, meaning that you should only use this API if you have some relatively complex executions to perform. Please use jobs in case your commands must run longer than 20 minutes. Or use the [Databricks SQL Driver for Go](https://github.com/databricks/databricks-sql-go) in case your workload type is purely for business intelligence.
+You can run Python, Scala, R, or SQL code on running interactive Databricks clusters and get the results back. All supplied code gets leading whitespace removed, so that you could easily embed Python code into Go applications. This high-level wrapper comes from the Databricks Terraform provider, where it was tested for over 2 years for use cases such as [DBFS mounts](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/mount) and [SQL permissions](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/sql_permissions). This interface hides the intricate complexity of all internal APIs involved to simplify the unit-testing experience for command execution. Databricks does not recommending that you use lower-level interfaces for command execution. The execution timeout is 20 minutes and cannot be overriden for the sake of interface simplicity, meaning that you should only use this API if you have some relatively complex executions to perform. Please use jobs in case your commands must run longer than 20 minutes. Or use the [Databricks SQL Driver for Go](https://github.com/xuxiaoshuo/databricks-sql-go) in case your workload type is purely for business intelligence.
 
 ```go
 res := w.CommandExecutor.Execute(ctx, clusterId, "python", "print(1)")
@@ -529,12 +529,12 @@ Databricks SDK for Go loosely integrates with [spf13/pflag](https://github.com/s
 
 ## Logging
 
-By default, Databricks SDK for Go uses [logger.SimpleLogger](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/logger#Logger), which is a levelled proxy to `log.Printf`, printing to `os.Stderr`. You can disable logging completely by adding `log.SetOutput(io.Discard)` to your `init()` function. You are encouraged to override `logging.DefaultLogger` with your own implementation that follows the [logger.Logger](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/logger#Logger) interface.
+By default, Databricks SDK for Go uses [logger.SimpleLogger](https://pkg.go.dev/github.com/xuxiaoshuo/databricks-sdk-go/logger#Logger), which is a levelled proxy to `log.Printf`, printing to `os.Stderr`. You can disable logging completely by adding `log.SetOutput(io.Discard)` to your `init()` function. You are encouraged to override `logging.DefaultLogger` with your own implementation that follows the [logger.Logger](https://pkg.go.dev/github.com/xuxiaoshuo/databricks-sdk-go/logger#Logger) interface.
 
 Since v0.10.0, default logger prints only `INFO` level messages. To replicate more verbose behavior from the previous versions, set the `DEBUG` level in `SimpleLogger`:
 
 ```go
-import "github.com/databricks/databricks-sdk-go/logger"
+import "github.com/xuxiaoshuo/databricks-sdk-go/logger"
 
 func init() {
 	logger.DefaultLogger = &logger.SimpleLogger{
@@ -547,4 +547,4 @@ Current Logger interface will evolve in the future versions of Databricks SDK fo
 
 ## Interface stability
 
-During the [Beta](https://docs.databricks.com/release-notes/release-types.html) period, Databricks is actively working on stabilizing the Databricks SDK for Go's interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to pin the exact version in the `go.mod` file and read the [changelog](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md) where Databricks documents the changes. Some types of interfaces are more stable than others. For those interfaces that are not yet [nightly tested](https://github.com/databricks/databricks-sdk-go/tree/main/internal), Databricks may have minor [documented](https://github.com/databricks/databricks-sdk-go/blob/main/CHANGELOG.md) backward-incompatible changes, such as fixing mapping correctness from `int` to `int64` or renaming some type names to bring more consistency. 
+During the [Beta](https://docs.databricks.com/release-notes/release-types.html) period, Databricks is actively working on stabilizing the Databricks SDK for Go's interfaces. API clients for all services are generated from specification files that are synchronized from the main platform. You are highly encouraged to pin the exact version in the `go.mod` file and read the [changelog](https://github.com/xuxiaoshuo/databricks-sdk-go/blob/main/CHANGELOG.md) where Databricks documents the changes. Some types of interfaces are more stable than others. For those interfaces that are not yet [nightly tested](https://github.com/xuxiaoshuo/databricks-sdk-go/tree/main/internal), Databricks may have minor [documented](https://github.com/xuxiaoshuo/databricks-sdk-go/blob/main/CHANGELOG.md) backward-incompatible changes, such as fixing mapping correctness from `int` to `int64` or renaming some type names to bring more consistency. 

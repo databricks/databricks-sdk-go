@@ -7,13 +7,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/logger"
-	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go/retries"
 )
 
 // getOrCreateClusterMutex guards "mounting" cluster creation to prevent multiple
 // redundant instances created at the same name. Compute package private property.
-// https://github.com/databricks/terraform-provider-databricks/issues/445
+// https://github.com/xuxiaoshuo/terraform-provider-databricks/issues/445
 var getOrCreateClusterMutex sync.Mutex
 
 func (c *ClusterDetails) IsRunningOrResizing() bool {

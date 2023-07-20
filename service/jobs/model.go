@@ -5,8 +5,8 @@ package jobs
 import (
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/service/compute"
-	"github.com/databricks/databricks-sdk-go/service/iam"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/compute"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/iam"
 )
 
 // all definitions in this file are in alphabetical order

@@ -3,21 +3,21 @@
 package databricks
 
 import (
-	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/xuxiaoshuo/databricks-sdk-go/client"
+	"github.com/xuxiaoshuo/databricks-sdk-go/config"
 
-	"github.com/databricks/databricks-sdk-go/service/catalog"
-	"github.com/databricks/databricks-sdk-go/service/compute"
-	"github.com/databricks/databricks-sdk-go/service/files"
-	"github.com/databricks/databricks-sdk-go/service/iam"
-	"github.com/databricks/databricks-sdk-go/service/jobs"
-	"github.com/databricks/databricks-sdk-go/service/ml"
-	"github.com/databricks/databricks-sdk-go/service/pipelines"
-	"github.com/databricks/databricks-sdk-go/service/serving"
-	"github.com/databricks/databricks-sdk-go/service/settings"
-	"github.com/databricks/databricks-sdk-go/service/sharing"
-	"github.com/databricks/databricks-sdk-go/service/sql"
-	"github.com/databricks/databricks-sdk-go/service/workspace"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/catalog"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/compute"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/files"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/iam"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/jobs"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/ml"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/pipelines"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/serving"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/settings"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/sharing"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/sql"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/workspace"
 )
 
 type WorkspaceClient struct {

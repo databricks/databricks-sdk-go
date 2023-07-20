@@ -8,11 +8,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 
-	"github.com/databricks/databricks-sdk-go/service/catalog"
-	"github.com/databricks/databricks-sdk-go/service/sql"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/catalog"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/sql"
 )
 
 func ExampleStatementExecutionAPI_Execute_tables() {

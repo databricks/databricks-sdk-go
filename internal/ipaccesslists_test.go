@@ -3,9 +3,9 @@ package internal
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/settings"
 )
 
 func TestAccIpAccessLists(t *testing.T) {

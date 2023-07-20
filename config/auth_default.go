@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 )
 
 var (

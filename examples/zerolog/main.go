@@ -5,10 +5,9 @@ import (
 	"flag"
 	"os"
 
-	"github.com/databricks/databricks-sdk-go"
-	sdk "github.com/databricks/databricks-sdk-go/logger"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	sdk "github.com/xuxiaoshuo/databricks-sdk-go/logger"
 )
 
 var json bool

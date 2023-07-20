@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/apierr"
-	"github.com/databricks/databricks-sdk-go/logger"
-	"github.com/databricks/databricks-sdk-go/retries"
-	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/xuxiaoshuo/databricks-sdk-go/apierr"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go/retries"
+	"github.com/xuxiaoshuo/databricks-sdk-go/useragent"
 )
 
 type Wait struct {

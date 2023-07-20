@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 
-	"github.com/databricks/databricks-sdk-go/service/workspace"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/workspace"
 )
 
 func ExampleGitCredentialsAPI_Create_gitCredentials() {

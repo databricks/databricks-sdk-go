@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/xuxiaoshuo/databricks-sdk-go/client"
 )
 
 // BEGIN TODO: remove this once FilesAPI gets OpenAPI spec

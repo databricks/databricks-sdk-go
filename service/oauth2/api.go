@@ -6,7 +6,7 @@ package oauth2
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/xuxiaoshuo/databricks-sdk-go/client"
 )
 
 func NewCustomAppIntegration(client *client.DatabricksClient) *CustomAppIntegrationAPI {
@@ -283,7 +283,7 @@ func NewServicePrincipalSecrets(client *client.DatabricksClient) *ServicePrincip
 // information, see [Databricks Terraform Provider].
 //
 // [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
-// [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
+// [Databricks Terraform Provider]: https://github.com/xuxiaoshuo/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
 type ServicePrincipalSecretsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ServicePrincipalSecretsService)

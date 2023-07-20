@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
 

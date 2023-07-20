@@ -6,8 +6,8 @@ package ml
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/xuxiaoshuo/databricks-sdk-go/client"
+	"github.com/xuxiaoshuo/databricks-sdk-go/useragent"
 )
 
 func NewExperiments(client *client.DatabricksClient) *ExperimentsAPI {

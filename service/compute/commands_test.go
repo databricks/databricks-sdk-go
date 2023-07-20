@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/databricks/databricks-sdk-go/apierr"
-	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/qa"
+	"github.com/xuxiaoshuo/databricks-sdk-go/apierr"
+	"github.com/xuxiaoshuo/databricks-sdk-go/client"
+	"github.com/xuxiaoshuo/databricks-sdk-go/qa"
 )
 
 func commonFixtureWithStatusResponse(response CommandStatusResponse) qa.HTTPFixtures {

@@ -7,10 +7,10 @@ import (
 	"os"
 	"path"
 
-	"github.com/databricks/databricks-sdk-go/openapi/code"
-	"github.com/databricks/databricks-sdk-go/openapi/generator"
-	"github.com/databricks/databricks-sdk-go/openapi/render"
-	"github.com/databricks/databricks-sdk-go/openapi/roll"
+	"github.com/xuxiaoshuo/databricks-sdk-go/openapi/code"
+	"github.com/xuxiaoshuo/databricks-sdk-go/openapi/generator"
+	"github.com/xuxiaoshuo/databricks-sdk-go/openapi/render"
+	"github.com/xuxiaoshuo/databricks-sdk-go/openapi/roll"
 )
 
 var ctx Context

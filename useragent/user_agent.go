@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/version"
+	"github.com/xuxiaoshuo/databricks-sdk-go/version"
 	"golang.org/x/mod/semver"
 )
 

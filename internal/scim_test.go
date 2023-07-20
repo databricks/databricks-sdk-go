@@ -4,11 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/apierr"
-	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/xuxiaoshuo/databricks-sdk-go/apierr"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/iam"
 )
 
 func me(t *testing.T, w *databricks.WorkspaceClient) *iam.User {

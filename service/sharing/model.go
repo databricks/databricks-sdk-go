@@ -5,7 +5,7 @@ package sharing
 import (
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/service/catalog"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/catalog"
 )
 
 // all definitions in this file are in alphabetical order

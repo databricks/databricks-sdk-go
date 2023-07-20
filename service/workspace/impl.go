@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/xuxiaoshuo/databricks-sdk-go/client"
 )
 
 // unexported type that holds implementations of just GitCredentials API methods

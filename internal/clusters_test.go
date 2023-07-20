@@ -2,16 +2,16 @@ package internal
 
 import (
 	"context"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/retries"
-	"github.com/databricks/databricks-sdk-go/service/compute"
-	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/xuxiaoshuo/databricks-sdk-go/retries"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/compute"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/iam"
 )
 
 func sharedRunningCluster(t *testing.T, ctx context.Context,

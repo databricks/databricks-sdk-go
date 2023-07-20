@@ -3,10 +3,10 @@ package internal
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/billing"
-	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/billing"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/provisioning"
 )
 
 func TestMwsAccUsageDownload(t *testing.T) {

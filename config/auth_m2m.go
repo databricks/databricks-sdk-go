@@ -11,7 +11,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 )
 
 var errOAuthNotSupported = errors.New("databricks OAuth is not supported for this host")

@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/rs/zerolog"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 )
 
 // zerologAdapter makes an zerolog.Logger usable with the Databricks SDK.

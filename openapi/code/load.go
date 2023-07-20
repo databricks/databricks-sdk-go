@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/openapi"
+	"github.com/xuxiaoshuo/databricks-sdk-go/openapi"
 	"golang.org/x/exp/slices"
 )
 

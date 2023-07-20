@@ -1,8 +1,8 @@
 package config_test
 
 import (
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
+	"github.com/xuxiaoshuo/databricks-sdk-go/config"
 )
 
 func ExampleConfig_pat() {

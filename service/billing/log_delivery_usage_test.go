@@ -8,11 +8,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 
-	"github.com/databricks/databricks-sdk-go/service/billing"
-	"github.com/databricks/databricks-sdk-go/service/provisioning"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/billing"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/provisioning"
 )
 
 func ExampleLogDeliveryAPI_Create_logDelivery() {

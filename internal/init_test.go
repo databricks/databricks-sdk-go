@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
 	"math/rand"
 	"os"
 	"path"
@@ -13,9 +14,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/config"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go/config"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 )
 
 const fullCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

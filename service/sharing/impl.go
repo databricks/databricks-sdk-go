@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/xuxiaoshuo/databricks-sdk-go/client"
 
-	"github.com/databricks/databricks-sdk-go/service/catalog"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/catalog"
 )
 
 // unexported type that holds implementations of just CleanRooms API methods

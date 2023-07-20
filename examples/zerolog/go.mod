@@ -2,10 +2,10 @@ module main
 
 go 1.18
 
-replace github.com/databricks/databricks-sdk-go v0.0.0 => ../..
+replace github.com/xuxiaoshuo/databricks-sdk-go v0.0.0 => ../..
 
 require (
-	github.com/databricks/databricks-sdk-go v0.0.0
+	github.com/xuxiaoshuo/databricks-sdk-go v0.0.0
 	github.com/rs/zerolog v1.29.0
 )
 

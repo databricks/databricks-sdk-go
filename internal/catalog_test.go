@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/catalog"
-	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/catalog"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/sql"
 )
 
 func TestUcAccVolumes(t *testing.T) {
@@ -172,7 +172,7 @@ func TestUcAccStorageCredentialsOnAws(t *testing.T) {
 	}
 
 	// TODO: OpenAPI: retry protocol on late validation for storage
-	// See https://github.com/databricks/terraform-provider-databricks/issues/1424
+	// See https://github.com/xuxiaoshuo/terraform-provider-databricks/issues/1424
 	created, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{
 		Name: RandomName("go-sdk-"),
 		AwsIamRole: &catalog.AwsIamRole{

@@ -2,15 +2,15 @@ package internal
 
 import (
 	"context"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
 	"os/exec"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/config"
-	"github.com/databricks/databricks-sdk-go/internal/env"
-	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/xuxiaoshuo/databricks-sdk-go/config"
+	"github.com/xuxiaoshuo/databricks-sdk-go/internal/env"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/compute"
 )
 
 func TestAccDefaultCredentials(t *testing.T) {

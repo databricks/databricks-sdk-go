@@ -5,10 +5,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/openapi/code"
-	"github.com/databricks/databricks-sdk-go/openapi/render"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/xuxiaoshuo/databricks-sdk-go/openapi/code"
+	"github.com/xuxiaoshuo/databricks-sdk-go/openapi/render"
 )
 
 func TestLoadsFolder(t *testing.T) {

@@ -6,7 +6,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/xuxiaoshuo/databricks-sdk-go/client"
 )
 
 // unexported type that holds implementations of just Dbfs API methods

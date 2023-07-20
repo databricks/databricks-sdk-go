@@ -14,7 +14,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/databricks/databricks-sdk-go/openapi/code"
+	"github.com/xuxiaoshuo/databricks-sdk-go/openapi/code"
 )
 
 type toolConfig struct {

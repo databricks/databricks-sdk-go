@@ -10,9 +10,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/apierr"
-	"github.com/databricks/databricks-sdk-go/service/compute"
-	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/xuxiaoshuo/databricks-sdk-go/apierr"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/compute"
+	"github.com/xuxiaoshuo/databricks-sdk-go/useragent"
 )
 
 var b64 = base64.StdEncoding

@@ -5,10 +5,10 @@ package settings_test
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 
-	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/settings"
 )
 
 func ExampleWorkspaceConfAPI_GetStatus_repos() {

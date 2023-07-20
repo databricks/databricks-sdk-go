@@ -1,9 +1,9 @@
 package databricks
 
 import (
-	"github.com/databricks/databricks-sdk-go/config"
-	"github.com/databricks/databricks-sdk-go/useragent"
-	"github.com/databricks/databricks-sdk-go/version"
+	"github.com/xuxiaoshuo/databricks-sdk-go/config"
+	"github.com/xuxiaoshuo/databricks-sdk-go/useragent"
+	"github.com/xuxiaoshuo/databricks-sdk-go/version"
 )
 
 type Config config.Config

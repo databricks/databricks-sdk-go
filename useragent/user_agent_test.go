@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/version"
 	"github.com/stretchr/testify/assert"
+	"github.com/xuxiaoshuo/databricks-sdk-go/version"
 )
 
 func TestGoVersion(t *testing.T) {

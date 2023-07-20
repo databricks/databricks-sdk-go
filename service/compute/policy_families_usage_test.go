@@ -5,10 +5,10 @@ package compute_test
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 
-	"github.com/databricks/databricks-sdk-go/service/compute"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/compute"
 )
 
 func ExamplePolicyFamiliesAPI_Get_clusterPolicyFamilies() {

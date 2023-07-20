@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/openapi"
+	"github.com/xuxiaoshuo/databricks-sdk-go/openapi"
 )
 
 // Method represents service RPC

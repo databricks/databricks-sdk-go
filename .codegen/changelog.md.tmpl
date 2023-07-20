@@ -22,7 +22,7 @@ Dependency updates:
 
 {{- define "what" -}}
     {{if eq .X "package" -}}
-        [{{.Package.Name}}](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/{{.Package.Name}}) package
+        [{{.Package.Name}}](https://pkg.go.dev/github.com/xuxiaoshuo/databricks-sdk-go/service/{{.Package.Name}}) package
     {{- else if eq .X "service" -}}
         {{template "service" .Service}}
     {{- else if eq .X "method" -}}
@@ -35,13 +35,13 @@ Dependency updates:
 {{- end -}}
 
 {{- define "service" -}}
-    [{{if .IsAccounts}}a{{else}}w{{end}}.{{.PascalName}}](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/{{.Package.Name}}#{{.PascalName}}API) {{if .IsAccounts}}account{{else}}workspace{{end}}-level service
+    [{{if .IsAccounts}}a{{else}}w{{end}}.{{.PascalName}}](https://pkg.go.dev/github.com/xuxiaoshuo/databricks-sdk-go/service/{{.Package.Name}}#{{.PascalName}}API) {{if .IsAccounts}}account{{else}}workspace{{end}}-level service
 {{- end -}}
 
 {{- define "entity" -}}
     {{- if not . }}any /* ERROR */
 	{{- else if .IsEmpty}}`any`
-	{{- else if .PascalName}}[{{.Package.Name}}.{{.PascalName}}](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/{{.Package.Name}}#{{.PascalName}})
+	{{- else if .PascalName}}[{{.Package.Name}}.{{.PascalName}}](https://pkg.go.dev/github.com/xuxiaoshuo/databricks-sdk-go/service/{{.Package.Name}}#{{.PascalName}})
 	{{- else if .IsAny}}`any`
 	{{- else if .IsString}}`string`
 	{{- else if .IsBool}}`bool`
@@ -50,6 +50,6 @@ Dependency updates:
 	{{- else if .IsInt}}`int`
 	{{- else if .ArrayValue }}[]{{template "entity" .ArrayValue}}
 	{{- else if .MapValue }}map[string]{{template "entity" .MapValue}}
-	{{- else}}[{{.Package.Name}}.{{.PascalName}}](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/{{.Package.Name}}#{{.PascalName}})
+	{{- else}}[{{.Package.Name}}.{{.PascalName}}](https://pkg.go.dev/github.com/xuxiaoshuo/databricks-sdk-go/service/{{.Package.Name}}#{{.PascalName}})
 	{{- end -}}
 {{- end -}}

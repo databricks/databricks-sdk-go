@@ -10,11 +10,11 @@ import (
 	"time"
     "os"
 
-	"github.com/databricks/databricks-sdk-go"
-    "github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
+    "github.com/xuxiaoshuo/databricks-sdk-go/logger"
 
     {{range .Suite.ServiceToPackage}}
-	"github.com/databricks/databricks-sdk-go/service/{{.}}"{{end}}
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/{{.}}"{{end}}
 )
 
 {{if eq (len .Samples) 0}}{{skipThisFile}}{{end}}

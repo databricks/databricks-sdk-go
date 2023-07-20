@@ -6,7 +6,7 @@ package files
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/xuxiaoshuo/databricks-sdk-go/client"
 )
 
 func NewDbfs(client *client.DatabricksClient) *DbfsAPI {

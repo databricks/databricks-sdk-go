@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/xuxiaoshuo/databricks-sdk-go/retries"
 	"golang.org/x/oauth2"
 )
 

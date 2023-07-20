@@ -3,8 +3,7 @@ package workspace_test
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/service/workspace"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/workspace"
 )
 
 func ExampleReposAPI_GetByPath_checkoutBranchByPath() {

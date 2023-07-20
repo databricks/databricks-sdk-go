@@ -5,8 +5,8 @@ package iam_test
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 )
 
 func ExampleCurrentUserAPI_Me_currentUser() {

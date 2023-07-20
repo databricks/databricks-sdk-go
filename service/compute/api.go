@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/retries"
-	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/xuxiaoshuo/databricks-sdk-go/client"
+	"github.com/xuxiaoshuo/databricks-sdk-go/retries"
+	"github.com/xuxiaoshuo/databricks-sdk-go/useragent"
 )
 
 func NewClusterPolicies(client *client.DatabricksClient) *ClusterPoliciesAPI {

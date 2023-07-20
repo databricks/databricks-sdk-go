@@ -5,15 +5,15 @@ package databricks
 import (
 	"errors"
 
-	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/config"
+	"github.com/xuxiaoshuo/databricks-sdk-go/client"
+	"github.com/xuxiaoshuo/databricks-sdk-go/config"
 
-	"github.com/databricks/databricks-sdk-go/service/billing"
-	"github.com/databricks/databricks-sdk-go/service/catalog"
-	"github.com/databricks/databricks-sdk-go/service/iam"
-	"github.com/databricks/databricks-sdk-go/service/oauth2"
-	"github.com/databricks/databricks-sdk-go/service/provisioning"
-	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/billing"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/catalog"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/iam"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/oauth2"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/provisioning"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/settings"
 )
 
 type AccountClient struct {
@@ -211,7 +211,7 @@ type AccountClient struct {
 	// For more information, see [Databricks Terraform Provider].
 	//
 	// [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
-	// [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
+	// [Databricks Terraform Provider]: https://github.com/xuxiaoshuo/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
 	ServicePrincipalSecrets *oauth2.ServicePrincipalSecretsAPI
 
 	// Identities for use with jobs, automated tools, and systems such as

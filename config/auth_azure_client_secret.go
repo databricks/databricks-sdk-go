@@ -9,7 +9,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 )
 
 type AzureClientSecretCredentials struct {
@@ -34,7 +34,7 @@ func (c AzureClientSecretCredentials) tokenSourceFor(
 // TODO: We need to expose which authentication mechanism is used to Terraform,
 // as we cannot create AKV backed secret scopes when authenticated as SP.
 // If we are authenticated as SP and wish to create one we want to fail early.
-// Also see https://github.com/databricks/terraform-provider-databricks/issues/1490.
+// Also see https://github.com/xuxiaoshuo/terraform-provider-databricks/issues/1490.
 func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
 	if cfg.AzureClientID == "" || cfg.AzureClientSecret == "" || cfg.AzureTenantID == "" {
 		return nil, nil

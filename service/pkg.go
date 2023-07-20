@@ -158,26 +158,26 @@
 package service
 
 import (
-	"github.com/databricks/databricks-sdk-go/service/billing"
-	"github.com/databricks/databricks-sdk-go/service/catalog"
-	"github.com/databricks/databricks-sdk-go/service/compute"
-	"github.com/databricks/databricks-sdk-go/service/files"
-	"github.com/databricks/databricks-sdk-go/service/iam"
-	"github.com/databricks/databricks-sdk-go/service/jobs"
-	"github.com/databricks/databricks-sdk-go/service/ml"
-	"github.com/databricks/databricks-sdk-go/service/oauth2"
-	"github.com/databricks/databricks-sdk-go/service/pipelines"
-	"github.com/databricks/databricks-sdk-go/service/provisioning"
-	"github.com/databricks/databricks-sdk-go/service/serving"
-	"github.com/databricks/databricks-sdk-go/service/settings"
-	"github.com/databricks/databricks-sdk-go/service/sharing"
-	"github.com/databricks/databricks-sdk-go/service/sql"
-	"github.com/databricks/databricks-sdk-go/service/workspace"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/billing"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/catalog"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/compute"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/files"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/iam"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/jobs"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/ml"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/oauth2"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/pipelines"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/provisioning"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/serving"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/settings"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/sharing"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/sql"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/workspace"
 )
 
 // adding this trick for godoc to use it as relative import, so that we have
 // a clear index of all services in this package at Go package docs:
-// https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service
+// https://pkg.go.dev/github.com/xuxiaoshuo/databricks-sdk-go/service
 // See: https://pkg.go.dev/golang.org/x/tools/internal/imports#ImportPathToAssumedName
 var (
 	_ *iam.AccountAccessControlAPI            = nil

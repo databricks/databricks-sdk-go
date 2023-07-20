@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/apierr"
-	"github.com/databricks/databricks-sdk-go/config"
-	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/stretchr/testify/assert"
+	"github.com/xuxiaoshuo/databricks-sdk-go/apierr"
+	"github.com/xuxiaoshuo/databricks-sdk-go/config"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 	"golang.org/x/time/rate"
 )
 

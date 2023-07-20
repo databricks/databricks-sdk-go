@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 )
 
 // Deprecated: use return types from non-*AndWait methods

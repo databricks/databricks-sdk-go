@@ -3,9 +3,9 @@
 package databricks
 
 import (
-	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/xuxiaoshuo/databricks-sdk-go/client"
 	{{range .Packages}}
-	"github.com/databricks/databricks-sdk-go/service/{{.Name}}"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/{{.Name}}"
 	{{- end}}
 )
 

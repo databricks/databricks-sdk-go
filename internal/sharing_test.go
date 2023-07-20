@@ -6,11 +6,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/catalog"
-	"github.com/databricks/databricks-sdk-go/service/sharing"
-	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/catalog"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/sharing"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/sql"
 )
 
 func TestUcAccProviders(t *testing.T) {

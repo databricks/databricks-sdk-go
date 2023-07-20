@@ -3,9 +3,9 @@ package internal
 import (
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/provisioning"
 )
 
 func TestMwsAccStorage(t *testing.T) {
@@ -214,7 +214,7 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	})
 
 	// TODO: OpenAPI: Document retry protocol on AWS IAM registration errors
-	// See https://github.com/databricks/terraform-provider-databricks/issues/1424
+	// See https://github.com/xuxiaoshuo/terraform-provider-databricks/issues/1424
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: RandomName("go-sdk-"),
 		AwsCredentials: provisioning.CreateCredentialAwsCredentials{

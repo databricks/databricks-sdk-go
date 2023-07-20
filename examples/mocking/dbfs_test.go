@@ -11,11 +11,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/service/dbfs"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/dbfs"
 )
 
-//go:generate go run github.com/golang/mock/mockgen@latest -package=mocks -destination=mocks/dbfs.go github.com/databricks/databricks-sdk-go/service/dbfs DbfsService
+//go:generate go run github.com/golang/mock/mockgen@latest -package=mocks -destination=mocks/dbfs.go github.com/xuxiaoshuo/databricks-sdk-go/service/dbfs DbfsService
 
 func TestDbfsHighLevelAPI(t *testing.T) {
 	ctrl := gomock.NewController(t)

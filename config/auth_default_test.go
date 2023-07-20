@@ -3,12 +3,12 @@ package config_test
 import (
 	"context"
 	"errors"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go"
-	"github.com/databricks/databricks-sdk-go/config"
-	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/stretchr/testify/assert"
+	"github.com/xuxiaoshuo/databricks-sdk-go/config"
+	"github.com/xuxiaoshuo/databricks-sdk-go/internal/env"
 )
 
 func TestErrCannotConfigureAuth(t *testing.T) {

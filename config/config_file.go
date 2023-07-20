@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/xuxiaoshuo/databricks-sdk-go/logger"
 	"gopkg.in/ini.v1"
 )
 
@@ -64,7 +64,7 @@ func (l configFileLoader) Name() string {
 func (l configFileLoader) Configure(cfg *Config) error {
 	// Skip loading config file if some authentication is already explicitly
 	// configured directly in the config by a user.
-	// See: https://github.com/databricks/databricks-sdk-go/issues/304
+	// See: https://github.com/xuxiaoshuo/databricks-sdk-go/issues/304
 	if cfg.Profile == "" && (l.isAnyAuthConfigured(cfg) || cfg.Host != "" || cfg.AzureResourceID != "") {
 		return nil
 	}

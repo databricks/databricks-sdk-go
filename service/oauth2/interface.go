@@ -134,7 +134,7 @@ type PublishedAppIntegrationService interface {
 // information, see [Databricks Terraform Provider].
 //
 // [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
-// [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
+// [Databricks Terraform Provider]: https://github.com/xuxiaoshuo/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
 type ServicePrincipalSecretsService interface {
 
 	// Create service principal secret.

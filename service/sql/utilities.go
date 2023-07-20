@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/xuxiaoshuo/databricks-sdk-go/retries"
 )
 
 // [EXPERIMENTAL] Execute a query and wait for results to be available

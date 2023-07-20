@@ -5,8 +5,7 @@ import (
 	"flag"
 	"os"
 
-	"github.com/databricks/databricks-sdk-go"
-	sdk "github.com/databricks/databricks-sdk-go/logger"
+	sdk "github.com/xuxiaoshuo/databricks-sdk-go/logger"
 	"golang.org/x/exp/slog"
 )
 

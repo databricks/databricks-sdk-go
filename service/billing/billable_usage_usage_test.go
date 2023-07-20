@@ -5,9 +5,9 @@ package billing_test
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
 
-	"github.com/databricks/databricks-sdk-go/service/billing"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/billing"
 )
 
 func ExampleBillableUsageAPI_Download_usageDownload() {

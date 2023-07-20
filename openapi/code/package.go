@@ -10,7 +10,7 @@ import (
 
 	"golang.org/x/exp/slices"
 
-	"github.com/databricks/databricks-sdk-go/openapi"
+	"github.com/xuxiaoshuo/databricks-sdk-go/openapi"
 )
 
 // Package represents a service package, which contains entities and interfaces
@@ -368,7 +368,7 @@ func (pkg *Package) Load(spec *openapi.Specification, tag openapi.Tag) error {
 					}
 					if prefix == "/api/2.0/workspace/export" && param.Name == "direct_download" {
 						// prevent changing the response content type via request parameter
-						// https://github.com/databricks/databricks-sdk-py/issues/104
+						// https://github.com/xuxiaoshuo/databricks-sdk-py/issues/104
 						continue
 					}
 					params = append(params, *param)

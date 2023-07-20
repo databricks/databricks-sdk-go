@@ -7,9 +7,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/service/catalog"
-	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/xuxiaoshuo/databricks-sdk-go/client"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/catalog"
+	"github.com/xuxiaoshuo/databricks-sdk-go/useragent"
 )
 
 func NewCleanRooms(client *client.DatabricksClient) *CleanRoomsAPI {

@@ -5,7 +5,7 @@ package sharing
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/service/catalog"
+	"github.com/xuxiaoshuo/databricks-sdk-go/service/catalog"
 )
 
 // A clean room is a secure, privacy-protecting environment where two or more

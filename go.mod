@@ -1,4 +1,4 @@
-module github.com/databricks/databricks-sdk-go
+module github.com/xuxiaoshuo/databricks-sdk-go
 
 go 1.18
 
