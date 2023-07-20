@@ -434,7 +434,7 @@ type PartialUpdate struct {
 	Operations []Patch `json:"Operations,omitempty"`
 	// The schema of the patch request. Must be
 	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
-	Schema []PatchSchema `json:"schema,omitempty"`
+	Schema []PatchSchema `json:"schemas,omitempty"`
 }
 
 type Patch struct {
