@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
 
 	"github.com/xuxiaoshuo/databricks-sdk-go/service/compute"
 )

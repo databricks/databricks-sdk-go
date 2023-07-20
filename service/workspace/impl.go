@@ -198,3 +198,9 @@ func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
 	return err
 }
+
+func (a *workspaceImpl) Update(ctx context.Context, request UpdateWorkspaceRequest) error {
+	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/workspaces/%v/roleassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceID, request.UserID)
+	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
+	return err
+}

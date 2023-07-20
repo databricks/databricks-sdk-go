@@ -3,6 +3,7 @@ package compute_test
 import (
 	"context"
 	"fmt"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
 
 	"github.com/xuxiaoshuo/databricks-sdk-go/service/compute"
 )

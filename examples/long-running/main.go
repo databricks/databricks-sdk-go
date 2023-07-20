@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/xuxiaoshuo/databricks-sdk-go"
 
 	"github.com/xuxiaoshuo/databricks-sdk-go/service/compute"
 	"github.com/xuxiaoshuo/databricks-sdk-go/service/jobs"

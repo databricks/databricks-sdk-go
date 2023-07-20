@@ -414,6 +414,12 @@ type ListWorkspaceRequest struct {
 	Path string `json:"-" url:"path"`
 }
 
+type UpdateWorkspaceRequest struct {
+	WorkspaceID string   `json:"-"`
+	UserID      string   `json:"-"`
+	Roles       []string `json:"roles"`
+}
+
 type Mkdirs struct {
 	// The absolute path of the directory. If the parent directories do not
 	// exist, it will also create them. If the directory already exists, this

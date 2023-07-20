@@ -305,4 +305,5 @@ type WorkspaceService interface {
 	// Note that if this operation fails it may have succeeded in creating some
 	// of the necessary parent directories.
 	Mkdirs(ctx context.Context, request Mkdirs) error
+	Update(ctx context.Context, request UpdateWorkspaceRequest) error
 }

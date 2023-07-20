@@ -740,6 +740,10 @@ func (a *WorkspaceAPI) Mkdirs(ctx context.Context, request Mkdirs) error {
 	return a.impl.Mkdirs(ctx, request)
 }
 
+func (a *WorkspaceAPI) Update(ctx context.Context, request UpdateWorkspaceRequest) error {
+	return a.impl.Update(ctx, request)
+}
+
 // Create a directory.
 //
 // Creates the specified directory (and necessary parent directories if they do
