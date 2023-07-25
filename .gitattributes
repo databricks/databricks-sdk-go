@@ -104,6 +104,7 @@ service/sql/impl.go linguist-generated=true
 service/sql/interface.go linguist-generated=true
 service/sql/model.go linguist-generated=true
 service/sql/queries_usage_test.go linguist-generated=true
+service/sql/query_history_usage_test.go linguist-generated=true
 service/sql/statement_execution_usage_test.go linguist-generated=true
 service/sql/warehouses_usage_test.go linguist-generated=true
 service/workspace/api.go linguist-generated=true

@@ -322,7 +322,18 @@ func makeQueryString(data interface{}) (string, error) {
 		if err != nil {
 			return "", fmt.Errorf("cannot create query string: %w", err)
 		}
-		return "?" + params.Encode(), nil
+		// Replace all instances of "[" or "][" (field separators) with ".".
+		// Remove the terminal "]".
+		protoCompatibleParams := make(url.Values)
+		for k, vs := range params {
+			newK := strings.Replace(k, "][", ".", -1)
+			newK = strings.Replace(newK, "[", ".", -1)
+			newK = strings.Replace(newK, "]", "", -1)
+			for _, v := range vs {
+				protoCompatibleParams.Add(newK, v)
+			}
+		}
+		return "?" + protoCompatibleParams.Encode(), nil
 	}
 	return "", fmt.Errorf("unsupported query string data: %#v", data)
 }

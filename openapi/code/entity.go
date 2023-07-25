@@ -33,6 +33,17 @@ func (f *Field) IsPublicPreview() bool {
 	return f.Schema != nil && isPublicPreview(&f.Schema.Node)
 }
 
+// Call the provided callback on this field and any nested fields in its entity,
+// recursively.
+func (f *Field) Traverse(fn func(*Field)) {
+	fn(f)
+	if f.Entity != nil && len(f.Entity.fields) > 0 {
+		for _, field := range f.Entity.fields {
+			field.Traverse(fn)
+		}
+	}
+}
+
 type EnumEntry struct {
 	Named
 	Entity *Entity
@@ -284,4 +295,11 @@ func (e *Entity) IsReferred() bool {
 		}
 	}
 	return false
+}
+
+func (e *Entity) Traverse(fn func(*Entity)) {
+	fn(e)
+	for _, f := range e.fields {
+		f.Entity.Traverse(fn)
+	}
 }
