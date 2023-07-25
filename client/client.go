@@ -326,8 +326,7 @@ func makeQueryString(data interface{}) (string, error) {
 		// Remove the terminal "]".
 		protoCompatibleParams := make(url.Values)
 		for k, vs := range params {
-			newK := strings.Replace(k, "][", ".", -1)
-			newK = strings.Replace(newK, "[", ".", -1)
+			newK := strings.Replace(k, "[", ".", -1)
 			newK = strings.Replace(newK, "]", "", -1)
 			for _, v := range vs {
 				protoCompatibleParams.Add(newK, v)
