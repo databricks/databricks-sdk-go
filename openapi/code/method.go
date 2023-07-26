@@ -24,6 +24,10 @@ type Method struct {
 	Response          *Entity
 	EmptyResponseName Named
 
+	// The style of the request, either "rpc" or "rest". See the documentation on
+	// Operation for more details.
+	PathStyle openapi.PathStyle
+
 	// For list APIs, the path of fields in the response entity to follow to get
 	// the resource ID.
 	IdFieldPath []*Field
@@ -105,7 +109,7 @@ func (m *Method) allowShortcut() bool {
 	if m.shortcut {
 		return true
 	}
-	if m.Service.IsRpcStyle {
+	if m.PathStyle == openapi.PathStyleRpc {
 		return true
 	}
 	return false

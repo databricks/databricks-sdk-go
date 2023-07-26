@@ -45,13 +45,42 @@ type Specification struct {
 	Tags       []Tag           `json:"tags"`
 }
 
+type PathStyle string
+
+const (
+	// PathStyleRpc indicates that the endpoint is an RPC-style endpoint.
+	// The endpoint path is an action, and the entity to act on is specified
+	// in the request body.
+	PathStyleRpc PathStyle = "rpc"
+
+	// PathStyleRest indicates that the endpoint is a REST-style endpoint.
+	// The endpoint path is a resource, and the operation to perform on the
+	// resource is specified in the HTTP method.
+	PathStyleRest PathStyle = "rest"
+)
+
+func (r *PathStyle) UnmarshalJSON(data []byte) error {
+	var s string
+	err := json.Unmarshal(data, &s)
+	if err != nil {
+		return fmt.Errorf("cannot unmarshal RequestStyle: %w", err)
+	}
+	switch s {
+	case "rpc", "rest":
+		*r = PathStyle(s)
+	default:
+		return fmt.Errorf("invalid RequestStyle: %s", s)
+	}
+	return nil
+}
+
 type Tag struct {
 	Node
-	Package    string `json:"x-databricks-package"`
-	PathStyle  string `json:"x-databricks-path-style"`
-	Service    string `json:"x-databricks-service"`
-	IsAccounts bool   `json:"x-databricks-is-accounts"`
-	Name       string `json:"name"`
+	Package    string    `json:"x-databricks-package"`
+	PathStyle  PathStyle `json:"x-databricks-path-style"`
+	Service    string    `json:"x-databricks-service"`
+	IsAccounts bool      `json:"x-databricks-is-accounts"`
+	Name       string    `json:"name"`
 }
 
 type Path struct {
@@ -99,6 +128,15 @@ type Operation struct {
 	Shortcut   bool        `json:"x-databricks-shortcut,omitempty"`
 	Crud       string      `json:"x-databricks-crud,omitempty"`
 	JsonOnly   bool        `json:"x-databricks-cli-json-only,omitempty"`
+
+	// The x-databricks-path-style field indicates whether the operation has a
+	// RESTful path style or a RPC style. When specified, this overrides the
+	// service-level setting. Valid values are "rest" and "rpc". "rest" means
+	// that the operation has a RESTful path style, i.e. the path represents
+	// a resource and the HTTP method represents an action on the resource.
+	// "rpc" means that the operation has a RPC style, i.e. the path represents
+	// an action and the request body represents the resource.
+	PathStyle PathStyle `json:"x-databricks-path-style,omitempty"`
 
 	// For list APIs, the path to the field in the response entity that contains
 	// the resource ID.
