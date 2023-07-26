@@ -220,7 +220,7 @@ func (c *call) IsWait() bool {
 func (c *call) Request() (fv []*fieldValue) {
 	if strings.Contains(c.Name, "By") {
 		fields := strings.Split(strings.Split(c.Name, "By")[0], "And")
-		for i, name := range fields {
+		for i, name := range fields[1:] {
 			fv = append(fv, &fieldValue{
 				Named: code.Named{
 					Name: name,
