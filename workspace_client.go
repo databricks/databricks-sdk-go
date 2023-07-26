@@ -398,7 +398,9 @@ type WorkspaceClient struct {
 	// using a policy family inherit the policy family's policy definition.
 	PolicyFamilies *compute.PolicyFamiliesAPI
 
-	// Databricks Providers REST API
+	// A data provider is an object representing the organization in the real
+	// world who shares the data. A provider contains shares which further
+	// contain the shared data.
 	Providers *sharing.ProvidersAPI
 
 	// These endpoints are used for CRUD operations on query definitions. Query
@@ -411,10 +413,35 @@ type WorkspaceClient struct {
 	// Access the history of queries through SQL warehouses.
 	QueryHistory *sql.QueryHistoryAPI
 
-	// Databricks Recipient Activation REST API
+	// The Recipient Activation API is only applicable in the open sharing model
+	// where the recipient object has the authentication type of `TOKEN`. The
+	// data recipient follows the activation link shared by the data provider to
+	// download the credential file that includes the access token. The
+	// recipient will then use the credential file to establish a secure
+	// connection with the provider to receive the shared data.
+	//
+	// Note that you can download the credential file only once. Recipients
+	// should treat the downloaded credential as a secret and must not share it
+	// outside of their organization.
 	RecipientActivation *sharing.RecipientActivationAPI
 
-	// Databricks Recipients REST API
+	// A recipient is an object you create using :method:recipients/create to
+	// represent an organization which you want to allow access shares. The way
+	// how sharing works differs depending on whether or not your recipient has
+	// access to a Databricks workspace that is enabled for Unity Catalog:
+	//
+	// - For recipients with access to a Databricks workspace that is enabled
+	// for Unity Catalog, you can create a recipient object along with a unique
+	// sharing identifier you get from the recipient. The sharing identifier is
+	// the key identifier that enables the secure connection. This sharing mode
+	// is called **Databricks-to-Databricks sharing**.
+	//
+	// - For recipients without access to a Databricks workspace that is enabled
+	// for Unity Catalog, when you create a recipient object, Databricks
+	// generates an activation link you can send to the recipient. The recipient
+	// follows the activation link to download the credential file, and then
+	// uses the credential file to establish a secure connection to receive the
+	// shared data. This sharing mode is called **open sharing**.
 	Recipients *sharing.RecipientsAPI
 
 	// The Repos API allows users to manage their git repos. Users can use the
@@ -476,7 +503,11 @@ type WorkspaceClient struct {
 	// served model.
 	ServingEndpoints *serving.ServingEndpointsAPI
 
-	// Databricks Shares REST API
+	// A share is a container instantiated with :method:shares/create. Once
+	// created you can iteratively register a collection of existing data assets
+	// defined within the metastore using :method:shares/update. You can
+	// register data assets under their original name, qualified by their
+	// original schema, or provide alternate exposed names.
 	Shares *sharing.SharesAPI
 
 	// The SQL Statement Execution API manages the execution of arbitrary SQL

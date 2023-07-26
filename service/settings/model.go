@@ -6,6 +6,13 @@ import "fmt"
 
 // all definitions in this file are in alphabetical order
 
+type AccountNetworkPolicyMessage struct {
+	// Whether or not serverless UDF can access the internet. When false, access
+	// to the internet will be blocked from serverless clusters. Trusted traffic
+	// required by clusters for basic functionality will not be affected.
+	ServerlessInternetAccessEnabled bool `json:"serverless_internet_access_enabled,omitempty"`
+}
+
 type CreateIpAccessList struct {
 	// Array of IP addresses or CIDR values to be added to the IP access list.
 	IpAddresses []string `json:"ip_addresses"`
@@ -54,6 +61,29 @@ type CreateTokenResponse struct {
 type DeleteAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list.
 	IpAccessListId string `json:"-" url:"-"`
+}
+
+// Delete Account Network Policy
+type DeleteAccountNetworkPolicyRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag"`
+}
+
+type DeleteAccountNetworkPolicyResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag"`
 }
 
 // Delete access list
@@ -264,6 +294,18 @@ type PublicTokenInfo struct {
 	TokenId string `json:"token_id,omitempty"`
 }
 
+// Get Account Network Policy
+type ReadAccountNetworkPolicyRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag"`
+}
+
 // Get Personal Compute setting
 type ReadPersonalComputeSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -312,6 +354,15 @@ type TokenInfo struct {
 	OwnerId int64 `json:"owner_id,omitempty"`
 	// ID of the token.
 	TokenId string `json:"token_id,omitempty"`
+}
+
+// Update Account Network Policy
+type UpdateAccountNetworkPolicyRequest struct {
+	// This should always be set to true for Settings RPCs. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing,omitempty"`
+
+	Setting *AccountNetworkPolicyMessage `json:"setting,omitempty"`
 }
 
 type UpdateIpAccessList struct {

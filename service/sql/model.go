@@ -64,7 +64,8 @@ type AlertOptions struct {
 	// Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`,
 	// `!=`
 	Op string `json:"op"`
-	// Value used to compare in alert evaluation.
+	// Value used to compare in alert evaluation. Supported types include
+	// strings (eg. 'foobar'), floats (eg. 123.4), and booleans (true).
 	Value any `json:"value"`
 }
 
@@ -158,6 +159,7 @@ type ChannelInfo struct {
 	Name ChannelName `json:"name,omitempty"`
 }
 
+// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`

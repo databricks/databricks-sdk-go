@@ -15,11 +15,10 @@ type accountMetastoreAssignmentsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) ([]CreateMetastoreAssignmentsResponseItem, error) {
-	var createMetastoreAssignmentsResponseItemList []CreateMetastoreAssignmentsResponseItem
+func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodPost, path, request, &createMetastoreAssignmentsResponseItemList)
-	return createMetastoreAssignmentsResponseItemList, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	return err
 }
 
 func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error {

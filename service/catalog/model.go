@@ -349,6 +349,8 @@ func (f *ConnectionType) Type() string {
 type CreateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// The name of the connection to an external data source.
+	ConnectionName string `json:"connection_name,omitempty"`
 	// Name of catalog.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -383,10 +385,14 @@ type CreateConnection struct {
 }
 
 type CreateExternalLocation struct {
+	// The AWS access point to use when accesing s3 for this external location.
+	AccessPoint string `json:"access_point,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name"`
+	// Encryption options that apply to clients connecting to cloud storage.
+	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Name of the external location.
 	Name string `json:"name"`
 	// Indicates whether the external location is read-only.
@@ -579,15 +585,6 @@ type CreateMetastoreAssignment struct {
 	MetastoreId string `json:"metastore_id"`
 	// A workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
-}
-
-type CreateMetastoreAssignmentsResponseItem struct {
-	// A human-readable message describing the outcome of the creation
-	Message string `json:"message,omitempty"`
-
-	MetastoreAssignment *MetastoreAssignment `json:"metastore_assignment,omitempty"`
-	// The returned HTTP status code for an individual creation in the batch
-	StatusCode int `json:"status_code,omitempty"`
 }
 
 type CreateSchema struct {
@@ -1028,7 +1025,15 @@ func (f *EnableSchemaName) Type() string {
 	return "EnableSchemaName"
 }
 
+// Encryption options that apply to clients connecting to cloud storage.
+type EncryptionDetails struct {
+	// Server-Side Encryption properties for clients communicating with AWS s3.
+	SseEncryptionDetails *SseEncryptionDetails `json:"sse_encryption_details,omitempty"`
+}
+
 type ExternalLocationInfo struct {
+	// The AWS access point to use when accesing s3 for this external location.
+	AccessPoint string `json:"access_point,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// Time at which this external location was created, in epoch milliseconds.
@@ -1039,6 +1044,8 @@ type ExternalLocationInfo struct {
 	CredentialId string `json:"credential_id,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name,omitempty"`
+	// Encryption options that apply to clients connecting to cloud storage.
+	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Unique identifier of metastore hosting the external location.
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of the external location.
@@ -1779,9 +1786,13 @@ const PrivilegeCreate Privilege = `CREATE`
 
 const PrivilegeCreateCatalog Privilege = `CREATE_CATALOG`
 
+const PrivilegeCreateConnection Privilege = `CREATE_CONNECTION`
+
 const PrivilegeCreateExternalLocation Privilege = `CREATE_EXTERNAL_LOCATION`
 
 const PrivilegeCreateExternalTable Privilege = `CREATE_EXTERNAL_TABLE`
+
+const PrivilegeCreateForeignCatalog Privilege = `CREATE_FOREIGN_CATALOG`
 
 const PrivilegeCreateFunction Privilege = `CREATE_FUNCTION`
 
@@ -1821,6 +1832,8 @@ const PrivilegeUsage Privilege = `USAGE`
 
 const PrivilegeUseCatalog Privilege = `USE_CATALOG`
 
+const PrivilegeUseConnection Privilege = `USE_CONNECTION`
+
 const PrivilegeUseMarketplaceAssets Privilege = `USE_MARKETPLACE_ASSETS`
 
 const PrivilegeUseProvider Privilege = `USE_PROVIDER`
@@ -1843,11 +1856,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ALL_PRIVILEGES`, `CREATE`, `CREATE_CATALOG`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
+	case `ALL_PRIVILEGES`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "CREATE", "CREATE_CATALOG", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
 	}
 }
 
@@ -1919,6 +1932,8 @@ type SecurableType string
 
 const SecurableTypeCatalog SecurableType = `catalog`
 
+const SecurableTypeConnection SecurableType = `connection`
+
 const SecurableTypeExternalLocation SecurableType = `external_location`
 
 const SecurableTypeFunction SecurableType = `function`
@@ -1947,17 +1962,54 @@ func (f *SecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableType) Set(v string) error {
 	switch v {
-	case `catalog`, `external_location`, `function`, `metastore`, `pipeline`, `provider`, `recipient`, `schema`, `share`, `storage_credential`, `table`:
+	case `catalog`, `connection`, `external_location`, `function`, `metastore`, `pipeline`, `provider`, `recipient`, `schema`, `share`, `storage_credential`, `table`:
 		*f = SecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "external_location", "function", "metastore", "pipeline", "provider", "recipient", "schema", "share", "storage_credential", "table"`, v)
+		return fmt.Errorf(`value "%s" is not one of "catalog", "connection", "external_location", "function", "metastore", "pipeline", "provider", "recipient", "schema", "share", "storage_credential", "table"`, v)
 	}
 }
 
 // Type always returns SecurableType to satisfy [pflag.Value] interface
 func (f *SecurableType) Type() string {
 	return "SecurableType"
+}
+
+// Server-Side Encryption properties for clients communicating with AWS s3.
+type SseEncryptionDetails struct {
+	// The type of key encryption to use (affects headers from s3 client).
+	Algorithm SseEncryptionDetailsAlgorithm `json:"algorithm"`
+	// When algorithm is **AWS_SSE_KMS** this field specifies the ARN of the SSE
+	// key to use.
+	AwsKmsKeyArn string `json:"aws_kms_key_arn,omitempty"`
+}
+
+// The type of key encryption to use (affects headers from s3 client).
+type SseEncryptionDetailsAlgorithm string
+
+const SseEncryptionDetailsAlgorithmAwsSseKms SseEncryptionDetailsAlgorithm = `AWS_SSE_KMS`
+
+const SseEncryptionDetailsAlgorithmAwsSseS3 SseEncryptionDetailsAlgorithm = `AWS_SSE_S3`
+
+// String representation for [fmt.Print]
+func (f *SseEncryptionDetailsAlgorithm) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SseEncryptionDetailsAlgorithm) Set(v string) error {
+	switch v {
+	case `AWS_SSE_KMS`, `AWS_SSE_S3`:
+		*f = SseEncryptionDetailsAlgorithm(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AWS_SSE_KMS", "AWS_SSE_S3"`, v)
+	}
+}
+
+// Type always returns SseEncryptionDetailsAlgorithm to satisfy [pflag.Value] interface
+func (f *SseEncryptionDetailsAlgorithm) Type() string {
+	return "SseEncryptionDetailsAlgorithm"
 }
 
 type StorageCredentialInfo struct {
@@ -2061,6 +2113,8 @@ type TableDependency struct {
 }
 
 type TableInfo struct {
+	// The AWS access point to use when accesing s3 for this external location.
+	AccessPoint string `json:"access_point,omitempty"`
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The array of __ColumnInfo__ definitions of the table's columns.
@@ -2085,6 +2139,8 @@ type TableInfo struct {
 	// Whether auto maintenance should be enabled for this object and objects
 	// under it.
 	EnableAutoMaintenance EnableAutoMaintenance `json:"enable_auto_maintenance,omitempty"`
+	// Encryption options that apply to clients connecting to cloud storage.
+	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Full name of table, in form of
 	// __catalog_name__.__schema_name__.__table_name__
 	FullName string `json:"full_name,omitempty"`
@@ -2209,10 +2265,14 @@ type UpdateConnection struct {
 }
 
 type UpdateExternalLocation struct {
+	// The AWS access point to use when accesing s3 for this external location.
+	AccessPoint string `json:"access_point,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name,omitempty"`
+	// Encryption options that apply to clients connecting to cloud storage.
+	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
 	Force bool `json:"force,omitempty"`
@@ -2482,6 +2542,8 @@ func (f *ValidationResultResult) Type() string {
 }
 
 type VolumeInfo struct {
+	// The AWS access point to use when accesing s3 for this external location.
+	AccessPoint string `json:"access_point,omitempty"`
 	// The name of the catalog where the schema and the volume are
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the volume
@@ -2490,6 +2552,8 @@ type VolumeInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The identifier of the user who created the volume
 	CreatedBy string `json:"created_by,omitempty"`
+	// Encryption options that apply to clients connecting to cloud storage.
+	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// The three-level (fully qualified) name of the volume
 	FullName string `json:"full_name,omitempty"`
 	// The unique identifier of the metastore

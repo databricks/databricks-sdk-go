@@ -161,8 +161,8 @@ type CreateWorkspaceRequest struct {
 	// account. For example, `us-east4`.
 	Location string `json:"location,omitempty"`
 	// The ID of the workspace's managed services encryption key configuration
-	// object. This is used to encrypt the workspace's notebook and secret data
-	// in the control plane, in addition to Databricks SQL queries and query
+	// object. This is used to help protect and control access to the
+	// workspace's notebooks, secrets, Databricks SQL queries, and query
 	// history. The provided key configuration object property `use_cases` must
 	// contain `MANAGED_SERVICES`.
 	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
