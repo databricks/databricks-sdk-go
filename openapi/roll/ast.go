@@ -219,7 +219,11 @@ func (c *call) IsWait() bool {
 
 func (c *call) Request() (fv []*fieldValue) {
 	if strings.Contains(c.Name, "By") {
-		fields := strings.Split(strings.Split(c.Name, "By")[0], "And")
+		// E.g. DeleteByJobId, DeleteByClusterIdAndWait
+		firstSplit := strings.SplitN(c.Name, "By", 2)
+		// And is used to separate field names, but some methods end with AndWait
+		joinedFields := strings.TrimSuffix(firstSplit[1], "AndWait")
+		fields := strings.Split(joinedFields, "And")
 		for i, name := range fields {
 			fv = append(fv, &fieldValue{
 				Named: code.Named{
