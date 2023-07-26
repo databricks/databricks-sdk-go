@@ -11,15 +11,13 @@ type AccountMetastoreAssignmentsService interface {
 
 	// Assigns a workspace to a metastore.
 	//
-	// Creates an assignment to a metastore for a workspace Please add a header
-	// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
-	Create(ctx context.Context, request AccountsCreateMetastoreAssignment) ([]CreateMetastoreAssignmentsResponseItem, error)
+	// Creates an assignment to a metastore for a workspace
+	Create(ctx context.Context, request AccountsCreateMetastoreAssignment) error
 
 	// Delete a metastore assignment.
 	//
 	// Deletes a metastore assignment to a workspace, leaving the workspace with
-	// no metastore. Please add a header
-	// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+	// no metastore.
 	Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error
 
 	// Gets the metastore assignment for a workspace.
@@ -27,22 +25,19 @@ type AccountMetastoreAssignmentsService interface {
 	// Gets the metastore assignment, if any, for the workspace specified by ID.
 	// If the workspace is assigned a metastore, the mappig will be returned. If
 	// no metastore is assigned to the workspace, the assignment will not be
-	// found and a 404 returned. Please add a header
-	// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+	// found and a 404 returned.
 	Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*AccountsMetastoreAssignment, error)
 
 	// Get all workspaces assigned to a metastore.
 	//
 	// Gets a list of all Databricks workspace IDs that have been assigned to
-	// given metastore. Please add a header
-	// X-Databricks-Account-Console-API-Version: 2.0 to access this API
+	// given metastore.
 	List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]MetastoreAssignment, error)
 
 	// Updates a metastore assignment to a workspaces.
 	//
 	// Updates an assignment to a metastore for a workspace. Currently, only the
-	// default catalog may be updated. Please add a header
-	// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+	// default catalog may be updated.
 	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error
 }
 
@@ -52,35 +47,28 @@ type AccountMetastoresService interface {
 
 	// Create metastore.
 	//
-	// Creates a Unity Catalog metastore. Please add a header
-	// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+	// Creates a Unity Catalog metastore.
 	Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsMetastoreInfo, error)
 
 	// Delete a metastore.
 	//
 	// Deletes a Unity Catalog metastore for an account, both specified by ID.
-	// Please add a header X-Databricks-Account-Console-API-Version: 2.0 to
-	// access this API.
 	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error
 
 	// Get a metastore.
 	//
 	// Gets a Unity Catalog metastore from an account, both specified by ID.
-	// Please add a header X-Databricks-Account-Console-API-Version: 2.0 to
-	// access this API.
 	Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsMetastoreInfo, error)
 
 	// Get all metastores associated with an account.
 	//
 	// Gets all Unity Catalog metastores associated with an account specified by
-	// ID. Please add a header X-Databricks-Account-Console-API-Version: 2.0 to
-	// access this API.
+	// ID.
 	List(ctx context.Context) (*ListMetastoresResponse, error)
 
 	// Update a metastore.
 	//
-	// Updates an existing Unity Catalog metastore. Please add a header
-	// X-Databricks-Account-Console-API-Version: 2.0 to access this API.
+	// Updates an existing Unity Catalog metastore.
 	Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsMetastoreInfo, error)
 }
 

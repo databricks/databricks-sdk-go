@@ -108,7 +108,7 @@ type CredentialInfo struct {
 	// ID of the credential object in the workspace.
 	CredentialId int64 `json:"credential_id,omitempty"`
 	// Git provider. This field is case-insensitive. The available Git providers
-	// are gitHub, bitbucketCloud, gitLab, azureDevOpsServices,
+	// are gitHub, gitHubOAuth, bitbucketCloud, gitLab, azureDevOpsServices,
 	// gitHubEnterprise, bitbucketServer, gitLabEnterpriseEdition and
 	// awsCodeCommit.
 	GitProvider string `json:"git_provider,omitempty"`
