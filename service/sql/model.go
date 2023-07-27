@@ -1676,13 +1676,13 @@ type QueryEditContent struct {
 
 // A filter to limit query history results. This field is optional.
 type QueryFilter struct {
-	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty"`
+	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty" url:"query_start_time_range,omitempty"`
 
-	Statuses []QueryStatus `json:"statuses,omitempty"`
+	Statuses []QueryStatus `json:"statuses,omitempty" url:"statuses,omitempty"`
 	// A list of user IDs who ran the queries.
-	UserIds []int `json:"user_ids,omitempty"`
+	UserIds []int `json:"user_ids,omitempty" url:"user_ids,omitempty"`
 	// A list of warehouse IDs.
-	WarehouseIds []string `json:"warehouse_ids,omitempty"`
+	WarehouseIds []string `json:"warehouse_ids,omitempty" url:"warehouse_ids,omitempty"`
 }
 
 type QueryInfo struct {
@@ -2596,9 +2596,9 @@ func (f *TerminationReasonType) Type() string {
 
 type TimeRange struct {
 	// Limit results to queries that started before this time.
-	EndTimeMs int `json:"end_time_ms,omitempty"`
+	EndTimeMs int `json:"end_time_ms,omitempty" url:"end_time_ms,omitempty"`
 	// Limit results to queries that started after this time.
-	StartTimeMs int `json:"start_time_ms,omitempty"`
+	StartTimeMs int `json:"start_time_ms,omitempty" url:"start_time_ms,omitempty"`
 }
 
 // When in synchronous mode with `wait_timeout > 0s` it determines the action
