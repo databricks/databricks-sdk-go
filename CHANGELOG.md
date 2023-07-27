@@ -1,5 +1,11 @@
 # Version changelog
 
+## 0.14.1
+
+* Handle nested query parameters in Client.attempt ([#559](https://github.com/databricks/databricks-sdk-go/pull/559)).
+* Support x-databricks-path-style overrides at the operation level ([#562](https://github.com/databricks/databricks-sdk-go/pull/562)).
+
+
 ## 0.14.0
 
 * Fixed names of keyword arguments in examples ([#560](https://github.com/databricks/databricks-sdk-go/pull/560)).
