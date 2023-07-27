@@ -12,7 +12,7 @@ import (
 // Service represents specific Databricks API
 type Service struct {
 	Named
-	IsRpcStyle          bool
+	PathStyle           openapi.PathStyle
 	IsAccounts          bool
 	Package             *Package
 	methods             map[string]*Method
@@ -245,6 +245,16 @@ func (svc *Service) paramPath(path string, request *Entity, params []openapi.Par
 	return
 }
 
+func (svc *Service) getPathStyle(op *openapi.Operation) openapi.PathStyle {
+	if op.PathStyle != "" {
+		return op.PathStyle
+	}
+	if svc.PathStyle != "" {
+		return svc.PathStyle
+	}
+	return openapi.PathStyleRest
+}
+
 func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) *Method {
 	request := svc.newRequest(params, op)
 	respSchema := op.SuccessResponseSchema(svc.Package.Components)
@@ -255,7 +265,8 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		emptyResponse = response.Named
 		response = nil
 	}
-	if svc.IsRpcStyle {
+	requestStyle := svc.getPathStyle(op)
+	if requestStyle == openapi.PathStyleRpc {
 		name = filepath.Base(path)
 	}
 	description := op.Description
@@ -296,6 +307,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		PathParts:         svc.paramPath(path, request, params),
 		Response:          response,
 		EmptyResponseName: emptyResponse,
+		PathStyle:         requestStyle,
 		NameFieldPath:     nameFieldPath,
 		IdFieldPath:       idFieldPath,
 		wait:              op.Wait,
