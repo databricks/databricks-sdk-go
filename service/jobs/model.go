@@ -2265,9 +2265,13 @@ type SqlTaskQuery struct {
 
 type SqlTaskSubscription struct {
 	// The canonical identifier of the destination to receive email
-	// notification.
+	// notification. This parameter is mutually exclusive with user_name. You
+	// cannot set both destination_id and user_name for subscription
+	// notifications.
 	DestinationId string `json:"destination_id,omitempty"`
-	// The user name to receive the subscription email.
+	// The user name to receive the subscription email. This parameter is
+	// mutually exclusive with destination_id. You cannot set both
+	// destination_id and user_name for subscription notifications.
 	UserName string `json:"user_name,omitempty"`
 }
 

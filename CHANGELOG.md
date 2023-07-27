@@ -1,5 +1,36 @@
 # Version changelog
 
+## 0.14.0
+
+* Fixed names of keyword arguments in examples ([#560](https://github.com/databricks/databricks-sdk-go/pull/560)).
+
+API Changes:
+
+ * Changed `Create` method for [a.AccountMetastoreAssignments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountMetastoreAssignmentsAPI) account-level service to no longer return [catalog.CreateMetastoreAssignmentsResponseItemList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateMetastoreAssignmentsResponseItemList).
+ * Added `ConnectionName` field for [catalog.CreateCatalog](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateCatalog).
+ * Added `AccessPoint` field for [catalog.CreateExternalLocation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateExternalLocation).
+ * Added `EncryptionDetails` field for [catalog.CreateExternalLocation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateExternalLocation).
+ * Removed [catalog.CreateMetastoreAssignmentsResponseItem](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateMetastoreAssignmentsResponseItem).
+ * Added `AccessPoint` field for [catalog.ExternalLocationInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ExternalLocationInfo).
+ * Added `EncryptionDetails` field for [catalog.ExternalLocationInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ExternalLocationInfo).
+ * Added `AccessPoint` field for [catalog.TableInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TableInfo).
+ * Added `EncryptionDetails` field for [catalog.TableInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TableInfo).
+ * Added `AccessPoint` field for [catalog.UpdateExternalLocation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateExternalLocation).
+ * Added `EncryptionDetails` field for [catalog.UpdateExternalLocation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateExternalLocation).
+ * Added `AccessPoint` field for [catalog.VolumeInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#VolumeInfo).
+ * Added `EncryptionDetails` field for [catalog.VolumeInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#VolumeInfo).
+ * Added [catalog.EncryptionDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EncryptionDetails).
+ * Added [catalog.SseEncryptionDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SseEncryptionDetails).
+ * Added [catalog.SseEncryptionDetailsAlgorithm](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SseEncryptionDetailsAlgorithm).
+ * Added [a.AccountNetworkPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountNetworkPolicyAPI) account-level service.
+ * Added [settings.AccountNetworkPolicyMessage](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountNetworkPolicyMessage).
+ * Added [settings.DeleteAccountNetworkPolicyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteAccountNetworkPolicyRequest).
+ * Added [settings.DeleteAccountNetworkPolicyResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteAccountNetworkPolicyResponse).
+ * Added [settings.ReadAccountNetworkPolicyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ReadAccountNetworkPolicyRequest).
+ * Added [settings.UpdateAccountNetworkPolicyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateAccountNetworkPolicyRequest).
+
+OpenAPI SHA: fbdd0fa3e83fed2c798a58d376529bdb1285b915, Date: 2023-07-26
+
 ## 0.13.0
 
 * Add issue templates ([#539](https://github.com/databricks/databricks-sdk-go/pull/539)).

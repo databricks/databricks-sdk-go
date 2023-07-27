@@ -76,6 +76,8 @@
 //
 // - [ml.ModelRegistryAPI]: MLflow Model Registry is a centralized model repository and a UI and set of APIs that enable you to manage the full lifecycle of MLflow Models.
 //
+// - [settings.AccountNetworkPolicyAPI]: Network policy is a set of rules that defines what can be accessed from your Databricks network.
+//
 // - [provisioning.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
 //
 // - [oauth2.OAuthEnrollmentAPI]: These APIs enable administrators to enroll OAuth for their accounts, which is required for adding/using any OAuth published/custom application integration.
@@ -88,7 +90,7 @@
 //
 // - [provisioning.PrivateAccessAPI]: These APIs manage private access settings for this account.
 //
-// - [sharing.ProvidersAPI]: Databricks Providers REST API.
+// - [sharing.ProvidersAPI]: A data provider is an object representing the organization in the real world who shares the data.
 //
 // - [oauth2.PublishedAppIntegrationAPI]: These APIs enable administrators to manage published oauth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
 //
@@ -96,9 +98,9 @@
 //
 // - [sql.QueryHistoryAPI]: Access the history of queries through SQL warehouses.
 //
-// - [sharing.RecipientActivationAPI]: Databricks Recipient Activation REST API.
+// - [sharing.RecipientActivationAPI]: The Recipient Activation API is only applicable in the open sharing model where the recipient object has the authentication type of `TOKEN`.
 //
-// - [sharing.RecipientsAPI]: Databricks Recipients REST API.
+// - [sharing.RecipientsAPI]: A recipient is an object you create using :method:recipients/create to represent an organization which you want to allow access shares.
 //
 // - [workspace.ReposAPI]: The Repos API allows users to manage their git repos.
 //
@@ -116,7 +118,7 @@
 //
 // - [settings.AccountSettingsAPI]: The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources.
 //
-// - [sharing.SharesAPI]: Databricks Shares REST API.
+// - [sharing.SharesAPI]: A share is a container instantiated with :method:shares/create.
 //
 // - [sql.StatementExecutionAPI]: The SQL Statement Execution API manages the execution of arbitrary SQL statements and the fetching of result data.
 //
@@ -218,6 +220,7 @@ var (
 	_ *catalog.MetastoresAPI                  = nil
 	_ *catalog.AccountMetastoresAPI           = nil
 	_ *ml.ModelRegistryAPI                    = nil
+	_ *settings.AccountNetworkPolicyAPI       = nil
 	_ *provisioning.NetworksAPI               = nil
 	_ *oauth2.OAuthEnrollmentAPI              = nil
 	_ *iam.PermissionsAPI                     = nil
