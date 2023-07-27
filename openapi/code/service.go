@@ -173,8 +173,22 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 				request.RequiredOrder = append(request.RequiredOrder, param.Name)
 			}
 		}
+		if field.IsQuery {
+			// recursively update field entity and sub entities with IsQuery = true
+			// this should be safe as paramToField() should recursively create
+			// all needed sub-entities
+			field.Traverse(
+				func(f *Field) {
+					f.IsQuery = true
+				})
+		}
 	}
-	svc.Package.updateType(request)
+	// IsQuery may have been set on some fields, so the request entity and
+	// sub-entities need to be updated
+	request.Traverse(
+		func(e *Entity) {
+			svc.Package.updateType(e)
+		})
 	if request.Name == "" {
 		// when there was a merge of params with a request or new entity was made
 		signularServiceName := svc.Singular().PascalName()
