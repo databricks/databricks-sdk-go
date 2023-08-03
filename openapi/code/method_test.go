@@ -66,6 +66,6 @@ func TestCmdletNames(t *testing.T) {
 				},
 			},
 		}
-		assert.Equal(t, v.cmdlet, m.CmdletName())
+		assert.Equal(t, v.cmdlet, m.CmdletName("Databricks"))
 	}
 }

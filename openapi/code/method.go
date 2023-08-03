@@ -389,10 +389,12 @@ func (m *Method) AsFlat() *Named {
 	}
 }
 
-func (m *Method) CmdletName() string {
+func (m *Method) CmdletName(prefix string) string {
 	words := m.AsFlat().splitASCII()
 	noun := &Named{
 		Name: strings.Join(words[1:], "_"),
 	}
-	return fmt.Sprintf("%s-Databricks%s", strings.Title(words[0]), noun.PascalName())
+	verb := strings.Title(words[0])
+	prefix = strings.Title(prefix)
+	return fmt.Sprintf("%s-%s%s", verb, prefix, noun.PascalName())
 }
