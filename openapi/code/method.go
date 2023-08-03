@@ -20,6 +20,8 @@ type Method struct {
 	PathParts []PathPart
 	// Request type representation
 	Request *Entity
+	// Request for listing
+	ListingRequest *Entity
 	// Response type representation
 	Response          *Entity
 	EmptyResponseName Named

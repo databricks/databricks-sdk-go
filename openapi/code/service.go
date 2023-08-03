@@ -304,6 +304,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		Verb:              strings.ToUpper(verb),
 		Path:              path,
 		Request:           request,
+		ListingRequest:    svc.withPaginationFieldsRemoved(request, op.Pagination),
 		PathParts:         svc.paramPath(path, request, params),
 		Response:          response,
 		EmptyResponseName: emptyResponse,
@@ -315,6 +316,51 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		pagination:        op.Pagination,
 		shortcut:          op.Shortcut,
 	}
+}
+
+// remove pagination fields without clear semantics for iterators
+func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Pagination) *Entity {
+	if req == nil {
+		return nil
+	}
+	if pg == nil || pg.Inline {
+		return nil
+	}
+	listing := &Entity{
+		Named: Named{
+			Name:        req.PascalName(),
+			Description: req.Description,
+		},
+		Package:       req.Package,
+		RequiredOrder: req.RequiredOrder,
+		fields:        map[string]*Field{},
+	}
+	var requiresModification bool
+	for _, v := range req.fields {
+		field := v
+		var nextToken string
+		if pg.Token != nil {
+			nextToken = pg.Token.Request
+		}
+		switch field.Name {
+		case pg.Limit, pg.Offset, nextToken:
+			requiresModification = true
+			continue
+		}
+		listing.fields[field.Name] = field
+	}
+	if !requiresModification {
+		// there was no change
+		return nil
+	}
+	if len(listing.fields) == 0 {
+		// there is no fields left
+		return nil
+	}
+	// this may be a breaking change, theoretically
+	req.Name = strings.TrimSuffix(req.PascalName(), "Request") + "Internal"
+	req.Description = "For internal use only"
+	return svc.Package.define(listing)
 }
 
 func (svc *Service) HasWaits() bool {
