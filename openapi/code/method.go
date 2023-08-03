@@ -348,7 +348,7 @@ func (m *Method) AsFlat() *Named {
 		"Libraries":       "ClusterLibraries",
 		"PolicyFamilies":  "ClusterPolicyFamilies",
 		"Workspace":       "Notebooks", // or WorkspaceObjects
-		"OAuthEnrollment": "Oauth",
+		"OAuthEnrollment": "OauthEnrollment",
 		"CurrentUser":     "",
 	}
 	if replace, ok := remap[svc.PascalName()]; ok {
