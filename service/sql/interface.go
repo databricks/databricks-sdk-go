@@ -452,6 +452,17 @@ type WarehousesService interface {
 	// Gets the information for a single SQL warehouse.
 	Get(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error)
 
+	// Get SQL warehouse permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetWarehousePermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error)
+
+	// Get SQL warehouse permissions.
+	//
+	// Gets the permissions of a SQL warehouse. SQL warehouses can inherit
+	// permissions from their root object.
+	GetWarehousePermissions(ctx context.Context, request GetWarehousePermissionsRequest) (*WarehousePermissions, error)
+
 	// Get the workspace configuration.
 	//
 	// Gets the workspace level configuration that is shared by all SQL
@@ -464,6 +475,12 @@ type WarehousesService interface {
 	//
 	// Use ListAll() to get all EndpointInfo instances
 	List(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error)
+
+	// Set SQL warehouse permissions.
+	//
+	// Sets permissions on a SQL warehouse. SQL warehouses can inherit
+	// permissions from their root object.
+	SetWarehousePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error)
 
 	// Set the workspace configuration.
 	//
@@ -480,4 +497,10 @@ type WarehousesService interface {
 	//
 	// Stops a SQL warehouse.
 	Stop(ctx context.Context, request StopRequest) error
+
+	// Update SQL warehouse permissions.
+	//
+	// Updates the permissions on a SQL warehouse. SQL warehouses can inherit
+	// permissions from their root object.
+	UpdateWarehousePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error)
 }

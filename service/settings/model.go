@@ -156,6 +156,11 @@ type GetTokenManagementRequest struct {
 	TokenId string `json:"-" url:"-"`
 }
 
+type GetTokenPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []TokenPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
 type IpAccessListInfo struct {
 	// Total number of IP or CIDR values.
 	AddressCount int `json:"address_count,omitempty"`
@@ -338,6 +343,30 @@ type RevokeTokenRequest struct {
 	TokenId string `json:"token_id"`
 }
 
+type TokenAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type TokenAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []TokenPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
 type TokenInfo struct {
 	// Comment that describes the purpose of the token, specified by the token
 	// creator.
@@ -354,6 +383,58 @@ type TokenInfo struct {
 	OwnerId int64 `json:"owner_id,omitempty"`
 	// ID of the token.
 	TokenId string `json:"token_id,omitempty"`
+}
+
+type TokenPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type TokenPermissionLevel string
+
+const TokenPermissionLevelCanUse TokenPermissionLevel = `CAN_USE`
+
+// String representation for [fmt.Print]
+func (f *TokenPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TokenPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_USE`:
+		*f = TokenPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_USE"`, v)
+	}
+}
+
+// Type always returns TokenPermissionLevel to satisfy [pflag.Value] interface
+func (f *TokenPermissionLevel) Type() string {
+	return "TokenPermissionLevel"
+}
+
+type TokenPermissions struct {
+	AccessControlList []TokenAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type TokenPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type TokenPermissionsRequest struct {
+	AccessControlList []TokenAccessControlRequest `json:"access_control_list,omitempty"`
 }
 
 // Update Account Network Policy

@@ -445,6 +445,23 @@ func (f *Format) Type() string {
 	return "Format"
 }
 
+// Get job permission levels
+type GetJobPermissionLevelsRequest struct {
+	// The job for which to get or manage permissions.
+	JobId string `json:"-" url:"-"`
+}
+
+type GetJobPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []JobPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get job permissions
+type GetJobPermissionsRequest struct {
+	// The job for which to get or manage permissions.
+	JobId string `json:"-" url:"-"`
+}
+
 // Get a single job
 type GetJobRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
@@ -564,6 +581,30 @@ type Job struct {
 	TriggerHistory *TriggerHistory `json:"trigger_history,omitempty"`
 }
 
+type JobAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type JobAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []JobPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
 type JobCluster struct {
 	// A unique name for the job cluster. This field is required and must be
 	// unique within the job. `JobTaskSettings` may refer to this field to
@@ -633,6 +674,66 @@ type JobParameterDefinition struct {
 	// The name of the defined parameter. May only contain alphanumeric
 	// characters, `_`, `-`, and `.`
 	Name string `json:"name"`
+}
+
+type JobPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type JobPermissionLevel string
+
+const JobPermissionLevelCanManage JobPermissionLevel = `CAN_MANAGE`
+
+const JobPermissionLevelCanManageRun JobPermissionLevel = `CAN_MANAGE_RUN`
+
+const JobPermissionLevelCanView JobPermissionLevel = `CAN_VIEW`
+
+const JobPermissionLevelIsOwner JobPermissionLevel = `IS_OWNER`
+
+// String representation for [fmt.Print]
+func (f *JobPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *JobPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_MANAGE_RUN`, `CAN_VIEW`, `IS_OWNER`:
+		*f = JobPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_MANAGE_RUN", "CAN_VIEW", "IS_OWNER"`, v)
+	}
+}
+
+// Type always returns JobPermissionLevel to satisfy [pflag.Value] interface
+func (f *JobPermissionLevel) Type() string {
+	return "JobPermissionLevel"
+}
+
+type JobPermissions struct {
+	AccessControlList []JobAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type JobPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type JobPermissionsRequest struct {
+	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
+	// The job for which to get or manage permissions.
+	JobId string `json:"-" url:"-"`
 }
 
 // Write-only setting, available only in Create/Update/Reset and Submit calls.
@@ -2389,9 +2490,9 @@ type Task struct {
 	// warehouse.
 	DbtTask *DbtTask `json:"dbt_task,omitempty"`
 	// An optional array of objects specifying the dependency graph of the task.
-	// All tasks specified in this field must complete successfully before
-	// executing this task. The key is `task_key`, and the value is the name
-	// assigned to the dependent task.
+	// All tasks specified in this field must complete before executing this
+	// task. The task will run only if the `run_if` condition is true. The key
+	// is `task_key`, and the value is the name assigned to the dependent task.
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task.
 	Description string `json:"description,omitempty"`

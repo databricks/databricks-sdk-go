@@ -11,6 +11,9 @@ type CreateCustomAppIntegration struct {
 	Name string `json:"name"`
 	// List of oauth redirect urls
 	RedirectUrls []string `json:"redirect_urls"`
+	// OAuth scopes granted to the application. Supported scopes: all-apis, sql,
+	// offline_access, openid, profile, email.
+	Scopes []string `json:"scopes,omitempty"`
 	// Token access policy
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 }

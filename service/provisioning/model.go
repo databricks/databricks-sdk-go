@@ -157,6 +157,32 @@ type CreateWorkspaceRequest struct {
 	// If a new workspace omits this property, the server generates a unique
 	// deployment name for you with the pattern `dbc-xxxxxxxx-xxxx`.
 	DeploymentName string `json:"deployment_name,omitempty"`
+	// The network settings for the workspace. The configurations are only for
+	// Databricks-managed VPCs. It is ignored if you specify a customer-managed
+	// VPC in the `network_id` field.", All the IP range configurations must be
+	// mutually exclusive. An attempt to create a workspace fails if Databricks
+	// detects an IP range overlap.
+	//
+	// Specify custom IP ranges in CIDR format. The IP ranges for these fields
+	// must not overlap, and all IP addresses must be entirely within the
+	// following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`,
+	// `192.168.0.0/16`, and `240.0.0.0/4`.
+	//
+	// The sizes of these IP ranges affect the maximum number of nodes for the
+	// workspace.
+	//
+	// **Important**: Confirm the IP ranges used by your Databricks workspace
+	// before creating the workspace. You cannot change them after your
+	// workspace is deployed. If the IP address ranges for your Databricks are
+	// too small, IP exhaustion can occur, causing your Databricks jobs to fail.
+	// To determine the address range sizes that you need, Databricks provides a
+	// calculator as a Microsoft Excel spreadsheet. See [calculate subnet sizes
+	// for a new workspace].
+	//
+	// [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
+	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
+	// The configurations for the GKE cluster of a Databricks workspace.
+	GkeConfig *GkeConfig `json:"gke_config,omitempty"`
 	// The Google Cloud region of the workspace data plane in your Google
 	// account. For example, `us-east4`.
 	Location string `json:"location,omitempty"`

@@ -236,6 +236,40 @@ func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId int64) (*RepoInfo, er
 	})
 }
 
+// Get repo permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *ReposAPI) GetRepoPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error) {
+	return a.impl.GetRepoPermissionLevels(ctx, request)
+}
+
+// Get repo permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *ReposAPI) GetRepoPermissionLevelsByRepoId(ctx context.Context, repoId string) (*GetRepoPermissionLevelsResponse, error) {
+	return a.impl.GetRepoPermissionLevels(ctx, GetRepoPermissionLevelsRequest{
+		RepoId: repoId,
+	})
+}
+
+// Get repo permissions.
+//
+// Gets the permissions of a repo. Repos can inherit permissions from their root
+// object.
+func (a *ReposAPI) GetRepoPermissions(ctx context.Context, request GetRepoPermissionsRequest) (*RepoPermissions, error) {
+	return a.impl.GetRepoPermissions(ctx, request)
+}
+
+// Get repo permissions.
+//
+// Gets the permissions of a repo. Repos can inherit permissions from their root
+// object.
+func (a *ReposAPI) GetRepoPermissionsByRepoId(ctx context.Context, repoId string) (*RepoPermissions, error) {
+	return a.impl.GetRepoPermissions(ctx, GetRepoPermissionsRequest{
+		RepoId: repoId,
+	})
+}
+
 // Get repos.
 //
 // Returns repos that the calling user has Manage permissions on. Results are
@@ -317,12 +351,28 @@ func (a *ReposAPI) GetByPath(ctx context.Context, name string) (*RepoInfo, error
 	return &alternatives[0], nil
 }
 
+// Set repo permissions.
+//
+// Sets permissions on a repo. Repos can inherit permissions from their root
+// object.
+func (a *ReposAPI) SetRepoPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
+	return a.impl.SetRepoPermissions(ctx, request)
+}
+
 // Update a repo.
 //
 // Updates the repo to a different branch or tag, or updates the repo to the
 // latest commit on the same branch.
 func (a *ReposAPI) Update(ctx context.Context, request UpdateRepo) error {
 	return a.impl.Update(ctx, request)
+}
+
+// Update repo permissions.
+//
+// Updates the permissions on a repo. Repos can inherit permissions from their
+// root object.
+func (a *ReposAPI) UpdateRepoPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
+	return a.impl.UpdateRepoPermissions(ctx, request)
 }
 
 func NewSecrets(client *client.DatabricksClient) *SecretsAPI {
@@ -650,6 +700,42 @@ func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*Objec
 	})
 }
 
+// Get workspace object permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *WorkspaceAPI) GetWorkspaceObjectPermissionLevels(ctx context.Context, request GetWorkspaceObjectPermissionLevelsRequest) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
+	return a.impl.GetWorkspaceObjectPermissionLevels(ctx, request)
+}
+
+// Get workspace object permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *WorkspaceAPI) GetWorkspaceObjectPermissionLevelsByWorkspaceObjectTypeAndWorkspaceObjectId(ctx context.Context, workspaceObjectType string, workspaceObjectId string) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
+	return a.impl.GetWorkspaceObjectPermissionLevels(ctx, GetWorkspaceObjectPermissionLevelsRequest{
+		WorkspaceObjectType: workspaceObjectType,
+		WorkspaceObjectId:   workspaceObjectId,
+	})
+}
+
+// Get workspace object permissions.
+//
+// Gets the permissions of a workspace object. Workspace objects can inherit
+// permissions from their parent objects or root object.
+func (a *WorkspaceAPI) GetWorkspaceObjectPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+	return a.impl.GetWorkspaceObjectPermissions(ctx, request)
+}
+
+// Get workspace object permissions.
+//
+// Gets the permissions of a workspace object. Workspace objects can inherit
+// permissions from their parent objects or root object.
+func (a *WorkspaceAPI) GetWorkspaceObjectPermissionsByWorkspaceObjectTypeAndWorkspaceObjectId(ctx context.Context, workspaceObjectType string, workspaceObjectId string) (*WorkspaceObjectPermissions, error) {
+	return a.impl.GetWorkspaceObjectPermissions(ctx, GetWorkspaceObjectPermissionsRequest{
+		WorkspaceObjectType: workspaceObjectType,
+		WorkspaceObjectId:   workspaceObjectId,
+	})
+}
+
 // Import a workspace object.
 //
 // Imports a workspace object (for example, a notebook or file) or the contents
@@ -752,4 +838,20 @@ func (a *WorkspaceAPI) MkdirsByPath(ctx context.Context, path string) error {
 	return a.impl.Mkdirs(ctx, Mkdirs{
 		Path: path,
 	})
+}
+
+// Set workspace object permissions.
+//
+// Sets permissions on a workspace object. Workspace objects can inherit
+// permissions from their parent objects or root object.
+func (a *WorkspaceAPI) SetWorkspaceObjectPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+	return a.impl.SetWorkspaceObjectPermissions(ctx, request)
+}
+
+// Update workspace object permissions.
+//
+// Updates the permissions on a workspace object. Workspace objects can inherit
+// permissions from their parent objects or root object.
+func (a *WorkspaceAPI) UpdateWorkspaceObjectPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+	return a.impl.UpdateWorkspaceObjectPermissions(ctx, request)
 }

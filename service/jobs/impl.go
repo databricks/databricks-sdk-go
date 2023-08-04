@@ -4,6 +4,7 @@ package jobs
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -59,6 +60,20 @@ func (a *jobsImpl) Get(ctx context.Context, request GetJobRequest) (*Job, error)
 	return &job, err
 }
 
+func (a *jobsImpl) GetJobPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error) {
+	var getJobPermissionLevelsResponse GetJobPermissionLevelsResponse
+	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v/permissionLevels", request.JobId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getJobPermissionLevelsResponse)
+	return &getJobPermissionLevelsResponse, err
+}
+
+func (a *jobsImpl) GetJobPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error) {
+	var jobPermissions JobPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", request.JobId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &jobPermissions)
+	return &jobPermissions, err
+}
+
 func (a *jobsImpl) GetRun(ctx context.Context, request GetRunRequest) (*Run, error) {
 	var run Run
 	path := "/api/2.1/jobs/runs/get"
@@ -107,6 +122,13 @@ func (a *jobsImpl) RunNow(ctx context.Context, request RunNow) (*RunNowResponse,
 	return &runNowResponse, err
 }
 
+func (a *jobsImpl) SetJobPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
+	var jobPermissions JobPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", request.JobId)
+	err := a.client.Do(ctx, http.MethodPut, path, request, &jobPermissions)
+	return &jobPermissions, err
+}
+
 func (a *jobsImpl) Submit(ctx context.Context, request SubmitRun) (*SubmitRunResponse, error) {
 	var submitRunResponse SubmitRunResponse
 	path := "/api/2.1/jobs/runs/submit"
@@ -118,4 +140,11 @@ func (a *jobsImpl) Update(ctx context.Context, request UpdateJob) error {
 	path := "/api/2.1/jobs/update"
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
 	return err
+}
+
+func (a *jobsImpl) UpdateJobPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
+	var jobPermissions JobPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", request.JobId)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &jobPermissions)
+	return &jobPermissions, err
 }

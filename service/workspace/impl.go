@@ -73,6 +73,20 @@ func (a *reposImpl) Get(ctx context.Context, request GetRepoRequest) (*RepoInfo,
 	return &repoInfo, err
 }
 
+func (a *reposImpl) GetRepoPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error) {
+	var getRepoPermissionLevelsResponse GetRepoPermissionLevelsResponse
+	path := fmt.Sprintf("/api/2.0/permissions/repos/%v/permissionLevels", request.RepoId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getRepoPermissionLevelsResponse)
+	return &getRepoPermissionLevelsResponse, err
+}
+
+func (a *reposImpl) GetRepoPermissions(ctx context.Context, request GetRepoPermissionsRequest) (*RepoPermissions, error) {
+	var repoPermissions RepoPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &repoPermissions)
+	return &repoPermissions, err
+}
+
 func (a *reposImpl) List(ctx context.Context, request ListReposRequest) (*ListReposResponse, error) {
 	var listReposResponse ListReposResponse
 	path := "/api/2.0/repos"
@@ -80,10 +94,24 @@ func (a *reposImpl) List(ctx context.Context, request ListReposRequest) (*ListRe
 	return &listReposResponse, err
 }
 
+func (a *reposImpl) SetRepoPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
+	var repoPermissions RepoPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
+	err := a.client.Do(ctx, http.MethodPut, path, request, &repoPermissions)
+	return &repoPermissions, err
+}
+
 func (a *reposImpl) Update(ctx context.Context, request UpdateRepo) error {
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
+}
+
+func (a *reposImpl) UpdateRepoPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
+	var repoPermissions RepoPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &repoPermissions)
+	return &repoPermissions, err
 }
 
 // unexported type that holds implementations of just Secrets API methods
@@ -180,6 +208,20 @@ func (a *workspaceImpl) GetStatus(ctx context.Context, request GetStatusRequest)
 	return &objectInfo, err
 }
 
+func (a *workspaceImpl) GetWorkspaceObjectPermissionLevels(ctx context.Context, request GetWorkspaceObjectPermissionLevelsRequest) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
+	var getWorkspaceObjectPermissionLevelsResponse GetWorkspaceObjectPermissionLevelsResponse
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", request.WorkspaceObjectType, request.WorkspaceObjectId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getWorkspaceObjectPermissionLevelsResponse)
+	return &getWorkspaceObjectPermissionLevelsResponse, err
+}
+
+func (a *workspaceImpl) GetWorkspaceObjectPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+	var workspaceObjectPermissions WorkspaceObjectPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &workspaceObjectPermissions)
+	return &workspaceObjectPermissions, err
+}
+
 func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
 	path := "/api/2.0/workspace/import"
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
@@ -197,4 +239,18 @@ func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
 	path := "/api/2.0/workspace/mkdirs"
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
 	return err
+}
+
+func (a *workspaceImpl) SetWorkspaceObjectPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+	var workspaceObjectPermissions WorkspaceObjectPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
+	err := a.client.Do(ctx, http.MethodPut, path, request, &workspaceObjectPermissions)
+	return &workspaceObjectPermissions, err
+}
+
+func (a *workspaceImpl) UpdateWorkspaceObjectPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+	var workspaceObjectPermissions WorkspaceObjectPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &workspaceObjectPermissions)
+	return &workspaceObjectPermissions, err
 }

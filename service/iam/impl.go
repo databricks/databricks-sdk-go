@@ -269,16 +269,18 @@ func (a *permissionsImpl) GetPermissionLevels(ctx context.Context, request GetPe
 	return &getPermissionLevelsResponse, err
 }
 
-func (a *permissionsImpl) Set(ctx context.Context, request PermissionsRequest) error {
+func (a *permissionsImpl) Set(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error) {
+	var objectPermissions ObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
-	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPut, path, request, &objectPermissions)
+	return &objectPermissions, err
 }
 
-func (a *permissionsImpl) Update(ctx context.Context, request PermissionsRequest) error {
+func (a *permissionsImpl) Update(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error) {
+	var objectPermissions ObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &objectPermissions)
+	return &objectPermissions, err
 }
 
 // unexported type that holds implementations of just ServicePrincipals API methods
@@ -350,6 +352,20 @@ func (a *usersImpl) Get(ctx context.Context, request GetUserRequest) (*User, err
 	return &user, err
 }
 
+func (a *usersImpl) GetPasswordPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error) {
+	var getPasswordPermissionLevelsResponse GetPasswordPermissionLevelsResponse
+	path := "/api/2.0/permissions/authorization/passwords/permissionLevels"
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &getPasswordPermissionLevelsResponse)
+	return &getPasswordPermissionLevelsResponse, err
+}
+
+func (a *usersImpl) GetPasswordPermissions(ctx context.Context) (*PasswordPermissions, error) {
+	var passwordPermissions PasswordPermissions
+	path := "/api/2.0/permissions/authorization/passwords"
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &passwordPermissions)
+	return &passwordPermissions, err
+}
+
 func (a *usersImpl) List(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
 	path := "/api/2.0/preview/scim/v2/Users"
@@ -363,10 +379,24 @@ func (a *usersImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	return err
 }
 
+func (a *usersImpl) SetPasswordPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
+	var passwordPermissions PasswordPermissions
+	path := "/api/2.0/permissions/authorization/passwords"
+	err := a.client.Do(ctx, http.MethodPut, path, request, &passwordPermissions)
+	return &passwordPermissions, err
+}
+
 func (a *usersImpl) Update(ctx context.Context, request User) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
 	return err
+}
+
+func (a *usersImpl) UpdatePasswordPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
+	var passwordPermissions PasswordPermissions
+	path := "/api/2.0/permissions/authorization/passwords"
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &passwordPermissions)
+	return &passwordPermissions, err
 }
 
 // unexported type that holds implementations of just WorkspaceAssignment API methods

@@ -113,6 +113,40 @@ func (a *ExperimentsAPI) GetExperiment(ctx context.Context, request GetExperimen
 	return a.impl.GetExperiment(ctx, request)
 }
 
+// Get experiment permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *ExperimentsAPI) GetExperimentPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
+	return a.impl.GetExperimentPermissionLevels(ctx, request)
+}
+
+// Get experiment permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *ExperimentsAPI) GetExperimentPermissionLevelsByExperimentId(ctx context.Context, experimentId string) (*GetExperimentPermissionLevelsResponse, error) {
+	return a.impl.GetExperimentPermissionLevels(ctx, GetExperimentPermissionLevelsRequest{
+		ExperimentId: experimentId,
+	})
+}
+
+// Get experiment permissions.
+//
+// Gets the permissions of an experiment. Experiments can inherit permissions
+// from their root object.
+func (a *ExperimentsAPI) GetExperimentPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error) {
+	return a.impl.GetExperimentPermissions(ctx, request)
+}
+
+// Get experiment permissions.
+//
+// Gets the permissions of an experiment. Experiments can inherit permissions
+// from their root object.
+func (a *ExperimentsAPI) GetExperimentPermissionsByExperimentId(ctx context.Context, experimentId string) (*ExperimentPermissions, error) {
+	return a.impl.GetExperimentPermissions(ctx, GetExperimentPermissionsRequest{
+		ExperimentId: experimentId,
+	})
+}
+
 // Get history of a given metric within a run.
 //
 // Gets a list of all values for the specified metric for a given run.
@@ -340,6 +374,14 @@ func (a *ExperimentsAPI) SearchRunsAll(ctx context.Context, request SearchRuns) 
 	return results, nil
 }
 
+// Set experiment permissions.
+//
+// Sets permissions on an experiment. Experiments can inherit permissions from
+// their root object.
+func (a *ExperimentsAPI) SetExperimentPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
+	return a.impl.SetExperimentPermissions(ctx, request)
+}
+
 // Set a tag.
 //
 // Sets a tag on an experiment. Experiment tags are metadata that can be
@@ -361,6 +403,14 @@ func (a *ExperimentsAPI) SetTag(ctx context.Context, request SetTag) error {
 // Updates experiment metadata.
 func (a *ExperimentsAPI) UpdateExperiment(ctx context.Context, request UpdateExperiment) error {
 	return a.impl.UpdateExperiment(ctx, request)
+}
+
+// Update experiment permissions.
+//
+// Updates the permissions on an experiment. Experiments can inherit permissions
+// from their root object.
+func (a *ExperimentsAPI) UpdateExperimentPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
+	return a.impl.UpdateExperimentPermissions(ctx, request)
 }
 
 // Update a run.
@@ -536,6 +586,40 @@ func (a *ModelRegistryAPI) GetModelVersionDownloadUri(ctx context.Context, reque
 	return a.impl.GetModelVersionDownloadUri(ctx, request)
 }
 
+// Get registered model permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *ModelRegistryAPI) GetRegisteredModelPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error) {
+	return a.impl.GetRegisteredModelPermissionLevels(ctx, request)
+}
+
+// Get registered model permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *ModelRegistryAPI) GetRegisteredModelPermissionLevelsByRegisteredModelId(ctx context.Context, registeredModelId string) (*GetRegisteredModelPermissionLevelsResponse, error) {
+	return a.impl.GetRegisteredModelPermissionLevels(ctx, GetRegisteredModelPermissionLevelsRequest{
+		RegisteredModelId: registeredModelId,
+	})
+}
+
+// Get registered model permissions.
+//
+// Gets the permissions of a registered model. Registered models can inherit
+// permissions from their root object.
+func (a *ModelRegistryAPI) GetRegisteredModelPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
+	return a.impl.GetRegisteredModelPermissions(ctx, request)
+}
+
+// Get registered model permissions.
+//
+// Gets the permissions of a registered model. Registered models can inherit
+// permissions from their root object.
+func (a *ModelRegistryAPI) GetRegisteredModelPermissionsByRegisteredModelId(ctx context.Context, registeredModelId string) (*RegisteredModelPermissions, error) {
+	return a.impl.GetRegisteredModelPermissions(ctx, GetRegisteredModelPermissionsRequest{
+		RegisteredModelId: registeredModelId,
+	})
+}
+
 // List models.
 //
 // Lists all available registered models, up to the limit specified in
@@ -688,6 +772,14 @@ func (a *ModelRegistryAPI) SetModelVersionTag(ctx context.Context, request SetMo
 	return a.impl.SetModelVersionTag(ctx, request)
 }
 
+// Set registered model permissions.
+//
+// Sets permissions on a registered model. Registered models can inherit
+// permissions from their root object.
+func (a *ModelRegistryAPI) SetRegisteredModelPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
+	return a.impl.SetRegisteredModelPermissions(ctx, request)
+}
+
 // Test a webhook.
 //
 // **NOTE:** This endpoint is in Public Preview.
@@ -727,6 +819,14 @@ func (a *ModelRegistryAPI) UpdateModel(ctx context.Context, request UpdateModelR
 // Updates the model version.
 func (a *ModelRegistryAPI) UpdateModelVersion(ctx context.Context, request UpdateModelVersionRequest) error {
 	return a.impl.UpdateModelVersion(ctx, request)
+}
+
+// Update registered model permissions.
+//
+// Updates the permissions on a registered model. Registered models can inherit
+// permissions from their root object.
+func (a *ModelRegistryAPI) UpdateRegisteredModelPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
+	return a.impl.UpdateRegisteredModelPermissions(ctx, request)
 }
 
 // Update a webhook.

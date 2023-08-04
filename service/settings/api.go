@@ -601,6 +601,21 @@ func (a *TokenManagementAPI) GetByTokenId(ctx context.Context, tokenId string) (
 	})
 }
 
+// Get token permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *TokenManagementAPI) GetTokenPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
+	return a.impl.GetTokenPermissionLevels(ctx)
+}
+
+// Get token permissions.
+//
+// Gets the permissions of all tokens. Tokens can inherit permissions from their
+// root object.
+func (a *TokenManagementAPI) GetTokenPermissions(ctx context.Context) (*TokenPermissions, error) {
+	return a.impl.GetTokenPermissions(ctx)
+}
+
 // List all tokens.
 //
 // Lists all tokens associated with the specified workspace or user.
@@ -665,6 +680,22 @@ func (a *TokenManagementAPI) GetByComment(ctx context.Context, name string) (*To
 		return nil, fmt.Errorf("there are %d instances of TokenInfo named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
+}
+
+// Set token permissions.
+//
+// Sets permissions on all tokens. Tokens can inherit permissions from their
+// root object.
+func (a *TokenManagementAPI) SetTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+	return a.impl.SetTokenPermissions(ctx, request)
+}
+
+// Update token permissions.
+//
+// Updates the permissions on all tokens. Tokens can inherit permissions from
+// their root object.
+func (a *TokenManagementAPI) UpdateTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+	return a.impl.UpdateTokenPermissions(ctx, request)
 }
 
 func NewTokens(client *client.DatabricksClient) *TokensAPI {

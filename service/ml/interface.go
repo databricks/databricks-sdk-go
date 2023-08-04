@@ -73,6 +73,17 @@ type ExperimentsService interface {
 	// experiments.
 	GetExperiment(ctx context.Context, request GetExperimentRequest) (*Experiment, error)
 
+	// Get experiment permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetExperimentPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error)
+
+	// Get experiment permissions.
+	//
+	// Gets the permissions of an experiment. Experiments can inherit
+	// permissions from their root object.
+	GetExperimentPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error)
+
 	// Get history of a given metric within a run.
 	//
 	// Gets a list of all values for the specified metric for a given run.
@@ -208,6 +219,12 @@ type ExperimentsService interface {
 	// Use SearchRunsAll() to get all Run instances, which will iterate over every result page.
 	SearchRuns(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error)
 
+	// Set experiment permissions.
+	//
+	// Sets permissions on an experiment. Experiments can inherit permissions
+	// from their root object.
+	SetExperimentPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error)
+
 	// Set a tag.
 	//
 	// Sets a tag on an experiment. Experiment tags are metadata that can be
@@ -224,6 +241,12 @@ type ExperimentsService interface {
 	//
 	// Updates experiment metadata.
 	UpdateExperiment(ctx context.Context, request UpdateExperiment) error
+
+	// Update experiment permissions.
+	//
+	// Updates the permissions on an experiment. Experiments can inherit
+	// permissions from their root object.
+	UpdateExperimentPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error)
 
 	// Update a run.
 	//
@@ -336,6 +359,17 @@ type ModelRegistryService interface {
 	// Gets a URI to download the model version.
 	GetModelVersionDownloadUri(ctx context.Context, request GetModelVersionDownloadUriRequest) (*GetModelVersionDownloadUriResponse, error)
 
+	// Get registered model permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetRegisteredModelPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error)
+
+	// Get registered model permissions.
+	//
+	// Gets the permissions of a registered model. Registered models can inherit
+	// permissions from their root object.
+	GetRegisteredModelPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
+
 	// List models.
 	//
 	// Lists all available registered models, up to the limit specified in
@@ -394,6 +428,12 @@ type ModelRegistryService interface {
 	// Sets a model version tag.
 	SetModelVersionTag(ctx context.Context, request SetModelVersionTagRequest) error
 
+	// Set registered model permissions.
+	//
+	// Sets permissions on a registered model. Registered models can inherit
+	// permissions from their root object.
+	SetRegisteredModelPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
+
 	// Test a webhook.
 	//
 	// **NOTE:** This endpoint is in Public Preview.
@@ -424,6 +464,12 @@ type ModelRegistryService interface {
 	//
 	// Updates the model version.
 	UpdateModelVersion(ctx context.Context, request UpdateModelVersionRequest) error
+
+	// Update registered model permissions.
+	//
+	// Updates the permissions on a registered model. Registered models can
+	// inherit permissions from their root object.
+	UpdateRegisteredModelPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
 
 	// Update a webhook.
 	//
