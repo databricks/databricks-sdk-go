@@ -137,7 +137,16 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 	}
 	request := &Entity{fields: map[string]*Field{}}
 	if op.RequestBody != nil {
-		request = svc.Package.schemaToEntity(op.RequestBody.Schema(), []string{op.Name()}, true)
+		mimeType, requestSchema := op.RequestBody.MimeTypeAndSchema()
+		if mimeType == "application/octet-stream" {
+			requestSchema = &openapi.Schema{
+				Type: "object",
+				Properties: map[string]*openapi.Schema{
+					"body": requestSchema,
+				},
+			}
+		}
+		request = svc.Package.schemaToEntity(requestSchema, []string{op.Name()}, true)
 	}
 	if request == nil {
 		panic(fmt.Errorf("%s request body is nil", op.OperationId))
@@ -257,6 +266,10 @@ func (svc *Service) getPathStyle(op *openapi.Operation) openapi.PathStyle {
 
 func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) *Method {
 	request := svc.newRequest(params, op)
+	var requestBodyField *Field
+	if mimeType, _ := op.RequestBody.MimeTypeAndSchema(); mimeType == "application/octet-stream" {
+		requestBodyField = request.fields["body"]
+	}
 	respSchema := op.SuccessResponseSchema(svc.Package.Components)
 	name := op.Name()
 	response := svc.Package.definedEntity(name+"Response", respSchema)
@@ -310,6 +323,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		PathStyle:         requestStyle,
 		NameFieldPath:     nameFieldPath,
 		IdFieldPath:       idFieldPath,
+		requestBodyField:  requestBodyField,
 		wait:              op.Wait,
 		operation:         op,
 		pagination:        op.Pagination,

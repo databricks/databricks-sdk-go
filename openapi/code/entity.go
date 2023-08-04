@@ -54,16 +54,17 @@ type EnumEntry struct {
 // Entity represents a Type
 type Entity struct {
 	Named
-	Package    *Package
-	enum       map[string]EnumEntry
-	ArrayValue *Entity
-	MapValue   *Entity
-	IsInt      bool
-	IsInt64    bool
-	IsFloat64  bool
-	IsBool     bool
-	IsString   bool
-	IsEmpty    bool
+	Package     *Package
+	enum        map[string]EnumEntry
+	ArrayValue  *Entity
+	MapValue    *Entity
+	IsInt       bool
+	IsInt64     bool
+	IsFloat64   bool
+	IsBool      bool
+	IsString    bool
+	IsByteArray bool
+	IsEmpty     bool
 
 	// this field does not have a concrete type
 	IsAny bool

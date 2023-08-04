@@ -81,7 +81,8 @@ type pass[T Named] struct {
 
 func (p *pass[T]) Run() error {
 	for _, item := range p.Items {
-		fmt.Printf("Processing: %s\n", item.FullName())
+		name := item.FullName()
+		fmt.Printf("Processing: %s\n", name)
 		for k, v := range p.fileset {
 			err := p.File(item, k, v)
 			if err != nil {

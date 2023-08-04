@@ -289,15 +289,26 @@ type Body struct {
 	Content  map[string]Example `json:"content,omitempty"`
 }
 
+var allowedMimeTypes = []string{
+	"application/json",
+	"application/octet-stream",
+}
+
 func (b *Body) Schema() *Schema {
-	if b.Content == nil {
-		return nil
+	_, schema := b.MimeTypeAndSchema()
+	return schema
+}
+
+func (b *Body) MimeTypeAndSchema() (string, *Schema) {
+	if b == nil || b.Content == nil {
+		return "", nil
 	}
-	j, ok := b.Content["application/json"]
-	if !ok {
-		return nil
+	for _, m := range allowedMimeTypes {
+		if _, ok := b.Content[m]; ok {
+			return m, b.Content[m].Schema
+		}
 	}
-	return j.Schema
+	return "", nil
 }
 
 type Example struct {
