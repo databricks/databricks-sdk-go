@@ -4,6 +4,7 @@ package ml
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -58,6 +59,20 @@ func (a *experimentsImpl) GetExperiment(ctx context.Context, request GetExperime
 	path := "/api/2.0/mlflow/experiments/get"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &experiment)
 	return &experiment, err
+}
+
+func (a *experimentsImpl) GetExperimentPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
+	var getExperimentPermissionLevelsResponse GetExperimentPermissionLevelsResponse
+	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v/permissionLevels", request.ExperimentId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getExperimentPermissionLevelsResponse)
+	return &getExperimentPermissionLevelsResponse, err
+}
+
+func (a *experimentsImpl) GetExperimentPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error) {
+	var experimentPermissions ExperimentPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &experimentPermissions)
+	return &experimentPermissions, err
 }
 
 func (a *experimentsImpl) GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error) {
@@ -144,6 +159,13 @@ func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) (*
 	return &searchRunsResponse, err
 }
 
+func (a *experimentsImpl) SetExperimentPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
+	var experimentPermissions ExperimentPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
+	err := a.client.Do(ctx, http.MethodPut, path, request, &experimentPermissions)
+	return &experimentPermissions, err
+}
+
 func (a *experimentsImpl) SetExperimentTag(ctx context.Context, request SetExperimentTag) error {
 	path := "/api/2.0/mlflow/experiments/set-experiment-tag"
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
@@ -160,6 +182,13 @@ func (a *experimentsImpl) UpdateExperiment(ctx context.Context, request UpdateEx
 	path := "/api/2.0/mlflow/experiments/update"
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
 	return err
+}
+
+func (a *experimentsImpl) UpdateExperimentPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
+	var experimentPermissions ExperimentPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &experimentPermissions)
+	return &experimentPermissions, err
 }
 
 func (a *experimentsImpl) UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error) {
@@ -286,6 +315,20 @@ func (a *modelRegistryImpl) GetModelVersionDownloadUri(ctx context.Context, requ
 	return &getModelVersionDownloadUriResponse, err
 }
 
+func (a *modelRegistryImpl) GetRegisteredModelPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error) {
+	var getRegisteredModelPermissionLevelsResponse GetRegisteredModelPermissionLevelsResponse
+	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v/permissionLevels", request.RegisteredModelId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getRegisteredModelPermissionLevelsResponse)
+	return &getRegisteredModelPermissionLevelsResponse, err
+}
+
+func (a *modelRegistryImpl) GetRegisteredModelPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
+	var registeredModelPermissions RegisteredModelPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &registeredModelPermissions)
+	return &registeredModelPermissions, err
+}
+
 func (a *modelRegistryImpl) ListModels(ctx context.Context, request ListModelsRequest) (*ListModelsResponse, error) {
 	var listModelsResponse ListModelsResponse
 	path := "/api/2.0/mlflow/registered-models/list"
@@ -347,6 +390,13 @@ func (a *modelRegistryImpl) SetModelVersionTag(ctx context.Context, request SetM
 	return err
 }
 
+func (a *modelRegistryImpl) SetRegisteredModelPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
+	var registeredModelPermissions RegisteredModelPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
+	err := a.client.Do(ctx, http.MethodPut, path, request, &registeredModelPermissions)
+	return &registeredModelPermissions, err
+}
+
 func (a *modelRegistryImpl) TestRegistryWebhook(ctx context.Context, request TestRegistryWebhookRequest) (*TestRegistryWebhookResponse, error) {
 	var testRegistryWebhookResponse TestRegistryWebhookResponse
 	path := "/api/2.0/mlflow/registry-webhooks/test"
@@ -378,6 +428,13 @@ func (a *modelRegistryImpl) UpdateModelVersion(ctx context.Context, request Upda
 	path := "/api/2.0/mlflow/model-versions/update"
 	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
 	return err
+}
+
+func (a *modelRegistryImpl) UpdateRegisteredModelPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
+	var registeredModelPermissions RegisteredModelPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &registeredModelPermissions)
+	return &registeredModelPermissions, err
 }
 
 func (a *modelRegistryImpl) UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) error {

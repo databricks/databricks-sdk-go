@@ -368,6 +368,49 @@ type WorkspaceClient struct {
 
 	// Permissions API are used to create read, write, edit, update and manage
 	// access for various users on different objects and endpoints.
+	//
+	// * **Cluster permissions** — Manage which users can manage, restart, or
+	// attach to clusters.
+	//
+	// * **Cluster policy permissions** — Manage which users can use cluster
+	// policies.
+	//
+	// * **Delta Live Tables pipeline permissions** — Manage which users can
+	// view, manage, run, cancel, or own a Delta Live Tables pipeline.
+	//
+	// * **Job permissions** — Manage which users can view, manage, trigger,
+	// cancel, or own a job.
+	//
+	// * **MLflow experiment permissions** — Manage which users can read,
+	// edit, or manage MLflow experiments.
+	//
+	// * **MLflow registered model permissions** — Manage which users can
+	// read, edit, or manage MLflow registered models.
+	//
+	// * **Password permissions** — Manage which users can use password login
+	// when SSO is enabled.
+	//
+	// * **Instance Pool permissions** — Manage which users can manage or
+	// attach to pools.
+	//
+	// * **Repo permissions** — Manage which users can read, run, edit, or
+	// manage a repo.
+	//
+	// * **Serving endpoint permissions** — Manage which users can view,
+	// query, or manage a serving endpoint.
+	//
+	// * **SQL warehouse permissions** — Manage which users can use or manage
+	// SQL warehouses.
+	//
+	// * **Token permissions** — Manage which users can create or use tokens.
+	//
+	// * **Workspace object permissions** — Manage which users can read, run,
+	// edit, or manage directories, files, and notebooks.
+	//
+	// For the mapping of the required permissions for specific actions or
+	// abilities and other important information, see [Access Control].
+	//
+	// [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html
 	Permissions *iam.PermissionsAPI
 
 	// The Delta Live Tables API allows you to create, edit, delete, start, and

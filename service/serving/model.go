@@ -161,6 +161,23 @@ type ExportMetricsRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+// Get serving endpoint permission levels
+type GetServingEndpointPermissionLevelsRequest struct {
+	// The serving endpoint for which to get or manage permissions.
+	ServingEndpointId string `json:"-" url:"-"`
+}
+
+type GetServingEndpointPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []ServingEndpointPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get serving endpoint permissions
+type GetServingEndpointPermissionsRequest struct {
+	// The serving endpoint for which to get or manage permissions.
+	ServingEndpointId string `json:"-" url:"-"`
+}
+
 // Get a single serving endpoint
 type GetServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
@@ -210,6 +227,9 @@ type ServedModelInput struct {
 	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
 	// "{{secrets/my_scope2/my_key2}}"}`
 	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
+	// ARN of the instance profile that the served model will use to access AWS
+	// resources.
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// The name of the model in Databricks Model Registry to be served or if the
 	// model resides in Unity Catalog, the full name of model, in the form of
 	// __catalog_name__.__schema_name__.__model_name__.
@@ -247,6 +267,9 @@ type ServedModelOutput struct {
 	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
 	// "{{secrets/my_scope2/my_key2}}"}`
 	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
+	// ARN of the instance profile that the served model will use to access AWS
+	// resources.
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// The name of the model in Databricks Model Registry or the full name of
 	// the model in Unity Catalog.
 	ModelName string `json:"model_name,omitempty"`
@@ -367,6 +390,30 @@ type ServingEndpoint struct {
 	State *EndpointState `json:"state,omitempty"`
 }
 
+type ServingEndpointAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type ServingEndpointAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []ServingEndpointPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
 type ServingEndpointDetailed struct {
 	// The config that is currently being served by the endpoint.
 	Config *EndpointCoreConfigOutput `json:"config,omitempty"`
@@ -417,6 +464,64 @@ func (f *ServingEndpointDetailedPermissionLevel) Set(v string) error {
 // Type always returns ServingEndpointDetailedPermissionLevel to satisfy [pflag.Value] interface
 func (f *ServingEndpointDetailedPermissionLevel) Type() string {
 	return "ServingEndpointDetailedPermissionLevel"
+}
+
+type ServingEndpointPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type ServingEndpointPermissionLevel string
+
+const ServingEndpointPermissionLevelCanManage ServingEndpointPermissionLevel = `CAN_MANAGE`
+
+const ServingEndpointPermissionLevelCanQuery ServingEndpointPermissionLevel = `CAN_QUERY`
+
+const ServingEndpointPermissionLevelCanView ServingEndpointPermissionLevel = `CAN_VIEW`
+
+// String representation for [fmt.Print]
+func (f *ServingEndpointPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ServingEndpointPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_QUERY`, `CAN_VIEW`:
+		*f = ServingEndpointPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW"`, v)
+	}
+}
+
+// Type always returns ServingEndpointPermissionLevel to satisfy [pflag.Value] interface
+func (f *ServingEndpointPermissionLevel) Type() string {
+	return "ServingEndpointPermissionLevel"
+}
+
+type ServingEndpointPermissions struct {
+	AccessControlList []ServingEndpointAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type ServingEndpointPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type ServingEndpointPermissionsRequest struct {
+	AccessControlList []ServingEndpointAccessControlRequest `json:"access_control_list,omitempty"`
+	// The serving endpoint for which to get or manage permissions.
+	ServingEndpointId string `json:"-" url:"-"`
 }
 
 type TrafficConfig struct {

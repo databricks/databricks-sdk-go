@@ -159,7 +159,6 @@ type ChannelInfo struct {
 	Name ChannelName `json:"name,omitempty"`
 }
 
-// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -1096,6 +1095,23 @@ type GetStatementResultChunkNRequest struct {
 	StatementId string `json:"-" url:"-"`
 }
 
+// Get SQL warehouse permission levels
+type GetWarehousePermissionLevelsRequest struct {
+	// The SQL warehouse for which to get or manage permissions.
+	WarehouseId string `json:"-" url:"-"`
+}
+
+type GetWarehousePermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []WarehousePermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get SQL warehouse permissions
+type GetWarehousePermissionsRequest struct {
+	// The SQL warehouse for which to get or manage permissions.
+	WarehouseId string `json:"-" url:"-"`
+}
+
 // Get warehouse info
 type GetWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
@@ -1676,13 +1692,13 @@ type QueryEditContent struct {
 
 // A filter to limit query history results. This field is optional.
 type QueryFilter struct {
-	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty"`
+	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty" url:"query_start_time_range,omitempty"`
 
-	Statuses []QueryStatus `json:"statuses,omitempty"`
+	Statuses []QueryStatus `json:"statuses,omitempty" url:"statuses,omitempty"`
 	// A list of user IDs who ran the queries.
-	UserIds []int `json:"user_ids,omitempty"`
+	UserIds []int `json:"user_ids,omitempty" url:"user_ids,omitempty"`
 	// A list of warehouse IDs.
-	WarehouseIds []string `json:"warehouse_ids,omitempty"`
+	WarehouseIds []string `json:"warehouse_ids,omitempty" url:"warehouse_ids,omitempty"`
 }
 
 type QueryInfo struct {
@@ -2596,9 +2612,9 @@ func (f *TerminationReasonType) Type() string {
 
 type TimeRange struct {
 	// Limit results to queries that started before this time.
-	EndTimeMs int `json:"end_time_ms,omitempty"`
+	EndTimeMs int `json:"end_time_ms,omitempty" url:"end_time_ms,omitempty"`
 	// Limit results to queries that started after this time.
-	StartTimeMs int `json:"start_time_ms,omitempty"`
+	StartTimeMs int `json:"start_time_ms,omitempty" url:"start_time_ms,omitempty"`
 }
 
 // When in synchronous mode with `wait_timeout > 0s` it determines the action
@@ -2684,6 +2700,88 @@ type Visualization struct {
 	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
+type WarehouseAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type WarehouseAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []WarehousePermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type WarehousePermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type WarehousePermissionLevel string
+
+const WarehousePermissionLevelCanManage WarehousePermissionLevel = `CAN_MANAGE`
+
+const WarehousePermissionLevelCanUse WarehousePermissionLevel = `CAN_USE`
+
+const WarehousePermissionLevelIsOwner WarehousePermissionLevel = `IS_OWNER`
+
+// String representation for [fmt.Print]
+func (f *WarehousePermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *WarehousePermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_USE`, `IS_OWNER`:
+		*f = WarehousePermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_USE", "IS_OWNER"`, v)
+	}
+}
+
+// Type always returns WarehousePermissionLevel to satisfy [pflag.Value] interface
+func (f *WarehousePermissionLevel) Type() string {
+	return "WarehousePermissionLevel"
+}
+
+type WarehousePermissions struct {
+	AccessControlList []WarehouseAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type WarehousePermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
+}
+
+type WarehousePermissionsRequest struct {
+	AccessControlList []WarehouseAccessControlRequest `json:"access_control_list,omitempty"`
+	// The SQL warehouse for which to get or manage permissions.
+	WarehouseId string `json:"-" url:"-"`
+}
+
 type WarehouseTypePair struct {
 	// If set to false the specific warehouse type will not be be allowed as a
 	// value for warehouse_type in CreateWarehouse and EditWarehouse
@@ -2724,7 +2822,7 @@ func (f *WarehouseTypePairWarehouseType) Type() string {
 
 type Widget struct {
 	// The unique ID for this widget.
-	Id int `json:"id,omitempty"`
+	Id string `json:"id,omitempty"`
 
 	Options *WidgetOptions `json:"options,omitempty"`
 	// The visualization description API changes frequently and is unsupported.

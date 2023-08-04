@@ -48,6 +48,20 @@ func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpoi
 	return &servingEndpointDetailed, err
 }
 
+func (a *servingEndpointsImpl) GetServingEndpointPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error) {
+	var getServingEndpointPermissionLevelsResponse GetServingEndpointPermissionLevelsResponse
+	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v/permissionLevels", request.ServingEndpointId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getServingEndpointPermissionLevelsResponse)
+	return &getServingEndpointPermissionLevelsResponse, err
+}
+
+func (a *servingEndpointsImpl) GetServingEndpointPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
+	var servingEndpointPermissions ServingEndpointPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &servingEndpointPermissions)
+	return &servingEndpointPermissions, err
+}
+
 func (a *servingEndpointsImpl) List(ctx context.Context) (*ListEndpointsResponse, error) {
 	var listEndpointsResponse ListEndpointsResponse
 	path := "/api/2.0/serving-endpoints"
@@ -69,9 +83,23 @@ func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryRequest) 
 	return &queryEndpointResponse, err
 }
 
+func (a *servingEndpointsImpl) SetServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
+	var servingEndpointPermissions ServingEndpointPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
+	err := a.client.Do(ctx, http.MethodPut, path, request, &servingEndpointPermissions)
+	return &servingEndpointPermissions, err
+}
+
 func (a *servingEndpointsImpl) UpdateConfig(ctx context.Context, request EndpointCoreConfigInput) (*ServingEndpointDetailed, error) {
 	var servingEndpointDetailed ServingEndpointDetailed
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/config", request.Name)
 	err := a.client.Do(ctx, http.MethodPut, path, request, &servingEndpointDetailed)
 	return &servingEndpointDetailed, err
+}
+
+func (a *servingEndpointsImpl) UpdateServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
+	var servingEndpointPermissions ServingEndpointPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &servingEndpointPermissions)
+	return &servingEndpointPermissions, err
 }

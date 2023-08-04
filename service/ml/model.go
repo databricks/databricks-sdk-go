@@ -527,6 +527,88 @@ type Experiment struct {
 	Tags []ExperimentTag `json:"tags,omitempty"`
 }
 
+type ExperimentAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type ExperimentAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []ExperimentPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type ExperimentPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type ExperimentPermissionLevel string
+
+const ExperimentPermissionLevelCanEdit ExperimentPermissionLevel = `CAN_EDIT`
+
+const ExperimentPermissionLevelCanManage ExperimentPermissionLevel = `CAN_MANAGE`
+
+const ExperimentPermissionLevelCanRead ExperimentPermissionLevel = `CAN_READ`
+
+// String representation for [fmt.Print]
+func (f *ExperimentPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ExperimentPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`:
+		*f = ExperimentPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_READ"`, v)
+	}
+}
+
+// Type always returns ExperimentPermissionLevel to satisfy [pflag.Value] interface
+func (f *ExperimentPermissionLevel) Type() string {
+	return "ExperimentPermissionLevel"
+}
+
+type ExperimentPermissions struct {
+	AccessControlList []ExperimentAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type ExperimentPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type ExperimentPermissionsRequest struct {
+	AccessControlList []ExperimentAccessControlRequest `json:"access_control_list,omitempty"`
+	// The experiment for which to get or manage permissions.
+	ExperimentId string `json:"-" url:"-"`
+}
+
 type ExperimentTag struct {
 	// The tag key.
 	Key string `json:"key,omitempty"`
@@ -552,6 +634,23 @@ type GetByNameRequest struct {
 type GetExperimentByNameResponse struct {
 	// Experiment details.
 	Experiment *Experiment `json:"experiment,omitempty"`
+}
+
+// Get experiment permission levels
+type GetExperimentPermissionLevelsRequest struct {
+	// The experiment for which to get or manage permissions.
+	ExperimentId string `json:"-" url:"-"`
+}
+
+type GetExperimentPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []ExperimentPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get experiment permissions
+type GetExperimentPermissionsRequest struct {
+	// The experiment for which to get or manage permissions.
+	ExperimentId string `json:"-" url:"-"`
 }
 
 // Get an experiment
@@ -632,6 +731,23 @@ type GetModelVersionRequest struct {
 
 type GetModelVersionResponse struct {
 	ModelVersion *ModelVersion `json:"model_version,omitempty"`
+}
+
+// Get registered model permission levels
+type GetRegisteredModelPermissionLevelsRequest struct {
+	// The registered model for which to get or manage permissions.
+	RegisteredModelId string `json:"-" url:"-"`
+}
+
+type GetRegisteredModelPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []RegisteredModelPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get registered model permissions
+type GetRegisteredModelPermissionsRequest struct {
+	// The registered model for which to get or manage permissions.
+	RegisteredModelId string `json:"-" url:"-"`
 }
 
 // Get a run
@@ -1066,6 +1182,92 @@ func (f *PermissionLevel) Set(v string) error {
 // Type always returns PermissionLevel to satisfy [pflag.Value] interface
 func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
+}
+
+type RegisteredModelAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type RegisteredModelAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []RegisteredModelPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type RegisteredModelPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type RegisteredModelPermissionLevel string
+
+const RegisteredModelPermissionLevelCanEdit RegisteredModelPermissionLevel = `CAN_EDIT`
+
+const RegisteredModelPermissionLevelCanManage RegisteredModelPermissionLevel = `CAN_MANAGE`
+
+const RegisteredModelPermissionLevelCanManageProductionVersions RegisteredModelPermissionLevel = `CAN_MANAGE_PRODUCTION_VERSIONS`
+
+const RegisteredModelPermissionLevelCanManageStagingVersions RegisteredModelPermissionLevel = `CAN_MANAGE_STAGING_VERSIONS`
+
+const RegisteredModelPermissionLevelCanRead RegisteredModelPermissionLevel = `CAN_READ`
+
+// String representation for [fmt.Print]
+func (f *RegisteredModelPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RegisteredModelPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`:
+		*f = RegisteredModelPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_STAGING_VERSIONS", "CAN_READ"`, v)
+	}
+}
+
+// Type always returns RegisteredModelPermissionLevel to satisfy [pflag.Value] interface
+func (f *RegisteredModelPermissionLevel) Type() string {
+	return "RegisteredModelPermissionLevel"
+}
+
+type RegisteredModelPermissions struct {
+	AccessControlList []RegisteredModelAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type RegisteredModelPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type RegisteredModelPermissionsRequest struct {
+	AccessControlList []RegisteredModelAccessControlRequest `json:"access_control_list,omitempty"`
+	// The registered model for which to get or manage permissions.
+	RegisteredModelId string `json:"-" url:"-"`
 }
 
 type RegistryWebhook struct {

@@ -274,6 +274,30 @@ func (f *CloudProviderNodeStatus) Type() string {
 	return "CloudProviderNodeStatus"
 }
 
+type ClusterAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type ClusterAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []ClusterPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
 type ClusterAttributes struct {
 	// Automatically terminates the cluster after it is inactive for this time
 	// in minutes. If not set, this cluster will not be automatically
@@ -600,6 +624,142 @@ type ClusterLogConf struct {
 	// the cluster iam role in `instance_profile_arn` has permission to write
 	// data to the s3 destination.
 	S3 *S3StorageInfo `json:"s3,omitempty"`
+}
+
+type ClusterPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type ClusterPermissionLevel string
+
+const ClusterPermissionLevelCanAttachTo ClusterPermissionLevel = `CAN_ATTACH_TO`
+
+const ClusterPermissionLevelCanManage ClusterPermissionLevel = `CAN_MANAGE`
+
+const ClusterPermissionLevelCanRestart ClusterPermissionLevel = `CAN_RESTART`
+
+// String representation for [fmt.Print]
+func (f *ClusterPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ClusterPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_ATTACH_TO`, `CAN_MANAGE`, `CAN_RESTART`:
+		*f = ClusterPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_ATTACH_TO", "CAN_MANAGE", "CAN_RESTART"`, v)
+	}
+}
+
+// Type always returns ClusterPermissionLevel to satisfy [pflag.Value] interface
+func (f *ClusterPermissionLevel) Type() string {
+	return "ClusterPermissionLevel"
+}
+
+type ClusterPermissions struct {
+	AccessControlList []ClusterAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type ClusterPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type ClusterPermissionsRequest struct {
+	AccessControlList []ClusterAccessControlRequest `json:"access_control_list,omitempty"`
+	// The cluster for which to get or manage permissions.
+	ClusterId string `json:"-" url:"-"`
+}
+
+type ClusterPolicyAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type ClusterPolicyAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []ClusterPolicyPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type ClusterPolicyPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type ClusterPolicyPermissionLevel string
+
+const ClusterPolicyPermissionLevelCanUse ClusterPolicyPermissionLevel = `CAN_USE`
+
+// String representation for [fmt.Print]
+func (f *ClusterPolicyPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ClusterPolicyPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_USE`:
+		*f = ClusterPolicyPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_USE"`, v)
+	}
+}
+
+// Type always returns ClusterPolicyPermissionLevel to satisfy [pflag.Value] interface
+func (f *ClusterPolicyPermissionLevel) Type() string {
+	return "ClusterPolicyPermissionLevel"
+}
+
+type ClusterPolicyPermissions struct {
+	AccessControlList []ClusterPolicyAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type ClusterPolicyPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type ClusterPolicyPermissionsRequest struct {
+	AccessControlList []ClusterPolicyAccessControlRequest `json:"access_control_list,omitempty"`
+	// The cluster policy for which to get or manage permissions.
+	ClusterPolicyId string `json:"-" url:"-"`
 }
 
 type ClusterSize struct {
@@ -1966,6 +2126,40 @@ func (f *GcpAvailability) Type() string {
 	return "GcpAvailability"
 }
 
+// Get cluster permission levels
+type GetClusterPermissionLevelsRequest struct {
+	// The cluster for which to get or manage permissions.
+	ClusterId string `json:"-" url:"-"`
+}
+
+type GetClusterPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []ClusterPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get cluster permissions
+type GetClusterPermissionsRequest struct {
+	// The cluster for which to get or manage permissions.
+	ClusterId string `json:"-" url:"-"`
+}
+
+// Get cluster policy permission levels
+type GetClusterPolicyPermissionLevelsRequest struct {
+	// The cluster policy for which to get or manage permissions.
+	ClusterPolicyId string `json:"-" url:"-"`
+}
+
+type GetClusterPolicyPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []ClusterPolicyPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get cluster policy permissions
+type GetClusterPolicyPermissionsRequest struct {
+	// The cluster policy for which to get or manage permissions.
+	ClusterPolicyId string `json:"-" url:"-"`
+}
+
 // Get entity
 type GetClusterPolicyRequest struct {
 	// Canonical unique identifier for the cluster policy.
@@ -2124,6 +2318,23 @@ type GetInstancePool struct {
 	Status *InstancePoolStatus `json:"status,omitempty"`
 }
 
+// Get instance pool permission levels
+type GetInstancePoolPermissionLevelsRequest struct {
+	// The instance pool for which to get or manage permissions.
+	InstancePoolId string `json:"-" url:"-"`
+}
+
+type GetInstancePoolPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []InstancePoolPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get instance pool permissions
+type GetInstancePoolPermissionsRequest struct {
+	// The instance pool for which to get or manage permissions.
+	InstancePoolId string `json:"-" url:"-"`
+}
+
 // Get instance pool information
 type GetInstancePoolRequest struct {
 	// The canonical unique identifier for the instance pool.
@@ -2251,6 +2462,30 @@ type InstallLibraries struct {
 	ClusterId string `json:"cluster_id"`
 	// The libraries to install.
 	Libraries []Library `json:"libraries"`
+}
+
+type InstancePoolAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type InstancePoolAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []InstancePoolPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
 }
 
 type InstancePoolAndStats struct {
@@ -2460,6 +2695,62 @@ type InstancePoolGcpAttributes struct {
 	//
 	// [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
 	LocalSsdCount int `json:"local_ssd_count,omitempty"`
+}
+
+type InstancePoolPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type InstancePoolPermissionLevel string
+
+const InstancePoolPermissionLevelCanAttachTo InstancePoolPermissionLevel = `CAN_ATTACH_TO`
+
+const InstancePoolPermissionLevelCanManage InstancePoolPermissionLevel = `CAN_MANAGE`
+
+// String representation for [fmt.Print]
+func (f *InstancePoolPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *InstancePoolPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_ATTACH_TO`, `CAN_MANAGE`:
+		*f = InstancePoolPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_ATTACH_TO", "CAN_MANAGE"`, v)
+	}
+}
+
+// Type always returns InstancePoolPermissionLevel to satisfy [pflag.Value] interface
+func (f *InstancePoolPermissionLevel) Type() string {
+	return "InstancePoolPermissionLevel"
+}
+
+type InstancePoolPermissions struct {
+	AccessControlList []InstancePoolAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type InstancePoolPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type InstancePoolPermissionsRequest struct {
+	AccessControlList []InstancePoolAccessControlRequest `json:"access_control_list,omitempty"`
+	// The instance pool for which to get or manage permissions.
+	InstancePoolId string `json:"-" url:"-"`
 }
 
 // Current state of the instance pool.

@@ -63,6 +63,17 @@ type JobsService interface {
 	// Retrieves the details for a single job.
 	Get(ctx context.Context, request GetJobRequest) (*Job, error)
 
+	// Get job permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetJobPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error)
+
+	// Get job permissions.
+	//
+	// Gets the permissions of a job. Jobs can inherit permissions from their
+	// root object.
+	GetJobPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error)
+
 	// Get a single job run.
 	//
 	// Retrieve the metadata of a run.
@@ -114,6 +125,12 @@ type JobsService interface {
 	// Run a job and return the `run_id` of the triggered run.
 	RunNow(ctx context.Context, request RunNow) (*RunNowResponse, error)
 
+	// Set job permissions.
+	//
+	// Sets permissions on a job. Jobs can inherit permissions from their root
+	// object.
+	SetJobPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
+
 	// Create and trigger a one-time run.
 	//
 	// Submit a one-time run. This endpoint allows you to submit a workload
@@ -127,4 +144,10 @@ type JobsService interface {
 	// Add, update, or remove specific settings of an existing job. Use the
 	// ResetJob to overwrite all job settings.
 	Update(ctx context.Context, request UpdateJob) error
+
+	// Update job permissions.
+	//
+	// Updates the permissions on a job. Jobs can inherit permissions from their
+	// root object.
+	UpdateJobPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
 }

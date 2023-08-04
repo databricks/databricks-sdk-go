@@ -257,6 +257,40 @@ func (a *JobsAPI) GetByJobId(ctx context.Context, jobId int64) (*Job, error) {
 	})
 }
 
+// Get job permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *JobsAPI) GetJobPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error) {
+	return a.impl.GetJobPermissionLevels(ctx, request)
+}
+
+// Get job permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *JobsAPI) GetJobPermissionLevelsByJobId(ctx context.Context, jobId string) (*GetJobPermissionLevelsResponse, error) {
+	return a.impl.GetJobPermissionLevels(ctx, GetJobPermissionLevelsRequest{
+		JobId: jobId,
+	})
+}
+
+// Get job permissions.
+//
+// Gets the permissions of a job. Jobs can inherit permissions from their root
+// object.
+func (a *JobsAPI) GetJobPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error) {
+	return a.impl.GetJobPermissions(ctx, request)
+}
+
+// Get job permissions.
+//
+// Gets the permissions of a job. Jobs can inherit permissions from their root
+// object.
+func (a *JobsAPI) GetJobPermissionsByJobId(ctx context.Context, jobId string) (*JobPermissions, error) {
+	return a.impl.GetJobPermissions(ctx, GetJobPermissionsRequest{
+		JobId: jobId,
+	})
+}
+
 // Get a single job run.
 //
 // Retrieve the metadata of a run.
@@ -521,6 +555,14 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...r
 	return wait.Get()
 }
 
+// Set job permissions.
+//
+// Sets permissions on a job. Jobs can inherit permissions from their root
+// object.
+func (a *JobsAPI) SetJobPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
+	return a.impl.SetJobPermissions(ctx, request)
+}
+
 // Create and trigger a one-time run.
 //
 // Submit a one-time run. This endpoint allows you to submit a workload directly
@@ -576,4 +618,12 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, option
 // to overwrite all job settings.
 func (a *JobsAPI) Update(ctx context.Context, request UpdateJob) error {
 	return a.impl.Update(ctx, request)
+}
+
+// Update job permissions.
+//
+// Updates the permissions on a job. Jobs can inherit permissions from their
+// root object.
+func (a *JobsAPI) UpdateJobPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
+	return a.impl.UpdateJobPermissions(ctx, request)
 }

@@ -20,9 +20,11 @@ type AccessControlRequest struct {
 type AccessControlResponse struct {
 	// All permissions.
 	AllPermissions []Permission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// name of the service principal
+	// Name of the service principal.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -118,7 +120,12 @@ type GetGroupRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-// Get permission levels
+type GetPasswordPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []PasswordPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get object permission levels
 type GetPermissionLevelsRequest struct {
 	// <needs content>
 	RequestObjectId string `json:"-" url:"-"`
@@ -437,6 +444,82 @@ type PartialUpdate struct {
 	Schema []PatchSchema `json:"schema,omitempty"`
 }
 
+type PasswordAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type PasswordAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []PasswordPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type PasswordPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type PasswordPermissionLevel string
+
+const PasswordPermissionLevelCanUse PasswordPermissionLevel = `CAN_USE`
+
+// String representation for [fmt.Print]
+func (f *PasswordPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PasswordPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_USE`:
+		*f = PasswordPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_USE"`, v)
+	}
+}
+
+// Type always returns PasswordPermissionLevel to satisfy [pflag.Value] interface
+func (f *PasswordPermissionLevel) Type() string {
+	return "PasswordPermissionLevel"
+}
+
+type PasswordPermissions struct {
+	AccessControlList []PasswordAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type PasswordPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type PasswordPermissionsRequest struct {
+	AccessControlList []PasswordAccessControlRequest `json:"access_control_list,omitempty"`
+}
+
 type Patch struct {
 	// Type of patch operation.
 	Op PatchOp `json:"op,omitempty"`
@@ -688,7 +771,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Name *Name `json:"name,omitempty"`
 

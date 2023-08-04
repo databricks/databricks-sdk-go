@@ -175,11 +175,39 @@ func (a *tokenManagementImpl) Get(ctx context.Context, request GetTokenManagemen
 	return &tokenInfo, err
 }
 
+func (a *tokenManagementImpl) GetTokenPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
+	var getTokenPermissionLevelsResponse GetTokenPermissionLevelsResponse
+	path := "/api/2.0/permissions/authorization/tokens/permissionLevels"
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &getTokenPermissionLevelsResponse)
+	return &getTokenPermissionLevelsResponse, err
+}
+
+func (a *tokenManagementImpl) GetTokenPermissions(ctx context.Context) (*TokenPermissions, error) {
+	var tokenPermissions TokenPermissions
+	path := "/api/2.0/permissions/authorization/tokens"
+	err := a.client.Do(ctx, http.MethodGet, path, nil, &tokenPermissions)
+	return &tokenPermissions, err
+}
+
 func (a *tokenManagementImpl) List(ctx context.Context, request ListTokenManagementRequest) (*ListTokensResponse, error) {
 	var listTokensResponse ListTokensResponse
 	path := "/api/2.0/token-management/tokens"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listTokensResponse)
 	return &listTokensResponse, err
+}
+
+func (a *tokenManagementImpl) SetTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+	var tokenPermissions TokenPermissions
+	path := "/api/2.0/permissions/authorization/tokens"
+	err := a.client.Do(ctx, http.MethodPut, path, request, &tokenPermissions)
+	return &tokenPermissions, err
+}
+
+func (a *tokenManagementImpl) UpdateTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+	var tokenPermissions TokenPermissions
+	path := "/api/2.0/permissions/authorization/tokens"
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &tokenPermissions)
+	return &tokenPermissions, err
 }
 
 // unexported type that holds implementations of just Tokens API methods
