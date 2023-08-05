@@ -38,16 +38,15 @@ type Method struct {
 
 	// If not the zero value, represent the field in the request entity that
 	// should be mapped to the request body.
-	requestBodyField *Field
+	RequestBodyField *Field
+
+	// Expected content type of the response
+	Accept string
 
 	wait       *openapi.Wait
 	pagination *openapi.Pagination
 	operation  *openapi.Operation
 	shortcut   bool
-}
-
-func (m *Method) RequestBodyField() *Field {
-	return m.requestBodyField
 }
 
 // Shortcut holds definition of "shortcut" methods, that are generated for

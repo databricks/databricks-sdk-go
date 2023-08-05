@@ -173,16 +173,16 @@ func (o *Operation) HasTag(tag string) bool {
 	return false
 }
 
-func (o *Operation) SuccessResponseSchema(c *Components) *Schema {
+func (o *Operation) SuccessResponseSchema(c *Components) (string, *Schema) {
 	httpOk, ok := o.Responses["200"]
 	if ok {
-		return (*c.Responses.Resolve(httpOk)).Schema()
+		return (*c.Responses.Resolve(httpOk)).MimeTypeAndSchema()
 	}
 	httpCreated, ok := o.Responses["201"]
 	if ok {
-		return (*c.Responses.Resolve(httpCreated)).Schema()
+		return (*c.Responses.Resolve(httpCreated)).MimeTypeAndSchema()
 	}
-	return nil
+	return "", nil
 }
 
 func (o *Operation) HasNameField() bool {

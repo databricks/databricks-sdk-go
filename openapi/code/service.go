@@ -270,7 +270,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 	if mimeType, _ := op.RequestBody.MimeTypeAndSchema(); mimeType == "application/octet-stream" {
 		requestBodyField = request.fields["body"]
 	}
-	respSchema := op.SuccessResponseSchema(svc.Package.Components)
+	responseMimeType, respSchema := op.SuccessResponseSchema(svc.Package.Components)
 	name := op.Name()
 	response := svc.Package.definedEntity(name+"Response", respSchema)
 	var emptyResponse Named
@@ -323,7 +323,8 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		PathStyle:         requestStyle,
 		NameFieldPath:     nameFieldPath,
 		IdFieldPath:       idFieldPath,
-		requestBodyField:  requestBodyField,
+		RequestBodyField:  requestBodyField,
+		Accept:            responseMimeType,
 		wait:              op.Wait,
 		operation:         op,
 		pagination:        op.Pagination,
