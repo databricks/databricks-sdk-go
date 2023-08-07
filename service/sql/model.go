@@ -1702,6 +1702,8 @@ type QueryFilter struct {
 }
 
 type QueryInfo struct {
+	// Reserved for internal use.
+	CanSubscribeToLiveQuery bool `json:"canSubscribeToLiveQuery,omitempty"`
 	// Channel information for the SQL warehouse at the time of query execution
 	ChannelUsed *ChannelInfo `json:"channel_used,omitempty"`
 	// Total execution time of the query from the client’s point of view, in
@@ -1767,19 +1769,35 @@ type QueryMetrics struct {
 	CompilationTimeMs int `json:"compilation_time_ms,omitempty"`
 	// Time spent executing the query, in milliseconds.
 	ExecutionTimeMs int `json:"execution_time_ms,omitempty"`
+	// Reserved for internal use.
+	MetadataTimeMs int `json:"metadata_time_ms,omitempty"`
 	// Total amount of data sent over the network between executor nodes during
 	// shuffle, in bytes.
 	NetworkSentBytes int `json:"network_sent_bytes,omitempty"`
+	// Timestamp of when the query was enqueued waiting while the warehouse was
+	// at max load. This field is optional and will not appear if the query
+	// skipped the overloading queue.
+	OverloadingQueueStartTimestamp int `json:"overloading_queue_start_timestamp,omitempty"`
 	// Total execution time for all individual Photon query engine tasks in the
 	// query, in milliseconds.
 	PhotonTotalTimeMs int `json:"photon_total_time_ms,omitempty"`
-	// Time spent waiting to execute the query because the SQL warehouse is
-	// already running the maximum number of concurrent queries, in
-	// milliseconds.
-	QueuedOverloadTimeMs int `json:"queued_overload_time_ms,omitempty"`
-	// Time waiting for compute resources to be provisioned for the SQL
-	// warehouse, in milliseconds.
-	QueuedProvisioningTimeMs int `json:"queued_provisioning_time_ms,omitempty"`
+	// Reserved for internal use.
+	PlanningPhases []any `json:"planning_phases,omitempty"`
+	// Reserved for internal use.
+	PlanningTimeMs int `json:"planning_time_ms,omitempty"`
+	// Timestamp of when the query was enqueued waiting for a cluster to be
+	// provisioned for the warehouse. This field is optional and will not appear
+	// if the query skipped the provisioning queue.
+	ProvisioningQueueStartTimestamp int `json:"provisioning_queue_start_timestamp,omitempty"`
+	// Total number of bytes in all tables not read due to pruning
+	PrunedBytes int `json:"pruned_bytes,omitempty"`
+	// Total number of files from all tables not read due to pruning
+	PrunedFilesCount int `json:"pruned_files_count,omitempty"`
+	// Timestamp of when the underlying compute started compilation of the
+	// query.
+	QueryCompilationStartTimestamp int `json:"query_compilation_start_timestamp,omitempty"`
+	// Reserved for internal use.
+	QueryExecutionTimeMs int `json:"query_execution_time_ms,omitempty"`
 	// Total size of data read by the query, in bytes.
 	ReadBytes int `json:"read_bytes,omitempty"`
 	// Size of persistent data read from the cache, in bytes.
@@ -1805,10 +1823,6 @@ type QueryMetrics struct {
 	SpillToDiskBytes int `json:"spill_to_disk_bytes,omitempty"`
 	// Sum of execution time for all of the query’s tasks, in milliseconds.
 	TaskTotalTimeMs int `json:"task_total_time_ms,omitempty"`
-	// Number of files that would have been read without pruning.
-	TotalFilesCount int `json:"total_files_count,omitempty"`
-	// Number of partitions that would have been read without pruning.
-	TotalPartitionsCount int `json:"total_partitions_count,omitempty"`
 	// Total execution time of the query from the client’s point of view, in
 	// milliseconds.
 	TotalTimeMs int `json:"total_time_ms,omitempty"`
