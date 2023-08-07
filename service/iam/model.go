@@ -111,7 +111,7 @@ type GetAssignableRolesForResourceRequest struct {
 }
 
 type GetAssignableRolesForResourceResponse struct {
-	Roles []string `json:"roles,omitempty"`
+	Roles []Role `json:"roles,omitempty"`
 }
 
 // Get group details
@@ -701,6 +701,11 @@ type ResourceMeta struct {
 	ResourceType string `json:"resourceType,omitempty"`
 }
 
+type Role struct {
+	// Role to assign to a principal or a list of principals on a resource.
+	Name string `json:"name"`
+}
+
 type RuleSetResponse struct {
 	// Identifies the version of the rule set returned.
 	Etag string `json:"etag,omitempty"`
@@ -735,7 +740,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 }
