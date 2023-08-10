@@ -331,6 +331,13 @@ func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Paginat
 	if pg == nil || pg.Inline {
 		return req
 	}
+	if pg.Offset == "" &&
+		pg.Limit == "" &&
+		pg.Increment == 0 &&
+		pg.Token == nil &&
+		pg.Results != "" {
+		return req
+	}
 	listing := &Entity{
 		Named: Named{
 			Name:        req.PascalName(),
@@ -355,8 +362,7 @@ func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Paginat
 		listing.fields[field.Name] = field
 	}
 	if !requiresModification {
-		// there was no change. A bit strange.
-		return req
+		panic(fmt.Errorf("incorrect type detected: %s", req.FullName()))
 	}
 	if svc.Name == "Jobs" {
 		// add generation for client-side maximum number of results during iteration.
