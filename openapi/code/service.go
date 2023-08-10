@@ -392,7 +392,7 @@ func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Paginat
 	oldName := req.Name
 	_, needsRename := svc.Package.types[oldName]
 	if needsRename {
-		newName := strings.TrimSuffix(req.PascalName(), "Request") + "Internal"
+		newName := strings.TrimSuffix(req.CamelName(), "Request") + "Internal"
 		req.Name = newName
 		req.Description = "For internal use only"
 		delete(svc.Package.types, oldName)
