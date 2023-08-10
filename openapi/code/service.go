@@ -323,17 +323,11 @@ func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Paginat
 	if req == nil {
 		return nil
 	}
-	if svc.Name == "Clusters" && req.PascalName() == "GetEvents" {
+	if svc.Name == "Clusters" && req.CamelName() == "getEvents" {
 		// edge case: cluster events performs listing through POST, not GET
 		// all other listing requests entities are synthesized.
-		pg = &openapi.Pagination{
-			Offset:  "offset",
-			Limit:   "limit",
-			Results: "events",
-		}
+		return req
 	}
-	// TODO: edge case for Experiments && SearchExperiments, SearchRuns
-	// TODO: virtual limit fields on Jobs (and other paginated responses)
 	if pg == nil || pg.Inline {
 		return req
 	}
@@ -368,9 +362,15 @@ func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Paginat
 		// there is no fields left
 		return nil
 	}
-	// this may be a breaking change, theoretically
-	req.Name = strings.TrimSuffix(req.PascalName(), "Request") + "Internal"
-	req.Description = "For internal use only"
+	oldName := req.Name
+	_, needsRename := svc.Package.types[oldName]
+	if needsRename {
+		newName := strings.TrimSuffix(req.PascalName(), "Request") + "Internal"
+		req.Name = newName
+		req.Description = "For internal use only"
+		delete(svc.Package.types, oldName)
+		svc.Package.types[newName] = req
+	}
 	return svc.Package.define(listing)
 }
 

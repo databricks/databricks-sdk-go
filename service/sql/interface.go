@@ -71,7 +71,7 @@ type DashboardsService interface {
 	// Fetch a paginated list of dashboard objects.
 	//
 	// Use ListAll() to get all Dashboard instances, which will iterate over every result page.
-	List(ctx context.Context, request ListDashboardsRequest) (*ListResponse, error)
+	List(ctx context.Context, request ListDashboardsInternal) (*ListResponse, error)
 
 	// Restore a dashboard.
 	//
@@ -173,7 +173,7 @@ type QueriesService interface {
 	// term.
 	//
 	// Use ListAll() to get all Query instances, which will iterate over every result page.
-	List(ctx context.Context, request ListQueriesRequest) (*QueryList, error)
+	List(ctx context.Context, request ListQueriesInternal) (*QueryList, error)
 
 	// Restore a query.
 	//
@@ -200,7 +200,7 @@ type QueryHistoryService interface {
 	// You can filter by user ID, warehouse ID, status, and time range.
 	//
 	// Use ListAll() to get all QueryInfo instances, which will iterate over every result page.
-	List(ctx context.Context, request ListQueryHistoryRequest) (*ListQueriesResponse, error)
+	List(ctx context.Context, request ListQueryHistoryInternal) (*ListQueriesResponse, error)
 }
 
 // The SQL Statement Execution API manages the execution of arbitrary SQL

@@ -530,14 +530,14 @@ func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableIn
 	return &tableInfo, err
 }
 
-func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error) {
+func (a *tablesImpl) List(ctx context.Context, request ListTablesInternal) (*ListTablesResponse, error) {
 	var listTablesResponse ListTablesResponse
 	path := "/api/2.1/unity-catalog/tables"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listTablesResponse)
 	return &listTablesResponse, err
 }
 
-func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error) {
+func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesInternal) (*ListTableSummariesResponse, error) {
 	var listTableSummariesResponse ListTableSummariesResponse
 	path := "/api/2.1/unity-catalog/table-summaries"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listTableSummariesResponse)

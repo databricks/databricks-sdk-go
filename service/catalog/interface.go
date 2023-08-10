@@ -681,7 +681,7 @@ type TablesService interface {
 	// array.
 	//
 	// Use ListAll() to get all TableInfo instances, which will iterate over every result page.
-	List(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error)
+	List(ctx context.Context, request ListTablesInternal) (*ListTablesResponse, error)
 
 	// List table summaries.
 	//
@@ -700,7 +700,7 @@ type TablesService interface {
 	// array.
 	//
 	// Use ListSummariesAll() to get all TableSummary instances, which will iterate over every result page.
-	ListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error)
+	ListSummaries(ctx context.Context, request ListSummariesInternal) (*ListTableSummariesResponse, error)
 
 	// Update a table owner.
 	//

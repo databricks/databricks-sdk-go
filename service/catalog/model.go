@@ -1600,14 +1600,28 @@ type ListStorageCredentialsResponse struct {
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
 }
 
-// List table summaries
-type ListSummariesRequest struct {
+// For internal use only
+type ListSummariesInternal struct {
 	// Name of parent catalog for tables of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
 	// Maximum number of tables to return (page length). Defaults to 10000.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque token to send for the next page of results (pagination).
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// A sql LIKE pattern (% and _) for schema names. All schemas will be
+	// returned if not set or empty.
+	SchemaNamePattern string `json:"-" url:"schema_name_pattern,omitempty"`
+	// A sql LIKE pattern (% and _) for table names. All tables will be returned
+	// if not set or empty.
+	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
+}
+
+// List table summaries
+type ListSummariesRequest struct {
+	// Name of parent catalog for tables of interest.
+	CatalogName string `json:"-" url:"catalog_name"`
+	// Maximum number of tables to return (page length). Defaults to 10000.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// A sql LIKE pattern (% and _) for schema names. All schemas will be
 	// returned if not set or empty.
 	SchemaNamePattern string `json:"-" url:"schema_name_pattern,omitempty"`
@@ -1634,8 +1648,8 @@ type ListTableSummariesResponse struct {
 	Tables []TableSummary `json:"tables,omitempty"`
 }
 
-// List tables
-type ListTablesRequest struct {
+// For internal use only
+type ListTablesInternal struct {
 	// Name of parent catalog for tables of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
 	// Whether delta metadata should be included in the response.
@@ -1649,6 +1663,23 @@ type ListTablesRequest struct {
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque token to send for the next page of results (pagination).
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Parent schema of tables.
+	SchemaName string `json:"-" url:"schema_name"`
+}
+
+// List tables
+type ListTablesRequest struct {
+	// Name of parent catalog for tables of interest.
+	CatalogName string `json:"-" url:"catalog_name"`
+	// Whether delta metadata should be included in the response.
+	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
+	// Maximum number of tables to return (page length). If not set, all
+	// accessible tables in the schema are returned. If set to:
+	//
+	// * greater than 0, page length is the minimum of this value and a server
+	// configured value. * equal to 0, page length is set to a server configured
+	// value. * lesser than 0, invalid parameter error.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Parent schema of tables.
 	SchemaName string `json:"-" url:"schema_name"`
 }

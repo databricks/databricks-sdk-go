@@ -948,8 +948,8 @@ type JobsHealthRules struct {
 	Rules []JobsHealthRule `json:"rules,omitempty"`
 }
 
-// List jobs
-type ListJobsRequest struct {
+// For internal use only
+type ListJobsInternal struct {
 	// Whether to include task and cluster details in the response.
 	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
 	// The number of jobs to return. This value must be greater than 0 and less
@@ -968,6 +968,20 @@ type ListJobsRequest struct {
 	PageToken string `json:"-" url:"page_token,omitempty"`
 }
 
+// List jobs
+type ListJobsRequest struct {
+	// Whether to include task and cluster details in the response.
+	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
+	// A filter on the list based on the exact (case insensitive) job name.
+	Name string `json:"-" url:"name,omitempty"`
+	// The offset of the first job to return, relative to the most recently
+	// created job.
+	//
+	// Deprecated since June 2023. Use `page_token` to iterate through the pages
+	// instead.
+	Offset int `json:"-" url:"offset,omitempty"`
+}
+
 type ListJobsResponse struct {
 	// If true, additional jobs matching the provided filter are available for
 	// listing.
@@ -980,8 +994,8 @@ type ListJobsResponse struct {
 	PrevPageToken string `json:"prev_page_token,omitempty"`
 }
 
-// List job runs
-type ListRunsRequest struct {
+// For internal use only
+type ListRunsInternal struct {
 	// If active_only is `true`, only active runs are included in the results;
 	// otherwise, lists both active and completed runs. An active run is a run
 	// in the `PENDING`, `RUNNING`, or `TERMINATING`. This field cannot be
@@ -1008,6 +1022,40 @@ type ListRunsRequest struct {
 	// Use `next_page_token` or `prev_page_token` returned from the previous
 	// request to list the next or previous page of runs respectively.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The type of runs to return. For a description of run types, see
+	// :method:jobs/getRun.
+	RunType ListRunsRunType `json:"-" url:"run_type,omitempty"`
+	// Show runs that started _at or after_ this value. The value must be a UTC
+	// timestamp in milliseconds. Can be combined with _start_time_to_ to filter
+	// by a time range.
+	StartTimeFrom int `json:"-" url:"start_time_from,omitempty"`
+	// Show runs that started _at or before_ this value. The value must be a UTC
+	// timestamp in milliseconds. Can be combined with _start_time_from_ to
+	// filter by a time range.
+	StartTimeTo int `json:"-" url:"start_time_to,omitempty"`
+}
+
+// List job runs
+type ListRunsRequest struct {
+	// If active_only is `true`, only active runs are included in the results;
+	// otherwise, lists both active and completed runs. An active run is a run
+	// in the `PENDING`, `RUNNING`, or `TERMINATING`. This field cannot be
+	// `true` when completed_only is `true`.
+	ActiveOnly bool `json:"-" url:"active_only,omitempty"`
+	// If completed_only is `true`, only completed runs are included in the
+	// results; otherwise, lists both active and completed runs. This field
+	// cannot be `true` when active_only is `true`.
+	CompletedOnly bool `json:"-" url:"completed_only,omitempty"`
+	// Whether to include task and cluster details in the response.
+	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
+	// The job for which to list runs. If omitted, the Jobs service lists runs
+	// from all jobs.
+	JobId int64 `json:"-" url:"job_id,omitempty"`
+	// The offset of the first run to return, relative to the most recent run.
+	//
+	// Deprecated since June 2023. Use `page_token` to iterate through the pages
+	// instead.
+	Offset int `json:"-" url:"offset,omitempty"`
 	// The type of runs to return. For a description of run types, see
 	// :method:jobs/getRun.
 	RunType ListRunsRunType `json:"-" url:"run_type,omitempty"`

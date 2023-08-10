@@ -89,14 +89,14 @@ func (a *experimentsImpl) GetRun(ctx context.Context, request GetRunRequest) (*G
 	return &getRunResponse, err
 }
 
-func (a *experimentsImpl) ListArtifacts(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error) {
+func (a *experimentsImpl) ListArtifacts(ctx context.Context, request ListArtifactsInternal) (*ListArtifactsResponse, error) {
 	var listArtifactsResponse ListArtifactsResponse
 	path := "/api/2.0/mlflow/artifacts/list"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listArtifactsResponse)
 	return &listArtifactsResponse, err
 }
 
-func (a *experimentsImpl) ListExperiments(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error) {
+func (a *experimentsImpl) ListExperiments(ctx context.Context, request ListExperimentsInternal) (*ListExperimentsResponse, error) {
 	var listExperimentsResponse ListExperimentsResponse
 	path := "/api/2.0/mlflow/experiments/list"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listExperimentsResponse)
@@ -145,14 +145,14 @@ func (a *experimentsImpl) RestoreRun(ctx context.Context, request RestoreRun) er
 	return err
 }
 
-func (a *experimentsImpl) SearchExperiments(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error) {
+func (a *experimentsImpl) SearchExperiments(ctx context.Context, request SearchExperimentsInternal) (*SearchExperimentsResponse, error) {
 	var searchExperimentsResponse SearchExperimentsResponse
 	path := "/api/2.0/mlflow/experiments/search"
 	err := a.client.Do(ctx, http.MethodPost, path, request, &searchExperimentsResponse)
 	return &searchExperimentsResponse, err
 }
 
-func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error) {
+func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRunsInternal) (*SearchRunsResponse, error) {
 	var searchRunsResponse SearchRunsResponse
 	path := "/api/2.0/mlflow/runs/search"
 	err := a.client.Do(ctx, http.MethodPost, path, request, &searchRunsResponse)
@@ -329,7 +329,7 @@ func (a *modelRegistryImpl) GetRegisteredModelPermissions(ctx context.Context, r
 	return &registeredModelPermissions, err
 }
 
-func (a *modelRegistryImpl) ListModels(ctx context.Context, request ListModelsRequest) (*ListModelsResponse, error) {
+func (a *modelRegistryImpl) ListModels(ctx context.Context, request ListModelsInternal) (*ListModelsResponse, error) {
 	var listModelsResponse ListModelsResponse
 	path := "/api/2.0/mlflow/registered-models/list"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listModelsResponse)
@@ -343,7 +343,7 @@ func (a *modelRegistryImpl) ListTransitionRequests(ctx context.Context, request 
 	return &listTransitionRequestsResponse, err
 }
 
-func (a *modelRegistryImpl) ListWebhooks(ctx context.Context, request ListWebhooksRequest) (*ListRegistryWebhooks, error) {
+func (a *modelRegistryImpl) ListWebhooks(ctx context.Context, request ListWebhooksInternal) (*ListRegistryWebhooks, error) {
 	var listRegistryWebhooks ListRegistryWebhooks
 	path := "/api/2.0/mlflow/registry-webhooks/list"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listRegistryWebhooks)
@@ -364,14 +364,14 @@ func (a *modelRegistryImpl) RenameModel(ctx context.Context, request RenameModel
 	return &renameModelResponse, err
 }
 
-func (a *modelRegistryImpl) SearchModelVersions(ctx context.Context, request SearchModelVersionsRequest) (*SearchModelVersionsResponse, error) {
+func (a *modelRegistryImpl) SearchModelVersions(ctx context.Context, request SearchModelVersionsInternal) (*SearchModelVersionsResponse, error) {
 	var searchModelVersionsResponse SearchModelVersionsResponse
 	path := "/api/2.0/mlflow/model-versions/search"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &searchModelVersionsResponse)
 	return &searchModelVersionsResponse, err
 }
 
-func (a *modelRegistryImpl) SearchModels(ctx context.Context, request SearchModelsRequest) (*SearchModelsResponse, error) {
+func (a *modelRegistryImpl) SearchModels(ctx context.Context, request SearchModelsInternal) (*SearchModelsResponse, error) {
 	var searchModelsResponse SearchModelsResponse
 	path := "/api/2.0/mlflow/registered-models/search"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &searchModelsResponse)

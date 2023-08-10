@@ -87,7 +87,7 @@ func (a *reposImpl) GetRepoPermissions(ctx context.Context, request GetRepoPermi
 	return &repoPermissions, err
 }
 
-func (a *reposImpl) List(ctx context.Context, request ListReposRequest) (*ListReposResponse, error) {
+func (a *reposImpl) List(ctx context.Context, request ListReposInternal) (*ListReposResponse, error) {
 	var listReposResponse ListReposResponse
 	path := "/api/2.0/repos"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listReposResponse)

@@ -2991,12 +2991,18 @@ type ListPoliciesResponse struct {
 	Policies []Policy `json:"policies,omitempty"`
 }
 
-// List policy families
-type ListPolicyFamiliesRequest struct {
+// For internal use only
+type ListPolicyFamiliesInternal struct {
 	// The max number of policy families to return.
 	MaxResults int64 `json:"-" url:"max_results,omitempty"`
 	// A token that can be used to get the next page of results.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+}
+
+// List policy families
+type ListPolicyFamiliesRequest struct {
+	// The max number of policy families to return.
+	MaxResults int64 `json:"-" url:"max_results,omitempty"`
 }
 
 type ListPolicyFamiliesResponse struct {

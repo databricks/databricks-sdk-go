@@ -584,5 +584,5 @@ type PolicyFamiliesService interface {
 	// Retrieve a list of policy families. This API is paginated.
 	//
 	// Use ListAll() to get all PolicyFamily instances, which will iterate over every result page.
-	List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error)
+	List(ctx context.Context, request ListPolicyFamiliesInternal) (*ListPolicyFamiliesResponse, error)
 }

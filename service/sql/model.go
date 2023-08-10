@@ -1285,14 +1285,22 @@ func (f *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Type() string {
 	return "GetWorkspaceWarehouseConfigResponseSecurityPolicy"
 }
 
-// Get dashboard objects
-type ListDashboardsRequest struct {
+// For internal use only
+type ListDashboardsInternal struct {
 	// Name of dashboard attribute to order by.
 	Order ListOrder `json:"-" url:"order,omitempty"`
 	// Page number to retrieve.
 	Page int `json:"-" url:"page,omitempty"`
 	// Number of dashboards to return per page.
 	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Full text search term.
+	Q string `json:"-" url:"q,omitempty"`
+}
+
+// Get dashboard objects
+type ListDashboardsRequest struct {
+	// Name of dashboard attribute to order by.
+	Order ListOrder `json:"-" url:"order,omitempty"`
 	// Full text search term.
 	Q string `json:"-" url:"q,omitempty"`
 }
@@ -1324,8 +1332,8 @@ func (f *ListOrder) Type() string {
 	return "ListOrder"
 }
 
-// Get a list of queries
-type ListQueriesRequest struct {
+// For internal use only
+type ListQueriesInternal struct {
 	// Name of query attribute to order by. Default sort order is ascending.
 	// Append a dash (`-`) to order descending instead.
 	//
@@ -1349,6 +1357,27 @@ type ListQueriesRequest struct {
 	Q string `json:"-" url:"q,omitempty"`
 }
 
+// Get a list of queries
+type ListQueriesRequest struct {
+	// Name of query attribute to order by. Default sort order is ascending.
+	// Append a dash (`-`) to order descending instead.
+	//
+	// - `name`: The name of the query.
+	//
+	// - `created_at`: The timestamp the query was created.
+	//
+	// - `runtime`: The time it took to run this query. This is blank for
+	// parameterized queries. A blank value is treated as the highest value for
+	// sorting.
+	//
+	// - `executed_at`: The timestamp when the query was last run.
+	//
+	// - `created_by`: The user name of the user that created the query.
+	Order string `json:"-" url:"order,omitempty"`
+	// Full text search term
+	Q string `json:"-" url:"q,omitempty"`
+}
+
 type ListQueriesResponse struct {
 	// Whether there is another page of results.
 	HasNextPage bool `json:"has_next_page,omitempty"`
@@ -1356,6 +1385,18 @@ type ListQueriesResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	Res []QueryInfo `json:"res,omitempty"`
+}
+
+// For internal use only
+type ListQueryHistoryInternal struct {
+	// A filter to limit query history results. This field is optional.
+	FilterBy *QueryFilter `json:"-" url:"filter_by,omitempty"`
+	// Whether to include metrics about query.
+	IncludeMetrics bool `json:"-" url:"include_metrics,omitempty"`
+	// Limit the number of results returned in one page. The default is 100.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// A token that can be used to get the next page of results.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 }
 
 // List Queries
@@ -1366,8 +1407,6 @@ type ListQueryHistoryRequest struct {
 	IncludeMetrics bool `json:"-" url:"include_metrics,omitempty"`
 	// Limit the number of results returned in one page. The default is 100.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
-	// A token that can be used to get the next page of results.
-	PageToken string `json:"-" url:"page_token,omitempty"`
 }
 
 type ListResponse struct {

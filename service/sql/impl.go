@@ -73,7 +73,7 @@ func (a *dashboardsImpl) Get(ctx context.Context, request GetDashboardRequest) (
 	return &dashboard, err
 }
 
-func (a *dashboardsImpl) List(ctx context.Context, request ListDashboardsRequest) (*ListResponse, error) {
+func (a *dashboardsImpl) List(ctx context.Context, request ListDashboardsInternal) (*ListResponse, error) {
 	var listResponse ListResponse
 	path := "/api/2.0/preview/sql/dashboards"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listResponse)
@@ -149,7 +149,7 @@ func (a *queriesImpl) Get(ctx context.Context, request GetQueryRequest) (*Query,
 	return &query, err
 }
 
-func (a *queriesImpl) List(ctx context.Context, request ListQueriesRequest) (*QueryList, error) {
+func (a *queriesImpl) List(ctx context.Context, request ListQueriesInternal) (*QueryList, error) {
 	var queryList QueryList
 	path := "/api/2.0/preview/sql/queries"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &queryList)
@@ -174,7 +174,7 @@ type queryHistoryImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *queryHistoryImpl) List(ctx context.Context, request ListQueryHistoryRequest) (*ListQueriesResponse, error) {
+func (a *queryHistoryImpl) List(ctx context.Context, request ListQueryHistoryInternal) (*ListQueriesResponse, error) {
 	var listQueriesResponse ListQueriesResponse
 	path := "/api/2.0/sql/history/queries"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listQueriesResponse)

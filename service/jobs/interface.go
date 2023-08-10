@@ -98,14 +98,14 @@ type JobsService interface {
 	// Retrieves a list of jobs.
 	//
 	// Use ListAll() to get all BaseJob instances, which will iterate over every result page.
-	List(ctx context.Context, request ListJobsRequest) (*ListJobsResponse, error)
+	List(ctx context.Context, request ListJobsInternal) (*ListJobsResponse, error)
 
 	// List job runs.
 	//
 	// List runs in descending order by start time.
 	//
 	// Use ListRunsAll() to get all BaseRun instances, which will iterate over every result page.
-	ListRuns(ctx context.Context, request ListRunsRequest) (*ListRunsResponse, error)
+	ListRuns(ctx context.Context, request ListRunsInternal) (*ListRunsResponse, error)
 
 	// Repair a job run.
 	//

@@ -405,12 +405,18 @@ type ListAclsResponse struct {
 	Items []AclItem `json:"items,omitempty"`
 }
 
-// Get repos
-type ListReposRequest struct {
+// For internal use only
+type ListReposInternal struct {
 	// Token used to get the next page of results. If not specified, returns the
 	// first page of results as well as a next page token if there are more
 	// results.
 	NextPageToken string `json:"-" url:"next_page_token,omitempty"`
+	// Filters repos that have paths starting with the given path prefix.
+	PathPrefix string `json:"-" url:"path_prefix,omitempty"`
+}
+
+// Get repos
+type ListReposRequest struct {
 	// Filters repos that have paths starting with the given path prefix.
 	PathPrefix string `json:"-" url:"path_prefix,omitempty"`
 }

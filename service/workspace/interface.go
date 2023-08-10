@@ -92,7 +92,7 @@ type ReposService interface {
 	// are paginated with each page containing twenty repos.
 	//
 	// Use ListAll() to get all RepoInfo instances, which will iterate over every result page.
-	List(ctx context.Context, request ListReposRequest) (*ListReposResponse, error)
+	List(ctx context.Context, request ListReposInternal) (*ListReposResponse, error)
 
 	// Set repo permissions.
 	//
