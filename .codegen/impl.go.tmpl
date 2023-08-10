@@ -18,13 +18,13 @@ type {{.CamelName}}Impl struct {
 }
 
 {{range .Methods}}
-func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{template "type" .Response}}{{end}}, error){{else}}error{{end}} {
+func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .RealRequest}}, request {{.RealRequest.PascalName}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{template "type" .Response}}{{end}}, error){{else}}error{{end}} {
 	{{if .Response}}var {{.Response.CamelName}} {{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}{{template "type" .Response}}{{end}}
 	{{end -}}
 	path := {{if .PathParts -}}
 		fmt.Sprintf("{{range  .PathParts}}{{.Prefix}}{{if or .Field .IsAccountId}}%v{{end}}{{ end }}"{{ range .PathParts }}{{if .Field}}, request.{{.Field.PascalName}}{{ else if .IsAccountId }}, a.client.ConfiguredAccountID(){{end}}{{ end }})
 	{{- else}}"{{.Path}}"{{end}}
-	err := a.client.Do(ctx, http.Method{{.TitleVerb}}, path, {{if .Request}}request{{else}}nil{{end}}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})
+	err := a.client.Do(ctx, http.Method{{.TitleVerb}}, path, {{if .RealRequest}}request{{else}}nil{{end}}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})
 	return {{if .Response}}{{if not .Response.ArrayValue}}&{{end}}{{.Response.CamelName}}, {{end}}err
 }
 {{end -}}

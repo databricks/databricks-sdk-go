@@ -21,7 +21,7 @@ type Method struct {
 	// Request type representation
 	Request *Entity
 	// Request for listing
-	ListingRequest *Entity
+	RawRequest *Entity
 	// Response type representation
 	Response          *Entity
 	EmptyResponseName Named
@@ -211,6 +211,15 @@ func (m *Method) Wait() *Wait {
 	}
 }
 
+// Returns either RawRequest used for fetching individual pages of data
+// or a more friendly request, if it's there.
+func (m *Method) RealRequest() *Entity {
+	if m.RawRequest != nil {
+		return m.RawRequest
+	}
+	return m.Request
+}
+
 // Pagination returns definition for possibly multi-request result iterator
 func (m *Method) Pagination() *Pagination {
 	if m.pagination == nil {
@@ -223,12 +232,12 @@ func (m *Method) Pagination() *Pagination {
 	var token *Binding
 	if m.pagination.Token != nil {
 		token = &Binding{ // reuse the same datastructure as for waiters
-			PollField: m.Request.Field(m.pagination.Token.Request),
+			PollField: m.RawRequest.Field(m.pagination.Token.Request),
 			Bind:      m.Response.Field(m.pagination.Token.Response),
 		}
 	}
-	offset := m.Request.Field(m.pagination.Offset)
-	limit := m.Request.Field(m.pagination.Limit)
+	offset := m.RawRequest.Field(m.pagination.Offset)
+	limit := m.RawRequest.Field(m.pagination.Limit)
 	results := m.Response.Field(m.pagination.Results)
 	if results == nil {
 		panic(fmt.Errorf("invalid results field '%v': %s",

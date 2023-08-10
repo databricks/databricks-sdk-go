@@ -298,13 +298,14 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		}
 		idFieldPath = idField
 	}
+	request, listingRequest := svc.withPaginationFieldsRemoved(request, op.Pagination)
 	return &Method{
 		Named:             Named{name, description},
 		Service:           svc,
 		Verb:              strings.ToUpper(verb),
 		Path:              path,
 		Request:           request,
-		ListingRequest:    svc.withPaginationFieldsRemoved(request, op.Pagination),
+		RawRequest:        listingRequest,
 		PathParts:         svc.paramPath(path, request, params),
 		Response:          response,
 		EmptyResponseName: emptyResponse,
@@ -319,24 +320,24 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 }
 
 // remove pagination fields without clear semantics for iterators
-func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Pagination) *Entity {
+func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Pagination) (*Entity, *Entity) {
 	if req == nil {
-		return nil
+		return nil, nil
 	}
 	if svc.Name == "Clusters" && req.CamelName() == "getEvents" {
-		// edge case: cluster events performs listing through POST, not GET
+		// edge case: cluster events performs listing through POST, not GET.
 		// all other listing requests entities are synthesized.
-		return req
+		return req, req
 	}
 	if pg == nil || pg.Inline {
-		return req
+		return req, nil
 	}
 	if pg.Offset == "" &&
 		pg.Limit == "" &&
 		pg.Increment == 0 &&
 		pg.Token == nil &&
 		pg.Results != "" {
-		return req
+		return req, nil
 	}
 	listing := &Entity{
 		Named: Named{
@@ -386,8 +387,8 @@ func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Paginat
 		}
 	}
 	if len(listing.fields) == 0 {
-		// there is no fields left
-		return nil
+		// there is no fields left.
+		return nil, req
 	}
 	oldName := req.Name
 	_, needsRename := svc.Package.types[oldName]
@@ -398,7 +399,7 @@ func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Paginat
 		delete(svc.Package.types, oldName)
 		svc.Package.types[newName] = req
 	}
-	return svc.Package.define(listing)
+	return svc.Package.define(listing), req
 }
 
 func (svc *Service) HasWaits() bool {
