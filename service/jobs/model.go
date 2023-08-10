@@ -972,7 +972,7 @@ type ListJobsInternal struct {
 type ListJobsRequest struct {
 	// Whether to include task and cluster details in the response.
 	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
-	// limit results in the generated iterator
+	// limit maximum number of results on the client side
 	Limit int `json:"-"`
 	// A filter on the list based on the exact (case insensitive) job name.
 	Name string `json:"-" url:"name,omitempty"`
@@ -1053,7 +1053,7 @@ type ListRunsRequest struct {
 	// The job for which to list runs. If omitted, the Jobs service lists runs
 	// from all jobs.
 	JobId int64 `json:"-" url:"job_id,omitempty"`
-	// limit results in the generated iterator
+	// limit maximum number of results on the client side
 	Limit int `json:"-"`
 	// The offset of the first run to return, relative to the most recent run.
 	//
