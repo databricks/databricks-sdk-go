@@ -323,8 +323,19 @@ func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Paginat
 	if req == nil {
 		return nil
 	}
+	if svc.Name == "Clusters" && req.PascalName() == "GetEvents" {
+		// edge case: cluster events performs listing through POST, not GET
+		// all other listing requests entities are synthesized.
+		pg = &openapi.Pagination{
+			Offset:  "offset",
+			Limit:   "limit",
+			Results: "events",
+		}
+	}
+	// TODO: edge case for Experiments && SearchExperiments, SearchRuns
+	// TODO: virtual limit fields on Jobs (and other paginated responses)
 	if pg == nil || pg.Inline {
-		return nil
+		return req
 	}
 	listing := &Entity{
 		Named: Named{
@@ -350,8 +361,8 @@ func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Paginat
 		listing.fields[field.Name] = field
 	}
 	if !requiresModification {
-		// there was no change
-		return nil
+		// there was no change. A bit strange.
+		return req
 	}
 	if len(listing.fields) == 0 {
 		// there is no fields left
