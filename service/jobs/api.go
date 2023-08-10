@@ -341,6 +341,7 @@ func (a *JobsAPI) ListAll(ctx context.Context, listing ListJobsRequest) ([]BaseJ
 	var results []BaseJob
 	request := ListJobsInternal{
 		ExpandTasks: listing.ExpandTasks,
+		Limit:       listing.Limit,
 		Name:        listing.Name,
 		Offset:      listing.Offset,
 	}
@@ -436,6 +437,7 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, listing ListRunsRequest) ([]B
 		CompletedOnly: listing.CompletedOnly,
 		ExpandTasks:   listing.ExpandTasks,
 		JobId:         listing.JobId,
+		Limit:         listing.Limit,
 		Offset:        listing.Offset,
 		RunType:       listing.RunType,
 		StartTimeFrom: listing.StartTimeFrom,

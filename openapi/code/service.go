@@ -358,6 +358,27 @@ func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Paginat
 		// there was no change. A bit strange.
 		return req
 	}
+	if svc.Name == "Jobs" {
+		// add generation for client-side maximum number of results during iteration.
+		// platform already implements this field for part of the APIs and it's
+		// consistently named as max_results everywhere. Perhaps we should
+		// rename "limit" to "max_results" in Jobs and add that to Dashboards and
+		// Queries as well, as we have exactly the same problem on big workspaces.
+		pg.Limit = "limit"
+		listing.fields["limit"] = &Field{
+			Named: Named{
+				Name:        "limit",
+				Description: "limit maximum number of results on the client side",
+			},
+			Of:      listing,
+			IsJson:  false,
+			IsQuery: false,
+			IsPath:  false,
+			Entity: &Entity{
+				IsInt: true,
+			},
+		}
+	}
 	if len(listing.fields) == 0 {
 		// there is no fields left
 		return nil

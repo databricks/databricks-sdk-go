@@ -972,6 +972,8 @@ type ListJobsInternal struct {
 type ListJobsRequest struct {
 	// Whether to include task and cluster details in the response.
 	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
+	// limit results in the generated iterator
+	Limit int `json:"-"`
 	// A filter on the list based on the exact (case insensitive) job name.
 	Name string `json:"-" url:"name,omitempty"`
 	// The offset of the first job to return, relative to the most recently
@@ -1051,6 +1053,8 @@ type ListRunsRequest struct {
 	// The job for which to list runs. If omitted, the Jobs service lists runs
 	// from all jobs.
 	JobId int64 `json:"-" url:"job_id,omitempty"`
+	// limit results in the generated iterator
+	Limit int `json:"-"`
 	// The offset of the first run to return, relative to the most recent run.
 	//
 	// Deprecated since June 2023. Use `page_token` to iterate through the pages
