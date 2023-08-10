@@ -62,6 +62,18 @@ func (pkg *Package) Types() (types []*Entity) {
 	return types
 }
 
+// Returns sorted slice of types that are not mere request placeholders.
+// This method is designed to simplify keyed args UX for Python SDK.
+func (pkg *Package) NonPlaceholderTypes() (types []*Entity) {
+	for _, v := range pkg.Types() {
+		if v.IsRequestOnly {
+			continue
+		}
+		types = append(types, v)
+	}
+	return types
+}
+
 // EmptyTypes returns sorted list of types without fields
 func (pkg *Package) EmptyTypes() (types []*Named) {
 	types = append(types, pkg.emptyTypes...)

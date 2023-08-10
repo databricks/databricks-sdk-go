@@ -75,6 +75,9 @@ type Entity struct {
 	RequiredOrder []string
 	fields        map[string]*Field
 
+	// if entity is only used as a request container
+	IsRequestOnly bool
+
 	// Schema references the OpenAPI schema this entity was created from.
 	Schema *openapi.Schema
 }
@@ -264,6 +267,7 @@ func (e *Entity) IsPublicPreview() bool {
 	return e.Schema != nil && isPublicPreview(&e.Schema.Node)
 }
 
+// Deprecated: use IsRequestOnly
 func (e *Entity) IsRequest() bool {
 	for _, svc := range e.Package.services {
 		for _, m := range svc.methods {

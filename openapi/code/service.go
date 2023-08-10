@@ -206,6 +206,17 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 		request.Description = op.Summary
 		svc.Package.define(request)
 	}
+	isOnlyUsedAsRequest := true
+	for _, e := range svc.Package.types {
+		for _, f := range e.fields {
+			if f.Entity == request {
+				// this type is not only a request placeholder, but is also
+				// part of other type definitions.
+				isOnlyUsedAsRequest = false
+			}
+		}
+	}
+	request.IsRequestOnly = isOnlyUsedAsRequest
 	return request
 }
 
