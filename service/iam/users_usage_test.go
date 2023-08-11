@@ -239,7 +239,7 @@ func ExampleUsersAPI_Patch_accountUsers() {
 	logger.Infof(ctx, "found %v", user)
 
 	err = a.Users.Patch(ctx, iam.PartialUpdate{
-		Id:     user.Id,
+		Id:      user.Id,
 		Schemas: []iam.PatchSchema{iam.PatchSchemaUrnIetfParamsScimApiMessages20PatchOp},
 		Operations: []iam.Patch{iam.Patch{
 			Op: iam.PatchOpAdd,
