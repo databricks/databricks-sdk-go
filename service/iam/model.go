@@ -195,7 +195,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -441,7 +441,7 @@ type PartialUpdate struct {
 	Operations []Patch `json:"Operations,omitempty"`
 	// The schema of the patch request. Must be
 	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
-	Schema []PatchSchema `json:"schema,omitempty"`
+	Schemas []PatchSchema `json:"schemas,omitempty"`
 }
 
 type PasswordAccessControlRequest struct {

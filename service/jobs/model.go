@@ -63,8 +63,16 @@ type BaseRun struct {
 	// total duration of a multitask job run is the value of the `run_duration`
 	// field.
 	ExecutionDuration int64 `json:"execution_duration,omitempty"`
-	// An optional specification for a remote repository containing the
-	// notebooks used by this job's notebook tasks.
+	// An optional specification for a remote Git repository containing the
+	// source code used by tasks. Version-controlled source code is supported by
+	// notebook, dbt, Python script, and SQL File tasks.
+	//
+	// If `git_source` is set, these tasks retrieve the file from the remote
+	// repository by default. However, this behavior can be overridden by
+	// setting `source` to `WORKSPACE` on the task.
+	//
+	// Note: dbt and SQL File tasks support only version-controlled sources. If
+	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
@@ -256,8 +264,16 @@ type CreateJob struct {
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
 	// always set to `"MULTI_TASK"`.
 	Format Format `json:"format,omitempty"`
-	// An optional specification for a remote repository containing the
-	// notebooks used by this job's notebook tasks.
+	// An optional specification for a remote Git repository containing the
+	// source code used by tasks. Version-controlled source code is supported by
+	// notebook, dbt, Python script, and SQL File tasks.
+	//
+	// If `git_source` is set, these tasks retrieve the file from the remote
+	// repository by default. However, this behavior can be overridden by
+	// setting `source` to `WORKSPACE` on the task.
+	//
+	// Note: dbt and SQL File tasks support only version-controlled sources. If
+	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
@@ -532,8 +548,16 @@ type GitSnapshot struct {
 	UsedCommit string `json:"used_commit,omitempty"`
 }
 
-// An optional specification for a remote repository containing the notebooks
-// used by this job's notebook tasks.
+// An optional specification for a remote Git repository containing the source
+// code used by tasks. Version-controlled source code is supported by notebook,
+// dbt, Python script, and SQL File tasks.
+//
+// If `git_source` is set, these tasks retrieve the file from the remote
+// repository by default. However, this behavior can be overridden by setting
+// `source` to `WORKSPACE` on the task.
+//
+// Note: dbt and SQL File tasks support only version-controlled sources. If dbt
+// or SQL File tasks are used, `git_source` must be defined on the job.
 type GitSource struct {
 	// Name of the branch to be checked out and used by this job. This field
 	// cannot be specified in conjunction with git_tag or git_commit.
@@ -767,8 +791,16 @@ type JobSettings struct {
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
 	// always set to `"MULTI_TASK"`.
 	Format Format `json:"format,omitempty"`
-	// An optional specification for a remote repository containing the
-	// notebooks used by this job's notebook tasks.
+	// An optional specification for a remote Git repository containing the
+	// source code used by tasks. Version-controlled source code is supported by
+	// notebook, dbt, Python script, and SQL File tasks.
+	//
+	// If `git_source` is set, these tasks retrieve the file from the remote
+	// repository by default. However, this behavior can be overridden by
+	// setting `source` to `WORKSPACE` on the task.
+	//
+	// Note: dbt and SQL File tasks support only version-controlled sources. If
+	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
@@ -1427,8 +1459,16 @@ type Run struct {
 	// total duration of a multitask job run is the value of the `run_duration`
 	// field.
 	ExecutionDuration int64 `json:"execution_duration,omitempty"`
-	// An optional specification for a remote repository containing the
-	// notebooks used by this job's notebook tasks.
+	// An optional specification for a remote Git repository containing the
+	// source code used by tasks. Version-controlled source code is supported by
+	// notebook, dbt, Python script, and SQL File tasks.
+	//
+	// If `git_source` is set, these tasks retrieve the file from the remote
+	// repository by default. However, this behavior can be overridden by
+	// setting `source` to `WORKSPACE` on the task.
+	//
+	// Note: dbt and SQL File tasks support only version-controlled sources. If
+	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
@@ -1999,8 +2039,16 @@ type RunTask struct {
 	// need to manually restart the cluster if it stops responding. We suggest
 	// running jobs on new clusters for greater reliability.
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
-	// An optional specification for a remote repository containing the
-	// notebooks used by this job's notebook tasks.
+	// An optional specification for a remote Git repository containing the
+	// source code used by tasks. Version-controlled source code is supported by
+	// notebook, dbt, Python script, and SQL File tasks.
+	//
+	// If `git_source` is set, these tasks retrieve the file from the remote
+	// repository by default. However, this behavior can be overridden by
+	// setting `source` to `WORKSPACE` on the task.
+	//
+	// Note: dbt and SQL File tasks support only version-controlled sources. If
+	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the job. The default value is an empty list.
@@ -2382,8 +2430,16 @@ type SubmitRun struct {
 	// An optional set of email addresses notified when the run begins or
 	// completes. The default behavior is to not send any emails.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
-	// An optional specification for a remote repository containing the
-	// notebooks used by this job's notebook tasks.
+	// An optional specification for a remote Git repository containing the
+	// source code used by tasks. Version-controlled source code is supported by
+	// notebook, dbt, Python script, and SQL File tasks.
+	//
+	// If `git_source` is set, these tasks retrieve the file from the remote
+	// repository by default. However, this behavior can be overridden by
+	// setting `source` to `WORKSPACE` on the task.
+	//
+	// Note: dbt and SQL File tasks support only version-controlled sources. If
+	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`

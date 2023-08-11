@@ -1130,6 +1130,10 @@ type CreateCluster struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
+	// This describes an enum
+	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
+
+	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
@@ -1177,6 +1181,8 @@ type CreateCluster struct {
 	// Decides which runtime engine to be use, e.g. Standard vs. Photon. If
 	// unspecified, the runtime engine is inferred from spark_version.
 	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
+	// Single user name if data_security_mode is `SINGLE_USER`
+	SingleUserName string `json:"single_user_name,omitempty"`
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
@@ -1272,9 +1278,9 @@ type CreateInstancePool struct {
 	NodeTypeId string `json:"node_type_id"`
 	// Custom Docker Image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-	// A list of preloaded Spark image versions for the pool. Pool-backed
-	// clusters started with the preloaded Spark version will start faster. A
-	// list of available Spark versions can be retrieved by using the
+	// A list containing at most one preloaded Spark image version for the pool.
+	// Pool-backed clusters started with the preloaded Spark version will start
+	// faster. A list of available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 }
@@ -1768,9 +1774,9 @@ type EditInstancePool struct {
 	NodeTypeId string `json:"node_type_id"`
 	// Custom Docker Image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-	// A list of preloaded Spark image versions for the pool. Pool-backed
-	// clusters started with the preloaded Spark version will start faster. A
-	// list of available Spark versions can be retrieved by using the
+	// A list containing at most one preloaded Spark image version for the pool.
+	// Pool-backed clusters started with the preloaded Spark version will start
+	// faster. A list of available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 }
@@ -2305,9 +2311,9 @@ type GetInstancePool struct {
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Custom Docker Image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-	// A list of preloaded Spark image versions for the pool. Pool-backed
-	// clusters started with the preloaded Spark version will start faster. A
-	// list of available Spark versions can be retrieved by using the
+	// A list containing at most one preloaded Spark image version for the pool.
+	// Pool-backed clusters started with the preloaded Spark version will start
+	// faster. A list of available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 	// Current state of the instance pool.
@@ -2553,9 +2559,9 @@ type InstancePoolAndStats struct {
 	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Custom Docker Image BYOC
 	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-	// A list of preloaded Spark image versions for the pool. Pool-backed
-	// clusters started with the preloaded Spark version will start faster. A
-	// list of available Spark versions can be retrieved by using the
+	// A list containing at most one preloaded Spark image version for the pool.
+	// Pool-backed clusters started with the preloaded Spark version will start
+	// faster. A list of available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 	// Current state of the instance pool.
