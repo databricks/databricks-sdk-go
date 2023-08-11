@@ -137,16 +137,24 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 	}
 	request := &Entity{fields: map[string]*Field{}}
 	if op.RequestBody != nil {
-		mimeType, requestSchema := op.RequestBody.MimeTypeAndSchema()
-		if mimeType == "application/octet-stream" {
+		_, mediaType := op.RequestBody.MimeTypeAndMediaType()
+		requestSchema := mediaType.Schema
+		// If x-databricks-body-field-name is specified, the request structure
+		// contains a field with that name whose value is the request body.
+		if mediaType.BodyFieldName != "" {
 			requestSchema = &openapi.Schema{
 				Type: "object",
 				Properties: map[string]*openapi.Schema{
-					"body": requestSchema,
+					mediaType.BodyFieldName: requestSchema,
 				},
 			}
 		}
 		request = svc.Package.schemaToEntity(requestSchema, []string{op.Name()}, true)
+		// If x-databricks-body-disposition is "stream", the request structure
+		// is a byte stream.
+		if mediaType.BodyDisposition == openapi.BodyDispositionStream {
+			request.IsByteStream = true
+		}
 	}
 	if request == nil {
 		panic(fmt.Errorf("%s request body is nil", op.OperationId))

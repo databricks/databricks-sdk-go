@@ -173,14 +173,12 @@ func (o *Operation) HasTag(tag string) bool {
 	return false
 }
 
-func (o *Operation) SuccessResponseSchema(c *Components) (string, *Schema) {
-	httpOk, ok := o.Responses["200"]
-	if ok {
-		return (*c.Responses.Resolve(httpOk)).MimeTypeAndSchema()
-	}
-	httpCreated, ok := o.Responses["201"]
-	if ok {
-		return (*c.Responses.Resolve(httpCreated)).MimeTypeAndSchema()
+func (o *Operation) SuccessResponseSchema(c *Components) (string, *MediaType) {
+	for _, v := range []string{"200", "201"} {
+		response, ok := o.Responses[v]
+		if ok {
+			return (*c.Responses.Resolve(response)).MimeTypeAndMediaType()
+		}
 	}
 	return "", nil
 }
@@ -277,16 +275,17 @@ func (s *Schema) IsEmpty() bool {
 
 type Parameter struct {
 	Node
-	Required bool    `json:"required,omitempty"`
-	In       string  `json:"in,omitempty"`
-	Name     string  `json:"name,omitempty"`
-	Schema   *Schema `json:"schema,omitempty"`
+	Required     bool    `json:"required,omitempty"`
+	In           string  `json:"in,omitempty"`
+	Name         string  `json:"name,omitempty"`
+	MultiSegment bool    `json:"x-databricks-multi-segment,omitempty"`
+	Schema       *Schema `json:"schema,omitempty"`
 }
 
 type Body struct {
 	Node
-	Required bool               `json:"required,omitempty"`
-	Content  map[string]Example `json:"content,omitempty"`
+	Required bool                 `json:"required,omitempty"`
+	Content  map[string]MediaType `json:"content,omitempty"`
 }
 
 var allowedMimeTypes = []string{
@@ -294,24 +293,28 @@ var allowedMimeTypes = []string{
 	"application/octet-stream",
 }
 
-func (b *Body) Schema() *Schema {
-	_, schema := b.MimeTypeAndSchema()
-	return schema
-}
-
-func (b *Body) MimeTypeAndSchema() (string, *Schema) {
+func (b *Body) MimeTypeAndMediaType() (string, *MediaType) {
 	if b == nil || b.Content == nil {
 		return "", nil
 	}
 	for _, m := range allowedMimeTypes {
-		if _, ok := b.Content[m]; ok {
-			return m, b.Content[m].Schema
+		if mediaType, ok := b.Content[m]; ok {
+			return m, &mediaType
 		}
 	}
 	return "", nil
 }
 
-type Example struct {
+type BodyDisposition string
+
+const (
+	BodyDispositionStatic BodyDisposition = "static"
+	BodyDispositionStream BodyDisposition = "stream"
+)
+
+type MediaType struct {
 	Node
-	Schema *Schema `json:"schema,omitempty"`
+	BodyDisposition BodyDisposition `json:"x-databricks-body-disposition,omitempty"`
+	BodyFieldName   string          `json:"x-databricks-body-field-name,omitempty"`
+	Schema          *Schema         `json:"schema,omitempty"`
 }

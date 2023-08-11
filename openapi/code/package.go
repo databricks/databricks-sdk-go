@@ -104,7 +104,7 @@ func (pkg *Package) ImportedPackages() (res []string) {
 	return
 }
 
-func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool) *Entity {
+func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName, isByteStream bool) *Entity {
 	if s.IsRef() {
 		pair := strings.Split(s.Component(), ".")
 		if len(pair) == 2 && pair[0] != pkg.Name {
@@ -166,20 +166,20 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName boo
 	}
 	// array
 	if s.ArrayValue != nil {
-		e.ArrayValue = pkg.schemaToEntity(s.ArrayValue, append(path, "Item"), false)
+		e.ArrayValue = pkg.schemaToEntity(s.ArrayValue, append(path, "Item"), false, isByteStream)
 		return e
 	}
 	// map
 	if s.MapValue != nil {
-		e.MapValue = pkg.schemaToEntity(s.MapValue, path, hasName)
+		e.MapValue = pkg.schemaToEntity(s.MapValue, path, hasName, isByteStream)
 		return e
 	}
 	e.IsBool = s.Type == "boolean" || s.Type == "bool"
-	e.IsString = s.Type == "string" && s.Format != "binary"
+	e.IsString = s.Type == "string"
 	e.IsInt64 = s.Type == "integer" && s.Format == "int64"
 	e.IsFloat64 = s.Type == "number" && s.Format == "double"
 	e.IsInt = s.Type == "integer" || s.Type == "int"
-	e.IsByteArray = s.Type == "string" && s.Format == "binary"
+	e.IsByteStream = isByteStream
 	return e
 }
 
@@ -200,7 +200,7 @@ func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Ent
 		named := Named{k, v.Description}
 		e.fields[k] = &Field{
 			Named:    named,
-			Entity:   pkg.schemaToEntity(v, append(path, named.PascalName()), false),
+			Entity:   pkg.schemaToEntity(v, append(path, named.PascalName()), false, false),
 			Required: required[k],
 			Schema:   v,
 			IsJson:   true,
@@ -248,7 +248,7 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 		return pkg.define(entity)
 	}
 
-	e := pkg.schemaToEntity(s, []string{name}, true)
+	e := pkg.schemaToEntity(s, []string{name}, true, false)
 	if e == nil {
 		// gets here when responses are objects with no properties
 		return nil
