@@ -230,7 +230,7 @@ func (a *AccountStorageCredentialsAPI) Impl() AccountStorageCredentialsService {
 //
 // The caller must be a metastore admin and have the
 // **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
-func (a *AccountStorageCredentialsAPI) Create(ctx context.Context, request AccountsCreateStorageCredential) (*StorageCredentialInfo, error) {
+func (a *AccountStorageCredentialsAPI) Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsStorageCredentialInfo, error) {
 	return a.impl.Create(ctx, request)
 }
 
@@ -257,7 +257,7 @@ func (a *AccountStorageCredentialsAPI) DeleteByMetastoreId(ctx context.Context, 
 // Gets a storage credential from the metastore. The caller must be a metastore
 // admin, the owner of the storage credential, or have a level of privilege on
 // the storage credential.
-func (a *AccountStorageCredentialsAPI) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*StorageCredentialInfo, error) {
+func (a *AccountStorageCredentialsAPI) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*AccountsStorageCredentialInfo, error) {
 	return a.impl.Get(ctx, request)
 }
 
@@ -266,7 +266,7 @@ func (a *AccountStorageCredentialsAPI) Get(ctx context.Context, request GetAccou
 // Gets a storage credential from the metastore. The caller must be a metastore
 // admin, the owner of the storage credential, or have a level of privilege on
 // the storage credential.
-func (a *AccountStorageCredentialsAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*StorageCredentialInfo, error) {
+func (a *AccountStorageCredentialsAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*AccountsStorageCredentialInfo, error) {
 	return a.impl.Get(ctx, GetAccountStorageCredentialRequest{
 		MetastoreId: metastoreId,
 	})
@@ -295,7 +295,7 @@ func (a *AccountStorageCredentialsAPI) ListByMetastoreId(ctx context.Context, me
 // Updates a storage credential on the metastore. The caller must be the owner
 // of the storage credential. If the caller is a metastore admin, only the
 // __owner__ credential can be changed.
-func (a *AccountStorageCredentialsAPI) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*StorageCredentialInfo, error) {
+func (a *AccountStorageCredentialsAPI) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error) {
 	return a.impl.Update(ctx, request)
 }
 

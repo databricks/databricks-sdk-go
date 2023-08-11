@@ -32,6 +32,10 @@ type AccountsMetastoreInfo struct {
 	MetastoreInfo *MetastoreInfo `json:"metastore_info,omitempty"`
 }
 
+type AccountsStorageCredentialInfo struct {
+	CredentialInfo *StorageCredentialInfo `json:"credential_info,omitempty"`
+}
+
 type AccountsUpdateMetastore struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
@@ -292,20 +296,68 @@ type ConnectionInfo struct {
 	// Name of the connection.
 	Name string `json:"name,omitempty"`
 	// A map of key-value properties attached to the securable.
-	OptionsKvpairs map[string]string `json:"options_kvpairs,omitempty"`
+	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of the connection.
 	Owner string `json:"owner,omitempty"`
 	// An object containing map of key-value properties attached to the
 	// connection.
-	PropertiesKvpairs map[string]string `json:"properties_kvpairs,omitempty"`
+	Properties map[string]string `json:"properties,omitempty"`
+	// Status of an asynchronously provisioned resource.
+	ProvisioningState ProvisioningState `json:"provisioning_state,omitempty"`
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
+	// Kind of connection securable.
+	SecurableKind ConnectionInfoSecurableKind `json:"securable_kind,omitempty"`
+
+	SecurableType string `json:"securable_type,omitempty"`
 	// Time at which this connection was updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified connection.
 	UpdatedBy string `json:"updated_by,omitempty"`
-	// URL of the remote data source, extracted from options_kvpairs.
+	// URL of the remote data source, extracted from options.
 	Url string `json:"url,omitempty"`
+}
+
+// Kind of connection securable.
+type ConnectionInfoSecurableKind string
+
+const ConnectionInfoSecurableKindConnectionBigquery ConnectionInfoSecurableKind = `CONNECTION_BIGQUERY`
+
+const ConnectionInfoSecurableKindConnectionDatabricks ConnectionInfoSecurableKind = `CONNECTION_DATABRICKS`
+
+const ConnectionInfoSecurableKindConnectionMysql ConnectionInfoSecurableKind = `CONNECTION_MYSQL`
+
+const ConnectionInfoSecurableKindConnectionOnlineCatalog ConnectionInfoSecurableKind = `CONNECTION_ONLINE_CATALOG`
+
+const ConnectionInfoSecurableKindConnectionPostgresql ConnectionInfoSecurableKind = `CONNECTION_POSTGRESQL`
+
+const ConnectionInfoSecurableKindConnectionRedshift ConnectionInfoSecurableKind = `CONNECTION_REDSHIFT`
+
+const ConnectionInfoSecurableKindConnectionSnowflake ConnectionInfoSecurableKind = `CONNECTION_SNOWFLAKE`
+
+const ConnectionInfoSecurableKindConnectionSqldw ConnectionInfoSecurableKind = `CONNECTION_SQLDW`
+
+const ConnectionInfoSecurableKindConnectionSqlserver ConnectionInfoSecurableKind = `CONNECTION_SQLSERVER`
+
+// String representation for [fmt.Print]
+func (f *ConnectionInfoSecurableKind) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ConnectionInfoSecurableKind) Set(v string) error {
+	switch v {
+	case `CONNECTION_BIGQUERY`, `CONNECTION_DATABRICKS`, `CONNECTION_MYSQL`, `CONNECTION_ONLINE_CATALOG`, `CONNECTION_POSTGRESQL`, `CONNECTION_REDSHIFT`, `CONNECTION_SNOWFLAKE`, `CONNECTION_SQLDW`, `CONNECTION_SQLSERVER`:
+		*f = ConnectionInfoSecurableKind(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CONNECTION_BIGQUERY", "CONNECTION_DATABRICKS", "CONNECTION_MYSQL", "CONNECTION_ONLINE_CATALOG", "CONNECTION_POSTGRESQL", "CONNECTION_REDSHIFT", "CONNECTION_SNOWFLAKE", "CONNECTION_SQLDW", "CONNECTION_SQLSERVER"`, v)
+	}
+}
+
+// Type always returns ConnectionInfoSecurableKind to satisfy [pflag.Value] interface
+func (f *ConnectionInfoSecurableKind) Type() string {
+	return "ConnectionInfoSecurableKind"
 }
 
 // The type of connection.
@@ -374,12 +426,12 @@ type CreateConnection struct {
 	// Name of the connection.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
-	OptionsKvpairs map[string]string `json:"options_kvpairs"`
+	Options map[string]string `json:"options"`
 	// Username of current owner of the connection.
 	Owner string `json:"owner,omitempty"`
 	// An object containing map of key-value properties attached to the
 	// connection.
-	PropertiesKvpairs map[string]string `json:"properties_kvpairs,omitempty"`
+	Properties map[string]string `json:"properties,omitempty"`
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
 }
@@ -1879,6 +1931,40 @@ type PrivilegeAssignment struct {
 // An object containing map of key-value properties attached to the connection.
 type PropertiesKvPairs map[string]string
 
+// Status of an asynchronously provisioned resource.
+type ProvisioningState string
+
+const ProvisioningStateActive ProvisioningState = `ACTIVE`
+
+const ProvisioningStateDeleting ProvisioningState = `DELETING`
+
+const ProvisioningStateFailed ProvisioningState = `FAILED`
+
+const ProvisioningStateProvisioning ProvisioningState = `PROVISIONING`
+
+const ProvisioningStateStateUnspecified ProvisioningState = `STATE_UNSPECIFIED`
+
+// String representation for [fmt.Print]
+func (f *ProvisioningState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ProvisioningState) Set(v string) error {
+	switch v {
+	case `ACTIVE`, `DELETING`, `FAILED`, `PROVISIONING`, `STATE_UNSPECIFIED`:
+		*f = ProvisioningState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETING", "FAILED", "PROVISIONING", "STATE_UNSPECIFIED"`, v)
+	}
+}
+
+// Type always returns ProvisioningState to satisfy [pflag.Value] interface
+func (f *ProvisioningState) Type() string {
+	return "ProvisioningState"
+}
+
 // Get a Volume
 type ReadVolumeRequest struct {
 	// The three-level (fully qualified) name of the volume
@@ -1978,7 +2064,7 @@ func (f *SecurableType) Type() string {
 // Server-Side Encryption properties for clients communicating with AWS s3.
 type SseEncryptionDetails struct {
 	// The type of key encryption to use (affects headers from s3 client).
-	Algorithm SseEncryptionDetailsAlgorithm `json:"algorithm"`
+	Algorithm SseEncryptionDetailsAlgorithm `json:"algorithm,omitempty"`
 	// When algorithm is **AWS_SSE_KMS** this field specifies the ARN of the SSE
 	// key to use.
 	AwsKmsKeyArn string `json:"aws_kms_key_arn,omitempty"`
@@ -2261,7 +2347,7 @@ type UpdateConnection struct {
 	// Name of the connection.
 	NameArg string `json:"-" url:"-"`
 	// A map of key-value properties attached to the securable.
-	OptionsKvpairs map[string]string `json:"options_kvpairs"`
+	Options map[string]string `json:"options"`
 }
 
 type UpdateExternalLocation struct {

@@ -85,7 +85,7 @@ type AccountStorageCredentialsService interface {
 	//
 	// The caller must be a metastore admin and have the
 	// **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
-	Create(ctx context.Context, request AccountsCreateStorageCredential) (*StorageCredentialInfo, error)
+	Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsStorageCredentialInfo, error)
 
 	// Delete a storage credential.
 	//
@@ -98,7 +98,7 @@ type AccountStorageCredentialsService interface {
 	// Gets a storage credential from the metastore. The caller must be a
 	// metastore admin, the owner of the storage credential, or have a level of
 	// privilege on the storage credential.
-	Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*StorageCredentialInfo, error)
+	Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*AccountsStorageCredentialInfo, error)
 
 	// Get all storage credentials assigned to a metastore.
 	//
@@ -111,7 +111,7 @@ type AccountStorageCredentialsService interface {
 	// Updates a storage credential on the metastore. The caller must be the
 	// owner of the storage credential. If the caller is a metastore admin, only
 	// the __owner__ credential can be changed.
-	Update(ctx context.Context, request AccountsUpdateStorageCredential) (*StorageCredentialInfo, error)
+	Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error)
 }
 
 // A catalog is the first layer of Unity Catalog’s three-level namespace.
