@@ -173,7 +173,7 @@ func (o *Operation) HasTag(tag string) bool {
 	return false
 }
 
-func (o *Operation) SuccessResponseSchema(c *Components) (string, *MediaType) {
+func (o *Operation) SuccessResponseSchema(c *Components) (MimeType, *MediaType) {
 	for _, v := range []string{"200", "201"} {
 		response, ok := o.Responses[v]
 		if ok {
@@ -288,33 +288,39 @@ type Body struct {
 	Content  map[string]MediaType `json:"content,omitempty"`
 }
 
-var allowedMimeTypes = []string{
-	"application/json",
-	"application/octet-stream",
+type MimeType string
+
+const (
+	MimeTypeJson        MimeType = "application/json"
+	MimeTypeOctetStream MimeType = "application/octet-stream"
+)
+
+// IsByteStream returns true if the body should be modeled as a byte stream.
+// Today, we only support application/json and application/octet-stream, and non
+// application/json entities are all modeled as byte streams.
+func (m MimeType) IsByteStream() bool {
+	return m != MimeTypeJson
 }
 
-func (b *Body) MimeTypeAndMediaType() (string, *MediaType) {
+var allowedMimeTypes = []MimeType{
+	MimeTypeJson,
+	MimeTypeOctetStream,
+}
+
+func (b *Body) MimeTypeAndMediaType() (MimeType, *MediaType) {
 	if b == nil || b.Content == nil {
 		return "", nil
 	}
 	for _, m := range allowedMimeTypes {
-		if mediaType, ok := b.Content[m]; ok {
+		if mediaType, ok := b.Content[string(m)]; ok {
 			return m, &mediaType
 		}
 	}
 	return "", nil
 }
 
-type BodyDisposition string
-
-const (
-	BodyDispositionStatic BodyDisposition = "static"
-	BodyDispositionStream BodyDisposition = "stream"
-)
-
 type MediaType struct {
 	Node
-	BodyDisposition BodyDisposition `json:"x-databricks-body-disposition,omitempty"`
-	BodyFieldName   string          `json:"x-databricks-body-field-name,omitempty"`
-	Schema          *Schema         `json:"schema,omitempty"`
+	BodyFieldName string  `json:"x-databricks-body-field-name,omitempty"`
+	Schema        *Schema `json:"schema,omitempty"`
 }

@@ -36,12 +36,13 @@ type Method struct {
 	// the user-friendly name of the resource.
 	NameFieldPath []*Field
 
-	// If not the zero value, represent the field in the request entity that
-	// should be mapped to the request body.
+	// If not nil, the field in the request entity that should be mapped to the
+	// request body.
 	RequestBodyField *Field
 
-	// Expected content type of the response
-	Accept string
+	// Expected content type of the request and response
+	ContentType openapi.MimeType
+	Accept      openapi.MimeType
 
 	wait       *openapi.Wait
 	pagination *openapi.Pagination

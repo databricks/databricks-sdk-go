@@ -116,7 +116,7 @@ func (svc *Service) paramToField(op *openapi.Operation, param openapi.Parameter)
 		Entity: svc.Package.schemaToEntity(param.Schema, []string{
 			op.Name(),
 			named.PascalName(),
-		}, false),
+		}, false, false),
 	}
 }
 
@@ -131,13 +131,21 @@ var crudNames = map[string]bool{
 	"restore": true,
 }
 
-func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation) *Entity {
+// Constructs the request object metadata for a method. This consists of
+//
+//  1. the request entity (i.e. the parameters and/or body)
+//  2. the request MIME type
+//  3. the field pointing to the request body (for non-JSON requests)
+func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation) (*Entity, openapi.MimeType, *Field) {
 	if op.RequestBody == nil && len(params) == 0 {
-		return nil
+		return nil, "", nil
 	}
+	var mimeType openapi.MimeType
+	var bodyField *Field
 	request := &Entity{fields: map[string]*Field{}}
 	if op.RequestBody != nil {
-		_, mediaType := op.RequestBody.MimeTypeAndMediaType()
+		var mediaType *openapi.MediaType
+		mimeType, mediaType = op.RequestBody.MimeTypeAndMediaType()
 		requestSchema := mediaType.Schema
 		// If x-databricks-body-field-name is specified, the request structure
 		// contains a field with that name whose value is the request body.
@@ -149,18 +157,16 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 				},
 			}
 		}
-		request = svc.Package.schemaToEntity(requestSchema, []string{op.Name()}, true)
-		// If x-databricks-body-disposition is "stream", the request structure
-		// is a byte stream.
-		if mediaType.BodyDisposition == openapi.BodyDispositionStream {
-			request.IsByteStream = true
+		request = svc.Package.schemaToEntity(requestSchema, []string{op.Name()}, true, mimeType.IsByteStream())
+		if mediaType.BodyFieldName != "" {
+			bodyField = request.fields[mediaType.BodyFieldName]
 		}
 	}
 	if request == nil {
 		panic(fmt.Errorf("%s request body is nil", op.OperationId))
 	}
 	if request.fields == nil && request.MapValue == nil {
-		return nil
+		return nil, "", nil
 	}
 	for _, v := range params {
 		if v.In == "header" {
@@ -223,7 +229,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 		request.Description = op.Summary
 		svc.Package.define(request)
 	}
-	return request
+	return request, mimeType, bodyField
 }
 
 func (svc *Service) paramPath(path string, request *Entity, params []openapi.Parameter) (parts []PathPart) {
@@ -273,14 +279,10 @@ func (svc *Service) getPathStyle(op *openapi.Operation) openapi.PathStyle {
 }
 
 func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) *Method {
-	request := svc.newRequest(params, op)
-	var requestBodyField *Field
-	if mimeType, _ := op.RequestBody.MimeTypeAndSchema(); mimeType == "application/octet-stream" {
-		requestBodyField = request.fields["body"]
-	}
-	responseMimeType, respSchema := op.SuccessResponseSchema(svc.Package.Components)
+	request, reqMimeType, reqBodyField := svc.newRequest(params, op)
+	respMimeType, respBody := op.SuccessResponseSchema(svc.Package.Components)
 	name := op.Name()
-	response := svc.Package.definedEntity(name+"Response", respSchema)
+	response := svc.Package.definedEntity(name+"Response", respBody.Schema)
 	var emptyResponse Named
 	if response != nil && response.IsEmpty {
 		emptyResponse = response.Named
@@ -331,8 +333,9 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		PathStyle:         requestStyle,
 		NameFieldPath:     nameFieldPath,
 		IdFieldPath:       idFieldPath,
-		RequestBodyField:  requestBodyField,
-		Accept:            responseMimeType,
+		RequestBodyField:  reqBodyField,
+		ContentType:       reqMimeType,
+		Accept:            respMimeType,
 		wait:              op.Wait,
 		operation:         op,
 		pagination:        op.Pagination,

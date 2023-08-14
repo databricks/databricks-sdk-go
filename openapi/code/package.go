@@ -166,12 +166,12 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName, is
 	}
 	// array
 	if s.ArrayValue != nil {
-		e.ArrayValue = pkg.schemaToEntity(s.ArrayValue, append(path, "Item"), false, isByteStream)
+		e.ArrayValue = pkg.schemaToEntity(s.ArrayValue, append(path, "Item"), false, false)
 		return e
 	}
 	// map
 	if s.MapValue != nil {
-		e.MapValue = pkg.schemaToEntity(s.MapValue, path, hasName, isByteStream)
+		e.MapValue = pkg.schemaToEntity(s.MapValue, path, hasName, false)
 		return e
 	}
 	e.IsBool = s.Type == "boolean" || s.Type == "bool"
