@@ -2,11 +2,13 @@ package compute
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/retries"
 )
@@ -72,6 +74,11 @@ func (a *ClustersAPI) EnsureClusterIsRunning(ctx context.Context, clusterId stri
 	timeout := 20 * time.Minute
 	return retries.Wait(ctx, timeout, func() *retries.Err {
 		err := a.startClusterIfNeeded(ctx, clusterId, timeout)
+		var apiErr *apierr.APIError
+		if errors.As(err, &apiErr) && apiErr.ErrorCode == "INVALID_STATE" {
+			logger.Debugf(ctx, "Cluster was started by other process: %s Retrying.", apiErr.Message)
+			return retries.Continue(apiErr)
+		}
 		if a.isErrFailedToReach(err) {
 			return retries.Continue(err)
 		}
