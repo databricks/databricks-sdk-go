@@ -91,11 +91,11 @@ type accountStorageCredentialsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request AccountsCreateStorageCredential) (*StorageCredentialInfo, error) {
-	var storageCredentialInfo StorageCredentialInfo
+func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsStorageCredentialInfo, error) {
+	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodPost, path, request, &storageCredentialInfo)
-	return &storageCredentialInfo, err
+	err := a.client.Do(ctx, http.MethodPost, path, request, &accountsStorageCredentialInfo)
+	return &accountsStorageCredentialInfo, err
 }
 
 func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error {
@@ -104,11 +104,11 @@ func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request Dele
 	return err
 }
 
-func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*StorageCredentialInfo, error) {
-	var storageCredentialInfo StorageCredentialInfo
+func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*AccountsStorageCredentialInfo, error) {
+	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &storageCredentialInfo)
-	return &storageCredentialInfo, err
+	err := a.client.Do(ctx, http.MethodGet, path, request, &accountsStorageCredentialInfo)
+	return &accountsStorageCredentialInfo, err
 }
 
 func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListStorageCredentialsResponse, error) {
@@ -118,11 +118,11 @@ func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAc
 	return &listStorageCredentialsResponse, err
 }
 
-func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*StorageCredentialInfo, error) {
-	var storageCredentialInfo StorageCredentialInfo
+func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error) {
+	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodPut, path, request, &storageCredentialInfo)
-	return &storageCredentialInfo, err
+	err := a.client.Do(ctx, http.MethodPut, path, request, &accountsStorageCredentialInfo)
+	return &accountsStorageCredentialInfo, err
 }
 
 // unexported type that holds implementations of just Catalogs API methods

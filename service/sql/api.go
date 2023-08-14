@@ -1300,6 +1300,40 @@ func (a *WarehousesAPI) GetById(ctx context.Context, id string) (*GetWarehouseRe
 	})
 }
 
+// Get SQL warehouse permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *WarehousesAPI) GetWarehousePermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error) {
+	return a.impl.GetWarehousePermissionLevels(ctx, request)
+}
+
+// Get SQL warehouse permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *WarehousesAPI) GetWarehousePermissionLevelsByWarehouseId(ctx context.Context, warehouseId string) (*GetWarehousePermissionLevelsResponse, error) {
+	return a.impl.GetWarehousePermissionLevels(ctx, GetWarehousePermissionLevelsRequest{
+		WarehouseId: warehouseId,
+	})
+}
+
+// Get SQL warehouse permissions.
+//
+// Gets the permissions of a SQL warehouse. SQL warehouses can inherit
+// permissions from their root object.
+func (a *WarehousesAPI) GetWarehousePermissions(ctx context.Context, request GetWarehousePermissionsRequest) (*WarehousePermissions, error) {
+	return a.impl.GetWarehousePermissions(ctx, request)
+}
+
+// Get SQL warehouse permissions.
+//
+// Gets the permissions of a SQL warehouse. SQL warehouses can inherit
+// permissions from their root object.
+func (a *WarehousesAPI) GetWarehousePermissionsByWarehouseId(ctx context.Context, warehouseId string) (*WarehousePermissions, error) {
+	return a.impl.GetWarehousePermissions(ctx, GetWarehousePermissionsRequest{
+		WarehouseId: warehouseId,
+	})
+}
+
 // Get the workspace configuration.
 //
 // Gets the workspace level configuration that is shared by all SQL warehouses
@@ -1372,6 +1406,14 @@ func (a *WarehousesAPI) GetByName(ctx context.Context, name string) (*EndpointIn
 		return nil, fmt.Errorf("there are %d instances of EndpointInfo named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
+}
+
+// Set SQL warehouse permissions.
+//
+// Sets permissions on a SQL warehouse. SQL warehouses can inherit permissions
+// from their root object.
+func (a *WarehousesAPI) SetWarehousePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
+	return a.impl.SetWarehousePermissions(ctx, request)
 }
 
 // Set the workspace configuration.
@@ -1472,4 +1514,12 @@ func (a *WarehousesAPI) StopAndWait(ctx context.Context, stopRequest StopRequest
 		}
 	}
 	return wait.Get()
+}
+
+// Update SQL warehouse permissions.
+//
+// Updates the permissions on a SQL warehouse. SQL warehouses can inherit
+// permissions from their root object.
+func (a *WarehousesAPI) UpdateWarehousePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
+	return a.impl.UpdateWarehousePermissions(ctx, request)
 }

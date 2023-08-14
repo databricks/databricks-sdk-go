@@ -342,3 +342,66 @@ func (m *Method) IsPrivatePreview() bool {
 func (m *Method) IsPublicPreview() bool {
 	return isPublicPreview(&m.operation.Node)
 }
+
+func (m *Method) AsFlat() *Named {
+	if m.PascalName() == "CreateOboToken" {
+		return &m.Named
+	}
+	methodWords := m.Named.splitASCII()
+	svc := m.Service.Named
+
+	remap := map[string]string{
+		"ModelRegistry":   "Models",
+		"Libraries":       "ClusterLibraries",
+		"PolicyFamilies":  "ClusterPolicyFamilies",
+		"Workspace":       "Notebooks", // or WorkspaceObjects
+		"OAuthEnrollment": "OauthEnrollment",
+		"CurrentUser":     "",
+	}
+	if replace, ok := remap[svc.PascalName()]; ok {
+		svc = Named{
+			Name: replace,
+		}
+	}
+
+	serviceWords := svc.splitASCII()
+	serviceSingularWords := svc.Singular().splitASCII()
+
+	words := []string{}
+	if len(methodWords) == 1 && strings.ToLower(methodWords[0]) == "list" {
+		words = append(words, "list")
+		words = append(words, serviceWords...)
+	} else if methodWords[0] == "execute" {
+		words = append(words, methodWords[0])
+		// command_execution.execute -> execute-command-execution
+		words = append(words, serviceWords[0])
+	} else {
+		words = append(words, methodWords[0])
+		words = append(words, serviceSingularWords...)
+	}
+	words = append(words, methodWords[1:]...)
+	// warehouses.get_workspace_warehouse_config -> get-warehouse-workspace-config
+	seen := map[string]bool{}
+	tmp := []string{}
+	for _, w := range words {
+		if seen[w] {
+			continue
+		}
+		tmp = append(tmp, w)
+		seen[w] = true
+	}
+
+	return &Named{
+		Name: strings.Join(tmp, "_"),
+	}
+}
+
+func (m *Method) CmdletName(prefix string) string {
+	words := m.AsFlat().splitASCII()
+	noun := &Named{
+		Name: strings.Join(words[1:], "_"),
+	}
+	verb := strings.Title(words[0])
+	prefix = strings.Title(prefix)
+	return fmt.Sprintf("%s-%s%s", verb, prefix, noun.PascalName())
+}

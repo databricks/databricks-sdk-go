@@ -1096,6 +1096,23 @@ type GetStatementResultChunkNRequest struct {
 	StatementId string `json:"-" url:"-"`
 }
 
+// Get SQL warehouse permission levels
+type GetWarehousePermissionLevelsRequest struct {
+	// The SQL warehouse for which to get or manage permissions.
+	WarehouseId string `json:"-" url:"-"`
+}
+
+type GetWarehousePermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []WarehousePermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get SQL warehouse permissions
+type GetWarehousePermissionsRequest struct {
+	// The SQL warehouse for which to get or manage permissions.
+	WarehouseId string `json:"-" url:"-"`
+}
+
 // Get warehouse info
 type GetWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
@@ -1676,16 +1693,18 @@ type QueryEditContent struct {
 
 // A filter to limit query history results. This field is optional.
 type QueryFilter struct {
-	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty"`
+	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty" url:"query_start_time_range,omitempty"`
 
-	Statuses []QueryStatus `json:"statuses,omitempty"`
+	Statuses []QueryStatus `json:"statuses,omitempty" url:"statuses,omitempty"`
 	// A list of user IDs who ran the queries.
-	UserIds []int `json:"user_ids,omitempty"`
+	UserIds []int `json:"user_ids,omitempty" url:"user_ids,omitempty"`
 	// A list of warehouse IDs.
-	WarehouseIds []string `json:"warehouse_ids,omitempty"`
+	WarehouseIds []string `json:"warehouse_ids,omitempty" url:"warehouse_ids,omitempty"`
 }
 
 type QueryInfo struct {
+	// Reserved for internal use.
+	CanSubscribeToLiveQuery bool `json:"canSubscribeToLiveQuery,omitempty"`
 	// Channel information for the SQL warehouse at the time of query execution
 	ChannelUsed *ChannelInfo `json:"channel_used,omitempty"`
 	// Total execution time of the query from the client’s point of view, in
@@ -1751,19 +1770,35 @@ type QueryMetrics struct {
 	CompilationTimeMs int `json:"compilation_time_ms,omitempty"`
 	// Time spent executing the query, in milliseconds.
 	ExecutionTimeMs int `json:"execution_time_ms,omitempty"`
+	// Reserved for internal use.
+	MetadataTimeMs int `json:"metadata_time_ms,omitempty"`
 	// Total amount of data sent over the network between executor nodes during
 	// shuffle, in bytes.
 	NetworkSentBytes int `json:"network_sent_bytes,omitempty"`
+	// Timestamp of when the query was enqueued waiting while the warehouse was
+	// at max load. This field is optional and will not appear if the query
+	// skipped the overloading queue.
+	OverloadingQueueStartTimestamp int `json:"overloading_queue_start_timestamp,omitempty"`
 	// Total execution time for all individual Photon query engine tasks in the
 	// query, in milliseconds.
 	PhotonTotalTimeMs int `json:"photon_total_time_ms,omitempty"`
-	// Time spent waiting to execute the query because the SQL warehouse is
-	// already running the maximum number of concurrent queries, in
-	// milliseconds.
-	QueuedOverloadTimeMs int `json:"queued_overload_time_ms,omitempty"`
-	// Time waiting for compute resources to be provisioned for the SQL
-	// warehouse, in milliseconds.
-	QueuedProvisioningTimeMs int `json:"queued_provisioning_time_ms,omitempty"`
+	// Reserved for internal use.
+	PlanningPhases []any `json:"planning_phases,omitempty"`
+	// Reserved for internal use.
+	PlanningTimeMs int `json:"planning_time_ms,omitempty"`
+	// Timestamp of when the query was enqueued waiting for a cluster to be
+	// provisioned for the warehouse. This field is optional and will not appear
+	// if the query skipped the provisioning queue.
+	ProvisioningQueueStartTimestamp int `json:"provisioning_queue_start_timestamp,omitempty"`
+	// Total number of bytes in all tables not read due to pruning
+	PrunedBytes int `json:"pruned_bytes,omitempty"`
+	// Total number of files from all tables not read due to pruning
+	PrunedFilesCount int `json:"pruned_files_count,omitempty"`
+	// Timestamp of when the underlying compute started compilation of the
+	// query.
+	QueryCompilationStartTimestamp int `json:"query_compilation_start_timestamp,omitempty"`
+	// Reserved for internal use.
+	QueryExecutionTimeMs int `json:"query_execution_time_ms,omitempty"`
 	// Total size of data read by the query, in bytes.
 	ReadBytes int `json:"read_bytes,omitempty"`
 	// Size of persistent data read from the cache, in bytes.
@@ -1789,10 +1824,6 @@ type QueryMetrics struct {
 	SpillToDiskBytes int `json:"spill_to_disk_bytes,omitempty"`
 	// Sum of execution time for all of the query’s tasks, in milliseconds.
 	TaskTotalTimeMs int `json:"task_total_time_ms,omitempty"`
-	// Number of files that would have been read without pruning.
-	TotalFilesCount int `json:"total_files_count,omitempty"`
-	// Number of partitions that would have been read without pruning.
-	TotalPartitionsCount int `json:"total_partitions_count,omitempty"`
 	// Total execution time of the query from the client’s point of view, in
 	// milliseconds.
 	TotalTimeMs int `json:"total_time_ms,omitempty"`
@@ -2596,9 +2627,9 @@ func (f *TerminationReasonType) Type() string {
 
 type TimeRange struct {
 	// Limit results to queries that started before this time.
-	EndTimeMs int `json:"end_time_ms,omitempty"`
+	EndTimeMs int `json:"end_time_ms,omitempty" url:"end_time_ms,omitempty"`
 	// Limit results to queries that started after this time.
-	StartTimeMs int `json:"start_time_ms,omitempty"`
+	StartTimeMs int `json:"start_time_ms,omitempty" url:"start_time_ms,omitempty"`
 }
 
 // When in synchronous mode with `wait_timeout > 0s` it determines the action
@@ -2684,6 +2715,88 @@ type Visualization struct {
 	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
+type WarehouseAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type WarehouseAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []WarehousePermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type WarehousePermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type WarehousePermissionLevel string
+
+const WarehousePermissionLevelCanManage WarehousePermissionLevel = `CAN_MANAGE`
+
+const WarehousePermissionLevelCanUse WarehousePermissionLevel = `CAN_USE`
+
+const WarehousePermissionLevelIsOwner WarehousePermissionLevel = `IS_OWNER`
+
+// String representation for [fmt.Print]
+func (f *WarehousePermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *WarehousePermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_USE`, `IS_OWNER`:
+		*f = WarehousePermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_USE", "IS_OWNER"`, v)
+	}
+}
+
+// Type always returns WarehousePermissionLevel to satisfy [pflag.Value] interface
+func (f *WarehousePermissionLevel) Type() string {
+	return "WarehousePermissionLevel"
+}
+
+type WarehousePermissions struct {
+	AccessControlList []WarehouseAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type WarehousePermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
+}
+
+type WarehousePermissionsRequest struct {
+	AccessControlList []WarehouseAccessControlRequest `json:"access_control_list,omitempty"`
+	// The SQL warehouse for which to get or manage permissions.
+	WarehouseId string `json:"-" url:"-"`
+}
+
 type WarehouseTypePair struct {
 	// If set to false the specific warehouse type will not be be allowed as a
 	// value for warehouse_type in CreateWarehouse and EditWarehouse
@@ -2724,7 +2837,7 @@ func (f *WarehouseTypePairWarehouseType) Type() string {
 
 type Widget struct {
 	// The unique ID for this widget.
-	Id int `json:"id,omitempty"`
+	Id string `json:"id,omitempty"`
 
 	Options *WidgetOptions `json:"options,omitempty"`
 	// The visualization description API changes frequently and is unsupported.

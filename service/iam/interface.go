@@ -253,29 +253,75 @@ type GroupsService interface {
 
 // Permissions API are used to create read, write, edit, update and manage
 // access for various users on different objects and endpoints.
+//
+// * **[Cluster permissions](:service:clusters)** — Manage which users can
+// manage, restart, or attach to clusters.
+//
+// * **[Cluster policy permissions](:service:clusterpolicies)** — Manage which
+// users can use cluster policies.
+//
+// * **[Delta Live Tables pipeline permissions](:service:pipelines)** — Manage
+// which users can view, manage, run, cancel, or own a Delta Live Tables
+// pipeline.
+//
+// * **[Job permissions](:service:jobs)** — Manage which users can view,
+// manage, trigger, cancel, or own a job.
+//
+// * **[MLflow experiment permissions](:service:experiments)** — Manage which
+// users can read, edit, or manage MLflow experiments.
+//
+// * **[MLflow registered model permissions](:service:modelregistry)** —
+// Manage which users can read, edit, or manage MLflow registered models.
+//
+// * **[Password permissions](:service:users)** — Manage which users can use
+// password login when SSO is enabled.
+//
+// * **[Instance Pool permissions](:service:instancepools)** — Manage which
+// users can manage or attach to pools.
+//
+// * **[Repo permissions](repos)** — Manage which users can read, run, edit,
+// or manage a repo.
+//
+// * **[Serving endpoint permissions](:service:servingendpoints)** — Manage
+// which users can view, query, or manage a serving endpoint.
+//
+// * **[SQL warehouse permissions](:service:warehouses)** — Manage which users
+// can use or manage SQL warehouses.
+//
+// * **[Token permissions](:service:tokenmanagement)** — Manage which users
+// can create or use tokens.
+//
+// * **[Workspace object permissions](:service:workspace)** — Manage which
+// users can read, run, edit, or manage directories, files, and notebooks.
+//
+// For the mapping of the required permissions for specific actions or abilities
+// and other important information, see [Access Control].
+//
+// [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html
 type PermissionsService interface {
 
 	// Get object permissions.
 	//
-	// Gets the permission of an object. Objects can inherit permissions from
-	// their parent objects or root objects.
+	// Gets the permissions of an object. Objects can inherit permissions from
+	// their parent objects or root object.
 	Get(ctx context.Context, request GetPermissionRequest) (*ObjectPermissions, error)
 
-	// Get permission levels.
+	// Get object permission levels.
 	//
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error)
 
-	// Set permissions.
+	// Set object permissions.
 	//
-	// Sets permissions on object. Objects can inherit permissions from their
-	// parent objects and root objects.
-	Set(ctx context.Context, request PermissionsRequest) error
+	// Sets permissions on an object. Objects can inherit permissions from their
+	// parent objects or root object.
+	Set(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error)
 
-	// Update permission.
+	// Update object permissions.
 	//
-	// Updates the permissions on an object.
-	Update(ctx context.Context, request PermissionsRequest) error
+	// Updates the permissions on an object. Objects can inherit permissions
+	// from their parent objects or root object.
+	Update(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error)
 }
 
 // Identities for use with jobs, automated tools, and systems such as scripts,
@@ -354,6 +400,17 @@ type UsersService interface {
 	// Gets information for a specific user in Databricks workspace.
 	Get(ctx context.Context, request GetUserRequest) (*User, error)
 
+	// Get password permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetPasswordPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error)
+
+	// Get password permissions.
+	//
+	// Gets the permissions of all passwords. Passwords can inherit permissions
+	// from their root object.
+	GetPasswordPermissions(ctx context.Context) (*PasswordPermissions, error)
+
 	// List users.
 	//
 	// Gets details for all the users associated with a Databricks workspace.
@@ -367,10 +424,22 @@ type UsersService interface {
 	// specific user attributes.
 	Patch(ctx context.Context, request PartialUpdate) error
 
+	// Set password permissions.
+	//
+	// Sets permissions on all passwords. Passwords can inherit permissions from
+	// their root object.
+	SetPasswordPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error)
+
 	// Replace a user.
 	//
 	// Replaces a user's information with the data supplied in request.
 	Update(ctx context.Context, request User) error
+
+	// Update password permissions.
+	//
+	// Updates the permissions on all passwords. Passwords can inherit
+	// permissions from their root object.
+	UpdatePasswordPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error)
 }
 
 // The Workspace Permission Assignment API allows you to manage workspace

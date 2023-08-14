@@ -244,6 +244,20 @@ func (a *warehousesImpl) Get(ctx context.Context, request GetWarehouseRequest) (
 	return &getWarehouseResponse, err
 }
 
+func (a *warehousesImpl) GetWarehousePermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error) {
+	var getWarehousePermissionLevelsResponse GetWarehousePermissionLevelsResponse
+	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v/permissionLevels", request.WarehouseId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getWarehousePermissionLevelsResponse)
+	return &getWarehousePermissionLevelsResponse, err
+}
+
+func (a *warehousesImpl) GetWarehousePermissions(ctx context.Context, request GetWarehousePermissionsRequest) (*WarehousePermissions, error) {
+	var warehousePermissions WarehousePermissions
+	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &warehousePermissions)
+	return &warehousePermissions, err
+}
+
 func (a *warehousesImpl) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetWorkspaceWarehouseConfigResponse, error) {
 	var getWorkspaceWarehouseConfigResponse GetWorkspaceWarehouseConfigResponse
 	path := "/api/2.0/sql/config/warehouses"
@@ -256,6 +270,13 @@ func (a *warehousesImpl) List(ctx context.Context, request ListWarehousesRequest
 	path := "/api/2.0/sql/warehouses"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listWarehousesResponse)
 	return &listWarehousesResponse, err
+}
+
+func (a *warehousesImpl) SetWarehousePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
+	var warehousePermissions WarehousePermissions
+	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
+	err := a.client.Do(ctx, http.MethodPut, path, request, &warehousePermissions)
+	return &warehousePermissions, err
 }
 
 func (a *warehousesImpl) SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) error {
@@ -274,4 +295,11 @@ func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/stop", request.Id)
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
 	return err
+}
+
+func (a *warehousesImpl) UpdateWarehousePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
+	var warehousePermissions WarehousePermissions
+	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &warehousePermissions)
+	return &warehousePermissions, err
 }

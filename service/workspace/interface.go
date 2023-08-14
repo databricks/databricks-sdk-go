@@ -75,6 +75,17 @@ type ReposService interface {
 	// Returns the repo with the given repo ID.
 	Get(ctx context.Context, request GetRepoRequest) (*RepoInfo, error)
 
+	// Get repo permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetRepoPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error)
+
+	// Get repo permissions.
+	//
+	// Gets the permissions of a repo. Repos can inherit permissions from their
+	// root object.
+	GetRepoPermissions(ctx context.Context, request GetRepoPermissionsRequest) (*RepoPermissions, error)
+
 	// Get repos.
 	//
 	// Returns repos that the calling user has Manage permissions on. Results
@@ -83,11 +94,23 @@ type ReposService interface {
 	// Use ListAll() to get all RepoInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListReposRequest) (*ListReposResponse, error)
 
+	// Set repo permissions.
+	//
+	// Sets permissions on a repo. Repos can inherit permissions from their root
+	// object.
+	SetRepoPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error)
+
 	// Update a repo.
 	//
 	// Updates the repo to a different branch or tag, or updates the repo to the
 	// latest commit on the same branch.
 	Update(ctx context.Context, request UpdateRepo) error
+
+	// Update repo permissions.
+	//
+	// Updates the permissions on a repo. Repos can inherit permissions from
+	// their root object.
+	UpdateRepoPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error)
 }
 
 // The Secrets API allows you to manage secrets, secret scopes, and access
@@ -279,6 +302,17 @@ type WorkspaceService interface {
 	// this call returns an error `RESOURCE_DOES_NOT_EXIST`.
 	GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error)
 
+	// Get workspace object permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetWorkspaceObjectPermissionLevels(ctx context.Context, request GetWorkspaceObjectPermissionLevelsRequest) (*GetWorkspaceObjectPermissionLevelsResponse, error)
+
+	// Get workspace object permissions.
+	//
+	// Gets the permissions of a workspace object. Workspace objects can inherit
+	// permissions from their parent objects or root object.
+	GetWorkspaceObjectPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error)
+
 	// Import a workspace object.
 	//
 	// Imports a workspace object (for example, a notebook or file) or the
@@ -305,4 +339,16 @@ type WorkspaceService interface {
 	// Note that if this operation fails it may have succeeded in creating some
 	// of the necessary parent directories.
 	Mkdirs(ctx context.Context, request Mkdirs) error
+
+	// Set workspace object permissions.
+	//
+	// Sets permissions on a workspace object. Workspace objects can inherit
+	// permissions from their parent objects or root object.
+	SetWorkspaceObjectPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error)
+
+	// Update workspace object permissions.
+	//
+	// Updates the permissions on a workspace object. Workspace objects can
+	// inherit permissions from their parent objects or root object.
+	UpdateWorkspaceObjectPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error)
 }

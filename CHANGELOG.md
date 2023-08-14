@@ -1,5 +1,265 @@
 # Version changelog
 
+## 0.16.0
+
+* Added ability to generate flat names ([#568](https://github.com/databricks/databricks-sdk-go/pull/568)).
+
+API Changes:
+
+ * Changed `Create` method for [a.AccountStorageCredentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountStorageCredentialsAPI) account-level service to return [catalog.AccountsStorageCredentialInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountsStorageCredentialInfo).
+ * Changed `Get` method for [a.AccountStorageCredentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountStorageCredentialsAPI) account-level service to return [catalog.AccountsStorageCredentialInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountsStorageCredentialInfo).
+ * Changed `Update` method for [a.AccountStorageCredentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountStorageCredentialsAPI) account-level service to return [catalog.AccountsStorageCredentialInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountsStorageCredentialInfo).
+ * Changed `Create` method for [w.Connections](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionsAPI) workspace-level service with new required argument order.
+ * Changed `Update` method for [w.Connections](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionsAPI) workspace-level service with new required argument order.
+ * Removed `OptionsKvpairs` field for [catalog.ConnectionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionInfo).
+ * Removed `PropertiesKvpairs` field for [catalog.ConnectionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionInfo).
+ * Added `Options` field for [catalog.ConnectionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionInfo).
+ * Added `Properties` field for [catalog.ConnectionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionInfo).
+ * Added `ProvisioningState` field for [catalog.ConnectionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionInfo).
+ * Added `SecurableKind` field for [catalog.ConnectionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionInfo).
+ * Added `SecurableType` field for [catalog.ConnectionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionInfo).
+ * Removed `OptionsKvpairs` field for [catalog.CreateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateConnection).
+ * Removed `PropertiesKvpairs` field for [catalog.CreateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateConnection).
+ * Added `Options` field for [catalog.CreateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateConnection).
+ * Added `Properties` field for [catalog.CreateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateConnection).
+ * Changed `Algorithm` field for [catalog.SseEncryptionDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SseEncryptionDetails) to no longer be required.
+ * Removed `OptionsKvpairs` field for [catalog.UpdateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateConnection).
+ * Added `Options` field for [catalog.UpdateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateConnection).
+ * Added [catalog.AccountsStorageCredentialInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountsStorageCredentialInfo).
+ * Added [catalog.ConnectionInfoSecurableKind](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionInfoSecurableKind).
+ * Added [catalog.ProvisioningState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ProvisioningState).
+ * Added `DataSecurityMode` field for [compute.CreateCluster](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#CreateCluster).
+ * Added `DockerImage` field for [compute.CreateCluster](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#CreateCluster).
+ * Added `SingleUserName` field for [compute.CreateCluster](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#CreateCluster).
+ * Removed `Schema` field for [iam.PartialUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PartialUpdate).
+ * Added `Schemas` field for [iam.PartialUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PartialUpdate).
+
+OpenAPI SHA: 1e3533f94335f0e6c5d9262bc1fea95b3ddcb0e1, Date: 2023-08-11
+Dependency updates:
+
+ * Bump golang.org/x/oauth2 from 0.10.0 to 0.11.0 ([#574](https://github.com/databricks/databricks-sdk-go/pull/574)).
+ * Bump google.golang.org/api from 0.134.0 to 0.135.0 ([#575](https://github.com/databricks/databricks-sdk-go/pull/575)).
+ * Bump google.golang.org/api from 0.135.0 to 0.136.0 ([#576](https://github.com/databricks/databricks-sdk-go/pull/576)).
+
+## 0.15.0
+
+To simplify documentation and management of object permissions, this release features a major reorganization of how permissions APIs are structured in the SDK. Rather than using a single `Permissions.Get()` API for all services, each service supporting permissions has its own permissions APIs. Follow these steps to migrate to the current SDK:
+
+ * Change `w.Permissions.Get()` and `w.Permissions.GetByRequestObjectIdAndRequestObjectType()` to `w.<Service>.Get<Service>Permissions()`
+ * Change `w.Permissions.GetPermissionLevels()` to `w.<Service>.GetServicePermissionLevels()`
+ * Change `w.Permissions.Set()` to `w.<Service>.Set<Service>Permissions()`
+ * Change `w.Permissions.Update()` to `w.<Service>.Update<Service>Permissions()`
+
+API Changes:
+
+ * Added `GetClusterPolicyPermissionLevels` method for [w.ClusterPolicies](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPoliciesAPI) workspace-level service.
+ * Added `GetClusterPolicyPermissions` method for [w.ClusterPolicies](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPoliciesAPI) workspace-level service.
+ * Added `SetClusterPolicyPermissions` method for [w.ClusterPolicies](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPoliciesAPI) workspace-level service.
+ * Added `UpdateClusterPolicyPermissions` method for [w.ClusterPolicies](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPoliciesAPI) workspace-level service.
+ * Added `GetClusterPermissionLevels` method for [w.Clusters](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClustersAPI) workspace-level service.
+ * Added `GetClusterPermissions` method for [w.Clusters](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClustersAPI) workspace-level service.
+ * Added `SetClusterPermissions` method for [w.Clusters](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClustersAPI) workspace-level service.
+ * Added `UpdateClusterPermissions` method for [w.Clusters](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClustersAPI) workspace-level service.
+ * Added `GetInstancePoolPermissionLevels` method for [w.InstancePools](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolsAPI) workspace-level service.
+ * Added `GetInstancePoolPermissions` method for [w.InstancePools](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolsAPI) workspace-level service.
+ * Added `SetInstancePoolPermissions` method for [w.InstancePools](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolsAPI) workspace-level service.
+ * Added `UpdateInstancePoolPermissions` method for [w.InstancePools](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolsAPI) workspace-level service.
+ * Added [compute.ClusterAccessControlRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterAccessControlRequest).
+ * Added [compute.ClusterAccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterAccessControlResponse).
+ * Added [compute.ClusterPermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPermission).
+ * Added [compute.ClusterPermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPermissionLevel).
+ * Added [compute.ClusterPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPermissions).
+ * Added [compute.ClusterPermissionsDescription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPermissionsDescription).
+ * Added [compute.ClusterPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPermissionsRequest).
+ * Added [compute.ClusterPolicyAccessControlRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPolicyAccessControlRequest).
+ * Added [compute.ClusterPolicyAccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPolicyAccessControlResponse).
+ * Added [compute.ClusterPolicyPermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPolicyPermission).
+ * Added [compute.ClusterPolicyPermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPolicyPermissionLevel).
+ * Added [compute.ClusterPolicyPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPolicyPermissions).
+ * Added [compute.ClusterPolicyPermissionsDescription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPolicyPermissionsDescription).
+ * Added [compute.ClusterPolicyPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterPolicyPermissionsRequest).
+ * Added [compute.GetClusterPermissionLevelsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetClusterPermissionLevelsRequest).
+ * Added [compute.GetClusterPermissionLevelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetClusterPermissionLevelsResponse).
+ * Added [compute.GetClusterPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetClusterPermissionsRequest).
+ * Added [compute.GetClusterPolicyPermissionLevelsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetClusterPolicyPermissionLevelsRequest).
+ * Added [compute.GetClusterPolicyPermissionLevelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetClusterPolicyPermissionLevelsResponse).
+ * Added [compute.GetClusterPolicyPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetClusterPolicyPermissionsRequest).
+ * Added [compute.GetInstancePoolPermissionLevelsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetInstancePoolPermissionLevelsRequest).
+ * Added [compute.GetInstancePoolPermissionLevelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetInstancePoolPermissionLevelsResponse).
+ * Added [compute.GetInstancePoolPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetInstancePoolPermissionsRequest).
+ * Added [compute.InstancePoolAccessControlRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolAccessControlRequest).
+ * Added [compute.InstancePoolAccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolAccessControlResponse).
+ * Added [compute.InstancePoolPermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolPermission).
+ * Added [compute.InstancePoolPermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolPermissionLevel).
+ * Added [compute.InstancePoolPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolPermissions).
+ * Added [compute.InstancePoolPermissionsDescription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolPermissionsDescription).
+ * Added [compute.InstancePoolPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolPermissionsRequest).
+ * Changed `Set` method for [w.Permissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PermissionsAPI) workspace-level service to start returning [iam.ObjectPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#ObjectPermissions).
+ * Changed `Update` method for [w.Permissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PermissionsAPI) workspace-level service to start returning [iam.ObjectPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#ObjectPermissions).
+ * Added `GetPasswordPermissionLevels` method for [w.Users](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#UsersAPI) workspace-level service.
+ * Added `GetPasswordPermissions` method for [w.Users](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#UsersAPI) workspace-level service.
+ * Added `SetPasswordPermissions` method for [w.Users](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#UsersAPI) workspace-level service.
+ * Added `UpdatePasswordPermissions` method for [w.Users](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#UsersAPI) workspace-level service.
+ * Added `DisplayName` field for [iam.AccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#AccessControlResponse).
+ * Changed `Roles` field for [iam.GetAssignableRolesForResourceResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#GetAssignableRolesForResourceResponse) to [iam.RoleList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#RoleList).
+ * Added [iam.GetPasswordPermissionLevelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#GetPasswordPermissionLevelsResponse).
+ * Added [iam.PasswordAccessControlRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PasswordAccessControlRequest).
+ * Added [iam.PasswordAccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PasswordAccessControlResponse).
+ * Added [iam.PasswordPermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PasswordPermission).
+ * Added [iam.PasswordPermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PasswordPermissionLevel).
+ * Added [iam.PasswordPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PasswordPermissions).
+ * Added [iam.PasswordPermissionsDescription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PasswordPermissionsDescription).
+ * Added [iam.PasswordPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PasswordPermissionsRequest).
+ * Added [iam.Role](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#Role).
+ * Added `GetJobPermissionLevels` method for [w.Jobs](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobsAPI) workspace-level service.
+ * Added `GetJobPermissions` method for [w.Jobs](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobsAPI) workspace-level service.
+ * Added `SetJobPermissions` method for [w.Jobs](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobsAPI) workspace-level service.
+ * Added `UpdateJobPermissions` method for [w.Jobs](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobsAPI) workspace-level service.
+ * Added [jobs.GetJobPermissionLevelsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#GetJobPermissionLevelsRequest).
+ * Added [jobs.GetJobPermissionLevelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#GetJobPermissionLevelsResponse).
+ * Added [jobs.GetJobPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#GetJobPermissionsRequest).
+ * Added [jobs.JobAccessControlRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobAccessControlRequest).
+ * Added [jobs.JobAccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobAccessControlResponse).
+ * Added [jobs.JobPermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobPermission).
+ * Added [jobs.JobPermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobPermissionLevel).
+ * Added [jobs.JobPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobPermissions).
+ * Added [jobs.JobPermissionsDescription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobPermissionsDescription).
+ * Added [jobs.JobPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobPermissionsRequest).
+ * Added `GetExperimentPermissionLevels` method for [w.Experiments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentsAPI) workspace-level service.
+ * Added `GetExperimentPermissions` method for [w.Experiments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentsAPI) workspace-level service.
+ * Added `SetExperimentPermissions` method for [w.Experiments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentsAPI) workspace-level service.
+ * Added `UpdateExperimentPermissions` method for [w.Experiments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentsAPI) workspace-level service.
+ * Added `GetRegisteredModelPermissionLevels` method for [w.ModelRegistry](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ModelRegistryAPI) workspace-level service.
+ * Added `GetRegisteredModelPermissions` method for [w.ModelRegistry](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ModelRegistryAPI) workspace-level service.
+ * Added `SetRegisteredModelPermissions` method for [w.ModelRegistry](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ModelRegistryAPI) workspace-level service.
+ * Added `UpdateRegisteredModelPermissions` method for [w.ModelRegistry](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ModelRegistryAPI) workspace-level service.
+ * Added [ml.ExperimentAccessControlRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentAccessControlRequest).
+ * Added [ml.ExperimentAccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentAccessControlResponse).
+ * Added [ml.ExperimentPermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentPermission).
+ * Added [ml.ExperimentPermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentPermissionLevel).
+ * Added [ml.ExperimentPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentPermissions).
+ * Added [ml.ExperimentPermissionsDescription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentPermissionsDescription).
+ * Added [ml.ExperimentPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentPermissionsRequest).
+ * Added [ml.GetExperimentPermissionLevelsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#GetExperimentPermissionLevelsRequest).
+ * Added [ml.GetExperimentPermissionLevelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#GetExperimentPermissionLevelsResponse).
+ * Added [ml.GetExperimentPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#GetExperimentPermissionsRequest).
+ * Added [ml.GetRegisteredModelPermissionLevelsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#GetRegisteredModelPermissionLevelsRequest).
+ * Added [ml.GetRegisteredModelPermissionLevelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#GetRegisteredModelPermissionLevelsResponse).
+ * Added [ml.GetRegisteredModelPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#GetRegisteredModelPermissionsRequest).
+ * Added [ml.RegisteredModelAccessControlRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#RegisteredModelAccessControlRequest).
+ * Added [ml.RegisteredModelAccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#RegisteredModelAccessControlResponse).
+ * Added [ml.RegisteredModelPermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#RegisteredModelPermission).
+ * Added [ml.RegisteredModelPermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#RegisteredModelPermissionLevel).
+ * Added [ml.RegisteredModelPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#RegisteredModelPermissions).
+ * Added [ml.RegisteredModelPermissionsDescription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#RegisteredModelPermissionsDescription).
+ * Added [ml.RegisteredModelPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#RegisteredModelPermissionsRequest).
+ * Added `Scopes` field for [oauth2.CreateCustomAppIntegration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#CreateCustomAppIntegration).
+ * Added `GetPipelinePermissionLevels` method for [w.Pipelines](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinesAPI) workspace-level service.
+ * Added `GetPipelinePermissions` method for [w.Pipelines](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinesAPI) workspace-level service.
+ * Added `SetPipelinePermissions` method for [w.Pipelines](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinesAPI) workspace-level service.
+ * Added `UpdatePipelinePermissions` method for [w.Pipelines](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinesAPI) workspace-level service.
+ * Added [pipelines.GetPipelinePermissionLevelsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#GetPipelinePermissionLevelsRequest).
+ * Added [pipelines.GetPipelinePermissionLevelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#GetPipelinePermissionLevelsResponse).
+ * Added [pipelines.GetPipelinePermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#GetPipelinePermissionsRequest).
+ * Added [pipelines.PipelineAccessControlRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineAccessControlRequest).
+ * Added [pipelines.PipelineAccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineAccessControlResponse).
+ * Added [pipelines.PipelinePermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinePermission).
+ * Added [pipelines.PipelinePermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinePermissionLevel).
+ * Added [pipelines.PipelinePermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinePermissions).
+ * Added [pipelines.PipelinePermissionsDescription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinePermissionsDescription).
+ * Added [pipelines.PipelinePermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinePermissionsRequest).
+ * Added `GcpManagedNetworkConfig` field for [provisioning.CreateWorkspaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#CreateWorkspaceRequest).
+ * Added `GkeConfig` field for [provisioning.CreateWorkspaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#CreateWorkspaceRequest).
+ * Added `GetServingEndpointPermissionLevels` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service.
+ * Added `GetServingEndpointPermissions` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service.
+ * Added `SetServingEndpointPermissions` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service.
+ * Added `UpdateServingEndpointPermissions` method for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service.
+ * Added `InstanceProfileArn` field for [serving.ServedModelInput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelInput).
+ * Added `InstanceProfileArn` field for [serving.ServedModelOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelOutput).
+ * Added [serving.GetServingEndpointPermissionLevelsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#GetServingEndpointPermissionLevelsRequest).
+ * Added [serving.GetServingEndpointPermissionLevelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#GetServingEndpointPermissionLevelsResponse).
+ * Added [serving.GetServingEndpointPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#GetServingEndpointPermissionsRequest).
+ * Added [serving.ServingEndpointAccessControlRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointAccessControlRequest).
+ * Added [serving.ServingEndpointAccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointAccessControlResponse).
+ * Added [serving.ServingEndpointPermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointPermission).
+ * Added [serving.ServingEndpointPermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointPermissionLevel).
+ * Added [serving.ServingEndpointPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointPermissions).
+ * Added [serving.ServingEndpointPermissionsDescription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointPermissionsDescription).
+ * Added [serving.ServingEndpointPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointPermissionsRequest).
+ * Added `GetTokenPermissionLevels` method for [w.TokenManagement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenManagementAPI) workspace-level service.
+ * Added `GetTokenPermissions` method for [w.TokenManagement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenManagementAPI) workspace-level service.
+ * Added `SetTokenPermissions` method for [w.TokenManagement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenManagementAPI) workspace-level service.
+ * Added `UpdateTokenPermissions` method for [w.TokenManagement](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenManagementAPI) workspace-level service.
+ * Added [settings.GetTokenPermissionLevelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetTokenPermissionLevelsResponse).
+ * Added [settings.TokenAccessControlRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenAccessControlRequest).
+ * Added [settings.TokenAccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenAccessControlResponse).
+ * Added [settings.TokenPermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenPermission).
+ * Added [settings.TokenPermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenPermissionLevel).
+ * Added [settings.TokenPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenPermissions).
+ * Added [settings.TokenPermissionsDescription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenPermissionsDescription).
+ * Added [settings.TokenPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#TokenPermissionsRequest).
+ * Added `GetWarehousePermissionLevels` method for [w.Warehouses](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehousesAPI) workspace-level service.
+ * Added `GetWarehousePermissions` method for [w.Warehouses](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehousesAPI) workspace-level service.
+ * Added `SetWarehousePermissions` method for [w.Warehouses](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehousesAPI) workspace-level service.
+ * Added `UpdateWarehousePermissions` method for [w.Warehouses](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehousesAPI) workspace-level service.
+ * Added `CanSubscribeToLiveQuery` field for [sql.QueryInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryInfo).
+ * Removed `QueuedOverloadTimeMs` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+ * Removed `QueuedProvisioningTimeMs` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+ * Removed `TotalFilesCount` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+ * Removed `TotalPartitionsCount` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+ * Added `MetadataTimeMs` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+ * Added `OverloadingQueueStartTimestamp` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+ * Added `PlanningPhases` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+ * Added `PlanningTimeMs` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+ * Added `ProvisioningQueueStartTimestamp` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+ * Added `PrunedBytes` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+ * Added `PrunedFilesCount` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+ * Added `QueryCompilationStartTimestamp` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+ * Added `QueryExecutionTimeMs` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+ * Added [sql.GetWarehousePermissionLevelsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#GetWarehousePermissionLevelsRequest).
+ * Added [sql.GetWarehousePermissionLevelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#GetWarehousePermissionLevelsResponse).
+ * Added [sql.GetWarehousePermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#GetWarehousePermissionsRequest).
+ * Added [sql.WarehouseAccessControlRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehouseAccessControlRequest).
+ * Added [sql.WarehouseAccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehouseAccessControlResponse).
+ * Added [sql.WarehousePermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehousePermission).
+ * Added [sql.WarehousePermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehousePermissionLevel).
+ * Added [sql.WarehousePermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehousePermissions).
+ * Added [sql.WarehousePermissionsDescription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehousePermissionsDescription).
+ * Added [sql.WarehousePermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehousePermissionsRequest).
+ * Added `GetRepoPermissionLevels` method for [w.Repos](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#ReposAPI) workspace-level service.
+ * Added `GetRepoPermissions` method for [w.Repos](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#ReposAPI) workspace-level service.
+ * Added `SetRepoPermissions` method for [w.Repos](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#ReposAPI) workspace-level service.
+ * Added `UpdateRepoPermissions` method for [w.Repos](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#ReposAPI) workspace-level service.
+ * Added `GetWorkspaceObjectPermissionLevels` method for [w.Workspace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#WorkspaceAPI) workspace-level service.
+ * Added `GetWorkspaceObjectPermissions` method for [w.Workspace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#WorkspaceAPI) workspace-level service.
+ * Added `SetWorkspaceObjectPermissions` method for [w.Workspace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#WorkspaceAPI) workspace-level service.
+ * Added `UpdateWorkspaceObjectPermissions` method for [w.Workspace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#WorkspaceAPI) workspace-level service.
+ * Added [workspace.GetRepoPermissionLevelsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#GetRepoPermissionLevelsRequest).
+ * Added [workspace.GetRepoPermissionLevelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#GetRepoPermissionLevelsResponse).
+ * Added [workspace.GetRepoPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#GetRepoPermissionsRequest).
+ * Added [workspace.GetWorkspaceObjectPermissionLevelsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#GetWorkspaceObjectPermissionLevelsRequest).
+ * Added [workspace.GetWorkspaceObjectPermissionLevelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#GetWorkspaceObjectPermissionLevelsResponse).
+ * Added [workspace.GetWorkspaceObjectPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#GetWorkspaceObjectPermissionsRequest).
+ * Added [workspace.RepoAccessControlRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#RepoAccessControlRequest).
+ * Added [workspace.RepoAccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#RepoAccessControlResponse).
+ * Added [workspace.RepoPermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#RepoPermission).
+ * Added [workspace.RepoPermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#RepoPermissionLevel).
+ * Added [workspace.RepoPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#RepoPermissions).
+ * Added [workspace.RepoPermissionsDescription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#RepoPermissionsDescription).
+ * Added [workspace.RepoPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#RepoPermissionsRequest).
+ * Added [workspace.WorkspaceObjectAccessControlRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#WorkspaceObjectAccessControlRequest).
+ * Added [workspace.WorkspaceObjectAccessControlResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#WorkspaceObjectAccessControlResponse).
+ * Added [workspace.WorkspaceObjectPermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#WorkspaceObjectPermission).
+ * Added [workspace.WorkspaceObjectPermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#WorkspaceObjectPermissionLevel).
+ * Added [workspace.WorkspaceObjectPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#WorkspaceObjectPermissions).
+ * Added [workspace.WorkspaceObjectPermissionsDescription](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#WorkspaceObjectPermissionsDescription).
+ * Added [workspace.WorkspaceObjectPermissionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#WorkspaceObjectPermissionsRequest).
+
+OpenAPI SHA: 386b65ecdc825b9c3ed4aa7ca88e2e5baf9d87df, Date: 2023-08-07
+Dependency updates:
+
+ * Bump google.golang.org/api from 0.131.0 to 0.134.0 ([#564](https://github.com/databricks/databricks-sdk-go/pull/564)).
+
 ## 0.14.1
 
 * Handle nested query parameters in Client.attempt ([#559](https://github.com/databricks/databricks-sdk-go/pull/559)).

@@ -55,12 +55,35 @@ type ClusterPoliciesService interface {
 	// only.
 	Get(ctx context.Context, request GetClusterPolicyRequest) (*Policy, error)
 
+	// Get cluster policy permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetClusterPolicyPermissionLevels(ctx context.Context, request GetClusterPolicyPermissionLevelsRequest) (*GetClusterPolicyPermissionLevelsResponse, error)
+
+	// Get cluster policy permissions.
+	//
+	// Gets the permissions of a cluster policy. Cluster policies can inherit
+	// permissions from their root object.
+	GetClusterPolicyPermissions(ctx context.Context, request GetClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error)
+
 	// Get a cluster policy.
 	//
 	// Returns a list of policies accessible by the requesting user.
 	//
 	// Use ListAll() to get all Policy instances
 	List(ctx context.Context, request ListClusterPoliciesRequest) (*ListPoliciesResponse, error)
+
+	// Set cluster policy permissions.
+	//
+	// Sets permissions on a cluster policy. Cluster policies can inherit
+	// permissions from their root object.
+	SetClusterPolicyPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error)
+
+	// Update cluster policy permissions.
+	//
+	// Updates the permissions on a cluster policy. Cluster policies can inherit
+	// permissions from their root object.
+	UpdateClusterPolicyPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error)
 }
 
 // The Clusters API allows you to create, start, edit, list, terminate, and
@@ -151,6 +174,17 @@ type ClustersService interface {
 	// terminated.
 	Get(ctx context.Context, request GetClusterRequest) (*ClusterDetails, error)
 
+	// Get cluster permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetClusterPermissionLevels(ctx context.Context, request GetClusterPermissionLevelsRequest) (*GetClusterPermissionLevelsResponse, error)
+
+	// Get cluster permissions.
+	//
+	// Gets the permissions of a cluster. Clusters can inherit permissions from
+	// their root object.
+	GetClusterPermissions(ctx context.Context, request GetClusterPermissionsRequest) (*ClusterPermissions, error)
+
 	// List all clusters.
 	//
 	// Return information about all pinned clusters, active clusters, up to 200
@@ -208,6 +242,12 @@ type ClustersService interface {
 	// currently in a `RUNNING` state, nothing will happen.
 	Restart(ctx context.Context, request RestartCluster) error
 
+	// Set cluster permissions.
+	//
+	// Sets permissions on a cluster. Clusters can inherit permissions from
+	// their root object.
+	SetClusterPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error)
+
 	// List available Spark versions.
 	//
 	// Returns the list of available Spark versions. These versions can be used
@@ -233,6 +273,12 @@ type ClustersService interface {
 	// the ListClusters API. Unpinning a cluster that is not pinned will have no
 	// effect. This API can only be called by workspace admins.
 	Unpin(ctx context.Context, request UnpinCluster) error
+
+	// Update cluster permissions.
+	//
+	// Updates the permissions on a cluster. Clusters can inherit permissions
+	// from their root object.
+	UpdateClusterPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error)
 }
 
 // This API allows execution of Python, Scala, SQL, or R commands on running
@@ -366,12 +412,35 @@ type InstancePoolsService interface {
 	// Retrieve the information for an instance pool based on its identifier.
 	Get(ctx context.Context, request GetInstancePoolRequest) (*GetInstancePool, error)
 
+	// Get instance pool permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetInstancePoolPermissionLevels(ctx context.Context, request GetInstancePoolPermissionLevelsRequest) (*GetInstancePoolPermissionLevelsResponse, error)
+
+	// Get instance pool permissions.
+	//
+	// Gets the permissions of an instance pool. Instance pools can inherit
+	// permissions from their root object.
+	GetInstancePoolPermissions(ctx context.Context, request GetInstancePoolPermissionsRequest) (*InstancePoolPermissions, error)
+
 	// List instance pool info.
 	//
 	// Gets a list of instance pools with their statistics.
 	//
 	// Use ListAll() to get all InstancePoolAndStats instances
 	List(ctx context.Context) (*ListInstancePools, error)
+
+	// Set instance pool permissions.
+	//
+	// Sets permissions on an instance pool. Instance pools can inherit
+	// permissions from their root object.
+	SetInstancePoolPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error)
+
+	// Update instance pool permissions.
+	//
+	// Updates the permissions on an instance pool. Instance pools can inherit
+	// permissions from their root object.
+	UpdateInstancePoolPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error)
 }
 
 // The Instance Profiles API allows admins to add, list, and remove instance

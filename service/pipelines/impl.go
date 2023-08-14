@@ -35,6 +35,20 @@ func (a *pipelinesImpl) Get(ctx context.Context, request GetPipelineRequest) (*G
 	return &getPipelineResponse, err
 }
 
+func (a *pipelinesImpl) GetPipelinePermissionLevels(ctx context.Context, request GetPipelinePermissionLevelsRequest) (*GetPipelinePermissionLevelsResponse, error) {
+	var getPipelinePermissionLevelsResponse GetPipelinePermissionLevelsResponse
+	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v/permissionLevels", request.PipelineId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getPipelinePermissionLevelsResponse)
+	return &getPipelinePermissionLevelsResponse, err
+}
+
+func (a *pipelinesImpl) GetPipelinePermissions(ctx context.Context, request GetPipelinePermissionsRequest) (*PipelinePermissions, error) {
+	var pipelinePermissions PipelinePermissions
+	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &pipelinePermissions)
+	return &pipelinePermissions, err
+}
+
 func (a *pipelinesImpl) GetUpdate(ctx context.Context, request GetUpdateRequest) (*GetUpdateResponse, error) {
 	var getUpdateResponse GetUpdateResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates/%v", request.PipelineId, request.UpdateId)
@@ -69,6 +83,13 @@ func (a *pipelinesImpl) Reset(ctx context.Context, request ResetRequest) error {
 	return err
 }
 
+func (a *pipelinesImpl) SetPipelinePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
+	var pipelinePermissions PipelinePermissions
+	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)
+	err := a.client.Do(ctx, http.MethodPut, path, request, &pipelinePermissions)
+	return &pipelinePermissions, err
+}
+
 func (a *pipelinesImpl) StartUpdate(ctx context.Context, request StartUpdate) (*StartUpdateResponse, error) {
 	var startUpdateResponse StartUpdateResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/updates", request.PipelineId)
@@ -86,4 +107,11 @@ func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) error 
 	path := fmt.Sprintf("/api/2.0/pipelines/%v", request.PipelineId)
 	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
 	return err
+}
+
+func (a *pipelinesImpl) UpdatePipelinePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
+	var pipelinePermissions PipelinePermissions
+	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &pipelinePermissions)
+	return &pipelinePermissions, err
 }

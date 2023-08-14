@@ -86,8 +86,8 @@ func TestAccAccountUsers(t *testing.T) {
 
 	assert.Equal(t, 0, len(user.Roles))
 	err = a.Users.Patch(ctx, iam.PartialUpdate{
-		Id:     user.Id,
-		Schema: []iam.PatchSchema{iam.PatchSchemaUrnIetfParamsScimApiMessages20PatchOp},
+		Id:      user.Id,
+		Schemas: []iam.PatchSchema{iam.PatchSchemaUrnIetfParamsScimApiMessages20PatchOp},
 		Operations: []iam.Patch{
 			{Op: iam.PatchOpAdd, Value: iam.User{
 				Roles: []iam.ComplexValue{

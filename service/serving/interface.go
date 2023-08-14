@@ -44,6 +44,17 @@ type ServingEndpointsService interface {
 	// Retrieves the details for a single serving endpoint.
 	Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error)
 
+	// Get serving endpoint permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetServingEndpointPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error)
+
+	// Get serving endpoint permissions.
+	//
+	// Gets the permissions of a serving endpoint. Serving endpoints can inherit
+	// permissions from their root object.
+	GetServingEndpointPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+
 	// Retrieve all serving endpoints.
 	//
 	// Use ListAll() to get all ServingEndpoint instances
@@ -58,6 +69,12 @@ type ServingEndpointsService interface {
 	// Query a serving endpoint with provided model input.
 	Query(ctx context.Context, request QueryRequest) (*QueryEndpointResponse, error)
 
+	// Set serving endpoint permissions.
+	//
+	// Sets permissions on a serving endpoint. Serving endpoints can inherit
+	// permissions from their root object.
+	SetServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+
 	// Update a serving endpoint with a new config.
 	//
 	// Updates any combination of the serving endpoint's served models, the
@@ -65,4 +82,10 @@ type ServingEndpointsService interface {
 	// config. An endpoint that already has an update in progress can not be
 	// updated until the current update completes or fails.
 	UpdateConfig(ctx context.Context, request EndpointCoreConfigInput) (*ServingEndpointDetailed, error)
+
+	// Update serving endpoint permissions.
+	//
+	// Updates the permissions on a serving endpoint. Serving endpoints can
+	// inherit permissions from their root object.
+	UpdateServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 }

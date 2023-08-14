@@ -232,6 +232,23 @@ type GetGitCredentialRequest struct {
 	CredentialId int64 `json:"-" url:"-"`
 }
 
+// Get repo permission levels
+type GetRepoPermissionLevelsRequest struct {
+	// The repo for which to get or manage permissions.
+	RepoId string `json:"-" url:"-"`
+}
+
+type GetRepoPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []RepoPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get repo permissions
+type GetRepoPermissionsRequest struct {
+	// The repo for which to get or manage permissions.
+	RepoId string `json:"-" url:"-"`
+}
+
 // Get a repo
 type GetRepoRequest struct {
 	// The ID for the corresponding repo to access.
@@ -242,6 +259,27 @@ type GetRepoRequest struct {
 type GetStatusRequest struct {
 	// The absolute path of the notebook or directory.
 	Path string `json:"-" url:"path"`
+}
+
+// Get workspace object permission levels
+type GetWorkspaceObjectPermissionLevelsRequest struct {
+	// The workspace object for which to get or manage permissions.
+	WorkspaceObjectId string `json:"-" url:"-"`
+	// The workspace object type for which to get or manage permissions.
+	WorkspaceObjectType string `json:"-" url:"-"`
+}
+
+type GetWorkspaceObjectPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []WorkspaceObjectPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get workspace object permissions
+type GetWorkspaceObjectPermissionsRequest struct {
+	// The workspace object for which to get or manage permissions.
+	WorkspaceObjectId string `json:"-" url:"-"`
+	// The workspace object type for which to get or manage permissions.
+	WorkspaceObjectType string `json:"-" url:"-"`
 }
 
 type Import struct {
@@ -501,6 +539,30 @@ type PutSecret struct {
 	StringValue string `json:"string_value,omitempty"`
 }
 
+type RepoAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type RepoAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []RepoPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
 type RepoInfo struct {
 	// Branch that the local version of the repo is checked out to.
 	Branch string `json:"branch,omitempty"`
@@ -520,6 +582,66 @@ type RepoInfo struct {
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
 	// URL of the Git repository to be linked.
 	Url string `json:"url,omitempty"`
+}
+
+type RepoPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type RepoPermissionLevel string
+
+const RepoPermissionLevelCanEdit RepoPermissionLevel = `CAN_EDIT`
+
+const RepoPermissionLevelCanManage RepoPermissionLevel = `CAN_MANAGE`
+
+const RepoPermissionLevelCanRead RepoPermissionLevel = `CAN_READ`
+
+const RepoPermissionLevelCanRun RepoPermissionLevel = `CAN_RUN`
+
+// String representation for [fmt.Print]
+func (f *RepoPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RepoPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`, `CAN_RUN`:
+		*f = RepoPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_READ", "CAN_RUN"`, v)
+	}
+}
+
+// Type always returns RepoPermissionLevel to satisfy [pflag.Value] interface
+func (f *RepoPermissionLevel) Type() string {
+	return "RepoPermissionLevel"
+}
+
+type RepoPermissions struct {
+	AccessControlList []RepoAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type RepoPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type RepoPermissionsRequest struct {
+	AccessControlList []RepoAccessControlRequest `json:"access_control_list,omitempty"`
+	// The repo for which to get or manage permissions.
+	RepoId string `json:"-" url:"-"`
 }
 
 type ScopeBackendType string
@@ -603,4 +725,90 @@ type UpdateRepo struct {
 	// new changes, you must update the repo to a branch instead of the detached
 	// HEAD.
 	Tag string `json:"tag,omitempty"`
+}
+
+type WorkspaceObjectAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type WorkspaceObjectAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []WorkspaceObjectPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type WorkspaceObjectPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type WorkspaceObjectPermissionLevel string
+
+const WorkspaceObjectPermissionLevelCanEdit WorkspaceObjectPermissionLevel = `CAN_EDIT`
+
+const WorkspaceObjectPermissionLevelCanManage WorkspaceObjectPermissionLevel = `CAN_MANAGE`
+
+const WorkspaceObjectPermissionLevelCanRead WorkspaceObjectPermissionLevel = `CAN_READ`
+
+const WorkspaceObjectPermissionLevelCanRun WorkspaceObjectPermissionLevel = `CAN_RUN`
+
+// String representation for [fmt.Print]
+func (f *WorkspaceObjectPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *WorkspaceObjectPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`, `CAN_RUN`:
+		*f = WorkspaceObjectPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_READ", "CAN_RUN"`, v)
+	}
+}
+
+// Type always returns WorkspaceObjectPermissionLevel to satisfy [pflag.Value] interface
+func (f *WorkspaceObjectPermissionLevel) Type() string {
+	return "WorkspaceObjectPermissionLevel"
+}
+
+type WorkspaceObjectPermissions struct {
+	AccessControlList []WorkspaceObjectAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type WorkspaceObjectPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type WorkspaceObjectPermissionsRequest struct {
+	AccessControlList []WorkspaceObjectAccessControlRequest `json:"access_control_list,omitempty"`
+	// The workspace object for which to get or manage permissions.
+	WorkspaceObjectId string `json:"-" url:"-"`
+	// The workspace object type for which to get or manage permissions.
+	WorkspaceObjectType string `json:"-" url:"-"`
 }

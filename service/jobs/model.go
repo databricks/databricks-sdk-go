@@ -63,8 +63,16 @@ type BaseRun struct {
 	// total duration of a multitask job run is the value of the `run_duration`
 	// field.
 	ExecutionDuration int64 `json:"execution_duration,omitempty"`
-	// An optional specification for a remote repository containing the
-	// notebooks used by this job's notebook tasks.
+	// An optional specification for a remote Git repository containing the
+	// source code used by tasks. Version-controlled source code is supported by
+	// notebook, dbt, Python script, and SQL File tasks.
+	//
+	// If `git_source` is set, these tasks retrieve the file from the remote
+	// repository by default. However, this behavior can be overridden by
+	// setting `source` to `WORKSPACE` on the task.
+	//
+	// Note: dbt and SQL File tasks support only version-controlled sources. If
+	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
@@ -256,8 +264,16 @@ type CreateJob struct {
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
 	// always set to `"MULTI_TASK"`.
 	Format Format `json:"format,omitempty"`
-	// An optional specification for a remote repository containing the
-	// notebooks used by this job's notebook tasks.
+	// An optional specification for a remote Git repository containing the
+	// source code used by tasks. Version-controlled source code is supported by
+	// notebook, dbt, Python script, and SQL File tasks.
+	//
+	// If `git_source` is set, these tasks retrieve the file from the remote
+	// repository by default. However, this behavior can be overridden by
+	// setting `source` to `WORKSPACE` on the task.
+	//
+	// Note: dbt and SQL File tasks support only version-controlled sources. If
+	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
@@ -445,6 +461,23 @@ func (f *Format) Type() string {
 	return "Format"
 }
 
+// Get job permission levels
+type GetJobPermissionLevelsRequest struct {
+	// The job for which to get or manage permissions.
+	JobId string `json:"-" url:"-"`
+}
+
+type GetJobPermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []JobPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get job permissions
+type GetJobPermissionsRequest struct {
+	// The job for which to get or manage permissions.
+	JobId string `json:"-" url:"-"`
+}
+
 // Get a single job
 type GetJobRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
@@ -515,8 +548,16 @@ type GitSnapshot struct {
 	UsedCommit string `json:"used_commit,omitempty"`
 }
 
-// An optional specification for a remote repository containing the notebooks
-// used by this job's notebook tasks.
+// An optional specification for a remote Git repository containing the source
+// code used by tasks. Version-controlled source code is supported by notebook,
+// dbt, Python script, and SQL File tasks.
+//
+// If `git_source` is set, these tasks retrieve the file from the remote
+// repository by default. However, this behavior can be overridden by setting
+// `source` to `WORKSPACE` on the task.
+//
+// Note: dbt and SQL File tasks support only version-controlled sources. If dbt
+// or SQL File tasks are used, `git_source` must be defined on the job.
 type GitSource struct {
 	// Name of the branch to be checked out and used by this job. This field
 	// cannot be specified in conjunction with git_tag or git_commit.
@@ -562,6 +603,30 @@ type Job struct {
 	Settings *JobSettings `json:"settings,omitempty"`
 	// History of the file arrival trigger associated with the job.
 	TriggerHistory *TriggerHistory `json:"trigger_history,omitempty"`
+}
+
+type JobAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type JobAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []JobPermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
 }
 
 type JobCluster struct {
@@ -635,6 +700,66 @@ type JobParameterDefinition struct {
 	Name string `json:"name"`
 }
 
+type JobPermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type JobPermissionLevel string
+
+const JobPermissionLevelCanManage JobPermissionLevel = `CAN_MANAGE`
+
+const JobPermissionLevelCanManageRun JobPermissionLevel = `CAN_MANAGE_RUN`
+
+const JobPermissionLevelCanView JobPermissionLevel = `CAN_VIEW`
+
+const JobPermissionLevelIsOwner JobPermissionLevel = `IS_OWNER`
+
+// String representation for [fmt.Print]
+func (f *JobPermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *JobPermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_MANAGE_RUN`, `CAN_VIEW`, `IS_OWNER`:
+		*f = JobPermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_MANAGE_RUN", "CAN_VIEW", "IS_OWNER"`, v)
+	}
+}
+
+// Type always returns JobPermissionLevel to satisfy [pflag.Value] interface
+func (f *JobPermissionLevel) Type() string {
+	return "JobPermissionLevel"
+}
+
+type JobPermissions struct {
+	AccessControlList []JobAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type JobPermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+}
+
+type JobPermissionsRequest struct {
+	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
+	// The job for which to get or manage permissions.
+	JobId string `json:"-" url:"-"`
+}
+
 // Write-only setting, available only in Create/Update/Reset and Submit calls.
 // Specifies the user or service principal that the job runs as. If not
 // specified, the job runs as the user who created the job.
@@ -666,8 +791,16 @@ type JobSettings struct {
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
 	// always set to `"MULTI_TASK"`.
 	Format Format `json:"format,omitempty"`
-	// An optional specification for a remote repository containing the
-	// notebooks used by this job's notebook tasks.
+	// An optional specification for a remote Git repository containing the
+	// source code used by tasks. Version-controlled source code is supported by
+	// notebook, dbt, Python script, and SQL File tasks.
+	//
+	// If `git_source` is set, these tasks retrieve the file from the remote
+	// repository by default. However, this behavior can be overridden by
+	// setting `source` to `WORKSPACE` on the task.
+	//
+	// Note: dbt and SQL File tasks support only version-controlled sources. If
+	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
@@ -1326,8 +1459,16 @@ type Run struct {
 	// total duration of a multitask job run is the value of the `run_duration`
 	// field.
 	ExecutionDuration int64 `json:"execution_duration,omitempty"`
-	// An optional specification for a remote repository containing the
-	// notebooks used by this job's notebook tasks.
+	// An optional specification for a remote Git repository containing the
+	// source code used by tasks. Version-controlled source code is supported by
+	// notebook, dbt, Python script, and SQL File tasks.
+	//
+	// If `git_source` is set, these tasks retrieve the file from the remote
+	// repository by default. However, this behavior can be overridden by
+	// setting `source` to `WORKSPACE` on the task.
+	//
+	// Note: dbt and SQL File tasks support only version-controlled sources. If
+	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
@@ -1898,8 +2039,16 @@ type RunTask struct {
 	// need to manually restart the cluster if it stops responding. We suggest
 	// running jobs on new clusters for greater reliability.
 	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
-	// An optional specification for a remote repository containing the
-	// notebooks used by this job's notebook tasks.
+	// An optional specification for a remote Git repository containing the
+	// source code used by tasks. Version-controlled source code is supported by
+	// notebook, dbt, Python script, and SQL File tasks.
+	//
+	// If `git_source` is set, these tasks retrieve the file from the remote
+	// repository by default. However, this behavior can be overridden by
+	// setting `source` to `WORKSPACE` on the task.
+	//
+	// Note: dbt and SQL File tasks support only version-controlled sources. If
+	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional list of libraries to be installed on the cluster that
 	// executes the job. The default value is an empty list.
@@ -2281,8 +2430,16 @@ type SubmitRun struct {
 	// An optional set of email addresses notified when the run begins or
 	// completes. The default behavior is to not send any emails.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
-	// An optional specification for a remote repository containing the
-	// notebooks used by this job's notebook tasks.
+	// An optional specification for a remote Git repository containing the
+	// source code used by tasks. Version-controlled source code is supported by
+	// notebook, dbt, Python script, and SQL File tasks.
+	//
+	// If `git_source` is set, these tasks retrieve the file from the remote
+	// repository by default. However, this behavior can be overridden by
+	// setting `source` to `WORKSPACE` on the task.
+	//
+	// Note: dbt and SQL File tasks support only version-controlled sources. If
+	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
@@ -2389,9 +2546,9 @@ type Task struct {
 	// warehouse.
 	DbtTask *DbtTask `json:"dbt_task,omitempty"`
 	// An optional array of objects specifying the dependency graph of the task.
-	// All tasks specified in this field must complete successfully before
-	// executing this task. The key is `task_key`, and the value is the name
-	// assigned to the dependent task.
+	// All tasks specified in this field must complete before executing this
+	// task. The task will run only if the `run_if` condition is true. The key
+	// is `task_key`, and the value is the name assigned to the dependent task.
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task.
 	Description string `json:"description,omitempty"`

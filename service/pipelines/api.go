@@ -197,6 +197,40 @@ func (a *PipelinesAPI) GetByPipelineId(ctx context.Context, pipelineId string) (
 	})
 }
 
+// Get pipeline permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *PipelinesAPI) GetPipelinePermissionLevels(ctx context.Context, request GetPipelinePermissionLevelsRequest) (*GetPipelinePermissionLevelsResponse, error) {
+	return a.impl.GetPipelinePermissionLevels(ctx, request)
+}
+
+// Get pipeline permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *PipelinesAPI) GetPipelinePermissionLevelsByPipelineId(ctx context.Context, pipelineId string) (*GetPipelinePermissionLevelsResponse, error) {
+	return a.impl.GetPipelinePermissionLevels(ctx, GetPipelinePermissionLevelsRequest{
+		PipelineId: pipelineId,
+	})
+}
+
+// Get pipeline permissions.
+//
+// Gets the permissions of a pipeline. Pipelines can inherit permissions from
+// their root object.
+func (a *PipelinesAPI) GetPipelinePermissions(ctx context.Context, request GetPipelinePermissionsRequest) (*PipelinePermissions, error) {
+	return a.impl.GetPipelinePermissions(ctx, request)
+}
+
+// Get pipeline permissions.
+//
+// Gets the permissions of a pipeline. Pipelines can inherit permissions from
+// their root object.
+func (a *PipelinesAPI) GetPipelinePermissionsByPipelineId(ctx context.Context, pipelineId string) (*PipelinePermissions, error) {
+	return a.impl.GetPipelinePermissions(ctx, GetPipelinePermissionsRequest{
+		PipelineId: pipelineId,
+	})
+}
+
 // Get a pipeline update.
 //
 // Gets an update from an active pipeline.
@@ -392,6 +426,14 @@ func (a *PipelinesAPI) ResetAndWait(ctx context.Context, resetRequest ResetReque
 	return wait.Get()
 }
 
+// Set pipeline permissions.
+//
+// Sets permissions on a pipeline. Pipelines can inherit permissions from their
+// root object.
+func (a *PipelinesAPI) SetPipelinePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
+	return a.impl.SetPipelinePermissions(ctx, request)
+}
+
 // Queue a pipeline update.
 //
 // Starts or queues a pipeline update.
@@ -450,4 +492,12 @@ func (a *PipelinesAPI) StopAndWait(ctx context.Context, stopRequest StopRequest,
 // Updates a pipeline with the supplied configuration.
 func (a *PipelinesAPI) Update(ctx context.Context, request EditPipeline) error {
 	return a.impl.Update(ctx, request)
+}
+
+// Update pipeline permissions.
+//
+// Updates the permissions on a pipeline. Pipelines can inherit permissions from
+// their root object.
+func (a *PipelinesAPI) UpdatePipelinePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
+	return a.impl.UpdatePipelinePermissions(ctx, request)
 }

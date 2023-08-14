@@ -183,6 +183,23 @@ type Filters struct {
 	Include []string `json:"include,omitempty"`
 }
 
+// Get pipeline permission levels
+type GetPipelinePermissionLevelsRequest struct {
+	// The pipeline for which to get or manage permissions.
+	PipelineId string `json:"-" url:"-"`
+}
+
+type GetPipelinePermissionLevelsResponse struct {
+	// Specific permission levels
+	PermissionLevels []PipelinePermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+// Get pipeline permissions
+type GetPipelinePermissionsRequest struct {
+	// The pipeline for which to get or manage permissions.
+	PipelineId string `json:"-" url:"-"`
+}
+
 // Get a pipeline
 type GetPipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
@@ -420,6 +437,30 @@ type Origin struct {
 	UpdateId string `json:"update_id,omitempty"`
 }
 
+type PipelineAccessControlRequest struct {
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Permission level
+	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
+	// name of the service principal
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
+type PipelineAccessControlResponse struct {
+	// All permissions.
+	AllPermissions []PipelinePermission `json:"all_permissions,omitempty"`
+	// Display name of the user or service principal.
+	DisplayName string `json:"display_name,omitempty"`
+	// name of the group
+	GroupName string `json:"group_name,omitempty"`
+	// Name of the service principal.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// name of the user
+	UserName string `json:"user_name,omitempty"`
+}
+
 type PipelineCluster struct {
 	// Note: This field won't be persisted. Only API users will check this
 	// field.
@@ -542,6 +583,66 @@ type PipelineLibrary struct {
 	// The path to a notebook that defines a pipeline and is stored in the
 	// <Databricks> workspace.
 	Notebook *NotebookLibrary `json:"notebook,omitempty"`
+}
+
+type PipelinePermission struct {
+	Inherited bool `json:"inherited,omitempty"`
+
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Permission level
+	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
+}
+
+// Permission level
+type PipelinePermissionLevel string
+
+const PipelinePermissionLevelCanManage PipelinePermissionLevel = `CAN_MANAGE`
+
+const PipelinePermissionLevelCanRun PipelinePermissionLevel = `CAN_RUN`
+
+const PipelinePermissionLevelCanView PipelinePermissionLevel = `CAN_VIEW`
+
+const PipelinePermissionLevelIsOwner PipelinePermissionLevel = `IS_OWNER`
+
+// String representation for [fmt.Print]
+func (f *PipelinePermissionLevel) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PipelinePermissionLevel) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_RUN`, `CAN_VIEW`, `IS_OWNER`:
+		*f = PipelinePermissionLevel(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_RUN", "CAN_VIEW", "IS_OWNER"`, v)
+	}
+}
+
+// Type always returns PipelinePermissionLevel to satisfy [pflag.Value] interface
+func (f *PipelinePermissionLevel) Type() string {
+	return "PipelinePermissionLevel"
+}
+
+type PipelinePermissions struct {
+	AccessControlList []PipelineAccessControlResponse `json:"access_control_list,omitempty"`
+
+	ObjectId string `json:"object_id,omitempty"`
+
+	ObjectType string `json:"object_type,omitempty"`
+}
+
+type PipelinePermissionsDescription struct {
+	Description string `json:"description,omitempty"`
+	// Permission level
+	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
+}
+
+type PipelinePermissionsRequest struct {
+	AccessControlList []PipelineAccessControlRequest `json:"access_control_list,omitempty"`
+	// The pipeline for which to get or manage permissions.
+	PipelineId string `json:"-" url:"-"`
 }
 
 type PipelineSpec struct {

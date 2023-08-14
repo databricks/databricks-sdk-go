@@ -791,6 +791,51 @@ func NewPermissions(client *client.DatabricksClient) *PermissionsAPI {
 
 // Permissions API are used to create read, write, edit, update and manage
 // access for various users on different objects and endpoints.
+//
+// * **[Cluster permissions](:service:clusters)** — Manage which users can
+// manage, restart, or attach to clusters.
+//
+// * **[Cluster policy permissions](:service:clusterpolicies)** — Manage which
+// users can use cluster policies.
+//
+// * **[Delta Live Tables pipeline permissions](:service:pipelines)** — Manage
+// which users can view, manage, run, cancel, or own a Delta Live Tables
+// pipeline.
+//
+// * **[Job permissions](:service:jobs)** — Manage which users can view,
+// manage, trigger, cancel, or own a job.
+//
+// * **[MLflow experiment permissions](:service:experiments)** — Manage which
+// users can read, edit, or manage MLflow experiments.
+//
+// * **[MLflow registered model permissions](:service:modelregistry)** —
+// Manage which users can read, edit, or manage MLflow registered models.
+//
+// * **[Password permissions](:service:users)** — Manage which users can use
+// password login when SSO is enabled.
+//
+// * **[Instance Pool permissions](:service:instancepools)** — Manage which
+// users can manage or attach to pools.
+//
+// * **[Repo permissions](repos)** — Manage which users can read, run, edit,
+// or manage a repo.
+//
+// * **[Serving endpoint permissions](:service:servingendpoints)** — Manage
+// which users can view, query, or manage a serving endpoint.
+//
+// * **[SQL warehouse permissions](:service:warehouses)** — Manage which users
+// can use or manage SQL warehouses.
+//
+// * **[Token permissions](:service:tokenmanagement)** — Manage which users
+// can create or use tokens.
+//
+// * **[Workspace object permissions](:service:workspace)** — Manage which
+// users can read, run, edit, or manage directories, files, and notebooks.
+//
+// For the mapping of the required permissions for specific actions or abilities
+// and other important information, see [Access Control].
+//
+// [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html
 type PermissionsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(PermissionsService)
@@ -811,16 +856,16 @@ func (a *PermissionsAPI) Impl() PermissionsService {
 
 // Get object permissions.
 //
-// Gets the permission of an object. Objects can inherit permissions from their
-// parent objects or root objects.
+// Gets the permissions of an object. Objects can inherit permissions from their
+// parent objects or root object.
 func (a *PermissionsAPI) Get(ctx context.Context, request GetPermissionRequest) (*ObjectPermissions, error) {
 	return a.impl.Get(ctx, request)
 }
 
 // Get object permissions.
 //
-// Gets the permission of an object. Objects can inherit permissions from their
-// parent objects or root objects.
+// Gets the permissions of an object. Objects can inherit permissions from their
+// parent objects or root object.
 func (a *PermissionsAPI) GetByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*ObjectPermissions, error) {
 	return a.impl.Get(ctx, GetPermissionRequest{
 		RequestObjectType: requestObjectType,
@@ -828,14 +873,14 @@ func (a *PermissionsAPI) GetByRequestObjectTypeAndRequestObjectId(ctx context.Co
 	})
 }
 
-// Get permission levels.
+// Get object permission levels.
 //
 // Gets the permission levels that a user can have on an object.
 func (a *PermissionsAPI) GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error) {
 	return a.impl.GetPermissionLevels(ctx, request)
 }
 
-// Get permission levels.
+// Get object permission levels.
 //
 // Gets the permission levels that a user can have on an object.
 func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectId(ctx context.Context, requestObjectType string, requestObjectId string) (*GetPermissionLevelsResponse, error) {
@@ -845,18 +890,19 @@ func (a *PermissionsAPI) GetPermissionLevelsByRequestObjectTypeAndRequestObjectI
 	})
 }
 
-// Set permissions.
+// Set object permissions.
 //
-// Sets permissions on object. Objects can inherit permissions from their parent
-// objects and root objects.
-func (a *PermissionsAPI) Set(ctx context.Context, request PermissionsRequest) error {
+// Sets permissions on an object. Objects can inherit permissions from their
+// parent objects or root object.
+func (a *PermissionsAPI) Set(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error) {
 	return a.impl.Set(ctx, request)
 }
 
-// Update permission.
+// Update object permissions.
 //
-// Updates the permissions on an object.
-func (a *PermissionsAPI) Update(ctx context.Context, request PermissionsRequest) error {
+// Updates the permissions on an object. Objects can inherit permissions from
+// their parent objects or root object.
+func (a *PermissionsAPI) Update(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error) {
 	return a.impl.Update(ctx, request)
 }
 
@@ -1095,6 +1141,21 @@ func (a *UsersAPI) GetById(ctx context.Context, id string) (*User, error) {
 	})
 }
 
+// Get password permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *UsersAPI) GetPasswordPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error) {
+	return a.impl.GetPasswordPermissionLevels(ctx)
+}
+
+// Get password permissions.
+//
+// Gets the permissions of all passwords. Passwords can inherit permissions from
+// their root object.
+func (a *UsersAPI) GetPasswordPermissions(ctx context.Context) (*PasswordPermissions, error) {
+	return a.impl.GetPasswordPermissions(ctx)
+}
+
 // List users.
 //
 // Gets details for all the users associated with a Databricks workspace.
@@ -1169,11 +1230,27 @@ func (a *UsersAPI) Patch(ctx context.Context, request PartialUpdate) error {
 	return a.impl.Patch(ctx, request)
 }
 
+// Set password permissions.
+//
+// Sets permissions on all passwords. Passwords can inherit permissions from
+// their root object.
+func (a *UsersAPI) SetPasswordPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
+	return a.impl.SetPasswordPermissions(ctx, request)
+}
+
 // Replace a user.
 //
 // Replaces a user's information with the data supplied in request.
 func (a *UsersAPI) Update(ctx context.Context, request User) error {
 	return a.impl.Update(ctx, request)
+}
+
+// Update password permissions.
+//
+// Updates the permissions on all passwords. Passwords can inherit permissions
+// from their root object.
+func (a *UsersAPI) UpdatePasswordPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
+	return a.impl.UpdatePasswordPermissions(ctx, request)
 }
 
 func NewWorkspaceAssignment(client *client.DatabricksClient) *WorkspaceAssignmentAPI {
