@@ -116,7 +116,7 @@ func (svc *Service) paramToField(op *openapi.Operation, param openapi.Parameter)
 		Entity: svc.Package.schemaToEntity(param.Schema, []string{
 			op.Name(),
 			named.PascalName(),
-		}, false, false),
+		}, false),
 	}
 }
 
@@ -146,7 +146,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 	if op.RequestBody != nil {
 		var mediaType *openapi.MediaType
 		mimeType, mediaType = op.RequestBody.MimeTypeAndMediaType()
-		requestSchema := mediaType.Schema
+		requestSchema := mediaType.GetSchema()
 		// If x-databricks-body-field-name is specified, the request structure
 		// contains a field with that name whose value is the request body.
 		if mediaType.BodyFieldName != "" {
@@ -157,7 +157,7 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 				},
 			}
 		}
-		request = svc.Package.schemaToEntity(requestSchema, []string{op.Name()}, true, mimeType.IsByteStream())
+		request = svc.Package.schemaToEntity(requestSchema, []string{op.Name()}, true)
 		if mediaType.BodyFieldName != "" {
 			bodyField = request.fields[mediaType.BodyFieldName]
 		}
@@ -282,7 +282,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 	request, reqMimeType, reqBodyField := svc.newRequest(params, op)
 	respMimeType, respBody := op.SuccessResponseSchema(svc.Package.Components)
 	name := op.Name()
-	response := svc.Package.definedEntity(name+"Response", respBody.Schema)
+	response := svc.Package.definedEntity(name+"Response", respBody.GetSchema())
 	var emptyResponse Named
 	if response != nil && response.IsEmpty {
 		emptyResponse = response.Named

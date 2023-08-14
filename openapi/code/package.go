@@ -104,7 +104,7 @@ func (pkg *Package) ImportedPackages() (res []string) {
 	return
 }
 
-func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName, isByteStream bool) *Entity {
+func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName bool) *Entity {
 	if s.IsRef() {
 		pair := strings.Split(s.Component(), ".")
 		if len(pair) == 2 && pair[0] != pkg.Name {
@@ -166,12 +166,12 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName, is
 	}
 	// array
 	if s.ArrayValue != nil {
-		e.ArrayValue = pkg.schemaToEntity(s.ArrayValue, append(path, "Item"), false, false)
+		e.ArrayValue = pkg.schemaToEntity(s.ArrayValue, append(path, "Item"), false)
 		return e
 	}
 	// map
 	if s.MapValue != nil {
-		e.MapValue = pkg.schemaToEntity(s.MapValue, path, hasName, false)
+		e.MapValue = pkg.schemaToEntity(s.MapValue, path, hasName)
 		return e
 	}
 	e.IsBool = s.Type == "boolean" || s.Type == "bool"
@@ -179,7 +179,6 @@ func (pkg *Package) schemaToEntity(s *openapi.Schema, path []string, hasName, is
 	e.IsInt64 = s.Type == "integer" && s.Format == "int64"
 	e.IsFloat64 = s.Type == "number" && s.Format == "double"
 	e.IsInt = s.Type == "integer" || s.Type == "int"
-	e.IsByteStream = isByteStream
 	return e
 }
 
@@ -200,7 +199,7 @@ func (pkg *Package) makeObject(e *Entity, s *openapi.Schema, path []string) *Ent
 		named := Named{k, v.Description}
 		e.fields[k] = &Field{
 			Named:    named,
-			Entity:   pkg.schemaToEntity(v, append(path, named.PascalName()), false, false),
+			Entity:   pkg.schemaToEntity(v, append(path, named.PascalName()), false),
 			Required: required[k],
 			Schema:   v,
 			IsJson:   true,
@@ -248,7 +247,7 @@ func (pkg *Package) definedEntity(name string, s *openapi.Schema) *Entity {
 		return pkg.define(entity)
 	}
 
-	e := pkg.schemaToEntity(s, []string{name}, true, false)
+	e := pkg.schemaToEntity(s, []string{name}, true)
 	if e == nil {
 		// gets here when responses are objects with no properties
 		return nil

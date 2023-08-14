@@ -63,7 +63,6 @@ type Entity struct {
 	IsFloat64    bool
 	IsBool       bool
 	IsString     bool
-	IsByteStream bool
 	IsEmpty      bool
 
 	// this field does not have a concrete type

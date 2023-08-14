@@ -406,3 +406,26 @@ func (m *Method) CmdletName(prefix string) string {
 	prefix = strings.Title(prefix)
 	return fmt.Sprintf("%s-%s%s", verb, prefix, noun.PascalName())
 }
+
+func (m *Method) HasRequestHeaders() bool {
+	return len(m.FixedRequestHeaders()) > 0
+}
+
+func (m *Method) FixedRequestHeaders() map[string]string {
+	headers := map[string]string{}
+	if m.ContentType != "" {
+		headers["Content-Type"] = string(m.ContentType)
+	}
+	if m.Accept != "" {
+		headers["Accept"] = string(m.Accept)
+	}
+	return headers
+}
+
+func (m *Method) IsRequestByteStream() bool {
+	return m.ContentType != openapi.MimeTypeJson
+}
+
+func (m *Method) IsResponseByteStream() bool {
+	return m.Accept != openapi.MimeTypeJson
+}

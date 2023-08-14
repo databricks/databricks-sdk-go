@@ -324,3 +324,10 @@ type MediaType struct {
 	BodyFieldName string  `json:"x-databricks-body-field-name,omitempty"`
 	Schema        *Schema `json:"schema,omitempty"`
 }
+
+func (m *MediaType) GetSchema() *Schema {
+	if m == nil {
+		return nil
+	}
+	return m.Schema
+}
