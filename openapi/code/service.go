@@ -131,6 +131,17 @@ var crudNames = map[string]bool{
 	"restore": true,
 }
 
+func (svc *Service) updateEntityTypeFromMimeType(entity *Entity, mimeType openapi.MimeType) {
+	if mimeType == "" || mimeType == openapi.MimeTypeJson {
+		return
+	}
+	// For request or response bodies that are not application/json, the body
+	// is modeled by a byte stream.
+	entity.IsByteStream = true
+	entity.IsEmpty = false
+	entity.IsAny = false
+}
+
 // Construct the base request entity for a given operation. For requests whose
 // mime type is not application/json, the request body is always a byte stream.
 // For requests whose mime type is application/json, the request body consists
@@ -167,18 +178,12 @@ func (svc *Service) newMethodEntity(op *openapi.Operation) (*Entity, openapi.Mim
 		bodyField = res.fields[mediaType.BodyFieldName]
 	}
 
-	// If the mime type is not application/json, we set the request body
-	// to be a byte stream, accounting for the repositioning of the request
-	// body done above.
-	if mimeType != openapi.MimeTypeJson {
-		entity := res
-		if mediaType.BodyFieldName != "" {
-			entity = bodyField.Entity
-		}
-		entity.IsByteStream = true
-		entity.IsEmpty = false
-		entity.IsAny = false
+	entity := res
+	if mediaType.BodyFieldName != "" {
+		entity = bodyField.Entity
 	}
+	svc.updateEntityTypeFromMimeType(entity, mimeType)
+
 	return res, mimeType, bodyField
 }
 
@@ -281,6 +286,7 @@ func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeTyp
 	respMimeType, respBody := op.SuccessResponseSchema(svc.Package.Components)
 	name := op.Name()
 	response := svc.Package.definedEntity(name+"Response", respBody.GetSchema())
+	svc.updateEntityTypeFromMimeType(response, respMimeType)
 	var emptyResponse Named
 	if response != nil && response.IsEmpty {
 		emptyResponse = response.Named
