@@ -131,43 +131,58 @@ var crudNames = map[string]bool{
 	"restore": true,
 }
 
-// Constructs the request object metadata for a method. This consists of
-//
-//  1. the request entity (i.e. the parameters and/or body)
-//  2. the request MIME type
-//  3. the field pointing to the request body (for non-JSON requests)
-func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation) (*Entity, openapi.MimeType, *Field) {
-	if op.RequestBody == nil && len(params) == 0 {
-		return nil, "", nil
+// Construct the base request entity for a given operation. For requests whose
+// mime type is not application/json, the request body is always a byte stream.
+// For requests whose mime type is application/json, the request body consists
+// of the top-level fields of the request object as defined in the OpenAPI spec.
+// Additionally, if the x-databricks-body-field-name extension is specified,
+// the request body is nested into a field with that name. This is necessary for
+// requests that are not application/json but that have additional request
+// parameters.
+func (svc *Service) newMethodEntity(op *openapi.Operation) (*Entity, openapi.MimeType, *Field) {
+	if op.RequestBody == nil {
+		return &Entity{fields: map[string]*Field{}}, "", nil
 	}
-	var mimeType openapi.MimeType
-	var bodyField *Field
-	request := &Entity{fields: map[string]*Field{}}
-	if op.RequestBody != nil {
-		var mediaType *openapi.MediaType
-		mimeType, mediaType = op.RequestBody.MimeTypeAndMediaType()
-		requestSchema := mediaType.GetSchema()
-		// If x-databricks-body-field-name is specified, the request structure
-		// contains a field with that name whose value is the request body.
-		if mediaType.BodyFieldName != "" {
-			requestSchema = &openapi.Schema{
-				Type: "object",
-				Properties: map[string]*openapi.Schema{
-					mediaType.BodyFieldName: requestSchema,
-				},
-			}
-		}
-		request = svc.Package.schemaToEntity(requestSchema, []string{op.Name()}, true)
-		if mediaType.BodyFieldName != "" {
-			bodyField = request.fields[mediaType.BodyFieldName]
+	mimeType, mediaType := op.RequestBody.MimeTypeAndMediaType()
+	requestSchema := mediaType.GetSchema()
+	if requestSchema == nil {
+		return &Entity{fields: map[string]*Field{}}, "", nil
+	}
+	// If x-databricks-body-field-name is specified, the request structure
+	// contains a field with that name whose value is the request body.
+	if mediaType.BodyFieldName != "" {
+		requestSchema = &openapi.Schema{
+			Type: "object",
+			Properties: map[string]*openapi.Schema{
+				mediaType.BodyFieldName: requestSchema,
+			},
 		}
 	}
-	if request == nil {
+	res := svc.Package.schemaToEntity(requestSchema, []string{op.Name()}, true)
+	if res == nil {
 		panic(fmt.Errorf("%s request body is nil", op.OperationId))
 	}
-	if request.fields == nil && request.MapValue == nil {
-		return nil, "", nil
+	var bodyField *Field
+	if mediaType.BodyFieldName != "" {
+		bodyField = res.fields[mediaType.BodyFieldName]
 	}
+
+	// If the mime type is not application/json, we set the request body
+	// to be a byte stream, accounting for the repositioning of the request
+	// body done above.
+	if mimeType != openapi.MimeTypeJson {
+		entity := res
+		if mediaType.BodyFieldName != "" {
+			entity = bodyField.Entity
+		}
+		entity.IsByteStream = true
+		entity.IsEmpty = false
+		entity.IsAny = false
+	}
+	return res, mimeType, bodyField
+}
+
+func (svc *Service) addParams(request *Entity, op *openapi.Operation, params []openapi.Parameter) {
 	for _, v := range params {
 		if v.In == "header" {
 			continue
@@ -212,22 +227,52 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 		func(e *Entity) {
 			svc.Package.updateType(e)
 		})
+}
+
+// Use heuristics to construct a "good" name for the request entity, as the name
+// was not provided by the original OpenAPI spec.
+func (svc *Service) nameAndDefineRequest(request *Entity, op *openapi.Operation) {
+	if request.Name != "" {
+		panic(fmt.Sprintf("request entity already has a name: %s", request.Name))
+	}
+	// when there was a merge of params with a request or new entity was made
+	signularServiceName := svc.Singular().PascalName()
+	notExplicit := !strings.Contains(op.Name(), signularServiceName)
+	if op.Name() == "list" && notExplicit {
+		request.Name = op.Name() + svc.Name + "Request"
+	} else if crudNames[strings.ToLower(op.Name())] {
+		request.Name = op.Name() + signularServiceName + "Request"
+	} else {
+		request.Name = op.Name() + "Request"
+	}
+	if svc.Package.Name == "scim" {
+		request.Name = strings.ReplaceAll(request.Name, "Account", "")
+	}
+	request.Description = op.Summary
+	svc.Package.define(request)
+}
+
+// Constructs the request object metadata for a method. This consists of
+//
+//  1. the request entity (i.e. the parameters and/or body)
+//  2. the request MIME type
+//  3. the field pointing to the request body (for non-JSON requests)
+//
+// The request entity includes fields for every parameter in the request (path,
+// query, and body). If the request is defined anonymously (i.e. it is not
+// refactored into a named type), the name for the request is constructed from
+// the operation name and service name.
+func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation) (*Entity, openapi.MimeType, *Field) {
+	if op.RequestBody == nil && len(params) == 0 {
+		return nil, "", nil
+	}
+	request, mimeType, bodyField := svc.newMethodEntity(op)
+	if request.fields == nil && request.MapValue == nil {
+		return nil, "", nil
+	}
+	svc.addParams(request, op, params)
 	if request.Name == "" {
-		// when there was a merge of params with a request or new entity was made
-		signularServiceName := svc.Singular().PascalName()
-		notExplicit := !strings.Contains(op.Name(), signularServiceName)
-		if op.Name() == "list" && notExplicit {
-			request.Name = op.Name() + svc.Name + "Request"
-		} else if crudNames[strings.ToLower(op.Name())] {
-			request.Name = op.Name() + signularServiceName + "Request"
-		} else {
-			request.Name = op.Name() + "Request"
-		}
-		if svc.Package.Name == "scim" {
-			request.Name = strings.ReplaceAll(request.Name, "Account", "")
-		}
-		request.Description = op.Summary
-		svc.Package.define(request)
+		svc.nameAndDefineRequest(request, op)
 	}
 	return request, mimeType, bodyField
 }
