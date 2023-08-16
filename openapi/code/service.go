@@ -277,6 +277,18 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 	return request, mimeType, bodyField
 }
 
+func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeType, Named) {
+	respMimeType, respBody := op.SuccessResponseSchema(svc.Package.Components)
+	name := op.Name()
+	response := svc.Package.definedEntity(name+"Response", respBody.GetSchema())
+	var emptyResponse Named
+	if response != nil && response.IsEmpty {
+		emptyResponse = response.Named
+		response = nil
+	}
+	return response, respMimeType, emptyResponse
+}
+
 func (svc *Service) paramPath(path string, request *Entity, params []openapi.Parameter) (parts []PathPart) {
 	var pathParams int
 	for _, v := range params {
@@ -324,18 +336,12 @@ func (svc *Service) getPathStyle(op *openapi.Operation) openapi.PathStyle {
 }
 
 func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) *Method {
+	methodName := op.Name()
 	request, reqMimeType, reqBodyField := svc.newRequest(params, op)
-	respMimeType, respBody := op.SuccessResponseSchema(svc.Package.Components)
-	name := op.Name()
-	response := svc.Package.definedEntity(name+"Response", respBody.GetSchema())
-	var emptyResponse Named
-	if response != nil && response.IsEmpty {
-		emptyResponse = response.Named
-		response = nil
-	}
+	response, respMimeType, emptyResponse := svc.newResponse(op)
 	requestStyle := svc.getPathStyle(op)
 	if requestStyle == openapi.PathStyleRpc {
-		name = filepath.Base(path)
+		methodName = filepath.Base(path)
 	}
 	description := op.Description
 	summary := strings.TrimSpace(op.Summary)
@@ -367,7 +373,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		idFieldPath = idField
 	}
 	return &Method{
-		Named:             Named{name, description},
+		Named:             Named{methodName, description},
 		Service:           svc,
 		Verb:              strings.ToUpper(verb),
 		Path:              path,
