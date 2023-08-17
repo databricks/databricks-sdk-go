@@ -14,6 +14,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
+// The header used to pass the service management token to the Databricks backend.
+const xDatabricksAzureSpManagementToken = "X-Databricks-Azure-SP-Management-Token"
+
+// The header used to pass the workspace resource ID to the Databricks backend.
+const xDatabricksAzureWorkspaceResourceId = "X-Databricks-Azure-Workspace-Resource-Id"
+
 type AzureCliCredentials struct {
 }
 
@@ -27,11 +33,35 @@ func (c AzureCliCredentials) tokenSourceFor(
 	return &azureCliTokenSource{resource: resource}
 }
 
+// There are three scenarios:
+//
+//  1. The user has logged in with the Azure CLI as a user and has access to the service management endpoint.
+//  2. The user has logged in with the Azure CLI as a user and does not have access to the service management endpoint.
+//  3. The user has logged in with the Azure CLI as a service principal, and must have access to the service management
+//     endpoint to authenticate.
+//
+// If the user can't access the service management endpoint, we assume they are in case 2 and do not pass the service
+// management token. Otherwise, we always pass the service management token.
+func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, innerTokenSource oauth2.TokenSource) (func(*http.Request) error, error) {
+	env, err := cfg.GetAzureEnvironment()
+	if err != nil {
+		return nil, err
+	}
+	managementTs := &azureCliTokenSource{env.ServiceManagementEndpoint, ""}
+	_, err = managementTs.Token()
+	if err != nil {
+		logger.Debugf(ctx, "Not including service management token in headers: %v", err)
+		return azureVisitor(cfg, refreshableVisitor(innerTokenSource)), nil
+	}
+	return azureVisitor(cfg, serviceToServiceVisitor(innerTokenSource, managementTs, xDatabricksAzureSpManagementToken)), nil
+}
+
 func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
 	if !cfg.IsAzure() {
 		return nil, nil
 	}
-	ts := azureCliTokenSource{cfg.getAzureLoginAppID()}
+	// Eagerly get a token to fail fast in case the user is not logged in with the Azure CLI.
+	ts := &azureCliTokenSource{cfg.getAzureLoginAppID(), cfg.AzureResourceID}
 	_, err := ts.Token()
 	if err != nil {
 		if strings.Contains(err.Error(), "No subscription found") {
@@ -50,11 +80,12 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
 	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
-	return refreshableVisitor(&ts), nil
+	return c.getVisitor(ctx, cfg, ts)
 }
 
 type azureCliTokenSource struct {
-	resource string
+	resource            string
+	workspaceResourceId string
 }
 
 type internalCliToken struct {

@@ -27,32 +27,45 @@ func retriableTokenSource(ctx context.Context, ts oauth2.TokenSource) (*oauth2.T
 	})
 }
 
-func serviceToServiceVisitor(inner, cloud oauth2.TokenSource, header string) func(r *http.Request) error {
-	refreshableInner := oauth2.ReuseTokenSource(nil, inner)
-	refreshableCloud := oauth2.ReuseTokenSource(nil, cloud)
+// serviceToServiceVisitor returns a visitor that sets the Authorization header to the token from the auth token source
+// and the provided secondary header to the token from the secondary token source.
+func serviceToServiceVisitor(auth, secondary oauth2.TokenSource, secondaryHeader string) func(r *http.Request) error {
+	refreshableAuth := oauth2.ReuseTokenSource(nil, auth)
+	refreshableSecondary := oauth2.ReuseTokenSource(nil, secondary)
 	return func(r *http.Request) error {
-		inner, err := retriableTokenSource(r.Context(), refreshableInner)
+		inner, err := retriableTokenSource(r.Context(), refreshableAuth)
 		if err != nil {
 			return fmt.Errorf("inner token: %w", err)
 		}
 		inner.SetAuthHeader(r)
-		cloud, err := retriableTokenSource(r.Context(), refreshableCloud)
+
+		cloud, err := retriableTokenSource(r.Context(), refreshableSecondary)
 		if err != nil {
 			return fmt.Errorf("cloud token: %w", err)
 		}
-		r.Header.Set(header, cloud.AccessToken)
+		r.Header.Set(secondaryHeader, cloud.AccessToken)
 		return nil
 	}
 }
 
+// The same as serviceToServiceVisitor, but without a secondary token source.
 func refreshableVisitor(inner oauth2.TokenSource) func(r *http.Request) error {
-	refreshableInner := oauth2.ReuseTokenSource(nil, inner)
+	refreshableAuth := oauth2.ReuseTokenSource(nil, inner)
 	return func(r *http.Request) error {
-		inner, err := retriableTokenSource(r.Context(), refreshableInner)
+		inner, err := retriableTokenSource(r.Context(), refreshableAuth)
 		if err != nil {
 			return fmt.Errorf("inner token: %w", err)
 		}
 		inner.SetAuthHeader(r)
 		return nil
+	}
+}
+
+func azureVisitor(cfg *Config, inner func(*http.Request) error) func(*http.Request) error {
+	return func(r *http.Request) error {
+		if cfg.AzureResourceID != "" {
+			r.Header.Set(xDatabricksAzureWorkspaceResourceId, cfg.AzureResourceID)
+		}
+		return inner(r)
 	}
 }

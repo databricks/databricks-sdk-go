@@ -14,6 +14,7 @@ import (
 )
 
 var azDummy = &Config{Host: "https://adb-xyz.c.azuredatabricks.net/"}
+var azDummyWithResourceId = &Config{Host: "https://adb-xyz.c.azuredatabricks.net/", AzureResourceID: "/subscriptions/123/resourceGroups/abc/providers/Microsoft.Databricks/workspaces/abc123"}
 
 // testdataPath returns the PATH to use for the duration of a test.
 // It must only return absolute directories because Go refuses to run
@@ -67,6 +68,40 @@ func TestAzureCliCredentials_Valid(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, "Bearer ...", r.Header.Get("Authorization"))
+	assert.Equal(t, "", r.Header.Get("X-Databricks-Azure-Workspace-Resource-Id"))
+	assert.Equal(t, "...", r.Header.Get("X-Databricks-Azure-SP-Management-Token"))
+}
+
+func TestAzureCliCredentials_ValidNoManagementAccess(t *testing.T) {
+	env.CleanupEnvironment(t)
+	os.Setenv("PATH", testdataPath())
+	os.Setenv("FAIL_IF", "https://management.core.windows.net/")
+	aa := AzureCliCredentials{}
+	visitor, err := aa.Configure(context.Background(), azDummy)
+	assert.NoError(t, err)
+
+	r := &http.Request{Header: http.Header{}}
+	err = visitor(r)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "Bearer ...", r.Header.Get("Authorization"))
+	assert.Equal(t, "", r.Header.Get("X-Databricks-Azure-Workspace-Resource-Id"))
+	assert.Equal(t, "", r.Header.Get("X-Databricks-Azure-SP-Management-Token"))
+}
+
+func TestAzureCliCredentials_ValidWithAzureResourceId(t *testing.T) {
+	env.CleanupEnvironment(t)
+	os.Setenv("PATH", testdataPath())
+	aa := AzureCliCredentials{}
+	visitor, err := aa.Configure(context.Background(), azDummyWithResourceId)
+	assert.NoError(t, err)
+
+	r := &http.Request{Header: http.Header{}}
+	err = visitor(r)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "Bearer ...", r.Header.Get("Authorization"))
+	assert.Equal(t, azDummyWithResourceId.AzureResourceID, r.Header.Get("X-Databricks-Azure-Workspace-Resource-Id"))
 }
 
 func TestAzureCliCredentials_AlwaysExpired(t *testing.T) {
