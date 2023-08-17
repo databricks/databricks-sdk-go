@@ -54,11 +54,5 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	refreshCtx := context.Background()
 	inner := c.tokenSourceFor(refreshCtx, cfg, env, cfg.getAzureLoginAppID())
 	platform := c.tokenSourceFor(refreshCtx, cfg, env, env.ServiceManagementEndpoint)
-	return func(r *http.Request) error {
-		if cfg.AzureResourceID != "" {
-			r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
-		}
-		return serviceToServiceVisitor(inner, platform,
-			"X-Databricks-Azure-SP-Management-Token")(r)
-	}, nil
+	return azureVisitor(cfg.AzureResourceID, serviceToServiceVisitor(inner, platform, "X-Databricks-Azure-SP-Management-Token")), nil
 }

@@ -24,14 +24,14 @@ func (c AzureCliCredentials) Name() string {
 // implementing azureHostResolver for ensureWorkspaceUrl to work
 func (c AzureCliCredentials) tokenSourceFor(
 	ctx context.Context, cfg *Config, env azureEnvironment, resource string) oauth2.TokenSource {
-	return &azureCliTokenSource{resource: resource}
+	return &azureCliTokenSource{loginAppId: resource}
 }
 
 func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
 	if !cfg.IsAzure() {
 		return nil, nil
 	}
-	ts := azureCliTokenSource{cfg.getAzureLoginAppID()}
+	ts := azureCliTokenSource{cfg.getAzureLoginAppID(), cfg.AzureResourceID}
 	_, err := ts.Token()
 	if err != nil {
 		if strings.Contains(err.Error(), "No subscription found") {
@@ -50,11 +50,12 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
 	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
-	return refreshableVisitor(&ts), nil
+	return azureVisitor(cfg.AzureResourceID, refreshableVisitor(&ts)), nil
 }
 
 type azureCliTokenSource struct {
-	resource string
+	loginAppId          string
+	workspaceResourceId string
 }
 
 type internalCliToken struct {
@@ -66,7 +67,7 @@ type internalCliToken struct {
 
 func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 	out, err := exec.Command("az", "account", "get-access-token", "--resource",
-		ts.resource, "--output", "json").Output()
+		ts.loginAppId, "--output", "json").Output()
 	if ee, ok := err.(*exec.ExitError); ok {
 		return nil, fmt.Errorf("cannot get access token: %s", string(ee.Stderr))
 	}
@@ -83,7 +84,7 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 		return nil, fmt.Errorf("cannot parse expiry: %w", err)
 	}
 	logger.Infof(context.Background(), "Refreshed OAuth token for %s from Azure CLI, which expires on %s",
-		ts.resource, it.ExpiresOn)
+		ts.loginAppId, it.ExpiresOn)
 
 	var extra map[string]interface{}
 	err = json.Unmarshal(out, &extra)

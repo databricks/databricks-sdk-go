@@ -49,13 +49,7 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		resource: env.ServiceManagementEndpoint,
 		clientId: cfg.AzureClientID,
 	}
-	return func(r *http.Request) error {
-		if !cfg.IsAccountClient() {
-			r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", cfg.AzureResourceID)
-		}
-		return serviceToServiceVisitor(inner, platform,
-			"X-Databricks-Azure-SP-Management-Token")(r)
-	}, nil
+	return azureVisitor(cfg.AzureResourceID, serviceToServiceVisitor(inner, platform, "X-Databricks-Azure-SP-Management-Token")), nil
 }
 
 func (c AzureMsiCredentials) getInstanceEnvironment(ctx context.Context) (*azureEnvironment, error) {

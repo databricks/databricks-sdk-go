@@ -56,3 +56,12 @@ func refreshableVisitor(inner oauth2.TokenSource) func(r *http.Request) error {
 		return nil
 	}
 }
+
+func azureVisitor(workspaceResourceId string, inner func(*http.Request) error) func(*http.Request) error {
+	return func(r *http.Request) error {
+		if workspaceResourceId != "" {
+			r.Header.Set("X-Databricks-Azure-Workspace-Resource-Id", workspaceResourceId)
+		}
+		return inner(r)
+	}
+}
