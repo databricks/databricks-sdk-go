@@ -69,6 +69,24 @@ func TestAzureCliCredentials_Valid(t *testing.T) {
 
 	assert.Equal(t, "Bearer ...", r.Header.Get("Authorization"))
 	assert.Equal(t, "", r.Header.Get("X-Databricks-Azure-Workspace-Resource-Id"))
+	assert.Equal(t, "...", r.Header.Get("X-Databricks-Azure-SP-Management-Token"))
+}
+
+func TestAzureCliCredentials_ValidNoManagementAccess(t *testing.T) {
+	env.CleanupEnvironment(t)
+	os.Setenv("PATH", testdataPath())
+	os.Setenv("FAIL_IF", "https://management.core.windows.net/")
+	aa := AzureCliCredentials{}
+	visitor, err := aa.Configure(context.Background(), azDummy)
+	assert.NoError(t, err)
+
+	r := &http.Request{Header: http.Header{}}
+	err = visitor(r)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "Bearer ...", r.Header.Get("Authorization"))
+	assert.Equal(t, "", r.Header.Get("X-Databricks-Azure-Workspace-Resource-Id"))
+	assert.Equal(t, "", r.Header.Get("X-Databricks-Azure-SP-Management-Token"))
 }
 
 func TestAzureCliCredentials_ValidWithAzureResourceId(t *testing.T) {
