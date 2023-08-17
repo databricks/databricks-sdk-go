@@ -14,8 +14,10 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
-// The header used to pass the workspace resource ID to the Databricks backend.
+// The header used to pass the service management token to the Databricks backend.
 const xDatabricksAzureSpManagementToken = "X-Databricks-Azure-SP-Management-Token"
+
+// The header used to pass the workspace resource ID to the Databricks backend.
 const xDatabricksAzureWorkspaceResourceId = "X-Databricks-Azure-Workspace-Resource-Id"
 
 type AzureCliCredentials struct {
@@ -49,9 +51,9 @@ func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, innerT
 	_, err = managementTs.Token()
 	if err != nil {
 		logger.Debugf(ctx, "Not including service management token in headers: %v", err)
-		return refreshableVisitor(innerTokenSource), nil
+		return azureVisitor(cfg, refreshableVisitor(innerTokenSource)), nil
 	}
-	return serviceToServiceVisitor(innerTokenSource, managementTs, xDatabricksAzureSpManagementToken), nil
+	return azureVisitor(cfg, serviceToServiceVisitor(innerTokenSource, managementTs, xDatabricksAzureSpManagementToken)), nil
 }
 
 func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
@@ -78,11 +80,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
 	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
-	baseVisitor, err := c.getVisitor(ctx, cfg, ts)
-	if err != nil {
-		return nil, err
-	}
-	return azureVisitor(cfg.AzureResourceID, baseVisitor), nil
+	return c.getVisitor(ctx, cfg, ts)
 }
 
 type azureCliTokenSource struct {

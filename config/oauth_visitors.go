@@ -32,10 +32,7 @@ func retriableTokenSource(ctx context.Context, ts oauth2.TokenSource) (*oauth2.T
 // header is not set.
 func serviceToServiceVisitor(auth, secondary oauth2.TokenSource, secondaryHeader string) func(r *http.Request) error {
 	refreshableAuth := oauth2.ReuseTokenSource(nil, auth)
-	var refreshableSecondary oauth2.TokenSource
-	if secondary != nil {
-		refreshableSecondary = oauth2.ReuseTokenSource(nil, secondary)
-	}
+	refreshableSecondary := oauth2.ReuseTokenSource(nil, secondary)
 	return func(r *http.Request) error {
 		inner, err := retriableTokenSource(r.Context(), refreshableAuth)
 		if err != nil {
@@ -43,13 +40,11 @@ func serviceToServiceVisitor(auth, secondary oauth2.TokenSource, secondaryHeader
 		}
 		inner.SetAuthHeader(r)
 
-		if refreshableSecondary != nil {
-			cloud, err := retriableTokenSource(r.Context(), refreshableSecondary)
-			if err != nil {
-				return fmt.Errorf("cloud token: %w", err)
-			}
-			r.Header.Set(secondaryHeader, cloud.AccessToken)
+		cloud, err := retriableTokenSource(r.Context(), refreshableSecondary)
+		if err != nil {
+			return fmt.Errorf("cloud token: %w", err)
 		}
+		r.Header.Set(secondaryHeader, cloud.AccessToken)
 		return nil
 	}
 }
@@ -67,10 +62,10 @@ func refreshableVisitor(inner oauth2.TokenSource) func(r *http.Request) error {
 	}
 }
 
-func azureVisitor(workspaceResourceId string, inner func(*http.Request) error) func(*http.Request) error {
+func azureVisitor(cfg *Config, inner func(*http.Request) error) func(*http.Request) error {
 	return func(r *http.Request) error {
-		if workspaceResourceId != "" {
-			r.Header.Set(xDatabricksAzureWorkspaceResourceId, workspaceResourceId)
+		if cfg.AzureResourceID != "" {
+			r.Header.Set(xDatabricksAzureWorkspaceResourceId, cfg.AzureResourceID)
 		}
 		return inner(r)
 	}
