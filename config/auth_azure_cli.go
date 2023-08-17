@@ -14,6 +14,9 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
+// The header used to pass the workspace resource ID to the Databricks backend.
+const XDatabricksAzureWorkspaceResourceId = "X-Databricks-Azure-Workspace-Resource-Id"
+
 type AzureCliCredentials struct {
 }
 
@@ -31,8 +34,19 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if !cfg.IsAzure() {
 		return nil, nil
 	}
-	ts := azureCliTokenSource{cfg.getAzureLoginAppID(), cfg.AzureResourceID}
-	_, err := ts.Token()
+	env, err := cfg.GetAzureEnvironment()
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.azureEnsureWorkspaceUrl(ctx, c)
+	if err != nil {
+		return nil, fmt.Errorf("resolve host: %w", err)
+	}
+	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
+	ts := &azureCliTokenSource{cfg.getAzureLoginAppID(), cfg.AzureResourceID}
+
+	// Eagerly get a token to fail fast in case the user is not logged in with the Azure CLI.
+	_, err = ts.Token()
 	if err != nil {
 		if strings.Contains(err.Error(), "No subscription found") {
 			// auth is not configured
@@ -45,12 +59,15 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		}
 		return nil, err
 	}
-	err = cfg.azureEnsureWorkspaceUrl(ctx, c)
-	if err != nil {
-		return nil, fmt.Errorf("resolve host: %w", err)
-	}
-	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
-	return azureVisitor(cfg.AzureResourceID, refreshableVisitor(&ts)), nil
+
+	// There are three scenarios:
+	// 1. The user has logged in with the Azure CLI as a user and has access to the service management endpoint.
+	// 2. The user has logged in with the Azure CLI as a user and does not have access to the service management endpoint.
+	// 3. The user has logged in with the Azure CLI as a service principal.
+	// As we can't tell whether the user has logged in with the CLI using a user or service principal, we always try to
+	// get a token for the service management endpoint but tolerate failures.
+	managementTs := &azureCliTokenSource{env.ServiceManagementEndpoint, ""}
+	return azureVisitor(cfg.AzureResourceID, serviceToServiceVisitor(ts, managementTs, XDatabricksAzureWorkspaceResourceId, true)), nil
 }
 
 type azureCliTokenSource struct {

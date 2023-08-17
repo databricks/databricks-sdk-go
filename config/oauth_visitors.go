@@ -27,34 +27,37 @@ func retriableTokenSource(ctx context.Context, ts oauth2.TokenSource) (*oauth2.T
 	})
 }
 
-func serviceToServiceVisitor(inner, cloud oauth2.TokenSource, header string) func(r *http.Request) error {
-	refreshableInner := oauth2.ReuseTokenSource(nil, inner)
-	refreshableCloud := oauth2.ReuseTokenSource(nil, cloud)
+// serviceToServiceVisitor returns a visitor that sets the Authorization header to the token from the auth token source
+// and the provided secondary header to the token from the secondary token source. If secondary is nil, the secondary
+// header is not set. If tolerateSecondaryFailure is true, the visitor will not return an error if the cloud token source fails.
+func serviceToServiceVisitor(auth, secondary oauth2.TokenSource, secondaryHeader string, tolerateSecondaryFailure bool) func(r *http.Request) error {
+	refreshableAuth := oauth2.ReuseTokenSource(nil, auth)
+	var refreshableSecondary oauth2.TokenSource
+	if secondary != nil {
+		refreshableSecondary = oauth2.ReuseTokenSource(nil, secondary)
+	}
 	return func(r *http.Request) error {
-		inner, err := retriableTokenSource(r.Context(), refreshableInner)
+		inner, err := retriableTokenSource(r.Context(), refreshableAuth)
 		if err != nil {
 			return fmt.Errorf("inner token: %w", err)
 		}
 		inner.SetAuthHeader(r)
-		cloud, err := retriableTokenSource(r.Context(), refreshableCloud)
-		if err != nil {
+
+		if refreshableSecondary == nil {
+			return nil
+		}
+		cloud, err := retriableTokenSource(r.Context(), refreshableSecondary)
+		if err == nil {
+			r.Header.Set(secondaryHeader, cloud.AccessToken)
+		} else if !tolerateSecondaryFailure {
 			return fmt.Errorf("cloud token: %w", err)
 		}
-		r.Header.Set(header, cloud.AccessToken)
 		return nil
 	}
 }
 
 func refreshableVisitor(inner oauth2.TokenSource) func(r *http.Request) error {
-	refreshableInner := oauth2.ReuseTokenSource(nil, inner)
-	return func(r *http.Request) error {
-		inner, err := retriableTokenSource(r.Context(), refreshableInner)
-		if err != nil {
-			return fmt.Errorf("inner token: %w", err)
-		}
-		inner.SetAuthHeader(r)
-		return nil
-	}
+	return serviceToServiceVisitor(inner, nil, "", false)
 }
 
 func azureVisitor(workspaceResourceId string, inner func(*http.Request) error) func(*http.Request) error {

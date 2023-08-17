@@ -54,5 +54,5 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	refreshCtx := context.Background()
 	inner := c.tokenSourceFor(refreshCtx, cfg, env, cfg.getAzureLoginAppID())
 	platform := c.tokenSourceFor(refreshCtx, cfg, env, env.ServiceManagementEndpoint)
-	return azureVisitor(cfg.AzureResourceID, serviceToServiceVisitor(inner, platform, "X-Databricks-Azure-SP-Management-Token")), nil
+	return azureVisitor(cfg.AzureResourceID, serviceToServiceVisitor(inner, platform, XDatabricksAzureWorkspaceResourceId, false)), nil
 }

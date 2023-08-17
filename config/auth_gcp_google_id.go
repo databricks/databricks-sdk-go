@@ -44,7 +44,7 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (f
 		return nil, err
 	}
 	logger.Infof(ctx, "Using Google Default Application Credentials for Accounts API")
-	return serviceToServiceVisitor(inner, platform, "X-Databricks-GCP-SA-Access-Token"), nil
+	return serviceToServiceVisitor(inner, platform, "X-Databricks-GCP-SA-Access-Token", false), nil
 }
 
 func (c GoogleDefaultCredentials) idTokenSource(ctx context.Context, host, serviceAccount string,
