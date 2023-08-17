@@ -27,7 +27,7 @@ func (c AzureCliCredentials) Name() string {
 // implementing azureHostResolver for ensureWorkspaceUrl to work
 func (c AzureCliCredentials) tokenSourceFor(
 	ctx context.Context, cfg *Config, env azureEnvironment, resource string) oauth2.TokenSource {
-	return &azureCliTokenSource{loginAppId: resource}
+	return &azureCliTokenSource{resource: resource}
 }
 
 func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
@@ -78,7 +78,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 }
 
 type azureCliTokenSource struct {
-	loginAppId          string
+	resource          string
 	workspaceResourceId string
 }
 
@@ -91,7 +91,7 @@ type internalCliToken struct {
 
 func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 	out, err := exec.Command("az", "account", "get-access-token", "--resource",
-		ts.loginAppId, "--output", "json").Output()
+		ts.resource, "--output", "json").Output()
 	if ee, ok := err.(*exec.ExitError); ok {
 		return nil, fmt.Errorf("cannot get access token: %s", string(ee.Stderr))
 	}
@@ -108,7 +108,7 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 		return nil, fmt.Errorf("cannot parse expiry: %w", err)
 	}
 	logger.Infof(context.Background(), "Refreshed OAuth token for %s from Azure CLI, which expires on %s",
-		ts.loginAppId, it.ExpiresOn)
+		ts.resource, it.ExpiresOn)
 
 	var extra map[string]interface{}
 	err = json.Unmarshal(out, &extra)
