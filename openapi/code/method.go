@@ -423,9 +423,9 @@ func (m *Method) FixedRequestHeaders() map[string]string {
 }
 
 func (m *Method) IsRequestByteStream() bool {
-	return m.ContentType != openapi.MimeTypeJson
+	return m.Request != nil && m.ContentType != openapi.MimeTypeJson
 }
 
 func (m *Method) IsResponseByteStream() bool {
-	return m.Accept != openapi.MimeTypeJson
+	return m.Response != nil && m.Accept != openapi.MimeTypeJson
 }

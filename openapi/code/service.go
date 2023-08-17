@@ -181,8 +181,14 @@ func (svc *Service) newMethodEntity(op *openapi.Operation) (*Entity, openapi.Mim
 	entity := res
 	if mediaType.BodyFieldName != "" {
 		entity = bodyField.Entity
+		res.RequiredOrder = append(res.RequiredOrder, mediaType.BodyFieldName)
 	}
 	svc.updateEntityTypeFromMimeType(entity, mimeType)
+	if mimeType != openapi.MimeTypeJson {
+		for _, v := range res.fields {
+			v.IsJson = false
+		}
+	}
 
 	return res, mimeType, bodyField
 }
