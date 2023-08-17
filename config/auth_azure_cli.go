@@ -15,7 +15,8 @@ import (
 )
 
 // The header used to pass the workspace resource ID to the Databricks backend.
-const XDatabricksAzureSpManagementToken = "X-Databricks-Azure-SP-Management-Token"
+const xDatabricksAzureSpManagementToken = "X-Databricks-Azure-SP-Management-Token"
+const xDatabricksAzureWorkspaceResourceId = "X-Databricks-Azure-Workspace-Resource-Id"
 
 type AzureCliCredentials struct {
 }
@@ -28,6 +29,29 @@ func (c AzureCliCredentials) Name() string {
 func (c AzureCliCredentials) tokenSourceFor(
 	ctx context.Context, cfg *Config, env azureEnvironment, resource string) oauth2.TokenSource {
 	return &azureCliTokenSource{resource: resource}
+}
+
+// There are three scenarios:
+//
+//  1. The user has logged in with the Azure CLI as a user and has access to the service management endpoint.
+//  2. The user has logged in with the Azure CLI as a user and does not have access to the service management endpoint.
+//  3. The user has logged in with the Azure CLI as a service principal, and must have access to the service management
+//     endpoint to authenticate.
+//
+// If the user can't access the service management endpoint, we assume they are in case 2 and do not pass the service
+// management token. Otherwise, we always pass the service management token.
+func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, innerTokenSource oauth2.TokenSource) (func(*http.Request) error, error) {
+	env, err := cfg.GetAzureEnvironment()
+	if err != nil {
+		return nil, err
+	}
+	managementTs := &azureCliTokenSource{env.ServiceManagementEndpoint, ""}
+	_, err = managementTs.Token()
+	if err != nil {
+		logger.Debugf(ctx, "Not including service management token in headers: %v", err)
+		return refreshableVisitor(innerTokenSource), nil
+	}
+	return serviceToServiceVisitor(innerTokenSource, managementTs, xDatabricksAzureSpManagementToken), nil
 }
 
 func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
@@ -54,27 +78,11 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
 	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
-
-	// There are three scenarios:
-	//
-	//  1. The user has logged in with the Azure CLI as a user and has access to the service management endpoint.
-	//  2. The user has logged in with the Azure CLI as a user and does not have access to the service management endpoint.
-	//  3. The user has logged in with the Azure CLI as a service principal, and must have access to the service management
-	//     endpoint to authenticate.
-	//
-	// If the user can't access the service management endpoint, we assume they are in case 2 and do not pass the service
-	// management token. Otherwise, we always pass the service management token.
-	var managementTs oauth2.TokenSource
-	env, err := cfg.GetAzureEnvironment()
+	baseVisitor, err := c.getVisitor(ctx, cfg, ts)
 	if err != nil {
 		return nil, err
 	}
-	managementTs = &azureCliTokenSource{env.ServiceManagementEndpoint, ""}
-	_, err = managementTs.Token()
-	if err != nil {
-		managementTs = nil
-	}
-	return azureVisitor(cfg.AzureResourceID, serviceToServiceVisitor(ts, managementTs, XDatabricksAzureSpManagementToken, true)), nil
+	return azureVisitor(cfg.AzureResourceID, baseVisitor), nil
 }
 
 type azureCliTokenSource struct {
