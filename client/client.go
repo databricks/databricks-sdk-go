@@ -137,7 +137,7 @@ func (c *DatabricksClient) unmarshal(body *Body, response any) error {
 		*raw = &body.ReadCloser
 		return nil
 	}
-	defer func() { body.ReadCloser.Close() }()
+	defer body.ReadCloser.Close()
 	bs := body.DebugBytes
 	if len(bs) == 0 {
 		return nil

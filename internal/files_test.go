@@ -30,13 +30,20 @@ func TestAccFilesAPI(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	filePath := RandomName("/Volumes/bogdanghita/default/v3_shared/sdk-testing/txt-")
-	err := w.Files.UploadFile(ctx, filePath, strings.NewReader("abcd"))
+
+	err := w.Files.UploadFile(ctx, files.UploadFileRequest{
+		FilePath: filePath,
+		Contents: io.NopCloser(strings.NewReader("abcd")),
+	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = w.Files.Delete(ctx, filePath)
+		err = w.Files.DeleteFileByFilePath(ctx, filePath)
 		assert.NoError(t, err)
 	})
-	raw, err := w.Files.ReadFile(ctx, filePath)
+	readCloser, err := w.Files.DownloadFileByFilePath(ctx, filePath)
+	require.NoError(t, err)
+	defer readCloser.Close()
+	raw, err := io.ReadAll(readCloser)
 	require.NoError(t, err)
 	assert.Equal(t, "abcd", string(raw))
 }
