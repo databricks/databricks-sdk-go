@@ -434,7 +434,7 @@ func (a *policyFamiliesImpl) Get(ctx context.Context, request GetPolicyFamilyReq
 	return &policyFamily, err
 }
 
-func (a *policyFamiliesImpl) List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error) {
+func (a *policyFamiliesImpl) List(ctx context.Context, request ListPolicyFamiliesInternal) (*ListPolicyFamiliesResponse, error) {
 	var listPolicyFamiliesResponse ListPolicyFamiliesResponse
 	path := "/api/2.0/policy-families"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listPolicyFamiliesResponse)

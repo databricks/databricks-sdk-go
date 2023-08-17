@@ -776,7 +776,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Name *Name `json:"name,omitempty"`
 

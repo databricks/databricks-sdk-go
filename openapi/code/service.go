@@ -298,12 +298,14 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		}
 		idFieldPath = idField
 	}
+	request, listingRequest := svc.withPaginationFieldsRemoved(request, op.Pagination)
 	return &Method{
 		Named:             Named{name, description},
 		Service:           svc,
 		Verb:              strings.ToUpper(verb),
 		Path:              path,
 		Request:           request,
+		RawRequest:        listingRequest,
 		PathParts:         svc.paramPath(path, request, params),
 		Response:          response,
 		EmptyResponseName: emptyResponse,
@@ -315,6 +317,89 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		pagination:        op.Pagination,
 		shortcut:          op.Shortcut,
 	}
+}
+
+// remove pagination fields without clear semantics for iterators
+func (svc *Service) withPaginationFieldsRemoved(req *Entity, pg *openapi.Pagination) (*Entity, *Entity) {
+	if req == nil {
+		return nil, nil
+	}
+	if svc.Name == "Clusters" && req.CamelName() == "getEvents" {
+		// edge case: cluster events performs listing through POST, not GET.
+		// all other listing requests entities are synthesized.
+		return req, req
+	}
+	if pg == nil || pg.Inline {
+		return req, nil
+	}
+	if pg.Offset == "" &&
+		pg.Limit == "" &&
+		pg.Increment == 0 &&
+		pg.Token == nil &&
+		pg.Results != "" {
+		return req, nil
+	}
+	listing := &Entity{
+		Named: Named{
+			Name:        req.PascalName(),
+			Description: req.Description,
+		},
+		Package:       req.Package,
+		RequiredOrder: req.RequiredOrder,
+		fields:        map[string]*Field{},
+	}
+	var requiresModification bool
+	for _, v := range req.fields {
+		field := v
+		var nextToken string
+		if pg.Token != nil {
+			nextToken = pg.Token.Request
+		}
+		switch field.Name {
+		case pg.Limit, pg.Offset, nextToken:
+			requiresModification = true
+			continue
+		}
+		listing.fields[field.Name] = field
+	}
+	if !requiresModification {
+		panic(fmt.Errorf("incorrect type detected: %s", req.FullName()))
+	}
+	if svc.Name == "Jobs" {
+		// add generation for client-side maximum number of results during iteration.
+		// platform already implements this field for part of the APIs and it's
+		// consistently named as max_results everywhere. Perhaps we should
+		// rename "limit" to "max_results" in Jobs and add that to Dashboards and
+		// Queries as well, as we have exactly the same problem on big workspaces.
+		pg.Limit = "limit"
+		listing.fields["limit"] = &Field{
+			Named: Named{
+				Name:        "limit",
+				Description: "limit maximum number of results on the client side",
+			},
+			Of:      listing,
+			IsJson:  false,
+			IsQuery: false,
+			IsPath:  false,
+			Entity: &Entity{
+				IsInt: true,
+			},
+		}
+	}
+	if len(listing.fields) == 0 {
+		// there is no fields left.
+		return nil, req
+	}
+	oldName := req.Name
+	_, needsRename := svc.Package.types[oldName]
+	if needsRename {
+		newName := strings.TrimSuffix(req.CamelName(), "Request") + "Internal"
+		req.Name = newName
+		req.Description = "For internal use only"
+		delete(svc.Package.types, oldName)
+		svc.Package.types[newName] = req
+	}
+	return svc.Package.define(listing), req
 }
 
 func (svc *Service) HasWaits() bool {

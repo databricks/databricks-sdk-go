@@ -827,10 +827,22 @@ type JobSpecWithoutSecret struct {
 	WorkspaceUrl string `json:"workspace_url,omitempty"`
 }
 
-// Get all artifacts
-type ListArtifactsRequest struct {
+// For internal use only
+type ListArtifactsInternal struct {
 	// Token indicating the page of artifact results to fetch
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Filter artifacts matching this path (a relative path from the root
+	// artifact directory).
+	Path string `json:"-" url:"path,omitempty"`
+	// ID of the run whose artifacts to list. Must be provided.
+	RunId string `json:"-" url:"run_id,omitempty"`
+	// [Deprecated, use run_id instead] ID of the run whose artifacts to list.
+	// This field will be removed in a future MLflow version.
+	RunUuid string `json:"-" url:"run_uuid,omitempty"`
+}
+
+// Get all artifacts
+type ListArtifactsRequest struct {
 	// Filter artifacts matching this path (a relative path from the root
 	// artifact directory).
 	Path string `json:"-" url:"path,omitempty"`
@@ -850,8 +862,8 @@ type ListArtifactsResponse struct {
 	RootUri string `json:"root_uri,omitempty"`
 }
 
-// List experiments
-type ListExperimentsRequest struct {
+// For internal use only
+type ListExperimentsInternal struct {
 	// Maximum number of experiments desired. If `max_results` is unspecified,
 	// return all experiments. If `max_results` is too large, it'll be
 	// automatically capped at 1000. Callers of this endpoint are encouraged to
@@ -860,6 +872,19 @@ type ListExperimentsRequest struct {
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Token indicating the page of experiments to fetch
 	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Qualifier for type of experiments to be returned. If unspecified, return
+	// only active experiments.
+	ViewType string `json:"-" url:"view_type,omitempty"`
+}
+
+// List experiments
+type ListExperimentsRequest struct {
+	// Maximum number of experiments desired. If `max_results` is unspecified,
+	// return all experiments. If `max_results` is too large, it'll be
+	// automatically capped at 1000. Callers of this endpoint are encouraged to
+	// pass max_results explicitly and leverage page_token to iterate through
+	// experiments.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Qualifier for type of experiments to be returned. If unspecified, return
 	// only active experiments.
 	ViewType string `json:"-" url:"view_type,omitempty"`
@@ -874,12 +899,18 @@ type ListExperimentsResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 }
 
-// List models
-type ListModelsRequest struct {
+// For internal use only
+type ListModelsInternal struct {
 	// Maximum number of registered models desired. Max threshold is 1000.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Pagination token to go to the next page based on a previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+}
+
+// List models
+type ListModelsRequest struct {
+	// Maximum number of registered models desired. Max threshold is 1000.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
 }
 
 type ListModelsResponse struct {
@@ -909,8 +940,8 @@ type ListTransitionRequestsResponse struct {
 	Requests []Activity `json:"requests,omitempty"`
 }
 
-// List registry webhooks
-type ListWebhooksRequest struct {
+// For internal use only
+type ListWebhooksInternal struct {
 	// If `events` is specified, any webhook with one or more of the specified
 	// trigger events is included in the output. If `events` is not specified,
 	// webhooks of all event types are included in the output.
@@ -920,6 +951,17 @@ type ListWebhooksRequest struct {
 	ModelName string `json:"-" url:"model_name,omitempty"`
 	// Token indicating the page of artifact results to fetch
 	PageToken string `json:"-" url:"page_token,omitempty"`
+}
+
+// List registry webhooks
+type ListWebhooksRequest struct {
+	// If `events` is specified, any webhook with one or more of the specified
+	// trigger events is included in the output. If `events` is not specified,
+	// webhooks of all event types are included in the output.
+	Events []RegistryWebhookEvent `json:"-" url:"events,omitempty"`
+	// If not specified, all webhooks associated with the specified events are
+	// listed, regardless of their associated model.
+	ModelName string `json:"-" url:"model_name,omitempty"`
 }
 
 type LogBatch struct {
@@ -1551,6 +1593,23 @@ type SearchExperiments struct {
 	// annotation, where "ASC" is the default. Tiebreaks are done by experiment
 	// id DESC.
 	OrderBy []string `json:"order_by,omitempty"`
+	// Qualifier for type of experiments to be returned. If unspecified, return
+	// only active experiments.
+	ViewType SearchExperimentsViewType `json:"view_type,omitempty"`
+}
+
+// For internal use only
+type SearchExperimentsInternal struct {
+	// String representing a SQL filter condition (e.g. "name ILIKE
+	// 'my-experiment%'")
+	Filter string `json:"filter,omitempty"`
+	// Maximum number of experiments desired. Max threshold is 3000.
+	MaxResults int64 `json:"max_results,omitempty"`
+	// List of columns for ordering search results, which can include experiment
+	// name and last updated timestamp with an optional "DESC" or "ASC"
+	// annotation, where "ASC" is the default. Tiebreaks are done by experiment
+	// id DESC.
+	OrderBy []string `json:"order_by,omitempty"`
 	// Token indicating the page of experiments to fetch
 	PageToken string `json:"page_token,omitempty"`
 	// Qualifier for type of experiments to be returned. If unspecified, return
@@ -1597,8 +1656,8 @@ func (f *SearchExperimentsViewType) Type() string {
 	return "SearchExperimentsViewType"
 }
 
-// Searches model versions
-type SearchModelVersionsRequest struct {
+// For internal use only
+type SearchModelVersionsInternal struct {
 	// String filter condition, like "name='my-model-name'". Must be a single
 	// boolean condition, with string values wrapped in single quotes.
 	Filter string `json:"-" url:"filter,omitempty"`
@@ -1613,6 +1672,20 @@ type SearchModelVersionsRequest struct {
 	PageToken string `json:"-" url:"page_token,omitempty"`
 }
 
+// Searches model versions
+type SearchModelVersionsRequest struct {
+	// String filter condition, like "name='my-model-name'". Must be a single
+	// boolean condition, with string values wrapped in single quotes.
+	Filter string `json:"-" url:"filter,omitempty"`
+	// Maximum number of models desired. Max threshold is 10K.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// List of columns to be ordered by including model name, version, stage
+	// with an optional "DESC" or "ASC" annotation, where "ASC" is the default.
+	// Tiebreaks are done by latest stage transition timestamp, followed by name
+	// ASC, followed by version DESC.
+	OrderBy []string `json:"-" url:"order_by,omitempty"`
+}
+
 type SearchModelVersionsResponse struct {
 	// Models that match the search criteria
 	ModelVersions []ModelVersion `json:"model_versions,omitempty"`
@@ -1621,8 +1694,8 @@ type SearchModelVersionsResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 }
 
-// Search models
-type SearchModelsRequest struct {
+// For internal use only
+type SearchModelsInternal struct {
 	// String filter condition, like "name LIKE 'my-model-name'". Interpreted in
 	// the backend automatically as "name LIKE '%my-model-name%'". Single
 	// boolean condition, with string values wrapped in single quotes.
@@ -1637,6 +1710,20 @@ type SearchModelsRequest struct {
 	PageToken string `json:"-" url:"page_token,omitempty"`
 }
 
+// Search models
+type SearchModelsRequest struct {
+	// String filter condition, like "name LIKE 'my-model-name'". Interpreted in
+	// the backend automatically as "name LIKE '%my-model-name%'". Single
+	// boolean condition, with string values wrapped in single quotes.
+	Filter string `json:"-" url:"filter,omitempty"`
+	// Maximum number of models desired. Default is 100. Max threshold is 1000.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// List of columns for ordering search results, which can include model name
+	// and last updated timestamp with an optional "DESC" or "ASC" annotation,
+	// where "ASC" is the default. Tiebreaks are done by model name ASC.
+	OrderBy []string `json:"-" url:"order_by,omitempty"`
+}
+
 type SearchModelsResponse struct {
 	// Pagination token to request the next page of models.
 	NextPageToken string `json:"next_page_token,omitempty"`
@@ -1645,6 +1732,37 @@ type SearchModelsResponse struct {
 }
 
 type SearchRuns struct {
+	// List of experiment IDs to search over.
+	ExperimentIds []string `json:"experiment_ids,omitempty"`
+	// A filter expression over params, metrics, and tags, that allows returning
+	// a subset of runs. The syntax is a subset of SQL that supports ANDing
+	// together binary operations between a param, metric, or tag and a
+	// constant.
+	//
+	// Example: `metrics.rmse < 1 and params.model_class = 'LogisticRegression'`
+	//
+	// You can select columns with special characters (hyphen, space, period,
+	// etc.) by using double quotes: `metrics."model class" = 'LinearRegression'
+	// and tags."user-name" = 'Tomas'`
+	//
+	// Supported operators are `=`, `!=`, `>`, `>=`, `<`, and `<=`.
+	Filter string `json:"filter,omitempty"`
+	// Maximum number of runs desired. Max threshold is 50000
+	MaxResults int `json:"max_results,omitempty"`
+	// List of columns to be ordered by, including attributes, params, metrics,
+	// and tags with an optional "DESC" or "ASC" annotation, where "ASC" is the
+	// default. Example: ["params.input DESC", "metrics.alpha ASC",
+	// "metrics.rmse"] Tiebreaks are done by start_time DESC followed by run_id
+	// for runs with the same start time (and this is the default ordering
+	// criterion if order_by is not provided).
+	OrderBy []string `json:"order_by,omitempty"`
+	// Whether to display only active, only deleted, or all runs. Defaults to
+	// only active runs.
+	RunViewType SearchRunsRunViewType `json:"run_view_type,omitempty"`
+}
+
+// For internal use only
+type SearchRunsInternal struct {
 	// List of experiment IDs to search over.
 	ExperimentIds []string `json:"experiment_ids,omitempty"`
 	// A filter expression over params, metrics, and tags, that allows returning

@@ -273,8 +273,8 @@ type GetUpdateResponse struct {
 	Update *UpdateInfo `json:"update,omitempty"`
 }
 
-// List pipeline events
-type ListPipelineEventsRequest struct {
+// For internal use only
+type ListPipelineEventsInternal struct {
 	// Criteria to select a subset of results, expressed using a SQL-like
 	// syntax. The supported filters are: 1. level='INFO' (or WARN or ERROR) 2.
 	// level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp > 'TIMESTAMP'
@@ -300,6 +300,29 @@ type ListPipelineEventsRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
+// List pipeline events
+type ListPipelineEventsRequest struct {
+	// Criteria to select a subset of results, expressed using a SQL-like
+	// syntax. The supported filters are: 1. level='INFO' (or WARN or ERROR) 2.
+	// level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp > 'TIMESTAMP'
+	// (or >=,<,<=,=)
+	//
+	// Composite expressions are supported, for example: level in ('ERROR',
+	// 'WARN') AND timestamp> '2021-07-22T06:37:33.083Z'
+	Filter string `json:"-" url:"filter,omitempty"`
+	// Max number of entries to return in a single page. The system may return
+	// fewer than max_results events in a response, even if there are more
+	// events available.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// A string indicating a sort order by timestamp for the results, for
+	// example, ["timestamp asc"]. The sort order can be ascending or
+	// descending. By default, events are returned in descending order by
+	// timestamp.
+	OrderBy []string `json:"-" url:"order_by,omitempty"`
+
+	PipelineId string `json:"-" url:"-"`
+}
+
 type ListPipelineEventsResponse struct {
 	// The list of events matching the request criteria.
 	Events []PipelineEvent `json:"events,omitempty"`
@@ -307,6 +330,31 @@ type ListPipelineEventsResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// If present, a token to fetch the previous page of events.
 	PrevPageToken string `json:"prev_page_token,omitempty"`
+}
+
+// For internal use only
+type ListPipelinesInternal struct {
+	// Select a subset of results based on the specified criteria. The supported
+	// filters are:
+	//
+	// * `notebook='<path>'` to select pipelines that reference the provided
+	// notebook path. * `name LIKE '[pattern]'` to select pipelines with a name
+	// that matches pattern. Wildcards are supported, for example: `name LIKE
+	// '%shopping%'`
+	//
+	// Composite filters are not supported. This field is optional.
+	Filter string `json:"-" url:"filter,omitempty"`
+	// The maximum number of entries to return in a single page. The system may
+	// return fewer than max_results events in a response, even if there are
+	// more events available. This field is optional. The default value is 25.
+	// The maximum value is 100. An error is returned if the value of
+	// max_results is greater than 100.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// A list of strings specifying the order of results. Supported order_by
+	// fields are id and name. The default is id asc. This field is optional.
+	OrderBy []string `json:"-" url:"order_by,omitempty"`
+	// Page token returned by previous call
+	PageToken string `json:"-" url:"page_token,omitempty"`
 }
 
 // List pipelines
@@ -330,8 +378,6 @@ type ListPipelinesRequest struct {
 	// A list of strings specifying the order of results. Supported order_by
 	// fields are id and name. The default is id asc. This field is optional.
 	OrderBy []string `json:"-" url:"order_by,omitempty"`
-	// Page token returned by previous call
-	PageToken string `json:"-" url:"page_token,omitempty"`
 }
 
 type ListPipelinesResponse struct {

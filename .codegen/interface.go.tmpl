@@ -17,7 +17,7 @@ type {{.PascalName}}Service interface {
 	// 
 	// Use {{.PascalName}}All() to get all {{.Pagination.Entity.PascalName}} instances{{if .Pagination.MultiRequest}}, which will iterate over every result page.{{end}}
 	{{- end}}
-    {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{template "type" .Response}}{{end}}, error){{else}}error{{end}}
+    {{.PascalName}}(ctx context.Context{{if .RealRequest}}, request {{.RealRequest.PascalName}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{template "type" .Response}}{{end}}, error){{else}}error{{end}}
 	{{end -}}
 }
 

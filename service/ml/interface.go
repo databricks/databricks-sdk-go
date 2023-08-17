@@ -106,14 +106,14 @@ type ExperimentsService interface {
 	// prefix.",
 	//
 	// Use ListArtifactsAll() to get all FileInfo instances, which will iterate over every result page.
-	ListArtifacts(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error)
+	ListArtifacts(ctx context.Context, request ListArtifactsInternal) (*ListArtifactsResponse, error)
 
 	// List experiments.
 	//
 	// Gets a list of all experiments.
 	//
 	// Use ListExperimentsAll() to get all Experiment instances, which will iterate over every result page.
-	ListExperiments(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error)
+	ListExperiments(ctx context.Context, request ListExperimentsInternal) (*ListExperimentsResponse, error)
 
 	// Log a batch.
 	//
@@ -208,7 +208,7 @@ type ExperimentsService interface {
 	// Searches for experiments that satisfy specified search criteria.
 	//
 	// Use SearchExperimentsAll() to get all Experiment instances, which will iterate over every result page.
-	SearchExperiments(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error)
+	SearchExperiments(ctx context.Context, request SearchExperimentsInternal) (*SearchExperimentsResponse, error)
 
 	// Search for runs.
 	//
@@ -217,7 +217,7 @@ type ExperimentsService interface {
 	// Search expressions can use `mlflowMetric` and `mlflowParam` keys.",
 	//
 	// Use SearchRunsAll() to get all Run instances, which will iterate over every result page.
-	SearchRuns(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error)
+	SearchRuns(ctx context.Context, request SearchRunsInternal) (*SearchRunsResponse, error)
 
 	// Set experiment permissions.
 	//
@@ -376,7 +376,7 @@ type ModelRegistryService interface {
 	// __max_results__.
 	//
 	// Use ListModelsAll() to get all Model instances, which will iterate over every result page.
-	ListModels(ctx context.Context, request ListModelsRequest) (*ListModelsResponse, error)
+	ListModels(ctx context.Context, request ListModelsInternal) (*ListModelsResponse, error)
 
 	// List transition requests.
 	//
@@ -392,7 +392,7 @@ type ModelRegistryService interface {
 	// Lists all registry webhooks.
 	//
 	// Use ListWebhooksAll() to get all RegistryWebhook instances, which will iterate over every result page.
-	ListWebhooks(ctx context.Context, request ListWebhooksRequest) (*ListRegistryWebhooks, error)
+	ListWebhooks(ctx context.Context, request ListWebhooksInternal) (*ListRegistryWebhooks, error)
 
 	// Reject a transition request.
 	//
@@ -409,14 +409,14 @@ type ModelRegistryService interface {
 	// Searches for specific model versions based on the supplied __filter__.
 	//
 	// Use SearchModelVersionsAll() to get all ModelVersion instances, which will iterate over every result page.
-	SearchModelVersions(ctx context.Context, request SearchModelVersionsRequest) (*SearchModelVersionsResponse, error)
+	SearchModelVersions(ctx context.Context, request SearchModelVersionsInternal) (*SearchModelVersionsResponse, error)
 
 	// Search models.
 	//
 	// Search for registered models based on the specified __filter__.
 	//
 	// Use SearchModelsAll() to get all Model instances, which will iterate over every result page.
-	SearchModels(ctx context.Context, request SearchModelsRequest) (*SearchModelsResponse, error)
+	SearchModels(ctx context.Context, request SearchModelsInternal) (*SearchModelsResponse, error)
 
 	// Set a tag.
 	//

@@ -56,14 +56,14 @@ func (a *pipelinesImpl) GetUpdate(ctx context.Context, request GetUpdateRequest)
 	return &getUpdateResponse, err
 }
 
-func (a *pipelinesImpl) ListPipelineEvents(ctx context.Context, request ListPipelineEventsRequest) (*ListPipelineEventsResponse, error) {
+func (a *pipelinesImpl) ListPipelineEvents(ctx context.Context, request ListPipelineEventsInternal) (*ListPipelineEventsResponse, error) {
 	var listPipelineEventsResponse ListPipelineEventsResponse
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/events", request.PipelineId)
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listPipelineEventsResponse)
 	return &listPipelineEventsResponse, err
 }
 
-func (a *pipelinesImpl) ListPipelines(ctx context.Context, request ListPipelinesRequest) (*ListPipelinesResponse, error) {
+func (a *pipelinesImpl) ListPipelines(ctx context.Context, request ListPipelinesInternal) (*ListPipelinesResponse, error) {
 	var listPipelinesResponse ListPipelinesResponse
 	path := "/api/2.0/pipelines"
 	err := a.client.Do(ctx, http.MethodGet, path, request, &listPipelinesResponse)
