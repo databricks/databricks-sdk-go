@@ -61,12 +61,19 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	}
 
 	// There are three scenarios:
-	// 1. The user has logged in with the Azure CLI as a user and has access to the service management endpoint.
-	// 2. The user has logged in with the Azure CLI as a user and does not have access to the service management endpoint.
-	// 3. The user has logged in with the Azure CLI as a service principal.
-	// As we can't tell whether the user has logged in with the CLI using a user or service principal, we always try to
-	// get a token for the service management endpoint but tolerate failures.
+	//
+	//  1. The user has logged in with the Azure CLI as a user and has access to the service management endpoint.
+	//  2. The user has logged in with the Azure CLI as a user and does not have access to the service management endpoint.
+	//  3. The user has logged in with the Azure CLI as a service principal, and must have access to the service management
+	//     endpoint to authenticate.
+	//
+	// If the user can't access the service management endpoint, we assume they are in case 2 and do not pass the service
+	// management token. Otherwise, we always pass the service management token.
 	managementTs := &azureCliTokenSource{env.ServiceManagementEndpoint, ""}
+	_, err = managementTs.Token()
+	if err != nil {
+		managementTs = nil
+	}
 	return azureVisitor(cfg.AzureResourceID, serviceToServiceVisitor(ts, managementTs, XDatabricksAzureWorkspaceResourceId, true)), nil
 }
 
