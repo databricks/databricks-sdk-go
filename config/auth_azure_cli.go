@@ -15,7 +15,7 @@ import (
 )
 
 // The header used to pass the workspace resource ID to the Databricks backend.
-const XDatabricksAzureWorkspaceResourceId = "X-Databricks-Azure-Workspace-Resource-Id"
+const XDatabricksAzureSpManagementToken = "X-Databricks-Azure-SP-Management-Token"
 
 type AzureCliCredentials struct {
 }
@@ -74,7 +74,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if err != nil {
 		managementTs = nil
 	}
-	return azureVisitor(cfg.AzureResourceID, serviceToServiceVisitor(ts, managementTs, XDatabricksAzureWorkspaceResourceId, true)), nil
+	return azureVisitor(cfg.AzureResourceID, serviceToServiceVisitor(ts, managementTs, XDatabricksAzureSpManagementToken, true)), nil
 }
 
 type azureCliTokenSource struct {
