@@ -34,18 +34,13 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if !cfg.IsAzure() {
 		return nil, nil
 	}
-	env, err := cfg.GetAzureEnvironment()
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.azureEnsureWorkspaceUrl(ctx, c)
+	err := cfg.azureEnsureWorkspaceUrl(ctx, c)
 	if err != nil {
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
 	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
-	ts := &azureCliTokenSource{cfg.getAzureLoginAppID(), cfg.AzureResourceID}
-
 	// Eagerly get a token to fail fast in case the user is not logged in with the Azure CLI.
+	ts := &azureCliTokenSource{cfg.getAzureLoginAppID(), cfg.AzureResourceID}
 	_, err = ts.Token()
 	if err != nil {
 		if strings.Contains(err.Error(), "No subscription found") {
@@ -69,7 +64,12 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	//
 	// If the user can't access the service management endpoint, we assume they are in case 2 and do not pass the service
 	// management token. Otherwise, we always pass the service management token.
-	managementTs := &azureCliTokenSource{env.ServiceManagementEndpoint, ""}
+	var managementTs oauth2.TokenSource
+	env, err := cfg.GetAzureEnvironment()
+	if err != nil {
+		return nil, err
+	}
+	managementTs = &azureCliTokenSource{env.ServiceManagementEndpoint, ""}
 	_, err = managementTs.Token()
 	if err != nil {
 		managementTs = nil
@@ -78,7 +78,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 }
 
 type azureCliTokenSource struct {
-	resource          string
+	resource            string
 	workspaceResourceId string
 }
 
