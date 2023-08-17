@@ -59,6 +59,7 @@ func TestSimpleRequestFails(t *testing.T) {
 			assert.Equal(t, "GET", r.Method)
 			assert.Equal(t, "/a/b", r.URL.Path)
 			assert.Equal(t, "c=d", r.URL.RawQuery)
+			assert.Equal(t, "f", r.Header.Get("e"))
 			auth := r.Header.Get("Authenticated")
 			assert.Equal(t, "yes", auth)
 			return nil, fmt.Errorf("nope")
@@ -66,6 +67,8 @@ func TestSimpleRequestFails(t *testing.T) {
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
 	err := c.Do(context.Background(), "GET", "/a/b", map[string]string{
+		"e": "f",
+	}, map[string]string{
 		"c": "d",
 	}, nil)
 	assert.EqualError(t, err, "failed request: nope")
@@ -89,7 +92,7 @@ func TestSimpleRequestSucceeds(t *testing.T) {
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
 	var resp Dummy
-	err := c.Do(context.Background(), "POST", "/c", Dummy{1}, &resp)
+	err := c.Do(context.Background(), "POST", "/c", nil, Dummy{1}, &resp)
 	assert.NoError(t, err)
 	assert.Equal(t, 2, resp.Foo)
 }
@@ -122,7 +125,7 @@ func TestSimpleRequestRetried(t *testing.T) {
 		rateLimiter:  rate.NewLimiter(rate.Inf, 1),
 	}
 	var resp Dummy
-	err := c.Do(context.Background(), "PATCH", "/a", Dummy{1}, &resp)
+	err := c.Do(context.Background(), "PATCH", "/a", nil, Dummy{1}, &resp)
 	assert.NoError(t, err)
 	assert.Equal(t, 2, resp.Foo)
 	assert.True(t, retried[0], "request was not retried")
@@ -133,7 +136,7 @@ func TestHaltAttemptForLimit(t *testing.T) {
 	c := &DatabricksClient{
 		rateLimiter: &rate.Limiter{},
 	}
-	_, rerr := c.attempt(ctx, "GET", "foo", []byte{})()
+	_, rerr := c.attempt(ctx, "GET", "foo", nil, []byte{})()
 	assert.NotNil(t, rerr)
 	assert.Equal(t, true, rerr.Halt)
 	assert.EqualError(t, rerr.Err, "rate: Wait(n=1) exceeds limiter's burst 0")
@@ -144,7 +147,7 @@ func TestHaltAttemptForNewRequest(t *testing.T) {
 	c := &DatabricksClient{
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	_, rerr := c.attempt(ctx, "🥱", "/", []byte{})()
+	_, rerr := c.attempt(ctx, "🥱", "/", nil, []byte{})()
 	assert.NotNil(t, rerr)
 	assert.Equal(t, true, rerr.Halt)
 	assert.EqualError(t, rerr.Err, `net/http: invalid method "🥱"`)
@@ -155,7 +158,7 @@ func TestHaltAttemptForVisitor(t *testing.T) {
 	c := &DatabricksClient{
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	_, rerr := c.attempt(ctx, "GET", "/", []byte{},
+	_, rerr := c.attempt(ctx, "GET", "/", nil, []byte{},
 		func(r *http.Request) error {
 			return fmt.Errorf("🥱")
 		})()
@@ -232,7 +235,7 @@ func TestFailPerformChannel(t *testing.T) {
 	c := &DatabricksClient{
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	_, err := c.perform(ctx, "GET", "/", true)
+	_, err := c.perform(ctx, "GET", "/", nil, true)
 	assert.EqualError(t, err, "request marshal: unsupported query string data: true")
 }
 
@@ -253,7 +256,7 @@ func TestSimpleRequestAPIError(t *testing.T) {
 		}),
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	err := c.Do(context.Background(), "PATCH", "/a", map[string]any{}, nil)
+	err := c.Do(context.Background(), "PATCH", "/a", nil, map[string]any{}, nil)
 	var aerr *apierr.APIError
 	if assert.ErrorAs(t, err, &aerr) {
 		assert.Equal(t, "NOT_FOUND", aerr.ErrorCode)
@@ -270,7 +273,7 @@ func TestSimpleRequestNilResponseNoError(t *testing.T) {
 		}),
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	err := c.Do(context.Background(), "PATCH", "/a", map[string]any{}, nil)
+	err := c.Do(context.Background(), "PATCH", "/a", nil, map[string]any{}, nil)
 	assert.EqualError(t, err, "no response: PATCH /a")
 }
 
@@ -288,7 +291,7 @@ func TestSimpleRequestErrReaderBody(t *testing.T) {
 		}),
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	err := c.Do(context.Background(), "PATCH", "/a", map[string]any{}, nil)
+	err := c.Do(context.Background(), "PATCH", "/a", nil, map[string]any{}, nil)
 	assert.EqualError(t, err, "response body: test error")
 }
 
@@ -306,7 +309,7 @@ func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
 		}),
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	err := c.Do(context.Background(), "PATCH", "/a", map[string]any{}, nil)
+	err := c.Do(context.Background(), "PATCH", "/a", nil, map[string]any{}, nil)
 	assert.EqualError(t, err, "response body: test error")
 }
 
@@ -325,7 +328,7 @@ func TestSimpleRequestRawResponse(t *testing.T) {
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
 	var raw []byte
-	err := c.Do(context.Background(), "GET", "/a", nil, &raw)
+	err := c.Do(context.Background(), "GET", "/a", nil, nil, &raw)
 	assert.NoError(t, err)
 	assert.Equal(t, "Hello, world!", string(raw))
 }
@@ -399,7 +402,7 @@ func TestSimpleResponseRedaction(t *testing.T) {
 		debugHeaders:       true,
 		rateLimiter:        rate.NewLimiter(rate.Inf, 1),
 	}
-	err := c.Do(context.Background(), "GET", "/a", map[string]any{
+	err := c.Do(context.Background(), "GET", "/a", nil, map[string]any{
 		"b": 0,
 		"a": 3,
 		"c": 23,
@@ -437,7 +440,7 @@ func TestInlineArrayDebugging(t *testing.T) {
 		debugTruncateBytes: 2048,
 		rateLimiter:        rate.NewLimiter(rate.Inf, 1),
 	}
-	err := c.Do(context.Background(), "GET", "/a", map[string]any{
+	err := c.Do(context.Background(), "GET", "/a", nil, map[string]any{
 		"b": 0,
 		"a": 3,
 		"c": 23,

@@ -86,8 +86,9 @@ func (c *DatabricksClient) ConfiguredAccountID() string {
 
 // Do sends an HTTP request against path.
 func (c *DatabricksClient) Do(ctx context.Context, method, path string,
-	request, response any, visitors ...func(*http.Request) error) error {
-	body, err := c.perform(ctx, method, path, request, visitors...)
+	headers map[string]string, request, response any,
+	visitors ...func(*http.Request) error) error {
+	body, err := c.perform(ctx, method, path, headers, request, visitors...)
 	if err != nil {
 		return err
 	}
@@ -142,6 +143,7 @@ func (c *DatabricksClient) attempt(
 	ctx context.Context,
 	method string,
 	requestURL string,
+	headers map[string]string,
 	requestBody []byte,
 	visitors ...func(*http.Request) error,
 ) func() (*bytes.Buffer, *retries.Err) {
@@ -150,8 +152,10 @@ func (c *DatabricksClient) attempt(
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
-		request, err := http.NewRequestWithContext(ctx, method, requestURL,
-			bytes.NewBuffer(requestBody))
+		request, err := http.NewRequestWithContext(ctx, method, requestURL, bytes.NewBuffer(requestBody))
+		for k, v := range headers {
+			request.Header.Set(k, v)
+		}
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
@@ -274,6 +278,7 @@ func (c *DatabricksClient) perform(
 	ctx context.Context,
 	method,
 	requestURL string,
+	headers map[string]string,
 	data interface{},
 	visitors ...func(*http.Request) error,
 ) ([]byte, error) {
@@ -288,7 +293,7 @@ func (c *DatabricksClient) perform(
 		c.addAuthHeaderToUserAgent,
 	}, visitors...)
 	resp, err := retries.Poll(ctx, c.retryTimeout,
-		c.attempt(ctx, method, requestURL, requestBody, visitors...))
+		c.attempt(ctx, method, requestURL, headers, requestBody, visitors...))
 	if err != nil {
 		// Don't re-wrap, as upper layers may depend on handling apierr.APIError.
 		return nil, err

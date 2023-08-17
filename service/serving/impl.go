@@ -18,88 +18,117 @@ type servingEndpointsImpl struct {
 func (a *servingEndpointsImpl) BuildLogs(ctx context.Context, request BuildLogsRequest) (*BuildLogsResponse, error) {
 	var buildLogsResponse BuildLogsResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/served-models/%v/build-logs", request.Name, request.ServedModelName)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &buildLogsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &buildLogsResponse)
 	return &buildLogsResponse, err
 }
 
 func (a *servingEndpointsImpl) Create(ctx context.Context, request CreateServingEndpoint) (*ServingEndpointDetailed, error) {
 	var servingEndpointDetailed ServingEndpointDetailed
 	path := "/api/2.0/serving-endpoints"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &servingEndpointDetailed)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &servingEndpointDetailed)
 	return &servingEndpointDetailed, err
 }
 
 func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServingEndpointRequest) error {
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request ExportMetricsRequest) error {
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/metrics", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, nil)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, nil)
 	return err
 }
 
 func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error) {
 	var servingEndpointDetailed ServingEndpointDetailed
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &servingEndpointDetailed)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &servingEndpointDetailed)
 	return &servingEndpointDetailed, err
 }
 
 func (a *servingEndpointsImpl) GetServingEndpointPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error) {
 	var getServingEndpointPermissionLevelsResponse GetServingEndpointPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v/permissionLevels", request.ServingEndpointId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getServingEndpointPermissionLevelsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getServingEndpointPermissionLevelsResponse)
 	return &getServingEndpointPermissionLevelsResponse, err
 }
 
 func (a *servingEndpointsImpl) GetServingEndpointPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
 	var servingEndpointPermissions ServingEndpointPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &servingEndpointPermissions)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &servingEndpointPermissions)
 	return &servingEndpointPermissions, err
 }
 
 func (a *servingEndpointsImpl) List(ctx context.Context) (*ListEndpointsResponse, error) {
 	var listEndpointsResponse ListEndpointsResponse
 	path := "/api/2.0/serving-endpoints"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &listEndpointsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listEndpointsResponse)
 	return &listEndpointsResponse, err
 }
 
 func (a *servingEndpointsImpl) Logs(ctx context.Context, request LogsRequest) (*ServerLogsResponse, error) {
 	var serverLogsResponse ServerLogsResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/served-models/%v/logs", request.Name, request.ServedModelName)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &serverLogsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &serverLogsResponse)
 	return &serverLogsResponse, err
 }
 
 func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryRequest) (*QueryEndpointResponse, error) {
 	var queryEndpointResponse QueryEndpointResponse
 	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)
-	err := a.client.Do(ctx, http.MethodPost, path, request, &queryEndpointResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &queryEndpointResponse)
 	return &queryEndpointResponse, err
 }
 
 func (a *servingEndpointsImpl) SetServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
 	var servingEndpointPermissions ServingEndpointPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
-	err := a.client.Do(ctx, http.MethodPut, path, request, &servingEndpointPermissions)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &servingEndpointPermissions)
 	return &servingEndpointPermissions, err
 }
 
 func (a *servingEndpointsImpl) UpdateConfig(ctx context.Context, request EndpointCoreConfigInput) (*ServingEndpointDetailed, error) {
 	var servingEndpointDetailed ServingEndpointDetailed
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/config", request.Name)
-	err := a.client.Do(ctx, http.MethodPut, path, request, &servingEndpointDetailed)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &servingEndpointDetailed)
 	return &servingEndpointDetailed, err
 }
 
 func (a *servingEndpointsImpl) UpdateServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
 	var servingEndpointPermissions ServingEndpointPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &servingEndpointPermissions)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &servingEndpointPermissions)
 	return &servingEndpointPermissions, err
 }

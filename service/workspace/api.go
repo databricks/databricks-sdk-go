@@ -482,6 +482,24 @@ func (a *SecretsAPI) GetAcl(ctx context.Context, request GetAclRequest) (*AclIte
 	return a.impl.GetAcl(ctx, request)
 }
 
+// Get a secret.
+//
+// Gets the bytes representation of a secret value for the specified scope and
+// key.
+//
+// Users need the READ permission to make this call.
+//
+// Note that the secret value returned is in bytes. The interpretation of the
+// bytes is determined by the caller in DBUtils and the type the data is decoded
+// into.
+//
+// Throws “PERMISSION_DENIED“ if the user does not have permission to make
+// this API call. Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret or secret
+// scope exists.
+func (a *SecretsAPI) GetSecret(ctx context.Context, request GetSecretRequest) (*GetSecretResponse, error) {
+	return a.impl.GetSecret(ctx, request)
+}
+
 // Lists ACLs.
 //
 // List the ACLs for a given secret scope. Users must have the `MANAGE`

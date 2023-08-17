@@ -17,33 +17,45 @@ type accountMetastoreAssignmentsImpl struct {
 
 func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*AccountsMetastoreAssignment, error) {
 	var accountsMetastoreAssignment AccountsMetastoreAssignment
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastore", a.client.ConfiguredAccountID(), request.WorkspaceId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &accountsMetastoreAssignment)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &accountsMetastoreAssignment)
 	return &accountsMetastoreAssignment, err
 }
 
 func (a *accountMetastoreAssignmentsImpl) List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]MetastoreAssignment, error) {
 	var metastoreAssignmentList []MetastoreAssignment
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/workspaces", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &metastoreAssignmentList)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &metastoreAssignmentList)
 	return metastoreAssignmentList, err
 }
 
 func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, nil)
 	return err
 }
 
@@ -55,34 +67,46 @@ type accountMetastoresImpl struct {
 func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsMetastoreInfo, error) {
 	var accountsMetastoreInfo AccountsMetastoreInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
-	err := a.client.Do(ctx, http.MethodPost, path, request, &accountsMetastoreInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &accountsMetastoreInfo)
 	return &accountsMetastoreInfo, err
 }
 
 func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsMetastoreInfo, error) {
 	var accountsMetastoreInfo AccountsMetastoreInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &accountsMetastoreInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &accountsMetastoreInfo)
 	return &accountsMetastoreInfo, err
 }
 
 func (a *accountMetastoresImpl) List(ctx context.Context) (*ListMetastoresResponse, error) {
 	var listMetastoresResponse ListMetastoresResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &listMetastoresResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listMetastoresResponse)
 	return &listMetastoresResponse, err
 }
 
 func (a *accountMetastoresImpl) Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsMetastoreInfo, error) {
 	var accountsMetastoreInfo AccountsMetastoreInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodPut, path, request, &accountsMetastoreInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &accountsMetastoreInfo)
 	return &accountsMetastoreInfo, err
 }
 
@@ -94,35 +118,71 @@ type accountStorageCredentialsImpl struct {
 func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsStorageCredentialInfo, error) {
 	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodPost, path, request, &accountsStorageCredentialInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &accountsStorageCredentialInfo)
 	return &accountsStorageCredentialInfo, err
 }
 
 func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*AccountsStorageCredentialInfo, error) {
 	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &accountsStorageCredentialInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &accountsStorageCredentialInfo)
 	return &accountsStorageCredentialInfo, err
 }
 
 func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListStorageCredentialsResponse, error) {
 	var listStorageCredentialsResponse ListStorageCredentialsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listStorageCredentialsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listStorageCredentialsResponse)
 	return &listStorageCredentialsResponse, err
 }
 
 func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error) {
 	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/", a.client.ConfiguredAccountID(), request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodPut, path, request, &accountsStorageCredentialInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &accountsStorageCredentialInfo)
 	return &accountsStorageCredentialInfo, err
+}
+
+// unexported type that holds implementations of just ArtifactAllowlists API methods
+type artifactAllowlistsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *artifactAllowlistsImpl) Get(ctx context.Context, request GetArtifactAllowlistRequest) (*ArtifactAllowlistInfo, error) {
+	var artifactAllowlistInfo ArtifactAllowlistInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/artifact-allowlists/%v", request.ArtifactType)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &artifactAllowlistInfo)
+	return &artifactAllowlistInfo, err
+}
+
+func (a *artifactAllowlistsImpl) Update(ctx context.Context, request SetArtifactAllowlist) (*ArtifactAllowlistInfo, error) {
+	var artifactAllowlistInfo ArtifactAllowlistInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/artifact-allowlists/%v", request.ArtifactType)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &artifactAllowlistInfo)
+	return &artifactAllowlistInfo, err
 }
 
 // unexported type that holds implementations of just Catalogs API methods
@@ -133,34 +193,46 @@ type catalogsImpl struct {
 func (a *catalogsImpl) Create(ctx context.Context, request CreateCatalog) (*CatalogInfo, error) {
 	var catalogInfo CatalogInfo
 	path := "/api/2.1/unity-catalog/catalogs"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &catalogInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &catalogInfo)
 	return &catalogInfo, err
 }
 
 func (a *catalogsImpl) Delete(ctx context.Context, request DeleteCatalogRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*CatalogInfo, error) {
 	var catalogInfo CatalogInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &catalogInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &catalogInfo)
 	return &catalogInfo, err
 }
 
 func (a *catalogsImpl) List(ctx context.Context) (*ListCatalogsResponse, error) {
 	var listCatalogsResponse ListCatalogsResponse
 	path := "/api/2.1/unity-catalog/catalogs"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &listCatalogsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listCatalogsResponse)
 	return &listCatalogsResponse, err
 }
 
 func (a *catalogsImpl) Update(ctx context.Context, request UpdateCatalog) (*CatalogInfo, error) {
 	var catalogInfo CatalogInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &catalogInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &catalogInfo)
 	return &catalogInfo, err
 }
 
@@ -172,34 +244,46 @@ type connectionsImpl struct {
 func (a *connectionsImpl) Create(ctx context.Context, request CreateConnection) (*ConnectionInfo, error) {
 	var connectionInfo ConnectionInfo
 	path := "/api/2.1/unity-catalog/connections"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &connectionInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &connectionInfo)
 	return &connectionInfo, err
 }
 
 func (a *connectionsImpl) Delete(ctx context.Context, request DeleteConnectionRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.NameArg)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *connectionsImpl) Get(ctx context.Context, request GetConnectionRequest) (*ConnectionInfo, error) {
 	var connectionInfo ConnectionInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.NameArg)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &connectionInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &connectionInfo)
 	return &connectionInfo, err
 }
 
 func (a *connectionsImpl) List(ctx context.Context) (*ListConnectionsResponse, error) {
 	var listConnectionsResponse ListConnectionsResponse
 	path := "/api/2.1/unity-catalog/connections"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &listConnectionsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listConnectionsResponse)
 	return &listConnectionsResponse, err
 }
 
 func (a *connectionsImpl) Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error) {
 	var connectionInfo ConnectionInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.NameArg)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &connectionInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &connectionInfo)
 	return &connectionInfo, err
 }
 
@@ -211,34 +295,46 @@ type externalLocationsImpl struct {
 func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExternalLocation) (*ExternalLocationInfo, error) {
 	var externalLocationInfo ExternalLocationInfo
 	path := "/api/2.1/unity-catalog/external-locations"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &externalLocationInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &externalLocationInfo)
 	return &externalLocationInfo, err
 }
 
 func (a *externalLocationsImpl) Delete(ctx context.Context, request DeleteExternalLocationRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLocationRequest) (*ExternalLocationInfo, error) {
 	var externalLocationInfo ExternalLocationInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &externalLocationInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &externalLocationInfo)
 	return &externalLocationInfo, err
 }
 
 func (a *externalLocationsImpl) List(ctx context.Context) (*ListExternalLocationsResponse, error) {
 	var listExternalLocationsResponse ListExternalLocationsResponse
 	path := "/api/2.1/unity-catalog/external-locations"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &listExternalLocationsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listExternalLocationsResponse)
 	return &listExternalLocationsResponse, err
 }
 
 func (a *externalLocationsImpl) Update(ctx context.Context, request UpdateExternalLocation) (*ExternalLocationInfo, error) {
 	var externalLocationInfo ExternalLocationInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &externalLocationInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &externalLocationInfo)
 	return &externalLocationInfo, err
 }
 
@@ -250,34 +346,46 @@ type functionsImpl struct {
 func (a *functionsImpl) Create(ctx context.Context, request CreateFunction) (*FunctionInfo, error) {
 	var functionInfo FunctionInfo
 	path := "/api/2.1/unity-catalog/functions"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &functionInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &functionInfo)
 	return &functionInfo, err
 }
 
 func (a *functionsImpl) Delete(ctx context.Context, request DeleteFunctionRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *functionsImpl) Get(ctx context.Context, request GetFunctionRequest) (*FunctionInfo, error) {
 	var functionInfo FunctionInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &functionInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &functionInfo)
 	return &functionInfo, err
 }
 
 func (a *functionsImpl) List(ctx context.Context, request ListFunctionsRequest) (*ListFunctionsResponse, error) {
 	var listFunctionsResponse ListFunctionsResponse
 	path := "/api/2.1/unity-catalog/functions"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listFunctionsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listFunctionsResponse)
 	return &listFunctionsResponse, err
 }
 
 func (a *functionsImpl) Update(ctx context.Context, request UpdateFunction) (*FunctionInfo, error) {
 	var functionInfo FunctionInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &functionInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &functionInfo)
 	return &functionInfo, err
 }
 
@@ -289,21 +397,28 @@ type grantsImpl struct {
 func (a *grantsImpl) Get(ctx context.Context, request GetGrantRequest) (*PermissionsList, error) {
 	var permissionsList PermissionsList
 	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.FullName)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &permissionsList)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &permissionsList)
 	return &permissionsList, err
 }
 
 func (a *grantsImpl) GetEffective(ctx context.Context, request GetEffectiveRequest) (*EffectivePermissionsList, error) {
 	var effectivePermissionsList EffectivePermissionsList
 	path := fmt.Sprintf("/api/2.1/unity-catalog/effective-permissions/%v/%v", request.SecurableType, request.FullName)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &effectivePermissionsList)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &effectivePermissionsList)
 	return &effectivePermissionsList, err
 }
 
 func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) (*PermissionsList, error) {
 	var permissionsList PermissionsList
 	path := fmt.Sprintf("/api/2.1/unity-catalog/permissions/%v/%v", request.SecurableType, request.FullName)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &permissionsList)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &permissionsList)
 	return &permissionsList, err
 }
 
@@ -314,74 +429,101 @@ type metastoresImpl struct {
 
 func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssignment) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
-	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, nil)
 	return err
 }
 
 func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error) {
 	var metastoreInfo MetastoreInfo
 	path := "/api/2.1/unity-catalog/metastores"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &metastoreInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &metastoreInfo)
 	return &metastoreInfo, err
 }
 
 func (a *metastoresImpl) Current(ctx context.Context) (*MetastoreAssignment, error) {
 	var metastoreAssignment MetastoreAssignment
 	path := "/api/2.1/unity-catalog/current-metastore-assignment"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &metastoreAssignment)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &metastoreAssignment)
 	return &metastoreAssignment, err
 }
 
 func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *metastoresImpl) EnableOptimization(ctx context.Context, request UpdatePredictiveOptimization) (*UpdatePredictiveOptimizationResponse, error) {
 	var updatePredictiveOptimizationResponse UpdatePredictiveOptimizationResponse
 	path := "/api/2.0/predictive-optimization/service"
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &updatePredictiveOptimizationResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updatePredictiveOptimizationResponse)
 	return &updatePredictiveOptimizationResponse, err
 }
 
 func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (*MetastoreInfo, error) {
 	var metastoreInfo MetastoreInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &metastoreInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &metastoreInfo)
 	return &metastoreInfo, err
 }
 
 func (a *metastoresImpl) List(ctx context.Context) (*ListMetastoresResponse, error) {
 	var listMetastoresResponse ListMetastoresResponse
 	path := "/api/2.1/unity-catalog/metastores"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &listMetastoresResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listMetastoresResponse)
 	return &listMetastoresResponse, err
 }
 
 func (a *metastoresImpl) Summary(ctx context.Context) (*GetMetastoreSummaryResponse, error) {
 	var getMetastoreSummaryResponse GetMetastoreSummaryResponse
 	path := "/api/2.1/unity-catalog/metastore_summary"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &getMetastoreSummaryResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &getMetastoreSummaryResponse)
 	return &getMetastoreSummaryResponse, err
 }
 
 func (a *metastoresImpl) Unassign(ctx context.Context, request UnassignRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *metastoresImpl) Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error) {
 	var metastoreInfo MetastoreInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &metastoreInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &metastoreInfo)
 	return &metastoreInfo, err
 }
 
 func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
 	return err
 }
 
@@ -393,35 +535,71 @@ type schemasImpl struct {
 func (a *schemasImpl) Create(ctx context.Context, request CreateSchema) (*SchemaInfo, error) {
 	var schemaInfo SchemaInfo
 	path := "/api/2.1/unity-catalog/schemas"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &schemaInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &schemaInfo)
 	return &schemaInfo, err
 }
 
 func (a *schemasImpl) Delete(ctx context.Context, request DeleteSchemaRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullName)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *schemasImpl) Get(ctx context.Context, request GetSchemaRequest) (*SchemaInfo, error) {
 	var schemaInfo SchemaInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullName)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &schemaInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &schemaInfo)
 	return &schemaInfo, err
 }
 
 func (a *schemasImpl) List(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error) {
 	var listSchemasResponse ListSchemasResponse
 	path := "/api/2.1/unity-catalog/schemas"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listSchemasResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listSchemasResponse)
 	return &listSchemasResponse, err
 }
 
 func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*SchemaInfo, error) {
 	var schemaInfo SchemaInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullName)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &schemaInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &schemaInfo)
 	return &schemaInfo, err
+}
+
+// unexported type that holds implementations of just SecurableTags API methods
+type securableTagsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *securableTagsImpl) List(ctx context.Context, request ListSecurableTagsRequest) (*TagSecurableAssignmentsList, error) {
+	var tagSecurableAssignmentsList TagSecurableAssignmentsList
+	path := fmt.Sprintf("/api/2.1/unity-catalog/securable-tags/%v/%v", request.SecurableType, request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &tagSecurableAssignmentsList)
+	return &tagSecurableAssignmentsList, err
+}
+
+func (a *securableTagsImpl) Update(ctx context.Context, request UpdateTags) (*TagSecurableAssignmentsList, error) {
+	var tagSecurableAssignmentsList TagSecurableAssignmentsList
+	path := fmt.Sprintf("/api/2.1/unity-catalog/securable-tags/%v/%v", request.SecurableType, request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &tagSecurableAssignmentsList)
+	return &tagSecurableAssignmentsList, err
 }
 
 // unexported type that holds implementations of just StorageCredentials API methods
@@ -432,42 +610,81 @@ type storageCredentialsImpl struct {
 func (a *storageCredentialsImpl) Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error) {
 	var storageCredentialInfo StorageCredentialInfo
 	path := "/api/2.1/unity-catalog/storage-credentials"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &storageCredentialInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &storageCredentialInfo)
 	return &storageCredentialInfo, err
 }
 
 func (a *storageCredentialsImpl) Delete(ctx context.Context, request DeleteStorageCredentialRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCredentialRequest) (*StorageCredentialInfo, error) {
 	var storageCredentialInfo StorageCredentialInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &storageCredentialInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &storageCredentialInfo)
 	return &storageCredentialInfo, err
 }
 
 func (a *storageCredentialsImpl) List(ctx context.Context) (*ListStorageCredentialsResponse, error) {
 	var listStorageCredentialsResponse ListStorageCredentialsResponse
 	path := "/api/2.1/unity-catalog/storage-credentials"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &listStorageCredentialsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listStorageCredentialsResponse)
 	return &listStorageCredentialsResponse, err
 }
 
 func (a *storageCredentialsImpl) Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error) {
 	var storageCredentialInfo StorageCredentialInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &storageCredentialInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &storageCredentialInfo)
 	return &storageCredentialInfo, err
 }
 
 func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateStorageCredential) (*ValidateStorageCredentialResponse, error) {
 	var validateStorageCredentialResponse ValidateStorageCredentialResponse
 	path := "/api/2.1/unity-catalog/validate-storage-credentials"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &validateStorageCredentialResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &validateStorageCredentialResponse)
 	return &validateStorageCredentialResponse, err
+}
+
+// unexported type that holds implementations of just SubentityTags API methods
+type subentityTagsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *subentityTagsImpl) List(ctx context.Context, request ListSubentityTagsRequest) (*TagSubentityAssignmentsList, error) {
+	var tagSubentityAssignmentsList TagSubentityAssignmentsList
+	path := fmt.Sprintf("/api/2.1/unity-catalog/subentity-tags/%v/%v/%v", request.SecurableType, request.FullName, request.SubentityName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &tagSubentityAssignmentsList)
+	return &tagSubentityAssignmentsList, err
+}
+
+func (a *subentityTagsImpl) Update(ctx context.Context, request UpdateTags) (*TagSubentityAssignmentsList, error) {
+	var tagSubentityAssignmentsList TagSubentityAssignmentsList
+	path := fmt.Sprintf("/api/2.1/unity-catalog/subentity-tags/%v/%v/%v", request.SecurableType, request.FullName, request.SubentityName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &tagSubentityAssignmentsList)
+	return &tagSubentityAssignmentsList, err
 }
 
 // unexported type that holds implementations of just SystemSchemas API methods
@@ -477,20 +694,26 @@ type systemSchemasImpl struct {
 
 func (a *systemSchemasImpl) Disable(ctx context.Context, request DisableRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas/%v", request.MetastoreId, request.SchemaName)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas/%v", request.MetastoreId, request.SchemaName)
-	err := a.client.Do(ctx, http.MethodPut, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, nil)
 	return err
 }
 
 func (a *systemSchemasImpl) List(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error) {
 	var listSystemSchemasResponse ListSystemSchemasResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas", request.MetastoreId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listSystemSchemasResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listSystemSchemasResponse)
 	return &listSystemSchemasResponse, err
 }
 
@@ -502,13 +725,18 @@ type tableConstraintsImpl struct {
 func (a *tableConstraintsImpl) Create(ctx context.Context, request CreateTableConstraint) (*TableConstraint, error) {
 	var tableConstraint TableConstraint
 	path := "/api/2.1/unity-catalog/constraints"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &tableConstraint)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &tableConstraint)
 	return &tableConstraint, err
 }
 
 func (a *tableConstraintsImpl) Delete(ctx context.Context, request DeleteTableConstraintRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/constraints/%v", request.FullName)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
@@ -519,34 +747,45 @@ type tablesImpl struct {
 
 func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableInfo, error) {
 	var tableInfo TableInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &tableInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &tableInfo)
 	return &tableInfo, err
 }
 
 func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error) {
 	var listTablesResponse ListTablesResponse
 	path := "/api/2.1/unity-catalog/tables"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listTablesResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listTablesResponse)
 	return &listTablesResponse, err
 }
 
 func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error) {
 	var listTableSummariesResponse ListTableSummariesResponse
 	path := "/api/2.1/unity-catalog/table-summaries"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listTableSummariesResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listTableSummariesResponse)
 	return &listTableSummariesResponse, err
 }
 
 func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
 	return err
 }
 
@@ -558,34 +797,45 @@ type volumesImpl struct {
 func (a *volumesImpl) Create(ctx context.Context, request CreateVolumeRequestContent) (*VolumeInfo, error) {
 	var volumeInfo VolumeInfo
 	path := "/api/2.1/unity-catalog/volumes"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &volumeInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &volumeInfo)
 	return &volumeInfo, err
 }
 
 func (a *volumesImpl) Delete(ctx context.Context, request DeleteVolumeRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.FullNameArg)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *volumesImpl) List(ctx context.Context, request ListVolumesRequest) (*ListVolumesResponseContent, error) {
 	var listVolumesResponseContent ListVolumesResponseContent
 	path := "/api/2.1/unity-catalog/volumes"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listVolumesResponseContent)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listVolumesResponseContent)
 	return &listVolumesResponseContent, err
 }
 
 func (a *volumesImpl) Read(ctx context.Context, request ReadVolumeRequest) (*VolumeInfo, error) {
 	var volumeInfo VolumeInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.FullNameArg)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &volumeInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &volumeInfo)
 	return &volumeInfo, err
 }
 
 func (a *volumesImpl) Update(ctx context.Context, request UpdateVolumeRequestContent) (*VolumeInfo, error) {
 	var volumeInfo VolumeInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.FullNameArg)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &volumeInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &volumeInfo)
 	return &volumeInfo, err
 }
 
@@ -597,13 +847,18 @@ type workspaceBindingsImpl struct {
 func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBindingRequest) (*CurrentWorkspaceBindings, error) {
 	var currentWorkspaceBindings CurrentWorkspaceBindings
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &currentWorkspaceBindings)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &currentWorkspaceBindings)
 	return &currentWorkspaceBindings, err
 }
 
 func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorkspaceBindings) (*CurrentWorkspaceBindings, error) {
 	var currentWorkspaceBindings CurrentWorkspaceBindings
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", request.Name)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &currentWorkspaceBindings)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &currentWorkspaceBindings)
 	return &currentWorkspaceBindings, err
 }
