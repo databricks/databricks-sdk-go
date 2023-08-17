@@ -18,18 +18,29 @@ type {{.CamelName}}Impl struct {
 }
 
 {{range .Methods}}
-func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{if .Response}}({{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}*{{template "type" .Response}}{{end}}, error){{else}}error{{end}} {
+func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) {{ template "response-type" . }} {
 	{{if .Response}}var {{.Response.CamelName}} {{if .Response.ArrayValue}}[]{{.Response.ArrayValue.PascalName}}{{else}}{{template "type" .Response}}{{end}}
 	{{end -}}
 	path := {{if .PathParts -}}
 		fmt.Sprintf("{{range  .PathParts}}{{.Prefix}}{{if or .Field .IsAccountId}}%v{{end}}{{ end }}"{{ range .PathParts }}{{if .Field}}, request.{{.Field.PascalName}}{{ else if .IsAccountId }}, a.client.ConfiguredAccountID(){{end}}{{ end }})
 	{{- else}}"{{.Path}}"{{end}}
 	{{ template "make-header" . }}
-	err := a.client.Do(ctx, http.Method{{.TitleVerb}}, path, headers, {{if .Request}}request{{else}}nil{{end}}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})
-	return {{if .Response}}{{if not .Response.ArrayValue}}&{{end}}{{.Response.CamelName}}, {{end}}err
+	err := a.client.Do(ctx, http.Method{{.TitleVerb}}, path, headers, {{if .Request}}request{{ if .RequestBodyField }}.{{.RequestBodyField.PascalName}}{{end}}{{else}}nil{{end}}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})
+	return {{ template "response" . }}
 }
 {{end -}}
 {{end}}
+
+{{ define "response-type" -}}
+  {{ if .Response }}(
+  {{- if and (not .IsResponseByteStream) (not .Response.ArrayValue) }}*{{end}}{{ template "type" .Response }}, error)
+  {{- else }}error
+  {{- end }}
+{{- end }}
+
+{{ define "response" -}}
+	{{if .Response}}{{if and (not .IsResponseByteStream) (not .Response.ArrayValue)}}&{{end}}{{.Response.CamelName}}, {{end}}err
+{{- end }}
 
 {{ define "make-header" -}}
     headers := make(map[string]string)

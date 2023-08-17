@@ -2,6 +2,10 @@
 
 package files
 
+import (
+	"io"
+)
+
 // all definitions in this file are in alphabetical order
 
 type AddBlock struct {
@@ -37,6 +41,18 @@ type Delete struct {
 	// Whether or not to recursively delete the directory's contents. Deleting
 	// empty directories can be done without providing the recursive flag.
 	Recursive bool `json:"recursive,omitempty"`
+}
+
+// Delete a file or directory
+type DeleteFileRequest struct {
+	// The absolute path of the file or directory in DBFS.
+	FilePath string `json:"-" url:"-"`
+}
+
+// Download a file
+type DownloadFileRequest struct {
+	// The absolute path of the file or directory in DBFS.
+	FilePath string `json:"-" url:"-"`
 }
 
 type FileInfo struct {
@@ -111,4 +127,13 @@ type ReadResponse struct {
 	BytesRead int64 `json:"bytes_read,omitempty"`
 	// The base64-encoded contents of the file read.
 	Data string `json:"data,omitempty"`
+}
+
+// Upload a file
+type UploadFileRequest struct {
+	Contents io.ReadCloser `json:"-"`
+	// The absolute path of the file or directory in DBFS.
+	FilePath string `json:"-" url:"-"`
+	// The flag that specifies whether to overwrite existing file/files.
+	Overwrite bool `json:"-" url:"overwrite,omitempty"`
 }

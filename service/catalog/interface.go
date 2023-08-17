@@ -511,29 +511,6 @@ type SchemasService interface {
 	Update(ctx context.Context, request UpdateSchema) (*SchemaInfo, error)
 }
 
-// Tags are attributes containing keys and values that can be applied to
-// different entities in Unity Catalog. Tags are useful for organizing and
-// categorizing different entities within a metastore. SecurableTags are
-// attached to Unity Catalog securable entities.
-type SecurableTagsService interface {
-
-	// Get tags for a securable.
-	//
-	// Gets tag assignments for an entity. The caller must be either the owner
-	// of the securable, or a metastore admin, or have at least USE / SELECT
-	// privilege on the associated securable.
-	//
-	// Use ListAll() to get all TagSecurableAssignment instances
-	List(ctx context.Context, request ListSecurableTagsRequest) (*TagSecurableAssignmentsList, error)
-
-	// Update tags for a securable.
-	//
-	// Update tag assignments for an entity The caller must be either the owner
-	// of the securable, or a metastore admin, or have at least USE / SELECT and
-	// APPLY_TAG privilege on the associated securable.
-	Update(ctx context.Context, request UpdateTags) (*TagSecurableAssignmentsList, error)
-}
-
 // A storage credential represents an authentication and authorization mechanism
 // for accessing data stored on your cloud tenant. Each storage credential is
 // subject to Unity Catalog access-control policies that control which users and
@@ -610,31 +587,6 @@ type StorageCredentialsService interface {
 	// have the **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the
 	// storage credential.
 	Validate(ctx context.Context, request ValidateStorageCredential) (*ValidateStorageCredentialResponse, error)
-}
-
-// Tags are attributes containing keys and values that can be applied to
-// different entities in Unity Catalog. Tags are useful for organizing and
-// categorizing different entities within a metastore. SubentityTags are
-// attached to Unity Catalog subentities.
-type SubentityTagsService interface {
-
-	// Get tags for a subentity.
-	//
-	// Gets tag assignments for a subentity associated with a securable entity.
-	// Eg. column of a table The caller must be either the owner of the
-	// securable, or a metastore admin, or have at least USE / SELECT privilege
-	// on the associated securable.
-	//
-	// Use ListAll() to get all TagsSubentityAssignment instances
-	List(ctx context.Context, request ListSubentityTagsRequest) (*TagSubentityAssignmentsList, error)
-
-	// Update tags for a subentity.
-	//
-	// Update tag assignments for a subentity associated with a securable
-	// entity. The caller must be either the owner of the securable, or a
-	// metastore admin, or have at least USE / SELECT and APPLY_TAG privilege on
-	// the associated securable.
-	Update(ctx context.Context, request UpdateTags) (*TagSubentityAssignmentsList, error)
 }
 
 // A system schema is a schema that lives within the system catalog. A system

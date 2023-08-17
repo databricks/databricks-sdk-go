@@ -1,10 +1,11 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// DBFS API makes it simple to interact with various data sources without having to include a users credentials every time to read a file.
+// These APIs allow you to manage Dbfs, Files, etc.
 package files
 
 import (
 	"context"
+	"io"
 
 	"github.com/databricks/databricks-sdk-go/client"
 )
@@ -232,4 +233,78 @@ func (a *DbfsAPI) Put(ctx context.Context, request Put) error {
 // contents until the end of file.",
 func (a *DbfsAPI) Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error) {
 	return a.impl.Read(ctx, request)
+}
+
+func NewFiles(client *client.DatabricksClient) *FilesAPI {
+	return &FilesAPI{
+		impl: &filesImpl{
+			client: client,
+		},
+	}
+}
+
+// The Files API allows you to read, write, and delete files and directories in
+// Unity Catalog volumes.
+type FilesAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(FilesService)
+	impl FilesService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *FilesAPI) WithImpl(impl FilesService) *FilesAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Files API implementation
+func (a *FilesAPI) Impl() FilesService {
+	return a.impl
+}
+
+// Delete a file or directory.
+//
+// Deletes a file or directory.
+func (a *FilesAPI) DeleteFile(ctx context.Context, request DeleteFileRequest) error {
+	return a.impl.DeleteFile(ctx, request)
+}
+
+// Delete a file or directory.
+//
+// Deletes a file or directory.
+func (a *FilesAPI) DeleteFileByFilePath(ctx context.Context, filePath string) error {
+	return a.impl.DeleteFile(ctx, DeleteFileRequest{
+		FilePath: filePath,
+	})
+}
+
+// Download a file.
+//
+// Downloads a file of up to 2 GiB.
+func (a *FilesAPI) DownloadFile(ctx context.Context, request DownloadFileRequest) (io.ReadCloser, error) {
+	return a.impl.DownloadFile(ctx, request)
+}
+
+// Download a file.
+//
+// Downloads a file of up to 2 GiB.
+func (a *FilesAPI) DownloadFileByFilePath(ctx context.Context, filePath string) (io.ReadCloser, error) {
+	return a.impl.DownloadFile(ctx, DownloadFileRequest{
+		FilePath: filePath,
+	})
+}
+
+// Get the status of a file or directory.
+//
+// Returns the status of a file or directory.
+func (a *FilesAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error) {
+	return a.impl.GetStatus(ctx, request)
+}
+
+// Upload a file.
+//
+// Uploads a file of up to 2 GiB.
+func (a *FilesAPI) UploadFile(ctx context.Context, request UploadFileRequest) error {
+	return a.impl.UploadFile(ctx, request)
 }

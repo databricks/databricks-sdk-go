@@ -5,6 +5,7 @@ package {{.Name}}
 import (
 	{{range .ImportedPackages}}
 	"github.com/databricks/databricks-sdk-go/service/{{.}}"{{end}}
+	"io"
 )
 
 // all definitions in this file are in alphabetical order
@@ -60,6 +61,7 @@ func (f *{{.PascalName}}) Type() string {
 	{{- else if .IsInt64}}int64
 	{{- else if .IsFloat64}}float64
 	{{- else if .IsInt}}int
+	{{- else if .IsByteStream}}io.ReadCloser
 	{{- else if .ArrayValue }}[]{{template "type" .ArrayValue}}
 	{{- else if .MapValue }}map[string]{{template "type" .MapValue}}
 	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}

@@ -69,6 +69,39 @@ type httpClient interface {
 	CloseIdleConnections()
 }
 
+// Represents a request or response Body.
+//
+// If the provided request data is an io.ReadCloser, DebugBytes is set to
+// "<io.ReadCloser>". Otherwise, DebugBytes is set to the marshaled JSON
+// representation of the request data, and ReadCloser is set to a new
+// io.ReadCloser that reads from DebugBytes.
+type Body struct {
+	ReadCloser io.ReadCloser
+	DebugBytes []byte
+}
+
+func fromBytes(bs []byte) Body {
+	return Body{
+		ReadCloser: io.NopCloser(bytes.NewReader(bs)),
+		DebugBytes: bs,
+	}
+}
+
+func fromReader(r io.Reader) Body {
+	return Body{
+		ReadCloser: io.NopCloser(r),
+		DebugBytes: []byte("<io.Reader>"),
+	}
+}
+
+func fromJsonData(data any) (Body, error) {
+	bs, err := json.Marshal(data)
+	if err != nil {
+		return Body{}, err
+	}
+	return fromBytes(bs), nil
+}
+
 type DatabricksClient struct {
 	Config             *config.Config
 	rateLimiter        *rate.Limiter
@@ -95,24 +128,26 @@ func (c *DatabricksClient) Do(ctx context.Context, method, path string,
 	return c.unmarshal(body, response)
 }
 
-func (c *DatabricksClient) unmarshal(body []byte, response any) error {
+func (c *DatabricksClient) unmarshal(body *Body, response any) error {
 	if response == nil {
 		return nil
 	}
-	if len(body) == 0 {
+	// If the destination is bytes.Buffer, write the body over there
+	if raw, ok := response.(**io.ReadCloser); ok {
+		*raw = &body.ReadCloser
 		return nil
 	}
-	// If the destination is bytes.Buffer, write the body over there
-	if raw, ok := response.(*bytes.Buffer); ok {
-		_, err := raw.Write(body)
-		return err
+	defer func() { body.ReadCloser.Close() }()
+	bs := body.DebugBytes
+	if len(bs) == 0 {
+		return nil
 	}
 	// If the destination is a byte slice, pass the body verbatim.
 	if raw, ok := response.(*[]byte); ok {
-		*raw = body
+		*raw = bs
 		return nil
 	}
-	return json.Unmarshal(body, &response)
+	return json.Unmarshal(bs, &response)
 }
 
 func (c *DatabricksClient) addHostToRequestUrl(r *http.Request) error {
@@ -128,9 +163,20 @@ func (c *DatabricksClient) addHostToRequestUrl(r *http.Request) error {
 	return nil
 }
 
-func (c *DatabricksClient) addApplicationJsonContentType(r *http.Request) error {
-	r.Header.Set("Content-Type", "application/json")
-	return nil
+func (c *DatabricksClient) fromResponse(r *http.Response) (Body, error) {
+	safeToReadFullResponse := r.Header.Get("Content-Type") == "application/json"
+	if safeToReadFullResponse {
+		defer r.Body.Close()
+		bs, err := io.ReadAll(r.Body)
+		if err != nil {
+			return Body{}, err
+		}
+		return fromBytes(bs), nil
+	}
+	return Body{
+		ReadCloser: r.Body,
+		DebugBytes: []byte("<io.ReadCloser>"),
+	}, nil
 }
 
 func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string) {
@@ -144,15 +190,15 @@ func (c *DatabricksClient) attempt(
 	method string,
 	requestURL string,
 	headers map[string]string,
-	requestBody []byte,
+	requestBody Body,
 	visitors ...func(*http.Request) error,
-) func() (*bytes.Buffer, *retries.Err) {
-	return func() (*bytes.Buffer, *retries.Err) {
+) func() (*Body, *retries.Err) {
+	return func() (*Body, *retries.Err) {
 		err := c.rateLimiter.Wait(ctx)
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
-		request, err := http.NewRequestWithContext(ctx, method, requestURL, bytes.NewBuffer(requestBody))
+		request, err := http.NewRequestWithContext(ctx, method, requestURL, requestBody.ReadCloser)
 		for k, v := range headers {
 			request.Header.Set(k, v)
 		}
@@ -170,23 +216,10 @@ func (c *DatabricksClient) attempt(
 
 		// attempt the actual request
 		response, err := c.httpClient.Do(request)
+		responseBody, responseBodyErr := c.fromResponse(response)
 
-		// Read responseBody immediately because we need it regardless of success or failure.
 		//
-		// Fully read and close HTTP response responseBody to release HTTP connections.
-		//
-		// HTTP client's Transport may not reuse HTTP/1.x "keep-alive" TCP connections
-		// if the Body is not read to completion and closed.
-		//
-		// See: https://groups.google.com/g/golang-nuts/c/IoSvPz-rpfc
-		var responseBody bytes.Buffer
-		var responseBodyErr error
-		if response != nil {
-			_, responseBodyErr = responseBody.ReadFrom(response.Body)
-			response.Body.Close()
-		}
-
-		retry, err := apierr.CheckForRetry(ctx, response, err, responseBody.Bytes(), responseBodyErr)
+		retry, err := apierr.CheckForRetry(ctx, response, err, responseBody.DebugBytes, responseBodyErr)
 		var apiErr *apierr.APIError
 		if err != nil && !errors.As(err, &apiErr) {
 			err = fmt.Errorf("failed request: %w", err)
@@ -194,11 +227,8 @@ func (c *DatabricksClient) attempt(
 		if err == nil && response == nil {
 			err = fmt.Errorf("no response: %s %s", method, requestURL)
 		}
-		if err == nil && responseBodyErr != nil {
-			err = fmt.Errorf("response body: %w", responseBodyErr)
-		}
 
-		defer c.recordRequestLog(ctx, request, response, err, requestBody, responseBody.Bytes())
+		defer c.recordRequestLog(ctx, request, response, err, requestBody.DebugBytes, responseBody.DebugBytes)
 
 		if err == nil {
 			return &responseBody, nil
@@ -219,8 +249,7 @@ func (c *DatabricksClient) recordRequestLog(
 	request *http.Request,
 	response *http.Response,
 	err error,
-	requestBody []byte,
-	responseBody []byte,
+	requestBody, responseBody []byte,
 ) {
 	// Don't compute expensive debug message if debug logging is not enabled.
 	if !logger.Get(ctx).Enabled(ctx, logger.LevelDebug) {
@@ -281,7 +310,7 @@ func (c *DatabricksClient) perform(
 	headers map[string]string,
 	data interface{},
 	visitors ...func(*http.Request) error,
-) ([]byte, error) {
+) (*Body, error) {
 	requestBody, err := makeRequestBody(method, &requestURL, data)
 	if err != nil {
 		return nil, fmt.Errorf("request marshal: %w", err)
@@ -289,7 +318,6 @@ func (c *DatabricksClient) perform(
 	visitors = append([]func(*http.Request) error{
 		c.Config.Authenticate,
 		c.addHostToRequestUrl,
-		c.addApplicationJsonContentType,
 		c.addAuthHeaderToUserAgent,
 	}, visitors...)
 	resp, err := retries.Poll(ctx, c.retryTimeout,
@@ -298,7 +326,7 @@ func (c *DatabricksClient) perform(
 		// Don't re-wrap, as upper layers may depend on handling apierr.APIError.
 		return nil, err
 	}
-	return resp.Bytes(), nil
+	return resp, nil
 }
 
 func makeQueryString(data interface{}) (string, error) {
@@ -347,15 +375,15 @@ func makeQueryString(data interface{}) (string, error) {
 }
 
 // Remove all custom request serializer logic once APP-1331 is rolled out.
-type serializer func(any) ([]byte, error)
+type serializer func(any) (Body, error)
 
-func serializeQueryParamsToRequestBody(data any) ([]byte, error) {
+func serializeQueryParamsToRequestBody(data any) (Body, error) {
 	m := map[string]any{}
 	rv := reflect.ValueOf(data)
 	rt := reflect.TypeOf(data)
 	// If data is a map, just serialize it to JSON.
 	if rv.Kind() == reflect.Map {
-		return json.MarshalIndent(data, "", "  ")
+		return fromJsonData(data)
 	}
 	for i := 0; i < rv.NumField(); i++ {
 		field := rv.Field(i)
@@ -371,7 +399,7 @@ func serializeQueryParamsToRequestBody(data any) ([]byte, error) {
 		m[key] = value
 	}
 
-	return json.MarshalIndent(m, "", "  ")
+	return fromJsonData(data)
 }
 
 // List of (method, URL) pairs whose request bodies need to be serialized in a
@@ -398,10 +426,9 @@ func getRequestCustomSerializer(method string, requestURL *string) serializer {
 	return nil
 }
 
-func makeRequestBody(method string, requestURL *string, data interface{}) ([]byte, error) {
-	var requestBody []byte
+func makeRequestBody(method string, requestURL *string, data interface{}) (Body, error) {
 	if data == nil && (method == "DELETE" || method == "GET") {
-		return requestBody, nil
+		return Body{}, nil
 	}
 	if customSerializer := getRequestCustomSerializer(method, requestURL); customSerializer != nil {
 		return customSerializer(data)
@@ -409,29 +436,21 @@ func makeRequestBody(method string, requestURL *string, data interface{}) ([]byt
 	if method == "GET" || method == "DELETE" {
 		qs, err := makeQueryString(data)
 		if err != nil {
-			return nil, err
+			return Body{}, err
 		}
 		*requestURL += qs
-		return requestBody, nil
+		return fromBytes([]byte{}), nil
 	}
 	if bytes, ok := data.([]byte); ok {
-		return bytes, nil
+		return fromBytes(bytes), nil
 	}
 	if reader, ok := data.(io.Reader); ok {
-		raw, err := io.ReadAll(reader)
-		if err != nil {
-			return nil, fmt.Errorf("failed to read from reader: %w", err)
-		}
-		return raw, nil
+		return fromReader(reader), nil
 	}
 	if str, ok := data.(string); ok {
-		return []byte(str), nil
+		return fromBytes([]byte(str)), nil
 	}
-	bodyBytes, err := json.MarshalIndent(data, "", "  ")
-	if err != nil {
-		return nil, fmt.Errorf("request marshal failure: %w", err)
-	}
-	return bodyBytes, nil
+	return fromJsonData(data)
 }
 
 func orDefault(configured, _default int) int {

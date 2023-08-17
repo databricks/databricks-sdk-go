@@ -4,6 +4,7 @@ package files
 
 import (
 	"context"
+	"io"
 )
 
 // DBFS API makes it simple to interact with various data sources without having
@@ -134,4 +135,29 @@ type DbfsService interface {
 	// If `offset + length` exceeds the number of bytes in a file, it reads the
 	// contents until the end of file.",
 	Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error)
+}
+
+// The Files API allows you to read, write, and delete files and directories in
+// Unity Catalog volumes.
+type FilesService interface {
+
+	// Delete a file or directory.
+	//
+	// Deletes a file or directory.
+	DeleteFile(ctx context.Context, request DeleteFileRequest) error
+
+	// Download a file.
+	//
+	// Downloads a file of up to 2 GiB.
+	DownloadFile(ctx context.Context, request DownloadFileRequest) (io.ReadCloser, error)
+
+	// Get the status of a file or directory.
+	//
+	// Returns the status of a file or directory.
+	GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error)
+
+	// Upload a file.
+	//
+	// Uploads a file of up to 2 GiB.
+	UploadFile(ctx context.Context, request UploadFileRequest) error
 }

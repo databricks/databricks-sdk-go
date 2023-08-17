@@ -30,7 +30,7 @@ func TestAccFilesAPI(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
 	filePath := RandomName("/Volumes/bogdanghita/default/v3_shared/sdk-testing/txt-")
-	err := w.Files.Upload(ctx, filePath, strings.NewReader("abcd"))
+	err := w.Files.UploadFile(ctx, filePath, strings.NewReader("abcd"))
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		err = w.Files.Delete(ctx, filePath)

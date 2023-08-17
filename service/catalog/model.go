@@ -1701,55 +1701,8 @@ type ListSchemasResponse struct {
 	Schemas []SchemaInfo `json:"schemas,omitempty"`
 }
 
-// Get tags for a securable
-type ListSecurableTagsRequest struct {
-	// The fully qualified name of the unity catalog securable entity.
-	FullName string `json:"-" url:"-"`
-	// The type of the unity catalog securable entity.
-	SecurableType ListSecurableType `json:"-" url:"-"`
-}
-
-type ListSecurableType string
-
-const ListSecurableTypeCatalog ListSecurableType = `catalog`
-
-const ListSecurableTypeSchema ListSecurableType = `schema`
-
-const ListSecurableTypeTable ListSecurableType = `table`
-
-// String representation for [fmt.Print]
-func (f *ListSecurableType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ListSecurableType) Set(v string) error {
-	switch v {
-	case `catalog`, `schema`, `table`:
-		*f = ListSecurableType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "schema", "table"`, v)
-	}
-}
-
-// Type always returns ListSecurableType to satisfy [pflag.Value] interface
-func (f *ListSecurableType) Type() string {
-	return "ListSecurableType"
-}
-
 type ListStorageCredentialsResponse struct {
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
-}
-
-// Get tags for a subentity
-type ListSubentityTagsRequest struct {
-	// The fully qualified name of the unity catalog securable entity.
-	FullName string `json:"-" url:"-"`
-	// The type of the unity catalog securable entity.
-	SecurableType ListSecurableType `json:"-" url:"-"`
-	// The name of subentity associated with the securable entity
-	SubentityName string `json:"-" url:"-"`
 }
 
 // List table summaries
@@ -1960,8 +1913,6 @@ type Privilege string
 
 const PrivilegeAllPrivileges Privilege = `ALL_PRIVILEGES`
 
-const PrivilegeApplyTag Privilege = `APPLY_TAG`
-
 const PrivilegeCreate Privilege = `CREATE`
 
 const PrivilegeCreateCatalog Privilege = `CREATE_CATALOG`
@@ -2036,11 +1987,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
+	case `ALL_PRIVILEGES`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
 	}
 }
 
@@ -2453,62 +2404,6 @@ func (f *TableType) Type() string {
 	return "TableType"
 }
 
-type TagChanges struct {
-	// Tags to add for the current entity
-	AddTags []TagKeyValuePair `json:"add_tags,omitempty"`
-	// Tags to remove for the current entity
-	Remove []string `json:"remove,omitempty"`
-}
-
-type TagKeyValuePair struct {
-	// Tag key name
-	Key string `json:"key"`
-	// Tag value
-	Value string `json:"value"`
-}
-
-type TagSecurable struct {
-	// Name of the securable entity
-	FullName string `json:"full_name"`
-	// Type of the securable entity
-	Type string `json:"type"`
-}
-
-type TagSecurableAssignment struct {
-	// Securable entity associated with the tagging information
-	Securable TagSecurable `json:"securable"`
-	// tag assignments containing keys and values for the securable entity
-	TagKeyValuePairs []TagKeyValuePair `json:"tag_key_value_pairs"`
-}
-
-type TagSecurableAssignmentsList struct {
-	// An array of tag assignments on a securable
-	TagAssignments []TagSecurableAssignment `json:"tag_assignments"`
-}
-
-type TagSubentity struct {
-	// Name of the securable entity
-	FullName string `json:"full_name"`
-	// Name of the subentity
-	Subentity string `json:"subentity"`
-	// Type of the securable entity
-	Type string `json:"type"`
-}
-
-type TagSubentityAssignmentsList struct {
-	// An array of subentity tag assignments on a subentity
-	TagAssignments []TagsSubentityAssignment `json:"tag_assignments"`
-}
-
-type TagsSubentityAssignment struct {
-	// Subentity associated with the tagging information
-	Securable TagSubentity `json:"securable"`
-	// Name of the subentity
-	Subentity string `json:"subentity"`
-	// tag assignments containing keys and values for the securable entity
-	TagKeyValuePairs []TagKeyValuePair `json:"tag_key_value_pairs"`
-}
-
 // Delete an assignment
 type UnassignRequest struct {
 	// Query for the ID of the metastore to delete.
@@ -2667,35 +2562,6 @@ type UpdateSchema struct {
 	Properties map[string]string `json:"properties,omitempty"`
 }
 
-type UpdateSecurableType string
-
-const UpdateSecurableTypeCatalog UpdateSecurableType = `catalog`
-
-const UpdateSecurableTypeSchema UpdateSecurableType = `schema`
-
-const UpdateSecurableTypeTable UpdateSecurableType = `table`
-
-// String representation for [fmt.Print]
-func (f *UpdateSecurableType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *UpdateSecurableType) Set(v string) error {
-	switch v {
-	case `catalog`, `schema`, `table`:
-		*f = UpdateSecurableType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "schema", "table"`, v)
-	}
-}
-
-// Type always returns UpdateSecurableType to satisfy [pflag.Value] interface
-func (f *UpdateSecurableType) Type() string {
-	return "UpdateSecurableType"
-}
-
 type UpdateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
@@ -2727,17 +2593,6 @@ type UpdateTableRequest struct {
 	FullName string `json:"-" url:"-"`
 
 	Owner string `json:"owner,omitempty"`
-}
-
-type UpdateTags struct {
-	// Desired changes to be made to the tag assignments on the entity
-	Changes TagChanges `json:"changes"`
-	// The fully qualified name of the unity catalog securable entity.
-	FullName string `json:"-" url:"-"`
-	// The type of the unity catalog securable entity.
-	SecurableType UpdateSecurableType `json:"-" url:"-"`
-	// The name of subentity associated with the securable entity
-	SubentityName string `json:"-" url:"-"`
 }
 
 type UpdateVolumeRequestContent struct {
