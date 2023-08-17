@@ -34,14 +34,9 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if !cfg.IsAzure() {
 		return nil, nil
 	}
-	err := cfg.azureEnsureWorkspaceUrl(ctx, c)
-	if err != nil {
-		return nil, fmt.Errorf("resolve host: %w", err)
-	}
-	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
 	// Eagerly get a token to fail fast in case the user is not logged in with the Azure CLI.
 	ts := &azureCliTokenSource{cfg.getAzureLoginAppID(), cfg.AzureResourceID}
-	_, err = ts.Token()
+	_, err := ts.Token()
 	if err != nil {
 		if strings.Contains(err.Error(), "No subscription found") {
 			// auth is not configured
@@ -54,6 +49,11 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		}
 		return nil, err
 	}
+	err = cfg.azureEnsureWorkspaceUrl(ctx, c)
+	if err != nil {
+		return nil, fmt.Errorf("resolve host: %w", err)
+	}
+	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
 
 	// There are three scenarios:
 	//
