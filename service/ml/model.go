@@ -441,6 +441,23 @@ type DeleteRun struct {
 	RunId string `json:"run_id"`
 }
 
+type DeleteRuns struct {
+	// The ID of the experiment containing the runs to delete.
+	ExperimentId string `json:"experiment_id"`
+	// An optional positive integer indicating the maximum number of runs to
+	// delete. The maximum allowed value for max_runs is 10000.
+	MaxRuns int `json:"max_runs,omitempty"`
+	// The maximum creation timestamp in milliseconds since the UNIX epoch for
+	// deleting runs. Only runs created prior to or at this timestamp are
+	// deleted.
+	MaxTimestampMillis int64 `json:"max_timestamp_millis"`
+}
+
+type DeleteRunsResponse struct {
+	// The number of runs deleted.
+	RunsDeleted int `json:"runs_deleted,omitempty"`
+}
+
 type DeleteTag struct {
 	// Name of the tag. Maximum size is 255 bytes. Must be provided.
 	Key string `json:"key"`
@@ -1447,6 +1464,23 @@ type RestoreExperiment struct {
 type RestoreRun struct {
 	// ID of the run to restore.
 	RunId string `json:"run_id"`
+}
+
+type RestoreRuns struct {
+	// The ID of the experiment containing the runs to restore.
+	ExperimentId string `json:"experiment_id"`
+	// An optional positive integer indicating the maximum number of runs to
+	// restore. The maximum allowed value for max_runs is 10000.
+	MaxRuns int `json:"max_runs,omitempty"`
+	// The minimum deletion timestamp in milliseconds since the UNIX epoch for
+	// restoring runs. Only runs deleted no earlier than this timestamp are
+	// restored.
+	MinTimestampMillis int64 `json:"min_timestamp_millis"`
+}
+
+type RestoreRunsResponse struct {
+	// The number of runs restored.
+	RunsRestored int `json:"runs_restored,omitempty"`
 }
 
 type Run struct {

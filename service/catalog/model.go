@@ -59,6 +59,53 @@ type AccountsUpdateStorageCredential struct {
 	Name string `json:"-" url:"-"`
 }
 
+type ArtifactAllowlistInfo struct {
+	ArtifactMatchers *ArtifactMatcher `json:"artifact_matchers,omitempty"`
+	// Time at which this artifact allowlist was set, in epoch milliseconds.
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// Username of the user who set the artifact allowlist.
+	CreatedBy string `json:"created_by,omitempty"`
+	// Unique identifier of parent metastore.
+	MetastoreId string `json:"metastore_id,omitempty"`
+}
+
+type ArtifactMatcher struct {
+	// The artifact path or maven coordinate
+	Artifact string `json:"artifact"`
+	// The pattern matching type of the artifact
+	MatchType MatchType `json:"match_type"`
+}
+
+// The artifact type
+type ArtifactType string
+
+const ArtifactTypeInitScript ArtifactType = `INIT_SCRIPT`
+
+const ArtifactTypeLibraryJar ArtifactType = `LIBRARY_JAR`
+
+const ArtifactTypeLibraryMaven ArtifactType = `LIBRARY_MAVEN`
+
+// String representation for [fmt.Print]
+func (f *ArtifactType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ArtifactType) Set(v string) error {
+	switch v {
+	case `INIT_SCRIPT`, `LIBRARY_JAR`, `LIBRARY_MAVEN`:
+		*f = ArtifactType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "INIT_SCRIPT", "LIBRARY_JAR", "LIBRARY_MAVEN"`, v)
+	}
+}
+
+// Type always returns ArtifactType to satisfy [pflag.Value] interface
+func (f *ArtifactType) Type() string {
+	return "ArtifactType"
+}
+
 type AwsIamRole struct {
 	// The external ID used in role assumption to prevent confused deputy
 	// problem..
@@ -109,10 +156,10 @@ type CatalogInfo struct {
 	// Username of catalog creator.
 	CreatedBy string `json:"created_by,omitempty"`
 
-	EffectiveAutoMaintenanceFlag *EffectiveAutoMaintenanceFlag `json:"effective_auto_maintenance_flag,omitempty"`
-	// Whether auto maintenance should be enabled for this object and objects
-	// under it.
-	EnableAutoMaintenance EnableAutoMaintenance `json:"enable_auto_maintenance,omitempty"`
+	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
+	// Whether predictive optimization should be enabled for this object and
+	// objects under it.
+	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
@@ -939,51 +986,51 @@ func (f *DisableSchemaName) Type() string {
 	return "DisableSchemaName"
 }
 
-type EffectiveAutoMaintenanceFlag struct {
+type EffectivePermissionsList struct {
+	// The privileges conveyed to each principal (either directly or via
+	// inheritance)
+	PrivilegeAssignments []EffectivePrivilegeAssignment `json:"privilege_assignments,omitempty"`
+}
+
+type EffectivePredictiveOptimizationFlag struct {
 	// The name of the object from which the flag was inherited. If there was no
 	// inheritance, this field is left blank.
 	InheritedFromName string `json:"inherited_from_name,omitempty"`
 	// The type of the object from which the flag was inherited. If there was no
 	// inheritance, this field is left blank.
-	InheritedFromType EffectiveAutoMaintenanceFlagInheritedFromType `json:"inherited_from_type,omitempty"`
-	// Whether auto maintenance should be enabled for this object and objects
-	// under it.
-	Value EnableAutoMaintenance `json:"value"`
+	InheritedFromType EffectivePredictiveOptimizationFlagInheritedFromType `json:"inherited_from_type,omitempty"`
+	// Whether predictive optimization should be enabled for this object and
+	// objects under it.
+	Value EnablePredictiveOptimization `json:"value"`
 }
 
 // The type of the object from which the flag was inherited. If there was no
 // inheritance, this field is left blank.
-type EffectiveAutoMaintenanceFlagInheritedFromType string
+type EffectivePredictiveOptimizationFlagInheritedFromType string
 
-const EffectiveAutoMaintenanceFlagInheritedFromTypeCatalog EffectiveAutoMaintenanceFlagInheritedFromType = `CATALOG`
+const EffectivePredictiveOptimizationFlagInheritedFromTypeCatalog EffectivePredictiveOptimizationFlagInheritedFromType = `CATALOG`
 
-const EffectiveAutoMaintenanceFlagInheritedFromTypeSchema EffectiveAutoMaintenanceFlagInheritedFromType = `SCHEMA`
+const EffectivePredictiveOptimizationFlagInheritedFromTypeSchema EffectivePredictiveOptimizationFlagInheritedFromType = `SCHEMA`
 
 // String representation for [fmt.Print]
-func (f *EffectiveAutoMaintenanceFlagInheritedFromType) String() string {
+func (f *EffectivePredictiveOptimizationFlagInheritedFromType) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *EffectiveAutoMaintenanceFlagInheritedFromType) Set(v string) error {
+func (f *EffectivePredictiveOptimizationFlagInheritedFromType) Set(v string) error {
 	switch v {
 	case `CATALOG`, `SCHEMA`:
-		*f = EffectiveAutoMaintenanceFlagInheritedFromType(v)
+		*f = EffectivePredictiveOptimizationFlagInheritedFromType(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CATALOG", "SCHEMA"`, v)
 	}
 }
 
-// Type always returns EffectiveAutoMaintenanceFlagInheritedFromType to satisfy [pflag.Value] interface
-func (f *EffectiveAutoMaintenanceFlagInheritedFromType) Type() string {
-	return "EffectiveAutoMaintenanceFlagInheritedFromType"
-}
-
-type EffectivePermissionsList struct {
-	// The privileges conveyed to each principal (either directly or via
-	// inheritance)
-	PrivilegeAssignments []EffectivePrivilegeAssignment `json:"privilege_assignments,omitempty"`
+// Type always returns EffectivePredictiveOptimizationFlagInheritedFromType to satisfy [pflag.Value] interface
+func (f *EffectivePredictiveOptimizationFlagInheritedFromType) Type() string {
+	return "EffectivePredictiveOptimizationFlagInheritedFromType"
 }
 
 type EffectivePrivilege struct {
@@ -1007,35 +1054,35 @@ type EffectivePrivilegeAssignment struct {
 	Privileges []EffectivePrivilege `json:"privileges,omitempty"`
 }
 
-// Whether auto maintenance should be enabled for this object and objects under
-// it.
-type EnableAutoMaintenance string
+// Whether predictive optimization should be enabled for this object and objects
+// under it.
+type EnablePredictiveOptimization string
 
-const EnableAutoMaintenanceDisable EnableAutoMaintenance = `DISABLE`
+const EnablePredictiveOptimizationDisable EnablePredictiveOptimization = `DISABLE`
 
-const EnableAutoMaintenanceEnable EnableAutoMaintenance = `ENABLE`
+const EnablePredictiveOptimizationEnable EnablePredictiveOptimization = `ENABLE`
 
-const EnableAutoMaintenanceInherit EnableAutoMaintenance = `INHERIT`
+const EnablePredictiveOptimizationInherit EnablePredictiveOptimization = `INHERIT`
 
 // String representation for [fmt.Print]
-func (f *EnableAutoMaintenance) String() string {
+func (f *EnablePredictiveOptimization) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *EnableAutoMaintenance) Set(v string) error {
+func (f *EnablePredictiveOptimization) Set(v string) error {
 	switch v {
 	case `DISABLE`, `ENABLE`, `INHERIT`:
-		*f = EnableAutoMaintenance(v)
+		*f = EnablePredictiveOptimization(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DISABLE", "ENABLE", "INHERIT"`, v)
 	}
 }
 
-// Type always returns EnableAutoMaintenance to satisfy [pflag.Value] interface
-func (f *EnableAutoMaintenance) Type() string {
-	return "EnableAutoMaintenance"
+// Type always returns EnablePredictiveOptimization to satisfy [pflag.Value] interface
+func (f *EnablePredictiveOptimization) Type() string {
+	return "EnablePredictiveOptimization"
 }
 
 // Enable a system schema
@@ -1414,6 +1461,12 @@ type GetAccountStorageCredentialRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+// Get an artifact allowlist
+type GetArtifactAllowlistRequest struct {
+	// The artifact type of the allowlist.
+	ArtifactType ArtifactType `json:"-" url:"-"`
+}
+
 // Get a catalog
 type GetCatalogRequest struct {
 	// The name of the catalog.
@@ -1648,8 +1701,55 @@ type ListSchemasResponse struct {
 	Schemas []SchemaInfo `json:"schemas,omitempty"`
 }
 
+// Get tags for a securable
+type ListSecurableTagsRequest struct {
+	// The fully qualified name of the unity catalog securable entity.
+	FullName string `json:"-" url:"-"`
+	// The type of the unity catalog securable entity.
+	SecurableType ListSecurableType `json:"-" url:"-"`
+}
+
+type ListSecurableType string
+
+const ListSecurableTypeCatalog ListSecurableType = `catalog`
+
+const ListSecurableTypeSchema ListSecurableType = `schema`
+
+const ListSecurableTypeTable ListSecurableType = `table`
+
+// String representation for [fmt.Print]
+func (f *ListSecurableType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ListSecurableType) Set(v string) error {
+	switch v {
+	case `catalog`, `schema`, `table`:
+		*f = ListSecurableType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "catalog", "schema", "table"`, v)
+	}
+}
+
+// Type always returns ListSecurableType to satisfy [pflag.Value] interface
+func (f *ListSecurableType) Type() string {
+	return "ListSecurableType"
+}
+
 type ListStorageCredentialsResponse struct {
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
+}
+
+// Get tags for a subentity
+type ListSubentityTagsRequest struct {
+	// The fully qualified name of the unity catalog securable entity.
+	FullName string `json:"-" url:"-"`
+	// The type of the unity catalog securable entity.
+	SecurableType ListSecurableType `json:"-" url:"-"`
+	// The name of subentity associated with the securable entity
+	SubentityName string `json:"-" url:"-"`
 }
 
 // List table summaries
@@ -1723,6 +1823,32 @@ type ListVolumesRequest struct {
 
 type ListVolumesResponseContent struct {
 	Volumes []VolumeInfo `json:"volumes,omitempty"`
+}
+
+// The artifact pattern matching type
+type MatchType string
+
+const MatchTypePrefixMatch MatchType = `PREFIX_MATCH`
+
+// String representation for [fmt.Print]
+func (f *MatchType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *MatchType) Set(v string) error {
+	switch v {
+	case `PREFIX_MATCH`:
+		*f = MatchType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PREFIX_MATCH"`, v)
+	}
+}
+
+// Type always returns MatchType to satisfy [pflag.Value] interface
+func (f *MatchType) Type() string {
+	return "MatchType"
 }
 
 type MetastoreAssignment struct {
@@ -1834,6 +1960,8 @@ type Privilege string
 
 const PrivilegeAllPrivileges Privilege = `ALL_PRIVILEGES`
 
+const PrivilegeApplyTag Privilege = `APPLY_TAG`
+
 const PrivilegeCreate Privilege = `CREATE`
 
 const PrivilegeCreateCatalog Privilege = `CREATE_CATALOG`
@@ -1908,11 +2036,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ALL_PRIVILEGES`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
+	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
 	}
 }
 
@@ -1983,10 +2111,10 @@ type SchemaInfo struct {
 	// Username of schema creator.
 	CreatedBy string `json:"created_by,omitempty"`
 
-	EffectiveAutoMaintenanceFlag *EffectiveAutoMaintenanceFlag `json:"effective_auto_maintenance_flag,omitempty"`
-	// Whether auto maintenance should be enabled for this object and objects
-	// under it.
-	EnableAutoMaintenance EnableAutoMaintenance `json:"enable_auto_maintenance,omitempty"`
+	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
+	// Whether predictive optimization should be enabled for this object and
+	// objects under it.
+	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Full name of schema, in form of __catalog_name__.__schema_name__.
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
@@ -2059,6 +2187,12 @@ func (f *SecurableType) Set(v string) error {
 // Type always returns SecurableType to satisfy [pflag.Value] interface
 func (f *SecurableType) Type() string {
 	return "SecurableType"
+}
+
+type SetArtifactAllowlist struct {
+	ArtifactMatchers ArtifactMatcher `json:"artifact_matchers"`
+	// The artifact type of the allowlist.
+	ArtifactType ArtifactType `json:"-" url:"-"`
 }
 
 // Server-Side Encryption properties for clients communicating with AWS s3.
@@ -2221,10 +2355,10 @@ type TableInfo struct {
 	// Information pertaining to current state of the delta table.
 	DeltaRuntimePropertiesKvpairs *DeltaRuntimePropertiesKvPairs `json:"delta_runtime_properties_kvpairs,omitempty"`
 
-	EffectiveAutoMaintenanceFlag *EffectiveAutoMaintenanceFlag `json:"effective_auto_maintenance_flag,omitempty"`
-	// Whether auto maintenance should be enabled for this object and objects
-	// under it.
-	EnableAutoMaintenance EnableAutoMaintenance `json:"enable_auto_maintenance,omitempty"`
+	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
+	// Whether predictive optimization should be enabled for this object and
+	// objects under it.
+	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Full name of table, in form of
@@ -2317,6 +2451,62 @@ func (f *TableType) Set(v string) error {
 // Type always returns TableType to satisfy [pflag.Value] interface
 func (f *TableType) Type() string {
 	return "TableType"
+}
+
+type TagChanges struct {
+	// Tags to add for the current entity
+	AddTags []TagKeyValuePair `json:"add_tags,omitempty"`
+	// Tags to remove for the current entity
+	Remove []string `json:"remove,omitempty"`
+}
+
+type TagKeyValuePair struct {
+	// Tag key name
+	Key string `json:"key"`
+	// Tag value
+	Value string `json:"value"`
+}
+
+type TagSecurable struct {
+	// Name of the securable entity
+	FullName string `json:"full_name"`
+	// Type of the securable entity
+	Type string `json:"type"`
+}
+
+type TagSecurableAssignment struct {
+	// Securable entity associated with the tagging information
+	Securable TagSecurable `json:"securable"`
+	// tag assignments containing keys and values for the securable entity
+	TagKeyValuePairs []TagKeyValuePair `json:"tag_key_value_pairs"`
+}
+
+type TagSecurableAssignmentsList struct {
+	// An array of tag assignments on a securable
+	TagAssignments []TagSecurableAssignment `json:"tag_assignments"`
+}
+
+type TagSubentity struct {
+	// Name of the securable entity
+	FullName string `json:"full_name"`
+	// Name of the subentity
+	Subentity string `json:"subentity"`
+	// Type of the securable entity
+	Type string `json:"type"`
+}
+
+type TagSubentityAssignmentsList struct {
+	// An array of subentity tag assignments on a subentity
+	TagAssignments []TagsSubentityAssignment `json:"tag_assignments"`
+}
+
+type TagsSubentityAssignment struct {
+	// Subentity associated with the tagging information
+	Securable TagSubentity `json:"securable"`
+	// Name of the subentity
+	Subentity string `json:"subentity"`
+	// tag assignments containing keys and values for the securable entity
+	TagKeyValuePairs []TagKeyValuePair `json:"tag_key_value_pairs"`
 }
 
 // Delete an assignment
@@ -2477,6 +2667,35 @@ type UpdateSchema struct {
 	Properties map[string]string `json:"properties,omitempty"`
 }
 
+type UpdateSecurableType string
+
+const UpdateSecurableTypeCatalog UpdateSecurableType = `catalog`
+
+const UpdateSecurableTypeSchema UpdateSecurableType = `schema`
+
+const UpdateSecurableTypeTable UpdateSecurableType = `table`
+
+// String representation for [fmt.Print]
+func (f *UpdateSecurableType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *UpdateSecurableType) Set(v string) error {
+	switch v {
+	case `catalog`, `schema`, `table`:
+		*f = UpdateSecurableType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "catalog", "schema", "table"`, v)
+	}
+}
+
+// Type always returns UpdateSecurableType to satisfy [pflag.Value] interface
+func (f *UpdateSecurableType) Type() string {
+	return "UpdateSecurableType"
+}
+
 type UpdateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
@@ -2508,6 +2727,17 @@ type UpdateTableRequest struct {
 	FullName string `json:"-" url:"-"`
 
 	Owner string `json:"owner,omitempty"`
+}
+
+type UpdateTags struct {
+	// Desired changes to be made to the tag assignments on the entity
+	Changes TagChanges `json:"changes"`
+	// The fully qualified name of the unity catalog securable entity.
+	FullName string `json:"-" url:"-"`
+	// The type of the unity catalog securable entity.
+	SecurableType UpdateSecurableType `json:"-" url:"-"`
+	// The name of subentity associated with the securable entity
+	SubentityName string `json:"-" url:"-"`
 }
 
 type UpdateVolumeRequestContent struct {
