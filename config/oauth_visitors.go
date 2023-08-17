@@ -28,8 +28,7 @@ func retriableTokenSource(ctx context.Context, ts oauth2.TokenSource) (*oauth2.T
 }
 
 // serviceToServiceVisitor returns a visitor that sets the Authorization header to the token from the auth token source
-// and the provided secondary header to the token from the secondary token source. If secondary is nil, the secondary
-// header is not set.
+// and the provided secondary header to the token from the secondary token source.
 func serviceToServiceVisitor(auth, secondary oauth2.TokenSource, secondaryHeader string) func(r *http.Request) error {
 	refreshableAuth := oauth2.ReuseTokenSource(nil, auth)
 	refreshableSecondary := oauth2.ReuseTokenSource(nil, secondary)
