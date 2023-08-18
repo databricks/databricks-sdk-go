@@ -255,6 +255,21 @@ type GetRepoRequest struct {
 	RepoId int64 `json:"-" url:"-"`
 }
 
+// Get a secret
+type GetSecretRequest struct {
+	// The key to fetch secret for.
+	Key string `json:"-" url:"key"`
+	// The name of the scope to fetch secret information from.
+	Scope string `json:"-" url:"scope"`
+}
+
+type GetSecretResponse struct {
+	// A unique name to identify the secret.
+	Key string `json:"key,omitempty"`
+	// The value of the secret in its byte representation.
+	Value string `json:"value,omitempty"`
+}
+
 // Get status
 type GetStatusRequest struct {
 	// The absolute path of the notebook or directory.

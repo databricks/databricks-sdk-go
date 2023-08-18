@@ -125,6 +125,25 @@ func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request Acco
 	return &accountsStorageCredentialInfo, err
 }
 
+// unexported type that holds implementations of just ArtifactAllowlists API methods
+type artifactAllowlistsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *artifactAllowlistsImpl) Get(ctx context.Context, request GetArtifactAllowlistRequest) (*ArtifactAllowlistInfo, error) {
+	var artifactAllowlistInfo ArtifactAllowlistInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/artifact-allowlists/%v", request.ArtifactType)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &artifactAllowlistInfo)
+	return &artifactAllowlistInfo, err
+}
+
+func (a *artifactAllowlistsImpl) Update(ctx context.Context, request SetArtifactAllowlist) (*ArtifactAllowlistInfo, error) {
+	var artifactAllowlistInfo ArtifactAllowlistInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/artifact-allowlists/%v", request.ArtifactType)
+	err := a.client.Do(ctx, http.MethodPut, path, request, &artifactAllowlistInfo)
+	return &artifactAllowlistInfo, err
+}
+
 // unexported type that holds implementations of just Catalogs API methods
 type catalogsImpl struct {
 	client *client.DatabricksClient
@@ -424,6 +443,25 @@ func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*Schema
 	return &schemaInfo, err
 }
 
+// unexported type that holds implementations of just SecurableTags API methods
+type securableTagsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *securableTagsImpl) List(ctx context.Context, request ListSecurableTagsRequest) (*TagSecurableAssignmentsList, error) {
+	var tagSecurableAssignmentsList TagSecurableAssignmentsList
+	path := fmt.Sprintf("/api/2.1/unity-catalog/securable-tags/%v/%v", request.SecurableType, request.FullName)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &tagSecurableAssignmentsList)
+	return &tagSecurableAssignmentsList, err
+}
+
+func (a *securableTagsImpl) Update(ctx context.Context, request UpdateTags) (*TagSecurableAssignmentsList, error) {
+	var tagSecurableAssignmentsList TagSecurableAssignmentsList
+	path := fmt.Sprintf("/api/2.1/unity-catalog/securable-tags/%v/%v", request.SecurableType, request.FullName)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &tagSecurableAssignmentsList)
+	return &tagSecurableAssignmentsList, err
+}
+
 // unexported type that holds implementations of just StorageCredentials API methods
 type storageCredentialsImpl struct {
 	client *client.DatabricksClient
@@ -468,6 +506,25 @@ func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateS
 	path := "/api/2.1/unity-catalog/validate-storage-credentials"
 	err := a.client.Do(ctx, http.MethodPost, path, request, &validateStorageCredentialResponse)
 	return &validateStorageCredentialResponse, err
+}
+
+// unexported type that holds implementations of just SubentityTags API methods
+type subentityTagsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *subentityTagsImpl) List(ctx context.Context, request ListSubentityTagsRequest) (*TagSubentityAssignmentsList, error) {
+	var tagSubentityAssignmentsList TagSubentityAssignmentsList
+	path := fmt.Sprintf("/api/2.1/unity-catalog/subentity-tags/%v/%v/%v", request.SecurableType, request.FullName, request.SubentityName)
+	err := a.client.Do(ctx, http.MethodGet, path, request, &tagSubentityAssignmentsList)
+	return &tagSubentityAssignmentsList, err
+}
+
+func (a *subentityTagsImpl) Update(ctx context.Context, request UpdateTags) (*TagSubentityAssignmentsList, error) {
+	var tagSubentityAssignmentsList TagSubentityAssignmentsList
+	path := fmt.Sprintf("/api/2.1/unity-catalog/subentity-tags/%v/%v/%v", request.SecurableType, request.FullName, request.SubentityName)
+	err := a.client.Do(ctx, http.MethodPatch, path, request, &tagSubentityAssignmentsList)
+	return &tagSubentityAssignmentsList, err
 }
 
 // unexported type that holds implementations of just SystemSchemas API methods

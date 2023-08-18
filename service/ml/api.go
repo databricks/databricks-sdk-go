@@ -83,6 +83,14 @@ func (a *ExperimentsAPI) DeleteRun(ctx context.Context, request DeleteRun) error
 	return a.impl.DeleteRun(ctx, request)
 }
 
+// Delete runs by creation time.
+//
+// Bulk delete runs in an experiment that were created prior to or at the
+// specified timestamp. Deletes at most max_runs per request.
+func (a *ExperimentsAPI) DeleteRuns(ctx context.Context, request DeleteRuns) (*DeleteRunsResponse, error) {
+	return a.impl.DeleteRuns(ctx, request)
+}
+
 // Delete a tag.
 //
 // Deletes a tag on a run. Tags are run metadata that can be updated during a
@@ -316,6 +324,14 @@ func (a *ExperimentsAPI) RestoreExperiment(ctx context.Context, request RestoreE
 // Restores a deleted run.
 func (a *ExperimentsAPI) RestoreRun(ctx context.Context, request RestoreRun) error {
 	return a.impl.RestoreRun(ctx, request)
+}
+
+// Restore runs by deletion time.
+//
+// Bulk restore runs in an experiment that were deleted no earlier than the
+// specified timestamp. Restores at most max_runs per request.
+func (a *ExperimentsAPI) RestoreRuns(ctx context.Context, request RestoreRuns) (*RestoreRunsResponse, error) {
+	return a.impl.RestoreRuns(ctx, request)
 }
 
 // Search experiments.

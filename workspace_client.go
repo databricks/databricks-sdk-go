@@ -39,6 +39,11 @@ type WorkspaceClient struct {
 	// :method:jobs/create.
 	Alerts *sql.AlertsAPI
 
+	// In Databricks Runtime 13.3 and above, you can add libraries and init
+	// scripts to the `allowlist` in UC so that users can leverage these
+	// artifacts on compute configured with shared access mode.
+	ArtifactAllowlists *catalog.ArtifactAllowlistsAPI
+
 	// A catalog is the first layer of Unity Catalog’s three-level namespace.
 	// It’s used to organize your data assets. Users can see all catalogs on
 	// which they have been assigned the USE_CATALOG data permission.
@@ -523,6 +528,12 @@ type WorkspaceClient struct {
 	// prevent such users from reading secrets.
 	Secrets *workspace.SecretsAPI
 
+	// Tags are attributes containing keys and values that can be applied to
+	// different entities in Unity Catalog. Tags are useful for organizing and
+	// categorizing different entities within a metastore. SecurableTags are
+	// attached to Unity Catalog securable entities.
+	SecurableTags *catalog.SecurableTagsAPI
+
 	// Identities for use with jobs, automated tools, and systems such as
 	// scripts, apps, and CI/CD platforms. Databricks recommends creating
 	// service principals to run production jobs or modify production data. If
@@ -761,6 +772,12 @@ type WorkspaceClient struct {
 	// ownership to another user or group to manage permissions on it.
 	StorageCredentials *catalog.StorageCredentialsAPI
 
+	// Tags are attributes containing keys and values that can be applied to
+	// different entities in Unity Catalog. Tags are useful for organizing and
+	// categorizing different entities within a metastore. SubentityTags are
+	// attached to Unity Catalog subentities.
+	SubentityTags *catalog.SubentityTagsAPI
+
 	// A system schema is a schema that lives within the system catalog. A
 	// system schema may contain information about customer usage of Unity
 	// Catalog such as audit-logs, billing-logs, lineage information, etc.
@@ -873,6 +890,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 
 		AccountAccessControlProxy: iam.NewAccountAccessControlProxy(apiClient),
 		Alerts:                    sql.NewAlerts(apiClient),
+		ArtifactAllowlists:        catalog.NewArtifactAllowlists(apiClient),
 		Catalogs:                  catalog.NewCatalogs(apiClient),
 		CleanRooms:                sharing.NewCleanRooms(apiClient),
 		ClusterPolicies:           compute.NewClusterPolicies(apiClient),
@@ -909,11 +927,13 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Repos:                     workspace.NewRepos(apiClient),
 		Schemas:                   catalog.NewSchemas(apiClient),
 		Secrets:                   workspace.NewSecrets(apiClient),
+		SecurableTags:             catalog.NewSecurableTags(apiClient),
 		ServicePrincipals:         iam.NewServicePrincipals(apiClient),
 		ServingEndpoints:          serving.NewServingEndpoints(apiClient),
 		Shares:                    sharing.NewShares(apiClient),
 		StatementExecution:        sql.NewStatementExecution(apiClient),
 		StorageCredentials:        catalog.NewStorageCredentials(apiClient),
+		SubentityTags:             catalog.NewSubentityTags(apiClient),
 		SystemSchemas:             catalog.NewSystemSchemas(apiClient),
 		TableConstraints:          catalog.NewTableConstraints(apiClient),
 		Tables:                    catalog.NewTables(apiClient),
