@@ -41,6 +41,13 @@ func (a *experimentsImpl) DeleteRun(ctx context.Context, request DeleteRun) erro
 	return err
 }
 
+func (a *experimentsImpl) DeleteRuns(ctx context.Context, request DeleteRuns) (*DeleteRunsResponse, error) {
+	var deleteRunsResponse DeleteRunsResponse
+	path := "/api/2.0/mlflow/databricks/runs/delete-runs"
+	err := a.client.Do(ctx, http.MethodPost, path, request, &deleteRunsResponse)
+	return &deleteRunsResponse, err
+}
+
 func (a *experimentsImpl) DeleteTag(ctx context.Context, request DeleteTag) error {
 	path := "/api/2.0/mlflow/runs/delete-tag"
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
@@ -143,6 +150,13 @@ func (a *experimentsImpl) RestoreRun(ctx context.Context, request RestoreRun) er
 	path := "/api/2.0/mlflow/runs/restore"
 	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
 	return err
+}
+
+func (a *experimentsImpl) RestoreRuns(ctx context.Context, request RestoreRuns) (*RestoreRunsResponse, error) {
+	var restoreRunsResponse RestoreRunsResponse
+	path := "/api/2.0/mlflow/databricks/runs/restore-runs"
+	err := a.client.Do(ctx, http.MethodPost, path, request, &restoreRunsResponse)
+	return &restoreRunsResponse, err
 }
 
 func (a *experimentsImpl) SearchExperiments(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error) {

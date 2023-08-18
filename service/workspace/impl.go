@@ -150,6 +150,13 @@ func (a *secretsImpl) GetAcl(ctx context.Context, request GetAclRequest) (*AclIt
 	return &aclItem, err
 }
 
+func (a *secretsImpl) GetSecret(ctx context.Context, request GetSecretRequest) (*GetSecretResponse, error) {
+	var getSecretResponse GetSecretResponse
+	path := "/api/2.0/secrets/get"
+	err := a.client.Do(ctx, http.MethodGet, path, request, &getSecretResponse)
+	return &getSecretResponse, err
+}
+
 func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) (*ListAclsResponse, error) {
 	var listAclsResponse ListAclsResponse
 	path := "/api/2.0/secrets/acls/list"
