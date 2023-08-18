@@ -1,6 +1,7 @@
 package code
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -14,7 +15,7 @@ type Batch struct {
 }
 
 // NewFromFile loads OpenAPI specification from file
-func NewFromFile(name string) (*Batch, error) {
+func NewFromFile(ctx context.Context, name string) (*Batch, error) {
 	f, err := os.Open(name)
 	if err != nil {
 		return nil, fmt.Errorf("no %s file: %w", name, err)
@@ -24,11 +25,11 @@ func NewFromFile(name string) (*Batch, error) {
 	if err != nil {
 		return nil, fmt.Errorf("spec from %s: %w", name, err)
 	}
-	return NewFromSpec(spec)
+	return NewFromSpec(ctx, spec)
 }
 
 // NewFromSpec converts OpenAPI spec to intermediate representation
-func NewFromSpec(spec *openapi.Specification) (*Batch, error) {
+func NewFromSpec(ctx context.Context, spec *openapi.Specification) (*Batch, error) {
 	batch := Batch{
 		packages: map[string]*Package{},
 	}
@@ -43,7 +44,7 @@ func NewFromSpec(spec *openapi.Specification) (*Batch, error) {
 			}
 			batch.packages[tag.Package] = pkg
 		}
-		err := pkg.Load(spec, tag)
+		err := pkg.Load(ctx, spec, tag)
 		if err != nil {
 			return nil, fmt.Errorf("fail to load %s: %w", tag.Name, err)
 		}
