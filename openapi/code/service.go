@@ -303,7 +303,19 @@ func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeTyp
 	schema, mimeType := svc.getBaseSchemaAndMimeType(body)
 	name := op.Name()
 	response := svc.Package.definedEntity(name+"Response", schema)
-	svc.updateEntityTypeFromMimeType(response, mimeType)
+
+	// This next block of code is needed to make up for shortcomings in
+	// schemaToEntity. That function (and the Entity structure) assumes that all
+	// entities are modeled by JSON objects. Later, we should change Entity
+	// and schemaToEntity to be more tolerant of non-JSON entities; for now, we
+	// put this hack in place to make things work.
+	if mimeType.IsByteStream() {
+		bodyField := response.fields[openapi.MediaTypeNonJsonBodyFieldName]
+		svc.updateEntityTypeFromMimeType(bodyField.Entity, mimeType)
+		for _, v := range response.fields {
+			v.IsJson = false
+		}
+	}
 	var emptyResponse Named
 	if response != nil && response.IsEmpty {
 		emptyResponse = response.Named
@@ -395,9 +407,12 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		}
 		idFieldPath = idField
 	}
-	headers := map[string]string{
-		"Content-Type": string(reqMimeType),
-		"Accept":       string(respMimeType),
+	headers := map[string]string{}
+	if reqMimeType != "" {
+		headers["Content-Type"] = string(reqMimeType)
+	}
+	if respMimeType != "" {
+		headers["Accept"] = string(respMimeType)
 	}
 	return &Method{
 		Named:               Named{methodName, description},

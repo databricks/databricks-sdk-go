@@ -299,7 +299,7 @@ const (
 // Today, we only support application/json and application/octet-stream, and non
 // application/json entities are all modeled as byte streams.
 func (m MimeType) IsByteStream() bool {
-	return m != MimeTypeJson
+	return m != "" && m != MimeTypeJson
 }
 
 var allowedMimeTypes = []MimeType{
