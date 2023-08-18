@@ -173,14 +173,14 @@ func (o *Operation) HasTag(tag string) bool {
 	return false
 }
 
-func (o *Operation) SuccessResponseSchema(c *Components) (MimeType, *MediaType) {
+func (o *Operation) SuccessResponseBody(c *Components) *Body {
 	for _, v := range []string{"200", "201"} {
 		response, ok := o.Responses[v]
 		if ok {
-			return (*c.Responses.Resolve(response)).MimeTypeAndMediaType()
+			return (*c.Responses.Resolve(response))
 		}
 	}
-	return "", nil
+	return nil
 }
 
 func (o *Operation) HasNameField() bool {

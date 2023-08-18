@@ -41,8 +41,7 @@ type Method struct {
 	RequestBodyField *Field
 
 	// Expected content type of the request and response
-	ContentType openapi.MimeType
-	Accept      openapi.MimeType
+	FixedRequestHeaders map[string]string
 
 	wait       *openapi.Wait
 	pagination *openapi.Pagination
@@ -407,25 +406,12 @@ func (m *Method) CmdletName(prefix string) string {
 	return fmt.Sprintf("%s-%s%s", verb, prefix, noun.PascalName())
 }
 
-func (m *Method) HasRequestHeaders() bool {
-	return len(m.FixedRequestHeaders()) > 0
-}
-
-func (m *Method) FixedRequestHeaders() map[string]string {
-	headers := map[string]string{}
-	if m.ContentType != "" {
-		headers["Content-Type"] = string(m.ContentType)
-	}
-	if m.Accept != "" {
-		headers["Accept"] = string(m.Accept)
-	}
-	return headers
-}
-
 func (m *Method) IsRequestByteStream() bool {
-	return m.Request != nil && m.ContentType != openapi.MimeTypeJson
+	contentType, ok := m.FixedRequestHeaders["Content-Type"]
+	return m.Request != nil && ok && contentType != string(openapi.MimeTypeJson)
 }
 
 func (m *Method) IsResponseByteStream() bool {
-	return m.Response != nil && m.Accept != openapi.MimeTypeJson
+	accept, ok := m.FixedRequestHeaders["Accept"]
+	return m.Response != nil && ok && accept != string(openapi.MimeTypeJson)
 }
