@@ -321,9 +321,10 @@ func (b *Body) MimeTypeAndMediaType() (MimeType, *MediaType) {
 
 type MediaType struct {
 	Node
-	BodyFieldName string  `json:"x-databricks-body-field-name,omitempty"`
-	Schema        *Schema `json:"schema,omitempty"`
+	Schema *Schema `json:"schema,omitempty"`
 }
+
+const MediaTypeNonJsonBodyFieldName = "contents"
 
 func (m *MediaType) GetSchema() *Schema {
 	if m == nil {

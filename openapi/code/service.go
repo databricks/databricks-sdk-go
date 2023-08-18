@@ -161,11 +161,11 @@ func (svc *Service) newMethodEntity(op *openapi.Operation) (*Entity, openapi.Mim
 	}
 	// If x-databricks-body-field-name is specified, the request structure
 	// contains a field with that name whose value is the request body.
-	if mediaType.BodyFieldName != "" {
+	if mimeType.IsByteStream() {
 		requestSchema = &openapi.Schema{
 			Type: "object",
 			Properties: map[string]*openapi.Schema{
-				mediaType.BodyFieldName: requestSchema,
+				openapi.MediaTypeNonJsonBodyFieldName: requestSchema,
 			},
 		}
 	}
@@ -174,14 +174,11 @@ func (svc *Service) newMethodEntity(op *openapi.Operation) (*Entity, openapi.Mim
 		panic(fmt.Errorf("%s request body is nil", op.OperationId))
 	}
 	var bodyField *Field
-	if mediaType.BodyFieldName != "" {
-		bodyField = res.fields[mediaType.BodyFieldName]
-	}
-
 	entity := res
-	if mediaType.BodyFieldName != "" {
+	if mimeType.IsByteStream() {
+		bodyField = res.fields[openapi.MediaTypeNonJsonBodyFieldName]
 		entity = bodyField.Entity
-		res.RequiredOrder = append(res.RequiredOrder, mediaType.BodyFieldName)
+		res.RequiredOrder = append(res.RequiredOrder, openapi.MediaTypeNonJsonBodyFieldName)
 	}
 	svc.updateEntityTypeFromMimeType(entity, mimeType)
 	if mimeType != openapi.MimeTypeJson {
