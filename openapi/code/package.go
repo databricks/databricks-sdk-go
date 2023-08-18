@@ -351,7 +351,7 @@ func (pkg *Package) Load(spec *openapi.Specification, tag openapi.Tag) error {
 				for _, v := range list {
 					param, err := pkg.resolveParam(&v)
 					if err != nil {
-						return fmt.Errorf("could not resolve parameter %s for %s %s. This could be due to a problem in the definition of this parameter. If using $ref, ensure that $ref is used inside the 'schema' keyword.", v.Name, verb, prefix)
+						return fmt.Errorf("could not resolve parameter %s for %s %s. This could be due to a problem in the definition of this parameter. If using $ref, ensure that $ref is used inside the 'schema' keyword", v.Name, verb, prefix)
 					}
 					if param == nil {
 						return nil
