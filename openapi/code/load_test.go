@@ -1,6 +1,7 @@
 package code
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -12,7 +13,8 @@ import (
 )
 
 func TestBasic(t *testing.T) {
-	batch, err := NewFromFile("../testdata/spec.json")
+	ctx := context.Background()
+	batch, err := NewFromFile(ctx, "../testdata/spec.json")
 	require.NoError(t, err)
 
 	require.Len(t, batch.Packages(), 1)
@@ -68,8 +70,9 @@ func TestBasic(t *testing.T) {
 // This test is used for debugging purposes
 func TestMethodsReport(t *testing.T) {
 	t.SkipNow()
+	ctx := context.Background()
 	home, _ := os.UserHomeDir()
-	batch, err := NewFromFile(filepath.Join(home,
+	batch, err := NewFromFile(ctx, filepath.Join(home,
 		"universe/bazel-bin/openapi/all-internal.json"))
 	assert.NoError(t, err)
 

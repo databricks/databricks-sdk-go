@@ -2,6 +2,7 @@ package generator
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -64,7 +65,7 @@ func NewGenerator(target string) (*Generator, error) {
 	return &c, nil
 }
 
-func (c *Generator) Apply(batch *code.Batch, suite *roll.Suite) error {
+func (c *Generator) Apply(ctx context.Context, batch *code.Batch, suite *roll.Suite) error {
 	if suite != nil {
 		err := suite.OptimizeWithApiSpec(batch)
 		if err != nil {
@@ -74,7 +75,7 @@ func (c *Generator) Apply(batch *code.Batch, suite *roll.Suite) error {
 	var filenames []string
 	if c.Batch != nil {
 		pass := render.NewPass(c.dir, []render.Named{batch}, c.Batch)
-		err := pass.Run()
+		err := pass.Run(ctx)
 		if err != nil {
 			return fmt.Errorf("batch: %w", err)
 		}
@@ -82,7 +83,7 @@ func (c *Generator) Apply(batch *code.Batch, suite *roll.Suite) error {
 	}
 	if c.Packages != nil {
 		pass := render.NewPass(c.dir, batch.Packages(), c.Packages)
-		err := pass.Run()
+		err := pass.Run(ctx)
 		if err != nil {
 			return fmt.Errorf("packages: %w", err)
 		}
@@ -90,7 +91,7 @@ func (c *Generator) Apply(batch *code.Batch, suite *roll.Suite) error {
 	}
 	if c.Services != nil {
 		pass := render.NewPass(c.dir, batch.Services(), c.Services)
-		err := pass.Run()
+		err := pass.Run(ctx)
 		if err != nil {
 			return fmt.Errorf("services: %w", err)
 		}
@@ -98,7 +99,7 @@ func (c *Generator) Apply(batch *code.Batch, suite *roll.Suite) error {
 	}
 	if c.Types != nil {
 		pass := render.NewPass(c.dir, batch.Types(), c.Types)
-		err := pass.Run()
+		err := pass.Run(ctx)
 		if err != nil {
 			return fmt.Errorf("types: %w", err)
 		}
@@ -106,7 +107,7 @@ func (c *Generator) Apply(batch *code.Batch, suite *roll.Suite) error {
 	}
 	if c.Examples != nil && suite != nil {
 		pass := render.NewPass(c.dir, suite.ServicesExamples(), c.Examples)
-		err := pass.Run()
+		err := pass.Run(ctx)
 		if err != nil {
 			return fmt.Errorf("examples: %w", err)
 		}
@@ -114,13 +115,13 @@ func (c *Generator) Apply(batch *code.Batch, suite *roll.Suite) error {
 	}
 	if c.Samples != nil && suite != nil {
 		pass := render.NewPass(c.dir, suite.Samples(), c.Samples)
-		err := pass.Run()
+		err := pass.Run(ctx)
 		if err != nil {
 			return fmt.Errorf("examples: %w", err)
 		}
 		filenames = append(filenames, pass.Filenames...)
 	}
-	render.Fomratter(c.dir, filenames, c.Formatter)
+	render.Formatter(ctx, c.dir, filenames, c.Formatter)
 	sort.Strings(filenames)
 	sb := bytes.NewBuffer([]byte{})
 	for _, v := range filenames {
