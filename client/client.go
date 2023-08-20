@@ -133,8 +133,8 @@ func (c *DatabricksClient) unmarshal(body *Body, response any) error {
 		return nil
 	}
 	// If the destination is bytes.Buffer, write the body over there
-	if raw, ok := response.(**io.ReadCloser); ok {
-		*raw = &body.ReadCloser
+	if raw, ok := response.(*io.ReadCloser); ok {
+		*raw = body.ReadCloser
 		return nil
 	}
 	defer body.ReadCloser.Close()
@@ -333,6 +333,8 @@ func (c *DatabricksClient) perform(
 	data interface{},
 	visitors ...func(*http.Request) error,
 ) (*Body, error) {
+	// replace double slash in the request URL with a single slash
+	requestURL = strings.Replace(requestURL, "//", "/", -1)
 	requestBody, err := makeRequestBody(method, &requestURL, data)
 	if err != nil {
 		return nil, fmt.Errorf("request marshal: %w", err)
