@@ -44,6 +44,8 @@
 //
 // - [catalog.ExternalLocationsAPI]: An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path.
 //
+// - [files.FilesAPI]: The Files API allows you to read, write, and delete files and directories in Unity Catalog volumes.
+//
 // - [catalog.FunctionsAPI]: Functions implement User-Defined Functions (UDFs) in Unity Catalog.
 //
 // - [workspace.GitCredentialsAPI]: Registers personal access token for Databricks to do operations on behalf of the user.
@@ -78,6 +80,8 @@
 //
 // - [ml.ModelRegistryAPI]: MLflow Model Registry is a centralized model repository and a UI and set of APIs that enable you to manage the full lifecycle of MLflow Models.
 //
+// - [catalog.ModelVersionsAPI]: Databricks provides a hosted version of MLflow Model Registry in Unity Catalog.
+//
 // - [settings.AccountNetworkPolicyAPI]: Network policy is a set of rules that defines what can be accessed from your Databricks network.
 //
 // - [provisioning.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
@@ -103,6 +107,8 @@
 // - [sharing.RecipientActivationAPI]: The Recipient Activation API is only applicable in the open sharing model where the recipient object has the authentication type of `TOKEN`.
 //
 // - [sharing.RecipientsAPI]: A recipient is an object you create using :method:recipients/create to represent an organization which you want to allow access shares.
+//
+// - [catalog.RegisteredModelsAPI]: Databricks provides a hosted version of MLflow Model Registry in Unity Catalog.
 //
 // - [workspace.ReposAPI]: The Repos API allows users to manage their git repos.
 //
@@ -210,6 +216,7 @@ var (
 	_ *provisioning.EncryptionKeysAPI         = nil
 	_ *ml.ExperimentsAPI                      = nil
 	_ *catalog.ExternalLocationsAPI           = nil
+	_ *files.FilesAPI                         = nil
 	_ *catalog.FunctionsAPI                   = nil
 	_ *workspace.GitCredentialsAPI            = nil
 	_ *compute.GlobalInitScriptsAPI           = nil
@@ -227,6 +234,7 @@ var (
 	_ *catalog.MetastoresAPI                  = nil
 	_ *catalog.AccountMetastoresAPI           = nil
 	_ *ml.ModelRegistryAPI                    = nil
+	_ *catalog.ModelVersionsAPI               = nil
 	_ *settings.AccountNetworkPolicyAPI       = nil
 	_ *provisioning.NetworksAPI               = nil
 	_ *oauth2.OAuthEnrollmentAPI              = nil
@@ -240,6 +248,7 @@ var (
 	_ *sql.QueryHistoryAPI                    = nil
 	_ *sharing.RecipientActivationAPI         = nil
 	_ *sharing.RecipientsAPI                  = nil
+	_ *catalog.RegisteredModelsAPI            = nil
 	_ *workspace.ReposAPI                     = nil
 	_ *catalog.SchemasAPI                     = nil
 	_ *workspace.SecretsAPI                   = nil

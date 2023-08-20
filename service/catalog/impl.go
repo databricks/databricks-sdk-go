@@ -527,6 +527,96 @@ func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMet
 	return err
 }
 
+// unexported type that holds implementations of just ModelVersions API methods
+type modelVersionsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *modelVersionsImpl) Delete(ctx context.Context, request DeleteModelVersionRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	return err
+}
+
+func (a *modelVersionsImpl) Get(ctx context.Context, request GetModelVersionRequest) (*RegisteredModelInfo, error) {
+	var registeredModelInfo RegisteredModelInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &registeredModelInfo)
+	return &registeredModelInfo, err
+}
+
+func (a *modelVersionsImpl) List(ctx context.Context, request ListModelVersionsRequest) (*ListModelVersionsResponse, error) {
+	var listModelVersionsResponse ListModelVersionsResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions", request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listModelVersionsResponse)
+	return &listModelVersionsResponse, err
+}
+
+func (a *modelVersionsImpl) Update(ctx context.Context, request UpdateModelVersionRequest) (*ModelVersionInfo, error) {
+	var modelVersionInfo ModelVersionInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &modelVersionInfo)
+	return &modelVersionInfo, err
+}
+
+// unexported type that holds implementations of just RegisteredModels API methods
+type registeredModelsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *registeredModelsImpl) Create(ctx context.Context, request CreateRegisteredModelRequest) (*RegisteredModelInfo, error) {
+	var registeredModelInfo RegisteredModelInfo
+	path := "/api/2.1/unity-catalog/models"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &registeredModelInfo)
+	return &registeredModelInfo, err
+}
+
+func (a *registeredModelsImpl) Delete(ctx context.Context, request DeleteRegisteredModelRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", request.FullName)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	return err
+}
+
+func (a *registeredModelsImpl) Get(ctx context.Context, request GetRegisteredModelRequest) (*RegisteredModelInfo, error) {
+	var registeredModelInfo RegisteredModelInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &registeredModelInfo)
+	return &registeredModelInfo, err
+}
+
+func (a *registeredModelsImpl) List(ctx context.Context, request ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error) {
+	var listRegisteredModelsResponse ListRegisteredModelsResponse
+	path := "/api/2.1/unity-catalog/models"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listRegisteredModelsResponse)
+	return &listRegisteredModelsResponse, err
+}
+
+func (a *registeredModelsImpl) Update(ctx context.Context, request UpdateRegisteredModelRequest) (*RegisteredModelInfo, error) {
+	var registeredModelInfo RegisteredModelInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &registeredModelInfo)
+	return &registeredModelInfo, err
+}
+
 // unexported type that holds implementations of just Schemas API methods
 type schemasImpl struct {
 	client *client.DatabricksClient

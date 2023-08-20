@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, External Locations, Functions, Grants, Metastores, Schemas, Securable Tags, Storage Credentials, Subentity Tags, System Schemas, Table Constraints, Tables, Volumes, Workspace Bindings, etc.
+// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, External Locations, Functions, Grants, Metastores, Model Versions, Registered Models, Schemas, Securable Tags, Storage Credentials, Subentity Tags, System Schemas, Table Constraints, Tables, Volumes, Workspace Bindings, etc.
 package catalog
 
 import (
@@ -1174,6 +1174,414 @@ func (a *MetastoresAPI) Update(ctx context.Context, request UpdateMetastore) (*M
 // admin.
 func (a *MetastoresAPI) UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error {
 	return a.impl.UpdateAssignment(ctx, request)
+}
+
+func NewModelVersions(client *client.DatabricksClient) *ModelVersionsAPI {
+	return &ModelVersionsAPI{
+		impl: &modelVersionsImpl{
+			client: client,
+		},
+	}
+}
+
+// Databricks provides a hosted version of MLflow Model Registry in Unity
+// Catalog. Models in Unity Catalog provide centralized access control,
+// auditing, lineage, and discovery of ML models across Databricks workspaces.
+//
+// This API reference documents the REST endpoints for managing model versions
+// in Unity Catalog. For more details, see the [registered models API
+// docs](/api/workspace/registeredmodels).
+type ModelVersionsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(ModelVersionsService)
+	impl ModelVersionsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *ModelVersionsAPI) WithImpl(impl ModelVersionsService) *ModelVersionsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level ModelVersions API implementation
+func (a *ModelVersionsAPI) Impl() ModelVersionsService {
+	return a.impl
+}
+
+// Delete a Model Version.
+//
+// Deletes a model version from the specified registered model. Any aliases
+// assigned to the model version will also be deleted.
+//
+// The caller must be a metastore admin or an owner of the parent registered
+// model. For the latter case, the caller must also be the owner or have the
+// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+// privilege on the parent schema.
+func (a *ModelVersionsAPI) Delete(ctx context.Context, request DeleteModelVersionRequest) error {
+	return a.impl.Delete(ctx, request)
+}
+
+// Delete a Model Version.
+//
+// Deletes a model version from the specified registered model. Any aliases
+// assigned to the model version will also be deleted.
+//
+// The caller must be a metastore admin or an owner of the parent registered
+// model. For the latter case, the caller must also be the owner or have the
+// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+// privilege on the parent schema.
+func (a *ModelVersionsAPI) DeleteByFullNameAndVersion(ctx context.Context, fullName string, version int) error {
+	return a.impl.Delete(ctx, DeleteModelVersionRequest{
+		FullName: fullName,
+		Version:  version,
+	})
+}
+
+// Get a Model Version.
+//
+// Get a model version.
+//
+// The caller must be a metastore admin or an owner of (or have the **EXECUTE**
+// privilege on) the parent registered model. For the latter case, the caller
+// must also be the owner or have the **USE_CATALOG** privilege on the parent
+// catalog and the **USE_SCHEMA** privilege on the parent schema.
+func (a *ModelVersionsAPI) Get(ctx context.Context, request GetModelVersionRequest) (*RegisteredModelInfo, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Get a Model Version.
+//
+// Get a model version.
+//
+// The caller must be a metastore admin or an owner of (or have the **EXECUTE**
+// privilege on) the parent registered model. For the latter case, the caller
+// must also be the owner or have the **USE_CATALOG** privilege on the parent
+// catalog and the **USE_SCHEMA** privilege on the parent schema.
+func (a *ModelVersionsAPI) GetByFullNameAndVersion(ctx context.Context, fullName string, version int) (*RegisteredModelInfo, error) {
+	return a.impl.Get(ctx, GetModelVersionRequest{
+		FullName: fullName,
+		Version:  version,
+	})
+}
+
+// List Model Versions.
+//
+// List model versions. You can list model versions under a particular schema,
+// or list all model versions in the current metastore.
+//
+// The returned models are filtered based on the privileges of the calling user.
+// For example, the metastore admin is able to list all the model versions. A
+// regular user needs to be the owner or have the **EXECUTE** privilege on the
+// parent registered model to recieve the model versions in the response. For
+// the latter case, the caller must also be the owner or have the
+// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+// privilege on the parent schema.
+//
+// There is no guarantee of a specific ordering of the elements in the response.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *ModelVersionsAPI) ListAll(ctx context.Context, request ListModelVersionsRequest) ([]ModelVersionInfo, error) {
+	var results []ModelVersionInfo
+	var totalCount int = 0
+	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+	for {
+		response, err := a.impl.List(ctx, request)
+		if err != nil {
+			return nil, err
+		}
+		if len(response.ModelVersions) == 0 {
+			break
+		}
+		for _, v := range response.ModelVersions {
+			results = append(results, v)
+		}
+		count := int(len(response.ModelVersions))
+		totalCount += count
+		request.PageToken = response.NextPageToken
+		if response.NextPageToken == "" {
+			break
+		}
+		limit := request.MaxResults
+		if limit > 0 && totalCount >= limit {
+			break
+		}
+	}
+	return results, nil
+}
+
+// List Model Versions.
+//
+// List model versions. You can list model versions under a particular schema,
+// or list all model versions in the current metastore.
+//
+// The returned models are filtered based on the privileges of the calling user.
+// For example, the metastore admin is able to list all the model versions. A
+// regular user needs to be the owner or have the **EXECUTE** privilege on the
+// parent registered model to recieve the model versions in the response. For
+// the latter case, the caller must also be the owner or have the
+// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+// privilege on the parent schema.
+//
+// There is no guarantee of a specific ordering of the elements in the response.
+func (a *ModelVersionsAPI) ListByFullName(ctx context.Context, fullName string) (*ListModelVersionsResponse, error) {
+	return a.impl.List(ctx, ListModelVersionsRequest{
+		FullName: fullName,
+	})
+}
+
+// Update a Model Version.
+//
+// Updates the specified model version.
+//
+// The caller must be a metastore admin or an owner of the parent registered
+// model. For the latter case, the caller must also be the owner or have the
+// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+// privilege on the parent schema.
+//
+// Currently only the comment of the model version can be updated.
+func (a *ModelVersionsAPI) Update(ctx context.Context, request UpdateModelVersionRequest) (*ModelVersionInfo, error) {
+	return a.impl.Update(ctx, request)
+}
+
+func NewRegisteredModels(client *client.DatabricksClient) *RegisteredModelsAPI {
+	return &RegisteredModelsAPI{
+		impl: &registeredModelsImpl{
+			client: client,
+		},
+	}
+}
+
+// Databricks provides a hosted version of MLflow Model Registry in Unity
+// Catalog. Models in Unity Catalog provide centralized access control,
+// auditing, lineage, and discovery of ML models across Databricks workspaces.
+//
+// An MLflow registered model resides in the third layer of Unity Catalog’s
+// three-level namespace. Registered models contain model versions, which
+// correspond to actual ML models (MLflow models). Creating new model versions
+// currently requires use of the MLflow Python client. Once model versions are
+// created, you can load them for batch inference using MLflow Python client
+// APIs, or deploy them for real-time serving using Databricks Model Serving.
+//
+// All operations on registered models and model versions require USE_CATALOG
+// permissions on the enclosing catalog and USE_SCHEMA permissions on the
+// enclosing schema. In addition, the following additional privileges are
+// required for various operations:
+//
+// * To create a registered model, users must additionally have the CREATE_MODEL
+// permission on the target schema. * To view registered model or model version
+// metadata, model version data files, or invoke a model version, users must
+// additionally have the EXECUTE permission on the registered model * To update
+// registered model or model version tags, users must additionally have APPLY
+// TAG permissions on the registered model * To update other registered model or
+// model version metadata (comments, aliases) create a new model version, or
+// update permissions on the registered model, users must be owners of the
+// registered model.
+//
+// Note: The securable type for models is "FUNCTION". When using REST APIs (e.g.
+// tagging, grants) that specify a securable type, use "FUNCTION" as the
+// securable type.
+type RegisteredModelsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(RegisteredModelsService)
+	impl RegisteredModelsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *RegisteredModelsAPI) WithImpl(impl RegisteredModelsService) *RegisteredModelsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level RegisteredModels API implementation
+func (a *RegisteredModelsAPI) Impl() RegisteredModelsService {
+	return a.impl
+}
+
+// Create a Registered Model.
+//
+// Creates a new registered model in Unity Catalog.
+//
+// File storage for model versions in the registered model will be located in
+// the default location which is specified by the parent schema, or the parent
+// catalog, or the Metastore.
+//
+// For registered model creation to succeed, the user must satisfy the following
+// conditions: - The caller must be a metastore admin, or be the owner of the
+// parent catalog and schema, or have the **USE_CATALOG** privilege on the
+// parent catalog and the **USE_SCHEMA** privilege on the parent schema. - The
+// caller must have the **CREATE MODEL** or **CREATE FUNCTION** privilege on the
+// parent schema.
+func (a *RegisteredModelsAPI) Create(ctx context.Context, request CreateRegisteredModelRequest) (*RegisteredModelInfo, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Delete a Registered Model.
+//
+// Deletes a registered model and all its model versions from the specified
+// parent catalog and schema.
+//
+// The caller must be a metastore admin or an owner of the registered model. For
+// the latter case, the caller must also be the owner or have the
+// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+// privilege on the parent schema.
+func (a *RegisteredModelsAPI) Delete(ctx context.Context, request DeleteRegisteredModelRequest) error {
+	return a.impl.Delete(ctx, request)
+}
+
+// Delete a Registered Model.
+//
+// Deletes a registered model and all its model versions from the specified
+// parent catalog and schema.
+//
+// The caller must be a metastore admin or an owner of the registered model. For
+// the latter case, the caller must also be the owner or have the
+// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+// privilege on the parent schema.
+func (a *RegisteredModelsAPI) DeleteByFullName(ctx context.Context, fullName string) error {
+	return a.impl.Delete(ctx, DeleteRegisteredModelRequest{
+		FullName: fullName,
+	})
+}
+
+// Get a Registered Model.
+//
+// Get a registered model.
+//
+// The caller must be a metastore admin or an owner of (or have the **EXECUTE**
+// privilege on) the registered model. For the latter case, the caller must also
+// be the owner or have the **USE_CATALOG** privilege on the parent catalog and
+// the **USE_SCHEMA** privilege on the parent schema.
+func (a *RegisteredModelsAPI) Get(ctx context.Context, request GetRegisteredModelRequest) (*RegisteredModelInfo, error) {
+	return a.impl.Get(ctx, request)
+}
+
+// Get a Registered Model.
+//
+// Get a registered model.
+//
+// The caller must be a metastore admin or an owner of (or have the **EXECUTE**
+// privilege on) the registered model. For the latter case, the caller must also
+// be the owner or have the **USE_CATALOG** privilege on the parent catalog and
+// the **USE_SCHEMA** privilege on the parent schema.
+func (a *RegisteredModelsAPI) GetByFullName(ctx context.Context, fullName string) (*RegisteredModelInfo, error) {
+	return a.impl.Get(ctx, GetRegisteredModelRequest{
+		FullName: fullName,
+	})
+}
+
+// List Registered Models.
+//
+// List registered models. You can list registered models under a particular
+// schema, or list all registered models in the current metastore.
+//
+// The returned models are filtered based on the privileges of the calling user.
+// For example, the metastore admin is able to list all the registered models. A
+// regular user needs to be the owner or have the **EXECUTE** privilege on the
+// registered model to recieve the registered models in the response. For the
+// latter case, the caller must also be the owner or have the **USE_CATALOG**
+// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+// parent schema.
+//
+// There is no guarantee of a specific ordering of the elements in the response.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *RegisteredModelsAPI) ListAll(ctx context.Context, request ListRegisteredModelsRequest) ([]RegisteredModelInfo, error) {
+	var results []RegisteredModelInfo
+	var totalCount int = 0
+	ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+	for {
+		response, err := a.impl.List(ctx, request)
+		if err != nil {
+			return nil, err
+		}
+		if len(response.RegisteredModels) == 0 {
+			break
+		}
+		for _, v := range response.RegisteredModels {
+			results = append(results, v)
+		}
+		count := int(len(response.RegisteredModels))
+		totalCount += count
+		request.PageToken = response.NextPageToken
+		if response.NextPageToken == "" {
+			break
+		}
+		limit := request.MaxResults
+		if limit > 0 && totalCount >= limit {
+			break
+		}
+	}
+	return results, nil
+}
+
+// RegisteredModelInfoNameToFullNameMap calls [RegisteredModelsAPI.ListAll] and creates a map of results with [RegisteredModelInfo].Name as key and [RegisteredModelInfo].FullName as value.
+//
+// Returns an error if there's more than one [RegisteredModelInfo] with the same .Name.
+//
+// Note: All [RegisteredModelInfo] instances are loaded into memory before creating a map.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *RegisteredModelsAPI) RegisteredModelInfoNameToFullNameMap(ctx context.Context, request ListRegisteredModelsRequest) (map[string]string, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
+	mapping := map[string]string{}
+	result, err := a.ListAll(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range result {
+		key := v.Name
+		_, duplicate := mapping[key]
+		if duplicate {
+			return nil, fmt.Errorf("duplicate .Name: %s", key)
+		}
+		mapping[key] = v.FullName
+	}
+	return mapping, nil
+}
+
+// GetByName calls [RegisteredModelsAPI.RegisteredModelInfoNameToFullNameMap] and returns a single [RegisteredModelInfo].
+//
+// Returns an error if there's more than one [RegisteredModelInfo] with the same .Name.
+//
+// Note: All [RegisteredModelInfo] instances are loaded into memory before returning matching by name.
+//
+// This method is generated by Databricks SDK Code Generator.
+func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*RegisteredModelInfo, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
+	result, err := a.ListAll(ctx, ListRegisteredModelsRequest{})
+	if err != nil {
+		return nil, err
+	}
+	tmp := map[string][]RegisteredModelInfo{}
+	for _, v := range result {
+		key := v.Name
+		tmp[key] = append(tmp[key], v)
+	}
+	alternatives, ok := tmp[name]
+	if !ok || len(alternatives) == 0 {
+		return nil, fmt.Errorf("RegisteredModelInfo named '%s' does not exist", name)
+	}
+	if len(alternatives) > 1 {
+		return nil, fmt.Errorf("there are %d instances of RegisteredModelInfo named '%s'", len(alternatives), name)
+	}
+	return &alternatives[0], nil
+}
+
+// Update a Registered Model.
+//
+// Updates the specified registered model.
+//
+// The caller must be a metastore admin or an owner of the registered model. For
+// the latter case, the caller must also be the owner or have the
+// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+// privilege on the parent schema.
+//
+// Currently only the name, the owner or the comment of the registered model can
+// be updated.
+func (a *RegisteredModelsAPI) Update(ctx context.Context, request UpdateRegisteredModelRequest) (*RegisteredModelInfo, error) {
+	return a.impl.Update(ctx, request)
 }
 
 func NewSchemas(client *client.DatabricksClient) *SchemasAPI {

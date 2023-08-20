@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -26,19 +27,47 @@ func (buf hashable) Hash() uint32 {
 }
 
 func TestAccFilesAPI(t *testing.T) {
-	t.SkipNow() // until available on prod
-	ctx, w := workspaceTest(t)
+	ctx, w := ucwsTest(t)
 
-	filePath := RandomName("/Volumes/bogdanghita/default/v3_shared/sdk-testing/txt-")
-	err := w.Files.Upload(ctx, filePath, strings.NewReader("abcd"))
+	schema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
+		CatalogName: "main",
+		Name:        RandomName("files-"),
+	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = w.Files.Delete(ctx, filePath)
+		w.Schemas.Delete(ctx, catalog.DeleteSchemaRequest{
+			FullName: schema.FullName,
+		})
+	})
+
+	volume, err := w.Volumes.Create(ctx, catalog.CreateVolumeRequestContent{
+		CatalogName: "main",
+		SchemaName:  schema.Name,
+		Name:        RandomName("files-"),
+		VolumeType:  catalog.VolumeTypeManaged,
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		w.Volumes.Delete(ctx, catalog.DeleteVolumeRequest{
+			FullNameArg: volume.FullName,
+		})
+	})
+
+	filePath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/files-")
+	err = w.Files.UploadFile(ctx, files.UploadFileRequest{
+		FilePath: filePath,
+		Contents: io.NopCloser(strings.NewReader("abcd")),
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err = w.Files.DeleteFileByFilePath(ctx, filePath)
 		assert.NoError(t, err)
 	})
-	raw, err := w.Files.ReadFile(ctx, filePath)
+	raw, err := w.Files.DownloadFileByFilePath(ctx, filePath)
 	require.NoError(t, err)
-	assert.Equal(t, "abcd", string(raw))
+	contents, err := io.ReadAll(raw.Contents)
+	require.NoError(t, err)
+	assert.Equal(t, "abcd", string(contents))
 }
 
 func TestAccDbfsOpen(t *testing.T) {

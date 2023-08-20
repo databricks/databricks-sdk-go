@@ -686,6 +686,20 @@ type CreateMetastoreAssignment struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+type CreateRegisteredModelRequest struct {
+	// The name of the catalog where the schema and the registered model reside
+	CatalogName string `json:"catalog_name"`
+	// The comment attached to the registered model
+	Comment string `json:"comment,omitempty"`
+	// The name of the registered model
+	Name string `json:"name"`
+	// The name of the schema where the registered model resides
+	SchemaName string `json:"schema_name"`
+	// The storage location on the cloud under which model version data files
+	// are stored
+	StorageLocation string `json:"storage_location,omitempty"`
+}
+
 type CreateSchema struct {
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name"`
@@ -889,6 +903,20 @@ type DeleteMetastoreRequest struct {
 	Force bool `json:"-" url:"force,omitempty"`
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
+}
+
+// Delete a Model Version
+type DeleteModelVersionRequest struct {
+	// The three-level (fully qualified) name of the model version
+	FullName string `json:"-" url:"-"`
+	// The integer version number of the model version
+	Version int `json:"-" url:"-"`
+}
+
+// Delete a Registered Model
+type DeleteRegisteredModelRequest struct {
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"-" url:"-"`
 }
 
 // Delete a schema
@@ -1590,6 +1618,20 @@ func (f *GetMetastoreSummaryResponseDeltaSharingScope) Type() string {
 	return "GetMetastoreSummaryResponseDeltaSharingScope"
 }
 
+// Get a Model Version
+type GetModelVersionRequest struct {
+	// The three-level (fully qualified) name of the model version
+	FullName string `json:"-" url:"-"`
+	// The integer version number of the model version
+	Version int `json:"-" url:"-"`
+}
+
+// Get a Registered Model
+type GetRegisteredModelRequest struct {
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"-" url:"-"`
+}
+
 // Get a schema
 type GetSchemaRequest struct {
 	// Full name of the schema.
@@ -1688,6 +1730,48 @@ type ListFunctionsResponse struct {
 type ListMetastoresResponse struct {
 	// An array of metastore information objects.
 	Metastores []MetastoreInfo `json:"metastores,omitempty"`
+}
+
+// List Model Versions
+type ListModelVersionsRequest struct {
+	// The full three-level name of the registered model under which to list
+	// model versions
+	FullName string `json:"-" url:"-"`
+	// Max number of model versions to return
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque token to send for the next page of results (pagination).
+	PageToken string `json:"-" url:"page_token,omitempty"`
+}
+
+type ListModelVersionsResponse struct {
+	ModelVersions []ModelVersionInfo `json:"model_versions,omitempty"`
+	// Token to retrieve the next page of results
+	NextPageToken string `json:"next_page_token,omitempty"`
+}
+
+// List Registered Models
+type ListRegisteredModelsRequest struct {
+	// The identifier of the catalog under which to list registered models. If
+	// specified, schema_name must be specified.
+	CatalogName string `json:"-" url:"catalog_name,omitempty"`
+	// Max number of registered models to return. If catalog and schema are
+	// unspecified, max_results must be specified. If max_results is
+	// unspecified, we return all results, starting from the page specified by
+	// page_token.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque token to send for the next page of results (pagination).
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The identifier of the schema under which to list registered models. If
+	// specified, catalog_name must be specified.
+	SchemaName string `json:"-" url:"schema_name,omitempty"`
+}
+
+type ListRegisteredModelsResponse struct {
+	// Opaque token for pagination. Omitted if there are no more results.
+	// page_token should be set to this value for fetching the next page.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	RegisteredModels []RegisteredModelInfo `json:"registered_models,omitempty"`
 }
 
 // List schemas
@@ -1930,6 +2014,86 @@ func (f *MetastoreInfoDeltaSharingScope) Type() string {
 	return "MetastoreInfoDeltaSharingScope"
 }
 
+type ModelVersionInfo struct {
+	// The name of the catalog containing the model version
+	CatalogName string `json:"catalog_name,omitempty"`
+	// The comment attached to the model version
+	Comment string `json:"comment,omitempty"`
+
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// The identifier of the user who created the model version
+	CreatedBy string `json:"created_by,omitempty"`
+	// The unique identifier of the model version
+	Id string `json:"id,omitempty"`
+	// The unique identifier of the metastore containing the model version
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// The name of the parent registered model of the model version, relative to
+	// parent schema
+	ModelName string `json:"model_name,omitempty"`
+	// Model version dependencies, for feature-store packaged models
+	ModelVersionDependencies []Dependency `json:"model_version_dependencies,omitempty"`
+	// MLflow run ID used when creating the model version, if ``source`` was
+	// generated by an experiment run stored in an MLflow tracking server
+	RunId string `json:"run_id,omitempty"`
+	// ID of the Databricks workspace containing the MLflow run that generated
+	// this model version, if applicable
+	RunWorkspaceId int `json:"run_workspace_id,omitempty"`
+	// The name of the schema containing the model version, relative to parent
+	// catalog
+	SchemaName string `json:"schema_name,omitempty"`
+	// URI indicating the location of the source artifacts (files) for the model
+	// version
+	Source string `json:"source,omitempty"`
+	// Current status of the model version. Newly created model versions start
+	// in PENDING_REGISTRATION status, then move to READY status once the model
+	// version files are uploaded and the model version is finalized. Only model
+	// versions in READY status can be loaded for inference or served.
+	Status ModelVersionInfoStatus `json:"status,omitempty"`
+	// The storage location on the cloud under which model version data files
+	// are stored
+	StorageLocation string `json:"storage_location,omitempty"`
+
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// The identifier of the user who updated the model version last time
+	UpdatedBy string `json:"updated_by,omitempty"`
+	// Integer model version number, used to reference the model version in API
+	// requests.
+	Version int `json:"version,omitempty"`
+}
+
+// Current status of the model version. Newly created model versions start in
+// PENDING_REGISTRATION status, then move to READY status once the model version
+// files are uploaded and the model version is finalized. Only model versions in
+// READY status can be loaded for inference or served.
+type ModelVersionInfoStatus string
+
+const ModelVersionInfoStatusFailedRegistration ModelVersionInfoStatus = `FAILED_REGISTRATION`
+
+const ModelVersionInfoStatusPendingRegistration ModelVersionInfoStatus = `PENDING_REGISTRATION`
+
+const ModelVersionInfoStatusReady ModelVersionInfoStatus = `READY`
+
+// String representation for [fmt.Print]
+func (f *ModelVersionInfoStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ModelVersionInfoStatus) Set(v string) error {
+	switch v {
+	case `FAILED_REGISTRATION`, `PENDING_REGISTRATION`, `READY`:
+		*f = ModelVersionInfoStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FAILED_REGISTRATION", "PENDING_REGISTRATION", "READY"`, v)
+	}
+}
+
+// Type always returns ModelVersionInfoStatus to satisfy [pflag.Value] interface
+func (f *ModelVersionInfoStatus) Type() string {
+	return "ModelVersionInfoStatus"
+}
+
 type NamedTableConstraint struct {
 	// The name of the constraint.
 	Name string `json:"name"`
@@ -1979,6 +2143,8 @@ const PrivilegeCreateFunction Privilege = `CREATE_FUNCTION`
 const PrivilegeCreateManagedStorage Privilege = `CREATE_MANAGED_STORAGE`
 
 const PrivilegeCreateMaterializedView Privilege = `CREATE_MATERIALIZED_VIEW`
+
+const PrivilegeCreateModel Privilege = `CREATE_MODEL`
 
 const PrivilegeCreateProvider Privilege = `CREATE_PROVIDER`
 
@@ -2036,11 +2202,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
+	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
 	}
 }
 
@@ -2097,6 +2263,46 @@ func (f *ProvisioningState) Type() string {
 type ReadVolumeRequest struct {
 	// The three-level (fully qualified) name of the volume
 	FullNameArg string `json:"-" url:"-"`
+}
+
+// Registered model alias.
+type RegisteredModelAlias struct {
+	// Name of the alias, e.g. 'champion' or 'latest_stable'
+	AliasName string `json:"alias_name,omitempty"`
+	// Integer version number of the model version to which this alias points.
+	VersionNum int `json:"version_num,omitempty"`
+}
+
+type RegisteredModelInfo struct {
+	// List of aliases associated with the registered model
+	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
+	// The name of the catalog where the schema and the registered model reside
+	CatalogName string `json:"catalog_name,omitempty"`
+	// The comment attached to the registered model
+	Comment string `json:"comment,omitempty"`
+	// Creation timestamp of the registered model in milliseconds since the Unix
+	// epoch
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// The identifier of the user who created the registered model
+	CreatedBy string `json:"created_by,omitempty"`
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"full_name,omitempty"`
+	// The unique identifier of the metastore
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// The name of the registered model
+	Name string `json:"name,omitempty"`
+	// The identifier of the user who owns the registered model
+	Owner string `json:"owner,omitempty"`
+	// The name of the schema where the registered model resides
+	SchemaName string `json:"schema_name,omitempty"`
+	// The storage location on the cloud under which model version data files
+	// are stored
+	StorageLocation string `json:"storage_location,omitempty"`
+	// Last-update timestamp of the registered model in milliseconds since the
+	// Unix epoch
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// The identifier of the user who updated the registered model last time
+	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
 type SchemaInfo struct {
@@ -2628,6 +2834,15 @@ func (f *UpdateMetastoreDeltaSharingScope) Type() string {
 	return "UpdateMetastoreDeltaSharingScope"
 }
 
+type UpdateModelVersionRequest struct {
+	// The comment attached to the model version
+	Comment string `json:"comment,omitempty"`
+	// The three-level (fully qualified) name of the model version
+	FullName string `json:"-" url:"-"`
+	// The integer version number of the model version
+	Version int `json:"-" url:"-"`
+}
+
 type UpdatePermissions struct {
 	// Array of permissions change objects.
 	Changes []PermissionsChange `json:"changes,omitempty"`
@@ -2652,6 +2867,17 @@ type UpdatePredictiveOptimizationResponse struct {
 	UserId int64 `json:"user_id,omitempty"`
 	// Name of the predictive optimization service principal.
 	Username string `json:"username,omitempty"`
+}
+
+type UpdateRegisteredModelRequest struct {
+	// The comment attached to the registered model
+	Comment string `json:"comment,omitempty"`
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"-" url:"-"`
+	// The name of the registered model
+	Name string `json:"name,omitempty"`
+	// The identifier of the user who owns the registered model
+	Owner string `json:"owner,omitempty"`
 }
 
 type UpdateSchema struct {
