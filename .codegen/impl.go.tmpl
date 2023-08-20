@@ -43,7 +43,7 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 {{- end }}
 
 {{ define "make-header" -}}
-    headers := make(map[string]string)
+	headers := make(map[string]string)
 	{{- range $k, $v := .FixedRequestHeaders }}
 	headers["{{$k}}"] = "{{$v}}"
 	{{- end }}

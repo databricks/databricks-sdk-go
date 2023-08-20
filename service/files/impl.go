@@ -4,8 +4,6 @@ package files
 
 import (
 	"context"
-	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -105,42 +103,4 @@ func (a *dbfsImpl) Read(ctx context.Context, request ReadDbfsRequest) (*ReadResp
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &readResponse)
 	return &readResponse, err
-}
-
-// unexported type that holds implementations of just Files API methods
-type filesImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *filesImpl) DeleteFile(ctx context.Context, request DeleteFileRequest) error {
-	path := fmt.Sprintf("/api/2.0/fs/files/%v", request.FilePath)
-	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
-	return err
-}
-
-func (a *filesImpl) DownloadFile(ctx context.Context, request DownloadFileRequest) (io.ReadCloser, error) {
-	var downloadFileResponse io.ReadCloser
-	path := fmt.Sprintf("/api/2.0/fs/files/%v", request.FilePath)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/octet-stream"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &downloadFileResponse)
-	return downloadFileResponse, err
-}
-
-func (a *filesImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error) {
-	var fileInfo FileInfo
-	path := "/api/2.0/fs/get-status"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &fileInfo)
-	return &fileInfo, err
-}
-
-func (a *filesImpl) UploadFile(ctx context.Context, request UploadFileRequest) error {
-	path := fmt.Sprintf("/api/2.0/fs/files/%v", request.FilePath)
-	headers := make(map[string]string)
-	headers["Content-Type"] = "application/octet-stream"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request.Contents, nil)
-	return err
 }

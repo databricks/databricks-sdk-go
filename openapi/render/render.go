@@ -2,6 +2,7 @@ package render
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -14,6 +15,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/openapi/code"
 )
 
@@ -79,9 +81,10 @@ type pass[T Named] struct {
 	Filenames []string
 }
 
-func (p *pass[T]) Run() error {
+func (p *pass[T]) Run(ctx context.Context) error {
 	for _, item := range p.Items {
-		fmt.Printf("Processing: %s\n", item.FullName())
+		name := item.FullName()
+		logger.Infof(ctx, "Processing: %s\n", name)
 		for k, v := range p.fileset {
 			err := p.File(item, k, v)
 			if err != nil {
@@ -136,10 +139,10 @@ func (p *pass[T]) File(item T, contentTRef, nameT string) error {
 	return file.Close()
 }
 
-func Fomratter(target string, filenames []string, formatSpec string) error {
+func Formatter(ctx context.Context, target string, filenames []string, formatSpec string) error {
 	for _, formatter := range strings.Split(formatSpec, "&&") {
 		formatter = strings.TrimSpace(formatter)
-		fmt.Printf("Formatting: %s\n", formatter)
+		logger.Infof(ctx, "Formatting: %s\n", formatter)
 
 		formatter = strings.ReplaceAll(formatter, "$FILENAMES",
 			strings.Join(filenames, " "))

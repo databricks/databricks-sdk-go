@@ -1,6 +1,7 @@
 package roll
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"testing"
@@ -37,8 +38,9 @@ func TestLoadsFolder(t *testing.T) {
 
 func TestOptimize(t *testing.T) {
 	t.Skip()
+	ctx := context.Background()
 	home, _ := os.UserHomeDir()
-	batch, err := code.NewFromFile(filepath.Join(home,
+	batch, err := code.NewFromFile(ctx, filepath.Join(home,
 		"universe/bazel-bin/openapi/all-internal.json"))
 	require.NoError(t, err)
 
@@ -51,6 +53,7 @@ func TestOptimize(t *testing.T) {
 
 func TestRegenerateExamples(t *testing.T) {
 	t.Skip() // temporary measure
+	ctx := context.Background()
 	s, err := NewSuite("../../internal")
 	require.NoError(t, err)
 
@@ -58,15 +61,16 @@ func TestRegenerateExamples(t *testing.T) {
 	pass := render.NewPass(target, s.ServicesExamples(), map[string]string{
 		".codegen/examples_test.go.tmpl": "service/{{.Package}}/{{.SnakeName}}_usage_test.go",
 	})
-	err = pass.Run()
+	err = pass.Run(ctx)
 	assert.NoError(t, err)
 
-	err = render.Fomratter(target, pass.Filenames, "go fmt ./... && go run golang.org/x/tools/cmd/goimports@latest -w $FILENAMES")
+	err = render.Formatter(ctx, target, pass.Filenames, "go fmt ./... && go run golang.org/x/tools/cmd/goimports@latest -w $FILENAMES")
 	assert.NoError(t, err)
 }
 
 func TestRegeneratePythonExamples(t *testing.T) {
 	t.Skip()
+	ctx := context.Background()
 	s, err := NewSuite("../../internal")
 	require.NoError(t, err)
 
@@ -74,9 +78,9 @@ func TestRegeneratePythonExamples(t *testing.T) {
 	pass := render.NewPass(target, s.Samples(), map[string]string{
 		".codegen/example.py.tmpl": "examples/{{.Service.SnakeName}}/{{.Method.SnakeName}}_{{.SnakeName}}.py",
 	})
-	err = pass.Run()
+	err = pass.Run(ctx)
 	assert.NoError(t, err)
 
-	err = render.Fomratter(target, pass.Filenames, "yapf -pri $FILENAMES && autoflake -i $FILENAMES && isort $FILENAMES")
+	err = render.Formatter(ctx, target, pass.Filenames, "yapf -pri $FILENAMES && autoflake -i $FILENAMES && isort $FILENAMES")
 	assert.NoError(t, err)
 }

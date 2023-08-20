@@ -2,6 +2,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -13,25 +14,26 @@ import (
 	"github.com/databricks/databricks-sdk-go/openapi/roll"
 )
 
-var ctx Context
+var c Context
 
 func main() {
+	ctx := context.Background()
 	cfg, err := render.Config()
 	if err != nil {
 		fmt.Printf("WARN: %s\n\n", err)
 	}
 	workDir, _ := os.Getwd()
-	flag.StringVar(&ctx.Spec, "spec", cfg.Spec, "location of the spec file")
-	flag.StringVar(&ctx.GoSDK, "gosdk", cfg.GoSDK, "location of the Go SDK")
-	flag.StringVar(&ctx.Target, "target", workDir, "path to directory with .codegen.json")
-	flag.BoolVar(&ctx.DryRun, "dry-run", false, "print to stdout instead of real files")
+	flag.StringVar(&c.Spec, "spec", cfg.Spec, "location of the spec file")
+	flag.StringVar(&c.GoSDK, "gosdk", cfg.GoSDK, "location of the Go SDK")
+	flag.StringVar(&c.Target, "target", workDir, "path to directory with .codegen.json")
+	flag.BoolVar(&c.DryRun, "dry-run", false, "print to stdout instead of real files")
 	flag.Parse()
-	if ctx.Spec == "" {
+	if c.Spec == "" {
 		println("USAGE: go run openapi/gen/main.go -spec /path/to/spec.json")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
-	err = ctx.Run()
+	err = c.Run(ctx)
 	if err != nil {
 		fmt.Printf("ERROR: %s\n\n", err)
 		os.Exit(1)
@@ -45,8 +47,8 @@ type Context struct {
 	DryRun bool
 }
 
-func (c *Context) Run() error {
-	spec, err := code.NewFromFile(c.Spec)
+func (c *Context) Run(ctx context.Context) error {
+	spec, err := code.NewFromFile(ctx, c.Spec)
 	if err != nil {
 		return fmt.Errorf("spec: %w", err)
 	}
@@ -61,5 +63,5 @@ func (c *Context) Run() error {
 	if err != nil {
 		return fmt.Errorf("config: %w", err)
 	}
-	return gen.Apply(spec, suite)
+	return gen.Apply(ctx, spec, suite)
 }

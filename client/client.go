@@ -138,7 +138,10 @@ func (c *DatabricksClient) unmarshal(body *Body, response any) error {
 		return nil
 	}
 	defer body.ReadCloser.Close()
-	bs := body.DebugBytes
+	bs, err := io.ReadAll(body.ReadCloser)
+	if err != nil {
+		return fmt.Errorf("failed to read response body: %w", err)
+	}
 	if len(bs) == 0 {
 		return nil
 	}
@@ -164,6 +167,9 @@ func (c *DatabricksClient) addHostToRequestUrl(r *http.Request) error {
 }
 
 func (c *DatabricksClient) fromResponse(r *http.Response) (Body, error) {
+	if r == nil {
+		return Body{}, fmt.Errorf("nil response")
+	}
 	safeToReadFullResponse := r.Header.Get("Content-Type") == "application/json"
 	if safeToReadFullResponse {
 		defer r.Body.Close()

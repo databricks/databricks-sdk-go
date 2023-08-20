@@ -3,6 +3,7 @@
 package code
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"sort"
@@ -10,6 +11,7 @@ import (
 
 	"golang.org/x/exp/slices"
 
+	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/openapi"
 )
 
@@ -317,7 +319,7 @@ func (pkg *Package) HasWaits() bool {
 }
 
 // Load takes OpenAPI specification and loads a service model
-func (pkg *Package) Load(spec *openapi.Specification, tag openapi.Tag) error {
+func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag openapi.Tag) error {
 	for k, v := range spec.Components.Schemas {
 		split := strings.Split(k, ".")
 		if split[0] != pkg.Name {
@@ -327,6 +329,7 @@ func (pkg *Package) Load(spec *openapi.Specification, tag openapi.Tag) error {
 	}
 	for prefix, path := range spec.Paths {
 		for verb, op := range path.Verbs() {
+			logger.Infof(ctx, "pkg.Load %s %s", verb, prefix)
 			if !op.HasTag(tag.Name) {
 				continue
 			}
@@ -350,14 +353,14 @@ func (pkg *Package) Load(spec *openapi.Specification, tag openapi.Tag) error {
 			for _, list := range [][]openapi.Parameter{path.Parameters, op.Parameters} {
 				for _, v := range list {
 					param, err := pkg.resolveParam(&v)
-					if param.In == "header" {
-						continue
-					}
 					if err != nil {
-						return fmt.Errorf("no components found: %s %s", verb, prefix)
+						return fmt.Errorf("could not resolve parameter %s for %s %s. This could be due to a problem in the definition of this parameter. If using $ref, ensure that $ref is used inside the 'schema' keyword", v.Name, verb, prefix)
 					}
 					if param == nil {
 						return nil
+					}
+					if param.In == "header" {
+						continue
 					}
 					// do not propagate common path parameter to account-level APIs
 					if svc.IsAccounts && param.In == "path" && param.Name == "account_id" {

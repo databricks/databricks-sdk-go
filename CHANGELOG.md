@@ -1,5 +1,64 @@
 # Version changelog
 
+## 0.17.0
+
+* Introduced Artifact Allowlist, Securable Tags, and Subentity Tags services.
+* Introduced DeleteRuns and RestoreRuns methods in the Experiments API.
+* Introduced the GetSecret method in the Secrets API.
+* Renamed Auto Maintenance to Predictive Optimization.
+* Set necessary headers when authenticating via Azure CLI ([#584](https://github.com/databricks/databricks-sdk-go/pull/584)).
+
+New Services:
+
+ * Added [w.ArtifactAllowlists](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ArtifactAllowlistsAPI) workspace-level service.
+ * Added [w.SecurableTags](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SecurableTagsAPI) workspace-level service.
+ * Added [w.SubentityTags](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SubentityTagsAPI) workspace-level service.
+ * Added [catalog.ArtifactAllowlistInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ArtifactAllowlistInfo).
+ * Added [catalog.ArtifactMatcher](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ArtifactMatcher).
+ * Added [catalog.ArtifactType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ArtifactType).
+ * Added [catalog.GetArtifactAllowlistRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetArtifactAllowlistRequest).
+ * Added [catalog.ListSecurableTagsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListSecurableTagsRequest).
+ * Added [catalog.ListSecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListSecurableType).
+ * Added [catalog.ListSubentityTagsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListSubentityTagsRequest).
+ * Added [catalog.MatchType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MatchType).
+ * Added [catalog.SetArtifactAllowlist](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SetArtifactAllowlist).
+ * Added [catalog.TagChanges](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TagChanges).
+ * Added [catalog.TagKeyValuePair](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TagKeyValuePair).
+ * Added [catalog.TagSecurable](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TagSecurable).
+ * Added [catalog.TagSecurableAssignment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TagSecurableAssignment).
+ * Added [catalog.TagSecurableAssignmentsList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TagSecurableAssignmentsList).
+ * Added [catalog.TagSubentity](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TagSubentity).
+ * Added [catalog.TagSubentityAssignmentsList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TagSubentityAssignmentsList).
+ * Added [catalog.TagsSubentityAssignment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TagsSubentityAssignment).
+ * Added [catalog.UpdateSecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateSecurableType).
+ * Added [catalog.UpdateTags](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateTags).
+
+New APIs:
+
+ * Added `DeleteRuns` method for [w.Experiments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentsAPI) workspace-level service.
+ * Added `RestoreRuns` method for [w.Experiments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentsAPI) workspace-level service.
+ * Added [ml.DeleteRuns](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#DeleteRuns).
+ * Added [ml.DeleteRunsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#DeleteRunsResponse).
+ * Added [ml.RestoreRuns](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#RestoreRuns).
+ * Added [ml.RestoreRunsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#RestoreRunsResponse).
+ * Added `GetSecret` method for [w.Secrets](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#SecretsAPI) workspace-level service.
+ * Added [workspace.GetSecretRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#GetSecretRequest).
+ * Added [workspace.GetSecretResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#GetSecretResponse).
+
+Service Renames:
+
+ * Renamed `EffectiveAutoMaintenanceFlag` field to `EffectivePredictiveOptimizationFlag` for [catalog.CatalogInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogInfo).
+ * Renamed `EnableAutoMaintenance` field to `EnablePredictiveOptimization` for [catalog.CatalogInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogInfo).
+ * Renamed [catalog.EffectiveAutoMaintenanceFlag](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EffectiveAutoMaintenanceFlag) to [catalog.EffectivePredictiveOptimizationFlag](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EffectivePredictiveOptimizationFlag).
+ * Renamed [catalog.EffectiveAutoMaintenanceFlagInheritedFromType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EffectiveAutoMaintenanceFlagInheritedFromType) to [catalog.EffectivePredictiveOptimizationFlagInheritedFromType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EffectivePredictiveOptimizationFlagInheritedFromType).
+ * Renamed [catalog.EnableAutoMaintenance](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EnableAutoMaintenance) to [catalog.EnablePredictiveOptimization](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EnablePredictiveOptimization).
+ * Renamed `EffectiveAutoMaintenanceFlag` field for [catalog.SchemaInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SchemaInfo) to `EffectivePredictiveOptimizationFlag` field for [catalog.SchemaInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SchemaInfo).
+ * Renamed `EnableAutoMaintenance` field for [catalog.SchemaInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SchemaInfo) to `EnablePredictiveOptimization` field for [catalog.SchemaInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SchemaInfo).
+ * Renamed `EffectiveAutoMaintenanceFlag` field for [catalog.TableInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TableInfo) to `EffectivePredictiveOptimizationFlag` field for [catalog.TableInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TableInfo).
+ * Renamed `EnableAutoMaintenance` field for [catalog.TableInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TableInfo) to `EnablePredictiveOptimization` field for [catalog.TableInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#TableInfo).
+
+OpenAPI SHA: beff621d7b3e1d59244e2e34fc53a496f310e130, Date: 2023-08-17
+
 ## 0.16.0
 
 * Added ability to generate flat names ([#568](https://github.com/databricks/databricks-sdk-go/pull/568)).

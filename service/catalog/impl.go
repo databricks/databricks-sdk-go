@@ -578,6 +578,30 @@ func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*Schema
 	return &schemaInfo, err
 }
 
+// unexported type that holds implementations of just SecurableTags API methods
+type securableTagsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *securableTagsImpl) List(ctx context.Context, request ListSecurableTagsRequest) (*TagSecurableAssignmentsList, error) {
+	var tagSecurableAssignmentsList TagSecurableAssignmentsList
+	path := fmt.Sprintf("/api/2.1/unity-catalog/securable-tags/%v/%v", request.SecurableType, request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &tagSecurableAssignmentsList)
+	return &tagSecurableAssignmentsList, err
+}
+
+func (a *securableTagsImpl) Update(ctx context.Context, request UpdateTags) (*TagSecurableAssignmentsList, error) {
+	var tagSecurableAssignmentsList TagSecurableAssignmentsList
+	path := fmt.Sprintf("/api/2.1/unity-catalog/securable-tags/%v/%v", request.SecurableType, request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &tagSecurableAssignmentsList)
+	return &tagSecurableAssignmentsList, err
+}
+
 // unexported type that holds implementations of just StorageCredentials API methods
 type storageCredentialsImpl struct {
 	client *client.DatabricksClient
@@ -637,6 +661,30 @@ func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateS
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &validateStorageCredentialResponse)
 	return &validateStorageCredentialResponse, err
+}
+
+// unexported type that holds implementations of just SubentityTags API methods
+type subentityTagsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *subentityTagsImpl) List(ctx context.Context, request ListSubentityTagsRequest) (*TagSubentityAssignmentsList, error) {
+	var tagSubentityAssignmentsList TagSubentityAssignmentsList
+	path := fmt.Sprintf("/api/2.1/unity-catalog/subentity-tags/%v/%v/%v", request.SecurableType, request.FullName, request.SubentityName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &tagSubentityAssignmentsList)
+	return &tagSubentityAssignmentsList, err
+}
+
+func (a *subentityTagsImpl) Update(ctx context.Context, request UpdateTags) (*TagSubentityAssignmentsList, error) {
+	var tagSubentityAssignmentsList TagSubentityAssignmentsList
+	path := fmt.Sprintf("/api/2.1/unity-catalog/subentity-tags/%v/%v/%v", request.SecurableType, request.FullName, request.SubentityName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &tagSubentityAssignmentsList)
+	return &tagSubentityAssignmentsList, err
 }
 
 // unexported type that holds implementations of just SystemSchemas API methods
