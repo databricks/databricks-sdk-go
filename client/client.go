@@ -170,25 +170,35 @@ func (c *DatabricksClient) fromResponse(r *http.Response) (Body, error) {
 	if r == nil {
 		return Body{}, fmt.Errorf("nil response")
 	}
-	safeToReadFullResponse := r.Header.Get("Content-Type") == "application/json"
-	if safeToReadFullResponse {
-		defer r.Body.Close()
-		bs, err := io.ReadAll(r.Body)
-		if err != nil {
-			return Body{}, err
-		}
-		return fromBytes(bs), nil
+	if r.Request == nil {
+		return Body{}, fmt.Errorf("nil request")
 	}
-	return Body{
-		ReadCloser: r.Body,
-		DebugBytes: []byte("<io.ReadCloser>"),
-	}, nil
+	streamResponse := r.Request.Header.Get("Accept") != "application/json" && r.Header.Get("Content-Type") != "application/json"
+	if streamResponse {
+		return Body{
+			ReadCloser: r.Body,
+			DebugBytes: []byte("<io.ReadCloser>"),
+		}, nil
+	}
+	defer r.Body.Close()
+	bs, err := io.ReadAll(r.Body)
+	if err != nil {
+		return Body{}, fmt.Errorf("response body: %w", err)
+	}
+	return fromBytes(bs), nil
 }
 
 func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string) {
 	return bodyLogger{
 		debugTruncateBytes: c.debugTruncateBytes,
 	}.redactedDump(prefix, body)
+}
+
+func (c *DatabricksClient) wrapError(retry bool, err error) (*Body, *retries.Err) {
+	if retry {
+		return nil, retries.Continue(err)
+	}
+	return nil, retries.Halt(err)
 }
 
 func (c *DatabricksClient) attempt(
@@ -209,12 +219,12 @@ func (c *DatabricksClient) attempt(
 			request.Header.Set(k, v)
 		}
 		if err != nil {
-			return nil, retries.Halt(err)
+			return c.wrapError(false, err)
 		}
 		for _, requestVisitor := range visitors {
 			err = requestVisitor(request)
 			if err != nil {
-				return nil, retries.Halt(err)
+				return c.wrapError(false, err)
 			}
 		}
 		// request.Context() holds context potentially enhanced by visitors
@@ -222,10 +232,20 @@ func (c *DatabricksClient) attempt(
 
 		// attempt the actual request
 		response, err := c.httpClient.Do(request)
+		if ue, ok := err.(*url.Error); ok {
+			apiError := &apierr.APIError{
+				ErrorCode:  "IO_ERROR",
+				StatusCode: 523,
+				Message:    ue.Error(),
+			}
+			return c.wrapError(apiError.IsRetriable(ctx), apiError)
+		}
 		responseBody, responseBodyErr := c.fromResponse(response)
+		if responseBodyErr != nil {
+			return c.wrapError(false, apierr.ReadError(response.StatusCode, responseBodyErr))
+		}
 
-		//
-		retry, err := apierr.CheckForRetry(ctx, response, err, responseBody.DebugBytes, responseBodyErr)
+		retry, err := apierr.CheckForRetry(ctx, response, err, responseBody.ReadCloser)
 		var apiErr *apierr.APIError
 		if err != nil && !errors.As(err, &apiErr) {
 			err = fmt.Errorf("failed request: %w", err)
@@ -242,11 +262,7 @@ func (c *DatabricksClient) attempt(
 
 		// proactively release the connections in HTTP connection pool
 		c.httpClient.CloseIdleConnections()
-		if retry {
-			return nil, retries.Continue(err)
-		}
-
-		return nil, retries.Halt(err)
+		return c.wrapError(retry, err)
 	}
 }
 
@@ -456,7 +472,11 @@ func makeRequestBody(method string, requestURL *string, data interface{}) (Body,
 	if str, ok := data.(string); ok {
 		return fromBytes([]byte(str)), nil
 	}
-	return fromJsonData(data)
+	res, err := fromJsonData(data)
+	if err != nil {
+		return Body{}, fmt.Errorf("request marshal failure: %w", err)
+	}
+	return res, nil
 }
 
 func orDefault(configured, _default int) int {

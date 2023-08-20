@@ -62,7 +62,9 @@ func TestSimpleRequestFails(t *testing.T) {
 			assert.Equal(t, "f", r.Header.Get("e"))
 			auth := r.Header.Get("Authenticated")
 			assert.Equal(t, "yes", auth)
-			return &http.Response{}, fmt.Errorf("nope")
+			return &http.Response{
+				Request: r,
+			}, fmt.Errorf("nope")
 		}),
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
@@ -174,30 +176,36 @@ func TestMakeRequestBody(t *testing.T) {
 	requestURL := "/a/b/c"
 	body, err := makeRequestBody("GET", &requestURL, x{"test"})
 	assert.NoError(t, err)
+	bodyBytes, err := io.ReadAll(body.ReadCloser)
+	assert.NoError(t, err)
 	assert.Equal(t, "/a/b/c?scope=test", requestURL)
-	assert.Equal(t, 0, len(body.DebugBytes))
+	assert.Equal(t, 0, len(bodyBytes))
 
 	requestURL = "/a/b/c"
 	body, err = makeRequestBody("POST", &requestURL, x{"test"})
 	assert.NoError(t, err)
+	bodyBytes, err = io.ReadAll(body.ReadCloser)
+	assert.NoError(t, err)
 	assert.Equal(t, "/a/b/c", requestURL)
-	x1 := `{
-  "scope": "test"
-}`
-	assert.Equal(t, []byte(x1), body)
+	x1 := `{"scope":"test"}`
+	assert.Equal(t, []byte(x1), bodyBytes)
 }
 
 func TestMakeRequestBodyFromReader(t *testing.T) {
 	requestURL := "/a/b/c"
 	body, err := makeRequestBody("PUT", &requestURL, strings.NewReader("abc"))
 	assert.NoError(t, err)
-	assert.Equal(t, []byte("abc"), body)
+	bodyBytes, err := io.ReadAll(body.ReadCloser)
+	assert.NoError(t, err)
+	assert.Equal(t, []byte("abc"), bodyBytes)
 }
 
 func TestMakeRequestBodyReaderError(t *testing.T) {
 	requestURL := "/a/b/c"
 	_, err := makeRequestBody("POST", &requestURL, errReader(false))
-	assert.EqualError(t, err, "failed to read from reader: test error")
+	// The request body is only read once the request is sent, so no error
+	// should be returned until then.
+	assert.NoError(t, err, "request body reader error should be ignored")
 }
 
 func TestMakeRequestBodyJsonError(t *testing.T) {
@@ -263,20 +271,6 @@ func TestSimpleRequestAPIError(t *testing.T) {
 	}
 }
 
-func TestSimpleRequestNilResponseNoError(t *testing.T) {
-	c := &DatabricksClient{
-		Config: config.NewMockConfig(func(r *http.Request) error {
-			return nil
-		}),
-		httpClient: hc(func(r *http.Request) (*http.Response, error) {
-			return nil, nil
-		}),
-		rateLimiter: rate.NewLimiter(rate.Inf, 1),
-	}
-	err := c.Do(context.Background(), "PATCH", "/a", nil, map[string]any{}, nil)
-	assert.EqualError(t, err, "no response: PATCH /a")
-}
-
 func TestSimpleRequestErrReaderBody(t *testing.T) {
 	c := &DatabricksClient{
 		Config: config.NewMockConfig(func(r *http.Request) error {
@@ -291,8 +285,28 @@ func TestSimpleRequestErrReaderBody(t *testing.T) {
 		}),
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	err := c.Do(context.Background(), "PATCH", "/a", nil, map[string]any{}, nil)
+	headers := map[string]string{"Accept": "application/json"}
+	err := c.Do(context.Background(), "PATCH", "/a", headers, map[string]any{}, nil)
 	assert.EqualError(t, err, "response body: test error")
+}
+
+func TestSimpleRequestErrReaderBodyStreamResponse(t *testing.T) {
+	c := &DatabricksClient{
+		Config: config.NewMockConfig(func(r *http.Request) error {
+			return nil
+		}),
+		httpClient: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 200,
+				Body:       errReader(false),
+				Request:    r,
+			}, nil
+		}),
+		rateLimiter: rate.NewLimiter(rate.Inf, 1),
+	}
+	headers := map[string]string{"Accept": "application/octet-stream"}
+	err := c.Do(context.Background(), "PATCH", "/a", headers, map[string]any{}, nil)
+	assert.NoError(t, err, "streaming response bodies are not read")
 }
 
 func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
@@ -309,8 +323,28 @@ func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
 		}),
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	err := c.Do(context.Background(), "PATCH", "/a", nil, map[string]any{}, nil)
+	headers := map[string]string{"Accept": "application/json"}
+	err := c.Do(context.Background(), "PATCH", "/a", headers, map[string]any{}, nil)
 	assert.EqualError(t, err, "response body: test error")
+}
+
+func TestSimpleRequestErrReaderCloseBody_StreamResponse(t *testing.T) {
+	c := &DatabricksClient{
+		Config: config.NewMockConfig(func(r *http.Request) error {
+			return nil
+		}),
+		httpClient: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 200,
+				Body:       errReader(true),
+				Request:    r,
+			}, nil
+		}),
+		rateLimiter: rate.NewLimiter(rate.Inf, 1),
+	}
+	headers := map[string]string{"Accept": "application/octet-stream"}
+	err := c.Do(context.Background(), "PATCH", "/a", headers, map[string]any{}, nil)
+	assert.NoError(t, err, "response body should not be closed for streaming responses")
 }
 
 func TestSimpleRequestRawResponse(t *testing.T) {
@@ -440,7 +474,8 @@ func TestInlineArrayDebugging(t *testing.T) {
 		debugTruncateBytes: 2048,
 		rateLimiter:        rate.NewLimiter(rate.Inf, 1),
 	}
-	err := c.Do(context.Background(), "GET", "/a", nil, map[string]any{
+	headers := map[string]string{"Accept": "application/json"}
+	err := c.Do(context.Background(), "GET", "/a", headers, map[string]any{
 		"b": 0,
 		"a": 3,
 		"c": 23,
@@ -454,4 +489,39 @@ func TestInlineArrayDebugging(t *testing.T) {
 <     "foo": "bar"
 <   }
 < ]`, bufLogger.String())
+}
+
+func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
+	prevLogger := logger.DefaultLogger
+	bufLogger := &BufferLogger{}
+	logger.DefaultLogger = bufLogger
+	defer func() {
+		logger.DefaultLogger = prevLogger
+	}()
+
+	c := &DatabricksClient{
+		Config: config.NewMockConfig(func(r *http.Request) error {
+			return nil
+		}),
+		httpClient: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(`lots of bytes`)),
+				Request:    r,
+			}, nil
+		}),
+		debugTruncateBytes: 2048,
+		rateLimiter:        rate.NewLimiter(rate.Inf, 1),
+	}
+	headers := map[string]string{"Accept": "application/octet-stream"}
+	err := c.Do(context.Background(), "GET", "/a", headers, map[string]any{
+		"b": 0,
+		"a": 3,
+		"c": 23,
+	}, nil)
+	assert.NoError(t, err)
+
+	assert.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
+<  
+< [non-JSON document of 15 bytes]. <io.ReadCloser>`, bufLogger.String())
 }

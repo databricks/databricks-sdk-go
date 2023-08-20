@@ -23,6 +23,8 @@ import (
 type WorkspaceClient struct {
 	Config *config.Config
 
+	Files *files.FilesAPI
+
 	// These APIs manage access rules on resources in an account. Currently,
 	// only grant rules are supported. A grant rule specifies a role assigned to
 	// a set of principals. A list of rules attached to a resource is called a
@@ -884,6 +886,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	}
 	return &WorkspaceClient{
 		Config: cfg,
+		Files:  files.NewFiles(apiClient),
 
 		AccountAccessControlProxy: iam.NewAccountAccessControlProxy(apiClient),
 		Alerts:                    sql.NewAlerts(apiClient),
