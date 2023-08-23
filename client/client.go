@@ -413,10 +413,13 @@ func serializeQueryParamsToRequestBody(data any) (Body, error) {
 			continue
 		}
 		key := strings.Split(tag, ",")[0]
+		if key == "-" {
+			continue
+		}
 		m[key] = value
 	}
 
-	return fromJsonData(data)
+	return fromJsonData(m)
 }
 
 // List of (method, URL) pairs whose request bodies need to be serialized in a
