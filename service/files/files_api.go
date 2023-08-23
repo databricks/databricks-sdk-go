@@ -37,7 +37,7 @@ func (a *FilesAPI) Upload(ctx context.Context, path string, r io.Reader) error {
 	if !ok {
 		return fmt.Errorf("wrong impl: %v", a.impl)
 	}
-	return impl.client.Do(ctx, "PUT", "/api/2.0/fs/files"+path, r, nil,
+	return impl.client.Do(ctx, "PUT", "/api/2.0/fs/files"+path, nil, r, nil,
 		func(r *http.Request) error {
 			r.Header.Set("Content-Type", "application/octet-stream")
 			return nil
@@ -55,7 +55,7 @@ func (a *FilesAPI) Download(ctx context.Context, path string) (io.ReadCloser, er
 		return nil, fmt.Errorf("wrong impl: %v", a.impl)
 	}
 	var buf bytes.Buffer
-	err := impl.client.Do(ctx, "GET", "/api/2.0/fs/files"+path, nil, &buf)
+	err := impl.client.Do(ctx, "GET", "/api/2.0/fs/files"+path, nil, nil, &buf)
 	if err != nil {
 		return nil, err
 	}
@@ -77,5 +77,5 @@ func (a *FilesAPI) Delete(ctx context.Context, path string) error {
 	if !ok {
 		return fmt.Errorf("wrong impl: %v", a.impl)
 	}
-	return impl.client.Do(ctx, "DELETE", "/api/2.0/fs/files"+path, nil, nil)
+	return impl.client.Do(ctx, "DELETE", "/api/2.0/fs/files"+path, nil, nil, nil)
 }

@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
-	"net/http"
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
@@ -168,11 +167,10 @@ func (a *WorkspaceAPI) Upload(ctx context.Context, path string, r io.Reader, opt
 	if !ok {
 		return fmt.Errorf("wrong impl: %v", a.impl)
 	}
-	return impl.client.Do(ctx, "POST", "/api/2.0/workspace/import", buf.Bytes(), nil,
-		func(r *http.Request) error {
-			r.Header.Set("Content-Type", w.FormDataContentType())
-			return nil
-		})
+	headers := map[string]string{
+		"Content-Type": w.FormDataContentType(),
+	}
+	return impl.client.Do(ctx, "POST", "/api/2.0/workspace/import", headers, buf.Bytes(), nil)
 }
 
 // WriteFile is identical to [os.WriteFile] but for Workspace File.
@@ -209,7 +207,8 @@ func (a *WorkspaceAPI) Download(ctx context.Context, path string, opts ...Downlo
 	for _, v := range opts {
 		v(query)
 	}
-	err := impl.client.Do(ctx, "GET", "/api/2.0/workspace/export", query, &buf)
+	headers := map[string]string{"Content-Type": "application/json"}
+	err := impl.client.Do(ctx, "GET", "/api/2.0/workspace/export", headers, query, &buf)
 	if err != nil {
 		return nil, err
 	}

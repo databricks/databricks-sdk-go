@@ -16,64 +16,91 @@ type dbfsImpl struct {
 
 func (a *dbfsImpl) AddBlock(ctx context.Context, request AddBlock) error {
 	path := "/api/2.0/dbfs/add-block"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *dbfsImpl) Close(ctx context.Context, request Close) error {
 	path := "/api/2.0/dbfs/close"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *dbfsImpl) Create(ctx context.Context, request Create) (*CreateResponse, error) {
 	var createResponse CreateResponse
 	path := "/api/2.0/dbfs/create"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &createResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createResponse)
 	return &createResponse, err
 }
 
 func (a *dbfsImpl) Delete(ctx context.Context, request Delete) error {
 	path := "/api/2.0/dbfs/delete"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *dbfsImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error) {
 	var fileInfo FileInfo
 	path := "/api/2.0/dbfs/get-status"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &fileInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &fileInfo)
 	return &fileInfo, err
 }
 
 func (a *dbfsImpl) List(ctx context.Context, request ListDbfsRequest) (*ListStatusResponse, error) {
 	var listStatusResponse ListStatusResponse
 	path := "/api/2.0/dbfs/list"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listStatusResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listStatusResponse)
 	return &listStatusResponse, err
 }
 
 func (a *dbfsImpl) Mkdirs(ctx context.Context, request MkDirs) error {
 	path := "/api/2.0/dbfs/mkdirs"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *dbfsImpl) Move(ctx context.Context, request Move) error {
 	path := "/api/2.0/dbfs/move"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *dbfsImpl) Put(ctx context.Context, request Put) error {
 	path := "/api/2.0/dbfs/put"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *dbfsImpl) Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error) {
 	var readResponse ReadResponse
 	path := "/api/2.0/dbfs/read"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &readResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &readResponse)
 	return &readResponse, err
 }

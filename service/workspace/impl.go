@@ -18,33 +18,44 @@ type gitCredentialsImpl struct {
 func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentials) (*CreateCredentialsResponse, error) {
 	var createCredentialsResponse CreateCredentialsResponse
 	path := "/api/2.0/git-credentials"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &createCredentialsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createCredentialsResponse)
 	return &createCredentialsResponse, err
 }
 
 func (a *gitCredentialsImpl) Delete(ctx context.Context, request DeleteGitCredentialRequest) error {
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *gitCredentialsImpl) Get(ctx context.Context, request GetGitCredentialRequest) (*CredentialInfo, error) {
 	var credentialInfo CredentialInfo
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &credentialInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &credentialInfo)
 	return &credentialInfo, err
 }
 
 func (a *gitCredentialsImpl) List(ctx context.Context) (*GetCredentialsResponse, error) {
 	var getCredentialsResponse GetCredentialsResponse
 	path := "/api/2.0/git-credentials"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &getCredentialsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &getCredentialsResponse)
 	return &getCredentialsResponse, err
 }
 
 func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentials) error {
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
 	return err
 }
 
@@ -56,61 +67,82 @@ type reposImpl struct {
 func (a *reposImpl) Create(ctx context.Context, request CreateRepo) (*RepoInfo, error) {
 	var repoInfo RepoInfo
 	path := "/api/2.0/repos"
-	err := a.client.Do(ctx, http.MethodPost, path, request, &repoInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &repoInfo)
 	return &repoInfo, err
 }
 
 func (a *reposImpl) Delete(ctx context.Context, request DeleteRepoRequest) error {
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *reposImpl) Get(ctx context.Context, request GetRepoRequest) (*RepoInfo, error) {
 	var repoInfo RepoInfo
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &repoInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &repoInfo)
 	return &repoInfo, err
 }
 
 func (a *reposImpl) GetRepoPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error) {
 	var getRepoPermissionLevelsResponse GetRepoPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/repos/%v/permissionLevels", request.RepoId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getRepoPermissionLevelsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getRepoPermissionLevelsResponse)
 	return &getRepoPermissionLevelsResponse, err
 }
 
 func (a *reposImpl) GetRepoPermissions(ctx context.Context, request GetRepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &repoPermissions)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &repoPermissions)
 	return &repoPermissions, err
 }
 
 func (a *reposImpl) List(ctx context.Context, request ListReposRequest) (*ListReposResponse, error) {
 	var listReposResponse ListReposResponse
 	path := "/api/2.0/repos"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listReposResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listReposResponse)
 	return &listReposResponse, err
 }
 
 func (a *reposImpl) SetRepoPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
-	err := a.client.Do(ctx, http.MethodPut, path, request, &repoPermissions)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &repoPermissions)
 	return &repoPermissions, err
 }
 
 func (a *reposImpl) Update(ctx context.Context, request UpdateRepo) error {
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
 	return err
 }
 
 func (a *reposImpl) UpdateRepoPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &repoPermissions)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &repoPermissions)
 	return &repoPermissions, err
 }
 
@@ -121,72 +153,100 @@ type secretsImpl struct {
 
 func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) error {
 	path := "/api/2.0/secrets/scopes/create"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *secretsImpl) DeleteAcl(ctx context.Context, request DeleteAcl) error {
 	path := "/api/2.0/secrets/acls/delete"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *secretsImpl) DeleteScope(ctx context.Context, request DeleteScope) error {
 	path := "/api/2.0/secrets/scopes/delete"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *secretsImpl) DeleteSecret(ctx context.Context, request DeleteSecret) error {
 	path := "/api/2.0/secrets/delete"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *secretsImpl) GetAcl(ctx context.Context, request GetAclRequest) (*AclItem, error) {
 	var aclItem AclItem
 	path := "/api/2.0/secrets/acls/get"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &aclItem)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &aclItem)
 	return &aclItem, err
 }
 
 func (a *secretsImpl) GetSecret(ctx context.Context, request GetSecretRequest) (*GetSecretResponse, error) {
 	var getSecretResponse GetSecretResponse
 	path := "/api/2.0/secrets/get"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getSecretResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getSecretResponse)
 	return &getSecretResponse, err
 }
 
 func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) (*ListAclsResponse, error) {
 	var listAclsResponse ListAclsResponse
 	path := "/api/2.0/secrets/acls/list"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listAclsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listAclsResponse)
 	return &listAclsResponse, err
 }
 
 func (a *secretsImpl) ListScopes(ctx context.Context) (*ListScopesResponse, error) {
 	var listScopesResponse ListScopesResponse
 	path := "/api/2.0/secrets/scopes/list"
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &listScopesResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listScopesResponse)
 	return &listScopesResponse, err
 }
 
 func (a *secretsImpl) ListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error) {
 	var listSecretsResponse ListSecretsResponse
 	path := "/api/2.0/secrets/list"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listSecretsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listSecretsResponse)
 	return &listSecretsResponse, err
 }
 
 func (a *secretsImpl) PutAcl(ctx context.Context, request PutAcl) error {
 	path := "/api/2.0/secrets/acls/put"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *secretsImpl) PutSecret(ctx context.Context, request PutSecret) error {
 	path := "/api/2.0/secrets/put"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
@@ -197,67 +257,92 @@ type workspaceImpl struct {
 
 func (a *workspaceImpl) Delete(ctx context.Context, request Delete) error {
 	path := "/api/2.0/workspace/delete"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *workspaceImpl) Export(ctx context.Context, request ExportRequest) (*ExportResponse, error) {
 	var exportResponse ExportResponse
 	path := "/api/2.0/workspace/export"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &exportResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &exportResponse)
 	return &exportResponse, err
 }
 
 func (a *workspaceImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error) {
 	var objectInfo ObjectInfo
 	path := "/api/2.0/workspace/get-status"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &objectInfo)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &objectInfo)
 	return &objectInfo, err
 }
 
 func (a *workspaceImpl) GetWorkspaceObjectPermissionLevels(ctx context.Context, request GetWorkspaceObjectPermissionLevelsRequest) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
 	var getWorkspaceObjectPermissionLevelsResponse GetWorkspaceObjectPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", request.WorkspaceObjectType, request.WorkspaceObjectId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &getWorkspaceObjectPermissionLevelsResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getWorkspaceObjectPermissionLevelsResponse)
 	return &getWorkspaceObjectPermissionLevelsResponse, err
 }
 
 func (a *workspaceImpl) GetWorkspaceObjectPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &workspaceObjectPermissions)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &workspaceObjectPermissions)
 	return &workspaceObjectPermissions, err
 }
 
 func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
 	path := "/api/2.0/workspace/import"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *workspaceImpl) List(ctx context.Context, request ListWorkspaceRequest) (*ListResponse, error) {
 	var listResponse ListResponse
 	path := "/api/2.0/workspace/list"
-	err := a.client.Do(ctx, http.MethodGet, path, request, &listResponse)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listResponse)
 	return &listResponse, err
 }
 
 func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
 	path := "/api/2.0/workspace/mkdirs"
-	err := a.client.Do(ctx, http.MethodPost, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
 }
 
 func (a *workspaceImpl) SetWorkspaceObjectPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
-	err := a.client.Do(ctx, http.MethodPut, path, request, &workspaceObjectPermissions)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &workspaceObjectPermissions)
 	return &workspaceObjectPermissions, err
 }
 
 func (a *workspaceImpl) UpdateWorkspaceObjectPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, &workspaceObjectPermissions)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &workspaceObjectPermissions)
 	return &workspaceObjectPermissions, err
 }

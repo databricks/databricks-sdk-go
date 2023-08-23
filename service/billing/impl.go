@@ -17,7 +17,8 @@ type billableUsageImpl struct {
 
 func (a *billableUsageImpl) Download(ctx context.Context, request DownloadRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/usage/download", a.client.ConfiguredAccountID())
-	err := a.client.Do(ctx, http.MethodGet, path, request, nil)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, nil)
 	return err
 }
 
@@ -29,33 +30,45 @@ type budgetsImpl struct {
 func (a *budgetsImpl) Create(ctx context.Context, request WrappedBudget) (*WrappedBudgetWithStatus, error) {
 	var wrappedBudgetWithStatus WrappedBudgetWithStatus
 	path := fmt.Sprintf("/api/2.0/accounts/%v/budget", a.client.ConfiguredAccountID())
-	err := a.client.Do(ctx, http.MethodPost, path, request, &wrappedBudgetWithStatus)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &wrappedBudgetWithStatus)
 	return &wrappedBudgetWithStatus, err
 }
 
 func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), request.BudgetId)
-	err := a.client.Do(ctx, http.MethodDelete, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
 }
 
 func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetRequest) (*WrappedBudgetWithStatus, error) {
 	var wrappedBudgetWithStatus WrappedBudgetWithStatus
 	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), request.BudgetId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &wrappedBudgetWithStatus)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &wrappedBudgetWithStatus)
 	return &wrappedBudgetWithStatus, err
 }
 
 func (a *budgetsImpl) List(ctx context.Context) (*BudgetList, error) {
 	var budgetList BudgetList
 	path := fmt.Sprintf("/api/2.0/accounts/%v/budget", a.client.ConfiguredAccountID())
-	err := a.client.Do(ctx, http.MethodGet, path, nil, &budgetList)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &budgetList)
 	return &budgetList, err
 }
 
 func (a *budgetsImpl) Update(ctx context.Context, request WrappedBudget) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/budget/%v", a.client.ConfiguredAccountID(), request.BudgetId)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
 	return err
 }
 
@@ -67,26 +80,36 @@ type logDeliveryImpl struct {
 func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error) {
 	var wrappedLogDeliveryConfiguration WrappedLogDeliveryConfiguration
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.ConfiguredAccountID())
-	err := a.client.Do(ctx, http.MethodPost, path, request, &wrappedLogDeliveryConfiguration)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &wrappedLogDeliveryConfiguration)
 	return &wrappedLogDeliveryConfiguration, err
 }
 
 func (a *logDeliveryImpl) Get(ctx context.Context, request GetLogDeliveryRequest) (*WrappedLogDeliveryConfiguration, error) {
 	var wrappedLogDeliveryConfiguration WrappedLogDeliveryConfiguration
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
-	err := a.client.Do(ctx, http.MethodGet, path, request, &wrappedLogDeliveryConfiguration)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &wrappedLogDeliveryConfiguration)
 	return &wrappedLogDeliveryConfiguration, err
 }
 
 func (a *logDeliveryImpl) List(ctx context.Context, request ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error) {
 	var wrappedLogDeliveryConfigurations WrappedLogDeliveryConfigurations
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.ConfiguredAccountID())
-	err := a.client.Do(ctx, http.MethodGet, path, request, &wrappedLogDeliveryConfigurations)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &wrappedLogDeliveryConfigurations)
 	return &wrappedLogDeliveryConfigurations, err
 }
 
 func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
-	err := a.client.Do(ctx, http.MethodPatch, path, request, nil)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
 	return err
 }
