@@ -36,6 +36,14 @@ type Method struct {
 	// the user-friendly name of the resource.
 	NameFieldPath []*Field
 
+	// If not nil, the field in the request and reponse entities that should be
+	// mapped to the request/response body.
+	RequestBodyField  *Field
+	ResponseBodyField *Field
+
+	// Expected content type of the request and response
+	FixedRequestHeaders map[string]string
+
 	wait       *openapi.Wait
 	pagination *openapi.Pagination
 	operation  *openapi.Operation
@@ -397,4 +405,14 @@ func (m *Method) CmdletName(prefix string) string {
 	verb := strings.Title(words[0])
 	prefix = strings.Title(prefix)
 	return fmt.Sprintf("%s-%s%s", verb, prefix, noun.PascalName())
+}
+
+func (m *Method) IsRequestByteStream() bool {
+	contentType, ok := m.FixedRequestHeaders["Content-Type"]
+	return m.Request != nil && ok && contentType != string(openapi.MimeTypeJson)
+}
+
+func (m *Method) IsResponseByteStream() bool {
+	accept, ok := m.FixedRequestHeaders["Accept"]
+	return m.Response != nil && ok && accept != string(openapi.MimeTypeJson)
 }
