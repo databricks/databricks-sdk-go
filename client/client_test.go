@@ -49,7 +49,32 @@ func TestNew(t *testing.T) {
 	assert.Equal(t, 5*time.Minute, c.retryTimeout)
 }
 
-func TestSimpleRequestFails(t *testing.T) {
+func TestSimpleRequestFailsURLError(t *testing.T) {
+	c := &DatabricksClient{
+		Config: config.NewMockConfig(func(r *http.Request) error {
+			r.Header.Add("Authenticated", "yes")
+			return nil
+		}),
+		httpClient: hc(func(r *http.Request) (*http.Response, error) {
+			assert.Equal(t, "GET", r.Method)
+			assert.Equal(t, "/a/b", r.URL.Path)
+			assert.Equal(t, "c=d", r.URL.RawQuery)
+			assert.Equal(t, "f", r.Header.Get("e"))
+			auth := r.Header.Get("Authenticated")
+			assert.Equal(t, "yes", auth)
+			return nil, &url.Error{Op: "GET", URL: "/a/b", Err: fmt.Errorf("nope")}
+		}),
+		rateLimiter: rate.NewLimiter(rate.Inf, 1),
+	}
+	err := c.Do(context.Background(), "GET", "/a/b", map[string]string{
+		"e": "f",
+	}, map[string]string{
+		"c": "d",
+	}, nil)
+	assert.EqualError(t, err, "GET \"/a/b\": nope")
+}
+
+func TestSimpleRequestFailsAPIError(t *testing.T) {
 	c := &DatabricksClient{
 		Config: config.NewMockConfig(func(r *http.Request) error {
 			r.Header.Add("Authenticated", "yes")
@@ -63,8 +88,10 @@ func TestSimpleRequestFails(t *testing.T) {
 			auth := r.Header.Get("Authenticated")
 			assert.Equal(t, "yes", auth)
 			return &http.Response{
-				Request: r,
-			}, fmt.Errorf("nope")
+				StatusCode: 400,
+				Request:    r,
+				Body:       io.NopCloser(strings.NewReader(`{"error_code": "INVALID_PARAMETER_VALUE", "message": "nope"}`)),
+			}, nil
 		}),
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
@@ -73,7 +100,7 @@ func TestSimpleRequestFails(t *testing.T) {
 	}, map[string]string{
 		"c": "d",
 	}, nil)
-	assert.EqualError(t, err, "failed request: nope")
+	assert.EqualError(t, err, "nope")
 }
 
 func TestSimpleRequestSucceeds(t *testing.T) {

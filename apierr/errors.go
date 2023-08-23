@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -101,19 +102,32 @@ func ReadError(statusCode int, err error) *APIError {
 	}
 }
 
+func TooManyRequests() *APIError {
+	return &APIError{
+		ErrorCode:  "TOO_MANY_REQUESTS",
+		StatusCode: 429,
+		Message:    "Current request has to be retried",
+	}
+}
+
+func GenericIOError(ue *url.Error) *APIError {
+	return &APIError{
+		ErrorCode:  "IO_ERROR",
+		StatusCode: 523,
+		Message:    ue.Error(),
+	}
+
+}
+
 // CheckForRetry inspects HTTP errors from the Databricks API for known transient errors on Workspace creation
-func CheckForRetry(ctx context.Context, resp *http.Response, respErr error, body io.ReadCloser) (bool, error) {
+func CheckForRetry(ctx context.Context, resp *http.Response, body io.ReadCloser) (bool, error) {
 	if resp == nil {
 		// If response is nil we can't make retry choices.
 		// In this case don't retry and return the original error from httpclient
-		return false, respErr
+		return false, nil
 	}
 	if resp.StatusCode == 429 {
-		return true, &APIError{
-			ErrorCode:  "TOO_MANY_REQUESTS",
-			Message:    "Current request has to be retried",
-			StatusCode: 429,
-		}
+		return true, TooManyRequests()
 	}
 	if resp.StatusCode >= 400 {
 		// read in response body as it is actually an error
@@ -124,7 +138,7 @@ func CheckForRetry(ctx context.Context, resp *http.Response, respErr error, body
 		apiError := parseErrorFromResponse(resp, bodyBytes)
 		return apiError.IsRetriable(ctx), apiError
 	}
-	return false, respErr
+	return false, nil
 }
 
 func parseErrorFromResponse(resp *http.Response, body []byte) *APIError {

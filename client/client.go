@@ -233,11 +233,7 @@ func (c *DatabricksClient) attempt(
 		// attempt the actual request
 		response, err := c.httpClient.Do(request)
 		if ue, ok := err.(*url.Error); ok {
-			apiError := &apierr.APIError{
-				ErrorCode:  "IO_ERROR",
-				StatusCode: 523,
-				Message:    ue.Error(),
-			}
+			apiError := apierr.GenericIOError(ue)
 			return c.wrapError(apiError.IsRetriable(ctx), apiError)
 		}
 		responseBody, responseBodyErr := c.fromResponse(response)
@@ -245,13 +241,10 @@ func (c *DatabricksClient) attempt(
 			return c.wrapError(false, apierr.ReadError(response.StatusCode, responseBodyErr))
 		}
 
-		retry, err := apierr.CheckForRetry(ctx, response, err, responseBody.ReadCloser)
+		retry, err := apierr.CheckForRetry(ctx, response, responseBody.ReadCloser)
 		var apiErr *apierr.APIError
 		if err != nil && !errors.As(err, &apiErr) {
 			err = fmt.Errorf("failed request: %w", err)
-		}
-		if err == nil && response == nil {
-			err = fmt.Errorf("no response: %s %s", method, requestURL)
 		}
 
 		defer c.recordRequestLog(ctx, request, response, err, requestBody.DebugBytes, responseBody.DebugBytes)
