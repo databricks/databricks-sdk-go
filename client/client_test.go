@@ -203,7 +203,7 @@ func TestMakeRequestBody(t *testing.T) {
 	requestURL := "/a/b/c"
 	body, err := makeRequestBody("GET", &requestURL, x{"test"})
 	assert.NoError(t, err)
-	bodyBytes, err := io.ReadAll(body.ReadCloser)
+	bodyBytes, err := io.ReadAll(body.Reader)
 	assert.NoError(t, err)
 	assert.Equal(t, "/a/b/c?scope=test", requestURL)
 	assert.Equal(t, 0, len(bodyBytes))
@@ -211,7 +211,7 @@ func TestMakeRequestBody(t *testing.T) {
 	requestURL = "/a/b/c"
 	body, err = makeRequestBody("POST", &requestURL, x{"test"})
 	assert.NoError(t, err)
-	bodyBytes, err = io.ReadAll(body.ReadCloser)
+	bodyBytes, err = io.ReadAll(body.Reader)
 	assert.NoError(t, err)
 	assert.Equal(t, "/a/b/c", requestURL)
 	x1 := `{"scope":"test"}`
@@ -222,7 +222,7 @@ func TestMakeRequestBodyFromReader(t *testing.T) {
 	requestURL := "/a/b/c"
 	body, err := makeRequestBody("PUT", &requestURL, strings.NewReader("abc"))
 	assert.NoError(t, err)
-	bodyBytes, err := io.ReadAll(body.ReadCloser)
+	bodyBytes, err := io.ReadAll(body.Reader)
 	assert.NoError(t, err)
 	assert.Equal(t, []byte("abc"), bodyBytes)
 }

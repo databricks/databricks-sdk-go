@@ -74,31 +74,45 @@ type httpClient interface {
 // "<io.ReadCloser>". Otherwise, DebugBytes is set to the marshaled JSON
 // representation of the request data, and ReadCloser is set to a new
 // io.ReadCloser that reads from DebugBytes.
-type Body struct {
-	ReadCloser io.ReadCloser
+type RequestBody struct {
+	Reader     io.Reader
 	DebugBytes []byte
 }
 
-func fromBytes(bs []byte) Body {
-	return Body{
-		ReadCloser: io.NopCloser(bytes.NewReader(bs)),
+func fromBytes(bs []byte) RequestBody {
+	bsReader := bytes.NewReader(bs)
+	return RequestBody{
+		Reader:     bsReader,
 		DebugBytes: bs,
 	}
 }
 
-func fromReader(r io.Reader) Body {
-	return Body{
-		ReadCloser: io.NopCloser(r),
+func fromReader(r io.Reader) RequestBody {
+	return RequestBody{
+		Reader:     r,
 		DebugBytes: []byte("<io.Reader>"),
 	}
 }
 
-func fromJsonData(data any) (Body, error) {
+func fromJsonData(data any) (RequestBody, error) {
 	bs, err := json.Marshal(data)
 	if err != nil {
-		return Body{}, err
+		return RequestBody{}, err
 	}
 	return fromBytes(bs), nil
+}
+
+type ResponseBody struct {
+	ReadCloser io.ReadCloser
+	DebugBytes []byte
+}
+
+func fromBytesResponse(bs []byte) ResponseBody {
+	bsReader := bytes.NewReader(bs)
+	return ResponseBody{
+		ReadCloser: io.NopCloser(bsReader),
+		DebugBytes: bs,
+	}
 }
 
 type DatabricksClient struct {
@@ -127,7 +141,7 @@ func (c *DatabricksClient) Do(ctx context.Context, method, path string,
 	return c.unmarshal(body, response)
 }
 
-func (c *DatabricksClient) unmarshal(body *Body, response any) error {
+func (c *DatabricksClient) unmarshal(body *ResponseBody, response any) error {
 	if response == nil {
 		return nil
 	}
@@ -165,16 +179,16 @@ func (c *DatabricksClient) addHostToRequestUrl(r *http.Request) error {
 	return nil
 }
 
-func (c *DatabricksClient) fromResponse(r *http.Response) (Body, error) {
+func (c *DatabricksClient) fromResponse(r *http.Response) (ResponseBody, error) {
 	if r == nil {
-		return Body{}, fmt.Errorf("nil response")
+		return ResponseBody{}, fmt.Errorf("nil response")
 	}
 	if r.Request == nil {
-		return Body{}, fmt.Errorf("nil request")
+		return ResponseBody{}, fmt.Errorf("nil request")
 	}
 	streamResponse := r.Request.Header.Get("Accept") != "application/json" && r.Header.Get("Content-Type") != "application/json"
 	if streamResponse {
-		return Body{
+		return ResponseBody{
 			ReadCloser: r.Body,
 			DebugBytes: []byte("<io.ReadCloser>"),
 		}, nil
@@ -182,9 +196,9 @@ func (c *DatabricksClient) fromResponse(r *http.Response) (Body, error) {
 	defer r.Body.Close()
 	bs, err := io.ReadAll(r.Body)
 	if err != nil {
-		return Body{}, fmt.Errorf("response body: %w", err)
+		return ResponseBody{}, fmt.Errorf("response body: %w", err)
 	}
-	return fromBytes(bs), nil
+	return fromBytesResponse(bs), nil
 }
 
 func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string) {
@@ -193,7 +207,7 @@ func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string)
 	}.redactedDump(prefix, body)
 }
 
-func (c *DatabricksClient) wrapError(retry bool, err error) (*Body, *retries.Err) {
+func (c *DatabricksClient) wrapError(retry bool, err error) (*ResponseBody, *retries.Err) {
 	if retry {
 		return nil, retries.Continue(err)
 	}
@@ -205,15 +219,15 @@ func (c *DatabricksClient) attempt(
 	method string,
 	requestURL string,
 	headers map[string]string,
-	requestBody Body,
+	requestBody RequestBody,
 	visitors ...func(*http.Request) error,
-) func() (*Body, *retries.Err) {
-	return func() (*Body, *retries.Err) {
+) func() (*ResponseBody, *retries.Err) {
+	return func() (*ResponseBody, *retries.Err) {
 		err := c.rateLimiter.Wait(ctx)
 		if err != nil {
 			return nil, retries.Halt(err)
 		}
-		request, err := http.NewRequestWithContext(ctx, method, requestURL, requestBody.ReadCloser)
+		request, err := http.NewRequestWithContext(ctx, method, requestURL, requestBody.Reader)
 		for k, v := range headers {
 			request.Header.Set(k, v)
 		}
@@ -324,7 +338,7 @@ func (c *DatabricksClient) perform(
 	headers map[string]string,
 	data interface{},
 	visitors ...func(*http.Request) error,
-) (*Body, error) {
+) (*ResponseBody, error) {
 	// replace double slash in the request URL with a single slash
 	requestURL = strings.Replace(requestURL, "//", "/", -1)
 	requestBody, err := makeRequestBody(method, &requestURL, data)
@@ -390,14 +404,14 @@ func makeQueryString(data interface{}) (string, error) {
 	return "", fmt.Errorf("unsupported query string data: %#v", data)
 }
 
-func makeRequestBody(method string, requestURL *string, data interface{}) (Body, error) {
+func makeRequestBody(method string, requestURL *string, data interface{}) (RequestBody, error) {
 	if data == nil && (method == "DELETE" || method == "GET") {
-		return Body{}, nil
+		return RequestBody{}, nil
 	}
 	if method == "GET" || method == "DELETE" {
 		qs, err := makeQueryString(data)
 		if err != nil {
-			return Body{}, err
+			return RequestBody{}, err
 		}
 		*requestURL += qs
 		return fromBytes([]byte{}), nil
@@ -413,7 +427,7 @@ func makeRequestBody(method string, requestURL *string, data interface{}) (Body,
 	}
 	res, err := fromJsonData(data)
 	if err != nil {
-		return Body{}, fmt.Errorf("request marshal failure: %w", err)
+		return RequestBody{}, fmt.Errorf("request marshal failure: %w", err)
 	}
 	return res, nil
 }
