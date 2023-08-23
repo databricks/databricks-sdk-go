@@ -38,7 +38,7 @@ type Method struct {
 
 	// If not nil, the field in the request and reponse entities that should be
 	// mapped to the request/response body.
-	RequestBodyField *Field
+	RequestBodyField  *Field
 	ResponseBodyField *Field
 
 	// Expected content type of the request and response
