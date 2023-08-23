@@ -128,11 +128,6 @@ func (c *DatabricksClient) addHostToRequestUrl(r *http.Request) error {
 	return nil
 }
 
-func (c *DatabricksClient) addApplicationJsonContentType(r *http.Request) error {
-	r.Header.Set("Content-Type", "application/json")
-	return nil
-}
-
 func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string) {
 	return bodyLogger{
 		debugTruncateBytes: c.debugTruncateBytes,
@@ -289,7 +284,6 @@ func (c *DatabricksClient) perform(
 	visitors = append([]func(*http.Request) error{
 		c.Config.Authenticate,
 		c.addHostToRequestUrl,
-		c.addApplicationJsonContentType,
 		c.addAuthHeaderToUserAgent,
 	}, visitors...)
 	resp, err := retries.Poll(ctx, c.retryTimeout,
