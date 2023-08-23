@@ -298,11 +298,15 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 	return request, mimeType, bodyField
 }
 
-func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeType, Named) {
+func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeType, *Field, Named) {
 	body := op.SuccessResponseBody(svc.Package.Components)
 	schema, mimeType := svc.getBaseSchemaAndMimeType(body)
 	name := op.Name()
 	response := svc.Package.definedEntity(name+"Response", schema)
+	var bodyField *Field
+	if mimeType.IsByteStream() {
+		bodyField = response.fields[openapi.MediaTypeNonJsonBodyFieldName]
+	}
 
 	// This next block of code is needed to make up for shortcomings in
 	// schemaToEntity. That function (and the Entity structure) assumes that all
@@ -310,18 +314,18 @@ func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeTyp
 	// and schemaToEntity to be more tolerant of non-JSON entities; for now, we
 	// put this hack in place to make things work.
 	if mimeType.IsByteStream() {
-		bodyField := response.fields[openapi.MediaTypeNonJsonBodyFieldName]
 		svc.updateEntityTypeFromMimeType(bodyField.Entity, mimeType)
 		for _, v := range response.fields {
 			v.IsJson = false
 		}
 	}
+
 	var emptyResponse Named
 	if response != nil && response.IsEmpty {
 		emptyResponse = response.Named
 		response = nil
 	}
-	return response, mimeType, emptyResponse
+	return response, mimeType, bodyField, emptyResponse
 }
 
 func (svc *Service) paramPath(path string, request *Entity, params []openapi.Parameter) (parts []PathPart) {
@@ -373,7 +377,7 @@ func (svc *Service) getPathStyle(op *openapi.Operation) openapi.PathStyle {
 func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) *Method {
 	methodName := op.Name()
 	request, reqMimeType, reqBodyField := svc.newRequest(params, op)
-	response, respMimeType, emptyResponse := svc.newResponse(op)
+	response, respMimeType, respBodyField, emptyResponse := svc.newResponse(op)
 	requestStyle := svc.getPathStyle(op)
 	if requestStyle == openapi.PathStyleRpc {
 		methodName = filepath.Base(path)
@@ -427,6 +431,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		NameFieldPath:       nameFieldPath,
 		IdFieldPath:         idFieldPath,
 		RequestBodyField:    reqBodyField,
+		ResponseBodyField:   respBodyField,
 		FixedRequestHeaders: headers,
 		wait:                op.Wait,
 		operation:           op,
