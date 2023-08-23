@@ -25,11 +25,18 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 		fmt.Sprintf("{{range  .PathParts}}{{.Prefix}}{{if or .Field .IsAccountId}}%v{{end}}{{ end }}"{{ range .PathParts }}{{if .Field}}, request.{{.Field.PascalName}}{{ else if .IsAccountId }}, a.client.ConfiguredAccountID(){{end}}{{ end }})
 	{{- else}}"{{.Path}}"{{end}}
 	{{ template "make-header" . }}
-	err := a.client.Do(ctx, http.Method{{.TitleVerb}}, path, headers, {{if .Request}}request{{ if .RequestBodyField }}.{{.RequestBodyField.PascalName}}{{end}}{{else}}nil{{end}}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})
+	err := a.client.Do(ctx, http.Method{{.TitleVerb}}, path, headers, {{ template "request-param" . }}, {{if .Response}}&{{.Response.CamelName}}{{else}}nil{{end}})
 	return {{ template "response" . }}
 }
 {{end -}}
 {{end}}
+
+{{ define "request-param" -}}
+  {{ if .Request -}}
+    request{{ if .RequestBodyField }}.{{.RequestBodyField.PascalName}}{{end}}
+  {{- else }}nil
+  {{- end }}
+{{- end }}
 
 {{ define "response-var" -}}
 {{ if .Response }}

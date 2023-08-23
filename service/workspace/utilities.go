@@ -207,8 +207,8 @@ func (a *WorkspaceAPI) Download(ctx context.Context, path string, opts ...Downlo
 	for _, v := range opts {
 		v(query)
 	}
-	// Not sure what Accept header should be used here.
-	err := impl.client.Do(ctx, "GET", "/api/2.0/workspace/export", nil, query, &buf)
+	headers := map[string]string{"Content-Type": "application/json"}
+	err := impl.client.Do(ctx, "GET", "/api/2.0/workspace/export", headers, query, &buf)
 	if err != nil {
 		return nil, err
 	}
