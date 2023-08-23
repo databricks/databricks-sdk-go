@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
 )
@@ -37,11 +36,10 @@ func (a *FilesAPI) Upload(ctx context.Context, path string, r io.Reader) error {
 	if !ok {
 		return fmt.Errorf("wrong impl: %v", a.impl)
 	}
-	return impl.client.Do(ctx, "PUT", "/api/2.0/fs/files"+path, nil, r, nil,
-		func(r *http.Request) error {
-			r.Header.Set("Content-Type", "application/octet-stream")
-			return nil
-		})
+	headers := map[string]string{
+		"Content-Type": "application/octet-stream",
+	}
+	return impl.client.Do(ctx, "PUT", "/api/2.0/fs/files"+path, headers, r, nil)
 }
 
 // WriteFile is identical to [os.WriteFile] but for Files API.
