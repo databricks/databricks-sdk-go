@@ -68,50 +68,74 @@ type httpClient interface {
 	CloseIdleConnections()
 }
 
-// Represents a request or response Body.
+// Represents a request body.
 //
-// If the provided request data is an io.ReadCloser, DebugBytes is set to
-// "<io.ReadCloser>". Otherwise, DebugBytes is set to the marshaled JSON
+// If the provided request data is an io.Reader, DebugBytes is set to
+// "<io.Reader>". Otherwise, DebugBytes is set to the marshaled JSON
 // representation of the request data, and ReadCloser is set to a new
 // io.ReadCloser that reads from DebugBytes.
+//
+// Request bodies are never closed by the client, hence only accepting
+// io.Reader.
 type RequestBody struct {
 	Reader     io.Reader
 	DebugBytes []byte
 }
 
-func fromBytes(bs []byte) RequestBody {
-	bsReader := bytes.NewReader(bs)
-	return RequestBody{
-		Reader:     bsReader,
-		DebugBytes: bs,
+func newRequestBody(data any) (RequestBody, error) {
+	switch v := data.(type) {
+	case io.Reader:
+		return RequestBody{
+			Reader:     v,
+			DebugBytes: []byte("<io.Reader>"),
+		}, nil
+	case string:
+		return RequestBody{
+			Reader:     strings.NewReader(v),
+			DebugBytes: []byte(v),
+		}, nil
+	case []byte:
+		return RequestBody{
+			Reader:     bytes.NewReader(v),
+			DebugBytes: v,
+		}, nil
+	default:
+		bs, err := json.Marshal(data)
+		if err != nil {
+			return RequestBody{}, fmt.Errorf("request marshal failure: %w", err)
+		}
+		return RequestBody{
+			Reader:     bytes.NewReader(bs),
+			DebugBytes: bs,
+		}, nil
 	}
 }
 
-func fromReader(r io.Reader) RequestBody {
-	return RequestBody{
-		Reader:     r,
-		DebugBytes: []byte("<io.Reader>"),
-	}
-}
-
-func fromJsonData(data any) (RequestBody, error) {
-	bs, err := json.Marshal(data)
-	if err != nil {
-		return RequestBody{}, err
-	}
-	return fromBytes(bs), nil
-}
-
+// Represents a response body.
+//
+// Responses must always be closed. For non-streaming responses, they are closed
+// during deserialization in the client (see unmarshall()). For streaming
+// responses, they are returned to the caller, who is responsible for closing
+// them.
 type ResponseBody struct {
 	ReadCloser io.ReadCloser
 	DebugBytes []byte
 }
 
-func fromBytesResponse(bs []byte) ResponseBody {
-	bsReader := bytes.NewReader(bs)
-	return ResponseBody{
-		ReadCloser: io.NopCloser(bsReader),
-		DebugBytes: bs,
+func newResponseBody(data any) ResponseBody {
+	switch v := data.(type) {
+	case io.ReadCloser:
+		return ResponseBody{
+			ReadCloser: v,
+			DebugBytes: []byte("<io.ReadCloser>"),
+		}
+	case []byte:
+		return ResponseBody{
+			ReadCloser: io.NopCloser(bytes.NewReader(v)),
+			DebugBytes: v,
+		}
+	default:
+		panic("newResponseBody can only be called with io.ReadCloser or []byte")
 	}
 }
 
@@ -188,17 +212,14 @@ func (c *DatabricksClient) fromResponse(r *http.Response) (ResponseBody, error) 
 	}
 	streamResponse := r.Request.Header.Get("Accept") != "application/json" && r.Header.Get("Content-Type") != "application/json"
 	if streamResponse {
-		return ResponseBody{
-			ReadCloser: r.Body,
-			DebugBytes: []byte("<io.ReadCloser>"),
-		}, nil
+		return newResponseBody(r.Body), nil
 	}
 	defer r.Body.Close()
 	bs, err := io.ReadAll(r.Body)
 	if err != nil {
 		return ResponseBody{}, fmt.Errorf("response body: %w", err)
 	}
-	return fromBytesResponse(bs), nil
+	return newResponseBody(bs), nil
 }
 
 func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string) {
@@ -414,22 +435,9 @@ func makeRequestBody(method string, requestURL *string, data interface{}) (Reque
 			return RequestBody{}, err
 		}
 		*requestURL += qs
-		return fromBytes([]byte{}), nil
+		return newRequestBody([]byte{})
 	}
-	if bytes, ok := data.([]byte); ok {
-		return fromBytes(bytes), nil
-	}
-	if reader, ok := data.(io.Reader); ok {
-		return fromReader(reader), nil
-	}
-	if str, ok := data.(string); ok {
-		return fromBytes([]byte(str)), nil
-	}
-	res, err := fromJsonData(data)
-	if err != nil {
-		return RequestBody{}, fmt.Errorf("request marshal failure: %w", err)
-	}
-	return res, nil
+	return newRequestBody(data)
 }
 
 func orDefault(configured, _default int) int {
