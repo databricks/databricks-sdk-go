@@ -122,20 +122,20 @@ type ResponseBody struct {
 	DebugBytes []byte
 }
 
-func newResponseBody(data any) ResponseBody {
+func newResponseBody(data any) (ResponseBody, error) {
 	switch v := data.(type) {
 	case io.ReadCloser:
 		return ResponseBody{
 			ReadCloser: v,
 			DebugBytes: []byte("<io.ReadCloser>"),
-		}
+		}, nil
 	case []byte:
 		return ResponseBody{
 			ReadCloser: io.NopCloser(bytes.NewReader(v)),
 			DebugBytes: v,
-		}
+		}, nil
 	default:
-		panic("newResponseBody can only be called with io.ReadCloser or []byte")
+		return ResponseBody{}, errors.New("newResponseBody can only be called with io.ReadCloser or []byte")
 	}
 }
 
@@ -212,14 +212,14 @@ func (c *DatabricksClient) fromResponse(r *http.Response) (ResponseBody, error) 
 	}
 	streamResponse := r.Request.Header.Get("Accept") != "application/json" && r.Header.Get("Content-Type") != "application/json"
 	if streamResponse {
-		return newResponseBody(r.Body), nil
+		return newResponseBody(r.Body)
 	}
 	defer r.Body.Close()
 	bs, err := io.ReadAll(r.Body)
 	if err != nil {
 		return ResponseBody{}, fmt.Errorf("response body: %w", err)
 	}
-	return newResponseBody(bs), nil
+	return newResponseBody(bs)
 }
 
 func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string) {
