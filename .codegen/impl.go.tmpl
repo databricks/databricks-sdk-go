@@ -60,7 +60,7 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 {{ define "response" -}}
   {{ if .Response -}}
   {{ if .IsResponseByteStream -}}
-    &{{ .Response.PascalName }}{ {{ .ResponseBodyField.CamelName }}: {{ .Response.CamelName }} }
+    &{{ .Response.PascalName }}{ {{ .ResponseBodyField.PascalName }}: {{ .Response.CamelName }} }
   {{- else -}}
     {{ if not .Response.ArrayValue }}&{{end}}{{.Response.CamelName}}
   {{- end }}, {{end}}err
