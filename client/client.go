@@ -465,7 +465,7 @@ func makeQueryString(data interface{}) (string, error) {
 }
 
 func makeRequestBody(method string, requestURL *string, data interface{}) (requestBody, error) {
-	if data == nil && (method == "DELETE" || method == "GET") {
+	if data == nil {
 		return requestBody{}, nil
 	}
 	if method == "GET" || method == "DELETE" {
