@@ -74,6 +74,9 @@ func (apiError *APIError) IsTooManyRequests() bool {
 
 // isRetriable returns true if error is retriable
 func (apiError *APIError) IsRetriable(ctx context.Context) bool {
+	if apiError.IsTooManyRequests() {
+		return true
+	}
 	// Handle transient errors for retries
 	for _, substring := range transientErrorStringMatches {
 		if strings.Contains(apiError.Message, substring) {
@@ -116,29 +119,23 @@ func GenericIOError(ue *url.Error) *APIError {
 		StatusCode: 523,
 		Message:    ue.Error(),
 	}
-
 }
 
-// CheckForRetry inspects HTTP errors from the Databricks API for known transient errors on Workspace creation
-func CheckForRetry(ctx context.Context, resp *http.Response, body io.ReadCloser) (bool, error) {
-	if resp == nil {
-		// If response is nil we can't make retry choices.
-		// In this case don't retry and return the original error from httpclient
-		return false, nil
-	}
+// GetAPIError inspects HTTP errors from the Databricks API for known transient errors.
+func GetAPIError(ctx context.Context, resp *http.Response, body io.ReadCloser) *APIError {
 	if resp.StatusCode == 429 {
-		return true, TooManyRequests()
+		return TooManyRequests()
 	}
 	if resp.StatusCode >= 400 {
 		// read in response body as it is actually an error
 		bodyBytes, err := io.ReadAll(body)
 		if err != nil {
-			return false, ReadError(resp.StatusCode, err)
+			return ReadError(resp.StatusCode, err)
 		}
 		apiError := parseErrorFromResponse(resp, bodyBytes)
-		return apiError.IsRetriable(ctx), apiError
+		return apiError
 	}
-	return false, nil
+	return nil
 }
 
 func parseErrorFromResponse(resp *http.Response, body []byte) *APIError {

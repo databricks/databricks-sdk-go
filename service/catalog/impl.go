@@ -704,7 +704,7 @@ func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) e
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas/%v", request.MetastoreId, request.SchemaName)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPut, path, headers, nil, nil)
 	return err
 }
 

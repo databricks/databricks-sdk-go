@@ -30,7 +30,7 @@ const defaultLongRunningTimeout = 20
 
 // Timeout returns timeout in minutes, defaulting to 20
 func (w *Wait) Timeout() int {
-	t := w.Method.operation.Wait.Timeout
+	t := w.Method.Operation.Wait.Timeout
 	if t == 0 {
 		return defaultLongRunningTimeout
 	}
@@ -175,7 +175,7 @@ func (w *Wait) ComplexMessagePath() bool {
 func (w *Wait) MessagePathHead() *Field {
 	path := w.MessagePath()
 	if len(path) == 0 {
-		panic("message path is empty for " + w.Method.operation.OperationId)
+		panic("message path is empty for " + w.Method.Operation.OperationId)
 	}
 	return path[0]
 }
