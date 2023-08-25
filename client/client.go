@@ -182,10 +182,14 @@ func (c *DatabricksClient) unmarshal(body *ResponseBody, response any) error {
 	if len(bs) == 0 {
 		return nil
 	}
-	// If the destination is a byte slice, pass the body verbatim.
+	// If the destination is a byte slice or buffer, pass the body verbatim.
 	if raw, ok := response.(*[]byte); ok {
 		*raw = bs
 		return nil
+	}
+	if raw, ok := response.(*bytes.Buffer); ok {
+		_, err := raw.Write(bs)
+		return err
 	}
 	return json.Unmarshal(bs, &response)
 }
