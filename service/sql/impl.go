@@ -105,7 +105,7 @@ func (a *dashboardsImpl) Restore(ctx context.Context, request RestoreDashboardRe
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/trash/%v", request.DashboardId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
 	return err
 }
 
@@ -202,7 +202,7 @@ func (a *queriesImpl) Restore(ctx context.Context, request RestoreQueryRequest) 
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/trash/%v", request.QueryId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
 	return err
 }
 
@@ -238,7 +238,7 @@ type statementExecutionImpl struct {
 func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request CancelExecutionRequest) error {
 	path := fmt.Sprintf("/api/2.0/sql/statements/%v/cancel", request.StatementId)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
 	return err
 }
 
@@ -370,7 +370,7 @@ func (a *warehousesImpl) Start(ctx context.Context, request StartRequest) error 
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/start", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
 	return err
 }
 
@@ -378,7 +378,7 @@ func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/stop", request.Id)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
 	return err
 }
 

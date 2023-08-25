@@ -99,7 +99,7 @@ func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryRequest) 
 	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &queryEndpointResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &queryEndpointResponse)
 	return &queryEndpointResponse, err
 }
 

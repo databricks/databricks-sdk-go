@@ -32,7 +32,7 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 {{end}}
 
 {{ define "request-param" -}}
-  {{ if or (and .Request (eq .Verb "GET") (eq .Verb "DELETE")) (and .Request .Request.Operation .Request.Operation.RequestBody) -}}
+  {{ if or (and .Request (or (eq .Verb "GET") (eq .Verb "DELETE"))) (and .Operation .Operation.RequestBody) -}}
     request{{ if .RequestBodyField }}.{{.RequestBodyField.PascalName}}{{end}}
   {{- else }}nil
   {{- end }}

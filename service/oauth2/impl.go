@@ -142,7 +142,7 @@ func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request Create
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &createServicePrincipalSecretResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &createServicePrincipalSecretResponse)
 	return &createServicePrincipalSecretResponse, err
 }
 
