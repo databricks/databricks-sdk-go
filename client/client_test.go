@@ -165,7 +165,9 @@ func TestHaltAttemptForLimit(t *testing.T) {
 	c := &DatabricksClient{
 		rateLimiter: &rate.Limiter{},
 	}
-	_, rerr := c.attempt(ctx, "GET", "foo", nil, fromBytes([]byte{}))()
+	req, err := newRequestBody([]byte{})
+	assert.NoError(t, err)
+	_, rerr := c.attempt(ctx, "GET", "foo", nil, req)()
 	assert.NotNil(t, rerr)
 	assert.Equal(t, true, rerr.Halt)
 	assert.EqualError(t, rerr.Err, "rate: Wait(n=1) exceeds limiter's burst 0")
@@ -176,7 +178,9 @@ func TestHaltAttemptForNewRequest(t *testing.T) {
 	c := &DatabricksClient{
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	_, rerr := c.attempt(ctx, "🥱", "/", nil, fromBytes([]byte{}))()
+	req, err := newRequestBody([]byte{})
+	assert.NoError(t, err)
+	_, rerr := c.attempt(ctx, "🥱", "/", nil, req)()
 	assert.NotNil(t, rerr)
 	assert.Equal(t, true, rerr.Halt)
 	assert.EqualError(t, rerr.Err, `net/http: invalid method "🥱"`)
@@ -187,7 +191,9 @@ func TestHaltAttemptForVisitor(t *testing.T) {
 	c := &DatabricksClient{
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	_, rerr := c.attempt(ctx, "GET", "/", nil, fromBytes([]byte{}),
+	req, err := newRequestBody([]byte{})
+	assert.NoError(t, err)
+	_, rerr := c.attempt(ctx, "GET", "/", nil, req,
 		func(r *http.Request) error {
 			return fmt.Errorf("🥱")
 		})()
