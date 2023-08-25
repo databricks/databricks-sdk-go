@@ -46,7 +46,7 @@ type Method struct {
 
 	wait       *openapi.Wait
 	pagination *openapi.Pagination
-	operation  *openapi.Operation
+	Operation  *openapi.Operation
 	shortcut   bool
 }
 
@@ -168,15 +168,15 @@ func (m *Method) Shortcut() *Shortcut {
 }
 
 func (m *Method) IsCrudRead() bool {
-	return m.operation.Crud == "read"
+	return m.Operation.Crud == "read"
 }
 
 func (m *Method) IsCrudCreate() bool {
-	return m.operation.Crud == "create"
+	return m.Operation.Crud == "create"
 }
 
 func (m *Method) IsJsonOnly() bool {
-	return m.operation.JsonOnly
+	return m.Operation.JsonOnly
 }
 
 func (m *Method) HasIdentifierField() bool {
@@ -238,7 +238,7 @@ func (m *Method) Pagination() *Pagination {
 	results := m.Response.Field(m.pagination.Results)
 	if results == nil {
 		panic(fmt.Errorf("invalid results field '%v': %s",
-			m.pagination.Results, m.operation.OperationId))
+			m.pagination.Results, m.Operation.OperationId))
 	}
 	entity := results.Entity.ArrayValue
 	increment := m.pagination.Increment
@@ -336,12 +336,12 @@ func (m *Method) TitleVerb() string {
 
 // IsPrivatePreview flags object being in private preview.
 func (m *Method) IsPrivatePreview() bool {
-	return isPrivatePreview(&m.operation.Node)
+	return isPrivatePreview(&m.Operation.Node)
 }
 
 // IsPublicPreview flags object being in public preview.
 func (m *Method) IsPublicPreview() bool {
-	return isPublicPreview(&m.operation.Node)
+	return isPublicPreview(&m.Operation.Node)
 }
 
 func (m *Method) AsFlat() *Named {

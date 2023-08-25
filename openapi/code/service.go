@@ -45,7 +45,7 @@ func (svc *Service) Methods() (methods []*Method) {
 // List returns a method annotated with x-databricks-crud:list
 func (svc *Service) List() *Method {
 	for _, v := range svc.methods {
-		if v.operation.Crud == "list" {
+		if v.Operation.Crud == "list" {
 			return v
 		}
 	}
@@ -55,7 +55,7 @@ func (svc *Service) List() *Method {
 // List returns a method annotated with x-databricks-crud:create
 func (svc *Service) Create() *Method {
 	for _, v := range svc.methods {
-		if v.operation.Crud == "create" {
+		if v.Operation.Crud == "create" {
 			return v
 		}
 	}
@@ -65,7 +65,7 @@ func (svc *Service) Create() *Method {
 // List returns a method annotated with x-databricks-crud:read
 func (svc *Service) Read() *Method {
 	for _, v := range svc.methods {
-		if v.operation.Crud == "read" {
+		if v.Operation.Crud == "read" {
 			return v
 		}
 	}
@@ -75,7 +75,7 @@ func (svc *Service) Read() *Method {
 // List returns a method annotated with x-databricks-crud:update
 func (svc *Service) Update() *Method {
 	for _, v := range svc.methods {
-		if v.operation.Crud == "update" {
+		if v.Operation.Crud == "update" {
 			return v
 		}
 	}
@@ -85,7 +85,7 @@ func (svc *Service) Update() *Method {
 // List returns a method annotated with x-databricks-crud:delete
 func (svc *Service) Delete() *Method {
 	for _, v := range svc.methods {
-		if v.operation.Crud == "delete" {
+		if v.Operation.Crud == "delete" {
 			return v
 		}
 	}
@@ -434,7 +434,7 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		ResponseBodyField:   respBodyField,
 		FixedRequestHeaders: headers,
 		wait:                op.Wait,
-		operation:           op,
+		Operation:           op,
 		pagination:          op.Pagination,
 		shortcut:            op.Shortcut,
 	}
