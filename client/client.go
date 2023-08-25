@@ -116,19 +116,16 @@ func newRequestBody(data any) (requestBody, error) {
 // This is used to retry requests with a body that has already been read. If
 // the request body is not strings.Reader or bytes.Reader, this will return an
 // error.
-func (r *requestBody) reset() error {
+func (r requestBody) reset() error {
 	if r.Reader == nil {
 		return errors.New("cannot reset nil reader")
 	}
-	switch v := r.Reader.(type) {
-	case *bytes.Reader:
-		v.Seek(0, io.SeekStart)
-	case *strings.Reader:
-		v.Seek(0, io.SeekStart)
-	default:
-		return errors.New("cannot reset reader of type " + reflect.TypeOf(v).String())
+	if v, ok := r.Reader.(io.Seeker); ok {
+		_, err := v.Seek(0, io.SeekStart)
+		return err
+	} else {
+		return fmt.Errorf("cannot reset reader of type %T", v)
 	}
-	return nil
 }
 
 // Represents a response body.
@@ -260,7 +257,7 @@ func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string)
 // Always returns nil for the first parameter as there is no meaningful response body to return in the error case.
 //
 // If it is certain that an error should not be retried, use failRequest() instead.
-func (c *DatabricksClient) handleError(ctx context.Context, err *apierr.APIError, body *requestBody) (*responseBody, *retries.Err) {
+func (c *DatabricksClient) handleError(ctx context.Context, err *apierr.APIError, body requestBody) (*responseBody, *retries.Err) {
 	if !err.IsRetriable(ctx) {
 		return c.failRequest("non-retriable error", err)
 	}
@@ -310,7 +307,7 @@ func (c *DatabricksClient) attempt(
 		// After this point, the request body has (probably) been consumed. handleError() must be called to reset it if
 		// possible.
 		if ue, ok := err.(*url.Error); ok {
-			return c.handleError(ctx, apierr.GenericIOError(ue), &requestBody)
+			return c.handleError(ctx, apierr.GenericIOError(ue), requestBody)
 		}
 
 		// By this point, the request body has certainly been consumed.
@@ -328,7 +325,7 @@ func (c *DatabricksClient) attempt(
 
 		// proactively release the connections in HTTP connection pool
 		c.httpClient.CloseIdleConnections()
-		return c.handleError(ctx, apiErr, &requestBody)
+		return c.handleError(ctx, apiErr, requestBody)
 	}
 }
 

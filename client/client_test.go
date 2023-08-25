@@ -1,11 +1,13 @@
 package client
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -557,4 +559,52 @@ func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
 	assert.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
 <  
 < [non-JSON document of 15 bytes]. <io.ReadCloser>`, bufLogger.String())
+}
+
+func TestStreamRequestFromFileWithReset(t *testing.T) {
+	// make a temporary file with some content
+	f, err := os.CreateTemp("", "databricks-client-test")
+	assert.NoError(t, err)
+	defer os.Remove(f.Name())
+	_, err = f.WriteString("hello world")
+	assert.NoError(t, err)
+	assert.NoError(t, f.Close())
+
+	// Make a reader that reads this file
+	r, err := os.Open(f.Name())
+	assert.NoError(t, err)
+	defer r.Close()
+
+	succeed := false
+	handler := func(req *http.Request) (*http.Response, error) {
+		bytes, err := io.ReadAll(req.Body)
+		assert.NoError(t, err)
+		assert.Equal(t, "hello world", string(bytes))
+		if succeed {
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader("succeeded")),
+				Request:    req,
+			}, nil
+		}
+		succeed = true
+		return &http.Response{
+			StatusCode: 429,
+			Body:       io.NopCloser(strings.NewReader("failed")),
+			Request:    req,
+		}, nil
+	}
+
+	client := &DatabricksClient{
+		httpClient:  hc(handler),
+		rateLimiter: rate.NewLimiter(rate.Limit(1), 1),
+		Config:      config.NewMockConfig(func(r *http.Request) error { return nil }),
+		retryTimeout: time.Hour,
+	}
+
+	respBytes := bytes.Buffer{}
+	err = client.Do(context.Background(), "POST", "/a", nil, r, &respBytes)
+	assert.NoError(t, err)
+	assert.Equal(t, "succeeded", respBytes.String())
+	assert.True(t, succeed)
 }
