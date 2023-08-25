@@ -596,9 +596,9 @@ func TestStreamRequestFromFileWithReset(t *testing.T) {
 	}
 
 	client := &DatabricksClient{
-		httpClient:  hc(handler),
-		rateLimiter: rate.NewLimiter(rate.Limit(1), 1),
-		Config:      config.NewMockConfig(func(r *http.Request) error { return nil }),
+		httpClient:   hc(handler),
+		rateLimiter:  rate.NewLimiter(rate.Limit(1), 1),
+		Config:       config.NewMockConfig(func(r *http.Request) error { return nil }),
 		retryTimeout: time.Hour,
 	}
 
@@ -607,4 +607,27 @@ func TestStreamRequestFromFileWithReset(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "succeeded", respBytes.String())
 	assert.True(t, succeed)
+}
+
+type customReader struct{}
+
+func (c customReader) Read(p []byte) (n int, err error) {
+	return 0, nil
+}
+
+func TestCannotRetryArbitraryReader(t *testing.T) {
+	client := &DatabricksClient{
+		httpClient: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 429,
+				Request:    r,
+				Body:       io.NopCloser(strings.NewReader("")),
+			}, nil
+		}),
+		rateLimiter:  rate.NewLimiter(rate.Limit(1), 1),
+		Config:       config.NewMockConfig(func(r *http.Request) error { return nil }),
+		retryTimeout: time.Hour,
+	}
+	err := client.Do(context.Background(), "POST", "/a", nil, customReader{}, nil)
+	assert.ErrorContains(t, err, "cannot reset reader of type client.customReader")
 }

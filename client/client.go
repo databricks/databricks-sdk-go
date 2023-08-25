@@ -124,7 +124,7 @@ func (r requestBody) reset() error {
 		_, err := v.Seek(0, io.SeekStart)
 		return err
 	} else {
-		return fmt.Errorf("cannot reset reader of type %T", v)
+		return fmt.Errorf("cannot reset reader of type %T", r.Reader)
 	}
 }
 
