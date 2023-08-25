@@ -74,7 +74,7 @@ func TestAccDbfsOpen(t *testing.T) {
 	// Upload through [io.Writer] should fail because the file exists.
 	{
 		_, err := w.Dbfs.Open(ctx, path, files.FileModeWrite)
-		require.ErrorContains(t, err, "dbfs open: A file or directory already exists at the input path")
+		require.ErrorContains(t, err, "dbfs open: non-retriable error: A file or directory already exists at the input path")
 	}
 
 	// Upload through [io.ReadFrom] with overwrite bit set.
@@ -141,11 +141,11 @@ func TestAccDbfsOpenDirectory(t *testing.T) {
 
 	// Try to open the directory for writing.
 	_, err = w.Dbfs.Open(ctx, path, files.FileModeWrite)
-	assert.ErrorContains(t, err, "dbfs open: A file or directory already exists")
+	assert.ErrorContains(t, err, "dbfs open: non-retriable error: A file or directory already exists")
 
 	// Try to open the directory for writing with overwrite flag set.
 	_, err = w.Dbfs.Open(ctx, path, files.FileModeWrite|files.FileModeOverwrite)
-	assert.ErrorContains(t, err, "dbfs open: A file or directory already exists")
+	assert.ErrorContains(t, err, "dbfs open: non-retriable error: A file or directory already exists")
 }
 
 func TestAccDbfsReadFileWriteFile(t *testing.T) {
