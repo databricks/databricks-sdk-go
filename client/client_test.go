@@ -71,7 +71,7 @@ func TestSimpleRequestFailsURLError(t *testing.T) {
 	}, map[string]string{
 		"c": "d",
 	}, nil)
-	assert.EqualError(t, err, "GET \"/a/b\": nope")
+	assert.EqualError(t, err, "non-retriable error: GET \"/a/b\": nope")
 }
 
 func TestSimpleRequestFailsAPIError(t *testing.T) {
@@ -100,7 +100,7 @@ func TestSimpleRequestFailsAPIError(t *testing.T) {
 	}, map[string]string{
 		"c": "d",
 	}, nil)
-	assert.EqualError(t, err, "nope")
+	assert.EqualError(t, err, "non-retriable error: nope")
 }
 
 func TestSimpleRequestSucceeds(t *testing.T) {
@@ -170,7 +170,7 @@ func TestHaltAttemptForLimit(t *testing.T) {
 	_, rerr := c.attempt(ctx, "GET", "foo", nil, req)()
 	assert.NotNil(t, rerr)
 	assert.Equal(t, true, rerr.Halt)
-	assert.EqualError(t, rerr.Err, "rate: Wait(n=1) exceeds limiter's burst 0")
+	assert.EqualError(t, rerr.Err, "failed in rate limiter: rate: Wait(n=1) exceeds limiter's burst 0")
 }
 
 func TestHaltAttemptForNewRequest(t *testing.T) {
@@ -183,7 +183,7 @@ func TestHaltAttemptForNewRequest(t *testing.T) {
 	_, rerr := c.attempt(ctx, "🥱", "/", nil, req)()
 	assert.NotNil(t, rerr)
 	assert.Equal(t, true, rerr.Halt)
-	assert.EqualError(t, rerr.Err, `net/http: invalid method "🥱"`)
+	assert.EqualError(t, rerr.Err, `failed creating new request: net/http: invalid method "🥱"`)
 }
 
 func TestHaltAttemptForVisitor(t *testing.T) {
@@ -199,7 +199,7 @@ func TestHaltAttemptForVisitor(t *testing.T) {
 		})()
 	assert.NotNil(t, rerr)
 	assert.Equal(t, true, rerr.Halt)
-	assert.EqualError(t, rerr.Err, "🥱")
+	assert.EqualError(t, rerr.Err, "failed during request visitor: 🥱")
 }
 
 func TestMakeRequestBody(t *testing.T) {
@@ -320,7 +320,7 @@ func TestSimpleRequestErrReaderBody(t *testing.T) {
 	}
 	headers := map[string]string{"Accept": "application/json"}
 	err := c.Do(context.Background(), "PATCH", "/a", headers, map[string]any{}, nil)
-	assert.EqualError(t, err, "response body: test error")
+	assert.EqualError(t, err, "failed while reading response: response body: test error")
 }
 
 func TestSimpleRequestErrReaderBodyStreamResponse(t *testing.T) {
@@ -358,7 +358,7 @@ func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
 	}
 	headers := map[string]string{"Accept": "application/json"}
 	err := c.Do(context.Background(), "PATCH", "/a", headers, map[string]any{}, nil)
-	assert.EqualError(t, err, "response body: test error")
+	assert.EqualError(t, err, "failed while reading response: response body: test error")
 }
 
 func TestSimpleRequestErrReaderCloseBody_StreamResponse(t *testing.T) {
