@@ -542,6 +542,8 @@ type LibrariesService interface {
 	// 3. Libraries that were previously requested on this cluster or on all
 	// clusters, but now marked for removal. Within this group there is no order
 	// guarantee.
+	//
+	// Use ClusterStatusAll() to get all LibraryFullStatus instances
 	ClusterStatus(ctx context.Context, request ClusterStatusRequest) (*ClusterLibraryStatuses, error)
 
 	// Add a library.

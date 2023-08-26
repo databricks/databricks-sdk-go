@@ -50,23 +50,23 @@ type DeleteFileRequest struct {
 }
 
 // Download a file
-type DownloadFileRequest struct {
+type DownloadRequest struct {
 	// The absolute path of the file or directory in DBFS.
 	FilePath string `json:"-" url:"-"`
 }
 
-type DownloadFileResponse struct {
+type DownloadResponse struct {
 	Contents io.ReadCloser `json:"-"`
 }
 
 type FileInfo struct {
-	// The length of the file in bytes or zero if the path is a directory.
+	// The length of the file in bytes. This field is omitted for directories.
 	FileSize int64 `json:"file_size,omitempty"`
 	// True if the path is a directory.
 	IsDir bool `json:"is_dir,omitempty"`
-	// Last modification time of given file/dir in milliseconds since Epoch.
+	// Last modification time of given file in milliseconds since epoch.
 	ModificationTime int64 `json:"modification_time,omitempty"`
-	// The path of the file or directory.
+	// The absolute path of the file or directory.
 	Path string `json:"path,omitempty"`
 }
 
@@ -134,10 +134,10 @@ type ReadResponse struct {
 }
 
 // Upload a file
-type UploadFileRequest struct {
+type UploadRequest struct {
 	Contents io.ReadCloser `json:"-"`
 	// The absolute path of the file or directory in DBFS.
 	FilePath string `json:"-" url:"-"`
-	// The flag that specifies whether to overwrite existing file/files.
+	// If true, an existing file will be overwritten.
 	Overwrite bool `json:"-" url:"overwrite,omitempty"`
 }

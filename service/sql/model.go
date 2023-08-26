@@ -914,6 +914,39 @@ type ExecuteStatementRequest struct {
 	// `CANCEL` → the statement execution is canceled and the call returns
 	// immediately with a `CANCELED` state.
 	OnWaitTimeout TimeoutAction `json:"on_wait_timeout,omitempty"`
+	// A list of parameters to pass into a SQL statement containing parameter
+	// markers. A parameter consists of a name, a value, and optionally a type.
+	// To represent a NULL value, the `value` field may be omitted. If the
+	// `type` field is omitted, the value is interpreted as a string.
+	//
+	// If the type is given, parameters will be checked for type correctness
+	// according to the given type. A value is correct if the provided string
+	// can be converted to the requested type using the `cast` function. The
+	// exact semantics are described in the section [`cast` function] of the SQL
+	// language reference.
+	//
+	// For example, the following statement contains two parameters, `my_id` and
+	// `my_date`:
+	//
+	// SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
+	//
+	// The parameters can be passed in the request body as follows:
+	//
+	// { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND
+	// date = :my_date", "parameters": [ { "name": "my_name", "value": "the
+	// name" }, { "name": "my_date", "value": "2020-01-01", "type": "DATE" } ] }
+	//
+	// Currently, positional parameters denoted by a `?` marker are not
+	// supported by the SQL Statement Execution API.
+	//
+	// Also see the section [Parameter markers] of the SQL language reference.
+	//
+	// [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
+	// [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
+	Parameters []StatementParameterListItem `json:"parameters,omitempty"`
+	// Applies the given row limit to the statement's result set with identical
+	// semantics as the SQL `LIMIT` clause.
+	RowLimit int64 `json:"row_limit,omitempty"`
 	// Sets default schema for statement execution, similar to [`USE SCHEMA`] in
 	// SQL.
 	//
@@ -2278,6 +2311,21 @@ func (f *State) Set(v string) error {
 // Type always returns State to satisfy [pflag.Value] interface
 func (f *State) Type() string {
 	return "State"
+}
+
+type StatementParameterListItem struct {
+	// The name of a parameter marker to be substituted in the statement.
+	Name string `json:"name"`
+	// The data type, given as a string. For example: `INT`, `STRING`,
+	// `DECIMAL(10,2)`. If no type is given the type is assumed to be `STRING`.
+	// Complex types, such as `ARRAY`, `MAP`, and `STRUCT` are not supported.
+	// For valid types, refer to the section [Data
+	// types](/sql/language-manual/functions/cast.html) of the SQL language
+	// reference.
+	Type string `json:"type,omitempty"`
+	// The value to substitute, represented as a string. If omitted, the value
+	// is interpreted as NULL.
+	Value string `json:"value,omitempty"`
 }
 
 // Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`:

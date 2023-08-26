@@ -116,8 +116,6 @@
 //
 // - [workspace.SecretsAPI]: The Secrets API allows you to manage secrets, secret scopes, and access permissions.
 //
-// - [catalog.SecurableTagsAPI]: Tags are attributes containing keys and values that can be applied to different entities in Unity Catalog.
-//
 // - [oauth2.ServicePrincipalSecretsAPI]: These APIs enable administrators to manage service principal secrets.
 //
 // - [iam.ServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
@@ -137,8 +135,6 @@
 // - [catalog.StorageCredentialsAPI]: A storage credential represents an authentication and authorization mechanism for accessing data stored on your cloud tenant.
 //
 // - [catalog.AccountStorageCredentialsAPI]: These APIs manage storage credentials for a particular metastore.
-//
-// - [catalog.SubentityTagsAPI]: Tags are attributes containing keys and values that can be applied to different entities in Unity Catalog.
 //
 // - [catalog.SystemSchemasAPI]: A system schema is a schema that lives within the system catalog.
 //
@@ -252,7 +248,6 @@ var (
 	_ *workspace.ReposAPI                     = nil
 	_ *catalog.SchemasAPI                     = nil
 	_ *workspace.SecretsAPI                   = nil
-	_ *catalog.SecurableTagsAPI               = nil
 	_ *oauth2.ServicePrincipalSecretsAPI      = nil
 	_ *iam.ServicePrincipalsAPI               = nil
 	_ *iam.AccountServicePrincipalsAPI        = nil
@@ -263,7 +258,6 @@ var (
 	_ *provisioning.StorageAPI                = nil
 	_ *catalog.StorageCredentialsAPI          = nil
 	_ *catalog.AccountStorageCredentialsAPI   = nil
-	_ *catalog.SubentityTagsAPI               = nil
 	_ *catalog.SystemSchemasAPI               = nil
 	_ *catalog.TableConstraintsAPI            = nil
 	_ *catalog.TablesAPI                      = nil

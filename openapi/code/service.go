@@ -45,7 +45,7 @@ func (svc *Service) Methods() (methods []*Method) {
 // List returns a method annotated with x-databricks-crud:list
 func (svc *Service) List() *Method {
 	for _, v := range svc.methods {
-		if v.operation.Crud == "list" {
+		if v.Operation.Crud == "list" {
 			return v
 		}
 	}
@@ -55,7 +55,7 @@ func (svc *Service) List() *Method {
 // List returns a method annotated with x-databricks-crud:create
 func (svc *Service) Create() *Method {
 	for _, v := range svc.methods {
-		if v.operation.Crud == "create" {
+		if v.Operation.Crud == "create" {
 			return v
 		}
 	}
@@ -65,7 +65,7 @@ func (svc *Service) Create() *Method {
 // List returns a method annotated with x-databricks-crud:read
 func (svc *Service) Read() *Method {
 	for _, v := range svc.methods {
-		if v.operation.Crud == "read" {
+		if v.Operation.Crud == "read" {
 			return v
 		}
 	}
@@ -75,7 +75,7 @@ func (svc *Service) Read() *Method {
 // List returns a method annotated with x-databricks-crud:update
 func (svc *Service) Update() *Method {
 	for _, v := range svc.methods {
-		if v.operation.Crud == "update" {
+		if v.Operation.Crud == "update" {
 			return v
 		}
 	}
@@ -85,7 +85,7 @@ func (svc *Service) Update() *Method {
 // List returns a method annotated with x-databricks-crud:delete
 func (svc *Service) Delete() *Method {
 	for _, v := range svc.methods {
-		if v.operation.Crud == "delete" {
+		if v.Operation.Crud == "delete" {
 			return v
 		}
 	}
@@ -131,20 +131,70 @@ var crudNames = map[string]bool{
 	"restore": true,
 }
 
-func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation) *Entity {
-	if op.RequestBody == nil && len(params) == 0 {
-		return nil
+// Returns the schema representing a request body for a given operation, along with the mime type.
+// For requests whose mime type is not application/json, the request body is always a byte stream.
+func (svc *Service) getBaseSchemaAndMimeType(body *openapi.Body) (*openapi.Schema, openapi.MimeType) {
+	mimeType, mediaType := body.MimeTypeAndMediaType()
+	schema := mediaType.GetSchema()
+	if mimeType.IsByteStream() {
+		schema = &openapi.Schema{
+			Type: "object",
+			Properties: map[string]*openapi.Schema{
+				openapi.MediaTypeNonJsonBodyFieldName: schema,
+			},
+		}
 	}
-	request := &Entity{fields: map[string]*Field{}}
-	if op.RequestBody != nil {
-		request = svc.Package.schemaToEntity(op.RequestBody.Schema(), []string{op.Name()}, true)
+	return schema, mimeType
+}
+
+func (svc *Service) updateEntityTypeFromMimeType(entity *Entity, mimeType openapi.MimeType) {
+	if !mimeType.IsByteStream() {
+		return
 	}
-	if request == nil {
+	// For request or response bodies that are not application/json, the body
+	// is modeled by a byte stream.
+	entity.IsByteStream = true
+	entity.IsEmpty = false
+	entity.IsAny = false
+}
+
+// Construct the base request entity for a given operation. For requests whose
+// mime type is not application/json, the request body is always a byte stream.
+// For requests whose mime type is application/json, the request body consists
+// of the top-level fields of the request object as defined in the OpenAPI spec.
+// Additionally, for non-application/json requests, the request body is nested
+// into a field named "contents".
+func (svc *Service) newMethodEntity(op *openapi.Operation) (*Entity, openapi.MimeType, *Field) {
+	if op.RequestBody == nil {
+		return &Entity{fields: map[string]*Field{}}, "", nil
+	}
+	requestSchema, mimeType := svc.getBaseSchemaAndMimeType(op.RequestBody)
+	res := svc.Package.schemaToEntity(requestSchema, []string{op.Name()}, true)
+	if res == nil {
 		panic(fmt.Errorf("%s request body is nil", op.OperationId))
 	}
-	if request.fields == nil && request.MapValue == nil {
-		return nil
+
+	var bodyField *Field
+	if mimeType.IsByteStream() {
+		bodyField = res.fields[openapi.MediaTypeNonJsonBodyFieldName]
 	}
+
+	// This next block of code is needed to make up for shortcomings in
+	// schemaToEntity. That function (and the Entity structure) assumes that all
+	// entities are modeled by JSON objects. Later, we should change Entity
+	// and schemaToEntity to be more tolerant of non-JSON entities; for now, we
+	// put this hack in place to make things work.
+	if mimeType.IsByteStream() {
+		for _, v := range res.fields {
+			v.IsJson = false
+		}
+		svc.updateEntityTypeFromMimeType(bodyField.Entity, mimeType)
+	}
+
+	return res, mimeType, bodyField
+}
+
+func (svc *Service) addParams(request *Entity, op *openapi.Operation, params []openapi.Parameter) {
 	for _, v := range params {
 		if v.In == "header" {
 			continue
@@ -189,24 +239,93 @@ func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation
 		func(e *Entity) {
 			svc.Package.updateType(e)
 		})
-	if request.Name == "" {
-		// when there was a merge of params with a request or new entity was made
-		signularServiceName := svc.Singular().PascalName()
-		notExplicit := !strings.Contains(op.Name(), signularServiceName)
-		if op.Name() == "list" && notExplicit {
-			request.Name = op.Name() + svc.Name + "Request"
-		} else if crudNames[strings.ToLower(op.Name())] {
-			request.Name = op.Name() + signularServiceName + "Request"
-		} else {
-			request.Name = op.Name() + "Request"
-		}
-		if svc.Package.Name == "scim" {
-			request.Name = strings.ReplaceAll(request.Name, "Account", "")
-		}
-		request.Description = op.Summary
-		svc.Package.define(request)
+}
+
+// The body param must be added after all other params so that it appears in the
+// correct position in shortcut methods.
+func (svc *Service) addBodyParamIfNeeded(request *Entity, mimeType openapi.MimeType) {
+	if mimeType.IsByteStream() {
+		request.RequiredOrder = append(request.RequiredOrder, openapi.MediaTypeNonJsonBodyFieldName)
 	}
-	return request
+}
+
+// Use heuristics to construct a "good" name for the request entity, as the name
+// was not provided by the original OpenAPI spec.
+func (svc *Service) nameAndDefineRequest(request *Entity, op *openapi.Operation) {
+	if request.Name != "" {
+		panic(fmt.Sprintf("request entity already has a name: %s", request.Name))
+	}
+	// when there was a merge of params with a request or new entity was made
+	signularServiceName := svc.Singular().PascalName()
+	notExplicit := !strings.Contains(op.Name(), signularServiceName)
+	if op.Name() == "list" && notExplicit {
+		request.Name = op.Name() + svc.Name + "Request"
+	} else if crudNames[strings.ToLower(op.Name())] {
+		request.Name = op.Name() + signularServiceName + "Request"
+	} else {
+		request.Name = op.Name() + "Request"
+	}
+	if svc.Package.Name == "scim" {
+		request.Name = strings.ReplaceAll(request.Name, "Account", "")
+	}
+	request.Description = op.Summary
+	svc.Package.define(request)
+}
+
+// Constructs the request object metadata for a method. This consists of
+//
+//  1. the request entity (i.e. the parameters and/or body)
+//  2. the request MIME type
+//  3. the field pointing to the request body (for non-JSON requests)
+//
+// The request entity includes fields for every parameter in the request (path,
+// query, and body). If the request is defined anonymously (i.e. it is not
+// refactored into a named type), the name for the request is constructed from
+// the operation name and service name.
+func (svc *Service) newRequest(params []openapi.Parameter, op *openapi.Operation) (*Entity, openapi.MimeType, *Field) {
+	if op.RequestBody == nil && len(params) == 0 {
+		return nil, "", nil
+	}
+	request, mimeType, bodyField := svc.newMethodEntity(op)
+	if request.fields == nil && request.MapValue == nil {
+		return nil, "", nil
+	}
+	svc.addParams(request, op, params)
+	svc.addBodyParamIfNeeded(request, mimeType)
+	if request.Name == "" {
+		svc.nameAndDefineRequest(request, op)
+	}
+	return request, mimeType, bodyField
+}
+
+func (svc *Service) newResponse(op *openapi.Operation) (*Entity, openapi.MimeType, *Field, Named) {
+	body := op.SuccessResponseBody(svc.Package.Components)
+	schema, mimeType := svc.getBaseSchemaAndMimeType(body)
+	name := op.Name()
+	response := svc.Package.definedEntity(name+"Response", schema)
+	var bodyField *Field
+	if mimeType.IsByteStream() {
+		bodyField = response.fields[openapi.MediaTypeNonJsonBodyFieldName]
+	}
+
+	// This next block of code is needed to make up for shortcomings in
+	// schemaToEntity. That function (and the Entity structure) assumes that all
+	// entities are modeled by JSON objects. Later, we should change Entity
+	// and schemaToEntity to be more tolerant of non-JSON entities; for now, we
+	// put this hack in place to make things work.
+	if mimeType.IsByteStream() {
+		svc.updateEntityTypeFromMimeType(bodyField.Entity, mimeType)
+		for _, v := range response.fields {
+			v.IsJson = false
+		}
+	}
+
+	var emptyResponse Named
+	if response != nil && response.IsEmpty {
+		emptyResponse = response.Named
+		response = nil
+	}
+	return response, mimeType, bodyField, emptyResponse
 }
 
 func (svc *Service) paramPath(path string, request *Entity, params []openapi.Parameter) (parts []PathPart) {
@@ -256,18 +375,12 @@ func (svc *Service) getPathStyle(op *openapi.Operation) openapi.PathStyle {
 }
 
 func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op *openapi.Operation) *Method {
-	request := svc.newRequest(params, op)
-	respSchema := op.SuccessResponseSchema(svc.Package.Components)
-	name := op.Name()
-	response := svc.Package.definedEntity(name+"Response", respSchema)
-	var emptyResponse Named
-	if response != nil && response.IsEmpty {
-		emptyResponse = response.Named
-		response = nil
-	}
+	methodName := op.Name()
+	request, reqMimeType, reqBodyField := svc.newRequest(params, op)
+	response, respMimeType, respBodyField, emptyResponse := svc.newResponse(op)
 	requestStyle := svc.getPathStyle(op)
 	if requestStyle == openapi.PathStyleRpc {
-		name = filepath.Base(path)
+		methodName = filepath.Base(path)
 	}
 	description := op.Description
 	summary := strings.TrimSpace(op.Summary)
@@ -298,22 +411,32 @@ func (svc *Service) newMethod(verb, path string, params []openapi.Parameter, op 
 		}
 		idFieldPath = idField
 	}
+	headers := map[string]string{}
+	if reqMimeType != "" {
+		headers["Content-Type"] = string(reqMimeType)
+	}
+	if respMimeType != "" {
+		headers["Accept"] = string(respMimeType)
+	}
 	return &Method{
-		Named:             Named{name, description},
-		Service:           svc,
-		Verb:              strings.ToUpper(verb),
-		Path:              path,
-		Request:           request,
-		PathParts:         svc.paramPath(path, request, params),
-		Response:          response,
-		EmptyResponseName: emptyResponse,
-		PathStyle:         requestStyle,
-		NameFieldPath:     nameFieldPath,
-		IdFieldPath:       idFieldPath,
-		wait:              op.Wait,
-		operation:         op,
-		pagination:        op.Pagination,
-		shortcut:          op.Shortcut,
+		Named:               Named{methodName, description},
+		Service:             svc,
+		Verb:                strings.ToUpper(verb),
+		Path:                path,
+		Request:             request,
+		PathParts:           svc.paramPath(path, request, params),
+		Response:            response,
+		EmptyResponseName:   emptyResponse,
+		PathStyle:           requestStyle,
+		NameFieldPath:       nameFieldPath,
+		IdFieldPath:         idFieldPath,
+		RequestBodyField:    reqBodyField,
+		ResponseBodyField:   respBodyField,
+		FixedRequestHeaders: headers,
+		wait:                op.Wait,
+		Operation:           op,
+		pagination:          op.Pagination,
+		shortcut:            op.Shortcut,
 	}
 }
 

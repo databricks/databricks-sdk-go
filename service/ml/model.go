@@ -648,11 +648,6 @@ type GetByNameRequest struct {
 	ExperimentName string `json:"-" url:"experiment_name"`
 }
 
-type GetExperimentByNameResponse struct {
-	// Experiment details.
-	Experiment *Experiment `json:"experiment,omitempty"`
-}
-
 // Get experiment permission levels
 type GetExperimentPermissionLevelsRequest struct {
 	// The experiment for which to get or manage permissions.
@@ -674,6 +669,11 @@ type GetExperimentPermissionsRequest struct {
 type GetExperimentRequest struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"-" url:"experiment_id"`
+}
+
+type GetExperimentResponse struct {
+	// Experiment details.
+	Experiment *Experiment `json:"experiment,omitempty"`
 }
 
 // Get history of a given metric within a run

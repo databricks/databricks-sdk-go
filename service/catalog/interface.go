@@ -64,6 +64,8 @@ type AccountMetastoresService interface {
 	//
 	// Gets all Unity Catalog metastores associated with an account specified by
 	// ID.
+	//
+	// Use ListAll() to get all MetastoreInfo instances
 	List(ctx context.Context) (*ListMetastoresResponse, error)
 
 	// Update a metastore.
@@ -104,7 +106,7 @@ type AccountStorageCredentialsService interface {
 	//
 	// Gets a list of all storage credentials that have been assigned to given
 	// metastore.
-	List(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListStorageCredentialsResponse, error)
+	List(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error)
 
 	// Updates a storage credential.
 	//
@@ -493,6 +495,16 @@ type ModelVersionsService interface {
 	// parent schema.
 	Get(ctx context.Context, request GetModelVersionRequest) (*RegisteredModelInfo, error)
 
+	// Get Model Version By Alias.
+	//
+	// Get a model version by alias.
+	//
+	// The caller must be a metastore admin or an owner of (or have the
+	// **EXECUTE** privilege on) the registered model. For the latter case, the
+	// caller must also be the owner or have the **USE_CATALOG** privilege on
+	// the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+	GetByAlias(ctx context.Context, request GetByAliasRequest) (*ModelVersionInfo, error)
+
 	// List Model Versions.
 	//
 	// List model versions. You can list model versions under a particular
@@ -583,6 +595,16 @@ type RegisteredModelsService interface {
 	// privilege on the parent schema.
 	Delete(ctx context.Context, request DeleteRegisteredModelRequest) error
 
+	// Delete a Registered Model Alias.
+	//
+	// Deletes a registered model alias.
+	//
+	// The caller must be a metastore admin or an owner of the registered model.
+	// For the latter case, the caller must also be the owner or have the
+	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+	// privilege on the parent schema.
+	DeleteAlias(ctx context.Context, request DeleteAliasRequest) error
+
 	// Get a Registered Model.
 	//
 	// Get a registered model.
@@ -611,6 +633,16 @@ type RegisteredModelsService interface {
 	//
 	// Use ListAll() to get all RegisteredModelInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error)
+
+	// Set a Registered Model Alias.
+	//
+	// Set an alias on the specified registered model.
+	//
+	// The caller must be a metastore admin or an owner of the registered model.
+	// For the latter case, the caller must also be the owner or have the
+	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+	// privilege on the parent schema.
+	SetAlias(ctx context.Context, request SetRegisteredModelAliasRequest) (*RegisteredModelAlias, error)
 
 	// Update a Registered Model.
 	//
@@ -673,29 +705,6 @@ type SchemasService interface {
 	// be updated, the caller must be a metastore admin or have the
 	// **CREATE_SCHEMA** privilege on the parent catalog.
 	Update(ctx context.Context, request UpdateSchema) (*SchemaInfo, error)
-}
-
-// Tags are attributes containing keys and values that can be applied to
-// different entities in Unity Catalog. Tags are useful for organizing and
-// categorizing different entities within a metastore. SecurableTags are
-// attached to Unity Catalog securable entities.
-type SecurableTagsService interface {
-
-	// Get tags for a securable.
-	//
-	// Gets tag assignments for an entity. The caller must be either the owner
-	// of the securable, or a metastore admin, or have at least USE / SELECT
-	// privilege on the associated securable.
-	//
-	// Use ListAll() to get all TagSecurableAssignment instances
-	List(ctx context.Context, request ListSecurableTagsRequest) (*TagSecurableAssignmentsList, error)
-
-	// Update tags for a securable.
-	//
-	// Update tag assignments for an entity The caller must be either the owner
-	// of the securable, or a metastore admin, or have at least USE / SELECT and
-	// APPLY_TAG privilege on the associated securable.
-	Update(ctx context.Context, request UpdateTags) (*TagSecurableAssignmentsList, error)
 }
 
 // A storage credential represents an authentication and authorization mechanism
@@ -774,31 +783,6 @@ type StorageCredentialsService interface {
 	// have the **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the
 	// storage credential.
 	Validate(ctx context.Context, request ValidateStorageCredential) (*ValidateStorageCredentialResponse, error)
-}
-
-// Tags are attributes containing keys and values that can be applied to
-// different entities in Unity Catalog. Tags are useful for organizing and
-// categorizing different entities within a metastore. SubentityTags are
-// attached to Unity Catalog subentities.
-type SubentityTagsService interface {
-
-	// Get tags for a subentity.
-	//
-	// Gets tag assignments for a subentity associated with a securable entity.
-	// Eg. column of a table The caller must be either the owner of the
-	// securable, or a metastore admin, or have at least USE / SELECT privilege
-	// on the associated securable.
-	//
-	// Use ListAll() to get all TagsSubentityAssignment instances
-	List(ctx context.Context, request ListSubentityTagsRequest) (*TagSubentityAssignmentsList, error)
-
-	// Update tags for a subentity.
-	//
-	// Update tag assignments for a subentity associated with a securable
-	// entity. The caller must be either the owner of the securable, or a
-	// metastore admin, or have at least USE / SELECT and APPLY_TAG privilege on
-	// the associated securable.
-	Update(ctx context.Context, request UpdateTags) (*TagSubentityAssignmentsList, error)
 }
 
 // A system schema is a schema that lives within the system catalog. A system

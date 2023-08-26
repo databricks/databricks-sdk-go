@@ -1,11 +1,13 @@
 package client
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -49,7 +51,7 @@ func TestNew(t *testing.T) {
 	assert.Equal(t, 5*time.Minute, c.retryTimeout)
 }
 
-func TestSimpleRequestFails(t *testing.T) {
+func TestSimpleRequestFailsURLError(t *testing.T) {
 	c := &DatabricksClient{
 		Config: config.NewMockConfig(func(r *http.Request) error {
 			r.Header.Add("Authenticated", "yes")
@@ -73,7 +75,36 @@ func TestSimpleRequestFails(t *testing.T) {
 	}, map[string]string{
 		"c": "d",
 	}, nil)
-	assert.EqualError(t, err, "failed request: nope")
+	assert.EqualError(t, err, "non-retriable error: GET \"/a/b\": nope")
+}
+
+func TestSimpleRequestFailsAPIError(t *testing.T) {
+	c := &DatabricksClient{
+		Config: config.NewMockConfig(func(r *http.Request) error {
+			r.Header.Add("Authenticated", "yes")
+			return nil
+		}),
+		httpClient: hc(func(r *http.Request) (*http.Response, error) {
+			assert.Equal(t, "GET", r.Method)
+			assert.Equal(t, "/a/b", r.URL.Path)
+			assert.Equal(t, "c=d", r.URL.RawQuery)
+			assert.Equal(t, "f", r.Header.Get("e"))
+			auth := r.Header.Get("Authenticated")
+			assert.Equal(t, "yes", auth)
+			return &http.Response{
+				StatusCode: 400,
+				Request:    r,
+				Body:       io.NopCloser(strings.NewReader(`{"error_code": "INVALID_PARAMETER_VALUE", "message": "nope"}`)),
+			}, nil
+		}),
+		rateLimiter: rate.NewLimiter(rate.Inf, 1),
+	}
+	err := c.Do(context.Background(), "GET", "/a/b", map[string]string{
+		"e": "f",
+	}, map[string]string{
+		"c": "d",
+	}, nil)
+	assert.EqualError(t, err, "non-retriable error: nope")
 }
 
 func TestSimpleRequestSucceeds(t *testing.T) {
@@ -138,10 +169,12 @@ func TestHaltAttemptForLimit(t *testing.T) {
 	c := &DatabricksClient{
 		rateLimiter: &rate.Limiter{},
 	}
-	_, rerr := c.attempt(ctx, "GET", "foo", nil, fromBytes([]byte{}))()
+	req, err := newRequestBody([]byte{})
+	assert.NoError(t, err)
+	_, rerr := c.attempt(ctx, "GET", "foo", nil, req)()
 	assert.NotNil(t, rerr)
 	assert.Equal(t, true, rerr.Halt)
-	assert.EqualError(t, rerr.Err, "rate: Wait(n=1) exceeds limiter's burst 0")
+	assert.EqualError(t, rerr.Err, "failed in rate limiter: rate: Wait(n=1) exceeds limiter's burst 0")
 }
 
 func TestHaltAttemptForNewRequest(t *testing.T) {
@@ -149,10 +182,12 @@ func TestHaltAttemptForNewRequest(t *testing.T) {
 	c := &DatabricksClient{
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	_, rerr := c.attempt(ctx, "🥱", "/", nil, fromBytes([]byte{}))()
+	req, err := newRequestBody([]byte{})
+	assert.NoError(t, err)
+	_, rerr := c.attempt(ctx, "🥱", "/", nil, req)()
 	assert.NotNil(t, rerr)
 	assert.Equal(t, true, rerr.Halt)
-	assert.EqualError(t, rerr.Err, `net/http: invalid method "🥱"`)
+	assert.EqualError(t, rerr.Err, `failed creating new request: net/http: invalid method "🥱"`)
 }
 
 func TestHaltAttemptForVisitor(t *testing.T) {
@@ -160,13 +195,15 @@ func TestHaltAttemptForVisitor(t *testing.T) {
 	c := &DatabricksClient{
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
-	_, rerr := c.attempt(ctx, "GET", "/", nil, fromBytes([]byte{}),
+	req, err := newRequestBody([]byte{})
+	assert.NoError(t, err)
+	_, rerr := c.attempt(ctx, "GET", "/", nil, req,
 		func(r *http.Request) error {
 			return fmt.Errorf("🥱")
 		})()
 	assert.NotNil(t, rerr)
 	assert.Equal(t, true, rerr.Halt)
-	assert.EqualError(t, rerr.Err, "🥱")
+	assert.EqualError(t, rerr.Err, "failed during request visitor: 🥱")
 }
 
 func TestMakeRequestBody(t *testing.T) {
@@ -176,7 +213,7 @@ func TestMakeRequestBody(t *testing.T) {
 	requestURL := "/a/b/c"
 	body, err := makeRequestBody("GET", &requestURL, x{"test"})
 	assert.NoError(t, err)
-	bodyBytes, err := io.ReadAll(body.ReadCloser)
+	bodyBytes, err := io.ReadAll(body.Reader)
 	assert.NoError(t, err)
 	assert.Equal(t, "/a/b/c?scope=test", requestURL)
 	assert.Equal(t, 0, len(bodyBytes))
@@ -184,7 +221,7 @@ func TestMakeRequestBody(t *testing.T) {
 	requestURL = "/a/b/c"
 	body, err = makeRequestBody("POST", &requestURL, x{"test"})
 	assert.NoError(t, err)
-	bodyBytes, err = io.ReadAll(body.ReadCloser)
+	bodyBytes, err = io.ReadAll(body.Reader)
 	assert.NoError(t, err)
 	assert.Equal(t, "/a/b/c", requestURL)
 	x1 := `{"scope":"test"}`
@@ -195,7 +232,7 @@ func TestMakeRequestBodyFromReader(t *testing.T) {
 	requestURL := "/a/b/c"
 	body, err := makeRequestBody("PUT", &requestURL, strings.NewReader("abc"))
 	assert.NoError(t, err)
-	bodyBytes, err := io.ReadAll(body.ReadCloser)
+	bodyBytes, err := io.ReadAll(body.Reader)
 	assert.NoError(t, err)
 	assert.Equal(t, []byte("abc"), bodyBytes)
 }
@@ -287,7 +324,7 @@ func TestSimpleRequestErrReaderBody(t *testing.T) {
 	}
 	headers := map[string]string{"Accept": "application/json"}
 	err := c.Do(context.Background(), "PATCH", "/a", headers, map[string]any{}, nil)
-	assert.EqualError(t, err, "response body: test error")
+	assert.EqualError(t, err, "failed while reading response: response body: test error")
 }
 
 func TestSimpleRequestErrReaderBodyStreamResponse(t *testing.T) {
@@ -325,7 +362,7 @@ func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
 	}
 	headers := map[string]string{"Accept": "application/json"}
 	err := c.Do(context.Background(), "PATCH", "/a", headers, map[string]any{}, nil)
-	assert.EqualError(t, err, "response body: test error")
+	assert.EqualError(t, err, "failed while reading response: response body: test error")
 }
 
 func TestSimpleRequestErrReaderCloseBody_StreamResponse(t *testing.T) {
@@ -524,4 +561,75 @@ func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
 	assert.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
 <  
 < [non-JSON document of 15 bytes]. <io.ReadCloser>`, bufLogger.String())
+}
+
+func TestStreamRequestFromFileWithReset(t *testing.T) {
+	// make a temporary file with some content
+	f, err := os.CreateTemp("", "databricks-client-test")
+	assert.NoError(t, err)
+	defer os.Remove(f.Name())
+	_, err = f.WriteString("hello world")
+	assert.NoError(t, err)
+	assert.NoError(t, f.Close())
+
+	// Make a reader that reads this file
+	r, err := os.Open(f.Name())
+	assert.NoError(t, err)
+	defer r.Close()
+
+	succeed := false
+	handler := func(req *http.Request) (*http.Response, error) {
+		bytes, err := io.ReadAll(req.Body)
+		assert.NoError(t, err)
+		assert.Equal(t, "hello world", string(bytes))
+		if succeed {
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader("succeeded")),
+				Request:    req,
+			}, nil
+		}
+		succeed = true
+		return &http.Response{
+			StatusCode: 429,
+			Body:       io.NopCloser(strings.NewReader("failed")),
+			Request:    req,
+		}, nil
+	}
+
+	client := &DatabricksClient{
+		httpClient:   hc(handler),
+		rateLimiter:  rate.NewLimiter(rate.Limit(1), 1),
+		Config:       config.NewMockConfig(func(r *http.Request) error { return nil }),
+		retryTimeout: time.Hour,
+	}
+
+	respBytes := bytes.Buffer{}
+	err = client.Do(context.Background(), "POST", "/a", nil, r, &respBytes)
+	assert.NoError(t, err)
+	assert.Equal(t, "succeeded", respBytes.String())
+	assert.True(t, succeed)
+}
+
+type customReader struct{}
+
+func (c customReader) Read(p []byte) (n int, err error) {
+	return 0, nil
+}
+
+func TestCannotRetryArbitraryReader(t *testing.T) {
+	client := &DatabricksClient{
+		httpClient: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 429,
+				Request:    r,
+				Body:       io.NopCloser(strings.NewReader("")),
+			}, nil
+		}),
+		rateLimiter:  rate.NewLimiter(rate.Limit(1), 1),
+		Config:       config.NewMockConfig(func(r *http.Request) error { return nil }),
+		retryTimeout: time.Hour,
+	}
+	err := client.Do(context.Background(), "POST", "/a", nil, customReader{}, nil)
+	assert.ErrorContains(t, err, "cannot reset reader of type client.customReader")
 }

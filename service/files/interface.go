@@ -143,14 +143,14 @@ type FilesService interface {
 	// Delete a file or directory.
 	//
 	// Deletes a file or directory.
-	DeleteFile(ctx context.Context, request DeleteFileRequest) error
+	Delete(ctx context.Context, request DeleteFileRequest) error
 
 	// Download a file.
 	//
 	// Downloads a file of up to 2 GiB.
-	DownloadFile(ctx context.Context, request DownloadFileRequest) (DownloadFileResponse, error)
+	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 
-	// Get the status of a file or directory.
+	// Get file or directory status.
 	//
 	// Returns the status of a file or directory.
 	GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error)
@@ -158,5 +158,5 @@ type FilesService interface {
 	// Upload a file.
 	//
 	// Uploads a file of up to 2 GiB.
-	UploadFile(ctx context.Context, request UploadFileRequest) error
+	Upload(ctx context.Context, request UploadRequest) error
 }

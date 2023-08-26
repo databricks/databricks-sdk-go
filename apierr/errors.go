@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -73,6 +74,9 @@ func (apiError *APIError) IsTooManyRequests() bool {
 
 // isRetriable returns true if error is retriable
 func (apiError *APIError) IsRetriable(ctx context.Context) bool {
+	if apiError.IsTooManyRequests() {
+		return true
+	}
 	// Handle transient errors for retries
 	for _, substring := range transientErrorStringMatches {
 		if strings.Contains(apiError.Message, substring) {
@@ -101,30 +105,37 @@ func ReadError(statusCode int, err error) *APIError {
 	}
 }
 
-// CheckForRetry inspects HTTP errors from the Databricks API for known transient errors on Workspace creation
-func CheckForRetry(ctx context.Context, resp *http.Response, respErr error, body io.ReadCloser) (bool, error) {
-	if resp == nil {
-		// If response is nil we can't make retry choices.
-		// In this case don't retry and return the original error from httpclient
-		return false, respErr
+func TooManyRequests() *APIError {
+	return &APIError{
+		ErrorCode:  "TOO_MANY_REQUESTS",
+		StatusCode: 429,
+		Message:    "Current request has to be retried",
 	}
+}
+
+func GenericIOError(ue *url.Error) *APIError {
+	return &APIError{
+		ErrorCode:  "IO_ERROR",
+		StatusCode: 523,
+		Message:    ue.Error(),
+	}
+}
+
+// GetAPIError inspects HTTP errors from the Databricks API for known transient errors.
+func GetAPIError(ctx context.Context, resp *http.Response, body io.ReadCloser) *APIError {
 	if resp.StatusCode == 429 {
-		return true, &APIError{
-			ErrorCode:  "TOO_MANY_REQUESTS",
-			Message:    "Current request has to be retried",
-			StatusCode: 429,
-		}
+		return TooManyRequests()
 	}
 	if resp.StatusCode >= 400 {
 		// read in response body as it is actually an error
 		bodyBytes, err := io.ReadAll(body)
 		if err != nil {
-			return false, ReadError(resp.StatusCode, err)
+			return ReadError(resp.StatusCode, err)
 		}
 		apiError := parseErrorFromResponse(resp, bodyBytes)
-		return apiError.IsRetriable(ctx), apiError
+		return apiError
 	}
-	return false, respErr
+	return nil
 }
 
 func parseErrorFromResponse(resp *http.Response, body []byte) *APIError {

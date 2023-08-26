@@ -145,6 +145,9 @@ type AzureServicePrincipal struct {
 }
 
 type CatalogInfo struct {
+	// Indicate whether or not the catalog info contains only browsable
+	// metadata.
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The type of the catalog.
 	CatalogType CatalogType `json:"catalog_type,omitempty"`
 	// User-provided free-form text description.
@@ -160,6 +163,8 @@ type CatalogInfo struct {
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
+	// The full name of the catalog. Corresponds with the name field.
+	FullName string `json:"full_name,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
@@ -178,6 +183,12 @@ type CatalogInfo struct {
 	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
 	// remote sharing server.
 	ProviderName string `json:"provider_name,omitempty"`
+	// Status of an asynchronously provisioned resource.
+	ProvisioningInfo ProvisioningInfo `json:"provisioning_info,omitempty"`
+	// Kind of catalog securable.
+	SecurableKind CatalogInfoSecurableKind `json:"securable_kind,omitempty"`
+
+	SecurableType string `json:"securable_type,omitempty"`
 	// The name of the share under the share provider.
 	ShareName string `json:"share_name,omitempty"`
 	// Storage Location URL (full path) for managed tables within catalog.
@@ -188,6 +199,60 @@ type CatalogInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified catalog.
 	UpdatedBy string `json:"updated_by,omitempty"`
+}
+
+// Kind of catalog securable.
+type CatalogInfoSecurableKind string
+
+const CatalogInfoSecurableKindCatalogDeltasharing CatalogInfoSecurableKind = `CATALOG_DELTASHARING`
+
+const CatalogInfoSecurableKindCatalogForeignBigquery CatalogInfoSecurableKind = `CATALOG_FOREIGN_BIGQUERY`
+
+const CatalogInfoSecurableKindCatalogForeignDatabricks CatalogInfoSecurableKind = `CATALOG_FOREIGN_DATABRICKS`
+
+const CatalogInfoSecurableKindCatalogForeignMysql CatalogInfoSecurableKind = `CATALOG_FOREIGN_MYSQL`
+
+const CatalogInfoSecurableKindCatalogForeignPostgresql CatalogInfoSecurableKind = `CATALOG_FOREIGN_POSTGRESQL`
+
+const CatalogInfoSecurableKindCatalogForeignRedshift CatalogInfoSecurableKind = `CATALOG_FOREIGN_REDSHIFT`
+
+const CatalogInfoSecurableKindCatalogForeignSnowflake CatalogInfoSecurableKind = `CATALOG_FOREIGN_SNOWFLAKE`
+
+const CatalogInfoSecurableKindCatalogForeignSqldw CatalogInfoSecurableKind = `CATALOG_FOREIGN_SQLDW`
+
+const CatalogInfoSecurableKindCatalogForeignSqlserver CatalogInfoSecurableKind = `CATALOG_FOREIGN_SQLSERVER`
+
+const CatalogInfoSecurableKindCatalogInternal CatalogInfoSecurableKind = `CATALOG_INTERNAL`
+
+const CatalogInfoSecurableKindCatalogOnline CatalogInfoSecurableKind = `CATALOG_ONLINE`
+
+const CatalogInfoSecurableKindCatalogOnlineIndex CatalogInfoSecurableKind = `CATALOG_ONLINE_INDEX`
+
+const CatalogInfoSecurableKindCatalogStandard CatalogInfoSecurableKind = `CATALOG_STANDARD`
+
+const CatalogInfoSecurableKindCatalogSystem CatalogInfoSecurableKind = `CATALOG_SYSTEM`
+
+const CatalogInfoSecurableKindCatalogSystemDeltasharing CatalogInfoSecurableKind = `CATALOG_SYSTEM_DELTASHARING`
+
+// String representation for [fmt.Print]
+func (f *CatalogInfoSecurableKind) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CatalogInfoSecurableKind) Set(v string) error {
+	switch v {
+	case `CATALOG_DELTASHARING`, `CATALOG_FOREIGN_BIGQUERY`, `CATALOG_FOREIGN_DATABRICKS`, `CATALOG_FOREIGN_MYSQL`, `CATALOG_FOREIGN_POSTGRESQL`, `CATALOG_FOREIGN_REDSHIFT`, `CATALOG_FOREIGN_SNOWFLAKE`, `CATALOG_FOREIGN_SQLDW`, `CATALOG_FOREIGN_SQLSERVER`, `CATALOG_INTERNAL`, `CATALOG_ONLINE`, `CATALOG_ONLINE_INDEX`, `CATALOG_STANDARD`, `CATALOG_SYSTEM`, `CATALOG_SYSTEM_DELTASHARING`:
+		*f = CatalogInfoSecurableKind(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CATALOG_DELTASHARING", "CATALOG_FOREIGN_BIGQUERY", "CATALOG_FOREIGN_DATABRICKS", "CATALOG_FOREIGN_MYSQL", "CATALOG_FOREIGN_POSTGRESQL", "CATALOG_FOREIGN_REDSHIFT", "CATALOG_FOREIGN_SNOWFLAKE", "CATALOG_FOREIGN_SQLDW", "CATALOG_FOREIGN_SQLSERVER", "CATALOG_INTERNAL", "CATALOG_ONLINE", "CATALOG_ONLINE_INDEX", "CATALOG_STANDARD", "CATALOG_SYSTEM", "CATALOG_SYSTEM_DELTASHARING"`, v)
+	}
+}
+
+// Type always returns CatalogInfoSecurableKind to satisfy [pflag.Value] interface
+func (f *CatalogInfoSecurableKind) Type() string {
+	return "CatalogInfoSecurableKind"
 }
 
 // The type of the catalog.
@@ -350,7 +415,7 @@ type ConnectionInfo struct {
 	// connection.
 	Properties map[string]string `json:"properties,omitempty"`
 	// Status of an asynchronously provisioned resource.
-	ProvisioningState ProvisioningState `json:"provisioning_state,omitempty"`
+	ProvisioningInfo ProvisioningInfo `json:"provisioning_info,omitempty"`
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Kind of connection securable.
@@ -452,6 +517,8 @@ type CreateCatalog struct {
 	ConnectionName string `json:"connection_name,omitempty"`
 	// Name of catalog.
 	Name string `json:"name"`
+	// A map of key-value properties attached to the securable.
+	Options map[string]string `json:"options,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
 	// The name of delta sharing provider.
@@ -864,6 +931,14 @@ type DeleteAccountStorageCredentialRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
+}
+
+// Delete a Registered Model Alias
+type DeleteAliasRequest struct {
+	// The name of the alias
+	Alias string `json:"-" url:"-"`
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"-" url:"-"`
 }
 
 // Delete a catalog
@@ -1495,6 +1570,14 @@ type GetArtifactAllowlistRequest struct {
 	ArtifactType ArtifactType `json:"-" url:"-"`
 }
 
+// Get Model Version By Alias
+type GetByAliasRequest struct {
+	// The name of the alias
+	Alias string `json:"-" url:"-"`
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"-" url:"-"`
+}
+
 // Get a catalog
 type GetCatalogRequest struct {
 	// The name of the catalog.
@@ -1785,55 +1868,8 @@ type ListSchemasResponse struct {
 	Schemas []SchemaInfo `json:"schemas,omitempty"`
 }
 
-// Get tags for a securable
-type ListSecurableTagsRequest struct {
-	// The fully qualified name of the unity catalog securable entity.
-	FullName string `json:"-" url:"-"`
-	// The type of the unity catalog securable entity.
-	SecurableType ListSecurableType `json:"-" url:"-"`
-}
-
-type ListSecurableType string
-
-const ListSecurableTypeCatalog ListSecurableType = `catalog`
-
-const ListSecurableTypeSchema ListSecurableType = `schema`
-
-const ListSecurableTypeTable ListSecurableType = `table`
-
-// String representation for [fmt.Print]
-func (f *ListSecurableType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ListSecurableType) Set(v string) error {
-	switch v {
-	case `catalog`, `schema`, `table`:
-		*f = ListSecurableType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "schema", "table"`, v)
-	}
-}
-
-// Type always returns ListSecurableType to satisfy [pflag.Value] interface
-func (f *ListSecurableType) Type() string {
-	return "ListSecurableType"
-}
-
 type ListStorageCredentialsResponse struct {
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
-}
-
-// Get tags for a subentity
-type ListSubentityTagsRequest struct {
-	// The fully qualified name of the unity catalog securable entity.
-	FullName string `json:"-" url:"-"`
-	// The type of the unity catalog securable entity.
-	SecurableType ListSecurableType `json:"-" url:"-"`
-	// The name of subentity associated with the securable entity
-	SubentityName string `json:"-" url:"-"`
 }
 
 // List table summaries
@@ -2226,37 +2262,37 @@ type PrivilegeAssignment struct {
 type PropertiesKvPairs map[string]string
 
 // Status of an asynchronously provisioned resource.
-type ProvisioningState string
+type ProvisioningInfo string
 
-const ProvisioningStateActive ProvisioningState = `ACTIVE`
+const ProvisioningInfoActive ProvisioningInfo = `ACTIVE`
 
-const ProvisioningStateDeleting ProvisioningState = `DELETING`
+const ProvisioningInfoDeleting ProvisioningInfo = `DELETING`
 
-const ProvisioningStateFailed ProvisioningState = `FAILED`
+const ProvisioningInfoFailed ProvisioningInfo = `FAILED`
 
-const ProvisioningStateProvisioning ProvisioningState = `PROVISIONING`
+const ProvisioningInfoProvisioning ProvisioningInfo = `PROVISIONING`
 
-const ProvisioningStateStateUnspecified ProvisioningState = `STATE_UNSPECIFIED`
+const ProvisioningInfoStateUnspecified ProvisioningInfo = `STATE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
-func (f *ProvisioningState) String() string {
+func (f *ProvisioningInfo) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *ProvisioningState) Set(v string) error {
+func (f *ProvisioningInfo) Set(v string) error {
 	switch v {
 	case `ACTIVE`, `DELETING`, `FAILED`, `PROVISIONING`, `STATE_UNSPECIFIED`:
-		*f = ProvisioningState(v)
+		*f = ProvisioningInfo(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETING", "FAILED", "PROVISIONING", "STATE_UNSPECIFIED"`, v)
 	}
 }
 
-// Type always returns ProvisioningState to satisfy [pflag.Value] interface
-func (f *ProvisioningState) Type() string {
-	return "ProvisioningState"
+// Type always returns ProvisioningInfo to satisfy [pflag.Value] interface
+func (f *ProvisioningInfo) Type() string {
+	return "ProvisioningInfo"
 }
 
 // Get a Volume
@@ -2399,6 +2435,15 @@ type SetArtifactAllowlist struct {
 	ArtifactMatchers ArtifactMatcher `json:"artifact_matchers"`
 	// The artifact type of the allowlist.
 	ArtifactType ArtifactType `json:"-" url:"-"`
+}
+
+type SetRegisteredModelAliasRequest struct {
+	// The name of the alias
+	Alias string `json:"alias" url:"-"`
+	// Full name of the registered model
+	FullName string `json:"full_name" url:"-"`
+	// The version number of the model version to which the alias points
+	VersionNum int `json:"version_num"`
 }
 
 // Server-Side Encryption properties for clients communicating with AWS s3.
@@ -2659,62 +2704,6 @@ func (f *TableType) Type() string {
 	return "TableType"
 }
 
-type TagChanges struct {
-	// Tags to add for the current entity
-	AddTags []TagKeyValuePair `json:"add_tags,omitempty"`
-	// Tags to remove for the current entity
-	Remove []string `json:"remove,omitempty"`
-}
-
-type TagKeyValuePair struct {
-	// Tag key name
-	Key string `json:"key"`
-	// Tag value
-	Value string `json:"value"`
-}
-
-type TagSecurable struct {
-	// Name of the securable entity
-	FullName string `json:"full_name"`
-	// Type of the securable entity
-	Type string `json:"type"`
-}
-
-type TagSecurableAssignment struct {
-	// Securable entity associated with the tagging information
-	Securable TagSecurable `json:"securable"`
-	// tag assignments containing keys and values for the securable entity
-	TagKeyValuePairs []TagKeyValuePair `json:"tag_key_value_pairs"`
-}
-
-type TagSecurableAssignmentsList struct {
-	// An array of tag assignments on a securable
-	TagAssignments []TagSecurableAssignment `json:"tag_assignments"`
-}
-
-type TagSubentity struct {
-	// Name of the securable entity
-	FullName string `json:"full_name"`
-	// Name of the subentity
-	Subentity string `json:"subentity"`
-	// Type of the securable entity
-	Type string `json:"type"`
-}
-
-type TagSubentityAssignmentsList struct {
-	// An array of subentity tag assignments on a subentity
-	TagAssignments []TagsSubentityAssignment `json:"tag_assignments"`
-}
-
-type TagsSubentityAssignment struct {
-	// Subentity associated with the tagging information
-	Securable TagSubentity `json:"securable"`
-	// Name of the subentity
-	Subentity string `json:"subentity"`
-	// tag assignments containing keys and values for the securable entity
-	TagKeyValuePairs []TagKeyValuePair `json:"tag_key_value_pairs"`
-}
-
 // Delete an assignment
 type UnassignRequest struct {
 	// Query for the ID of the metastore to delete.
@@ -2731,6 +2720,8 @@ type UpdateCatalog struct {
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of catalog.
 	Name string `json:"name,omitempty" url:"-"`
+	// A map of key-value properties attached to the securable.
+	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of catalog.
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
@@ -2893,35 +2884,6 @@ type UpdateSchema struct {
 	Properties map[string]string `json:"properties,omitempty"`
 }
 
-type UpdateSecurableType string
-
-const UpdateSecurableTypeCatalog UpdateSecurableType = `catalog`
-
-const UpdateSecurableTypeSchema UpdateSecurableType = `schema`
-
-const UpdateSecurableTypeTable UpdateSecurableType = `table`
-
-// String representation for [fmt.Print]
-func (f *UpdateSecurableType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *UpdateSecurableType) Set(v string) error {
-	switch v {
-	case `catalog`, `schema`, `table`:
-		*f = UpdateSecurableType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "schema", "table"`, v)
-	}
-}
-
-// Type always returns UpdateSecurableType to satisfy [pflag.Value] interface
-func (f *UpdateSecurableType) Type() string {
-	return "UpdateSecurableType"
-}
-
 type UpdateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
@@ -2953,17 +2915,6 @@ type UpdateTableRequest struct {
 	FullName string `json:"-" url:"-"`
 
 	Owner string `json:"owner,omitempty"`
-}
-
-type UpdateTags struct {
-	// Desired changes to be made to the tag assignments on the entity
-	Changes TagChanges `json:"changes"`
-	// The fully qualified name of the unity catalog securable entity.
-	FullName string `json:"-" url:"-"`
-	// The type of the unity catalog securable entity.
-	SecurableType UpdateSecurableType `json:"-" url:"-"`
-	// The name of subentity associated with the securable entity
-	SubentityName string `json:"-" url:"-"`
 }
 
 type UpdateVolumeRequestContent struct {

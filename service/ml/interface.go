@@ -71,13 +71,13 @@ type ExperimentsService interface {
 	//
 	// Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name
 	// exists.
-	GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error)
+	GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentResponse, error)
 
 	// Get an experiment.
 	//
 	// Gets metadata for an experiment. This method works on deleted
 	// experiments.
-	GetExperiment(ctx context.Context, request GetExperimentRequest) (*Experiment, error)
+	GetExperiment(ctx context.Context, request GetExperimentRequest) (*GetExperimentResponse, error)
 
 	// Get experiment permission levels.
 	//
@@ -93,6 +93,8 @@ type ExperimentsService interface {
 	// Get history of a given metric within a run.
 	//
 	// Gets a list of all values for the specified metric for a given run.
+	//
+	// Use GetHistoryAll() to get all Metric instances, which will iterate over every result page.
 	GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error)
 
 	// Get a run.

@@ -100,7 +100,7 @@ func (a *pipelinesImpl) Reset(ctx context.Context, request ResetRequest) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/reset", request.PipelineId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
 	return err
 }
 
@@ -128,7 +128,7 @@ func (a *pipelinesImpl) Stop(ctx context.Context, request StopRequest) error {
 	path := fmt.Sprintf("/api/2.0/pipelines/%v/stop", request.PipelineId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil)
 	return err
 }
 

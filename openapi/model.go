@@ -173,14 +173,12 @@ func (o *Operation) HasTag(tag string) bool {
 	return false
 }
 
-func (o *Operation) SuccessResponseSchema(c *Components) *Schema {
-	httpOk, ok := o.Responses["200"]
-	if ok {
-		return (*c.Responses.Resolve(httpOk)).Schema()
-	}
-	httpCreated, ok := o.Responses["201"]
-	if ok {
-		return (*c.Responses.Resolve(httpCreated)).Schema()
+func (o *Operation) SuccessResponseBody(c *Components) *Body {
+	for _, v := range []string{"200", "201"} {
+		response, ok := o.Responses[v]
+		if ok {
+			return (*c.Responses.Resolve(response))
+		}
 	}
 	return nil
 }
@@ -277,30 +275,60 @@ func (s *Schema) IsEmpty() bool {
 
 type Parameter struct {
 	Node
-	Required bool    `json:"required,omitempty"`
-	In       string  `json:"in,omitempty"`
-	Name     string  `json:"name,omitempty"`
-	Schema   *Schema `json:"schema,omitempty"`
+	Required     bool    `json:"required,omitempty"`
+	In           string  `json:"in,omitempty"`
+	Name         string  `json:"name,omitempty"`
+	MultiSegment bool    `json:"x-databricks-multi-segment,omitempty"`
+	Schema       *Schema `json:"schema,omitempty"`
 }
 
 type Body struct {
 	Node
-	Required bool               `json:"required,omitempty"`
-	Content  map[string]Example `json:"content,omitempty"`
+	Required bool                 `json:"required,omitempty"`
+	Content  map[string]MediaType `json:"content,omitempty"`
 }
 
-func (b *Body) Schema() *Schema {
-	if b.Content == nil {
-		return nil
-	}
-	j, ok := b.Content["application/json"]
-	if !ok {
-		return nil
-	}
-	return j.Schema
+type MimeType string
+
+const (
+	MimeTypeJson        MimeType = "application/json"
+	MimeTypeOctetStream MimeType = "application/octet-stream"
+)
+
+// IsByteStream returns true if the body should be modeled as a byte stream.
+// Today, we only support application/json and application/octet-stream, and non
+// application/json entities are all modeled as byte streams.
+func (m MimeType) IsByteStream() bool {
+	return m != "" && m != MimeTypeJson
 }
 
-type Example struct {
+var allowedMimeTypes = []MimeType{
+	MimeTypeJson,
+	MimeTypeOctetStream,
+}
+
+func (b *Body) MimeTypeAndMediaType() (MimeType, *MediaType) {
+	if b == nil || b.Content == nil {
+		return "", nil
+	}
+	for _, m := range allowedMimeTypes {
+		if mediaType, ok := b.Content[string(m)]; ok {
+			return m, &mediaType
+		}
+	}
+	return "", nil
+}
+
+type MediaType struct {
 	Node
 	Schema *Schema `json:"schema,omitempty"`
+}
+
+const MediaTypeNonJsonBodyFieldName = "contents"
+
+func (m *MediaType) GetSchema() *Schema {
+	if m == nil {
+		return nil
+	}
+	return m.Schema
 }

@@ -1269,7 +1269,8 @@ func (a *WorkspacesAPI) GetByWorkspaceName(ctx context.Context, name string) (*W
 // or update the private access settings ID to upgrade a workspace to add
 // support for front-end, back-end, or both types of connectivity. You cannot
 // remove (downgrade) any existing front-end or back-end PrivateLink support on
-// a workspace.
+// a workspace. - Custom tags. Given you provide an empty custom tags, the
+// update would not be applied.
 //
 // After calling the `PATCH` operation to update the workspace configuration,
 // make repeated `GET` requests with the workspace ID and check the workspace
@@ -1307,7 +1308,8 @@ func (a *WorkspacesAPI) GetByWorkspaceName(ctx context.Context, name string) (*W
 // PrivateLink support. You can add or update the private access settings ID to
 // upgrade a workspace to add support for front-end, back-end, or both types of
 // connectivity. You cannot remove (downgrade) any existing front-end or
-// back-end PrivateLink support on a workspace.
+// back-end PrivateLink support on a workspace. - Custom tags. Given you provide
+// an empty custom tags, the update would not be applied.
 //
 // **Important**: To update a running workspace, your workspace must have no
 // running compute resources that run in your workspace's VPC in the Classic

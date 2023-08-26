@@ -123,6 +123,11 @@ type CreateWorkspaceRequest struct {
 	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
 	// ID of the workspace's credential configuration object.
 	CredentialsId string `json:"credentials_id,omitempty"`
+	// The custom tags key-value pairing that is attached to this workspace. The
+	// key-value pair is a string of utf-8 characters. The value can be an empty
+	// string, with maximum length of 255 characters. The key can be of maximum
+	// length of 127 characters, and cannot be empty.
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// The deployment name defines part of the subdomain for the workspace. The
 	// workspace URL for web application and REST APIs is
 	// `<workspace-deployment-name>.cloud.databricks.com`. For example, if the
@@ -234,6 +239,12 @@ type Credential struct {
 	// The human-readable name of the credential configuration object.
 	CredentialsName string `json:"credentials_name,omitempty"`
 }
+
+// The custom tags key-value pairing that is attached to this workspace. The
+// key-value pair is a string of utf-8 characters. The value can be an empty
+// string, with maximum length of 255 characters. The key can be of maximum
+// length of 127 characters, and cannot be empty.
+type CustomTags map[string]string
 
 // The general workspace configurations that are specific to Google Cloud.
 type CustomerFacingGcpCloudResourceContainer struct {
@@ -766,6 +777,11 @@ type UpdateWorkspaceRequest struct {
 	// ID of the workspace's credential configuration object. This parameter is
 	// available for updating both failed and running workspaces.
 	CredentialsId string `json:"credentials_id,omitempty"`
+	// The custom tags key-value pairing that is attached to this workspace. The
+	// key-value pair is a string of utf-8 characters. The value can be an empty
+	// string, with maximum length of 255 characters. The key can be of maximum
+	// length of 127 characters, and cannot be empty.
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// The ID of the workspace's managed services encryption key configuration
 	// object. This parameter is available only for updating failed workspaces.
 	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
@@ -938,6 +954,11 @@ type Workspace struct {
 	CreationTime int64 `json:"creation_time,omitempty"`
 	// ID of the workspace's credential configuration object.
 	CredentialsId string `json:"credentials_id,omitempty"`
+	// The custom tags key-value pairing that is attached to this workspace. The
+	// key-value pair is a string of utf-8 characters. The value can be an empty
+	// string, with maximum length of 255 characters. The key can be of maximum
+	// length of 127 characters, and cannot be empty.
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// The deployment name defines part of the subdomain for the workspace. The
 	// workspace URL for web application and REST APIs is
 	// `<deployment-name>.cloud.databricks.com`.

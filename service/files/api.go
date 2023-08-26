@@ -265,15 +265,15 @@ func (a *FilesAPI) Impl() FilesService {
 // Delete a file or directory.
 //
 // Deletes a file or directory.
-func (a *FilesAPI) DeleteFile(ctx context.Context, request DeleteFileRequest) error {
-	return a.impl.DeleteFile(ctx, request)
+func (a *FilesAPI) Delete(ctx context.Context, request DeleteFileRequest) error {
+	return a.impl.Delete(ctx, request)
 }
 
 // Delete a file or directory.
 //
 // Deletes a file or directory.
-func (a *FilesAPI) DeleteFileByFilePath(ctx context.Context, filePath string) error {
-	return a.impl.DeleteFile(ctx, DeleteFileRequest{
+func (a *FilesAPI) DeleteByFilePath(ctx context.Context, filePath string) error {
+	return a.impl.Delete(ctx, DeleteFileRequest{
 		FilePath: filePath,
 	})
 }
@@ -281,20 +281,20 @@ func (a *FilesAPI) DeleteFileByFilePath(ctx context.Context, filePath string) er
 // Download a file.
 //
 // Downloads a file of up to 2 GiB.
-func (a *FilesAPI) DownloadFile(ctx context.Context, request DownloadFileRequest) (DownloadFileResponse, error) {
-	return a.impl.DownloadFile(ctx, request)
+func (a *FilesAPI) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
+	return a.impl.Download(ctx, request)
 }
 
 // Download a file.
 //
 // Downloads a file of up to 2 GiB.
-func (a *FilesAPI) DownloadFileByFilePath(ctx context.Context, filePath string) (DownloadFileResponse, error) {
-	return a.impl.DownloadFile(ctx, DownloadFileRequest{
+func (a *FilesAPI) DownloadByFilePath(ctx context.Context, filePath string) (*DownloadResponse, error) {
+	return a.impl.Download(ctx, DownloadRequest{
 		FilePath: filePath,
 	})
 }
 
-// Get the status of a file or directory.
+// Get file or directory status.
 //
 // Returns the status of a file or directory.
 func (a *FilesAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error) {
@@ -304,6 +304,6 @@ func (a *FilesAPI) GetStatus(ctx context.Context, request GetStatusRequest) (*Fi
 // Upload a file.
 //
 // Uploads a file of up to 2 GiB.
-func (a *FilesAPI) UploadFile(ctx context.Context, request UploadFileRequest) error {
-	return a.impl.UploadFile(ctx, request)
+func (a *FilesAPI) Upload(ctx context.Context, request UploadRequest) error {
+	return a.impl.Upload(ctx, request)
 }

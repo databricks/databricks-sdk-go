@@ -103,7 +103,7 @@ func TestMethodsReport(t *testing.T) {
 					m.KebabName(),
 					methodWithoutService,
 					singleService,
-					m.operation.Crud,
+					m.Operation.Crud,
 					strings.Join(fields, ", "),
 				))
 			}

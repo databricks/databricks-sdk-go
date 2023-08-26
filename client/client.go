@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
-	"regexp"
 	"runtime"
 	"sort"
 	"strings"
@@ -69,37 +68,92 @@ type httpClient interface {
 	CloseIdleConnections()
 }
 
-// Represents a request or response Body.
+// Represents a request body.
 //
-// If the provided request data is an io.ReadCloser, DebugBytes is set to
-// "<io.ReadCloser>". Otherwise, DebugBytes is set to the marshaled JSON
+// If the provided request data is an io.Reader, DebugBytes is set to
+// "<io.Reader>". Otherwise, DebugBytes is set to the marshaled JSON
 // representation of the request data, and ReadCloser is set to a new
 // io.ReadCloser that reads from DebugBytes.
-type Body struct {
+//
+// Request bodies are never closed by the client, hence only accepting
+// io.Reader.
+type requestBody struct {
+	Reader     io.Reader
+	DebugBytes []byte
+}
+
+func newRequestBody(data any) (requestBody, error) {
+	switch v := data.(type) {
+	case io.Reader:
+		return requestBody{
+			Reader:     v,
+			DebugBytes: []byte("<io.Reader>"),
+		}, nil
+	case string:
+		return requestBody{
+			Reader:     strings.NewReader(v),
+			DebugBytes: []byte(v),
+		}, nil
+	case []byte:
+		return requestBody{
+			Reader:     bytes.NewReader(v),
+			DebugBytes: v,
+		}, nil
+	default:
+		bs, err := json.Marshal(data)
+		if err != nil {
+			return requestBody{}, fmt.Errorf("request marshal failure: %w", err)
+		}
+		return requestBody{
+			Reader:     bytes.NewReader(bs),
+			DebugBytes: bs,
+		}, nil
+	}
+}
+
+// Reset a request body to its initial state.
+//
+// This is used to retry requests with a body that has already been read. If
+// the request body is not strings.Reader or bytes.Reader, this will return an
+// error.
+func (r requestBody) reset() error {
+	if r.Reader == nil {
+		return errors.New("cannot reset nil reader")
+	}
+	if v, ok := r.Reader.(io.Seeker); ok {
+		_, err := v.Seek(0, io.SeekStart)
+		return err
+	} else {
+		return fmt.Errorf("cannot reset reader of type %T", r.Reader)
+	}
+}
+
+// Represents a response body.
+//
+// Responses must always be closed. For non-streaming responses, they are closed
+// during deserialization in the client (see unmarshall()). For streaming
+// responses, they are returned to the caller, who is responsible for closing
+// them.
+type responseBody struct {
 	ReadCloser io.ReadCloser
 	DebugBytes []byte
 }
 
-func fromBytes(bs []byte) Body {
-	return Body{
-		ReadCloser: io.NopCloser(bytes.NewReader(bs)),
-		DebugBytes: bs,
+func newResponseBody(data any) (responseBody, error) {
+	switch v := data.(type) {
+	case io.ReadCloser:
+		return responseBody{
+			ReadCloser: v,
+			DebugBytes: []byte("<io.ReadCloser>"),
+		}, nil
+	case []byte:
+		return responseBody{
+			ReadCloser: io.NopCloser(bytes.NewReader(v)),
+			DebugBytes: v,
+		}, nil
+	default:
+		return responseBody{}, errors.New("newResponseBody can only be called with io.ReadCloser or []byte")
 	}
-}
-
-func fromReader(r io.Reader) Body {
-	return Body{
-		ReadCloser: io.NopCloser(r),
-		DebugBytes: []byte("<io.Reader>"),
-	}
-}
-
-func fromJsonData(data any) (Body, error) {
-	bs, err := json.Marshal(data)
-	if err != nil {
-		return Body{}, err
-	}
-	return fromBytes(bs), nil
 }
 
 type DatabricksClient struct {
@@ -128,7 +182,7 @@ func (c *DatabricksClient) Do(ctx context.Context, method, path string,
 	return c.unmarshal(body, response)
 }
 
-func (c *DatabricksClient) unmarshal(body *Body, response any) error {
+func (c *DatabricksClient) unmarshal(body *responseBody, response any) error {
 	if response == nil {
 		return nil
 	}
@@ -145,10 +199,14 @@ func (c *DatabricksClient) unmarshal(body *Body, response any) error {
 	if len(bs) == 0 {
 		return nil
 	}
-	// If the destination is a byte slice, pass the body verbatim.
+	// If the destination is a byte slice or buffer, pass the body verbatim.
 	if raw, ok := response.(*[]byte); ok {
 		*raw = bs
 		return nil
+	}
+	if raw, ok := response.(*bytes.Buffer); ok {
+		_, err := raw.Write(bs)
+		return err
 	}
 	return json.Unmarshal(bs, &response)
 }
@@ -166,26 +224,23 @@ func (c *DatabricksClient) addHostToRequestUrl(r *http.Request) error {
 	return nil
 }
 
-func (c *DatabricksClient) fromResponse(r *http.Response) (Body, error) {
+func (c *DatabricksClient) fromResponse(r *http.Response) (responseBody, error) {
 	if r == nil {
-		return Body{}, fmt.Errorf("nil response")
+		return responseBody{}, fmt.Errorf("nil response")
 	}
 	if r.Request == nil {
-		return Body{}, fmt.Errorf("nil request")
+		return responseBody{}, fmt.Errorf("nil request")
 	}
 	streamResponse := r.Request.Header.Get("Accept") != "application/json" && r.Header.Get("Content-Type") != "application/json"
 	if streamResponse {
-		return Body{
-			ReadCloser: r.Body,
-			DebugBytes: []byte("<io.ReadCloser>"),
-		}, nil
+		return newResponseBody(r.Body)
 	}
 	defer r.Body.Close()
 	bs, err := io.ReadAll(r.Body)
 	if err != nil {
-		return Body{}, fmt.Errorf("response body: %w", err)
+		return responseBody{}, fmt.Errorf("response body: %w", err)
 	}
-	return fromBytes(bs), nil
+	return newResponseBody(bs)
 }
 
 func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string) {
@@ -194,11 +249,27 @@ func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string)
 	}.redactedDump(prefix, body)
 }
 
-func (c *DatabricksClient) wrapError(retry bool, err error) (*Body, *retries.Err) {
-	if retry {
-		return nil, retries.Continue(err)
+// Common error-handling logic for all responses that may need to be retried.
+//
+// If the error is retriable, return a retries.Err to retry the request. However, as the request body will have been consumed
+// by the first attempt, the body must be reset before retrying. If the body cannot be reset, return a retries.Err to halt.
+//
+// Always returns nil for the first parameter as there is no meaningful response body to return in the error case.
+//
+// If it is certain that an error should not be retried, use failRequest() instead.
+func (c *DatabricksClient) handleError(ctx context.Context, err *apierr.APIError, body requestBody) (*responseBody, *retries.Err) {
+	if !err.IsRetriable(ctx) {
+		return c.failRequest("non-retriable error", err)
 	}
-	return nil, retries.Halt(err)
+	if resetErr := body.reset(); resetErr != nil {
+		return nil, retries.Halt(resetErr)
+	}
+	return nil, retries.Continue(err)
+}
+
+// Fails the request with a retries.Err to halt future retries.
+func (c *DatabricksClient) failRequest(msg string, err error) (*responseBody, *retries.Err) {
+	return nil, retries.Halt(fmt.Errorf("%s: %w", msg, err))
 }
 
 func (c *DatabricksClient) attempt(
@@ -206,25 +277,25 @@ func (c *DatabricksClient) attempt(
 	method string,
 	requestURL string,
 	headers map[string]string,
-	requestBody Body,
+	requestBody requestBody,
 	visitors ...func(*http.Request) error,
-) func() (*Body, *retries.Err) {
-	return func() (*Body, *retries.Err) {
+) func() (*responseBody, *retries.Err) {
+	return func() (*responseBody, *retries.Err) {
 		err := c.rateLimiter.Wait(ctx)
 		if err != nil {
-			return nil, retries.Halt(err)
+			return c.failRequest("failed in rate limiter", err)
 		}
-		request, err := http.NewRequestWithContext(ctx, method, requestURL, requestBody.ReadCloser)
+		request, err := http.NewRequestWithContext(ctx, method, requestURL, requestBody.Reader)
+		if err != nil {
+			return c.failRequest("failed creating new request", err)
+		}
 		for k, v := range headers {
 			request.Header.Set(k, v)
-		}
-		if err != nil {
-			return c.wrapError(false, err)
 		}
 		for _, requestVisitor := range visitors {
 			err = requestVisitor(request)
 			if err != nil {
-				return c.wrapError(false, err)
+				return c.failRequest("failed during request visitor", err)
 			}
 		}
 		// request.Context() holds context potentially enhanced by visitors
@@ -232,37 +303,29 @@ func (c *DatabricksClient) attempt(
 
 		// attempt the actual request
 		response, err := c.httpClient.Do(request)
+
+		// After this point, the request body has (probably) been consumed. handleError() must be called to reset it if
+		// possible.
 		if ue, ok := err.(*url.Error); ok {
-			apiError := &apierr.APIError{
-				ErrorCode:  "IO_ERROR",
-				StatusCode: 523,
-				Message:    ue.Error(),
-			}
-			return c.wrapError(apiError.IsRetriable(ctx), apiError)
+			return c.handleError(ctx, apierr.GenericIOError(ue), requestBody)
 		}
+
+		// By this point, the request body has certainly been consumed.
 		responseBody, responseBodyErr := c.fromResponse(response)
 		if responseBodyErr != nil {
-			return c.wrapError(false, apierr.ReadError(response.StatusCode, responseBodyErr))
+			return c.failRequest("failed while reading response", apierr.ReadError(response.StatusCode, responseBodyErr))
 		}
 
-		retry, err := apierr.CheckForRetry(ctx, response, err, responseBody.ReadCloser)
-		var apiErr *apierr.APIError
-		if err != nil && !errors.As(err, &apiErr) {
-			err = fmt.Errorf("failed request: %w", err)
-		}
-		if err == nil && response == nil {
-			err = fmt.Errorf("no response: %s %s", method, requestURL)
-		}
+		apiErr := apierr.GetAPIError(ctx, response, responseBody.ReadCloser)
+		defer c.recordRequestLog(ctx, request, response, apiErr, requestBody.DebugBytes, responseBody.DebugBytes)
 
-		defer c.recordRequestLog(ctx, request, response, err, requestBody.DebugBytes, responseBody.DebugBytes)
-
-		if err == nil {
+		if apiErr == nil {
 			return &responseBody, nil
 		}
 
 		// proactively release the connections in HTTP connection pool
 		c.httpClient.CloseIdleConnections()
-		return c.wrapError(retry, err)
+		return c.handleError(ctx, apiErr, requestBody)
 	}
 }
 
@@ -332,7 +395,7 @@ func (c *DatabricksClient) perform(
 	headers map[string]string,
 	data interface{},
 	visitors ...func(*http.Request) error,
-) (*Body, error) {
+) (*responseBody, error) {
 	// replace double slash in the request URL with a single slash
 	requestURL = strings.Replace(requestURL, "//", "/", -1)
 	requestBody, err := makeRequestBody(method, &requestURL, data)
@@ -398,87 +461,19 @@ func makeQueryString(data interface{}) (string, error) {
 	return "", fmt.Errorf("unsupported query string data: %#v", data)
 }
 
-// Remove all custom request serializer logic once APP-1331 is rolled out.
-type serializer func(any) (Body, error)
-
-func serializeQueryParamsToRequestBody(data any) (Body, error) {
-	m := map[string]any{}
-	rv := reflect.ValueOf(data)
-	rt := reflect.TypeOf(data)
-	// If data is a map, just serialize it to JSON.
-	if rv.Kind() == reflect.Map {
-		return fromJsonData(data)
-	}
-	for i := 0; i < rv.NumField(); i++ {
-		field := rv.Field(i)
-		tag := rt.Field(i).Tag.Get("url")
-		if tag == "" {
-			continue
-		}
-		value := field.Interface()
-		if field.IsZero() {
-			continue
-		}
-		key := strings.Split(tag, ",")[0]
-		m[key] = value
-	}
-
-	return fromJsonData(data)
-}
-
-// List of (method, URL) pairs whose request bodies need to be serialized in a
-// custom way. These can be removed after APP-1331 is rolled out.
-var requestInBodyOverrides = []struct {
-	method     string
-	urlRegexp  *regexp.Regexp
-	serializer serializer
-}{
-	{"DELETE", regexp.MustCompile("(/api/2.1)?/unity-catalog/(metastores|catalogs)/[^/]+"), serializeQueryParamsToRequestBody},
-	{"DELETE", regexp.MustCompile("(/api/2.1)?/unity-catalog/workspaces/[^/]+/(metastore|catalog)"), serializeQueryParamsToRequestBody},
-}
-
-func getRequestCustomSerializer(method string, requestURL *string) serializer {
-	for _, override := range requestInBodyOverrides {
-		// Return true if the request URL has the prefix and no trailing segments
-		// which would indicate other APIs.
-		matchRequestMethod := method == override.method
-		matchRequestURL := override.urlRegexp.MatchString(*requestURL)
-		if matchRequestMethod && matchRequestURL {
-			return override.serializer
-		}
-	}
-	return nil
-}
-
-func makeRequestBody(method string, requestURL *string, data interface{}) (Body, error) {
-	if data == nil && (method == "DELETE" || method == "GET") {
-		return Body{}, nil
-	}
-	if customSerializer := getRequestCustomSerializer(method, requestURL); customSerializer != nil {
-		return customSerializer(data)
+func makeRequestBody(method string, requestURL *string, data interface{}) (requestBody, error) {
+	if data == nil {
+		return requestBody{}, nil
 	}
 	if method == "GET" || method == "DELETE" {
 		qs, err := makeQueryString(data)
 		if err != nil {
-			return Body{}, err
+			return requestBody{}, err
 		}
 		*requestURL += qs
-		return fromBytes([]byte{}), nil
+		return newRequestBody([]byte{})
 	}
-	if bytes, ok := data.([]byte); ok {
-		return fromBytes(bytes), nil
-	}
-	if reader, ok := data.(io.Reader); ok {
-		return fromReader(reader), nil
-	}
-	if str, ok := data.(string); ok {
-		return fromBytes([]byte(str)), nil
-	}
-	res, err := fromJsonData(data)
-	if err != nil {
-		return Body{}, fmt.Errorf("request marshal failure: %w", err)
-	}
-	return res, nil
+	return newRequestBody(data)
 }
 
 func orDefault(configured, _default int) int {
