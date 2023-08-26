@@ -65,8 +65,12 @@ func TestSimpleRequestFailsURLError(t *testing.T) {
 			auth := r.Header.Get("Authenticated")
 			assert.Equal(t, "yes", auth)
 			return &http.Response{
-				Request: r,
-			}, fmt.Errorf("nope")
+					Request: r,
+				}, &url.Error{
+					Op:  "GET",
+					URL: "/a/b",
+					Err: fmt.Errorf("nope"),
+				}
 		}),
 		rateLimiter: rate.NewLimiter(rate.Inf, 1),
 	}
