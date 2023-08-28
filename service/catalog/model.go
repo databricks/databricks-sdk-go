@@ -145,6 +145,9 @@ type AzureServicePrincipal struct {
 }
 
 type CatalogInfo struct {
+	// Indicate whether or not the catalog info contains only browsable
+	// metadata.
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The type of the catalog.
 	CatalogType CatalogType `json:"catalog_type,omitempty"`
 	// User-provided free-form text description.
@@ -160,6 +163,8 @@ type CatalogInfo struct {
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
+	// The full name of the catalog. Corresponds with the name field.
+	FullName string `json:"full_name,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
@@ -178,6 +183,12 @@ type CatalogInfo struct {
 	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
 	// remote sharing server.
 	ProviderName string `json:"provider_name,omitempty"`
+	// Status of an asynchronously provisioned resource.
+	ProvisioningInfo ProvisioningInfo `json:"provisioning_info,omitempty"`
+	// Kind of catalog securable.
+	SecurableKind CatalogInfoSecurableKind `json:"securable_kind,omitempty"`
+
+	SecurableType string `json:"securable_type,omitempty"`
 	// The name of the share under the share provider.
 	ShareName string `json:"share_name,omitempty"`
 	// Storage Location URL (full path) for managed tables within catalog.
@@ -188,6 +199,60 @@ type CatalogInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified catalog.
 	UpdatedBy string `json:"updated_by,omitempty"`
+}
+
+// Kind of catalog securable.
+type CatalogInfoSecurableKind string
+
+const CatalogInfoSecurableKindCatalogDeltasharing CatalogInfoSecurableKind = `CATALOG_DELTASHARING`
+
+const CatalogInfoSecurableKindCatalogForeignBigquery CatalogInfoSecurableKind = `CATALOG_FOREIGN_BIGQUERY`
+
+const CatalogInfoSecurableKindCatalogForeignDatabricks CatalogInfoSecurableKind = `CATALOG_FOREIGN_DATABRICKS`
+
+const CatalogInfoSecurableKindCatalogForeignMysql CatalogInfoSecurableKind = `CATALOG_FOREIGN_MYSQL`
+
+const CatalogInfoSecurableKindCatalogForeignPostgresql CatalogInfoSecurableKind = `CATALOG_FOREIGN_POSTGRESQL`
+
+const CatalogInfoSecurableKindCatalogForeignRedshift CatalogInfoSecurableKind = `CATALOG_FOREIGN_REDSHIFT`
+
+const CatalogInfoSecurableKindCatalogForeignSnowflake CatalogInfoSecurableKind = `CATALOG_FOREIGN_SNOWFLAKE`
+
+const CatalogInfoSecurableKindCatalogForeignSqldw CatalogInfoSecurableKind = `CATALOG_FOREIGN_SQLDW`
+
+const CatalogInfoSecurableKindCatalogForeignSqlserver CatalogInfoSecurableKind = `CATALOG_FOREIGN_SQLSERVER`
+
+const CatalogInfoSecurableKindCatalogInternal CatalogInfoSecurableKind = `CATALOG_INTERNAL`
+
+const CatalogInfoSecurableKindCatalogOnline CatalogInfoSecurableKind = `CATALOG_ONLINE`
+
+const CatalogInfoSecurableKindCatalogOnlineIndex CatalogInfoSecurableKind = `CATALOG_ONLINE_INDEX`
+
+const CatalogInfoSecurableKindCatalogStandard CatalogInfoSecurableKind = `CATALOG_STANDARD`
+
+const CatalogInfoSecurableKindCatalogSystem CatalogInfoSecurableKind = `CATALOG_SYSTEM`
+
+const CatalogInfoSecurableKindCatalogSystemDeltasharing CatalogInfoSecurableKind = `CATALOG_SYSTEM_DELTASHARING`
+
+// String representation for [fmt.Print]
+func (f *CatalogInfoSecurableKind) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CatalogInfoSecurableKind) Set(v string) error {
+	switch v {
+	case `CATALOG_DELTASHARING`, `CATALOG_FOREIGN_BIGQUERY`, `CATALOG_FOREIGN_DATABRICKS`, `CATALOG_FOREIGN_MYSQL`, `CATALOG_FOREIGN_POSTGRESQL`, `CATALOG_FOREIGN_REDSHIFT`, `CATALOG_FOREIGN_SNOWFLAKE`, `CATALOG_FOREIGN_SQLDW`, `CATALOG_FOREIGN_SQLSERVER`, `CATALOG_INTERNAL`, `CATALOG_ONLINE`, `CATALOG_ONLINE_INDEX`, `CATALOG_STANDARD`, `CATALOG_SYSTEM`, `CATALOG_SYSTEM_DELTASHARING`:
+		*f = CatalogInfoSecurableKind(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CATALOG_DELTASHARING", "CATALOG_FOREIGN_BIGQUERY", "CATALOG_FOREIGN_DATABRICKS", "CATALOG_FOREIGN_MYSQL", "CATALOG_FOREIGN_POSTGRESQL", "CATALOG_FOREIGN_REDSHIFT", "CATALOG_FOREIGN_SNOWFLAKE", "CATALOG_FOREIGN_SQLDW", "CATALOG_FOREIGN_SQLSERVER", "CATALOG_INTERNAL", "CATALOG_ONLINE", "CATALOG_ONLINE_INDEX", "CATALOG_STANDARD", "CATALOG_SYSTEM", "CATALOG_SYSTEM_DELTASHARING"`, v)
+	}
+}
+
+// Type always returns CatalogInfoSecurableKind to satisfy [pflag.Value] interface
+func (f *CatalogInfoSecurableKind) Type() string {
+	return "CatalogInfoSecurableKind"
 }
 
 // The type of the catalog.
@@ -350,7 +415,7 @@ type ConnectionInfo struct {
 	// connection.
 	Properties map[string]string `json:"properties,omitempty"`
 	// Status of an asynchronously provisioned resource.
-	ProvisioningState ProvisioningState `json:"provisioning_state,omitempty"`
+	ProvisioningInfo ProvisioningInfo `json:"provisioning_info,omitempty"`
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Kind of connection securable.
@@ -452,6 +517,8 @@ type CreateCatalog struct {
 	ConnectionName string `json:"connection_name,omitempty"`
 	// Name of catalog.
 	Name string `json:"name"`
+	// A map of key-value properties attached to the securable.
+	Options map[string]string `json:"options,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
 	// The name of delta sharing provider.
@@ -686,6 +753,20 @@ type CreateMetastoreAssignment struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+type CreateRegisteredModelRequest struct {
+	// The name of the catalog where the schema and the registered model reside
+	CatalogName string `json:"catalog_name"`
+	// The comment attached to the registered model
+	Comment string `json:"comment,omitempty"`
+	// The name of the registered model
+	Name string `json:"name"`
+	// The name of the schema where the registered model resides
+	SchemaName string `json:"schema_name"`
+	// The storage location on the cloud under which model version data files
+	// are stored
+	StorageLocation string `json:"storage_location,omitempty"`
+}
+
 type CreateSchema struct {
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name"`
@@ -852,6 +933,14 @@ type DeleteAccountStorageCredentialRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+// Delete a Registered Model Alias
+type DeleteAliasRequest struct {
+	// The name of the alias
+	Alias string `json:"-" url:"-"`
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"-" url:"-"`
+}
+
 // Delete a catalog
 type DeleteCatalogRequest struct {
 	// Force deletion even if the catalog is not empty.
@@ -889,6 +978,20 @@ type DeleteMetastoreRequest struct {
 	Force bool `json:"-" url:"force,omitempty"`
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
+}
+
+// Delete a Model Version
+type DeleteModelVersionRequest struct {
+	// The three-level (fully qualified) name of the model version
+	FullName string `json:"-" url:"-"`
+	// The integer version number of the model version
+	Version int `json:"-" url:"-"`
+}
+
+// Delete a Registered Model
+type DeleteRegisteredModelRequest struct {
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"-" url:"-"`
 }
 
 // Delete a schema
@@ -1467,6 +1570,14 @@ type GetArtifactAllowlistRequest struct {
 	ArtifactType ArtifactType `json:"-" url:"-"`
 }
 
+// Get Model Version By Alias
+type GetByAliasRequest struct {
+	// The name of the alias
+	Alias string `json:"-" url:"-"`
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"-" url:"-"`
+}
+
 // Get a catalog
 type GetCatalogRequest struct {
 	// The name of the catalog.
@@ -1590,6 +1701,20 @@ func (f *GetMetastoreSummaryResponseDeltaSharingScope) Type() string {
 	return "GetMetastoreSummaryResponseDeltaSharingScope"
 }
 
+// Get a Model Version
+type GetModelVersionRequest struct {
+	// The three-level (fully qualified) name of the model version
+	FullName string `json:"-" url:"-"`
+	// The integer version number of the model version
+	Version int `json:"-" url:"-"`
+}
+
+// Get a Registered Model
+type GetRegisteredModelRequest struct {
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"-" url:"-"`
+}
+
 // Get a schema
 type GetSchemaRequest struct {
 	// Full name of the schema.
@@ -1690,6 +1815,48 @@ type ListMetastoresResponse struct {
 	Metastores []MetastoreInfo `json:"metastores,omitempty"`
 }
 
+// List Model Versions
+type ListModelVersionsRequest struct {
+	// The full three-level name of the registered model under which to list
+	// model versions
+	FullName string `json:"-" url:"-"`
+	// Max number of model versions to return
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque token to send for the next page of results (pagination).
+	PageToken string `json:"-" url:"page_token,omitempty"`
+}
+
+type ListModelVersionsResponse struct {
+	ModelVersions []ModelVersionInfo `json:"model_versions,omitempty"`
+	// Token to retrieve the next page of results
+	NextPageToken string `json:"next_page_token,omitempty"`
+}
+
+// List Registered Models
+type ListRegisteredModelsRequest struct {
+	// The identifier of the catalog under which to list registered models. If
+	// specified, schema_name must be specified.
+	CatalogName string `json:"-" url:"catalog_name,omitempty"`
+	// Max number of registered models to return. If catalog and schema are
+	// unspecified, max_results must be specified. If max_results is
+	// unspecified, we return all results, starting from the page specified by
+	// page_token.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque token to send for the next page of results (pagination).
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The identifier of the schema under which to list registered models. If
+	// specified, catalog_name must be specified.
+	SchemaName string `json:"-" url:"schema_name,omitempty"`
+}
+
+type ListRegisteredModelsResponse struct {
+	// Opaque token for pagination. Omitted if there are no more results.
+	// page_token should be set to this value for fetching the next page.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	RegisteredModels []RegisteredModelInfo `json:"registered_models,omitempty"`
+}
+
 // List schemas
 type ListSchemasRequest struct {
 	// Parent catalog for schemas of interest.
@@ -1701,55 +1868,8 @@ type ListSchemasResponse struct {
 	Schemas []SchemaInfo `json:"schemas,omitempty"`
 }
 
-// Get tags for a securable
-type ListSecurableTagsRequest struct {
-	// The fully qualified name of the unity catalog securable entity.
-	FullName string `json:"-" url:"-"`
-	// The type of the unity catalog securable entity.
-	SecurableType ListSecurableType `json:"-" url:"-"`
-}
-
-type ListSecurableType string
-
-const ListSecurableTypeCatalog ListSecurableType = `catalog`
-
-const ListSecurableTypeSchema ListSecurableType = `schema`
-
-const ListSecurableTypeTable ListSecurableType = `table`
-
-// String representation for [fmt.Print]
-func (f *ListSecurableType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ListSecurableType) Set(v string) error {
-	switch v {
-	case `catalog`, `schema`, `table`:
-		*f = ListSecurableType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "schema", "table"`, v)
-	}
-}
-
-// Type always returns ListSecurableType to satisfy [pflag.Value] interface
-func (f *ListSecurableType) Type() string {
-	return "ListSecurableType"
-}
-
 type ListStorageCredentialsResponse struct {
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
-}
-
-// Get tags for a subentity
-type ListSubentityTagsRequest struct {
-	// The fully qualified name of the unity catalog securable entity.
-	FullName string `json:"-" url:"-"`
-	// The type of the unity catalog securable entity.
-	SecurableType ListSecurableType `json:"-" url:"-"`
-	// The name of subentity associated with the securable entity
-	SubentityName string `json:"-" url:"-"`
 }
 
 // List table summaries
@@ -1930,6 +2050,86 @@ func (f *MetastoreInfoDeltaSharingScope) Type() string {
 	return "MetastoreInfoDeltaSharingScope"
 }
 
+type ModelVersionInfo struct {
+	// The name of the catalog containing the model version
+	CatalogName string `json:"catalog_name,omitempty"`
+	// The comment attached to the model version
+	Comment string `json:"comment,omitempty"`
+
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// The identifier of the user who created the model version
+	CreatedBy string `json:"created_by,omitempty"`
+	// The unique identifier of the model version
+	Id string `json:"id,omitempty"`
+	// The unique identifier of the metastore containing the model version
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// The name of the parent registered model of the model version, relative to
+	// parent schema
+	ModelName string `json:"model_name,omitempty"`
+	// Model version dependencies, for feature-store packaged models
+	ModelVersionDependencies []Dependency `json:"model_version_dependencies,omitempty"`
+	// MLflow run ID used when creating the model version, if ``source`` was
+	// generated by an experiment run stored in an MLflow tracking server
+	RunId string `json:"run_id,omitempty"`
+	// ID of the Databricks workspace containing the MLflow run that generated
+	// this model version, if applicable
+	RunWorkspaceId int `json:"run_workspace_id,omitempty"`
+	// The name of the schema containing the model version, relative to parent
+	// catalog
+	SchemaName string `json:"schema_name,omitempty"`
+	// URI indicating the location of the source artifacts (files) for the model
+	// version
+	Source string `json:"source,omitempty"`
+	// Current status of the model version. Newly created model versions start
+	// in PENDING_REGISTRATION status, then move to READY status once the model
+	// version files are uploaded and the model version is finalized. Only model
+	// versions in READY status can be loaded for inference or served.
+	Status ModelVersionInfoStatus `json:"status,omitempty"`
+	// The storage location on the cloud under which model version data files
+	// are stored
+	StorageLocation string `json:"storage_location,omitempty"`
+
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// The identifier of the user who updated the model version last time
+	UpdatedBy string `json:"updated_by,omitempty"`
+	// Integer model version number, used to reference the model version in API
+	// requests.
+	Version int `json:"version,omitempty"`
+}
+
+// Current status of the model version. Newly created model versions start in
+// PENDING_REGISTRATION status, then move to READY status once the model version
+// files are uploaded and the model version is finalized. Only model versions in
+// READY status can be loaded for inference or served.
+type ModelVersionInfoStatus string
+
+const ModelVersionInfoStatusFailedRegistration ModelVersionInfoStatus = `FAILED_REGISTRATION`
+
+const ModelVersionInfoStatusPendingRegistration ModelVersionInfoStatus = `PENDING_REGISTRATION`
+
+const ModelVersionInfoStatusReady ModelVersionInfoStatus = `READY`
+
+// String representation for [fmt.Print]
+func (f *ModelVersionInfoStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ModelVersionInfoStatus) Set(v string) error {
+	switch v {
+	case `FAILED_REGISTRATION`, `PENDING_REGISTRATION`, `READY`:
+		*f = ModelVersionInfoStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FAILED_REGISTRATION", "PENDING_REGISTRATION", "READY"`, v)
+	}
+}
+
+// Type always returns ModelVersionInfoStatus to satisfy [pflag.Value] interface
+func (f *ModelVersionInfoStatus) Type() string {
+	return "ModelVersionInfoStatus"
+}
+
 type NamedTableConstraint struct {
 	// The name of the constraint.
 	Name string `json:"name"`
@@ -1979,6 +2179,8 @@ const PrivilegeCreateFunction Privilege = `CREATE_FUNCTION`
 const PrivilegeCreateManagedStorage Privilege = `CREATE_MANAGED_STORAGE`
 
 const PrivilegeCreateMaterializedView Privilege = `CREATE_MATERIALIZED_VIEW`
+
+const PrivilegeCreateModel Privilege = `CREATE_MODEL`
 
 const PrivilegeCreateProvider Privilege = `CREATE_PROVIDER`
 
@@ -2036,11 +2238,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
+	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
 	}
 }
 
@@ -2060,43 +2262,83 @@ type PrivilegeAssignment struct {
 type PropertiesKvPairs map[string]string
 
 // Status of an asynchronously provisioned resource.
-type ProvisioningState string
+type ProvisioningInfo string
 
-const ProvisioningStateActive ProvisioningState = `ACTIVE`
+const ProvisioningInfoActive ProvisioningInfo = `ACTIVE`
 
-const ProvisioningStateDeleting ProvisioningState = `DELETING`
+const ProvisioningInfoDeleting ProvisioningInfo = `DELETING`
 
-const ProvisioningStateFailed ProvisioningState = `FAILED`
+const ProvisioningInfoFailed ProvisioningInfo = `FAILED`
 
-const ProvisioningStateProvisioning ProvisioningState = `PROVISIONING`
+const ProvisioningInfoProvisioning ProvisioningInfo = `PROVISIONING`
 
-const ProvisioningStateStateUnspecified ProvisioningState = `STATE_UNSPECIFIED`
+const ProvisioningInfoStateUnspecified ProvisioningInfo = `STATE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
-func (f *ProvisioningState) String() string {
+func (f *ProvisioningInfo) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *ProvisioningState) Set(v string) error {
+func (f *ProvisioningInfo) Set(v string) error {
 	switch v {
 	case `ACTIVE`, `DELETING`, `FAILED`, `PROVISIONING`, `STATE_UNSPECIFIED`:
-		*f = ProvisioningState(v)
+		*f = ProvisioningInfo(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETING", "FAILED", "PROVISIONING", "STATE_UNSPECIFIED"`, v)
 	}
 }
 
-// Type always returns ProvisioningState to satisfy [pflag.Value] interface
-func (f *ProvisioningState) Type() string {
-	return "ProvisioningState"
+// Type always returns ProvisioningInfo to satisfy [pflag.Value] interface
+func (f *ProvisioningInfo) Type() string {
+	return "ProvisioningInfo"
 }
 
 // Get a Volume
 type ReadVolumeRequest struct {
 	// The three-level (fully qualified) name of the volume
 	FullNameArg string `json:"-" url:"-"`
+}
+
+// Registered model alias.
+type RegisteredModelAlias struct {
+	// Name of the alias, e.g. 'champion' or 'latest_stable'
+	AliasName string `json:"alias_name,omitempty"`
+	// Integer version number of the model version to which this alias points.
+	VersionNum int `json:"version_num,omitempty"`
+}
+
+type RegisteredModelInfo struct {
+	// List of aliases associated with the registered model
+	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
+	// The name of the catalog where the schema and the registered model reside
+	CatalogName string `json:"catalog_name,omitempty"`
+	// The comment attached to the registered model
+	Comment string `json:"comment,omitempty"`
+	// Creation timestamp of the registered model in milliseconds since the Unix
+	// epoch
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// The identifier of the user who created the registered model
+	CreatedBy string `json:"created_by,omitempty"`
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"full_name,omitempty"`
+	// The unique identifier of the metastore
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// The name of the registered model
+	Name string `json:"name,omitempty"`
+	// The identifier of the user who owns the registered model
+	Owner string `json:"owner,omitempty"`
+	// The name of the schema where the registered model resides
+	SchemaName string `json:"schema_name,omitempty"`
+	// The storage location on the cloud under which model version data files
+	// are stored
+	StorageLocation string `json:"storage_location,omitempty"`
+	// Last-update timestamp of the registered model in milliseconds since the
+	// Unix epoch
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// The identifier of the user who updated the registered model last time
+	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
 type SchemaInfo struct {
@@ -2193,6 +2435,15 @@ type SetArtifactAllowlist struct {
 	ArtifactMatchers ArtifactMatcher `json:"artifact_matchers"`
 	// The artifact type of the allowlist.
 	ArtifactType ArtifactType `json:"-" url:"-"`
+}
+
+type SetRegisteredModelAliasRequest struct {
+	// The name of the alias
+	Alias string `json:"alias" url:"-"`
+	// Full name of the registered model
+	FullName string `json:"full_name" url:"-"`
+	// The version number of the model version to which the alias points
+	VersionNum int `json:"version_num"`
 }
 
 // Server-Side Encryption properties for clients communicating with AWS s3.
@@ -2453,62 +2704,6 @@ func (f *TableType) Type() string {
 	return "TableType"
 }
 
-type TagChanges struct {
-	// Tags to add for the current entity
-	AddTags []TagKeyValuePair `json:"add_tags,omitempty"`
-	// Tags to remove for the current entity
-	Remove []string `json:"remove,omitempty"`
-}
-
-type TagKeyValuePair struct {
-	// Tag key name
-	Key string `json:"key"`
-	// Tag value
-	Value string `json:"value"`
-}
-
-type TagSecurable struct {
-	// Name of the securable entity
-	FullName string `json:"full_name"`
-	// Type of the securable entity
-	Type string `json:"type"`
-}
-
-type TagSecurableAssignment struct {
-	// Securable entity associated with the tagging information
-	Securable TagSecurable `json:"securable"`
-	// tag assignments containing keys and values for the securable entity
-	TagKeyValuePairs []TagKeyValuePair `json:"tag_key_value_pairs"`
-}
-
-type TagSecurableAssignmentsList struct {
-	// An array of tag assignments on a securable
-	TagAssignments []TagSecurableAssignment `json:"tag_assignments"`
-}
-
-type TagSubentity struct {
-	// Name of the securable entity
-	FullName string `json:"full_name"`
-	// Name of the subentity
-	Subentity string `json:"subentity"`
-	// Type of the securable entity
-	Type string `json:"type"`
-}
-
-type TagSubentityAssignmentsList struct {
-	// An array of subentity tag assignments on a subentity
-	TagAssignments []TagsSubentityAssignment `json:"tag_assignments"`
-}
-
-type TagsSubentityAssignment struct {
-	// Subentity associated with the tagging information
-	Securable TagSubentity `json:"securable"`
-	// Name of the subentity
-	Subentity string `json:"subentity"`
-	// tag assignments containing keys and values for the securable entity
-	TagKeyValuePairs []TagKeyValuePair `json:"tag_key_value_pairs"`
-}
-
 // Delete an assignment
 type UnassignRequest struct {
 	// Query for the ID of the metastore to delete.
@@ -2525,6 +2720,8 @@ type UpdateCatalog struct {
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of catalog.
 	Name string `json:"name,omitempty" url:"-"`
+	// A map of key-value properties attached to the securable.
+	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of catalog.
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
@@ -2628,6 +2825,15 @@ func (f *UpdateMetastoreDeltaSharingScope) Type() string {
 	return "UpdateMetastoreDeltaSharingScope"
 }
 
+type UpdateModelVersionRequest struct {
+	// The comment attached to the model version
+	Comment string `json:"comment,omitempty"`
+	// The three-level (fully qualified) name of the model version
+	FullName string `json:"-" url:"-"`
+	// The integer version number of the model version
+	Version int `json:"-" url:"-"`
+}
+
 type UpdatePermissions struct {
 	// Array of permissions change objects.
 	Changes []PermissionsChange `json:"changes,omitempty"`
@@ -2654,6 +2860,17 @@ type UpdatePredictiveOptimizationResponse struct {
 	Username string `json:"username,omitempty"`
 }
 
+type UpdateRegisteredModelRequest struct {
+	// The comment attached to the registered model
+	Comment string `json:"comment,omitempty"`
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"-" url:"-"`
+	// The name of the registered model
+	Name string `json:"name,omitempty"`
+	// The identifier of the user who owns the registered model
+	Owner string `json:"owner,omitempty"`
+}
+
 type UpdateSchema struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -2665,35 +2882,6 @@ type UpdateSchema struct {
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
-}
-
-type UpdateSecurableType string
-
-const UpdateSecurableTypeCatalog UpdateSecurableType = `catalog`
-
-const UpdateSecurableTypeSchema UpdateSecurableType = `schema`
-
-const UpdateSecurableTypeTable UpdateSecurableType = `table`
-
-// String representation for [fmt.Print]
-func (f *UpdateSecurableType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *UpdateSecurableType) Set(v string) error {
-	switch v {
-	case `catalog`, `schema`, `table`:
-		*f = UpdateSecurableType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "schema", "table"`, v)
-	}
-}
-
-// Type always returns UpdateSecurableType to satisfy [pflag.Value] interface
-func (f *UpdateSecurableType) Type() string {
-	return "UpdateSecurableType"
 }
 
 type UpdateStorageCredential struct {
@@ -2727,17 +2915,6 @@ type UpdateTableRequest struct {
 	FullName string `json:"-" url:"-"`
 
 	Owner string `json:"owner,omitempty"`
-}
-
-type UpdateTags struct {
-	// Desired changes to be made to the tag assignments on the entity
-	Changes TagChanges `json:"changes"`
-	// The fully qualified name of the unity catalog securable entity.
-	FullName string `json:"-" url:"-"`
-	// The type of the unity catalog securable entity.
-	SecurableType UpdateSecurableType `json:"-" url:"-"`
-	// The name of subentity associated with the securable entity
-	SubentityName string `json:"-" url:"-"`
 }
 
 type UpdateVolumeRequestContent struct {

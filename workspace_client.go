@@ -23,8 +23,6 @@ import (
 type WorkspaceClient struct {
 	Config *config.Config
 
-	Files *files.FilesAPI
-
 	// These APIs manage access rules on resources in an account. Currently,
 	// only grant rules are supported. A grant rule specifies a role assigned to
 	// a set of principals. A list of rules attached to a resource is called a
@@ -204,6 +202,10 @@ type WorkspaceClient struct {
 	// with the **CREATE_EXTERNAL_LOCATION** privilege.
 	ExternalLocations *catalog.ExternalLocationsAPI
 
+	// The Files API allows you to read, write, and delete files and directories
+	// in Unity Catalog volumes.
+	Files *files.FilesAPI
+
 	// Functions implement User-Defined Functions (UDFs) in Unity Catalog.
 	//
 	// The function implementation can be any SQL expression or Query, and it
@@ -371,6 +373,16 @@ type WorkspaceClient struct {
 	// of APIs that enable you to manage the full lifecycle of MLflow Models.
 	ModelRegistry *ml.ModelRegistryAPI
 
+	// Databricks provides a hosted version of MLflow Model Registry in Unity
+	// Catalog. Models in Unity Catalog provide centralized access control,
+	// auditing, lineage, and discovery of ML models across Databricks
+	// workspaces.
+	//
+	// This API reference documents the REST endpoints for managing model
+	// versions in Unity Catalog. For more details, see the [registered models
+	// API docs](/api/workspace/registeredmodels).
+	ModelVersions *catalog.ModelVersionsAPI
+
 	// Permissions API are used to create read, write, edit, update and manage
 	// access for various users on different objects and endpoints.
 	//
@@ -494,6 +506,39 @@ type WorkspaceClient struct {
 	// shared data. This sharing mode is called **open sharing**.
 	Recipients *sharing.RecipientsAPI
 
+	// Databricks provides a hosted version of MLflow Model Registry in Unity
+	// Catalog. Models in Unity Catalog provide centralized access control,
+	// auditing, lineage, and discovery of ML models across Databricks
+	// workspaces.
+	//
+	// An MLflow registered model resides in the third layer of Unity
+	// Catalog’s three-level namespace. Registered models contain model
+	// versions, which correspond to actual ML models (MLflow models). Creating
+	// new model versions currently requires use of the MLflow Python client.
+	// Once model versions are created, you can load them for batch inference
+	// using MLflow Python client APIs, or deploy them for real-time serving
+	// using Databricks Model Serving.
+	//
+	// All operations on registered models and model versions require
+	// USE_CATALOG permissions on the enclosing catalog and USE_SCHEMA
+	// permissions on the enclosing schema. In addition, the following
+	// additional privileges are required for various operations:
+	//
+	// * To create a registered model, users must additionally have the
+	// CREATE_MODEL permission on the target schema. * To view registered model
+	// or model version metadata, model version data files, or invoke a model
+	// version, users must additionally have the EXECUTE permission on the
+	// registered model * To update registered model or model version tags,
+	// users must additionally have APPLY TAG permissions on the registered
+	// model * To update other registered model or model version metadata
+	// (comments, aliases) create a new model version, or update permissions on
+	// the registered model, users must be owners of the registered model.
+	//
+	// Note: The securable type for models is "FUNCTION". When using REST APIs
+	// (e.g. tagging, grants) that specify a securable type, use "FUNCTION" as
+	// the securable type.
+	RegisteredModels *catalog.RegisteredModelsAPI
+
 	// The Repos API allows users to manage their git repos. Users can use the
 	// API to access all repos that they have manage permissions on.
 	//
@@ -527,12 +572,6 @@ type WorkspaceClient struct {
 	// values that might be displayed in notebooks, it is not possible to
 	// prevent such users from reading secrets.
 	Secrets *workspace.SecretsAPI
-
-	// Tags are attributes containing keys and values that can be applied to
-	// different entities in Unity Catalog. Tags are useful for organizing and
-	// categorizing different entities within a metastore. SecurableTags are
-	// attached to Unity Catalog securable entities.
-	SecurableTags *catalog.SecurableTagsAPI
 
 	// Identities for use with jobs, automated tools, and systems such as
 	// scripts, apps, and CI/CD platforms. Databricks recommends creating
@@ -772,12 +811,6 @@ type WorkspaceClient struct {
 	// ownership to another user or group to manage permissions on it.
 	StorageCredentials *catalog.StorageCredentialsAPI
 
-	// Tags are attributes containing keys and values that can be applied to
-	// different entities in Unity Catalog. Tags are useful for organizing and
-	// categorizing different entities within a metastore. SubentityTags are
-	// attached to Unity Catalog subentities.
-	SubentityTags *catalog.SubentityTagsAPI
-
 	// A system schema is a schema that lives within the system catalog. A
 	// system schema may contain information about customer usage of Unity
 	// Catalog such as audit-logs, billing-logs, lineage information, etc.
@@ -886,7 +919,6 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	}
 	return &WorkspaceClient{
 		Config: cfg,
-		Files:  files.NewFiles(apiClient),
 
 		AccountAccessControlProxy: iam.NewAccountAccessControlProxy(apiClient),
 		Alerts:                    sql.NewAlerts(apiClient),
@@ -904,6 +936,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		DbsqlPermissions:          sql.NewDbsqlPermissions(apiClient),
 		Experiments:               ml.NewExperiments(apiClient),
 		ExternalLocations:         catalog.NewExternalLocations(apiClient),
+		Files:                     files.NewFiles(apiClient),
 		Functions:                 catalog.NewFunctions(apiClient),
 		GitCredentials:            workspace.NewGitCredentials(apiClient),
 		GlobalInitScripts:         compute.NewGlobalInitScripts(apiClient),
@@ -916,6 +949,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Libraries:                 compute.NewLibraries(apiClient),
 		Metastores:                catalog.NewMetastores(apiClient),
 		ModelRegistry:             ml.NewModelRegistry(apiClient),
+		ModelVersions:             catalog.NewModelVersions(apiClient),
 		Permissions:               iam.NewPermissions(apiClient),
 		Pipelines:                 pipelines.NewPipelines(apiClient),
 		PolicyFamilies:            compute.NewPolicyFamilies(apiClient),
@@ -924,16 +958,15 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		QueryHistory:              sql.NewQueryHistory(apiClient),
 		RecipientActivation:       sharing.NewRecipientActivation(apiClient),
 		Recipients:                sharing.NewRecipients(apiClient),
+		RegisteredModels:          catalog.NewRegisteredModels(apiClient),
 		Repos:                     workspace.NewRepos(apiClient),
 		Schemas:                   catalog.NewSchemas(apiClient),
 		Secrets:                   workspace.NewSecrets(apiClient),
-		SecurableTags:             catalog.NewSecurableTags(apiClient),
 		ServicePrincipals:         iam.NewServicePrincipals(apiClient),
 		ServingEndpoints:          serving.NewServingEndpoints(apiClient),
 		Shares:                    sharing.NewShares(apiClient),
 		StatementExecution:        sql.NewStatementExecution(apiClient),
 		StorageCredentials:        catalog.NewStorageCredentials(apiClient),
-		SubentityTags:             catalog.NewSubentityTags(apiClient),
 		SystemSchemas:             catalog.NewSystemSchemas(apiClient),
 		TableConstraints:          catalog.NewTableConstraints(apiClient),
 		Tables:                    catalog.NewTables(apiClient),

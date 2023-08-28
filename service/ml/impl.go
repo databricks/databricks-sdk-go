@@ -72,22 +72,22 @@ func (a *experimentsImpl) DeleteTag(ctx context.Context, request DeleteTag) erro
 	return err
 }
 
-func (a *experimentsImpl) GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error) {
-	var getExperimentByNameResponse GetExperimentByNameResponse
+func (a *experimentsImpl) GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentResponse, error) {
+	var getExperimentResponse GetExperimentResponse
 	path := "/api/2.0/mlflow/experiments/get-by-name"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getExperimentByNameResponse)
-	return &getExperimentByNameResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getExperimentResponse)
+	return &getExperimentResponse, err
 }
 
-func (a *experimentsImpl) GetExperiment(ctx context.Context, request GetExperimentRequest) (*Experiment, error) {
-	var experiment Experiment
+func (a *experimentsImpl) GetExperiment(ctx context.Context, request GetExperimentRequest) (*GetExperimentResponse, error) {
+	var getExperimentResponse GetExperimentResponse
 	path := "/api/2.0/mlflow/experiments/get"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &experiment)
-	return &experiment, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getExperimentResponse)
+	return &getExperimentResponse, err
 }
 
 func (a *experimentsImpl) GetExperimentPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {

@@ -2,6 +2,10 @@
 
 package files
 
+import (
+	"io"
+)
+
 // all definitions in this file are in alphabetical order
 
 type AddBlock struct {
@@ -39,14 +43,30 @@ type Delete struct {
 	Recursive bool `json:"recursive,omitempty"`
 }
 
+// Delete a file or directory
+type DeleteFileRequest struct {
+	// The absolute path of the file or directory in DBFS.
+	FilePath string `json:"-" url:"-"`
+}
+
+// Download a file
+type DownloadRequest struct {
+	// The absolute path of the file or directory in DBFS.
+	FilePath string `json:"-" url:"-"`
+}
+
+type DownloadResponse struct {
+	Contents io.ReadCloser `json:"-"`
+}
+
 type FileInfo struct {
-	// The length of the file in bytes or zero if the path is a directory.
+	// The length of the file in bytes. This field is omitted for directories.
 	FileSize int64 `json:"file_size,omitempty"`
 	// True if the path is a directory.
 	IsDir bool `json:"is_dir,omitempty"`
-	// Last modification time of given file/dir in milliseconds since Epoch.
+	// Last modification time of given file in milliseconds since epoch.
 	ModificationTime int64 `json:"modification_time,omitempty"`
-	// The path of the file or directory.
+	// The absolute path of the file or directory.
 	Path string `json:"path,omitempty"`
 }
 
@@ -111,4 +131,13 @@ type ReadResponse struct {
 	BytesRead int64 `json:"bytes_read,omitempty"`
 	// The base64-encoded contents of the file read.
 	Data string `json:"data,omitempty"`
+}
+
+// Upload a file
+type UploadRequest struct {
+	Contents io.ReadCloser `json:"-"`
+	// The absolute path of the file or directory in DBFS.
+	FilePath string `json:"-" url:"-"`
+	// If true, an existing file will be overwritten.
+	Overwrite bool `json:"-" url:"overwrite,omitempty"`
 }

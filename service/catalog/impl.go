@@ -142,13 +142,13 @@ func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAcco
 	return &accountsStorageCredentialInfo, err
 }
 
-func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListStorageCredentialsResponse, error) {
-	var listStorageCredentialsResponse ListStorageCredentialsResponse
+func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error) {
+	var storageCredentialInfoList []StorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listStorageCredentialsResponse)
-	return &listStorageCredentialsResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &storageCredentialInfoList)
+	return storageCredentialInfoList, err
 }
 
 func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error) {
@@ -527,6 +527,122 @@ func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMet
 	return err
 }
 
+// unexported type that holds implementations of just ModelVersions API methods
+type modelVersionsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *modelVersionsImpl) Delete(ctx context.Context, request DeleteModelVersionRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	return err
+}
+
+func (a *modelVersionsImpl) Get(ctx context.Context, request GetModelVersionRequest) (*RegisteredModelInfo, error) {
+	var registeredModelInfo RegisteredModelInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &registeredModelInfo)
+	return &registeredModelInfo, err
+}
+
+func (a *modelVersionsImpl) GetByAlias(ctx context.Context, request GetByAliasRequest) (*ModelVersionInfo, error) {
+	var modelVersionInfo ModelVersionInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/aliases/%v", request.FullName, request.Alias)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &modelVersionInfo)
+	return &modelVersionInfo, err
+}
+
+func (a *modelVersionsImpl) List(ctx context.Context, request ListModelVersionsRequest) (*ListModelVersionsResponse, error) {
+	var listModelVersionsResponse ListModelVersionsResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions", request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listModelVersionsResponse)
+	return &listModelVersionsResponse, err
+}
+
+func (a *modelVersionsImpl) Update(ctx context.Context, request UpdateModelVersionRequest) (*ModelVersionInfo, error) {
+	var modelVersionInfo ModelVersionInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &modelVersionInfo)
+	return &modelVersionInfo, err
+}
+
+// unexported type that holds implementations of just RegisteredModels API methods
+type registeredModelsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *registeredModelsImpl) Create(ctx context.Context, request CreateRegisteredModelRequest) (*RegisteredModelInfo, error) {
+	var registeredModelInfo RegisteredModelInfo
+	path := "/api/2.1/unity-catalog/models"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &registeredModelInfo)
+	return &registeredModelInfo, err
+}
+
+func (a *registeredModelsImpl) Delete(ctx context.Context, request DeleteRegisteredModelRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", request.FullName)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	return err
+}
+
+func (a *registeredModelsImpl) DeleteAlias(ctx context.Context, request DeleteAliasRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/aliases/%v", request.FullName, request.Alias)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	return err
+}
+
+func (a *registeredModelsImpl) Get(ctx context.Context, request GetRegisteredModelRequest) (*RegisteredModelInfo, error) {
+	var registeredModelInfo RegisteredModelInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &registeredModelInfo)
+	return &registeredModelInfo, err
+}
+
+func (a *registeredModelsImpl) List(ctx context.Context, request ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error) {
+	var listRegisteredModelsResponse ListRegisteredModelsResponse
+	path := "/api/2.1/unity-catalog/models"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listRegisteredModelsResponse)
+	return &listRegisteredModelsResponse, err
+}
+
+func (a *registeredModelsImpl) SetAlias(ctx context.Context, request SetRegisteredModelAliasRequest) (*RegisteredModelAlias, error) {
+	var registeredModelAlias RegisteredModelAlias
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/aliases/%v", request.FullName, request.Alias)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &registeredModelAlias)
+	return &registeredModelAlias, err
+}
+
+func (a *registeredModelsImpl) Update(ctx context.Context, request UpdateRegisteredModelRequest) (*RegisteredModelInfo, error) {
+	var registeredModelInfo RegisteredModelInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", request.FullName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &registeredModelInfo)
+	return &registeredModelInfo, err
+}
+
 // unexported type that holds implementations of just Schemas API methods
 type schemasImpl struct {
 	client *client.DatabricksClient
@@ -576,30 +692,6 @@ func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*Schema
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &schemaInfo)
 	return &schemaInfo, err
-}
-
-// unexported type that holds implementations of just SecurableTags API methods
-type securableTagsImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *securableTagsImpl) List(ctx context.Context, request ListSecurableTagsRequest) (*TagSecurableAssignmentsList, error) {
-	var tagSecurableAssignmentsList TagSecurableAssignmentsList
-	path := fmt.Sprintf("/api/2.1/unity-catalog/securable-tags/%v/%v", request.SecurableType, request.FullName)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &tagSecurableAssignmentsList)
-	return &tagSecurableAssignmentsList, err
-}
-
-func (a *securableTagsImpl) Update(ctx context.Context, request UpdateTags) (*TagSecurableAssignmentsList, error) {
-	var tagSecurableAssignmentsList TagSecurableAssignmentsList
-	path := fmt.Sprintf("/api/2.1/unity-catalog/securable-tags/%v/%v", request.SecurableType, request.FullName)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &tagSecurableAssignmentsList)
-	return &tagSecurableAssignmentsList, err
 }
 
 // unexported type that holds implementations of just StorageCredentials API methods
@@ -661,30 +753,6 @@ func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateS
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &validateStorageCredentialResponse)
 	return &validateStorageCredentialResponse, err
-}
-
-// unexported type that holds implementations of just SubentityTags API methods
-type subentityTagsImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *subentityTagsImpl) List(ctx context.Context, request ListSubentityTagsRequest) (*TagSubentityAssignmentsList, error) {
-	var tagSubentityAssignmentsList TagSubentityAssignmentsList
-	path := fmt.Sprintf("/api/2.1/unity-catalog/subentity-tags/%v/%v/%v", request.SecurableType, request.FullName, request.SubentityName)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &tagSubentityAssignmentsList)
-	return &tagSubentityAssignmentsList, err
-}
-
-func (a *subentityTagsImpl) Update(ctx context.Context, request UpdateTags) (*TagSubentityAssignmentsList, error) {
-	var tagSubentityAssignmentsList TagSubentityAssignmentsList
-	path := fmt.Sprintf("/api/2.1/unity-catalog/subentity-tags/%v/%v/%v", request.SecurableType, request.FullName, request.SubentityName)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &tagSubentityAssignmentsList)
-	return &tagSubentityAssignmentsList, err
 }
 
 // unexported type that holds implementations of just SystemSchemas API methods

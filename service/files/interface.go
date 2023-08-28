@@ -135,3 +135,28 @@ type DbfsService interface {
 	// contents until the end of file.",
 	Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error)
 }
+
+// The Files API allows you to read, write, and delete files and directories in
+// Unity Catalog volumes.
+type FilesService interface {
+
+	// Delete a file or directory.
+	//
+	// Deletes a file or directory.
+	Delete(ctx context.Context, request DeleteFileRequest) error
+
+	// Download a file.
+	//
+	// Downloads a file of up to 2 GiB.
+	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
+
+	// Get file or directory status.
+	//
+	// Returns the status of a file or directory.
+	GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error)
+
+	// Upload a file.
+	//
+	// Uploads a file of up to 2 GiB.
+	Upload(ctx context.Context, request UploadRequest) error
+}

@@ -64,6 +64,8 @@ type AccountMetastoresService interface {
 	//
 	// Gets all Unity Catalog metastores associated with an account specified by
 	// ID.
+	//
+	// Use ListAll() to get all MetastoreInfo instances
 	List(ctx context.Context) (*ListMetastoresResponse, error)
 
 	// Update a metastore.
@@ -104,7 +106,7 @@ type AccountStorageCredentialsService interface {
 	//
 	// Gets a list of all storage credentials that have been assigned to given
 	// metastore.
-	List(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListStorageCredentialsResponse, error)
+	List(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error)
 
 	// Updates a storage credential.
 	//
@@ -462,6 +464,200 @@ type MetastoresService interface {
 	UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error
 }
 
+// Databricks provides a hosted version of MLflow Model Registry in Unity
+// Catalog. Models in Unity Catalog provide centralized access control,
+// auditing, lineage, and discovery of ML models across Databricks workspaces.
+//
+// This API reference documents the REST endpoints for managing model versions
+// in Unity Catalog. For more details, see the [registered models API
+// docs](/api/workspace/registeredmodels).
+type ModelVersionsService interface {
+
+	// Delete a Model Version.
+	//
+	// Deletes a model version from the specified registered model. Any aliases
+	// assigned to the model version will also be deleted.
+	//
+	// The caller must be a metastore admin or an owner of the parent registered
+	// model. For the latter case, the caller must also be the owner or have the
+	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+	// privilege on the parent schema.
+	Delete(ctx context.Context, request DeleteModelVersionRequest) error
+
+	// Get a Model Version.
+	//
+	// Get a model version.
+	//
+	// The caller must be a metastore admin or an owner of (or have the
+	// **EXECUTE** privilege on) the parent registered model. For the latter
+	// case, the caller must also be the owner or have the **USE_CATALOG**
+	// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+	// parent schema.
+	Get(ctx context.Context, request GetModelVersionRequest) (*RegisteredModelInfo, error)
+
+	// Get Model Version By Alias.
+	//
+	// Get a model version by alias.
+	//
+	// The caller must be a metastore admin or an owner of (or have the
+	// **EXECUTE** privilege on) the registered model. For the latter case, the
+	// caller must also be the owner or have the **USE_CATALOG** privilege on
+	// the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+	GetByAlias(ctx context.Context, request GetByAliasRequest) (*ModelVersionInfo, error)
+
+	// List Model Versions.
+	//
+	// List model versions. You can list model versions under a particular
+	// schema, or list all model versions in the current metastore.
+	//
+	// The returned models are filtered based on the privileges of the calling
+	// user. For example, the metastore admin is able to list all the model
+	// versions. A regular user needs to be the owner or have the **EXECUTE**
+	// privilege on the parent registered model to recieve the model versions in
+	// the response. For the latter case, the caller must also be the owner or
+	// have the **USE_CATALOG** privilege on the parent catalog and the
+	// **USE_SCHEMA** privilege on the parent schema.
+	//
+	// There is no guarantee of a specific ordering of the elements in the
+	// response.
+	//
+	// Use ListAll() to get all ModelVersionInfo instances, which will iterate over every result page.
+	List(ctx context.Context, request ListModelVersionsRequest) (*ListModelVersionsResponse, error)
+
+	// Update a Model Version.
+	//
+	// Updates the specified model version.
+	//
+	// The caller must be a metastore admin or an owner of the parent registered
+	// model. For the latter case, the caller must also be the owner or have the
+	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+	// privilege on the parent schema.
+	//
+	// Currently only the comment of the model version can be updated.
+	Update(ctx context.Context, request UpdateModelVersionRequest) (*ModelVersionInfo, error)
+}
+
+// Databricks provides a hosted version of MLflow Model Registry in Unity
+// Catalog. Models in Unity Catalog provide centralized access control,
+// auditing, lineage, and discovery of ML models across Databricks workspaces.
+//
+// An MLflow registered model resides in the third layer of Unity Catalog’s
+// three-level namespace. Registered models contain model versions, which
+// correspond to actual ML models (MLflow models). Creating new model versions
+// currently requires use of the MLflow Python client. Once model versions are
+// created, you can load them for batch inference using MLflow Python client
+// APIs, or deploy them for real-time serving using Databricks Model Serving.
+//
+// All operations on registered models and model versions require USE_CATALOG
+// permissions on the enclosing catalog and USE_SCHEMA permissions on the
+// enclosing schema. In addition, the following additional privileges are
+// required for various operations:
+//
+// * To create a registered model, users must additionally have the CREATE_MODEL
+// permission on the target schema. * To view registered model or model version
+// metadata, model version data files, or invoke a model version, users must
+// additionally have the EXECUTE permission on the registered model * To update
+// registered model or model version tags, users must additionally have APPLY
+// TAG permissions on the registered model * To update other registered model or
+// model version metadata (comments, aliases) create a new model version, or
+// update permissions on the registered model, users must be owners of the
+// registered model.
+//
+// Note: The securable type for models is "FUNCTION". When using REST APIs (e.g.
+// tagging, grants) that specify a securable type, use "FUNCTION" as the
+// securable type.
+type RegisteredModelsService interface {
+
+	// Create a Registered Model.
+	//
+	// Creates a new registered model in Unity Catalog.
+	//
+	// File storage for model versions in the registered model will be located
+	// in the default location which is specified by the parent schema, or the
+	// parent catalog, or the Metastore.
+	//
+	// For registered model creation to succeed, the user must satisfy the
+	// following conditions: - The caller must be a metastore admin, or be the
+	// owner of the parent catalog and schema, or have the **USE_CATALOG**
+	// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+	// parent schema. - The caller must have the **CREATE MODEL** or **CREATE
+	// FUNCTION** privilege on the parent schema.
+	Create(ctx context.Context, request CreateRegisteredModelRequest) (*RegisteredModelInfo, error)
+
+	// Delete a Registered Model.
+	//
+	// Deletes a registered model and all its model versions from the specified
+	// parent catalog and schema.
+	//
+	// The caller must be a metastore admin or an owner of the registered model.
+	// For the latter case, the caller must also be the owner or have the
+	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+	// privilege on the parent schema.
+	Delete(ctx context.Context, request DeleteRegisteredModelRequest) error
+
+	// Delete a Registered Model Alias.
+	//
+	// Deletes a registered model alias.
+	//
+	// The caller must be a metastore admin or an owner of the registered model.
+	// For the latter case, the caller must also be the owner or have the
+	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+	// privilege on the parent schema.
+	DeleteAlias(ctx context.Context, request DeleteAliasRequest) error
+
+	// Get a Registered Model.
+	//
+	// Get a registered model.
+	//
+	// The caller must be a metastore admin or an owner of (or have the
+	// **EXECUTE** privilege on) the registered model. For the latter case, the
+	// caller must also be the owner or have the **USE_CATALOG** privilege on
+	// the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+	Get(ctx context.Context, request GetRegisteredModelRequest) (*RegisteredModelInfo, error)
+
+	// List Registered Models.
+	//
+	// List registered models. You can list registered models under a particular
+	// schema, or list all registered models in the current metastore.
+	//
+	// The returned models are filtered based on the privileges of the calling
+	// user. For example, the metastore admin is able to list all the registered
+	// models. A regular user needs to be the owner or have the **EXECUTE**
+	// privilege on the registered model to recieve the registered models in the
+	// response. For the latter case, the caller must also be the owner or have
+	// the **USE_CATALOG** privilege on the parent catalog and the
+	// **USE_SCHEMA** privilege on the parent schema.
+	//
+	// There is no guarantee of a specific ordering of the elements in the
+	// response.
+	//
+	// Use ListAll() to get all RegisteredModelInfo instances, which will iterate over every result page.
+	List(ctx context.Context, request ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error)
+
+	// Set a Registered Model Alias.
+	//
+	// Set an alias on the specified registered model.
+	//
+	// The caller must be a metastore admin or an owner of the registered model.
+	// For the latter case, the caller must also be the owner or have the
+	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+	// privilege on the parent schema.
+	SetAlias(ctx context.Context, request SetRegisteredModelAliasRequest) (*RegisteredModelAlias, error)
+
+	// Update a Registered Model.
+	//
+	// Updates the specified registered model.
+	//
+	// The caller must be a metastore admin or an owner of the registered model.
+	// For the latter case, the caller must also be the owner or have the
+	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
+	// privilege on the parent schema.
+	//
+	// Currently only the name, the owner or the comment of the registered model
+	// can be updated.
+	Update(ctx context.Context, request UpdateRegisteredModelRequest) (*RegisteredModelInfo, error)
+}
+
 // A schema (also called a database) is the second layer of Unity Catalog’s
 // three-level namespace. A schema organizes tables, views and functions. To
 // access (or list) a table or view in a schema, users must have the USE_SCHEMA
@@ -509,29 +705,6 @@ type SchemasService interface {
 	// be updated, the caller must be a metastore admin or have the
 	// **CREATE_SCHEMA** privilege on the parent catalog.
 	Update(ctx context.Context, request UpdateSchema) (*SchemaInfo, error)
-}
-
-// Tags are attributes containing keys and values that can be applied to
-// different entities in Unity Catalog. Tags are useful for organizing and
-// categorizing different entities within a metastore. SecurableTags are
-// attached to Unity Catalog securable entities.
-type SecurableTagsService interface {
-
-	// Get tags for a securable.
-	//
-	// Gets tag assignments for an entity. The caller must be either the owner
-	// of the securable, or a metastore admin, or have at least USE / SELECT
-	// privilege on the associated securable.
-	//
-	// Use ListAll() to get all TagSecurableAssignment instances
-	List(ctx context.Context, request ListSecurableTagsRequest) (*TagSecurableAssignmentsList, error)
-
-	// Update tags for a securable.
-	//
-	// Update tag assignments for an entity The caller must be either the owner
-	// of the securable, or a metastore admin, or have at least USE / SELECT and
-	// APPLY_TAG privilege on the associated securable.
-	Update(ctx context.Context, request UpdateTags) (*TagSecurableAssignmentsList, error)
 }
 
 // A storage credential represents an authentication and authorization mechanism
@@ -610,31 +783,6 @@ type StorageCredentialsService interface {
 	// have the **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the
 	// storage credential.
 	Validate(ctx context.Context, request ValidateStorageCredential) (*ValidateStorageCredentialResponse, error)
-}
-
-// Tags are attributes containing keys and values that can be applied to
-// different entities in Unity Catalog. Tags are useful for organizing and
-// categorizing different entities within a metastore. SubentityTags are
-// attached to Unity Catalog subentities.
-type SubentityTagsService interface {
-
-	// Get tags for a subentity.
-	//
-	// Gets tag assignments for a subentity associated with a securable entity.
-	// Eg. column of a table The caller must be either the owner of the
-	// securable, or a metastore admin, or have at least USE / SELECT privilege
-	// on the associated securable.
-	//
-	// Use ListAll() to get all TagsSubentityAssignment instances
-	List(ctx context.Context, request ListSubentityTagsRequest) (*TagSubentityAssignmentsList, error)
-
-	// Update tags for a subentity.
-	//
-	// Update tag assignments for a subentity associated with a securable
-	// entity. The caller must be either the owner of the securable, or a
-	// metastore admin, or have at least USE / SELECT and APPLY_TAG privilege on
-	// the associated securable.
-	Update(ctx context.Context, request UpdateTags) (*TagSubentityAssignmentsList, error)
 }
 
 // A system schema is a schema that lives within the system catalog. A system

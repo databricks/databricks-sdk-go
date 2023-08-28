@@ -1259,8 +1259,6 @@ type CreateInstancePool struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
-	// The fleet related setting to power the instance pool.
-	InstancePoolFleetAttributes *InstancePoolFleetAttributes `json:"instance_pool_fleet_attributes,omitempty"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
 	InstancePoolName string `json:"instance_pool_name"`
@@ -1753,8 +1751,6 @@ type EditInstancePool struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
-	// The fleet related setting to power the instance pool.
-	InstancePoolFleetAttributes *InstancePoolFleetAttributes `json:"instance_pool_fleet_attributes,omitempty"`
 	// Instance pool ID
 	InstancePoolId string `json:"instance_pool_id"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
@@ -1963,120 +1959,6 @@ func (f *EventType) Set(v string) error {
 // Type always returns EventType to satisfy [pflag.Value] interface
 func (f *EventType) Type() string {
 	return "EventType"
-}
-
-type FleetLaunchTemplateOverride struct {
-	// User-assigned preferred availability zone. It will adjust to the default
-	// zone of the worker environment if the preferred zone does not exist in
-	// the subnet.
-	AvailabilityZone string `json:"availability_zone"`
-
-	InstanceType string `json:"instance_type"`
-	// The maximum price per unit hour that you are willing to pay for a Spot
-	// Instance.
-	MaxPrice float64 `json:"max_price,omitempty"`
-	// The priority for the launch template override. If AllocationStrategy is
-	// set to prioritized, EC2 Fleet uses priority to determine which launch
-	// template override or to use first in fulfilling On-Demand capacity. The
-	// highest priority is launched first. Valid values are whole numbers
-	// starting at 0. The lower the number, the higher the priority. If no
-	// number is set, the launch template override has the lowest priority.
-	Priority float64 `json:"priority,omitempty"`
-}
-
-type FleetOnDemandOption struct {
-	// Only lowest-price and prioritized are allowed
-	AllocationStrategy FleetOnDemandOptionAllocationStrategy `json:"allocation_strategy,omitempty"`
-	// The maximum amount per hour for On-Demand Instances that you're willing
-	// to pay.
-	MaxTotalPrice float64 `json:"max_total_price,omitempty"`
-	// If you specify use-capacity-reservations-first, the fleet uses unused
-	// Capacity Reservations to fulfill On-Demand capacity up to the target
-	// On-Demand capacity. If multiple instance pools have unused Capacity
-	// Reservations, the On-Demand allocation strategy (lowest-price or
-	// prioritized) is applied. If the number of unused Capacity Reservations is
-	// less than the On-Demand target capacity, the remaining On-Demand target
-	// capacity is launched according to the On-Demand allocation strategy
-	// (lowest-price or prioritized).
-	UseCapacityReservationsFirst bool `json:"use_capacity_reservations_first,omitempty"`
-}
-
-// Only lowest-price and prioritized are allowed
-type FleetOnDemandOptionAllocationStrategy string
-
-const FleetOnDemandOptionAllocationStrategyCapacityOptimized FleetOnDemandOptionAllocationStrategy = `CAPACITY_OPTIMIZED`
-
-const FleetOnDemandOptionAllocationStrategyDiversified FleetOnDemandOptionAllocationStrategy = `DIVERSIFIED`
-
-const FleetOnDemandOptionAllocationStrategyLowestPrice FleetOnDemandOptionAllocationStrategy = `LOWEST_PRICE`
-
-const FleetOnDemandOptionAllocationStrategyPrioritized FleetOnDemandOptionAllocationStrategy = `PRIORITIZED`
-
-// String representation for [fmt.Print]
-func (f *FleetOnDemandOptionAllocationStrategy) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *FleetOnDemandOptionAllocationStrategy) Set(v string) error {
-	switch v {
-	case `CAPACITY_OPTIMIZED`, `DIVERSIFIED`, `LOWEST_PRICE`, `PRIORITIZED`:
-		*f = FleetOnDemandOptionAllocationStrategy(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "CAPACITY_OPTIMIZED", "DIVERSIFIED", "LOWEST_PRICE", "PRIORITIZED"`, v)
-	}
-}
-
-// Type always returns FleetOnDemandOptionAllocationStrategy to satisfy [pflag.Value] interface
-func (f *FleetOnDemandOptionAllocationStrategy) Type() string {
-	return "FleetOnDemandOptionAllocationStrategy"
-}
-
-type FleetSpotOption struct {
-	// lowest-price | diversified | capacity-optimized
-	AllocationStrategy FleetSpotOptionAllocationStrategy `json:"allocation_strategy,omitempty"`
-	// The number of Spot pools across which to allocate your target Spot
-	// capacity. Valid only when Spot Allocation Strategy is set to
-	// lowest-price. EC2 Fleet selects the cheapest Spot pools and evenly
-	// allocates your target Spot capacity across the number of Spot pools that
-	// you specify.
-	InstancePoolsToUseCount int `json:"instance_pools_to_use_count,omitempty"`
-	// The maximum amount per hour for Spot Instances that you're willing to
-	// pay.
-	MaxTotalPrice float64 `json:"max_total_price,omitempty"`
-}
-
-// lowest-price | diversified | capacity-optimized
-type FleetSpotOptionAllocationStrategy string
-
-const FleetSpotOptionAllocationStrategyCapacityOptimized FleetSpotOptionAllocationStrategy = `CAPACITY_OPTIMIZED`
-
-const FleetSpotOptionAllocationStrategyDiversified FleetSpotOptionAllocationStrategy = `DIVERSIFIED`
-
-const FleetSpotOptionAllocationStrategyLowestPrice FleetSpotOptionAllocationStrategy = `LOWEST_PRICE`
-
-const FleetSpotOptionAllocationStrategyPrioritized FleetSpotOptionAllocationStrategy = `PRIORITIZED`
-
-// String representation for [fmt.Print]
-func (f *FleetSpotOptionAllocationStrategy) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *FleetSpotOptionAllocationStrategy) Set(v string) error {
-	switch v {
-	case `CAPACITY_OPTIMIZED`, `DIVERSIFIED`, `LOWEST_PRICE`, `PRIORITIZED`:
-		*f = FleetSpotOptionAllocationStrategy(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "CAPACITY_OPTIMIZED", "DIVERSIFIED", "LOWEST_PRICE", "PRIORITIZED"`, v)
-	}
-}
-
-// Type always returns FleetSpotOptionAllocationStrategy to satisfy [pflag.Value] interface
-func (f *FleetSpotOptionAllocationStrategy) Type() string {
-	return "FleetSpotOptionAllocationStrategy"
 }
 
 type GcpAttributes struct {
@@ -2290,8 +2172,6 @@ type GetInstancePool struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
-	// The fleet related setting to power the instance pool.
-	InstancePoolFleetAttributes *InstancePoolFleetAttributes `json:"instance_pool_fleet_attributes,omitempty"`
 	// Canonical unique identifier for the pool.
 	InstancePoolId string `json:"instance_pool_id"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
@@ -2538,8 +2418,6 @@ type InstancePoolAndStats struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
-	// The fleet related setting to power the instance pool.
-	InstancePoolFleetAttributes *InstancePoolFleetAttributes `json:"instance_pool_fleet_attributes,omitempty"`
 	// Canonical unique identifier for the pool.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
@@ -2679,14 +2557,6 @@ func (f *InstancePoolAzureAttributesAvailability) Set(v string) error {
 // Type always returns InstancePoolAzureAttributesAvailability to satisfy [pflag.Value] interface
 func (f *InstancePoolAzureAttributesAvailability) Type() string {
 	return "InstancePoolAzureAttributesAvailability"
-}
-
-type InstancePoolFleetAttributes struct {
-	FleetOnDemandOption *FleetOnDemandOption `json:"fleet_on_demand_option,omitempty"`
-
-	FleetSpotOption *FleetSpotOption `json:"fleet_spot_option,omitempty"`
-
-	LaunchTemplateOverrides []FleetLaunchTemplateOverride `json:"launch_template_overrides,omitempty"`
 }
 
 type InstancePoolGcpAttributes struct {
