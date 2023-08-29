@@ -2338,6 +2338,9 @@ type InitScriptInfo struct {
 	// the cluster iam role in `instance_profile_arn` has permission to write
 	// data to the s3 destination.
 	S3 *S3StorageInfo `json:"s3,omitempty"`
+	// destination needs to be provided. e.g. `{ "volumes" : { "destination" :
+	// "/Volumes/my-init.sh" } }`
+	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
 	// destination needs to be provided. e.g. `{ "workspace" : { "destination" :
 	// "/Users/user1@databricks.com/my-init.sh" } }`
 	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
@@ -3584,6 +3587,11 @@ type UninstallLibraries struct {
 type UnpinCluster struct {
 	// <needs content added>
 	ClusterId string `json:"cluster_id"`
+}
+
+type VolumesStorageInfo struct {
+	// Unity Catalog Volumes file destination, e.g. `/Volumes/my-init.sh`
+	Destination string `json:"destination,omitempty"`
 }
 
 type WorkloadType struct {
