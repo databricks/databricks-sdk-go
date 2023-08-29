@@ -184,7 +184,7 @@ type CatalogInfo struct {
 	// remote sharing server.
 	ProviderName string `json:"provider_name,omitempty"`
 	// Status of an asynchronously provisioned resource.
-	ProvisioningInfo ProvisioningInfo `json:"provisioning_info,omitempty"`
+	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
 	// Kind of catalog securable.
 	SecurableKind CatalogInfoSecurableKind `json:"securable_kind,omitempty"`
 
@@ -415,7 +415,7 @@ type ConnectionInfo struct {
 	// connection.
 	Properties map[string]string `json:"properties,omitempty"`
 	// Status of an asynchronously provisioned resource.
-	ProvisioningInfo ProvisioningInfo `json:"provisioning_info,omitempty"`
+	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Kind of connection securable.
@@ -2262,37 +2262,41 @@ type PrivilegeAssignment struct {
 type PropertiesKvPairs map[string]string
 
 // Status of an asynchronously provisioned resource.
-type ProvisioningInfo string
+type ProvisioningInfo struct {
+	State ProvisioningInfoState `json:"state,omitempty"`
+}
 
-const ProvisioningInfoActive ProvisioningInfo = `ACTIVE`
+type ProvisioningInfoState string
 
-const ProvisioningInfoDeleting ProvisioningInfo = `DELETING`
+const ProvisioningInfoStateActive ProvisioningInfoState = `ACTIVE`
 
-const ProvisioningInfoFailed ProvisioningInfo = `FAILED`
+const ProvisioningInfoStateDeleting ProvisioningInfoState = `DELETING`
 
-const ProvisioningInfoProvisioning ProvisioningInfo = `PROVISIONING`
+const ProvisioningInfoStateFailed ProvisioningInfoState = `FAILED`
 
-const ProvisioningInfoStateUnspecified ProvisioningInfo = `STATE_UNSPECIFIED`
+const ProvisioningInfoStateProvisioning ProvisioningInfoState = `PROVISIONING`
+
+const ProvisioningInfoStateStateUnspecified ProvisioningInfoState = `STATE_UNSPECIFIED`
 
 // String representation for [fmt.Print]
-func (f *ProvisioningInfo) String() string {
+func (f *ProvisioningInfoState) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *ProvisioningInfo) Set(v string) error {
+func (f *ProvisioningInfoState) Set(v string) error {
 	switch v {
 	case `ACTIVE`, `DELETING`, `FAILED`, `PROVISIONING`, `STATE_UNSPECIFIED`:
-		*f = ProvisioningInfo(v)
+		*f = ProvisioningInfoState(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETING", "FAILED", "PROVISIONING", "STATE_UNSPECIFIED"`, v)
 	}
 }
 
-// Type always returns ProvisioningInfo to satisfy [pflag.Value] interface
-func (f *ProvisioningInfo) Type() string {
-	return "ProvisioningInfo"
+// Type always returns ProvisioningInfoState to satisfy [pflag.Value] interface
+func (f *ProvisioningInfoState) Type() string {
+	return "ProvisioningInfoState"
 }
 
 // Get a Volume

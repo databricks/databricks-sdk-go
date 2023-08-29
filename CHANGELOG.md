@@ -1,5 +1,86 @@
 # Version changelog
 
+## 0.18.0
+
+Breaking Changes:
+* Added support Files API (application/octet-stream) in OpenAPI Spec ([#572](https://github.com/databricks/databricks-sdk-go/pull/572)). The signatures of `Upload`, `Download` and `Delete` have changed; these methods now take `UploadRequest`, `DownloadRequest`, and `DeleteRequest` structures, respectively. Shortcut methods are generated for `DownloadByFileName` and `DeleteByFileName` for convenience. The `WriteFile` and `ReadFile` methods are removed.
+* Propagate Request Headers to client.go ([#589](https://github.com/databricks/databricks-sdk-go/pull/589)). The `Do` method of `Client` now requires an additional parameter for request headers. Add headers to requests using this parameter, or pass `nil` if no headers are needed.
+
+Breaking API Changes:
+ * Removed [w.SecurableTags](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SecurableTagsAPI) workspace-level service and all associated structures.
+ * Removed [w.SubentityTags](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SubentityTagsAPI) workspace-level service and all associated structures.
+ * Renamed `ProvisioningState` field to `ProvisioningInfo` for [catalog.ConnectionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionInfo).
+ * Changed [catalog.ProvisioningState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ProvisioningState) to [catalog.ProvisioningInfoState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ProvisioningInfoState).
+ * Removed `InstancePoolFleetAttributes` field for [compute.CreateInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#CreateInstancePool).
+ * Removed `InstancePoolFleetAttributes` field for [compute.EditInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditInstancePool).
+ * Removed [compute.FleetLaunchTemplateOverride](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#FleetLaunchTemplateOverride).
+ * Removed [compute.FleetOnDemandOption](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#FleetOnDemandOption).
+ * Removed [compute.FleetOnDemandOptionAllocationStrategy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#FleetOnDemandOptionAllocationStrategy).
+ * Removed [compute.FleetSpotOption](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#FleetSpotOption).
+ * Removed [compute.FleetSpotOptionAllocationStrategy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#FleetSpotOptionAllocationStrategy).
+ * Removed `InstancePoolFleetAttributes` field for [compute.GetInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetInstancePool).
+ * Removed `InstancePoolFleetAttributes` field for [compute.InstancePoolAndStats](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolAndStats).
+ * Removed [compute.InstancePoolFleetAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolFleetAttributes).
+ * Changed `GetByName` method for [w.Experiments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentsAPI) workspace-level service to return [ml.GetExperimentResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#GetExperimentResponse).
+ * Changed `GetExperiment` method for [w.Experiments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentsAPI) workspace-level service to return [ml.GetExperimentResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#GetExperimentResponse).
+ * Renamed [ml.GetExperimentByNameResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#GetExperimentByNameResponse) to [ml.GetExperimentResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#GetExperimentResponse).
+
+API Changes:
+ * Changed `List` method for [a.AccountStorageCredentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountStorageCredentialsAPI) account-level service to return [catalog.StorageCredentialInfoList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#StorageCredentialInfoList).
+ * Added [w.ModelVersions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelVersionsAPI) workspace-level service.
+ * Added [w.RegisteredModels](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#RegisteredModelsAPI) workspace-level service.
+ * Added `BrowseOnly` field for [catalog.CatalogInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogInfo).
+ * Added `FullName` field for [catalog.CatalogInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogInfo).
+ * Added `ProvisioningInfo` field for [catalog.CatalogInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogInfo).
+ * Added `SecurableKind` field for [catalog.CatalogInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogInfo).
+ * Added `SecurableType` field for [catalog.CatalogInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogInfo).
+ * Added `Options` field for [catalog.CreateCatalog](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateCatalog).
+ * Added `Options` field for [catalog.UpdateCatalog](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateCatalog).
+ * Added [catalog.CreateRegisteredModelRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateRegisteredModelRequest).
+ * Added [catalog.DeleteAliasRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteAliasRequest).
+ * Added [catalog.DeleteModelVersionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteModelVersionRequest).
+ * Added [catalog.DeleteRegisteredModelRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteRegisteredModelRequest).
+ * Added [catalog.GetByAliasRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetByAliasRequest).
+ * Added [catalog.GetModelVersionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetModelVersionRequest).
+ * Added [catalog.GetRegisteredModelRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetRegisteredModelRequest).
+ * Added [catalog.ListModelVersionsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListModelVersionsRequest).
+ * Added [catalog.ListModelVersionsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListModelVersionsResponse).
+ * Added [catalog.ListRegisteredModelsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListRegisteredModelsRequest).
+ * Added [catalog.ListRegisteredModelsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListRegisteredModelsResponse).
+ * Added [catalog.ModelVersionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelVersionInfo).
+ * Added [catalog.ModelVersionInfoStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ModelVersionInfoStatus).
+ * Added [catalog.ProvisioningInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ProvisioningInfo).
+ * Added [catalog.ProvisioningInfoState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ProvisioningInfoState).
+ * Added [catalog.RegisteredModelAlias](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#RegisteredModelAlias).
+ * Added [catalog.RegisteredModelInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#RegisteredModelInfo).
+ * Added [catalog.SetRegisteredModelAliasRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SetRegisteredModelAliasRequest).
+ * Added [catalog.UpdateModelVersionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateModelVersionRequest).
+ * Added [catalog.UpdateRegisteredModelRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateRegisteredModelRequest).
+ * Added `Volumes` field for [compute.InitScriptInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InitScriptInfo).
+ * Added [compute.VolumesStorageInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#VolumesStorageInfo).
+ * Added [w.Files](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#FilesAPI) workspace-level service.
+ * Added [files.DeleteFileRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#DeleteFileRequest).
+ * Added [files.DownloadRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#DownloadRequest).
+ * Added [files.DownloadResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#DownloadResponse).
+ * Added [files.UploadRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/files#UploadRequest).
+ * Added `CustomTags` field for [provisioning.CreateWorkspaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#CreateWorkspaceRequest).
+ * Added `CustomTags` field for [provisioning.UpdateWorkspaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#UpdateWorkspaceRequest).
+ * Added `CustomTags` field for [provisioning.Workspace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#Workspace).
+ * Added [provisioning.CustomTags](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#CustomTags).
+ * Added `Parameters` field for [sql.ExecuteStatementRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#ExecuteStatementRequest).
+ * Added `RowLimit` field for [sql.ExecuteStatementRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#ExecuteStatementRequest).
+ * Added [sql.StatementParameterListItem](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#StatementParameterListItem).
+
+SDK Internal Changes:
+* Added support for io.ReadCloser for request and response bodies ([#590](https://github.com/databricks/databricks-sdk-go/pull/590)).
+* Fixed nightly test failures for Go SDK ([#592](https://github.com/databricks/databricks-sdk-go/pull/592)).
+
+OpenAPI Generator Changes:
+* Improved error handling for ill-defined parameters ([#582](https://github.com/databricks/databricks-sdk-go/pull/582)).
+* Switched to logging consistently rather than printing to stdout ([#588](https://github.com/databricks/databricks-sdk-go/pull/588)).
+
+OpenAPI SHA: 5d0ccbb790d341eae8e85321a685a9e9e2d5bf24, Date: 2023-08-29
+
 ## 0.17.0
 
 * Introduced Artifact Allowlist, Securable Tags, and Subentity Tags services.
