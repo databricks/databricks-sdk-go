@@ -95,17 +95,49 @@ type internalCliToken struct {
 	ExpiresOn    string `json:"expiresOn"`
 }
 
-func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
-	out, err := exec.Command("az", "account", "get-access-token", "--resource",
-		ts.resource, "--output", "json").Output()
-	if ee, ok := err.(*exec.ExitError); ok {
-		return nil, fmt.Errorf("cannot get access token: %s", string(ee.Stderr))
+func (ts *azureCliTokenSource) getSubscription() string {
+	if ts.workspaceResourceId == "" {
+		return ""
 	}
-	if err != nil {
-		return nil, fmt.Errorf("cannot get access token: %v", err)
+	components := strings.Split(ts.workspaceResourceId, "/")
+	if len(components) < 3 {
+		logger.Warnf(context.Background(), "Invalid azure workspace resource ID")
+		return ""
+	}
+	return components[2]
+}
+
+func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
+	subscription := ts.getSubscription()
+	var out []byte
+	args := []string{"account", "get-access-token", "--resource",
+		ts.resource, "--output", "json"}
+	if subscription != "" {
+		extendedArgs := make([]string, len(args))
+		copy(extendedArgs, args)
+		extendedArgs = append(extendedArgs, "--subscription", subscription)
+		// This will fail if the user has access to the workspace, but not to the subscription
+		// itself.
+		// In such case, we fall back to not using the subscription.
+		result, err := exec.Command("az", extendedArgs...).Output()
+		if err != nil {
+			logger.Warnf(context.Background(), "Failed to get token for subscription. Using resource only token.")
+		} else {
+			out = result
+		}
+	}
+	if out == nil {
+		result, err := exec.Command("az", args...).Output()
+		if ee, ok := err.(*exec.ExitError); ok {
+			return nil, fmt.Errorf("cannot get access token: %s", string(ee.Stderr))
+		}
+		if err != nil {
+			return nil, fmt.Errorf("cannot get access token: %v", err)
+		}
+		out = result
 	}
 	var it internalCliToken
-	err = json.Unmarshal(out, &it)
+	err := json.Unmarshal(out, &it)
 	if err != nil {
 		return nil, fmt.Errorf("cannot unmarshal CLI result: %w", err)
 	}
