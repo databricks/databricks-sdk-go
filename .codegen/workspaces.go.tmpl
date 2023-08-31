@@ -17,7 +17,9 @@ type WorkspaceClient struct {
 	{{end}}{{end}}
 }
 
-// NewWorkspaceClient creates new Databricks SDK client for Workspaces or 
+var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration")
+
+// NewWorkspaceClient creates new Databricks SDK client for Workspaces or
 // returns error in case configuration is wrong
 func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	var cfg *config.Config
@@ -27,6 +29,13 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	} else {
 		// default config
 		cfg = &config.Config{}
+	}
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	if cfg.IsAccountClient() {
+		return nil, ErrNotWorkspaceClient
 	}
 	apiClient, err := client.New(cfg)
 	if err != nil {
