@@ -45,7 +45,13 @@ func LoadFile(path string) (*File, error) {
 		path = fmt.Sprintf("%s%s", homedir, path[1:])
 	}
 
-	iniFile, err := ini.Load(path)
+	opts := ini.LoadOptions{
+		// Passwords may contain '#'. Require a space before '#' for inline comments.
+		// See https://github.com/databricks/databricks-sdk-go/issues/594
+		SpaceBeforeInlineComment: true,
+	}
+
+	iniFile, err := ini.LoadSources(opts, path)
 	if err != nil {
 		return nil, err
 	}
