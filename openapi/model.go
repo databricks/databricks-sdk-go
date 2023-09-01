@@ -138,6 +138,12 @@ type Operation struct {
 	// an action and the request body represents the resource.
 	PathStyle PathStyle `json:"x-databricks-path-style,omitempty"`
 
+	// The x-databricks-request-type-name field defines the name to use for
+	// the request type in the generated client. This may be specified only
+	// if the operation does NOT have a request body, thus only uses a request
+	// type to encapsulate path and query parameters.
+	RequestTypeName string `json:"x-databricks-request-type-name,omitempty"`
+
 	// For list APIs, the path to the field in the response entity that contains
 	// the resource ID.
 	IdField fieldPath `json:"x-databricks-id,omitempty"`

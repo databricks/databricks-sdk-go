@@ -3,6 +3,7 @@ package code
 import (
 	"fmt"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/openapi"
@@ -32,14 +33,31 @@ func (svc *Service) MatchesPackageName() bool {
 }
 
 // Methods returns sorted slice of methods
-func (svc *Service) Methods() (methods []*Method) {
+func (svc *Service) Methods() []*Method {
+	permissionOperationRegex := regexp.MustCompile(`(Permissions|PermissionLevels)$`)
+
+	// Order the primary methods first, followed by the permission methods.
+	// This keeps the docs in a more logical order. Otherwise, the permission
+	// methods would be interspersed with the primary methods.
+	primaryMethods := []*Method{}
+	permissionMethods := []*Method{}
 	for _, v := range svc.methods {
-		methods = append(methods, v)
+		if permissionOperationRegex.MatchString(v.Operation.OperationId) {
+			permissionMethods = append(permissionMethods, v)
+		} else {
+			primaryMethods = append(primaryMethods, v)
+		}
 	}
-	slices.SortFunc(methods, func(a, b *Method) bool {
+
+	slices.SortFunc(primaryMethods, func(a, b *Method) bool {
 		return a.CamelName() < b.CamelName()
 	})
-	return methods
+
+	slices.SortFunc(permissionMethods, func(a, b *Method) bool {
+		return a.CamelName() < b.CamelName()
+	})
+
+	return append(primaryMethods, permissionMethods...)
 }
 
 // List returns a method annotated with x-databricks-crud:list
@@ -255,19 +273,26 @@ func (svc *Service) nameAndDefineRequest(request *Entity, op *openapi.Operation)
 	if request.Name != "" {
 		panic(fmt.Sprintf("request entity already has a name: %s", request.Name))
 	}
-	// when there was a merge of params with a request or new entity was made
-	signularServiceName := svc.Singular().PascalName()
-	notExplicit := !strings.Contains(op.Name(), signularServiceName)
-	if op.Name() == "list" && notExplicit {
-		request.Name = op.Name() + svc.Name + "Request"
-	} else if crudNames[strings.ToLower(op.Name())] {
-		request.Name = op.Name() + signularServiceName + "Request"
+
+	// If the operation defines a request type name, use it.
+	if op.RequestTypeName != "" {
+		request.Name = op.RequestTypeName
 	} else {
-		request.Name = op.Name() + "Request"
+		// Otherwise, synthesize a request type name.
+		singularServiceName := svc.Singular().PascalName()
+		notExplicit := !strings.Contains(op.Name(), singularServiceName)
+		if op.Name() == "list" && notExplicit {
+			request.Name = op.Name() + svc.Name + "Request"
+		} else if crudNames[strings.ToLower(op.Name())] {
+			request.Name = op.Name() + singularServiceName + "Request"
+		} else {
+			request.Name = op.Name() + "Request"
+		}
+		if svc.Package.Name == "scim" {
+			request.Name = strings.ReplaceAll(request.Name, "Account", "")
+		}
 	}
-	if svc.Package.Name == "scim" {
-		request.Name = strings.ReplaceAll(request.Name, "Account", "")
-	}
+
 	request.Description = op.Summary
 	svc.Package.define(request)
 }
