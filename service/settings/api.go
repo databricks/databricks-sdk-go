@@ -604,16 +604,16 @@ func (a *TokenManagementAPI) GetByTokenId(ctx context.Context, tokenId string) (
 // Get token permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *TokenManagementAPI) GetTokenPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
-	return a.impl.GetTokenPermissionLevels(ctx)
+func (a *TokenManagementAPI) GetPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx)
 }
 
 // Get token permissions.
 //
 // Gets the permissions of all tokens. Tokens can inherit permissions from their
 // root object.
-func (a *TokenManagementAPI) GetTokenPermissions(ctx context.Context) (*TokenPermissions, error) {
-	return a.impl.GetTokenPermissions(ctx)
+func (a *TokenManagementAPI) GetPermissions(ctx context.Context) (*TokenPermissions, error) {
+	return a.impl.GetPermissions(ctx)
 }
 
 // List all tokens.
@@ -686,16 +686,16 @@ func (a *TokenManagementAPI) GetByComment(ctx context.Context, name string) (*To
 //
 // Sets permissions on all tokens. Tokens can inherit permissions from their
 // root object.
-func (a *TokenManagementAPI) SetTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
-	return a.impl.SetTokenPermissions(ctx, request)
+func (a *TokenManagementAPI) SetPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
 // Update token permissions.
 //
 // Updates the permissions on all tokens. Tokens can inherit permissions from
 // their root object.
-func (a *TokenManagementAPI) UpdateTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
-	return a.impl.UpdateTokenPermissions(ctx, request)
+func (a *TokenManagementAPI) UpdatePermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }
 
 func NewTokens(client *client.DatabricksClient) *TokensAPI {

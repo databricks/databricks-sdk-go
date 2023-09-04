@@ -2048,7 +2048,7 @@ type GetClusterPolicyPermissionsRequest struct {
 	ClusterPolicyId string `json:"-" url:"-"`
 }
 
-// Get entity
+// Get a cluster policy
 type GetClusterPolicyRequest struct {
 	// Canonical unique identifier for the cluster policy.
 	PolicyId string `json:"-" url:"policy_id"`
@@ -2823,7 +2823,7 @@ type ListAvailableZonesResponse struct {
 	Zones []string `json:"zones,omitempty"`
 }
 
-// Get a cluster policy
+// List cluster policies
 type ListClusterPoliciesRequest struct {
 	// The cluster policy attribute to sort by. * `POLICY_CREATION_TIME` - Sort
 	// result list by policy creation time. * `POLICY_NAME` - Sort result list
@@ -3027,6 +3027,9 @@ type NodeType struct {
 	SupportEbsVolumes bool `json:"support_ebs_volumes,omitempty"`
 
 	SupportPortForwarding bool `json:"support_port_forwarding,omitempty"`
+	// Indicates if this node type can be used for an instance pool or cluster
+	// with elastic disk enabled. This is true for most node types.
+	SupportsElasticDisk bool `json:"supports_elastic_disk,omitempty"`
 }
 
 type PendingInstanceError struct {

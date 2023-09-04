@@ -116,23 +116,23 @@ type AccountClient struct {
 	//
 	// 1. **Create storage**: In AWS, [create a new AWS S3 bucket] with a
 	// specific bucket policy. Using Databricks APIs, call the Account API to
-	// create a [storage configuration object](#operation/create-storage-config)
-	// that uses the bucket name. 2. **Create credentials**: In AWS, create the
+	// create a [storage configuration object](:method:Storage/Create) that uses
+	// the bucket name. 2. **Create credentials**: In AWS, create the
 	// appropriate AWS IAM role. For full details, including the required IAM
 	// role policies and trust relationship, see [Billable usage log delivery].
 	// Using Databricks APIs, call the Account API to create a [credential
-	// configuration object](#operation/create-credential-config) that uses the
-	// IAM role's ARN. 3. **Create log delivery configuration**: Using
-	// Databricks APIs, call the Account API to [create a log delivery
-	// configuration](#operation/create-log-delivery-config) that uses the
-	// credential and storage configuration objects from previous steps. You can
-	// specify if the logs should include all events of that log type in your
-	// account (_Account level_ delivery) or only events for a specific set of
-	// workspaces (_workspace level_ delivery). Account level log delivery
-	// applies to all current and future workspaces plus account level logs,
-	// while workspace level log delivery solely delivers logs related to the
-	// specified workspaces. You can create multiple types of delivery
-	// configurations per account.
+	// configuration object](:method:Credentials/Create) that uses the IAM
+	// role"s ARN. 3. **Create log delivery configuration**: Using Databricks
+	// APIs, call the Account API to [create a log delivery
+	// configuration](:method:LogDelivery/Create) that uses the credential and
+	// storage configuration objects from previous steps. You can specify if the
+	// logs should include all events of that log type in your account (_Account
+	// level_ delivery) or only events for a specific set of workspaces
+	// (_workspace level_ delivery). Account level log delivery applies to all
+	// current and future workspaces plus account level logs, while workspace
+	// level log delivery solely delivers logs related to the specified
+	// workspaces. You can create multiple types of delivery configurations per
+	// account.
 	//
 	// For billable usage delivery: * For more information about billable usage
 	// logs, see [Billable usage log delivery]. For the CSV schema, see the

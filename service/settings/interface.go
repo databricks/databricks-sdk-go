@@ -281,13 +281,13 @@ type TokenManagementService interface {
 	// Get token permission levels.
 	//
 	// Gets the permission levels that a user can have on an object.
-	GetTokenPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error)
+	GetPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error)
 
 	// Get token permissions.
 	//
 	// Gets the permissions of all tokens. Tokens can inherit permissions from
 	// their root object.
-	GetTokenPermissions(ctx context.Context) (*TokenPermissions, error)
+	GetPermissions(ctx context.Context) (*TokenPermissions, error)
 
 	// List all tokens.
 	//
@@ -300,13 +300,13 @@ type TokenManagementService interface {
 	//
 	// Sets permissions on all tokens. Tokens can inherit permissions from their
 	// root object.
-	SetTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error)
+	SetPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error)
 
 	// Update token permissions.
 	//
 	// Updates the permissions on all tokens. Tokens can inherit permissions
 	// from their root object.
-	UpdateTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error)
+	UpdatePermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error)
 }
 
 // The Token API allows you to create, list, and revoke tokens that can be used

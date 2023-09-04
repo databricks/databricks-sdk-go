@@ -96,7 +96,7 @@ func (a *ClusterPoliciesAPI) Edit(ctx context.Context, request EditPolicy) error
 	return a.impl.Edit(ctx, request)
 }
 
-// Get entity.
+// Get a cluster policy.
 //
 // Get a cluster policy entity. Creation and editing is available to admins
 // only.
@@ -104,7 +104,7 @@ func (a *ClusterPoliciesAPI) Get(ctx context.Context, request GetClusterPolicyRe
 	return a.impl.Get(ctx, request)
 }
 
-// Get entity.
+// Get a cluster policy.
 //
 // Get a cluster policy entity. Creation and editing is available to admins
 // only.
@@ -117,15 +117,15 @@ func (a *ClusterPoliciesAPI) GetByPolicyId(ctx context.Context, policyId string)
 // Get cluster policy permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ClusterPoliciesAPI) GetClusterPolicyPermissionLevels(ctx context.Context, request GetClusterPolicyPermissionLevelsRequest) (*GetClusterPolicyPermissionLevelsResponse, error) {
-	return a.impl.GetClusterPolicyPermissionLevels(ctx, request)
+func (a *ClusterPoliciesAPI) GetPermissionLevels(ctx context.Context, request GetClusterPolicyPermissionLevelsRequest) (*GetClusterPolicyPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get cluster policy permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ClusterPoliciesAPI) GetClusterPolicyPermissionLevelsByClusterPolicyId(ctx context.Context, clusterPolicyId string) (*GetClusterPolicyPermissionLevelsResponse, error) {
-	return a.impl.GetClusterPolicyPermissionLevels(ctx, GetClusterPolicyPermissionLevelsRequest{
+func (a *ClusterPoliciesAPI) GetPermissionLevelsByClusterPolicyId(ctx context.Context, clusterPolicyId string) (*GetClusterPolicyPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, GetClusterPolicyPermissionLevelsRequest{
 		ClusterPolicyId: clusterPolicyId,
 	})
 }
@@ -134,21 +134,21 @@ func (a *ClusterPoliciesAPI) GetClusterPolicyPermissionLevelsByClusterPolicyId(c
 //
 // Gets the permissions of a cluster policy. Cluster policies can inherit
 // permissions from their root object.
-func (a *ClusterPoliciesAPI) GetClusterPolicyPermissions(ctx context.Context, request GetClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
-	return a.impl.GetClusterPolicyPermissions(ctx, request)
+func (a *ClusterPoliciesAPI) GetPermissions(ctx context.Context, request GetClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
+	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get cluster policy permissions.
 //
 // Gets the permissions of a cluster policy. Cluster policies can inherit
 // permissions from their root object.
-func (a *ClusterPoliciesAPI) GetClusterPolicyPermissionsByClusterPolicyId(ctx context.Context, clusterPolicyId string) (*ClusterPolicyPermissions, error) {
-	return a.impl.GetClusterPolicyPermissions(ctx, GetClusterPolicyPermissionsRequest{
+func (a *ClusterPoliciesAPI) GetPermissionsByClusterPolicyId(ctx context.Context, clusterPolicyId string) (*ClusterPolicyPermissions, error) {
+	return a.impl.GetPermissions(ctx, GetClusterPolicyPermissionsRequest{
 		ClusterPolicyId: clusterPolicyId,
 	})
 }
 
-// Get a cluster policy.
+// List cluster policies.
 //
 // Returns a list of policies accessible by the requesting user.
 //
@@ -218,16 +218,16 @@ func (a *ClusterPoliciesAPI) GetByName(ctx context.Context, name string) (*Polic
 //
 // Sets permissions on a cluster policy. Cluster policies can inherit
 // permissions from their root object.
-func (a *ClusterPoliciesAPI) SetClusterPolicyPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
-	return a.impl.SetClusterPolicyPermissions(ctx, request)
+func (a *ClusterPoliciesAPI) SetPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
 // Update cluster policy permissions.
 //
 // Updates the permissions on a cluster policy. Cluster policies can inherit
 // permissions from their root object.
-func (a *ClusterPoliciesAPI) UpdateClusterPolicyPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
-	return a.impl.UpdateClusterPolicyPermissions(ctx, request)
+func (a *ClusterPoliciesAPI) UpdatePermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }
 
 func NewClusters(client *client.DatabricksClient) *ClustersAPI {
@@ -633,15 +633,15 @@ func (a *ClustersAPI) GetByClusterId(ctx context.Context, clusterId string) (*Cl
 // Get cluster permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ClustersAPI) GetClusterPermissionLevels(ctx context.Context, request GetClusterPermissionLevelsRequest) (*GetClusterPermissionLevelsResponse, error) {
-	return a.impl.GetClusterPermissionLevels(ctx, request)
+func (a *ClustersAPI) GetPermissionLevels(ctx context.Context, request GetClusterPermissionLevelsRequest) (*GetClusterPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get cluster permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ClustersAPI) GetClusterPermissionLevelsByClusterId(ctx context.Context, clusterId string) (*GetClusterPermissionLevelsResponse, error) {
-	return a.impl.GetClusterPermissionLevels(ctx, GetClusterPermissionLevelsRequest{
+func (a *ClustersAPI) GetPermissionLevelsByClusterId(ctx context.Context, clusterId string) (*GetClusterPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, GetClusterPermissionLevelsRequest{
 		ClusterId: clusterId,
 	})
 }
@@ -650,16 +650,16 @@ func (a *ClustersAPI) GetClusterPermissionLevelsByClusterId(ctx context.Context,
 //
 // Gets the permissions of a cluster. Clusters can inherit permissions from
 // their root object.
-func (a *ClustersAPI) GetClusterPermissions(ctx context.Context, request GetClusterPermissionsRequest) (*ClusterPermissions, error) {
-	return a.impl.GetClusterPermissions(ctx, request)
+func (a *ClustersAPI) GetPermissions(ctx context.Context, request GetClusterPermissionsRequest) (*ClusterPermissions, error) {
+	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get cluster permissions.
 //
 // Gets the permissions of a cluster. Clusters can inherit permissions from
 // their root object.
-func (a *ClustersAPI) GetClusterPermissionsByClusterId(ctx context.Context, clusterId string) (*ClusterPermissions, error) {
-	return a.impl.GetClusterPermissions(ctx, GetClusterPermissionsRequest{
+func (a *ClustersAPI) GetPermissionsByClusterId(ctx context.Context, clusterId string) (*ClusterPermissions, error) {
+	return a.impl.GetPermissions(ctx, GetClusterPermissionsRequest{
 		ClusterId: clusterId,
 	})
 }
@@ -915,8 +915,8 @@ func (a *ClustersAPI) RestartAndWait(ctx context.Context, restartCluster Restart
 //
 // Sets permissions on a cluster. Clusters can inherit permissions from their
 // root object.
-func (a *ClustersAPI) SetClusterPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
-	return a.impl.SetClusterPermissions(ctx, request)
+func (a *ClustersAPI) SetPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
 // List available Spark versions.
@@ -1026,8 +1026,8 @@ func (a *ClustersAPI) UnpinByClusterId(ctx context.Context, clusterId string) er
 //
 // Updates the permissions on a cluster. Clusters can inherit permissions from
 // their root object.
-func (a *ClustersAPI) UpdateClusterPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
-	return a.impl.UpdateClusterPermissions(ctx, request)
+func (a *ClustersAPI) UpdatePermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }
 
 func NewCommandExecution(client *client.DatabricksClient) *CommandExecutionAPI {
@@ -1655,15 +1655,15 @@ func (a *InstancePoolsAPI) GetByInstancePoolId(ctx context.Context, instancePool
 // Get instance pool permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *InstancePoolsAPI) GetInstancePoolPermissionLevels(ctx context.Context, request GetInstancePoolPermissionLevelsRequest) (*GetInstancePoolPermissionLevelsResponse, error) {
-	return a.impl.GetInstancePoolPermissionLevels(ctx, request)
+func (a *InstancePoolsAPI) GetPermissionLevels(ctx context.Context, request GetInstancePoolPermissionLevelsRequest) (*GetInstancePoolPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get instance pool permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *InstancePoolsAPI) GetInstancePoolPermissionLevelsByInstancePoolId(ctx context.Context, instancePoolId string) (*GetInstancePoolPermissionLevelsResponse, error) {
-	return a.impl.GetInstancePoolPermissionLevels(ctx, GetInstancePoolPermissionLevelsRequest{
+func (a *InstancePoolsAPI) GetPermissionLevelsByInstancePoolId(ctx context.Context, instancePoolId string) (*GetInstancePoolPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, GetInstancePoolPermissionLevelsRequest{
 		InstancePoolId: instancePoolId,
 	})
 }
@@ -1672,16 +1672,16 @@ func (a *InstancePoolsAPI) GetInstancePoolPermissionLevelsByInstancePoolId(ctx c
 //
 // Gets the permissions of an instance pool. Instance pools can inherit
 // permissions from their root object.
-func (a *InstancePoolsAPI) GetInstancePoolPermissions(ctx context.Context, request GetInstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
-	return a.impl.GetInstancePoolPermissions(ctx, request)
+func (a *InstancePoolsAPI) GetPermissions(ctx context.Context, request GetInstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
+	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get instance pool permissions.
 //
 // Gets the permissions of an instance pool. Instance pools can inherit
 // permissions from their root object.
-func (a *InstancePoolsAPI) GetInstancePoolPermissionsByInstancePoolId(ctx context.Context, instancePoolId string) (*InstancePoolPermissions, error) {
-	return a.impl.GetInstancePoolPermissions(ctx, GetInstancePoolPermissionsRequest{
+func (a *InstancePoolsAPI) GetPermissionsByInstancePoolId(ctx context.Context, instancePoolId string) (*InstancePoolPermissions, error) {
+	return a.impl.GetPermissions(ctx, GetInstancePoolPermissionsRequest{
 		InstancePoolId: instancePoolId,
 	})
 }
@@ -1756,16 +1756,16 @@ func (a *InstancePoolsAPI) GetByInstancePoolName(ctx context.Context, name strin
 //
 // Sets permissions on an instance pool. Instance pools can inherit permissions
 // from their root object.
-func (a *InstancePoolsAPI) SetInstancePoolPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
-	return a.impl.SetInstancePoolPermissions(ctx, request)
+func (a *InstancePoolsAPI) SetPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
 // Update instance pool permissions.
 //
 // Updates the permissions on an instance pool. Instance pools can inherit
 // permissions from their root object.
-func (a *InstancePoolsAPI) UpdateInstancePoolPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
-	return a.impl.UpdateInstancePoolPermissions(ctx, request)
+func (a *InstancePoolsAPI) UpdatePermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }
 
 func NewInstanceProfiles(client *client.DatabricksClient) *InstanceProfilesAPI {

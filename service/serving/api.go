@@ -218,15 +218,15 @@ func (a *ServingEndpointsAPI) GetByName(ctx context.Context, name string) (*Serv
 // Get serving endpoint permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ServingEndpointsAPI) GetServingEndpointPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error) {
-	return a.impl.GetServingEndpointPermissionLevels(ctx, request)
+func (a *ServingEndpointsAPI) GetPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get serving endpoint permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ServingEndpointsAPI) GetServingEndpointPermissionLevelsByServingEndpointId(ctx context.Context, servingEndpointId string) (*GetServingEndpointPermissionLevelsResponse, error) {
-	return a.impl.GetServingEndpointPermissionLevels(ctx, GetServingEndpointPermissionLevelsRequest{
+func (a *ServingEndpointsAPI) GetPermissionLevelsByServingEndpointId(ctx context.Context, servingEndpointId string) (*GetServingEndpointPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, GetServingEndpointPermissionLevelsRequest{
 		ServingEndpointId: servingEndpointId,
 	})
 }
@@ -235,16 +235,16 @@ func (a *ServingEndpointsAPI) GetServingEndpointPermissionLevelsByServingEndpoin
 //
 // Gets the permissions of a serving endpoint. Serving endpoints can inherit
 // permissions from their root object.
-func (a *ServingEndpointsAPI) GetServingEndpointPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
-	return a.impl.GetServingEndpointPermissions(ctx, request)
+func (a *ServingEndpointsAPI) GetPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
+	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get serving endpoint permissions.
 //
 // Gets the permissions of a serving endpoint. Serving endpoints can inherit
 // permissions from their root object.
-func (a *ServingEndpointsAPI) GetServingEndpointPermissionsByServingEndpointId(ctx context.Context, servingEndpointId string) (*ServingEndpointPermissions, error) {
-	return a.impl.GetServingEndpointPermissions(ctx, GetServingEndpointPermissionsRequest{
+func (a *ServingEndpointsAPI) GetPermissionsByServingEndpointId(ctx context.Context, servingEndpointId string) (*ServingEndpointPermissions, error) {
+	return a.impl.GetPermissions(ctx, GetServingEndpointPermissionsRequest{
 		ServingEndpointId: servingEndpointId,
 	})
 }
@@ -288,8 +288,8 @@ func (a *ServingEndpointsAPI) Query(ctx context.Context, request QueryRequest) (
 //
 // Sets permissions on a serving endpoint. Serving endpoints can inherit
 // permissions from their root object.
-func (a *ServingEndpointsAPI) SetServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
-	return a.impl.SetServingEndpointPermissions(ctx, request)
+func (a *ServingEndpointsAPI) SetPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
 // Update a serving endpoint with a new config.
@@ -345,6 +345,6 @@ func (a *ServingEndpointsAPI) UpdateConfigAndWait(ctx context.Context, endpointC
 //
 // Updates the permissions on a serving endpoint. Serving endpoints can inherit
 // permissions from their root object.
-func (a *ServingEndpointsAPI) UpdateServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
-	return a.impl.UpdateServingEndpointPermissions(ctx, request)
+func (a *ServingEndpointsAPI) UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }

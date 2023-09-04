@@ -138,6 +138,11 @@ type WorkspaceClient struct {
 	// or service principal.
 	CurrentUser *iam.CurrentUserAPI
 
+	// This is an evolving API that facilitates the addition and removal of
+	// widgets from existing dashboards within the Databricks Workspace. Data
+	// structures may change over time.
+	DashboardWidgets *sql.DashboardWidgetsAPI
+
 	// In general, there is little need to modify dashboards using the API.
 	// However, it can be useful to use dashboard objects to look-up a
 	// collection of related query IDs. The API can also be used to duplicate
@@ -476,6 +481,11 @@ type WorkspaceClient struct {
 
 	// Access the history of queries through SQL warehouses.
 	QueryHistory *sql.QueryHistoryAPI
+
+	// This is an evolving API that facilitates the addition and removal of
+	// vizualisations from existing queries within the Databricks Workspace.
+	// Data structures may change over time.
+	QueryVisualizations *sql.QueryVisualizationsAPI
 
 	// The Recipient Activation API is only applicable in the open sharing model
 	// where the recipient object has the authentication type of `TOKEN`. The
@@ -941,6 +951,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		CommandExecution:          compute.NewCommandExecution(apiClient),
 		Connections:               catalog.NewConnections(apiClient),
 		CurrentUser:               iam.NewCurrentUser(apiClient),
+		DashboardWidgets:          sql.NewDashboardWidgets(apiClient),
 		Dashboards:                sql.NewDashboards(apiClient),
 		DataSources:               sql.NewDataSources(apiClient),
 		Dbfs:                      files.NewDbfs(apiClient),
@@ -967,6 +978,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Providers:                 sharing.NewProviders(apiClient),
 		Queries:                   sql.NewQueries(apiClient),
 		QueryHistory:              sql.NewQueryHistory(apiClient),
+		QueryVisualizations:       sql.NewQueryVisualizations(apiClient),
 		RecipientActivation:       sharing.NewRecipientActivation(apiClient),
 		Recipients:                sharing.NewRecipients(apiClient),
 		RegisteredModels:          catalog.NewRegisteredModels(apiClient),

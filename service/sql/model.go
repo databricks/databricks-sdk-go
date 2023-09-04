@@ -159,7 +159,6 @@ type ChannelInfo struct {
 	Name ChannelName `json:"name,omitempty"`
 }
 
-// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -309,17 +308,39 @@ type CreateAlert struct {
 
 // Create a dashboard object
 type CreateDashboardRequest struct {
+	// Indicates whether the dashboard filters are enabled
+	DashboardFiltersEnabled bool `json:"dashboard_filters_enabled,omitempty"`
 	// Indicates whether this query object should appear in the current user's
 	// favorites list. The application uses this flag to determine whether or
 	// not the "favorite star " should selected.
 	IsFavorite bool `json:"is_favorite,omitempty"`
 	// The title of this dashboard that appears in list views and at the top of
 	// the dashboard page.
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
+	// Run as role
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
 	Tags []string `json:"tags,omitempty"`
+}
+
+// Add visualization to a query
+type CreateQueryVisualizationRequest struct {
+	// A short description of this visualization. This is not displayed in the
+	// UI.
+	Description string `json:"description,omitempty"`
+	// The name of the visualization that appears on dashboards and the query
+	// screen.
+	Name string `json:"name,omitempty"`
+	// The options object varies widely from one visualization type to the next
+	// and is unsupported. Databricks does not recommend modifying visualization
+	// settings in JSON.
+	Options any `json:"options"`
+	// The identifier returned by :method:queries/create
+	QueryId string `json:"query_id"`
+	// The type of visualization: chart, table, pivot table, and so on.
+	Type string `json:"type"`
 }
 
 type CreateWarehouseRequest struct {
@@ -421,6 +442,23 @@ type CreateWarehouseResponse struct {
 	Id string `json:"id,omitempty"`
 }
 
+type CreateWidget struct {
+	// Dashboard ID returned by :method:dashboards/create.
+	DashboardId string `json:"dashboard_id"`
+
+	Id string `json:"-" url:"-"`
+
+	Options WidgetOptions `json:"options"`
+	// If this is a textbox widget, the application displays this text. This
+	// field is ignored if the widget contains a visualization in the
+	// `visualization` field.
+	Text string `json:"text,omitempty"`
+	// Query Vizualization ID returned by :method:queryvisualizations/create.
+	VisualizationId string `json:"visualization_id,omitempty"`
+	// Width of a widget
+	Width int `json:"width"`
+}
+
 // A JSON representing a dashboard containing widgets of visualizations and text
 // boxes.
 type Dashboard struct {
@@ -511,9 +549,19 @@ type DeleteDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 }
 
+// Remove widget
+type DeleteDashboardWidgetRequest struct {
+	Id string `json:"-" url:"-"`
+}
+
 // Delete a query
 type DeleteQueryRequest struct {
 	QueryId string `json:"-" url:"-"`
+}
+
+// Remove visualization
+type DeleteQueryVisualizationRequest struct {
+	Id string `json:"-" url:"-"`
 }
 
 // Delete a warehouse
@@ -1693,6 +1741,8 @@ type Query struct {
 	Query string `json:"query,omitempty"`
 	// A SHA-256 hash of the query text along with the authenticated user ID.
 	QueryHash string `json:"query_hash,omitempty"`
+	// Run as role
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
 	Tags []string `json:"tags,omitempty"`
 	// The timestamp at which this query was last updated.
@@ -1891,6 +1941,8 @@ type QueryPostContent struct {
 	Parent string `json:"parent,omitempty"`
 	// The text of the query to be run.
 	Query string `json:"query,omitempty"`
+	// Run as role
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 }
 
 // Type of statement for this query
@@ -2106,6 +2158,34 @@ type ResultSchema struct {
 	ColumnCount int `json:"column_count,omitempty"`
 
 	Columns []ColumnInfo `json:"columns,omitempty"`
+}
+
+// Run as role
+type RunAsRole string
+
+const RunAsRoleOwner RunAsRole = `owner`
+
+const RunAsRoleViewer RunAsRole = `viewer`
+
+// String representation for [fmt.Print]
+func (f *RunAsRole) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RunAsRole) Set(v string) error {
+	switch v {
+	case `owner`, `viewer`:
+		*f = RunAsRole(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "owner", "viewer"`, v)
+	}
+}
+
+// Type always returns RunAsRole to satisfy [pflag.Value] interface
+func (f *RunAsRole) Type() string {
+	return "RunAsRole"
 }
 
 type ServiceError struct {
@@ -2749,7 +2829,7 @@ type Visualization struct {
 	// UI.
 	Description string `json:"description,omitempty"`
 	// The UUID for this visualization.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 	// The name of the visualization that appears on dashboards and the query
 	// screen.
 	Name string `json:"name,omitempty"`
@@ -2901,9 +2981,8 @@ type Widget struct {
 type WidgetOptions struct {
 	// Timestamp when this object was created
 	CreatedAt string `json:"created_at,omitempty"`
-	// The dashboard ID to which this widget belongs. Each widget can belong to
-	// one dashboard.
-	DashboardId string `json:"dashboard_id,omitempty"`
+	// Custom description of the widget
+	Description string `json:"description,omitempty"`
 	// Whether this widget is hidden on the dashboard.
 	IsHidden bool `json:"isHidden,omitempty"`
 	// How parameters used by the visualization in this widget relate to other
@@ -2912,11 +2991,24 @@ type WidgetOptions struct {
 	ParameterMappings any `json:"parameterMappings,omitempty"`
 	// Coordinates of this widget on a dashboard. This portion of the API
 	// changes frequently and is unsupported.
-	Position any `json:"position,omitempty"`
-	// If this is a textbox widget, the application displays this text. This
-	// field is ignored if the widget contains a visualization in the
-	// `visualization` field.
-	Text string `json:"text,omitempty"`
+	Position *WidgetPosition `json:"position,omitempty"`
+	// Custom title of the widget
+	Title string `json:"title,omitempty"`
 	// Timestamp of the last time this object was updated.
 	UpdatedAt string `json:"updated_at,omitempty"`
+}
+
+// Coordinates of this widget on a dashboard. This portion of the API changes
+// frequently and is unsupported.
+type WidgetPosition struct {
+	// reserved for internal use
+	AutoHeight bool `json:"autoHeight,omitempty"`
+	// column in the dashboard grid. Values start with 0
+	Col int `json:"col,omitempty"`
+	// row in the dashboard grid. Values start with 0
+	Row int `json:"row,omitempty"`
+	// width of the widget measured in dashboard grid cells
+	SizeX int `json:"sizeX,omitempty"`
+	// height of the widget measured in dashboard grid cells
+	SizeY int `json:"sizeY,omitempty"`
 }

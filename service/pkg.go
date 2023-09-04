@@ -30,6 +30,8 @@
 //
 // - [oauth2.CustomAppIntegrationAPI]: These APIs enable administrators to manage custom oauth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
 //
+// - [sql.DashboardWidgetsAPI]: This is an evolving API that facilitates the addition and removal of widgets from existing dashboards within the Databricks Workspace.
+//
 // - [sql.DashboardsAPI]: In general, there is little need to modify dashboards using the API.
 //
 // - [sql.DataSourcesAPI]: This API is provided to assist you in making new query objects.
@@ -103,6 +105,8 @@
 // - [sql.QueriesAPI]: These endpoints are used for CRUD operations on query definitions.
 //
 // - [sql.QueryHistoryAPI]: Access the history of queries through SQL warehouses.
+//
+// - [sql.QueryVisualizationsAPI]: This is an evolving API that facilitates the addition and removal of vizualisations from existing queries within the Databricks Workspace.
 //
 // - [sharing.RecipientActivationAPI]: The Recipient Activation API is only applicable in the open sharing model where the recipient object has the authentication type of `TOKEN`.
 //
@@ -205,6 +209,7 @@ var (
 	_ *provisioning.CredentialsAPI            = nil
 	_ *iam.CurrentUserAPI                     = nil
 	_ *oauth2.CustomAppIntegrationAPI         = nil
+	_ *sql.DashboardWidgetsAPI                = nil
 	_ *sql.DashboardsAPI                      = nil
 	_ *sql.DataSourcesAPI                     = nil
 	_ *files.DbfsAPI                          = nil
@@ -242,6 +247,7 @@ var (
 	_ *oauth2.PublishedAppIntegrationAPI      = nil
 	_ *sql.QueriesAPI                         = nil
 	_ *sql.QueryHistoryAPI                    = nil
+	_ *sql.QueryVisualizationsAPI             = nil
 	_ *sharing.RecipientActivationAPI         = nil
 	_ *sharing.RecipientsAPI                  = nil
 	_ *catalog.RegisteredModelsAPI            = nil
