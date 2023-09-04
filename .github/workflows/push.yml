@@ -10,7 +10,7 @@ on:
     # if it was saved by a run from the repository's default branch.
     # The run result will be identical to that from the merge queue
     # because the commit is identical, yet we need to perform it to
-    # propertly use the build cache.
+    # seed the build cache.
     branches:
       - main
 
