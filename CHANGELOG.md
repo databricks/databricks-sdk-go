@@ -1,5 +1,46 @@
 # Version changelog
 
+## 0.19.0
+
+* Added `ErrNotWorkspaceClient` ([#596](https://github.com/databricks/databricks-sdk-go/pull/596)).
+* Fix loading of databrickscfg with a password containing a hash ([#595](https://github.com/databricks/databricks-sdk-go/pull/595)).
+* Use an operation's request type name if specified ([#598](https://github.com/databricks/databricks-sdk-go/pull/598)).
+* Update OpenAPI spec ([#600](https://github.com/databricks/databricks-sdk-go/pull/600)).
+
+API Changes:
+
+* Renamed permissions APIs to no longer include the service name, for example:
+  * `GetJobPermissionLevels` -> `GetPermissionLevels`
+  * `GetJobPermissions` -> `GetPermissions`
+  * `SetJobPermissions` -> `SetPermissions`
+  * `UpdateJobPermissions` -> `UpdatePermissions`
+* Changed `Create` method for [w.Volumes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#VolumesAPI) workspace-level service with new required argument order.
+* Added `SupportsElasticDisk` field for [compute.NodeType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#NodeType).
+* Changed `Create` method for [w.Dashboards](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#DashboardsAPI) workspace-level service with new required argument order.
+* Added [w.DashboardWidgets](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#DashboardWidgetsAPI) workspace-level service.
+* Added [w.QueryVisualizations](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryVisualizationsAPI) workspace-level service.
+* Changed `Name` field for [sql.CreateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateDashboardRequest) to be required.
+* Added `DashboardFiltersEnabled` field for [sql.CreateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateDashboardRequest).
+* Added `RunAsRole` field for [sql.CreateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateDashboardRequest).
+* Added `RunAsRole` field for [sql.Query](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#Query).
+* Added `RunAsRole` field for [sql.QueryPostContent](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryPostContent).
+* Removed `DashboardId` field for [sql.WidgetOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WidgetOptions).
+* Changed `Position` field for [sql.WidgetOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WidgetOptions) to [sql.WidgetPosition](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WidgetPosition).
+* Removed `Text` field for [sql.WidgetOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WidgetOptions).
+* Added `Description` field for [sql.WidgetOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WidgetOptions).
+* Added `Title` field for [sql.WidgetOptions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WidgetOptions).
+* Added [sql.CreateQueryVisualizationRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateQueryVisualizationRequest).
+* Added [sql.CreateWidget](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateWidget).
+* Added [sql.DeleteDashboardWidgetRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#DeleteDashboardWidgetRequest).
+* Added [sql.DeleteQueryVisualizationRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#DeleteQueryVisualizationRequest).
+* Added [sql.RunAsRole](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#RunAsRole).
+* Added [sql.WidgetPosition](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WidgetPosition).
+
+OpenAPI SHA: 09a7fa63d9ae243e5407941f200960ca14d48b07, Date: 2023-09-04
+
+Dependency updates:
+
+* Bump google.golang.org/api from 0.136.0 to 0.138.0 ([#587](https://github.com/databricks/databricks-sdk-go/pull/587)).
 ## 0.18.0
 
 Breaking Changes:
