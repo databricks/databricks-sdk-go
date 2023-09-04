@@ -43,6 +43,21 @@ type AlertsService interface {
 	Update(ctx context.Context, request EditAlert) error
 }
 
+// This is an evolving API that facilitates the addition and removal of widgets
+// from existing dashboards within the Databricks Workspace. Data structures may
+// change over time.
+type DashboardWidgetsService interface {
+
+	// Add widget to a dashboard.
+	Create(ctx context.Context, request CreateWidget) (*Widget, error)
+
+	// Remove widget.
+	Delete(ctx context.Context, request DeleteDashboardWidgetRequest) error
+
+	// Update existing widget.
+	Update(ctx context.Context, request CreateWidget) (*Widget, error)
+}
+
 // In general, there is little need to modify dashboards using the API. However,
 // it can be useful to use dashboard objects to look-up a collection of related
 // query IDs. The API can also be used to duplicate multiple dashboards at once
@@ -201,6 +216,21 @@ type QueryHistoryService interface {
 	//
 	// Use ListAll() to get all QueryInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListQueryHistoryRequest) (*ListQueriesResponse, error)
+}
+
+// This is an evolving API that facilitates the addition and removal of
+// vizualisations from existing queries within the Databricks Workspace. Data
+// structures may change over time.
+type QueryVisualizationsService interface {
+
+	// Add visualization to a query.
+	Create(ctx context.Context, request CreateQueryVisualizationRequest) (*Visualization, error)
+
+	// Remove visualization.
+	Delete(ctx context.Context, request DeleteQueryVisualizationRequest) error
+
+	// Edit existing visualization.
+	Update(ctx context.Context, request Visualization) (*Visualization, error)
 }
 
 // The SQL Statement Execution API manages the execution of arbitrary SQL
@@ -455,13 +485,13 @@ type WarehousesService interface {
 	// Get SQL warehouse permission levels.
 	//
 	// Gets the permission levels that a user can have on an object.
-	GetWarehousePermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error)
+	GetPermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error)
 
 	// Get SQL warehouse permissions.
 	//
 	// Gets the permissions of a SQL warehouse. SQL warehouses can inherit
 	// permissions from their root object.
-	GetWarehousePermissions(ctx context.Context, request GetWarehousePermissionsRequest) (*WarehousePermissions, error)
+	GetPermissions(ctx context.Context, request GetWarehousePermissionsRequest) (*WarehousePermissions, error)
 
 	// Get the workspace configuration.
 	//
@@ -480,7 +510,7 @@ type WarehousesService interface {
 	//
 	// Sets permissions on a SQL warehouse. SQL warehouses can inherit
 	// permissions from their root object.
-	SetWarehousePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error)
+	SetPermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error)
 
 	// Set the workspace configuration.
 	//
@@ -502,5 +532,5 @@ type WarehousesService interface {
 	//
 	// Updates the permissions on a SQL warehouse. SQL warehouses can inherit
 	// permissions from their root object.
-	UpdateWarehousePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error)
+	UpdatePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error)
 }

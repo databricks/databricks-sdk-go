@@ -40,13 +40,13 @@ type PipelinesService interface {
 	// Get pipeline permission levels.
 	//
 	// Gets the permission levels that a user can have on an object.
-	GetPipelinePermissionLevels(ctx context.Context, request GetPipelinePermissionLevelsRequest) (*GetPipelinePermissionLevelsResponse, error)
+	GetPermissionLevels(ctx context.Context, request GetPipelinePermissionLevelsRequest) (*GetPipelinePermissionLevelsResponse, error)
 
 	// Get pipeline permissions.
 	//
 	// Gets the permissions of a pipeline. Pipelines can inherit permissions
 	// from their root object.
-	GetPipelinePermissions(ctx context.Context, request GetPipelinePermissionsRequest) (*PipelinePermissions, error)
+	GetPermissions(ctx context.Context, request GetPipelinePermissionsRequest) (*PipelinePermissions, error)
 
 	// Get a pipeline update.
 	//
@@ -81,7 +81,7 @@ type PipelinesService interface {
 	//
 	// Sets permissions on a pipeline. Pipelines can inherit permissions from
 	// their root object.
-	SetPipelinePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error)
+	SetPermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error)
 
 	// Queue a pipeline update.
 	//
@@ -102,5 +102,5 @@ type PipelinesService interface {
 	//
 	// Updates the permissions on a pipeline. Pipelines can inherit permissions
 	// from their root object.
-	UpdatePipelinePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error)
+	UpdatePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error)
 }

@@ -47,13 +47,13 @@ type ServingEndpointsService interface {
 	// Get serving endpoint permission levels.
 	//
 	// Gets the permission levels that a user can have on an object.
-	GetServingEndpointPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error)
+	GetPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error)
 
 	// Get serving endpoint permissions.
 	//
 	// Gets the permissions of a serving endpoint. Serving endpoints can inherit
 	// permissions from their root object.
-	GetServingEndpointPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+	GetPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 
 	// Retrieve all serving endpoints.
 	//
@@ -73,7 +73,7 @@ type ServingEndpointsService interface {
 	//
 	// Sets permissions on a serving endpoint. Serving endpoints can inherit
 	// permissions from their root object.
-	SetServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+	SetPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 
 	// Update a serving endpoint with a new config.
 	//
@@ -87,5 +87,5 @@ type ServingEndpointsService interface {
 	//
 	// Updates the permissions on a serving endpoint. Serving endpoints can
 	// inherit permissions from their root object.
-	UpdateServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 }

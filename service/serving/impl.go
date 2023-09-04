@@ -58,7 +58,7 @@ func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpoi
 	return &servingEndpointDetailed, err
 }
 
-func (a *servingEndpointsImpl) GetServingEndpointPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error) {
+func (a *servingEndpointsImpl) GetPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error) {
 	var getServingEndpointPermissionLevelsResponse GetServingEndpointPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v/permissionLevels", request.ServingEndpointId)
 	headers := make(map[string]string)
@@ -67,7 +67,7 @@ func (a *servingEndpointsImpl) GetServingEndpointPermissionLevels(ctx context.Co
 	return &getServingEndpointPermissionLevelsResponse, err
 }
 
-func (a *servingEndpointsImpl) GetServingEndpointPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
+func (a *servingEndpointsImpl) GetPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
 	var servingEndpointPermissions ServingEndpointPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
 	headers := make(map[string]string)
@@ -103,7 +103,7 @@ func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryRequest) 
 	return &queryEndpointResponse, err
 }
 
-func (a *servingEndpointsImpl) SetServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
+func (a *servingEndpointsImpl) SetPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
 	var servingEndpointPermissions ServingEndpointPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
 	headers := make(map[string]string)
@@ -123,7 +123,7 @@ func (a *servingEndpointsImpl) UpdateConfig(ctx context.Context, request Endpoin
 	return &servingEndpointDetailed, err
 }
 
-func (a *servingEndpointsImpl) UpdateServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
+func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
 	var servingEndpointPermissions ServingEndpointPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
 	headers := make(map[string]string)

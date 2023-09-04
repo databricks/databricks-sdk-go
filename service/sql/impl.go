@@ -60,6 +60,39 @@ func (a *alertsImpl) Update(ctx context.Context, request EditAlert) error {
 	return err
 }
 
+// unexported type that holds implementations of just DashboardWidgets API methods
+type dashboardWidgetsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *dashboardWidgetsImpl) Create(ctx context.Context, request CreateWidget) (*Widget, error) {
+	var widget Widget
+	path := "/api/2.0/preview/sql/widgets"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &widget)
+	return &widget, err
+}
+
+func (a *dashboardWidgetsImpl) Delete(ctx context.Context, request DeleteDashboardWidgetRequest) error {
+	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	return err
+}
+
+func (a *dashboardWidgetsImpl) Update(ctx context.Context, request CreateWidget) (*Widget, error) {
+	var widget Widget
+	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &widget)
+	return &widget, err
+}
+
 // unexported type that holds implementations of just Dashboards API methods
 type dashboardsImpl struct {
 	client *client.DatabricksClient
@@ -230,6 +263,39 @@ func (a *queryHistoryImpl) List(ctx context.Context, request ListQueryHistoryReq
 	return &listQueriesResponse, err
 }
 
+// unexported type that holds implementations of just QueryVisualizations API methods
+type queryVisualizationsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateQueryVisualizationRequest) (*Visualization, error) {
+	var visualization Visualization
+	path := "/api/2.0/preview/sql/visualizations"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &visualization)
+	return &visualization, err
+}
+
+func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteQueryVisualizationRequest) error {
+	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	return err
+}
+
+func (a *queryVisualizationsImpl) Update(ctx context.Context, request Visualization) (*Visualization, error) {
+	var visualization Visualization
+	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &visualization)
+	return &visualization, err
+}
+
 // unexported type that holds implementations of just StatementExecution API methods
 type statementExecutionImpl struct {
 	client *client.DatabricksClient
@@ -311,7 +377,7 @@ func (a *warehousesImpl) Get(ctx context.Context, request GetWarehouseRequest) (
 	return &getWarehouseResponse, err
 }
 
-func (a *warehousesImpl) GetWarehousePermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error) {
+func (a *warehousesImpl) GetPermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error) {
 	var getWarehousePermissionLevelsResponse GetWarehousePermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v/permissionLevels", request.WarehouseId)
 	headers := make(map[string]string)
@@ -320,7 +386,7 @@ func (a *warehousesImpl) GetWarehousePermissionLevels(ctx context.Context, reque
 	return &getWarehousePermissionLevelsResponse, err
 }
 
-func (a *warehousesImpl) GetWarehousePermissions(ctx context.Context, request GetWarehousePermissionsRequest) (*WarehousePermissions, error) {
+func (a *warehousesImpl) GetPermissions(ctx context.Context, request GetWarehousePermissionsRequest) (*WarehousePermissions, error) {
 	var warehousePermissions WarehousePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
 	headers := make(map[string]string)
@@ -347,7 +413,7 @@ func (a *warehousesImpl) List(ctx context.Context, request ListWarehousesRequest
 	return &listWarehousesResponse, err
 }
 
-func (a *warehousesImpl) SetWarehousePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
+func (a *warehousesImpl) SetPermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
 	var warehousePermissions WarehousePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
 	headers := make(map[string]string)
@@ -382,7 +448,7 @@ func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
 	return err
 }
 
-func (a *warehousesImpl) UpdateWarehousePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
+func (a *warehousesImpl) UpdatePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
 	var warehousePermissions WarehousePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
 	headers := make(map[string]string)

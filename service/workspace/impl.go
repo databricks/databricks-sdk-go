@@ -90,7 +90,7 @@ func (a *reposImpl) Get(ctx context.Context, request GetRepoRequest) (*RepoInfo,
 	return &repoInfo, err
 }
 
-func (a *reposImpl) GetRepoPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error) {
+func (a *reposImpl) GetPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error) {
 	var getRepoPermissionLevelsResponse GetRepoPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/repos/%v/permissionLevels", request.RepoId)
 	headers := make(map[string]string)
@@ -99,7 +99,7 @@ func (a *reposImpl) GetRepoPermissionLevels(ctx context.Context, request GetRepo
 	return &getRepoPermissionLevelsResponse, err
 }
 
-func (a *reposImpl) GetRepoPermissions(ctx context.Context, request GetRepoPermissionsRequest) (*RepoPermissions, error) {
+func (a *reposImpl) GetPermissions(ctx context.Context, request GetRepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
 	headers := make(map[string]string)
@@ -117,7 +117,7 @@ func (a *reposImpl) List(ctx context.Context, request ListReposRequest) (*ListRe
 	return &listReposResponse, err
 }
 
-func (a *reposImpl) SetRepoPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
+func (a *reposImpl) SetPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
 	headers := make(map[string]string)
@@ -136,7 +136,7 @@ func (a *reposImpl) Update(ctx context.Context, request UpdateRepo) error {
 	return err
 }
 
-func (a *reposImpl) UpdateRepoPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
+func (a *reposImpl) UpdatePermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
 	var repoPermissions RepoPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/repos/%v", request.RepoId)
 	headers := make(map[string]string)
@@ -273,16 +273,7 @@ func (a *workspaceImpl) Export(ctx context.Context, request ExportRequest) (*Exp
 	return &exportResponse, err
 }
 
-func (a *workspaceImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error) {
-	var objectInfo ObjectInfo
-	path := "/api/2.0/workspace/get-status"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &objectInfo)
-	return &objectInfo, err
-}
-
-func (a *workspaceImpl) GetWorkspaceObjectPermissionLevels(ctx context.Context, request GetWorkspaceObjectPermissionLevelsRequest) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
+func (a *workspaceImpl) GetPermissionLevels(ctx context.Context, request GetWorkspaceObjectPermissionLevelsRequest) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
 	var getWorkspaceObjectPermissionLevelsResponse GetWorkspaceObjectPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", request.WorkspaceObjectType, request.WorkspaceObjectId)
 	headers := make(map[string]string)
@@ -291,13 +282,22 @@ func (a *workspaceImpl) GetWorkspaceObjectPermissionLevels(ctx context.Context, 
 	return &getWorkspaceObjectPermissionLevelsResponse, err
 }
 
-func (a *workspaceImpl) GetWorkspaceObjectPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+func (a *workspaceImpl) GetPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &workspaceObjectPermissions)
 	return &workspaceObjectPermissions, err
+}
+
+func (a *workspaceImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*ObjectInfo, error) {
+	var objectInfo ObjectInfo
+	path := "/api/2.0/workspace/get-status"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &objectInfo)
+	return &objectInfo, err
 }
 
 func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
@@ -327,7 +327,7 @@ func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
 	return err
 }
 
-func (a *workspaceImpl) SetWorkspaceObjectPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+func (a *workspaceImpl) SetPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
 	headers := make(map[string]string)
@@ -337,7 +337,7 @@ func (a *workspaceImpl) SetWorkspaceObjectPermissions(ctx context.Context, reque
 	return &workspaceObjectPermissions, err
 }
 
-func (a *workspaceImpl) UpdateWorkspaceObjectPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+func (a *workspaceImpl) UpdatePermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
 	var workspaceObjectPermissions WorkspaceObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.WorkspaceObjectType, request.WorkspaceObjectId)
 	headers := make(map[string]string)

@@ -223,7 +223,7 @@ func (a *tokenManagementImpl) Get(ctx context.Context, request GetTokenManagemen
 	return &tokenInfo, err
 }
 
-func (a *tokenManagementImpl) GetTokenPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
+func (a *tokenManagementImpl) GetPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
 	var getTokenPermissionLevelsResponse GetTokenPermissionLevelsResponse
 	path := "/api/2.0/permissions/authorization/tokens/permissionLevels"
 	headers := make(map[string]string)
@@ -232,7 +232,7 @@ func (a *tokenManagementImpl) GetTokenPermissionLevels(ctx context.Context) (*Ge
 	return &getTokenPermissionLevelsResponse, err
 }
 
-func (a *tokenManagementImpl) GetTokenPermissions(ctx context.Context) (*TokenPermissions, error) {
+func (a *tokenManagementImpl) GetPermissions(ctx context.Context) (*TokenPermissions, error) {
 	var tokenPermissions TokenPermissions
 	path := "/api/2.0/permissions/authorization/tokens"
 	headers := make(map[string]string)
@@ -250,7 +250,7 @@ func (a *tokenManagementImpl) List(ctx context.Context, request ListTokenManagem
 	return &listTokensResponse, err
 }
 
-func (a *tokenManagementImpl) SetTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+func (a *tokenManagementImpl) SetPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
 	var tokenPermissions TokenPermissions
 	path := "/api/2.0/permissions/authorization/tokens"
 	headers := make(map[string]string)
@@ -260,7 +260,7 @@ func (a *tokenManagementImpl) SetTokenPermissions(ctx context.Context, request T
 	return &tokenPermissions, err
 }
 
-func (a *tokenManagementImpl) UpdateTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+func (a *tokenManagementImpl) UpdatePermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
 	var tokenPermissions TokenPermissions
 	path := "/api/2.0/permissions/authorization/tokens"
 	headers := make(map[string]string)

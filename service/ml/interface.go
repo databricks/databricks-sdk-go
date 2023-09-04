@@ -79,23 +79,23 @@ type ExperimentsService interface {
 	// experiments.
 	GetExperiment(ctx context.Context, request GetExperimentRequest) (*GetExperimentResponse, error)
 
-	// Get experiment permission levels.
-	//
-	// Gets the permission levels that a user can have on an object.
-	GetExperimentPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error)
-
-	// Get experiment permissions.
-	//
-	// Gets the permissions of an experiment. Experiments can inherit
-	// permissions from their root object.
-	GetExperimentPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error)
-
 	// Get history of a given metric within a run.
 	//
 	// Gets a list of all values for the specified metric for a given run.
 	//
 	// Use GetHistoryAll() to get all Metric instances, which will iterate over every result page.
 	GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error)
+
+	// Get experiment permission levels.
+	//
+	// Gets the permission levels that a user can have on an object.
+	GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error)
+
+	// Get experiment permissions.
+	//
+	// Gets the permissions of an experiment. Experiments can inherit
+	// permissions from their root object.
+	GetPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error)
 
 	// Get a run.
 	//
@@ -233,17 +233,17 @@ type ExperimentsService interface {
 	// Use SearchRunsAll() to get all Run instances, which will iterate over every result page.
 	SearchRuns(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error)
 
-	// Set experiment permissions.
-	//
-	// Sets permissions on an experiment. Experiments can inherit permissions
-	// from their root object.
-	SetExperimentPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error)
-
 	// Set a tag.
 	//
 	// Sets a tag on an experiment. Experiment tags are metadata that can be
 	// updated.
 	SetExperimentTag(ctx context.Context, request SetExperimentTag) error
+
+	// Set experiment permissions.
+	//
+	// Sets permissions on an experiment. Experiments can inherit permissions
+	// from their root object.
+	SetPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error)
 
 	// Set a tag.
 	//
@@ -260,7 +260,7 @@ type ExperimentsService interface {
 	//
 	// Updates the permissions on an experiment. Experiments can inherit
 	// permissions from their root object.
-	UpdateExperimentPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error)
+	UpdatePermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error)
 
 	// Update a run.
 	//
@@ -376,13 +376,13 @@ type ModelRegistryService interface {
 	// Get registered model permission levels.
 	//
 	// Gets the permission levels that a user can have on an object.
-	GetRegisteredModelPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error)
+	GetPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error)
 
 	// Get registered model permissions.
 	//
 	// Gets the permissions of a registered model. Registered models can inherit
 	// permissions from their root object.
-	GetRegisteredModelPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
+	GetPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
 
 	// List models.
 	//
@@ -446,7 +446,7 @@ type ModelRegistryService interface {
 	//
 	// Sets permissions on a registered model. Registered models can inherit
 	// permissions from their root object.
-	SetRegisteredModelPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
+	SetPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
 
 	// Test a webhook.
 	//
@@ -483,7 +483,7 @@ type ModelRegistryService interface {
 	//
 	// Updates the permissions on a registered model. Registered models can
 	// inherit permissions from their root object.
-	UpdateRegisteredModelPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
+	UpdatePermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
 
 	// Update a webhook.
 	//

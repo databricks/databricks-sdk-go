@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Alerts, Dashboards, Data Sources, Dbsql Permissions, Queries, Query History, Statement Execution, Warehouses, etc.
+// These APIs allow you to manage Alerts, Dashboard Widgets, Dashboards, Data Sources, Dbsql Permissions, Queries, Query History, Query Visualizations, Statement Execution, Warehouses, etc.
 package sql
 
 import (
@@ -153,6 +153,57 @@ func (a *AlertsAPI) GetByName(ctx context.Context, name string) (*Alert, error) 
 //
 // Updates an alert.
 func (a *AlertsAPI) Update(ctx context.Context, request EditAlert) error {
+	return a.impl.Update(ctx, request)
+}
+
+func NewDashboardWidgets(client *client.DatabricksClient) *DashboardWidgetsAPI {
+	return &DashboardWidgetsAPI{
+		impl: &dashboardWidgetsImpl{
+			client: client,
+		},
+	}
+}
+
+// This is an evolving API that facilitates the addition and removal of widgets
+// from existing dashboards within the Databricks Workspace. Data structures may
+// change over time.
+type DashboardWidgetsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(DashboardWidgetsService)
+	impl DashboardWidgetsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *DashboardWidgetsAPI) WithImpl(impl DashboardWidgetsService) *DashboardWidgetsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level DashboardWidgets API implementation
+func (a *DashboardWidgetsAPI) Impl() DashboardWidgetsService {
+	return a.impl
+}
+
+// Add widget to a dashboard.
+func (a *DashboardWidgetsAPI) Create(ctx context.Context, request CreateWidget) (*Widget, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Remove widget.
+func (a *DashboardWidgetsAPI) Delete(ctx context.Context, request DeleteDashboardWidgetRequest) error {
+	return a.impl.Delete(ctx, request)
+}
+
+// Remove widget.
+func (a *DashboardWidgetsAPI) DeleteById(ctx context.Context, id string) error {
+	return a.impl.Delete(ctx, DeleteDashboardWidgetRequest{
+		Id: id,
+	})
+}
+
+// Update existing widget.
+func (a *DashboardWidgetsAPI) Update(ctx context.Context, request CreateWidget) (*Widget, error) {
 	return a.impl.Update(ctx, request)
 }
 
@@ -758,6 +809,57 @@ func (a *QueryHistoryAPI) ListAll(ctx context.Context, request ListQueryHistoryR
 	return results, nil
 }
 
+func NewQueryVisualizations(client *client.DatabricksClient) *QueryVisualizationsAPI {
+	return &QueryVisualizationsAPI{
+		impl: &queryVisualizationsImpl{
+			client: client,
+		},
+	}
+}
+
+// This is an evolving API that facilitates the addition and removal of
+// vizualisations from existing queries within the Databricks Workspace. Data
+// structures may change over time.
+type QueryVisualizationsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(QueryVisualizationsService)
+	impl QueryVisualizationsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *QueryVisualizationsAPI) WithImpl(impl QueryVisualizationsService) *QueryVisualizationsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level QueryVisualizations API implementation
+func (a *QueryVisualizationsAPI) Impl() QueryVisualizationsService {
+	return a.impl
+}
+
+// Add visualization to a query.
+func (a *QueryVisualizationsAPI) Create(ctx context.Context, request CreateQueryVisualizationRequest) (*Visualization, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Remove visualization.
+func (a *QueryVisualizationsAPI) Delete(ctx context.Context, request DeleteQueryVisualizationRequest) error {
+	return a.impl.Delete(ctx, request)
+}
+
+// Remove visualization.
+func (a *QueryVisualizationsAPI) DeleteById(ctx context.Context, id string) error {
+	return a.impl.Delete(ctx, DeleteQueryVisualizationRequest{
+		Id: id,
+	})
+}
+
+// Edit existing visualization.
+func (a *QueryVisualizationsAPI) Update(ctx context.Context, request Visualization) (*Visualization, error) {
+	return a.impl.Update(ctx, request)
+}
+
 func NewStatementExecution(client *client.DatabricksClient) *StatementExecutionAPI {
 	return &StatementExecutionAPI{
 		impl: &statementExecutionImpl{
@@ -1310,15 +1412,15 @@ func (a *WarehousesAPI) GetById(ctx context.Context, id string) (*GetWarehouseRe
 // Get SQL warehouse permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *WarehousesAPI) GetWarehousePermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error) {
-	return a.impl.GetWarehousePermissionLevels(ctx, request)
+func (a *WarehousesAPI) GetPermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get SQL warehouse permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *WarehousesAPI) GetWarehousePermissionLevelsByWarehouseId(ctx context.Context, warehouseId string) (*GetWarehousePermissionLevelsResponse, error) {
-	return a.impl.GetWarehousePermissionLevels(ctx, GetWarehousePermissionLevelsRequest{
+func (a *WarehousesAPI) GetPermissionLevelsByWarehouseId(ctx context.Context, warehouseId string) (*GetWarehousePermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, GetWarehousePermissionLevelsRequest{
 		WarehouseId: warehouseId,
 	})
 }
@@ -1327,16 +1429,16 @@ func (a *WarehousesAPI) GetWarehousePermissionLevelsByWarehouseId(ctx context.Co
 //
 // Gets the permissions of a SQL warehouse. SQL warehouses can inherit
 // permissions from their root object.
-func (a *WarehousesAPI) GetWarehousePermissions(ctx context.Context, request GetWarehousePermissionsRequest) (*WarehousePermissions, error) {
-	return a.impl.GetWarehousePermissions(ctx, request)
+func (a *WarehousesAPI) GetPermissions(ctx context.Context, request GetWarehousePermissionsRequest) (*WarehousePermissions, error) {
+	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get SQL warehouse permissions.
 //
 // Gets the permissions of a SQL warehouse. SQL warehouses can inherit
 // permissions from their root object.
-func (a *WarehousesAPI) GetWarehousePermissionsByWarehouseId(ctx context.Context, warehouseId string) (*WarehousePermissions, error) {
-	return a.impl.GetWarehousePermissions(ctx, GetWarehousePermissionsRequest{
+func (a *WarehousesAPI) GetPermissionsByWarehouseId(ctx context.Context, warehouseId string) (*WarehousePermissions, error) {
+	return a.impl.GetPermissions(ctx, GetWarehousePermissionsRequest{
 		WarehouseId: warehouseId,
 	})
 }
@@ -1419,8 +1521,8 @@ func (a *WarehousesAPI) GetByName(ctx context.Context, name string) (*EndpointIn
 //
 // Sets permissions on a SQL warehouse. SQL warehouses can inherit permissions
 // from their root object.
-func (a *WarehousesAPI) SetWarehousePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
-	return a.impl.SetWarehousePermissions(ctx, request)
+func (a *WarehousesAPI) SetPermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
 // Set the workspace configuration.
@@ -1527,6 +1629,6 @@ func (a *WarehousesAPI) StopAndWait(ctx context.Context, stopRequest StopRequest
 //
 // Updates the permissions on a SQL warehouse. SQL warehouses can inherit
 // permissions from their root object.
-func (a *WarehousesAPI) UpdateWarehousePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
-	return a.impl.UpdateWarehousePermissions(ctx, request)
+func (a *WarehousesAPI) UpdatePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }
