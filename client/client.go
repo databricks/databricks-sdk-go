@@ -259,7 +259,7 @@ func (c *DatabricksClient) redactedDump(prefix string, body []byte) (res string)
 // If it is certain that an error should not be retried, use failRequest() instead.
 func (c *DatabricksClient) handleError(ctx context.Context, err *apierr.APIError, body requestBody) (*responseBody, *retries.Err) {
 	if !err.IsRetriable(ctx) {
-		return c.failRequest("non-retriable error", err)
+		return c.failRequest(ctx, "non-retriable error", err)
 	}
 	if resetErr := body.reset(); resetErr != nil {
 		return nil, retries.Halt(resetErr)
@@ -268,8 +268,9 @@ func (c *DatabricksClient) handleError(ctx context.Context, err *apierr.APIError
 }
 
 // Fails the request with a retries.Err to halt future retries.
-func (c *DatabricksClient) failRequest(msg string, err error) (*responseBody, *retries.Err) {
-	return nil, retries.Halt(fmt.Errorf("%s: %w", msg, err))
+func (c *DatabricksClient) failRequest(ctx context.Context, msg string, err error) (*responseBody, *retries.Err) {
+	logger.Debugf(ctx, "%s: %s", msg, err)
+	return nil, retries.Halt(err)
 }
 
 func (c *DatabricksClient) attempt(
@@ -283,11 +284,11 @@ func (c *DatabricksClient) attempt(
 	return func() (*responseBody, *retries.Err) {
 		err := c.rateLimiter.Wait(ctx)
 		if err != nil {
-			return c.failRequest("failed in rate limiter", err)
+			return c.failRequest(ctx, "failed in rate limiter", err)
 		}
 		request, err := http.NewRequestWithContext(ctx, method, requestURL, requestBody.Reader)
 		if err != nil {
-			return c.failRequest("failed creating new request", err)
+			return c.failRequest(ctx, "failed creating new request", err)
 		}
 		for k, v := range headers {
 			request.Header.Set(k, v)
@@ -295,7 +296,7 @@ func (c *DatabricksClient) attempt(
 		for _, requestVisitor := range visitors {
 			err = requestVisitor(request)
 			if err != nil {
-				return c.failRequest("failed during request visitor", err)
+				return c.failRequest(ctx, "failed during request visitor", err)
 			}
 		}
 		// request.Context() holds context potentially enhanced by visitors
@@ -313,7 +314,7 @@ func (c *DatabricksClient) attempt(
 		// By this point, the request body has certainly been consumed.
 		responseBody, responseBodyErr := c.fromResponse(response)
 		if responseBodyErr != nil {
-			return c.failRequest("failed while reading response", apierr.ReadError(response.StatusCode, responseBodyErr))
+			return c.failRequest(ctx, "failed while reading response", apierr.ReadError(response.StatusCode, responseBodyErr))
 		}
 
 		apiErr := apierr.GetAPIError(ctx, response, responseBody.ReadCloser)
