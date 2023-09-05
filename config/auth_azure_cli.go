@@ -47,13 +47,14 @@ func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, innerT
 	if err != nil {
 		return nil, err
 	}
-	managementTs := &azureCliTokenSource{env.ServiceManagementEndpoint, ""}
-	_, err = managementTs.Token()
+	ts := &azureCliTokenSource{env.ServiceManagementEndpoint, ""}
+	t, err := ts.Token()
 	if err != nil {
 		logger.Debugf(ctx, "Not including service management token in headers: %v", err)
 		return azureVisitor(cfg, refreshableVisitor(innerTokenSource)), nil
 	}
-	return azureVisitor(cfg, serviceToServiceVisitor(innerTokenSource, managementTs, xDatabricksAzureSpManagementToken)), nil
+	managementTokenSource := oauth2.ReuseTokenSource(t, ts)
+	return azureVisitor(cfg, serviceToServiceVisitor(innerTokenSource, managementTokenSource, xDatabricksAzureSpManagementToken)), nil
 }
 
 func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
@@ -62,7 +63,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	}
 	// Eagerly get a token to fail fast in case the user is not logged in with the Azure CLI.
 	ts := &azureCliTokenSource{cfg.getAzureLoginAppID(), cfg.AzureResourceID}
-	_, err := ts.Token()
+	t, err := ts.Token()
 	if err != nil {
 		if strings.Contains(err.Error(), "No subscription found") {
 			// auth is not configured
@@ -79,8 +80,12 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if err != nil {
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
+	visitor, err := c.getVisitor(ctx, cfg, oauth2.ReuseTokenSource(t, ts))
+	if err != nil {
+		return nil, err
+	}
 	logger.Infof(ctx, "Using Azure CLI authentication with AAD tokens")
-	return c.getVisitor(ctx, cfg, ts)
+	return visitor, nil
 }
 
 type azureCliTokenSource struct {
