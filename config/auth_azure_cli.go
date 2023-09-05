@@ -108,36 +108,12 @@ func (ts *azureCliTokenSource) getSubscription() string {
 }
 
 func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
-	subscription := ts.getSubscription()
-	var out []byte
-	args := []string{"account", "get-access-token", "--resource",
-		ts.resource, "--output", "json"}
-	if subscription != "" {
-		extendedArgs := make([]string, len(args))
-		copy(extendedArgs, args)
-		extendedArgs = append(extendedArgs, "--subscription", subscription)
-		// This will fail if the user has access to the workspace, but not to the subscription
-		// itself.
-		// In such case, we fall back to not using the subscription.
-		result, err := exec.Command("az", extendedArgs...).Output()
-		if err != nil {
-			logger.Warnf(context.Background(), "Failed to get token for subscription. Using resource only token.")
-		} else {
-			out = result
-		}
-	}
-	if out == nil {
-		result, err := exec.Command("az", args...).Output()
-		if ee, ok := err.(*exec.ExitError); ok {
-			return nil, fmt.Errorf("cannot get access token: %s", string(ee.Stderr))
-		}
-		if err != nil {
-			return nil, fmt.Errorf("cannot get access token: %v", err)
-		}
-		out = result
+	tokenBytes, err := ts.getTokenBytes()
+	if err != nil {
+		return nil, err
 	}
 	var it internalCliToken
-	err := json.Unmarshal(out, &it)
+	err = json.Unmarshal(tokenBytes, &it)
 	if err != nil {
 		return nil, fmt.Errorf("cannot unmarshal CLI result: %w", err)
 	}
@@ -149,7 +125,7 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 		ts.resource, it.ExpiresOn)
 
 	var extra map[string]interface{}
-	err = json.Unmarshal(out, &extra)
+	err = json.Unmarshal(tokenBytes, &extra)
 	if err != nil {
 		return nil, fmt.Errorf("cannot unmarshal extra: %w", err)
 	}
@@ -159,4 +135,31 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 		TokenType:    it.TokenType,
 		Expiry:       expiresOn,
 	}).WithExtra(extra), nil
+}
+
+func (ts *azureCliTokenSource) getTokenBytes() ([]byte, error) {
+	subscription := ts.getSubscription()
+	args := []string{"account", "get-access-token", "--resource",
+		ts.resource, "--output", "json"}
+	if subscription != "" {
+		extendedArgs := make([]string, len(args))
+		copy(extendedArgs, args)
+		extendedArgs = append(extendedArgs, "--subscription", subscription)
+		// This will fail if the user has access to the workspace, but not to the subscription
+		// itself.
+		// In such case, we fall back to not using the subscription.
+		result, err := exec.Command("az", extendedArgs...).Output()
+		if err == nil {
+			return result, nil
+		}
+		logger.Warnf(context.Background(), "Failed to get token for subscription. Using resource only token.")
+	}
+	result, err := exec.Command("az", args...).Output()
+	if ee, ok := err.(*exec.ExitError); ok {
+		return nil, fmt.Errorf("cannot get access token: %s", string(ee.Stderr))
+	}
+	if err != nil {
+		return nil, fmt.Errorf("cannot get access token: %v", err)
+	}
+	return result, nil
 }
