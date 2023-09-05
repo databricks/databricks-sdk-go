@@ -159,7 +159,7 @@ func (ts *azureCliTokenSource) getTokenBytes() ([]byte, error) {
 		return nil, fmt.Errorf("cannot get access token: %s", string(ee.Stderr))
 	}
 	if err != nil {
-		return nil, fmt.Errorf("cannot get access token: %v", err)
+		return nil, fmt.Errorf("cannot get access token: %w", err)
 	}
 	return result, nil
 }
