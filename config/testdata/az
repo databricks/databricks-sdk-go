@@ -22,7 +22,7 @@ for arg in "$@"; do
     fi
 done
 
-# Add PID to file at $COUNT if it is defined.
+# Add character to file at $COUNT if it is defined.
 if [ -n "$COUNT" ]; then
     echo -n x >> "$COUNT"
 fi
