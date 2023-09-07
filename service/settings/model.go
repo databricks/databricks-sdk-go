@@ -2,7 +2,11 @@
 
 package settings
 
-import "fmt"
+import (
+	"fmt"
+
+	marshal "github.com/databricks/databricks-sdk-go/json"
+)
 
 // all definitions in this file are in alphabetical order
 
@@ -11,6 +15,18 @@ type AccountNetworkPolicyMessage struct {
 	// to the internet will be blocked from serverless clusters. Trusted traffic
 	// required by clusters for basic functionality will not be affected.
 	ServerlessInternetAccessEnabled bool `json:"serverless_internet_access_enabled,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AccountNetworkPolicyMessage) UnmarshalJSON(b []byte) error {
+	type C AccountNetworkPolicyMessage
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s AccountNetworkPolicyMessage) MarshalJSON() ([]byte, error) {
+	type C AccountNetworkPolicyMessage
+	return marshal.Marshal((C)(s))
 }
 
 type CreateIpAccessList struct {
@@ -20,10 +36,34 @@ type CreateIpAccessList struct {
 	Label string `json:"label"`
 	// This describes an enum
 	ListType ListType `json:"list_type"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateIpAccessList) UnmarshalJSON(b []byte) error {
+	type C CreateIpAccessList
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateIpAccessList) MarshalJSON() ([]byte, error) {
+	type C CreateIpAccessList
+	return marshal.Marshal((C)(s))
 }
 
 type CreateIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	type C CreateIpAccessListResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateIpAccessListResponse) MarshalJSON() ([]byte, error) {
+	type C CreateIpAccessListResponse
+	return marshal.Marshal((C)(s))
 }
 
 type CreateOboTokenRequest struct {
@@ -33,12 +73,36 @@ type CreateOboTokenRequest struct {
 	Comment string `json:"comment,omitempty"`
 	// The number of seconds before the token expires.
 	LifetimeSeconds int64 `json:"lifetime_seconds"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateOboTokenRequest) UnmarshalJSON(b []byte) error {
+	type C CreateOboTokenRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateOboTokenRequest) MarshalJSON() ([]byte, error) {
+	type C CreateOboTokenRequest
+	return marshal.Marshal((C)(s))
 }
 
 type CreateOboTokenResponse struct {
 	TokenInfo *TokenInfo `json:"token_info,omitempty"`
 	// Value of the token.
 	TokenValue string `json:"token_value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateOboTokenResponse) UnmarshalJSON(b []byte) error {
+	type C CreateOboTokenResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateOboTokenResponse) MarshalJSON() ([]byte, error) {
+	type C CreateOboTokenResponse
+	return marshal.Marshal((C)(s))
 }
 
 type CreateTokenRequest struct {
@@ -48,6 +112,18 @@ type CreateTokenRequest struct {
 	//
 	// If the ifetime is not specified, this token remains valid indefinitely.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateTokenRequest) UnmarshalJSON(b []byte) error {
+	type C CreateTokenRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateTokenRequest) MarshalJSON() ([]byte, error) {
+	type C CreateTokenRequest
+	return marshal.Marshal((C)(s))
 }
 
 type CreateTokenResponse struct {
@@ -55,12 +131,36 @@ type CreateTokenResponse struct {
 	TokenInfo *PublicTokenInfo `json:"token_info,omitempty"`
 	// The value of the new token.
 	TokenValue string `json:"token_value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateTokenResponse) UnmarshalJSON(b []byte) error {
+	type C CreateTokenResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateTokenResponse) MarshalJSON() ([]byte, error) {
+	type C CreateTokenResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Delete access list
 type DeleteAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list.
 	IpAccessListId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteAccountIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteAccountIpAccessListRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteAccountIpAccessListRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteAccountIpAccessListRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Delete Account Network Policy
@@ -73,6 +173,18 @@ type DeleteAccountNetworkPolicyRequest struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteAccountNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteAccountNetworkPolicyRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteAccountNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteAccountNetworkPolicyRequest
+	return marshal.Marshal((C)(s))
 }
 
 type DeleteAccountNetworkPolicyResponse struct {
@@ -84,12 +196,36 @@ type DeleteAccountNetworkPolicyResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	Etag string `json:"etag"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteAccountNetworkPolicyResponse) UnmarshalJSON(b []byte) error {
+	type C DeleteAccountNetworkPolicyResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteAccountNetworkPolicyResponse) MarshalJSON() ([]byte, error) {
+	type C DeleteAccountNetworkPolicyResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Delete access list
 type DeleteIpAccessListRequest struct {
 	// The ID for the corresponding IP access list to modify.
 	IpAccessListId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteIpAccessListRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteIpAccessListRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteIpAccessListRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Delete Personal Compute setting
@@ -102,6 +238,18 @@ type DeletePersonalComputeSettingRequest struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeletePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+	type C DeletePersonalComputeSettingRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeletePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+	type C DeletePersonalComputeSettingRequest
+	return marshal.Marshal((C)(s))
 }
 
 type DeletePersonalComputeSettingResponse struct {
@@ -113,52 +261,172 @@ type DeletePersonalComputeSettingResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	Etag string `json:"etag"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeletePersonalComputeSettingResponse) UnmarshalJSON(b []byte) error {
+	type C DeletePersonalComputeSettingResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeletePersonalComputeSettingResponse) MarshalJSON() ([]byte, error) {
+	type C DeletePersonalComputeSettingResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Delete a token
 type DeleteTokenManagementRequest struct {
 	// The ID of the token to get.
 	TokenId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteTokenManagementRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteTokenManagementRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteTokenManagementRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteTokenManagementRequest
+	return marshal.Marshal((C)(s))
 }
 
 type FetchIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *FetchIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	type C FetchIpAccessListResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s FetchIpAccessListResponse) MarshalJSON() ([]byte, error) {
+	type C FetchIpAccessListResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get IP access list
 type GetAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list.
 	IpAccessListId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetAccountIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	type C GetAccountIpAccessListRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetAccountIpAccessListRequest) MarshalJSON() ([]byte, error) {
+	type C GetAccountIpAccessListRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get access list
 type GetIpAccessListRequest struct {
 	// The ID for the corresponding IP access list to modify.
 	IpAccessListId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	type C GetIpAccessListRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetIpAccessListRequest) MarshalJSON() ([]byte, error) {
+	type C GetIpAccessListRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetIpAccessListResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	type C GetIpAccessListResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetIpAccessListResponse) MarshalJSON() ([]byte, error) {
+	type C GetIpAccessListResponse
+	return marshal.Marshal((C)(s))
 }
 
 type GetIpAccessListsResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetIpAccessListsResponse) UnmarshalJSON(b []byte) error {
+	type C GetIpAccessListsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetIpAccessListsResponse) MarshalJSON() ([]byte, error) {
+	type C GetIpAccessListsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Check configuration status
 type GetStatusRequest struct {
 	Keys string `json:"-" url:"keys"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetStatusRequest) UnmarshalJSON(b []byte) error {
+	type C GetStatusRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetStatusRequest) MarshalJSON() ([]byte, error) {
+	type C GetStatusRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get token info
 type GetTokenManagementRequest struct {
 	// The ID of the token to get.
 	TokenId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetTokenManagementRequest) UnmarshalJSON(b []byte) error {
+	type C GetTokenManagementRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetTokenManagementRequest) MarshalJSON() ([]byte, error) {
+	type C GetTokenManagementRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetTokenPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []TokenPermissionsDescription `json:"permission_levels,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetTokenPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	type C GetTokenPermissionLevelsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetTokenPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	type C GetTokenPermissionLevelsResponse
+	return marshal.Marshal((C)(s))
 }
 
 type IpAccessListInfo struct {
@@ -182,6 +450,18 @@ type IpAccessListInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// User ID of the user who updated this list.
 	UpdatedBy int64 `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *IpAccessListInfo) UnmarshalJSON(b []byte) error {
+	type C IpAccessListInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s IpAccessListInfo) MarshalJSON() ([]byte, error) {
+	type C IpAccessListInfo
+	return marshal.Marshal((C)(s))
 }
 
 // List all tokens
@@ -190,10 +470,34 @@ type ListTokenManagementRequest struct {
 	CreatedById string `json:"-" url:"created_by_id,omitempty"`
 	// Username of the user that created the token.
 	CreatedByUsername string `json:"-" url:"created_by_username,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListTokenManagementRequest) UnmarshalJSON(b []byte) error {
+	type C ListTokenManagementRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListTokenManagementRequest) MarshalJSON() ([]byte, error) {
+	type C ListTokenManagementRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ListTokensResponse struct {
 	TokenInfos []TokenInfo `json:"token_infos,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListTokensResponse) UnmarshalJSON(b []byte) error {
+	type C ListTokensResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListTokensResponse) MarshalJSON() ([]byte, error) {
+	type C ListTokensResponse
+	return marshal.Marshal((C)(s))
 }
 
 // This describes an enum
@@ -236,6 +540,18 @@ type PersonalComputeMessage struct {
 	// Compute default policy before they will be able to create compute
 	// resources through that policy.
 	Value PersonalComputeMessageEnum `json:"value"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PersonalComputeMessage) UnmarshalJSON(b []byte) error {
+	type C PersonalComputeMessage
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s PersonalComputeMessage) MarshalJSON() ([]byte, error) {
+	type C PersonalComputeMessage
+	return marshal.Marshal((C)(s))
 }
 
 // ON: Grants all users in all workspaces access to the Personal Compute default
@@ -285,6 +601,18 @@ type PersonalComputeSetting struct {
 	// Name of the corresponding setting. Needs to be 'default' if there is only
 	// one setting instance per account.
 	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PersonalComputeSetting) UnmarshalJSON(b []byte) error {
+	type C PersonalComputeSetting
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s PersonalComputeSetting) MarshalJSON() ([]byte, error) {
+	type C PersonalComputeSetting
+	return marshal.Marshal((C)(s))
 }
 
 type PublicTokenInfo struct {
@@ -297,6 +625,18 @@ type PublicTokenInfo struct {
 	ExpiryTime int64 `json:"expiry_time,omitempty"`
 	// The ID of this token.
 	TokenId string `json:"token_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PublicTokenInfo) UnmarshalJSON(b []byte) error {
+	type C PublicTokenInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s PublicTokenInfo) MarshalJSON() ([]byte, error) {
+	type C PublicTokenInfo
+	return marshal.Marshal((C)(s))
 }
 
 // Get Account Network Policy
@@ -309,6 +649,18 @@ type ReadAccountNetworkPolicyRequest struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ReadAccountNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	type C ReadAccountNetworkPolicyRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ReadAccountNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
+	type C ReadAccountNetworkPolicyRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get Personal Compute setting
@@ -321,6 +673,18 @@ type ReadPersonalComputeSettingRequest struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	Etag string `json:"-" url:"etag"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ReadPersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+	type C ReadPersonalComputeSettingRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ReadPersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+	type C ReadPersonalComputeSettingRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ReplaceIpAccessList struct {
@@ -336,11 +700,35 @@ type ReplaceIpAccessList struct {
 	ListId string `json:"list_id,omitempty"`
 	// This describes an enum
 	ListType ListType `json:"list_type"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ReplaceIpAccessList) UnmarshalJSON(b []byte) error {
+	type C ReplaceIpAccessList
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ReplaceIpAccessList) MarshalJSON() ([]byte, error) {
+	type C ReplaceIpAccessList
+	return marshal.Marshal((C)(s))
 }
 
 type RevokeTokenRequest struct {
 	// The ID of the token to be revoked.
 	TokenId string `json:"token_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RevokeTokenRequest) UnmarshalJSON(b []byte) error {
+	type C RevokeTokenRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RevokeTokenRequest) MarshalJSON() ([]byte, error) {
+	type C RevokeTokenRequest
+	return marshal.Marshal((C)(s))
 }
 
 type TokenAccessControlRequest struct {
@@ -352,6 +740,18 @@ type TokenAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenAccessControlRequest) UnmarshalJSON(b []byte) error {
+	type C TokenAccessControlRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TokenAccessControlRequest) MarshalJSON() ([]byte, error) {
+	type C TokenAccessControlRequest
+	return marshal.Marshal((C)(s))
 }
 
 type TokenAccessControlResponse struct {
@@ -365,6 +765,18 @@ type TokenAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenAccessControlResponse) UnmarshalJSON(b []byte) error {
+	type C TokenAccessControlResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TokenAccessControlResponse) MarshalJSON() ([]byte, error) {
+	type C TokenAccessControlResponse
+	return marshal.Marshal((C)(s))
 }
 
 type TokenInfo struct {
@@ -383,6 +795,18 @@ type TokenInfo struct {
 	OwnerId int64 `json:"owner_id,omitempty"`
 	// ID of the token.
 	TokenId string `json:"token_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenInfo) UnmarshalJSON(b []byte) error {
+	type C TokenInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TokenInfo) MarshalJSON() ([]byte, error) {
+	type C TokenInfo
+	return marshal.Marshal((C)(s))
 }
 
 type TokenPermission struct {
@@ -391,6 +815,18 @@ type TokenPermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenPermission) UnmarshalJSON(b []byte) error {
+	type C TokenPermission
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TokenPermission) MarshalJSON() ([]byte, error) {
+	type C TokenPermission
+	return marshal.Marshal((C)(s))
 }
 
 // Permission level
@@ -425,16 +861,52 @@ type TokenPermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenPermissions) UnmarshalJSON(b []byte) error {
+	type C TokenPermissions
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TokenPermissions) MarshalJSON() ([]byte, error) {
+	type C TokenPermissions
+	return marshal.Marshal((C)(s))
 }
 
 type TokenPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenPermissionsDescription) UnmarshalJSON(b []byte) error {
+	type C TokenPermissionsDescription
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TokenPermissionsDescription) MarshalJSON() ([]byte, error) {
+	type C TokenPermissionsDescription
+	return marshal.Marshal((C)(s))
 }
 
 type TokenPermissionsRequest struct {
 	AccessControlList []TokenAccessControlRequest `json:"access_control_list,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenPermissionsRequest) UnmarshalJSON(b []byte) error {
+	type C TokenPermissionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TokenPermissionsRequest) MarshalJSON() ([]byte, error) {
+	type C TokenPermissionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Update Account Network Policy
@@ -444,6 +916,18 @@ type UpdateAccountNetworkPolicyRequest struct {
 	AllowMissing bool `json:"allow_missing,omitempty"`
 
 	Setting *AccountNetworkPolicyMessage `json:"setting,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateAccountNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	type C UpdateAccountNetworkPolicyRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UpdateAccountNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
+	type C UpdateAccountNetworkPolicyRequest
+	return marshal.Marshal((C)(s))
 }
 
 type UpdateIpAccessList struct {
@@ -459,6 +943,18 @@ type UpdateIpAccessList struct {
 	ListId string `json:"list_id,omitempty"`
 	// This describes an enum
 	ListType ListType `json:"list_type"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateIpAccessList) UnmarshalJSON(b []byte) error {
+	type C UpdateIpAccessList
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UpdateIpAccessList) MarshalJSON() ([]byte, error) {
+	type C UpdateIpAccessList
+	return marshal.Marshal((C)(s))
 }
 
 // Update Personal Compute setting
@@ -468,6 +964,18 @@ type UpdatePersonalComputeSettingRequest struct {
 	AllowMissing bool `json:"allow_missing,omitempty"`
 
 	Setting *PersonalComputeSetting `json:"setting,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdatePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+	type C UpdatePersonalComputeSettingRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UpdatePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+	type C UpdatePersonalComputeSettingRequest
+	return marshal.Marshal((C)(s))
 }
 
 type WorkspaceConf map[string]string

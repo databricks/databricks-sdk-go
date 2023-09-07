@@ -2,7 +2,11 @@
 
 package compute
 
-import "fmt"
+import (
+	"fmt"
+
+	marshal "github.com/databricks/databricks-sdk-go/json"
+)
 
 // all definitions in this file are in alphabetical order
 
@@ -33,6 +37,18 @@ type AddInstanceProfile struct {
 	// availability zone”), you can pass this flag to skip the validation and
 	// forcibly add the instance profile.
 	SkipValidation bool `json:"skip_validation,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AddInstanceProfile) UnmarshalJSON(b []byte) error {
+	type C AddInstanceProfile
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s AddInstanceProfile) MarshalJSON() ([]byte, error) {
+	type C AddInstanceProfile
+	return marshal.Marshal((C)(s))
 }
 
 type AutoScale struct {
@@ -44,6 +60,18 @@ type AutoScale struct {
 	// underutilized. It is also the initial number of workers the cluster will
 	// have after creation.
 	MinWorkers int `json:"min_workers"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AutoScale) UnmarshalJSON(b []byte) error {
+	type C AutoScale
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s AutoScale) MarshalJSON() ([]byte, error) {
+	type C AutoScale
+	return marshal.Marshal((C)(s))
 }
 
 type AwsAttributes struct {
@@ -127,6 +155,18 @@ type AwsAttributes struct {
 	// details. The list of available zones as well as the default value can be
 	// found by using the `List Zones`_ method.
 	ZoneId string `json:"zone_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AwsAttributes) UnmarshalJSON(b []byte) error {
+	type C AwsAttributes
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s AwsAttributes) MarshalJSON() ([]byte, error) {
+	type C AwsAttributes
+	return marshal.Marshal((C)(s))
 }
 
 // Availability type used for all subsequent nodes past the `first_on_demand`
@@ -187,6 +227,18 @@ type AzureAttributes struct {
 	// cannot be evicted on the basis of price, and only on the basis of
 	// availability. Further, the value should > 0 or -1.
 	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AzureAttributes) UnmarshalJSON(b []byte) error {
+	type C AzureAttributes
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s AzureAttributes) MarshalJSON() ([]byte, error) {
+	type C AzureAttributes
+	return marshal.Marshal((C)(s))
 }
 
 // Availability type used for all subsequent nodes past the `first_on_demand`
@@ -227,6 +279,18 @@ type CancelCommand struct {
 	CommandId string `json:"commandId,omitempty"`
 
 	ContextId string `json:"contextId,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CancelCommand) UnmarshalJSON(b []byte) error {
+	type C CancelCommand
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CancelCommand) MarshalJSON() ([]byte, error) {
+	type C CancelCommand
+	return marshal.Marshal((C)(s))
 }
 
 type ChangeClusterOwner struct {
@@ -234,6 +298,18 @@ type ChangeClusterOwner struct {
 	ClusterId string `json:"cluster_id"`
 	// New owner of the cluster_id after this RPC.
 	OwnerUsername string `json:"owner_username"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ChangeClusterOwner) UnmarshalJSON(b []byte) error {
+	type C ChangeClusterOwner
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ChangeClusterOwner) MarshalJSON() ([]byte, error) {
+	type C ChangeClusterOwner
+	return marshal.Marshal((C)(s))
 }
 
 type ClientsTypes struct {
@@ -241,10 +317,34 @@ type ClientsTypes struct {
 	Jobs bool `json:"jobs,omitempty"`
 	// With notebooks set, this cluster can be used for notebooks
 	Notebooks bool `json:"notebooks,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClientsTypes) UnmarshalJSON(b []byte) error {
+	type C ClientsTypes
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClientsTypes) MarshalJSON() ([]byte, error) {
+	type C ClientsTypes
+	return marshal.Marshal((C)(s))
 }
 
 type CloudProviderNodeInfo struct {
 	Status []CloudProviderNodeStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CloudProviderNodeInfo) UnmarshalJSON(b []byte) error {
+	type C CloudProviderNodeInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CloudProviderNodeInfo) MarshalJSON() ([]byte, error) {
+	type C CloudProviderNodeInfo
+	return marshal.Marshal((C)(s))
 }
 
 type CloudProviderNodeStatus string
@@ -283,6 +383,18 @@ type ClusterAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterAccessControlRequest) UnmarshalJSON(b []byte) error {
+	type C ClusterAccessControlRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterAccessControlRequest) MarshalJSON() ([]byte, error) {
+	type C ClusterAccessControlRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterAccessControlResponse struct {
@@ -296,6 +408,18 @@ type ClusterAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterAccessControlResponse) UnmarshalJSON(b []byte) error {
+	type C ClusterAccessControlResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterAccessControlResponse) MarshalJSON() ([]byte, error) {
+	type C ClusterAccessControlResponse
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterAttributes struct {
@@ -406,6 +530,18 @@ type ClusterAttributes struct {
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterAttributes) UnmarshalJSON(b []byte) error {
+	type C ClusterAttributes
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterAttributes) MarshalJSON() ([]byte, error) {
+	type C ClusterAttributes
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterDetails struct {
@@ -590,6 +726,18 @@ type ClusterDetails struct {
 	TerminationReason *TerminationReason `json:"termination_reason,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterDetails) UnmarshalJSON(b []byte) error {
+	type C ClusterDetails
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterDetails) MarshalJSON() ([]byte, error) {
+	type C ClusterDetails
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterEvent struct {
@@ -605,6 +753,18 @@ type ClusterEvent struct {
 	Timestamp int64 `json:"timestamp,omitempty"`
 
 	Type EventType `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterEvent) UnmarshalJSON(b []byte) error {
+	type C ClusterEvent
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterEvent) MarshalJSON() ([]byte, error) {
+	type C ClusterEvent
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterLibraryStatuses struct {
@@ -612,6 +772,18 @@ type ClusterLibraryStatuses struct {
 	ClusterId string `json:"cluster_id,omitempty"`
 	// Status of all libraries on the cluster.
 	LibraryStatuses []LibraryFullStatus `json:"library_statuses,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterLibraryStatuses) UnmarshalJSON(b []byte) error {
+	type C ClusterLibraryStatuses
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterLibraryStatuses) MarshalJSON() ([]byte, error) {
+	type C ClusterLibraryStatuses
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterLogConf struct {
@@ -624,6 +796,18 @@ type ClusterLogConf struct {
 	// the cluster iam role in `instance_profile_arn` has permission to write
 	// data to the s3 destination.
 	S3 *S3StorageInfo `json:"s3,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterLogConf) UnmarshalJSON(b []byte) error {
+	type C ClusterLogConf
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterLogConf) MarshalJSON() ([]byte, error) {
+	type C ClusterLogConf
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterPermission struct {
@@ -632,6 +816,18 @@ type ClusterPermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterPermission) UnmarshalJSON(b []byte) error {
+	type C ClusterPermission
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterPermission) MarshalJSON() ([]byte, error) {
+	type C ClusterPermission
+	return marshal.Marshal((C)(s))
 }
 
 // Permission level
@@ -670,18 +866,54 @@ type ClusterPermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterPermissions) UnmarshalJSON(b []byte) error {
+	type C ClusterPermissions
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterPermissions) MarshalJSON() ([]byte, error) {
+	type C ClusterPermissions
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterPermissionsDescription) UnmarshalJSON(b []byte) error {
+	type C ClusterPermissionsDescription
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterPermissionsDescription) MarshalJSON() ([]byte, error) {
+	type C ClusterPermissionsDescription
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterPermissionsRequest struct {
 	AccessControlList []ClusterAccessControlRequest `json:"access_control_list,omitempty"`
 	// The cluster for which to get or manage permissions.
 	ClusterId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterPermissionsRequest) UnmarshalJSON(b []byte) error {
+	type C ClusterPermissionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterPermissionsRequest) MarshalJSON() ([]byte, error) {
+	type C ClusterPermissionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterPolicyAccessControlRequest struct {
@@ -693,6 +925,18 @@ type ClusterPolicyAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterPolicyAccessControlRequest) UnmarshalJSON(b []byte) error {
+	type C ClusterPolicyAccessControlRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterPolicyAccessControlRequest) MarshalJSON() ([]byte, error) {
+	type C ClusterPolicyAccessControlRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterPolicyAccessControlResponse struct {
@@ -706,6 +950,18 @@ type ClusterPolicyAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterPolicyAccessControlResponse) UnmarshalJSON(b []byte) error {
+	type C ClusterPolicyAccessControlResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterPolicyAccessControlResponse) MarshalJSON() ([]byte, error) {
+	type C ClusterPolicyAccessControlResponse
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterPolicyPermission struct {
@@ -714,6 +970,18 @@ type ClusterPolicyPermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterPolicyPermission) UnmarshalJSON(b []byte) error {
+	type C ClusterPolicyPermission
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterPolicyPermission) MarshalJSON() ([]byte, error) {
+	type C ClusterPolicyPermission
+	return marshal.Marshal((C)(s))
 }
 
 // Permission level
@@ -748,18 +1016,54 @@ type ClusterPolicyPermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterPolicyPermissions) UnmarshalJSON(b []byte) error {
+	type C ClusterPolicyPermissions
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterPolicyPermissions) MarshalJSON() ([]byte, error) {
+	type C ClusterPolicyPermissions
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterPolicyPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterPolicyPermissionsDescription) UnmarshalJSON(b []byte) error {
+	type C ClusterPolicyPermissionsDescription
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterPolicyPermissionsDescription) MarshalJSON() ([]byte, error) {
+	type C ClusterPolicyPermissionsDescription
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterPolicyPermissionsRequest struct {
 	AccessControlList []ClusterPolicyAccessControlRequest `json:"access_control_list,omitempty"`
 	// The cluster policy for which to get or manage permissions.
 	ClusterPolicyId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterPolicyPermissionsRequest) UnmarshalJSON(b []byte) error {
+	type C ClusterPolicyPermissionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterPolicyPermissionsRequest) MarshalJSON() ([]byte, error) {
+	type C ClusterPolicyPermissionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ClusterSize struct {
@@ -778,6 +1082,18 @@ type ClusterSize struct {
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	NumWorkers int `json:"num_workers,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterSize) UnmarshalJSON(b []byte) error {
+	type C ClusterSize
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterSize) MarshalJSON() ([]byte, error) {
+	type C ClusterSize
+	return marshal.Marshal((C)(s))
 }
 
 // Determines whether the cluster was created by a user through the UI, created
@@ -943,12 +1259,36 @@ type ClusterSpec struct {
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterSpec) UnmarshalJSON(b []byte) error {
+	type C ClusterSpec
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterSpec) MarshalJSON() ([]byte, error) {
+	type C ClusterSpec
+	return marshal.Marshal((C)(s))
 }
 
 // Get status
 type ClusterStatusRequest struct {
 	// Unique identifier of the cluster whose status should be retrieved.
 	ClusterId string `json:"-" url:"cluster_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterStatusRequest) UnmarshalJSON(b []byte) error {
+	type C ClusterStatusRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ClusterStatusRequest) MarshalJSON() ([]byte, error) {
+	type C ClusterStatusRequest
+	return marshal.Marshal((C)(s))
 }
 
 type Command struct {
@@ -960,6 +1300,18 @@ type Command struct {
 	ContextId string `json:"contextId,omitempty"`
 
 	Language Language `json:"language,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Command) UnmarshalJSON(b []byte) error {
+	type C Command
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Command) MarshalJSON() ([]byte, error) {
+	type C Command
+	return marshal.Marshal((C)(s))
 }
 
 type CommandStatus string
@@ -1004,6 +1356,18 @@ type CommandStatusRequest struct {
 	CommandId string `json:"-" url:"commandId"`
 
 	ContextId string `json:"-" url:"contextId"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CommandStatusRequest) UnmarshalJSON(b []byte) error {
+	type C CommandStatusRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CommandStatusRequest) MarshalJSON() ([]byte, error) {
+	type C CommandStatusRequest
+	return marshal.Marshal((C)(s))
 }
 
 type CommandStatusResponse struct {
@@ -1012,11 +1376,35 @@ type CommandStatusResponse struct {
 	Results *Results `json:"results,omitempty"`
 
 	Status CommandStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CommandStatusResponse) UnmarshalJSON(b []byte) error {
+	type C CommandStatusResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CommandStatusResponse) MarshalJSON() ([]byte, error) {
+	type C CommandStatusResponse
+	return marshal.Marshal((C)(s))
 }
 
 type ComputeSpec struct {
 	// The kind of compute described by this compute specification.
 	Kind ComputeSpecKind `json:"kind,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ComputeSpec) UnmarshalJSON(b []byte) error {
+	type C ComputeSpec
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ComputeSpec) MarshalJSON() ([]byte, error) {
+	type C ComputeSpec
+	return marshal.Marshal((C)(s))
 }
 
 // The kind of compute described by this compute specification.
@@ -1079,12 +1467,36 @@ type ContextStatusRequest struct {
 	ClusterId string `json:"-" url:"clusterId"`
 
 	ContextId string `json:"-" url:"contextId"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ContextStatusRequest) UnmarshalJSON(b []byte) error {
+	type C ContextStatusRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ContextStatusRequest) MarshalJSON() ([]byte, error) {
+	type C ContextStatusRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ContextStatusResponse struct {
 	Id string `json:"id,omitempty"`
 
 	Status ContextStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ContextStatusResponse) UnmarshalJSON(b []byte) error {
+	type C ContextStatusResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ContextStatusResponse) MarshalJSON() ([]byte, error) {
+	type C ContextStatusResponse
+	return marshal.Marshal((C)(s))
 }
 
 type CreateCluster struct {
@@ -1213,10 +1625,34 @@ type CreateCluster struct {
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateCluster) UnmarshalJSON(b []byte) error {
+	type C CreateCluster
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateCluster) MarshalJSON() ([]byte, error) {
+	type C CreateCluster
+	return marshal.Marshal((C)(s))
 }
 
 type CreateClusterResponse struct {
 	ClusterId string `json:"cluster_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateClusterResponse) UnmarshalJSON(b []byte) error {
+	type C CreateClusterResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateClusterResponse) MarshalJSON() ([]byte, error) {
+	type C CreateClusterResponse
+	return marshal.Marshal((C)(s))
 }
 
 type CreateContext struct {
@@ -1224,6 +1660,18 @@ type CreateContext struct {
 	ClusterId string `json:"clusterId,omitempty"`
 
 	Language Language `json:"language,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateContext) UnmarshalJSON(b []byte) error {
+	type C CreateContext
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateContext) MarshalJSON() ([]byte, error) {
+	type C CreateContext
+	return marshal.Marshal((C)(s))
 }
 
 type CreateInstancePool struct {
@@ -1281,11 +1729,35 @@ type CreateInstancePool struct {
 	// faster. A list of available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateInstancePool) UnmarshalJSON(b []byte) error {
+	type C CreateInstancePool
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateInstancePool) MarshalJSON() ([]byte, error) {
+	type C CreateInstancePool
+	return marshal.Marshal((C)(s))
 }
 
 type CreateInstancePoolResponse struct {
 	// The ID of the created instance pool.
 	InstancePoolId string `json:"instance_pool_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateInstancePoolResponse) UnmarshalJSON(b []byte) error {
+	type C CreateInstancePoolResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateInstancePoolResponse) MarshalJSON() ([]byte, error) {
+	type C CreateInstancePoolResponse
+	return marshal.Marshal((C)(s))
 }
 
 type CreatePolicy struct {
@@ -1315,20 +1787,68 @@ type CreatePolicy struct {
 	// `policy_family_definition_overrides` instead to customize the policy
 	// definition.
 	PolicyFamilyId string `json:"policy_family_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreatePolicy) UnmarshalJSON(b []byte) error {
+	type C CreatePolicy
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreatePolicy) MarshalJSON() ([]byte, error) {
+	type C CreatePolicy
+	return marshal.Marshal((C)(s))
 }
 
 type CreatePolicyResponse struct {
 	// Canonical unique identifier for the cluster policy.
 	PolicyId string `json:"policy_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreatePolicyResponse) UnmarshalJSON(b []byte) error {
+	type C CreatePolicyResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreatePolicyResponse) MarshalJSON() ([]byte, error) {
+	type C CreatePolicyResponse
+	return marshal.Marshal((C)(s))
 }
 
 type CreateResponse struct {
 	// The global init script ID.
 	ScriptId string `json:"script_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateResponse) UnmarshalJSON(b []byte) error {
+	type C CreateResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateResponse) MarshalJSON() ([]byte, error) {
+	type C CreateResponse
+	return marshal.Marshal((C)(s))
 }
 
 type Created struct {
 	Id string `json:"id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Created) UnmarshalJSON(b []byte) error {
+	type C Created
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Created) MarshalJSON() ([]byte, error) {
+	type C Created
+	return marshal.Marshal((C)(s))
 }
 
 type DataPlaneEventDetails struct {
@@ -1340,6 +1860,18 @@ type DataPlaneEventDetails struct {
 	HostId string `json:"host_id,omitempty"`
 	// <needs content added>
 	Timestamp int64 `json:"timestamp,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DataPlaneEventDetails) UnmarshalJSON(b []byte) error {
+	type C DataPlaneEventDetails
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DataPlaneEventDetails) MarshalJSON() ([]byte, error) {
+	type C DataPlaneEventDetails
+	return marshal.Marshal((C)(s))
 }
 
 // <needs content added>
@@ -1423,33 +1955,105 @@ func (f *DataSecurityMode) Type() string {
 type DbfsStorageInfo struct {
 	// dbfs destination, e.g. `dbfs:/my/path`
 	Destination string `json:"destination,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DbfsStorageInfo) UnmarshalJSON(b []byte) error {
+	type C DbfsStorageInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DbfsStorageInfo) MarshalJSON() ([]byte, error) {
+	type C DbfsStorageInfo
+	return marshal.Marshal((C)(s))
 }
 
 type DeleteCluster struct {
 	// The cluster to be terminated.
 	ClusterId string `json:"cluster_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteCluster) UnmarshalJSON(b []byte) error {
+	type C DeleteCluster
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteCluster) MarshalJSON() ([]byte, error) {
+	type C DeleteCluster
+	return marshal.Marshal((C)(s))
 }
 
 // Delete init script
 type DeleteGlobalInitScriptRequest struct {
 	// The ID of the global init script.
 	ScriptId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteGlobalInitScriptRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteGlobalInitScriptRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteGlobalInitScriptRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteGlobalInitScriptRequest
+	return marshal.Marshal((C)(s))
 }
 
 type DeleteInstancePool struct {
 	// The instance pool to be terminated.
 	InstancePoolId string `json:"instance_pool_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteInstancePool) UnmarshalJSON(b []byte) error {
+	type C DeleteInstancePool
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteInstancePool) MarshalJSON() ([]byte, error) {
+	type C DeleteInstancePool
+	return marshal.Marshal((C)(s))
 }
 
 type DeletePolicy struct {
 	// The ID of the policy to delete.
 	PolicyId string `json:"policy_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeletePolicy) UnmarshalJSON(b []byte) error {
+	type C DeletePolicy
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeletePolicy) MarshalJSON() ([]byte, error) {
+	type C DeletePolicy
+	return marshal.Marshal((C)(s))
 }
 
 type DestroyContext struct {
 	ClusterId string `json:"clusterId"`
 
 	ContextId string `json:"contextId"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DestroyContext) UnmarshalJSON(b []byte) error {
+	type C DestroyContext
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DestroyContext) MarshalJSON() ([]byte, error) {
+	type C DestroyContext
+	return marshal.Marshal((C)(s))
 }
 
 type DiskSpec struct {
@@ -1485,12 +2089,36 @@ type DiskSpec struct {
 	DiskThroughput int `json:"disk_throughput,omitempty"`
 	// The type of disks that will be launched with this cluster.
 	DiskType *DiskType `json:"disk_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DiskSpec) UnmarshalJSON(b []byte) error {
+	type C DiskSpec
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DiskSpec) MarshalJSON() ([]byte, error) {
+	type C DiskSpec
+	return marshal.Marshal((C)(s))
 }
 
 type DiskType struct {
 	AzureDiskVolumeType DiskTypeAzureDiskVolumeType `json:"azure_disk_volume_type,omitempty"`
 
 	EbsVolumeType DiskTypeEbsVolumeType `json:"ebs_volume_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DiskType) UnmarshalJSON(b []byte) error {
+	type C DiskType
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DiskType) MarshalJSON() ([]byte, error) {
+	type C DiskType
+	return marshal.Marshal((C)(s))
 }
 
 type DiskTypeAzureDiskVolumeType string
@@ -1552,12 +2180,36 @@ type DockerBasicAuth struct {
 	Password string `json:"password,omitempty"`
 	// Name of the user
 	Username string `json:"username,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DockerBasicAuth) UnmarshalJSON(b []byte) error {
+	type C DockerBasicAuth
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DockerBasicAuth) MarshalJSON() ([]byte, error) {
+	type C DockerBasicAuth
+	return marshal.Marshal((C)(s))
 }
 
 type DockerImage struct {
 	BasicAuth *DockerBasicAuth `json:"basic_auth,omitempty"`
 	// URL of the docker image.
 	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DockerImage) UnmarshalJSON(b []byte) error {
+	type C DockerImage
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DockerImage) MarshalJSON() ([]byte, error) {
+	type C DockerImage
+	return marshal.Marshal((C)(s))
 }
 
 // The type of EBS volumes that will be launched with this cluster.
@@ -1716,6 +2368,18 @@ type EditCluster struct {
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EditCluster) UnmarshalJSON(b []byte) error {
+	type C EditCluster
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s EditCluster) MarshalJSON() ([]byte, error) {
+	type C EditCluster
+	return marshal.Marshal((C)(s))
 }
 
 type EditInstancePool struct {
@@ -1775,6 +2439,18 @@ type EditInstancePool struct {
 	// faster. A list of available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EditInstancePool) UnmarshalJSON(b []byte) error {
+	type C EditInstancePool
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s EditInstancePool) MarshalJSON() ([]byte, error) {
+	type C EditInstancePool
+	return marshal.Marshal((C)(s))
 }
 
 type EditPolicy struct {
@@ -1806,6 +2482,18 @@ type EditPolicy struct {
 	PolicyFamilyId string `json:"policy_family_id,omitempty"`
 	// The ID of the policy to update.
 	PolicyId string `json:"policy_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EditPolicy) UnmarshalJSON(b []byte) error {
+	type C EditPolicy
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s EditPolicy) MarshalJSON() ([]byte, error) {
+	type C EditPolicy
+	return marshal.Marshal((C)(s))
 }
 
 type EventDetails struct {
@@ -1854,6 +2542,18 @@ type EventDetails struct {
 	// The user that caused the event to occur. (Empty if it was done by the
 	// control plane.)
 	User string `json:"user,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EventDetails) UnmarshalJSON(b []byte) error {
+	type C EventDetails
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s EventDetails) MarshalJSON() ([]byte, error) {
+	type C EventDetails
+	return marshal.Marshal((C)(s))
 }
 
 // The cause of a change in target size.
@@ -1980,6 +2680,18 @@ type GcpAttributes struct {
 	//
 	// [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
 	LocalSsdCount int `json:"local_ssd_count,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GcpAttributes) UnmarshalJSON(b []byte) error {
+	type C GcpAttributes
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GcpAttributes) MarshalJSON() ([]byte, error) {
+	type C GcpAttributes
+	return marshal.Marshal((C)(s))
 }
 
 // This field determines whether the instance pool will contain preemptible VMs,
@@ -2018,46 +2730,142 @@ func (f *GcpAvailability) Type() string {
 type GetClusterPermissionLevelsRequest struct {
 	// The cluster for which to get or manage permissions.
 	ClusterId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetClusterPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	type C GetClusterPermissionLevelsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetClusterPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	type C GetClusterPermissionLevelsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetClusterPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []ClusterPermissionsDescription `json:"permission_levels,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetClusterPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	type C GetClusterPermissionLevelsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetClusterPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	type C GetClusterPermissionLevelsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get cluster permissions
 type GetClusterPermissionsRequest struct {
 	// The cluster for which to get or manage permissions.
 	ClusterId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetClusterPermissionsRequest) UnmarshalJSON(b []byte) error {
+	type C GetClusterPermissionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetClusterPermissionsRequest) MarshalJSON() ([]byte, error) {
+	type C GetClusterPermissionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get cluster policy permission levels
 type GetClusterPolicyPermissionLevelsRequest struct {
 	// The cluster policy for which to get or manage permissions.
 	ClusterPolicyId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetClusterPolicyPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	type C GetClusterPolicyPermissionLevelsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetClusterPolicyPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	type C GetClusterPolicyPermissionLevelsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetClusterPolicyPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []ClusterPolicyPermissionsDescription `json:"permission_levels,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetClusterPolicyPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	type C GetClusterPolicyPermissionLevelsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetClusterPolicyPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	type C GetClusterPolicyPermissionLevelsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get cluster policy permissions
 type GetClusterPolicyPermissionsRequest struct {
 	// The cluster policy for which to get or manage permissions.
 	ClusterPolicyId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetClusterPolicyPermissionsRequest) UnmarshalJSON(b []byte) error {
+	type C GetClusterPolicyPermissionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetClusterPolicyPermissionsRequest) MarshalJSON() ([]byte, error) {
+	type C GetClusterPolicyPermissionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get a cluster policy
 type GetClusterPolicyRequest struct {
 	// Canonical unique identifier for the cluster policy.
 	PolicyId string `json:"-" url:"policy_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetClusterPolicyRequest) UnmarshalJSON(b []byte) error {
+	type C GetClusterPolicyRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetClusterPolicyRequest) MarshalJSON() ([]byte, error) {
+	type C GetClusterPolicyRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get cluster info
 type GetClusterRequest struct {
 	// The cluster about which to retrieve information.
 	ClusterId string `json:"-" url:"cluster_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetClusterRequest) UnmarshalJSON(b []byte) error {
+	type C GetClusterRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetClusterRequest) MarshalJSON() ([]byte, error) {
+	type C GetClusterRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetEvents struct {
@@ -2081,6 +2889,18 @@ type GetEvents struct {
 	// The start time in epoch milliseconds. If empty, returns events starting
 	// from the beginning of time.
 	StartTime int64 `json:"start_time,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetEvents) UnmarshalJSON(b []byte) error {
+	type C GetEvents
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetEvents) MarshalJSON() ([]byte, error) {
+	type C GetEvents
+	return marshal.Marshal((C)(s))
 }
 
 // The order to list events in; either "ASC" or "DESC". Defaults to "DESC".
@@ -2120,12 +2940,36 @@ type GetEventsResponse struct {
 	// The total number of events filtered by the start_time, end_time, and
 	// event_types.
 	TotalCount int64 `json:"total_count,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetEventsResponse) UnmarshalJSON(b []byte) error {
+	type C GetEventsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetEventsResponse) MarshalJSON() ([]byte, error) {
+	type C GetEventsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get an init script
 type GetGlobalInitScriptRequest struct {
 	// The ID of the global init script.
 	ScriptId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetGlobalInitScriptRequest) UnmarshalJSON(b []byte) error {
+	type C GetGlobalInitScriptRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetGlobalInitScriptRequest) MarshalJSON() ([]byte, error) {
+	type C GetGlobalInitScriptRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetInstancePool struct {
@@ -2202,39 +3046,123 @@ type GetInstancePool struct {
 	Stats *InstancePoolStats `json:"stats,omitempty"`
 	// Status of failed pending instances in the pool.
 	Status *InstancePoolStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetInstancePool) UnmarshalJSON(b []byte) error {
+	type C GetInstancePool
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetInstancePool) MarshalJSON() ([]byte, error) {
+	type C GetInstancePool
+	return marshal.Marshal((C)(s))
 }
 
 // Get instance pool permission levels
 type GetInstancePoolPermissionLevelsRequest struct {
 	// The instance pool for which to get or manage permissions.
 	InstancePoolId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetInstancePoolPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	type C GetInstancePoolPermissionLevelsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetInstancePoolPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	type C GetInstancePoolPermissionLevelsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetInstancePoolPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []InstancePoolPermissionsDescription `json:"permission_levels,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetInstancePoolPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	type C GetInstancePoolPermissionLevelsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetInstancePoolPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	type C GetInstancePoolPermissionLevelsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get instance pool permissions
 type GetInstancePoolPermissionsRequest struct {
 	// The instance pool for which to get or manage permissions.
 	InstancePoolId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetInstancePoolPermissionsRequest) UnmarshalJSON(b []byte) error {
+	type C GetInstancePoolPermissionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetInstancePoolPermissionsRequest) MarshalJSON() ([]byte, error) {
+	type C GetInstancePoolPermissionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get instance pool information
 type GetInstancePoolRequest struct {
 	// The canonical unique identifier for the instance pool.
 	InstancePoolId string `json:"-" url:"instance_pool_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetInstancePoolRequest) UnmarshalJSON(b []byte) error {
+	type C GetInstancePoolRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetInstancePoolRequest) MarshalJSON() ([]byte, error) {
+	type C GetInstancePoolRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get policy family information
 type GetPolicyFamilyRequest struct {
 	PolicyFamilyId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetPolicyFamilyRequest) UnmarshalJSON(b []byte) error {
+	type C GetPolicyFamilyRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetPolicyFamilyRequest) MarshalJSON() ([]byte, error) {
+	type C GetPolicyFamilyRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetSparkVersionsResponse struct {
 	// All the available Spark versions.
 	Versions []SparkVersion `json:"versions,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetSparkVersionsResponse) UnmarshalJSON(b []byte) error {
+	type C GetSparkVersionsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetSparkVersionsResponse) MarshalJSON() ([]byte, error) {
+	type C GetSparkVersionsResponse
+	return marshal.Marshal((C)(s))
 }
 
 type GlobalInitScriptCreateRequest struct {
@@ -2256,6 +3184,18 @@ type GlobalInitScriptCreateRequest struct {
 	Position int `json:"position,omitempty"`
 	// The Base64-encoded content of the script.
 	Script string `json:"script"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GlobalInitScriptCreateRequest) UnmarshalJSON(b []byte) error {
+	type C GlobalInitScriptCreateRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GlobalInitScriptCreateRequest) MarshalJSON() ([]byte, error) {
+	type C GlobalInitScriptCreateRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GlobalInitScriptDetails struct {
@@ -2278,6 +3218,18 @@ type GlobalInitScriptDetails struct {
 	UpdatedAt int `json:"updated_at,omitempty"`
 	// The username of the user who last updated the script
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GlobalInitScriptDetails) UnmarshalJSON(b []byte) error {
+	type C GlobalInitScriptDetails
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GlobalInitScriptDetails) MarshalJSON() ([]byte, error) {
+	type C GlobalInitScriptDetails
+	return marshal.Marshal((C)(s))
 }
 
 type GlobalInitScriptDetailsWithContent struct {
@@ -2302,6 +3254,18 @@ type GlobalInitScriptDetailsWithContent struct {
 	UpdatedAt int `json:"updated_at,omitempty"`
 	// The username of the user who last updated the script
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GlobalInitScriptDetailsWithContent) UnmarshalJSON(b []byte) error {
+	type C GlobalInitScriptDetailsWithContent
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GlobalInitScriptDetailsWithContent) MarshalJSON() ([]byte, error) {
+	type C GlobalInitScriptDetailsWithContent
+	return marshal.Marshal((C)(s))
 }
 
 type GlobalInitScriptUpdateRequest struct {
@@ -2326,6 +3290,18 @@ type GlobalInitScriptUpdateRequest struct {
 	Script string `json:"script"`
 	// The ID of the global init script.
 	ScriptId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GlobalInitScriptUpdateRequest) UnmarshalJSON(b []byte) error {
+	type C GlobalInitScriptUpdateRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GlobalInitScriptUpdateRequest) MarshalJSON() ([]byte, error) {
+	type C GlobalInitScriptUpdateRequest
+	return marshal.Marshal((C)(s))
 }
 
 type InitScriptInfo struct {
@@ -2344,6 +3320,18 @@ type InitScriptInfo struct {
 	// destination needs to be provided. e.g. `{ "workspace" : { "destination" :
 	// "/Users/user1@databricks.com/my-init.sh" } }`
 	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InitScriptInfo) UnmarshalJSON(b []byte) error {
+	type C InitScriptInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InitScriptInfo) MarshalJSON() ([]byte, error) {
+	type C InitScriptInfo
+	return marshal.Marshal((C)(s))
 }
 
 type InstallLibraries struct {
@@ -2351,6 +3339,18 @@ type InstallLibraries struct {
 	ClusterId string `json:"cluster_id"`
 	// The libraries to install.
 	Libraries []Library `json:"libraries"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstallLibraries) UnmarshalJSON(b []byte) error {
+	type C InstallLibraries
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstallLibraries) MarshalJSON() ([]byte, error) {
+	type C InstallLibraries
+	return marshal.Marshal((C)(s))
 }
 
 type InstancePoolAccessControlRequest struct {
@@ -2362,6 +3362,18 @@ type InstancePoolAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstancePoolAccessControlRequest) UnmarshalJSON(b []byte) error {
+	type C InstancePoolAccessControlRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstancePoolAccessControlRequest) MarshalJSON() ([]byte, error) {
+	type C InstancePoolAccessControlRequest
+	return marshal.Marshal((C)(s))
 }
 
 type InstancePoolAccessControlResponse struct {
@@ -2375,6 +3387,18 @@ type InstancePoolAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstancePoolAccessControlResponse) UnmarshalJSON(b []byte) error {
+	type C InstancePoolAccessControlResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstancePoolAccessControlResponse) MarshalJSON() ([]byte, error) {
+	type C InstancePoolAccessControlResponse
+	return marshal.Marshal((C)(s))
 }
 
 type InstancePoolAndStats struct {
@@ -2451,6 +3475,18 @@ type InstancePoolAndStats struct {
 	Stats *InstancePoolStats `json:"stats,omitempty"`
 	// Status of failed pending instances in the pool.
 	Status *InstancePoolStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstancePoolAndStats) UnmarshalJSON(b []byte) error {
+	type C InstancePoolAndStats
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstancePoolAndStats) MarshalJSON() ([]byte, error) {
+	type C InstancePoolAndStats
+	return marshal.Marshal((C)(s))
 }
 
 type InstancePoolAwsAttributes struct {
@@ -2483,6 +3519,18 @@ type InstancePoolAwsAttributes struct {
 	// will be used. The list of available zones as well as the default value
 	// can be found by using the `List Zones`_ method.
 	ZoneId string `json:"zone_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstancePoolAwsAttributes) UnmarshalJSON(b []byte) error {
+	type C InstancePoolAwsAttributes
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstancePoolAwsAttributes) MarshalJSON() ([]byte, error) {
+	type C InstancePoolAwsAttributes
+	return marshal.Marshal((C)(s))
 }
 
 // Availability type used for the spot nodes.
@@ -2527,6 +3575,18 @@ type InstancePoolAzureAttributes struct {
 	// The default value and documentation here should be kept consistent with
 	// CommonConf.defaultSpotBidMaxPrice.
 	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstancePoolAzureAttributes) UnmarshalJSON(b []byte) error {
+	type C InstancePoolAzureAttributes
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstancePoolAzureAttributes) MarshalJSON() ([]byte, error) {
+	type C InstancePoolAzureAttributes
+	return marshal.Marshal((C)(s))
 }
 
 // Shows the Availability type used for the spot nodes.
@@ -2574,6 +3634,18 @@ type InstancePoolGcpAttributes struct {
 	//
 	// [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
 	LocalSsdCount int `json:"local_ssd_count,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstancePoolGcpAttributes) UnmarshalJSON(b []byte) error {
+	type C InstancePoolGcpAttributes
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstancePoolGcpAttributes) MarshalJSON() ([]byte, error) {
+	type C InstancePoolGcpAttributes
+	return marshal.Marshal((C)(s))
 }
 
 type InstancePoolPermission struct {
@@ -2582,6 +3654,18 @@ type InstancePoolPermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstancePoolPermission) UnmarshalJSON(b []byte) error {
+	type C InstancePoolPermission
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstancePoolPermission) MarshalJSON() ([]byte, error) {
+	type C InstancePoolPermission
+	return marshal.Marshal((C)(s))
 }
 
 // Permission level
@@ -2618,18 +3702,54 @@ type InstancePoolPermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstancePoolPermissions) UnmarshalJSON(b []byte) error {
+	type C InstancePoolPermissions
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstancePoolPermissions) MarshalJSON() ([]byte, error) {
+	type C InstancePoolPermissions
+	return marshal.Marshal((C)(s))
 }
 
 type InstancePoolPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstancePoolPermissionsDescription) UnmarshalJSON(b []byte) error {
+	type C InstancePoolPermissionsDescription
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstancePoolPermissionsDescription) MarshalJSON() ([]byte, error) {
+	type C InstancePoolPermissionsDescription
+	return marshal.Marshal((C)(s))
 }
 
 type InstancePoolPermissionsRequest struct {
 	AccessControlList []InstancePoolAccessControlRequest `json:"access_control_list,omitempty"`
 	// The instance pool for which to get or manage permissions.
 	InstancePoolId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstancePoolPermissionsRequest) UnmarshalJSON(b []byte) error {
+	type C InstancePoolPermissionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstancePoolPermissionsRequest) MarshalJSON() ([]byte, error) {
+	type C InstancePoolPermissionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Current state of the instance pool.
@@ -2671,6 +3791,18 @@ type InstancePoolStats struct {
 	PendingUsedCount int `json:"pending_used_count,omitempty"`
 	// Number of active instances in the pool that are part of a cluster.
 	UsedCount int `json:"used_count,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstancePoolStats) UnmarshalJSON(b []byte) error {
+	type C InstancePoolStats
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstancePoolStats) MarshalJSON() ([]byte, error) {
+	type C InstancePoolStats
+	return marshal.Marshal((C)(s))
 }
 
 type InstancePoolStatus struct {
@@ -2679,6 +3811,18 @@ type InstancePoolStatus struct {
 	// of the pool. The pending_instance_errors is emptied once the number of
 	// exiting available instances reaches the min_idle of the pool.
 	PendingInstanceErrors []PendingInstanceError `json:"pending_instance_errors,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstancePoolStatus) UnmarshalJSON(b []byte) error {
+	type C InstancePoolStatus
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstancePoolStatus) MarshalJSON() ([]byte, error) {
+	type C InstancePoolStatus
+	return marshal.Marshal((C)(s))
 }
 
 type InstanceProfile struct {
@@ -2700,6 +3844,18 @@ type InstanceProfile struct {
 	// roles. Therefore it should always be used with authorization. This field
 	// is optional, the default value is `false`.
 	IsMetaInstanceProfile bool `json:"is_meta_instance_profile,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InstanceProfile) UnmarshalJSON(b []byte) error {
+	type C InstanceProfile
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InstanceProfile) MarshalJSON() ([]byte, error) {
+	type C InstanceProfile
+	return marshal.Marshal((C)(s))
 }
 
 type Language string
@@ -2757,6 +3913,18 @@ type Library struct {
 	// the cluster has read access on the library. You may need to launch the
 	// cluster with an IAM role to access the S3 URI.
 	Whl string `json:"whl,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Library) UnmarshalJSON(b []byte) error {
+	type C Library
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Library) MarshalJSON() ([]byte, error) {
+	type C Library
+	return marshal.Marshal((C)(s))
 }
 
 type LibraryFullStatus struct {
@@ -2770,6 +3938,18 @@ type LibraryFullStatus struct {
 	Messages []string `json:"messages,omitempty"`
 	// Status of installing the library on the cluster.
 	Status LibraryFullStatusStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LibraryFullStatus) UnmarshalJSON(b []byte) error {
+	type C LibraryFullStatus
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s LibraryFullStatus) MarshalJSON() ([]byte, error) {
+	type C LibraryFullStatus
+	return marshal.Marshal((C)(s))
 }
 
 // Status of installing the library on the cluster.
@@ -2813,6 +3993,18 @@ func (f *LibraryFullStatusStatus) Type() string {
 type ListAllClusterLibraryStatusesResponse struct {
 	// A list of cluster statuses.
 	Statuses []ClusterLibraryStatuses `json:"statuses,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListAllClusterLibraryStatusesResponse) UnmarshalJSON(b []byte) error {
+	type C ListAllClusterLibraryStatusesResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListAllClusterLibraryStatusesResponse) MarshalJSON() ([]byte, error) {
+	type C ListAllClusterLibraryStatusesResponse
+	return marshal.Marshal((C)(s))
 }
 
 type ListAvailableZonesResponse struct {
@@ -2821,6 +4013,18 @@ type ListAvailableZonesResponse struct {
 	DefaultZone string `json:"default_zone,omitempty"`
 	// The list of available zones (e.g., ['us-west-2c', 'us-east-2']).
 	Zones []string `json:"zones,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListAvailableZonesResponse) UnmarshalJSON(b []byte) error {
+	type C ListAvailableZonesResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListAvailableZonesResponse) MarshalJSON() ([]byte, error) {
+	type C ListAvailableZonesResponse
+	return marshal.Marshal((C)(s))
 }
 
 // List cluster policies
@@ -2832,6 +4036,18 @@ type ListClusterPoliciesRequest struct {
 	// The order in which the policies get listed. * `DESC` - Sort result list
 	// in descending order. * `ASC` - Sort result list in ascending order.
 	SortOrder ListSortOrder `json:"-" url:"sort_order,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListClusterPoliciesRequest) UnmarshalJSON(b []byte) error {
+	type C ListClusterPoliciesRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListClusterPoliciesRequest) MarshalJSON() ([]byte, error) {
+	type C ListClusterPoliciesRequest
+	return marshal.Marshal((C)(s))
 }
 
 // List all clusters
@@ -2840,34 +4056,118 @@ type ListClustersRequest struct {
 	// either NOTEBOOKS or JOBS. No input for this field will get all clusters
 	// in the workspace without filtering on its supported client
 	CanUseClient string `json:"-" url:"can_use_client,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListClustersRequest) UnmarshalJSON(b []byte) error {
+	type C ListClustersRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListClustersRequest) MarshalJSON() ([]byte, error) {
+	type C ListClustersRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ListClustersResponse struct {
 	// <needs content added>
 	Clusters []ClusterDetails `json:"clusters,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListClustersResponse) UnmarshalJSON(b []byte) error {
+	type C ListClustersResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListClustersResponse) MarshalJSON() ([]byte, error) {
+	type C ListClustersResponse
+	return marshal.Marshal((C)(s))
 }
 
 type ListGlobalInitScriptsResponse struct {
 	Scripts []GlobalInitScriptDetails `json:"scripts,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListGlobalInitScriptsResponse) UnmarshalJSON(b []byte) error {
+	type C ListGlobalInitScriptsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListGlobalInitScriptsResponse) MarshalJSON() ([]byte, error) {
+	type C ListGlobalInitScriptsResponse
+	return marshal.Marshal((C)(s))
 }
 
 type ListInstancePools struct {
 	InstancePools []InstancePoolAndStats `json:"instance_pools,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListInstancePools) UnmarshalJSON(b []byte) error {
+	type C ListInstancePools
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListInstancePools) MarshalJSON() ([]byte, error) {
+	type C ListInstancePools
+	return marshal.Marshal((C)(s))
 }
 
 type ListInstanceProfilesResponse struct {
 	// A list of instance profiles that the user can access.
 	InstanceProfiles []InstanceProfile `json:"instance_profiles,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListInstanceProfilesResponse) UnmarshalJSON(b []byte) error {
+	type C ListInstanceProfilesResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListInstanceProfilesResponse) MarshalJSON() ([]byte, error) {
+	type C ListInstanceProfilesResponse
+	return marshal.Marshal((C)(s))
 }
 
 type ListNodeTypesResponse struct {
 	// The list of available Spark node types.
 	NodeTypes []NodeType `json:"node_types,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListNodeTypesResponse) UnmarshalJSON(b []byte) error {
+	type C ListNodeTypesResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListNodeTypesResponse) MarshalJSON() ([]byte, error) {
+	type C ListNodeTypesResponse
+	return marshal.Marshal((C)(s))
 }
 
 type ListPoliciesResponse struct {
 	// List of policies.
 	Policies []Policy `json:"policies,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListPoliciesResponse) UnmarshalJSON(b []byte) error {
+	type C ListPoliciesResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListPoliciesResponse) MarshalJSON() ([]byte, error) {
+	type C ListPoliciesResponse
+	return marshal.Marshal((C)(s))
 }
 
 // List policy families
@@ -2876,6 +4176,18 @@ type ListPolicyFamiliesRequest struct {
 	MaxResults int64 `json:"-" url:"max_results,omitempty"`
 	// A token that can be used to get the next page of results.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListPolicyFamiliesRequest) UnmarshalJSON(b []byte) error {
+	type C ListPolicyFamiliesRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListPolicyFamiliesRequest) MarshalJSON() ([]byte, error) {
+	type C ListPolicyFamiliesRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ListPolicyFamiliesResponse struct {
@@ -2884,6 +4196,18 @@ type ListPolicyFamiliesResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// List of policy families.
 	PolicyFamilies []PolicyFamily `json:"policy_families"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListPolicyFamiliesResponse) UnmarshalJSON(b []byte) error {
+	type C ListPolicyFamiliesResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListPolicyFamiliesResponse) MarshalJSON() ([]byte, error) {
+	type C ListPolicyFamiliesResponse
+	return marshal.Marshal((C)(s))
 }
 
 type ListSortColumn string
@@ -2945,6 +4269,18 @@ type LogAnalyticsInfo struct {
 	LogAnalyticsPrimaryKey string `json:"log_analytics_primary_key,omitempty"`
 	// <needs content added>
 	LogAnalyticsWorkspaceId string `json:"log_analytics_workspace_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LogAnalyticsInfo) UnmarshalJSON(b []byte) error {
+	type C LogAnalyticsInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s LogAnalyticsInfo) MarshalJSON() ([]byte, error) {
+	type C LogAnalyticsInfo
+	return marshal.Marshal((C)(s))
 }
 
 type LogSyncStatus struct {
@@ -2954,6 +4290,18 @@ type LogSyncStatus struct {
 	// The exception thrown in the last attempt, it would be null (omitted in
 	// the response) if there is no exception in last attempted.
 	LastException string `json:"last_exception,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LogSyncStatus) UnmarshalJSON(b []byte) error {
+	type C LogSyncStatus
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s LogSyncStatus) MarshalJSON() ([]byte, error) {
+	type C LogSyncStatus
+	return marshal.Marshal((C)(s))
 }
 
 type MavenLibrary struct {
@@ -2968,6 +4316,18 @@ type MavenLibrary struct {
 	// Maven repo to install the Maven package from. If omitted, both Maven
 	// Central Repository and Spark Packages are searched.
 	Repo string `json:"repo,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *MavenLibrary) UnmarshalJSON(b []byte) error {
+	type C MavenLibrary
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s MavenLibrary) MarshalJSON() ([]byte, error) {
+	type C MavenLibrary
+	return marshal.Marshal((C)(s))
 }
 
 type NodeInstanceType struct {
@@ -2980,6 +4340,18 @@ type NodeInstanceType struct {
 	LocalNvmeDiskSizeGb int `json:"local_nvme_disk_size_gb,omitempty"`
 
 	LocalNvmeDisks int `json:"local_nvme_disks,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *NodeInstanceType) UnmarshalJSON(b []byte) error {
+	type C NodeInstanceType
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s NodeInstanceType) MarshalJSON() ([]byte, error) {
+	type C NodeInstanceType
+	return marshal.Marshal((C)(s))
 }
 
 type NodeType struct {
@@ -3030,22 +4402,70 @@ type NodeType struct {
 	// Indicates if this node type can be used for an instance pool or cluster
 	// with elastic disk enabled. This is true for most node types.
 	SupportsElasticDisk bool `json:"supports_elastic_disk,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *NodeType) UnmarshalJSON(b []byte) error {
+	type C NodeType
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s NodeType) MarshalJSON() ([]byte, error) {
+	type C NodeType
+	return marshal.Marshal((C)(s))
 }
 
 type PendingInstanceError struct {
 	InstanceId string `json:"instance_id,omitempty"`
 
 	Message string `json:"message,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PendingInstanceError) UnmarshalJSON(b []byte) error {
+	type C PendingInstanceError
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s PendingInstanceError) MarshalJSON() ([]byte, error) {
+	type C PendingInstanceError
+	return marshal.Marshal((C)(s))
 }
 
 type PermanentDeleteCluster struct {
 	// The cluster to be deleted.
 	ClusterId string `json:"cluster_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PermanentDeleteCluster) UnmarshalJSON(b []byte) error {
+	type C PermanentDeleteCluster
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s PermanentDeleteCluster) MarshalJSON() ([]byte, error) {
+	type C PermanentDeleteCluster
+	return marshal.Marshal((C)(s))
 }
 
 type PinCluster struct {
 	// <needs content added>
 	ClusterId string `json:"cluster_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PinCluster) UnmarshalJSON(b []byte) error {
+	type C PinCluster
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s PinCluster) MarshalJSON() ([]byte, error) {
+	type C PinCluster
+	return marshal.Marshal((C)(s))
 }
 
 type Policy struct {
@@ -3082,6 +4502,18 @@ type Policy struct {
 	PolicyFamilyId string `json:"policy_family_id,omitempty"`
 	// Canonical unique identifier for the Cluster Policy.
 	PolicyId string `json:"policy_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Policy) UnmarshalJSON(b []byte) error {
+	type C Policy
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Policy) MarshalJSON() ([]byte, error) {
+	type C Policy
+	return marshal.Marshal((C)(s))
 }
 
 type PolicyFamily struct {
@@ -3094,6 +4526,18 @@ type PolicyFamily struct {
 	Name string `json:"name"`
 	// ID of the policy family.
 	PolicyFamilyId string `json:"policy_family_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PolicyFamily) UnmarshalJSON(b []byte) error {
+	type C PolicyFamily
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s PolicyFamily) MarshalJSON() ([]byte, error) {
+	type C PolicyFamily
+	return marshal.Marshal((C)(s))
 }
 
 type PythonPyPiLibrary struct {
@@ -3104,6 +4548,18 @@ type PythonPyPiLibrary struct {
 	// The repository where the package can be found. If not specified, the
 	// default pip index is used.
 	Repo string `json:"repo,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PythonPyPiLibrary) UnmarshalJSON(b []byte) error {
+	type C PythonPyPiLibrary
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s PythonPyPiLibrary) MarshalJSON() ([]byte, error) {
+	type C PythonPyPiLibrary
+	return marshal.Marshal((C)(s))
 }
 
 type RCranLibrary struct {
@@ -3112,11 +4568,35 @@ type RCranLibrary struct {
 	// The repository where the package can be found. If not specified, the
 	// default CRAN repo is used.
 	Repo string `json:"repo,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RCranLibrary) UnmarshalJSON(b []byte) error {
+	type C RCranLibrary
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RCranLibrary) MarshalJSON() ([]byte, error) {
+	type C RCranLibrary
+	return marshal.Marshal((C)(s))
 }
 
 type RemoveInstanceProfile struct {
 	// The ARN of the instance profile to remove. This field is required.
 	InstanceProfileArn string `json:"instance_profile_arn"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RemoveInstanceProfile) UnmarshalJSON(b []byte) error {
+	type C RemoveInstanceProfile
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RemoveInstanceProfile) MarshalJSON() ([]byte, error) {
+	type C RemoveInstanceProfile
+	return marshal.Marshal((C)(s))
 }
 
 type ResizeCluster struct {
@@ -3137,6 +4617,18 @@ type ResizeCluster struct {
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	NumWorkers int `json:"num_workers,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ResizeCluster) UnmarshalJSON(b []byte) error {
+	type C ResizeCluster
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ResizeCluster) MarshalJSON() ([]byte, error) {
+	type C ResizeCluster
+	return marshal.Marshal((C)(s))
 }
 
 type RestartCluster struct {
@@ -3144,6 +4636,18 @@ type RestartCluster struct {
 	ClusterId string `json:"cluster_id"`
 	// <needs content added>
 	RestartUser string `json:"restart_user,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RestartCluster) UnmarshalJSON(b []byte) error {
+	type C RestartCluster
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RestartCluster) MarshalJSON() ([]byte, error) {
+	type C RestartCluster
+	return marshal.Marshal((C)(s))
 }
 
 type ResultType string
@@ -3201,6 +4705,18 @@ type Results struct {
 	Summary string `json:"summary,omitempty"`
 	// true if partial results are returned.
 	Truncated bool `json:"truncated,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Results) UnmarshalJSON(b []byte) error {
+	type C Results
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Results) MarshalJSON() ([]byte, error) {
+	type C Results
+	return marshal.Marshal((C)(s))
 }
 
 // Decides which runtime engine to be use, e.g. Standard vs. Photon. If
@@ -3265,6 +4781,18 @@ type S3StorageInfo struct {
 	// S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set.
 	// If both are set, endpoint will be used.
 	Region string `json:"region,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *S3StorageInfo) UnmarshalJSON(b []byte) error {
+	type C S3StorageInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s S3StorageInfo) MarshalJSON() ([]byte, error) {
+	type C S3StorageInfo
+	return marshal.Marshal((C)(s))
 }
 
 type SparkNode struct {
@@ -3293,11 +4821,35 @@ type SparkNode struct {
 	// its launch and setup by the NodeDaemon. This timestamp is the same as the
 	// creation timestamp in the database.
 	StartTimestamp int64 `json:"start_timestamp,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SparkNode) UnmarshalJSON(b []byte) error {
+	type C SparkNode
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SparkNode) MarshalJSON() ([]byte, error) {
+	type C SparkNode
+	return marshal.Marshal((C)(s))
 }
 
 type SparkNodeAwsAttributes struct {
 	// Whether this node is on an Amazon spot instance.
 	IsSpot bool `json:"is_spot,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SparkNodeAwsAttributes) UnmarshalJSON(b []byte) error {
+	type C SparkNodeAwsAttributes
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SparkNodeAwsAttributes) MarshalJSON() ([]byte, error) {
+	type C SparkNodeAwsAttributes
+	return marshal.Marshal((C)(s))
 }
 
 type SparkVersion struct {
@@ -3309,11 +4861,35 @@ type SparkVersion struct {
 	Key string `json:"key,omitempty"`
 	// A descriptive name for this Spark version, for example "Spark 2.1".
 	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SparkVersion) UnmarshalJSON(b []byte) error {
+	type C SparkVersion
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SparkVersion) MarshalJSON() ([]byte, error) {
+	type C SparkVersion
+	return marshal.Marshal((C)(s))
 }
 
 type StartCluster struct {
 	// The cluster to be started.
 	ClusterId string `json:"cluster_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StartCluster) UnmarshalJSON(b []byte) error {
+	type C StartCluster
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s StartCluster) MarshalJSON() ([]byte, error) {
+	type C StartCluster
+	return marshal.Marshal((C)(s))
 }
 
 // Current state of the cluster.
@@ -3364,6 +4940,18 @@ type TerminationReason struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 	// type of the termination
 	Type TerminationReasonType `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TerminationReason) UnmarshalJSON(b []byte) error {
+	type C TerminationReason
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TerminationReason) MarshalJSON() ([]byte, error) {
+	type C TerminationReason
+	return marshal.Marshal((C)(s))
 }
 
 // status code indicating why the cluster was terminated
@@ -3585,25 +5173,85 @@ type UninstallLibraries struct {
 	ClusterId string `json:"cluster_id"`
 	// The libraries to uninstall.
 	Libraries []Library `json:"libraries"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UninstallLibraries) UnmarshalJSON(b []byte) error {
+	type C UninstallLibraries
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UninstallLibraries) MarshalJSON() ([]byte, error) {
+	type C UninstallLibraries
+	return marshal.Marshal((C)(s))
 }
 
 type UnpinCluster struct {
 	// <needs content added>
 	ClusterId string `json:"cluster_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UnpinCluster) UnmarshalJSON(b []byte) error {
+	type C UnpinCluster
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UnpinCluster) MarshalJSON() ([]byte, error) {
+	type C UnpinCluster
+	return marshal.Marshal((C)(s))
 }
 
 type VolumesStorageInfo struct {
 	// Unity Catalog Volumes file destination, e.g. `/Volumes/my-init.sh`
 	Destination string `json:"destination,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *VolumesStorageInfo) UnmarshalJSON(b []byte) error {
+	type C VolumesStorageInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s VolumesStorageInfo) MarshalJSON() ([]byte, error) {
+	type C VolumesStorageInfo
+	return marshal.Marshal((C)(s))
 }
 
 type WorkloadType struct {
 	// defined what type of clients can use the cluster. E.g. Notebooks, Jobs
 	Clients *ClientsTypes `json:"clients,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WorkloadType) UnmarshalJSON(b []byte) error {
+	type C WorkloadType
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WorkloadType) MarshalJSON() ([]byte, error) {
+	type C WorkloadType
+	return marshal.Marshal((C)(s))
 }
 
 type WorkspaceStorageInfo struct {
 	// workspace files destination, e.g.
 	// `/Users/user1@databricks.com/my-init.sh`
 	Destination string `json:"destination,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WorkspaceStorageInfo) UnmarshalJSON(b []byte) error {
+	type C WorkspaceStorageInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WorkspaceStorageInfo) MarshalJSON() ([]byte, error) {
+	type C WorkspaceStorageInfo
+	return marshal.Marshal((C)(s))
 }

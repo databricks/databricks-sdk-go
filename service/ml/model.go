@@ -2,7 +2,11 @@
 
 package ml
 
-import "fmt"
+import (
+	"fmt"
+
+	marshal "github.com/databricks/databricks-sdk-go/json"
+)
 
 // all definitions in this file are in alphabetical order
 
@@ -47,6 +51,18 @@ type Activity struct {
 	ToStage Stage `json:"to_stage,omitempty"`
 	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Activity) UnmarshalJSON(b []byte) error {
+	type C Activity
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Activity) MarshalJSON() ([]byte, error) {
+	type C Activity
+	return marshal.Marshal((C)(s))
 }
 
 // This describes an enum
@@ -147,11 +163,35 @@ type ApproveTransitionRequest struct {
 	Stage Stage `json:"stage"`
 	// Version of the model.
 	Version string `json:"version"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ApproveTransitionRequest) UnmarshalJSON(b []byte) error {
+	type C ApproveTransitionRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ApproveTransitionRequest) MarshalJSON() ([]byte, error) {
+	type C ApproveTransitionRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ApproveTransitionRequestResponse struct {
 	// Activity recorded for the action.
 	Activity *Activity `json:"activity,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ApproveTransitionRequestResponse) UnmarshalJSON(b []byte) error {
+	type C ApproveTransitionRequestResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ApproveTransitionRequestResponse) MarshalJSON() ([]byte, error) {
+	type C ApproveTransitionRequestResponse
+	return marshal.Marshal((C)(s))
 }
 
 // This describes an enum
@@ -198,6 +238,18 @@ type CommentObject struct {
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CommentObject) UnmarshalJSON(b []byte) error {
+	type C CommentObject
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CommentObject) MarshalJSON() ([]byte, error) {
+	type C CommentObject
+	return marshal.Marshal((C)(s))
 }
 
 type CreateComment struct {
@@ -207,11 +259,35 @@ type CreateComment struct {
 	Name string `json:"name"`
 	// Version of the model.
 	Version string `json:"version"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateComment) UnmarshalJSON(b []byte) error {
+	type C CreateComment
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateComment) MarshalJSON() ([]byte, error) {
+	type C CreateComment
+	return marshal.Marshal((C)(s))
 }
 
 type CreateCommentResponse struct {
 	// Comment details.
 	Comment *CommentObject `json:"comment,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateCommentResponse) UnmarshalJSON(b []byte) error {
+	type C CreateCommentResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateCommentResponse) MarshalJSON() ([]byte, error) {
+	type C CreateCommentResponse
+	return marshal.Marshal((C)(s))
 }
 
 type CreateExperiment struct {
@@ -226,11 +302,35 @@ type CreateExperiment struct {
 	// tag values up to 5000 bytes in size. All storage backends are also
 	// guaranteed to support up to 20 tags per request.
 	Tags []ExperimentTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateExperiment) UnmarshalJSON(b []byte) error {
+	type C CreateExperiment
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateExperiment) MarshalJSON() ([]byte, error) {
+	type C CreateExperiment
+	return marshal.Marshal((C)(s))
 }
 
 type CreateExperimentResponse struct {
 	// Unique identifier for the experiment.
 	ExperimentId string `json:"experiment_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateExperimentResponse) UnmarshalJSON(b []byte) error {
+	type C CreateExperimentResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateExperimentResponse) MarshalJSON() ([]byte, error) {
+	type C CreateExperimentResponse
+	return marshal.Marshal((C)(s))
 }
 
 type CreateModelRequest struct {
@@ -240,10 +340,34 @@ type CreateModelRequest struct {
 	Name string `json:"name"`
 	// Additional metadata for registered model.
 	Tags []ModelTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateModelRequest) UnmarshalJSON(b []byte) error {
+	type C CreateModelRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateModelRequest) MarshalJSON() ([]byte, error) {
+	type C CreateModelRequest
+	return marshal.Marshal((C)(s))
 }
 
 type CreateModelResponse struct {
 	RegisteredModel *Model `json:"registered_model,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateModelResponse) UnmarshalJSON(b []byte) error {
+	type C CreateModelResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateModelResponse) MarshalJSON() ([]byte, error) {
+	type C CreateModelResponse
+	return marshal.Marshal((C)(s))
 }
 
 type CreateModelVersionRequest struct {
@@ -261,11 +385,35 @@ type CreateModelVersionRequest struct {
 	Source string `json:"source"`
 	// Additional metadata for model version.
 	Tags []ModelVersionTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateModelVersionRequest) UnmarshalJSON(b []byte) error {
+	type C CreateModelVersionRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateModelVersionRequest) MarshalJSON() ([]byte, error) {
+	type C CreateModelVersionRequest
+	return marshal.Marshal((C)(s))
 }
 
 type CreateModelVersionResponse struct {
 	// Return new version number generated for this model in registry.
 	ModelVersion *ModelVersion `json:"model_version,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateModelVersionResponse) UnmarshalJSON(b []byte) error {
+	type C CreateModelVersionResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateModelVersionResponse) MarshalJSON() ([]byte, error) {
+	type C CreateModelVersionResponse
+	return marshal.Marshal((C)(s))
 }
 
 type CreateRegistryWebhook struct {
@@ -313,6 +461,18 @@ type CreateRegistryWebhook struct {
 	ModelName string `json:"model_name,omitempty"`
 	// This describes an enum
 	Status RegistryWebhookStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateRegistryWebhook) UnmarshalJSON(b []byte) error {
+	type C CreateRegistryWebhook
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateRegistryWebhook) MarshalJSON() ([]byte, error) {
+	type C CreateRegistryWebhook
+	return marshal.Marshal((C)(s))
 }
 
 type CreateRun struct {
@@ -326,11 +486,35 @@ type CreateRun struct {
 	// 1.0, and will be removed in a future MLflow release. Use 'mlflow.user'
 	// tag instead.
 	UserId string `json:"user_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateRun) UnmarshalJSON(b []byte) error {
+	type C CreateRun
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateRun) MarshalJSON() ([]byte, error) {
+	type C CreateRun
+	return marshal.Marshal((C)(s))
 }
 
 type CreateRunResponse struct {
 	// The newly created run.
 	Run *Run `json:"run,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateRunResponse) UnmarshalJSON(b []byte) error {
+	type C CreateRunResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateRunResponse) MarshalJSON() ([]byte, error) {
+	type C CreateRunResponse
+	return marshal.Marshal((C)(s))
 }
 
 type CreateTransitionRequest struct {
@@ -350,15 +534,51 @@ type CreateTransitionRequest struct {
 	Stage Stage `json:"stage"`
 	// Version of the model.
 	Version string `json:"version"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateTransitionRequest) UnmarshalJSON(b []byte) error {
+	type C CreateTransitionRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateTransitionRequest) MarshalJSON() ([]byte, error) {
+	type C CreateTransitionRequest
+	return marshal.Marshal((C)(s))
 }
 
 type CreateTransitionRequestResponse struct {
 	// Transition request details.
 	Request *TransitionRequest `json:"request,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateTransitionRequestResponse) UnmarshalJSON(b []byte) error {
+	type C CreateTransitionRequestResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateTransitionRequestResponse) MarshalJSON() ([]byte, error) {
+	type C CreateTransitionRequestResponse
+	return marshal.Marshal((C)(s))
 }
 
 type CreateWebhookResponse struct {
 	Webhook *RegistryWebhook `json:"webhook,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateWebhookResponse) UnmarshalJSON(b []byte) error {
+	type C CreateWebhookResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateWebhookResponse) MarshalJSON() ([]byte, error) {
+	type C CreateWebhookResponse
+	return marshal.Marshal((C)(s))
 }
 
 type Dataset struct {
@@ -382,6 +602,18 @@ type Dataset struct {
 	// reproduce the dataset if it was transformed / modified before use with
 	// MLflow.
 	SourceType string `json:"source_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Dataset) UnmarshalJSON(b []byte) error {
+	type C Dataset
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Dataset) MarshalJSON() ([]byte, error) {
+	type C Dataset
+	return marshal.Marshal((C)(s))
 }
 
 type DatasetInput struct {
@@ -390,22 +622,70 @@ type DatasetInput struct {
 	// A list of tags for the dataset input, e.g. a “context” tag with value
 	// “training”
 	Tags []InputTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DatasetInput) UnmarshalJSON(b []byte) error {
+	type C DatasetInput
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DatasetInput) MarshalJSON() ([]byte, error) {
+	type C DatasetInput
+	return marshal.Marshal((C)(s))
 }
 
 // Delete a comment
 type DeleteCommentRequest struct {
 	Id string `json:"-" url:"id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteCommentRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteCommentRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteCommentRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteCommentRequest
+	return marshal.Marshal((C)(s))
 }
 
 type DeleteExperiment struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"experiment_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteExperiment) UnmarshalJSON(b []byte) error {
+	type C DeleteExperiment
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteExperiment) MarshalJSON() ([]byte, error) {
+	type C DeleteExperiment
+	return marshal.Marshal((C)(s))
 }
 
 // Delete a model
 type DeleteModelRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"-" url:"name"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteModelRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteModelRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteModelRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteModelRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Delete a model tag
@@ -415,6 +695,18 @@ type DeleteModelTagRequest struct {
 	Key string `json:"-" url:"key"`
 	// Name of the registered model that the tag was logged under.
 	Name string `json:"-" url:"name"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteModelTagRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteModelTagRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteModelTagRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteModelTagRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Delete a model version.
@@ -423,6 +715,18 @@ type DeleteModelVersionRequest struct {
 	Name string `json:"-" url:"name"`
 	// Model version number
 	Version string `json:"-" url:"version"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteModelVersionRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteModelVersionRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteModelVersionRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteModelVersionRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Delete a model version tag
@@ -434,11 +738,35 @@ type DeleteModelVersionTagRequest struct {
 	Name string `json:"-" url:"name"`
 	// Model version number that the tag was logged under.
 	Version string `json:"-" url:"version"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteModelVersionTagRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteModelVersionTagRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteModelVersionTagRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteModelVersionTagRequest
+	return marshal.Marshal((C)(s))
 }
 
 type DeleteRun struct {
 	// ID of the run to delete.
 	RunId string `json:"run_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteRun) UnmarshalJSON(b []byte) error {
+	type C DeleteRun
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteRun) MarshalJSON() ([]byte, error) {
+	type C DeleteRun
+	return marshal.Marshal((C)(s))
 }
 
 type DeleteRuns struct {
@@ -451,11 +779,35 @@ type DeleteRuns struct {
 	// deleting runs. Only runs created prior to or at this timestamp are
 	// deleted.
 	MaxTimestampMillis int64 `json:"max_timestamp_millis"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteRuns) UnmarshalJSON(b []byte) error {
+	type C DeleteRuns
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteRuns) MarshalJSON() ([]byte, error) {
+	type C DeleteRuns
+	return marshal.Marshal((C)(s))
 }
 
 type DeleteRunsResponse struct {
 	// The number of runs deleted.
 	RunsDeleted int `json:"runs_deleted,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteRunsResponse) UnmarshalJSON(b []byte) error {
+	type C DeleteRunsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteRunsResponse) MarshalJSON() ([]byte, error) {
+	type C DeleteRunsResponse
+	return marshal.Marshal((C)(s))
 }
 
 type DeleteTag struct {
@@ -463,6 +815,18 @@ type DeleteTag struct {
 	Key string `json:"key"`
 	// ID of the run that the tag was logged under. Must be provided.
 	RunId string `json:"run_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteTag) UnmarshalJSON(b []byte) error {
+	type C DeleteTag
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteTag) MarshalJSON() ([]byte, error) {
+	type C DeleteTag
+	return marshal.Marshal((C)(s))
 }
 
 // Delete a transition request
@@ -487,6 +851,18 @@ type DeleteTransitionRequestRequest struct {
 	Stage DeleteTransitionRequestStage `json:"-" url:"stage"`
 	// Version of the model.
 	Version string `json:"-" url:"version"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteTransitionRequestRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteTransitionRequestRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteTransitionRequestRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteTransitionRequestRequest
+	return marshal.Marshal((C)(s))
 }
 
 type DeleteTransitionRequestStage string
@@ -524,6 +900,18 @@ func (f *DeleteTransitionRequestStage) Type() string {
 type DeleteWebhookRequest struct {
 	// Webhook ID required to delete a registry webhook.
 	Id string `json:"-" url:"id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteWebhookRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteWebhookRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteWebhookRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteWebhookRequest
+	return marshal.Marshal((C)(s))
 }
 
 type Experiment struct {
@@ -542,6 +930,18 @@ type Experiment struct {
 	Name string `json:"name,omitempty"`
 	// Tags: Additional metadata key-value pairs.
 	Tags []ExperimentTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Experiment) UnmarshalJSON(b []byte) error {
+	type C Experiment
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Experiment) MarshalJSON() ([]byte, error) {
+	type C Experiment
+	return marshal.Marshal((C)(s))
 }
 
 type ExperimentAccessControlRequest struct {
@@ -553,6 +953,18 @@ type ExperimentAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExperimentAccessControlRequest) UnmarshalJSON(b []byte) error {
+	type C ExperimentAccessControlRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ExperimentAccessControlRequest) MarshalJSON() ([]byte, error) {
+	type C ExperimentAccessControlRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ExperimentAccessControlResponse struct {
@@ -566,6 +978,18 @@ type ExperimentAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExperimentAccessControlResponse) UnmarshalJSON(b []byte) error {
+	type C ExperimentAccessControlResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ExperimentAccessControlResponse) MarshalJSON() ([]byte, error) {
+	type C ExperimentAccessControlResponse
+	return marshal.Marshal((C)(s))
 }
 
 type ExperimentPermission struct {
@@ -574,6 +998,18 @@ type ExperimentPermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExperimentPermission) UnmarshalJSON(b []byte) error {
+	type C ExperimentPermission
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ExperimentPermission) MarshalJSON() ([]byte, error) {
+	type C ExperimentPermission
+	return marshal.Marshal((C)(s))
 }
 
 // Permission level
@@ -612,18 +1048,54 @@ type ExperimentPermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExperimentPermissions) UnmarshalJSON(b []byte) error {
+	type C ExperimentPermissions
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ExperimentPermissions) MarshalJSON() ([]byte, error) {
+	type C ExperimentPermissions
+	return marshal.Marshal((C)(s))
 }
 
 type ExperimentPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExperimentPermissionsDescription) UnmarshalJSON(b []byte) error {
+	type C ExperimentPermissionsDescription
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ExperimentPermissionsDescription) MarshalJSON() ([]byte, error) {
+	type C ExperimentPermissionsDescription
+	return marshal.Marshal((C)(s))
 }
 
 type ExperimentPermissionsRequest struct {
 	AccessControlList []ExperimentAccessControlRequest `json:"access_control_list,omitempty"`
 	// The experiment for which to get or manage permissions.
 	ExperimentId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExperimentPermissionsRequest) UnmarshalJSON(b []byte) error {
+	type C ExperimentPermissionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ExperimentPermissionsRequest) MarshalJSON() ([]byte, error) {
+	type C ExperimentPermissionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ExperimentTag struct {
@@ -631,6 +1103,18 @@ type ExperimentTag struct {
 	Key string `json:"key,omitempty"`
 	// The tag value.
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExperimentTag) UnmarshalJSON(b []byte) error {
+	type C ExperimentTag
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ExperimentTag) MarshalJSON() ([]byte, error) {
+	type C ExperimentTag
+	return marshal.Marshal((C)(s))
 }
 
 type FileInfo struct {
@@ -640,40 +1124,124 @@ type FileInfo struct {
 	IsDir bool `json:"is_dir,omitempty"`
 	// Path relative to the root artifact directory run.
 	Path string `json:"path,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *FileInfo) UnmarshalJSON(b []byte) error {
+	type C FileInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s FileInfo) MarshalJSON() ([]byte, error) {
+	type C FileInfo
+	return marshal.Marshal((C)(s))
 }
 
 // Get metadata
 type GetByNameRequest struct {
 	// Name of the associated experiment.
 	ExperimentName string `json:"-" url:"experiment_name"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetByNameRequest) UnmarshalJSON(b []byte) error {
+	type C GetByNameRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetByNameRequest) MarshalJSON() ([]byte, error) {
+	type C GetByNameRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get experiment permission levels
 type GetExperimentPermissionLevelsRequest struct {
 	// The experiment for which to get or manage permissions.
 	ExperimentId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetExperimentPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	type C GetExperimentPermissionLevelsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetExperimentPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	type C GetExperimentPermissionLevelsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetExperimentPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []ExperimentPermissionsDescription `json:"permission_levels,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetExperimentPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	type C GetExperimentPermissionLevelsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetExperimentPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	type C GetExperimentPermissionLevelsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get experiment permissions
 type GetExperimentPermissionsRequest struct {
 	// The experiment for which to get or manage permissions.
 	ExperimentId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetExperimentPermissionsRequest) UnmarshalJSON(b []byte) error {
+	type C GetExperimentPermissionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetExperimentPermissionsRequest) MarshalJSON() ([]byte, error) {
+	type C GetExperimentPermissionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get an experiment
 type GetExperimentRequest struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"-" url:"experiment_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetExperimentRequest) UnmarshalJSON(b []byte) error {
+	type C GetExperimentRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetExperimentRequest) MarshalJSON() ([]byte, error) {
+	type C GetExperimentRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetExperimentResponse struct {
 	// Experiment details.
 	Experiment *Experiment `json:"experiment,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetExperimentResponse) UnmarshalJSON(b []byte) error {
+	type C GetExperimentResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetExperimentResponse) MarshalJSON() ([]byte, error) {
+	type C GetExperimentResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get history of a given metric within a run
@@ -691,6 +1259,18 @@ type GetHistoryRequest struct {
 	// [Deprecated, use run_id instead] ID of the run from which to fetch metric
 	// values. This field will be removed in a future MLflow version.
 	RunUuid string `json:"-" url:"run_uuid,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetHistoryRequest) UnmarshalJSON(b []byte) error {
+	type C GetHistoryRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetHistoryRequest) MarshalJSON() ([]byte, error) {
+	type C GetHistoryRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetLatestVersionsRequest struct {
@@ -698,6 +1278,18 @@ type GetLatestVersionsRequest struct {
 	Name string `json:"name"`
 	// List of stages.
 	Stages []string `json:"stages,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetLatestVersionsRequest) UnmarshalJSON(b []byte) error {
+	type C GetLatestVersionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetLatestVersionsRequest) MarshalJSON() ([]byte, error) {
+	type C GetLatestVersionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetLatestVersionsResponse struct {
@@ -705,6 +1297,18 @@ type GetLatestVersionsResponse struct {
 	// current `READY` status. If no `stages` provided, returns the latest
 	// version for each stage, including `"None"`.
 	ModelVersions []ModelVersion `json:"model_versions,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetLatestVersionsResponse) UnmarshalJSON(b []byte) error {
+	type C GetLatestVersionsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetLatestVersionsResponse) MarshalJSON() ([]byte, error) {
+	type C GetLatestVersionsResponse
+	return marshal.Marshal((C)(s))
 }
 
 type GetMetricHistoryResponse struct {
@@ -713,16 +1317,52 @@ type GetMetricHistoryResponse struct {
 	// Token that can be used to retrieve the next page of metric history
 	// results
 	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetMetricHistoryResponse) UnmarshalJSON(b []byte) error {
+	type C GetMetricHistoryResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetMetricHistoryResponse) MarshalJSON() ([]byte, error) {
+	type C GetMetricHistoryResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get model
 type GetModelRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"-" url:"name"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetModelRequest) UnmarshalJSON(b []byte) error {
+	type C GetModelRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetModelRequest) MarshalJSON() ([]byte, error) {
+	type C GetModelRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetModelResponse struct {
 	RegisteredModelDatabricks *ModelDatabricks `json:"registered_model_databricks,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetModelResponse) UnmarshalJSON(b []byte) error {
+	type C GetModelResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetModelResponse) MarshalJSON() ([]byte, error) {
+	type C GetModelResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get a model version URI
@@ -731,11 +1371,35 @@ type GetModelVersionDownloadUriRequest struct {
 	Name string `json:"-" url:"name"`
 	// Model version number
 	Version string `json:"-" url:"version"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetModelVersionDownloadUriRequest) UnmarshalJSON(b []byte) error {
+	type C GetModelVersionDownloadUriRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetModelVersionDownloadUriRequest) MarshalJSON() ([]byte, error) {
+	type C GetModelVersionDownloadUriRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetModelVersionDownloadUriResponse struct {
 	// URI corresponding to where artifacts for this model version are stored.
 	ArtifactUri string `json:"artifact_uri,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetModelVersionDownloadUriResponse) UnmarshalJSON(b []byte) error {
+	type C GetModelVersionDownloadUriResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetModelVersionDownloadUriResponse) MarshalJSON() ([]byte, error) {
+	type C GetModelVersionDownloadUriResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get a model version
@@ -744,27 +1408,87 @@ type GetModelVersionRequest struct {
 	Name string `json:"-" url:"name"`
 	// Model version number
 	Version string `json:"-" url:"version"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetModelVersionRequest) UnmarshalJSON(b []byte) error {
+	type C GetModelVersionRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetModelVersionRequest) MarshalJSON() ([]byte, error) {
+	type C GetModelVersionRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetModelVersionResponse struct {
 	ModelVersion *ModelVersion `json:"model_version,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetModelVersionResponse) UnmarshalJSON(b []byte) error {
+	type C GetModelVersionResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetModelVersionResponse) MarshalJSON() ([]byte, error) {
+	type C GetModelVersionResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get registered model permission levels
 type GetRegisteredModelPermissionLevelsRequest struct {
 	// The registered model for which to get or manage permissions.
 	RegisteredModelId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetRegisteredModelPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	type C GetRegisteredModelPermissionLevelsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetRegisteredModelPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	type C GetRegisteredModelPermissionLevelsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetRegisteredModelPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []RegisteredModelPermissionsDescription `json:"permission_levels,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetRegisteredModelPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	type C GetRegisteredModelPermissionLevelsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetRegisteredModelPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	type C GetRegisteredModelPermissionLevelsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get registered model permissions
 type GetRegisteredModelPermissionsRequest struct {
 	// The registered model for which to get or manage permissions.
 	RegisteredModelId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetRegisteredModelPermissionsRequest) UnmarshalJSON(b []byte) error {
+	type C GetRegisteredModelPermissionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetRegisteredModelPermissionsRequest) MarshalJSON() ([]byte, error) {
+	type C GetRegisteredModelPermissionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get a run
@@ -774,12 +1498,36 @@ type GetRunRequest struct {
 	// [Deprecated, use run_id instead] ID of the run to fetch. This field will
 	// be removed in a future MLflow version.
 	RunUuid string `json:"-" url:"run_uuid,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetRunRequest) UnmarshalJSON(b []byte) error {
+	type C GetRunRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetRunRequest) MarshalJSON() ([]byte, error) {
+	type C GetRunRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetRunResponse struct {
 	// Run metadata (name, start time, etc) and data (metrics, params, and
 	// tags).
 	Run *Run `json:"run,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetRunResponse) UnmarshalJSON(b []byte) error {
+	type C GetRunResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetRunResponse) MarshalJSON() ([]byte, error) {
+	type C GetRunResponse
+	return marshal.Marshal((C)(s))
 }
 
 type HttpUrlSpec struct {
@@ -802,6 +1550,18 @@ type HttpUrlSpec struct {
 	Secret string `json:"secret,omitempty"`
 	// External HTTPS URL called on event trigger (by using a POST request).
 	Url string `json:"url"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *HttpUrlSpec) UnmarshalJSON(b []byte) error {
+	type C HttpUrlSpec
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s HttpUrlSpec) MarshalJSON() ([]byte, error) {
+	type C HttpUrlSpec
+	return marshal.Marshal((C)(s))
 }
 
 type HttpUrlSpecWithoutSecret struct {
@@ -815,6 +1575,18 @@ type HttpUrlSpecWithoutSecret struct {
 	EnableSslVerification bool `json:"enable_ssl_verification,omitempty"`
 	// External HTTPS URL called on event trigger (by using a POST request).
 	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *HttpUrlSpecWithoutSecret) UnmarshalJSON(b []byte) error {
+	type C HttpUrlSpecWithoutSecret
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s HttpUrlSpecWithoutSecret) MarshalJSON() ([]byte, error) {
+	type C HttpUrlSpecWithoutSecret
+	return marshal.Marshal((C)(s))
 }
 
 type InputTag struct {
@@ -822,6 +1594,18 @@ type InputTag struct {
 	Key string `json:"key,omitempty"`
 	// The tag value.
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InputTag) UnmarshalJSON(b []byte) error {
+	type C InputTag
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s InputTag) MarshalJSON() ([]byte, error) {
+	type C InputTag
+	return marshal.Marshal((C)(s))
 }
 
 type JobSpec struct {
@@ -833,6 +1617,18 @@ type JobSpec struct {
 	// specified, the job’s workspace URL is assumed to be the same as the
 	// workspace where the webhook is created.
 	WorkspaceUrl string `json:"workspace_url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobSpec) UnmarshalJSON(b []byte) error {
+	type C JobSpec
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s JobSpec) MarshalJSON() ([]byte, error) {
+	type C JobSpec
+	return marshal.Marshal((C)(s))
 }
 
 type JobSpecWithoutSecret struct {
@@ -842,6 +1638,18 @@ type JobSpecWithoutSecret struct {
 	// to the workspace URL in which the webhook is created. If not specified,
 	// the job’s workspace is assumed to be the same as the webhook’s.
 	WorkspaceUrl string `json:"workspace_url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobSpecWithoutSecret) UnmarshalJSON(b []byte) error {
+	type C JobSpecWithoutSecret
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s JobSpecWithoutSecret) MarshalJSON() ([]byte, error) {
+	type C JobSpecWithoutSecret
+	return marshal.Marshal((C)(s))
 }
 
 // Get all artifacts
@@ -856,6 +1664,18 @@ type ListArtifactsRequest struct {
 	// [Deprecated, use run_id instead] ID of the run whose artifacts to list.
 	// This field will be removed in a future MLflow version.
 	RunUuid string `json:"-" url:"run_uuid,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListArtifactsRequest) UnmarshalJSON(b []byte) error {
+	type C ListArtifactsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListArtifactsRequest) MarshalJSON() ([]byte, error) {
+	type C ListArtifactsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ListArtifactsResponse struct {
@@ -865,6 +1685,18 @@ type ListArtifactsResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// Root artifact directory for the run.
 	RootUri string `json:"root_uri,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListArtifactsResponse) UnmarshalJSON(b []byte) error {
+	type C ListArtifactsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListArtifactsResponse) MarshalJSON() ([]byte, error) {
+	type C ListArtifactsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // List experiments
@@ -880,6 +1712,18 @@ type ListExperimentsRequest struct {
 	// Qualifier for type of experiments to be returned. If unspecified, return
 	// only active experiments.
 	ViewType string `json:"-" url:"view_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListExperimentsRequest) UnmarshalJSON(b []byte) error {
+	type C ListExperimentsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListExperimentsRequest) MarshalJSON() ([]byte, error) {
+	type C ListExperimentsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ListExperimentsResponse struct {
@@ -889,6 +1733,18 @@ type ListExperimentsResponse struct {
 	// Token that can be used to retrieve the next page of experiments. Empty
 	// token means no more experiment is available for retrieval.
 	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListExperimentsResponse) UnmarshalJSON(b []byte) error {
+	type C ListExperimentsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListExperimentsResponse) MarshalJSON() ([]byte, error) {
+	type C ListExperimentsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // List models
@@ -897,6 +1753,18 @@ type ListModelsRequest struct {
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Pagination token to go to the next page based on a previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListModelsRequest) UnmarshalJSON(b []byte) error {
+	type C ListModelsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListModelsRequest) MarshalJSON() ([]byte, error) {
+	type C ListModelsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ListModelsResponse struct {
@@ -904,6 +1772,18 @@ type ListModelsResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	RegisteredModels []Model `json:"registered_models,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListModelsResponse) UnmarshalJSON(b []byte) error {
+	type C ListModelsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListModelsResponse) MarshalJSON() ([]byte, error) {
+	type C ListModelsResponse
+	return marshal.Marshal((C)(s))
 }
 
 type ListRegistryWebhooks struct {
@@ -911,6 +1791,18 @@ type ListRegistryWebhooks struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// Array of registry webhooks.
 	Webhooks []RegistryWebhook `json:"webhooks,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListRegistryWebhooks) UnmarshalJSON(b []byte) error {
+	type C ListRegistryWebhooks
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListRegistryWebhooks) MarshalJSON() ([]byte, error) {
+	type C ListRegistryWebhooks
+	return marshal.Marshal((C)(s))
 }
 
 // List transition requests
@@ -919,11 +1811,35 @@ type ListTransitionRequestsRequest struct {
 	Name string `json:"-" url:"name"`
 	// Version of the model.
 	Version string `json:"-" url:"version"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListTransitionRequestsRequest) UnmarshalJSON(b []byte) error {
+	type C ListTransitionRequestsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListTransitionRequestsRequest) MarshalJSON() ([]byte, error) {
+	type C ListTransitionRequestsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ListTransitionRequestsResponse struct {
 	// Array of open transition requests.
 	Requests []Activity `json:"requests,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListTransitionRequestsResponse) UnmarshalJSON(b []byte) error {
+	type C ListTransitionRequestsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListTransitionRequestsResponse) MarshalJSON() ([]byte, error) {
+	type C ListTransitionRequestsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // List registry webhooks
@@ -937,6 +1853,18 @@ type ListWebhooksRequest struct {
 	ModelName string `json:"-" url:"model_name,omitempty"`
 	// Token indicating the page of artifact results to fetch
 	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListWebhooksRequest) UnmarshalJSON(b []byte) error {
+	type C ListWebhooksRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListWebhooksRequest) MarshalJSON() ([]byte, error) {
+	type C ListWebhooksRequest
+	return marshal.Marshal((C)(s))
 }
 
 type LogBatch struct {
@@ -951,6 +1879,18 @@ type LogBatch struct {
 	// Tags to log. A single request can contain up to 100 tags, and up to 1000
 	// metrics, params, and tags in total.
 	Tags []RunTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LogBatch) UnmarshalJSON(b []byte) error {
+	type C LogBatch
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s LogBatch) MarshalJSON() ([]byte, error) {
+	type C LogBatch
+	return marshal.Marshal((C)(s))
 }
 
 type LogInputs struct {
@@ -958,6 +1898,18 @@ type LogInputs struct {
 	Datasets []DatasetInput `json:"datasets,omitempty"`
 	// ID of the run to log under
 	RunId string `json:"run_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LogInputs) UnmarshalJSON(b []byte) error {
+	type C LogInputs
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s LogInputs) MarshalJSON() ([]byte, error) {
+	type C LogInputs
+	return marshal.Marshal((C)(s))
 }
 
 type LogMetric struct {
@@ -974,6 +1926,18 @@ type LogMetric struct {
 	Timestamp int64 `json:"timestamp"`
 	// Double value of the metric being logged.
 	Value float64 `json:"value"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LogMetric) UnmarshalJSON(b []byte) error {
+	type C LogMetric
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s LogMetric) MarshalJSON() ([]byte, error) {
+	type C LogMetric
+	return marshal.Marshal((C)(s))
 }
 
 type LogModel struct {
@@ -981,6 +1945,18 @@ type LogModel struct {
 	ModelJson string `json:"model_json,omitempty"`
 	// ID of the run to log under
 	RunId string `json:"run_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LogModel) UnmarshalJSON(b []byte) error {
+	type C LogModel
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s LogModel) MarshalJSON() ([]byte, error) {
+	type C LogModel
+	return marshal.Marshal((C)(s))
 }
 
 type LogParam struct {
@@ -993,6 +1969,18 @@ type LogParam struct {
 	RunUuid string `json:"run_uuid,omitempty"`
 	// String value of the param being logged. Maximum size is 500 bytes.
 	Value string `json:"value"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LogParam) UnmarshalJSON(b []byte) error {
+	type C LogParam
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s LogParam) MarshalJSON() ([]byte, error) {
+	type C LogParam
+	return marshal.Marshal((C)(s))
 }
 
 type Metric struct {
@@ -1004,6 +1992,18 @@ type Metric struct {
 	Timestamp int64 `json:"timestamp,omitempty"`
 	// Value associated with this metric.
 	Value float64 `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Metric) UnmarshalJSON(b []byte) error {
+	type C Metric
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Metric) MarshalJSON() ([]byte, error) {
+	type C Metric
+	return marshal.Marshal((C)(s))
 }
 
 type Model struct {
@@ -1023,6 +2023,18 @@ type Model struct {
 	Tags []ModelTag `json:"tags,omitempty"`
 	// User that created this `registered_model`
 	UserId string `json:"user_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Model) UnmarshalJSON(b []byte) error {
+	type C Model
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Model) MarshalJSON() ([]byte, error) {
+	type C Model
+	return marshal.Marshal((C)(s))
 }
 
 type ModelDatabricks struct {
@@ -1045,6 +2057,18 @@ type ModelDatabricks struct {
 	Tags []ModelTag `json:"tags,omitempty"`
 	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ModelDatabricks) UnmarshalJSON(b []byte) error {
+	type C ModelDatabricks
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ModelDatabricks) MarshalJSON() ([]byte, error) {
+	type C ModelDatabricks
+	return marshal.Marshal((C)(s))
 }
 
 type ModelTag struct {
@@ -1052,6 +2076,18 @@ type ModelTag struct {
 	Key string `json:"key,omitempty"`
 	// The tag value.
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ModelTag) UnmarshalJSON(b []byte) error {
+	type C ModelTag
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ModelTag) MarshalJSON() ([]byte, error) {
+	type C ModelTag
+	return marshal.Marshal((C)(s))
 }
 
 type ModelVersion struct {
@@ -1084,6 +2120,18 @@ type ModelVersion struct {
 	UserId string `json:"user_id,omitempty"`
 	// Model's version number.
 	Version string `json:"version,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ModelVersion) UnmarshalJSON(b []byte) error {
+	type C ModelVersion
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ModelVersion) MarshalJSON() ([]byte, error) {
+	type C ModelVersion
+	return marshal.Marshal((C)(s))
 }
 
 type ModelVersionDatabricks struct {
@@ -1120,6 +2168,18 @@ type ModelVersionDatabricks struct {
 	UserId string `json:"user_id,omitempty"`
 	// Version of the model.
 	Version string `json:"version,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ModelVersionDatabricks) UnmarshalJSON(b []byte) error {
+	type C ModelVersionDatabricks
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ModelVersionDatabricks) MarshalJSON() ([]byte, error) {
+	type C ModelVersionDatabricks
+	return marshal.Marshal((C)(s))
 }
 
 // Current status of `model_version`
@@ -1157,6 +2217,18 @@ type ModelVersionTag struct {
 	Key string `json:"key,omitempty"`
 	// The tag value.
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ModelVersionTag) UnmarshalJSON(b []byte) error {
+	type C ModelVersionTag
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ModelVersionTag) MarshalJSON() ([]byte, error) {
+	type C ModelVersionTag
+	return marshal.Marshal((C)(s))
 }
 
 type Param struct {
@@ -1164,6 +2236,18 @@ type Param struct {
 	Key string `json:"key,omitempty"`
 	// Value associated with this param.
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Param) UnmarshalJSON(b []byte) error {
+	type C Param
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Param) MarshalJSON() ([]byte, error) {
+	type C Param
+	return marshal.Marshal((C)(s))
 }
 
 // Permission level of the requesting user on the object. For what is allowed at
@@ -1210,6 +2294,18 @@ type RegisteredModelAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RegisteredModelAccessControlRequest) UnmarshalJSON(b []byte) error {
+	type C RegisteredModelAccessControlRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RegisteredModelAccessControlRequest) MarshalJSON() ([]byte, error) {
+	type C RegisteredModelAccessControlRequest
+	return marshal.Marshal((C)(s))
 }
 
 type RegisteredModelAccessControlResponse struct {
@@ -1223,6 +2319,18 @@ type RegisteredModelAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RegisteredModelAccessControlResponse) UnmarshalJSON(b []byte) error {
+	type C RegisteredModelAccessControlResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RegisteredModelAccessControlResponse) MarshalJSON() ([]byte, error) {
+	type C RegisteredModelAccessControlResponse
+	return marshal.Marshal((C)(s))
 }
 
 type RegisteredModelPermission struct {
@@ -1231,6 +2339,18 @@ type RegisteredModelPermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RegisteredModelPermission) UnmarshalJSON(b []byte) error {
+	type C RegisteredModelPermission
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RegisteredModelPermission) MarshalJSON() ([]byte, error) {
+	type C RegisteredModelPermission
+	return marshal.Marshal((C)(s))
 }
 
 // Permission level
@@ -1273,18 +2393,54 @@ type RegisteredModelPermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RegisteredModelPermissions) UnmarshalJSON(b []byte) error {
+	type C RegisteredModelPermissions
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RegisteredModelPermissions) MarshalJSON() ([]byte, error) {
+	type C RegisteredModelPermissions
+	return marshal.Marshal((C)(s))
 }
 
 type RegisteredModelPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RegisteredModelPermissionsDescription) UnmarshalJSON(b []byte) error {
+	type C RegisteredModelPermissionsDescription
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RegisteredModelPermissionsDescription) MarshalJSON() ([]byte, error) {
+	type C RegisteredModelPermissionsDescription
+	return marshal.Marshal((C)(s))
 }
 
 type RegisteredModelPermissionsRequest struct {
 	AccessControlList []RegisteredModelAccessControlRequest `json:"access_control_list,omitempty"`
 	// The registered model for which to get or manage permissions.
 	RegisteredModelId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RegisteredModelPermissionsRequest) UnmarshalJSON(b []byte) error {
+	type C RegisteredModelPermissionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RegisteredModelPermissionsRequest) MarshalJSON() ([]byte, error) {
+	type C RegisteredModelPermissionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type RegistryWebhook struct {
@@ -1338,6 +2494,18 @@ type RegistryWebhook struct {
 	ModelName string `json:"model_name,omitempty"`
 	// This describes an enum
 	Status RegistryWebhookStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RegistryWebhook) UnmarshalJSON(b []byte) error {
+	type C RegistryWebhook
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RegistryWebhook) MarshalJSON() ([]byte, error) {
+	type C RegistryWebhook
+	return marshal.Marshal((C)(s))
 }
 
 type RegistryWebhookEvent string
@@ -1438,11 +2606,35 @@ type RejectTransitionRequest struct {
 	Stage Stage `json:"stage"`
 	// Version of the model.
 	Version string `json:"version"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RejectTransitionRequest) UnmarshalJSON(b []byte) error {
+	type C RejectTransitionRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RejectTransitionRequest) MarshalJSON() ([]byte, error) {
+	type C RejectTransitionRequest
+	return marshal.Marshal((C)(s))
 }
 
 type RejectTransitionRequestResponse struct {
 	// Activity recorded for the action.
 	Activity *Activity `json:"activity,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RejectTransitionRequestResponse) UnmarshalJSON(b []byte) error {
+	type C RejectTransitionRequestResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RejectTransitionRequestResponse) MarshalJSON() ([]byte, error) {
+	type C RejectTransitionRequestResponse
+	return marshal.Marshal((C)(s))
 }
 
 type RenameModelRequest struct {
@@ -1450,20 +2642,68 @@ type RenameModelRequest struct {
 	Name string `json:"name"`
 	// If provided, updates the name for this `registered_model`.
 	NewName string `json:"new_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RenameModelRequest) UnmarshalJSON(b []byte) error {
+	type C RenameModelRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RenameModelRequest) MarshalJSON() ([]byte, error) {
+	type C RenameModelRequest
+	return marshal.Marshal((C)(s))
 }
 
 type RenameModelResponse struct {
 	RegisteredModel *Model `json:"registered_model,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RenameModelResponse) UnmarshalJSON(b []byte) error {
+	type C RenameModelResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RenameModelResponse) MarshalJSON() ([]byte, error) {
+	type C RenameModelResponse
+	return marshal.Marshal((C)(s))
 }
 
 type RestoreExperiment struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"experiment_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RestoreExperiment) UnmarshalJSON(b []byte) error {
+	type C RestoreExperiment
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RestoreExperiment) MarshalJSON() ([]byte, error) {
+	type C RestoreExperiment
+	return marshal.Marshal((C)(s))
 }
 
 type RestoreRun struct {
 	// ID of the run to restore.
 	RunId string `json:"run_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RestoreRun) UnmarshalJSON(b []byte) error {
+	type C RestoreRun
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RestoreRun) MarshalJSON() ([]byte, error) {
+	type C RestoreRun
+	return marshal.Marshal((C)(s))
 }
 
 type RestoreRuns struct {
@@ -1476,11 +2716,35 @@ type RestoreRuns struct {
 	// restoring runs. Only runs deleted no earlier than this timestamp are
 	// restored.
 	MinTimestampMillis int64 `json:"min_timestamp_millis"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RestoreRuns) UnmarshalJSON(b []byte) error {
+	type C RestoreRuns
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RestoreRuns) MarshalJSON() ([]byte, error) {
+	type C RestoreRuns
+	return marshal.Marshal((C)(s))
 }
 
 type RestoreRunsResponse struct {
 	// The number of runs restored.
 	RunsRestored int `json:"runs_restored,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RestoreRunsResponse) UnmarshalJSON(b []byte) error {
+	type C RestoreRunsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RestoreRunsResponse) MarshalJSON() ([]byte, error) {
+	type C RestoreRunsResponse
+	return marshal.Marshal((C)(s))
 }
 
 type Run struct {
@@ -1490,6 +2754,18 @@ type Run struct {
 	Info *RunInfo `json:"info,omitempty"`
 	// Run inputs.
 	Inputs *RunInputs `json:"inputs,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Run) UnmarshalJSON(b []byte) error {
+	type C Run
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Run) MarshalJSON() ([]byte, error) {
+	type C Run
+	return marshal.Marshal((C)(s))
 }
 
 type RunData struct {
@@ -1499,6 +2775,18 @@ type RunData struct {
 	Params []Param `json:"params,omitempty"`
 	// Additional metadata key-value pairs.
 	Tags []RunTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RunData) UnmarshalJSON(b []byte) error {
+	type C RunData
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RunData) MarshalJSON() ([]byte, error) {
+	type C RunData
+	return marshal.Marshal((C)(s))
 }
 
 type RunInfo struct {
@@ -1526,6 +2814,18 @@ type RunInfo struct {
 	// and will be removed in a future MLflow release. Use 'mlflow.user' tag
 	// instead.
 	UserId string `json:"user_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RunInfo) UnmarshalJSON(b []byte) error {
+	type C RunInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RunInfo) MarshalJSON() ([]byte, error) {
+	type C RunInfo
+	return marshal.Marshal((C)(s))
 }
 
 // Current status of the run.
@@ -1565,6 +2865,18 @@ func (f *RunInfoStatus) Type() string {
 type RunInputs struct {
 	// Run metrics.
 	DatasetInputs []DatasetInput `json:"dataset_inputs,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RunInputs) UnmarshalJSON(b []byte) error {
+	type C RunInputs
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RunInputs) MarshalJSON() ([]byte, error) {
+	type C RunInputs
+	return marshal.Marshal((C)(s))
 }
 
 type RunTag struct {
@@ -1572,6 +2884,18 @@ type RunTag struct {
 	Key string `json:"key,omitempty"`
 	// The tag value.
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RunTag) UnmarshalJSON(b []byte) error {
+	type C RunTag
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RunTag) MarshalJSON() ([]byte, error) {
+	type C RunTag
+	return marshal.Marshal((C)(s))
 }
 
 type SearchExperiments struct {
@@ -1590,6 +2914,18 @@ type SearchExperiments struct {
 	// Qualifier for type of experiments to be returned. If unspecified, return
 	// only active experiments.
 	ViewType SearchExperimentsViewType `json:"view_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SearchExperiments) UnmarshalJSON(b []byte) error {
+	type C SearchExperiments
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SearchExperiments) MarshalJSON() ([]byte, error) {
+	type C SearchExperiments
+	return marshal.Marshal((C)(s))
 }
 
 type SearchExperimentsResponse struct {
@@ -1598,6 +2934,18 @@ type SearchExperimentsResponse struct {
 	// Token that can be used to retrieve the next page of experiments. An empty
 	// token means that no more experiments are available for retrieval.
 	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SearchExperimentsResponse) UnmarshalJSON(b []byte) error {
+	type C SearchExperimentsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SearchExperimentsResponse) MarshalJSON() ([]byte, error) {
+	type C SearchExperimentsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Qualifier for type of experiments to be returned. If unspecified, return only
@@ -1645,6 +2993,18 @@ type SearchModelVersionsRequest struct {
 	OrderBy []string `json:"-" url:"order_by,omitempty"`
 	// Pagination token to go to next page based on previous search query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SearchModelVersionsRequest) UnmarshalJSON(b []byte) error {
+	type C SearchModelVersionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SearchModelVersionsRequest) MarshalJSON() ([]byte, error) {
+	type C SearchModelVersionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type SearchModelVersionsResponse struct {
@@ -1653,6 +3013,18 @@ type SearchModelVersionsResponse struct {
 	// Pagination token to request next page of models for the same search
 	// query.
 	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SearchModelVersionsResponse) UnmarshalJSON(b []byte) error {
+	type C SearchModelVersionsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SearchModelVersionsResponse) MarshalJSON() ([]byte, error) {
+	type C SearchModelVersionsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Search models
@@ -1669,6 +3041,18 @@ type SearchModelsRequest struct {
 	OrderBy []string `json:"-" url:"order_by,omitempty"`
 	// Pagination token to go to the next page based on a previous search query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SearchModelsRequest) UnmarshalJSON(b []byte) error {
+	type C SearchModelsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SearchModelsRequest) MarshalJSON() ([]byte, error) {
+	type C SearchModelsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type SearchModelsResponse struct {
@@ -1676,6 +3060,18 @@ type SearchModelsResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// Registered Models that match the search criteria.
 	RegisteredModels []Model `json:"registered_models,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SearchModelsResponse) UnmarshalJSON(b []byte) error {
+	type C SearchModelsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SearchModelsResponse) MarshalJSON() ([]byte, error) {
+	type C SearchModelsResponse
+	return marshal.Marshal((C)(s))
 }
 
 type SearchRuns struct {
@@ -1708,6 +3104,18 @@ type SearchRuns struct {
 	// Whether to display only active, only deleted, or all runs. Defaults to
 	// only active runs.
 	RunViewType SearchRunsRunViewType `json:"run_view_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SearchRuns) UnmarshalJSON(b []byte) error {
+	type C SearchRuns
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SearchRuns) MarshalJSON() ([]byte, error) {
+	type C SearchRuns
+	return marshal.Marshal((C)(s))
 }
 
 type SearchRunsResponse struct {
@@ -1715,6 +3123,18 @@ type SearchRunsResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// Runs that match the search criteria.
 	Runs []Run `json:"runs,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SearchRunsResponse) UnmarshalJSON(b []byte) error {
+	type C SearchRunsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SearchRunsResponse) MarshalJSON() ([]byte, error) {
+	type C SearchRunsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Whether to display only active, only deleted, or all runs. Defaults to only
@@ -1758,6 +3178,18 @@ type SetExperimentTag struct {
 	// backend. All storage backends are guaranteed to support key values up to
 	// 5000 bytes in size.
 	Value string `json:"value"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SetExperimentTag) UnmarshalJSON(b []byte) error {
+	type C SetExperimentTag
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SetExperimentTag) MarshalJSON() ([]byte, error) {
+	type C SetExperimentTag
+	return marshal.Marshal((C)(s))
 }
 
 type SetModelTagRequest struct {
@@ -1772,6 +3204,18 @@ type SetModelTagRequest struct {
 	// backend. All storage backends are guaranteed to support key values up to
 	// 5000 bytes in size.
 	Value string `json:"value"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SetModelTagRequest) UnmarshalJSON(b []byte) error {
+	type C SetModelTagRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SetModelTagRequest) MarshalJSON() ([]byte, error) {
+	type C SetModelTagRequest
+	return marshal.Marshal((C)(s))
 }
 
 type SetModelVersionTagRequest struct {
@@ -1788,6 +3232,18 @@ type SetModelVersionTagRequest struct {
 	Value string `json:"value"`
 	// Model version number.
 	Version string `json:"version"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SetModelVersionTagRequest) UnmarshalJSON(b []byte) error {
+	type C SetModelVersionTagRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SetModelVersionTagRequest) MarshalJSON() ([]byte, error) {
+	type C SetModelVersionTagRequest
+	return marshal.Marshal((C)(s))
 }
 
 type SetTag struct {
@@ -1803,6 +3259,18 @@ type SetTag struct {
 	// backend. All storage backends are guaranteed to support key values up to
 	// 5000 bytes in size.
 	Value string `json:"value"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SetTag) UnmarshalJSON(b []byte) error {
+	type C SetTag
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SetTag) MarshalJSON() ([]byte, error) {
+	type C SetTag
+	return marshal.Marshal((C)(s))
 }
 
 // This describes an enum
@@ -1881,6 +3349,18 @@ type TestRegistryWebhook struct {
 	Body string `json:"body,omitempty"`
 	// Status code returned by the webhook URL
 	StatusCode int `json:"status_code,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TestRegistryWebhook) UnmarshalJSON(b []byte) error {
+	type C TestRegistryWebhook
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TestRegistryWebhook) MarshalJSON() ([]byte, error) {
+	type C TestRegistryWebhook
+	return marshal.Marshal((C)(s))
 }
 
 type TestRegistryWebhookRequest struct {
@@ -1890,11 +3370,35 @@ type TestRegistryWebhookRequest struct {
 	Event RegistryWebhookEvent `json:"event,omitempty"`
 	// Webhook ID
 	Id string `json:"id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TestRegistryWebhookRequest) UnmarshalJSON(b []byte) error {
+	type C TestRegistryWebhookRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TestRegistryWebhookRequest) MarshalJSON() ([]byte, error) {
+	type C TestRegistryWebhookRequest
+	return marshal.Marshal((C)(s))
 }
 
 type TestRegistryWebhookResponse struct {
 	// Test webhook response object.
 	Webhook *TestRegistryWebhook `json:"webhook,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TestRegistryWebhookResponse) UnmarshalJSON(b []byte) error {
+	type C TestRegistryWebhookResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TestRegistryWebhookResponse) MarshalJSON() ([]byte, error) {
+	type C TestRegistryWebhookResponse
+	return marshal.Marshal((C)(s))
 }
 
 type TransitionModelVersionStageDatabricks struct {
@@ -1917,6 +3421,18 @@ type TransitionModelVersionStageDatabricks struct {
 	Stage Stage `json:"stage"`
 	// Version of the model.
 	Version string `json:"version"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TransitionModelVersionStageDatabricks) UnmarshalJSON(b []byte) error {
+	type C TransitionModelVersionStageDatabricks
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TransitionModelVersionStageDatabricks) MarshalJSON() ([]byte, error) {
+	type C TransitionModelVersionStageDatabricks
+	return marshal.Marshal((C)(s))
 }
 
 // Transition request details.
@@ -1940,10 +3456,34 @@ type TransitionRequest struct {
 	ToStage Stage `json:"to_stage,omitempty"`
 	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TransitionRequest) UnmarshalJSON(b []byte) error {
+	type C TransitionRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TransitionRequest) MarshalJSON() ([]byte, error) {
+	type C TransitionRequest
+	return marshal.Marshal((C)(s))
 }
 
 type TransitionStageResponse struct {
 	ModelVersion *ModelVersionDatabricks `json:"model_version,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TransitionStageResponse) UnmarshalJSON(b []byte) error {
+	type C TransitionStageResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TransitionStageResponse) MarshalJSON() ([]byte, error) {
+	type C TransitionStageResponse
+	return marshal.Marshal((C)(s))
 }
 
 type UpdateComment struct {
@@ -1951,11 +3491,35 @@ type UpdateComment struct {
 	Comment string `json:"comment"`
 	// Unique identifier of an activity
 	Id string `json:"id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateComment) UnmarshalJSON(b []byte) error {
+	type C UpdateComment
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UpdateComment) MarshalJSON() ([]byte, error) {
+	type C UpdateComment
+	return marshal.Marshal((C)(s))
 }
 
 type UpdateCommentResponse struct {
 	// Comment details.
 	Comment *CommentObject `json:"comment,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateCommentResponse) UnmarshalJSON(b []byte) error {
+	type C UpdateCommentResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UpdateCommentResponse) MarshalJSON() ([]byte, error) {
+	type C UpdateCommentResponse
+	return marshal.Marshal((C)(s))
 }
 
 type UpdateExperiment struct {
@@ -1964,6 +3528,18 @@ type UpdateExperiment struct {
 	// If provided, the experiment's name is changed to the new name. The new
 	// name must be unique.
 	NewName string `json:"new_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateExperiment) UnmarshalJSON(b []byte) error {
+	type C UpdateExperiment
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UpdateExperiment) MarshalJSON() ([]byte, error) {
+	type C UpdateExperiment
+	return marshal.Marshal((C)(s))
 }
 
 type UpdateModelRequest struct {
@@ -1971,6 +3547,18 @@ type UpdateModelRequest struct {
 	Description string `json:"description,omitempty"`
 	// Registered model unique name identifier.
 	Name string `json:"name"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateModelRequest) UnmarshalJSON(b []byte) error {
+	type C UpdateModelRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UpdateModelRequest) MarshalJSON() ([]byte, error) {
+	type C UpdateModelRequest
+	return marshal.Marshal((C)(s))
 }
 
 type UpdateModelVersionRequest struct {
@@ -1980,6 +3568,18 @@ type UpdateModelVersionRequest struct {
 	Name string `json:"name"`
 	// Model version number
 	Version string `json:"version"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateModelVersionRequest) UnmarshalJSON(b []byte) error {
+	type C UpdateModelVersionRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
+	type C UpdateModelVersionRequest
+	return marshal.Marshal((C)(s))
 }
 
 type UpdateRegistryWebhook struct {
@@ -2027,6 +3627,18 @@ type UpdateRegistryWebhook struct {
 	JobSpec *JobSpec `json:"job_spec,omitempty"`
 	// This describes an enum
 	Status RegistryWebhookStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateRegistryWebhook) UnmarshalJSON(b []byte) error {
+	type C UpdateRegistryWebhook
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UpdateRegistryWebhook) MarshalJSON() ([]byte, error) {
+	type C UpdateRegistryWebhook
+	return marshal.Marshal((C)(s))
 }
 
 type UpdateRun struct {
@@ -2039,11 +3651,35 @@ type UpdateRun struct {
 	RunUuid string `json:"run_uuid,omitempty"`
 	// Updated status of the run.
 	Status UpdateRunStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateRun) UnmarshalJSON(b []byte) error {
+	type C UpdateRun
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UpdateRun) MarshalJSON() ([]byte, error) {
+	type C UpdateRun
+	return marshal.Marshal((C)(s))
 }
 
 type UpdateRunResponse struct {
 	// Updated metadata of the run.
 	RunInfo *RunInfo `json:"run_info,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateRunResponse) UnmarshalJSON(b []byte) error {
+	type C UpdateRunResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UpdateRunResponse) MarshalJSON() ([]byte, error) {
+	type C UpdateRunResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Updated status of the run.

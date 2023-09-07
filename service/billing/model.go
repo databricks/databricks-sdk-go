@@ -2,7 +2,11 @@
 
 package billing
 
-import "fmt"
+import (
+	"fmt"
+
+	marshal "github.com/databricks/databricks-sdk-go/json"
+)
 
 // all definitions in this file are in alphabetical order
 
@@ -37,6 +41,18 @@ type Budget struct {
 	StartDate string `json:"start_date"`
 	// Target amount of the budget per period in USD.
 	TargetAmount string `json:"target_amount"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Budget) UnmarshalJSON(b []byte) error {
+	type C Budget
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Budget) MarshalJSON() ([]byte, error) {
+	type C Budget
+	return marshal.Marshal((C)(s))
 }
 
 type BudgetAlert struct {
@@ -46,11 +62,35 @@ type BudgetAlert struct {
 	// Percentage of the target amount used in the currect period that will
 	// trigger a notification.
 	MinPercentage int `json:"min_percentage,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *BudgetAlert) UnmarshalJSON(b []byte) error {
+	type C BudgetAlert
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s BudgetAlert) MarshalJSON() ([]byte, error) {
+	type C BudgetAlert
+	return marshal.Marshal((C)(s))
 }
 
 // List of budgets.
 type BudgetList struct {
 	Budgets []BudgetWithStatus `json:"budgets,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *BudgetList) UnmarshalJSON(b []byte) error {
+	type C BudgetList
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s BudgetList) MarshalJSON() ([]byte, error) {
+	type C BudgetList
+	return marshal.Marshal((C)(s))
 }
 
 // Budget configuration with daily status.
@@ -92,6 +132,18 @@ type BudgetWithStatus struct {
 	TargetAmount string `json:"target_amount,omitempty"`
 
 	UpdateTime string `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *BudgetWithStatus) UnmarshalJSON(b []byte) error {
+	type C BudgetWithStatus
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s BudgetWithStatus) MarshalJSON() ([]byte, error) {
+	type C BudgetWithStatus
+	return marshal.Marshal((C)(s))
 }
 
 type BudgetWithStatusStatusDailyItem struct {
@@ -99,6 +151,18 @@ type BudgetWithStatusStatusDailyItem struct {
 	Amount string `json:"amount,omitempty"`
 
 	Date string `json:"date,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *BudgetWithStatusStatusDailyItem) UnmarshalJSON(b []byte) error {
+	type C BudgetWithStatusStatusDailyItem
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s BudgetWithStatusStatusDailyItem) MarshalJSON() ([]byte, error) {
+	type C BudgetWithStatusStatusDailyItem
+	return marshal.Marshal((C)(s))
 }
 
 type CreateLogDeliveryConfigurationParams struct {
@@ -171,12 +235,36 @@ type CreateLogDeliveryConfigurationParams struct {
 	// deployments there is only one workspace per account ID, so this field is
 	// unnecessary.
 	WorkspaceIdsFilter []int64 `json:"workspace_ids_filter,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateLogDeliveryConfigurationParams) UnmarshalJSON(b []byte) error {
+	type C CreateLogDeliveryConfigurationParams
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateLogDeliveryConfigurationParams) MarshalJSON() ([]byte, error) {
+	type C CreateLogDeliveryConfigurationParams
+	return marshal.Marshal((C)(s))
 }
 
 // Delete budget
 type DeleteBudgetRequest struct {
 	// Budget ID
 	BudgetId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteBudgetRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteBudgetRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteBudgetRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteBudgetRequest
+	return marshal.Marshal((C)(s))
 }
 
 // This describes an enum
@@ -233,18 +321,54 @@ type DownloadRequest struct {
 	// Format: `YYYY-MM`. First month to return billable usage logs for. This
 	// field is required.
 	StartMonth string `json:"-" url:"start_month"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DownloadRequest) UnmarshalJSON(b []byte) error {
+	type C DownloadRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DownloadRequest) MarshalJSON() ([]byte, error) {
+	type C DownloadRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get budget and its status
 type GetBudgetRequest struct {
 	// Budget ID
 	BudgetId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetBudgetRequest) UnmarshalJSON(b []byte) error {
+	type C GetBudgetRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetBudgetRequest) MarshalJSON() ([]byte, error) {
+	type C GetBudgetRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get log delivery configuration
 type GetLogDeliveryRequest struct {
 	// Databricks log delivery configuration ID
 	LogDeliveryConfigurationId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetLogDeliveryRequest) UnmarshalJSON(b []byte) error {
+	type C GetLogDeliveryRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetLogDeliveryRequest) MarshalJSON() ([]byte, error) {
+	type C GetLogDeliveryRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get all log delivery configurations
@@ -255,6 +379,18 @@ type ListLogDeliveryRequest struct {
 	Status LogDeliveryConfigStatus `json:"-" url:"status,omitempty"`
 	// Filter by storage configuration ID.
 	StorageConfigurationId string `json:"-" url:"storage_configuration_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListLogDeliveryRequest) UnmarshalJSON(b []byte) error {
+	type C ListLogDeliveryRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListLogDeliveryRequest) MarshalJSON() ([]byte, error) {
+	type C ListLogDeliveryRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Status of log delivery configuration. Set to `ENABLED` (enabled) or
@@ -371,6 +507,18 @@ type LogDeliveryConfiguration struct {
 	// deployments there is only one workspace per account ID, so this field is
 	// unnecessary.
 	WorkspaceIdsFilter []int64 `json:"workspace_ids_filter,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
+	type C LogDeliveryConfiguration
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s LogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
+	type C LogDeliveryConfiguration
+	return marshal.Marshal((C)(s))
 }
 
 // Databricks log delivery status.
@@ -385,6 +533,18 @@ type LogDeliveryStatus struct {
 	Message string `json:"message,omitempty"`
 	// This describes an enum
 	Status DeliveryStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LogDeliveryStatus) UnmarshalJSON(b []byte) error {
+	type C LogDeliveryStatus
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s LogDeliveryStatus) MarshalJSON() ([]byte, error) {
+	type C LogDeliveryStatus
+	return marshal.Marshal((C)(s))
 }
 
 // Log delivery type. Supported values are:
@@ -472,6 +632,18 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateLogDeliveryConfigurationStatusRequest) UnmarshalJSON(b []byte) error {
+	type C UpdateLogDeliveryConfigurationStatusRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s UpdateLogDeliveryConfigurationStatusRequest) MarshalJSON() ([]byte, error) {
+	type C UpdateLogDeliveryConfigurationStatusRequest
+	return marshal.Marshal((C)(s))
 }
 
 type WrappedBudget struct {
@@ -479,21 +651,81 @@ type WrappedBudget struct {
 	Budget Budget `json:"budget"`
 	// Budget ID
 	BudgetId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WrappedBudget) UnmarshalJSON(b []byte) error {
+	type C WrappedBudget
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WrappedBudget) MarshalJSON() ([]byte, error) {
+	type C WrappedBudget
+	return marshal.Marshal((C)(s))
 }
 
 type WrappedBudgetWithStatus struct {
 	// Budget configuration with daily status.
 	Budget BudgetWithStatus `json:"budget"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WrappedBudgetWithStatus) UnmarshalJSON(b []byte) error {
+	type C WrappedBudgetWithStatus
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WrappedBudgetWithStatus) MarshalJSON() ([]byte, error) {
+	type C WrappedBudgetWithStatus
+	return marshal.Marshal((C)(s))
 }
 
 type WrappedCreateLogDeliveryConfiguration struct {
 	LogDeliveryConfiguration *CreateLogDeliveryConfigurationParams `json:"log_delivery_configuration,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WrappedCreateLogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
+	type C WrappedCreateLogDeliveryConfiguration
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WrappedCreateLogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
+	type C WrappedCreateLogDeliveryConfiguration
+	return marshal.Marshal((C)(s))
 }
 
 type WrappedLogDeliveryConfiguration struct {
 	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WrappedLogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
+	type C WrappedLogDeliveryConfiguration
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WrappedLogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
+	type C WrappedLogDeliveryConfiguration
+	return marshal.Marshal((C)(s))
 }
 
 type WrappedLogDeliveryConfigurations struct {
 	LogDeliveryConfigurations []LogDeliveryConfiguration `json:"log_delivery_configurations,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WrappedLogDeliveryConfigurations) UnmarshalJSON(b []byte) error {
+	type C WrappedLogDeliveryConfigurations
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WrappedLogDeliveryConfigurations) MarshalJSON() ([]byte, error) {
+	type C WrappedLogDeliveryConfigurations
+	return marshal.Marshal((C)(s))
 }

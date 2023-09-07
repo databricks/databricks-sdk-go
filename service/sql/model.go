@@ -2,7 +2,11 @@
 
 package sql
 
-import "fmt"
+import (
+	"fmt"
+
+	marshal "github.com/databricks/databricks-sdk-go/json"
+)
 
 // all definitions in this file are in alphabetical order
 
@@ -12,6 +16,18 @@ type AccessControl struct {
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AccessControl) UnmarshalJSON(b []byte) error {
+	type C AccessControl
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s AccessControl) MarshalJSON() ([]byte, error) {
+	type C AccessControl
+	return marshal.Marshal((C)(s))
 }
 
 type Alert struct {
@@ -41,6 +57,18 @@ type Alert struct {
 	UpdatedAt string `json:"updated_at,omitempty"`
 
 	User *User `json:"user,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Alert) UnmarshalJSON(b []byte) error {
+	type C Alert
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Alert) MarshalJSON() ([]byte, error) {
+	type C Alert
+	return marshal.Marshal((C)(s))
 }
 
 // Alert configuration options.
@@ -67,6 +95,18 @@ type AlertOptions struct {
 	// Value used to compare in alert evaluation. Supported types include
 	// strings (eg. 'foobar'), floats (eg. 123.4), and booleans (true).
 	Value any `json:"value"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AlertOptions) UnmarshalJSON(b []byte) error {
+	type C AlertOptions
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s AlertOptions) MarshalJSON() ([]byte, error) {
+	type C AlertOptions
+	return marshal.Marshal((C)(s))
 }
 
 type AlertQuery struct {
@@ -106,6 +146,18 @@ type AlertQuery struct {
 	UpdatedAt string `json:"updated_at,omitempty"`
 	// The ID of the user who created this query.
 	UserId int `json:"user_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AlertQuery) UnmarshalJSON(b []byte) error {
+	type C AlertQuery
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s AlertQuery) MarshalJSON() ([]byte, error) {
+	type C AlertQuery
+	return marshal.Marshal((C)(s))
 }
 
 // State of the alert. Possible values are: `unknown` (yet to be evaluated),
@@ -143,12 +195,36 @@ func (f *AlertState) Type() string {
 // Cancel statement execution
 type CancelExecutionRequest struct {
 	StatementId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CancelExecutionRequest) UnmarshalJSON(b []byte) error {
+	type C CancelExecutionRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CancelExecutionRequest) MarshalJSON() ([]byte, error) {
+	type C CancelExecutionRequest
+	return marshal.Marshal((C)(s))
 }
 
 type Channel struct {
 	DbsqlVersion string `json:"dbsql_version,omitempty"`
 
 	Name ChannelName `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Channel) UnmarshalJSON(b []byte) error {
+	type C Channel
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Channel) MarshalJSON() ([]byte, error) {
+	type C Channel
+	return marshal.Marshal((C)(s))
 }
 
 // Channel information for the SQL warehouse at the time of query execution
@@ -157,6 +233,18 @@ type ChannelInfo struct {
 	DbsqlVersion string `json:"dbsql_version,omitempty"`
 	// Name of the channel
 	Name ChannelName `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ChannelInfo) UnmarshalJSON(b []byte) error {
+	type C ChannelInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ChannelInfo) MarshalJSON() ([]byte, error) {
+	type C ChannelInfo
+	return marshal.Marshal((C)(s))
 }
 
 type ChannelName string
@@ -210,6 +298,18 @@ type ChunkInfo struct {
 	RowCount int64 `json:"row_count,omitempty"`
 	// Starting row offset within the result set.
 	RowOffset int64 `json:"row_offset,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ChunkInfo) UnmarshalJSON(b []byte) error {
+	type C ChunkInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ChunkInfo) MarshalJSON() ([]byte, error) {
+	type C ChunkInfo
+	return marshal.Marshal((C)(s))
 }
 
 type ColumnInfo struct {
@@ -227,6 +327,18 @@ type ColumnInfo struct {
 	TypeScale int `json:"type_scale,omitempty"`
 	// Full data type spec, SQL/catalogString text.
 	TypeText string `json:"type_text,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
+	type C ColumnInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ColumnInfo) MarshalJSON() ([]byte, error) {
+	type C ColumnInfo
+	return marshal.Marshal((C)(s))
 }
 
 // Name of type (INT, STRUCT, MAP, and so on)
@@ -304,6 +416,18 @@ type CreateAlert struct {
 	// and can be triggered again. If `null`, alert will never be triggered
 	// again.
 	Rearm int `json:"rearm,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateAlert) UnmarshalJSON(b []byte) error {
+	type C CreateAlert
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateAlert) MarshalJSON() ([]byte, error) {
+	type C CreateAlert
+	return marshal.Marshal((C)(s))
 }
 
 // Create a dashboard object
@@ -323,6 +447,18 @@ type CreateDashboardRequest struct {
 	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
 	Tags []string `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateDashboardRequest) UnmarshalJSON(b []byte) error {
+	type C CreateDashboardRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateDashboardRequest) MarshalJSON() ([]byte, error) {
+	type C CreateDashboardRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Add visualization to a query
@@ -341,6 +477,18 @@ type CreateQueryVisualizationRequest struct {
 	QueryId string `json:"query_id"`
 	// The type of visualization: chart, table, pivot table, and so on.
 	Type string `json:"type"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateQueryVisualizationRequest) UnmarshalJSON(b []byte) error {
+	type C CreateQueryVisualizationRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateQueryVisualizationRequest) MarshalJSON() ([]byte, error) {
+	type C CreateQueryVisualizationRequest
+	return marshal.Marshal((C)(s))
 }
 
 type CreateWarehouseRequest struct {
@@ -403,6 +551,18 @@ type CreateWarehouseRequest struct {
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
 	WarehouseType CreateWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateWarehouseRequest) UnmarshalJSON(b []byte) error {
+	type C CreateWarehouseRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateWarehouseRequest) MarshalJSON() ([]byte, error) {
+	type C CreateWarehouseRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
@@ -440,6 +600,18 @@ func (f *CreateWarehouseRequestWarehouseType) Type() string {
 type CreateWarehouseResponse struct {
 	// Id for the SQL warehouse. This value is unique across all SQL warehouses.
 	Id string `json:"id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateWarehouseResponse) UnmarshalJSON(b []byte) error {
+	type C CreateWarehouseResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateWarehouseResponse) MarshalJSON() ([]byte, error) {
+	type C CreateWarehouseResponse
+	return marshal.Marshal((C)(s))
 }
 
 type CreateWidget struct {
@@ -457,6 +629,18 @@ type CreateWidget struct {
 	VisualizationId string `json:"visualization_id,omitempty"`
 	// Width of a widget
 	Width int `json:"width"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateWidget) UnmarshalJSON(b []byte) error {
+	type C CreateWidget
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s CreateWidget) MarshalJSON() ([]byte, error) {
+	type C CreateWidget
+	return marshal.Marshal((C)(s))
 }
 
 // A JSON representing a dashboard containing widgets of visualizations and text
@@ -505,6 +689,18 @@ type Dashboard struct {
 	UserId int `json:"user_id,omitempty"`
 
 	Widgets []Widget `json:"widgets,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Dashboard) UnmarshalJSON(b []byte) error {
+	type C Dashboard
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Dashboard) MarshalJSON() ([]byte, error) {
+	type C Dashboard
+	return marshal.Marshal((C)(s))
 }
 
 type DashboardOptions struct {
@@ -512,6 +708,18 @@ type DashboardOptions struct {
 	// the `is_archived` property is `true`. Trashed items are deleted after
 	// thirty days.
 	MovedToTrashAt string `json:"moved_to_trash_at,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DashboardOptions) UnmarshalJSON(b []byte) error {
+	type C DashboardOptions
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DashboardOptions) MarshalJSON() ([]byte, error) {
+	type C DashboardOptions
+	return marshal.Marshal((C)(s))
 }
 
 // A JSON object representing a DBSQL data source / SQL warehouse.
@@ -537,37 +745,121 @@ type DataSource struct {
 	// The ID of the associated SQL warehouse, if this data source is backed by
 	// a SQL warehouse.
 	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DataSource) UnmarshalJSON(b []byte) error {
+	type C DataSource
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DataSource) MarshalJSON() ([]byte, error) {
+	type C DataSource
+	return marshal.Marshal((C)(s))
 }
 
 // Delete an alert
 type DeleteAlertRequest struct {
 	AlertId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteAlertRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteAlertRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteAlertRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteAlertRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Remove a dashboard
 type DeleteDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteDashboardRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteDashboardRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteDashboardRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteDashboardRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Remove widget
 type DeleteDashboardWidgetRequest struct {
 	Id string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteDashboardWidgetRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteDashboardWidgetRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteDashboardWidgetRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteDashboardWidgetRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Delete a query
 type DeleteQueryRequest struct {
 	QueryId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteQueryRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteQueryRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteQueryRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteQueryRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Remove visualization
 type DeleteQueryVisualizationRequest struct {
 	Id string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteQueryVisualizationRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteQueryVisualizationRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteQueryVisualizationRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteQueryVisualizationRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Delete a warehouse
 type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteWarehouseRequest) UnmarshalJSON(b []byte) error {
+	type C DeleteWarehouseRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s DeleteWarehouseRequest) MarshalJSON() ([]byte, error) {
+	type C DeleteWarehouseRequest
+	return marshal.Marshal((C)(s))
 }
 
 // The fetch disposition provides two modes of fetching results: `INLINE` and
@@ -633,6 +925,18 @@ type EditAlert struct {
 	// and can be triggered again. If `null`, alert will never be triggered
 	// again.
 	Rearm int `json:"rearm,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EditAlert) UnmarshalJSON(b []byte) error {
+	type C EditAlert
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s EditAlert) MarshalJSON() ([]byte, error) {
+	type C EditAlert
+	return marshal.Marshal((C)(s))
 }
 
 type EditWarehouseRequest struct {
@@ -697,6 +1001,18 @@ type EditWarehouseRequest struct {
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
 	WarehouseType EditWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EditWarehouseRequest) UnmarshalJSON(b []byte) error {
+	type C EditWarehouseRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s EditWarehouseRequest) MarshalJSON() ([]byte, error) {
+	type C EditWarehouseRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
@@ -735,6 +1051,18 @@ type EndpointConfPair struct {
 	Key string `json:"key,omitempty"`
 
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EndpointConfPair) UnmarshalJSON(b []byte) error {
+	type C EndpointConfPair
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s EndpointConfPair) MarshalJSON() ([]byte, error) {
+	type C EndpointConfPair
+	return marshal.Marshal((C)(s))
 }
 
 type EndpointHealth struct {
@@ -750,6 +1078,18 @@ type EndpointHealth struct {
 	// A short summary of the health status in case of degraded/failed
 	// warehouses.
 	Summary string `json:"summary,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EndpointHealth) UnmarshalJSON(b []byte) error {
+	type C EndpointHealth
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s EndpointHealth) MarshalJSON() ([]byte, error) {
+	type C EndpointHealth
+	return marshal.Marshal((C)(s))
 }
 
 type EndpointInfo struct {
@@ -827,6 +1167,18 @@ type EndpointInfo struct {
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
 	WarehouseType EndpointInfoWarehouseType `json:"warehouse_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EndpointInfo) UnmarshalJSON(b []byte) error {
+	type C EndpointInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s EndpointInfo) MarshalJSON() ([]byte, error) {
+	type C EndpointInfo
+	return marshal.Marshal((C)(s))
 }
 
 // Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
@@ -865,10 +1217,34 @@ type EndpointTagPair struct {
 	Key string `json:"key,omitempty"`
 
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EndpointTagPair) UnmarshalJSON(b []byte) error {
+	type C EndpointTagPair
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s EndpointTagPair) MarshalJSON() ([]byte, error) {
+	type C EndpointTagPair
+	return marshal.Marshal((C)(s))
 }
 
 type EndpointTags struct {
 	CustomTags []EndpointTagPair `json:"custom_tags,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EndpointTags) UnmarshalJSON(b []byte) error {
+	type C EndpointTags
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s EndpointTags) MarshalJSON() ([]byte, error) {
+	type C EndpointTags
+	return marshal.Marshal((C)(s))
 }
 
 type ExecuteStatementRequest struct {
@@ -1009,6 +1385,18 @@ type ExecuteStatementRequest struct {
 	// Warehouse upon which to execute a statement. See also [What are SQL
 	// warehouses?](/sql/admin/warehouse-type.html)
 	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExecuteStatementRequest) UnmarshalJSON(b []byte) error {
+	type C ExecuteStatementRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ExecuteStatementRequest) MarshalJSON() ([]byte, error) {
+	type C ExecuteStatementRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ExecuteStatementResponse struct {
@@ -1024,6 +1412,18 @@ type ExecuteStatementResponse struct {
 	// Status response includes execution state and if relevant, error
 	// information.
 	Status *StatementStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExecuteStatementResponse) UnmarshalJSON(b []byte) error {
+	type C ExecuteStatementResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ExecuteStatementResponse) MarshalJSON() ([]byte, error) {
+	type C ExecuteStatementResponse
+	return marshal.Marshal((C)(s))
 }
 
 type ExternalLink struct {
@@ -1047,6 +1447,18 @@ type ExternalLink struct {
 	RowCount int64 `json:"row_count,omitempty"`
 	// Starting row offset within the result set.
 	RowOffset int64 `json:"row_offset,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExternalLink) UnmarshalJSON(b []byte) error {
+	type C ExternalLink
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ExternalLink) MarshalJSON() ([]byte, error) {
+	type C ExternalLink
+	return marshal.Marshal((C)(s))
 }
 
 // Statement execution supports three result formats: `JSON_ARRAY` (default),
@@ -1122,11 +1534,35 @@ func (f *Format) Type() string {
 // Get an alert
 type GetAlertRequest struct {
 	AlertId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetAlertRequest) UnmarshalJSON(b []byte) error {
+	type C GetAlertRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetAlertRequest) MarshalJSON() ([]byte, error) {
+	type C GetAlertRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Retrieve a definition
 type GetDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetDashboardRequest) UnmarshalJSON(b []byte) error {
+	type C GetDashboardRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetDashboardRequest) MarshalJSON() ([]byte, error) {
+	type C GetDashboardRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get object ACL
@@ -1135,11 +1571,35 @@ type GetDbsqlPermissionRequest struct {
 	ObjectId string `json:"-" url:"-"`
 	// The type of object permissions to check.
 	ObjectType ObjectTypePlural `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetDbsqlPermissionRequest) UnmarshalJSON(b []byte) error {
+	type C GetDbsqlPermissionRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetDbsqlPermissionRequest) MarshalJSON() ([]byte, error) {
+	type C GetDbsqlPermissionRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get a query definition.
 type GetQueryRequest struct {
 	QueryId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetQueryRequest) UnmarshalJSON(b []byte) error {
+	type C GetQueryRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetQueryRequest) MarshalJSON() ([]byte, error) {
+	type C GetQueryRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetResponse struct {
@@ -1148,11 +1608,35 @@ type GetResponse struct {
 	ObjectId string `json:"object_id,omitempty"`
 	// A singular noun object type.
 	ObjectType ObjectType `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetResponse) UnmarshalJSON(b []byte) error {
+	type C GetResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetResponse) MarshalJSON() ([]byte, error) {
+	type C GetResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get status, manifest, and result first chunk
 type GetStatementRequest struct {
 	StatementId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetStatementRequest) UnmarshalJSON(b []byte) error {
+	type C GetStatementRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetStatementRequest) MarshalJSON() ([]byte, error) {
+	type C GetStatementRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetStatementResponse struct {
@@ -1168,6 +1652,18 @@ type GetStatementResponse struct {
 	// Status response includes execution state and if relevant, error
 	// information.
 	Status *StatementStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetStatementResponse) UnmarshalJSON(b []byte) error {
+	type C GetStatementResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetStatementResponse) MarshalJSON() ([]byte, error) {
+	type C GetStatementResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get result chunk by index
@@ -1175,29 +1671,89 @@ type GetStatementResultChunkNRequest struct {
 	ChunkIndex int `json:"-" url:"-"`
 
 	StatementId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetStatementResultChunkNRequest) UnmarshalJSON(b []byte) error {
+	type C GetStatementResultChunkNRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetStatementResultChunkNRequest) MarshalJSON() ([]byte, error) {
+	type C GetStatementResultChunkNRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get SQL warehouse permission levels
 type GetWarehousePermissionLevelsRequest struct {
 	// The SQL warehouse for which to get or manage permissions.
 	WarehouseId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetWarehousePermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	type C GetWarehousePermissionLevelsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetWarehousePermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	type C GetWarehousePermissionLevelsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetWarehousePermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []WarehousePermissionsDescription `json:"permission_levels,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetWarehousePermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	type C GetWarehousePermissionLevelsResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetWarehousePermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	type C GetWarehousePermissionLevelsResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Get SQL warehouse permissions
 type GetWarehousePermissionsRequest struct {
 	// The SQL warehouse for which to get or manage permissions.
 	WarehouseId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetWarehousePermissionsRequest) UnmarshalJSON(b []byte) error {
+	type C GetWarehousePermissionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetWarehousePermissionsRequest) MarshalJSON() ([]byte, error) {
+	type C GetWarehousePermissionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Get warehouse info
 type GetWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetWarehouseRequest) UnmarshalJSON(b []byte) error {
+	type C GetWarehouseRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetWarehouseRequest) MarshalJSON() ([]byte, error) {
+	type C GetWarehouseRequest
+	return marshal.Marshal((C)(s))
 }
 
 type GetWarehouseResponse struct {
@@ -1275,6 +1831,18 @@ type GetWarehouseResponse struct {
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
 	WarehouseType GetWarehouseResponseWarehouseType `json:"warehouse_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetWarehouseResponse) UnmarshalJSON(b []byte) error {
+	type C GetWarehouseResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetWarehouseResponse) MarshalJSON() ([]byte, error) {
+	type C GetWarehouseResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
@@ -1335,6 +1903,18 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	SecurityPolicy GetWorkspaceWarehouseConfigResponseSecurityPolicy `json:"security_policy,omitempty"`
 	// SQL configuration parameters
 	SqlConfigurationParameters *RepeatedEndpointConfPairs `json:"sql_configuration_parameters,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetWorkspaceWarehouseConfigResponse) UnmarshalJSON(b []byte) error {
+	type C GetWorkspaceWarehouseConfigResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s GetWorkspaceWarehouseConfigResponse) MarshalJSON() ([]byte, error) {
+	type C GetWorkspaceWarehouseConfigResponse
+	return marshal.Marshal((C)(s))
 }
 
 // Security policy for warehouses
@@ -1377,6 +1957,18 @@ type ListDashboardsRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Full text search term.
 	Q string `json:"-" url:"q,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListDashboardsRequest) UnmarshalJSON(b []byte) error {
+	type C ListDashboardsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListDashboardsRequest) MarshalJSON() ([]byte, error) {
+	type C ListDashboardsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ListOrder string
@@ -1429,6 +2021,18 @@ type ListQueriesRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Full text search term
 	Q string `json:"-" url:"q,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListQueriesRequest) UnmarshalJSON(b []byte) error {
+	type C ListQueriesRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListQueriesRequest) MarshalJSON() ([]byte, error) {
+	type C ListQueriesRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ListQueriesResponse struct {
@@ -1438,6 +2042,18 @@ type ListQueriesResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	Res []QueryInfo `json:"res,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListQueriesResponse) UnmarshalJSON(b []byte) error {
+	type C ListQueriesResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListQueriesResponse) MarshalJSON() ([]byte, error) {
+	type C ListQueriesResponse
+	return marshal.Marshal((C)(s))
 }
 
 // List Queries
@@ -1450,6 +2066,18 @@ type ListQueryHistoryRequest struct {
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// A token that can be used to get the next page of results.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListQueryHistoryRequest) UnmarshalJSON(b []byte) error {
+	type C ListQueryHistoryRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListQueryHistoryRequest) MarshalJSON() ([]byte, error) {
+	type C ListQueryHistoryRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ListResponse struct {
@@ -1461,6 +2089,18 @@ type ListResponse struct {
 	PageSize int `json:"page_size,omitempty"`
 	// List of dashboards returned.
 	Results []Dashboard `json:"results,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListResponse) UnmarshalJSON(b []byte) error {
+	type C ListResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListResponse) MarshalJSON() ([]byte, error) {
+	type C ListResponse
+	return marshal.Marshal((C)(s))
 }
 
 // List warehouses
@@ -1468,11 +2108,35 @@ type ListWarehousesRequest struct {
 	// Service Principal which will be used to fetch the list of warehouses. If
 	// not specified, the user from the session header is used.
 	RunAsUserId int `json:"-" url:"run_as_user_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListWarehousesRequest) UnmarshalJSON(b []byte) error {
+	type C ListWarehousesRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListWarehousesRequest) MarshalJSON() ([]byte, error) {
+	type C ListWarehousesRequest
+	return marshal.Marshal((C)(s))
 }
 
 type ListWarehousesResponse struct {
 	// A list of warehouses and their configurations.
 	Warehouses []EndpointInfo `json:"warehouses,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListWarehousesResponse) UnmarshalJSON(b []byte) error {
+	type C ListWarehousesResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ListWarehousesResponse) MarshalJSON() ([]byte, error) {
+	type C ListWarehousesResponse
+	return marshal.Marshal((C)(s))
 }
 
 // A singular noun object type.
@@ -1547,6 +2211,18 @@ type OdbcParams struct {
 	Port int `json:"port,omitempty"`
 
 	Protocol string `json:"protocol,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *OdbcParams) UnmarshalJSON(b []byte) error {
+	type C OdbcParams
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s OdbcParams) MarshalJSON() ([]byte, error) {
+	type C OdbcParams
+	return marshal.Marshal((C)(s))
 }
 
 // The singular form of the type of object which can be owned.
@@ -1589,6 +2265,18 @@ type Parameter struct {
 	Type ParameterType `json:"type,omitempty"`
 	// The default value for this parameter.
 	Value any `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Parameter) UnmarshalJSON(b []byte) error {
+	type C Parameter
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Parameter) MarshalJSON() ([]byte, error) {
+	type C Parameter
+	return marshal.Marshal((C)(s))
 }
 
 // Parameters can have several different types.
@@ -1753,6 +2441,18 @@ type Query struct {
 	UserId int `json:"user_id,omitempty"`
 
 	Visualizations []Visualization `json:"visualizations,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Query) UnmarshalJSON(b []byte) error {
+	type C Query
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Query) MarshalJSON() ([]byte, error) {
+	type C Query
+	return marshal.Marshal((C)(s))
 }
 
 type QueryEditContent struct {
@@ -1772,6 +2472,18 @@ type QueryEditContent struct {
 	Query string `json:"query,omitempty"`
 
 	QueryId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryEditContent) UnmarshalJSON(b []byte) error {
+	type C QueryEditContent
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s QueryEditContent) MarshalJSON() ([]byte, error) {
+	type C QueryEditContent
+	return marshal.Marshal((C)(s))
 }
 
 // A filter to limit query history results. This field is optional.
@@ -1783,6 +2495,18 @@ type QueryFilter struct {
 	UserIds []int `json:"user_ids,omitempty" url:"user_ids,omitempty"`
 	// A list of warehouse IDs.
 	WarehouseIds []string `json:"warehouse_ids,omitempty" url:"warehouse_ids,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryFilter) UnmarshalJSON(b []byte) error {
+	type C QueryFilter
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s QueryFilter) MarshalJSON() ([]byte, error) {
+	type C QueryFilter
+	return marshal.Marshal((C)(s))
 }
 
 type QueryInfo struct {
@@ -1834,6 +2558,18 @@ type QueryInfo struct {
 	UserName string `json:"user_name,omitempty"`
 	// Warehouse ID.
 	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryInfo) UnmarshalJSON(b []byte) error {
+	type C QueryInfo
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s QueryInfo) MarshalJSON() ([]byte, error) {
+	type C QueryInfo
+	return marshal.Marshal((C)(s))
 }
 
 type QueryList struct {
@@ -1845,6 +2581,18 @@ type QueryList struct {
 	PageSize int `json:"page_size,omitempty"`
 	// List of queries returned.
 	Results []Query `json:"results,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryList) UnmarshalJSON(b []byte) error {
+	type C QueryList
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s QueryList) MarshalJSON() ([]byte, error) {
+	type C QueryList
+	return marshal.Marshal((C)(s))
 }
 
 // Metrics about query execution.
@@ -1913,6 +2661,18 @@ type QueryMetrics struct {
 	// Size pf persistent data written to cloud object storage in your cloud
 	// tenant, in bytes.
 	WriteRemoteBytes int `json:"write_remote_bytes,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryMetrics) UnmarshalJSON(b []byte) error {
+	type C QueryMetrics
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s QueryMetrics) MarshalJSON() ([]byte, error) {
+	type C QueryMetrics
+	return marshal.Marshal((C)(s))
 }
 
 type QueryOptions struct {
@@ -1922,6 +2682,18 @@ type QueryOptions struct {
 	MovedToTrashAt string `json:"moved_to_trash_at,omitempty"`
 
 	Parameters []Parameter `json:"parameters,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryOptions) UnmarshalJSON(b []byte) error {
+	type C QueryOptions
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s QueryOptions) MarshalJSON() ([]byte, error) {
+	type C QueryOptions
+	return marshal.Marshal((C)(s))
 }
 
 type QueryPostContent struct {
@@ -1943,6 +2715,18 @@ type QueryPostContent struct {
 	Query string `json:"query,omitempty"`
 	// Run as role
 	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryPostContent) UnmarshalJSON(b []byte) error {
+	type C QueryPostContent
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s QueryPostContent) MarshalJSON() ([]byte, error) {
+	type C QueryPostContent
+	return marshal.Marshal((C)(s))
 }
 
 // Type of statement for this query
@@ -2057,16 +2841,52 @@ type RepeatedEndpointConfPairs struct {
 	ConfigPair []EndpointConfPair `json:"config_pair,omitempty"`
 
 	ConfigurationPairs []EndpointConfPair `json:"configuration_pairs,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RepeatedEndpointConfPairs) UnmarshalJSON(b []byte) error {
+	type C RepeatedEndpointConfPairs
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RepeatedEndpointConfPairs) MarshalJSON() ([]byte, error) {
+	type C RepeatedEndpointConfPairs
+	return marshal.Marshal((C)(s))
 }
 
 // Restore a dashboard
 type RestoreDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RestoreDashboardRequest) UnmarshalJSON(b []byte) error {
+	type C RestoreDashboardRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RestoreDashboardRequest) MarshalJSON() ([]byte, error) {
+	type C RestoreDashboardRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Restore a query
 type RestoreQueryRequest struct {
 	QueryId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RestoreQueryRequest) UnmarshalJSON(b []byte) error {
+	type C RestoreQueryRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s RestoreQueryRequest) MarshalJSON() ([]byte, error) {
+	type C RestoreQueryRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Result data chunks are delivered in either the `chunk` field when using
@@ -2092,6 +2912,18 @@ type ResultData struct {
 	RowCount int64 `json:"row_count,omitempty"`
 	// Starting row offset within the result set.
 	RowOffset int64 `json:"row_offset,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ResultData) UnmarshalJSON(b []byte) error {
+	type C ResultData
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ResultData) MarshalJSON() ([]byte, error) {
+	type C ResultData
+	return marshal.Marshal((C)(s))
 }
 
 // The result manifest provides schema and metadata for the result set.
@@ -2151,6 +2983,18 @@ type ResultManifest struct {
 	TotalChunkCount int `json:"total_chunk_count,omitempty"`
 	// Total number of rows in the result set.
 	TotalRowCount int64 `json:"total_row_count,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ResultManifest) UnmarshalJSON(b []byte) error {
+	type C ResultManifest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ResultManifest) MarshalJSON() ([]byte, error) {
+	type C ResultManifest
+	return marshal.Marshal((C)(s))
 }
 
 // Schema is an ordered list of column descriptions.
@@ -2158,6 +3002,18 @@ type ResultSchema struct {
 	ColumnCount int `json:"column_count,omitempty"`
 
 	Columns []ColumnInfo `json:"columns,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ResultSchema) UnmarshalJSON(b []byte) error {
+	type C ResultSchema
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ResultSchema) MarshalJSON() ([]byte, error) {
+	type C ResultSchema
+	return marshal.Marshal((C)(s))
 }
 
 // Run as role
@@ -2192,6 +3048,18 @@ type ServiceError struct {
 	ErrorCode ServiceErrorCode `json:"error_code,omitempty"`
 	// Brief summary of error condition.
 	Message string `json:"message,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ServiceError) UnmarshalJSON(b []byte) error {
+	type C ServiceError
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s ServiceError) MarshalJSON() ([]byte, error) {
+	type C ServiceError
+	return marshal.Marshal((C)(s))
 }
 
 type ServiceErrorCode string
@@ -2253,6 +3121,18 @@ type SetRequest struct {
 	ObjectId string `json:"-" url:"-"`
 	// The type of object permission to set.
 	ObjectType ObjectTypePlural `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SetRequest) UnmarshalJSON(b []byte) error {
+	type C SetRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SetRequest) MarshalJSON() ([]byte, error) {
+	type C SetRequest
+	return marshal.Marshal((C)(s))
 }
 
 type SetResponse struct {
@@ -2261,6 +3141,18 @@ type SetResponse struct {
 	ObjectId string `json:"object_id,omitempty"`
 	// A singular noun object type.
 	ObjectType ObjectType `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SetResponse) UnmarshalJSON(b []byte) error {
+	type C SetResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SetResponse) MarshalJSON() ([]byte, error) {
+	type C SetResponse
+	return marshal.Marshal((C)(s))
 }
 
 type SetWorkspaceWarehouseConfigRequest struct {
@@ -2289,6 +3181,18 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	SecurityPolicy SetWorkspaceWarehouseConfigRequestSecurityPolicy `json:"security_policy,omitempty"`
 	// SQL configuration parameters
 	SqlConfigurationParameters *RepeatedEndpointConfPairs `json:"sql_configuration_parameters,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SetWorkspaceWarehouseConfigRequest) UnmarshalJSON(b []byte) error {
+	type C SetWorkspaceWarehouseConfigRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s SetWorkspaceWarehouseConfigRequest) MarshalJSON() ([]byte, error) {
+	type C SetWorkspaceWarehouseConfigRequest
+	return marshal.Marshal((C)(s))
 }
 
 // Security policy for warehouses
@@ -2355,6 +3259,18 @@ func (f *SpotInstancePolicy) Type() string {
 type StartRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StartRequest) UnmarshalJSON(b []byte) error {
+	type C StartRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s StartRequest) MarshalJSON() ([]byte, error) {
+	type C StartRequest
+	return marshal.Marshal((C)(s))
 }
 
 // State of the warehouse
@@ -2406,6 +3322,18 @@ type StatementParameterListItem struct {
 	// The value to substitute, represented as a string. If omitted, the value
 	// is interpreted as NULL.
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StatementParameterListItem) UnmarshalJSON(b []byte) error {
+	type C StatementParameterListItem
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s StatementParameterListItem) MarshalJSON() ([]byte, error) {
+	type C StatementParameterListItem
+	return marshal.Marshal((C)(s))
 }
 
 // Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`:
@@ -2460,6 +3388,18 @@ type StatementStatus struct {
 	// - `CLOSED`: execution successful, and statement closed; result no longer
 	// available for fetch
 	State StatementState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StatementStatus) UnmarshalJSON(b []byte) error {
+	type C StatementStatus
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s StatementStatus) MarshalJSON() ([]byte, error) {
+	type C StatementStatus
+	return marshal.Marshal((C)(s))
 }
 
 // Health status of the warehouse.
@@ -2498,10 +3438,34 @@ func (f *Status) Type() string {
 type StopRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StopRequest) UnmarshalJSON(b []byte) error {
+	type C StopRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s StopRequest) MarshalJSON() ([]byte, error) {
+	type C StopRequest
+	return marshal.Marshal((C)(s))
 }
 
 type Success struct {
 	Message SuccessMessage `json:"message,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Success) UnmarshalJSON(b []byte) error {
+	type C Success
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Success) MarshalJSON() ([]byte, error) {
+	type C Success
+	return marshal.Marshal((C)(s))
 }
 
 type SuccessMessage string
@@ -2537,6 +3501,18 @@ type TerminationReason struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 	// type of the termination
 	Type TerminationReasonType `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TerminationReason) UnmarshalJSON(b []byte) error {
+	type C TerminationReason
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TerminationReason) MarshalJSON() ([]byte, error) {
+	type C TerminationReason
+	return marshal.Marshal((C)(s))
 }
 
 // status code indicating why the cluster was terminated
@@ -2758,6 +3734,18 @@ type TimeRange struct {
 	EndTimeMs int `json:"end_time_ms,omitempty" url:"end_time_ms,omitempty"`
 	// Limit results to queries that started after this time.
 	StartTimeMs int `json:"start_time_ms,omitempty" url:"start_time_ms,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TimeRange) UnmarshalJSON(b []byte) error {
+	type C TimeRange
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TimeRange) MarshalJSON() ([]byte, error) {
+	type C TimeRange
+	return marshal.Marshal((C)(s))
 }
 
 // When in synchronous mode with `wait_timeout > 0s` it determines the action
@@ -2798,6 +3786,18 @@ func (f *TimeoutAction) Type() string {
 type TransferOwnershipObjectId struct {
 	// Email address for the new owner, who must exist in the workspace.
 	NewOwner string `json:"new_owner,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TransferOwnershipObjectId) UnmarshalJSON(b []byte) error {
+	type C TransferOwnershipObjectId
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TransferOwnershipObjectId) MarshalJSON() ([]byte, error) {
+	type C TransferOwnershipObjectId
+	return marshal.Marshal((C)(s))
 }
 
 // Transfer object ownership
@@ -2808,6 +3808,18 @@ type TransferOwnershipRequest struct {
 	ObjectId TransferOwnershipObjectId `json:"-" url:"-"`
 	// The type of object on which to change ownership.
 	ObjectType OwnableObjectType `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TransferOwnershipRequest) UnmarshalJSON(b []byte) error {
+	type C TransferOwnershipRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s TransferOwnershipRequest) MarshalJSON() ([]byte, error) {
+	type C TransferOwnershipRequest
+	return marshal.Marshal((C)(s))
 }
 
 type User struct {
@@ -2816,6 +3828,18 @@ type User struct {
 	Id int `json:"id,omitempty"`
 
 	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *User) UnmarshalJSON(b []byte) error {
+	type C User
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s User) MarshalJSON() ([]byte, error) {
+	type C User
+	return marshal.Marshal((C)(s))
 }
 
 // The visualization description API changes frequently and is unsupported. You
@@ -2841,6 +3865,18 @@ type Visualization struct {
 	Type string `json:"type,omitempty"`
 
 	UpdatedAt string `json:"updated_at,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Visualization) UnmarshalJSON(b []byte) error {
+	type C Visualization
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Visualization) MarshalJSON() ([]byte, error) {
+	type C Visualization
+	return marshal.Marshal((C)(s))
 }
 
 type WarehouseAccessControlRequest struct {
@@ -2852,6 +3888,18 @@ type WarehouseAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WarehouseAccessControlRequest) UnmarshalJSON(b []byte) error {
+	type C WarehouseAccessControlRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WarehouseAccessControlRequest) MarshalJSON() ([]byte, error) {
+	type C WarehouseAccessControlRequest
+	return marshal.Marshal((C)(s))
 }
 
 type WarehouseAccessControlResponse struct {
@@ -2865,6 +3913,18 @@ type WarehouseAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WarehouseAccessControlResponse) UnmarshalJSON(b []byte) error {
+	type C WarehouseAccessControlResponse
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WarehouseAccessControlResponse) MarshalJSON() ([]byte, error) {
+	type C WarehouseAccessControlResponse
+	return marshal.Marshal((C)(s))
 }
 
 type WarehousePermission struct {
@@ -2873,6 +3933,18 @@ type WarehousePermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WarehousePermission) UnmarshalJSON(b []byte) error {
+	type C WarehousePermission
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WarehousePermission) MarshalJSON() ([]byte, error) {
+	type C WarehousePermission
+	return marshal.Marshal((C)(s))
 }
 
 // Permission level
@@ -2911,18 +3983,54 @@ type WarehousePermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WarehousePermissions) UnmarshalJSON(b []byte) error {
+	type C WarehousePermissions
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WarehousePermissions) MarshalJSON() ([]byte, error) {
+	type C WarehousePermissions
+	return marshal.Marshal((C)(s))
 }
 
 type WarehousePermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WarehousePermissionsDescription) UnmarshalJSON(b []byte) error {
+	type C WarehousePermissionsDescription
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WarehousePermissionsDescription) MarshalJSON() ([]byte, error) {
+	type C WarehousePermissionsDescription
+	return marshal.Marshal((C)(s))
 }
 
 type WarehousePermissionsRequest struct {
 	AccessControlList []WarehouseAccessControlRequest `json:"access_control_list,omitempty"`
 	// The SQL warehouse for which to get or manage permissions.
 	WarehouseId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WarehousePermissionsRequest) UnmarshalJSON(b []byte) error {
+	type C WarehousePermissionsRequest
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WarehousePermissionsRequest) MarshalJSON() ([]byte, error) {
+	type C WarehousePermissionsRequest
+	return marshal.Marshal((C)(s))
 }
 
 type WarehouseTypePair struct {
@@ -2931,6 +4039,18 @@ type WarehouseTypePair struct {
 	Enabled bool `json:"enabled,omitempty"`
 	// Warehouse type: `PRO` or `CLASSIC`.
 	WarehouseType WarehouseTypePairWarehouseType `json:"warehouse_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WarehouseTypePair) UnmarshalJSON(b []byte) error {
+	type C WarehouseTypePair
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WarehouseTypePair) MarshalJSON() ([]byte, error) {
+	type C WarehouseTypePair
+	return marshal.Marshal((C)(s))
 }
 
 // Warehouse type: `PRO` or `CLASSIC`.
@@ -2976,6 +4096,18 @@ type Widget struct {
 	Visualization *Visualization `json:"visualization,omitempty"`
 	// Unused field.
 	Width int `json:"width,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Widget) UnmarshalJSON(b []byte) error {
+	type C Widget
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s Widget) MarshalJSON() ([]byte, error) {
+	type C Widget
+	return marshal.Marshal((C)(s))
 }
 
 type WidgetOptions struct {
@@ -2996,6 +4128,18 @@ type WidgetOptions struct {
 	Title string `json:"title,omitempty"`
 	// Timestamp of the last time this object was updated.
 	UpdatedAt string `json:"updated_at,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WidgetOptions) UnmarshalJSON(b []byte) error {
+	type C WidgetOptions
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WidgetOptions) MarshalJSON() ([]byte, error) {
+	type C WidgetOptions
+	return marshal.Marshal((C)(s))
 }
 
 // Coordinates of this widget on a dashboard. This portion of the API changes
@@ -3011,4 +4155,16 @@ type WidgetPosition struct {
 	SizeX int `json:"sizeX,omitempty"`
 	// height of the widget measured in dashboard grid cells
 	SizeY int `json:"sizeY,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WidgetPosition) UnmarshalJSON(b []byte) error {
+	type C WidgetPosition
+	return marshal.Unmarshal(b, (*C)(s))
+}
+
+func (s WidgetPosition) MarshalJSON() ([]byte, error) {
+	type C WidgetPosition
+	return marshal.Marshal((C)(s))
 }
