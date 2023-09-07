@@ -2,10 +2,10 @@
 
 ## 0.19.1
 
-* Handle Azure authentication when WorkspaceResourceID is provided ([#597](https://github.com/databricks/databricks-sdk-go/pull/597)).
-* Revert error message changes from client.go ([#604](https://github.com/databricks/databricks-sdk-go/pull/604)).
-* Reuse tokens after first call to Azure CLI ([#605](https://github.com/databricks/databricks-sdk-go/pull/605)).
-* Update error message assertions ([#607](https://github.com/databricks/databricks-sdk-go/pull/607)).
+* Handled Azure authentication when WorkspaceResourceID is provided ([#597](https://github.com/databricks/databricks-sdk-go/pull/597)).
+* Reverted error message changes from client.go ([#604](https://github.com/databricks/databricks-sdk-go/pull/604)).
+* Reused tokens after first call to Azure CLI ([#605](https://github.com/databricks/databricks-sdk-go/pull/605)).
+* Updated error message assertions ([#607](https://github.com/databricks/databricks-sdk-go/pull/607)).
 
 
 ## 0.19.0
