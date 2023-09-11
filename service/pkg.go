@@ -26,6 +26,8 @@
 //
 // - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
+// - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
+//
 // - [iam.CurrentUserAPI]: This API allows retrieving information about currently authenticated user or service principal.
 //
 // - [oauth2.CustomAppIntegrationAPI]: These APIs enable administrators to manage custom oauth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
@@ -132,7 +134,7 @@
 //
 // - [sharing.SharesAPI]: A share is a container instantiated with :method:shares/create.
 //
-// - [sql.StatementExecutionAPI]: The SQL Statement Execution API manages the execution of arbitrary SQL statements and the fetching of result data.
+// - [sql.StatementExecutionAPI]: The Databricks SQL Statement Execution API can be used to execute SQL statements on a SQL warehouse and fetch the result.
 //
 // - [provisioning.StorageAPI]: These APIs manage storage configurations for this workspace.
 //
@@ -207,6 +209,7 @@ var (
 	_ *compute.CommandExecutionAPI            = nil
 	_ *catalog.ConnectionsAPI                 = nil
 	_ *provisioning.CredentialsAPI            = nil
+	_ *settings.CredentialsManagerAPI         = nil
 	_ *iam.CurrentUserAPI                     = nil
 	_ *oauth2.CustomAppIntegrationAPI         = nil
 	_ *sql.DashboardWidgetsAPI                = nil

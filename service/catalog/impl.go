@@ -41,13 +41,13 @@ func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAc
 	return &accountsMetastoreAssignment, err
 }
 
-func (a *accountMetastoreAssignmentsImpl) List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]MetastoreAssignment, error) {
-	var metastoreAssignmentList []MetastoreAssignment
+func (a *accountMetastoreAssignmentsImpl) List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]int64, error) {
+	var workspaceIdList []WorkspaceId
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/workspaces", a.client.ConfiguredAccountID(), request.MetastoreId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &metastoreAssignmentList)
-	return metastoreAssignmentList, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &workspaceIdList)
+	return workspaceIdList, err
 }
 
 func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error {

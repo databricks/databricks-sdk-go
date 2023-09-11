@@ -8,7 +8,20 @@ import "fmt"
 
 // Activity recorded for the action.
 type Activity struct {
-	// This describes an enum
+	// Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied
+	// the corresponding stage transition.
+	//
+	// * `REQUESTED_TRANSITION`: User requested the corresponding stage
+	// transition.
+	//
+	// * `CANCELLED_REQUEST`: User cancelled an existing transition request.
+	//
+	// * `APPROVED_REQUEST`: User approved the corresponding stage transition.
+	//
+	// * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
+	//
+	// * `SYSTEM_TRANSITION`: For events performed as a side effect, such as
+	// archiving existing model versions in a stage.
 	ActivityType ActivityType `json:"activity_type,omitempty"`
 	// User-provided comment associated with the activity.
 	Comment string `json:"comment,omitempty"`
@@ -49,7 +62,13 @@ type Activity struct {
 	UserId string `json:"user_id,omitempty"`
 }
 
-// This describes an enum
+// An action that a user (with sufficient permissions) could take on an
+// activity. Valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a
+// transition request
+//
+// * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+//
+// * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
 type ActivityAction string
 
 // Approve a transition request
@@ -82,7 +101,19 @@ func (f *ActivityAction) Type() string {
 	return "ActivityAction"
 }
 
-// This describes an enum
+// Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
+// corresponding stage transition.
+//
+// * `REQUESTED_TRANSITION`: User requested the corresponding stage transition.
+//
+// * `CANCELLED_REQUEST`: User cancelled an existing transition request.
+//
+// * `APPROVED_REQUEST`: User approved the corresponding stage transition.
+//
+// * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
+//
+// * `SYSTEM_TRANSITION`: For events performed as a side effect, such as
+// archiving existing model versions in a stage.
 type ActivityType string
 
 // User applied the corresponding stage transition.
@@ -154,7 +185,10 @@ type ApproveTransitionRequestResponse struct {
 	Activity *Activity `json:"activity,omitempty"`
 }
 
-// This describes an enum
+// An action that a user (with sufficient permissions) could take on a comment.
+// Valid values are: * `EDIT_COMMENT`: Edit the comment
+//
+// * `DELETE_COMMENT`: Delete the comment
 type CommentActivityAction string
 
 // Delete the comment
@@ -311,7 +345,14 @@ type CreateRegistryWebhook struct {
 	JobSpec *JobSpec `json:"job_spec,omitempty"`
 	// Name of the model whose events would trigger this webhook.
 	ModelName string `json:"model_name,omitempty"`
-	// This describes an enum
+	// Enable or disable triggering the webhook, or put the webhook into test
+	// mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an
+	// associated event happens.
+	//
+	// * `DISABLED`: Webhook is not triggered.
+	//
+	// * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is
+	// not triggered on a real event.
 	Status RegistryWebhookStatus `json:"status,omitempty"`
 }
 
@@ -1089,7 +1130,15 @@ type ModelVersion struct {
 type ModelVersionDatabricks struct {
 	// Creation time of the object, as a Unix timestamp in milliseconds.
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-	// This describes an enum
+	// Stage of the model version. Valid values are:
+	//
+	// * `None`: The initial stage of a model version.
+	//
+	// * `Staging`: Staging or pre-production stage.
+	//
+	// * `Production`: Production stage.
+	//
+	// * `Archived`: Archived stage.
 	CurrentStage Stage `json:"current_stage,omitempty"`
 	// User-specified description for the object.
 	Description string `json:"description,omitempty"`
@@ -1110,7 +1159,14 @@ type ModelVersionDatabricks struct {
 	// URI that indicates the location of the source model artifacts. This is
 	// used when creating the model version.
 	Source string `json:"source,omitempty"`
-	// This describes an enum
+	// The status of the model version. Valid values are: *
+	// `PENDING_REGISTRATION`: Request to register a new model version is
+	// pending as server performs background tasks.
+	//
+	// * `FAILED_REGISTRATION`: Request to register a new model version has
+	// failed.
+	//
+	// * `READY`: Model version is ready for use.
 	Status Status `json:"status,omitempty"`
 	// Details on the current status, for example why registration failed.
 	StatusMessage string `json:"status_message,omitempty"`
@@ -1336,7 +1392,14 @@ type RegistryWebhook struct {
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Name of the model whose events would trigger this webhook.
 	ModelName string `json:"model_name,omitempty"`
-	// This describes an enum
+	// Enable or disable triggering the webhook, or put the webhook into test
+	// mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an
+	// associated event happens.
+	//
+	// * `DISABLED`: Webhook is not triggered.
+	//
+	// * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is
+	// not triggered on a real event.
 	Status RegistryWebhookStatus `json:"status,omitempty"`
 }
 
@@ -1387,7 +1450,14 @@ func (f *RegistryWebhookEvent) Type() string {
 	return "RegistryWebhookEvent"
 }
 
-// This describes an enum
+// Enable or disable triggering the webhook, or put the webhook into test mode.
+// The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated
+// event happens.
+//
+// * `DISABLED`: Webhook is not triggered.
+//
+// * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not
+// triggered on a real event.
 type RegistryWebhookStatus string
 
 // Webhook is triggered when an associated event happens.
@@ -1805,7 +1875,15 @@ type SetTag struct {
 	Value string `json:"value"`
 }
 
-// This describes an enum
+// Stage of the model version. Valid values are:
+//
+// * `None`: The initial stage of a model version.
+//
+// * `Staging`: Staging or pre-production stage.
+//
+// * `Production`: Production stage.
+//
+// * `Archived`: Archived stage.
 type Stage string
 
 // Archived stage.
@@ -1841,7 +1919,13 @@ func (f *Stage) Type() string {
 	return "Stage"
 }
 
-// This describes an enum
+// The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
+// Request to register a new model version is pending as server performs
+// background tasks.
+//
+// * `FAILED_REGISTRATION`: Request to register a new model version has failed.
+//
+// * `READY`: Model version is ready for use.
 type Status string
 
 // Request to register a new model version has failed.
@@ -2025,7 +2109,14 @@ type UpdateRegistryWebhook struct {
 	Id string `json:"id"`
 
 	JobSpec *JobSpec `json:"job_spec,omitempty"`
-	// This describes an enum
+	// Enable or disable triggering the webhook, or put the webhook into test
+	// mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an
+	// associated event happens.
+	//
+	// * `DISABLED`: Webhook is not triggered.
+	//
+	// * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is
+	// not triggered on a real event.
 	Status RegistryWebhookStatus `json:"status,omitempty"`
 }
 
