@@ -113,12 +113,12 @@ func newRequestBody(data any) (requestBody, error) {
 
 // Reset a request body to its initial state.
 //
-// This is used to retry requests with a body that has already been read. If
-// the request body is not strings.Reader or bytes.Reader, this will return an
-// error.
+// This is used to retry requests with a body that has already been read.
+// If the request body is not resettable (i.e. not nil and of type other than
+// strings.Reader or bytes.Reader), this will return an error.
 func (r requestBody) reset() error {
 	if r.Reader == nil {
-		return errors.New("cannot reset nil reader")
+		return nil
 	}
 	if v, ok := r.Reader.(io.Seeker); ok {
 		_, err := v.Seek(0, io.SeekStart)

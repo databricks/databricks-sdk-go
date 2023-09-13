@@ -637,3 +637,39 @@ func TestCannotRetryArbitraryReader(t *testing.T) {
 	err := client.Do(context.Background(), "POST", "/a", nil, customReader{}, nil)
 	assert.ErrorContains(t, err, "cannot reset reader of type client.customReader")
 }
+
+func TestRetryGetRequest(t *testing.T) {
+	// This test was added in response to https://github.com/databricks/terraform-provider-databricks/issues/2675.
+	succeed := false
+	handler := func(req *http.Request) (*http.Response, error) {
+		assert.Nil(t, req.Body)
+
+		if succeed {
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader("succeeded")),
+				Request:    req,
+			}, nil
+		}
+
+		succeed = true
+		return &http.Response{
+			StatusCode: 429,
+			Body:       io.NopCloser(strings.NewReader("failed")),
+			Request:    req,
+		}, nil
+	}
+
+	client := &DatabricksClient{
+		httpClient:   hc(handler),
+		rateLimiter:  rate.NewLimiter(rate.Limit(1), 1),
+		Config:       config.NewMockConfig(func(r *http.Request) error { return nil }),
+		retryTimeout: time.Hour,
+	}
+
+	respBytes := bytes.Buffer{}
+	err := client.Do(context.Background(), "GET", "/a", nil, nil, &respBytes)
+	assert.NoError(t, err)
+	assert.Equal(t, "succeeded", respBytes.String())
+	assert.True(t, succeed)
+}
