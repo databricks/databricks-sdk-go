@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-	"slices"
 	"strings"
 )
 
@@ -104,10 +103,17 @@ func parseJSONTag(raw string) (jsonTag, error) {
 	}
 
 	parts := strings.Split(raw, ",")
-	return jsonTag{
-		name:     parts[0],
-		asString: slices.Contains(parts, "string"),
-	}, nil
+
+	jsonTag := jsonTag{
+		name: parts[0],
+	}
+
+	for _, v := range parts {
+		if v == "string" {
+			jsonTag.asString = true
+		}
+	}
+	return jsonTag, nil
 }
 
 // Determines wether a field should be indluded or not
