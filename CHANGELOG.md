@@ -2,7 +2,7 @@
 
 ## 0.19.2
 
-* Fix case where retry of a request without body fails ([#614](https://github.com/databricks/databricks-sdk-go/pull/614)).
+* Fixed case where retry of a request without body fails ([#614](https://github.com/databricks/databricks-sdk-go/pull/614)).
 
 
 ## 0.19.1
