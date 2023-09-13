@@ -1,10 +1,13 @@
 package marshal
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
+
+	"github.com/databricks/databricks-sdk-go/logger"
 )
 
 const FORCE_SEND_FIELD_NAME = "ForceSendFields"
@@ -69,7 +72,7 @@ func structAsMap(object interface{}) (map[string]interface{}, error) {
 		}
 
 		// Skip fields which should not be included
-		if tag.ignore || !includeField(fieldValue, fieldStruct, includeFields) {
+		if !includeField(tag, fieldValue, fieldStruct, includeFields) {
 			continue
 		}
 
@@ -92,9 +95,10 @@ func formatAsString(v reflect.Value, kind reflect.Kind) string {
 }
 
 type jsonTag struct {
-	name     string
-	asString bool
-	ignore   bool
+	name      string
+	asString  bool
+	ignore    bool
+	omitempty bool
 }
 
 func parseJSONTag(raw string) (jsonTag, error) {
@@ -109,7 +113,10 @@ func parseJSONTag(raw string) (jsonTag, error) {
 	}
 
 	for _, v := range parts {
-		if v == "string" {
+		switch v {
+		case "omitempty":
+			jsonTag.omitempty = true
+		case "string":
 			jsonTag.asString = true
 		}
 	}
@@ -117,7 +124,14 @@ func parseJSONTag(raw string) (jsonTag, error) {
 }
 
 // Determines wether a field should be indluded or not
-func includeField(value reflect.Value, field reflect.StructField, mustInclude map[string]bool) bool {
+func includeField(tag jsonTag, value reflect.Value, field reflect.StructField, mustInclude map[string]bool) bool {
+	logger.Warnf(context.Background(), "%v", tag)
+	if tag.ignore {
+		return false
+	}
+	if !tag.omitempty {
+		return true
+	}
 	return (isBasicType(value.Type()) && mustInclude[field.Name]) || !isEmptyValue(value)
 }
 

@@ -144,3 +144,13 @@ func TestIntToString(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "1", res.ID)
 }
+
+func TestNoOmit(t *testing.T) {
+	in := SimpleStruct{
+		ID: "",
+	}
+	jsonString := `{"id":""}`
+	res, err := Marshal(in)
+	assert.NoError(t, err)
+	assert.Equal(t, jsonString, string(res))
+}

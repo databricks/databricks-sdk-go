@@ -8,13 +8,13 @@ import (
 )
 
 type CompositeParent struct {
-	Field1 int `json:"field1"`
+	Field1 int `json:"field1,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
 
 type CompositeSecondParent struct {
-	Field3 int `json:"field3"`
+	Field3 int `json:"field3,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -42,7 +42,7 @@ func (s CompositeParent) MarshalJSON() ([]byte, error) {
 type compositeChild struct {
 	CompositeParent
 	*CompositeSecondParent
-	Field2 int `json:"field2"`
+	Field2 int `json:"field2,omitempty"`
 }
 
 func (s compositeChild) MarshalJSON() ([]byte, error) {
