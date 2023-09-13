@@ -1,13 +1,10 @@
 package marshal
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
-
-	"github.com/databricks/databricks-sdk-go/logger"
 )
 
 const FORCE_SEND_FIELD_NAME = "ForceSendFields"
@@ -125,7 +122,6 @@ func parseJSONTag(raw string) (jsonTag, error) {
 
 // Determines wether a field should be indluded or not
 func includeField(tag jsonTag, value reflect.Value, field reflect.StructField, mustInclude map[string]bool) bool {
-	logger.Warnf(context.Background(), "%v", tag)
 	if tag.ignore {
 		return false
 	}
