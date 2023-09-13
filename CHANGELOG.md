@@ -1,5 +1,10 @@
 # Version changelog
 
+## 0.19.2
+
+* Fixed case where retry of a request without body fails ([#614](https://github.com/databricks/databricks-sdk-go/pull/614)).
+
+
 ## 0.19.1
 
 * Handled Azure authentication when WorkspaceResourceID is provided ([#597](https://github.com/databricks/databricks-sdk-go/pull/597)).
