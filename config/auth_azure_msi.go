@@ -41,14 +41,14 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		}
 	}
 	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
-	inner := azureMsiTokenSource{
+	inner := azureReuseTokenSource(nil, azureMsiTokenSource{
 		resource: cfg.getAzureLoginAppID(),
 		clientId: cfg.AzureClientID,
-	}
-	platform := azureMsiTokenSource{
+	})
+	platform := azureReuseTokenSource(nil, azureMsiTokenSource{
 		resource: env.ServiceManagementEndpoint,
 		clientId: cfg.AzureClientID,
-	}
+	})
 	return azureVisitor(cfg, serviceToServiceVisitor(inner, platform, xDatabricksAzureSpManagementToken)), nil
 }
 

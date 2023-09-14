@@ -53,7 +53,7 @@ func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, innerT
 		logger.Debugf(ctx, "Not including service management token in headers: %v", err)
 		return azureVisitor(cfg, refreshableVisitor(innerTokenSource)), nil
 	}
-	managementTokenSource := oauth2.ReuseTokenSource(t, ts)
+	managementTokenSource := azureReuseTokenSource(t, ts)
 	return azureVisitor(cfg, serviceToServiceVisitor(innerTokenSource, managementTokenSource, xDatabricksAzureSpManagementToken)), nil
 }
 
@@ -80,7 +80,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if err != nil {
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
-	visitor, err := c.getVisitor(ctx, cfg, oauth2.ReuseTokenSource(t, ts))
+	visitor, err := c.getVisitor(ctx, cfg, azureReuseTokenSource(t, ts))
 	if err != nil {
 		return nil, err
 	}
