@@ -21,13 +21,11 @@ type {{.PascalName}} struct {
 }
 
 func (s *{{.PascalName}}) UnmarshalJSON(b []byte) error {
-	type C {{.PascalName}}
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s {{.PascalName}}) MarshalJSON() ([]byte, error) {
-	type C {{.PascalName}}
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 {{else if .MapValue}}{{.Comment "// " 80}}
 type {{.PascalName}} {{template "type" .}}
