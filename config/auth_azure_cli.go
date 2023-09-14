@@ -122,10 +122,10 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 	if err != nil {
 		return nil, fmt.Errorf("cannot unmarshal CLI result: %w", err)
 	}
-	// expiresOn, err := time.ParseInLocation("2006-01-02 15:04:05.999999", it.ExpiresOn, time.Local)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("cannot parse expiry: %w", err)
-	// }
+	expiresOn, err := time.ParseInLocation("2006-01-02 15:04:05.999999", it.ExpiresOn, time.Local)
+	if err != nil {
+		return nil, fmt.Errorf("cannot parse expiry: %w", err)
+	}
 	logger.Infof(context.Background(), "Refreshed OAuth token for %s from Azure CLI, which expires on %s",
 		ts.resource, it.ExpiresOn)
 
@@ -138,7 +138,7 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 		AccessToken:  it.AccessToken,
 		RefreshToken: it.RefreshToken,
 		TokenType:    it.TokenType,
-		Expiry:       time.Now().Add(time.Minute),
+		Expiry:       expiresOn,
 	}).WithExtra(extra), nil
 }
 
