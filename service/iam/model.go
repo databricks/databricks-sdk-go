@@ -5,7 +5,7 @@ package iam
 import (
 	"fmt"
 
-	marshal "github.com/databricks/databricks-sdk-go/json"
+	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
 // all definitions in this file are in alphabetical order
@@ -1500,7 +1500,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Name *Name `json:"name,omitempty"`
 

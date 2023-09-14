@@ -7,14 +7,14 @@ import (
 	"strings"
 )
 
-const FORCE_SEND_FIELD_NAME = "ForceSendFields"
+const force_send_field_name = "ForceSendFields"
 
 // Marshal returns a JSON encoding of the given object. Included fields:
 // - non-empty value
 // - a basic type whose field's name is present in forceSendFields
 // Our templates always populate either omitempty or the '-' tag.
 // For simplicity, we assume one of those cases.
-func Marshal(object interface{}) ([]byte, error) {
+func Marshal(object any) ([]byte, error) {
 
 	dataMap, err := structAsMap(object)
 	if err != nil {
@@ -25,7 +25,7 @@ func Marshal(object interface{}) ([]byte, error) {
 }
 
 // Converts the object to a map
-func structAsMap(object interface{}) (map[string]interface{}, error) {
+func structAsMap(object any) (map[string]interface{}, error) {
 	result := make(map[string]interface{})
 
 	// If the object is nil or a pointer to nil, don't do anything
@@ -33,15 +33,10 @@ func structAsMap(object interface{}) (map[string]interface{}, error) {
 		return result, nil
 	}
 
-	forceSendFields, err := getForceSendFields(object)
+	includeFields, err := getForceSendFields(object)
 
 	if err != nil {
 		return nil, err
-	}
-
-	includeFields := make(map[string]bool)
-	for _, field := range forceSendFields {
-		includeFields[field] = true
 	}
 
 	value := reflect.ValueOf(object)
@@ -60,11 +55,11 @@ func structAsMap(object interface{}) (map[string]interface{}, error) {
 
 		// Anonymous fields should be marshalled using the same JSON, and then merged into the same map
 		if fieldStruct.Anonymous && fieldValue.IsValid() {
-			dataMap2, err := structAsMap(fieldValue.Interface())
+			anonymousFieldResult, err := structAsMap(fieldValue.Interface())
 			if err != nil {
 				return nil, err
 			}
-			result = mergeMaps(result, dataMap2)
+			result = mergeMaps(anonymousFieldResult, result)
 			continue
 		}
 
@@ -120,7 +115,7 @@ func parseJSONTag(raw string) (jsonTag, error) {
 	return jsonTag, nil
 }
 
-// Determines wether a field should be indluded or not
+// Determines wether a field should be included or not
 func includeField(tag jsonTag, value reflect.Value, field reflect.StructField, mustInclude map[string]bool) bool {
 	if tag.ignore {
 		return false
@@ -155,8 +150,8 @@ func isEmptyValue(v reflect.Value) bool {
 // does it, and a JSON should not have duplicated entries.
 func mergeMaps(m1 map[string]interface{}, m2 map[string]interface{}) map[string]interface{} {
 	merged := make(map[string]interface{})
-	for k, v := range m1 {
-		merged[k] = v
+	for key, value := range m1 {
+		merged[key] = value
 	}
 	for key, value := range m2 {
 		merged[key] = value
@@ -164,21 +159,26 @@ func mergeMaps(m1 map[string]interface{}, m2 map[string]interface{}) map[string]
 	return merged
 }
 
-func getForceSendFields(v interface{}) ([]string, error) {
+func getForceSendFields(v any) (map[string]bool, error) {
 	// reflect.GetFieldByName panics if the field is inside a null anonymous field
-	field := getFieldByName(v, FORCE_SEND_FIELD_NAME)
+	field := getFieldByName(v, force_send_field_name)
 	if !field.IsValid() {
 		return nil, nil
 	}
-	result, ok := field.Interface().([]string)
+	forceSendFields, ok := field.Interface().([]string)
 	if !ok {
-		return nil, fmt.Errorf("invalid type for %s field", FORCE_SEND_FIELD_NAME)
+		return nil, fmt.Errorf("invalid type for %s field", force_send_field_name)
 	}
-	return result, nil
+	includeFields := make(map[string]bool)
+	for _, field := range forceSendFields {
+		includeFields[field] = true
+	}
+
+	return includeFields, nil
 
 }
 
-func getFieldByName(v interface{}, fieldName string) reflect.Value {
+func getFieldByName(v any, fieldName string) reflect.Value {
 	value := reflect.ValueOf(v)
 	value = reflect.Indirect(value)
 	objectType := value.Type()

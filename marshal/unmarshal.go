@@ -16,8 +16,8 @@ func Unmarshal(data []byte, v any) error {
 	}
 	// create a new element if the pointer is nul
 	if v == nil {
-		vType := reflect.ValueOf(v).Type()
-		v = reflect.New(vType).Interface()
+		objectType := reflect.ValueOf(v).Type()
+		v = reflect.New(objectType).Interface()
 	}
 	err := unmarshalInternal(data, v)
 	if err != nil {
@@ -29,12 +29,12 @@ func Unmarshal(data []byte, v any) error {
 
 func recordOriginalFields(data []byte, v any) error {
 
-	vValue := reflect.ValueOf(v)
-	switch vValue.Kind() {
+	value := reflect.ValueOf(v)
+	switch value.Kind() {
 	case reflect.Ptr:
 		// reflex.GetFieldByName may return the field for an anonymous field
 		// if the extending struct doesn't have the field
-		field := getFieldByName(v, FORCE_SEND_FIELD_NAME)
+		field := getFieldByName(v, force_send_field_name)
 		if !field.IsValid() {
 			return nil
 		}
@@ -72,18 +72,18 @@ func getFieldsInJson(data []byte, v any) ([]string, error) {
 	schema := reflect.ValueOf(v)
 	derefer := reflect.Indirect(schema)
 
-	st := derefer.Type()
+	objectType := derefer.Type()
 
 	elements := []string{}
 
 	for i := 0; i < derefer.NumField(); i++ {
-		fieldType := st.Field(i).Type
+		fieldType := objectType.Field(i).Type
 
 		if !isBasicType(fieldType) {
 			continue
 		}
 
-		jsonTag := st.Field(i).Tag.Get("json")
+		jsonTag := objectType.Field(i).Tag.Get("json")
 		if jsonTag == "" {
 			continue
 		}
@@ -93,7 +93,7 @@ func getFieldsInJson(data []byte, v any) ([]string, error) {
 		}
 
 		if _, ok := jsonFields[jsonName]; ok {
-			name := st.Field(i).Name
+			name := objectType.Field(i).Name
 			elements = append(elements, name)
 		}
 	}
@@ -126,16 +126,16 @@ func unmarshalInternal(data []byte, v any) error {
 		return err
 	}
 
-	schema := reflect.ValueOf(v)
-	derefer := reflect.Indirect(schema)
+	value := reflect.ValueOf(v)
+	derefer := reflect.Indirect(value)
 
-	st := derefer.Type()
+	objectType := derefer.Type()
 
 	for i := 0; i < derefer.NumField(); i++ {
 		field := derefer.Field(i)
-		jsonTag := st.Field(i).Tag.Get("json")
+		jsonTag := objectType.Field(i).Tag.Get("json")
 
-		if st.Field(i).Anonymous {
+		if objectType.Field(i).Anonymous {
 			setField(field, data)
 			continue
 		}

@@ -5,7 +5,7 @@ package sql
 import (
 	"fmt"
 
-	marshal "github.com/databricks/databricks-sdk-go/json"
+	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
 // all definitions in this file are in alphabetical order
