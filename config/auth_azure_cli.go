@@ -42,7 +42,7 @@ func (c AzureCliCredentials) tokenSourceFor(
 //
 // If the user can't access the service management endpoint, we assume they are in case 2 and do not pass the service
 // management token. Otherwise, we always pass the service management token.
-func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, innerTokenSource oauth2.TokenSource) (func(*http.Request) error, error) {
+func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, inner oauth2.TokenSource) (func(*http.Request) error, error) {
 	env, err := cfg.GetAzureEnvironment()
 	if err != nil {
 		return nil, err
@@ -51,10 +51,17 @@ func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, innerT
 	t, err := ts.Token()
 	if err != nil {
 		logger.Debugf(ctx, "Not including service management token in headers: %v", err)
-		return azureVisitor(cfg, refreshableVisitor(innerTokenSource)), nil
+		return azureVisitor(cfg, refreshableVisitor(azureAdjustExpiry(inner))), nil
 	}
-	managementTokenSource := oauth2.ReuseTokenSource(t, ts)
-	return azureVisitor(cfg, serviceToServiceVisitor(innerTokenSource, managementTokenSource, xDatabricksAzureSpManagementToken)), nil
+	management := oauth2.ReuseTokenSource(t, ts)
+	return azureVisitor(
+		cfg,
+		serviceToServiceVisitor(
+			azureAdjustExpiry(inner),
+			azureAdjustExpiry(management),
+			xDatabricksAzureSpManagementToken,
+		),
+	), nil
 }
 
 func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {

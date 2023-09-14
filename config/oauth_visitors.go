@@ -69,3 +69,11 @@ func azureVisitor(cfg *Config, inner func(*http.Request) error) func(*http.Reque
 		return inner(r)
 	}
 }
+
+// azureAdjustExpiry returns a copy of the specified token source that will refresh the token 40 seconds before it expires.
+// By default, the oauth2 library refreshes a token 10 seconds before it expires.
+// Azure Databricks rejects tokens that expire in 30 seconds or less.
+// We combine these and refresh the token 40 seconds before it expires.
+func azureAdjustExpiry(ts oauth2.TokenSource) oauth2.TokenSource {
+	return oauth2.ReuseTokenSourceWithExpiry(nil, ts, 40*time.Second)
+}
