@@ -51,17 +51,10 @@ func (c AzureCliCredentials) getVisitor(ctx context.Context, cfg *Config, inner 
 	t, err := ts.Token()
 	if err != nil {
 		logger.Debugf(ctx, "Not including service management token in headers: %v", err)
-		return azureVisitor(cfg, refreshableVisitor(azureAdjustExpiry(inner))), nil
+		return azureVisitor(cfg, refreshableVisitor(inner)), nil
 	}
-	management := oauth2.ReuseTokenSource(t, ts)
-	return azureVisitor(
-		cfg,
-		serviceToServiceVisitor(
-			azureAdjustExpiry(inner),
-			azureAdjustExpiry(management),
-			xDatabricksAzureSpManagementToken,
-		),
-	), nil
+	management := azureReuseTokenSource(t, ts)
+	return azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken)), nil
 }
 
 func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
@@ -87,7 +80,7 @@ func (c AzureCliCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if err != nil {
 		return nil, fmt.Errorf("resolve host: %w", err)
 	}
-	visitor, err := c.getVisitor(ctx, cfg, oauth2.ReuseTokenSource(t, ts))
+	visitor, err := c.getVisitor(ctx, cfg, azureReuseTokenSource(t, ts))
 	if err != nil {
 		return nil, err
 	}
@@ -129,10 +122,10 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 	if err != nil {
 		return nil, fmt.Errorf("cannot unmarshal CLI result: %w", err)
 	}
-	expiresOn, err := time.ParseInLocation("2006-01-02 15:04:05.999999", it.ExpiresOn, time.Local)
-	if err != nil {
-		return nil, fmt.Errorf("cannot parse expiry: %w", err)
-	}
+	// expiresOn, err := time.ParseInLocation("2006-01-02 15:04:05.999999", it.ExpiresOn, time.Local)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("cannot parse expiry: %w", err)
+	// }
 	logger.Infof(context.Background(), "Refreshed OAuth token for %s from Azure CLI, which expires on %s",
 		ts.resource, it.ExpiresOn)
 
@@ -145,7 +138,7 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 		AccessToken:  it.AccessToken,
 		RefreshToken: it.RefreshToken,
 		TokenType:    it.TokenType,
-		Expiry:       expiresOn,
+		Expiry:       time.Now().Add(time.Minute),
 	}).WithExtra(extra), nil
 }
 

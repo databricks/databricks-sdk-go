@@ -58,7 +58,7 @@ func TestOAuthWithValidToken(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestAzureAdjustExpiry(t *testing.T) {
+func TestAzureReuseTokenSource(t *testing.T) {
 	mockSource := mockTokenSource{
 		mockedTokenFunc: func() (*oauth2.Token, error) {
 			return &oauth2.Token{
@@ -68,7 +68,7 @@ func TestAzureAdjustExpiry(t *testing.T) {
 	}
 
 	// Assert the token is not valid if it expires in 35 seconds.
-	adjustedSource := azureAdjustExpiry(mockSource)
+	adjustedSource := azureReuseTokenSource(nil, mockSource)
 	token, err := adjustedSource.Token()
 	assert.NoError(t, err)
 	assert.False(t, token.Valid())
