@@ -21,13 +21,11 @@ type AccessControl struct {
 }
 
 func (s *AccessControl) UnmarshalJSON(b []byte) error {
-	type C AccessControl
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AccessControl) MarshalJSON() ([]byte, error) {
-	type C AccessControl
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Alert struct {
@@ -62,13 +60,11 @@ type Alert struct {
 }
 
 func (s *Alert) UnmarshalJSON(b []byte) error {
-	type C Alert
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Alert) MarshalJSON() ([]byte, error) {
-	type C Alert
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Alert configuration options.
@@ -100,13 +96,11 @@ type AlertOptions struct {
 }
 
 func (s *AlertOptions) UnmarshalJSON(b []byte) error {
-	type C AlertOptions
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AlertOptions) MarshalJSON() ([]byte, error) {
-	type C AlertOptions
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type AlertQuery struct {
@@ -151,13 +145,11 @@ type AlertQuery struct {
 }
 
 func (s *AlertQuery) UnmarshalJSON(b []byte) error {
-	type C AlertQuery
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AlertQuery) MarshalJSON() ([]byte, error) {
-	type C AlertQuery
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // State of the alert. Possible values are: `unknown` (yet to be evaluated),
@@ -200,13 +192,11 @@ type CancelExecutionRequest struct {
 }
 
 func (s *CancelExecutionRequest) UnmarshalJSON(b []byte) error {
-	type C CancelExecutionRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CancelExecutionRequest) MarshalJSON() ([]byte, error) {
-	type C CancelExecutionRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Channel struct {
@@ -218,13 +208,11 @@ type Channel struct {
 }
 
 func (s *Channel) UnmarshalJSON(b []byte) error {
-	type C Channel
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Channel) MarshalJSON() ([]byte, error) {
-	type C Channel
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Channel information for the SQL warehouse at the time of query execution
@@ -238,13 +226,11 @@ type ChannelInfo struct {
 }
 
 func (s *ChannelInfo) UnmarshalJSON(b []byte) error {
-	type C ChannelInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ChannelInfo) MarshalJSON() ([]byte, error) {
-	type C ChannelInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ChannelName string
@@ -303,13 +289,11 @@ type ChunkInfo struct {
 }
 
 func (s *ChunkInfo) UnmarshalJSON(b []byte) error {
-	type C ChunkInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ChunkInfo) MarshalJSON() ([]byte, error) {
-	type C ChunkInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ColumnInfo struct {
@@ -332,13 +316,11 @@ type ColumnInfo struct {
 }
 
 func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
-	type C ColumnInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ColumnInfo) MarshalJSON() ([]byte, error) {
-	type C ColumnInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Name of type (INT, STRUCT, MAP, and so on)
@@ -421,13 +403,11 @@ type CreateAlert struct {
 }
 
 func (s *CreateAlert) UnmarshalJSON(b []byte) error {
-	type C CreateAlert
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateAlert) MarshalJSON() ([]byte, error) {
-	type C CreateAlert
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Create a dashboard object
@@ -452,13 +432,11 @@ type CreateDashboardRequest struct {
 }
 
 func (s *CreateDashboardRequest) UnmarshalJSON(b []byte) error {
-	type C CreateDashboardRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateDashboardRequest) MarshalJSON() ([]byte, error) {
-	type C CreateDashboardRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Add visualization to a query
@@ -482,13 +460,11 @@ type CreateQueryVisualizationRequest struct {
 }
 
 func (s *CreateQueryVisualizationRequest) UnmarshalJSON(b []byte) error {
-	type C CreateQueryVisualizationRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateQueryVisualizationRequest) MarshalJSON() ([]byte, error) {
-	type C CreateQueryVisualizationRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateWarehouseRequest struct {
@@ -556,13 +532,11 @@ type CreateWarehouseRequest struct {
 }
 
 func (s *CreateWarehouseRequest) UnmarshalJSON(b []byte) error {
-	type C CreateWarehouseRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateWarehouseRequest) MarshalJSON() ([]byte, error) {
-	type C CreateWarehouseRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
@@ -605,13 +579,11 @@ type CreateWarehouseResponse struct {
 }
 
 func (s *CreateWarehouseResponse) UnmarshalJSON(b []byte) error {
-	type C CreateWarehouseResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateWarehouseResponse) MarshalJSON() ([]byte, error) {
-	type C CreateWarehouseResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateWidget struct {
@@ -634,13 +606,11 @@ type CreateWidget struct {
 }
 
 func (s *CreateWidget) UnmarshalJSON(b []byte) error {
-	type C CreateWidget
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateWidget) MarshalJSON() ([]byte, error) {
-	type C CreateWidget
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // A JSON representing a dashboard containing widgets of visualizations and text
@@ -694,13 +664,11 @@ type Dashboard struct {
 }
 
 func (s *Dashboard) UnmarshalJSON(b []byte) error {
-	type C Dashboard
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Dashboard) MarshalJSON() ([]byte, error) {
-	type C Dashboard
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type DashboardOptions struct {
@@ -713,13 +681,11 @@ type DashboardOptions struct {
 }
 
 func (s *DashboardOptions) UnmarshalJSON(b []byte) error {
-	type C DashboardOptions
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DashboardOptions) MarshalJSON() ([]byte, error) {
-	type C DashboardOptions
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // A JSON object representing a DBSQL data source / SQL warehouse.
@@ -750,13 +716,11 @@ type DataSource struct {
 }
 
 func (s *DataSource) UnmarshalJSON(b []byte) error {
-	type C DataSource
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DataSource) MarshalJSON() ([]byte, error) {
-	type C DataSource
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete an alert
@@ -767,13 +731,11 @@ type DeleteAlertRequest struct {
 }
 
 func (s *DeleteAlertRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteAlertRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteAlertRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteAlertRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Remove a dashboard
@@ -784,13 +746,11 @@ type DeleteDashboardRequest struct {
 }
 
 func (s *DeleteDashboardRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteDashboardRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteDashboardRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteDashboardRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Remove widget
@@ -801,13 +761,11 @@ type DeleteDashboardWidgetRequest struct {
 }
 
 func (s *DeleteDashboardWidgetRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteDashboardWidgetRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteDashboardWidgetRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteDashboardWidgetRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a query
@@ -818,13 +776,11 @@ type DeleteQueryRequest struct {
 }
 
 func (s *DeleteQueryRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteQueryRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteQueryRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteQueryRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Remove visualization
@@ -835,13 +791,11 @@ type DeleteQueryVisualizationRequest struct {
 }
 
 func (s *DeleteQueryVisualizationRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteQueryVisualizationRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteQueryVisualizationRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteQueryVisualizationRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a warehouse
@@ -853,13 +807,11 @@ type DeleteWarehouseRequest struct {
 }
 
 func (s *DeleteWarehouseRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteWarehouseRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteWarehouseRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteWarehouseRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The fetch disposition provides two modes of fetching results: `INLINE` and
@@ -930,13 +882,11 @@ type EditAlert struct {
 }
 
 func (s *EditAlert) UnmarshalJSON(b []byte) error {
-	type C EditAlert
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EditAlert) MarshalJSON() ([]byte, error) {
-	type C EditAlert
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type EditWarehouseRequest struct {
@@ -1006,13 +956,11 @@ type EditWarehouseRequest struct {
 }
 
 func (s *EditWarehouseRequest) UnmarshalJSON(b []byte) error {
-	type C EditWarehouseRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EditWarehouseRequest) MarshalJSON() ([]byte, error) {
-	type C EditWarehouseRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
@@ -1056,13 +1004,11 @@ type EndpointConfPair struct {
 }
 
 func (s *EndpointConfPair) UnmarshalJSON(b []byte) error {
-	type C EndpointConfPair
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EndpointConfPair) MarshalJSON() ([]byte, error) {
-	type C EndpointConfPair
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type EndpointHealth struct {
@@ -1083,13 +1029,11 @@ type EndpointHealth struct {
 }
 
 func (s *EndpointHealth) UnmarshalJSON(b []byte) error {
-	type C EndpointHealth
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EndpointHealth) MarshalJSON() ([]byte, error) {
-	type C EndpointHealth
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type EndpointInfo struct {
@@ -1172,13 +1116,11 @@ type EndpointInfo struct {
 }
 
 func (s *EndpointInfo) UnmarshalJSON(b []byte) error {
-	type C EndpointInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EndpointInfo) MarshalJSON() ([]byte, error) {
-	type C EndpointInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
@@ -1222,13 +1164,11 @@ type EndpointTagPair struct {
 }
 
 func (s *EndpointTagPair) UnmarshalJSON(b []byte) error {
-	type C EndpointTagPair
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EndpointTagPair) MarshalJSON() ([]byte, error) {
-	type C EndpointTagPair
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type EndpointTags struct {
@@ -1238,13 +1178,11 @@ type EndpointTags struct {
 }
 
 func (s *EndpointTags) UnmarshalJSON(b []byte) error {
-	type C EndpointTags
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EndpointTags) MarshalJSON() ([]byte, error) {
-	type C EndpointTags
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ExecuteStatementRequest struct {
@@ -1390,13 +1328,11 @@ type ExecuteStatementRequest struct {
 }
 
 func (s *ExecuteStatementRequest) UnmarshalJSON(b []byte) error {
-	type C ExecuteStatementRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ExecuteStatementRequest) MarshalJSON() ([]byte, error) {
-	type C ExecuteStatementRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ExecuteStatementResponse struct {
@@ -1417,13 +1353,11 @@ type ExecuteStatementResponse struct {
 }
 
 func (s *ExecuteStatementResponse) UnmarshalJSON(b []byte) error {
-	type C ExecuteStatementResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ExecuteStatementResponse) MarshalJSON() ([]byte, error) {
-	type C ExecuteStatementResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ExternalLink struct {
@@ -1452,13 +1386,11 @@ type ExternalLink struct {
 }
 
 func (s *ExternalLink) UnmarshalJSON(b []byte) error {
-	type C ExternalLink
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ExternalLink) MarshalJSON() ([]byte, error) {
-	type C ExternalLink
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Statement execution supports three result formats: `JSON_ARRAY` (default),
@@ -1539,13 +1471,11 @@ type GetAlertRequest struct {
 }
 
 func (s *GetAlertRequest) UnmarshalJSON(b []byte) error {
-	type C GetAlertRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetAlertRequest) MarshalJSON() ([]byte, error) {
-	type C GetAlertRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Retrieve a definition
@@ -1556,13 +1486,11 @@ type GetDashboardRequest struct {
 }
 
 func (s *GetDashboardRequest) UnmarshalJSON(b []byte) error {
-	type C GetDashboardRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetDashboardRequest) MarshalJSON() ([]byte, error) {
-	type C GetDashboardRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get object ACL
@@ -1576,13 +1504,11 @@ type GetDbsqlPermissionRequest struct {
 }
 
 func (s *GetDbsqlPermissionRequest) UnmarshalJSON(b []byte) error {
-	type C GetDbsqlPermissionRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetDbsqlPermissionRequest) MarshalJSON() ([]byte, error) {
-	type C GetDbsqlPermissionRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a query definition.
@@ -1593,13 +1519,11 @@ type GetQueryRequest struct {
 }
 
 func (s *GetQueryRequest) UnmarshalJSON(b []byte) error {
-	type C GetQueryRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetQueryRequest) MarshalJSON() ([]byte, error) {
-	type C GetQueryRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetResponse struct {
@@ -1613,13 +1537,11 @@ type GetResponse struct {
 }
 
 func (s *GetResponse) UnmarshalJSON(b []byte) error {
-	type C GetResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetResponse) MarshalJSON() ([]byte, error) {
-	type C GetResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get status, manifest, and result first chunk
@@ -1630,13 +1552,11 @@ type GetStatementRequest struct {
 }
 
 func (s *GetStatementRequest) UnmarshalJSON(b []byte) error {
-	type C GetStatementRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetStatementRequest) MarshalJSON() ([]byte, error) {
-	type C GetStatementRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetStatementResponse struct {
@@ -1657,13 +1577,11 @@ type GetStatementResponse struct {
 }
 
 func (s *GetStatementResponse) UnmarshalJSON(b []byte) error {
-	type C GetStatementResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetStatementResponse) MarshalJSON() ([]byte, error) {
-	type C GetStatementResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get result chunk by index
@@ -1676,13 +1594,11 @@ type GetStatementResultChunkNRequest struct {
 }
 
 func (s *GetStatementResultChunkNRequest) UnmarshalJSON(b []byte) error {
-	type C GetStatementResultChunkNRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetStatementResultChunkNRequest) MarshalJSON() ([]byte, error) {
-	type C GetStatementResultChunkNRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get SQL warehouse permission levels
@@ -1694,13 +1610,11 @@ type GetWarehousePermissionLevelsRequest struct {
 }
 
 func (s *GetWarehousePermissionLevelsRequest) UnmarshalJSON(b []byte) error {
-	type C GetWarehousePermissionLevelsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetWarehousePermissionLevelsRequest) MarshalJSON() ([]byte, error) {
-	type C GetWarehousePermissionLevelsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetWarehousePermissionLevelsResponse struct {
@@ -1711,13 +1625,11 @@ type GetWarehousePermissionLevelsResponse struct {
 }
 
 func (s *GetWarehousePermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	type C GetWarehousePermissionLevelsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetWarehousePermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	type C GetWarehousePermissionLevelsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get SQL warehouse permissions
@@ -1729,13 +1641,11 @@ type GetWarehousePermissionsRequest struct {
 }
 
 func (s *GetWarehousePermissionsRequest) UnmarshalJSON(b []byte) error {
-	type C GetWarehousePermissionsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetWarehousePermissionsRequest) MarshalJSON() ([]byte, error) {
-	type C GetWarehousePermissionsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get warehouse info
@@ -1747,13 +1657,11 @@ type GetWarehouseRequest struct {
 }
 
 func (s *GetWarehouseRequest) UnmarshalJSON(b []byte) error {
-	type C GetWarehouseRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetWarehouseRequest) MarshalJSON() ([]byte, error) {
-	type C GetWarehouseRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetWarehouseResponse struct {
@@ -1836,13 +1744,11 @@ type GetWarehouseResponse struct {
 }
 
 func (s *GetWarehouseResponse) UnmarshalJSON(b []byte) error {
-	type C GetWarehouseResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetWarehouseResponse) MarshalJSON() ([]byte, error) {
-	type C GetWarehouseResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
@@ -1908,13 +1814,11 @@ type GetWorkspaceWarehouseConfigResponse struct {
 }
 
 func (s *GetWorkspaceWarehouseConfigResponse) UnmarshalJSON(b []byte) error {
-	type C GetWorkspaceWarehouseConfigResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetWorkspaceWarehouseConfigResponse) MarshalJSON() ([]byte, error) {
-	type C GetWorkspaceWarehouseConfigResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Security policy for warehouses
@@ -1962,13 +1866,11 @@ type ListDashboardsRequest struct {
 }
 
 func (s *ListDashboardsRequest) UnmarshalJSON(b []byte) error {
-	type C ListDashboardsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListDashboardsRequest) MarshalJSON() ([]byte, error) {
-	type C ListDashboardsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListOrder string
@@ -2026,13 +1928,11 @@ type ListQueriesRequest struct {
 }
 
 func (s *ListQueriesRequest) UnmarshalJSON(b []byte) error {
-	type C ListQueriesRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListQueriesRequest) MarshalJSON() ([]byte, error) {
-	type C ListQueriesRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListQueriesResponse struct {
@@ -2047,13 +1947,11 @@ type ListQueriesResponse struct {
 }
 
 func (s *ListQueriesResponse) UnmarshalJSON(b []byte) error {
-	type C ListQueriesResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListQueriesResponse) MarshalJSON() ([]byte, error) {
-	type C ListQueriesResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List Queries
@@ -2071,13 +1969,11 @@ type ListQueryHistoryRequest struct {
 }
 
 func (s *ListQueryHistoryRequest) UnmarshalJSON(b []byte) error {
-	type C ListQueryHistoryRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListQueryHistoryRequest) MarshalJSON() ([]byte, error) {
-	type C ListQueryHistoryRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListResponse struct {
@@ -2094,13 +1990,11 @@ type ListResponse struct {
 }
 
 func (s *ListResponse) UnmarshalJSON(b []byte) error {
-	type C ListResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListResponse) MarshalJSON() ([]byte, error) {
-	type C ListResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List warehouses
@@ -2113,13 +2007,11 @@ type ListWarehousesRequest struct {
 }
 
 func (s *ListWarehousesRequest) UnmarshalJSON(b []byte) error {
-	type C ListWarehousesRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListWarehousesRequest) MarshalJSON() ([]byte, error) {
-	type C ListWarehousesRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListWarehousesResponse struct {
@@ -2130,13 +2022,11 @@ type ListWarehousesResponse struct {
 }
 
 func (s *ListWarehousesResponse) UnmarshalJSON(b []byte) error {
-	type C ListWarehousesResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListWarehousesResponse) MarshalJSON() ([]byte, error) {
-	type C ListWarehousesResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // A singular noun object type.
@@ -2216,13 +2106,11 @@ type OdbcParams struct {
 }
 
 func (s *OdbcParams) UnmarshalJSON(b []byte) error {
-	type C OdbcParams
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s OdbcParams) MarshalJSON() ([]byte, error) {
-	type C OdbcParams
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The singular form of the type of object which can be owned.
@@ -2270,13 +2158,11 @@ type Parameter struct {
 }
 
 func (s *Parameter) UnmarshalJSON(b []byte) error {
-	type C Parameter
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Parameter) MarshalJSON() ([]byte, error) {
-	type C Parameter
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Parameters can have several different types.
@@ -2446,13 +2332,11 @@ type Query struct {
 }
 
 func (s *Query) UnmarshalJSON(b []byte) error {
-	type C Query
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Query) MarshalJSON() ([]byte, error) {
-	type C Query
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type QueryEditContent struct {
@@ -2477,13 +2361,11 @@ type QueryEditContent struct {
 }
 
 func (s *QueryEditContent) UnmarshalJSON(b []byte) error {
-	type C QueryEditContent
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s QueryEditContent) MarshalJSON() ([]byte, error) {
-	type C QueryEditContent
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // A filter to limit query history results. This field is optional.
@@ -2500,13 +2382,11 @@ type QueryFilter struct {
 }
 
 func (s *QueryFilter) UnmarshalJSON(b []byte) error {
-	type C QueryFilter
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s QueryFilter) MarshalJSON() ([]byte, error) {
-	type C QueryFilter
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type QueryInfo struct {
@@ -2563,13 +2443,11 @@ type QueryInfo struct {
 }
 
 func (s *QueryInfo) UnmarshalJSON(b []byte) error {
-	type C QueryInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s QueryInfo) MarshalJSON() ([]byte, error) {
-	type C QueryInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type QueryList struct {
@@ -2586,13 +2464,11 @@ type QueryList struct {
 }
 
 func (s *QueryList) UnmarshalJSON(b []byte) error {
-	type C QueryList
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s QueryList) MarshalJSON() ([]byte, error) {
-	type C QueryList
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Metrics about query execution.
@@ -2666,13 +2542,11 @@ type QueryMetrics struct {
 }
 
 func (s *QueryMetrics) UnmarshalJSON(b []byte) error {
-	type C QueryMetrics
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s QueryMetrics) MarshalJSON() ([]byte, error) {
-	type C QueryMetrics
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type QueryOptions struct {
@@ -2687,13 +2561,11 @@ type QueryOptions struct {
 }
 
 func (s *QueryOptions) UnmarshalJSON(b []byte) error {
-	type C QueryOptions
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s QueryOptions) MarshalJSON() ([]byte, error) {
-	type C QueryOptions
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type QueryPostContent struct {
@@ -2720,13 +2592,11 @@ type QueryPostContent struct {
 }
 
 func (s *QueryPostContent) UnmarshalJSON(b []byte) error {
-	type C QueryPostContent
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s QueryPostContent) MarshalJSON() ([]byte, error) {
-	type C QueryPostContent
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Type of statement for this query
@@ -2846,13 +2716,11 @@ type RepeatedEndpointConfPairs struct {
 }
 
 func (s *RepeatedEndpointConfPairs) UnmarshalJSON(b []byte) error {
-	type C RepeatedEndpointConfPairs
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RepeatedEndpointConfPairs) MarshalJSON() ([]byte, error) {
-	type C RepeatedEndpointConfPairs
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Restore a dashboard
@@ -2863,13 +2731,11 @@ type RestoreDashboardRequest struct {
 }
 
 func (s *RestoreDashboardRequest) UnmarshalJSON(b []byte) error {
-	type C RestoreDashboardRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RestoreDashboardRequest) MarshalJSON() ([]byte, error) {
-	type C RestoreDashboardRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Restore a query
@@ -2880,13 +2746,11 @@ type RestoreQueryRequest struct {
 }
 
 func (s *RestoreQueryRequest) UnmarshalJSON(b []byte) error {
-	type C RestoreQueryRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RestoreQueryRequest) MarshalJSON() ([]byte, error) {
-	type C RestoreQueryRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Result data chunks are delivered in either the `chunk` field when using
@@ -2917,13 +2781,11 @@ type ResultData struct {
 }
 
 func (s *ResultData) UnmarshalJSON(b []byte) error {
-	type C ResultData
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ResultData) MarshalJSON() ([]byte, error) {
-	type C ResultData
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The result manifest provides schema and metadata for the result set.
@@ -2988,13 +2850,11 @@ type ResultManifest struct {
 }
 
 func (s *ResultManifest) UnmarshalJSON(b []byte) error {
-	type C ResultManifest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ResultManifest) MarshalJSON() ([]byte, error) {
-	type C ResultManifest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Schema is an ordered list of column descriptions.
@@ -3007,13 +2867,11 @@ type ResultSchema struct {
 }
 
 func (s *ResultSchema) UnmarshalJSON(b []byte) error {
-	type C ResultSchema
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ResultSchema) MarshalJSON() ([]byte, error) {
-	type C ResultSchema
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Run as role
@@ -3053,13 +2911,11 @@ type ServiceError struct {
 }
 
 func (s *ServiceError) UnmarshalJSON(b []byte) error {
-	type C ServiceError
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServiceError) MarshalJSON() ([]byte, error) {
-	type C ServiceError
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ServiceErrorCode string
@@ -3126,13 +2982,11 @@ type SetRequest struct {
 }
 
 func (s *SetRequest) UnmarshalJSON(b []byte) error {
-	type C SetRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SetRequest) MarshalJSON() ([]byte, error) {
-	type C SetRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SetResponse struct {
@@ -3146,13 +3000,11 @@ type SetResponse struct {
 }
 
 func (s *SetResponse) UnmarshalJSON(b []byte) error {
-	type C SetResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SetResponse) MarshalJSON() ([]byte, error) {
-	type C SetResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SetWorkspaceWarehouseConfigRequest struct {
@@ -3186,13 +3038,11 @@ type SetWorkspaceWarehouseConfigRequest struct {
 }
 
 func (s *SetWorkspaceWarehouseConfigRequest) UnmarshalJSON(b []byte) error {
-	type C SetWorkspaceWarehouseConfigRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SetWorkspaceWarehouseConfigRequest) MarshalJSON() ([]byte, error) {
-	type C SetWorkspaceWarehouseConfigRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Security policy for warehouses
@@ -3264,13 +3114,11 @@ type StartRequest struct {
 }
 
 func (s *StartRequest) UnmarshalJSON(b []byte) error {
-	type C StartRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s StartRequest) MarshalJSON() ([]byte, error) {
-	type C StartRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // State of the warehouse
@@ -3327,13 +3175,11 @@ type StatementParameterListItem struct {
 }
 
 func (s *StatementParameterListItem) UnmarshalJSON(b []byte) error {
-	type C StatementParameterListItem
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s StatementParameterListItem) MarshalJSON() ([]byte, error) {
-	type C StatementParameterListItem
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`:
@@ -3393,13 +3239,11 @@ type StatementStatus struct {
 }
 
 func (s *StatementStatus) UnmarshalJSON(b []byte) error {
-	type C StatementStatus
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s StatementStatus) MarshalJSON() ([]byte, error) {
-	type C StatementStatus
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Health status of the warehouse.
@@ -3443,13 +3287,11 @@ type StopRequest struct {
 }
 
 func (s *StopRequest) UnmarshalJSON(b []byte) error {
-	type C StopRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s StopRequest) MarshalJSON() ([]byte, error) {
-	type C StopRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Success struct {
@@ -3459,13 +3301,11 @@ type Success struct {
 }
 
 func (s *Success) UnmarshalJSON(b []byte) error {
-	type C Success
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Success) MarshalJSON() ([]byte, error) {
-	type C Success
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SuccessMessage string
@@ -3506,13 +3346,11 @@ type TerminationReason struct {
 }
 
 func (s *TerminationReason) UnmarshalJSON(b []byte) error {
-	type C TerminationReason
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TerminationReason) MarshalJSON() ([]byte, error) {
-	type C TerminationReason
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // status code indicating why the cluster was terminated
@@ -3739,13 +3577,11 @@ type TimeRange struct {
 }
 
 func (s *TimeRange) UnmarshalJSON(b []byte) error {
-	type C TimeRange
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TimeRange) MarshalJSON() ([]byte, error) {
-	type C TimeRange
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // When in synchronous mode with `wait_timeout > 0s` it determines the action
@@ -3791,13 +3627,11 @@ type TransferOwnershipObjectId struct {
 }
 
 func (s *TransferOwnershipObjectId) UnmarshalJSON(b []byte) error {
-	type C TransferOwnershipObjectId
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TransferOwnershipObjectId) MarshalJSON() ([]byte, error) {
-	type C TransferOwnershipObjectId
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Transfer object ownership
@@ -3813,13 +3647,11 @@ type TransferOwnershipRequest struct {
 }
 
 func (s *TransferOwnershipRequest) UnmarshalJSON(b []byte) error {
-	type C TransferOwnershipRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TransferOwnershipRequest) MarshalJSON() ([]byte, error) {
-	type C TransferOwnershipRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type User struct {
@@ -3833,13 +3665,11 @@ type User struct {
 }
 
 func (s *User) UnmarshalJSON(b []byte) error {
-	type C User
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s User) MarshalJSON() ([]byte, error) {
-	type C User
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The visualization description API changes frequently and is unsupported. You
@@ -3870,13 +3700,11 @@ type Visualization struct {
 }
 
 func (s *Visualization) UnmarshalJSON(b []byte) error {
-	type C Visualization
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Visualization) MarshalJSON() ([]byte, error) {
-	type C Visualization
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WarehouseAccessControlRequest struct {
@@ -3893,13 +3721,11 @@ type WarehouseAccessControlRequest struct {
 }
 
 func (s *WarehouseAccessControlRequest) UnmarshalJSON(b []byte) error {
-	type C WarehouseAccessControlRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WarehouseAccessControlRequest) MarshalJSON() ([]byte, error) {
-	type C WarehouseAccessControlRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WarehouseAccessControlResponse struct {
@@ -3918,13 +3744,11 @@ type WarehouseAccessControlResponse struct {
 }
 
 func (s *WarehouseAccessControlResponse) UnmarshalJSON(b []byte) error {
-	type C WarehouseAccessControlResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WarehouseAccessControlResponse) MarshalJSON() ([]byte, error) {
-	type C WarehouseAccessControlResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WarehousePermission struct {
@@ -3938,13 +3762,11 @@ type WarehousePermission struct {
 }
 
 func (s *WarehousePermission) UnmarshalJSON(b []byte) error {
-	type C WarehousePermission
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WarehousePermission) MarshalJSON() ([]byte, error) {
-	type C WarehousePermission
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -3988,13 +3810,11 @@ type WarehousePermissions struct {
 }
 
 func (s *WarehousePermissions) UnmarshalJSON(b []byte) error {
-	type C WarehousePermissions
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WarehousePermissions) MarshalJSON() ([]byte, error) {
-	type C WarehousePermissions
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WarehousePermissionsDescription struct {
@@ -4006,13 +3826,11 @@ type WarehousePermissionsDescription struct {
 }
 
 func (s *WarehousePermissionsDescription) UnmarshalJSON(b []byte) error {
-	type C WarehousePermissionsDescription
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WarehousePermissionsDescription) MarshalJSON() ([]byte, error) {
-	type C WarehousePermissionsDescription
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WarehousePermissionsRequest struct {
@@ -4024,13 +3842,11 @@ type WarehousePermissionsRequest struct {
 }
 
 func (s *WarehousePermissionsRequest) UnmarshalJSON(b []byte) error {
-	type C WarehousePermissionsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WarehousePermissionsRequest) MarshalJSON() ([]byte, error) {
-	type C WarehousePermissionsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WarehouseTypePair struct {
@@ -4044,13 +3860,11 @@ type WarehouseTypePair struct {
 }
 
 func (s *WarehouseTypePair) UnmarshalJSON(b []byte) error {
-	type C WarehouseTypePair
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WarehouseTypePair) MarshalJSON() ([]byte, error) {
-	type C WarehouseTypePair
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Warehouse type: `PRO` or `CLASSIC`.
@@ -4101,13 +3915,11 @@ type Widget struct {
 }
 
 func (s *Widget) UnmarshalJSON(b []byte) error {
-	type C Widget
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Widget) MarshalJSON() ([]byte, error) {
-	type C Widget
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WidgetOptions struct {
@@ -4133,13 +3945,11 @@ type WidgetOptions struct {
 }
 
 func (s *WidgetOptions) UnmarshalJSON(b []byte) error {
-	type C WidgetOptions
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WidgetOptions) MarshalJSON() ([]byte, error) {
-	type C WidgetOptions
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Coordinates of this widget on a dashboard. This portion of the API changes
@@ -4160,11 +3970,9 @@ type WidgetPosition struct {
 }
 
 func (s *WidgetPosition) UnmarshalJSON(b []byte) error {
-	type C WidgetPosition
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WidgetPosition) MarshalJSON() ([]byte, error) {
-	type C WidgetPosition
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }

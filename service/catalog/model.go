@@ -17,13 +17,11 @@ type AccountsCreateMetastore struct {
 }
 
 func (s *AccountsCreateMetastore) UnmarshalJSON(b []byte) error {
-	type C AccountsCreateMetastore
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AccountsCreateMetastore) MarshalJSON() ([]byte, error) {
-	type C AccountsCreateMetastore
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type AccountsCreateMetastoreAssignment struct {
@@ -37,13 +35,11 @@ type AccountsCreateMetastoreAssignment struct {
 }
 
 func (s *AccountsCreateMetastoreAssignment) UnmarshalJSON(b []byte) error {
-	type C AccountsCreateMetastoreAssignment
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AccountsCreateMetastoreAssignment) MarshalJSON() ([]byte, error) {
-	type C AccountsCreateMetastoreAssignment
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type AccountsCreateStorageCredential struct {
@@ -55,13 +51,11 @@ type AccountsCreateStorageCredential struct {
 }
 
 func (s *AccountsCreateStorageCredential) UnmarshalJSON(b []byte) error {
-	type C AccountsCreateStorageCredential
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AccountsCreateStorageCredential) MarshalJSON() ([]byte, error) {
-	type C AccountsCreateStorageCredential
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type AccountsMetastoreAssignment struct {
@@ -71,13 +65,11 @@ type AccountsMetastoreAssignment struct {
 }
 
 func (s *AccountsMetastoreAssignment) UnmarshalJSON(b []byte) error {
-	type C AccountsMetastoreAssignment
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AccountsMetastoreAssignment) MarshalJSON() ([]byte, error) {
-	type C AccountsMetastoreAssignment
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type AccountsMetastoreInfo struct {
@@ -87,13 +79,11 @@ type AccountsMetastoreInfo struct {
 }
 
 func (s *AccountsMetastoreInfo) UnmarshalJSON(b []byte) error {
-	type C AccountsMetastoreInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AccountsMetastoreInfo) MarshalJSON() ([]byte, error) {
-	type C AccountsMetastoreInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type AccountsStorageCredentialInfo struct {
@@ -103,13 +93,11 @@ type AccountsStorageCredentialInfo struct {
 }
 
 func (s *AccountsStorageCredentialInfo) UnmarshalJSON(b []byte) error {
-	type C AccountsStorageCredentialInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AccountsStorageCredentialInfo) MarshalJSON() ([]byte, error) {
-	type C AccountsStorageCredentialInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type AccountsUpdateMetastore struct {
@@ -122,13 +110,11 @@ type AccountsUpdateMetastore struct {
 }
 
 func (s *AccountsUpdateMetastore) UnmarshalJSON(b []byte) error {
-	type C AccountsUpdateMetastore
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AccountsUpdateMetastore) MarshalJSON() ([]byte, error) {
-	type C AccountsUpdateMetastore
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type AccountsUpdateMetastoreAssignment struct {
@@ -142,13 +128,11 @@ type AccountsUpdateMetastoreAssignment struct {
 }
 
 func (s *AccountsUpdateMetastoreAssignment) UnmarshalJSON(b []byte) error {
-	type C AccountsUpdateMetastoreAssignment
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AccountsUpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
-	type C AccountsUpdateMetastoreAssignment
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type AccountsUpdateStorageCredential struct {
@@ -162,13 +146,11 @@ type AccountsUpdateStorageCredential struct {
 }
 
 func (s *AccountsUpdateStorageCredential) UnmarshalJSON(b []byte) error {
-	type C AccountsUpdateStorageCredential
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AccountsUpdateStorageCredential) MarshalJSON() ([]byte, error) {
-	type C AccountsUpdateStorageCredential
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ArtifactAllowlistInfo struct {
@@ -184,13 +166,11 @@ type ArtifactAllowlistInfo struct {
 }
 
 func (s *ArtifactAllowlistInfo) UnmarshalJSON(b []byte) error {
-	type C ArtifactAllowlistInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ArtifactAllowlistInfo) MarshalJSON() ([]byte, error) {
-	type C ArtifactAllowlistInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ArtifactMatcher struct {
@@ -203,13 +183,11 @@ type ArtifactMatcher struct {
 }
 
 func (s *ArtifactMatcher) UnmarshalJSON(b []byte) error {
-	type C ArtifactMatcher
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ArtifactMatcher) MarshalJSON() ([]byte, error) {
-	type C ArtifactMatcher
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The artifact type
@@ -256,13 +234,11 @@ type AwsIamRole struct {
 }
 
 func (s *AwsIamRole) UnmarshalJSON(b []byte) error {
-	type C AwsIamRole
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AwsIamRole) MarshalJSON() ([]byte, error) {
-	type C AwsIamRole
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type AzureManagedIdentity struct {
@@ -284,13 +260,11 @@ type AzureManagedIdentity struct {
 }
 
 func (s *AzureManagedIdentity) UnmarshalJSON(b []byte) error {
-	type C AzureManagedIdentity
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AzureManagedIdentity) MarshalJSON() ([]byte, error) {
-	type C AzureManagedIdentity
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type AzureServicePrincipal struct {
@@ -307,13 +281,11 @@ type AzureServicePrincipal struct {
 }
 
 func (s *AzureServicePrincipal) UnmarshalJSON(b []byte) error {
-	type C AzureServicePrincipal
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AzureServicePrincipal) MarshalJSON() ([]byte, error) {
-	type C AzureServicePrincipal
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CatalogInfo struct {
@@ -376,13 +348,11 @@ type CatalogInfo struct {
 }
 
 func (s *CatalogInfo) UnmarshalJSON(b []byte) error {
-	type C CatalogInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CatalogInfo) MarshalJSON() ([]byte, error) {
-	type C CatalogInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Kind of catalog securable.
@@ -499,13 +469,11 @@ type ColumnInfo struct {
 }
 
 func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
-	type C ColumnInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ColumnInfo) MarshalJSON() ([]byte, error) {
-	type C ColumnInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ColumnMask struct {
@@ -521,13 +489,11 @@ type ColumnMask struct {
 }
 
 func (s *ColumnMask) UnmarshalJSON(b []byte) error {
-	type C ColumnMask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ColumnMask) MarshalJSON() ([]byte, error) {
-	type C ColumnMask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Name of type (INT, STRUCT, MAP, etc.).
@@ -641,13 +607,11 @@ type ConnectionInfo struct {
 }
 
 func (s *ConnectionInfo) UnmarshalJSON(b []byte) error {
-	type C ConnectionInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
-	type C ConnectionInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Kind of connection securable.
@@ -755,13 +719,11 @@ type CreateCatalog struct {
 }
 
 func (s *CreateCatalog) UnmarshalJSON(b []byte) error {
-	type C CreateCatalog
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateCatalog) MarshalJSON() ([]byte, error) {
-	type C CreateCatalog
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateConnection struct {
@@ -785,13 +747,11 @@ type CreateConnection struct {
 }
 
 func (s *CreateConnection) UnmarshalJSON(b []byte) error {
-	type C CreateConnection
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateConnection) MarshalJSON() ([]byte, error) {
-	type C CreateConnection
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateExternalLocation struct {
@@ -817,13 +777,11 @@ type CreateExternalLocation struct {
 }
 
 func (s *CreateExternalLocation) UnmarshalJSON(b []byte) error {
-	type C CreateExternalLocation
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateExternalLocation) MarshalJSON() ([]byte, error) {
-	type C CreateExternalLocation
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateFunction struct {
@@ -879,13 +837,11 @@ type CreateFunction struct {
 }
 
 func (s *CreateFunction) UnmarshalJSON(b []byte) error {
-	type C CreateFunction
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateFunction) MarshalJSON() ([]byte, error) {
-	type C CreateFunction
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Function parameter style. **S** is the value for SQL.
@@ -1015,13 +971,11 @@ type CreateMetastore struct {
 }
 
 func (s *CreateMetastore) UnmarshalJSON(b []byte) error {
-	type C CreateMetastore
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateMetastore) MarshalJSON() ([]byte, error) {
-	type C CreateMetastore
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateMetastoreAssignment struct {
@@ -1036,13 +990,11 @@ type CreateMetastoreAssignment struct {
 }
 
 func (s *CreateMetastoreAssignment) UnmarshalJSON(b []byte) error {
-	type C CreateMetastoreAssignment
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateMetastoreAssignment) MarshalJSON() ([]byte, error) {
-	type C CreateMetastoreAssignment
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateRegisteredModelRequest struct {
@@ -1062,13 +1014,11 @@ type CreateRegisteredModelRequest struct {
 }
 
 func (s *CreateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
-	type C CreateRegisteredModelRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
-	type C CreateRegisteredModelRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateSchema struct {
@@ -1087,13 +1037,11 @@ type CreateSchema struct {
 }
 
 func (s *CreateSchema) UnmarshalJSON(b []byte) error {
-	type C CreateSchema
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateSchema) MarshalJSON() ([]byte, error) {
-	type C CreateSchema
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateStorageCredential struct {
@@ -1119,13 +1067,11 @@ type CreateStorageCredential struct {
 }
 
 func (s *CreateStorageCredential) UnmarshalJSON(b []byte) error {
-	type C CreateStorageCredential
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateStorageCredential) MarshalJSON() ([]byte, error) {
-	type C CreateStorageCredential
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateTableConstraint struct {
@@ -1140,13 +1086,11 @@ type CreateTableConstraint struct {
 }
 
 func (s *CreateTableConstraint) UnmarshalJSON(b []byte) error {
-	type C CreateTableConstraint
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateTableConstraint) MarshalJSON() ([]byte, error) {
-	type C CreateTableConstraint
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateVolumeRequestContent struct {
@@ -1167,13 +1111,11 @@ type CreateVolumeRequestContent struct {
 }
 
 func (s *CreateVolumeRequestContent) UnmarshalJSON(b []byte) error {
-	type C CreateVolumeRequestContent
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateVolumeRequestContent) MarshalJSON() ([]byte, error) {
-	type C CreateVolumeRequestContent
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The type of credential.
@@ -1211,13 +1153,11 @@ type CurrentWorkspaceBindings struct {
 }
 
 func (s *CurrentWorkspaceBindings) UnmarshalJSON(b []byte) error {
-	type C CurrentWorkspaceBindings
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CurrentWorkspaceBindings) MarshalJSON() ([]byte, error) {
-	type C CurrentWorkspaceBindings
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Data source format
@@ -1273,13 +1213,11 @@ type DatabricksGcpServiceAccountResponse struct {
 }
 
 func (s *DatabricksGcpServiceAccountResponse) UnmarshalJSON(b []byte) error {
-	type C DatabricksGcpServiceAccountResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DatabricksGcpServiceAccountResponse) MarshalJSON() ([]byte, error) {
-	type C DatabricksGcpServiceAccountResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a metastore assignment
@@ -1293,13 +1231,11 @@ type DeleteAccountMetastoreAssignmentRequest struct {
 }
 
 func (s *DeleteAccountMetastoreAssignmentRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteAccountMetastoreAssignmentRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteAccountMetastoreAssignmentRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteAccountMetastoreAssignmentRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a metastore
@@ -1313,13 +1249,11 @@ type DeleteAccountMetastoreRequest struct {
 }
 
 func (s *DeleteAccountMetastoreRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteAccountMetastoreRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteAccountMetastoreRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteAccountMetastoreRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a storage credential
@@ -1336,13 +1270,11 @@ type DeleteAccountStorageCredentialRequest struct {
 }
 
 func (s *DeleteAccountStorageCredentialRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteAccountStorageCredentialRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteAccountStorageCredentialRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteAccountStorageCredentialRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a Registered Model Alias
@@ -1356,13 +1288,11 @@ type DeleteAliasRequest struct {
 }
 
 func (s *DeleteAliasRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteAliasRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteAliasRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteAliasRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a catalog
@@ -1376,13 +1306,11 @@ type DeleteCatalogRequest struct {
 }
 
 func (s *DeleteCatalogRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteCatalogRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteCatalogRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteCatalogRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a connection
@@ -1394,13 +1322,11 @@ type DeleteConnectionRequest struct {
 }
 
 func (s *DeleteConnectionRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteConnectionRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteConnectionRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteConnectionRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete an external location
@@ -1414,13 +1340,11 @@ type DeleteExternalLocationRequest struct {
 }
 
 func (s *DeleteExternalLocationRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteExternalLocationRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteExternalLocationRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteExternalLocationRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a function
@@ -1435,13 +1359,11 @@ type DeleteFunctionRequest struct {
 }
 
 func (s *DeleteFunctionRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteFunctionRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteFunctionRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteFunctionRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a metastore
@@ -1455,13 +1377,11 @@ type DeleteMetastoreRequest struct {
 }
 
 func (s *DeleteMetastoreRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteMetastoreRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteMetastoreRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteMetastoreRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a Model Version
@@ -1475,13 +1395,11 @@ type DeleteModelVersionRequest struct {
 }
 
 func (s *DeleteModelVersionRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteModelVersionRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteModelVersionRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteModelVersionRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a Registered Model
@@ -1493,13 +1411,11 @@ type DeleteRegisteredModelRequest struct {
 }
 
 func (s *DeleteRegisteredModelRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteRegisteredModelRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteRegisteredModelRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteRegisteredModelRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a schema
@@ -1511,13 +1427,11 @@ type DeleteSchemaRequest struct {
 }
 
 func (s *DeleteSchemaRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteSchemaRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteSchemaRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteSchemaRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a credential
@@ -1532,13 +1446,11 @@ type DeleteStorageCredentialRequest struct {
 }
 
 func (s *DeleteStorageCredentialRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteStorageCredentialRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteStorageCredentialRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteStorageCredentialRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a table constraint
@@ -1556,13 +1468,11 @@ type DeleteTableConstraintRequest struct {
 }
 
 func (s *DeleteTableConstraintRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteTableConstraintRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteTableConstraintRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteTableConstraintRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a table
@@ -1574,13 +1484,11 @@ type DeleteTableRequest struct {
 }
 
 func (s *DeleteTableRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteTableRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteTableRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteTableRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a Volume
@@ -1592,13 +1500,11 @@ type DeleteVolumeRequest struct {
 }
 
 func (s *DeleteVolumeRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteVolumeRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteVolumeRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteVolumeRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Properties pertaining to the current state of the delta table as given by the
@@ -1612,13 +1518,11 @@ type DeltaRuntimePropertiesKvPairs struct {
 }
 
 func (s *DeltaRuntimePropertiesKvPairs) UnmarshalJSON(b []byte) error {
-	type C DeltaRuntimePropertiesKvPairs
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeltaRuntimePropertiesKvPairs) MarshalJSON() ([]byte, error) {
-	type C DeltaRuntimePropertiesKvPairs
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // A dependency of a SQL object. Either the __table__ field or the __function__
@@ -1633,13 +1537,11 @@ type Dependency struct {
 }
 
 func (s *Dependency) UnmarshalJSON(b []byte) error {
-	type C Dependency
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Dependency) MarshalJSON() ([]byte, error) {
-	type C Dependency
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Disable a system schema
@@ -1653,13 +1555,11 @@ type DisableRequest struct {
 }
 
 func (s *DisableRequest) UnmarshalJSON(b []byte) error {
-	type C DisableRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DisableRequest) MarshalJSON() ([]byte, error) {
-	type C DisableRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type DisableSchemaName string
@@ -1702,13 +1602,11 @@ type EffectivePermissionsList struct {
 }
 
 func (s *EffectivePermissionsList) UnmarshalJSON(b []byte) error {
-	type C EffectivePermissionsList
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EffectivePermissionsList) MarshalJSON() ([]byte, error) {
-	type C EffectivePermissionsList
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type EffectivePredictiveOptimizationFlag struct {
@@ -1726,13 +1624,11 @@ type EffectivePredictiveOptimizationFlag struct {
 }
 
 func (s *EffectivePredictiveOptimizationFlag) UnmarshalJSON(b []byte) error {
-	type C EffectivePredictiveOptimizationFlag
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EffectivePredictiveOptimizationFlag) MarshalJSON() ([]byte, error) {
-	type C EffectivePredictiveOptimizationFlag
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The type of the object from which the flag was inherited. If there was no
@@ -1780,13 +1676,11 @@ type EffectivePrivilege struct {
 }
 
 func (s *EffectivePrivilege) UnmarshalJSON(b []byte) error {
-	type C EffectivePrivilege
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EffectivePrivilege) MarshalJSON() ([]byte, error) {
-	type C EffectivePrivilege
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type EffectivePrivilegeAssignment struct {
@@ -1800,13 +1694,11 @@ type EffectivePrivilegeAssignment struct {
 }
 
 func (s *EffectivePrivilegeAssignment) UnmarshalJSON(b []byte) error {
-	type C EffectivePrivilegeAssignment
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EffectivePrivilegeAssignment) MarshalJSON() ([]byte, error) {
-	type C EffectivePrivilegeAssignment
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Whether predictive optimization should be enabled for this object and objects
@@ -1851,13 +1743,11 @@ type EnableRequest struct {
 }
 
 func (s *EnableRequest) UnmarshalJSON(b []byte) error {
-	type C EnableRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EnableRequest) MarshalJSON() ([]byte, error) {
-	type C EnableRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type EnableSchemaName string
@@ -1900,13 +1790,11 @@ type EncryptionDetails struct {
 }
 
 func (s *EncryptionDetails) UnmarshalJSON(b []byte) error {
-	type C EncryptionDetails
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EncryptionDetails) MarshalJSON() ([]byte, error) {
-	type C EncryptionDetails
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ExternalLocationInfo struct {
@@ -1944,13 +1832,11 @@ type ExternalLocationInfo struct {
 }
 
 func (s *ExternalLocationInfo) UnmarshalJSON(b []byte) error {
-	type C ExternalLocationInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ExternalLocationInfo) MarshalJSON() ([]byte, error) {
-	type C ExternalLocationInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ForeignKeyConstraint struct {
@@ -1967,13 +1853,11 @@ type ForeignKeyConstraint struct {
 }
 
 func (s *ForeignKeyConstraint) UnmarshalJSON(b []byte) error {
-	type C ForeignKeyConstraint
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ForeignKeyConstraint) MarshalJSON() ([]byte, error) {
-	type C ForeignKeyConstraint
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // A function that is dependent on a SQL object.
@@ -1986,13 +1870,11 @@ type FunctionDependency struct {
 }
 
 func (s *FunctionDependency) UnmarshalJSON(b []byte) error {
-	type C FunctionDependency
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s FunctionDependency) MarshalJSON() ([]byte, error) {
-	type C FunctionDependency
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type FunctionInfo struct {
@@ -2065,13 +1947,11 @@ type FunctionInfo struct {
 }
 
 func (s *FunctionInfo) UnmarshalJSON(b []byte) error {
-	type C FunctionInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s FunctionInfo) MarshalJSON() ([]byte, error) {
-	type C FunctionInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Function parameter style. **S** is the value for SQL.
@@ -2217,13 +2097,11 @@ type FunctionParameterInfo struct {
 }
 
 func (s *FunctionParameterInfo) UnmarshalJSON(b []byte) error {
-	type C FunctionParameterInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s FunctionParameterInfo) MarshalJSON() ([]byte, error) {
-	type C FunctionParameterInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The mode of the function parameter.
@@ -2289,13 +2167,11 @@ type GetAccountMetastoreAssignmentRequest struct {
 }
 
 func (s *GetAccountMetastoreAssignmentRequest) UnmarshalJSON(b []byte) error {
-	type C GetAccountMetastoreAssignmentRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetAccountMetastoreAssignmentRequest) MarshalJSON() ([]byte, error) {
-	type C GetAccountMetastoreAssignmentRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a metastore
@@ -2307,13 +2183,11 @@ type GetAccountMetastoreRequest struct {
 }
 
 func (s *GetAccountMetastoreRequest) UnmarshalJSON(b []byte) error {
-	type C GetAccountMetastoreRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetAccountMetastoreRequest) MarshalJSON() ([]byte, error) {
-	type C GetAccountMetastoreRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Gets the named storage credential
@@ -2327,13 +2201,11 @@ type GetAccountStorageCredentialRequest struct {
 }
 
 func (s *GetAccountStorageCredentialRequest) UnmarshalJSON(b []byte) error {
-	type C GetAccountStorageCredentialRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetAccountStorageCredentialRequest) MarshalJSON() ([]byte, error) {
-	type C GetAccountStorageCredentialRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get an artifact allowlist
@@ -2345,13 +2217,11 @@ type GetArtifactAllowlistRequest struct {
 }
 
 func (s *GetArtifactAllowlistRequest) UnmarshalJSON(b []byte) error {
-	type C GetArtifactAllowlistRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetArtifactAllowlistRequest) MarshalJSON() ([]byte, error) {
-	type C GetArtifactAllowlistRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get Model Version By Alias
@@ -2365,13 +2235,11 @@ type GetByAliasRequest struct {
 }
 
 func (s *GetByAliasRequest) UnmarshalJSON(b []byte) error {
-	type C GetByAliasRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetByAliasRequest) MarshalJSON() ([]byte, error) {
-	type C GetByAliasRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a catalog
@@ -2383,13 +2251,11 @@ type GetCatalogRequest struct {
 }
 
 func (s *GetCatalogRequest) UnmarshalJSON(b []byte) error {
-	type C GetCatalogRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetCatalogRequest) MarshalJSON() ([]byte, error) {
-	type C GetCatalogRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a connection
@@ -2401,13 +2267,11 @@ type GetConnectionRequest struct {
 }
 
 func (s *GetConnectionRequest) UnmarshalJSON(b []byte) error {
-	type C GetConnectionRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetConnectionRequest) MarshalJSON() ([]byte, error) {
-	type C GetConnectionRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get effective permissions
@@ -2424,13 +2288,11 @@ type GetEffectiveRequest struct {
 }
 
 func (s *GetEffectiveRequest) UnmarshalJSON(b []byte) error {
-	type C GetEffectiveRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetEffectiveRequest) MarshalJSON() ([]byte, error) {
-	type C GetEffectiveRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get an external location
@@ -2442,13 +2304,11 @@ type GetExternalLocationRequest struct {
 }
 
 func (s *GetExternalLocationRequest) UnmarshalJSON(b []byte) error {
-	type C GetExternalLocationRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetExternalLocationRequest) MarshalJSON() ([]byte, error) {
-	type C GetExternalLocationRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a function
@@ -2461,13 +2321,11 @@ type GetFunctionRequest struct {
 }
 
 func (s *GetFunctionRequest) UnmarshalJSON(b []byte) error {
-	type C GetFunctionRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetFunctionRequest) MarshalJSON() ([]byte, error) {
-	type C GetFunctionRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get permissions
@@ -2484,13 +2342,11 @@ type GetGrantRequest struct {
 }
 
 func (s *GetGrantRequest) UnmarshalJSON(b []byte) error {
-	type C GetGrantRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetGrantRequest) MarshalJSON() ([]byte, error) {
-	type C GetGrantRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a metastore
@@ -2502,13 +2358,11 @@ type GetMetastoreRequest struct {
 }
 
 func (s *GetMetastoreRequest) UnmarshalJSON(b []byte) error {
-	type C GetMetastoreRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetMetastoreRequest) MarshalJSON() ([]byte, error) {
-	type C GetMetastoreRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetMetastoreSummaryResponse struct {
@@ -2556,13 +2410,11 @@ type GetMetastoreSummaryResponse struct {
 }
 
 func (s *GetMetastoreSummaryResponse) UnmarshalJSON(b []byte) error {
-	type C GetMetastoreSummaryResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetMetastoreSummaryResponse) MarshalJSON() ([]byte, error) {
-	type C GetMetastoreSummaryResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The scope of Delta Sharing enabled for the metastore.
@@ -2604,13 +2456,11 @@ type GetModelVersionRequest struct {
 }
 
 func (s *GetModelVersionRequest) UnmarshalJSON(b []byte) error {
-	type C GetModelVersionRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetModelVersionRequest) MarshalJSON() ([]byte, error) {
-	type C GetModelVersionRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a Registered Model
@@ -2622,13 +2472,11 @@ type GetRegisteredModelRequest struct {
 }
 
 func (s *GetRegisteredModelRequest) UnmarshalJSON(b []byte) error {
-	type C GetRegisteredModelRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetRegisteredModelRequest) MarshalJSON() ([]byte, error) {
-	type C GetRegisteredModelRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a schema
@@ -2640,13 +2488,11 @@ type GetSchemaRequest struct {
 }
 
 func (s *GetSchemaRequest) UnmarshalJSON(b []byte) error {
-	type C GetSchemaRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetSchemaRequest) MarshalJSON() ([]byte, error) {
-	type C GetSchemaRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a credential
@@ -2658,13 +2504,11 @@ type GetStorageCredentialRequest struct {
 }
 
 func (s *GetStorageCredentialRequest) UnmarshalJSON(b []byte) error {
-	type C GetStorageCredentialRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetStorageCredentialRequest) MarshalJSON() ([]byte, error) {
-	type C GetStorageCredentialRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a table
@@ -2678,13 +2522,11 @@ type GetTableRequest struct {
 }
 
 func (s *GetTableRequest) UnmarshalJSON(b []byte) error {
-	type C GetTableRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetTableRequest) MarshalJSON() ([]byte, error) {
-	type C GetTableRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get catalog workspace bindings
@@ -2696,13 +2538,11 @@ type GetWorkspaceBindingRequest struct {
 }
 
 func (s *GetWorkspaceBindingRequest) UnmarshalJSON(b []byte) error {
-	type C GetWorkspaceBindingRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetWorkspaceBindingRequest) MarshalJSON() ([]byte, error) {
-	type C GetWorkspaceBindingRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Whether the current securable is accessible from all workspaces or a specific
@@ -2743,13 +2583,11 @@ type ListAccountMetastoreAssignmentsRequest struct {
 }
 
 func (s *ListAccountMetastoreAssignmentsRequest) UnmarshalJSON(b []byte) error {
-	type C ListAccountMetastoreAssignmentsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListAccountMetastoreAssignmentsRequest) MarshalJSON() ([]byte, error) {
-	type C ListAccountMetastoreAssignmentsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get all storage credentials assigned to a metastore
@@ -2761,13 +2599,11 @@ type ListAccountStorageCredentialsRequest struct {
 }
 
 func (s *ListAccountStorageCredentialsRequest) UnmarshalJSON(b []byte) error {
-	type C ListAccountStorageCredentialsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListAccountStorageCredentialsRequest) MarshalJSON() ([]byte, error) {
-	type C ListAccountStorageCredentialsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListCatalogsResponse struct {
@@ -2778,13 +2614,11 @@ type ListCatalogsResponse struct {
 }
 
 func (s *ListCatalogsResponse) UnmarshalJSON(b []byte) error {
-	type C ListCatalogsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListCatalogsResponse) MarshalJSON() ([]byte, error) {
-	type C ListCatalogsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListConnectionsResponse struct {
@@ -2795,13 +2629,11 @@ type ListConnectionsResponse struct {
 }
 
 func (s *ListConnectionsResponse) UnmarshalJSON(b []byte) error {
-	type C ListConnectionsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListConnectionsResponse) MarshalJSON() ([]byte, error) {
-	type C ListConnectionsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListExternalLocationsResponse struct {
@@ -2812,13 +2644,11 @@ type ListExternalLocationsResponse struct {
 }
 
 func (s *ListExternalLocationsResponse) UnmarshalJSON(b []byte) error {
-	type C ListExternalLocationsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListExternalLocationsResponse) MarshalJSON() ([]byte, error) {
-	type C ListExternalLocationsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List functions
@@ -2832,13 +2662,11 @@ type ListFunctionsRequest struct {
 }
 
 func (s *ListFunctionsRequest) UnmarshalJSON(b []byte) error {
-	type C ListFunctionsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListFunctionsRequest) MarshalJSON() ([]byte, error) {
-	type C ListFunctionsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListFunctionsResponse struct {
@@ -2849,13 +2677,11 @@ type ListFunctionsResponse struct {
 }
 
 func (s *ListFunctionsResponse) UnmarshalJSON(b []byte) error {
-	type C ListFunctionsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListFunctionsResponse) MarshalJSON() ([]byte, error) {
-	type C ListFunctionsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListMetastoresResponse struct {
@@ -2866,13 +2692,11 @@ type ListMetastoresResponse struct {
 }
 
 func (s *ListMetastoresResponse) UnmarshalJSON(b []byte) error {
-	type C ListMetastoresResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListMetastoresResponse) MarshalJSON() ([]byte, error) {
-	type C ListMetastoresResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List Model Versions
@@ -2889,13 +2713,11 @@ type ListModelVersionsRequest struct {
 }
 
 func (s *ListModelVersionsRequest) UnmarshalJSON(b []byte) error {
-	type C ListModelVersionsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListModelVersionsRequest) MarshalJSON() ([]byte, error) {
-	type C ListModelVersionsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListModelVersionsResponse struct {
@@ -2907,13 +2729,11 @@ type ListModelVersionsResponse struct {
 }
 
 func (s *ListModelVersionsResponse) UnmarshalJSON(b []byte) error {
-	type C ListModelVersionsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListModelVersionsResponse) MarshalJSON() ([]byte, error) {
-	type C ListModelVersionsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List Registered Models
@@ -2936,13 +2756,11 @@ type ListRegisteredModelsRequest struct {
 }
 
 func (s *ListRegisteredModelsRequest) UnmarshalJSON(b []byte) error {
-	type C ListRegisteredModelsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListRegisteredModelsRequest) MarshalJSON() ([]byte, error) {
-	type C ListRegisteredModelsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListRegisteredModelsResponse struct {
@@ -2956,13 +2774,11 @@ type ListRegisteredModelsResponse struct {
 }
 
 func (s *ListRegisteredModelsResponse) UnmarshalJSON(b []byte) error {
-	type C ListRegisteredModelsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListRegisteredModelsResponse) MarshalJSON() ([]byte, error) {
-	type C ListRegisteredModelsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List schemas
@@ -2974,13 +2790,11 @@ type ListSchemasRequest struct {
 }
 
 func (s *ListSchemasRequest) UnmarshalJSON(b []byte) error {
-	type C ListSchemasRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListSchemasRequest) MarshalJSON() ([]byte, error) {
-	type C ListSchemasRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListSchemasResponse struct {
@@ -2991,13 +2805,11 @@ type ListSchemasResponse struct {
 }
 
 func (s *ListSchemasResponse) UnmarshalJSON(b []byte) error {
-	type C ListSchemasResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListSchemasResponse) MarshalJSON() ([]byte, error) {
-	type C ListSchemasResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListStorageCredentialsResponse struct {
@@ -3007,13 +2819,11 @@ type ListStorageCredentialsResponse struct {
 }
 
 func (s *ListStorageCredentialsResponse) UnmarshalJSON(b []byte) error {
-	type C ListStorageCredentialsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListStorageCredentialsResponse) MarshalJSON() ([]byte, error) {
-	type C ListStorageCredentialsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List table summaries
@@ -3035,13 +2845,11 @@ type ListSummariesRequest struct {
 }
 
 func (s *ListSummariesRequest) UnmarshalJSON(b []byte) error {
-	type C ListSummariesRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListSummariesRequest) MarshalJSON() ([]byte, error) {
-	type C ListSummariesRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List system schemas
@@ -3053,13 +2861,11 @@ type ListSystemSchemasRequest struct {
 }
 
 func (s *ListSystemSchemasRequest) UnmarshalJSON(b []byte) error {
-	type C ListSystemSchemasRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListSystemSchemasRequest) MarshalJSON() ([]byte, error) {
-	type C ListSystemSchemasRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListSystemSchemasResponse struct {
@@ -3070,13 +2876,11 @@ type ListSystemSchemasResponse struct {
 }
 
 func (s *ListSystemSchemasResponse) UnmarshalJSON(b []byte) error {
-	type C ListSystemSchemasResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListSystemSchemasResponse) MarshalJSON() ([]byte, error) {
-	type C ListSystemSchemasResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListTableSummariesResponse struct {
@@ -3089,13 +2893,11 @@ type ListTableSummariesResponse struct {
 }
 
 func (s *ListTableSummariesResponse) UnmarshalJSON(b []byte) error {
-	type C ListTableSummariesResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListTableSummariesResponse) MarshalJSON() ([]byte, error) {
-	type C ListTableSummariesResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List tables
@@ -3120,13 +2922,11 @@ type ListTablesRequest struct {
 }
 
 func (s *ListTablesRequest) UnmarshalJSON(b []byte) error {
-	type C ListTablesRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListTablesRequest) MarshalJSON() ([]byte, error) {
-	type C ListTablesRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListTablesResponse struct {
@@ -3140,13 +2940,11 @@ type ListTablesResponse struct {
 }
 
 func (s *ListTablesResponse) UnmarshalJSON(b []byte) error {
-	type C ListTablesResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListTablesResponse) MarshalJSON() ([]byte, error) {
-	type C ListTablesResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List Volumes
@@ -3160,13 +2958,11 @@ type ListVolumesRequest struct {
 }
 
 func (s *ListVolumesRequest) UnmarshalJSON(b []byte) error {
-	type C ListVolumesRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListVolumesRequest) MarshalJSON() ([]byte, error) {
-	type C ListVolumesRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListVolumesResponseContent struct {
@@ -3176,13 +2972,11 @@ type ListVolumesResponseContent struct {
 }
 
 func (s *ListVolumesResponseContent) UnmarshalJSON(b []byte) error {
-	type C ListVolumesResponseContent
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListVolumesResponseContent) MarshalJSON() ([]byte, error) {
-	type C ListVolumesResponseContent
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The artifact pattern matching type
@@ -3223,13 +3017,11 @@ type MetastoreAssignment struct {
 }
 
 func (s *MetastoreAssignment) UnmarshalJSON(b []byte) error {
-	type C MetastoreAssignment
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s MetastoreAssignment) MarshalJSON() ([]byte, error) {
-	type C MetastoreAssignment
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type MetastoreInfo struct {
@@ -3277,13 +3069,11 @@ type MetastoreInfo struct {
 }
 
 func (s *MetastoreInfo) UnmarshalJSON(b []byte) error {
-	type C MetastoreInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s MetastoreInfo) MarshalJSON() ([]byte, error) {
-	type C MetastoreInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The scope of Delta Sharing enabled for the metastore.
@@ -3364,13 +3154,11 @@ type ModelVersionInfo struct {
 }
 
 func (s *ModelVersionInfo) UnmarshalJSON(b []byte) error {
-	type C ModelVersionInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ModelVersionInfo) MarshalJSON() ([]byte, error) {
-	type C ModelVersionInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Current status of the model version. Newly created model versions start in
@@ -3414,13 +3202,11 @@ type NamedTableConstraint struct {
 }
 
 func (s *NamedTableConstraint) UnmarshalJSON(b []byte) error {
-	type C NamedTableConstraint
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s NamedTableConstraint) MarshalJSON() ([]byte, error) {
-	type C NamedTableConstraint
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PermissionsChange struct {
@@ -3435,13 +3221,11 @@ type PermissionsChange struct {
 }
 
 func (s *PermissionsChange) UnmarshalJSON(b []byte) error {
-	type C PermissionsChange
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PermissionsChange) MarshalJSON() ([]byte, error) {
-	type C PermissionsChange
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PermissionsList struct {
@@ -3452,13 +3236,11 @@ type PermissionsList struct {
 }
 
 func (s *PermissionsList) UnmarshalJSON(b []byte) error {
-	type C PermissionsList
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PermissionsList) MarshalJSON() ([]byte, error) {
-	type C PermissionsList
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PrimaryKeyConstraint struct {
@@ -3471,13 +3253,11 @@ type PrimaryKeyConstraint struct {
 }
 
 func (s *PrimaryKeyConstraint) UnmarshalJSON(b []byte) error {
-	type C PrimaryKeyConstraint
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PrimaryKeyConstraint) MarshalJSON() ([]byte, error) {
-	type C PrimaryKeyConstraint
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Privilege string
@@ -3585,13 +3365,11 @@ type PrivilegeAssignment struct {
 }
 
 func (s *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
-	type C PrivilegeAssignment
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PrivilegeAssignment) MarshalJSON() ([]byte, error) {
-	type C PrivilegeAssignment
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // An object containing map of key-value properties attached to the connection.
@@ -3605,13 +3383,11 @@ type ProvisioningInfo struct {
 }
 
 func (s *ProvisioningInfo) UnmarshalJSON(b []byte) error {
-	type C ProvisioningInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ProvisioningInfo) MarshalJSON() ([]byte, error) {
-	type C ProvisioningInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ProvisioningInfoState string
@@ -3656,13 +3432,11 @@ type ReadVolumeRequest struct {
 }
 
 func (s *ReadVolumeRequest) UnmarshalJSON(b []byte) error {
-	type C ReadVolumeRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ReadVolumeRequest) MarshalJSON() ([]byte, error) {
-	type C ReadVolumeRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Registered model alias.
@@ -3676,13 +3450,11 @@ type RegisteredModelAlias struct {
 }
 
 func (s *RegisteredModelAlias) UnmarshalJSON(b []byte) error {
-	type C RegisteredModelAlias
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RegisteredModelAlias) MarshalJSON() ([]byte, error) {
-	type C RegisteredModelAlias
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RegisteredModelInfo struct {
@@ -3720,13 +3492,11 @@ type RegisteredModelInfo struct {
 }
 
 func (s *RegisteredModelInfo) UnmarshalJSON(b []byte) error {
-	type C RegisteredModelInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RegisteredModelInfo) MarshalJSON() ([]byte, error) {
-	type C RegisteredModelInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SchemaInfo struct {
@@ -3768,13 +3538,11 @@ type SchemaInfo struct {
 }
 
 func (s *SchemaInfo) UnmarshalJSON(b []byte) error {
-	type C SchemaInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SchemaInfo) MarshalJSON() ([]byte, error) {
-	type C SchemaInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // A map of key-value properties attached to the securable.
@@ -3840,13 +3608,11 @@ type SetArtifactAllowlist struct {
 }
 
 func (s *SetArtifactAllowlist) UnmarshalJSON(b []byte) error {
-	type C SetArtifactAllowlist
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SetArtifactAllowlist) MarshalJSON() ([]byte, error) {
-	type C SetArtifactAllowlist
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SetRegisteredModelAliasRequest struct {
@@ -3861,13 +3627,11 @@ type SetRegisteredModelAliasRequest struct {
 }
 
 func (s *SetRegisteredModelAliasRequest) UnmarshalJSON(b []byte) error {
-	type C SetRegisteredModelAliasRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SetRegisteredModelAliasRequest) MarshalJSON() ([]byte, error) {
-	type C SetRegisteredModelAliasRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Server-Side Encryption properties for clients communicating with AWS s3.
@@ -3882,13 +3646,11 @@ type SseEncryptionDetails struct {
 }
 
 func (s *SseEncryptionDetails) UnmarshalJSON(b []byte) error {
-	type C SseEncryptionDetails
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SseEncryptionDetails) MarshalJSON() ([]byte, error) {
-	type C SseEncryptionDetails
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The type of key encryption to use (affects headers from s3 client).
@@ -3956,13 +3718,11 @@ type StorageCredentialInfo struct {
 }
 
 func (s *StorageCredentialInfo) UnmarshalJSON(b []byte) error {
-	type C StorageCredentialInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s StorageCredentialInfo) MarshalJSON() ([]byte, error) {
-	type C StorageCredentialInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SystemSchemaInfo struct {
@@ -3976,13 +3736,11 @@ type SystemSchemaInfo struct {
 }
 
 func (s *SystemSchemaInfo) UnmarshalJSON(b []byte) error {
-	type C SystemSchemaInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SystemSchemaInfo) MarshalJSON() ([]byte, error) {
-	type C SystemSchemaInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The current state of enablement for the system schema. An empty string means
@@ -4034,13 +3792,11 @@ type TableConstraint struct {
 }
 
 func (s *TableConstraint) UnmarshalJSON(b []byte) error {
-	type C TableConstraint
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TableConstraint) MarshalJSON() ([]byte, error) {
-	type C TableConstraint
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TableConstraintList struct {
@@ -4051,13 +3807,11 @@ type TableConstraintList struct {
 }
 
 func (s *TableConstraintList) UnmarshalJSON(b []byte) error {
-	type C TableConstraintList
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TableConstraintList) MarshalJSON() ([]byte, error) {
-	type C TableConstraintList
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // A table that is dependent on a SQL object.
@@ -4070,13 +3824,11 @@ type TableDependency struct {
 }
 
 func (s *TableDependency) UnmarshalJSON(b []byte) error {
-	type C TableDependency
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TableDependency) MarshalJSON() ([]byte, error) {
-	type C TableDependency
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TableInfo struct {
@@ -4154,13 +3906,11 @@ type TableInfo struct {
 }
 
 func (s *TableInfo) UnmarshalJSON(b []byte) error {
-	type C TableInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TableInfo) MarshalJSON() ([]byte, error) {
-	type C TableInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TableRowFilter struct {
@@ -4175,13 +3925,11 @@ type TableRowFilter struct {
 }
 
 func (s *TableRowFilter) UnmarshalJSON(b []byte) error {
-	type C TableRowFilter
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TableRowFilter) MarshalJSON() ([]byte, error) {
-	type C TableRowFilter
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TableSummary struct {
@@ -4194,13 +3942,11 @@ type TableSummary struct {
 }
 
 func (s *TableSummary) UnmarshalJSON(b []byte) error {
-	type C TableSummary
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TableSummary) MarshalJSON() ([]byte, error) {
-	type C TableSummary
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TableType string
@@ -4247,13 +3993,11 @@ type UnassignRequest struct {
 }
 
 func (s *UnassignRequest) UnmarshalJSON(b []byte) error {
-	type C UnassignRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UnassignRequest) MarshalJSON() ([]byte, error) {
-	type C UnassignRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateCatalog struct {
@@ -4275,13 +4019,11 @@ type UpdateCatalog struct {
 }
 
 func (s *UpdateCatalog) UnmarshalJSON(b []byte) error {
-	type C UpdateCatalog
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateCatalog) MarshalJSON() ([]byte, error) {
-	type C UpdateCatalog
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateConnection struct {
@@ -4296,13 +4038,11 @@ type UpdateConnection struct {
 }
 
 func (s *UpdateConnection) UnmarshalJSON(b []byte) error {
-	type C UpdateConnection
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateConnection) MarshalJSON() ([]byte, error) {
-	type C UpdateConnection
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateExternalLocation struct {
@@ -4330,13 +4070,11 @@ type UpdateExternalLocation struct {
 }
 
 func (s *UpdateExternalLocation) UnmarshalJSON(b []byte) error {
-	type C UpdateExternalLocation
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateExternalLocation) MarshalJSON() ([]byte, error) {
-	type C UpdateExternalLocation
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateFunction struct {
@@ -4350,13 +4088,11 @@ type UpdateFunction struct {
 }
 
 func (s *UpdateFunction) UnmarshalJSON(b []byte) error {
-	type C UpdateFunction
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateFunction) MarshalJSON() ([]byte, error) {
-	type C UpdateFunction
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateMetastore struct {
@@ -4383,13 +4119,11 @@ type UpdateMetastore struct {
 }
 
 func (s *UpdateMetastore) UnmarshalJSON(b []byte) error {
-	type C UpdateMetastore
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateMetastore) MarshalJSON() ([]byte, error) {
-	type C UpdateMetastore
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateMetastoreAssignment struct {
@@ -4404,13 +4138,11 @@ type UpdateMetastoreAssignment struct {
 }
 
 func (s *UpdateMetastoreAssignment) UnmarshalJSON(b []byte) error {
-	type C UpdateMetastoreAssignment
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
-	type C UpdateMetastoreAssignment
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The scope of Delta Sharing enabled for the metastore.
@@ -4453,13 +4185,11 @@ type UpdateModelVersionRequest struct {
 }
 
 func (s *UpdateModelVersionRequest) UnmarshalJSON(b []byte) error {
-	type C UpdateModelVersionRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
-	type C UpdateModelVersionRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdatePermissions struct {
@@ -4474,13 +4204,11 @@ type UpdatePermissions struct {
 }
 
 func (s *UpdatePermissions) UnmarshalJSON(b []byte) error {
-	type C UpdatePermissions
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdatePermissions) MarshalJSON() ([]byte, error) {
-	type C UpdatePermissions
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdatePredictiveOptimization struct {
@@ -4493,13 +4221,11 @@ type UpdatePredictiveOptimization struct {
 }
 
 func (s *UpdatePredictiveOptimization) UnmarshalJSON(b []byte) error {
-	type C UpdatePredictiveOptimization
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdatePredictiveOptimization) MarshalJSON() ([]byte, error) {
-	type C UpdatePredictiveOptimization
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdatePredictiveOptimizationResponse struct {
@@ -4515,13 +4241,11 @@ type UpdatePredictiveOptimizationResponse struct {
 }
 
 func (s *UpdatePredictiveOptimizationResponse) UnmarshalJSON(b []byte) error {
-	type C UpdatePredictiveOptimizationResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdatePredictiveOptimizationResponse) MarshalJSON() ([]byte, error) {
-	type C UpdatePredictiveOptimizationResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateRegisteredModelRequest struct {
@@ -4538,13 +4262,11 @@ type UpdateRegisteredModelRequest struct {
 }
 
 func (s *UpdateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
-	type C UpdateRegisteredModelRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
-	type C UpdateRegisteredModelRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateSchema struct {
@@ -4563,13 +4285,11 @@ type UpdateSchema struct {
 }
 
 func (s *UpdateSchema) UnmarshalJSON(b []byte) error {
-	type C UpdateSchema
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateSchema) MarshalJSON() ([]byte, error) {
-	type C UpdateSchema
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateStorageCredential struct {
@@ -4600,13 +4320,11 @@ type UpdateStorageCredential struct {
 }
 
 func (s *UpdateStorageCredential) UnmarshalJSON(b []byte) error {
-	type C UpdateStorageCredential
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateStorageCredential) MarshalJSON() ([]byte, error) {
-	type C UpdateStorageCredential
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Update a table owner.
@@ -4620,13 +4338,11 @@ type UpdateTableRequest struct {
 }
 
 func (s *UpdateTableRequest) UnmarshalJSON(b []byte) error {
-	type C UpdateTableRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateTableRequest) MarshalJSON() ([]byte, error) {
-	type C UpdateTableRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateVolumeRequestContent struct {
@@ -4643,13 +4359,11 @@ type UpdateVolumeRequestContent struct {
 }
 
 func (s *UpdateVolumeRequestContent) UnmarshalJSON(b []byte) error {
-	type C UpdateVolumeRequestContent
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateVolumeRequestContent) MarshalJSON() ([]byte, error) {
-	type C UpdateVolumeRequestContent
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateWorkspaceBindings struct {
@@ -4664,13 +4378,11 @@ type UpdateWorkspaceBindings struct {
 }
 
 func (s *UpdateWorkspaceBindings) UnmarshalJSON(b []byte) error {
-	type C UpdateWorkspaceBindings
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateWorkspaceBindings) MarshalJSON() ([]byte, error) {
-	type C UpdateWorkspaceBindings
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ValidateStorageCredential struct {
@@ -4695,13 +4407,11 @@ type ValidateStorageCredential struct {
 }
 
 func (s *ValidateStorageCredential) UnmarshalJSON(b []byte) error {
-	type C ValidateStorageCredential
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ValidateStorageCredential) MarshalJSON() ([]byte, error) {
-	type C ValidateStorageCredential
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ValidateStorageCredentialResponse struct {
@@ -4714,13 +4424,11 @@ type ValidateStorageCredentialResponse struct {
 }
 
 func (s *ValidateStorageCredentialResponse) UnmarshalJSON(b []byte) error {
-	type C ValidateStorageCredentialResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ValidateStorageCredentialResponse) MarshalJSON() ([]byte, error) {
-	type C ValidateStorageCredentialResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ValidationResult struct {
@@ -4735,13 +4443,11 @@ type ValidationResult struct {
 }
 
 func (s *ValidationResult) UnmarshalJSON(b []byte) error {
-	type C ValidationResult
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ValidationResult) MarshalJSON() ([]byte, error) {
-	type C ValidationResult
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The operation tested.
@@ -4844,13 +4550,11 @@ type VolumeInfo struct {
 }
 
 func (s *VolumeInfo) UnmarshalJSON(b []byte) error {
-	type C VolumeInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s VolumeInfo) MarshalJSON() ([]byte, error) {
-	type C VolumeInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type VolumeType string

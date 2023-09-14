@@ -20,23 +20,19 @@ type CompositeSecondParent struct {
 }
 
 func (s *CompositeSecondParent) UnmarshalJSON(b []byte) error {
-	type C CompositeSecondParent
-	return Unmarshal(b, (*C)(s))
+	return Unmarshal(b, s)
 }
 
 func (s CompositeSecondParent) MarshalJSON() ([]byte, error) {
-	type C CompositeSecondParent
-	return Marshal((C)(s))
+	return Marshal(s)
 }
 
 func (s *CompositeParent) UnmarshalJSON(b []byte) error {
-	type C CompositeParent
-	return Unmarshal(b, (*C)(s))
+	return Unmarshal(b, s)
 }
 
 func (s CompositeParent) MarshalJSON() ([]byte, error) {
-	type C CompositeParent
-	return Marshal((C)(s))
+	return Marshal(s)
 }
 
 type compositeChild struct {
@@ -50,8 +46,7 @@ func (s compositeChild) MarshalJSON() ([]byte, error) {
 }
 
 func (s *compositeChild) UnmarshalJSON(b []byte) error {
-	type C compositeChild
-	return Unmarshal(b, (*C)(s))
+	return Unmarshal(b, s)
 }
 
 func TestComposite(t *testing.T) {
@@ -152,13 +147,11 @@ type noSendFieldChild struct {
 }
 
 func (s *noSendFieldChild) UnmarshalJSON(b []byte) error {
-	type C noSendFieldChild
-	return Unmarshal(b, (*C)(s))
+	return Unmarshal(b, s)
 }
 
 func (s noSendFieldChild) MarshalJSON() ([]byte, error) {
-	type C noSendFieldChild
-	return Marshal((C)(s))
+	return Marshal(s)
 }
 
 func TestNoSendFieldChild(t *testing.T) {

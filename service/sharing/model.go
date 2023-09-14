@@ -56,13 +56,11 @@ type CentralCleanRoomInfo struct {
 }
 
 func (s *CentralCleanRoomInfo) UnmarshalJSON(b []byte) error {
-	type C CentralCleanRoomInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CentralCleanRoomInfo) MarshalJSON() ([]byte, error) {
-	type C CentralCleanRoomInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CleanRoomAssetInfo struct {
@@ -81,13 +79,11 @@ type CleanRoomAssetInfo struct {
 }
 
 func (s *CleanRoomAssetInfo) UnmarshalJSON(b []byte) error {
-	type C CleanRoomAssetInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CleanRoomAssetInfo) MarshalJSON() ([]byte, error) {
-	type C CleanRoomAssetInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CleanRoomCatalog struct {
@@ -102,13 +98,11 @@ type CleanRoomCatalog struct {
 }
 
 func (s *CleanRoomCatalog) UnmarshalJSON(b []byte) error {
-	type C CleanRoomCatalog
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CleanRoomCatalog) MarshalJSON() ([]byte, error) {
-	type C CleanRoomCatalog
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CleanRoomCatalogUpdate struct {
@@ -121,13 +115,11 @@ type CleanRoomCatalogUpdate struct {
 }
 
 func (s *CleanRoomCatalogUpdate) UnmarshalJSON(b []byte) error {
-	type C CleanRoomCatalogUpdate
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CleanRoomCatalogUpdate) MarshalJSON() ([]byte, error) {
-	type C CleanRoomCatalogUpdate
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CleanRoomCollaboratorInfo struct {
@@ -144,13 +136,11 @@ type CleanRoomCollaboratorInfo struct {
 }
 
 func (s *CleanRoomCollaboratorInfo) UnmarshalJSON(b []byte) error {
-	type C CleanRoomCollaboratorInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CleanRoomCollaboratorInfo) MarshalJSON() ([]byte, error) {
-	type C CleanRoomCollaboratorInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CleanRoomInfo struct {
@@ -177,13 +167,11 @@ type CleanRoomInfo struct {
 }
 
 func (s *CleanRoomInfo) UnmarshalJSON(b []byte) error {
-	type C CleanRoomInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CleanRoomInfo) MarshalJSON() ([]byte, error) {
-	type C CleanRoomInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CleanRoomNotebookInfo struct {
@@ -196,13 +184,11 @@ type CleanRoomNotebookInfo struct {
 }
 
 func (s *CleanRoomNotebookInfo) UnmarshalJSON(b []byte) error {
-	type C CleanRoomNotebookInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CleanRoomNotebookInfo) MarshalJSON() ([]byte, error) {
-	type C CleanRoomNotebookInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CleanRoomTableInfo struct {
@@ -222,13 +208,11 @@ type CleanRoomTableInfo struct {
 }
 
 func (s *CleanRoomTableInfo) UnmarshalJSON(b []byte) error {
-	type C CleanRoomTableInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CleanRoomTableInfo) MarshalJSON() ([]byte, error) {
-	type C CleanRoomTableInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ColumnInfo struct {
@@ -261,13 +245,11 @@ type ColumnInfo struct {
 }
 
 func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
-	type C ColumnInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ColumnInfo) MarshalJSON() ([]byte, error) {
-	type C ColumnInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ColumnMask struct {
@@ -283,13 +265,11 @@ type ColumnMask struct {
 }
 
 func (s *ColumnMask) UnmarshalJSON(b []byte) error {
-	type C ColumnMask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ColumnMask) MarshalJSON() ([]byte, error) {
-	type C ColumnMask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Name of type (INT, STRUCT, MAP, etc.).
@@ -370,13 +350,11 @@ type CreateCleanRoom struct {
 }
 
 func (s *CreateCleanRoom) UnmarshalJSON(b []byte) error {
-	type C CreateCleanRoom
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateCleanRoom) MarshalJSON() ([]byte, error) {
-	type C CreateCleanRoom
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateProvider struct {
@@ -394,13 +372,11 @@ type CreateProvider struct {
 }
 
 func (s *CreateProvider) UnmarshalJSON(b []byte) error {
-	type C CreateProvider
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateProvider) MarshalJSON() ([]byte, error) {
-	type C CreateProvider
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateRecipient struct {
@@ -429,13 +405,11 @@ type CreateRecipient struct {
 }
 
 func (s *CreateRecipient) UnmarshalJSON(b []byte) error {
-	type C CreateRecipient
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateRecipient) MarshalJSON() ([]byte, error) {
-	type C CreateRecipient
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateShare struct {
@@ -448,13 +422,11 @@ type CreateShare struct {
 }
 
 func (s *CreateShare) UnmarshalJSON(b []byte) error {
-	type C CreateShare
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateShare) MarshalJSON() ([]byte, error) {
-	type C CreateShare
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a clean room
@@ -466,13 +438,11 @@ type DeleteCleanRoomRequest struct {
 }
 
 func (s *DeleteCleanRoomRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteCleanRoomRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteCleanRoomRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteCleanRoomRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a provider
@@ -484,13 +454,11 @@ type DeleteProviderRequest struct {
 }
 
 func (s *DeleteProviderRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteProviderRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteProviderRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteProviderRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a share recipient
@@ -502,13 +470,11 @@ type DeleteRecipientRequest struct {
 }
 
 func (s *DeleteRecipientRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteRecipientRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteRecipientRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteRecipientRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a share
@@ -520,13 +486,11 @@ type DeleteShareRequest struct {
 }
 
 func (s *DeleteShareRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteShareRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteShareRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteShareRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a share activation URL
@@ -538,13 +502,11 @@ type GetActivationUrlInfoRequest struct {
 }
 
 func (s *GetActivationUrlInfoRequest) UnmarshalJSON(b []byte) error {
-	type C GetActivationUrlInfoRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetActivationUrlInfoRequest) MarshalJSON() ([]byte, error) {
-	type C GetActivationUrlInfoRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a clean room
@@ -558,13 +520,11 @@ type GetCleanRoomRequest struct {
 }
 
 func (s *GetCleanRoomRequest) UnmarshalJSON(b []byte) error {
-	type C GetCleanRoomRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetCleanRoomRequest) MarshalJSON() ([]byte, error) {
-	type C GetCleanRoomRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a provider
@@ -576,13 +536,11 @@ type GetProviderRequest struct {
 }
 
 func (s *GetProviderRequest) UnmarshalJSON(b []byte) error {
-	type C GetProviderRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetProviderRequest) MarshalJSON() ([]byte, error) {
-	type C GetProviderRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a share recipient
@@ -594,13 +552,11 @@ type GetRecipientRequest struct {
 }
 
 func (s *GetRecipientRequest) UnmarshalJSON(b []byte) error {
-	type C GetRecipientRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetRecipientRequest) MarshalJSON() ([]byte, error) {
-	type C GetRecipientRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetRecipientSharePermissionsResponse struct {
@@ -611,13 +567,11 @@ type GetRecipientSharePermissionsResponse struct {
 }
 
 func (s *GetRecipientSharePermissionsResponse) UnmarshalJSON(b []byte) error {
-	type C GetRecipientSharePermissionsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetRecipientSharePermissionsResponse) MarshalJSON() ([]byte, error) {
-	type C GetRecipientSharePermissionsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a share
@@ -631,13 +585,11 @@ type GetShareRequest struct {
 }
 
 func (s *GetShareRequest) UnmarshalJSON(b []byte) error {
-	type C GetShareRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetShareRequest) MarshalJSON() ([]byte, error) {
-	type C GetShareRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type IpAccessList struct {
@@ -648,13 +600,11 @@ type IpAccessList struct {
 }
 
 func (s *IpAccessList) UnmarshalJSON(b []byte) error {
-	type C IpAccessList
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s IpAccessList) MarshalJSON() ([]byte, error) {
-	type C IpAccessList
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListCleanRoomsResponse struct {
@@ -665,13 +615,11 @@ type ListCleanRoomsResponse struct {
 }
 
 func (s *ListCleanRoomsResponse) UnmarshalJSON(b []byte) error {
-	type C ListCleanRoomsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
-	type C ListCleanRoomsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListProviderSharesResponse struct {
@@ -682,13 +630,11 @@ type ListProviderSharesResponse struct {
 }
 
 func (s *ListProviderSharesResponse) UnmarshalJSON(b []byte) error {
-	type C ListProviderSharesResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListProviderSharesResponse) MarshalJSON() ([]byte, error) {
-	type C ListProviderSharesResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List providers
@@ -701,13 +647,11 @@ type ListProvidersRequest struct {
 }
 
 func (s *ListProvidersRequest) UnmarshalJSON(b []byte) error {
-	type C ListProvidersRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListProvidersRequest) MarshalJSON() ([]byte, error) {
-	type C ListProvidersRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListProvidersResponse struct {
@@ -718,13 +662,11 @@ type ListProvidersResponse struct {
 }
 
 func (s *ListProvidersResponse) UnmarshalJSON(b []byte) error {
-	type C ListProvidersResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListProvidersResponse) MarshalJSON() ([]byte, error) {
-	type C ListProvidersResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List share recipients
@@ -737,13 +679,11 @@ type ListRecipientsRequest struct {
 }
 
 func (s *ListRecipientsRequest) UnmarshalJSON(b []byte) error {
-	type C ListRecipientsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListRecipientsRequest) MarshalJSON() ([]byte, error) {
-	type C ListRecipientsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListRecipientsResponse struct {
@@ -754,13 +694,11 @@ type ListRecipientsResponse struct {
 }
 
 func (s *ListRecipientsResponse) UnmarshalJSON(b []byte) error {
-	type C ListRecipientsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListRecipientsResponse) MarshalJSON() ([]byte, error) {
-	type C ListRecipientsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List shares by Provider
@@ -772,13 +710,11 @@ type ListSharesRequest struct {
 }
 
 func (s *ListSharesRequest) UnmarshalJSON(b []byte) error {
-	type C ListSharesRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListSharesRequest) MarshalJSON() ([]byte, error) {
-	type C ListSharesRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListSharesResponse struct {
@@ -789,13 +725,11 @@ type ListSharesResponse struct {
 }
 
 func (s *ListSharesResponse) UnmarshalJSON(b []byte) error {
-	type C ListSharesResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListSharesResponse) MarshalJSON() ([]byte, error) {
-	type C ListSharesResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Partition struct {
@@ -806,13 +740,11 @@ type Partition struct {
 }
 
 func (s *Partition) UnmarshalJSON(b []byte) error {
-	type C Partition
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Partition) MarshalJSON() ([]byte, error) {
-	type C Partition
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PartitionValue struct {
@@ -833,13 +765,11 @@ type PartitionValue struct {
 }
 
 func (s *PartitionValue) UnmarshalJSON(b []byte) error {
-	type C PartitionValue
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PartitionValue) MarshalJSON() ([]byte, error) {
-	type C PartitionValue
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The operator to apply for the value.
@@ -975,13 +905,11 @@ type PrivilegeAssignment struct {
 }
 
 func (s *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
-	type C PrivilegeAssignment
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PrivilegeAssignment) MarshalJSON() ([]byte, error) {
-	type C PrivilegeAssignment
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ProviderInfo struct {
@@ -1025,13 +953,11 @@ type ProviderInfo struct {
 }
 
 func (s *ProviderInfo) UnmarshalJSON(b []byte) error {
-	type C ProviderInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ProviderInfo) MarshalJSON() ([]byte, error) {
-	type C ProviderInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ProviderShare struct {
@@ -1042,13 +968,11 @@ type ProviderShare struct {
 }
 
 func (s *ProviderShare) UnmarshalJSON(b []byte) error {
-	type C ProviderShare
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ProviderShare) MarshalJSON() ([]byte, error) {
-	type C ProviderShare
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RecipientInfo struct {
@@ -1102,13 +1026,11 @@ type RecipientInfo struct {
 }
 
 func (s *RecipientInfo) UnmarshalJSON(b []byte) error {
-	type C RecipientInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RecipientInfo) MarshalJSON() ([]byte, error) {
-	type C RecipientInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RecipientProfile struct {
@@ -1123,13 +1045,11 @@ type RecipientProfile struct {
 }
 
 func (s *RecipientProfile) UnmarshalJSON(b []byte) error {
-	type C RecipientProfile
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RecipientProfile) MarshalJSON() ([]byte, error) {
-	type C RecipientProfile
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RecipientTokenInfo struct {
@@ -1153,13 +1073,11 @@ type RecipientTokenInfo struct {
 }
 
 func (s *RecipientTokenInfo) UnmarshalJSON(b []byte) error {
-	type C RecipientTokenInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RecipientTokenInfo) MarshalJSON() ([]byte, error) {
-	type C RecipientTokenInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get an access token
@@ -1171,13 +1089,11 @@ type RetrieveTokenRequest struct {
 }
 
 func (s *RetrieveTokenRequest) UnmarshalJSON(b []byte) error {
-	type C RetrieveTokenRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RetrieveTokenRequest) MarshalJSON() ([]byte, error) {
-	type C RetrieveTokenRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RetrieveTokenResponse struct {
@@ -1194,13 +1110,11 @@ type RetrieveTokenResponse struct {
 }
 
 func (s *RetrieveTokenResponse) UnmarshalJSON(b []byte) error {
-	type C RetrieveTokenResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RetrieveTokenResponse) MarshalJSON() ([]byte, error) {
-	type C RetrieveTokenResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RotateRecipientToken struct {
@@ -1216,13 +1130,11 @@ type RotateRecipientToken struct {
 }
 
 func (s *RotateRecipientToken) UnmarshalJSON(b []byte) error {
-	type C RotateRecipientToken
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RotateRecipientToken) MarshalJSON() ([]byte, error) {
-	type C RotateRecipientToken
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // An object with __properties__ containing map of key-value properties attached
@@ -1235,13 +1147,11 @@ type SecurablePropertiesKvPairs struct {
 }
 
 func (s *SecurablePropertiesKvPairs) UnmarshalJSON(b []byte) error {
-	type C SecurablePropertiesKvPairs
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SecurablePropertiesKvPairs) MarshalJSON() ([]byte, error) {
-	type C SecurablePropertiesKvPairs
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // A map of key-value properties attached to the securable.
@@ -1269,13 +1179,11 @@ type ShareInfo struct {
 }
 
 func (s *ShareInfo) UnmarshalJSON(b []byte) error {
-	type C ShareInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ShareInfo) MarshalJSON() ([]byte, error) {
-	type C ShareInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get recipient share permissions
@@ -1287,13 +1195,11 @@ type SharePermissionsRequest struct {
 }
 
 func (s *SharePermissionsRequest) UnmarshalJSON(b []byte) error {
-	type C SharePermissionsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SharePermissionsRequest) MarshalJSON() ([]byte, error) {
-	type C SharePermissionsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ShareToPrivilegeAssignment struct {
@@ -1306,13 +1212,11 @@ type ShareToPrivilegeAssignment struct {
 }
 
 func (s *ShareToPrivilegeAssignment) UnmarshalJSON(b []byte) error {
-	type C ShareToPrivilegeAssignment
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ShareToPrivilegeAssignment) MarshalJSON() ([]byte, error) {
-	type C ShareToPrivilegeAssignment
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SharedDataObject struct {
@@ -1358,13 +1262,11 @@ type SharedDataObject struct {
 }
 
 func (s *SharedDataObject) UnmarshalJSON(b []byte) error {
-	type C SharedDataObject
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SharedDataObject) MarshalJSON() ([]byte, error) {
-	type C SharedDataObject
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Whether to enable or disable sharing of data history. If not specified, the
@@ -1434,13 +1336,11 @@ type SharedDataObjectUpdate struct {
 }
 
 func (s *SharedDataObjectUpdate) UnmarshalJSON(b []byte) error {
-	type C SharedDataObjectUpdate
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SharedDataObjectUpdate) MarshalJSON() ([]byte, error) {
-	type C SharedDataObjectUpdate
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // One of: **ADD**, **REMOVE**, **UPDATE**.
@@ -1489,13 +1389,11 @@ type UpdateCleanRoom struct {
 }
 
 func (s *UpdateCleanRoom) UnmarshalJSON(b []byte) error {
-	type C UpdateCleanRoom
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateCleanRoom) MarshalJSON() ([]byte, error) {
-	type C UpdateCleanRoom
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateProvider struct {
@@ -1513,13 +1411,11 @@ type UpdateProvider struct {
 }
 
 func (s *UpdateProvider) UnmarshalJSON(b []byte) error {
-	type C UpdateProvider
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateProvider) MarshalJSON() ([]byte, error) {
-	type C UpdateProvider
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateRecipient struct {
@@ -1541,13 +1437,11 @@ type UpdateRecipient struct {
 }
 
 func (s *UpdateRecipient) UnmarshalJSON(b []byte) error {
-	type C UpdateRecipient
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateRecipient) MarshalJSON() ([]byte, error) {
-	type C UpdateRecipient
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateShare struct {
@@ -1564,13 +1458,11 @@ type UpdateShare struct {
 }
 
 func (s *UpdateShare) UnmarshalJSON(b []byte) error {
-	type C UpdateShare
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateShare) MarshalJSON() ([]byte, error) {
-	type C UpdateShare
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateSharePermissions struct {
@@ -1583,11 +1475,9 @@ type UpdateSharePermissions struct {
 }
 
 func (s *UpdateSharePermissions) UnmarshalJSON(b []byte) error {
-	type C UpdateSharePermissions
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateSharePermissions) MarshalJSON() ([]byte, error) {
-	type C UpdateSharePermissions
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }

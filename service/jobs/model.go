@@ -29,13 +29,11 @@ type BaseJob struct {
 }
 
 func (s *BaseJob) UnmarshalJSON(b []byte) error {
-	type C BaseJob
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s BaseJob) MarshalJSON() ([]byte, error) {
-	type C BaseJob
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type BaseRun struct {
@@ -146,13 +144,11 @@ type BaseRun struct {
 }
 
 func (s *BaseRun) UnmarshalJSON(b []byte) error {
-	type C BaseRun
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s BaseRun) MarshalJSON() ([]byte, error) {
-	type C BaseRun
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CancelAllRuns struct {
@@ -164,13 +160,11 @@ type CancelAllRuns struct {
 }
 
 func (s *CancelAllRuns) UnmarshalJSON(b []byte) error {
-	type C CancelAllRuns
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CancelAllRuns) MarshalJSON() ([]byte, error) {
-	type C CancelAllRuns
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CancelRun struct {
@@ -181,13 +175,11 @@ type CancelRun struct {
 }
 
 func (s *CancelRun) UnmarshalJSON(b []byte) error {
-	type C CancelRun
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CancelRun) MarshalJSON() ([]byte, error) {
-	type C CancelRun
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ClusterInstance struct {
@@ -214,13 +206,11 @@ type ClusterInstance struct {
 }
 
 func (s *ClusterInstance) UnmarshalJSON(b []byte) error {
-	type C ClusterInstance
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ClusterInstance) MarshalJSON() ([]byte, error) {
-	type C ClusterInstance
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ClusterSpec struct {
@@ -239,13 +229,11 @@ type ClusterSpec struct {
 }
 
 func (s *ClusterSpec) UnmarshalJSON(b []byte) error {
-	type C ClusterSpec
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ClusterSpec) MarshalJSON() ([]byte, error) {
-	type C ClusterSpec
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ConditionTask struct {
@@ -271,13 +259,11 @@ type ConditionTask struct {
 }
 
 func (s *ConditionTask) UnmarshalJSON(b []byte) error {
-	type C ConditionTask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ConditionTask) MarshalJSON() ([]byte, error) {
-	type C ConditionTask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
@@ -334,13 +320,11 @@ type Continuous struct {
 }
 
 func (s *Continuous) UnmarshalJSON(b []byte) error {
-	type C Continuous
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Continuous) MarshalJSON() ([]byte, error) {
-	type C Continuous
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateJob struct {
@@ -438,13 +422,11 @@ type CreateJob struct {
 }
 
 func (s *CreateJob) UnmarshalJSON(b []byte) error {
-	type C CreateJob
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateJob) MarshalJSON() ([]byte, error) {
-	type C CreateJob
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateResponse struct {
@@ -455,13 +437,11 @@ type CreateResponse struct {
 }
 
 func (s *CreateResponse) UnmarshalJSON(b []byte) error {
-	type C CreateResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateResponse) MarshalJSON() ([]byte, error) {
-	type C CreateResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CronSchedule struct {
@@ -482,13 +462,11 @@ type CronSchedule struct {
 }
 
 func (s *CronSchedule) UnmarshalJSON(b []byte) error {
-	type C CronSchedule
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CronSchedule) MarshalJSON() ([]byte, error) {
-	type C CronSchedule
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type DbtOutput struct {
@@ -504,13 +482,11 @@ type DbtOutput struct {
 }
 
 func (s *DbtOutput) UnmarshalJSON(b []byte) error {
-	type C DbtOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DbtOutput) MarshalJSON() ([]byte, error) {
-	type C DbtOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type DbtTask struct {
@@ -544,13 +520,11 @@ type DbtTask struct {
 }
 
 func (s *DbtTask) UnmarshalJSON(b []byte) error {
-	type C DbtTask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DbtTask) MarshalJSON() ([]byte, error) {
-	type C DbtTask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type DeleteJob struct {
@@ -561,13 +535,11 @@ type DeleteJob struct {
 }
 
 func (s *DeleteJob) UnmarshalJSON(b []byte) error {
-	type C DeleteJob
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteJob) MarshalJSON() ([]byte, error) {
-	type C DeleteJob
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type DeleteRun struct {
@@ -578,13 +550,11 @@ type DeleteRun struct {
 }
 
 func (s *DeleteRun) UnmarshalJSON(b []byte) error {
-	type C DeleteRun
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteRun) MarshalJSON() ([]byte, error) {
-	type C DeleteRun
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ExportRunOutput struct {
@@ -595,13 +565,11 @@ type ExportRunOutput struct {
 }
 
 func (s *ExportRunOutput) UnmarshalJSON(b []byte) error {
-	type C ExportRunOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ExportRunOutput) MarshalJSON() ([]byte, error) {
-	type C ExportRunOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Export and retrieve a job run
@@ -615,13 +583,11 @@ type ExportRunRequest struct {
 }
 
 func (s *ExportRunRequest) UnmarshalJSON(b []byte) error {
-	type C ExportRunRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ExportRunRequest) MarshalJSON() ([]byte, error) {
-	type C ExportRunRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type FileArrivalTriggerConfiguration struct {
@@ -642,13 +608,11 @@ type FileArrivalTriggerConfiguration struct {
 }
 
 func (s *FileArrivalTriggerConfiguration) UnmarshalJSON(b []byte) error {
-	type C FileArrivalTriggerConfiguration
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s FileArrivalTriggerConfiguration) MarshalJSON() ([]byte, error) {
-	type C FileArrivalTriggerConfiguration
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Format string
@@ -687,13 +651,11 @@ type GetJobPermissionLevelsRequest struct {
 }
 
 func (s *GetJobPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
-	type C GetJobPermissionLevelsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetJobPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
-	type C GetJobPermissionLevelsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetJobPermissionLevelsResponse struct {
@@ -704,13 +666,11 @@ type GetJobPermissionLevelsResponse struct {
 }
 
 func (s *GetJobPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	type C GetJobPermissionLevelsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetJobPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	type C GetJobPermissionLevelsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get job permissions
@@ -722,13 +682,11 @@ type GetJobPermissionsRequest struct {
 }
 
 func (s *GetJobPermissionsRequest) UnmarshalJSON(b []byte) error {
-	type C GetJobPermissionsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetJobPermissionsRequest) MarshalJSON() ([]byte, error) {
-	type C GetJobPermissionsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a single job
@@ -741,13 +699,11 @@ type GetJobRequest struct {
 }
 
 func (s *GetJobRequest) UnmarshalJSON(b []byte) error {
-	type C GetJobRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetJobRequest) MarshalJSON() ([]byte, error) {
-	type C GetJobRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get the output for a single run
@@ -759,13 +715,11 @@ type GetRunOutputRequest struct {
 }
 
 func (s *GetRunOutputRequest) UnmarshalJSON(b []byte) error {
-	type C GetRunOutputRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetRunOutputRequest) MarshalJSON() ([]byte, error) {
-	type C GetRunOutputRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a single job run
@@ -780,13 +734,11 @@ type GetRunRequest struct {
 }
 
 func (s *GetRunRequest) UnmarshalJSON(b []byte) error {
-	type C GetRunRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetRunRequest) MarshalJSON() ([]byte, error) {
-	type C GetRunRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GitProvider string
@@ -840,13 +792,11 @@ type GitSnapshot struct {
 }
 
 func (s *GitSnapshot) UnmarshalJSON(b []byte) error {
-	type C GitSnapshot
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GitSnapshot) MarshalJSON() ([]byte, error) {
-	type C GitSnapshot
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // An optional specification for a remote Git repository containing the source
@@ -885,13 +835,11 @@ type GitSource struct {
 }
 
 func (s *GitSource) UnmarshalJSON(b []byte) error {
-	type C GitSource
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GitSource) MarshalJSON() ([]byte, error) {
-	type C GitSource
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Job struct {
@@ -921,13 +869,11 @@ type Job struct {
 }
 
 func (s *Job) UnmarshalJSON(b []byte) error {
-	type C Job
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Job) MarshalJSON() ([]byte, error) {
-	type C Job
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type JobAccessControlRequest struct {
@@ -944,13 +890,11 @@ type JobAccessControlRequest struct {
 }
 
 func (s *JobAccessControlRequest) UnmarshalJSON(b []byte) error {
-	type C JobAccessControlRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobAccessControlRequest) MarshalJSON() ([]byte, error) {
-	type C JobAccessControlRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type JobAccessControlResponse struct {
@@ -969,13 +913,11 @@ type JobAccessControlResponse struct {
 }
 
 func (s *JobAccessControlResponse) UnmarshalJSON(b []byte) error {
-	type C JobAccessControlResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobAccessControlResponse) MarshalJSON() ([]byte, error) {
-	type C JobAccessControlResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type JobCluster struct {
@@ -990,13 +932,11 @@ type JobCluster struct {
 }
 
 func (s *JobCluster) UnmarshalJSON(b []byte) error {
-	type C JobCluster
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobCluster) MarshalJSON() ([]byte, error) {
-	type C JobCluster
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type JobCompute struct {
@@ -1011,13 +951,11 @@ type JobCompute struct {
 }
 
 func (s *JobCompute) UnmarshalJSON(b []byte) error {
-	type C JobCompute
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobCompute) MarshalJSON() ([]byte, error) {
-	type C JobCompute
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type JobEmailNotifications struct {
@@ -1050,13 +988,11 @@ type JobEmailNotifications struct {
 }
 
 func (s *JobEmailNotifications) UnmarshalJSON(b []byte) error {
-	type C JobEmailNotifications
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobEmailNotifications) MarshalJSON() ([]byte, error) {
-	type C JobEmailNotifications
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type JobNotificationSettings struct {
@@ -1071,13 +1007,11 @@ type JobNotificationSettings struct {
 }
 
 func (s *JobNotificationSettings) UnmarshalJSON(b []byte) error {
-	type C JobNotificationSettings
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobNotificationSettings) MarshalJSON() ([]byte, error) {
-	type C JobNotificationSettings
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type JobParameter struct {
@@ -1092,13 +1026,11 @@ type JobParameter struct {
 }
 
 func (s *JobParameter) UnmarshalJSON(b []byte) error {
-	type C JobParameter
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobParameter) MarshalJSON() ([]byte, error) {
-	type C JobParameter
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type JobParameterDefinition struct {
@@ -1112,13 +1044,11 @@ type JobParameterDefinition struct {
 }
 
 func (s *JobParameterDefinition) UnmarshalJSON(b []byte) error {
-	type C JobParameterDefinition
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobParameterDefinition) MarshalJSON() ([]byte, error) {
-	type C JobParameterDefinition
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type JobPermission struct {
@@ -1132,13 +1062,11 @@ type JobPermission struct {
 }
 
 func (s *JobPermission) UnmarshalJSON(b []byte) error {
-	type C JobPermission
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobPermission) MarshalJSON() ([]byte, error) {
-	type C JobPermission
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -1184,13 +1112,11 @@ type JobPermissions struct {
 }
 
 func (s *JobPermissions) UnmarshalJSON(b []byte) error {
-	type C JobPermissions
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobPermissions) MarshalJSON() ([]byte, error) {
-	type C JobPermissions
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type JobPermissionsDescription struct {
@@ -1202,13 +1128,11 @@ type JobPermissionsDescription struct {
 }
 
 func (s *JobPermissionsDescription) UnmarshalJSON(b []byte) error {
-	type C JobPermissionsDescription
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobPermissionsDescription) MarshalJSON() ([]byte, error) {
-	type C JobPermissionsDescription
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type JobPermissionsRequest struct {
@@ -1220,13 +1144,11 @@ type JobPermissionsRequest struct {
 }
 
 func (s *JobPermissionsRequest) UnmarshalJSON(b []byte) error {
-	type C JobPermissionsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobPermissionsRequest) MarshalJSON() ([]byte, error) {
-	type C JobPermissionsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Write-only setting, available only in Create/Update/Reset and Submit calls.
@@ -1247,13 +1169,11 @@ type JobRunAs struct {
 }
 
 func (s *JobRunAs) UnmarshalJSON(b []byte) error {
-	type C JobRunAs
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobRunAs) MarshalJSON() ([]byte, error) {
-	type C JobRunAs
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type JobSettings struct {
@@ -1349,13 +1269,11 @@ type JobSettings struct {
 }
 
 func (s *JobSettings) UnmarshalJSON(b []byte) error {
-	type C JobSettings
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobSettings) MarshalJSON() ([]byte, error) {
-	type C JobSettings
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The source of the job specification in the remote repository when the job is
@@ -1372,13 +1290,11 @@ type JobSource struct {
 }
 
 func (s *JobSource) UnmarshalJSON(b []byte) error {
-	type C JobSource
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobSource) MarshalJSON() ([]byte, error) {
-	type C JobSource
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -1483,13 +1399,11 @@ type JobsHealthRule struct {
 }
 
 func (s *JobsHealthRule) UnmarshalJSON(b []byte) error {
-	type C JobsHealthRule
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobsHealthRule) MarshalJSON() ([]byte, error) {
-	type C JobsHealthRule
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // An optional set of health rules that can be defined for this job.
@@ -1500,13 +1414,11 @@ type JobsHealthRules struct {
 }
 
 func (s *JobsHealthRules) UnmarshalJSON(b []byte) error {
-	type C JobsHealthRules
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s JobsHealthRules) MarshalJSON() ([]byte, error) {
-	type C JobsHealthRules
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List jobs
@@ -1532,13 +1444,11 @@ type ListJobsRequest struct {
 }
 
 func (s *ListJobsRequest) UnmarshalJSON(b []byte) error {
-	type C ListJobsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListJobsRequest) MarshalJSON() ([]byte, error) {
-	type C ListJobsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListJobsResponse struct {
@@ -1556,13 +1466,11 @@ type ListJobsResponse struct {
 }
 
 func (s *ListJobsResponse) UnmarshalJSON(b []byte) error {
-	type C ListJobsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListJobsResponse) MarshalJSON() ([]byte, error) {
-	type C ListJobsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List job runs
@@ -1609,13 +1517,11 @@ type ListRunsRequest struct {
 }
 
 func (s *ListRunsRequest) UnmarshalJSON(b []byte) error {
-	type C ListRunsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListRunsRequest) MarshalJSON() ([]byte, error) {
-	type C ListRunsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListRunsResponse struct {
@@ -1633,13 +1539,11 @@ type ListRunsResponse struct {
 }
 
 func (s *ListRunsResponse) UnmarshalJSON(b []byte) error {
-	type C ListRunsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListRunsResponse) MarshalJSON() ([]byte, error) {
-	type C ListRunsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -1691,13 +1595,11 @@ type NotebookOutput struct {
 }
 
 func (s *NotebookOutput) UnmarshalJSON(b []byte) error {
-	type C NotebookOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s NotebookOutput) MarshalJSON() ([]byte, error) {
-	type C NotebookOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type NotebookTask struct {
@@ -1737,13 +1639,11 @@ type NotebookTask struct {
 }
 
 func (s *NotebookTask) UnmarshalJSON(b []byte) error {
-	type C NotebookTask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s NotebookTask) MarshalJSON() ([]byte, error) {
-	type C NotebookTask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ParamPairs map[string]string
@@ -1783,13 +1683,11 @@ type PipelineParams struct {
 }
 
 func (s *PipelineParams) UnmarshalJSON(b []byte) error {
-	type C PipelineParams
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelineParams) MarshalJSON() ([]byte, error) {
-	type C PipelineParams
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PipelineTask struct {
@@ -1802,13 +1700,11 @@ type PipelineTask struct {
 }
 
 func (s *PipelineTask) UnmarshalJSON(b []byte) error {
-	type C PipelineTask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelineTask) MarshalJSON() ([]byte, error) {
-	type C PipelineTask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PythonWheelTask struct {
@@ -1830,13 +1726,11 @@ type PythonWheelTask struct {
 }
 
 func (s *PythonWheelTask) UnmarshalJSON(b []byte) error {
-	type C PythonWheelTask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PythonWheelTask) MarshalJSON() ([]byte, error) {
-	type C PythonWheelTask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RepairHistoryItem struct {
@@ -1860,13 +1754,11 @@ type RepairHistoryItem struct {
 }
 
 func (s *RepairHistoryItem) UnmarshalJSON(b []byte) error {
-	type C RepairHistoryItem
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RepairHistoryItem) MarshalJSON() ([]byte, error) {
-	type C RepairHistoryItem
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The repair history item type. Indicates whether a run is the original run or
@@ -2000,13 +1892,11 @@ type RepairRun struct {
 }
 
 func (s *RepairRun) UnmarshalJSON(b []byte) error {
-	type C RepairRun
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RepairRun) MarshalJSON() ([]byte, error) {
-	type C RepairRun
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RepairRunResponse struct {
@@ -2018,13 +1908,11 @@ type RepairRunResponse struct {
 }
 
 func (s *RepairRunResponse) UnmarshalJSON(b []byte) error {
-	type C RepairRunResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RepairRunResponse) MarshalJSON() ([]byte, error) {
-	type C RepairRunResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ResetJob struct {
@@ -2041,13 +1929,11 @@ type ResetJob struct {
 }
 
 func (s *ResetJob) UnmarshalJSON(b []byte) error {
-	type C ResetJob
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ResetJob) MarshalJSON() ([]byte, error) {
-	type C ResetJob
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ResolvedConditionTaskValues struct {
@@ -2059,13 +1945,11 @@ type ResolvedConditionTaskValues struct {
 }
 
 func (s *ResolvedConditionTaskValues) UnmarshalJSON(b []byte) error {
-	type C ResolvedConditionTaskValues
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ResolvedConditionTaskValues) MarshalJSON() ([]byte, error) {
-	type C ResolvedConditionTaskValues
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ResolvedDbtTaskValues struct {
@@ -2075,13 +1959,11 @@ type ResolvedDbtTaskValues struct {
 }
 
 func (s *ResolvedDbtTaskValues) UnmarshalJSON(b []byte) error {
-	type C ResolvedDbtTaskValues
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ResolvedDbtTaskValues) MarshalJSON() ([]byte, error) {
-	type C ResolvedDbtTaskValues
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ResolvedNotebookTaskValues struct {
@@ -2091,13 +1973,11 @@ type ResolvedNotebookTaskValues struct {
 }
 
 func (s *ResolvedNotebookTaskValues) UnmarshalJSON(b []byte) error {
-	type C ResolvedNotebookTaskValues
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ResolvedNotebookTaskValues) MarshalJSON() ([]byte, error) {
-	type C ResolvedNotebookTaskValues
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ResolvedParamPairValues struct {
@@ -2107,13 +1987,11 @@ type ResolvedParamPairValues struct {
 }
 
 func (s *ResolvedParamPairValues) UnmarshalJSON(b []byte) error {
-	type C ResolvedParamPairValues
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ResolvedParamPairValues) MarshalJSON() ([]byte, error) {
-	type C ResolvedParamPairValues
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ResolvedPythonWheelTaskValues struct {
@@ -2125,13 +2003,11 @@ type ResolvedPythonWheelTaskValues struct {
 }
 
 func (s *ResolvedPythonWheelTaskValues) UnmarshalJSON(b []byte) error {
-	type C ResolvedPythonWheelTaskValues
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ResolvedPythonWheelTaskValues) MarshalJSON() ([]byte, error) {
-	type C ResolvedPythonWheelTaskValues
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ResolvedRunJobTaskValues struct {
@@ -2143,13 +2019,11 @@ type ResolvedRunJobTaskValues struct {
 }
 
 func (s *ResolvedRunJobTaskValues) UnmarshalJSON(b []byte) error {
-	type C ResolvedRunJobTaskValues
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ResolvedRunJobTaskValues) MarshalJSON() ([]byte, error) {
-	type C ResolvedRunJobTaskValues
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ResolvedStringParamsValues struct {
@@ -2159,13 +2033,11 @@ type ResolvedStringParamsValues struct {
 }
 
 func (s *ResolvedStringParamsValues) UnmarshalJSON(b []byte) error {
-	type C ResolvedStringParamsValues
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ResolvedStringParamsValues) MarshalJSON() ([]byte, error) {
-	type C ResolvedStringParamsValues
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ResolvedValues struct {
@@ -2193,13 +2065,11 @@ type ResolvedValues struct {
 }
 
 func (s *ResolvedValues) UnmarshalJSON(b []byte) error {
-	type C ResolvedValues
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ResolvedValues) MarshalJSON() ([]byte, error) {
-	type C ResolvedValues
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Run struct {
@@ -2312,13 +2182,11 @@ type Run struct {
 }
 
 func (s *Run) UnmarshalJSON(b []byte) error {
-	type C Run
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Run) MarshalJSON() ([]byte, error) {
-	type C Run
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RunConditionTask struct {
@@ -2336,13 +2204,11 @@ type RunConditionTask struct {
 }
 
 func (s *RunConditionTask) UnmarshalJSON(b []byte) error {
-	type C RunConditionTask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RunConditionTask) MarshalJSON() ([]byte, error) {
-	type C RunConditionTask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The condtion task operator.
@@ -2431,13 +2297,11 @@ type RunJobOutput struct {
 }
 
 func (s *RunJobOutput) UnmarshalJSON(b []byte) error {
-	type C RunJobOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RunJobOutput) MarshalJSON() ([]byte, error) {
-	type C RunJobOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RunJobTask struct {
@@ -2450,13 +2314,11 @@ type RunJobTask struct {
 }
 
 func (s *RunJobTask) UnmarshalJSON(b []byte) error {
-	type C RunJobTask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RunJobTask) MarshalJSON() ([]byte, error) {
-	type C RunJobTask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -2622,13 +2484,11 @@ type RunNow struct {
 }
 
 func (s *RunNow) UnmarshalJSON(b []byte) error {
-	type C RunNow
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RunNow) MarshalJSON() ([]byte, error) {
-	type C RunNow
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RunNowResponse struct {
@@ -2642,13 +2502,11 @@ type RunNowResponse struct {
 }
 
 func (s *RunNowResponse) UnmarshalJSON(b []byte) error {
-	type C RunNowResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RunNowResponse) MarshalJSON() ([]byte, error) {
-	type C RunNowResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RunOutput struct {
@@ -2693,13 +2551,11 @@ type RunOutput struct {
 }
 
 func (s *RunOutput) UnmarshalJSON(b []byte) error {
-	type C RunOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RunOutput) MarshalJSON() ([]byte, error) {
-	type C RunOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RunParameters struct {
@@ -2789,13 +2645,11 @@ type RunParameters struct {
 }
 
 func (s *RunParameters) UnmarshalJSON(b []byte) error {
-	type C RunParameters
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RunParameters) MarshalJSON() ([]byte, error) {
-	type C RunParameters
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -2869,13 +2723,11 @@ type RunState struct {
 }
 
 func (s *RunState) UnmarshalJSON(b []byte) error {
-	type C RunState
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RunState) MarshalJSON() ([]byte, error) {
-	type C RunState
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RunTask struct {
@@ -2997,13 +2849,11 @@ type RunTask struct {
 }
 
 func (s *RunTask) UnmarshalJSON(b []byte) error {
-	type C RunTask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RunTask) MarshalJSON() ([]byte, error) {
-	type C RunTask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -3089,13 +2939,11 @@ type SparkJarTask struct {
 }
 
 func (s *SparkJarTask) UnmarshalJSON(b []byte) error {
-	type C SparkJarTask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SparkJarTask) MarshalJSON() ([]byte, error) {
-	type C SparkJarTask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SparkPythonTask struct {
@@ -3127,13 +2975,11 @@ type SparkPythonTask struct {
 }
 
 func (s *SparkPythonTask) UnmarshalJSON(b []byte) error {
-	type C SparkPythonTask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SparkPythonTask) MarshalJSON() ([]byte, error) {
-	type C SparkPythonTask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SparkSubmitTask struct {
@@ -3149,13 +2995,11 @@ type SparkSubmitTask struct {
 }
 
 func (s *SparkSubmitTask) UnmarshalJSON(b []byte) error {
-	type C SparkSubmitTask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SparkSubmitTask) MarshalJSON() ([]byte, error) {
-	type C SparkSubmitTask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SqlAlertOutput struct {
@@ -3179,13 +3023,11 @@ type SqlAlertOutput struct {
 }
 
 func (s *SqlAlertOutput) UnmarshalJSON(b []byte) error {
-	type C SqlAlertOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SqlAlertOutput) MarshalJSON() ([]byte, error) {
-	type C SqlAlertOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The state of the SQL alert.
@@ -3232,13 +3074,11 @@ type SqlDashboardOutput struct {
 }
 
 func (s *SqlDashboardOutput) UnmarshalJSON(b []byte) error {
-	type C SqlDashboardOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SqlDashboardOutput) MarshalJSON() ([]byte, error) {
-	type C SqlDashboardOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SqlDashboardWidgetOutput struct {
@@ -3261,13 +3101,11 @@ type SqlDashboardWidgetOutput struct {
 }
 
 func (s *SqlDashboardWidgetOutput) UnmarshalJSON(b []byte) error {
-	type C SqlDashboardWidgetOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SqlDashboardWidgetOutput) MarshalJSON() ([]byte, error) {
-	type C SqlDashboardWidgetOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The execution status of the SQL widget.
@@ -3316,13 +3154,11 @@ type SqlOutput struct {
 }
 
 func (s *SqlOutput) UnmarshalJSON(b []byte) error {
-	type C SqlOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SqlOutput) MarshalJSON() ([]byte, error) {
-	type C SqlOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SqlOutputError struct {
@@ -3333,13 +3169,11 @@ type SqlOutputError struct {
 }
 
 func (s *SqlOutputError) UnmarshalJSON(b []byte) error {
-	type C SqlOutputError
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SqlOutputError) MarshalJSON() ([]byte, error) {
-	type C SqlOutputError
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SqlQueryOutput struct {
@@ -3357,13 +3191,11 @@ type SqlQueryOutput struct {
 }
 
 func (s *SqlQueryOutput) UnmarshalJSON(b []byte) error {
-	type C SqlQueryOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SqlQueryOutput) MarshalJSON() ([]byte, error) {
-	type C SqlQueryOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SqlStatementOutput struct {
@@ -3374,13 +3206,11 @@ type SqlStatementOutput struct {
 }
 
 func (s *SqlStatementOutput) UnmarshalJSON(b []byte) error {
-	type C SqlStatementOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SqlStatementOutput) MarshalJSON() ([]byte, error) {
-	type C SqlStatementOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SqlTask struct {
@@ -3405,13 +3235,11 @@ type SqlTask struct {
 }
 
 func (s *SqlTask) UnmarshalJSON(b []byte) error {
-	type C SqlTask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SqlTask) MarshalJSON() ([]byte, error) {
-	type C SqlTask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SqlTaskAlert struct {
@@ -3426,13 +3254,11 @@ type SqlTaskAlert struct {
 }
 
 func (s *SqlTaskAlert) UnmarshalJSON(b []byte) error {
-	type C SqlTaskAlert
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SqlTaskAlert) MarshalJSON() ([]byte, error) {
-	type C SqlTaskAlert
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SqlTaskDashboard struct {
@@ -3450,13 +3276,11 @@ type SqlTaskDashboard struct {
 }
 
 func (s *SqlTaskDashboard) UnmarshalJSON(b []byte) error {
-	type C SqlTaskDashboard
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SqlTaskDashboard) MarshalJSON() ([]byte, error) {
-	type C SqlTaskDashboard
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SqlTaskFile struct {
@@ -3467,13 +3291,11 @@ type SqlTaskFile struct {
 }
 
 func (s *SqlTaskFile) UnmarshalJSON(b []byte) error {
-	type C SqlTaskFile
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SqlTaskFile) MarshalJSON() ([]byte, error) {
-	type C SqlTaskFile
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SqlTaskQuery struct {
@@ -3484,13 +3306,11 @@ type SqlTaskQuery struct {
 }
 
 func (s *SqlTaskQuery) UnmarshalJSON(b []byte) error {
-	type C SqlTaskQuery
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SqlTaskQuery) MarshalJSON() ([]byte, error) {
-	type C SqlTaskQuery
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SqlTaskSubscription struct {
@@ -3508,13 +3328,11 @@ type SqlTaskSubscription struct {
 }
 
 func (s *SqlTaskSubscription) UnmarshalJSON(b []byte) error {
-	type C SqlTaskSubscription
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SqlTaskSubscription) MarshalJSON() ([]byte, error) {
-	type C SqlTaskSubscription
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SubmitRun struct {
@@ -3570,13 +3388,11 @@ type SubmitRun struct {
 }
 
 func (s *SubmitRun) UnmarshalJSON(b []byte) error {
-	type C SubmitRun
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SubmitRun) MarshalJSON() ([]byte, error) {
-	type C SubmitRun
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SubmitRunResponse struct {
@@ -3587,13 +3403,11 @@ type SubmitRunResponse struct {
 }
 
 func (s *SubmitRunResponse) UnmarshalJSON(b []byte) error {
-	type C SubmitRunResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SubmitRunResponse) MarshalJSON() ([]byte, error) {
-	type C SubmitRunResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SubmitTask struct {
@@ -3653,13 +3467,11 @@ type SubmitTask struct {
 }
 
 func (s *SubmitTask) UnmarshalJSON(b []byte) error {
-	type C SubmitTask
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SubmitTask) MarshalJSON() ([]byte, error) {
-	type C SubmitTask
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Task struct {
@@ -3759,13 +3571,11 @@ type Task struct {
 }
 
 func (s *Task) UnmarshalJSON(b []byte) error {
-	type C Task
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Task) MarshalJSON() ([]byte, error) {
-	type C Task
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TaskDependency struct {
@@ -3779,13 +3589,11 @@ type TaskDependency struct {
 }
 
 func (s *TaskDependency) UnmarshalJSON(b []byte) error {
-	type C TaskDependency
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TaskDependency) MarshalJSON() ([]byte, error) {
-	type C TaskDependency
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TaskEmailNotifications struct {
@@ -3815,13 +3623,11 @@ type TaskEmailNotifications struct {
 }
 
 func (s *TaskEmailNotifications) UnmarshalJSON(b []byte) error {
-	type C TaskEmailNotifications
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TaskEmailNotifications) MarshalJSON() ([]byte, error) {
-	type C TaskEmailNotifications
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TaskNotificationSettings struct {
@@ -3840,13 +3646,11 @@ type TaskNotificationSettings struct {
 }
 
 func (s *TaskNotificationSettings) UnmarshalJSON(b []byte) error {
-	type C TaskNotificationSettings
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TaskNotificationSettings) MarshalJSON() ([]byte, error) {
-	type C TaskNotificationSettings
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TriggerEvaluation struct {
@@ -3863,13 +3667,11 @@ type TriggerEvaluation struct {
 }
 
 func (s *TriggerEvaluation) UnmarshalJSON(b []byte) error {
-	type C TriggerEvaluation
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TriggerEvaluation) MarshalJSON() ([]byte, error) {
-	type C TriggerEvaluation
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TriggerHistory struct {
@@ -3884,13 +3686,11 @@ type TriggerHistory struct {
 }
 
 func (s *TriggerHistory) UnmarshalJSON(b []byte) error {
-	type C TriggerHistory
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TriggerHistory) MarshalJSON() ([]byte, error) {
-	type C TriggerHistory
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TriggerInfo struct {
@@ -3901,13 +3701,11 @@ type TriggerInfo struct {
 }
 
 func (s *TriggerInfo) UnmarshalJSON(b []byte) error {
-	type C TriggerInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TriggerInfo) MarshalJSON() ([]byte, error) {
-	type C TriggerInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TriggerSettings struct {
@@ -3920,13 +3718,11 @@ type TriggerSettings struct {
 }
 
 func (s *TriggerSettings) UnmarshalJSON(b []byte) error {
-	type C TriggerSettings
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TriggerSettings) MarshalJSON() ([]byte, error) {
-	type C TriggerSettings
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -3994,13 +3790,11 @@ type UpdateJob struct {
 }
 
 func (s *UpdateJob) UnmarshalJSON(b []byte) error {
-	type C UpdateJob
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateJob) MarshalJSON() ([]byte, error) {
-	type C UpdateJob
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ViewItem struct {
@@ -4017,13 +3811,11 @@ type ViewItem struct {
 }
 
 func (s *ViewItem) UnmarshalJSON(b []byte) error {
-	type C ViewItem
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ViewItem) MarshalJSON() ([]byte, error) {
-	type C ViewItem
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -4096,13 +3888,11 @@ type Webhook struct {
 }
 
 func (s *Webhook) UnmarshalJSON(b []byte) error {
-	type C Webhook
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Webhook) MarshalJSON() ([]byte, error) {
-	type C Webhook
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WebhookNotifications struct {
@@ -4126,13 +3916,11 @@ type WebhookNotifications struct {
 }
 
 func (s *WebhookNotifications) UnmarshalJSON(b []byte) error {
-	type C WebhookNotifications
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WebhookNotifications) MarshalJSON() ([]byte, error) {
-	type C WebhookNotifications
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WebhookNotificationsOnDurationWarningThresholdExceededItem struct {
@@ -4142,11 +3930,9 @@ type WebhookNotificationsOnDurationWarningThresholdExceededItem struct {
 }
 
 func (s *WebhookNotificationsOnDurationWarningThresholdExceededItem) UnmarshalJSON(b []byte) error {
-	type C WebhookNotificationsOnDurationWarningThresholdExceededItem
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WebhookNotificationsOnDurationWarningThresholdExceededItem) MarshalJSON() ([]byte, error) {
-	type C WebhookNotificationsOnDurationWarningThresholdExceededItem
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }

@@ -60,13 +60,11 @@ type CreatePipeline struct {
 }
 
 func (s *CreatePipeline) UnmarshalJSON(b []byte) error {
-	type C CreatePipeline
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreatePipeline) MarshalJSON() ([]byte, error) {
-	type C CreatePipeline
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreatePipelineResponse struct {
@@ -80,13 +78,11 @@ type CreatePipelineResponse struct {
 }
 
 func (s *CreatePipelineResponse) UnmarshalJSON(b []byte) error {
-	type C CreatePipelineResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreatePipelineResponse) MarshalJSON() ([]byte, error) {
-	type C CreatePipelineResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CronTrigger struct {
@@ -98,13 +94,11 @@ type CronTrigger struct {
 }
 
 func (s *CronTrigger) UnmarshalJSON(b []byte) error {
-	type C CronTrigger
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CronTrigger) MarshalJSON() ([]byte, error) {
-	type C CronTrigger
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type DataPlaneId struct {
@@ -117,13 +111,11 @@ type DataPlaneId struct {
 }
 
 func (s *DataPlaneId) UnmarshalJSON(b []byte) error {
-	type C DataPlaneId
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DataPlaneId) MarshalJSON() ([]byte, error) {
-	type C DataPlaneId
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a pipeline
@@ -134,13 +126,11 @@ type DeletePipelineRequest struct {
 }
 
 func (s *DeletePipelineRequest) UnmarshalJSON(b []byte) error {
-	type C DeletePipelineRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeletePipelineRequest) MarshalJSON() ([]byte, error) {
-	type C DeletePipelineRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type EditPipeline struct {
@@ -196,13 +186,11 @@ type EditPipeline struct {
 }
 
 func (s *EditPipeline) UnmarshalJSON(b []byte) error {
-	type C EditPipeline
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EditPipeline) MarshalJSON() ([]byte, error) {
-	type C EditPipeline
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ErrorDetail struct {
@@ -215,13 +203,11 @@ type ErrorDetail struct {
 }
 
 func (s *ErrorDetail) UnmarshalJSON(b []byte) error {
-	type C ErrorDetail
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ErrorDetail) MarshalJSON() ([]byte, error) {
-	type C ErrorDetail
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The severity level of the event.
@@ -264,13 +250,11 @@ type FileLibrary struct {
 }
 
 func (s *FileLibrary) UnmarshalJSON(b []byte) error {
-	type C FileLibrary
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s FileLibrary) MarshalJSON() ([]byte, error) {
-	type C FileLibrary
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Filters struct {
@@ -283,13 +267,11 @@ type Filters struct {
 }
 
 func (s *Filters) UnmarshalJSON(b []byte) error {
-	type C Filters
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Filters) MarshalJSON() ([]byte, error) {
-	type C Filters
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get pipeline permission levels
@@ -301,13 +283,11 @@ type GetPipelinePermissionLevelsRequest struct {
 }
 
 func (s *GetPipelinePermissionLevelsRequest) UnmarshalJSON(b []byte) error {
-	type C GetPipelinePermissionLevelsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetPipelinePermissionLevelsRequest) MarshalJSON() ([]byte, error) {
-	type C GetPipelinePermissionLevelsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetPipelinePermissionLevelsResponse struct {
@@ -318,13 +298,11 @@ type GetPipelinePermissionLevelsResponse struct {
 }
 
 func (s *GetPipelinePermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	type C GetPipelinePermissionLevelsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetPipelinePermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	type C GetPipelinePermissionLevelsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get pipeline permissions
@@ -336,13 +314,11 @@ type GetPipelinePermissionsRequest struct {
 }
 
 func (s *GetPipelinePermissionsRequest) UnmarshalJSON(b []byte) error {
-	type C GetPipelinePermissionsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetPipelinePermissionsRequest) MarshalJSON() ([]byte, error) {
-	type C GetPipelinePermissionsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a pipeline
@@ -353,13 +329,11 @@ type GetPipelineRequest struct {
 }
 
 func (s *GetPipelineRequest) UnmarshalJSON(b []byte) error {
-	type C GetPipelineRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetPipelineRequest) MarshalJSON() ([]byte, error) {
-	type C GetPipelineRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetPipelineResponse struct {
@@ -392,13 +366,11 @@ type GetPipelineResponse struct {
 }
 
 func (s *GetPipelineResponse) UnmarshalJSON(b []byte) error {
-	type C GetPipelineResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetPipelineResponse) MarshalJSON() ([]byte, error) {
-	type C GetPipelineResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The health of a pipeline.
@@ -440,13 +412,11 @@ type GetUpdateRequest struct {
 }
 
 func (s *GetUpdateRequest) UnmarshalJSON(b []byte) error {
-	type C GetUpdateRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetUpdateRequest) MarshalJSON() ([]byte, error) {
-	type C GetUpdateRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetUpdateResponse struct {
@@ -457,13 +427,11 @@ type GetUpdateResponse struct {
 }
 
 func (s *GetUpdateResponse) UnmarshalJSON(b []byte) error {
-	type C GetUpdateResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetUpdateResponse) MarshalJSON() ([]byte, error) {
-	type C GetUpdateResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List pipeline events
@@ -496,13 +464,11 @@ type ListPipelineEventsRequest struct {
 }
 
 func (s *ListPipelineEventsRequest) UnmarshalJSON(b []byte) error {
-	type C ListPipelineEventsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListPipelineEventsRequest) MarshalJSON() ([]byte, error) {
-	type C ListPipelineEventsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListPipelineEventsResponse struct {
@@ -517,13 +483,11 @@ type ListPipelineEventsResponse struct {
 }
 
 func (s *ListPipelineEventsResponse) UnmarshalJSON(b []byte) error {
-	type C ListPipelineEventsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListPipelineEventsResponse) MarshalJSON() ([]byte, error) {
-	type C ListPipelineEventsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List pipelines
@@ -554,13 +518,11 @@ type ListPipelinesRequest struct {
 }
 
 func (s *ListPipelinesRequest) UnmarshalJSON(b []byte) error {
-	type C ListPipelinesRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListPipelinesRequest) MarshalJSON() ([]byte, error) {
-	type C ListPipelinesRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListPipelinesResponse struct {
@@ -573,13 +535,11 @@ type ListPipelinesResponse struct {
 }
 
 func (s *ListPipelinesResponse) UnmarshalJSON(b []byte) error {
-	type C ListPipelinesResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListPipelinesResponse) MarshalJSON() ([]byte, error) {
-	type C ListPipelinesResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List pipeline updates
@@ -597,13 +557,11 @@ type ListUpdatesRequest struct {
 }
 
 func (s *ListUpdatesRequest) UnmarshalJSON(b []byte) error {
-	type C ListUpdatesRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListUpdatesRequest) MarshalJSON() ([]byte, error) {
-	type C ListUpdatesRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListUpdatesResponse struct {
@@ -620,13 +578,11 @@ type ListUpdatesResponse struct {
 }
 
 func (s *ListUpdatesResponse) UnmarshalJSON(b []byte) error {
-	type C ListUpdatesResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListUpdatesResponse) MarshalJSON() ([]byte, error) {
-	type C ListUpdatesResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Maturity level for EventDetails.
@@ -667,13 +623,11 @@ type NotebookLibrary struct {
 }
 
 func (s *NotebookLibrary) UnmarshalJSON(b []byte) error {
-	type C NotebookLibrary
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s NotebookLibrary) MarshalJSON() ([]byte, error) {
-	type C NotebookLibrary
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Origin struct {
@@ -717,13 +671,11 @@ type Origin struct {
 }
 
 func (s *Origin) UnmarshalJSON(b []byte) error {
-	type C Origin
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Origin) MarshalJSON() ([]byte, error) {
-	type C Origin
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PipelineAccessControlRequest struct {
@@ -740,13 +692,11 @@ type PipelineAccessControlRequest struct {
 }
 
 func (s *PipelineAccessControlRequest) UnmarshalJSON(b []byte) error {
-	type C PipelineAccessControlRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelineAccessControlRequest) MarshalJSON() ([]byte, error) {
-	type C PipelineAccessControlRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PipelineAccessControlResponse struct {
@@ -765,13 +715,11 @@ type PipelineAccessControlResponse struct {
 }
 
 func (s *PipelineAccessControlResponse) UnmarshalJSON(b []byte) error {
-	type C PipelineAccessControlResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelineAccessControlResponse) MarshalJSON() ([]byte, error) {
-	type C PipelineAccessControlResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PipelineCluster struct {
@@ -867,13 +815,11 @@ type PipelineCluster struct {
 }
 
 func (s *PipelineCluster) UnmarshalJSON(b []byte) error {
-	type C PipelineCluster
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelineCluster) MarshalJSON() ([]byte, error) {
-	type C PipelineCluster
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PipelineEvent struct {
@@ -900,13 +846,11 @@ type PipelineEvent struct {
 }
 
 func (s *PipelineEvent) UnmarshalJSON(b []byte) error {
-	type C PipelineEvent
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelineEvent) MarshalJSON() ([]byte, error) {
-	type C PipelineEvent
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PipelineLibrary struct {
@@ -925,13 +869,11 @@ type PipelineLibrary struct {
 }
 
 func (s *PipelineLibrary) UnmarshalJSON(b []byte) error {
-	type C PipelineLibrary
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelineLibrary) MarshalJSON() ([]byte, error) {
-	type C PipelineLibrary
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PipelinePermission struct {
@@ -945,13 +887,11 @@ type PipelinePermission struct {
 }
 
 func (s *PipelinePermission) UnmarshalJSON(b []byte) error {
-	type C PipelinePermission
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelinePermission) MarshalJSON() ([]byte, error) {
-	type C PipelinePermission
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -997,13 +937,11 @@ type PipelinePermissions struct {
 }
 
 func (s *PipelinePermissions) UnmarshalJSON(b []byte) error {
-	type C PipelinePermissions
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelinePermissions) MarshalJSON() ([]byte, error) {
-	type C PipelinePermissions
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PipelinePermissionsDescription struct {
@@ -1015,13 +953,11 @@ type PipelinePermissionsDescription struct {
 }
 
 func (s *PipelinePermissionsDescription) UnmarshalJSON(b []byte) error {
-	type C PipelinePermissionsDescription
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelinePermissionsDescription) MarshalJSON() ([]byte, error) {
-	type C PipelinePermissionsDescription
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PipelinePermissionsRequest struct {
@@ -1033,13 +969,11 @@ type PipelinePermissionsRequest struct {
 }
 
 func (s *PipelinePermissionsRequest) UnmarshalJSON(b []byte) error {
-	type C PipelinePermissionsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelinePermissionsRequest) MarshalJSON() ([]byte, error) {
-	type C PipelinePermissionsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PipelineSpec struct {
@@ -1086,13 +1020,11 @@ type PipelineSpec struct {
 }
 
 func (s *PipelineSpec) UnmarshalJSON(b []byte) error {
-	type C PipelineSpec
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelineSpec) MarshalJSON() ([]byte, error) {
-	type C PipelineSpec
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The pipeline state.
@@ -1159,13 +1091,11 @@ type PipelineStateInfo struct {
 }
 
 func (s *PipelineStateInfo) UnmarshalJSON(b []byte) error {
-	type C PipelineStateInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelineStateInfo) MarshalJSON() ([]byte, error) {
-	type C PipelineStateInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PipelineTrigger struct {
@@ -1177,13 +1107,11 @@ type PipelineTrigger struct {
 }
 
 func (s *PipelineTrigger) UnmarshalJSON(b []byte) error {
-	type C PipelineTrigger
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PipelineTrigger) MarshalJSON() ([]byte, error) {
-	type C PipelineTrigger
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Reset a pipeline
@@ -1194,13 +1122,11 @@ type ResetRequest struct {
 }
 
 func (s *ResetRequest) UnmarshalJSON(b []byte) error {
-	type C ResetRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ResetRequest) MarshalJSON() ([]byte, error) {
-	type C ResetRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Sequencing struct {
@@ -1213,13 +1139,11 @@ type Sequencing struct {
 }
 
 func (s *Sequencing) UnmarshalJSON(b []byte) error {
-	type C Sequencing
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Sequencing) MarshalJSON() ([]byte, error) {
-	type C Sequencing
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SerializedException struct {
@@ -1234,13 +1158,11 @@ type SerializedException struct {
 }
 
 func (s *SerializedException) UnmarshalJSON(b []byte) error {
-	type C SerializedException
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SerializedException) MarshalJSON() ([]byte, error) {
-	type C SerializedException
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type StackFrame struct {
@@ -1257,13 +1179,11 @@ type StackFrame struct {
 }
 
 func (s *StackFrame) UnmarshalJSON(b []byte) error {
-	type C StackFrame
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s StackFrame) MarshalJSON() ([]byte, error) {
-	type C StackFrame
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type StartUpdate struct {
@@ -1287,13 +1207,11 @@ type StartUpdate struct {
 }
 
 func (s *StartUpdate) UnmarshalJSON(b []byte) error {
-	type C StartUpdate
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s StartUpdate) MarshalJSON() ([]byte, error) {
-	type C StartUpdate
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type StartUpdateCause string
@@ -1338,13 +1256,11 @@ type StartUpdateResponse struct {
 }
 
 func (s *StartUpdateResponse) UnmarshalJSON(b []byte) error {
-	type C StartUpdateResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s StartUpdateResponse) MarshalJSON() ([]byte, error) {
-	type C StartUpdateResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Stop a pipeline
@@ -1355,13 +1271,11 @@ type StopRequest struct {
 }
 
 func (s *StopRequest) UnmarshalJSON(b []byte) error {
-	type C StopRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s StopRequest) MarshalJSON() ([]byte, error) {
-	type C StopRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateInfo struct {
@@ -1397,13 +1311,11 @@ type UpdateInfo struct {
 }
 
 func (s *UpdateInfo) UnmarshalJSON(b []byte) error {
-	type C UpdateInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateInfo) MarshalJSON() ([]byte, error) {
-	type C UpdateInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // What triggered this update.
@@ -1499,13 +1411,11 @@ type UpdateStateInfo struct {
 }
 
 func (s *UpdateStateInfo) UnmarshalJSON(b []byte) error {
-	type C UpdateStateInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateStateInfo) MarshalJSON() ([]byte, error) {
-	type C UpdateStateInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateStateInfoState string

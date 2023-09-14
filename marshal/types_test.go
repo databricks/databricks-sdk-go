@@ -52,23 +52,19 @@ type structFS struct {
 }
 
 func (s *structFS) UnmarshalJSON(b []byte) error {
-	type C structFS
-	return Unmarshal(b, (*C)(s))
+	return Unmarshal(b, s)
 }
 
 func (s structFS) MarshalJSON() ([]byte, error) {
-	type C structFS
-	return Marshal((C)(s))
+	return Marshal(s)
 }
 
 func (s *customStruct) UnmarshalJSON(b []byte) error {
-	type C customStruct
-	return Unmarshal(b, (*C)(s))
+	return Unmarshal(b, s)
 }
 
 func (s customStruct) MarshalJSON() ([]byte, error) {
-	type C customStruct
-	return Marshal((C)(s))
+	return Marshal(s)
 }
 
 func Ptr[T any](v T) *T {

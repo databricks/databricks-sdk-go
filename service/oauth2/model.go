@@ -25,13 +25,11 @@ type CreateCustomAppIntegration struct {
 }
 
 func (s *CreateCustomAppIntegration) UnmarshalJSON(b []byte) error {
-	type C CreateCustomAppIntegration
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateCustomAppIntegration) MarshalJSON() ([]byte, error) {
-	type C CreateCustomAppIntegration
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateCustomAppIntegrationOutput struct {
@@ -47,13 +45,11 @@ type CreateCustomAppIntegrationOutput struct {
 }
 
 func (s *CreateCustomAppIntegrationOutput) UnmarshalJSON(b []byte) error {
-	type C CreateCustomAppIntegrationOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateCustomAppIntegrationOutput) MarshalJSON() ([]byte, error) {
-	type C CreateCustomAppIntegrationOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateOAuthEnrollment struct {
@@ -64,13 +60,11 @@ type CreateOAuthEnrollment struct {
 }
 
 func (s *CreateOAuthEnrollment) UnmarshalJSON(b []byte) error {
-	type C CreateOAuthEnrollment
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateOAuthEnrollment) MarshalJSON() ([]byte, error) {
-	type C CreateOAuthEnrollment
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreatePublishedAppIntegration struct {
@@ -84,13 +78,11 @@ type CreatePublishedAppIntegration struct {
 }
 
 func (s *CreatePublishedAppIntegration) UnmarshalJSON(b []byte) error {
-	type C CreatePublishedAppIntegration
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreatePublishedAppIntegration) MarshalJSON() ([]byte, error) {
-	type C CreatePublishedAppIntegration
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreatePublishedAppIntegrationOutput struct {
@@ -101,13 +93,11 @@ type CreatePublishedAppIntegrationOutput struct {
 }
 
 func (s *CreatePublishedAppIntegrationOutput) UnmarshalJSON(b []byte) error {
-	type C CreatePublishedAppIntegrationOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreatePublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
-	type C CreatePublishedAppIntegrationOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Create service principal secret
@@ -119,13 +109,11 @@ type CreateServicePrincipalSecretRequest struct {
 }
 
 func (s *CreateServicePrincipalSecretRequest) UnmarshalJSON(b []byte) error {
-	type C CreateServicePrincipalSecretRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateServicePrincipalSecretRequest) MarshalJSON() ([]byte, error) {
-	type C CreateServicePrincipalSecretRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateServicePrincipalSecretResponse struct {
@@ -146,13 +134,11 @@ type CreateServicePrincipalSecretResponse struct {
 }
 
 func (s *CreateServicePrincipalSecretResponse) UnmarshalJSON(b []byte) error {
-	type C CreateServicePrincipalSecretResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateServicePrincipalSecretResponse) MarshalJSON() ([]byte, error) {
-	type C CreateServicePrincipalSecretResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete Custom OAuth App Integration
@@ -164,13 +150,11 @@ type DeleteCustomAppIntegrationRequest struct {
 }
 
 func (s *DeleteCustomAppIntegrationRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteCustomAppIntegrationRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteCustomAppIntegrationRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteCustomAppIntegrationRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete Published OAuth App Integration
@@ -182,13 +166,11 @@ type DeletePublishedAppIntegrationRequest struct {
 }
 
 func (s *DeletePublishedAppIntegrationRequest) UnmarshalJSON(b []byte) error {
-	type C DeletePublishedAppIntegrationRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeletePublishedAppIntegrationRequest) MarshalJSON() ([]byte, error) {
-	type C DeletePublishedAppIntegrationRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete service principal secret
@@ -202,13 +184,11 @@ type DeleteServicePrincipalSecretRequest struct {
 }
 
 func (s *DeleteServicePrincipalSecretRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteServicePrincipalSecretRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteServicePrincipalSecretRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteServicePrincipalSecretRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetCustomAppIntegrationOutput struct {
@@ -229,13 +209,11 @@ type GetCustomAppIntegrationOutput struct {
 }
 
 func (s *GetCustomAppIntegrationOutput) UnmarshalJSON(b []byte) error {
-	type C GetCustomAppIntegrationOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetCustomAppIntegrationOutput) MarshalJSON() ([]byte, error) {
-	type C GetCustomAppIntegrationOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get OAuth Custom App Integration
@@ -247,13 +225,11 @@ type GetCustomAppIntegrationRequest struct {
 }
 
 func (s *GetCustomAppIntegrationRequest) UnmarshalJSON(b []byte) error {
-	type C GetCustomAppIntegrationRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetCustomAppIntegrationRequest) MarshalJSON() ([]byte, error) {
-	type C GetCustomAppIntegrationRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetCustomAppIntegrationsOutput struct {
@@ -264,13 +240,11 @@ type GetCustomAppIntegrationsOutput struct {
 }
 
 func (s *GetCustomAppIntegrationsOutput) UnmarshalJSON(b []byte) error {
-	type C GetCustomAppIntegrationsOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetCustomAppIntegrationsOutput) MarshalJSON() ([]byte, error) {
-	type C GetCustomAppIntegrationsOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetPublishedAppIntegrationOutput struct {
@@ -287,13 +261,11 @@ type GetPublishedAppIntegrationOutput struct {
 }
 
 func (s *GetPublishedAppIntegrationOutput) UnmarshalJSON(b []byte) error {
-	type C GetPublishedAppIntegrationOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetPublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
-	type C GetPublishedAppIntegrationOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get OAuth Published App Integration
@@ -305,13 +277,11 @@ type GetPublishedAppIntegrationRequest struct {
 }
 
 func (s *GetPublishedAppIntegrationRequest) UnmarshalJSON(b []byte) error {
-	type C GetPublishedAppIntegrationRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetPublishedAppIntegrationRequest) MarshalJSON() ([]byte, error) {
-	type C GetPublishedAppIntegrationRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetPublishedAppIntegrationsOutput struct {
@@ -322,13 +292,11 @@ type GetPublishedAppIntegrationsOutput struct {
 }
 
 func (s *GetPublishedAppIntegrationsOutput) UnmarshalJSON(b []byte) error {
-	type C GetPublishedAppIntegrationsOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetPublishedAppIntegrationsOutput) MarshalJSON() ([]byte, error) {
-	type C GetPublishedAppIntegrationsOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List service principal secrets
@@ -340,13 +308,11 @@ type ListServicePrincipalSecretsRequest struct {
 }
 
 func (s *ListServicePrincipalSecretsRequest) UnmarshalJSON(b []byte) error {
-	type C ListServicePrincipalSecretsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListServicePrincipalSecretsRequest) MarshalJSON() ([]byte, error) {
-	type C ListServicePrincipalSecretsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListServicePrincipalSecretsResponse struct {
@@ -357,13 +323,11 @@ type ListServicePrincipalSecretsResponse struct {
 }
 
 func (s *ListServicePrincipalSecretsResponse) UnmarshalJSON(b []byte) error {
-	type C ListServicePrincipalSecretsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListServicePrincipalSecretsResponse) MarshalJSON() ([]byte, error) {
-	type C ListServicePrincipalSecretsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type OAuthEnrollmentStatus struct {
@@ -374,13 +338,11 @@ type OAuthEnrollmentStatus struct {
 }
 
 func (s *OAuthEnrollmentStatus) UnmarshalJSON(b []byte) error {
-	type C OAuthEnrollmentStatus
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s OAuthEnrollmentStatus) MarshalJSON() ([]byte, error) {
-	type C OAuthEnrollmentStatus
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type SecretInfo struct {
@@ -399,13 +361,11 @@ type SecretInfo struct {
 }
 
 func (s *SecretInfo) UnmarshalJSON(b []byte) error {
-	type C SecretInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s SecretInfo) MarshalJSON() ([]byte, error) {
-	type C SecretInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TokenAccessPolicy struct {
@@ -418,13 +378,11 @@ type TokenAccessPolicy struct {
 }
 
 func (s *TokenAccessPolicy) UnmarshalJSON(b []byte) error {
-	type C TokenAccessPolicy
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TokenAccessPolicy) MarshalJSON() ([]byte, error) {
-	type C TokenAccessPolicy
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateCustomAppIntegration struct {
@@ -440,13 +398,11 @@ type UpdateCustomAppIntegration struct {
 }
 
 func (s *UpdateCustomAppIntegration) UnmarshalJSON(b []byte) error {
-	type C UpdateCustomAppIntegration
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateCustomAppIntegration) MarshalJSON() ([]byte, error) {
-	type C UpdateCustomAppIntegration
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdatePublishedAppIntegration struct {
@@ -459,11 +415,9 @@ type UpdatePublishedAppIntegration struct {
 }
 
 func (s *UpdatePublishedAppIntegration) UnmarshalJSON(b []byte) error {
-	type C UpdatePublishedAppIntegration
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdatePublishedAppIntegration) MarshalJSON() ([]byte, error) {
-	type C UpdatePublishedAppIntegration
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }

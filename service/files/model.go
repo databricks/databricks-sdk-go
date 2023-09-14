@@ -21,13 +21,11 @@ type AddBlock struct {
 }
 
 func (s *AddBlock) UnmarshalJSON(b []byte) error {
-	type C AddBlock
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AddBlock) MarshalJSON() ([]byte, error) {
-	type C AddBlock
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Close struct {
@@ -38,13 +36,11 @@ type Close struct {
 }
 
 func (s *Close) UnmarshalJSON(b []byte) error {
-	type C Close
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Close) MarshalJSON() ([]byte, error) {
-	type C Close
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Create struct {
@@ -57,13 +53,11 @@ type Create struct {
 }
 
 func (s *Create) UnmarshalJSON(b []byte) error {
-	type C Create
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Create) MarshalJSON() ([]byte, error) {
-	type C Create
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateResponse struct {
@@ -75,13 +69,11 @@ type CreateResponse struct {
 }
 
 func (s *CreateResponse) UnmarshalJSON(b []byte) error {
-	type C CreateResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateResponse) MarshalJSON() ([]byte, error) {
-	type C CreateResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Delete struct {
@@ -96,13 +88,11 @@ type Delete struct {
 }
 
 func (s *Delete) UnmarshalJSON(b []byte) error {
-	type C Delete
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Delete) MarshalJSON() ([]byte, error) {
-	type C Delete
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a file or directory
@@ -114,13 +104,11 @@ type DeleteFileRequest struct {
 }
 
 func (s *DeleteFileRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteFileRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteFileRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteFileRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Download a file
@@ -132,13 +120,11 @@ type DownloadRequest struct {
 }
 
 func (s *DownloadRequest) UnmarshalJSON(b []byte) error {
-	type C DownloadRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DownloadRequest) MarshalJSON() ([]byte, error) {
-	type C DownloadRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type DownloadResponse struct {
@@ -148,13 +134,11 @@ type DownloadResponse struct {
 }
 
 func (s *DownloadResponse) UnmarshalJSON(b []byte) error {
-	type C DownloadResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DownloadResponse) MarshalJSON() ([]byte, error) {
-	type C DownloadResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type FileInfo struct {
@@ -171,13 +155,11 @@ type FileInfo struct {
 }
 
 func (s *FileInfo) UnmarshalJSON(b []byte) error {
-	type C FileInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s FileInfo) MarshalJSON() ([]byte, error) {
-	type C FileInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get the information of a file or directory
@@ -190,13 +172,11 @@ type GetStatusRequest struct {
 }
 
 func (s *GetStatusRequest) UnmarshalJSON(b []byte) error {
-	type C GetStatusRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetStatusRequest) MarshalJSON() ([]byte, error) {
-	type C GetStatusRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List directory contents or file details
@@ -209,13 +189,11 @@ type ListDbfsRequest struct {
 }
 
 func (s *ListDbfsRequest) UnmarshalJSON(b []byte) error {
-	type C ListDbfsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListDbfsRequest) MarshalJSON() ([]byte, error) {
-	type C ListDbfsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListStatusResponse struct {
@@ -227,13 +205,11 @@ type ListStatusResponse struct {
 }
 
 func (s *ListStatusResponse) UnmarshalJSON(b []byte) error {
-	type C ListStatusResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListStatusResponse) MarshalJSON() ([]byte, error) {
-	type C ListStatusResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type MkDirs struct {
@@ -244,13 +220,11 @@ type MkDirs struct {
 }
 
 func (s *MkDirs) UnmarshalJSON(b []byte) error {
-	type C MkDirs
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s MkDirs) MarshalJSON() ([]byte, error) {
-	type C MkDirs
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Move struct {
@@ -265,13 +239,11 @@ type Move struct {
 }
 
 func (s *Move) UnmarshalJSON(b []byte) error {
-	type C Move
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Move) MarshalJSON() ([]byte, error) {
-	type C Move
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Put struct {
@@ -286,13 +258,11 @@ type Put struct {
 }
 
 func (s *Put) UnmarshalJSON(b []byte) error {
-	type C Put
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Put) MarshalJSON() ([]byte, error) {
-	type C Put
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get the contents of a file
@@ -309,13 +279,11 @@ type ReadDbfsRequest struct {
 }
 
 func (s *ReadDbfsRequest) UnmarshalJSON(b []byte) error {
-	type C ReadDbfsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ReadDbfsRequest) MarshalJSON() ([]byte, error) {
-	type C ReadDbfsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ReadResponse struct {
@@ -330,13 +298,11 @@ type ReadResponse struct {
 }
 
 func (s *ReadResponse) UnmarshalJSON(b []byte) error {
-	type C ReadResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ReadResponse) MarshalJSON() ([]byte, error) {
-	type C ReadResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Upload a file
@@ -351,11 +317,9 @@ type UploadRequest struct {
 }
 
 func (s *UploadRequest) UnmarshalJSON(b []byte) error {
-	type C UploadRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UploadRequest) MarshalJSON() ([]byte, error) {
-	type C UploadRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }

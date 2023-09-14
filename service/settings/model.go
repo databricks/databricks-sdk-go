@@ -20,13 +20,11 @@ type AccountNetworkPolicyMessage struct {
 }
 
 func (s *AccountNetworkPolicyMessage) UnmarshalJSON(b []byte) error {
-	type C AccountNetworkPolicyMessage
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AccountNetworkPolicyMessage) MarshalJSON() ([]byte, error) {
-	type C AccountNetworkPolicyMessage
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateIpAccessList struct {
@@ -41,13 +39,11 @@ type CreateIpAccessList struct {
 }
 
 func (s *CreateIpAccessList) UnmarshalJSON(b []byte) error {
-	type C CreateIpAccessList
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateIpAccessList) MarshalJSON() ([]byte, error) {
-	type C CreateIpAccessList
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateIpAccessListResponse struct {
@@ -57,13 +53,11 @@ type CreateIpAccessListResponse struct {
 }
 
 func (s *CreateIpAccessListResponse) UnmarshalJSON(b []byte) error {
-	type C CreateIpAccessListResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateIpAccessListResponse) MarshalJSON() ([]byte, error) {
-	type C CreateIpAccessListResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateOboTokenRequest struct {
@@ -78,13 +72,11 @@ type CreateOboTokenRequest struct {
 }
 
 func (s *CreateOboTokenRequest) UnmarshalJSON(b []byte) error {
-	type C CreateOboTokenRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateOboTokenRequest) MarshalJSON() ([]byte, error) {
-	type C CreateOboTokenRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateOboTokenResponse struct {
@@ -96,13 +88,11 @@ type CreateOboTokenResponse struct {
 }
 
 func (s *CreateOboTokenResponse) UnmarshalJSON(b []byte) error {
-	type C CreateOboTokenResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateOboTokenResponse) MarshalJSON() ([]byte, error) {
-	type C CreateOboTokenResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateTokenRequest struct {
@@ -117,13 +107,11 @@ type CreateTokenRequest struct {
 }
 
 func (s *CreateTokenRequest) UnmarshalJSON(b []byte) error {
-	type C CreateTokenRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateTokenRequest) MarshalJSON() ([]byte, error) {
-	type C CreateTokenRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateTokenResponse struct {
@@ -136,13 +124,11 @@ type CreateTokenResponse struct {
 }
 
 func (s *CreateTokenResponse) UnmarshalJSON(b []byte) error {
-	type C CreateTokenResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateTokenResponse) MarshalJSON() ([]byte, error) {
-	type C CreateTokenResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete access list
@@ -154,13 +140,11 @@ type DeleteAccountIpAccessListRequest struct {
 }
 
 func (s *DeleteAccountIpAccessListRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteAccountIpAccessListRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteAccountIpAccessListRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteAccountIpAccessListRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete Account Network Policy
@@ -178,13 +162,11 @@ type DeleteAccountNetworkPolicyRequest struct {
 }
 
 func (s *DeleteAccountNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteAccountNetworkPolicyRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteAccountNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteAccountNetworkPolicyRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type DeleteAccountNetworkPolicyResponse struct {
@@ -201,13 +183,11 @@ type DeleteAccountNetworkPolicyResponse struct {
 }
 
 func (s *DeleteAccountNetworkPolicyResponse) UnmarshalJSON(b []byte) error {
-	type C DeleteAccountNetworkPolicyResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteAccountNetworkPolicyResponse) MarshalJSON() ([]byte, error) {
-	type C DeleteAccountNetworkPolicyResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete access list
@@ -219,13 +199,11 @@ type DeleteIpAccessListRequest struct {
 }
 
 func (s *DeleteIpAccessListRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteIpAccessListRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteIpAccessListRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteIpAccessListRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete Personal Compute setting
@@ -243,13 +221,11 @@ type DeletePersonalComputeSettingRequest struct {
 }
 
 func (s *DeletePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
-	type C DeletePersonalComputeSettingRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeletePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
-	type C DeletePersonalComputeSettingRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type DeletePersonalComputeSettingResponse struct {
@@ -266,13 +242,11 @@ type DeletePersonalComputeSettingResponse struct {
 }
 
 func (s *DeletePersonalComputeSettingResponse) UnmarshalJSON(b []byte) error {
-	type C DeletePersonalComputeSettingResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeletePersonalComputeSettingResponse) MarshalJSON() ([]byte, error) {
-	type C DeletePersonalComputeSettingResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a token
@@ -284,13 +258,11 @@ type DeleteTokenManagementRequest struct {
 }
 
 func (s *DeleteTokenManagementRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteTokenManagementRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteTokenManagementRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteTokenManagementRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type FetchIpAccessListResponse struct {
@@ -300,13 +272,11 @@ type FetchIpAccessListResponse struct {
 }
 
 func (s *FetchIpAccessListResponse) UnmarshalJSON(b []byte) error {
-	type C FetchIpAccessListResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s FetchIpAccessListResponse) MarshalJSON() ([]byte, error) {
-	type C FetchIpAccessListResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get IP access list
@@ -318,13 +288,11 @@ type GetAccountIpAccessListRequest struct {
 }
 
 func (s *GetAccountIpAccessListRequest) UnmarshalJSON(b []byte) error {
-	type C GetAccountIpAccessListRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetAccountIpAccessListRequest) MarshalJSON() ([]byte, error) {
-	type C GetAccountIpAccessListRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get access list
@@ -336,13 +304,11 @@ type GetIpAccessListRequest struct {
 }
 
 func (s *GetIpAccessListRequest) UnmarshalJSON(b []byte) error {
-	type C GetIpAccessListRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetIpAccessListRequest) MarshalJSON() ([]byte, error) {
-	type C GetIpAccessListRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetIpAccessListResponse struct {
@@ -352,13 +318,11 @@ type GetIpAccessListResponse struct {
 }
 
 func (s *GetIpAccessListResponse) UnmarshalJSON(b []byte) error {
-	type C GetIpAccessListResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetIpAccessListResponse) MarshalJSON() ([]byte, error) {
-	type C GetIpAccessListResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetIpAccessListsResponse struct {
@@ -368,13 +332,11 @@ type GetIpAccessListsResponse struct {
 }
 
 func (s *GetIpAccessListsResponse) UnmarshalJSON(b []byte) error {
-	type C GetIpAccessListsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetIpAccessListsResponse) MarshalJSON() ([]byte, error) {
-	type C GetIpAccessListsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Check configuration status
@@ -385,13 +347,11 @@ type GetStatusRequest struct {
 }
 
 func (s *GetStatusRequest) UnmarshalJSON(b []byte) error {
-	type C GetStatusRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetStatusRequest) MarshalJSON() ([]byte, error) {
-	type C GetStatusRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get token info
@@ -403,13 +363,11 @@ type GetTokenManagementRequest struct {
 }
 
 func (s *GetTokenManagementRequest) UnmarshalJSON(b []byte) error {
-	type C GetTokenManagementRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetTokenManagementRequest) MarshalJSON() ([]byte, error) {
-	type C GetTokenManagementRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetTokenPermissionLevelsResponse struct {
@@ -420,13 +378,11 @@ type GetTokenPermissionLevelsResponse struct {
 }
 
 func (s *GetTokenPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	type C GetTokenPermissionLevelsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetTokenPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	type C GetTokenPermissionLevelsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type IpAccessListInfo struct {
@@ -455,13 +411,11 @@ type IpAccessListInfo struct {
 }
 
 func (s *IpAccessListInfo) UnmarshalJSON(b []byte) error {
-	type C IpAccessListInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s IpAccessListInfo) MarshalJSON() ([]byte, error) {
-	type C IpAccessListInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List all tokens
@@ -475,13 +429,11 @@ type ListTokenManagementRequest struct {
 }
 
 func (s *ListTokenManagementRequest) UnmarshalJSON(b []byte) error {
-	type C ListTokenManagementRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListTokenManagementRequest) MarshalJSON() ([]byte, error) {
-	type C ListTokenManagementRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListTokensResponse struct {
@@ -491,13 +443,11 @@ type ListTokensResponse struct {
 }
 
 func (s *ListTokensResponse) UnmarshalJSON(b []byte) error {
-	type C ListTokensResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListTokensResponse) MarshalJSON() ([]byte, error) {
-	type C ListTokensResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -545,13 +495,11 @@ type PersonalComputeMessage struct {
 }
 
 func (s *PersonalComputeMessage) UnmarshalJSON(b []byte) error {
-	type C PersonalComputeMessage
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PersonalComputeMessage) MarshalJSON() ([]byte, error) {
-	type C PersonalComputeMessage
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // ON: Grants all users in all workspaces access to the Personal Compute default
@@ -606,13 +554,11 @@ type PersonalComputeSetting struct {
 }
 
 func (s *PersonalComputeSetting) UnmarshalJSON(b []byte) error {
-	type C PersonalComputeSetting
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PersonalComputeSetting) MarshalJSON() ([]byte, error) {
-	type C PersonalComputeSetting
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type PublicTokenInfo struct {
@@ -630,13 +576,11 @@ type PublicTokenInfo struct {
 }
 
 func (s *PublicTokenInfo) UnmarshalJSON(b []byte) error {
-	type C PublicTokenInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PublicTokenInfo) MarshalJSON() ([]byte, error) {
-	type C PublicTokenInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get Account Network Policy
@@ -654,13 +598,11 @@ type ReadAccountNetworkPolicyRequest struct {
 }
 
 func (s *ReadAccountNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
-	type C ReadAccountNetworkPolicyRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ReadAccountNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
-	type C ReadAccountNetworkPolicyRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get Personal Compute setting
@@ -678,13 +620,11 @@ type ReadPersonalComputeSettingRequest struct {
 }
 
 func (s *ReadPersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
-	type C ReadPersonalComputeSettingRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ReadPersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
-	type C ReadPersonalComputeSettingRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ReplaceIpAccessList struct {
@@ -705,13 +645,11 @@ type ReplaceIpAccessList struct {
 }
 
 func (s *ReplaceIpAccessList) UnmarshalJSON(b []byte) error {
-	type C ReplaceIpAccessList
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ReplaceIpAccessList) MarshalJSON() ([]byte, error) {
-	type C ReplaceIpAccessList
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type RevokeTokenRequest struct {
@@ -722,13 +660,11 @@ type RevokeTokenRequest struct {
 }
 
 func (s *RevokeTokenRequest) UnmarshalJSON(b []byte) error {
-	type C RevokeTokenRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RevokeTokenRequest) MarshalJSON() ([]byte, error) {
-	type C RevokeTokenRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TokenAccessControlRequest struct {
@@ -745,13 +681,11 @@ type TokenAccessControlRequest struct {
 }
 
 func (s *TokenAccessControlRequest) UnmarshalJSON(b []byte) error {
-	type C TokenAccessControlRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TokenAccessControlRequest) MarshalJSON() ([]byte, error) {
-	type C TokenAccessControlRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TokenAccessControlResponse struct {
@@ -770,13 +704,11 @@ type TokenAccessControlResponse struct {
 }
 
 func (s *TokenAccessControlResponse) UnmarshalJSON(b []byte) error {
-	type C TokenAccessControlResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TokenAccessControlResponse) MarshalJSON() ([]byte, error) {
-	type C TokenAccessControlResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TokenInfo struct {
@@ -800,13 +732,11 @@ type TokenInfo struct {
 }
 
 func (s *TokenInfo) UnmarshalJSON(b []byte) error {
-	type C TokenInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TokenInfo) MarshalJSON() ([]byte, error) {
-	type C TokenInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TokenPermission struct {
@@ -820,13 +750,11 @@ type TokenPermission struct {
 }
 
 func (s *TokenPermission) UnmarshalJSON(b []byte) error {
-	type C TokenPermission
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TokenPermission) MarshalJSON() ([]byte, error) {
-	type C TokenPermission
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -866,13 +794,11 @@ type TokenPermissions struct {
 }
 
 func (s *TokenPermissions) UnmarshalJSON(b []byte) error {
-	type C TokenPermissions
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TokenPermissions) MarshalJSON() ([]byte, error) {
-	type C TokenPermissions
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TokenPermissionsDescription struct {
@@ -884,13 +810,11 @@ type TokenPermissionsDescription struct {
 }
 
 func (s *TokenPermissionsDescription) UnmarshalJSON(b []byte) error {
-	type C TokenPermissionsDescription
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TokenPermissionsDescription) MarshalJSON() ([]byte, error) {
-	type C TokenPermissionsDescription
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TokenPermissionsRequest struct {
@@ -900,13 +824,11 @@ type TokenPermissionsRequest struct {
 }
 
 func (s *TokenPermissionsRequest) UnmarshalJSON(b []byte) error {
-	type C TokenPermissionsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TokenPermissionsRequest) MarshalJSON() ([]byte, error) {
-	type C TokenPermissionsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Update Account Network Policy
@@ -921,13 +843,11 @@ type UpdateAccountNetworkPolicyRequest struct {
 }
 
 func (s *UpdateAccountNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
-	type C UpdateAccountNetworkPolicyRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateAccountNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
-	type C UpdateAccountNetworkPolicyRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateIpAccessList struct {
@@ -948,13 +868,11 @@ type UpdateIpAccessList struct {
 }
 
 func (s *UpdateIpAccessList) UnmarshalJSON(b []byte) error {
-	type C UpdateIpAccessList
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateIpAccessList) MarshalJSON() ([]byte, error) {
-	type C UpdateIpAccessList
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Update Personal Compute setting
@@ -969,13 +887,11 @@ type UpdatePersonalComputeSettingRequest struct {
 }
 
 func (s *UpdatePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
-	type C UpdatePersonalComputeSettingRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdatePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
-	type C UpdatePersonalComputeSettingRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WorkspaceConf map[string]string

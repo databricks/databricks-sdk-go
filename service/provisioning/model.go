@@ -17,13 +17,11 @@ type AwsCredentials struct {
 }
 
 func (s *AwsCredentials) UnmarshalJSON(b []byte) error {
-	type C AwsCredentials
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AwsCredentials) MarshalJSON() ([]byte, error) {
-	type C AwsCredentials
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type AwsKeyInfo struct {
@@ -43,13 +41,11 @@ type AwsKeyInfo struct {
 }
 
 func (s *AwsKeyInfo) UnmarshalJSON(b []byte) error {
-	type C AwsKeyInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s AwsKeyInfo) MarshalJSON() ([]byte, error) {
-	type C AwsKeyInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The general workspace configurations that are specific to cloud providers.
@@ -61,13 +57,11 @@ type CloudResourceContainer struct {
 }
 
 func (s *CloudResourceContainer) UnmarshalJSON(b []byte) error {
-	type C CloudResourceContainer
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CloudResourceContainer) MarshalJSON() ([]byte, error) {
-	type C CloudResourceContainer
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateAwsKeyInfo struct {
@@ -86,13 +80,11 @@ type CreateAwsKeyInfo struct {
 }
 
 func (s *CreateAwsKeyInfo) UnmarshalJSON(b []byte) error {
-	type C CreateAwsKeyInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateAwsKeyInfo) MarshalJSON() ([]byte, error) {
-	type C CreateAwsKeyInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateCredentialAwsCredentials struct {
@@ -102,13 +94,11 @@ type CreateCredentialAwsCredentials struct {
 }
 
 func (s *CreateCredentialAwsCredentials) UnmarshalJSON(b []byte) error {
-	type C CreateCredentialAwsCredentials
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateCredentialAwsCredentials) MarshalJSON() ([]byte, error) {
-	type C CreateCredentialAwsCredentials
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateCredentialRequest struct {
@@ -120,13 +110,11 @@ type CreateCredentialRequest struct {
 }
 
 func (s *CreateCredentialRequest) UnmarshalJSON(b []byte) error {
-	type C CreateCredentialRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateCredentialRequest) MarshalJSON() ([]byte, error) {
-	type C CreateCredentialRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateCredentialStsRole struct {
@@ -137,13 +125,11 @@ type CreateCredentialStsRole struct {
 }
 
 func (s *CreateCredentialStsRole) UnmarshalJSON(b []byte) error {
-	type C CreateCredentialStsRole
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateCredentialStsRole) MarshalJSON() ([]byte, error) {
-	type C CreateCredentialStsRole
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateCustomerManagedKeyRequest struct {
@@ -157,13 +143,11 @@ type CreateCustomerManagedKeyRequest struct {
 }
 
 func (s *CreateCustomerManagedKeyRequest) UnmarshalJSON(b []byte) error {
-	type C CreateCustomerManagedKeyRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateCustomerManagedKeyRequest) MarshalJSON() ([]byte, error) {
-	type C CreateCustomerManagedKeyRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateGcpKeyInfo struct {
@@ -174,13 +158,11 @@ type CreateGcpKeyInfo struct {
 }
 
 func (s *CreateGcpKeyInfo) UnmarshalJSON(b []byte) error {
-	type C CreateGcpKeyInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateGcpKeyInfo) MarshalJSON() ([]byte, error) {
-	type C CreateGcpKeyInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateNetworkRequest struct {
@@ -208,13 +190,11 @@ type CreateNetworkRequest struct {
 }
 
 func (s *CreateNetworkRequest) UnmarshalJSON(b []byte) error {
-	type C CreateNetworkRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateNetworkRequest) MarshalJSON() ([]byte, error) {
-	type C CreateNetworkRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateStorageConfigurationRequest struct {
@@ -227,13 +207,11 @@ type CreateStorageConfigurationRequest struct {
 }
 
 func (s *CreateStorageConfigurationRequest) UnmarshalJSON(b []byte) error {
-	type C CreateStorageConfigurationRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateStorageConfigurationRequest) MarshalJSON() ([]byte, error) {
-	type C CreateStorageConfigurationRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateVpcEndpointRequest struct {
@@ -251,13 +229,11 @@ type CreateVpcEndpointRequest struct {
 }
 
 func (s *CreateVpcEndpointRequest) UnmarshalJSON(b []byte) error {
-	type C CreateVpcEndpointRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateVpcEndpointRequest) MarshalJSON() ([]byte, error) {
-	type C CreateVpcEndpointRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateWorkspaceRequest struct {
@@ -378,13 +354,11 @@ type CreateWorkspaceRequest struct {
 }
 
 func (s *CreateWorkspaceRequest) UnmarshalJSON(b []byte) error {
-	type C CreateWorkspaceRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	type C CreateWorkspaceRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Credential struct {
@@ -403,13 +377,11 @@ type Credential struct {
 }
 
 func (s *Credential) UnmarshalJSON(b []byte) error {
-	type C Credential
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Credential) MarshalJSON() ([]byte, error) {
-	type C Credential
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The custom tags key-value pairing that is attached to this workspace. The
@@ -428,13 +400,11 @@ type CustomerFacingGcpCloudResourceContainer struct {
 }
 
 func (s *CustomerFacingGcpCloudResourceContainer) UnmarshalJSON(b []byte) error {
-	type C CustomerFacingGcpCloudResourceContainer
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CustomerFacingGcpCloudResourceContainer) MarshalJSON() ([]byte, error) {
-	type C CustomerFacingGcpCloudResourceContainer
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CustomerManagedKey struct {
@@ -455,13 +425,11 @@ type CustomerManagedKey struct {
 }
 
 func (s *CustomerManagedKey) UnmarshalJSON(b []byte) error {
-	type C CustomerManagedKey
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CustomerManagedKey) MarshalJSON() ([]byte, error) {
-	type C CustomerManagedKey
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete credential configuration
@@ -473,13 +441,11 @@ type DeleteCredentialRequest struct {
 }
 
 func (s *DeleteCredentialRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteCredentialRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteCredentialRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete encryption key configuration
@@ -491,13 +457,11 @@ type DeleteEncryptionKeyRequest struct {
 }
 
 func (s *DeleteEncryptionKeyRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteEncryptionKeyRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteEncryptionKeyRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteEncryptionKeyRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a network configuration
@@ -509,13 +473,11 @@ type DeleteNetworkRequest struct {
 }
 
 func (s *DeleteNetworkRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteNetworkRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteNetworkRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteNetworkRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a private access settings object
@@ -527,13 +489,11 @@ type DeletePrivateAccesRequest struct {
 }
 
 func (s *DeletePrivateAccesRequest) UnmarshalJSON(b []byte) error {
-	type C DeletePrivateAccesRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeletePrivateAccesRequest) MarshalJSON() ([]byte, error) {
-	type C DeletePrivateAccesRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete storage configuration
@@ -545,13 +505,11 @@ type DeleteStorageRequest struct {
 }
 
 func (s *DeleteStorageRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteStorageRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteStorageRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteStorageRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete VPC endpoint configuration
@@ -563,13 +521,11 @@ type DeleteVpcEndpointRequest struct {
 }
 
 func (s *DeleteVpcEndpointRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteVpcEndpointRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteVpcEndpointRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteVpcEndpointRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a workspace
@@ -581,13 +537,11 @@ type DeleteWorkspaceRequest struct {
 }
 
 func (s *DeleteWorkspaceRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteWorkspaceRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteWorkspaceRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // This enumeration represents the type of Databricks VPC [endpoint service]
@@ -664,13 +618,11 @@ type GcpKeyInfo struct {
 }
 
 func (s *GcpKeyInfo) UnmarshalJSON(b []byte) error {
-	type C GcpKeyInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GcpKeyInfo) MarshalJSON() ([]byte, error) {
-	type C GcpKeyInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The network settings for the workspace. The configurations are only for
@@ -711,13 +663,11 @@ type GcpManagedNetworkConfig struct {
 }
 
 func (s *GcpManagedNetworkConfig) UnmarshalJSON(b []byte) error {
-	type C GcpManagedNetworkConfig
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GcpManagedNetworkConfig) MarshalJSON() ([]byte, error) {
-	type C GcpManagedNetworkConfig
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The Google Cloud specific information for this network (for example, the VPC
@@ -746,13 +696,11 @@ type GcpNetworkInfo struct {
 }
 
 func (s *GcpNetworkInfo) UnmarshalJSON(b []byte) error {
-	type C GcpNetworkInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GcpNetworkInfo) MarshalJSON() ([]byte, error) {
-	type C GcpNetworkInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The Google Cloud specific information for this Private Service Connect
@@ -774,13 +722,11 @@ type GcpVpcEndpointInfo struct {
 }
 
 func (s *GcpVpcEndpointInfo) UnmarshalJSON(b []byte) error {
-	type C GcpVpcEndpointInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GcpVpcEndpointInfo) MarshalJSON() ([]byte, error) {
-	type C GcpVpcEndpointInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get credential configuration
@@ -792,13 +738,11 @@ type GetCredentialRequest struct {
 }
 
 func (s *GetCredentialRequest) UnmarshalJSON(b []byte) error {
-	type C GetCredentialRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetCredentialRequest) MarshalJSON() ([]byte, error) {
-	type C GetCredentialRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get encryption key configuration
@@ -810,13 +754,11 @@ type GetEncryptionKeyRequest struct {
 }
 
 func (s *GetEncryptionKeyRequest) UnmarshalJSON(b []byte) error {
-	type C GetEncryptionKeyRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetEncryptionKeyRequest) MarshalJSON() ([]byte, error) {
-	type C GetEncryptionKeyRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a network configuration
@@ -828,13 +770,11 @@ type GetNetworkRequest struct {
 }
 
 func (s *GetNetworkRequest) UnmarshalJSON(b []byte) error {
-	type C GetNetworkRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetNetworkRequest) MarshalJSON() ([]byte, error) {
-	type C GetNetworkRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a private access settings object
@@ -846,13 +786,11 @@ type GetPrivateAccesRequest struct {
 }
 
 func (s *GetPrivateAccesRequest) UnmarshalJSON(b []byte) error {
-	type C GetPrivateAccesRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetPrivateAccesRequest) MarshalJSON() ([]byte, error) {
-	type C GetPrivateAccesRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get storage configuration
@@ -864,13 +802,11 @@ type GetStorageRequest struct {
 }
 
 func (s *GetStorageRequest) UnmarshalJSON(b []byte) error {
-	type C GetStorageRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetStorageRequest) MarshalJSON() ([]byte, error) {
-	type C GetStorageRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a VPC endpoint configuration
@@ -882,13 +818,11 @@ type GetVpcEndpointRequest struct {
 }
 
 func (s *GetVpcEndpointRequest) UnmarshalJSON(b []byte) error {
-	type C GetVpcEndpointRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetVpcEndpointRequest) MarshalJSON() ([]byte, error) {
-	type C GetVpcEndpointRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a workspace
@@ -900,13 +834,11 @@ type GetWorkspaceRequest struct {
 }
 
 func (s *GetWorkspaceRequest) UnmarshalJSON(b []byte) error {
-	type C GetWorkspaceRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	type C GetWorkspaceRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The configurations for the GKE cluster of a Databricks workspace.
@@ -930,13 +862,11 @@ type GkeConfig struct {
 }
 
 func (s *GkeConfig) UnmarshalJSON(b []byte) error {
-	type C GkeConfig
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GkeConfig) MarshalJSON() ([]byte, error) {
-	type C GkeConfig
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Specifies the network connectivity types for the GKE nodes and the GKE master
@@ -1042,13 +972,11 @@ type Network struct {
 }
 
 func (s *Network) UnmarshalJSON(b []byte) error {
-	type C Network
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Network) MarshalJSON() ([]byte, error) {
-	type C Network
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type NetworkHealth struct {
@@ -1062,13 +990,11 @@ type NetworkHealth struct {
 }
 
 func (s *NetworkHealth) UnmarshalJSON(b []byte) error {
-	type C NetworkHealth
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s NetworkHealth) MarshalJSON() ([]byte, error) {
-	type C NetworkHealth
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // If specified, contains the VPC endpoints used to allow cluster communication
@@ -1087,13 +1013,11 @@ type NetworkVpcEndpoints struct {
 }
 
 func (s *NetworkVpcEndpoints) UnmarshalJSON(b []byte) error {
-	type C NetworkVpcEndpoints
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s NetworkVpcEndpoints) MarshalJSON() ([]byte, error) {
-	type C NetworkVpcEndpoints
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type NetworkWarning struct {
@@ -1107,13 +1031,11 @@ type NetworkWarning struct {
 }
 
 func (s *NetworkWarning) UnmarshalJSON(b []byte) error {
-	type C NetworkWarning
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s NetworkWarning) MarshalJSON() ([]byte, error) {
-	type C NetworkWarning
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The pricing tier of the workspace. For pricing tier information, see [AWS
@@ -1218,13 +1140,11 @@ type PrivateAccessSettings struct {
 }
 
 func (s *PrivateAccessSettings) UnmarshalJSON(b []byte) error {
-	type C PrivateAccessSettings
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s PrivateAccessSettings) MarshalJSON() ([]byte, error) {
-	type C PrivateAccessSettings
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Root S3 bucket information.
@@ -1236,13 +1156,11 @@ type RootBucketInfo struct {
 }
 
 func (s *RootBucketInfo) UnmarshalJSON(b []byte) error {
-	type C RootBucketInfo
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s RootBucketInfo) MarshalJSON() ([]byte, error) {
-	type C RootBucketInfo
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type StorageConfiguration struct {
@@ -1261,13 +1179,11 @@ type StorageConfiguration struct {
 }
 
 func (s *StorageConfiguration) UnmarshalJSON(b []byte) error {
-	type C StorageConfiguration
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s StorageConfiguration) MarshalJSON() ([]byte, error) {
-	type C StorageConfiguration
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type StsRole struct {
@@ -1281,13 +1197,11 @@ type StsRole struct {
 }
 
 func (s *StsRole) UnmarshalJSON(b []byte) error {
-	type C StsRole
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s StsRole) MarshalJSON() ([]byte, error) {
-	type C StsRole
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpdateWorkspaceRequest struct {
@@ -1323,13 +1237,11 @@ type UpdateWorkspaceRequest struct {
 }
 
 func (s *UpdateWorkspaceRequest) UnmarshalJSON(b []byte) error {
-	type C UpdateWorkspaceRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	type C UpdateWorkspaceRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type UpsertPrivateAccessSettingsRequest struct {
@@ -1373,13 +1285,11 @@ type UpsertPrivateAccessSettingsRequest struct {
 }
 
 func (s *UpsertPrivateAccessSettingsRequest) UnmarshalJSON(b []byte) error {
-	type C UpsertPrivateAccessSettingsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpsertPrivateAccessSettingsRequest) MarshalJSON() ([]byte, error) {
-	type C UpsertPrivateAccessSettingsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type VpcEndpoint struct {
@@ -1423,13 +1333,11 @@ type VpcEndpoint struct {
 }
 
 func (s *VpcEndpoint) UnmarshalJSON(b []byte) error {
-	type C VpcEndpoint
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s VpcEndpoint) MarshalJSON() ([]byte, error) {
-	type C VpcEndpoint
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -1591,13 +1499,11 @@ type Workspace struct {
 }
 
 func (s *Workspace) UnmarshalJSON(b []byte) error {
-	type C Workspace
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Workspace) MarshalJSON() ([]byte, error) {
-	type C Workspace
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The status of the workspace. For workspace creation, usually it is set to

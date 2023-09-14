@@ -24,13 +24,11 @@ type BuildLogsRequest struct {
 }
 
 func (s *BuildLogsRequest) UnmarshalJSON(b []byte) error {
-	type C BuildLogsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s BuildLogsRequest) MarshalJSON() ([]byte, error) {
-	type C BuildLogsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type BuildLogsResponse struct {
@@ -41,13 +39,11 @@ type BuildLogsResponse struct {
 }
 
 func (s *BuildLogsResponse) UnmarshalJSON(b []byte) error {
-	type C BuildLogsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s BuildLogsResponse) MarshalJSON() ([]byte, error) {
-	type C BuildLogsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateServingEndpoint struct {
@@ -62,13 +58,11 @@ type CreateServingEndpoint struct {
 }
 
 func (s *CreateServingEndpoint) UnmarshalJSON(b []byte) error {
-	type C CreateServingEndpoint
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateServingEndpoint) MarshalJSON() ([]byte, error) {
-	type C CreateServingEndpoint
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete a serving endpoint
@@ -80,13 +74,11 @@ type DeleteServingEndpointRequest struct {
 }
 
 func (s *DeleteServingEndpointRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteServingEndpointRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteServingEndpointRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteServingEndpointRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type EndpointCoreConfigInput struct {
@@ -103,13 +95,11 @@ type EndpointCoreConfigInput struct {
 }
 
 func (s *EndpointCoreConfigInput) UnmarshalJSON(b []byte) error {
-	type C EndpointCoreConfigInput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EndpointCoreConfigInput) MarshalJSON() ([]byte, error) {
-	type C EndpointCoreConfigInput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type EndpointCoreConfigOutput struct {
@@ -124,13 +114,11 @@ type EndpointCoreConfigOutput struct {
 }
 
 func (s *EndpointCoreConfigOutput) UnmarshalJSON(b []byte) error {
-	type C EndpointCoreConfigOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EndpointCoreConfigOutput) MarshalJSON() ([]byte, error) {
-	type C EndpointCoreConfigOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type EndpointCoreConfigSummary struct {
@@ -141,13 +129,11 @@ type EndpointCoreConfigSummary struct {
 }
 
 func (s *EndpointCoreConfigSummary) UnmarshalJSON(b []byte) error {
-	type C EndpointCoreConfigSummary
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EndpointCoreConfigSummary) MarshalJSON() ([]byte, error) {
-	type C EndpointCoreConfigSummary
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type EndpointPendingConfig struct {
@@ -166,13 +152,11 @@ type EndpointPendingConfig struct {
 }
 
 func (s *EndpointPendingConfig) UnmarshalJSON(b []byte) error {
-	type C EndpointPendingConfig
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EndpointPendingConfig) MarshalJSON() ([]byte, error) {
-	type C EndpointPendingConfig
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type EndpointState struct {
@@ -192,13 +176,11 @@ type EndpointState struct {
 }
 
 func (s *EndpointState) UnmarshalJSON(b []byte) error {
-	type C EndpointState
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s EndpointState) MarshalJSON() ([]byte, error) {
-	type C EndpointState
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The state of an endpoint's config update. This informs the user if the
@@ -276,13 +258,11 @@ type ExportMetricsRequest struct {
 }
 
 func (s *ExportMetricsRequest) UnmarshalJSON(b []byte) error {
-	type C ExportMetricsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ExportMetricsRequest) MarshalJSON() ([]byte, error) {
-	type C ExportMetricsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get serving endpoint permission levels
@@ -294,13 +274,11 @@ type GetServingEndpointPermissionLevelsRequest struct {
 }
 
 func (s *GetServingEndpointPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
-	type C GetServingEndpointPermissionLevelsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetServingEndpointPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
-	type C GetServingEndpointPermissionLevelsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type GetServingEndpointPermissionLevelsResponse struct {
@@ -311,13 +289,11 @@ type GetServingEndpointPermissionLevelsResponse struct {
 }
 
 func (s *GetServingEndpointPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	type C GetServingEndpointPermissionLevelsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetServingEndpointPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	type C GetServingEndpointPermissionLevelsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get serving endpoint permissions
@@ -329,13 +305,11 @@ type GetServingEndpointPermissionsRequest struct {
 }
 
 func (s *GetServingEndpointPermissionsRequest) UnmarshalJSON(b []byte) error {
-	type C GetServingEndpointPermissionsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetServingEndpointPermissionsRequest) MarshalJSON() ([]byte, error) {
-	type C GetServingEndpointPermissionsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get a single serving endpoint
@@ -347,13 +321,11 @@ type GetServingEndpointRequest struct {
 }
 
 func (s *GetServingEndpointRequest) UnmarshalJSON(b []byte) error {
-	type C GetServingEndpointRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetServingEndpointRequest) MarshalJSON() ([]byte, error) {
-	type C GetServingEndpointRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ListEndpointsResponse struct {
@@ -364,13 +336,11 @@ type ListEndpointsResponse struct {
 }
 
 func (s *ListEndpointsResponse) UnmarshalJSON(b []byte) error {
-	type C ListEndpointsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListEndpointsResponse) MarshalJSON() ([]byte, error) {
-	type C ListEndpointsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Retrieve the most recent log lines associated with a given serving endpoint's
@@ -387,13 +357,11 @@ type LogsRequest struct {
 }
 
 func (s *LogsRequest) UnmarshalJSON(b []byte) error {
-	type C LogsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s LogsRequest) MarshalJSON() ([]byte, error) {
-	type C LogsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type QueryEndpointResponse struct {
@@ -404,13 +372,11 @@ type QueryEndpointResponse struct {
 }
 
 func (s *QueryEndpointResponse) UnmarshalJSON(b []byte) error {
-	type C QueryEndpointResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s QueryEndpointResponse) MarshalJSON() ([]byte, error) {
-	type C QueryEndpointResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Query a serving endpoint with provided model input.
@@ -422,13 +388,11 @@ type QueryRequest struct {
 }
 
 func (s *QueryRequest) UnmarshalJSON(b []byte) error {
-	type C QueryRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s QueryRequest) MarshalJSON() ([]byte, error) {
-	type C QueryRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type Route struct {
@@ -442,13 +406,11 @@ type Route struct {
 }
 
 func (s *Route) UnmarshalJSON(b []byte) error {
-	type C Route
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Route) MarshalJSON() ([]byte, error) {
-	type C Route
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ServedModelInput struct {
@@ -490,13 +452,11 @@ type ServedModelInput struct {
 }
 
 func (s *ServedModelInput) UnmarshalJSON(b []byte) error {
-	type C ServedModelInput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServedModelInput) MarshalJSON() ([]byte, error) {
-	type C ServedModelInput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ServedModelOutput struct {
@@ -540,13 +500,11 @@ type ServedModelOutput struct {
 }
 
 func (s *ServedModelOutput) UnmarshalJSON(b []byte) error {
-	type C ServedModelOutput
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServedModelOutput) MarshalJSON() ([]byte, error) {
-	type C ServedModelOutput
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ServedModelSpec struct {
@@ -563,13 +521,11 @@ type ServedModelSpec struct {
 }
 
 func (s *ServedModelSpec) UnmarshalJSON(b []byte) error {
-	type C ServedModelSpec
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServedModelSpec) MarshalJSON() ([]byte, error) {
-	type C ServedModelSpec
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ServedModelState struct {
@@ -593,13 +549,11 @@ type ServedModelState struct {
 }
 
 func (s *ServedModelState) UnmarshalJSON(b []byte) error {
-	type C ServedModelState
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServedModelState) MarshalJSON() ([]byte, error) {
-	type C ServedModelState
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The state of the served model deployment. DEPLOYMENT_CREATING indicates that
@@ -655,13 +609,11 @@ type ServerLogsResponse struct {
 }
 
 func (s *ServerLogsResponse) UnmarshalJSON(b []byte) error {
-	type C ServerLogsResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServerLogsResponse) MarshalJSON() ([]byte, error) {
-	type C ServerLogsResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ServingEndpoint struct {
@@ -685,13 +637,11 @@ type ServingEndpoint struct {
 }
 
 func (s *ServingEndpoint) UnmarshalJSON(b []byte) error {
-	type C ServingEndpoint
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServingEndpoint) MarshalJSON() ([]byte, error) {
-	type C ServingEndpoint
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ServingEndpointAccessControlRequest struct {
@@ -708,13 +658,11 @@ type ServingEndpointAccessControlRequest struct {
 }
 
 func (s *ServingEndpointAccessControlRequest) UnmarshalJSON(b []byte) error {
-	type C ServingEndpointAccessControlRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServingEndpointAccessControlRequest) MarshalJSON() ([]byte, error) {
-	type C ServingEndpointAccessControlRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ServingEndpointAccessControlResponse struct {
@@ -733,13 +681,11 @@ type ServingEndpointAccessControlResponse struct {
 }
 
 func (s *ServingEndpointAccessControlResponse) UnmarshalJSON(b []byte) error {
-	type C ServingEndpointAccessControlResponse
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServingEndpointAccessControlResponse) MarshalJSON() ([]byte, error) {
-	type C ServingEndpointAccessControlResponse
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ServingEndpointDetailed struct {
@@ -767,13 +713,11 @@ type ServingEndpointDetailed struct {
 }
 
 func (s *ServingEndpointDetailed) UnmarshalJSON(b []byte) error {
-	type C ServingEndpointDetailed
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServingEndpointDetailed) MarshalJSON() ([]byte, error) {
-	type C ServingEndpointDetailed
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // The permission level of the principal making the request.
@@ -817,13 +761,11 @@ type ServingEndpointPermission struct {
 }
 
 func (s *ServingEndpointPermission) UnmarshalJSON(b []byte) error {
-	type C ServingEndpointPermission
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServingEndpointPermission) MarshalJSON() ([]byte, error) {
-	type C ServingEndpointPermission
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -867,13 +809,11 @@ type ServingEndpointPermissions struct {
 }
 
 func (s *ServingEndpointPermissions) UnmarshalJSON(b []byte) error {
-	type C ServingEndpointPermissions
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServingEndpointPermissions) MarshalJSON() ([]byte, error) {
-	type C ServingEndpointPermissions
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ServingEndpointPermissionsDescription struct {
@@ -885,13 +825,11 @@ type ServingEndpointPermissionsDescription struct {
 }
 
 func (s *ServingEndpointPermissionsDescription) UnmarshalJSON(b []byte) error {
-	type C ServingEndpointPermissionsDescription
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServingEndpointPermissionsDescription) MarshalJSON() ([]byte, error) {
-	type C ServingEndpointPermissionsDescription
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type ServingEndpointPermissionsRequest struct {
@@ -903,13 +841,11 @@ type ServingEndpointPermissionsRequest struct {
 }
 
 func (s *ServingEndpointPermissionsRequest) UnmarshalJSON(b []byte) error {
-	type C ServingEndpointPermissionsRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ServingEndpointPermissionsRequest) MarshalJSON() ([]byte, error) {
-	type C ServingEndpointPermissionsRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type TrafficConfig struct {
@@ -920,11 +856,9 @@ type TrafficConfig struct {
 }
 
 func (s *TrafficConfig) UnmarshalJSON(b []byte) error {
-	type C TrafficConfig
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s TrafficConfig) MarshalJSON() ([]byte, error) {
-	type C TrafficConfig
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }

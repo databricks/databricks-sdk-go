@@ -46,13 +46,11 @@ type Budget struct {
 }
 
 func (s *Budget) UnmarshalJSON(b []byte) error {
-	type C Budget
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s Budget) MarshalJSON() ([]byte, error) {
-	type C Budget
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type BudgetAlert struct {
@@ -67,13 +65,11 @@ type BudgetAlert struct {
 }
 
 func (s *BudgetAlert) UnmarshalJSON(b []byte) error {
-	type C BudgetAlert
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s BudgetAlert) MarshalJSON() ([]byte, error) {
-	type C BudgetAlert
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // List of budgets.
@@ -84,13 +80,11 @@ type BudgetList struct {
 }
 
 func (s *BudgetList) UnmarshalJSON(b []byte) error {
-	type C BudgetList
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s BudgetList) MarshalJSON() ([]byte, error) {
-	type C BudgetList
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Budget configuration with daily status.
@@ -137,13 +131,11 @@ type BudgetWithStatus struct {
 }
 
 func (s *BudgetWithStatus) UnmarshalJSON(b []byte) error {
-	type C BudgetWithStatus
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s BudgetWithStatus) MarshalJSON() ([]byte, error) {
-	type C BudgetWithStatus
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type BudgetWithStatusStatusDailyItem struct {
@@ -156,13 +148,11 @@ type BudgetWithStatusStatusDailyItem struct {
 }
 
 func (s *BudgetWithStatusStatusDailyItem) UnmarshalJSON(b []byte) error {
-	type C BudgetWithStatusStatusDailyItem
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s BudgetWithStatusStatusDailyItem) MarshalJSON() ([]byte, error) {
-	type C BudgetWithStatusStatusDailyItem
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type CreateLogDeliveryConfigurationParams struct {
@@ -240,13 +230,11 @@ type CreateLogDeliveryConfigurationParams struct {
 }
 
 func (s *CreateLogDeliveryConfigurationParams) UnmarshalJSON(b []byte) error {
-	type C CreateLogDeliveryConfigurationParams
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s CreateLogDeliveryConfigurationParams) MarshalJSON() ([]byte, error) {
-	type C CreateLogDeliveryConfigurationParams
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Delete budget
@@ -258,13 +246,11 @@ type DeleteBudgetRequest struct {
 }
 
 func (s *DeleteBudgetRequest) UnmarshalJSON(b []byte) error {
-	type C DeleteBudgetRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DeleteBudgetRequest) MarshalJSON() ([]byte, error) {
-	type C DeleteBudgetRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -326,13 +312,11 @@ type DownloadRequest struct {
 }
 
 func (s *DownloadRequest) UnmarshalJSON(b []byte) error {
-	type C DownloadRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s DownloadRequest) MarshalJSON() ([]byte, error) {
-	type C DownloadRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get budget and its status
@@ -344,13 +328,11 @@ type GetBudgetRequest struct {
 }
 
 func (s *GetBudgetRequest) UnmarshalJSON(b []byte) error {
-	type C GetBudgetRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetBudgetRequest) MarshalJSON() ([]byte, error) {
-	type C GetBudgetRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get log delivery configuration
@@ -362,13 +344,11 @@ type GetLogDeliveryRequest struct {
 }
 
 func (s *GetLogDeliveryRequest) UnmarshalJSON(b []byte) error {
-	type C GetLogDeliveryRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s GetLogDeliveryRequest) MarshalJSON() ([]byte, error) {
-	type C GetLogDeliveryRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Get all log delivery configurations
@@ -384,13 +364,11 @@ type ListLogDeliveryRequest struct {
 }
 
 func (s *ListLogDeliveryRequest) UnmarshalJSON(b []byte) error {
-	type C ListLogDeliveryRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s ListLogDeliveryRequest) MarshalJSON() ([]byte, error) {
-	type C ListLogDeliveryRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Status of log delivery configuration. Set to `ENABLED` (enabled) or
@@ -512,13 +490,11 @@ type LogDeliveryConfiguration struct {
 }
 
 func (s *LogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
-	type C LogDeliveryConfiguration
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s LogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
-	type C LogDeliveryConfiguration
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Databricks log delivery status.
@@ -538,13 +514,11 @@ type LogDeliveryStatus struct {
 }
 
 func (s *LogDeliveryStatus) UnmarshalJSON(b []byte) error {
-	type C LogDeliveryStatus
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s LogDeliveryStatus) MarshalJSON() ([]byte, error) {
-	type C LogDeliveryStatus
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 // Log delivery type. Supported values are:
@@ -637,13 +611,11 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 }
 
 func (s *UpdateLogDeliveryConfigurationStatusRequest) UnmarshalJSON(b []byte) error {
-	type C UpdateLogDeliveryConfigurationStatusRequest
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s UpdateLogDeliveryConfigurationStatusRequest) MarshalJSON() ([]byte, error) {
-	type C UpdateLogDeliveryConfigurationStatusRequest
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WrappedBudget struct {
@@ -656,13 +628,11 @@ type WrappedBudget struct {
 }
 
 func (s *WrappedBudget) UnmarshalJSON(b []byte) error {
-	type C WrappedBudget
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WrappedBudget) MarshalJSON() ([]byte, error) {
-	type C WrappedBudget
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WrappedBudgetWithStatus struct {
@@ -673,13 +643,11 @@ type WrappedBudgetWithStatus struct {
 }
 
 func (s *WrappedBudgetWithStatus) UnmarshalJSON(b []byte) error {
-	type C WrappedBudgetWithStatus
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WrappedBudgetWithStatus) MarshalJSON() ([]byte, error) {
-	type C WrappedBudgetWithStatus
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WrappedCreateLogDeliveryConfiguration struct {
@@ -689,13 +657,11 @@ type WrappedCreateLogDeliveryConfiguration struct {
 }
 
 func (s *WrappedCreateLogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
-	type C WrappedCreateLogDeliveryConfiguration
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WrappedCreateLogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
-	type C WrappedCreateLogDeliveryConfiguration
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WrappedLogDeliveryConfiguration struct {
@@ -705,13 +671,11 @@ type WrappedLogDeliveryConfiguration struct {
 }
 
 func (s *WrappedLogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
-	type C WrappedLogDeliveryConfiguration
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WrappedLogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
-	type C WrappedLogDeliveryConfiguration
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
 
 type WrappedLogDeliveryConfigurations struct {
@@ -721,11 +685,9 @@ type WrappedLogDeliveryConfigurations struct {
 }
 
 func (s *WrappedLogDeliveryConfigurations) UnmarshalJSON(b []byte) error {
-	type C WrappedLogDeliveryConfigurations
-	return marshal.Unmarshal(b, (*C)(s))
+	return marshal.Unmarshal(b, s)
 }
 
 func (s WrappedLogDeliveryConfigurations) MarshalJSON() ([]byte, error) {
-	type C WrappedLogDeliveryConfigurations
-	return marshal.Marshal((C)(s))
+	return marshal.Marshal(s)
 }
