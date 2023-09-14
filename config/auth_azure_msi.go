@@ -45,11 +45,11 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 		resource: cfg.getAzureLoginAppID(),
 		clientId: cfg.AzureClientID,
 	})
-	platform := azureReuseTokenSource(nil, azureMsiTokenSource{
+	management := azureReuseTokenSource(nil, azureMsiTokenSource{
 		resource: env.ServiceManagementEndpoint,
 		clientId: cfg.AzureClientID,
 	})
-	return azureVisitor(cfg, serviceToServiceVisitor(inner, platform, xDatabricksAzureSpManagementToken)), nil
+	return azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken)), nil
 }
 
 func (c AzureMsiCredentials) getInstanceEnvironment(ctx context.Context) (*azureEnvironment, error) {

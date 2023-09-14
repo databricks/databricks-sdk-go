@@ -53,6 +53,6 @@ func (c AzureClientSecretCredentials) Configure(ctx context.Context, cfg *Config
 	logger.Infof(ctx, "Generating AAD token for Service Principal (%s)", cfg.AzureClientID)
 	refreshCtx := context.Background()
 	inner := azureReuseTokenSource(nil, c.tokenSourceFor(refreshCtx, cfg, env, cfg.getAzureLoginAppID()))
-	platform := azureReuseTokenSource(nil, c.tokenSourceFor(refreshCtx, cfg, env, env.ServiceManagementEndpoint))
-	return azureVisitor(cfg, serviceToServiceVisitor(inner, platform, xDatabricksAzureSpManagementToken)), nil
+	management := azureReuseTokenSource(nil, c.tokenSourceFor(refreshCtx, cfg, env, env.ServiceManagementEndpoint))
+	return azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken)), nil
 }
