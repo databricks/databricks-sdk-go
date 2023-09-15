@@ -111,6 +111,60 @@ func TestSimpleRequestFailsAPIError(t *testing.T) {
 	assert.EqualError(t, err, "nope")
 }
 
+func TestETag(t *testing.T) {
+	reason := "some_reason"
+	domain := "a_domain"
+	eTag := "sample_etag"
+	c := &DatabricksClient{
+		Config: config.NewMockConfig(func(r *http.Request) error {
+			return nil
+		}),
+		httpClient: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 400,
+				Request:    r,
+				Body: io.NopCloser(strings.NewReader(fmt.Sprintf(`{
+					"error_code": "RESOURCE_CONFLICT",
+					"message": "test_public_workspace_setting",
+					"stack_trace": "java.io.PrintWriter@329e4ed3",
+					"details": [
+					  {
+						"@type": "%s",
+						"reason": "%s",
+						"domain": "%s",
+						"metadata": {
+						  "etag": "%s"
+						}
+					  },
+					  {
+						"@type": "anotherType",
+						"reason": "",
+						"domain": "",
+						"metadata": {
+						  "etag": "anotherTag"
+						}
+					  }
+					]
+				  }`, "type.googleapis.com/google.rpc.ErrorInfo", reason, domain, eTag))),
+			}, nil
+		}),
+		rateLimiter: rate.NewLimiter(rate.Inf, 1),
+	}
+	err := c.Do(context.Background(), "GET", "/a/b", map[string]string{
+		"e": "f",
+	}, map[string]string{
+		"c": "d",
+	}, nil)
+	details := apierr.GetErrorInfo(err)
+	assert.Equal(t, 1, len(details))
+	errorDetails := details[0]
+	assert.Equal(t, reason, errorDetails.Reason)
+	assert.Equal(t, domain, errorDetails.Domain)
+	assert.Equal(t, map[string]string{
+		"etag": eTag,
+	}, errorDetails.Metadata)
+}
+
 func TestSimpleRequestSucceeds(t *testing.T) {
 	type Dummy struct {
 		Foo int `json:"foo"`
