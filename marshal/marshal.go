@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+
+	"golang.org/x/exp/maps"
 )
 
 const force_send_field_name = "ForceSendFields"
@@ -64,7 +66,7 @@ func structAsMap(object any) (map[string]interface{}, error) {
 		}
 
 		// Skip fields which should not be included
-		if !includeField(tag, fieldValue, fieldStruct, includeFields) {
+		if !includeField(tag, fieldValue, includeFields[fieldStruct.Name]) {
 			continue
 		}
 
@@ -115,22 +117,23 @@ func parseJSONTag(raw string) (jsonTag, error) {
 	return jsonTag, nil
 }
 
-// Determines wether a field should be included or not
-func includeField(tag jsonTag, value reflect.Value, field reflect.StructField, mustInclude map[string]bool) bool {
+// Determines whether a field should be included or not
+func includeField(tag jsonTag, value reflect.Value, forceSend bool) bool {
 	if tag.ignore {
 		return false
 	}
 	if !tag.omitempty {
 		return true
 	}
-	return (isBasicType(value.Type()) && mustInclude[field.Name]) || !isEmptyValue(value)
+	return (isBasicType(value.Type()) && forceSend) || !isEmptyValue(value)
 }
 
+// isEmptyValue returns whether v is the empty value for its type.
+// This implementation is based on on the encoding/json package for consistency on the results
+// https://github.com/golang/go/blob/a278550c40ef3f01a5fcbef43414dc49009201f8/src/encoding/json/encode.go#L306
 func isEmptyValue(v reflect.Value) bool {
 	switch v.Kind() {
-	case reflect.String:
-		return v.Len() == 0
-	case reflect.Array, reflect.Map, reflect.Slice:
+	case reflect.Array, reflect.Map, reflect.Slice, reflect.String:
 		return v.Len() == 0
 	case reflect.Bool:
 		return !v.Bool()
@@ -140,7 +143,7 @@ func isEmptyValue(v reflect.Value) bool {
 		return v.Uint() == 0
 	case reflect.Float32, reflect.Float64:
 		return v.Float() == 0
-	case reflect.Interface, reflect.Ptr:
+	case reflect.Interface, reflect.Pointer:
 		return v.IsNil()
 	}
 	return false
@@ -150,12 +153,8 @@ func isEmptyValue(v reflect.Value) bool {
 // does it, and a JSON should not have duplicated entries.
 func mergeMaps(m1 map[string]interface{}, m2 map[string]interface{}) map[string]interface{} {
 	merged := make(map[string]interface{})
-	for key, value := range m1 {
-		merged[key] = value
-	}
-	for key, value := range m2 {
-		merged[key] = value
-	}
+	maps.Copy(merged, m2)
+	maps.Copy(merged, m1)
 	return merged
 }
 
