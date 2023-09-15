@@ -295,7 +295,7 @@ type ColumnInfo struct {
 	// Whether field may be Null (default: true).
 	Nullable bool `json:"nullable,omitempty"`
 	// Partition index for column.
-	PartitionIndex int `json:"partition_index,omitempty"`
+	PartitionIndex *int `json:"partition_index,omitempty"`
 	// Ordinal position of column (starting at position 0).
 	Position int `json:"position,omitempty"`
 	// Format of IntervalType.
