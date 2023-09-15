@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/oauth2"
@@ -55,4 +56,20 @@ func TestOAuthWithValidToken(t *testing.T) {
 	token, err := retriableTokenSource(context.Background(), mockSource)
 	assert.Equal(t, "test", token.TokenType)
 	assert.NoError(t, err)
+}
+
+func TestAzureReuseTokenSource(t *testing.T) {
+	mockSource := mockTokenSource{
+		mockedTokenFunc: func() (*oauth2.Token, error) {
+			return &oauth2.Token{
+				Expiry: time.Now().Add(35 * time.Second),
+			}, nil
+		},
+	}
+
+	// Assert the token is not valid if it expires in 35 seconds.
+	adjustedSource := azureReuseTokenSource(nil, mockSource)
+	token, err := adjustedSource.Token()
+	assert.NoError(t, err)
+	assert.False(t, token.Valid())
 }
