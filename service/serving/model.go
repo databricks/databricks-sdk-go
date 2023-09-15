@@ -19,31 +19,11 @@ type BuildLogsRequest struct {
 	// The name of the served model that build logs will be retrieved for. This
 	// field is required.
 	ServedModelName string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *BuildLogsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s BuildLogsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type BuildLogsResponse struct {
 	// The logs associated with building the served model's environment.
 	Logs string `json:"logs"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *BuildLogsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s BuildLogsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateServingEndpoint struct {
@@ -53,32 +33,12 @@ type CreateServingEndpoint struct {
 	// unique across a Databricks workspace. An endpoint name can consist of
 	// alphanumeric characters, dashes, and underscores.
 	Name string `json:"name"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateServingEndpoint) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateServingEndpoint) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete a serving endpoint
 type DeleteServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
 	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteServingEndpointRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteServingEndpointRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type EndpointCoreConfigInput struct {
@@ -90,16 +50,6 @@ type EndpointCoreConfigInput struct {
 	// The traffic config defining how invocations to the serving endpoint
 	// should be routed.
 	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *EndpointCoreConfigInput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s EndpointCoreConfigInput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type EndpointCoreConfigOutput struct {
@@ -124,16 +74,6 @@ func (s EndpointCoreConfigOutput) MarshalJSON() ([]byte, error) {
 type EndpointCoreConfigSummary struct {
 	// The list of served models under the serving endpoint config.
 	ServedModels []ServedModelSpec `json:"served_models,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *EndpointCoreConfigSummary) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s EndpointCoreConfigSummary) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type EndpointPendingConfig struct {
@@ -171,16 +111,6 @@ type EndpointState struct {
 	// configuration are ready. If any of the actively served models are in a
 	// non-ready state, the endpoint state will be NOT_READY.
 	Ready EndpointStateReady `json:"ready,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *EndpointState) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s EndpointState) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // The state of an endpoint's config update. This informs the user if the
@@ -253,94 +183,34 @@ type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
 	// required.
 	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ExportMetricsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ExportMetricsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get serving endpoint permission levels
 type GetServingEndpointPermissionLevelsRequest struct {
 	// The serving endpoint for which to get or manage permissions.
 	ServingEndpointId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetServingEndpointPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetServingEndpointPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetServingEndpointPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []ServingEndpointPermissionsDescription `json:"permission_levels,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetServingEndpointPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetServingEndpointPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get serving endpoint permissions
 type GetServingEndpointPermissionsRequest struct {
 	// The serving endpoint for which to get or manage permissions.
 	ServingEndpointId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetServingEndpointPermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetServingEndpointPermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get a single serving endpoint
 type GetServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
 	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetServingEndpointRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetServingEndpointRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ListEndpointsResponse struct {
 	// The list of endpoints.
 	Endpoints []ServingEndpoint `json:"endpoints,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListEndpointsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListEndpointsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Retrieve the most recent log lines associated with a given serving endpoint's
@@ -352,47 +222,17 @@ type LogsRequest struct {
 	// The name of the served model that logs will be retrieved for. This field
 	// is required.
 	ServedModelName string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *LogsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s LogsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type QueryEndpointResponse struct {
 	// The predictions returned by the serving endpoint.
 	Predictions []any `json:"predictions"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *QueryEndpointResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s QueryEndpointResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Query a serving endpoint with provided model input.
 type QueryRequest struct {
 	// The name of the serving endpoint. This field is required.
 	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *QueryRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s QueryRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type Route struct {
@@ -401,16 +241,6 @@ type Route struct {
 	// The percentage of endpoint traffic to send to this route. It must be an
 	// integer between 0 and 100 inclusive.
 	TrafficPercentage int `json:"traffic_percentage"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *Route) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s Route) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ServedModelInput struct {
@@ -604,16 +434,6 @@ type ServerLogsResponse struct {
 	// The most recent log lines of the model server processing invocation
 	// requests.
 	Logs string `json:"logs"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ServerLogsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ServerLogsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ServingEndpoint struct {
@@ -836,29 +656,9 @@ type ServingEndpointPermissionsRequest struct {
 	AccessControlList []ServingEndpointAccessControlRequest `json:"access_control_list,omitempty"`
 	// The serving endpoint for which to get or manage permissions.
 	ServingEndpointId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ServingEndpointPermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ServingEndpointPermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type TrafficConfig struct {
 	// The list of routes that define traffic to each served model.
 	Routes []Route `json:"routes,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *TrafficConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s TrafficConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }

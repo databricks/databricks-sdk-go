@@ -121,16 +121,6 @@ func (s DataPlaneId) MarshalJSON() ([]byte, error) {
 // Delete a pipeline
 type DeletePipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeletePipelineRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeletePipelineRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type EditPipeline struct {
@@ -262,78 +252,28 @@ type Filters struct {
 	Exclude []string `json:"exclude,omitempty"`
 	// Paths to include.
 	Include []string `json:"include,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *Filters) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s Filters) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get pipeline permission levels
 type GetPipelinePermissionLevelsRequest struct {
 	// The pipeline for which to get or manage permissions.
 	PipelineId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetPipelinePermissionLevelsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetPipelinePermissionLevelsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetPipelinePermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []PipelinePermissionsDescription `json:"permission_levels,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetPipelinePermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetPipelinePermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get pipeline permissions
 type GetPipelinePermissionsRequest struct {
 	// The pipeline for which to get or manage permissions.
 	PipelineId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetPipelinePermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetPipelinePermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get a pipeline
 type GetPipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetPipelineRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetPipelineRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetPipelineResponse struct {
@@ -407,31 +347,11 @@ type GetUpdateRequest struct {
 	PipelineId string `json:"-" url:"-"`
 	// The ID of the update.
 	UpdateId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetUpdateRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetUpdateRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetUpdateResponse struct {
 	// The current update info.
 	Update *UpdateInfo `json:"update,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetUpdateResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetUpdateResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // List pipeline events
@@ -964,16 +884,6 @@ type PipelinePermissionsRequest struct {
 	AccessControlList []PipelineAccessControlRequest `json:"access_control_list,omitempty"`
 	// The pipeline for which to get or manage permissions.
 	PipelineId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *PipelinePermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PipelinePermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type PipelineSpec struct {
@@ -1102,31 +1012,11 @@ type PipelineTrigger struct {
 	Cron *CronTrigger `json:"cron,omitempty"`
 
 	Manual any `json:"manual,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *PipelineTrigger) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PipelineTrigger) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Reset a pipeline
 type ResetRequest struct {
 	PipelineId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ResetRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ResetRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type Sequencing struct {
@@ -1266,16 +1156,6 @@ func (s StartUpdateResponse) MarshalJSON() ([]byte, error) {
 // Stop a pipeline
 type StopRequest struct {
 	PipelineId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *StopRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s StopRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type UpdateInfo struct {

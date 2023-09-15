@@ -15,16 +15,6 @@ type AclItem struct {
 	Permission AclPermission `json:"permission"`
 	// The principal in which the permission is applied.
 	Principal string `json:"principal"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *AclItem) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AclItem) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type AclPermission string
@@ -62,16 +52,6 @@ type AzureKeyVaultSecretScopeMetadata struct {
 	// The resource id of the azure KeyVault that user wants to associate the
 	// scope with.
 	ResourceId string `json:"resource_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *AzureKeyVaultSecretScopeMetadata) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AzureKeyVaultSecretScopeMetadata) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateCredentials struct {
@@ -215,63 +195,23 @@ type DeleteAcl struct {
 	Principal string `json:"principal"`
 	// The name of the scope to remove permissions from.
 	Scope string `json:"scope"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteAcl) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteAcl) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete a credential
 type DeleteGitCredentialRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteGitCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteGitCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete a repo
 type DeleteRepoRequest struct {
 	// The ID for the corresponding repo to access.
 	RepoId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteRepoRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteRepoRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type DeleteScope struct {
 	// Name of the scope to delete.
 	Scope string `json:"scope"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteScope) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteScope) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type DeleteSecret struct {
@@ -279,16 +219,6 @@ type DeleteSecret struct {
 	Key string `json:"key"`
 	// The name of the scope that contains the secret to delete.
 	Scope string `json:"scope"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteSecret) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteSecret) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ExportFormat string
@@ -340,16 +270,6 @@ type ExportRequest struct {
 	// The absolute path of the object or directory. Exporting a directory is
 	// only supported for the `DBC` and `SOURCE` format.
 	Path string `json:"-" url:"path"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ExportRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ExportRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ExportResponse struct {
@@ -374,109 +294,39 @@ type GetAclRequest struct {
 	Principal string `json:"-" url:"principal"`
 	// The name of the scope to fetch ACL information from.
 	Scope string `json:"-" url:"scope"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetAclRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetAclRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetCredentialsResponse struct {
 	Credentials []CredentialInfo `json:"credentials,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetCredentialsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetCredentialsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get a credential entry
 type GetGitCredentialRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetGitCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetGitCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get repo permission levels
 type GetRepoPermissionLevelsRequest struct {
 	// The repo for which to get or manage permissions.
 	RepoId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetRepoPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetRepoPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetRepoPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []RepoPermissionsDescription `json:"permission_levels,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetRepoPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetRepoPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get repo permissions
 type GetRepoPermissionsRequest struct {
 	// The repo for which to get or manage permissions.
 	RepoId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetRepoPermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetRepoPermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get a repo
 type GetRepoRequest struct {
 	// The ID for the corresponding repo to access.
 	RepoId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetRepoRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetRepoRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get a secret
@@ -485,16 +335,6 @@ type GetSecretRequest struct {
 	Key string `json:"-" url:"key"`
 	// The name of the scope to fetch secret information from.
 	Scope string `json:"-" url:"scope"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetSecretRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetSecretRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetSecretResponse struct {
@@ -518,16 +358,6 @@ func (s GetSecretResponse) MarshalJSON() ([]byte, error) {
 type GetStatusRequest struct {
 	// The absolute path of the notebook or directory.
 	Path string `json:"-" url:"path"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetStatusRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetStatusRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get workspace object permission levels
@@ -536,31 +366,11 @@ type GetWorkspaceObjectPermissionLevelsRequest struct {
 	WorkspaceObjectId string `json:"-" url:"-"`
 	// The workspace object type for which to get or manage permissions.
 	WorkspaceObjectType string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetWorkspaceObjectPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetWorkspaceObjectPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetWorkspaceObjectPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []WorkspaceObjectPermissionsDescription `json:"permission_levels,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetWorkspaceObjectPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetWorkspaceObjectPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get workspace object permissions
@@ -569,16 +379,6 @@ type GetWorkspaceObjectPermissionsRequest struct {
 	WorkspaceObjectId string `json:"-" url:"-"`
 	// The workspace object type for which to get or manage permissions.
 	WorkspaceObjectType string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetWorkspaceObjectPermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetWorkspaceObjectPermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type Import struct {
@@ -707,31 +507,11 @@ func (f *Language) Type() string {
 type ListAclsRequest struct {
 	// The name of the scope to fetch ACL information from.
 	Scope string `json:"-" url:"scope"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListAclsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListAclsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ListAclsResponse struct {
 	// The associated ACLs rule applied to principals in the given scope.
 	Items []AclItem `json:"items,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListAclsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListAclsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get repos
@@ -775,62 +555,22 @@ func (s ListReposResponse) MarshalJSON() ([]byte, error) {
 type ListResponse struct {
 	// List of objects.
 	Objects []ObjectInfo `json:"objects,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ListScopesResponse struct {
 	// The available secret scopes.
 	Scopes []SecretScope `json:"scopes,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListScopesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListScopesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // List secret keys
 type ListSecretsRequest struct {
 	// The name of the scope to list secrets within.
 	Scope string `json:"-" url:"scope"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListSecretsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListSecretsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ListSecretsResponse struct {
 	// Metadata information of all secrets contained within the given scope.
 	Secrets []SecretMetadata `json:"secrets,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListSecretsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListSecretsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // List contents
@@ -856,16 +596,6 @@ type Mkdirs struct {
 	// exist, it will also create them. If the directory already exists, this
 	// command will do nothing and succeed.
 	Path string `json:"path"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *Mkdirs) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s Mkdirs) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ObjectInfo struct {
@@ -945,16 +675,6 @@ type PutAcl struct {
 	Principal string `json:"principal"`
 	// The name of the scope to apply permissions to.
 	Scope string `json:"scope"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *PutAcl) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PutAcl) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type PutSecret struct {
@@ -1141,16 +861,6 @@ type RepoPermissionsRequest struct {
 	AccessControlList []RepoAccessControlRequest `json:"access_control_list,omitempty"`
 	// The repo for which to get or manage permissions.
 	RepoId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *RepoPermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s RepoPermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ScopeBackendType string
@@ -1219,31 +929,11 @@ func (s SecretScope) MarshalJSON() ([]byte, error) {
 type SparseCheckout struct {
 	// List of patterns to include for sparse checkout.
 	Patterns []string `json:"patterns,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *SparseCheckout) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s SparseCheckout) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type SparseCheckoutUpdate struct {
 	// List of patterns to include for sparse checkout.
 	Patterns []string `json:"patterns,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *SparseCheckoutUpdate) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s SparseCheckoutUpdate) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type UpdateCredentials struct {
@@ -1430,14 +1120,4 @@ type WorkspaceObjectPermissionsRequest struct {
 	WorkspaceObjectId string `json:"-" url:"-"`
 	// The workspace object type for which to get or manage permissions.
 	WorkspaceObjectType string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *WorkspaceObjectPermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s WorkspaceObjectPermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }

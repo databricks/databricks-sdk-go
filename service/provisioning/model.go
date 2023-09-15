@@ -12,16 +12,6 @@ import (
 
 type AwsCredentials struct {
 	StsRole *StsRole `json:"sts_role,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *AwsCredentials) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AwsCredentials) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type AwsKeyInfo struct {
@@ -52,16 +42,6 @@ func (s AwsKeyInfo) MarshalJSON() ([]byte, error) {
 type CloudResourceContainer struct {
 	// The general workspace configurations that are specific to Google Cloud.
 	Gcp *CustomerFacingGcpCloudResourceContainer `json:"gcp,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CloudResourceContainer) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CloudResourceContainer) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateAwsKeyInfo struct {
@@ -89,32 +69,12 @@ func (s CreateAwsKeyInfo) MarshalJSON() ([]byte, error) {
 
 type CreateCredentialAwsCredentials struct {
 	StsRole *CreateCredentialStsRole `json:"sts_role,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateCredentialAwsCredentials) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateCredentialAwsCredentials) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateCredentialRequest struct {
 	AwsCredentials CreateCredentialAwsCredentials `json:"aws_credentials"`
 	// The human-readable name of the credential configuration object.
 	CredentialsName string `json:"credentials_name"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateCredentialStsRole struct {
@@ -138,31 +98,11 @@ type CreateCustomerManagedKeyRequest struct {
 	GcpKeyInfo *CreateGcpKeyInfo `json:"gcp_key_info,omitempty"`
 	// The cases that the key can be used for.
 	UseCases []KeyUseCase `json:"use_cases"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateCustomerManagedKeyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateCustomerManagedKeyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateGcpKeyInfo struct {
 	// The GCP KMS key's resource name
 	KmsKeyId string `json:"kms_key_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateGcpKeyInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateGcpKeyInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateNetworkRequest struct {
@@ -202,16 +142,6 @@ type CreateStorageConfigurationRequest struct {
 	RootBucketInfo RootBucketInfo `json:"root_bucket_info"`
 	// The human-readable name of the storage configuration.
 	StorageConfigurationName string `json:"storage_configuration_name"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateStorageConfigurationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateStorageConfigurationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateVpcEndpointRequest struct {
@@ -436,112 +366,42 @@ func (s CustomerManagedKey) MarshalJSON() ([]byte, error) {
 type DeleteCredentialRequest struct {
 	// Databricks Account API credential configuration ID
 	CredentialsId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete encryption key configuration
 type DeleteEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
 	CustomerManagedKeyId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteEncryptionKeyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteEncryptionKeyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete a network configuration
 type DeleteNetworkRequest struct {
 	// Databricks Account API network configuration ID.
 	NetworkId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteNetworkRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteNetworkRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete a private access settings object
 type DeletePrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeletePrivateAccesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeletePrivateAccesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete storage configuration
 type DeleteStorageRequest struct {
 	// Databricks Account API storage configuration ID.
 	StorageConfigurationId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteStorageRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteStorageRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete VPC endpoint configuration
 type DeleteVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
 	VpcEndpointId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteVpcEndpointRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteVpcEndpointRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete a workspace
 type DeleteWorkspaceRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteWorkspaceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // This enumeration represents the type of Databricks VPC [endpoint service]
@@ -613,16 +473,6 @@ func (f *ErrorType) Type() string {
 type GcpKeyInfo struct {
 	// The GCP KMS key's resource name
 	KmsKeyId string `json:"kms_key_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GcpKeyInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GcpKeyInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // The network settings for the workspace. The configurations are only for
@@ -691,16 +541,6 @@ type GcpNetworkInfo struct {
 	// The ID of the VPC associated with this network. VPC IDs can be used in
 	// multiple network configurations.
 	VpcId string `json:"vpc_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GcpNetworkInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GcpNetworkInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // The Google Cloud specific information for this Private Service Connect
@@ -733,112 +573,42 @@ func (s GcpVpcEndpointInfo) MarshalJSON() ([]byte, error) {
 type GetCredentialRequest struct {
 	// Databricks Account API credential configuration ID
 	CredentialsId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get encryption key configuration
 type GetEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
 	CustomerManagedKeyId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetEncryptionKeyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetEncryptionKeyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get a network configuration
 type GetNetworkRequest struct {
 	// Databricks Account API network configuration ID.
 	NetworkId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetNetworkRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetNetworkRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get a private access settings object
 type GetPrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetPrivateAccesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetPrivateAccesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get storage configuration
 type GetStorageRequest struct {
 	// Databricks Account API storage configuration ID.
 	StorageConfigurationId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetStorageRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetStorageRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get a VPC endpoint configuration
 type GetVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
 	VpcEndpointId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetVpcEndpointRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetVpcEndpointRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get a workspace
 type GetWorkspaceRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetWorkspaceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // The configurations for the GKE cluster of a Databricks workspace.
@@ -1008,16 +778,6 @@ type NetworkVpcEndpoints struct {
 	// The VPC endpoint ID used by this network to access the Databricks REST
 	// API.
 	RestApi []string `json:"rest_api"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *NetworkVpcEndpoints) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s NetworkVpcEndpoints) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type NetworkWarning struct {

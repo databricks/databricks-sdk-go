@@ -80,96 +80,36 @@ func (s ComplexValue) MarshalJSON() ([]byte, error) {
 type DeleteAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
 	Id string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteAccountGroupRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteAccountGroupRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete a service principal
 type DeleteAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
 	Id string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteAccountServicePrincipalRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteAccountServicePrincipalRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete a user
 type DeleteAccountUserRequest struct {
 	// Unique ID for a user in the Databricks account.
 	Id string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteAccountUserRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteAccountUserRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete a group
 type DeleteGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
 	Id string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteGroupRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteGroupRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete a service principal
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
 	Id string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteServicePrincipalRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteServicePrincipalRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete a user
 type DeleteUserRequest struct {
 	// Unique ID for a user in the Databricks workspace.
 	Id string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteUserRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteUserRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete permissions assignment
@@ -178,125 +118,45 @@ type DeleteWorkspaceAssignmentRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteWorkspaceAssignmentRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get group details
 type GetAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
 	Id string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetAccountGroupRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetAccountGroupRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get service principal details
 type GetAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
 	Id string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetAccountServicePrincipalRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetAccountServicePrincipalRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get user details
 type GetAccountUserRequest struct {
 	// Unique ID for a user in the Databricks account.
 	Id string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetAccountUserRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetAccountUserRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get assignable roles for a resource
 type GetAssignableRolesForResourceRequest struct {
 	// The resource name for which assignable roles will be listed.
 	Resource string `json:"-" url:"resource"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetAssignableRolesForResourceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetAssignableRolesForResourceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetAssignableRolesForResourceResponse struct {
 	Roles []Role `json:"roles,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetAssignableRolesForResourceResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetAssignableRolesForResourceResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get group details
 type GetGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
 	Id string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetGroupRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetGroupRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetPasswordPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []PasswordPermissionsDescription `json:"permission_levels,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetPasswordPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetPasswordPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get object permission levels
@@ -305,31 +165,11 @@ type GetPermissionLevelsRequest struct {
 	RequestObjectId string `json:"-" url:"-"`
 	// <needs content>
 	RequestObjectType string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get object permissions
@@ -337,16 +177,6 @@ type GetPermissionRequest struct {
 	RequestObjectId string `json:"-" url:"-"`
 	// <needs content>
 	RequestObjectType string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetPermissionRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetPermissionRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get a rule set
@@ -362,64 +192,24 @@ type GetRuleSetRequest struct {
 	Etag string `json:"-" url:"etag"`
 	// The ruleset name associated with the request.
 	Name string `json:"-" url:"name"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetRuleSetRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetRuleSetRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get service principal details
 type GetServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
 	Id string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetServicePrincipalRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetServicePrincipalRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get user details
 type GetUserRequest struct {
 	// Unique ID for a user in the Databricks workspace.
 	Id string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetUserRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetUserRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // List workspace permissions
 type GetWorkspaceAssignmentRequest struct {
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetWorkspaceAssignmentRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GrantRule struct {
@@ -427,16 +217,6 @@ type GrantRule struct {
 	Principals []string `json:"principals,omitempty"`
 	// Role that is assigned to the list of principals.
 	Role string `json:"role"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GrantRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GrantRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type Group struct {
@@ -771,16 +551,6 @@ func (s ListUsersResponse) MarshalJSON() ([]byte, error) {
 type ListWorkspaceAssignmentRequest struct {
 	// The workspace ID for the account.
 	WorkspaceId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListWorkspaceAssignmentRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type Name struct {
@@ -826,16 +596,6 @@ type PartialUpdate struct {
 	// The schema of the patch request. Must be
 	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
 	Schemas []PatchSchema `json:"schemas,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *PartialUpdate) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PartialUpdate) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type PasswordAccessControlRequest struct {
@@ -962,16 +722,6 @@ func (s PasswordPermissionsDescription) MarshalJSON() ([]byte, error) {
 
 type PasswordPermissionsRequest struct {
 	AccessControlList []PasswordAccessControlRequest `json:"access_control_list,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *PasswordPermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PasswordPermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type Patch struct {
@@ -1088,16 +838,6 @@ func (s PermissionAssignment) MarshalJSON() ([]byte, error) {
 type PermissionAssignments struct {
 	// Array of permissions assignments defined for a workspace.
 	PermissionAssignments []PermissionAssignment `json:"permission_assignments,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *PermissionAssignments) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PermissionAssignments) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -1193,16 +933,6 @@ type PermissionsRequest struct {
 	RequestObjectId string `json:"-" url:"-"`
 	// <needs content>
 	RequestObjectType string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *PermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type PrincipalOutput struct {
@@ -1248,16 +978,6 @@ func (s ResourceMeta) MarshalJSON() ([]byte, error) {
 type Role struct {
 	// Role to assign to a principal or a list of principals on a resource.
 	Name string `json:"name"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *Role) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s Role) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type RuleSetResponse struct {
@@ -1288,16 +1008,6 @@ type RuleSetUpdateRequest struct {
 	GrantRules []GrantRule `json:"grant_rules,omitempty"`
 	// Name of the rule set.
 	Name string `json:"name"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *RuleSetUpdateRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s RuleSetUpdateRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ServicePrincipal struct {
@@ -1314,7 +1024,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 
@@ -1334,16 +1044,6 @@ type UpdateRuleSetRequest struct {
 	Name string `json:"name"`
 
 	RuleSet RuleSetUpdateRequest `json:"rule_set"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdateRuleSetRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateRuleSetRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type UpdateWorkspaceAssignments struct {
@@ -1353,16 +1053,6 @@ type UpdateWorkspaceAssignments struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdateWorkspaceAssignments) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateWorkspaceAssignments) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type User struct {
@@ -1380,7 +1070,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Name *Name `json:"name,omitempty"`
 
@@ -1431,14 +1121,4 @@ func (f *WorkspacePermission) Type() string {
 type WorkspacePermissions struct {
 	// Array of permissions defined for a workspace.
 	Permissions []PermissionOutput `json:"permissions,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *WorkspacePermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s WorkspacePermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }

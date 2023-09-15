@@ -75,16 +75,6 @@ func (s BudgetAlert) MarshalJSON() ([]byte, error) {
 // List of budgets.
 type BudgetList struct {
 	Budgets []BudgetWithStatus `json:"budgets,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *BudgetList) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s BudgetList) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Budget configuration with daily status.
@@ -241,16 +231,6 @@ func (s CreateLogDeliveryConfigurationParams) MarshalJSON() ([]byte, error) {
 type DeleteBudgetRequest struct {
 	// Budget ID
 	BudgetId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteBudgetRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteBudgetRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -323,32 +303,12 @@ func (s DownloadRequest) MarshalJSON() ([]byte, error) {
 type GetBudgetRequest struct {
 	// Budget ID
 	BudgetId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetBudgetRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetBudgetRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get log delivery configuration
 type GetLogDeliveryRequest struct {
 	// Databricks log delivery configuration ID
 	LogDeliveryConfigurationId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetLogDeliveryRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetLogDeliveryRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get all log delivery configurations
@@ -606,16 +566,6 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdateLogDeliveryConfigurationStatusRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateLogDeliveryConfigurationStatusRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type WrappedBudget struct {
@@ -623,71 +573,21 @@ type WrappedBudget struct {
 	Budget Budget `json:"budget"`
 	// Budget ID
 	BudgetId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *WrappedBudget) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s WrappedBudget) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type WrappedBudgetWithStatus struct {
 	// Budget configuration with daily status.
 	Budget BudgetWithStatus `json:"budget"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *WrappedBudgetWithStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s WrappedBudgetWithStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type WrappedCreateLogDeliveryConfiguration struct {
 	LogDeliveryConfiguration *CreateLogDeliveryConfigurationParams `json:"log_delivery_configuration,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *WrappedCreateLogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s WrappedCreateLogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type WrappedLogDeliveryConfiguration struct {
 	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *WrappedLogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s WrappedLogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type WrappedLogDeliveryConfigurations struct {
 	LogDeliveryConfigurations []LogDeliveryConfiguration `json:"log_delivery_configurations,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *WrappedLogDeliveryConfigurations) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s WrappedLogDeliveryConfigurations) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }

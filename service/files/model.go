@@ -16,31 +16,11 @@ type AddBlock struct {
 	Data string `json:"data"`
 	// The handle on an open stream.
 	Handle int64 `json:"handle"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *AddBlock) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AddBlock) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type Close struct {
 	// The handle on an open stream.
 	Handle int64 `json:"handle"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *Close) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s Close) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type Create struct {
@@ -99,46 +79,16 @@ func (s Delete) MarshalJSON() ([]byte, error) {
 type DeleteFileRequest struct {
 	// The absolute path of the file or directory in DBFS.
 	FilePath string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteFileRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteFileRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Download a file
 type DownloadRequest struct {
 	// The absolute path of the file or directory in DBFS.
 	FilePath string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DownloadRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DownloadRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type DownloadResponse struct {
 	Contents io.ReadCloser `json:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DownloadResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DownloadResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type FileInfo struct {
@@ -167,16 +117,6 @@ type GetStatusRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
 	Path string `json:"-" url:"path"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetStatusRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetStatusRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // List directory contents or file details
@@ -184,47 +124,17 @@ type ListDbfsRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
 	Path string `json:"-" url:"path"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListDbfsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListDbfsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ListStatusResponse struct {
 	// A list of FileInfo's that describe contents of directory or file. See
 	// example above.
 	Files []FileInfo `json:"files,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListStatusResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListStatusResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type MkDirs struct {
 	// The path of the new directory. The path should be the absolute DBFS path.
 	Path string `json:"path"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *MkDirs) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s MkDirs) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type Move struct {
@@ -234,16 +144,6 @@ type Move struct {
 	// The source path of the file or directory. The path should be the absolute
 	// DBFS path.
 	SourcePath string `json:"source_path"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *Move) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s Move) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type Put struct {

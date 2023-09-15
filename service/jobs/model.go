@@ -155,31 +155,11 @@ type CancelAllRuns struct {
 	// The canonical identifier of the job to cancel all runs of. This field is
 	// required.
 	JobId int64 `json:"job_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CancelAllRuns) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CancelAllRuns) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CancelRun struct {
 	// This field is required.
 	RunId int64 `json:"run_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CancelRun) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CancelRun) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ClusterInstance struct {
@@ -315,16 +295,6 @@ type Continuous struct {
 	// Indicate whether the continuous execution of the job is paused or not.
 	// Defaults to UNPAUSED.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *Continuous) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s Continuous) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateJob struct {
@@ -457,16 +427,6 @@ type CronSchedule struct {
 	//
 	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
 	TimezoneId string `json:"timezone_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CronSchedule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CronSchedule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type DbtOutput struct {
@@ -530,46 +490,16 @@ func (s DbtTask) MarshalJSON() ([]byte, error) {
 type DeleteJob struct {
 	// The canonical identifier of the job to delete. This field is required.
 	JobId int64 `json:"job_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteJob) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteJob) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type DeleteRun struct {
 	// The canonical identifier of the run for which to retrieve the metadata.
 	RunId int64 `json:"run_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteRun) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteRun) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ExportRunOutput struct {
 	// The exported content in HTML format (one for every view item).
 	Views []ViewItem `json:"views,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ExportRunOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ExportRunOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Export and retrieve a job run
@@ -578,16 +508,6 @@ type ExportRunRequest struct {
 	RunId int64 `json:"-" url:"run_id"`
 	// Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
 	ViewsToExport ViewsToExport `json:"-" url:"views_to_export,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ExportRunRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ExportRunRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type FileArrivalTriggerConfiguration struct {
@@ -646,47 +566,17 @@ func (f *Format) Type() string {
 type GetJobPermissionLevelsRequest struct {
 	// The job for which to get or manage permissions.
 	JobId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetJobPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetJobPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetJobPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []JobPermissionsDescription `json:"permission_levels,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetJobPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetJobPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get job permissions
 type GetJobPermissionsRequest struct {
 	// The job for which to get or manage permissions.
 	JobId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetJobPermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetJobPermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get a single job
@@ -694,32 +584,12 @@ type GetJobRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
 	JobId int64 `json:"-" url:"job_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetJobRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetJobRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get the output for a single run
 type GetRunOutputRequest struct {
 	// The canonical identifier for the run. This field is required.
 	RunId int64 `json:"-" url:"run_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetRunOutputRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetRunOutputRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Get a single job run
@@ -927,16 +797,6 @@ type JobCluster struct {
 	JobClusterKey string `json:"job_cluster_key"`
 	// If new_cluster, a description of a cluster that is created for each task.
 	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *JobCluster) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s JobCluster) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type JobCompute struct {
@@ -946,16 +806,6 @@ type JobCompute struct {
 	ComputeKey string `json:"compute_key"`
 
 	Spec compute.ComputeSpec `json:"spec"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *JobCompute) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s JobCompute) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type JobEmailNotifications struct {
@@ -1039,16 +889,6 @@ type JobParameterDefinition struct {
 	// The name of the defined parameter. May only contain alphanumeric
 	// characters, `_`, `-`, and `.`
 	Name string `json:"name"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *JobParameterDefinition) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s JobParameterDefinition) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type JobPermission struct {
@@ -1139,16 +979,6 @@ type JobPermissionsRequest struct {
 	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
 	// The job for which to get or manage permissions.
 	JobId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *JobPermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s JobPermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Write-only setting, available only in Create/Update/Reset and Submit calls.
@@ -1285,16 +1115,6 @@ type JobSource struct {
 	ImportFromGitBranch string `json:"import_from_git_branch"`
 	// Path of the job YAML file that contains the job specification.
 	JobConfigPath string `json:"job_config_path"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *JobSource) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s JobSource) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -1409,16 +1229,6 @@ func (s JobsHealthRule) MarshalJSON() ([]byte, error) {
 // An optional set of health rules that can be defined for this job.
 type JobsHealthRules struct {
 	Rules []JobsHealthRule `json:"rules,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *JobsHealthRules) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s JobsHealthRules) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // List jobs
@@ -1634,16 +1444,6 @@ type NotebookTask struct {
 	// * `WORKSPACE`: Notebook is located in <Databricks> workspace. * `GIT`:
 	// Notebook is located in cloud Git provider.
 	Source Source `json:"source,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *NotebookTask) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s NotebookTask) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ParamPairs map[string]string
@@ -1924,16 +1724,6 @@ type ResetJob struct {
 	// Changes to the field `JobBaseSettings.timeout_seconds` are applied to
 	// active runs. Changes to other fields are applied to future runs only.
 	NewSettings JobSettings `json:"new_settings"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ResetJob) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ResetJob) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ResolvedConditionTaskValues struct {
@@ -1954,90 +1744,30 @@ func (s ResolvedConditionTaskValues) MarshalJSON() ([]byte, error) {
 
 type ResolvedDbtTaskValues struct {
 	Commands []string `json:"commands,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ResolvedDbtTaskValues) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ResolvedDbtTaskValues) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ResolvedNotebookTaskValues struct {
 	BaseParameters map[string]string `json:"base_parameters,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ResolvedNotebookTaskValues) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ResolvedNotebookTaskValues) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ResolvedParamPairValues struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ResolvedParamPairValues) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ResolvedParamPairValues) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ResolvedPythonWheelTaskValues struct {
 	NamedParameters map[string]string `json:"named_parameters,omitempty"`
 
 	Parameters []string `json:"parameters,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ResolvedPythonWheelTaskValues) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ResolvedPythonWheelTaskValues) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ResolvedRunJobTaskValues struct {
 	NamedParameters map[string]string `json:"named_parameters,omitempty"`
 
 	Parameters map[string]string `json:"parameters,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ResolvedRunJobTaskValues) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ResolvedRunJobTaskValues) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ResolvedStringParamsValues struct {
 	Parameters []string `json:"parameters,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ResolvedStringParamsValues) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ResolvedStringParamsValues) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ResolvedValues struct {
@@ -2060,16 +1790,6 @@ type ResolvedValues struct {
 	SparkSubmitTask *ResolvedStringParamsValues `json:"spark_submit_task,omitempty"`
 
 	SqlTask *ResolvedParamPairValues `json:"sql_task,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ResolvedValues) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ResolvedValues) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type Run struct {
@@ -2309,16 +2029,6 @@ type RunJobTask struct {
 	JobId int `json:"job_id"`
 	// Job-level parameters used to trigger the job.
 	JobParameters any `json:"job_parameters,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *RunJobTask) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s RunJobTask) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -2640,16 +2350,6 @@ type RunParameters struct {
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
 	SqlParams map[string]string `json:"sql_params,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *RunParameters) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s RunParameters) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -2970,16 +2670,6 @@ type SparkPythonTask struct {
 	// at a cloud filesystem URI. * `GIT`: The Python file is located in a
 	// remote Git repository.
 	Source Source `json:"source,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *SparkPythonTask) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s SparkPythonTask) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type SparkSubmitTask struct {
@@ -2990,16 +2680,6 @@ type SparkSubmitTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	Parameters []string `json:"parameters,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *SparkSubmitTask) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s SparkSubmitTask) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type SqlAlertOutput struct {
@@ -3149,16 +2829,6 @@ type SqlOutput struct {
 	DashboardOutput *SqlDashboardOutput `json:"dashboard_output,omitempty"`
 	// The output of a SQL query task, if available.
 	QueryOutput *SqlQueryOutput `json:"query_output,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *SqlOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s SqlOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type SqlOutputError struct {
@@ -3230,16 +2900,6 @@ type SqlTask struct {
 	// The canonical identifier of the SQL warehouse. Only serverless and pro
 	// SQL warehouses are supported.
 	WarehouseId string `json:"warehouse_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *SqlTask) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s SqlTask) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type SqlTaskAlert struct {
@@ -3286,31 +2946,11 @@ func (s SqlTaskDashboard) MarshalJSON() ([]byte, error) {
 type SqlTaskFile struct {
 	// Relative path of the SQL file in the remote Git repository.
 	Path string `json:"path"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *SqlTaskFile) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s SqlTaskFile) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type SqlTaskQuery struct {
 	// The canonical identifier of the SQL query.
 	QueryId string `json:"query_id"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *SqlTaskQuery) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s SqlTaskQuery) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type SqlTaskSubscription struct {
@@ -3618,16 +3258,6 @@ type TaskEmailNotifications struct {
 	// not specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
 	OnSuccess []string `json:"on_success,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *TaskEmailNotifications) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s TaskEmailNotifications) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type TaskNotificationSettings struct {
@@ -3681,16 +3311,6 @@ type TriggerHistory struct {
 	LastNotTriggered *TriggerEvaluation `json:"last_not_triggered,omitempty"`
 	// The last time the run was triggered due to a file arrival.
 	LastTriggered *TriggerEvaluation `json:"last_triggered,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *TriggerHistory) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s TriggerHistory) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type TriggerInfo struct {
@@ -3713,16 +3333,6 @@ type TriggerSettings struct {
 	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
 	// Whether this trigger is paused or not.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *TriggerSettings) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s TriggerSettings) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // This describes an enum
@@ -3785,16 +3395,6 @@ type UpdateJob struct {
 	// Changes to the field `JobSettings.timeout_seconds` are applied to active
 	// runs. Changes to other fields are applied to future runs only.
 	NewSettings *JobSettings `json:"new_settings,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdateJob) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateJob) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ViewItem struct {
@@ -3911,16 +3511,6 @@ type WebhookNotifications struct {
 	// completes successfully. A maximum of 3 destinations can be specified for
 	// the `on_success` property.
 	OnSuccess []Webhook `json:"on_success,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *WebhookNotifications) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s WebhookNotifications) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type WebhookNotificationsOnDurationWarningThresholdExceededItem struct {

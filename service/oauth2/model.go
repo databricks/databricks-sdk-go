@@ -104,16 +104,6 @@ func (s CreatePublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
 type CreateServicePrincipalSecretRequest struct {
 	// The service principal ID.
 	ServicePrincipalId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateServicePrincipalSecretRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateServicePrincipalSecretRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateServicePrincipalSecretResponse struct {
@@ -145,32 +135,12 @@ func (s CreateServicePrincipalSecretResponse) MarshalJSON() ([]byte, error) {
 type DeleteCustomAppIntegrationRequest struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteCustomAppIntegrationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteCustomAppIntegrationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete Published OAuth App Integration
 type DeletePublishedAppIntegrationRequest struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeletePublishedAppIntegrationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeletePublishedAppIntegrationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Delete service principal secret
@@ -179,16 +149,6 @@ type DeleteServicePrincipalSecretRequest struct {
 	SecretId string `json:"-" url:"-"`
 	// The service principal ID.
 	ServicePrincipalId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *DeleteServicePrincipalSecretRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteServicePrincipalSecretRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetCustomAppIntegrationOutput struct {
@@ -220,31 +180,11 @@ func (s GetCustomAppIntegrationOutput) MarshalJSON() ([]byte, error) {
 type GetCustomAppIntegrationRequest struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetCustomAppIntegrationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetCustomAppIntegrationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetCustomAppIntegrationsOutput struct {
 	// Array of Custom OAuth App Integrations defined for the account.
 	Apps []GetCustomAppIntegrationOutput `json:"apps,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetCustomAppIntegrationsOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetCustomAppIntegrationsOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetPublishedAppIntegrationOutput struct {
@@ -272,62 +212,22 @@ func (s GetPublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
 type GetPublishedAppIntegrationRequest struct {
 	// The oauth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetPublishedAppIntegrationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetPublishedAppIntegrationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GetPublishedAppIntegrationsOutput struct {
 	// Array of Published OAuth App Integrations defined for the account.
 	Apps []GetPublishedAppIntegrationOutput `json:"apps,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *GetPublishedAppIntegrationsOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GetPublishedAppIntegrationsOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // List service principal secrets
 type ListServicePrincipalSecretsRequest struct {
 	// The service principal ID.
 	ServicePrincipalId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListServicePrincipalSecretsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListServicePrincipalSecretsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type ListServicePrincipalSecretsResponse struct {
 	// List of the secrets
 	Secrets []SecretInfo `json:"secrets,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *ListServicePrincipalSecretsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListServicePrincipalSecretsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type OAuthEnrollmentStatus struct {
@@ -393,16 +293,6 @@ type UpdateCustomAppIntegration struct {
 	RedirectUrls []string `json:"redirect_urls,omitempty"`
 	// Token access policy to be updated in the custom oauth app integration
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdateCustomAppIntegration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateCustomAppIntegration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type UpdatePublishedAppIntegration struct {
@@ -410,14 +300,4 @@ type UpdatePublishedAppIntegration struct {
 	IntegrationId string `json:"-" url:"-"`
 	// Token access policy to be updated in the published oauth app integration
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdatePublishedAppIntegration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdatePublishedAppIntegration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
