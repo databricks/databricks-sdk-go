@@ -90,7 +90,7 @@ func (a *AccountMetastoreAssignmentsAPI) GetByWorkspaceId(ctx context.Context, w
 //
 // Gets a list of all Databricks workspace IDs that have been assigned to given
 // metastore.
-func (a *AccountMetastoreAssignmentsAPI) List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]MetastoreAssignment, error) {
+func (a *AccountMetastoreAssignmentsAPI) List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]int64, error) {
 	return a.impl.List(ctx, request)
 }
 
@@ -98,7 +98,7 @@ func (a *AccountMetastoreAssignmentsAPI) List(ctx context.Context, request ListA
 //
 // Gets a list of all Databricks workspace IDs that have been assigned to given
 // metastore.
-func (a *AccountMetastoreAssignmentsAPI) ListByMetastoreId(ctx context.Context, metastoreId string) ([]MetastoreAssignment, error) {
+func (a *AccountMetastoreAssignmentsAPI) ListByMetastoreId(ctx context.Context, metastoreId string) ([]int64, error) {
 	return a.impl.List(ctx, ListAccountMetastoreAssignmentsRequest{
 		MetastoreId: metastoreId,
 	})
@@ -390,7 +390,7 @@ func (a *ArtifactAllowlistsAPI) Impl() ArtifactAllowlistsService {
 // Get an artifact allowlist.
 //
 // Get the artifact allowlist of a certain artifact type. The caller must be a
-// metastore admin.
+// metastore admin or have the **MANAGE ALLOWLIST** privilege on the metastore.
 func (a *ArtifactAllowlistsAPI) Get(ctx context.Context, request GetArtifactAllowlistRequest) (*ArtifactAllowlistInfo, error) {
 	return a.impl.Get(ctx, request)
 }
@@ -398,7 +398,7 @@ func (a *ArtifactAllowlistsAPI) Get(ctx context.Context, request GetArtifactAllo
 // Get an artifact allowlist.
 //
 // Get the artifact allowlist of a certain artifact type. The caller must be a
-// metastore admin.
+// metastore admin or have the **MANAGE ALLOWLIST** privilege on the metastore.
 func (a *ArtifactAllowlistsAPI) GetByArtifactType(ctx context.Context, artifactType ArtifactType) (*ArtifactAllowlistInfo, error) {
 	return a.impl.Get(ctx, GetArtifactAllowlistRequest{
 		ArtifactType: artifactType,
@@ -409,7 +409,7 @@ func (a *ArtifactAllowlistsAPI) GetByArtifactType(ctx context.Context, artifactT
 //
 // Set the artifact allowlist of a certain artifact type. The whole artifact
 // allowlist is replaced with the new allowlist. The caller must be a metastore
-// admin.
+// admin or have the **MANAGE ALLOWLIST** privilege on the metastore.
 func (a *ArtifactAllowlistsAPI) Update(ctx context.Context, request SetArtifactAllowlist) (*ArtifactAllowlistInfo, error) {
 	return a.impl.Update(ctx, request)
 }

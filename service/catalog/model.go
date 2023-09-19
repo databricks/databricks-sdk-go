@@ -2198,6 +2198,8 @@ const PrivilegeCreateView Privilege = `CREATE_VIEW`
 
 const PrivilegeExecute Privilege = `EXECUTE`
 
+const PrivilegeManageAllowlist Privilege = `MANAGE_ALLOWLIST`
+
 const PrivilegeModify Privilege = `MODIFY`
 
 const PrivilegeReadFiles Privilege = `READ_FILES`
@@ -2238,11 +2240,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
+	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
 	}
 }
 
@@ -2414,6 +2416,8 @@ const SecurableTypeStorageCredential SecurableType = `storage_credential`
 
 const SecurableTypeTable SecurableType = `table`
 
+const SecurableTypeVolume SecurableType = `volume`
+
 // String representation for [fmt.Print]
 func (f *SecurableType) String() string {
 	return string(*f)
@@ -2422,11 +2426,11 @@ func (f *SecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableType) Set(v string) error {
 	switch v {
-	case `catalog`, `connection`, `external_location`, `function`, `metastore`, `pipeline`, `provider`, `recipient`, `schema`, `share`, `storage_credential`, `table`:
+	case `catalog`, `connection`, `external_location`, `function`, `metastore`, `pipeline`, `provider`, `recipient`, `schema`, `share`, `storage_credential`, `table`, `volume`:
 		*f = SecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "connection", "external_location", "function", "metastore", "pipeline", "provider", "recipient", "schema", "share", "storage_credential", "table"`, v)
+		return fmt.Errorf(`value "%s" is not one of "catalog", "connection", "external_location", "function", "metastore", "pipeline", "provider", "recipient", "schema", "share", "storage_credential", "table", "volume"`, v)
 	}
 }
 
@@ -3099,3 +3103,6 @@ func (f *VolumeType) Set(v string) error {
 func (f *VolumeType) Type() string {
 	return "VolumeType"
 }
+
+// Workspace id.
+type WorkspaceId int64

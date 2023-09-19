@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Network Policy, Account Settings, Ip Access Lists, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Network Policy, Account Settings, Credentials Manager, Ip Access Lists, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -323,6 +323,42 @@ func (a *AccountSettingsAPI) ReadPersonalComputeSetting(ctx context.Context, req
 // Updates the value of the Personal Compute setting.
 func (a *AccountSettingsAPI) UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	return a.impl.UpdatePersonalComputeSetting(ctx, request)
+}
+
+func NewCredentialsManager(client *client.DatabricksClient) *CredentialsManagerAPI {
+	return &CredentialsManagerAPI{
+		impl: &credentialsManagerImpl{
+			client: client,
+		},
+	}
+}
+
+// Credentials manager interacts with with Identity Providers to to perform
+// token exchanges using stored credentials and refresh tokens.
+type CredentialsManagerAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(CredentialsManagerService)
+	impl CredentialsManagerService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *CredentialsManagerAPI) WithImpl(impl CredentialsManagerService) *CredentialsManagerAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level CredentialsManager API implementation
+func (a *CredentialsManagerAPI) Impl() CredentialsManagerService {
+	return a.impl
+}
+
+// Exchange token.
+//
+// Exchange tokens with an Identity Provider to get a new access token. It
+// allowes specifying scopes to determine token permissions.
+func (a *CredentialsManagerAPI) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
+	return a.impl.ExchangeToken(ctx, request)
 }
 
 func NewIpAccessLists(client *client.DatabricksClient) *IpAccessListsAPI {

@@ -156,6 +156,17 @@ type AccountSettingsService interface {
 	UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error)
 }
 
+// Credentials manager interacts with with Identity Providers to to perform
+// token exchanges using stored credentials and refresh tokens.
+type CredentialsManagerService interface {
+
+	// Exchange token.
+	//
+	// Exchange tokens with an Identity Provider to get a new access token. It
+	// allowes specifying scopes to determine token permissions.
+	ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error)
+}
+
 // IP Access List enables admins to configure IP access lists.
 //
 // IP access lists affect web application access and REST API access to this
