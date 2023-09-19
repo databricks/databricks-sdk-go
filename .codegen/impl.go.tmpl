@@ -42,6 +42,8 @@ func (a *{{.Service.CamelName}}Impl) {{.PascalName}}(ctx context.Context{{if .Re
 {{ if .Response }}
   var {{ .Response.CamelName }} {{ if .IsResponseByteStream -}}
     io.ReadCloser
+  {{- else if .Response.ArrayValue -}}
+	[]{{ .Response.ArrayValue.PascalName }}
   {{- else -}}
 	{{ template "type" .Response }}
   {{- end }}
