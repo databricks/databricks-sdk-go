@@ -3096,9 +3096,6 @@ type PolicyFamily struct {
 	PolicyFamilyId string `json:"policy_family_id"`
 }
 
-// ID of the policy family.
-type PolicyFamilyId string
-
 type PythonPyPiLibrary struct {
 	// The name of the pypi package to install. An optional exact version
 	// specification is also supported. Examples: "simplejson" and
