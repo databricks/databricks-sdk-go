@@ -474,6 +474,13 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 	Status LogDeliveryConfigStatus `json:"status"`
 }
 
+// Format specification for month in the format `YYYY-MM`. This is used to
+// specify billable usage `start_month` and `end_month` properties. **Note**:
+// Billable usage logs are unavailable before March 2019 (`2019-03`).
+type UsageDownloadMonth string
+
+type WorkspaceId int64
+
 type WrappedBudget struct {
 	// Budget configuration to be created.
 	Budget Budget `json:"budget"`

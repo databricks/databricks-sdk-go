@@ -449,6 +449,8 @@ func (f *PartitionValueOp) Type() string {
 	return "PartitionValueOp"
 }
 
+type PermissionsList catalog.PermissionsList
+
 type Privilege string
 
 const PrivilegeAllPrivileges Privilege = `ALL_PRIVILEGES`

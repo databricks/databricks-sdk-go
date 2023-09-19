@@ -195,7 +195,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -680,6 +680,12 @@ type PermissionsRequest struct {
 	// <needs content>
 	RequestObjectType string `json:"-" url:"-"`
 }
+
+// A principal can be a user (for end users), a service principal (for
+// applications and compute workloads), or an account group. Each principal has
+// its own identifier format: * users/<USERNAME> * groups/<GROUP_NAME> *
+// servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>
+type Principal string
 
 type PrincipalOutput struct {
 	// The display name of the principal.

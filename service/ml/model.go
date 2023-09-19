@@ -82,6 +82,9 @@ func (f *ActivityAction) Type() string {
 	return "ActivityAction"
 }
 
+// Unique identifier of an activity
+type ActivityId string
+
 // This describes an enum
 type ActivityType string
 
@@ -1046,6 +1049,9 @@ type ModelDatabricks struct {
 	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
 }
+
+// Name of the model whose events would trigger this webhook.
+type ModelName string
 
 type ModelTag struct {
 	// The tag key.
@@ -2079,3 +2085,6 @@ func (f *UpdateRunStatus) Set(v string) error {
 func (f *UpdateRunStatus) Type() string {
 	return "UpdateRunStatus"
 }
+
+// Webhook ID
+type WebhookId string
