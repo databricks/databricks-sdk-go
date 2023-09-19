@@ -134,6 +134,21 @@ func (a *accountSettingsImpl) UpdatePersonalComputeSetting(ctx context.Context, 
 	return &personalComputeSetting, err
 }
 
+// unexported type that holds implementations of just CredentialsManager API methods
+type credentialsManagerImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
+	var exchangeTokenResponse ExchangeTokenResponse
+	path := "/api/2.0/credentials-manager/exchange-tokens/token"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &exchangeTokenResponse)
+	return &exchangeTokenResponse, err
+}
+
 // unexported type that holds implementations of just IpAccessLists API methods
 type ipAccessListsImpl struct {
 	client *client.DatabricksClient
