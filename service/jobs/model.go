@@ -101,7 +101,11 @@ type BaseRun struct {
 	RunName string `json:"run_name,omitempty"`
 	// The URL to the detail page of the run.
 	RunPageUrl string `json:"run_page_url,omitempty"`
-	// This describes an enum
+	// * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *
+	// `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run].
+	// * `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
+	//
+	// [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
 	RunType RunType `json:"run_type,omitempty"`
 	// The cron schedule that triggered this run if it was triggered by the
 	// periodic scheduler.
@@ -124,7 +128,17 @@ type BaseRun struct {
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run resutls.
 	Tasks []RunTask `json:"tasks,omitempty"`
-	// This describes an enum
+	// The type of trigger that fired this run.
+	//
+	// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
+	// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
+	// occurs you triggered a single run on demand through the UI or the API. *
+	// `RETRY`: Indicates a run that is triggered as a retry of a previously
+	// failed run. This occurs when you request to re-run the job in case of
+	// failures. * `RUN_JOB_TASK`: Indicates a run that is triggered using a Run
+	// Job task.
+	//
+	// * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival.
 	Trigger TriggerType `json:"trigger,omitempty"`
 
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
@@ -868,7 +882,15 @@ type JobSettings struct {
 // The source of the job specification in the remote repository when the job is
 // source controlled.
 type JobSource struct {
-	// This describes an enum
+	// Dirty state indicates the job is not fully synced with the job
+	// specification in the remote repository.
+	//
+	// Possible values are: * `NOT_SYNCED`: The job is not yet synced with the
+	// remote job specification. Import the remote job specification from UI to
+	// make the job fully synced. * `DISCONNECTED`: The job is temporary
+	// disconnected from the remote job specification and is allowed for live
+	// edit. Import the remote job specification again from UI to make the job
+	// fully synced.
 	DirtyState JobSourceDirtyState `json:"dirty_state,omitempty"`
 	// Name of the branch which the job is imported from.
 	ImportFromGitBranch string `json:"import_from_git_branch"`
@@ -876,7 +898,14 @@ type JobSource struct {
 	JobConfigPath string `json:"job_config_path"`
 }
 
-// This describes an enum
+// Dirty state indicates the job is not fully synced with the job specification
+// in the remote repository.
+//
+// Possible values are: * `NOT_SYNCED`: The job is not yet synced with the
+// remote job specification. Import the remote job specification from UI to make
+// the job fully synced. * `DISCONNECTED`: The job is temporary disconnected
+// from the remote job specification and is allowed for live edit. Import the
+// remote job specification again from UI to make the job fully synced.
 type JobSourceDirtyState string
 
 // The job is temporary disconnected from the remote job specification and is
@@ -1065,7 +1094,11 @@ type ListRunsResponse struct {
 	Runs []BaseRun `json:"runs,omitempty"`
 }
 
-// This describes an enum
+// * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *
+// `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. *
+// `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
+//
+// [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
 type ListRunsRunType string
 
 // Normal job run. A run created with :method:jobs/runNow.
@@ -1499,7 +1532,11 @@ type Run struct {
 	RunName string `json:"run_name,omitempty"`
 	// The URL to the detail page of the run.
 	RunPageUrl string `json:"run_page_url,omitempty"`
-	// This describes an enum
+	// * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *
+	// `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run].
+	// * `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
+	//
+	// [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
 	RunType RunType `json:"run_type,omitempty"`
 	// The cron schedule that triggered this run if it was triggered by the
 	// periodic scheduler.
@@ -1522,7 +1559,17 @@ type Run struct {
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run resutls.
 	Tasks []RunTask `json:"tasks,omitempty"`
-	// This describes an enum
+	// The type of trigger that fired this run.
+	//
+	// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
+	// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
+	// occurs you triggered a single run on demand through the UI or the API. *
+	// `RETRY`: Indicates a run that is triggered as a retry of a previously
+	// failed run. This occurs when you request to re-run the job in case of
+	// failures. * `RUN_JOB_TASK`: Indicates a run that is triggered using a Run
+	// Job task.
+	//
+	// * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival.
 	Trigger TriggerType `json:"trigger,omitempty"`
 
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
@@ -1576,7 +1623,16 @@ func (f *RunConditionTaskOp) Type() string {
 	return "RunConditionTaskOp"
 }
 
-// This describes an enum
+// An optional value indicating the condition that determines whether the task
+// should be run once its dependencies have been completed. When omitted,
+// defaults to `ALL_SUCCESS`.
+//
+// Possible values are: * `ALL_SUCCESS`: All dependencies have executed and
+// succeeded * `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded *
+// `NONE_FAILED`: None of the dependencies have failed and at least one was
+// executed * `ALL_DONE`: All dependencies have been completed *
+// `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl
+// dependencies have failed
 type RunIf string
 
 // All dependencies have been completed
@@ -1630,7 +1686,22 @@ type RunJobTask struct {
 	JobParameters any `json:"job_parameters,omitempty"`
 }
 
-// This describes an enum
+// A value indicating the run's lifecycle state. The possible values are: *
+// `PENDING`: The run has been triggered. If there is not an active run of the
+// same job, the cluster and execution context are being prepared. If there is
+// already an active run of the same job, the run immediately transitions into
+// the `SKIPPED` state without preparing any resources. * `RUNNING`: The task of
+// this run is being executed. * `TERMINATING`: The task of this run has
+// completed, and the cluster and execution context are being cleaned up. *
+// `TERMINATED`: The task of this run has completed, and the cluster and
+// execution context have been cleaned up. This state is terminal. * `SKIPPED`:
+// This run was aborted because a previous run of the same job was already
+// active. This state is terminal. * `INTERNAL_ERROR`: An exceptional state that
+// indicates a failure in the Jobs service, such as network failure over a long
+// period. If a run on a new cluster ends in the `INTERNAL_ERROR` state, the
+// Jobs service terminates the cluster as soon as possible. This state is
+// terminal. * `BLOCKED`: The run is blocked on an upstream dependency. *
+// `WAITING_FOR_RETRY`: The run is waiting for a retry.
 type RunLifeCycleState string
 
 // The run is blocked on an upstream dependency.
@@ -1921,7 +1992,17 @@ type RunParameters struct {
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
-// This describes an enum
+// A value indicating the run's result. The possible values are: * `SUCCESS`:
+// The task completed successfully. * `FAILED`: The task completed with an
+// error. * `TIMEDOUT`: The run was stopped after reaching the timeout. *
+// `CANCELED`: The run was canceled at user request. *
+// `MAXIMUM_CONCURRENT_RUNS_REACHED`: The run was skipped because the maximum
+// concurrent runs were reached. * `EXCLUDED`: The run was skipped because the
+// necessary conditions were not met. * `SUCCESS_WITH_FAILURES`: The job run
+// completed successfully with some failures; leaf tasks were successful. *
+// `UPSTREAM_FAILED`: The run was skipped because of an upstream failure. *
+// `UPSTREAM_CANCELED`: The run was skipped because an upstream task was
+// canceled.
 type RunResultState string
 
 // The run was canceled at user request.
@@ -2105,7 +2186,11 @@ type RunTask struct {
 	TaskKey string `json:"task_key,omitempty"`
 }
 
-// This describes an enum
+// * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *
+// `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. *
+// `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
+//
+// [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
 type RunType string
 
 // Normal job run. A run created with :method:jobs/runNow.
@@ -2704,7 +2789,16 @@ type TriggerSettings struct {
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 }
 
-// This describes an enum
+// The type of trigger that fired this run.
+//
+// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
+// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
+// occurs you triggered a single run on demand through the UI or the API. *
+// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
+// run. This occurs when you request to re-run the job in case of failures. *
+// `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task.
+//
+// * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival.
 type TriggerType string
 
 // Indicates a run that is triggered by a file arrival.
@@ -2777,7 +2871,7 @@ type ViewItem struct {
 	Type ViewType `json:"type,omitempty"`
 }
 
-// This describes an enum
+// * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
 type ViewType string
 
 // Dashboard view item.
@@ -2807,7 +2901,8 @@ func (f *ViewType) Type() string {
 	return "ViewType"
 }
 
-// This describes an enum
+// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
+// the notebook. * `ALL`: All views of the notebook.
 type ViewsToExport string
 
 // All views of the notebook.
