@@ -36,13 +36,7 @@ func TestAccAccountServicePrincipal(t *testing.T) {
 	assert.Equal(t, spGetByDisplayName.Id, sp.Id)
 
 	spList, err := a.ServicePrincipals.ListAll(ctx, iam.ListAccountServicePrincipalsRequest{
-		Attributes:         "",
-		Count:              0,
-		ExcludedAttributes: "",
-		Filter:             fmt.Sprintf("displayName eq %v", sp.DisplayName),
-		SortBy:             "",
-		SortOrder:          "",
-		StartIndex:         0,
+		Filter: fmt.Sprintf("displayName eq %v", sp.DisplayName),
 	})
 	require.NoError(t, err)
 	assert.Equal(t, spList[0].Id, sp.Id)
