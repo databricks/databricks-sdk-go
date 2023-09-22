@@ -674,7 +674,9 @@ func (f *GkeConfigConnectivityType) Type() string {
 	return "GkeConfigConnectivityType"
 }
 
-// This describes an enum
+// Possible values are: * `MANAGED_SERVICES`: Encrypts notebook and secret data
+// in the control plane * `STORAGE`: Encrypts the workspace's root S3 bucket
+// (root DBFS and system data) and, optionally, cluster EBS volumes.
 type KeyUseCase string
 
 // Encrypts notebook and secret data in the control plane
@@ -731,7 +733,9 @@ type Network struct {
 	// The ID of the VPC associated with this network configuration. VPC IDs can
 	// be used in multiple networks.
 	VpcId string `json:"vpc_id,omitempty"`
-	// This describes an enum
+	// The status of this network configuration object in terms of its use in a
+	// workspace: * `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`:
+	// Broken. * `WARNED`: Warned.
 	VpcStatus VpcStatus `json:"vpc_status,omitempty"`
 	// Array of warning messages about the network configuration.
 	WarningMessages []NetworkWarning `json:"warning_messages,omitempty"`
@@ -1100,7 +1104,9 @@ func (s VpcEndpoint) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// This describes an enum
+// The status of this network configuration object in terms of its use in a
+// workspace: * `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`: Broken.
+// * `WARNED`: Warned.
 type VpcStatus string
 
 // Broken.

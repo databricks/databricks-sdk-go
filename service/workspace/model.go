@@ -437,16 +437,23 @@ func (s Import) MarshalJSON() ([]byte, error) {
 // notebook is imported from R Markdown format.
 type ImportFormat string
 
+// The item is imported depending on an analysis of the item's extension and
 const ImportFormatAuto ImportFormat = `AUTO`
 
+// The notebook is imported in <Databricks> archive format. Required for
+// directories.
 const ImportFormatDbc ImportFormat = `DBC`
 
+// The notebook is imported as an HTML file.
 const ImportFormatHtml ImportFormat = `HTML`
 
+// The notebook is imported as a Jupyter/IPython Notebook file.
 const ImportFormatJupyter ImportFormat = `JUPYTER`
 
+// The notebook is imported from R Markdown format.
 const ImportFormatRMarkdown ImportFormat = `R_MARKDOWN`
 
+// The notebook is imported as source code.
 const ImportFormatSource ImportFormat = `SOURCE`
 
 // String representation for [fmt.Print]
@@ -637,14 +644,19 @@ func (s ObjectInfo) MarshalJSON() ([]byte, error) {
 // file - `REPO`: repository
 type ObjectType string
 
+// directory
 const ObjectTypeDirectory ObjectType = `DIRECTORY`
 
+// file
 const ObjectTypeFile ObjectType = `FILE`
 
+// library
 const ObjectTypeLibrary ObjectType = `LIBRARY`
 
+// document that contains runnable code, visualizations, and explanatory text.
 const ObjectTypeNotebook ObjectType = `NOTEBOOK`
 
+// repository
 const ObjectTypeRepo ObjectType = `REPO`
 
 // String representation for [fmt.Print]

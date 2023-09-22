@@ -32,7 +32,12 @@ type CreateIpAccessList struct {
 	IpAddresses []string `json:"ip_addresses"`
 	// Label for the IP access list. This **cannot** be empty.
 	Label string `json:"label"`
-	// This describes an enum
+	// Type of IP access list. Valid values are as follows and are
+	// case-sensitive:
+	//
+	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
+	// list. Exclude this IP or range. IP addresses in the block list are
+	// excluded even if they are included in an allow list.
 	ListType ListType `json:"list_type"`
 }
 
@@ -111,6 +116,21 @@ func (s CreateTokenResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CredentialPartitionId struct {
+	// The ID of the workspace.
+	WorkspaceId int64 `json:"workspace_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CredentialPartitionId) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CredentialPartitionId) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Delete access list
 type DeleteAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list.
@@ -175,6 +195,42 @@ type DeleteTokenManagementRequest struct {
 	TokenId string `json:"-" url:"-"`
 }
 
+type ExchangeToken struct {
+	// The requested token.
+	Credential string `json:"credential,omitempty"`
+	// The end-of-life timestamp of the token. The value is in milliseconds
+	// since the Unix epoch.
+	CredentialEolTime int64 `json:"credential_eol_time,omitempty"`
+	// User ID of the user that owns this token.
+	OwnerId int64 `json:"owner_id,omitempty"`
+	// The scopes of access granted in the token.
+	Scopes []string `json:"scopes,omitempty"`
+
+	TokenType []TokenType `json:"token_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExchangeToken) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExchangeToken) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ExchangeTokenRequest struct {
+	CredentialPartitionId CredentialPartitionId `json:"credential_partition_id"`
+	// Array of scopes for the token request.
+	Scopes []string `json:"scopes"`
+
+	TokenType []TokenType `json:"token_type"`
+}
+
+type ExchangeTokenResponse struct {
+	Values []ExchangeToken `json:"values,omitempty"`
+}
+
 type FetchIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
@@ -230,7 +286,12 @@ type IpAccessListInfo struct {
 	Label string `json:"label,omitempty"`
 	// Universally unique identifier (UUID) of the IP access list.
 	ListId string `json:"list_id,omitempty"`
-	// This describes an enum
+	// Type of IP access list. Valid values are as follows and are
+	// case-sensitive:
+	//
+	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
+	// list. Exclude this IP or range. IP addresses in the block list are
+	// excluded even if they are included in an allow list.
 	ListType ListType `json:"list_type,omitempty"`
 	// Update timestamp in milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
@@ -270,7 +331,11 @@ type ListTokensResponse struct {
 	TokenInfos []TokenInfo `json:"token_infos,omitempty"`
 }
 
-// This describes an enum
+// Type of IP access list. Valid values are as follows and are case-sensitive:
+//
+// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list.
+// Exclude this IP or range. IP addresses in the block list are excluded even if
+// they are included in an allow list.
 type ListType string
 
 // An allow list. Include this IP or range.
@@ -428,7 +493,12 @@ type ReplaceIpAccessList struct {
 	Label string `json:"label"`
 	// Universally unique identifier (UUID) of the IP access list.
 	ListId string `json:"list_id,omitempty"`
-	// This describes an enum
+	// Type of IP access list. Valid values are as follows and are
+	// case-sensitive:
+	//
+	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
+	// list. Exclude this IP or range. IP addresses in the block list are
+	// excluded even if they are included in an allow list.
 	ListType ListType `json:"list_type"`
 
 	ForceSendFields []string `json:"-"`
@@ -601,6 +671,33 @@ type TokenPermissionsRequest struct {
 	AccessControlList []TokenAccessControlRequest `json:"access_control_list,omitempty"`
 }
 
+// The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is
+// supported.
+type TokenType string
+
+const TokenTypeAzureActiveDirectoryToken TokenType = `AZURE_ACTIVE_DIRECTORY_TOKEN`
+
+// String representation for [fmt.Print]
+func (f *TokenType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TokenType) Set(v string) error {
+	switch v {
+	case `AZURE_ACTIVE_DIRECTORY_TOKEN`:
+		*f = TokenType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AZURE_ACTIVE_DIRECTORY_TOKEN"`, v)
+	}
+}
+
+// Type always returns TokenType to satisfy [pflag.Value] interface
+func (f *TokenType) Type() string {
+	return "TokenType"
+}
+
 // Update Account Network Policy
 type UpdateAccountNetworkPolicyRequest struct {
 	// This should always be set to true for Settings RPCs. Added for AIP
@@ -631,7 +728,12 @@ type UpdateIpAccessList struct {
 	Label string `json:"label"`
 	// Universally unique identifier (UUID) of the IP access list.
 	ListId string `json:"list_id,omitempty"`
-	// This describes an enum
+	// Type of IP access list. Valid values are as follows and are
+	// case-sensitive:
+	//
+	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
+	// list. Exclude this IP or range. IP addresses in the block list are
+	// excluded even if they are included in an allow list.
 	ListType ListType `json:"list_type"`
 
 	ForceSendFields []string `json:"-"`
