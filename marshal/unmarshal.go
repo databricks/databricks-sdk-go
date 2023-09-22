@@ -34,9 +34,9 @@ func setForceSendFields(v any, presentFields []string) error {
 		return nil
 	}
 
-	// reflex.GetFieldByName may return the field for an anonymous field
-	// if the extending struct doesn't have the field
-	field := getFieldByName(v, force_send_field_name)
+	// reflex.GetFieldByName may return the field from an anonymous field
+	// if the extending struct doesn't have the field.
+	field := getFieldByName(v, forceSendFieldName)
 	if !field.IsValid() {
 		return nil
 	}

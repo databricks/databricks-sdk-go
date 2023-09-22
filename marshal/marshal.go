@@ -9,7 +9,7 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-const force_send_field_name = "ForceSendFields"
+const forceSendFieldName = "ForceSendFields"
 
 // Marshal returns a JSON encoding of the given object. Included fields:
 // - non-empty value
@@ -19,7 +19,6 @@ const force_send_field_name = "ForceSendFields"
 // Conversely, an embedded struct is not impacted by the ForceSendFields
 // of the struct containing it.
 func Marshal(object any) ([]byte, error) {
-
 	dataMap, err := structAsMap(object)
 	if err != nil {
 		return nil, err
@@ -63,7 +62,7 @@ func structAsMap(object any) (map[string]any, error) {
 			if err != nil {
 				return nil, err
 			}
-			result = mergeMaps(anonymousFieldResult, result)
+			result = mergeMaps(result, anonymousFieldResult)
 			continue
 		}
 
@@ -155,20 +154,20 @@ func isEmptyValue(v reflect.Value) bool {
 // does it, and a JSON should not have duplicated entries.
 func mergeMaps(m1 map[string]any, m2 map[string]any) map[string]any {
 	merged := make(map[string]any)
-	maps.Copy(merged, m2)
 	maps.Copy(merged, m1)
+	maps.Copy(merged, m2)
 	return merged
 }
 
 func getForceSendFields(v any, structName string) (map[string]bool, error) {
 	// reflect.GetFieldByName panics if the field is inside a null anonymous field
-	field := getFieldByName(v, force_send_field_name)
+	field := getFieldByName(v, forceSendFieldName)
 	if !field.IsValid() {
 		return nil, nil
 	}
 	forceSendFields, ok := field.Interface().([]string)
 	if !ok {
-		return nil, fmt.Errorf("invalid type for %s field", force_send_field_name)
+		return nil, fmt.Errorf("invalid type for %s field", forceSendFieldName)
 	}
 	existingFields := getFieldNames(v)
 	includeFields := make(map[string]bool)

@@ -2,7 +2,7 @@ package marshal
 
 import "reflect"
 
-var BASIC_TYPES = map[reflect.Kind]bool{
+var basicTypes = map[reflect.Kind]bool{
 
 	reflect.Bool: true,
 
@@ -31,6 +31,6 @@ var BASIC_TYPES = map[reflect.Kind]bool{
 }
 
 func isBasicType(v reflect.Type) bool {
-	b, ok := BASIC_TYPES[v.Kind()]
+	b, ok := basicTypes[v.Kind()]
 	return b && ok
 }
