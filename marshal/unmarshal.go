@@ -85,13 +85,14 @@ func unmarshalInternal(data []byte, v any) error {
 	objectType := derefer.Type()
 
 	foundFields := []string{}
+	fields := *getTypeFields(objectType)
 
 	for i := 0; i < derefer.NumField(); i++ {
 		field := derefer.Field(i)
 		fieldType := field.Type()
-		jsonTag := objectType.Field(i).Tag.Get("json")
+		jsonTag := fields[i].JsonTag
 
-		if objectType.Field(i).Anonymous {
+		if fields[i].Anonymous {
 			setField(field, data)
 			continue
 		}
@@ -110,7 +111,7 @@ func unmarshalInternal(data []byte, v any) error {
 		}
 
 		if isBasicType(fieldType) {
-			foundFields = append(foundFields, objectType.Field(i).Name)
+			foundFields = append(foundFields, fields[i].Name)
 		}
 
 		if !field.CanAddr() {

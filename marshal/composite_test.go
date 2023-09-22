@@ -112,7 +112,6 @@ func TestCompositeDefault(t *testing.T) {
 			matchUnmarshal: true,
 		},
 	)
-
 }
 
 type compositeTest struct {

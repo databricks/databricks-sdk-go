@@ -40,24 +40,26 @@ func structAsMap(object any) (map[string]any, error) {
 	value = reflect.Indirect(value)
 	objectType := value.Type()
 
-	includeFields, err := getForceSendFields(object, objectType.Name())
+	includeFields, err := getForceSendFields(object, getTypeName(objectType))
 
 	if err != nil {
 		return nil, err
 	}
 
+	fields := *getTypeFields(objectType)
+
 	for i := 0; i < value.NumField(); i++ {
-		jsonTag := objectType.Field(i).Tag.Get("json")
+		jsonTag := fields[i].JsonTag
 		tag, err := parseJSONTag(jsonTag)
 		if err != nil {
 			return nil, err
 		}
 
 		fieldValue := value.Field(i)
-		fieldType := objectType.Field(i)
+		fieldStruct := fields[i]
 
 		// Anonymous fields should be marshalled using the same JSON, and then merged into the same map
-		if fieldType.Anonymous && fieldValue.IsValid() {
+		if fieldStruct.Anonymous && fieldValue.IsValid() {
 			anonymousFieldResult, err := structAsMap(fieldValue.Interface())
 			if err != nil {
 				return nil, err
@@ -67,12 +69,12 @@ func structAsMap(object any) (map[string]any, error) {
 		}
 
 		// Skip fields which should not be included
-		if !includeField(tag, fieldValue, includeFields[fieldType.Name]) {
+		if !includeField(tag, fieldValue, includeFields[fieldStruct.Name]) {
 			continue
 		}
 
 		if tag.asString {
-			result[tag.name] = formatAsString(fieldValue, fieldType.Type.Kind())
+			result[tag.name] = formatAsString(fieldValue, fieldStruct.Type.Kind())
 		} else {
 			result[tag.name] = fieldValue.Interface()
 		}
@@ -188,8 +190,8 @@ func getFieldByName(v any, fieldName string) reflect.Value {
 	value = reflect.Indirect(value)
 	objectType := value.Type()
 
-	for i := 0; i < value.NumField(); i++ {
-		name := objectType.Field(i).Name
+	for i, field := range *getTypeFields(objectType) {
+		name := field.Name
 		if name == fieldName {
 			return value.Field(i)
 		}
@@ -203,8 +205,8 @@ func getFieldNames(v any) map[string]bool {
 	value = reflect.Indirect(value)
 	objectType := value.Type()
 
-	for i := 0; i < value.NumField(); i++ {
-		name := objectType.Field(i).Name
+	for _, field := range *getTypeFields(objectType) {
+		name := field.Name
 		result[name] = true
 	}
 	return result
