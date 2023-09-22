@@ -81,7 +81,7 @@ type Entity struct {
 }
 
 // Whether the Entity contains a basic GoLang type which is not required
-func (e *Entity) ForceSendFields() bool {
+func (e *Entity) ShouldIncludeForceSendFields() bool {
 	for _, field := range e.fields {
 		fieldType := field.Entity
 		if !field.Required && fieldType.IsBasicGoLangType() {

@@ -4,17 +4,6 @@ import (
 	"testing"
 )
 
-func TestChildNoFSNotSet(t *testing.T) {
-	executeBasicMarshalTest(t,
-		basicMarshalTest{
-			st:             customStruct{},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
-		},
-	)
-}
-
 func TestChildNoFSDefault(t *testing.T) {
 	executeBasicMarshalTest(t,
 		basicMarshalTest{

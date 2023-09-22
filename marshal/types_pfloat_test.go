@@ -4,17 +4,6 @@ import (
 	"testing"
 )
 
-func TestPFloatNotSet(t *testing.T) {
-	executeBasicMarshalTest(t,
-		basicMarshalTest{
-			st:             customStruct{},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
-		},
-	)
-}
-
 func TestPFloatDefault(t *testing.T) {
 	executeBasicMarshalTest(t,
 		basicMarshalTest{

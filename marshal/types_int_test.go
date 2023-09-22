@@ -4,17 +4,6 @@ import (
 	"testing"
 )
 
-func TestIntNotSet(t *testing.T) {
-	executeBasicMarshalTest(t,
-		basicMarshalTest{
-			st:             customStruct{},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
-		},
-	)
-}
-
 func TestIntDefault(t *testing.T) {
 	executeBasicMarshalTest(t,
 		basicMarshalTest{

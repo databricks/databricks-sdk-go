@@ -24,81 +24,34 @@ func Unmarshal(data []byte, v any) error {
 		return err
 	}
 
-	return recordOriginalFields(data, v)
-}
-
-func recordOriginalFields(data []byte, v any) error {
-
-	value := reflect.ValueOf(v)
-	switch value.Kind() {
-	case reflect.Ptr:
-		// reflex.GetFieldByName may return the field for an anonymous field
-		// if the extending struct doesn't have the field
-		field := getFieldByName(v, force_send_field_name)
-		if !field.IsValid() {
-			return nil
-		}
-		// A Value can be changed only if it is
-		// addressable and was not obtained by
-		// the use of unexported struct fields.
-		if field.CanSet() {
-			// change value of N
-			if field.Kind() == reflect.Slice {
-				presentFields, err := getFieldsInJson(data, v)
-				if err != nil {
-					return err
-				}
-				if len(presentFields) == 0 {
-					return nil
-				}
-				presentFieldsValue := reflect.ValueOf(presentFields)
-				field.Set(presentFieldsValue)
-			}
-		} else {
-			return errors.New("cannot set field")
-		}
-	}
 	return nil
 }
 
-// Returns the list of fields found in the json
-func getFieldsInJson(data []byte, v any) ([]string, error) {
-	var jsonFields map[string]interface{}
-	err := json.Unmarshal([]byte(data), &jsonFields)
-	if err != nil {
-		return []string{}, err
+func setForceSendFields(v any, presentFields []string) error {
+
+	value := reflect.ValueOf(v)
+	if value.Kind() != reflect.Ptr {
+		return nil
 	}
 
-	schema := reflect.ValueOf(v)
-	derefer := reflect.Indirect(schema)
-
-	objectType := derefer.Type()
-
-	elements := []string{}
-
-	for i := 0; i < derefer.NumField(); i++ {
-		fieldType := objectType.Field(i).Type
-
-		if !isBasicType(fieldType) {
-			continue
-		}
-
-		jsonTag := objectType.Field(i).Tag.Get("json")
-		if jsonTag == "" {
-			continue
-		}
-		jsonName, err := getJsonName(jsonTag)
-		if err != nil {
-			return nil, err
-		}
-
-		if _, ok := jsonFields[jsonName]; ok {
-			name := objectType.Field(i).Name
-			elements = append(elements, name)
-		}
+	// reflex.GetFieldByName may return the field for an anonymous field
+	// if the extending struct doesn't have the field
+	field := getFieldByName(v, force_send_field_name)
+	if !field.IsValid() {
+		return nil
 	}
 
-	return elements, nil
+	if !field.CanSet() || field.Kind() != reflect.Slice {
+		return errors.New("cannot set field")
+	}
+
+	if len(presentFields) == 0 {
+		return nil
+	}
+	presentFieldsValue := reflect.ValueOf(presentFields)
+	field.Set(presentFieldsValue)
+
+	return nil
 }
 
 // Extract the json name from the json tag
@@ -131,8 +84,11 @@ func unmarshalInternal(data []byte, v any) error {
 
 	objectType := derefer.Type()
 
+	foundFields := []string{}
+
 	for i := 0; i < derefer.NumField(); i++ {
 		field := derefer.Field(i)
+		fieldType := field.Type()
 		jsonTag := objectType.Field(i).Tag.Get("json")
 
 		if objectType.Field(i).Anonymous {
@@ -153,6 +109,10 @@ func unmarshalInternal(data []byte, v any) error {
 			continue
 		}
 
+		if isBasicType(fieldType) {
+			foundFields = append(foundFields, objectType.Field(i).Name)
+		}
+
 		if !field.CanAddr() {
 			return errors.New("cannot address field")
 		}
@@ -163,7 +123,7 @@ func unmarshalInternal(data []byte, v any) error {
 		}
 	}
 
-	return nil
+	return setForceSendFields(v, foundFields)
 
 }
 

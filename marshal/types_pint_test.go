@@ -4,17 +4,6 @@ import (
 	"testing"
 )
 
-func TestPIntNotSet(t *testing.T) {
-	executeBasicMarshalTest(t,
-		basicMarshalTest{
-			st:             customStruct{},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
-		},
-	)
-}
-
 func TestPIntDefault(t *testing.T) {
 	executeBasicMarshalTest(t,
 		basicMarshalTest{

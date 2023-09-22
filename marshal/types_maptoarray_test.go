@@ -4,17 +4,6 @@ import (
 	"testing"
 )
 
-func TestMapToArrayNotSet(t *testing.T) {
-	executeBasicMarshalTest(t,
-		basicMarshalTest{
-			st:             customStruct{},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
-		},
-	)
-}
-
 func TestMapToArrayDefault(t *testing.T) {
 	executeBasicMarshalTest(t,
 		basicMarshalTest{

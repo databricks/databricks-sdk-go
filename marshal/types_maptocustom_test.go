@@ -4,17 +4,6 @@ import (
 	"testing"
 )
 
-func TestMapToCustomTypeFSNotSet(t *testing.T) {
-	executeBasicMarshalTest(t,
-		basicMarshalTest{
-			st:             customStruct{},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
-		},
-	)
-}
-
 func TestMapToCustomTypeFSDefault(t *testing.T) {
 	executeBasicMarshalTest(t,
 		basicMarshalTest{

@@ -1,10 +1,22 @@
 package marshal
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+func TestEmpty(t *testing.T) {
+	executeBasicMarshalTest(t,
+		basicMarshalTest{
+			st:             customStruct{},
+			jsonString:     `{"childfs":{},"childnofs":{}}`,
+			matchClassic:   true,
+			matchUnmarshal: true,
+		},
+	)
+}
 
 func TestDefaults(t *testing.T) {
 	executeBasicMarshalTest(t, basicMarshalTest{
@@ -153,4 +165,12 @@ func TestNoOmit(t *testing.T) {
 	res, err := Marshal(in)
 	assert.NoError(t, err)
 	assert.Equal(t, jsonString, string(res))
+}
+
+func TestWrongField(t *testing.T) {
+	st := customStruct{
+		ForceSendFields: []string{"notAField"},
+	}
+	_, err := json.Marshal(st)
+	assert.ErrorContains(t, err, "field notAField cannot be found in struct customStruct")
 }

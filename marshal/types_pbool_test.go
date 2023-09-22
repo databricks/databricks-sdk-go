@@ -4,17 +4,6 @@ import (
 	"testing"
 )
 
-func TestPBoolNotSet(t *testing.T) {
-	executeBasicMarshalTest(t,
-		basicMarshalTest{
-			st:             customStruct{},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
-		},
-	)
-}
-
 func TestPBoolDefault(t *testing.T) {
 	executeBasicMarshalTest(t,
 		basicMarshalTest{

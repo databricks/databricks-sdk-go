@@ -14,8 +14,10 @@ const force_send_field_name = "ForceSendFields"
 // Marshal returns a JSON encoding of the given object. Included fields:
 // - non-empty value
 // - a basic type whose field's name is present in forceSendFields
-// Our templates always populate either omitempty or the '-' tag.
-// For simplicity, we assume one of those cases.
+// Embedded structs are still considered a separate struct. ForceSendFields
+// in an embedded struct only impact the fields of the embedded struct.
+// Conversely, an embedded struct is not impacted by the ForceSendFields
+// of the struct containing it.
 func Marshal(object any) ([]byte, error) {
 
 	dataMap, err := structAsMap(object)
@@ -27,23 +29,23 @@ func Marshal(object any) ([]byte, error) {
 }
 
 // Converts the object to a map
-func structAsMap(object any) (map[string]interface{}, error) {
-	result := make(map[string]interface{})
+func structAsMap(object any) (map[string]any, error) {
+	result := make(map[string]any)
 
 	// If the object is nil or a pointer to nil, don't do anything
 	if object == nil || (reflect.ValueOf(object).Kind() == reflect.Ptr && reflect.ValueOf(object).IsNil()) {
 		return result, nil
 	}
 
-	includeFields, err := getForceSendFields(object)
+	value := reflect.ValueOf(object)
+	value = reflect.Indirect(value)
+	objectType := value.Type()
+
+	includeFields, err := getForceSendFields(object, objectType.Name())
 
 	if err != nil {
 		return nil, err
 	}
-
-	value := reflect.ValueOf(object)
-	value = reflect.Indirect(value)
-	objectType := value.Type()
 
 	for i := 0; i < value.NumField(); i++ {
 		jsonTag := objectType.Field(i).Tag.Get("json")
@@ -53,10 +55,10 @@ func structAsMap(object any) (map[string]interface{}, error) {
 		}
 
 		fieldValue := value.Field(i)
-		fieldStruct := objectType.Field(i)
+		fieldType := objectType.Field(i)
 
 		// Anonymous fields should be marshalled using the same JSON, and then merged into the same map
-		if fieldStruct.Anonymous && fieldValue.IsValid() {
+		if fieldType.Anonymous && fieldValue.IsValid() {
 			anonymousFieldResult, err := structAsMap(fieldValue.Interface())
 			if err != nil {
 				return nil, err
@@ -66,12 +68,12 @@ func structAsMap(object any) (map[string]interface{}, error) {
 		}
 
 		// Skip fields which should not be included
-		if !includeField(tag, fieldValue, includeFields[fieldStruct.Name]) {
+		if !includeField(tag, fieldValue, includeFields[fieldType.Name]) {
 			continue
 		}
 
 		if tag.asString {
-			result[tag.name] = formatAsString(fieldValue, fieldStruct.Type.Kind())
+			result[tag.name] = formatAsString(fieldValue, fieldType.Type.Kind())
 		} else {
 			result[tag.name] = fieldValue.Interface()
 		}
@@ -151,14 +153,14 @@ func isEmptyValue(v reflect.Value) bool {
 
 // Merges two maps. Overrides duplicated elements, which is fine because json.Unmarshal also
 // does it, and a JSON should not have duplicated entries.
-func mergeMaps(m1 map[string]interface{}, m2 map[string]interface{}) map[string]interface{} {
-	merged := make(map[string]interface{})
+func mergeMaps(m1 map[string]any, m2 map[string]any) map[string]any {
+	merged := make(map[string]any)
 	maps.Copy(merged, m2)
 	maps.Copy(merged, m1)
 	return merged
 }
 
-func getForceSendFields(v any) (map[string]bool, error) {
+func getForceSendFields(v any, structName string) (map[string]bool, error) {
 	// reflect.GetFieldByName panics if the field is inside a null anonymous field
 	field := getFieldByName(v, force_send_field_name)
 	if !field.IsValid() {
@@ -168,9 +170,14 @@ func getForceSendFields(v any) (map[string]bool, error) {
 	if !ok {
 		return nil, fmt.Errorf("invalid type for %s field", force_send_field_name)
 	}
+	existingFields := getFieldNames(v)
 	includeFields := make(map[string]bool)
 	for _, field := range forceSendFields {
-		includeFields[field] = true
+		if _, ok := existingFields[field]; ok {
+			includeFields[field] = true
+		} else {
+			return nil, fmt.Errorf("field %s cannot be found in struct %s", field, structName)
+		}
 	}
 
 	return includeFields, nil
@@ -189,4 +196,17 @@ func getFieldByName(v any, fieldName string) reflect.Value {
 		}
 	}
 	return reflect.Value{}
+}
+
+func getFieldNames(v any) map[string]bool {
+	result := map[string]bool{}
+	value := reflect.ValueOf(v)
+	value = reflect.Indirect(value)
+	objectType := value.Type()
+
+	for i := 0; i < value.NumField(); i++ {
+		name := objectType.Field(i).Name
+		result[name] = true
+	}
+	return result
 }

@@ -17,10 +17,10 @@ type {{.PascalName}} struct {
     {{.Comment "    // " 80}}
     {{.PascalName}} {{if .IsOptionalObject}}*{{end}}{{template "type" .Entity}} `{{template "field-tag" . }}`{{end}}
 
-	{{if .ForceSendFields}} ForceSendFields []string `json:"-"` {{end}}
+	{{if .ShouldIncludeForceSendFields}} ForceSendFields []string `json:"-"` {{end}}
 }
 
-{{if and .Fields .ForceSendFields}}
+{{if .ShouldIncludeForceSendFields}}
 func (s *{{.PascalName}}) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }

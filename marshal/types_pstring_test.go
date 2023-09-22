@@ -4,17 +4,6 @@ import (
 	"testing"
 )
 
-func TestPStrNotSet(t *testing.T) {
-	executeBasicMarshalTest(t,
-		basicMarshalTest{
-			st:             customStruct{},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
-		},
-	)
-}
-
 func TestPStrDefault(t *testing.T) {
 	executeBasicMarshalTest(t,
 		basicMarshalTest{
