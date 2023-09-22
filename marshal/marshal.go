@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-	"strings"
 
 	"golang.org/x/exp/maps"
 )
@@ -46,7 +45,7 @@ func structAsMap(object any) (map[string]any, error) {
 		return nil, err
 	}
 
-	fields := *getTypeFields(objectType)
+	fields := getTypeFields(objectType)
 
 	for i := 0; i < value.NumField(); i++ {
 		jsonTag := fields[i].JsonTag
@@ -64,7 +63,7 @@ func structAsMap(object any) (map[string]any, error) {
 			if err != nil {
 				return nil, err
 			}
-			result = mergeMaps(result, anonymousFieldResult)
+			result = mergeMaps(anonymousFieldResult, result)
 			continue
 		}
 
@@ -96,28 +95,6 @@ type jsonTag struct {
 	asString  bool
 	ignore    bool
 	omitempty bool
-}
-
-func parseJSONTag(raw string) (jsonTag, error) {
-	if raw == "-" || raw == "" {
-		return jsonTag{ignore: true}, nil
-	}
-
-	parts := strings.Split(raw, ",")
-
-	jsonTag := jsonTag{
-		name: parts[0],
-	}
-
-	for _, v := range parts {
-		switch v {
-		case "omitempty":
-			jsonTag.omitempty = true
-		case "string":
-			jsonTag.asString = true
-		}
-	}
-	return jsonTag, nil
 }
 
 // Determines whether a field should be included or not
@@ -190,7 +167,7 @@ func getFieldByName(v any, fieldName string) reflect.Value {
 	value = reflect.Indirect(value)
 	objectType := value.Type()
 
-	for i, field := range *getTypeFields(objectType) {
+	for i, field := range getTypeFields(objectType) {
 		name := field.Name
 		if name == fieldName {
 			return value.Field(i)
@@ -205,7 +182,7 @@ func getFieldNames(v any) map[string]bool {
 	value = reflect.Indirect(value)
 	objectType := value.Type()
 
-	for _, field := range *getTypeFields(objectType) {
+	for _, field := range getTypeFields(objectType) {
 		name := field.Name
 		result[name] = true
 	}

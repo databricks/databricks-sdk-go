@@ -3,9 +3,7 @@ package marshal
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"reflect"
-	"strings"
 )
 
 // Unmarshals a JSON element and fills in the ForceSendFields field if
@@ -54,24 +52,6 @@ func setForceSendFields(v any, presentFields []string) error {
 	return nil
 }
 
-// Extract the json name from the json tag
-func getJsonName(val string) (string, error) {
-	if val == "-" {
-		return "-", nil
-	}
-
-	i := strings.Index(val, ",")
-
-	if i == -1 {
-		return val, nil
-	}
-	if val[:i] == "" {
-		return "", fmt.Errorf("malformed json tag: %s", val)
-	}
-
-	return val[:i], nil
-}
-
 func unmarshalInternal(data []byte, v any) error {
 	var jsonFields map[string]json.RawMessage
 	err := json.Unmarshal([]byte(data), &jsonFields)
@@ -85,7 +65,7 @@ func unmarshalInternal(data []byte, v any) error {
 	objectType := derefer.Type()
 
 	foundFields := []string{}
-	fields := *getTypeFields(objectType)
+	fields := getTypeFields(objectType)
 
 	for i := 0; i < derefer.NumField(); i++ {
 		field := derefer.Field(i)
@@ -99,13 +79,13 @@ func unmarshalInternal(data []byte, v any) error {
 		if jsonTag == "" {
 			continue
 		}
-		jsonName, err := getJsonName(jsonTag)
+		tag, err := parseJSONTag(jsonTag)
 
 		if err != nil {
 			return err
 		}
 
-		value, ok := jsonFields[jsonName]
+		value, ok := jsonFields[tag.name]
 		if !ok {
 			continue
 		}

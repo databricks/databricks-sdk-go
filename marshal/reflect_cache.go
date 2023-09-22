@@ -1,17 +1,22 @@
 package marshal
 
-import "reflect"
+import (
+	"reflect"
+	"strings"
+)
 
-var typeCache = map[reflect.Type]*[]cachedType{}
+var typeCache = map[reflect.Type][]cachedType{}
 
 var nameCache = map[reflect.Type]string{}
+
+var tagCache = map[string]jsonTag{}
 
 type cachedType struct {
 	reflect.StructField
 	JsonTag string
 }
 
-func getTypeFields(structType reflect.Type) *[]cachedType {
+func getTypeFields(structType reflect.Type) []cachedType {
 	if res, ok := typeCache[structType]; ok {
 		return res
 	}
@@ -23,8 +28,8 @@ func getTypeFields(structType reflect.Type) *[]cachedType {
 			JsonTag:     field.Tag.Get("json"),
 		})
 	}
-	typeCache[structType] = &res
-	return &res
+	typeCache[structType] = res
+	return res
 }
 
 func getTypeName(structType reflect.Type) string {
@@ -34,4 +39,30 @@ func getTypeName(structType reflect.Type) string {
 	name := structType.Name()
 	nameCache[structType] = name
 	return name
+}
+
+func parseJSONTag(raw string) (jsonTag, error) {
+	if tag, ok := tagCache[raw]; ok {
+		return tag, nil
+	}
+	if raw == "-" || raw == "" {
+		return jsonTag{ignore: true}, nil
+	}
+
+	parts := strings.Split(raw, ",")
+
+	jsonTag := jsonTag{
+		name: parts[0],
+	}
+
+	for _, v := range parts {
+		switch v {
+		case "omitempty":
+			jsonTag.omitempty = true
+		case "string":
+			jsonTag.asString = true
+		}
+	}
+	tagCache[raw] = jsonTag
+	return jsonTag, nil
 }
