@@ -7,6 +7,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type jsonTags struct {
+	NoJsonTag    *string
+	EmptyJsonTag *string `json:""`
+	OnlyOmit     *string `json:",omitempty"`
+	JsonIgnore   *string `json:"-"`
+}
+
+func (s *jsonTags) UnmarshalJSON(b []byte) error {
+	return Unmarshal(b, s)
+}
+
+func (s jsonTags) MarshalJSON() ([]byte, error) {
+	return Marshal(s)
+}
+
 func TestEmpty(t *testing.T) {
 	executeBasicMarshalTest(t,
 		basicMarshalTest{
@@ -16,6 +31,30 @@ func TestEmpty(t *testing.T) {
 			matchUnmarshal: true,
 		},
 	)
+}
+
+func TestNoJsonFields(t *testing.T) {
+	testString := "value"
+	st := jsonTags{
+		NoJsonTag:    &testString,
+		EmptyJsonTag: &testString,
+		JsonIgnore:   &testString,
+		OnlyOmit:     &testString,
+	}
+	jsonString, err := json.Marshal(st)
+	type C jsonTags
+	original, _ := json.Marshal((C)(st))
+	assert.NoError(t, err)
+	compareJSON(t, string(jsonString), string(original))
+	var res jsonTags
+	err = json.Unmarshal(jsonString, &res)
+	expected := jsonTags{
+		NoJsonTag:    &testString,
+		EmptyJsonTag: &testString,
+		OnlyOmit:     &testString,
+	}
+	assert.NoError(t, err)
+	assert.Equal(t, res, expected)
 }
 
 func TestDefaults(t *testing.T) {

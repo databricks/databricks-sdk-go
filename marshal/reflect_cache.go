@@ -3,17 +3,21 @@ package marshal
 import (
 	"reflect"
 	"strings"
+	"sync"
 )
+
+var mutexType sync.Mutex
 
 var typeCache = map[reflect.Type][]cachedType{}
 
-var nameCache = map[reflect.Type]string{}
+var mutexName sync.Mutex
 
-var tagCache = map[string]jsonTag{}
+var nameCache = map[reflect.Type]string{}
 
 type cachedType struct {
 	reflect.StructField
-	JsonTag string
+	JsonTag       jsonTag
+	IndexInStruct int
 }
 
 func getTypeFields(structType reflect.Type) []cachedType {
@@ -23,12 +27,16 @@ func getTypeFields(structType reflect.Type) []cachedType {
 	res := []cachedType{}
 	for i := 0; i < structType.NumField(); i++ {
 		field := structType.Field(i)
+		jsonTag := parseJSONTag(field)
 		res = append(res, cachedType{
-			StructField: field,
-			JsonTag:     field.Tag.Get("json"),
+			StructField:   field,
+			JsonTag:       jsonTag,
+			IndexInStruct: i,
 		})
 	}
+	mutexType.Lock()
 	typeCache[structType] = res
+	mutexType.Unlock()
 	return res
 }
 
@@ -37,22 +45,28 @@ func getTypeName(structType reflect.Type) string {
 		return res
 	}
 	name := structType.Name()
+	mutexName.Lock()
 	nameCache[structType] = name
+	mutexName.Unlock()
 	return name
 }
 
-func parseJSONTag(raw string) (jsonTag, error) {
-	if tag, ok := tagCache[raw]; ok {
-		return tag, nil
-	}
-	if raw == "-" || raw == "" {
-		return jsonTag{ignore: true}, nil
+func parseJSONTag(field reflect.StructField) jsonTag {
+	raw := field.Tag.Get("json")
+	name := field.Name
+
+	if raw == "-" {
+		return jsonTag{ignore: true}
 	}
 
 	parts := strings.Split(raw, ",")
 
+	if parts[0] != "" {
+		name = parts[0]
+	}
+
 	jsonTag := jsonTag{
-		name: parts[0],
+		name: name,
 	}
 
 	for _, v := range parts {
@@ -63,6 +77,5 @@ func parseJSONTag(raw string) (jsonTag, error) {
 			jsonTag.asString = true
 		}
 	}
-	tagCache[raw] = jsonTag
-	return jsonTag, nil
+	return jsonTag
 }

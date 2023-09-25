@@ -45,20 +45,17 @@ func structAsMap(object any) (map[string]any, error) {
 		return nil, err
 	}
 
-	fields := getTypeFields(objectType)
-
-	for i := 0; i < value.NumField(); i++ {
-		jsonTag := fields[i].JsonTag
-		tag, err := parseJSONTag(jsonTag)
-		if err != nil {
-			return nil, err
+	for _, field := range getTypeFields(objectType) {
+		if field.JsonTag.ignore {
+			continue
 		}
+		fieldIndex := field.IndexInStruct
+		tag := field.JsonTag
 
-		fieldValue := value.Field(i)
-		fieldStruct := fields[i]
+		fieldValue := value.Field(fieldIndex)
 
 		// Anonymous fields should be marshalled using the same JSON, and then merged into the same map
-		if fieldStruct.Anonymous && fieldValue.IsValid() {
+		if field.Anonymous && fieldValue.IsValid() {
 			anonymousFieldResult, err := structAsMap(fieldValue.Interface())
 			if err != nil {
 				return nil, err
@@ -68,12 +65,12 @@ func structAsMap(object any) (map[string]any, error) {
 		}
 
 		// Skip fields which should not be included
-		if !includeField(tag, fieldValue, includeFields[fieldStruct.Name]) {
+		if !includeField(tag, fieldValue, includeFields[field.Name]) {
 			continue
 		}
 
 		if tag.asString {
-			result[tag.name] = formatAsString(fieldValue, fieldStruct.Type.Kind())
+			result[tag.name] = formatAsString(fieldValue, field.Type.Kind())
 		} else {
 			result[tag.name] = fieldValue.Interface()
 		}
@@ -167,10 +164,10 @@ func getFieldByName(v any, fieldName string) reflect.Value {
 	value = reflect.Indirect(value)
 	objectType := value.Type()
 
-	for i, field := range getTypeFields(objectType) {
+	for _, field := range getTypeFields(objectType) {
 		name := field.Name
 		if name == fieldName {
-			return value.Field(i)
+			return value.Field(field.IndexInStruct)
 		}
 	}
 	return reflect.Value{}

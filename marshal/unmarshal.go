@@ -60,26 +60,24 @@ func unmarshalInternal(data []byte, v any) error {
 	}
 
 	value := reflect.ValueOf(v)
-	derefer := reflect.Indirect(value)
+	value = reflect.Indirect(value)
 
-	objectType := derefer.Type()
+	objectType := value.Type()
 
 	foundFields := []string{}
-	fields := getTypeFields(objectType)
 
-	for i := 0; i < derefer.NumField(); i++ {
-		field := derefer.Field(i)
-		fieldType := field.Type()
-		jsonTag := fields[i].JsonTag
-
-		if fields[i].Anonymous {
-			setField(field, data)
+	for _, field := range getTypeFields(objectType) {
+		if field.JsonTag.ignore {
 			continue
 		}
-		if jsonTag == "" {
+		index := field.IndexInStruct
+		fieldValue := value.Field(index)
+		fieldType := fieldValue.Type()
+		tag := field.JsonTag
+		if field.Anonymous {
+			setField(fieldValue, data)
 			continue
 		}
-		tag, err := parseJSONTag(jsonTag)
 
 		if err != nil {
 			return err
@@ -91,14 +89,14 @@ func unmarshalInternal(data []byte, v any) error {
 		}
 
 		if isBasicType(fieldType) {
-			foundFields = append(foundFields, fields[i].Name)
+			foundFields = append(foundFields, field.Name)
 		}
 
-		if !field.CanAddr() {
+		if !fieldValue.CanAddr() {
 			return errors.New("cannot address field")
 		}
 
-		err = setField(field, value)
+		err = setField(fieldValue, value)
 		if err != nil {
 			return err
 		}
