@@ -21,6 +21,7 @@ type cachedType struct {
 }
 
 func getTypeFields(structType reflect.Type) []cachedType {
+	mutexType.Lock()
 	if res, ok := typeCache[structType]; ok {
 		return res
 	}
@@ -34,18 +35,17 @@ func getTypeFields(structType reflect.Type) []cachedType {
 			IndexInStruct: i,
 		})
 	}
-	mutexType.Lock()
 	typeCache[structType] = res
 	mutexType.Unlock()
 	return res
 }
 
 func getTypeName(structType reflect.Type) string {
+	mutexName.Lock()
 	if res, ok := nameCache[structType]; ok {
 		return res
 	}
 	name := structType.Name()
-	mutexName.Lock()
 	nameCache[structType] = name
 	mutexName.Unlock()
 	return name

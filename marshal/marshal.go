@@ -46,14 +46,12 @@ func structAsMap(object any) (map[string]any, error) {
 	}
 
 	for _, field := range getTypeFields(objectType) {
-		if field.JsonTag.ignore {
+		tag := field.JsonTag
+		if tag.ignore {
 			continue
 		}
-		fieldIndex := field.IndexInStruct
-		tag := field.JsonTag
 
-		fieldValue := value.Field(fieldIndex)
-
+		fieldValue := value.Field(field.IndexInStruct)
 		// Anonymous fields should be marshalled using the same JSON, and then merged into the same map
 		if field.Anonymous && fieldValue.IsValid() {
 			anonymousFieldResult, err := structAsMap(fieldValue.Interface())
