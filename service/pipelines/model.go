@@ -42,6 +42,8 @@ type CreatePipeline struct {
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
 	Name string `json:"name,omitempty"`
+	// List of notification settings for this pipeline.
+	Notifications []Notifications `json:"notifications,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
@@ -116,6 +118,8 @@ type EditPipeline struct {
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
 	Name string `json:"name,omitempty"`
+	// List of notification settings for this pipeline.
+	Notifications []Notifications `json:"notifications,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
@@ -399,6 +403,19 @@ type NotebookLibrary struct {
 	Path string `json:"path,omitempty"`
 }
 
+type Notifications struct {
+	// A list of alerts that trigger the sending of notifications to the
+	// configured destinations. The supported alerts are:
+	//
+	// * `on-update-success`: A pipeline update completes successfully. *
+	// `on-update-failure`: Each time a pipeline update fails. *
+	// `on-update-fatal-failure`: A pipeline update fails with a non-retryable
+	// (fatal) error. * `on-flow-failure`: A single data flow fails.
+	Alerts []string `json:"alerts,omitempty"`
+	// A list of email addresses notified when a configured alert is triggered.
+	EmailRecipients []string `json:"email_recipients,omitempty"`
+}
+
 type Origin struct {
 	// The id of a batch. Unique within a flow.
 	BatchId int `json:"batch_id,omitempty"`
@@ -672,6 +689,8 @@ type PipelineSpec struct {
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
 	Name string `json:"name,omitempty"`
+	// List of notification settings for this pipeline.
+	Notifications []Notifications `json:"notifications,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.

@@ -207,6 +207,39 @@ func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessLi
 	return err
 }
 
+// unexported type that holds implementations of just Settings API methods
+type settingsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *settingsImpl) DeleteDefaultWorkspaceNamespace(ctx context.Context, request DeleteDefaultWorkspaceNamespaceRequest) (*DeleteDefaultWorkspaceNamespaceResponse, error) {
+	var deleteDefaultWorkspaceNamespaceResponse DeleteDefaultWorkspaceNamespaceResponse
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteDefaultWorkspaceNamespaceResponse)
+	return &deleteDefaultWorkspaceNamespaceResponse, err
+}
+
+func (a *settingsImpl) ReadDefaultWorkspaceNamespace(ctx context.Context, request ReadDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error) {
+	var defaultNamespaceSetting DefaultNamespaceSetting
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &defaultNamespaceSetting)
+	return &defaultNamespaceSetting, err
+}
+
+func (a *settingsImpl) UpdateDefaultWorkspaceNamespace(ctx context.Context, request UpdateDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error) {
+	var defaultNamespaceSetting DefaultNamespaceSetting
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &defaultNamespaceSetting)
+	return &defaultNamespaceSetting, err
+}
+
 // unexported type that holds implementations of just TokenManagement API methods
 type tokenManagementImpl struct {
 	client *client.DatabricksClient

@@ -73,7 +73,7 @@ type ServingEndpointsService interface {
 	Patch(ctx context.Context, request PatchServingEndpointTags) ([]EndpointTag, error)
 
 	// Query a serving endpoint with provided model input.
-	Query(ctx context.Context, request QueryRequest) (*QueryEndpointResponse, error)
+	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
 
 	// Set serving endpoint permissions.
 	//

@@ -34,6 +34,14 @@ type CreateServingEndpoint struct {
 	Tags []EndpointTag `json:"tags,omitempty"`
 }
 
+type DataframeSplitInput struct {
+	Columns []any `json:"columns,omitempty"`
+
+	Data []any `json:"data,omitempty"`
+
+	Index []int `json:"index,omitempty"`
+}
+
 // Delete a serving endpoint
 type DeleteServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
@@ -220,15 +228,22 @@ type PatchServingEndpointTags struct {
 	Name string `json:"-" url:"-"`
 }
 
+type QueryEndpointInput struct {
+	// Pandas Dataframe input in the records orientation.
+	DataframeRecords []any `json:"dataframe_records,omitempty"`
+	// Pandas Dataframe input in the split orientation.
+	DataframeSplit *DataframeSplitInput `json:"dataframe_split,omitempty"`
+	// Tensor-based input in columnar format.
+	Inputs any `json:"inputs,omitempty"`
+	// Tensor-based input in row format.
+	Instances []any `json:"instances,omitempty"`
+	// The name of the serving endpoint. This field is required.
+	Name string `json:"-" url:"-"`
+}
+
 type QueryEndpointResponse struct {
 	// The predictions returned by the serving endpoint.
 	Predictions []any `json:"predictions"`
-}
-
-// Query a serving endpoint with provided model input.
-type QueryRequest struct {
-	// The name of the serving endpoint. This field is required.
-	Name string `json:"-" url:"-"`
 }
 
 type Route struct {

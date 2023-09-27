@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Network Policy, Account Settings, Credentials Manager, Ip Access Lists, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Network Policy, Account Settings, Credentials Manager, Ip Access Lists, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -567,6 +567,58 @@ func (a *IpAccessListsAPI) Replace(ctx context.Context, request ReplaceIpAccessL
 // :method:workspaceconf/setStatus.
 func (a *IpAccessListsAPI) Update(ctx context.Context, request UpdateIpAccessList) error {
 	return a.impl.Update(ctx, request)
+}
+
+func NewSettings(client *client.DatabricksClient) *SettingsAPI {
+	return &SettingsAPI{
+		impl: &settingsImpl{
+			client: client,
+		},
+	}
+}
+
+// // TODO(yuyuan.tang) to add the description for the setting
+type SettingsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(SettingsService)
+	impl SettingsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *SettingsAPI) WithImpl(impl SettingsService) *SettingsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Settings API implementation
+func (a *SettingsAPI) Impl() SettingsService {
+	return a.impl
+}
+
+// Delete the default namespace.
+//
+// Deletes the default namespace.
+func (a *SettingsAPI) DeleteDefaultWorkspaceNamespace(ctx context.Context, request DeleteDefaultWorkspaceNamespaceRequest) (*DeleteDefaultWorkspaceNamespaceResponse, error) {
+	return a.impl.DeleteDefaultWorkspaceNamespace(ctx, request)
+}
+
+// Get the default namespace.
+//
+// Gets the default namespace.
+func (a *SettingsAPI) ReadDefaultWorkspaceNamespace(ctx context.Context, request ReadDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error) {
+	return a.impl.ReadDefaultWorkspaceNamespace(ctx, request)
+}
+
+// Updates the default namespace setting.
+//
+// Updates the default namespace setting for the workspace. A fresh etag needs
+// to be provided in PATCH requests (as part the setting field). The etag can be
+// retrieved by making a GET request before the PATCH request. Note that if the
+// setting does not exist, GET will return a NOT_FOUND error and the etag will
+// be present in the error response, which should be set in the PATCH request.
+func (a *SettingsAPI) UpdateDefaultWorkspaceNamespace(ctx context.Context, request UpdateDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error) {
+	return a.impl.UpdateDefaultWorkspaceNamespace(ctx, request)
 }
 
 func NewTokenManagement(client *client.DatabricksClient) *TokenManagementAPI {
