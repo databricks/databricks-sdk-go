@@ -62,9 +62,22 @@ type CreateTokenResponse struct {
 	TokenValue string `json:"token_value,omitempty"`
 }
 
-type CredentialPartitionId struct {
-	// The ID of the workspace.
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
+// Default namespace setting.
+type DefaultNamespaceSetting struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+
+	Namespace StringMessage `json:"namespace"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	SettingName string `json:"setting_name,omitempty"`
 }
 
 // Delete access list
@@ -86,6 +99,29 @@ type DeleteAccountNetworkPolicyRequest struct {
 }
 
 type DeleteAccountNetworkPolicyResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag"`
+}
+
+// Delete the default namespace
+type DeleteDefaultWorkspaceNamespaceRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag"`
+}
+
+type DeleteDefaultWorkspaceNamespaceResponse struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -136,21 +172,22 @@ type ExchangeToken struct {
 	Credential string `json:"credential,omitempty"`
 	// The end-of-life timestamp of the token. The value is in milliseconds
 	// since the Unix epoch.
-	CredentialEolTime int64 `json:"credential_eol_time,omitempty"`
+	CredentialEolTime int64 `json:"credentialEolTime,omitempty"`
 	// User ID of the user that owns this token.
-	OwnerId int64 `json:"owner_id,omitempty"`
+	OwnerId int64 `json:"ownerId,omitempty"`
 	// The scopes of access granted in the token.
 	Scopes []string `json:"scopes,omitempty"`
-
-	TokenType []TokenType `json:"token_type,omitempty"`
+	// The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN`
+	// is supported.
+	TokenType TokenType `json:"tokenType,omitempty"`
 }
 
 type ExchangeTokenRequest struct {
-	CredentialPartitionId CredentialPartitionId `json:"credential_partition_id"`
+	PartitionId PartitionId `json:"partitionId"`
 	// Array of scopes for the token request.
 	Scopes []string `json:"scopes"`
 
-	TokenType []TokenType `json:"token_type"`
+	TokenType []TokenType `json:"tokenType"`
 }
 
 type ExchangeTokenResponse struct {
@@ -272,6 +309,11 @@ func (f *ListType) Type() string {
 	return "ListType"
 }
 
+type PartitionId struct {
+	// The ID of the workspace.
+	WorkspaceId int64 `json:"workspaceId,omitempty"`
+}
+
 type PersonalComputeMessage struct {
 	// ON: Grants all users in all workspaces access to the Personal Compute
 	// default policy, allowing all users to create single-machine compute
@@ -356,6 +398,18 @@ type ReadAccountNetworkPolicyRequest struct {
 	Etag string `json:"-" url:"etag"`
 }
 
+// Get the default namespace
+type ReadDefaultWorkspaceNamespaceRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag"`
+}
+
 // Get Personal Compute setting
 type ReadPersonalComputeSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -391,6 +445,11 @@ type ReplaceIpAccessList struct {
 type RevokeTokenRequest struct {
 	// The ID of the token to be revoked.
 	TokenId string `json:"token_id"`
+}
+
+type StringMessage struct {
+	// Represents a generic string value.
+	Value string `json:"value,omitempty"`
 }
 
 type TokenAccessControlRequest struct {
@@ -521,6 +580,23 @@ type UpdateAccountNetworkPolicyRequest struct {
 	AllowMissing bool `json:"allow_missing,omitempty"`
 
 	Setting *AccountNetworkPolicyMessage `json:"setting,omitempty"`
+}
+
+// Updates the default namespace setting
+type UpdateDefaultWorkspaceNamespaceRequest struct {
+	// This should always be set to true for Settings RPCs. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing,omitempty"`
+	// Field mask required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. For
+	// example, for Default Namespace setting, the field mask is supposed to
+	// contain fields from the DefaultNamespaceSetting.namespace schema.
+	//
+	// The field mask needs to supplied as single string. To specify multiple
+	// fields in the field mask, use comma as the seperator (no space).
+	FieldMask string `json:"field_mask,omitempty"`
+	// Default namespace setting.
+	Setting *DefaultNamespaceSetting `json:"setting,omitempty"`
 }
 
 type UpdateIpAccessList struct {

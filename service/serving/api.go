@@ -288,7 +288,7 @@ func (a *ServingEndpointsAPI) Patch(ctx context.Context, request PatchServingEnd
 }
 
 // Query a serving endpoint with provided model input.
-func (a *ServingEndpointsAPI) Query(ctx context.Context, request QueryRequest) (*QueryEndpointResponse, error) {
+func (a *ServingEndpointsAPI) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
 	return a.impl.Query(ctx, request)
 }
 

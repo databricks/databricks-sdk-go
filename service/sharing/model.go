@@ -356,9 +356,20 @@ type IpAccessList struct {
 	AllowedIpAddresses []string `json:"allowed_ip_addresses,omitempty"`
 }
 
+// List clean rooms
+type ListCleanRoomsRequest struct {
+	// Maximum number of clean rooms to return.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+}
+
 type ListCleanRoomsResponse struct {
 	// An array of clean rooms. Remote details (central) are not included.
 	CleanRooms []CleanRoomInfo `json:"clean_rooms,omitempty"`
+	// Token to retrieve the next page of results. Absent if there are no more
+	// pages.
+	NextPageToken string `json:"next_page_token,omitempty"`
 }
 
 type ListProviderSharesResponse struct {
