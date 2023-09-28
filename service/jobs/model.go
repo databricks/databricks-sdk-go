@@ -101,7 +101,11 @@ type BaseRun struct {
 	RunName string `json:"run_name,omitempty"`
 	// The URL to the detail page of the run.
 	RunPageUrl string `json:"run_page_url,omitempty"`
-	// This describes an enum
+	// * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *
+	// `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run].
+	// * `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
+	//
+	// [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
 	RunType RunType `json:"run_type,omitempty"`
 	// The cron schedule that triggered this run if it was triggered by the
 	// periodic scheduler.
@@ -124,16 +128,28 @@ type BaseRun struct {
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run resutls.
 	Tasks []RunTask `json:"tasks,omitempty"`
-	// This describes an enum
+	// The type of trigger that fired this run.
+	//
+	// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
+	// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
+	// occurs you triggered a single run on demand through the UI or the API. *
+	// `RETRY`: Indicates a run that is triggered as a retry of a previously
+	// failed run. This occurs when you request to re-run the job in case of
+	// failures. * `RUN_JOB_TASK`: Indicates a run that is triggered using a Run
+	// Job task.
+	//
+	// * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival.
 	Trigger TriggerType `json:"trigger,omitempty"`
 
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
 }
 
 type CancelAllRuns struct {
-	// The canonical identifier of the job to cancel all runs of. This field is
-	// required.
-	JobId int64 `json:"job_id"`
+	// Optional boolean parameter to cancel all queued runs. If no job_id is
+	// provided, all queued runs in the workspace are canceled.
+	AllQueuedRuns bool `json:"all_queued_runs,omitempty"`
+	// The canonical identifier of the job to cancel all runs of.
+	JobId int64 `json:"job_id,omitempty"`
 }
 
 type CancelRun struct {
@@ -307,6 +323,8 @@ type CreateJob struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
+	// The queue settings of the job.
+	Queue *QueueSettings `json:"queue,omitempty"`
 	// Write-only setting, available only in Create/Update/Reset and Submit
 	// calls. Specifies the user or service principal that the job runs as. If
 	// not specified, the job runs as the user who created the job.
@@ -407,7 +425,11 @@ type DeleteRun struct {
 }
 
 type ExportRunOutput struct {
-	// The exported content in HTML format (one for every view item).
+	// The exported content in HTML format (one for every view item). To extract
+	// the HTML notebook from the JSON response, download and run this [Python
+	// script].
+	//
+	// [Python script]: https://docs.databricks.com/en/_static/examples/extract.py
 	Views []ViewItem `json:"views,omitempty"`
 }
 
@@ -834,6 +856,8 @@ type JobSettings struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
+	// The queue settings of the job.
+	Queue *QueueSettings `json:"queue,omitempty"`
 	// Write-only setting, available only in Create/Update/Reset and Submit
 	// calls. Specifies the user or service principal that the job runs as. If
 	// not specified, the job runs as the user who created the job.
@@ -868,7 +892,15 @@ type JobSettings struct {
 // The source of the job specification in the remote repository when the job is
 // source controlled.
 type JobSource struct {
-	// This describes an enum
+	// Dirty state indicates the job is not fully synced with the job
+	// specification in the remote repository.
+	//
+	// Possible values are: * `NOT_SYNCED`: The job is not yet synced with the
+	// remote job specification. Import the remote job specification from UI to
+	// make the job fully synced. * `DISCONNECTED`: The job is temporary
+	// disconnected from the remote job specification and is allowed for live
+	// edit. Import the remote job specification again from UI to make the job
+	// fully synced.
 	DirtyState JobSourceDirtyState `json:"dirty_state,omitempty"`
 	// Name of the branch which the job is imported from.
 	ImportFromGitBranch string `json:"import_from_git_branch"`
@@ -876,7 +908,14 @@ type JobSource struct {
 	JobConfigPath string `json:"job_config_path"`
 }
 
-// This describes an enum
+// Dirty state indicates the job is not fully synced with the job specification
+// in the remote repository.
+//
+// Possible values are: * `NOT_SYNCED`: The job is not yet synced with the
+// remote job specification. Import the remote job specification from UI to make
+// the job fully synced. * `DISCONNECTED`: The job is temporary disconnected
+// from the remote job specification and is allowed for live edit. Import the
+// remote job specification again from UI to make the job fully synced.
 type JobSourceDirtyState string
 
 // The job is temporary disconnected from the remote job specification and is
@@ -1016,8 +1055,8 @@ type ListJobsResponse struct {
 type ListRunsRequest struct {
 	// If active_only is `true`, only active runs are included in the results;
 	// otherwise, lists both active and completed runs. An active run is a run
-	// in the `PENDING`, `RUNNING`, or `TERMINATING`. This field cannot be
-	// `true` when completed_only is `true`.
+	// in the `QUEUED`, `PENDING`, `RUNNING`, or `TERMINATING`. This field
+	// cannot be `true` when completed_only is `true`.
 	ActiveOnly bool `json:"-" url:"active_only,omitempty"`
 	// If completed_only is `true`, only completed runs are included in the
 	// results; otherwise, lists both active and completed runs. This field
@@ -1065,7 +1104,11 @@ type ListRunsResponse struct {
 	Runs []BaseRun `json:"runs,omitempty"`
 }
 
-// This describes an enum
+// * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *
+// `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. *
+// `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
+//
+// [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
 type ListRunsRunType string
 
 // Normal job run. A run created with :method:jobs/runNow.
@@ -1202,6 +1245,11 @@ type PythonWheelTask struct {
 	Parameters []string `json:"parameters,omitempty"`
 }
 
+type QueueSettings struct {
+	// If true, enable queueing for the job. This is a required field.
+	Enabled bool `json:"enabled"`
+}
+
 type RepairHistoryItem struct {
 	// The end time of the (repaired) run.
 	EndTime int64 `json:"end_time,omitempty"`
@@ -1254,24 +1302,27 @@ type RepairRun struct {
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt run"]`
 	DbtCommands []string `json:"dbt_commands,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
-	// `\"jar_params\": [\"john doe\", \"35\"]`. The parameters are used to
-	// invoke the main function of the main class specified in the Spark JAR
-	// task. If not specified upon `run-now`, it defaults to an empty list.
-	// jar_params cannot be specified in conjunction with notebook_params. The
-	// JSON representation of this field (for example `{\"jar_params\":[\"john
-	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
+	// main function of the main class specified in the Spark JAR task. If not
+	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
+	// be specified in conjunction with notebook_params. The JSON representation
+	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
+	// exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables](/jobs.html"#parameter-variables") to set
 	// parameters containing information about job runs.
 	JarParams []string `json:"jar_params,omitempty"`
+	// Job-level parameters used in the run. for example `"param":
+	// "overriding_val"`
+	JobParameters map[string]string `json:"job_parameters,omitempty"`
 	// The ID of the latest repair. This parameter is not required when
 	// repairing a run for the first time, but must be provided on subsequent
 	// requests to repair the same run.
 	LatestRepairId int64 `json:"latest_repair_id,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
-	// `\"notebook_params\": {\"name\": \"john doe\", \"age\": \"35\"}`. The map
-	// is passed to the notebook and is accessible through the
-	// [dbutils.widgets.get] function.
+	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
+	// to the notebook and is accessible through the [dbutils.widgets.get]
+	// function.
 	//
 	// If not specified upon `run-now`, the triggered run uses the job’s base
 	// parameters.
@@ -1282,8 +1333,8 @@ type RepairRun struct {
 	// about job runs.
 	//
 	// The JSON representation of this field (for example
-	// `{\"notebook_params\":{\"name\":\"john doe\",\"age\":\"35\"}}`) cannot
-	// exceed 10,000 bytes.
+	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
+	// 10,000 bytes.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
@@ -1295,11 +1346,11 @@ type RepairRun struct {
 	// "dbfs:/path/to/data.json"}`.
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
-	// `\"python_params\": [\"john doe\", \"35\"]`. The parameters are passed to
+	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
-	// representation of this field (for example `{\"python_params\":[\"john
-	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// representation of this field (for example `{"python_params":["john
+	// doe","35"]}`) cannot exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables] to set parameters containing information
 	// about job runs.
@@ -1324,12 +1375,12 @@ type RepairRun struct {
 	// The job run ID of the run to repair. The run must not be in progress.
 	RunId int64 `json:"run_id"`
 	// A list of parameters for jobs with spark submit task, for example
-	// `\"spark_submit_params\": [\"--class\",
-	// \"org.apache.spark.examples.SparkPi\"]`. The parameters are passed to
+	// `"spark_submit_params": ["--class",
+	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables] to set parameters containing information
 	// about job runs
@@ -1499,7 +1550,11 @@ type Run struct {
 	RunName string `json:"run_name,omitempty"`
 	// The URL to the detail page of the run.
 	RunPageUrl string `json:"run_page_url,omitempty"`
-	// This describes an enum
+	// * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *
+	// `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run].
+	// * `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
+	//
+	// [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
 	RunType RunType `json:"run_type,omitempty"`
 	// The cron schedule that triggered this run if it was triggered by the
 	// periodic scheduler.
@@ -1522,7 +1577,17 @@ type Run struct {
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run resutls.
 	Tasks []RunTask `json:"tasks,omitempty"`
-	// This describes an enum
+	// The type of trigger that fired this run.
+	//
+	// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
+	// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
+	// occurs you triggered a single run on demand through the UI or the API. *
+	// `RETRY`: Indicates a run that is triggered as a retry of a previously
+	// failed run. This occurs when you request to re-run the job in case of
+	// failures. * `RUN_JOB_TASK`: Indicates a run that is triggered using a Run
+	// Job task.
+	//
+	// * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival.
 	Trigger TriggerType `json:"trigger,omitempty"`
 
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
@@ -1576,7 +1641,16 @@ func (f *RunConditionTaskOp) Type() string {
 	return "RunConditionTaskOp"
 }
 
-// This describes an enum
+// An optional value indicating the condition that determines whether the task
+// should be run once its dependencies have been completed. When omitted,
+// defaults to `ALL_SUCCESS`.
+//
+// Possible values are: * `ALL_SUCCESS`: All dependencies have executed and
+// succeeded * `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded *
+// `NONE_FAILED`: None of the dependencies have failed and at least one was
+// executed * `ALL_DONE`: All dependencies have been completed *
+// `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl
+// dependencies have failed
 type RunIf string
 
 // All dependencies have been completed
@@ -1630,7 +1704,20 @@ type RunJobTask struct {
 	JobParameters any `json:"job_parameters,omitempty"`
 }
 
-// This describes an enum
+// A value indicating the run's lifecycle state. The possible values are: *
+// `QUEUED`: The run is queued. * `PENDING`: The run is waiting to be executed
+// while the cluster and execution context are being prepared. * `RUNNING`: The
+// task of this run is being executed. * `TERMINATING`: The task of this run has
+// completed, and the cluster and execution context are being cleaned up. *
+// `TERMINATED`: The task of this run has completed, and the cluster and
+// execution context have been cleaned up. This state is terminal. * `SKIPPED`:
+// This run was aborted because a previous run of the same job was already
+// active. This state is terminal. * `INTERNAL_ERROR`: An exceptional state that
+// indicates a failure in the Jobs service, such as network failure over a long
+// period. If a run on a new cluster ends in the `INTERNAL_ERROR` state, the
+// Jobs service terminates the cluster as soon as possible. This state is
+// terminal. * `BLOCKED`: The run is blocked on an upstream dependency. *
+// `WAITING_FOR_RETRY`: The run is waiting for a retry.
 type RunLifeCycleState string
 
 // The run is blocked on an upstream dependency.
@@ -1642,11 +1729,12 @@ const RunLifeCycleStateBlocked RunLifeCycleState = `BLOCKED`
 // possible. This state is terminal.
 const RunLifeCycleStateInternalError RunLifeCycleState = `INTERNAL_ERROR`
 
-// The run has been triggered. If there is not an active run of the same job,
-// the cluster and execution context are being prepared. If there is already an
-// active run of the same job, the run immediately transitions into the
-// `SKIPPED` state without preparing any resources.
+// The run is waiting to be executed while the cluster and execution context are
+// being prepared.
 const RunLifeCycleStatePending RunLifeCycleState = `PENDING`
+
+// The run is queued.
+const RunLifeCycleStateQueued RunLifeCycleState = `QUEUED`
 
 // The task of this run is being executed.
 const RunLifeCycleStateRunning RunLifeCycleState = `RUNNING`
@@ -1674,11 +1762,11 @@ func (f *RunLifeCycleState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RunLifeCycleState) Set(v string) error {
 	switch v {
-	case `BLOCKED`, `INTERNAL_ERROR`, `PENDING`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`, `WAITING_FOR_RETRY`:
+	case `BLOCKED`, `INTERNAL_ERROR`, `PENDING`, `QUEUED`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`, `WAITING_FOR_RETRY`:
 		*f = RunLifeCycleState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "INTERNAL_ERROR", "PENDING", "RUNNING", "SKIPPED", "TERMINATED", "TERMINATING", "WAITING_FOR_RETRY"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "INTERNAL_ERROR", "PENDING", "QUEUED", "RUNNING", "SKIPPED", "TERMINATED", "TERMINATING", "WAITING_FOR_RETRY"`, v)
 	}
 }
 
@@ -1707,24 +1795,25 @@ type RunNow struct {
 	// [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
 	IdempotencyToken string `json:"idempotency_token,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
-	// `\"jar_params\": [\"john doe\", \"35\"]`. The parameters are used to
-	// invoke the main function of the main class specified in the Spark JAR
-	// task. If not specified upon `run-now`, it defaults to an empty list.
-	// jar_params cannot be specified in conjunction with notebook_params. The
-	// JSON representation of this field (for example `{\"jar_params\":[\"john
-	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
+	// main function of the main class specified in the Spark JAR task. If not
+	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
+	// be specified in conjunction with notebook_params. The JSON representation
+	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
+	// exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables](/jobs.html"#parameter-variables") to set
 	// parameters containing information about job runs.
 	JarParams []string `json:"jar_params,omitempty"`
 	// The ID of the job to be executed
 	JobId int64 `json:"job_id"`
-	// Job-level parameters used in the run
-	JobParameters []map[string]string `json:"job_parameters,omitempty"`
+	// Job-level parameters used in the run. for example `"param":
+	// "overriding_val"`
+	JobParameters map[string]string `json:"job_parameters,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
-	// `\"notebook_params\": {\"name\": \"john doe\", \"age\": \"35\"}`. The map
-	// is passed to the notebook and is accessible through the
-	// [dbutils.widgets.get] function.
+	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
+	// to the notebook and is accessible through the [dbutils.widgets.get]
+	// function.
 	//
 	// If not specified upon `run-now`, the triggered run uses the job’s base
 	// parameters.
@@ -1735,8 +1824,8 @@ type RunNow struct {
 	// about job runs.
 	//
 	// The JSON representation of this field (for example
-	// `{\"notebook_params\":{\"name\":\"john doe\",\"age\":\"35\"}}`) cannot
-	// exceed 10,000 bytes.
+	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
+	// 10,000 bytes.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
@@ -1748,11 +1837,11 @@ type RunNow struct {
 	// "dbfs:/path/to/data.json"}`.
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
-	// `\"python_params\": [\"john doe\", \"35\"]`. The parameters are passed to
+	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
-	// representation of this field (for example `{\"python_params\":[\"john
-	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// representation of this field (for example `{"python_params":["john
+	// doe","35"]}`) cannot exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables] to set parameters containing information
 	// about job runs.
@@ -1765,13 +1854,15 @@ type RunNow struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	PythonParams []string `json:"python_params,omitempty"`
+	// The queue settings of the run.
+	Queue *QueueSettings `json:"queue,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
-	// `\"spark_submit_params\": [\"--class\",
-	// \"org.apache.spark.examples.SparkPi\"]`. The parameters are passed to
+	// `"spark_submit_params": ["--class",
+	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables] to set parameters containing information
 	// about job runs
@@ -1842,20 +1933,23 @@ type RunParameters struct {
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt run"]`
 	DbtCommands []string `json:"dbt_commands,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
-	// `\"jar_params\": [\"john doe\", \"35\"]`. The parameters are used to
-	// invoke the main function of the main class specified in the Spark JAR
-	// task. If not specified upon `run-now`, it defaults to an empty list.
-	// jar_params cannot be specified in conjunction with notebook_params. The
-	// JSON representation of this field (for example `{\"jar_params\":[\"john
-	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
+	// main function of the main class specified in the Spark JAR task. If not
+	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
+	// be specified in conjunction with notebook_params. The JSON representation
+	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
+	// exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables](/jobs.html"#parameter-variables") to set
 	// parameters containing information about job runs.
 	JarParams []string `json:"jar_params,omitempty"`
+	// Job-level parameters used in the run. for example `"param":
+	// "overriding_val"`
+	JobParameters map[string]string `json:"job_parameters,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
-	// `\"notebook_params\": {\"name\": \"john doe\", \"age\": \"35\"}`. The map
-	// is passed to the notebook and is accessible through the
-	// [dbutils.widgets.get] function.
+	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
+	// to the notebook and is accessible through the [dbutils.widgets.get]
+	// function.
 	//
 	// If not specified upon `run-now`, the triggered run uses the job’s base
 	// parameters.
@@ -1866,8 +1960,8 @@ type RunParameters struct {
 	// about job runs.
 	//
 	// The JSON representation of this field (for example
-	// `{\"notebook_params\":{\"name\":\"john doe\",\"age\":\"35\"}}`) cannot
-	// exceed 10,000 bytes.
+	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
+	// 10,000 bytes.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
@@ -1879,11 +1973,11 @@ type RunParameters struct {
 	// "dbfs:/path/to/data.json"}`.
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
-	// `\"python_params\": [\"john doe\", \"35\"]`. The parameters are passed to
+	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
-	// representation of this field (for example `{\"python_params\":[\"john
-	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// representation of this field (for example `{"python_params":["john
+	// doe","35"]}`) cannot exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables] to set parameters containing information
 	// about job runs.
@@ -1897,12 +1991,12 @@ type RunParameters struct {
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
-	// `\"spark_submit_params\": [\"--class\",
-	// \"org.apache.spark.examples.SparkPi\"]`. The parameters are passed to
+	// `"spark_submit_params": ["--class",
+	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables] to set parameters containing information
 	// about job runs
@@ -1921,7 +2015,17 @@ type RunParameters struct {
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
-// This describes an enum
+// A value indicating the run's result. The possible values are: * `SUCCESS`:
+// The task completed successfully. * `FAILED`: The task completed with an
+// error. * `TIMEDOUT`: The run was stopped after reaching the timeout. *
+// `CANCELED`: The run was canceled at user request. *
+// `MAXIMUM_CONCURRENT_RUNS_REACHED`: The run was skipped because the maximum
+// concurrent runs were reached. * `EXCLUDED`: The run was skipped because the
+// necessary conditions were not met. * `SUCCESS_WITH_FAILURES`: The job run
+// completed successfully with some failures; leaf tasks were successful. *
+// `UPSTREAM_FAILED`: The run was skipped because of an upstream failure. *
+// `UPSTREAM_CANCELED`: The run was skipped because an upstream task was
+// canceled.
 type RunResultState string
 
 // The run was canceled at user request.
@@ -1978,6 +2082,8 @@ type RunState struct {
 	// A value indicating the run's current lifecycle state. This field is
 	// always available in the response.
 	LifeCycleState RunLifeCycleState `json:"life_cycle_state,omitempty"`
+	// The reason indicating why the run was queued.
+	QueueReason string `json:"queue_reason,omitempty"`
 	// A value indicating the run's result. This field is only available for
 	// terminal lifecycle states.
 	ResultState RunResultState `json:"result_state,omitempty"`
@@ -2063,6 +2169,8 @@ type RunTask struct {
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
 	// If python_wheel_task, indicates that this job must execute a PythonWheel.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
+	// The time in milliseconds that the run has spent in the queue.
+	QueueDuration int64 `json:"queue_duration,omitempty"`
 	// Parameter values including resolved references
 	ResolvedValues *ResolvedValues `json:"resolved_values,omitempty"`
 	// The ID of the task run.
@@ -2086,8 +2194,23 @@ type RunTask struct {
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
 	// If spark_python_task, indicates that this job must run a Python file.
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-	// If spark_submit_task, indicates that this task must be launched by the
-	// spark submit script. This task can run only on new clusters
+	// If `spark_submit_task`, indicates that this task must be launched by the
+	// spark submit script. This task can run only on new clusters.
+	//
+	// In the `new_cluster` specification, `libraries` and `spark_conf` are not
+	// supported. Instead, use `--jars` and `--py-files` to add Java and Python
+	// libraries and `--conf` to set the Spark configurations.
+	//
+	// `master`, `deploy-mode`, and `executor-cores` are automatically
+	// configured by Databricks; you _cannot_ specify them in parameters.
+	//
+	// By default, the Spark submit job uses all available memory (excluding
+	// reserved memory for Databricks services). You can set `--driver-memory`,
+	// and `--executor-memory` to a smaller value to leave some room for
+	// off-heap usage.
+	//
+	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
+	// paths.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// If sql_task, indicates that this job must execute a SQL.
 	SqlTask *SqlTask `json:"sql_task,omitempty"`
@@ -2105,7 +2228,11 @@ type RunTask struct {
 	TaskKey string `json:"task_key,omitempty"`
 }
 
-// This describes an enum
+// * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *
+// `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. *
+// `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
+//
+// [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
 type RunType string
 
 // Normal job run. A run created with :method:jobs/runNow.
@@ -2462,6 +2589,8 @@ type SubmitRun struct {
 	// Optional notification settings that are used when sending notifications
 	// to each of the `webhook_notifications` for this run.
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
+	// The queue settings of the one-time run.
+	Queue *QueueSettings `json:"queue,omitempty"`
 	// An optional name for the run. The default value is `Untitled`.
 	RunName string `json:"run_name,omitempty"`
 
@@ -2518,8 +2647,23 @@ type SubmitTask struct {
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
 	// If spark_python_task, indicates that this task must run a Python file.
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-	// If spark_submit_task, indicates that this task must be launched by the
+	// If `spark_submit_task`, indicates that this task must be launched by the
 	// spark submit script. This task can run only on new clusters.
+	//
+	// In the `new_cluster` specification, `libraries` and `spark_conf` are not
+	// supported. Instead, use `--jars` and `--py-files` to add Java and Python
+	// libraries and `--conf` to set the Spark configurations.
+	//
+	// `master`, `deploy-mode`, and `executor-cores` are automatically
+	// configured by Databricks; you _cannot_ specify them in parameters.
+	//
+	// By default, the Spark submit job uses all available memory (excluding
+	// reserved memory for Databricks services). You can set `--driver-memory`,
+	// and `--executor-memory` to a smaller value to leave some room for
+	// off-heap usage.
+	//
+	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
+	// paths.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// If sql_task, indicates that this job must execute a SQL.
 	SqlTask *SqlTask `json:"sql_task,omitempty"`
@@ -2612,8 +2756,23 @@ type Task struct {
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
 	// If spark_python_task, indicates that this task must run a Python file.
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-	// If spark_submit_task, indicates that this task must be launched by the
+	// If `spark_submit_task`, indicates that this task must be launched by the
 	// spark submit script. This task can run only on new clusters.
+	//
+	// In the `new_cluster` specification, `libraries` and `spark_conf` are not
+	// supported. Instead, use `--jars` and `--py-files` to add Java and Python
+	// libraries and `--conf` to set the Spark configurations.
+	//
+	// `master`, `deploy-mode`, and `executor-cores` are automatically
+	// configured by Databricks; you _cannot_ specify them in parameters.
+	//
+	// By default, the Spark submit job uses all available memory (excluding
+	// reserved memory for Databricks services). You can set `--driver-memory`,
+	// and `--executor-memory` to a smaller value to leave some room for
+	// off-heap usage.
+	//
+	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
+	// paths.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// If sql_task, indicates that this job must execute a SQL task.
 	SqlTask *SqlTask `json:"sql_task,omitempty"`
@@ -2704,7 +2863,16 @@ type TriggerSettings struct {
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 }
 
-// This describes an enum
+// The type of trigger that fired this run.
+//
+// * `PERIODIC`: Schedules that periodically trigger runs, such as a cron
+// scheduler. * `ONE_TIME`: One time triggers that fire a single run. This
+// occurs you triggered a single run on demand through the UI or the API. *
+// `RETRY`: Indicates a run that is triggered as a retry of a previously failed
+// run. This occurs when you request to re-run the job in case of failures. *
+// `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task.
+//
+// * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival.
 type TriggerType string
 
 // Indicates a run that is triggered by a file arrival.
@@ -2777,7 +2945,7 @@ type ViewItem struct {
 	Type ViewType `json:"type,omitempty"`
 }
 
-// This describes an enum
+// * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
 type ViewType string
 
 // Dashboard view item.
@@ -2807,7 +2975,8 @@ func (f *ViewType) Type() string {
 	return "ViewType"
 }
 
-// This describes an enum
+// * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
+// the notebook. * `ALL`: All views of the notebook.
 type ViewsToExport string
 
 // All views of the notebook.

@@ -66,8 +66,14 @@ type ServingEndpointsService interface {
 	// Retrieves the service logs associated with the provided served model.
 	Logs(ctx context.Context, request LogsRequest) (*ServerLogsResponse, error)
 
+	// Patch the tags of a serving endpoint.
+	//
+	// Used to batch add and delete tags from a serving endpoint with a single
+	// API call.
+	Patch(ctx context.Context, request PatchServingEndpointTags) ([]EndpointTag, error)
+
 	// Query a serving endpoint with provided model input.
-	Query(ctx context.Context, request QueryRequest) (*QueryEndpointResponse, error)
+	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
 
 	// Set serving endpoint permissions.
 	//

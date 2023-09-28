@@ -279,8 +279,16 @@ func (a *ServingEndpointsAPI) LogsByNameAndServedModelName(ctx context.Context, 
 	})
 }
 
+// Patch the tags of a serving endpoint.
+//
+// Used to batch add and delete tags from a serving endpoint with a single API
+// call.
+func (a *ServingEndpointsAPI) Patch(ctx context.Context, request PatchServingEndpointTags) ([]EndpointTag, error) {
+	return a.impl.Patch(ctx, request)
+}
+
 // Query a serving endpoint with provided model input.
-func (a *ServingEndpointsAPI) Query(ctx context.Context, request QueryRequest) (*QueryEndpointResponse, error) {
+func (a *ServingEndpointsAPI) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
 	return a.impl.Query(ctx, request)
 }
 

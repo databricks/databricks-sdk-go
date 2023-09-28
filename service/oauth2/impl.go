@@ -82,6 +82,20 @@ func (a *oAuthEnrollmentImpl) Get(ctx context.Context) (*OAuthEnrollmentStatus, 
 	return &oAuthEnrollmentStatus, err
 }
 
+// unexported type that holds implementations of just OAuthPublishedApps API methods
+type oAuthPublishedAppsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *oAuthPublishedAppsImpl) List(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error) {
+	var getPublishedAppsOutput GetPublishedAppsOutput
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-apps/", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getPublishedAppsOutput)
+	return &getPublishedAppsOutput, err
+}
+
 // unexported type that holds implementations of just PublishedAppIntegration API methods
 type publishedAppIntegrationImpl struct {
 	client *client.DatabricksClient

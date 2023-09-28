@@ -8,7 +8,8 @@ import "fmt"
 
 type AccessControl struct {
 	GroupName string `json:"group_name,omitempty"`
-	// This describes an enum
+	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
+	// `CAN_MANAGE`: Can manage the query
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	UserName string `json:"user_name,omitempty"`
@@ -58,6 +59,8 @@ type AlertOptions struct {
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	CustomSubject string `json:"custom_subject,omitempty"`
+	// State that alert evaluates to when query result is empty.
+	EmptyResultState AlertOptionsEmptyResultState `json:"empty_result_state,omitempty"`
 	// Whether or not the alert is muted. If an alert is muted, it will not
 	// notify users and notification destinations when triggered.
 	Muted bool `json:"muted,omitempty"`
@@ -67,6 +70,36 @@ type AlertOptions struct {
 	// Value used to compare in alert evaluation. Supported types include
 	// strings (eg. 'foobar'), floats (eg. 123.4), and booleans (true).
 	Value any `json:"value"`
+}
+
+// State that alert evaluates to when query result is empty.
+type AlertOptionsEmptyResultState string
+
+const AlertOptionsEmptyResultStateOk AlertOptionsEmptyResultState = `ok`
+
+const AlertOptionsEmptyResultStateTriggered AlertOptionsEmptyResultState = `triggered`
+
+const AlertOptionsEmptyResultStateUnknown AlertOptionsEmptyResultState = `unknown`
+
+// String representation for [fmt.Print]
+func (f *AlertOptionsEmptyResultState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AlertOptionsEmptyResultState) Set(v string) error {
+	switch v {
+	case `ok`, `triggered`, `unknown`:
+		*f = AlertOptionsEmptyResultState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ok", "triggered", "unknown"`, v)
+	}
+}
+
+// Type always returns AlertOptionsEmptyResultState to satisfy [pflag.Value] interface
+func (f *AlertOptionsEmptyResultState) Type() string {
+	return "AlertOptionsEmptyResultState"
 }
 
 type AlertQuery struct {
@@ -140,6 +173,20 @@ func (f *AlertState) Type() string {
 	return "AlertState"
 }
 
+// Describes metadata for a particular chunk, within a result set; this
+// structure is used both within a manifest, and when fetching individual chunk
+// data or links.
+type BaseChunkInfo struct {
+	// The number of bytes in the result chunk.
+	ByteCount int64 `json:"byte_count,omitempty"`
+	// The position within the sequence of result set chunks.
+	ChunkIndex int `json:"chunk_index,omitempty"`
+	// The number of rows within the result chunk.
+	RowCount int64 `json:"row_count,omitempty"`
+	// The starting row offset within the result set.
+	RowOffset int64 `json:"row_offset,omitempty"`
+}
+
 // Cancel statement execution
 type CancelExecutionRequest struct {
 	StatementId string `json:"-" url:"-"`
@@ -192,44 +239,28 @@ func (f *ChannelName) Type() string {
 	return "ChannelName"
 }
 
-// Describes metadata for a particular chunk, within a result set; this
-// structure is used both within a manifest, and when fetching individual chunk
-// data or links.
-type ChunkInfo struct {
-	// Number of bytes in the result chunk.
-	ByteCount int64 `json:"byte_count,omitempty"`
-	// Position within the sequence of result set chunks.
-	ChunkIndex int `json:"chunk_index,omitempty"`
-	// When fetching, gives `chunk_index` for the _next_ chunk; if absent,
-	// indicates there are no more chunks.
-	NextChunkIndex int `json:"next_chunk_index,omitempty"`
-	// When fetching, gives `internal_link` for the _next_ chunk; if absent,
-	// indicates there are no more chunks.
-	NextChunkInternalLink string `json:"next_chunk_internal_link,omitempty"`
-	// Number of rows within the result chunk.
-	RowCount int64 `json:"row_count,omitempty"`
-	// Starting row offset within the result set.
-	RowOffset int64 `json:"row_offset,omitempty"`
-}
-
 type ColumnInfo struct {
-	// Name of Column.
+	// The name of the column.
 	Name string `json:"name,omitempty"`
-	// Ordinal position of column (starting at position 0).
+	// The ordinal position of the column (starting at position 0).
 	Position int `json:"position,omitempty"`
-	// Format of interval type.
+	// The format of the interval type.
 	TypeIntervalType string `json:"type_interval_type,omitempty"`
-	// Name of type (INT, STRUCT, MAP, and so on)
+	// The name of the base data type. This doesn't include details for complex
+	// types such as STRUCT, MAP or ARRAY.
 	TypeName ColumnInfoTypeName `json:"type_name,omitempty"`
-	// Digits of precision.
+	// Specifies the number of digits in a number. This applies to the DECIMAL
+	// type.
 	TypePrecision int `json:"type_precision,omitempty"`
-	// Digits to right of decimal.
+	// Specifies the number of digits to the right of the decimal point in a
+	// number. This applies to the DECIMAL type.
 	TypeScale int `json:"type_scale,omitempty"`
-	// Full data type spec, SQL/catalogString text.
+	// The full SQL type specification.
 	TypeText string `json:"type_text,omitempty"`
 }
 
-// Name of type (INT, STRUCT, MAP, and so on)
+// The name of the base data type. This doesn't include details for complex
+// types such as STRUCT, MAP or ARRAY.
 type ColumnInfoTypeName string
 
 const ColumnInfoTypeNameArray ColumnInfoTypeName = `ARRAY`
@@ -490,7 +521,8 @@ type Dashboard struct {
 	Options *DashboardOptions `json:"options,omitempty"`
 	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
-	// This describes an enum
+	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
+	// `CAN_MANAGE`: Can manage the query
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// URL slug. Usually mirrors the query name with dashes (`-`) instead of
 	// spaces. Appears in the URL for this query.
@@ -575,11 +607,11 @@ type DeleteWarehouseRequest struct {
 //
 // Statements executed with `INLINE` disposition will return result data inline,
 // in `JSON_ARRAY` format, in a series of chunks. If a given statement produces
-// a result set with a size larger than 16 MiB, that statement execution is
+// a result set with a size larger than 25 MiB, that statement execution is
 // aborted, and no result set will be available.
 //
 // **NOTE** Byte limits are computed based upon internal representations of the
-// result set data, and may not match the sizes visible in JSON responses.
+// result set data, and might not match the sizes visible in JSON responses.
 //
 // Statements executed with `EXTERNAL_LINKS` disposition will return result data
 // as external links: URLs that point to cloud storage internal to the
@@ -873,8 +905,11 @@ type EndpointTags struct {
 
 type ExecuteStatementRequest struct {
 	// Applies the given byte limit to the statement's result size. Byte counts
-	// are based on internal representations and may not match measurable sizes
-	// in the requested `format`.
+	// are based on internal data representations and might not match the final
+	// size in the requested `format`. If the result was truncated due to the
+	// byte limit, then `truncated` in the response is set to `true`. When using
+	// `EXTERNAL_LINKS` disposition, a default `byte_limit` of 100 GiB is
+	// applied if `byte_limit` is not explcitly set.
 	ByteLimit int64 `json:"byte_limit,omitempty"`
 	// Sets default catalog for statement execution, similar to [`USE CATALOG`]
 	// in SQL.
@@ -886,11 +921,11 @@ type ExecuteStatementRequest struct {
 	//
 	// Statements executed with `INLINE` disposition will return result data
 	// inline, in `JSON_ARRAY` format, in a series of chunks. If a given
-	// statement produces a result set with a size larger than 16 MiB, that
+	// statement produces a result set with a size larger than 25 MiB, that
 	// statement execution is aborted, and no result set will be available.
 	//
 	// **NOTE** Byte limits are computed based upon internal representations of
-	// the result set data, and may not match the sizes visible in JSON
+	// the result set data, and might not match the sizes visible in JSON
 	// responses.
 	//
 	// Statements executed with `EXTERNAL_LINKS` disposition will return result
@@ -911,6 +946,10 @@ type ExecuteStatementRequest struct {
 	// Statement execution supports three result formats: `JSON_ARRAY`
 	// (default), `ARROW_STREAM`, and `CSV`.
 	//
+	// Important: The formats `ARROW_STREAM` and `CSV` are supported only with
+	// `EXTERNAL_LINKS` disposition. `JSON_ARRAY` is supported in `INLINE` and
+	// `EXTERNAL_LINKS` disposition.
+	//
 	// When specifying `format=JSON_ARRAY`, result data will be formatted as an
 	// array of arrays of values, where each value is either the *string
 	// representation* of a value, or `null`. For example, the output of `SELECT
@@ -920,52 +959,41 @@ type ExecuteStatementRequest struct {
 	// ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null
 	// ], ] ```
 	//
-	// `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS`
-	// dispositions.
+	// When specifying `format=JSON_ARRAY` and `disposition=EXTERNAL_LINKS`,
+	// each chunk in the result contains compact JSON with no indentation or
+	// extra whitespace.
 	//
-	// `INLINE` `JSON_ARRAY` data can be found at the path
-	// `StatementResponse.result.data_array`.
+	// When specifying `format=ARROW_STREAM` and `disposition=EXTERNAL_LINKS`,
+	// each chunk in the result will be formatted as Apache Arrow Stream. See
+	// the [Apache Arrow streaming format].
 	//
-	// For `EXTERNAL_LINKS` `JSON_ARRAY` results, each URL points to a file in
-	// cloud storage that contains compact JSON with no indentation or extra
-	// whitespace.
-	//
-	// When specifying `format=ARROW_STREAM`, each chunk in the result will be
-	// formatted as Apache Arrow Stream. See the [Apache Arrow streaming
-	// format].
-	//
-	// IMPORTANT: The format `ARROW_STREAM` is supported only with
-	// `EXTERNAL_LINKS` disposition.
-	//
-	// When specifying `format=CSV`, each chunk in the result will be a CSV
-	// according to [RFC 4180] standard. All the columns values will have
-	// *string representation* similar to the `JSON_ARRAY` format, and `null`
-	// values will be encoded as “null”. Only the first chunk in the result
-	// would contain a header row with column names. For example, the output of
-	// `SELECT concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM
-	// range(3)` would look like this:
+	// When specifying `format=CSV` and `disposition=EXTERNAL_LINKS`, each chunk
+	// in the result will be a CSV according to [RFC 4180] standard. All the
+	// columns values will have *string representation* similar to the
+	// `JSON_ARRAY` format, and `null` values will be encoded as “null”.
+	// Only the first chunk in the result would contain a header row with column
+	// names. For example, the output of `SELECT concat('id-', id) AS strCol, id
+	// AS intCol, null as nullCol FROM range(3)` would look like this:
 	//
 	// ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
-	//
-	// IMPORTANT: The format `CSV` is supported only with `EXTERNAL_LINKS`
-	// disposition.
 	//
 	// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
 	// [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
 	Format Format `json:"format,omitempty"`
-	// When in synchronous mode with `wait_timeout > 0s` it determines the
-	// action taken when the timeout is reached:
-	//
-	// `CONTINUE` → the statement execution continues asynchronously and the
-	// call returns a statement ID immediately.
-	//
-	// `CANCEL` → the statement execution is canceled and the call returns
-	// immediately with a `CANCELED` state.
-	OnWaitTimeout TimeoutAction `json:"on_wait_timeout,omitempty"`
+	// When `wait_timeout > 0s`, the call will block up to the specified time.
+	// If the statement execution doesn't finish within this time,
+	// `on_wait_timeout` determines whether the execution should continue or be
+	// canceled. When set to `CONTINUE`, the statement execution continues
+	// asynchronously and the call returns a statement ID which can be used for
+	// polling with :method:statementexecution/getStatement. When set to
+	// `CANCEL`, the statement execution is canceled and the call returns with a
+	// `CANCELED` state.
+	OnWaitTimeout ExecuteStatementRequestOnWaitTimeout `json:"on_wait_timeout,omitempty"`
 	// A list of parameters to pass into a SQL statement containing parameter
 	// markers. A parameter consists of a name, a value, and optionally a type.
-	// To represent a NULL value, the `value` field may be omitted. If the
-	// `type` field is omitted, the value is interpreted as a string.
+	// To represent a NULL value, the `value` field may be omitted or set to
+	// `null` explicitly. If the `type` field is omitted, the value is
+	// interpreted as a string.
 	//
 	// If the type is given, parameters will be checked for type correctness
 	// according to the given type. A value is correct if the provided string
@@ -973,8 +1001,8 @@ type ExecuteStatementRequest struct {
 	// exact semantics are described in the section [`cast` function] of the SQL
 	// language reference.
 	//
-	// For example, the following statement contains two parameters, `my_id` and
-	// `my_date`:
+	// For example, the following statement contains two parameters, `my_name`
+	// and `my_date`:
 	//
 	// SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
 	//
@@ -985,111 +1013,126 @@ type ExecuteStatementRequest struct {
 	// name" }, { "name": "my_date", "value": "2020-01-01", "type": "DATE" } ] }
 	//
 	// Currently, positional parameters denoted by a `?` marker are not
-	// supported by the SQL Statement Execution API.
+	// supported by the Databricks SQL Statement Execution API.
 	//
 	// Also see the section [Parameter markers] of the SQL language reference.
 	//
 	// [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
 	// [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
 	Parameters []StatementParameterListItem `json:"parameters,omitempty"`
-	// Applies the given row limit to the statement's result set with identical
-	// semantics as the SQL `LIMIT` clause.
+	// Applies the given row limit to the statement's result set, but unlike the
+	// `LIMIT` clause in SQL, it also sets the `truncated` field in the response
+	// to indicate whether the result was trimmed due to the limit or not.
 	RowLimit int64 `json:"row_limit,omitempty"`
 	// Sets default schema for statement execution, similar to [`USE SCHEMA`] in
 	// SQL.
 	//
 	// [`USE SCHEMA`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-schema.html
 	Schema string `json:"schema,omitempty"`
-	// SQL statement to execute
-	Statement string `json:"statement,omitempty"`
-	// The time in seconds the API service will wait for the statement's result
-	// set as `Ns`, where `N` can be set to 0 or to a value between 5 and 50.
-	// When set to '0s' the statement will execute in asynchronous mode."
+	// The SQL statement to execute. The statement can optionally be
+	// parameterized, see `parameters`.
+	Statement string `json:"statement"`
+	// The time in seconds the call will wait for the statement's result set as
+	// `Ns`, where `N` can be set to 0 or to a value between 5 and 50.
+	//
+	// When set to `0s`, the statement will execute in asynchronous mode and the
+	// call will not wait for the execution to finish. In this case, the call
+	// returns directly with `PENDING` state and a statement ID which can be
+	// used for polling with :method:statementexecution/getStatement.
+	//
+	// When set between 5 and 50 seconds, the call will behave synchronously up
+	// to this timeout and wait for the statement execution to finish. If the
+	// execution finishes within this time, the call returns immediately with a
+	// manifest and result data (or a `FAILED` state in case of an execution
+	// error). If the statement takes longer to execute, `on_wait_timeout`
+	// determines what should happen after the timeout is reached.
 	WaitTimeout string `json:"wait_timeout,omitempty"`
 	// Warehouse upon which to execute a statement. See also [What are SQL
 	// warehouses?](/sql/admin/warehouse-type.html)
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	WarehouseId string `json:"warehouse_id"`
+}
+
+// When `wait_timeout > 0s`, the call will block up to the specified time. If
+// the statement execution doesn't finish within this time, `on_wait_timeout`
+// determines whether the execution should continue or be canceled. When set to
+// `CONTINUE`, the statement execution continues asynchronously and the call
+// returns a statement ID which can be used for polling with
+// :method:statementexecution/getStatement. When set to `CANCEL`, the statement
+// execution is canceled and the call returns with a `CANCELED` state.
+type ExecuteStatementRequestOnWaitTimeout string
+
+const ExecuteStatementRequestOnWaitTimeoutCancel ExecuteStatementRequestOnWaitTimeout = `CANCEL`
+
+const ExecuteStatementRequestOnWaitTimeoutContinue ExecuteStatementRequestOnWaitTimeout = `CONTINUE`
+
+// String representation for [fmt.Print]
+func (f *ExecuteStatementRequestOnWaitTimeout) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ExecuteStatementRequestOnWaitTimeout) Set(v string) error {
+	switch v {
+	case `CANCEL`, `CONTINUE`:
+		*f = ExecuteStatementRequestOnWaitTimeout(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCEL", "CONTINUE"`, v)
+	}
+}
+
+// Type always returns ExecuteStatementRequestOnWaitTimeout to satisfy [pflag.Value] interface
+func (f *ExecuteStatementRequestOnWaitTimeout) Type() string {
+	return "ExecuteStatementRequestOnWaitTimeout"
 }
 
 type ExecuteStatementResponse struct {
 	// The result manifest provides schema and metadata for the result set.
 	Manifest *ResultManifest `json:"manifest,omitempty"`
-	// Result data chunks are delivered in either the `chunk` field when using
-	// `INLINE` disposition, or in the `external_link` field when using
-	// `EXTERNAL_LINKS` disposition. Exactly one of these will be set.
+	// Contains the result data of a single chunk when using `INLINE`
+	// disposition. When using `EXTERNAL_LINKS` disposition, the array
+	// `external_links` is used instead to provide presigned URLs to the result
+	// data in cloud storage. Exactly one of these alternatives is used. (While
+	// the `external_links` array prepares the API to return multiple links in a
+	// single response. Currently only a single link is returned.)
 	Result *ResultData `json:"result,omitempty"`
-	// Statement ID is returned upon successfully submitting a SQL statement,
-	// and is a required reference for all subsequent calls.
+	// The statement ID is returned upon successfully submitting a SQL
+	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"statement_id,omitempty"`
-	// Status response includes execution state and if relevant, error
+	// The status response includes execution state and if relevant, error
 	// information.
 	Status *StatementStatus `json:"status,omitempty"`
 }
 
 type ExternalLink struct {
-	// Number of bytes in the result chunk.
+	// The number of bytes in the result chunk.
 	ByteCount int64 `json:"byte_count,omitempty"`
-	// Position within the sequence of result set chunks.
+	// The position within the sequence of result set chunks.
 	ChunkIndex int `json:"chunk_index,omitempty"`
-	// Indicates date-time that the given external link will expire and become
-	// invalid, after which point a new `external_link` must be requested.
+	// Indicates the date-time that the given external link will expire and
+	// becomes invalid, after which point a new `external_link` must be
+	// requested.
 	Expiration string `json:"expiration,omitempty"`
-	// Pre-signed URL pointing to a chunk of result data, hosted by an external
-	// service, with a short expiration time (< 1 hour).
+	// A presigned URL pointing to a chunk of result data, hosted by an external
+	// service, with a short expiration time (<= 15 minutes). As this URL
+	// contains a temporary credential, it should be considered sensitive and
+	// the client should expose this URL in a log.
 	ExternalLink string `json:"external_link,omitempty"`
-	// When fetching, gives `chunk_index` for the _next_ chunk; if absent,
-	// indicates there are no more chunks.
+	// When fetching, provides the `chunk_index` for the _next_ chunk. If
+	// absent, indicates there are no more chunks. The next chunk can be fetched
+	// with a :method:statementexecution/getStatementResultChunkN request.
 	NextChunkIndex int `json:"next_chunk_index,omitempty"`
-	// When fetching, gives `internal_link` for the _next_ chunk; if absent,
-	// indicates there are no more chunks.
+	// When fetching, provides a link to fetch the _next_ chunk. If absent,
+	// indicates there are no more chunks. This link is an absolute `path` to be
+	// joined with your `$DATABRICKS_HOST`, and should be treated as an opague
+	// link. This is an alternative to using `next_chunk_index`.
 	NextChunkInternalLink string `json:"next_chunk_internal_link,omitempty"`
-	// Number of rows within the result chunk.
+	// The number of rows within the result chunk.
 	RowCount int64 `json:"row_count,omitempty"`
-	// Starting row offset within the result set.
+	// The starting row offset within the result set.
 	RowOffset int64 `json:"row_offset,omitempty"`
 }
 
-// Statement execution supports three result formats: `JSON_ARRAY` (default),
-// `ARROW_STREAM`, and `CSV`.
-//
-// When specifying `format=JSON_ARRAY`, result data will be formatted as an
-// array of arrays of values, where each value is either the *string
-// representation* of a value, or `null`. For example, the output of `SELECT
-// concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)`
-// would look like this:
-//
-// ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null ], ]
-// ```
-//
-// `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS` dispositions.
-//
-// `INLINE` `JSON_ARRAY` data can be found at the path
-// `StatementResponse.result.data_array`.
-//
-// For `EXTERNAL_LINKS` `JSON_ARRAY` results, each URL points to a file in cloud
-// storage that contains compact JSON with no indentation or extra whitespace.
-//
-// When specifying `format=ARROW_STREAM`, each chunk in the result will be
-// formatted as Apache Arrow Stream. See the [Apache Arrow streaming format].
-//
-// IMPORTANT: The format `ARROW_STREAM` is supported only with `EXTERNAL_LINKS`
-// disposition.
-//
-// When specifying `format=CSV`, each chunk in the result will be a CSV
-// according to [RFC 4180] standard. All the columns values will have *string
-// representation* similar to the `JSON_ARRAY` format, and `null` values will be
-// encoded as “null”. Only the first chunk in the result would contain a
-// header row with column names. For example, the output of `SELECT
-// concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM range(3)`
-// would look like this:
-//
-// ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
-//
-// IMPORTANT: The format `CSV` is supported only with `EXTERNAL_LINKS`
-// disposition.
-//
-// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
-// [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
 type Format string
 
 const FormatArrowStream Format = `ARROW_STREAM`
@@ -1158,14 +1201,17 @@ type GetStatementRequest struct {
 type GetStatementResponse struct {
 	// The result manifest provides schema and metadata for the result set.
 	Manifest *ResultManifest `json:"manifest,omitempty"`
-	// Result data chunks are delivered in either the `chunk` field when using
-	// `INLINE` disposition, or in the `external_link` field when using
-	// `EXTERNAL_LINKS` disposition. Exactly one of these will be set.
+	// Contains the result data of a single chunk when using `INLINE`
+	// disposition. When using `EXTERNAL_LINKS` disposition, the array
+	// `external_links` is used instead to provide presigned URLs to the result
+	// data in cloud storage. Exactly one of these alternatives is used. (While
+	// the `external_links` array prepares the API to return multiple links in a
+	// single response. Currently only a single link is returned.)
 	Result *ResultData `json:"result,omitempty"`
-	// Statement ID is returned upon successfully submitting a SQL statement,
-	// and is a required reference for all subsequent calls.
+	// The statement ID is returned upon successfully submitting a SQL
+	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"statement_id,omitempty"`
-	// Status response includes execution state and if relevant, error
+	// The status response includes execution state and if relevant, error
 	// information.
 	Status *StatementStatus `json:"status,omitempty"`
 }
@@ -1621,7 +1667,8 @@ func (f *ParameterType) Type() string {
 	return "ParameterType"
 }
 
-// This describes an enum
+// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
+// `CAN_MANAGE`: Can manage the query
 type PermissionLevel string
 
 // Can manage the query
@@ -1735,7 +1782,8 @@ type Query struct {
 	Options *QueryOptions `json:"options,omitempty"`
 	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
-	// This describes an enum
+	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
+	// `CAN_MANAGE`: Can manage the query
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// The text of the query to be run.
 	Query string `json:"query,omitempty"`
@@ -1826,7 +1874,10 @@ type QueryInfo struct {
 	SparkUiUrl string `json:"spark_ui_url,omitempty"`
 	// Type of statement for this query
 	StatementType QueryStatementType `json:"statement_type,omitempty"`
-	// This describes an enum
+	// Query status with one the following values: * `QUEUED`: Query has been
+	// received and queued. * `RUNNING`: Query has started. * `CANCELED`: Query
+	// has been cancelled by the user. * `FAILED`: Query has failed. *
+	// `FINISHED`: Query has completed.
 	Status QueryStatus `json:"status,omitempty"`
 	// The ID of the user who ran the query.
 	UserId int `json:"user_id,omitempty"`
@@ -2013,7 +2064,10 @@ func (f *QueryStatementType) Type() string {
 	return "QueryStatementType"
 }
 
-// This describes an enum
+// Query status with one the following values: * `QUEUED`: Query has been
+// received and queued. * `RUNNING`: Query has started. * `CANCELED`: Query has
+// been cancelled by the user. * `FAILED`: Query has failed. * `FINISHED`: Query
+// has completed.
 type QueryStatus string
 
 // Query has been cancelled by the user.
@@ -2069,91 +2123,59 @@ type RestoreQueryRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
-// Result data chunks are delivered in either the `chunk` field when using
-// `INLINE` disposition, or in the `external_link` field when using
-// `EXTERNAL_LINKS` disposition. Exactly one of these will be set.
+// Contains the result data of a single chunk when using `INLINE` disposition.
+// When using `EXTERNAL_LINKS` disposition, the array `external_links` is used
+// instead to provide presigned URLs to the result data in cloud storage.
+// Exactly one of these alternatives is used. (While the `external_links` array
+// prepares the API to return multiple links in a single response. Currently
+// only a single link is returned.)
 type ResultData struct {
-	// Number of bytes in the result chunk.
+	// The number of bytes in the result chunk.
 	ByteCount int64 `json:"byte_count,omitempty"`
-	// Position within the sequence of result set chunks.
+	// The position within the sequence of result set chunks.
 	ChunkIndex int `json:"chunk_index,omitempty"`
-	// `JSON_ARRAY` format is an array of arrays of values, where each non-null
-	// value is formatted as a string. Null values are encoded as JSON `null`.
+	// The `JSON_ARRAY` format is an array of arrays of values, where each
+	// non-null value is formatted as a string. Null values are encoded as JSON
+	// `null`.
 	DataArray [][]string `json:"data_array,omitempty"`
 
 	ExternalLinks []ExternalLink `json:"external_links,omitempty"`
-	// When fetching, gives `chunk_index` for the _next_ chunk; if absent,
-	// indicates there are no more chunks.
+	// When fetching, provides the `chunk_index` for the _next_ chunk. If
+	// absent, indicates there are no more chunks. The next chunk can be fetched
+	// with a :method:statementexecution/getStatementResultChunkN request.
 	NextChunkIndex int `json:"next_chunk_index,omitempty"`
-	// When fetching, gives `internal_link` for the _next_ chunk; if absent,
-	// indicates there are no more chunks.
+	// When fetching, provides a link to fetch the _next_ chunk. If absent,
+	// indicates there are no more chunks. This link is an absolute `path` to be
+	// joined with your `$DATABRICKS_HOST`, and should be treated as an opague
+	// link. This is an alternative to using `next_chunk_index`.
 	NextChunkInternalLink string `json:"next_chunk_internal_link,omitempty"`
-	// Number of rows within the result chunk.
+	// The number of rows within the result chunk.
 	RowCount int64 `json:"row_count,omitempty"`
-	// Starting row offset within the result set.
+	// The starting row offset within the result set.
 	RowOffset int64 `json:"row_offset,omitempty"`
 }
 
 // The result manifest provides schema and metadata for the result set.
 type ResultManifest struct {
 	// Array of result set chunk metadata.
-	Chunks []ChunkInfo `json:"chunks,omitempty"`
-	// Statement execution supports three result formats: `JSON_ARRAY`
-	// (default), `ARROW_STREAM`, and `CSV`.
-	//
-	// When specifying `format=JSON_ARRAY`, result data will be formatted as an
-	// array of arrays of values, where each value is either the *string
-	// representation* of a value, or `null`. For example, the output of `SELECT
-	// concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)`
-	// would look like this:
-	//
-	// ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null
-	// ], ] ```
-	//
-	// `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS`
-	// dispositions.
-	//
-	// `INLINE` `JSON_ARRAY` data can be found at the path
-	// `StatementResponse.result.data_array`.
-	//
-	// For `EXTERNAL_LINKS` `JSON_ARRAY` results, each URL points to a file in
-	// cloud storage that contains compact JSON with no indentation or extra
-	// whitespace.
-	//
-	// When specifying `format=ARROW_STREAM`, each chunk in the result will be
-	// formatted as Apache Arrow Stream. See the [Apache Arrow streaming
-	// format].
-	//
-	// IMPORTANT: The format `ARROW_STREAM` is supported only with
-	// `EXTERNAL_LINKS` disposition.
-	//
-	// When specifying `format=CSV`, each chunk in the result will be a CSV
-	// according to [RFC 4180] standard. All the columns values will have
-	// *string representation* similar to the `JSON_ARRAY` format, and `null`
-	// values will be encoded as “null”. Only the first chunk in the result
-	// would contain a header row with column names. For example, the output of
-	// `SELECT concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM
-	// range(3)` would look like this:
-	//
-	// ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
-	//
-	// IMPORTANT: The format `CSV` is supported only with `EXTERNAL_LINKS`
-	// disposition.
-	//
-	// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
-	// [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
+	Chunks []BaseChunkInfo `json:"chunks,omitempty"`
+
 	Format Format `json:"format,omitempty"`
-	// Schema is an ordered list of column descriptions.
+	// The schema is an ordered list of column descriptions.
 	Schema *ResultSchema `json:"schema,omitempty"`
-	// Total number of bytes in the result set.
+	// The total number of bytes in the result set. This field is not available
+	// when using `INLINE` disposition.
 	TotalByteCount int64 `json:"total_byte_count,omitempty"`
-	// Total number of chunks that the result set has been divided into.
+	// The total number of chunks that the result set has been divided into.
 	TotalChunkCount int `json:"total_chunk_count,omitempty"`
-	// Total number of rows in the result set.
+	// The total number of rows in the result set.
 	TotalRowCount int64 `json:"total_row_count,omitempty"`
+	// Indicates whether the result is truncated due to `row_limit` or
+	// `byte_limit`.
+	Truncated bool `json:"truncated,omitempty"`
 }
 
-// Schema is an ordered list of column descriptions.
+// The schema is an ordered list of column descriptions.
 type ResultSchema struct {
 	ColumnCount int `json:"column_count,omitempty"`
 
@@ -2190,7 +2212,7 @@ func (f *RunAsRole) Type() string {
 
 type ServiceError struct {
 	ErrorCode ServiceErrorCode `json:"error_code,omitempty"`
-	// Brief summary of error condition.
+	// A brief summary of the error condition.
 	Message string `json:"message,omitempty"`
 }
 
@@ -2416,16 +2438,24 @@ type StatementParameterListItem struct {
 // successful, and statement closed; result no longer available for fetch
 type StatementState string
 
+// user canceled; can come from explicit cancel call, or timeout with
+// `on_wait_timeout=CANCEL`
 const StatementStateCanceled StatementState = `CANCELED`
 
+// execution successful, and statement closed; result no longer available for
+// fetch
 const StatementStateClosed StatementState = `CLOSED`
 
+// execution failed; reason for failure described in accomanying error message
 const StatementStateFailed StatementState = `FAILED`
 
+// waiting for warehouse
 const StatementStatePending StatementState = `PENDING`
 
+// running
 const StatementStateRunning StatementState = `RUNNING`
 
+// execution was successful, result data available for fetch
 const StatementStateSucceeded StatementState = `SUCCEEDED`
 
 // String representation for [fmt.Print]
@@ -2449,7 +2479,8 @@ func (f *StatementState) Type() string {
 	return "StatementState"
 }
 
-// Status response includes execution state and if relevant, error information.
+// The status response includes execution state and if relevant, error
+// information.
 type StatementStatus struct {
 	Error *ServiceError `json:"error,omitempty"`
 	// Statement execution state: - `PENDING`: waiting for warehouse -
@@ -2758,41 +2789,6 @@ type TimeRange struct {
 	EndTimeMs int `json:"end_time_ms,omitempty" url:"end_time_ms,omitempty"`
 	// Limit results to queries that started after this time.
 	StartTimeMs int `json:"start_time_ms,omitempty" url:"start_time_ms,omitempty"`
-}
-
-// When in synchronous mode with `wait_timeout > 0s` it determines the action
-// taken when the timeout is reached:
-//
-// `CONTINUE` → the statement execution continues asynchronously and the call
-// returns a statement ID immediately.
-//
-// `CANCEL` → the statement execution is canceled and the call returns
-// immediately with a `CANCELED` state.
-type TimeoutAction string
-
-const TimeoutActionCancel TimeoutAction = `CANCEL`
-
-const TimeoutActionContinue TimeoutAction = `CONTINUE`
-
-// String representation for [fmt.Print]
-func (f *TimeoutAction) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *TimeoutAction) Set(v string) error {
-	switch v {
-	case `CANCEL`, `CONTINUE`:
-		*f = TimeoutAction(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCEL", "CONTINUE"`, v)
-	}
-}
-
-// Type always returns TimeoutAction to satisfy [pflag.Value] interface
-func (f *TimeoutAction) Type() string {
-	return "TimeoutAction"
 }
 
 type TransferOwnershipObjectId struct {

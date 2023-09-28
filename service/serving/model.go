@@ -29,6 +29,17 @@ type CreateServingEndpoint struct {
 	// unique across a Databricks workspace. An endpoint name can consist of
 	// alphanumeric characters, dashes, and underscores.
 	Name string `json:"name"`
+	// Tags to be attached to the serving endpoint and automatically propagated
+	// to billing logs.
+	Tags []EndpointTag `json:"tags,omitempty"`
+}
+
+type DataframeSplitInput struct {
+	Columns []any `json:"columns,omitempty"`
+
+	Data []any `json:"data,omitempty"`
+
+	Index []int `json:"index,omitempty"`
 }
 
 // Delete a serving endpoint
@@ -154,6 +165,13 @@ func (f *EndpointStateReady) Type() string {
 	return "EndpointStateReady"
 }
 
+type EndpointTag struct {
+	// Key field for a serving endpoint tag.
+	Key string `json:"key"`
+	// Optional value field for a serving endpoint tag.
+	Value string `json:"value,omitempty"`
+}
+
 // Retrieve the metrics associated with a serving endpoint
 type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
@@ -200,15 +218,32 @@ type LogsRequest struct {
 	ServedModelName string `json:"-" url:"-"`
 }
 
+type PatchServingEndpointTags struct {
+	// List of endpoint tags to add
+	AddTags []EndpointTag `json:"add_tags,omitempty"`
+	// List of tag keys to delete
+	DeleteTags []string `json:"delete_tags,omitempty"`
+	// The name of the serving endpoint who's tags to patch. This field is
+	// required.
+	Name string `json:"-" url:"-"`
+}
+
+type QueryEndpointInput struct {
+	// Pandas Dataframe input in the records orientation.
+	DataframeRecords []any `json:"dataframe_records,omitempty"`
+	// Pandas Dataframe input in the split orientation.
+	DataframeSplit *DataframeSplitInput `json:"dataframe_split,omitempty"`
+	// Tensor-based input in columnar format.
+	Inputs any `json:"inputs,omitempty"`
+	// Tensor-based input in row format.
+	Instances []any `json:"instances,omitempty"`
+	// The name of the serving endpoint. This field is required.
+	Name string `json:"-" url:"-"`
+}
+
 type QueryEndpointResponse struct {
 	// The predictions returned by the serving endpoint.
 	Predictions []any `json:"predictions"`
-}
-
-// Query a serving endpoint with provided model input.
-type QueryRequest struct {
-	// The name of the serving endpoint. This field is required.
-	Name string `json:"-" url:"-"`
 }
 
 type Route struct {
@@ -388,6 +423,8 @@ type ServingEndpoint struct {
 	Name string `json:"name,omitempty"`
 	// Information corresponding to the state of the serving endpoint.
 	State *EndpointState `json:"state,omitempty"`
+	// Tags attached to the serving endpoint.
+	Tags []EndpointTag `json:"tags,omitempty"`
 }
 
 type ServingEndpointAccessControlRequest struct {
@@ -434,6 +471,8 @@ type ServingEndpointDetailed struct {
 	PermissionLevel ServingEndpointDetailedPermissionLevel `json:"permission_level,omitempty"`
 	// Information corresponding to the state of the serving endpoint.
 	State *EndpointState `json:"state,omitempty"`
+	// Tags attached to the serving endpoint.
+	Tags []EndpointTag `json:"tags,omitempty"`
 }
 
 // The permission level of the principal making the request.

@@ -134,6 +134,21 @@ func (a *accountSettingsImpl) UpdatePersonalComputeSetting(ctx context.Context, 
 	return &personalComputeSetting, err
 }
 
+// unexported type that holds implementations of just CredentialsManager API methods
+type credentialsManagerImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
+	var exchangeTokenResponse ExchangeTokenResponse
+	path := "/api/2.0/credentials-manager/exchange-tokens/token"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &exchangeTokenResponse)
+	return &exchangeTokenResponse, err
+}
+
 // unexported type that holds implementations of just IpAccessLists API methods
 type ipAccessListsImpl struct {
 	client *client.DatabricksClient
@@ -190,6 +205,39 @@ func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessLi
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
 	return err
+}
+
+// unexported type that holds implementations of just Settings API methods
+type settingsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *settingsImpl) DeleteDefaultWorkspaceNamespace(ctx context.Context, request DeleteDefaultWorkspaceNamespaceRequest) (*DeleteDefaultWorkspaceNamespaceResponse, error) {
+	var deleteDefaultWorkspaceNamespaceResponse DeleteDefaultWorkspaceNamespaceResponse
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteDefaultWorkspaceNamespaceResponse)
+	return &deleteDefaultWorkspaceNamespaceResponse, err
+}
+
+func (a *settingsImpl) ReadDefaultWorkspaceNamespace(ctx context.Context, request ReadDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error) {
+	var defaultNamespaceSetting DefaultNamespaceSetting
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &defaultNamespaceSetting)
+	return &defaultNamespaceSetting, err
+}
+
+func (a *settingsImpl) UpdateDefaultWorkspaceNamespace(ctx context.Context, request UpdateDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error) {
+	var defaultNamespaceSetting DefaultNamespaceSetting
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &defaultNamespaceSetting)
+	return &defaultNamespaceSetting, err
 }
 
 // unexported type that holds implementations of just TokenManagement API methods

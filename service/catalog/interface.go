@@ -32,7 +32,7 @@ type AccountMetastoreAssignmentsService interface {
 	//
 	// Gets a list of all Databricks workspace IDs that have been assigned to
 	// given metastore.
-	List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]MetastoreAssignment, error)
+	List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]int64, error)
 
 	// Updates a metastore assignment to a workspaces.
 	//
@@ -124,14 +124,16 @@ type ArtifactAllowlistsService interface {
 	// Get an artifact allowlist.
 	//
 	// Get the artifact allowlist of a certain artifact type. The caller must be
-	// a metastore admin.
+	// a metastore admin or have the **MANAGE ALLOWLIST** privilege on the
+	// metastore.
 	Get(ctx context.Context, request GetArtifactAllowlistRequest) (*ArtifactAllowlistInfo, error)
 
 	// Set an artifact allowlist.
 	//
 	// Set the artifact allowlist of a certain artifact type. The whole artifact
 	// allowlist is replaced with the new allowlist. The caller must be a
-	// metastore admin.
+	// metastore admin or have the **MANAGE ALLOWLIST** privilege on the
+	// metastore.
 	Update(ctx context.Context, request SetArtifactAllowlist) (*ArtifactAllowlistInfo, error)
 }
 
