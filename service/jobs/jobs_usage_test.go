@@ -56,7 +56,9 @@ func ExampleJobsAPI_CancelAllRuns_jobsApiFullIntegration() {
 	}
 	logger.Infof(ctx, "found %v", createdJob)
 
-	err = w.Jobs.CancelAllRunsByJobId(ctx, createdJob.JobId)
+	err = w.Jobs.CancelAllRuns(ctx, jobs.CancelAllRuns{
+		JobId: createdJob.JobId,
+	})
 	if err != nil {
 		panic(err)
 	}

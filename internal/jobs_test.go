@@ -80,7 +80,9 @@ func TestAccJobsApiFullIntegration(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	err = w.Jobs.CancelAllRunsByJobId(ctx, createdJob.JobId)
+	err = w.Jobs.CancelAllRuns(ctx, jobs.CancelAllRuns{
+		JobId: createdJob.JobId,
+	})
 	require.NoError(t, err)
 
 	runNowResponse, err := w.Jobs.RunNow(ctx, jobs.RunNow{
