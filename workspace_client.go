@@ -614,6 +614,9 @@ type WorkspaceClient struct {
 	// served model.
 	ServingEndpoints *serving.ServingEndpointsAPI
 
+	// // TODO(yuyuan.tang) to add the description for the setting
+	Settings *settings.SettingsAPI
+
 	// A share is a container instantiated with :method:shares/create. Once
 	// created you can iteratively register a collection of existing data assets
 	// defined within the metastore using :method:shares/update. You can
@@ -912,6 +915,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Secrets:                   workspace.NewSecrets(apiClient),
 		ServicePrincipals:         iam.NewServicePrincipals(apiClient),
 		ServingEndpoints:          serving.NewServingEndpoints(apiClient),
+		Settings:                  settings.NewSettings(apiClient),
 		Shares:                    sharing.NewShares(apiClient),
 		StatementExecution:        sql.NewStatementExecution(apiClient),
 		StorageCredentials:        catalog.NewStorageCredentials(apiClient),

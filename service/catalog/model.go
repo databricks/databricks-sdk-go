@@ -64,7 +64,8 @@ type AccountsUpdateStorageCredential struct {
 }
 
 type ArtifactAllowlistInfo struct {
-	ArtifactMatchers *ArtifactMatcher `json:"artifact_matchers,omitempty"`
+	// A list of allowed artifact match patterns.
+	ArtifactMatchers []ArtifactMatcher `json:"artifact_matchers,omitempty"`
 	// Time at which this artifact allowlist was set, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of the user who set the artifact allowlist.
@@ -625,8 +626,6 @@ type CreateConnection struct {
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
 	Options map[string]string `json:"options"`
-	// Username of current owner of the connection.
-	Owner string `json:"owner,omitempty"`
 	// An object containing map of key-value properties attached to the
 	// connection.
 	Properties map[string]string `json:"properties,omitempty"`
@@ -2944,7 +2943,8 @@ func (f *SecurableType) Type() string {
 }
 
 type SetArtifactAllowlist struct {
-	ArtifactMatchers ArtifactMatcher `json:"artifact_matchers"`
+	// A list of allowed artifact match patterns.
+	ArtifactMatchers []ArtifactMatcher `json:"artifact_matchers"`
 	// The artifact type of the allowlist.
 	ArtifactType ArtifactType `json:"-" url:"-"`
 }
@@ -3282,8 +3282,6 @@ type UpdateCatalog struct {
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of catalog.
 	Name string `json:"name,omitempty" url:"-"`
-	// A map of key-value properties attached to the securable.
-	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of catalog.
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.

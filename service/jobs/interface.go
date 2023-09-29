@@ -32,10 +32,10 @@ type JobsService interface {
 	// so it doesn't prevent new runs from being started.
 	CancelAllRuns(ctx context.Context, request CancelAllRuns) error
 
-	// Cancel a job run.
+	// Cancel a run.
 	//
-	// Cancels a job run. The run is canceled asynchronously, so it may still be
-	// running when this request completes.
+	// Cancels a job run or a task run. The run is canceled asynchronously, so
+	// it may still be running when this request completes.
 	CancelRun(ctx context.Context, request CancelRun) error
 
 	// Create a new job.
