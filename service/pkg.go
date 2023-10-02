@@ -132,6 +132,8 @@
 //
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 //
+// - [settings.SettingsAPI]: // TODO(yuyuan.tang) to add the description for the setting.
+//
 // - [settings.AccountSettingsAPI]: The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources.
 //
 // - [sharing.SharesAPI]: A share is a container instantiated with :method:shares/create.
@@ -264,6 +266,7 @@ var (
 	_ *iam.ServicePrincipalsAPI               = nil
 	_ *iam.AccountServicePrincipalsAPI        = nil
 	_ *serving.ServingEndpointsAPI            = nil
+	_ *settings.SettingsAPI                   = nil
 	_ *settings.AccountSettingsAPI            = nil
 	_ *sharing.SharesAPI                      = nil
 	_ *sql.StatementExecutionAPI              = nil

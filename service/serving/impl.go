@@ -104,12 +104,13 @@ func (a *servingEndpointsImpl) Patch(ctx context.Context, request PatchServingEn
 	return endpointTagList, err
 }
 
-func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryRequest) (*QueryEndpointResponse, error) {
+func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
 	var queryEndpointResponse QueryEndpointResponse
 	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, &queryEndpointResponse)
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &queryEndpointResponse)
 	return &queryEndpointResponse, err
 }
 

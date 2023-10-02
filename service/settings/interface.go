@@ -269,6 +269,30 @@ type IpAccessListsService interface {
 	Update(ctx context.Context, request UpdateIpAccessList) error
 }
 
+// // TODO(yuyuan.tang) to add the description for the setting
+type SettingsService interface {
+
+	// Delete the default namespace.
+	//
+	// Deletes the default namespace.
+	DeleteDefaultWorkspaceNamespace(ctx context.Context, request DeleteDefaultWorkspaceNamespaceRequest) (*DeleteDefaultWorkspaceNamespaceResponse, error)
+
+	// Get the default namespace.
+	//
+	// Gets the default namespace.
+	ReadDefaultWorkspaceNamespace(ctx context.Context, request ReadDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error)
+
+	// Updates the default namespace setting.
+	//
+	// Updates the default namespace setting for the workspace. A fresh etag
+	// needs to be provided in PATCH requests (as part the setting field). The
+	// etag can be retrieved by making a GET request before the PATCH request.
+	// Note that if the setting does not exist, GET will return a NOT_FOUND
+	// error and the etag will be present in the error response, which should be
+	// set in the PATCH request.
+	UpdateDefaultWorkspaceNamespace(ctx context.Context, request UpdateDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error)
+}
+
 // Enables administrators to get all tokens and delete tokens for other users.
 // Admins can either get every token, get a specific token by ID, or get all
 // tokens for a particular user.

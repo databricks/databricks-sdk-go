@@ -44,12 +44,12 @@ func (a *cleanRoomsImpl) Get(ctx context.Context, request GetCleanRoomRequest) (
 	return &cleanRoomInfo, err
 }
 
-func (a *cleanRoomsImpl) List(ctx context.Context) (*ListCleanRoomsResponse, error) {
+func (a *cleanRoomsImpl) List(ctx context.Context, request ListCleanRoomsRequest) (*ListCleanRoomsResponse, error) {
 	var listCleanRoomsResponse ListCleanRoomsResponse
 	path := "/api/2.1/unity-catalog/clean-rooms"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listCleanRoomsResponse)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listCleanRoomsResponse)
 	return &listCleanRoomsResponse, err
 }
 
