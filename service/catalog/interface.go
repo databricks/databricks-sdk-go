@@ -32,7 +32,9 @@ type AccountMetastoreAssignmentsService interface {
 	//
 	// Gets a list of all Databricks workspace IDs that have been assigned to
 	// given metastore.
-	List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]int64, error)
+	//
+	// Use ListAll() to get all WorkspaceId instances
+	List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) (*ListAccountMetastoreAssignmentsResponse, error)
 
 	// Updates a metastore assignment to a workspaces.
 	//
