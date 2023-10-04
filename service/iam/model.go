@@ -1024,7 +1024,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
 
@@ -1070,7 +1070,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Name *Name `json:"name,omitempty"`
 

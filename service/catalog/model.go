@@ -2119,6 +2119,11 @@ type ListAccountMetastoreAssignmentsRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 }
 
+// The list of workspaces to which the given metastore is assigned.
+type ListAccountMetastoreAssignmentsResponse struct {
+	WorkspaceIds []int64 `json:"workspace_ids,omitempty"`
+}
+
 // Get all storage credentials assigned to a metastore
 type ListAccountStorageCredentialsRequest struct {
 	// Unity Catalog metastore ID

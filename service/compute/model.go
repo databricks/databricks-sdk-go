@@ -3134,8 +3134,6 @@ const InstancePoolAwsAttributesAvailabilityOnDemand InstancePoolAwsAttributesAva
 
 const InstancePoolAwsAttributesAvailabilitySpot InstancePoolAwsAttributesAvailability = `SPOT`
 
-const InstancePoolAwsAttributesAvailabilitySpotWithFallback InstancePoolAwsAttributesAvailability = `SPOT_WITH_FALLBACK`
-
 // String representation for [fmt.Print]
 func (f *InstancePoolAwsAttributesAvailability) String() string {
 	return string(*f)
@@ -3144,11 +3142,11 @@ func (f *InstancePoolAwsAttributesAvailability) String() string {
 // Set raw string value and validate it against allowed values
 func (f *InstancePoolAwsAttributesAvailability) Set(v string) error {
 	switch v {
-	case `ON_DEMAND`, `SPOT`, `SPOT_WITH_FALLBACK`:
+	case `ON_DEMAND`, `SPOT`:
 		*f = InstancePoolAwsAttributesAvailability(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND", "SPOT", "SPOT_WITH_FALLBACK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND", "SPOT"`, v)
 	}
 }
 
@@ -3188,8 +3186,6 @@ const InstancePoolAzureAttributesAvailabilityOnDemandAzure InstancePoolAzureAttr
 
 const InstancePoolAzureAttributesAvailabilitySpotAzure InstancePoolAzureAttributesAvailability = `SPOT_AZURE`
 
-const InstancePoolAzureAttributesAvailabilitySpotWithFallbackAzure InstancePoolAzureAttributesAvailability = `SPOT_WITH_FALLBACK_AZURE`
-
 // String representation for [fmt.Print]
 func (f *InstancePoolAzureAttributesAvailability) String() string {
 	return string(*f)
@@ -3198,11 +3194,11 @@ func (f *InstancePoolAzureAttributesAvailability) String() string {
 // Set raw string value and validate it against allowed values
 func (f *InstancePoolAzureAttributesAvailability) Set(v string) error {
 	switch v {
-	case `ON_DEMAND_AZURE`, `SPOT_AZURE`, `SPOT_WITH_FALLBACK_AZURE`:
+	case `ON_DEMAND_AZURE`, `SPOT_AZURE`:
 		*f = InstancePoolAzureAttributesAvailability(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE", "SPOT_WITH_FALLBACK_AZURE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE"`, v)
 	}
 }
 
