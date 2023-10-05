@@ -211,7 +211,7 @@ type GetIpAccessListRequest struct {
 }
 
 type GetIpAccessListResponse struct {
-	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
+	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
 type GetIpAccessListsResponse struct {
@@ -260,6 +260,10 @@ type IpAccessListInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// User ID of the user who updated this list.
 	UpdatedBy int64 `json:"updated_by,omitempty"`
+}
+
+type ListIpAccessListResponse struct {
+	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
 
 // List all tokens

@@ -227,7 +227,7 @@ type IpAccessListsService interface {
 	// Gets all IP access lists for the specified workspace.
 	//
 	// Use ListAll() to get all IpAccessListInfo instances
-	List(ctx context.Context) (*GetIpAccessListResponse, error)
+	List(ctx context.Context) (*ListIpAccessListResponse, error)
 
 	// Replace access list.
 	//

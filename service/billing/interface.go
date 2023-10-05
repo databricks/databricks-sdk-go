@@ -23,7 +23,7 @@ type BillableUsageService interface {
 	// date ranges.
 	//
 	// [CSV file schema]: https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema
-	Download(ctx context.Context, request DownloadRequest) error
+	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 }
 
 // These APIs manage budget configuration including notifications for exceeding

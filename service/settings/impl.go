@@ -180,13 +180,13 @@ func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessListRequ
 	return &fetchIpAccessListResponse, err
 }
 
-func (a *ipAccessListsImpl) List(ctx context.Context) (*GetIpAccessListResponse, error) {
-	var getIpAccessListResponse GetIpAccessListResponse
+func (a *ipAccessListsImpl) List(ctx context.Context) (*ListIpAccessListResponse, error) {
+	var listIpAccessListResponse ListIpAccessListResponse
 	path := "/api/2.0/ip-access-lists"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &getIpAccessListResponse)
-	return &getIpAccessListResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listIpAccessListResponse)
+	return &listIpAccessListResponse, err
 }
 
 func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
