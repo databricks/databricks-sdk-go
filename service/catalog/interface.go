@@ -728,7 +728,16 @@ type StorageCredentialsService interface {
 
 	// Create a storage credential.
 	//
-	// Creates a new storage credential.
+	// Creates a new storage credential. The request object is specific to the
+	// cloud:
+	//
+	// * **AwsIamRole** for AWS credentials. * **AzureServicePrincipal** for
+	// Azure credentials. * **AzureManagedIdentity** for Azure managed
+	// credentials. * **DatabricksGcpServiceAccount** for GCP managed
+	// credentials.
+	//
+	// The caller must be a metastore admin and have the
+	// **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
 	Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error)
 
 	// Delete a credential.
@@ -757,7 +766,9 @@ type StorageCredentialsService interface {
 
 	// Update a credential.
 	//
-	// Updates a storage credential on the metastore.
+	// Updates a storage credential on the metastore. The caller must be the
+	// owner of the storage credential or a metastore admin. If the caller is a
+	// metastore admin, only the __owner__ credential can be changed.
 	Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error)
 
 	// Validate a storage credential.

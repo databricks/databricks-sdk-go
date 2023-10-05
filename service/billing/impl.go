@@ -5,7 +5,6 @@ package billing
 import (
 	"context"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -16,13 +15,11 @@ type billableUsageImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *billableUsageImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
-	var downloadResponse io.ReadCloser
+func (a *billableUsageImpl) Download(ctx context.Context, request DownloadRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/usage/download", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
-	headers["Accept"] = "text/plain"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &downloadResponse)
-	return &DownloadResponse{Contents: downloadResponse}, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, nil)
+	return err
 }
 
 // unexported type that holds implementations of just Budgets API methods

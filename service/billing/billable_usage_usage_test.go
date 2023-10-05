@@ -17,7 +17,7 @@ func ExampleBillableUsageAPI_Download_usageDownload() {
 		panic(err)
 	}
 
-	_, err = a.BillableUsage.Download(ctx, billing.DownloadRequest{
+	err = a.BillableUsage.Download(ctx, billing.DownloadRequest{
 		StartMonth: "2022-01",
 		EndMonth:   "2022-02",
 	})

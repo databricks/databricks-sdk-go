@@ -2,10 +2,7 @@
 
 package billing
 
-import (
-	"fmt"
-	"io"
-)
+import "fmt"
 
 // all definitions in this file are in alphabetical order
 
@@ -244,10 +241,6 @@ type DownloadRequest struct {
 	// Format: `YYYY-MM`. First month to return billable usage logs for. This
 	// field is required.
 	StartMonth string `json:"-" url:"start_month"`
-}
-
-type DownloadResponse struct {
-	Contents io.ReadCloser `json:"-"`
 }
 
 // Get budget and its status
