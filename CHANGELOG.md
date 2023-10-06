@@ -1,5 +1,21 @@
 # Version changelog
 
+## 0.22.0
+
+Breaking API Changes:
+
+ * Changed `List` method for [a.AccountMetastoreAssignments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountMetastoreAssignmentsAPI) account-level service to return [catalog.ListAccountMetastoreAssignmentsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListAccountMetastoreAssignmentsResponse).
+
+API Changes:
+
+ * Added [catalog.ListAccountMetastoreAssignmentsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListAccountMetastoreAssignmentsResponse).
+
+Internal SDK Changes:
+
+* Add support for template libraries ([#635](https://github.com/databricks/databricks-sdk-go/pull/635)).
+
+OpenAPI SHA: bcbf6e851e3d82fd910940910dd31c10c059746c, Date: 2023-10-02
+
 ## 0.21.0
 
 Breaking API Changes:
