@@ -15,7 +15,7 @@ func TestAccAccountServicePrincipal(t *testing.T) {
 
 	spCreate, err := a.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		Active:      true,
-		DisplayName: RandomName("sp"),
+		DisplayName: RandomName("go-sdk-sp-"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
