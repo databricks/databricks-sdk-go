@@ -10,9 +10,8 @@ func TestBasicMapDefault(t *testing.T) {
 			st: customStruct{
 				BasicMap: nil,
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -25,9 +24,8 @@ func TestBasicMapValue(t *testing.T) {
 					"key": "value",
 				},
 			},
-			jsonString:     `{"basicmap":{"key":"value"},"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"basicmap":{"key":"value"},"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -39,9 +37,8 @@ func TestBasicMapForce(t *testing.T) {
 				BasicMap:        nil,
 				ForceSendFields: []string{"BasicMap"},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false, // Unmarshal won't include the ForceSendFields
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }

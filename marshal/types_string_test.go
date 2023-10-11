@@ -10,9 +10,8 @@ func TestStringDefault(t *testing.T) {
 			st: customStruct{
 				Str: "",
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -25,7 +24,6 @@ func TestStringValue(t *testing.T) {
 			},
 			jsonString:              `{"string":"val","childfs":{},"childnofs":{}}`,
 			matchClassic:            true,
-			matchUnmarshal:          false,
 			unmarshalForceSendField: []string{"Str"},
 		},
 	)
@@ -40,7 +38,6 @@ func TestStringForce(t *testing.T) {
 			},
 			jsonString:              `{"string":"","childfs":{},"childnofs":{}}`,
 			matchClassic:            false,
-			matchUnmarshal:          true,
 			unmarshalForceSendField: []string{"Str"},
 		},
 	)

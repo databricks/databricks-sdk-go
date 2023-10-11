@@ -63,9 +63,8 @@ func TestComposite(t *testing.T) {
 					ForceSendFields: []string{"Field3"},
 				},
 			},
-			jsonString:     `{"field1":1, "field2":2, "field3":3}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"field1":1, "field2":2, "field3":3}`,
+			matchClassic: true,
 		},
 	)
 
@@ -79,17 +78,23 @@ func TestCompositeNil(t *testing.T) {
 			ForceSendFields: []string{"Field1"},
 		},
 	}
-	result := executeCompositeMarshalTest(
+	expected := compositeChild{
+		Field2: 2,
+		CompositeParent: CompositeParent{
+			Field1: 1,
+		},
+		//CompositeSecondParent will be present due to limitations of the unmarshalling
+		CompositeSecondParent: &CompositeSecondParent{},
+	}
+	executeCompositeMarshalTest(
 		t, compositeTest{
-			st:           element,
-			jsonString:   `{"field1":1, "field2":2}`,
-			matchClassic: true,
-			//CompositeSecondParent will be present due to limitations of the unmarshalling
-			matchUnmarshal: false,
+			st:              element,
+			jsonString:      `{"field1":1, "field2":2}`,
+			matchClassic:    true,
+			unmarshalResult: &expected,
 		},
 	)
 	element.CompositeSecondParent = &CompositeSecondParent{}
-	assert.Equal(t, element, result)
 
 }
 
@@ -107,9 +112,8 @@ func TestCompositeDefault(t *testing.T) {
 					ForceSendFields: []string{"Field3"},
 				},
 			},
-			jsonString:     `{"field1":0, "field3":0}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"field1":0, "field3":0}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -121,7 +125,7 @@ type compositeTest struct {
 	matchClassic bool
 	// Unmarshal may not match, since ForceSendFields will be populated during
 	// custom unmarshal process
-	matchUnmarshal bool
+	unmarshalResult *compositeChild
 }
 
 func executeCompositeMarshalTest(t *testing.T, tc compositeTest) compositeChild {
@@ -133,9 +137,22 @@ func executeCompositeMarshalTest(t *testing.T, tc compositeTest) compositeChild 
 	var reconstruct compositeChild
 	err = json.Unmarshal(res, &reconstruct)
 	assert.NoError(t, err, "error while unmarshaling")
-	if tc.matchUnmarshal {
-		assert.Equal(t, tc.st, reconstruct)
+
+	expected := tc.st
+	if tc.unmarshalResult != nil {
+		expected = *tc.unmarshalResult
 	}
+	// We don't expect the ForceSendFields to match. Removing to compare the results
+	expected.CompositeParent.ForceSendFields = nil
+	if expected.CompositeSecondParent != nil {
+		expected.CompositeSecondParent.ForceSendFields = nil
+	}
+	reconstruct.CompositeParent.ForceSendFields = nil
+	if reconstruct.CompositeSecondParent != nil {
+		reconstruct.CompositeSecondParent.ForceSendFields = nil
+	}
+
+	assert.Equal(t, expected, reconstruct)
 
 	return reconstruct
 }
@@ -153,6 +170,8 @@ func (s noSendFieldChild) MarshalJSON() ([]byte, error) {
 	return Marshal(s)
 }
 
+// Similar to TestCompositeNil, but this struct has a single anonymous field.
+// In such case, GoLang will surface ForceSendFields.
 func TestNoSendFieldChild(t *testing.T) {
 	st := noSendFieldChild{
 		Field2: 2,

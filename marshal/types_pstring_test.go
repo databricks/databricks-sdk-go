@@ -10,9 +10,8 @@ func TestPStrDefault(t *testing.T) {
 			st: customStruct{
 				PStr: nil,
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -23,9 +22,8 @@ func TestPStrValue(t *testing.T) {
 			st: customStruct{
 				PStr: Ptr(""),
 			},
-			jsonString:     `{"pstring":"","childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false,
+			jsonString:   `{"pstring":"","childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -37,9 +35,8 @@ func TestPStrForce(t *testing.T) {
 				PStr:            nil,
 				ForceSendFields: []string{"PStr"},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }

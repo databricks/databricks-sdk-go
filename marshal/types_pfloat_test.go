@@ -10,9 +10,8 @@ func TestPFloatDefault(t *testing.T) {
 			st: customStruct{
 				PFloat: nil,
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -23,9 +22,8 @@ func TestPFloatValue(t *testing.T) {
 			st: customStruct{
 				PFloat: Ptr(0.0),
 			},
-			jsonString:     `{"pfloat":0,"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false,
+			jsonString:   `{"pfloat":0,"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -37,9 +35,8 @@ func TestPFloatForce(t *testing.T) {
 				PFloat:          nil,
 				ForceSendFields: []string{"PFloat"},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }

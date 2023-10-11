@@ -10,9 +10,8 @@ func TestBoolDefault(t *testing.T) {
 			st: customStruct{
 				Bool: false,
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -25,7 +24,6 @@ func TestBoolValue(t *testing.T) {
 			},
 			jsonString:              `{"bool":true,"childfs":{},"childnofs":{}}`,
 			matchClassic:            true,
-			matchUnmarshal:          false,
 			unmarshalForceSendField: []string{"Bool"},
 		},
 	)
@@ -40,7 +38,6 @@ func TestBoolForce(t *testing.T) {
 			},
 			jsonString:              `{"bool":false,"childfs":{},"childnofs":{}}`,
 			matchClassic:            false,
-			matchUnmarshal:          true,
 			unmarshalForceSendField: []string{"Bool"},
 		},
 	)

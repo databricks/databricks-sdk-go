@@ -10,9 +10,8 @@ func TestInterfaceDefault(t *testing.T) {
 			st: customStruct{
 				Interface: nil,
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -25,9 +24,13 @@ func TestInterfaceValue(t *testing.T) {
 					Int: 3,
 				},
 			},
-			jsonString:     `{"interface":{"childint":3},"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false,
+			jsonString:   `{"interface":{"childint":3},"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
+			unmarshalResult: &customStruct{ //Reflect can't determine the original type, so unmarshal returns this instead.
+				Interface: map[string]interface{}{
+					"childint": 3.0,
+				},
+			},
 		},
 	)
 }
@@ -39,9 +42,8 @@ func TestInterfaceForce(t *testing.T) {
 				Interface:       nil,
 				ForceSendFields: []string{"Interface"},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false, // Unmarshal won't include the ForceSendFields
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }

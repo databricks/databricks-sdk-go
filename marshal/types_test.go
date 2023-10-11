@@ -2,8 +2,6 @@ package marshal
 
 import (
 	"encoding/json"
-	"fmt"
-	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -75,11 +73,9 @@ type basicMarshalTest struct {
 	st         customStruct
 	jsonString string
 	// Compare marshal results with normal marshal
-	matchClassic bool
-	// Unmarshal may not match, since ForceSendFields will be populated during
-	// custom unmarshal process
-	matchUnmarshal          bool
+	matchClassic            bool
 	unmarshalForceSendField []string
+	unmarshalResult         *customStruct
 }
 
 func executeBasicMarshalTest(t *testing.T, tc basicMarshalTest) customStruct {
@@ -99,11 +95,26 @@ func executeBasicMarshalTest(t *testing.T, tc basicMarshalTest) customStruct {
 	var reconstruct customStruct
 	err = json.Unmarshal(res, &reconstruct)
 	assert.NoError(t, err, "error while unmarshaling")
-	if tc.matchUnmarshal {
-		assert.Equal(t, tc.st, reconstruct)
-	}
 
 	compareSlices(t, tc.unmarshalForceSendField, reconstruct.ForceSendFields)
+
+	expected := tc.st
+	if tc.unmarshalResult != nil {
+		expected = *tc.unmarshalResult
+	}
+	// We don't expect the ForceSendFields to match. Removing to compare the results
+	expected.ForceSendFields = nil
+	expected.ChildFS.ForceSendFields = nil
+	if expected.PChildFS != nil {
+		expected.PChildFS.ForceSendFields = nil
+	}
+	reconstruct.ForceSendFields = nil
+	reconstruct.ChildFS.ForceSendFields = nil
+	if reconstruct.PChildFS != nil {
+		reconstruct.PChildFS.ForceSendFields = nil
+	}
+
+	assert.Equal(t, expected, reconstruct)
 
 	return reconstruct
 }
@@ -122,8 +133,5 @@ func compareJSON(t *testing.T, json1 string, json2 string) {
 	assert.NoError(t, err, "error while unmarshalling")
 	err = json.Unmarshal([]byte(json2), &i2)
 	assert.NoError(t, err, "error while unmarshalling")
-	if !reflect.DeepEqual(i1, i2) {
-		message := fmt.Sprintf("result doesn't match expected string:\nwant :%v\ngot: %v", i1, i2)
-		assert.Fail(t, message)
-	}
+	assert.Equal(t, i1, i2)
 }

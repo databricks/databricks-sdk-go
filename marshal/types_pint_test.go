@@ -10,9 +10,8 @@ func TestPIntDefault(t *testing.T) {
 			st: customStruct{
 				PInt: nil,
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -23,9 +22,8 @@ func TestPIntValue(t *testing.T) {
 			st: customStruct{
 				PInt: Ptr(0),
 			},
-			jsonString:     `{"pint":0,"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false,
+			jsonString:   `{"pint":0,"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -37,9 +35,8 @@ func TestPIntForce(t *testing.T) {
 				PInt:            nil,
 				ForceSendFields: []string{"PInt"},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }

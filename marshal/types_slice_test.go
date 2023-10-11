@@ -10,9 +10,8 @@ func TestSliceDefault(t *testing.T) {
 			st: customStruct{
 				Slice: nil,
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -23,9 +22,8 @@ func TestSliceValue(t *testing.T) {
 			st: customStruct{
 				Slice: []int{3, 4},
 			},
-			jsonString:     `{"slice":[3,4],"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"slice":[3,4],"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -36,9 +34,11 @@ func TestSliceEmptyValue(t *testing.T) {
 			st: customStruct{
 				Slice: []int{},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false, //  Unmarshal will have a nil slice
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
+			unmarshalResult: &customStruct{
+				Slice: nil,
+			},
 		},
 	)
 }
@@ -50,9 +50,8 @@ func TestSliceForce(t *testing.T) {
 				Slice:           nil,
 				ForceSendFields: []string{"Slice"},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false, // Unmarshal won't include the ForceSendFields
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }

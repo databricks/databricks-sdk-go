@@ -12,47 +12,6 @@ func Unmarshal(data []byte, v any) error {
 	if len(data) == 0 {
 		return nil
 	}
-	// create a new element if the pointer is nul
-	if v == nil {
-		objectType := reflect.ValueOf(v).Type()
-		v = reflect.New(objectType).Interface()
-	}
-	err := unmarshalInternal(data, v)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func setForceSendFields(v any, presentFields []string) error {
-
-	value := reflect.ValueOf(v)
-	if value.Kind() != reflect.Ptr {
-		return nil
-	}
-
-	// reflex.GetFieldByName may return the field from an anonymous field
-	// if the extending struct doesn't have the field.
-	field := getFieldByName(v, forceSendFieldName)
-	if !field.IsValid() {
-		return nil
-	}
-
-	if !field.CanSet() || field.Kind() != reflect.Slice {
-		return errors.New("cannot set field")
-	}
-
-	if len(presentFields) == 0 {
-		return nil
-	}
-	presentFieldsValue := reflect.ValueOf(presentFields)
-	field.Set(presentFieldsValue)
-
-	return nil
-}
-
-func unmarshalInternal(data []byte, v any) error {
 	var jsonFields map[string]json.RawMessage
 	err := json.Unmarshal([]byte(data), &jsonFields)
 	if err != nil {
@@ -117,4 +76,31 @@ func setField(field reflect.Value, value []byte) error {
 	// Since strings in YAML may not have quotes, they won't be added.
 	// So we add them manually
 	return json.Unmarshal([]byte(`"`+string(value)+`"`), pointer)
+}
+
+func setForceSendFields(v any, presentFields []string) error {
+	if len(presentFields) == 0 {
+		return nil
+	}
+
+	value := reflect.ValueOf(v)
+	if value.Kind() != reflect.Ptr {
+		return nil
+	}
+
+	// reflex.GetFieldByName may return the field from an anonymous field
+	// if the extending struct doesn't have the field.
+	field := getFieldByName(v, forceSendFieldName)
+	if !field.IsValid() {
+		return nil
+	}
+
+	if !field.CanSet() || field.Kind() != reflect.Slice {
+		return errors.New("cannot set field")
+	}
+
+	presentFieldsValue := reflect.ValueOf(presentFields)
+	field.Set(presentFieldsValue)
+
+	return nil
 }

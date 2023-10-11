@@ -10,9 +10,8 @@ func TestMapToArrayDefault(t *testing.T) {
 			st: customStruct{
 				MapToArray: nil,
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -27,9 +26,15 @@ func TestMapToArrayValue(t *testing.T) {
 					}},
 				},
 			},
-			jsonString:     `{"maptoarray":{"key":[{"childint":3}]},"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false,
+			jsonString:   `{"maptoarray":{"key":[{"childint":3}]},"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
+			unmarshalResult: &customStruct{
+				MapToArray: map[string][]interface{}{
+					"key": {map[string]interface{}{
+						"childint": 3.0,
+					}},
+				},
+			},
 		},
 	)
 }
@@ -41,9 +46,8 @@ func TestMapToArrayForce(t *testing.T) {
 				MapToArray:      nil,
 				ForceSendFields: []string{"MapToArray"},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false, // Unmarshal won't include the ForceSendFields
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }

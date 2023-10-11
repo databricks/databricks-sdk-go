@@ -10,9 +10,8 @@ func TestIntDefault(t *testing.T) {
 			st: customStruct{
 				Int: 0,
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -25,7 +24,6 @@ func TestIntValue(t *testing.T) {
 			},
 			jsonString:              `{"int":2,"childfs":{},"childnofs":{}}`,
 			matchClassic:            true,
-			matchUnmarshal:          false,
 			unmarshalForceSendField: []string{"Int"},
 		},
 	)
@@ -40,7 +38,6 @@ func TestIntForce(t *testing.T) {
 			},
 			jsonString:              `{"int":0,"childfs":{},"childnofs":{}}`,
 			matchClassic:            false,
-			matchUnmarshal:          true,
 			unmarshalForceSendField: []string{"Int"},
 		},
 	)

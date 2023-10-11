@@ -10,9 +10,8 @@ func TestMapToInterfaceDefault(t *testing.T) {
 			st: customStruct{
 				MapToInt: nil,
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -26,12 +25,10 @@ func TestMapToInterfaceValue(t *testing.T) {
 			st: customStruct{
 				MapToInt: element,
 			},
-			jsonString:     `{"maptoint":{"key":"3"},"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false,
+			jsonString:   `{"maptoint":{"key":"3"},"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
-	//assert.Fail(t, "S")
 }
 
 func TestMapToInterfaceForce(t *testing.T) {
@@ -41,9 +38,8 @@ func TestMapToInterfaceForce(t *testing.T) {
 				MapToInt:        nil,
 				ForceSendFields: []string{"MapToInt"},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false, // Unmarshal won't include the ForceSendFields
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }

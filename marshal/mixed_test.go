@@ -25,10 +25,9 @@ func (s jsonTags) MarshalJSON() ([]byte, error) {
 func TestEmpty(t *testing.T) {
 	executeBasicMarshalTest(t,
 		basicMarshalTest{
-			st:             customStruct{},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			st:           customStruct{},
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -83,9 +82,8 @@ func TestDefaults(t *testing.T) {
 
 			MapToCustomTypeFS: nil,
 		},
-		jsonString:     `{"childfs":{},"childnofs":{}}`,
-		matchClassic:   true,
-		matchUnmarshal: true,
+		jsonString:   `{"childfs":{},"childnofs":{}}`,
+		matchClassic: true,
 	})
 }
 
@@ -119,7 +117,6 @@ func TestForce(t *testing.T) {
 		},
 		jsonString:              `{"int":0, "float":0, "string":"", "bool":false, "childfs":{},"childnofs":{}}`,
 		matchClassic:            false,
-		matchUnmarshal:          true,
 		unmarshalForceSendField: []string{"Int", "Float", "Str", "Bool"},
 	})
 }
@@ -145,8 +142,7 @@ func TestNotDefault(t *testing.T) {
 		},
 
 		ChildFS: structFS{
-			Int:             1,
-			ForceSendFields: []string{"Int"},
+			Int: 1,
 		},
 		ChildNoFS: structNoFS{
 			Int: 2,
@@ -167,6 +163,7 @@ func TestNotDefault(t *testing.T) {
 			},
 		},
 	}
+
 	rc := executeBasicMarshalTest(t, basicMarshalTest{
 		st: st,
 		jsonString: `{"int":1, "float":1, "string":"1", "bool":true,
@@ -176,7 +173,6 @@ func TestNotDefault(t *testing.T) {
 		"pchildfs":{"childint":3},"pchildnofs":{"childint":4},
 		"maptocustomtypefs":{"struct1":{"childint":1}}}`,
 		matchClassic:            true,
-		matchUnmarshal:          false,
 		unmarshalForceSendField: []string{"Int", "Bool", "Str", "Float"},
 	})
 	rc.ForceSendFields = nil

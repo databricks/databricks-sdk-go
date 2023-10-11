@@ -10,9 +10,8 @@ func TestPChildNoFSDefault(t *testing.T) {
 			st: customStruct{
 				PChildNoFS: nil,
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -23,9 +22,8 @@ func TestPChildNoFSValueEmpty(t *testing.T) {
 			st: customStruct{
 				PChildNoFS: &structNoFS{},
 			},
-			jsonString:     `{"pchildnofs":{},"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true, // PChildNoFS will have ForceSendFields set
+			jsonString:   `{"pchildnofs":{},"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -38,9 +36,8 @@ func TestPChildNoFSValue(t *testing.T) {
 					Int: 3,
 				},
 			},
-			jsonString:     `{"pchildnofs":{"childint":3},"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false, // PChildNoFS will have ForceSendFields set
+			jsonString:   `{"pchildnofs":{"childint":3},"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -52,9 +49,8 @@ func TestPChildNoFSForce(t *testing.T) {
 				PChildNoFS:      nil,
 				ForceSendFields: []string{"PChildNoFS"},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false, // Unmarshal won't include the ForceSendFields
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }

@@ -10,9 +10,8 @@ func TestMapToCustomTypeFSDefault(t *testing.T) {
 			st: customStruct{
 				MapToCustomTypeFS: nil,
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -23,13 +22,13 @@ func TestMapToCustomTypeFSValue(t *testing.T) {
 			st: customStruct{
 				MapToCustomTypeFS: map[string]structFS{
 					"key": {
-						Int: 2,
+						Int:             2,
+						ForceSendFields: []string{"Int"},
 					},
 				},
 			},
-			jsonString:     `{"maptocustomtypefs":{"key":{"childint":2}},"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false, // Unmarshal will include ForceSendFields for child
+			jsonString:   `{"maptocustomtypefs":{"key":{"childint":2}},"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -45,9 +44,8 @@ func TestMapToCustomTypeFSValueForce(t *testing.T) {
 					},
 				},
 			},
-			jsonString:     `{"maptocustomtypefs":{"key":{"childint":0}},"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"maptocustomtypefs":{"key":{"childint":0}},"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -59,9 +57,8 @@ func TestMapToCustomTypeFSForce(t *testing.T) {
 				MapToCustomTypeFS: nil,
 				ForceSendFields:   []string{"MapToCustomTypeFS"},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false, // Unmarshal won't include the ForceSendFields
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }

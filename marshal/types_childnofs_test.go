@@ -10,9 +10,8 @@ func TestChildNoFSDefault(t *testing.T) {
 			st: customStruct{
 				ChildNoFS: structNoFS{},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -25,9 +24,8 @@ func TestChildNoFSValue(t *testing.T) {
 					Int: 3,
 				},
 			},
-			jsonString:     `{"childnofs":{"childint":3},"childfs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childnofs":{"childint":3},"childfs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -39,9 +37,8 @@ func TestChildNoFSForce(t *testing.T) {
 				ChildNoFS:       structNoFS{},
 				ForceSendFields: []string{"ChildNoFS"},
 			},
-			jsonString:     `{"childnofs":{},"childfs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false, // Unmarshal won't include the ForceSendFields
+			jsonString:   `{"childnofs":{},"childfs":{}}`,
+			matchClassic: true,
 		},
 	)
 }

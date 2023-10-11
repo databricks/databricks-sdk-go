@@ -10,9 +10,8 @@ func TestPBoolDefault(t *testing.T) {
 			st: customStruct{
 				PBool: nil,
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -23,9 +22,8 @@ func TestPBoolValue(t *testing.T) {
 			st: customStruct{
 				PBool: Ptr(false),
 			},
-			jsonString:     `{"pbool":false,"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false,
+			jsonString:   `{"pbool":false,"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -37,9 +35,8 @@ func TestPBoolForce(t *testing.T) {
 				PBool:           nil,
 				ForceSendFields: []string{"PBool"},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }

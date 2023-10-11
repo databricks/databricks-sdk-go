@@ -10,9 +10,8 @@ func TestChildFSDefault(t *testing.T) {
 			st: customStruct{
 				ChildFS: structFS{},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: true,
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -25,9 +24,8 @@ func TestChildFSValue(t *testing.T) {
 					Int: 3,
 				},
 			},
-			jsonString:     `{"childfs":{"childint":3},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false, // ChildFS will have ForceSendFields set
+			jsonString:   `{"childfs":{"childint":3},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
@@ -39,14 +37,13 @@ func TestChildFSForce(t *testing.T) {
 				ChildFS:         structFS{},
 				ForceSendFields: []string{"ChildFS"},
 			},
-			jsonString:     `{"childfs":{},"childnofs":{}}`,
-			matchClassic:   true,
-			matchUnmarshal: false, // Unmarshal won't include the ForceSendFields
+			jsonString:   `{"childfs":{},"childnofs":{}}`,
+			matchClassic: true,
 		},
 	)
 }
 
-func TestChildFSChuildForce(t *testing.T) {
+func TestChildFSChildForce(t *testing.T) {
 	executeBasicMarshalTest(t,
 		basicMarshalTest{
 			st: customStruct{
@@ -57,7 +54,6 @@ func TestChildFSChuildForce(t *testing.T) {
 			},
 			jsonString:              `{"childfs":{"childint":0},"childnofs":{}, "int":0}`,
 			matchClassic:            false,
-			matchUnmarshal:          true, // Unmarshal won't include the ForceSendFields
 			unmarshalForceSendField: []string{"Int"},
 		},
 	)
