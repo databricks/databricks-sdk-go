@@ -80,6 +80,22 @@ type Entity struct {
 	Schema *openapi.Schema
 }
 
+// Whether the Entity contains a basic GoLang type which is not required
+func (e *Entity) ShouldIncludeForceSendFields() bool {
+	for _, field := range e.fields {
+		fieldType := field.Entity
+		if !field.Required && fieldType.IsBasicGoLangType() {
+			return true
+		}
+	}
+	return false
+}
+
+// Whether this entity represents a basic GoLang type
+func (e *Entity) IsBasicGoLangType() bool {
+	return e.IsBool || e.IsInt64 || e.IsInt || e.IsFloat64 || e.IsString
+}
+
 // FullName includes package name and untransformed name of the entity
 func (e *Entity) FullName() string {
 	return fmt.Sprintf("%s.%s", e.Package.FullName(), e.PascalName())

@@ -5,6 +5,7 @@ package sharing
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
@@ -50,6 +51,16 @@ type CentralCleanRoomInfo struct {
 	StationCloud string `json:"station_cloud,omitempty"`
 	// The region where clean room tasks will be run.
 	StationRegion string `json:"station_region,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CentralCleanRoomInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CentralCleanRoomInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomAssetInfo struct {
@@ -63,6 +74,16 @@ type CleanRoomAssetInfo struct {
 	TableInfo *CleanRoomTableInfo `json:"table_info,omitempty"`
 	// Time at which this asset was updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CleanRoomAssetInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomAssetInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomCatalog struct {
@@ -72,6 +93,16 @@ type CleanRoomCatalog struct {
 	NotebookFiles []SharedDataObject `json:"notebook_files,omitempty"`
 	// The details of the shared tables.
 	Tables []SharedDataObject `json:"tables,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CleanRoomCatalog) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomCatalog) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomCatalogUpdate struct {
@@ -79,6 +110,16 @@ type CleanRoomCatalogUpdate struct {
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The updates to the assets in the catalog.
 	Updates *SharedDataObjectUpdate `json:"updates,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CleanRoomCatalogUpdate) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomCatalogUpdate) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomCollaboratorInfo struct {
@@ -90,6 +131,16 @@ type CleanRoomCollaboratorInfo struct {
 	// metastore for Delta Sharing and is used to identify the organization to
 	// other collaborators.
 	OrganizationName string `json:"organization_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CleanRoomCollaboratorInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomCollaboratorInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomInfo struct {
@@ -111,6 +162,16 @@ type CleanRoomInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of clean room updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CleanRoomInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomNotebookInfo struct {
@@ -118,6 +179,16 @@ type CleanRoomNotebookInfo struct {
 	NotebookContent string `json:"notebook_content,omitempty"`
 	// The name of the notebook.
 	NotebookName string `json:"notebook_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CleanRoomNotebookInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomNotebookInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomTableInfo struct {
@@ -132,6 +203,16 @@ type CleanRoomTableInfo struct {
 	Name string `json:"name,omitempty"`
 	// Name of parent schema relative to its parent catalog.
 	SchemaName string `json:"schema_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CleanRoomTableInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CleanRoomTableInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ColumnInfo struct {
@@ -159,6 +240,16 @@ type ColumnInfo struct {
 	TypeScale int `json:"type_scale,omitempty"`
 	// Full data type specification as SQL/catalogString text.
 	TypeText string `json:"type_text,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ColumnInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ColumnMask struct {
@@ -169,6 +260,16 @@ type ColumnMask struct {
 	// of the column being masked and the types of the rest of the args should
 	// match the types of columns in 'using_column_names'.
 	UsingColumnNames []string `json:"using_column_names,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ColumnMask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ColumnMask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Name of type (INT, STRUCT, MAP, etc.).
@@ -244,6 +345,16 @@ type CreateCleanRoom struct {
 	Name string `json:"name"`
 	// Central clean room details.
 	RemoteDetailedInfo CentralCleanRoomInfo `json:"remote_detailed_info"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateCleanRoom) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateCleanRoom) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateProvider struct {
@@ -256,6 +367,16 @@ type CreateProvider struct {
 	// This field is required when the __authentication_type__ is **TOKEN** or
 	// not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateProvider) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateProvider) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateRecipient struct {
@@ -279,6 +400,16 @@ type CreateRecipient struct {
 	// The one-time sharing code provided by the data recipient. This field is
 	// required when the __authentication_type__ is **DATABRICKS**.
 	SharingCode string `json:"sharing_code,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateRecipient) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateRecipient) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateShare struct {
@@ -286,6 +417,16 @@ type CreateShare struct {
 	Comment string `json:"comment,omitempty"`
 	// Name of the share.
 	Name string `json:"name"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateShare) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateShare) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete a clean room
@@ -324,6 +465,16 @@ type GetCleanRoomRequest struct {
 	IncludeRemoteDetails bool `json:"-" url:"include_remote_details,omitempty"`
 	// The name of the clean room.
 	NameArg string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetCleanRoomRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetCleanRoomRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get a provider
@@ -349,6 +500,16 @@ type GetShareRequest struct {
 	IncludeSharedData bool `json:"-" url:"include_shared_data,omitempty"`
 	// The name of the share.
 	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetShareRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetShareRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type IpAccessList struct {
@@ -362,6 +523,16 @@ type ListCleanRoomsRequest struct {
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListCleanRoomsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCleanRoomsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListCleanRoomsResponse struct {
@@ -370,6 +541,16 @@ type ListCleanRoomsResponse struct {
 	// Token to retrieve the next page of results. Absent if there are no more
 	// pages.
 	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListCleanRoomsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListProviderSharesResponse struct {
@@ -382,6 +563,16 @@ type ListProvidersRequest struct {
 	// If not provided, all providers will be returned. If no providers exist
 	// with this ID, no results will be returned.
 	DataProviderGlobalMetastoreId string `json:"-" url:"data_provider_global_metastore_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListProvidersRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListProvidersRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListProvidersResponse struct {
@@ -394,6 +585,16 @@ type ListRecipientsRequest struct {
 	// If not provided, all recipients will be returned. If no recipients exist
 	// with this ID, no results will be returned.
 	DataRecipientGlobalMetastoreId string `json:"-" url:"data_recipient_global_metastore_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListRecipientsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListRecipientsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListRecipientsResponse struct {
@@ -430,6 +631,16 @@ type PartitionValue struct {
 	// `null` value. When this field is set, field `recipient_property_key` can
 	// not be set.
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PartitionValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PartitionValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The operator to apply for the value.
@@ -562,6 +773,16 @@ type PrivilegeAssignment struct {
 	Principal string `json:"principal,omitempty"`
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PrivilegeAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ProviderInfo struct {
@@ -600,11 +821,31 @@ type ProviderInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified Share.
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ProviderInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ProviderInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ProviderShare struct {
 	// The name of the Provider Share.
 	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ProviderShare) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ProviderShare) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RecipientInfo struct {
@@ -653,6 +894,16 @@ type RecipientInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of recipient updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RecipientInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RecipientInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RecipientProfile struct {
@@ -662,6 +913,16 @@ type RecipientProfile struct {
 	Endpoint string `json:"endpoint,omitempty"`
 	// The version number of the recipient's credentials on a share.
 	ShareCredentialsVersion int `json:"share_credentials_version,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RecipientProfile) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RecipientProfile) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RecipientTokenInfo struct {
@@ -680,6 +941,16 @@ type RecipientTokenInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of recipient Token updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RecipientTokenInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RecipientTokenInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get an access token
@@ -697,6 +968,16 @@ type RetrieveTokenResponse struct {
 	ExpirationTime string `json:"expirationTime,omitempty"`
 	// These field names must follow the delta sharing protocol.
 	ShareCredentialsVersion int `json:"shareCredentialsVersion,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RetrieveTokenResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RetrieveTokenResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RotateRecipientToken struct {
@@ -736,6 +1017,16 @@ type ShareInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of share updater.
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ShareInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ShareInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get recipient share permissions
@@ -749,6 +1040,16 @@ type ShareToPrivilegeAssignment struct {
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
 	// The share name.
 	ShareName string `json:"share_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ShareToPrivilegeAssignment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ShareToPrivilegeAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SharedDataObject struct {
@@ -789,6 +1090,16 @@ type SharedDataObject struct {
 	StartVersion int64 `json:"start_version,omitempty"`
 	// One of: **ACTIVE**, **PERMISSION_DENIED**.
 	Status SharedDataObjectStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SharedDataObject) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SharedDataObject) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Whether to enable or disable sharing of data history. If not specified, the
@@ -896,6 +1207,16 @@ type UpdateCleanRoom struct {
 	NameArg string `json:"-" url:"-"`
 	// Username of current owner of clean room.
 	Owner string `json:"owner,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateCleanRoom) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateCleanRoom) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateProvider struct {
@@ -908,6 +1229,16 @@ type UpdateProvider struct {
 	// This field is required when the __authentication_type__ is **TOKEN** or
 	// not provided.
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateProvider) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateProvider) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateRecipient struct {
@@ -924,6 +1255,16 @@ type UpdateRecipient struct {
 	// properties. To add and remove properties, one would need to perform a
 	// read-modify-write.
 	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateRecipient) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateRecipient) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateShare struct {
@@ -935,6 +1276,16 @@ type UpdateShare struct {
 	Owner string `json:"owner,omitempty"`
 	// Array of shared data object updates.
 	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateShare) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateShare) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateSharePermissions struct {

@@ -2,7 +2,11 @@
 
 package catalog
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/databricks/databricks-sdk-go/marshal"
+)
 
 // all definitions in this file are in alphabetical order
 
@@ -68,6 +72,16 @@ type ArtifactAllowlistInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// Unique identifier of parent metastore.
 	MetastoreId string `json:"metastore_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ArtifactAllowlistInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ArtifactAllowlistInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ArtifactMatcher struct {
@@ -116,6 +130,16 @@ type AwsIamRole struct {
 	// The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
 	// This is the identity that is going to assume the AWS IAM role.
 	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AwsIamRole) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AwsIamRole) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type AzureManagedIdentity struct {
@@ -132,6 +156,16 @@ type AzureManagedIdentity struct {
 	// this field is not provided, then we assume the AzureManagedIdentity is
 	// for a system-assigned identity.
 	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AzureManagedIdentity) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AzureManagedIdentity) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type AzureServicePrincipal struct {
@@ -200,6 +234,16 @@ type CatalogInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified catalog.
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CatalogInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CatalogInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Kind of catalog securable.
@@ -311,6 +355,16 @@ type ColumnInfo struct {
 	TypeScale int `json:"type_scale,omitempty"`
 	// Full data type specification as SQL/catalogString text.
 	TypeText string `json:"type_text,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ColumnInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ColumnMask struct {
@@ -321,6 +375,16 @@ type ColumnMask struct {
 	// of the column being masked and the types of the rest of the args should
 	// match the types of columns in 'using_column_names'.
 	UsingColumnNames []string `json:"using_column_names,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ColumnMask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ColumnMask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Name of type (INT, STRUCT, MAP, etc.).
@@ -429,6 +493,16 @@ type ConnectionInfo struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// URL of the remote data source, extracted from options.
 	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ConnectionInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Kind of connection securable.
@@ -531,6 +605,16 @@ type CreateCatalog struct {
 	ShareName string `json:"share_name,omitempty"`
 	// Storage root URL for managed tables within catalog.
 	StorageRoot string `json:"storage_root,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateCatalog) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateCatalog) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateConnection struct {
@@ -547,6 +631,16 @@ type CreateConnection struct {
 	Properties map[string]string `json:"properties,omitempty"`
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateConnection) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateConnection) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateExternalLocation struct {
@@ -567,6 +661,16 @@ type CreateExternalLocation struct {
 	SkipValidation bool `json:"skip_validation,omitempty"`
 	// Path URL of the external location.
 	Url string `json:"url"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateExternalLocation) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateExternalLocation) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateFunction struct {
@@ -617,6 +721,16 @@ type CreateFunction struct {
 	SqlDataAccess CreateFunctionSqlDataAccess `json:"sql_data_access"`
 	// List of schemes whose objects can be referenced without qualification.
 	SqlPath string `json:"sql_path,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateFunction) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Function parameter style. **S** is the value for SQL.
@@ -741,6 +855,16 @@ type CreateMetastore struct {
 	Region string `json:"region,omitempty"`
 	// The storage root URL for metastore
 	StorageRoot string `json:"storage_root"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateMetastore) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateMetastore) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateMetastoreAssignment struct {
@@ -764,6 +888,16 @@ type CreateRegisteredModelRequest struct {
 	// The storage location on the cloud under which model version data files
 	// are stored
 	StorageLocation string `json:"storage_location,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateSchema struct {
@@ -777,6 +911,16 @@ type CreateSchema struct {
 	Properties map[string]string `json:"properties,omitempty"`
 	// Storage root URL for managed tables within schema.
 	StorageRoot string `json:"storage_root,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateSchema) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateSchema) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateStorageCredential struct {
@@ -797,6 +941,16 @@ type CreateStorageCredential struct {
 	// Supplying true to this argument skips validation of the created
 	// credential.
 	SkipValidation bool `json:"skip_validation,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateStorageCredential) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateStorageCredential) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateTableConstraint struct {
@@ -821,6 +975,16 @@ type CreateVolumeRequestContent struct {
 	StorageLocation string `json:"storage_location,omitempty"`
 
 	VolumeType VolumeType `json:"volume_type"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateVolumeRequestContent) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateVolumeRequestContent) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The type of credential.
@@ -903,6 +1067,16 @@ type DatabricksGcpServiceAccountResponse struct {
 	CredentialId string `json:"credential_id,omitempty"`
 	// The email of the service account. This is an output-only field.
 	Email string `json:"email,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DatabricksGcpServiceAccountResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabricksGcpServiceAccountResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete a metastore assignment
@@ -919,6 +1093,16 @@ type DeleteAccountMetastoreRequest struct {
 	Force bool `json:"-" url:"force,omitempty"`
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteAccountMetastoreRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteAccountMetastoreRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete a storage credential
@@ -930,6 +1114,16 @@ type DeleteAccountStorageCredentialRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteAccountStorageCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteAccountStorageCredentialRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete a Registered Model Alias
@@ -946,6 +1140,16 @@ type DeleteCatalogRequest struct {
 	Force bool `json:"-" url:"force,omitempty"`
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteCatalogRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteCatalogRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete a connection
@@ -960,6 +1164,16 @@ type DeleteExternalLocationRequest struct {
 	Force bool `json:"-" url:"force,omitempty"`
 	// Name of the external location.
 	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteExternalLocationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteExternalLocationRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete a function
@@ -969,6 +1183,16 @@ type DeleteFunctionRequest struct {
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
 	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteFunctionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteFunctionRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete a metastore
@@ -977,6 +1201,16 @@ type DeleteMetastoreRequest struct {
 	Force bool `json:"-" url:"force,omitempty"`
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteMetastoreRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteMetastoreRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete a Model Version
@@ -1006,6 +1240,16 @@ type DeleteStorageCredentialRequest struct {
 	Force bool `json:"-" url:"force,omitempty"`
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteStorageCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteStorageCredentialRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete a table constraint
@@ -1104,6 +1348,16 @@ type EffectivePredictiveOptimizationFlag struct {
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	Value EnablePredictiveOptimization `json:"value"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EffectivePredictiveOptimizationFlag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EffectivePredictiveOptimizationFlag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The type of the object from which the flag was inherited. If there was no
@@ -1146,6 +1400,16 @@ type EffectivePrivilege struct {
 	InheritedFromType SecurableType `json:"inherited_from_type,omitempty"`
 	// The privilege assigned to the principal.
 	Privilege Privilege `json:"privilege,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EffectivePrivilege) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EffectivePrivilege) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type EffectivePrivilegeAssignment struct {
@@ -1154,6 +1418,16 @@ type EffectivePrivilegeAssignment struct {
 	// The privileges conveyed to the principal (either directly or via
 	// inheritance).
 	Privileges []EffectivePrivilege `json:"privileges,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EffectivePrivilegeAssignment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EffectivePrivilegeAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Whether predictive optimization should be enabled for this object and objects
@@ -1262,6 +1536,16 @@ type ExternalLocationInfo struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// Path URL of the external location.
 	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExternalLocationInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalLocationInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ForeignKeyConstraint struct {
@@ -1347,6 +1631,16 @@ type FunctionInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified function.
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *FunctionInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FunctionInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Function parameter style. **S** is the value for SQL.
@@ -1487,6 +1781,16 @@ type FunctionParameterInfo struct {
 	TypeScale int `json:"type_scale,omitempty"`
 	// Full data type spec, SQL/catalogString text.
 	TypeText string `json:"type_text"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *FunctionParameterInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FunctionParameterInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The mode of the function parameter.
@@ -1598,6 +1902,16 @@ type GetEffectiveRequest struct {
 	Principal string `json:"-" url:"principal,omitempty"`
 	// Type of securable.
 	SecurableType SecurableType `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetEffectiveRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetEffectiveRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get an external location
@@ -1622,6 +1936,16 @@ type GetGrantRequest struct {
 	Principal string `json:"-" url:"principal,omitempty"`
 	// Type of securable.
 	SecurableType SecurableType `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetGrantRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetGrantRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get a metastore
@@ -1670,6 +1994,16 @@ type GetMetastoreSummaryResponse struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the metastore.
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetMetastoreSummaryResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetMetastoreSummaryResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The scope of Delta Sharing enabled for the metastore.
@@ -1732,6 +2066,16 @@ type GetTableRequest struct {
 	FullName string `json:"-" url:"-"`
 	// Whether delta metadata should be included in the response.
 	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetTableRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get catalog workspace bindings
@@ -1828,12 +2172,32 @@ type ListModelVersionsRequest struct {
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// Opaque token to send for the next page of results (pagination).
 	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListModelVersionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListModelVersionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListModelVersionsResponse struct {
 	ModelVersions []ModelVersionInfo `json:"model_versions,omitempty"`
 	// Token to retrieve the next page of results
 	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListModelVersionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListModelVersionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List Registered Models
@@ -1851,6 +2215,16 @@ type ListRegisteredModelsRequest struct {
 	// The identifier of the schema under which to list registered models. If
 	// specified, catalog_name must be specified.
 	SchemaName string `json:"-" url:"schema_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListRegisteredModelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListRegisteredModelsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListRegisteredModelsResponse struct {
@@ -1859,6 +2233,16 @@ type ListRegisteredModelsResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	RegisteredModels []RegisteredModelInfo `json:"registered_models,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListRegisteredModelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListRegisteredModelsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List schemas
@@ -1890,6 +2274,16 @@ type ListSummariesRequest struct {
 	// A sql LIKE pattern (% and _) for table names. All tables will be returned
 	// if not set or empty.
 	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListSummariesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSummariesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List system schemas
@@ -1908,6 +2302,16 @@ type ListTableSummariesResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// List of table summaries.
 	Tables []TableSummary `json:"tables,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListTableSummariesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListTableSummariesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List tables
@@ -1927,6 +2331,16 @@ type ListTablesRequest struct {
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// Parent schema of tables.
 	SchemaName string `json:"-" url:"schema_name"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListTablesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListTablesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListTablesResponse struct {
@@ -1935,6 +2349,16 @@ type ListTablesResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of table information objects.
 	Tables []TableInfo `json:"tables,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListTablesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListTablesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List Volumes
@@ -1982,6 +2406,16 @@ type MetastoreAssignment struct {
 	MetastoreId string `json:"metastore_id"`
 	// The unique ID of the Databricks workspace.
 	WorkspaceId int64 `json:"workspace_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *MetastoreAssignment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MetastoreAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type MetastoreInfo struct {
@@ -2024,6 +2458,16 @@ type MetastoreInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the metastore.
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *MetastoreInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MetastoreInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The scope of Delta Sharing enabled for the metastore.
@@ -2099,6 +2543,16 @@ type ModelVersionInfo struct {
 	// Integer model version number, used to reference the model version in API
 	// requests.
 	Version int `json:"version,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ModelVersionInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ModelVersionInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Current status of the model version. Newly created model versions start in
@@ -2146,6 +2600,16 @@ type PermissionsChange struct {
 	Principal string `json:"principal,omitempty"`
 	// The set of privileges to remove.
 	Remove []Privilege `json:"remove,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PermissionsChange) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PermissionsChange) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PermissionsList struct {
@@ -2262,6 +2726,16 @@ type PrivilegeAssignment struct {
 	Principal string `json:"principal,omitempty"`
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PrivilegeAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // An object containing map of key-value properties attached to the connection.
@@ -2317,6 +2791,16 @@ type RegisteredModelAlias struct {
 	AliasName string `json:"alias_name,omitempty"`
 	// Integer version number of the model version to which this alias points.
 	VersionNum int `json:"version_num,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RegisteredModelAlias) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RegisteredModelAlias) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RegisteredModelInfo struct {
@@ -2349,6 +2833,16 @@ type RegisteredModelInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// The identifier of the user who updated the registered model last time
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RegisteredModelInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RegisteredModelInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SchemaInfo struct {
@@ -2385,6 +2879,16 @@ type SchemaInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified schema.
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SchemaInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SchemaInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // A map of key-value properties attached to the securable.
@@ -2466,6 +2970,16 @@ type SseEncryptionDetails struct {
 	// When algorithm is **AWS_SSE_KMS** this field specifies the ARN of the SSE
 	// key to use.
 	AwsKmsKeyArn string `json:"aws_kms_key_arn,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SseEncryptionDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SseEncryptionDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The type of key encryption to use (affects headers from s3 client).
@@ -2528,6 +3042,16 @@ type StorageCredentialInfo struct {
 	// Whether this credential is the current metastore's root storage
 	// credential.
 	UsedForManagedStorage bool `json:"used_for_managed_storage,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StorageCredentialInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StorageCredentialInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SystemSchemaInfo struct {
@@ -2536,6 +3060,16 @@ type SystemSchemaInfo struct {
 	// The current state of enablement for the system schema. An empty string
 	// means the system schema is available and ready for opt-in.
 	State SystemSchemaInfoState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SystemSchemaInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SystemSchemaInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The current state of enablement for the system schema. An empty string means
@@ -2666,6 +3200,16 @@ type TableInfo struct {
 	// provided but is empty; - when DependencyList is not an empty list,
 	// dependencies are provided and recorded.
 	ViewDependencies []Dependency `json:"view_dependencies,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TableInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TableInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TableRowFilter struct {
@@ -2682,6 +3226,16 @@ type TableSummary struct {
 	FullName string `json:"full_name,omitempty"`
 
 	TableType TableType `json:"table_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TableSummary) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TableSummary) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TableType string
@@ -2737,6 +3291,16 @@ type UpdateCatalog struct {
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateCatalog) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateCatalog) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateConnection struct {
@@ -2768,6 +3332,16 @@ type UpdateExternalLocation struct {
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Path URL of the external location.
 	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateExternalLocation) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateExternalLocation) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateFunction struct {
@@ -2776,6 +3350,16 @@ type UpdateFunction struct {
 	Name string `json:"-" url:"-"`
 	// Username of current owner of function.
 	Owner string `json:"owner,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateFunction) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateFunction) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateMetastore struct {
@@ -2797,6 +3381,16 @@ type UpdateMetastore struct {
 	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
 	// UUID of storage credential to access the metastore storage_root.
 	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateMetastore) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateMetastore) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateMetastoreAssignment struct {
@@ -2806,6 +3400,16 @@ type UpdateMetastoreAssignment struct {
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// A workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateMetastoreAssignment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The scope of Delta Sharing enabled for the metastore.
@@ -2843,6 +3447,16 @@ type UpdateModelVersionRequest struct {
 	FullName string `json:"-" url:"-"`
 	// The integer version number of the model version
 	Version int `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateModelVersionRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdatePermissions struct {
@@ -2869,6 +3483,16 @@ type UpdatePredictiveOptimizationResponse struct {
 	UserId int64 `json:"user_id,omitempty"`
 	// Name of the predictive optimization service principal.
 	Username string `json:"username,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdatePredictiveOptimizationResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdatePredictiveOptimizationResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateRegisteredModelRequest struct {
@@ -2880,6 +3504,16 @@ type UpdateRegisteredModelRequest struct {
 	Name string `json:"name,omitempty"`
 	// The identifier of the user who owns the registered model
 	Owner string `json:"owner,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateSchema struct {
@@ -2893,6 +3527,16 @@ type UpdateSchema struct {
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateSchema) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateSchema) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateStorageCredential struct {
@@ -2918,6 +3562,16 @@ type UpdateStorageCredential struct {
 	// Supplying true to this argument skips validation of the updated
 	// credential.
 	SkipValidation bool `json:"skip_validation,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateStorageCredential) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateStorageCredential) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Update a table owner.
@@ -2926,6 +3580,16 @@ type UpdateTableRequest struct {
 	FullName string `json:"-" url:"-"`
 
 	Owner string `json:"owner,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateTableRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateVolumeRequestContent struct {
@@ -2937,6 +3601,16 @@ type UpdateVolumeRequestContent struct {
 	Name string `json:"name,omitempty"`
 	// The identifier of the user who owns the volume
 	Owner string `json:"owner,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateVolumeRequestContent) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateVolumeRequestContent) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateWorkspaceBindings struct {
@@ -2965,6 +3639,16 @@ type ValidateStorageCredential struct {
 	StorageCredentialName any `json:"storage_credential_name,omitempty"`
 	// The external location url to validate.
 	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ValidateStorageCredential) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ValidateStorageCredential) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ValidateStorageCredentialResponse struct {
@@ -2972,6 +3656,16 @@ type ValidateStorageCredentialResponse struct {
 	IsDir bool `json:"isDir,omitempty"`
 	// The results of the validation check.
 	Results []ValidationResult `json:"results,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ValidateStorageCredentialResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ValidateStorageCredentialResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ValidationResult struct {
@@ -2981,6 +3675,16 @@ type ValidationResult struct {
 	Operation ValidationResultOperation `json:"operation,omitempty"`
 	// The results of the tested operation.
 	Result ValidationResultResult `json:"result,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ValidationResult) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ValidationResult) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The operation tested.
@@ -3078,6 +3782,16 @@ type VolumeInfo struct {
 	VolumeId string `json:"volume_id,omitempty"`
 
 	VolumeType VolumeType `json:"volume_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *VolumeInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s VolumeInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type VolumeType string

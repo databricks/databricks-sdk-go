@@ -5,6 +5,7 @@ package pipelines
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
@@ -56,6 +57,16 @@ type CreatePipeline struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreatePipeline) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreatePipeline) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreatePipelineResponse struct {
@@ -64,12 +75,32 @@ type CreatePipelineResponse struct {
 	// The unique identifier for the newly created pipeline. Only returned when
 	// dry_run is false.
 	PipelineId string `json:"pipeline_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreatePipelineResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreatePipelineResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CronTrigger struct {
 	QuartzCronSchedule string `json:"quartz_cron_schedule,omitempty"`
 
 	TimezoneId string `json:"timezone_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CronTrigger) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CronTrigger) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DataPlaneId struct {
@@ -77,6 +108,16 @@ type DataPlaneId struct {
 	Instance string `json:"instance,omitempty"`
 	// A sequence number, unique and increasing within the data plane instance.
 	SeqNo any `json:"seq_no,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DataPlaneId) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DataPlaneId) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete a pipeline
@@ -134,6 +175,16 @@ type EditPipeline struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EditPipeline) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EditPipeline) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ErrorDetail struct {
@@ -141,6 +192,16 @@ type ErrorDetail struct {
 	Exceptions []SerializedException `json:"exceptions,omitempty"`
 	// Whether this error is considered fatal, that is, unrecoverable.
 	Fatal bool `json:"fatal,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ErrorDetail) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ErrorDetail) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The severity level of the event.
@@ -178,6 +239,16 @@ func (f *EventLevel) Type() string {
 type FileLibrary struct {
 	// The absolute path of the file.
 	Path string `json:"path,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *FileLibrary) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FileLibrary) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Filters struct {
@@ -234,6 +305,16 @@ type GetPipelineResponse struct {
 	Spec *PipelineSpec `json:"spec,omitempty"`
 	// The pipeline state.
 	State PipelineState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetPipelineResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetPipelineResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The health of a pipeline.
@@ -302,6 +383,16 @@ type ListPipelineEventsRequest struct {
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	PipelineId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListPipelineEventsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListPipelineEventsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListPipelineEventsResponse struct {
@@ -311,6 +402,16 @@ type ListPipelineEventsResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// If present, a token to fetch the previous page of events.
 	PrevPageToken string `json:"prev_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListPipelineEventsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListPipelineEventsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List pipelines
@@ -336,6 +437,16 @@ type ListPipelinesRequest struct {
 	OrderBy []string `json:"-" url:"order_by,omitempty"`
 	// Page token returned by previous call
 	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListPipelinesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListPipelinesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListPipelinesResponse struct {
@@ -343,6 +454,16 @@ type ListPipelinesResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// The list of events matching the request criteria.
 	Statuses []PipelineStateInfo `json:"statuses,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListPipelinesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListPipelinesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List pipeline updates
@@ -355,6 +476,16 @@ type ListUpdatesRequest struct {
 	PipelineId string `json:"-" url:"-"`
 	// If present, returns updates until and including this update_id.
 	UntilUpdateId string `json:"-" url:"until_update_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListUpdatesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListUpdatesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListUpdatesResponse struct {
@@ -366,6 +497,16 @@ type ListUpdatesResponse struct {
 	PrevPageToken string `json:"prev_page_token,omitempty"`
 
 	Updates []UpdateInfo `json:"updates,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListUpdatesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListUpdatesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Maturity level for EventDetails.
@@ -401,6 +542,16 @@ func (f *MaturityLevel) Type() string {
 type NotebookLibrary struct {
 	// The absolute path of the notebook.
 	Path string `json:"path,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *NotebookLibrary) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s NotebookLibrary) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Notifications struct {
@@ -452,6 +603,16 @@ type Origin struct {
 	UcResourceId string `json:"uc_resource_id,omitempty"`
 	// The id of an execution. Globally unique.
 	UpdateId string `json:"update_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Origin) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Origin) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PipelineAccessControlRequest struct {
@@ -463,6 +624,16 @@ type PipelineAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelineAccessControlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelineAccessControlRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PipelineAccessControlResponse struct {
@@ -476,6 +647,16 @@ type PipelineAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelineAccessControlResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelineAccessControlResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PipelineCluster struct {
@@ -566,6 +747,16 @@ type PipelineCluster struct {
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelineCluster) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelineCluster) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PipelineEvent struct {
@@ -587,6 +778,16 @@ type PipelineEvent struct {
 	Sequence *Sequencing `json:"sequence,omitempty"`
 	// The time of the event.
 	Timestamp string `json:"timestamp,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelineEvent) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelineEvent) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PipelineLibrary struct {
@@ -600,6 +801,16 @@ type PipelineLibrary struct {
 	// The path to a notebook that defines a pipeline and is stored in the
 	// <Databricks> workspace.
 	Notebook *NotebookLibrary `json:"notebook,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelineLibrary) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelineLibrary) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PipelinePermission struct {
@@ -608,6 +819,16 @@ type PipelinePermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelinePermission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelinePermission) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -648,12 +869,32 @@ type PipelinePermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelinePermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelinePermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PipelinePermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelinePermissionsDescription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelinePermissionsDescription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PipelinePermissionsRequest struct {
@@ -703,6 +944,16 @@ type PipelineSpec struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelineSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelineSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The pipeline state.
@@ -764,6 +1015,16 @@ type PipelineStateInfo struct {
 	RunAsUserName string `json:"run_as_user_name,omitempty"`
 	// The pipeline state.
 	State PipelineState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelineStateInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelineStateInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PipelineTrigger struct {
@@ -782,6 +1043,16 @@ type Sequencing struct {
 	ControlPlaneSeqNo int `json:"control_plane_seq_no,omitempty"`
 	// the ID assigned by the data plane.
 	DataPlaneId *DataPlaneId `json:"data_plane_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Sequencing) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Sequencing) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SerializedException struct {
@@ -791,6 +1062,16 @@ type SerializedException struct {
 	Message string `json:"message,omitempty"`
 	// Stack trace consisting of a list of stack frames
 	Stack []StackFrame `json:"stack,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SerializedException) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SerializedException) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type StackFrame struct {
@@ -802,6 +1083,16 @@ type StackFrame struct {
 	LineNumber int `json:"line_number,omitempty"`
 	// Name of the method which was called
 	MethodName string `json:"method_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StackFrame) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StackFrame) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type StartUpdate struct {
@@ -820,6 +1111,16 @@ type StartUpdate struct {
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	RefreshSelection []string `json:"refresh_selection,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StartUpdate) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StartUpdate) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type StartUpdateCause string
@@ -859,6 +1160,16 @@ func (f *StartUpdateCause) Type() string {
 
 type StartUpdateResponse struct {
 	UpdateId string `json:"update_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StartUpdateResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StartUpdateResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Stop a pipeline
@@ -894,6 +1205,16 @@ type UpdateInfo struct {
 	State UpdateInfoState `json:"state,omitempty"`
 	// The ID of this update.
 	UpdateId string `json:"update_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // What triggered this update.
@@ -984,6 +1305,16 @@ type UpdateStateInfo struct {
 	State UpdateStateInfoState `json:"state,omitempty"`
 
 	UpdateId string `json:"update_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateStateInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateStateInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateStateInfoState string
