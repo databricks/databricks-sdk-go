@@ -135,6 +135,22 @@ type GetPublishedAppIntegrationsOutput struct {
 	Apps []GetPublishedAppIntegrationOutput `json:"apps,omitempty"`
 }
 
+type GetPublishedAppsOutput struct {
+	// Array of Published OAuth Apps.
+	Apps []PublishedAppOutput `json:"apps,omitempty"`
+	// A token that can be used to get the next page of results. If not present,
+	// there are no more results to show.
+	NextPageToken string `json:"next_page_token,omitempty"`
+}
+
+// Get all the published OAuth apps
+type ListOAuthPublishedAppsRequest struct {
+	// The max number of OAuth published apps to return.
+	PageSize int64 `json:"-" url:"page_size,omitempty"`
+	// A token that can be used to get the next page of results.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+}
+
 // List service principal secrets
 type ListServicePrincipalSecretsRequest struct {
 	// The service principal ID.
@@ -149,6 +165,25 @@ type ListServicePrincipalSecretsResponse struct {
 type OAuthEnrollmentStatus struct {
 	// Is OAuth enrolled for the account.
 	IsEnabled bool `json:"is_enabled,omitempty"`
+}
+
+type PublishedAppOutput struct {
+	// Unique ID of the published OAuth app.
+	AppId string `json:"app_id,omitempty"`
+	// Client ID of the published OAuth app. It is the client_id in the OAuth
+	// flow
+	ClientId string `json:"client_id,omitempty"`
+	// Description of the published OAuth app.
+	Description string `json:"description,omitempty"`
+	// Whether the published OAuth app is a confidential client. It is always
+	// false for published OAuth apps.
+	IsConfidentialClient bool `json:"is_confidential_client,omitempty"`
+	// Name of the published OAuth app.
+	Name string `json:"name,omitempty"`
+	// Redirect URLs of the published OAuth app.
+	RedirectUrls []string `json:"redirect_urls,omitempty"`
+	// Required scopes for the published OAuth app.
+	Scopes []string `json:"scopes,omitempty"`
 }
 
 type SecretInfo struct {

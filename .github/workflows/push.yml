@@ -5,6 +5,14 @@ on:
     types: [opened, synchronize]
   merge_group:
     types: [checks_requested]
+  push:
+    # Always run on push to main. The build cache can only be reused
+    # if it was saved by a run from the repository's default branch.
+    # The run result will be identical to that from the merge queue
+    # because the commit is identical, yet we need to perform it to
+    # seed the build cache.
+    branches:
+      - main
 
 jobs:
   tests:
@@ -12,19 +20,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        goVersion: [1.19.x, 1.20.x]
+        goVersion: ["1.19", "1.20", "1.21"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Unshallow
         run: git fetch --prune --unshallow
 
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         with:
           go-version: ${{ matrix.goVersion }}
-          cache: true
 
       - name: Set go env
         run: |
@@ -45,10 +52,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         with:
           go-version: 1.18.x
 

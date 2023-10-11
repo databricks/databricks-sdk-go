@@ -26,9 +26,13 @@
 //
 // - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
+// - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
+//
 // - [iam.CurrentUserAPI]: This API allows retrieving information about currently authenticated user or service principal.
 //
 // - [oauth2.CustomAppIntegrationAPI]: These APIs enable administrators to manage custom oauth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
+//
+// - [sql.DashboardWidgetsAPI]: This is an evolving API that facilitates the addition and removal of widgets from existing dashboards within the Databricks Workspace.
 //
 // - [sql.DashboardsAPI]: In general, there is little need to modify dashboards using the API.
 //
@@ -88,6 +92,8 @@
 //
 // - [oauth2.OAuthEnrollmentAPI]: These APIs enable administrators to enroll OAuth for their accounts, which is required for adding/using any OAuth published/custom application integration.
 //
+// - [oauth2.OAuthPublishedAppsAPI]: These APIs enable administrators to view all the available published OAuth applications in Databricks.
+//
 // - [iam.PermissionsAPI]: Permissions API are used to create read, write, edit, update and manage access for various users on different objects and endpoints.
 //
 // - [pipelines.PipelinesAPI]: The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
@@ -98,11 +104,13 @@
 //
 // - [sharing.ProvidersAPI]: A data provider is an object representing the organization in the real world who shares the data.
 //
-// - [oauth2.PublishedAppIntegrationAPI]: These APIs enable administrators to manage published oauth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
+// - [oauth2.PublishedAppIntegrationAPI]: These APIs enable administrators to manage published oauth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud.
 //
 // - [sql.QueriesAPI]: These endpoints are used for CRUD operations on query definitions.
 //
 // - [sql.QueryHistoryAPI]: Access the history of queries through SQL warehouses.
+//
+// - [sql.QueryVisualizationsAPI]: This is an evolving API that facilitates the addition and removal of vizualisations from existing queries within the Databricks Workspace.
 //
 // - [sharing.RecipientActivationAPI]: The Recipient Activation API is only applicable in the open sharing model where the recipient object has the authentication type of `TOKEN`.
 //
@@ -124,11 +132,13 @@
 //
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 //
+// - [settings.SettingsAPI]: // TODO(yuyuan.tang) to add the description for the setting.
+//
 // - [settings.AccountSettingsAPI]: The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources.
 //
 // - [sharing.SharesAPI]: A share is a container instantiated with :method:shares/create.
 //
-// - [sql.StatementExecutionAPI]: The SQL Statement Execution API manages the execution of arbitrary SQL statements and the fetching of result data.
+// - [sql.StatementExecutionAPI]: The Databricks SQL Statement Execution API can be used to execute SQL statements on a SQL warehouse and fetch the result.
 //
 // - [provisioning.StorageAPI]: These APIs manage storage configurations for this workspace.
 //
@@ -203,8 +213,10 @@ var (
 	_ *compute.CommandExecutionAPI            = nil
 	_ *catalog.ConnectionsAPI                 = nil
 	_ *provisioning.CredentialsAPI            = nil
+	_ *settings.CredentialsManagerAPI         = nil
 	_ *iam.CurrentUserAPI                     = nil
 	_ *oauth2.CustomAppIntegrationAPI         = nil
+	_ *sql.DashboardWidgetsAPI                = nil
 	_ *sql.DashboardsAPI                      = nil
 	_ *sql.DataSourcesAPI                     = nil
 	_ *files.DbfsAPI                          = nil
@@ -234,6 +246,7 @@ var (
 	_ *settings.AccountNetworkPolicyAPI       = nil
 	_ *provisioning.NetworksAPI               = nil
 	_ *oauth2.OAuthEnrollmentAPI              = nil
+	_ *oauth2.OAuthPublishedAppsAPI           = nil
 	_ *iam.PermissionsAPI                     = nil
 	_ *pipelines.PipelinesAPI                 = nil
 	_ *compute.PolicyFamiliesAPI              = nil
@@ -242,6 +255,7 @@ var (
 	_ *oauth2.PublishedAppIntegrationAPI      = nil
 	_ *sql.QueriesAPI                         = nil
 	_ *sql.QueryHistoryAPI                    = nil
+	_ *sql.QueryVisualizationsAPI             = nil
 	_ *sharing.RecipientActivationAPI         = nil
 	_ *sharing.RecipientsAPI                  = nil
 	_ *catalog.RegisteredModelsAPI            = nil
@@ -252,6 +266,7 @@ var (
 	_ *iam.ServicePrincipalsAPI               = nil
 	_ *iam.AccountServicePrincipalsAPI        = nil
 	_ *serving.ServingEndpointsAPI            = nil
+	_ *settings.SettingsAPI                   = nil
 	_ *settings.AccountSettingsAPI            = nil
 	_ *sharing.SharesAPI                      = nil
 	_ *sql.StatementExecutionAPI              = nil

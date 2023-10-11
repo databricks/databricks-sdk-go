@@ -82,6 +82,20 @@ func (a *oAuthEnrollmentImpl) Get(ctx context.Context) (*OAuthEnrollmentStatus, 
 	return &oAuthEnrollmentStatus, err
 }
 
+// unexported type that holds implementations of just OAuthPublishedApps API methods
+type oAuthPublishedAppsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *oAuthPublishedAppsImpl) List(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error) {
+	var getPublishedAppsOutput GetPublishedAppsOutput
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-apps/", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getPublishedAppsOutput)
+	return &getPublishedAppsOutput, err
+}
+
 // unexported type that holds implementations of just PublishedAppIntegration API methods
 type publishedAppIntegrationImpl struct {
 	client *client.DatabricksClient
@@ -147,7 +161,7 @@ func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request Create
 }
 
 func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets/%v,", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.SecretId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.SecretId)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err

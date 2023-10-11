@@ -121,40 +121,6 @@ func (a *ExperimentsAPI) GetExperiment(ctx context.Context, request GetExperimen
 	return a.impl.GetExperiment(ctx, request)
 }
 
-// Get experiment permission levels.
-//
-// Gets the permission levels that a user can have on an object.
-func (a *ExperimentsAPI) GetExperimentPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
-	return a.impl.GetExperimentPermissionLevels(ctx, request)
-}
-
-// Get experiment permission levels.
-//
-// Gets the permission levels that a user can have on an object.
-func (a *ExperimentsAPI) GetExperimentPermissionLevelsByExperimentId(ctx context.Context, experimentId string) (*GetExperimentPermissionLevelsResponse, error) {
-	return a.impl.GetExperimentPermissionLevels(ctx, GetExperimentPermissionLevelsRequest{
-		ExperimentId: experimentId,
-	})
-}
-
-// Get experiment permissions.
-//
-// Gets the permissions of an experiment. Experiments can inherit permissions
-// from their root object.
-func (a *ExperimentsAPI) GetExperimentPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error) {
-	return a.impl.GetExperimentPermissions(ctx, request)
-}
-
-// Get experiment permissions.
-//
-// Gets the permissions of an experiment. Experiments can inherit permissions
-// from their root object.
-func (a *ExperimentsAPI) GetExperimentPermissionsByExperimentId(ctx context.Context, experimentId string) (*ExperimentPermissions, error) {
-	return a.impl.GetExperimentPermissions(ctx, GetExperimentPermissionsRequest{
-		ExperimentId: experimentId,
-	})
-}
-
 // Get history of a given metric within a run.
 //
 // Gets a list of all values for the specified metric for a given run.
@@ -187,6 +153,40 @@ func (a *ExperimentsAPI) GetHistoryAll(ctx context.Context, request GetHistoryRe
 		}
 	}
 	return results, nil
+}
+
+// Get experiment permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *ExperimentsAPI) GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, request)
+}
+
+// Get experiment permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *ExperimentsAPI) GetPermissionLevelsByExperimentId(ctx context.Context, experimentId string) (*GetExperimentPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, GetExperimentPermissionLevelsRequest{
+		ExperimentId: experimentId,
+	})
+}
+
+// Get experiment permissions.
+//
+// Gets the permissions of an experiment. Experiments can inherit permissions
+// from their root object.
+func (a *ExperimentsAPI) GetPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error) {
+	return a.impl.GetPermissions(ctx, request)
+}
+
+// Get experiment permissions.
+//
+// Gets the permissions of an experiment. Experiments can inherit permissions
+// from their root object.
+func (a *ExperimentsAPI) GetPermissionsByExperimentId(ctx context.Context, experimentId string) (*ExperimentPermissions, error) {
+	return a.impl.GetPermissions(ctx, GetExperimentPermissionsRequest{
+		ExperimentId: experimentId,
+	})
 }
 
 // Get a run.
@@ -424,20 +424,20 @@ func (a *ExperimentsAPI) SearchRunsAll(ctx context.Context, request SearchRuns) 
 	return results, nil
 }
 
-// Set experiment permissions.
-//
-// Sets permissions on an experiment. Experiments can inherit permissions from
-// their root object.
-func (a *ExperimentsAPI) SetExperimentPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
-	return a.impl.SetExperimentPermissions(ctx, request)
-}
-
 // Set a tag.
 //
 // Sets a tag on an experiment. Experiment tags are metadata that can be
 // updated.
 func (a *ExperimentsAPI) SetExperimentTag(ctx context.Context, request SetExperimentTag) error {
 	return a.impl.SetExperimentTag(ctx, request)
+}
+
+// Set experiment permissions.
+//
+// Sets permissions on an experiment. Experiments can inherit permissions from
+// their root object.
+func (a *ExperimentsAPI) SetPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
 // Set a tag.
@@ -459,8 +459,8 @@ func (a *ExperimentsAPI) UpdateExperiment(ctx context.Context, request UpdateExp
 //
 // Updates the permissions on an experiment. Experiments can inherit permissions
 // from their root object.
-func (a *ExperimentsAPI) UpdateExperimentPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
-	return a.impl.UpdateExperimentPermissions(ctx, request)
+func (a *ExperimentsAPI) UpdatePermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }
 
 // Update a run.
@@ -639,15 +639,15 @@ func (a *ModelRegistryAPI) GetModelVersionDownloadUri(ctx context.Context, reque
 // Get registered model permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ModelRegistryAPI) GetRegisteredModelPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error) {
-	return a.impl.GetRegisteredModelPermissionLevels(ctx, request)
+func (a *ModelRegistryAPI) GetPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get registered model permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ModelRegistryAPI) GetRegisteredModelPermissionLevelsByRegisteredModelId(ctx context.Context, registeredModelId string) (*GetRegisteredModelPermissionLevelsResponse, error) {
-	return a.impl.GetRegisteredModelPermissionLevels(ctx, GetRegisteredModelPermissionLevelsRequest{
+func (a *ModelRegistryAPI) GetPermissionLevelsByRegisteredModelId(ctx context.Context, registeredModelId string) (*GetRegisteredModelPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, GetRegisteredModelPermissionLevelsRequest{
 		RegisteredModelId: registeredModelId,
 	})
 }
@@ -656,16 +656,16 @@ func (a *ModelRegistryAPI) GetRegisteredModelPermissionLevelsByRegisteredModelId
 //
 // Gets the permissions of a registered model. Registered models can inherit
 // permissions from their root object.
-func (a *ModelRegistryAPI) GetRegisteredModelPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
-	return a.impl.GetRegisteredModelPermissions(ctx, request)
+func (a *ModelRegistryAPI) GetPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
+	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get registered model permissions.
 //
 // Gets the permissions of a registered model. Registered models can inherit
 // permissions from their root object.
-func (a *ModelRegistryAPI) GetRegisteredModelPermissionsByRegisteredModelId(ctx context.Context, registeredModelId string) (*RegisteredModelPermissions, error) {
-	return a.impl.GetRegisteredModelPermissions(ctx, GetRegisteredModelPermissionsRequest{
+func (a *ModelRegistryAPI) GetPermissionsByRegisteredModelId(ctx context.Context, registeredModelId string) (*RegisteredModelPermissions, error) {
+	return a.impl.GetPermissions(ctx, GetRegisteredModelPermissionsRequest{
 		RegisteredModelId: registeredModelId,
 	})
 }
@@ -847,8 +847,8 @@ func (a *ModelRegistryAPI) SetModelVersionTag(ctx context.Context, request SetMo
 //
 // Sets permissions on a registered model. Registered models can inherit
 // permissions from their root object.
-func (a *ModelRegistryAPI) SetRegisteredModelPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
-	return a.impl.SetRegisteredModelPermissions(ctx, request)
+func (a *ModelRegistryAPI) SetPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
 // Test a webhook.
@@ -896,8 +896,8 @@ func (a *ModelRegistryAPI) UpdateModelVersion(ctx context.Context, request Updat
 //
 // Updates the permissions on a registered model. Registered models can inherit
 // permissions from their root object.
-func (a *ModelRegistryAPI) UpdateRegisteredModelPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
-	return a.impl.UpdateRegisteredModelPermissions(ctx, request)
+func (a *ModelRegistryAPI) UpdatePermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }
 
 // Update a webhook.

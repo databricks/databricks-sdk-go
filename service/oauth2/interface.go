@@ -9,10 +9,6 @@ import (
 // These APIs enable administrators to manage custom oauth app integrations,
 // which is required for adding/using Custom OAuth App Integration like Tableau
 // Cloud for Databricks in AWS cloud.
-//
-// **Note:** You can only add/use the OAuth custom application integrations when
-// OAuth enrollment status is enabled. For more details see
-// :method:OAuthEnrollment/create
 type CustomAppIntegrationService interface {
 
 	// Create Custom OAuth App Integration.
@@ -79,13 +75,23 @@ type OAuthEnrollmentService interface {
 	Get(ctx context.Context) (*OAuthEnrollmentStatus, error)
 }
 
+// These APIs enable administrators to view all the available published OAuth
+// applications in Databricks. Administrators can add the published OAuth
+// applications to their account through the OAuth Published App Integration
+// APIs.
+type OAuthPublishedAppsService interface {
+
+	// Get all the published OAuth apps.
+	//
+	// Get all the available published OAuth apps in Databricks.
+	//
+	// Use ListAll() to get all PublishedAppOutput instances, which will iterate over every result page.
+	List(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error)
+}
+
 // These APIs enable administrators to manage published oauth app integrations,
 // which is required for adding/using Published OAuth App Integration like
-// Tableau Cloud for Databricks in AWS cloud.
-//
-// **Note:** You can only add/use the OAuth published application integrations
-// when OAuth enrollment status is enabled. For more details see
-// :method:OAuthEnrollment/create
+// Tableau Desktop for Databricks in AWS cloud.
 type PublishedAppIntegrationService interface {
 
 	// Create Published OAuth App Integration.

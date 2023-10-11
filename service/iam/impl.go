@@ -454,7 +454,7 @@ func (a *usersImpl) Get(ctx context.Context, request GetUserRequest) (*User, err
 	return &user, err
 }
 
-func (a *usersImpl) GetPasswordPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error) {
+func (a *usersImpl) GetPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error) {
 	var getPasswordPermissionLevelsResponse GetPasswordPermissionLevelsResponse
 	path := "/api/2.0/permissions/authorization/passwords/permissionLevels"
 	headers := make(map[string]string)
@@ -463,7 +463,7 @@ func (a *usersImpl) GetPasswordPermissionLevels(ctx context.Context) (*GetPasswo
 	return &getPasswordPermissionLevelsResponse, err
 }
 
-func (a *usersImpl) GetPasswordPermissions(ctx context.Context) (*PasswordPermissions, error) {
+func (a *usersImpl) GetPermissions(ctx context.Context) (*PasswordPermissions, error) {
 	var passwordPermissions PasswordPermissions
 	path := "/api/2.0/permissions/authorization/passwords"
 	headers := make(map[string]string)
@@ -490,7 +490,7 @@ func (a *usersImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	return err
 }
 
-func (a *usersImpl) SetPasswordPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
+func (a *usersImpl) SetPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
 	var passwordPermissions PasswordPermissions
 	path := "/api/2.0/permissions/authorization/passwords"
 	headers := make(map[string]string)
@@ -509,7 +509,7 @@ func (a *usersImpl) Update(ctx context.Context, request User) error {
 	return err
 }
 
-func (a *usersImpl) UpdatePasswordPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
+func (a *usersImpl) UpdatePermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
 	var passwordPermissions PasswordPermissions
 	path := "/api/2.0/permissions/authorization/passwords"
 	headers := make(map[string]string)

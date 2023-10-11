@@ -1144,16 +1144,16 @@ func (a *UsersAPI) GetById(ctx context.Context, id string) (*User, error) {
 // Get password permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *UsersAPI) GetPasswordPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error) {
-	return a.impl.GetPasswordPermissionLevels(ctx)
+func (a *UsersAPI) GetPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx)
 }
 
 // Get password permissions.
 //
 // Gets the permissions of all passwords. Passwords can inherit permissions from
 // their root object.
-func (a *UsersAPI) GetPasswordPermissions(ctx context.Context) (*PasswordPermissions, error) {
-	return a.impl.GetPasswordPermissions(ctx)
+func (a *UsersAPI) GetPermissions(ctx context.Context) (*PasswordPermissions, error) {
+	return a.impl.GetPermissions(ctx)
 }
 
 // List users.
@@ -1234,8 +1234,8 @@ func (a *UsersAPI) Patch(ctx context.Context, request PartialUpdate) error {
 //
 // Sets permissions on all passwords. Passwords can inherit permissions from
 // their root object.
-func (a *UsersAPI) SetPasswordPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
-	return a.impl.SetPasswordPermissions(ctx, request)
+func (a *UsersAPI) SetPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
 // Replace a user.
@@ -1249,8 +1249,8 @@ func (a *UsersAPI) Update(ctx context.Context, request User) error {
 //
 // Updates the permissions on all passwords. Passwords can inherit permissions
 // from their root object.
-func (a *UsersAPI) UpdatePasswordPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
-	return a.impl.UpdatePasswordPermissions(ctx, request)
+func (a *UsersAPI) UpdatePermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }
 
 func NewWorkspaceAssignment(client *client.DatabricksClient) *WorkspaceAssignmentAPI {

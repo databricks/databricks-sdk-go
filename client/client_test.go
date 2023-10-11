@@ -79,7 +79,7 @@ func TestSimpleRequestFailsURLError(t *testing.T) {
 	}, map[string]string{
 		"c": "d",
 	}, nil)
-	assert.EqualError(t, err, "non-retriable error: GET \"/a/b\": nope")
+	assert.EqualError(t, err, "GET \"/a/b\": nope")
 }
 
 func TestSimpleRequestFailsAPIError(t *testing.T) {
@@ -108,7 +108,61 @@ func TestSimpleRequestFailsAPIError(t *testing.T) {
 	}, map[string]string{
 		"c": "d",
 	}, nil)
-	assert.EqualError(t, err, "non-retriable error: nope")
+	assert.EqualError(t, err, "nope")
+}
+
+func TestETag(t *testing.T) {
+	reason := "some_reason"
+	domain := "a_domain"
+	eTag := "sample_etag"
+	c := &DatabricksClient{
+		Config: config.NewMockConfig(func(r *http.Request) error {
+			return nil
+		}),
+		httpClient: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 400,
+				Request:    r,
+				Body: io.NopCloser(strings.NewReader(fmt.Sprintf(`{
+					"error_code": "RESOURCE_CONFLICT",
+					"message": "test_public_workspace_setting",
+					"stack_trace": "java.io.PrintWriter@329e4ed3",
+					"details": [
+					  {
+						"@type": "%s",
+						"reason": "%s",
+						"domain": "%s",
+						"metadata": {
+						  "etag": "%s"
+						}
+					  },
+					  {
+						"@type": "anotherType",
+						"reason": "",
+						"domain": "",
+						"metadata": {
+						  "etag": "anotherTag"
+						}
+					  }
+					]
+				  }`, "type.googleapis.com/google.rpc.ErrorInfo", reason, domain, eTag))),
+			}, nil
+		}),
+		rateLimiter: rate.NewLimiter(rate.Inf, 1),
+	}
+	err := c.Do(context.Background(), "GET", "/a/b", map[string]string{
+		"e": "f",
+	}, map[string]string{
+		"c": "d",
+	}, nil)
+	details := apierr.GetErrorInfo(err)
+	assert.Equal(t, 1, len(details))
+	errorDetails := details[0]
+	assert.Equal(t, reason, errorDetails.Reason)
+	assert.Equal(t, domain, errorDetails.Domain)
+	assert.Equal(t, map[string]string{
+		"etag": eTag,
+	}, errorDetails.Metadata)
 }
 
 func TestSimpleRequestSucceeds(t *testing.T) {
@@ -178,7 +232,7 @@ func TestHaltAttemptForLimit(t *testing.T) {
 	_, rerr := c.attempt(ctx, "GET", "foo", nil, req)()
 	assert.NotNil(t, rerr)
 	assert.Equal(t, true, rerr.Halt)
-	assert.EqualError(t, rerr.Err, "failed in rate limiter: rate: Wait(n=1) exceeds limiter's burst 0")
+	assert.EqualError(t, rerr.Err, "rate: Wait(n=1) exceeds limiter's burst 0")
 }
 
 func TestHaltAttemptForNewRequest(t *testing.T) {
@@ -191,7 +245,7 @@ func TestHaltAttemptForNewRequest(t *testing.T) {
 	_, rerr := c.attempt(ctx, "🥱", "/", nil, req)()
 	assert.NotNil(t, rerr)
 	assert.Equal(t, true, rerr.Halt)
-	assert.EqualError(t, rerr.Err, `failed creating new request: net/http: invalid method "🥱"`)
+	assert.EqualError(t, rerr.Err, `net/http: invalid method "🥱"`)
 }
 
 func TestHaltAttemptForVisitor(t *testing.T) {
@@ -207,7 +261,7 @@ func TestHaltAttemptForVisitor(t *testing.T) {
 		})()
 	assert.NotNil(t, rerr)
 	assert.Equal(t, true, rerr.Halt)
-	assert.EqualError(t, rerr.Err, "failed during request visitor: 🥱")
+	assert.EqualError(t, rerr.Err, "🥱")
 }
 
 func TestMakeRequestBody(t *testing.T) {
@@ -328,7 +382,7 @@ func TestSimpleRequestErrReaderBody(t *testing.T) {
 	}
 	headers := map[string]string{"Accept": "application/json"}
 	err := c.Do(context.Background(), "PATCH", "/a", headers, map[string]any{}, nil)
-	assert.EqualError(t, err, "failed while reading response: response body: test error")
+	assert.EqualError(t, err, "response body: test error")
 }
 
 func TestSimpleRequestErrReaderBodyStreamResponse(t *testing.T) {
@@ -366,7 +420,7 @@ func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
 	}
 	headers := map[string]string{"Accept": "application/json"}
 	err := c.Do(context.Background(), "PATCH", "/a", headers, map[string]any{}, nil)
-	assert.EqualError(t, err, "failed while reading response: response body: test error")
+	assert.EqualError(t, err, "response body: test error")
 }
 
 func TestSimpleRequestErrReaderCloseBody_StreamResponse(t *testing.T) {
@@ -636,4 +690,40 @@ func TestCannotRetryArbitraryReader(t *testing.T) {
 	}
 	err := client.Do(context.Background(), "POST", "/a", nil, customReader{}, nil)
 	assert.ErrorContains(t, err, "cannot reset reader of type client.customReader")
+}
+
+func TestRetryGetRequest(t *testing.T) {
+	// This test was added in response to https://github.com/databricks/terraform-provider-databricks/issues/2675.
+	succeed := false
+	handler := func(req *http.Request) (*http.Response, error) {
+		assert.Nil(t, req.Body)
+
+		if succeed {
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader("succeeded")),
+				Request:    req,
+			}, nil
+		}
+
+		succeed = true
+		return &http.Response{
+			StatusCode: 429,
+			Body:       io.NopCloser(strings.NewReader("failed")),
+			Request:    req,
+		}, nil
+	}
+
+	client := &DatabricksClient{
+		httpClient:   hc(handler),
+		rateLimiter:  rate.NewLimiter(rate.Limit(1), 1),
+		Config:       config.NewMockConfig(func(r *http.Request) error { return nil }),
+		retryTimeout: time.Hour,
+	}
+
+	respBytes := bytes.Buffer{}
+	err := client.Do(context.Background(), "GET", "/a", nil, nil, &respBytes)
+	assert.NoError(t, err)
+	assert.Equal(t, "succeeded", respBytes.String())
+	assert.True(t, succeed)
 }

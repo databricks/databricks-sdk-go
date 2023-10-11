@@ -334,7 +334,23 @@ type ClusterAttributes struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// This describes an enum
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// * `NONE`: No security isolation for multiple users sharing the cluster.
+	// Data governance features are not available in this mode. * `SINGLE_USER`:
+	// A secure cluster that can only be exclusively used by a single user
+	// specified in `single_user_name`. Most programming languages, cluster
+	// features and data governance features are available in this mode. *
+	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
+	// Cluster users are fully isolated so that they cannot see each other's
+	// data and credentials. Most data governance features are supported in this
+	// mode. But programming languages and cluster features might be limited. *
+	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -462,7 +478,23 @@ type ClusterDetails struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// This describes an enum
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// * `NONE`: No security isolation for multiple users sharing the cluster.
+	// Data governance features are not available in this mode. * `SINGLE_USER`:
+	// A secure cluster that can only be exclusively used by a single user
+	// specified in `single_user_name`. Most programming languages, cluster
+	// features and data governance features are available in this mode. *
+	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
+	// Cluster users are fully isolated so that they cannot see each other's
+	// data and credentials. Most data governance features are supported in this
+	// mode. But programming languages and cluster features might be limited. *
+	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
@@ -860,7 +892,23 @@ type ClusterSpec struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// This describes an enum
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// * `NONE`: No security isolation for multiple users sharing the cluster.
+	// Data governance features are not available in this mode. * `SINGLE_USER`:
+	// A secure cluster that can only be exclusively used by a single user
+	// specified in `single_user_name`. Most programming languages, cluster
+	// features and data governance features are available in this mode. *
+	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
+	// Cluster users are fully isolated so that they cannot see each other's
+	// data and credentials. Most data governance features are supported in this
+	// mode. But programming languages and cluster features might be limited. *
+	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -1130,7 +1178,23 @@ type CreateCluster struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// This describes an enum
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// * `NONE`: No security isolation for multiple users sharing the cluster.
+	// Data governance features are not available in this mode. * `SINGLE_USER`:
+	// A secure cluster that can only be exclusively used by a single user
+	// specified in `single_user_name`. Most programming languages, cluster
+	// features and data governance features are available in this mode. *
+	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
+	// Cluster users are fully isolated so that they cannot see each other's
+	// data and credentials. Most data governance features are supported in this
+	// mode. But programming languages and cluster features might be limited. *
+	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -1370,7 +1434,22 @@ func (f *DataPlaneEventDetailsEventType) Type() string {
 	return "DataPlaneEventDetailsEventType"
 }
 
-// This describes an enum
+// Data security mode decides what data governance model to use when accessing
+// data from a cluster.
+//
+// * `NONE`: No security isolation for multiple users sharing the cluster. Data
+// governance features are not available in this mode. * `SINGLE_USER`: A secure
+// cluster that can only be exclusively used by a single user specified in
+// `single_user_name`. Most programming languages, cluster features and data
+// governance features are available in this mode. * `USER_ISOLATION`: A secure
+// cluster that can be shared by multiple users. Cluster users are fully
+// isolated so that they cannot see each other's data and credentials. Most data
+// governance features are supported in this mode. But programming languages and
+// cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for
+// users migrating from legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This
+// mode is for users migrating from legacy Passthrough on high concurrency
+// clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from
+// legacy Passthrough on standard clusters.
 type DataSecurityMode string
 
 // This mode is for users migrating from legacy Passthrough on high concurrency
@@ -1633,7 +1712,23 @@ type EditCluster struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// This describes an enum
+	// Data security mode decides what data governance model to use when
+	// accessing data from a cluster.
+	//
+	// * `NONE`: No security isolation for multiple users sharing the cluster.
+	// Data governance features are not available in this mode. * `SINGLE_USER`:
+	// A secure cluster that can only be exclusively used by a single user
+	// specified in `single_user_name`. Most programming languages, cluster
+	// features and data governance features are available in this mode. *
+	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
+	// Cluster users are fully isolated so that they cannot see each other's
+	// data and credentials. Most data governance features are supported in this
+	// mode. But programming languages and cluster features might be limited. *
+	// `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
+	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
+	// from legacy Passthrough on high concurrency clusters. *
+	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+	// Passthrough on standard clusters.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -2048,7 +2143,7 @@ type GetClusterPolicyPermissionsRequest struct {
 	ClusterPolicyId string `json:"-" url:"-"`
 }
 
-// Get entity
+// Get a cluster policy
 type GetClusterPolicyRequest struct {
 	// Canonical unique identifier for the cluster policy.
 	PolicyId string `json:"-" url:"policy_id"`
@@ -2495,8 +2590,6 @@ const InstancePoolAwsAttributesAvailabilityOnDemand InstancePoolAwsAttributesAva
 
 const InstancePoolAwsAttributesAvailabilitySpot InstancePoolAwsAttributesAvailability = `SPOT`
 
-const InstancePoolAwsAttributesAvailabilitySpotWithFallback InstancePoolAwsAttributesAvailability = `SPOT_WITH_FALLBACK`
-
 // String representation for [fmt.Print]
 func (f *InstancePoolAwsAttributesAvailability) String() string {
 	return string(*f)
@@ -2505,11 +2598,11 @@ func (f *InstancePoolAwsAttributesAvailability) String() string {
 // Set raw string value and validate it against allowed values
 func (f *InstancePoolAwsAttributesAvailability) Set(v string) error {
 	switch v {
-	case `ON_DEMAND`, `SPOT`, `SPOT_WITH_FALLBACK`:
+	case `ON_DEMAND`, `SPOT`:
 		*f = InstancePoolAwsAttributesAvailability(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND", "SPOT", "SPOT_WITH_FALLBACK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND", "SPOT"`, v)
 	}
 }
 
@@ -2539,8 +2632,6 @@ const InstancePoolAzureAttributesAvailabilityOnDemandAzure InstancePoolAzureAttr
 
 const InstancePoolAzureAttributesAvailabilitySpotAzure InstancePoolAzureAttributesAvailability = `SPOT_AZURE`
 
-const InstancePoolAzureAttributesAvailabilitySpotWithFallbackAzure InstancePoolAzureAttributesAvailability = `SPOT_WITH_FALLBACK_AZURE`
-
 // String representation for [fmt.Print]
 func (f *InstancePoolAzureAttributesAvailability) String() string {
 	return string(*f)
@@ -2549,11 +2640,11 @@ func (f *InstancePoolAzureAttributesAvailability) String() string {
 // Set raw string value and validate it against allowed values
 func (f *InstancePoolAzureAttributesAvailability) Set(v string) error {
 	switch v {
-	case `ON_DEMAND_AZURE`, `SPOT_AZURE`, `SPOT_WITH_FALLBACK_AZURE`:
+	case `ON_DEMAND_AZURE`, `SPOT_AZURE`:
 		*f = InstancePoolAzureAttributesAvailability(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE", "SPOT_WITH_FALLBACK_AZURE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE"`, v)
 	}
 }
 
@@ -2823,7 +2914,7 @@ type ListAvailableZonesResponse struct {
 	Zones []string `json:"zones,omitempty"`
 }
 
-// Get a cluster policy
+// List cluster policies
 type ListClusterPoliciesRequest struct {
 	// The cluster policy attribute to sort by. * `POLICY_CREATION_TIME` - Sort
 	// result list by policy creation time. * `POLICY_NAME` - Sort result list
@@ -3027,6 +3118,9 @@ type NodeType struct {
 	SupportEbsVolumes bool `json:"support_ebs_volumes,omitempty"`
 
 	SupportPortForwarding bool `json:"support_port_forwarding,omitempty"`
+	// Indicates if this node type can be used for an instance pool or cluster
+	// with elastic disk enabled. This is true for most node types.
+	SupportsElasticDisk bool `json:"supports_elastic_disk,omitempty"`
 }
 
 type PendingInstanceError struct {

@@ -273,19 +273,26 @@ func (svc *Service) nameAndDefineRequest(request *Entity, op *openapi.Operation)
 	if request.Name != "" {
 		panic(fmt.Sprintf("request entity already has a name: %s", request.Name))
 	}
-	// when there was a merge of params with a request or new entity was made
-	signularServiceName := svc.Singular().PascalName()
-	notExplicit := !strings.Contains(op.Name(), signularServiceName)
-	if op.Name() == "list" && notExplicit {
-		request.Name = op.Name() + svc.Name + "Request"
-	} else if crudNames[strings.ToLower(op.Name())] {
-		request.Name = op.Name() + signularServiceName + "Request"
+
+	// If the operation defines a request type name, use it.
+	if op.RequestTypeName != "" {
+		request.Name = op.RequestTypeName
 	} else {
-		request.Name = op.Name() + "Request"
+		// Otherwise, synthesize a request type name.
+		singularServiceName := svc.Singular().PascalName()
+		notExplicit := !strings.Contains(op.Name(), singularServiceName)
+		if op.Name() == "list" && notExplicit {
+			request.Name = op.Name() + svc.Name + "Request"
+		} else if crudNames[strings.ToLower(op.Name())] {
+			request.Name = op.Name() + singularServiceName + "Request"
+		} else {
+			request.Name = op.Name() + "Request"
+		}
+		if svc.Package.Name == "scim" {
+			request.Name = strings.ReplaceAll(request.Name, "Account", "")
+		}
 	}
-	if svc.Package.Name == "scim" {
-		request.Name = strings.ReplaceAll(request.Name, "Account", "")
-	}
+
 	request.Description = op.Summary
 	svc.Package.define(request)
 }

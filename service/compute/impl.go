@@ -52,7 +52,7 @@ func (a *clusterPoliciesImpl) Get(ctx context.Context, request GetClusterPolicyR
 	return &policy, err
 }
 
-func (a *clusterPoliciesImpl) GetClusterPolicyPermissionLevels(ctx context.Context, request GetClusterPolicyPermissionLevelsRequest) (*GetClusterPolicyPermissionLevelsResponse, error) {
+func (a *clusterPoliciesImpl) GetPermissionLevels(ctx context.Context, request GetClusterPolicyPermissionLevelsRequest) (*GetClusterPolicyPermissionLevelsResponse, error) {
 	var getClusterPolicyPermissionLevelsResponse GetClusterPolicyPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v/permissionLevels", request.ClusterPolicyId)
 	headers := make(map[string]string)
@@ -61,7 +61,7 @@ func (a *clusterPoliciesImpl) GetClusterPolicyPermissionLevels(ctx context.Conte
 	return &getClusterPolicyPermissionLevelsResponse, err
 }
 
-func (a *clusterPoliciesImpl) GetClusterPolicyPermissions(ctx context.Context, request GetClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
+func (a *clusterPoliciesImpl) GetPermissions(ctx context.Context, request GetClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
 	var clusterPolicyPermissions ClusterPolicyPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", request.ClusterPolicyId)
 	headers := make(map[string]string)
@@ -79,7 +79,7 @@ func (a *clusterPoliciesImpl) List(ctx context.Context, request ListClusterPolic
 	return &listPoliciesResponse, err
 }
 
-func (a *clusterPoliciesImpl) SetClusterPolicyPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
+func (a *clusterPoliciesImpl) SetPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
 	var clusterPolicyPermissions ClusterPolicyPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", request.ClusterPolicyId)
 	headers := make(map[string]string)
@@ -89,7 +89,7 @@ func (a *clusterPoliciesImpl) SetClusterPolicyPermissions(ctx context.Context, r
 	return &clusterPolicyPermissions, err
 }
 
-func (a *clusterPoliciesImpl) UpdateClusterPolicyPermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
+func (a *clusterPoliciesImpl) UpdatePermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error) {
 	var clusterPolicyPermissions ClusterPolicyPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/cluster-policies/%v", request.ClusterPolicyId)
 	headers := make(map[string]string)
@@ -160,7 +160,7 @@ func (a *clustersImpl) Get(ctx context.Context, request GetClusterRequest) (*Clu
 	return &clusterDetails, err
 }
 
-func (a *clustersImpl) GetClusterPermissionLevels(ctx context.Context, request GetClusterPermissionLevelsRequest) (*GetClusterPermissionLevelsResponse, error) {
+func (a *clustersImpl) GetPermissionLevels(ctx context.Context, request GetClusterPermissionLevelsRequest) (*GetClusterPermissionLevelsResponse, error) {
 	var getClusterPermissionLevelsResponse GetClusterPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v/permissionLevels", request.ClusterId)
 	headers := make(map[string]string)
@@ -169,7 +169,7 @@ func (a *clustersImpl) GetClusterPermissionLevels(ctx context.Context, request G
 	return &getClusterPermissionLevelsResponse, err
 }
 
-func (a *clustersImpl) GetClusterPermissions(ctx context.Context, request GetClusterPermissionsRequest) (*ClusterPermissions, error) {
+func (a *clustersImpl) GetPermissions(ctx context.Context, request GetClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)
 	headers := make(map[string]string)
@@ -241,7 +241,7 @@ func (a *clustersImpl) Restart(ctx context.Context, request RestartCluster) erro
 	return err
 }
 
-func (a *clustersImpl) SetClusterPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
+func (a *clustersImpl) SetPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)
 	headers := make(map[string]string)
@@ -278,7 +278,7 @@ func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 	return err
 }
 
-func (a *clustersImpl) UpdateClusterPermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
+func (a *clustersImpl) UpdatePermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error) {
 	var clusterPermissions ClusterPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/clusters/%v", request.ClusterId)
 	headers := make(map[string]string)
@@ -439,7 +439,7 @@ func (a *instancePoolsImpl) Get(ctx context.Context, request GetInstancePoolRequ
 	return &getInstancePool, err
 }
 
-func (a *instancePoolsImpl) GetInstancePoolPermissionLevels(ctx context.Context, request GetInstancePoolPermissionLevelsRequest) (*GetInstancePoolPermissionLevelsResponse, error) {
+func (a *instancePoolsImpl) GetPermissionLevels(ctx context.Context, request GetInstancePoolPermissionLevelsRequest) (*GetInstancePoolPermissionLevelsResponse, error) {
 	var getInstancePoolPermissionLevelsResponse GetInstancePoolPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v/permissionLevels", request.InstancePoolId)
 	headers := make(map[string]string)
@@ -448,7 +448,7 @@ func (a *instancePoolsImpl) GetInstancePoolPermissionLevels(ctx context.Context,
 	return &getInstancePoolPermissionLevelsResponse, err
 }
 
-func (a *instancePoolsImpl) GetInstancePoolPermissions(ctx context.Context, request GetInstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
+func (a *instancePoolsImpl) GetPermissions(ctx context.Context, request GetInstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
 	var instancePoolPermissions InstancePoolPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", request.InstancePoolId)
 	headers := make(map[string]string)
@@ -466,7 +466,7 @@ func (a *instancePoolsImpl) List(ctx context.Context) (*ListInstancePools, error
 	return &listInstancePools, err
 }
 
-func (a *instancePoolsImpl) SetInstancePoolPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
+func (a *instancePoolsImpl) SetPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
 	var instancePoolPermissions InstancePoolPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", request.InstancePoolId)
 	headers := make(map[string]string)
@@ -476,7 +476,7 @@ func (a *instancePoolsImpl) SetInstancePoolPermissions(ctx context.Context, requ
 	return &instancePoolPermissions, err
 }
 
-func (a *instancePoolsImpl) UpdateInstancePoolPermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
+func (a *instancePoolsImpl) UpdatePermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error) {
 	var instancePoolPermissions InstancePoolPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/instance-pools/%v", request.InstancePoolId)
 	headers := make(map[string]string)

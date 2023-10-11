@@ -32,10 +32,10 @@ type JobsService interface {
 	// so it doesn't prevent new runs from being started.
 	CancelAllRuns(ctx context.Context, request CancelAllRuns) error
 
-	// Cancel a job run.
+	// Cancel a run.
 	//
-	// Cancels a job run. The run is canceled asynchronously, so it may still be
-	// running when this request completes.
+	// Cancels a job run or a task run. The run is canceled asynchronously, so
+	// it may still be running when this request completes.
 	CancelRun(ctx context.Context, request CancelRun) error
 
 	// Create a new job.
@@ -66,13 +66,13 @@ type JobsService interface {
 	// Get job permission levels.
 	//
 	// Gets the permission levels that a user can have on an object.
-	GetJobPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error)
+	GetPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error)
 
 	// Get job permissions.
 	//
 	// Gets the permissions of a job. Jobs can inherit permissions from their
 	// root object.
-	GetJobPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error)
+	GetPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error)
 
 	// Get a single job run.
 	//
@@ -129,7 +129,7 @@ type JobsService interface {
 	//
 	// Sets permissions on a job. Jobs can inherit permissions from their root
 	// object.
-	SetJobPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
+	SetPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
 
 	// Create and trigger a one-time run.
 	//
@@ -149,5 +149,5 @@ type JobsService interface {
 	//
 	// Updates the permissions on a job. Jobs can inherit permissions from their
 	// root object.
-	UpdateJobPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
+	UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
 }

@@ -79,7 +79,7 @@ func (a *jobsImpl) Get(ctx context.Context, request GetJobRequest) (*Job, error)
 	return &job, err
 }
 
-func (a *jobsImpl) GetJobPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error) {
+func (a *jobsImpl) GetPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error) {
 	var getJobPermissionLevelsResponse GetJobPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v/permissionLevels", request.JobId)
 	headers := make(map[string]string)
@@ -88,7 +88,7 @@ func (a *jobsImpl) GetJobPermissionLevels(ctx context.Context, request GetJobPer
 	return &getJobPermissionLevelsResponse, err
 }
 
-func (a *jobsImpl) GetJobPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error) {
+func (a *jobsImpl) GetPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error) {
 	var jobPermissions JobPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", request.JobId)
 	headers := make(map[string]string)
@@ -162,7 +162,7 @@ func (a *jobsImpl) RunNow(ctx context.Context, request RunNow) (*RunNowResponse,
 	return &runNowResponse, err
 }
 
-func (a *jobsImpl) SetJobPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
+func (a *jobsImpl) SetPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
 	var jobPermissions JobPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", request.JobId)
 	headers := make(map[string]string)
@@ -191,7 +191,7 @@ func (a *jobsImpl) Update(ctx context.Context, request UpdateJob) error {
 	return err
 }
 
-func (a *jobsImpl) UpdateJobPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
+func (a *jobsImpl) UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
 	var jobPermissions JobPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/jobs/%v", request.JobId)
 	headers := make(map[string]string)
