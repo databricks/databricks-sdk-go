@@ -13,7 +13,7 @@ const forceSendFieldName = "ForceSendFields"
 // Marshal returns a JSON encoding of the given object. Included fields:
 // - non-empty value
 // - a basic type whose field's name is present in forceSendFields
-// Interfaces and pointers are not serialized even if their field name appears in ForceSendFields
+// Nil interfaces, nil pointers, and nil or empty maps and slices are not serialized even if their field name appears in ForceSendFields
 // Embedded structs are still considered a separate struct. ForceSendFields
 // in an embedded struct only impact the fields of the embedded struct.
 // Conversely, an embedded struct is not impacted by the ForceSendFields
