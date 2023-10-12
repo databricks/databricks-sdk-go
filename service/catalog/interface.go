@@ -728,16 +728,7 @@ type StorageCredentialsService interface {
 
 	// Create a storage credential.
 	//
-	// Creates a new storage credential. The request object is specific to the
-	// cloud:
-	//
-	// * **AwsIamRole** for AWS credentials. * **AzureServicePrincipal** for
-	// Azure credentials. * **AzureManagedIdentity** for Azure managed
-	// credentials. * **DatabricksGcpServiceAccount** for GCP managed
-	// credentials.
-	//
-	// The caller must be a metastore admin and have the
-	// **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
+	// Creates a new storage credential.
 	Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error)
 
 	// Delete a credential.
@@ -766,9 +757,7 @@ type StorageCredentialsService interface {
 
 	// Update a credential.
 	//
-	// Updates a storage credential on the metastore. The caller must be the
-	// owner of the storage credential or a metastore admin. If the caller is a
-	// metastore admin, only the __owner__ credential can be changed.
+	// Updates a storage credential on the metastore.
 	Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error)
 
 	// Validate a storage credential.
@@ -1017,12 +1006,24 @@ type VolumesService interface {
 	Update(ctx context.Context, request UpdateVolumeRequestContent) (*VolumeInfo, error)
 }
 
-// A catalog in Databricks can be configured as __OPEN__ or __ISOLATED__. An
-// __OPEN__ catalog can be accessed from any workspace, while an __ISOLATED__
-// catalog can only be access from a configured list of workspaces.
+// A securable in Databricks can be configured as __OPEN__ or __ISOLATED__. An
+// __OPEN__ securable can be accessed from any workspace, while an __ISOLATED__
+// securable can only be accessed from a configured list of workspaces. This API
+// allows you to configure (bind) securables to workspaces.
 //
-// A catalog's workspace bindings can be configured by a metastore admin or the
-// owner of the catalog.
+// NOTE: The __isolation_mode__ is configured for the securable itself (using
+// its Update method) and the workspace bindings are only consulted when the
+// securable's __isolation_mode__ is set to __ISOLATED__.
+//
+// A securable's workspace bindings can be configured by a metastore admin or
+// the owner of the securable.
+//
+// The original path (/api/2.1/unity-catalog/workspace-bindings/catalogs/{name})
+// is deprecated. Please use the new path
+// (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which
+// introduces the ability to bind a securable in READ_ONLY mode (catalogs only).
+//
+// Securables that support binding: - catalog
 type WorkspaceBindingsService interface {
 
 	// Get catalog workspace bindings.
@@ -1031,9 +1032,21 @@ type WorkspaceBindingsService interface {
 	// admin or an owner of the catalog.
 	Get(ctx context.Context, request GetWorkspaceBindingRequest) (*CurrentWorkspaceBindings, error)
 
+	// Get securable workspace bindings.
+	//
+	// Gets workspace bindings of the securable. The caller must be a metastore
+	// admin or an owner of the securable.
+	GetBindings(ctx context.Context, request GetBindingsRequest) (*WorkspaceBindingsResponse, error)
+
 	// Update catalog workspace bindings.
 	//
 	// Updates workspace bindings of the catalog. The caller must be a metastore
 	// admin or an owner of the catalog.
 	Update(ctx context.Context, request UpdateWorkspaceBindings) (*CurrentWorkspaceBindings, error)
+
+	// Update securable workspace bindings.
+	//
+	// Updates workspace bindings of the securable. The caller must be a
+	// metastore admin or an owner of the securable.
+	UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*WorkspaceBindingsResponse, error)
 }

@@ -1,30 +1,30 @@
 // Code generated from Databricks SDK for Go integration tests by openapi.roll.TestRegenerateExamples. DO NOT EDIT.
 
-package billing_test
+package catalog_test
 
 import (
 	"context"
+	"os"
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/logger"
 
-	"github.com/databricks/databricks-sdk-go/service/billing"
+	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-func ExampleBillableUsageAPI_Download_usageDownload() {
+func ExampleMetastoreAssignmentsAPI_ListAll_metastoreAssignments() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
 		panic(err)
 	}
 
-	resp, err := a.BillableUsage.Download(ctx, billing.DownloadRequest{
-		StartMonth: "2023-01",
-		EndMonth:   "2023-02",
+	ws, err := a.MetastoreAssignments.ListAll(ctx, catalog.ListAccountMetastoreAssignmentsRequest{
+		MetastoreId: os.Getenv("TEST_METASTORE_ID"),
 	})
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof(ctx, "found %v", resp)
+	logger.Infof(ctx, "found %v", ws)
 
 }

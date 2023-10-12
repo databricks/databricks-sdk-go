@@ -103,32 +103,6 @@ type AccountIpAccessListsService interface {
 	Update(ctx context.Context, request UpdateIpAccessList) error
 }
 
-// Network policy is a set of rules that defines what can be accessed from your
-// Databricks network. E.g.: You can choose to block your SQL UDF to access
-// internet from your Databricks serverless clusters.
-//
-// There is only one instance of this setting per account. Since this setting
-// has a default value, this setting is present on all accounts even though it's
-// never set on a given account. Deletion reverts the value of the setting back
-// to the default value.
-type AccountNetworkPolicyService interface {
-
-	// Delete Account Network Policy.
-	//
-	// Reverts back all the account network policies back to default.
-	DeleteAccountNetworkPolicy(ctx context.Context, request DeleteAccountNetworkPolicyRequest) (*DeleteAccountNetworkPolicyResponse, error)
-
-	// Get Account Network Policy.
-	//
-	// Gets the value of Account level Network Policy.
-	ReadAccountNetworkPolicy(ctx context.Context, request ReadAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error)
-
-	// Update Account Network Policy.
-	//
-	// Updates the policy content of Account level Network Policy.
-	UpdateAccountNetworkPolicy(ctx context.Context, request UpdateAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error)
-}
-
 // The Personal Compute enablement setting lets you control which users can use
 // the Personal Compute default policy to create compute resources. By default
 // all users in all workspaces have access (ON), but you can change the setting
@@ -227,7 +201,7 @@ type IpAccessListsService interface {
 	// Gets all IP access lists for the specified workspace.
 	//
 	// Use ListAll() to get all IpAccessListInfo instances
-	List(ctx context.Context) (*GetIpAccessListResponse, error)
+	List(ctx context.Context) (*ListIpAccessListResponse, error)
 
 	// Replace access list.
 	//

@@ -4,6 +4,7 @@ package billing
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
@@ -305,6 +306,10 @@ func (s *DownloadRequest) UnmarshalJSON(b []byte) error {
 
 func (s DownloadRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type DownloadResponse struct {
+	Contents io.ReadCloser `json:"-"`
 }
 
 // Get budget and its status

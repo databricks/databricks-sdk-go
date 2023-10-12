@@ -83,14 +83,17 @@ type PipelinesService interface {
 	// their root object.
 	SetPermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error)
 
-	// Queue a pipeline update.
+	// Start a pipeline.
 	//
-	// Starts or queues a pipeline update.
+	// Starts a new update for the pipeline. If there is already an active
+	// update for the pipeline, the request will fail and the active update will
+	// remain running.
 	StartUpdate(ctx context.Context, request StartUpdate) (*StartUpdateResponse, error)
 
 	// Stop a pipeline.
 	//
-	// Stops a pipeline.
+	// Stops the pipeline by canceling the active update. If there is no active
+	// update for the pipeline, this request is a no-op.
 	Stop(ctx context.Context, request StopRequest) error
 
 	// Edit a pipeline.

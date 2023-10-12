@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"io"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/billing"
@@ -14,12 +15,14 @@ func TestMwsAccUsageDownload(t *testing.T) {
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
-	// TODO: fix SDK to handle raw responses
-	err := a.BillableUsage.Download(ctx, billing.DownloadRequest{
-		StartMonth: "2022-01",
-		EndMonth:   "2022-02",
+	resp, err := a.BillableUsage.Download(ctx, billing.DownloadRequest{
+		StartMonth: "2023-01",
+		EndMonth:   "2023-02",
 	})
 	require.NoError(t, err)
+	out, err := io.ReadAll(resp.Contents)
+	require.NoError(t, err)
+	assert.NotEmpty(t, out)
 }
 
 func TestMwsAccLogDelivery(t *testing.T) {

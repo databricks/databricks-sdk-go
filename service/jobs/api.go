@@ -491,10 +491,10 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, opt
 	return wait.Get()
 }
 
-// Overwrites all settings for a job.
+// Overwrite all settings for a job.
 //
-// Overwrites all the settings for a specific job. Use the Update endpoint to
-// update job settings partially.
+// Overwrite all settings for the given job. Use the Update endpoint to update
+// job settings partially.
 func (a *JobsAPI) Reset(ctx context.Context, request ResetJob) error {
 	return a.impl.Reset(ctx, request)
 }

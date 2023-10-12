@@ -258,9 +258,10 @@ func (a *AccountStorageCredentialsAPI) Delete(ctx context.Context, request Delet
 //
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
-func (a *AccountStorageCredentialsAPI) DeleteByMetastoreId(ctx context.Context, metastoreId string) error {
+func (a *AccountStorageCredentialsAPI) DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) error {
 	return a.impl.Delete(ctx, DeleteAccountStorageCredentialRequest{
-		MetastoreId: metastoreId,
+		MetastoreId:           metastoreId,
+		StorageCredentialName: storageCredentialName,
 	})
 }
 
@@ -278,9 +279,10 @@ func (a *AccountStorageCredentialsAPI) Get(ctx context.Context, request GetAccou
 // Gets a storage credential from the metastore. The caller must be a metastore
 // admin, the owner of the storage credential, or have a level of privilege on
 // the storage credential.
-func (a *AccountStorageCredentialsAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*AccountsStorageCredentialInfo, error) {
+func (a *AccountStorageCredentialsAPI) GetByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*AccountsStorageCredentialInfo, error) {
 	return a.impl.Get(ctx, GetAccountStorageCredentialRequest{
-		MetastoreId: metastoreId,
+		MetastoreId:           metastoreId,
+		StorageCredentialName: storageCredentialName,
 	})
 }
 
@@ -1915,15 +1917,7 @@ func (a *StorageCredentialsAPI) Impl() StorageCredentialsService {
 
 // Create a storage credential.
 //
-// Creates a new storage credential. The request object is specific to the
-// cloud:
-//
-// * **AwsIamRole** for AWS credentials. * **AzureServicePrincipal** for Azure
-// credentials. * **AzureManagedIdentity** for Azure managed credentials. *
-// **DatabricksGcpServiceAccount** for GCP managed credentials.
-//
-// The caller must be a metastore admin and have the
-// **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
+// Creates a new storage credential.
 func (a *StorageCredentialsAPI) Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error) {
 	return a.impl.Create(ctx, request)
 }
@@ -2010,9 +2004,7 @@ func (a *StorageCredentialsAPI) StorageCredentialInfoNameToIdMap(ctx context.Con
 
 // Update a credential.
 //
-// Updates a storage credential on the metastore. The caller must be the owner
-// of the storage credential or a metastore admin. If the caller is a metastore
-// admin, only the __owner__ credential can be changed.
+// Updates a storage credential on the metastore.
 func (a *StorageCredentialsAPI) Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error) {
 	return a.impl.Update(ctx, request)
 }
@@ -2642,12 +2634,24 @@ func NewWorkspaceBindings(client *client.DatabricksClient) *WorkspaceBindingsAPI
 	}
 }
 
-// A catalog in Databricks can be configured as __OPEN__ or __ISOLATED__. An
-// __OPEN__ catalog can be accessed from any workspace, while an __ISOLATED__
-// catalog can only be access from a configured list of workspaces.
+// A securable in Databricks can be configured as __OPEN__ or __ISOLATED__. An
+// __OPEN__ securable can be accessed from any workspace, while an __ISOLATED__
+// securable can only be accessed from a configured list of workspaces. This API
+// allows you to configure (bind) securables to workspaces.
 //
-// A catalog's workspace bindings can be configured by a metastore admin or the
-// owner of the catalog.
+// NOTE: The __isolation_mode__ is configured for the securable itself (using
+// its Update method) and the workspace bindings are only consulted when the
+// securable's __isolation_mode__ is set to __ISOLATED__.
+//
+// A securable's workspace bindings can be configured by a metastore admin or
+// the owner of the securable.
+//
+// The original path (/api/2.1/unity-catalog/workspace-bindings/catalogs/{name})
+// is deprecated. Please use the new path
+// (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which
+// introduces the ability to bind a securable in READ_ONLY mode (catalogs only).
+//
+// Securables that support binding: - catalog
 type WorkspaceBindingsAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(WorkspaceBindingsService)
@@ -2684,10 +2688,37 @@ func (a *WorkspaceBindingsAPI) GetByName(ctx context.Context, name string) (*Cur
 	})
 }
 
+// Get securable workspace bindings.
+//
+// Gets workspace bindings of the securable. The caller must be a metastore
+// admin or an owner of the securable.
+func (a *WorkspaceBindingsAPI) GetBindings(ctx context.Context, request GetBindingsRequest) (*WorkspaceBindingsResponse, error) {
+	return a.impl.GetBindings(ctx, request)
+}
+
+// Get securable workspace bindings.
+//
+// Gets workspace bindings of the securable. The caller must be a metastore
+// admin or an owner of the securable.
+func (a *WorkspaceBindingsAPI) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType string, securableName string) (*WorkspaceBindingsResponse, error) {
+	return a.impl.GetBindings(ctx, GetBindingsRequest{
+		SecurableType: securableType,
+		SecurableName: securableName,
+	})
+}
+
 // Update catalog workspace bindings.
 //
 // Updates workspace bindings of the catalog. The caller must be a metastore
 // admin or an owner of the catalog.
 func (a *WorkspaceBindingsAPI) Update(ctx context.Context, request UpdateWorkspaceBindings) (*CurrentWorkspaceBindings, error) {
 	return a.impl.Update(ctx, request)
+}
+
+// Update securable workspace bindings.
+//
+// Updates workspace bindings of the securable. The caller must be a metastore
+// admin or an owner of the securable.
+func (a *WorkspaceBindingsAPI) UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*WorkspaceBindingsResponse, error) {
+	return a.impl.UpdateBindings(ctx, request)
 }

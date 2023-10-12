@@ -58,23 +58,6 @@ func ExampleModelRegistryAPI_CreateComment_modelVersionComments() {
 
 }
 
-func ExampleModelRegistryAPI_CreateModel_modelVersionComments() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	model, err := w.ModelRegistry.CreateModel(ctx, ml.CreateModelRequest{
-		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-	})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", model)
-
-}
-
 func ExampleModelRegistryAPI_CreateModel_models() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
@@ -89,6 +72,23 @@ func ExampleModelRegistryAPI_CreateModel_models() {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", created)
+
+}
+
+func ExampleModelRegistryAPI_CreateModel_modelVersionComments() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	model, err := w.ModelRegistry.CreateModel(ctx, ml.CreateModelRequest{
+		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", model)
 
 }
 

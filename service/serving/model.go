@@ -322,6 +322,12 @@ type ServedModelInput struct {
 	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
 	// the provisioned concurrency for each workload size will be 0.
 	WorkloadSize string `json:"workload_size"`
+	// The workload type of the served model. The workload type selects which
+	// type of compute to use in the endpoint. The default value for this
+	// parameter is "CPU". For deep learning workloads, GPU acceleration is
+	// available by selecting workload types like GPU_SMALL and others. See
+	// documentation for all options.
+	WorkloadType string `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -370,6 +376,12 @@ type ServedModelOutput struct {
 	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
 	// the provisioned concurrency for each workload size will be 0.
 	WorkloadSize string `json:"workload_size,omitempty"`
+	// The workload type of the served model. The workload type selects which
+	// type of compute to use in the endpoint. The default value for this
+	// parameter is "CPU". For deep learning workloads, GPU acceleration is
+	// available by selecting workload types like GPU_SMALL and others. See
+	// documentation for all options.
+	WorkloadType string `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

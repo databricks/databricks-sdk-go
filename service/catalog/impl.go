@@ -126,7 +126,7 @@ func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request Acco
 }
 
 func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
@@ -135,7 +135,7 @@ func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request Dele
 
 func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*AccountsStorageCredentialInfo, error) {
 	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &accountsStorageCredentialInfo)
@@ -153,7 +153,7 @@ func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAc
 
 func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error) {
 	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -921,6 +921,15 @@ func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBin
 	return &currentWorkspaceBindings, err
 }
 
+func (a *workspaceBindingsImpl) GetBindings(ctx context.Context, request GetBindingsRequest) (*WorkspaceBindingsResponse, error) {
+	var workspaceBindingsResponse WorkspaceBindingsResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/bindings/%v/%v", request.SecurableType, request.SecurableName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &workspaceBindingsResponse)
+	return &workspaceBindingsResponse, err
+}
+
 func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorkspaceBindings) (*CurrentWorkspaceBindings, error) {
 	var currentWorkspaceBindings CurrentWorkspaceBindings
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", request.Name)
@@ -929,4 +938,14 @@ func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorksp
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &currentWorkspaceBindings)
 	return &currentWorkspaceBindings, err
+}
+
+func (a *workspaceBindingsImpl) UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*WorkspaceBindingsResponse, error) {
+	var workspaceBindingsResponse WorkspaceBindingsResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/bindings/%v/%v", request.SecurableType, request.SecurableName)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &workspaceBindingsResponse)
+	return &workspaceBindingsResponse, err
 }

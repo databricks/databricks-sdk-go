@@ -51,7 +51,7 @@ func (a *BillableUsageAPI) Impl() BillableUsageService {
 // to mitigate by calling the API with narrower date ranges.
 //
 // [CSV file schema]: https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema
-func (a *BillableUsageAPI) Download(ctx context.Context, request DownloadRequest) error {
+func (a *BillableUsageAPI) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
 	return a.impl.Download(ctx, request)
 }
 
