@@ -161,7 +161,7 @@ func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request Create
 }
 
 func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error {
-	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets/%v,", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.SecretId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.SecretId)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err

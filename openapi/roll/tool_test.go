@@ -60,7 +60,7 @@ func TestRegenerateExamples(t *testing.T) {
 	target := "../.."
 	pass := render.NewPass(target, s.ServicesExamples(), map[string]string{
 		".codegen/examples_test.go.tmpl": "service/{{.Package}}/{{.SnakeName}}_usage_test.go",
-	})
+	}, []string{})
 	err = pass.Run(ctx)
 	assert.NoError(t, err)
 
@@ -77,7 +77,7 @@ func TestRegeneratePythonExamples(t *testing.T) {
 	target := "../../../databricks-sdk-py"
 	pass := render.NewPass(target, s.Samples(), map[string]string{
 		".codegen/example.py.tmpl": "examples/{{.Service.SnakeName}}/{{.Method.SnakeName}}_{{.SnakeName}}.py",
-	})
+	}, []string{})
 	err = pass.Run(ctx)
 	assert.NoError(t, err)
 

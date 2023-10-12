@@ -2,7 +2,11 @@
 
 package settings
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/databricks/databricks-sdk-go/marshal"
+)
 
 // all definitions in this file are in alphabetical order
 
@@ -11,6 +15,16 @@ type AccountNetworkPolicyMessage struct {
 	// to the internet will be blocked from serverless clusters. Trusted traffic
 	// required by clusters for basic functionality will not be affected.
 	ServerlessInternetAccessEnabled bool `json:"serverless_internet_access_enabled,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AccountNetworkPolicyMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AccountNetworkPolicyMessage) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateIpAccessList struct {
@@ -38,12 +52,32 @@ type CreateOboTokenRequest struct {
 	Comment string `json:"comment,omitempty"`
 	// The number of seconds before the token expires.
 	LifetimeSeconds int64 `json:"lifetime_seconds"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateOboTokenRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateOboTokenRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateOboTokenResponse struct {
 	TokenInfo *TokenInfo `json:"token_info,omitempty"`
 	// Value of the token.
 	TokenValue string `json:"token_value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateOboTokenResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateOboTokenResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateTokenRequest struct {
@@ -53,6 +87,16 @@ type CreateTokenRequest struct {
 	//
 	// If the ifetime is not specified, this token remains valid indefinitely.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateTokenRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateTokenRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateTokenResponse struct {
@@ -60,11 +104,44 @@ type CreateTokenResponse struct {
 	TokenInfo *PublicTokenInfo `json:"token_info,omitempty"`
 	// The value of the new token.
 	TokenValue string `json:"token_value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
 }
 
-type CredentialPartitionId struct {
-	// The ID of the workspace.
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
+func (s *CreateTokenResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateTokenResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Default namespace setting.
+type DefaultNamespaceSetting struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+
+	Namespace StringMessage `json:"namespace"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DefaultNamespaceSetting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DefaultNamespaceSetting) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete access list
@@ -86,6 +163,29 @@ type DeleteAccountNetworkPolicyRequest struct {
 }
 
 type DeleteAccountNetworkPolicyResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag"`
+}
+
+// Delete the default namespace
+type DeleteDefaultWorkspaceNamespaceRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag"`
+}
+
+type DeleteDefaultWorkspaceNamespaceResponse struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -136,21 +236,32 @@ type ExchangeToken struct {
 	Credential string `json:"credential,omitempty"`
 	// The end-of-life timestamp of the token. The value is in milliseconds
 	// since the Unix epoch.
-	CredentialEolTime int64 `json:"credential_eol_time,omitempty"`
+	CredentialEolTime int64 `json:"credentialEolTime,omitempty"`
 	// User ID of the user that owns this token.
-	OwnerId int64 `json:"owner_id,omitempty"`
+	OwnerId int64 `json:"ownerId,omitempty"`
 	// The scopes of access granted in the token.
 	Scopes []string `json:"scopes,omitempty"`
+	// The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN`
+	// is supported.
+	TokenType TokenType `json:"tokenType,omitempty"`
 
-	TokenType []TokenType `json:"token_type,omitempty"`
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExchangeToken) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExchangeToken) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ExchangeTokenRequest struct {
-	CredentialPartitionId CredentialPartitionId `json:"credential_partition_id"`
+	PartitionId PartitionId `json:"partitionId"`
 	// Array of scopes for the token request.
 	Scopes []string `json:"scopes"`
 
-	TokenType []TokenType `json:"token_type"`
+	TokenType []TokenType `json:"tokenType"`
 }
 
 type ExchangeTokenResponse struct {
@@ -223,6 +334,16 @@ type IpAccessListInfo struct {
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// User ID of the user who updated this list.
 	UpdatedBy int64 `json:"updated_by,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *IpAccessListInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IpAccessListInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List all tokens
@@ -231,6 +352,16 @@ type ListTokenManagementRequest struct {
 	CreatedById string `json:"-" url:"created_by_id,omitempty"`
 	// Username of the user that created the token.
 	CreatedByUsername string `json:"-" url:"created_by_username,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListTokenManagementRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListTokenManagementRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListTokensResponse struct {
@@ -270,6 +401,21 @@ func (f *ListType) Set(v string) error {
 // Type always returns ListType to satisfy [pflag.Value] interface
 func (f *ListType) Type() string {
 	return "ListType"
+}
+
+type PartitionId struct {
+	// The ID of the workspace.
+	WorkspaceId int64 `json:"workspaceId,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PartitionId) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PartitionId) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PersonalComputeMessage struct {
@@ -330,6 +476,16 @@ type PersonalComputeSetting struct {
 	// Name of the corresponding setting. Needs to be 'default' if there is only
 	// one setting instance per account.
 	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PersonalComputeSetting) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PersonalComputeSetting) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PublicTokenInfo struct {
@@ -342,10 +498,32 @@ type PublicTokenInfo struct {
 	ExpiryTime int64 `json:"expiry_time,omitempty"`
 	// The ID of this token.
 	TokenId string `json:"token_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PublicTokenInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PublicTokenInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get Account Network Policy
 type ReadAccountNetworkPolicyRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag"`
+}
+
+// Get the default namespace
+type ReadDefaultWorkspaceNamespaceRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -386,11 +564,36 @@ type ReplaceIpAccessList struct {
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
 	ListType ListType `json:"list_type"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ReplaceIpAccessList) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ReplaceIpAccessList) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RevokeTokenRequest struct {
 	// The ID of the token to be revoked.
 	TokenId string `json:"token_id"`
+}
+
+type StringMessage struct {
+	// Represents a generic string value.
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StringMessage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StringMessage) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TokenAccessControlRequest struct {
@@ -402,6 +605,16 @@ type TokenAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenAccessControlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TokenAccessControlRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TokenAccessControlResponse struct {
@@ -415,6 +628,16 @@ type TokenAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenAccessControlResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TokenAccessControlResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TokenInfo struct {
@@ -433,6 +656,16 @@ type TokenInfo struct {
 	OwnerId int64 `json:"owner_id,omitempty"`
 	// ID of the token.
 	TokenId string `json:"token_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TokenInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TokenPermission struct {
@@ -441,6 +674,16 @@ type TokenPermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenPermission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TokenPermission) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -475,12 +718,32 @@ type TokenPermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenPermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TokenPermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TokenPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenPermissionsDescription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TokenPermissionsDescription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TokenPermissionsRequest struct {
@@ -521,6 +784,43 @@ type UpdateAccountNetworkPolicyRequest struct {
 	AllowMissing bool `json:"allow_missing,omitempty"`
 
 	Setting *AccountNetworkPolicyMessage `json:"setting,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateAccountNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateAccountNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Updates the default namespace setting
+type UpdateDefaultWorkspaceNamespaceRequest struct {
+	// This should always be set to true for Settings RPCs. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing,omitempty"`
+	// Field mask required to be passed into the PATCH request. Field mask
+	// specifies which fields of the setting payload will be updated. For
+	// example, for Default Namespace setting, the field mask is supposed to
+	// contain fields from the DefaultNamespaceSetting.namespace schema.
+	//
+	// The field mask needs to supplied as single string. To specify multiple
+	// fields in the field mask, use comma as the seperator (no space).
+	FieldMask string `json:"field_mask,omitempty"`
+	// Default namespace setting.
+	Setting *DefaultNamespaceSetting `json:"setting,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateDefaultWorkspaceNamespaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateDefaultWorkspaceNamespaceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateIpAccessList struct {
@@ -541,6 +841,16 @@ type UpdateIpAccessList struct {
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
 	ListType ListType `json:"list_type"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateIpAccessList) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateIpAccessList) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Update Personal Compute setting
@@ -550,6 +860,16 @@ type UpdatePersonalComputeSettingRequest struct {
 	AllowMissing bool `json:"allow_missing,omitempty"`
 
 	Setting *PersonalComputeSetting `json:"setting,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdatePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdatePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WorkspaceConf map[string]string

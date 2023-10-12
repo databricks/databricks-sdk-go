@@ -122,20 +122,10 @@ func (a *JobsAPI) CancelAllRuns(ctx context.Context, request CancelAllRuns) erro
 	return a.impl.CancelAllRuns(ctx, request)
 }
 
-// Cancel all runs of a job.
+// Cancel a run.
 //
-// Cancels all active runs of a job. The runs are canceled asynchronously, so it
-// doesn't prevent new runs from being started.
-func (a *JobsAPI) CancelAllRunsByJobId(ctx context.Context, jobId int64) error {
-	return a.impl.CancelAllRuns(ctx, CancelAllRuns{
-		JobId: jobId,
-	})
-}
-
-// Cancel a job run.
-//
-// Cancels a job run. The run is canceled asynchronously, so it may still be
-// running when this request completes.
+// Cancels a job run or a task run. The run is canceled asynchronously, so it
+// may still be running when this request completes.
 func (a *JobsAPI) CancelRun(ctx context.Context, cancelRun CancelRun) (*WaitGetRunJobTerminatedOrSkipped[any], error) {
 	err := a.impl.CancelRun(ctx, cancelRun)
 	if err != nil {
@@ -179,10 +169,10 @@ func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, opt
 	return wait.Get()
 }
 
-// Cancel a job run.
+// Cancel a run.
 //
-// Cancels a job run. The run is canceled asynchronously, so it may still be
-// running when this request completes.
+// Cancels a job run or a task run. The run is canceled asynchronously, so it
+// may still be running when this request completes.
 func (a *JobsAPI) CancelRunByRunId(ctx context.Context, runId int64) error {
 	return a.impl.CancelRun(ctx, CancelRun{
 		RunId: runId,

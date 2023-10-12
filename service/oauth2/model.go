@@ -2,6 +2,10 @@
 
 package oauth2
 
+import (
+	"github.com/databricks/databricks-sdk-go/marshal"
+)
+
 // all definitions in this file are in alphabetical order
 
 type CreateCustomAppIntegration struct {
@@ -16,6 +20,16 @@ type CreateCustomAppIntegration struct {
 	Scopes []string `json:"scopes,omitempty"`
 	// Token access policy
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateCustomAppIntegration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateCustomAppIntegration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateCustomAppIntegrationOutput struct {
@@ -26,11 +40,31 @@ type CreateCustomAppIntegrationOutput struct {
 	ClientSecret string `json:"client_secret,omitempty"`
 	// unique integration id for the custom oauth app
 	IntegrationId string `json:"integration_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateCustomAppIntegrationOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateCustomAppIntegrationOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateOAuthEnrollment struct {
 	// If true, enable OAuth for all the published applications in the account.
 	EnableAllPublishedApps bool `json:"enable_all_published_apps,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateOAuthEnrollment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateOAuthEnrollment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreatePublishedAppIntegration struct {
@@ -39,11 +73,31 @@ type CreatePublishedAppIntegration struct {
 	AppId string `json:"app_id,omitempty"`
 	// Token access policy
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreatePublishedAppIntegration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreatePublishedAppIntegration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreatePublishedAppIntegrationOutput struct {
 	// unique integration id for the published oauth app
 	IntegrationId string `json:"integration_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreatePublishedAppIntegrationOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreatePublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Create service principal secret
@@ -65,6 +119,16 @@ type CreateServicePrincipalSecretResponse struct {
 	Status string `json:"status,omitempty"`
 	// UTC time when the secret was updated
 	UpdateTime string `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateServicePrincipalSecretResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateServicePrincipalSecretResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete Custom OAuth App Integration
@@ -100,6 +164,16 @@ type GetCustomAppIntegrationOutput struct {
 	RedirectUrls []string `json:"redirect_urls,omitempty"`
 	// Token access policy
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetCustomAppIntegrationOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetCustomAppIntegrationOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get OAuth Custom App Integration
@@ -122,6 +196,16 @@ type GetPublishedAppIntegrationOutput struct {
 	Name string `json:"name,omitempty"`
 	// Token access policy
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetPublishedAppIntegrationOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetPublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get OAuth Published App Integration
@@ -141,6 +225,16 @@ type GetPublishedAppsOutput struct {
 	// A token that can be used to get the next page of results. If not present,
 	// there are no more results to show.
 	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetPublishedAppsOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetPublishedAppsOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get all the published OAuth apps
@@ -149,6 +243,16 @@ type ListOAuthPublishedAppsRequest struct {
 	PageSize int64 `json:"-" url:"page_size,omitempty"`
 	// A token that can be used to get the next page of results.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListOAuthPublishedAppsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListOAuthPublishedAppsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List service principal secrets
@@ -165,6 +269,16 @@ type ListServicePrincipalSecretsResponse struct {
 type OAuthEnrollmentStatus struct {
 	// Is OAuth enrolled for the account.
 	IsEnabled bool `json:"is_enabled,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *OAuthEnrollmentStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OAuthEnrollmentStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PublishedAppOutput struct {
@@ -184,6 +298,16 @@ type PublishedAppOutput struct {
 	RedirectUrls []string `json:"redirect_urls,omitempty"`
 	// Required scopes for the published OAuth app.
 	Scopes []string `json:"scopes,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PublishedAppOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PublishedAppOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SecretInfo struct {
@@ -197,6 +321,16 @@ type SecretInfo struct {
 	Status string `json:"status,omitempty"`
 	// UTC time when the secret was updated
 	UpdateTime string `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SecretInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SecretInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TokenAccessPolicy struct {
@@ -204,6 +338,16 @@ type TokenAccessPolicy struct {
 	AccessTokenTtlInMinutes int `json:"access_token_ttl_in_minutes,omitempty"`
 	// refresh token time to live in minutes
 	RefreshTokenTtlInMinutes int `json:"refresh_token_ttl_in_minutes,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TokenAccessPolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TokenAccessPolicy) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateCustomAppIntegration struct {

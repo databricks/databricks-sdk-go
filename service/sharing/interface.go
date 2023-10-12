@@ -41,8 +41,8 @@ type CleanRoomsService interface {
 	// must be a metastore admin or the owner of the clean room. There is no
 	// guarantee of a specific ordering of the elements in the array.
 	//
-	// Use ListAll() to get all CleanRoomInfo instances
-	List(ctx context.Context) (*ListCleanRoomsResponse, error)
+	// Use ListAll() to get all CleanRoomInfo instances, which will iterate over every result page.
+	List(ctx context.Context, request ListCleanRoomsRequest) (*ListCleanRoomsResponse, error)
 
 	// Update a clean room.
 	//

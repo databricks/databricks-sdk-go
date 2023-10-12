@@ -2,7 +2,11 @@
 
 package billing
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/databricks/databricks-sdk-go/marshal"
+)
 
 // all definitions in this file are in alphabetical order
 
@@ -37,6 +41,16 @@ type Budget struct {
 	StartDate string `json:"start_date"`
 	// Target amount of the budget per period in USD.
 	TargetAmount string `json:"target_amount"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Budget) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Budget) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type BudgetAlert struct {
@@ -46,6 +60,16 @@ type BudgetAlert struct {
 	// Percentage of the target amount used in the currect period that will
 	// trigger a notification.
 	MinPercentage int `json:"min_percentage,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *BudgetAlert) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BudgetAlert) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List of budgets.
@@ -92,6 +116,16 @@ type BudgetWithStatus struct {
 	TargetAmount string `json:"target_amount,omitempty"`
 
 	UpdateTime string `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *BudgetWithStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BudgetWithStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type BudgetWithStatusStatusDailyItem struct {
@@ -99,6 +133,16 @@ type BudgetWithStatusStatusDailyItem struct {
 	Amount string `json:"amount,omitempty"`
 
 	Date string `json:"date,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *BudgetWithStatusStatusDailyItem) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BudgetWithStatusStatusDailyItem) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateLogDeliveryConfigurationParams struct {
@@ -171,6 +215,16 @@ type CreateLogDeliveryConfigurationParams struct {
 	// deployments there is only one workspace per account ID, so this field is
 	// unnecessary.
 	WorkspaceIdsFilter []int64 `json:"workspace_ids_filter,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateLogDeliveryConfigurationParams) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateLogDeliveryConfigurationParams) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete budget
@@ -241,6 +295,16 @@ type DownloadRequest struct {
 	// Format: `YYYY-MM`. First month to return billable usage logs for. This
 	// field is required.
 	StartMonth string `json:"-" url:"start_month"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DownloadRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DownloadRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get budget and its status
@@ -263,6 +327,16 @@ type ListLogDeliveryRequest struct {
 	Status LogDeliveryConfigStatus `json:"-" url:"status,omitempty"`
 	// Filter by storage configuration ID.
 	StorageConfigurationId string `json:"-" url:"storage_configuration_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListLogDeliveryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListLogDeliveryRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Status of log delivery configuration. Set to `ENABLED` (enabled) or
@@ -379,6 +453,16 @@ type LogDeliveryConfiguration struct {
 	// deployments there is only one workspace per account ID, so this field is
 	// unnecessary.
 	WorkspaceIdsFilter []int64 `json:"workspace_ids_filter,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Databricks log delivery status.
@@ -402,6 +486,16 @@ type LogDeliveryStatus struct {
 	// disabled since the release of this feature or there are no workspaces in
 	// the account.
 	Status DeliveryStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LogDeliveryStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LogDeliveryStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Log delivery type. Supported values are:

@@ -299,6 +299,7 @@ type MimeType string
 const (
 	MimeTypeJson        MimeType = "application/json"
 	MimeTypeOctetStream MimeType = "application/octet-stream"
+	MimeTypeTextPlain   MimeType = "text/plain"
 )
 
 // IsByteStream returns true if the body should be modeled as a byte stream.
@@ -311,6 +312,7 @@ func (m MimeType) IsByteStream() bool {
 var allowedMimeTypes = []MimeType{
 	MimeTypeJson,
 	MimeTypeOctetStream,
+	MimeTypeTextPlain,
 }
 
 func (b *Body) MimeTypeAndMediaType() (MimeType, *MediaType) {

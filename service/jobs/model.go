@@ -5,6 +5,7 @@ package jobs
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
@@ -23,6 +24,16 @@ type BaseJob struct {
 	// Settings for this job and all of its runs. These settings can be updated
 	// using the `resetJob` method.
 	Settings *JobSettings `json:"settings,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *BaseJob) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BaseJob) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type BaseRun struct {
@@ -142,12 +153,34 @@ type BaseRun struct {
 	Trigger TriggerType `json:"trigger,omitempty"`
 
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *BaseRun) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BaseRun) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CancelAllRuns struct {
-	// The canonical identifier of the job to cancel all runs of. This field is
-	// required.
-	JobId int64 `json:"job_id"`
+	// Optional boolean parameter to cancel all queued runs. If no job_id is
+	// provided, all queued runs in the workspace are canceled.
+	AllQueuedRuns bool `json:"all_queued_runs,omitempty"`
+	// The canonical identifier of the job to cancel all runs of.
+	JobId int64 `json:"job_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CancelAllRuns) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CancelAllRuns) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CancelRun struct {
@@ -174,6 +207,16 @@ type ClusterInstance struct {
 	// The response won’t include this field if the identifier is not
 	// available yet.
 	SparkContextId string `json:"spark_context_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterInstance) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClusterInstance) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ClusterSpec struct {
@@ -187,6 +230,16 @@ type ClusterSpec struct {
 	Libraries []compute.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a cluster that is created for each run.
 	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ClusterSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClusterSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ConditionTask struct {
@@ -207,6 +260,16 @@ type ConditionTask struct {
 	// The right operand of the condition task. Can be either a string value or
 	// a job state or parameter reference.
 	Right string `json:"right,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ConditionTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ConditionTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
@@ -321,6 +384,8 @@ type CreateJob struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
+	// The queue settings of the job.
+	Queue *QueueSettings `json:"queue,omitempty"`
 	// Write-only setting, available only in Create/Update/Reset and Submit
 	// calls. Specifies the user or service principal that the job runs as. If
 	// not specified, the job runs as the user who created the job.
@@ -350,11 +415,31 @@ type CreateJob struct {
 	// A collection of system notification IDs to notify when the run begins or
 	// completes. The default behavior is to not send any system notifications.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateJob) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateJob) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateResponse struct {
 	// The canonical identifier for the newly created job.
 	JobId int64 `json:"job_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CronSchedule struct {
@@ -380,6 +465,16 @@ type DbtOutput struct {
 	// valid for a limited time (30 minutes). This information is only available
 	// after the run has finished.
 	ArtifactsLink string `json:"artifacts_link,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DbtOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DbtOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DbtTask struct {
@@ -408,6 +503,16 @@ type DbtTask struct {
 	// overridden on a per-command basis by using the `--profiles-dir` command
 	// line argument.
 	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DbtTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DbtTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DeleteJob struct {
@@ -421,7 +526,11 @@ type DeleteRun struct {
 }
 
 type ExportRunOutput struct {
-	// The exported content in HTML format (one for every view item).
+	// The exported content in HTML format (one for every view item). To extract
+	// the HTML notebook from the JSON response, download and run this [Python
+	// script].
+	//
+	// [Python script]: https://docs.databricks.com/en/_static/examples/extract.py
 	Views []ViewItem `json:"views,omitempty"`
 }
 
@@ -446,6 +555,16 @@ type FileArrivalTriggerConfiguration struct {
 	// batch of incoming files to arrive before triggering a run. The minimum
 	// allowed value is 60 seconds.
 	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *FileArrivalTriggerConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FileArrivalTriggerConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Format string
@@ -512,6 +631,16 @@ type GetRunRequest struct {
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
 	RunId int64 `json:"-" url:"run_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetRunRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetRunRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GitProvider string
@@ -560,6 +689,16 @@ type GitSnapshot struct {
 	// this points to the HEAD of the branch at the time of the run; if git_tag
 	// was specified, this points to the commit the tag points to.
 	UsedCommit string `json:"used_commit,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GitSnapshot) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GitSnapshot) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // An optional specification for a remote Git repository containing the source
@@ -593,6 +732,16 @@ type GitSource struct {
 	// The source of the job specification in the remote repository when the job
 	// is source controlled.
 	JobSource *JobSource `json:"job_source,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GitSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GitSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Job struct {
@@ -617,6 +766,16 @@ type Job struct {
 	Settings *JobSettings `json:"settings,omitempty"`
 	// History of the file arrival trigger associated with the job.
 	TriggerHistory *TriggerHistory `json:"trigger_history,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Job) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Job) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type JobAccessControlRequest struct {
@@ -628,6 +787,16 @@ type JobAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobAccessControlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobAccessControlRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type JobAccessControlResponse struct {
@@ -641,6 +810,16 @@ type JobAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobAccessControlResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobAccessControlResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type JobCluster struct {
@@ -686,6 +865,16 @@ type JobEmailNotifications struct {
 	// not specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
 	OnSuccess []string `json:"on_success,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobEmailNotifications) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobEmailNotifications) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type JobNotificationSettings struct {
@@ -695,6 +884,16 @@ type JobNotificationSettings struct {
 	// If true, do not send notifications to recipients specified in
 	// `on_failure` if the run is skipped.
 	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobNotificationSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobNotificationSettings) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type JobParameter struct {
@@ -704,6 +903,16 @@ type JobParameter struct {
 	Name string `json:"name,omitempty"`
 	// The value used in the run
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobParameter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobParameter) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type JobParameterDefinition struct {
@@ -720,6 +929,16 @@ type JobPermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobPermission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobPermission) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -760,12 +979,32 @@ type JobPermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobPermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobPermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type JobPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobPermissionsDescription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobPermissionsDescription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type JobPermissionsRequest struct {
@@ -787,6 +1026,16 @@ type JobRunAs struct {
 	// The email of an active workspace user. Non-admin users can only set this
 	// field to their own email.
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobRunAs) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobRunAs) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type JobSettings struct {
@@ -848,6 +1097,8 @@ type JobSettings struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
+	// The queue settings of the job.
+	Queue *QueueSettings `json:"queue,omitempty"`
 	// Write-only setting, available only in Create/Update/Reset and Submit
 	// calls. Specifies the user or service principal that the job runs as. If
 	// not specified, the job runs as the user who created the job.
@@ -877,6 +1128,16 @@ type JobSettings struct {
 	// A collection of system notification IDs to notify when the run begins or
 	// completes. The default behavior is to not send any system notifications.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobSettings) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The source of the job specification in the remote repository when the job is
@@ -1002,6 +1263,16 @@ type JobsHealthRule struct {
 	// Specifies the threshold value that the health metric should obey to
 	// satisfy the health rule.
 	Value int `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobsHealthRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobsHealthRule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // An optional set of health rules that can be defined for this job.
@@ -1027,6 +1298,16 @@ type ListJobsRequest struct {
 	// Use `next_page_token` or `prev_page_token` returned from the previous
 	// request to list the next or previous page of jobs respectively.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListJobsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListJobsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListJobsResponse struct {
@@ -1039,14 +1320,24 @@ type ListJobsResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// A token that can be used to list the previous page of jobs.
 	PrevPageToken string `json:"prev_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListJobsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListJobsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List job runs
 type ListRunsRequest struct {
 	// If active_only is `true`, only active runs are included in the results;
 	// otherwise, lists both active and completed runs. An active run is a run
-	// in the `PENDING`, `RUNNING`, or `TERMINATING`. This field cannot be
-	// `true` when completed_only is `true`.
+	// in the `QUEUED`, `PENDING`, `RUNNING`, or `TERMINATING`. This field
+	// cannot be `true` when completed_only is `true`.
 	ActiveOnly bool `json:"-" url:"active_only,omitempty"`
 	// If completed_only is `true`, only completed runs are included in the
 	// results; otherwise, lists both active and completed runs. This field
@@ -1080,6 +1371,16 @@ type ListRunsRequest struct {
 	// timestamp in milliseconds. Can be combined with _start_time_from_ to
 	// filter by a time range.
 	StartTimeTo int `json:"-" url:"start_time_to,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListRunsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListRunsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListRunsResponse struct {
@@ -1092,6 +1393,16 @@ type ListRunsResponse struct {
 	PrevPageToken string `json:"prev_page_token,omitempty"`
 	// A list of runs, from most recently started to least.
 	Runs []BaseRun `json:"runs,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListRunsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListRunsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *
@@ -1142,6 +1453,16 @@ type NotebookOutput struct {
 	Result string `json:"result,omitempty"`
 	// Whether or not the result was truncated.
 	Truncated bool `json:"truncated,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *NotebookOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s NotebookOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type NotebookTask struct {
@@ -1210,6 +1531,16 @@ func (f *PauseStatus) Type() string {
 type PipelineParams struct {
 	// If true, triggers a full refresh on the delta live table.
 	FullRefresh bool `json:"full_refresh,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelineParams) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelineParams) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PipelineTask struct {
@@ -1217,6 +1548,16 @@ type PipelineTask struct {
 	FullRefresh bool `json:"full_refresh,omitempty"`
 	// The full name of the pipeline task to execute.
 	PipelineId string `json:"pipeline_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PipelineTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PipelineTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PythonWheelTask struct {
@@ -1233,6 +1574,21 @@ type PythonWheelTask struct {
 	// Command-line parameters passed to Python wheel task. Leave it empty if
 	// `named_parameters` is not null.
 	Parameters []string `json:"parameters,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PythonWheelTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PythonWheelTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type QueueSettings struct {
+	// If true, enable queueing for the job. This is a required field.
+	Enabled bool `json:"enabled"`
 }
 
 type RepairHistoryItem struct {
@@ -1251,6 +1607,16 @@ type RepairHistoryItem struct {
 	// The repair history item type. Indicates whether a run is the original run
 	// or a repair run.
 	Type RepairHistoryItemType `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RepairHistoryItem) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RepairHistoryItem) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The repair history item type. Indicates whether a run is the original run or
@@ -1287,24 +1653,27 @@ type RepairRun struct {
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt run"]`
 	DbtCommands []string `json:"dbt_commands,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
-	// `\"jar_params\": [\"john doe\", \"35\"]`. The parameters are used to
-	// invoke the main function of the main class specified in the Spark JAR
-	// task. If not specified upon `run-now`, it defaults to an empty list.
-	// jar_params cannot be specified in conjunction with notebook_params. The
-	// JSON representation of this field (for example `{\"jar_params\":[\"john
-	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
+	// main function of the main class specified in the Spark JAR task. If not
+	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
+	// be specified in conjunction with notebook_params. The JSON representation
+	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
+	// exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables](/jobs.html"#parameter-variables") to set
 	// parameters containing information about job runs.
 	JarParams []string `json:"jar_params,omitempty"`
+	// Job-level parameters used in the run. for example `"param":
+	// "overriding_val"`
+	JobParameters map[string]string `json:"job_parameters,omitempty"`
 	// The ID of the latest repair. This parameter is not required when
 	// repairing a run for the first time, but must be provided on subsequent
 	// requests to repair the same run.
 	LatestRepairId int64 `json:"latest_repair_id,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
-	// `\"notebook_params\": {\"name\": \"john doe\", \"age\": \"35\"}`. The map
-	// is passed to the notebook and is accessible through the
-	// [dbutils.widgets.get] function.
+	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
+	// to the notebook and is accessible through the [dbutils.widgets.get]
+	// function.
 	//
 	// If not specified upon `run-now`, the triggered run uses the job’s base
 	// parameters.
@@ -1315,8 +1684,8 @@ type RepairRun struct {
 	// about job runs.
 	//
 	// The JSON representation of this field (for example
-	// `{\"notebook_params\":{\"name\":\"john doe\",\"age\":\"35\"}}`) cannot
-	// exceed 10,000 bytes.
+	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
+	// 10,000 bytes.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
@@ -1328,11 +1697,11 @@ type RepairRun struct {
 	// "dbfs:/path/to/data.json"}`.
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
-	// `\"python_params\": [\"john doe\", \"35\"]`. The parameters are passed to
+	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
-	// representation of this field (for example `{\"python_params\":[\"john
-	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// representation of this field (for example `{"python_params":["john
+	// doe","35"]}`) cannot exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables] to set parameters containing information
 	// about job runs.
@@ -1357,12 +1726,12 @@ type RepairRun struct {
 	// The job run ID of the run to repair. The run must not be in progress.
 	RunId int64 `json:"run_id"`
 	// A list of parameters for jobs with spark submit task, for example
-	// `\"spark_submit_params\": [\"--class\",
-	// \"org.apache.spark.examples.SparkPi\"]`. The parameters are passed to
+	// `"spark_submit_params": ["--class",
+	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables] to set parameters containing information
 	// about job runs
@@ -1379,12 +1748,32 @@ type RepairRun struct {
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
 	SqlParams map[string]string `json:"sql_params,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RepairRun) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RepairRun) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RepairRunResponse struct {
 	// The ID of the repair. Must be provided in subsequent repairs using the
 	// `latest_repair_id` field to ensure sequential repairs.
 	RepairId int64 `json:"repair_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RepairRunResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RepairRunResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ResetJob struct {
@@ -1402,6 +1791,16 @@ type ResolvedConditionTaskValues struct {
 	Left string `json:"left,omitempty"`
 
 	Right string `json:"right,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ResolvedConditionTaskValues) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ResolvedConditionTaskValues) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ResolvedDbtTaskValues struct {
@@ -1573,6 +1972,16 @@ type Run struct {
 	Trigger TriggerType `json:"trigger,omitempty"`
 
 	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Run) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Run) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RunConditionTask struct {
@@ -1585,6 +1994,16 @@ type RunConditionTask struct {
 	Outcome string `json:"outcome,omitempty"`
 	// The right operand of the condition task.
 	Right string `json:"right"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RunConditionTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RunConditionTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The condtion task operator.
@@ -1677,6 +2096,16 @@ func (f *RunIf) Type() string {
 type RunJobOutput struct {
 	// The run id of the triggered job run
 	RunId int `json:"run_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RunJobOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RunJobOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RunJobTask struct {
@@ -1687,11 +2116,9 @@ type RunJobTask struct {
 }
 
 // A value indicating the run's lifecycle state. The possible values are: *
-// `PENDING`: The run has been triggered. If there is not an active run of the
-// same job, the cluster and execution context are being prepared. If there is
-// already an active run of the same job, the run immediately transitions into
-// the `SKIPPED` state without preparing any resources. * `RUNNING`: The task of
-// this run is being executed. * `TERMINATING`: The task of this run has
+// `QUEUED`: The run is queued. * `PENDING`: The run is waiting to be executed
+// while the cluster and execution context are being prepared. * `RUNNING`: The
+// task of this run is being executed. * `TERMINATING`: The task of this run has
 // completed, and the cluster and execution context are being cleaned up. *
 // `TERMINATED`: The task of this run has completed, and the cluster and
 // execution context have been cleaned up. This state is terminal. * `SKIPPED`:
@@ -1713,11 +2140,12 @@ const RunLifeCycleStateBlocked RunLifeCycleState = `BLOCKED`
 // possible. This state is terminal.
 const RunLifeCycleStateInternalError RunLifeCycleState = `INTERNAL_ERROR`
 
-// The run has been triggered. If there is not an active run of the same job,
-// the cluster and execution context are being prepared. If there is already an
-// active run of the same job, the run immediately transitions into the
-// `SKIPPED` state without preparing any resources.
+// The run is waiting to be executed while the cluster and execution context are
+// being prepared.
 const RunLifeCycleStatePending RunLifeCycleState = `PENDING`
+
+// The run is queued.
+const RunLifeCycleStateQueued RunLifeCycleState = `QUEUED`
 
 // The task of this run is being executed.
 const RunLifeCycleStateRunning RunLifeCycleState = `RUNNING`
@@ -1745,11 +2173,11 @@ func (f *RunLifeCycleState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *RunLifeCycleState) Set(v string) error {
 	switch v {
-	case `BLOCKED`, `INTERNAL_ERROR`, `PENDING`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`, `WAITING_FOR_RETRY`:
+	case `BLOCKED`, `INTERNAL_ERROR`, `PENDING`, `QUEUED`, `RUNNING`, `SKIPPED`, `TERMINATED`, `TERMINATING`, `WAITING_FOR_RETRY`:
 		*f = RunLifeCycleState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "INTERNAL_ERROR", "PENDING", "RUNNING", "SKIPPED", "TERMINATED", "TERMINATING", "WAITING_FOR_RETRY"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "INTERNAL_ERROR", "PENDING", "QUEUED", "RUNNING", "SKIPPED", "TERMINATED", "TERMINATING", "WAITING_FOR_RETRY"`, v)
 	}
 }
 
@@ -1778,24 +2206,25 @@ type RunNow struct {
 	// [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
 	IdempotencyToken string `json:"idempotency_token,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
-	// `\"jar_params\": [\"john doe\", \"35\"]`. The parameters are used to
-	// invoke the main function of the main class specified in the Spark JAR
-	// task. If not specified upon `run-now`, it defaults to an empty list.
-	// jar_params cannot be specified in conjunction with notebook_params. The
-	// JSON representation of this field (for example `{\"jar_params\":[\"john
-	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
+	// main function of the main class specified in the Spark JAR task. If not
+	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
+	// be specified in conjunction with notebook_params. The JSON representation
+	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
+	// exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables](/jobs.html"#parameter-variables") to set
 	// parameters containing information about job runs.
 	JarParams []string `json:"jar_params,omitempty"`
 	// The ID of the job to be executed
 	JobId int64 `json:"job_id"`
-	// Job-level parameters used in the run
-	JobParameters []map[string]string `json:"job_parameters,omitempty"`
+	// Job-level parameters used in the run. for example `"param":
+	// "overriding_val"`
+	JobParameters map[string]string `json:"job_parameters,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
-	// `\"notebook_params\": {\"name\": \"john doe\", \"age\": \"35\"}`. The map
-	// is passed to the notebook and is accessible through the
-	// [dbutils.widgets.get] function.
+	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
+	// to the notebook and is accessible through the [dbutils.widgets.get]
+	// function.
 	//
 	// If not specified upon `run-now`, the triggered run uses the job’s base
 	// parameters.
@@ -1806,8 +2235,8 @@ type RunNow struct {
 	// about job runs.
 	//
 	// The JSON representation of this field (for example
-	// `{\"notebook_params\":{\"name\":\"john doe\",\"age\":\"35\"}}`) cannot
-	// exceed 10,000 bytes.
+	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
+	// 10,000 bytes.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
@@ -1819,11 +2248,11 @@ type RunNow struct {
 	// "dbfs:/path/to/data.json"}`.
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
-	// `\"python_params\": [\"john doe\", \"35\"]`. The parameters are passed to
+	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
-	// representation of this field (for example `{\"python_params\":[\"john
-	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// representation of this field (for example `{"python_params":["john
+	// doe","35"]}`) cannot exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables] to set parameters containing information
 	// about job runs.
@@ -1836,13 +2265,15 @@ type RunNow struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	PythonParams []string `json:"python_params,omitempty"`
+	// The queue settings of the run.
+	Queue *QueueSettings `json:"queue,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
-	// `\"spark_submit_params\": [\"--class\",
-	// \"org.apache.spark.examples.SparkPi\"]`. The parameters are passed to
+	// `"spark_submit_params": ["--class",
+	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables] to set parameters containing information
 	// about job runs
@@ -1859,6 +2290,16 @@ type RunNow struct {
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
 	SqlParams map[string]string `json:"sql_params,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RunNow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RunNow) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RunNowResponse struct {
@@ -1867,6 +2308,16 @@ type RunNowResponse struct {
 	NumberInJob int64 `json:"number_in_job,omitempty"`
 	// The globally unique ID of the newly triggered run.
 	RunId int64 `json:"run_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RunNowResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RunNowResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RunOutput struct {
@@ -1906,6 +2357,16 @@ type RunOutput struct {
 	RunJobOutput *RunJobOutput `json:"run_job_output,omitempty"`
 	// The output of a SQL task, if available.
 	SqlOutput *SqlOutput `json:"sql_output,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RunOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RunOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RunParameters struct {
@@ -1913,20 +2374,23 @@ type RunParameters struct {
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt run"]`
 	DbtCommands []string `json:"dbt_commands,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
-	// `\"jar_params\": [\"john doe\", \"35\"]`. The parameters are used to
-	// invoke the main function of the main class specified in the Spark JAR
-	// task. If not specified upon `run-now`, it defaults to an empty list.
-	// jar_params cannot be specified in conjunction with notebook_params. The
-	// JSON representation of this field (for example `{\"jar_params\":[\"john
-	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
+	// main function of the main class specified in the Spark JAR task. If not
+	// specified upon `run-now`, it defaults to an empty list. jar_params cannot
+	// be specified in conjunction with notebook_params. The JSON representation
+	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
+	// exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables](/jobs.html"#parameter-variables") to set
 	// parameters containing information about job runs.
 	JarParams []string `json:"jar_params,omitempty"`
+	// Job-level parameters used in the run. for example `"param":
+	// "overriding_val"`
+	JobParameters map[string]string `json:"job_parameters,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
-	// `\"notebook_params\": {\"name\": \"john doe\", \"age\": \"35\"}`. The map
-	// is passed to the notebook and is accessible through the
-	// [dbutils.widgets.get] function.
+	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
+	// to the notebook and is accessible through the [dbutils.widgets.get]
+	// function.
 	//
 	// If not specified upon `run-now`, the triggered run uses the job’s base
 	// parameters.
@@ -1937,8 +2401,8 @@ type RunParameters struct {
 	// about job runs.
 	//
 	// The JSON representation of this field (for example
-	// `{\"notebook_params\":{\"name\":\"john doe\",\"age\":\"35\"}}`) cannot
-	// exceed 10,000 bytes.
+	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
+	// 10,000 bytes.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
@@ -1950,11 +2414,11 @@ type RunParameters struct {
 	// "dbfs:/path/to/data.json"}`.
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
-	// `\"python_params\": [\"john doe\", \"35\"]`. The parameters are passed to
+	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
 	// would overwrite the parameters specified in job setting. The JSON
-	// representation of this field (for example `{\"python_params\":[\"john
-	// doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// representation of this field (for example `{"python_params":["john
+	// doe","35"]}`) cannot exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables] to set parameters containing information
 	// about job runs.
@@ -1968,12 +2432,12 @@ type RunParameters struct {
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
-	// `\"spark_submit_params\": [\"--class\",
-	// \"org.apache.spark.examples.SparkPi\"]`. The parameters are passed to
+	// `"spark_submit_params": ["--class",
+	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
 	// spark-submit script as command-line parameters. If specified upon
 	// `run-now`, it would overwrite the parameters specified in job setting.
 	// The JSON representation of this field (for example
-	// `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 	//
 	// Use [Task parameter variables] to set parameters containing information
 	// about job runs
@@ -2059,6 +2523,8 @@ type RunState struct {
 	// A value indicating the run's current lifecycle state. This field is
 	// always available in the response.
 	LifeCycleState RunLifeCycleState `json:"life_cycle_state,omitempty"`
+	// The reason indicating why the run was queued.
+	QueueReason string `json:"queue_reason,omitempty"`
 	// A value indicating the run's result. This field is only available for
 	// terminal lifecycle states.
 	ResultState RunResultState `json:"result_state,omitempty"`
@@ -2068,6 +2534,16 @@ type RunState struct {
 	// A value indicating whether a run was canceled manually by a user or by
 	// the scheduler because the run timed out.
 	UserCancelledOrTimedout bool `json:"user_cancelled_or_timedout,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RunState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RunState) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RunTask struct {
@@ -2144,6 +2620,8 @@ type RunTask struct {
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
 	// If python_wheel_task, indicates that this job must execute a PythonWheel.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
+	// The time in milliseconds that the run has spent in the queue.
+	QueueDuration int64 `json:"queue_duration,omitempty"`
 	// Parameter values including resolved references
 	ResolvedValues *ResolvedValues `json:"resolved_values,omitempty"`
 	// The ID of the task run.
@@ -2167,8 +2645,23 @@ type RunTask struct {
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
 	// If spark_python_task, indicates that this job must run a Python file.
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-	// If spark_submit_task, indicates that this task must be launched by the
-	// spark submit script. This task can run only on new clusters
+	// If `spark_submit_task`, indicates that this task must be launched by the
+	// spark submit script. This task can run only on new clusters.
+	//
+	// In the `new_cluster` specification, `libraries` and `spark_conf` are not
+	// supported. Instead, use `--jars` and `--py-files` to add Java and Python
+	// libraries and `--conf` to set the Spark configurations.
+	//
+	// `master`, `deploy-mode`, and `executor-cores` are automatically
+	// configured by Databricks; you _cannot_ specify them in parameters.
+	//
+	// By default, the Spark submit job uses all available memory (excluding
+	// reserved memory for Databricks services). You can set `--driver-memory`,
+	// and `--executor-memory` to a smaller value to leave some room for
+	// off-heap usage.
+	//
+	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
+	// paths.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// If sql_task, indicates that this job must execute a SQL.
 	SqlTask *SqlTask `json:"sql_task,omitempty"`
@@ -2184,6 +2677,16 @@ type RunTask struct {
 	// job. On Update or Reset, this field is used to reference the tasks to be
 	// updated or reset.
 	TaskKey string `json:"task_key,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RunTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RunTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *
@@ -2268,6 +2771,16 @@ type SparkJarTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	Parameters []string `json:"parameters,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SparkJarTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SparkJarTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SparkPythonTask struct {
@@ -2322,6 +2835,16 @@ type SqlAlertOutput struct {
 	SqlStatements []SqlStatementOutput `json:"sql_statements,omitempty"`
 	// The canonical identifier of the SQL warehouse.
 	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SqlAlertOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlAlertOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The state of the SQL alert.
@@ -2363,6 +2886,16 @@ type SqlDashboardOutput struct {
 	WarehouseId string `json:"warehouse_id,omitempty"`
 	// Widgets executed in the run. Only SQL query based widgets are listed.
 	Widgets []SqlDashboardWidgetOutput `json:"widgets,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SqlDashboardOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlDashboardOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SqlDashboardWidgetOutput struct {
@@ -2380,6 +2913,16 @@ type SqlDashboardWidgetOutput struct {
 	WidgetId string `json:"widget_id,omitempty"`
 	// The title of the SQL widget.
 	WidgetTitle string `json:"widget_title,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SqlDashboardWidgetOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlDashboardWidgetOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The execution status of the SQL widget.
@@ -2428,6 +2971,16 @@ type SqlOutput struct {
 type SqlOutputError struct {
 	// The error message when execution fails.
 	Message string `json:"message,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SqlOutputError) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlOutputError) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SqlQueryOutput struct {
@@ -2440,11 +2993,31 @@ type SqlQueryOutput struct {
 	SqlStatements []SqlStatementOutput `json:"sql_statements,omitempty"`
 	// The canonical identifier of the SQL warehouse.
 	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SqlQueryOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlQueryOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SqlStatementOutput struct {
 	// A key that can be used to look up query details.
 	LookupKey string `json:"lookup_key,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SqlStatementOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlStatementOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SqlTask struct {
@@ -2473,6 +3046,16 @@ type SqlTaskAlert struct {
 	PauseSubscriptions bool `json:"pause_subscriptions,omitempty"`
 	// If specified, alert notifications are sent to subscribers.
 	Subscriptions []SqlTaskSubscription `json:"subscriptions,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SqlTaskAlert) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlTaskAlert) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SqlTaskDashboard struct {
@@ -2485,6 +3068,16 @@ type SqlTaskDashboard struct {
 	PauseSubscriptions bool `json:"pause_subscriptions,omitempty"`
 	// If specified, dashboard snapshots are sent to subscriptions.
 	Subscriptions []SqlTaskSubscription `json:"subscriptions,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SqlTaskDashboard) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlTaskDashboard) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SqlTaskFile struct {
@@ -2507,6 +3100,16 @@ type SqlTaskSubscription struct {
 	// mutually exclusive with destination_id. You cannot set both
 	// destination_id and user_name for subscription notifications.
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SqlTaskSubscription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlTaskSubscription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SubmitRun struct {
@@ -2547,6 +3150,8 @@ type SubmitRun struct {
 	// Optional notification settings that are used when sending notifications
 	// to each of the `webhook_notifications` for this run.
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
+	// The queue settings of the one-time run.
+	Queue *QueueSettings `json:"queue,omitempty"`
 	// An optional name for the run. The default value is `Untitled`.
 	RunName string `json:"run_name,omitempty"`
 
@@ -2557,11 +3162,31 @@ type SubmitRun struct {
 	// A collection of system notification IDs to notify when the run begins or
 	// completes. The default behavior is to not send any system notifications.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SubmitRun) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SubmitRun) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SubmitRunResponse struct {
 	// The canonical identifier for the newly submitted run.
 	RunId int64 `json:"run_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SubmitRunResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SubmitRunResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SubmitTask struct {
@@ -2603,8 +3228,23 @@ type SubmitTask struct {
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
 	// If spark_python_task, indicates that this task must run a Python file.
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-	// If spark_submit_task, indicates that this task must be launched by the
+	// If `spark_submit_task`, indicates that this task must be launched by the
 	// spark submit script. This task can run only on new clusters.
+	//
+	// In the `new_cluster` specification, `libraries` and `spark_conf` are not
+	// supported. Instead, use `--jars` and `--py-files` to add Java and Python
+	// libraries and `--conf` to set the Spark configurations.
+	//
+	// `master`, `deploy-mode`, and `executor-cores` are automatically
+	// configured by Databricks; you _cannot_ specify them in parameters.
+	//
+	// By default, the Spark submit job uses all available memory (excluding
+	// reserved memory for Databricks services). You can set `--driver-memory`,
+	// and `--executor-memory` to a smaller value to leave some room for
+	// off-heap usage.
+	//
+	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
+	// paths.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// If sql_task, indicates that this job must execute a SQL.
 	SqlTask *SqlTask `json:"sql_task,omitempty"`
@@ -2616,6 +3256,16 @@ type SubmitTask struct {
 	// An optional timeout applied to each run of this job task. The default
 	// behavior is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SubmitTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SubmitTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Task struct {
@@ -2697,8 +3347,23 @@ type Task struct {
 	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
 	// If spark_python_task, indicates that this task must run a Python file.
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-	// If spark_submit_task, indicates that this task must be launched by the
+	// If `spark_submit_task`, indicates that this task must be launched by the
 	// spark submit script. This task can run only on new clusters.
+	//
+	// In the `new_cluster` specification, `libraries` and `spark_conf` are not
+	// supported. Instead, use `--jars` and `--py-files` to add Java and Python
+	// libraries and `--conf` to set the Spark configurations.
+	//
+	// `master`, `deploy-mode`, and `executor-cores` are automatically
+	// configured by Databricks; you _cannot_ specify them in parameters.
+	//
+	// By default, the Spark submit job uses all available memory (excluding
+	// reserved memory for Databricks services). You can set `--driver-memory`,
+	// and `--executor-memory` to a smaller value to leave some room for
+	// off-heap usage.
+	//
+	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
+	// paths.
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// If sql_task, indicates that this job must execute a SQL task.
 	SqlTask *SqlTask `json:"sql_task,omitempty"`
@@ -2710,6 +3375,16 @@ type Task struct {
 	// An optional timeout applied to each run of this job task. The default
 	// behavior is to have no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Task) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Task) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TaskDependency struct {
@@ -2718,6 +3393,16 @@ type TaskDependency struct {
 	Outcome string `json:"outcome,omitempty"`
 	// The name of the task this task depends on.
 	TaskKey string `json:"task_key"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TaskDependency) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TaskDependency) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TaskEmailNotifications struct {
@@ -2755,6 +3440,16 @@ type TaskNotificationSettings struct {
 	// If true, do not send notifications to recipients specified in
 	// `on_failure` if the run is skipped.
 	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TaskNotificationSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TaskNotificationSettings) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TriggerEvaluation struct {
@@ -2766,6 +3461,16 @@ type TriggerEvaluation struct {
 	RunId int64 `json:"run_id,omitempty"`
 	// Timestamp at which the trigger was evaluated.
 	Timestamp int64 `json:"timestamp,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TriggerEvaluation) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TriggerEvaluation) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TriggerHistory struct {
@@ -2780,6 +3485,16 @@ type TriggerHistory struct {
 type TriggerInfo struct {
 	// The run id of the Run Job task run
 	RunId int `json:"run_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TriggerInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TriggerInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TriggerSettings struct {
@@ -2869,6 +3584,16 @@ type ViewItem struct {
 	Name string `json:"name,omitempty"`
 	// Type of the view item.
 	Type ViewType `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ViewItem) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ViewItem) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
@@ -2937,6 +3662,16 @@ func (f *ViewsToExport) Type() string {
 
 type Webhook struct {
 	Id string `json:"id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Webhook) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Webhook) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WebhookNotifications struct {
@@ -2959,4 +3694,14 @@ type WebhookNotifications struct {
 
 type WebhookNotificationsOnDurationWarningThresholdExceededItem struct {
 	Id string `json:"id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WebhookNotificationsOnDurationWarningThresholdExceededItem) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WebhookNotificationsOnDurationWarningThresholdExceededItem) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }

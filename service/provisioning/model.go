@@ -2,7 +2,11 @@
 
 package provisioning
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/databricks/databricks-sdk-go/marshal"
+)
 
 // all definitions in this file are in alphabetical order
 
@@ -22,6 +26,16 @@ type AwsKeyInfo struct {
 	// cluster EBS volumes. If you do not want to use this key for encrypting
 	// EBS volumes, set to `false`.
 	ReuseKeyForClusterVolumes bool `json:"reuse_key_for_cluster_volumes,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AwsKeyInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AwsKeyInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The general workspace configurations that are specific to cloud providers.
@@ -41,6 +55,16 @@ type CreateAwsKeyInfo struct {
 	// cluster EBS volumes. To not use this key also for encrypting EBS volumes,
 	// set this to `false`.
 	ReuseKeyForClusterVolumes bool `json:"reuse_key_for_cluster_volumes,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateAwsKeyInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAwsKeyInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateCredentialAwsCredentials struct {
@@ -56,6 +80,16 @@ type CreateCredentialRequest struct {
 type CreateCredentialStsRole struct {
 	// The Amazon Resource Name (ARN) of the cross account role.
 	RoleArn string `json:"role_arn,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateCredentialStsRole) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateCredentialStsRole) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateCustomerManagedKeyRequest struct {
@@ -91,6 +125,16 @@ type CreateNetworkRequest struct {
 	// The ID of the VPC associated with this network. VPC IDs can be used in
 	// multiple network configurations.
 	VpcId string `json:"vpc_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateNetworkRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateNetworkRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateStorageConfigurationRequest struct {
@@ -110,6 +154,16 @@ type CreateVpcEndpointRequest struct {
 	Region string `json:"region,omitempty"`
 	// The human-readable name of the storage configuration.
 	VpcEndpointName string `json:"vpc_endpoint_name"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateVpcEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateVpcEndpointRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateWorkspaceRequest struct {
@@ -225,6 +279,16 @@ type CreateWorkspaceRequest struct {
 	StorageCustomerManagedKeyId string `json:"storage_customer_managed_key_id,omitempty"`
 	// The workspace's human-readable name.
 	WorkspaceName string `json:"workspace_name"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Credential struct {
@@ -238,6 +302,16 @@ type Credential struct {
 	CredentialsId string `json:"credentials_id,omitempty"`
 	// The human-readable name of the credential configuration object.
 	CredentialsName string `json:"credentials_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Credential) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Credential) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The custom tags key-value pairing that is attached to this workspace. The
@@ -251,6 +325,16 @@ type CustomerFacingGcpCloudResourceContainer struct {
 	// The Google Cloud project ID, which the workspace uses to instantiate
 	// cloud resources for your workspace.
 	ProjectId string `json:"project_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CustomerFacingGcpCloudResourceContainer) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingGcpCloudResourceContainer) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CustomerManagedKey struct {
@@ -266,6 +350,16 @@ type CustomerManagedKey struct {
 	GcpKeyInfo *GcpKeyInfo `json:"gcp_key_info,omitempty"`
 	// The cases that the key can be used for.
 	UseCases []KeyUseCase `json:"use_cases,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CustomerManagedKey) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerManagedKey) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete credential configuration
@@ -414,6 +508,16 @@ type GcpManagedNetworkConfig struct {
 	// The IP range from which to allocate GKE cluster nodes. No bigger than
 	// `/9` and no smaller than `/29`.
 	SubnetCidr string `json:"subnet_cidr,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GcpManagedNetworkConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GcpManagedNetworkConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The Google Cloud specific information for this network (for example, the VPC
@@ -453,6 +557,16 @@ type GcpVpcEndpointInfo struct {
 	PscEndpointName string `json:"psc_endpoint_name"`
 	// The service attachment this PSC connection connects to.
 	ServiceAttachmentId string `json:"service_attachment_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GcpVpcEndpointInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GcpVpcEndpointInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get credential configuration
@@ -513,6 +627,16 @@ type GkeConfig struct {
 	//
 	// It must be exactly as big as `/28`.
 	MasterIpRange string `json:"master_ip_range,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GkeConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GkeConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Specifies the network connectivity types for the GKE nodes and the GKE master
@@ -617,6 +741,16 @@ type Network struct {
 	WarningMessages []NetworkWarning `json:"warning_messages,omitempty"`
 	// Workspace ID associated with this network configuration.
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Network) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Network) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type NetworkHealth struct {
@@ -625,6 +759,16 @@ type NetworkHealth struct {
 	// The AWS resource associated with this error: credentials, VPC, subnet,
 	// security group, or network ACL.
 	ErrorType ErrorType `json:"error_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *NetworkHealth) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s NetworkHealth) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // If specified, contains the VPC endpoints used to allow cluster communication
@@ -646,6 +790,16 @@ type NetworkWarning struct {
 	// The AWS resource associated with this warning: a subnet or a security
 	// group.
 	WarningType WarningType `json:"warning_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *NetworkWarning) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s NetworkWarning) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The pricing tier of the workspace. For pricing tier information, see [AWS
@@ -745,12 +899,32 @@ type PrivateAccessSettings struct {
 	// The cloud region for workspaces attached to this private access settings
 	// object.
 	Region string `json:"region,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PrivateAccessSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PrivateAccessSettings) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Root S3 bucket information.
 type RootBucketInfo struct {
 	// The name of the S3 bucket.
 	BucketName string `json:"bucket_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RootBucketInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RootBucketInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type StorageConfiguration struct {
@@ -764,6 +938,16 @@ type StorageConfiguration struct {
 	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
 	// The human-readable name of the storage configuration.
 	StorageConfigurationName string `json:"storage_configuration_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StorageConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StorageConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type StsRole struct {
@@ -772,6 +956,16 @@ type StsRole struct {
 	ExternalId string `json:"external_id,omitempty"`
 	// The Amazon Resource Name (ARN) of the cross account role.
 	RoleArn string `json:"role_arn,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StsRole) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StsRole) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateWorkspaceRequest struct {
@@ -802,6 +996,16 @@ type UpdateWorkspaceRequest struct {
 	StorageCustomerManagedKeyId string `json:"storage_customer_managed_key_id,omitempty"`
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpsertPrivateAccessSettingsRequest struct {
@@ -840,6 +1044,16 @@ type UpsertPrivateAccessSettingsRequest struct {
 	// The cloud region for workspaces associated with this private access
 	// settings object.
 	Region string `json:"region"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpsertPrivateAccessSettingsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpsertPrivateAccessSettingsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type VpcEndpoint struct {
@@ -878,6 +1092,16 @@ type VpcEndpoint struct {
 	VpcEndpointId string `json:"vpc_endpoint_id,omitempty"`
 	// The human-readable name of the storage configuration.
 	VpcEndpointName string `json:"vpc_endpoint_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *VpcEndpoint) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s VpcEndpoint) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The status of this network configuration object in terms of its use in a
@@ -1036,6 +1260,16 @@ type Workspace struct {
 	WorkspaceStatus WorkspaceStatus `json:"workspace_status,omitempty"`
 	// Message describing the current workspace status.
 	WorkspaceStatusMessage string `json:"workspace_status_message,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Workspace) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Workspace) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The status of the workspace. For workspace creation, usually it is set to
