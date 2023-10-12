@@ -1,5 +1,79 @@
 # Version changelog
 
+## 0.23.0
+
+Note: this release includes custom JSON marshalling that captures whether or
+not a value is set and should be included in the marshalled output, if its
+value is equal to Go's zero value (i.e. `0` for an int field).
+
+* Add ForceSendFields and a custom marshaller ([#615](https://github.com/databricks/databricks-sdk-go/pull/615)).
+* Support text/plain response as streaming request body ([#638](https://github.com/databricks/databricks-sdk-go/pull/638)).
+* Added log statement if OIDC response is non 200 ([#644](https://github.com/databricks/databricks-sdk-go/pull/644)).
+
+API Changes:
+
+ * Changed `Download` method for [a.BillableUsage](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/billing#BillableUsageAPI) account-level service to start returning [billing.DownloadResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/billing#DownloadResponse).
+ * Added [billing.DownloadResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/billing#DownloadResponse).
+ * Changed `Delete` method for [a.AccountStorageCredentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountStorageCredentialsAPI) account-level service with new required argument order.
+ * Changed `Get` method for [a.AccountStorageCredentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountStorageCredentialsAPI) account-level service with new required argument order.
+ * Changed `Update` method for [a.AccountStorageCredentials](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountStorageCredentialsAPI) account-level service with new required argument order.
+ * Added `GetBindings` method for [w.WorkspaceBindings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#WorkspaceBindingsAPI) workspace-level service.
+ * Added `UpdateBindings` method for [w.WorkspaceBindings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#WorkspaceBindingsAPI) workspace-level service.
+ * Removed `Name` field for [catalog.AccountsUpdateStorageCredential](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountsUpdateStorageCredential).
+ * Added `StorageCredentialName` field for [catalog.AccountsUpdateStorageCredential](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccountsUpdateStorageCredential).
+ * Removed `Name` field for [catalog.DeleteAccountStorageCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteAccountStorageCredentialRequest).
+ * Added `StorageCredentialName` field for [catalog.DeleteAccountStorageCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DeleteAccountStorageCredentialRequest).
+ * Removed `Name` field for [catalog.GetAccountStorageCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetAccountStorageCredentialRequest).
+ * Added `StorageCredentialName` field for [catalog.GetAccountStorageCredentialRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetAccountStorageCredentialRequest).
+ * Added `Owner` field for [catalog.UpdateConnection](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateConnection).
+ * Added [catalog.GetBindingsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetBindingsRequest).
+ * Added [catalog.UpdateWorkspaceBindingsParameters](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateWorkspaceBindingsParameters).
+ * Added [catalog.WorkspaceBinding](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#WorkspaceBinding).
+ * Added [catalog.WorkspaceBindingBindingType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#WorkspaceBindingBindingType).
+ * Added [catalog.WorkspaceBindingsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#WorkspaceBindingsResponse).
+ * Added `Spec` field for [compute.ClusterDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterDetails).
+ * Added `ApplyPolicyDefaultValues` field for [compute.ClusterSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClusterSpec).
+ * Removed `AwsAttributes` field for [compute.EditInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditInstancePool).
+ * Removed `AzureAttributes` field for [compute.EditInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditInstancePool).
+ * Removed `DiskSpec` field for [compute.EditInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditInstancePool).
+ * Removed `EnableElasticDisk` field for [compute.EditInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditInstancePool).
+ * Removed `GcpAttributes` field for [compute.EditInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditInstancePool).
+ * Removed `PreloadedDockerImages` field for [compute.EditInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditInstancePool).
+ * Removed `PreloadedSparkVersions` field for [compute.EditInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditInstancePool).
+ * Added `Deployment` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob).
+ * Added `UiState` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob).
+ * Added `Deployment` field for [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
+ * Added `UiState` field for [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
+ * Removed `ConditionTask` field for [jobs.RunOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunOutput).
+ * Added `WebhookNotifications` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+ * Added [jobs.CreateJobUiState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJobUiState).
+ * Added [jobs.JobDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobDeployment).
+ * Added [jobs.JobDeploymentKind](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobDeploymentKind).
+ * Added [jobs.JobSettingsUiState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettingsUiState).
+ * Added `WorkloadType` field for [serving.ServedModelInput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelInput).
+ * Added `WorkloadType` field for [serving.ServedModelOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelOutput).
+ * Removed [a.AccountNetworkPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountNetworkPolicyAPI) account-level service.
+ * Changed `List` method for [w.IpAccessLists](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#IpAccessListsAPI) workspace-level service to return [settings.ListIpAccessListResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ListIpAccessListResponse).
+ * Removed [settings.AccountNetworkPolicyMessage](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountNetworkPolicyMessage).
+ * Removed [settings.DeleteAccountNetworkPolicyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteAccountNetworkPolicyRequest).
+ * Removed [settings.DeleteAccountNetworkPolicyResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#DeleteAccountNetworkPolicyResponse).
+ * Removed `IpAccessLists` field for [settings.GetIpAccessListResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetIpAccessListResponse).
+ * Added `IpAccessList` field for [settings.GetIpAccessListResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetIpAccessListResponse).
+ * Removed [settings.ReadAccountNetworkPolicyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ReadAccountNetworkPolicyRequest).
+ * Removed [settings.UpdateAccountNetworkPolicyRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#UpdateAccountNetworkPolicyRequest).
+ * Added [settings.ListIpAccessListResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ListIpAccessListResponse).
+
+OpenAPI SHA: 493a76554afd3afdd15dc858773d01643f80352a, Date: 2023-10-12
+
+Dependency updates:
+
+ * Bump golang.org/x/mod from 0.12.0 to 0.13.0 ([#639](https://github.com/databricks/databricks-sdk-go/pull/639)).
+ * Bump google.golang.org/api from 0.140.0 to 0.146.0 ([#643](https://github.com/databricks/databricks-sdk-go/pull/643)).
+ * Bump golang.org/x/net from 0.15.0 to 0.17.0 ([#646](https://github.com/databricks/databricks-sdk-go/pull/646)).
+ * Bump golang.org/x/oauth2 from 0.12.0 to 0.13.0 ([#642](https://github.com/databricks/databricks-sdk-go/pull/642)).
+ * Bump golang.org/x/net from 0.8.0 to 0.17.0 in /examples/zerolog ([#647](https://github.com/databricks/databricks-sdk-go/pull/647)).
+ * Bump golang.org/x/net from 0.8.0 to 0.17.0 in /examples/slog ([#648](https://github.com/databricks/databricks-sdk-go/pull/648)).
+
 ## 0.22.0
 
 Breaking API Changes:
