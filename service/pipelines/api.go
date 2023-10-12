@@ -448,16 +448,19 @@ func (a *PipelinesAPI) SetPermissions(ctx context.Context, request PipelinePermi
 	return a.impl.SetPermissions(ctx, request)
 }
 
-// Queue a pipeline update.
+// Start a pipeline.
 //
-// Starts or queues a pipeline update.
+// Starts a new update for the pipeline. If there is already an active update
+// for the pipeline, the request will fail and the active update will remain
+// running.
 func (a *PipelinesAPI) StartUpdate(ctx context.Context, request StartUpdate) (*StartUpdateResponse, error) {
 	return a.impl.StartUpdate(ctx, request)
 }
 
 // Stop a pipeline.
 //
-// Stops a pipeline.
+// Stops the pipeline by canceling the active update. If there is no active
+// update for the pipeline, this request is a no-op.
 func (a *PipelinesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*WaitGetPipelineIdle[any], error) {
 	err := a.impl.Stop(ctx, stopRequest)
 	if err != nil {

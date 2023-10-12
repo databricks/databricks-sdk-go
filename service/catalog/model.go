@@ -60,7 +60,7 @@ type AccountsUpdateStorageCredential struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// Name of the storage credential.
-	Name string `json:"-" url:"-"`
+	StorageCredentialName string `json:"-" url:"-"`
 }
 
 type ArtifactAllowlistInfo struct {
@@ -1113,7 +1113,7 @@ type DeleteAccountStorageCredentialRequest struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// Name of the storage credential.
-	Name string `json:"-" url:"-"`
+	StorageCredentialName string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1864,13 +1864,21 @@ type GetAccountStorageCredentialRequest struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 	// Name of the storage credential.
-	Name string `json:"-" url:"-"`
+	StorageCredentialName string `json:"-" url:"-"`
 }
 
 // Get an artifact allowlist
 type GetArtifactAllowlistRequest struct {
 	// The artifact type of the allowlist.
 	ArtifactType ArtifactType `json:"-" url:"-"`
+}
+
+// Get securable workspace bindings
+type GetBindingsRequest struct {
+	// The name of the securable.
+	SecurableName string `json:"-" url:"-"`
+	// The type of the securable.
+	SecurableType string `json:"-" url:"-"`
 }
 
 // Get Model Version By Alias
@@ -3310,6 +3318,18 @@ type UpdateConnection struct {
 	NameArg string `json:"-" url:"-"`
 	// A map of key-value properties attached to the securable.
 	Options map[string]string `json:"options"`
+	// Username of current owner of the connection.
+	Owner string `json:"owner,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateConnection) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateConnection) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateExternalLocation struct {
@@ -3622,6 +3642,17 @@ type UpdateWorkspaceBindings struct {
 	UnassignWorkspaces []int64 `json:"unassign_workspaces,omitempty"`
 }
 
+type UpdateWorkspaceBindingsParameters struct {
+	// List of workspace bindings
+	Add []WorkspaceBinding `json:"add,omitempty"`
+	// List of workspace bindings
+	Remove []WorkspaceBinding `json:"remove,omitempty"`
+	// The name of the securable.
+	SecurableName string `json:"-" url:"-"`
+	// The type of the securable.
+	SecurableType string `json:"-" url:"-"`
+}
+
 type ValidateStorageCredential struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
@@ -3819,4 +3850,53 @@ func (f *VolumeType) Set(v string) error {
 // Type always returns VolumeType to satisfy [pflag.Value] interface
 func (f *VolumeType) Type() string {
 	return "VolumeType"
+}
+
+type WorkspaceBinding struct {
+	BindingType WorkspaceBindingBindingType `json:"binding_type,omitempty"`
+
+	WorkspaceId int64 `json:"workspace_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WorkspaceBinding) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WorkspaceBinding) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type WorkspaceBindingBindingType string
+
+const WorkspaceBindingBindingTypeBindingTypeReadOnly WorkspaceBindingBindingType = `BINDING_TYPE_READ_ONLY`
+
+const WorkspaceBindingBindingTypeBindingTypeReadWrite WorkspaceBindingBindingType = `BINDING_TYPE_READ_WRITE`
+
+// String representation for [fmt.Print]
+func (f *WorkspaceBindingBindingType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *WorkspaceBindingBindingType) Set(v string) error {
+	switch v {
+	case `BINDING_TYPE_READ_ONLY`, `BINDING_TYPE_READ_WRITE`:
+		*f = WorkspaceBindingBindingType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BINDING_TYPE_READ_ONLY", "BINDING_TYPE_READ_WRITE"`, v)
+	}
+}
+
+// Type always returns WorkspaceBindingBindingType to satisfy [pflag.Value] interface
+func (f *WorkspaceBindingBindingType) Type() string {
+	return "WorkspaceBindingBindingType"
+}
+
+// Currently assigned workspace bindings
+type WorkspaceBindingsResponse struct {
+	// List of workspace bindings
+	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
 }

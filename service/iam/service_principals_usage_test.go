@@ -13,6 +13,33 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/iam"
 )
 
+func ExampleServicePrincipalsAPI_Create_accountServicePrincipal() {
+	ctx := context.Background()
+	a, err := databricks.NewAccountClient()
+	if err != nil {
+		panic(err)
+	}
+
+	spCreate, err := a.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
+		Active:      true,
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", spCreate)
+
+	// cleanup
+
+	err = a.ServicePrincipals.Delete(ctx, iam.DeleteAccountServicePrincipalRequest{
+		Id: spCreate.Id,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 func ExampleServicePrincipalsAPI_Create_workspaceAssignmentOnAws() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
@@ -87,6 +114,39 @@ func ExampleServicePrincipalsAPI_Create_createOboTokenOnAws() {
 
 }
 
+func ExampleServicePrincipalsAPI_Get_accountServicePrincipal() {
+	ctx := context.Background()
+	a, err := databricks.NewAccountClient()
+	if err != nil {
+		panic(err)
+	}
+
+	spCreate, err := a.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
+		Active:      true,
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", spCreate)
+
+	sp, err := a.ServicePrincipals.GetById(ctx, spCreate.Id)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", sp)
+
+	// cleanup
+
+	err = a.ServicePrincipals.Delete(ctx, iam.DeleteAccountServicePrincipalRequest{
+		Id: spCreate.Id,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 func ExampleServicePrincipalsAPI_Get_servicePrincipalsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
@@ -117,6 +177,47 @@ func ExampleServicePrincipalsAPI_Get_servicePrincipalsOnAws() {
 
 }
 
+func ExampleServicePrincipalsAPI_ListAll_accountServicePrincipal() {
+	ctx := context.Background()
+	a, err := databricks.NewAccountClient()
+	if err != nil {
+		panic(err)
+	}
+
+	spCreate, err := a.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
+		Active:      true,
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", spCreate)
+
+	sp, err := a.ServicePrincipals.GetById(ctx, spCreate.Id)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", sp)
+
+	spList, err := a.ServicePrincipals.ListAll(ctx, iam.ListAccountServicePrincipalsRequest{
+		Filter: fmt.Sprintf("displayName eq %v", sp.DisplayName),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", spList)
+
+	// cleanup
+
+	err = a.ServicePrincipals.Delete(ctx, iam.DeleteAccountServicePrincipalRequest{
+		Id: spCreate.Id,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 func ExampleServicePrincipalsAPI_ListAll_servicePrincipalsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
@@ -129,6 +230,94 @@ func ExampleServicePrincipalsAPI_ListAll_servicePrincipalsOnAws() {
 		panic(err)
 	}
 	logger.Infof(ctx, "found %v", all)
+
+}
+
+func ExampleServicePrincipalsAPI_Patch_accountServicePrincipal() {
+	ctx := context.Background()
+	a, err := databricks.NewAccountClient()
+	if err != nil {
+		panic(err)
+	}
+
+	spCreate, err := a.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
+		Active:      true,
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", spCreate)
+
+	sp, err := a.ServicePrincipals.GetById(ctx, spCreate.Id)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", sp)
+
+	err = a.ServicePrincipals.Patch(ctx, iam.PartialUpdate{
+		Id: sp.Id,
+		Operations: []iam.Patch{iam.Patch{
+			Op:    iam.PatchOpReplace,
+			Path:  "active",
+			Value: "false",
+		}},
+		Schemas: []iam.PatchSchema{iam.PatchSchemaUrnIetfParamsScimApiMessages20PatchOp},
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	// cleanup
+
+	err = a.ServicePrincipals.Delete(ctx, iam.DeleteAccountServicePrincipalRequest{
+		Id: spCreate.Id,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func ExampleServicePrincipalsAPI_Update_accountServicePrincipal() {
+	ctx := context.Background()
+	a, err := databricks.NewAccountClient()
+	if err != nil {
+		panic(err)
+	}
+
+	spCreate, err := a.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
+		Active:      true,
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", spCreate)
+
+	sp, err := a.ServicePrincipals.GetById(ctx, spCreate.Id)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", sp)
+
+	err = a.ServicePrincipals.Update(ctx, iam.ServicePrincipal{
+		Active:      true,
+		DisplayName: sp.DisplayName,
+		Id:          sp.Id,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	// cleanup
+
+	err = a.ServicePrincipals.Delete(ctx, iam.DeleteAccountServicePrincipalRequest{
+		Id: spCreate.Id,
+	})
+	if err != nil {
+		panic(err)
+	}
 
 }
 

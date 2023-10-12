@@ -333,9 +333,10 @@ type CreateJob struct {
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
 	Continuous *Continuous `json:"continuous,omitempty"`
+	// Deployment information for jobs managed by external sources.
+	Deployment *JobDeployment `json:"deployment,omitempty"`
 	// An optional set of email addresses that is notified when runs of this job
-	// begin or complete as well as when this job is deleted. The default
-	// behavior is to not send any emails.
+	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
@@ -371,9 +372,8 @@ type CreateJob struct {
 	// concurrency to 3 won’t kill any of the active runs. However, from then
 	// on, new runs are skipped unless there are fewer than 3 active runs.
 	//
-	// This value cannot exceed 1000\. Setting this value to 0 causes all new
-	// runs to be skipped. The default behavior is to allow only 1 concurrent
-	// run.
+	// This value cannot exceed 1000\. Setting this value to `0` causes all new
+	// runs to be skipped.
 	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
 	// An optional name for the job. The maximum length is 4096 bytes in UTF-8
 	// encoding.
@@ -404,16 +404,21 @@ type CreateJob struct {
 	Tags map[string]string `json:"tags,omitempty"`
 	// A list of task specifications to be executed by this job.
 	Tasks []Task `json:"tasks,omitempty"`
-	// An optional timeout applied to each run of this job. The default behavior
-	// is to have no timeout.
+	// An optional timeout applied to each run of this job. A value of `0` means
+	// no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 	// Trigger settings for the job. Can be used to trigger a run when new files
 	// arrive in an external location. The default behavior is that the job runs
 	// only when triggered by clicking “Run Now” in the Jobs UI or sending
 	// an API request to `runNow`.
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
-	// A collection of system notification IDs to notify when the run begins or
-	// completes. The default behavior is to not send any system notifications.
+	// State of the job in UI.
+	//
+	// * `LOCKED`: The job is in a locked state and cannot be modified. *
+	// `EDITABLE`: The job is in an editable state and can be modified.
+	UiState CreateJobUiState `json:"ui_state,omitempty"`
+	// A collection of system notification IDs to notify when runs of this job
+	// begin or complete.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -425,6 +430,39 @@ func (s *CreateJob) UnmarshalJSON(b []byte) error {
 
 func (s CreateJob) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// State of the job in UI.
+//
+// * `LOCKED`: The job is in a locked state and cannot be modified. *
+// `EDITABLE`: The job is in an editable state and can be modified.
+type CreateJobUiState string
+
+// The job is in an editable state and can be modified.
+const CreateJobUiStateEditable CreateJobUiState = `EDITABLE`
+
+// The job is in a locked state and cannot be modified.
+const CreateJobUiStateLocked CreateJobUiState = `LOCKED`
+
+// String representation for [fmt.Print]
+func (f *CreateJobUiState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CreateJobUiState) Set(v string) error {
+	switch v {
+	case `EDITABLE`, `LOCKED`:
+		*f = CreateJobUiState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EDITABLE", "LOCKED"`, v)
+	}
+}
+
+// Type always returns CreateJobUiState to satisfy [pflag.Value] interface
+func (f *CreateJobUiState) Type() string {
+	return "CreateJobUiState"
 }
 
 type CreateResponse struct {
@@ -840,6 +878,54 @@ type JobCompute struct {
 	Spec compute.ComputeSpec `json:"spec"`
 }
 
+type JobDeployment struct {
+	// The kind of deployment that manages the job.
+	//
+	// * `BUNDLE`: The job is managed by Databricks Asset Bundle.
+	Kind JobDeploymentKind `json:"kind"`
+	// Path of the file that contains deployment metadata.
+	MetadataFilePath string `json:"metadata_file_path,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *JobDeployment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobDeployment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The kind of deployment that manages the job.
+//
+// * `BUNDLE`: The job is managed by Databricks Asset Bundle.
+type JobDeploymentKind string
+
+// The job is managed by Databricks Asset Bundle.
+const JobDeploymentKindBundle JobDeploymentKind = `BUNDLE`
+
+// String representation for [fmt.Print]
+func (f *JobDeploymentKind) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *JobDeploymentKind) Set(v string) error {
+	switch v {
+	case `BUNDLE`:
+		*f = JobDeploymentKind(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BUNDLE"`, v)
+	}
+}
+
+// Type always returns JobDeploymentKind to satisfy [pflag.Value] interface
+func (f *JobDeploymentKind) Type() string {
+	return "JobDeploymentKind"
+}
+
 type JobEmailNotifications struct {
 	// If true, do not send email to recipients specified in `on_failure` if the
 	// run is skipped.
@@ -1046,9 +1132,10 @@ type JobSettings struct {
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
 	Continuous *Continuous `json:"continuous,omitempty"`
+	// Deployment information for jobs managed by external sources.
+	Deployment *JobDeployment `json:"deployment,omitempty"`
 	// An optional set of email addresses that is notified when runs of this job
-	// begin or complete as well as when this job is deleted. The default
-	// behavior is to not send any emails.
+	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
@@ -1084,9 +1171,8 @@ type JobSettings struct {
 	// concurrency to 3 won’t kill any of the active runs. However, from then
 	// on, new runs are skipped unless there are fewer than 3 active runs.
 	//
-	// This value cannot exceed 1000\. Setting this value to 0 causes all new
-	// runs to be skipped. The default behavior is to allow only 1 concurrent
-	// run.
+	// This value cannot exceed 1000\. Setting this value to `0` causes all new
+	// runs to be skipped.
 	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
 	// An optional name for the job. The maximum length is 4096 bytes in UTF-8
 	// encoding.
@@ -1117,16 +1203,21 @@ type JobSettings struct {
 	Tags map[string]string `json:"tags,omitempty"`
 	// A list of task specifications to be executed by this job.
 	Tasks []Task `json:"tasks,omitempty"`
-	// An optional timeout applied to each run of this job. The default behavior
-	// is to have no timeout.
+	// An optional timeout applied to each run of this job. A value of `0` means
+	// no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 	// Trigger settings for the job. Can be used to trigger a run when new files
 	// arrive in an external location. The default behavior is that the job runs
 	// only when triggered by clicking “Run Now” in the Jobs UI or sending
 	// an API request to `runNow`.
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
-	// A collection of system notification IDs to notify when the run begins or
-	// completes. The default behavior is to not send any system notifications.
+	// State of the job in UI.
+	//
+	// * `LOCKED`: The job is in a locked state and cannot be modified. *
+	// `EDITABLE`: The job is in an editable state and can be modified.
+	UiState JobSettingsUiState `json:"ui_state,omitempty"`
+	// A collection of system notification IDs to notify when runs of this job
+	// begin or complete.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -1138,6 +1229,39 @@ func (s *JobSettings) UnmarshalJSON(b []byte) error {
 
 func (s JobSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// State of the job in UI.
+//
+// * `LOCKED`: The job is in a locked state and cannot be modified. *
+// `EDITABLE`: The job is in an editable state and can be modified.
+type JobSettingsUiState string
+
+// The job is in an editable state and can be modified.
+const JobSettingsUiStateEditable JobSettingsUiState = `EDITABLE`
+
+// The job is in a locked state and cannot be modified.
+const JobSettingsUiStateLocked JobSettingsUiState = `LOCKED`
+
+// String representation for [fmt.Print]
+func (f *JobSettingsUiState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *JobSettingsUiState) Set(v string) error {
+	switch v {
+	case `EDITABLE`, `LOCKED`:
+		*f = JobSettingsUiState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EDITABLE", "LOCKED"`, v)
+	}
+}
+
+// Type always returns JobSettingsUiState to satisfy [pflag.Value] interface
+func (f *JobSettingsUiState) Type() string {
+	return "JobSettingsUiState"
 }
 
 // The source of the job specification in the remote repository when the job is
@@ -2321,8 +2445,6 @@ func (s RunNowResponse) MarshalJSON() ([]byte, error) {
 }
 
 type RunOutput struct {
-	// The output of a condition task, if available.
-	ConditionTask any `json:"condition_task,omitempty"`
 	// The output of a dbt task, if available.
 	DbtOutput *DbtOutput `json:"dbt_output,omitempty"`
 	// An error message indicating why a task failed or why output is not
@@ -3116,7 +3238,7 @@ type SubmitRun struct {
 	// List of permissions to set on the job.
 	AccessControlList []iam.AccessControlRequest `json:"access_control_list,omitempty"`
 	// An optional set of email addresses notified when the run begins or
-	// completes. The default behavior is to not send any emails.
+	// completes.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
@@ -3148,7 +3270,8 @@ type SubmitRun struct {
 	// [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
 	IdempotencyToken string `json:"idempotency_token,omitempty"`
 	// Optional notification settings that are used when sending notifications
-	// to each of the `webhook_notifications` for this run.
+	// to each of the `email_notifications` and `webhook_notifications` for this
+	// run.
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// The queue settings of the one-time run.
 	Queue *QueueSettings `json:"queue,omitempty"`
@@ -3156,11 +3279,11 @@ type SubmitRun struct {
 	RunName string `json:"run_name,omitempty"`
 
 	Tasks []SubmitTask `json:"tasks,omitempty"`
-	// An optional timeout applied to each run of this job. The default behavior
-	// is to have no timeout.
+	// An optional timeout applied to each run of this job. A value of `0` means
+	// no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 	// A collection of system notification IDs to notify when the run begins or
-	// completes. The default behavior is to not send any system notifications.
+	// completes.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -3217,8 +3340,9 @@ type SubmitTask struct {
 	// If notebook_task, indicates that this task must run a notebook. This
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
-	// Optional notification settings that are used when sending email
-	// notifications for this task run.
+	// Optional notification settings that are used when sending notifications
+	// to each of the `email_notifications` and `webhook_notifications` for this
+	// task run.
 	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
 	// If pipeline_task, indicates that this task must execute a Pipeline.
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
@@ -3253,8 +3377,8 @@ type SubmitTask struct {
 	// job. On Update or Reset, this field is used to reference the tasks to be
 	// updated or reset.
 	TaskKey string `json:"task_key"`
-	// An optional timeout applied to each run of this job task. The default
-	// behavior is to have no timeout.
+	// An optional timeout applied to each run of this job task. A value of `0`
+	// means no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -3306,9 +3430,8 @@ type Task struct {
 	Libraries []compute.Library `json:"libraries,omitempty"`
 	// An optional maximum number of times to retry an unsuccessful run. A run
 	// is considered to be unsuccessful if it completes with the `FAILED`
-	// result_state or `INTERNAL_ERROR` `life_cycle_state`. The value -1 means
-	// to retry indefinitely and the value 0 means to never retry. The default
-	// behavior is to never retry.
+	// result_state or `INTERNAL_ERROR` `life_cycle_state`. The value `-1` means
+	// to retry indefinitely and the value `0` means to never retry.
 	MaxRetries int `json:"max_retries,omitempty"`
 	// An optional minimal interval in milliseconds between the start of the
 	// failed run and the subsequent retry run. The default behavior is that
@@ -3321,18 +3444,17 @@ type Task struct {
 	// field may not be specified in conjunction with spark_jar_task.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
-	// to each of the `email_notifications` for this task.
+	// to each of the `email_notifications` and `webhook_notifications` for this
+	// task.
 	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
 	// If pipeline_task, indicates that this task must execute a Pipeline.
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
 	// If python_wheel_task, indicates that this job must execute a PythonWheel.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
 	// An optional policy to specify whether to retry a task when it times out.
-	// The default behavior is to not retry on timeout.
 	RetryOnTimeout bool `json:"retry_on_timeout,omitempty"`
 	// An optional value specifying the condition determining whether the task
-	// is run once its dependencies have been completed. When omitted, defaults
-	// to `ALL_SUCCESS`.
+	// is run once its dependencies have been completed.
 	//
 	// * `ALL_SUCCESS`: All dependencies have executed and succeeded *
 	// `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded *
@@ -3372,9 +3494,13 @@ type Task struct {
 	// job. On Update or Reset, this field is used to reference the tasks to be
 	// updated or reset.
 	TaskKey string `json:"task_key"`
-	// An optional timeout applied to each run of this job task. The default
-	// behavior is to have no timeout.
+	// An optional timeout applied to each run of this job task. A value of `0`
+	// means no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// A collection of system notification IDs to notify when runs of this task
+	// begin or complete. The default behavior is to not send any system
+	// notifications.
+	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

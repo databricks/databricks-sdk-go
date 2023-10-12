@@ -86,8 +86,6 @@
 //
 // - [catalog.ModelVersionsAPI]: Databricks provides a hosted version of MLflow Model Registry in Unity Catalog.
 //
-// - [settings.AccountNetworkPolicyAPI]: Network policy is a set of rules that defines what can be accessed from your Databricks network.
-//
 // - [provisioning.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
 //
 // - [oauth2.OAuthEnrollmentAPI]: These APIs enable administrators to enroll OAuth for their accounts, which is required for adding/using any OAuth published/custom application integration.
@@ -170,7 +168,7 @@
 //
 // - [iam.WorkspaceAssignmentAPI]: The Workspace Permission Assignment API allows you to manage workspace permissions for principals in your account.
 //
-// - [catalog.WorkspaceBindingsAPI]: A catalog in Databricks can be configured as __OPEN__ or __ISOLATED__.
+// - [catalog.WorkspaceBindingsAPI]: A securable in Databricks can be configured as __OPEN__ or __ISOLATED__.
 //
 // - [settings.WorkspaceConfAPI]: This API allows updating known workspace settings for advanced users.
 //
@@ -243,7 +241,6 @@ var (
 	_ *catalog.AccountMetastoresAPI           = nil
 	_ *ml.ModelRegistryAPI                    = nil
 	_ *catalog.ModelVersionsAPI               = nil
-	_ *settings.AccountNetworkPolicyAPI       = nil
 	_ *provisioning.NetworksAPI               = nil
 	_ *oauth2.OAuthEnrollmentAPI              = nil
 	_ *oauth2.OAuthPublishedAppsAPI           = nil

@@ -17,7 +17,7 @@ type accountIpAccessListsImpl struct {
 
 func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
 	var createIpAccessListResponse CreateIpAccessListResponse
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -26,7 +26,7 @@ func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpA
 }
 
 func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -34,7 +34,7 @@ func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAcc
 
 func (a *accountIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpAccessListRequest) (*GetIpAccessListResponse, error) {
 	var getIpAccessListResponse GetIpAccessListResponse
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getIpAccessListResponse)
@@ -43,7 +43,7 @@ func (a *accountIpAccessListsImpl) Get(ctx context.Context, request GetAccountIp
 
 func (a *accountIpAccessListsImpl) List(ctx context.Context) (*GetIpAccessListsResponse, error) {
 	var getIpAccessListsResponse GetIpAccessListsResponse
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &getIpAccessListsResponse)
@@ -51,7 +51,7 @@ func (a *accountIpAccessListsImpl) List(ctx context.Context) (*GetIpAccessListsR
 }
 
 func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -60,45 +60,12 @@ func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceI
 }
 
 func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
 	return err
-}
-
-// unexported type that holds implementations of just AccountNetworkPolicy API methods
-type accountNetworkPolicyImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *accountNetworkPolicyImpl) DeleteAccountNetworkPolicy(ctx context.Context, request DeleteAccountNetworkPolicyRequest) (*DeleteAccountNetworkPolicyResponse, error) {
-	var deleteAccountNetworkPolicyResponse DeleteAccountNetworkPolicyResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/network_policy/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteAccountNetworkPolicyResponse)
-	return &deleteAccountNetworkPolicyResponse, err
-}
-
-func (a *accountNetworkPolicyImpl) ReadAccountNetworkPolicy(ctx context.Context, request ReadAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error) {
-	var accountNetworkPolicyMessage AccountNetworkPolicyMessage
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/network_policy/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &accountNetworkPolicyMessage)
-	return &accountNetworkPolicyMessage, err
-}
-
-func (a *accountNetworkPolicyImpl) UpdateAccountNetworkPolicy(ctx context.Context, request UpdateAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error) {
-	var accountNetworkPolicyMessage AccountNetworkPolicyMessage
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/network_policy/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &accountNetworkPolicyMessage)
-	return &accountNetworkPolicyMessage, err
 }
 
 // unexported type that holds implementations of just AccountSettings API methods
@@ -180,13 +147,13 @@ func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessListRequ
 	return &fetchIpAccessListResponse, err
 }
 
-func (a *ipAccessListsImpl) List(ctx context.Context) (*GetIpAccessListResponse, error) {
-	var getIpAccessListResponse GetIpAccessListResponse
+func (a *ipAccessListsImpl) List(ctx context.Context) (*ListIpAccessListResponse, error) {
+	var listIpAccessListResponse ListIpAccessListResponse
 	path := "/api/2.0/ip-access-lists"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &getIpAccessListResponse)
-	return &getIpAccessListResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listIpAccessListResponse)
+	return &listIpAccessListResponse, err
 }
 
 func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {

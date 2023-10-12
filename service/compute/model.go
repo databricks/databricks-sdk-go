@@ -686,6 +686,11 @@ type ClusterDetails struct {
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	SparkVersion string `json:"spark_version,omitempty"`
+	// `spec` contains a snapshot of the field values that were used to create
+	// or edit this cluster. The contents of `spec` can be used in the body of a
+	// create cluster request. This field might not be populated for older
+	// clusters. Note: not included in the response of the ListClusters API.
+	Spec *CreateCluster `json:"spec,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
@@ -1057,6 +1062,7 @@ func (f *ClusterSource) Type() string {
 }
 
 type ClusterSpec struct {
+	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
@@ -1380,8 +1386,6 @@ func (s ContextStatusResponse) MarshalJSON() ([]byte, error) {
 }
 
 type CreateCluster struct {
-	// Note: This field won't be true for webapp requests. Only API users will
-	// check this field.
 	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
@@ -2052,8 +2056,6 @@ func (f *EbsVolumeType) Type() string {
 }
 
 type EditCluster struct {
-	// Note: This field won't be true for webapp requests. Only API users will
-	// check this field.
 	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
@@ -2208,30 +2210,12 @@ func (s EditCluster) MarshalJSON() ([]byte, error) {
 }
 
 type EditInstancePool struct {
-	// Attributes related to instance pools running on Amazon Web Services. If
-	// not specified at pool creation, a set of default values will be used.
-	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
-	// Attributes related to instance pools running on Azure. If not specified
-	// at pool creation, a set of default values will be used.
-	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Defines the specification of the disks that will be attached to all spark
-	// containers.
-	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
-	// Autoscaling Local Storage: when enabled, this instances in this pool will
-	// dynamically acquire additional disk space when its Spark workers are
-	// running low on disk space. In AWS, this feature requires specific AWS
-	// permissions to function correctly - refer to the User Guide for more
-	// details.
-	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-	// Attributes related to instance pools running on Google Cloud Platform. If
-	// not specified at pool creation, a set of default values will be used.
-	GcpAttributes *InstancePoolGcpAttributes `json:"gcp_attributes,omitempty"`
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
 	// is already met. If not set, the extra pool instances will be
@@ -2257,13 +2241,6 @@ type EditInstancePool struct {
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	NodeTypeId string `json:"node_type_id"`
-	// Custom Docker Image BYOC
-	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-	// A list containing at most one preloaded Spark image version for the pool.
-	// Pool-backed clusters started with the preloaded Spark version will start
-	// faster. A list of available Spark versions can be retrieved by using the
-	// :method:clusters/sparkVersions API call.
-	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

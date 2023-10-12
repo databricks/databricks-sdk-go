@@ -395,11 +395,12 @@ type Import struct {
 	// - `AUTO`: The item is imported depending on an analysis of the item's
 	// extension and the header content provided in the request. If the item is
 	// imported as a notebook, then the item's extension is automatically
-	// removed. - `SOURCE`: The notebook is imported as source code. - `HTML`:
-	// The notebook is imported as an HTML file. - `JUPYTER`: The notebook is
-	// imported as a Jupyter/IPython Notebook file. - `DBC`: The notebook is
-	// imported in Databricks archive format. Required for directories. -
-	// `R_MARKDOWN`: The notebook is imported from R Markdown format.
+	// removed. - `SOURCE`: The notebook or directory is imported as source
+	// code. - `HTML`: The notebook is imported as an HTML file. - `JUPYTER`:
+	// The notebook is imported as a Jupyter/IPython Notebook file. - `DBC`: The
+	// notebook is imported in Databricks archive format. Required for
+	// directories. - `R_MARKDOWN`: The notebook is imported from R Markdown
+	// format.
 	Format ImportFormat `json:"format,omitempty"`
 	// The language of the object. This value is set only if the object type is
 	// `NOTEBOOK`.
@@ -409,7 +410,7 @@ type Import struct {
 	// it may contain a directory.
 	Overwrite bool `json:"overwrite,omitempty"`
 	// The absolute path of the object or directory. Importing a directory is
-	// only supported for the `DBC` format.
+	// only supported for the `DBC` and `SOURCE` formats.
 	Path string `json:"path"`
 
 	ForceSendFields []string `json:"-"`
@@ -430,9 +431,9 @@ func (s Import) MarshalJSON() ([]byte, error) {
 // - `AUTO`: The item is imported depending on an analysis of the item's
 // extension and the header content provided in the request. If the item is
 // imported as a notebook, then the item's extension is automatically removed. -
-// `SOURCE`: The notebook is imported as source code. - `HTML`: The notebook is
-// imported as an HTML file. - `JUPYTER`: The notebook is imported as a
-// Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in
+// `SOURCE`: The notebook or directory is imported as source code. - `HTML`: The
+// notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported
+// as a Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in
 // Databricks archive format. Required for directories. - `R_MARKDOWN`: The
 // notebook is imported from R Markdown format.
 type ImportFormat string
@@ -453,7 +454,7 @@ const ImportFormatJupyter ImportFormat = `JUPYTER`
 // The notebook is imported from R Markdown format.
 const ImportFormatRMarkdown ImportFormat = `R_MARKDOWN`
 
-// The notebook is imported as source code.
+// The notebook or directory is imported as source code.
 const ImportFormatSource ImportFormat = `SOURCE`
 
 // String representation for [fmt.Print]

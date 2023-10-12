@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Network Policy, Account Settings, Credentials Manager, Ip Access Lists, Settings, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Credentials Manager, Ip Access Lists, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -212,61 +212,6 @@ func (a *AccountIpAccessListsAPI) Replace(ctx context.Context, request ReplaceIp
 // It can take a few minutes for the changes to take effect.
 func (a *AccountIpAccessListsAPI) Update(ctx context.Context, request UpdateIpAccessList) error {
 	return a.impl.Update(ctx, request)
-}
-
-func NewAccountNetworkPolicy(client *client.DatabricksClient) *AccountNetworkPolicyAPI {
-	return &AccountNetworkPolicyAPI{
-		impl: &accountNetworkPolicyImpl{
-			client: client,
-		},
-	}
-}
-
-// Network policy is a set of rules that defines what can be accessed from your
-// Databricks network. E.g.: You can choose to block your SQL UDF to access
-// internet from your Databricks serverless clusters.
-//
-// There is only one instance of this setting per account. Since this setting
-// has a default value, this setting is present on all accounts even though it's
-// never set on a given account. Deletion reverts the value of the setting back
-// to the default value.
-type AccountNetworkPolicyAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(AccountNetworkPolicyService)
-	impl AccountNetworkPolicyService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *AccountNetworkPolicyAPI) WithImpl(impl AccountNetworkPolicyService) *AccountNetworkPolicyAPI {
-	a.impl = impl
-	return a
-}
-
-// Impl returns low-level AccountNetworkPolicy API implementation
-func (a *AccountNetworkPolicyAPI) Impl() AccountNetworkPolicyService {
-	return a.impl
-}
-
-// Delete Account Network Policy.
-//
-// Reverts back all the account network policies back to default.
-func (a *AccountNetworkPolicyAPI) DeleteAccountNetworkPolicy(ctx context.Context, request DeleteAccountNetworkPolicyRequest) (*DeleteAccountNetworkPolicyResponse, error) {
-	return a.impl.DeleteAccountNetworkPolicy(ctx, request)
-}
-
-// Get Account Network Policy.
-//
-// Gets the value of Account level Network Policy.
-func (a *AccountNetworkPolicyAPI) ReadAccountNetworkPolicy(ctx context.Context, request ReadAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error) {
-	return a.impl.ReadAccountNetworkPolicy(ctx, request)
-}
-
-// Update Account Network Policy.
-//
-// Updates the policy content of Account level Network Policy.
-func (a *AccountNetworkPolicyAPI) UpdateAccountNetworkPolicy(ctx context.Context, request UpdateAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error) {
-	return a.impl.UpdateAccountNetworkPolicy(ctx, request)
 }
 
 func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
