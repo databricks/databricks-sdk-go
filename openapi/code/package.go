@@ -329,10 +329,10 @@ func (pkg *Package) Load(ctx context.Context, spec *openapi.Specification, tag o
 	}
 	for prefix, path := range spec.Paths {
 		for verb, op := range path.Verbs() {
-			logger.Infof(ctx, "pkg.Load %s %s", verb, prefix)
 			if !op.HasTag(tag.Name) {
 				continue
 			}
+			logger.Infof(ctx, "pkg.Load %s %s", verb, prefix)
 			svc, ok := pkg.services[tag.Service]
 			if !ok {
 				svc = &Service{
