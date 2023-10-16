@@ -16,6 +16,7 @@ jobs:
         run: |
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
+            git fetch origin main
             git checkout main
             git tag tanmaytest 
             git push origin --tags
