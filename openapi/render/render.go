@@ -54,7 +54,9 @@ func NewPass[T Named](target string, items []T, fileset map[string]string, libs 
 		tmpls = append(tmpls, filename)
 		newFileset[filepath.Base(filename)] = v
 	}
-	tmpls = append(tmpls, libs...)
+	for _, lib := range libs {
+		tmpls = append(tmpls, filepath.Join(target, lib))
+	}
 	t := template.New("codegen").Funcs(code.HelperFuncs)
 	t = t.Funcs(template.FuncMap{
 		"load": func(tmpl string) (string, error) {
