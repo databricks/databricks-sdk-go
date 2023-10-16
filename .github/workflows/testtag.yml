@@ -1,0 +1,23 @@
+name: build
+
+on:
+  pull_request:
+    branches:
+        - main
+
+jobs:
+  tagtest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+    
+      - name: Push Tag
+        run: |
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git checkout main
+            git tag tanmaytest 
+            git push origin --tags
+
+
