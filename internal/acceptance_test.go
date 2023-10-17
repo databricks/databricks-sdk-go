@@ -53,6 +53,12 @@ func TestAccExplicitDatabricksCfg(t *testing.T) {
 }
 
 func TestAccExplicitAzureCliAuth(t *testing.T) {
+	// if we don't cache these, test will get skipped with the following error
+	// > Environment variable ARM_CLIENT_ID is missing
+	clientID := GetEnvOrSkipTest(t, "ARM_CLIENT_ID")
+	clientSecret := GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET")
+	tenantID := GetEnvOrSkipTest(t, "ARM_TENANT_ID")
+	resourceID := GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID")
 	env.CleanupEnvironment(t)
 
 	t.Setenv("AZURE_CONFIG_DIR", t.TempDir())
@@ -62,9 +68,9 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 		"az",
 		"login",
 		"--service-principal",
-		"--user", GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
-		"--password", GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET"),
-		"--tenant", GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
+		"--user", clientID,
+		"--password", clientSecret,
+		"--tenant", tenantID,
 	)
 	out, err := cmd.Output()
 	if err != nil {
@@ -72,7 +78,7 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 	}
 
 	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
-		AzureResourceID: GetEnvOrSkipTest(t, "DATABRICKS_AZURE_RESOURCE_ID"),
+		AzureResourceID: resourceID,
 		Credentials:     config.AzureCliCredentials{},
 	}))
 	ctx := context.Background()
