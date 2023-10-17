@@ -2,7 +2,11 @@
 
 package iam
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/databricks/databricks-sdk-go/marshal"
+)
 
 // all definitions in this file are in alphabetical order
 
@@ -15,6 +19,16 @@ type AccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AccessControlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AccessControlRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type AccessControlResponse struct {
@@ -28,6 +42,16 @@ type AccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AccessControlResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AccessControlResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ComplexValue struct {
@@ -40,6 +64,16 @@ type ComplexValue struct {
 	Type string `json:"type,omitempty"`
 
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ComplexValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ComplexValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete a group
@@ -202,6 +236,16 @@ type Group struct {
 	Meta *ResourceMeta `json:"meta,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Group) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Group) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List group details
@@ -226,6 +270,16 @@ type ListAccountGroupsRequest struct {
 	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int `json:"-" url:"startIndex,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListAccountGroupsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAccountGroupsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List service principals
@@ -250,6 +304,16 @@ type ListAccountServicePrincipalsRequest struct {
 	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int `json:"-" url:"startIndex,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListAccountServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAccountServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List users
@@ -275,6 +339,16 @@ type ListAccountUsersRequest struct {
 	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int `json:"-" url:"startIndex,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListAccountUsersRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAccountUsersRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List group details
@@ -299,6 +373,16 @@ type ListGroupsRequest struct {
 	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int `json:"-" url:"startIndex,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListGroupsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListGroupsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListGroupsResponse struct {
@@ -311,6 +395,16 @@ type ListGroupsResponse struct {
 	StartIndex int64 `json:"startIndex,omitempty"`
 	// Total results that match the request filters.
 	TotalResults int64 `json:"totalResults,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListGroupsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListGroupsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListServicePrincipalResponse struct {
@@ -323,6 +417,16 @@ type ListServicePrincipalResponse struct {
 	StartIndex int64 `json:"startIndex,omitempty"`
 	// Total results that match the request filters.
 	TotalResults int64 `json:"totalResults,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListServicePrincipalResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListServicePrincipalResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List service principals
@@ -347,6 +451,16 @@ type ListServicePrincipalsRequest struct {
 	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int `json:"-" url:"startIndex,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListSortOrder string
@@ -399,6 +513,16 @@ type ListUsersRequest struct {
 	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
 	StartIndex int `json:"-" url:"startIndex,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListUsersRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListUsersRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListUsersResponse struct {
@@ -411,6 +535,16 @@ type ListUsersResponse struct {
 	StartIndex int64 `json:"startIndex,omitempty"`
 	// Total results that match the request filters.
 	TotalResults int64 `json:"totalResults,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListUsersResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListUsersResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get permission assignments
@@ -424,6 +558,16 @@ type Name struct {
 	FamilyName string `json:"familyName,omitempty"`
 	// Given name of the Databricks user.
 	GivenName string `json:"givenName,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Name) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Name) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ObjectPermissions struct {
@@ -432,6 +576,16 @@ type ObjectPermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ObjectPermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ObjectPermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PartialUpdate struct {
@@ -453,6 +607,16 @@ type PasswordAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PasswordAccessControlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PasswordAccessControlRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PasswordAccessControlResponse struct {
@@ -466,6 +630,16 @@ type PasswordAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PasswordAccessControlResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PasswordAccessControlResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PasswordPermission struct {
@@ -474,6 +648,16 @@ type PasswordPermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PasswordPermission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PasswordPermission) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -508,12 +692,32 @@ type PasswordPermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PasswordPermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PasswordPermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PasswordPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PasswordPermissionsDescription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PasswordPermissionsDescription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PasswordPermissionsRequest struct {
@@ -527,6 +731,16 @@ type Patch struct {
 	Path string `json:"path,omitempty"`
 	// Value to modify
 	Value any `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Patch) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Patch) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Type of patch operation.
@@ -590,6 +804,16 @@ type Permission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Permission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Permission) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PermissionAssignment struct {
@@ -599,6 +823,16 @@ type PermissionAssignment struct {
 	Permissions []WorkspacePermission `json:"permissions,omitempty"`
 	// Information about the principal assigned to the workspace.
 	Principal *PrincipalOutput `json:"principal,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PermissionAssignment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PermissionAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PermissionAssignments struct {
@@ -665,12 +899,32 @@ type PermissionOutput struct {
 	Description string `json:"description,omitempty"`
 
 	PermissionLevel WorkspacePermission `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PermissionOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PermissionOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PermissionsDescription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PermissionsDescription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PermissionsRequest struct {
@@ -693,12 +947,32 @@ type PrincipalOutput struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// The username of the user. Present only if the principal is a user.
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PrincipalOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PrincipalOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ResourceMeta struct {
 	// Identifier for group type. Can be local workspace group
 	// (`WorkspaceGroup`) or account group (`Group`).
 	ResourceType string `json:"resourceType,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ResourceMeta) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ResourceMeta) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Role struct {
@@ -713,6 +987,16 @@ type RuleSetResponse struct {
 	GrantRules []GrantRule `json:"grant_rules,omitempty"`
 	// Name of the rule set.
 	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RuleSetResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RuleSetResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RuleSetUpdateRequest struct {
@@ -743,6 +1027,16 @@ type ServicePrincipal struct {
 	Id string `json:"id,omitempty"`
 
 	Roles []ComplexValue `json:"roles,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ServicePrincipal) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ServicePrincipal) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateRuleSetRequest struct {
@@ -783,6 +1077,16 @@ type User struct {
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// Email address of the Databricks user.
 	UserName string `json:"userName,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *User) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s User) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WorkspacePermission string

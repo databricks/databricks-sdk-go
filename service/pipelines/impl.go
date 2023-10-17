@@ -42,7 +42,7 @@ func (a *pipelinesImpl) Get(ctx context.Context, request GetPipelineRequest) (*G
 	return &getPipelineResponse, err
 }
 
-func (a *pipelinesImpl) GetPipelinePermissionLevels(ctx context.Context, request GetPipelinePermissionLevelsRequest) (*GetPipelinePermissionLevelsResponse, error) {
+func (a *pipelinesImpl) GetPermissionLevels(ctx context.Context, request GetPipelinePermissionLevelsRequest) (*GetPipelinePermissionLevelsResponse, error) {
 	var getPipelinePermissionLevelsResponse GetPipelinePermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v/permissionLevels", request.PipelineId)
 	headers := make(map[string]string)
@@ -51,7 +51,7 @@ func (a *pipelinesImpl) GetPipelinePermissionLevels(ctx context.Context, request
 	return &getPipelinePermissionLevelsResponse, err
 }
 
-func (a *pipelinesImpl) GetPipelinePermissions(ctx context.Context, request GetPipelinePermissionsRequest) (*PipelinePermissions, error) {
+func (a *pipelinesImpl) GetPermissions(ctx context.Context, request GetPipelinePermissionsRequest) (*PipelinePermissions, error) {
 	var pipelinePermissions PipelinePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)
 	headers := make(map[string]string)
@@ -104,7 +104,7 @@ func (a *pipelinesImpl) Reset(ctx context.Context, request ResetRequest) error {
 	return err
 }
 
-func (a *pipelinesImpl) SetPipelinePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
+func (a *pipelinesImpl) SetPermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
 	var pipelinePermissions PipelinePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)
 	headers := make(map[string]string)
@@ -141,7 +141,7 @@ func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) error 
 	return err
 }
 
-func (a *pipelinesImpl) UpdatePipelinePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
+func (a *pipelinesImpl) UpdatePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
 	var pipelinePermissions PipelinePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)
 	headers := make(map[string]string)

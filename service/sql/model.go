@@ -2,16 +2,31 @@
 
 package sql
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/databricks/databricks-sdk-go/marshal"
+)
 
 // all definitions in this file are in alphabetical order
 
 type AccessControl struct {
 	GroupName string `json:"group_name,omitempty"`
-	// This describes an enum
+	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
+	// `CAN_MANAGE`: Can manage the query
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AccessControl) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AccessControl) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Alert struct {
@@ -41,6 +56,16 @@ type Alert struct {
 	UpdatedAt string `json:"updated_at,omitempty"`
 
 	User *User `json:"user,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Alert) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Alert) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Alert configuration options.
@@ -58,6 +83,8 @@ type AlertOptions struct {
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	CustomSubject string `json:"custom_subject,omitempty"`
+	// State that alert evaluates to when query result is empty.
+	EmptyResultState AlertOptionsEmptyResultState `json:"empty_result_state,omitempty"`
 	// Whether or not the alert is muted. If an alert is muted, it will not
 	// notify users and notification destinations when triggered.
 	Muted bool `json:"muted,omitempty"`
@@ -67,6 +94,46 @@ type AlertOptions struct {
 	// Value used to compare in alert evaluation. Supported types include
 	// strings (eg. 'foobar'), floats (eg. 123.4), and booleans (true).
 	Value any `json:"value"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AlertOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// State that alert evaluates to when query result is empty.
+type AlertOptionsEmptyResultState string
+
+const AlertOptionsEmptyResultStateOk AlertOptionsEmptyResultState = `ok`
+
+const AlertOptionsEmptyResultStateTriggered AlertOptionsEmptyResultState = `triggered`
+
+const AlertOptionsEmptyResultStateUnknown AlertOptionsEmptyResultState = `unknown`
+
+// String representation for [fmt.Print]
+func (f *AlertOptionsEmptyResultState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AlertOptionsEmptyResultState) Set(v string) error {
+	switch v {
+	case `ok`, `triggered`, `unknown`:
+		*f = AlertOptionsEmptyResultState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ok", "triggered", "unknown"`, v)
+	}
+}
+
+// Type always returns AlertOptionsEmptyResultState to satisfy [pflag.Value] interface
+func (f *AlertOptionsEmptyResultState) Type() string {
+	return "AlertOptionsEmptyResultState"
 }
 
 type AlertQuery struct {
@@ -106,6 +173,16 @@ type AlertQuery struct {
 	UpdatedAt string `json:"updated_at,omitempty"`
 	// The ID of the user who created this query.
 	UserId int `json:"user_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AlertQuery) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertQuery) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // State of the alert. Possible values are: `unknown` (yet to be evaluated),
@@ -140,6 +217,30 @@ func (f *AlertState) Type() string {
 	return "AlertState"
 }
 
+// Describes metadata for a particular chunk, within a result set; this
+// structure is used both within a manifest, and when fetching individual chunk
+// data or links.
+type BaseChunkInfo struct {
+	// The number of bytes in the result chunk.
+	ByteCount int64 `json:"byte_count,omitempty"`
+	// The position within the sequence of result set chunks.
+	ChunkIndex int `json:"chunk_index,omitempty"`
+	// The number of rows within the result chunk.
+	RowCount int64 `json:"row_count,omitempty"`
+	// The starting row offset within the result set.
+	RowOffset int64 `json:"row_offset,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *BaseChunkInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BaseChunkInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Cancel statement execution
 type CancelExecutionRequest struct {
 	StatementId string `json:"-" url:"-"`
@@ -149,6 +250,16 @@ type Channel struct {
 	DbsqlVersion string `json:"dbsql_version,omitempty"`
 
 	Name ChannelName `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Channel) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Channel) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Channel information for the SQL warehouse at the time of query execution
@@ -157,9 +268,18 @@ type ChannelInfo struct {
 	DbsqlVersion string `json:"dbsql_version,omitempty"`
 	// Name of the channel
 	Name ChannelName `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
 }
 
-// Name of the channel
+func (s *ChannelInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ChannelInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -193,44 +313,38 @@ func (f *ChannelName) Type() string {
 	return "ChannelName"
 }
 
-// Describes metadata for a particular chunk, within a result set; this
-// structure is used both within a manifest, and when fetching individual chunk
-// data or links.
-type ChunkInfo struct {
-	// Number of bytes in the result chunk.
-	ByteCount int64 `json:"byte_count,omitempty"`
-	// Position within the sequence of result set chunks.
-	ChunkIndex int `json:"chunk_index,omitempty"`
-	// When fetching, gives `chunk_index` for the _next_ chunk; if absent,
-	// indicates there are no more chunks.
-	NextChunkIndex int `json:"next_chunk_index,omitempty"`
-	// When fetching, gives `internal_link` for the _next_ chunk; if absent,
-	// indicates there are no more chunks.
-	NextChunkInternalLink string `json:"next_chunk_internal_link,omitempty"`
-	// Number of rows within the result chunk.
-	RowCount int64 `json:"row_count,omitempty"`
-	// Starting row offset within the result set.
-	RowOffset int64 `json:"row_offset,omitempty"`
-}
-
 type ColumnInfo struct {
-	// Name of Column.
+	// The name of the column.
 	Name string `json:"name,omitempty"`
-	// Ordinal position of column (starting at position 0).
+	// The ordinal position of the column (starting at position 0).
 	Position int `json:"position,omitempty"`
-	// Format of interval type.
+	// The format of the interval type.
 	TypeIntervalType string `json:"type_interval_type,omitempty"`
-	// Name of type (INT, STRUCT, MAP, and so on)
+	// The name of the base data type. This doesn't include details for complex
+	// types such as STRUCT, MAP or ARRAY.
 	TypeName ColumnInfoTypeName `json:"type_name,omitempty"`
-	// Digits of precision.
+	// Specifies the number of digits in a number. This applies to the DECIMAL
+	// type.
 	TypePrecision int `json:"type_precision,omitempty"`
-	// Digits to right of decimal.
+	// Specifies the number of digits to the right of the decimal point in a
+	// number. This applies to the DECIMAL type.
 	TypeScale int `json:"type_scale,omitempty"`
-	// Full data type spec, SQL/catalogString text.
+	// The full SQL type specification.
 	TypeText string `json:"type_text,omitempty"`
+
+	ForceSendFields []string `json:"-"`
 }
 
-// Name of type (INT, STRUCT, MAP, and so on)
+func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ColumnInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The name of the base data type. This doesn't include details for complex
+// types such as STRUCT, MAP or ARRAY.
 type ColumnInfoTypeName string
 
 const ColumnInfoTypeNameArray ColumnInfoTypeName = `ARRAY`
@@ -305,21 +419,73 @@ type CreateAlert struct {
 	// and can be triggered again. If `null`, alert will never be triggered
 	// again.
 	Rearm int `json:"rearm,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateAlert) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAlert) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Create a dashboard object
 type CreateDashboardRequest struct {
+	// Indicates whether the dashboard filters are enabled
+	DashboardFiltersEnabled bool `json:"dashboard_filters_enabled,omitempty"`
 	// Indicates whether this query object should appear in the current user's
 	// favorites list. The application uses this flag to determine whether or
 	// not the "favorite star " should selected.
 	IsFavorite bool `json:"is_favorite,omitempty"`
 	// The title of this dashboard that appears in list views and at the top of
 	// the dashboard page.
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
+	// Run as role
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
 	Tags []string `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateDashboardRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Add visualization to a query
+type CreateQueryVisualizationRequest struct {
+	// A short description of this visualization. This is not displayed in the
+	// UI.
+	Description string `json:"description,omitempty"`
+	// The name of the visualization that appears on dashboards and the query
+	// screen.
+	Name string `json:"name,omitempty"`
+	// The options object varies widely from one visualization type to the next
+	// and is unsupported. Databricks does not recommend modifying visualization
+	// settings in JSON.
+	Options any `json:"options"`
+	// The identifier returned by :method:queries/create
+	QueryId string `json:"query_id"`
+	// The type of visualization: chart, table, pivot table, and so on.
+	Type string `json:"type"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateQueryVisualizationRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateQueryVisualizationRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateWarehouseRequest struct {
@@ -382,6 +548,16 @@ type CreateWarehouseRequest struct {
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
 	WarehouseType CreateWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateWarehouseRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateWarehouseRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
@@ -419,6 +595,43 @@ func (f *CreateWarehouseRequestWarehouseType) Type() string {
 type CreateWarehouseResponse struct {
 	// Id for the SQL warehouse. This value is unique across all SQL warehouses.
 	Id string `json:"id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateWarehouseResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateWarehouseResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateWidget struct {
+	// Dashboard ID returned by :method:dashboards/create.
+	DashboardId string `json:"dashboard_id"`
+
+	Id string `json:"-" url:"-"`
+
+	Options WidgetOptions `json:"options"`
+	// If this is a textbox widget, the application displays this text. This
+	// field is ignored if the widget contains a visualization in the
+	// `visualization` field.
+	Text string `json:"text,omitempty"`
+	// Query Vizualization ID returned by :method:queryvisualizations/create.
+	VisualizationId string `json:"visualization_id,omitempty"`
+	// Width of a widget
+	Width int `json:"width"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateWidget) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateWidget) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // A JSON representing a dashboard containing widgets of visualizations and text
@@ -452,7 +665,8 @@ type Dashboard struct {
 	Options *DashboardOptions `json:"options,omitempty"`
 	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
-	// This describes an enum
+	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
+	// `CAN_MANAGE`: Can manage the query
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// URL slug. Usually mirrors the query name with dashes (`-`) instead of
 	// spaces. Appears in the URL for this query.
@@ -467,6 +681,16 @@ type Dashboard struct {
 	UserId int `json:"user_id,omitempty"`
 
 	Widgets []Widget `json:"widgets,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Dashboard) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Dashboard) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DashboardOptions struct {
@@ -474,6 +698,16 @@ type DashboardOptions struct {
 	// the `is_archived` property is `true`. Trashed items are deleted after
 	// thirty days.
 	MovedToTrashAt string `json:"moved_to_trash_at,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DashboardOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DashboardOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // A JSON object representing a DBSQL data source / SQL warehouse.
@@ -499,6 +733,16 @@ type DataSource struct {
 	// The ID of the associated SQL warehouse, if this data source is backed by
 	// a SQL warehouse.
 	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DataSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DataSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete an alert
@@ -511,9 +755,19 @@ type DeleteDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 }
 
+// Remove widget
+type DeleteDashboardWidgetRequest struct {
+	Id string `json:"-" url:"-"`
+}
+
 // Delete a query
 type DeleteQueryRequest struct {
 	QueryId string `json:"-" url:"-"`
+}
+
+// Remove visualization
+type DeleteQueryVisualizationRequest struct {
+	Id string `json:"-" url:"-"`
 }
 
 // Delete a warehouse
@@ -527,11 +781,11 @@ type DeleteWarehouseRequest struct {
 //
 // Statements executed with `INLINE` disposition will return result data inline,
 // in `JSON_ARRAY` format, in a series of chunks. If a given statement produces
-// a result set with a size larger than 16 MiB, that statement execution is
+// a result set with a size larger than 25 MiB, that statement execution is
 // aborted, and no result set will be available.
 //
 // **NOTE** Byte limits are computed based upon internal representations of the
-// result set data, and may not match the sizes visible in JSON responses.
+// result set data, and might not match the sizes visible in JSON responses.
 //
 // Statements executed with `EXTERNAL_LINKS` disposition will return result data
 // as external links: URLs that point to cloud storage internal to the
@@ -585,6 +839,16 @@ type EditAlert struct {
 	// and can be triggered again. If `null`, alert will never be triggered
 	// again.
 	Rearm int `json:"rearm,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EditAlert) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EditAlert) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type EditWarehouseRequest struct {
@@ -649,6 +913,16 @@ type EditWarehouseRequest struct {
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
 	WarehouseType EditWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EditWarehouseRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EditWarehouseRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
@@ -687,6 +961,16 @@ type EndpointConfPair struct {
 	Key string `json:"key,omitempty"`
 
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EndpointConfPair) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EndpointConfPair) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type EndpointHealth struct {
@@ -702,6 +986,16 @@ type EndpointHealth struct {
 	// A short summary of the health status in case of degraded/failed
 	// warehouses.
 	Summary string `json:"summary,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EndpointHealth) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EndpointHealth) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type EndpointInfo struct {
@@ -779,6 +1073,16 @@ type EndpointInfo struct {
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
 	WarehouseType EndpointInfoWarehouseType `json:"warehouse_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EndpointInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EndpointInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
@@ -817,6 +1121,16 @@ type EndpointTagPair struct {
 	Key string `json:"key,omitempty"`
 
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *EndpointTagPair) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EndpointTagPair) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type EndpointTags struct {
@@ -825,8 +1139,11 @@ type EndpointTags struct {
 
 type ExecuteStatementRequest struct {
 	// Applies the given byte limit to the statement's result size. Byte counts
-	// are based on internal representations and may not match measurable sizes
-	// in the requested `format`.
+	// are based on internal data representations and might not match the final
+	// size in the requested `format`. If the result was truncated due to the
+	// byte limit, then `truncated` in the response is set to `true`. When using
+	// `EXTERNAL_LINKS` disposition, a default `byte_limit` of 100 GiB is
+	// applied if `byte_limit` is not explcitly set.
 	ByteLimit int64 `json:"byte_limit,omitempty"`
 	// Sets default catalog for statement execution, similar to [`USE CATALOG`]
 	// in SQL.
@@ -838,11 +1155,11 @@ type ExecuteStatementRequest struct {
 	//
 	// Statements executed with `INLINE` disposition will return result data
 	// inline, in `JSON_ARRAY` format, in a series of chunks. If a given
-	// statement produces a result set with a size larger than 16 MiB, that
+	// statement produces a result set with a size larger than 25 MiB, that
 	// statement execution is aborted, and no result set will be available.
 	//
 	// **NOTE** Byte limits are computed based upon internal representations of
-	// the result set data, and may not match the sizes visible in JSON
+	// the result set data, and might not match the sizes visible in JSON
 	// responses.
 	//
 	// Statements executed with `EXTERNAL_LINKS` disposition will return result
@@ -863,6 +1180,10 @@ type ExecuteStatementRequest struct {
 	// Statement execution supports three result formats: `JSON_ARRAY`
 	// (default), `ARROW_STREAM`, and `CSV`.
 	//
+	// Important: The formats `ARROW_STREAM` and `CSV` are supported only with
+	// `EXTERNAL_LINKS` disposition. `JSON_ARRAY` is supported in `INLINE` and
+	// `EXTERNAL_LINKS` disposition.
+	//
 	// When specifying `format=JSON_ARRAY`, result data will be formatted as an
 	// array of arrays of values, where each value is either the *string
 	// representation* of a value, or `null`. For example, the output of `SELECT
@@ -872,52 +1193,41 @@ type ExecuteStatementRequest struct {
 	// ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null
 	// ], ] ```
 	//
-	// `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS`
-	// dispositions.
+	// When specifying `format=JSON_ARRAY` and `disposition=EXTERNAL_LINKS`,
+	// each chunk in the result contains compact JSON with no indentation or
+	// extra whitespace.
 	//
-	// `INLINE` `JSON_ARRAY` data can be found at the path
-	// `StatementResponse.result.data_array`.
+	// When specifying `format=ARROW_STREAM` and `disposition=EXTERNAL_LINKS`,
+	// each chunk in the result will be formatted as Apache Arrow Stream. See
+	// the [Apache Arrow streaming format].
 	//
-	// For `EXTERNAL_LINKS` `JSON_ARRAY` results, each URL points to a file in
-	// cloud storage that contains compact JSON with no indentation or extra
-	// whitespace.
-	//
-	// When specifying `format=ARROW_STREAM`, each chunk in the result will be
-	// formatted as Apache Arrow Stream. See the [Apache Arrow streaming
-	// format].
-	//
-	// IMPORTANT: The format `ARROW_STREAM` is supported only with
-	// `EXTERNAL_LINKS` disposition.
-	//
-	// When specifying `format=CSV`, each chunk in the result will be a CSV
-	// according to [RFC 4180] standard. All the columns values will have
-	// *string representation* similar to the `JSON_ARRAY` format, and `null`
-	// values will be encoded as “null”. Only the first chunk in the result
-	// would contain a header row with column names. For example, the output of
-	// `SELECT concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM
-	// range(3)` would look like this:
+	// When specifying `format=CSV` and `disposition=EXTERNAL_LINKS`, each chunk
+	// in the result will be a CSV according to [RFC 4180] standard. All the
+	// columns values will have *string representation* similar to the
+	// `JSON_ARRAY` format, and `null` values will be encoded as “null”.
+	// Only the first chunk in the result would contain a header row with column
+	// names. For example, the output of `SELECT concat('id-', id) AS strCol, id
+	// AS intCol, null as nullCol FROM range(3)` would look like this:
 	//
 	// ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
-	//
-	// IMPORTANT: The format `CSV` is supported only with `EXTERNAL_LINKS`
-	// disposition.
 	//
 	// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
 	// [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
 	Format Format `json:"format,omitempty"`
-	// When in synchronous mode with `wait_timeout > 0s` it determines the
-	// action taken when the timeout is reached:
-	//
-	// `CONTINUE` → the statement execution continues asynchronously and the
-	// call returns a statement ID immediately.
-	//
-	// `CANCEL` → the statement execution is canceled and the call returns
-	// immediately with a `CANCELED` state.
-	OnWaitTimeout TimeoutAction `json:"on_wait_timeout,omitempty"`
+	// When `wait_timeout > 0s`, the call will block up to the specified time.
+	// If the statement execution doesn't finish within this time,
+	// `on_wait_timeout` determines whether the execution should continue or be
+	// canceled. When set to `CONTINUE`, the statement execution continues
+	// asynchronously and the call returns a statement ID which can be used for
+	// polling with :method:statementexecution/getStatement. When set to
+	// `CANCEL`, the statement execution is canceled and the call returns with a
+	// `CANCELED` state.
+	OnWaitTimeout ExecuteStatementRequestOnWaitTimeout `json:"on_wait_timeout,omitempty"`
 	// A list of parameters to pass into a SQL statement containing parameter
 	// markers. A parameter consists of a name, a value, and optionally a type.
-	// To represent a NULL value, the `value` field may be omitted. If the
-	// `type` field is omitted, the value is interpreted as a string.
+	// To represent a NULL value, the `value` field may be omitted or set to
+	// `null` explicitly. If the `type` field is omitted, the value is
+	// interpreted as a string.
 	//
 	// If the type is given, parameters will be checked for type correctness
 	// according to the given type. A value is correct if the provided string
@@ -925,8 +1235,8 @@ type ExecuteStatementRequest struct {
 	// exact semantics are described in the section [`cast` function] of the SQL
 	// language reference.
 	//
-	// For example, the following statement contains two parameters, `my_id` and
-	// `my_date`:
+	// For example, the following statement contains two parameters, `my_name`
+	// and `my_date`:
 	//
 	// SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
 	//
@@ -937,111 +1247,156 @@ type ExecuteStatementRequest struct {
 	// name" }, { "name": "my_date", "value": "2020-01-01", "type": "DATE" } ] }
 	//
 	// Currently, positional parameters denoted by a `?` marker are not
-	// supported by the SQL Statement Execution API.
+	// supported by the Databricks SQL Statement Execution API.
 	//
 	// Also see the section [Parameter markers] of the SQL language reference.
 	//
 	// [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
 	// [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
 	Parameters []StatementParameterListItem `json:"parameters,omitempty"`
-	// Applies the given row limit to the statement's result set with identical
-	// semantics as the SQL `LIMIT` clause.
+	// Applies the given row limit to the statement's result set, but unlike the
+	// `LIMIT` clause in SQL, it also sets the `truncated` field in the response
+	// to indicate whether the result was trimmed due to the limit or not.
 	RowLimit int64 `json:"row_limit,omitempty"`
 	// Sets default schema for statement execution, similar to [`USE SCHEMA`] in
 	// SQL.
 	//
 	// [`USE SCHEMA`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-schema.html
 	Schema string `json:"schema,omitempty"`
-	// SQL statement to execute
-	Statement string `json:"statement,omitempty"`
-	// The time in seconds the API service will wait for the statement's result
-	// set as `Ns`, where `N` can be set to 0 or to a value between 5 and 50.
-	// When set to '0s' the statement will execute in asynchronous mode."
+	// The SQL statement to execute. The statement can optionally be
+	// parameterized, see `parameters`.
+	Statement string `json:"statement"`
+	// The time in seconds the call will wait for the statement's result set as
+	// `Ns`, where `N` can be set to 0 or to a value between 5 and 50.
+	//
+	// When set to `0s`, the statement will execute in asynchronous mode and the
+	// call will not wait for the execution to finish. In this case, the call
+	// returns directly with `PENDING` state and a statement ID which can be
+	// used for polling with :method:statementexecution/getStatement.
+	//
+	// When set between 5 and 50 seconds, the call will behave synchronously up
+	// to this timeout and wait for the statement execution to finish. If the
+	// execution finishes within this time, the call returns immediately with a
+	// manifest and result data (or a `FAILED` state in case of an execution
+	// error). If the statement takes longer to execute, `on_wait_timeout`
+	// determines what should happen after the timeout is reached.
 	WaitTimeout string `json:"wait_timeout,omitempty"`
 	// Warehouse upon which to execute a statement. See also [What are SQL
 	// warehouses?](/sql/admin/warehouse-type.html)
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	WarehouseId string `json:"warehouse_id"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExecuteStatementRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExecuteStatementRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// When `wait_timeout > 0s`, the call will block up to the specified time. If
+// the statement execution doesn't finish within this time, `on_wait_timeout`
+// determines whether the execution should continue or be canceled. When set to
+// `CONTINUE`, the statement execution continues asynchronously and the call
+// returns a statement ID which can be used for polling with
+// :method:statementexecution/getStatement. When set to `CANCEL`, the statement
+// execution is canceled and the call returns with a `CANCELED` state.
+type ExecuteStatementRequestOnWaitTimeout string
+
+const ExecuteStatementRequestOnWaitTimeoutCancel ExecuteStatementRequestOnWaitTimeout = `CANCEL`
+
+const ExecuteStatementRequestOnWaitTimeoutContinue ExecuteStatementRequestOnWaitTimeout = `CONTINUE`
+
+// String representation for [fmt.Print]
+func (f *ExecuteStatementRequestOnWaitTimeout) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ExecuteStatementRequestOnWaitTimeout) Set(v string) error {
+	switch v {
+	case `CANCEL`, `CONTINUE`:
+		*f = ExecuteStatementRequestOnWaitTimeout(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCEL", "CONTINUE"`, v)
+	}
+}
+
+// Type always returns ExecuteStatementRequestOnWaitTimeout to satisfy [pflag.Value] interface
+func (f *ExecuteStatementRequestOnWaitTimeout) Type() string {
+	return "ExecuteStatementRequestOnWaitTimeout"
 }
 
 type ExecuteStatementResponse struct {
 	// The result manifest provides schema and metadata for the result set.
 	Manifest *ResultManifest `json:"manifest,omitempty"`
-	// Result data chunks are delivered in either the `chunk` field when using
-	// `INLINE` disposition, or in the `external_link` field when using
-	// `EXTERNAL_LINKS` disposition. Exactly one of these will be set.
+	// Contains the result data of a single chunk when using `INLINE`
+	// disposition. When using `EXTERNAL_LINKS` disposition, the array
+	// `external_links` is used instead to provide presigned URLs to the result
+	// data in cloud storage. Exactly one of these alternatives is used. (While
+	// the `external_links` array prepares the API to return multiple links in a
+	// single response. Currently only a single link is returned.)
 	Result *ResultData `json:"result,omitempty"`
-	// Statement ID is returned upon successfully submitting a SQL statement,
-	// and is a required reference for all subsequent calls.
+	// The statement ID is returned upon successfully submitting a SQL
+	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"statement_id,omitempty"`
-	// Status response includes execution state and if relevant, error
+	// The status response includes execution state and if relevant, error
 	// information.
 	Status *StatementStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExecuteStatementResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExecuteStatementResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ExternalLink struct {
-	// Number of bytes in the result chunk.
+	// The number of bytes in the result chunk.
 	ByteCount int64 `json:"byte_count,omitempty"`
-	// Position within the sequence of result set chunks.
+	// The position within the sequence of result set chunks.
 	ChunkIndex int `json:"chunk_index,omitempty"`
-	// Indicates date-time that the given external link will expire and become
-	// invalid, after which point a new `external_link` must be requested.
+	// Indicates the date-time that the given external link will expire and
+	// becomes invalid, after which point a new `external_link` must be
+	// requested.
 	Expiration string `json:"expiration,omitempty"`
-	// Pre-signed URL pointing to a chunk of result data, hosted by an external
-	// service, with a short expiration time (< 1 hour).
+	// A presigned URL pointing to a chunk of result data, hosted by an external
+	// service, with a short expiration time (<= 15 minutes). As this URL
+	// contains a temporary credential, it should be considered sensitive and
+	// the client should expose this URL in a log.
 	ExternalLink string `json:"external_link,omitempty"`
-	// When fetching, gives `chunk_index` for the _next_ chunk; if absent,
-	// indicates there are no more chunks.
+	// When fetching, provides the `chunk_index` for the _next_ chunk. If
+	// absent, indicates there are no more chunks. The next chunk can be fetched
+	// with a :method:statementexecution/getStatementResultChunkN request.
 	NextChunkIndex int `json:"next_chunk_index,omitempty"`
-	// When fetching, gives `internal_link` for the _next_ chunk; if absent,
-	// indicates there are no more chunks.
+	// When fetching, provides a link to fetch the _next_ chunk. If absent,
+	// indicates there are no more chunks. This link is an absolute `path` to be
+	// joined with your `$DATABRICKS_HOST`, and should be treated as an opague
+	// link. This is an alternative to using `next_chunk_index`.
 	NextChunkInternalLink string `json:"next_chunk_internal_link,omitempty"`
-	// Number of rows within the result chunk.
+	// The number of rows within the result chunk.
 	RowCount int64 `json:"row_count,omitempty"`
-	// Starting row offset within the result set.
+	// The starting row offset within the result set.
 	RowOffset int64 `json:"row_offset,omitempty"`
+
+	ForceSendFields []string `json:"-"`
 }
 
-// Statement execution supports three result formats: `JSON_ARRAY` (default),
-// `ARROW_STREAM`, and `CSV`.
-//
-// When specifying `format=JSON_ARRAY`, result data will be formatted as an
-// array of arrays of values, where each value is either the *string
-// representation* of a value, or `null`. For example, the output of `SELECT
-// concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)`
-// would look like this:
-//
-// ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null ], ]
-// ```
-//
-// `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS` dispositions.
-//
-// `INLINE` `JSON_ARRAY` data can be found at the path
-// `StatementResponse.result.data_array`.
-//
-// For `EXTERNAL_LINKS` `JSON_ARRAY` results, each URL points to a file in cloud
-// storage that contains compact JSON with no indentation or extra whitespace.
-//
-// When specifying `format=ARROW_STREAM`, each chunk in the result will be
-// formatted as Apache Arrow Stream. See the [Apache Arrow streaming format].
-//
-// IMPORTANT: The format `ARROW_STREAM` is supported only with `EXTERNAL_LINKS`
-// disposition.
-//
-// When specifying `format=CSV`, each chunk in the result will be a CSV
-// according to [RFC 4180] standard. All the columns values will have *string
-// representation* similar to the `JSON_ARRAY` format, and `null` values will be
-// encoded as “null”. Only the first chunk in the result would contain a
-// header row with column names. For example, the output of `SELECT
-// concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM range(3)`
-// would look like this:
-//
-// ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
-//
-// IMPORTANT: The format `CSV` is supported only with `EXTERNAL_LINKS`
-// disposition.
-//
-// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
-// [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
+func (s *ExternalLink) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalLink) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type Format string
 
 const FormatArrowStream Format = `ARROW_STREAM`
@@ -1100,6 +1455,16 @@ type GetResponse struct {
 	ObjectId string `json:"object_id,omitempty"`
 	// A singular noun object type.
 	ObjectType ObjectType `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get status, manifest, and result first chunk
@@ -1110,16 +1475,29 @@ type GetStatementRequest struct {
 type GetStatementResponse struct {
 	// The result manifest provides schema and metadata for the result set.
 	Manifest *ResultManifest `json:"manifest,omitempty"`
-	// Result data chunks are delivered in either the `chunk` field when using
-	// `INLINE` disposition, or in the `external_link` field when using
-	// `EXTERNAL_LINKS` disposition. Exactly one of these will be set.
+	// Contains the result data of a single chunk when using `INLINE`
+	// disposition. When using `EXTERNAL_LINKS` disposition, the array
+	// `external_links` is used instead to provide presigned URLs to the result
+	// data in cloud storage. Exactly one of these alternatives is used. (While
+	// the `external_links` array prepares the API to return multiple links in a
+	// single response. Currently only a single link is returned.)
 	Result *ResultData `json:"result,omitempty"`
-	// Statement ID is returned upon successfully submitting a SQL statement,
-	// and is a required reference for all subsequent calls.
+	// The statement ID is returned upon successfully submitting a SQL
+	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"statement_id,omitempty"`
-	// Status response includes execution state and if relevant, error
+	// The status response includes execution state and if relevant, error
 	// information.
 	Status *StatementStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetStatementResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetStatementResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get result chunk by index
@@ -1227,6 +1605,16 @@ type GetWarehouseResponse struct {
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
 	WarehouseType GetWarehouseResponseWarehouseType `json:"warehouse_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetWarehouseResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetWarehouseResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
@@ -1287,6 +1675,16 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	SecurityPolicy GetWorkspaceWarehouseConfigResponseSecurityPolicy `json:"security_policy,omitempty"`
 	// SQL configuration parameters
 	SqlConfigurationParameters *RepeatedEndpointConfPairs `json:"sql_configuration_parameters,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetWorkspaceWarehouseConfigResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetWorkspaceWarehouseConfigResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Security policy for warehouses
@@ -1329,6 +1727,16 @@ type ListDashboardsRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Full text search term.
 	Q string `json:"-" url:"q,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListDashboardsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDashboardsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListOrder string
@@ -1381,6 +1789,16 @@ type ListQueriesRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Full text search term
 	Q string `json:"-" url:"q,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListQueriesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListQueriesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListQueriesResponse struct {
@@ -1390,6 +1808,16 @@ type ListQueriesResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	Res []QueryInfo `json:"res,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListQueriesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListQueriesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List Queries
@@ -1402,6 +1830,16 @@ type ListQueryHistoryRequest struct {
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 	// A token that can be used to get the next page of results.
 	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListQueryHistoryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListQueryHistoryRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListResponse struct {
@@ -1413,6 +1851,16 @@ type ListResponse struct {
 	PageSize int `json:"page_size,omitempty"`
 	// List of dashboards returned.
 	Results []Dashboard `json:"results,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List warehouses
@@ -1420,6 +1868,16 @@ type ListWarehousesRequest struct {
 	// Service Principal which will be used to fetch the list of warehouses. If
 	// not specified, the user from the session header is used.
 	RunAsUserId int `json:"-" url:"run_as_user_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListWarehousesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListWarehousesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListWarehousesResponse struct {
@@ -1499,6 +1957,16 @@ type OdbcParams struct {
 	Port int `json:"port,omitempty"`
 
 	Protocol string `json:"protocol,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *OdbcParams) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OdbcParams) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The singular form of the type of object which can be owned.
@@ -1541,6 +2009,16 @@ type Parameter struct {
 	Type ParameterType `json:"type,omitempty"`
 	// The default value for this parameter.
 	Value any `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Parameter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Parameter) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Parameters can have several different types.
@@ -1573,7 +2051,8 @@ func (f *ParameterType) Type() string {
 	return "ParameterType"
 }
 
-// This describes an enum
+// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
+// `CAN_MANAGE`: Can manage the query
 type PermissionLevel string
 
 // Can manage the query
@@ -1687,12 +2166,15 @@ type Query struct {
 	Options *QueryOptions `json:"options,omitempty"`
 	// The identifier of the workspace folder containing the object.
 	Parent string `json:"parent,omitempty"`
-	// This describes an enum
+	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
+	// `CAN_MANAGE`: Can manage the query
 	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// The text of the query to be run.
 	Query string `json:"query,omitempty"`
 	// A SHA-256 hash of the query text along with the authenticated user ID.
 	QueryHash string `json:"query_hash,omitempty"`
+	// Run as role
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
 	Tags []string `json:"tags,omitempty"`
 	// The timestamp at which this query was last updated.
@@ -1703,6 +2185,16 @@ type Query struct {
 	UserId int `json:"user_id,omitempty"`
 
 	Visualizations []Visualization `json:"visualizations,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Query) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Query) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type QueryEditContent struct {
@@ -1722,6 +2214,16 @@ type QueryEditContent struct {
 	Query string `json:"query,omitempty"`
 
 	QueryId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryEditContent) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryEditContent) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // A filter to limit query history results. This field is optional.
@@ -1776,7 +2278,10 @@ type QueryInfo struct {
 	SparkUiUrl string `json:"spark_ui_url,omitempty"`
 	// Type of statement for this query
 	StatementType QueryStatementType `json:"statement_type,omitempty"`
-	// This describes an enum
+	// Query status with one the following values: * `QUEUED`: Query has been
+	// received and queued. * `RUNNING`: Query has started. * `CANCELED`: Query
+	// has been cancelled by the user. * `FAILED`: Query has failed. *
+	// `FINISHED`: Query has completed.
 	Status QueryStatus `json:"status,omitempty"`
 	// The ID of the user who ran the query.
 	UserId int `json:"user_id,omitempty"`
@@ -1784,6 +2289,16 @@ type QueryInfo struct {
 	UserName string `json:"user_name,omitempty"`
 	// Warehouse ID.
 	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type QueryList struct {
@@ -1795,6 +2310,16 @@ type QueryList struct {
 	PageSize int `json:"page_size,omitempty"`
 	// List of queries returned.
 	Results []Query `json:"results,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryList) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryList) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Metrics about query execution.
@@ -1863,6 +2388,16 @@ type QueryMetrics struct {
 	// Size pf persistent data written to cloud object storage in your cloud
 	// tenant, in bytes.
 	WriteRemoteBytes int `json:"write_remote_bytes,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryMetrics) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryMetrics) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type QueryOptions struct {
@@ -1872,6 +2407,16 @@ type QueryOptions struct {
 	MovedToTrashAt string `json:"moved_to_trash_at,omitempty"`
 
 	Parameters []Parameter `json:"parameters,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type QueryPostContent struct {
@@ -1891,6 +2436,18 @@ type QueryPostContent struct {
 	Parent string `json:"parent,omitempty"`
 	// The text of the query to be run.
 	Query string `json:"query,omitempty"`
+	// Run as role
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *QueryPostContent) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryPostContent) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Type of statement for this query
@@ -1961,7 +2518,10 @@ func (f *QueryStatementType) Type() string {
 	return "QueryStatementType"
 }
 
-// This describes an enum
+// Query status with one the following values: * `QUEUED`: Query has been
+// received and queued. * `RUNNING`: Query has started. * `CANCELED`: Query has
+// been cancelled by the user. * `FAILED`: Query has failed. * `FINISHED`: Query
+// has completed.
 type QueryStatus string
 
 // Query has been cancelled by the user.
@@ -2017,101 +2577,137 @@ type RestoreQueryRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
-// Result data chunks are delivered in either the `chunk` field when using
-// `INLINE` disposition, or in the `external_link` field when using
-// `EXTERNAL_LINKS` disposition. Exactly one of these will be set.
+// Contains the result data of a single chunk when using `INLINE` disposition.
+// When using `EXTERNAL_LINKS` disposition, the array `external_links` is used
+// instead to provide presigned URLs to the result data in cloud storage.
+// Exactly one of these alternatives is used. (While the `external_links` array
+// prepares the API to return multiple links in a single response. Currently
+// only a single link is returned.)
 type ResultData struct {
-	// Number of bytes in the result chunk.
+	// The number of bytes in the result chunk.
 	ByteCount int64 `json:"byte_count,omitempty"`
-	// Position within the sequence of result set chunks.
+	// The position within the sequence of result set chunks.
 	ChunkIndex int `json:"chunk_index,omitempty"`
-	// `JSON_ARRAY` format is an array of arrays of values, where each non-null
-	// value is formatted as a string. Null values are encoded as JSON `null`.
+	// The `JSON_ARRAY` format is an array of arrays of values, where each
+	// non-null value is formatted as a string. Null values are encoded as JSON
+	// `null`.
 	DataArray [][]string `json:"data_array,omitempty"`
 
 	ExternalLinks []ExternalLink `json:"external_links,omitempty"`
-	// When fetching, gives `chunk_index` for the _next_ chunk; if absent,
-	// indicates there are no more chunks.
+	// When fetching, provides the `chunk_index` for the _next_ chunk. If
+	// absent, indicates there are no more chunks. The next chunk can be fetched
+	// with a :method:statementexecution/getStatementResultChunkN request.
 	NextChunkIndex int `json:"next_chunk_index,omitempty"`
-	// When fetching, gives `internal_link` for the _next_ chunk; if absent,
-	// indicates there are no more chunks.
+	// When fetching, provides a link to fetch the _next_ chunk. If absent,
+	// indicates there are no more chunks. This link is an absolute `path` to be
+	// joined with your `$DATABRICKS_HOST`, and should be treated as an opague
+	// link. This is an alternative to using `next_chunk_index`.
 	NextChunkInternalLink string `json:"next_chunk_internal_link,omitempty"`
-	// Number of rows within the result chunk.
+	// The number of rows within the result chunk.
 	RowCount int64 `json:"row_count,omitempty"`
-	// Starting row offset within the result set.
+	// The starting row offset within the result set.
 	RowOffset int64 `json:"row_offset,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ResultData) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ResultData) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The result manifest provides schema and metadata for the result set.
 type ResultManifest struct {
 	// Array of result set chunk metadata.
-	Chunks []ChunkInfo `json:"chunks,omitempty"`
-	// Statement execution supports three result formats: `JSON_ARRAY`
-	// (default), `ARROW_STREAM`, and `CSV`.
-	//
-	// When specifying `format=JSON_ARRAY`, result data will be formatted as an
-	// array of arrays of values, where each value is either the *string
-	// representation* of a value, or `null`. For example, the output of `SELECT
-	// concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)`
-	// would look like this:
-	//
-	// ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null
-	// ], ] ```
-	//
-	// `JSON_ARRAY` is supported with `INLINE` and `EXTERNAL_LINKS`
-	// dispositions.
-	//
-	// `INLINE` `JSON_ARRAY` data can be found at the path
-	// `StatementResponse.result.data_array`.
-	//
-	// For `EXTERNAL_LINKS` `JSON_ARRAY` results, each URL points to a file in
-	// cloud storage that contains compact JSON with no indentation or extra
-	// whitespace.
-	//
-	// When specifying `format=ARROW_STREAM`, each chunk in the result will be
-	// formatted as Apache Arrow Stream. See the [Apache Arrow streaming
-	// format].
-	//
-	// IMPORTANT: The format `ARROW_STREAM` is supported only with
-	// `EXTERNAL_LINKS` disposition.
-	//
-	// When specifying `format=CSV`, each chunk in the result will be a CSV
-	// according to [RFC 4180] standard. All the columns values will have
-	// *string representation* similar to the `JSON_ARRAY` format, and `null`
-	// values will be encoded as “null”. Only the first chunk in the result
-	// would contain a header row with column names. For example, the output of
-	// `SELECT concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM
-	// range(3)` would look like this:
-	//
-	// ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
-	//
-	// IMPORTANT: The format `CSV` is supported only with `EXTERNAL_LINKS`
-	// disposition.
-	//
-	// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
-	// [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
+	Chunks []BaseChunkInfo `json:"chunks,omitempty"`
+
 	Format Format `json:"format,omitempty"`
-	// Schema is an ordered list of column descriptions.
+	// The schema is an ordered list of column descriptions.
 	Schema *ResultSchema `json:"schema,omitempty"`
-	// Total number of bytes in the result set.
+	// The total number of bytes in the result set. This field is not available
+	// when using `INLINE` disposition.
 	TotalByteCount int64 `json:"total_byte_count,omitempty"`
-	// Total number of chunks that the result set has been divided into.
+	// The total number of chunks that the result set has been divided into.
 	TotalChunkCount int `json:"total_chunk_count,omitempty"`
-	// Total number of rows in the result set.
+	// The total number of rows in the result set.
 	TotalRowCount int64 `json:"total_row_count,omitempty"`
+	// Indicates whether the result is truncated due to `row_limit` or
+	// `byte_limit`.
+	Truncated bool `json:"truncated,omitempty"`
+
+	ForceSendFields []string `json:"-"`
 }
 
-// Schema is an ordered list of column descriptions.
+func (s *ResultManifest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ResultManifest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The schema is an ordered list of column descriptions.
 type ResultSchema struct {
 	ColumnCount int `json:"column_count,omitempty"`
 
 	Columns []ColumnInfo `json:"columns,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ResultSchema) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ResultSchema) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Run as role
+type RunAsRole string
+
+const RunAsRoleOwner RunAsRole = `owner`
+
+const RunAsRoleViewer RunAsRole = `viewer`
+
+// String representation for [fmt.Print]
+func (f *RunAsRole) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RunAsRole) Set(v string) error {
+	switch v {
+	case `owner`, `viewer`:
+		*f = RunAsRole(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "owner", "viewer"`, v)
+	}
+}
+
+// Type always returns RunAsRole to satisfy [pflag.Value] interface
+func (f *RunAsRole) Type() string {
+	return "RunAsRole"
 }
 
 type ServiceError struct {
 	ErrorCode ServiceErrorCode `json:"error_code,omitempty"`
-	// Brief summary of error condition.
+	// A brief summary of the error condition.
 	Message string `json:"message,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ServiceError) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ServiceError) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ServiceErrorCode string
@@ -2181,6 +2777,16 @@ type SetResponse struct {
 	ObjectId string `json:"object_id,omitempty"`
 	// A singular noun object type.
 	ObjectType ObjectType `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SetResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SetResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SetWorkspaceWarehouseConfigRequest struct {
@@ -2209,6 +2815,16 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	SecurityPolicy SetWorkspaceWarehouseConfigRequestSecurityPolicy `json:"security_policy,omitempty"`
 	// SQL configuration parameters
 	SqlConfigurationParameters *RepeatedEndpointConfPairs `json:"sql_configuration_parameters,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SetWorkspaceWarehouseConfigRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SetWorkspaceWarehouseConfigRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Security policy for warehouses
@@ -2326,6 +2942,16 @@ type StatementParameterListItem struct {
 	// The value to substitute, represented as a string. If omitted, the value
 	// is interpreted as NULL.
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *StatementParameterListItem) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s StatementParameterListItem) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`:
@@ -2336,16 +2962,24 @@ type StatementParameterListItem struct {
 // successful, and statement closed; result no longer available for fetch
 type StatementState string
 
+// user canceled; can come from explicit cancel call, or timeout with
+// `on_wait_timeout=CANCEL`
 const StatementStateCanceled StatementState = `CANCELED`
 
+// execution successful, and statement closed; result no longer available for
+// fetch
 const StatementStateClosed StatementState = `CLOSED`
 
+// execution failed; reason for failure described in accomanying error message
 const StatementStateFailed StatementState = `FAILED`
 
+// waiting for warehouse
 const StatementStatePending StatementState = `PENDING`
 
+// running
 const StatementStateRunning StatementState = `RUNNING`
 
+// execution was successful, result data available for fetch
 const StatementStateSucceeded StatementState = `SUCCEEDED`
 
 // String representation for [fmt.Print]
@@ -2369,7 +3003,8 @@ func (f *StatementState) Type() string {
 	return "StatementState"
 }
 
-// Status response includes execution state and if relevant, error information.
+// The status response includes execution state and if relevant, error
+// information.
 type StatementStatus struct {
 	Error *ServiceError `json:"error,omitempty"`
 	// Statement execution state: - `PENDING`: waiting for warehouse -
@@ -2678,46 +3313,31 @@ type TimeRange struct {
 	EndTimeMs int `json:"end_time_ms,omitempty" url:"end_time_ms,omitempty"`
 	// Limit results to queries that started after this time.
 	StartTimeMs int `json:"start_time_ms,omitempty" url:"start_time_ms,omitempty"`
+
+	ForceSendFields []string `json:"-"`
 }
 
-// When in synchronous mode with `wait_timeout > 0s` it determines the action
-// taken when the timeout is reached:
-//
-// `CONTINUE` → the statement execution continues asynchronously and the call
-// returns a statement ID immediately.
-//
-// `CANCEL` → the statement execution is canceled and the call returns
-// immediately with a `CANCELED` state.
-type TimeoutAction string
-
-const TimeoutActionCancel TimeoutAction = `CANCEL`
-
-const TimeoutActionContinue TimeoutAction = `CONTINUE`
-
-// String representation for [fmt.Print]
-func (f *TimeoutAction) String() string {
-	return string(*f)
+func (s *TimeRange) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-// Set raw string value and validate it against allowed values
-func (f *TimeoutAction) Set(v string) error {
-	switch v {
-	case `CANCEL`, `CONTINUE`:
-		*f = TimeoutAction(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCEL", "CONTINUE"`, v)
-	}
-}
-
-// Type always returns TimeoutAction to satisfy [pflag.Value] interface
-func (f *TimeoutAction) Type() string {
-	return "TimeoutAction"
+func (s TimeRange) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TransferOwnershipObjectId struct {
 	// Email address for the new owner, who must exist in the workspace.
 	NewOwner string `json:"new_owner,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TransferOwnershipObjectId) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TransferOwnershipObjectId) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Transfer object ownership
@@ -2728,6 +3348,16 @@ type TransferOwnershipRequest struct {
 	ObjectId TransferOwnershipObjectId `json:"-" url:"-"`
 	// The type of object on which to change ownership.
 	ObjectType OwnableObjectType `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *TransferOwnershipRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TransferOwnershipRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type User struct {
@@ -2736,6 +3366,16 @@ type User struct {
 	Id int `json:"id,omitempty"`
 
 	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *User) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s User) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The visualization description API changes frequently and is unsupported. You
@@ -2749,7 +3389,7 @@ type Visualization struct {
 	// UI.
 	Description string `json:"description,omitempty"`
 	// The UUID for this visualization.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 	// The name of the visualization that appears on dashboards and the query
 	// screen.
 	Name string `json:"name,omitempty"`
@@ -2761,6 +3401,16 @@ type Visualization struct {
 	Type string `json:"type,omitempty"`
 
 	UpdatedAt string `json:"updated_at,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Visualization) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Visualization) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WarehouseAccessControlRequest struct {
@@ -2772,6 +3422,16 @@ type WarehouseAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WarehouseAccessControlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WarehouseAccessControlRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WarehouseAccessControlResponse struct {
@@ -2785,6 +3445,16 @@ type WarehouseAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WarehouseAccessControlResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WarehouseAccessControlResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WarehousePermission struct {
@@ -2793,6 +3463,16 @@ type WarehousePermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WarehousePermission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WarehousePermission) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -2831,12 +3511,32 @@ type WarehousePermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WarehousePermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WarehousePermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WarehousePermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WarehousePermissionsDescription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WarehousePermissionsDescription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WarehousePermissionsRequest struct {
@@ -2851,6 +3551,16 @@ type WarehouseTypePair struct {
 	Enabled bool `json:"enabled,omitempty"`
 	// Warehouse type: `PRO` or `CLASSIC`.
 	WarehouseType WarehouseTypePairWarehouseType `json:"warehouse_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WarehouseTypePair) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WarehouseTypePair) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Warehouse type: `PRO` or `CLASSIC`.
@@ -2896,14 +3606,23 @@ type Widget struct {
 	Visualization *Visualization `json:"visualization,omitempty"`
 	// Unused field.
 	Width int `json:"width,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Widget) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Widget) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WidgetOptions struct {
 	// Timestamp when this object was created
 	CreatedAt string `json:"created_at,omitempty"`
-	// The dashboard ID to which this widget belongs. Each widget can belong to
-	// one dashboard.
-	DashboardId string `json:"dashboard_id,omitempty"`
+	// Custom description of the widget
+	Description string `json:"description,omitempty"`
 	// Whether this widget is hidden on the dashboard.
 	IsHidden bool `json:"isHidden,omitempty"`
 	// How parameters used by the visualization in this widget relate to other
@@ -2912,11 +3631,44 @@ type WidgetOptions struct {
 	ParameterMappings any `json:"parameterMappings,omitempty"`
 	// Coordinates of this widget on a dashboard. This portion of the API
 	// changes frequently and is unsupported.
-	Position any `json:"position,omitempty"`
-	// If this is a textbox widget, the application displays this text. This
-	// field is ignored if the widget contains a visualization in the
-	// `visualization` field.
-	Text string `json:"text,omitempty"`
+	Position *WidgetPosition `json:"position,omitempty"`
+	// Custom title of the widget
+	Title string `json:"title,omitempty"`
 	// Timestamp of the last time this object was updated.
 	UpdatedAt string `json:"updated_at,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WidgetOptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WidgetOptions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Coordinates of this widget on a dashboard. This portion of the API changes
+// frequently and is unsupported.
+type WidgetPosition struct {
+	// reserved for internal use
+	AutoHeight bool `json:"autoHeight,omitempty"`
+	// column in the dashboard grid. Values start with 0
+	Col int `json:"col,omitempty"`
+	// row in the dashboard grid. Values start with 0
+	Row int `json:"row,omitempty"`
+	// width of the widget measured in dashboard grid cells
+	SizeX int `json:"sizeX,omitempty"`
+	// height of the widget measured in dashboard grid cells
+	SizeY int `json:"sizeY,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WidgetPosition) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WidgetPosition) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }

@@ -46,13 +46,16 @@ func Config() (toolConfig, error) {
 	return cfg, nil
 }
 
-func NewPass[T Named](target string, items []T, fileset map[string]string) *pass[T] {
+func NewPass[T Named](target string, items []T, fileset map[string]string, libs []string) *pass[T] {
 	var tmpls []string
 	newFileset := map[string]string{}
 	for filename, v := range fileset {
 		filename = filepath.Join(target, filename)
 		tmpls = append(tmpls, filename)
 		newFileset[filepath.Base(filename)] = v
+	}
+	for _, lib := range libs {
+		tmpls = append(tmpls, filepath.Join(target, lib))
 	}
 	t := template.New("codegen").Funcs(code.HelperFuncs)
 	t = t.Funcs(template.FuncMap{

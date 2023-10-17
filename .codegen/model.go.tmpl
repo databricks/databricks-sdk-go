@@ -6,6 +6,7 @@ import (
 	{{range .ImportedPackages}}
 	"github.com/databricks/databricks-sdk-go/service/{{.}}"{{end}}
 	"io"
+	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
 // all definitions in this file are in alphabetical order
@@ -15,7 +16,19 @@ type {{.PascalName}} struct {
     {{- range .Fields}}
     {{.Comment "    // " 80}}
     {{.PascalName}} {{if .IsOptionalObject}}*{{end}}{{template "type" .Entity}} `{{template "field-tag" . }}`{{end}}
+
+	{{if .ShouldIncludeForceSendFields}} ForceSendFields []string `json:"-"` {{end}}
 }
+
+{{if .ShouldIncludeForceSendFields}}
+func (s *{{.PascalName}}) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s {{.PascalName}}) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+{{end}}
 {{else if .MapValue}}{{.Comment "// " 80}}
 type {{.PascalName}} {{template "type" .}}
 {{else if .Enum}}{{.Comment "// " 80}}

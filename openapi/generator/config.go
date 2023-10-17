@@ -25,6 +25,11 @@ type Toolchain struct {
 type Generator struct {
 	Formatter string `json:"formatter"`
 
+	// TemplateLibraries is a list of files containing go template definitions
+	// that are reused in different stages of codegen. E.g. the "type" template
+	// is needed in both the "types" and "services" stages.
+	TemplateLibraries []string `json:"template_libraries,omitempty"`
+
 	// We can generate SDKs in three modes: Packages, Types, Services
 	// E.g. Go is Package-focused and Java is Types+Services
 	Packages map[string]string `json:"packages,omitempty"`
@@ -74,7 +79,7 @@ func (c *Generator) Apply(ctx context.Context, batch *code.Batch, suite *roll.Su
 	}
 	var filenames []string
 	if c.Batch != nil {
-		pass := render.NewPass(c.dir, []render.Named{batch}, c.Batch)
+		pass := render.NewPass(c.dir, []render.Named{batch}, c.Batch, c.TemplateLibraries)
 		err := pass.Run(ctx)
 		if err != nil {
 			return fmt.Errorf("batch: %w", err)
@@ -82,7 +87,7 @@ func (c *Generator) Apply(ctx context.Context, batch *code.Batch, suite *roll.Su
 		filenames = append(filenames, pass.Filenames...)
 	}
 	if c.Packages != nil {
-		pass := render.NewPass(c.dir, batch.Packages(), c.Packages)
+		pass := render.NewPass(c.dir, batch.Packages(), c.Packages, c.TemplateLibraries)
 		err := pass.Run(ctx)
 		if err != nil {
 			return fmt.Errorf("packages: %w", err)
@@ -90,7 +95,7 @@ func (c *Generator) Apply(ctx context.Context, batch *code.Batch, suite *roll.Su
 		filenames = append(filenames, pass.Filenames...)
 	}
 	if c.Services != nil {
-		pass := render.NewPass(c.dir, batch.Services(), c.Services)
+		pass := render.NewPass(c.dir, batch.Services(), c.Services, c.TemplateLibraries)
 		err := pass.Run(ctx)
 		if err != nil {
 			return fmt.Errorf("services: %w", err)
@@ -98,7 +103,7 @@ func (c *Generator) Apply(ctx context.Context, batch *code.Batch, suite *roll.Su
 		filenames = append(filenames, pass.Filenames...)
 	}
 	if c.Types != nil {
-		pass := render.NewPass(c.dir, batch.Types(), c.Types)
+		pass := render.NewPass(c.dir, batch.Types(), c.Types, c.TemplateLibraries)
 		err := pass.Run(ctx)
 		if err != nil {
 			return fmt.Errorf("types: %w", err)
@@ -106,7 +111,7 @@ func (c *Generator) Apply(ctx context.Context, batch *code.Batch, suite *roll.Su
 		filenames = append(filenames, pass.Filenames...)
 	}
 	if c.Examples != nil && suite != nil {
-		pass := render.NewPass(c.dir, suite.ServicesExamples(), c.Examples)
+		pass := render.NewPass(c.dir, suite.ServicesExamples(), c.Examples, c.TemplateLibraries)
 		err := pass.Run(ctx)
 		if err != nil {
 			return fmt.Errorf("examples: %w", err)
@@ -114,7 +119,7 @@ func (c *Generator) Apply(ctx context.Context, batch *code.Batch, suite *roll.Su
 		filenames = append(filenames, pass.Filenames...)
 	}
 	if c.Samples != nil && suite != nil {
-		pass := render.NewPass(c.dir, suite.Samples(), c.Samples)
+		pass := render.NewPass(c.dir, suite.Samples(), c.Samples, c.TemplateLibraries)
 		err := pass.Run(ctx)
 		if err != nil {
 			return fmt.Errorf("examples: %w", err)

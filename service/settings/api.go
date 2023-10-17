@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Network Policy, Account Settings, Ip Access Lists, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Credentials Manager, Ip Access Lists, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -214,61 +214,6 @@ func (a *AccountIpAccessListsAPI) Update(ctx context.Context, request UpdateIpAc
 	return a.impl.Update(ctx, request)
 }
 
-func NewAccountNetworkPolicy(client *client.DatabricksClient) *AccountNetworkPolicyAPI {
-	return &AccountNetworkPolicyAPI{
-		impl: &accountNetworkPolicyImpl{
-			client: client,
-		},
-	}
-}
-
-// Network policy is a set of rules that defines what can be accessed from your
-// Databricks network. E.g.: You can choose to block your SQL UDF to access
-// internet from your Databricks serverless clusters.
-//
-// There is only one instance of this setting per account. Since this setting
-// has a default value, this setting is present on all accounts even though it's
-// never set on a given account. Deletion reverts the value of the setting back
-// to the default value.
-type AccountNetworkPolicyAPI struct {
-	// impl contains low-level REST API interface, that could be overridden
-	// through WithImpl(AccountNetworkPolicyService)
-	impl AccountNetworkPolicyService
-}
-
-// WithImpl could be used to override low-level API implementations for unit
-// testing purposes with [github.com/golang/mock] or other mocking frameworks.
-func (a *AccountNetworkPolicyAPI) WithImpl(impl AccountNetworkPolicyService) *AccountNetworkPolicyAPI {
-	a.impl = impl
-	return a
-}
-
-// Impl returns low-level AccountNetworkPolicy API implementation
-func (a *AccountNetworkPolicyAPI) Impl() AccountNetworkPolicyService {
-	return a.impl
-}
-
-// Delete Account Network Policy.
-//
-// Reverts back all the account network policies back to default.
-func (a *AccountNetworkPolicyAPI) DeleteAccountNetworkPolicy(ctx context.Context, request DeleteAccountNetworkPolicyRequest) (*DeleteAccountNetworkPolicyResponse, error) {
-	return a.impl.DeleteAccountNetworkPolicy(ctx, request)
-}
-
-// Get Account Network Policy.
-//
-// Gets the value of Account level Network Policy.
-func (a *AccountNetworkPolicyAPI) ReadAccountNetworkPolicy(ctx context.Context, request ReadAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error) {
-	return a.impl.ReadAccountNetworkPolicy(ctx, request)
-}
-
-// Update Account Network Policy.
-//
-// Updates the policy content of Account level Network Policy.
-func (a *AccountNetworkPolicyAPI) UpdateAccountNetworkPolicy(ctx context.Context, request UpdateAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error) {
-	return a.impl.UpdateAccountNetworkPolicy(ctx, request)
-}
-
 func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
 	return &AccountSettingsAPI{
 		impl: &accountSettingsImpl{
@@ -323,6 +268,42 @@ func (a *AccountSettingsAPI) ReadPersonalComputeSetting(ctx context.Context, req
 // Updates the value of the Personal Compute setting.
 func (a *AccountSettingsAPI) UpdatePersonalComputeSetting(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	return a.impl.UpdatePersonalComputeSetting(ctx, request)
+}
+
+func NewCredentialsManager(client *client.DatabricksClient) *CredentialsManagerAPI {
+	return &CredentialsManagerAPI{
+		impl: &credentialsManagerImpl{
+			client: client,
+		},
+	}
+}
+
+// Credentials manager interacts with with Identity Providers to to perform
+// token exchanges using stored credentials and refresh tokens.
+type CredentialsManagerAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(CredentialsManagerService)
+	impl CredentialsManagerService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *CredentialsManagerAPI) WithImpl(impl CredentialsManagerService) *CredentialsManagerAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level CredentialsManager API implementation
+func (a *CredentialsManagerAPI) Impl() CredentialsManagerService {
+	return a.impl
+}
+
+// Exchange token.
+//
+// Exchange tokens with an Identity Provider to get a new access token. It
+// allowes specifying scopes to determine token permissions.
+func (a *CredentialsManagerAPI) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
+	return a.impl.ExchangeToken(ctx, request)
 }
 
 func NewIpAccessLists(client *client.DatabricksClient) *IpAccessListsAPI {
@@ -533,6 +514,58 @@ func (a *IpAccessListsAPI) Update(ctx context.Context, request UpdateIpAccessLis
 	return a.impl.Update(ctx, request)
 }
 
+func NewSettings(client *client.DatabricksClient) *SettingsAPI {
+	return &SettingsAPI{
+		impl: &settingsImpl{
+			client: client,
+		},
+	}
+}
+
+// // TODO(yuyuan.tang) to add the description for the setting
+type SettingsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(SettingsService)
+	impl SettingsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *SettingsAPI) WithImpl(impl SettingsService) *SettingsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Settings API implementation
+func (a *SettingsAPI) Impl() SettingsService {
+	return a.impl
+}
+
+// Delete the default namespace.
+//
+// Deletes the default namespace.
+func (a *SettingsAPI) DeleteDefaultWorkspaceNamespace(ctx context.Context, request DeleteDefaultWorkspaceNamespaceRequest) (*DeleteDefaultWorkspaceNamespaceResponse, error) {
+	return a.impl.DeleteDefaultWorkspaceNamespace(ctx, request)
+}
+
+// Get the default namespace.
+//
+// Gets the default namespace.
+func (a *SettingsAPI) ReadDefaultWorkspaceNamespace(ctx context.Context, request ReadDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error) {
+	return a.impl.ReadDefaultWorkspaceNamespace(ctx, request)
+}
+
+// Updates the default namespace setting.
+//
+// Updates the default namespace setting for the workspace. A fresh etag needs
+// to be provided in PATCH requests (as part the setting field). The etag can be
+// retrieved by making a GET request before the PATCH request. Note that if the
+// setting does not exist, GET will return a NOT_FOUND error and the etag will
+// be present in the error response, which should be set in the PATCH request.
+func (a *SettingsAPI) UpdateDefaultWorkspaceNamespace(ctx context.Context, request UpdateDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error) {
+	return a.impl.UpdateDefaultWorkspaceNamespace(ctx, request)
+}
+
 func NewTokenManagement(client *client.DatabricksClient) *TokenManagementAPI {
 	return &TokenManagementAPI{
 		impl: &tokenManagementImpl{
@@ -604,16 +637,16 @@ func (a *TokenManagementAPI) GetByTokenId(ctx context.Context, tokenId string) (
 // Get token permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *TokenManagementAPI) GetTokenPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
-	return a.impl.GetTokenPermissionLevels(ctx)
+func (a *TokenManagementAPI) GetPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx)
 }
 
 // Get token permissions.
 //
 // Gets the permissions of all tokens. Tokens can inherit permissions from their
 // root object.
-func (a *TokenManagementAPI) GetTokenPermissions(ctx context.Context) (*TokenPermissions, error) {
-	return a.impl.GetTokenPermissions(ctx)
+func (a *TokenManagementAPI) GetPermissions(ctx context.Context) (*TokenPermissions, error) {
+	return a.impl.GetPermissions(ctx)
 }
 
 // List all tokens.
@@ -686,16 +719,16 @@ func (a *TokenManagementAPI) GetByComment(ctx context.Context, name string) (*To
 //
 // Sets permissions on all tokens. Tokens can inherit permissions from their
 // root object.
-func (a *TokenManagementAPI) SetTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
-	return a.impl.SetTokenPermissions(ctx, request)
+func (a *TokenManagementAPI) SetPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
 // Update token permissions.
 //
 // Updates the permissions on all tokens. Tokens can inherit permissions from
 // their root object.
-func (a *TokenManagementAPI) UpdateTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
-	return a.impl.UpdateTokenPermissions(ctx, request)
+func (a *TokenManagementAPI) UpdatePermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }
 
 func NewTokens(client *client.DatabricksClient) *TokensAPI {

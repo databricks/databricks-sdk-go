@@ -122,20 +122,10 @@ func (a *JobsAPI) CancelAllRuns(ctx context.Context, request CancelAllRuns) erro
 	return a.impl.CancelAllRuns(ctx, request)
 }
 
-// Cancel all runs of a job.
+// Cancel a run.
 //
-// Cancels all active runs of a job. The runs are canceled asynchronously, so it
-// doesn't prevent new runs from being started.
-func (a *JobsAPI) CancelAllRunsByJobId(ctx context.Context, jobId int64) error {
-	return a.impl.CancelAllRuns(ctx, CancelAllRuns{
-		JobId: jobId,
-	})
-}
-
-// Cancel a job run.
-//
-// Cancels a job run. The run is canceled asynchronously, so it may still be
-// running when this request completes.
+// Cancels a job run or a task run. The run is canceled asynchronously, so it
+// may still be running when this request completes.
 func (a *JobsAPI) CancelRun(ctx context.Context, cancelRun CancelRun) (*WaitGetRunJobTerminatedOrSkipped[any], error) {
 	err := a.impl.CancelRun(ctx, cancelRun)
 	if err != nil {
@@ -179,10 +169,10 @@ func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, opt
 	return wait.Get()
 }
 
-// Cancel a job run.
+// Cancel a run.
 //
-// Cancels a job run. The run is canceled asynchronously, so it may still be
-// running when this request completes.
+// Cancels a job run or a task run. The run is canceled asynchronously, so it
+// may still be running when this request completes.
 func (a *JobsAPI) CancelRunByRunId(ctx context.Context, runId int64) error {
 	return a.impl.CancelRun(ctx, CancelRun{
 		RunId: runId,
@@ -260,15 +250,15 @@ func (a *JobsAPI) GetByJobId(ctx context.Context, jobId int64) (*Job, error) {
 // Get job permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *JobsAPI) GetJobPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error) {
-	return a.impl.GetJobPermissionLevels(ctx, request)
+func (a *JobsAPI) GetPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get job permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *JobsAPI) GetJobPermissionLevelsByJobId(ctx context.Context, jobId string) (*GetJobPermissionLevelsResponse, error) {
-	return a.impl.GetJobPermissionLevels(ctx, GetJobPermissionLevelsRequest{
+func (a *JobsAPI) GetPermissionLevelsByJobId(ctx context.Context, jobId string) (*GetJobPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, GetJobPermissionLevelsRequest{
 		JobId: jobId,
 	})
 }
@@ -277,16 +267,16 @@ func (a *JobsAPI) GetJobPermissionLevelsByJobId(ctx context.Context, jobId strin
 //
 // Gets the permissions of a job. Jobs can inherit permissions from their root
 // object.
-func (a *JobsAPI) GetJobPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error) {
-	return a.impl.GetJobPermissions(ctx, request)
+func (a *JobsAPI) GetPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error) {
+	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get job permissions.
 //
 // Gets the permissions of a job. Jobs can inherit permissions from their root
 // object.
-func (a *JobsAPI) GetJobPermissionsByJobId(ctx context.Context, jobId string) (*JobPermissions, error) {
-	return a.impl.GetJobPermissions(ctx, GetJobPermissionsRequest{
+func (a *JobsAPI) GetPermissionsByJobId(ctx context.Context, jobId string) (*JobPermissions, error) {
+	return a.impl.GetPermissions(ctx, GetJobPermissionsRequest{
 		JobId: jobId,
 	})
 }
@@ -501,10 +491,10 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, opt
 	return wait.Get()
 }
 
-// Overwrites all settings for a job.
+// Overwrite all settings for a job.
 //
-// Overwrites all the settings for a specific job. Use the Update endpoint to
-// update job settings partially.
+// Overwrite all settings for the given job. Use the Update endpoint to update
+// job settings partially.
 func (a *JobsAPI) Reset(ctx context.Context, request ResetJob) error {
 	return a.impl.Reset(ctx, request)
 }
@@ -559,8 +549,8 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...r
 //
 // Sets permissions on a job. Jobs can inherit permissions from their root
 // object.
-func (a *JobsAPI) SetJobPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
-	return a.impl.SetJobPermissions(ctx, request)
+func (a *JobsAPI) SetPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
 // Create and trigger a one-time run.
@@ -624,6 +614,6 @@ func (a *JobsAPI) Update(ctx context.Context, request UpdateJob) error {
 //
 // Updates the permissions on a job. Jobs can inherit permissions from their
 // root object.
-func (a *JobsAPI) UpdateJobPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
-	return a.impl.UpdateJobPermissions(ctx, request)
+func (a *JobsAPI) UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }

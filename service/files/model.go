@@ -4,6 +4,8 @@ package files
 
 import (
 	"io"
+
+	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
 // all definitions in this file are in alphabetical order
@@ -26,12 +28,32 @@ type Create struct {
 	Overwrite bool `json:"overwrite,omitempty"`
 	// The path of the new file. The path should be the absolute DBFS path.
 	Path string `json:"path"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Create) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Create) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateResponse struct {
 	// Handle which should subsequently be passed into the AddBlock and Close
 	// calls when writing to a file through a stream.
 	Handle int64 `json:"handle,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Delete struct {
@@ -41,6 +63,16 @@ type Delete struct {
 	// Whether or not to recursively delete the directory's contents. Deleting
 	// empty directories can be done without providing the recursive flag.
 	Recursive bool `json:"recursive,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Delete) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Delete) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Delete a file or directory
@@ -68,6 +100,16 @@ type FileInfo struct {
 	ModificationTime int64 `json:"modification_time,omitempty"`
 	// The absolute path of the file or directory.
 	Path string `json:"path,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *FileInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FileInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get the information of a file or directory
@@ -111,6 +153,16 @@ type Put struct {
 	Overwrite bool `json:"overwrite,omitempty"`
 	// The path of the new file. The path should be the absolute DBFS path.
 	Path string `json:"path"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Put) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Put) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get the contents of a file
@@ -122,6 +174,16 @@ type ReadDbfsRequest struct {
 	Offset int `json:"-" url:"offset,omitempty"`
 	// The path of the file to read. The path should be the absolute DBFS path.
 	Path string `json:"-" url:"path"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ReadDbfsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ReadDbfsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ReadResponse struct {
@@ -131,6 +193,16 @@ type ReadResponse struct {
 	BytesRead int64 `json:"bytes_read,omitempty"`
 	// The base64-encoded contents of the file read.
 	Data string `json:"data,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ReadResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ReadResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Upload a file
@@ -140,4 +212,14 @@ type UploadRequest struct {
 	FilePath string `json:"-" url:"-"`
 	// If true, an existing file will be overwritten.
 	Overwrite bool `json:"-" url:"overwrite,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UploadRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UploadRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }

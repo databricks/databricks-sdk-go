@@ -2,7 +2,11 @@
 
 package workspace
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/databricks/databricks-sdk-go/marshal"
+)
 
 // all definitions in this file are in alphabetical order
 
@@ -61,6 +65,16 @@ type CreateCredentials struct {
 	// The personal access token used to authenticate to the corresponding Git
 	// provider.
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateCredentials) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateCredentials) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateCredentialsResponse struct {
@@ -73,6 +87,16 @@ type CreateCredentialsResponse struct {
 	GitProvider string `json:"git_provider,omitempty"`
 	// Git username.
 	GitUsername string `json:"git_username,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateCredentialsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateCredentialsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateRepo struct {
@@ -89,6 +113,16 @@ type CreateRepo struct {
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
 	// URL of the Git repository to be linked.
 	Url string `json:"url"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateRepo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateRepo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateScope struct {
@@ -102,6 +136,16 @@ type CreateScope struct {
 	// The backend type the scope will be created with. If not specified, will
 	// default to `DATABRICKS`
 	ScopeBackendType ScopeBackendType `json:"scope_backend_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CreateScope) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateScope) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CredentialInfo struct {
@@ -114,6 +158,16 @@ type CredentialInfo struct {
 	GitProvider string `json:"git_provider,omitempty"`
 	// Git username.
 	GitUsername string `json:"git_username,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *CredentialInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CredentialInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Delete struct {
@@ -124,6 +178,16 @@ type Delete struct {
 	// it fails in the middle, some of objects under this directory may be
 	// deleted and cannot be undone.
 	Recursive bool `json:"recursive,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Delete) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Delete) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DeleteAcl struct {
@@ -212,6 +276,16 @@ type ExportResponse struct {
 	// The base64-encoded content. If the limit (10MB) is exceeded, exception
 	// with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.
 	Content string `json:"content,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ExportResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExportResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get secret ACL details
@@ -268,6 +342,16 @@ type GetSecretResponse struct {
 	Key string `json:"key,omitempty"`
 	// The value of the secret in its byte representation.
 	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetSecretResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetSecretResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get status
@@ -311,11 +395,12 @@ type Import struct {
 	// - `AUTO`: The item is imported depending on an analysis of the item's
 	// extension and the header content provided in the request. If the item is
 	// imported as a notebook, then the item's extension is automatically
-	// removed. - `SOURCE`: The notebook is imported as source code. - `HTML`:
-	// The notebook is imported as an HTML file. - `JUPYTER`: The notebook is
-	// imported as a Jupyter/IPython Notebook file. - `DBC`: The notebook is
-	// imported in Databricks archive format. Required for directories. -
-	// `R_MARKDOWN`: The notebook is imported from R Markdown format.
+	// removed. - `SOURCE`: The notebook or directory is imported as source
+	// code. - `HTML`: The notebook is imported as an HTML file. - `JUPYTER`:
+	// The notebook is imported as a Jupyter/IPython Notebook file. - `DBC`: The
+	// notebook is imported in Databricks archive format. Required for
+	// directories. - `R_MARKDOWN`: The notebook is imported from R Markdown
+	// format.
 	Format ImportFormat `json:"format,omitempty"`
 	// The language of the object. This value is set only if the object type is
 	// `NOTEBOOK`.
@@ -325,8 +410,18 @@ type Import struct {
 	// it may contain a directory.
 	Overwrite bool `json:"overwrite,omitempty"`
 	// The absolute path of the object or directory. Importing a directory is
-	// only supported for the `DBC` format.
+	// only supported for the `DBC` and `SOURCE` formats.
 	Path string `json:"path"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *Import) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Import) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // This specifies the format of the file to be imported.
@@ -336,23 +431,30 @@ type Import struct {
 // - `AUTO`: The item is imported depending on an analysis of the item's
 // extension and the header content provided in the request. If the item is
 // imported as a notebook, then the item's extension is automatically removed. -
-// `SOURCE`: The notebook is imported as source code. - `HTML`: The notebook is
-// imported as an HTML file. - `JUPYTER`: The notebook is imported as a
-// Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in
+// `SOURCE`: The notebook or directory is imported as source code. - `HTML`: The
+// notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported
+// as a Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in
 // Databricks archive format. Required for directories. - `R_MARKDOWN`: The
 // notebook is imported from R Markdown format.
 type ImportFormat string
 
+// The item is imported depending on an analysis of the item's extension and
 const ImportFormatAuto ImportFormat = `AUTO`
 
+// The notebook is imported in <Databricks> archive format. Required for
+// directories.
 const ImportFormatDbc ImportFormat = `DBC`
 
+// The notebook is imported as an HTML file.
 const ImportFormatHtml ImportFormat = `HTML`
 
+// The notebook is imported as a Jupyter/IPython Notebook file.
 const ImportFormatJupyter ImportFormat = `JUPYTER`
 
+// The notebook is imported from R Markdown format.
 const ImportFormatRMarkdown ImportFormat = `R_MARKDOWN`
 
+// The notebook or directory is imported as source code.
 const ImportFormatSource ImportFormat = `SOURCE`
 
 // String representation for [fmt.Print]
@@ -428,6 +530,16 @@ type ListReposRequest struct {
 	NextPageToken string `json:"-" url:"next_page_token,omitempty"`
 	// Filters repos that have paths starting with the given path prefix.
 	PathPrefix string `json:"-" url:"path_prefix,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListReposRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListReposRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListReposResponse struct {
@@ -436,6 +548,16 @@ type ListReposResponse struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	Repos []RepoInfo `json:"repos,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListReposResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListReposResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListResponse struct {
@@ -465,6 +587,16 @@ type ListWorkspaceRequest struct {
 	NotebooksModifiedAfter int `json:"-" url:"notebooks_modified_after,omitempty"`
 	// The absolute path of the notebook or directory.
 	Path string `json:"-" url:"path"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Mkdirs struct {
@@ -494,6 +626,16 @@ type ObjectInfo struct {
 	Path string `json:"path,omitempty"`
 	// Only applicable to files. The file size in bytes can be returned.
 	Size int64 `json:"size,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ObjectInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ObjectInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The type of the object in workspace.
@@ -503,14 +645,19 @@ type ObjectInfo struct {
 // file - `REPO`: repository
 type ObjectType string
 
+// directory
 const ObjectTypeDirectory ObjectType = `DIRECTORY`
 
+// file
 const ObjectTypeFile ObjectType = `FILE`
 
+// library
 const ObjectTypeLibrary ObjectType = `LIBRARY`
 
+// document that contains runnable code, visualizations, and explanatory text.
 const ObjectTypeNotebook ObjectType = `NOTEBOOK`
 
+// repository
 const ObjectTypeRepo ObjectType = `REPO`
 
 // String representation for [fmt.Print]
@@ -552,6 +699,16 @@ type PutSecret struct {
 	Scope string `json:"scope"`
 	// If specified, note that the value will be stored in UTF-8 (MB4) form.
 	StringValue string `json:"string_value,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *PutSecret) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PutSecret) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RepoAccessControlRequest struct {
@@ -563,6 +720,16 @@ type RepoAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RepoAccessControlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RepoAccessControlRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RepoAccessControlResponse struct {
@@ -576,6 +743,16 @@ type RepoAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RepoAccessControlResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RepoAccessControlResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RepoInfo struct {
@@ -597,6 +774,16 @@ type RepoInfo struct {
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
 	// URL of the Git repository to be linked.
 	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RepoInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RepoInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RepoPermission struct {
@@ -605,6 +792,16 @@ type RepoPermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RepoPermission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RepoPermission) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -645,12 +842,32 @@ type RepoPermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RepoPermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RepoPermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RepoPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *RepoPermissionsDescription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RepoPermissionsDescription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RepoPermissionsRequest struct {
@@ -691,6 +908,16 @@ type SecretMetadata struct {
 	Key string `json:"key,omitempty"`
 	// The last updated timestamp (in milliseconds) for the secret.
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SecretMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SecretMetadata) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SecretScope struct {
@@ -700,6 +927,16 @@ type SecretScope struct {
 	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata `json:"keyvault_metadata,omitempty"`
 	// A unique name to identify the secret scope.
 	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *SecretScope) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SecretScope) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type SparseCheckout struct {
@@ -725,6 +962,16 @@ type UpdateCredentials struct {
 	// The personal access token used to authenticate to the corresponding Git
 	// provider.
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateCredentials) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateCredentials) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateRepo struct {
@@ -740,6 +987,16 @@ type UpdateRepo struct {
 	// new changes, you must update the repo to a branch instead of the detached
 	// HEAD.
 	Tag string `json:"tag,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *UpdateRepo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateRepo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WorkspaceObjectAccessControlRequest struct {
@@ -751,6 +1008,16 @@ type WorkspaceObjectAccessControlRequest struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WorkspaceObjectAccessControlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WorkspaceObjectAccessControlRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WorkspaceObjectAccessControlResponse struct {
@@ -764,6 +1031,16 @@ type WorkspaceObjectAccessControlResponse struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WorkspaceObjectAccessControlResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WorkspaceObjectAccessControlResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WorkspaceObjectPermission struct {
@@ -772,6 +1049,16 @@ type WorkspaceObjectPermission struct {
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WorkspaceObjectPermission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WorkspaceObjectPermission) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -812,12 +1099,32 @@ type WorkspaceObjectPermissions struct {
 	ObjectId string `json:"object_id,omitempty"`
 
 	ObjectType string `json:"object_type,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WorkspaceObjectPermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WorkspaceObjectPermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WorkspaceObjectPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
 	// Permission level
 	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *WorkspaceObjectPermissionsDescription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WorkspaceObjectPermissionsDescription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type WorkspaceObjectPermissionsRequest struct {

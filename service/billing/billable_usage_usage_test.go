@@ -6,6 +6,7 @@ import (
 	"context"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/logger"
 
 	"github.com/databricks/databricks-sdk-go/service/billing"
 )
@@ -17,12 +18,13 @@ func ExampleBillableUsageAPI_Download_usageDownload() {
 		panic(err)
 	}
 
-	err = a.BillableUsage.Download(ctx, billing.DownloadRequest{
-		StartMonth: "2022-01",
-		EndMonth:   "2022-02",
+	resp, err := a.BillableUsage.Download(ctx, billing.DownloadRequest{
+		StartMonth: "2023-01",
+		EndMonth:   "2023-02",
 	})
 	if err != nil {
 		panic(err)
 	}
+	logger.Infof(ctx, "found %v", resp)
 
 }

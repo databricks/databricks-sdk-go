@@ -60,6 +60,7 @@ func oidcEndpoints(ctx context.Context, cfg *Config) (*oauthAuthorizationServer,
 		return nil, fmt.Errorf("fetch .well-known: %w", err)
 	}
 	if oidcResponse.StatusCode != 200 {
+		logger.Warnf(ctx, "Failure getting OIDC response. Response status: %s", oidcResponse.Status)
 		return nil, errOAuthNotSupported
 	}
 	if oidcResponse.Body == nil {

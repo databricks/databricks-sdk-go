@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"os"
 	"os/exec"
 	"testing"
 
@@ -15,10 +16,10 @@ import (
 
 func TestAccDefaultCredentials(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
-	w := databricks.Must(databricks.NewWorkspaceClient())
-	if w.Config.IsAccountClient() {
-		t.SkipNow()
+	if os.Getenv("DATABRICKS_ACCOUNT_ID") != "" {
+		skipf(t)("Skipping workspace test on account level")
 	}
+	w := databricks.Must(databricks.NewWorkspaceClient())
 	ctx := context.Background()
 	versions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
@@ -34,12 +35,13 @@ func TestAccDefaultCredentials(t *testing.T) {
 // TODO: add CredentialProviderChain
 
 func TestAccExplicitDatabricksCfg(t *testing.T) {
+	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+	if os.Getenv("DATABRICKS_ACCOUNT_ID") != "" {
+		skipf(t)("Skipping workspace test on account level")
+	}
 	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
 		Profile: GetEnvOrSkipTest(t, "DATABRICKS_CONFIG_PROFILE"),
 	}))
-	if w.Config.IsAccountClient() {
-		t.SkipNow()
-	}
 	ctx := context.Background()
 	versions, err := w.Clusters.SparkVersions(ctx)
 	require.NoError(t, err)
@@ -111,4 +113,22 @@ func TestAccExplicitAzureSpnAuth(t *testing.T) {
 	})
 	assert.NoError(t, err)
 	assert.NotEmpty(t, v)
+}
+
+func TestAccErrNotAccountClient(t *testing.T) {
+	workspaceTest(t)
+
+	// Confirm that we get an error when trying to create an account client
+	// if the configuration indicates a workspace.
+	_, err := databricks.NewAccountClient()
+	assert.ErrorIs(t, err, databricks.ErrNotAccountClient)
+}
+
+func TestAccErrNotWorkspaceClient(t *testing.T) {
+	accountTest(t)
+
+	// Confirm that we get an error when trying to create a workspace client
+	// if the configuration indicates an account.
+	_, err := databricks.NewWorkspaceClient()
+	assert.ErrorIs(t, err, databricks.ErrNotWorkspaceClient)
 }

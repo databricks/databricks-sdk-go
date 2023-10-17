@@ -44,10 +44,6 @@ type AccountClient struct {
 	// These APIs enable administrators to manage custom oauth app integrations,
 	// which is required for adding/using Custom OAuth App Integration like
 	// Tableau Cloud for Databricks in AWS cloud.
-	//
-	// **Note:** You can only add/use the OAuth custom application integrations
-	// when OAuth enrollment status is enabled. For more details see
-	// :method:OAuthEnrollment/create
 	CustomAppIntegration *oauth2.CustomAppIntegrationAPI
 
 	// These APIs manage encryption key configurations for this workspace
@@ -116,23 +112,23 @@ type AccountClient struct {
 	//
 	// 1. **Create storage**: In AWS, [create a new AWS S3 bucket] with a
 	// specific bucket policy. Using Databricks APIs, call the Account API to
-	// create a [storage configuration object](#operation/create-storage-config)
-	// that uses the bucket name. 2. **Create credentials**: In AWS, create the
+	// create a [storage configuration object](:method:Storage/Create) that uses
+	// the bucket name. 2. **Create credentials**: In AWS, create the
 	// appropriate AWS IAM role. For full details, including the required IAM
 	// role policies and trust relationship, see [Billable usage log delivery].
 	// Using Databricks APIs, call the Account API to create a [credential
-	// configuration object](#operation/create-credential-config) that uses the
-	// IAM role's ARN. 3. **Create log delivery configuration**: Using
-	// Databricks APIs, call the Account API to [create a log delivery
-	// configuration](#operation/create-log-delivery-config) that uses the
-	// credential and storage configuration objects from previous steps. You can
-	// specify if the logs should include all events of that log type in your
-	// account (_Account level_ delivery) or only events for a specific set of
-	// workspaces (_workspace level_ delivery). Account level log delivery
-	// applies to all current and future workspaces plus account level logs,
-	// while workspace level log delivery solely delivers logs related to the
-	// specified workspaces. You can create multiple types of delivery
-	// configurations per account.
+	// configuration object](:method:Credentials/Create) that uses the IAM
+	// role"s ARN. 3. **Create log delivery configuration**: Using Databricks
+	// APIs, call the Account API to [create a log delivery
+	// configuration](:method:LogDelivery/Create) that uses the credential and
+	// storage configuration objects from previous steps. You can specify if the
+	// logs should include all events of that log type in your account (_Account
+	// level_ delivery) or only events for a specific set of workspaces
+	// (_workspace level_ delivery). Account level log delivery applies to all
+	// current and future workspaces plus account level logs, while workspace
+	// level log delivery solely delivers logs related to the specified
+	// workspaces. You can create multiple types of delivery configurations per
+	// account.
 	//
 	// For billable usage delivery: * For more information about billable usage
 	// logs, see [Billable usage log delivery]. For the CSV schema, see the
@@ -174,16 +170,6 @@ type AccountClient struct {
 	// contains catalogs that can be associated with workspaces
 	Metastores *catalog.AccountMetastoresAPI
 
-	// Network policy is a set of rules that defines what can be accessed from
-	// your Databricks network. E.g.: You can choose to block your SQL UDF to
-	// access internet from your Databricks serverless clusters.
-	//
-	// There is only one instance of this setting per account. Since this
-	// setting has a default value, this setting is present on all accounts even
-	// though it's never set on a given account. Deletion reverts the value of
-	// the setting back to the default value.
-	NetworkPolicy *settings.AccountNetworkPolicyAPI
-
 	// These APIs manage network configurations for customer-managed VPCs
 	// (optional). Its ID is used when creating a new workspace if you use
 	// customer-managed VPCs.
@@ -197,16 +183,18 @@ type AccountClient struct {
 	// is because OAuth is only supported on the E2 version.
 	OAuthEnrollment *oauth2.OAuthEnrollmentAPI
 
+	// These APIs enable administrators to view all the available published
+	// OAuth applications in Databricks. Administrators can add the published
+	// OAuth applications to their account through the OAuth Published App
+	// Integration APIs.
+	OAuthPublishedApps *oauth2.OAuthPublishedAppsAPI
+
 	// These APIs manage private access settings for this account.
 	PrivateAccess *provisioning.PrivateAccessAPI
 
 	// These APIs enable administrators to manage published oauth app
 	// integrations, which is required for adding/using Published OAuth App
-	// Integration like Tableau Cloud for Databricks in AWS cloud.
-	//
-	// **Note:** You can only add/use the OAuth published application
-	// integrations when OAuth enrollment status is enabled. For more details
-	// see :method:OAuthEnrollment/create
+	// Integration like Tableau Desktop for Databricks in AWS cloud.
 	PublishedAppIntegration *oauth2.PublishedAppIntegrationAPI
 
 	// These APIs enable administrators to manage service principal secrets.
@@ -327,9 +315,9 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		LogDelivery:             billing.NewLogDelivery(apiClient),
 		MetastoreAssignments:    catalog.NewAccountMetastoreAssignments(apiClient),
 		Metastores:              catalog.NewAccountMetastores(apiClient),
-		NetworkPolicy:           settings.NewAccountNetworkPolicy(apiClient),
 		Networks:                provisioning.NewNetworks(apiClient),
 		OAuthEnrollment:         oauth2.NewOAuthEnrollment(apiClient),
+		OAuthPublishedApps:      oauth2.NewOAuthPublishedApps(apiClient),
 		PrivateAccess:           provisioning.NewPrivateAccess(apiClient),
 		PublishedAppIntegration: oauth2.NewPublishedAppIntegration(apiClient),
 		ServicePrincipalSecrets: oauth2.NewServicePrincipalSecrets(apiClient),

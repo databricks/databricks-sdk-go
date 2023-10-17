@@ -17,7 +17,7 @@ type accountIpAccessListsImpl struct {
 
 func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
 	var createIpAccessListResponse CreateIpAccessListResponse
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -26,7 +26,7 @@ func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpA
 }
 
 func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error {
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
 	return err
@@ -34,7 +34,7 @@ func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAcc
 
 func (a *accountIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpAccessListRequest) (*GetIpAccessListResponse, error) {
 	var getIpAccessListResponse GetIpAccessListResponse
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getIpAccessListResponse)
@@ -43,7 +43,7 @@ func (a *accountIpAccessListsImpl) Get(ctx context.Context, request GetAccountIp
 
 func (a *accountIpAccessListsImpl) List(ctx context.Context) (*GetIpAccessListsResponse, error) {
 	var getIpAccessListsResponse GetIpAccessListsResponse
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &getIpAccessListsResponse)
@@ -51,7 +51,7 @@ func (a *accountIpAccessListsImpl) List(ctx context.Context) (*GetIpAccessListsR
 }
 
 func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -60,45 +60,12 @@ func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceI
 }
 
 func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
 	return err
-}
-
-// unexported type that holds implementations of just AccountNetworkPolicy API methods
-type accountNetworkPolicyImpl struct {
-	client *client.DatabricksClient
-}
-
-func (a *accountNetworkPolicyImpl) DeleteAccountNetworkPolicy(ctx context.Context, request DeleteAccountNetworkPolicyRequest) (*DeleteAccountNetworkPolicyResponse, error) {
-	var deleteAccountNetworkPolicyResponse DeleteAccountNetworkPolicyResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/network_policy/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteAccountNetworkPolicyResponse)
-	return &deleteAccountNetworkPolicyResponse, err
-}
-
-func (a *accountNetworkPolicyImpl) ReadAccountNetworkPolicy(ctx context.Context, request ReadAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error) {
-	var accountNetworkPolicyMessage AccountNetworkPolicyMessage
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/network_policy/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &accountNetworkPolicyMessage)
-	return &accountNetworkPolicyMessage, err
-}
-
-func (a *accountNetworkPolicyImpl) UpdateAccountNetworkPolicy(ctx context.Context, request UpdateAccountNetworkPolicyRequest) (*AccountNetworkPolicyMessage, error) {
-	var accountNetworkPolicyMessage AccountNetworkPolicyMessage
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/network_policy/names/default", a.client.ConfiguredAccountID())
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &accountNetworkPolicyMessage)
-	return &accountNetworkPolicyMessage, err
 }
 
 // unexported type that holds implementations of just AccountSettings API methods
@@ -134,6 +101,21 @@ func (a *accountSettingsImpl) UpdatePersonalComputeSetting(ctx context.Context, 
 	return &personalComputeSetting, err
 }
 
+// unexported type that holds implementations of just CredentialsManager API methods
+type credentialsManagerImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
+	var exchangeTokenResponse ExchangeTokenResponse
+	path := "/api/2.0/credentials-manager/exchange-tokens/token"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &exchangeTokenResponse)
+	return &exchangeTokenResponse, err
+}
+
 // unexported type that holds implementations of just IpAccessLists API methods
 type ipAccessListsImpl struct {
 	client *client.DatabricksClient
@@ -165,13 +147,13 @@ func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessListRequ
 	return &fetchIpAccessListResponse, err
 }
 
-func (a *ipAccessListsImpl) List(ctx context.Context) (*GetIpAccessListResponse, error) {
-	var getIpAccessListResponse GetIpAccessListResponse
+func (a *ipAccessListsImpl) List(ctx context.Context) (*ListIpAccessListResponse, error) {
+	var listIpAccessListResponse ListIpAccessListResponse
 	path := "/api/2.0/ip-access-lists"
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &getIpAccessListResponse)
-	return &getIpAccessListResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, &listIpAccessListResponse)
+	return &listIpAccessListResponse, err
 }
 
 func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
@@ -190,6 +172,39 @@ func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessLi
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, nil)
 	return err
+}
+
+// unexported type that holds implementations of just Settings API methods
+type settingsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *settingsImpl) DeleteDefaultWorkspaceNamespace(ctx context.Context, request DeleteDefaultWorkspaceNamespaceRequest) (*DeleteDefaultWorkspaceNamespaceResponse, error) {
+	var deleteDefaultWorkspaceNamespaceResponse DeleteDefaultWorkspaceNamespaceResponse
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, &deleteDefaultWorkspaceNamespaceResponse)
+	return &deleteDefaultWorkspaceNamespaceResponse, err
+}
+
+func (a *settingsImpl) ReadDefaultWorkspaceNamespace(ctx context.Context, request ReadDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error) {
+	var defaultNamespaceSetting DefaultNamespaceSetting
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &defaultNamespaceSetting)
+	return &defaultNamespaceSetting, err
+}
+
+func (a *settingsImpl) UpdateDefaultWorkspaceNamespace(ctx context.Context, request UpdateDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error) {
+	var defaultNamespaceSetting DefaultNamespaceSetting
+	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &defaultNamespaceSetting)
+	return &defaultNamespaceSetting, err
 }
 
 // unexported type that holds implementations of just TokenManagement API methods
@@ -223,7 +238,7 @@ func (a *tokenManagementImpl) Get(ctx context.Context, request GetTokenManagemen
 	return &tokenInfo, err
 }
 
-func (a *tokenManagementImpl) GetTokenPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
+func (a *tokenManagementImpl) GetPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
 	var getTokenPermissionLevelsResponse GetTokenPermissionLevelsResponse
 	path := "/api/2.0/permissions/authorization/tokens/permissionLevels"
 	headers := make(map[string]string)
@@ -232,7 +247,7 @@ func (a *tokenManagementImpl) GetTokenPermissionLevels(ctx context.Context) (*Ge
 	return &getTokenPermissionLevelsResponse, err
 }
 
-func (a *tokenManagementImpl) GetTokenPermissions(ctx context.Context) (*TokenPermissions, error) {
+func (a *tokenManagementImpl) GetPermissions(ctx context.Context) (*TokenPermissions, error) {
 	var tokenPermissions TokenPermissions
 	path := "/api/2.0/permissions/authorization/tokens"
 	headers := make(map[string]string)
@@ -250,7 +265,7 @@ func (a *tokenManagementImpl) List(ctx context.Context, request ListTokenManagem
 	return &listTokensResponse, err
 }
 
-func (a *tokenManagementImpl) SetTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+func (a *tokenManagementImpl) SetPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
 	var tokenPermissions TokenPermissions
 	path := "/api/2.0/permissions/authorization/tokens"
 	headers := make(map[string]string)
@@ -260,7 +275,7 @@ func (a *tokenManagementImpl) SetTokenPermissions(ctx context.Context, request T
 	return &tokenPermissions, err
 }
 
-func (a *tokenManagementImpl) UpdateTokenPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
+func (a *tokenManagementImpl) UpdatePermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
 	var tokenPermissions TokenPermissions
 	path := "/api/2.0/permissions/authorization/tokens"
 	headers := make(map[string]string)

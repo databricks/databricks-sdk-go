@@ -200,15 +200,15 @@ func (a *PipelinesAPI) GetByPipelineId(ctx context.Context, pipelineId string) (
 // Get pipeline permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *PipelinesAPI) GetPipelinePermissionLevels(ctx context.Context, request GetPipelinePermissionLevelsRequest) (*GetPipelinePermissionLevelsResponse, error) {
-	return a.impl.GetPipelinePermissionLevels(ctx, request)
+func (a *PipelinesAPI) GetPermissionLevels(ctx context.Context, request GetPipelinePermissionLevelsRequest) (*GetPipelinePermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get pipeline permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *PipelinesAPI) GetPipelinePermissionLevelsByPipelineId(ctx context.Context, pipelineId string) (*GetPipelinePermissionLevelsResponse, error) {
-	return a.impl.GetPipelinePermissionLevels(ctx, GetPipelinePermissionLevelsRequest{
+func (a *PipelinesAPI) GetPermissionLevelsByPipelineId(ctx context.Context, pipelineId string) (*GetPipelinePermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, GetPipelinePermissionLevelsRequest{
 		PipelineId: pipelineId,
 	})
 }
@@ -217,16 +217,16 @@ func (a *PipelinesAPI) GetPipelinePermissionLevelsByPipelineId(ctx context.Conte
 //
 // Gets the permissions of a pipeline. Pipelines can inherit permissions from
 // their root object.
-func (a *PipelinesAPI) GetPipelinePermissions(ctx context.Context, request GetPipelinePermissionsRequest) (*PipelinePermissions, error) {
-	return a.impl.GetPipelinePermissions(ctx, request)
+func (a *PipelinesAPI) GetPermissions(ctx context.Context, request GetPipelinePermissionsRequest) (*PipelinePermissions, error) {
+	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get pipeline permissions.
 //
 // Gets the permissions of a pipeline. Pipelines can inherit permissions from
 // their root object.
-func (a *PipelinesAPI) GetPipelinePermissionsByPipelineId(ctx context.Context, pipelineId string) (*PipelinePermissions, error) {
-	return a.impl.GetPipelinePermissions(ctx, GetPipelinePermissionsRequest{
+func (a *PipelinesAPI) GetPermissionsByPipelineId(ctx context.Context, pipelineId string) (*PipelinePermissions, error) {
+	return a.impl.GetPermissions(ctx, GetPipelinePermissionsRequest{
 		PipelineId: pipelineId,
 	})
 }
@@ -444,20 +444,23 @@ func (a *PipelinesAPI) ResetAndWait(ctx context.Context, resetRequest ResetReque
 //
 // Sets permissions on a pipeline. Pipelines can inherit permissions from their
 // root object.
-func (a *PipelinesAPI) SetPipelinePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
-	return a.impl.SetPipelinePermissions(ctx, request)
+func (a *PipelinesAPI) SetPermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
-// Queue a pipeline update.
+// Start a pipeline.
 //
-// Starts or queues a pipeline update.
+// Starts a new update for the pipeline. If there is already an active update
+// for the pipeline, the request will fail and the active update will remain
+// running.
 func (a *PipelinesAPI) StartUpdate(ctx context.Context, request StartUpdate) (*StartUpdateResponse, error) {
 	return a.impl.StartUpdate(ctx, request)
 }
 
 // Stop a pipeline.
 //
-// Stops a pipeline.
+// Stops the pipeline by canceling the active update. If there is no active
+// update for the pipeline, this request is a no-op.
 func (a *PipelinesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*WaitGetPipelineIdle[any], error) {
 	err := a.impl.Stop(ctx, stopRequest)
 	if err != nil {
@@ -512,6 +515,6 @@ func (a *PipelinesAPI) Update(ctx context.Context, request EditPipeline) error {
 //
 // Updates the permissions on a pipeline. Pipelines can inherit permissions from
 // their root object.
-func (a *PipelinesAPI) UpdatePipelinePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
-	return a.impl.UpdatePipelinePermissions(ctx, request)
+func (a *PipelinesAPI) UpdatePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }

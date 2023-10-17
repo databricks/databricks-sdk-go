@@ -403,13 +403,13 @@ type UsersService interface {
 	// Get password permission levels.
 	//
 	// Gets the permission levels that a user can have on an object.
-	GetPasswordPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error)
+	GetPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error)
 
 	// Get password permissions.
 	//
 	// Gets the permissions of all passwords. Passwords can inherit permissions
 	// from their root object.
-	GetPasswordPermissions(ctx context.Context) (*PasswordPermissions, error)
+	GetPermissions(ctx context.Context) (*PasswordPermissions, error)
 
 	// List users.
 	//
@@ -428,7 +428,7 @@ type UsersService interface {
 	//
 	// Sets permissions on all passwords. Passwords can inherit permissions from
 	// their root object.
-	SetPasswordPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error)
+	SetPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error)
 
 	// Replace a user.
 	//
@@ -439,7 +439,7 @@ type UsersService interface {
 	//
 	// Updates the permissions on all passwords. Passwords can inherit
 	// permissions from their root object.
-	UpdatePasswordPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error)
+	UpdatePermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error)
 }
 
 // The Workspace Permission Assignment API allows you to manage workspace

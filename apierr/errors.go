@@ -29,10 +29,15 @@ var (
 	}
 )
 
+const (
+	errorInfoType string = "type.googleapis.com/google.rpc.ErrorInfo"
+)
+
 // APIErrorBody maps "proper" databricks rest api errors to a struct
 type APIErrorBody struct {
-	ErrorCode string `json:"error_code,omitempty"`
-	Message   string `json:"message,omitempty"`
+	ErrorCode string        `json:"error_code,omitempty"`
+	Message   string        `json:"message,omitempty"`
+	Details   []ErrorDetail `json:"details,omitempty"`
 	// The following two are for scim api only
 	// for RFC 7644 Section 3.7.3 https://tools.ietf.org/html/rfc7644#section-3.7.3
 	ScimDetail string `json:"detail,omitempty"`
@@ -41,11 +46,19 @@ type APIErrorBody struct {
 	API12Error string `json:"error,omitempty"`
 }
 
+type ErrorDetail struct {
+	Type     string            `json:"@type,omitempty"`
+	Reason   string            `json:"reason,omitempty"`
+	Domain   string            `json:"domain,omitempty"`
+	Metadata map[string]string `json:"metadata,omitempty"`
+}
+
 // APIError is a generic struct for an api error on databricks
 type APIError struct {
 	ErrorCode  string
 	Message    string
 	StatusCode int
+	Details    []ErrorDetail
 }
 
 // Error returns error message string instead of
@@ -60,6 +73,25 @@ func IsMissing(err error) bool {
 		return apiError.IsMissing()
 	}
 	return false
+}
+
+// GetErrorInfo returns all entries in the list of error details of type `ErrorInfo`.
+func GetErrorInfo(err error) []ErrorDetail {
+	return getDetailsByType(err, errorInfoType)
+}
+
+func getDetailsByType(err error, errorDetailType string) []ErrorDetail {
+	var apiError *APIError
+	if !errors.As(err, &apiError) {
+		return nil
+	}
+	filteredDetails := []ErrorDetail{}
+	for _, detail := range apiError.Details {
+		if errorDetailType == detail.Type {
+			filteredDetails = append(filteredDetails, detail)
+		}
+	}
+	return filteredDetails
 }
 
 // IsMissing tells if it is missing resource
@@ -165,6 +197,7 @@ func parseErrorFromResponse(resp *http.Response, body []byte) *APIError {
 		Message:    errorBody.Message,
 		ErrorCode:  errorBody.ErrorCode,
 		StatusCode: resp.StatusCode,
+		Details:    errorBody.Details,
 	}
 }
 

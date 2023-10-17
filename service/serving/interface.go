@@ -47,13 +47,13 @@ type ServingEndpointsService interface {
 	// Get serving endpoint permission levels.
 	//
 	// Gets the permission levels that a user can have on an object.
-	GetServingEndpointPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error)
+	GetPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error)
 
 	// Get serving endpoint permissions.
 	//
 	// Gets the permissions of a serving endpoint. Serving endpoints can inherit
 	// permissions from their root object.
-	GetServingEndpointPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+	GetPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 
 	// Retrieve all serving endpoints.
 	//
@@ -66,14 +66,20 @@ type ServingEndpointsService interface {
 	// Retrieves the service logs associated with the provided served model.
 	Logs(ctx context.Context, request LogsRequest) (*ServerLogsResponse, error)
 
+	// Patch the tags of a serving endpoint.
+	//
+	// Used to batch add and delete tags from a serving endpoint with a single
+	// API call.
+	Patch(ctx context.Context, request PatchServingEndpointTags) ([]EndpointTag, error)
+
 	// Query a serving endpoint with provided model input.
-	Query(ctx context.Context, request QueryRequest) (*QueryEndpointResponse, error)
+	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
 
 	// Set serving endpoint permissions.
 	//
 	// Sets permissions on a serving endpoint. Serving endpoints can inherit
 	// permissions from their root object.
-	SetServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+	SetPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 
 	// Update a serving endpoint with a new config.
 	//
@@ -87,5 +93,5 @@ type ServingEndpointsService interface {
 	//
 	// Updates the permissions on a serving endpoint. Serving endpoints can
 	// inherit permissions from their root object.
-	UpdateServingEndpointPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 }

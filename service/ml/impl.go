@@ -90,7 +90,16 @@ func (a *experimentsImpl) GetExperiment(ctx context.Context, request GetExperime
 	return &getExperimentResponse, err
 }
 
-func (a *experimentsImpl) GetExperimentPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
+func (a *experimentsImpl) GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error) {
+	var getMetricHistoryResponse GetMetricHistoryResponse
+	path := "/api/2.0/mlflow/metrics/get-history"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getMetricHistoryResponse)
+	return &getMetricHistoryResponse, err
+}
+
+func (a *experimentsImpl) GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
 	var getExperimentPermissionLevelsResponse GetExperimentPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v/permissionLevels", request.ExperimentId)
 	headers := make(map[string]string)
@@ -99,22 +108,13 @@ func (a *experimentsImpl) GetExperimentPermissionLevels(ctx context.Context, req
 	return &getExperimentPermissionLevelsResponse, err
 }
 
-func (a *experimentsImpl) GetExperimentPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error) {
+func (a *experimentsImpl) GetPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error) {
 	var experimentPermissions ExperimentPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &experimentPermissions)
 	return &experimentPermissions, err
-}
-
-func (a *experimentsImpl) GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error) {
-	var getMetricHistoryResponse GetMetricHistoryResponse
-	path := "/api/2.0/mlflow/metrics/get-history"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &getMetricHistoryResponse)
-	return &getMetricHistoryResponse, err
 }
 
 func (a *experimentsImpl) GetRun(ctx context.Context, request GetRunRequest) (*GetRunResponse, error) {
@@ -237,16 +237,6 @@ func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) (*
 	return &searchRunsResponse, err
 }
 
-func (a *experimentsImpl) SetExperimentPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
-	var experimentPermissions ExperimentPermissions
-	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &experimentPermissions)
-	return &experimentPermissions, err
-}
-
 func (a *experimentsImpl) SetExperimentTag(ctx context.Context, request SetExperimentTag) error {
 	path := "/api/2.0/mlflow/experiments/set-experiment-tag"
 	headers := make(map[string]string)
@@ -254,6 +244,16 @@ func (a *experimentsImpl) SetExperimentTag(ctx context.Context, request SetExper
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, request, nil)
 	return err
+}
+
+func (a *experimentsImpl) SetPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
+	var experimentPermissions ExperimentPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, request, &experimentPermissions)
+	return &experimentPermissions, err
 }
 
 func (a *experimentsImpl) SetTag(ctx context.Context, request SetTag) error {
@@ -274,7 +274,7 @@ func (a *experimentsImpl) UpdateExperiment(ctx context.Context, request UpdateEx
 	return err
 }
 
-func (a *experimentsImpl) UpdateExperimentPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
+func (a *experimentsImpl) UpdatePermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
 	var experimentPermissions ExperimentPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
 	headers := make(map[string]string)
@@ -452,7 +452,7 @@ func (a *modelRegistryImpl) GetModelVersionDownloadUri(ctx context.Context, requ
 	return &getModelVersionDownloadUriResponse, err
 }
 
-func (a *modelRegistryImpl) GetRegisteredModelPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error) {
+func (a *modelRegistryImpl) GetPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error) {
 	var getRegisteredModelPermissionLevelsResponse GetRegisteredModelPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v/permissionLevels", request.RegisteredModelId)
 	headers := make(map[string]string)
@@ -461,7 +461,7 @@ func (a *modelRegistryImpl) GetRegisteredModelPermissionLevels(ctx context.Conte
 	return &getRegisteredModelPermissionLevelsResponse, err
 }
 
-func (a *modelRegistryImpl) GetRegisteredModelPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
+func (a *modelRegistryImpl) GetPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
 	var registeredModelPermissions RegisteredModelPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
 	headers := make(map[string]string)
@@ -553,7 +553,7 @@ func (a *modelRegistryImpl) SetModelVersionTag(ctx context.Context, request SetM
 	return err
 }
 
-func (a *modelRegistryImpl) SetRegisteredModelPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
+func (a *modelRegistryImpl) SetPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
 	var registeredModelPermissions RegisteredModelPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
 	headers := make(map[string]string)
@@ -611,7 +611,7 @@ func (a *modelRegistryImpl) UpdateModelVersion(ctx context.Context, request Upda
 	return err
 }
 
-func (a *modelRegistryImpl) UpdateRegisteredModelPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
+func (a *modelRegistryImpl) UpdatePermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
 	var registeredModelPermissions RegisteredModelPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
 	headers := make(map[string]string)

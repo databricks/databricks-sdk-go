@@ -15,6 +15,7 @@ import (
 
 var azDummy = &Config{Host: "https://adb-xyz.c.azuredatabricks.net/"}
 var azDummyWithResourceId = &Config{Host: "https://adb-xyz.c.azuredatabricks.net/", AzureResourceID: "/subscriptions/123/resourceGroups/abc/providers/Microsoft.Databricks/workspaces/abc123"}
+var azDummyWitInvalidResourceId = &Config{Host: "https://adb-xyz.c.azuredatabricks.net/", AzureResourceID: "invalidResourceId"}
 
 // testdataPath returns the PATH to use for the duration of a test.
 // It must only return absolute directories because Go refuses to run
@@ -72,6 +73,31 @@ func TestAzureCliCredentials_Valid(t *testing.T) {
 	assert.Equal(t, "...", r.Header.Get("X-Databricks-Azure-SP-Management-Token"))
 }
 
+func TestAzureCliCredentials_ReuseTokens(t *testing.T) {
+	env.CleanupEnvironment(t)
+	os.Setenv("PATH", testdataPath())
+	os.Setenv("EXPIRE", "10M")
+
+	// Use temporary file to store the number of calls to the AZ CLI.
+	tmp := t.TempDir()
+	count := filepath.Join(tmp, "count")
+	os.Setenv("COUNT", count)
+
+	aa := AzureCliCredentials{}
+	visitor, err := aa.Configure(context.Background(), azDummy)
+	assert.NoError(t, err)
+
+	r := &http.Request{Header: http.Header{}}
+	err = visitor(r)
+	assert.NoError(t, err)
+
+	// We verify the headers in the test above.
+	// This test validates we do not call the AZ CLI more than we need.
+	buf, err := os.ReadFile(count)
+	require.NoError(t, err)
+	assert.Len(t, buf, 2, "Expected the AZ CLI to be called twice")
+}
+
 func TestAzureCliCredentials_ValidNoManagementAccess(t *testing.T) {
 	env.CleanupEnvironment(t)
 	os.Setenv("PATH", testdataPath())
@@ -102,6 +128,22 @@ func TestAzureCliCredentials_ValidWithAzureResourceId(t *testing.T) {
 
 	assert.Equal(t, "Bearer ...", r.Header.Get("Authorization"))
 	assert.Equal(t, azDummyWithResourceId.AzureResourceID, r.Header.Get("X-Databricks-Azure-Workspace-Resource-Id"))
+}
+
+func TestAzureCliCredentials_Fallback(t *testing.T) {
+	env.CleanupEnvironment(t)
+	os.Setenv("PATH", testdataPath())
+	aa := AzureCliCredentials{}
+	visitor, err := aa.Configure(context.Background(), azDummyWitInvalidResourceId)
+	assert.NoError(t, err)
+
+	r := &http.Request{Header: http.Header{}}
+	err = visitor(r)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "Bearer ...", r.Header.Get("Authorization"))
+	assert.Equal(t, azDummyWitInvalidResourceId.AzureResourceID, r.Header.Get("X-Databricks-Azure-Workspace-Resource-Id"))
+	assert.Equal(t, "...", r.Header.Get("X-Databricks-Azure-SP-Management-Token"))
 }
 
 func TestAzureCliCredentials_AlwaysExpired(t *testing.T) {

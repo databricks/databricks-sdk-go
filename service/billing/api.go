@@ -51,7 +51,7 @@ func (a *BillableUsageAPI) Impl() BillableUsageService {
 // to mitigate by calling the API with narrower date ranges.
 //
 // [CSV file schema]: https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema
-func (a *BillableUsageAPI) Download(ctx context.Context, request DownloadRequest) error {
+func (a *BillableUsageAPI) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
 	return a.impl.Download(ctx, request)
 }
 
@@ -221,16 +221,15 @@ func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
 //
 // 1. **Create storage**: In AWS, [create a new AWS S3 bucket] with a specific
 // bucket policy. Using Databricks APIs, call the Account API to create a
-// [storage configuration object](#operation/create-storage-config) that uses
-// the bucket name. 2. **Create credentials**: In AWS, create the appropriate
-// AWS IAM role. For full details, including the required IAM role policies and
-// trust relationship, see [Billable usage log delivery]. Using Databricks APIs,
-// call the Account API to create a [credential configuration
-// object](#operation/create-credential-config) that uses the IAM role's ARN. 3.
-// **Create log delivery configuration**: Using Databricks APIs, call the
-// Account API to [create a log delivery
-// configuration](#operation/create-log-delivery-config) that uses the
-// credential and storage configuration objects from previous steps. You can
+// [storage configuration object](:method:Storage/Create) that uses the bucket
+// name. 2. **Create credentials**: In AWS, create the appropriate AWS IAM role.
+// For full details, including the required IAM role policies and trust
+// relationship, see [Billable usage log delivery]. Using Databricks APIs, call
+// the Account API to create a [credential configuration
+// object](:method:Credentials/Create) that uses the IAM role"s ARN. 3. **Create
+// log delivery configuration**: Using Databricks APIs, call the Account API to
+// [create a log delivery configuration](:method:LogDelivery/Create) that uses
+// the credential and storage configuration objects from previous steps. You can
 // specify if the logs should include all events of that log type in your
 // account (_Account level_ delivery) or only events for a specific set of
 // workspaces (_workspace level_ delivery). Account level log delivery applies
@@ -291,10 +290,9 @@ func (a *LogDeliveryAPI) Impl() LogDeliveryService {
 //
 // Creates a new Databricks log delivery configuration to enable delivery of the
 // specified type of logs to your storage location. This requires that you
-// already created a [credential object](#operation/create-credential-config)
-// (which encapsulates a cross-account service IAM role) and a [storage
-// configuration object](#operation/create-storage-config) (which encapsulates
-// an S3 bucket).
+// already created a [credential object](:method:Credentials/Create) (which
+// encapsulates a cross-account service IAM role) and a [storage configuration
+// object](:method:Storage/Create) (which encapsulates an S3 bucket).
 //
 // For full details, including the required IAM role policies and bucket
 // policies, see [Deliver and access billable usage logs] or [Configure audit
@@ -311,7 +309,7 @@ func (a *LogDeliveryAPI) Impl() LogDeliveryService {
 //
 // You cannot delete a log delivery configuration, but you can disable it (see
 // [Enable or disable log delivery
-// configuration](#operation/patch-log-delivery-config-status)).
+// configuration](:method:LogDelivery/PatchStatus)).
 //
 // [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 // [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
@@ -410,7 +408,7 @@ func (a *LogDeliveryAPI) GetByConfigName(ctx context.Context, name string) (*Log
 // configurations is not supported, so disable log delivery configurations that
 // are no longer needed. Note that you can't re-enable a delivery configuration
 // if this would violate the delivery configuration limits described under
-// [Create log delivery](#operation/create-log-delivery-config).
+// [Create log delivery](:method:LogDelivery/Create).
 func (a *LogDeliveryAPI) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
 	return a.impl.PatchStatus(ctx, request)
 }

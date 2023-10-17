@@ -12,6 +12,7 @@ service/catalog/external_locations_usage_test.go linguist-generated=true
 service/catalog/grants_usage_test.go linguist-generated=true
 service/catalog/impl.go linguist-generated=true
 service/catalog/interface.go linguist-generated=true
+service/catalog/metastore_assignments_usage_test.go linguist-generated=true
 service/catalog/metastores_usage_test.go linguist-generated=true
 service/catalog/model.go linguist-generated=true
 service/catalog/schemas_usage_test.go linguist-generated=true

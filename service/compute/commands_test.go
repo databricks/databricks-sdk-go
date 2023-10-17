@@ -193,7 +193,7 @@ func TestCommandsAPIExecute_FailGettingCluster(t *testing.T) {
 	}.ApplyClient(t, func(ctx context.Context, client *client.DatabricksClient) {
 		commands := NewCommandExecutor(client)
 		cr := commands.Execute(ctx, "abc", "cobol", "Hello?")
-		assert.EqualError(t, cr.Err(), "non-retriable error: Does not compute")
+		assert.EqualError(t, cr.Err(), "Does not compute")
 	})
 }
 
@@ -233,7 +233,7 @@ func TestCommandsAPIExecute_FailToCreateContext(t *testing.T) {
 	}.ApplyClient(t, func(ctx context.Context, client *client.DatabricksClient) {
 		commands := NewCommandExecutor(client)
 		cr := commands.Execute(ctx, "abc", "cobol", "Hello?")
-		assert.EqualError(t, cr.Err(), "non-retriable error: Does not compute")
+		assert.EqualError(t, cr.Err(), "Does not compute")
 	})
 }
 
@@ -264,7 +264,7 @@ func TestCommandsAPIExecute_FailToWaitForContext(t *testing.T) {
 	}.ApplyClient(t, func(ctx context.Context, client *client.DatabricksClient) {
 		commands := NewCommandExecutor(client)
 		cr := commands.Execute(ctx, "abc", "cobol", "Hello?")
-		assert.EqualError(t, cr.Err(), "non-retriable error: Does not compute")
+		assert.EqualError(t, cr.Err(), "Does not compute")
 	})
 }
 
@@ -311,7 +311,7 @@ func TestCommandsAPIExecute_FailToCreateCommand(t *testing.T) {
 	}.ApplyClient(t, func(ctx context.Context, client *client.DatabricksClient) {
 		commands := NewCommandExecutor(client)
 		cr := commands.Execute(ctx, "abc", "cobol", "Hello?")
-		assert.EqualError(t, cr.Err(), "non-retriable error: Does not compute")
+		assert.EqualError(t, cr.Err(), "Does not compute")
 	})
 }
 
@@ -365,7 +365,7 @@ func TestCommandsAPIExecute_FailToWaitForCommand(t *testing.T) {
 	}.ApplyClient(t, func(ctx context.Context, client *client.DatabricksClient) {
 		commands := NewCommandExecutor(client)
 		cr := commands.Execute(ctx, "abc", "cobol", "Hello?")
-		assert.EqualError(t, cr.Err(), "non-retriable error: Does not compute")
+		assert.EqualError(t, cr.Err(), "Does not compute")
 	})
 }
 
@@ -419,7 +419,7 @@ func TestCommandsAPIExecute_FailToGetCommand(t *testing.T) {
 	}.ApplyClient(t, func(ctx context.Context, client *client.DatabricksClient) {
 		commands := NewCommandExecutor(client)
 		cr := commands.Execute(ctx, "abc", "cobol", "Hello?")
-		assert.EqualError(t, cr.Err(), "non-retriable error: Does not compute")
+		assert.EqualError(t, cr.Err(), "Does not compute")
 	})
 }
 

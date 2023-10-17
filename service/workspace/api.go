@@ -239,15 +239,15 @@ func (a *ReposAPI) GetByRepoId(ctx context.Context, repoId int64) (*RepoInfo, er
 // Get repo permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ReposAPI) GetRepoPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error) {
-	return a.impl.GetRepoPermissionLevels(ctx, request)
+func (a *ReposAPI) GetPermissionLevels(ctx context.Context, request GetRepoPermissionLevelsRequest) (*GetRepoPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, request)
 }
 
 // Get repo permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ReposAPI) GetRepoPermissionLevelsByRepoId(ctx context.Context, repoId string) (*GetRepoPermissionLevelsResponse, error) {
-	return a.impl.GetRepoPermissionLevels(ctx, GetRepoPermissionLevelsRequest{
+func (a *ReposAPI) GetPermissionLevelsByRepoId(ctx context.Context, repoId string) (*GetRepoPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, GetRepoPermissionLevelsRequest{
 		RepoId: repoId,
 	})
 }
@@ -256,16 +256,16 @@ func (a *ReposAPI) GetRepoPermissionLevelsByRepoId(ctx context.Context, repoId s
 //
 // Gets the permissions of a repo. Repos can inherit permissions from their root
 // object.
-func (a *ReposAPI) GetRepoPermissions(ctx context.Context, request GetRepoPermissionsRequest) (*RepoPermissions, error) {
-	return a.impl.GetRepoPermissions(ctx, request)
+func (a *ReposAPI) GetPermissions(ctx context.Context, request GetRepoPermissionsRequest) (*RepoPermissions, error) {
+	return a.impl.GetPermissions(ctx, request)
 }
 
 // Get repo permissions.
 //
 // Gets the permissions of a repo. Repos can inherit permissions from their root
 // object.
-func (a *ReposAPI) GetRepoPermissionsByRepoId(ctx context.Context, repoId string) (*RepoPermissions, error) {
-	return a.impl.GetRepoPermissions(ctx, GetRepoPermissionsRequest{
+func (a *ReposAPI) GetPermissionsByRepoId(ctx context.Context, repoId string) (*RepoPermissions, error) {
+	return a.impl.GetPermissions(ctx, GetRepoPermissionsRequest{
 		RepoId: repoId,
 	})
 }
@@ -355,8 +355,8 @@ func (a *ReposAPI) GetByPath(ctx context.Context, name string) (*RepoInfo, error
 //
 // Sets permissions on a repo. Repos can inherit permissions from their root
 // object.
-func (a *ReposAPI) SetRepoPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
-	return a.impl.SetRepoPermissions(ctx, request)
+func (a *ReposAPI) SetPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
 // Update a repo.
@@ -371,8 +371,8 @@ func (a *ReposAPI) Update(ctx context.Context, request UpdateRepo) error {
 //
 // Updates the permissions on a repo. Repos can inherit permissions from their
 // root object.
-func (a *ReposAPI) UpdateRepoPermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
-	return a.impl.UpdateRepoPermissions(ctx, request)
+func (a *ReposAPI) UpdatePermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }
 
 func NewSecrets(client *client.DatabricksClient) *SecretsAPI {
@@ -700,6 +700,42 @@ func (a *WorkspaceAPI) Export(ctx context.Context, request ExportRequest) (*Expo
 	return a.impl.Export(ctx, request)
 }
 
+// Get workspace object permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *WorkspaceAPI) GetPermissionLevels(ctx context.Context, request GetWorkspaceObjectPermissionLevelsRequest) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, request)
+}
+
+// Get workspace object permission levels.
+//
+// Gets the permission levels that a user can have on an object.
+func (a *WorkspaceAPI) GetPermissionLevelsByWorkspaceObjectTypeAndWorkspaceObjectId(ctx context.Context, workspaceObjectType string, workspaceObjectId string) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
+	return a.impl.GetPermissionLevels(ctx, GetWorkspaceObjectPermissionLevelsRequest{
+		WorkspaceObjectType: workspaceObjectType,
+		WorkspaceObjectId:   workspaceObjectId,
+	})
+}
+
+// Get workspace object permissions.
+//
+// Gets the permissions of a workspace object. Workspace objects can inherit
+// permissions from their parent objects or root object.
+func (a *WorkspaceAPI) GetPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+	return a.impl.GetPermissions(ctx, request)
+}
+
+// Get workspace object permissions.
+//
+// Gets the permissions of a workspace object. Workspace objects can inherit
+// permissions from their parent objects or root object.
+func (a *WorkspaceAPI) GetPermissionsByWorkspaceObjectTypeAndWorkspaceObjectId(ctx context.Context, workspaceObjectType string, workspaceObjectId string) (*WorkspaceObjectPermissions, error) {
+	return a.impl.GetPermissions(ctx, GetWorkspaceObjectPermissionsRequest{
+		WorkspaceObjectType: workspaceObjectType,
+		WorkspaceObjectId:   workspaceObjectId,
+	})
+}
+
 // Get status.
 //
 // Gets the status of an object or a directory. If `path` does not exist, this
@@ -718,48 +754,14 @@ func (a *WorkspaceAPI) GetStatusByPath(ctx context.Context, path string) (*Objec
 	})
 }
 
-// Get workspace object permission levels.
-//
-// Gets the permission levels that a user can have on an object.
-func (a *WorkspaceAPI) GetWorkspaceObjectPermissionLevels(ctx context.Context, request GetWorkspaceObjectPermissionLevelsRequest) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
-	return a.impl.GetWorkspaceObjectPermissionLevels(ctx, request)
-}
-
-// Get workspace object permission levels.
-//
-// Gets the permission levels that a user can have on an object.
-func (a *WorkspaceAPI) GetWorkspaceObjectPermissionLevelsByWorkspaceObjectTypeAndWorkspaceObjectId(ctx context.Context, workspaceObjectType string, workspaceObjectId string) (*GetWorkspaceObjectPermissionLevelsResponse, error) {
-	return a.impl.GetWorkspaceObjectPermissionLevels(ctx, GetWorkspaceObjectPermissionLevelsRequest{
-		WorkspaceObjectType: workspaceObjectType,
-		WorkspaceObjectId:   workspaceObjectId,
-	})
-}
-
-// Get workspace object permissions.
-//
-// Gets the permissions of a workspace object. Workspace objects can inherit
-// permissions from their parent objects or root object.
-func (a *WorkspaceAPI) GetWorkspaceObjectPermissions(ctx context.Context, request GetWorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
-	return a.impl.GetWorkspaceObjectPermissions(ctx, request)
-}
-
-// Get workspace object permissions.
-//
-// Gets the permissions of a workspace object. Workspace objects can inherit
-// permissions from their parent objects or root object.
-func (a *WorkspaceAPI) GetWorkspaceObjectPermissionsByWorkspaceObjectTypeAndWorkspaceObjectId(ctx context.Context, workspaceObjectType string, workspaceObjectId string) (*WorkspaceObjectPermissions, error) {
-	return a.impl.GetWorkspaceObjectPermissions(ctx, GetWorkspaceObjectPermissionsRequest{
-		WorkspaceObjectType: workspaceObjectType,
-		WorkspaceObjectId:   workspaceObjectId,
-	})
-}
-
 // Import a workspace object.
 //
 // Imports a workspace object (for example, a notebook or file) or the contents
 // of an entire directory. If `path` already exists and `overwrite` is set to
-// `false`, this call returns an error `RESOURCE_ALREADY_EXISTS`. One can only
-// use `DBC` format to import a directory.
+// `false`, this call returns an error `RESOURCE_ALREADY_EXISTS`. To import a
+// directory, you can use either the `DBC` format or the `SOURCE` format with
+// the `language` field unset. To import a single file as `SOURCE`, you must set
+// the `language` field.
 func (a *WorkspaceAPI) Import(ctx context.Context, request Import) error {
 	return a.impl.Import(ctx, request)
 }
@@ -862,14 +864,14 @@ func (a *WorkspaceAPI) MkdirsByPath(ctx context.Context, path string) error {
 //
 // Sets permissions on a workspace object. Workspace objects can inherit
 // permissions from their parent objects or root object.
-func (a *WorkspaceAPI) SetWorkspaceObjectPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
-	return a.impl.SetWorkspaceObjectPermissions(ctx, request)
+func (a *WorkspaceAPI) SetPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+	return a.impl.SetPermissions(ctx, request)
 }
 
 // Update workspace object permissions.
 //
 // Updates the permissions on a workspace object. Workspace objects can inherit
 // permissions from their parent objects or root object.
-func (a *WorkspaceAPI) UpdateWorkspaceObjectPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
-	return a.impl.UpdateWorkspaceObjectPermissions(ctx, request)
+func (a *WorkspaceAPI) UpdatePermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {
+	return a.impl.UpdatePermissions(ctx, request)
 }
