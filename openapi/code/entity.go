@@ -264,11 +264,11 @@ func (e *Entity) IsAllRequiredFieldsPrimitive() bool {
 
 func (e *Entity) HasRequiredNonBodyField() bool {
 	for _, v := range e.RequiredFields() {
-		if !v.IsJson {
-			return false
+		if !v.IsJson || v.IsPath || v.IsQuery {
+			return true
 		}
 	}
-	return true
+	return false
 }
 
 // IsPrivatePreview flags object being in private preview.
