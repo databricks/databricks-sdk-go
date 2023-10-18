@@ -177,6 +177,21 @@ func TestAccServicePrincipalsOnAWS(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, byId.Id, byName.Id)
 
+	err = w.ServicePrincipals.Patch(ctx, iam.PartialUpdate{
+		Id: byId.Id,
+		Operations: []iam.Patch{
+			{
+				Op:    iam.PatchOpReplace,
+				Path:  "active",
+				Value: "false",
+			},
+		},
+		Schemas: []iam.PatchSchema{
+			iam.PatchSchemaUrnIetfParamsScimApiMessages20PatchOp,
+		},
+	})
+	require.NoError(t, err)
+
 	all, err := w.ServicePrincipals.ListAll(ctx, iam.ListServicePrincipalsRequest{})
 	require.NoError(t, err)
 
