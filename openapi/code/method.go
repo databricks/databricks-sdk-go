@@ -179,6 +179,34 @@ func (m *Method) IsJsonOnly() bool {
 	return m.Operation.JsonOnly
 }
 
+// CanSetRequiredFieldsFromJson indicates whether we can use
+// JSON input to set all required fields for request.
+// If we can do so, it means we can ignore all positional arguments
+// passed for a certaing command and only use JSON input passed via --json flag.
+func (m *Method) CanSetRequiredFieldsFromJson() bool {
+	// method supports only JSON input
+	if m.IsJsonOnly() {
+		return true
+	}
+
+	if m.Request == nil {
+		return false
+	}
+
+	// if not all required fields are primitive, then fields should be provided in JSON
+	if !m.Request.IsAllRequiredFieldsPrimitive() {
+		return true
+	}
+
+	// if there are no required fields which are part of request body (URL, query)
+	// it can be fully set via JSON
+	if !m.Request.HasRequiredNonBodyField() {
+		return true
+	}
+
+	return false
+}
+
 func (m *Method) HasIdentifierField() bool {
 	return len(m.IdFieldPath) > 0
 }
