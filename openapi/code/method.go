@@ -179,8 +179,12 @@ func (m *Method) IsJsonOnly() bool {
 	return m.Operation.JsonOnly
 }
 
+// CanSetRequiredFieldsFromJson indicates whether we can use
+// JSON input to set all required fields for request.
+// If we can do so, it means we can ignore all positional arguments
+// passed for a certaing command and only use JSON input passed via --json flag.
 func (m *Method) CanSetRequiredFieldsFromJson() bool {
-	// cmethod supports only JSON input
+	// method supports only JSON input
 	if m.IsJsonOnly() {
 		return true
 	}
