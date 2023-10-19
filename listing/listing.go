@@ -13,26 +13,36 @@ const (
 	ListingStatusExhausted ListingStatus = iota
 	// ListingStatusNotExhausted indicates that the iterator is not exhausted
 	// and there are more items to be fetched.
-	ListingStatusNotExhausted ListingStatus = iota
+	ListingStatusNotExhausted
 	// ListingStatusCheckResult indicates that the iterator is exhausted if and
 	// only if there are no results returned.
-	ListingStatusCheckResult ListingStatus = iota
+	ListingStatusCheckResult
 )
 
 // Use struct{} for Req to indicate one-shot iterator.
 type Iterator[Req, Resp, T any] struct {
-	nextReq     Req
+	// nextReq is the request to be used to fetch the next page.
+	nextReq Req
+
+	// getNextPage fetches the next page of items, returning the deserialized
+	// response and error.
 	getNextPage func(context.Context, Req) (Resp, error)
-	getItems    func(Resp) []T
+
+	// getItems selects the items being iterated over from the response.
+	getItems func(Resp) []T
 
 	// getNextReq is used to get the next request to be used in the next page.
-	// The returned boolean value indicates whether the iterator is exhausted
-	// without needing to fetch the next page (e.g. token-based pagination where
-	// no next page token is provided in the response).
-	getNextReq     func(Resp) (Req, ListingStatus)
-	currentPage    []T
+	// The ListingStatus value indicates whether the client can stop iterating.
+	getNextReq func(Resp) (Req, ListingStatus)
+
+	// currentPage is the current page of items.
+	currentPage []T
+
+	// currentPageIdx is the index of the next item from currentPage to return.
 	currentPageIdx int
-	isExhausted    bool
+
+	// isExhausted indicates whether there are no more items to be fetched.
+	isExhausted bool
 }
 
 var ErrNoMoreItems = errors.New("no more items")
