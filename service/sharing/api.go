@@ -137,10 +137,10 @@ func (a *CleanRoomsAPI) ListAll(ctx context.Context, request ListCleanRoomsReque
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Update a clean room.
@@ -273,10 +273,10 @@ func (a *ProvidersAPI) ListAll(ctx context.Context, request ListProvidersRequest
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // ProviderInfoNameToMetastoreIdMap calls [ProvidersAPI.ListAll] and creates a map of results with [ProviderInfo].Name as key and [ProviderInfo].MetastoreId as value.
@@ -337,10 +337,10 @@ func (a *ProvidersAPI) ListSharesAll(ctx context.Context, request ListSharesRequ
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // List shares by Provider.
@@ -558,10 +558,10 @@ func (a *RecipientsAPI) ListAll(ctx context.Context, request ListRecipientsReque
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // RecipientInfoNameToMetastoreIdMap calls [RecipientsAPI.ListAll] and creates a map of results with [RecipientInfo].Name as key and [RecipientInfo].MetastoreId as value.
@@ -734,10 +734,10 @@ func (a *SharesAPI) ListAll(ctx context.Context) ([]ShareInfo, error) {
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Get permissions.

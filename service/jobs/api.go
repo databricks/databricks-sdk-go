@@ -369,10 +369,10 @@ func (a *JobsAPI) ListAll(ctx context.Context, request ListJobsRequest) ([]BaseJ
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // BaseJobSettingsNameToJobIdMap calls [JobsAPI.ListAll] and creates a map of results with [BaseJob].Settings.Name as key and [BaseJob].JobId as value.
@@ -474,10 +474,10 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]B
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Repair a job run.

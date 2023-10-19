@@ -118,10 +118,10 @@ func (a *GitCredentialsAPI) ListAll(ctx context.Context) ([]CredentialInfo, erro
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // CredentialInfoGitProviderToCredentialIdMap calls [GitCredentialsAPI.ListAll] and creates a map of results with [CredentialInfo].GitProvider as key and [CredentialInfo].CredentialId as value.
@@ -336,10 +336,10 @@ func (a *ReposAPI) ListAll(ctx context.Context, request ListReposRequest) ([]Rep
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // RepoInfoPathToIdMap calls [ReposAPI.ListAll] and creates a map of results with [RepoInfo].Path as key and [RepoInfo].Id as value.
@@ -580,10 +580,10 @@ func (a *SecretsAPI) ListAclsAll(ctx context.Context, request ListAclsRequest) (
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Lists ACLs.
@@ -634,10 +634,10 @@ func (a *SecretsAPI) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // List secret keys.
@@ -678,10 +678,10 @@ func (a *SecretsAPI) ListSecretsAll(ctx context.Context, request ListSecretsRequ
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // List secret keys.
@@ -915,10 +915,10 @@ func (a *WorkspaceAPI) ListAll(ctx context.Context, request ListWorkspaceRequest
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // ObjectInfoPathToObjectIdMap calls [WorkspaceAPI.ListAll] and creates a map of results with [ObjectInfo].Path as key and [ObjectInfo].ObjectId as value.

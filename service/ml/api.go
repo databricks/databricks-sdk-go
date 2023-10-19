@@ -168,10 +168,10 @@ func (a *ExperimentsAPI) GetHistoryAll(ctx context.Context, request GetHistoryRe
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Get experiment permission levels.
@@ -261,10 +261,10 @@ func (a *ExperimentsAPI) ListArtifactsAll(ctx context.Context, request ListArtif
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // List experiments.
@@ -313,10 +313,10 @@ func (a *ExperimentsAPI) ListExperimentsAll(ctx context.Context, request ListExp
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Log a batch.
@@ -464,10 +464,10 @@ func (a *ExperimentsAPI) SearchExperimentsAll(ctx context.Context, request Searc
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Search for runs.
@@ -512,10 +512,10 @@ func (a *ExperimentsAPI) SearchRunsAll(ctx context.Context, request SearchRuns) 
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Set a tag.
@@ -723,10 +723,10 @@ func (a *ModelRegistryAPI) GetLatestVersionsAll(ctx context.Context, request Get
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Get model.
@@ -835,10 +835,10 @@ func (a *ModelRegistryAPI) ListModelsAll(ctx context.Context, request ListModels
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // List transition requests.
@@ -872,10 +872,10 @@ func (a *ModelRegistryAPI) ListTransitionRequestsAll(ctx context.Context, reques
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // List registry webhooks.
@@ -920,10 +920,10 @@ func (a *ModelRegistryAPI) ListWebhooksAll(ctx context.Context, request ListWebh
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Reject a transition request.
@@ -986,10 +986,10 @@ func (a *ModelRegistryAPI) SearchModelVersionsAll(ctx context.Context, request S
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Search models.
@@ -1038,10 +1038,10 @@ func (a *ModelRegistryAPI) SearchModelsAll(ctx context.Context, request SearchMo
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Set a tag.

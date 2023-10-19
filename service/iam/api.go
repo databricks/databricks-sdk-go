@@ -229,10 +229,10 @@ func (a *AccountGroupsAPI) ListAll(ctx context.Context, request ListAccountGroup
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // GroupDisplayNameToIdMap calls [AccountGroupsAPI.ListAll] and creates a map of results with [Group].DisplayName as key and [Group].Id as value.
@@ -406,10 +406,10 @@ func (a *AccountServicePrincipalsAPI) ListAll(ctx context.Context, request ListA
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // ServicePrincipalDisplayNameToIdMap calls [AccountServicePrincipalsAPI.ListAll] and creates a map of results with [ServicePrincipal].DisplayName as key and [ServicePrincipal].Id as value.
@@ -592,10 +592,10 @@ func (a *AccountUsersAPI) ListAll(ctx context.Context, request ListAccountUsersR
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // UserUserNameToIdMap calls [AccountUsersAPI.ListAll] and creates a map of results with [User].UserName as key and [User].Id as value.
@@ -805,10 +805,10 @@ func (a *GroupsAPI) ListAll(ctx context.Context, request ListGroupsRequest) ([]G
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // GroupDisplayNameToIdMap calls [GroupsAPI.ListAll] and creates a map of results with [Group].DisplayName as key and [Group].Id as value.
@@ -1107,10 +1107,10 @@ func (a *ServicePrincipalsAPI) ListAll(ctx context.Context, request ListServiceP
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // ServicePrincipalDisplayNameToIdMap calls [ServicePrincipalsAPI.ListAll] and creates a map of results with [ServicePrincipal].DisplayName as key and [ServicePrincipal].Id as value.
@@ -1308,10 +1308,10 @@ func (a *UsersAPI) ListAll(ctx context.Context, request ListUsersRequest) ([]Use
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // UserUserNameToIdMap calls [UsersAPI.ListAll] and creates a map of results with [User].UserName as key and [User].Id as value.
@@ -1495,10 +1495,10 @@ func (a *WorkspaceAssignmentAPI) ListAll(ctx context.Context, request ListWorksp
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Get permission assignments.

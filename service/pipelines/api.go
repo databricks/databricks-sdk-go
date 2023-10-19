@@ -295,10 +295,10 @@ func (a *PipelinesAPI) ListPipelineEventsAll(ctx context.Context, request ListPi
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // List pipeline events.
@@ -356,10 +356,10 @@ func (a *PipelinesAPI) ListPipelinesAll(ctx context.Context, request ListPipelin
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // PipelineStateInfoNameToPipelineIdMap calls [PipelinesAPI.ListPipelinesAll] and creates a map of results with [PipelineStateInfo].Name as key and [PipelineStateInfo].PipelineId as value.

@@ -119,10 +119,10 @@ func (a *AccountMetastoreAssignmentsAPI) ListAll(ctx context.Context, request Li
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Get all workspaces assigned to a metastore.
@@ -241,10 +241,10 @@ func (a *AccountMetastoresAPI) ListAll(ctx context.Context) ([]MetastoreInfo, er
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Update a metastore.
@@ -586,10 +586,10 @@ func (a *CatalogsAPI) ListAll(ctx context.Context) ([]CatalogInfo, error) {
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Update a catalog.
@@ -712,10 +712,10 @@ func (a *ConnectionsAPI) ListAll(ctx context.Context) ([]ConnectionInfo, error) 
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // ConnectionInfoNameToFullNameMap calls [ConnectionsAPI.ListAll] and creates a map of results with [ConnectionInfo].Name as key and [ConnectionInfo].FullName as value.
@@ -899,10 +899,10 @@ func (a *ExternalLocationsAPI) ListAll(ctx context.Context) ([]ExternalLocationI
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Update an external location.
@@ -1050,10 +1050,10 @@ func (a *FunctionsAPI) ListAll(ctx context.Context, request ListFunctionsRequest
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // FunctionInfoNameToFullNameMap calls [FunctionsAPI.ListAll] and creates a map of results with [FunctionInfo].Name as key and [FunctionInfo].FullName as value.
@@ -1310,10 +1310,10 @@ func (a *MetastoresAPI) ListAll(ctx context.Context) ([]MetastoreInfo, error) {
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // MetastoreInfoNameToMetastoreIdMap calls [MetastoresAPI.ListAll] and creates a map of results with [MetastoreInfo].Name as key and [MetastoreInfo].MetastoreId as value.
@@ -1585,10 +1585,10 @@ func (a *ModelVersionsAPI) ListAll(ctx context.Context, request ListModelVersion
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // List Model Versions.
@@ -1836,10 +1836,10 @@ func (a *RegisteredModelsAPI) ListAll(ctx context.Context, request ListRegistere
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // RegisteredModelInfoNameToFullNameMap calls [RegisteredModelsAPI.ListAll] and creates a map of results with [RegisteredModelInfo].Name as key and [RegisteredModelInfo].FullName as value.
@@ -2035,10 +2035,10 @@ func (a *SchemasAPI) ListAll(ctx context.Context, request ListSchemasRequest) ([
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // SchemaInfoNameToFullNameMap calls [SchemasAPI.ListAll] and creates a map of results with [SchemaInfo].Name as key and [SchemaInfo].FullName as value.
@@ -2224,10 +2224,10 @@ func (a *StorageCredentialsAPI) ListAll(ctx context.Context) ([]StorageCredentia
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // StorageCredentialInfoNameToIdMap calls [StorageCredentialsAPI.ListAll] and creates a map of results with [StorageCredentialInfo].Name as key and [StorageCredentialInfo].Id as value.
@@ -2368,10 +2368,10 @@ func (a *SystemSchemasAPI) ListAll(ctx context.Context, request ListSystemSchema
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // List system schemas.
@@ -2606,10 +2606,10 @@ func (a *TablesAPI) ListAll(ctx context.Context, request ListTablesRequest) ([]T
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // TableInfoNameToTableIdMap calls [TablesAPI.ListAll] and creates a map of results with [TableInfo].Name as key and [TableInfo].TableId as value.
@@ -2721,10 +2721,10 @@ func (a *TablesAPI) ListSummariesAll(ctx context.Context, request ListSummariesR
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Update a table owner.
@@ -2863,10 +2863,10 @@ func (a *VolumesAPI) ListAll(ctx context.Context, request ListVolumesRequest) ([
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // VolumeInfoNameToVolumeIdMap calls [VolumesAPI.ListAll] and creates a map of results with [VolumeInfo].Name as key and [VolumeInfo].VolumeId as value.

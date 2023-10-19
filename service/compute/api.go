@@ -180,10 +180,10 @@ func (a *ClusterPoliciesAPI) ListAll(ctx context.Context, request ListClusterPol
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // PolicyNameToPolicyIdMap calls [ClusterPoliciesAPI.ListAll] and creates a map of results with [Policy].Name as key and [Policy].PolicyId as value.
@@ -643,10 +643,10 @@ func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]Clust
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Get cluster info.
@@ -740,10 +740,10 @@ func (a *ClustersAPI) ListAll(ctx context.Context, request ListClustersRequest) 
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // ClusterDetailsClusterNameToClusterIdMap calls [ClustersAPI.ListAll] and creates a map of results with [ClusterDetails].ClusterName as key and [ClusterDetails].ClusterId as value.
@@ -1578,10 +1578,10 @@ func (a *GlobalInitScriptsAPI) ListAll(ctx context.Context) ([]GlobalInitScriptD
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // GlobalInitScriptDetailsNameToScriptIdMap calls [GlobalInitScriptsAPI.ListAll] and creates a map of results with [GlobalInitScriptDetails].Name as key and [GlobalInitScriptDetails].ScriptId as value.
@@ -1802,10 +1802,10 @@ func (a *InstancePoolsAPI) ListAll(ctx context.Context) ([]InstancePoolAndStats,
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // InstancePoolAndStatsInstancePoolNameToInstancePoolIdMap calls [InstancePoolsAPI.ListAll] and creates a map of results with [InstancePoolAndStats].InstancePoolName as key and [InstancePoolAndStats].InstancePoolId as value.
@@ -1971,10 +1971,10 @@ func (a *InstanceProfilesAPI) ListAll(ctx context.Context) ([]InstanceProfile, e
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Remove the instance profile.
@@ -2100,10 +2100,10 @@ func (a *LibrariesAPI) ClusterStatusAll(ctx context.Context, request ClusterStat
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Get status.
@@ -2247,8 +2247,8 @@ func (a *PolicyFamiliesAPI) ListAll(ctx context.Context, request ListPolicyFamil
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }

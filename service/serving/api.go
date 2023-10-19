@@ -279,10 +279,10 @@ func (a *ServingEndpointsAPI) ListAll(ctx context.Context) ([]ServingEndpoint, e
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Retrieve the most recent log lines associated with a given serving endpoint's

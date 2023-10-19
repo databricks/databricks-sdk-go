@@ -157,10 +157,10 @@ func (a *BudgetsAPI) ListAll(ctx context.Context) ([]BudgetWithStatus, error) {
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // BudgetWithStatusNameToBudgetIdMap calls [BudgetsAPI.ListAll] and creates a map of results with [BudgetWithStatus].Name as key and [BudgetWithStatus].BudgetId as value.
@@ -392,10 +392,10 @@ func (a *LogDeliveryAPI) ListAll(ctx context.Context, request ListLogDeliveryReq
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // LogDeliveryConfigurationConfigNameToConfigIdMap calls [LogDeliveryAPI.ListAll] and creates a map of results with [LogDeliveryConfiguration].ConfigName as key and [LogDeliveryConfiguration].ConfigId as value.

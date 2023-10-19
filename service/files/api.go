@@ -168,10 +168,10 @@ func (a *DbfsAPI) ListAll(ctx context.Context, request ListDbfsRequest) ([]FileI
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // List directory contents or file details.

@@ -329,10 +329,10 @@ func (a *DashboardsAPI) ListAll(ctx context.Context, request ListDashboardsReque
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // DashboardNameToIdMap calls [DashboardsAPI.ListAll] and creates a map of results with [Dashboard].Name as key and [Dashboard].Id as value.
@@ -699,10 +699,10 @@ func (a *QueriesAPI) ListAll(ctx context.Context, request ListQueriesRequest) ([
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // QueryNameToIdMap calls [QueriesAPI.ListAll] and creates a map of results with [Query].Name as key and [Query].Id as value.
@@ -850,10 +850,10 @@ func (a *QueryHistoryAPI) ListAll(ctx context.Context, request ListQueryHistoryR
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 func NewQueryVisualizations(client *client.DatabricksClient) *QueryVisualizationsAPI {
@@ -1448,10 +1448,10 @@ func (a *WarehousesAPI) ListAll(ctx context.Context, request ListWarehousesReque
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // EndpointInfoNameToIdMap calls [WarehousesAPI.ListAll] and creates a map of results with [EndpointInfo].Name as key and [EndpointInfo].Id as value.

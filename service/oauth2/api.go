@@ -116,10 +116,10 @@ func (a *CustomAppIntegrationAPI) ListAll(ctx context.Context) ([]GetCustomAppIn
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Updates Custom OAuth App Integration.
@@ -262,10 +262,10 @@ func (a *OAuthPublishedAppsAPI) ListAll(ctx context.Context, request ListOAuthPu
 			break
 		}
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 func NewPublishedAppIntegration(client *client.DatabricksClient) *PublishedAppIntegrationAPI {
@@ -373,10 +373,10 @@ func (a *PublishedAppIntegrationAPI) ListAll(ctx context.Context) ([]GetPublishe
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // Updates Published OAuth App Integration.
@@ -483,10 +483,10 @@ func (a *ServicePrincipalSecretsAPI) ListAll(ctx context.Context, request ListSe
 
 		results = append(results, next)
 	}
-	if err != nil {
+	if err != listing.ErrNoMoreItems {
 		return nil, err
 	}
-	return results, err
+	return results, nil
 }
 
 // List service principal secrets.
