@@ -5,6 +5,7 @@ package settings
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -139,11 +140,11 @@ func (a *AccountIpAccessListsAPI) ListAll(ctx context.Context) ([]IpAccessListIn
 	iter := a.List(ctx)
 	var err error
 	var next IpAccessListInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -459,11 +460,11 @@ func (a *IpAccessListsAPI) ListAll(ctx context.Context) ([]IpAccessListInfo, err
 	iter := a.List(ctx)
 	var err error
 	var next IpAccessListInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -725,11 +726,11 @@ func (a *TokenManagementAPI) ListAll(ctx context.Context, request ListTokenManag
 	iter := a.List(ctx, request)
 	var err error
 	var next TokenInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -891,11 +892,11 @@ func (a *TokensAPI) ListAll(ctx context.Context) ([]TokenInfo, error) {
 	iter := a.List(ctx)
 	var err error
 	var next TokenInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil

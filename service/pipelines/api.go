@@ -5,6 +5,7 @@ package pipelines
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -287,7 +288,7 @@ func (a *PipelinesAPI) ListPipelineEventsAll(ctx context.Context, request ListPi
 	iter := a.ListPipelineEvents(ctx, request)
 	var err error
 	var next PipelineEvent
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -295,7 +296,7 @@ func (a *PipelinesAPI) ListPipelineEventsAll(ctx context.Context, request ListPi
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -348,7 +349,7 @@ func (a *PipelinesAPI) ListPipelinesAll(ctx context.Context, request ListPipelin
 	iter := a.ListPipelines(ctx, request)
 	var err error
 	var next PipelineStateInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -356,7 +357,7 @@ func (a *PipelinesAPI) ListPipelinesAll(ctx context.Context, request ListPipelin
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil

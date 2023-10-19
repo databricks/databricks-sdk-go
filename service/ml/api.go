@@ -5,6 +5,7 @@ package ml
 
 import (
 	"context"
+	"errors"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
@@ -160,7 +161,7 @@ func (a *ExperimentsAPI) GetHistoryAll(ctx context.Context, request GetHistoryRe
 	iter := a.GetHistory(ctx, request)
 	var err error
 	var next Metric
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -168,7 +169,7 @@ func (a *ExperimentsAPI) GetHistoryAll(ctx context.Context, request GetHistoryRe
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -257,11 +258,11 @@ func (a *ExperimentsAPI) ListArtifactsAll(ctx context.Context, request ListArtif
 	iter := a.ListArtifacts(ctx, request)
 	var err error
 	var next FileInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -305,7 +306,7 @@ func (a *ExperimentsAPI) ListExperimentsAll(ctx context.Context, request ListExp
 	iter := a.ListExperiments(ctx, request)
 	var err error
 	var next Experiment
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -313,7 +314,7 @@ func (a *ExperimentsAPI) ListExperimentsAll(ctx context.Context, request ListExp
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -460,11 +461,11 @@ func (a *ExperimentsAPI) SearchExperimentsAll(ctx context.Context, request Searc
 	iter := a.SearchExperiments(ctx, request)
 	var err error
 	var next Experiment
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -508,11 +509,11 @@ func (a *ExperimentsAPI) SearchRunsAll(ctx context.Context, request SearchRuns) 
 	iter := a.SearchRuns(ctx, request)
 	var err error
 	var next Run
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -719,11 +720,11 @@ func (a *ModelRegistryAPI) GetLatestVersionsAll(ctx context.Context, request Get
 	iter := a.GetLatestVersions(ctx, request)
 	var err error
 	var next ModelVersion
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -827,7 +828,7 @@ func (a *ModelRegistryAPI) ListModelsAll(ctx context.Context, request ListModels
 	iter := a.ListModels(ctx, request)
 	var err error
 	var next Model
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -835,7 +836,7 @@ func (a *ModelRegistryAPI) ListModelsAll(ctx context.Context, request ListModels
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -868,11 +869,11 @@ func (a *ModelRegistryAPI) ListTransitionRequestsAll(ctx context.Context, reques
 	iter := a.ListTransitionRequests(ctx, request)
 	var err error
 	var next Activity
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -916,11 +917,11 @@ func (a *ModelRegistryAPI) ListWebhooksAll(ctx context.Context, request ListWebh
 	iter := a.ListWebhooks(ctx, request)
 	var err error
 	var next RegistryWebhook
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -978,7 +979,7 @@ func (a *ModelRegistryAPI) SearchModelVersionsAll(ctx context.Context, request S
 	iter := a.SearchModelVersions(ctx, request)
 	var err error
 	var next ModelVersion
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -986,7 +987,7 @@ func (a *ModelRegistryAPI) SearchModelVersionsAll(ctx context.Context, request S
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -1030,7 +1031,7 @@ func (a *ModelRegistryAPI) SearchModelsAll(ctx context.Context, request SearchMo
 	iter := a.SearchModels(ctx, request)
 	var err error
 	var next Model
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -1038,7 +1039,7 @@ func (a *ModelRegistryAPI) SearchModelsAll(ctx context.Context, request SearchMo
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil

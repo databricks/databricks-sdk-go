@@ -5,6 +5,7 @@ package oauth2
 
 import (
 	"context"
+	"errors"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
@@ -112,11 +113,11 @@ func (a *CustomAppIntegrationAPI) ListAll(ctx context.Context) ([]GetCustomAppIn
 	iter := a.List(ctx)
 	var err error
 	var next GetCustomAppIntegrationOutput
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -254,7 +255,7 @@ func (a *OAuthPublishedAppsAPI) ListAll(ctx context.Context, request ListOAuthPu
 	iter := a.List(ctx, request)
 	var err error
 	var next PublishedAppOutput
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -262,7 +263,7 @@ func (a *OAuthPublishedAppsAPI) ListAll(ctx context.Context, request ListOAuthPu
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -369,11 +370,11 @@ func (a *PublishedAppIntegrationAPI) ListAll(ctx context.Context) ([]GetPublishe
 	iter := a.List(ctx)
 	var err error
 	var next GetPublishedAppIntegrationOutput
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -479,11 +480,11 @@ func (a *ServicePrincipalSecretsAPI) ListAll(ctx context.Context, request ListSe
 	iter := a.List(ctx, request)
 	var err error
 	var next SecretInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil

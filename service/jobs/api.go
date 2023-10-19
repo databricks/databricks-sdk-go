@@ -5,6 +5,7 @@ package jobs
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -361,7 +362,7 @@ func (a *JobsAPI) ListAll(ctx context.Context, request ListJobsRequest) ([]BaseJ
 	iter := a.List(ctx, request)
 	var err error
 	var next BaseJob
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -369,7 +370,7 @@ func (a *JobsAPI) ListAll(ctx context.Context, request ListJobsRequest) ([]BaseJ
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -466,7 +467,7 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]B
 	iter := a.ListRuns(ctx, request)
 	var err error
 	var next BaseRun
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -474,7 +475,7 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]B
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil

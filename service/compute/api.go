@@ -5,6 +5,7 @@ package compute
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -176,11 +177,11 @@ func (a *ClusterPoliciesAPI) ListAll(ctx context.Context, request ListClusterPol
 	iter := a.List(ctx, request)
 	var err error
 	var next Policy
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -641,7 +642,7 @@ func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]Clust
 	iter := a.Events(ctx, request)
 	var err error
 	var next ClusterEvent
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -649,7 +650,7 @@ func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]Clust
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -742,11 +743,11 @@ func (a *ClustersAPI) ListAll(ctx context.Context, request ListClustersRequest) 
 	iter := a.List(ctx, request)
 	var err error
 	var next ClusterDetails
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -1580,11 +1581,11 @@ func (a *GlobalInitScriptsAPI) ListAll(ctx context.Context) ([]GlobalInitScriptD
 	iter := a.List(ctx)
 	var err error
 	var next GlobalInitScriptDetails
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -1804,11 +1805,11 @@ func (a *InstancePoolsAPI) ListAll(ctx context.Context) ([]InstancePoolAndStats,
 	iter := a.List(ctx)
 	var err error
 	var next InstancePoolAndStats
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -1973,11 +1974,11 @@ func (a *InstanceProfilesAPI) ListAll(ctx context.Context) ([]InstanceProfile, e
 	iter := a.List(ctx)
 	var err error
 	var next InstanceProfile
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -2102,11 +2103,11 @@ func (a *LibrariesAPI) ClusterStatusAll(ctx context.Context, request ClusterStat
 	iter := a.ClusterStatus(ctx, request)
 	var err error
 	var next LibraryFullStatus
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -2245,7 +2246,7 @@ func (a *PolicyFamiliesAPI) ListAll(ctx context.Context, request ListPolicyFamil
 	iter := a.List(ctx, request)
 	var err error
 	var next PolicyFamily
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -2253,7 +2254,7 @@ func (a *PolicyFamiliesAPI) ListAll(ctx context.Context, request ListPolicyFamil
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil

@@ -5,6 +5,7 @@ package sql
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -317,7 +318,7 @@ func (a *DashboardsAPI) ListAll(ctx context.Context, request ListDashboardsReque
 	seen := map[string]bool{}
 	var err error
 	var next Dashboard
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 		id := next.Id
 		if seen[id] {
 			// item was added during iteration
@@ -330,7 +331,7 @@ func (a *DashboardsAPI) ListAll(ctx context.Context, request ListDashboardsReque
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -688,7 +689,7 @@ func (a *QueriesAPI) ListAll(ctx context.Context, request ListQueriesRequest) ([
 	seen := map[string]bool{}
 	var err error
 	var next Query
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 		id := next.Id
 		if seen[id] {
 			// item was added during iteration
@@ -701,7 +702,7 @@ func (a *QueriesAPI) ListAll(ctx context.Context, request ListQueriesRequest) ([
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -844,7 +845,7 @@ func (a *QueryHistoryAPI) ListAll(ctx context.Context, request ListQueryHistoryR
 	iter := a.List(ctx, request)
 	var err error
 	var next QueryInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -852,7 +853,7 @@ func (a *QueryHistoryAPI) ListAll(ctx context.Context, request ListQueryHistoryR
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -1446,11 +1447,11 @@ func (a *WarehousesAPI) ListAll(ctx context.Context, request ListWarehousesReque
 	iter := a.List(ctx, request)
 	var err error
 	var next EndpointInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil

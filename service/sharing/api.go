@@ -5,6 +5,7 @@ package sharing
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -129,7 +130,7 @@ func (a *CleanRoomsAPI) ListAll(ctx context.Context, request ListCleanRoomsReque
 	iter := a.List(ctx, request)
 	var err error
 	var next CleanRoomInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -137,7 +138,7 @@ func (a *CleanRoomsAPI) ListAll(ctx context.Context, request ListCleanRoomsReque
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -269,11 +270,11 @@ func (a *ProvidersAPI) ListAll(ctx context.Context, request ListProvidersRequest
 	iter := a.List(ctx, request)
 	var err error
 	var next ProviderInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -333,11 +334,11 @@ func (a *ProvidersAPI) ListSharesAll(ctx context.Context, request ListSharesRequ
 	iter := a.ListShares(ctx, request)
 	var err error
 	var next ProviderShare
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -554,11 +555,11 @@ func (a *RecipientsAPI) ListAll(ctx context.Context, request ListRecipientsReque
 	iter := a.List(ctx, request)
 	var err error
 	var next RecipientInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -730,11 +731,11 @@ func (a *SharesAPI) ListAll(ctx context.Context) ([]ShareInfo, error) {
 	iter := a.List(ctx)
 	var err error
 	var next ShareInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil

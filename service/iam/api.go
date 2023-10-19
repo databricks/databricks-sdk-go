@@ -5,6 +5,7 @@ package iam
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -225,11 +226,11 @@ func (a *AccountGroupsAPI) ListAll(ctx context.Context, request ListAccountGroup
 	iter := a.List(ctx, request)
 	var err error
 	var next Group
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -402,11 +403,11 @@ func (a *AccountServicePrincipalsAPI) ListAll(ctx context.Context, request ListA
 	iter := a.List(ctx, request)
 	var err error
 	var next ServicePrincipal
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -588,11 +589,11 @@ func (a *AccountUsersAPI) ListAll(ctx context.Context, request ListAccountUsersR
 	iter := a.List(ctx, request)
 	var err error
 	var next User
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -801,11 +802,11 @@ func (a *GroupsAPI) ListAll(ctx context.Context, request ListGroupsRequest) ([]G
 	iter := a.List(ctx, request)
 	var err error
 	var next Group
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -1103,11 +1104,11 @@ func (a *ServicePrincipalsAPI) ListAll(ctx context.Context, request ListServiceP
 	iter := a.List(ctx, request)
 	var err error
 	var next ServicePrincipal
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -1304,11 +1305,11 @@ func (a *UsersAPI) ListAll(ctx context.Context, request ListUsersRequest) ([]Use
 	iter := a.List(ctx, request)
 	var err error
 	var next User
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -1491,11 +1492,11 @@ func (a *WorkspaceAssignmentAPI) ListAll(ctx context.Context, request ListWorksp
 	iter := a.List(ctx, request)
 	var err error
 	var next PermissionAssignment
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil

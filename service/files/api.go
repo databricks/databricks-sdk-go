@@ -5,6 +5,7 @@ package files
 
 import (
 	"context"
+	"errors"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
@@ -164,11 +165,11 @@ func (a *DbfsAPI) ListAll(ctx context.Context, request ListDbfsRequest) ([]FileI
 	iter := a.List(ctx, request)
 	var err error
 	var next FileInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil

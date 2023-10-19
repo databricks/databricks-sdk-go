@@ -5,6 +5,7 @@ package serving
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -275,11 +276,11 @@ func (a *ServingEndpointsAPI) ListAll(ctx context.Context) ([]ServingEndpoint, e
 	iter := a.List(ctx)
 	var err error
 	var next ServingEndpoint
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil

@@ -5,6 +5,7 @@ package workspace
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -114,11 +115,11 @@ func (a *GitCredentialsAPI) ListAll(ctx context.Context) ([]CredentialInfo, erro
 	iter := a.List(ctx)
 	var err error
 	var next CredentialInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -332,11 +333,11 @@ func (a *ReposAPI) ListAll(ctx context.Context, request ListReposRequest) ([]Rep
 	iter := a.List(ctx, request)
 	var err error
 	var next RepoInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -576,11 +577,11 @@ func (a *SecretsAPI) ListAclsAll(ctx context.Context, request ListAclsRequest) (
 	iter := a.ListAcls(ctx, request)
 	var err error
 	var next AclItem
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -630,11 +631,11 @@ func (a *SecretsAPI) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
 	iter := a.ListScopes(ctx)
 	var err error
 	var next SecretScope
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -674,11 +675,11 @@ func (a *SecretsAPI) ListSecretsAll(ctx context.Context, request ListSecretsRequ
 	iter := a.ListSecrets(ctx, request)
 	var err error
 	var next SecretMetadata
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -911,11 +912,11 @@ func (a *WorkspaceAPI) ListAll(ctx context.Context, request ListWorkspaceRequest
 	iter := a.List(ctx, request)
 	var err error
 	var next ObjectInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil

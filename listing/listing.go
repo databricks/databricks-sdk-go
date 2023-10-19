@@ -76,7 +76,11 @@ func (i *Iterator[Req, Resp, T]) loadNextPageIfNeeded(ctx context.Context) error
 	i.currentPage = items
 	i.currentPageIdx = 0
 	var status ListingStatus
-	i.nextReq, status = i.getNextReq(resp)
+	if i.getNextReq == nil {
+		status = ListingStatusExhausted
+	} else {
+		i.nextReq, status = i.getNextReq(resp)
+	}
 	if !i.isExhausted && (status == ListingStatusExhausted || (status == ListingStatusCheckResult && len(items) == 0)) {
 		i.isExhausted = true
 	}

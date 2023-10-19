@@ -5,6 +5,7 @@ package catalog
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -115,11 +116,11 @@ func (a *AccountMetastoreAssignmentsAPI) ListAll(ctx context.Context, request Li
 	iter := a.List(ctx, request)
 	var err error
 	var next int64
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -237,11 +238,11 @@ func (a *AccountMetastoresAPI) ListAll(ctx context.Context) ([]MetastoreInfo, er
 	iter := a.List(ctx)
 	var err error
 	var next MetastoreInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -582,11 +583,11 @@ func (a *CatalogsAPI) ListAll(ctx context.Context) ([]CatalogInfo, error) {
 	iter := a.List(ctx)
 	var err error
 	var next CatalogInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -708,11 +709,11 @@ func (a *ConnectionsAPI) ListAll(ctx context.Context) ([]ConnectionInfo, error) 
 	iter := a.List(ctx)
 	var err error
 	var next ConnectionInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -895,11 +896,11 @@ func (a *ExternalLocationsAPI) ListAll(ctx context.Context) ([]ExternalLocationI
 	iter := a.List(ctx)
 	var err error
 	var next ExternalLocationInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -1046,11 +1047,11 @@ func (a *FunctionsAPI) ListAll(ctx context.Context, request ListFunctionsRequest
 	iter := a.List(ctx, request)
 	var err error
 	var next FunctionInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -1306,11 +1307,11 @@ func (a *MetastoresAPI) ListAll(ctx context.Context) ([]MetastoreInfo, error) {
 	iter := a.List(ctx)
 	var err error
 	var next MetastoreInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -1577,7 +1578,7 @@ func (a *ModelVersionsAPI) ListAll(ctx context.Context, request ListModelVersion
 	iter := a.List(ctx, request)
 	var err error
 	var next ModelVersionInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -1585,7 +1586,7 @@ func (a *ModelVersionsAPI) ListAll(ctx context.Context, request ListModelVersion
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -1828,7 +1829,7 @@ func (a *RegisteredModelsAPI) ListAll(ctx context.Context, request ListRegistere
 	iter := a.List(ctx, request)
 	var err error
 	var next RegisteredModelInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -1836,7 +1837,7 @@ func (a *RegisteredModelsAPI) ListAll(ctx context.Context, request ListRegistere
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -2031,11 +2032,11 @@ func (a *SchemasAPI) ListAll(ctx context.Context, request ListSchemasRequest) ([
 	iter := a.List(ctx, request)
 	var err error
 	var next SchemaInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -2220,11 +2221,11 @@ func (a *StorageCredentialsAPI) ListAll(ctx context.Context) ([]StorageCredentia
 	iter := a.List(ctx)
 	var err error
 	var next StorageCredentialInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -2364,11 +2365,11 @@ func (a *SystemSchemasAPI) ListAll(ctx context.Context, request ListSystemSchema
 	iter := a.List(ctx, request)
 	var err error
 	var next SystemSchemaInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -2598,7 +2599,7 @@ func (a *TablesAPI) ListAll(ctx context.Context, request ListTablesRequest) ([]T
 	iter := a.List(ctx, request)
 	var err error
 	var next TableInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -2606,7 +2607,7 @@ func (a *TablesAPI) ListAll(ctx context.Context, request ListTablesRequest) ([]T
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -2713,7 +2714,7 @@ func (a *TablesAPI) ListSummariesAll(ctx context.Context, request ListSummariesR
 	iter := a.ListSummaries(ctx, request)
 	var err error
 	var next TableSummary
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 		totalCount++
@@ -2721,7 +2722,7 @@ func (a *TablesAPI) ListSummariesAll(ctx context.Context, request ListSummariesR
 			break
 		}
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
@@ -2859,11 +2860,11 @@ func (a *VolumesAPI) ListAll(ctx context.Context, request ListVolumesRequest) ([
 	iter := a.List(ctx, request)
 	var err error
 	var next VolumeInfo
-	for next, err = iter.Next(ctx); err != nil; next, err = iter.Next(ctx) {
+	for next, err = iter.Next(ctx); err == nil; next, err = iter.Next(ctx) {
 
 		results = append(results, next)
 	}
-	if err != listing.ErrNoMoreItems {
+	if err != nil && !errors.Is(err, listing.ErrNoMoreItems) {
 		return nil, err
 	}
 	return results, nil
