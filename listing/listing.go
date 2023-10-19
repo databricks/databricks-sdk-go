@@ -51,17 +51,16 @@ func NewIterator[Req, Resp, T any](
 	}
 }
 
-func (i *Iterator[Req, Resp, T]) loadNextPageIfNeeded(ctx context.Context) (bool, error) {
+func (i *Iterator[Req, Resp, T]) loadNextPageIfNeeded(ctx context.Context) error {
 	if i.currentPageIdx < len(i.currentPage) {
-		return true, nil
+		return nil
 	}
-
 	if i.isExhausted {
-		return false, ErrNoMoreItems
+		return ErrNoMoreItems
 	}
 	resp, err := i.getNextPage(ctx, i.nextReq)
 	if err != nil {
-		return false, err
+		return err
 	}
 	items := i.getItems(resp)
 	i.currentPage = items
@@ -71,16 +70,16 @@ func (i *Iterator[Req, Resp, T]) loadNextPageIfNeeded(ctx context.Context) (bool
 	if !i.isExhausted && (status == ListingStatusExhausted || (status == ListingStatusCheckResult && len(items) == 0)) {
 		i.isExhausted = true
 	}
-	return !i.isExhausted, err
+	return err
 }
 
 func (i *Iterator[Req, Resp, T]) Next(ctx context.Context) (T, error) {
 	var t T
-	ok, err := i.loadNextPageIfNeeded(ctx)
+	err := i.loadNextPageIfNeeded(ctx)
 	if err != nil {
 		return t, err
 	}
-	if !ok {
+	if i.currentPageIdx >= len(i.currentPage) {
 		return t, ErrNoMoreItems
 	}
 	item := i.currentPage[i.currentPageIdx]
@@ -89,5 +88,9 @@ func (i *Iterator[Req, Resp, T]) Next(ctx context.Context) (T, error) {
 }
 
 func (i *Iterator[Req, Resp, T]) HasNext(ctx context.Context) (bool, error) {
-	return i.loadNextPageIfNeeded(ctx)
+	err := i.loadNextPageIfNeeded(ctx)
+	if err != nil {
+		return false, err
+	}
+	return i.currentPageIdx < len(i.currentPage), nil
 }
