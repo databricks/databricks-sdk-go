@@ -338,8 +338,8 @@ func (a *JobsAPI) List(ctx context.Context, request ListJobsRequest) *listing.It
 		return resp.Jobs
 	}
 	getNextReq := func(resp *ListJobsResponse) (ListJobsRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
@@ -443,8 +443,8 @@ func (a *JobsAPI) ListRuns(ctx context.Context, request ListRunsRequest) *listin
 		return resp.Runs
 	}
 	getNextReq := func(resp *ListRunsResponse) (ListRunsRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {

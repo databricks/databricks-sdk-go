@@ -297,8 +297,9 @@ func (a *DashboardsAPI) List(ctx context.Context, request ListDashboardsRequest)
 		return resp.Results
 	}
 	getNextReq := func(resp *ListResponse) (ListDashboardsRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.Page = resp.Page + 1
-		return request, listing.ListingStatusCheckResult
+		return request, status
 	}
 	return listing.NewIterator(
 		request,
@@ -667,8 +668,9 @@ func (a *QueriesAPI) List(ctx context.Context, request ListQueriesRequest) *list
 		return resp.Results
 	}
 	getNextReq := func(resp *QueryList) (ListQueriesRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.Page = resp.Page + 1
-		return request, listing.ListingStatusCheckResult
+		return request, status
 	}
 	return listing.NewIterator(
 		request,
@@ -819,8 +821,8 @@ func (a *QueryHistoryAPI) List(ctx context.Context, request ListQueryHistoryRequ
 		return resp.Res
 	}
 	getNextReq := func(resp *ListQueriesResponse) (ListQueryHistoryRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {

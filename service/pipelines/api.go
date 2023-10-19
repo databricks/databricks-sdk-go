@@ -264,8 +264,8 @@ func (a *PipelinesAPI) ListPipelineEvents(ctx context.Context, request ListPipel
 		return resp.Events
 	}
 	getNextReq := func(resp *ListPipelineEventsResponse) (ListPipelineEventsRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
@@ -325,8 +325,8 @@ func (a *PipelinesAPI) ListPipelines(ctx context.Context, request ListPipelinesR
 		return resp.Statuses
 	}
 	getNextReq := func(resp *ListPipelinesResponse) (ListPipelinesRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {

@@ -1554,8 +1554,8 @@ func (a *ModelVersionsAPI) List(ctx context.Context, request ListModelVersionsRe
 		return resp.ModelVersions
 	}
 	getNextReq := func(resp *ListModelVersionsResponse) (ListModelVersionsRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
@@ -1805,8 +1805,8 @@ func (a *RegisteredModelsAPI) List(ctx context.Context, request ListRegisteredMo
 		return resp.RegisteredModels
 	}
 	getNextReq := func(resp *ListRegisteredModelsResponse) (ListRegisteredModelsRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
@@ -2575,8 +2575,8 @@ func (a *TablesAPI) List(ctx context.Context, request ListTablesRequest) *listin
 		return resp.Tables
 	}
 	getNextReq := func(resp *ListTablesResponse) (ListTablesRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
@@ -2690,8 +2690,8 @@ func (a *TablesAPI) ListSummaries(ctx context.Context, request ListSummariesRequ
 		return resp.Tables
 	}
 	getNextReq := func(resp *ListTableSummariesResponse) (ListSummariesRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {

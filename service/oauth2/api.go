@@ -231,8 +231,8 @@ func (a *OAuthPublishedAppsAPI) List(ctx context.Context, request ListOAuthPubli
 		return resp.Apps
 	}
 	getNextReq := func(resp *GetPublishedAppsOutput) (ListOAuthPublishedAppsRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {

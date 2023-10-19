@@ -137,8 +137,8 @@ func (a *ExperimentsAPI) GetHistory(ctx context.Context, request GetHistoryReque
 		return resp.Metrics
 	}
 	getNextReq := func(resp *GetMetricHistoryResponse) (GetHistoryRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
@@ -236,8 +236,8 @@ func (a *ExperimentsAPI) ListArtifacts(ctx context.Context, request ListArtifact
 		return resp.Files
 	}
 	getNextReq := func(resp *ListArtifactsResponse) (ListArtifactsRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
@@ -282,8 +282,8 @@ func (a *ExperimentsAPI) ListExperiments(ctx context.Context, request ListExperi
 		return resp.Experiments
 	}
 	getNextReq := func(resp *ListExperimentsResponse) (ListExperimentsRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
@@ -439,8 +439,8 @@ func (a *ExperimentsAPI) SearchExperiments(ctx context.Context, request SearchEx
 		return resp.Experiments
 	}
 	getNextReq := func(resp *SearchExperimentsResponse) (SearchExperiments, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
@@ -487,8 +487,8 @@ func (a *ExperimentsAPI) SearchRuns(ctx context.Context, request SearchRuns) *li
 		return resp.Runs
 	}
 	getNextReq := func(resp *SearchRunsResponse) (SearchRuns, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
@@ -804,8 +804,8 @@ func (a *ModelRegistryAPI) ListModels(ctx context.Context, request ListModelsReq
 		return resp.RegisteredModels
 	}
 	getNextReq := func(resp *ListModelsResponse) (ListModelsRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
@@ -895,8 +895,8 @@ func (a *ModelRegistryAPI) ListWebhooks(ctx context.Context, request ListWebhook
 		return resp.Webhooks
 	}
 	getNextReq := func(resp *ListRegistryWebhooks) (ListWebhooksRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
@@ -955,8 +955,8 @@ func (a *ModelRegistryAPI) SearchModelVersions(ctx context.Context, request Sear
 		return resp.ModelVersions
 	}
 	getNextReq := func(resp *SearchModelVersionsResponse) (SearchModelVersionsRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
@@ -1007,8 +1007,8 @@ func (a *ModelRegistryAPI) SearchModels(ctx context.Context, request SearchModel
 		return resp.RegisteredModels
 	}
 	getNextReq := func(resp *SearchModelsResponse) (SearchModelsRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {

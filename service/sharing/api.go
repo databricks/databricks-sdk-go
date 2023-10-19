@@ -106,8 +106,8 @@ func (a *CleanRoomsAPI) List(ctx context.Context, request ListCleanRoomsRequest)
 		return resp.CleanRooms
 	}
 	getNextReq := func(resp *ListCleanRoomsResponse) (ListCleanRoomsRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {

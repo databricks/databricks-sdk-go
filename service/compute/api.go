@@ -618,8 +618,14 @@ func (a *ClustersAPI) Events(ctx context.Context, request GetEvents) *listing.It
 		return resp.Events
 	}
 	getNextReq := func(resp *GetEventsResponse) (GetEvents, listing.ListingStatus) {
-		request = *resp.NextPage
-		return request, listing.ListingStatusCheckResult
+		status := listing.ListingStatusCheckResult
+		if resp.NextPage == nil {
+			status = listing.ListingStatusExhausted
+		} else {
+			status = listing.ListingStatusNotExhausted
+			request = *resp.NextPage
+		}
+		return request, status
 	}
 	return listing.NewIterator(
 		request,
@@ -2216,8 +2222,8 @@ func (a *PolicyFamiliesAPI) List(ctx context.Context, request ListPolicyFamilies
 		return resp.PolicyFamilies
 	}
 	getNextReq := func(resp *ListPolicyFamiliesResponse) (ListPolicyFamiliesRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.PageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {

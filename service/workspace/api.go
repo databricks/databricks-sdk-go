@@ -311,8 +311,8 @@ func (a *ReposAPI) List(ctx context.Context, request ListReposRequest) *listing.
 		return resp.Repos
 	}
 	getNextReq := func(resp *ListReposResponse) (ListReposRequest, listing.ListingStatus) {
+		status := listing.ListingStatusCheckResult
 		request.NextPageToken = resp.NextPageToken
-		var status listing.ListingStatus
 		if resp.NextPageToken == "" {
 			status = listing.ListingStatusExhausted
 		} else {
