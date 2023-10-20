@@ -30,7 +30,8 @@ func TestCiCdProviderDetect(t *testing.T) {
 
 func cleanupEnv(t *testing.T) {
 	// We use set dummy env here to ensure this function is not called from a
-	// test that runs in parallel.
+	// test that runs in parallel. The t.Setenv() calls below will fail if this
+	// function is called from a parallel test.
 	t.Setenv("FOO_BAR", "")
 
 	environ := os.Environ()
