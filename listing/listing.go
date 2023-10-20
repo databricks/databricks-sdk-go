@@ -133,6 +133,9 @@ func (i *iteratorImpl[Req, Resp, T]) Next(ctx context.Context) (T, error) {
 
 func (i *iteratorImpl[Req, Resp, T]) HasNext(ctx context.Context) bool {
 	err := i.loadNextPageIfNeeded(ctx)
+	// As described in the documentation for HasNext, if there was an error
+	// fetching the next page, we still return true to allow the user to handle
+	// the error in Next.
 	if err != nil {
 		return true
 	}
@@ -177,6 +180,11 @@ func (i *dedupeIteratorImpl[T, Id]) HasNext(ctx context.Context) bool {
 	if i.current != nil {
 		return true
 	}
+	// To compute HasNext in dedupeIteratorImpl, we need to actually fetch the
+	// next item from the underlying iterator and compare it to seen items.
+	// However, the retrieved item cannot be discarded, as it needs to be
+	// returned by the next call to Next. So we store the item in current and
+	// return it in the next call to Next, after which current is set to nil.
 	for {
 		t, err := i.it.Next(ctx)
 		if errors.Is(err, ErrNoMoreItems) {
