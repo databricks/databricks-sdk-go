@@ -5,8 +5,13 @@ import (
 	"errors"
 )
 
+type Iterator[T any] interface {
+	HasNext(context.Context) bool
+	Next(context.Context) (T, error)
+}
+
 // Use struct{} for Req to indicate one-shot iterator.
-type Iterator[Req, Resp, T any] struct {
+type IteratorImpl[Req, Resp, T any] struct {
 	// nextReq is the request to be used to fetch the next page. If nil, then
 	// there is no next page to fetch.
 	nextReq *Req
@@ -39,8 +44,8 @@ func NewIterator[Req, Resp, T any](
 	getNextPage func(context.Context, Req) (Resp, error),
 	getItems func(Resp) []T,
 	getNextReq func(Resp) *Req,
-) *Iterator[Req, Resp, T] {
-	return &Iterator[Req, Resp, T]{
+) *IteratorImpl[Req, Resp, T] {
+	return &IteratorImpl[Req, Resp, T]{
 		nextReq:     nextReq,
 		getNextPage: getNextPage,
 		getItems:    getItems,
@@ -48,7 +53,7 @@ func NewIterator[Req, Resp, T any](
 	}
 }
 
-func (i *Iterator[Req, Resp, T]) loadNextPageIfNeeded(ctx context.Context) error {
+func (i *IteratorImpl[Req, Resp, T]) loadNextPageIfNeeded(ctx context.Context) error {
 	if i.currentPageIdx < len(i.currentPage) {
 		return nil
 	}
@@ -78,7 +83,7 @@ func (i *Iterator[Req, Resp, T]) loadNextPageIfNeeded(ctx context.Context) error
 	return nil
 }
 
-func (i *Iterator[Req, Resp, T]) Next(ctx context.Context) (T, error) {
+func (i *IteratorImpl[Req, Resp, T]) Next(ctx context.Context) (T, error) {
 	var t T
 	err := i.loadNextPageIfNeeded(ctx)
 	if err != nil {
@@ -92,7 +97,7 @@ func (i *Iterator[Req, Resp, T]) Next(ctx context.Context) (T, error) {
 	return item, nil
 }
 
-func (i *Iterator[Req, Resp, T]) HasNext(ctx context.Context) bool {
+func (i *IteratorImpl[Req, Resp, T]) HasNext(ctx context.Context) bool {
 	err := i.loadNextPageIfNeeded(ctx)
 	if err != nil {
 		return true
@@ -100,21 +105,22 @@ func (i *Iterator[Req, Resp, T]) HasNext(ctx context.Context) bool {
 	return i.currentPageIdx < len(i.currentPage)
 }
 
-type DedupeIterator[Req, Resp any, T comparable] struct {
-	it      *Iterator[Req, Resp, T]
-	seen    map[T]struct{}
+type DedupeIteratorImpl[T any, Id comparable] struct {
+	it      Iterator[T]
+	getId   func(T) Id
+	seen    map[Id]struct{}
 	current *T
 }
 
-func NewDedupeIterator[Req, Resp any, T comparable](
-	it *Iterator[Req, Resp, T]) *DedupeIterator[Req, Resp, T] {
-	return &DedupeIterator[Req, Resp, T]{
-		it:   it,
-		seen: make(map[T]struct{}),
+func NewDedupeIterator[T any, Id comparable](it Iterator[T], getId func(T) Id) *DedupeIteratorImpl[T, Id] {
+	return &DedupeIteratorImpl[T, Id]{
+		it:    it,
+		getId: getId,
+		seen:  make(map[Id]struct{}),
 	}
 }
 
-func (i *DedupeIterator[Req, Resp, T]) Next(ctx context.Context) (T, error) {
+func (i *DedupeIteratorImpl[T, Id]) Next(ctx context.Context) (T, error) {
 	if i.current != nil {
 		t := *i.current
 		i.current = nil
@@ -125,14 +131,15 @@ func (i *DedupeIterator[Req, Resp, T]) Next(ctx context.Context) (T, error) {
 		if err != nil {
 			return t, err
 		}
-		if _, ok := i.seen[t]; !ok {
-			i.seen[t] = struct{}{}
+		id := i.getId(t)
+		if _, ok := i.seen[id]; !ok {
+			i.seen[id] = struct{}{}
 			return t, nil
 		}
 	}
 }
 
-func (i *DedupeIterator[Req, Resp, T]) HasNext(ctx context.Context) bool {
+func (i *DedupeIteratorImpl[T, Id]) HasNext(ctx context.Context) bool {
 	if i.current != nil {
 		return true
 	}
@@ -144,8 +151,10 @@ func (i *DedupeIterator[Req, Resp, T]) HasNext(ctx context.Context) bool {
 		if err != nil {
 			return true
 		}
-		if _, ok := i.seen[t]; !ok {
+		id := i.getId(t)
+		if _, ok := i.seen[id]; !ok {
 			i.current = &t
+			i.seen[id] = struct{}{}
 			return true
 		}
 	}

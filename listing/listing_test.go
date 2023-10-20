@@ -1,59 +1,204 @@
-package listing
+package listing_test
 
 import (
 	"context"
 	"errors"
 	"testing"
+
+	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/stretchr/testify/assert"
 )
 
-// TestIterator tests the Iterator type.
 func TestIterator(t *testing.T) {
-	getNextPage := func(ctx context.Context, req int) ([]int, error) {
-		if req >= 10 {
-			return nil, nil
+	t.Run("basic iteration", func(t *testing.T) {
+		reqs := []string{"page1", "page2", "page3"}
+		pages := map[string]map[string][]int{
+			"page1": {"page": {1, 2}},
+			"page2": {"page": {3, 4}},
+			"page3": {"page": {5, 6}},
 		}
-		return []int{req, req + 1}, nil
-	}
-	getNextReq := func(resp []int) *int {
-		if len(resp) == 0 {
-			return nil
+		nextReq := "page1"
+
+		iterator := listing.NewIterator(&nextReq,
+			func(ctx context.Context, req string) (map[string][]int, error) {
+				return pages[req], nil
+			},
+			func(resp map[string][]int) []int {
+				return resp["page"]
+			},
+			func(resp map[string][]int) *string {
+				for i, r := range reqs {
+					if r == nextReq && i+1 < len(reqs) {
+						nextReq = reqs[i+1]
+						return &nextReq
+					}
+				}
+				return nil
+			},
+		)
+
+		for i := 1; i <= 6; i++ {
+			item, err := iterator.Next(context.Background())
+			assert.NoError(t, err)
+			assert.Equal(t, i, item)
 		}
-		x := resp[len(resp)-1] + 1
-		return &x
-	}
-	getItems := func(resp []int) []int {
-		return resp
-	}
-	x := 0
-	it := NewIterator(&x, getNextPage, getItems, getNextReq)
-	for i := 0; i < 10; i++ {
-		v, err := it.Next(context.Background())
-		if err != nil {
-			t.Fatal(err)
+
+		_, err := iterator.Next(context.Background())
+		assert.ErrorIs(t, err, listing.ErrNoMoreItems)
+	})
+
+	t.Run("error propagation", func(t *testing.T) {
+		expectedErr := errors.New("some error")
+		iterator := listing.NewIterator[struct{}, []int, struct{}](&struct{}{},
+			func(ctx context.Context, req struct{}) ([]int, error) {
+				return nil, expectedErr
+			},
+			nil,
+			nil,
+		)
+
+		_, err := iterator.Next(context.Background())
+		assert.ErrorIs(t, err, expectedErr)
+	})
+
+	t.Run("error propagation from HasNext", func(t *testing.T) {
+		expectedErr := errors.New("some error")
+		iterator := listing.NewIterator[struct{}, []int, struct{}](&struct{}{},
+			func(ctx context.Context, req struct{}) ([]int, error) {
+				return nil, expectedErr
+			},
+			nil,
+			nil,
+		)
+
+		b := iterator.HasNext(context.Background())
+		assert.True(t, b)
+		// Error from HasNext is stored and returned on call to Next
+		_, err := iterator.Next(context.Background())
+		assert.ErrorIs(t, err, expectedErr)
+		// Error is cached
+		_, err2 := iterator.Next(context.Background())
+		assert.Equal(t, err, err2)
+	})
+
+	t.Run("iteration with empty page in the middle", func(t *testing.T) {
+		reqs := []string{"page1", "page2", "page3"}
+		pages := map[string]map[string][]int{
+			"page1": {"page": {1, 2}},
+			"page2": {"page": {}},
+			"page3": {"page": {3, 4}},
 		}
-		if v != i {
-			t.Fatalf("expected %d, got %d", i, v)
+		nextReq := "page1"
+
+		iterator := listing.NewIterator(&nextReq,
+			func(ctx context.Context, req string) (map[string][]int, error) {
+				return pages[req], nil
+			},
+			func(resp map[string][]int) []int {
+				return resp["page"]
+			},
+			func(resp map[string][]int) *string {
+				for i, r := range reqs {
+					if r == nextReq && i+1 < len(reqs) {
+						nextReq = reqs[i+1]
+						return &nextReq
+					}
+				}
+				return nil
+			},
+		)
+
+		for i := 1; i <= 4; i++ {
+			item, err := iterator.Next(context.Background())
+			assert.NoError(t, err)
+			assert.Equal(t, i, item)
 		}
-	}
-	_, err := it.Next(context.Background())
-	if !errors.Is(err, ErrNoMoreItems) {
-		t.Fatalf("expected %v, got %v", ErrNoMoreItems, err)
-	}
+
+		_, err := iterator.Next(context.Background())
+		assert.ErrorIs(t, err, listing.ErrNoMoreItems)
+	})
 }
 
-// Tests to write:
-// TestIterator_GetNextPageErrors tests that errors from getNextPage are propagated.
+func TestDedupeIterator(t *testing.T) {
+	t.Run("basic iteration", func(t *testing.T) {
+		reqs := []string{"page1", "page2", "page3"}
+		pages := map[string][]int{
+			"page1": {1, 2, 2},
+			"page2": {3, 4, 4},
+			"page3": {5, 5, 6},
+		}
+		nextReq := "page1"
 
-// TestIterator_GetNextReqCheckResult tests that the iterator stops if there are no more items.
+		iterator := listing.NewIterator(&nextReq,
+			func(ctx context.Context, req string) ([]int, error) {
+				return pages[req], nil
+			},
+			func(resp []int) []int {
+				return resp
+			},
+			func(resp []int) *string {
+				for i, r := range reqs {
+					if r == nextReq && i+1 < len(reqs) {
+						nextReq = reqs[i+1]
+						return &nextReq
+					}
+				}
+				return nil
+			},
+		)
 
-// TestIterator_GetNextReqExhausted tests that the iterator stops even if some items are returned.
+		dedupeIterator := listing.NewDedupeIterator(
+			iterator, func(a int) int { return a })
 
-// TestIterator_GetNextReqNotExhausted tests that the iterator continues if there are more items until CheckResult with no entries or Exhausted.
+		for i := 1; i <= 6; i++ {
+			item, err := dedupeIterator.Next(context.Background())
+			assert.NoError(t, err)
+			assert.Equal(t, i, item)
+		}
 
-// TestIterator_NextReturnsNextItem tests that Next returns the next item.
+		_, err := dedupeIterator.Next(context.Background())
+		assert.ErrorIs(t, err, listing.ErrNoMoreItems)
+	})
 
-// TestIterator_NextErrNoMoreItems tests that Next returns ErrNoMoreItems when there are no more items.
+	t.Run("HasNext caches appropriately", func(t *testing.T) {
+		reqs := []string{"page1", "page2", "page3"}
+		pages := map[string][]int{
+			"page1": {1, 2, 2},
+			"page2": {3, 4, 4},
+			"page3": {5, 5, 6},
+		}
+		nextReq := "page1"
 
-// TestIterator_HasNextNoNext tests that HasNext returns false when there are no more items.
+		iterator := listing.NewIterator(&nextReq,
+			func(ctx context.Context, req string) ([]int, error) {
+				return pages[req], nil
+			},
+			func(resp []int) []int {
+				return resp
+			},
+			func(resp []int) *string {
+				for i, r := range reqs {
+					if r == nextReq && i+1 < len(reqs) {
+						nextReq = reqs[i+1]
+						return &nextReq
+					}
+				}
+				return nil
+			},
+		)
 
-// TestIterator_HasNextNext tests that HasNext returns true when there are more items.
+		dedupeIterator := listing.NewDedupeIterator(
+			iterator, func(a int) int { return a })
+		values := make([]int, 0)
+		for dedupeIterator.HasNext(context.Background()) {
+			v, err := dedupeIterator.Next(context.Background())
+			values = append(values, v)
+			assert.NoError(t, err)
+		}
+		assert.Equal(t, []int{1, 2, 3, 4, 5, 6}, values)
+	})
+
+	t.Run("HasNext returns true when there is an error", func(t *testing.T) {
+
+	})
+}
