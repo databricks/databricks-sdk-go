@@ -318,10 +318,10 @@ func (a *DashboardsAPI) List(ctx context.Context, request ListDashboardsRequest)
 }
 
 func (a *DashboardsAPI) ListAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
+	iter := a.List(ctx, request)
 	var results []Dashboard
 	var totalCount int = 0
 	limit := request.PageSize
-	iter := a.List(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -334,6 +334,7 @@ func (a *DashboardsAPI) ListAll(ctx context.Context, request ListDashboardsReque
 		}
 	}
 	return results, nil
+
 }
 
 // DashboardNameToIdMap calls [DashboardsAPI.ListAll] and creates a map of results with [Dashboard].Name as key and [Dashboard].Id as value.
@@ -689,10 +690,10 @@ func (a *QueriesAPI) List(ctx context.Context, request ListQueriesRequest) (it l
 }
 
 func (a *QueriesAPI) ListAll(ctx context.Context, request ListQueriesRequest) ([]Query, error) {
+	iter := a.List(ctx, request)
 	var results []Query
 	var totalCount int = 0
 	limit := request.PageSize
-	iter := a.List(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -705,6 +706,7 @@ func (a *QueriesAPI) ListAll(ctx context.Context, request ListQueriesRequest) ([
 		}
 	}
 	return results, nil
+
 }
 
 // QueryNameToIdMap calls [QueriesAPI.ListAll] and creates a map of results with [Query].Name as key and [Query].Id as value.
@@ -837,10 +839,10 @@ func (a *QueryHistoryAPI) List(ctx context.Context, request ListQueryHistoryRequ
 }
 
 func (a *QueryHistoryAPI) ListAll(ctx context.Context, request ListQueryHistoryRequest) ([]QueryInfo, error) {
+	iter := a.List(ctx, request)
 	var results []QueryInfo
 	var totalCount int = 0
 	limit := request.MaxResults
-	iter := a.List(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -853,6 +855,7 @@ func (a *QueryHistoryAPI) ListAll(ctx context.Context, request ListQueryHistoryR
 		}
 	}
 	return results, nil
+
 }
 
 func NewQueryVisualizations(client *client.DatabricksClient) *QueryVisualizationsAPI {
@@ -1441,16 +1444,8 @@ func (a *WarehousesAPI) List(ctx context.Context, request ListWarehousesRequest)
 }
 
 func (a *WarehousesAPI) ListAll(ctx context.Context, request ListWarehousesRequest) ([]EndpointInfo, error) {
-	var results []EndpointInfo
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // EndpointInfoNameToIdMap calls [WarehousesAPI.ListAll] and creates a map of results with [EndpointInfo].Name as key and [EndpointInfo].Id as value.

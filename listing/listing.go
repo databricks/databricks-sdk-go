@@ -10,6 +10,18 @@ type Iterator[T any] interface {
 	Next(context.Context) (T, error)
 }
 
+func ToSlice[T any](ctx context.Context, it Iterator[T]) ([]T, error) {
+	var items []T
+	for it.HasNext(ctx) {
+		item, err := it.Next(ctx)
+		if err != nil {
+			return nil, err
+		}
+		items = append(items, item)
+	}
+	return items, nil
+}
+
 // Use struct{} for Req to indicate one-shot iterator.
 type IteratorImpl[Req, Resp, T any] struct {
 	// nextReq is the request to be used to fetch the next page. If nil, then

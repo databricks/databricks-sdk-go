@@ -215,26 +215,26 @@ func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}
 }
 
 func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) ([]{{ template "type" .Pagination.Entity }}, error) {
-	var results []{{ template "type" .Pagination.Entity }}
+	iter := a.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
 	{{ if .Pagination.Limit -}}
+	var results []{{ template "type" .Pagination.Entity }}
 	var totalCount {{template "type" .Pagination.Limit.Entity}} = 0
 	limit := request.{{.Pagination.Limit.PascalName}}
-	{{ end -}}
-	iter := a.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
 			return nil, err
 		}
 		results = append(results, next)
-		{{ if .Pagination.Limit -}}
 		totalCount++
 		if limit > 0 && totalCount >= limit {
 			break
 		}
-		{{- end -}}
 	}
 	return results, nil
+	{{ else -}}
+	return listing.ToSlice(ctx, iter)
+	{{- end }}
 }
 {{end}}{{if .NamedIdMap}}
 // {{.NamedIdMap.PascalName}} calls [{{.Service.Name}}API.{{.PascalName}}{{if not .NamedIdMap.Direct}}All{{end -}}] and creates a map of results with [{{.NamedIdMap.Entity.PascalName}}]{{ template "field-path" .NamedIdMap.NamePath }} as key and [{{.NamedIdMap.Entity.PascalName}}]{{ template "field-path" .NamedIdMap.IdPath}} as value.

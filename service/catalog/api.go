@@ -113,16 +113,8 @@ func (a *AccountMetastoreAssignmentsAPI) List(ctx context.Context, request ListA
 }
 
 func (a *AccountMetastoreAssignmentsAPI) ListAll(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]int64, error) {
-	var results []int64
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Get all workspaces assigned to a metastore.
@@ -236,16 +228,8 @@ func (a *AccountMetastoresAPI) List(ctx context.Context) (it listing.Iterator[Me
 }
 
 func (a *AccountMetastoresAPI) ListAll(ctx context.Context) ([]MetastoreInfo, error) {
-	var results []MetastoreInfo
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Update a metastore.
@@ -582,16 +566,8 @@ func (a *CatalogsAPI) List(ctx context.Context) (it listing.Iterator[CatalogInfo
 }
 
 func (a *CatalogsAPI) ListAll(ctx context.Context) ([]CatalogInfo, error) {
-	var results []CatalogInfo
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Update a catalog.
@@ -709,16 +685,8 @@ func (a *ConnectionsAPI) List(ctx context.Context) (it listing.Iterator[Connecti
 }
 
 func (a *ConnectionsAPI) ListAll(ctx context.Context) ([]ConnectionInfo, error) {
-	var results []ConnectionInfo
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // ConnectionInfoNameToFullNameMap calls [ConnectionsAPI.ListAll] and creates a map of results with [ConnectionInfo].Name as key and [ConnectionInfo].FullName as value.
@@ -897,16 +865,8 @@ func (a *ExternalLocationsAPI) List(ctx context.Context) (it listing.Iterator[Ex
 }
 
 func (a *ExternalLocationsAPI) ListAll(ctx context.Context) ([]ExternalLocationInfo, error) {
-	var results []ExternalLocationInfo
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Update an external location.
@@ -1048,16 +1008,8 @@ func (a *FunctionsAPI) List(ctx context.Context, request ListFunctionsRequest) (
 }
 
 func (a *FunctionsAPI) ListAll(ctx context.Context, request ListFunctionsRequest) ([]FunctionInfo, error) {
-	var results []FunctionInfo
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // FunctionInfoNameToFullNameMap calls [FunctionsAPI.ListAll] and creates a map of results with [FunctionInfo].Name as key and [FunctionInfo].FullName as value.
@@ -1309,16 +1261,8 @@ func (a *MetastoresAPI) List(ctx context.Context) (it listing.Iterator[Metastore
 }
 
 func (a *MetastoresAPI) ListAll(ctx context.Context) ([]MetastoreInfo, error) {
-	var results []MetastoreInfo
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // MetastoreInfoNameToMetastoreIdMap calls [MetastoresAPI.ListAll] and creates a map of results with [MetastoreInfo].Name as key and [MetastoreInfo].MetastoreId as value.
@@ -1575,10 +1519,10 @@ func (a *ModelVersionsAPI) List(ctx context.Context, request ListModelVersionsRe
 }
 
 func (a *ModelVersionsAPI) ListAll(ctx context.Context, request ListModelVersionsRequest) ([]ModelVersionInfo, error) {
+	iter := a.List(ctx, request)
 	var results []ModelVersionInfo
 	var totalCount int = 0
 	limit := request.MaxResults
-	iter := a.List(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -1591,6 +1535,7 @@ func (a *ModelVersionsAPI) ListAll(ctx context.Context, request ListModelVersion
 		}
 	}
 	return results, nil
+
 }
 
 // List Model Versions.
@@ -1823,10 +1768,10 @@ func (a *RegisteredModelsAPI) List(ctx context.Context, request ListRegisteredMo
 }
 
 func (a *RegisteredModelsAPI) ListAll(ctx context.Context, request ListRegisteredModelsRequest) ([]RegisteredModelInfo, error) {
+	iter := a.List(ctx, request)
 	var results []RegisteredModelInfo
 	var totalCount int = 0
 	limit := request.MaxResults
-	iter := a.List(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -1839,6 +1784,7 @@ func (a *RegisteredModelsAPI) ListAll(ctx context.Context, request ListRegistere
 		}
 	}
 	return results, nil
+
 }
 
 // RegisteredModelInfoNameToFullNameMap calls [RegisteredModelsAPI.ListAll] and creates a map of results with [RegisteredModelInfo].Name as key and [RegisteredModelInfo].FullName as value.
@@ -2028,16 +1974,8 @@ func (a *SchemasAPI) List(ctx context.Context, request ListSchemasRequest) (it l
 }
 
 func (a *SchemasAPI) ListAll(ctx context.Context, request ListSchemasRequest) ([]SchemaInfo, error) {
-	var results []SchemaInfo
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // SchemaInfoNameToFullNameMap calls [SchemasAPI.ListAll] and creates a map of results with [SchemaInfo].Name as key and [SchemaInfo].FullName as value.
@@ -2218,16 +2156,8 @@ func (a *StorageCredentialsAPI) List(ctx context.Context) (it listing.Iterator[S
 }
 
 func (a *StorageCredentialsAPI) ListAll(ctx context.Context) ([]StorageCredentialInfo, error) {
-	var results []StorageCredentialInfo
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // StorageCredentialInfoNameToIdMap calls [StorageCredentialsAPI.ListAll] and creates a map of results with [StorageCredentialInfo].Name as key and [StorageCredentialInfo].Id as value.
@@ -2362,16 +2292,8 @@ func (a *SystemSchemasAPI) List(ctx context.Context, request ListSystemSchemasRe
 }
 
 func (a *SystemSchemasAPI) ListAll(ctx context.Context, request ListSystemSchemasRequest) ([]SystemSchemaInfo, error) {
-	var results []SystemSchemaInfo
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // List system schemas.
@@ -2591,10 +2513,10 @@ func (a *TablesAPI) List(ctx context.Context, request ListTablesRequest) (it lis
 }
 
 func (a *TablesAPI) ListAll(ctx context.Context, request ListTablesRequest) ([]TableInfo, error) {
+	iter := a.List(ctx, request)
 	var results []TableInfo
 	var totalCount int = 0
 	limit := request.MaxResults
-	iter := a.List(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -2607,6 +2529,7 @@ func (a *TablesAPI) ListAll(ctx context.Context, request ListTablesRequest) ([]T
 		}
 	}
 	return results, nil
+
 }
 
 // TableInfoNameToTableIdMap calls [TablesAPI.ListAll] and creates a map of results with [TableInfo].Name as key and [TableInfo].TableId as value.
@@ -2703,10 +2626,10 @@ func (a *TablesAPI) ListSummaries(ctx context.Context, request ListSummariesRequ
 }
 
 func (a *TablesAPI) ListSummariesAll(ctx context.Context, request ListSummariesRequest) ([]TableSummary, error) {
+	iter := a.ListSummaries(ctx, request)
 	var results []TableSummary
 	var totalCount int = 0
 	limit := request.MaxResults
-	iter := a.ListSummaries(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -2719,6 +2642,7 @@ func (a *TablesAPI) ListSummariesAll(ctx context.Context, request ListSummariesR
 		}
 	}
 	return results, nil
+
 }
 
 // Update a table owner.
@@ -2851,16 +2775,8 @@ func (a *VolumesAPI) List(ctx context.Context, request ListVolumesRequest) (it l
 }
 
 func (a *VolumesAPI) ListAll(ctx context.Context, request ListVolumesRequest) ([]VolumeInfo, error) {
-	var results []VolumeInfo
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // VolumeInfoNameToVolumeIdMap calls [VolumesAPI.ListAll] and creates a map of results with [VolumeInfo].Name as key and [VolumeInfo].VolumeId as value.

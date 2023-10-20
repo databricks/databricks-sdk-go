@@ -174,16 +174,8 @@ func (a *ClusterPoliciesAPI) List(ctx context.Context, request ListClusterPolici
 }
 
 func (a *ClusterPoliciesAPI) ListAll(ctx context.Context, request ListClusterPoliciesRequest) ([]Policy, error) {
-	var results []Policy
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // PolicyNameToPolicyIdMap calls [ClusterPoliciesAPI.ListAll] and creates a map of results with [Policy].Name as key and [Policy].PolicyId as value.
@@ -635,10 +627,10 @@ func (a *ClustersAPI) Events(ctx context.Context, request GetEvents) (it listing
 }
 
 func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]ClusterEvent, error) {
+	iter := a.Events(ctx, request)
 	var results []ClusterEvent
 	var totalCount int64 = 0
 	limit := request.Limit
-	iter := a.Events(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -651,6 +643,7 @@ func (a *ClustersAPI) EventsAll(ctx context.Context, request GetEvents) ([]Clust
 		}
 	}
 	return results, nil
+
 }
 
 // Get cluster info.
@@ -738,16 +731,8 @@ func (a *ClustersAPI) List(ctx context.Context, request ListClustersRequest) (it
 }
 
 func (a *ClustersAPI) ListAll(ctx context.Context, request ListClustersRequest) ([]ClusterDetails, error) {
-	var results []ClusterDetails
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // ClusterDetailsClusterNameToClusterIdMap calls [ClustersAPI.ListAll] and creates a map of results with [ClusterDetails].ClusterName as key and [ClusterDetails].ClusterId as value.
@@ -1577,16 +1562,8 @@ func (a *GlobalInitScriptsAPI) List(ctx context.Context) (it listing.Iterator[Gl
 }
 
 func (a *GlobalInitScriptsAPI) ListAll(ctx context.Context) ([]GlobalInitScriptDetails, error) {
-	var results []GlobalInitScriptDetails
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // GlobalInitScriptDetailsNameToScriptIdMap calls [GlobalInitScriptsAPI.ListAll] and creates a map of results with [GlobalInitScriptDetails].Name as key and [GlobalInitScriptDetails].ScriptId as value.
@@ -1802,16 +1779,8 @@ func (a *InstancePoolsAPI) List(ctx context.Context) (it listing.Iterator[Instan
 }
 
 func (a *InstancePoolsAPI) ListAll(ctx context.Context) ([]InstancePoolAndStats, error) {
-	var results []InstancePoolAndStats
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // InstancePoolAndStatsInstancePoolNameToInstancePoolIdMap calls [InstancePoolsAPI.ListAll] and creates a map of results with [InstancePoolAndStats].InstancePoolName as key and [InstancePoolAndStats].InstancePoolId as value.
@@ -1972,16 +1941,8 @@ func (a *InstanceProfilesAPI) List(ctx context.Context) (it listing.Iterator[Ins
 }
 
 func (a *InstanceProfilesAPI) ListAll(ctx context.Context) ([]InstanceProfile, error) {
-	var results []InstanceProfile
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Remove the instance profile.
@@ -2101,16 +2062,8 @@ func (a *LibrariesAPI) ClusterStatus(ctx context.Context, request ClusterStatusR
 }
 
 func (a *LibrariesAPI) ClusterStatusAll(ctx context.Context, request ClusterStatusRequest) ([]LibraryFullStatus, error) {
-	var results []LibraryFullStatus
 	iter := a.ClusterStatus(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Get status.
@@ -2239,10 +2192,10 @@ func (a *PolicyFamiliesAPI) List(ctx context.Context, request ListPolicyFamilies
 }
 
 func (a *PolicyFamiliesAPI) ListAll(ctx context.Context, request ListPolicyFamiliesRequest) ([]PolicyFamily, error) {
+	iter := a.List(ctx, request)
 	var results []PolicyFamily
 	var totalCount int64 = 0
 	limit := request.MaxResults
-	iter := a.List(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -2255,4 +2208,5 @@ func (a *PolicyFamiliesAPI) ListAll(ctx context.Context, request ListPolicyFamil
 		}
 	}
 	return results, nil
+
 }

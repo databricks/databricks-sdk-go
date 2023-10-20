@@ -354,10 +354,10 @@ func (a *JobsAPI) List(ctx context.Context, request ListJobsRequest) (it listing
 }
 
 func (a *JobsAPI) ListAll(ctx context.Context, request ListJobsRequest) ([]BaseJob, error) {
+	iter := a.List(ctx, request)
 	var results []BaseJob
 	var totalCount int = 0
 	limit := request.Limit
-	iter := a.List(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -370,6 +370,7 @@ func (a *JobsAPI) ListAll(ctx context.Context, request ListJobsRequest) ([]BaseJ
 		}
 	}
 	return results, nil
+
 }
 
 // BaseJobSettingsNameToJobIdMap calls [JobsAPI.ListAll] and creates a map of results with [BaseJob].Settings.Name as key and [BaseJob].JobId as value.
@@ -456,10 +457,10 @@ func (a *JobsAPI) ListRuns(ctx context.Context, request ListRunsRequest) (it lis
 }
 
 func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]BaseRun, error) {
+	iter := a.ListRuns(ctx, request)
 	var results []BaseRun
 	var totalCount int = 0
 	limit := request.Limit
-	iter := a.ListRuns(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -472,6 +473,7 @@ func (a *JobsAPI) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]B
 		}
 	}
 	return results, nil
+
 }
 
 // Repair a job run.

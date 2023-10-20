@@ -111,16 +111,8 @@ func (a *CustomAppIntegrationAPI) List(ctx context.Context) (it listing.Iterator
 }
 
 func (a *CustomAppIntegrationAPI) ListAll(ctx context.Context) ([]GetCustomAppIntegrationOutput, error) {
-	var results []GetCustomAppIntegrationOutput
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Updates Custom OAuth App Integration.
@@ -248,10 +240,10 @@ func (a *OAuthPublishedAppsAPI) List(ctx context.Context, request ListOAuthPubli
 }
 
 func (a *OAuthPublishedAppsAPI) ListAll(ctx context.Context, request ListOAuthPublishedAppsRequest) ([]PublishedAppOutput, error) {
+	iter := a.List(ctx, request)
 	var results []PublishedAppOutput
 	var totalCount int64 = 0
 	limit := request.PageSize
-	iter := a.List(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -264,6 +256,7 @@ func (a *OAuthPublishedAppsAPI) ListAll(ctx context.Context, request ListOAuthPu
 		}
 	}
 	return results, nil
+
 }
 
 func NewPublishedAppIntegration(client *client.DatabricksClient) *PublishedAppIntegrationAPI {
@@ -366,16 +359,8 @@ func (a *PublishedAppIntegrationAPI) List(ctx context.Context) (it listing.Itera
 }
 
 func (a *PublishedAppIntegrationAPI) ListAll(ctx context.Context) ([]GetPublishedAppIntegrationOutput, error) {
-	var results []GetPublishedAppIntegrationOutput
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Updates Published OAuth App Integration.
@@ -476,16 +461,8 @@ func (a *ServicePrincipalSecretsAPI) List(ctx context.Context, request ListServi
 }
 
 func (a *ServicePrincipalSecretsAPI) ListAll(ctx context.Context, request ListServicePrincipalSecretsRequest) ([]SecretInfo, error) {
-	var results []SecretInfo
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // List service principal secrets.

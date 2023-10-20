@@ -162,16 +162,8 @@ func (a *DbfsAPI) List(ctx context.Context, request ListDbfsRequest) (it listing
 }
 
 func (a *DbfsAPI) ListAll(ctx context.Context, request ListDbfsRequest) ([]FileInfo, error) {
-	var results []FileInfo
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // List directory contents or file details.

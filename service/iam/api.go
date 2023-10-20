@@ -223,16 +223,8 @@ func (a *AccountGroupsAPI) List(ctx context.Context, request ListAccountGroupsRe
 }
 
 func (a *AccountGroupsAPI) ListAll(ctx context.Context, request ListAccountGroupsRequest) ([]Group, error) {
-	var results []Group
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // GroupDisplayNameToIdMap calls [AccountGroupsAPI.ListAll] and creates a map of results with [Group].DisplayName as key and [Group].Id as value.
@@ -400,16 +392,8 @@ func (a *AccountServicePrincipalsAPI) List(ctx context.Context, request ListAcco
 }
 
 func (a *AccountServicePrincipalsAPI) ListAll(ctx context.Context, request ListAccountServicePrincipalsRequest) ([]ServicePrincipal, error) {
-	var results []ServicePrincipal
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // ServicePrincipalDisplayNameToIdMap calls [AccountServicePrincipalsAPI.ListAll] and creates a map of results with [ServicePrincipal].DisplayName as key and [ServicePrincipal].Id as value.
@@ -586,16 +570,8 @@ func (a *AccountUsersAPI) List(ctx context.Context, request ListAccountUsersRequ
 }
 
 func (a *AccountUsersAPI) ListAll(ctx context.Context, request ListAccountUsersRequest) ([]User, error) {
-	var results []User
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // UserUserNameToIdMap calls [AccountUsersAPI.ListAll] and creates a map of results with [User].UserName as key and [User].Id as value.
@@ -799,16 +775,8 @@ func (a *GroupsAPI) List(ctx context.Context, request ListGroupsRequest) (it lis
 }
 
 func (a *GroupsAPI) ListAll(ctx context.Context, request ListGroupsRequest) ([]Group, error) {
-	var results []Group
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // GroupDisplayNameToIdMap calls [GroupsAPI.ListAll] and creates a map of results with [Group].DisplayName as key and [Group].Id as value.
@@ -1101,16 +1069,8 @@ func (a *ServicePrincipalsAPI) List(ctx context.Context, request ListServicePrin
 }
 
 func (a *ServicePrincipalsAPI) ListAll(ctx context.Context, request ListServicePrincipalsRequest) ([]ServicePrincipal, error) {
-	var results []ServicePrincipal
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // ServicePrincipalDisplayNameToIdMap calls [ServicePrincipalsAPI.ListAll] and creates a map of results with [ServicePrincipal].DisplayName as key and [ServicePrincipal].Id as value.
@@ -1302,16 +1262,8 @@ func (a *UsersAPI) List(ctx context.Context, request ListUsersRequest) (it listi
 }
 
 func (a *UsersAPI) ListAll(ctx context.Context, request ListUsersRequest) ([]User, error) {
-	var results []User
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // UserUserNameToIdMap calls [UsersAPI.ListAll] and creates a map of results with [User].UserName as key and [User].Id as value.
@@ -1489,16 +1441,8 @@ func (a *WorkspaceAssignmentAPI) List(ctx context.Context, request ListWorkspace
 }
 
 func (a *WorkspaceAssignmentAPI) ListAll(ctx context.Context, request ListWorkspaceAssignmentRequest) ([]PermissionAssignment, error) {
-	var results []PermissionAssignment
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Get permission assignments.

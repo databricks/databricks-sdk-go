@@ -153,10 +153,10 @@ func (a *ExperimentsAPI) GetHistory(ctx context.Context, request GetHistoryReque
 }
 
 func (a *ExperimentsAPI) GetHistoryAll(ctx context.Context, request GetHistoryRequest) ([]Metric, error) {
+	iter := a.GetHistory(ctx, request)
 	var results []Metric
 	var totalCount int = 0
 	limit := request.MaxResults
-	iter := a.GetHistory(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -169,6 +169,7 @@ func (a *ExperimentsAPI) GetHistoryAll(ctx context.Context, request GetHistoryRe
 		}
 	}
 	return results, nil
+
 }
 
 // Get experiment permission levels.
@@ -249,16 +250,8 @@ func (a *ExperimentsAPI) ListArtifacts(ctx context.Context, request ListArtifact
 }
 
 func (a *ExperimentsAPI) ListArtifactsAll(ctx context.Context, request ListArtifactsRequest) ([]FileInfo, error) {
-	var results []FileInfo
 	iter := a.ListArtifacts(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // List experiments.
@@ -292,10 +285,10 @@ func (a *ExperimentsAPI) ListExperiments(ctx context.Context, request ListExperi
 }
 
 func (a *ExperimentsAPI) ListExperimentsAll(ctx context.Context, request ListExperimentsRequest) ([]Experiment, error) {
+	iter := a.ListExperiments(ctx, request)
 	var results []Experiment
 	var totalCount int = 0
 	limit := request.MaxResults
-	iter := a.ListExperiments(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -308,6 +301,7 @@ func (a *ExperimentsAPI) ListExperimentsAll(ctx context.Context, request ListExp
 		}
 	}
 	return results, nil
+
 }
 
 // Log a batch.
@@ -446,16 +440,8 @@ func (a *ExperimentsAPI) SearchExperiments(ctx context.Context, request SearchEx
 }
 
 func (a *ExperimentsAPI) SearchExperimentsAll(ctx context.Context, request SearchExperiments) ([]Experiment, error) {
-	var results []Experiment
 	iter := a.SearchExperiments(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Search for runs.
@@ -491,16 +477,8 @@ func (a *ExperimentsAPI) SearchRuns(ctx context.Context, request SearchRuns) (it
 }
 
 func (a *ExperimentsAPI) SearchRunsAll(ctx context.Context, request SearchRuns) ([]Run, error) {
-	var results []Run
 	iter := a.SearchRuns(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Set a tag.
@@ -702,16 +680,8 @@ func (a *ModelRegistryAPI) GetLatestVersions(ctx context.Context, request GetLat
 }
 
 func (a *ModelRegistryAPI) GetLatestVersionsAll(ctx context.Context, request GetLatestVersionsRequest) ([]ModelVersion, error) {
-	var results []ModelVersion
 	iter := a.GetLatestVersions(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Get model.
@@ -805,10 +775,10 @@ func (a *ModelRegistryAPI) ListModels(ctx context.Context, request ListModelsReq
 }
 
 func (a *ModelRegistryAPI) ListModelsAll(ctx context.Context, request ListModelsRequest) ([]Model, error) {
+	iter := a.ListModels(ctx, request)
 	var results []Model
 	var totalCount int = 0
 	limit := request.MaxResults
-	iter := a.ListModels(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -821,6 +791,7 @@ func (a *ModelRegistryAPI) ListModelsAll(ctx context.Context, request ListModels
 		}
 	}
 	return results, nil
+
 }
 
 // List transition requests.
@@ -848,16 +819,8 @@ func (a *ModelRegistryAPI) ListTransitionRequests(ctx context.Context, request L
 }
 
 func (a *ModelRegistryAPI) ListTransitionRequestsAll(ctx context.Context, request ListTransitionRequestsRequest) ([]Activity, error) {
-	var results []Activity
 	iter := a.ListTransitionRequests(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // List registry webhooks.
@@ -893,16 +856,8 @@ func (a *ModelRegistryAPI) ListWebhooks(ctx context.Context, request ListWebhook
 }
 
 func (a *ModelRegistryAPI) ListWebhooksAll(ctx context.Context, request ListWebhooksRequest) ([]RegistryWebhook, error) {
-	var results []RegistryWebhook
 	iter := a.ListWebhooks(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Reject a transition request.
@@ -950,10 +905,10 @@ func (a *ModelRegistryAPI) SearchModelVersions(ctx context.Context, request Sear
 }
 
 func (a *ModelRegistryAPI) SearchModelVersionsAll(ctx context.Context, request SearchModelVersionsRequest) ([]ModelVersion, error) {
+	iter := a.SearchModelVersions(ctx, request)
 	var results []ModelVersion
 	var totalCount int = 0
 	limit := request.MaxResults
-	iter := a.SearchModelVersions(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -966,6 +921,7 @@ func (a *ModelRegistryAPI) SearchModelVersionsAll(ctx context.Context, request S
 		}
 	}
 	return results, nil
+
 }
 
 // Search models.
@@ -999,10 +955,10 @@ func (a *ModelRegistryAPI) SearchModels(ctx context.Context, request SearchModel
 }
 
 func (a *ModelRegistryAPI) SearchModelsAll(ctx context.Context, request SearchModelsRequest) ([]Model, error) {
+	iter := a.SearchModels(ctx, request)
 	var results []Model
 	var totalCount int = 0
 	limit := request.MaxResults
-	iter := a.SearchModels(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -1015,6 +971,7 @@ func (a *ModelRegistryAPI) SearchModelsAll(ctx context.Context, request SearchMo
 		}
 	}
 	return results, nil
+
 }
 
 // Set a tag.

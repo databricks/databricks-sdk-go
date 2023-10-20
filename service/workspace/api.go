@@ -113,16 +113,8 @@ func (a *GitCredentialsAPI) List(ctx context.Context) (it listing.Iterator[Crede
 }
 
 func (a *GitCredentialsAPI) ListAll(ctx context.Context) ([]CredentialInfo, error) {
-	var results []CredentialInfo
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // CredentialInfoGitProviderToCredentialIdMap calls [GitCredentialsAPI.ListAll] and creates a map of results with [CredentialInfo].GitProvider as key and [CredentialInfo].CredentialId as value.
@@ -328,16 +320,8 @@ func (a *ReposAPI) List(ctx context.Context, request ListReposRequest) (it listi
 }
 
 func (a *ReposAPI) ListAll(ctx context.Context, request ListReposRequest) ([]RepoInfo, error) {
-	var results []RepoInfo
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // RepoInfoPathToIdMap calls [ReposAPI.ListAll] and creates a map of results with [RepoInfo].Path as key and [RepoInfo].Id as value.
@@ -572,16 +556,8 @@ func (a *SecretsAPI) ListAcls(ctx context.Context, request ListAclsRequest) (it 
 }
 
 func (a *SecretsAPI) ListAclsAll(ctx context.Context, request ListAclsRequest) ([]AclItem, error) {
-	var results []AclItem
 	iter := a.ListAcls(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Lists ACLs.
@@ -627,16 +603,8 @@ func (a *SecretsAPI) ListScopes(ctx context.Context) (it listing.Iterator[Secret
 }
 
 func (a *SecretsAPI) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
-	var results []SecretScope
 	iter := a.ListScopes(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // List secret keys.
@@ -671,16 +639,8 @@ func (a *SecretsAPI) ListSecrets(ctx context.Context, request ListSecretsRequest
 }
 
 func (a *SecretsAPI) ListSecretsAll(ctx context.Context, request ListSecretsRequest) ([]SecretMetadata, error) {
-	var results []SecretMetadata
 	iter := a.ListSecrets(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // List secret keys.
@@ -908,16 +868,8 @@ func (a *WorkspaceAPI) List(ctx context.Context, request ListWorkspaceRequest) (
 }
 
 func (a *WorkspaceAPI) ListAll(ctx context.Context, request ListWorkspaceRequest) ([]ObjectInfo, error) {
-	var results []ObjectInfo
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // ObjectInfoPathToObjectIdMap calls [WorkspaceAPI.ListAll] and creates a map of results with [ObjectInfo].Path as key and [ObjectInfo].ObjectId as value.

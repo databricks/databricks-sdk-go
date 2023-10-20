@@ -152,16 +152,8 @@ func (a *BudgetsAPI) List(ctx context.Context) (it listing.Iterator[BudgetWithSt
 }
 
 func (a *BudgetsAPI) ListAll(ctx context.Context) ([]BudgetWithStatus, error) {
-	var results []BudgetWithStatus
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // BudgetWithStatusNameToBudgetIdMap calls [BudgetsAPI.ListAll] and creates a map of results with [BudgetWithStatus].Name as key and [BudgetWithStatus].BudgetId as value.
@@ -387,16 +379,8 @@ func (a *LogDeliveryAPI) List(ctx context.Context, request ListLogDeliveryReques
 }
 
 func (a *LogDeliveryAPI) ListAll(ctx context.Context, request ListLogDeliveryRequest) ([]LogDeliveryConfiguration, error) {
-	var results []LogDeliveryConfiguration
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // LogDeliveryConfigurationConfigNameToConfigIdMap calls [LogDeliveryAPI.ListAll] and creates a map of results with [LogDeliveryConfiguration].ConfigName as key and [LogDeliveryConfiguration].ConfigId as value.

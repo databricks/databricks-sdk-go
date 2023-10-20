@@ -280,10 +280,10 @@ func (a *PipelinesAPI) ListPipelineEvents(ctx context.Context, request ListPipel
 }
 
 func (a *PipelinesAPI) ListPipelineEventsAll(ctx context.Context, request ListPipelineEventsRequest) ([]PipelineEvent, error) {
+	iter := a.ListPipelineEvents(ctx, request)
 	var results []PipelineEvent
 	var totalCount int = 0
 	limit := request.MaxResults
-	iter := a.ListPipelineEvents(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -296,6 +296,7 @@ func (a *PipelinesAPI) ListPipelineEventsAll(ctx context.Context, request ListPi
 		}
 	}
 	return results, nil
+
 }
 
 // List pipeline events.
@@ -338,10 +339,10 @@ func (a *PipelinesAPI) ListPipelines(ctx context.Context, request ListPipelinesR
 }
 
 func (a *PipelinesAPI) ListPipelinesAll(ctx context.Context, request ListPipelinesRequest) ([]PipelineStateInfo, error) {
+	iter := a.ListPipelines(ctx, request)
 	var results []PipelineStateInfo
 	var totalCount int = 0
 	limit := request.MaxResults
-	iter := a.ListPipelines(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -354,6 +355,7 @@ func (a *PipelinesAPI) ListPipelinesAll(ctx context.Context, request ListPipelin
 		}
 	}
 	return results, nil
+
 }
 
 // PipelineStateInfoNameToPipelineIdMap calls [PipelinesAPI.ListPipelinesAll] and creates a map of results with [PipelineStateInfo].Name as key and [PipelineStateInfo].PipelineId as value.

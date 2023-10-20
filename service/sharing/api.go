@@ -122,10 +122,10 @@ func (a *CleanRoomsAPI) List(ctx context.Context, request ListCleanRoomsRequest)
 }
 
 func (a *CleanRoomsAPI) ListAll(ctx context.Context, request ListCleanRoomsRequest) ([]CleanRoomInfo, error) {
+	iter := a.List(ctx, request)
 	var results []CleanRoomInfo
 	var totalCount int = 0
 	limit := request.MaxResults
-	iter := a.List(ctx, request)
 	for iter.HasNext(ctx) {
 		next, err := iter.Next(ctx)
 		if err != nil {
@@ -138,6 +138,7 @@ func (a *CleanRoomsAPI) ListAll(ctx context.Context, request ListCleanRoomsReque
 		}
 	}
 	return results, nil
+
 }
 
 // Update a clean room.
@@ -264,16 +265,8 @@ func (a *ProvidersAPI) List(ctx context.Context, request ListProvidersRequest) (
 }
 
 func (a *ProvidersAPI) ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error) {
-	var results []ProviderInfo
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // ProviderInfoNameToMetastoreIdMap calls [ProvidersAPI.ListAll] and creates a map of results with [ProviderInfo].Name as key and [ProviderInfo].MetastoreId as value.
@@ -328,16 +321,8 @@ func (a *ProvidersAPI) ListShares(ctx context.Context, request ListSharesRequest
 }
 
 func (a *ProvidersAPI) ListSharesAll(ctx context.Context, request ListSharesRequest) ([]ProviderShare, error) {
-	var results []ProviderShare
 	iter := a.ListShares(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // List shares by Provider.
@@ -549,16 +534,8 @@ func (a *RecipientsAPI) List(ctx context.Context, request ListRecipientsRequest)
 }
 
 func (a *RecipientsAPI) ListAll(ctx context.Context, request ListRecipientsRequest) ([]RecipientInfo, error) {
-	var results []RecipientInfo
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // RecipientInfoNameToMetastoreIdMap calls [RecipientsAPI.ListAll] and creates a map of results with [RecipientInfo].Name as key and [RecipientInfo].MetastoreId as value.
@@ -726,16 +703,8 @@ func (a *SharesAPI) List(ctx context.Context) (it listing.Iterator[ShareInfo]) {
 }
 
 func (a *SharesAPI) ListAll(ctx context.Context) ([]ShareInfo, error) {
-	var results []ShareInfo
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Get permissions.

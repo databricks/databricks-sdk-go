@@ -138,16 +138,8 @@ func (a *AccountIpAccessListsAPI) List(ctx context.Context) (it listing.Iterator
 }
 
 func (a *AccountIpAccessListsAPI) ListAll(ctx context.Context) ([]IpAccessListInfo, error) {
-	var results []IpAccessListInfo
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // IpAccessListInfoLabelToListIdMap calls [AccountIpAccessListsAPI.ListAll] and creates a map of results with [IpAccessListInfo].Label as key and [IpAccessListInfo].ListId as value.
@@ -459,16 +451,8 @@ func (a *IpAccessListsAPI) List(ctx context.Context) (it listing.Iterator[IpAcce
 }
 
 func (a *IpAccessListsAPI) ListAll(ctx context.Context) ([]IpAccessListInfo, error) {
-	var results []IpAccessListInfo
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // IpAccessListInfoLabelToListIdMap calls [IpAccessListsAPI.ListAll] and creates a map of results with [IpAccessListInfo].Label as key and [IpAccessListInfo].ListId as value.
@@ -725,16 +709,8 @@ func (a *TokenManagementAPI) List(ctx context.Context, request ListTokenManageme
 }
 
 func (a *TokenManagementAPI) ListAll(ctx context.Context, request ListTokenManagementRequest) ([]TokenInfo, error) {
-	var results []TokenInfo
 	iter := a.List(ctx, request)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // TokenInfoCommentToTokenIdMap calls [TokenManagementAPI.ListAll] and creates a map of results with [TokenInfo].Comment as key and [TokenInfo].TokenId as value.
@@ -892,16 +868,8 @@ func (a *TokensAPI) List(ctx context.Context) (it listing.Iterator[TokenInfo]) {
 }
 
 func (a *TokensAPI) ListAll(ctx context.Context) ([]TokenInfo, error) {
-	var results []TokenInfo
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // TokenInfoCommentToTokenIdMap calls [TokensAPI.ListAll] and creates a map of results with [TokenInfo].Comment as key and [TokenInfo].TokenId as value.

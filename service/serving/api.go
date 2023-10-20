@@ -274,16 +274,8 @@ func (a *ServingEndpointsAPI) List(ctx context.Context) (it listing.Iterator[Ser
 }
 
 func (a *ServingEndpointsAPI) ListAll(ctx context.Context) ([]ServingEndpoint, error) {
-	var results []ServingEndpoint
 	iter := a.List(ctx)
-	for iter.HasNext(ctx) {
-		next, err := iter.Next(ctx)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, next)
-	}
-	return results, nil
+	return listing.ToSlice(ctx, iter)
 }
 
 // Retrieve the most recent log lines associated with a given serving endpoint's
