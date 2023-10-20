@@ -154,7 +154,7 @@ func (a *DbfsAPI) List(ctx context.Context, request ListDbfsRequest) *listing.It
 	}
 
 	return listing.NewIterator(
-		request,
+		&request,
 		getNextPage,
 		getItems,
 		nil)

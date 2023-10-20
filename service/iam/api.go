@@ -215,7 +215,7 @@ func (a *AccountGroupsAPI) List(ctx context.Context, request ListAccountGroupsRe
 	}
 
 	return listing.NewIterator(
-		request,
+		&request,
 		getNextPage,
 		getItems,
 		nil)
@@ -392,7 +392,7 @@ func (a *AccountServicePrincipalsAPI) List(ctx context.Context, request ListAcco
 	}
 
 	return listing.NewIterator(
-		request,
+		&request,
 		getNextPage,
 		getItems,
 		nil)
@@ -578,7 +578,7 @@ func (a *AccountUsersAPI) List(ctx context.Context, request ListAccountUsersRequ
 	}
 
 	return listing.NewIterator(
-		request,
+		&request,
 		getNextPage,
 		getItems,
 		nil)
@@ -791,7 +791,7 @@ func (a *GroupsAPI) List(ctx context.Context, request ListGroupsRequest) *listin
 	}
 
 	return listing.NewIterator(
-		request,
+		&request,
 		getNextPage,
 		getItems,
 		nil)
@@ -1093,7 +1093,7 @@ func (a *ServicePrincipalsAPI) List(ctx context.Context, request ListServicePrin
 	}
 
 	return listing.NewIterator(
-		request,
+		&request,
 		getNextPage,
 		getItems,
 		nil)
@@ -1294,7 +1294,7 @@ func (a *UsersAPI) List(ctx context.Context, request ListUsersRequest) *listing.
 	}
 
 	return listing.NewIterator(
-		request,
+		&request,
 		getNextPage,
 		getItems,
 		nil)
@@ -1481,7 +1481,7 @@ func (a *WorkspaceAssignmentAPI) List(ctx context.Context, request ListWorkspace
 	}
 
 	return listing.NewIterator(
-		request,
+		&request,
 		getNextPage,
 		getItems,
 		nil)

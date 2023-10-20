@@ -338,18 +338,15 @@ func (a *JobsAPI) List(ctx context.Context, request ListJobsRequest) *listing.It
 	getItems := func(resp *ListJobsResponse) []BaseJob {
 		return resp.Jobs
 	}
-	getNextReq := func(resp *ListJobsResponse) (ListJobsRequest, listing.ListingStatus) {
-		status := listing.ListingStatusCheckResult
-		request.PageToken = resp.NextPageToken
+	getNextReq := func(resp *ListJobsResponse) *ListJobsRequest {
 		if resp.NextPageToken == "" {
-			status = listing.ListingStatusExhausted
-		} else {
-			status = listing.ListingStatusNotExhausted
+			return nil
 		}
-		return request, status
+		request.PageToken = resp.NextPageToken
+		return &request
 	}
 	return listing.NewIterator(
-		request,
+		&request,
 		getNextPage,
 		getItems,
 		getNextReq)
@@ -443,18 +440,15 @@ func (a *JobsAPI) ListRuns(ctx context.Context, request ListRunsRequest) *listin
 	getItems := func(resp *ListRunsResponse) []BaseRun {
 		return resp.Runs
 	}
-	getNextReq := func(resp *ListRunsResponse) (ListRunsRequest, listing.ListingStatus) {
-		status := listing.ListingStatusCheckResult
-		request.PageToken = resp.NextPageToken
+	getNextReq := func(resp *ListRunsResponse) *ListRunsRequest {
 		if resp.NextPageToken == "" {
-			status = listing.ListingStatusExhausted
-		} else {
-			status = listing.ListingStatusNotExhausted
+			return nil
 		}
-		return request, status
+		request.PageToken = resp.NextPageToken
+		return &request
 	}
 	return listing.NewIterator(
-		request,
+		&request,
 		getNextPage,
 		getItems,
 		getNextReq)

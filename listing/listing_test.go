@@ -14,16 +14,18 @@ func TestIterator(t *testing.T) {
 		}
 		return []int{req, req + 1}, nil
 	}
-	getNextReq := func(resp []int) (int, ListingStatus) {
+	getNextReq := func(resp []int) *int {
 		if len(resp) == 0 {
-			return 0, ListingStatusExhausted
+			return nil
 		}
-		return resp[len(resp)-1] + 1, ListingStatusCheckResult
+		x := resp[len(resp)-1] + 1
+		return &x
 	}
 	getItems := func(resp []int) []int {
 		return resp
 	}
-	it := NewIterator(0, getNextPage, getItems, getNextReq)
+	x := 0
+	it := NewIterator(&x, getNextPage, getItems, getNextReq)
 	for i := 0; i < 10; i++ {
 		v, err := it.Next(context.Background())
 		if err != nil {
@@ -38,3 +40,20 @@ func TestIterator(t *testing.T) {
 		t.Fatalf("expected %v, got %v", ErrNoMoreItems, err)
 	}
 }
+
+// Tests to write:
+// TestIterator_GetNextPageErrors tests that errors from getNextPage are propagated.
+
+// TestIterator_GetNextReqCheckResult tests that the iterator stops if there are no more items.
+
+// TestIterator_GetNextReqExhausted tests that the iterator stops even if some items are returned.
+
+// TestIterator_GetNextReqNotExhausted tests that the iterator continues if there are more items until CheckResult with no entries or Exhausted.
+
+// TestIterator_NextReturnsNextItem tests that Next returns the next item.
+
+// TestIterator_NextErrNoMoreItems tests that Next returns ErrNoMoreItems when there are no more items.
+
+// TestIterator_HasNextNoNext tests that HasNext returns false when there are no more items.
+
+// TestIterator_HasNextNext tests that HasNext returns true when there are more items.
