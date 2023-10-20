@@ -5,7 +5,6 @@ package {{.Name}}
 import (
 	{{range .ImportedPackages}}
 	"github.com/databricks/databricks-sdk-go/service/{{.}}"{{end}}
-	"fmt"
 	"io"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
