@@ -147,7 +147,7 @@ func TestDedupeIterator(t *testing.T) {
 			},
 		)
 
-		dedupeIterator := listing.NewDedupeIterator(
+		dedupeIterator := listing.NewDedupeIterator[int, int](
 			iterator, func(a int) int { return a })
 
 		for i := 1; i <= 6; i++ {
@@ -187,7 +187,7 @@ func TestDedupeIterator(t *testing.T) {
 			},
 		)
 
-		dedupeIterator := listing.NewDedupeIterator(
+		dedupeIterator := listing.NewDedupeIterator[int, int](
 			iterator, func(a int) int { return a })
 		values := make([]int, 0)
 		for dedupeIterator.HasNext(context.Background()) {
