@@ -8,11 +8,16 @@ type envVar struct {
 }
 
 type cicdProvider struct {
+	// The name of the CI/CD provider. This is the name included in the user 
+	// agent string.
 	name    string
+
+	// The env vars that are expected to be set in the CI/CD provider's runner.
 	envVars []envVar
 }
 
-// TODO: add bamboo to this?
+// cicdProviders is a list of CI/CD providers and their env vars we can rely on
+// to detect them.
 var cicdProviders = []cicdProvider{
 	{"github", []envVar{{"GITHUB_ACTIONS", "true"}}},
 	{"gitlab", []envVar{{"GITLAB_CI", "true"}}},
@@ -26,6 +31,7 @@ var cicdProviders = []cicdProvider{
 	{"tf-cloud", []envVar{{"TFC_RUN_ID", ""}}},
 }
 
+// detect returns true if all env vars are set and have expected values.
 func (p cicdProvider) detect() bool {
 	for _, envVar := range p.envVars {
 		v, ok := os.LookupEnv(envVar.name)
@@ -39,6 +45,8 @@ func (p cicdProvider) detect() bool {
 	return true
 }
 
+// CiCdProvider returns the name of the CI/CD provider if detected. Returns the
+// first one, if multiple are detected.
 func CiCdProvider() string {
 	for _, p := range cicdProviders {
 		if p.detect() {
