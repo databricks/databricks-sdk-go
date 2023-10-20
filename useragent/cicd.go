@@ -8,9 +8,9 @@ type envVar struct {
 }
 
 type cicdProvider struct {
-	// The name of the CI/CD provider. This is the name included in the user 
+	// The name of the CI/CD provider. This is the name included in the user
 	// agent string.
-	name    string
+	name string
 
 	// The env vars that are expected to be set in the CI/CD provider's runner.
 	envVars []envVar
