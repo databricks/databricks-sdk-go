@@ -9,33 +9,47 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type requestResponse struct {
+	req  string
+	page map[string][]int
+}
+
+func makeIterator(reqsAndPages []requestResponse) listing.Iterator[int] {
+	reqs := make([]string, len(reqsAndPages))
+	pages := make(map[string]map[string][]int)
+	for i, reqAndPage := range reqsAndPages {
+		reqs[i] = reqAndPage.req
+		pages[reqAndPage.req] = reqAndPage.page
+	}
+	nextReq := reqs[0]
+	iterator := listing.NewIterator(&nextReq,
+		func(ctx context.Context, req string) (map[string][]int, error) {
+			return pages[req], nil
+		},
+		func(resp map[string][]int) []int {
+			return resp["page"]
+		},
+		func(resp map[string][]int) *string {
+			for i, r := range reqs {
+				if r == nextReq && i+1 < len(reqs) {
+					nextReq = reqs[i+1]
+					return &nextReq
+				}
+			}
+			return nil
+		},
+	)
+	return iterator
+}
+
 func TestIterator(t *testing.T) {
 	t.Run("basic iteration", func(t *testing.T) {
-		reqs := []string{"page1", "page2", "page3"}
-		pages := map[string]map[string][]int{
-			"page1": {"page": {1, 2}},
-			"page2": {"page": {3, 4}},
-			"page3": {"page": {5, 6}},
+		rrs := []requestResponse{
+			{req: "page1", page: map[string][]int{"page": {1, 2}}},
+			{req: "page2", page: map[string][]int{"page": {3, 4}}},
+			{req: "page3", page: map[string][]int{"page": {5, 6}}},
 		}
-		nextReq := "page1"
-
-		iterator := listing.NewIterator(&nextReq,
-			func(ctx context.Context, req string) (map[string][]int, error) {
-				return pages[req], nil
-			},
-			func(resp map[string][]int) []int {
-				return resp["page"]
-			},
-			func(resp map[string][]int) *string {
-				for i, r := range reqs {
-					if r == nextReq && i+1 < len(reqs) {
-						nextReq = reqs[i+1]
-						return &nextReq
-					}
-				}
-				return nil
-			},
-		)
+		iterator := makeIterator(rrs)
 
 		for i := 1; iterator.HasNext(context.Background()); i++ {
 			item, err := iterator.Next(context.Background())
@@ -82,31 +96,12 @@ func TestIterator(t *testing.T) {
 	})
 
 	t.Run("iteration with empty page in the middle", func(t *testing.T) {
-		reqs := []string{"page1", "page2", "page3"}
-		pages := map[string]map[string][]int{
-			"page1": {"page": {1, 2}},
-			"page2": {"page": {}},
-			"page3": {"page": {3, 4}},
+		rrs := []requestResponse{
+			{req: "page1", page: map[string][]int{"page": {1, 2}}},
+			{req: "page2", page: map[string][]int{"page": {}}},
+			{req: "page3", page: map[string][]int{"page": {3, 4}}},
 		}
-		nextReq := "page1"
-
-		iterator := listing.NewIterator(&nextReq,
-			func(ctx context.Context, req string) (map[string][]int, error) {
-				return pages[req], nil
-			},
-			func(resp map[string][]int) []int {
-				return resp["page"]
-			},
-			func(resp map[string][]int) *string {
-				for i, r := range reqs {
-					if r == nextReq && i+1 < len(reqs) {
-						nextReq = reqs[i+1]
-						return &nextReq
-					}
-				}
-				return nil
-			},
-		)
+		iterator := makeIterator(rrs)
 
 		for i := 1; i <= 4; i++ {
 			item, err := iterator.Next(context.Background())
@@ -121,32 +116,12 @@ func TestIterator(t *testing.T) {
 
 func TestDedupeIterator(t *testing.T) {
 	t.Run("basic iteration", func(t *testing.T) {
-		reqs := []string{"page1", "page2", "page3"}
-		pages := map[string][]int{
-			"page1": {1, 2, 2},
-			"page2": {3, 4, 4},
-			"page3": {5, 5, 6},
+		rrs := []requestResponse{
+			{req: "page1", page: map[string][]int{"page": {1, 2, 2}}},
+			{req: "page2", page: map[string][]int{"page": {3, 4, 4}}},
+			{req: "page3", page: map[string][]int{"page": {5, 5, 6}}},
 		}
-		nextReq := "page1"
-
-		iterator := listing.NewIterator(&nextReq,
-			func(ctx context.Context, req string) ([]int, error) {
-				return pages[req], nil
-			},
-			func(resp []int) []int {
-				return resp
-			},
-			func(resp []int) *string {
-				for i, r := range reqs {
-					if r == nextReq && i+1 < len(reqs) {
-						nextReq = reqs[i+1]
-						return &nextReq
-					}
-				}
-				return nil
-			},
-		)
-
+		iterator := makeIterator(rrs)
 		dedupeIterator := listing.NewDedupeIterator[int, int](
 			iterator, func(a int) int { return a })
 
@@ -161,34 +136,15 @@ func TestDedupeIterator(t *testing.T) {
 	})
 
 	t.Run("HasNext caches appropriately", func(t *testing.T) {
-		reqs := []string{"page1", "page2", "page3"}
-		pages := map[string][]int{
-			"page1": {1, 2, 2},
-			"page2": {3, 4, 4},
-			"page3": {5, 5, 6},
+		rrs := []requestResponse{
+			{req: "page1", page: map[string][]int{"page": {1, 2, 2}}},
+			{req: "page2", page: map[string][]int{"page": {3, 4, 4}}},
+			{req: "page3", page: map[string][]int{"page": {5, 5, 6}}},
 		}
-		nextReq := "page1"
-
-		iterator := listing.NewIterator(&nextReq,
-			func(ctx context.Context, req string) ([]int, error) {
-				return pages[req], nil
-			},
-			func(resp []int) []int {
-				return resp
-			},
-			func(resp []int) *string {
-				for i, r := range reqs {
-					if r == nextReq && i+1 < len(reqs) {
-						nextReq = reqs[i+1]
-						return &nextReq
-					}
-				}
-				return nil
-			},
-		)
-
+		iterator := makeIterator(rrs)
 		dedupeIterator := listing.NewDedupeIterator[int, int](
 			iterator, func(a int) int { return a })
+
 		values := make([]int, 0)
 		for dedupeIterator.HasNext(context.Background()) {
 			assert.True(t, dedupeIterator.HasNext(context.Background()))
@@ -200,6 +156,18 @@ func TestDedupeIterator(t *testing.T) {
 	})
 
 	t.Run("HasNext returns true when there is an error", func(t *testing.T) {
-
+		expectedErr := errors.New("some error")
+		iterator := listing.NewIterator[struct{}, []int, int](&struct{}{},
+			func(ctx context.Context, req struct{}) ([]int, error) {
+				return nil, expectedErr
+			},
+			nil,
+			nil,
+		)
+		dedupeIterator := listing.NewDedupeIterator[int, int](
+			iterator, func(a int) int { return a })
+		assert.True(t, dedupeIterator.HasNext(context.Background()))
+		_, err := dedupeIterator.Next(context.Background())
+		assert.ErrorIs(t, err, expectedErr)
 	})
 }
