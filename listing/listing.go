@@ -103,16 +103,15 @@ func (i *iteratorImpl[Req, Resp, T]) loadNextPageIfNeeded(ctx context.Context) e
 	// Keep loading pages while we have a next request and the current page is
 	// empty.
 	i.currentPage = nil
+	i.currentPageIdx = 0
 	for i.nextReq != nil && len(i.currentPage) == 0 {
 		resp, err := i.getNextPage(ctx, *i.nextReq)
 		i.lastErr = err
 		if err != nil {
 			return err
 		}
-		items := i.getItems(resp)
-		i.currentPage = items
-		i.currentPageIdx = 0
 		i.nextReq = i.getNextReq(resp)
+		i.currentPage = i.getItems(resp)
 	}
 	return nil
 }
