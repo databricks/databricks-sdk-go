@@ -37,7 +37,7 @@ func TestIterator(t *testing.T) {
 			},
 		)
 
-		for i := 1; i <= 6; i++ {
+		for i := 1; iterator.HasNext(context.Background()); i++ {
 			item, err := iterator.Next(context.Background())
 			assert.NoError(t, err)
 			assert.Equal(t, i, item)
@@ -191,6 +191,7 @@ func TestDedupeIterator(t *testing.T) {
 			iterator, func(a int) int { return a })
 		values := make([]int, 0)
 		for dedupeIterator.HasNext(context.Background()) {
+			assert.True(t, dedupeIterator.HasNext(context.Background()))
 			v, err := dedupeIterator.Next(context.Background())
 			values = append(values, v)
 			assert.NoError(t, err)
