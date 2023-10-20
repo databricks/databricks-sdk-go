@@ -112,6 +112,24 @@ func TestIterator(t *testing.T) {
 		_, err := iterator.Next(context.Background())
 		assert.ErrorIs(t, err, listing.ErrNoMoreItems)
 	})
+
+	t.Run("iteration with empty page at the end", func(t *testing.T) {
+		rrs := []requestResponse{
+			{req: "page1", page: map[string][]int{"page": {1, 2}}},
+			{req: "page2", page: map[string][]int{"page": {3, 4}}},
+			{req: "page3", page: map[string][]int{"page": {}}},
+		}
+		iterator := makeIterator(rrs)
+
+		for i := 1; i <= 4; i++ {
+			item, err := iterator.Next(context.Background())
+			assert.NoError(t, err)
+			assert.Equal(t, i, item)
+		}
+
+		_, err := iterator.Next(context.Background())
+		assert.ErrorIs(t, err, listing.ErrNoMoreItems)
+	})
 }
 
 func TestDedupeIterator(t *testing.T) {
