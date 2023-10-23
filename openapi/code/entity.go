@@ -173,6 +173,30 @@ func (e *Entity) RequiredFields() (fields []*Field) {
 	return
 }
 
+func (e *Entity) RequiredPathFields() (fields []*Field) {
+	for _, r := range e.RequiredOrder {
+		v := e.fields[r]
+		if !v.IsPath {
+			continue
+		}
+		v.Of = e
+		fields = append(fields, v)
+	}
+	return
+}
+
+func (e *Entity) RequiredRequestBodyFields() (fields []*Field) {
+	for _, r := range e.RequiredOrder {
+		v := e.fields[r]
+		if v.IsPath {
+			continue
+		}
+		v.Of = e
+		fields = append(fields, v)
+	}
+	return
+}
+
 func (e *Entity) NonRequiredFields() (fields []*Field) {
 	required := map[string]bool{}
 	for _, r := range e.RequiredOrder {
@@ -262,9 +286,9 @@ func (e *Entity) IsAllRequiredFieldsPrimitive() bool {
 	return true
 }
 
-func (e *Entity) HasRequiredNonBodyField() bool {
+func (e *Entity) HasRequiredPathFields() bool {
 	for _, v := range e.RequiredFields() {
-		if !v.IsJson || v.IsPath || v.IsQuery {
+		if v.IsPath {
 			return true
 		}
 	}
