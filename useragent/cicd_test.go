@@ -31,11 +31,11 @@ func TestCiCdProviderGithubActions(t *testing.T) {
 	env.CleanupEnvironment(t)
 
 	// No provider detected.
-	assert.Equal(t, "", CiCdProvider())
+	assert.Equal(t, "", lookupCiCdProvider())
 
 	// Github Actions detected.
 	t.Setenv("GITHUB_ACTIONS", "true")
-	assert.Equal(t, "github", CiCdProvider())
+	assert.Equal(t, "github", lookupCiCdProvider())
 }
 
 func TestCiCdProviderGitlab(t *testing.T) {
@@ -43,7 +43,7 @@ func TestCiCdProviderGitlab(t *testing.T) {
 
 	// Gitlab detected.
 	t.Setenv("GITLAB_CI", "true")
-	assert.Equal(t, "gitlab", CiCdProvider())
+	assert.Equal(t, "gitlab", lookupCiCdProvider())
 }
 
 func TestCiCdProviderJenkins(t *testing.T) {
@@ -51,7 +51,7 @@ func TestCiCdProviderJenkins(t *testing.T) {
 
 	// Jenkins detected.
 	t.Setenv("JENKINS_URL", "https://jenkins.example.com")
-	assert.Equal(t, "jenkins", CiCdProvider())
+	assert.Equal(t, "jenkins", lookupCiCdProvider())
 }
 
 func TestCiCdProviderAzureDevops(t *testing.T) {
@@ -59,7 +59,7 @@ func TestCiCdProviderAzureDevops(t *testing.T) {
 
 	// Azure Devops detected.
 	t.Setenv("TF_BUILD", "True")
-	assert.Equal(t, "azure-devops", CiCdProvider())
+	assert.Equal(t, "azure-devops", lookupCiCdProvider())
 }
 
 func TestCiCdProviderCircle(t *testing.T) {
@@ -67,7 +67,7 @@ func TestCiCdProviderCircle(t *testing.T) {
 
 	// Circle detected.
 	t.Setenv("CIRCLECI", "true")
-	assert.Equal(t, "circle", CiCdProvider())
+	assert.Equal(t, "circle", lookupCiCdProvider())
 }
 
 func TestCiCdProviderTravis(t *testing.T) {
@@ -75,7 +75,7 @@ func TestCiCdProviderTravis(t *testing.T) {
 
 	// Travis detected.
 	t.Setenv("TRAVIS", "true")
-	assert.Equal(t, "travis", CiCdProvider())
+	assert.Equal(t, "travis", lookupCiCdProvider())
 }
 
 func TestCiCdProviderBitbucket(t *testing.T) {
@@ -83,7 +83,7 @@ func TestCiCdProviderBitbucket(t *testing.T) {
 
 	// Bitbucket detected.
 	t.Setenv("BITBUCKET_BUILD_NUMBER", "123")
-	assert.Equal(t, "bitbucket", CiCdProvider())
+	assert.Equal(t, "bitbucket", lookupCiCdProvider())
 }
 
 func TestCiCdProviderGoogleCloudBuild(t *testing.T) {
@@ -94,7 +94,7 @@ func TestCiCdProviderGoogleCloudBuild(t *testing.T) {
 	t.Setenv("BUILD_ID", "bar")
 	t.Setenv("PROJECT_NUMBER", "baz")
 	t.Setenv("LOCATION", "")
-	assert.Equal(t, "google-cloud-build", CiCdProvider())
+	assert.Equal(t, "google-cloud-build", lookupCiCdProvider())
 }
 
 func TestCiCdProviderAwsCodeBuild(t *testing.T) {
@@ -102,7 +102,7 @@ func TestCiCdProviderAwsCodeBuild(t *testing.T) {
 
 	// AWS Code Build detected.
 	t.Setenv("CODEBUILD_BUILD_ARN", "arn:aws:codebuild:us-east-1:123456789012:build/my-demo-project:b1e6deae-e4f2-4151-be79-3cc4e82a0bf0")
-	assert.Equal(t, "aws-code-build", CiCdProvider())
+	assert.Equal(t, "aws-code-build", lookupCiCdProvider())
 }
 
 func TestCiCdProviderTfCloud(t *testing.T) {
@@ -110,7 +110,7 @@ func TestCiCdProviderTfCloud(t *testing.T) {
 
 	// Terraform Cloud detected.
 	t.Setenv("TFC_RUN_ID", "run-123")
-	assert.Equal(t, "tf-cloud", CiCdProvider())
+	assert.Equal(t, "tf-cloud", lookupCiCdProvider())
 }
 
 func TestCiCdProviderMultiple(t *testing.T) {
@@ -119,5 +119,5 @@ func TestCiCdProviderMultiple(t *testing.T) {
 	// Multiple providers detected. The first one detected is set.
 	t.Setenv("GITHUB_ACTIONS", "true")
 	t.Setenv("GITLAB_CI", "true")
-	assert.Equal(t, "github", CiCdProvider())
+	assert.Equal(t, "github", lookupCiCdProvider())
 }

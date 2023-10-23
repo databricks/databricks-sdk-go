@@ -1,6 +1,9 @@
 package useragent
 
-import "os"
+import (
+	"os"
+	"sync"
+)
 
 type envVar struct {
 	name          string
@@ -34,6 +37,7 @@ func listCiCdProviders() []cicdProvider {
 
 // detect returns true if all env vars are set and have expected values.
 func (p cicdProvider) detect() bool {
+	os.Environ()
 	for _, envVar := range p.envVars {
 		v, ok := os.LookupEnv(envVar.name)
 		if !ok {
@@ -46,13 +50,24 @@ func (p cicdProvider) detect() bool {
 	return true
 }
 
-// CiCdProvider returns the name of the CI/CD provider if detected. Returns the
+// lookupCiCdProvider returns the name of the CI/CD provider if detected. Returns the
 // first one, if multiple are detected.
-func CiCdProvider() string {
+func lookupCiCdProvider() string {
 	for _, p := range listCiCdProviders() {
 		if p.detect() {
 			return p.name
 		}
 	}
 	return ""
+}
+
+var provider string
+
+var providerOnce sync.Once
+
+func CiCdProvider() string {
+	providerOnce.Do(func() {
+		provider = lookupCiCdProvider()
+	})
+	return provider
 }
