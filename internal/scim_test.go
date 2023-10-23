@@ -42,6 +42,28 @@ func TestAccWorkspaceUsers(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, user.DisplayName, fetch.DisplayName)
 
+	err = w.Users.Patch(ctx, iam.PartialUpdate{
+		Id: user.Id,
+		Operations: []iam.Patch{
+			{
+				Op:    iam.PatchOpReplace,
+				Path:  "active",
+				Value: "false",
+			},
+		},
+		Schemas: []iam.PatchSchema{
+			iam.PatchSchemaUrnIetfParamsScimApiMessages20PatchOp,
+		},
+	})
+	require.NoError(t, err)
+
+	err = w.Users.Update(ctx, iam.User{
+		Id:       user.Id,
+		UserName: user.UserName,
+		Active:   true,
+	})
+	require.NoError(t, err)
+
 	byName, err := w.Users.GetByUserName(ctx, fetch.UserName)
 	require.NoError(t, err)
 	assert.Equal(t, fetch.Id, byName.Id)
