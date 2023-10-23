@@ -1,10 +1,9 @@
 package useragent
 
 import (
-	"os"
-	"strings"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -28,27 +27,8 @@ func TestCiCdProviderDetect(t *testing.T) {
 	assert.True(t, cicdProvider.detect(), "should detect when all env vars are set")
 }
 
-func cleanupEnv(t *testing.T) {
-	// We use set dummy env here to ensure this function is not called from a
-	// test that runs in parallel. The t.Setenv() calls below will fail if this
-	// function is called from a parallel test.
-	t.Setenv("FOO_BAR", "")
-
-	environ := os.Environ()
-	t.Cleanup(func() {
-		// Restore original environment once test is done.
-		for _, kv := range environ {
-			kvs := strings.SplitN(kv, "=", 2)
-			os.Setenv(kvs[0], kvs[1])
-		}
-	})
-
-	// Clear out all existing environment variables.
-	os.Clearenv()
-}
-
 func TestCiCdProviderGithubActions(t *testing.T) {
-	cleanupEnv(t)
+	env.CleanupEnvironment(t)
 
 	// No provider detected.
 	assert.Equal(t, "", CiCdProvider())
@@ -59,7 +39,7 @@ func TestCiCdProviderGithubActions(t *testing.T) {
 }
 
 func TestCiCdProviderGitlab(t *testing.T) {
-	cleanupEnv(t)
+	env.CleanupEnvironment(t)
 
 	// Gitlab detected.
 	t.Setenv("GITLAB_CI", "true")
@@ -67,7 +47,7 @@ func TestCiCdProviderGitlab(t *testing.T) {
 }
 
 func TestCiCdProviderJenkins(t *testing.T) {
-	cleanupEnv(t)
+	env.CleanupEnvironment(t)
 
 	// Jenkins detected.
 	t.Setenv("JENKINS_URL", "https://jenkins.example.com")
@@ -75,7 +55,7 @@ func TestCiCdProviderJenkins(t *testing.T) {
 }
 
 func TestCiCdProviderAzureDevops(t *testing.T) {
-	cleanupEnv(t)
+	env.CleanupEnvironment(t)
 
 	// Azure Devops detected.
 	t.Setenv("TF_BUILD", "True")
@@ -83,7 +63,7 @@ func TestCiCdProviderAzureDevops(t *testing.T) {
 }
 
 func TestCiCdProviderCircle(t *testing.T) {
-	cleanupEnv(t)
+	env.CleanupEnvironment(t)
 
 	// Circle detected.
 	t.Setenv("CIRCLECI", "true")
@@ -91,7 +71,7 @@ func TestCiCdProviderCircle(t *testing.T) {
 }
 
 func TestCiCdProviderTravis(t *testing.T) {
-	cleanupEnv(t)
+	env.CleanupEnvironment(t)
 
 	// Travis detected.
 	t.Setenv("TRAVIS", "true")
@@ -99,7 +79,7 @@ func TestCiCdProviderTravis(t *testing.T) {
 }
 
 func TestCiCdProviderBitbucket(t *testing.T) {
-	cleanupEnv(t)
+	env.CleanupEnvironment(t)
 
 	// Bitbucket detected.
 	t.Setenv("BITBUCKET_BUILD_NUMBER", "123")
@@ -107,7 +87,7 @@ func TestCiCdProviderBitbucket(t *testing.T) {
 }
 
 func TestCiCdProviderGoogleCloudBuild(t *testing.T) {
-	cleanupEnv(t)
+	env.CleanupEnvironment(t)
 
 	// Google Cloud Build detected.
 	t.Setenv("PROJECT_ID", "foo")
@@ -118,7 +98,7 @@ func TestCiCdProviderGoogleCloudBuild(t *testing.T) {
 }
 
 func TestCiCdProviderAwsCodeBuild(t *testing.T) {
-	cleanupEnv(t)
+	env.CleanupEnvironment(t)
 
 	// AWS Code Build detected.
 	t.Setenv("CODEBUILD_BUILD_ARN", "arn:aws:codebuild:us-east-1:123456789012:build/my-demo-project:b1e6deae-e4f2-4151-be79-3cc4e82a0bf0")
@@ -126,7 +106,7 @@ func TestCiCdProviderAwsCodeBuild(t *testing.T) {
 }
 
 func TestCiCdProviderTfCloud(t *testing.T) {
-	cleanupEnv(t)
+	env.CleanupEnvironment(t)
 
 	// Terraform Cloud detected.
 	t.Setenv("TFC_RUN_ID", "run-123")
@@ -134,7 +114,7 @@ func TestCiCdProviderTfCloud(t *testing.T) {
 }
 
 func TestCiCdProviderMultiple(t *testing.T) {
-	cleanupEnv(t)
+	env.CleanupEnvironment(t)
 
 	// Multiple providers detected. The first one detected is set.
 	t.Setenv("GITHUB_ACTIONS", "true")
