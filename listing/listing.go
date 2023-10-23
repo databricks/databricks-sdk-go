@@ -127,7 +127,11 @@ func (i *PaginatingIterator[Req, Resp, T]) loadNextPageIfNeeded(ctx context.Cont
 		if err != nil {
 			return err
 		}
-		i.nextReq = i.getNextReq(resp)
+		if i.getNextReq != nil {
+			i.nextReq = i.getNextReq(resp)
+		} else {
+			i.nextReq = nil
+		}
 		i.currentPage = i.getItems(resp)
 	}
 	return nil
