@@ -382,6 +382,64 @@ func ExampleJobsAPI_ListAll_jobsApiFullIntegration() {
 
 }
 
+func ExampleJobsAPI_ListRuns_jobsApiFullIntegration() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	notebookPath := func() string {
+		me, err := w.CurrentUser.Me(ctx)
+		if err != nil {
+			panic(err)
+		}
+		return filepath.Join("/Users", me.UserName, fmt.Sprintf("sdk-%x", time.Now().UnixNano()))
+	}()
+
+	clusterId := func() string {
+		clusterId := os.Getenv("DATABRICKS_CLUSTER_ID")
+		err := w.Clusters.EnsureClusterIsRunning(ctx, clusterId)
+		if err != nil {
+			panic(err)
+		}
+		return clusterId
+	}()
+
+	createdJob, err := w.Jobs.Create(ctx, jobs.CreateJob{
+		Name: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+		Tasks: []jobs.Task{jobs.Task{
+			Description:       "test",
+			ExistingClusterId: clusterId,
+			NotebookTask: &jobs.NotebookTask{
+				NotebookPath: notebookPath,
+			},
+			TaskKey:        "test",
+			TimeoutSeconds: 0,
+		}},
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", createdJob)
+
+	runList, err := w.Jobs.ListRunsAll(ctx, jobs.ListRunsRequest{
+		JobId: createdJob.JobId,
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", runList)
+
+	// cleanup
+
+	err = w.Jobs.DeleteByJobId(ctx, createdJob.JobId)
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 func ExampleJobsAPI_RepairRun_jobsApiFullIntegration() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
