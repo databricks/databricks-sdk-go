@@ -11,7 +11,7 @@ import (
 )
 
 func TestAccConnections(t *testing.T) {
-	ctx, w := workspaceTest(t)
+	ctx, w := ucwsTest(t)
 
 	connCreate, err := w.Connections.Create(ctx, catalog.CreateConnection{
 		Comment:        "Go SDK Acceptance Test Connection",
