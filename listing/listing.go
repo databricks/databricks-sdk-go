@@ -52,7 +52,7 @@ func ToSliceN[T any, Limit ~int | ~int64](ctx context.Context, it Iterator[T], n
 }
 
 // Use struct{} for Req for iterators that don't need any request structure.
-type IteratorImpl[Req, Resp, T any] struct {
+type PaginatingIterator[Req, Resp, T any] struct {
 	// nextReq is the request to be used to fetch the next page. If nil, then
 	// there is no next page to fetch.
 	nextReq *Req
@@ -92,8 +92,8 @@ func NewIterator[Req, Resp, T any](
 	getNextPage func(context.Context, Req) (Resp, error),
 	getItems func(Resp) []T,
 	getNextReq func(Resp) *Req,
-) *IteratorImpl[Req, Resp, T] {
-	return &IteratorImpl[Req, Resp, T]{
+) *PaginatingIterator[Req, Resp, T] {
+	return &PaginatingIterator[Req, Resp, T]{
 		nextReq:     nextReq,
 		getNextPage: getNextPage,
 		getItems:    getItems,
@@ -101,7 +101,7 @@ func NewIterator[Req, Resp, T any](
 	}
 }
 
-func (i *IteratorImpl[Req, Resp, T]) loadNextPageIfNeeded(ctx context.Context) error {
+func (i *PaginatingIterator[Req, Resp, T]) loadNextPageIfNeeded(ctx context.Context) error {
 	if i.currentPageIdx < len(i.currentPage) {
 		return nil
 	}
@@ -133,7 +133,7 @@ func (i *IteratorImpl[Req, Resp, T]) loadNextPageIfNeeded(ctx context.Context) e
 	return nil
 }
 
-func (i *IteratorImpl[Req, Resp, T]) Next(ctx context.Context) (T, error) {
+func (i *PaginatingIterator[Req, Resp, T]) Next(ctx context.Context) (T, error) {
 	var t T
 	err := i.loadNextPageIfNeeded(ctx)
 	if err != nil {
@@ -147,7 +147,7 @@ func (i *IteratorImpl[Req, Resp, T]) Next(ctx context.Context) (T, error) {
 	return item, nil
 }
 
-func (i *IteratorImpl[Req, Resp, T]) HasNext(ctx context.Context) bool {
+func (i *PaginatingIterator[Req, Resp, T]) HasNext(ctx context.Context) bool {
 	err := i.loadNextPageIfNeeded(ctx)
 	// As described in the documentation for HasNext, if there was an error
 	// fetching the next page, we still return true to allow the user to handle
@@ -158,22 +158,22 @@ func (i *IteratorImpl[Req, Resp, T]) HasNext(ctx context.Context) bool {
 	return i.currentPageIdx < len(i.currentPage)
 }
 
-type DedupeIteratorImpl[T any, Id comparable] struct {
+type DeduplicatingIterator[T any, Id comparable] struct {
 	it      Iterator[T]
 	getId   func(T) Id
 	seen    map[Id]struct{}
 	current *T
 }
 
-func NewDedupeIterator[T any, Id comparable](it Iterator[T], getId func(T) Id) *DedupeIteratorImpl[T, Id] {
-	return &DedupeIteratorImpl[T, Id]{
+func NewDedupeIterator[T any, Id comparable](it Iterator[T], getId func(T) Id) *DeduplicatingIterator[T, Id] {
+	return &DeduplicatingIterator[T, Id]{
 		it:    it,
 		getId: getId,
 		seen:  make(map[Id]struct{}),
 	}
 }
 
-func (i *DedupeIteratorImpl[T, Id]) Next(ctx context.Context) (T, error) {
+func (i *DeduplicatingIterator[T, Id]) Next(ctx context.Context) (T, error) {
 	if i.current != nil {
 		t := *i.current
 		i.current = nil
@@ -192,12 +192,12 @@ func (i *DedupeIteratorImpl[T, Id]) Next(ctx context.Context) (T, error) {
 	}
 }
 
-func (i *DedupeIteratorImpl[T, Id]) HasNext(ctx context.Context) bool {
+func (i *DeduplicatingIterator[T, Id]) HasNext(ctx context.Context) bool {
 	if i.current != nil {
 		return true
 	}
-	// To compute HasNext in dedupeIteratorImpl, we need to actually fetch the
-	// next item from the underlying iterator and compare it to seen items.
+	// To compute HasNext in DeduplicatingIterator, we need to actually fetch
+	// the next item from the underlying iterator and compare it to seen items.
 	// However, the retrieved item cannot be discarded, as it needs to be
 	// returned by the next call to Next. So we store the item in current and
 	// return it in the next call to Next, after which current is set to nil.

@@ -205,7 +205,7 @@ func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}
 		getItems,
 		{{if .Pagination.MultiRequest}}getNextReq{{else}}nil{{end}})
 	{{ if .NeedsOffsetDedupe -}}
-	dedupedIterator := listing.NewDedupeIterator(
+	dedupedIterator := listing.NewDedupeIterator[{{ template "type" .Pagination.Entity }}, {{ template "type" .IdentifierField.Entity }}](
 		iterator,
 		func(item {{ template "type" .Pagination.Entity }}) {{ template "type" .IdentifierField.Entity }} {
 			return item{{ template "field-path" .IdFieldPath }}
@@ -307,8 +307,8 @@ func (a *{{.Service.Name}}API) {{.Shortcut.PascalName}}AndWait(ctx context.Conte
 {{- end -}}
 {{- define "paginated-return-type" -}}
   {{ if .NeedsOffsetDedupe -}}
-  *listing.DedupeIteratorImpl[{{ template "type" .Pagination.Entity }}, {{ template "type" .IdentifierField.Entity }}]
+  *listing.DeduplicatingIterator[{{ template "type" .Pagination.Entity }}, {{ template "type" .IdentifierField.Entity }}]
   {{- else -}}
-  *listing.IteratorImpl[{{ template "paginated-request-type" .}}, *{{ .Response.PascalName }}, {{ template "type" .Pagination.Entity }}]
+  *listing.PaginatingIterator[{{ template "paginated-request-type" .}}, *{{ .Response.PascalName }}, {{ template "type" .Pagination.Entity }}]
   {{- end -}}
 {{- end -}}
