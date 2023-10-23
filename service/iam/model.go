@@ -134,8 +134,39 @@ type GetAccountServicePrincipalRequest struct {
 
 // Get user details
 type GetAccountUserRequest struct {
+	// Comma-separated list of attributes to return in response.
+	Attributes string `json:"-" url:"attributes,omitempty"`
+	// Desired number of results per page. Default is 10000.
+	Count int `json:"-" url:"count,omitempty"`
+	// Comma-separated list of attributes to exclude in response.
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
+	// Query by which the results have to be filtered. Supported operators are
+	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
+	// Additionally, simple expressions can be formed using logical operators -
+	// `and` and `or`. The [SCIM RFC] has more details but we currently only
+	// support simple expressions.
+	//
+	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Unique ID for a user in the Databricks account.
 	Id string `json:"-" url:"-"`
+	// Attribute to sort the results. Multi-part paths are supported. For
+	// example, `userName`, `name.givenName`, and `emails`.
+	SortBy string `json:"-" url:"sortBy,omitempty"`
+	// The order to sort the results.
+	SortOrder GetSortOrder `json:"-" url:"sortOrder,omitempty"`
+	// Specifies the index of the first result. First item is number 1.
+	StartIndex int `json:"-" url:"startIndex,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetAccountUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetAccountUserRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get assignable roles for a resource
@@ -200,10 +231,68 @@ type GetServicePrincipalRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+type GetSortOrder string
+
+const GetSortOrderAscending GetSortOrder = `ascending`
+
+const GetSortOrderDescending GetSortOrder = `descending`
+
+// String representation for [fmt.Print]
+func (f *GetSortOrder) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *GetSortOrder) Set(v string) error {
+	switch v {
+	case `ascending`, `descending`:
+		*f = GetSortOrder(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ascending", "descending"`, v)
+	}
+}
+
+// Type always returns GetSortOrder to satisfy [pflag.Value] interface
+func (f *GetSortOrder) Type() string {
+	return "GetSortOrder"
+}
+
 // Get user details
 type GetUserRequest struct {
+	// Comma-separated list of attributes to return in response.
+	Attributes string `json:"-" url:"attributes,omitempty"`
+	// Desired number of results per page.
+	Count int `json:"-" url:"count,omitempty"`
+	// Comma-separated list of attributes to exclude in response.
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
+	// Query by which the results have to be filtered. Supported operators are
+	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
+	// Additionally, simple expressions can be formed using logical operators -
+	// `and` and `or`. The [SCIM RFC] has more details but we currently only
+	// support simple expressions.
+	//
+	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Unique ID for a user in the Databricks workspace.
 	Id string `json:"-" url:"-"`
+	// Attribute to sort the results. Multi-part paths are supported. For
+	// example, `userName`, `name.givenName`, and `emails`.
+	SortBy string `json:"-" url:"sortBy,omitempty"`
+	// The order to sort the results.
+	SortOrder GetSortOrder `json:"-" url:"sortOrder,omitempty"`
+	// Specifies the index of the first result. First item is number 1.
+	StartIndex int `json:"-" url:"startIndex,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetUserRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List workspace permissions
@@ -229,13 +318,15 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
 	Meta *ResourceMeta `json:"meta,omitempty"`
-
+	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
+	// The schema of the group.
+	Schemas []GroupSchema `json:"schemas,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -246,6 +337,31 @@ func (s *Group) UnmarshalJSON(b []byte) error {
 
 func (s Group) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type GroupSchema string
+
+const GroupSchemaUrnIetfParamsScimSchemasCore20Group GroupSchema = `urn:ietf:params:scim:schemas:core:2.0:Group`
+
+// String representation for [fmt.Print]
+func (f *GroupSchema) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *GroupSchema) Set(v string) error {
+	switch v {
+	case `urn:ietf:params:scim:schemas:core:2.0:Group`:
+		*f = GroupSchema(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "urn:ietf:params:scim:schemas:core:2.0:Group"`, v)
+	}
+}
+
+// Type always returns GroupSchema to satisfy [pflag.Value] interface
+func (f *GroupSchema) Type() string {
+	return "GroupSchema"
 }
 
 // List group details
@@ -390,6 +506,8 @@ type ListGroupsResponse struct {
 	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
 	// User objects returned in the response.
 	Resources []Group `json:"Resources,omitempty"`
+	// The schema of the service principal.
+	Schemas []ListResponseSchema `json:"schemas,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
 	StartIndex int64 `json:"startIndex,omitempty"`
@@ -407,11 +525,38 @@ func (s ListGroupsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListResponseSchema string
+
+const ListResponseSchemaUrnIetfParamsScimApiMessages20ListResponse ListResponseSchema = `urn:ietf:params:scim:api:messages:2.0:ListResponse`
+
+// String representation for [fmt.Print]
+func (f *ListResponseSchema) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ListResponseSchema) Set(v string) error {
+	switch v {
+	case `urn:ietf:params:scim:api:messages:2.0:ListResponse`:
+		*f = ListResponseSchema(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "urn:ietf:params:scim:api:messages:2.0:ListResponse"`, v)
+	}
+}
+
+// Type always returns ListResponseSchema to satisfy [pflag.Value] interface
+func (f *ListResponseSchema) Type() string {
+	return "ListResponseSchema"
+}
+
 type ListServicePrincipalResponse struct {
 	// Total results returned in the response.
 	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
 	// User objects returned in the response.
 	Resources []ServicePrincipal `json:"Resources,omitempty"`
+	// The schema of the List response.
+	Schemas []ListResponseSchema `json:"schemas,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
 	StartIndex int64 `json:"startIndex,omitempty"`
@@ -530,6 +675,8 @@ type ListUsersResponse struct {
 	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
 	// User objects returned in the response.
 	Resources []User `json:"Resources,omitempty"`
+	// The schema of the List response.
+	Schemas []ListResponseSchema `json:"schemas,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
 	StartIndex int64 `json:"startIndex,omitempty"`
@@ -1025,8 +1172,10 @@ type ServicePrincipal struct {
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
 	Id string `json:"id,omitempty"`
-
+	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
+	// The schema of the List response.
+	Schemas []ServicePrincipalSchema `json:"schemas,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1037,6 +1186,31 @@ func (s *ServicePrincipal) UnmarshalJSON(b []byte) error {
 
 func (s ServicePrincipal) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ServicePrincipalSchema string
+
+const ServicePrincipalSchemaUrnIetfParamsScimSchemasCore20ServicePrincipal ServicePrincipalSchema = `urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal`
+
+// String representation for [fmt.Print]
+func (f *ServicePrincipalSchema) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ServicePrincipalSchema) Set(v string) error {
+	switch v {
+	case `urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal`:
+		*f = ServicePrincipalSchema(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal"`, v)
+	}
+}
+
+// Type always returns ServicePrincipalSchema to satisfy [pflag.Value] interface
+func (f *ServicePrincipalSchema) Type() string {
+	return "ServicePrincipalSchema"
 }
 
 type UpdateRuleSetRequest struct {
@@ -1070,11 +1244,13 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Name *Name `json:"name,omitempty"`
-
+	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
+	// The schema of the user.
+	Schemas []UserSchema `json:"schemas,omitempty"`
 	// Email address of the Databricks user.
 	UserName string `json:"userName,omitempty"`
 
@@ -1087,6 +1263,31 @@ func (s *User) UnmarshalJSON(b []byte) error {
 
 func (s User) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UserSchema string
+
+const UserSchemaUrnIetfParamsScimSchemasCore20User UserSchema = `urn:ietf:params:scim:schemas:core:2.0:User`
+
+// String representation for [fmt.Print]
+func (f *UserSchema) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *UserSchema) Set(v string) error {
+	switch v {
+	case `urn:ietf:params:scim:schemas:core:2.0:User`:
+		*f = UserSchema(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "urn:ietf:params:scim:schemas:core:2.0:User"`, v)
+	}
+}
+
+// Type always returns UserSchema to satisfy [pflag.Value] interface
+func (f *UserSchema) Type() string {
+	return "UserSchema"
 }
 
 type WorkspacePermission string

@@ -530,8 +530,14 @@ func NewModelRegistry(client *client.DatabricksClient) *ModelRegistryAPI {
 	}
 }
 
-// MLflow Model Registry is a centralized model repository and a UI and set of
-// APIs that enable you to manage the full lifecycle of MLflow Models.
+// Note: This API reference documents APIs for the Workspace Model Registry.
+// Databricks recommends using [Models in Unity
+// Catalog](/api/workspace/registeredmodels) instead. Models in Unity Catalog
+// provides centralized model governance, cross-workspace access, lineage, and
+// deployment. Workspace Model Registry will be deprecated in the future.
+//
+// The Workspace Model Registry is a centralized model repository and a UI and
+// set of APIs that enable you to manage the full lifecycle of MLflow Models.
 type ModelRegistryAPI struct {
 	// impl contains low-level REST API interface, that could be overridden
 	// through WithImpl(ModelRegistryService)

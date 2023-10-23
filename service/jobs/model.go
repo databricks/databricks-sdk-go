@@ -1473,7 +1473,7 @@ type ListRunsRequest struct {
 	// from all jobs.
 	JobId int64 `json:"-" url:"job_id,omitempty"`
 	// The number of runs to return. This value must be greater than 0 and less
-	// than 25. The default value is 25. If a request specifies a limit of 0,
+	// than 25. The default value is 20. If a request specifies a limit of 0,
 	// the service instead uses the maximum limit.
 	Limit int `json:"-" url:"limit,omitempty"`
 	// The offset of the first run to return, relative to the most recent run.
@@ -1603,6 +1603,8 @@ type NotebookTask struct {
 	// from the notebook is used.
 	//
 	// Retrieve these parameters in a notebook using [dbutils.widgets.get].
+	//
+	// The JSON representation of this field cannot exceed 1MB.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-widgets
@@ -3380,6 +3382,10 @@ type SubmitTask struct {
 	// An optional timeout applied to each run of this job task. A value of `0`
 	// means no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// A collection of system notification IDs to notify when the run begins or
+	// completes. The default behavior is to not send any system notifications.
+	// Task webhooks respect the task notification settings.
+	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
