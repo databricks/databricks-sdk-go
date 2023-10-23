@@ -37,7 +37,6 @@ func listCiCdProviders() []cicdProvider {
 
 // detect returns true if all env vars are set and have expected values.
 func (p cicdProvider) detect() bool {
-	os.Environ()
 	for _, envVar := range p.envVars {
 		v, ok := os.LookupEnv(envVar.name)
 		if !ok {
