@@ -222,9 +222,9 @@ func (a *{{.Service.Name}}API) {{.PascalName}}(ctx context.Context{{if .Request}
 func (a *{{.Service.Name}}API) {{.PascalName}}All(ctx context.Context{{if .Request}}, request {{.Request.PascalName}}{{end}}) ([]{{ template "type" .Pagination.Entity }}, error) {
 	iterator := a.{{.PascalName}}(ctx{{if .Request}}, request{{end}})
 	{{ if .Pagination.Limit -}}
-	return listing.ToSliceN(ctx, iterator, request.{{.Pagination.Limit.PascalName}})
+	return listing.ToSliceN[{{ template "type" .Pagination.Entity }}, {{ template "type" .Pagination.Limit.Entity }}](ctx, iterator, request.{{.Pagination.Limit.PascalName}})
 	{{ else -}}
-	return listing.ToSlice(ctx, iterator)
+	return listing.ToSlice[{{ template "type" .Pagination.Entity }}](ctx, iterator)
 	{{- end }}
 }
 {{end}}{{if .NamedIdMap}}
