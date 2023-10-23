@@ -130,6 +130,32 @@ func TestIterator(t *testing.T) {
 		_, err := iterator.Next(context.Background())
 		assert.ErrorIs(t, err, listing.ErrNoMoreItems)
 	})
+
+	t.Run("ToSlice returns all items", func(t *testing.T) {
+		rrs := []requestResponse{
+			{req: "page1", page: map[string][]int{"page": {1, 2}}},
+			{req: "page2", page: map[string][]int{"page": {3, 4}}},
+			{req: "page3", page: map[string][]int{"page": {5, 6}}},
+		}
+		iterator := makeIterator(rrs)
+
+		items, err := listing.ToSlice(context.Background(), iterator)
+		assert.NoError(t, err)
+		assert.Equal(t, []int{1, 2, 3, 4, 5, 6}, items)
+	})
+
+	t.Run("ToSliceN returns the first N items", func(t *testing.T) {
+		rrs := []requestResponse{
+			{req: "page1", page: map[string][]int{"page": {1, 2}}},
+			{req: "page2", page: map[string][]int{"page": {3, 4}}},
+			{req: "page3", page: map[string][]int{"page": {5, 6}}},
+		}
+		iterator := makeIterator(rrs)
+
+		items, err := listing.ToSliceN(context.Background(), iterator, 3)
+		assert.NoError(t, err)
+		assert.Equal(t, []int{1, 2, 3}, items)
+	})
 }
 
 func TestDedupeIterator(t *testing.T) {
