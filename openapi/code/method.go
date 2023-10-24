@@ -188,7 +188,7 @@ func (m *Method) MustUseJson() bool {
 		return true
 	}
 
-	// if not all required fields are primitive, then fields should be provided in JSON
+	// if not all required fields are primitive, then fields must be provided in JSON
 	if m.Request != nil && !m.Request.IsAllRequiredFieldsPrimitive() {
 		return true
 	}
