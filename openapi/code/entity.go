@@ -170,6 +170,12 @@ func (e *Entity) RequiredFields() (fields []*Field) {
 		v.Of = e
 		fields = append(fields, v)
 	}
+
+	// Path fields should always be first in required arguments order.
+	// We use stable sort to male sure we preserve the path arguments order
+	slices.SortStableFunc(fields, func(a, b *Field) bool {
+		return a.IsPath && !b.IsPath
+	})
 	return
 }
 
