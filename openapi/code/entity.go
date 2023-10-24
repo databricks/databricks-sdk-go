@@ -173,6 +173,30 @@ func (e *Entity) RequiredFields() (fields []*Field) {
 	return
 }
 
+func (e *Entity) RequiredPathFields() (fields []*Field) {
+	for _, r := range e.RequiredOrder {
+		v := e.fields[r]
+		if !v.IsPath {
+			continue
+		}
+		v.Of = e
+		fields = append(fields, v)
+	}
+	return
+}
+
+func (e *Entity) RequiredRequestBodyFields() (fields []*Field) {
+	for _, r := range e.RequiredOrder {
+		v := e.fields[r]
+		if !v.IsJson {
+			continue
+		}
+		v.Of = e
+		fields = append(fields, v)
+	}
+	return
+}
+
 func (e *Entity) NonRequiredFields() (fields []*Field) {
 	required := map[string]bool{}
 	for _, r := range e.RequiredOrder {
@@ -262,13 +286,12 @@ func (e *Entity) IsAllRequiredFieldsPrimitive() bool {
 	return true
 }
 
-func (e *Entity) HasRequiredNonBodyField() bool {
-	for _, v := range e.RequiredFields() {
-		if !v.IsJson || v.IsPath || v.IsQuery {
-			return true
-		}
-	}
-	return false
+func (e *Entity) HasRequiredPathFields() bool {
+	return len(e.RequiredPathFields()) > 0
+}
+
+func (e *Entity) HasRequiredRequestBodyFields() bool {
+	return len(e.RequiredRequestBodyFields()) > 0
 }
 
 // IsPrivatePreview flags object being in private preview.

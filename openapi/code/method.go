@@ -179,32 +179,29 @@ func (m *Method) IsJsonOnly() bool {
 	return m.Operation.JsonOnly
 }
 
-// CanSetRequiredFieldsFromJson indicates whether we can use
+// MustUseJson indicates whether we have to use
 // JSON input to set all required fields for request.
-// If we can do so, it means we can ignore all positional arguments
-// passed for a certaing command and only use JSON input passed via --json flag.
-func (m *Method) CanSetRequiredFieldsFromJson() bool {
+// If we can do so, it means we can only use JSON input passed via --json flag.
+func (m *Method) MustUseJson() bool {
 	// method supports only JSON input
 	if m.IsJsonOnly() {
 		return true
 	}
 
-	if m.Request == nil {
-		return false
-	}
-
-	// if not all required fields are primitive, then fields should be provided in JSON
-	if !m.Request.IsAllRequiredFieldsPrimitive() {
-		return true
-	}
-
-	// if there are no required fields which are part of request body (URL, query)
-	// it can be fully set via JSON
-	if !m.Request.HasRequiredNonBodyField() {
+	// if not all required fields are primitive, then fields must be provided in JSON
+	if m.Request != nil && !m.Request.IsAllRequiredFieldsPrimitive() {
 		return true
 	}
 
 	return false
+}
+
+// CanUseJson indicates whether the generated command supports --json flag.
+// It happens when either method has to use JSON input or not all fields in request
+// are primitives. Because such fields are not required, the command has not but
+// should support JSON input.
+func (m *Method) CanUseJson() bool {
+	return m.MustUseJson() || (m.Request != nil && m.Request.HasJsonField())
 }
 
 func (m *Method) HasIdentifierField() bool {
