@@ -188,7 +188,7 @@ func (e *Entity) RequiredPathFields() (fields []*Field) {
 func (e *Entity) RequiredRequestBodyFields() (fields []*Field) {
 	for _, r := range e.RequiredOrder {
 		v := e.fields[r]
-		if v.IsPath {
+		if !v.IsJson {
 			continue
 		}
 		v.Of = e
@@ -287,12 +287,11 @@ func (e *Entity) IsAllRequiredFieldsPrimitive() bool {
 }
 
 func (e *Entity) HasRequiredPathFields() bool {
-	for _, v := range e.RequiredFields() {
-		if v.IsPath {
-			return true
-		}
-	}
-	return false
+	return len(e.RequiredPathFields()) > 0
+}
+
+func (e *Entity) HasRequiredRequestBodyFields() bool {
+	return len(e.RequiredRequestBodyFields()) > 0
 }
 
 // IsPrivatePreview flags object being in private preview.

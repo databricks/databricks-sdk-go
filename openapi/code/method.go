@@ -201,7 +201,7 @@ func (m *Method) MustUseJson() bool {
 // are primitives. Because such fields are not required, the command has not but
 // should support JSON input.
 func (m *Method) CanUseJson() bool {
-	return m.MustUseJson() || (m.Request != nil && !m.Request.IsOnlyPrimitiveFields())
+	return m.MustUseJson() || (m.Request != nil && m.Request.HasJsonField())
 }
 
 func (m *Method) HasIdentifierField() bool {
