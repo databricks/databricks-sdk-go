@@ -10,6 +10,33 @@ import (
 
 // all definitions in this file are in alphabetical order
 
+type AppManifest struct {
+	// Workspace dependencies.
+	Dependencies []any `json:"dependencies,omitempty"`
+	// application description
+	Description string `json:"description,omitempty"`
+	// Ingress rules for app public endpoints
+	Ingress any `json:"ingress,omitempty"`
+	// Only a-z and dashes (-). Max length of 30.
+	Name string `json:"name,omitempty"`
+	// Container private registry
+	Registry any `json:"registry,omitempty"`
+	// list of app services. Restricted to one for now.
+	Services any `json:"services,omitempty"`
+	// The manifest format version. Must be set to 1.
+	Version int `json:"version,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AppManifest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppManifest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Retrieve the logs associated with building the model's environment for a
 // given serving endpoint's served model.
 type BuildLogsRequest struct {
@@ -46,10 +73,72 @@ type DataframeSplitInput struct {
 	Index []int `json:"index,omitempty"`
 }
 
+// Delete an application
+type DeleteAppRequest struct {
+	// The name of an application. This field is required.
+	Name string `json:"-" url:"-"`
+}
+
 // Delete a serving endpoint
 type DeleteServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
 	Name string `json:"-" url:"-"`
+}
+
+type DeployAppRequest struct {
+	// Manifest that specifies the application requirements
+	Manifest AppManifest `json:"manifest"`
+	// Information passed at app deployment time to fulfill app dependencies
+	Resources any `json:"resources,omitempty"`
+}
+
+type DeploymentStatus struct {
+	// description
+	DeploymentId string `json:"deployment_id,omitempty"`
+	// State: one of DEPLOYING,SUCCESS, FAILURE, DEPLOYMENT_STATE_UNSPECIFIED
+	State DeploymentStatusState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeploymentStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeploymentStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// State: one of DEPLOYING,SUCCESS, FAILURE, DEPLOYMENT_STATE_UNSPECIFIED
+type DeploymentStatusState string
+
+const DeploymentStatusStateDeploying DeploymentStatusState = `DEPLOYING`
+
+const DeploymentStatusStateDeploymentStateUnspecified DeploymentStatusState = `DEPLOYMENT_STATE_UNSPECIFIED`
+
+const DeploymentStatusStateFailure DeploymentStatusState = `FAILURE`
+
+const DeploymentStatusStateSuccess DeploymentStatusState = `SUCCESS`
+
+// String representation for [fmt.Print]
+func (f *DeploymentStatusState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DeploymentStatusState) Set(v string) error {
+	switch v {
+	case `DEPLOYING`, `DEPLOYMENT_STATE_UNSPECIFIED`, `FAILURE`, `SUCCESS`:
+		*f = DeploymentStatusState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DEPLOYING", "DEPLOYMENT_STATE_UNSPECIFIED", "FAILURE", "SUCCESS"`, v)
+	}
+}
+
+// Type always returns DeploymentStatusState to satisfy [pflag.Value] interface
+func (f *DeploymentStatusState) Type() string {
+	return "DeploymentStatusState"
 }
 
 type EndpointCoreConfigInput struct {
@@ -210,6 +299,12 @@ func (s EndpointTag) MarshalJSON() ([]byte, error) {
 type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
 	// required.
+	Name string `json:"-" url:"-"`
+}
+
+// Get definition for an application
+type GetAppRequest struct {
+	// The name of an application. This field is required.
 	Name string `json:"-" url:"-"`
 }
 

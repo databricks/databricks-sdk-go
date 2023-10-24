@@ -1,5 +1,37 @@
 # Version changelog
 
+## 0.24.0
+
+* Implemented Iterator support for paginated endpoints or endpoints returning a list ([#543](https://github.com/databricks/databricks-sdk-go/pull/543)). The Iterator interface allows users to get the next resource in the iterator and to check whether another resource is available in the iterator. Iterators for paginated endpoints fetch pages lazily, allowing users to only fetch the pages needed for their use case.
+* Removed `photon` and `graviton` selectors in `compute.SparkVersionRequ…` ([#622](https://github.com/databricks/databricks-sdk-go/pull/622)). Going forward, photon is determined by the `RuntimeEngine` field in `compute.CreateCluster`, and graviton is chosen depending on the `aws_instance_type` field in `compute.CreateCluster`.
+
+API Changes:
+
+ * Added `Attributes`, `Count`, `ExcludedAttributes`, `Filter`, `SortBy`, `SortOrder`, and `StartIndex` fields to [iam.GetAccountUserRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#GetAccountUserRequest) and [iam.GetUserRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#GetUserRequest).
+ * Added `Schemas` field to [iam.Group](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#Group), [iam.ListGroupsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#ListGroupsResponse), [iam.ListServicePrincipalResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#ListServicePrincipalResponse), [iam.ListUsersResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#ListUsersResponse), [iam.ServicePrincipal](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#ServicePrincipal), and [iam.User](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#User).
+ * Added [iam.GetSortOrder](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#GetSortOrder).
+ * Added [iam.GroupSchema](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#GroupSchema).
+ * Added [iam.ListResponseSchema](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#ListResponseSchema).
+ * Added [iam.ServicePrincipalSchema](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#ServicePrincipalSchema).
+ * Added [iam.UserSchema](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#UserSchema).
+ * Added `WebhookNotifications` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+ * Added [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service and related methods.
+ * Added [a.AccountNetworkPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#AccountNetworkPolicyAPI) account-level service and related methods.
+
+Internal SDK Changes:
+* Update to actions/checkout@v4 ([#650](https://github.com/databricks/databricks-sdk-go/pull/650)).
+* Skip unshallow step in test workflow ([#649](https://github.com/databricks/databricks-sdk-go/pull/649)).
+* Add integration tests for `Jobs`: `ListRuns` ([#645](https://github.com/databricks/databricks-sdk-go/pull/645)).
+* Only log pkg.Load after checking whether the operation is tagged ([#655](https://github.com/databricks/databricks-sdk-go/pull/655)).
+* Prefix library paths with the target directory to construct absolute paths ([#656](https://github.com/databricks/databricks-sdk-go/pull/656)).
+* Fixed HasRequiredNonBodyField method ([#660](https://github.com/databricks/databricks-sdk-go/pull/660)).
+* Added CanSetRequiredFieldsFromJson method for OpenAPI generator ([#661](https://github.com/databricks/databricks-sdk-go/pull/661)).
+* Add integration tests for `ServicePrincipals`: `Patch` ([#662](https://github.com/databricks/databricks-sdk-go/pull/662)).
+* Add integration tests for `Users`: `Patch`, `Update` ([#663](https://github.com/databricks/databricks-sdk-go/pull/663)).
+* Enforce running `az login --service-principal` on nightly runs ([#659](https://github.com/databricks/databricks-sdk-go/pull/659)).
+* Add integration tests for `Connections`: `Create`, `Delete`, `Get`, `List`, `Update` ([#653](https://github.com/databricks/databricks-sdk-go/pull/653)).
+
+OpenAPI SHA: 5903bb39137fd76ac384b2044e425f9c56840e00, Date: 2023-10-23
 ## 0.23.0
 
 Note: this release includes custom JSON marshalling that captures whether or

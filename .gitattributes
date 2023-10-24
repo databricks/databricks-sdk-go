@@ -8,6 +8,7 @@ service/billing/log_delivery_usage_test.go linguist-generated=true
 service/billing/model.go linguist-generated=true
 service/catalog/api.go linguist-generated=true
 service/catalog/catalogs_usage_test.go linguist-generated=true
+service/catalog/connections_usage_test.go linguist-generated=true
 service/catalog/external_locations_usage_test.go linguist-generated=true
 service/catalog/grants_usage_test.go linguist-generated=true
 service/catalog/impl.go linguist-generated=true

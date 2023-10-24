@@ -38,8 +38,12 @@ func ToSlice[T any](ctx context.Context, it Iterator[T]) ([]T, error) {
 }
 
 // ToSliceN returns the first N items from the iterator as a slice. If there
-// was an error fetching items at any time, it returns that error.
+// was an error fetching items at any time, it returns that error. If n == 0,
+// it returns all items.
 func ToSliceN[T any, Limit ~int | ~int64](ctx context.Context, it Iterator[T], n Limit) ([]T, error) {
+	if n == 0 {
+		return ToSlice(ctx, it)
+	}
 	var items []T
 	for it.HasNext(ctx) && Limit(len(items)) < n {
 		item, err := it.Next(ctx)
@@ -127,7 +131,11 @@ func (i *PaginatingIterator[Req, Resp, T]) loadNextPageIfNeeded(ctx context.Cont
 		if err != nil {
 			return err
 		}
-		i.nextReq = i.getNextReq(resp)
+		if i.getNextReq != nil {
+			i.nextReq = i.getNextReq(resp)
+		} else {
+			i.nextReq = nil
+		}
 		i.currentPage = i.getItems(resp)
 	}
 	return nil

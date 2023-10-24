@@ -280,6 +280,7 @@ func (s ChannelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Name of the channel
 type ChannelName string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
@@ -1378,7 +1379,7 @@ type ExternalLink struct {
 	NextChunkIndex int `json:"next_chunk_index,omitempty"`
 	// When fetching, provides a link to fetch the _next_ chunk. If absent,
 	// indicates there are no more chunks. This link is an absolute `path` to be
-	// joined with your `$DATABRICKS_HOST`, and should be treated as an opague
+	// joined with your `$DATABRICKS_HOST`, and should be treated as an opaque
 	// link. This is an alternative to using `next_chunk_index`.
 	NextChunkInternalLink string `json:"next_chunk_internal_link,omitempty"`
 	// The number of rows within the result chunk.
@@ -2600,7 +2601,7 @@ type ResultData struct {
 	NextChunkIndex int `json:"next_chunk_index,omitempty"`
 	// When fetching, provides a link to fetch the _next_ chunk. If absent,
 	// indicates there are no more chunks. This link is an absolute `path` to be
-	// joined with your `$DATABRICKS_HOST`, and should be treated as an opague
+	// joined with your `$DATABRICKS_HOST`, and should be treated as an opaque
 	// link. This is an alternative to using `next_chunk_index`.
 	NextChunkInternalLink string `json:"next_chunk_internal_link,omitempty"`
 	// The number of rows within the result chunk.

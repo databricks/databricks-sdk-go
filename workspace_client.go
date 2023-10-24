@@ -39,6 +39,11 @@ type WorkspaceClient struct {
 	// :method:jobs/create.
 	Alerts *sql.AlertsAPI
 
+	// Lakehouse Apps run directly on a customer’s Databricks instance,
+	// integrate with their data, use and extend Databricks services, and enable
+	// users to interact through single sign-on.
+	Apps *serving.AppsAPI
+
 	// In Databricks Runtime 13.3 and above, you can add libraries and init
 	// scripts to the `allowlist` in UC so that users can leverage these
 	// artifacts on compute configured with shared access mode.
@@ -380,8 +385,16 @@ type WorkspaceClient struct {
 	// available in a catalog named hive_metastore.
 	Metastores *catalog.MetastoresAPI
 
-	// MLflow Model Registry is a centralized model repository and a UI and set
-	// of APIs that enable you to manage the full lifecycle of MLflow Models.
+	// Note: This API reference documents APIs for the Workspace Model Registry.
+	// Databricks recommends using [Models in Unity
+	// Catalog](/api/workspace/registeredmodels) instead. Models in Unity
+	// Catalog provides centralized model governance, cross-workspace access,
+	// lineage, and deployment. Workspace Model Registry will be deprecated in
+	// the future.
+	//
+	// The Workspace Model Registry is a centralized model repository and a UI
+	// and set of APIs that enable you to manage the full lifecycle of MLflow
+	// Models.
 	ModelRegistry *ml.ModelRegistryAPI
 
 	// Databricks provides a hosted version of MLflow Model Registry in Unity
@@ -884,6 +897,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 
 		AccountAccessControlProxy: iam.NewAccountAccessControlProxy(apiClient),
 		Alerts:                    sql.NewAlerts(apiClient),
+		Apps:                      serving.NewApps(apiClient),
 		ArtifactAllowlists:        catalog.NewArtifactAllowlists(apiClient),
 		Catalogs:                  catalog.NewCatalogs(apiClient),
 		CleanRooms:                sharing.NewCleanRooms(apiClient),

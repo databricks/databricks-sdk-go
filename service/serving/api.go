@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
+// These APIs allow you to manage Apps, Serving Endpoints, etc.
 package serving
 
 import (
@@ -13,6 +13,74 @@ import (
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
+
+func NewApps(client *client.DatabricksClient) *AppsAPI {
+	return &AppsAPI{
+		impl: &appsImpl{
+			client: client,
+		},
+	}
+}
+
+// Lakehouse Apps run directly on a customer’s Databricks instance, integrate
+// with their data, use and extend Databricks services, and enable users to
+// interact through single sign-on.
+type AppsAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(AppsService)
+	impl AppsService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *AppsAPI) WithImpl(impl AppsService) *AppsAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level Apps API implementation
+func (a *AppsAPI) Impl() AppsService {
+	return a.impl
+}
+
+// Create and deploy an application.
+//
+// Creates and deploys an application.
+func (a *AppsAPI) Create(ctx context.Context, request DeployAppRequest) (*DeploymentStatus, error) {
+	return a.impl.Create(ctx, request)
+}
+
+// Delete an application.
+//
+// Delete an application definition
+func (a *AppsAPI) Delete(ctx context.Context, request DeleteAppRequest) error {
+	return a.impl.Delete(ctx, request)
+}
+
+// Delete an application.
+//
+// Delete an application definition
+func (a *AppsAPI) DeleteByName(ctx context.Context, name string) error {
+	return a.impl.Delete(ctx, DeleteAppRequest{
+		Name: name,
+	})
+}
+
+// Get definition for an application.
+//
+// Get an application definition
+func (a *AppsAPI) Get(ctx context.Context, request GetAppRequest) error {
+	return a.impl.Get(ctx, request)
+}
+
+// Get definition for an application.
+//
+// Get an application definition
+func (a *AppsAPI) GetByName(ctx context.Context, name string) error {
+	return a.impl.Get(ctx, GetAppRequest{
+		Name: name,
+	})
+}
 
 func NewServingEndpoints(client *client.DatabricksClient) *ServingEndpointsAPI {
 	return &ServingEndpointsAPI{

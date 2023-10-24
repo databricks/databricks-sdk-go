@@ -279,6 +279,49 @@ func ExampleServicePrincipalsAPI_Patch_accountServicePrincipal() {
 
 }
 
+func ExampleServicePrincipalsAPI_Patch_servicePrincipalsOnAws() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	created, err := w.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", created)
+
+	byId, err := w.ServicePrincipals.GetById(ctx, created.Id)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", byId)
+
+	err = w.ServicePrincipals.Patch(ctx, iam.PartialUpdate{
+		Id: byId.Id,
+		Operations: []iam.Patch{iam.Patch{
+			Op:    iam.PatchOpReplace,
+			Path:  "active",
+			Value: "false",
+		}},
+		Schemas: []iam.PatchSchema{iam.PatchSchemaUrnIetfParamsScimApiMessages20PatchOp},
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	// cleanup
+
+	err = w.ServicePrincipals.DeleteById(ctx, created.Id)
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 func ExampleServicePrincipalsAPI_Update_accountServicePrincipal() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()

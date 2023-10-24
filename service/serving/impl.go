@@ -10,6 +10,37 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 )
 
+// unexported type that holds implementations of just Apps API methods
+type appsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *appsImpl) Create(ctx context.Context, request DeployAppRequest) (*DeploymentStatus, error) {
+	var deploymentStatus DeploymentStatus
+	path := "/api/2.0/preview/apps/deployments"
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, request, &deploymentStatus)
+	return &deploymentStatus, err
+}
+
+func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) error {
+	path := fmt.Sprintf("/api/2.0/preview/apps/instances/%v", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, request, nil)
+	return err
+}
+
+func (a *appsImpl) Get(ctx context.Context, request GetAppRequest) error {
+	path := fmt.Sprintf("/api/2.0/preview/apps/instances/%v", request.Name)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, nil)
+	return err
+}
+
 // unexported type that holds implementations of just ServingEndpoints API methods
 type servingEndpointsImpl struct {
 	client *client.DatabricksClient

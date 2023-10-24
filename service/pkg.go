@@ -6,6 +6,8 @@
 //
 // - [sql.AlertsAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
+// - [serving.AppsAPI]: Lakehouse Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
+//
 // - [catalog.ArtifactAllowlistsAPI]: In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode.
 //
 // - [billing.BillableUsageAPI]: This API allows you to download billable usage logs for the specified account and date range.
@@ -82,9 +84,11 @@
 //
 // - [catalog.AccountMetastoresAPI]: These APIs manage Unity Catalog metastores for an account.
 //
-// - [ml.ModelRegistryAPI]: MLflow Model Registry is a centralized model repository and a UI and set of APIs that enable you to manage the full lifecycle of MLflow Models.
+// - [ml.ModelRegistryAPI]: Note: This API reference documents APIs for the Workspace Model Registry.
 //
 // - [catalog.ModelVersionsAPI]: Databricks provides a hosted version of MLflow Model Registry in Unity Catalog.
+//
+// - [settings.AccountNetworkPolicyAPI]: Network policy is a set of rules that defines what can be accessed from your Databricks network.
 //
 // - [provisioning.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
 //
@@ -201,6 +205,7 @@ var (
 	_ *iam.AccountAccessControlAPI            = nil
 	_ *iam.AccountAccessControlProxyAPI       = nil
 	_ *sql.AlertsAPI                          = nil
+	_ *serving.AppsAPI                        = nil
 	_ *catalog.ArtifactAllowlistsAPI          = nil
 	_ *billing.BillableUsageAPI               = nil
 	_ *billing.BudgetsAPI                     = nil
@@ -241,6 +246,7 @@ var (
 	_ *catalog.AccountMetastoresAPI           = nil
 	_ *ml.ModelRegistryAPI                    = nil
 	_ *catalog.ModelVersionsAPI               = nil
+	_ *settings.AccountNetworkPolicyAPI       = nil
 	_ *provisioning.NetworksAPI               = nil
 	_ *oauth2.OAuthEnrollmentAPI              = nil
 	_ *oauth2.OAuthPublishedAppsAPI           = nil
