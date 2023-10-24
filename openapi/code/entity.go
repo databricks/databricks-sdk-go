@@ -33,6 +33,11 @@ func (f *Field) IsPublicPreview() bool {
 	return f.Schema != nil && isPublicPreview(&f.Schema.Node)
 }
 
+// IsRequestBodyField indicates a field which can only be set as part of request body
+func (f *Field) IsRequestBodyField() bool {
+	return f.IsJson && !f.IsPath && !f.IsQuery
+}
+
 // Call the provided callback on this field and any nested fields in its entity,
 // recursively.
 func (f *Field) Traverse(fn func(*Field)) {
@@ -194,7 +199,7 @@ func (e *Entity) RequiredPathFields() (fields []*Field) {
 func (e *Entity) RequiredRequestBodyFields() (fields []*Field) {
 	for _, r := range e.RequiredOrder {
 		v := e.fields[r]
-		if !v.IsJson {
+		if !v.IsRequestBodyField() {
 			continue
 		}
 		v.Of = e
