@@ -389,6 +389,19 @@ func (c *DatabricksClient) addAuthHeaderToUserAgent(r *http.Request) error {
 	return nil
 }
 
+func (c *DatabricksClient) addCiCdProviderToUserAgent(r *http.Request) error {
+	// Detect if we are running in a CI/CD environment
+	provider := useragent.CiCdProvider()
+	if provider == "" {
+		return nil
+	}
+
+	// Add the detected CI/CD provider to the user agent
+	ctx := useragent.InContext(r.Context(), "cicd", provider)
+	*r = *r.WithContext(ctx) // replace request
+	return nil
+}
+
 func (c *DatabricksClient) perform(
 	ctx context.Context,
 	method,
@@ -407,6 +420,7 @@ func (c *DatabricksClient) perform(
 		c.Config.Authenticate,
 		c.addHostToRequestUrl,
 		c.addAuthHeaderToUserAgent,
+		c.addCiCdProviderToUserAgent,
 	}, visitors...)
 	resp, err := retries.Poll(ctx, c.retryTimeout,
 		c.attempt(ctx, method, requestURL, headers, requestBody, visitors...))
