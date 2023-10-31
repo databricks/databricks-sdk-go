@@ -6,6 +6,27 @@ import (
 	"context"
 )
 
+// Lakehouse Apps run directly on a customer’s Databricks instance, integrate
+// with their data, use and extend Databricks services, and enable users to
+// interact through single sign-on.
+type AppsService interface {
+
+	// Create and deploy an application.
+	//
+	// Creates and deploys an application.
+	Create(ctx context.Context, request DeployAppRequest) (*DeploymentStatus, error)
+
+	// Delete an application.
+	//
+	// Delete an application definition
+	Delete(ctx context.Context, request DeleteAppRequest) error
+
+	// Get definition for an application.
+	//
+	// Get an application definition
+	Get(ctx context.Context, request GetAppRequest) error
+}
+
 // The Serving Endpoints API allows you to create, update, and delete model
 // serving endpoints.
 //

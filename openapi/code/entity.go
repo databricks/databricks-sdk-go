@@ -33,6 +33,15 @@ func (f *Field) IsPublicPreview() bool {
 	return f.Schema != nil && isPublicPreview(&f.Schema.Node)
 }
 
+// IsRequestBodyField indicates a field which can only be set as part of request body
+// There are some fields, such as PipelineId for example, which can be both used in JSON and
+// as path parameters. In code generation we handle path and request body parameters separately
+// by making path parameters always required. Thus, we don't need to consider such fields
+// as request body fields anymore.
+func (f *Field) IsRequestBodyField() bool {
+	return f.IsJson && !f.IsPath && !f.IsQuery
+}
+
 // Call the provided callback on this field and any nested fields in its entity,
 // recursively.
 func (f *Field) Traverse(fn func(*Field)) {
@@ -170,6 +179,36 @@ func (e *Entity) RequiredFields() (fields []*Field) {
 		v.Of = e
 		fields = append(fields, v)
 	}
+
+	// Path fields should always be first in required arguments order.
+	// We use stable sort to male sure we preserve the path arguments order
+	slices.SortStableFunc(fields, func(a, b *Field) bool {
+		return a.IsPath && !b.IsPath
+	})
+	return
+}
+
+func (e *Entity) RequiredPathFields() (fields []*Field) {
+	for _, r := range e.RequiredOrder {
+		v := e.fields[r]
+		if !v.IsPath {
+			continue
+		}
+		v.Of = e
+		fields = append(fields, v)
+	}
+	return
+}
+
+func (e *Entity) RequiredRequestBodyFields() (fields []*Field) {
+	for _, r := range e.RequiredOrder {
+		v := e.fields[r]
+		if !v.IsRequestBodyField() {
+			continue
+		}
+		v.Of = e
+		fields = append(fields, v)
+	}
 	return
 }
 
@@ -262,13 +301,12 @@ func (e *Entity) IsAllRequiredFieldsPrimitive() bool {
 	return true
 }
 
-func (e *Entity) HasRequiredNonBodyField() bool {
-	for _, v := range e.RequiredFields() {
-		if !v.IsJson || v.IsPath || v.IsQuery {
-			return true
-		}
-	}
-	return false
+func (e *Entity) HasRequiredPathFields() bool {
+	return len(e.RequiredPathFields()) > 0
+}
+
+func (e *Entity) HasRequiredRequestBodyFields() bool {
+	return len(e.RequiredRequestBodyFields()) > 0
 }
 
 // IsPrivatePreview flags object being in private preview.

@@ -388,7 +388,7 @@ type CreateRecipient struct {
 	// This field is required when the __authentication_type__ is
 	// **DATABRICKS**. The identifier is of format
 	// __cloud__:__region__:__metastore-uuid__.
-	DataRecipientGlobalMetastoreId any `json:"data_recipient_global_metastore_id,omitempty"`
+	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// Name of Recipient.
@@ -687,6 +687,8 @@ const PrivilegeCreateExternalLocation Privilege = `CREATE_EXTERNAL_LOCATION`
 
 const PrivilegeCreateExternalTable Privilege = `CREATE_EXTERNAL_TABLE`
 
+const PrivilegeCreateExternalVolume Privilege = `CREATE_EXTERNAL_VOLUME`
+
 const PrivilegeCreateForeignCatalog Privilege = `CREATE_FOREIGN_CATALOG`
 
 const PrivilegeCreateFunction Privilege = `CREATE_FUNCTION`
@@ -711,6 +713,8 @@ const PrivilegeCreateTable Privilege = `CREATE_TABLE`
 
 const PrivilegeCreateView Privilege = `CREATE_VIEW`
 
+const PrivilegeCreateVolume Privilege = `CREATE_VOLUME`
+
 const PrivilegeExecute Privilege = `EXECUTE`
 
 const PrivilegeManageAllowlist Privilege = `MANAGE_ALLOWLIST`
@@ -720,6 +724,8 @@ const PrivilegeModify Privilege = `MODIFY`
 const PrivilegeReadFiles Privilege = `READ_FILES`
 
 const PrivilegeReadPrivateFiles Privilege = `READ_PRIVATE_FILES`
+
+const PrivilegeReadVolume Privilege = `READ_VOLUME`
 
 const PrivilegeRefresh Privilege = `REFRESH`
 
@@ -747,6 +753,8 @@ const PrivilegeWriteFiles Privilege = `WRITE_FILES`
 
 const PrivilegeWritePrivateFiles Privilege = `WRITE_PRIVATE_FILES`
 
+const PrivilegeWriteVolume Privilege = `WRITE_VOLUME`
+
 // String representation for [fmt.Print]
 func (f *Privilege) String() string {
 	return string(*f)
@@ -755,11 +763,11 @@ func (f *Privilege) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Privilege) Set(v string) error {
 	switch v {
-	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`:
+	case `ALL_PRIVILEGES`, `APPLY_TAG`, `CREATE`, `CREATE_CATALOG`, `CREATE_CONNECTION`, `CREATE_EXTERNAL_LOCATION`, `CREATE_EXTERNAL_TABLE`, `CREATE_EXTERNAL_VOLUME`, `CREATE_FOREIGN_CATALOG`, `CREATE_FUNCTION`, `CREATE_MANAGED_STORAGE`, `CREATE_MATERIALIZED_VIEW`, `CREATE_MODEL`, `CREATE_PROVIDER`, `CREATE_RECIPIENT`, `CREATE_SCHEMA`, `CREATE_SHARE`, `CREATE_STORAGE_CREDENTIAL`, `CREATE_TABLE`, `CREATE_VIEW`, `CREATE_VOLUME`, `EXECUTE`, `MANAGE_ALLOWLIST`, `MODIFY`, `READ_FILES`, `READ_PRIVATE_FILES`, `READ_VOLUME`, `REFRESH`, `SELECT`, `SET_SHARE_PERMISSION`, `USAGE`, `USE_CATALOG`, `USE_CONNECTION`, `USE_MARKETPLACE_ASSETS`, `USE_PROVIDER`, `USE_RECIPIENT`, `USE_SCHEMA`, `USE_SHARE`, `WRITE_FILES`, `WRITE_PRIVATE_FILES`, `WRITE_VOLUME`:
 		*f = Privilege(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "EXECUTE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
 	}
 }
 

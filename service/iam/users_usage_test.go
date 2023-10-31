@@ -222,6 +222,37 @@ func ExampleUsersAPI_ListAll_workspaceUsers() {
 
 }
 
+func ExampleUsersAPI_Patch_workspaceUsers() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	user, err := w.Users.Create(ctx, iam.User{
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+		UserName:    fmt.Sprintf("sdk-%x@example.com", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", user)
+
+	err = w.Users.Patch(ctx, iam.PartialUpdate{
+		Id: user.Id,
+		Operations: []iam.Patch{iam.Patch{
+			Op:    iam.PatchOpReplace,
+			Path:  "active",
+			Value: "false",
+		}},
+		Schemas: []iam.PatchSchema{iam.PatchSchemaUrnIetfParamsScimApiMessages20PatchOp},
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 func ExampleUsersAPI_Patch_accountUsers() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
@@ -257,6 +288,33 @@ func ExampleUsersAPI_Patch_accountUsers() {
 	// cleanup
 
 	err = a.Users.DeleteById(ctx, user.Id)
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func ExampleUsersAPI_Update_workspaceUsers() {
+	ctx := context.Background()
+	w, err := databricks.NewWorkspaceClient()
+	if err != nil {
+		panic(err)
+	}
+
+	user, err := w.Users.Create(ctx, iam.User{
+		DisplayName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+		UserName:    fmt.Sprintf("sdk-%x@example.com", time.Now().UnixNano()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof(ctx, "found %v", user)
+
+	err = w.Users.Update(ctx, iam.User{
+		Id:       user.Id,
+		UserName: user.UserName,
+		Active:   true,
+	})
 	if err != nil {
 		panic(err)
 	}
