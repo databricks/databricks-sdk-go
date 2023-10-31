@@ -6,7 +6,12 @@ import (
 )
 
 type envVar struct {
-	name          string
+	// Name of the environment variable.
+	name string
+
+	// Expected value of the environment variable. If empty, only the presence
+	// of the environment variable is checked. If non-empty, the value must
+	// match exactly.
 	expectedValue string
 }
 
