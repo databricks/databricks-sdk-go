@@ -360,7 +360,7 @@ func TestUcAccCatalogWorkspaceBindings(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	thisWorkspaceID := MustParseInt64(GetEnvOrSkipTest(t, "THIS_WORKSPACE_ID"))
+	thisWorkspaceID := MustParseInt64(GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
 	_, err = w.WorkspaceBindings.Update(ctx, catalog.UpdateWorkspaceBindings{
 		Name:             created.Name,
 		AssignWorkspaces: []int64{thisWorkspaceID},
