@@ -87,7 +87,7 @@ func TestUcAccVolumes(t *testing.T) {
 func TestUcAccTables(t *testing.T) {
 	ctx, w := ucwsTest(t)
 	if w.Config.IsGcp() {
-		t.Skip("Statement Execution API not available on GCP, skipping")
+		skipf(t)("Statement Execution API not available on GCP, skipping")
 	}
 
 	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
