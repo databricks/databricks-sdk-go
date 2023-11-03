@@ -12,6 +12,9 @@ import (
 
 func TestUcAccVolumes(t *testing.T) {
 	ctx, w := ucwsTest(t)
+	if !w.Config.IsAws() {
+		skipf(t)("not on aws")
+	}
 
 	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
 		Name: RandomName("catalog_"),
