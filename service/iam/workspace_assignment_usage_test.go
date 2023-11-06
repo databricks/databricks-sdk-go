@@ -28,7 +28,7 @@ func ExampleWorkspaceAssignmentAPI_ListAll_workspaceAssignmentOnAws() {
 			panic(fmt.Sprintf("`%s` is not int64: %s", v, err))
 		}
 		return i
-	}(os.Getenv("TEST_WORKSPACE_ID"))
+	}(os.Getenv("DUMMY_WORKSPACE_ID"))
 
 	all, err := a.WorkspaceAssignment.ListByWorkspaceId(ctx, workspaceId)
 	if err != nil {
@@ -67,7 +67,7 @@ func ExampleWorkspaceAssignmentAPI_Update_workspaceAssignmentOnAws() {
 			panic(fmt.Sprintf("`%s` is not int64: %s", v, err))
 		}
 		return i
-	}(os.Getenv("TEST_WORKSPACE_ID"))
+	}(os.Getenv("DUMMY_WORKSPACE_ID"))
 
 	err = a.WorkspaceAssignment.Update(ctx, iam.UpdateWorkspaceAssignments{
 		WorkspaceId: workspaceId,

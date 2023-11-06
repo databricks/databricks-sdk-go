@@ -288,7 +288,7 @@ func TestUcAccMetastores(t *testing.T) {
 	_, err = w.Metastores.GetById(ctx, created.MetastoreId)
 	require.NoError(t, err)
 
-	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
+	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "DUMMY_WORKSPACE_ID"))
 
 	err = w.Metastores.Assign(ctx, catalog.CreateMetastoreAssignment{
 		MetastoreId: created.MetastoreId,
@@ -363,7 +363,7 @@ func TestUcAccCatalogWorkspaceBindings(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	thisWorkspaceID := MustParseInt64(GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
+	thisWorkspaceID := MustParseInt64(GetEnvOrSkipTest(t, "DUMMY_WORKSPACE_ID"))
 	_, err = w.WorkspaceBindings.Update(ctx, catalog.UpdateWorkspaceBindings{
 		Name:             created.Name,
 		AssignWorkspaces: []int64{thisWorkspaceID},

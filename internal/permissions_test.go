@@ -67,7 +67,7 @@ func TestUcAccWorkspaceAssignmentOnAws(t *testing.T) {
 	if !a.Config.IsAws() {
 		t.SkipNow()
 	}
-	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
+	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "DUMMY_WORKSPACE_ID"))
 
 	spn, err := a.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		DisplayName: RandomName("sdk-go-"),
