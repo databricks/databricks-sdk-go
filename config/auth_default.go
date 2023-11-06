@@ -39,8 +39,11 @@ func (c *DefaultCredentials) Name() string {
 	return c.name
 }
 
+var authFlowUrl = "https://docs.databricks.com/en/dev-tools/auth.html#databricks-client-unified-authentication"
+var errorMessage = fmt.Sprintf("cannot configure default credentials, please check %s to configure credentials for your preferred authentication method", authFlowUrl)
+
 // ErrCannotConfigureAuth (experimental) is returned when no auth is configured
-var ErrCannotConfigureAuth = errors.New("cannot configure default credentials")
+var ErrCannotConfigureAuth = errors.New(errorMessage)
 
 func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (func(*http.Request) error, error) {
 	for _, p := range authProviders {

@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"sync"
@@ -42,6 +43,10 @@ func init() {
 // set to a file, where auth test fixtures are going to be dumped
 var dumpTo string = ""
 var dumpToMu sync.Mutex
+
+var defaultAuthBaseErrorMessage = "default auth: cannot configure default credentials, " +
+	"please check https://docs.databricks.com/en/dev-tools/auth.html#databricks-client-unified-authentication " +
+	"to configure credentials for your preferred authentication method"
 
 func (cf configFixture) dump(t *testing.T) error {
 	if dumpTo == "" {
@@ -117,7 +122,7 @@ func (cf configFixture) configureProviderAndReturnConfig(t *testing.T) (*Config,
 
 func TestConfig_NoParams(t *testing.T) {
 	configFixture{
-		AssertError: "default auth: cannot configure default credentials",
+		AssertError: defaultAuthBaseErrorMessage,
 	}.apply(t)
 }
 
@@ -126,7 +131,7 @@ func TestConfig_HostEnv(t *testing.T) {
 		Env: map[string]string{
 			"DATABRICKS_HOST": "x",
 		},
-		AssertError: "default auth: cannot configure default credentials. Config: host=https://x. Env: DATABRICKS_HOST",
+		AssertError: fmt.Sprintf("%s. Config: host=https://x. Env: DATABRICKS_HOST", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
@@ -135,7 +140,7 @@ func TestConfig_TokenEnv(t *testing.T) {
 		Env: map[string]string{
 			"DATABRICKS_TOKEN": "x",
 		},
-		AssertError: "default auth: cannot configure default credentials. Config: token=***. Env: DATABRICKS_TOKEN",
+		AssertError: fmt.Sprintf("%s. Config: token=***. Env: DATABRICKS_TOKEN", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
@@ -167,7 +172,7 @@ func TestConfig_UserPasswordEnv(t *testing.T) {
 			"DATABRICKS_USERNAME": "x",
 			"DATABRICKS_PASSWORD": "x",
 		},
-		AssertError: "default auth: cannot configure default credentials. Config: username=x, password=***. Env: DATABRICKS_USERNAME, DATABRICKS_PASSWORD",
+		AssertError: fmt.Sprintf("%s. Config: username=x, password=***. Env: DATABRICKS_USERNAME, DATABRICKS_PASSWORD", defaultAuthBaseErrorMessage),
 		AssertHost:  "https://x",
 	}.apply(t)
 }
@@ -250,7 +255,7 @@ func TestConfig_ConfigFile(t *testing.T) {
 		Env: map[string]string{
 			"DATABRICKS_CONFIG_FILE": "x",
 		},
-		AssertError: "default auth: cannot configure default credentials. Config: config_file=x. Env: DATABRICKS_CONFIG_FILE",
+		AssertError: fmt.Sprintf("%s. Config: config_file=x. Env: DATABRICKS_CONFIG_FILE", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
@@ -261,7 +266,7 @@ func TestConfig_ConfigFileSkipDefaultProfileIfHostSpecified(t *testing.T) {
 			// This directory has a DEFAULT profile in databrickscfg
 			"HOME": "testdata",
 		},
-		AssertError: "default auth: cannot configure default credentials. Config: host=https://x",
+		AssertError: fmt.Sprintf("%s. Config: host=https://x", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
@@ -270,7 +275,7 @@ func TestConfig_ConfigFileWithEmptyDefaultProfileSelectDefault(t *testing.T) {
 		Env: map[string]string{
 			"HOME": "testdata/empty_default",
 		},
-		AssertError: "default auth: cannot configure default credentials",
+		AssertError: defaultAuthBaseErrorMessage,
 	}.apply(t)
 }
 
@@ -315,8 +320,7 @@ func TestConfig_PatFromDatabricksCfg_NohostProfile(t *testing.T) {
 			"HOME":                      "testdata",
 			"DATABRICKS_CONFIG_PROFILE": "nohost",
 		},
-		AssertError: "default auth: cannot configure default credentials. " +
-			"Config: token=***, profile=nohost. Env: DATABRICKS_CONFIG_PROFILE",
+		AssertError: fmt.Sprintf("%s. Config: token=***, profile=nohost. Env: DATABRICKS_CONFIG_PROFILE", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
@@ -327,8 +331,7 @@ func TestConfig_ConfigProfileAndToken(t *testing.T) {
 			"DATABRICKS_CONFIG_PROFILE": "nohost",
 			"HOME":                      "testdata",
 		},
-		AssertError: "default auth: cannot configure default credentials. " +
-			"Config: token=***, profile=nohost. Env: DATABRICKS_TOKEN, DATABRICKS_CONFIG_PROFILE",
+		AssertError: fmt.Sprintf("%s. Config: token=***, profile=nohost. Env: DATABRICKS_TOKEN, DATABRICKS_CONFIG_PROFILE", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
@@ -390,7 +393,7 @@ func TestConfig_AzureCliHost_AzNotInstalled(t *testing.T) {
 			"PATH": "whatever",
 			"HOME": "testdata/azure",
 		},
-		AssertError: "default auth: cannot configure default credentials. Config: azure_workspace_resource_id=/sub/rg/ws",
+		AssertError: fmt.Sprintf("%s. Config: azure_workspace_resource_id=/sub/rg/ws", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 
