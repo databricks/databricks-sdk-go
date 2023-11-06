@@ -28,7 +28,7 @@ func ExampleMetastoresAPI_Assign_metastores() {
 			panic(fmt.Sprintf("`%s` is not int64: %s", v, err))
 		}
 		return i
-	}(os.Getenv("TEST_WORKSPACE_ID"))
+	}(os.Getenv("DUMMY_WORKSPACE_ID"))
 
 	created, err := w.Metastores.Create(ctx, catalog.CreateMetastore{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
@@ -215,7 +215,7 @@ func ExampleMetastoresAPI_Unassign_metastores() {
 			panic(fmt.Sprintf("`%s` is not int64: %s", v, err))
 		}
 		return i
-	}(os.Getenv("TEST_WORKSPACE_ID"))
+	}(os.Getenv("DUMMY_WORKSPACE_ID"))
 
 	created, err := w.Metastores.Create(ctx, catalog.CreateMetastore{
 		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),

@@ -12,6 +12,9 @@ import (
 
 func TestUcAccVolumes(t *testing.T) {
 	ctx, w := ucwsTest(t)
+	if !w.Config.IsAws() {
+		skipf(t)("not on aws")
+	}
 
 	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
 		Name: RandomName("catalog_"),
@@ -86,6 +89,9 @@ func TestUcAccVolumes(t *testing.T) {
 
 func TestUcAccTables(t *testing.T) {
 	ctx, w := ucwsTest(t)
+	if w.Config.IsGcp() {
+		skipf(t)("Statement Execution API not available on GCP, skipping")
+	}
 
 	createdCatalog, err := w.Catalogs.Create(ctx, catalog.CreateCatalog{
 		Name: RandomName("catalog_"),
@@ -282,7 +288,7 @@ func TestUcAccMetastores(t *testing.T) {
 	_, err = w.Metastores.GetById(ctx, created.MetastoreId)
 	require.NoError(t, err)
 
-	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"))
+	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "DUMMY_WORKSPACE_ID"))
 
 	err = w.Metastores.Assign(ctx, catalog.CreateMetastoreAssignment{
 		MetastoreId: created.MetastoreId,
