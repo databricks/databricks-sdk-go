@@ -1,4 +1,4 @@
-# Databricks SDK for Go
+ # Databricks SDK for Go
 
 [Beta](https://docs.databricks.com/release-notes/release-types.html): This SDK is supported for production use cases, 
 but we do expect future releases to have some interface changes; see [Interface stability](#interface-stability). 
