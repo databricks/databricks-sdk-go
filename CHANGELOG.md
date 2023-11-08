@@ -1,5 +1,23 @@
 # Version changelog
 
+## 0.24.1
+
+* Make sure path parameters are first in order in RequiredFields ([#669](https://github.com/databricks/databricks-sdk-go/pull/669)).
+* Added Field.IsRequestBodyField method for code generation ([#670](https://github.com/databricks/databricks-sdk-go/pull/670)).
+* Add regressions question to the issue template ([#676](https://github.com/databricks/databricks-sdk-go/pull/676)).
+* Add telemetry for CI/CD platform to useragent ([#665](https://github.com/databricks/databricks-sdk-go/pull/665)).
+* Skip GCP Integration Tests using Statement Execution API ([#678](https://github.com/databricks/databricks-sdk-go/pull/678)).
+* Add more detailed error message on default credentials not found error ([#679](https://github.com/databricks/databricks-sdk-go/pull/679)).
+
+Dependency updates:
+
+ * Bump google.golang.org/api from 0.146.0 to 0.150.0 ([#683](https://github.com/databricks/databricks-sdk-go/pull/683)).
+ * Bump golang.org/x/mod from 0.13.0 to 0.14.0 ([#681](https://github.com/databricks/databricks-sdk-go/pull/681)).
+ * Bump google.golang.org/grpc from 1.57.0 to 1.57.1 in /examples/zerolog ([#674](https://github.com/databricks/databricks-sdk-go/pull/674)).
+ * Bump google.golang.org/grpc from 1.58.2 to 1.58.3 in /examples/slog ([#672](https://github.com/databricks/databricks-sdk-go/pull/672)).
+ * Bump google.golang.org/grpc from 1.58.2 to 1.58.3 in /examples/zerolog ([#684](https://github.com/databricks/databricks-sdk-go/pull/684)).
+ * Bump golang.org/x/time from 0.3.0 to 0.4.0 ([#680](https://github.com/databricks/databricks-sdk-go/pull/680)).
+
 ## 0.24.0
 
 * Implemented Iterator support for paginated endpoints or endpoints returning a list ([#543](https://github.com/databricks/databricks-sdk-go/pull/543)). The Iterator interface allows users to get the next resource in the iterator and to check whether another resource is available in the iterator. Iterators for paginated endpoints fetch pages lazily, allowing users to only fetch the pages needed for their use case.
