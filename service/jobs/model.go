@@ -666,6 +666,8 @@ type GetRunOutputRequest struct {
 type GetRunRequest struct {
 	// Whether to include the repair history in the response.
 	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
+	// Whether to include resolved parameter values in the response.
+	IncludeResolvedValues bool `json:"-" url:"include_resolved_values,omitempty"`
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
 	RunId int64 `json:"-" url:"run_id"`
@@ -3158,8 +3160,10 @@ type SqlTask struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 	// If query, indicates that this job must execute a SQL query.
 	Query *SqlTaskQuery `json:"query,omitempty"`
-	// The canonical identifier of the SQL warehouse. Only serverless and pro
-	// SQL warehouses are supported.
+	// The canonical identifier of the SQL warehouse. Recommended to use with
+	// serverless or pro SQL warehouses. Classic SQL warehouses are only
+	// supported for SQL alert, dashboard and query tasks and are limited to
+	// scheduled single-task jobs.
 	WarehouseId string `json:"warehouse_id"`
 }
 

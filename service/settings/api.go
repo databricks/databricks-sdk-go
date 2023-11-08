@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Network Policy, Account Settings, Credentials Manager, Ip Access Lists, Settings, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Network Policy, Account Settings, Credentials Manager, Ip Access Lists, Network Connectivity, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -610,6 +610,150 @@ func (a *IpAccessListsAPI) Replace(ctx context.Context, request ReplaceIpAccessL
 // :method:workspaceconf/setStatus.
 func (a *IpAccessListsAPI) Update(ctx context.Context, request UpdateIpAccessList) error {
 	return a.impl.Update(ctx, request)
+}
+
+func NewNetworkConnectivity(client *client.DatabricksClient) *NetworkConnectivityAPI {
+	return &NetworkConnectivityAPI{
+		impl: &networkConnectivityImpl{
+			client: client,
+		},
+	}
+}
+
+// These APIs provide configurations for the network connectivity of your
+// workspaces for serverless compute resources. This API provides stable subnets
+// for your workspace so that you can configure your firewalls on your Azure
+// Storage accounts to allow access from Databricks. You can also use the API to
+// provision private endpoints for Databricks to privately connect serverless
+// compute resources to your Azure resources using Azure Private Link. See
+// [configure serverless secure connectivity].
+//
+// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+type NetworkConnectivityAPI struct {
+	// impl contains low-level REST API interface, that could be overridden
+	// through WithImpl(NetworkConnectivityService)
+	impl NetworkConnectivityService
+}
+
+// WithImpl could be used to override low-level API implementations for unit
+// testing purposes with [github.com/golang/mock] or other mocking frameworks.
+func (a *NetworkConnectivityAPI) WithImpl(impl NetworkConnectivityService) *NetworkConnectivityAPI {
+	a.impl = impl
+	return a
+}
+
+// Impl returns low-level NetworkConnectivity API implementation
+func (a *NetworkConnectivityAPI) Impl() NetworkConnectivityService {
+	return a.impl
+}
+
+// Create a network connectivity configuration.
+//
+// Creates a network connectivity configuration (NCC), which provides stable
+// Azure service subnets when accessing your Azure Storage accounts. You can
+// also use a network connectivity configuration to create Databricks-managed
+// private endpoints so that Databricks serverless compute resources privately
+// access your resources.
+//
+// **IMPORTANT**: After you create the network connectivity configuration, you
+// must assign one or more workspaces to the new network connectivity
+// configuration. You can share one network connectivity configuration with
+// multiple workspaces from the same Azure region within the same Databricks
+// account. See [configure serverless secure connectivity].
+//
+// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+func (a *NetworkConnectivityAPI) CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error) {
+	return a.impl.CreateNetworkConnectivityConfiguration(ctx, request)
+}
+
+// Create a private endpoint rule.
+//
+// Create a private endpoint rule for the specified network connectivity config
+// object. Once the object is created, Databricks asynchronously provisions a
+// new Azure private endpoint to your specified Azure resource.
+//
+// **IMPORTANT**: You must use Azure portal or other Azure tools to approve the
+// private endpoint to complete the connection. To get the information of the
+// private endpoint created, make a `GET` request on the new private endpoint
+// rule. See [serverless private link].
+//
+// [serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link
+func (a *NetworkConnectivityAPI) CreatePrivateEndpointRule(ctx context.Context, request CreatePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
+	return a.impl.CreatePrivateEndpointRule(ctx, request)
+}
+
+// Delete a network connectivity configuration.
+//
+// Deletes a network connectivity configuration.
+func (a *NetworkConnectivityAPI) DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error {
+	return a.impl.DeleteNetworkConnectivityConfiguration(ctx, request)
+}
+
+// Delete a network connectivity configuration.
+//
+// Deletes a network connectivity configuration.
+func (a *NetworkConnectivityAPI) DeleteNetworkConnectivityConfigurationByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) error {
+	return a.impl.DeleteNetworkConnectivityConfiguration(ctx, DeleteNetworkConnectivityConfigurationRequest{
+		NetworkConnectivityConfigId: networkConnectivityConfigId,
+	})
+}
+
+// Delete a private endpoint rule.
+//
+// Initiates deleting a private endpoint rule. The private endpoint will be
+// deactivated and will be purged after seven days of deactivation. When a
+// private endpoint is in deactivated state, `deactivated` field is set to
+// `true` and the private endpoint is not available to your serverless compute
+// resources.
+func (a *NetworkConnectivityAPI) DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
+	return a.impl.DeletePrivateEndpointRule(ctx, request)
+}
+
+// Delete a private endpoint rule.
+//
+// Initiates deleting a private endpoint rule. The private endpoint will be
+// deactivated and will be purged after seven days of deactivation. When a
+// private endpoint is in deactivated state, `deactivated` field is set to
+// `true` and the private endpoint is not available to your serverless compute
+// resources.
+func (a *NetworkConnectivityAPI) DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*NccAzurePrivateEndpointRule, error) {
+	return a.impl.DeletePrivateEndpointRule(ctx, DeletePrivateEndpointRuleRequest{
+		NetworkConnectivityConfigId: networkConnectivityConfigId,
+		PrivateEndpointRuleId:       privateEndpointRuleId,
+	})
+}
+
+// Get a network connectivity configuration.
+//
+// Gets a network connectivity configuration.
+func (a *NetworkConnectivityAPI) GetNetworkConnectivityConfiguration(ctx context.Context, request GetNetworkConnectivityConfigurationRequest) (*NetworkConnectivityConfiguration, error) {
+	return a.impl.GetNetworkConnectivityConfiguration(ctx, request)
+}
+
+// Get a network connectivity configuration.
+//
+// Gets a network connectivity configuration.
+func (a *NetworkConnectivityAPI) GetNetworkConnectivityConfigurationByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*NetworkConnectivityConfiguration, error) {
+	return a.impl.GetNetworkConnectivityConfiguration(ctx, GetNetworkConnectivityConfigurationRequest{
+		NetworkConnectivityConfigId: networkConnectivityConfigId,
+	})
+}
+
+// Get a private endpoint rule.
+//
+// Gets the private endpoint rule.
+func (a *NetworkConnectivityAPI) GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
+	return a.impl.GetPrivateEndpointRule(ctx, request)
+}
+
+// Get a private endpoint rule.
+//
+// Gets the private endpoint rule.
+func (a *NetworkConnectivityAPI) GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*NccAzurePrivateEndpointRule, error) {
+	return a.impl.GetPrivateEndpointRule(ctx, GetPrivateEndpointRuleRequest{
+		NetworkConnectivityConfigId: networkConnectivityConfigId,
+		PrivateEndpointRuleId:       privateEndpointRuleId,
+	})
 }
 
 func NewSettings(client *client.DatabricksClient) *SettingsAPI {

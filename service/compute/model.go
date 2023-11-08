@@ -1656,6 +1656,9 @@ type CreatePolicy struct {
 	Definition string `json:"definition,omitempty"`
 	// Additional human-readable description of the cluster policy.
 	Description string `json:"description,omitempty"`
+	// A list of libraries to be installed on the next cluster restart that uses
+	// this policy.
+	Libraries []Library `json:"libraries,omitempty"`
 	// Max number of clusters per user that can be active using this policy. If
 	// not present, there is no max limit.
 	MaxClustersPerUser int64 `json:"max_clusters_per_user,omitempty"`
@@ -2259,6 +2262,9 @@ type EditPolicy struct {
 	Definition string `json:"definition,omitempty"`
 	// Additional human-readable description of the cluster policy.
 	Description string `json:"description,omitempty"`
+	// A list of libraries to be installed on the next cluster restart that uses
+	// this policy.
+	Libraries []Library `json:"libraries,omitempty"`
 	// Max number of clusters per user that can be active using this policy. If
 	// not present, there is no max limit.
 	MaxClustersPerUser int64 `json:"max_clusters_per_user,omitempty"`
@@ -2317,6 +2323,9 @@ type EventDetails struct {
 	EnableTerminationForNodeBlocklisted bool `json:"enable_termination_for_node_blocklisted,omitempty"`
 	// <needs content added>
 	FreeSpace int64 `json:"free_space,omitempty"`
+	// List of global and cluster init scripts associated with this cluster
+	// event.
+	InitScripts *InitScriptEventDetails `json:"init_scripts,omitempty"`
 	// Instance Id where the event originated from
 	InstanceId string `json:"instance_id,omitempty"`
 	// Unique identifier of the specific job run associated with this cluster
@@ -2904,10 +2913,87 @@ func (s GlobalInitScriptUpdateRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type InitScriptEventDetails struct {
+	// The cluster scoped init scripts associated with this cluster event
+	Cluster []InitScriptInfoAndExecutionDetails `json:"cluster,omitempty"`
+	// The global init scripts associated with this cluster event
+	Global []InitScriptInfoAndExecutionDetails `json:"global,omitempty"`
+	// The private ip address of the node where the init scripts were run.
+	ReportedForNode string `json:"reported_for_node,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InitScriptEventDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s InitScriptEventDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type InitScriptExecutionDetails struct {
+	// Addition details regarding errors.
+	ErrorMessage string `json:"error_message,omitempty"`
+	// The duration of the script execution in seconds.
+	ExecutionDurationSeconds int `json:"execution_duration_seconds,omitempty"`
+	// The current status of the script
+	Status InitScriptExecutionDetailsStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *InitScriptExecutionDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s InitScriptExecutionDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The current status of the script
+type InitScriptExecutionDetailsStatus string
+
+const InitScriptExecutionDetailsStatusFailedExecution InitScriptExecutionDetailsStatus = `FAILED_EXECUTION`
+
+const InitScriptExecutionDetailsStatusFailedFetch InitScriptExecutionDetailsStatus = `FAILED_FETCH`
+
+const InitScriptExecutionDetailsStatusNotExecuted InitScriptExecutionDetailsStatus = `NOT_EXECUTED`
+
+const InitScriptExecutionDetailsStatusSkipped InitScriptExecutionDetailsStatus = `SKIPPED`
+
+const InitScriptExecutionDetailsStatusSucceeded InitScriptExecutionDetailsStatus = `SUCCEEDED`
+
+const InitScriptExecutionDetailsStatusUnknown InitScriptExecutionDetailsStatus = `UNKNOWN`
+
+// String representation for [fmt.Print]
+func (f *InitScriptExecutionDetailsStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *InitScriptExecutionDetailsStatus) Set(v string) error {
+	switch v {
+	case `FAILED_EXECUTION`, `FAILED_FETCH`, `NOT_EXECUTED`, `SKIPPED`, `SUCCEEDED`, `UNKNOWN`:
+		*f = InitScriptExecutionDetailsStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FAILED_EXECUTION", "FAILED_FETCH", "NOT_EXECUTED", "SKIPPED", "SUCCEEDED", "UNKNOWN"`, v)
+	}
+}
+
+// Type always returns InitScriptExecutionDetailsStatus to satisfy [pflag.Value] interface
+func (f *InitScriptExecutionDetailsStatus) Type() string {
+	return "InitScriptExecutionDetailsStatus"
+}
+
 type InitScriptInfo struct {
 	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
 	// "dbfs:/home/cluster_log" } }`
 	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
+	// destination needs to be provided. e.g. `{ "file" : { "destination" :
+	// "file:/my/local/file.sh" } }`
+	File *LocalFileInfo `json:"file,omitempty"`
 	// destination and either the region or endpoint need to be provided. e.g.
 	// `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
 	// "us-west-2" } }` Cluster iam role is used to access s3, please make sure
@@ -2920,6 +3006,13 @@ type InitScriptInfo struct {
 	// destination needs to be provided. e.g. `{ "workspace" : { "destination" :
 	// "/Users/user1@databricks.com/my-init.sh" } }`
 	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
+}
+
+type InitScriptInfoAndExecutionDetails struct {
+	// Details about the script
+	ExecutionDetails *InitScriptExecutionDetails `json:"execution_details,omitempty"`
+	// The script
+	Script *InitScriptInfo `json:"script,omitempty"`
 }
 
 type InstallLibraries struct {
@@ -3196,6 +3289,14 @@ type InstancePoolGcpAttributes struct {
 	//
 	// [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
 	LocalSsdCount int `json:"local_ssd_count,omitempty"`
+	// Identifier for the availability zone/datacenter in which the cluster
+	// resides. This string will be of a form like "us-west1-a". The provided
+	// availability zone must be in the same region as the Databricks workspace.
+	// For example, "us-west1-a" is not a valid zone id if the Databricks
+	// workspace resides in the "us-east1" region. This is an optional field at
+	// instance pool creation, and if not specified, a default zone will be
+	// used.
+	ZoneId string `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -3682,6 +3783,21 @@ func (f *ListSortOrder) Type() string {
 	return "ListSortOrder"
 }
 
+type LocalFileInfo struct {
+	// local file destination, e.g. `file:/my/local/file.sh`
+	Destination string `json:"destination,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *LocalFileInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LocalFileInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type LogAnalyticsInfo struct {
 	// <needs content added>
 	LogAnalyticsPrimaryKey string `json:"log_analytics_primary_key,omitempty"`
@@ -3866,6 +3982,9 @@ type Policy struct {
 	// Default policies cannot be deleted, and their policy families cannot be
 	// changed.
 	IsDefault bool `json:"is_default,omitempty"`
+	// A list of libraries to be installed on the next cluster restart that uses
+	// this policy.
+	Libraries []Library `json:"libraries,omitempty"`
 	// Max number of clusters per user that can be active using this policy. If
 	// not present, there is no max limit.
 	MaxClustersPerUser int64 `json:"max_clusters_per_user,omitempty"`

@@ -10,6 +10,28 @@ import (
 
 // all definitions in this file are in alphabetical order
 
+type AppEvents struct {
+	EventName string `json:"event_name,omitempty"`
+
+	EventTime string `json:"event_time,omitempty"`
+
+	EventType string `json:"event_type,omitempty"`
+
+	Message string `json:"message,omitempty"`
+
+	ServiceName string `json:"service_name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AppEvents) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppEvents) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AppManifest struct {
 	// Workspace dependencies.
 	Dependencies []any `json:"dependencies,omitempty"`
@@ -24,7 +46,7 @@ type AppManifest struct {
 	// list of app services. Restricted to one for now.
 	Services any `json:"services,omitempty"`
 	// The manifest format version. Must be set to 1.
-	Version int `json:"version,omitempty"`
+	Version any `json:"version,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -34,6 +56,24 @@ func (s *AppManifest) UnmarshalJSON(b []byte) error {
 }
 
 func (s AppManifest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AppServiceStatus struct {
+	Deployment any `json:"deployment,omitempty"`
+
+	Name string `json:"name,omitempty"`
+
+	Template any `json:"template,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *AppServiceStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppServiceStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -79,6 +119,20 @@ type DeleteAppRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type DeleteAppResponse struct {
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *DeleteAppResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteAppResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Delete a serving endpoint
 type DeleteServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
@@ -93,8 +147,12 @@ type DeployAppRequest struct {
 }
 
 type DeploymentStatus struct {
+	// Container logs.
+	ContainerLogs []any `json:"container_logs,omitempty"`
 	// description
 	DeploymentId string `json:"deployment_id,omitempty"`
+	// Supplementary information about pod
+	ExtraInfo string `json:"extra_info,omitempty"`
 	// State: one of DEPLOYING,SUCCESS, FAILURE, DEPLOYMENT_STATE_UNSPECIFIED
 	State DeploymentStatusState `json:"state,omitempty"`
 
@@ -302,8 +360,52 @@ type ExportMetricsRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+// Get deployment status for an application
+type GetAppDeploymentStatusRequest struct {
+	// The deployment id for an application. This field is required.
+	DeploymentId string `json:"-" url:"-"`
+	// Boolean flag to include application logs
+	IncludeAppLog string `json:"-" url:"include_app_log,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetAppDeploymentStatusRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetAppDeploymentStatusRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get definition for an application
 type GetAppRequest struct {
+	// The name of an application. This field is required.
+	Name string `json:"-" url:"-"`
+}
+
+type GetAppResponse struct {
+	CurrentServices []AppServiceStatus `json:"current_services,omitempty"`
+
+	Name string `json:"name,omitempty"`
+
+	PendingServices []AppServiceStatus `json:"pending_services,omitempty"`
+
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *GetAppResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetAppResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Get deployment events for an application
+type GetEventsRequest struct {
 	// The name of an application. This field is required.
 	Name string `json:"-" url:"-"`
 }
@@ -329,6 +431,28 @@ type GetServingEndpointPermissionsRequest struct {
 type GetServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
 	Name string `json:"-" url:"-"`
+}
+
+type ListAppEventsResponse struct {
+	// App events
+	Events []AppEvents `json:"events,omitempty"`
+}
+
+type ListAppsResponse struct {
+	// Available apps.
+	Apps []any `json:"apps,omitempty"`
+
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListAppsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAppsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListEndpointsResponse struct {

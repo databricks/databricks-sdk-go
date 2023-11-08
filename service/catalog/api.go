@@ -946,7 +946,7 @@ func (a *FunctionsAPI) Impl() FunctionsService {
 // The user must have the following permissions in order for the function to be
 // created: - **USE_CATALOG** on the function's parent catalog - **USE_SCHEMA**
 // and **CREATE_FUNCTION** on the function's parent schema
-func (a *FunctionsAPI) Create(ctx context.Context, request CreateFunction) (*FunctionInfo, error) {
+func (a *FunctionsAPI) Create(ctx context.Context, request CreateFunctionRequest) (*FunctionInfo, error) {
 	return a.impl.Create(ctx, request)
 }
 
@@ -1219,7 +1219,11 @@ func (a *MetastoresAPI) Assign(ctx context.Context, request CreateMetastoreAssig
 
 // Create a metastore.
 //
-// Creates a new metastore based on a provided name and storage root path.
+// Creates a new metastore based on a provided name and optional storage root
+// path. By default (if the __owner__ field is not set), the owner of the new
+// metastore is the user calling the __createMetastore__ API. If the __owner__
+// field is set to the empty string (**""**), the ownership is assigned to the
+// System User instead.
 func (a *MetastoresAPI) Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error) {
 	return a.impl.Create(ctx, request)
 }
@@ -1390,7 +1394,8 @@ func (a *MetastoresAPI) UnassignByWorkspaceId(ctx context.Context, workspaceId i
 // Update a metastore.
 //
 // Updates information for a specific metastore. The caller must be a metastore
-// admin.
+// admin. If the __owner__ field is set to the empty string (**""**), the
+// ownership is updated to the System User.
 func (a *MetastoresAPI) Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error) {
 	return a.impl.Update(ctx, request)
 }

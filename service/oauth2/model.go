@@ -52,21 +52,6 @@ func (s CreateCustomAppIntegrationOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type CreateOAuthEnrollment struct {
-	// If true, enable OAuth for all the published applications in the account.
-	EnableAllPublishedApps bool `json:"enable_all_published_apps,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *CreateOAuthEnrollment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateOAuthEnrollment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type CreatePublishedAppIntegration struct {
 	// app_id of the oauth published app integration. For example power-bi,
 	// tableau-deskop
@@ -264,21 +249,6 @@ type ListServicePrincipalSecretsRequest struct {
 type ListServicePrincipalSecretsResponse struct {
 	// List of the secrets
 	Secrets []SecretInfo `json:"secrets,omitempty"`
-}
-
-type OAuthEnrollmentStatus struct {
-	// Is OAuth enrolled for the account.
-	IsEnabled bool `json:"is_enabled,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *OAuthEnrollmentStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s OAuthEnrollmentStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type PublishedAppOutput struct {

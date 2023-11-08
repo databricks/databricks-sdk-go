@@ -343,7 +343,7 @@ type functionsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *functionsImpl) Create(ctx context.Context, request CreateFunction) (*FunctionInfo, error) {
+func (a *functionsImpl) Create(ctx context.Context, request CreateFunctionRequest) (*FunctionInfo, error) {
 	var functionInfo FunctionInfo
 	path := "/api/2.1/unity-catalog/functions"
 	headers := make(map[string]string)

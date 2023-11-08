@@ -53,15 +53,15 @@ func (a *AppsAPI) Create(ctx context.Context, request DeployAppRequest) (*Deploy
 // Delete an application.
 //
 // Delete an application definition
-func (a *AppsAPI) Delete(ctx context.Context, request DeleteAppRequest) error {
-	return a.impl.Delete(ctx, request)
+func (a *AppsAPI) DeleteApp(ctx context.Context, request DeleteAppRequest) (*DeleteAppResponse, error) {
+	return a.impl.DeleteApp(ctx, request)
 }
 
 // Delete an application.
 //
 // Delete an application definition
-func (a *AppsAPI) DeleteByName(ctx context.Context, name string) error {
-	return a.impl.Delete(ctx, DeleteAppRequest{
+func (a *AppsAPI) DeleteAppByName(ctx context.Context, name string) (*DeleteAppResponse, error) {
+	return a.impl.DeleteApp(ctx, DeleteAppRequest{
 		Name: name,
 	})
 }
@@ -69,15 +69,54 @@ func (a *AppsAPI) DeleteByName(ctx context.Context, name string) error {
 // Get definition for an application.
 //
 // Get an application definition
-func (a *AppsAPI) Get(ctx context.Context, request GetAppRequest) error {
-	return a.impl.Get(ctx, request)
+func (a *AppsAPI) GetApp(ctx context.Context, request GetAppRequest) (*GetAppResponse, error) {
+	return a.impl.GetApp(ctx, request)
 }
 
 // Get definition for an application.
 //
 // Get an application definition
-func (a *AppsAPI) GetByName(ctx context.Context, name string) error {
-	return a.impl.Get(ctx, GetAppRequest{
+func (a *AppsAPI) GetAppByName(ctx context.Context, name string) (*GetAppResponse, error) {
+	return a.impl.GetApp(ctx, GetAppRequest{
+		Name: name,
+	})
+}
+
+// Get deployment status for an application.
+//
+// Get deployment status for an application
+func (a *AppsAPI) GetAppDeploymentStatus(ctx context.Context, request GetAppDeploymentStatusRequest) (*DeploymentStatus, error) {
+	return a.impl.GetAppDeploymentStatus(ctx, request)
+}
+
+// Get deployment status for an application.
+//
+// Get deployment status for an application
+func (a *AppsAPI) GetAppDeploymentStatusByDeploymentId(ctx context.Context, deploymentId string) (*DeploymentStatus, error) {
+	return a.impl.GetAppDeploymentStatus(ctx, GetAppDeploymentStatusRequest{
+		DeploymentId: deploymentId,
+	})
+}
+
+// List all applications.
+//
+// List all available applications
+func (a *AppsAPI) GetApps(ctx context.Context) (*ListAppsResponse, error) {
+	return a.impl.GetApps(ctx)
+}
+
+// Get deployment events for an application.
+//
+// Get deployment events for an application
+func (a *AppsAPI) GetEvents(ctx context.Context, request GetEventsRequest) (*ListAppEventsResponse, error) {
+	return a.impl.GetEvents(ctx, request)
+}
+
+// Get deployment events for an application.
+//
+// Get deployment events for an application
+func (a *AppsAPI) GetEventsByName(ctx context.Context, name string) (*ListAppEventsResponse, error) {
+	return a.impl.GetEvents(ctx, GetEventsRequest{
 		Name: name,
 	})
 }

@@ -686,9 +686,8 @@ type CreateFunction struct {
 	ExternalName string `json:"external_name,omitempty"`
 	// Pretty printed function data type.
 	FullDataType string `json:"full_data_type"`
-	// The array of __FunctionParameterInfo__ definitions of the function's
-	// parameters.
-	InputParams []FunctionParameterInfo `json:"input_params"`
+
+	InputParams FunctionParameterInfos `json:"input_params"`
 	// Whether the function is deterministic.
 	IsDeterministic bool `json:"is_deterministic"`
 	// Function null call.
@@ -697,10 +696,10 @@ type CreateFunction struct {
 	Name string `json:"name"`
 	// Function parameter style. **S** is the value for SQL.
 	ParameterStyle CreateFunctionParameterStyle `json:"parameter_style"`
-	// A map of key-value properties attached to the securable.
-	Properties map[string]string `json:"properties,omitempty"`
+	// JSON-serialized key-value pair map, encoded (escaped) as a string.
+	Properties string `json:"properties,omitempty"`
 	// Table function return parameters.
-	ReturnParams []FunctionParameterInfo `json:"return_params"`
+	ReturnParams FunctionParameterInfos `json:"return_params"`
 	// Function language. When **EXTERNAL** is used, the language of the routine
 	// function should be specified in the __external_language__ field, and the
 	// __return_params__ of the function cannot be used (as **TABLE** return
@@ -710,7 +709,7 @@ type CreateFunction struct {
 	// Function body.
 	RoutineDefinition string `json:"routine_definition"`
 	// Function dependencies.
-	RoutineDependencies []Dependency `json:"routine_dependencies"`
+	RoutineDependencies DependencyList `json:"routine_dependencies"`
 	// Name of parent schema relative to its parent catalog.
 	SchemaName string `json:"schema_name"`
 	// Function security type.
@@ -757,6 +756,11 @@ func (f *CreateFunctionParameterStyle) Set(v string) error {
 // Type always returns CreateFunctionParameterStyle to satisfy [pflag.Value] interface
 func (f *CreateFunctionParameterStyle) Type() string {
 	return "CreateFunctionParameterStyle"
+}
+
+type CreateFunctionRequest struct {
+	// Partial __FunctionInfo__ specifying the function to be created.
+	FunctionInfo CreateFunction `json:"function_info"`
 }
 
 // Function language. When **EXTERNAL** is used, the language of the routine
@@ -854,7 +858,7 @@ type CreateMetastore struct {
 	// will be used.
 	Region string `json:"region,omitempty"`
 	// The storage root URL for metastore
-	StorageRoot string `json:"storage_root"`
+	StorageRoot string `json:"storage_root,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -1293,6 +1297,12 @@ type Dependency struct {
 	Table *TableDependency `json:"table,omitempty"`
 }
 
+// A list of dependencies.
+type DependencyList struct {
+	// Array of dependencies.
+	Dependencies []Dependency `json:"dependencies,omitempty"`
+}
+
 // Disable a system schema
 type DisableRequest struct {
 	// The metastore ID under which the system schema lives.
@@ -1588,9 +1598,8 @@ type FunctionInfo struct {
 	FullName string `json:"full_name,omitempty"`
 	// Id of Function, relative to parent schema.
 	FunctionId string `json:"function_id,omitempty"`
-	// The array of __FunctionParameterInfo__ definitions of the function's
-	// parameters.
-	InputParams []FunctionParameterInfo `json:"input_params,omitempty"`
+
+	InputParams *FunctionParameterInfos `json:"input_params,omitempty"`
 	// Whether the function is deterministic.
 	IsDeterministic bool `json:"is_deterministic,omitempty"`
 	// Function null call.
@@ -1603,10 +1612,10 @@ type FunctionInfo struct {
 	Owner string `json:"owner,omitempty"`
 	// Function parameter style. **S** is the value for SQL.
 	ParameterStyle FunctionInfoParameterStyle `json:"parameter_style,omitempty"`
-	// A map of key-value properties attached to the securable.
-	Properties map[string]string `json:"properties,omitempty"`
+	// JSON-serialized key-value pair map, encoded (escaped) as a string.
+	Properties string `json:"properties,omitempty"`
 	// Table function return parameters.
-	ReturnParams []FunctionParameterInfo `json:"return_params,omitempty"`
+	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
 	// Function language. When **EXTERNAL** is used, the language of the routine
 	// function should be specified in the __external_language__ field, and the
 	// __return_params__ of the function cannot be used (as **TABLE** return
@@ -1616,7 +1625,7 @@ type FunctionInfo struct {
 	// Function body.
 	RoutineDefinition string `json:"routine_definition,omitempty"`
 	// Function dependencies.
-	RoutineDependencies []Dependency `json:"routine_dependencies,omitempty"`
+	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
 	// Name of parent schema relative to its parent catalog.
 	SchemaName string `json:"schema_name,omitempty"`
 	// Function security type.
@@ -1791,6 +1800,12 @@ func (s *FunctionParameterInfo) UnmarshalJSON(b []byte) error {
 
 func (s FunctionParameterInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type FunctionParameterInfos struct {
+	// The array of __FunctionParameterInfo__ definitions of the function's
+	// parameters.
+	Parameters []FunctionParameterInfo `json:"parameters,omitempty"`
 }
 
 // The mode of the function parameter.
@@ -2523,7 +2538,7 @@ type ModelVersionInfo struct {
 	// parent schema
 	ModelName string `json:"model_name,omitempty"`
 	// Model version dependencies, for feature-store packaged models
-	ModelVersionDependencies []Dependency `json:"model_version_dependencies,omitempty"`
+	ModelVersionDependencies *DependencyList `json:"model_version_dependencies,omitempty"`
 	// MLflow run ID used when creating the model version, if ``source`` was
 	// generated by an experiment run stored in an MLflow tracking server
 	RunId string `json:"run_id,omitempty"`
@@ -3215,7 +3230,7 @@ type TableInfo struct {
 	// provided; - when DependencyList is an empty list, the dependency is
 	// provided but is empty; - when DependencyList is not an empty list,
 	// dependencies are provided and recorded.
-	ViewDependencies []Dependency `json:"view_dependencies,omitempty"`
+	ViewDependencies *DependencyList `json:"view_dependencies,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -3358,6 +3373,9 @@ type UpdateExternalLocation struct {
 	Owner string `json:"owner,omitempty"`
 	// Indicates whether the external location is read-only.
 	ReadOnly bool `json:"read_only,omitempty"`
+	// Skips validation of the storage credential associated with the external
+	// location.
+	SkipValidation bool `json:"skip_validation,omitempty"`
 	// Path URL of the external location.
 	Url string `json:"url,omitempty"`
 
