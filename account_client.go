@@ -170,6 +170,17 @@ type AccountClient struct {
 	// contains catalogs that can be associated with workspaces
 	Metastores *catalog.AccountMetastoresAPI
 
+	// These APIs provide configurations for the network connectivity of your
+	// workspaces for serverless compute resources. This API provides stable
+	// subnets for your workspace so that you can configure your firewalls on
+	// your Azure Storage accounts to allow access from Databricks. You can also
+	// use the API to provision private endpoints for Databricks to privately
+	// connect serverless compute resources to your Azure resources using Azure
+	// Private Link. See [configure serverless secure connectivity].
+	//
+	// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+	NetworkConnectivity *settings.NetworkConnectivityAPI
+
 	// Network policy is a set of rules that defines what can be accessed from
 	// your Databricks network. E.g.: You can choose to block your SQL UDF to
 	// access internet from your Databricks serverless clusters.
@@ -184,14 +195,6 @@ type AccountClient struct {
 	// (optional). Its ID is used when creating a new workspace if you use
 	// customer-managed VPCs.
 	Networks *provisioning.NetworksAPI
-
-	// These APIs enable administrators to enroll OAuth for their accounts,
-	// which is required for adding/using any OAuth published/custom application
-	// integration.
-	//
-	// **Note:** Your account must be on the E2 version to use these APIs, this
-	// is because OAuth is only supported on the E2 version.
-	OAuthEnrollment *oauth2.OAuthEnrollmentAPI
 
 	// These APIs enable administrators to view all the available published
 	// OAuth applications in Databricks. Administrators can add the published
@@ -325,9 +328,9 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		LogDelivery:             billing.NewLogDelivery(apiClient),
 		MetastoreAssignments:    catalog.NewAccountMetastoreAssignments(apiClient),
 		Metastores:              catalog.NewAccountMetastores(apiClient),
+		NetworkConnectivity:     settings.NewNetworkConnectivity(apiClient),
 		NetworkPolicy:           settings.NewAccountNetworkPolicy(apiClient),
 		Networks:                provisioning.NewNetworks(apiClient),
-		OAuthEnrollment:         oauth2.NewOAuthEnrollment(apiClient),
 		OAuthPublishedApps:      oauth2.NewOAuthPublishedApps(apiClient),
 		PrivateAccess:           provisioning.NewPrivateAccess(apiClient),
 		PublishedAppIntegration: oauth2.NewPublishedAppIntegration(apiClient),

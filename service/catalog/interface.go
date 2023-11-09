@@ -301,7 +301,7 @@ type FunctionsService interface {
 	// The user must have the following permissions in order for the function to
 	// be created: - **USE_CATALOG** on the function's parent catalog -
 	// **USE_SCHEMA** and **CREATE_FUNCTION** on the function's parent schema
-	Create(ctx context.Context, request CreateFunction) (*FunctionInfo, error)
+	Create(ctx context.Context, request CreateFunctionRequest) (*FunctionInfo, error)
 
 	// Delete a function.
 	//
@@ -406,7 +406,11 @@ type MetastoresService interface {
 
 	// Create a metastore.
 	//
-	// Creates a new metastore based on a provided name and storage root path.
+	// Creates a new metastore based on a provided name and optional storage
+	// root path. By default (if the __owner__ field is not set), the owner of
+	// the new metastore is the user calling the __createMetastore__ API. If the
+	// __owner__ field is set to the empty string (**""**), the ownership is
+	// assigned to the System User instead.
 	Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error)
 
 	// Get metastore assignment for workspace.
@@ -455,7 +459,8 @@ type MetastoresService interface {
 	// Update a metastore.
 	//
 	// Updates information for a specific metastore. The caller must be a
-	// metastore admin.
+	// metastore admin. If the __owner__ field is set to the empty string
+	// (**""**), the ownership is updated to the System User.
 	Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error)
 
 	// Update an assignment.

@@ -311,7 +311,10 @@ type GrantRule struct {
 type Group struct {
 	// String that represents a human-readable group name
 	DisplayName string `json:"displayName,omitempty"`
-
+	// Entitlements assigned to the group. See [assigning entitlements] for a
+	// full list of supported values.
+	//
+	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
 
 	ExternalId string `json:"externalId,omitempty"`
@@ -1164,14 +1167,17 @@ type ServicePrincipal struct {
 	ApplicationId string `json:"applicationId,omitempty"`
 	// String that represents a concatenation of given and family names.
 	DisplayName string `json:"displayName,omitempty"`
-
+	// Entitlements assigned to the service principal. See [assigning
+	// entitlements] for a full list of supported values.
+	//
+	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
 
 	ExternalId string `json:"externalId,omitempty"`
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.
@@ -1233,17 +1239,25 @@ type User struct {
 	// If this user is active
 	Active bool `json:"active,omitempty"`
 	// String that represents a concatenation of given and family names. For
-	// example `John Smith`.
+	// example `John Smith`. This field cannot be updated through the Workspace
+	// SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to
+	// update `displayName`.
+	//
+	// [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
 	DisplayName string `json:"displayName,omitempty"`
 	// All the emails associated with the Databricks user.
 	Emails []ComplexValue `json:"emails,omitempty"`
-
+	// Entitlements assigned to the user. See [assigning entitlements] for a
+	// full list of supported values.
+	//
+	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
-
+	// External ID is not currently supported. It is reserved for future use.
 	ExternalId string `json:"externalId,omitempty"`
 
 	Groups []ComplexValue `json:"groups,omitempty"`
-	// Databricks user ID.
+	// Databricks user ID. This is automatically set by Databricks. Any value
+	// provided by the client will be ignored.
 	Id string `json:"id,omitempty"`
 
 	Name *Name `json:"name,omitempty"`

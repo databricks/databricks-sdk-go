@@ -269,6 +269,73 @@ type IpAccessListsService interface {
 	Update(ctx context.Context, request UpdateIpAccessList) error
 }
 
+// These APIs provide configurations for the network connectivity of your
+// workspaces for serverless compute resources. This API provides stable subnets
+// for your workspace so that you can configure your firewalls on your Azure
+// Storage accounts to allow access from Databricks. You can also use the API to
+// provision private endpoints for Databricks to privately connect serverless
+// compute resources to your Azure resources using Azure Private Link. See
+// [configure serverless secure connectivity].
+//
+// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+type NetworkConnectivityService interface {
+
+	// Create a network connectivity configuration.
+	//
+	// Creates a network connectivity configuration (NCC), which provides stable
+	// Azure service subnets when accessing your Azure Storage accounts. You can
+	// also use a network connectivity configuration to create
+	// Databricks-managed private endpoints so that Databricks serverless
+	// compute resources privately access your resources.
+	//
+	// **IMPORTANT**: After you create the network connectivity configuration,
+	// you must assign one or more workspaces to the new network connectivity
+	// configuration. You can share one network connectivity configuration with
+	// multiple workspaces from the same Azure region within the same Databricks
+	// account. See [configure serverless secure connectivity].
+	//
+	// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+	CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error)
+
+	// Create a private endpoint rule.
+	//
+	// Create a private endpoint rule for the specified network connectivity
+	// config object. Once the object is created, Databricks asynchronously
+	// provisions a new Azure private endpoint to your specified Azure resource.
+	//
+	// **IMPORTANT**: You must use Azure portal or other Azure tools to approve
+	// the private endpoint to complete the connection. To get the information
+	// of the private endpoint created, make a `GET` request on the new private
+	// endpoint rule. See [serverless private link].
+	//
+	// [serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link
+	CreatePrivateEndpointRule(ctx context.Context, request CreatePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error)
+
+	// Delete a network connectivity configuration.
+	//
+	// Deletes a network connectivity configuration.
+	DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error
+
+	// Delete a private endpoint rule.
+	//
+	// Initiates deleting a private endpoint rule. The private endpoint will be
+	// deactivated and will be purged after seven days of deactivation. When a
+	// private endpoint is in deactivated state, `deactivated` field is set to
+	// `true` and the private endpoint is not available to your serverless
+	// compute resources.
+	DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error)
+
+	// Get a network connectivity configuration.
+	//
+	// Gets a network connectivity configuration.
+	GetNetworkConnectivityConfiguration(ctx context.Context, request GetNetworkConnectivityConfigurationRequest) (*NetworkConnectivityConfiguration, error)
+
+	// Get a private endpoint rule.
+	//
+	// Gets the private endpoint rule.
+	GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error)
+}
+
 // // TODO(yuyuan.tang) to add the description for the setting
 type SettingsService interface {
 

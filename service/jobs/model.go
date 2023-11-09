@@ -335,6 +335,11 @@ type CreateJob struct {
 	Continuous *Continuous `json:"continuous,omitempty"`
 	// Deployment information for jobs managed by external sources.
 	Deployment *JobDeployment `json:"deployment,omitempty"`
+	// Edit mode of the job.
+	//
+	// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
+	// `EDITABLE`: The job is in an editable state and can be modified.
+	EditMode CreateJobEditMode `json:"edit_mode,omitempty"`
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
@@ -412,11 +417,6 @@ type CreateJob struct {
 	// only when triggered by clicking “Run Now” in the Jobs UI or sending
 	// an API request to `runNow`.
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
-	// State of the job in UI.
-	//
-	// * `LOCKED`: The job is in a locked state and cannot be modified. *
-	// `EDITABLE`: The job is in an editable state and can be modified.
-	UiState CreateJobUiState `json:"ui_state,omitempty"`
 	// A collection of system notification IDs to notify when runs of this job
 	// begin or complete.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
@@ -432,37 +432,37 @@ func (s CreateJob) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// State of the job in UI.
+// Edit mode of the job.
 //
-// * `LOCKED`: The job is in a locked state and cannot be modified. *
+// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
 // `EDITABLE`: The job is in an editable state and can be modified.
-type CreateJobUiState string
+type CreateJobEditMode string
 
 // The job is in an editable state and can be modified.
-const CreateJobUiStateEditable CreateJobUiState = `EDITABLE`
+const CreateJobEditModeEditable CreateJobEditMode = `EDITABLE`
 
-// The job is in a locked state and cannot be modified.
-const CreateJobUiStateLocked CreateJobUiState = `LOCKED`
+// The job is in a locked UI state and cannot be modified.
+const CreateJobEditModeUiLocked CreateJobEditMode = `UI_LOCKED`
 
 // String representation for [fmt.Print]
-func (f *CreateJobUiState) String() string {
+func (f *CreateJobEditMode) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *CreateJobUiState) Set(v string) error {
+func (f *CreateJobEditMode) Set(v string) error {
 	switch v {
-	case `EDITABLE`, `LOCKED`:
-		*f = CreateJobUiState(v)
+	case `EDITABLE`, `UI_LOCKED`:
+		*f = CreateJobEditMode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EDITABLE", "LOCKED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "EDITABLE", "UI_LOCKED"`, v)
 	}
 }
 
-// Type always returns CreateJobUiState to satisfy [pflag.Value] interface
-func (f *CreateJobUiState) Type() string {
-	return "CreateJobUiState"
+// Type always returns CreateJobEditMode to satisfy [pflag.Value] interface
+func (f *CreateJobEditMode) Type() string {
+	return "CreateJobEditMode"
 }
 
 type CreateResponse struct {
@@ -666,6 +666,8 @@ type GetRunOutputRequest struct {
 type GetRunRequest struct {
 	// Whether to include the repair history in the response.
 	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
+	// Whether to include resolved parameter values in the response.
+	IncludeResolvedValues bool `json:"-" url:"include_resolved_values,omitempty"`
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
 	RunId int64 `json:"-" url:"run_id"`
@@ -1134,6 +1136,11 @@ type JobSettings struct {
 	Continuous *Continuous `json:"continuous,omitempty"`
 	// Deployment information for jobs managed by external sources.
 	Deployment *JobDeployment `json:"deployment,omitempty"`
+	// Edit mode of the job.
+	//
+	// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
+	// `EDITABLE`: The job is in an editable state and can be modified.
+	EditMode JobSettingsEditMode `json:"edit_mode,omitempty"`
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
@@ -1211,11 +1218,6 @@ type JobSettings struct {
 	// only when triggered by clicking “Run Now” in the Jobs UI or sending
 	// an API request to `runNow`.
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
-	// State of the job in UI.
-	//
-	// * `LOCKED`: The job is in a locked state and cannot be modified. *
-	// `EDITABLE`: The job is in an editable state and can be modified.
-	UiState JobSettingsUiState `json:"ui_state,omitempty"`
 	// A collection of system notification IDs to notify when runs of this job
 	// begin or complete.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
@@ -1231,37 +1233,37 @@ func (s JobSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// State of the job in UI.
+// Edit mode of the job.
 //
-// * `LOCKED`: The job is in a locked state and cannot be modified. *
+// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
 // `EDITABLE`: The job is in an editable state and can be modified.
-type JobSettingsUiState string
+type JobSettingsEditMode string
 
 // The job is in an editable state and can be modified.
-const JobSettingsUiStateEditable JobSettingsUiState = `EDITABLE`
+const JobSettingsEditModeEditable JobSettingsEditMode = `EDITABLE`
 
-// The job is in a locked state and cannot be modified.
-const JobSettingsUiStateLocked JobSettingsUiState = `LOCKED`
+// The job is in a locked UI state and cannot be modified.
+const JobSettingsEditModeUiLocked JobSettingsEditMode = `UI_LOCKED`
 
 // String representation for [fmt.Print]
-func (f *JobSettingsUiState) String() string {
+func (f *JobSettingsEditMode) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *JobSettingsUiState) Set(v string) error {
+func (f *JobSettingsEditMode) Set(v string) error {
 	switch v {
-	case `EDITABLE`, `LOCKED`:
-		*f = JobSettingsUiState(v)
+	case `EDITABLE`, `UI_LOCKED`:
+		*f = JobSettingsEditMode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EDITABLE", "LOCKED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "EDITABLE", "UI_LOCKED"`, v)
 	}
 }
 
-// Type always returns JobSettingsUiState to satisfy [pflag.Value] interface
-func (f *JobSettingsUiState) Type() string {
-	return "JobSettingsUiState"
+// Type always returns JobSettingsEditMode to satisfy [pflag.Value] interface
+func (f *JobSettingsEditMode) Type() string {
+	return "JobSettingsEditMode"
 }
 
 // The source of the job specification in the remote repository when the job is
@@ -3158,8 +3160,10 @@ type SqlTask struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 	// If query, indicates that this job must execute a SQL query.
 	Query *SqlTaskQuery `json:"query,omitempty"`
-	// The canonical identifier of the SQL warehouse. Only serverless and pro
-	// SQL warehouses are supported.
+	// The canonical identifier of the SQL warehouse. Recommended to use with
+	// serverless or pro SQL warehouses. Classic SQL warehouses are only
+	// supported for SQL alert, dashboard and query tasks and are limited to
+	// scheduled single-task jobs.
 	WarehouseId string `json:"warehouse_id"`
 }
 

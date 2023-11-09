@@ -19,12 +19,27 @@ type AppsService interface {
 	// Delete an application.
 	//
 	// Delete an application definition
-	Delete(ctx context.Context, request DeleteAppRequest) error
+	DeleteApp(ctx context.Context, request DeleteAppRequest) (*DeleteAppResponse, error)
 
 	// Get definition for an application.
 	//
 	// Get an application definition
-	Get(ctx context.Context, request GetAppRequest) error
+	GetApp(ctx context.Context, request GetAppRequest) (*GetAppResponse, error)
+
+	// Get deployment status for an application.
+	//
+	// Get deployment status for an application
+	GetAppDeploymentStatus(ctx context.Context, request GetAppDeploymentStatusRequest) (*DeploymentStatus, error)
+
+	// List all applications.
+	//
+	// List all available applications
+	GetApps(ctx context.Context) (*ListAppsResponse, error)
+
+	// Get deployment events for an application.
+	//
+	// Get deployment events for an application
+	GetEvents(ctx context.Context, request GetEventsRequest) (*ListAppEventsResponse, error)
 }
 
 // The Serving Endpoints API allows you to create, update, and delete model

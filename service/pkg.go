@@ -18,7 +18,7 @@
 //
 // - [sharing.CleanRoomsAPI]: A clean room is a secure, privacy-protecting environment where two or more parties can share sensitive enterprise data, including customer data, for measurements, insights, activation and other use cases.
 //
-// - [compute.ClusterPoliciesAPI]: Cluster policy limits the ability to configure clusters based on a set of rules.
+// - [compute.ClusterPoliciesAPI]: You can use cluster policies to control users' ability to configure clusters based on a set of rules.
 //
 // - [compute.ClustersAPI]: The Clusters API allows you to create, start, edit, list, terminate, and delete clusters.
 //
@@ -88,11 +88,11 @@
 //
 // - [catalog.ModelVersionsAPI]: Databricks provides a hosted version of MLflow Model Registry in Unity Catalog.
 //
+// - [settings.NetworkConnectivityAPI]: These APIs provide configurations for the network connectivity of your workspaces for serverless compute resources.
+//
 // - [settings.AccountNetworkPolicyAPI]: Network policy is a set of rules that defines what can be accessed from your Databricks network.
 //
 // - [provisioning.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
-//
-// - [oauth2.OAuthEnrollmentAPI]: These APIs enable administrators to enroll OAuth for their accounts, which is required for adding/using any OAuth published/custom application integration.
 //
 // - [oauth2.OAuthPublishedAppsAPI]: These APIs enable administrators to view all the available published OAuth applications in Databricks.
 //
@@ -246,9 +246,9 @@ var (
 	_ *catalog.AccountMetastoresAPI           = nil
 	_ *ml.ModelRegistryAPI                    = nil
 	_ *catalog.ModelVersionsAPI               = nil
+	_ *settings.NetworkConnectivityAPI        = nil
 	_ *settings.AccountNetworkPolicyAPI       = nil
 	_ *provisioning.NetworksAPI               = nil
-	_ *oauth2.OAuthEnrollmentAPI              = nil
 	_ *oauth2.OAuthPublishedAppsAPI           = nil
 	_ *iam.PermissionsAPI                     = nil
 	_ *pipelines.PipelinesAPI                 = nil
