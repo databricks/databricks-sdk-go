@@ -2,24 +2,20 @@
 
 package apierr
 
-import (
-	"context"
-	"errors"
-	"os"
-)
+import "errors"
 
 var (
-	ErrBadRequest             = inheritErr(os.ErrInvalid, "the request is invalid")
-	ErrUnauthenticated        = inheritErr(os.ErrPermission, "the request does not have valid authentication (AuthN) credentials for the operation")
-	ErrPermissionDenied       = inheritErr(os.ErrPermission, "the caller does not have permission to execute the specified operation")
-	ErrNotFound               = inheritErr(os.ErrNotExist, "the operation was performed on a resource that does not exist")
-	ErrResourceConflict       = inheritErr(os.ErrExist, "maps to all HTTP 409 (Conflict) responses")
+	ErrBadRequest             = errors.New("the request is invalid")
+	ErrUnauthenticated        = errors.New("the request does not have valid authentication (AuthN) credentials for the operation")
+	ErrPermissionDenied       = errors.New("the caller does not have permission to execute the specified operation")
+	ErrNotFound               = errors.New("the operation was performed on a resource that does not exist")
+	ErrResourceConflict       = errors.New("maps to all HTTP 409 (Conflict) responses")
 	ErrTooManyRequests        = errors.New("maps to HTTP code: 429 Too Many Requests")
-	ErrCancelled              = inheritErr(context.Canceled, "the operation was explicitly canceled by the caller")
+	ErrCancelled              = errors.New("the operation was explicitly canceled by the caller")
 	ErrInternalError          = errors.New("some invariants expected by the underlying system have been broken")
 	ErrNotImplemented         = errors.New("the operation is not implemented or is not supported/enabled in this service")
 	ErrTemporarilyUnavailable = errors.New("the service is currently unavailable")
-	ErrDeadlineExceeded       = inheritErr(os.ErrDeadlineExceeded, "the deadline expired before the operation could complete")
+	ErrDeadlineExceeded       = errors.New("the deadline expired before the operation could complete")
 	ErrInvalidParameterValue  = inheritErr(ErrBadRequest, "supplied value for a parameter was invalid")
 	ErrAborted                = inheritErr(ErrResourceConflict, "the operation was aborted, typically due to a concurrency issue such as a sequencer check failure")
 	ErrAlreadyExists          = inheritErr(ErrResourceConflict, "operation was rejected due a conflict with an existing resource")

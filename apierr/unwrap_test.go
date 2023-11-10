@@ -2,7 +2,6 @@ package apierr
 
 import (
 	"errors"
-	"os"
 	"testing"
 )
 
@@ -12,11 +11,8 @@ var testTable = []mapping{
 	codeMapping(400, "INVALID_PARAMETER_VALUE", ErrInvalidParameterValue),
 	codeMapping(400, "REQUEST_LIMIT_EXCEEDED", ErrTooManyRequests),
 	statusMapping(401, ErrUnauthenticated),
-	statusMapping(401, os.ErrPermission),
 	statusMapping(403, ErrPermissionDenied),
-	statusMapping(403, os.ErrPermission),
 	statusMapping(404, ErrNotFound),
-	statusMapping(404, os.ErrNotExist),
 	statusMapping(409, ErrResourceConflict),
 	codeMapping(409, "ABORTED", ErrAborted),
 	codeMapping(409, "ABORTED", ErrResourceConflict),
@@ -36,7 +32,6 @@ var testTable = []mapping{
 	statusMapping(501, ErrNotImplemented),
 	statusMapping(503, ErrTemporarilyUnavailable),
 	statusMapping(504, ErrDeadlineExceeded),
-	statusMapping(504, os.ErrDeadlineExceeded),
 }
 
 func TestErrorMapping(t *testing.T) {

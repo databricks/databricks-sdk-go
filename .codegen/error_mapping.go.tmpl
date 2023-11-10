@@ -4,27 +4,13 @@ package apierr
 
 import (
 	"errors"
-    "os"
-    "context"
 )
-
-{{$builtinErrors := dict 
-    "BAD_REQUEST" "os.ErrInvalid"
-    "DEADLINE_EXCEEDED" "os.ErrDeadlineExceeded"
-    "CANCELLED" "context.Canceled"
-    "NOT_FOUND" "os.ErrNotExist"
-    "UNAUTHENTICATED" "os.ErrPermission"
-    "PERMISSION_DENIED" "os.ErrPermission"
-    "RESOURCE_CONFLICT" "os.ErrExist"
-}}
 
 var ({{range .ExceptionTypes}}
     Err{{.PascalName}} = {{if .Inherit -}}
         inheritErr(Err{{.Inherit.PascalName}}, 
-    {{- else if ne "" (getOrDefault $builtinErrors .Name "") -}}
-        inheritErr({{getOrDefault $builtinErrors .Name ""}},
     {{- else -}}
-        {{getOrDefault $builtinErrors .Name ""}} errors.New(
+        errors.New(
     {{- end}}"{{.Description}}")
 {{- end}}
 
