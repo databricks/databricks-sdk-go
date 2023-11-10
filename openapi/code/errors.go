@@ -8,6 +8,10 @@ type ExceptionType struct {
 	Inherit    *Named
 }
 
+func (et *ExceptionType) FullName() string {
+	return et.Name
+}
+
 type ErrorMappingRule struct {
 	Named
 	StatusCode int
@@ -38,14 +42,14 @@ func (b *Batch) ErrorCodeMapping() (rules []ErrorMappingRule) {
 	return rules
 }
 
-func (b *Batch) ExceptionTypes() []ExceptionType {
+func (b *Batch) ExceptionTypes() []*ExceptionType {
 	statusCodeMapping := map[int]*Named{}
-	exceptionTypes := []ExceptionType{}
+	exceptionTypes := []*ExceptionType{}
 	for _, em := range openapi.ErrorStatusCodeMapping {
 		statusCodeMapping[em.StatusCode] = &Named{
 			Name: em.ErrorCode,
 		}
-		exceptionTypes = append(exceptionTypes, ExceptionType{
+		exceptionTypes = append(exceptionTypes, &ExceptionType{
 			Named: Named{
 				Name:        em.ErrorCode,
 				Description: em.Description,
@@ -54,7 +58,7 @@ func (b *Batch) ExceptionTypes() []ExceptionType {
 		})
 	}
 	for _, em := range openapi.ErrorCodeMapping {
-		exceptionTypes = append(exceptionTypes, ExceptionType{
+		exceptionTypes = append(exceptionTypes, &ExceptionType{
 			Named: Named{
 				Name:        em.ErrorCode,
 				Description: em.Description,

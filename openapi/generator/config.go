@@ -32,10 +32,11 @@ type Generator struct {
 
 	// We can generate SDKs in three modes: Packages, Types, Services
 	// E.g. Go is Package-focused and Java is Types+Services
-	Packages map[string]string `json:"packages,omitempty"`
-	Types    map[string]string `json:"types,omitempty"`
-	Services map[string]string `json:"services,omitempty"`
-	Batch    map[string]string `json:"batch,omitempty"`
+	Packages       map[string]string `json:"packages,omitempty"`
+	Types          map[string]string `json:"types,omitempty"`
+	Services       map[string]string `json:"services,omitempty"`
+	ExceptionTypes map[string]string `json:"exception_types,omitempty"`
+	Batch          map[string]string `json:"batch,omitempty"`
 
 	// special case for usage example templates, that are generated
 	// from Go SDK integration tests
@@ -107,6 +108,14 @@ func (c *Generator) Apply(ctx context.Context, batch *code.Batch, suite *roll.Su
 		err := pass.Run(ctx)
 		if err != nil {
 			return fmt.Errorf("types: %w", err)
+		}
+		filenames = append(filenames, pass.Filenames...)
+	}
+	if c.ExceptionTypes != nil {
+		pass := render.NewPass(c.dir, batch.ExceptionTypes(), c.ExceptionTypes, c.TemplateLibraries)
+		err := pass.Run(ctx)
+		if err != nil {
+			return fmt.Errorf("exception types: %w", err)
 		}
 		filenames = append(filenames, pass.Filenames...)
 	}
