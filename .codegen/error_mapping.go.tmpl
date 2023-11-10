@@ -1,0 +1,37 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package apierr
+
+import (
+	"errors"
+)
+
+{{- $builtinErrors := dict 
+    "BAD_REQUEST" "os.ErrInvalid"
+    "DEADLINE_EXCEEDED" "os.ErrDeadlineExceeded"
+    "CANCELLED" "context.Canceled"
+    "NOT_FOUND" "os.ErrNotExist"
+    "UNAUTHENTICATED" "os.ErrPermission"
+    "PERMISSION_DENIED" "os.ErrPermission"
+    "RESOURCE_CONFLICT" "os.ErrExist"
+ -}}
+
+var ({{range .ExceptionTypes}}
+    Err{{.PascalName}} = {{if .Inherit -}}
+        inheritErr(Err{{.Inherit.PascalName}}, 
+    {{- else if ne "" (getOrDefault $builtinErrors .Name "") -}}
+        inhericErr(Err{{getOrDefault $builtinErrors .Name ""}}
+    {{- else -}}
+        {{getOrDefault $builtinErrors .Name ""}} errors.New(
+    {{- end}}"{{.Description}}")
+{{- end}}
+
+    statusCodeMapping = map[int]error{ {{range .ErrorStatusCodeMapping}}
+        {{.StatusCode}}: Err{{.PascalName}},{{- end}}
+    }
+
+    errorCodeMapping = map[string]error{ {{range .ErrorCodeMapping}}
+        "{{.ErrorCode}}": Err{{.PascalName}},{{- end}}
+    }
+)
+
