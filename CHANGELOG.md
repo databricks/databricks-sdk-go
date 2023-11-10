@@ -4,44 +4,36 @@
 
 * Make sure path parameters are first in order in RequiredFields ([#669](https://github.com/databricks/databricks-sdk-go/pull/669)).
 * Added Field.IsRequestBodyField method for code generation ([#670](https://github.com/databricks/databricks-sdk-go/pull/670)).
-* Add regressions question to the issue template ([#676](https://github.com/databricks/databricks-sdk-go/pull/676)).
-* Add telemetry for CI/CD platform to useragent ([#665](https://github.com/databricks/databricks-sdk-go/pull/665)).
-* Skip GCP Integration Tests using Statement Execution API ([#678](https://github.com/databricks/databricks-sdk-go/pull/678)).
-* Add more detailed error message on default credentials not found error ([#679](https://github.com/databricks/databricks-sdk-go/pull/679)).
-* Update SDK to latest OpenAPI Spec ([#685](https://github.com/databricks/databricks-sdk-go/pull/685)).
+* Added regressions question to the issue template ([#676](https://github.com/databricks/databricks-sdk-go/pull/676)).
+* Added telemetry for CI/CD platform to useragent ([#665](https://github.com/databricks/databricks-sdk-go/pull/665)).
+* Skiped GCP Integration Tests using Statement Execution API ([#678](https://github.com/databricks/databricks-sdk-go/pull/678)).
+* Added more detailed error message on default credentials not found error ([#679](https://github.com/databricks/databricks-sdk-go/pull/679)).
+* Updated SDK to latest OpenAPI Spec ([#685](https://github.com/databricks/databricks-sdk-go/pull/685)).
 
 API Changes:
 
- * Changed `Create` method for [w.Functions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionsAPI) workspace-level service . New request type is [catalog.CreateFunctionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateFunctionRequest).
- * Changed `Create` method for [w.Metastores](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MetastoresAPI) workspace-level service with new required argument order.
- * Changed `InputParams` field for [catalog.CreateFunction](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateFunction) to [catalog.FunctionParameterInfos](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionParameterInfos).
- * Changed `Properties` field for [catalog.CreateFunction](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateFunction) to `string`.
- * Changed `ReturnParams` field for [catalog.CreateFunction](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateFunction) to [catalog.FunctionParameterInfos](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionParameterInfos).
+ * Changed `Create` method for [w.Functions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionsAPI) workspace-level service . New request type is [catalog.CreateFunctionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateFunctionRequest) and [w.Metastores](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#MetastoresAPI) workspace-level service with new required argument order.
+ * Changed `InputParams` field for [catalog.CreateFunction](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateFunction) to [catalog.FunctionParameterInfos](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionParameterInfos) and [catalog.FunctionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionInfo) to [catalog.FunctionParameterInfos](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionParameterInfos).
+ * Changed `Properties` field for [catalog.CreateFunction](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateFunction) and [catalog.FunctionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionInfo) to `string`.
+ * Changed `ReturnParams` field for [catalog.CreateFunction](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateFunction) and [catalog.FunctionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionInfo) to [catalog.FunctionParameterInfos](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionParameterInfos)
  * Changed `StorageRoot` field for [catalog.CreateMetastore](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateMetastore) to no longer be required.
- * Changed `InputParams` field for [catalog.FunctionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionInfo) to [catalog.FunctionParameterInfos](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionParameterInfos).
- * Changed `Properties` field for [catalog.FunctionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionInfo) to `string`.
- * Changed `ReturnParams` field for [catalog.FunctionInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionInfo) to [catalog.FunctionParameterInfos](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionParameterInfos).
  * Added `SkipValidation` field for [catalog.UpdateExternalLocation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateExternalLocation).
  * Added [catalog.CreateFunctionRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateFunctionRequest).
  * Added [catalog.DependencyList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DependencyList).
  * Added [catalog.FunctionParameterInfos](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#FunctionParameterInfos).
- * Added `Libraries` field for [compute.CreatePolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#CreatePolicy).
- * Added `Libraries` field for [compute.EditPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditPolicy).
+ * Added `Libraries` field for [compute.CreatePolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#CreatePolicy), [compute.EditPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditPolicy) and [compute.Policy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#Policy).
+ * Added [compute.InitScriptEventDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InitScriptEventDetails).
  * Added `InitScripts` field for [compute.EventDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EventDetails).
  * Added `File` field for [compute.InitScriptInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InitScriptInfo).
  * Added `ZoneId` field for [compute.InstancePoolGcpAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolGcpAttributes).
- * Added `Libraries` field for [compute.Policy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#Policy).
- * Added [compute.InitScriptEventDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InitScriptEventDetails).
  * Added [compute.InitScriptExecutionDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InitScriptExecutionDetails).
  * Added [compute.InitScriptExecutionDetailsStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InitScriptExecutionDetailsStatus).
  * Added [compute.InitScriptInfoAndExecutionDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InitScriptInfoAndExecutionDetails).
  * Added [compute.LocalFileInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#LocalFileInfo).
- * Removed `UiState` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob).
- * Added `EditMode` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob).
+ * Removed `UiState` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob) and [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
+ * Added `EditMode` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob) and [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
  * Removed [jobs.CreateJobUiState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJobUiState).
  * Added `IncludeResolvedValues` field for [jobs.GetRunRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#GetRunRequest).
- * Removed `UiState` field for [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
- * Added `EditMode` field for [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings).
  * Removed [jobs.JobSettingsUiState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettingsUiState).
  * Added [jobs.CreateJobEditMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJobEditMode).
  * Added [jobs.JobSettingsEditMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettingsEditMode).
@@ -49,15 +41,9 @@ API Changes:
  * Removed [oauth2.CreateOAuthEnrollment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#CreateOAuthEnrollment).
  * Removed [oauth2.OAuthEnrollmentStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#OAuthEnrollmentStatus).
  * Added `NetworkConnectivityConfigId` field for [provisioning.UpdateWorkspaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#UpdateWorkspaceRequest).
- * Removed `Delete` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
- * Removed `Get` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
- * Added `DeleteApp` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
- * Added `GetApp` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
- * Added `GetAppDeploymentStatus` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
- * Added `GetApps` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
- * Added `GetEvents` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
- * Added `ContainerLogs` field for [serving.DeploymentStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#DeploymentStatus).
- * Added `ExtraInfo` field for [serving.DeploymentStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#DeploymentStatus).
+ * Removed `Delete`, `Get`,  method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added `DeleteApp`, `GetApp`, `GetAppDeploymentStatus`, `GetApps` and `GetEvents` method for [w.Apps](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppsAPI) workspace-level service.
+ * Added `ContainerLogs` and `ExtraInfo` field for [serving.DeploymentStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#DeploymentStatus).
  * Added [serving.AppEvents](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppEvents).
  * Added [serving.AppServiceStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AppServiceStatus).
  * Added [serving.DeleteAppResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#DeleteAppResponse).
@@ -88,9 +74,8 @@ Dependency updates:
 
  * Bump google.golang.org/api from 0.146.0 to 0.150.0 ([#683](https://github.com/databricks/databricks-sdk-go/pull/683)).
  * Bump golang.org/x/mod from 0.13.0 to 0.14.0 ([#681](https://github.com/databricks/databricks-sdk-go/pull/681)).
- * Bump google.golang.org/grpc from 1.57.0 to 1.57.1 in /examples/zerolog ([#674](https://github.com/databricks/databricks-sdk-go/pull/674)).
  * Bump google.golang.org/grpc from 1.58.2 to 1.58.3 in /examples/slog ([#672](https://github.com/databricks/databricks-sdk-go/pull/672)).
- * Bump google.golang.org/grpc from 1.58.2 to 1.58.3 in /examples/zerolog ([#684](https://github.com/databricks/databricks-sdk-go/pull/684)).
+ * Bump google.golang.org/grpc to 1.58.3 in /examples/zerolog ([#684](https://github.com/databricks/databricks-sdk-go/pull/684)).
  * Bump golang.org/x/time from 0.3.0 to 0.4.0 ([#680](https://github.com/databricks/databricks-sdk-go/pull/680)).
 
 ## 0.24.0
