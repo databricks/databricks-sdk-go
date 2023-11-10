@@ -1,0 +1,11 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package databricks
+
+import "github.com/databricks/databricks-sdk-go/apierr"
+
+var ({{range .ExceptionTypes}}
+    // {{.Description}}
+    Err{{.PascalName}} = apierr.Err{{.PascalName}}
+{{- end}}
+)

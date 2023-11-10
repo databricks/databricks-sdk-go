@@ -1,34 +1,12 @@
 package databricks
 
 import (
-	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"github.com/databricks/databricks-sdk-go/version"
 )
 
 type Config config.Config
-
-var (
-	ErrInternalError          = apierr.ErrInternalError
-	ErrDataLoss               = apierr.ErrDataLoss
-	ErrUnknown                = apierr.ErrUnknown
-	ErrTemporarilyUnavailable = apierr.ErrTemporarilyUnavailable
-	ErrBadRequest             = apierr.ErrBadRequest
-	ErrInvalidParameterValue  = apierr.ErrInvalidParameterValue
-	ErrDeadlineExceeded       = apierr.ErrDeadlineExceeded
-	ErrCancelled              = apierr.ErrCancelled
-	ErrNotFound               = apierr.ErrNotFound
-	ErrUnauthenticated        = apierr.ErrUnauthenticated
-	ErrPermissionDenied       = apierr.ErrPermissionDenied
-	ErrTooManyRequests        = apierr.ErrTooManyRequests
-	ErrResourceExhausted      = apierr.ErrResourceExhausted
-	ErrRequestLimitExceeded   = apierr.ErrRequestLimitExceeded
-	ErrResourceConflict       = apierr.ErrResourceConflict
-	ErrAlreadyExists          = apierr.ErrAlreadyExists
-	ErrAborted                = apierr.ErrAborted
-	ErrNotImplemented         = apierr.ErrNotImplemented
-)
 
 // Must panics if error is not nil. It's intended to be used with
 // [databricks.NewWorkspaceClient] and [databricks.NewAccountClient].
