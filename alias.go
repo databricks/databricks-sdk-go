@@ -10,24 +10,24 @@ import (
 type Config config.Config
 
 var (
-	ErrInternal                = apierr.ErrInternal
-	ErrDataLoss                = apierr.ErrDataLoss
-	ErrUnknown                 = apierr.ErrUnknown
-	ErrTemporarilyUnavailable  = apierr.ErrTemporarilyUnavailable
-	ErrBadRequest              = apierr.ErrBadRequest
-	ErrInvalidParameterValue   = apierr.ErrInvalidParameterValue
-	ErrDeadlineExceeded        = apierr.ErrDeadlineExceeded
-	ErrCancelled               = apierr.ErrCancelled
-	ErrNotFound                = apierr.ErrNotFound
-	ErrUnauthenticated         = apierr.ErrUnauthenticated
-	ErrPermissionDenied        = apierr.ErrPermissionDenied
-	ErrTooManyRequests         = apierr.ErrTooManyRequests
-	ErrResourceExhausted       = apierr.ErrResourceExhausted
-	ErrRequestLimitExceeded    = apierr.ErrRequestLimitExceeded
-	ErrResourceConflict        = apierr.ErrResourceConflict
-	ErrAlreadyExists           = apierr.ErrAlreadyExists
-	ErrAborted                 = apierr.ErrAborted
-	ErrOperationNotImplemented = apierr.ErrOperationNotImplemented
+	ErrInternalError          = apierr.ErrInternalError
+	ErrDataLoss               = apierr.ErrDataLoss
+	ErrUnknown                = apierr.ErrUnknown
+	ErrTemporarilyUnavailable = apierr.ErrTemporarilyUnavailable
+	ErrBadRequest             = apierr.ErrBadRequest
+	ErrInvalidParameterValue  = apierr.ErrInvalidParameterValue
+	ErrDeadlineExceeded       = apierr.ErrDeadlineExceeded
+	ErrCancelled              = apierr.ErrCancelled
+	ErrNotFound               = apierr.ErrNotFound
+	ErrUnauthenticated        = apierr.ErrUnauthenticated
+	ErrPermissionDenied       = apierr.ErrPermissionDenied
+	ErrTooManyRequests        = apierr.ErrTooManyRequests
+	ErrResourceExhausted      = apierr.ErrResourceExhausted
+	ErrRequestLimitExceeded   = apierr.ErrRequestLimitExceeded
+	ErrResourceConflict       = apierr.ErrResourceConflict
+	ErrAlreadyExists          = apierr.ErrAlreadyExists
+	ErrAborted                = apierr.ErrAborted
+	ErrNotImplemented         = apierr.ErrNotImplemented
 )
 
 // Must panics if error is not nil. It's intended to be used with
