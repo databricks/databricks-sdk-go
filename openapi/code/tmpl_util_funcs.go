@@ -17,7 +17,8 @@ var HelperFuncs = template.FuncMap{
 	"notLast": func(idx int, a interface{}) bool {
 		return idx+1 != reflect.ValueOf(a).Len()
 	},
-	"lower": strings.ToLower,
+	"contains": strings.Contains,
+	"lower":    strings.ToLower,
 	"lowerFirst": func(s string) string {
 		return strings.ToLower(s[0:1]) + s[1:]
 	},
