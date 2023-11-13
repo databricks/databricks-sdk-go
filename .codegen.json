@@ -9,7 +9,9 @@
   "batch": {
     ".codegen/workspaces.go.tmpl": "workspace_client.go",
     ".codegen/accounts.go.tmpl": "account_client.go",
-    ".codegen/service-pkg.go.tmpl": "service/pkg.go"
+    ".codegen/service-pkg.go.tmpl": "service/pkg.go",
+    ".codegen/error_mapping.go.tmpl": "apierr/error_mapping.go",
+    ".codegen/error_alias.go.tmpl": "error_alias.go"
   },
   "examples": {
     ".codegen/examples_test.go.tmpl": "service/{{.Package}}/{{.SnakeName}}_usage_test.go"

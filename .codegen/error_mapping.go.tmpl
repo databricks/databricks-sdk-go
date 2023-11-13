@@ -1,0 +1,25 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package apierr
+
+import (
+	"errors"
+)
+
+var ({{range .ExceptionTypes}}
+    Err{{.PascalName}} = {{if .Inherit -}}
+        inheritErr(Err{{.Inherit.PascalName}}, 
+    {{- else -}}
+        errors.New(
+    {{- end}}"{{.Description}}")
+{{- end}}
+
+    statusCodeMapping = map[int]error{ {{range .ErrorStatusCodeMapping}}
+        {{.StatusCode}}: Err{{.PascalName}},{{- end}}
+    }
+
+    errorCodeMapping = map[string]error{ {{range .ErrorCodeMapping}}
+        "{{.ErrorCode}}": Err{{.PascalName}},{{- end}}
+    }
+)
+
