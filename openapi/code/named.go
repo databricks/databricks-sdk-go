@@ -9,10 +9,46 @@ import (
 )
 
 var reservedWords = []string{
+	// Go reserved keywords
 	"break", "default", "func", "interface", "select", "case", "defer", "go",
 	"map", "struct", "chan", "else", "goto", "switch", "const", "fallthrough",
 	"if", "range", "type", "continue", "for", "import", "return", "var",
 	"append", "bool", "byte", "iota", "len", "make", "new", "package",
+
+	// Python reserved keywords
+	// https://docs.python.org/3/reference/lexical_analysis.html#keywords
+	"False", "await", "else", "import", "pass",
+	"None", "break", "except", "in", "raise",
+	"True", "class", "finally", "is", "return",
+	"and", "continue", "for", "lambda", "try",
+	"as", "def", "from", "nonlocal", "while",
+	"assert", "del", "global", "not", "with",
+	"async", "elif", "if", "or", "yield",
+	// Soft keywords
+	"match", "case", "type",
+
+	// Java reserved keywords
+	// https://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html
+	"abstract", "continue", "for", "new", "switch",
+	"assert", "default", "goto", "package", "synchronized",
+	"boolean", "do", "if", "private", "this",
+	"break", "double", "implements", "protected", "throw",
+	"byte", "else", "import", "public", "throws",
+	"case", "enum", "instanceof", "return", "transient",
+	"catch", "extends", "int", "short", "try",
+	"char", "final", "interface", "static", "void",
+	"class", "finally", "long", "strictfp", "volatile",
+	"const", "float", "native", "super", "while",
+
+	// JavaScript reserved keywords
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#keywords
+	"break", "case", "catch", "class", "const", "continue", "debugger",
+	"default", "delete", "do", "else", "export", "extends", "false",
+	"finally", "for", "function", "if", "import", "in", "instanceof",
+	"new", "null", "return", "super", "switch", "this", "throw",
+	"true", "try", "typeof", "var", "void", "while", "with",
+	"let", "static", "yield", "await", "enum", "implements", "interface",
+	"package", "private", "protected", "public", "null", "true", "false",
 }
 
 // Named holds common methods for identifying and describing things
@@ -22,12 +58,23 @@ type Named struct {
 }
 
 func (n *Named) IsNameReserved() bool {
+	return isNameReserved(n.CamelName())
+}
+
+func isNameReserved(name string) bool {
 	for _, v := range reservedWords {
-		if n.CamelName() == v {
+		if name == v {
 			return true
 		}
 	}
 	return false
+}
+
+func makeSafeName(name string) string {
+	if isNameReserved(name) {
+		return fmt.Sprintf("%s_", name)
+	}
+	return name
 }
 
 func (n *Named) isNamePlural() bool {
@@ -196,12 +243,12 @@ func (n *Named) PascalName() string {
 	for _, w := range n.splitASCII() {
 		sb.WriteString(strings.Title(w))
 	}
-	return sb.String()
+	return makeSafeName(sb.String())
 }
 
 // TitleName creates Names Likes This
 func (n *Named) TitleName() string {
-	return strings.Title(strings.Join(n.splitASCII(), " "))
+	return makeSafeName(strings.Title(strings.Join(n.splitASCII(), " ")))
 }
 
 // CamelName creates namesLikesThis
@@ -210,7 +257,7 @@ func (n *Named) CamelName() string {
 		return "_"
 	}
 	cc := n.PascalName()
-	return strings.ToLower(cc[0:1]) + cc[1:]
+	return makeSafeName(strings.ToLower(cc[0:1]) + cc[1:])
 }
 
 // SnakeName creates names_like_this
@@ -218,17 +265,17 @@ func (n *Named) SnakeName() string {
 	if n.Name == "_" {
 		return "_"
 	}
-	return strings.Join(n.splitASCII(), "_")
+	return makeSafeName(strings.Join(n.splitASCII(), "_"))
 }
 
 // ConstantName creates NAMES_LIKE_THIS
 func (n *Named) ConstantName() string {
-	return strings.ToUpper(n.SnakeName())
+	return makeSafeName(strings.ToUpper(n.SnakeName()))
 }
 
 // KebabName creates names-like-this
 func (n *Named) KebabName() string {
-	return strings.Join(n.splitASCII(), "-")
+	return makeSafeName(strings.Join(n.splitASCII(), "-"))
 }
 
 // AbbrName returns `nlt` for `namesLikeThis`
@@ -237,7 +284,7 @@ func (n *Named) AbbrName() string {
 	for _, v := range n.splitASCII() {
 		abbr = append(abbr, v[0])
 	}
-	return string(abbr)
+	return makeSafeName(string(abbr))
 }
 
 // TrimPrefix returns *Named, but with a prefix trimmed from CamelName()
