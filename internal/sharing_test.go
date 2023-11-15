@@ -55,6 +55,9 @@ func TestUcAccProviders(t *testing.T) {
 // TODO: remove NoTranspile
 func TestUcAccRecipientActivationNoTranspile(t *testing.T) {
 	ctx, w := ucwsTest(t)
+	if w.Config.IsAzure() {
+		skipf(t)("temporarily skipping this test on Azure until RetrieveToken uses the same host as specified in the activation URL")
+	}
 
 	created, err := w.Recipients.Create(ctx, sharing.CreateRecipient{
 		Name:               RandomName("go-sdk-"),
