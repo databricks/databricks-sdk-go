@@ -34,21 +34,21 @@ func (s *slogAdapter) Enabled(ctx context.Context, level logger.Level) bool {
 }
 
 func (s *slogAdapter) Tracef(ctx context.Context, format string, v ...any) {
-	s.DebugCtx(ctx, fmt.Sprintf(format, v...))
+	s.DebugContext(ctx, fmt.Sprintf(format, v...))
 }
 
 func (s *slogAdapter) Debugf(ctx context.Context, format string, v ...any) {
-	s.DebugCtx(ctx, fmt.Sprintf(format, v...))
+	s.DebugContext(ctx, fmt.Sprintf(format, v...))
 }
 
 func (s *slogAdapter) Infof(ctx context.Context, format string, v ...any) {
-	s.InfoCtx(ctx, fmt.Sprintf(format, v...))
+	s.InfoContext(ctx, fmt.Sprintf(format, v...))
 }
 
 func (s *slogAdapter) Warnf(ctx context.Context, format string, v ...any) {
-	s.WarnCtx(ctx, fmt.Sprintf(format, v...))
+	s.WarnContext(ctx, fmt.Sprintf(format, v...))
 }
 
 func (s *slogAdapter) Errorf(ctx context.Context, format string, v ...any) {
-	s.ErrorCtx(ctx, fmt.Sprintf(format, v...), nil)
+	s.ErrorContext(ctx, fmt.Sprintf(format, v...), nil)
 }
