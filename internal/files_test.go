@@ -26,7 +26,7 @@ func (buf hashable) Hash() uint32 {
 	return h.Sum32()
 }
 
-func TestAccFilesAPI(t *testing.T) {
+func TestUcAccFilesAPI(t *testing.T) {
 	ctx, w := ucwsTest(t)
 
 	schema, err := w.Schemas.Create(ctx, catalog.CreateSchema{
