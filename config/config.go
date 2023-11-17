@@ -105,6 +105,8 @@ type Config struct {
 	// Number of seconds to keep retrying HTTP requests. Default is 300 (5 minutes)
 	RetryTimeoutSeconds int `name:"retry_timeout_seconds" auth:"-"`
 
+	HTTPTransport *http.Transport
+
 	Loaders []Loader
 
 	// marker for configuration resolving
