@@ -16,6 +16,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/time/rate"
 )
 
@@ -726,4 +728,35 @@ func TestRetryGetRequest(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "succeeded", respBytes.String())
 	assert.True(t, succeed)
+}
+
+type mockedTransport struct {
+	mock.Mock
+}
+
+func (m *mockedTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	m.Called(request)
+	argResponse := &http.Response{Request: request}
+	return argResponse, nil
+}
+
+func TestHttpTransport(t *testing.T) {
+	const methodName = "RoundTrip"
+
+	mockedTransport := new(mockedTransport)
+	matchedBy := mock.MatchedBy(func(arg any) bool {
+		_, ok := arg.(*http.Request)
+		return ok
+	})
+	mockedTransport.On(methodName, matchedBy).Return()
+
+	cfg := config.NewMockConfig(func(r *http.Request) error { return nil })
+	cfg.HTTPTransport = mockedTransport
+	client, err := New(cfg)
+	require.NoError(t, err)
+
+	err = client.Do(context.Background(), "GET", "/a", nil, nil, bytes.Buffer{})
+	require.NoError(t, err)
+
+	mockedTransport.AssertExpectations(t)
 }
