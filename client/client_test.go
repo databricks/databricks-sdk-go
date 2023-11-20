@@ -734,8 +734,6 @@ func (cb hc) RoundTrip(r *http.Request) (*http.Response, error) {
 }
 
 func TestHttpTransport(t *testing.T) {
-	const methodName = "RoundTrip"
-
 	calledMock := false
 	cfg := config.NewMockConfig(func(r *http.Request) error { return nil })
 	cfg.HTTPTransport = hc(func(r *http.Request) (*http.Response, error) {
