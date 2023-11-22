@@ -62,7 +62,7 @@ func (c *Config) GetAzureEnvironment() (azureEnvironment, error) {
 	}
 	env, ok := azureEnvironments[strings.ToUpper(c.AzureEnvironment)]
 	if !ok {
-		return env, fmt.Errorf("azure envionment not found: %s", c.AzureEnvironment)
+		return env, fmt.Errorf("azure environment not found: %s", c.AzureEnvironment)
 	}
 	return env, nil
 }
