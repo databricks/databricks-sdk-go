@@ -35,6 +35,25 @@ func New(cfg *config.Config) (*DatabricksClient, error) {
 	httpTimeout := time.Duration(orDefault(cfg.HTTPTimeoutSeconds, 60)) * time.Second
 	rateLimiter := rate.NewLimiter(rate.Limit(orDefault(cfg.RateLimitPerSecond, 15)), 1)
 	debugTruncateBytes := orDefault(cfg.DebugTruncateBytes, 96)
+	httpTransport := cfg.HTTPTransport
+	if httpTransport == nil {
+		httpTransport = &http.Transport{
+			Proxy: http.ProxyFromEnvironment,
+			DialContext: (&net.Dialer{
+				Timeout:   30 * time.Second,
+				KeepAlive: 30 * time.Second,
+			}).DialContext,
+			ForceAttemptHTTP2:     true,
+			MaxIdleConns:          100,
+			MaxIdleConnsPerHost:   runtime.GOMAXPROCS(0) + 1,
+			IdleConnTimeout:       180 * time.Second,
+			TLSHandshakeTimeout:   30 * time.Second,
+			ExpectContinueTimeout: 1 * time.Second,
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: cfg.InsecureSkipVerify,
+			},
+		}
+	}
 	return &DatabricksClient{
 		Config:             cfg,
 		debugHeaders:       cfg.DebugHeaders,
@@ -42,23 +61,8 @@ func New(cfg *config.Config) (*DatabricksClient, error) {
 		retryTimeout:       retryTimeout,
 		rateLimiter:        rateLimiter,
 		httpClient: &http.Client{
-			Timeout: httpTimeout,
-			Transport: &http.Transport{
-				Proxy: http.ProxyFromEnvironment,
-				DialContext: (&net.Dialer{
-					Timeout:   30 * time.Second,
-					KeepAlive: 30 * time.Second,
-				}).DialContext,
-				ForceAttemptHTTP2:     true,
-				MaxIdleConns:          100,
-				MaxIdleConnsPerHost:   runtime.GOMAXPROCS(0) + 1,
-				IdleConnTimeout:       180 * time.Second,
-				TLSHandshakeTimeout:   30 * time.Second,
-				ExpectContinueTimeout: 1 * time.Second,
-				TLSClientConfig: &tls.Config{
-					InsecureSkipVerify: cfg.InsecureSkipVerify,
-				},
-			},
+			Timeout:   httpTimeout,
+			Transport: httpTransport,
 		},
 	}, nil
 }
