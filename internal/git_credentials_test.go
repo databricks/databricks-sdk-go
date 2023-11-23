@@ -11,13 +11,6 @@ import (
 func TestAccGitCredentials(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
-	list, err := w.GitCredentials.ListAll(ctx)
-	require.NoError(t, err)
-	for _, v := range list {
-		err = w.GitCredentials.DeleteByCredentialId(ctx, v.CredentialId)
-		require.NoError(t, err)
-	}
-
 	cr, err := w.GitCredentials.Create(ctx, workspace.CreateCredentials{
 		GitProvider:         "gitHub",
 		GitUsername:         "test",
@@ -28,6 +21,10 @@ func TestAccGitCredentials(t *testing.T) {
 		err = w.GitCredentials.DeleteByCredentialId(ctx, cr.CredentialId)
 		require.NoError(t, err)
 	})
+
+	list, err := w.GitCredentials.ListAll(ctx)
+	require.NoError(t, err)
+	assert.True(t, len(list) >= 1)
 
 	err = w.GitCredentials.Update(ctx, workspace.UpdateCredentials{
 		CredentialId:        cr.CredentialId,
