@@ -272,13 +272,6 @@ func TestUcAccMetastores(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotEqual(t, created.MetastoreId, currentMetastore.MetastoreId)
 
-	autoMaintenance, err := w.Metastores.EnableOptimization(ctx, catalog.UpdatePredictiveOptimization{
-		Enable:      true,
-		MetastoreId: created.MetastoreId,
-	})
-	assert.NoError(t, err)
-	assert.Equal(t, true, autoMaintenance.State)
-
 	_, err = w.Metastores.Update(ctx, catalog.UpdateMetastore{
 		Id:   created.MetastoreId,
 		Name: RandomName("go-sdk-updated"),

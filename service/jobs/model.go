@@ -335,6 +335,9 @@ type CreateJob struct {
 	Continuous *Continuous `json:"continuous,omitempty"`
 	// Deployment information for jobs managed by external sources.
 	Deployment *JobDeployment `json:"deployment,omitempty"`
+	// An optional description for the job. The maximum length is 1024
+	// characters in UTF-8 encoding.
+	Description string `json:"description,omitempty"`
 	// Edit mode of the job.
 	//
 	// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
@@ -377,7 +380,7 @@ type CreateJob struct {
 	// concurrency to 3 won’t kill any of the active runs. However, from then
 	// on, new runs are skipped unless there are fewer than 3 active runs.
 	//
-	// This value cannot exceed 1000\. Setting this value to `0` causes all new
+	// This value cannot exceed 1000. Setting this value to `0` causes all new
 	// runs to be skipped.
 	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
 	// An optional name for the job. The maximum length is 4096 bytes in UTF-8
@@ -823,7 +826,8 @@ type JobAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
-	// name of the service principal
+	// Application ID of an active service principal. Setting this field
+	// requires the `servicePrincipal/user` role.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -1136,6 +1140,9 @@ type JobSettings struct {
 	Continuous *Continuous `json:"continuous,omitempty"`
 	// Deployment information for jobs managed by external sources.
 	Deployment *JobDeployment `json:"deployment,omitempty"`
+	// An optional description for the job. The maximum length is 1024
+	// characters in UTF-8 encoding.
+	Description string `json:"description,omitempty"`
 	// Edit mode of the job.
 	//
 	// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
@@ -1178,7 +1185,7 @@ type JobSettings struct {
 	// concurrency to 3 won’t kill any of the active runs. However, from then
 	// on, new runs are skipped unless there are fewer than 3 active runs.
 	//
-	// This value cannot exceed 1000\. Setting this value to `0` causes all new
+	// This value cannot exceed 1000. Setting this value to `0` causes all new
 	// runs to be skipped.
 	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
 	// An optional name for the job. The maximum length is 4096 bytes in UTF-8

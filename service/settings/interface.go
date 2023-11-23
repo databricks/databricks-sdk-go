@@ -334,29 +334,61 @@ type NetworkConnectivityService interface {
 	//
 	// Gets the private endpoint rule.
 	GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error)
+
+	// List network connectivity configurations.
+	//
+	// Gets an array of network connectivity configurations.
+	//
+	// Use ListNetworkConnectivityConfigurationsAll() to get all NetworkConnectivityConfiguration instances, which will iterate over every result page.
+	ListNetworkConnectivityConfigurations(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) (*ListNetworkConnectivityConfigurationsResponse, error)
+
+	// List private endpoint rules.
+	//
+	// Gets an array of private endpoint rules.
+	//
+	// Use ListPrivateEndpointRulesAll() to get all NccAzurePrivateEndpointRule instances, which will iterate over every result page.
+	ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error)
 }
 
-// // TODO(yuyuan.tang) to add the description for the setting
+// The default namespace setting API allows users to configure the default
+// namespace for a Databricks workspace.
+//
+// Through this API, users can retrieve, set, or modify the default namespace
+// used when queries do not reference a fully qualified three-level name. For
+// example, if you use the API to set 'retail_prod' as the default catalog, then
+// a query 'SELECT * FROM myTable' would reference the object
+// 'retail_prod.default.myTable' (the schema 'default' is always assumed).
+//
+// This setting requires a restart of clusters and SQL warehouses to take
+// effect. Additionally, the default namespace only applies when using Unity
+// Catalog-enabled compute.
 type SettingsService interface {
 
-	// Delete the default namespace.
+	// Delete the default namespace setting.
 	//
-	// Deletes the default namespace.
+	// Deletes the default namespace setting for the workspace. A fresh etag
+	// needs to be provided in DELETE requests (as a query parameter). The etag
+	// can be retrieved by making a GET request before the DELETE request. If
+	// the setting is updated/deleted concurrently, DELETE will fail with 409
+	// and the request will need to be retried by using the fresh etag in the
+	// 409 response.
 	DeleteDefaultWorkspaceNamespace(ctx context.Context, request DeleteDefaultWorkspaceNamespaceRequest) (*DeleteDefaultWorkspaceNamespaceResponse, error)
 
-	// Get the default namespace.
+	// Get the default namespace setting.
 	//
-	// Gets the default namespace.
+	// Gets the default namespace setting.
 	ReadDefaultWorkspaceNamespace(ctx context.Context, request ReadDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error)
 
-	// Updates the default namespace setting.
+	// Update the default namespace setting.
 	//
 	// Updates the default namespace setting for the workspace. A fresh etag
-	// needs to be provided in PATCH requests (as part the setting field). The
-	// etag can be retrieved by making a GET request before the PATCH request.
-	// Note that if the setting does not exist, GET will return a NOT_FOUND
-	// error and the etag will be present in the error response, which should be
-	// set in the PATCH request.
+	// needs to be provided in PATCH requests (as part of the setting field).
+	// The etag can be retrieved by making a GET request before the PATCH
+	// request. Note that if the setting does not exist, GET will return a
+	// NOT_FOUND error and the etag will be present in the error response, which
+	// should be set in the PATCH request. If the setting is updated
+	// concurrently, PATCH will fail with 409 and the request will need to be
+	// retried by using the fresh etag in the 409 response.
 	UpdateDefaultWorkspaceNamespace(ctx context.Context, request UpdateDefaultWorkspaceNamespaceRequest) (*DefaultNamespaceSetting, error)
 }
 

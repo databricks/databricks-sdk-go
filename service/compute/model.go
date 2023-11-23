@@ -137,9 +137,8 @@ type AwsAttributes struct {
 	// optional field at cluster creation, and if not specified, a default zone
 	// will be used. If the zone specified is "auto", will try to place cluster
 	// in a zone with high availability, and will retry placement in a different
-	// AZ if there is not enough capacity. See [[AutoAZHelper.scala]] for more
-	// details. The list of available zones as well as the default value can be
-	// found by using the `List Zones`_ method.
+	// AZ if there is not enough capacity. The list of available zones as well
+	// as the default value can be found by using the `List Zones` method.
 	ZoneId string `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -333,7 +332,8 @@ type ClusterAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
-	// name of the service principal
+	// Application ID of an active service principal. Setting this field
+	// requires the `servicePrincipal/user` role.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -870,7 +870,8 @@ type ClusterPolicyAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
-	// name of the service principal
+	// Application ID of an active service principal. Setting this field
+	// requires the `servicePrincipal/user` role.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -1651,8 +1652,10 @@ func (s CreateInstancePoolResponse) MarshalJSON() ([]byte, error) {
 }
 
 type CreatePolicy struct {
-	// Policy definition document expressed in Databricks Cluster Policy
-	// Definition Language.
+	// Policy definition document expressed in [Databricks Cluster Policy
+	// Definition Language].
+	//
+	// [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	Definition string `json:"definition,omitempty"`
 	// Additional human-readable description of the cluster policy.
 	Description string `json:"description,omitempty"`
@@ -1665,13 +1668,15 @@ type CreatePolicy struct {
 	// Cluster Policy name requested by the user. This has to be unique. Length
 	// must be between 1 and 100 characters.
 	Name string `json:"name"`
-	// Policy definition JSON document expressed in Databricks Policy Definition
-	// Language. The JSON document must be passed as a string and cannot be
-	// embedded in the requests.
+	// Policy definition JSON document expressed in [Databricks Policy
+	// Definition Language]. The JSON document must be passed as a string and
+	// cannot be embedded in the requests.
 	//
 	// You can use this to customize the policy definition inherited from the
 	// policy family. Policy rules specified here are merged into the inherited
 	// policy definition.
+	//
+	// [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	PolicyFamilyDefinitionOverrides string `json:"policy_family_definition_overrides,omitempty"`
 	// ID of the policy family. The cluster policy's policy definition inherits
 	// the policy family's policy definition.
@@ -2257,8 +2262,10 @@ func (s EditInstancePool) MarshalJSON() ([]byte, error) {
 }
 
 type EditPolicy struct {
-	// Policy definition document expressed in Databricks Cluster Policy
-	// Definition Language.
+	// Policy definition document expressed in [Databricks Cluster Policy
+	// Definition Language].
+	//
+	// [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	Definition string `json:"definition,omitempty"`
 	// Additional human-readable description of the cluster policy.
 	Description string `json:"description,omitempty"`
@@ -2271,13 +2278,15 @@ type EditPolicy struct {
 	// Cluster Policy name requested by the user. This has to be unique. Length
 	// must be between 1 and 100 characters.
 	Name string `json:"name"`
-	// Policy definition JSON document expressed in Databricks Policy Definition
-	// Language. The JSON document must be passed as a string and cannot be
-	// embedded in the requests.
+	// Policy definition JSON document expressed in [Databricks Policy
+	// Definition Language]. The JSON document must be passed as a string and
+	// cannot be embedded in the requests.
 	//
 	// You can use this to customize the policy definition inherited from the
 	// policy family. Policy rules specified here are merged into the inherited
 	// policy definition.
+	//
+	// [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	PolicyFamilyDefinitionOverrides string `json:"policy_family_definition_overrides,omitempty"`
 	// ID of the policy family. The cluster policy's policy definition inherits
 	// the policy family's policy definition.
@@ -3027,7 +3036,8 @@ type InstancePoolAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
-	// name of the service principal
+	// Application ID of an active service principal. Setting this field
+	// requires the `servicePrincipal/user` role.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -3180,7 +3190,7 @@ type InstancePoolAwsAttributes struct {
 	// Databricks deployment resides in the "us-east-1" region. This is an
 	// optional field at cluster creation, and if not specified, a default zone
 	// will be used. The list of available zones as well as the default value
-	// can be found by using the `List Zones`_ method.
+	// can be found by using the `List Zones` method.
 	ZoneId string `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -3973,8 +3983,10 @@ type Policy struct {
 	// Creator user name. The field won't be included in the response if the
 	// user has already been deleted.
 	CreatorUserName string `json:"creator_user_name,omitempty"`
-	// Policy definition document expressed in Databricks Cluster Policy
-	// Definition Language.
+	// Policy definition document expressed in [Databricks Cluster Policy
+	// Definition Language].
+	//
+	// [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	Definition string `json:"definition,omitempty"`
 	// Additional human-readable description of the cluster policy.
 	Description string `json:"description,omitempty"`
@@ -3991,13 +4003,15 @@ type Policy struct {
 	// Cluster Policy name requested by the user. This has to be unique. Length
 	// must be between 1 and 100 characters.
 	Name string `json:"name,omitempty"`
-	// Policy definition JSON document expressed in Databricks Policy Definition
-	// Language. The JSON document must be passed as a string and cannot be
-	// embedded in the requests.
+	// Policy definition JSON document expressed in [Databricks Policy
+	// Definition Language]. The JSON document must be passed as a string and
+	// cannot be embedded in the requests.
 	//
 	// You can use this to customize the policy definition inherited from the
 	// policy family. Policy rules specified here are merged into the inherited
 	// policy definition.
+	//
+	// [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	PolicyFamilyDefinitionOverrides string `json:"policy_family_definition_overrides,omitempty"`
 	// ID of the policy family.
 	PolicyFamilyId string `json:"policy_family_id,omitempty"`
@@ -4016,8 +4030,10 @@ func (s Policy) MarshalJSON() ([]byte, error) {
 }
 
 type PolicyFamily struct {
-	// Policy definition document expressed in Databricks Cluster Policy
-	// Definition Language.
+	// Policy definition document expressed in [Databricks Cluster Policy
+	// Definition Language].
+	//
+	// [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	Definition string `json:"definition"`
 	// Human-readable description of the purpose of the policy family.
 	Description string `json:"description"`

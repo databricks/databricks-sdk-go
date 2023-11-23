@@ -90,7 +90,7 @@ type AccountGroupsService interface {
 	//
 	// Gets all details of the groups associated with the Databricks account.
 	//
-	// Use ListAll() to get all Group instances
+	// Use ListAll() to get all Group instances, which will iterate over every result page.
 	List(ctx context.Context, request ListAccountGroupsRequest) (*ListGroupsResponse, error)
 
 	// Update group details.
@@ -132,7 +132,7 @@ type AccountServicePrincipalsService interface {
 	//
 	// Gets the set of service principals associated with a Databricks account.
 	//
-	// Use ListAll() to get all ServicePrincipal instances
+	// Use ListAll() to get all ServicePrincipal instances, which will iterate over every result page.
 	List(ctx context.Context, request ListAccountServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
 
 	// Update service principal details.
@@ -183,7 +183,7 @@ type AccountUsersService interface {
 	//
 	// Gets details for all the users associated with a Databricks account.
 	//
-	// Use ListAll() to get all User instances
+	// Use ListAll() to get all User instances, which will iterate over every result page.
 	List(ctx context.Context, request ListAccountUsersRequest) (*ListUsersResponse, error)
 
 	// Update user details.
@@ -237,7 +237,7 @@ type GroupsService interface {
 	//
 	// Gets all details of the groups associated with the Databricks workspace.
 	//
-	// Use ListAll() to get all Group instances
+	// Use ListAll() to get all Group instances, which will iterate over every result page.
 	List(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error)
 
 	// Update group details.
@@ -353,7 +353,7 @@ type ServicePrincipalsService interface {
 	// Gets the set of service principals associated with a Databricks
 	// workspace.
 	//
-	// Use ListAll() to get all ServicePrincipal instances
+	// Use ListAll() to get all ServicePrincipal instances, which will iterate over every result page.
 	List(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
 
 	// Update service principal details.
@@ -415,7 +415,7 @@ type UsersService interface {
 	//
 	// Gets details for all the users associated with a Databricks workspace.
 	//
-	// Use ListAll() to get all User instances
+	// Use ListAll() to get all User instances, which will iterate over every result page.
 	List(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error)
 
 	// Update user details.

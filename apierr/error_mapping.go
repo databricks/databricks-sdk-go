@@ -2,7 +2,9 @@
 
 package apierr
 
-import "errors"
+import (
+	"errors"
+)
 
 var (
 	ErrBadRequest             = errors.New("the request is invalid")

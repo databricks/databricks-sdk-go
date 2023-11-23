@@ -173,7 +173,15 @@ func (s CreateTokenResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Default namespace setting.
+// This represents the setting configuration for the default namespace in the
+// Databricks workspace. Setting the default catalog for the workspace
+// determines the catalog that is used when queries do not reference a fully
+// qualified 3 level name. For example, if the default catalog is set to
+// 'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
+// 'retail_prod.default.myTable' (the schema 'default' is always assumed). This
+// setting requires a restart of clusters and SQL warehouses to take effect.
+// Additionally, the default namespace only applies when using Unity
+// Catalog-enabled compute.
 type DefaultNamespaceSetting struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -188,6 +196,8 @@ type DefaultNamespaceSetting struct {
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
 	SettingName string `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-"`
@@ -230,7 +240,7 @@ type DeleteAccountNetworkPolicyResponse struct {
 	Etag string `json:"etag"`
 }
 
-// Delete the default namespace
+// Delete the default namespace setting
 type DeleteDefaultWorkspaceNamespaceRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -433,6 +443,74 @@ func (s IpAccessListInfo) MarshalJSON() ([]byte, error) {
 
 type ListIpAccessListResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
+}
+
+type ListNccAzurePrivateEndpointRulesResponse struct {
+	Items []NccAzurePrivateEndpointRule `json:"items,omitempty"`
+	// A token that can be used to get the next page of results. If null, there
+	// are no more results to show.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListNccAzurePrivateEndpointRulesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListNccAzurePrivateEndpointRulesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List network connectivity configurations
+type ListNetworkConnectivityConfigurationsRequest struct {
+	// Pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListNetworkConnectivityConfigurationsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListNetworkConnectivityConfigurationsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListNetworkConnectivityConfigurationsResponse struct {
+	Items []NetworkConnectivityConfiguration `json:"items,omitempty"`
+	// A token that can be used to get the next page of results. If null, there
+	// are no more results to show.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListNetworkConnectivityConfigurationsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListNetworkConnectivityConfigurationsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List private endpoint rules
+type ListPrivateEndpointRulesRequest struct {
+	// Your Network Connectvity Configuration ID.
+	NetworkConnectivityConfigId string `json:"-" url:"-"`
+	// Pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-"`
+}
+
+func (s *ListPrivateEndpointRulesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListPrivateEndpointRulesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List all tokens
@@ -823,7 +901,7 @@ type ReadAccountNetworkPolicyRequest struct {
 	Etag string `json:"-" url:"etag"`
 }
 
-// Get the default namespace
+// Get the default namespace setting
 type ReadDefaultWorkspaceNamespaceRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -902,7 +980,8 @@ type TokenAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
-	// name of the service principal
+	// Application ID of an active service principal. Setting this field
+	// requires the `servicePrincipal/user` role.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -1097,20 +1176,28 @@ func (s UpdateAccountNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Updates the default namespace setting
+// Update the default namespace setting
 type UpdateDefaultWorkspaceNamespaceRequest struct {
-	// This should always be set to true for Settings RPCs. Added for AIP
+	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing,omitempty"`
-	// Field mask required to be passed into the PATCH request. Field mask
+	// Field mask is required to be passed into the PATCH request. Field mask
 	// specifies which fields of the setting payload will be updated. For
 	// example, for Default Namespace setting, the field mask is supposed to
 	// contain fields from the DefaultNamespaceSetting.namespace schema.
 	//
-	// The field mask needs to supplied as single string. To specify multiple
+	// The field mask needs to be supplied as single string. To specify multiple
 	// fields in the field mask, use comma as the seperator (no space).
 	FieldMask string `json:"field_mask,omitempty"`
-	// Default namespace setting.
+	// This represents the setting configuration for the default namespace in
+	// the Databricks workspace. Setting the default catalog for the workspace
+	// determines the catalog that is used when queries do not reference a fully
+	// qualified 3 level name. For example, if the default catalog is set to
+	// 'retail_prod' then a query 'SELECT * FROM myTable' would reference the
+	// object 'retail_prod.default.myTable' (the schema 'default' is always
+	// assumed). This setting requires a restart of clusters and SQL warehouses
+	// to take effect. Additionally, the default namespace only applies when
+	// using Unity Catalog-enabled compute.
 	Setting *DefaultNamespaceSetting `json:"setting,omitempty"`
 
 	ForceSendFields []string `json:"-"`

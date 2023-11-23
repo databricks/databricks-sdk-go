@@ -267,6 +267,24 @@ func (a *networkConnectivityImpl) GetPrivateEndpointRule(ctx context.Context, re
 	return &nccAzurePrivateEndpointRule, err
 }
 
+func (a *networkConnectivityImpl) ListNetworkConnectivityConfigurations(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) (*ListNetworkConnectivityConfigurationsResponse, error) {
+	var listNetworkConnectivityConfigurationsResponse ListNetworkConnectivityConfigurationsResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs", a.client.ConfiguredAccountID())
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listNetworkConnectivityConfigurationsResponse)
+	return &listNetworkConnectivityConfigurationsResponse, err
+}
+
+func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error) {
+	var listNccAzurePrivateEndpointRulesResponse ListNccAzurePrivateEndpointRulesResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, request, &listNccAzurePrivateEndpointRulesResponse)
+	return &listNccAzurePrivateEndpointRulesResponse, err
+}
+
 // unexported type that holds implementations of just Settings API methods
 type settingsImpl struct {
 	client *client.DatabricksClient

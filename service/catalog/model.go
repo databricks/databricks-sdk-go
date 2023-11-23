@@ -3150,7 +3150,8 @@ type TableConstraint struct {
 }
 
 type TableConstraintList struct {
-	// List of table constraints.
+	// List of table constraints. Note: this field is not set in the output of
+	// the __listTables__ API.
 	TableConstraints []TableConstraint `json:"table_constraints,omitempty"`
 }
 
@@ -3199,6 +3200,9 @@ type TableInfo struct {
 	Name string `json:"name,omitempty"`
 	// Username of current owner of table.
 	Owner string `json:"owner,omitempty"`
+	// The pipeline ID of the table. Applicable for tables created by pipelines
+	// (Materialized View, Streaming Table, etc.).
+	PipelineId string `json:"pipeline_id,omitempty"`
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
 
@@ -3313,6 +3317,9 @@ type UnassignRequest struct {
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// Whether predictive optimization should be enabled for this object and
+	// objects under it.
+	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
@@ -3514,33 +3521,6 @@ type UpdatePermissions struct {
 	SecurableType SecurableType `json:"-" url:"-"`
 }
 
-type UpdatePredictiveOptimization struct {
-	// Whether to enable predictive optimization on the metastore.
-	Enable bool `json:"enable"`
-	// Unique identifier of metastore.
-	MetastoreId string `json:"metastore_id"`
-}
-
-type UpdatePredictiveOptimizationResponse struct {
-	// Whether predictive optimization is enabled on the metastore.
-	State bool `json:"state,omitempty"`
-	// Id of the predictive optimization service principal. This will be the
-	// user used to run optimization tasks.
-	UserId int64 `json:"user_id,omitempty"`
-	// Name of the predictive optimization service principal.
-	Username string `json:"username,omitempty"`
-
-	ForceSendFields []string `json:"-"`
-}
-
-func (s *UpdatePredictiveOptimizationResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdatePredictiveOptimizationResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type UpdateRegisteredModelRequest struct {
 	// The comment attached to the registered model
 	Comment string `json:"comment,omitempty"`
@@ -3565,6 +3545,9 @@ func (s UpdateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
 type UpdateSchema struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// Whether predictive optimization should be enabled for this object and
+	// objects under it.
+	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Full name of the schema.
 	FullName string `json:"-" url:"-"`
 	// Name of schema, relative to parent catalog.

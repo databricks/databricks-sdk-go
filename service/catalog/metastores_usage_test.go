@@ -102,43 +102,6 @@ func ExampleMetastoresAPI_Current_metastores() {
 
 }
 
-func ExampleMetastoresAPI_EnableOptimization_metastores() {
-	ctx := context.Background()
-	w, err := databricks.NewWorkspaceClient()
-	if err != nil {
-		panic(err)
-	}
-
-	created, err := w.Metastores.Create(ctx, catalog.CreateMetastore{
-		Name:        fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		StorageRoot: fmt.Sprintf("s3://%s/%s", os.Getenv("TEST_BUCKET"), fmt.Sprintf("sdk-%x", time.Now().UnixNano())),
-	})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", created)
-
-	autoMaintenance, err := w.Metastores.EnableOptimization(ctx, catalog.UpdatePredictiveOptimization{
-		Enable:      true,
-		MetastoreId: created.MetastoreId,
-	})
-	if err != nil {
-		panic(err)
-	}
-	logger.Infof(ctx, "found %v", autoMaintenance)
-
-	// cleanup
-
-	err = w.Metastores.Delete(ctx, catalog.DeleteMetastoreRequest{
-		Id:    created.MetastoreId,
-		Force: true,
-	})
-	if err != nil {
-		panic(err)
-	}
-
-}
-
 func ExampleMetastoresAPI_Get_metastores() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()

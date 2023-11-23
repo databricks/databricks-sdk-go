@@ -134,7 +134,7 @@
 //
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 //
-// - [settings.SettingsAPI]: // TODO(yuyuan.tang) to add the description for the setting.
+// - [settings.SettingsAPI]: The default namespace setting API allows users to configure the default namespace for a Databricks workspace.
 //
 // - [settings.AccountSettingsAPI]: The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources.
 //

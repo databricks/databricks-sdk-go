@@ -1098,6 +1098,12 @@ type SharedDataObject struct {
 	StartVersion int64 `json:"start_version,omitempty"`
 	// One of: **ACTIVE**, **PERMISSION_DENIED**.
 	Status SharedDataObjectStatus `json:"status,omitempty"`
+	// A user-provided new name for the data object within the share. If this
+	// new name is not provided, the object's original name will be used as the
+	// `string_shared_as` name. The `string_shared_as` name must be unique
+	// within a share. For notebooks, the new name should be the new notebook
+	// file name.
+	StringSharedAs string `json:"string_shared_as,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }

@@ -238,8 +238,9 @@ func ExampleCatalogsAPI_Update_catalogs() {
 	logger.Infof(ctx, "found %v", created)
 
 	_, err = w.Catalogs.Update(ctx, catalog.UpdateCatalog{
-		Name:    created.Name,
-		Comment: "updated",
+		Name:                         created.Name,
+		Comment:                      "updated",
+		EnablePredictiveOptimization: catalog.EnablePredictiveOptimizationEnable,
 	})
 	if err != nil {
 		panic(err)

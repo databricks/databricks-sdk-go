@@ -1251,13 +1251,6 @@ func (a *MetastoresAPI) DeleteById(ctx context.Context, id string) error {
 	})
 }
 
-// Toggle predictive optimization on the metastore.
-//
-// Enables or disables predictive optimization on the metastore.
-func (a *MetastoresAPI) EnableOptimization(ctx context.Context, request UpdatePredictiveOptimization) (*UpdatePredictiveOptimizationResponse, error) {
-	return a.impl.EnableOptimization(ctx, request)
-}
-
 // Get a metastore.
 //
 // Gets a metastore that matches the supplied ID. The caller must be a metastore
