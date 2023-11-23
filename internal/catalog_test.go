@@ -322,9 +322,8 @@ func TestUcAccCatalogs(t *testing.T) {
 	})
 
 	_, err = w.Catalogs.Update(ctx, catalog.UpdateCatalog{
-		Name:                         created.Name,
-		Comment:                      "updated",
-		EnablePredictiveOptimization: catalog.EnablePredictiveOptimizationEnable,
+		Name:    created.Name,
+		Comment: "updated",
 	})
 	require.NoError(t, err)
 
