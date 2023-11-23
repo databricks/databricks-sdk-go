@@ -45,6 +45,11 @@ func (c DatabricksCliCredentials) Configure(ctx context.Context, cfg *Config) (f
 
 	_, err = ts.Token()
 	if err != nil {
+		if strings.Contains(err.Error(), "no configuration file found at") {
+			// databricks auth token produced this error message between
+			// v0.207.1 and v0.209.1
+			return nil, nil
+		}
 		if strings.Contains(err.Error(), "databricks OAuth is not") {
 			// OAuth is not configured or not supported
 			return nil, nil
