@@ -463,16 +463,6 @@ func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequ
 	return err
 }
 
-func (a *metastoresImpl) EnableOptimization(ctx context.Context, request UpdatePredictiveOptimization) (*UpdatePredictiveOptimizationResponse, error) {
-	var updatePredictiveOptimizationResponse UpdatePredictiveOptimizationResponse
-	path := "/api/2.0/predictive-optimization/service"
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, request, &updatePredictiveOptimizationResponse)
-	return &updatePredictiveOptimizationResponse, err
-}
-
 func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (*MetastoreInfo, error) {
 	var metastoreInfo MetastoreInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)

@@ -1,4 +1,6 @@
 account_client.go linguist-generated=true
+apierr/error_mapping.go linguist-generated=true
+error_alias.go linguist-generated=true
 service/billing/api.go linguist-generated=true
 service/billing/billable_usage_usage_test.go linguist-generated=true
 service/billing/budgets_usage_test.go linguist-generated=true

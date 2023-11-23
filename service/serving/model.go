@@ -747,7 +747,8 @@ type ServingEndpointAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
-	// name of the service principal
+	// Application ID of an active service principal. Setting this field
+	// requires the `servicePrincipal/user` role.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`

@@ -223,6 +223,8 @@ type DeleteSecret struct {
 
 type ExportFormat string
 
+const ExportFormatAuto ExportFormat = `AUTO`
+
 const ExportFormatDbc ExportFormat = `DBC`
 
 const ExportFormatHtml ExportFormat = `HTML`
@@ -241,11 +243,11 @@ func (f *ExportFormat) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ExportFormat) Set(v string) error {
 	switch v {
-	case `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
+	case `AUTO`, `DBC`, `HTML`, `JUPYTER`, `R_MARKDOWN`, `SOURCE`:
 		*f = ExportFormat(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DBC", "HTML", "JUPYTER", "R_MARKDOWN", "SOURCE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AUTO", "DBC", "HTML", "JUPYTER", "R_MARKDOWN", "SOURCE"`, v)
 	}
 }
 
@@ -261,14 +263,18 @@ type ExportRequest struct {
 	//
 	// The value is case sensitive.
 	//
-	// - `SOURCE`: The notebook is exported as source code. - `HTML`: The
-	// notebook is exported as an HTML file. - `JUPYTER`: The notebook is
-	// exported as a Jupyter/IPython Notebook file. - `DBC`: The notebook is
-	// exported in Databricks archive format. - `R_MARKDOWN`: The notebook is
-	// exported to R Markdown format.
+	// - `SOURCE`: The notebook is exported as source code. Directory exports
+	// will not include non-notebook entries. - `HTML`: The notebook is exported
+	// as an HTML file. - `JUPYTER`: The notebook is exported as a
+	// Jupyter/IPython Notebook file. - `DBC`: The notebook is exported in
+	// Databricks archive format. Directory exports will not include
+	// non-notebook entries. - `R_MARKDOWN`: The notebook is exported to R
+	// Markdown format. - `AUTO`: The object or directory is exported depending
+	// on the objects type. Directory exports will include notebooks and
+	// workspace files.
 	Format ExportFormat `json:"-" url:"format,omitempty"`
 	// The absolute path of the object or directory. Exporting a directory is
-	// only supported for the `DBC` and `SOURCE` format.
+	// only supported for the `DBC`, `SOURCE`, and `AUTO` format.
 	Path string `json:"-" url:"path"`
 }
 
@@ -716,7 +722,8 @@ type RepoAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
-	// name of the service principal
+	// Application ID of an active service principal. Setting this field
+	// requires the `servicePrincipal/user` role.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -1004,7 +1011,8 @@ type WorkspaceObjectAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
-	// name of the service principal
+	// Application ID of an active service principal. Setting this field
+	// requires the `servicePrincipal/user` role.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`

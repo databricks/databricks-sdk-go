@@ -15,7 +15,8 @@ type AccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
-	// name of the service principal
+	// Application ID of an active service principal. Setting this field
+	// requires the `servicePrincipal/user` role.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -321,7 +322,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -372,7 +373,7 @@ type ListAccountGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page. Default is 10000.
-	Count int `json:"-" url:"count,omitempty"`
+	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
 	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
@@ -388,7 +389,7 @@ type ListAccountGroupsRequest struct {
 	// The order to sort the results.
 	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int `json:"-" url:"startIndex,omitempty"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -406,7 +407,7 @@ type ListAccountServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page. Default is 10000.
-	Count int `json:"-" url:"count,omitempty"`
+	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
 	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
@@ -422,7 +423,7 @@ type ListAccountServicePrincipalsRequest struct {
 	// The order to sort the results.
 	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int `json:"-" url:"startIndex,omitempty"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -440,7 +441,7 @@ type ListAccountUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page. Default is 10000.
-	Count int `json:"-" url:"count,omitempty"`
+	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
 	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
@@ -457,7 +458,7 @@ type ListAccountUsersRequest struct {
 	// The order to sort the results.
 	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int `json:"-" url:"startIndex,omitempty"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -475,7 +476,7 @@ type ListGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
-	Count int `json:"-" url:"count,omitempty"`
+	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
 	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
@@ -491,7 +492,7 @@ type ListGroupsRequest struct {
 	// The order to sort the results.
 	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int `json:"-" url:"startIndex,omitempty"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -582,7 +583,7 @@ type ListServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
-	Count int `json:"-" url:"count,omitempty"`
+	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
 	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
@@ -598,7 +599,7 @@ type ListServicePrincipalsRequest struct {
 	// The order to sort the results.
 	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int `json:"-" url:"startIndex,omitempty"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -643,7 +644,7 @@ type ListUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
-	Count int `json:"-" url:"count,omitempty"`
+	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
 	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
@@ -660,7 +661,7 @@ type ListUsersRequest struct {
 	// The order to sort the results.
 	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int `json:"-" url:"startIndex,omitempty"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-"`
 }
@@ -753,7 +754,8 @@ type PasswordAccessControlRequest struct {
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
-	// name of the service principal
+	// Application ID of an active service principal. Setting this field
+	// requires the `servicePrincipal/user` role.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	UserName string `json:"user_name,omitempty"`
@@ -1177,7 +1179,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.
