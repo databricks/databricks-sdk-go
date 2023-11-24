@@ -31,70 +31,28 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if !cfg.IsAzure() || !cfg.AzureUseMSI || (cfg.AzureResourceID == "" && !cfg.IsAccountClient()) {
 		return nil, nil
 	}
-	env, err := c.getInstanceEnvironment(ctx)
-	if err != nil {
-		return nil, err
-	}
+	env := cfg.Environment()
 	ctx = httpclient.DefaultClient.InContextForOAuth2(ctx)
 	if !cfg.IsAccountClient() {
-		err = cfg.azureEnsureWorkspaceUrl(ctx, c)
+		err := cfg.azureEnsureWorkspaceUrl(ctx, c)
 		if err != nil {
 			return nil, fmt.Errorf("resolve host: %w", err)
 		}
 	}
 	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
 	inner := azureReuseTokenSource(nil, azureMsiTokenSource{
-		resource: cfg.getAzureLoginAppID(),
+		resource: env.azureApplicationID,
 		clientId: cfg.AzureClientID,
 	})
 	management := azureReuseTokenSource(nil, azureMsiTokenSource{
-		resource: env.ServiceManagementEndpoint,
+		resource: env.AzureServiceManagementEndpoint(),
 		clientId: cfg.AzureClientID,
 	})
 	return azureVisitor(cfg, serviceToServiceVisitor(inner, management, xDatabricksAzureSpManagementToken)), nil
 }
 
-func (c AzureMsiCredentials) getInstanceEnvironment(ctx context.Context) (*azureEnvironment, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet,
-		fmt.Sprintf("%s/instance", instanceMetadataPrefix), nil)
-	if err != nil {
-		return nil, fmt.Errorf("metadata request: %w", err)
-	}
-	query := req.URL.Query()
-	query.Add("api-version", "2021-12-13")
-	req.URL.RawQuery = query.Encode()
-	req.Header.Add("Metadata", "true")
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("metadata response: %w", err)
-	}
-	raw, err := io.ReadAll(res.Body)
-	if err != nil {
-		return nil, fmt.Errorf("metadata read: %w", err)
-	}
-	if res.StatusCode != 200 {
-		return nil, fmt.Errorf("metadata error: %s", raw)
-	}
-	var metadata struct {
-		Compute struct {
-			Environment string `json:"azEnvironment"`
-		} `json:"compute"`
-	}
-	err = json.Unmarshal(raw, &metadata)
-	if err != nil {
-		return nil, fmt.Errorf("metadata parse: %w", err)
-	}
-	for _, v := range azureEnvironments {
-		if v.Name == metadata.Compute.Environment {
-			return &v, nil
-		}
-	}
-	return nil, fmt.Errorf("cannot determine environment: %s",
-		metadata.Compute.Environment)
-}
-
 // implementing azureHostResolver for ensureWorkspaceUrl to work
-func (c AzureMsiCredentials) tokenSourceFor(_ context.Context, cfg *Config, _ azureEnvironment, resource string) oauth2.TokenSource {
+func (c AzureMsiCredentials) tokenSourceFor(_ context.Context, cfg *Config, _, resource string) oauth2.TokenSource {
 	return azureMsiTokenSource{
 		resource: resource,
 		clientId: cfg.AzureClientID,

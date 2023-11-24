@@ -70,10 +70,15 @@ type Config struct {
 	AzureClientID     string `name:"azure_client_id" env:"ARM_CLIENT_ID" auth:"azure"`
 	AzureTenantID     string `name:"azure_tenant_id" env:"ARM_TENANT_ID" auth:"azure"`
 
-	// AzureEnvironment (Public, UsGov, China, Germany) has specific set of API endpoints.
+	// AzureEnvironment (PUBLIC, USGOVERNMENT, CHINA) has specific set of API endpoints. Starting from v0.26.0,
+	// the environment is determined based on the workspace hostname, if it's specified.
 	AzureEnvironment string `name:"azure_environment" env:"ARM_ENVIRONMENT"`
 
-	// Azure Login Application ID. Must be set if authenticating for non-production workspaces.
+	// Azure Login Application ID. Must be set if authenticating for non-production workspaces. Starting from v0.26.0,
+	// the correct Azure Login App ID is determined based on the Azure Databricks Workspace hostname.
+	//
+	// Deprecated: this configuration property no longer has any effect and will be removed in the future
+	// versions of Go SDK.
 	AzureLoginAppID string `name:"azure_login_app_id" env:"DATABRICKS_AZURE_LOGIN_APP_ID" auth:"azure"`
 
 	ClientID     string `name:"client_id" env:"DATABRICKS_CLIENT_ID" auth:"oauth"`
@@ -107,6 +112,9 @@ type Config struct {
 
 	// HTTPTransport can be overriden for unit testing and together with tooling like https://github.com/google/go-replayers
 	HTTPTransport http.RoundTripper
+
+	// Metadata about the environment, where Databricks is deployed. Reserved for internal use.
+	DatabricksEnvironments []DatabricksEnvironment
 
 	Loaders []Loader
 
@@ -142,16 +150,15 @@ func (c *Config) Authenticate(r *http.Request) error {
 
 // IsAzure returns if the client is configured for Azure Databricks.
 func (c *Config) IsAzure() bool {
-	isAzureHost := strings.Contains(c.Host, ".azuredatabricks.net") ||
-		strings.Contains(c.Host, "databricks.azure.cn") ||
-		strings.Contains(c.Host, ".databricks.azure.us")
-
-	return isAzureHost || c.AzureResourceID != ""
+	if c.AzureResourceID != "" {
+		return true
+	}
+	return c.Environment().Cloud == CloudAzure
 }
 
 // IsGcp returns if the client is configured for Databricks on Google Cloud.
 func (c *Config) IsGcp() bool {
-	return strings.Contains(c.Host, ".gcp.databricks.com")
+	return c.Environment().Cloud == CloudGCP
 }
 
 // IsAws returns if the client is configured for Databricks on AWS.
