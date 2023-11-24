@@ -19,10 +19,6 @@ func New(cfg *config.Config) (*DatabricksClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	return newWithTransport(cfg, cfg.HTTPTransport), nil
-}
-
-func newWithTransport(cfg *config.Config, transport http.RoundTripper) *DatabricksClient {
 	retryTimeout := time.Duration(orDefault(cfg.RetryTimeoutSeconds, 300)) * time.Second
 	httpTimeout := time.Duration(orDefault(cfg.HTTPTimeoutSeconds, 60)) * time.Second
 	return &DatabricksClient{
@@ -34,7 +30,7 @@ func newWithTransport(cfg *config.Config, transport http.RoundTripper) *Databric
 			DebugHeaders:       cfg.DebugHeaders,
 			DebugTruncateBytes: cfg.DebugTruncateBytes,
 			InsecureSkipVerify: cfg.InsecureSkipVerify,
-			Transport:          transport,
+			Transport:          cfg.HTTPTransport,
 			Visitors: []httpclient.RequestVisitor{
 				cfg.Authenticate,
 				func(r *http.Request) error {
@@ -87,7 +83,7 @@ func newWithTransport(cfg *config.Config, transport http.RoundTripper) *Databric
 				return false
 			},
 		}),
-	}
+	}, nil
 }
 
 type DatabricksClient struct {
