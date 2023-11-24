@@ -19,15 +19,19 @@ type responseBody struct {
 	ReadCloser io.ReadCloser
 	DebugBytes []byte
 	Header     http.Header
+	Status     string
+	StatusCode int
 }
 
-func newResponseBody(data any, header http.Header) (responseBody, error) {
+func newResponseBody(data any, header http.Header, statusCode int, status string) (responseBody, error) {
 	switch v := data.(type) {
 	case io.ReadCloser:
 		return responseBody{
 			ReadCloser: v,
 			DebugBytes: []byte("<io.ReadCloser>"),
 			Header:     header,
+			StatusCode: statusCode,
+			Status:     status,
 		}, nil
 	case []byte:
 		return responseBody{
@@ -40,7 +44,7 @@ func newResponseBody(data any, header http.Header) (responseBody, error) {
 	}
 }
 
-func WithCaptureHeader(key string, value *string) DoOption {
+func WithResponseHeader(key string, value *string) DoOption {
 	return DoOption{
 		out: func(body *responseBody) error {
 			*value = body.Header.Get(key)
@@ -49,7 +53,7 @@ func WithCaptureHeader(key string, value *string) DoOption {
 	}
 }
 
-func WithUnmarshal(response any) DoOption {
+func WithResponseUnmarshal(response any) DoOption {
 	return DoOption{
 		out: func(body *responseBody) error {
 			if response == nil {

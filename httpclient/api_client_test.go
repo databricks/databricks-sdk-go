@@ -13,8 +13,8 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/logger"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/oauth2"
 	"golang.org/x/time/rate"
 )
 
@@ -56,11 +56,12 @@ func TestSimpleRequestFailsURLError(t *testing.T) {
 			return nil, fmt.Errorf("nope")
 		}),
 	})
-	err := c.Do(context.Background(), "GET", "/a/b", WithHeaders(map[string]string{
-		"e": "f",
-	}), WithData(map[string]string{
-		"c": "d",
-	}))
+	err := c.Do(context.Background(), "GET", "/a/b",
+		WithRequestHeaders(map[string]string{
+			"e": "f",
+		}), WithRequestData(map[string]string{
+			"c": "d",
+		}))
 	require.EqualError(t, err, `Get "/a/b?c=d": nope`)
 }
 
@@ -78,11 +79,12 @@ func TestSimpleRequestFailsAPIError(t *testing.T) {
 			}, nil
 		}),
 	})
-	err := c.Do(context.Background(), "GET", "/a/b", WithHeaders(map[string]string{
-		"e": "f",
-	}), WithData(map[string]string{
-		"c": "d",
-	}))
+	err := c.Do(context.Background(), "GET", "/a/b",
+		WithRequestHeaders(map[string]string{
+			"e": "f",
+		}), WithRequestData(map[string]string{
+			"c": "d",
+		}))
 	require.EqualError(t, err, "http 400: nope")
 }
 
@@ -100,7 +102,9 @@ func TestSimpleRequestSucceeds(t *testing.T) {
 		}),
 	})
 	var resp Dummy
-	err := c.Do(context.Background(), "POST", "/c", WithData(Dummy{1}), WithUnmarshal(&resp))
+	err := c.Do(context.Background(), "POST", "/c",
+		WithRequestData(Dummy{1}),
+		WithResponseUnmarshal(&resp))
 	require.NoError(t, err)
 	require.Equal(t, 2, resp.Foo)
 }
@@ -128,7 +132,9 @@ func TestSimpleRequestRetried(t *testing.T) {
 		}),
 	})
 	var resp Dummy
-	err := c.Do(context.Background(), "PATCH", "/a", WithData(Dummy{1}), WithUnmarshal(&resp))
+	err := c.Do(context.Background(), "PATCH", "/a",
+		WithRequestData(Dummy{1}),
+		WithResponseUnmarshal(&resp))
 	require.NoError(t, err)
 	require.Equal(t, 2, resp.Foo)
 	require.True(t, retried[0], "request was not retried")
@@ -173,75 +179,6 @@ func TestHaltAttemptForVisitor(t *testing.T) {
 	require.EqualError(t, rerr.Err, "🥱")
 }
 
-func TestMakeRequestBody(t *testing.T) {
-	type x struct {
-		Scope string `json:"scope" url:"scope"`
-	}
-	requestURL := "/a/b/c"
-	body, err := makeRequestBody("GET", &requestURL, x{"test"})
-	require.NoError(t, err)
-	bodyBytes, err := io.ReadAll(body.Reader)
-	require.NoError(t, err)
-	require.Equal(t, "/a/b/c?scope=test", requestURL)
-	require.Equal(t, 0, len(bodyBytes))
-
-	requestURL = "/a/b/c"
-	body, err = makeRequestBody("POST", &requestURL, x{"test"})
-	require.NoError(t, err)
-	bodyBytes, err = io.ReadAll(body.Reader)
-	require.NoError(t, err)
-	require.Equal(t, "/a/b/c", requestURL)
-	x1 := `{"scope":"test"}`
-	require.Equal(t, []byte(x1), bodyBytes)
-}
-
-func TestMakeRequestBodyFromReader(t *testing.T) {
-	requestURL := "/a/b/c"
-	body, err := makeRequestBody("PUT", &requestURL, strings.NewReader("abc"))
-	require.NoError(t, err)
-	bodyBytes, err := io.ReadAll(body.Reader)
-	require.NoError(t, err)
-	require.Equal(t, []byte("abc"), bodyBytes)
-}
-
-func TestMakeRequestBodyReaderError(t *testing.T) {
-	requestURL := "/a/b/c"
-	_, err := makeRequestBody("POST", &requestURL, errReader(false))
-	// The request body is only read once the request is sent, so no error
-	// should be returned until then.
-	require.NoError(t, err, "request body reader error should be ignored")
-}
-
-func TestMakeRequestBodyJsonError(t *testing.T) {
-	requestURL := "/a/b/c"
-	type x struct {
-		Foo chan string `json:"foo"`
-	}
-	_, err := makeRequestBody("POST", &requestURL, x{make(chan string)})
-	require.EqualError(t, err, "request marshal failure: json: unsupported type: chan string")
-}
-
-type failingUrlEncode string
-
-func (fue failingUrlEncode) EncodeValues(key string, v *url.Values) error {
-	return fmt.Errorf(string(fue))
-}
-
-func TestMakeRequestBodyQueryFailingEncode(t *testing.T) {
-	requestURL := "/a/b/c"
-	type x struct {
-		Foo failingUrlEncode `url:"foo"`
-	}
-	_, err := makeRequestBody("GET", &requestURL, x{failingUrlEncode("always failing")})
-	require.EqualError(t, err, "cannot create query string: always failing")
-}
-
-func TestMakeRequestBodyQueryUnsupported(t *testing.T) {
-	requestURL := "/a/b/c"
-	_, err := makeRequestBody("GET", &requestURL, true)
-	require.EqualError(t, err, "unsupported query string data: true")
-}
-
 func TestFailPerformChannel(t *testing.T) {
 	ctx := context.Background()
 	c := &ApiClient{
@@ -249,41 +186,6 @@ func TestFailPerformChannel(t *testing.T) {
 	}
 	_, err := c.perform(ctx, "GET", "/", true)
 	require.EqualError(t, err, "request marshal: unsupported query string data: true")
-}
-
-func TestSimpleRequestAPIError(t *testing.T) {
-	c := NewApiClient(ClientConfig{
-		Transport: hc(func(r *http.Request) (*http.Response, error) {
-			return &http.Response{
-				StatusCode: 400,
-				Body: io.NopCloser(strings.NewReader(`{
-					"error_code": "NOT_FOUND",
-					"message": "Something was not found"
-				}`)),
-				Request: r,
-			}, nil
-		}),
-	})
-	err := c.Do(context.Background(), "PATCH", "/a", WithData(map[string]any{}))
-	var httpErr *HttpError
-	if assert.ErrorAs(t, err, &httpErr) {
-		require.Equal(t, 400, httpErr.StatusCode)
-	}
-}
-
-func TestSimpleRequestErrReaderBody(t *testing.T) {
-	c := NewApiClient(ClientConfig{
-		Transport: hc(func(r *http.Request) (*http.Response, error) {
-			return &http.Response{
-				StatusCode: 200,
-				Body:       errReader(false),
-				Request:    r,
-			}, nil
-		}),
-	})
-	headers := map[string]string{"Accept": "application/json"}
-	err := c.Do(context.Background(), "PATCH", "/a", WithHeaders(headers), WithData(map[string]any{}))
-	require.EqualError(t, err, "response body: test error")
 }
 
 func TestSimpleRequestErrReaderBodyStreamResponse(t *testing.T) {
@@ -297,7 +199,9 @@ func TestSimpleRequestErrReaderBodyStreamResponse(t *testing.T) {
 		}),
 	})
 	headers := map[string]string{"Accept": "application/octet-stream"}
-	err := c.Do(context.Background(), "PATCH", "/a", WithHeaders(headers), WithData(map[string]any{}))
+	err := c.Do(context.Background(), "PATCH", "/a",
+		WithRequestHeaders(headers),
+		WithRequestData(map[string]any{}))
 	require.NoError(t, err, "streaming response bodies are not read")
 }
 
@@ -312,7 +216,9 @@ func TestSimpleRequestErrReaderCloseBody(t *testing.T) {
 		}),
 	})
 	headers := map[string]string{"Accept": "application/json"}
-	err := c.Do(context.Background(), "PATCH", "/a", WithHeaders(headers), WithData(map[string]any{}))
+	err := c.Do(context.Background(), "PATCH", "/a",
+		WithRequestHeaders(headers),
+		WithRequestData(map[string]any{}))
 	require.EqualError(t, err, "response body: test error")
 }
 
@@ -327,24 +233,10 @@ func TestSimpleRequestErrReaderCloseBody_StreamResponse(t *testing.T) {
 		}),
 	})
 	headers := map[string]string{"Accept": "application/octet-stream"}
-	err := c.Do(context.Background(), "PATCH", "/a", WithHeaders(headers), WithData(map[string]any{}))
+	err := c.Do(context.Background(), "PATCH", "/a",
+		WithRequestHeaders(headers),
+		WithRequestData(map[string]any{}))
 	require.NoError(t, err, "response body should not be closed for streaming responses")
-}
-
-func TestSimpleRequestRawResponse(t *testing.T) {
-	c := NewApiClient(ClientConfig{
-		Transport: hc(func(r *http.Request) (*http.Response, error) {
-			return &http.Response{
-				StatusCode: 200,
-				Body:       io.NopCloser(strings.NewReader("Hello, world!")),
-				Request:    r,
-			}, nil
-		}),
-	})
-	var raw []byte
-	err := c.Do(context.Background(), "GET", "/a", WithUnmarshal(&raw))
-	require.NoError(t, err)
-	require.Equal(t, "Hello, world!", string(raw))
 }
 
 type BufferLogger struct {
@@ -408,11 +300,12 @@ func TestSimpleResponseRedaction(t *testing.T) {
 			}, nil
 		}),
 	})
-	err := c.Do(context.Background(), "GET", "/a", WithData(map[string]any{
-		"b": 0,
-		"a": 3,
-		"c": 23,
-	}))
+	err := c.Do(context.Background(), "GET", "/a",
+		WithRequestData(map[string]any{
+			"b": 0,
+			"a": 3,
+			"c": 23,
+		}))
 	require.NoError(t, err)
 	// not testing for exact logged lines, as header order is not deterministic
 	require.NotContains(t, bufLogger.String(), "__SENSITIVE01__")
@@ -443,11 +336,13 @@ func TestInlineArrayDebugging(t *testing.T) {
 		}),
 	})
 	headers := map[string]string{"Accept": "application/json"}
-	err := c.Do(context.Background(), "GET", "/a", WithHeaders(headers), WithData(map[string]any{
-		"b": 0,
-		"a": 3,
-		"c": 23,
-	}))
+	err := c.Do(context.Background(), "GET", "/a",
+		WithRequestHeaders(headers),
+		WithRequestData(map[string]any{
+			"b": 0,
+			"a": 3,
+			"c": 23,
+		}))
 	require.NoError(t, err)
 
 	require.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
@@ -478,11 +373,13 @@ func TestInlineArrayDebugging_StreamResponse(t *testing.T) {
 		}),
 	})
 	headers := map[string]string{"Accept": "application/octet-stream"}
-	err := c.Do(context.Background(), "GET", "/a", WithHeaders(headers), WithData(map[string]any{
-		"b": 0,
-		"a": 3,
-		"c": 23,
-	}))
+	err := c.Do(context.Background(), "GET", "/a",
+		WithRequestHeaders(headers),
+		WithRequestData(map[string]any{
+			"b": 0,
+			"a": 3,
+			"c": 23,
+		}))
 	require.NoError(t, err)
 
 	require.Equal(t, `[DEBUG] GET /a?a=3&b=0&c=23
@@ -529,7 +426,9 @@ func TestStreamRequestFromFileWithReset(t *testing.T) {
 	})
 
 	respBytes := bytes.Buffer{}
-	err = client.Do(context.Background(), "POST", "/a", WithData(r), WithUnmarshal(&respBytes))
+	err = client.Do(context.Background(), "POST", "/a",
+		WithRequestData(r),
+		WithResponseUnmarshal(&respBytes))
 	require.NoError(t, err)
 	require.Equal(t, "succeeded", respBytes.String())
 	require.True(t, succeed)
@@ -551,7 +450,8 @@ func TestCannotRetryArbitraryReader(t *testing.T) {
 			}, nil
 		}),
 	})
-	err := client.Do(context.Background(), "POST", "/a", WithData(customReader{}))
+	err := client.Do(context.Background(), "POST", "/a",
+		WithRequestData(customReader{}))
 	require.ErrorContains(t, err, "cannot reset reader of type httpclient.customReader")
 }
 
@@ -582,8 +482,31 @@ func TestRetryGetRequest(t *testing.T) {
 	})
 
 	respBytes := bytes.Buffer{}
-	err := client.Do(context.Background(), "GET", "/a", WithUnmarshal(&respBytes))
+	err := client.Do(context.Background(), "GET", "/a",
+		WithResponseUnmarshal(&respBytes))
 	require.NoError(t, err)
 	require.Equal(t, "succeeded", respBytes.String())
 	require.True(t, succeed)
+}
+
+func TestOAuth2Integration(t *testing.T) {
+	inner := NewApiClient(ClientConfig{
+		Transport: hc(func(r *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 204,
+				Request:    r,
+				Body:       io.NopCloser(strings.NewReader("")),
+			}, nil
+		}),
+	})
+
+	ctx := context.Background()
+	ctx = inner.InContextForOAuth2(ctx)
+
+	outer := oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{
+		AccessToken: "abc",
+	}))
+	res, err := outer.Get("abc")
+	require.NoError(t, err)
+	require.Equal(t, 204, res.StatusCode)
 }

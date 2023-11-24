@@ -87,7 +87,7 @@ func (c *Config) azureEnsureWorkspaceUrl(ctx context.Context, ahr azureHostResol
 	}
 	requestURL := env.ResourceManagerEndpoint + c.AzureResourceID + "?api-version=2018-04-01"
 	err = httpclient.DefaultClient.Do(ctx, "GET", requestURL,
-		httpclient.WithUnmarshal(&workspaceMetadata),
+		httpclient.WithResponseUnmarshal(&workspaceMetadata),
 		httpclient.WithTokenSource(management),
 	)
 	if err != nil {

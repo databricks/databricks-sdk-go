@@ -103,11 +103,11 @@ func (c *DatabricksClient) Do(ctx context.Context, method, path string,
 	visitors ...func(*http.Request) error) error {
 	opts := []httpclient.DoOption{}
 	for _, v := range visitors {
-		opts = append(opts, httpclient.WithVisitor(v))
+		opts = append(opts, httpclient.WithRequestVisitor(v))
 	}
-	opts = append(opts, httpclient.WithHeaders(headers))
-	opts = append(opts, httpclient.WithData(request))
-	opts = append(opts, httpclient.WithUnmarshal(response))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
 	return c.client.Do(ctx, method, path, opts...)
 }
 

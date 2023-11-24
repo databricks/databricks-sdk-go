@@ -75,47 +75,52 @@ func (r requestBody) reset() error {
 	}
 }
 
-func WithHeader(k, v string) DoOption {
-	return DoOption{
-		in: func(r *http.Request) error {
+// WithRequestHeader adds a request visitor, that sets a header on a request
+func WithRequestHeader(k, v string) DoOption {
+	return WithRequestVisitor(func(r *http.Request) error {
+		r.Header.Set(k, v)
+		return nil
+	})
+}
+
+// WithRequestHeaders adds a request visitor, that set all headers from a map
+func WithRequestHeaders(headers map[string]string) DoOption {
+	return WithRequestVisitor(func(r *http.Request) error {
+		for k, v := range headers {
 			r.Header.Set(k, v)
-			return nil
-		},
-	}
+		}
+		return nil
+	})
 }
 
-func WithHeaders(headers map[string]string) DoOption {
-	return DoOption{
-		in: func(r *http.Request) error {
-			for k, v := range headers {
-				r.Header.Set(k, v)
-			}
-			return nil
-		},
-	}
-}
-
+// WithTokenSource uses the specified golang.org/x/oauth2 token source on a request
 func WithTokenSource(ts oauth2.TokenSource) DoOption {
-	return DoOption{
-		in: func(r *http.Request) error {
-			token, err := ts.Token()
-			if err != nil {
-				return fmt.Errorf("token: %w", err)
-			}
-			auth := fmt.Sprintf("%s %s", token.TokenType, token.AccessToken)
-			r.Header.Set("Authorization", auth)
-			return nil
-		},
-	}
+	return WithRequestVisitor(func(r *http.Request) error {
+		token, err := ts.Token()
+		if err != nil {
+			return fmt.Errorf("token: %w", err)
+		}
+		auth := fmt.Sprintf("%s %s", token.TokenType, token.AccessToken)
+		r.Header.Set("Authorization", auth)
+		return nil
+	})
 }
 
-func WithVisitor(visitor func(r *http.Request) error) DoOption {
+// WithRequestVisitor applies given function on a request
+func WithRequestVisitor(visitor func(r *http.Request) error) DoOption {
 	return DoOption{
 		in: visitor,
 	}
 }
 
-func WithData(body any) DoOption {
+// WithRequestData takes either a struct instance, map, string, bytes, or io.Reader
+// and sends it either as query string for GET and DELETE calls, or as request body
+// for POST, PUT, and PATCH calls.
+//
+// Experimental: this method may eventually be split into more granular options.
+func WithRequestData(body any) DoOption {
+	// refactor this, so that we split JSON/query string serialization and make
+	// separate request visitors internally.
 	return DoOption{
 		body: body,
 	}

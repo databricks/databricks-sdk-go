@@ -1,4 +1,4 @@
-package httpclient // has to be a separate package than client, otherwise a circular dependency
+package httpclient
 
 import (
 	"context"
@@ -145,16 +145,20 @@ func (c *ApiClient) fromResponse(r *http.Response) (responseBody, error) {
 	if r.Request == nil {
 		return responseBody{}, fmt.Errorf("nil request")
 	}
+	// SDK only supports using JSON for non-streaming requests/responses, as that
+	// is the only supported serde in the SDK. If you need to use any other content
+	// type, the SDK will just hand you an io.ReadCloser and you will be responsible
+	// for consuming the request body yourself.
 	streamResponse := r.Request.Header.Get("Accept") != "application/json" && r.Header.Get("Content-Type") != "application/json"
 	if streamResponse {
-		return newResponseBody(r.Body, r.Header)
+		return newResponseBody(r.Body, r.Header, r.StatusCode, r.Status)
 	}
 	defer r.Body.Close()
 	bs, err := io.ReadAll(r.Body)
 	if err != nil {
 		return responseBody{}, fmt.Errorf("response body: %w", err)
 	}
-	return newResponseBody(bs, r.Header)
+	return newResponseBody(bs, r.Header, r.StatusCode, r.Status)
 }
 
 func (c *ApiClient) redactedDump(prefix string, body []byte) (res string) {
@@ -330,9 +334,9 @@ func (c *ApiClient) RoundTrip(request *http.Request) (*http.Response, error) {
 	// here we assume only successful responses, as HTTP 4XX and 5XX are mapped
 	// to Go's error implementations.
 	return &http.Response{
-		Status:     "OK",
-		StatusCode: 200,
 		Request:    request,
+		Status:     resp.Status,
+		StatusCode: resp.StatusCode,
 		Header:     resp.Header,
 		Body:       resp.ReadCloser,
 	}, nil
