@@ -19,13 +19,12 @@ func TestGetErrorStub(t *testing.T) {
 	}))
 	// spacing in this test is very important
 	assert.EqualError(t, err, `Get "/foo?foo=bar": missing stub, please add: {
-    Method:   "GET",
-    Resource: "/foo?foo=bar",
-    Response: XXX {
-        // fill in specific fields...
-    },
-},
-`, err.Error())
+		Method:   "GET",
+		Resource: "/foo?foo=bar",
+		Response: XXX {
+			// fill in specific fields...
+		},
+	},`, err.Error())
 }
 
 func TestGetErrorStubFilled(t *testing.T) {
@@ -86,13 +85,12 @@ func TestGetErrorStubWithHost(t *testing.T) {
 	}))
 	// spacing in this test is very important
 	assert.EqualError(t, err, `Get "http://localhost:1234/foo?foo=bar": missing stub, please add: {
-    Method:   "GET",
-    Resource: "/foo?foo=bar",
-    Response: XXX {
-        // fill in specific fields...
-    },
-},
-`, err.Error())
+		Method:   "GET",
+		Resource: "/foo?foo=bar",
+		Response: XXX {
+			// fill in specific fields...
+		},
+	},`, err.Error())
 }
 
 func TestPostErrorStub(t *testing.T) {
@@ -105,17 +103,16 @@ func TestPostErrorStub(t *testing.T) {
 	}))
 	// spacing in this test is very important
 	assert.EqualError(t, err, `Post "/foo": missing stub, please add: {
-    Method:   "POST",
-    Resource: "/foo",
-    ExpectedRequest: XXX {
-        Foo: "bar",
-    },
-    // ExpectedRequest: map[string]interface {}{"foo":"bar"},
-    Response: XXX {
-        // fill in specific fields...
-    },
-},
-`)
+		Method:   "POST",
+		Resource: "/foo",
+		ExpectedRequest: XXX {
+			Foo: "bar",
+		},
+		// ExpectedRequest: map[string]interface {}{"foo":"bar"},
+		Response: XXX {
+			// fill in specific fields...
+		},
+	},`)
 }
 
 func TestPostErrorStubFilled(t *testing.T) {

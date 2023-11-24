@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/openapi/code"
-	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
 // HTTPFixture defines request structure for test
@@ -123,36 +122,47 @@ func (fixtures HTTPFixtures) RoundTrip(req *http.Request) (*http.Response, error
 		}
 		return f.Reply(req)
 	}
+	expectedRequest, err := fixtures.bodyStub(req)
+	if err != nil {
+		return nil, fmt.Errorf("marshal: %w", err)
+	}
+	// whitespace in this string is very important for unit tests
+	stub := fmt.Sprintf(`{
+		Method:   "%s",
+		Resource: "%s",
+		%sResponse: XXX {
+			// fill in specific fields...
+		},
+	},`, req.Method, resource, expectedRequest)
+	return nil, fmt.Errorf("missing stub, please add: %s", stub)
+}
+
+func (fixtures HTTPFixtures) bodyStub(req *http.Request) (string, error) {
+	if req.Body == nil {
+		return "", nil
+	}
 	receivedRequest := map[string]any{}
 	actualRequestJSON := new(bytes.Buffer)
 	_, err := actualRequestJSON.ReadFrom(req.Body)
 	if err != nil {
-		return nil, fmt.Errorf("read body: %w", err)
+		return "", fmt.Errorf("read body: %w", err)
 	}
 	expectedRequest := ""
-	if actualRequestJSON.Len() > 0 {
-		err = json.Unmarshal(actualRequestJSON.Bytes(), &receivedRequest)
-		if err != nil {
-			return nil, fmt.Errorf("unmarshal body: %w", err)
-		}
-		// guessing model name would require going over AST,
-		// which is not something i'm willing to write on my weekend
-		expectedRequest += "ExpectedRequest: XXX {\n"
-		for key, value := range receivedRequest {
-			camel := (&code.Named{Name: key}).PascalName()
-			expectedRequest += fmt.Sprintf("\t\t\t%s: %#v,\n", camel, value)
-		}
-		expectedRequest += "\t\t},\n"
-		expectedRequest += fmt.Sprintf("\t\t// ExpectedRequest: %#v,\n", receivedRequest)
+	if actualRequestJSON.Len() == 0 {
+		return "", nil
 	}
-	// whitespace in this string is very important for unit tests
-	stub := compute.TrimLeadingWhitespace(fmt.Sprintf(`	{
-		Method:   "%s",
-		Resource: "%s",
-		%s
-		Response: XXX {
-			// fill in specific fields...
-		},
-	},`, req.Method, resource, expectedRequest))
-	return nil, fmt.Errorf("missing stub, please add: %s", stub)
+	err = json.Unmarshal(actualRequestJSON.Bytes(), &receivedRequest)
+	if err != nil {
+		return "", fmt.Errorf("unmarshal body: %w", err)
+	}
+	// guessing model name would require going over AST,
+	// which is not something i'm willing to write on my weekend
+	expectedRequest += "ExpectedRequest: XXX {\n"
+	for key, value := range receivedRequest {
+		camel := (&code.Named{Name: key}).PascalName()
+		expectedRequest += fmt.Sprintf("\t\t\t%s: %#v,\n", camel, value)
+	}
+	expectedRequest += "\t\t},\n"
+	expectedRequest += fmt.Sprintf("\t\t// ExpectedRequest: %#v,\n\t\t", receivedRequest)
+	return expectedRequest, nil
 }
