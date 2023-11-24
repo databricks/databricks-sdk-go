@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
@@ -78,13 +79,17 @@ type metadataService struct {
 func (s metadataService) Get() (*oauth2.Token, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), metadataServiceTimeout)
 	defer cancel()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, s.metadataServiceURL.String(), nil)
+	var inner msiToken
+	err := s.config.refreshClient.Do(ctx, http.MethodGet,
+		s.metadataServiceURL.String(),
+		httpclient.WithRequestHeader(MetadataServiceVersionHeader, MetadataServiceVersion),
+		httpclient.WithRequestHeader(MetadataServiceHostHeader, s.config.Host),
+		httpclient.WithResponseUnmarshal(&inner),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("token request: %w", err)
 	}
-	req.Header.Add(MetadataServiceVersionHeader, MetadataServiceVersion)
-	req.Header.Add(MetadataServiceHostHeader, s.config.Host)
-	return makeMsiRequest(req)
+	return inner.Token()
 }
 
 func (t metadataService) Token() (*oauth2.Token, error) {

@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
@@ -56,8 +57,8 @@ func (c *Config) azureEnsureWorkspaceUrl(ctx context.Context, ahr azureHostResol
 			WorkspaceURL string `json:"workspaceUrl"`
 		} `json:"properties"`
 	}
-	requestURL := azureEnv.ResourceManagerEndpoint + c.AzureResourceID + "?api-version=2018-04-01"
-	err := httpclient.DefaultClient.Do(ctx, "GET", requestURL,
+	requestURL := strings.TrimSuffix(azureEnv.ResourceManagerEndpoint, "/") + c.AzureResourceID + "?api-version=2018-04-01"
+	err := c.refreshClient.Do(ctx, "GET", requestURL,
 		httpclient.WithResponseUnmarshal(&workspaceMetadata),
 		httpclient.WithTokenSource(management),
 	)

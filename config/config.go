@@ -8,6 +8,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -121,6 +122,8 @@ type Config struct {
 	// marker for configuration resolving
 	resolved bool
 
+	refreshClient *httpclient.ApiClient
+
 	// marker for testing fixture
 	isTesting bool
 
@@ -211,6 +214,9 @@ func (c *Config) EnsureResolved() error {
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("validate: %w", err))
 	}
+	c.refreshClient = httpclient.NewApiClient(httpclient.ClientConfig{
+		Transport: c.HTTPTransport,
+	})
 	c.resolved = true
 	return nil
 }
@@ -247,6 +253,7 @@ func (c *Config) authenticateIfNeeded(ctx context.Context) error {
 		c.Credentials = &DefaultCredentials{}
 	}
 	c.fixHostIfNeeded()
+	ctx = c.refreshClient.InContextForOAuth2(ctx)
 	visitor, err := c.Credentials.Configure(ctx, c)
 	if err != nil {
 		return c.wrapDebug(fmt.Errorf("%s auth: %w", c.Credentials.Name(), err))
