@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
@@ -34,6 +35,7 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (func(*
 	if err != nil {
 		return nil, err
 	}
+	ctx = httpclient.DefaultClient.InContextForOAuth2(ctx)
 	if !cfg.IsAccountClient() {
 		err = cfg.azureEnsureWorkspaceUrl(ctx, c)
 		if err != nil {

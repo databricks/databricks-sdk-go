@@ -154,7 +154,7 @@ func GenericIOError(ue *url.Error) *APIError {
 }
 
 // GetAPIError inspects HTTP errors from the Databricks API for known transient errors.
-func GetAPIError(ctx context.Context, resp *http.Response, body io.ReadCloser) *APIError {
+func GetAPIError(ctx context.Context, resp *http.Response, body io.ReadCloser) error {
 	if resp.StatusCode == 429 {
 		return TooManyRequests()
 	}

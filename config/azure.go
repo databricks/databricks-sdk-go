@@ -2,11 +2,10 @@ package config
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
 	"strings"
 
+	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
@@ -81,23 +80,18 @@ func (c *Config) azureEnsureWorkspaceUrl(ctx context.Context, ahr azureHostResol
 	}
 	// azure resource ID can also be used in lieu of host by some of the clients, like Terraform
 	management := ahr.tokenSourceFor(ctx, c, env, env.ResourceManagerEndpoint)
-	resourceManager := oauth2.NewClient(ctx, management)
-	resp, err := resourceManager.Get(env.ResourceManagerEndpoint + c.AzureResourceID + "?api-version=2018-04-01")
-	if err != nil {
-		return fmt.Errorf("cannot resolve workspace: %w", err)
-	}
-	raw, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Errorf("cannot read: %w", err)
-	}
 	var workspaceMetadata struct {
 		Properties struct {
 			WorkspaceURL string `json:"workspaceUrl"`
 		} `json:"properties"`
 	}
-	err = json.Unmarshal(raw, &workspaceMetadata)
+	requestURL := env.ResourceManagerEndpoint + c.AzureResourceID + "?api-version=2018-04-01"
+	err = httpclient.DefaultClient.Do(ctx, "GET", requestURL,
+		httpclient.WithResponseUnmarshal(&workspaceMetadata),
+		httpclient.WithTokenSource(management),
+	)
 	if err != nil {
-		return fmt.Errorf("cannot unmarshal: %w", err)
+		return fmt.Errorf("resolve workspace: %w", err)
 	}
 	c.Host = fmt.Sprintf("https://%s", workspaceMetadata.Properties.WorkspaceURL)
 	logger.Debugf(ctx, "Discovered workspace url: %s", c.Host)

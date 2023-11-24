@@ -76,6 +76,18 @@ func Backoff(attempt int) time.Duration {
 	return wait
 }
 
+type ErrTimedOut struct {
+	err error
+}
+
+func (et *ErrTimedOut) Error() string {
+	return fmt.Sprintf("timed out: %s", et.err)
+}
+
+func (et *ErrTimedOut) Unwrap() error {
+	return et.err
+}
+
 func Wait(pctx context.Context, timeout time.Duration, fn WaitFn) error {
 	ctx, cancel := context.WithTimeout(pctx, timeout)
 	defer cancel()
@@ -100,7 +112,7 @@ func Wait(pctx context.Context, timeout time.Duration, fn WaitFn) error {
 		// stop when either this or parent context times out
 		case <-ctx.Done():
 			timer.Stop()
-			return fmt.Errorf("timed out: %w", lastErr)
+			return &ErrTimedOut{lastErr}
 		case <-timer.C:
 		}
 	}
@@ -130,7 +142,7 @@ func Poll[T any](pctx context.Context, timeout time.Duration, fn func() (*T, *Er
 		// stop when either this or parent context times out
 		case <-ctx.Done():
 			timer.Stop()
-			return nil, fmt.Errorf("timed out: %w", lastErr)
+			return nil, &ErrTimedOut{lastErr}
 		case <-timer.C:
 		}
 	}

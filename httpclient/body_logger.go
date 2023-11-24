@@ -1,4 +1,4 @@
-package client
+package httpclient
 
 import (
 	"bytes"
@@ -13,9 +13,13 @@ type bodyLogger struct {
 }
 
 var redactKeys = map[string]bool{
-	"string_value": true,
-	"token_value":  true,
-	"content":      true,
+	"string_value":  true,
+	"token_value":   true,
+	"content":       true,
+	"access_token":  true,
+	"refresh_token": true,
+	"token":         true,
+	"password":      true,
 }
 
 func (b bodyLogger) mask(m map[string]any) {
