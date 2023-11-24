@@ -61,14 +61,6 @@ func (cfg ClientConfig) httpTransport() http.RoundTripper {
 	}
 }
 
-var DefaultClient = NewApiClient(ClientConfig{
-	ErrorRetriable:     DefaultErrorRetriable,
-	ErrorMapper:        DefaultErrorMapper,
-	HTTPTimeout:        30 * time.Second,
-	RetryTimeout:       5 * time.Minute,
-	RateLimitPerSecond: 30,
-})
-
 func NewApiClient(cfg ClientConfig) *ApiClient {
 	cfg.HTTPTimeout = time.Duration(orDefault(int(cfg.HTTPTimeout), int(30*time.Second)))
 	cfg.DebugTruncateBytes = orDefault(cfg.DebugTruncateBytes, 96)

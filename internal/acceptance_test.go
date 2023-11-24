@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/databricks/databricks-sdk-go/service/compute"
@@ -93,6 +94,19 @@ func TestAccExplicitAzureCliAuth(t *testing.T) {
 	})
 	assert.NoError(t, err)
 	assert.NotEmpty(t, v)
+}
+
+func TestAccAzureErrorMappingForUnauthenticated(t *testing.T) {
+	w := databricks.Must(databricks.NewWorkspaceClient(&databricks.Config{
+		DebugHeaders:      true,
+		AzureTenantID:     GetEnvOrSkipTest(t, "ARM_TENANT_ID"),
+		AzureClientID:     GetEnvOrSkipTest(t, "ARM_CLIENT_ID"),
+		AzureClientSecret: "invalid-for-integration-tests",
+		AzureResourceID:   "/a/b/c",
+	}))
+	ctx := context.Background()
+	_, err := w.Clusters.SparkVersions(ctx)
+	require.ErrorIs(t, err, apierr.ErrUnauthenticated)
 }
 
 func TestAccExplicitAzureSpnAuth(t *testing.T) {
