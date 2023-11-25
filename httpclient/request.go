@@ -25,26 +25,30 @@ import (
 // Request bodies are never closed by the client, hence only accepting
 // io.Reader.
 type requestBody struct {
-	Reader     io.Reader
-	DebugBytes []byte
+	Reader      io.Reader
+	ContentType string
+	DebugBytes  []byte
 }
 
 func newRequestBody(data any) (requestBody, error) {
 	switch v := data.(type) {
 	case io.Reader:
 		return requestBody{
-			Reader:     v,
-			DebugBytes: []byte("<io.Reader>"),
+			Reader:      v,
+			ContentType: "application/octet-stream",
+			DebugBytes:  []byte("<io.Reader>"),
 		}, nil
 	case string:
 		return requestBody{
-			Reader:     strings.NewReader(v),
-			DebugBytes: []byte(v),
+			Reader:      strings.NewReader(v),
+			ContentType: "application/octet-stream",
+			DebugBytes:  []byte(v),
 		}, nil
 	case []byte:
 		return requestBody{
-			Reader:     bytes.NewReader(v),
-			DebugBytes: v,
+			Reader:      bytes.NewReader(v),
+			ContentType: "application/octet-stream",
+			DebugBytes:  v,
 		}, nil
 	default:
 		bs, err := json.Marshal(data)
@@ -52,8 +56,9 @@ func newRequestBody(data any) (requestBody, error) {
 			return requestBody{}, fmt.Errorf("request marshal failure: %w", err)
 		}
 		return requestBody{
-			Reader:     bytes.NewReader(bs),
-			DebugBytes: bs,
+			Reader:      bytes.NewReader(bs),
+			ContentType: "application/json",
+			DebugBytes:  bs,
 		}, nil
 	}
 }

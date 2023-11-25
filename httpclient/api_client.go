@@ -237,6 +237,9 @@ func (c *ApiClient) attempt(
 		}
 		// request.Context() holds context potentially enhanced by visitors
 		request.Header.Set("User-Agent", useragent.FromContext(request.Context()))
+		if request.Header.Get("Content-Type") != "" {
+			request.Header.Set("Content-Type", requestBody.ContentType)
+		}
 
 		// attempt the actual request
 		response, err := c.httpClient.Do(request)
