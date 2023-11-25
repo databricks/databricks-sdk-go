@@ -145,11 +145,11 @@ func (c *ApiClient) fromResponse(r *http.Response) (responseBody, error) {
 	if r.Request == nil {
 		return responseBody{}, fmt.Errorf("nil request")
 	}
-	// SDK only supports using JSON for non-streaming requests/responses, as that
-	// is the only supported serde in the SDK. If you need to use any other content
-	// type, the SDK will just hand you an io.ReadCloser and you will be responsible
-	// for consuming the request body yourself.
-	streamResponse := r.Request.Header.Get("Accept") != "application/json" && r.Header.Get("Content-Type") != "application/json"
+	// JSON media types might have more information after `application/json`, like
+	// `application/json;odata.metadata=minimal;odata...=...`.
+	// See https://www.rfc-editor.org/rfc/rfc9110#section-8.3.1
+	isJSON := strings.HasPrefix(r.Header.Get("Content-Type"), "application/json")
+	streamResponse := r.Request.Header.Get("Accept") != "application/json" && !isJSON
 	if streamResponse {
 		return newResponseBody(r.Body, r.Header, r.StatusCode, r.Status)
 	}
