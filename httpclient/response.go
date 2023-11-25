@@ -55,6 +55,18 @@ func WithResponseHeader(key string, value *string) DoOption {
 
 func WithResponseUnmarshal(response any) DoOption {
 	return DoOption{
+		in: func(r *http.Request) error {
+			if r.Header.Get("Accept") != "" {
+				return nil
+			}
+			switch response.(type) {
+			case *bytes.Buffer, *io.ReadCloser, *[]byte:
+				r.Header.Set("Accept", "application/octet-stream")
+			default:
+				r.Header.Set("Accept", "application/json")
+			}
+			return nil
+		},
 		out: func(body *responseBody) error {
 			if response == nil {
 				return nil
