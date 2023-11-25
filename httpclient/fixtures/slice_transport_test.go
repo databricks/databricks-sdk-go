@@ -11,7 +11,7 @@ import (
 
 func TestGetErrorStub(t *testing.T) {
 	client := httpclient.NewApiClient(httpclient.ClientConfig{
-		Transport: fixtures.HTTPFixtures{},
+		Transport: fixtures.SliceTransport{},
 	})
 	ctx := context.Background()
 	err := client.Do(ctx, "GET", "/foo", httpclient.WithRequestData(map[string]any{
@@ -32,7 +32,7 @@ func TestGetErrorStubFilled(t *testing.T) {
 		Foo string `json:"foo"`
 	}
 	client := httpclient.NewApiClient(httpclient.ClientConfig{
-		Transport: fixtures.HTTPFixtures{
+		Transport: fixtures.SliceTransport{
 			{
 				Method:   "GET",
 				Resource: "/foo?foo=bar",
@@ -57,7 +57,7 @@ func TestReplyWithString(t *testing.T) {
 		Foo string `json:"foo"`
 	}
 	client := httpclient.NewApiClient(httpclient.ClientConfig{
-		Transport: fixtures.HTTPFixtures{
+		Transport: fixtures.SliceTransport{
 			{
 				Method:   "GET",
 				Resource: "/foo?foo=bar",
@@ -77,7 +77,7 @@ func TestReplyWithString(t *testing.T) {
 
 func TestGetErrorStubWithHost(t *testing.T) {
 	client := httpclient.NewApiClient(httpclient.ClientConfig{
-		Transport: fixtures.HTTPFixtures{},
+		Transport: fixtures.SliceTransport{},
 	})
 	ctx := context.Background()
 	err := client.Do(ctx, "GET", "http://localhost:1234/foo", httpclient.WithRequestData(map[string]any{
@@ -95,7 +95,7 @@ func TestGetErrorStubWithHost(t *testing.T) {
 
 func TestPostErrorStub(t *testing.T) {
 	client := httpclient.NewApiClient(httpclient.ClientConfig{
-		Transport: fixtures.HTTPFixtures{},
+		Transport: fixtures.SliceTransport{},
 	})
 	ctx := context.Background()
 	err := client.Do(ctx, "POST", "/foo", httpclient.WithRequestData(map[string]any{
@@ -120,7 +120,7 @@ func TestPostErrorStubFilled(t *testing.T) {
 		Foo string `json:"foo"`
 	}
 	client := httpclient.NewApiClient(httpclient.ClientConfig{
-		Transport: fixtures.HTTPFixtures{
+		Transport: fixtures.SliceTransport{
 			{
 				Method:   "POST",
 				Resource: "/foo",
@@ -142,7 +142,7 @@ func TestPostUnexpectedRequest(t *testing.T) {
 		Foo string `json:"foo"`
 	}
 	client := httpclient.NewApiClient(httpclient.ClientConfig{
-		Transport: fixtures.HTTPFixtures{
+		Transport: fixtures.SliceTransport{
 			{
 				Method:   "POST",
 				Resource: "/foo",
@@ -156,7 +156,7 @@ func TestPostUnexpectedRequest(t *testing.T) {
 	err := client.Do(ctx, "POST", "/foo", httpclient.WithRequestData(map[string]any{
 		"foo": "bar",
 	}))
-	assert.EqualError(t, err, `Post "/foo": expected request: want {
+	assert.EqualError(t, err, `Post "/foo": expected: want {
   "foo": "ba..r"
 }, got {
   "foo": "bar"
