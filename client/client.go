@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
@@ -108,6 +109,11 @@ func (c *DatabricksClient) Do(ctx context.Context, method, path string,
 	opts = append(opts, httpclient.WithRequestHeaders(headers))
 	opts = append(opts, httpclient.WithRequestData(request))
 	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+	// Remove extra `/` from path for files API.
+	// Once the OpenAPI spec doesn't include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
 	return c.client.Do(ctx, method, path, opts...)
 }
 
